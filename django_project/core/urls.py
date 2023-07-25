@@ -21,6 +21,9 @@ from django.contrib import admin
 from django.urls import path
 from django.views.generic.base import RedirectView
 
+from core.api.access_request import (
+    AccessRequestList,
+)
 from core.api.color import ColorPaletteListAPI
 from core.api.group import GroupListAPI, GroupDetailAPI
 from core.api.proxy import ProxyView
@@ -82,16 +85,29 @@ color_api = [
         ColorPaletteListAPI.as_view(), name='color-list-api'
     ),
 ]
+# Request Access
+request_access_api = [
+    url(
+        r'^request/'
+        r'(?P<request_type>(user|permission))/'
+        r'list/?$',
+        AccessRequestList.as_view(),
+        name='access-request-list-api'
+    ),
+]
 
 api = [
     url(r'^color/palette/', include(color_api)),
     url(r'^group/', include(group_api)),
     url(r'^user/', include(user_api)),
+    url(r'^user/', include(user_api)),
+    url(r'^access/', include(request_access_api)),
 ]
 urlpatterns += [
     url(r'^proxy', ProxyView.as_view(), name='proxy-view'),
     url(r'^api/', include(api)),
     url(r'^sentry-debug', trigger_error),
+    url(r'^captcha/', include('captcha.urls')),
     url(r'^', include('geosight.urls')),
     url(r'^', include('frontend.urls')),
 ]

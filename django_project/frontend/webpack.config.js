@@ -28,6 +28,7 @@ let conf = {
   entry: {
     Home: ['./src/pages/Home'],
     Login: ['./src/pages/Login'],
+    SignUp: ['./src/pages/SignUp'],
     GeoRepoAuthFailed: ['./src/pages/GeoRepoAuthFailed'],
     Dashboard: ['./src/pages/Dashboard/Page'],
     DashboardForm: ['./src/pages/Admin/Dashboard/Form'],
@@ -54,6 +55,10 @@ let conf = {
     AdminScheduledJobs: ['./src/pages/Admin/Importer/ScheduledJobs'],
     AdminImporterLogDetail: ['./src/pages/Admin/Importer/LogDetail'],
     AdminImporterLogData: ['./src/pages/Admin/Importer/LogData'],
+
+    // ACCESS REQUEST
+    AdminAccessUserRequest: ['./src/pages/Admin/AccessRequest/User'],
+    AdminAccessPermissionRequest: ['./src/pages/Admin/AccessRequest/Permission'],
 
     // INDICATOR MANAGEMENT
     IndicatorValueList: ['./src/pages/Admin/Indicator/IndicatorValueList'],

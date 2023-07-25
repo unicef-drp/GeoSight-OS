@@ -30,9 +30,14 @@ export const pageNames = {
   Dataset: 'Data Browser',
   DataAccess: 'Data Access',
   RelatedTables: 'Related Tables',
+
+  // Importer
   Importer: 'Related Table Importer',
   ImporterLogs: 'Importer Logs',
   ScheduleJobs: 'Scheduled Jobs',
+
+  AccessRequestUser: 'Request New User',
+  AccessRequestPermission: 'Request Permission',
 }
 /**
  * Base Admin App

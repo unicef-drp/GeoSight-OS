@@ -17,11 +17,13 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.conf.urls import url
 from django.urls import include
 
+from frontend.views.georepo_auth_failed import GeoRepoAuthFailedPageView
 from frontend.views.home import HomePageView
 from frontend.views.login import LoginPageView
-from frontend.views.georepo_auth_failed import GeoRepoAuthFailedPageView
+from frontend.views.sign_up import SignUpView
 
 admin_url = [
+    url(r'^access/', include('frontend.urls.access_request')),
     url(r'^project/', include('frontend.urls.dashboard_admin')),
     url(r'^indicators/', include('frontend.urls.indicator')),
     url(r'^basemap/', include('frontend.urls.basemap')),
@@ -37,6 +39,7 @@ urlpatterns = [
     url(r'^embed/', include('frontend.urls.embed')),
     url(r'^project/', include('frontend.urls.dashboard')),
     url(r'^login/', LoginPageView.as_view(), name='login'),
+    url(r'^sign-up/$', SignUpView.as_view(), name='signup-view'),
     url(r'^georepo_auth_failed/', GeoRepoAuthFailedPageView.as_view(),
         name='georepo_auth_failed'),
     url(r'^admin/', include(admin_url)),
