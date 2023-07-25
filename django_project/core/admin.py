@@ -175,6 +175,8 @@ else:
 
 
 class UserAccessRequestAdmin(admin.ModelAdmin):
+    """User access request admin."""
+
     list_display = (
         'requester_email', 'requester_first_name', 'type',
         'status', 'submitted_on'

@@ -36,9 +36,11 @@ User = get_user_model()
 
 class AccessRequestList(APIView):
     """List access request."""
+
     permission_classes = (AdminAuthenticationPermission,)
 
     def get(self, request, request_type, *args, **kwargs):
+        """Get access request list."""
         if request_type not in ACCESS_REQUEST_TYPE_LIST:
             raise ValidationError(f'Invalid request type: {request_type}')
         status = request.GET.get('status', None)
@@ -54,9 +56,11 @@ class AccessRequestList(APIView):
 
 class AccessRequestDetail(APIView):
     """Approve/Reject access request."""
+
     permission_classes = (AdminAuthenticationPermission,)
 
     def get(self, request, pk, *args, **kwargs):
+        """Get access request detail."""
         request_obj = get_object_or_404(UserAccessRequest, pk=pk)
         return Response(
             status=200,

@@ -30,6 +30,8 @@ from core.models.preferences import SitePreferences
 
 
 class SignUpForm(forms.Form):
+    """Sign Up form."""
+
     required_css_class = 'required'
     first_name = forms.CharField(max_length=150, required=True)
     last_name = forms.CharField(max_length=150, required=False)
@@ -41,6 +43,7 @@ class SignUpForm(forms.Form):
     captcha = CaptchaField()
 
     def send_email(self, obj: UserAccessRequest, request):
+        """Send email."""
         admin_emails = SitePreferences.preferences().default_admin_emails
         if not admin_emails:
             return
@@ -83,6 +86,7 @@ class SignUpForm(forms.Form):
         )
 
     def save(self, request):
+        """Save data."""
         access_request = UserAccessRequest.objects.create(
             type=UserAccessRequest.RequestType.NEW_USER,
             status=UserAccessRequest.RequestStatus.PENDING,
@@ -97,11 +101,13 @@ class SignUpForm(forms.Form):
 
 class SignUpView(FormView):
     """Login Create View."""
+
     template_name = 'frontend/sign_up.html'
     form_class = SignUpForm
     success_url = "/sign-up/?success=true"
 
     def form_valid(self, form):
+        """Form is valid."""
         if form.is_valid():
             # if user has pending request, then skip save
             check_exist = UserAccessRequest.objects.filter(
@@ -114,6 +120,7 @@ class SignUpView(FormView):
         return super().form_valid(form)
 
     def get(self, request, *args, **kwargs):
+        """GET request."""
         if request.user.is_authenticated:
             return HttpResponseRedirect('/')
         return super(SignUpView, self).get(request, *args, **kwargs)

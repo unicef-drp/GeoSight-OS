@@ -41,6 +41,7 @@ class AccessRequestDetailView(RoleSuperAdminRequiredMixin, AdminBaseView, ABC):
     def approval_request(
             self, obj: UserAccessRequest, is_approve: bool, remarks: str
     ):
+        """Approval request."""
         obj.approved_date = datetime.now()
         obj.approved_by = self.request.user
         obj.approver_notes = remarks
@@ -51,6 +52,7 @@ class AccessRequestDetailView(RoleSuperAdminRequiredMixin, AdminBaseView, ABC):
         obj.save()
 
     def notify_requester_new_user(self, obj: UserAccessRequest):
+        """Notify new user."""
         request_from = '-'
         if obj.requester_first_name:
             request_from = obj.requester_first_name
@@ -96,6 +98,7 @@ class AccessRequestDetailView(RoleSuperAdminRequiredMixin, AdminBaseView, ABC):
         )
 
     def notify_requester_access_request(self, obj: UserAccessRequest):
+        """Approval requester for access request."""
         request_from = '-'
         if obj.requester_first_name:
             request_from = obj.requester_first_name
@@ -142,6 +145,7 @@ class AccessRequestDetailView(RoleSuperAdminRequiredMixin, AdminBaseView, ABC):
         )
 
     def approve_new_user_access(self, obj: UserAccessRequest):
+        """Approve new user."""
         # create new user + set as viewer
         user, created = User.objects.get_or_create(
             username=obj.requester_email,

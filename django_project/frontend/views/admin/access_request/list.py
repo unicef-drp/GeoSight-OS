@@ -37,7 +37,9 @@ class AccessRequestUserListView(RoleSuperAdminRequiredMixin, AdminBaseView):
         return f'<a href="{list_url}">Request New User</a> '
 
 
-class AccessRequestPermissionListView(RoleSuperAdminRequiredMixin, AdminBaseView):
+class AccessRequestPermissionListView(
+    RoleSuperAdminRequiredMixin, AdminBaseView
+):
     """Access Request Detail View."""
 
     template_name = 'frontend/admin/access_request/list/permission.html'
