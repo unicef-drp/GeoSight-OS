@@ -38,6 +38,8 @@ export const pageNames = {
 
   AccessRequestUser: 'Request New User',
   AccessRequestPermission: 'Request Permission',
+  AccessRequestUserDetail: 'Request New User Detail',
+  AccessRequestPermissionDetail: 'Request Permission Detail',
 }
 /**
  * Base Admin App

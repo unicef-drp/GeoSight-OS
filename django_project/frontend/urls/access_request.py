@@ -16,19 +16,32 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.conf.urls import url
 
+from frontend.views.admin.access_request.detail import (
+    AccessRequestUserDetailView, AccessRequestPermissionDetailView
+)
 from frontend.views.admin.access_request.list import (
-    AccessRequestUserView, AccessRequestPermissionView
+    AccessRequestUserListView, AccessRequestPermissionListView
 )
 
 urlpatterns = [
     url(
-        r'^request/user',
-        AccessRequestUserView.as_view(),
+        r'^request/user/(?P<pk>\d+)$',
+        AccessRequestUserDetailView.as_view(),
+        name='admin-access-request-user-detail-view'
+    ),
+    url(
+        r'^request/permission/(?P<pk>\d+)$',
+        AccessRequestPermissionDetailView.as_view(),
+        name='admin-access-request-permission-detail-view'
+    ),
+    url(
+        r'^request/user$',
+        AccessRequestUserListView.as_view(),
         name='admin-access-request-user-list-view'
     ),
     url(
-        r'^request/permission',
-        AccessRequestPermissionView.as_view(),
+        r'^request/permission$',
+        AccessRequestPermissionListView.as_view(),
         name='admin-access-request-permission-list-view'
     ),
 ]

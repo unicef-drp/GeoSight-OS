@@ -24,12 +24,20 @@ import { formatDateTime } from "../../../../utils/main";
 /**
  * Access Request List
  */
-export default function AccessRequestPermissionList() {
-  const pageName = pageNames.AccessRequestPermission
+export default function AccessRequestUserList() {
+  const pageName = pageNames.AccessRequestUser
   return <AdminList
     columns={[
       { field: 'id', headerName: 'id', hide: true },
-      { field: 'name', headerName: 'Name', flex: 1 },
+      {
+        field: 'name', headerName: 'Name', flex: 1,
+        renderCell: (params) => {
+          return <a className='MuiButtonLike CellLink'
+                    href={detailUrl.replace('/0', `/${params.id}`)}>
+            {params.value}
+          </a>
+        }
+      },
       { field: 'requester_email', headerName: 'Requester Email', flex: 1 },
       { field: 'status', headerName: 'Status', flex: 1 },
       {
@@ -41,7 +49,14 @@ export default function AccessRequestPermissionList() {
     ]}
     pageName={pageName}
     listUrl={urls.api.list}
+    filterDefault={
+      [{
+        columnField: 'status',
+        operatorValue: 'equals',
+        value: 'PENDING'
+      }]
+    }
   />
 }
 
-render(AccessRequestPermissionList, store)
+render(AccessRequestUserList, store)

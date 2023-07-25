@@ -15,6 +15,7 @@ __date__ = '25/07/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -22,7 +23,8 @@ from rest_framework.views import APIView
 from core.models.access_request import UserAccessRequest
 from core.permissions import AdminAuthenticationPermission
 from core.serializer.access_request import (
-    AccessRequestSerializer
+    AccessRequestSerializer,
+    AccessRequestDetailSerializer
 )
 
 ACCESS_REQUEST_TYPE_LIST = {
@@ -48,3 +50,15 @@ class AccessRequestList(APIView):
         return Response(status=200, data=AccessRequestSerializer(
             results, many=True
         ).data)
+
+
+class AccessRequestDetail(APIView):
+    """Approve/Reject access request."""
+    permission_classes = (AdminAuthenticationPermission,)
+
+    def get(self, request, pk, *args, **kwargs):
+        request_obj = get_object_or_404(UserAccessRequest, pk=pk)
+        return Response(
+            status=200,
+            data=AccessRequestDetailSerializer(request_obj).data
+        )

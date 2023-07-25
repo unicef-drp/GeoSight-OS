@@ -20,10 +20,10 @@ from frontend.views.admin._base import AdminBaseView
 from geosight.permission.access import RoleSuperAdminRequiredMixin
 
 
-class AccessRequestUserView(RoleSuperAdminRequiredMixin, AdminBaseView):
-    """Basemap Detail View."""
+class AccessRequestUserListView(RoleSuperAdminRequiredMixin, AdminBaseView):
+    """Access Request Detail View."""
 
-    template_name = 'frontend/admin/access_request/user.html'
+    template_name = 'frontend/admin/access_request/list/user.html'
 
     @property
     def page_title(self):
@@ -37,10 +37,10 @@ class AccessRequestUserView(RoleSuperAdminRequiredMixin, AdminBaseView):
         return f'<a href="{list_url}">Request New User</a> '
 
 
-class AccessRequestPermissionView(RoleSuperAdminRequiredMixin, AdminBaseView):
-    """Basemap Detail View."""
+class AccessRequestPermissionListView(RoleSuperAdminRequiredMixin, AdminBaseView):
+    """Access Request Detail View."""
 
-    template_name = 'frontend/admin/access_request/permission.html'
+    template_name = 'frontend/admin/access_request/list/permission.html'
 
     @property
     def page_title(self):

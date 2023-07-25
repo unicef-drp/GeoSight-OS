@@ -62,6 +62,14 @@ export function AdminTable(
       sortModel: sortingDefault
     }
   }
+  let filter = {}
+  if (props.filterDefault) {
+    filter = {
+      filterModel: {
+        items: props.filterDefault
+      }
+    }
+  }
 
   // Is loading if rows are undefined or null
   const isLoading = [undefined, null].includes(rows)
@@ -85,7 +93,8 @@ export function AdminTable(
         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
         rowsPerPageOptions={[25, 50, 100]}
         initialState={{
-          sorting: sorting
+          sorting: sorting,
+          filter: filter
         }}
         disableSelectionOnClick
 

@@ -5,11 +5,12 @@
 {% endblock %}
 
 {% block render_bundle %}
-    {% render_bundle 'AdminAccessUserRequest' %}
+    {% render_bundle 'AdminAccessRequestUserList' %}
 {% endblock %}
 
 {% block scripts %}
     <script>
+      const detailUrl = '{% url 'admin-access-request-user-detail-view' pk=0%}';
       urls.api = {
         'list': '{% url 'access-request-list-api' request_type='user'%}',
       }

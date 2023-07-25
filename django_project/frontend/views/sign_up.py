@@ -40,30 +40,33 @@ class SignUpForm(forms.Form):
     )
     captcha = CaptchaField()
 
-    def send_email(self, request_obj: UserAccessRequest, request):
+    def send_email(self, obj: UserAccessRequest, request):
         admin_emails = SitePreferences.preferences().default_admin_emails
         if not admin_emails:
             return
         name_of_user = '-'
-        if request_obj.requester_first_name:
-            name_of_user = request_obj.requester_first_name
-            if request_obj.requester_last_name:
+        if obj.requester_first_name:
+            name_of_user = obj.requester_first_name
+            if obj.requester_last_name:
                 name_of_user = (
-                    f'{name_of_user} {request_obj.requester_last_name}'
+                    f'{name_of_user} {obj.requester_last_name}'
                 )
         request_from = (
-            request_obj.requester_email if name_of_user == '-' else
+            obj.requester_email if name_of_user == '-' else
             name_of_user
         )
         context = {
             'request_name': 'New Sign Up',
             'request_from': request_from,
             'name_of_user': name_of_user,
-            'email_of_user': request_obj.requester_email,
-            'description': request_obj.description,
+            'email_of_user': obj.requester_email,
+            'description': obj.description,
             'url': request.build_absolute_uri(
-                reverse('home-view')
-            ) + f'access_request?id={request_obj.id}'
+                reverse(
+                    'admin-access-request-user-detail-view',
+                    kwargs={"pk": obj.pk}
+                )
+            )
         }
         subject = f'New Access Request from {request_from}'
         message = render_to_string(

@@ -22,7 +22,7 @@ from django.urls import path
 from django.views.generic.base import RedirectView
 
 from core.api.access_request import (
-    AccessRequestList,
+    AccessRequestList, AccessRequestDetail
 )
 from core.api.color import ColorPaletteListAPI
 from core.api.group import GroupListAPI, GroupDetailAPI
@@ -93,6 +93,11 @@ request_access_api = [
         r'list/?$',
         AccessRequestList.as_view(),
         name='access-request-list-api'
+    ),
+    url(
+        r'^request/(?P<pk>\d+)$',
+        AccessRequestDetail.as_view(),
+        name='access-request-detail-api'
     ),
 ]
 
