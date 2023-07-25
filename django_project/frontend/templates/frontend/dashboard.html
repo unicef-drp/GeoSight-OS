@@ -1,0 +1,36 @@
+{% extends 'frontend/base.html' %}
+{% load render_bundle from webpack_loader %}
+{% load static %}
+{% block style %}
+    <script type="text/javascript"
+            src="{% static 'libs/xlsx/0.17.5/jszip.js' %}"></script>
+    <script type="text/javascript"
+            src="{% static 'libs/xlsx/0.17.5/xlsx.js' %}"></script>
+{% endblock %}
+{% block render_bundle %}
+    {% render_bundle 'Dashboard' %}
+{% endblock %}
+{% block scripts %}
+    <script>
+      {# specified url for dashboard #}
+      urls.dashboardData = '{% url 'dashboard-data-api' slug=dashboard.id %}'
+      urls.bookmarkCreate = '{% url 'dashboard-bookmarks-create' slug=dashboard.id %}'
+      urls.bookmarkList = '{% url 'dashboard-bookmarks' slug=dashboard.id %}'
+      urls.bookmarkDetail = '{% url 'dashboard-bookmarks-detail' slug=dashboard.id pk=0 %}'
+      urls.embedDetail = '{% url 'dashboard-embed' slug=dashboard.id %}'
+      urls.drilldown = '{% url 'dashboard-entity-drilldown' slug=dashboard.id concept_uuid='concept_uuid' %}'
+
+      const definition = {{ definition|safe }};
+      let editMode = {% if edit_mode %} true {% else %} false {% endif %};
+      if (editMode) {
+        urls.api = {
+          'basemapListAPI': '{% url 'basemap-list-api' %}',
+          'indicatorListAPI': '{% url 'indicator-list-api' %}',
+          'contextLayerListAPI': '{% url 'context-layer-list-api' %}',
+          'relatedTableListAPI': '{% url 'related-table-list-api' %}',
+        }
+      }
+
+      const embedConfig = {% if embed_config %}{{ embed_config|safe }}{% else %}null{% endif %};
+    </script>
+{% endblock %}

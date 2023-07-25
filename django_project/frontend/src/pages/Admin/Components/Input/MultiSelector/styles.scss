@@ -1,0 +1,107 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   Multi Item Selector
+   ========================================================================== */
+
+@import '../../../../../app/variables';
+
+.MultiSelectorItem {
+  display: flex;
+
+  .MultiSelectorItemList {
+    min-height: 200px;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+
+    .MuiCircularProgress-root {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100px !important;
+      height: 100px !important;
+      margin: -50px;
+    }
+
+    select {
+      max-width: 300px;
+      overflow-x: auto;
+    }
+
+    input {
+      border-radius: 0;
+      margin-bottom: -1px;
+    }
+
+    .MuiOutlinedInput-notchedOutline {
+      border: none !important;
+      outline: none !important;
+    }
+
+    .MuiInputBase-root {
+      border-radius: 0 !important;
+      flex-grow: 1;
+      align-items: stretch;
+    }
+
+    select {
+      border-radius: 0 !important;
+      padding-right: 0.5rem !important;
+      height: 100%;
+    }
+  }
+
+  .MultiSelectorButtons {
+    padding: 1rem 0.5rem;
+
+    div {
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  .ItemRows {
+    flex-grow: 1;
+    min-height: 200px;
+    border: 1px solid $primary-color;
+
+    table {
+      width: 100%;
+      margin-bottom: 0 !important;
+
+      tbody {
+        tr:last-child {
+          border-bottom: none !important;
+        }
+      }
+
+      th {
+        font-weight: $base-font-regular;
+        text-align: left;
+      }
+
+      th, td {
+        padding: 0.5rem;
+      }
+
+      tr {
+        border: none !important;
+        border-bottom: 1px solid $primary-color !important;
+      }
+    }
+  }
+}

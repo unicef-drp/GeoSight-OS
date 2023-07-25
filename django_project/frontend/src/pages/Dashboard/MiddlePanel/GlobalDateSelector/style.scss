@@ -1,0 +1,233 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   Date selection
+   ========================================================================== */
+
+@import '../../../../app/variables';
+
+.GlobalDateSelection {
+  width: 100%;
+  pointer-events: auto;
+  padding: 0 !important;
+  height: 0;
+  transition: height 0.3s;
+  font-size: 0.8rem;
+
+  .Separator {
+    flex-grow: 1;
+  }
+
+  .MuiSlider-markLabel {
+    font-size: 0.8rem;
+  }
+
+  .MuiCircularProgress-root {
+    display: block;
+    margin: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
+  .MuiFormControl-root {
+    .ReactSelect__control {
+      min-height: 25px;
+    }
+
+    .ReactSelect__indicator-separator {
+      margin: 0;
+    }
+
+    .ReactSelect__value-container {
+      padding: 2px 4px;
+    }
+
+    .ReactSelect__indicator {
+      padding: 2px !important;
+    }
+  }
+
+  .GlobalDateSelectionOuterWrapper {
+    .GlobalDateSelectionWrapper {
+      padding: 1rem;
+      width: 100%;
+      height: 125px;
+
+      box-shadow: $box-shadow;
+      background-color: $white;
+      box-sizing: border-box;
+      color: $secondary-color;
+
+      &:hover {
+        background-color: $white;
+      }
+
+      .AccessFilterIcon {
+        margin-top: 7px;
+        cursor: pointer;
+      }
+
+      .GlobalDateSelectionSliderWrapper {
+        display: flex;
+
+        .TimeSelection {
+          div {
+            text-align: center;
+          }
+
+          & > .MuiFormControl-root {
+            margin-top: 0.3rem;
+          }
+        }
+
+        .Middle {
+          flex-grow: 1;
+          padding: 0 2rem;
+
+          .Options {
+            display: flex;
+            color: $base-black-color;
+            margin-bottom: 4px;
+
+            .MuiTypography-root {
+              font-size: 0.8rem;
+            }
+
+            .MuiSwitch-root {
+              margin-left: -10px;
+            }
+          }
+        }
+
+        .GlobalDateSelectionSlider {
+          width: 100%;
+          box-sizing: border-box;
+
+          &.Single {
+            .MuiSlider-thumb {
+              left: 50% !important;
+            }
+          }
+
+          .MuiSlider-thumb {
+            color: $secondary-color;
+          }
+
+          .MuiSlider-root {
+            color: $secondary-color;
+          }
+
+          .MuiSlider-mark {
+            height: 20px;
+            width: 20px;
+            border-radius: 20px;
+            color: $gray-500;
+            transform: translate(-50%, -50%);
+          }
+
+          .MuiSlider-markLabel {
+            display: none;
+          }
+
+          .Mui-disabled {
+            .MuiSlider-markLabel {
+              color: $gray-500;
+            }
+
+            .MuiSlider-thumb {
+              color: $gray-500;
+            }
+
+            .MuiSlider-track {
+              color: $gray-300;
+            }
+          }
+        }
+      }
+    }
+
+    .GlobalDateSelectionShowMinMax {
+      display: flex;
+      color: $base-black-color;
+      margin-top: 0.5rem;
+
+      .GlobalDateSelectionShowMinMaxText {
+        margin-top: 2px;
+        margin-right: 0.5rem;
+        width: 50px;
+      }
+
+      .Selection {
+        flex-grow: 1;
+      }
+    }
+
+    &.Disabled {
+      .GlobalDateSelectionShowLatestValue {
+        color: $gray-500;
+      }
+    }
+
+    .UpperSection {
+      display: flex;
+      padding-bottom: 0.5rem;
+      margin-top: -0.5rem;
+
+      .TimeSelection {
+        width: 140px;
+
+        b {
+          font-weight: $base-font-regular !important;
+        }
+      }
+
+      .UpperSectionText {
+        margin-top: 0.5rem;
+      }
+
+      .Separator {
+        flex-grow: 1;
+      }
+
+      .GlobalDateSelectionIconDate {
+        font-weight: $base-font-weight;
+        margin: 0.5rem 0;
+        text-align: center;
+
+        .DateSeparator {
+          margin: 0 0.5rem;
+          display: inline-block;
+          font-weight: 500;
+        }
+      }
+
+      .UpperSectionMiddle {
+        flex-grow: 1;
+      }
+    }
+  }
+
+  .UpperFloating {
+    width: 100%;
+    display: flex;
+  }
+}
+
+.GlobalDateSelection {
+  &.Open {
+    height: 155px;
+  }
+}

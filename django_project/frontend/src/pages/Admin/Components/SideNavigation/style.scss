@@ -1,0 +1,89 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   Dashboard specific style
+   ========================================================================== */
+
+@import '../../../../app/variables';
+
+
+.SideNavigation {
+  background: white;
+  width: 200px;
+  min-width: 200px;
+  box-shadow: $box-shadow-sm;
+  padding: 0.2rem;
+  overflow-y: auto !important;
+  z-index: 1;
+}
+
+.SideNavigation-Row {
+  border-radius: $border-radius;
+  color: $base-black-color;
+  cursor: pointer;
+  display: flex;
+  padding: 0.5rem 0.5rem;
+
+  &:hover {
+    opacity: 0.5;
+  }
+
+  &.active {
+    background-color: $primary-color;
+    color: $anti-primary-color;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    path {
+      fill: $anti-primary-color !important;
+    }
+  }
+
+  .SideNavigation-Row-Icon {
+    margin-right: 0.5rem;
+    width: 24px;
+    height: 24px;
+    display: inline-block;
+
+    path {
+      fill: $base-black-color;
+    }
+  }
+}
+
+.SideNavigation-Row-Group {
+  .SideNavigation-Row-Child {
+
+    .SideNavigation-Row {
+      padding-left: 2.5rem;
+
+      &.active {
+        background-color: $base-alpha-color;
+        color: $base-black-color;
+
+        &:hover {
+          opacity: 1;
+        }
+
+        path {
+          fill: $base-black-color !important;
+        }
+      }
+    }
+  }
+}

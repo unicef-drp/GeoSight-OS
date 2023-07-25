@@ -1,0 +1,23 @@
+{% extends 'frontend/admin/base.html' %}
+{% load frontend %}
+{% load render_bundle from webpack_loader %}
+{% block render_bundle %}
+    {% render_bundle 'HarvesterDetail' %}
+{% endblock %}
+{% block scripts %}
+    <script>
+      function toJson(str) {
+        return JSON.parse(str.replaceAll("'", '"').replaceAll("None", 'null').replaceAll("True", 'true').replaceAll("False", 'false'))
+      }
+
+      const editUrl = "{{ edit_url }}";
+      const harvester = JSON.parse(`{{ harvester|safe }}`);
+      const attributesData = JSON.parse(`{{ attributes|safe }}`);
+      const currentLogData = {% if current_log %}
+        JSON.parse(`{{ current_log|safe }}`.replaceAll(/\n/g, '<br>'))
+        {% else %}null{% endif %};
+      {% if current_log_detail %}
+        currentLogData['html_detail'] = `{{ current_log_detail }}`
+      {% endif %}
+    </script>
+{% endblock %}

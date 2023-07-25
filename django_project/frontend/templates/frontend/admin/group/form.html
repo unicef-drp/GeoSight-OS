@@ -1,0 +1,15 @@
+{% extends 'frontend/admin/base_form.html' %}
+{% load render_bundle from webpack_loader %}
+{% load static %}
+
+{% block render_bundle %}
+    {% render_bundle 'AdminGroupForm' %}
+{% endblock %}
+{% block scripts %}
+    <script>
+      urls.api = {
+        'detail': '{{ group_detail_api }}',
+        'users': '{% url 'user-list-api'%}',
+      }
+    </script>
+{% endblock %}

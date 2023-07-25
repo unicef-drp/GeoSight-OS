@@ -1,0 +1,229 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   Form Style
+   ========================================================================== */
+
+@import './variables.scss';
+
+.MuiFormControl-root {
+  display: block !important;
+}
+
+.MuiFormControl-hidden {
+  .MuiInput-root {
+    display: none !important;
+  }
+}
+
+.MuiInputLabel-root {
+  background-color: white;
+}
+
+.MuiRadio-root {
+  padding: 0 !important;
+  padding-right: 5px !important;
+}
+
+// MENUS -------------------
+.MuiMenuItem-root {
+  a, a:link, a:visited, a:hover, a:active {
+    color: $primary-color;
+    font-weight: 300;
+  }
+}
+
+.MuiMenuItem-placeholder {
+  display: none !important;
+}
+
+.MuiMenuItem-subname {
+  font-size: 0.8rem;
+}
+
+.MuiFormControl-Form {
+  .MuiFormControl-root {
+    margin-top: 1.5rem !important;
+  }
+}
+
+/* ==========================================================================
+   Basic Form
+   ========================================================================== */
+
+.BasicForm {
+  padding: 0 2rem;
+
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    width: fit-content;
+
+    &.required {
+      font-weight: $base-font-bold;
+
+      &:after {
+        content: '*';
+      }
+    }
+  }
+
+  input,
+  select {
+    background: white;
+    border-radius: $border-radius;
+    box-sizing: border-box;
+    padding: 0.5rem;
+    width: 100%;
+  }
+
+  input[type='checkbox'] {
+    width: fit-content;
+  }
+
+  input[disabled],
+  textarea[disabled] {
+    background-color: $gray-200;
+    cursor: not-allowed;
+
+    &:hover {
+      border: 1px solid rgba(0, 0, 0, 0.23);
+    }
+  }
+
+  textarea {
+    padding: 0.5rem;
+  }
+
+  textarea,
+  input,
+  select {
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.23);
+
+    &:hover {
+      border: 1px solid rgba(0, 0, 0, 0.87);
+    }
+
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: 300;
+
+    &:focus,
+    &:focus-within,
+    &:focus-visible {
+      border: 1px solid #1976d2;
+      outline: 1px solid #1976d2;
+    }
+  }
+
+  textarea {
+    font-family: inherit;
+    font-weight: inherit;
+  }
+
+  .form-helptext {
+    color: gray;
+    font-size: 0.8rem;
+    display: block;
+  }
+
+  .BasicFormSection {
+    margin-block-start: 0;
+    margin-block-end: 2rem;
+
+    .InputInLine {
+      display: flex;
+      width: 100%;
+      align-items: flex-start;
+
+      & > div {
+        flex: 1 1 0;
+      }
+
+
+      .MuiFormControl-root {
+        width: fit-content !important;
+      }
+
+      .MuiInputBase-root {
+        margin: 0;
+
+        &::before,
+        &::after {
+          display: none !important;
+        }
+
+        input {
+          height: unset;
+        }
+      }
+    }
+  }
+
+  .form-error {
+    color: $error;
+    font-size: 0.8rem;
+  }
+
+  .MuiOutlinedInput-root {
+    width: 100%;
+
+    input {
+      height: 2.5rem;
+      border: none;
+      outline: none !important;
+    }
+  }
+
+  .InputEnabler {
+    border-right: 1px solid $gray-300;
+    margin-right: 1rem;
+    border-radius: 0;
+  }
+}
+
+.MuiForm-RadioGroup {
+  border: 1px solid rgba(0, 0, 0, 0.23) !important;
+  border-radius: $border-radius;
+  padding-bottom: 1rem !important;
+
+  label {
+    width: fit-content;
+  }
+
+  .MuiFormControlLabel-root {
+    margin-left: 1rem !important;
+    margin-bottom: 0.5rem;
+  }
+
+  .BasicForm {
+    padding: 0 1rem 0 3rem !important;
+
+    .helptext {
+      font-size: 0.8rem;
+    }
+  }
+
+  .CustomDateFilterValues {
+    display: flex;
+    margin-bottom: 0 !important;
+
+    .Separator {
+      padding: 0.5rem;
+    }
+  }
+}

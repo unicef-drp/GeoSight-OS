@@ -1,0 +1,26 @@
+{% extends 'frontend/admin/base.html' %}
+{% load render_bundle from webpack_loader %}
+
+{% block extrastyle %}
+{% endblock %}
+
+{% block render_bundle %}
+    {% render_bundle 'AdminStyleList' %}
+{% endblock %}
+
+{% block scripts %}
+    <script>
+      urls.api = {
+        'list': '{% url 'style-list-api' %}',
+        'create': '{% url 'admin-style-create-view' %}',
+        'edit': '{% url 'admin-style-edit-view' 0 %}',
+        'batch': '{% url 'admin-style-edit-batch-view' %}',
+        'detail': '{% url 'style-detail-api' 0 %}',
+
+        {# permissions #}
+        'users': '{% url 'user-list-api'%}',
+        'groups': '{% url 'group-list-api'%}',
+        'permission': '{% url 'style-permission-api' 0 %}',
+      }
+    </script>
+{% endblock %}

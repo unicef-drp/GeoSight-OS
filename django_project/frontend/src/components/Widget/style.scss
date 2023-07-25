@@ -1,0 +1,217 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   Right-side panel
+   ========================================================================== */
+
+@import '../../app/variables';
+
+.widget {
+  background-color: #F6F8FA;
+  border: 0.5px solid rgba(0, 0, 0, 0.12);
+  border-radius: 5px;
+  position: relative;
+  margin-bottom: 5px;
+
+  .MuiLinearProgress-root {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+
+  > div {
+    padding: 0.5rem;
+  }
+
+  .info__button {
+    cursor: pointer;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  .widget__button__editor {
+    cursor: pointer;
+    position: absolute;
+    right: 2rem;
+    top: 5px;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  .remove__button {
+    color: red;
+    cursor: pointer;
+    position: absolute;
+    left: 5px;
+    top: 5px;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  .widget__fill {
+    min-height: 2rem;
+
+    > .widget__error {
+      text-align: center;
+    }
+  }
+
+  .widget__info {
+    border-top: 0.5px solid rgba(0, 0, 0, 0.12);
+
+    .widget__info__content {
+      color: #555;
+      font-style: italic;
+    }
+  }
+}
+
+.widget__content {
+  margin-top: 5px;
+  overflow-y: auto;
+}
+
+.widget__sw {
+  text-align: center;
+
+  .widget__sw__title {
+    color: $base-font-color;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+}
+
+.widget__sgw {
+  table {
+    text-align: left;
+    width: 95%;
+  }
+
+  .widget__content {
+    max-height: 200px;
+  }
+
+  .widget__sgw__row__name {
+    width: 1%;
+  }
+
+  .widget__sgw__row {
+    div {
+      background-color: $primary-color;
+      color: white;
+      padding: 3px 5px;
+    }
+  }
+}
+
+.widget__error {
+  color: red;
+  padding: 0 2rem;
+}
+
+.widget__selection__member {
+  background-color: white;
+  border: 1px solid $primary-color;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 5px;
+  margin-bottom: 5px;
+
+  &:hover {
+    opacity: 0.7;
+  }
+}
+
+.modal__widget__selection {
+  .modal--content {
+    background-color: #eee;
+  }
+}
+
+.widget__add__button {
+  color: green !important;
+  padding: 0 !important;
+  margin-bottom: 5px !important;
+  width: 100%;
+}
+
+.modal__widget__editor {
+  .MuiInput-root,
+  .MuiOutlinedInput-root {
+    width: 100%;
+  }
+
+  .MuiForm-RadioGroup {
+    padding-top: 1rem !important;
+
+    .Horizontal {
+      display: flex;
+      flex-direction: row;
+    }
+  }
+
+  .MuiForm-SubGroup {
+    padding: 1rem 1rem 0 1rem;
+
+    .MuiFormControl-root {
+      margin-top: 0 !important;
+      width: 100%;
+    }
+  }
+
+  .MuiFormLabel-root {
+    color: rgba(0, 0, 0, 0.6);
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.4375em;
+    letter-spacing: 0.00938em;
+    padding: 0;
+    position: relative;
+    display: block;
+    transform-origin: top left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(133% - 32px);
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: translate(14px, -9px) scale(0.75);
+    background-color: white;
+  }
+
+  .CustomDateFilterValues {
+    .react-datepicker__aria-live {
+      display: none !important;
+    }
+  }
+
+  .modal__widget__editor__apply {
+    margin-top: 1rem;
+    width: 100%;
+  }
+}

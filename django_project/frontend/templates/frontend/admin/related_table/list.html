@@ -1,0 +1,23 @@
+{% extends 'frontend/admin/base.html' %}
+{% load render_bundle from webpack_loader %}
+
+{% block extrastyle %}
+{% endblock %}
+
+{% block render_bundle %}
+    {% render_bundle 'AdminRelatedTableList' %}
+{% endblock %}
+
+{% block scripts %}
+    <script>
+      urls.api = {
+        'list': '{% url 'related-table-list-api' %}',
+        'detail': '{% url 'related-table-detail-api' 0 %}',
+        'dataView': '{% url 'admin-related-table-data-view' 0 %}',
+
+        'users': '{% url 'user-list-api'%}',
+        'groups': '{% url 'group-list-api'%}',
+        'permission': '{% url 'related-table-permission-api' 0 %}',
+      }
+    </script>
+{% endblock %}

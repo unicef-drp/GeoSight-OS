@@ -1,0 +1,18 @@
+{% extends 'frontend/admin/base.html' %}
+{% load render_bundle from webpack_loader %}
+
+{% block extrastyle %}
+{% endblock %}
+
+{% block render_bundle %}
+    {% render_bundle 'AdminRelatedTableData' %}
+{% endblock %}
+
+{% block scripts %}
+    <script>
+      urls.api = {
+        'detail': '{% url 'related-table-detail-api' obj_id %}',
+        'data': '{% url 'related-table-data-api' obj_id %}',
+      }
+    </script>
+{% endblock %}

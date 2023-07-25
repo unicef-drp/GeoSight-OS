@@ -1,0 +1,29 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Compile PDF",
+            "type": "node",
+            // see tasks.json for definition
+            "preLaunchTask": "Compile PDF", // The name of the task defined above
+            "request": "attach"
+        },
+        {
+            "name": "Compile HTML",
+            "type": "node",
+            // see tasks.json for definition
+            "preLaunchTask": "Compile HTML", // The name of the task defined above
+            "request": "attach"
+        },
+        {
+            "name": "Serve HTML",
+            "type": "node",
+            // see tasks.json for definition
+            "preLaunchTask": "Serve HTML", // The name of the task defined above
+            "request": "attach"
+        }
+    ]
+}

@@ -1,0 +1,101 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   Dataset style
+   ========================================================================== */
+
+@import '../../../app/variables';
+
+.ListAdminFilters {
+  padding: 0.5rem !important;
+  display: flex;
+  flex-flow: row wrap;
+  margin: 0 1rem 1rem 1rem !important;
+
+  & > div {
+    margin-right: 0.5rem;
+  }
+
+  .MuiFormControl-root {
+    .MuiFormLabel-root {
+      top: -6px;
+    }
+  }
+
+  .MuiInputBase-root {
+    width: 200px;
+
+    input {
+      padding: 10px;
+      padding-right: 0 !important;
+    }
+  }
+
+  .MuiSelect-icon {
+    transform: rotate(0deg) !important;
+  }
+
+  .ModalDataSelectorSelected {
+    display: none;
+  }
+}
+
+.DatasetAdmin {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  padding: 0 !important;
+
+  .DatasetAdminTable {
+    flex-grow: 1;
+    height: unset !important;
+  }
+
+  .Loading {
+    text-align: center;
+    padding: 200px 20px;
+  }
+
+  .MuiDataGrid-cell {
+    &.Hide {
+      span, div {
+        display: none;
+      }
+    }
+
+    &.Updated {
+      background-color: $base-alpha-color;
+    }
+
+    .MuiFormControl-root {
+      .MuiInputBase-root {
+        padding-right: 0.5rem;
+      }
+
+      input {
+        padding: 0.5rem;
+      }
+
+      svg {
+        cursor: pointer;
+
+        &:hover {
+          opacity: $base-hovered-opacity;
+        }
+      }
+    }
+  }
+}

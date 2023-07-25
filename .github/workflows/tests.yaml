@@ -1,0 +1,55 @@
+# GeoSight is UNICEF's geospatial web-based business intelligence platform.
+#
+# Contact : geosight-no-reply@unicef.org
+#
+# .. note:: This program is free software; you can redistribute it and/or modify
+#     it under the terms of the GNU Affero General Public License as published by
+#     the Free Software Foundation; either version 3 of the License, or
+#     (at your option) any later version.
+#
+# __author__ = 'irwan@kartoza.com'
+# __date__ = '13/06/2023'
+# __copyright__ = ('Copyright 2023, Unicef')
+
+name: Tests
+
+on: [ push ]
+
+jobs:
+  django_app_test:
+    name: 'Django App'
+    runs-on: ubuntu-latest
+    env:
+      APP_IMAGE: kartoza/geosight
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build test image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: deployment/docker/Dockerfile
+          push: false
+          load: true
+          target: dev
+          tags: ${{ env.APP_IMAGE }}:dev
+          cache-from: |
+            type=gha,scope=test
+            type=gha,scope=prod
+          cache-to: type=gha,scope=test
+
+      - name: Run docker-compose services
+        working-directory: deployment
+        run: |
+          echo "Override docker-compose for testing purposes"
+          cp docker-compose.test.yml docker-compose.override.yml
+          cd ../
+          make devweb
+          make wait-db
+          make sleep
+          make create-test-db
+          make devweb-test

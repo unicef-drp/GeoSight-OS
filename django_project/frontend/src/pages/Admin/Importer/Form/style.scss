@@ -1,0 +1,128 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   Data Importer
+   ========================================================================== */
+@import '../../../../app/variables';
+
+.BasicForm {
+  .MuiGrid-root {
+    margin-top: 0;
+    padding-top: 0 !important;
+  }
+
+  .MuiFormGroup-root {
+    label {
+      margin-left: 0;
+      width: fit-content;
+    }
+  }
+
+  .MuiInputBase-root {
+    input {
+      background-color: unset;
+    }
+  }
+
+  .SelectWithList, {
+    & > div {
+      min-height: 42px;
+    }
+  }
+
+  .BasicFormSection,
+  .MuiGrid-item {
+    & > input {
+      height: 42px;
+    }
+  }
+
+  .MappingSection {
+
+    & > label {
+      background: $secondary-color;
+      color: $anti-secondary-color;
+      padding: 0.7rem;
+      position: relative;
+      text-align: center;
+
+      button {
+        position: absolute;
+        right: 0;
+        top: 2px;
+      }
+    }
+
+    & > div {
+      margin: 1rem 0;
+      box-sizing: border-box;
+      width: 100%;
+
+      .MuiGrid-item {
+        display: flex;
+
+        .MuiFormControl-root {
+          flex-grow: 1;
+
+          .RemoveButton {
+            color: #d32f2f;
+            padding: 8px 0;
+          }
+        }
+      }
+    }
+  }
+}
+
+.AlertSection {
+  margin-top: 1rem;
+
+  .MuiFormGroup-root {
+    display: flex;
+    flex-direction: row;
+    margin-top: 7px;
+  }
+}
+
+form {
+  .BaseIndicatorAttribute,
+  .FormAttribute {
+    display: none;
+  }
+
+  .FormAttribute {
+    .NunjucksConfig {
+      height: 500px;
+      min-height: 0;
+    }
+  }
+
+  &.Reference {
+    .Attributes {
+      display: block !important;
+    }
+
+    .BaseIndicatorAttribute {
+      display: block;
+    }
+  }
+
+  &.Attributes {
+    .FormAttribute {
+      display: block;
+    }
+  }
+}

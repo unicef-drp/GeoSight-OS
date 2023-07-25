@@ -1,0 +1,242 @@
+/**
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
+
+import { capitalize, dictDeepCopy } from "./main";
+import nunjucks from "nunjucks";
+import { extractCode } from "./georepo";
+import { getRelatedTableData } from "./relatedTable";
+
+export const SingleIndicatorType = 'Single Indicator'
+export const MultiIndicatorType = 'Multi Indicator'
+export const DynamicIndicatorType = 'Dynamic Indicator'
+export const RelatedTableLayerType = 'Related Table'
+
+export const defaultFields = [
+  'indicator.value', 'indicator.time', 'indicator.label',
+  'geometry_data.admin_level', 'geometry_data.admin_level_name',
+  'geometry_data.concept_uuid', 'geometry_data.geom_code',
+  'geometry_data.name',
+]
+
+export function indicatorLayerId(indicatorLayer) {
+  return 'layer_' + indicatorLayer.id
+}
+
+/***
+ * Return indicator layers that has behaviour like indicator data
+ */
+export function isIndicatorLayerLikeIndicator(indicatorLayer) {
+  return [DynamicIndicatorType].includes(indicatorLayer.type)
+}
+
+/***
+ * Return indicator layers that has behaviour like indicator data
+ */
+export function indicatorLayersLikeIndicator(indicatorLayers) {
+  return indicatorLayers.filter(indicatorLayer => isIndicatorLayerLikeIndicator(indicatorLayer))
+}
+
+/***
+ * Return indicators for dynamic indicator layer
+ */
+export function dynamicLayerIndicatorList(indicatorLayer, indicators) {
+  return indicators.filter(indicator => {
+    return indicatorLayer?.config.expression?.includes(indicator.shortcode) || indicatorLayer?.config.expression?.includes(indicator.id)
+  })
+}
+
+/***
+ * Return data of dynamic layer
+ * The structure of context is
+ * {
+ *   values: {
+ *     <indicator.shortcode> : value
+ *   }
+ * }
+ */
+export function dynamicLayerData(indicatorLayer, context) {
+  indicatorLayer?.config.exposedVariables.map(variable => {
+    context.values[variable.field] = variable.value
+  })
+  let valueData = nunjucks.renderString(
+    indicatorLayer?.config.expression, { context: context }
+  )
+  if (!isNaN(parseFloat(valueData))) {
+    valueData = parseFloat(valueData)
+  }
+  return valueData
+}
+
+/***
+ * Return indicators for dynamic indicator layer
+ */
+export function fetchDynamicLayerData(
+  indicatorLayer, indicators, indicatorsData, geoField,
+  onError, onSuccess
+) {
+  const dynamicLayerIndicators = dynamicLayerIndicatorList(indicatorLayer, indicators)
+
+  let error = ''
+  const data = []
+  dynamicLayerIndicators.map(indicator => {
+    if (indicatorsData[indicator.id]?.data) {
+      indicatorsData[indicator.id].data.map(row => {
+        data.push({
+          admin_level: row.admin_level,
+          concept_uuid: row.concept_uuid,
+          date: row.date,
+          geometry_code: row.geometry_code,
+          value: row.value,
+          id: indicator.shortcode ? indicator.shortcode : indicator.id,
+        })
+      })
+    }
+    if (indicatorsData[indicator.id].error) {
+      error = indicatorsData[indicator.id].error
+    }
+  })
+
+  // If error, set error
+  if (error) {
+    onError(error)
+  } else {
+    // Get data per code
+    const dataDict = {}
+    data.map(row => {
+      const code = extractCode(row, geoField)
+      if (!dataDict[code]) {
+        dataDict[code] = {
+          admin_level: null,
+          concept_uuid: null,
+          date: null,
+          geometry_code: null,
+          values: {}
+        }
+      }
+      dataDict[code].admin_level = row.admin_level
+      dataDict[code].concept_uuid = row.concept_uuid
+      dataDict[code].date = row.date
+      dataDict[code].geometry_code = row.geometry_code
+      dataDict[code].values[row.id] = row.value
+    })
+
+    // Construct data
+    let response = []
+    for (const [key, value] of Object.entries(dataDict)) {
+      response.push({
+        admin_level: value.admin_level,
+        concept_uuid: value.concept_uuid,
+        date: value.date,
+        geometry_code: value.geometry_code,
+        value: dynamicLayerData(indicatorLayer, value)
+      })
+    }
+    onSuccess(response)
+  }
+}
+
+/**
+ * Return layer data
+ */
+export function getLayerData(indicatorsData, relatedTableData, indicatorLayer) {
+  const data = []
+  indicatorLayer.indicators?.map(obj => {
+    if (indicatorsData[obj.id]) {
+      data.push(indicatorsData[obj.id])
+    }
+  })
+  if (indicatorsData[indicatorLayerId(indicatorLayer)]) {
+    data.push(indicatorsData[indicatorLayerId(indicatorLayer)])
+  }
+  indicatorLayer.related_tables?.map(obj => {
+    if (relatedTableData[obj.id]) {
+      data.push(relatedTableData[obj.id])
+    }
+  })
+  return data
+}
+
+/**
+ * Return layer data
+ */
+export function getLayerDataCleaned(
+  indicatorsData, relatedTableData, indicatorLayer, selectedGlobalTime, geoField,
+  filteredGeometries
+) {
+  let data = []
+  indicatorsData = dictDeepCopy(indicatorsData)
+  relatedTableData = dictDeepCopy(relatedTableData)
+  indicatorLayer.indicators?.map(obj => {
+    if (indicatorsData[obj.id]) {
+      data.push(indicatorsData[obj.id])
+    }
+  })
+  if (indicatorsData[indicatorLayerId(indicatorLayer)]) {
+    data.push(indicatorsData[indicatorLayerId(indicatorLayer)])
+  }
+  indicatorLayer.related_tables?.map(obj => {
+    if (relatedTableData[obj.id]) {
+      const { rows } = getRelatedTableData(
+        relatedTableData[indicatorLayer.related_tables[0].id]?.data,
+        indicatorLayer.config,
+        selectedGlobalTime,
+        geoField
+      )
+      data.push({
+        data: rows
+      })
+    }
+  })
+
+  if (filteredGeometries && Array.isArray(data[0]?.data)) {
+    data[0].data = data[0].data.filter(row => filteredGeometries.includes(row.concept_uuid))
+  }
+  return data
+}
+
+/**
+ *
+ * @param indicatorsData
+ * @param relatedTableData
+ * @param indicatorLayers
+ * @returns {boolean}
+ */
+export function allLayerDataIsReady(indicatorsData, relatedTableData, indicatorLayers) {
+  let done = true
+  indicatorLayers.map(indicatorLayer => {
+    getLayerData(indicatorsData, relatedTableData, indicatorLayer).map(data => {
+      if (data?.fetching) {
+        done = false
+      }
+    })
+  })
+  return done
+}
+
+/**
+ * Data fields default
+ */
+export function dataFieldsDefault() {
+  return defaultFields.map((field, idx) => {
+    const fieldName = field.split('.')[1]
+    return {
+      "name": 'context.current.' + field,
+      "alias": capitalize(fieldName),
+      "visible": true,
+      "type": field.includes('date') ? "date" : "string",
+      "order": idx
+    }
+  })
+}

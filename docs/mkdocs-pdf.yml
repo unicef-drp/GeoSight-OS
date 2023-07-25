@@ -1,0 +1,69 @@
+# GeoSight is UNICEF's geospatial web-based business intelligence platform.
+#
+# Contact : geosight-no-reply@unicef.org
+#
+# .. note:: This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as published by
+#    the Free Software Foundation; either version 3 of the License, or
+#    (at your option) any later version.
+#
+# __author__ = 'irwan@kartoza.com'
+# __date__ = '13/06/2023'
+# __copyright__ = ('Copyright 2023, Unicef')
+
+# See mkdocs base and the create-mkdocs*
+# scripts for how this is used
+
+plugins:
+  - with-pdf:
+      # Generate the whole site as a single PDF
+      # Full details on this plugin here:
+      # https://github.com/orzih/mkdocs-with-pdf
+      # And don't get it confused with https://github.com/zhaoterryy/mkdocs-pdf-export-plugin
+      # which is intended to export a single page at a time
+      output_path: ../pdfs/TheGeoSightHandbook.pdf
+      author: UNICEF
+      # copyright will draw in page.bottom-right
+      # do it manually in templates/styles.scss
+      # for more control
+      # if you comment out here or use an empty string,
+      # the copyright text from mkdocs-base.yml will be
+      # used instead
+      copyright: " "
+      cover: true # see templates/cover.html
+      back_cover: true
+      cover_title: The Geosight Handbook
+      cover_subtitle: Insights from Spatial Data
+      cover_logo: ../resources/img/logo/logo.svg
+      # Print css is defined in templates/styles.scss
+      #custom_template_path: TEMPLATES PATH
+      #
+      toc_title: Contents
+      #heading_shift: false
+      toc_level: 2
+      # Set to 0 so that it does not generate chapter numbering
+      # we do the numbering in styles.css rather
+      ordered_chapter_level: 0
+      #excludes_children:
+      #    - 'release-notes/:upgrading'
+      #    - 'release-notes/:changelog'
+      #
+      #exclude_pages:
+      #    - 'bugs/'
+      #    - 'appendix/contribute/'
+      #convert_iframe:
+      #    - src: IFRAME SRC
+      #      img: POSTER IMAGE URL
+      #      text: ALTERNATE TEXT
+      #    - src: ...
+      #two_columns_level: 3
+      #
+      #render_js: true
+      #headless_chrome_path: headless-chromium
+      #
+
+      #enabled_if_env: ENABLE_PDF_EXPORT
+      # See notes at the top of templates/styles.scss.templ
+      # for debugging workflow details.
+      debug_html: true
+      #show_anchors: true

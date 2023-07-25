@@ -1,0 +1,85 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   Timeseries Widget
+   ========================================================================== */
+
+.widget__time_series {
+  overflow-y: visible !important;
+  max-height: unset !important;
+}
+
+.widget__time_series {
+  .widget__time_series__wrapper {
+    position: relative;
+
+    .NoDataFound {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #F6F8FA;
+      padding-top: 95px;
+      box-sizing: border-box;
+    }
+  }
+
+  .widget__time_series__legend {
+    margin-top: 1rem;
+
+    .widget__time_series__row {
+      width: fit-content;
+      padding: 2px 3px;
+      display: inline-block;
+      text-align: left;
+      cursor: pointer;
+      font-size: 0.7rem;
+
+      &.unselected {
+        opacity: 0.5;
+
+        .widget__time_series__color {
+          background-color: gray !important;
+        }
+      }
+
+      &:hover {
+        opacity: 0.5;
+      }
+
+      .widget__time_series__row_inner {
+        display: flex;
+      }
+
+      .widget__time_series__color {
+        height: 0.7rem;
+        width: 0.7rem;
+        border-radius: 0.5rem;
+        margin-top: 3px;
+        margin-right: 3px;
+      }
+    }
+  }
+
+  .widget__time_series__chart {
+    margin-top: 1rem;
+
+    canvas {
+      height: 200px;
+    }
+  }
+}

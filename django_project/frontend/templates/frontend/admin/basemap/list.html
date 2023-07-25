@@ -1,0 +1,26 @@
+{% extends 'frontend/admin/base.html' %}
+{% load render_bundle from webpack_loader %}
+
+{% block extrastyle %}
+{% endblock %}
+
+{% block render_bundle %}
+    {% render_bundle 'AdminBasemapList' %}
+{% endblock %}
+
+{% block scripts %}
+    <script>
+      urls.api = {
+        'list': '{% url 'basemap-list-api' %}',
+        'create': '{% url 'admin-basemap-create-view' %}',
+        'edit': '{% url 'admin-basemap-edit-view' 0 %}',
+        'batch': '{% url 'admin-basemap-edit-batch-view' %}',
+        'detail': '{% url 'basemap-detail-api' 0 %}',
+        'users': '{% url 'user-list-api'%}',
+        'groups': '{% url 'group-list-api'%}',
+
+        {# basemap specified url#}
+        'permission': '{% url 'basemap-permission-api' 0 %}',
+      }
+    </script>
+{% endblock %}

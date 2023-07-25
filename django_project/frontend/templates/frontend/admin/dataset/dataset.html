@@ -1,0 +1,19 @@
+{% extends 'frontend/admin/base.html' %}
+{% load render_bundle from webpack_loader %}
+
+{% block extrastyle %}
+{% endblock %}
+
+{% block render_bundle %}
+    {% render_bundle 'AdminDataset' %}
+{% endblock %}
+
+{% block scripts %}
+    <script>
+      urls.api = {
+        'datasetApi': '{% url 'dataset-list-api'%}',
+        'indicators': '{% url 'indicator-basic-list-api'%}',
+        'referenceLayers': '{% url 'reference-layer-list-api'%}',
+      }
+    </script>
+{% endblock %}

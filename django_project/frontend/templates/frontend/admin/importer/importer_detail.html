@@ -1,0 +1,17 @@
+{% extends 'frontend/admin/base.html' %}
+{% load render_bundle from webpack_loader %}
+
+{% block extrastyle %}
+{% endblock %}
+
+{% block render_bundle %}
+    {% render_bundle 'AdminImporterDetail' %}
+{% endblock %}
+
+{% block scripts %}
+    <script>
+      urls.api = {
+        'detail': '{% url 'importer-detail-api' obj_id %}',
+      }
+    </script>
+{% endblock %}

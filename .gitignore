@@ -1,0 +1,33 @@
+.idea
+.venv
+deployment/.env
+deployment/backups
+deployment/docker-compose.override.yml
+deployment/onedrive/data
+deployment/sites-enabled/default.conf
+deployment/nginx/CA
+deployment/volumes
+
+__pycache__/
+
+django_project/.pycharm_helpers/
+celerybeat-schedule*
+
+deployment/node-red/*
+!deployment/node-red/flows.json
+!deployment/node-red/package.json
+
+# frontend
+django_project/frontend/node_modules
+django_project/frontend/bundles/*
+django_project/frontend/package-lock.json
+django_project/frontend/webpack-stats.dev.json
+django_project/frontend/webpack-stats.prod.json
+
+# mkdocs related
+docs/mkdocs.yml
+docs/templates/graphics.scss
+docs/site/*
+
+# env vscode
+django_project/.env

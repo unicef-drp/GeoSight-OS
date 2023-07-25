@@ -1,0 +1,11 @@
+{
+  "page": 1,
+  "total_page": 1,
+  "page_size": 50,
+  "results": [
+    {
+      "ucode": "TEST",
+      "uuid": "test"
+    }
+  ]
+}

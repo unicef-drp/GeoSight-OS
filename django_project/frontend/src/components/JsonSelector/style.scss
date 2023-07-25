@@ -1,0 +1,94 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* -------------------------------------------------------------------
+   JSON SELECTOR
+  ------------------------------------------------------------------- */
+
+@import '../../app/variables';
+
+.JsonDisplay {
+  font-size: 14px;
+
+  .highlighted {
+    color: #ddd
+  }
+
+  .content {
+    padding-left: 20px;
+  }
+
+  span {
+    font-size: 14px;
+    clear: both;
+    color: black;
+    position: relative;
+    display: inline-block;
+
+    &.highlighted {
+      color: black !important;
+      cursor: pointer;
+    }
+  }
+
+  &.highlighted {
+    color: #ddd;
+
+    span {
+      color: #ddd
+    }
+  }
+
+  .modal--header--title {
+    font-weight: 300;
+  }
+
+  #attribute-selection {
+    margin-top: 1rem;
+    display: flex;
+  }
+
+
+  .attribute-selection {
+    cursor: pointer;
+    padding: 2px 5px;
+    background: $primary-color;
+    color: $anti-primary-color;
+    border-radius: 3px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    font-size: 12px;
+  }
+
+  .attribute-selection.disabled {
+    cursor: not-allowed;
+    background-color: #dddd;
+    opacity: 0.2;
+    color: black;
+  }
+
+  .attribute-selection.selected {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .attribute-selection.indicator {
+    position: absolute;
+    top: -2px;
+    white-space: nowrap;
+    cursor: default;
+    z-index: 9;
+  }
+}

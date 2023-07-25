@@ -1,0 +1,47 @@
+{% extends 'frontend/base.html' %}
+{% load render_bundle from webpack_loader %}
+{% block render_bundle %}
+    {% render_bundle 'Login' %}
+{% endblock %}
+{% block style %}
+    <style>
+        {% if preferences.background_image %}
+            .Background {
+                background: url("{{ preferences.background_image }}") no-repeat;
+                background-size: cover;
+            }
+        {% endif %}
+    </style>
+{% endblock %}
+{% block extra_html %}
+    <div id='FormTemplate' style="display: none">
+        {% if no_access %}
+            <span class="form-login-no-access">1</span>
+        {% endif %}
+        {% if redirect_next_uri %}
+            <span class="form-login-redirect-next-uri">{{ redirect_next_uri }}</span>
+        {% endif %}
+        {{ form.non_field_errors }}
+        <p data-field-name="{{ field.name }}">
+            <span class="form-input"> {% csrf_token %}</span>
+        </p>
+        {% for field in form %}
+            <p data-field-name="{{ field.name }}">
+                <label class="form-label {% if field.field.required %}required{% endif %}"
+                       for="{{ field.name }}">{{ field.label }}
+                </label>
+                {% if field.errors %}
+                    <span class="form-error">
+                    {% for error in field.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                    </span>
+                {% endif %}
+                <span class="form-input">{{ field }}</span>
+                {% if field.help_text %}
+                    <span class="form-helptext">{{ field.help_text|safe }}</span>
+                {% endif %}
+            </p>
+        {% endfor %}
+    </div>
+{% endblock %}

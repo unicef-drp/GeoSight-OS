@@ -1,0 +1,33 @@
+{% extends 'frontend/admin/base.html' %}
+{% load static %}
+{% load render_bundle from webpack_loader %}
+
+{% block style %}
+    <link rel="stylesheet"
+          href="{% static "libs/ReactDatepicker/style.css" %}"/>
+    <script type="text/javascript"
+            src="{% static 'libs/xlsx/0.17.5/jszip.js' %}"></script>
+    <script type="text/javascript"
+            src="{% static 'libs/xlsx/0.17.5/xlsx.js' %}"></script>
+{% endblock %}
+
+{% block render_bundle %}
+    {% render_bundle 'AdminImporter' %}
+{% endblock %}
+
+{% block scripts %}
+    <script>
+      urls.api = {
+        'detailView': '{% url 'admin-importer-log-detail-view' 0 %}',
+        'relatedTable': '{% url 'related-table-list-api' %}?permission=edit_data',
+        'indicatorListAPI': '{% url 'indicator-list-api' %}',
+        'indicators': '{% url 'indicator-list-api' %}',
+        'sharepointListAPI': '{% url 'sharepoint-config-list-api' %}',
+        'contextLayers': '{% url 'context-layer-list-api' %}',
+
+        {% if obj_id %}
+          'detail': '{% url 'importer-detail-api' obj_id %}',
+        {% endif %}
+      }
+    </script>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'frontend/admin/base.html' %}
+{% load render_bundle from webpack_loader %}
+{% load static %}
+
+{% block extrastyle %}
+{% endblock %}
+
+{% block extra_html %}
+    {# To create form, please use this template #}
+    <div id='FormTemplate' style="display: none">
+        <p data-field-name="{{ field.name }}">
+            <span class="form-input"> {% csrf_token %}</span>
+        </p>
+        {% for field in form %}
+            <p data-field-name="{{ field.name }}">
+                {% if not field.field.widget.is_hidden %}
+                    <label class="form-label {% if field.field.required %}required{% endif %}"
+                           for="{{ field.name }}">{{ field.label }}
+                    </label>
+                {% endif %}
+                {% if field.errors %}
+                    <span class="form-error">
+                    {% for error in field.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                    </span>
+                {% endif %}
+                <span class="form-input">{{ field }}</span>
+                {% if field.help_text %}
+                    <span class="form-helptext">{{ field.help_text|safe }}</span>
+                {% endif %}
+            </p>
+        {% endfor %}
+    </div>
+{% endblock %}

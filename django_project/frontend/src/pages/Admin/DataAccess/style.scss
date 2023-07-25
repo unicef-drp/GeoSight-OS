@@ -1,0 +1,111 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   DataAccess style
+   ========================================================================== */
+
+@import '../../../app/variables';
+
+.ListAdminFilters {
+  padding: 0.5rem !important;
+  display: flex;
+  flex-flow: row wrap;
+  margin: 0 1rem 1rem 1rem !important;
+
+  & > div {
+    margin-right: 0.5rem;
+  }
+
+  .MuiFormControl-root {
+    .MuiFormLabel-root {
+      top: -6px;
+    }
+  }
+
+  .MuiInputBase-root {
+    width: 200px;
+
+    input, .MuiSelect-select {
+      padding: 10px;
+      padding-right: 0 !important;
+    }
+  }
+
+  .MuiSelect-icon {
+    transform: rotate(0deg) !important;
+  }
+
+  .ModalDataSelectorSelected {
+    display: none;
+  }
+}
+
+.DataAccessAdmin {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  padding: 0 !important;
+  background-color: unset !important;
+
+
+  .DataAccessAdminTable {
+    flex-grow: 1;
+    height: unset !important;
+    background-color: white;
+  }
+
+  .Loading {
+    text-align: center;
+    padding: 200px 20px;
+  }
+
+  .ModalDataSelectorSelected {
+    display: none;
+  }
+}
+
+.FilterControl {
+  cursor: pointer;
+
+  input {
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  div, input, svg, fieldset {
+    cursor: pointer;
+  }
+}
+
+.PermissionDatasetAddData {
+  .MuiFormControl-root {
+    margin-bottom: 1rem;
+
+    label {
+      font-weight: $base-font-regular;
+    }
+  }
+
+  .MuiTextField-root {
+    svg {
+      display: none;
+    }
+
+    input {
+      padding: 1rem;
+      min-height: 56px;
+    }
+  }
+}

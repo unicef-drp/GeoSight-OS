@@ -1,0 +1,15 @@
+{
+"type": "FeatureCollection",
+"name": "arcgis_geojson_1",
+"features": [
+{ "type": "Feature", "id": 1, "properties": { "OBJECTID": 0, "name": "A", "population": 10, "male": 2, "female": 8, "update_date": 1640998861000, "ucode": "AA" }, "geometry": { "type": "Point", "coordinates": [ 0.0, 0.0 ] } },
+{ "type": "Feature", "id": 2, "properties": { "OBJECTID": 1, "name": "B", "population": 20, "male": 10, "female": 10, "update_date": 1641002461000, "ucode": "AA" }, "geometry": { "type": "Point", "coordinates": [ 1.0, 1.0 ] } },
+{ "type": "Feature", "id": 3, "properties": { "OBJECTID": 2, "name": "C", "population": 15, "male": 5, "female": 10, "update_date": 1640998861000, "ucode": "AA" }, "geometry": { "type": "Point", "coordinates": [ 7.0, 7.0 ] } },
+{ "type": "Feature", "id": 4, "properties": { "OBJECTID": 8, "name": "OUT2", "population": 10, "male": 5, "female": 5, "update_date": 1641002461000 }, "geometry": { "type": "Point", "coordinates": [ -1.0, -1.0 ] } },
+{ "type": "Feature", "id": 5, "properties": { "OBJECTID": 3, "name": "D", "population": 15, "male": 10, "female": 5, "update_date": 1640998861000, "ucode": "CC" }, "geometry": { "type": "Point", "coordinates": [ 5.0, 13.0 ] } },
+{ "type": "Feature", "id": 6, "properties": { "OBJECTID": 4, "name": "E", "population": 5, "male": 3, "female": 2, "update_date": 1641002461000, "ucode": "CC" }, "geometry": { "type": "Point", "coordinates": [ 6.0, 14.0 ] } },
+{ "type": "Feature", "id": 7, "properties": { "OBJECTID": 5, "name": "F", "population": 10, "male": 5, "female": 5, "update_date": 1640998861000, "ucode": "BB" }, "geometry": { "type": "Point", "coordinates": [ 15.0, 15.0 ] } },
+{ "type": "Feature", "id": 8, "properties": { "OBJECTID": 6, "name": "G", "population": 15, "male": 5, "female": 10, "update_date": 1641002461000, "ucode": "BB" }, "geometry": { "type": "Point", "coordinates": [ 16.0, 16.0 ] } },
+{ "type": "Feature", "id": 9, "properties": { "OBJECTID": 7, "name": "OUT1", "population": 5, "male": 5, "female": 0, "update_date": 1641002461000 }, "geometry": { "type": "Point", "coordinates": [ 21.0, 21.0 ] } }
+]
+}

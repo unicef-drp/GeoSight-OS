@@ -1,0 +1,416 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   Left-side panel
+   ========================================================================== */
+
+@import '../../../app/variables';
+
+.dashboard__left_side {
+  position: relative;
+  transition: margin-left 0.3s;
+  width: 20%;
+
+  &.right {
+    margin-left: -20%;
+  }
+
+  @include media(small-down) {
+    width: 20%;
+    &.right {
+      margin-left: -20%;
+    }
+  }
+
+  @include media(xsmall-only) {
+    height: 500px !important;
+    max-height: 100vh;
+    width: 50%;
+    margin-left: -50%;
+
+    &.right {
+      margin-left: 0;
+    }
+  }
+
+  .dashboard__content-wrapper {
+    display: flex;
+    flex-direction: column;
+
+    &.LAYERS .filter-wrapper {
+      display: none !important;
+    }
+
+    &.FILTERS .dataset-wrapper {
+      display: none !important;
+    }
+  }
+
+  .dashboard__content-wrapper__navbar {
+    background: #eee;
+    display: flex;
+    padding: 0.5rem;
+
+    div {
+      width: 50%;
+      cursor: pointer;
+      padding: 0.2rem;
+      text-align: center;
+      border-radius: $border-radius;
+
+      &:hover {
+        opacity: 0.5;
+      }
+
+      svg {
+        height: 15px;
+        width: 15px;
+      }
+    }
+
+    .active {
+      color: $anti-primary-color;
+      background-color: $primary-color;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+
+  &.expanded {
+    .dashboard__content-wrapper {
+      height: 100% !important;
+    }
+
+    .dashboard__left_side__bottom {
+      position: absolute;
+      bottom: 1rem;
+      left: 100%;
+    }
+  }
+
+  .dashboard__left_side__bottom {
+    position: fixed;
+    bottom: 5px;
+    left: 0;
+    margin-left: 1rem;
+
+    .dashboard__left_side__bottom_inner {
+      display: flex;
+      align-items: flex-end;
+      width: 100vw;
+      height: 0;
+    }
+  }
+
+  // For accordion
+  .dashboard__content-wrapper__inner {
+    background-color: #eee;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 0 0.5rem 0.5rem 0.5rem;
+
+    .MuiAccordionSummary-title-desc {
+      color: $base-black-color;
+      font-weight: $base-font-light;
+    }
+
+    > div.Mui-expanded {
+      flex-grow: 1;
+    }
+
+    > .MuiPaper-root {
+      margin: 0.2rem 0;
+      border-radius: $border-radius;
+
+      &.Mui-expanded {
+        margin: 0.2rem 0;
+      }
+
+      &:before {
+        display: none;
+      }
+
+      .MuiAccordionSummary-content {
+        margin: 0 !important;
+        font-weight: $base-font-medium;
+        font-size: 1rem;
+        color: $primary-color;
+        display: flex;
+
+        .Name {
+          flex-grow: 1;
+        }
+      }
+    }
+
+    > .MuiPaper-root > .MuiCollapse-root {
+      flex-grow: 1 !important;
+      overflow: auto;
+      height: 0 !important;
+    }
+
+    .MuiPaper-root {
+      box-shadow: unset !important;
+      display: flex;
+      flex-direction: column;
+
+      &:before {
+        opacity: 1 !important;
+      }
+    }
+
+    .MuiCollapse-hidden {
+      height: 0 !important;
+    }
+
+    .MuiAccordionSummary-root {
+      min-height: 0 !important;
+      height: fit-content !important;
+      padding: 0.5rem 1rem 0.5rem 1rem;
+    }
+
+    .MuiAccordionSummary-root.Mui-expanded {
+      padding: 0.5rem 1rem 0.3rem 1rem;
+    }
+  }
+
+  .LayerGroup {
+    border: 1px solid #ddd;
+    margin: -1px;
+
+    .dashboard__left_side__row {
+      padding-right: 10px;
+
+      .title {
+        margin-left: 5px;
+        padding-top: 3px;
+      }
+
+      .IndicatorLegendRow-Color {
+        height: 1rem;
+        width: 1rem;
+        margin-right: 0.5rem;
+      }
+
+      .MuiRadio-root {
+        height: 24px;
+        margin-top: 3px;
+      }
+    }
+
+    &.Empty {
+      border: none;
+
+      & > .LayerGroupName {
+        display: none;
+      }
+
+      & > .LayerGroupList {
+        padding: 0;
+      }
+    }
+
+    .LayerGroupName {
+      background-color: $base-to-white-color;
+      padding: 5px 10px;
+      cursor: pointer;
+
+      .CollapseButton {
+        padding: 0 !important;
+        display: inline-block;
+        width: 30px;
+        min-height: 0;
+        min-width: 0;
+        margin-right: 5px;
+
+        .MuiButton-startIcon {
+          margin-right: 0;
+          margin-left: 0;
+          padding-top: 3px;
+        }
+      }
+    }
+
+    .LayerGroupList {
+      padding: 0 10px 0 10px;
+    }
+  }
+}
+
+.MuiAccordionSummary-content {
+  .MuiSvgIcon-root {
+    margin-left: 5px;
+  }
+
+  .MuiButtonLike:hover {
+    opacity: 0.5;
+  }
+}
+
+/** -----------------------------------------------
+  ROWS
+ ----------------------------------------------- **/
+.dashboard__left_side__row {
+  width: 100%;
+
+  & > tbody {
+    & > tr {
+      & > td {
+        &:first-child {
+          width: 25px;
+        }
+
+        &:last-child {
+          width: 12px;
+        }
+      }
+    }
+  }
+
+  .dashboard__left_side__row__title {
+    cursor: pointer;
+
+    td {
+      padding: 5px 0;
+    }
+
+    .InfoIcon {
+      height: 20px;
+      width: 20px;
+      margin: 5px 0.5rem 0 0.5rem;
+
+      svg {
+        height: 100%;
+        width: 100%;
+      }
+
+      &.Error {
+        color: red;
+      }
+    }
+
+    .RadioButtonSection {
+      position: relative;
+
+      .MuiCircularProgress-root {
+        position: absolute;
+        width: 24px !important;
+        height: 24px !important;
+        top: 3px;
+        left: 0;
+      }
+    }
+  }
+
+  .MuiCheckbox-root {
+    align-items: baseline;
+    padding: 0 5px 0 0;
+  }
+
+  .title {
+    flex-grow: 1;
+  }
+
+  &.disabled {
+    cursor: not-allowed;
+
+    .text {
+      opacity: 0.6;
+    }
+  }
+
+  .legend {
+    display: none;
+
+    &.showLegend {
+      display: table-row;
+    }
+
+    & > td {
+      &:nth-child(2) {
+        > div {
+          margin-bottom: 0.5rem;
+        }
+      }
+    }
+
+    table {
+      tr {
+        td:first-child {
+          padding-right: 0.3rem;
+        }
+      }
+    }
+
+    img {
+      max-width: 100%;
+    }
+  }
+
+  .toggler {
+    cursor: pointer;
+    font-size: 28px;
+
+    > div {
+      height: 20px;
+      width: 10px;
+      margin-top: -9px;
+    }
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}
+
+.dashboard__editor {
+  .MuiAccordionSummary-content {
+    display: block;
+  }
+
+  .MuiPaper-root {
+    margin: 0 !important;
+    overflow-x: auto;
+
+    &.error {
+      .MuiAccordionSummary-content {
+        color: $error;
+
+        .setting__helper {
+          color: $error;
+        }
+      }
+    }
+  }
+}
+
+.modal__setting {
+  .title {
+    b {
+      font-weight: $base-font-medium;
+    }
+  }
+}
+
+.setting__helper {
+  color: #111;
+  font-style: italic;
+  font-weight: 300;
+}

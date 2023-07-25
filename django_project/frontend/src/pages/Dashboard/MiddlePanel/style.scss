@@ -1,0 +1,124 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   Date selection
+   ========================================================================== */
+
+@import '../../../app/variables';
+
+.DashboardMiddlePanel {
+  flex-grow: 1;
+  position: relative;
+  pointer-events: none;
+  height: 100%;
+
+  .TopContent {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    pointer-events: none;
+    z-index: 2;
+
+    & > div {
+      pointer-events: auto;
+    }
+
+    .MapNavbar {
+      display: flex;
+      height: 49px;
+      box-sizing: border-box;
+      position: relative;
+      z-index: 3;
+      pointer-events: none !important;
+
+      .LeftMapNavbar {
+        flex-grow: 1;
+        padding: 0.5rem;
+        pointer-events: none !important;
+      }
+
+      .RightMapNavbar {
+        pointer-events: auto !important;
+        padding: 0.5rem;
+      }
+    }
+  }
+
+  .ButtonSection {
+    background-color: unset !important;
+    display: flex;
+    left: 0;
+    pointer-events: none !important;
+    position: absolute;
+    top: 55px;
+    width: 100%;
+    z-index: 2;
+
+    .Separator {
+      background-color: unset !important;
+      pointer-events: none;
+    }
+
+    .LeftButton {
+      border-top-right-radius: $border-radius;
+      border-bottom-right-radius: $border-radius;
+    }
+
+    .RightButton {
+      border-top-left-radius: $border-radius;
+      border-bottom-left-radius: $border-radius;
+    }
+
+    .left-right-toggle-button {
+      width: fit-content;
+      pointer-events: auto;
+    }
+  }
+
+  .BottomContent {
+    bottom: 0;
+    position: absolute;
+    left: 0;
+    width: 100%;
+
+    .Disclaimer {
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+    }
+
+    .ContentLine {
+      width: 100%;
+      display: flex;
+
+      & > div {
+        margin-top: auto;
+        padding: 1rem;
+      }
+
+      &.Inner {
+        & > div {
+          margin-top: auto;
+          padding: 0;
+          pointer-events: auto;
+        }
+      }
+
+      .LeftSection {
+        flex-grow: 1;
+      }
+    }
+  }
+}

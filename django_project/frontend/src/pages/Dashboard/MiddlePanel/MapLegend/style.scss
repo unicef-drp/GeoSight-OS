@@ -1,0 +1,70 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   Context layers style
+   ========================================================================== */
+
+@import '../../../../app/variables';
+
+.MapLegend {
+
+  .MapLegendSection {
+    padding: 0.5rem;
+    background-color: $white-transparent;
+    box-shadow: $box-shadow;
+    border-radius: $border-radius;
+    max-width: 250px;
+    max-height: 600px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    pointer-events: auto;
+    font-size: 0.8rem;
+    box-sizing: border-box;
+    margin-top: 0.5rem;
+
+    &:hover {
+      background-color: $white;
+    }
+
+    .MapLegendSectionTitle {
+      color: $secondary-color;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  .IndicatorLegendSection {
+    margin-bottom: 0.5rem;
+
+    .IndicatorLegendRow {
+      display: flex;
+      align-items: center;
+    }
+
+    .IndicatorLegendRowBlock {
+      height: 16px;
+      width: 16px;
+      margin-right: 8px;
+    }
+
+    .IndicatorLegendRowName {
+      max-width: 226px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}

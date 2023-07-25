@@ -1,0 +1,121 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   Indicator Form style
+   ========================================================================== */
+
+@import '../../../../app/variables';
+
+
+.ManagementMap {
+  flex-grow: 1;
+  padding: 0 !important;
+  position: relative;
+
+  #Map {
+    height: 100%;
+    width: 100%;
+  }
+
+  .ReferenceList {
+    background-color: white;
+    right: 0;
+    position: absolute;
+    top: 0;
+    z-index: 999;
+    padding: 0.5rem;
+
+    .ReferenceListLoading {
+      color: $secondary-color;
+      margin-top: 0.5rem;
+      text-align: center;
+      animation: blinker 1s steps(5, start) infinite;
+      -webkit-animation: blinker 1s steps(5, start) infinite;
+    }
+  }
+}
+
+.leaflet-popup-close-button {
+  color: $anti-secondary-color;
+  top: 2px !important;
+  right: 2px !important;
+
+  span {
+    color: $anti-secondary-color;
+  }
+}
+
+.leaflet-popup-content {
+  width: 500px !important;
+
+  .popup-header {
+    text-align: left;
+    padding: 0.5rem !important;
+    background: $secondary-color;
+    color: $anti-secondary-color;
+  }
+
+  .popup-content {
+    display: flex;
+
+    .popup-content-form,
+    .popup-content-table {
+      width: 50%;
+      padding: 0.5rem;
+    }
+
+    .popup-content-form {
+      .popup-content-form-title {
+        padding: 0.5rem;
+      }
+
+      input {
+        border: 1px solid $secondary-color;
+        margin-bottom: 0.5rem;
+        padding: 0.5rem;
+        display: block;
+        width: 100%;
+        box-sizing: border-box
+      }
+
+      .main-button {
+        background: $secondary-color;
+        color: $anti-secondary-color;
+        cursor: pointer;
+        margin-bottom: 0;
+
+        &:disabled {
+          opacity: 0.5;
+        }
+      }
+    }
+
+    .popup-content-table {
+      table {
+        width: 100%;
+      }
+
+      th {
+        background: $secondary-color;
+        color: $anti-secondary-color;
+      }
+
+      th, td {
+        padding: 0.3rem 0.5rem;
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{% extends 'frontend/admin/base.html' %}
+{% load render_bundle from webpack_loader %}
+
+{% block extrastyle %}
+{% endblock %}
+
+{% block render_bundle %}
+    {% render_bundle 'AdminHarvesterList' %}
+{% endblock %}
+
+{% block scripts %}
+    <script>
+      urls.api = {
+        'list': '{% url 'harvester-list-api' %}',
+        'detail': '{% url 'harvester-detail-api' 0 %}',
+        'create': '{{ create_harvester_api  }}',
+        'edit': '{% url 'harvester-detail-view' 0 %}',
+        'users': '{% url 'user-list-api'%}',
+        'groups': '{% url 'group-list-api'%}',
+
+        {# harvester specified url#}
+        'permission': '{% url 'harvester-permission-api' 0 %}',
+      }
+    </script>
+{% endblock %}

@@ -1,0 +1,419 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+    Materialize
+   ========================================================================== */
+@import './variables.scss';
+
+
+.MuiList-root {
+  padding: 0 !important;
+}
+
+.MuiButton-root {
+  text-transform: unset !important;
+  padding: 0.5rem 1rem !important;
+
+  &:disabled {
+    pointer-events: auto !important;
+    cursor: not-allowed !important;
+    opacity: 0.5;
+
+    &:hover {
+      opacity: 0.5
+    }
+  }
+
+  &:hover {
+    opacity: $base-hovered-opacity;
+  }
+
+  .MuiTouchRipple-root {
+    display: none;
+  }
+
+  &.Basic {
+    padding: 0.5rem !important;
+    min-width: 0;
+
+    svg {
+      margin-right: 0;
+    }
+  }
+
+  &.Reverse {
+    &:hover {
+      background-color: unset !important;
+    }
+  }
+}
+
+.MuiButton-primary {
+  background-color: $primary-color !important;
+  border: 1px solid $primary-color !important;
+  color: $anti-primary-color !important;
+}
+
+.MuiButton-Error {
+  background-color: $error !important;
+  border: 1px solid $error !important;
+  color: white !important;
+
+  &.Reverse {
+    background-color: white !important;
+    border: 1px solid white !important;
+    color: $error !important;
+  }
+
+  &.Basic {
+    padding: 0.5rem !important;
+    min-width: 0;
+
+    svg {
+      margin-right: 0;
+    }
+  }
+}
+
+.MuiButton-secondary {
+  background-color: $secondary-color !important;
+  border: 1px solid $secondary-color !important;
+  color: $anti-secondary-color !important;
+
+  a {
+    color: $anti-primary-color !important;
+  }
+
+  &.Basic {
+    padding: 0.5rem !important;
+    min-width: 0;
+
+    svg {
+      margin-right: 0;
+      fill: $anti-secondary-color !important;
+    }
+  }
+
+  &.Reverse {
+    background-color: $anti-secondary-color !important;
+    border: 1px solid $secondary-color !important;
+    color: $secondary-color !important;
+
+    svg {
+      fill: $secondary-color !important;
+    }
+
+    &:hover {
+      background-color: $secondary-color !important;
+      color: $anti-secondary-color !important;
+
+      svg {
+        fill: $anti-secondary-color !important;
+      }
+    }
+
+    &.Mui-disabled {
+      background-color: $anti-secondary-color !important;
+      border: 1px solid $secondary-color !important;
+      color: $secondary-color !important;
+      -webkit-text-fill-color: $secondary-color !important;
+
+      svg {
+        display: block !important;
+        fill: $secondary-color !important;
+      }
+    }
+  }
+}
+
+.MuiButton-primary-text {
+  color: $primary-color !important;
+}
+
+.MuiListSubheader-root {
+  color: $primary-color !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+}
+
+.MuiAccordionSummary-title {
+  flex-grow: 1;
+}
+
+.MuiButtonLike {
+  cursor: pointer;
+
+  &:hover {
+    opacity: $base-hovered-opacity;
+  }
+}
+
+.MuiMenuItem-root {
+  a {
+    display: block;
+    padding: 6px 16px;
+    width: 100%;
+  }
+}
+
+/* ==========================================================================
+    MUI Data Grid
+   ========================================================================== */
+
+
+.MuiDataGrid-root {
+  border: none !important;
+
+  .MuiCheckbox-root {
+    color: $gray-600 !important;
+
+    &.Mui-checked {
+      color: var(--primary-color) !important;
+    }
+  }
+
+  div {
+    &:focus,
+    &:focus-visible,
+    &:focus-within {
+      outline: none !important;
+    }
+  }
+
+  .MuiDataGrid-columnHeader {
+    color: $primary-color;
+
+    .MuiButtonBase-root {
+      color: $primary-color;
+    }
+
+    .MuiDataGrid-columnHeaderTitle {
+      font-weight: 600 !important;
+    }
+  }
+
+  .MuiDataGrid-columnSeparator {
+    display: none !important;
+  }
+
+  .MuiDataGrid-row:hover {
+    background-color: $base-almost-white-color !important;
+  }
+
+  .MuiDataGrid-columnHeader,
+  .MuiDataGrid-cell {
+    padding: 0 1rem !important;
+
+    &.MuiDataGrid-columnHeaderCheckbox {
+      padding: 0 !important;
+    }
+  }
+
+  .MuiDataGrid-cell {
+    a {
+      color: inherit;
+      display: block;
+      height: 20px !important;
+
+      svg {
+        height: 100%;
+        width: 20px !important;
+      }
+    }
+
+    button {
+      &:not(.TextButton) {
+        a {
+          width: 20px !important;
+
+          svg {
+            width: 100%;
+          }
+        }
+      }
+    }
+
+    .TextButton {
+      height: 100%;
+      line-height: 1 !important;
+
+      a {
+        height: 30px !important;
+      }
+
+      .MuiButtonBase-root {
+        height: 100%;
+        padding: 0 1rem !important;
+
+        svg {
+          height: 20px !important;
+        }
+      }
+
+      &:hover {
+        background-color: unset;
+      }
+    }
+  }
+}
+
+
+.MuiButton-Div {
+  align-items: center;
+  display: inline-flex !important;
+  border-radius: $border-radius;
+  line-height: 1.5;
+}
+
+.MuiDataGridTable {
+  height: 500px;
+}
+
+.MuiDataGrid-main {
+  .MuiSelect-select {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 0.5rem;
+    background: inherit;
+    min-width: 50px;
+  }
+}
+
+.MuiDataGrid-ActionsColumn {
+  -webkit-box-pack: end !important;
+  -ms-flex-pack: end !important;
+  -webkit-justify-content: flex-end !important;
+  justify-content: end !important;
+}
+
+.MuiCircularProgress-root {
+  color: $primary-color !important;
+}
+
+.MuiOutlinedInput-input {
+  &.Mui-disabled {
+    background-color: $base-almost-white-color;
+  }
+}
+
+.Mui-disabled {
+  cursor: not-allowed !important;
+}
+
+// -----------------------------------------------
+// SWITCH THEME
+// -----------------------------------------------
+.MuiSwitch-root {
+  &.Secondary {
+    .Mui-checked {
+      .MuiSwitch-thumb {
+        color: $secondary-color;
+      }
+    }
+
+    .Mui-disabled {
+      .MuiSwitch-thumb {
+        color: $gray-500;
+      }
+    }
+
+    .Mui-checked + .MuiSwitch-track {
+      background-color: $secondary-color !important;
+    }
+  }
+}
+
+.MuiDataGrid-panelContent {
+  overflow: visible !important;
+}
+
+// FOR DATA GRID
+.AdminList {
+  .MuiDataGrid-row {
+    max-height: unset !important;
+  }
+
+  .MuiDataGrid-cell {
+    max-height: unset !important;
+    white-space: normal !important;
+    padding: 0.5rem 1rem !important;
+    min-height: 40px !important;
+
+    .MuiDataGrid-cellContent {
+      overflow-y: auto;
+      max-height: 150px;
+    }
+
+    &.MuiDataGrid-ActionsColumn {
+      padding: 0 1rem !important;
+    }
+
+    a {
+      height: unset !important;
+
+      & > svg {
+        margin-top: 5px;
+
+      }
+    }
+  }
+}
+
+.MuiDataGrid-footerContainer {
+  flex-direction: row-reverse;
+}
+
+.MuiTextField-root {
+  textarea {
+    border: none !important;
+    padding: 0 !important;
+
+    &:focus-visible,
+    &:focus-within,
+    &:focus {
+      border: none !important;
+      outline: none !important;
+    }
+  }
+}
+
+.MuiInputAdornment-root {
+  .MuiCircularProgress-root {
+    width: 20px !important;
+    height: 20px !important;
+  }
+}
+
+.MuiFormControl-root {
+  .MuiFormLabel-root {
+    z-index: 1;
+  }
+}
+
+.MuiSnackbar-root {
+  background-color: unset !important;
+}
+
+.MuiDataGrid-cellCheckbox,
+.MuiDataGrid-columnHeaderCheckbox {
+  input {
+    width: 100% !important;
+  }
+}
+
+.MuiDataGrid-overlay {
+  background-color: unset !important;
+}

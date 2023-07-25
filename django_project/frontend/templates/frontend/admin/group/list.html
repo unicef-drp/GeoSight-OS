@@ -1,0 +1,26 @@
+{% extends 'frontend/admin/base.html' %}
+{% load render_bundle from webpack_loader %}
+
+{% block extrastyle %}
+{% endblock %}
+
+{% block render_bundle %}
+    {% render_bundle 'AdminGroupList' %}
+{% endblock %}
+
+{% block scripts %}
+    <script>
+      urls.api = {
+        'list': '{% url 'group-list-api' %}',
+        'create': '{% url 'admin-group-create-view' %}',
+        'edit': '{% url 'admin-group-edit-view' 0 %}',
+        'detail': '{% url 'group-detail-api' 0 %}',
+        'users': '{% url 'user-list-api'%}',
+        'groups': '{% url 'group-list-api'%}',
+
+        {# context-layer specified url#}
+        'permission': '{% url 'group-permission-api' 0 %}',
+        'permissionAdmin': '{% url 'admin-data-access-view' %}',
+      }
+    </script>
+{% endblock %}

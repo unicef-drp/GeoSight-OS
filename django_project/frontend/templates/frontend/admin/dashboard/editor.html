@@ -1,0 +1,54 @@
+{% extends 'frontend/admin/base.html' %}
+{% load render_bundle from webpack_loader %}
+{% load static %}
+{% block style %}
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+          integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+          crossorigin=""/>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css"/>
+    <script type="text/javascript"
+            src="{% static 'libs/xlsx/0.17.5/jszip.js' %}"></script>
+    <script type="text/javascript"
+            src="{% static 'libs/xlsx/0.17.5/xlsx.js' %}"></script>
+{% endblock %}
+{% block render_bundle %}
+    {% render_bundle 'DashboardForm' %}
+{% endblock %}
+{% block scripts %}
+    <script>
+      {# specified url for dashboard #}
+      urls.dashboardData = '{% url 'dashboard-data-api' slug=dashboard.id %}'
+
+      {# specified url for dashboard #}
+      urls.dashboardData = '{% url 'dashboard-data-api' slug=dashboard.id %}'
+      urls.bookmarkCreate = '{% url 'dashboard-bookmarks-create' slug=dashboard.id %}'
+      urls.bookmarkList = '{% url 'dashboard-bookmarks' slug=dashboard.id %}'
+      urls.bookmarkDetail = '{% url 'dashboard-bookmarks-detail' slug=dashboard.id pk=0 %}'
+      urls.drilldown = '{% url 'dashboard-entity-drilldown' slug=dashboard.id concept_uuid='concept_uuid' %}'
+
+      {% if dashboard.id %}
+        urls.embedDetail = '{% url 'dashboard-embed' slug=dashboard.id %}'
+      {% endif %}
+
+      const definition = {{ definition|safe }};
+      const batch = null
+      let editMode = true;
+      urls.api = {
+        'basemapListAPI': '{% url 'basemap-list-api' %}',
+        'indicatorListAPI': '{% url 'indicator-list-api' %}',
+        'contextLayerListAPI': '{% url 'context-layer-list-api' %}',
+        'relatedTableListAPI': '{% url 'related-table-list-api' %}?permission=read',
+        'users': '{% url 'user-list-api'%}',
+        'groups': '{% url 'group-list-api'%}',
+        'styles': '{% url 'style-list-api'%}',
+      }
+
+      // Format code choices
+      const codelists = {{ codelists|safe }};
+      const types = {{ types|safe }};
+      const styleTypes = {{ styleTypes|safe }};
+      const dynamicClassification = {{ dynamicClassification|safe }};
+    </script>
+{% endblock %}

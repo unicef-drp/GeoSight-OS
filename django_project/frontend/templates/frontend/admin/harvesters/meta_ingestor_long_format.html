@@ -1,0 +1,5 @@
+{% extends 'frontend/admin/harvesters/base.html' %}
+{% load render_bundle from webpack_loader %}
+{% block render_bundle %}
+    {% render_bundle 'MetaIngestorLongFormat' %}
+{% endblock %}

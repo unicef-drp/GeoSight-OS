@@ -1,0 +1,352 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   Filter style
+   ========================================================================== */
+
+@import '../../../app/variables';
+
+
+.WhereConfiguration {
+  .MuiFormControl-root {
+    margin-top: 0 !important;
+  }
+
+  .WhereConfigurationResult {
+    margin-bottom: 1rem;
+    display: flex;
+
+    .AddButton {
+      margin-right: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .WhereConfigurationQuery {
+      text-align: center;
+      flex-grow: 1;
+    }
+
+    .MuiInputBase-root::after {
+      display: none;
+    }
+  }
+
+  .MuiInput-root {
+    margin-bottom: 2rem;
+    width: 100%;
+  }
+
+  .WhereConfigurationQuery {
+    display: flex;
+    padding-bottom: 0.5rem;
+
+    .MuiOutlinedInput-root {
+      background-color: white;
+    }
+
+    .MuiInput-root {
+      background-color: white;
+      border-radius: 4px;
+      border: $border;
+      padding: 16.5px 14px;
+      margin-bottom: 0 !important;
+
+      &::before {
+        display: none;
+      }
+    }
+
+    .MuiAutocomplete-root {
+      flex-grow: 1;
+
+      .MuiOutlinedInput-root {
+        min-height: 56px;
+      }
+    }
+
+    .MuiInputSliderWithInput {
+      flex-grow: 1;
+      display: flex;
+      border-top-right-radius: $border-radius;
+      border-bottom-right-radius: $border-radius;
+      background-color: white;
+      border: $border;
+      overflow: hidden;
+
+      .MuiInputSlider {
+        flex-grow: 1;
+        min-width: 200px;
+        padding: 12px 20px 0 20px;
+        border-left: $border;
+        border-right: $border;
+      }
+
+      .MuiInput-root {
+        padding: 5px;
+        width: 100px;
+        border-radius: 0;
+        border: none;
+
+        input {
+          -moz-appearance: textfield;
+          padding: 0;
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+      }
+
+      .MuiInputBase-root {
+        &.Mui-disabled {
+          display: none;
+        }
+      }
+    }
+
+    &.Simplified {
+      .MuiInputSliderWithInput {
+        flex-grow: unset !important;
+
+        .MuiInputBase-root {
+          &.Mui-disabled {
+            display: block !important;
+
+            input {
+              margin-top: 10px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .MuiButton-root {
+    margin-top: 20px;
+    width: 100%;
+  }
+
+  .WhereConfigurationQueryGroup {
+    border: 1px solid $secondary-color;
+    border-radius: $border-radius;
+    padding: 0.5rem;
+
+    & > .WhereConfigurationQuery:last-child {
+      padding-bottom: 0;
+    }
+  }
+
+  .WhereConfigurationQuery {
+    &.Simplified {
+      .MuiInputSliderWithInput {
+        border: none;
+
+        .MuiInputBase-root {
+          border: $border;
+        }
+      }
+
+      .MuiInputSliderWithInput {
+        .MuiInputSlider {
+          padding-top: 16px;
+          width: 10px !important;
+          min-width: 10px !important;
+          text-align: center;
+
+          &:after {
+            content: '-';
+          }
+        }
+
+        &.Single {
+          .MuiInputSlider,
+          .MinValue {
+            display: none !important;
+          }
+        }
+      }
+
+      .MuiInputSlider {
+        width: 0 !important;
+        min-width: 0 !important;
+        padding: 0;
+        border: none;
+
+        span {
+          display: none;
+        }
+      }
+    }
+
+    & > div {
+      margin-right: -1px;
+    }
+
+    .MuiOutlinedInput-root {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
+    .WhereConfigurationField {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      width: 400px;
+    }
+
+    .WhereConfigurationOperator {
+      min-width: 100px;
+      border-radius: 0 !important;
+
+      &.Error {
+        .MuiInputBase-input {
+          color: $error;
+        }
+      }
+    }
+
+    .WhereConfigurationOperatorValue {
+      min-width: 200px;
+      flex-grow: 1;
+      border-top-left-radius: 0 !important;
+      border-bottom-left-radius: 0 !important;
+
+      input {
+        width: 100%;
+      }
+
+      & > div {
+        min-width: 200px;
+        min-height: 100%;
+      }
+    }
+
+    .TimeConfigurationOperator {
+      min-width: 100px;
+    }
+
+    .MuiInput-root {
+      padding: 5px 14px;
+    }
+
+    .MuiSelect-select {
+      padding: 5px 32px 5px 14px;
+    }
+  }
+
+  .WhereConfigurationOrAndWrapper {
+    margin-bottom: 0.5rem;
+
+    .WhereConfigurationOrAndInnerWrapper {
+      display: inline-block;
+
+      .WhereConfigurationOrAnd {
+        display: flex;
+
+        div {
+          width: 3rem;
+          color: $secondary-color;
+          text-align: center;
+          cursor: pointer;
+        }
+
+        .AND {
+          border-top-left-radius: $border-radius;
+          border-bottom-left-radius: $border-radius;
+        }
+
+        .OR {
+          border-top-right-radius: $border-radius;
+          border-bottom-right-radius: $border-radius;
+        }
+
+        &.OR {
+          .AND {
+            background-color: $secondary-color;
+          }
+
+          .OR {
+            border: 1px solid $secondary-color;
+          }
+        }
+
+        &.AND {
+          .AND {
+            border: 1px solid $secondary-color;
+          }
+
+          .OR {
+            background-color: $secondary-color;
+          }
+        }
+      }
+
+      &.Disabled {
+        opacity: 0.8;
+
+        .WhereConfigurationOrAnd {
+          cursor: not-allowed;
+
+          div {
+            color: $gray-500;
+            cursor: not-allowed;
+            border-radius: $border-radius !important;
+          }
+
+          &.OR {
+            .AND {
+              display: none;
+            }
+
+            .OR {
+              border: 1px solid $gray-500;
+            }
+          }
+
+          &.AND {
+            .AND {
+              border: 1px solid $gray-500;
+            }
+
+            .OR {
+              display: none;
+            }
+          }
+        }
+
+      }
+    }
+  }
+}
+
+.RemoveIcon {
+  cursor: pointer;
+  color: $error;
+  padding: 1rem 0.5rem;
+
+  &:hover {
+    opacity: $base-hovered-opacity;
+  }
+}
+
+.AddButton {
+  cursor: pointer;
+
+  &:hover {
+    opacity: $base-hovered-opacity;
+  }
+}

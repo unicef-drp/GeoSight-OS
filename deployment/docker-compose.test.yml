@@ -1,0 +1,48 @@
+# GeoSight is UNICEF's geospatial web-based business intelligence platform.
+#
+# Contact : geosight-no-reply@unicef.org
+#
+# .. note:: This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as published by
+#    the Free Software Foundation; either version 3 of the License, or
+#    (at your option) any later version.
+#
+# __author__ = 'irwan@kartoza.com'
+# __date__ = '13/06/2023'
+# __copyright__ = ('Copyright 2023, Unicef')
+
+# Specific configuration for development environment
+
+volumes:
+  static-data:
+  media-data:
+
+# Exactly the same as production but for dev env, we expose the port and uses
+# different port for the web.
+version: '3.4'
+services:
+
+  dev:
+    image: ${APP_IMAGE}:dev
+    container_name: "geosight_dev"
+    links:
+      - db:db
+    environment:
+      # editable in .env
+      - DATABASE_NAME=${DATABASE_NAME:-django}
+      - DATABASE_TEMP_NAME=${DATABASE_TEMP_NAME:-temp}
+      - DATABASE_USERNAME=${DATABASE_USERNAME:-docker}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD:-docker}
+      - DATABASE_HOST=${DATABASE_HOST:-db}
+      - RABBITMQ_HOST=${RABBITMQ_HOST:-rabbitmq}
+      - DJANGO_SETTINGS_MODULE=core.settings.prod
+      - INITIAL_FIXTURES=${INITIAL_FIXTURES:-True}
+
+      # Email where alters should be sent. This will be used by let's encrypt and as the django admin email.
+      - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@example.com}
+    entrypoint: []
+    volumes:
+      - static-data:/home/web/static
+      - media-data:/home/web/media

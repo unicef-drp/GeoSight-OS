@@ -1,0 +1,29 @@
+{% extends 'frontend/admin/base.html' %}
+{% load render_bundle from webpack_loader %}
+{% load static %}
+
+{% block render_bundle %}
+    {% render_bundle 'IndicatorValueManagementForm' %}
+{% endblock %}
+{% block scripts %}
+    <link rel="stylesheet"
+          href="{% static "libs/ReactDatepicker/style.css" %}"/>
+    <script type="text/javascript"
+            src="{% static 'libs/xlsx/0.17.5/jszip.js' %}"></script>
+    <script type="text/javascript"
+            src="{% static 'libs/xlsx/0.17.5/xlsx.js' %}"></script>
+    <script>
+      const valueDataList = {};
+      const valueChecked = {};
+      {% for value in values %}
+        if (!valueChecked['{{ value.geom_id }}']) {
+          valueDataList['{{ value.geom_id }}'] = {
+            value: '{{ value.value }}',
+            date: '{{ value.date }}'
+          }
+          valueChecked['{{ value.geom_id }}'] = true;
+        }
+      {% endfor %}
+      const reportingLevel = '{{ indicator.reporting_level }}';
+    </script>
+{% endblock %}

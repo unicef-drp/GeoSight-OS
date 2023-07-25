@@ -1,0 +1,38 @@
+# GeoSight is UNICEF's geospatial web-based business intelligence platform.
+#
+# Contact : geosight-no-reply@unicef.org
+#
+# .. note:: This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as published by
+#    the Free Software Foundation; either version 3 of the License, or
+#    (at your option) any later version.
+#
+# __author__ = 'irwan@kartoza.com'
+# __date__ = '13/06/2023'
+# __copyright__ = ('Copyright 2023, Unicef')
+
+Django==3.2.16
+django-braces==1.15.0
+django-celery-beat==2.4.0
+django-celery-results==2.4.0
+djangorestframework==3.14.0
+djangorestframework-gis==1.0
+
+requests==2.31.0
+celery==5.3.1
+Pillow==10.0.0
+psycopg2-binary==2.9.6
+pyexcel-xls==0.7.0
+pyexcel-xlsx==0.6.0
+openpyxl==3.0.10
+python-dateutil==2.8.2
+redis==4.6.0
+sentry-sdk==1.27.0
+uwsgi==2.0.21
+django-webpack-loader==1.8.1
+
+Office365-REST-Python-Client==2.4.2
+pyjwt==2.6.0
+msal==1.21.0
+selenium==4.10.0
+webdriver-manager==3.8.6

@@ -1,0 +1,219 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   Map Container
+   ========================================================================== */
+
+@import '../../../app/variables';
+
+
+.DashboardMap {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  #map {
+    height: 100%;
+    width: 100%;
+
+    &:focus-visible {
+      outline: none;
+    }
+
+    .maplibregl-canvas-container, canvas {
+      height: 100% !important;
+      width: 100% !important;
+    }
+  }
+
+
+  .maplibregl-ctrl-top-left {
+    background-color: #eee;
+    padding-left: 175px !important;
+  }
+
+  .Toolbar,
+  .maplibregl-ctrl-top-left {
+    display: flex;
+    height: 49px;
+    left: 0;
+    padding-left: 1rem;
+    position: absolute;
+    top: 0;
+    transition: left 0.3s;
+    width: 100vw;
+
+    button {
+      background-color: unset;
+      border: none;
+      height: 30px;
+      width: 30px;
+      margin: 0 5px;
+      padding: 3px;
+
+      &:hover, {
+        background-color: #ddd;
+      }
+
+      span {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    .Disabled {
+
+      a, span {
+        color: $disabled-color !important;
+        cursor: not-allowed !important;
+
+        &:hover {
+          background-color: unset !important;
+          opacity: 1 !important;
+        }
+      }
+    }
+
+
+    .Active {
+      a, span {
+        background-color: $primary-color !important;
+        color: white !important;
+      }
+    }
+
+    &.Disabled {
+      a, span {
+        color: $disabled-color !important;
+        cursor: default;
+
+        &:hover {
+          background-color: unset !important;
+          opacity: 1 !important;
+        }
+      }
+    }
+
+    .ToolbarControl,
+    .maplibregl-ctrl,
+    .mapboxgl-ctrl {
+      border: none;
+      display: flex;
+      margin-left: 0;
+      margin-top: 7px;
+      z-index: 1000;
+      box-shadow: none;
+      float: unset;
+      background: none;
+      border-radius: 0;
+
+      a {
+        margin: 0 5px;
+        padding: 3px;
+        line-height: 30px;
+        width: 30px;
+        height: 30px;
+
+        &:hover, {
+          background-color: #ddd;
+        }
+      }
+
+      a, span {
+        border: none;
+        border-radius: $border-radius;
+        box-sizing: border-box;
+        color: $primary-color;
+        cursor: pointer;
+        display: block;
+      }
+    }
+  }
+}
+
+.LeftExpanded {
+  .Toolbar,
+  .maplibregl-ctrl-top-left {
+    left: 20%;
+  }
+}
+
+
+// NAVBAR
+.maplibregl-ctrl-group,
+.mapboxgl-ctrl-group {
+  span {
+    background-size: 24px !important;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+  }
+}
+
+// TODO:
+//  We need to fix the color using variable
+$nav-enabled-color: '%231CABE2';
+$nav-disabled-color: '%23CCCCCC';
+
+
+.mapbox-gl-draw_polygon {
+  @include measurement-icon($nav-enabled-color);
+  background-size: 24px !important;
+}
+
+.mapbox-gl-draw_trash {
+  display: none !important;
+}
+
+.maplibregl-ctrl-zoom-in {
+  .maplibregl-ctrl-icon {
+    @include plus-icon($nav-enabled-color);
+    background-size: 22px !important;
+  }
+}
+
+.maplibregl-ctrl-zoom-out {
+  .maplibregl-ctrl-icon {
+    @include minus-icon($nav-enabled-color);
+    background-size: 22px !important;
+  }
+}
+
+
+.maplibregl-ctrl-compass {
+  .maplibregl-ctrl-icon {
+    @include compass-icon($nav-enabled-color);
+    background-size: 30px !important;
+  }
+}
+
+.IconMarker {
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: bottom;
+  height: 35px;
+  width: 30px;
+}
+
+// This is for embed mode
+.Embed {
+  .EmbedControl,
+  .BookmarkControl,
+  .DownloadControl {
+    display: none !important;
+  }
+}

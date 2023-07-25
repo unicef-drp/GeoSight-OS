@@ -1,0 +1,89 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   Table style
+   ========================================================================== */
+
+@import '../../app/variables';
+
+.ResourceList {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-width: 0;
+  background-color: #F4F4F4;
+
+  & > div {
+    border-radius: $border-radius;
+    margin: 0 1rem 1rem 1rem;
+    background-color: white;
+  }
+
+  .ResourceInput {
+    background-color: white;
+    padding: 0.5rem;
+
+    .MuiFormControl-root {
+      background-color: $base-almost-white-color;
+      margin-top: 0 !important;
+      width: 100%;
+
+      .MuiOutlinedInput-root {
+        width: 100%;
+
+        input {
+          padding: 0.5rem 1rem 0.5rem 0;
+        }
+
+        .MuiOutlinedInput-notchedOutline {
+          border: unset;
+        }
+
+        &:hover {
+          .MuiOutlinedInput-notchedOutline {
+            border: unset;
+          }
+        }
+      }
+    }
+  }
+
+  .MuiDataGrid-actionsCell {
+    grid-gap: 0 !important;
+  }
+
+  .MoreActionIcon {
+    width: 20px;
+    height: 20px;
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .ResourceTable {
+    height: 100%;
+  }
+
+  .ResourceTableDelete {
+    color: $error;
+  }
+
+  .CellLink {
+    color: $primary-color !important;
+  }
+}

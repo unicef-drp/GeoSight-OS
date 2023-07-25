@@ -1,0 +1,32 @@
+{% extends 'frontend/admin/base.html' %}
+{% load render_bundle from webpack_loader %}
+
+{% block extrastyle %}
+{% endblock %}
+
+{% block render_bundle %}
+    {% render_bundle 'AdminIndicatorList' %}
+{% endblock %}
+
+{% block scripts %}
+    <script>
+      urls.api = {
+        'list': '{% url 'indicator-admin-list-api' %}',
+        'create': '{% url 'admin-indicator-create-view' %}',
+        'edit': '{% url 'admin-indicator-edit-view' 0 %}',
+        'batch': '{% url 'admin-indicator-edit-batch-view' %}',
+        'detail': '{% url 'indicator-detail-api' 0 %}',
+        'users': '{% url 'user-list-api'%}',
+        'groups': '{% url 'group-list-api'%}',
+
+        {# indicator specified url#}
+        'form': '{% url 'admin-indicator-value-form-manager' 0 %}',
+        'map': '{% url 'admin-indicator-value-mapview-manager' 0 %}',
+        'values': '{% url 'admin-indicator-value-list-manager' 0 %}',
+        'dataBrowser': '{% url 'admin-dataset-view' %}',
+        'permission': '{% url 'indicator-permission-api' 0 %}',
+        'permissionAdmin': '{% url 'admin-data-access-view' %}',
+        'styles': '{% url 'style-list-api'%}',
+      }
+    </script>
+{% endblock %}

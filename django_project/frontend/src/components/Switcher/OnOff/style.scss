@@ -1,0 +1,89 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   ON OFF SWITCHER
+   ========================================================================== */
+
+@import '../../../app/variables';
+
+.OnOffSwitcher {
+  margin-left: 0 !important;
+  margin-right: 0.5rem !important;
+  align-items: inherit !important;
+
+  .MuiSwitch-root {
+    height: 20px;
+    width: 73px;
+    padding: 0;
+    border: 1px solid $primary-color;
+    border-radius: $border-radius;
+    overflow: hidden;
+  }
+
+  .MuiButtonBase-root {
+    padding: 0;
+    align-items: flex-start;
+
+    &.Mui-checked {
+      -webkit-transform: translateX(38px);
+      -moz-transform: translateX(38px);
+      -ms-transform: translateX(38px);
+      transform: translateX(38px);
+
+      .MuiSwitch-thumb {
+        border-radius: 0;
+        border-bottom-right-radius: $border-radius;
+        border-top-right-radius: $border-radius;
+      }
+    }
+  }
+
+  .MuiSwitch-thumb {
+    box-shadow: none;
+    background-color: $primary-color;
+    border-radius: 0;
+    width: 36px;
+    height: 22px;
+  }
+
+  .MuiSwitch-track {
+    background-color: $anti-primary-color !important;
+    border-radius: $border-radius;
+    opacity: 1 !important;
+
+    &:before, &:after {
+      content: '""';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 19px;
+      font-size: 0.8rem;
+    }
+
+    &:before {
+      content: 'ON';
+      left: 10px;
+      color: $primary-color;
+    }
+
+    &:after {
+      content: 'OFF';
+      right: 15px;
+      color: $primary-color;
+    }
+  }
+}

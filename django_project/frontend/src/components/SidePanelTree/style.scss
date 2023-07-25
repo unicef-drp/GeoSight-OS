@@ -1,0 +1,198 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+.TreeView {
+  form {
+    padding: 0 !important;
+  }
+
+  ul {
+    padding-right: 0;
+  }
+}
+
+.TreeItem {
+  .MuiTreeItem-content {
+    align-items: start;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    box-sizing: border-box;
+  }
+
+  label {
+    align-items: flex-start;
+
+    .InfoIcon {
+
+      .MuiSvgIcon-fontSizeSmall {
+        font-size: 1em;
+        margin-left: 3px;
+      }
+
+      &.Error {
+        color: red;
+      }
+    }
+
+    .PanelInput {
+      position: relative;
+      padding-top: 4px;
+
+      .MuiCircularProgress-root {
+        display: none;
+        position: absolute;
+        top: 2px;
+        height: 20px !important;
+        width: 20px !important;
+      }
+
+      &.Loading {
+        .MuiCircularProgress-root {
+          display: block;
+        }
+      }
+    }
+
+    .PanelCheckbox, .PanelRadio {
+      padding: 0;
+      padding-top: 0 !important;
+      margin-top: -2px !important;
+      padding-right: 0 !important;
+    }
+
+    .PanelCheckbox {
+      margin-right: 2px;
+      margin-left: -2px;
+    }
+  }
+}
+
+.MuiTreeItem-label {
+  padding-left: 0 !important;
+
+  label {
+    margin-right: 0;
+
+    .MuiTypography-root {
+      margin-left: 3px;
+
+      .LayerIcon {
+        padding-top: 3px;
+      }
+    }
+  }
+
+  .MuiFormControlLabel-root {
+    width: 100%;
+    margin-left: 0 !important;
+    display: flex;
+
+    span {
+      display: block;
+    }
+
+    .MuiTypography-root {
+      flex-grow: 1;
+      display: block;
+      overflow: hidden;
+
+      & > span {
+        display: flex;
+
+        & > .LayerName {
+          display: block;
+        }
+      }
+    }
+  }
+
+  .LayerName {
+    width: 100%;
+
+    span {
+      display: inline !important;
+    }
+
+    &.Ellipsis {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      div {
+        display: flex;
+
+        mark.prefix {
+          padding-left: 4px;
+        }
+        mark.suffix {
+          padding-right: 4px;
+        }
+      }
+    }
+
+  }
+  table {
+    margin-left: 20px;
+  }
+}
+
+.MuiTreeItem-content {
+  align-items: flex-start;
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+
+  .MuiTreeItem-iconContainer {
+    margin-right: 0;
+    margin-top: 3px;
+    width: auto !important;
+  }
+
+  &.Mui-selected {
+    background-color: white !important;
+  }
+
+  .GroupSelectable {
+    .PanelCheckbox {
+      margin-top: 1px !important;
+    }
+  }
+}
+
+.ContextLayersAccordion {
+  .MuiTreeItem-group {
+    .MuiTreeItem-content {
+      padding-left: 22px !important;
+    }
+  }
+}
+
+.MuiTreeItem-group {
+  margin-left: 0 !important;
+  padding-left: 18px !important;
+  box-sizing: border-box;
+}
+
+.PanelSearchBox {
+  width: 100%;
+
+  .MuiInputBase-root {
+    width: 100%;
+
+    input {
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+  }
+}

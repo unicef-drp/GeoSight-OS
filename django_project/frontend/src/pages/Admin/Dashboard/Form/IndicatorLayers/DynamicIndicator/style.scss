@@ -1,0 +1,112 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '28/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   Dynamic indicator style
+   ========================================================================== */
+
+@import '../../../../../../app/variables';
+
+
+.Expression {
+  .context-data {
+    padding: 0 0.5rem;
+    max-height: 100%;
+    overflow: auto;
+  }
+
+  .NunjucksConfig {
+    min-height: 200px;
+    height: 200px;
+
+    .context {
+      display: none;
+    }
+  }
+
+  .mapboxgl-popup-close-button {
+    display: none;
+  }
+
+  .maplibregl-popup-content-wrapper {
+    box-shadow: unset !important;
+    border: none !important;
+  }
+
+  .Title {
+    color: $black;
+    margin-right: 0.5rem;
+    font-weight: 400;
+    letter-spacing: 0.02857em;
+  }
+
+  .ExposedVariable {
+    margin-bottom: 1rem;
+
+    .TitleButton {
+      padding-left: 0 !important;
+    }
+
+    .InputInLine {
+      margin-top: 0.5rem;
+
+      & > div {
+        flex: unset !important;
+      }
+
+      .BasicForm {
+        input {
+          height: 56px !important;
+        }
+      }
+    }
+
+    .WhereConfigurationQuery {
+      display: flex;
+
+      .WhereConfigurationField,
+      .RemoveIcon {
+        display: none;
+      }
+
+      .MuiInputSliderWithInput {
+        display: flex;
+      }
+
+      .MuiInputSlider {
+        width: 200px;
+        padding: 0.5rem 1rem;
+      }
+
+      .MuiInputSliderWithInput {
+        input {
+          height: 100% !important;
+        }
+      }
+    }
+
+    .MuiOutlinedInput-root {
+      width: fit-content !important;
+    }
+
+    .Createable {
+      height: 56px;
+
+      .Createable__control {
+        min-height: 100%;
+      }
+    }
+  }
+}

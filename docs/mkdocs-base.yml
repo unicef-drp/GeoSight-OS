@@ -1,0 +1,60 @@
+# GeoSight is UNICEF's geospatial web-based business intelligence platform.
+#
+# Contact : geosight-no-reply@unicef.org
+#
+# .. note:: This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as published by
+#    the Free Software Foundation; either version 3 of the License, or
+#    (at your option) any later version.
+#
+# __author__ = 'irwan@kartoza.com'
+# __date__ = '13/06/2023'
+# __copyright__ = ('Copyright 2023, Unicef')
+
+site_name: GeoSight
+site_description: "A platform provides a way to understand risk modalities across different geographic contexts."
+site_author: "Unicef"
+docs_dir: ./src
+site_dir: ./site
+repo_name: "unicef-drp/GeoSight"
+repo_url: "https://github.com/unicef-drp/GeoSight"
+edit_uri: "https://github.com/unicef-drp/GeoSight/blob/main/docs/"
+copyright: "Unicef, Kartoza and Contributors"
+
+# Navigation
+nav:
+        - Home:
+                  - About: about_geosight.md
+                  - Contributing: users/contributing.md
+        - For Users:
+                  - Overview: users/index.md
+                  - Platform tour: users/platform_tour.md
+                  - Map Interactions: users/map_interactions.md
+                  - Indicators: users/indicator.md
+                  - Layers: users/layers.md
+                  - User Tutorial: users/user_tutorial.md
+                  - Disclaimer: users/disclaimer.md
+                  - Credits: users/credits.md
+                  - License: users/license.md
+        - For Administrators:
+                  - Overview: administrators/administrator_tutorial.md
+                  - Provisioning Reference Layers: administrators/reference_layers.md
+        - For Developers:
+                  - developers/setup/index.md
+                  - Installation:
+                            - Preparation: developers/setup/installation/preparation.md
+                            - Project setup: developers/setup/installation/project_setup.md
+                            - Road Map: developers/setup/installation/roadmap.md
+                            - Development setup:
+                                      - developers/setup/installation/development_setup/index.md
+                                      - Using pycharm: developers/setup/installation/development_setup/pycharm.md
+                  - Configuration:
+                            - Geography: developers/setup/configuration/geography.md
+                            - Indicator: developers/setup/configuration/indicator.md
+                            - Instances: developers/setup/configuration/instances.md
+                            - Layer: developers/setup/configuration/layer.md
+                            - Navigation Link: developers/setup/configuration/navigation_link.md
+                            - Preferences: developers/setup/configuration/preferences.md
+                            - Program Intervention: developers/setup/configuration/program_intervention.md
+                            - Scenario: developers/setup/configuration/scenario.md
+                            - User: developers/setup/configuration/user.md

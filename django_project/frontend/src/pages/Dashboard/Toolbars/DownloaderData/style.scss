@@ -1,0 +1,104 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   Downloader data
+   ========================================================================== */
+
+@import '../../../../app/variables';
+
+.DownloaderDataComponent {
+  padding: 1rem;
+
+  .GroupSelection {
+    margin-bottom: 1rem;
+
+    .MuiFormGroup-root {
+      display: flex;
+      flex-direction: row;
+      margin-top: 0.5rem;
+      max-width: 500px;
+
+      .MuiFormControlLabel-root {
+        margin-left: 0;
+      }
+
+      .MuiRadio-root {
+        margin-left: 10px;
+      }
+    }
+  }
+
+  .DownloaderDataForm {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  table {
+    width: 100%;
+    min-width: 300px;
+    margin-bottom: 2px;
+
+    thead {
+      td {
+        background-color: $secondary-color;
+        color: $anti-secondary-color;
+      }
+
+      svg {
+        background-color: white;
+      }
+    }
+
+    td {
+      border: 1px solid $secondary-color;
+    }
+
+    tr {
+      td:first-child {
+        width: 20px;
+      }
+
+      td:last-child {
+        padding: 0 0.5rem;
+      }
+    }
+  }
+
+  .DownloadButton {
+    button {
+      width: 100%;
+    }
+  }
+
+  .DownloaderDataTitle {
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid $secondary-color;
+  }
+
+  .MuiCircularProgress-root {
+    margin-right: 0.5rem;
+    color: $secondary-color !important;
+    width: 24px !important;
+    height: 24px !important;
+
+    svg {
+      margin: 0 !important;
+    }
+  }
+}

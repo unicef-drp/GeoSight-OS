@@ -1,0 +1,143 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* -------------------------------------------------------------------
+   Used for global theme element
+  ------------------------------------------------------------------- */
+
+@import './variables.scss';
+
+html, body {
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  width: 100vw;
+}
+
+#app {
+  height: 100%;
+  width: 100%;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  width: 100%;
+}
+
+.AddButton {
+  color: green;
+}
+
+.RemoveButton {
+  color: $error;
+}
+
+.DeleteButton {
+  color: $error;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.5;
+  }
+}
+
+.ThemeButton {
+  svg {
+    margin-right: 0.5rem !important;
+  }
+}
+
+
+.TabPrimary {
+  display: flex;
+
+  div {
+    border: 1px solid $primary-color;
+    padding: 0.5rem;
+    cursor: pointer;
+    margin-right: -1px;
+    min-width: 8rem;
+    text-align: center;
+    background-color: white;
+    border: 1px solid $gray-200;
+
+    &:hover {
+      background-color: $gray-100;
+    }
+
+    &.Selected {
+      background-color: $primary-color;
+      color: $anti-primary-color;
+    }
+
+    &.Disabled {
+      background: $gray-100;
+      color: #adb5bd;
+      cursor: not-allowed;
+    }
+  }
+
+  button {
+    margin-bottom: 0.5rem;
+    margin-left: 0.5rem;
+  }
+}
+
+
+.Popover-Submit {
+  padding: 0.5rem;
+
+  .FormError {
+    color: $error;
+  }
+
+  .FormOk {
+    color: $ok;
+  }
+}
+
+.FlexScrollableSection {
+  flex-grow: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.MuiSnackbar-root {
+  padding: 0 !important;
+}
+
+.Hidden {
+  display: none !important;
+}
+
+.LoadingElement {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .Throbber {
+    color: $primary-color;
+    text-align: center;
+
+    .MuiCircularProgress-root {
+      margin-bottom: 1rem;
+    }
+  }
+}

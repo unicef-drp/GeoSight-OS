@@ -1,0 +1,18 @@
+{% extends 'frontend/admin/base.html' %}
+{% load render_bundle from webpack_loader %}
+
+{% block extrastyle %}
+{% endblock %}
+
+{% block render_bundle %}
+    {% render_bundle 'IndicatorValueList' %}
+{% endblock %}
+
+{% block scripts %}
+    <script>
+      urls.api = {
+        'detail': '{% url 'indicator-value-detail' indicator_id 0%}',
+        'list': '{% url 'indicator-values-list-api' indicator_id %}',
+      }
+    </script>
+{% endblock %}

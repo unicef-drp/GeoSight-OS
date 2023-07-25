@@ -1,0 +1,141 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+.CronBuilder {
+  .cron_builder {
+    box-sizing: border-box;
+  }
+
+  .cron-builder-bg {
+    background-color: var(--secondary-color);
+  }
+
+  .well-small {
+    text-align: left;
+
+    input[type='number'] {
+      max-width: 162px;
+    }
+  }
+
+  .Result-Row {
+    margin-top: 20px;
+
+    div, input {
+      width: 100%;
+    }
+  }
+
+  .Button-Row {
+    width: fit-content;
+    margin-top: 20px;
+    margin-left: auto;
+    display: flex;
+  }
+
+  .Save-Button, .Clear-Button {
+    margin-left: 0.5rem;
+  }
+
+  .BasicForm {
+    padding: 0;
+    margin: 0;
+  }
+}
+
+.ant-select-dropdown {
+  z-index: 9999;
+}
+
+.react-js-cron {
+  display: flex;
+  font-weight: 500;
+
+  & > div {
+    display: flex;
+    align-items: center;
+  }
+
+  > div {
+    margin-right: 2px;
+    min-height: 42px;
+
+    > span {
+      margin: 0.5rem 0.5rem;
+    }
+  }
+
+  .ant-select-selection-item {
+    margin-top: 5px;
+  }
+
+  .react-js-cron-week-days {
+    .react-js-cron-select {
+      min-width: 200px;
+    }
+  }
+
+  .react-js-cron-hours {
+    display: flex;
+
+    .react-js-cron-select {
+      min-width: 120px;
+    }
+
+    > span {
+      height: 21px;
+      margin: 0.5rem 0.5rem;
+    }
+
+    .ant-select-selection-placeholder {
+      margin-top: -3px;
+    }
+  }
+
+  .react-js-cron-minutes {
+    .react-js-cron-select {
+      min-width: 130px;
+    }
+
+    > span {
+      margin: 0.5rem 0.5rem;
+    }
+  }
+
+  .react-js-cron-months {
+    .react-js-cron-select {
+      min-width: 130px;
+    }
+  }
+
+  .react-js-cron-month-days {
+    .react-js-cron-select {
+      min-width: 200px;
+    }
+  }
+
+  .ant-select-selector {
+    min-width: 100px;
+    border-radius: 3px;
+    min-height: 42px;
+    font-size: 1rem;
+  }
+
+  .ant-btn {
+    border-radius: 3px;
+    margin-left: 10px;
+    background-color: #374ea2!important;
+  }
+}

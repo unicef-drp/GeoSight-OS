@@ -1,0 +1,7 @@
+{% extends 'frontend/admin/base_form.html' %}
+{% load render_bundle from webpack_loader %}
+{% load static %}
+
+{% block render_bundle %}
+    {% render_bundle 'AdminUserForm' %}
+{% endblock %}

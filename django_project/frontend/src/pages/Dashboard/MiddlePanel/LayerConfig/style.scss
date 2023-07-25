@@ -1,0 +1,263 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   Related table layer filter
+   ========================================================================== */
+
+@import '../../../../app/variables';
+
+.WhereConfigurationWrapper.Duplication {
+  pointer-events: auto !important;
+  height: 5px;
+
+  .WhereConfigurationQueryGroup {
+    height: 0;
+    overflow: hidden;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: unset !important;
+  }
+}
+
+.WhereConfigurationWrapper.Real {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  pointer-events: none !important;
+
+  &::-webkit-scrollbar {
+    display: none !important;
+  }
+}
+
+.IndicatorLayerMiddleConfig {
+  box-sizing: border-box;
+  max-width: 100%;
+  transition: height 0.3s;
+  width: 100%;
+  z-index: 1;
+  pointer-events: none !important;
+
+  .WhereConfigurationWrapper {
+    width: 100%;
+    overflow-x: scroll;
+    overflow-y: hidden;
+  }
+
+  .WhereConfiguration {
+    height: 100%;
+    width: fit-content;
+    pointer-events: none !important;
+    padding: 0 1rem;
+  }
+
+  .MultipleSelectWithSearch,
+  .SelectWithSearch {
+    .MuiInputBase-root {
+      height: 25px !important;
+      min-height: 25px !important;
+    }
+  }
+
+  .top-bottom-toggle-button {
+    position: absolute;
+    bottom: -18px;
+    left: 50%;
+    height: fit-content;
+    pointer-events: auto;
+    border-bottom-left-radius: $border-radius;
+    border-bottom-right-radius: $border-radius;
+  }
+
+  .WhereConfigurationResult {
+    display: none;
+  }
+
+  .WhereConfigurationQueryGroup {
+    border: none;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    width: fit-content;
+    pointer-events: none !important;
+    padding: 0 0.5rem !important;
+
+    .WhereConfigurationQuery {
+      display: block;
+      padding: 0 0.5rem;
+      height: 105px;
+      pointer-events: none !important;
+
+      .MuiOutlinedInput-root {
+        min-height: 40px;
+        font-size: 0.9rem !important;
+      }
+    }
+
+    .WhereConfigurationOrAndWrapper {
+      display: none;
+    }
+
+    .WhereConfigurationOperator {
+      display: none;
+    }
+
+    .WhereConfigurationField {
+      width: 100%;
+      background-color: unset !important;
+      color: $primary-color !important;
+      font-weight: 600;
+      min-height: 30px !important;
+      height: fit-content !important;
+      pointer-events: none !important;
+
+      fieldset {
+        border: none !important;
+      }
+
+      svg {
+        display: none;
+      }
+
+      .MuiSelect-select {
+        color: $primary-color !important;
+        -webkit-text-fill-color: $primary-color !important;
+        background-color: white;
+        padding: 0;
+        font-size: 0.9rem !important;
+        cursor: default !important;
+        width: fit-content;
+        text-shadow: -0.5px -0.5px 0 white, 0.5px -0.5px 0 white, -0.5px 0.5px 0 white, 0.5px 0.5px 0 white;
+      }
+
+      div {
+        background-color: unset !important;
+      }
+    }
+
+    .FilterInput {
+      .MuiInputBase-root {
+        flex-wrap: nowrap;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        pointer-events: auto !important;
+      }
+
+      .MuiChip-root,
+      .MuiInput-root {
+        background-color: unset !important;
+      }
+
+      .MuiInputBase-root {
+        border-radius: $border-radius !important;
+        font-size: 0.9rem !important;
+        box-shadow: $box-shadow-sm-strong;
+        background-color: white !important;
+      }
+    }
+  }
+
+  .MuiInputSlider {
+    height: 34px;
+    padding: 4px 20px 0 20px !important;
+    pointer-events: auto !important;
+
+    .MuiSlider-root {
+      & > span {
+        box-shadow: $box-shadow-sm-strong;
+      }
+    }
+  }
+
+  .MuiInputSliderWithInput {
+    overflow: visible !important;
+    position: relative;
+    border: unset !important;
+    background-color: unset !important;
+
+    input {
+      padding-bottom: 0;
+    }
+
+    .MuiInputSlider {
+      position: absolute;
+      box-sizing: border-box;
+      top: 25px;
+      left: 0;
+      width: 100%;
+      border: unset !important;
+      padding: 0 8px !important;
+      min-width: unset !important;
+
+      .MuiSlider-root {
+        height: 1px;
+      }
+
+      .MuiSlider-thumb {
+        height: 10px;
+        width: 10px;
+      }
+
+      .MuiSlider-rail {
+        border: 1px solid currentColor;
+      }
+    }
+
+    .MuiInputBase-root {
+      height: 25px;
+      border: $border !important;
+      border-radius: $border-radius !important;
+      margin-right: 5px;
+      padding: 0 !important;
+      pointer-events: auto !important;
+
+      input {
+        text-align: center;
+      }
+
+      &.Mui-disabled {
+        display: block !important;
+
+        input {
+          margin-top: 1px;
+        }
+      }
+    }
+
+    &.Single {
+      .MinValue {
+        display: none !important;
+      }
+    }
+  }
+
+  .MuiAutocomplete-input {
+    min-width: 0;
+    pointer-events: auto !important;
+  }
+
+  .MuiAutocomplete-popper {
+    pointer-events: auto !important;
+
+    div, ul, li {
+      min-width: fit-content;
+    }
+
+    li {
+      text-wrap: none;
+    }
+  }
+}

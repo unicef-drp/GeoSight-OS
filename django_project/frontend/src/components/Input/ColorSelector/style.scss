@@ -1,0 +1,73 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'zakki@kartoza.com'
+* __date__ = '30/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   COLOR SELECTOR
+   ========================================================================== */
+
+@import '../../../app/variables';
+
+.ColorConfigLabel,
+.ColorConfig {
+  width: 135px;
+  display: block;
+}
+
+.ColorConfig {
+  border: 1px solid $base-almost-gray-color;
+  border-radius: $border-radius;
+  display: flex;
+
+  &.FullWidth {
+  width: 100%;
+
+  .ColorConfigPreview {
+    width: 100%;
+  }
+}
+
+  input[type="text"] {
+    border: none;
+    border-right: 1px solid $base-almost-gray-color;
+    flex-grow: 1;
+    min-width: 3rem;
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+  }
+
+  .ColorConfigPreview {
+    height: 2.9rem;
+    min-height: 2.9rem;
+    width: 2.9rem;
+    min-width: 2.9rem;
+  }
+
+  input[type="color"] {
+    -webkit-appearance: none;
+    cursor: pointer;
+    border: none;
+    padding: 0 !important;
+    height: 100%;
+    width: 100%;
+  }
+
+  input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0.3rem;
+  }
+
+  input[type="color"]::-webkit-color-swatch {
+    border: none;
+  }
+}

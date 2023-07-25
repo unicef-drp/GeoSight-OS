@@ -1,0 +1,97 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   Bookmarks
+   ========================================================================== */
+
+@import '../../../../app/variables';
+
+.BookmarkComponent {
+  padding: 0.5rem;
+
+  .Header {
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid #ddd;
+    text-align: right;
+
+    button {
+      padding: 0 !important;
+      text-align: right;
+    }
+  }
+
+  .Body {
+    max-height: 20rem;
+    overflow-y: auto;
+  }
+
+  .Bookmark {
+    color: $primary-color;
+    cursor: pointer;
+
+    td {
+      padding-right: 0.3rem;
+      color: $base-black-color;
+    }
+
+    svg {
+      height: 20px;
+      width: 20px;
+      margin-right: 0.2rem;
+      margin-top: 5px;
+    }
+
+    .StarIcon {
+      display: none;
+      margin-top: -2px;
+    }
+
+    .EditIcon, .DeleteIcon {
+      color: $base-black-color;
+
+      &:hover {
+        cursor: pointer;
+        opacity: $base-hovered-opacity;
+      }
+    }
+
+    .DeleteIcon {
+      color: $error;
+    }
+
+    &.Selected {
+      font-weight: $base-font-medium;
+
+      td {
+        color: $primary-color;
+      }
+
+      .StarIcon {
+        display: block;
+      }
+    }
+
+    &:hover {
+      opacity: $base-hovered-opacity;
+    }
+
+    .Creator {
+      font-size: 0.7rem;
+      color: #555 !important;
+    }
+  }
+}

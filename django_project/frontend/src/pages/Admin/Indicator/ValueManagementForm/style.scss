@@ -1,0 +1,178 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   Indicator Form style
+   ========================================================================== */
+
+@import '../../../../app/variables';
+
+
+.AdminContentHeader-Right {
+  display: flex;
+
+  button {
+    width: 170px;
+    height: 43px;
+  }
+
+  .react-datepicker-wrapper {
+    width: fit-content;
+
+    input {
+      padding: 0.7rem !important;
+    }
+  }
+}
+
+.ManagementForm {
+  flex-grow: 1;
+  padding: 1rem !important;
+  overflow: auto;
+
+  .ReferenceLayerSelection {
+    padding: 0.5rem;
+  }
+
+  .ReferenceLayerTable {
+    padding: 0.5rem;
+
+    .MuiOutlinedInput-input {
+      padding: 0.5rem;
+    }
+
+    table {
+      width: 100%;
+
+      tr {
+        border: 1px solid $secondary-color;
+      }
+
+      td {
+        padding: 0.5rem 1rem;
+      }
+
+      .ReferenceLayerTable-Name,
+      .ReferenceLayerTable-LastValue {
+        padding-top: 1rem;
+      }
+
+      .ReferenceLayerTable-Name {
+        text-align: right;
+        color: $secondary-color;
+        padding-right: 0;
+      }
+
+      .ReferenceLayerTable-LastValue {
+        width: 1%;
+        white-space: nowrap;
+      }
+    }
+
+    .ExtraValue {
+      display: flex;
+      margin-top: 0.5rem;
+      width: 100%;
+
+      .ExtraValueContent {
+        border: 1px solid $primary-color;
+        padding: 0.5rem;
+        flex-grow: 1;
+        margin-left: 0.5rem;
+      }
+
+      .ExtraValueContentRow {
+        width: 100%;
+        display: flex;
+
+        input {
+          height: 1.5rem !important;
+          padding: 0.3rem !important;
+          font-size: 0.8rem !important;
+        }
+
+        .ExtraValueContentEqual {
+          padding: 0 0.5rem;
+        }
+
+        svg {
+          color: $error;
+          margin-left: 0.5rem;
+        }
+      }
+
+      .ExtraValueTitle {
+        display: flex !important;
+
+        .ExtraValueIcon {
+          margin-left: 3px;
+          padding-top: 2px;
+        }
+
+        svg {
+          height: 1rem;
+          width: 1rem;
+        }
+      }
+    }
+  }
+
+  .TopButtons {
+    margin: 0.5rem;
+    text-align: right;
+
+    button {
+      margin-left: 0.5rem;
+    }
+  }
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  padding: 0 !important;
+}
+
+.ValueManagementForm {
+
+  .BasicForm {
+    padding: 1rem !important;
+    box-sizing: border-box;
+
+    .modal-body {
+      & > div {
+        margin-bottom: 1rem;
+      }
+    }
+  }
+
+  b {
+    font-weight: $base-font-regular !important;
+    color: $secondary-color;
+  }
+
+  table {
+    th {
+      color: $secondary-color;
+    }
+
+    th, td {
+      padding: 0.5rem;
+      border: 1px solid $secondary-color;
+    }
+  }
+}

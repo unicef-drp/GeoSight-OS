@@ -1,0 +1,228 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   Table Form style
+   ========================================================================== */
+
+@import '../../../../../app/variables';
+// TABLE FORM
+.DragDropTable {
+  width: 100%;
+  border-spacing: 0;
+
+  tr {
+    background: white;
+  }
+
+  th, td {
+    padding: 0.3rem 0.5rem;
+  }
+
+  td {
+    background-color: #dddddd30;
+  }
+
+  tbody {
+    border: 1px solid $secondary-color;
+  }
+
+  .GroupRow {
+    &._noGroup-header {
+      display: none;
+    }
+
+    td {
+      background: $secondary-color;
+      color: $anti-secondary-color;
+    }
+
+    td:first-child {
+      display: none;
+    }
+
+    .GroupRowTitle {
+      display: flex;
+
+      .GroupEditName {
+        margin-top: 0.8rem;
+        height: 1rem;
+      }
+
+      span {
+        display: block;
+        padding: 0.5rem 0 0.5rem 0.5rem !important;
+      }
+
+      .Separator {
+        flex-grow: 1;
+      }
+
+      .AddButton {
+        padding: 0.5rem;
+        display: flex;
+        font-weight: $base-font-medium;
+        letter-spacing: 0.02857em;
+        font-size: 1rem !important;
+        line-height: 1.5 !important;
+        font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+        color: $anti-secondary-color;
+
+        svg {
+          margin-right: 0.5rem;
+        }
+      }
+
+      .MuiFormControl-root {
+        margin-top: 0.2rem;
+        margin-left: 0.5rem;
+
+        .MuiOutlinedInput-root {
+          color: inherit;
+
+          .MuiInputAdornment-root {
+            color: inherit;
+
+            svg {
+              cursor: pointer;
+
+              &:hover {
+                opacity: 0.8;
+              }
+            }
+          }
+
+          input {
+            padding: 0.3rem 0.5rem;
+          }
+
+          fieldset {
+            border-color: inherit;
+            top: 0;
+
+            legend {
+              display: none;
+            }
+          }
+        }
+      }
+    }
+
+    th {
+      font-weight: $base-font-medium;
+      text-align: left;
+    }
+
+    .ItemSelectedInfo {
+      display: flex !important;
+
+      button {
+        color: white;
+        padding: 0 !important;
+      }
+    }
+  }
+
+  .VisibilityAction,
+  .RemoveAction,
+  .DragDropItem-Drag {
+    width: 2rem;
+    text-align: center !important;
+
+    svg {
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+
+  .VisibilityAction {
+    .MuiCheckbox-root {
+      svg {
+        margin-top: 0;
+      }
+    }
+
+    .VisibilityOff {
+      opacity: 0.5;
+    }
+  }
+
+  .AddAction {
+    width: 1%;
+  }
+
+  .DragDropItem-Name,
+  .DragDropItem-Description {
+    padding: 1em 0.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .DragDropItem-Description {
+    flex-grow: 1;
+    max-width: 30rem;
+  }
+
+  .DropArea {
+    padding: 1rem;
+    color: #666;
+    text-align: center;
+  }
+
+  .OtherActionFunctions {
+    text-align: right;
+  }
+}
+
+.TableForm {
+  .SortableTree {
+    margin-top: -2rem;
+  }
+}
+
+.TableForm-Header {
+  display: flex;
+  margin-bottom: 1rem;
+
+  .TableForm-Header-Left {
+    flex-grow: 1;
+  }
+
+  .TableForm-Header-Right {
+    button {
+      margin-left: 0.5rem;
+    }
+  }
+}
+
+.AdminSelectDataForm {
+  .ResourceRow {
+    opacity: 0.5;
+
+    .MuiDataGrid-cellCheckbox {
+      display: none;
+    }
+
+    &.Readable {
+      opacity: 1;
+
+      .MuiDataGrid-cellCheckbox {
+        display: block;
+      }
+    }
+  }
+}

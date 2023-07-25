@@ -1,0 +1,29 @@
+{% extends 'frontend/admin/base_form.html' %}
+{% load render_bundle from webpack_loader %}
+{% load static %}
+
+{% block render_bundle %}
+    {% render_bundle 'AdminBasemapForm' %}
+{% endblock %}
+{% block scripts %}
+    <script>
+      const permission = {{ permission|safe }}
+      // Urls api
+      urls.api = {
+        'styles': '{% url 'style-list-api'%}',
+        'users': '{% url 'user-list-api'%}',
+        'groups': '{% url 'group-list-api'%}',
+      }
+
+      if (permission.share) {
+        {% if id %}
+          urls.api.permission = '{% url 'basemap-permission-api' id %}'
+        {% else %}
+          urls.api.permission = '{% url 'basemap-permission-api' 0 %}'
+        {% endif %}
+      }
+
+      // If in batch or not
+      const batch = {% if batch %}true{% else %}null{% endif %};
+    </script>
+{% endblock %}

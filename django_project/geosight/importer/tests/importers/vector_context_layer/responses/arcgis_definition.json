@@ -1,0 +1,35 @@
+{
+  "currentVersion": 10.81,
+  "id": 0,
+  "name": "Population",
+  "type": "Feature Layer",
+  "advancedQueryCapabilities": {
+    "supportsPaginationOnAggregatedQueries": true
+  },
+  "fields": [
+    {
+      "name": "OBJECTID",
+      "type": "esriFieldTypeOID"
+    },
+    {
+      "name": "name",
+      "type": "esriFieldTypeString"
+    },
+    {
+      "name": "population",
+      "type": "esriFieldTypeDouble"
+    },
+    {
+      "name": "male",
+      "type": "esriFieldTypeInteger"
+    },
+    {
+      "name": "female",
+      "type": "esriFieldTypeInteger"
+    },
+    {
+      "name": "update_date",
+      "type": "esriFieldTypeDate"
+    }
+  ]
+}

@@ -1,0 +1,271 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+.Wrapper {
+  list-style: none;
+  box-sizing: border-box;
+  padding-left: var(--spacing);
+  margin-bottom: -1px;
+
+  &.clone {
+    display: inline-block;
+    pointer-events: none;
+    padding: 0;
+    margin-left: 10px;
+    margin-top: 5px;
+
+    .TreeItem {
+      --vertical-padding: 5px;
+
+      padding-right: 24px;
+      border-radius: 4px;
+      box-shadow: 0px 15px 15px 0 rgba(34, 33, 81, 0.1);
+    }
+  }
+
+  &.ghost {
+    &.indicator {
+      opacity: 1;
+      position: relative;
+      z-index: 1;
+      margin-bottom: -1px;
+
+      .TreeItem {
+        position: relative;
+        padding: 0;
+        height: 8px;
+        border-color: #2389ff;
+        background-color: #56a1f8;
+
+        &:before {
+          position: absolute;
+          left: -8px;
+          top: -4px;
+          display: block;
+          content: '';
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          border: 1px solid #2389ff;
+          background-color: #ffffff;
+        }
+
+        > * {
+          /* Items are hidden using height and opacity to retain focus */
+          opacity: 0;
+          height: 0;
+        }
+      }
+    }
+
+    &:not(.indicator) {
+      opacity: 0.5;
+    }
+
+    .TreeItem > * {
+      box-shadow: none;
+      background-color: transparent;
+    }
+  }
+}
+
+.TreeItem {
+  --vertical-padding: 10px;
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: var(--vertical-padding) 10px;
+  background-color: #fff;
+  border: 1px solid #dedede;
+  color: #222;
+  box-sizing: border-box;
+}
+
+.Text {
+  flex-grow: 1;
+  padding-left: 0.5rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.Count {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #2389ff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.disableInteraction {
+  pointer-events: none;
+}
+
+.disableSelection,
+.clone {
+  .Text,
+  .Count {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+}
+
+.Collapse {
+  svg {
+    transition: transform 250ms ease;
+  }
+
+  &.collapsed svg {
+    transform: rotate(-90deg);
+  }
+}
+
+$focused-outline-color: #4c9ffe;
+
+.Action {
+  display: flex;
+  width: 12px;
+  padding: 15px;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  touch-action: none;
+  cursor: var(--cursor, pointer);
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  appearance: none;
+  background-color: transparent;
+  -webkit-tap-highlight-color: transparent;
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: var(--action-background, rgba(0, 0, 0, 0.05));
+
+      svg {
+        fill: #6f7b88;
+      }
+    }
+  }
+
+  svg {
+    flex: 0 0 auto;
+    margin: auto;
+    height: 100%;
+    overflow: visible;
+    fill: #919eab;
+  }
+
+  &:active {
+    background-color: var(--background, rgba(0, 0, 0, 0.05));
+
+    svg {
+      fill: var(--fill, #788491);
+    }
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0),
+    0 0px 0px 2px $focused-outline-color;
+  }
+}
+
+.VisibilityAction {
+  cursor: pointer;
+  display: flex;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.VisibilityOffAction {
+  cursor: pointer;
+  opacity: 0.5;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.AddButton {
+  cursor: pointer;
+  margin-left: auto;
+  padding: 0.5rem;
+  display: flex;
+  font-weight: 500;
+  letter-spacing: 0.02857em;
+  font-size: 1rem !important;
+  line-height: 1.5 !important;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  color: var(--anti-secondary-color);
+
+  svg {
+    margin-right: 0.5rem;
+  }
+
+  &.indicator {
+    overflow: hidden;
+    padding: 0;
+    height: 0;
+    width: 0;
+  }
+}
+
+.EditButton {
+  margin-right: 1rem;
+  cursor: pointer;
+}
+
+.RemoveButton {
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  font-weight: 500;
+  letter-spacing: 0.02857em;
+  font-size: 1rem !important;
+  line-height: 1.5 !important;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  color: var(--anti-secondary-color);
+
+  svg {
+    margin-right: 0.5rem;
+  }
+}
+
+.GroupTextField {
+  margin-top: 0.2rem;
+  margin-left: 0.5em !important;
+  color: var(--anti-secondary-color);
+
+  input, svg {
+    color: var(--anti-secondary-color);
+    padding: 5px 10px;
+  }
+
+  fieldset {
+    border: 2px solid white;
+  }
+}

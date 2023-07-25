@@ -1,0 +1,38 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Compile PDF",
+            "command": "./build-docs-pdf.sh",
+            "args": [
+                ""
+            ],
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/docs/"
+            },
+        },
+        {
+            "label": "Compile HTML",
+            "command": "./build-docs-html.sh",
+            "args": [
+                ""
+            ],
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/docs/"
+            },
+        },
+        {
+            "label": "Serve HTML",
+            "command": "mkdocs",
+            "args": [
+                "serve"
+            ],
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/docs/"
+            },
+        }
+    ]
+}

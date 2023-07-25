@@ -1,0 +1,161 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   Dashboard specific style
+   ========================================================================== */
+
+@import '../../app/variables';
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.page {
+  @include media(xsmall-only) {
+    min-height: 100vh;
+    display: block;
+    overflow-y: auto;
+  }
+}
+
+.page {
+  main {
+    flex-grow: 1;
+    position: relative;
+    min-height: 0;
+    width: 100%;
+
+    @include media(small-down) {
+      height: fit-content;
+    }
+  }
+
+  .dashboard {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    display: flex;
+
+    .left-right-toggle-button {
+      background: $primary-color;
+      cursor: pointer;
+      height: 30px;
+      padding: 0.2rem 0.3rem;
+      color: $anti-primary-color;
+
+      div {
+        height: 1rem;
+        width: 0.6rem;
+      }
+
+      div:after {
+        font-size: 12px;
+      }
+
+      @include media(xsmall-only) {
+        div:after {
+          font-size: 16px;
+        }
+      }
+
+      &.left {
+        div:after {
+          content: '◀';
+        }
+      }
+
+      &.right {
+        div:after {
+          content: '▶';
+        }
+      }
+    }
+
+    .top-bottom-toggle-button {
+      background: $primary-color;
+      cursor: pointer;
+      width: 46px;
+      color: $anti-primary-color;
+
+      div {
+        width: 100%;
+        height: 18px;
+        text-align: center;
+      }
+
+      div:after {
+        font-size: 12px;
+      }
+
+      @include media(xsmall-only) {
+        div:after {
+          font-size: 16px;
+        }
+      }
+
+      &.top {
+        div:after {
+          content: '▲';
+          display: block;
+        }
+      }
+
+      &.bottom {
+        div:after {
+          content: '▼';
+          display: block;
+        }
+      }
+    }
+
+    & > .LoadingElement {
+      .Throbber {
+        margin-top: -100px;
+        font-size: 2rem;
+        width: 400px !important;
+
+        .MuiCircularProgress-root {
+          height: 300px !important;
+          width: 300px !important;
+        }
+      }
+    }
+  }
+
+  .dashboard__panel {
+    box-sizing: border-box;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1001;
+
+    .dashboard__content-wrapper {
+      background-color: white;
+      width: 100%;
+    }
+
+    > div {
+      pointer-events: auto;
+    }
+  }
+
+  .dashboard__content {
+    background-color: #eee;
+    padding: 10px 10px 5px 10px;
+  }
+}

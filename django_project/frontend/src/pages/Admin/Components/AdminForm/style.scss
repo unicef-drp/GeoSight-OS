@@ -1,0 +1,113 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   Admin Form specific style
+   ========================================================================== */
+
+@import '../../../../app/variables';
+
+.AdminForm {
+  flex-grow: 1;
+  padding: 0 !important;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: unset !important;
+  position: relative;
+
+  form {
+    background-color: white;
+    flex-grow: 1;
+    padding: 1rem 1rem 0 1rem !important;
+    min-height: 0;
+    overflow: auto;
+  }
+
+  .AdminFormLoading {
+    display: block;
+    flex-grow: 1;
+
+    .AdminFormLoadingSection {
+      height: fit-content;
+      width: fit-content;
+      margin: auto;
+      display: flex;
+      margin-top: 200px;
+
+      div {
+        margin-left: 1rem;
+        padding-top: 0.5rem;
+      }
+    }
+  }
+
+  // Tab form
+  & > .TabPrimary {
+    display: flex;
+    flex-direction: row-reverse;
+
+    div {
+      border: 1px solid $gray-200;
+    }
+  }
+
+  &.Wizard {
+    .TabPrimary {
+      div {
+        width: fit-content;
+        position: relative;
+        padding-left: 1.5rem;
+        padding-right: 1rem;
+        min-width: 5rem;
+
+        &:hover {
+          &:after {
+            border-left: 10px solid $gray-100;
+          }
+        }
+
+        &.Disabled {
+          &:after {
+            border-left: 10px solid $gray-100;
+          }
+        }
+
+        &:last-child {
+          padding-left: 1rem;
+        }
+
+        &:after {
+          position: absolute;
+          top: 0;
+          left: 100%;
+          content: '';
+          border-left: 10px solid white;
+          border-top: 20px solid transparent;
+          border-bottom: 20px solid transparent;
+        }
+
+        &.Selected {
+          background: $primary-color;
+          color: $anti-primary-color;
+
+          &:after {
+            border-left-color: $primary-color;
+          }
+        }
+      }
+    }
+  }
+}

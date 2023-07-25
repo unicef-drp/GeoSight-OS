@@ -1,0 +1,22 @@
+{% extends 'frontend/admin/base.html' %}
+{% load render_bundle from webpack_loader %}
+
+{% block extrastyle %}
+{% endblock %}
+
+{% block render_bundle %}
+    {% render_bundle 'AdminDataAccess' %}
+{% endblock %}
+
+{% block scripts %}
+    <script>
+      urls.api = {
+        'permissions': '{% url 'dataset-access-api' %}',
+        'detail': '{{ group_detail_api }}',
+        'users': '{% url 'user-list-api'%}',
+        'groups': '{% url 'group-list-api'%}',
+        'indicators': '{% url 'indicator-basic-list-api'%}',
+        'referenceLayers': '{% url 'reference-layer-list-api'%}',
+      }
+    </script>
+{% endblock %}

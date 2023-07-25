@@ -1,0 +1,26 @@
+{% extends 'frontend/admin/base.html' %}
+{% load render_bundle from webpack_loader %}
+
+{% block extrastyle %}
+{% endblock %}
+
+{% block render_bundle %}
+    {% render_bundle 'AdminContextLayerList' %}
+{% endblock %}
+
+{% block scripts %}
+    <script>
+      urls.api = {
+        'list': '{% url 'context-layer-list-api' %}',
+        'create': '{% url 'admin-context-layer-create-view' %}',
+        'edit': '{% url 'admin-context-layer-edit-view' 0 %}',
+        'batch': '{% url 'admin-context-layer-edit-batch-view' %}',
+        'detail': '{% url 'context-layer-detail-api' 0 %}',
+        'users': '{% url 'user-list-api'%}',
+        'groups': '{% url 'group-list-api'%}',
+
+        {# context-layer specified url#}
+        'permission': '{% url 'context-layer-permission-api' 0 %}',
+      }
+    </script>
+{% endblock %}

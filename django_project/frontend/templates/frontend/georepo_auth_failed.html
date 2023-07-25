@@ -1,0 +1,12 @@
+{% extends 'frontend/base.html' %}
+{% load render_bundle from webpack_loader %}
+{% block render_bundle %}
+    {% render_bundle 'GeoRepoAuthFailed' %}
+{% endblock %}
+{% block extra_html %}
+    <div id='FormTemplate' style="display: none">
+        {% if redirect_next_uri %}
+            <span class="form-login-redirect-next-uri">{{ redirect_next_uri }}</span>
+        {% endif %}
+    </div>
+{% endblock %}

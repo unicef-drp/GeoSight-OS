@@ -1,0 +1,97 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   VectorContextLayerHarvester Content
+   ========================================================================== */
+
+@import '../../../../../../app/variables';
+
+.InputInLine {
+  display: flex;
+
+  & > div {
+    min-width: 50%;
+    flex-grow: 1;
+  }
+
+  input[type="number"] {
+    height: 38px;
+  }
+
+  .BasicFormSection {
+    margin-bottom: 0;
+  }
+}
+
+.HarvesterForm {
+  .BasicFormSection {
+    input:disabled {
+      border: 1px solid $disabled-color !important;
+      color: $disabled-color;
+      cursor: pointer;
+    }
+  }
+}
+
+.TestConfiguration {
+  width: 100%;
+  margin-top: 2rem !important;
+  margin-bottom: 2rem !important;
+}
+
+.TestConfigurationModal {
+  .modal--box {
+    max-width: 90%;
+
+    .loading, .error {
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .modal--content {
+      padding: 0 !important;
+
+      .AdminBaseInput {
+        margin-top: 1rem;
+      }
+
+      .AdminTable {
+        height: 500px;
+      }
+    }
+  }
+
+  .TestConfigurationForm {
+    padding: 2rem;
+
+    button {
+      &.TestConfiguration {
+        margin: 0 !important;
+        margin-top: 1rem !important;
+        margin-bottom: 1rem !important;
+      }
+    }
+
+    .AdminBaseInput {
+      margin-top: 0 !important;
+    }
+
+    .CodeSelection {
+      padding: 1rem;
+      margin-bottom: 0;
+    }
+  }
+}

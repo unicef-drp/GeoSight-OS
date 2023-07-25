@@ -1,0 +1,176 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": 1,
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0,
+          0
+        ]
+      },
+      "properties": {
+        "OBJECTID": 0,
+        "name": "A",
+        "population": 10,
+        "male": 2,
+        "female": 8,
+        "update_date": 1640998861000
+      }
+    },
+    {
+      "id": 2,
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1,
+          1
+        ]
+      },
+      "properties": {
+        "OBJECTID": 1,
+        "name": "B",
+        "population": 20,
+        "male": 10,
+        "female": 10,
+        "update_date": 1641002461000
+      }
+    },
+    {
+      "id": 3,
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7,
+          7
+        ]
+      },
+      "properties": {
+        "OBJECTID": 2,
+        "name": "C",
+        "population": 15,
+        "male": 5,
+        "female": 10,
+        "update_date": 1640998861000
+      }
+    },
+    {
+      "id": 4,
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1,
+          -1
+        ]
+      },
+      "properties": {
+        "OBJECTID": 8,
+        "name": "OUT2",
+        "population": 10,
+        "male": 5,
+        "female": 5,
+        "update_date": 1641002461000
+      }
+    },
+    {
+      "id": 5,
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5,
+          13
+        ]
+      },
+      "properties": {
+        "OBJECTID": 3,
+        "name": "D",
+        "population": 15,
+        "male": 10,
+        "female": 5,
+        "update_date": 1640998861000
+      }
+    },
+    {
+      "id": 6,
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6,
+          14
+        ]
+      },
+      "properties": {
+        "OBJECTID": 4,
+        "name": "E",
+        "population": 5,
+        "male": 3,
+        "female": 2,
+        "update_date": 1641002461000
+      }
+    },
+    {
+      "id": 7,
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15,
+          15
+        ]
+      },
+      "properties": {
+        "OBJECTID": 5,
+        "name": "F",
+        "population": 10,
+        "male": 5,
+        "female": 5,
+        "update_date": 1640998861000
+      }
+    },
+    {
+      "id": 8,
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16,
+          16
+        ]
+      },
+      "properties": {
+        "OBJECTID": 6,
+        "name": "G",
+        "population": 15,
+        "male": 5,
+        "female": 10,
+        "update_date": 1641002461000
+      }
+    },
+    {
+      "id": 9,
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21,
+          21
+        ]
+      },
+      "properties": {
+        "OBJECTID": 7,
+        "name": "OUT1",
+        "population": 5,
+        "male": 5,
+        "female": 0,
+        "update_date": 1641002461000
+      }
+    }
+  ]
+}

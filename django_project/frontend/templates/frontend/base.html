@@ -1,0 +1,181 @@
+{% load static %}
+<!doctype html>
+<html lang="en" data-color-mode="light">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content="No description yet."/>
+    <link rel="shortcut icon" href="{{ preferences.favicon }}"
+          type="image/x-icon">
+    <title>{{ preferences.site_title }} : {{ page_title }}</title>
+    <meta name="description"
+          content="GeoSight Dashboard."/>
+
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Rubik:300,300i,500,500i"/>
+    <link rel="stylesheet"
+          href="{% static "libs/ReactDatepicker/style.css" %}"/>
+    <script>
+      let originalConsoleError = console.error;
+      console.error = function () {
+        let args = Array.prototype.slice.call(arguments);
+        let errorMsg = args.join(' ');
+        if (errorMsg.includes("georepo")) {
+          return;
+        }
+        if (errorMsg.includes("Warning:") || errorMsg.includes("MUI: useResizeContainer")) {
+          console.warn.apply(console, args);
+          return;
+        }
+        originalConsoleError.apply(console, args);
+      };
+    </script>
+    <style>
+        {# FOR THE THEME #}
+        :root {
+            --primary-color: {{ preferences.primary_color }};
+            --anti-primary-color: {{ preferences.anti_primary_color }};
+
+            --secondary-color: {{ preferences.secondary_color }};
+            --anti-secondary-color: {{ preferences.anti_secondary_color }};
+
+            --tertiary-color: {{ preferences.tertiary_color }};
+            --anti-tertiary-color: {{ preferences.anti_tertiary_color }};
+        }
+
+        .primaryColorBox {
+            background-color: var(--primary-color) !important;
+            color: var(--anti-primary-color) !important;
+        }
+
+        .secondaryColorBox {
+            background-color: var(--secondary-color) !important;
+            color: var(--anti-secondary-color) !important;
+        }
+
+        .tertiaryColorBox {
+            background-color: var(--tertiary-color) !important;
+            color: var(--anti-tertiary-color) !important;
+        }
+    </style>
+    {% block style %}
+    {% endblock %}
+</head>
+<body>
+
+<div id="app"></div>
+{% block extra_html %}
+{% endblock %}
+<script type="text/javascript" src="{% static 'libs/fuzzysort.js' %}"></script>
+<script type="text/javascript" src="{% static 'libs/geostats.js' %}"></script>
+{% block pre_scripts %}
+{% endblock %}
+<script>
+  const maxZoom = 24;
+  {% if request.user.is_authenticated %}
+    const user = {{ user|safe }};
+    user.is_staff = user.is_staff === 'true'
+    user.is_contributor = user.is_contributor === 'true'
+    user.is_creator = user.is_creator === 'true'
+    user.is_admin = user.is_admin === 'true'
+  {% else %}
+    const user = {};
+  {% endif %}
+
+  const USE_AZURE = '{{ use_azure_auth }}'.toLowerCase() === 'true';
+  const csrfmiddlewaretoken = '{{ csrf_token }}';
+  const preferences = {{ preferences|safe }};
+  preferences.georepo_api = {{ preferences.georepo_api|safe }};
+  const version = "{{ version }}";
+
+  const links = {{ links|safe }};
+  const contentTitle = `{{ content_title|safe }}`;
+  const headerTitle = `{{ header_title|safe }}`;
+  const useAzureAuth = {% if use_azure_auth %}true{% else %}false{% endif %};
+  let urls = {
+    'login': "{% url 'login' %}",
+    {% if use_azure_auth %}
+      'logout': "{% url 'azure_auth:logout' %}",
+      'azure_login': "{% url 'azure_auth:login' %}",
+      'geoRepoLoginUrl': "{% url 'georepo_login' %}",
+    {% else %}
+      'logout': "{% url 'logout' %}?next=/",
+      'azure_login': "",
+      'geoRepoLoginUrl': "",
+    {% endif %}
+    'admin': {
+      'djangoAdmin': "{% url 'admin:index' %}",
+      'dashboardList': "{% url "admin-dashboard-list-view" %}",
+      'indicatorList': "{% url "admin-indicator-list-view" %}",
+      'basemapList': "{% url "admin-basemap-list-view" %}",
+      'contextLayerList': "{% url "admin-context-layer-list-view" %}",
+      'userList': "{% url "admin-user-list-view" %}",
+      'groupList': "{% url "admin-group-list-view" %}",
+      'styleList': "{% url "admin-style-list-view" %}",
+      'dataset': "{% url "admin-dataset-view" %}",
+      'dataAccess': "{% url "admin-data-access-view" %}",
+      'relatedTableList': "{% url "admin-related-table-list-view" %}",
+      'importer': "{% url "admin-importer-create-view" %}",
+      'importerLogs': "{% url "admin-importer-log-list-view" %}",
+      'scheduledJobs': "{% url "admin-scheduled-job-list-view" %}",
+    },
+    'api': {}
+  }
+
+  /**
+   * Function before ajax
+   */
+  function beforeAjaxSend(xhr) {
+    xhr.setRequestHeader('X-CSRFToken', csrfmiddlewaretoken);
+  }
+
+  const threshold = -50000;
+
+  /**
+   *  Check the score of match between value and target.
+   * @param {String} value Value that will be checked.
+   * @param {String} target Target that will be checked.
+   */
+  function isMatched(value, target) {
+    const result = fuzzysort.single(value.replaceAll('_', ' '), target.replaceAll('_', ' '));
+    if (result && result.score > threshold) {
+      return {
+        value: value,
+        score: result.score
+      }
+    } else {
+      return {
+        value: null,
+        score: threshold
+      }
+    }
+  }
+
+  /**
+   *  Find the element in list that most matched with value.
+   * @param {Array} list List of data that will be searched.
+   * @param {String} value Value of target.
+   */
+  function findMostMatched(list, value) {
+    let maxScore = threshold
+    let matchedValue = null
+    list.map(row => {
+      const { score } = isMatched(value, '' + row)
+      if (score > maxScore) {
+        maxScore = score
+        matchedValue = row
+      }
+    })
+    return {
+      value: matchedValue,
+      score: maxScore
+    }
+  }
+</script>
+{% block scripts %}
+{% endblock %}
+{% block render_bundle %}
+{% endblock %}
+</body>
+</html>

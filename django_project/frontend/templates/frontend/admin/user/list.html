@@ -1,0 +1,23 @@
+{% extends 'frontend/admin/base.html' %}
+{% load render_bundle from webpack_loader %}
+
+{% block extrastyle %}
+{% endblock %}
+
+{% block render_bundle %}
+    {% render_bundle 'AdminUserList' %}
+{% endblock %}
+
+{% block scripts %}
+    <script>
+      urls.api = {
+        'list': '{% url 'user-list-api' %}',
+        'edit': '{% url 'admin-user-edit-view' 0 %}',
+        'detail': '{% url 'user-detail-api' 0 %}',
+        'permissionAdmin': '{% url 'admin-data-access-view' %}',
+      }
+      {% if use_azure_auth %}
+        urls.api.create = '{% url 'admin-user-create-view' %}'
+      {% endif %}
+    </script>
+{% endblock %}

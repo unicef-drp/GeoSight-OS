@@ -1,0 +1,22 @@
+{% extends 'frontend/admin/base.html' %}
+{% load render_bundle from webpack_loader %}
+
+{% block extrastyle %}
+{% endblock %}
+
+{% block render_bundle %}
+    {% render_bundle 'AdminImporterLogData' %}
+{% endblock %}
+
+{% block scripts %}
+    <script>
+      urls.api = {
+        'data': '{% url 'importer-log-data-api' obj_id %}',
+        'datasetApi': '{% url 'dataset-list-api'%}',
+        'indicators': '{% url 'indicator-basic-list-api'%}',
+        'referenceLayers': '{% url 'reference-layer-list-api'%}',
+      }
+      const impoterType = '{{ obj_type }}'
+      const impoterStatus = '{{ obj_status }}'
+    </script>
+{% endblock %}

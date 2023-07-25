@@ -1,0 +1,171 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   SELECTOR
+   ========================================================================== */
+
+
+.MultipleSelectWithSearch {
+  .MuiChip-label {
+    font-size: 1rem !important;
+  }
+
+  &.Compact {
+    .MuiChip-label {
+      font-size: 0.9rem !important;
+    }
+  }
+
+  .MuiAutocomplete-inputFocused {
+    color: rgb(0, 0, 0, 0);
+    background-color: unset !important;
+  }
+
+  .MuiAutocomplete-inputFocused {
+    position: absolute;
+    width: 100% !important;
+    top: 0;
+    left: 0;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  input {
+    height: 100%;
+    padding: 0 4px 0 12px !important;
+    box-sizing: border-box;
+  }
+}
+
+.MultipleSelectWithSearch,
+.SelectWithSearch {
+  position: relative;
+  height: 56px;
+
+  .MuiFormControl-root {
+    height: 100%;
+  }
+
+  .MuiInputBase-root {
+    padding-right: 22px !important;
+    min-width: 170px;
+    max-width: 300px;
+    height: 100%;
+
+    & > .MuiButtonBase-root:not(:first-child) {
+      display: none;
+    }
+
+    & > .MuiButtonBase-root {
+      background-color: white;
+      pointer-events: unset;
+
+      span {
+        padding: 0;
+      }
+
+      svg {
+        display: none;
+      }
+    }
+
+    input {
+      height: 100%;
+      box-sizing: border-box;
+    }
+  }
+
+  .MuiAutocomplete-clearIndicator {
+    display: none;
+  }
+
+  &.NoValue {
+    .MuiAutocomplete-inputFocused {
+      color: gray;
+    }
+  }
+
+  &.MultipleValue {
+    .MuiInputBase-root {
+      & > .MuiButtonBase-root {
+        span {
+          display: none;
+        }
+
+        &:after {
+          content: '(Multiple Values)';
+          font-size: 1rem !important;
+        }
+      }
+
+      .MuiInputBase-root {
+        & > .MuiButtonBase-root {
+          &:after {
+            font-size: 0.9rem !important;
+          }
+        }
+      }
+    }
+  }
+
+  &.FullWidth {
+    .MuiInputBase-root {
+      max-width: 100%;
+    }
+  }
+
+  &.SmallHeight {
+    height: 36px;
+
+    .MuiInputBase-root {
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+
+      input {
+        padding-left: 0;
+      }
+    }
+  }
+
+  &.ShowValues {
+    .MuiInputBase-root {
+      & > .MuiButtonBase-root {
+        display: inline-flex !important;
+        margin: 0 2px;
+
+        span {
+          display: inline-flex !important;
+        }
+
+        &:after {
+          content: ',';
+        }
+      }
+    }
+  }
+}
+
+.OptionMember {
+  &.Compact {
+    font-size: 0.9rem !important;
+
+    .MuiCheckbox-root {
+      padding: 0 0 0 0.5rem !important;
+    }
+  }
+
+  padding: 0.5rem 0 !important;
+}

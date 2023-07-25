@@ -1,0 +1,221 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   Indicator Form style
+   ========================================================================== */
+
+@import '../../../../app/variables';
+
+.BasicForm-Title,
+.RuleTable-Title {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+#RuleTable {
+  border-collapse: collapse;
+  margin-bottom: 2rem;
+  text-align: left;
+
+  th {
+    padding: 0.5rem;
+  }
+
+  .RuleTable-Header {
+    border-bottom: none !important;
+
+    th {
+      font-weight: 500;
+    }
+  }
+
+  .RemoveSection {
+    svg {
+      margin-top: 0.5rem;
+    }
+  }
+
+  .RuleTable-Help {
+    color: gray;
+    border-top: none !important;
+    font-size: 0.8rem;
+
+    ul {
+      padding-left: 1rem;
+      margin: 0;
+    }
+
+    th {
+      font-weight: inherit;
+    }
+  }
+
+  tr {
+    border: 1px solid $primary-color;
+    border-bottom: none;
+  }
+
+  tbody {
+    td {
+      padding: 0.5rem 1rem 0.5rem 0;
+      vertical-align: top;
+    }
+
+    .RemoveButton {
+      cursor: pointer;
+    }
+
+    .RuleValue {
+      display: none;
+    }
+
+    .RuleSectionCell {
+      display: flex;
+
+      &.String {
+        .RuleSection {
+          width: 100%;
+        }
+      }
+
+      input {
+        width: 60px;
+      }
+    }
+
+    .RuleSection {
+      background: $base-almost-white-color;
+      border: 1px solid $base-almost-gray-color;
+      display: flex;
+      min-height: 2.8rem;
+      border-radius: $border-radius;
+
+      input {
+        border: none;
+        padding-right: 0 !important;
+
+        &:disabled {
+          background: $base-almost-white-color;
+          cursor: not-allowed;
+        }
+      }
+
+      .RuleSectionSymbol {
+        border-right: 1px solid #ccc;
+        padding: 10px 5px;
+      }
+
+      .RuleSectionSymbolLeft {
+        border-left: 1px solid #ccc;
+      }
+
+      .RuleSectionSelection {
+        flex-grow: 1;
+
+        &.RuleSectionSelectionCategory {
+          min-width: 400px;
+        }
+
+        &.RuleSectionSelectionType {
+          min-width: 125px;
+        }
+
+        & > div {
+          min-height: 100%;
+          border: none;
+        }
+      }
+    }
+
+    .OrSection {
+      border: none;
+      background: white;
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+      flex-grow: unset !important;
+      display: block;
+      width: 20px !important;
+
+      .RuleSectionSymbol {
+        border-right: none;
+      }
+    }
+
+    input {
+      padding: 0.8rem 0.5rem;
+
+      &:focus,
+      &:focus-within {
+        outline: none;
+      }
+    }
+
+    .Rule-Add {
+      border: 1px solid $secondary-color;
+
+      td {
+        padding: 0;
+        border: none !important;
+
+        button {
+          width: 100%;
+          border-radius: 0;
+        }
+      }
+    }
+
+    .Rule-Divider {
+      border-top: none;
+
+      td {
+        height: 1rem;
+      }
+    }
+  }
+
+  .DragDropItem-Drag {
+    padding: 0.5rem;
+
+    svg {
+      &:focus {
+        outline: none !important;
+      }
+    }
+  }
+
+  .OtherData {
+    .RuleSection {
+      width: fit-content;
+    }
+
+    td:first-child {
+      text-align: right;
+      padding-right: 7px;
+    }
+  }
+}
+
+.ResourceInputControl {
+  .MuiFormLabel-root {
+    display: none !important;
+  }
+}
+
+#Form {
+  .AdminForm {
+    overflow: visible;
+  }
+}

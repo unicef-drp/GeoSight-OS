@@ -1,0 +1,17 @@
+{% extends 'frontend/admin/harvesters/base.html' %}
+{% load render_bundle from webpack_loader %}
+{% block render_bundle %}
+    {% render_bundle 'VectorContextLayerHarvester' %}
+{% endblock %}
+{% block scripts %}
+    <script>
+      const harvester = JSON.parse(`{{ harvester|safe }}`);
+      const harvestersData = JSON.parse(`{{ harvesters|safe }}`);
+      const harvesterClass = "{{ harvester_class|safe }}";
+      const attributesData = JSON.parse(`{{ attributes|safe }}`);
+      const formDefinitions = JSON.parse(`{{ formDefinitions|safe }}`);
+      const mappingData = JSON.parse(`{{ mapping|safe }}`);
+      const indicatorListAPI = '{% url 'indicator-admin-list-api' %}'
+      const testConfigurationAPI = '{% url 'vector-context-layer-harvester-test-configuration' %}'
+    </script>
+{% endblock %}

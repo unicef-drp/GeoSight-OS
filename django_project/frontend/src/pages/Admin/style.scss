@@ -1,0 +1,157 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   Admin specific style
+   ========================================================================== */
+
+@import '../../app/variables';
+
+
+main {
+  flex-grow: 1;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+
+  & > div {
+    height: 100%;
+    overflow: hidden;
+
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box; /* Firefox, other Gecko */
+    box-sizing: border-box; /* Opera/IE 8+ */
+  }
+}
+
+.AdminContent {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-width: 0;
+  background-color: #F4F4F4;
+  position: relative;
+
+  & > div {
+    border-radius: $border-radius;
+    margin: 0 1rem 1rem 1rem;
+    background-color: white;
+    padding: 0 2rem;
+  }
+
+  .AdminContentHeader {
+    background: white;
+    border-radius: 0;
+    box-shadow: $box-shadow-sm;
+    color: $primary-color;
+    display: flex;
+    margin: 0 0 1rem 0;
+    padding: 0.5rem 1rem;
+
+    .AdminContentHeader-Left {
+      flex-grow: 1;
+      padding: 0.5rem 0;
+
+      span, a {
+        color: $primary-color;
+        display: inline-block;
+        margin-right: 0.5rem;
+      }
+    }
+
+    .AdminContentHeader-Right {
+      button {
+        margin-left: 0.5rem;
+      }
+    }
+  }
+
+  .AdminBaseInput {
+    background-color: white;
+    padding: 0.5rem;
+
+    .MuiFormControl-root {
+      background-color: $base-almost-white-color;
+      margin-top: 0 !important;
+      width: 100%;
+
+      .MuiOutlinedInput-root {
+        width: 100%;
+
+        input {
+          padding: 0.5rem 1rem 0.5rem 0;
+        }
+
+        .MuiOutlinedInput-notchedOutline {
+          border: unset;
+        }
+
+        &:hover {
+          .MuiOutlinedInput-notchedOutline {
+            border: unset;
+          }
+        }
+      }
+    }
+  }
+
+  .MuiDataGrid-actionsCell {
+    grid-gap: 0 !important;
+  }
+
+  // With loading
+  .AdminContentWithLoading {
+    background-color: white;
+    flex-grow: 1;
+    min-height: 0;
+    overflow: auto;
+
+    .AdminLoading {
+      display: block;
+      flex-grow: 1;
+
+      .AdminLoadingSection {
+        height: fit-content;
+        width: fit-content;
+        margin: auto;
+        display: flex;
+        margin-top: 200px;
+
+        div {
+          margin-left: 1rem;
+          padding-top: 0.5rem;
+        }
+      }
+    }
+  }
+}
+
+.AdminSelectDataForm {
+  & > .MuiBox-root {
+    height: 90%;
+
+    .MuiBox-root {
+      .AdminContent {
+        padding-top: 1rem;
+      }
+
+      display: flex;
+      flex-direction: column;
+      width: 90%;
+      height: 100%;
+      max-width: 90%;
+    }
+  }
+}

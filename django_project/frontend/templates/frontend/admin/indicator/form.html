@@ -1,0 +1,54 @@
+{% extends 'frontend/admin/base_form.html' %}
+{% load render_bundle from webpack_loader %}
+{% load static %}
+
+{% block render_bundle %}
+    {% render_bundle 'AdminIndicatorForm' %}
+{% endblock %}
+{% block pre_scripts %}
+    <script>
+      document.querySelector('p[data-field-name="type"]').remove()
+      document.querySelector('p[data-field-name="min_value"]').remove()
+      document.querySelector('p[data-field-name="max_value"]').remove()
+      document.querySelector('p[data-field-name="codelist"]').remove()
+      document.querySelector('p[data-field-name="style_type"]').remove()
+      document.querySelector('p[data-field-name="style"]').remove()
+      document.querySelector('p[data-field-name="aggregation_multiple_values"]').remove()
+      document.querySelector('p[data-field-name="aggregation_upper_level_allowed"]').remove()
+      document.querySelector('p[data-field-name="aggregation_upper_level"]').remove()
+      document.querySelector('p[data-field-name="label_config"]').remove()
+      document.querySelector('p[data-field-name="style_config"]').remove()
+    </script>
+{% endblock %}
+{% block scripts %}
+    <script>
+      const indicator = {{ form.indicator_data|safe }};
+      const indicatorId = {% if indicator_id %}{{ indicator_id }}{% else %}null{% endif %};
+      const indicatorRules = {{ rules|safe }}
+      const types = {{ types|safe }}
+      const styleTypes = {{ styleTypes|safe }}
+      const dynamicClassification = {{ dynamicClassification|safe }};
+      const permission = {{ permission|safe }}
+
+      // Format code choices
+      const codelists = {{ codelists|safe }};
+
+      // Urls api
+      urls.api = {
+        'styles': '{% url 'style-list-api'%}',
+        'users': '{% url 'user-list-api'%}',
+        'groups': '{% url 'group-list-api'%}',
+      }
+
+      if (permission.share) {
+        {% if indicator_id %}
+            urls.api.permission = '{% url 'indicator-permission-api' indicator_id %}'
+        {% else %}
+            urls.api.permission = '{% url 'indicator-permission-api' 0 %}'
+        {% endif %}
+      }
+
+      // If in batch or not
+      const batch = {% if batch %}true{% else %}null{% endif %};
+    </script>
+{% endblock %}

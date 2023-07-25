@@ -1,0 +1,20 @@
+{% extends 'frontend/admin/base.html' %}
+{% load static %}
+{% block style %}
+    <link rel="stylesheet"
+          href="{% static "libs/ReactDatepicker/style.css" %}"/>
+    <script type="text/javascript"
+            src="{% static 'libs/xlsx/0.17.5/jszip.js' %}"></script>
+    <script type="text/javascript"
+            src="{% static 'libs/xlsx/0.17.5/xlsx.js' %}"></script>
+{% endblock %}
+{% block scripts %}
+    <script>
+      const harvester = JSON.parse(`{{ harvester|safe }}`);
+      const harvestersData = JSON.parse(`{{ harvesters|safe }}`);
+      const harvesterClass = "{{ harvester_class|safe }}";
+      const attributesData = JSON.parse(`{{ attributes|safe }}`);
+      const mappingData = JSON.parse(`{{ mapping|safe }}`);
+      const indicatorListAPI = '{% url 'indicator-admin-list-api' %}'
+    </script>
+{% endblock %}
