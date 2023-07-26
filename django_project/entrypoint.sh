@@ -33,10 +33,6 @@ cd /home/web/django_project
 echo 'Running initialize.py...'
 python -u initialize.py
 
-# Fix permission on media directory
-echo 'Fix permission on media directory...'
-chown 1000:1000 -R /home/web/media
-
 echo "-----------------------------------------------------"
 echo "FINISHED DJANGO ENTRYPOINT --------------------------"
 echo "-----------------------------------------------------"
