@@ -40,7 +40,6 @@ export const Notification = forwardRef(
     // Ready check
     useImperativeHandle(ref, () => ({
       notify(newMessage, newSeverity = NotificationStatus.INFO) {
-        console.log('notify')
         setState(
           { message: newMessage, open: true, severity: newSeverity }
         )
