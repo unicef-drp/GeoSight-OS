@@ -60,7 +60,7 @@ export default function AccessRequestDetail({ pageName }) {
       data['is_approve'] = true
     }
     setSubmitted(true)
-    axios.post(window.location.href, data, {
+    axios.post(urls.api.detail, data, {
       headers: {
         'Content-Type': 'multipart/form-data',
         'X-CSRFToken': csrfmiddlewaretoken
@@ -81,7 +81,7 @@ export default function AccessRequestDetail({ pageName }) {
   return <Admin
     pageName={pageName}
     rightHeader={
-      data?.status === 'PENDING' ? <Fragment>
+      data?.status === 'PENDING' && user.is_staff ? <Fragment>
 
         {/* APPROVE */}
         <ConfirmDialog

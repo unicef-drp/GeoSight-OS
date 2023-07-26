@@ -24,7 +24,7 @@ import { ThemeButton } from "../Elements/Button";
  * @param {React.Component} children React component to be rendered.
  */
 export const ConfirmDialog = forwardRef(
-  ({ header, onConfirmed, onRejected, children }, ref
+  ({ header, onConfirmed, onRejected, children, ...props }, ref
   ) => {
     const [open, setOpen] = useState(false);
 
@@ -65,6 +65,7 @@ export const ConfirmDialog = forwardRef(
             &nbsp;
             <ThemeButton
               variant="secondary Basic"
+              disabled={props.disabledConfirm}
               onClick={() => {
                 onConfirmed()
                 setOpen(false)

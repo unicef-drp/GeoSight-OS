@@ -27,7 +27,9 @@ class AccessRequestSerializer(serializers.ModelSerializer):
 
     def get_name(self, obj: UserAccessRequest):
         """Get name of access."""
-        if obj.requester_first_name and obj.requester_last_name:
+        if obj.request_by:
+            return f'{obj.request_by.first_name} {obj.request_by.last_name}'
+        elif obj.requester_first_name and obj.requester_last_name:
             return f'{obj.requester_first_name} {obj.requester_last_name}'
         elif obj.requester_first_name:
             return obj.requester_first_name
@@ -48,7 +50,21 @@ class AccessRequestSerializer(serializers.ModelSerializer):
 class AccessRequestDetailSerializer(serializers.ModelSerializer):
     """Access request serializer for detail."""
 
+    requester_first_name = serializers.SerializerMethodField()
+    requester_last_name = serializers.SerializerMethodField()
     approval_by = serializers.SerializerMethodField()
+
+    def get_requester_first_name(self, obj: UserAccessRequest):
+        """Get name of access."""
+        if obj.request_by:
+            return obj.request_by.first_name
+        return '-'
+
+    def get_requester_last_name(self, obj: UserAccessRequest):
+        """Get name of access."""
+        if obj.request_by:
+            return obj.request_by.last_name
+        return '-'
 
     def get_approval_by(self, obj: UserAccessRequest):
         """Get approval by username."""

@@ -18,15 +18,12 @@ from datetime import datetime
 
 from captcha.fields import CaptchaField
 from django import forms
-from django.conf import settings
-from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
-from django.template.loader import render_to_string
 from django.urls import reverse
 from django.views.generic.edit import FormView
 
+from core.email import send_email_to_admins_with_html
 from core.models.access_request import UserAccessRequest
-from core.models.preferences import SitePreferences
 
 
 class SignUpForm(forms.Form):
@@ -44,9 +41,6 @@ class SignUpForm(forms.Form):
 
     def send_email(self, obj: UserAccessRequest, request):
         """Send email."""
-        admin_emails = SitePreferences.preferences().default_admin_emails
-        if not admin_emails:
-            return
         name_of_user = '-'
         if obj.requester_first_name:
             name_of_user = obj.requester_first_name
@@ -72,17 +66,8 @@ class SignUpForm(forms.Form):
             )
         }
         subject = f'New Access Request from {request_from}'
-        message = render_to_string(
-            'emails/notify_new_request.html',
-            context
-        )
-        send_mail(
-            subject,
-            None,
-            settings.DEFAULT_FROM_EMAIL,
-            admin_emails,
-            html_message=message,
-            fail_silently=False
+        send_email_to_admins_with_html(
+            subject, context, 'emails/notify_new_request.html'
         )
 
     def save(self, request):
