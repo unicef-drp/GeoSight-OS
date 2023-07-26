@@ -94,6 +94,7 @@
   const headerTitle = `{{ header_title|safe }}`;
   const useAzureAuth = {% if use_azure_auth %}true{% else %}false{% endif %};
   let urls = {
+    'requestAccess': '{% url 'signup-view' %}',
     'login': "{% url 'login' %}",
     {% if use_azure_auth %}
       'logout': "{% url 'azure_auth:logout' %}",
@@ -119,6 +120,10 @@
       'importer': "{% url "admin-importer-create-view" %}",
       'importerLogs': "{% url "admin-importer-log-list-view" %}",
       'scheduledJobs': "{% url "admin-scheduled-job-list-view" %}",
+
+      {# ACCESS REQUEST#}
+      'accessRequestUser': "{% url "admin-access-request-user-list-view" %}",
+      'accessRequestPermission': "{% url "admin-access-request-permission-list-view" %}",
     },
     'api': {}
   }

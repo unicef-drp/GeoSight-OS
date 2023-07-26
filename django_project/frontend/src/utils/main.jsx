@@ -372,3 +372,8 @@ export function uniqueList(list) {
   out.sort()
   return out;
 }
+
+/*** Is valid email ***/
+export function isValidEmail(email) {
+  return /\S+@\S+\.\S+/.test(email);
+}

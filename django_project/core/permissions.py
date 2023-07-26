@@ -16,8 +16,6 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from rest_framework.permissions import BasePermission
 
-from core.models.profile import ROLES
-
 
 class AdminAuthenticationPermission(BasePermission):
     """Authentication just for the admin."""
@@ -25,7 +23,22 @@ class AdminAuthenticationPermission(BasePermission):
     def has_permission(self, request, view):
         """For checking if user has permission."""
         user = request.user
-        if user and user.is_authenticated:
-            return user.is_superuser or user.is_staff or \
-                user.profile.role == ROLES.SUPER_ADMIN.name
-        return False
+        return user.is_authenticated and user.profile.is_admin
+
+
+class RoleContributorAuthenticationPermission(BasePermission):
+    """Authentication just for Role Contributor."""
+
+    def has_permission(self, request, view):
+        """For checking if user has permission."""
+        user = request.user
+        return user.is_authenticated and user.profile.is_contributor
+
+
+class RoleCreatorAuthenticationPermission(BasePermission):
+    """Authentication just for Role Contributor."""
+
+    def has_permission(self, request, view):
+        """For checking if user has permission."""
+        user = request.user
+        return user.is_authenticated and user.profile.is_creator

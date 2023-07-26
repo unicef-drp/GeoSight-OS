@@ -62,6 +62,15 @@ x-common-django:
     - GEOREPO_AZURE_B2C_CLIENT_SECRET=${GEOREPO_AZURE_B2C_CLIENT_SECRET:-''}
     - GEOREPO_AZURE_B2C_TENANT_NAME=${GEOREPO_AZURE_B2C_TENANT_NAME:-''}
     - GEOREPO_AZURE_B2C_POLICY_NAME=${GEOREPO_AZURE_B2C_POLICY_NAME:-''}
+
+    # email variables
+    - EMAIL_HOST=${EMAIL_HOST:-smtp}
+    - EMAIL_PORT=${EMAIL_PORT:-25}
+    - EMAIL_HOST_USER=${EMAIL_HOST_USER}
+    - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+    - EMAIL_USE_TLS=${EMAIL_USE_TLS:-False}
+    - EMAIL_USE_SSL=${EMAIL_USE_SSL:-False}
+    - DEFAULT_FROM_EMAIL=${DEFAULT_FROM_EMAIL:-noreply@kartoza.com}
   volumes:
     - static-data:/home/web/static
     - media-data:/home/web/media

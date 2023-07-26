@@ -1,0 +1,97 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '25/07/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   Login Page Content
+   ========================================================================== */
+@import '../../app/variables';
+
+main {
+  flex-grow: 1;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+
+  .Background {
+    flex-grow: 1;
+  }
+
+  .Login {
+    background-color: white;
+    height: 100%;
+    width: 400px;
+    padding: 3rem 2rem;
+    box-sizing: border-box;
+    overflow-y: auto;
+
+    .Errorlist {
+      color: $error;
+      margin: 0;
+      padding: 0;
+    }
+
+    .LoginHeader {
+      color: $primary-color;
+      font-size: 1.5rem;
+      font-weight: $base-font-medium;
+      margin-bottom: 2rem;
+    }
+
+    .AdminForm {
+      margin-top: 1rem;
+    }
+
+    .Mui-focused {
+      fieldset {
+        border: 2px solid $secondary-color;
+      }
+    }
+
+    fieldset {
+      border-radius: 0;
+      border: 1px solid $secondary-color;
+
+      &:hover {
+        border: 1px solid $secondary-color;
+      }
+    }
+
+    .MuiButton-root {
+      border-radius: 0;
+      width: 100%;
+    }
+
+    .BasicForm {
+      padding: 0;
+      color: $secondary-color;
+
+      input {
+        outline: none;
+      }
+    }
+
+    .captcha-refresh {
+      margin-left: 0.5rem;
+    }
+
+    #id_captcha_1 {
+      display: none;
+    }
+
+    #id_captcha {
+      margin-top: -1rem;
+    }
+  }
+}

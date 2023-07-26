@@ -62,15 +62,19 @@ export function AdminTable(
       sortModel: sortingDefault
     }
   }
+  let filter = {}
+  if (props.filterDefault) {
+    filter = {
+      filterModel: {
+        items: props.filterDefault
+      }
+    }
+  }
 
   // Is loading if rows are undefined or null
   const isLoading = [undefined, null].includes(rows)
   return (
     <div className='AdminTable'>
-      {
-        props.error ?
-          <div className='AdminTableError'>{props.error}</div> : null
-      }
       <DataGrid
         getRowClassName={(params) => {
           return !params.row.permission || params.row.permission.read ? 'ResourceRow Readable' : 'ResourceRow'
@@ -84,8 +88,14 @@ export function AdminTable(
         pageSize={pageSize}
         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
         rowsPerPageOptions={[25, 50, 100]}
+        error={props.error}
         initialState={{
-          sorting: sorting
+          sorting: sorting,
+          filter: filter
+        }}
+        localeText={{
+          noRowsLabel: props.noRowsLabel ? props.noRowsLabel : 'No results found',
+          errorOverlayDefaultLabel: <div className='error'>{props.error}</div>
         }}
         disableSelectionOnClick
 

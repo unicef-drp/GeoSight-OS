@@ -52,6 +52,14 @@ class SitePreferences(SingletonModel):
         )
     )
     # -----------------------------------------------
+    # Default Admin Email Addresses
+    # send email notification from SignUp and Access Request
+    # -----------------------------------------------
+    default_admin_emails = models.JSONField(
+        default=list,
+        blank=True
+    )
+    # -----------------------------------------------
     # GEOREPO
     # -----------------------------------------------
     georepo_url = models.CharField(

@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 import React, { useState } from 'react';
 import $ from 'jquery';
@@ -67,38 +67,54 @@ export default function Login() {
       <div className='Background'></div>
       <div className='Login'>
         <div className='LoginHeader'>Welcome to {preferences.site_title}</div>
-        { !useAzureLogin && (
-          <div>
-            <AdminForm isSubmitted={submitted} submit={() => {
-              setSubmitted(true)
-            }}/>
+        {
+          !useAzureLogin && (
+            <div>
+              <AdminForm isSubmitted={submitted} submit={() => {
+                setSubmitted(true)
+              }}/>
 
-            <ThemeButton
-              variant="secondary"
-              onClick={login}
-              disabled={submitted ? true : false}
-            >
-              LOG IN
+              <ThemeButton
+                variant="secondary"
+                onClick={login}
+                disabled={submitted ? true : false}
+              >
+                LOG IN
+              </ThemeButton>
+            </div>
+          )
+        }
+        {
+          useAzureLogin && getNoLoginAccess() && (
+            <div style={{ marginBottom: '20px' }}>
+              <p>
+                You are not allowed to access GeoSight. Please contact
+                administrator or try to use different account!
+              </p>
+            </div>
+          )
+        }
+        {
+          useAzureLogin && (
+            <div>
+              <ThemeButton
+                variant="secondary"
+                onClick={loginWithAzure}
+              >
+                LOG IN
+              </ThemeButton>
+            </div>
+          )
+        }
+        <br/>
+        <div>
+          <a
+            href={urls.requestAccess}>
+            <ThemeButton variant="secondary Basic">
+              Request Access
             </ThemeButton>
-          </div>
-        )}
-        { useAzureLogin && getNoLoginAccess() && (
-          <div style={{marginBottom: '20px'}}>
-            <p>
-                You are not allowed to access GeoSight. Please contact administrator or try to use different account!
-            </p>
+          </a>
         </div>
-        )}
-        { useAzureLogin && (
-          <div>
-            <ThemeButton
-              variant="secondary"
-              onClick={loginWithAzure}
-            >
-              LOG IN
-            </ThemeButton>
-          </div>
-        )}
       </div>
     </App>
   )

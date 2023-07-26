@@ -1,23 +1,24 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 import React, { Fragment } from 'react';
 import HomeIcon from '@mui/icons-material/Home';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import LayersIcon from '@mui/icons-material/Layers';
 import MapIcon from '@mui/icons-material/Map';
+import GppMaybeIcon from '@mui/icons-material/GppMaybe';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import CloudSyncIcon from '@mui/icons-material/CloudSync';
 import PersonIcon from '@mui/icons-material/Person';
@@ -167,6 +168,36 @@ export default function SideNavigation({ pageName }) {
               </a>
             </div>
           </div> : null
+      }
+
+      {
+        user.is_staff ?
+          <div className='SideNavigation-Row-Group'>
+            <a href={urls.admin.accessRequestUser}
+               className={'SideNavigation-Row ' + ([pageNames.AccessRequestUser, pageNames.AccessRequestPermission].includes(pageName) ? 'active' : '')}>
+              <GppMaybeIcon className='SideNavigation-Row-Icon'/>
+              <span
+                className='SideNavigation-Row-Name'>Access Request</span>
+            </a>
+            <div className='SideNavigation-Row-Child'>
+              <a href={urls.admin.accessRequestUser}
+                 className={'SideNavigation-Row ' + (pageNames.AccessRequestUser === pageName ? 'active' : '')}>
+            <span
+              className='SideNavigation-Row-Name'>New User</span>
+              </a>
+            </div>
+            <div className='SideNavigation-Row-Child'>
+              <a href={urls.admin.accessRequestPermission}
+                 className={'SideNavigation-Row ' + (pageNames.AccessRequestPermission === pageName ? 'active' : '')}>
+            <span
+              className='SideNavigation-Row-Name'>Permission</span>
+              </a>
+            </div>
+          </div> : <a href={urls.admin.accessRequestPermission}
+                      className={'SideNavigation-Row ' + (pageName === pageNames.AccessRequestPermission ? 'active' : '')}>
+            <GppMaybeIcon className='SideNavigation-Row-Icon'/>
+            <span className='SideNavigation-Row-Name'>Access Request</span>
+          </a>
       }
     </div>
   );

@@ -22,7 +22,8 @@ INSTALLED_APPS = INSTALLED_APPS + (
     'rest_framework_gis',
     'webpack_loader',
     'django_celery_beat',
-    'django_celery_results'
+    'django_celery_results',
+    'captcha'
 )
 WEBPACK_LOADER = {
     'DEFAULT': {

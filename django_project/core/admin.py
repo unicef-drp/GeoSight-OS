@@ -26,6 +26,7 @@ from core.forms.user import (
     AzureAdminUserCreationForm
 )
 from core.models import SitePreferences, SitePreferencesImage, Profile
+from core.models.access_request import UserAccessRequest
 from core.models.color import ColorPalette
 
 User = get_user_model()
@@ -45,6 +46,11 @@ class SitePreferencesAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields': ('site_title', 'site_url', 'disclaimer')
+        }),
+        ('Email', {
+            'fields': (
+                'default_admin_emails',
+            )
         }),
         ('GeoRepo', {
             'fields': (
@@ -166,3 +172,21 @@ else:
 
 
     admin.site.register(User, UserProfileAdmin)
+
+
+class UserAccessRequestAdmin(admin.ModelAdmin):
+    """User access request admin."""
+
+    list_display = (
+        'requester_email', 'requester_first_name', 'type',
+        'status', 'submitted_on'
+    )
+    list_filter = [
+        'type', 'status'
+    ]
+    search_fields = [
+        'requester_first_name', 'requester_email'
+    ]
+
+
+admin.site.register(UserAccessRequest, UserAccessRequestAdmin)

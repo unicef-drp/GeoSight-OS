@@ -1,0 +1,125 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '25/07/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+@import '../../../../app/variables';
+
+.Detail {
+  padding-top: 2rem !important;
+  padding-bottom: 2rem !important;
+
+  .DetailSection {
+    border-bottom: 1px solid $gray-500;
+    color: $base-black-color;
+    padding: 1rem 1rem 0.5rem 1rem;
+    height: 100%;
+    box-sizing: border-box;
+
+    & > div {
+      margin-bottom: 0.5rem;
+    }
+
+    & > div:first-child,
+    .title {
+      font-weight: $base-font-regular;
+    }
+
+    a {
+      max-width: 100%;
+      display: block;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+
+  .DetailDataFound {
+    position: relative;
+    z-index: 9999;
+
+    a {
+      display: block;
+      margin-top: 1rem;
+      margin-left: auto;
+      width: fit-content;
+    }
+
+    .DetailButtonButton {
+      display: flex;
+
+      a {
+        margin-left: 5px;
+      }
+    }
+  }
+
+  .DetailDataFoundError {
+    position: relative;
+    max-height: 10rem;
+    overflow: hidden;
+    z-index: 9999;
+
+    div {
+      background-color: white;
+      border: 1px solid white;
+      padding: 6px;
+      margin: -7px;
+    }
+
+    &:hover {
+      overflow: visible;
+
+      div {
+        border: 1px solid $primary-color;
+      }
+    }
+  }
+
+  .MuiGrid-container {
+    &.error {
+      .DetailSection {
+        color: $error;
+      }
+    }
+  }
+
+  .MuiBox-root {
+    box-sizing: border-box;
+  }
+
+  .SidePanelTitle {
+    background-color: $secondary-color;
+    color: $anti-secondary-color;
+    padding: 1rem;
+  }
+
+  .SidePanelSection {
+    border: 1px solid $secondary-color;
+    margin-top: -1px;
+    cursor: pointer;
+
+    &.Link {
+      &:hover {
+        opacity: 0.5;
+      }
+    }
+
+    table {
+      width: 100%;
+
+      td {
+        padding: 0.2rem 0.5rem;
+      }
+    }
+  }
+}
