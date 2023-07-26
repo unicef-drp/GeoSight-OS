@@ -13,11 +13,15 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '26/07/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import logging
+
 from django.conf import settings
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
 from core.models.preferences import SitePreferences
+
+logger = logging.getLogger(__name__)
 
 
 def send_email_with_html(
@@ -28,14 +32,17 @@ def send_email_with_html(
         html_path,
         context
     )
-    send_mail(
-        subject,
-        None,
-        settings.DEFAULT_FROM_EMAIL,
-        recipient_list,
-        html_message=message,
-        fail_silently=False
-    )
+    try:
+        send_mail(
+            subject,
+            None,
+            settings.DEFAULT_FROM_EMAIL,
+            recipient_list,
+            html_message=message,
+            fail_silently=False
+        )
+    except Exception as e:
+        logger.exception(e)
 
 
 def send_email_to_admins_with_html(

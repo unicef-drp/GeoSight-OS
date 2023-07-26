@@ -58,13 +58,13 @@ class AccessRequestDetailSerializer(serializers.ModelSerializer):
         """Get name of access."""
         if obj.request_by:
             return obj.request_by.first_name
-        return '-'
+        return obj.requester_first_name
 
     def get_requester_last_name(self, obj: UserAccessRequest):
         """Get name of access."""
         if obj.request_by:
             return obj.request_by.last_name
-        return '-'
+        return obj.requester_last_name
 
     def get_approval_by(self, obj: UserAccessRequest):
         """Get approval by username."""
