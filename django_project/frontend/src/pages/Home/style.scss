@@ -21,107 +21,166 @@
 .Home {
   main {
     padding: 0;
+    flex-grow: 1;
+    min-height: 0;
   }
 }
 
 .PageContent {
-  margin: 0 !important;
   background-color: unset !important;
-  width: 100% !important;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
   height: 100%;
+  margin: 0 !important;
   overflow-y: auto;
-  padding: 2rem 0 !important;
-  box-sizing: border-box;
-}
+  padding: 0 !important;
+  width: 100% !important;
 
-.HomePageContent {
-  background-color: rgba(250, 250, 250, 0.9);
-  padding: 1rem 1rem 2rem 2rem !important;
-  box-sizing: border-box;
-  width: 1325px;
-  margin: auto;
-  margin-bottom: 4rem;
+  .HomePageContent {
+    box-sizing: border-box;
+    flex-grow: 1;
+    margin: 2rem auto;
+    max-width: 100%;
+    width: 1300px;
+    padding: 0 2rem;
 
-  .PageContent-Title {
-    padding-right: 1rem;
-  }
-
-  .PageContent-Content {
-    display: flex;
-    flex-wrap: wrap;
-  }
-
-  .DashboardCard {
-    margin-top: 1rem;
-    margin-right: 1rem;
-    width: 196px;
-    height: 250px;
-
-    .DashboardCard-Wrapper {
-      cursor: pointer;
-      transition: margin 0.2s;
-      background-color: white;
-      width: 100%;
-      height: 100%;
+    .PageContent-Title {
+      font-size: 26px;
+      font-weight: 500;
+      margin-bottom: 2rem;
+      color: inherit;
       display: flex;
-      flex-direction: column;
-      position: relative;
+      align-items: center;
 
-      a {
-        height: 100%;
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-      }
+      .SearchInput {
+        width: 40%;
 
-      &:hover {
-        margin-top: -5px;
-      }
-
-      .DashboardCard-Edit {
-        position: absolute;
-        top: 0;
-        right: 0;
-        padding: 2px;
-        font-size: 0.5rem;
-        background: white;
-        display: block;
-        color: $secondary-color;
-        height: 15px;
-        width: 15px;
-        border-bottom-left-radius: 5px;
-
-        svg {
-          height: 100%;
+        .MuiInputBase-root {
           width: 100%;
         }
       }
     }
 
-    img {
-      height: 100px;
-      width: 100%;
-      object-fit: cover;
+    .PageContent-Content {
+      display: flex;
+      flex-wrap: wrap;
     }
 
-    .DashboardCard-Name,
-    .DashboardCard-Description {
-      padding: 0 1rem;
+    .MuiGrid-root {
+      &:hover {
+        z-index: 1;
+      }
     }
 
-    .DashboardCard-Name {
-      padding-top: 1rem;
-      color: $secondary-color;
-      font-weight: $base-font-medium;
-      padding-bottom: 0.3rem;
+    .ProjectGrid {
+      background-color: #F4F4F4;
+      cursor: pointer;
+      height: 360px;
+      transition: margin 0.2s;
+      overflow: hidden;
+
+      &:hover {
+        margin-top: -0.5rem;
+        overflow: visible;
+
+        a {
+          opacity: 1;
+        }
+
+        .ProjectGridDescription {
+          max-height: 300px;
+          overflow: auto;
+        }
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .ProjectGridIcon {
+        background-color: white;
+        border: 1px solid #F4F4F4;
+        height: 180px;
+        width: 100%;
+
+        img {
+          height: 100%;
+          object-fit: cover;
+          width: 100%;
+        }
+
+        svg {
+          display: block;
+          font-size: 5rem;
+          color: #F4F4F4;
+          margin: auto;
+          margin-top: 3rem;
+        }
+      }
+
+      .ProjectGridName,
+      .ProjectGridDescription {
+        padding: 0 1rem;
+      }
+
+      .ProjectGridName {
+        font-size: 18px;
+        font-weight: 400;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        text-transform: capitalize;
+        line-height: 21px;
+      }
+
+      .ProjectGridDescription {
+        flex-grow: 1;
+        font-size: 14px;
+        font-weight: 300;
+        padding-bottom: 1rem;
+        overflow-y: auto;
+        background-color: #F4F4F4;
+
+        .wmde-markdown {
+          background-color: unset;
+          line-height: 17px;
+          color: $gray-600;
+        }
+      }
     }
 
-    .DashboardCard-Description {
-      padding-bottom: 1rem;
-      font-size: 0.8rem;
-      overflow-y: auto;
-      color: $base-black-color;
-      flex-grow: 1;
+    .CategorySelector {
+      &.MultipleValue {
+        .MuiInputBase-root {
+          & > .MuiButtonBase-root {
+            &:after {
+              content: 'Categories selected';
+            }
+          }
+        }
+      }
+
+      &.AllSelected {
+        .MuiInputBase-root {
+          & > .MuiButtonBase-root {
+            &:after {
+              content: 'All categories';
+            }
+          }
+        }
+      }
+    }
+
+    .SortSelectorInput {
+      svg {
+        width: 18px;
+        height: 16px;
+        cursor: pointer;
+
+        &:hover {
+          opacity: 0.5;
+        }
+      }
     }
   }
 }

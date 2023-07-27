@@ -3,21 +3,3 @@
 {% block render_bundle %}
     {% render_bundle 'Home' %}
 {% endblock %}
-{% block style %}
-    <style>
-        {% if preferences.background_image %}
-            main {
-                background: url("{{ preferences.background_image }}") no-repeat;
-                background-size: cover;
-            }
-        {% endif %}
-    </style>
-{% endblock %}
-{% block scripts %}
-    <script>
-      const dashboards = {{ dashboards|safe }};
-      urls.api = {
-        'create': '{% url 'admin-dashboard-create-view' %}',
-      }
-    </script>
-{% endblock %}

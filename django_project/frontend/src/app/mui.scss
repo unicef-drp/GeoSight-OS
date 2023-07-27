@@ -417,3 +417,37 @@
 .MuiDataGrid-overlay {
   background-color: unset !important;
 }
+
+.MuiAutocomplete-root {
+  cursor: pointer;
+
+  input {
+    cursor: pointer;
+  }
+
+  .MuiInputBase-root {
+    border-radius: 0;
+  }
+}
+
+.SelectWithSearchInput {
+  border: 1px solid rgba(0, 0, 0, 0.23);
+  display: flex;
+  align-items: center;
+
+  .IconStart {
+    margin-left: 1rem;
+  }
+
+  .MuiAutocomplete-root {
+    flex-grow: 1;
+  }
+
+  &:hover {
+    border: 1px solid rgba(0, 0, 0, 0.87);
+  }
+
+  .MuiOutlinedInput-notchedOutline {
+    border: none !important;
+  }
+}

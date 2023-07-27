@@ -257,6 +257,7 @@ class DashboardBasicSerializer(serializers.ModelSerializer):
     group = serializers.SerializerMethodField()
     category = serializers.SerializerMethodField()
     modified_at = serializers.SerializerMethodField()
+    created_at = serializers.SerializerMethodField()
     permission = serializers.SerializerMethodField()
 
     def get_id(self, obj: Dashboard):
@@ -275,6 +276,10 @@ class DashboardBasicSerializer(serializers.ModelSerializer):
         """Return dashboard last modified."""
         return obj.modified_at.strftime('%Y-%m-%d %H:%M:%S')
 
+    def get_created_at(self, obj: Dashboard):
+        """Return dashboard created time."""
+        return obj.modified_at.strftime('%Y-%m-%d %H:%M:%S')
+
     def get_permission(self, obj: Dashboard):
         """Return permission."""
         return obj.permission.all_permission(
@@ -284,7 +289,7 @@ class DashboardBasicSerializer(serializers.ModelSerializer):
     class Meta:  # noqa: D106
         model = Dashboard
         fields = (
-            'id', 'slug', 'icon', 'name', 'modified_at',
+            'id', 'slug', 'icon', 'name', 'created_at', 'modified_at',
             'description', 'group', 'category', 'permission',
-            'reference_layer'
+            'reference_layer', 'creator'
         )
