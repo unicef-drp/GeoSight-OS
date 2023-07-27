@@ -443,7 +443,7 @@ export default function RelatedTableLayerConfig(
                 'Label': <LabelForm
                   indicator={data}
                   setIndicator={newData => {
-                    setData({ ...newData })
+                    setData({ ...data, label_config: newData.label_config })
                   }}/>,
                 'Popup': <PopupConfigForm
                   indicator={data}
