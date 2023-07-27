@@ -19,11 +19,13 @@ import MDEditor from "@uiw/react-md-editor";
 import CircularProgress from "@mui/material/CircularProgress";
 import Grid from "@mui/material/Grid";
 import ImageIcon from '@mui/icons-material/Image';
-
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { store } from '../../store/admin';
 import { render } from '../../app';
 
 import { SearchInput } from "../../components/Input/IconInput";
+import { ThemeButton } from "../../components/Elements/Button";
 import {
   MultipleSelectWithSearch,
   SelectWithSearch
@@ -77,6 +79,7 @@ export default function Home() {
   const [selectedSortByAsc, setSelectedSortByAsc] = useState(true);
 
   const [projects, setProjects] = useState(null);
+  const [showBanner, setShowBanner] = useState(true);
 
 
   // Fetch data
@@ -123,7 +126,32 @@ export default function Home() {
 
   return (
     <BasicPage className='Home'>
-      <div></div>
+      {
+        mainImage ?
+          <banner className={showBanner ? '' : 'Hide'}>
+            <div className='BannerContent'>
+              <div className='Separator'/>
+              {
+                preferences.landing_page_banner_text ?
+                  <MDEditor.Markdown
+                    source={preferences.landing_page_banner_text}
+                    linkTarget="_blank"
+                  /> :
+                  null
+              }
+              <ThemeButton
+                variant="secondary Basic HideBanner"
+                onClick={_ => setShowBanner(false)}>
+                Hide this banner <HighlightOffIcon/>
+              </ThemeButton>
+            </div>
+            <ThemeButton
+              variant="Basic ShowBanner"
+              onClick={_ => setShowBanner(true)}>
+              <VisibilityIcon/> Show banner
+            </ThemeButton>
+          </banner> : null
+      }
       <div className={'HomePageContent ' + (!projects ? 'Loading' : '')}>
         {
           !projects ? (

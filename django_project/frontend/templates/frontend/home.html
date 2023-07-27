@@ -3,3 +3,19 @@
 {% block render_bundle %}
     {% render_bundle 'Home' %}
 {% endblock %}
+{% block style %}
+    <style>
+        {% if preferences.landing_page_banner %}
+            banner {
+                background: url("{{ preferences.landing_page_banner }}") no-repeat;
+                background-size: cover;
+                background-position: center;
+            }
+        {% endif %}
+    </style>
+{% endblock %}
+{% block scripts %}
+    <script>
+      const mainImage = "{{ preferences.landing_page_banner }}"
+    </script>
+{% endblock %}

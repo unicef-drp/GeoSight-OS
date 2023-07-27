@@ -24,6 +24,96 @@
     flex-grow: 1;
     min-height: 0;
   }
+
+  banner {
+    height: 420px;
+    position: relative;
+    transition: height 0.5s;
+    width: 100%;
+
+    &.Hide {
+      height: 0;
+
+      .ShowBanner {
+        display: inline-flex;
+      }
+
+      .HideBanner {
+        display: none;
+      }
+    }
+
+    &:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-image: linear-gradient(270deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 1));
+      opacity: .6;
+      height: 100%;
+      width: 100%;
+    }
+
+    .BannerContent {
+      box-sizing: border-box;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      height: 420px;
+      margin: auto;
+      padding: 3rem;
+      padding-right: 11rem;
+
+      .wmde-markdown {
+        color: white;
+      }
+    }
+
+    .ShowBanner {
+      background-color: white;
+      bottom: -2.5rem;
+      border: 1px solid $base-black-color;
+      border-radius: 0;
+      display: none;
+      opacity: 0.2;
+      z-index: 1;
+
+      &:hover {
+        opacity: 0.6;
+      }
+    }
+
+    .HideBanner {
+      bottom: 2rem;
+    }
+
+    .HideBanner,
+    .ShowBanner {
+      right: 2rem;
+      position: absolute;
+      font-size: 10px !important;
+
+      svg {
+        margin-right: 0 !important;
+        margin-left: 3px;
+        height: 16px;
+        width: 16px;
+      }
+    }
+  }
+
+  .wmde-markdown {
+    background-color: unset;
+  }
+}
+
+.BannerContent,
+.HomePageContent {
+  max-width: 100%;
+  width: 1300px;
+  position: relative;
 }
 
 .PageContent {
@@ -40,10 +130,9 @@
   .HomePageContent {
     box-sizing: border-box;
     flex-grow: 1;
-    margin: 2rem auto;
-    max-width: 100%;
-    width: 1300px;
-    padding: 0 2rem;
+    padding: 3rem;
+    margin: auto;
+    background-color: white;
 
     .PageContent-Title {
       font-size: 26px;
@@ -169,7 +258,6 @@
         background-color: #F4F4F4;
 
         .wmde-markdown {
-          background-color: unset;
           line-height: 17px;
           color: $gray-600;
         }
