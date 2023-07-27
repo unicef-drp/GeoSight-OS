@@ -31,6 +31,7 @@ import BasicPage from '../Basic'
 
 import './style.scss';
 import { SortDesc } from "../../components/Icons/svg";
+import Footer from "../../components/Footer";
 
 
 /** Project Grid */
@@ -191,7 +192,9 @@ export default function Home() {
           )
         }
       </div>
-      <div></div>
+      <div>
+        <Footer/>
+      </div>
     </BasicPage>
   )
 }
