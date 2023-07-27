@@ -133,9 +133,10 @@ class BaseIndicatorEditView(AdminBaseView):
                         indicator_rule.save()
                         order += 1
 
-    def post(self, request, **kwargs):
-        """Create indicator."""
-        data = request.POST.copy()
+    @property
+    def data(self):
+        """Update data of request."""
+        data = self.request.POST.copy()
         data['aggregation_upper_level_allowed'] = string_is_true(
             data.get('aggregation_upper_level_allowed', 'False')
         )
@@ -143,6 +144,11 @@ class BaseIndicatorEditView(AdminBaseView):
             data['label_config'] = '{}'
         if not data.get('style_config', None):
             data['style_config'] = '{}'
+        return data
+
+    def post(self, request, **kwargs):
+        """Create indicator."""
+        data = self.data
         form = IndicatorForm(data)
         if form.is_valid():
             instance = form.instance
