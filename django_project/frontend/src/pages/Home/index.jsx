@@ -19,19 +19,20 @@ import MDEditor from "@uiw/react-md-editor";
 import CircularProgress from "@mui/material/CircularProgress";
 import Grid from "@mui/material/Grid";
 import ImageIcon from '@mui/icons-material/Image';
+
+import { store } from '../../store/admin';
+import { render } from '../../app';
+
 import { SearchInput } from "../../components/Input/IconInput";
 import {
   MultipleSelectWithSearch,
   SelectWithSearch
 } from "../../components/Input/SelectWithSearch";
-
-import { store } from '../../store/admin';
-import { render } from '../../app';
+import { SortAsc, SortDesc } from "../../components/Icons/svg";
+import Footer from "../../components/Footer";
 import BasicPage from '../Basic'
 
 import './style.scss';
-import { SortDesc } from "../../components/Icons/svg";
-import Footer from "../../components/Footer";
 
 
 /** Project Grid */
@@ -54,6 +55,9 @@ function ProjectGrid({ projects }) {
                   source={project.description}
                   linkTarget="_blank"
                 />
+              </div>
+              <div className='ProjectGridTags'>
+                {project.category ? <div>{project.category}</div> : null}
               </div>
             </a>
           </div>
@@ -121,13 +125,6 @@ export default function Home() {
     <BasicPage className='Home'>
       <div></div>
       <div className={'HomePageContent ' + (!projects ? 'Loading' : '')}>
-        <div className='PageContent-Title'>
-          Your projects <div className='Separator'/>
-          <SearchInput
-            className='SearchInput'
-            placeholder='Search projects' value={searchProject}
-            onChange={setSearchProject}/>
-        </div>
         {
           !projects ? (
             <div className='LoadingElement'>
@@ -135,33 +132,35 @@ export default function Home() {
                 <CircularProgress size="10rem"/>
               </div>
             </div>
-          ) : (
-            <ProjectGrid
-              projects={
-                projects.own.filter(
-                  project => !searchProject || project.name.includes(searchProject) || project.description.includes(searchProject)
-                )
-              }
-            />
-          )
-        }
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <div className='PageContent-Title'>
-          Other shared projects
-        </div>
-        {
-          !sharedProjects ? (
-            <div className='LoadingElement'>
-              <div className='Throbber'>
-                <CircularProgress size="10rem"/>
-              </div>
-            </div>
-          ) : (
+          ) : projects?.own?.length ?
             <Fragment>
+              <div className='PageContent-Title'>
+                Your projects <div className='Separator'/>
+                <SearchInput
+                  className='SearchInput'
+                  placeholder='Search projects' value={searchProject}
+                  onChange={setSearchProject}/>
+              </div>
+              <ProjectGrid
+                projects={
+                  projects.own.filter(
+                    project => !searchProject || project.name.includes(searchProject) || project.description.includes(searchProject)
+                  )
+                }
+              />
+              <br/>
+              <br/>
+              <br/>
+              <br/>
+              <br/>
+            </Fragment> : null
+        }
+        {
+          !projects?.shared?.length ? null : (
+            <Fragment>
+              <div className='PageContent-Title'>
+                Other shared projects
+              </div>
               <div className='PageContent-Title'>
                 <div style={{ flexGrow: 1 }}>
                   <MultipleSelectWithSearch
@@ -183,7 +182,9 @@ export default function Home() {
                   parentClassName='SortSelectorInput'
                   iconStart={
                     <div
-                      onClick={_ => setSelectedSortByAsc(_ => !_)}>{SortDesc()}</div>
+                      onClick={_ => setSelectedSortByAsc(_ => !_)}>
+                      {selectedSortByAsc ? <SortAsc/> : <SortDesc/>}
+                    </div>
                   }
                 />
               </div>

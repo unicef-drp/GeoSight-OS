@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 /* ==========================================================================
    USER NAVBAR
@@ -20,11 +20,12 @@
 import React, { Fragment, useState } from 'react';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Fade from '@mui/material/Fade';
+import LoginIcon from '@mui/icons-material/Login';
 
 import { EmbedConfig } from "../../utils/embed";
 import GeorepoAuthorization from "../../components/B2C/GeorepoAuthorization";
+import { ThemeButton } from "../Elements/Button";
 
 /**
  * User dropdown.
@@ -52,10 +53,8 @@ export default function User() {
 
   if (username) {
     return (
-      <div>
-        <button onClick={handleClick} type="button">
-          <AccountCircleIcon/>
-        </button>
+      <Fragment>
+        <div className='Account' onClick={handleClick}>{username[0]}</div>
         <Menu
           anchorEl={anchorEl}
           open={open}
@@ -92,17 +91,19 @@ export default function User() {
             <a href={logoutUrl}>Logout</a>
           </MenuItem>
         </Menu>
-      </div>
+      </Fragment>
     )
   } else {
     return (
-      <Fragment>
-        <a href={loginUrl} className={"LoginButton"}>
-          <button type='button'>
-            LOG IN
-          </button>
+      <div className='LinkButton'>
+        <a href={loginUrl}>
+          <ThemeButton
+            variant="white"
+          >
+            <LoginIcon/> Login
+          </ThemeButton>
         </a>
-      </Fragment>
+      </div>
     );
   }
 }

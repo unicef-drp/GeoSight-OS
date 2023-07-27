@@ -139,6 +139,10 @@
   }
 }
 
+.MuiButton-white {
+  border: 1px solid white !important;
+}
+
 .MuiButton-primary-text {
   color: $primary-color !important;
 }
@@ -164,7 +168,7 @@
 .MuiMenuItem-root {
   a {
     display: block;
-    padding: 6px 16px;
+    padding: 3px 1rem;
     width: 100%;
   }
 }
@@ -430,24 +434,8 @@
   }
 }
 
-.SelectWithSearchInput {
-  border: 1px solid rgba(0, 0, 0, 0.23);
-  display: flex;
-  align-items: center;
-
-  .IconStart {
-    margin-left: 1rem;
-  }
-
-  .MuiAutocomplete-root {
-    flex-grow: 1;
-  }
-
-  &:hover {
-    border: 1px solid rgba(0, 0, 0, 0.87);
-  }
-
-  .MuiOutlinedInput-notchedOutline {
-    border: none !important;
+.MuiPopover-root {
+  .MuiPaper-root {
+    border-radius: 0;
   }
 }
