@@ -76,6 +76,17 @@ class SitePreferences(SingletonModel):
     )
 
     # -----------------------------------------------
+    # LANDING PAGE
+    # -----------------------------------------------
+    landing_page_banner = models.FileField(
+        null=True, blank=True,
+        upload_to='settings/images'
+    )
+    landing_page_banner_text = models.TextField(
+        default=''
+    )
+
+    # -----------------------------------------------
     # THEME
     # -----------------------------------------------
     primary_color = models.CharField(

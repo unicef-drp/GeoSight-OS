@@ -37,34 +37,38 @@ export function SelectWithSearch(
     value, options, className, disabled = false, onChangeFn, ...props
   }
 ) {
-  value = value === 0 ? '' : value
+  value = !value ? '' : value
   const isCompact = props.isCompact
-  return <Autocomplete
-    autoComplete={false}
-    className={
-      'SelectWithSearch ' +
-      (isCompact ? 'Compact ' : '') +
-      (props.fullWidth ? 'FullWidth ' : '') +
-      (props.smallHeight ? 'SmallHeight ' : '') +
-      (value.length === 0 ? 'NoValue ' : '') +
-      (value.length > 1 ? 'MultipleValue ' : '') +
-      className
-    }
-    value={value}
-    options={options}
-    disableCloseOnSelect={props.disableCloseOnSelect !== undefined ? props.disableCloseOnSelect : true}
-    getOptionLabel={(option) => option}
-    renderInput={(params) => (
-      <TextField
-        {...params}
-        placeholder={props.placeholder ? props.placeholder : "Select 1 option"}
-      />
-    )}
-    onChange={(event, values) => {
-      onChangeFn(values ? values : '');
-    }}
-    disabled={disabled}
-  />
+  return <div className={'SelectWithSearchInput ' + props.parentClassName}>
+    {props.iconStart ?
+      <div className='IconStart'>{props.iconStart}</div> : null}
+    <Autocomplete
+      autoComplete={false}
+      className={
+        'SelectWithSearch ' +
+        (isCompact ? 'Compact ' : '') +
+        (props.fullWidth ? 'FullWidth ' : '') +
+        (props.smallHeight ? 'SmallHeight ' : '') +
+        (value.length === 0 ? 'NoValue ' : '') +
+        (value.length > 1 ? 'MultipleValue ' : '') +
+        className
+      }
+      value={value}
+      options={options}
+      disableCloseOnSelect={props.disableCloseOnSelect !== undefined ? props.disableCloseOnSelect : true}
+      getOptionLabel={(option) => option}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          placeholder={props.placeholder ? props.placeholder : "Select 1 option"}
+        />
+      )}
+      onChange={(event, values) => {
+        onChangeFn(values ? values : '');
+      }}
+      disabled={disabled}
+    />
+  </div>
 }
 
 /**
@@ -101,6 +105,7 @@ export function MultipleSelectWithSearch(
       (props.showValues ? 'ShowValues ' : '') +
       (value.length === 0 ? 'NoValue ' : '') +
       (value.length > 1 ? 'MultipleValue ' : '') +
+      (value.length === options.length ? 'AllSelected ' : '') +
       className
     }
     value={value}

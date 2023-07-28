@@ -58,6 +58,11 @@ class SitePreferencesAdmin(admin.ModelAdmin):
                 'georepo_api_key_level_1', 'georepo_api_key_level_4'
             ),
         }),
+        ('Landing Page', {
+            'fields': (
+                'landing_page_banner', 'landing_page_banner_text'
+            ),
+        }),
         ('Theme', {
             'fields': (
                 'primary_color', 'anti_primary_color',

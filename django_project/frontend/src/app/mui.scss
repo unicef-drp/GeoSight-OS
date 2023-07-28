@@ -139,6 +139,10 @@
   }
 }
 
+.MuiButton-white {
+  border: 1px solid white !important;
+}
+
 .MuiButton-primary-text {
   color: $primary-color !important;
 }
@@ -164,7 +168,7 @@
 .MuiMenuItem-root {
   a {
     display: block;
-    padding: 6px 16px;
+    padding: 3px 1rem;
     width: 100%;
   }
 }
@@ -416,4 +420,22 @@
 
 .MuiDataGrid-overlay {
   background-color: unset !important;
+}
+
+.MuiAutocomplete-root {
+  cursor: pointer;
+
+  input {
+    cursor: pointer;
+  }
+
+  .MuiInputBase-root {
+    border-radius: 0;
+  }
+}
+
+.MuiPopover-root {
+  .MuiPaper-root {
+    border-radius: 0;
+  }
 }
