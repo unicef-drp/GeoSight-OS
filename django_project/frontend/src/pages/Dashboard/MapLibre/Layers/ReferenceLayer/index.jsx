@@ -459,7 +459,7 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
           )
           offset.push(parseFloat(size) / 2)
         }
-        const defaultOutlineSize = compareMode ? 4 : noDataStyle.outline_size ? noDataStyle.outline_size : 0.5
+        const defaultOutlineSize = compareMode ? preferences.style_compare_mode_outline_size : noDataStyle.outline_size ? noDataStyle.outline_size : 0.5
         if (sizes.length) {
           map.setPaintProperty(
             OUTLINE_LAYER_ID, 'line-width',

@@ -235,6 +235,15 @@ class SitePreferences(SingletonModel):
         verbose_name="Outline size"
     )
 
+    # Compare mode
+    style_compare_mode_outline_size = models.FloatField(
+        default=4,
+        help_text=_(
+            'Outline size for compare mode.'
+        ),
+        verbose_name="Outline size"
+    )
+
     class Meta:  # noqa: D106
         verbose_name_plural = "site preferences"
 

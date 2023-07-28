@@ -101,6 +101,11 @@ class SitePreferencesAdmin(admin.ModelAdmin):
                 'style_dynamic_style_outline_size',
             ),
         }),
+        ('Compare Mode', {
+            'fields': (
+                'style_compare_mode_outline_size',
+            ),
+        }),
     )
     inlines = (SitePreferencesImageInline,)
 
