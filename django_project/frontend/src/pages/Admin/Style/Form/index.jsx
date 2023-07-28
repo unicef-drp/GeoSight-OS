@@ -91,6 +91,8 @@ export default function StyleForm() {
             <StyleConfig
               data={dictDeepCopy(styleData)}
               setData={style => {
+                console.log(style)
+                console.log(styleData)
                 if (JSON.stringify(style) !== JSON.stringify(styleData)) {
                   setStyleData({ ...style })
                 }

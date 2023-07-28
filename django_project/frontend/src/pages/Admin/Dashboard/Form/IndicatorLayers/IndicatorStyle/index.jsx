@@ -236,7 +236,10 @@ export const IndicatorStyle = forwardRef(
                         <LabelForm
                           indicator={data}
                           setIndicator={newData => {
-                            setData({ ...newData })
+                            setData({
+                              ...data,
+                              label_config: newData.label_config
+                            })
                           }}/> : null
                     }
                   </div>,

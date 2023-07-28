@@ -68,10 +68,7 @@ class IndicatorEditView(RoleContributorRequiredMixin, BaseIndicatorEditView):
     def post(self, request, **kwargs):
         """Edit indicator."""
         save_as = string_is_true(request.GET.get('save-as', False))
-        data = request.POST.copy()
-        data['aggregation_upper_level_allowed'] = string_is_true(
-            data.get('aggregation_upper_level_allowed', 'False')
-        )
+        data = self.data
         if save_as:
             form = IndicatorForm(data)
         else:

@@ -70,6 +70,7 @@ export default function DynamicStyleConfig({ data, setData }) {
     return
   }
   const sync_outline = data.style_config.sync_outline ? data.style_config.sync_outline : false
+  const sync_filter = data.style_config.sync_filter ? data.style_config.sync_filter : false
   return <div className='DynamicStyleConfig'>
     <ColorPaletteSelector
       colorPalette={data.style_config.color_palette}
@@ -162,7 +163,7 @@ export default function DynamicStyleConfig({ data, setData }) {
             checked={data.style_config.sync_filter ? data.style_config.sync_filter : false}
             onChange={
               _ => {
-                data.style_config.sync_filter = !sync_outline
+                data.style_config.sync_filter = !sync_filter
                 setData({ ...data })
               }
             }/>}
