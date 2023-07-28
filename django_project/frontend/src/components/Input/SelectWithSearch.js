@@ -37,7 +37,7 @@ export function SelectWithSearch(
     value, options, className, disabled = false, onChangeFn, ...props
   }
 ) {
-  value = value === 0 ? '' : value
+  value = !value ? '' : value
   const isCompact = props.isCompact
   return <div className={'SelectWithSearchInput ' + props.parentClassName}>
     {props.iconStart ?
