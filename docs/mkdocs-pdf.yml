@@ -1,16 +1,3 @@
-# GeoSight is UNICEF's geospatial web-based business intelligence platform.
-#
-# Contact : geosight-no-reply@unicef.org
-#
-# .. note:: This program is free software; you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as published by
-#    the Free Software Foundation; either version 3 of the License, or
-#    (at your option) any later version.
-#
-# __author__ = 'irwan@kartoza.com'
-# __date__ = '13/06/2023'
-# __copyright__ = ('Copyright 2023, Unicef')
-
 # See mkdocs base and the create-mkdocs*
 # scripts for how this is used
 
@@ -21,8 +8,8 @@ plugins:
       # https://github.com/orzih/mkdocs-with-pdf
       # And don't get it confused with https://github.com/zhaoterryy/mkdocs-pdf-export-plugin
       # which is intended to export a single page at a time
-      output_path: ../pdfs/TheGeoSightHandbook.pdf
-      author: UNICEF
+      output_path: ../pdfs/Documenation.pdf
+      author: Kartoza Pty (Ltd.)
       # copyright will draw in page.bottom-right
       # do it manually in templates/styles.scss
       # for more control
@@ -32,9 +19,9 @@ plugins:
       copyright: " "
       cover: true # see templates/cover.html
       back_cover: true
-      cover_title: The Geosight Handbook
-      cover_subtitle: Insights from Spatial Data
-      cover_logo: ../resources/img/logo/logo.svg
+      cover_title: Title for PDF
+      cover_subtitle: Mappiness is Happiness
+      cover_logo: ./resources/img/logo/kartoza-logo.svg
       # Print css is defined in templates/styles.scss
       #custom_template_path: TEMPLATES PATH
       #

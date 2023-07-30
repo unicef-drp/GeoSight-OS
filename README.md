@@ -1,4 +1,4 @@
-[//]: # "GeoSight is UNICEF's geospatial web-based business intelligence platform."
+pdsitelatform[//]: # "GeoSight is UNICEF's geospatial web-based business intelligence platform."
 [//]: # 
 [//]: # "Contact : geosight-no-reply@unicef.org"
 [//]: # 

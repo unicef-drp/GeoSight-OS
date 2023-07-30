@@ -1,60 +1,61 @@
-# GeoSight is UNICEF's geospatial web-based business intelligence platform.
-#
-# Contact : geosight-no-reply@unicef.org
-#
-# .. note:: This program is free software; you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as published by
-#    the Free Software Foundation; either version 3 of the License, or
-#    (at your option) any later version.
-#
-# __author__ = 'irwan@kartoza.com'
-# __date__ = '13/06/2023'
-# __copyright__ = ('Copyright 2023, Unicef')
-
-site_name: GeoSight
-site_description: "A platform provides a way to understand risk modalities across different geographic contexts."
-site_author: "Unicef"
+site_name: Project Name
+site_description: "Project technical and user documentation."
+site_author: "Kartoza"
 docs_dir: ./src
 site_dir: ./site
-repo_name: "unicef-drp/GeoSight"
-repo_url: "https://github.com/unicef-drp/GeoSight"
-edit_uri: "https://github.com/unicef-drp/GeoSight/blob/main/docs/"
-copyright: "Unicef, Kartoza and Contributors"
+repo_name: "Project Name"
+repo_url: "https://github.com/kartoza/<project name>"
+edit_uri: "https://github.com/kartoza/<project name>/blob/main/docs/"
 
-# Navigation
+copyright: Kartoza and Contributors
+
+markdown_extensions:
+        - pymdownx.highlight:
+                  anchor_linenums: true
+        - pymdownx.inlinehilite
+        #- mdx_truly_sane_lists
+        - toc:
+                  permalink: true
+                   #slugify: !!python/name:pymdownx.slugs.slugify
+        - pymdownx.snippets:
+                  base_path: .
+        - admonition
+        - tables
+        - pymdownx.details
+        - pymdownx.caret
+        - pymdownx.keys
+        - pymdownx.mark
+        - pymdownx.tilde
+        - pymdownx.superfences:
+                  custom_fences:
+                          - name: mermaid
+                            class: mermaid
+                            format: !!python/name:pymdownx.superfences.fence_code_format
+        - pymdownx.emoji:
+                  emoji_generator: !!python/name:materialx.emoji.to_svg
+                  emoji_index: !!python/name:materialx.emoji.twemoji
+
 nav:
         - Home:
-                  - About: about_geosight.md
-                  - Contributing: users/contributing.md
-        - For Users:
-                  - Overview: users/index.md
-                  - Platform tour: users/platform_tour.md
-                  - Map Interactions: users/map_interactions.md
-                  - Indicators: users/indicator.md
-                  - Layers: users/layers.md
-                  - User Tutorial: users/user_tutorial.md
-                  - Disclaimer: users/disclaimer.md
-                  - Credits: users/credits.md
-                  - License: users/license.md
-        - For Administrators:
-                  - Overview: administrators/administrator_tutorial.md
-                  - Provisioning Reference Layers: administrators/reference_layers.md
-        - For Developers:
-                  - developers/setup/index.md
-                  - Installation:
-                            - Preparation: developers/setup/installation/preparation.md
-                            - Project setup: developers/setup/installation/project_setup.md
-                            - Road Map: developers/setup/installation/roadmap.md
-                            - Development setup:
-                                      - developers/setup/installation/development_setup/index.md
-                                      - Using pycharm: developers/setup/installation/development_setup/pycharm.md
-                  - Configuration:
-                            - Geography: developers/setup/configuration/geography.md
-                            - Indicator: developers/setup/configuration/indicator.md
-                            - Instances: developers/setup/configuration/instances.md
-                            - Layer: developers/setup/configuration/layer.md
-                            - Navigation Link: developers/setup/configuration/navigation_link.md
-                            - Preferences: developers/setup/configuration/preferences.md
-                            - Program Intervention: developers/setup/configuration/program_intervention.md
-                            - Scenario: developers/setup/configuration/scenario.md
-                            - User: developers/setup/configuration/user.md
+                  - Home: index.md
+        - User:
+                  - Quickstart: user/quickstart.md
+                  - User Guide: user/user-guide.md
+                  - User Reference Manual: user/user-reference-manual.md
+                  - API: user/api.md
+        - Admin:
+                  - Admin Guide: admin/admin-guide.md
+                  - Admin Reference Manual: admin/admin-reference-manual.md
+        - Developer:
+                  - Tutorial: developer/tutorial.md
+                  - Architecture: developer/architecture.md
+                  - Documentation: developer/docs.md
+                  - Developer Reference Manual: developer/dev-ref-manual.md
+                  - Design: developer/design.md
+        - DevOps:
+                  - DevOps Tutorial: devops/tutorial.md
+                  - DevOps Reference Manual: devops/devops-ref-manual.md
+        - About:
+                  - Index: about/index.md
+                  - License: about/license.md
+                  - Code of Conduct : about/code-of-conduct.md
