@@ -22,12 +22,31 @@
 
 .SideNavigation {
   background: white;
-  width: 200px;
-  min-width: 200px;
+  width: 233px;
+  min-width: 233px;
   box-shadow: $box-shadow-sm;
-  padding: 0.2rem;
-  overflow-y: auto !important;
   z-index: 1;
+  display: flex;
+  flex-direction: column;
+
+  .NavHeader {
+    .Separator,
+    .LinkButton,
+    .NavbarAccount  {
+      display: none !important;
+    }
+  }
+
+  .SideNavigationFooter {
+    background-color: $base-gray;
+    padding: 1rem;
+  }
+}
+
+.SideNavigationContent {
+  flex-grow: 1;
+  padding: 0.2rem;
+  overflow-y: auto;
 }
 
 .SideNavigation-Row {

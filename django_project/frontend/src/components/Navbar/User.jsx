@@ -30,7 +30,7 @@ import { ThemeButton } from "../Elements/Button";
 /**
  * User dropdown.
  **/
-export default function User() {
+export default function User({ ...props }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -54,7 +54,18 @@ export default function User() {
   if (username) {
     return (
       <Fragment>
-        <div className='Account' onClick={handleClick}>{username[0]}</div>
+        <div
+          className={'NavbarAccount-Wrapper ' + (props.detail ? 'Detail' : '')}>
+          <div
+            className='NavbarAccount'
+            onClick={handleClick}>{username[0]}</div>
+          {
+            props.detail ? <div>
+              <div className='NavbarAccount-Username'>{username}</div>
+              <div className='NavbarAccount-FullName'>{full_name}</div>
+            </div> : null
+          }
+        </div>
         <Menu
           anchorEl={anchorEl}
           open={open}

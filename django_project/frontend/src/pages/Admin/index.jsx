@@ -49,7 +49,7 @@ export const pageNames = {
  */
 export default function Admin({ pageName, rightHeader, children }) {
   return (
-    <App className='Admin'>
+    <App className='Admin' hideNavbar={true}>
       <SideNavigation pageName={pageName}/>
       <div className='AdminContent'>
         <div className='AdminContentHeader'>

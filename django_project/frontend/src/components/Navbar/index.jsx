@@ -23,10 +23,10 @@ import i18n from "i18next";
 
 import User from './User'
 import { EmbedConfig } from "../../utils/embed";
-
-import './style.scss';
 import { Cog } from "../Icons/svg";
 import { ThemeButton } from "../Elements/Button";
+
+import './style.scss';
 
 /**
  * Navbar.
