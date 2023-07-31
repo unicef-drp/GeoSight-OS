@@ -15,7 +15,6 @@
 
 import React, {
   forwardRef,
-  Fragment,
   useEffect,
   useImperativeHandle,
   useRef,
@@ -28,15 +27,17 @@ import {
   DeleteButton,
   ThemeButton
 } from '../../components/Elements/Button'
-import Admin from './index';
-import { List } from './Components/List'
+import { AdminPage } from './index';
+import { BaseList } from './Components/List'
+import EditIcon from "@mui/icons-material/Edit";
 
 import './style.scss';
-import EditIcon from "@mui/icons-material/Edit";
+import { IconTextField } from "../../components/Elements/Input";
+import SearchIcon from "@mui/icons-material/Search";
 
 
 /**
- * Admin List App
+ * Admin List that contains content of list
  * @param {list} columns Columns setup.
  * @param {String} pageName Page Name.
  * @param {String} listUrl Url for list row.
@@ -48,7 +49,7 @@ import EditIcon from "@mui/icons-material/Edit";
  * @param {React.Component} children React component to be rendered
  */
 
-export const AdminList = forwardRef(
+export const AdminListContent = forwardRef(
   ({
      columns, pageName,
      listUrl, selectionChanged,
@@ -57,6 +58,7 @@ export const AdminList = forwardRef(
      sortingDefault = null,
      searchDefault = null,
      multipleDelete = null,
+     middleChildren,
      ...props
    }, ref
   ) => {
@@ -65,6 +67,7 @@ export const AdminList = forwardRef(
     const selectionModelIds = selectionModel.map(model => model.id ? model.id : model)
     const [isDeleting, setIsDeleting] = useState(false)
     const listRef = useRef(null);
+    const [search, setSearch] = useState(searchDefault);
 
     /** Refresh data **/
     useImperativeHandle(ref, () => ({
@@ -149,36 +152,91 @@ export const AdminList = forwardRef(
       }
     }
     return (
-      <Admin
-        className='Indicator'
-        pageName={pageName}
-        rightHeader={
-          <Fragment>
+      <div className={'AdminContent ' + props.className}>
+        <div className='AdminContentHeader'>
+          <div className='AdminContentHeader-Left'>
+            <b className='light'
+               dangerouslySetInnerHTML={{ __html: props.title ? props.title : contentTitle }}></b>
+          </div>
+          <div>
+            <IconTextField
+              placeholder={"Search " + pageName}
+              defaultValue={search ? search : ""}
+              iconEnd={<SearchIcon/>}
+              onChange={evt => setSearch(evt.target.value.toLowerCase())}
+            />
+          </div>
+          <div className='AdminContentHeader-Right'>
             {rightHeader ? rightHeader : null}
             {batchEditButton()}
             {deleteButton()}
             {createButton()}
-          </Fragment>
-        }
-      >
-        <List
-          columns={columns} pageName={pageName} listUrl={listUrl}
-          initData={initData}
-          setInitData={newData => {
-            if (newData) {
-              setData(newData)
+          </div>
+        </div>
+        {middleChildren}
+        <div className='AdminList'>
+          <BaseList
+            columns={columns}
+            pageName={pageName}
+            listUrl={listUrl}
+            initData={initData}
+            setInitData={newData => {
+              if (newData) {
+                setData(newData)
+              }
+            }}
+            selectionChanged={
+              selectionChanged || multipleDelete ? setSelectionModel : null
             }
-          }}
-          selectionChanged={
-            selectionChanged || multipleDelete ? setSelectionModel : null
-          }
-          sortingDefault={sortingDefault}
-          searchDefault={searchDefault}
-          selectable={selectableFunction}
-          ref={listRef}
-          {...props}
-        />
-      </Admin>
-    );
+            sortingDefault={sortingDefault}
+            search={search}
+            searchDefault={searchDefault}
+            selectable={selectableFunction}
+            ref={listRef}
+            {...props}
+          />
+        </div>
+      </div>
+    )
   }
 )
+/**
+ * Admin List App
+ * @param {list} columns Columns setup.
+ * @param {String} pageName Page Name.
+ * @param {String} listUrl Url for list row.
+ * @param {function} selectionChanged Function when selection changed.
+ * @param {list} initData If there is init data.
+ * @param {React.Component} rightHeader Right header.
+ * @param {Array} sortingDefault Default for sorting.
+ * @param {str} searchDefault Default for search.
+ * @param {React.Component} children React component to be rendered
+ */
+
+export const AdminList = forwardRef(
+  ({
+     columns, pageName,
+     listUrl, selectionChanged,
+     initData = null,
+     rightHeader = null,
+     sortingDefault = null,
+     searchDefault = null,
+     multipleDelete = null,
+     ...props
+   }, ref
+  ) => {
+    return (
+      <AdminPage pageName={pageName}>
+        <AdminListContent
+          columns={columns} pageName={pageName}
+          listUrl={listUrl} selectionChanged={selectionChanged}
+          initData={initData}
+          rightHeader={rightHeader}
+          sortingDefault={sortingDefault}
+          searchDefault={searchDefault}
+          multipleDelete={multipleDelete}
+          {...props}
+        />
+      </AdminPage>
+    );
+  })

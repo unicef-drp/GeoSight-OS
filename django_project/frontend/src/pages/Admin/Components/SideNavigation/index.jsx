@@ -15,8 +15,6 @@
 
 import React, { Fragment } from 'react';
 import GppMaybeIcon from '@mui/icons-material/GppMaybe';
-import PersonIcon from '@mui/icons-material/Person';
-import GroupsIcon from '@mui/icons-material/Groups';
 
 import { pageNames } from '../../index'
 import NavBar from "../../../../components/Navbar";
@@ -35,6 +33,7 @@ import {
 } from "../../../../components/Icons";
 
 import './style.scss';
+import ContactIcon from "../../../../components/Icons/ContactIcon";
 
 
 /**
@@ -47,8 +46,7 @@ export default function SideNavigation({ pageName }) {
   const basemapList = urls.admin.basemapList; // eslint-disable-line no-undef
   const contextLayerList = urls.admin.contextLayerList; // eslint-disable-line no-undef
   const styleList = urls.admin.styleList; // eslint-disable-line no-undef
-  const userList = urls.admin.userList; // eslint-disable-line no-undef
-  const groupList = urls.admin.groupList; // eslint-disable-line no-undef
+  const userAndGroupList = urls.admin.userAndGroupList; // eslint-disable-line no-undef
   const dataset = urls.admin.dataset; // eslint-disable-line no-undef
   const dataAccess = urls.admin.dataAccess; // eslint-disable-line no-undef
   const relatedTableList = urls.admin.relatedTableList; // eslint-disable-line no-undef
@@ -152,15 +150,11 @@ export default function SideNavigation({ pageName }) {
           }
           {
             user.is_admin ? <Fragment>
-              <a href={userList}
-                 className={'SideNavigation-Row ' + (pageName === pageNames.Users ? 'active' : '')}>
-                <PersonIcon className='SideNavigation-Row-Icon'/>
-                <span className='SideNavigation-Row-Name'>Users</span>
-              </a>
-              <a href={groupList}
-                 className={'SideNavigation-Row ' + (pageName === pageNames.Groups ? 'active' : '')}>
-                <GroupsIcon className='SideNavigation-Row-Icon'/>
-                <span className='SideNavigation-Row-Name'>Groups</span>
+              <a href={userAndGroupList}
+                 className={'SideNavigation-Row ' + (pageName === pageNames.UsersAndGroups ? 'active' : '')}>
+                <ContactIcon className='SideNavigation-Row-Icon'/>
+                <span
+                  className='SideNavigation-Row-Name'>Users and groups</span>
               </a>
             </Fragment> : null
           }
@@ -198,11 +192,11 @@ export default function SideNavigation({ pageName }) {
       </div>
 
       <div className='SideNavigationContentGroup'>
-          <a href='/' className='SideNavigation-Row Button'>
-            <ViewsIcon/>
-            <span className='SideNavigation-Row-Name'>View all dashboard</span>
-          </a>
-        </div>
+        <a href='/' className='SideNavigation-Row Button'>
+          <ViewsIcon/>
+          <span className='SideNavigation-Row-Name'>View all dashboard</span>
+        </a>
+      </div>
       <div className='SideNavigationFooter'>
         <User detail={true}/>
       </div>

@@ -31,6 +31,7 @@ admin_url = [
     url(r'^context-layer/', include('frontend.urls.context_layer')),
     url(r'^style/', include('frontend.urls.style')),
     url(r'^user/', include('frontend.urls.user')),
+    url(r'^user-and-group/', include('frontend.urls.user_and_group')),
     url(r'^dataset/', include('frontend.urls.dataset')),
     url(r'^related-table/', include('frontend.urls.related_table')),
     url(r'^importer/', include('frontend.urls.importer')),

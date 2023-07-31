@@ -439,3 +439,8 @@
     border-radius: 0;
   }
 }
+
+.MuiOutlinedInput-root,
+.MuiButton-root {
+  border-radius: 0 !important;
+}

@@ -321,6 +321,28 @@ header {
 .TabPrimary {
   display: flex;
 
+  &.TabAdminList {
+    background-color: unset;
+    padding: 0;
+    border-bottom: 1px solid $gray-400;
+    flex-direction: row-reverse;
+
+    div {
+      background-color: unset;
+      border: unset;
+
+      &:hover {
+        color: $primary-color;
+      }
+
+      &.Selected {
+        background-color: unset !important;
+        color: $primary-color;
+        border-bottom: 3px solid $primary-color;
+      }
+    }
+  }
+
   div {
     border: 1px solid $primary-color;
     padding: 0.5rem;
