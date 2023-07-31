@@ -19,7 +19,7 @@
 
 import React from 'react';
 
-export function NextEnd() {
+export function NextEndIcon() {
   return <svg
     className="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
     focusable="false" aria-hidden="true" viewBox="-400 -400 2100 2100"
@@ -36,7 +36,7 @@ l0 -2745 490 0 490 0 0 5940 0 5940 -490 0 -490 0 -2 -2906z"/>
   </svg>
 }
 
-export function PrevEnd() {
+export function PrevEndIcon() {
   return <svg
     className="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
     focusable="false" aria-hidden="true" viewBox="-110 -110 580 580"
@@ -52,7 +52,7 @@ export function PrevEnd() {
   </svg>
 }
 
-export function SortAsc() {
+export function SortAscIcon() {
   return <svg
     width="10" height="9" viewBox="0 0 10 9" fill="none"
     xmlns="http://www.w3.org/2000/svg">
@@ -62,7 +62,7 @@ export function SortAsc() {
   </svg>
 }
 
-export function SortDesc() {
+export function SortDescIcon() {
   return <svg
     width="10" height="9" viewBox="0 0 10 9" fill="none"
     xmlns="http://www.w3.org/2000/svg">
@@ -73,7 +73,7 @@ export function SortDesc() {
   </svg>
 }
 
-export function Cog() {
+export function CogIcon() {
   return <svg width="11" height="11" viewBox="0 0 11 11" fill="none"
               xmlns="http://www.w3.org/2000/svg">
     <path

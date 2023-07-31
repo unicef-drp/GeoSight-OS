@@ -25,7 +25,7 @@ header {
   .NavHeader {
     align-items: center;
     display: flex;
-    height: 36px;
+    height: $base-height;
     padding: 5px 1rem;
     position: relative;
     width: 100%;

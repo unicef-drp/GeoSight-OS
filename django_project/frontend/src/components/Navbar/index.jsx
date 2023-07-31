@@ -23,7 +23,7 @@ import i18n from "i18next";
 
 import User from './User'
 import { EmbedConfig } from "../../utils/embed";
-import { Cog } from "../Icons/svg";
+import { CogIcon } from "../Icons/svg";
 import { ThemeButton } from "../Elements/Button";
 
 import './style.scss';
@@ -71,7 +71,7 @@ export default function NavBar() {
                 <ThemeButton
                   variant="white"
                 >
-                  <Cog/> Admin panel
+                  <CogIcon/> Admin panel
                 </ThemeButton>
               </a>
             </div>

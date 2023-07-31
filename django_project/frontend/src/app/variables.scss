@@ -19,6 +19,7 @@
 
 /* Settings */
 $base-hovered-opacity: 0.8;
+$base-height: 36px;
 
 /* Customized Theme */
 $primary-color: var(--primary-color);
@@ -33,10 +34,11 @@ $base-black-color: rgba(0, 0, 0, 0.87);
 $base-to-white-color: #F4F4F4;
 $base-almost-white-color: #FAFAFA;
 $base-almost-gray-color: #DDDDDD;
-$base-alpha-color: #1CABE220;
+$base-alpha-color: #1CABE215;
 $base-shadow-box: 0 0 16px 4px rgba(#000000, 0.1);
 $disabled-color: #CCCCCC;
 $base-gray: rgba(217, 217, 217, 0.4);
+$base-gray-to-white: rgba(217, 217, 217, 0.2);
 
 
 $white: #fff !default;

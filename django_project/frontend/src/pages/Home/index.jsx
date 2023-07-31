@@ -30,7 +30,7 @@ import {
   MultipleSelectWithSearch,
   SelectWithSearch
 } from "../../components/Input/SelectWithSearch";
-import { SortAsc, SortDesc } from "../../components/Icons/svg";
+import { SortAscIcon, SortDescIcon } from "../../components/Icons/svg";
 import Footer from "../../components/Footer";
 import BasicPage from '../Basic'
 
@@ -211,7 +211,7 @@ export default function Home() {
                   iconStart={
                     <div
                       onClick={_ => setSelectedSortByAsc(_ => !_)}>
-                      {selectedSortByAsc ? <SortAsc/> : <SortDesc/>}
+                      {selectedSortByAsc ? <SortAscIcon/> : <SortDescIcon/>}
                     </div>
                   }
                 />
