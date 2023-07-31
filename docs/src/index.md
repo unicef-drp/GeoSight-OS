@@ -11,7 +11,7 @@
 [//]: # "__date__ = '13/06/2023'"
 [//]: # "__copyright__ = ('Copyright 2023, Unicef')"
 
-# GeoSoght
+# GeoSight
 
 GeoSight is a UNICEF’s open-source geospatial web-based data visualization/analysis platform that aims to make geospatial data easily accessible and sharable in support of risk informed programming. This data is displayed utilizing administrative reference datasets from [GeoRepo](https://github.com/unicef-drp/GeoRepo-OS).
 
