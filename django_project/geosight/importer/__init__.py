@@ -24,7 +24,7 @@ class Config(AppConfig):
 
     label = 'geosight_importer'
     name = 'geosight.importer'
-    verbose_name = "GeoSight Data Importer"
+    verbose_name = "GeoSight Data Management"
 
 
 default_app_config = 'geosight.importer.Config'

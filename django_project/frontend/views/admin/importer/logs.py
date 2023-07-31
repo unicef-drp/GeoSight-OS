@@ -36,7 +36,7 @@ class LogListView(RoleContributorRequiredMixin, AdminBaseView):
         data_importer = reverse('admin-importer-create-view')
         logs = reverse('admin-importer-log-list-view')
         return (
-            f'<a href="{data_importer}">Data Importer</a>'
+            f'<a href="{data_importer}">Data Management</a>'
             '<span>></span>'
             f'<a href="{logs}">Logs</a>'
         )

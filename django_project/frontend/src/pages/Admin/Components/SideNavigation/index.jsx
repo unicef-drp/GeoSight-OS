@@ -95,34 +95,13 @@ export default function SideNavigation({ pageName }) {
           {
             user.is_contributor ?
               <div className='SideNavigation-Row-Group'>
-                <a href={urls.admin.importer}
-                   className={'SideNavigation-Row ' + ([pageNames.Importer, pageNames.ScheduleJobs, pageNames.ImporterLogs].includes(pageName) ? 'active' : '')}>
+                <a href={urls.admin.importerLogs}
+                   className={'SideNavigation-Row ' + ([pageNames.Importer, pageNames.DataManagement].includes(pageName) ? 'active' : '')}>
                   <DataManagementIcon
-                    active={[pageNames.Importer, pageNames.ScheduleJobs, pageNames.ImporterLogs].includes(pageName)}/>
+                    active={[pageNames.Importer, pageNames.DataManagement].includes(pageName)}/>
                   <span
-                    className='SideNavigation-Row-Name'>Data Importer</span>
+                    className='SideNavigation-Row-Name'>Data Management</span>
                 </a>
-                <div className='SideNavigation-Row-Child'>
-                  <a href={urls.admin.importer}
-                     className={'SideNavigation-Row ' + (pageNames.Importer === pageName ? 'active' : '')}>
-            <span
-              className='SideNavigation-Row-Name'>Import Data</span>
-                  </a>
-                </div>
-                <div className='SideNavigation-Row-Child'>
-                  <a href={urls.admin.scheduledJobs}
-                     className={'SideNavigation-Row ' + (pageNames.ScheduleJobs === pageName ? 'active' : '')}>
-            <span
-              className='SideNavigation-Row-Name'>Scheduled Jobs</span>
-                  </a>
-                </div>
-                <div className='SideNavigation-Row-Child'>
-                  <a href={urls.admin.importerLogs}
-                     className={'SideNavigation-Row ' + (pageNames.ImporterLogs === pageName ? 'active' : '')}>
-            <span
-              className='SideNavigation-Row-Name'>Logs</span>
-                  </a>
-                </div>
               </div> : null
           }
           <a href={dataset}

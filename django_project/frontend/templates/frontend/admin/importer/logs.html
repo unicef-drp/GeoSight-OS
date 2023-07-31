@@ -12,10 +12,17 @@
 {% block scripts %}
     <script>
       urls.api = {
-        'list': '{% url 'importer-log-list-api' %}',
-        'detail': '{% url 'importer-log-detail-api' 0 %}',
-        'detailView': '{% url 'admin-importer-log-detail-view' 0 %}',
-        'dataView': '{% url 'admin-importer-log-data-view' 0 %}',
+        scheduledJobs: {
+          'list': '{% url 'scheduled-job-list-api' %}',
+          'detail': '{% url 'importer-detail-api' 0 %}',
+          'detailView': '{% url 'admin-importer-detail-view' 0 %}',
+        },
+        logs: {
+          'list': '{% url 'importer-log-list-api' %}',
+          'detail': '{% url 'importer-log-detail-api' 0 %}',
+          'detailView': '{% url 'admin-importer-log-detail-view' 0 %}',
+          'dataView': '{% url 'admin-importer-log-data-view' 0 %}',
+        }
       }
     </script>
 {% endblock %}

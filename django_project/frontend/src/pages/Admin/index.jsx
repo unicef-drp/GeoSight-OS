@@ -32,8 +32,7 @@ export const pageNames = {
 
   // Importer
   Importer: 'Related Table Importer',
-  ImporterLogs: 'Importer Logs',
-  ScheduleJobs: 'Scheduled Jobs',
+  DataManagement: 'Data Management',
 
   AccessRequestUser: 'Request New User',
   AccessRequestPermission: 'Request Permission',

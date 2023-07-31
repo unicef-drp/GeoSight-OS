@@ -59,7 +59,7 @@ class ImporterLogDataView(RoleContributorRequiredMixin, AdminBaseView):
             'admin-importer-log-data-view', args=[log.id]
         )
         return (
-            f'<a href="{data_importer}">Data Importer</a>'
+            f'<a href="{data_importer}">Data Management</a>'
             '<span>></span>'
             f'<a href="{logs}">Logs</a>'
             f'<span>></span> '

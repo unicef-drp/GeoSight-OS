@@ -36,7 +36,7 @@ class ScheduledJobListView(RoleContributorRequiredMixin, AdminBaseView):
         data_importer = reverse('admin-importer-create-view')
         logs = reverse('admin-scheduled-job-list-view')
         return (
-            f'<a href="{data_importer}">Data Importer</a>'
+            f'<a href="{data_importer}">Data Management</a>'
             '<span>></span>'
             f'<a href="{logs}">Scheduled Jobs</a>'
         )

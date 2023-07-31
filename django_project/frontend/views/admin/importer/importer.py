@@ -54,7 +54,7 @@ class ImporterDetailView(RoleContributorRequiredMixin, AdminBaseView):
             'admin-importer-detail-view', args=[importer.id]
         )
         return (
-            f'<a href="{data_importer}">Data Importer</a>'
+            f'<a href="{data_importer}">Data Management</a>'
             '<span>></span>'
             f'<a href="{list_url}">Scheduled Jobs</a>'
             f'<span>></span> '

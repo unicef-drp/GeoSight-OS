@@ -69,8 +69,8 @@ job_url = [
 ]
 urlpatterns = [
     url(r'logs/', include(logs_url)),
-    url(r'job/', include(job_url)),
     url(r'scheduled-jobs/', include(scheduled_job_url)),
+    url(r'job/', include(job_url)),
     url(
         r'',
         ImporterCreateView.as_view(),
