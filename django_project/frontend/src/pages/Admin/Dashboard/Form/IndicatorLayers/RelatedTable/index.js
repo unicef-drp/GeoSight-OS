@@ -406,6 +406,8 @@ export default function RelatedTableLayerConfig(
                     {
                       error ? <div className={'error'}>{error}</div> :
                         <DataGrid
+                          getRowHeight={() => 'auto'}
+                          headerHeight={36}
                           rows={rows}
                           columns={[
                             { field: 'id', headerName: 'id', hide: true },

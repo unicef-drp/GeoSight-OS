@@ -76,6 +76,8 @@ export function AdminTable(
   return (
     <div className='AdminTable'>
       <DataGrid
+        headerHeight={36}
+        getRowHeight={() => 'auto'}
         getRowClassName={(params) => {
           return !params.row.permission || params.row.permission.read ? 'ResourceRow Readable' : 'ResourceRow'
         }}

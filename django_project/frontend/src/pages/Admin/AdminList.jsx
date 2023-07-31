@@ -99,7 +99,7 @@ export const AdminListContent = forwardRef(
         const selectedIds = selectedModelData.filter(row => !row.permission || row.permission.delete).map(row => row.id)
         return <DeleteButton
           disabled={isDeleting || !selectedIds.length}
-          variant="secondary Reverse"
+          variant="Error Reverse"
           text={"Delete " + (selectedIds.length ? `(${selectedIds.length} Selected)` : "")}
           onClick={() => {
             const deleteWarning = "WARNING! Do you want to delete the selected data? This will apply directly to database."
@@ -130,7 +130,7 @@ export const AdminListContent = forwardRef(
       if (user.is_creator && urls.api.create) {
         return <a href={urls.api.create}>
           <AddButton
-            variant="secondary"
+            variant="primary"
             text={"Add New " + pageName}
           />
         </a>
@@ -143,7 +143,7 @@ export const AdminListContent = forwardRef(
         return <a
           href={urls.api.batch + '?ids=' + selectedIds.join(',')}>
           <ThemeButton
-            variant="secondary Basic"
+            variant="primary Basic"
             disabled={!selectedIds.length}>
             <EditIcon/>Batch
             edit {(selectedIds.length ? `(${selectedIds.length} Selected)` : "")}

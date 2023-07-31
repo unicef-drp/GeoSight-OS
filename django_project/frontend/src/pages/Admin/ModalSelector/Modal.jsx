@@ -218,6 +218,8 @@ export default function ModalSelector(
 
         <div className='AdminList'>
           <DataGrid
+            getRowHeight={() => 'auto'}
+            headerHeight={36}
             rows={rows ? rows : []}
             columns={columns}
             pagination

@@ -84,6 +84,8 @@ export default function GroupForm() {
               <input type={"text"} name='users' className='UserInput'
                      value={usersGroup.map(user => user.id).join(',')}/>
               <DataGrid
+                getRowHeight={() => 'auto'}
+                headerHeight={36}
                 rows={usersGroup}
                 columns={USER_COLUMNS}
                 pageSize={20}

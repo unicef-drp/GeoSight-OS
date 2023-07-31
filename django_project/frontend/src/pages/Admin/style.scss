@@ -51,9 +51,7 @@ main {
 
   & > div {
     border-radius: $border-radius;
-    margin: 0 1rem 1rem 1rem;
     background-color: white;
-    padding: 0 2rem;
   }
 
   .AdminContentHeader {
@@ -61,7 +59,7 @@ main {
     border-radius: 0;
     display: flex;
     margin: 0;
-    padding: 1rem 2rem;
+    padding: 18px 2rem;
     align-items: center;
 
     .MuiInputBase-root,
@@ -74,7 +72,7 @@ main {
       padding: 0.5rem 0;
 
       span, a {
-        color: $primary-color;
+        color: $black;
         display: inline-block;
         margin-right: 0.5rem;
         font-weight: 500;

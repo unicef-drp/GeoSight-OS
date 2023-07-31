@@ -172,6 +172,8 @@ export function PermissionFormTableDataSelection(
           </div> :
           <div style={{ height: '400px' }}>
             <DataGrid
+              getRowHeight={() => 'auto'}
+              headerHeight={36}
               rows={rows}
               columns={columns}
               pageSize={20}
@@ -318,6 +320,8 @@ export function PermissionFormTable(
     </div>
     <div className='PermissionFormTable MuiDataGridTable'>
       <DataGrid
+        getRowHeight={() => 'auto'}
+        headerHeight={36}
         rows={dataList}
         isRowSelectable={(params) => !params.row.creator}
         columns={columns.concat([
