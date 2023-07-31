@@ -118,7 +118,7 @@ Fill in the [Pull Request Template](./docs/PULL_REQUEST_TEMPLATE.md) by check yo
 ## Code of Conduct
 
 This project and everyone participating in it is governed by the [Code of
-Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this
+Conduct](code-of-conduct.md). By participating, you are expected to uphold this
 code. Please report unacceptable behavior to tim@kartoza.com.
 
 > This guide is based on [atom contributing
