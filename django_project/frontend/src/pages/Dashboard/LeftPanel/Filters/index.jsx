@@ -158,7 +158,7 @@ function FilterSection() {
       )
       if (filteredGeometries) {
         dispatcher(
-          Actions.FilteredGeometries.update(filteredGeometries)
+          Actions.FilteredGeometries.update(Array.from(new Set(filteredGeometries)))
         )
       }
       dispatcher(

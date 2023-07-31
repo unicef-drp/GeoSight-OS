@@ -91,7 +91,7 @@ export default function DynamicIndicatorLayer({ indicatorLayer }) {
     // ---------------------------------------
     if (!loaded && !indicatorsData[id]?.fetching) {
       dispatch(Actions.IndicatorsData.request(id))
-      prevState.lastData = JSON.stringify([])
+      prevState.lastData = null
     }
     if (loaded) {
       fetchDynamicLayerData(
