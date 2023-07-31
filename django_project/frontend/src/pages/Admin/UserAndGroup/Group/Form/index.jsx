@@ -18,13 +18,16 @@ import React, { useEffect, useState } from 'react';
 import { DataGrid } from "@mui/x-data-grid";
 import CircularProgress from "@mui/material/CircularProgress";
 
-import { render } from '../../../../app';
-import { store } from '../../../../store/admin';
-import { AddButton, SaveButton } from "../../../../components/Elements/Button";
-import Admin, { pageNames } from '../../index';
-import AdminForm from '../../Components/Form'
-import { fetchJSON } from "../../../../Requests";
-import UserSelector, { USER_COLUMNS } from "../../ModalSelector/User";
+import { render } from '../../../../../app';
+import { store } from '../../../../../store/admin';
+import {
+  AddButton,
+  SaveButton
+} from "../../../../../components/Elements/Button";
+import Admin, { pageNames } from '../../../index';
+import AdminForm from '../../../Components/Form'
+import { fetchJSON } from "../../../../../Requests";
+import UserSelector, { USER_COLUMNS } from "../../../ModalSelector/User";
 
 import './style.scss';
 

@@ -16,11 +16,11 @@
 import React, { useEffect, useState } from 'react';
 import $ from "jquery";
 
-import { render } from '../../../../app';
-import { store } from '../../../../store/admin';
-import { SaveButton } from "../../../../components/Elements/Button";
-import Admin, { pageNames } from '../../index';
-import AdminForm from '../../Components/Form'
+import { render } from '../../../../../app';
+import { store } from '../../../../../store/admin';
+import { SaveButton } from "../../../../../components/Elements/Button";
+import Admin, { pageNames } from '../../../index';
+import AdminForm from '../../../Components/Form'
 
 import './style.scss';
 

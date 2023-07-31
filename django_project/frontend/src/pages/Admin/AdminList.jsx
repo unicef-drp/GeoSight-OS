@@ -62,9 +62,10 @@ export const AdminListContent = forwardRef(
      ...props
    }, ref
   ) => {
+    const apiBatch = props.apiBatch ? props.apiBatch : urls.api.batch
+    const apiCreate = props.apiCreate ? props.apiCreate : urls.api.create;
     const [data, setData] = useState([]);
     const [selectionModel, setSelectionModel] = useState([]);
-    const selectionModelIds = selectionModel.map(model => model.id ? model.id : model)
     const [isDeleting, setIsDeleting] = useState(false)
     const listRef = useRef(null);
     const [search, setSearch] = useState(searchDefault);
@@ -86,7 +87,7 @@ export const AdminListContent = forwardRef(
 
     /** Render **/
     let selectableFunction = !isDeleting
-    if (!isDeleting && (multipleDelete || urls.api.batch)) {
+    if (!isDeleting && (multipleDelete || apiBatch)) {
       selectableFunction = (params) => {
         const { permission } = params.row
         return !permission || permission.edit || permission.delete
@@ -127,8 +128,8 @@ export const AdminListContent = forwardRef(
       }
     }
     const createButton = () => {
-      if (user.is_creator && urls.api.create) {
-        return <a href={urls.api.create}>
+      if (user.is_creator && apiCreate) {
+        return <a href={apiCreate}>
           <AddButton
             variant="primary"
             text={"Add New " + pageName}
@@ -138,10 +139,10 @@ export const AdminListContent = forwardRef(
     }
     /** Button for batch edit **/
     const batchEditButton = () => {
-      if (user.is_creator && urls.api.batch) {
+      if (user.is_creator && apiBatch) {
         const selectedIds = selectedModelData.filter(row => !row.permission || row.permission.edit).map(row => row.id)
         return <a
-          href={urls.api.batch + '?ids=' + selectedIds.join(',')}>
+          href={apiBatch + '?ids=' + selectedIds.join(',')}>
           <ThemeButton
             variant="primary Basic"
             disabled={!selectedIds.length}>

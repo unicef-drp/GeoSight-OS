@@ -19,14 +19,12 @@ import { GridActionsCellItem } from "@mui/x-data-grid";
 import Tooltip from "@mui/material/Tooltip";
 import StorageIcon from "@mui/icons-material/Storage";
 
-import { render } from '../../../../app';
-import { store } from '../../../../store/admin';
-import { COLUMNS_ACTION } from "../../Components/List";
-import { AdminListContent } from "../../AdminList";
-import { MultipleAdminContent } from "../../MultipleAdminContent";
-import { pageNames } from "../../index";
-
-import './style.scss';
+import { render } from '../../../app';
+import { store } from '../../../store/admin';
+import { COLUMNS_ACTION } from "../Components/List";
+import { AdminListContent } from "../AdminList";
+import { MultipleAdminContent } from "../MultipleAdminContent";
+import { pageNames } from "../index";
 
 export function USER_COLUMNS() {
   const editUrl = '/admin/user/0/edit';
@@ -144,11 +142,15 @@ export default function UserAndGroupList({ defaultTab }) {
       'User': <AdminListContent
         columns={USER_COLUMNS()}
         listUrl={urls.api.user.list}
+        apiCreate={urls.api.user.create}
+        apiBatch={urls.api.user.batch}
         multipleDelete={true}
       />,
       'Group': <AdminListContent
         columns={GROUP_COLUMNS()}
         listUrl={urls.api.group.list}
+        apiCreate={urls.api.group.create}
+        apiBatch={urls.api.group.batch}
         multipleDelete={true}
       />
     }}

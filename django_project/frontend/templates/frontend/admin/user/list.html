@@ -15,6 +15,7 @@
           'list': '{% url 'user-list-api' %}',
           'edit': '{% url 'admin-user-edit-view' 0 %}',
           'detail': '{% url 'user-detail-api' 0 %}',
+          'create': '{% url 'admin-user-create-view' %}'
         },
         group: {
           'list': '{% url 'group-list-api' %}',
@@ -24,8 +25,5 @@
         },
         'permissionAdmin': '{% url 'admin-data-access-view' %}',
       }
-      {% if use_azure_auth %}
-        urls.api.user.create = '{% url 'admin-user-create-view' %}'
-      {% endif %}
     </script>
 {% endblock %}

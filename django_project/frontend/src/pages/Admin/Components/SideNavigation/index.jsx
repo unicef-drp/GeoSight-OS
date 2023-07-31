@@ -46,7 +46,7 @@ export default function SideNavigation({ pageName }) {
   const basemapList = urls.admin.basemapList; // eslint-disable-line no-undef
   const contextLayerList = urls.admin.contextLayerList; // eslint-disable-line no-undef
   const styleList = urls.admin.styleList; // eslint-disable-line no-undef
-  const userAndGroupList = urls.admin.userAndGroupList; // eslint-disable-line no-undef
+  const userList = urls.admin.userList; // eslint-disable-line no-undef
   const dataset = urls.admin.dataset; // eslint-disable-line no-undef
   const dataAccess = urls.admin.dataAccess; // eslint-disable-line no-undef
   const relatedTableList = urls.admin.relatedTableList; // eslint-disable-line no-undef
@@ -129,7 +129,7 @@ export default function SideNavigation({ pageName }) {
           }
           {
             user.is_admin ? <Fragment>
-              <a href={userAndGroupList}
+              <a href={userList}
                  className={'SideNavigation-Row ' + (pageName === pageNames.UsersAndGroups ? 'active' : '')}>
                 <ContactIcon className='SideNavigation-Row-Icon'/>
                 <span

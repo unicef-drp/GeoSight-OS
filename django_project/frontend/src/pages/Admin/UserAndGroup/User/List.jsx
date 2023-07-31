@@ -19,8 +19,6 @@ import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
 import UserAndGroupList from "../../UserAndGroup/List";
 
-import './style.scss';
-
 
 /**
  * Indicator List App

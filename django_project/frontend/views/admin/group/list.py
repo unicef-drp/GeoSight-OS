@@ -33,5 +33,5 @@ class GroupListView(RoleSuperAdminRequiredMixin, AdminBaseView):
     @property
     def content_title(self):
         """Return content title that used on page title indicator."""
-        list_url = reverse('admin-user-and-group-list-view')
+        list_url = reverse('admin-group-list-view')
         return f'<a href="{list_url}">Groups</a> '
