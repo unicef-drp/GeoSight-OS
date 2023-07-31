@@ -10,9 +10,15 @@
 
 {% block scripts %}
     <script>
-      const detailUrl = '{% url 'admin-access-request-user-detail-view' pk=0%}';
       urls.api = {
-        'list': '{% url 'access-request-list-api' request_type='user'%}',
+        'permission': {
+          'detail': '{% url 'admin-access-request-permission-detail-view' pk=0%}',
+          'list': '{% url 'access-request-list-api' request_type='permission'%}',
+        },
+        'user': {
+          'list': '{% url 'access-request-list-api' request_type='user'%}',
+          'detail': '{% url 'admin-access-request-user-detail-view' pk=0%}'
+        }
       }
     </script>
 {% endblock %}

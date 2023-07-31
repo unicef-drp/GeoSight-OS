@@ -147,20 +147,6 @@ export default function SideNavigation({ pageName }) {
                   <span
                     className='SideNavigation-Row-Name'>Access Request</span>
                 </a>
-                <div className='SideNavigation-Row-Child'>
-                  <a href={urls.admin.accessRequestUser}
-                     className={'SideNavigation-Row ' + (pageNames.AccessRequestUser === pageName ? 'active' : '')}>
-            <span
-              className='SideNavigation-Row-Name'>New User</span>
-                  </a>
-                </div>
-                <div className='SideNavigation-Row-Child'>
-                  <a href={urls.admin.accessRequestPermission}
-                     className={'SideNavigation-Row ' + (pageNames.AccessRequestPermission === pageName ? 'active' : '')}>
-            <span
-              className='SideNavigation-Row-Name'>Permission</span>
-                  </a>
-                </div>
               </div> : <a href={urls.admin.accessRequestPermission}
                           className={'SideNavigation-Row ' + (pageName === pageNames.AccessRequestPermission ? 'active' : '')}>
                 <GppMaybeIcon className='SideNavigation-Row-Icon'/>

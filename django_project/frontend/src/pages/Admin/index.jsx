@@ -34,8 +34,7 @@ export const pageNames = {
   Importer: 'Related Table Importer',
   DataManagement: 'Data Management',
 
-  AccessRequestUser: 'Request New User',
-  AccessRequestPermission: 'Request Permission',
+  AccessRequestList: 'Access Request',
   AccessRequestUserDetail: 'Request New User Detail',
   AccessRequestPermissionDetail: 'Request Permission Detail',
 }
