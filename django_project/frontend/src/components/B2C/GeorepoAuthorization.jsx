@@ -14,6 +14,7 @@
  */
 
 import React from "react";
+import Cookies from "js-cookie";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { ThemeButton } from "../Elements/Button";
 
@@ -22,16 +23,18 @@ import { ThemeButton } from "../Elements/Button";
  * Georepo authorization
  */
 export default function GeorepoAuthorization() {
+  function onReceivedMessage(event) {
+    if (event.origin === new URL(GEOREPO_AZURE_REDIRECT_URL).origin) {
+      Cookies.set(`georepo-token`, event.data)
+      window.removeEventListener('message', onReceivedMessage, false)
+      window.location.reload()
+    }
+  }
 
   /** Login to georepo **/
   const login = () => {
-    // GeoRepo Authorization URI
-    let _login_uri = urls.geoRepoLoginUrl;
-    let _next = window.location.pathname;
-    if (_next) {
-      _login_uri = _login_uri + `?next=${_next}`
-    }
-    window.location.replace(_login_uri);
+    window.open(GEOREPO_AZURE_REDIRECT_URL, '_blank');
+    window.addEventListener('message', onReceivedMessage, false);
   }
 
   return (

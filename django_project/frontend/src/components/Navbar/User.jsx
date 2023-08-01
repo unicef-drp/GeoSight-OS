@@ -67,14 +67,14 @@ export default function User() {
           <MenuItem className='MenuItem-Header Description'>
             Logged as : {username}
             {
-              useAzureAuth && !preferences.georepo_api.api_key_is_public ?
+              USE_GEOREPO && !preferences.georepo_api.api_key_is_public ?
                 <div style={{ color: "gray" }}>
                   <i>Authorized to GeoRepo</i>
                 </div> : null
             }
           </MenuItem>
           {
-            useAzureAuth && preferences.georepo_api.api_key_is_public ?
+            USE_GEOREPO && preferences.georepo_api.api_key_is_public ?
               <MenuItem
                 className='MenuItem-Header MenuItem-Button Description'>
                 <GeorepoAuthorization/>
