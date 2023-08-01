@@ -28,6 +28,7 @@ import Admin, { pageNames } from '../../../index';
 import AdminForm from '../../../Components/Form'
 import { fetchJSON } from "../../../../../Requests";
 import UserSelector, { USER_COLUMNS } from "../../../ModalSelector/User";
+import { MainDataGrid } from "../../../../../components/MainDataGrid";
 
 import './style.scss';
 
@@ -86,9 +87,7 @@ export default function GroupForm() {
             <div className='UserTable'>
               <input type={"text"} name='users' className='UserInput'
                      value={usersGroup.map(user => user.id).join(',')}/>
-              <DataGrid
-                getRowHeight={() => 'auto'}
-                headerHeight={36}
+              <MainDataGrid
                 rows={usersGroup}
                 columns={USER_COLUMNS}
                 pageSize={20}

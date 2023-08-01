@@ -14,7 +14,6 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { DataGrid } from '@mui/x-data-grid';
 import {
   LocalizationProvider
 } from '@mui/x-date-pickers/LocalizationProvider';
@@ -31,6 +30,7 @@ import {
   MultipleCreatableFilter
 } from "../ModalSelector/ModalFilterSelector/MultipleCreatableFilter";
 import CustomPopover from "../../../components/CustomPopover";
+import { MainDataGrid } from "../../../components/MainDataGrid";
 
 import './style.scss';
 
@@ -211,9 +211,7 @@ export default function DatasetList(
         <div className='MuiDataGridTable DatasetAdminTable'>
           {
             COLUMNS.length ?
-              <DataGrid
-                getRowHeight={() => 'auto'}
-                headerHeight={36}
+              <MainDataGrid
                 key={'TableWithData'}
                 initialState={{
                   sorting: sorting,
@@ -233,9 +231,7 @@ export default function DatasetList(
                 checkboxSelection={checkboxSelection}
                 onSelectionModelChange={setSelectionModel}
                 selectionModel={selectionModel}
-              /> : <DataGrid
-                getRowHeight={() => 'auto'}
-                headerHeight={36}
+              /> : <MainDataGrid
                 key={'TableWithoutData'} loading={true} rows={[]} columns={[]}/>
           }
         </div>

@@ -63,6 +63,7 @@ export const MultipleAdminContent = forwardRef(
       }
       window.location.hash = tab
     }, [tab]);
+
     return <AdminPage pageName={props.pageName}>
       {
         Object.keys(contents).map(key => {

@@ -18,7 +18,7 @@ import $ from 'jquery';
 import CircularProgress from '@mui/material/CircularProgress';
 import SettingsBackupRestoreIcon
   from '@mui/icons-material/SettingsBackupRestore';
-import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
+import { GridActionsCellItem } from "@mui/x-data-grid";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
@@ -49,6 +49,7 @@ import Modal, {
   ModalFooter,
   ModalHeader
 } from "../../../components/Modal";
+import { MainDataGrid } from "../../../components/MainDataGrid";
 
 import './style.scss';
 
@@ -249,9 +250,7 @@ export function AccessData(
   const [pageSize, setPageSize] = useState(25)
 
   return <div className='MuiDataGridTable DataAccessAdminTable'>
-    <DataGrid
-      getRowHeight={() => 'auto'}
-      headerHeight={36}
+    <MainDataGrid
       rows={rows}
       columns={columns}
       initialState={{
@@ -278,8 +277,6 @@ export function AccessData(
 }
 
 const UserTab = 'users'
-const IndicatorTab = 'indicators'
-const DatasetTab = 'datasets'
 const GroupTab = 'groups'
 const GeneralTab = 'generals'
 /**
@@ -291,9 +288,13 @@ export default function DataAccessAdmin() {
     indicators,
     permissions,
     users,
-    groups,
-    tab: paramTab
+    groups
   } = urlParams()
+
+  let paramTab = window.location.hash.replace('#', '').replaceAll('%20', ' ').toLowerCase()
+  if (![UserTab, GroupTab, GeneralTab].includes(paramTab)) {
+    paramTab = UserTab
+  }
 
   const [submitted, setSubmitted] = useState(false)
   const [tab, setTab] = useState(paramTab ? paramTab : UserTab)
@@ -554,6 +555,11 @@ export default function DataAccessAdmin() {
         formatData(data)
       })
   }, [])
+
+  /** When tab changes **/
+  useEffect(() => {
+    window.location.hash = tab
+  }, [tab]);
 
   // Check if the data changed
   let changed = false;

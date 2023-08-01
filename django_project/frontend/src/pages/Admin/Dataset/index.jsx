@@ -51,6 +51,7 @@ import {
   Notification,
   NotificationStatus
 } from "../../../components/Notification";
+import { MainDataGrid } from "../../../components/MainDataGrid";
 
 import './style.scss';
 
@@ -404,9 +405,7 @@ export default function DatasetAdmin() {
 
       <div className='AdminList DatasetAdmin'>
         <div className='MuiDataGridTable DatasetAdminTable'>
-          <DataGrid
-            getRowHeight={() => 'auto'}
-            headerHeight={36}
+          <MainDataGrid
             rows={usedData}
             rowCount={rowSize}
             loading={isLoading}

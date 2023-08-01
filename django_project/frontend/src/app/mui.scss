@@ -303,6 +303,7 @@
 
 .MuiButton-Div {
   align-items: center;
+  border-radius: $border-radius;
   display: inline-flex !important;
   line-height: 1.5;
 }
@@ -393,6 +394,13 @@
   }
 }
 
+.MuiDataGrid-footerContainer,
+.MuiTablePagination-toolbar {
+  min-height: $base-height !important;
+  height: $base-height !important;
+  font-size: 12px !important;
+}
+
 .MuiDataGrid-footerContainer {
   flex-direction: row-reverse;
 }
@@ -414,6 +422,8 @@
 }
 
 .MuiInputAdornment-root {
+  color: $gray-500 !important;
+
   .MuiCircularProgress-root {
     width: 20px !important;
     height: 20px !important;
@@ -473,9 +483,4 @@
       width: 14px;
     }
   }
-}
-
-.MuiOutlinedInput-root,
-.MuiButton-root {
-  border-radius: 0 !important;
 }

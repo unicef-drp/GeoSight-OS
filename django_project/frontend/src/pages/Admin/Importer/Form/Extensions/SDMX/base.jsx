@@ -22,11 +22,11 @@ import React, {
 } from 'react';
 import axios from "axios";
 import CircularProgress from "@mui/material/CircularProgress";
-import { DataGrid } from "@mui/x-data-grid";
 import { usePapaParse } from 'react-papaparse';
 
 import { updateDataWithSetState } from "../../utils";
 import { IconTextField } from "../../../../../../components/Elements/Input";
+import { MainDataGrid } from "../../../../../../components/MainDataGrid";
 
 import './style.scss';
 
@@ -176,9 +176,7 @@ export const BaseSDMXForm = forwardRef(
         <label className="form-label" htmlFor="group">
           Retrieved data
         </label>
-        <DataGrid
-          getRowHeight={() => 'auto'}
-          headerHeight={36}
+        <MainDataGrid
           style={{ height: "500px" }}
           rows={loading ? [] : requestData ? requestData : []}
           columns={requestData ? Object.keys(requestData[0]).map(key => {

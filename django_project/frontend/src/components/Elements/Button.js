@@ -15,10 +15,10 @@
 
 import React from 'react';
 import { Button } from "@mui/material";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
+import AddIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
 import EditIcon from '@mui/icons-material/Edit';
-import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+import { DeleteIcon } from "../Icons";
 
 /** Main button
  * @param {string} buttonProps Variant of Button.
@@ -40,7 +40,7 @@ export function ThemeButton({ children, ...props }) {
 export function AddButton({ text, ...props }) {
   return (
     <ThemeButton {...props}>
-      <AddCircleIcon/>{text}
+      <AddIcon/>{text}
     </ThemeButton>
   )
 }
@@ -78,7 +78,7 @@ export function SaveButton({ text, ...props }) {
 export function DeleteButton({ text, ...props }) {
   return (
     <ThemeButton {...props}>
-      <RemoveCircleIcon/>{text}
+      <DeleteIcon/>{text}
     </ThemeButton>
   )
 }

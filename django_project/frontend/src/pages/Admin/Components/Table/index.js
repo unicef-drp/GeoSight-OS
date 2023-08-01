@@ -14,7 +14,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { DataGrid } from "@mui/x-data-grid";
+import { MainDataGrid } from "../../../../components/MainDataGrid";
 
 import './style.scss';
 
@@ -75,9 +75,7 @@ export function AdminTable(
   const isLoading = [undefined, null].includes(rows)
   return (
     <div className='AdminTable'>
-      <DataGrid
-        headerHeight={36}
-        getRowHeight={() => 'auto'}
+      <MainDataGrid
         getRowClassName={(params) => {
           return !params.row.permission || params.row.permission.read ? 'ResourceRow Readable' : 'ResourceRow'
         }}

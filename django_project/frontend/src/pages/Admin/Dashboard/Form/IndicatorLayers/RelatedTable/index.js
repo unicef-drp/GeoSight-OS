@@ -16,7 +16,6 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { useSelector } from "react-redux";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { DataGrid } from "@mui/x-data-grid";
 import { FormGroup } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
@@ -56,6 +55,7 @@ import {
 import LabelForm from "../../../../Indicator/Form/LabelForm";
 import PopupConfigForm from "../PopupConfigForm";
 import StyleConfig from "../../../../Style/Form/StyleConfig";
+import { MainDataGrid } from "../../../../../../components/MainDataGrid";
 
 import './style.scss';
 
@@ -405,9 +405,7 @@ export default function RelatedTableLayerConfig(
                   <div className='Section AdminList'>
                     {
                       error ? <div className={'error'}>{error}</div> :
-                        <DataGrid
-                          getRowHeight={() => 'auto'}
-                          headerHeight={36}
+                        <MainDataGrid
                           rows={rows}
                           columns={[
                             { field: 'id', headerName: 'id', hide: true },

@@ -202,11 +202,6 @@ export const BaseList = forwardRef(
       }
     }, [data])
 
-    /** Search on change */
-    const searchOnChange = (evt) => {
-      setSearch(evt.target.value.toLowerCase())
-    }
-
     /** Filter by search input */
     let rows = dictDeepCopy(data);
     const fields = columns?.map(column => column.field).filter(column => column !== 'id')

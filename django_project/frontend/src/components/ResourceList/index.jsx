@@ -15,10 +15,10 @@
 
 import React, { Fragment, useEffect, useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
-import { DataGrid } from "@mui/x-data-grid";
 
 import { IconTextField } from '../Elements/Input'
 import { fetchJSON } from "../../Requests";
+import { MainDataGrid } from "../MainDataGrid";
 
 import './style.scss';
 
@@ -103,9 +103,7 @@ export default function List(
         </div>
 
         <div className='ResourceTable'>
-          <DataGrid
-            getRowHeight={() => 'auto'}
-            headerHeight={36}
+          <MainDataGrid
             getRowClassName={(params) => {
               return (!params.row.permission || params.row.permission?.read)
                 ? 'ResourceRow Readable' : 'ResourceRow'

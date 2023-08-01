@@ -24,7 +24,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import DoDisturbOnIcon from '@mui/icons-material/DoDisturbOn';
-import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
+import { GridActionsCellItem } from "@mui/x-data-grid";
 
 import Modal, {
   ModalContent,
@@ -43,6 +43,7 @@ import { IconTextField } from "../../../components/Elements/Input";
 import SearchIcon from "@mui/icons-material/Search";
 import { USER_COLUMNS } from "../ModalSelector/User";
 import { ShareIcon } from "../../../components/Icons";
+import { MainDataGrid } from "../../../components/MainDataGrid";
 
 import './style.scss';
 
@@ -171,9 +172,7 @@ export function PermissionFormTableDataSelection(
             <CircularProgress/>
           </div> :
           <div style={{ height: '400px' }}>
-            <DataGrid
-              getRowHeight={() => 'auto'}
-              headerHeight={36}
+            <MainDataGrid
               rows={rows}
               columns={columns}
               pageSize={20}
@@ -319,9 +318,7 @@ export function PermissionFormTable(
       />
     </div>
     <div className='PermissionFormTable MuiDataGridTable'>
-      <DataGrid
-        getRowHeight={() => 'auto'}
-        headerHeight={36}
+      <MainDataGrid
         rows={dataList}
         isRowSelectable={(params) => !params.row.creator}
         columns={columns.concat([

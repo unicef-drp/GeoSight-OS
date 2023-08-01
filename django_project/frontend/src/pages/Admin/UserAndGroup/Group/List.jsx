@@ -56,7 +56,7 @@ export function GROUP_COLUMNS() {
             icon={
               <Tooltip title={`Go to data access.`}>
                 <a
-                  href={urls.api.permissionAdmin + '?groups=' + params.id + '&tab=Groups'}>
+                  href={urls.api.permissionAdmin + '?groups=' + params.id + '#Groups'}>
                   <StorageIcon/>
                 </a>
               </Tooltip>

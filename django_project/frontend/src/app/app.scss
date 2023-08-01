@@ -326,46 +326,29 @@ header {
 
 .TabPrimary {
   display: flex;
-
-  &.TabAdminList {
-    background-color: unset;
-    padding: 0;
-    border-bottom: 1px solid $gray-400;
-    flex-direction: row-reverse;
-
-    div {
-      background-color: unset;
-      border: unset;
-
-      &:hover {
-        color: $primary-color;
-      }
-
-      &.Selected {
-        background-color: unset !important;
-        color: $primary-color;
-        border-bottom: 3px solid $primary-color;
-      }
-    }
-  }
+  background-color: unset;
+  border-bottom: 1px solid $gray-400;
+  padding: 0;
+  flex-direction: row-reverse;
 
   div {
-    border: 1px solid $primary-color;
+    background-color: unset;
+    border: unset;
     padding: 0.5rem;
     cursor: pointer;
     margin-right: -1px;
     min-width: 8rem;
     text-align: center;
-    background-color: white;
-    border: 1px solid $gray-200;
 
     &:hover {
-      background-color: $gray-100;
+      color: $primary-color;
+      background-color: unset !important;
     }
 
     &.Selected {
-      background-color: $primary-color;
-      color: $anti-primary-color;
+      background-color: unset !important;
+      color: $primary-color;
+      border-bottom: 3px solid $primary-color;
     }
 
     &.Disabled {
