@@ -164,7 +164,7 @@ export default function IndicatorList() {
             icon={
               <a href={urls.api.dataBrowser + '?indicators=' + params.id}>
                 <div
-                  className='MuiButton-Div MuiButtonBase-root MuiButton-secondary ThemeButton'>
+                  className='MuiButton-Div MuiButtonBase-root MuiButton-primary Reverse ThemeButton'>
                   <DataUsageIcon/> Value List
                 </div>
               </a>

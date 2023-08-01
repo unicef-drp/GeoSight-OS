@@ -121,6 +121,12 @@ header {
 
 .error {
   color: red !important;
+
+  svg {
+    path {
+      fill: red;
+    }
+  }
 }
 
 .warning {

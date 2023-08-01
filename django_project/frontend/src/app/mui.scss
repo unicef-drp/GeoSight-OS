@@ -65,6 +65,12 @@
   background-color: $primary-color !important;
   border: 1px solid $primary-color !important;
   color: $anti-primary-color !important;
+
+  &.Reverse {
+    background-color: white !important;
+    border: 1px solid $primary-color !important;
+    color: $primary-color !important;
+  }
 }
 
 .MuiButton-Error {
@@ -230,25 +236,39 @@
   }
 
   .MuiDataGrid-cell {
+    .ShareIcon {
+      height: 18px;
+      width: 18px;
+      padding: 3px;
+      color: $primary-color;
+      border-radius: $border-radius;
+      border: 1px solid $primary-color;
+
+      svg {
+        height: 12px !important;
+        width: 12px !important;
+      }
+    }
+
     a {
       color: inherit;
       display: block;
 
       svg {
-        height: 16px !important;
-        width: 16px !important;
+        height: 16px;
+        width: 16px;
       }
     }
 
     button {
       &:not(.TextButton) {
         a {
-          height: 16px !important;
-          width: 16px !important;
+          height: 16px;
+          width: 16px;
 
           svg {
-            height: 16px !important;
-            width: 16px !important;
+            height: 16px;
+            width: 16px;
           }
         }
       }
@@ -443,6 +463,15 @@
 .MuiPopover-root {
   .MuiPaper-root {
     border-radius: 0;
+  }
+
+  .MuiMenuItem-root {
+    font-size: 12px !important;
+
+    svg {
+      height: 14px;
+      width: 14px;
+    }
   }
 }
 

@@ -14,8 +14,8 @@
  */
 
 import React, { Fragment, useEffect, useState } from 'react';
+import $ from "jquery";
 
-import ShareIcon from '@mui/icons-material/Share';
 import CircularProgress from '@mui/material/CircularProgress';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -39,12 +39,12 @@ import {
 } from "../../../components/Elements/Button";
 import { fetchJSON } from "../../../Requests";
 import { dictDeepCopy } from "../../../utils/main";
-
-import './style.scss';
-import $ from "jquery";
 import { IconTextField } from "../../../components/Elements/Input";
 import SearchIcon from "@mui/icons-material/Search";
 import { USER_COLUMNS } from "../ModalSelector/User";
+import { ShareIcon } from "../../../components/Icons";
+
+import './style.scss';
 
 /**
  * Permission Configuration Form Table data selection
@@ -609,7 +609,9 @@ export default function PermissionModal(
   }, [defaultData])
 
   return <Fragment>
-    <ShareIcon onClick={() => setOpen(true)}/>
+    <div className='ShareIcon'>
+      <ShareIcon onClick={() => setOpen(true)}/>
+    </div>
     <Modal
       className='PermissionFormModal'
       open={open}

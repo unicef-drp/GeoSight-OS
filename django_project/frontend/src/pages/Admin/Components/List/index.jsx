@@ -25,7 +25,6 @@ import $ from "jquery";
 import SearchIcon from '@mui/icons-material/Search';
 
 import { GridActionsCellItem } from "@mui/x-data-grid";
-import DeleteIcon from "@mui/icons-material/Delete";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 import { AdminTable } from '../Table';
@@ -33,6 +32,7 @@ import { IconTextField } from '../../../../components/Elements/Input'
 import { fetchingData } from "../../../../Requests";
 import MoreAction from "../../../../components/Elements/MoreAction";
 import { dictDeepCopy, toSingular } from "../../../../utils/main";
+import { DeleteIcon } from "../../../../components/Icons";
 
 import './style.scss';
 
