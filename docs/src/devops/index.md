@@ -7,9 +7,12 @@
 [//]: # "    the Free Software Foundation; either version 3 of the License, or"
 [//]: # "    (at your option) any later version."
 [//]: # 
-[//]: # "_author_ = 'irwan@kartoza.com'"
-[//]: # "_date_ = '13/06/2023'"
-[//]: # "_copyright_ = ('Copyright 2023, Unicef')"
+[//]: # "__author__ = 'irwan@kartoza.com'"
+[//]: # "__date__ = '13/06/2023'"
+[//]: # "__copyright__ = ('Copyright 2023, Unicef')"
+[//]: # "__copyright__ = ('Copyright 2023, Unicef')"
 
-# Contributing Guidelines
-<!-- To Be Populated -->
+# DevOps Documentation
+<!-- Replace all of the titles with relevant titles -->
+
+This section contains all documentation relevant to DevOps procedures.
