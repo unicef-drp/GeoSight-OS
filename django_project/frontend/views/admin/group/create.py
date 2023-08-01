@@ -70,7 +70,9 @@ class GroupCreateView(RoleSuperAdminRequiredMixin, AdminBaseView):
                 user.groups.remove(group)
             for user in users:
                 user.groups.add(group)
-            return redirect(reverse('admin-user-and-group-list-view') + '#Groups')
+            return redirect(
+                reverse('admin-user-and-group-list-view') + '#Groups'
+            )
         context = self.get_context_data(**kwargs)
         context['form'] = form
         return render(

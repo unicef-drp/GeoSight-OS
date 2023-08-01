@@ -146,8 +146,7 @@ export const AdminListContent = forwardRef(
           <ThemeButton
             variant="primary Basic"
             disabled={!selectedIds.length}>
-            <EditIcon/>Batch
-            edit {(selectedIds.length ? `(${selectedIds.length} Selected)` : "")}
+            <EditIcon/>Edit {(selectedIds.length ? `(${selectedIds.length} Selected)` : "")}
           </ThemeButton>
         </a>
       }

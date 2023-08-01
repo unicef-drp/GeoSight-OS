@@ -81,7 +81,7 @@ export default function ScheduledJobs({ ...props }) {
             icon={
               user.is_admin || params.row.creator === user.id ?
                 <ThemeButton
-                  variant="secondary Basic"
+                  variant="primary Reverse Basic"
                   onClick={() => {
                     axios.post(data.job_active ? data.urls.pause : data.urls.resume, {}, {
                       headers: {

@@ -616,25 +616,28 @@ export default function DataAccessAdmin() {
       rightHeader={
         <Fragment>
           {/* ------------------------------ */}
+          <ThemeButton
+            variant="primary" onClick={() => {
+            setTableData(dictDeepCopy(defaultTableData))
+          }}
+            disabled={!changed || submitted}>
+            <SettingsBackupRestoreIcon/> Default
+          </ThemeButton>
+          <SaveButton
+            id={buttonID}
+            variant="primary Reverse"
+            text="Apply"
+            onClick={submit}
+            disabled={!changed || submitted}
+          />
+          {/* ------------------------------ */}
           {/* OTHER BUTTONS */}
           {
             [UserTab, GroupTab].includes(tab) && data ?
               <Fragment>
-                <DeleteButton
-                  disabled={!selectionModel.length}
-                  variant="secondary Reverse"
-                  text={"Delete"}
-                  onClick={() => {
-                    tableData[tab].filter(data => selectionModel.includes(data.id)).map(row => {
-                      row.is_deleted = true
-                    })
-                    setTableData({ ...tableData })
-                    setSelectionModel([])
-                  }}
-                />
                 <EditButton
                   disabled={!selectionModel.length}
-                  variant="secondary Reverse"
+                  variant="primary Reverse"
                   text={"Change permission"}
                   onClick={() => {
                     setUpdatePermissionOpen(true)
@@ -658,7 +661,7 @@ export default function DataAccessAdmin() {
                   }}
                 />
                 <AddButton
-                  variant="secondary"
+                  variant="primary"
                   text={"Share to " + tab}
                   onClick={() => {
                     setAddPermissionOpen(true)
@@ -677,23 +680,20 @@ export default function DataAccessAdmin() {
                     setTableData({ ...tableData })
                   }}
                 />
+                <DeleteButton
+                  disabled={!selectionModel.length}
+                  variant="Error Reverse"
+                  text={"Delete" + (selectionModel.length ? `(${selectionModel.length} Selected)` : "")}
+                  onClick={() => {
+                    tableData[tab].filter(data => selectionModel.includes(data.id)).map(row => {
+                      row.is_deleted = true
+                    })
+                    setTableData({ ...tableData })
+                    setSelectionModel([])
+                  }}
+                />
               </Fragment> : null
           }
-          {/* ------------------------------ */}
-          <ThemeButton
-            variant="secondary" onClick={() => {
-            setTableData(dictDeepCopy(defaultTableData))
-          }}
-            disabled={!changed || submitted}>
-            <SettingsBackupRestoreIcon/> Default
-          </ThemeButton>
-          <SaveButton
-            id={buttonID}
-            variant="secondary Reverse"
-            text="Apply"
-            onClick={submit}
-            disabled={!changed || submitted}
-          />
           <Popover
             id={buttonID}
             open={open}
@@ -735,7 +735,7 @@ export default function DataAccessAdmin() {
         }
       </div>
       <div className='AdminList DataAccessAdmin'>
-        <div className='Tab TabPrimary TabAdminList'>
+        <div className='Tab TabPrimary'>
           <div className='Separator'></div>
           <div
             className={tab === GeneralTab ? "Selected" : ""}

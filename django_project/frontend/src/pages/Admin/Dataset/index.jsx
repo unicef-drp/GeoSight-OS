@@ -15,7 +15,7 @@
 
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import $ from "jquery";
-import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
+import { GridActionsCellItem } from '@mui/x-data-grid';
 import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
 import HistoryIcon from '@mui/icons-material/History';
 import {
@@ -306,34 +306,8 @@ export default function DatasetAdmin() {
       pageName={pageNames.Dataset}
       rightHeader={
         <Fragment>
-          <DeleteButton
-            disabled={!selectionModel.length || isDeleting}
-            variant="secondary Reverse"
-            text={"Delete"}
-            onClick={() => {
-              if (confirm(deleteWarning) === true) {
-                setIsDeleting(true)
-                $.ajax({
-                  url: urls.api.datasetApi,
-                  method: 'DELETE',
-                  data: {
-                    'ids': JSON.stringify(selectionModel)
-                  },
-                  success: function () {
-                    setIsDeleting(false)
-                    loadData();
-                  },
-                  error: function () {
-                    setIsDeleting(false)
-                  },
-                  beforeSend: beforeAjaxSend
-                });
-                return false;
-              }
-            }}
-          />
           <SaveButton
-            variant="secondary"
+            variant="primary"
             text={"Apply " + updatedData.length + " Change(s)"}
             disabled={!updatedData.length || isApplying}
             onClick={() => {
@@ -360,6 +334,32 @@ export default function DatasetAdmin() {
                 },
                 beforeSend: beforeAjaxSend
               });
+            }}
+          />
+          <DeleteButton
+            disabled={!selectionModel.length || isDeleting}
+            variant="Error Reverse"
+            text={"Delete" + (selectionModel.length ? `(${selectionModel.length} Selected)` : "")}
+            onClick={() => {
+              if (confirm(deleteWarning) === true) {
+                setIsDeleting(true)
+                $.ajax({
+                  url: urls.api.datasetApi,
+                  method: 'DELETE',
+                  data: {
+                    'ids': JSON.stringify(selectionModel)
+                  },
+                  success: function () {
+                    setIsDeleting(false)
+                    loadData();
+                  },
+                  error: function () {
+                    setIsDeleting(false)
+                  },
+                  beforeSend: beforeAjaxSend
+                });
+                return false;
+              }
             }}
           />
         </Fragment>

@@ -59,7 +59,9 @@ export function USER_COLUMNS() {
               <Tooltip title={`Go to data access.`}>
                 <a
                   href={urls.api.permissionAdmin + '?users=' + params.id}>
-                  <StorageIcon/>
+                  <div className='ButtonIcon'>
+                    <StorageIcon/>
+                  </div>
                 </a>
               </Tooltip>
             }

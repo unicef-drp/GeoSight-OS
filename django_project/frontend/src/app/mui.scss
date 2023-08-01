@@ -236,7 +236,7 @@
   }
 
   .MuiDataGrid-cell {
-    .ShareIcon {
+    .ButtonIcon {
       height: 18px;
       width: 18px;
       padding: 3px;
@@ -272,6 +272,11 @@
           }
         }
       }
+
+      &:hover {
+        background-color: unset;
+        opacity: 0.8;
+      }
     }
 
     .TextButton {
@@ -296,6 +301,46 @@
       &:hover {
         background-color: unset;
       }
+    }
+  }
+
+  .ActionHeader {
+    height: $base-height;
+    box-sizing: border-box;
+    padding: 0 !important;
+
+    a,
+    button {
+      margin-left: 0.5rem;
+    }
+
+    .MuiDataGrid-columnHeaderTitleContainerContent,
+    .MuiDataGrid-columnHeaderTitle,
+    a,
+    button {
+      height: 100%;
+      font-size: 10px !important;
+    }
+
+    a {
+      display: flex;
+    }
+
+    button {
+      padding: 0.5rem !important;
+    }
+
+    svg {
+      height: 8px !important;
+      width: 8px !important;
+    }
+
+    .ActionsColumnHeader {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem 1rem !important;
+      box-sizing: border-box;
+      height: 100%;
     }
   }
 }

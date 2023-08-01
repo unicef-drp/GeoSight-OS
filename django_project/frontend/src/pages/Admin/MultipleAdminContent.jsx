@@ -72,10 +72,9 @@ export const MultipleAdminContent = forwardRef(
             pageName: key,
             title: key,
             tabChildren: Object.keys(contents).length > 1 ?
-              <div className={'TabPrimary TabAdminList ' + tab}>
-                <div className='Separator'></div>
+              <div className={'TabPrimary ' + tab}>
                 {
-                  Object.keys(contents).reverse().map(key =>
+                  Object.keys(contents).map(key =>
                     <Tab key={key} tabName={key}/>
                   )
                 }

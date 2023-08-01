@@ -88,7 +88,9 @@ class GroupEditView(RoleSuperAdminRequiredMixin, AdminBaseView):
                     user.groups.add(group)
                 except (ValueError, User.DoesNotExist):
                     pass
-            return redirect(reverse('admin-user-and-group-list-view') + '#Groups')
+            return redirect(
+                reverse('admin-user-and-group-list-view') + '#Groups'
+            )
         context = self.get_context_data(**kwargs)
         context['form'] = form
         return render(request, self.template_name, context)

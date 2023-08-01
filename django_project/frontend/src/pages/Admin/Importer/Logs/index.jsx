@@ -72,7 +72,7 @@ const LOG_COLUMNS = [
                 <a
                   href={urls.api.logs.dataView.replace('/0', `/${params.id}`)}>
                   <div
-                    className='MuiButton-Div MuiButtonBase-root MuiButton-secondary ThemeButton'>
+                    className='MuiButton-Div MuiButtonBase-root MuiButton-primary Reverse ThemeButton'>
                     <DataUsageIcon/> Data
                   </div>
                 </a>

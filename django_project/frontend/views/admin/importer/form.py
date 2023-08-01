@@ -147,7 +147,8 @@ class ImporterScheduledEditView(ImporterEditView):
         """Return content title that used on page title indicator."""
         importer = self.instance
         data_importer = reverse('admin-importer-create-view')
-        list_url = reverse('admin-data-management-list-view') + '#Scheduled Jobs'
+        list_url = reverse(
+            'admin-data-management-list-view') + '#Scheduled Jobs'
         importer_url = reverse(
             'admin-importer-detail-view', args=[importer.id]
         )
