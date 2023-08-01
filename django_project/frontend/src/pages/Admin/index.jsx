@@ -31,9 +31,10 @@ export const pageNames = {
   RelatedTables: 'Related Tables',
 
   // Importer
-  Importer: 'Related Table Importer',
+  Importer: 'Data Importer',
   DataManagement: 'Data Management',
 
+  // Access Request
   AccessRequestList: 'Access Request',
   AccessRequestUserDetail: 'Request New User Detail',
   AccessRequestPermissionDetail: 'Request Permission Detail',

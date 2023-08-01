@@ -48,10 +48,11 @@ let conf = {
     AdminDataAccess: ['./src/pages/Admin/DataAccess'],
     AdminRelatedTableList: ['./src/pages/Admin/RelatedTable/List'],
     AdminRelatedTableData: ['./src/pages/Admin/RelatedTable/Data'],
+
+    // DATA MANAGEMENT
+    AdminDataManagement: ['./src/pages/Admin/Importer/List'],
     AdminImporter: ['./src/pages/Admin/Importer/Form'],
     AdminImporterDetail: ['./src/pages/Admin/Importer/ImporterDetail'],
-    AdminImporterLogs: ['./src/pages/Admin/Importer/Logs'],
-    AdminScheduledJobs: ['./src/pages/Admin/Importer/ScheduledJobs'],
     AdminImporterLogDetail: ['./src/pages/Admin/Importer/LogDetail'],
     AdminImporterLogData: ['./src/pages/Admin/Importer/LogData'],
 

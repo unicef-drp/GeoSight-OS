@@ -11,7 +11,7 @@ Contact : geosight-no-reply@unicef.org
 
 """
 __author__ = 'irwan@kartoza.com'
-__date__ = '13/06/2023'
+__date__ = '01/08/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.shortcuts import reverse
@@ -20,21 +20,21 @@ from frontend.views.admin._base import AdminBaseView
 from geosight.permission.access import RoleContributorRequiredMixin
 
 
-class LogListView(RoleContributorRequiredMixin, AdminBaseView):
+class DataManagementListView(RoleContributorRequiredMixin, AdminBaseView):
     """Logs Lost View."""
 
-    template_name = 'frontend/admin/importer/logs.html'
+    template_name = 'frontend/admin/importer/data_management.html'
 
     @property
     def page_title(self):
         """Return page title that used on tab bar."""
-        return 'Importer Log'
+        return 'Data Management'
 
     @property
     def content_title(self):
         """Return content title that used on page title indicator."""
         data_importer = reverse('admin-importer-create-view')
-        logs = reverse('admin-importer-log-list-view')
+        logs = reverse('admin-data-management-list-view') + '#Logs'
         return (
             f'<a href="{data_importer}">Data Management</a>'
             '<span>></span>'

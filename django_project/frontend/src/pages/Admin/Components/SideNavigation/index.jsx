@@ -95,7 +95,7 @@ export default function SideNavigation({ pageName }) {
           {
             user.is_contributor ?
               <div className='SideNavigation-Row-Group'>
-                <a href={urls.admin.importerLogs}
+                <a href={urls.admin.dataManagement}
                    className={'SideNavigation-Row ' + ([pageNames.Importer, pageNames.DataManagement].includes(pageName) ? 'active' : '')}>
                   <DataManagementIcon
                     active={[pageNames.Importer, pageNames.DataManagement].includes(pageName)}/>

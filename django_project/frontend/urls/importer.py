@@ -17,14 +17,15 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.conf.urls import url
 from django.urls import include
 
+from frontend.views.admin.importer.data_management import (
+    DataManagementListView
+)
 from frontend.views.admin.importer.form import (
     ImporterCreateView, ImporterEditView, ImporterScheduledEditView
 )
 from frontend.views.admin.importer.importer import ImporterDetailView
 from frontend.views.admin.importer.log_data import ImporterLogDataView
 from frontend.views.admin.importer.log_detail import ImporterLogDetailView
-from frontend.views.admin.importer.logs import LogListView
-from frontend.views.admin.importer.scheduled_job import ScheduledJobListView
 
 logs_url = [
     url(
@@ -36,11 +37,6 @@ logs_url = [
         r'^(?P<pk>\d+)',
         ImporterLogDetailView.as_view(),
         name='admin-importer-log-detail-view'
-    ),
-    url(
-        r'',
-        LogListView.as_view(),
-        name='admin-importer-log-list-view'
     ),
 ]
 scheduled_job_url = [
@@ -54,11 +50,6 @@ scheduled_job_url = [
         ImporterDetailView.as_view(),
         name='admin-importer-detail-view'
     ),
-    url(
-        r'',
-        ScheduledJobListView.as_view(),
-        name='admin-scheduled-job-list-view'
-    ),
 ]
 job_url = [
     url(
@@ -68,6 +59,11 @@ job_url = [
     ),
 ]
 urlpatterns = [
+    url(
+        r'data-management',
+        DataManagementListView.as_view(),
+        name='admin-data-management-list-view'
+    ),
     url(r'logs/', include(logs_url)),
     url(r'scheduled-jobs/', include(scheduled_job_url)),
     url(r'job/', include(job_url)),
