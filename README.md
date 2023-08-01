@@ -60,7 +60,7 @@ docker-compose down
 git clone https://github.com/unicef-drp/GeoSight-OS
 cd GeoSight-OS/deployment
 cp .template.env .env
-docker-compose.override.template.yml docker-compose.override.yml
+cp docker-compose.override.template.yml docker-compose.override.yml
 ```
 
 After that, do

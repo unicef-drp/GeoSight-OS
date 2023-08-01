@@ -31,3 +31,6 @@ docs/site/*
 
 # env vscode
 django_project/.env
+
+#direnv for docs building
+docs/.direnv
