@@ -56,8 +56,7 @@ let conf = {
     AdminImporterLogData: ['./src/pages/Admin/Importer/LogData'],
 
     // ACCESS REQUEST
-    AdminAccessRequestUserList: ['./src/pages/Admin/AccessRequest/List/User'],
-    AdminAccessRequestPermissionList: ['./src/pages/Admin/AccessRequest/List/Permission'],
+    AdminAccessRequestList: ['./src/pages/Admin/AccessRequest/List'],
     AdminAccessRequestUserDetail: ['./src/pages/Admin/AccessRequest/Detail/User'],
     AdminAccessRequestPermissionDetail: ['./src/pages/Admin/AccessRequest/Detail/Permission'],
 

@@ -31,9 +31,9 @@ import {
   StyleIcon,
   ViewsIcon
 } from "../../../../components/Icons";
+import ContactIcon from "../../../../components/Icons/ContactIcon";
 
 import './style.scss';
-import ContactIcon from "../../../../components/Icons/ContactIcon";
 
 
 /**
@@ -137,22 +137,14 @@ export default function SideNavigation({ pageName }) {
               </a>
             </Fragment> : null
           }
-
-          {
-            user.is_staff ?
-              <div className='SideNavigation-Row-Group'>
-                <a href={urls.admin.accessRequestUser}
-                   className={'SideNavigation-Row ' + ([pageNames.AccessRequestUser, pageNames.AccessRequestPermission].includes(pageName) ? 'active' : '')}>
-                  <GppMaybeIcon className='SideNavigation-Row-Icon'/>
-                  <span
-                    className='SideNavigation-Row-Name'>Access Request</span>
-                </a>
-              </div> : <a href={urls.admin.accessRequestPermission}
-                          className={'SideNavigation-Row ' + (pageName === pageNames.AccessRequestPermission ? 'active' : '')}>
-                <GppMaybeIcon className='SideNavigation-Row-Icon'/>
-                <span className='SideNavigation-Row-Name'>Access Request</span>
-              </a>
-          }
+          <div className='SideNavigation-Row-Group'>
+            <a href={urls.admin.accessRequest}
+               className={'SideNavigation-Row ' + (pageNames.AccessRequestList === pageName ? 'active' : '')}>
+              <GppMaybeIcon className='SideNavigation-Row-Icon'/>
+              <span
+                className='SideNavigation-Row-Name'>Access Request</span>
+            </a>
+          </div>
         </div>
       </div>
 

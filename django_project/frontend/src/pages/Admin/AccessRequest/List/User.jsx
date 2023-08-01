@@ -14,17 +14,43 @@
  */
 
 import React from 'react';
-
-import { render } from '../../../../app';
-import { store } from '../../../../store/admin';
-import AccessRequestList from "./List";
+import { AdminListContent } from "../../AdminList";
+import { formatDateTime } from "../../../../utils/main";
 
 /**
  * Access Request Permission
  */
-export default function AccessRequestUserList() {
-  return <AccessRequestList defaultTab={'New User'}/>
+export default function AccessRequestUserList({ ...props }) {
+  return <AdminListContent
+    columns={[
+      { field: 'id', headerName: 'id', hide: true },
+      {
+        field: 'name', headerName: 'Name', flex: 1,
+        renderCell: (params) => {
+          return <a
+            className='MuiButtonLike CellLink'
+            href={urls.api.user.detail.replace('/0', `/${params.id}`)}>
+            {params.value}
+          </a>
+        }
+      },
+      { field: 'requester_email', headerName: 'Requester Email', flex: 1 },
+      { field: 'status', headerName: 'Status', flex: 1 },
+      {
+        field: 'submitted_date', headerName: 'Submitted Date', flex: 1,
+        renderCell: (params) => {
+          return formatDateTime(new Date(params.value))
+        }
+      },
+    ]}
+    listUrl={urls.api.user.list}
+    filterDefault={
+      [{
+        columnField: 'status',
+        operatorValue: 'equals',
+        value: 'PENDING'
+      }]
+    }
+    {...props}
+  />
 }
-
-
-render(AccessRequestUserList, store)

@@ -408,6 +408,8 @@
 
 .MuiSnackbar-root {
   background-color: unset !important;
+  padding: 0 !important;
+  height: fit-content !important;
 }
 
 .MuiDataGrid-cellCheckbox,

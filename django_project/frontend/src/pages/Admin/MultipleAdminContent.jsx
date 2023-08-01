@@ -32,7 +32,7 @@ export const MultipleAdminContent = forwardRef(
      ...props
    }, ref
   ) => {
-    let defaultTab = window.location.hash.replace('#', '')
+    let defaultTab = window.location.hash.replace('#', '').replaceAll('%20', ' ')
     if (!Object.keys(contents).includes(defaultTab)) {
       defaultTab = Object.keys(contents)[0]
     }
@@ -70,14 +70,15 @@ export const MultipleAdminContent = forwardRef(
             className: (tab !== key ? 'Hidden' : ""),
             pageName: key,
             title: key,
-            tabChildren: <div className={'TabPrimary TabAdminList ' + tab}>
-              <div className='Separator'></div>
-              {
-                Object.keys(contents).reverse().map(key =>
-                  <Tab key={key} tabName={key}/>
-                )
-              }
-            </div>
+            tabChildren: Object.keys(contents).length > 1 ?
+              <div className={'TabPrimary TabAdminList ' + tab}>
+                <div className='Separator'></div>
+                {
+                  Object.keys(contents).reverse().map(key =>
+                    <Tab key={key} tabName={key}/>
+                  )
+                }
+              </div> : null
           })
         })
       }
