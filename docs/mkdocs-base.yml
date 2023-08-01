@@ -38,24 +38,40 @@ markdown_extensions:
 nav:
         - Home:
                   - Home: index.md
-        - User:
-                  - Quickstart: user/quickstart.md
-                  - User Guide: user/user-guide.md
-                  - User Reference Manual: user/user-reference-manual.md
-                  - API: user/api.md
-        - Admin:
-                  - Admin Guide: admin/admin-guide.md
-                  - Admin Reference Manual: admin/admin-reference-manual.md
-        - Developer:
-                  - Tutorial: developer/tutorial.md
-                  - Architecture: developer/architecture.md
-                  - Documentation: developer/docs.md
-                  - Developer Reference Manual: developer/dev-ref-manual.md
-                  - Design: developer/design.md
-        - DevOps:
-                  - DevOps Tutorial: devops/tutorial.md
-                  - DevOps Reference Manual: devops/devops-ref-manual.md
-        - About:
-                  - Index: about/index.md
-                  - License: about/license.md
-                  - Code of Conduct : about/code-of-conduct.md
+                  - About: about-geosight.md
+                  - Contributing: developer/manual/contributing.md
+        - For Users:
+                  - Overview: user/index.md
+                  - Guide: 
+                          - Overview: user/guide/index.md
+                          - Platform tour: user/guide/platform-tour.md
+                          - Map Interactions: user/guide/map-interactions.md
+                          - Indicators: user/guide/indicator.md
+                          - Layers: user/guide/layers.md
+                          - User Tutorial: user/guide/user-tutorial.md
+                          - Disclaimer: about/disclaimer.md
+                          - Credits: about/credits.md
+                          - License: about/license.md
+        - For Administrators:
+                  - Overview: administrator/index.md
+                  - Guide: administrator/guide/index.md
+                  - Provisioning Reference Layers: administrator/manual/reference-layers.md
+        - For Developers:
+                  - Overview: developer/index.md
+                  - Installation:
+                            - Preparation: developer/guide/setup/installation/preparation.md
+                            - Project setup: developer/guide/setup/installation/project-setup.md
+                            - Road Map: developer/guide/setup/roadmap.md
+                            - Development setup:
+                                      - Overview: developer/guide/setup/installation/development-setup/index.md
+                                      - Using pycharm: developer/guide/setup/installation/development-setup/pycharm.md
+                  - Configuration:
+                            - Geography: developer/guide/setup/configuration/geography.md
+                            - Indicator: developer/guide/setup/configuration/indicator.md
+                            - Instances: developer/guide/setup/configuration/instances.md
+                            - Layer: developer/guide/setup/configuration/layer.md
+                            - Navigation Link: developer/guide/setup/configuration/navigation-link.md
+                            - Preferences: developer/guide/setup/configuration/preferences.md
+                            - Program Intervention: developer/guide/setup/configuration/program-intervention.md
+                            - Scenario: developer/guide/setup/configuration/scenario.md
+                            - User: developer/guide/setup/configuration/user.md
