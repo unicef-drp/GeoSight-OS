@@ -37,41 +37,107 @@ markdown_extensions:
 
 nav:
         - Home:
-                  - Home: index.md
-                  - About: about-geosight.md
-                  - Contributing: developer/manual/contributing.md
-        - For Users:
-                  - Overview: user/index.md
-                  - Guide: 
-                          - Overview: user/guide/index.md
-                          - Platform tour: user/guide/platform-tour.md
-                          - Map Interactions: user/guide/map-interactions.md
-                          - Indicators: user/guide/indicator.md
-                          - Layers: user/guide/layers.md
-                          - User Tutorial: user/guide/user-tutorial.md
-                          - Disclaimer: about/disclaimer.md
-                          - Credits: about/credits.md
-                          - License: about/license.md
-        - For Administrators:
-                  - Overview: administrator/index.md
-                  - Guide: administrator/guide/index.md
-                  - Provisioning Reference Layers: administrator/manual/reference-layers.md
-        - For Developers:
-                  - Overview: developer/index.md
-                  - Installation:
-                            - Preparation: developer/guide/setup/installation/preparation.md
-                            - Project setup: developer/guide/setup/installation/project-setup.md
-                            - Road Map: developer/guide/setup/roadmap.md
-                            - Development setup:
-                                      - Overview: developer/guide/setup/installation/development-setup/index.md
-                                      - Using pycharm: developer/guide/setup/installation/development-setup/pycharm.md
-                  - Configuration:
-                            - Geography: developer/guide/setup/configuration/geography.md
-                            - Indicator: developer/guide/setup/configuration/indicator.md
-                            - Instances: developer/guide/setup/configuration/instances.md
-                            - Layer: developer/guide/setup/configuration/layer.md
-                            - Navigation Link: developer/guide/setup/configuration/navigation-link.md
-                            - Preferences: developer/guide/setup/configuration/preferences.md
-                            - Program Intervention: developer/guide/setup/configuration/program-intervention.md
-                            - Scenario: developer/guide/setup/configuration/scenario.md
-                            - User: developer/guide/setup/configuration/user.md
+                - index.md
+                - About: about/index.md
+                - Contributing: about/contributing.md
+                - Code of Conduct: about/code-of-conduct.md
+        - Users:
+                - Overview: 
+                        - user/index.md
+                        - Quickstart: 
+                                - user/quickstart/index.md
+                        - Guide:
+                                - user/guide/index.md
+                                - Platform tour: user/guide/platform-tour.md
+                                - Map Interactions: user/guide/map-interactions.md
+                                - Indicators: 
+                                        - Overview: user/guide/indicator.md
+                                        - Adding Indicators: user/guide/adding-indicators.md
+                                - Layers: user/guide/layers.md
+                                - User Tutorial: user/guide/user-tutorial.md
+                                - Projects: user/guide/projects.md
+                                - Sharing Projects: user/guide/sharing-projects.md
+                                - Data Access: user/guide/data-access.md
+                                - Disclaimer: about/disclaimer.md
+                                - Credits: about/credits.md
+                                - License: about/license.md
+                        - Manual: 
+                                - user/manual/index.md
+        - Administrators:
+                - Overview:
+                        - administrator/index.md
+                        - Guide:
+                                - administrator/guide/index.md
+                                - Filters: administrator/guide/admin-filters.md
+                                - Widgets: administrator/guide/admin-widgets.md
+                                - Geography: administrator/guide/geography.md
+                                - Import Data Using the Management Map: administrator/guide/import-using-management-map.md
+                                - Indicators: administrator/guide/indicator.md
+                                - Instances: administrator/guide/instances.md
+                                - Layer: administrator/guide/layer.md
+                                - Navigation Links: administrator/guide/navigation-link.md
+                                - Preferences: administrator/guide/preferences.md
+                                - Program Intervention: administrator/guide/program-intervention.md
+                                - Scenarios: administrator/guide/scenario.md
+                                - Users: administrator/guide/user.md
+                        - Manual:
+                                - administrator/manual/index.md
+                                - Tutorial: administrator/manual/administrator-tutorial.md
+                                - Basemap Layers: administrator/manual/basemap-layers.md
+                                - Contextual Layers: administrator/manual/context-layers.md
+                                - Provisioning Reference Layers: administrator/manual/reference-layers.md
+        - Developers:
+                - Overview:
+                        - developer/index.md
+                        - Guide:
+                                - developer/guide/index.md
+                                - Project Prerequisites: developer/guide/project-prerequisites.md
+                                - IDE to Use: developer/guide/ide-to-use.md
+                                - Checking Out The Code: developer/guide/checking-out-the-code.md
+                                - Building/Compiling Code: developer/guide/building-compiling-code.md
+                                - Running Instances: developer/guide/running-instances.md
+                                - Setup:
+                                        - developer/guide/setup/index.md
+                                        - Installation:
+                                                - Preparation: developer/guide/setup/installation/preparation.md
+                                                - Project setup: developer/guide/setup/installation/project-setup.md
+                                        - Development setup:
+                                                - Overview: developer/guide/setup/installation/development-setup/index.md
+                                                - Using pycharm: developer/guide/setup/installation/development-setup/pycharm.md
+                                        - Road Map: developer/guide/setup/roadmap.md
+                                        - Configuration:
+                                                - Geography: developer/guide/setup/configuration/geography.md
+                                                - Indicator: developer/guide/setup/configuration/indicator.md
+                                                - Instances: developer/guide/setup/configuration/instances.md
+                                                - Layer: developer/guide/setup/configuration/layer.md
+                                                - Navigation Link: developer/guide/setup/configuration/navigation-link.md
+                                                - Preferences: developer/guide/setup/configuration/preferences.md
+                                                - Program Intervention: developer/guide/setup/configuration/program-intervention.md
+                                                - Scenario: developer/guide/setup/configuration/scenario.md
+                                                - User: developer/guide/setup/configuration/user.md
+                                - Building/Compiling Code: developer/guide/building-compiling-code.md
+                                - Checking Out The Code: developer/guide/checking-out-the-code.md
+                                - Developer Workflows: developer/guide/developer-workflows.md
+                                - IDE to Use: developer/guide/ide-to-use.md
+                                - Running Instances: developer/guide/running-instances.md
+
+                        - Architecture:
+                                - developer/architecture/index.md
+                        - Documentation:
+                                - developer/documentation/index.md
+                        - Manual:
+                                - developer/manual/index.md
+                        - API:
+                                - developer/api/index.md
+                                - API Manual: developer/api/api.md
+                                - API Settings: developer/api/api_settings.md
+                        - Design:
+                                - developer/design/index.md
+        - DevOps:
+                - Overview:
+                        - devops/index.md
+                        - Guide:
+                                - devops/guide/index.md
+                                - Tutorial 1: devops/guide/tutorial1.md
+                        - Manual:
+                                - devops/manual/index.md

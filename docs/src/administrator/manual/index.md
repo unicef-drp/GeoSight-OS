@@ -1,23 +1,16 @@
-# Admin Reference Manual
+[//]: # "GeoSight is UNICEF's geospatial web-based business intelligence platform."
+[//]: # 
+[//]: # "Contact : geosight-no-reply@unicef.org"
+[//]: # 
+[//]: # ".. note:: This program is free software; you can redistribute it and/or modify"
+[//]: # "    it under the terms of the GNU Affero General Public License as published by"
+[//]: # "    the Free Software Foundation; either version 3 of the License, or"
+[//]: # "    (at your option) any later version."
+[//]: # 
+[//]: # "__author__ = 'irwan@kartoza.com'"
+[//]: # "__date__ = '13/06/2023'"
+[//]: # "__copyright__ = ('Copyright 2023, Unicef')"
+[//]: # "__copyright__ = ('Copyright 2023, Unicef')"
+
+# Administrator Reference Manual
 <!-- Replace all of the titles with relevant titles -->
-
-## Conceptual Model
-<!-- High-level model on how product will function -->
-
-![conceptual_model](img/conceptual_model)
-
-## Page/View Manual
-<!-- needs to be able to provide anchors for the product that link to specific sections
-on the page (i.e. help button links to specific sections)  -->
-<!-- Screen By Screen explanation of UI which will be referred to from help buttons-->
-<!-- Explanation of things like widgets, buttons, etc -->
-
-### Functionality 1
-
-### Functionality 2
-
-## Permissions
-<!-- Explanation of User permissions -->
-
-### Permissions Framework
-<!-- Over view of how permissions work -->

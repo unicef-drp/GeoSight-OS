@@ -12,7 +12,14 @@
 [//]: # "__copyright__ = ('Copyright 2023, Unicef')"
 [//]: # "__copyright__ = ('Copyright 2023, Unicef')"
 
-# About Geo-Sight
-<!-- This needs to be populated, just temporarily populated to make site work -->
+# Settings
 
-GeoSight is a UNICEF’s open-source geospatial web-based data visualization/analysis platform that aims to make geospatial data easily accessible and shareable in support of risk informed programming. This data is displayed utilizing administrative reference datasets from [GeoRepo](https://github.com/unicef-drp/GeoRepo-OS).
+<!--
+::: django_project.initialize
+    handler: python
+    options:
+        docstring_style: sphinx
+        heading_level: 1
+        show_source: true
+        show_root_heading: false
+-->

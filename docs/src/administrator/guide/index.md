@@ -1,16 +1,17 @@
-# Admin Guide
+[//]: # "GeoSight is UNICEF's geospatial web-based business intelligence platform."
+[//]: # 
+[//]: # "Contact : geosight-no-reply@unicef.org"
+[//]: # 
+[//]: # ".. note:: This program is free software; you can redistribute it and/or modify"
+[//]: # "    it under the terms of the GNU Affero General Public License as published by"
+[//]: # "    the Free Software Foundation; either version 3 of the License, or"
+[//]: # "    (at your option) any later version."
+[//]: # 
+[//]: # "__author__ = 'irwan@kartoza.com'"
+[//]: # "__date__ = '13/06/2023'"
+[//]: # "__copyright__ = ('Copyright 2023, Unicef')"
+[//]: # "__copyright__ = ('Copyright 2023, Unicef')"
+
+# Administrator Guide
 <!-- Narrative Instructions on how admin users will use the product/platform -->
 <!-- Replace all of the titles with relevant titles -->
-
-## Tutorial 1
-<!-- e.g. starting a new project (change per project) -->
-![tut1_new_proj_1](img/tut1_new_proj_1)
-
-## Tutorial 2
-<!-- e.g. loading data (change per project) -->
-
-## Sample Data
-<!-- Links to sample data used in examples -->
-
-## Sample Projects
-<!-- Sample projects utilising the product or platform -->
