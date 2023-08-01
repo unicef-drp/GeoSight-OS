@@ -60,7 +60,7 @@ export default function GroupForm() {
 
   return (
     <Admin
-      pageName={pageNames.Groups}
+      pageName={pageNames.UsersAndGroups}
       rightHeader={
         <SaveButton
           variant="secondary"

@@ -37,7 +37,7 @@ class UserCreateView(RoleSuperAdminRequiredMixin, AdminBaseView):
     @property
     def content_title(self):
         """Return content title that used on page title indicator."""
-        list_url = reverse('admin-user-list-view')
+        list_url = reverse('admin-user-and-group-list-view') + '#Users'
         create_url = reverse('admin-user-create-view')
         return (
             f'<a href="{list_url}">Users</a> '
@@ -62,7 +62,7 @@ class UserCreateView(RoleSuperAdminRequiredMixin, AdminBaseView):
             user = form.save()
             user.profile.role = form.cleaned_data['role']
             user.profile.save()
-            return redirect(reverse('admin-user-list-view'))
+            return redirect(reverse('admin-user-and-group-list-view') + '#Users')
         context = self.get_context_data(**kwargs)
         context['form'] = form
         return render(

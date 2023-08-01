@@ -28,13 +28,15 @@ import './style.scss';
 export const MultipleAdminContent = forwardRef(
   ({
      contents,
-     defaultTab,
      onTabChanges,
      ...props
    }, ref
   ) => {
-
-    const [tab, setTab] = useState(defaultTab ? defaultTab : Object.keys(contents)[0]);
+    let defaultTab = window.location.hash.replace('#', '')
+    if (!Object.keys(contents).includes(defaultTab)) {
+      defaultTab = Object.keys(contents)[0]
+    }
+    const [tab, setTab] = useState(defaultTab);
 
     /*** Create tab of content ***/
     function Tab({ tabName, disabled = false }) {
@@ -59,8 +61,8 @@ export const MultipleAdminContent = forwardRef(
       if (onTabChanges) {
         onTabChanges(tab)
       }
+      window.location.hash = tab
     }, [tab]);
-
     return <AdminPage pageName={props.pageName}>
       {
         Object.keys(contents).map(key => {
@@ -68,7 +70,7 @@ export const MultipleAdminContent = forwardRef(
             className: (tab !== key ? 'Hidden' : ""),
             pageName: key,
             title: key,
-            middleChildren: <div className={'TabPrimary TabAdminList ' + tab}>
+            tabChildren: <div className={'TabPrimary TabAdminList ' + tab}>
               <div className='Separator'></div>
               {
                 Object.keys(contents).reverse().map(key =>

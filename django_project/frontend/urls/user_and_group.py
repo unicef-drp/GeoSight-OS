@@ -11,27 +11,17 @@ Contact : geosight-no-reply@unicef.org
 
 """
 __author__ = 'irwan@kartoza.com'
-__date__ = '13/06/2023'
+__date__ = '01/08/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.conf.urls import url
-from django.urls import include
 
-from frontend.views.admin.user.create import UserCreateView
-from frontend.views.admin.user.edit import UserEditView
+from frontend.views.admin.user_and_group.list import UserAndGroupListView
 
-admin_detail_url = [
-    url(
-        r'^edit',
-        UserEditView.as_view(),
-        name='admin-user-edit-view'
-    ),
-]
 urlpatterns = [
-    url(r'^(?P<username>.*)/', include(admin_detail_url)),
     url(
-        r'^create',
-        UserCreateView.as_view(),
-        name='admin-user-create-view'
+        r'^',
+        UserAndGroupListView.as_view(),
+        name='admin-user-and-group-list-view'
     ),
 ]

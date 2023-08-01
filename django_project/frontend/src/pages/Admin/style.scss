@@ -54,6 +54,10 @@ main {
     background-color: white;
   }
 
+  .AdminForm {
+    padding: 0 1rem;
+  }
+
   .AdminContentHeader {
     background: unset;
     border-radius: 0;
@@ -76,6 +80,12 @@ main {
         display: inline-block;
         margin-right: 0.5rem;
         font-weight: 500;
+      }
+
+      b {
+        a {
+          font-weight: 600;
+        }
       }
     }
 

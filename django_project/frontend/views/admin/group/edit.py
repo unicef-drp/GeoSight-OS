@@ -41,7 +41,7 @@ class GroupEditView(RoleSuperAdminRequiredMixin, AdminBaseView):
         group = get_object_or_404(
             GeosightGroup, pk=self.kwargs.get('pk', '')
         )
-        list_url = reverse('admin-group-list-view')
+        list_url = reverse('admin-user-and-group-list-view') + '#Groups'
         edit_url = reverse('admin-group-edit-view', args=[group.id])
         return (
             f'<a href="{list_url}">Groups</a> '
@@ -88,7 +88,7 @@ class GroupEditView(RoleSuperAdminRequiredMixin, AdminBaseView):
                     user.groups.add(group)
                 except (ValueError, User.DoesNotExist):
                     pass
-            return redirect(reverse('admin-group-list-view'))
+            return redirect(reverse('admin-user-and-group-list-view') + '#Groups')
         context = self.get_context_data(**kwargs)
         context['form'] = form
         return render(request, self.template_name, context)

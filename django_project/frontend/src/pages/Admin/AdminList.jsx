@@ -58,7 +58,7 @@ export const AdminListContent = forwardRef(
      sortingDefault = null,
      searchDefault = null,
      multipleDelete = null,
-     middleChildren,
+     tabChildren,
      ...props
    }, ref
   ) => {
@@ -174,7 +174,7 @@ export const AdminListContent = forwardRef(
             {createButton()}
           </div>
         </div>
-        {middleChildren}
+        {tabChildren}
         <div className='AdminList'>
           <BaseList
             columns={columns}
