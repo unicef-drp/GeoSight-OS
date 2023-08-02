@@ -89,13 +89,6 @@ main {
   height: 100%;
   width: 100%;
 
-  .TabPrimary {
-    div {
-      min-width: 0;
-      border: 1px solid $gray-200;
-    }
-  }
-
   .DashboardFormHeader {
     display: flex;
 

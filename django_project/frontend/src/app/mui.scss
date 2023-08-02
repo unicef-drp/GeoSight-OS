@@ -348,7 +348,6 @@
 
 .MuiButton-Div {
   align-items: center;
-  border-radius: $border-radius;
   display: inline-flex !important;
   line-height: 1.5;
 }
@@ -526,6 +525,20 @@
     svg {
       height: 14px;
       width: 14px;
+    }
+  }
+}
+
+.MuiOutlinedInput-root,
+.MuiButton-root {
+  border-radius: 0 !important;
+}
+.MuiOutlinedInput-icon {
+  .MuiOutlinedInput-root {
+    padding-right: 1rem !important;
+
+    svg {
+      color: #adb5bd;
     }
   }
 }

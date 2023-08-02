@@ -18,7 +18,7 @@ import CreatableSelect from "react-select/creatable";
 import FormControl from "@mui/material/FormControl";
 import CustomPopover from "../../../../components/CustomPopover";
 import { IconTextField } from "../../../../components/Elements/Input";
-import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import FilterIcon from "../../../../components/Icons/FilterIcon";
 
 /**
  * Filter group
@@ -49,7 +49,7 @@ export function MultipleCreatableFilter(
             : ""
         }
         <IconTextField
-          iconEnd={<FilterAltIcon/>}
+          iconEnd={<FilterIcon/>}
           value={data.length ? data.length + ' selected' : title}
           inputProps={
             { readOnly: true, }

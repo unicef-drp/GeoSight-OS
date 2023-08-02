@@ -30,10 +30,10 @@ import {
 import { AdminPage } from './index';
 import { BaseList } from './Components/List'
 import EditIcon from "@mui/icons-material/Edit";
+import { IconTextField } from "../../components/Elements/Input";
 
 import './style.scss';
-import { IconTextField } from "../../components/Elements/Input";
-import SearchIcon from "@mui/icons-material/Search";
+import MagnifyIcon from "../../components/Icons/MagnifyIcon";
 
 
 /**
@@ -162,7 +162,7 @@ export const AdminListContent = forwardRef(
             <IconTextField
               placeholder={"Search " + pageName}
               defaultValue={search ? search : ""}
-              iconEnd={<SearchIcon/>}
+              iconEnd={<MagnifyIcon/>}
               onChange={evt => setSearch(evt.target.value.toLowerCase())}
             />
           </div>
@@ -174,28 +174,26 @@ export const AdminListContent = forwardRef(
           </div>
         </div>
         {tabChildren}
-        <div className='AdminList'>
-          <BaseList
-            columns={columns}
-            pageName={pageName}
-            listUrl={listUrl}
-            initData={initData}
-            setInitData={newData => {
-              if (newData) {
-                setData(newData)
-              }
-            }}
-            selectionChanged={
-              selectionChanged || multipleDelete ? setSelectionModel : null
+        <BaseList
+          columns={columns}
+          pageName={pageName}
+          listUrl={listUrl}
+          initData={initData}
+          setInitData={newData => {
+            if (newData) {
+              setData(newData)
             }
-            sortingDefault={sortingDefault}
-            search={search}
-            searchDefault={searchDefault}
-            selectable={selectableFunction}
-            ref={listRef}
-            {...props}
-          />
-        </div>
+          }}
+          selectionChanged={
+            selectionChanged || multipleDelete ? setSelectionModel : null
+          }
+          sortingDefault={sortingDefault}
+          search={search}
+          searchDefault={searchDefault}
+          selectable={selectableFunction}
+          ref={listRef}
+          {...props}
+        />
       </div>
     )
   }

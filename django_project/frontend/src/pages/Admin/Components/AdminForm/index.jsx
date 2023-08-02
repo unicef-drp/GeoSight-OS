@@ -97,7 +97,6 @@ export const AdminForm = forwardRef(
       <div className={'AdminForm ' + (props.isWizard ? 'Wizard' : '')}>
         {/* --------------------  TAB -------------------- */}
         <div className={'TabPrimary ' + tab}>
-          <div className='Separator'></div>
           {permissionApi ? <Tab tabName={ShareTab}/> : null}
           {
             Object.keys(forms).reverse().map(key =>

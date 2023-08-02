@@ -402,3 +402,49 @@ header {
     }
   }
 }
+
+
+.ListAdminFilters {
+  padding: 0.5rem !important;
+  display: flex;
+  flex-flow: row wrap;
+  margin: 0 1rem !important;
+  background-color: unset !important;
+
+  &::before {
+    display: block;
+    flex-grow: 1;
+    content: "";
+  }
+
+
+  & > div {
+    margin-right: 0.5rem;
+  }
+
+  .MuiFormControl-root {
+    background-color: white;
+
+    .MuiFormLabel-root {
+      top: -6px;
+      background-color: unset;
+    }
+  }
+
+  .MuiInputBase-root {
+    width: 200px;
+
+    input, .MuiSelect-select {
+      padding: 10px;
+      padding-right: 0 !important;
+    }
+  }
+
+  .MuiSelect-icon {
+    transform: rotate(0deg) !important;
+  }
+
+  .ModalDataSelectorSelected {
+    display: none;
+  }
+}

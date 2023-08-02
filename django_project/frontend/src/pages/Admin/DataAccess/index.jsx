@@ -736,7 +736,6 @@ export default function DataAccessAdmin() {
       </div>
       <div className='AdminList DataAccessAdmin'>
         <div className='Tab TabPrimary'>
-          <div className='Separator'></div>
           <div
             className={tab === GeneralTab ? "Selected" : ""}
             onClick={() => setTab(GeneralTab)}
