@@ -71,7 +71,7 @@ function ContextLayerStyle({ contextLayer }) {
           Style for {contextLayer.name}
         </ModalHeader>
         <ModalContent className='Gray'>
-          <div className='AdminForm Section'>
+          <div className='SaveButton-Section'>
             <SaveButton
               variant="primary"
               text={"Apply Changes"}
@@ -79,6 +79,8 @@ function ContextLayerStyle({ contextLayer }) {
                 JSON.stringify(contextLayer) === JSON.stringify(data)
               }
               onClick={apply}/>
+          </div>
+          <div className='AdminForm Section'>
             {
               open ? <StyleConfig
                 data={data} setData={updateData}

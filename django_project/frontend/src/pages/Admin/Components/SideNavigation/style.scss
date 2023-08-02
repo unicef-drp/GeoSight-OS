@@ -24,7 +24,7 @@
   background: white;
   width: 233px;
   min-width: 233px;
-  border-right: 1px solid #E6E8E8;
+  border-right: 1px solid $border-gray;
   z-index: 1;
   display: flex;
   flex-direction: column;
@@ -52,7 +52,7 @@
         display: flex;
         height: $base-height;
         color: #7E7E7E;
-        border-bottom: 1px solid #E6E8E8;
+        border-bottom: 1px solid $border-gray;
         font-weight: 500;
         font-size: 10px;
         align-items: center;

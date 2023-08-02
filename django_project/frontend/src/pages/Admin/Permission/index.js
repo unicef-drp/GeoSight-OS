@@ -17,9 +17,6 @@ import React, { Fragment, useEffect, useState } from 'react';
 import $ from "jquery";
 
 import CircularProgress from '@mui/material/CircularProgress';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -435,135 +432,97 @@ export function PermissionForm({ data, setData, additionalTabs = {} }) {
           <CircularProgress/>
         </div> :
         <div className={'PermissionForm BasicForm ' + tab}>
-          <div className='TabPrimary'>
-            <div className={tab === 'UserAccess' ? 'Selected' : ''}
-                 onClick={() => setTab('UserAccess')}>
-              User Access ({data.user_permissions.length})
+          <div>
+            {/* ORGANIZATION ACCESS */}
+            <div className='GeneralAccess'>
+              {/* PUBLIC ACCESS */}
+              <label className="form-label">Public Access</label>
+              <div className='Separator'></div>
+              <FormControl className='BasicForm'>
+                <Select
+                  name="radio-buttons-group"
+                  value={data.public_permission}
+                  onChange={(evt) => {
+                    data.public_permission = evt.target.value
+                    setData({ ...data })
+                  }}
+                >
+                  {
+                    data.choices.public_permission.map(choice => {
+                      return <MenuItem
+                        key={choice[0]}
+                        value={choice[0]}>{choice[1]}</MenuItem>
+                    })
+                  }
+                </Select>
+              </FormControl>
             </div>
-            <div className={tab === 'GroupAccess' ? 'Selected' : ''}
-                 onClick={() => setTab('GroupAccess')}>
-              Group Access ({data.group_permissions.length})
+            {/* OTHER ACCESS */}
+            <div className='TabPrimary'>
+              <div className={tab === 'UserAccess' ? 'Selected' : ''}
+                   onClick={() => setTab('UserAccess')}>
+                User Access ({data.user_permissions.length})
+              </div>
+              <div className={tab === 'GroupAccess' ? 'Selected' : ''}
+                   onClick={() => setTab('GroupAccess')}>
+                Group Access ({data.group_permissions.length})
+              </div>
+              {
+                Object.keys(additionalTabs).map(key => {
+                  return <div
+                    key={key}
+                    className={tab === key ? 'Selected' : ''}
+                    onClick={() => setTab(key)}>
+                    {key}
+                  </div>
+                })
+              }
             </div>
-            <div className={tab === 'GeneralAccess' ? 'Selected' : ''}
-                 onClick={() => setTab('GeneralAccess')}>
-              General Access
-            </div>
+            {/* USERS ACCESS */}
+            {
+              tab === "UserAccess" ?
+                <div className="UserAccess">
+                  <PermissionFormTable
+                    permissionLabel='User'
+                    columns={USER_COLUMNS}
+                    data={data}
+                    dataListKey='user_permissions'
+                    setData={setData}
+                    permissionChoices={data.choices.user_permission}
+                    dataUrl={urls.api.users + '?role__in=Contributor,Creator,Super%20Admin'}
+                  />
+                </div> : null
+            }
+
+            {/* GROUP ACCESS */}
+            {
+              tab === "GroupAccess" ?
+                <div className="GroupAccess">
+                  <PermissionFormTable
+                    permissionLabel='Group'
+                    columns={[
+                      { field: 'id', headerName: 'id', hide: true },
+                      { field: 'name', headerName: 'Group name', flex: 1 },
+                    ]}
+                    data={data}
+                    dataListKey='group_permissions'
+                    setData={setData}
+                    permissionChoices={data.choices.group_permission}
+                    dataUrl={urls.api.groups}
+                  />
+                </div> : ""
+            }
+
+            {/* OTHER TABS */}
             {
               Object.keys(additionalTabs).map(key => {
-                return <div
-                  key={key}
-                  className={tab === key ? 'Selected' : ''}
-                  onClick={() => setTab(key)}>
-                  {key}
-                </div>
+                if (tab === key) {
+                  return additionalTabs[key]
+                }
+                return null
               })
             }
           </div>
-          {/* USERS ACCESS */}
-          {
-            tab === "UserAccess" ?
-              <div className="UserAccess">
-                <PermissionFormTable
-                  permissionLabel='User'
-                  columns={USER_COLUMNS}
-                  data={data}
-                  dataListKey='user_permissions'
-                  setData={setData}
-                  permissionChoices={data.choices.user_permission}
-                  dataUrl={urls.api.users + '?role__in=Contributor,Creator,Super%20Admin'}
-                />
-              </div> : null
-          }
-
-          {/* GROUP ACCESS */}
-          {
-            tab === "GroupAccess" ?
-              <div className="GroupAccess">
-                <PermissionFormTable
-                  permissionLabel='Group'
-                  columns={[
-                    { field: 'id', headerName: 'id', hide: true },
-                    { field: 'name', headerName: 'Group name', flex: 1 },
-                  ]}
-                  data={data}
-                  dataListKey='group_permissions'
-                  setData={setData}
-                  permissionChoices={data.choices.group_permission}
-                  dataUrl={urls.api.groups}
-                />
-              </div> : ""
-          }
-
-          {/* ORGANIZATION ACCESS */}
-          {
-            tab === "GeneralAccess" ?
-              <div className='GeneralAccess'>
-
-                {/* We don't use organization anymore */}
-                {/*<div className="BasicFormSection">*/}
-                {/*  <div>*/}
-                {/*    <label className="form-label">*/}
-                {/*      Organization Access*/}
-                {/*    </label>*/}
-                {/*  </div>*/}
-                {/*  <FormControl>*/}
-                {/*    <RadioGroup*/}
-                {/*      value={data.organization_permission}*/}
-                {/*      name="radio-buttons-group"*/}
-                {/*      onChange={(evt) => {*/}
-                {/*        data.organization_permission = evt.target.value*/}
-                {/*        setData({ ...data })*/}
-                {/*      }}*/}
-                {/*    >*/}
-                {/*      {*/}
-                {/*        data.choices.organization_permission.map(choice => {*/}
-                {/*          return <FormControlLabel*/}
-                {/*            key={choice[0]}*/}
-                {/*            value={choice[0]} control={<Radio/>}*/}
-                {/*            label={choice[1]}/>*/}
-                {/*        })*/}
-                {/*      }*/}
-                {/*    </RadioGroup>*/}
-                {/*  </FormControl>*/}
-                {/*</div>*/}
-
-                {/* PUBLIC ACCESS */}
-                <div className="BasicFormSection">
-                  <div>
-                    <label className="form-label">Public Access</label>
-                  </div>
-                  <FormControl>
-                    <RadioGroup
-                      value={data.public_permission}
-                      name="radio-buttons-group"
-                      onChange={(evt) => {
-                        data.public_permission = evt.target.value
-                        setData({ ...data })
-                      }}
-                    >
-                      {
-                        data.choices.public_permission.map(choice => {
-                          return <FormControlLabel
-                            key={choice[0]}
-                            value={choice[0]} control={<Radio/>}
-                            label={choice[1]}/>
-                        })
-                      }
-                    </RadioGroup>
-                  </FormControl>
-                </div>
-              </div> : null
-          }
-
-          {/* OTHER TABS */}
-          {
-            Object.keys(additionalTabs).map(key => {
-              if (tab === key) {
-                return additionalTabs[key]
-              }
-              return null
-            })
-          }
         </div>
     }
   </Fragment>

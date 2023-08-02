@@ -124,7 +124,6 @@
     }
   }
 
-  & > .GeneralAccess,
   & > .Other {
     padding: 1rem;
   }
@@ -136,6 +135,24 @@
 
     button {
       margin-left: 0.5rem;
+    }
+  }
+
+  .GeneralAccess {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background: $base-gray-to-white;
+    border: 1px solid $border-gray;
+    margin-bottom: 1rem;
+
+    label {
+      margin-bottom: 0;
+    }
+
+    .MuiInputBase-root {
+      height: $base-height;
+      background-color: white;
     }
   }
 }
