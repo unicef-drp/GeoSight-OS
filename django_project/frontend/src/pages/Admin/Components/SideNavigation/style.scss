@@ -23,6 +23,7 @@
 .SideNavigation {
   background: white;
   width: 233px;
+  min-width: 233px;
   border-right: 1px solid $border-gray;
   z-index: 1;
   display: flex;
@@ -133,6 +134,7 @@
 
   &.Minified {
     width: 56px;
+    min-width: 56px;
 
     .SideNavigationContentGroupTitle,
     .NavbarAccountName,

@@ -55,6 +55,10 @@
 .PermissionForm {
   padding: 0;
 
+  .MuiDataGridTable {
+    height: 300px;
+  }
+
   .form-label {
     font-weight: $base-font-regular;
 

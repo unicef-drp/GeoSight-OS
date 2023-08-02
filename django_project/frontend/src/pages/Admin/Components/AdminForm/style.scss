@@ -60,6 +60,7 @@
     display: block;
     font-size: 1rem;
     min-width: 200px;
+    border-bottom: unset;
 
     & > div {
       cursor: pointer;

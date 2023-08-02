@@ -193,6 +193,7 @@
 
 
 .MuiDataGrid-root {
+  margin-top: $base-height;
   border: none !important;
 
   .MuiCheckbox-root {
@@ -458,7 +459,32 @@
 }
 
 .MuiDataGrid-footerContainer {
-  flex-direction: row-reverse;
+  position: absolute;
+  top: $base-height-minus;
+  left: 0;
+  width: 100%;
+  border: unset !important;
+  justify-content: unset !important;
+
+  div, p {
+    font-size: 12px !important;
+  }
+
+  .MuiDataGrid-selectedRowCount {
+    margin-right: 0 !important;
+    border: 1px solid $primary-color;
+    color: $primary-color;
+    padding: 3px;
+  }
+
+  .MuiInputBase-root {
+    margin-right: 5px !important;
+    margin-top: 1px;
+  }
+}
+
+.MuiDataGrid-columnHeaders {
+  border-radius: 0 !important;
 }
 
 .MuiTextField-root {

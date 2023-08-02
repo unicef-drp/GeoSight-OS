@@ -347,6 +347,7 @@ header {
   display: flex;
   background-color: unset !important;
   padding: 0;
+  border-bottom: 1px solid $border-gray;
 
   div {
     background-color: unset;
