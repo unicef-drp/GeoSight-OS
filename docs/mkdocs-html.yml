@@ -62,5 +62,16 @@ extra_javascript:
   - https://unpkg.com/tablesort@5.3.0/dist/tablesort.min.js
   - js/tablesort.js
 
+# Needed for the hooks below to work
 plugins:
   - search
+  - redirects:
+      redirect_maps:
+        'old.md': 'new.md'
+        #'old/file.md': 'new/file.md'
+        #'some_file.md': 'http://external.url.com/foobar'
+
+# Hook to add a uuid to every anchor
+# see also hook.py and https://github.com/squidfunk/mkdocs-material/discussions/3758#discussioncomment-4397373
+hooks:
+  - ./hook.py
