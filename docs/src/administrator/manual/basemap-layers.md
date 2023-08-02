@@ -20,7 +20,7 @@ Administrators are able to adjust and delete existing basemaps and add new ones.
 ### Accessing and adjusting basemaps
 As with other administrative abilities, the Basemaps UI can be accessed from the GeoSight home page. To access the administative UI, click the user profile photo and select "Admin".
 
-![Select admin](img/Admin.jpeg)
+![Select admin](img/select-admin.jpeg)
 
 From here, select "Basemaps"
 
@@ -47,7 +47,7 @@ Under 'URL", you will have to enter the originally URL of the basemap sourced fr
 
 Under "Type" you will indicate the type of basemap service, which can be WMS or WMTS (Tiled webmap). The type of service will be already known from the website the basemap is sourced from. WMS has the advantage of providing arbitrary and flexible boundaries, while WMTS has faster processing times.
 
-Finally, under "Category" you will indicate the category the basemap belongs to (e.g. UN). 
+Finally, under "Category" you will indicate the category the basemap belongs to (e.g. UN).
 
 ![Select URL, type and category of basemap](img/type-basemap.jpeg)
 

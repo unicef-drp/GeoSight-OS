@@ -140,7 +140,7 @@ https://staging.osgs.rir.kartoza.com/geoserver/ows?access_token=SWMqWx64T5dOsNwP
 
 👨‍🏫 Now we can create the context layer in the RIR platform. Click on your account menu in the top right corner of the RIR platform and open **Django Admin**. Click on **+Add** on the Context Layers line. Select the instance you would like to add the context layer to.
 
-![Context Layers](img/addcontextlayer.png "Context Layers")
+![Context Layers](img/add-context-layer.png "Context Layers")
 
 We will use the instance that we have just created, South Africa. Paste the URL that you copied above into the URL box.
 

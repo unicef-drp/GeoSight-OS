@@ -1,3 +1,17 @@
+[//]: # "GeoSight is UNICEF's geospatial web-based business intelligence platform."
+[//]: # 
+[//]: # "Contact : geosight-no-reply@unicef.org"
+[//]: # 
+[//]: # ".. note:: This program is free software; you can redistribute it and/or modify"
+[//]: # "    it under the terms of the GNU Affero General Public License as published by"
+[//]: # "    the Free Software Foundation; either version 3 of the License, or"
+[//]: # "    (at your option) any later version."
+[//]: # 
+[//]: # "__author__ = 'irwan@kartoza.com'"
+[//]: # "__date__ = '13/06/2023'"
+[//]: # "__copyright__ = ('Copyright 2023, Unicef')"
+[//]: # "__copyright__ = ('Copyright 2023, Unicef')"
+
 # Contributing to GeoSight
 
 First off, thanks for taking the time to contribute! 🎉 😘 ✨
@@ -94,7 +108,7 @@ If you are adding new commands or features, they must include tests.
 If you are changing functionality, update the tests if you need to.
 
 #### Commit
-Follow our [commit message conventions](./docs/COMMIT_MESSAGE_CONVENTION.md).
+Follow our [commit message conventions](./documentation/commit-message-convention.md).
 
 ### Yes! Pull request
 
@@ -113,7 +127,7 @@ Follow other PR title format on below.
 #### Description
 
 If it has related issues, add links to the issues(like `#123`) in the description.
-Fill in the [Pull Request Template](./docs/PULL_REQUEST_TEMPLATE.md) by check your case.
+Fill in the [Pull Request Template](./documentation/pull-request-template.md) by check your case.
 
 ## Code of Conduct
 
