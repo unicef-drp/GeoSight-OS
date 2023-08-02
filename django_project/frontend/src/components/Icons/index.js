@@ -1,5 +1,6 @@
 
 export { default as DeleteIcon } from "./DeleteIcon";
+export { default as ArrowDownwardIcon } from "./ArrowDownwardIcon";
 export { default as DataAccessIcon } from "./DataAccessIcon";
 export { default as DataBrowserIcon } from "./DataBrowserIcon";
 export { default as DataManagementIcon } from "./DataManagementIcon";

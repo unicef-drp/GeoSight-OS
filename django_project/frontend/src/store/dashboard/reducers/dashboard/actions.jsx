@@ -195,10 +195,13 @@ export function updateFiltersAllowModify() {
 /**
  * Change geofield
  */
-export function changeGeoField() {
+export function changeGeoField(geoField) {
   return {
     name: DASHBOARD_ACTION_NAME,
-    type: DASHBOARD_ACTION_TYPE_UPDATE_GEOFIELD
+    type: DASHBOARD_ACTION_TYPE_UPDATE_GEOFIELD,
+    payload: {
+      geoField: geoField
+    }
   };
 }
 

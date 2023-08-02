@@ -90,11 +90,12 @@ export default function dashboardReducer(
           }
         }
         case DASHBOARD_ACTION_TYPE_UPDATE_GEOFIELD: {
+          const { geoField } = action.payload
           return {
             ...state,
             data: {
               ...state.data,
-              geoField: state.data.geoField === 'geometry_code' ? 'concept_uuid' : 'geometry_code'
+              geoField: geoField
             }
           }
         }
