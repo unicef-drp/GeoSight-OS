@@ -606,7 +606,7 @@ export default function PermissionModal(
   }, [defaultData])
 
   return <Fragment>
-    <div className='ButtonIcon'>
+    <div className='ButtonIcon' onClick={() => setOpen(true)}>
       <ShareIcon onClick={() => setOpen(true)}/>
     </div>
     <Modal

@@ -206,6 +206,10 @@
 
   .MuiButtonBase-root {
     padding: 0 5px;
+
+    .MuiTouchRipple-root {
+      display: none;
+    }
   }
 
   div {
