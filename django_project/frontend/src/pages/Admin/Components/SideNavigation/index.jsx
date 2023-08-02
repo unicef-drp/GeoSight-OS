@@ -38,9 +38,10 @@ import './style.scss';
 
 /**
  * Admin side navigation bad
- * @param {string} pageName Page name indicator
+ * @param {string} pageName Page name indicator.
+ * @param {boolean} minified Is side navigation minified.
  */
-export default function SideNavigation({ pageName }) {
+export default function SideNavigation({ pageName, minified }) {
   const dashboardList = urls.admin.dashboardList; // eslint-disable-line no-undef
   const indicatorList = urls.admin.indicatorList; // eslint-disable-line no-undef
   const basemapList = urls.admin.basemapList; // eslint-disable-line no-undef
@@ -52,9 +53,9 @@ export default function SideNavigation({ pageName }) {
   const relatedTableList = urls.admin.relatedTableList; // eslint-disable-line no-undef
 
   return (
-    <div className='SideNavigation'>
+    <div className={'SideNavigation ' + (minified ? 'Minified' : '')}>
       <div className='SideNavigationHeader'>
-        <NavBar/>
+        <NavBar minified={minified}/>
       </div>
       <div className='SideNavigationContent'>
         <div className='SideNavigationContentGroup'>
@@ -148,7 +149,7 @@ export default function SideNavigation({ pageName }) {
         </div>
       </div>
 
-      <div className='SideNavigationContentGroup'>
+      <div className='SideNavigationContentGroup ViewAllDashboard'>
         <a href='/' className='SideNavigation-Row Button'>
           <ViewsIcon/>
           <span className='SideNavigation-Row-Name'>View all dashboard</span>

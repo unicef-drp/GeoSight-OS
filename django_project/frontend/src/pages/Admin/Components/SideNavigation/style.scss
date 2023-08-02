@@ -23,7 +23,6 @@
 .SideNavigation {
   background: white;
   width: 233px;
-  min-width: 233px;
   border-right: 1px solid $border-gray;
   z-index: 1;
   display: flex;
@@ -35,6 +34,10 @@
     .NavbarAccount,
     .MiddleSection {
       display: none !important;
+    }
+
+    img {
+      filter: brightness(0) invert(1);
     }
   }
 
@@ -125,6 +128,46 @@
           }
         }
       }
+    }
+  }
+
+  &.Minified {
+    width: 56px;
+
+    .SideNavigationContentGroupTitle,
+    .NavbarAccountName,
+    .SideNavigation-Row-Name {
+      display: none !important;
+    }
+
+    .ViewAllDashboard {
+      .SideNavigation-Row {
+        margin: 0;
+      }
+    }
+
+    .SideNavigation-Row {
+      padding: 0 21px;
+    }
+
+    svg {
+      height: 18px !important;
+      margin-right: 0;
+    }
+
+    .NavbarAccount {
+      height: 26px;
+      width: 26px;
+      font-size: 18px;
+      margin-right: 0;
+    }
+
+    .NavHeaderLink {
+      display: none;
+    }
+
+    .NavHeaderLogo {
+      padding: 0 4px;
     }
   }
 }

@@ -31,8 +31,8 @@ import './style.scss';
 /**
  * Navbar.
  * **/
-export default function NavBar() {
-  const { icon, site_title } = preferences;
+export default function NavBar({ minified }) {
+  const { icon, favicon, site_title } = preferences;
   const { username, full_name, is_staff, is_contributor } = user;
 
   // Set width of logo
@@ -48,7 +48,7 @@ export default function NavBar() {
             title={i18n.t('Homepage')}
             className='nav-header-link'
           >
-            <img src={icon} alt="Logo"/>
+            <img src={(minified ? favicon : icon)} alt="Logo"/>
           </a>
         </div>
         <a

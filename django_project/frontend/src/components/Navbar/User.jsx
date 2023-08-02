@@ -60,7 +60,7 @@ export default function User({ ...props }) {
             className='NavbarAccount'
             onClick={handleClick}>{username[0]}</div>
           {
-            props.detail ? <div>
+            props.detail ? <div className='NavbarAccountName'>
               <div className='NavbarAccount-Username'>{username}</div>
               <div className='NavbarAccount-FullName'>{full_name}</div>
             </div> : null

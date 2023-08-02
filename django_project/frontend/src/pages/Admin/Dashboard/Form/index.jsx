@@ -480,7 +480,7 @@ export function DashboardForm({ onPreview }) {
   const className = currentPage.replaceAll(' ', '')
   return (
     <div className='Admin'>
-      <SideNavigation pageName={pageNames.Dashboard}/>
+      <SideNavigation pageName={pageNames.Dashboard} minified={true}/>
       <div className='AdminContent'>
         <div className='AdminContentHeader'>
           <div className='AdminContentHeader-Left'>
