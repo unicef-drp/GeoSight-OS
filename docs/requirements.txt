@@ -6,3 +6,4 @@ mkdocs-pdf-export-plugin
 mkdocstrings-python
 mkdocs-video
 mkdocs-redirects
+mkdocs-enumerate-headings-plugin

@@ -71,6 +71,20 @@ plugins:
         #'old.md': 'new.md'
         #'old/file.md': 'new/file.md'
         #'some_file.md': 'http://external.url.com/foobar'
+  - enumerate-headings:
+      toc_depth: 3
+      strict: true
+      increment_across_pages: true
+      include:
+        - "*"
+      exclude:
+        - index.md
+        - user/index.md
+        - administrator/index.md
+        - developer/index.md
+        - devops/index.md
+      restart_increment_after:
+        - second_section.md
 
 # Hook to add a uuid to every anchor
 # see also hook.py and https://github.com/squidfunk/mkdocs-material/discussions/3758#discussioncomment-4397373
