@@ -12,30 +12,5 @@
 [//]: # "__copyright__ = ('Copyright 2023, Unicef')"
 [//]: # "__copyright__ = ('Copyright 2023, Unicef')"
 
-# Developer Workflows
-
-## Adding a Feature
-
-- Create an Issue
-- Wait for it to be added to a Sprint
-- Functional Tests
-- Playwright Tests
-- Write end user documentation
-
-## Fixing a Bug
-
-- Claim an Issue
-- Wait for it to be added to a Sprint
-- Regression Test
-- Implement Fix
-
-## Make PR for Feature/Bug Fix
-
-### Committing To Project
-
-Follow our [commit message conventions](../../about/documentation/commit-message-convention.md).
-
-### Pull Request Template
-
-If it has related issues, add links to the issues(like `#123`) in the description.
-Fill in the [Pull Request Template](../../about/documentation/pull-request-template.md) by check your case.
+# Commit Message Convention
+<!-- To Be Populated -->

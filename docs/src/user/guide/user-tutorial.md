@@ -287,13 +287,13 @@ There is a **Timelapse Bar** that can show changes in data over time located at 
 
 👨‍🏫 Check the box on the **IDP Departure layer** and any other layers off. Click on the green play button on the timelapse bar.
 
-![timelapse](img/time-laps.png)
+![timelapse](img/time-lapse.png)
 
 🧑‍🏫 People will leave due to conflict, drought, and other reasons. This is also interesting to compare to IDP arrivals using the slide bar to see where people are leaving and what regions they are going to who may need extra financial and technical support.
 
 👨‍🏫 Check the box on the **IDP Arrivals layer** and use the slider to compare the two layers.
 
-![Timelapse](../assets/screencasts/time-laps.gif)
+![Timelapse](img/time-lapse.gif)
 
 ## More on the Information Panel
 
