@@ -1,11 +1,11 @@
-site_name: Project Name
+site_name: GeoSight-OS
 site_description: "Project technical and user documentation."
 site_author: "Kartoza"
 docs_dir: ./src
 site_dir: ./site
-repo_name: "Project Name"
-repo_url: "https://github.com/kartoza/<project name>"
-edit_uri: "https://github.com/kartoza/<project name>/blob/main/docs/"
+repo_name: "GeoSight-OS"
+repo_url: "https://github.com/unicef-drp/GeoSight-OS"
+edit_uri: "https://github.com/unicef-drp/GeoSight-OS/blob/main/docs/"
 
 copyright: Kartoza and Contributors
 
@@ -141,3 +141,4 @@ nav:
                                 - Tutorial 1: devops/guide/tutorial1.md
                         - Manual:
                                 - devops/manual/index.md
+
