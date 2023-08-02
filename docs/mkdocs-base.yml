@@ -39,7 +39,10 @@ nav:
         - Home:
                 - index.md
                 - About: about/index.md
-                - Contributing: about/contributing.md
+                - Contributing:
+                        - about/contributing.md
+                        - Commit Messages: about/documentation/commit-message-convention.md
+                        - Pull Request Template: about/documentation/pull-request-template.md
                 - Code of Conduct: about/code-of-conduct.md
         - Users:
                 - Overview: 
@@ -63,6 +66,7 @@ nav:
                                 - License: about/license.md
                         - Manual: 
                                 - user/manual/index.md
+                                - Home Page: user/manual/home.md
         - Administrators:
                 - Overview:
                         - administrator/index.md
@@ -127,6 +131,7 @@ nav:
                                 - developer/documentation/index.md
                         - Manual:
                                 - developer/manual/index.md
+                                - License: about/license.md
                         - API:
                                 - developer/api/index.md
                                 - API Manual: developer/api/api.md
