@@ -58,7 +58,7 @@ export default function UserForm() {
       pageName={pageNames.UsersAndGroups}
       rightHeader={
         <SaveButton
-          variant="secondary"
+          variant="primary"
           text="Save"
           onClick={submit}
           disabled={submitted || !role}

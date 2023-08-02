@@ -131,7 +131,7 @@ export function AddData(
     <ModalFooter>
       <div className='Save-Button'>
         <SaveButton
-          variant="secondary"
+          variant="primary"
           text={"Apply Changes"}
           onClick={() => {
             let maxId = data.length ? Math.max(...data.map(row => row.id)) : 0
@@ -231,7 +231,7 @@ export function UpdatePermissionModal(
     <ModalFooter>
       <div className='Save-Button'>
         <SaveButton
-          variant="secondary"
+          variant="primary"
           text={"Apply Changes"}
           onClick={() => {
             selectedPermission(selected)

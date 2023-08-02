@@ -255,7 +255,7 @@ export const IndicatorStyle = forwardRef(
                 }}
               />
               <SaveButton
-                variant="secondary"
+                variant="primary"
                 text={"Apply Changes"}
                 disabled={disabled}
                 onClick={apply}/>

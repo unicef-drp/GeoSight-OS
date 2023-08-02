@@ -343,7 +343,7 @@ export function DashboardSaveForm(
 
   return <Fragment>
     <SaveButton
-      variant="secondary"
+      variant="primary"
       text={submitted ? 'Saving...' : 'Save'}
       onClick={onSave}
       className={submitted ? 'Submitted' : ''}
@@ -491,7 +491,7 @@ export function DashboardForm({ onPreview }) {
               currentHistoryIdx={currentHistoryIdx}
               setCurrentHistoryIdx={setCurrentHistoryIdx}/>
             <ThemeButton
-              variant="secondary"
+              variant="primary"
               onClick={onPreview}
             >
               <MapIcon/>Preview
@@ -539,7 +539,7 @@ export default function DashboardFormApp() {
       <Dashboard>
         <div className='BackToForm'>
           <ThemeButton
-            variant="secondary"
+            variant="primary"
             onClick={() => {
               setCurrentMode('FormMode')
             }}

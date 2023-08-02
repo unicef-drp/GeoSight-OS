@@ -73,7 +73,7 @@ function ContextLayerStyle({ contextLayer }) {
         <ModalContent className='Gray'>
           <div className='AdminForm Section'>
             <SaveButton
-              variant="secondary"
+              variant="primary"
               text={"Apply Changes"}
               disabled={
                 JSON.stringify(contextLayer) === JSON.stringify(data)

@@ -129,7 +129,7 @@ export default function ScheduledJobs({ ...props }) {
       rightHeader={
         <Fragment>
           <ThemeButton
-            variant="secondary Basic"
+            variant="primary Basic"
             disabled={!selectionModel.length}
             onClick={() => {
               $.ajax({
@@ -155,7 +155,7 @@ export default function ScheduledJobs({ ...props }) {
             <PauseIcon/> Pause Selected
           </ThemeButton>
           <ThemeButton
-            variant="secondary Basic"
+            variant="primary Basic"
             disabled={!selectionModel.length}
             onClick={() => {
               $.ajax({

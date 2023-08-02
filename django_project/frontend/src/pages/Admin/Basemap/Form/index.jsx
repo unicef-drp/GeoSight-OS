@@ -38,7 +38,7 @@ export default function BasemapForm() {
       pageName={pageNames.Basemaps}
       rightHeader={
         <SaveButton
-          variant="secondary"
+          variant="primary"
           text="Submit"
           onClick={() => {
             formRef.current.submit(true)

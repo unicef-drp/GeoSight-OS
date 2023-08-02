@@ -75,7 +75,7 @@ export default function Login() {
               }}/>
 
               <ThemeButton
-                variant="secondary"
+                variant="primary"
                 onClick={login}
                 disabled={submitted ? true : false}
               >
@@ -98,7 +98,7 @@ export default function Login() {
           useAzureLogin && (
             <div>
               <ThemeButton
-                variant="secondary"
+                variant="primary"
                 onClick={loginWithAzure}
               >
                 LOG IN
@@ -110,7 +110,7 @@ export default function Login() {
         <div>
           <a
             href={urls.requestAccess}>
-            <ThemeButton variant="secondary Basic">
+            <ThemeButton variant="primary Basic">
               Request Access
             </ThemeButton>
           </a>

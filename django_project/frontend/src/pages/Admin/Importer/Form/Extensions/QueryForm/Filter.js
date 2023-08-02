@@ -109,7 +109,7 @@ export default function Filter(
           fields ?
             <div className='Save-Button'>
               <SaveButton
-                variant="secondary"
+                variant="primary"
                 text={"Apply"}
                 onClick={() => {
                   setOpen(false)

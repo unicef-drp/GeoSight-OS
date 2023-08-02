@@ -403,7 +403,7 @@ export default function MultiIndicatorConfig(
               }}
             />
             <SaveButton
-              variant="secondary"
+              variant="primary"
               text={"Apply Changes"}
               disabled={data.indicators.length < 2 || !data.name}
               onClick={apply}/>

@@ -50,7 +50,7 @@ export default function StyleForm() {
       pageName={pageNames.Styles}
       rightHeader={
         <SaveButton
-          variant="secondary"
+          variant="primary"
           text="save"
           onClick={() => {
             formRef.current.submit(true)

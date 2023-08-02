@@ -260,7 +260,7 @@ export default function ImporterForm() {
             rightHeader={
               <Fragment>
                 <SaveButton
-                  variant="secondary"
+                  variant="primary"
                   text="Submit"
                   onClick={() => {
                     submit()

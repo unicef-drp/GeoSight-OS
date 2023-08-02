@@ -356,7 +356,7 @@ export default function Bookmark({ map }) {
         </ModalContent>
         <ModalFooter>
           <SaveButton
-            variant="secondary"
+            variant="primary"
             text='Submit'
             onClick={() => {
               if (bookmarkSave) {

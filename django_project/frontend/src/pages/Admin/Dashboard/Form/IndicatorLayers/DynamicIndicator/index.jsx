@@ -236,7 +236,7 @@ export default function DynamicIndicatorConfig(
               }}
             />
             <SaveButton
-              variant="secondary"
+              variant="primary"
               text={"Apply Changes"}
               disabled={!data.name}
               onClick={apply}/>

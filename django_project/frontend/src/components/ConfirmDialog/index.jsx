@@ -64,7 +64,7 @@ export const ConfirmDialog = forwardRef(
             </ThemeButton>
             &nbsp;
             <ThemeButton
-              variant="secondary Basic"
+              variant="primary Basic"
               disabled={props.disabledConfirm}
               onClick={() => {
                 onConfirmed()

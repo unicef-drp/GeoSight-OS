@@ -167,7 +167,7 @@ export default function AccessRequestPermissionList({ ...props }) {
             </ConfirmDialog>
             <ThemeButton
               disabled={submitted}
-              variant="secondary"
+              variant="primary"
               onClick={() => {
                 dialogRef?.current?.open()
               }}>

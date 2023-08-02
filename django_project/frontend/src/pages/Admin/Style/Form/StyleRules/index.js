@@ -757,7 +757,7 @@ export default function StyleRules(
       <tr className='Rule-Add'>
         <td colSpan={7}>
           <AddButton
-            variant="secondary"
+            variant="primary"
             text="Add New Rule"
             onClick={addNewRule}
           />

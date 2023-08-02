@@ -71,7 +71,7 @@ export default function ContextLayerForm() {
       pageName={pageNames.ContextLayer}
       rightHeader={
         <SaveButton
-          variant="secondary"
+          variant="primary"
           text="Save"
           onClick={() => {
             formRef.current.submit(true)

@@ -126,7 +126,7 @@ export const CronInput = forwardRef(
             <div className='Button-Row'>
               <div className='Clear-Button'>
                 <DeleteButton
-                  variant="secondary"
+                  variant="primary"
                   text={"Clear"}
                   onClick={() => {
                     setSchedule('* * * * *')
@@ -136,7 +136,7 @@ export const CronInput = forwardRef(
               <div className='Save-Button'>
                 <SaveButton
                   disabled={!schedule}
-                  variant="secondary"
+                  variant="primary"
                   text={"Update Schedule"}
                   onClick={() => {
                     data.schedule = parseSchedule()

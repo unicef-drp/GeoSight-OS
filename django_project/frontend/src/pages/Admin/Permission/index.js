@@ -194,7 +194,7 @@ export function PermissionFormTableDataSelection(
       }
       <div className='Save-Button'>
         <SaveButton
-          variant="secondary"
+          variant="primary"
           text={"Add " + permissionLabel + 's'}
           onClick={() => {
             const newData = data.filter(row => {
@@ -253,7 +253,7 @@ export function UpdatePermissionModal(
     <ModalFooter>
       <div className='Save-Button'>
         <SaveButton
-          variant="secondary"
+          variant="primary"
           text={"Apply Changes"}
           onClick={() => {
             selectedPermission(selected)
@@ -291,7 +291,7 @@ export function PermissionFormTable(
     <div className='PermissionFormTableHeader'>
       <DeleteButton
         disabled={!selectionModel.length}
-        variant="secondary Reverse"
+        variant="primary Reverse"
         text={"Delete"}
         onClick={() => {
           if (confirm(`Do you want to delete the selected ${permissionLabel.toLowerCase()}s?`) === true) {
@@ -303,14 +303,14 @@ export function PermissionFormTable(
       />
       <EditButton
         disabled={!selectionModel.length}
-        variant="secondary Reverse"
+        variant="primary Reverse"
         text={"Change permission"}
         onClick={() => {
           setOpenPermission(true)
         }}
       />
       <AddButton
-        variant="secondary"
+        variant="primary"
         text={"Share to new " + permissionLabel.toLowerCase() + "(s)"}
         onClick={() => {
           setOpen(true)
@@ -631,7 +631,7 @@ export default function PermissionModal(
         <div className='Save-Button'>
           <SaveButton
             disabled={uploaded}
-            variant="secondary"
+            variant="primary"
             text={"Apply Changes"}
             onClick={() => {
               setUploaded(true)

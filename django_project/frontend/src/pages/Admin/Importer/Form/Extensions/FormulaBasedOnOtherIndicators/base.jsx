@@ -149,7 +149,7 @@ export const FormulaBasedForm = forwardRef(
                   className='FunctionGenerator MuiBox-Large'
                   Button={
                     <AddButton
-                      variant="secondary Reverse" text={"Generate get_value"}
+                      variant="primary Reverse" text={"Generate get_value"}
                     />
                   }
                   header={'Generate get_value'}
@@ -171,7 +171,7 @@ export const FormulaBasedForm = forwardRef(
                   className='FunctionGenerator MuiBox-Large'
                   Button={
                     <AddButton
-                      variant="secondary Reverse" text={"Generate get_values"}
+                      variant="primary Reverse" text={"Generate get_values"}
                     />
                   }
                   header={'Generate get_values'}

@@ -360,7 +360,7 @@ export default function ImporterLogData() {
         actionButtons={
           <div>
             <SaveButton
-              variant="secondary"
+              variant="primary"
               text={"Save " + selectionModel.length + " selected(s)"}
               disabled={!selectionModel.length || progress < 100}
               style={{ marginLeft: 0, marginBottom: 0 }}

@@ -64,7 +64,7 @@ export default function GroupForm() {
       pageName={pageNames.UsersAndGroups}
       rightHeader={
         <SaveButton
-          variant="secondary"
+          variant="primary"
           text="Save"
           onClick={submit}
           disabled={submitted ? true : false}
@@ -75,7 +75,7 @@ export default function GroupForm() {
         <div className='MembersLabel'>
           <label className="form-label required" htmlFor="name">Members</label>
           <AddButton
-            variant="secondary"
+            variant="primary"
             text={"Add users"}
             onClick={() => {
               setOpen(true)

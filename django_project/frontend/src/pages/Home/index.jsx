@@ -140,7 +140,7 @@ export default function Home() {
                   null
               }
               <ThemeButton
-                variant="secondary Basic HideBanner"
+                variant="primary Basic HideBanner"
                 onClick={_ => setShowBanner(false)}>
                 Hide this banner <HighlightOffIcon/>
               </ThemeButton>

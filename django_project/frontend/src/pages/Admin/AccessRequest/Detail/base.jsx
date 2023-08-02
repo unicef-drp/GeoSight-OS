@@ -110,7 +110,7 @@ export default function AccessRequestDetail({ pageName }) {
         </ConfirmDialog>
         <ThemeButton
           disabled={submitted}
-          variant="secondary"
+          variant="primary"
           onClick={() => {
             approveRef?.current?.open()
           }}>

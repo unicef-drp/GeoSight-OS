@@ -535,6 +535,10 @@
     width: 25px;
     display: flex;
     align-items: center;
+
+    button {
+      color: $svg-gray !important;
+    }
   }
 }
 
@@ -563,7 +567,23 @@
     padding-right: 1rem !important;
 
     svg {
-      color: #adb5bd;
+      color: $svg-gray;
     }
   }
+}
+
+.MuiAutocomplete-popper {
+  .MuiPaper-root {
+    box-shadow: $box-shadow-sm;
+  }
+}
+
+.MuiAutocomplete-option[aria-selected="true"],
+.SelectWithList__option--is-selected {
+  background-color: $primary-color-transparency !important;
+  color: black !important;
+}
+
+.SelectWithList__option--is-focused {
+  background-color: rgba(0, 0, 0, 0.04) !important;
 }

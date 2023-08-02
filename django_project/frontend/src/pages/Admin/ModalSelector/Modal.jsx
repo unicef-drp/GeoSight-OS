@@ -257,7 +257,7 @@ export default function ModalSelector(
           isMultiple ?
             <div className='Save-Button'>
               <SaveButton
-                variant="secondary"
+                variant="primary"
                 text={"Update Selection"}
                 disabled={!data}
                 onClick={() => {
