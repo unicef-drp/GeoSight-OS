@@ -88,7 +88,6 @@
 
 
   .Mui-disabled {
-    -webkit-text-fill-color: $base-black-color;
     color: $base-black-color;
     cursor: not-allowed;
 
@@ -128,10 +127,6 @@
   & > .GeneralAccess,
   & > .Other {
     padding: 1rem;
-  }
-
-  & > .UserAccess, & > .GroupAccess, & > .GeneralAccess, & > .Other {
-    border: 1px solid $primary-color;
   }
 
   .PermissionFormTableHeader {

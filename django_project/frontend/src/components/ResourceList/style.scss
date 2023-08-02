@@ -45,17 +45,7 @@
         width: 100%;
 
         input {
-          padding: 0.5rem 1rem 0.5rem 0;
-        }
-
-        .MuiOutlinedInput-notchedOutline {
-          border: unset;
-        }
-
-        &:hover {
-          .MuiOutlinedInput-notchedOutline {
-            border: unset;
-          }
+          padding: 0.5rem 1rem;
         }
       }
     }

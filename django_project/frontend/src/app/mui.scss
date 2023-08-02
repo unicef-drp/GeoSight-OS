@@ -71,6 +71,15 @@
     border: 1px solid $primary-color !important;
     color: $primary-color !important;
   }
+
+  &.Basic {
+    background-color: unset !important;
+    border: unset !important;
+
+    &.Mui-disabled {
+      color: $gray-500 !important;
+    }
+  }
 }
 
 .MuiButton-Error {
@@ -135,7 +144,6 @@
       background-color: $anti-secondary-color !important;
       border: 1px solid $secondary-color !important;
       color: $secondary-color !important;
-      -webkit-text-fill-color: $secondary-color !important;
 
       svg {
         display: block !important;

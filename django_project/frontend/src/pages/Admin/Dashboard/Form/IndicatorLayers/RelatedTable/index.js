@@ -15,7 +15,6 @@
 
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { useSelector } from "react-redux";
-import SettingsIcon from "@mui/icons-material/Settings";
 import { FormGroup } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
@@ -56,6 +55,7 @@ import LabelForm from "../../../../Indicator/Form/LabelForm";
 import PopupConfigForm from "../PopupConfigForm";
 import StyleConfig from "../../../../Style/Form/StyleConfig";
 import { MainDataGrid } from "../../../../../../components/MainDataGrid";
+import { CogIcon } from "../../../../../../components/Icons/svg";
 
 import './style.scss';
 
@@ -235,6 +235,13 @@ export default function RelatedTableLayerConfig(
           Setup Related Table Layer
         </ModalHeader>
         <ModalContent className='Gray'>
+          <div className='SaveButton-Section'>
+            <SaveButton
+              variant="primary"
+              text={"Apply Changes"}
+              disabled={disabled}
+              onClick={apply}/>
+          </div>
           <div className='AdminForm Section'>
             <AdminForm
               selectableInput={false}
@@ -456,11 +463,6 @@ export default function RelatedTableLayerConfig(
                 />,
               }}
             />
-            <SaveButton
-              variant="primary"
-              text={"Apply Changes"}
-              disabled={disabled}
-              onClick={apply}/>
           </div>
         </ModalContent>
       </Modal>
@@ -469,7 +471,7 @@ export default function RelatedTableLayerConfig(
           <ThemeButton className='IndicatorStyleButton' onClick={() => {
             setOpen(true)
           }}>
-            <SettingsIcon/> Config
+            <CogIcon/> Config
           </ThemeButton>
           : ""
       }

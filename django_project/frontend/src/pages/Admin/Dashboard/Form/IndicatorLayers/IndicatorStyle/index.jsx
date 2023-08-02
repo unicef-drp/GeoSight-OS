@@ -14,7 +14,6 @@
  */
 
 import React, { forwardRef, Fragment, useEffect, useState } from 'react';
-import SettingsIcon from "@mui/icons-material/Settings";
 import { useDispatch, useSelector } from "react-redux";
 import { FormControlLabel, FormGroup } from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
@@ -35,6 +34,7 @@ import { AdminForm } from "../../../../Components/AdminForm";
 import { dictDeepCopy } from "../../../../../../utils/main";
 import PopupConfigForm from "../PopupConfigForm";
 import StyleConfig from "../../../../Style/Form/StyleConfig";
+import { CogIcon } from "../../../../../../components/Icons/svg";
 
 import './style.scss';
 
@@ -101,6 +101,13 @@ export const IndicatorStyle = forwardRef(
             }
           </ModalHeader>
           <ModalContent className='Gray'>
+            <div className='SaveButton-Section'>
+              <SaveButton
+                variant="primary"
+                text={"Apply Changes"}
+                disabled={disabled}
+                onClick={apply}/>
+            </div>
             <div className='AdminForm Section'>
               <AdminForm
                 selectableInput={false}
@@ -254,18 +261,13 @@ export const IndicatorStyle = forwardRef(
                   />,
                 }}
               />
-              <SaveButton
-                variant="primary"
-                text={"Apply Changes"}
-                disabled={disabled}
-                onClick={apply}/>
             </div>
           </ModalContent>
         </Modal>
         <ThemeButton className='IndicatorStyleButton' onClick={() => {
           setOpen(true)
         }}>
-          <SettingsIcon/> Config
+          <CogIcon/> Config
         </ThemeButton>
       </Fragment>
     )
