@@ -130,7 +130,7 @@ export function DashboardHistory(
 
   return <Fragment>
     <ThemeButton
-      variant='primary Reverse Basic'
+      variant='primary Reverse JustIcon'
       className='UndoRedo'
       onClick={undo}
       disabled={currentHistoryIdx <= 0}
@@ -138,7 +138,7 @@ export function DashboardHistory(
       <UndoIcon/>
     </ThemeButton>
     <ThemeButton
-      variant='primary Reverse Basic'
+      variant='primary Reverse JustIcon'
       className='UndoRedo'
       onClick={reset}
       disabled={currentHistoryIdx <= 0}
@@ -146,7 +146,7 @@ export function DashboardHistory(
       <ReplayIcon/>
     </ThemeButton>
     <ThemeButton
-      variant='primary Reverse Basic'
+      variant='primary Reverse JustIcon'
       className='UndoRedo'
       onClick={redo}
       disabled={redoDisabled}
