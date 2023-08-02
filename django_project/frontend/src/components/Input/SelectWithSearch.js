@@ -14,6 +14,7 @@
  */
 
 import React from "react";
+import $ from 'jquery';
 import { Checkbox, TextField } from "@mui/material";
 import Autocomplete from '@mui/material/Autocomplete';
 import CheckBoxOutlineBlankIcon
@@ -142,7 +143,7 @@ export function MultipleSelectWithSearch(
       />
     )}
     onChange={(e, values) => {
-      if (e.target.getAttribute('value') === selectAllText) {
+      if (e.target.getAttribute('value') === selectAllText || $(e.target).closest('li').attr('value') === selectAllText) {
         if (!allSelected) {
           onChangeFn(options);
         } else {

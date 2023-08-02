@@ -401,51 +401,51 @@ export function DashboardFormHeader(
   } = useSelector(state => state.dashboard.data);
   return <div className='DashboardFormHeader TabPrimary'>
     <div
-      className={currentPage === 'Summary' ? 'active' : 'MuiButtonLike'}
+      className={currentPage === 'Summary' ? 'Selected' : 'MuiButtonLike'}
       onClick={() => changePage('Summary')}
     >
       General
     </div>
     <div
-      className={currentPage === 'Indicators' ? 'active' : 'MuiButtonLike'}
+      className={currentPage === 'Indicators' ? 'Selected' : 'MuiButtonLike'}
       onClick={() => changePage('Indicators')}
     >
       Indicators {indicators?.length ? `(${indicators?.length})` : null}
     </div>
     <div
-      className={currentPage === 'Indicator Layers' ? 'active' : 'MuiButtonLike'}
+      className={currentPage === 'Indicator Layers' ? 'Selected' : 'MuiButtonLike'}
       onClick={() => changePage('Indicator Layers')}
     >
       Indicator
       Layers {indicatorLayers?.length ? `(${indicatorLayers?.length})` : null}
     </div>
     <div
-      className={currentPage === 'Context Layers' ? 'active' : 'MuiButtonLike'}
+      className={currentPage === 'Context Layers' ? 'Selected' : 'MuiButtonLike'}
       onClick={() => changePage('Context Layers')}
     >
       Context
       Layers {contextLayers?.length ? `(${contextLayers?.length})` : null}
     </div>
     <div
-      className={currentPage === 'Basemaps' ? 'active' : 'MuiButtonLike'}
+      className={currentPage === 'Basemaps' ? 'Selected' : 'MuiButtonLike'}
       onClick={() => changePage('Basemaps')}
     >
       Basemaps {basemapsLayers?.length ? `(${basemapsLayers?.length})` : null}
     </div>
     <div
-      className={currentPage === 'Filters' ? 'active' : 'MuiButtonLike'}
+      className={currentPage === 'Filters' ? 'Selected' : 'MuiButtonLike'}
       onClick={() => changePage('Filters')}
     >
       Filters
     </div>
     <div
-      className={currentPage === 'Widgets' ? 'active' : 'MuiButtonLike'}
+      className={currentPage === 'Widgets' ? 'Selected' : 'MuiButtonLike'}
       onClick={() => changePage('Widgets')}
     >
       Widgets {widgets?.length ? `(${widgets?.length})` : null}
     </div>
     <div
-      className={currentPage === 'RelatedTables' ? 'active' : 'MuiButtonLike'}
+      className={currentPage === 'RelatedTables' ? 'Selected' : 'MuiButtonLike'}
       onClick={() => changePage('RelatedTables')}
     >
       Related
@@ -454,7 +454,7 @@ export function DashboardFormHeader(
     {
       user_permission?.share ?
         <div
-          className={currentPage === 'Share' ? 'active' : 'MuiButtonLike'}
+          className={currentPage === 'Share' ? 'Selected' : 'MuiButtonLike'}
           onClick={() => changePage('Share')}
         >
           Share
