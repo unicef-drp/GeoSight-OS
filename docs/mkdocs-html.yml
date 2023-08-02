@@ -67,11 +67,13 @@ plugins:
   - search
   - redirects:
       redirect_maps:
-        'old.md': 'new.md'
+        #see https://github.com/mkdocs/mkdocs-redirects/tree/master#using
+        #'old.md': 'new.md'
         #'old/file.md': 'new/file.md'
         #'some_file.md': 'http://external.url.com/foobar'
 
 # Hook to add a uuid to every anchor
 # see also hook.py and https://github.com/squidfunk/mkdocs-material/discussions/3758#discussioncomment-4397373
+# Note that although the above link implies you can use UUIDs, you have to use numeric IDS not UUIDS
 hooks:
   - ./hook.py
