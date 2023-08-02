@@ -509,7 +509,7 @@ export function DashboardForm({ onPreview }) {
 
         {/* DASHBOARD FORM */}
         <div className='DashboardFormWrapper'>
-          <div className={'DashboardForm ' + className}>
+          <div className={'AdminForm DashboardForm ' + className}>
             {/* FORM CONTENT */}
             <DashboardFormHeader
               currentPage={currentPage} changePage={setCurrentPage}

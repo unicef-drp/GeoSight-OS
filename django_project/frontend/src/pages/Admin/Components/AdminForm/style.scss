@@ -23,7 +23,6 @@
   flex-grow: 1;
   padding: 0 !important;
   display: flex;
-  flex-direction: column;
   overflow: hidden;
   background-color: unset !important;
   position: relative;
@@ -50,6 +49,31 @@
       div {
         margin-left: 1rem;
         padding-top: 0.5rem;
+      }
+    }
+  }
+
+
+  & > .TabPrimary {
+    background-color: white !important;
+    border-right: 1px solid #E6E8E8;
+    display: block;
+    font-size: 12px;
+    min-width: 200px;
+
+    & > div {
+      cursor: pointer;
+      padding: 0.5rem 1rem;
+      text-align: left;
+      border: unset !important;
+
+      &:hover {
+        color: $primary-color;
+      }
+
+      &.Selected {
+        background: $primary-color-transparency !important;
+        border: unset !important;
       }
     }
   }

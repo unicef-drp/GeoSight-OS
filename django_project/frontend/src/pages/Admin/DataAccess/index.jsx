@@ -737,10 +737,10 @@ export default function DataAccessAdmin() {
       <div className='AdminList DataAccessAdmin'>
         <div className='Tab TabPrimary'>
           <div
-            className={tab === GeneralTab ? "Selected" : ""}
-            onClick={() => setTab(GeneralTab)}
+            className={tab === UserTab ? "Selected" : ""}
+            onClick={() => setTab(UserTab)}
           >
-            General
+            User(s)
           </div>
           <div
             className={tab === GroupTab ? "Selected" : ""}
@@ -749,10 +749,10 @@ export default function DataAccessAdmin() {
             Group(s)
           </div>
           <div
-            className={tab === UserTab ? "Selected" : ""}
-            onClick={() => setTab(UserTab)}
+            className={tab === GeneralTab ? "Selected" : ""}
+            onClick={() => setTab(GeneralTab)}
           >
-            User(s)
+            General
           </div>
         </div>
         {
