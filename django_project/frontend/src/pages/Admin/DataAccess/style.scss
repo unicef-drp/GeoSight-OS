@@ -20,24 +20,10 @@
 @import '../../../app/variables';
 
 .DataAccessAdmin {
-  display: flex;
-  flex-grow: 1;
-  flex-direction: column;
-  padding: 0 !important;
-  background-color: unset !important;
-
-
-  .DataAccessAdminTable {
-    flex-grow: 1;
-    height: unset !important;
-    background-color: white;
-  }
-
   .Loading {
     text-align: center;
     padding: 200px 20px;
   }
-
   .ModalDataSelectorSelected {
     display: none;
   }

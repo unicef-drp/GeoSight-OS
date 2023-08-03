@@ -13,9 +13,8 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import $ from 'jquery';
-import CircularProgress from '@mui/material/CircularProgress';
 import SettingsBackupRestoreIcon
   from '@mui/icons-material/SettingsBackupRestore';
 import { GridActionsCellItem } from "@mui/x-data-grid";
@@ -49,9 +48,11 @@ import Modal, {
   ModalFooter,
   ModalHeader
 } from "../../../components/Modal";
-import { MainDataGrid } from "../../../components/MainDataGrid";
+import { AdminTable } from "../Components/Table";
 
+import '../../Admin/Components/List/style.scss';
 import './style.scss';
+import { ConfirmDialog } from "../../../components/ConfirmDialog";
 
 /***
  * Add new data
@@ -246,13 +247,53 @@ export function UpdatePermissionModal(
  * Access data
  */
 export function AccessData(
-  { rows, columns, selected, selectionModel, setSelectionModel }) {
-  const [pageSize, setPageSize] = useState(25)
+  {
+    rows,
+    columns,
+    selected,
+    selectionModel,
+    setSelectionModel,
+    tab,
+    onDelete,
+    children
+  }) {
+  const deleteDialogRef = useRef(null);
+  const dataName = tab.replace(/s$/, '');
 
-  return <div className='MuiDataGridTable DataAccessAdminTable'>
-    <MainDataGrid
-      rows={rows}
-      columns={columns}
+  return <div className='AdminList DataAccessAdminTable'>
+    <AdminTable
+      header={
+        <Fragment>
+          {children}
+          <DeleteButton
+            disabled={!selectionModel.length}
+            variant="Error Reverse"
+            text={"Delete"}
+            onClick={() => {
+              deleteDialogRef?.current?.open()
+            }}
+          />
+          <ConfirmDialog
+            onConfirmed={() => {
+              onDelete()
+            }}
+            ref={deleteDialogRef}
+          >
+            <div>
+              Are you sure want to
+              delete {selectionModel.length} data access
+              for {dataName.toLowerCase() + (selectionModel.length > 1 ? 's' : '')}?
+              <br/>
+              <br/>
+              To apply it to database, please hit "Apply" button.
+            </div>
+          </ConfirmDialog>
+        </Fragment>
+      }
+      rows={rows} columns={columns}
+      selectionChanged={(newSelectionModel) => {
+        setSelectionModel(newSelectionModel);
+      }}
       initialState={{
         sorting: {
           sortModel: [
@@ -260,17 +301,9 @@ export function AccessData(
           ],
         },
       }}
-      pagination
-      pageSize={pageSize}
-      onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-      rowsPerPageOptions={[25, 50, 100]}
       disableSelectionOnClick
       disableColumnFilter
-
       checkboxSelection={selected}
-      onSelectionModelChange={(newSelectionModel) => {
-        setSelectionModel(newSelectionModel);
-      }}
       selectionModel={selectionModel}
     />
   </div>
@@ -635,31 +668,6 @@ export default function DataAccessAdmin() {
           {
             [UserTab, GroupTab].includes(tab) && data ?
               <Fragment>
-                <EditButton
-                  disabled={!selectionModel.length}
-                  variant="primary Reverse"
-                  text={"Change permission"}
-                  onClick={() => {
-                    setUpdatePermissionOpen(true)
-                  }}
-                />
-                <UpdatePermissionModal
-                  open={updatePermissionOpen}
-                  setOpen={setUpdatePermissionOpen}
-                  choices={data['permission_choices'].filter(choice => {
-                    return !(tab !== 'Generals' && choice[0] === 'None')
-                  })}
-                  selectedPermission={(permission) => {
-                    tableData[tab].filter(data => {
-                      if (selectionModel.includes(data.id)) {
-                        data.permission = permission
-                      }
-                    })
-                    setTableData({ ...tableData })
-                    setSelectionModel([])
-                    setUpdatePermissionOpen(false)
-                  }}
-                />
                 <AddButton
                   variant="primary"
                   text={"Share to " + tab}
@@ -678,18 +686,6 @@ export default function DataAccessAdmin() {
                   updateData={(data) => {
                     tableData[tab] = data
                     setTableData({ ...tableData })
-                  }}
-                />
-                <DeleteButton
-                  disabled={!selectionModel.length}
-                  variant="Error Reverse"
-                  text={"Delete" + (selectionModel.length ? `(${selectionModel.length} Selected)` : "")}
-                  onClick={() => {
-                    tableData[tab].filter(data => selectionModel.includes(data.id)).map(row => {
-                      row.is_deleted = true
-                    })
-                    setTableData({ ...tableData })
-                    setSelectionModel([])
                   }}
                 />
               </Fragment> : null
@@ -734,41 +730,71 @@ export default function DataAccessAdmin() {
           ) : ""
         }
       </div>
-      <div className='AdminList DataAccessAdmin'>
-        <div className='Tab TabPrimary'>
-          <div
-            className={tab === UserTab ? "Selected" : ""}
-            onClick={() => setTab(UserTab)}
-          >
-            User(s)
-          </div>
-          <div
-            className={tab === GroupTab ? "Selected" : ""}
-            onClick={() => setTab(GroupTab)}
-          >
-            Group(s)
-          </div>
-          <div
-            className={tab === GeneralTab ? "Selected" : ""}
-            onClick={() => setTab(GeneralTab)}
-          >
-            General
-          </div>
+      <div className='Tab TabPrimary'>
+        <div
+          className={tab === UserTab ? "Selected" : ""}
+          onClick={() => setTab(UserTab)}
+        >
+          User(s)
         </div>
-        {
-          !tableData ?
-            <div className='DataAccessAdminTable Loading'>
-              <CircularProgress/>
-            </div> : (
-              <AccessData
-                rows={filteredTableData[tab]} columns={COLUMNS[tab]}
-                selected={[UserTab, GroupTab].includes(tab)}
-                selectionModel={selectionModel}
-                setSelectionModel={setSelectionModel}
-              />
-            )
-        }
+        <div
+          className={tab === GroupTab ? "Selected" : ""}
+          onClick={() => setTab(GroupTab)}
+        >
+          Group(s)
+        </div>
+        <div
+          className={tab === GeneralTab ? "Selected" : ""}
+          onClick={() => setTab(GeneralTab)}
+        >
+          General
+        </div>
       </div>
+      <AccessData
+        rows={filteredTableData ? filteredTableData[tab] : null}
+        columns={COLUMNS[tab]}
+        selected={[UserTab, GroupTab].includes(tab)}
+        selectionModel={selectionModel}
+        setSelectionModel={setSelectionModel}
+        onDelete={_ => {
+          tableData[tab].filter(data => selectionModel.includes(data.id)).map(row => {
+            row.is_deleted = true
+          })
+          setTableData({ ...tableData })
+          setSelectionModel([])
+        }}
+        tab={tab}
+      >
+        {
+          data ? <Fragment>
+            <EditButton
+              disabled={!selectionModel.length}
+              variant="primary Reverse"
+              text={"Change permission"}
+              onClick={() => {
+                setUpdatePermissionOpen(true)
+              }}
+            />
+            <UpdatePermissionModal
+              open={updatePermissionOpen}
+              setOpen={setUpdatePermissionOpen}
+              choices={data['permission_choices'].filter(choice => {
+                return !(tab !== 'Generals' && choice[0] === 'None')
+              })}
+              selectedPermission={(permission) => {
+                tableData[tab].filter(data => {
+                  if (selectionModel.includes(data.id)) {
+                    data.permission = permission
+                  }
+                })
+                setTableData({ ...tableData })
+                setSelectionModel([])
+                setUpdatePermissionOpen(false)
+              }}
+            />
+          </Fragment> : null
+        }
+      </AccessData>
     </Admin>
   );
 }
