@@ -61,9 +61,8 @@ Create an issue and provide the following information:
   copy/pasteable snippets which you use in those examples, as Markdown code
   blocks.
 * **Include screenshots and animated GIFs** which helps demonstrate the steps
-  or point out the part of TOAST UI Editor which the suggestion is related to.
-* **Explain why this enhancement would be useful** to most QGIS Animation
-  Workbench users.
+  or point out the part of project which the suggestion is related to.
+* **Explain why this enhancement would be useful** to most users.
 * **List some other text editors or applications where this enhancement
   exists.**
 

@@ -19,8 +19,8 @@ plugins:
       copyright: " "
       cover: true # see templates/cover.html
       back_cover: true
-      cover_title: Title for PDF
-      cover_subtitle: Mappiness is Happiness
+      cover_title: GeoSight-OS 
+      cover_subtitle: GeoSpatial Business Intelligence Platform 
       cover_logo: ./resources/img/logo/kartoza-logo.svg
       # Print css is defined in templates/styles.scss
       #custom_template_path: TEMPLATES PATH
