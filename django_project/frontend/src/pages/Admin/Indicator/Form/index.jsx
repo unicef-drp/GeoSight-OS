@@ -158,6 +158,7 @@ export default function IndicatorForm() {
 
   return (
     <Admin
+      minifySideNavigation={true}
       className='Indicator'
       pageName={pageNames.Indicators}
       rightHeader={

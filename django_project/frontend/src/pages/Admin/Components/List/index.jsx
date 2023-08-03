@@ -272,22 +272,20 @@ export const List = forwardRef(
           />
         </div>
 
-        <div className='AdminList'>
-          <BaseList
-            columns={columns}
-            pageName={pageName}
-            listUrl={listUrl}
-            initData={initData}
-            setInitData={setInitData}
-            selectionChanged={selectionChanged}
-            sortingDefault={sortingDefault}
-            search={search}
-            searchDefault={searchDefault}
-            selectable={selectable}
-            ref={listRef}
-            {...props}
-          />
-        </div>
+        <BaseList
+          columns={columns}
+          pageName={pageName}
+          listUrl={listUrl}
+          initData={initData}
+          setInitData={setInitData}
+          selectionChanged={selectionChanged}
+          sortingDefault={sortingDefault}
+          search={search}
+          searchDefault={searchDefault}
+          selectable={selectable}
+          ref={listRef}
+          {...props}
+        />
       </Fragment>
     );
   }

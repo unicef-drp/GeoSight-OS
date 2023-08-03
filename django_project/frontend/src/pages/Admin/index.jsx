@@ -45,10 +45,10 @@ export const pageNames = {
  * @param {string} pageName Current page name.
  * @param {React.Component} children React component to be rendered
  */
-export function AdminPage({ pageName, children }) {
+export function AdminPage({ pageName, children, ...props }) {
   return (
     <App className='Admin' hideNavbar={true}>
-      <SideNavigation pageName={pageName}/>
+      <SideNavigation pageName={pageName} minified={props.minifySideNavigation}/>
       {children}
     </App>
   );
@@ -81,9 +81,9 @@ export function AdminPageContent({ rightHeader, title, children }) {
  * @param {JSX.Element} rightHeader Right header component.
  * @param {React.Component} children React component to be rendered
  */
-export default function Admin({ pageName, rightHeader, children }) {
+export default function Admin({ pageName, rightHeader, children, ...props }) {
   return (
-    <AdminPage pageName={pageName}>
+    <AdminPage pageName={pageName} {...props}>
       <AdminPageContent rightHeader={rightHeader} children={children}/>
     </AdminPage>
   );

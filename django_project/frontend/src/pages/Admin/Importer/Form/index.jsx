@@ -243,7 +243,7 @@ export default function ImporterForm() {
     <Fragment>
       {
         urls.api.detail && !data.id ?
-          <Admin pageName={' Detail'}>
+          <Admin pageName={' Detail'} minifySideNavigation={true}>
             <div className='AdminContentWithLoading'>
               <div className='AdminLoading'>
                 <div className='AdminLoadingSection'>
@@ -256,6 +256,7 @@ export default function ImporterForm() {
             </div>
           </Admin> :
           <Admin
+            minifySideNavigation={true}
             pageName={pageNames.Importer}
             rightHeader={
               <Fragment>

@@ -68,6 +68,7 @@ export default function ContextLayerForm() {
   }
   return (
     <Admin
+      minifySideNavigation={true}
       pageName={pageNames.ContextLayer}
       rightHeader={
         <SaveButton

@@ -47,6 +47,7 @@ export default function StyleForm() {
   })
   return (
     <Admin
+      minifySideNavigation={true}
       pageName={pageNames.Styles}
       rightHeader={
         <SaveButton
