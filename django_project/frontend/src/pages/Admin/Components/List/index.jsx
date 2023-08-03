@@ -271,7 +271,6 @@ export const List = forwardRef(
             onChange={evt => setSearch(evt.target.value.toLowerCase())}
           />
         </div>
-
         <BaseList
           columns={columns}
           pageName={pageName}

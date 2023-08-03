@@ -15,6 +15,7 @@
 
 import React, {
   forwardRef,
+  Fragment,
   useEffect,
   useImperativeHandle,
   useRef,
@@ -31,9 +32,10 @@ import { AdminPage } from './index';
 import { BaseList } from './Components/List'
 import EditIcon from "@mui/icons-material/Edit";
 import { IconTextField } from "../../components/Elements/Input";
+import MagnifyIcon from "../../components/Icons/MagnifyIcon";
+import { ConfirmDialog } from "../../components/ConfirmDialog";
 
 import './style.scss';
-import MagnifyIcon from "../../components/Icons/MagnifyIcon";
 
 
 /**
@@ -51,7 +53,7 @@ import MagnifyIcon from "../../components/Icons/MagnifyIcon";
 
 export const AdminListContent = forwardRef(
   ({
-     columns, pageName,
+     columns, pageName = '',
      listUrl, selectionChanged,
      initData = null,
      rightHeader = null,
@@ -62,6 +64,7 @@ export const AdminListContent = forwardRef(
      ...props
    }, ref
   ) => {
+    const deleteDialogRef = useRef(null);
     const apiBatch = props.apiBatch ? props.apiBatch : urls.api.batch
     const apiCreate = props.apiCreate ? props.apiCreate : urls.api.create;
     const [data, setData] = useState([]);
@@ -69,6 +72,8 @@ export const AdminListContent = forwardRef(
     const [isDeleting, setIsDeleting] = useState(false)
     const listRef = useRef(null);
     const [search, setSearch] = useState(searchDefault);
+
+    const dataName = pageName.replace(/s$/, '');
 
     /** Refresh data **/
     useImperativeHandle(ref, () => ({
@@ -98,13 +103,17 @@ export const AdminListContent = forwardRef(
     const deleteButton = () => {
       if (user.is_creator && multipleDelete && listUrl) {
         const selectedIds = selectedModelData.filter(row => !row.permission || row.permission.delete).map(row => row.id)
-        return <DeleteButton
-          disabled={isDeleting || !selectedIds.length}
-          variant="Error Reverse"
-          text={"Delete " + (selectedIds.length ? `(${selectedIds.length} Selected)` : "")}
-          onClick={() => {
-            const deleteWarning = "WARNING! Do you want to delete the selected data? This will apply directly to database."
-            if (confirm(deleteWarning) === true) {
+        return <Fragment>
+          <DeleteButton
+            disabled={isDeleting || !selectedIds.length}
+            variant="Error Reverse"
+            text={"Delete"}
+            onClick={() => {
+              deleteDialogRef?.current?.open()
+            }}
+          />
+          <ConfirmDialog
+            onConfirmed={() => {
               setIsDeleting(true)
               $.ajax({
                 url: listUrl,
@@ -122,9 +131,15 @@ export const AdminListContent = forwardRef(
                 beforeSend: beforeAjaxSend
               });
               return false;
-            }
-          }}
-        />
+            }}
+            ref={deleteDialogRef}
+          >
+            <div>
+              Are you sure want to
+              delete {selectedIds.length} {dataName.toLowerCase() + (selectedIds.length > 1 ? 's' : '')}?
+            </div>
+          </ConfirmDialog>
+        </Fragment>
       }
     }
     const createButton = () => {
@@ -146,7 +161,7 @@ export const AdminListContent = forwardRef(
           <ThemeButton
             variant="primary Basic"
             disabled={!selectedIds.length}>
-            <EditIcon/>Edit {(selectedIds.length ? `(${selectedIds.length} Selected)` : "")}
+            <EditIcon/>Edit
           </ThemeButton>
         </a>
       }
@@ -168,8 +183,6 @@ export const AdminListContent = forwardRef(
           </div>
           <div className='AdminContentHeader-Right'>
             {rightHeader ? rightHeader : null}
-            {batchEditButton()}
-            {deleteButton()}
             {createButton()}
           </div>
         </div>
@@ -193,6 +206,12 @@ export const AdminListContent = forwardRef(
           selectable={selectableFunction}
           ref={listRef}
           {...props}
+          header={
+            <Fragment>
+              {batchEditButton()}
+              {deleteButton()}
+            </Fragment>
+          }
         />
       </div>
     )

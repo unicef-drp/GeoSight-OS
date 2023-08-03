@@ -193,7 +193,6 @@
 
 
 .MuiDataGrid-root {
-  margin-top: $base-height;
   border: none !important;
 
   .MuiCheckbox-root {
@@ -254,7 +253,6 @@
       width: 18px;
       padding: 3px;
       color: $primary-color;
-      border-radius: $border-radius;
       border: 1px solid $primary-color;
 
       svg {
@@ -304,7 +302,7 @@
         height: 24px !important;
         font-size: 11px;
         padding: 0 0.5rem !important;
-        margin-top: 3px;
+        margin-top: 2px;
 
         svg {
           height: 16px !important;
@@ -459,22 +457,12 @@
 }
 
 .MuiDataGrid-footerContainer {
-  position: absolute;
-  top: $base-height-minus;
-  left: 0;
-  width: 100%;
-  border: unset !important;
-  justify-content: unset !important;
-
   div, p {
     font-size: 12px !important;
   }
 
   .MuiDataGrid-selectedRowCount {
-    margin-right: 0 !important;
-    border: 1px solid $primary-color;
-    color: $primary-color;
-    padding: 3px;
+    opacity: 0 !important;
   }
 
   .MuiInputBase-root {

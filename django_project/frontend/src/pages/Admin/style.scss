@@ -46,7 +46,7 @@ main {
   flex-direction: column;
   flex-grow: 1;
   min-width: 0;
-  background-color: #F4F4F4;
+  background-color: $base-to-white-color;
   position: relative;
 
   & > div {
@@ -97,11 +97,11 @@ main {
   }
 
   .AdminBaseInput {
-    background-color: white;
-    padding: 0.5rem;
+    background-color: $base-to-white-color;
+    padding: 1rem;
 
     .MuiFormControl-root {
-      background-color: $base-almost-white-color;
+      background-color: white;
       margin-top: 0 !important;
       width: 100%;
 

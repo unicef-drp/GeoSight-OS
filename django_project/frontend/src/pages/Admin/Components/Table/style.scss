@@ -26,3 +26,29 @@
     }
   }
 }
+
+.AdminListHeader {
+  display: flex;
+  background-color: $base-to-white-color !important;
+  align-items: center;
+  height: $base-height;
+  padding: 2px 20px;
+  font-size: 12px !important;
+
+  .AdminListHeader-Count {
+    color: $primary-color;
+    border: 1px solid $primary-color;
+    padding: 2px 0.5rem;
+  }
+
+  button {
+    height: 24px;
+    font-size: 12px !important;
+    min-width: 80px !important;
+    margin-left: 5px;
+
+    svg {
+      height: 10px;
+    }
+  }
+}

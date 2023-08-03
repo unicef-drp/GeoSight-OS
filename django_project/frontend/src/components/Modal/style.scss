@@ -42,7 +42,7 @@
   }
 
   .Save-Button {
-    margin: 1rem 1rem 1rem auto;
+    margin: 0 0 0 auto;
     padding: 1rem;
     background-color: unset;
   }
@@ -94,7 +94,7 @@
   overflow-x: auto;
 
   &.Gray {
-    background-color: #F4F4F4;
+    background-color: $base-to-white-color;
     padding: 0;
     padding-top: 1rem;
 
@@ -116,6 +116,8 @@
 
 .modal--footer {
   overflow-x: auto;
+  padding: 1rem;
+  background-color: $base-to-white-color;
 }
 
 .ModalSelection {

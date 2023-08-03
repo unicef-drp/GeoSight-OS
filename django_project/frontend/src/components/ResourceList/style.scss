@@ -24,7 +24,7 @@
   flex-direction: column;
   flex-grow: 1;
   min-width: 0;
-  background-color: #F4F4F4;
+  background-color: $base-to-white-color;
 
   & > div {
     border-radius: $border-radius;
