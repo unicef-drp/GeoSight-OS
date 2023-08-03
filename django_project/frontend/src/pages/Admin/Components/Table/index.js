@@ -30,26 +30,24 @@ export function AdminTable(
   {
     rows,
     columns,
-    selectionChanged = null,
+    selectionModel,
+    setSelectionModel,
     sortingDefault = null,
     selectable = true,
     ...props
   }
 ) {
-  const [selectionModel, setSelectionModel] = useState([]);
   const [pageSize, setPageSize] = useState(25);
 
   // When selection model show
   useEffect(() => {
-    if (selectionChanged) {
+    if (setSelectionModel) {
       if (props.selectedFullData) {
         if (rows) {
-          selectionChanged(rows.filter(row => selectionModel.includes(row.id)))
+          setSelectionModel(rows.filter(row => selectionModel.includes(row.id)))
         } else {
-          selectionChanged([])
+          setSelectionModel([])
         }
-      } else {
-        selectionChanged(selectionModel)
       }
     }
   }, [selectionModel, rows]);
@@ -112,11 +110,11 @@ export function AdminTable(
           }}
           disableSelectionOnClick
 
-          checkboxSelection={columns?.length && !!selectionChanged}
+          checkboxSelection={columns?.length && !!setSelectionModel}
           onSelectionModelChange={(newSelectionModel) => {
             setSelectionModel(newSelectionModel);
           }}
-          selectionModel={selectionModel}
+          selectionModel={selectionModel ? selectionModel : []}
           isRowSelectable={(params) => {
             if (typeof selectable === 'function') {
               return selectable(params)

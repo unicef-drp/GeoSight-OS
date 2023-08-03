@@ -92,6 +92,17 @@ export const AdminListContent = forwardRef(
       }
     }, [selectionModel])
 
+    // When init data changed
+    useEffect(() => {
+      if (initData) {
+        const selectableIds = initData.filter(row => [null, undefined, true].includes(row.selectable)).map(row => row.id)
+        const newSelectionModel = selectionModel.filter(row => selectableIds.includes(row))
+        if (JSON.stringify(newSelectionModel) !== JSON.stringify(selectionModel)) {
+          setSelectionModel(newSelectionModel)
+        }
+      }
+    }, [initData])
+
     /** Render **/
     let selectableFunction = !isDeleting
     if (!isDeleting && (multipleDelete || apiBatch)) {
@@ -206,7 +217,8 @@ export const AdminListContent = forwardRef(
           selectable={selectableFunction}
           ref={listRef}
           {...props}
-          selectionChanged={
+          selectionModel={selectionModel}
+          setSelectionModel={
             selectionChanged || multipleDelete ? (
               selectedData => {
                 setSelectionModel(selectedData)

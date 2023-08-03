@@ -156,7 +156,9 @@ export function COLUMNS(pageName, redirectUrl, editUrl = null, detailUrl = null)
 export const BaseList = forwardRef(
   ({
      columns, pageName, listUrl, initData, setInitData,
-     selectionChanged, sortingDefault, searchDefault,
+     sortingDefault, searchDefault,
+     selectionModel,
+     setSelectionModel,
      search, selectable = true,
      ...props
    }, ref
@@ -230,8 +232,10 @@ export const BaseList = forwardRef(
       <Fragment>
         <div className='AdminList'>
           <AdminTable
-            rows={rows} columns={columns}
-            selectionChanged={selectionChanged}
+            rows={rows}
+            columns={columns}
+            selectionModel={selectionModel}
+            setSelectionModel={setSelectionModel}
             sortingDefault={sortingDefault}
             selectable={selectable}
             error={error}

@@ -291,9 +291,7 @@ export function AccessData(
         </Fragment>
       }
       rows={rows} columns={columns}
-      selectionChanged={(newSelectionModel) => {
-        setSelectionModel(newSelectionModel);
-      }}
+      setSelectionModel={setSelectionModel}
       initialState={{
         sorting: {
           sortModel: [

@@ -326,7 +326,10 @@ export default function ImporterLogData() {
 
   let usedData = null
   if (data) {
-    usedData = dictDeepCopy(data);
+    usedData = dictDeepCopy(data)
+    usedData.map(row => {
+      row.selectable = row.status === 'Review'
+    })
     if (filters.indicators?.length) {
       usedData = usedData.filter(row => filters.indicators.includes(row.indicator_id + ''))
     }
@@ -392,7 +395,7 @@ export default function ImporterLogData() {
           </div>
         }
         columns={state.columns}
-        rows={usedData}
+        initData={usedData}
         filters={filters}
         setFilters={setFilters}
         selectionModel={selectionModel}
@@ -403,9 +406,7 @@ export default function ImporterLogData() {
         }}
         disableColumnFilter={false}
         sortingDefault={[{ field: 'status', sort: 'asc' }]}
-        selectable={(param) => {
-          return progress >= 100 && param.row.status === 'Review'
-        }}
+        selectable={(param) => progress >= 100 && param.row.selectable}
       />
     </AdminPage>
   }
