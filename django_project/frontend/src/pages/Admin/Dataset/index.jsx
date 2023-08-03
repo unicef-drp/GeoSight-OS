@@ -48,10 +48,10 @@ import { AdminListContent } from "../AdminList";
 import { fetchJSON } from "../../../Requests";
 import CustomPopover from "../../../components/CustomPopover";
 import { IconTextField } from "../../../components/Elements/Input";
-
-import './style.scss';
 import { DeleteButton, SaveButton } from "../../../components/Elements/Button";
 import { ConfirmDialog } from "../../../components/ConfirmDialog";
+
+import './style.scss';
 
 /*** Dataset list **/
 export function DatasetList(

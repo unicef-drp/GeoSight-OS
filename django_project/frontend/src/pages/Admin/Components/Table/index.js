@@ -112,7 +112,7 @@ export function AdminTable(
           }}
           disableSelectionOnClick
 
-          checkboxSelection={!!selectionChanged}
+          checkboxSelection={columns?.length && !!selectionChanged}
           onSelectionModelChange={(newSelectionModel) => {
             setSelectionModel(newSelectionModel);
           }}

@@ -54,7 +54,8 @@ import './style.scss';
 export const AdminListContent = forwardRef(
   ({
      columns, pageName = '',
-     listUrl, selectionChanged,
+     listUrl,
+     selectionChanged,
      initData = null,
      rightHeader = null,
      sortingDefault = null,
@@ -90,7 +91,6 @@ export const AdminListContent = forwardRef(
         selectionChanged(selectionModel)
       }
     }, [selectionModel])
-
 
     /** Render **/
     let selectableFunction = !isDeleting
