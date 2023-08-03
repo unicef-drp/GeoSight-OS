@@ -60,6 +60,8 @@ export const AdminListContent = forwardRef(
      sortingDefault = null,
      searchDefault = null,
      multipleDelete = null,
+     tableHeader,
+     otherFilters,
      tabChildren,
      ...props
    }, ref
@@ -186,6 +188,7 @@ export const AdminListContent = forwardRef(
             {createButton()}
           </div>
         </div>
+        {otherFilters}
         {tabChildren}
         <BaseList
           columns={columns}
@@ -197,19 +200,27 @@ export const AdminListContent = forwardRef(
               setData(newData)
             }
           }}
-          selectionChanged={
-            selectionChanged || multipleDelete ? setSelectionModel : null
-          }
           sortingDefault={sortingDefault}
           search={search}
           searchDefault={searchDefault}
           selectable={selectableFunction}
           ref={listRef}
           {...props}
+          selectionChanged={
+            selectionChanged || multipleDelete ? (
+              selectedData => {
+                setSelectionModel(selectedData)
+                if (props.selectionChanged) {
+                  props.selectionChanged(selectedData)
+                }
+              }
+            ) : null
+          }
           header={
             <Fragment>
               {batchEditButton()}
               {deleteButton()}
+              {tableHeader}
             </Fragment>
           }
         />

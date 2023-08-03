@@ -52,7 +52,7 @@ export function AdminTable(
         selectionChanged(selectionModel)
       }
     }
-  }, [selectionModel]);
+  }, [selectionModel, rows]);
 
   let sorting = {
     sortModel: [{ field: 'name', sort: 'asc' }],
@@ -125,6 +125,7 @@ export function AdminTable(
             }
           }}
           loading={!props.error && isLoading}
+          {...props}
         />
       </div>
     </Fragment>

@@ -146,6 +146,40 @@ main {
   }
 }
 
+.ListAdminFilters {
+  padding: 0.5rem !important;
+  display: flex;
+  flex-flow: row wrap;
+  margin: 0 1rem 1rem 1rem !important;
+
+  & > div {
+    margin-right: 0.5rem;
+  }
+
+  .MuiFormControl-root {
+    .MuiFormLabel-root {
+      top: -6px;
+    }
+  }
+
+  .MuiInputBase-root {
+    width: 200px;
+
+    input {
+      padding: 10px;
+      padding-right: 0 !important;
+    }
+  }
+
+  .MuiSelect-icon {
+    transform: rotate(0deg) !important;
+  }
+
+  .ModalDataSelectorSelected {
+    display: none;
+  }
+}
+
 .AdminSelectDataForm {
   & > .MuiBox-root {
     height: 90%;

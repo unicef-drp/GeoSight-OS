@@ -25,6 +25,16 @@
       display: none;
     }
   }
+
+  .MuiDataGrid-cell {
+    &.Updated {
+      background-color: $base-alpha-color;
+    }
+
+    .MuiOutlinedInput-root {
+      height: 28px;
+    }
+  }
 }
 
 .AdminListHeader {
