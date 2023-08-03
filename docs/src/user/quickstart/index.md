@@ -5,7 +5,6 @@
 <!-- Easy to follow instructions for installing the product
 not always a necessity -->
 
-![install_download_1](img/install_download_1)
 
 ## Getting Started
 <!-- Easy to follow instructions for getting started using
