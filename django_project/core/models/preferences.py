@@ -76,6 +76,17 @@ class SitePreferences(SingletonModel):
     )
 
     # -----------------------------------------------
+    # LANDING PAGE
+    # -----------------------------------------------
+    landing_page_banner = models.FileField(
+        null=True, blank=True,
+        upload_to='settings/images'
+    )
+    landing_page_banner_text = models.TextField(
+        default=''
+    )
+
+    # -----------------------------------------------
     # THEME
     # -----------------------------------------------
     primary_color = models.CharField(
@@ -220,6 +231,15 @@ class SitePreferences(SingletonModel):
         default=DEFAULT_OUTLINE_SIZE,
         help_text=_(
             'Default outline size for dynamic style.'
+        ),
+        verbose_name="Outline size"
+    )
+
+    # Compare mode
+    style_compare_mode_outline_size = models.FloatField(
+        default=4,
+        help_text=_(
+            'Outline size for compare mode.'
         ),
         verbose_name="Outline size"
     )

@@ -93,6 +93,9 @@ export const ReferenceLayerInput = forwardRef(
         } else if (valueOnly && data.admin_level_type === ANY_LEVEL) {
           switchTo(BY_VALUE)
         }
+        if (typeof data.admin_level_value === 'string' || data.admin_level_value instanceof String) {
+          data.admin_level_value = parseInt(data.admin_level_value)
+        }
       }, [data, attributes]
     )
 
@@ -115,7 +118,7 @@ export const ReferenceLayerInput = forwardRef(
         levels = levels.map(level => {
           return level.value
         });
-        if (!levels.includes(data.admin_level_value)) {
+        if (!levels.includes(parseInt(data.admin_level_value))) {
           return levels[0]
         }
       }
@@ -133,8 +136,9 @@ export const ReferenceLayerInput = forwardRef(
         });
         let updated = false
         if (data.admin_level_type === BY_VALUE) {
-          if (!levels.includes(data.admin_level_value)) {
-            data.admin_level_value = levels[0]
+          const level = defaultLevel(referenceLayer?.dataset_levels)
+          if (level !== parseInt(data.admin_level_value)) {
+            data.admin_level_value = level
             updated = true
           }
         }
@@ -172,6 +176,7 @@ export const ReferenceLayerInput = forwardRef(
         }
       }, [references, data.reference_layer]
     )
+
     return (
       <Grid container spacing={2}>
         <Grid item xs={6}>

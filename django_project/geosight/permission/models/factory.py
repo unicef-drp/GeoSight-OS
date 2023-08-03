@@ -201,6 +201,9 @@ def permission_model_factory(
 
         def get_user_perm_level(self, user: User = None):
             """Get user permission."""
+            if user and not user.is_authenticated:
+                user = None
+
             if user:
                 # Return true if superuser or super admin
                 if user.profile.is_admin:

@@ -1,0 +1,48 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   Navbar : Deprecated, reusing css from admin dashboard
+   ========================================================================== */
+
+@import '../../app/variables';
+
+footer {
+  background-color: $navbar-background-color;
+  height: 87px;
+
+  .Footer {
+    align-items: center;
+    display: flex;
+    margin: auto;
+    max-width: 100%;
+    width: 1300px;
+    padding: 1.8rem 5rem;
+    height: 100%;
+    box-sizing: border-box;
+    color: $anti-primary-color;
+
+    a {
+      display: block;
+      height: 100%;
+    }
+
+    img {
+      height: 100%;
+      vertical-align: unset !important;
+      margin-right: 2rem;
+    }
+  }
+}

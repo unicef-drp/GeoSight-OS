@@ -58,6 +58,11 @@ class SitePreferencesAdmin(admin.ModelAdmin):
                 'georepo_api_key_level_1', 'georepo_api_key_level_4'
             ),
         }),
+        ('Landing Page', {
+            'fields': (
+                'landing_page_banner', 'landing_page_banner_text'
+            ),
+        }),
         ('Theme', {
             'fields': (
                 'primary_color', 'anti_primary_color',
@@ -94,6 +99,11 @@ class SitePreferencesAdmin(admin.ModelAdmin):
             'fields': (
                 'style_dynamic_style_outline_color',
                 'style_dynamic_style_outline_size',
+            ),
+        }),
+        ('Compare Mode', {
+            'fields': (
+                'style_compare_mode_outline_size',
             ),
         }),
     )

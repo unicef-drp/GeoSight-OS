@@ -5,19 +5,17 @@
 {% endblock %}
 {% block style %}
     <style>
-        {% if preferences.background_image %}
-            main {
-                background: url("{{ preferences.background_image }}") no-repeat;
+        {% if preferences.landing_page_banner %}
+            banner {
+                background: url("{{ preferences.landing_page_banner }}") no-repeat;
                 background-size: cover;
+                background-position: center;
             }
         {% endif %}
     </style>
 {% endblock %}
 {% block scripts %}
     <script>
-      const dashboards = {{ dashboards|safe }};
-      urls.api = {
-        'create': '{% url 'admin-dashboard-create-view' %}',
-      }
+      const mainImage = "{{ preferences.landing_page_banner }}"
     </script>
 {% endblock %}

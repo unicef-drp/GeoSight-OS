@@ -27,6 +27,7 @@ class SitePreferencesSerializer(serializers.ModelSerializer):
     icon = serializers.SerializerMethodField()
     favicon = serializers.SerializerMethodField()
     background_image = serializers.SerializerMethodField()
+    landing_page_banner = serializers.SerializerMethodField()
 
     def get_icon(self, obj: SitePreferences):
         """Return icon."""
@@ -43,6 +44,10 @@ class SitePreferencesSerializer(serializers.ModelSerializer):
             return ''
         idx = random.randint(0, count - 1)
         return obj.sitepreferencesimage_set.all()[idx].image.url
+
+    def get_landing_page_banner(self, obj: SitePreferences):
+        """Return landing page banner."""
+        return obj.landing_page_banner.url if obj.landing_page_banner else ''
 
     class Meta:  # noqa: D106
         model = SitePreferences

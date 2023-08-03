@@ -41,10 +41,9 @@ import './style.scss';
 export function Selection(
   { list, secondSeries, setSecondSeries }
 ) {
-
   // When config changed
   useEffect(() => {
-    if (!list.map(row => row.id).includes(secondSeries?.id)) {
+    if (!list.map(row => row.id).includes(secondSeries?.id) || !list.map(row => row.color).includes(secondSeries?.color)) {
       setSecondSeries(list[0])
     }
   }, [list])
@@ -163,7 +162,7 @@ export default function Index({ idx, data }) {
           return indicatorInList
         })
       )
-    } else {
+    } else if (selectedIndicatorLayer?.id) {
       const id = indicatorLayerId(selectedIndicatorLayer)
       const indicatorInList = indicatorsList.find(row => row.id === id)
       if (!indicatorInList) {
@@ -184,7 +183,7 @@ export default function Index({ idx, data }) {
             return {
               id: indicator.id,
               name: indicator.name,
-              color: '' + getRandomColor()
+              color: getRandomColor()
             }
           }
           return indicatorInList
@@ -270,7 +269,7 @@ export default function Index({ idx, data }) {
                   }/>
               </Fragment> :
               <div className='form-helptext'>
-                This indicator layer is not supported yet.
+                {selectedIndicatorLayer?.id ? 'This indicator layer is not supported yet.' : 'No indicator layer is selected.'}
               </div>
           }
         </div>
