@@ -65,6 +65,21 @@ extra_javascript:
 # Needed for the hooks below to work
 plugins:
   - search
+  - git-revision-date-localized
+  - mkdocs-video
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [..]
+          import:
+            - https://docs.python.org/3/objects.inv
+            - https://mkdocstrings.github.io/autorefs/objects.inv
+          options:
+            docstring_style: sphinx
+            separate_signature: true
+            merge_init_into_class: true
+            docstring_options:
+              ignore_init_summary: true
   - redirects:
       redirect_maps:
         #see https://github.com/mkdocs/mkdocs-redirects/tree/master#using
