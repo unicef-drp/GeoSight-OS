@@ -117,7 +117,8 @@ class ImporterLogData(models.Model):
             note_keys = list(self.note.keys())
             try:
                 note_keys.remove('warning')
-                in_warning = True
+                if not len(note_keys):
+                    in_warning = True
             except ValueError:
                 pass
 
