@@ -478,7 +478,10 @@ export default function StyleRules(
 
   /** Update rule for adding NO DATA RULE and OTHER RULE **/
   const updateStyleRules = (oldStyleRules) => {
-    const theStyleRules = [...oldStyleRules]
+    let theStyleRules = []
+    if (oldStyleRules.constructor === Object) {
+      theStyleRules = [...oldStyleRules]
+    }
     const newStyleRules = []
     theStyleRules.map(rule => {
       if (![NO_DATA_RULE, OTHER_DATA_RULE].includes(rule.rule)) {

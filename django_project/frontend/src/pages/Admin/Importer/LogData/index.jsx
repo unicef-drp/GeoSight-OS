@@ -152,7 +152,7 @@ export default function ImporterLogData() {
               const note = JSON.parse(params.row.note)
               Button = <PriorityHighIcon fontSize={"small"}/>
               Text = note.warning
-              Color = 'warning.dark'
+              Color = 'warning.main'
               break
             default:
               Button = <QuestionMarkIcon fontSize={"small"}/>
@@ -241,6 +241,21 @@ export default function ImporterLogData() {
                 &nbsp;
                 <div title={params.value}>{params.value}</div>
               </div>
+            } else if (note && key === 'value' && note.warning) {
+              return <div className='FlexCell'>
+                <CustomPopover
+                  anchorOrigin={{ vertical: 'center', horizontal: 'right' }}
+                  transformOrigin={{ vertical: 'center', horizontal: 'left' }}
+                  Button={<InfoIcon fontSize={"small"}/>}
+                  showOnHover={true}
+                >
+                  <div className='MuiPopover-Info'>
+                    {note.warning}
+                  </div>
+                </CustomPopover>
+                &nbsp;
+                <div title={params.value}>{params.value}</div>
+              </div>
             } else {
               if (isDate) {
                 return parseDateTime(params.value)
@@ -250,7 +265,7 @@ export default function ImporterLogData() {
           },
           cellClassName: (params) => {
             const note = params.row.note ? JSON.parse(params.row.note) : null
-            return note && note[key] ? 'CellError' : null
+            return note && note[key] ? 'CellError' : (note && key === 'value' && note.warning) ? 'CellWarning' : null
           },
           field: key,
           headerName: columnDetail ? columnDetail.headerName : capitalize(key),
@@ -328,7 +343,7 @@ export default function ImporterLogData() {
   if (data) {
     usedData = dictDeepCopy(data)
     usedData.map(row => {
-      row.selectable = row.status === 'Review'
+      row.selectable = ['Review', 'Warning'].includes(row.status)
     })
     if (filters.indicators?.length) {
       usedData = usedData.filter(row => filters.indicators.includes(row.indicator_id + ''))

@@ -148,13 +148,14 @@ class FormulaBasedOnOtherIndicatorsIndicatorValue(IndicatorValueLongFormat):
                         time = output[1].strip()
                     except IndexError:
                         time = None
-                    records.append({
-                        "concept_uuid": ctx['concept_uuid'],
-                        "geom_code": ctx['geom_code'],
-                        "admin_level": ctx['admin_level'],
-                        "time": time,
-                        "value": output[0].strip()
-                    })
+                    if output[0].strip() != '':
+                        records.append({
+                            "concept_uuid": ctx['concept_uuid'],
+                            "geom_code": ctx['geom_code'],
+                            "admin_level": ctx['admin_level'],
+                            "time": time,
+                            "value": output[0].strip()
+                        })
                 except JSONDecodeError:
                     raise Exception('Expression result is not json.')
             driver.close()
