@@ -76,7 +76,7 @@
       font-weight: $base-font-bold;
 
       &:after {
-        content: '*';
+        content: ' *';
       }
     }
   }
@@ -84,7 +84,6 @@
   input,
   select {
     background: white;
-    border-radius: $border-radius;
     box-sizing: border-box;
     padding: 0.5rem;
     width: 100%;
@@ -111,7 +110,6 @@
   textarea,
   input,
   select {
-    border-radius: 4px;
     border: 1px solid rgba(0, 0, 0, 0.23);
 
     &:hover {
@@ -136,8 +134,9 @@
   }
 
   .form-helptext {
-    color: gray;
-    font-size: 0.8rem;
+    color: #121212 !important;;
+    opacity: 0.3 !important;
+    font-size: 10px;
     display: block;
   }
 
@@ -152,11 +151,6 @@
 
       & > div {
         flex: 1 1 0;
-      }
-
-
-      .MuiFormControl-root {
-        width: fit-content !important;
       }
 
       .MuiInputBase-root {
@@ -198,7 +192,6 @@
 
 .MuiForm-RadioGroup {
   border: 1px solid rgba(0, 0, 0, 0.23) !important;
-  border-radius: $border-radius;
   padding-bottom: 1rem !important;
 
   label {

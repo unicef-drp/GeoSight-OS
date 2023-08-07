@@ -25,7 +25,7 @@ header {
   .NavHeader {
     align-items: center;
     display: flex;
-    height: 36px;
+    height: $base-height;
     padding: 5px 1rem;
     position: relative;
     width: 100%;
@@ -74,7 +74,7 @@ header {
     .NavHeaderLogo {
       box-sizing: border-box;
       height: 80%;
-      margin-right: 1rem;
+      margin-right: 0.5rem;
 
       .NavHeaderLink {
         width: 85px;
@@ -90,8 +90,10 @@ header {
       }
     }
   }
+}
 
-  .Account {
+.NavbarAccount-Wrapper {
+  .NavbarAccount {
     background-color: white;
     border-radius: 50%;
     color: $base-black-color;
@@ -100,9 +102,33 @@ header {
     text-transform: capitalize;
     width: 24px;
     text-align: center;
+    font-size: 16px;
 
     &:hover {
       opacity: $base-hovered-opacity;
+    }
+  }
+
+  &.Detail {
+    display: flex;
+    align-items: center;
+
+    .NavbarAccount {
+      background-color: $primary-color;
+      color: white;
+      font-size: 22px;
+      height: 33px;
+      width: 33px;
+      margin-right: 0.5rem;
+    }
+
+    .NavbarAccount-Username {
+      font-size: 10px;
+    }
+
+    .NavbarAccount-FullName {
+      font-size: 8px;
+      opacity: 0.3;
     }
   }
 }

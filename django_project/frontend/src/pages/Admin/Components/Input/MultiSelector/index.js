@@ -105,7 +105,7 @@ export default function MultiSelectorConfig(
       <div className='MultiSelectorButtons'>
         <div>
           <ThemeButton
-            variant="secondary Basic"
+            variant="primary Basic"
             onClick={() => {
               let newItems = []
               if (items) {
@@ -124,7 +124,7 @@ export default function MultiSelectorConfig(
         </div>
         <div>
           <ThemeButton
-            variant="secondary Basic"
+            variant="primary Basic"
             onClick={() => {
               setSelectedItems([])
               setTemporarySelectedItems([])

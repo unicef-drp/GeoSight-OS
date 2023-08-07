@@ -43,7 +43,7 @@ export default function GeoRepoAuthFailed() {
         </div>
         <div>
             <ThemeButton
-              variant="secondary"
+              variant="primary"
               onClick={backOnClick}
             >
               BACK

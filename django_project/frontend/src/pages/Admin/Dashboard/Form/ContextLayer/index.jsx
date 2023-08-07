@@ -1,21 +1,20 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 import React, { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import SettingsIcon from '@mui/icons-material/Settings';
 
 import { Actions } from "../../../../../store/dashboard";
 import Modal, {
@@ -28,6 +27,7 @@ import {
 } from "../../../../../components/Elements/Button";
 import ListForm from '../ListForm'
 import StyleConfig from '../../../ContextLayer/StyleConfig'
+import { CogIcon } from "../../../../../components/Icons/svg";
 
 import './style.scss';
 
@@ -71,14 +71,16 @@ function ContextLayerStyle({ contextLayer }) {
           Style for {contextLayer.name}
         </ModalHeader>
         <ModalContent className='Gray'>
-          <div className='AdminForm Section'>
+          <div className='SaveButton-Section'>
             <SaveButton
-              variant="secondary"
+              variant="primary"
               text={"Apply Changes"}
               disabled={
                 JSON.stringify(contextLayer) === JSON.stringify(data)
               }
               onClick={apply}/>
+          </div>
+          <div className='AdminForm Section'>
             {
               open ? <StyleConfig
                 data={data} setData={updateData}
@@ -91,7 +93,7 @@ function ContextLayerStyle({ contextLayer }) {
       <ThemeButton className='ContextLayerStyleButton' onClick={() => {
         setOpen(true)
       }}>
-        <SettingsIcon/> Config
+        <CogIcon/> Config
       </ThemeButton>
     </Fragment>
   )

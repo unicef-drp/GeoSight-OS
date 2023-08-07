@@ -31,6 +31,7 @@
   .LayerCountIndicatorWrapper {
     display: flex;
     width: 122px;
+    color: $primary-color;
 
     div:first-child {
       flex-grow: 1;
@@ -82,12 +83,13 @@
   .Section {
     background-color: unset !important;
     position: relative;
+  }
 
-    .SaveButton {
-      position: absolute;
-      top: -0.5rem;
-      right: 1rem
-    }
+  .SaveButton-Section {
+    margin-bottom: 1rem;
+    margin-right: 1rem;
+    display: flex;
+    flex-direction: row-reverse;
   }
 
   .OverrideAdminLevel {

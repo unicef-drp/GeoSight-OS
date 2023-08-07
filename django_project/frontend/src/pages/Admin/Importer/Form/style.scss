@@ -14,7 +14,7 @@
 */
 
 /* ==========================================================================
-   Data Importer
+   Data Management
    ========================================================================== */
 @import '../../../../app/variables';
 
@@ -34,12 +34,6 @@
   .MuiInputBase-root {
     input {
       background-color: unset;
-    }
-  }
-
-  .SelectWithList, {
-    & > div {
-      min-height: 42px;
     }
   }
 

@@ -25,15 +25,15 @@
 
     .AdminContent {
       padding-top: 1rem;
+
+      .AdminBaseInput {
+        padding: 1rem;
+        padding-top: 0;
+      }
     }
 
     .AdminList {
       height: 500px;
-      padding: 0;
-    }
-
-    .Save-Button {
-      margin-left: auto;
       padding: 0;
     }
   }

@@ -24,44 +24,24 @@ from core.email import send_email_to_admins_with_html
 from core.models.access_request import UserAccessRequest
 from core.models.preferences import SitePreferences
 from frontend.views.admin._base import AdminBaseView
-from geosight.permission.access import RoleSuperAdminRequiredMixin, \
-    RoleContributorRequiredMixin
+from geosight.permission.access import RoleContributorRequiredMixin
 
 
-class AccessRequestUserListView(RoleSuperAdminRequiredMixin, AdminBaseView):
+class AccessRequestListView(RoleContributorRequiredMixin, AdminBaseView):
     """Access Request Detail View."""
 
-    template_name = 'frontend/admin/access_request/list/user.html'
+    template_name = 'frontend/admin/access_request/list.html'
 
     @property
     def page_title(self):
         """Return page title that used on tab bar."""
-        return 'Request New User'
+        return 'Access Request'
 
     @property
     def content_title(self):
         """Return content title that used on page title indicator."""
-        list_url = reverse('admin-access-request-user-list-view')
-        return f'<a href="{list_url}">Request New User</a> '
-
-
-class AccessRequestPermissionListView(
-    RoleContributorRequiredMixin, AdminBaseView
-):
-    """Access Request Detail View."""
-
-    template_name = 'frontend/admin/access_request/list/permission.html'
-
-    @property
-    def page_title(self):
-        """Return page title that used on tab bar."""
-        return 'Request Permission'
-
-    @property
-    def content_title(self):
-        """Return content title that used on page title indicator."""
-        list_url = reverse('admin-access-request-permission-list-view')
-        return f'<a href="{list_url}">Request Permission</a> '
+        list_url = reverse('admin-access-request-list-view')
+        return f'<a href="{list_url}">Request New Users</a> '
 
     def check_has_pending_request(self):
         """Check pending request."""
@@ -143,8 +123,8 @@ class AccessRequestPermissionListView(
             self.notify_admin(request_obj)
             return HttpResponseRedirect(
                 reverse(
-                    'admin-access-request-permission-list-view'
-                )
+                    'admin-access-request-list-view'
+                ) + '#Permission Requests'
             )
         except KeyError as e:
             return HttpResponseBadRequest(f'{e}')

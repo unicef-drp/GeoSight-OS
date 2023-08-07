@@ -161,7 +161,7 @@ export default function DataSelectionModal(
         initData={cleanListData}/>
       <div className='Save-Button'>
         <SaveButton
-          variant="secondary"
+          variant="primary"
           text={"Apply Selections : Selected (" + groupSelectedDataIds.length + ")"}
           onClick={apply}/>
       </div>

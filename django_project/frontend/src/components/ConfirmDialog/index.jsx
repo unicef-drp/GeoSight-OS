@@ -42,11 +42,14 @@ export const ConfirmDialog = forwardRef(
           setOpen(false)
         }}
       >
-        <ModalHeader onClosed={() => {
-          setOpen(false)
-        }}>
-          {header}
-        </ModalHeader>
+        {
+          header ?
+            <ModalHeader onClosed={() => {
+              setOpen(false)
+            }}>
+              {header}
+            </ModalHeader> : null
+        }
         <ModalContent>
           {children}
         </ModalContent>
@@ -64,7 +67,7 @@ export const ConfirmDialog = forwardRef(
             </ThemeButton>
             &nbsp;
             <ThemeButton
-              variant="secondary Basic"
+              variant="primary Basic"
               disabled={props.disabledConfirm}
               onClick={() => {
                 onConfirmed()

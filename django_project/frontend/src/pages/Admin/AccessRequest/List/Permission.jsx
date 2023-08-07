@@ -14,28 +14,23 @@
  */
 
 import React, { Fragment, useRef, useState } from 'react';
-
-import { render } from '../../../../app';
-import { store } from '../../../../store/admin';
-import { pageNames } from '../../index';
-import { AdminList } from "../../AdminList";
+import {
+  Notification,
+  NotificationStatus
+} from "../../../../components/Notification";
+import { AdminListContent } from "../../AdminList";
 import { formatDateTime, isValidEmail } from "../../../../utils/main";
+import axios from "axios";
 import { ConfirmDialog } from "../../../../components/ConfirmDialog";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import { Input } from "@mui/material";
 import { ThemeButton } from "../../../../components/Elements/Button";
-import {
-  Notification,
-  NotificationStatus
-} from "../../../../components/Notification";
-import axios from "axios";
 
 /**
- * Access Request List
+ * Access Request Permission
  */
-export default function AccessRequestPermissionList() {
-  const pageName = pageNames.AccessRequestPermission
+export default function AccessRequestPermissionList({ ...props }) {
   const dialogRef = useRef(null);
 
   const [description, setDescription] = useState("");
@@ -50,14 +45,15 @@ export default function AccessRequestPermissionList() {
   }
 
   if (user.is_admin) {
-    return <AdminList
+    return <AdminListContent
       columns={[
         { field: 'id', headerName: 'id', hide: true },
         {
           field: 'name', headerName: 'Name', flex: 1,
           renderCell: (params) => {
-            return <a className='MuiButtonLike CellLink'
-                      href={detailUrl.replace('/0', `/${params.id}`)}>
+            return <a
+              className='MuiButtonLike CellLink'
+              href={urls.api.permission.detail.replace('/0', `/${params.id}`)}>
               {params.value}
             </a>
           }
@@ -71,8 +67,7 @@ export default function AccessRequestPermissionList() {
           }
         },
       ]}
-      pageName={pageName}
-      listUrl={urls.api.list}
+      listUrl={urls.api.permission.list}
       filterDefault={
         [{
           columnField: 'status',
@@ -80,6 +75,7 @@ export default function AccessRequestPermissionList() {
           value: 'PENDING'
         }]
       }
+      {...props}
     />
   } else {
     /** Post new Request **/
@@ -96,7 +92,7 @@ export default function AccessRequestPermissionList() {
         }
       }).then(response => {
         notify('Request has been submitted', NotificationStatus.SUCCESS)
-        window.location = window.location;
+        window.location.reload();
       }).catch(error => {
         setSubmitted(false)
         if (error?.response?.data) {
@@ -109,22 +105,21 @@ export default function AccessRequestPermissionList() {
 
     return <Fragment>
       <Notification ref={notificationRef}/>
-      <AdminList
+      <AdminListContent
         columns={[
           { field: 'id', headerName: 'id', hide: true },
           {
             field: 'submitted_date', headerName: 'Submitted Date', flex: 1,
             renderCell: (params) => {
               return <a className='MuiButtonLike CellLink'
-                        href={detailUrl.replace('/0', `/${params.id}`)}>
+                        href={urls.api.permission.detail.replace('/0', `/${params.id}`)}>
                 {formatDateTime(new Date(params.value))}
               </a>
             }
           },
           { field: 'status', headerName: 'Status', flex: 1 }
         ]}
-        pageName={pageName}
-        listUrl={urls.api.list}
+        listUrl={urls.api.permission.list}
         rightHeader={
           <Fragment>
             {/* APPROVE */}
@@ -172,7 +167,7 @@ export default function AccessRequestPermissionList() {
             </ConfirmDialog>
             <ThemeButton
               disabled={submitted}
-              variant="secondary"
+              variant="primary"
               onClick={() => {
                 dialogRef?.current?.open()
               }}>
@@ -180,9 +175,8 @@ export default function AccessRequestPermissionList() {
             </ThemeButton>
           </Fragment>
         }
+        {...props}
       />
     </Fragment>
   }
 }
-
-render(AccessRequestPermissionList, store)

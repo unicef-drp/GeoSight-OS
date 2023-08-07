@@ -47,10 +47,11 @@ export default function StyleForm() {
   })
   return (
     <Admin
+      minifySideNavigation={true}
       pageName={pageNames.Styles}
       rightHeader={
         <SaveButton
-          variant="secondary"
+          variant="primary"
           text="save"
           onClick={() => {
             formRef.current.submit(true)

@@ -121,7 +121,9 @@ export default function IndicatorList() {
               <Tooltip title={`Go to data access.`}>
                 <a
                   href={urls.api.permissionAdmin + '?indicators=' + params.id}>
-                  <StorageIcon/>
+                  <div className='ButtonIcon'>
+                    <StorageIcon/>
+                  </div>
                 </a>
               </Tooltip>
             }
@@ -136,7 +138,9 @@ export default function IndicatorList() {
               <Tooltip title={`Management Map`}>
                 <a
                   href={urls.api.map.replace('/0', `/${params.id}`)}>
-                  <MapIcon/>
+                  <div className='ButtonIcon'>
+                    <MapIcon/>
+                  </div>
                 </a>
               </Tooltip>
             }
@@ -150,7 +154,9 @@ export default function IndicatorList() {
               <Tooltip title={`Management Form`}>
                 <a
                   href={urls.api.form.replace('/0', `/${params.id}`)}>
-                  <DynamicFormIcon/>
+                  <div className='ButtonIcon'>
+                    <DynamicFormIcon/>
+                  </div>
                 </a>
               </Tooltip>
             }
@@ -164,7 +170,7 @@ export default function IndicatorList() {
             icon={
               <a href={urls.api.dataBrowser + '?indicators=' + params.id}>
                 <div
-                  className='MuiButton-Div MuiButtonBase-root MuiButton-secondary ThemeButton'>
+                  className='MuiButton-Div MuiButtonBase-root MuiButton-primary Reverse ThemeButton'>
                   <DataUsageIcon/> Value List
                 </div>
               </a>

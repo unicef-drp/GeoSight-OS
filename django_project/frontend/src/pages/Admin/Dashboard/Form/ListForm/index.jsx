@@ -209,13 +209,13 @@ export default function ListForm(
             <div className='TableForm-Header-Left'></div>
             <div className='TableForm-Header-Right'>
               <AddButton
-                variant="secondary" text={"Add " + singularPageName}
+                variant="primary" text={"Add " + singularPageName}
                 onClick={() => addLayerInGroup("")}/>
               {
                 hasGroup ?
                   <AddButton
                     className='AddGroupButton'
-                    variant="secondary" text={"Add Group"}
+                    variant="primary" text={"Add Group"}
                     onClick={addGroup}/> : ""
               }
             </div>

@@ -55,6 +55,10 @@
 .PermissionForm {
   padding: 0;
 
+  .MuiDataGridTable {
+    height: 300px;
+  }
+
   .form-label {
     font-weight: $base-font-regular;
 
@@ -67,6 +71,10 @@
         margin-right: 0;
       }
     }
+  }
+
+  .Other {
+    padding: 1rem;
   }
 
   .MuiFormGroup-root {
@@ -88,7 +96,6 @@
 
 
   .Mui-disabled {
-    -webkit-text-fill-color: $base-black-color;
     color: $base-black-color;
     cursor: not-allowed;
 
@@ -125,13 +132,8 @@
     }
   }
 
-  & > .GeneralAccess,
   & > .Other {
     padding: 1rem;
-  }
-
-  & > .UserAccess, & > .GroupAccess, & > .GeneralAccess, & > .Other {
-    border: 1px solid $primary-color;
   }
 
   .PermissionFormTableHeader {
@@ -141,6 +143,24 @@
 
     button {
       margin-left: 0.5rem;
+    }
+  }
+
+  .GeneralAccess {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background: $base-gray-to-white;
+    border: 1px solid $border-gray;
+    margin-bottom: 1rem;
+
+    label {
+      margin-bottom: 0;
+    }
+
+    .MuiInputBase-root {
+      height: $base-height;
+      background-color: white;
     }
   }
 }

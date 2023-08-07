@@ -233,7 +233,7 @@ export default function FunctionGenerator(
 
     <div className='Save-Button'>
       <SaveButton
-        variant="secondary"
+        variant="primary"
         text={"Update Selection"}
         disabled={!ready()}
         onClick={() => {

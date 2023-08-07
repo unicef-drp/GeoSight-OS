@@ -14,12 +14,14 @@
  */
 
 import React from "react";
+import $ from 'jquery';
 import { Checkbox, TextField } from "@mui/material";
 import Autocomplete from '@mui/material/Autocomplete';
 import CheckBoxOutlineBlankIcon
   from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { dictDeepCopy } from "../../utils/main";
+import { ArrowDownwardIcon } from "../Icons";
 
 import './style.scss';
 
@@ -67,6 +69,7 @@ export function SelectWithSearch(
         onChangeFn(values ? values : '');
       }}
       disabled={disabled}
+      popupIcon={<ArrowDownwardIcon/>}
     />
   </div>
 }
@@ -136,11 +139,11 @@ export function MultipleSelectWithSearch(
     renderInput={(params) => (
       <TextField
         {...params}
-        placeholder={props.placeholder ? props.placeholder : "Select 1 option"}
+        placeholder={value?.length ? '' : props.placeholder ? props.placeholder : "Select 1 option"}
       />
     )}
     onChange={(e, values) => {
-      if (e.target.getAttribute('value') === selectAllText) {
+      if (e.target.getAttribute('value') === selectAllText || $(e.target).closest('li').attr('value') === selectAllText) {
         if (!allSelected) {
           onChangeFn(options);
         } else {
@@ -152,5 +155,6 @@ export function MultipleSelectWithSearch(
     }}
     disabled={disabled}
     multiple
+    popupIcon={<ArrowDownwardIcon/>}
   />
 }

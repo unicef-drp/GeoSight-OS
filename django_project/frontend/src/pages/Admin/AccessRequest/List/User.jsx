@@ -14,26 +14,22 @@
  */
 
 import React from 'react';
-
-import { render } from '../../../../app';
-import { store } from '../../../../store/admin';
-import { pageNames } from '../../index';
-import { AdminList } from "../../AdminList";
+import { AdminListContent } from "../../AdminList";
 import { formatDateTime } from "../../../../utils/main";
 
 /**
- * Access Request List
+ * Access Request Permission
  */
-export default function AccessRequestUserList() {
-  const pageName = pageNames.AccessRequestUser
-  return <AdminList
+export default function AccessRequestUserList({ ...props }) {
+  return <AdminListContent
     columns={[
       { field: 'id', headerName: 'id', hide: true },
       {
         field: 'name', headerName: 'Name', flex: 1,
         renderCell: (params) => {
-          return <a className='MuiButtonLike CellLink'
-                    href={detailUrl.replace('/0', `/${params.id}`)}>
+          return <a
+            className='MuiButtonLike CellLink'
+            href={urls.api.user.detail.replace('/0', `/${params.id}`)}>
             {params.value}
           </a>
         }
@@ -47,8 +43,7 @@ export default function AccessRequestUserList() {
         }
       },
     ]}
-    pageName={pageName}
-    listUrl={urls.api.list}
+    listUrl={urls.api.user.list}
     filterDefault={
       [{
         columnField: 'status',
@@ -56,7 +51,6 @@ export default function AccessRequestUserList() {
         value: 'PENDING'
       }]
     }
+    {...props}
   />
 }
-
-render(AccessRequestUserList, store)

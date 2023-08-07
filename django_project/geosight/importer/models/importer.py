@@ -269,8 +269,9 @@ class Importer(AbstractEditData):
         elif self.job:
             # TODO:
             #  Return the detail page of job
-            return reverse('admin-scheduled-job-list-view')
-        return reverse('admin-importer-log-list-view')
+            return reverse(
+                'admin-data-management-list-view') + '#Scheduled Jobs'
+        return reverse('admin-data-management-list-view') + '#Logs'
 
     # For run importer
     @property

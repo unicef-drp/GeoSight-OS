@@ -90,7 +90,7 @@ export default function SignUp() {
                   </div>
                 </AdminForm>
                 <ThemeButton
-                  variant="secondary"
+                  variant="primary"
                   onClick={signUp}
                   disabled={submitted ? true : false}
                 >

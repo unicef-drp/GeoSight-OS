@@ -40,7 +40,7 @@ class UserEditView(RoleSuperAdminRequiredMixin, AdminBaseView):
         user = get_object_or_404(
             User, username=self.kwargs.get('username', '')
         )
-        list_url = reverse('admin-user-list-view')
+        list_url = reverse('admin-user-and-group-list-view') + '#Users'
         edit_url = reverse('admin-user-edit-view', args=[user.id])
         return (
             f'<a href="{list_url}">Users</a> '
@@ -77,7 +77,9 @@ class UserEditView(RoleSuperAdminRequiredMixin, AdminBaseView):
             user = form.save()
             user.profile.role = form.cleaned_data['role']
             user.profile.save()
-            return redirect(reverse('admin-user-list-view'))
+            return redirect(
+                reverse('admin-user-and-group-list-view') + '#Users'
+            )
         context = self.get_context_data(**kwargs)
         context['form'] = form
         return render(request, self.template_name, context)

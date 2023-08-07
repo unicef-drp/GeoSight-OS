@@ -19,6 +19,11 @@
 
 @import '../../app/variables';
 
+.page {
+  & > header {
+    display: none;
+  }
+}
 
 main {
   flex-grow: 1;
@@ -41,33 +46,46 @@ main {
   flex-direction: column;
   flex-grow: 1;
   min-width: 0;
-  background-color: #F4F4F4;
+  background-color: $base-to-white-color;
   position: relative;
 
   & > div {
     border-radius: $border-radius;
-    margin: 0 1rem 1rem 1rem;
     background-color: white;
-    padding: 0 2rem;
+  }
+
+  .AdminForm {
+    padding: 0 1rem;
   }
 
   .AdminContentHeader {
-    background: white;
+    background: unset;
     border-radius: 0;
-    box-shadow: $box-shadow-sm;
-    color: $primary-color;
     display: flex;
-    margin: 0 0 1rem 0;
-    padding: 0.5rem 1rem;
+    margin: 0;
+    padding: 18px 2rem;
+    align-items: center;
+
+    .MuiInputBase-root,
+    .MuiButtonBase-root {
+      height: $base-height;
+    }
 
     .AdminContentHeader-Left {
       flex-grow: 1;
       padding: 0.5rem 0;
 
       span, a {
-        color: $primary-color;
+        color: $black;
         display: inline-block;
         margin-right: 0.5rem;
+        font-weight: 500;
+      }
+
+      b {
+        a {
+          font-weight: 600;
+        }
       }
     }
 
@@ -79,11 +97,11 @@ main {
   }
 
   .AdminBaseInput {
-    background-color: white;
-    padding: 0.5rem;
+    background-color: $base-to-white-color;
+    padding: 1rem;
 
     .MuiFormControl-root {
-      background-color: $base-almost-white-color;
+      background-color: white;
       margin-top: 0 !important;
       width: 100%;
 
@@ -91,17 +109,7 @@ main {
         width: 100%;
 
         input {
-          padding: 0.5rem 1rem 0.5rem 0;
-        }
-
-        .MuiOutlinedInput-notchedOutline {
-          border: unset;
-        }
-
-        &:hover {
-          .MuiOutlinedInput-notchedOutline {
-            border: unset;
-          }
+          padding: 0.5rem 1rem;
         }
       }
     }
@@ -135,6 +143,40 @@ main {
         }
       }
     }
+  }
+}
+
+.ListAdminFilters {
+  padding: 0.5rem !important;
+  display: flex;
+  flex-flow: row wrap;
+  margin: 0 1rem 1rem 1rem !important;
+
+  & > div {
+    margin-right: 0.5rem;
+  }
+
+  .MuiFormControl-root {
+    .MuiFormLabel-root {
+      top: -6px;
+    }
+  }
+
+  .MuiInputBase-root {
+    width: 200px;
+
+    input {
+      padding: 10px;
+      padding-right: 0 !important;
+    }
+  }
+
+  .MuiSelect-icon {
+    transform: rotate(0deg) !important;
+  }
+
+  .ModalDataSelectorSelected {
+    display: none;
   }
 }
 

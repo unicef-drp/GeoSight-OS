@@ -315,7 +315,7 @@ export default function JsonSelector(
       }
     </ModalContent>
     <ModalFooter>
-      <SaveButton variant="secondary" text="Apply" id='apply-modal'/>
+      <SaveButton variant="primary" text="Apply" id='apply-modal'/>
     </ModalFooter>
   </Modal>
 }

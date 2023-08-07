@@ -58,7 +58,7 @@ export const Notification = forwardRef(
     return <Snackbar
       anchorOrigin={{
         vertical: 'top',
-        horizontal: 'right'
+        horizontal: 'center'
       }}
       open={state.open}
       onClose={handleClose}

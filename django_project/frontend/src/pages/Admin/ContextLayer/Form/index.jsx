@@ -68,10 +68,11 @@ export default function ContextLayerForm() {
   }
   return (
     <Admin
+      minifySideNavigation={true}
       pageName={pageNames.ContextLayer}
       rightHeader={
         <SaveButton
-          variant="secondary"
+          variant="primary"
           text="Save"
           onClick={() => {
             formRef.current.submit(true)

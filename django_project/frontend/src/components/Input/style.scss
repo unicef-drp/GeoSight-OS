@@ -48,6 +48,10 @@
     padding: 0 4px 0 12px !important;
     box-sizing: border-box;
   }
+
+  &.SmallHeight {
+    height: 35px !important;
+  }
 }
 
 .SelectWithSearchInput {
@@ -67,8 +71,8 @@
     border: 1px solid rgba(0, 0, 0, 0.87);
   }
 
-  .MuiOutlinedInput-notchedOutline {
-    border: none !important;
+  fieldset {
+    border: unset !important;
   }
 }
 
@@ -150,7 +154,7 @@
   }
 
   &.SmallHeight {
-    height: 36px;
+    height: 34px;
 
     .MuiInputBase-root {
       padding-top: 0 !important;

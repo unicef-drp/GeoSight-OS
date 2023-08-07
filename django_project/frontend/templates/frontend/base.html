@@ -113,19 +113,16 @@
       'indicatorList': "{% url "admin-indicator-list-view" %}",
       'basemapList': "{% url "admin-basemap-list-view" %}",
       'contextLayerList': "{% url "admin-context-layer-list-view" %}",
-      'userList': "{% url "admin-user-list-view" %}",
-      'groupList': "{% url "admin-group-list-view" %}",
+      'userAndGroupList': "{% url "admin-user-and-group-list-view" %}",
       'styleList': "{% url "admin-style-list-view" %}",
       'dataset': "{% url "admin-dataset-view" %}",
       'dataAccess': "{% url "admin-data-access-view" %}",
       'relatedTableList': "{% url "admin-related-table-list-view" %}",
       'importer': "{% url "admin-importer-create-view" %}",
-      'importerLogs': "{% url "admin-importer-log-list-view" %}",
-      'scheduledJobs': "{% url "admin-scheduled-job-list-view" %}",
+      'dataManagement': "{% url 'admin-data-management-list-view' %}",
 
       {# ACCESS REQUEST#}
-      'accessRequestUser': "{% url "admin-access-request-user-list-view" %}",
-      'accessRequestPermission': "{% url "admin-access-request-permission-list-view" %}",
+      'accessRequest': "{% url "admin-access-request-list-view" %}",
     },
     'api': {}
   }

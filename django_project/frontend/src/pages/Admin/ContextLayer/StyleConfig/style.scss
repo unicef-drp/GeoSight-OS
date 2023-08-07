@@ -22,6 +22,16 @@
 
 .ContextLayerConfig-Wrapper {
   text-align: center;
+  width: 100%;
+
+  #ContextLayerConfig {
+    padding: 1rem;
+    flex-grow: 1;
+  }
+
+  .AdminForm {
+    width: 100%;
+  }
 
   .form-helptext {
     margin-bottom: 1rem;
@@ -66,7 +76,6 @@
 
 
   .ArcgisConfig {
-    padding: 1rem;
 
     .Classification {
       border: 1px solid $secondary-color;

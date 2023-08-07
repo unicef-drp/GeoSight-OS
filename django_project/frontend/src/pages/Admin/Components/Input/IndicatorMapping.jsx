@@ -73,7 +73,7 @@ export default function IndicatorMapping(
 
   return <FormControl className="BasicFormSection MappingSection">
     <ThemeButton
-      variant="secondary"
+      variant="primary"
       disabled={!indicatorList.length}
       onClick={() => {
         let key = attributes.find(
