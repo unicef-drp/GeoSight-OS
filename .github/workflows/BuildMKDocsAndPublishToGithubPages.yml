@@ -33,7 +33,14 @@ jobs:
         uses: BSFishy/pip-action@v1
         with:
           packages: |
+            mdx_gh_links
+            mkdocs-enumerate-headings-plugin
             mkdocs-material 
+            mkdocs-pdf-export-plugin
+            mkdocs-redirects
+            mkdocstrings-python
+            mkdocs-video
+            mkdocs-with-pdf
             qrcode
       - name: Checkout main from github
         uses: actions/checkout@v1
