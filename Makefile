@@ -2,7 +2,7 @@ PROJECT_ID := geosight
 export COMPOSE_FILE=deployment/docker-compose.yml:deployment/docker-compose.override.yml
 export ONEDRIVE_DATA_DIR=$(shell pwd)/deployment/onedrive/data
 
-SHELL := /bin/bash
+SHELL := /usr/bin/env bash
 
 # ----------------------------------------------------------------------------
 #    P R O D U C T I O N     C O M M A N D S

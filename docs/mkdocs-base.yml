@@ -1,60 +1,124 @@
-# GeoSight is UNICEF's geospatial web-based business intelligence platform.
-#
-# Contact : geosight-no-reply@unicef.org
-#
-# .. note:: This program is free software; you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as published by
-#    the Free Software Foundation; either version 3 of the License, or
-#    (at your option) any later version.
-#
-# __author__ = 'irwan@kartoza.com'
-# __date__ = '13/06/2023'
-# __copyright__ = ('Copyright 2023, Unicef')
-
-site_name: GeoSight
-site_description: "A platform provides a way to understand risk modalities across different geographic contexts."
-site_author: "Unicef"
+site_name: GeoSight-OS
+site_description: "Project technical and user documentation."
+site_author: "Kartoza"
 docs_dir: ./src
 site_dir: ./site
-repo_name: "unicef-drp/GeoSight"
-repo_url: "https://github.com/unicef-drp/GeoSight"
-edit_uri: "https://github.com/unicef-drp/GeoSight/blob/main/docs/"
-copyright: "Unicef, Kartoza and Contributors"
+repo_name: "GeoSight-OS"
+repo_url: "https://github.com/unicef-drp/GeoSight-OS"
+edit_uri: "https://github.com/unicef-drp/GeoSight-OS/blob/main/docs/"
 
-# Navigation
+copyright: Kartoza and Contributors
+
+markdown_extensions:
+        - pymdownx.highlight:
+                  anchor_linenums: true
+        - pymdownx.inlinehilite
+        #- mdx_truly_sane_lists
+        - toc:
+                  permalink: true
+                   #slugify: !!python/name:pymdownx.slugs.slugify
+        - pymdownx.snippets:
+                  base_path: .
+        - admonition
+        - tables
+        - pymdownx.details
+        - pymdownx.caret
+        - pymdownx.keys
+        - pymdownx.mark
+        - pymdownx.tilde
+        - pymdownx.superfences:
+                  custom_fences:
+                          - name: mermaid
+                            class: mermaid
+                            format: !!python/name:pymdownx.superfences.fence_code_format
+        - pymdownx.emoji:
+                  emoji_generator: !!python/name:materialx.emoji.to_svg
+                  emoji_index: !!python/name:materialx.emoji.twemoji
+
+
 nav:
         - Home:
-                  - About: about_geosight.md
-                  - Contributing: users/contributing.md
-        - For Users:
-                  - Overview: users/index.md
-                  - Platform tour: users/platform_tour.md
-                  - Map Interactions: users/map_interactions.md
-                  - Indicators: users/indicator.md
-                  - Layers: users/layers.md
-                  - User Tutorial: users/user_tutorial.md
-                  - Disclaimer: users/disclaimer.md
-                  - Credits: users/credits.md
-                  - License: users/license.md
-        - For Administrators:
-                  - Overview: administrators/administrator_tutorial.md
-                  - Provisioning Reference Layers: administrators/reference_layers.md
-        - For Developers:
-                  - developers/setup/index.md
-                  - Installation:
-                            - Preparation: developers/setup/installation/preparation.md
-                            - Project setup: developers/setup/installation/project_setup.md
-                            - Road Map: developers/setup/installation/roadmap.md
-                            - Development setup:
-                                      - developers/setup/installation/development_setup/index.md
-                                      - Using pycharm: developers/setup/installation/development_setup/pycharm.md
-                  - Configuration:
-                            - Geography: developers/setup/configuration/geography.md
-                            - Indicator: developers/setup/configuration/indicator.md
-                            - Instances: developers/setup/configuration/instances.md
-                            - Layer: developers/setup/configuration/layer.md
-                            - Navigation Link: developers/setup/configuration/navigation_link.md
-                            - Preferences: developers/setup/configuration/preferences.md
-                            - Program Intervention: developers/setup/configuration/program_intervention.md
-                            - Scenario: developers/setup/configuration/scenario.md
-                            - User: developers/setup/configuration/user.md
+                - index.md
+                - About: about/index.md
+                - Contributing:
+                        - about/contributing.md
+                        - Commit Messages: about/documentation/commit-message-convention.md
+                        - Pull Request Template: about/documentation/pull-request-template.md
+                - Code of Conduct: about/code-of-conduct.md
+        - Users:
+                - Overview: 
+                        - user/index.md
+                        - Quickstart: 
+                                - user/quickstart/index.md
+                        - Guide:
+                                - user/guide/index.md
+                                - Disclaimer: about/disclaimer.md
+                                - Credits: about/credits.md
+                                - License: about/license.md
+                        - Manual: 
+                                - user/manual/index.md
+                                - Home Page: user/manual/home.md
+        - Administrators:
+                - Overview:
+                        - administrator/index.md
+                        - Guide:
+                                - administrator/guide/index.md
+                        - Manual:
+                                - administrator/manual/index.md
+        - Developers:
+                - Overview:
+                        - developer/index.md
+                        - Guide:
+                                - developer/guide/index.md
+                                - Project Prerequisites: developer/guide/project-prerequisites.md
+                                - IDE to Use: developer/guide/ide-to-use.md
+                                - Checking Out The Code: developer/guide/checking-out-the-code.md
+                                - Building/Compiling Code: developer/guide/building-compiling-code.md
+                                - Running Instances: developer/guide/running-instances.md
+                                - Setup:
+                                        - developer/guide/setup/index.md
+                                        - Installation:
+                                                - Preparation: developer/guide/setup/installation/preparation.md
+                                                - Project setup: developer/guide/setup/installation/project-setup.md
+                                        - Development setup:
+                                                - Overview: developer/guide/setup/installation/development-setup/index.md
+                                                - Using pycharm: developer/guide/setup/installation/development-setup/pycharm.md
+                                        - Road Map: developer/guide/setup/roadmap.md
+                                        - Configuration:
+                                                - Geography: developer/guide/setup/configuration/geography.md
+                                                - Indicator: developer/guide/setup/configuration/indicator.md
+                                                - Instances: developer/guide/setup/configuration/instances.md
+                                                - Layer: developer/guide/setup/configuration/layer.md
+                                                - Navigation Link: developer/guide/setup/configuration/navigation-link.md
+                                                - Preferences: developer/guide/setup/configuration/preferences.md
+                                                - Program Intervention: developer/guide/setup/configuration/program-intervention.md
+                                                - Scenario: developer/guide/setup/configuration/scenario.md
+                                                - User: developer/guide/setup/configuration/user.md
+                                - Building/Compiling Code: developer/guide/building-compiling-code.md
+                                - Checking Out The Code: developer/guide/checking-out-the-code.md
+                                - Developer Workflows: developer/guide/developer-workflows.md
+                                - IDE to Use: developer/guide/ide-to-use.md
+                                - Running Instances: developer/guide/running-instances.md
+
+                        - Architecture:
+                                - developer/architecture/index.md
+                        - Documentation:
+                                - developer/documentation/index.md
+                        - Manual:
+                                - developer/manual/index.md
+                                - License: about/license.md
+                        - API:
+                                - developer/api/index.md
+                                - API Manual: developer/api/api.md
+                                - API Settings: developer/api/api_settings.md
+                        - Design:
+                                - developer/design/index.md
+        - DevOps:
+                - Overview:
+                        - devops/index.md
+                        - Guide:
+                                - devops/guide/index.md
+                                - Tutorial 1: devops/guide/tutorial1.md
+                        - Manual:
+                                - devops/manual/index.md
+
