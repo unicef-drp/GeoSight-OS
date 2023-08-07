@@ -50,7 +50,7 @@ jobs:
         run: ./create-mkdocs-html-config.sh
       - name: Deploy docs to github pages
         # This is where we get the material theme from
-        uses: mhausenblas/mkdocs-deploy-gh-pages@master
+        uses: timlinux/mkdocs-deploy-gh-pages@master
         # Wrong
         #uses: timlinux/QGISAnimationWorkbench@main
         env:
