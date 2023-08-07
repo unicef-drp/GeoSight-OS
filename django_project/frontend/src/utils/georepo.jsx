@@ -15,6 +15,7 @@
 
 import { fetchJSON } from '../Requests'
 import axios from "axios";
+import Cookies from "js-cookie";
 
 /** Georepo URL */
 export function updateToken(url) {
@@ -148,7 +149,17 @@ export const fetchFeatureList = async function (url, useCache = true) {
 
 /*** Axios georepo request */
 export const axiosGet = function (url) {
-  return axios.get(url, headers)
+  return axios.get(url, headers).catch(function (error) {
+    if (USE_GEOREPO && error.message === 'Request failed with status code 403') {
+      if (!preferences.georepo_api.is_api_key) {
+        Cookies.set('georepo-token', '')
+        document.location.reload()
+      }
+    } else {
+
+    }
+    throw new Error(error);
+  });
 }
 
 /***
