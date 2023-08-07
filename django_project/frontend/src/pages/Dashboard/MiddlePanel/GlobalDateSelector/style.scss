@@ -86,10 +86,14 @@
         .TimeSelection {
           div {
             text-align: center;
+            border-radius: 0;
           }
 
           & > .MuiFormControl-root {
             margin-top: 0.3rem;
+          }
+          .ReactSelect__indicators{
+            padding: 0 5px;
           }
         }
 
