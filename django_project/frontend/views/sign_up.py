@@ -131,9 +131,7 @@ class SignUpView(FormView):
         return context
 
     def get_initial(self):
-        """
-        Returns the initial data to use for forms on this view.
-        """
+        """Update the initial data to use for forms on this view."""
         default_user = {
             'first_name': '',
             'last_name': '',

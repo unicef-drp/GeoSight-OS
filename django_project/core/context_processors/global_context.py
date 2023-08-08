@@ -50,6 +50,7 @@ def global_context(request):
         'preferences': pref_data,
         'use_azure_auth': settings.USE_AZURE,
         'use_georepo_auth': settings.USE_GEOREPO,
-        'georepo_azure_autehntication_url': settings.GEOREPO_AZURE_AUTHENTICATION_URL,
+        'georepo_azure_autehntication_url':
+            settings.GEOREPO_AZURE_AUTHENTICATION_URL,
         'version': project_version(request)
     }
