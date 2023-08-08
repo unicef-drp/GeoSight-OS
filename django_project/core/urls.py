@@ -29,7 +29,6 @@ from core.api.group import GroupListAPI, GroupDetailAPI
 from core.api.proxy import ProxyView
 from core.api.sentry import trigger_error
 from core.api.user import UserListAPI, UserDetailAPI
-from geosight.georepo.authentication.views import georepo_azure_auth_callback
 
 admin.autodiscover()
 
@@ -43,7 +42,6 @@ urlpatterns = [
 if settings.USE_AZURE:
     # azure auth
     urlpatterns += [
-        path("signin-oidc", georepo_azure_auth_callback, name="callback"),
         path("", include("azure_auth.urls", namespace="azure_auth")),
     ]
 else:

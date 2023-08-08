@@ -18,7 +18,7 @@ import CreatableSelect from "react-select/creatable";
 import FormControl from "@mui/material/FormControl";
 import CustomPopover from "../../../../components/CustomPopover";
 import { IconTextField } from "../../../../components/Elements/Input";
-import FilterIcon from "../../../../components/Icons/FilterIcon";
+import { FilterIcon } from "../../../../components/Icons";
 
 /**
  * Filter group

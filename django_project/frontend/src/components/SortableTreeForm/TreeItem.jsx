@@ -17,14 +17,13 @@ import React, { forwardRef, Fragment, useEffect, useState } from 'react';
 import classNames from 'classnames';
 
 import styles from './TreeItem.module.scss';
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { IconTextField } from "../Elements/Input";
 import DoneIcon from "@mui/icons-material/Done";
 import EditIcon from "@mui/icons-material/Edit";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import { Checkbox } from "@mui/material";
+import { VisibilityIcon, VisibilityOffIcon } from "../Icons";
 
 export function Action({ active, className, cursor, style, ...props }) {
   return (

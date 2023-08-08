@@ -32,7 +32,7 @@ import { AdminPage } from './index';
 import { BaseList } from './Components/List'
 import EditIcon from "@mui/icons-material/Edit";
 import { IconTextField } from "../../components/Elements/Input";
-import MagnifyIcon from "../../components/Icons/MagnifyIcon";
+import { MagnifyIcon } from "../../components/Icons";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 
 import './style.scss';

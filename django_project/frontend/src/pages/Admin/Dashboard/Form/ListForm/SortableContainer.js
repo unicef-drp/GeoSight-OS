@@ -13,24 +13,26 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, {Fragment, useEffect, useState} from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import {
   rectSortingStrategy,
   SortableContext,
   useSortable
 } from "@dnd-kit/sortable";
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import DragHandleIcon from '@mui/icons-material/DragHandle';
 import DoneIcon from '@mui/icons-material/Done';
 import EditIcon from "@mui/icons-material/Edit";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { IconTextField } from "../../../../../components/Elements/Input";
 import SortableItem from "./SortableItem";
 import { CSS } from "@dnd-kit/utilities";
-import {Button, Checkbox} from "@mui/material";
+import { Button, Checkbox } from "@mui/material";
+import { IconTextField } from "../../../../../components/Elements/Input";
+import {
+  VisibilityIcon,
+  VisibilityOffIcon
+} from "../../../../../components/Icons";
 
 /**
  * Group container
@@ -141,11 +143,11 @@ export default function SortableContainer(
                   className={'GroupRow ' + item}>
                   {
                     selectable ?
-                    <td width={1}>
+                      <td width={1}>
                         <Checkbox
-                            onClick={selectGroup} style={{ color: 'white' }}
-                            checked={groupSelected}/>
-                    </td> : null
+                          onClick={selectGroup} style={{ color: 'white' }}
+                          checked={groupSelected}/>
+                      </td> : null
                   }
                   <td className='DragDropItem-Drag'>
                     {
@@ -182,7 +184,7 @@ export default function SortableContainer(
                               ) :
                               (
                                 <Fragment>
-                                  <span>Group :  {name ? name :
+                                  <span>Group : {name ? name :
                                     <i>No Name</i>}
                                   </span>
                                   <EditIcon
@@ -194,9 +196,11 @@ export default function SortableContainer(
                               )
                           }
                           <div className='Separator'/>
-                          { itemSelected.length > 0 ?
-                            <span className='ItemSelectedInfo'>{itemSelected.length} selected
-                              <Button size={'small'} variant="text" onClick={handleRemoveItemsClick}>
+                          {itemSelected.length > 0 ?
+                            <span
+                              className='ItemSelectedInfo'>{itemSelected.length} selected
+                              <Button size={'small'} variant="text"
+                                      onClick={handleRemoveItemsClick}>
                                 <DeleteOutlineIcon fontSize={'small'}/>
                               </Button>
                             </span> : ''
@@ -223,10 +227,11 @@ export default function SortableContainer(
             /** FOR GROUP MEMBERS **/
             return (
               <SortableItem key={item} id={item}>
-                { selectable ?
+                {selectable ?
                   <td width={1}>
-                      <Checkbox onClick={(e) => selectItem(item)} checked={itemSelected.indexOf(item) >= 0}/>
-                  </td> : null }
+                    <Checkbox onClick={(e) => selectItem(item)}
+                              checked={itemSelected.indexOf(item) >= 0}/>
+                  </td> : null}
                 <td title={layer.name}>
                   <div className='DragDropItem-Name'>
                     {layer.name}
@@ -271,13 +276,13 @@ export default function SortableContainer(
                       }}/>
                     </td> : ''
                 }
-                { !selectable ?
+                {!selectable ?
                   <td className='RemoveAction'>
                     <RemoveCircleIcon className='MuiButtonLike'
                                       onClick={() => {
                                         removeLayer(layer)
                                       }}/>
-                  </td> : null }
+                  </td> : null}
               </SortableItem>
             )
           }) : <SortableItem

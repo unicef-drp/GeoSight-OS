@@ -34,7 +34,7 @@ import { AdminForm } from "../../../../Components/AdminForm";
 import { dictDeepCopy } from "../../../../../../utils/main";
 import PopupConfigForm from "../PopupConfigForm";
 import StyleConfig from "../../../../Style/Form/StyleConfig";
-import { CogIcon } from "../../../../../../components/Icons/svg";
+import { CogIcon } from "../../../../../../components/Icons";
 
 import './style.scss';
 

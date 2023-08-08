@@ -27,7 +27,7 @@ import {
 } from "../../../../../components/Elements/Button";
 import ListForm from '../ListForm'
 import StyleConfig from '../../../ContextLayer/StyleConfig'
-import { CogIcon } from "../../../../../components/Icons/svg";
+import { CogIcon } from "../../../../../components/Icons";
 
 import './style.scss';
 
