@@ -22,7 +22,6 @@ from django.conf import settings
 from core.models.preferences import SitePreferences
 from core.serializer.site_preferences import SitePreferencesSerializer
 from core.settings.utils import ABS_PATH
-from geosight.georepo.authentication.backends import fetch_georepo_token
 from geosight.georepo.request import GeorepoUrl
 
 
@@ -46,12 +45,12 @@ def global_context(request):
     # Return api_key level 1 if user not have api_key
     pref = SitePreferences.preferences()
     pref_data = SitePreferencesSerializer(pref).data
-    georepo_token = fetch_georepo_token(request)
-    pref_data['georepo_api'] = json.dumps(
-        GeorepoUrl(api_key=georepo_token).details
-    )
+    pref_data['georepo_api'] = json.dumps(GeorepoUrl().details)
     return {
         'preferences': pref_data,
         'use_azure_auth': settings.USE_AZURE,
+        'use_georepo_auth': settings.USE_GEOREPO,
+        'georepo_azure_autehntication_url':
+            settings.GEOREPO_AZURE_AUTHENTICATION_URL,
         'version': project_version(request)
     }

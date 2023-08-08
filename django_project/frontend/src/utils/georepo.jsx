@@ -1,20 +1,21 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 import { fetchJSON } from '../Requests'
 import axios from "axios";
+import Cookies from "js-cookie";
 
 /** Georepo URL */
 export function updateToken(url) {
@@ -31,7 +32,7 @@ export function updateToken(url) {
 /** Headers georepo **/
 const headers = {
   headers: {
-    Authorization: 'Token ' + preferences.georepo_api.api_key
+    Authorization: (preferences.georepo_api.is_api_key ? 'Token ' : 'Bearer ') + preferences.georepo_api.api_key
   }
 }
 
@@ -148,7 +149,17 @@ export const fetchFeatureList = async function (url, useCache = true) {
 
 /*** Axios georepo request */
 export const axiosGet = function (url) {
-  return axios.get(url, headers)
+  return axios.get(url, headers).catch(function (error) {
+    if (USE_GEOREPO && error.message === 'Request failed with status code 403') {
+      if (!preferences.georepo_api.is_api_key) {
+        Cookies.set('georepo-token', '')
+        document.location.reload()
+      }
+    } else {
+
+    }
+    throw new Error(error);
+  });
 }
 
 /***

@@ -20,7 +20,6 @@ from geosight.georepo.api import (
     ReferenceLayerListAPI, ReferenceLayerDetailAPI,
     ReferenceLayerEntityDrilldownAPI
 )
-from geosight.georepo.authentication.views import azure_auth_georepo_login
 
 urlpatterns = [
     url(
@@ -37,9 +36,5 @@ urlpatterns = [
         r'^entity/(?P<concept_uuid>[^/]+)/drilldown',
         ReferenceLayerEntityDrilldownAPI.as_view(),
         name='entity-drilldown-api'
-    ),
-    url(
-        "azure-auth/georepo/login",
-        azure_auth_georepo_login,
-        name="georepo_login"),
+    )
 ]

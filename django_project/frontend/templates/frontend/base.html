@@ -74,6 +74,22 @@
 {% block pre_scripts %}
 {% endblock %}
 <script>
+  function getCookie(cname) {
+    let name = cname + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
+  }
+
   const maxZoom = 24;
   {% if request.user.is_authenticated %}
     const user = {{ user|safe }};
@@ -86,9 +102,20 @@
   {% endif %}
 
   const USE_AZURE = '{{ use_azure_auth }}'.toLowerCase() === 'true';
+  const USE_GEOREPO = '{{ use_georepo_auth }}'.toLowerCase() === 'true';
+  const GEOREPO_AZURE_AUTHENTICATION_URL = '{{ georepo_azure_autehntication_url }}';
   const csrfmiddlewaretoken = '{{ csrf_token }}';
   const preferences = {{ preferences|safe }};
   preferences.georepo_api = {{ preferences.georepo_api|safe }};
+
+  {# Check cookie of georepo api #}
+  const georepoToken = getCookie('georepo-token')
+  if (georepoToken) {
+    preferences.georepo_api.api_key = georepoToken;
+    preferences.georepo_api.api_key_is_public = false;
+    preferences.georepo_api.is_api_key = false;
+  }
+
   const version = "{{ version }}";
 
   const links = {{ links|safe }};
@@ -101,11 +128,9 @@
     {% if use_azure_auth %}
       'logout': "{% url 'azure_auth:logout' %}",
       'azure_login': "{% url 'azure_auth:login' %}",
-      'geoRepoLoginUrl': "{% url 'georepo_login' %}",
     {% else %}
       'logout': "{% url 'logout' %}?next=/",
       'azure_login': "",
-      'geoRepoLoginUrl': "",
     {% endif %}
     'admin': {
       'djangoAdmin': "{% url 'admin:index' %}",

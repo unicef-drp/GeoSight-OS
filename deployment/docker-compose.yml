@@ -21,6 +21,7 @@ volumes:
   rabbitmq:
   node-red:
   node-red-data:
+  redis-data:
 
 x-common-django:
   &default-common-django
@@ -83,6 +84,8 @@ services:
     container_name: "geosight_redis"
     environment:
       - REDIS_PASSWORD=${REDIS_PASSWORD:-redis_password}
+    volumes:
+      - redis-data:/bitnami/redis/data
 
   db:
     image: kartoza/postgis:13.0

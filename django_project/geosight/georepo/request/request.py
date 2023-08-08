@@ -145,6 +145,7 @@ class GeorepoUrl:
             'view_detail': self.view_detail('<identifier>'),
             'api_key': self.georepo_api_key,
             'api_key_is_public': self.api_key_is_public,
+            'is_api_key': True,
         }
 
     # -------------------------------------------
