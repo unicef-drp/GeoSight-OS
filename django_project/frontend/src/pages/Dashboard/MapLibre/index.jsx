@@ -39,20 +39,24 @@ import {
   MovementHistories,
   TiltControl,
   LabelToggler,
-  ProjectOverview
+  ProjectOverview,
+  ToggleLeftPanel
 } from '../Toolbars'
 import { EmbedConfig } from "../../../utils/embed";
 import { Actions } from "../../../store/dashboard";
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 import './style.scss';
+import {LEFT, RIGHT} from "../../../components/ToggleButton";
 
 const BASEMAP_ID = `basemap`
 
 /**
  * MapLibre component.
  */
-export default function MapLibre() {
+export default function MapLibre(
+  { leftPanelProps, ...props }
+) {
   const dispatch = useDispatch()
   const [map, setMap] = useState(null);
   const [deckgl, setDeckGl] = useState(null);
@@ -182,6 +186,21 @@ export default function MapLibre() {
     <div id="map"></div>
     {/* TOOLBARS */}
     <div className='Toolbar'>
+      {
+        leftPanelProps ?
+          <
+            ToggleLeftPanel
+            className={leftPanelProps.className}
+            initState={leftPanelProps.leftExpanded}
+            active={leftPanelProps.active}
+            onLeft={() => {
+              leftPanelProps.onLeft()
+            }}
+            onRight={() => {
+              leftPanelProps.onRight()
+            }}
+          /> : null
+      }
       <ProjectOverview/>
       <MovementHistories map={map}/>
       <TiltControl map={map} is3DView={is3dMode} force={force}/>

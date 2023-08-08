@@ -334,7 +334,7 @@ function FilterSection() {
   return <Fragment>
     <div className='FilterControl'>
       <div className='FilterControlInfo'>
-        Filter changes based on the admin level shows on the map.
+        FILTERS
       </div>
       <FilterControl
         filtersData={

@@ -43,6 +43,18 @@ export default function Dashboard({ children }) {
   const [leftExpanded, setLeftExpanded] = useState(showLayerTab || showFilterTab);
   const [rightExpanded, setRightExpanded] = useState(showWidget);
 
+  const leftPanelProps = (showLayerTab || showFilterTab) ? {
+    className: 'LeftButton',
+    initState: leftExpanded ? LEFT : RIGHT,
+    active: leftExpanded,
+    onLeft: () => {
+      setLeftExpanded(true)
+    },
+    onRight: () => {
+      setLeftExpanded(false)
+    }
+  } : {}
+
   // Fetch data of dashboard
   useEffect(() => {
     dispatch(
@@ -59,7 +71,7 @@ export default function Dashboard({ children }) {
       className={'dashboard ' + (leftExpanded ? 'LeftExpanded' : "")}>
       {data && Object.keys(data).length > 0 ?
         <Fragment>
-          <MapLibre/>
+          <MapLibre leftPanelProps={leftPanelProps}/>
           <LeftPanel leftExpanded={leftExpanded}/>
           <MiddlePanel
             leftExpanded={leftExpanded}
@@ -68,20 +80,6 @@ export default function Dashboard({ children }) {
             setRightExpanded={setRightExpanded}
           >
             <div className='ButtonSection'>
-              {/* RIGHT SIDE TOGGLER */}
-              {
-                (showLayerTab || showFilterTab) ?
-                  <LeftRightToggleButton
-                    className={'LeftButton'}
-                    initState={leftExpanded ? LEFT : RIGHT}
-                    onLeft={() => {
-                      setLeftExpanded(true)
-                    }}
-                    onRight={() => {
-                      setLeftExpanded(false)
-                    }}/> : null
-              }
-
               <div className='Separator'></div>
 
               {/* WIDGET TOGGLER */}

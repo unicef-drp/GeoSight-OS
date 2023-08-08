@@ -26,6 +26,7 @@ import IndicatorLayersAccordion from './IndicatorLayers'
 import RelatedTables from './RelatedTable'
 import FiltersAccordion from './Filters'
 import { EmbedConfig } from "../../../utils/embed";
+import { LayerIcon, TuneIcon } from "../../../components/Icons";
 
 import './style.scss';
 
@@ -61,14 +62,16 @@ export default function LeftPanel({ leftExpanded }) {
             showLayerTab ?
               <div onClick={() => setTab('Layers')}
                    className={tab === 'Layers' ? 'active' : ''}>
-                Layers
+                <LayerIcon/>
+                <span>Layers</span>
               </div> : null
           }
           {
             showFilterTab ?
               <div onClick={() => setTab('Filters')}
                    className={tab === 'Filters' ? 'active' : ''}>
-                Filters
+                <TuneIcon/>
+                <span>Filters</span>
               </div> : null
           }
         </div>

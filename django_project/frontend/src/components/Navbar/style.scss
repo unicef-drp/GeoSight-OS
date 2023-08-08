@@ -62,6 +62,21 @@ header {
       }
     }
 
+    .HelpButton {
+      height: 100%;
+
+      a {
+        height: 100%;
+      }
+
+      svg {
+        margin-top: 5px !important;
+        margin-right: 10px !important;
+      }
+    }
+
+
+
     .SvgButton {
       color: var(--anti-primary-color);
       cursor: pointer;

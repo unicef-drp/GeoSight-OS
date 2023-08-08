@@ -222,3 +222,13 @@ $nav-disabled-color: '%23CCCCCC';
     display: none !important;
   }
 }
+
+.maplibregl-ctrl {
+  &.maplibregl-ctrl-group {
+    &.mapboxgl-ctrl {
+      &.mapboxgl-ctrl-group {
+        margin-left: 40px;
+      }
+    }
+  }
+}

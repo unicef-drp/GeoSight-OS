@@ -1,0 +1,85 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'zakki@kartoza.com'
+* __date__ = '08/08/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   Toggle Left Panel
+   ========================================================================== */
+
+import React, {useEffect, useState} from 'react';
+
+import {Plugin, PluginChild} from "../../MapLibre/Plugin";
+import { ToggleLeftPanelIcon } from "../../../../components/Icons/index"
+
+import './style.scss';
+import {LEFT, RIGHT} from "../../../../components/ToggleButton";
+
+/**
+ * ToggleLeftPanel.
+ */
+export default function ToggleLeftPanel(
+  { initState, onLeft, onRight, ...props }
+) {
+  const [state, setState] = useState(LEFT);
+  const [active, setActive] = useState('');
+
+  useEffect(() => {
+    setState(initState)
+    setActive('Active')
+  }, [])
+
+  const change = () => {
+    const newState = state === RIGHT ? LEFT : RIGHT;
+    setState(newState);
+
+    if (newState === LEFT) {
+      onLeft()
+    } else if (newState === RIGHT) {
+      onRight()
+    }
+    if (
+      (props.className === 'LeftButton' && newState === LEFT) ||
+      (props.className === 'RightButton' && newState === RIGHT)
+    ) {
+      setActive('Active')
+    } else {
+      setActive('')
+    }
+  };
+
+  // let active = ''
+  // if (
+  //   (props.className === 'LeftButton' && state === LEFT) ||
+  //   (props.className === 'RightButton' && state === RIGHT)
+  // ) {
+  //   active = 'Active'
+  // }
+
+  // const className = `${props.className} ${active}`
+
+  return (
+    <Plugin className={props.className}>
+      <div className={active}>
+        <PluginChild
+          title={'Toggle Left Panel'}
+          onClick={() => {
+           change()
+         }}
+        >
+          <ToggleLeftPanelIcon/>
+        </PluginChild>
+      </div>
+    </Plugin>
+  )
+}

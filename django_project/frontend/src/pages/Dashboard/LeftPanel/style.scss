@@ -53,10 +53,13 @@
     font-family: $base-font-family !important;
     font-weight: $base-font-regular !important;
     color: #888888;
-    line-height: 17px;
 
     &.Layers .filter-wrapper {
       display: none !important;
+    }
+
+    &.Layers svg {
+      margin-right: 5px;
     }
 
     &.Filters .dataset-wrapper {
@@ -65,14 +68,16 @@
   }
 
   .dashboard__content-wrapper__navbar {
-    background: #FFFFFF;
+    background: #ffffff;
     display: flex;
     padding: 0.5rem;
+    padding-bottom: 0px;
+    height: 42px;
 
     div {
       width: 50%;
       cursor: pointer;
-      padding: 0.2rem;
+      padding: 0.5rem;
       text-align: center;
       border-radius: $border-radius;
 
@@ -83,6 +88,8 @@
       svg {
         height: 15px;
         width: 15px;
+        margin-right: 5px;
+        margin-bottom: -3px;
       }
     }
 
@@ -130,7 +137,7 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    padding: 0 0.5rem 0.5rem 0.5rem;
+    //padding: 0 0.5rem 0.5rem 0.5rem;
 
     .MuiAccordionSummary-title-desc {
       color: $base-black-color;

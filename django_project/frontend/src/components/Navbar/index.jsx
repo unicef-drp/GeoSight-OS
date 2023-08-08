@@ -23,7 +23,7 @@ import i18n from "i18next";
 
 import User from './User'
 import { EmbedConfig } from "../../utils/embed";
-import { CogIcon } from "../Icons";
+import { CogIcon, HelpIcon } from "../Icons";
 import { ThemeButton } from "../Elements/Button";
 
 import './style.scss';
@@ -77,6 +77,11 @@ export default function NavBar({ minified }) {
             </div>
           ) : null
         }
+        <div className='HelpButton .SvgButton'>
+          <a href='#'>
+            <HelpIcon/>
+          </a>
+        </div>
         <User/>
       </div>
     </header>

@@ -49,6 +49,7 @@ import './style.scss'
 import {
   WhereInputValue
 } from "../../../../components/SqlQueryGenerator/WhereQueryGenerator/WhereInput";
+import Checkbox from "@mui/material/Checkbox";
 
 const Switcher = styled(Switch)(({ theme }) => ({}));
 const expandedByFilterField = {}
@@ -150,10 +151,10 @@ export default function FilterControl(
     return <div className='FilterGroup'>
       <div className='FilterGroupHeader'>
         <div className='FilterGroupOption'>
-          <Switch
+          <Checkbox
             className='GroupSwitcher'
-            size="small"
             checked={where.active}
+            size="small"
             onChange={() => {
               groupCheckedChanged(where, !where.active)
             }}
@@ -324,9 +325,10 @@ export default function FilterControl(
           onClick={(event) => {
             updateExpanded()
           }}>
-          <Switch
-            size="small"
+          <Checkbox
+            className='GroupSwitcher'
             checked={active}
+            size="small"
             onChange={(event) => {
               updateActive(event.target.checked)
             }}
