@@ -78,28 +78,17 @@ nav:
                                 - Setup:
                                         - developer/guide/setup/index.md
                                         - Installation:
+                                                - developer/guide/setup/installation/index.md
                                                 - Preparation: developer/guide/setup/installation/preparation.md
                                                 - Project setup: developer/guide/setup/installation/project-setup.md
                                         - Development setup:
+                                                - developer/guide/setup/installation/development-setup/index.md
                                                 - Overview: developer/guide/setup/installation/development-setup/index.md
                                                 - Using pycharm: developer/guide/setup/installation/development-setup/pycharm.md
                                         - Road Map: developer/guide/setup/roadmap.md
                                         - Configuration:
-                                                - Geography: developer/guide/setup/configuration/geography.md
-                                                - Indicator: developer/guide/setup/configuration/indicator.md
-                                                - Instances: developer/guide/setup/configuration/instances.md
-                                                - Layer: developer/guide/setup/configuration/layer.md
-                                                - Navigation Link: developer/guide/setup/configuration/navigation-link.md
-                                                - Preferences: developer/guide/setup/configuration/preferences.md
-                                                - Program Intervention: developer/guide/setup/configuration/program-intervention.md
-                                                - Scenario: developer/guide/setup/configuration/scenario.md
-                                                - User: developer/guide/setup/configuration/user.md
-                                - Building/Compiling Code: developer/guide/building-compiling-code.md
-                                - Checking Out The Code: developer/guide/checking-out-the-code.md
+                                                - developer/guide/setup/configuration/index.md
                                 - Developer Workflows: developer/guide/developer-workflows.md
-                                - IDE to Use: developer/guide/ide-to-use.md
-                                - Running Instances: developer/guide/running-instances.md
-
                         - Architecture:
                                 - developer/architecture/index.md
                         - Documentation:
@@ -109,7 +98,7 @@ nav:
                                 - License: about/license.md
                         - API:
                                 - developer/api/index.md
-                                - API Manual: developer/api/api.md
+                                - API Manual: developer/api/guide.md
                                 - API Settings: developer/api/api_settings.md
                         - Design:
                                 - developer/design/index.md
