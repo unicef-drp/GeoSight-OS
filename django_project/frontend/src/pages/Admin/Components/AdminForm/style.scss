@@ -58,13 +58,12 @@
     background-color: white !important;
     border-right: 1px solid $border-gray;
     display: block;
-    font-size: 12px;
     min-width: 200px;
     border-bottom: unset;
 
     & > div {
       cursor: pointer;
-      padding: 0.5rem 1rem;
+      padding: 9px 1rem;
       text-align: left;
       border: unset !important;
 

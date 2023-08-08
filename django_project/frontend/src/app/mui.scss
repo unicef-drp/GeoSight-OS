@@ -220,27 +220,28 @@
     }
   }
 
-  .MuiDataGrid-columnHeader {
+  .MuiDataGrid-columnHeaders {
     background-color: #EAEAEA;
-    color: #1212127D;
-    font-size: 11px;
 
-    .MuiButtonBase-root {
-      color: $primary-color;
+    .MuiDataGrid-columnHeader {
+      color: #1212127D;
+      font-size: 11px !important;
+
+      .MuiButtonBase-root {
+        color: $primary-color;
+      }
     }
+
   }
 
   .MuiDataGrid-columnSeparator {
     display: none !important;
   }
 
-  .MuiDataGrid-row:hover {
-    background-color: $base-almost-white-color !important;
-  }
-
   .MuiDataGrid-columnHeader,
   .MuiDataGrid-cell {
-    padding: 0.5rem 1rem !important;
+    padding: 10px 1rem !important;
+    font-size: 1rem !important;
 
     &.MuiDataGrid-columnHeaderCheckbox {
       padding: 0 !important;
@@ -421,13 +422,23 @@
   }
 }
 
+// -----------------------------------------------
+// DATA GRID
+// -----------------------------------------------
 .MuiDataGrid-panelContent {
   overflow: visible !important;
 }
 
-// FOR DATA GRID
 .MuiDataGrid-row {
   max-height: unset !important;
+
+  .MuiDataGrid-cell {
+    border: unset !important;
+  }
+
+  .Mui-selected {
+    background-color: $primary-color-transparency;
+  }
 }
 
 .MuiDataGrid-cell {
@@ -473,6 +484,8 @@
 
 .MuiDataGrid-columnHeaders {
   border-radius: 0 !important;
+  min-height: $base-height !important;
+  max-height: $base-height !important;
 }
 
 .MuiTextField-root {

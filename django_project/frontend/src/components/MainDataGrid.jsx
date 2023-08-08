@@ -23,6 +23,7 @@ export function MainDataGrid({ ...props }) {
   return <DataGrid
     headerHeight={36}
     getRowHeight={() => 'auto'}
+    keepNonExistentRowsSelected
     {...props}
   />
 }

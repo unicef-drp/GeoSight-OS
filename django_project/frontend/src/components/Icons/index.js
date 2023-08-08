@@ -17,6 +17,8 @@
 export { default as AddIcon } from "./add.svg";
 export { default as ArrowDownwardIcon } from "./arrow-downward.svg";
 export { default as CalendarIcon } from "./calendar.svg";
+export { default as CheckboxCheckedIcon } from "./checkbox-checked.svg";
+export { default as CheckboxUncheckedIcon } from "./checkbox-unchecked.svg";
 export { default as ContactIcon } from "./contact.svg";
 export { default as CogIcon } from "./cog.svg";
 export { default as ContactActiveIcon } from "./contact-active.svg";
