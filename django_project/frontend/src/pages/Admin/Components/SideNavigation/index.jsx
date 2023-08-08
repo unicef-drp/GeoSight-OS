@@ -21,18 +21,27 @@ import { pageNames } from '../../index'
 import NavBar from "../../../../components/Navbar";
 import User from "../../../../components/Navbar/User";
 import {
+  ContactActiveIcon,
+  ContactIcon,
+  DataAccessActiveIcon,
   DataAccessIcon,
+  DataBrowserActiveIcon,
   DataBrowserIcon,
+  DataManagementActiveIcon,
   DataManagementIcon,
+  GridIcon,
+  LayerActiveIcon,
   LayerIcon,
   ListIcon,
+  MapActiveIcon,
   MapIcon,
+  ProjectActiveIcon,
   ProjectIcon,
-  RelatedTableIcon,
+  StyleActiveIcon,
   StyleIcon,
-  ViewsIcon
+  TableActiveIcon,
+  TableIcon,
 } from "../../../../components/Icons";
-import ContactIcon from "../../../../components/Icons/ContactIcon";
 
 import './style.scss';
 
@@ -74,7 +83,8 @@ export default function SideNavigation({ pageName, minified }) {
           <SidaNavigationButton minified={minified} title='Project'>
             <a href={dashboardList}
                className={'SideNavigation-Row ' + (pageName === pageNames.Dashboard ? 'active' : '')}>
-              <ProjectIcon active={pageName === pageNames.Dashboard}/>
+              {pageName === pageNames.Dashboard ? <ProjectActiveIcon/> :
+                <ProjectIcon/>}
               <span className='SideNavigation-Row-Name'>Project</span>
             </a>
           </SidaNavigationButton>
@@ -88,14 +98,15 @@ export default function SideNavigation({ pageName, minified }) {
           <SidaNavigationButton minified={minified} title='Context Layers'>
             <a href={contextLayerList}
                className={'SideNavigation-Row ' + (pageName === pageNames.ContextLayer ? 'active' : '')}>
-              <LayerIcon active={pageName === pageNames.ContextLayer}/>
+              {pageName === pageNames.ContextLayer ? <LayerActiveIcon/> :
+                <LayerIcon/>}
               <span className='SideNavigation-Row-Name'>Context Layers</span>
             </a>
           </SidaNavigationButton>
           <SidaNavigationButton minified={minified} title='Basemaps'>
             <a href={basemapList}
                className={'SideNavigation-Row ' + (pageName === pageNames.Basemaps ? 'active' : '')}>
-              <MapIcon active={pageName === pageNames.Basemaps}/>
+              {pageName === pageNames.Basemaps ? <MapActiveIcon/> : <MapIcon/>}
               <span className='SideNavigation-Row-Name'>Basemaps</span>
             </a>
           </SidaNavigationButton>
@@ -104,7 +115,8 @@ export default function SideNavigation({ pageName, minified }) {
               <SidaNavigationButton minified={minified} title='Styles'>
                 <a href={styleList}
                    className={'SideNavigation-Row ' + (pageName === pageNames.Styles ? 'active' : '')}>
-                  <StyleIcon active={pageName === pageNames.Styles}/>
+                  {pageName === pageNames.Styles ? <StyleActiveIcon/> :
+                    <StyleIcon/>}
                   <span className='SideNavigation-Row-Name'>Styles</span>
                 </a>
               </SidaNavigationButton>
@@ -121,8 +133,10 @@ export default function SideNavigation({ pageName, minified }) {
                                       title='Data Management'>
                   <a href={urls.admin.dataManagement}
                      className={'SideNavigation-Row ' + ([pageNames.Importer, pageNames.DataManagement].includes(pageName) ? 'active' : '')}>
-                    <DataManagementIcon
-                      active={[pageNames.Importer, pageNames.DataManagement].includes(pageName)}/>
+                    {
+                      [pageNames.Importer, pageNames.DataManagement].includes(pageName) ?
+                        <DataManagementActiveIcon/> : <DataManagementIcon/>
+                    }
                     <span
                       className='SideNavigation-Row-Name'>Data Management</span>
                   </a>
@@ -132,7 +146,10 @@ export default function SideNavigation({ pageName, minified }) {
           <SidaNavigationButton minified={minified} title='Data Data Browser'>
             <a href={dataset}
                className={'SideNavigation-Row ' + (pageName === pageNames.Dataset ? 'active' : '')}>
-              <DataBrowserIcon active={pageName === pageNames.Dataset}/>
+              {
+                pageName === pageNames.Dataset ? <DataBrowserActiveIcon/> :
+                  <DataBrowserIcon/>
+              }
               <span className='SideNavigation-Row-Name'>Data Browser</span>
             </a>
           </SidaNavigationButton>
@@ -140,7 +157,8 @@ export default function SideNavigation({ pageName, minified }) {
           <SidaNavigationButton minified={minified} title='Related Tables'>
             <a href={relatedTableList}
                className={'SideNavigation-Row ' + (pageName === pageNames.RelatedTables ? 'active' : '')}>
-              <RelatedTableIcon active={pageName === pageNames.RelatedTables}/>
+              {pageName === pageNames.RelatedTables ? <TableActiveIcon/> :
+                <TableIcon/>}
               <span className='SideNavigation-Row-Name'>Related Tables</span>
             </a>
           </SidaNavigationButton>
@@ -152,7 +170,10 @@ export default function SideNavigation({ pageName, minified }) {
               <SidaNavigationButton minified={minified} title='Data Access'>
                 <a href={dataAccess}
                    className={'SideNavigation-Row ' + (pageName === pageNames.DataAccess ? 'active' : '')}>
-                  <DataAccessIcon active={pageName === pageNames.DataAccess}/>
+                  {
+                    pageName === pageNames.DataAccess ?
+                      <DataAccessActiveIcon/> : <DataAccessIcon/>
+                  }
                   <span className='SideNavigation-Row-Name'>Data Access</span>
                 </a>
               </SidaNavigationButton>
@@ -164,7 +185,8 @@ export default function SideNavigation({ pageName, minified }) {
                                     title='Users and groups'>
                 <a href={userAndGroupList}
                    className={'SideNavigation-Row ' + (pageName === pageNames.UsersAndGroups ? 'active' : '')}>
-                  <ContactIcon className='SideNavigation-Row-Icon'/>
+                  {pageName === pageNames.UsersAndGroups ?
+                    <ContactActiveIcon/> : <ContactIcon/>}
                   <span
                     className='SideNavigation-Row-Name'>Users and groups</span>
                 </a>
@@ -187,7 +209,7 @@ export default function SideNavigation({ pageName, minified }) {
       <div className='SideNavigationContentGroup ViewAllDashboard'>
         <SidaNavigationButton minified={minified} title='View all dashboard'>
           <a href='/' className='SideNavigation-Row Button'>
-            <ViewsIcon/>
+            <GridIcon/>
             <span className='SideNavigation-Row-Name'>View all dashboard</span>
           </a>
         </SidaNavigationButton>

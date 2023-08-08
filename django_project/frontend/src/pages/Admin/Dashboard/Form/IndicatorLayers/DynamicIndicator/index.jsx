@@ -39,7 +39,7 @@ import {
 import Expression from "./Expression";
 import LabelForm from "../../../../Indicator/Form/LabelForm";
 import StyleConfig from "../../../../Style/Form/StyleConfig";
-import { CogIcon } from "../../../../../../components/Icons/svg";
+import { CogIcon } from "../../../../../../components/Icons";
 
 import './style.scss';
 

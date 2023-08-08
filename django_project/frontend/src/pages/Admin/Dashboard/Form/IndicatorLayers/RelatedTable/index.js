@@ -55,7 +55,7 @@ import LabelForm from "../../../../Indicator/Form/LabelForm";
 import PopupConfigForm from "../PopupConfigForm";
 import StyleConfig from "../../../../Style/Form/StyleConfig";
 import { MainDataGrid } from "../../../../../../components/MainDataGrid";
-import { CogIcon } from "../../../../../../components/Icons/svg";
+import { CogIcon } from "../../../../../../components/Icons";
 
 import './style.scss';
 

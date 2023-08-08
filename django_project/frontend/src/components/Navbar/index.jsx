@@ -23,7 +23,7 @@ import i18n from "i18next";
 
 import User from './User'
 import { EmbedConfig } from "../../utils/embed";
-import { CogIcon } from "../Icons/svg";
+import { CogIcon } from "../Icons";
 import { ThemeButton } from "../Elements/Button";
 
 import './style.scss';

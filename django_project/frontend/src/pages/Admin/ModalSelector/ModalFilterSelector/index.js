@@ -25,7 +25,7 @@ import { IconTextField } from "../../../../components/Elements/Input";
 import IndicatorSelector from "../Indicator";
 
 import { GeorepoViewSelector, GroupSelector, UserSelector } from "../index";
-import FilterIcon from "../../../../components/Icons/FilterIcon";
+import { FilterIcon } from "../../../../components/Icons";
 
 import './style.scss';
 

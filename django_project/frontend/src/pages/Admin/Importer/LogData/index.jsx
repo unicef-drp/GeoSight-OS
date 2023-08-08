@@ -15,7 +15,6 @@
 
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import $ from "jquery";
-import InfoIcon from '@mui/icons-material/Info';
 import CheckIcon from '@mui/icons-material/Check';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -41,6 +40,7 @@ import { NotificationStatus } from "../../../../components/Notification";
 import { axiosGet } from "../../../../utils/georepo";
 import { AdminPage, pageNames } from "../../index";
 import { SaveButton } from "../../../../components/Elements/Button";
+import { InfoIcon } from "../../../../components/Icons";
 
 import './style.scss';
 

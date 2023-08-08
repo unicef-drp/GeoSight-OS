@@ -21,8 +21,8 @@ import React, { useEffect, useState } from 'react';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import SquareFootIcon from '@mui/icons-material/SquareFoot';
 import CancelIcon from '@mui/icons-material/Cancel';
-import DeleteIcon from '@mui/icons-material/Delete';
 import AddLocationIcon from '@mui/icons-material/AddLocation';
+import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import {
   area as turfArea,
   length as turfLength,
@@ -33,10 +33,10 @@ import $ from 'jquery';
 import { Plugin, PluginChild } from "../../MapLibre/Plugin";
 import { ThemeButton } from "../../../../components/Elements/Button";
 import { numberWithCommas } from "../../../../utils/main";
-
-import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
-import './style.scss';
 import { SelectWithList } from "../../../../components/Input/SelectWithList";
+import { DeleteIcon } from "../../../../components/Icons";
+
+import './style.scss';
 
 /**
  * Measurement

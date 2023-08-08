@@ -37,7 +37,7 @@ import {
 } from "../../../../Components/Input/ReferenceLayerLevelConfiguration";
 import PopupConfigForm from "../PopupConfigForm";
 import { dataFieldsDefault } from "../../../../../../utils/indicatorLayer";
-import { CogIcon } from "../../../../../../components/Icons/svg";
+import { CogIcon } from "../../../../../../components/Icons";
 
 import './style.scss';
 

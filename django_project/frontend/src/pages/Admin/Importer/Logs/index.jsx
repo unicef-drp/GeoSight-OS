@@ -19,7 +19,7 @@ import DataUsageIcon from "@mui/icons-material/DataUsage";
 
 import { COLUMNS_ACTION } from "../../Components/List";
 import { ThemeButton } from "../../../../components/Elements/Button";
-import UploadIcon from "../../../../components/Icons/UploadIcon";
+import { UploadIcon } from "../../../../components/Icons";
 import { AdminListContent } from "../../AdminList";
 import { urlParams } from "../../../../utils/main";
 import { COLUMNS } from "../utils";

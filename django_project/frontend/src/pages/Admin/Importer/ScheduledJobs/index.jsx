@@ -29,7 +29,7 @@ import { COLUMNS } from "../utils";
 import { COLUMNS_ACTION } from "../../Components/List";
 import { ThemeButton } from "../../../../components/Elements/Button";
 import { AdminListContent } from "../../AdminList";
-import UploadIcon from "../../../../components/Icons/UploadIcon";
+import { UploadIcon } from "../../../../components/Icons";
 import { urlParams } from "../../../../utils/main";
 
 import './style.scss';

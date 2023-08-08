@@ -20,7 +20,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Grid from "@mui/material/Grid";
 import ImageIcon from '@mui/icons-material/Image';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import { store } from '../../store/admin';
 import { render } from '../../app';
 
@@ -30,7 +29,11 @@ import {
   MultipleSelectWithSearch,
   SelectWithSearch
 } from "../../components/Input/SelectWithSearch";
-import { SortAscIcon, SortDescIcon } from "../../components/Icons/svg";
+import {
+  SortAscIcon,
+  SortDescIcon,
+  VisibilityIcon
+} from "../../components/Icons";
 import Footer from "../../components/Footer";
 import BasicPage from '../Basic'
 
