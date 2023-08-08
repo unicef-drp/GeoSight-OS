@@ -14,11 +14,11 @@
  */
 
 import React, { Fragment, useEffect, useState } from 'react';
-import SearchIcon from '@mui/icons-material/Search';
 
 import { IconTextField } from '../Elements/Input'
 import { fetchJSON } from "../../Requests";
 import { MainDataGrid } from "../MainDataGrid";
+import { MagnifyIcon } from "../Icons";
 
 import './style.scss';
 
@@ -97,7 +97,7 @@ export default function List(
         <div className='ResourceInput'>
           <IconTextField
             placeholder={"Search " + title}
-            iconStart={<SearchIcon/>}
+            iconStart={<MagnifyIcon/>}
             onChange={searchOnChange}
           />
         </div>

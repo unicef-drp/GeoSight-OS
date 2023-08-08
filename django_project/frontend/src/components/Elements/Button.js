@@ -17,8 +17,7 @@ import React from 'react';
 import { Button } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
-import EditIcon from '@mui/icons-material/Edit';
-import { DeleteIcon } from "../Icons";
+import { DeleteIcon, EditIcon } from "../Icons";
 
 /** Main button
  * @param {string} buttonProps Variant of Button.

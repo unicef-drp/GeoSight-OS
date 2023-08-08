@@ -31,6 +31,7 @@ export {
   default as DataManagementActiveIcon
 } from "./data-management-active.svg";
 export { default as DeleteIcon } from "./delete.svg";
+export { default as EditIcon } from "./edit.svg";
 export { default as FilterIcon } from "./filter.svg";
 export { default as GridIcon } from "./grid.svg";
 export { default as ExploreIcon } from "./explore.svg";

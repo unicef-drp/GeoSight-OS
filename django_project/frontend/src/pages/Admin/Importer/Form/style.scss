@@ -40,7 +40,7 @@
   .BasicFormSection,
   .MuiGrid-item {
     & > input {
-      height: 42px;
+      height: $base-height;
     }
   }
 

@@ -16,7 +16,6 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import $ from "jquery";
-import MapIcon from '@mui/icons-material/Map';
 import ViewHeadlineIcon from '@mui/icons-material/ViewHeadline';
 import ReplayIcon from '@mui/icons-material/Replay';
 import UndoIcon from "@mui/icons-material/Undo";
@@ -55,10 +54,11 @@ import { postData } from "../../../../Requests";
 // Georepo authorization
 import GeorepoAuthorizationModal
   from "../../../../components/B2C/GeorepoAuthorizationModal";
+import { dataFieldsDefault } from "../../../../utils/indicatorLayer";
+import { MapActiveIcon } from "../../../../components/Icons";
 
 import '../../../Dashboard/style.scss';
 import './style.scss';
-import { dataFieldsDefault } from "../../../../utils/indicatorLayer";
 
 
 /**
@@ -497,7 +497,7 @@ export function DashboardForm({ onPreview }) {
               variant="primary"
               onClick={onPreview}
             >
-              <MapIcon/>Preview
+              <MapActiveIcon/>Preview
             </ThemeButton>
             <DashboardSaveForm
               currentPage={currentPage}

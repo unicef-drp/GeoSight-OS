@@ -20,7 +20,6 @@ import Grid from '@mui/material/Grid';
 import CircularProgress from '@mui/material/CircularProgress';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
-import EditIcon from '@mui/icons-material/Edit';
 import Admin from "../../index";
 import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
@@ -31,7 +30,7 @@ import {
   Notification,
   NotificationStatus
 } from "../../../../components/Notification";
-import { DeleteIcon } from "../../../../components/Icons";
+import { DeleteIcon, EditIcon } from "../../../../components/Icons";
 
 import './style.scss';
 

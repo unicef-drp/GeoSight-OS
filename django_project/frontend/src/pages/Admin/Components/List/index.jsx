@@ -22,7 +22,6 @@ import React, {
   useState
 } from 'react';
 import $ from "jquery";
-import SearchIcon from '@mui/icons-material/Search';
 
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -32,7 +31,7 @@ import { IconTextField } from '../../../../components/Elements/Input'
 import { fetchingData } from "../../../../Requests";
 import MoreAction from "../../../../components/Elements/MoreAction";
 import { dictDeepCopy, toSingular } from "../../../../utils/main";
-import { DeleteIcon } from "../../../../components/Icons";
+import { DeleteIcon, MagnifyIcon } from "../../../../components/Icons";
 
 import './style.scss';
 
@@ -271,7 +270,7 @@ export const List = forwardRef(
           <IconTextField
             placeholder={"Search " + pageName}
             defaultValue={search ? search : ""}
-            iconEnd={<SearchIcon/>}
+            iconEnd={<MagnifyIcon/>}
             onChange={evt => setSearch(evt.target.value.toLowerCase())}
           />
         </div>

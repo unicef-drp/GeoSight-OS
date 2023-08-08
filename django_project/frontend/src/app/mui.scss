@@ -48,10 +48,6 @@
   &.Basic {
     padding: 0.5rem !important;
     min-width: 0;
-
-    svg {
-      margin-right: 0 !important;
-    }
   }
 
   &.Reverse {
@@ -630,7 +626,6 @@
   }
 
   .DropdownIndicator {
-    height: $base-height;
     width: $base-height;
     color: $svg-gray !important;
     display: flex;
