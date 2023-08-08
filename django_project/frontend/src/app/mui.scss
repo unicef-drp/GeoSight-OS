@@ -153,6 +153,23 @@
   border: 1px solid white !important;
 }
 
+.MuiButton-basic {
+  background-color: white !important;
+  border: 1px solid $border-gray !important;
+  color: black !important;
+
+  &.Mui-disabled {
+    background-color: white !important;
+    border: 1px solid $disabled-color !important;
+    color: $disabled-color !important;
+    opacity: 1;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
 .MuiButton-primary-text {
   color: $primary-color !important;
 }

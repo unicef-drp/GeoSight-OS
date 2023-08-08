@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { Fragment } from 'react';
+import React, { Fragment, useRef } from 'react';
 import GppMaybeIcon from '@mui/icons-material/GppMaybe';
 import Tooltip from "@mui/material/Tooltip";
 
@@ -30,6 +30,7 @@ import {
   DataManagementActiveIcon,
   DataManagementIcon,
   GridIcon,
+  HelpIcon,
   LayerActiveIcon,
   LayerIcon,
   ListIcon,
@@ -44,6 +45,7 @@ import {
 } from "../../../../components/Icons";
 
 import './style.scss';
+import { HelpPage } from "../../../../components/HelpPage";
 
 
 function SidaNavigationButton({ title, minified, children }) {
@@ -71,6 +73,7 @@ export default function SideNavigation({ pageName, minified }) {
   const dataset = urls.admin.dataset; // eslint-disable-line no-undef
   const dataAccess = urls.admin.dataAccess; // eslint-disable-line no-undef
   const relatedTableList = urls.admin.relatedTableList; // eslint-disable-line no-undef
+  const helpPageRef = useRef(null);
 
   return (
     <div className={'SideNavigation ' + (minified ? 'Minified' : '')}>
@@ -207,16 +210,29 @@ export default function SideNavigation({ pageName, minified }) {
       </div>
 
       <div className='SideNavigationContentGroup ViewAllDashboard'>
-        <SidaNavigationButton minified={minified} title='View all dashboard'>
+        <SidaNavigationButton
+          minified={minified} title='View all dashboard(s)'>
           <a href='/' className='SideNavigation-Row Button'>
             <GridIcon/>
-            <span className='SideNavigation-Row-Name'>View all dashboard</span>
+            <span className='SideNavigation-Row-Name'>
+              View all dashboard(s)
+            </span>
+          </a>
+        </SidaNavigationButton>
+        <SidaNavigationButton minified={minified} title='Help'>
+          <a href='#' className='SideNavigation-Row' onClick={_ => {
+            helpPageRef?.current.open()
+          }}>
+            <HelpIcon/>
+            <span className='SideNavigation-Row-Name'>Help</span>
           </a>
         </SidaNavigationButton>
       </div>
       <div className='SideNavigationFooter'>
         <User detail={true}/>
       </div>
+
+      <HelpPage ref={helpPageRef}/>
     </div>
   );
 }
