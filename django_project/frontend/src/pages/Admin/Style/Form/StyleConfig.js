@@ -15,7 +15,6 @@
 
 import React, { Fragment, useEffect, useState } from "react";
 import { Checkbox, FormControlLabel } from "@mui/material";
-import Select from "react-select";
 import StyleRules from "./StyleRules";
 import DynamicStyleConfig from "./DynamicStyleConfig";
 import {
@@ -23,6 +22,7 @@ import {
 } from "../../../../components/ResourceList/WithModal/WithInput";
 import { dictDeepCopy } from "../../../../utils/main";
 import { dynamicStyleTypes } from "../../../../utils/Style";
+import { Select } from "../../../../components/Input";
 
 export const styleTypesChoices = styleTypes.map(type => {
   return {

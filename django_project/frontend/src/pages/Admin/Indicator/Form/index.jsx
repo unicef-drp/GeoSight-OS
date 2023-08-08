@@ -14,7 +14,6 @@
  */
 
 import React, { Fragment, useEffect, useRef, useState } from 'react';
-import Select from "react-select";
 
 import Admin, { pageNames } from '../../index';
 import { codelistOptions, typeChoices } from "./Base";
@@ -27,9 +26,10 @@ import { dictDeepCopy, urlParams } from "../../../../utils/main";
 import DjangoTemplateForm from "../../Components/AdminForm/DjangoTemplateForm";
 import AggregationForm from "./AggregationForm";
 import LabelForm from "./LabelForm";
+import StyleConfig from "../../Style/Form/StyleConfig";
+import { Select } from "../../../../components/Input";
 
 import './style.scss';
-import StyleConfig from "../../Style/Form/StyleConfig";
 
 /*** Additional General Indicator Inputs ***/
 function AdditionalGeneralIndicator({ indicatorData, setIndicatorData }) {

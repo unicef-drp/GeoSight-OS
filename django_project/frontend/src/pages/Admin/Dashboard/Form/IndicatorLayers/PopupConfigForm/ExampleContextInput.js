@@ -14,13 +14,13 @@
  */
 
 import React, { useEffect, useState } from "react";
-
-import './style.scss';
 import { useSelector } from "react-redux";
-import Select from "react-select";
 import {
   getContext
 } from "../../../../../Dashboard/MapLibre/Layers/ReferenceLayer/Popup";
+import { Select } from "../../../../../../components/Input";
+
+import './style.scss';
 
 /*** Popup Config Form ***/
 export default function ExampleContextInput(

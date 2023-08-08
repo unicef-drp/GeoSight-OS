@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 import React from 'react';
 import { GridActionsCellItem } from "@mui/x-data-grid";
@@ -22,6 +22,7 @@ import { pageNames } from '../../index';
 import { COLUMNS, COLUMNS_ACTION } from "../../Components/List";
 import { AdminList } from "../../AdminList";
 import PermissionModal from "../../Permission";
+import { MapIcon } from "../../../../components/Icons";
 
 import './style.scss';
 
@@ -31,22 +32,9 @@ import './style.scss';
 export default function DashboardList() {
   const pageName = pageNames.Dashboard
   const columns = COLUMNS(pageName, urls.admin.dashboardList);
-  columns[2] = { field: 'category', headerName: 'Category', flex: 0.5 }
-  columns[3] = { field: 'modified_at', headerName: 'Last Modified', flex: 0.5 }
-  columns[4] = {
-    field: 'slug', headerName: 'URL Project', flex: 1,
-    renderCell: (params) => {
-      const permission = params.row.permission
-      if (permission.read) {
-        return <a
-          className={"MuiButtonLike CellLink"}
-          href={urls.api.map.replace('/0', `/${params.id}`)}>
-          {params.value}
-        </a>
-      }
-      return params.value
-    }
-  }
+  columns[2] = { field: 'description', headerName: 'Description', flex: 1 }
+  columns[3] = { field: 'category', headerName: 'Category', flex: 0.5 }
+  columns[4] = { field: 'modified_at', headerName: 'Last Modified', flex: 0.5 }
   columns[5] = {
     field: 'actions',
     type: 'actions',
@@ -67,6 +55,22 @@ export default function DashboardList() {
             }
             label="Change Share Configuration."
           />)
+      }
+      if (permission.read) {
+        actions.unshift(
+          <GridActionsCellItem
+            icon={
+              <a
+                className={"MuiButtonLike CellLink"}
+                href={urls.api.map.replace('/0', `/${params.id}`)}>
+                <div className='ButtonIcon'>
+                  <MapIcon/>
+                </div>
+              </a>
+            }
+            label="Go to map."
+          />
+        )
       }
       if (!params.row.reference_layer) {
         actions.unshift(

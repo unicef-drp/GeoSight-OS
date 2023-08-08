@@ -18,30 +18,3 @@ __date__ = '02/08/2023'
    ========================================================================== */
 
 @import '../../../app/variables';
-
-.SelectWithList, {
-  & > div {
-    min-height: $base-height;
-    border-radius: 0;
-  }
-
-  .DropdownIndicator {
-    height: $base-height;
-    width: $base-height;
-    color: $svg-gray !important;
-    display: flex;
-    align-items: center;
-
-    svg {
-      margin-left: 17px;
-    }
-  }
-
-  .SelectWithList__menu {
-    margin: 0;
-  }
-
-  .SelectWithList__single-value {
-    font-size: 1rem !important;
-  }
-}

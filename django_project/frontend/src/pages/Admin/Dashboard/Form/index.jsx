@@ -16,7 +16,6 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import $ from "jquery";
-import MapIcon from '@mui/icons-material/Map';
 import ViewHeadlineIcon from '@mui/icons-material/ViewHeadline';
 import ReplayIcon from '@mui/icons-material/Replay';
 import UndoIcon from "@mui/icons-material/Undo";
@@ -55,10 +54,11 @@ import { postData } from "../../../../Requests";
 // Georepo authorization
 import GeorepoAuthorizationModal
   from "../../../../components/B2C/GeorepoAuthorizationModal";
+import { dataFieldsDefault } from "../../../../utils/indicatorLayer";
+import { MapActiveIcon } from "../../../../components/Icons";
 
 import '../../../Dashboard/style.scss';
 import './style.scss';
-import { dataFieldsDefault } from "../../../../utils/indicatorLayer";
 
 
 /**
@@ -202,7 +202,8 @@ export function DashboardSaveForm(
     const errors = [];
     const name = $('#SummaryName').val();
     const slug = $('#SummarySlug').val();
-    const description = $('#SummaryDescription textarea').val();
+    const description = $('#SummaryDescription').val();
+    const overview = $('#SummaryOverview textarea').val();
     const icon = $('#SummaryIcon')[0].files[0];
     const category = $('#SummaryCategory').val();
     const splashScreen = $('#SummarySplash').is(':checked');
@@ -308,6 +309,7 @@ export function DashboardSaveForm(
       formData.append('icon', icon)
       formData.append('name', name)
       formData.append('description', description)
+      formData.append('overview', overview)
       formData.append('group', category)
       formData.append('data', JSON.stringify(dashboardData))
       formData.append('geoField', geoField)
@@ -497,7 +499,7 @@ export function DashboardForm({ onPreview }) {
               variant="primary"
               onClick={onPreview}
             >
-              <MapIcon/>Preview
+              <MapActiveIcon/>Preview
             </ThemeButton>
             <DashboardSaveForm
               currentPage={currentPage}

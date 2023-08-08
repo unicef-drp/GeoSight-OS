@@ -48,6 +48,7 @@ export default function SummaryDashboardForm({ changed }) {
     icon,
     name,
     description,
+    overview,
     group,
     referenceLayer,
     geoField,
@@ -59,6 +60,7 @@ export default function SummaryDashboardForm({ changed }) {
 
   const [nameData, setNameData] = useState(name);
   const [descriptionData, setDescriptionData] = useState(description);
+  const [overviewData, setOverviewData] = useState(overview);
   const [showSplashOnFirstOpenData, setShowSplashOnFirstOpenData] = useState(show_splash_first_open);
   const [groupData, setGroupData] = useState(group);
   const [slugInput, setSlugInput] = useState(slug);
@@ -186,6 +188,21 @@ export default function SummaryDashboardForm({ changed }) {
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <FormControl className='IconInput'>
+                <label className="form-label"
+                       htmlFor="name">Description</label>
+                <textarea
+                  id='SummaryDescription'
+                  name="textarea"
+                  value={descriptionData}
+                  style={{ height: "200px" }}
+                  onChange={(evt) => {
+                    setDescriptionData(evt.target.value)
+                    changed(true)
+                  }}/>
+              </FormControl>
+            </Grid>
+            <Grid item xs={6}>
+              <FormControl className='IconInput'>
                 <label className="form-label" htmlFor="name">Icon</label>
                 <ImageInput
                   id='SummaryIcon'
@@ -200,16 +217,18 @@ export default function SummaryDashboardForm({ changed }) {
         </div>
         <div className="BasicFormSection">
           <div>
-            <label className="form-label" htmlFor="name">Description</label>
+            <label className="form-label" htmlFor="name">Project
+              Overview</label>
           </div>
           <div className='DescriptionInput'>
             <div className="container">
               <div data-color-mode="light">
                 <MDEditor
-                  id='SummaryDescription'
-                  height={200} value={descriptionData}
+                  id='SummaryOverview'
+                  height={200}
+                  value={overviewData}
                   onChange={(value) => {
-                    setDescriptionData(value)
+                    setOverviewData(value)
                     changed(true)
                   }}/>
               </div>
@@ -221,18 +240,6 @@ export default function SummaryDashboardForm({ changed }) {
           <FormGroup>
             <FormControlLabel
               control={<Checkbox
-                id={'SummaryTruncateIndicatorName'}
-                checked={truncateIndicatorName}
-                onChange={(event) => {
-                  setTruncateIndicatorName((value) => !value)
-                  changed(true)
-                }}
-              />}
-              label={'Truncate long Indicator Layer name'}/>
-          </FormGroup>
-          <FormGroup>
-            <FormControlLabel
-              control={<Checkbox
                 id={'SummarySplash'}
                 checked={showSplashOnFirstOpenData}
                 onChange={(event) => {
@@ -241,6 +248,18 @@ export default function SummaryDashboardForm({ changed }) {
                 }}
               />}
               label={'Show as a splash screen when opening project for the first time'}/>
+          </FormGroup>
+          <FormGroup>
+            <FormControlLabel
+              control={<Checkbox
+                id={'SummaryTruncateIndicatorName'}
+                checked={truncateIndicatorName}
+                onChange={(event) => {
+                  setTruncateIndicatorName((value) => !value)
+                  changed(true)
+                }}
+              />}
+              label={'Truncate long Indicator Layer name'}/>
           </FormGroup>
         </div>
         <div className="BasicFormSection">

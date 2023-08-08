@@ -67,7 +67,6 @@
 
 
   .SideNavigation-Row {
-    font-size: 12px;
     align-items: center;
     border-radius: $border-radius;
     cursor: pointer;
@@ -96,12 +95,8 @@
 
     svg {
       margin-right: 10px;
-      width: 12px;
-      height: 12px;
-
-      path {
-        fill: #9BA0A2;
-      }
+      width: 14px;
+      height: 14px;
     }
 
     &.Button {

@@ -20,15 +20,15 @@
 @import '../../../../app/variables';
 
 .AdminList {
-  background-color: white;
+  background-color: unset !important;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
   min-height: 0;
-  overflow: hidden;
-  padding: 0 !important;
   margin: 0 !important;
-  border-radius: 0 !important;
+  padding: 0 !important;
+  border-radius: $border-radius !important;
+  overflow: hidden;
 
   .MoreActionIcon {
     width: 16px;
@@ -45,6 +45,7 @@
     height: 100%;
     width: 100%;
     position: relative;
+    background-color: white;
 
     .AdminTableError {
       color: $error;

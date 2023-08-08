@@ -14,8 +14,8 @@
  */
 
 import React, { Fragment } from 'react';
-import Select from "react-select";
 import ColorSelector from "../../../../../components/Input/ColorSelector";
+import { Select } from "../../../../../components/Input";
 
 /**
  * One point input

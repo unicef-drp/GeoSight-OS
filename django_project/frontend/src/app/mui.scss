@@ -48,10 +48,6 @@
   &.Basic {
     padding: 0.5rem !important;
     min-width: 0;
-
-    svg {
-      margin-right: 0 !important;
-    }
   }
 
   &.Reverse {
@@ -220,27 +216,28 @@
     }
   }
 
-  .MuiDataGrid-columnHeader {
+  .MuiDataGrid-columnHeaders {
     background-color: #EAEAEA;
-    color: #1212127D;
-    font-size: 11px;
 
-    .MuiButtonBase-root {
-      color: $primary-color;
+    .MuiDataGrid-columnHeader {
+      color: #1212127D;
+      font-size: 11px !important;
+
+      .MuiButtonBase-root {
+        color: $primary-color;
+      }
     }
+
   }
 
   .MuiDataGrid-columnSeparator {
     display: none !important;
   }
 
-  .MuiDataGrid-row:hover {
-    background-color: $base-almost-white-color !important;
-  }
-
   .MuiDataGrid-columnHeader,
   .MuiDataGrid-cell {
-    padding: 0.5rem 1rem !important;
+    padding: 10px 1rem !important;
+    font-size: 1rem !important;
 
     &.MuiDataGrid-columnHeaderCheckbox {
       padding: 0 !important;
@@ -421,13 +418,23 @@
   }
 }
 
+// -----------------------------------------------
+// DATA GRID
+// -----------------------------------------------
 .MuiDataGrid-panelContent {
   overflow: visible !important;
 }
 
-// FOR DATA GRID
 .MuiDataGrid-row {
   max-height: unset !important;
+
+  .MuiDataGrid-cell {
+    border: unset !important;
+  }
+
+  .Mui-selected {
+    background-color: $primary-color-transparency;
+  }
 }
 
 .MuiDataGrid-cell {
@@ -473,6 +480,8 @@
 
 .MuiDataGrid-columnHeaders {
   border-radius: 0 !important;
+  min-height: $base-height !important;
+  max-height: $base-height !important;
 }
 
 .MuiTextField-root {
@@ -599,17 +608,47 @@
 }
 
 .MuiAutocomplete-popper {
+  margin: 5px 0 !important;
+
   .MuiPaper-root {
     box-shadow: $box-shadow-sm;
+  }
+
+  .MuiAutocomplete-listbox {
+    padding: 0;
+  }
+}
+
+.ReactSelect {
+  & > div {
+    min-height: $base-height;
+    border-radius: 0;
+  }
+
+  .DropdownIndicator {
+    width: $base-height;
+    color: $svg-gray !important;
+    display: flex;
+    align-items: center;
+
+    svg {
+      margin-left: 17px;
+    }
+  }
+
+  .ReactSelect__single-value {
+    font-size: 1rem !important;
   }
 }
 
 .MuiAutocomplete-option[aria-selected="true"],
-.SelectWithList__option--is-selected {
+.SelectWithList__option--is-selected,
+.ReactSelect__option--is-selected, {
   background-color: $primary-color-transparency !important;
   color: black !important;
 }
 
-.SelectWithList__option--is-focused {
+.SelectWithList__option--is-focused,
+.ReactSelect__option--is-focused, {
   background-color: rgba(0, 0, 0, 0.04) !important;
 }

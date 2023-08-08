@@ -16,7 +16,6 @@
 import React, { Fragment, useRef } from 'react';
 import Tooltip from "@mui/material/Tooltip";
 import DynamicFormIcon from '@mui/icons-material/DynamicForm';
-import MapIcon from '@mui/icons-material/Map';
 import DataUsageIcon from '@mui/icons-material/DataUsage';
 import StorageIcon from '@mui/icons-material/Storage';
 import { GridActionsCellItem } from "@mui/x-data-grid";
@@ -27,6 +26,7 @@ import { pageNames } from '../../index';
 import { COLUMNS, COLUMNS_ACTION } from "../../Components/List";
 import { AdminList } from "../../AdminList";
 import PermissionModal from "../../Permission";
+import { MapActiveIcon } from "../../../../components/Icons";
 
 import './style.scss';
 
@@ -139,7 +139,7 @@ export default function IndicatorList() {
                 <a
                   href={urls.api.map.replace('/0', `/${params.id}`)}>
                   <div className='ButtonIcon'>
-                    <MapIcon/>
+                    <MapActiveIcon/>
                   </div>
                 </a>
               </Tooltip>

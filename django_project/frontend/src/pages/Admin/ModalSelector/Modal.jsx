@@ -14,13 +14,13 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import SearchIcon from '@mui/icons-material/Search';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import Modal, { ModalHeader } from "../../../components/Modal";
 import { IconTextField } from "../../../components/Elements/Input";
 import { SaveButton } from "../../../components/Elements/Button";
 import { fetchJSON } from "../../../Requests";
 import { MainDataGrid } from "../../../components/MainDataGrid";
+import { MagnifyIcon } from "../../../components/Icons";
 
 import './style.scss';
 
@@ -210,7 +210,7 @@ export default function ModalSelector(
         <div className='AdminBaseInput Indicator-Search'>
           <IconTextField
             placeholder={"Search " + title}
-            iconStart={<SearchIcon/>}
+            iconStart={<MagnifyIcon/>}
             onChange={searchOnChange}
             value={search ? search : ""}
           />
