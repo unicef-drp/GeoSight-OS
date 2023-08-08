@@ -246,7 +246,7 @@ class DashboardSerializer(serializers.ModelSerializer):
             'related_tables',
             'permission', 'user_permission',
             'geo_field', 'show_splash_first_open',
-            'truncate_indicator_layer_name'
+            'truncate_indicator_layer_name', 'overview'
         )
 
 

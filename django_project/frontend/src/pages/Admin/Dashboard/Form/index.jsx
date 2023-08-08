@@ -202,7 +202,8 @@ export function DashboardSaveForm(
     const errors = [];
     const name = $('#SummaryName').val();
     const slug = $('#SummarySlug').val();
-    const description = $('#SummaryDescription textarea').val();
+    const description = $('#SummaryDescription').val();
+    const overview = $('#SummaryOverview textarea').val();
     const icon = $('#SummaryIcon')[0].files[0];
     const category = $('#SummaryCategory').val();
     const splashScreen = $('#SummarySplash').is(':checked');
@@ -308,6 +309,7 @@ export function DashboardSaveForm(
       formData.append('icon', icon)
       formData.append('name', name)
       formData.append('description', description)
+      formData.append('overview', overview)
       formData.append('group', category)
       formData.append('data', JSON.stringify(dashboardData))
       formData.append('geoField', geoField)
