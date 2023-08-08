@@ -14,7 +14,6 @@
  */
 
 import React, { useRef, useState } from 'react';
-import Select from "react-select";
 
 import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
@@ -25,6 +24,7 @@ import { AdminFormInput } from "../../Components/AdminForm/Base";
 import { dictDeepCopy } from "../../../../utils/main";
 import { SaveButton } from "../../../../components/Elements/Button";
 import StyleConfig from "./StyleConfig";
+import { Select } from "../../../../components/Input";
 
 import './style.scss';
 

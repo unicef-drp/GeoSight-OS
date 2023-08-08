@@ -14,14 +14,12 @@
  */
 
 import React from 'react';
-import Select from "react-select";
-import CreatableSelect from "react-select/creatable";
 import { dictDeepCopy } from "../../../utils/main";
 
 import FormControl from "@mui/material/FormControl";
-import { ArrowDownwardIcon } from "../../Icons";
 
 import './style.scss'
+import { Creatable, Select } from "../index";
 
 /** Main button
  * @param {string} buttonProps Variant of Button.
@@ -68,7 +66,7 @@ export function SelectWithList(
 
   let SelectComponent = Select;
   if (createable) {
-    SelectComponent = CreatableSelect;
+    SelectComponent = Creatable;
   }
 
   return (
@@ -76,18 +74,13 @@ export function SelectWithList(
       <SelectComponent
         menuPlacement={props.menuPlacement ? props.menuPlacement : 'auto'}
         className={'SelectWithList ' + props.ClassName + (createable ? ' Creatable ' : '')}
-        classNamePrefix="SelectWithList"
-        options={options} value={defaultValue} {...props}
+        options={options}
+        value={defaultValue} {...props}
         styles={{
           menu: (baseStyles, state) => ({
             ...baseStyles,
             zIndex: 2
           }),
-        }}
-        components={{
-          IndicatorSeparator: () => null,
-          DropdownIndicator: () => <div className='DropdownIndicator'>
-            <ArrowDownwardIcon/></div>,
         }}
       />
       {

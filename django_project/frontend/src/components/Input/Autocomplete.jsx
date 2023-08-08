@@ -9,10 +9,18 @@
  *     (at your option) any later version.
  *
  * __author__ = 'irwan@kartoza.com'
- * __date__ = '13/06/2023'
+ * __date__ = '08/08/2023'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-export { default as SelectPlaceholder } from "./SelectPlaceholder/index";
-export { default as Creatable } from "./Creatable";
-export { default as Select } from "./Select";
+import React from 'react';
+import ReactAutocomplete from '@mui/material/Autocomplete';
+import { ArrowDownwardIcon } from "../Icons";
+
+export default function Autocomplete({ ...props }) {
+  return <ReactAutocomplete
+    {...props}
+    className={"ReactAutocomplete " + (props.className ? props.className : '')}
+    popupIcon={<ArrowDownwardIcon/>}
+  />
+}

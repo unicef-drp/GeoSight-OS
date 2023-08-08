@@ -20,15 +20,14 @@
  */
 import React, { Fragment, useEffect, useState } from 'react';
 import $ from 'jquery';
-import Select from 'react-select'
-import Creatable from 'react-select/creatable';
 import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
 import Checkbox from "@mui/material/Checkbox";
 import { IconTextField } from '../../../../components/Elements/Input'
+import { urlParams } from "../../../../utils/main";
+import { Creatable, Select } from "../../../../components/Input";
 
 import './style.scss';
-import { urlParams } from "../../../../utils/main";
 
 /**
  * Indicator List App

@@ -18,11 +18,13 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import { Input } from "@mui/material";
-import Creatable from "react-select/creatable";
 import WhereInput
   from "../../../../../../components/SqlQueryGenerator/WhereQueryGenerator/WhereInput";
 import { ThemeButton } from "../../../../../../components/Elements/Button";
-import { SelectPlaceholder } from "../../../../../../components/Input";
+import {
+  Creatable,
+  SelectPlaceholder
+} from "../../../../../../components/Input";
 import { capitalize } from "../../../../../../utils/main";
 import { VALUE_TYPES } from "../../../../../../utils/queryExtraction";
 import NunjucksConfig from "../../../../../../components/Nunjucks/Config";
@@ -67,8 +69,6 @@ export function ExposedVariable({ data, setData, remove }) {
       {
         data.type === 'text' ?
           <Creatable
-            className='Createable'
-            classNamePrefix='Createable'
             placeholder='Add options and typing to create new option.'
             options={
               data.values.map((key, idx) => {

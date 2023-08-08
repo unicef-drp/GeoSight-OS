@@ -612,17 +612,48 @@
 }
 
 .MuiAutocomplete-popper {
+  margin: 5px 0 !important;
+
   .MuiPaper-root {
     box-shadow: $box-shadow-sm;
+  }
+
+  .MuiAutocomplete-listbox {
+    padding: 0;
+  }
+}
+
+.ReactSelect {
+  & > div {
+    min-height: $base-height;
+    border-radius: 0;
+  }
+
+  .DropdownIndicator {
+    height: $base-height;
+    width: $base-height;
+    color: $svg-gray !important;
+    display: flex;
+    align-items: center;
+
+    svg {
+      margin-left: 17px;
+    }
+  }
+
+  .ReactSelect__single-value {
+    font-size: 1rem !important;
   }
 }
 
 .MuiAutocomplete-option[aria-selected="true"],
-.SelectWithList__option--is-selected {
+.SelectWithList__option--is-selected,
+.ReactSelect__option--is-selected, {
   background-color: $primary-color-transparency !important;
   color: black !important;
 }
 
-.SelectWithList__option--is-focused {
+.SelectWithList__option--is-focused,
+.ReactSelect__option--is-focused, {
   background-color: rgba(0, 0, 0, 0.04) !important;
 }

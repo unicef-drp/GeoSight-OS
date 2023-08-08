@@ -16,12 +16,11 @@
 import React from "react";
 import $ from 'jquery';
 import { Checkbox, TextField } from "@mui/material";
-import Autocomplete from '@mui/material/Autocomplete';
 import CheckBoxOutlineBlankIcon
   from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { dictDeepCopy } from "../../utils/main";
-import { ArrowDownwardIcon } from "../Icons";
+import Autocomplete from "./Autocomplete";
 
 import './style.scss';
 
@@ -69,7 +68,6 @@ export function SelectWithSearch(
         onChangeFn(values ? values : '');
       }}
       disabled={disabled}
-      popupIcon={<ArrowDownwardIcon/>}
     />
   </div>
 }
@@ -155,6 +153,5 @@ export function MultipleSelectWithSearch(
     }}
     disabled={disabled}
     multiple
-    popupIcon={<ArrowDownwardIcon/>}
   />
 }
