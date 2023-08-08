@@ -38,7 +38,7 @@ export default function LeftPanel({ leftExpanded }) {
 
   const state = leftExpanded ? LEFT : RIGHT
   const [expanded, setExpanded] = useState('indicators');
-  const [tab, setTab] = useState(showLayerTab ? 'LAYERS' : 'FILTERS');
+  const [tab, setTab] = useState(showLayerTab ? 'Layers' : 'Filters');
 
   const handleChange = (panel) => (event, isExpanded) => {
     if (panel === 'projectOverview' && isExpanded) {
@@ -59,16 +59,16 @@ export default function LeftPanel({ leftExpanded }) {
         <div className='dashboard__content-wrapper__navbar'>
           {
             showLayerTab ?
-              <div onClick={() => setTab('LAYERS')}
-                   className={tab === 'LAYERS' ? 'active' : ''}>
-                LAYERS
+              <div onClick={() => setTab('Layers')}
+                   className={tab === 'Layers' ? 'active' : ''}>
+                Layers
               </div> : null
           }
           {
             showFilterTab ?
-              <div onClick={() => setTab('FILTERS')}
-                   className={tab === 'FILTERS' ? 'active' : ''}>
-                FILTERS
+              <div onClick={() => setTab('Filters')}
+                   className={tab === 'Filters' ? 'active' : ''}>
+                Filters
               </div> : null
           }
         </div>

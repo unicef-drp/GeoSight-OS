@@ -49,18 +49,23 @@
   .dashboard__content-wrapper {
     display: flex;
     flex-direction: column;
+    font-size: 14px;
+    font-family: $base-font-family !important;
+    font-weight: $base-font-regular !important;
+    color: #888888;
+    line-height: 17px;
 
-    &.LAYERS .filter-wrapper {
+    &.Layers .filter-wrapper {
       display: none !important;
     }
 
-    &.FILTERS .dataset-wrapper {
+    &.Filters .dataset-wrapper {
       display: none !important;
     }
   }
 
   .dashboard__content-wrapper__navbar {
-    background: #eee;
+    background: #FFFFFF;
     display: flex;
     padding: 0.5rem;
 
@@ -82,8 +87,9 @@
     }
 
     .active {
-      color: $anti-primary-color;
-      background-color: $primary-color;
+      color: #51A8DD;
+      font-weight: $base-font-medium!important;
+      border-bottom: 3px solid #51A8DD;
 
       &:hover {
         opacity: 1;
