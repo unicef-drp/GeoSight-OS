@@ -1,0 +1,9 @@
+
+mkdocs-with-pdf
+mkdocs-material
+mdx_gh_links
+mkdocs-pdf-export-plugin
+mkdocstrings-python
+mkdocs-video
+mkdocs-redirects
+mkdocs-enumerate-headings-plugin

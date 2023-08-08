@@ -47,10 +47,11 @@ export default function StyleForm() {
   })
   return (
     <Admin
+      minifySideNavigation={true}
       pageName={pageNames.Styles}
       rightHeader={
         <SaveButton
-          variant="secondary"
+          variant="primary"
           text="save"
           onClick={() => {
             formRef.current.submit(true)
@@ -91,8 +92,6 @@ export default function StyleForm() {
             <StyleConfig
               data={dictDeepCopy(styleData)}
               setData={style => {
-                console.log(style)
-                console.log(styleData)
                 if (JSON.stringify(style) !== JSON.stringify(styleData)) {
                   setStyleData({ ...style })
                 }

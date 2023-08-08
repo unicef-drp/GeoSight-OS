@@ -19,9 +19,6 @@
 @import '../../../../app/variables';
 
 .Detail {
-  padding-top: 2rem !important;
-  padding-bottom: 2rem !important;
-
   .DetailSection {
     border-bottom: 1px solid $gray-500;
     color: $base-black-color;
@@ -72,7 +69,7 @@
     overflow: hidden;
     z-index: 9999;
 
-    div {
+    & > div {
       background-color: white;
       border: 1px solid white;
       padding: 6px;
@@ -82,7 +79,7 @@
     &:hover {
       overflow: visible;
 
-      div {
+      & > div {
         border: 1px solid $primary-color;
       }
     }

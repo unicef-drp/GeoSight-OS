@@ -328,6 +328,8 @@ export default function GlobalDateSelector() {
         }
         if (!newDates.includes(selectedDatePoint)) {
           setSelectedDatePoint(max)
+        } else if (currentIndicatorSecondLayer?.id && prevState.indicatorLayersSelected && !prevState.indicatorLayersSelected.includes(currentIndicatorSecondLayer?.id)) {
+          setSelectedDatePoint(max)
         }
         prevState.indicatorLayersSelected = indicatorLayersSelected
       }

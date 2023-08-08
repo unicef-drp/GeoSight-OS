@@ -1,26 +1,10 @@
-[//]: # "GeoSight is UNICEF's geospatial web-based business intelligence platform."
-[//]: # 
-[//]: # "Contact : geosight-no-reply@unicef.org"
-[//]: # 
-[//]: # ".. note:: This program is free software; you can redistribute it and/or modify"
-[//]: # "    it under the terms of the GNU Affero General Public License as published by"
-[//]: # "    the Free Software Foundation; either version 3 of the License, or"
-[//]: # "    (at your option) any later version."
-[//]: # 
-[//]: # "__author__ = 'irwan@kartoza.com'"
-[//]: # "__date__ = '13/06/2023'"
-[//]: # "__copyright__ = ('Copyright 2023, Unicef')"
-[//]: # "__copyright__ = ('Copyright 2023, Unicef')"
-
 # GeoSight
 
-
-
-GeoSight is a UNICEF’s open-source geospatial web-based data visualization/analysis platform that aims to make geospatial data easily accessible and sharable in support of risk informed programming. This data is displayed utilizing administrative reference datasets from [GeoRepo](https://github.com/unicef-drp/GeoRepo-OS).
+GeoSight is a UNICEF’s open-source geospatial web-based data visualization/analysis platform that aims to make geospatial data easily accessible and shareable in support of risk informed programming. This data is displayed utilizing administrative reference datasets from [GeoRepo](https://github.com/unicef-drp/GeoRepo-OS).
 
 ## Key Concepts
 
-A **project** (dashboard) is the most important feature of GeoSight. Projects combine different elements (Reference datasets, indicators, and context layers) and enable data visualization/analysis for all end users. 
+A **project** (dashboard) is the most important feature of GeoSight. Projects combine different elements (Reference datasets, indicators, and context layers) and enable data visualization/analysis for all end users.
 
 **Context layers** are geospatial layers used to contextualise the information presented in a project.
 
@@ -62,7 +46,7 @@ docker-compose down
 git clone https://github.com/unicef-drp/GeoSight-OS
 cd GeoSight-OS/deployment
 cp .template.env .env
-docker-compose.override.template.yml docker-compose.override.yml
+cp docker-compose.override.template.yml docker-compose.override.yml
 ```
 
 After that, do

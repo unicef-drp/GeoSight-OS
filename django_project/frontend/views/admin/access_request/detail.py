@@ -55,17 +55,17 @@ class AccessRequestUserDetailView(AccessRequestDetailView):
     @property
     def LIST_URL(self):
         """Return list URL."""
-        return reverse('admin-access-request-user-list-view')
+        return reverse('admin-access-request-list-view') + '#New Users'
 
     @property
     def page_title(self):
         """Return page title that used on tab bar."""
-        return 'Request New User'
+        return 'Request New Users'
 
     @property
     def content_title(self):
         """Return content title that used on page title indicator."""
-        return f'<a href="{self.LIST_URL}">Request New User</a> '
+        return f'<a href="{self.LIST_URL}">Request New Users</a> '
 
 
 class AccessRequestPermissionDetailView(AccessRequestDetailView):
@@ -77,7 +77,8 @@ class AccessRequestPermissionDetailView(AccessRequestDetailView):
     @property
     def LIST_URL(self):
         """Return list URL."""
-        return reverse('admin-access-request-permission-list-view')
+        return reverse(
+            'admin-access-request-list-view') + '#Permission Requests'
 
     @property
     def page_title(self):

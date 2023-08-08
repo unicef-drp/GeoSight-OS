@@ -478,7 +478,10 @@ export default function StyleRules(
 
   /** Update rule for adding NO DATA RULE and OTHER RULE **/
   const updateStyleRules = (oldStyleRules) => {
-    const theStyleRules = [...oldStyleRules]
+    let theStyleRules = []
+    if (oldStyleRules.constructor === Object) {
+      theStyleRules = [...oldStyleRules]
+    }
     const newStyleRules = []
     theStyleRules.map(rule => {
       if (![NO_DATA_RULE, OTHER_DATA_RULE].includes(rule.rule)) {
@@ -757,7 +760,7 @@ export default function StyleRules(
       <tr className='Rule-Add'>
         <td colSpan={7}>
           <AddButton
-            variant="secondary"
+            variant="primary"
             text="Add New Rule"
             onClick={addNewRule}
           />

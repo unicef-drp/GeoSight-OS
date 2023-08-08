@@ -15,7 +15,6 @@
 
 import React, { useState } from 'react';
 import FormControl from "@mui/material/FormControl";
-import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import ListItemText from '@mui/material/ListItemText';
@@ -26,6 +25,7 @@ import { IconTextField } from "../../../../components/Elements/Input";
 import IndicatorSelector from "../Indicator";
 
 import { GeorepoViewSelector, GroupSelector, UserSelector } from "../index";
+import FilterIcon from "../../../../components/Icons/FilterIcon";
 
 import './style.scss';
 
@@ -56,7 +56,7 @@ export function ModalFilterSelector(
         : ""
     }
     <IconTextField
-      iconEnd={<FilterAltIcon/>}
+      iconEnd={<FilterIcon/>}
       onClick={() => setOpen(true)}
       value={data.length ? data.length + ' selected' : placeholder}
       inputProps={
@@ -149,13 +149,13 @@ export function SelectFilter({ title, data, setData, options }) {
   const handleChange = (evt) => {
     setData(evt.target.value);
   };
-  return <FormControl>
+  return <FormControl className='MuiOutlinedInput-icon'>
     <InputLabel>{title}</InputLabel>
     <Select
       multiple
       value={data}
       onChange={handleChange}
-      IconComponent={FilterAltIcon}
+      IconComponent={FilterIcon}
       input={<OutlinedInput label={title}/>}
       renderValue={(selected) => selected.length + ' selected'}
     >

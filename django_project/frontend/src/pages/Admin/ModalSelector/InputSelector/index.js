@@ -15,7 +15,6 @@
 
 import React, { useState } from 'react';
 import FormControl from "@mui/material/FormControl";
-import InputIcon from '@mui/icons-material/Input';
 import { IconTextField } from "../../../../components/Elements/Input";
 import {
   ContextLayer,
@@ -23,6 +22,7 @@ import {
   IndicatorSelector,
   RelatedTableSelector
 } from "../index";
+import { ArrowDownwardIcon } from "../../../../components/Icons";
 
 import './style.scss';
 
@@ -54,20 +54,21 @@ export function ModalInputSelector(
       }
     }
   }
-  let inputValue = data.length ? data.length + ' selected' : placeholder
+  let inputValue = data.length ? data.length + ' selected' : ''
   if (!isMultiple && data.length) {
     inputValue = data[0]?.name
   }
   return <FormControl className='InputControl'>
     {
-      data.length ?
+      data.length && !props.hideLabel ?
         <label
           className="MuiFormLabel-root"
           data-shrink="true">{placeholder}</label>
         : ""
     }
     <IconTextField
-      iconEnd={<InputIcon/>}
+      placeholder={placeholder}
+      iconEnd={<ArrowDownwardIcon/>}
       onClick={() => setOpen(true)}
       value={inputValue}
       inputProps={
@@ -167,6 +168,7 @@ export function GeorepoViewInputSelector(
     setData={setData}
     isMultiple={isMultiple}
     showSelected={showSelected}
+    hideLabel={true}
   >
     <GeorepoViewSelector/>
   </ModalInputSelector>

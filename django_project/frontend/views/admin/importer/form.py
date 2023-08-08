@@ -38,14 +38,14 @@ class ImporterCreateView(RoleContributorRequiredMixin, AdminBaseView):
     @property
     def page_title(self):
         """Return page title that used on tab bar."""
-        return 'Data Importer'
+        return 'Data Management'
 
     @property
     def content_title(self):
         """Return content title that used on page title indicator."""
         data_importer = reverse('admin-importer-create-view')
         return (
-            f'<a href="{data_importer}">Data Importer</a>'
+            f'<a href="{data_importer}">Data Management</a>'
             '<span>></span>'
             f'<a href="{data_importer}">Import Data</a>'
         )
@@ -124,12 +124,12 @@ class ImporterEditView(ImporterCreateView):
             'admin-importer-edit-view', args=[importer.id]
         )
         data_importer = reverse('admin-importer-create-view')
-        logs = reverse('admin-importer-log-list-view')
+        logs = reverse('admin-data-management-list-view') + '#Logs'
         log_url = reverse(
             'admin-importer-log-detail-view', args=[log.id]
         )
         return (
-            f'<a href="{data_importer}">Data Importer</a>'
+            f'<a href="{data_importer}">Data Management</a>'
             '<span>></span>'
             f'<a href="{logs}">Logs</a>'
             f'<span>></span> '
@@ -147,7 +147,8 @@ class ImporterScheduledEditView(ImporterEditView):
         """Return content title that used on page title indicator."""
         importer = self.instance
         data_importer = reverse('admin-importer-create-view')
-        list_url = reverse('admin-scheduled-job-list-view')
+        list_url = reverse(
+            'admin-data-management-list-view') + '#Scheduled Jobs'
         importer_url = reverse(
             'admin-importer-detail-view', args=[importer.id]
         )
@@ -155,7 +156,7 @@ class ImporterScheduledEditView(ImporterEditView):
             'admin-scheduled-importer-edit-view', args=[importer.id]
         )
         return (
-            f'<a href="{data_importer}">Data Importer</a>'
+            f'<a href="{data_importer}">Data Management</a>'
             '<span>></span>'
             f'<a href="{list_url}">Scheduled Jobs</a>'
             f'<span>></span> '

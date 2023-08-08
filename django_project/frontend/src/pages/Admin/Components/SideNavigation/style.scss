@@ -22,68 +22,155 @@
 
 .SideNavigation {
   background: white;
-  width: 200px;
-  min-width: 200px;
-  box-shadow: $box-shadow-sm;
-  padding: 0.2rem;
-  overflow-y: auto !important;
+  width: 233px;
+  min-width: 233px;
+  border-right: 1px solid $border-gray;
   z-index: 1;
-}
-
-.SideNavigation-Row {
-  border-radius: $border-radius;
-  color: $base-black-color;
-  cursor: pointer;
   display: flex;
-  padding: 0.5rem 0.5rem;
+  flex-direction: column;
 
-  &:hover {
-    opacity: 0.5;
+  .NavHeader {
+    .Separator,
+    .LinkButton,
+    .NavbarAccount,
+    .MiddleSection {
+      display: none !important;
+    }
+
+    img {
+      filter: brightness(0) invert(1);
+    }
   }
 
-  &.active {
-    background-color: $primary-color;
-    color: $anti-primary-color;
+  .SideNavigationFooter {
+    background-color: $base-gray;
+    padding: 1rem;
+  }
+
+  .SideNavigationContent {
+    flex-grow: 1;
+    overflow-y: auto;
+
+    .SideNavigationContentGroup {
+      .SideNavigationContentGroupTitle {
+        display: flex;
+        height: $base-height;
+        color: #7E7E7E;
+        border-bottom: 1px solid $border-gray;
+        font-weight: 500;
+        font-size: 10px;
+        align-items: center;
+        padding: 0 10px;
+      }
+    }
+  }
+
+
+  .SideNavigation-Row {
+    font-size: 12px;
+    align-items: center;
+    border-radius: $border-radius;
+    cursor: pointer;
+    color: $base-black-color;
+    display: flex;
+    height: $base-height;
+    padding: 0 16px;
+    border-bottom: 1px solid $base-gray-to-white;
 
     &:hover {
-      opacity: 1;
+      opacity: 0.5;
     }
 
-    path {
-      fill: $anti-primary-color !important;
+    &.active {
+      background-color: $base-alpha-color;
+      color: $primary-color;
+
+      &:hover {
+        opacity: 1;
+      }
+
+      path {
+        fill: $primary-color !important;
+      }
+    }
+
+    svg {
+      margin-right: 10px;
+      width: 12px;
+      height: 12px;
+
+      path {
+        fill: #9BA0A2;
+      }
+    }
+
+    &.Button {
+      background-color: $base-gray;
+      margin: 0.5rem 16px;
     }
   }
 
-  .SideNavigation-Row-Icon {
-    margin-right: 0.5rem;
-    width: 24px;
-    height: 24px;
-    display: inline-block;
+  .SideNavigation-Row-Group {
+    .SideNavigation-Row-Child {
 
-    path {
-      fill: $base-black-color;
-    }
-  }
-}
+      .SideNavigation-Row {
+        padding-left: 2.5rem;
 
-.SideNavigation-Row-Group {
-  .SideNavigation-Row-Child {
+        &.active {
+          background-color: $base-alpha-color;
+          color: $base-black-color;
 
-    .SideNavigation-Row {
-      padding-left: 2.5rem;
+          &:hover {
+            opacity: 1;
+          }
 
-      &.active {
-        background-color: $base-alpha-color;
-        color: $base-black-color;
-
-        &:hover {
-          opacity: 1;
-        }
-
-        path {
-          fill: $base-black-color !important;
+          path {
+            fill: $base-black-color !important;
+          }
         }
       }
+    }
+  }
+
+  &.Minified {
+    width: 56px;
+    min-width: 56px;
+
+    .SideNavigationContentGroupTitle,
+    .NavbarAccountName,
+    .SideNavigation-Row-Name {
+      display: none !important;
+    }
+
+    .ViewAllDashboard {
+      .SideNavigation-Row {
+        margin: 0;
+        background-color: unset;
+      }
+    }
+
+    .SideNavigation-Row {
+      padding: 0 21px;
+    }
+
+    svg {
+      height: 18px !important;
+      margin-right: 0;
+    }
+
+    .NavbarAccount {
+      height: 26px;
+      width: 26px;
+      font-size: 18px;
+      margin-right: 0;
+    }
+
+    .NavHeaderLink {
+      display: none;
+    }
+
+    .NavHeaderLogo {
+      padding: 0 4px;
     }
   }
 }

@@ -130,6 +130,7 @@ export function DashboardHistory(
 
   return <Fragment>
     <ThemeButton
+      variant='primary Reverse JustIcon'
       className='UndoRedo'
       onClick={undo}
       disabled={currentHistoryIdx <= 0}
@@ -137,6 +138,7 @@ export function DashboardHistory(
       <UndoIcon/>
     </ThemeButton>
     <ThemeButton
+      variant='primary Reverse JustIcon'
       className='UndoRedo'
       onClick={reset}
       disabled={currentHistoryIdx <= 0}
@@ -144,6 +146,7 @@ export function DashboardHistory(
       <ReplayIcon/>
     </ThemeButton>
     <ThemeButton
+      variant='primary Reverse JustIcon'
       className='UndoRedo'
       onClick={redo}
       disabled={redoDisabled}
@@ -343,7 +346,7 @@ export function DashboardSaveForm(
 
   return <Fragment>
     <SaveButton
-      variant="secondary"
+      variant="primary"
       text={submitted ? 'Saving...' : 'Save'}
       onClick={onSave}
       className={submitted ? 'Submitted' : ''}
@@ -401,51 +404,51 @@ export function DashboardFormHeader(
   } = useSelector(state => state.dashboard.data);
   return <div className='DashboardFormHeader TabPrimary'>
     <div
-      className={currentPage === 'Summary' ? 'active' : 'MuiButtonLike'}
+      className={currentPage === 'Summary' ? 'Selected' : 'MuiButtonLike'}
       onClick={() => changePage('Summary')}
     >
       General
     </div>
     <div
-      className={currentPage === 'Indicators' ? 'active' : 'MuiButtonLike'}
+      className={currentPage === 'Indicators' ? 'Selected' : 'MuiButtonLike'}
       onClick={() => changePage('Indicators')}
     >
       Indicators {indicators?.length ? `(${indicators?.length})` : null}
     </div>
     <div
-      className={currentPage === 'Indicator Layers' ? 'active' : 'MuiButtonLike'}
+      className={currentPage === 'Indicator Layers' ? 'Selected' : 'MuiButtonLike'}
       onClick={() => changePage('Indicator Layers')}
     >
       Indicator
       Layers {indicatorLayers?.length ? `(${indicatorLayers?.length})` : null}
     </div>
     <div
-      className={currentPage === 'Context Layers' ? 'active' : 'MuiButtonLike'}
+      className={currentPage === 'Context Layers' ? 'Selected' : 'MuiButtonLike'}
       onClick={() => changePage('Context Layers')}
     >
       Context
       Layers {contextLayers?.length ? `(${contextLayers?.length})` : null}
     </div>
     <div
-      className={currentPage === 'Basemaps' ? 'active' : 'MuiButtonLike'}
+      className={currentPage === 'Basemaps' ? 'Selected' : 'MuiButtonLike'}
       onClick={() => changePage('Basemaps')}
     >
       Basemaps {basemapsLayers?.length ? `(${basemapsLayers?.length})` : null}
     </div>
     <div
-      className={currentPage === 'Filters' ? 'active' : 'MuiButtonLike'}
+      className={currentPage === 'Filters' ? 'Selected' : 'MuiButtonLike'}
       onClick={() => changePage('Filters')}
     >
       Filters
     </div>
     <div
-      className={currentPage === 'Widgets' ? 'active' : 'MuiButtonLike'}
+      className={currentPage === 'Widgets' ? 'Selected' : 'MuiButtonLike'}
       onClick={() => changePage('Widgets')}
     >
       Widgets {widgets?.length ? `(${widgets?.length})` : null}
     </div>
     <div
-      className={currentPage === 'RelatedTables' ? 'active' : 'MuiButtonLike'}
+      className={currentPage === 'RelatedTables' ? 'Selected' : 'MuiButtonLike'}
       onClick={() => changePage('RelatedTables')}
     >
       Related
@@ -454,7 +457,7 @@ export function DashboardFormHeader(
     {
       user_permission?.share ?
         <div
-          className={currentPage === 'Share' ? 'active' : 'MuiButtonLike'}
+          className={currentPage === 'Share' ? 'Selected' : 'MuiButtonLike'}
           onClick={() => changePage('Share')}
         >
           Share
@@ -477,7 +480,7 @@ export function DashboardForm({ onPreview }) {
   const className = currentPage.replaceAll(' ', '')
   return (
     <div className='Admin'>
-      <SideNavigation pageName={pageNames.Dashboard}/>
+      <SideNavigation pageName={pageNames.Dashboard} minified={true}/>
       <div className='AdminContent'>
         <div className='AdminContentHeader'>
           <div className='AdminContentHeader-Left'>
@@ -491,7 +494,7 @@ export function DashboardForm({ onPreview }) {
               currentHistoryIdx={currentHistoryIdx}
               setCurrentHistoryIdx={setCurrentHistoryIdx}/>
             <ThemeButton
-              variant="secondary"
+              variant="primary"
               onClick={onPreview}
             >
               <MapIcon/>Preview
@@ -509,7 +512,7 @@ export function DashboardForm({ onPreview }) {
 
         {/* DASHBOARD FORM */}
         <div className='DashboardFormWrapper'>
-          <div className={'DashboardForm ' + className}>
+          <div className={'AdminForm DashboardForm ' + className}>
             {/* FORM CONTENT */}
             <DashboardFormHeader
               currentPage={currentPage} changePage={setCurrentPage}
@@ -539,7 +542,7 @@ export default function DashboardFormApp() {
       <Dashboard>
         <div className='BackToForm'>
           <ThemeButton
-            variant="secondary"
+            variant="primary"
             onClick={() => {
               setCurrentMode('FormMode')
             }}

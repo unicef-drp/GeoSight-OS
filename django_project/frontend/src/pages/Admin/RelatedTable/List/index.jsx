@@ -68,7 +68,7 @@ export default function RelatedTableList() {
             icon={
               <a href={urls.api.dataView.replace('/0', `/${params.id}`)}>
                 <div
-                  className='MuiButton-Div MuiButtonBase-root MuiButton-secondary ThemeButton'>
+                  className='MuiButton-Div MuiButtonBase-root MuiButton-primary Reverse ThemeButton'>
                   <DataUsageIcon/> Data
                 </div>
               </a>
@@ -85,7 +85,7 @@ export default function RelatedTableList() {
               <a
                 href={`${urls.admin.importer}?import_type=Related Tables&input_format=Excel Wide Format&related_table_uuid=${params.row.unique_id}&related_table_name=${params.row.name}&related_table_id=${params.row.id}`}>
                 <div
-                  className='MuiButton-Div MuiButtonBase-root MuiButton-secondary ThemeButton'>
+                  className='MuiButton-Div MuiButtonBase-root MuiButton-primary Reverse ThemeButton'>
                   <CachedIcon/> Replace Data
                 </div>
               </a>

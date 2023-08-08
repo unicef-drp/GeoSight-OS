@@ -163,7 +163,7 @@ export default function IndicatorValueList() {
       rightHeader={
         <div>
           <ThemeButton
-            variant="secondary" disabled={!selected.length}
+            variant="primary" disabled={!selected.length}
             onClick={() => deleteSelected()}>
             Delete Selected
             {selected.length ? " (" + selected.length + " Selected)" : ""}

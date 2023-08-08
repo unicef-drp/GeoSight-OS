@@ -38,7 +38,7 @@ export default function GeorepoAuthorization() {
   }
 
   return (
-    <ThemeButton variant="secondary Basic" onClick={login}>
+    <ThemeButton variant="primary Basic" onClick={login}>
       <AccountCircleIcon/>
       &nbsp;&nbsp;Authorize to GeoRepo
     </ThemeButton>

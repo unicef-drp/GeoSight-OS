@@ -163,7 +163,7 @@
     }
 
     .ProjectGrid {
-      background-color: #F4F4F4;
+      background-color: $base-to-white-color;
       cursor: pointer;
       height: 360px;
       transition: margin 0.2s;
@@ -202,7 +202,7 @@
 
       .ProjectGridIcon {
         background-color: white;
-        border: 1px solid #F4F4F4;
+        border: 1px solid $base-to-white-color;
         height: 180px;
         width: 100%;
 
@@ -215,7 +215,7 @@
         svg {
           display: block;
           font-size: 5rem;
-          color: #F4F4F4;
+          color: $base-to-white-color;
           margin: auto;
           margin-top: 3rem;
         }
@@ -238,7 +238,7 @@
       .ProjectGridTags {
         display: flex;
         padding: 0.5rem 1rem 1rem 1rem;
-        background-color: #F4F4F4;
+        background-color: $base-to-white-color;
 
         div {
           background-color: white;
@@ -255,7 +255,7 @@
         padding-bottom: 1rem;
         overflow: hidden;
         max-height: 300px;
-        background-color: #F4F4F4;
+        background-color: $base-to-white-color;
 
         .wmde-markdown {
           line-height: 17px;

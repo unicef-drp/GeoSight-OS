@@ -140,7 +140,7 @@ export const fetchFeatureList = async function (url, useCache = true) {
         data = data.concat(response)
       }
     } catch (error) {
-      await _fetchJson(page += 1)
+
     }
   }
   await _fetchJson()

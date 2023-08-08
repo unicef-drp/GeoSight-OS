@@ -31,10 +31,12 @@ import './form.small.scss';
  * @param {string} className Class name for modal
  * @param {React.Component} children React component to be rendered
  */
-export default function App({ className, children }) {
+export default function App({ className, children, ...props }) {
   return (
     <div className={c('page', className) + (EmbedConfig().id ? ' Embed' : '')}>
-      <NavBar/>
+      {
+        !props.hideNavbar ? <NavBar/> : null
+      }
       <main>
         {children}
       </main>

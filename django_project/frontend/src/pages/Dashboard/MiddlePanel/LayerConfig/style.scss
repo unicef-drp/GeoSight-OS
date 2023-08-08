@@ -65,10 +65,24 @@
   }
 
   .MultipleSelectWithSearch,
+  .SelectWithSearchInput,
   .SelectWithSearch {
+    height: 24px !important;
+    min-height: 24px !important;
+    background-color: unset !important;
+    border: $border;
+
+    & > .SelectWithSearch {
+      border: unset !important;
+    }
+
+    fieldset {
+      border: unset !important;
+    }
+
     .MuiInputBase-root {
-      height: 25px !important;
-      min-height: 25px !important;
+      height: 23px !important;
+      min-height: 23px !important;
     }
   }
 
@@ -134,7 +148,6 @@
 
       .MuiSelect-select {
         color: $primary-color !important;
-        -webkit-text-fill-color: $primary-color !important;
         background-color: white;
         padding: 0;
         font-size: 0.9rem !important;

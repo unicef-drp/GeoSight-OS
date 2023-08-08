@@ -158,6 +158,7 @@ export default function IndicatorForm() {
 
   return (
     <Admin
+      minifySideNavigation={true}
       className='Indicator'
       pageName={pageNames.Indicators}
       rightHeader={
@@ -165,7 +166,7 @@ export default function IndicatorForm() {
           {
             indicatorId ?
               <SaveButton
-                variant="secondary Reverse"
+                variant="primary Reverse"
                 text="Save As"
                 onClick={() => {
                   formRef.current.submit(true)
@@ -175,7 +176,7 @@ export default function IndicatorForm() {
               /> : ""
           }
           <SaveButton
-            variant="secondary"
+            variant="primary"
             text="Save"
             onClick={() => {
               formRef.current.submit()

@@ -54,6 +54,7 @@ export default function ReferenceLayerCentroid({ map }) {
   const filteredGeometries = useSelector(state => state.filteredGeometries)
   const indicatorsData = useSelector(state => state.indicatorsData);
   const selectedIndicatorLayer = useSelector(state => state.selectedIndicatorLayer)
+  const selectedIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer)
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel)
   const filtersData = useSelector(state => state.filtersData);
 
@@ -280,21 +281,28 @@ export default function ReferenceLayerCentroid({ map }) {
   // When level changed
   useEffect(() => {
     // Check if all data is ready
-    if (!selectedIndicatorLayer.indicators) {
+    let indicatorLayer = selectedIndicatorLayer
+    if (selectedIndicatorSecondLayer?.indicators?.length >= 2) {
+      indicatorLayer = selectedIndicatorSecondLayer
+    }
+    if (!indicatorLayer.indicators) {
       reset()
       return;
     }
+
+    const isRenderingChart = indicatorLayer?.indicators?.length >= 2
+
     let rendering = true
     const usedIndicatorsData = {}
     const usedIndicatorsProperties = {}
-    selectedIndicatorLayer.indicators.map(indicator => {
+    indicatorLayer.indicators.map(indicator => {
       usedIndicatorsData[indicator.id] = indicatorsData[indicator.id]
       usedIndicatorsProperties[indicator.id] = indicator
     })
-    const layerId = indicatorLayerId(selectedIndicatorLayer)
+    const layerId = indicatorLayerId(indicatorLayer)
     if (indicatorsData[layerId]) {
       usedIndicatorsData[layerId] = indicatorsData[layerId]
-      usedIndicatorsProperties[layerId] = selectedIndicatorLayer
+      usedIndicatorsProperties[layerId] = indicatorLayer
     }
     if (!allDataIsReady(usedIndicatorsData)) {
       rendering = false
@@ -310,13 +318,11 @@ export default function ReferenceLayerCentroid({ map }) {
       return;
     }
 
-    const isRenderingChart = selectedIndicatorLayer?.indicators?.length >= 2
-
     // Check by config
     const config = {
-      indicators: selectedIndicatorLayer.indicators.map(indicator => indicator.id),
-      selectedIndicatorLayer: selectedIndicatorLayer.id,
-      selectedIndicatorLayerConfig: isIndicatorLayerLikeIndicator(selectedIndicatorLayer) ? selectedIndicatorLayer.config : {},
+      indicators: indicatorLayer.indicators.map(indicator => indicator.id),
+      indicatorLayer: indicatorLayer.id,
+      indicatorLayerConfig: isIndicatorLayerLikeIndicator(indicatorLayer) ? indicatorLayer.config : {},
       geometries: Object.keys(geometriesData),
       filteredGeometries: filteredGeometries,
       indicatorShow: indicatorShow
@@ -355,7 +361,7 @@ export default function ReferenceLayerCentroid({ map }) {
       let maxValue = 0
       const features = []
 
-      const chartStyle = selectedIndicatorLayer.chart_style
+      const chartStyle = indicatorLayer.chart_style
       let theGeometries = Object.keys(geometriesData)
       if (where && filteredGeometries) {
         theGeometries = filteredGeometries
@@ -368,7 +374,7 @@ export default function ReferenceLayerCentroid({ map }) {
         if (indicatorsByGeom[geometry?.code]) {
           const properties = Object.assign({}, geometry, {
             chart_style: JSON.parse(JSON.stringify(chartStyle)),
-            name: selectedIndicatorLayer.name
+            name: indicatorLayer.name
           })
           properties['data'] = indicatorsByGeom[geometry.code]
           properties['chartData'] = chartData(indicatorsByGeom[geometry.code])
@@ -421,16 +427,16 @@ export default function ReferenceLayerCentroid({ map }) {
       // ---------------------------------------------------------
       // CREATE LABEL IF SINGLE INDICATOR
       // ---------------------------------------------------------
-      let selectedIndicatorLayerId = null
-      if (selectedIndicatorLayer?.indicators) {
-        selectedIndicatorLayerId = selectedIndicatorLayer?.indicators[0]?.id
+      let indicatorLayerId = null
+      if (indicatorLayer?.indicators) {
+        indicatorLayerId = indicatorLayer?.indicators[0]?.id
       }
-      const indicatorDetail = indicators.find(indicator => indicator.id === selectedIndicatorLayerId)
+      const indicatorDetail = indicators.find(indicator => indicator.id === indicatorLayerId)
       let config;
       if (indicatorDetail) {
         config = indicatorDetail?.label_config
       } else {
-        config = selectedIndicatorLayer?.label_config
+        config = indicatorLayer?.label_config
       }
       // When there is no config, no label rendered
       if (!(config?.style && config?.text) || !showIndicatorMapLabel) {
@@ -487,7 +493,8 @@ export default function ReferenceLayerCentroid({ map }) {
     }
   }, [
     geometries, filteredGeometries, indicatorsData,
-    indicatorShow, indicatorLayers, selectedIndicatorLayer,
+    indicatorShow, indicatorLayers,
+    selectedIndicatorLayer, selectedIndicatorSecondLayer,
     showIndicatorMapLabel
   ]);
 

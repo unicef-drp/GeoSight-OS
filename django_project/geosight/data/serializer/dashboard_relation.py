@@ -78,6 +78,7 @@ class DashboardIndicatorSerializer(serializers.ModelSerializer):
                 ).data
                 data['style'] = data['styles']
                 del data['styles']
+                return data
             else:
                 return None
         else:

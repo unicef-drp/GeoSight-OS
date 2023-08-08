@@ -37,7 +37,7 @@ class GroupCreateView(RoleSuperAdminRequiredMixin, AdminBaseView):
     @property
     def content_title(self):
         """Return content title that used on page title indicator."""
-        list_url = reverse('admin-group-list-view')
+        list_url = reverse('admin-user-and-group-list-view') + '#Groups'
         create_url = reverse('admin-group-create-view')
         return (
             f'<a href="{list_url}">Groups</a> '
@@ -70,7 +70,9 @@ class GroupCreateView(RoleSuperAdminRequiredMixin, AdminBaseView):
                 user.groups.remove(group)
             for user in users:
                 user.groups.add(group)
-            return redirect(reverse('admin-group-list-view'))
+            return redirect(
+                reverse('admin-user-and-group-list-view') + '#Groups'
+            )
         context = self.get_context_data(**kwargs)
         context['form'] = form
         return render(

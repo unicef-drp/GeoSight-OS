@@ -109,7 +109,7 @@ export default function ImporterDetail() {
     rightHeader={
       <div>
         <ThemeButton
-          variant="secondary Basic"
+          variant="primary Basic"
           onClick={() => {
             axios.post(data.job_active ? data.urls.pause : data.urls.resume, {}, {
               headers: {
@@ -134,7 +134,7 @@ export default function ImporterDetail() {
         </ThemeButton>
         <ThemeButton
           disabled={['Start', 'Running'].includes(data.logs[0]?.status)}
-          variant="secondary Basic"
+          variant="primary Basic"
           onClick={() => {
             axios.post(data.urls.run, {}, {
               headers: {
@@ -158,7 +158,7 @@ export default function ImporterDetail() {
         </ThemeButton>
         <a
           href={data.urls.edit}>
-          <ThemeButton variant="secondary Basic">
+          <ThemeButton variant="primary Basic">
             <EditIcon/> Edit
           </ThemeButton>
         </a>

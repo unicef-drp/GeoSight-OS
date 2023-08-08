@@ -43,6 +43,25 @@
   font-size: $root-font-size;
 }
 
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #121212 !important;;
+  opacity: 0.3 !important;; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #121212 !important;;
+  opacity: 0.3 !important;; /* Firefox */
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+  color: #121212 !important;
+  opacity: 0.3 !important;; /* Firefox */
+}
+
+::-webkit-file-upload-button {
+  cursor: pointer;
+}
+
 /* --------------------------------- */
 html, body {
   height: 100vh;
@@ -87,7 +106,7 @@ a:hover {
 }
 
 b.light {
-  font-weight: 500 !important;
+  font-weight: 600 !important;
 }
 
 table {
@@ -121,6 +140,12 @@ header {
 
 .error {
   color: red !important;
+
+  svg {
+    path {
+      fill: red;
+    }
+  }
 }
 
 .warning {
@@ -320,24 +345,28 @@ header {
 
 .TabPrimary {
   display: flex;
+  background-color: unset !important;
+  padding: 0;
+  border-bottom: 1px solid $border-gray;
 
   div {
-    border: 1px solid $primary-color;
+    background-color: unset;
+    border: unset;
     padding: 0.5rem;
     cursor: pointer;
     margin-right: -1px;
     min-width: 8rem;
     text-align: center;
-    background-color: white;
-    border: 1px solid $gray-200;
 
     &:hover {
-      background-color: $gray-100;
+      color: $primary-color;
+      background-color: unset !important;
     }
 
     &.Selected {
-      background-color: $primary-color;
-      color: $anti-primary-color;
+      background-color: unset !important;
+      color: $primary-color;
+      border-bottom: 3px solid $primary-color;
     }
 
     &.Disabled {
@@ -370,10 +399,7 @@ header {
   flex-grow: 1;
   min-height: 0;
   overflow: auto;
-}
-
-.MuiSnackbar-root {
-  padding: 0 !important;
+  padding: 1rem;
 }
 
 .Hidden {
@@ -394,5 +420,51 @@ header {
     .MuiCircularProgress-root {
       margin-bottom: 1rem;
     }
+  }
+}
+
+
+.ListAdminFilters {
+  padding: 0.5rem !important;
+  display: flex;
+  flex-flow: row wrap;
+  margin: 0 1rem !important;
+  background-color: unset !important;
+
+  &::before {
+    display: block;
+    flex-grow: 1;
+    content: "";
+  }
+
+
+  & > div {
+    margin-right: 0.5rem;
+  }
+
+  .MuiFormControl-root {
+    background-color: white;
+
+    .MuiFormLabel-root {
+      top: -6px;
+      background-color: unset;
+    }
+  }
+
+  .MuiInputBase-root {
+    width: 200px;
+
+    input, .MuiSelect-select {
+      padding: 10px;
+      padding-right: 0 !important;
+    }
+  }
+
+  .MuiSelect-icon {
+    transform: rotate(0deg) !important;
+  }
+
+  .ModalDataSelectorSelected {
+    display: none;
   }
 }

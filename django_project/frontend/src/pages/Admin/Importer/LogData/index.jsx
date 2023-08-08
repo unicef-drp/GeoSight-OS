@@ -20,23 +20,27 @@ import CheckIcon from '@mui/icons-material/Check';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import ClearIcon from '@mui/icons-material/Clear';
 import Box from "@mui/material/Box";
-import LinearProgress from '@mui/material/LinearProgress';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
+import LinearProgress from "@mui/material/LinearProgress";
 
 import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
 import { AdminList } from "../../AdminList";
 import { fetchJSON } from "../../../../Requests";
-import { capitalize, parseDateTime } from "../../../../utils/main";
+import {
+  capitalize,
+  dictDeepCopy,
+  parseDateTime,
+  splitParams,
+  urlParams
+} from "../../../../utils/main";
 import CustomPopover from "../../../../components/CustomPopover";
 import { SelectWithList } from "../../../../components/Input/SelectWithList";
-import DatasetList from "../../Dataset/List";
-import { SaveButton } from "../../../../components/Elements/Button";
-import {
-  Notification,
-  NotificationStatus
-} from "../../../../components/Notification";
+import { DatasetList } from "../../Dataset/index";
+import { NotificationStatus } from "../../../../components/Notification";
 import { axiosGet } from "../../../../utils/georepo";
+import { AdminPage, pageNames } from "../../index";
+import { SaveButton } from "../../../../components/Elements/Button";
 
 import './style.scss';
 
@@ -88,6 +92,8 @@ const statusFilter = [
 const fetchData = async () => {
   return await fetchJSON(urls.api.data, {}, true);
 }
+
+let inProgress = false
 /**
  * Importer Log Data
  */
@@ -101,16 +107,28 @@ export default function ImporterLogData() {
   // States
   const [state, setState] = useState({
     columns: [],
-    data: []
+    data: null
   });
+  const { columns, data } = state;
   const [selectionModel, setSelectionModel] = useState([]);
   const [progress, setProgress] = useState(100);
   const isIndicatorValue = impoterType === 'Indicator Value'
 
+  // Other attributes
+  const defaultFilters = urlParams()
+  const [filters, setFilters] = useState({
+    indicators: defaultFilters.indicators ? splitParams(defaultFilters.indicators) : [],
+    datasets: defaultFilters.datasets ? splitParams(defaultFilters.datasets) : [],
+    levels: defaultFilters.levels ? splitParams(defaultFilters.levels) : [],
+    geographies: defaultFilters.geographies ? splitParams(defaultFilters.geographies) : [],
+    fromTime: defaultFilters.fromTime ? defaultFilters.fromTime : null,
+    toTime: defaultFilters.toTime ? defaultFilters.toTime : null,
+  })
+
   /***
    * Load data
    */
-  const loadData = async (parameters) => {
+  const loadData = async () => {
     const responseData = await fetchData()
     // Construct dict
     const columnsByDict = {
@@ -134,7 +152,7 @@ export default function ImporterLogData() {
               const note = JSON.parse(params.row.note)
               Button = <PriorityHighIcon fontSize={"small"}/>
               Text = note.warning
-              Color = 'warning.dark'
+              Color = 'warning.main'
               break
             default:
               Button = <QuestionMarkIcon fontSize={"small"}/>
@@ -223,6 +241,21 @@ export default function ImporterLogData() {
                 &nbsp;
                 <div title={params.value}>{params.value}</div>
               </div>
+            } else if (note && key === 'value' && note.warning) {
+              return <div className='FlexCell'>
+                <CustomPopover
+                  anchorOrigin={{ vertical: 'center', horizontal: 'right' }}
+                  transformOrigin={{ vertical: 'center', horizontal: 'left' }}
+                  Button={<InfoIcon fontSize={"small"}/>}
+                  showOnHover={true}
+                >
+                  <div className='MuiPopover-Info'>
+                    {note.warning}
+                  </div>
+                </CustomPopover>
+                &nbsp;
+                <div title={params.value}>{params.value}</div>
+              </div>
             } else {
               if (isDate) {
                 return parseDateTime(params.value)
@@ -232,7 +265,7 @@ export default function ImporterLogData() {
           },
           cellClassName: (params) => {
             const note = params.row.note ? JSON.parse(params.row.note) : null
-            return note && note[key] ? 'CellError' : null
+            return note && note[key] ? 'CellError' : (note && key === 'value' && note.warning) ? 'CellWarning' : null
           },
           field: key,
           headerName: columnDetail ? columnDetail.headerName : capitalize(key),
@@ -259,22 +292,24 @@ export default function ImporterLogData() {
 
   // On loaded
   useEffect(() => {
-    if (!isIndicatorValue) {
-      (
-        async () => {
-          const state = await loadData()
-          setState({ ...state })
-        }
-      )()
-    }
+    (
+      async () => {
+        const state = await loadData()
+        setState({ ...state })
+      }
+    )()
   }, [])
 
-  const checkProgress = () => {
+  const checkProgress = (force) => {
+    if (!force && inProgress) {
+      return
+    }
+    inProgress = true
     axiosGet(urls.api.data + '/progress').then(response => {
       setTimeout(function () {
+        inProgress = false
         checkProgress()
       }, 1000);
-      setSelectionModel(response.data.target_ids)
       setProgress(
         (
           response.data.saved_ids.length / response.data.target_ids.length
@@ -285,83 +320,58 @@ export default function ImporterLogData() {
       data.filter(row => response.data.saved_ids.includes(row.id)).map(row => {
         row.status = 'Saved'
       })
+      const newSelectionModel = response.data.target_ids.filter(row => !response.data.saved_ids.includes(row))
       setState({ ...state, data: [...data] })
+      setSelectionModel(newSelectionModel)
     }).catch(function (error) {
       setProgress(100)
       data.filter(row => selectionModel.includes(row.id)).map(row => {
         row.status = 'Saved'
       })
       setState({ ...state, data: [...data] })
-      setSelectionModel([])
     })
   }
 
   // Check the progress
   useEffect(() => {
-    checkProgress()
-  }, [])
+    if (data) {
+      checkProgress()
+    }
+  }, [data])
 
-  const { columns, data } = state;
+  let usedData = null
+  if (data) {
+    usedData = dictDeepCopy(data)
+    usedData.map(row => {
+      row.selectable = ['Review', 'Warning'].includes(row.status)
+    })
+    if (filters.indicators?.length) {
+      usedData = usedData.filter(row => filters.indicators.includes(row.indicator_id + ''))
+    }
+    if (filters.datasets?.length) {
+      usedData = usedData.filter(row => filters.datasets.includes(row.reference_layer_identifier + ''))
+    }
+    if (filters.levels?.length) {
+      usedData = usedData.filter(row => filters.levels.includes(row.admin_level + ''))
+    }
+    if (filters.geographies?.length) {
+      usedData = usedData.filter(row => filters.geographies.includes(row.geo_code + ''))
+    }
+    if (filters.fromTime) {
+      usedData = usedData.filter(row => row.date_time >= filters.fromTime.unix())
+    }
+    if (filters.toTime) {
+      usedData = usedData.filter(row => row.date_time <= filters.toTime.unix())
+    }
+  }
   if (isIndicatorValue) {
-    return <Fragment>
+    return <AdminPage pageName={pageNames.Importer}>
       <DatasetList
-        selectionModel={selectionModel}
-        setSelectionModel={(newSelectionModel) => {
-          setSelectionModel(
-            data.filter(row => ['Review', 'Warning'].includes(row.status) && newSelectionModel.includes(row.id)).map(row => row.id)
-          )
-        }}
-        loadData={async (parameters) => {
-          let usedData = []
-          if (!data.length) {
-            const responseData = await loadData()
-            setState({ ...responseData })
-            usedData = responseData.data
-          } else {
-            usedData = data
-          }
-
-          // Filter data
-          if (parameters.indicator_id__in) {
-            usedData = usedData.filter(row => {
-              return parameters.indicator_id__in.split(',').includes(row.indicator_id + '')
-            })
-          }
-          if (parameters.reference_layer_id__in) {
-            usedData = usedData.filter(row => {
-              return parameters.reference_layer_id__in.split(',').includes(row.reference_layer_identifier + '')
-            })
-          }
-          if (parameters.admin_level__in) {
-            usedData = usedData.filter(row => {
-              return parameters.admin_level__in.split(',').includes(row.admin_level + '')
-            })
-          }
-          if (parameters.geom_id__in) {
-            usedData = usedData.filter(row => {
-              return parameters.geom_id__in.split(',').includes(row.geo_code + '')
-            })
-          }
-          if (parameters.date__gte) {
-            const ts = new Date(parameters.date__gte).getTime() / 1000
-            usedData = usedData.filter(row => {
-              return row.date_time >= ts
-            })
-          }
-          if (parameters.date__lte) {
-            const ts = new Date(parameters.date__lte).getTime() / 1000
-            usedData = usedData.filter(row => {
-              return row.date_time <= ts
-            })
-          }
-          return usedData
-        }} pageName='Importer Log Data'
-        COLUMNS={state.columns}
-        actionButtons={
-          <div>
+        tableHeader={
+          <div className='SaveButtonOnTable'>
             <SaveButton
-              variant="secondary"
-              text={"Save " + selectionModel.length + " selected(s)"}
+              variant="primary Reverse"
+              text={"Save"}
               disabled={!selectionModel.length || progress < 100}
               style={{ marginLeft: 0, marginBottom: 0 }}
               onClick={() => {
@@ -373,7 +383,7 @@ export default function ImporterLogData() {
                     'data': JSON.stringify(selectionModel)
                   },
                   success: function () {
-                    checkProgress()
+                    checkProgress(true)
                   },
                   error: function (error) {
                     notify(error.message, NotificationStatus.ERROR)
@@ -399,29 +409,26 @@ export default function ImporterLogData() {
             }
           </div>
         }
-
-        getCellClassName={params => {
-          let className = ''
-          if (["__check__", "actions"].includes(params.field)) {
-            if (!['Review', 'Warning'].includes(params.row.status)) {
-              className += "Hide"
-            }
-          }
-          return className
-        }}
-
+        columns={state.columns}
+        initData={usedData}
+        filters={filters}
+        setFilters={setFilters}
+        selectionModel={selectionModel}
         checkboxSelection={impoterStatus === 'Success'}
+        disableSelectionOnClick
+        selectionChanged={(newSelectionModel) => {
+          setSelectionModel(newSelectionModel)
+        }}
         disableColumnFilter={false}
         sortingDefault={[{ field: 'status', sort: 'asc' }]}
-        selectable={progress >= 100}
+        selectable={(param) => progress >= 100 && param.row.selectable}
       />
-      <Notification ref={notificationRef}/>
-    </Fragment>
+    </AdminPage>
   }
   return <AdminList
     columns={columns}
-    pageName={'Importer Log Data'}
-    initData={data}
+    pageName={pageNames.Importer}
+    initData={usedData}
     listUrl={null}
     rightHeader={<div></div>}
   />

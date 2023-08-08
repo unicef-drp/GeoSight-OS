@@ -13,8 +13,8 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { useEffect, useState } from 'react';
-import { DataGrid } from "@mui/x-data-grid";
+import React, { Fragment, useEffect, useState } from 'react';
+import { MainDataGrid } from "../../../../components/MainDataGrid";
 
 import './style.scss';
 
@@ -30,29 +30,27 @@ export function AdminTable(
   {
     rows,
     columns,
-    selectionChanged = null,
+    selectionModel,
+    setSelectionModel,
     sortingDefault = null,
     selectable = true,
     ...props
   }
 ) {
-  const [selectionModel, setSelectionModel] = useState([]);
   const [pageSize, setPageSize] = useState(25);
 
   // When selection model show
   useEffect(() => {
-    if (selectionChanged) {
+    if (setSelectionModel) {
       if (props.selectedFullData) {
         if (rows) {
-          selectionChanged(rows.filter(row => selectionModel.includes(row.id)))
+          setSelectionModel(rows.filter(row => selectionModel.includes(row.id)))
         } else {
-          selectionChanged([])
+          setSelectionModel([])
         }
-      } else {
-        selectionChanged(selectionModel)
       }
     }
-  }, [selectionModel]);
+  }, [selectionModel, rows]);
 
   let sorting = {
     sortModel: [{ field: 'name', sort: 'asc' }],
@@ -74,45 +72,60 @@ export function AdminTable(
   // Is loading if rows are undefined or null
   const isLoading = [undefined, null].includes(rows)
   return (
-    <div className='AdminTable'>
-      <DataGrid
-        getRowClassName={(params) => {
-          return !params.row.permission || params.row.permission.read ? 'ResourceRow Readable' : 'ResourceRow'
-        }}
-        columnVisibilityModel={{
-          id: false
-        }}
-        rows={isLoading ? [] : rows}
-        columns={columns}
-        pagination
-        pageSize={pageSize}
-        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-        rowsPerPageOptions={[25, 50, 100]}
-        error={props.error}
-        initialState={{
-          sorting: sorting,
-          filter: filter
-        }}
-        localeText={{
-          noRowsLabel: props.noRowsLabel ? props.noRowsLabel : 'No results found',
-          errorOverlayDefaultLabel: <div className='error'>{props.error}</div>
-        }}
-        disableSelectionOnClick
+    <Fragment>
+      <div className='AdminListHeader'>
+        {
+          (selectionModel?.length ?
+            <div
+              className='AdminListHeader-Count'>{selectionModel.length + ' selected'}</div> : '')
+        }
+        <div className='Separator'/>
+        <div className='AdminListHeader-Right'>
+          {props.header}
+        </div>
+      </div>
+      <div className='AdminTable'>
+        <MainDataGrid
+          getRowClassName={(params) => {
+            return !params.row.permission || params.row.permission.read ? 'ResourceRow Readable' : 'ResourceRow'
+          }}
+          columnVisibilityModel={{
+            id: false
+          }}
+          rows={isLoading ? [] : rows}
+          columns={columns}
+          pagination
+          pageSize={pageSize}
+          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+          rowsPerPageOptions={[25, 50, 100]}
+          error={props.error}
+          initialState={{
+            sorting: sorting,
+            filter: filter
+          }}
+          localeText={{
+            noRowsLabel: props.noRowsLabel ? props.noRowsLabel : 'No results found',
+            errorOverlayDefaultLabel: <div
+              className='error'>{props.error}</div>
+          }}
+          disableSelectionOnClick
 
-        checkboxSelection={!!selectionChanged}
-        onSelectionModelChange={(newSelectionModel) => {
-          setSelectionModel(newSelectionModel);
-        }}
-        selectionModel={selectionModel}
-        isRowSelectable={(params) => {
-          if (typeof selectable === 'function') {
-            return selectable(params)
-          } else {
-            return selectable
-          }
-        }}
-        loading={!props.error && isLoading}
-      />
-    </div>
+          checkboxSelection={columns?.length && !!setSelectionModel}
+          onSelectionModelChange={(newSelectionModel) => {
+            setSelectionModel(newSelectionModel);
+          }}
+          selectionModel={selectionModel ? selectionModel : []}
+          isRowSelectable={(params) => {
+            if (typeof selectable === 'function') {
+              return selectable(params)
+            } else {
+              return selectable
+            }
+          }}
+          loading={!props.error && isLoading}
+          {...props}
+        />
+      </div>
+    </Fragment>
   )
 }

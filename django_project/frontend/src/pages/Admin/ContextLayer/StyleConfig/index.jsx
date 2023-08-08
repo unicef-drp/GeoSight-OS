@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 import React, { Fragment, useEffect, useState } from 'react';
 import MapConfig from './Map'
@@ -69,81 +69,82 @@ export default function StyleConfig(
           <div className='error'>{error.toString()}</div>
           : ""
       }
-
-      {/* FOR CONFIG */}
-      <div className='TabPrimary ContextLayerConfigTab'>
-        <div
-          onClick={() => {
-            setTab('Map')
-          }}
-          className={tab === 'Map' ? 'Selected' : ""}
-        >
-          Map
+      <div className='AdminForm'>
+        {/* FOR CONFIG */}
+        <div className='TabPrimary ContextLayerConfigTab'>
+          <div
+            onClick={() => {
+              setTab('Map')
+            }}
+            className={tab === 'Map' ? 'Selected' : ""}
+          >
+            Map
+          </div>
+          {
+            data.layer_type === 'ARCGIS' ?
+              <Fragment>
+                <div
+                  onClick={() => {
+                    setTab('Fields')
+                  }}
+                  className={tab === 'Fields' ? 'Selected' : ""}
+                >
+                  Fields
+                </div>
+                <div
+                  onClick={() => {
+                    setTab('Label')
+                  }}
+                  className={tab === 'Label' ? 'Selected' : ""}
+                >
+                  Label
+                </div>
+                <div
+                  onClick={() => {
+                    setTab('Style')
+                  }}
+                  className={tab === 'Style' ? 'Selected' : ""}
+                >
+                  Style
+                </div>
+              </Fragment> : ""
+          }
         </div>
-        {
-          data.layer_type === 'ARCGIS' ?
-            <Fragment>
-              <div
-                onClick={() => {
-                  setTab('Fields')
-                }}
-                className={tab === 'Fields' ? 'Selected' : ""}
-              >
-                Fields
-              </div>
-              <div
-                onClick={() => {
-                  setTab('Label')
-                }}
-                className={tab === 'Label' ? 'Selected' : ""}
-              >
-                Label
-              </div>
-              <div
-                onClick={() => {
-                  setTab('Style')
-                }}
-                className={tab === 'Style' ? 'Selected' : ""}
-              >
-                Style
-              </div>
-            </Fragment> : ""
-        }
-      </div>
-      <div id='ContextLayerConfig' className="BasicFormSection">
-        {
-          tab === 'Map' ?
-            <div className='MapWrapper Map'>
-              <div className='legend'>
-                <div className='title'><b className='light'>Legend</b></div>
-                {
-                  legend ?
-                    <div
-                      dangerouslySetInnerHTML={{ __html: legend }}></div> : ""
-                }
-              </div>
-              <MapConfig data={data} layerInput={{
-                layer: layer,
-                layer_type: data.layer_type,
-                render: true
-              }}/>
-            </div> : ""
-        }
-        {
-          data.layer_type === 'ARCGIS' ?
-            <ArcgisConfig
-              originalData={data} setData={setData}
-              ArcgisData={layerData} useOverride={useOverride}
-            /> :
-            <Fragment>
-              <div className='ArcgisConfig Fields form-helptext'>
-                Config is not Arcgis
-              </div>
-              <div className='ArcgisConfig Style form-helptext'>
-                Config is not Arcgis
-              </div>
-            </Fragment>
-        }
+        <div id='ContextLayerConfig' className="BasicFormSection">
+          {
+            tab === 'Map' ?
+              <div className='MapWrapper Map'>
+                <div className='legend'>
+                  <div className='title'><b className='light'>Legend</b></div>
+                  {
+                    legend ?
+                      <div
+                        dangerouslySetInnerHTML={{ __html: legend }}></div> : ""
+                  }
+                </div>
+                <MapConfig data={data} layerInput={{
+                  layer: layer,
+                  layer_type: data.layer_type,
+                  render: true
+                }}/>
+              </div> : ""
+          }
+          {
+            data.layer_type === 'ARCGIS' ?
+              <ArcgisConfig
+                originalData={data} setData={setData}
+                ArcgisData={layerData} useOverride={useOverride}
+              /> :
+              <Fragment>
+                <div className='ArcgisConfig Fields form-helptext'>
+                  Config is not Arcgis
+                </div>
+                <div className='ArcgisConfig Style form-helptext'>
+                  Config is not Arcgis
+                </div>
+              </Fragment>
+          }
+        </div>
       </div>
     </div>
   )

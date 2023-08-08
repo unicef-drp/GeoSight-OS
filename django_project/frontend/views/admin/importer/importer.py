@@ -49,12 +49,13 @@ class ImporterDetailView(RoleContributorRequiredMixin, AdminBaseView):
         """Return content title that used on page title indicator."""
         importer = self.importer
         data_importer = reverse('admin-importer-create-view')
-        list_url = reverse('admin-scheduled-job-list-view')
+        list_url = reverse(
+            'admin-data-management-list-view') + '#Scheduled Jobs'
         importer_url = reverse(
             'admin-importer-detail-view', args=[importer.id]
         )
         return (
-            f'<a href="{data_importer}">Data Importer</a>'
+            f'<a href="{data_importer}">Data Management</a>'
             '<span>></span>'
             f'<a href="{list_url}">Scheduled Jobs</a>'
             f'<span>></span> '

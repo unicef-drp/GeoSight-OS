@@ -24,7 +24,7 @@ from frontend.tests.admin._base import BaseViewTest
 class GroupAdminViewTest(BaseViewTest, TestCase):
     """Test for Group Admin."""
 
-    list_url_tag = 'admin-group-list-view'
+    list_url_tag = 'admin-user-and-group-list-view'
     create_url_tag = 'admin-group-create-view'
     edit_url_tag = 'admin-group-edit-view'
 

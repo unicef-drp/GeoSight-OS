@@ -19,9 +19,7 @@ from django.conf.urls import url
 from frontend.views.admin.access_request.detail import (
     AccessRequestUserDetailView, AccessRequestPermissionDetailView
 )
-from frontend.views.admin.access_request.list import (
-    AccessRequestUserListView, AccessRequestPermissionListView
-)
+from frontend.views.admin.access_request.list import AccessRequestListView
 
 urlpatterns = [
     url(
@@ -35,13 +33,8 @@ urlpatterns = [
         name='admin-access-request-permission-detail-view'
     ),
     url(
-        r'^request/user$',
-        AccessRequestUserListView.as_view(),
-        name='admin-access-request-user-list-view'
-    ),
-    url(
-        r'^request/permission$',
-        AccessRequestPermissionListView.as_view(),
-        name='admin-access-request-permission-list-view'
+        r'^request$',
+        AccessRequestListView.as_view(),
+        name='admin-access-request-list-view'
     ),
 ]

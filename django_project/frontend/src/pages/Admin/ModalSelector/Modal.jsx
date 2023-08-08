@@ -14,13 +14,13 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { DataGrid } from "@mui/x-data-grid";
 import SearchIcon from '@mui/icons-material/Search';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import Modal, { ModalHeader } from "../../../components/Modal";
 import { IconTextField } from "../../../components/Elements/Input";
 import { SaveButton } from "../../../components/Elements/Button";
 import { fetchJSON } from "../../../Requests";
+import { MainDataGrid } from "../../../components/MainDataGrid";
 
 import './style.scss';
 
@@ -217,7 +217,7 @@ export default function ModalSelector(
         </div>
 
         <div className='AdminList'>
-          <DataGrid
+          <MainDataGrid
             rows={rows ? rows : []}
             columns={columns}
             pagination
@@ -257,7 +257,7 @@ export default function ModalSelector(
           isMultiple ?
             <div className='Save-Button'>
               <SaveButton
-                variant="secondary"
+                variant="primary"
                 text={"Update Selection"}
                 disabled={!data}
                 onClick={() => {

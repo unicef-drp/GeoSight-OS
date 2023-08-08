@@ -98,7 +98,7 @@ export default function ProjectOverview() {
               }
               <div className={'Separator'}></div>
               <CloseButton
-                variant="secondary"
+                variant="primary"
                 onClick={_ => {
                   setOpen(false);
                 }
