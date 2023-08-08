@@ -19,14 +19,26 @@
 
 @import '../../app/variables';
 
+.Admin {
+
+  .NavHeader {
+    height: $base-height;
+    padding: 5px 1rem;
+
+    a {
+      font-size: 20px;
+    }
+  }
+}
+
 header {
   background-color: $navbar-background-color;
 
   .NavHeader {
     align-items: center;
     display: flex;
-    height: $base-height;
-    padding: 5px 1rem;
+    height: 56px;
+    padding: 10px 1rem;
     position: relative;
     width: 100%;
     z-index: 1001;
@@ -37,16 +49,17 @@ header {
       display: block;
       color: var(--anti-primary-color);
       text-underline: none;
+      font-size: 24px;
     }
 
     .LinkButton {
       height: 100%;
 
       button {
-        font-size: 10px !important;
         height: 100%;
-        padding-left: 5px !important;
-        padding-right: 5px !important;
+        margin-top: -4px;
+        padding-left: 10px !important;
+        padding-right: 10px !important;
         border-radius: 0;
       }
 
@@ -55,8 +68,8 @@ header {
       }
 
       svg {
-        height: 10px;
-        width: 10px;
+        height: 14px;
+        width: 14px;
         margin-right: 5px !important;
 
       }
@@ -76,10 +89,6 @@ header {
       height: 80%;
       margin-right: 0.5rem;
 
-      .NavHeaderLink {
-        width: 85px;
-      }
-
       a {
         height: 100%;
       }
@@ -98,11 +107,11 @@ header {
     border-radius: 50%;
     color: $base-black-color;
     cursor: pointer;
-    height: 24px;
+    height: 30px;
     text-transform: capitalize;
-    width: 24px;
+    width: 30px;
     text-align: center;
-    font-size: 16px;
+    font-size: 20px;
 
     &:hover {
       opacity: $base-hovered-opacity;
@@ -123,11 +132,11 @@ header {
     }
 
     .NavbarAccount-Username {
-      font-size: 10px;
+      font-size: 12px;
     }
 
     .NavbarAccount-FullName {
-      font-size: 8px;
+      font-size: 10px;
       opacity: 0.3;
     }
   }
