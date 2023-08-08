@@ -7,3 +7,4 @@ mkdocstrings-python
 mkdocs-video
 mkdocs-redirects
 mkdocs-enumerate-headings-plugin
+mkdocs-git-revision-date-localized-plugin
