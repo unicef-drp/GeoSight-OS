@@ -24,7 +24,7 @@ import { ThemeButton } from "../Elements/Button";
  */
 export default function GeorepoAuthorization() {
   function onReceivedMessage(event) {
-    if (event.origin === new URL(GEOREPO_AZURE_REDIRECT_URL).origin) {
+    if (event.origin === new URL(GEOREPO_AZURE_AUTHENTICATION_URL).origin) {
       Cookies.set(`georepo-token`, event.data)
       window.removeEventListener('message', onReceivedMessage, false)
       window.location.reload()
@@ -33,7 +33,7 @@ export default function GeorepoAuthorization() {
 
   /** Login to georepo **/
   const login = () => {
-    window.open(GEOREPO_AZURE_REDIRECT_URL, '_blank');
+    window.open(GEOREPO_AZURE_AUTHENTICATION_URL, '_blank');
     window.addEventListener('message', onReceivedMessage, false);
   }
 

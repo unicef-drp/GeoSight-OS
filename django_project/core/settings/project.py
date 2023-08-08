@@ -133,6 +133,6 @@ if USE_AZURE:
 
 # GEOREPO ATTRIBUTES
 USE_GEOREPO = USE_AZURE and os.environ.get(
-    'GEOREPO_AZURE_REDIRECT_URL', False) not in [False, '', "''"]
-GEOREPO_AZURE_REDIRECT_URL = os.environ.get(
-    'GEOREPO_AZURE_REDIRECT_URL', False)
+    'GEOREPO_AZURE_AUTHENTICATION_URL', False) not in [False, '', "''"]
+GEOREPO_AZURE_AUTHENTICATION_URL = os.environ.get(
+    'GEOREPO_AZURE_AUTHENTICATION_URL', False)
