@@ -17,7 +17,7 @@
    NAVBAR
    ========================================================================== */
 
-import React from 'react';
+import React, { useRef } from 'react';
 import $ from 'jquery';
 import i18n from "i18next";
 
@@ -27,11 +27,13 @@ import { CogIcon, HelpIcon } from "../Icons";
 import { ThemeButton } from "../Elements/Button";
 
 import './style.scss';
+import { HelpPage } from "../HelpPage";
 
 /**
  * Navbar.
  * **/
 export default function NavBar({ minified }) {
+  const helpPageRef = useRef(null);
   const { icon, favicon, site_title } = preferences;
   const { username, full_name, is_staff, is_contributor } = user;
 
@@ -78,12 +80,15 @@ export default function NavBar({ minified }) {
           ) : null
         }
         <div className='HelpButton .SvgButton'>
-          <a href='#'>
+          <a href='#' onClick={_ => {
+            helpPageRef?.current.open()
+          }}>
             <HelpIcon/>
           </a>
         </div>
         <User/>
       </div>
+      <HelpPage ref={helpPageRef}/>
     </header>
   )
 }

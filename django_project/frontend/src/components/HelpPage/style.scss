@@ -19,6 +19,14 @@
 
 @import '../../app/variables';
 
+.Admin {
+  .HelpPageSection {
+    top: 0;
+    padding-top: 0;
+    box-sizing: border-box;
+  }
+}
+
 .HelpPageSection {
   height: 100%;
   position: fixed;
@@ -27,6 +35,9 @@
   background-color: unset;
   z-index: 99999999;
   transition: background-color linear 0.2s;
+  top: 0;
+  padding-top: $nav-header-height;
+  box-sizing: border-box;
 
   &.Open {
     pointer-events: auto;

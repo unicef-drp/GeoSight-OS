@@ -25,7 +25,7 @@ header {
   .NavHeader {
     align-items: center;
     display: flex;
-    height: 45px;
+    height: $nav-header-height;
     padding: 5px 1rem;
     position: relative;
     width: 100%;
@@ -64,18 +64,8 @@ header {
     }
 
     .HelpButton {
-      height: 100%;
-
-      a {
-        height: 100%;
-      }
-
-      svg {
-        margin-top: 5px !important;
-        margin-right: 10px !important;
-      }
+      margin-right: 10px;
     }
-
 
 
     .SvgButton {
