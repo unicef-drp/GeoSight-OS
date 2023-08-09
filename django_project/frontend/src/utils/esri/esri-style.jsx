@@ -138,7 +138,7 @@ export default function parseArcRESTStyle(data) {
    * @return {ol.style.Style}     Style to apply
    */
   const drawingInfo = data.drawingInfo;
-  switch (drawingInfo.renderer.type) {
+  switch (drawingInfo?.renderer.type) {
     case "classBreaks":
     case "uniqueValue": {
       let info = {

@@ -85,7 +85,7 @@
   select {
     background: white;
     box-sizing: border-box;
-    padding: 10px 1rem;
+    padding: $base-input-padding;
     min-height: $base-input-height;
     width: 100%;
   }

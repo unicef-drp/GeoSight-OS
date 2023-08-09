@@ -149,7 +149,7 @@
   .GeneralAccess {
     display: flex;
     align-items: center;
-    padding: 0.5rem 1rem;
+    padding: $base-input-padding;
     background: $base-gray-to-white;
     border: 1px solid $border-gray;
     margin-bottom: 1rem;

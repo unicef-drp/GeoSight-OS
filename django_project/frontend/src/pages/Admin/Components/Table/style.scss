@@ -49,9 +49,9 @@
   }
 
   .AdminListHeader-Count {
-    color: $primary-color;
-    border: 1px solid $primary-color;
-    padding: 2px 0.5rem;
+    &.Empty {
+      color: $gray-400;
+    }
   }
 
   button {
