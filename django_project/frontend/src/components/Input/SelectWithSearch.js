@@ -44,6 +44,7 @@ export function SelectWithSearch(
     {props.iconStart ?
       <div className='IconStart'>{props.iconStart}</div> : null}
     <Autocomplete
+      id={props?.id ? props.id : null}
       autoComplete={false}
       className={
         'SelectWithSearch ' +

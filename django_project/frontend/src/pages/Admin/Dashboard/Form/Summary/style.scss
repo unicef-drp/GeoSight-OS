@@ -43,29 +43,6 @@
   }
 }
 
-.BasicForm {
-  padding: 0 !important;
-
-  .ReferenceDatasetSection {
-    display: flex;
-
-    .MuiFormControl-root {
-      flex-grow: 1;
-    }
-
-    .MuiFormGroup-root {
-      width: 350px;
-      margin-left: 1rem;
-    }
-  }
-
-  .MuiAutocomplete-root {
-    .MuiInputBase-root {
-      width: 100%;
-    }
-  }
-}
-
 .DescriptionInput {
   padding: 0 1px;
 

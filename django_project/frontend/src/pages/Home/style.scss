@@ -286,7 +286,7 @@
       }
     }
 
-    .SortSelectorInput {
+    .IconStart {
       svg {
         width: 18px;
         height: 16px;
@@ -296,6 +296,18 @@
           opacity: 0.5;
         }
       }
+    }
+  }
+
+  .SelectWithSearchInput,
+  .MultipleSelectWithSearch,
+  .SelectWithSearch {
+    position: relative;
+    height: 56px;
+
+    input {
+      min-height: 54px;
+      height: 54px;
     }
   }
 }

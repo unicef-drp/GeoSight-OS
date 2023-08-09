@@ -17,6 +17,7 @@
    SELECTOR
    ========================================================================== */
 
+@import '../../app/variables';
 
 .MultipleSelectWithSearch {
   .MuiChip-label {
@@ -55,9 +56,12 @@
 }
 
 .SelectWithSearchInput {
-  border: 1px solid rgba(0, 0, 0, 0.23);
+  outline: 1px solid rgba(0, 0, 0, 0.23);
+  outline-offset: -1px;
   display: flex;
   align-items: center;
+  padding: 1px;
+  box-sizing: border-box;
 
   .IconStart {
     margin-left: 1rem;
@@ -65,10 +69,11 @@
 
   .MuiAutocomplete-root {
     flex-grow: 1;
+    height: 100% !important;
   }
 
   &:hover {
-    border: 1px solid rgba(0, 0, 0, 0.87);
+    outline: 1px solid rgba(0, 0, 0, 0.87);
   }
 
   fieldset {
@@ -76,10 +81,15 @@
   }
 }
 
+.SelectWithSearchInput,
 .MultipleSelectWithSearch,
 .SelectWithSearch {
   position: relative;
-  height: 56px;
+  height: $base-input-height;
+
+  input {
+    min-height: 34px;
+  }
 
   .MuiFormControl-root {
     height: 100%;
@@ -153,16 +163,13 @@
     }
   }
 
-  &.SmallHeight {
-    height: 34px;
 
-    .MuiInputBase-root {
-      padding-top: 0 !important;
-      padding-bottom: 0 !important;
+  .MuiInputBase-root {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
 
-      input {
-        padding-left: 0;
-      }
+    input {
+      padding-left: 0;
     }
   }
 

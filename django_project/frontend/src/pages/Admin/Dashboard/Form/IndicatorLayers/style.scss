@@ -40,13 +40,12 @@
     .LayerCountIndicator {
       width: fit-content;
       height: 22px;
-      margin-top: 7px;
       display: block;
       margin-left: 0.5rem;
       background: white;
       border-radius: $border-radius;
       text-align: center;
-      padding: 2px 10px 0 10px;
+      padding: 7px 10px 0 10px;
       border: 1px solid $primary-color;
       font-size: 0.8rem;
       white-space: nowrap;

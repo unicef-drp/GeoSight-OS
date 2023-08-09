@@ -299,10 +299,9 @@ header {
   cursor: default !important;
 }
 
-.FilterControl {
-  .MuiFormLabel-root {
-    z-index: 1 !important;
-  }
+.MuiFormLabel-root {
+  z-index: 1 !important;
+  margin-bottom: 0 !important;
 }
 
 #app {
@@ -338,8 +337,8 @@ header {
 .ThemeButton {
   svg {
     margin-right: 0.5rem !important;
-    height: 18px;
-    width: 18px;
+    height: 14px;
+    width: 14px;
   }
 }
 

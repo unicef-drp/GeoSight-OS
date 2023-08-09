@@ -151,14 +151,19 @@ export default function SummaryDashboardForm({ changed }) {
               </label>
               <div>
               <span className="form-input">
-              <input
-                id="SummaryCategory" type="text" name="category"
-                placeholder='Example: Lorem Ipsum'
-                required={true} value={groupData}
-                onChange={(event) => {
-                  setGroupData(event.target.value)
-                  changed(true)
-                }}/>
+                <SelectWithSearch
+                  id="SummaryCategory"
+                  placeholder='Example: Lorem Ipsum'
+                  options={projectCategories}
+                  value={groupData}
+                  onChangeFn={evt => {
+                    setGroupData(evt)
+                    changed(true)
+                  }}
+                  disableCloseOnSelect={false}
+                  fullWidth={true}
+                  smallHeight={true}
+                />
               </span>
               </div>
             </Grid>
