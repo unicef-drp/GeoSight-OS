@@ -468,3 +468,27 @@ header {
     display: none;
   }
 }
+
+// ------------------------------------
+// REACT SELECT
+// ------------------------------------
+.ReactSelect {
+  position: relative;
+  height: $base-input-height;
+
+  .ReactSelect__control,
+  .ReactSelect__value-container,
+  .ReactSelect__input-container {
+    height: $base-input-height;
+  }
+
+  .ReactSelect__value-container {
+    padding: 0 8px;
+  }
+
+  .ReactSelect__input-container {
+    margin: 0;
+    box-sizing: border-box;
+    padding: 0;
+  }
+}

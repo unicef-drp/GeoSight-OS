@@ -102,7 +102,7 @@
   {% endif %}
 
   const USE_AZURE = '{{ use_azure_auth }}'.toLowerCase() === 'true';
-  const USE_GEOREPO = '{{ use_georepo_auth }}'.toLowerCase() === 'true';
+  const USE_GEOREPO_AUTH = '{{ use_georepo_auth }}'.toLowerCase() === 'true';
   const GEOREPO_AZURE_AUTHENTICATION_URL = '{{ georepo_azure_autehntication_url }}';
   const csrfmiddlewaretoken = '{{ csrf_token }}';
   const preferences = {{ preferences|safe }};

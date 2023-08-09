@@ -1,19 +1,20 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 import axios from "axios";
+import Cookies from "js-cookie";
 
 /**
  * Perform Fetching Data
@@ -60,6 +61,17 @@ export async function fetchJSON(url, options, useCache = true) {
   if (!responseCaches[url]) {
     try {
       const response = await fetch(url, options);
+
+      // Check if using georepo auth and status is 403
+      if (USE_GEOREPO_AUTH && response.status === 403) {
+        if (new URL(GEOREPO_AZURE_AUTHENTICATION_URL).origin === new URL(url).origin) {
+          if (!preferences.georepo_api.is_api_key) {
+            Cookies.set('georepo-token', '')
+            document.location.reload()
+          }
+        }
+      }
+
       let json = null;
       try {
         json = await response.json();
