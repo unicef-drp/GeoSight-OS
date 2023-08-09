@@ -76,6 +76,11 @@
     }
   }
 
+  .ReactSelect__control {
+    background-color: #ADE0FF;
+    border-color: #ADE0FF;
+  }
+
   // OPERATOR SWITCHER
   .OperatorSwitcher {
     margin-left: -1px;
@@ -150,7 +155,7 @@
   .FilterGroup {
     //border: 1px solid $primary-color;
     margin-top: 20px;
-    padding: 20px 8px 10px 8px;
+    padding: 10px 8px 10px 8px;
     position: relative;
     border-radius: $border-radius;
     background-color: #F8F9F9;
@@ -195,11 +200,11 @@
       width: 100%;
 
       .FilterGroupOption {
-        background-color: $primary-color;
+        background-color: #F8F9F9;
         border-radius: $border-radius;
-        color: $anti-primary-color;
         display: flex;
         padding: 0 7px;
+        height: 12px;
 
         .FilterGroupName {
           flex-grow: 1;
@@ -234,6 +239,22 @@
           background: $primary-color;
           border-radius: 5px;
           cursor: pointer;
+        }
+
+        .FilterGroupAddExpression,
+        .FilterGroupAdd,
+        .FilterGroupDelete {
+          background-color:  #F8F9F9;
+          color: #ADE0FF;
+        }
+
+        div.MuiInputBase-root {
+          height: 20px !important;
+          background-color: #ADE0FF;
+
+          svg {
+            color: $tab-active-color;
+          }
         }
       }
     }
@@ -428,6 +449,14 @@
     max-width: unset;
   }
 
+  .MuiInputLabel-root {
+    color: black;
+  }
+
+  .MuiInputBase-input {
+    border: 1px solid $tab-inactive-color;
+  }
+
   .MuiFormControl-root {
     margin-top: 0 !important;
   }
@@ -505,9 +534,14 @@
     }
   }
 
-  .MuiButton-root {
-    margin-top: 20px;
-    width: 100%;
+  div.button-div {
+    //margin-top: ;
+    display: flex;
+    flex-direction: row-reverse;
+
+    .MuiButton-root {
+      width: 15%;
+    }
   }
 }
 

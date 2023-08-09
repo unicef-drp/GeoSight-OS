@@ -104,29 +104,27 @@ export default function FilterEditorModal(
           setOpen(false)
         }
       }>
-        {data.field ? "Update" : "Create"} filter
+        {data.field ? "Updating" : "Creating"} new filter
       </ModalHeader>
       <ModalContent>
         <div>
-          <FormControl>
-            <InputLabel><b>Filter Name*</b></InputLabel>
-            <Input
-              type="text" placeholder="Filter name" value={name}
-              onChange={(event) => {
-                setName(event.target.value)
-              }}/>
-          </FormControl>
-          <FormControl>
-            <InputLabel>Description</InputLabel>
-            <Input
-              type="text" placeholder="Filter description" value={description}
-              onChange={(event) => {
-                setDescription(event.target.value)
-              }}/>
-          </FormControl>
+          <InputLabel><b>Filter Name*</b></InputLabel>
+          <Input
+            type="text" placeholder="Filter name" value={name}
+            disableUnderline={true}
+            onChange={(event) => {
+              setName(event.target.value)
+            }}/>
+          <InputLabel>Description</InputLabel>
+          <Input
+            type="text" placeholder="Filter description" value={description}
+            disableUnderline={true}
+            onChange={(event) => {
+              setDescription(event.target.value)
+            }}/>
         </div>
         <div className='FilterEditModalQueryWrapper'>
-          <div>Select fields, operation and default value for the filter.</div>
+          <div>Create rule</div>
           <div className='FilterEditModalQuery'>
             <SelectPlaceholder
               className='FilterEditModalQueryField'
@@ -160,15 +158,17 @@ export default function FilterEditorModal(
             setAllowChange(evt.target.checked)
           }}/> Allow users to modify filter parameters (values)
         </div>
-        <Button
-          variant="primary"
-          className='save__button'
-          disabled={!field || !operator || !name}
-          onClick={onSave}>
-          {
-            data.field ? "Update" : "Create"
-          }
-        </Button>
+        <div className='button-div'>
+          <Button
+            variant="primary"
+            className='save__button'
+            disabled={!field || !operator || !name}
+            onClick={onSave}>
+            {
+              data.field ? "Update filter" : "Create filter"
+            }
+          </Button>
+        </div>
       </ModalContent>
     </Modal>
   </div>
