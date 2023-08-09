@@ -47,6 +47,10 @@
     padding-left: 175px !important;
   }
 
+  .Toolbar {
+    border-bottom: 1px solid $border-gray;
+  }
+
   .Toolbar,
   .maplibregl-ctrl-top-left {
     background-color: $white !important;

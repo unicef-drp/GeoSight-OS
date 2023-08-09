@@ -22,6 +22,7 @@
 .dashboard__left_side {
   position: relative;
   transition: margin-left 0.3s;
+  border-right: 1px solid $border-gray;
   width: 20%;
 
   &.right {
@@ -73,6 +74,8 @@
     padding: 0.5rem;
     padding-bottom: 0px;
     height: 42px;
+    min-height: 42px;
+    border-bottom: 1px solid $border-gray;
 
     div {
       width: 50%;
@@ -80,8 +83,7 @@
       padding: 0.5rem;
       text-align: center;
       border-radius: $border-radius;
-      border-bottom: 3px solid rgba(0, 0, 0, 0);
-      transition: border-bottom-color 0.5s ease-in-out;
+      border-bottom: 2px solid rgba(0, 0, 0, 0);
 
       &:hover {
         opacity: 0.5;
@@ -97,8 +99,8 @@
 
     .active {
       color: $primary-color;
-      font-weight: $base-font-medium!important;
-      border-bottom-color: #51A8DD;
+      font-weight: $base-font-medium !important;
+      border-bottom-color: $primary-color;
 
       &:hover {
         opacity: 1;
@@ -132,13 +134,30 @@
     }
   }
 
+  .dashboard__content-wrapper Layers {
+    display: flex;
+    flex-direction: column;
+  }
+
   // For accordion
   .dashboard__content-wrapper__inner {
     background-color: #eee;
     flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+    display: block;
+    min-height: 0;
+
+    & > .MuiBox-root {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+
+      .sidepanel-tab {
+        flex-grow: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        width: 100%;
+      }
+    }
 
     .MuiAccordionSummary-title-desc {
       color: $base-black-color;
@@ -431,15 +450,12 @@
 
 .MuiTabs-flexContainer {
   height: 40px;
+
   button {
     text-transform: none;
     width: 50%;
     margin-top: -10px;
     border-bottom: 1px solid #51A8DD !important;
-
-    svg {
-      margin-top: -5px;
-    }
   }
 }
 
