@@ -153,11 +153,11 @@
   }
 
   .FilterGroup {
-    margin-top: 20px;
+    margin-top: 15px;
     padding: 10px 8px 10px 8px;
     position: relative;
     border-radius: $border-radius;
-    background-color: #F8F9F9;
+    background-color: rgba(0,0,0,0.03);
 
     & > .MuiPaper-root {
       margin-top: 5px !important;
@@ -205,16 +205,16 @@
         padding: 0 7px;
         height: 12px;
 
+        .MuiButtonBase-root {
+          margin-top: -3px;
+        }
+
         .FilterGroupName {
           flex-grow: 1;
         }
 
         .FilterGroupEnd {
           width: 5px;
-        }
-
-        .OperatorIdentifier {
-          padding: 10px 0 0 5px;
         }
 
         .MuiButtonLike {
@@ -252,7 +252,7 @@
           background-color: #ADE0FF;
 
           svg {
-            color: $tab-active-color;
+            color: $primary-color;
           }
         }
       }

@@ -49,6 +49,7 @@
 
   .Toolbar,
   .maplibregl-ctrl-top-left {
+    background-color: $white !important;
     display: flex;
     height: 49px;
     left: 0;
@@ -151,7 +152,7 @@
       &.LeftButton {
         .Active {
           a, span {
-            color: $tab-active-color !important;
+            color: $primary-color !important;
             background-color: rgba(0, 0, 0, 0) !important;
           }
         }

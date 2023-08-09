@@ -117,8 +117,8 @@ export default function FilterControl(
     const [addType, setAddType] = useState(null)
 
     const optionsTypes = [
-      { id: WHERE_OPERATOR.AND, name: WHERE_OPERATOR.AND },
-      { id: WHERE_OPERATOR.OR, name: WHERE_OPERATOR.OR }
+      { id: WHERE_OPERATOR.AND, name: 'And' },
+      { id: WHERE_OPERATOR.OR, name: 'Or' }
     ]
 
     const switchWhere = (operator) => {

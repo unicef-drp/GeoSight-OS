@@ -13,6 +13,8 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
+@import '../../app/variables';
+
 .TreeView {
   form {
     padding: 0 !important;
@@ -33,13 +35,7 @@
   }
 
   .Mui-expanded {
-    color: #1CABE2;
-  }
-
-  .Mui-expanded + ul {
-    li {
-      margin-left: -18px;
-    }
+    color: $primary-color;
   }
 }
 
@@ -182,7 +178,7 @@
 
   &.Mui-selected {
     background-color: white !important;
-    color: #1CABE2;
+    color: $primary-color;
   }
 
   .GroupSelectable {

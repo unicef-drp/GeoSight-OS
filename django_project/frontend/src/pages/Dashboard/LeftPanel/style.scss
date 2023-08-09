@@ -52,6 +52,7 @@
     font-family: $base-font-family !important;
     font-weight: $base-font-regular !important;
     color: $tab-inactive-color;
+    background-color: $white;
 
     &.Layers .filter-wrapper {
       display: none !important;
@@ -79,6 +80,8 @@
       padding: 0.5rem;
       text-align: center;
       border-radius: $border-radius;
+      border-bottom: 3px solid rgba(0, 0, 0, 0);
+      transition: border-bottom-color 0.5s ease-in-out;
 
       &:hover {
         opacity: 0.5;
@@ -93,9 +96,9 @@
     }
 
     .active {
-      color: $tab-active-color;
+      color: $primary-color;
       font-weight: $base-font-medium!important;
-      border-bottom: 3px solid #51A8DD;
+      border-bottom-color: #51A8DD;
 
       &:hover {
         opacity: 1;
