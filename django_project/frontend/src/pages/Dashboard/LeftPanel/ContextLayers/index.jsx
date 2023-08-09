@@ -114,7 +114,7 @@ function ContextLayers() {
       groupSelectable={true}
       maxSelect={10}
       onChange={onChange}
-      placeholder={'Filter context layers'}
+      placeholder={'Search Context Layers'}
     />
   )
 }
@@ -138,20 +138,20 @@ export default function ContextLayersAccordion({ expanded, handleChange }) {
       onChange={handleChange('contextLayers')}
       className='ContextLayersAccordion'
     >
-      <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
-        <div className='Name'>
-          Context Layers
-        </div>
-        <OnOffSwitcher
-          checked={contextLayersShow}
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-          onChange={(e) => {
-            dispatch(Actions.Map.showHideContextLayer(!contextLayersShow))
-            e.stopPropagation();
-          }}/>
-      </AccordionSummary>
+      {/*<AccordionSummary expandIcon={<ExpandMoreIcon/>}>*/}
+      {/*  <div className='Name'>*/}
+      {/*    Context Layers*/}
+      {/*  </div>*/}
+      {/*  <OnOffSwitcher*/}
+      {/*    checked={contextLayersShow}*/}
+      {/*    onClick={(e) => {*/}
+      {/*      e.stopPropagation();*/}
+      {/*    }}*/}
+      {/*    onChange={(e) => {*/}
+      {/*      dispatch(Actions.Map.showHideContextLayer(!contextLayersShow))*/}
+      {/*      e.stopPropagation();*/}
+      {/*    }}/>*/}
+      {/*</AccordionSummary>*/}
       <AccordionDetails>
         <ContextLayers/>
       </AccordionDetails>

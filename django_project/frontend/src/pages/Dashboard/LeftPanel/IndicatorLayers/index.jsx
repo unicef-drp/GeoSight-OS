@@ -258,7 +258,7 @@ export function IndicatorLayers() {
           }
           return null
         }}
-        placeholder={'Filter indicators'}
+        placeholder={'Search Indicators'}
       />
       {
         indicatorLayers.map(indicatorLayer => {
@@ -293,20 +293,20 @@ export default function IndicatorLayersAccordion({ expanded, handleChange }) {
       className={'IndicatorLayerList'}
     >
 
-      <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
-        <div className='Name'>
-          Indicators
-        </div>
-        <OnOffSwitcher
-          checked={indicatorShow}
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-          onChange={(e) => {
-            dispatch(Actions.Map.showHideIndicator(!indicatorShow))
-            e.stopPropagation();
-          }}/>
-      </AccordionSummary>
+      {/*<AccordionSummary expandIcon={<ExpandMoreIcon/>}>*/}
+      {/*  <div className='Name'>*/}
+      {/*    Indicators*/}
+      {/*  </div>*/}
+      {/*  <OnOffSwitcher*/}
+      {/*    checked={indicatorShow}*/}
+      {/*    onClick={(e) => {*/}
+      {/*      e.stopPropagation();*/}
+      {/*    }}*/}
+      {/*    onChange={(e) => {*/}
+      {/*      dispatch(Actions.Map.showHideIndicator(!indicatorShow))*/}
+      {/*      e.stopPropagation();*/}
+      {/*    }}/>*/}
+      {/*</AccordionSummary>*/}
       <AccordionDetails>
         <IndicatorLayers/>
       </AccordionDetails>

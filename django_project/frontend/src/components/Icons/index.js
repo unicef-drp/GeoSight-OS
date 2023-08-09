@@ -34,6 +34,7 @@ export { default as FilterIcon } from "./filter.svg";
 export { default as GridIcon } from "./grid.svg";
 export { default as HelpIcon } from "./help.svg";
 export { default as InfoIcon } from "./info.svg";
+export { default as InfoFillIcon } from "./info-fill.svg";
 export { default as LayerIcon } from "./layer.svg";
 export { default as LayerActiveIcon } from "./layer-active.svg";
 export { default as ToggleLeftPanelIcon } from "./left-sidepanel-toggle.svg";

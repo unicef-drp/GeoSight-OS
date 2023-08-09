@@ -15,13 +15,13 @@
 
 import React, { Fragment, useLayoutEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import InfoIcon from "@mui/icons-material/Info";
 import CircularProgress from "@mui/material/CircularProgress";
 
 import { Actions } from "../../../store/dashboard";
 import CustomPopover from "../../CustomPopover";
 import { fetchingData } from "../../../Requests";
 import { formatDateTime } from "../../../utils/main";
+import { InfoFillIcon } from "../../Icons/"
 
 import './style.scss';
 
@@ -83,7 +83,7 @@ export default function LayerDescription({ layer }) {
               horizontal: 'left',
             }}
             Button={
-              <InfoIcon fontSize={"small"}/>
+              <InfoFillIcon fontSize={"small"}/>
             }
             showOnHover={true}
           >
@@ -102,7 +102,7 @@ export default function LayerDescription({ layer }) {
               horizontal: 'left',
             }}
             Button={
-              <InfoIcon fontSize={"small"}/>
+              <InfoFillIcon fontSize={"small"}/>
             }
             showOnHover={true}
             onHover={() => {
