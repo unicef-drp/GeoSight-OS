@@ -55,7 +55,6 @@
     align-items: flex-start;
 
     .InfoIcon {
-      margin-top: -2px;
 
       .MuiSvgIcon-fontSizeSmall {
         font-size: 1em;
@@ -102,7 +101,6 @@
 
 .MuiTreeItem-label {
   padding-left: 0 !important;
-  //border-bottom: 1px solid;
 
   label {
     margin-right: 0;
@@ -142,6 +140,7 @@
 
   .LayerName {
     width: 100%;
+    margin-top: 3px;
 
     span {
       display: inline !important;
@@ -183,6 +182,7 @@
 
   &.Mui-selected {
     background-color: white !important;
+    color: #1CABE2;
   }
 
   .GroupSelectable {

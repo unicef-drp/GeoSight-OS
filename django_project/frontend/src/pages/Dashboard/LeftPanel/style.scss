@@ -49,10 +49,9 @@
   .dashboard__content-wrapper {
     display: flex;
     flex-direction: column;
-    font-size: 14px;
     font-family: $base-font-family !important;
     font-weight: $base-font-regular !important;
-    color: #888888;
+    color: $tab-inactive-color;
 
     &.Layers .filter-wrapper {
       display: none !important;
@@ -94,7 +93,7 @@
     }
 
     .active {
-      color: #51A8DD;
+      color: $tab-active-color;
       font-weight: $base-font-medium!important;
       border-bottom: 3px solid #51A8DD;
 
@@ -433,8 +432,12 @@
   button {
     text-transform: none;
     width: 50%;
-    font-size: 14px !important;
     margin-top: -10px;
+    border-bottom: 1px solid #51A8DD !important;
+
+    svg {
+      margin-top: -5px;
+    }
   }
 }
 

@@ -23,9 +23,7 @@ import { useDispatch } from "react-redux"
 import Tooltip from '@mui/material/Tooltip'
 import { styled } from '@mui/material/styles';
 import AddCircleIcon from '@mui/icons-material/AddCircle'
-import DoDisturbOnIcon from '@mui/icons-material/DoDisturbOn';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import ModeEditIcon from '@mui/icons-material/ModeEdit'
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder'
 import Accordion from '@mui/material/Accordion'
 import AccordionSummary from '@mui/material/AccordionSummary'
@@ -44,6 +42,7 @@ import {
 import { Actions } from '../../../../store/dashboard'
 import { capitalize } from "../../../../utils/main";
 import FilterEditorModal from './Modal'
+import { DeleteIcon, EditIcon } from '../../../../components/Icons'
 
 import './style.scss'
 import {
@@ -199,7 +198,7 @@ export default function FilterControl(
                 {
                   upperWhere ? (
                     <Tooltip title="Delete Group">
-                      <DoDisturbOnIcon
+                      <DeleteIcon
                         className='FilterGroupDelete MuiButtonLike' onClick={
                         () => {
                           let isExecuted = confirm("Do you want to delete this group?");
@@ -346,7 +345,7 @@ export default function FilterControl(
         </div>
         {ableToModify ?
           <Fragment>
-            <ModeEditIcon
+            <EditIcon
               className='MuiButtonLike FilterEdit'
               onClick={(event) => {
                 event.stopPropagation()
@@ -355,7 +354,7 @@ export default function FilterControl(
             {
               upperWhere ? (
                 <Tooltip title="Delete Filter">
-                  <DoDisturbOnIcon
+                  <DeleteIcon
                     className='MuiButtonLike FilterDelete MuiButtonLike'
                     onClick={
                       (e) => {

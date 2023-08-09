@@ -147,6 +147,19 @@
         cursor: pointer;
         display: block;
       }
+
+      &.LeftButton {
+        .Active {
+          a, span {
+            color: $tab-active-color !important;
+            background-color: rgba(0, 0, 0, 0) !important;
+          }
+        }
+
+        a, span {
+          color: $tab-inactive-color !important;
+        }
+      }
     }
   }
 }

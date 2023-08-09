@@ -167,6 +167,17 @@
           height: 0.8rem;
           width: 0.8rem;
         }
+
+        .FilterEdit {
+          color: $tab-inactive-color;
+          width: 12px;
+          margin-right: 5px;
+        }
+
+        .FilterDelete {
+          color: $tab-inactive-color;
+          width: 9px;
+        }
       }
     }
 
@@ -267,6 +278,10 @@
     .FilterExpressionName {
       flex-grow: 1;
       display: flex;
+
+      div {
+        margin-top: 2px;
+      }
     }
 
     .FilterExpressionDescription {
