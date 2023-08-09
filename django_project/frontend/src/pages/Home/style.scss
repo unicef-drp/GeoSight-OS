@@ -190,10 +190,6 @@
         height: 100%;
 
         &:hover {
-          display: block;
-          min-height: 100%;
-          height: unset;
-
           .ProjectGridDescription {
             overflow-y: auto;
           }
