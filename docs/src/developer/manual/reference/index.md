@@ -11,12 +11,13 @@ license: This program is free software; you can redistribute it and/or modify it
 #context_id: 1234
 ---
 
-# Settings
+# GeoSight Importer API
 
-::: django_project.initialize
+::: django_project.manage
     handler: python
     options:
         docstring_style: sphinx
         heading_level: 1
         show_source: true
         show_root_heading: false
+
