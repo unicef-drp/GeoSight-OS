@@ -68,56 +68,15 @@
     }
   }
 
-  .dashboard__content-wrapper__navbar {
-    background: #ffffff;
-    display: flex;
-    padding: 0.5rem;
-    padding-bottom: 0px;
-    height: 42px;
-    min-height: 42px;
-    border-bottom: 1px solid $border-gray;
 
-    div {
-      width: 50%;
-      cursor: pointer;
-      padding: 0.5rem;
-      text-align: center;
-      border-radius: $border-radius;
-      border-bottom: 2px solid rgba(0, 0, 0, 0);
-
-      &:hover {
-        opacity: 0.5;
-      }
-
-      svg {
-        height: 15px;
-        width: 15px;
-        margin-right: 5px;
-        margin-bottom: -3px;
-      }
-    }
-
-    .active {
-      color: $primary-color;
-      font-weight: $base-font-medium !important;
-      border-bottom-color: $primary-color;
-
-      &:hover {
-        opacity: 1;
-      }
-    }
+  .dashboard__content-wrapper {
+    height: 100% !important;
   }
 
-  &.expanded {
-    .dashboard__content-wrapper {
-      height: 100% !important;
-    }
-
-    .dashboard__left_side__bottom {
-      position: absolute;
-      bottom: 1rem;
-      left: 100%;
-    }
+  .dashboard__left_side__bottom {
+    position: absolute;
+    bottom: 1rem;
+    left: 100%;
   }
 
   .dashboard__left_side__bottom {
@@ -140,22 +99,37 @@
   }
 
   // For accordion
-  .dashboard__content-wrapper__inner {
+  .dashboard__content-wrapper {
     background-color: #eee;
     flex-grow: 1;
     display: block;
     min-height: 0;
 
+    .layers-tab-container {
+      width: 370px;
+      margin-left: -20px;
+    }
+
     & > .MuiBox-root {
       height: 100%;
       display: flex;
       flex-direction: column;
+      margin-left: -3px;
 
       .sidepanel-tab {
         flex-grow: 1;
         overflow-y: auto;
         overflow-x: hidden;
         width: 100%;
+
+        .MuiBox-root {
+          margin-top: -15px;
+        }
+
+        &.layers-panel {
+          width: 384px;
+          margin-left: -32px;
+        }
       }
     }
 
@@ -455,7 +429,6 @@
     text-transform: none;
     width: 50%;
     margin-top: -10px;
-    border-bottom: 1px solid #51A8DD !important;
   }
 }
 
@@ -470,7 +443,7 @@
     margin-bottom: 10px;
 
     .MuiFormControl-root {
-      margin-top: -20px;
+      margin-top: -10px;
     }
   }
 }

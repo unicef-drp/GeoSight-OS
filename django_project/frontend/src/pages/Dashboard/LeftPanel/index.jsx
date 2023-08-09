@@ -42,16 +42,13 @@ import './style.scss';
  */
 export default function LeftPanel({ leftExpanded }) {
   const dispatch = useDispatch();
-  const showLayerTab = !!EmbedConfig().layer_tab
-  const showFilterTab = !!EmbedConfig().filter_tab
   const state = leftExpanded ? LEFT : RIGHT
-  const [expanded, setExpanded] = useState('indicators');
-  const [tab, setTab] = useState(showLayerTab ? 'Layers' : 'Filters');
+  const [tabValue, setTabValue] = React.useState(0);
 
   const {
     contextLayers
   } = useSelector(state => state.dashboard.data);
-  const [value, setValue] = React.useState(contextLayers.length ? 0 : 1);
+  const [tab2Value, setTab2Value] = React.useState(contextLayers.length ? 0 : 1);
   const {
     contextLayersShow,
     indicatorShow
@@ -68,95 +65,84 @@ export default function LeftPanel({ leftExpanded }) {
   }
 
   const handleChangeTab = (event, newValue) => {
-    setValue(newValue);
+    setTabValue(newValue);
   };
 
-  const handleChange = (panel) => (event, isExpanded) => {
-    if (panel === 'projectOverview' && isExpanded) {
-      setExpanded('projectOverview')
-    } else {
-      setExpanded(expanded === 'indicators' ? 'contextLayers' : 'indicators');
-    }
+  const handleChangeTab2 = (event, newValue) => {
+    setTab2Value(newValue);
   };
 
-  const className = `dashboard__panel dashboard__left_side ${state} ${expanded ? 'expanded' : ''} `
-  const classNameWrapper = `dashboard__content-wrapper ${tab}`
+  const className = `dashboard__panel dashboard__left_side ${state}`
+  const classNameWrapper = `dashboard__content-wrapper`
 
   return (
     <section
-      className={className + (!showLayerTab && !showFilterTab ? 'Hidden' : '')}
+      className={className}
     >
       <div className={classNameWrapper}>
-        <div className='dashboard__content-wrapper__navbar'>
-          {
-            showLayerTab ?
-              <div onClick={() => setTab('Layers')}
-                   className={tab === 'Layers' ? 'active' : ''}>
-                <LayerIcon/>
-                <span>Layers</span>
-              </div> : null
-          }
-          {
-            showFilterTab ?
-              <div onClick={() => setTab('Filters')}
-                   className={tab === 'Filters' ? 'active' : ''}>
-                <TuneIcon/>
-                <span>Filters</span>
-              </div> : null
-          }
-        </div>
-        <div
-          className={'dashboard__content-wrapper__inner dataset-wrapper ' + (showLayerTab ? showLayerTab : 'Hidden')}>
-          <Box sx={{ width: '100%' }}>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-              <Tabs value={value} onChange={handleChangeTab} aria-label="basic tabs example">
-                <Tab
-                  label="Context Layers"
-                  icon={
-                    contextLayersShow ? <VisibilityIcon
-                      onClick={handleContextLayerVisibility}
-                    /> : <VisibilityOffIcon
-                      onClick={handleContextLayerVisibility}
-                    />
-                  }
-                  iconPosition='end'
-                  {...tabProps(0)}
-                />
-                <Tab
-                  label="Indicators"
-                  icon={
-                    indicatorShow ? <VisibilityIcon
-                      onClick={handleIndicatorVisibility}
-                    /> : <VisibilityOffIcon
-                      onClick={handleIndicatorVisibility}
-                    />
-                  }
-                  iconPosition='end'
-                  {...tabProps(1)}
-                />
-              </Tabs>
-            </Box>
-            <TabPanel value={value} index={0} className={'sidepanel-tab'}>
-              <ContextLayersAccordion
-                expanded={expanded === 'contextLayers'}
-                handleChange={handleChange}
+        <Box sx={{ width: '100%' }}>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Tabs value={tabValue} onChange={handleChangeTab} aria-label="basic tabs example">
+              <Tab
+                label="Layers"
+                icon=<LayerIcon/>
+                iconPosition="start"
+                {...tabProps('Layers')}
               />
-            </TabPanel>
-            <TabPanel value={value} index={1} className={'sidepanel-tab'}>
-              <IndicatorLayersAccordion
-                expanded={expanded === 'indicators'}
-                handleChange={handleChange}
+              <Tab
+                label="Filters"
+                icon=<TuneIcon/>
+                iconPosition="start"
+                {...tabProps('Filters')}
               />
-            </TabPanel>
+            </Tabs>
           </Box>
-          <Indicators/>
-          <RelatedTables/>
-        </div>
-        <div
-          className={'dashboard__content-wrapper__inner filter-wrapper ' + (showFilterTab ? showFilterTab : 'Hidden')}
-        >
-          <FiltersAccordion/>
-        </div>
+          <TabPanel value={tabValue} index={0} className={'sidepanel-tab'}>
+            <Box sx={{ width: '100%' }}>
+              <Box sx={{ borderBottom: 1, borderColor: 'divider' }} className={'layers-tab-container'}>
+                <Tabs value={tab2Value} onChange={handleChangeTab2} aria-label="basic tabs example">
+                  <Tab
+                    label="Context Layers"
+                    icon={
+                      contextLayersShow ? <VisibilityIcon
+                        onClick={handleContextLayerVisibility}
+                      /> : <VisibilityOffIcon
+                        onClick={handleContextLayerVisibility}
+                      />
+                    }
+                    iconPosition='end'
+                    {...tabProps(0)}
+                  />
+                  <Tab
+                    label="Indicators"
+                    icon={
+                      indicatorShow ? <VisibilityIcon
+                        onClick={handleIndicatorVisibility}
+                      /> : <VisibilityOffIcon
+                        onClick={handleIndicatorVisibility}
+                      />
+                    }
+                    iconPosition='end'
+                    {...tabProps(1)}
+                  />
+                </Tabs>
+              </Box>
+              <TabPanel value={tab2Value} index={0} className={'sidepanel-tab layers-panel'}>
+                <ContextLayersAccordion
+                />
+              </TabPanel>
+              <TabPanel value={tab2Value} index={1} className={'sidepanel-tab layers-panel'}>
+                <IndicatorLayersAccordion
+                />
+              </TabPanel>
+            </Box>
+            <Indicators/>
+            <RelatedTables/>
+          </TabPanel>
+          <TabPanel value={tabValue} index={1} className={'sidepanel-tab'}>
+            <FiltersAccordion/>
+          </TabPanel>
+        </Box>
       </div>
     </section>
   )

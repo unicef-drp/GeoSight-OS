@@ -65,6 +65,7 @@
     font-weight: $base-font-medium;
     font-size: 12px;
     color: #7E7E7E;
+    margin-left: 20px;
   }
 
   // GROUP SWITCHER
@@ -243,7 +244,7 @@
         .FilterGroupAddExpression,
         .FilterGroupAdd,
         .FilterGroupDelete {
-          background-color:  #F8F9F9;
+          background-color:  rgba(0, 0, 0, 0);
           color: #ADE0FF;
         }
 
@@ -277,6 +278,7 @@
 
   .FilterExpression {
     background-color: #FFFFFF;
+    height: 20px;
 
     &.Disabled {
       cursor: not-allowed;
@@ -298,6 +300,7 @@
     .FilterExpressionName {
       flex-grow: 1;
       display: flex;
+      margin-top: -15px;
 
       div {
         margin-top: 2px;
@@ -335,7 +338,7 @@
 
       .FilterEdit,
       .FilterDelete {
-        margin-top: 2px;
+        margin-top: -15px;
       }
 
       .FilterDelete {

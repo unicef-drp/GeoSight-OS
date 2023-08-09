@@ -121,7 +121,7 @@ function ContextLayers() {
  * @param {bool} expanded Is the accordion expanded.
  * @param {function} handleChange Function when the accordion show.
  */
-export default function ContextLayersAccordion({ expanded, handleChange }) {
+export default function ContextLayersAccordion({ expanded }) {
   const dispatch = useDispatch();
   const { contextLayersShow } = useSelector(state => state.map);
 
@@ -132,7 +132,6 @@ export default function ContextLayersAccordion({ expanded, handleChange }) {
   return (
     <Accordion
       expanded={expanded}
-      onChange={handleChange('contextLayers')}
       className='ContextLayersAccordion'
     >
       <AccordionDetails>

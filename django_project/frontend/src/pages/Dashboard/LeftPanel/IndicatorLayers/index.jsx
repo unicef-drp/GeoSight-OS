@@ -280,11 +280,10 @@ export function IndicatorLayers() {
  * @param {bool} expanded Is the accordion expanded
  * @param {function} handleChange Function when the accordion show
  */
-export default function IndicatorLayersAccordion({ expanded, handleChange }) {
+export default function IndicatorLayersAccordion({ expanded }) {
   return (
     <Accordion
       expanded={expanded}
-      onChange={handleChange('indicators')}
       className={'IndicatorLayerList'}
     >
 

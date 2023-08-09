@@ -18,6 +18,7 @@
 .TreeView {
   form {
     padding: 0 !important;
+    border-bottom: 1px solid #0412171A !important;
   }
 
   ul {
@@ -25,6 +26,11 @@
   }
 
   > ul {
+    margin-left: 10px;
+
+    li {
+      margin-left: -10px;
+    }
     > li {
         border-bottom: 1px solid #0412171A;
 
@@ -96,7 +102,7 @@
 }
 
 .MuiTreeItem-label {
-  padding-left: 0 !important;
+  padding-left: 10px !important;
 
   label {
     margin-right: 0;
@@ -203,9 +209,8 @@
 }
 
 .PanelSearchBox {
-  width: 100%;
+  width: 95%;
   height: 50px;
-  border-bottom: 1px solid #0412171A !important;
 
   .MuiInputBase-root {
     width: 100%;

@@ -4,10 +4,10 @@ import Box from '@mui/material/Box';
 
 import './style.scss';
 
-export function tabProps(index) {
+export function tabProps(identifier) {
   return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
+    id: `simple-tab-${identifier}`,
+    'aria-controls': `simple-tabpanel-${identifier}`,
   };
 }
 
