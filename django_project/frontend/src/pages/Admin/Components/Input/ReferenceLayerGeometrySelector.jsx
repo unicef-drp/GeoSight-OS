@@ -19,7 +19,7 @@ import {
   fetchFeatureList,
   GeorepoUrls
 } from "../../../../utils/georepo";
-import Select from "react-select";
+import { Select } from "../../../../components/Input";
 
 let requestTime = null
 /**

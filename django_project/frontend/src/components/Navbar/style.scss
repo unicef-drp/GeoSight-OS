@@ -25,7 +25,7 @@ header {
   .NavHeader {
     align-items: center;
     display: flex;
-    height: $base-height;
+    height: 45px;
     padding: 5px 1rem;
     position: relative;
     width: 100%;
@@ -37,6 +37,7 @@ header {
       display: block;
       color: var(--anti-primary-color);
       text-underline: none;
+      font-size: 20px;
     }
 
     .LinkButton {
@@ -86,22 +87,24 @@ header {
       }
     }
 
+    .NavHeaderLink {
+      margin-left: 0.5rem;
+      border-left: 1px solid white;
+      padding-left: 0.5rem;
+    }
+
     .NavHeaderLogo {
       box-sizing: border-box;
       height: 80%;
-      margin-right: 0.5rem;
-
-      .NavHeaderLink {
-        width: 85px;
-      }
 
       a {
         height: 100%;
       }
 
       img {
-        height: 100%;
+        height: 22px;
         vertical-align: unset !important;
+        margin-top: 2px;
       }
     }
   }

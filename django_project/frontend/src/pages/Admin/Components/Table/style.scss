@@ -39,11 +39,14 @@
 
 .AdminListHeader {
   display: flex;
-  background-color: $base-to-white-color !important;
+  background-color: white;
   align-items: center;
-  height: $base-height;
-  padding: 2px 20px;
+  padding: 0 20px;
   font-size: 12px !important;
+
+  .Separator {
+    height: $base-height;
+  }
 
   .AdminListHeader-Count {
     color: $primary-color;

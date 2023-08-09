@@ -31,8 +31,6 @@ import {
 } from "@dnd-kit/sortable";
 
 import { CSS } from "@dnd-kit/utilities";
-import Select from 'react-select'
-import Creatable from "react-select/creatable";
 
 import SortableItem
   from '../../../../Admin/Dashboard/Form/ListForm/SortableItem'
@@ -41,6 +39,7 @@ import { arrayMove } from "../../../../../utils/Array";
 import { fetchJSON } from "../../../../../Requests";
 import { uniqueList } from "../../../../../utils/main";
 import ColorSelector from "../../../../../components/Input/ColorSelector";
+import { Creatable, Select } from "../../../../../components/Input";
 
 import './style.scss';
 
@@ -479,7 +478,7 @@ export default function StyleRules(
   /** Update rule for adding NO DATA RULE and OTHER RULE **/
   const updateStyleRules = (oldStyleRules) => {
     let theStyleRules = []
-    if (oldStyleRules.constructor === Object) {
+    if (Array.isArray(oldStyleRules)) {
       theStyleRules = [...oldStyleRules]
     }
     const newStyleRules = []

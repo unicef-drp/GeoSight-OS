@@ -73,17 +73,16 @@ export function AdminTable(
   const isLoading = [undefined, null].includes(rows)
   return (
     <Fragment>
-      <div className='AdminListHeader'>
-        {
-          (selectionModel?.length ?
-            <div
-              className='AdminListHeader-Count'>{selectionModel.length + ' selected'}</div> : '')
-        }
-        <div className='Separator'/>
-        <div className='AdminListHeader-Right'>
-          {props.header}
-        </div>
-      </div>
+      {
+        selectionModel === undefined ? null :
+          <div className='AdminListHeader'>
+            {selectionModel.length + ' item' + (selectionModel.length > 1 ? 's' : '') + ' on this list are selected.'}
+            <div className='Separator'/>
+            <div className='AdminListHeader-Right'>
+              {props.header}
+            </div>
+          </div>
+      }
       <div className='AdminTable'>
         <MainDataGrid
           getRowClassName={(params) => {

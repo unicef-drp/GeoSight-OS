@@ -22,7 +22,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import Radio from "@mui/material/Radio";
 import TextField from "@mui/material/TextField";
@@ -37,6 +36,7 @@ import {
 } from "../../pages/Dashboard/LeftPanel/Indicators";
 import LayerDescription from "./Description";
 import Highlighted from "./Highlighted";
+import { MagnifyIcon } from "../Icons";
 
 import './style.scss';
 
@@ -337,7 +337,7 @@ export default function SidePanelTreeView(
                           aria-label="search"
                           disabled={filterText.length === 0}
                           onClick={() => setFilterText('')}>
-                {filterText ? <ClearIcon/> : <SearchIcon/>}
+                {filterText ? <ClearIcon/> : <MagnifyIcon/>}
               </IconButton>
             )
           }}/>

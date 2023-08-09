@@ -53,6 +53,7 @@
 
     .SideNavigationContentGroup {
       .SideNavigationContentGroupTitle {
+        box-sizing: border-box;
         display: flex;
         height: $base-height;
         color: #7E7E7E;
@@ -67,7 +68,6 @@
 
 
   .SideNavigation-Row {
-    font-size: 12px;
     align-items: center;
     border-radius: $border-radius;
     cursor: pointer;
@@ -76,6 +76,7 @@
     height: $base-height;
     padding: 0 16px;
     border-bottom: 1px solid $base-gray-to-white;
+    box-sizing: border-box;
 
     &:hover {
       opacity: 0.5;
@@ -96,12 +97,8 @@
 
     svg {
       margin-right: 10px;
-      width: 12px;
-      height: 12px;
-
-      path {
-        fill: #9BA0A2;
-      }
+      width: 14px;
+      height: 14px;
     }
 
     &.Button {

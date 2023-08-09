@@ -9,21 +9,18 @@
  *     (at your option) any later version.
  *
  * __author__ = 'irwan@kartoza.com'
- * __date__ = '01/08/2023'
+ * __date__ = '08/08/2023'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
 import React from 'react';
-import { DataGrid } from "@mui/x-data-grid";
+import ReactAutocomplete from '@mui/material/Autocomplete';
+import { ArrowDownwardIcon } from "../Icons";
 
-/**
- * Customized Main Data Grid
- */
-export function MainDataGrid({ ...props }) {
-  return <DataGrid
-    headerHeight={36}
-    getRowHeight={() => 'auto'}
-    keepNonExistentRowsSelected
+export default function Autocomplete({ ...props }) {
+  return <ReactAutocomplete
     {...props}
+    className={"ReactAutocomplete " + (props.className ? props.className : '')}
+    popupIcon={<ArrowDownwardIcon/>}
   />
 }
