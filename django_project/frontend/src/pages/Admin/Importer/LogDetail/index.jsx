@@ -204,6 +204,23 @@ export default function ImporterLogDetail() {
           </div>
         </Grid>
       </Grid>
+      {
+        data.attributes.indicator_data_type ?
+          <Grid container spacing={2}>
+            <Grid item xs={3}>
+              <div className='DetailSection'>
+                <div>Indicator type</div>
+                <div>{data.attributes.indicator_data_type}</div>
+              </div>
+            </Grid>
+            <Grid item xs={3}>
+              <div className='DetailSection'>
+                <div>Indicator name(s)</div>
+                <div>{data.attributes.indicator_data?.name ? data.attributes.indicator_data?.name : data.attributes.indicator_data_names ? data.attributes.indicator_data_names.join(", ") : '-'}</div>
+              </div>
+            </Grid>
+          </Grid> : null
+      }
       <Grid container spacing={2}>
         <Grid item xs={3}>
           <div className='DetailSection'>

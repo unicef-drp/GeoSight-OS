@@ -23,6 +23,7 @@
 .SideNavigation {
   background: white;
   width: 220px;
+  min-width: 220px;
   border-right: 1px solid $border-gray;
   z-index: 1;
   display: flex;

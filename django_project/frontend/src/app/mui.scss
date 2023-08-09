@@ -449,20 +449,17 @@
     border-bottom: 1px solid $border-gray !important;
     max-height: $base-height !important;
     min-height: $base-height !important;
-    white-space: normal !important;
+    white-space: nowrap;
 
-    .MuiDataGrid-cellContent {
-      overflow-y: auto;
+    .MuiDataGrid-cellContent, .CellLink {
       max-height: 150px;
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     &.MuiDataGrid-ActionsColumn {
       padding: 0 1rem !important;
-    }
-
-    a {
-      height: unset !important;
     }
   }
 
