@@ -446,30 +446,28 @@
   max-height: unset !important;
 
   .MuiDataGrid-cell {
-    border: unset !important;
+    border-bottom: 1px solid $border-gray !important;
+    max-height: $base-height !important;
+    min-height: $base-height !important;
+    white-space: normal !important;
+
+    .MuiDataGrid-cellContent {
+      overflow-y: auto;
+      max-height: 150px;
+      white-space: nowrap;
+    }
+
+    &.MuiDataGrid-ActionsColumn {
+      padding: 0 1rem !important;
+    }
+
+    a {
+      height: unset !important;
+    }
   }
 
   .Mui-selected {
     background-color: $primary-color-transparency;
-  }
-}
-
-.MuiDataGrid-cell {
-  max-height: unset !important;
-  white-space: normal !important;
-  min-height: 36px !important;
-
-  .MuiDataGrid-cellContent {
-    overflow-y: auto;
-    max-height: 150px;
-  }
-
-  &.MuiDataGrid-ActionsColumn {
-    padding: 0 1rem !important;
-  }
-
-  a {
-    height: unset !important;
   }
 }
 

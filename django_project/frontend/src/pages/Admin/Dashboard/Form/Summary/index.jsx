@@ -30,13 +30,13 @@ import { slugify } from "../../../../../utils/main";
 import {
   ViewLevelConfiguration
 } from "../../../Components/Input/ReferenceLayerLevelConfiguration";
-
-import './style.scss';
 import Grid from "@mui/material/Grid";
 import {
   SelectWithSearch
 } from "../../../../../components/Input/SelectWithSearch";
 import { ImageInput } from "../../../../../components/Input/ImageInput";
+
+import './style.scss';
 
 /**
  * Summary dashboard
@@ -216,27 +216,6 @@ export default function SummaryDashboardForm({ changed }) {
           </Grid>
         </div>
         <div className="BasicFormSection">
-          <div>
-            <label className="form-label" htmlFor="name">Project
-              Overview</label>
-          </div>
-          <div className='DescriptionInput'>
-            <div className="container">
-              <div data-color-mode="light">
-                <MDEditor
-                  id='SummaryOverview'
-                  height={200}
-                  value={overviewData}
-                  onChange={(value) => {
-                    setOverviewData(value)
-                    changed(true)
-                  }}/>
-              </div>
-            </div>
-          </div>
-
-        </div>
-        <div className="BasicFormSection">
           <FormGroup>
             <FormControlLabel
               control={<Checkbox
@@ -270,6 +249,27 @@ export default function SummaryDashboardForm({ changed }) {
           </div>
           <MapConfig/>
         </div>
+      </div>
+      <div className="BasicFormSection">
+        <div>
+          <label className="form-label" htmlFor="name">Project
+            Overview</label>
+        </div>
+        <div className='DescriptionInput'>
+          <div className="container">
+            <div data-color-mode="light">
+              <MDEditor
+                id='SummaryOverview'
+                height={200}
+                value={overviewData}
+                onChange={(value) => {
+                  setOverviewData(value)
+                  changed(true)
+                }}/>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   )

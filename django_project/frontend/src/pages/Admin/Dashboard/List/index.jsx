@@ -22,7 +22,7 @@ import { pageNames } from '../../index';
 import { COLUMNS, COLUMNS_ACTION } from "../../Components/List";
 import { AdminList } from "../../AdminList";
 import PermissionModal from "../../Permission";
-import { MapIcon } from "../../../../components/Icons";
+import { VisibilityIcon } from "../../../../components/Icons";
 
 import './style.scss';
 
@@ -61,10 +61,11 @@ export default function DashboardList() {
           <GridActionsCellItem
             icon={
               <a
+                title='Preview dashbaord'
                 className={"MuiButtonLike CellLink"}
                 href={urls.api.map.replace('/0', `/${params.id}`)}>
                 <div className='ButtonIcon'>
-                  <MapIcon/>
+                  <VisibilityIcon/>
                 </div>
               </a>
             }

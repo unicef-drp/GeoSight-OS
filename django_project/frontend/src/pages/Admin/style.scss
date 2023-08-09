@@ -63,7 +63,7 @@ main {
     border-radius: 0;
     display: flex;
     margin: 0;
-    padding: 19px 2rem;
+    padding: 23px 2rem;
     align-items: center;
 
     .MuiInputBase-root,
@@ -74,6 +74,7 @@ main {
     .AdminContentHeader-Left {
       flex-grow: 1;
       padding: 0.5rem 0;
+      font-size: 16px;
 
       span, a {
         color: $black;

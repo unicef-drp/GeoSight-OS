@@ -53,6 +53,7 @@
 
     .SideNavigationContentGroup {
       .SideNavigationContentGroupTitle {
+        box-sizing: border-box;
         display: flex;
         height: $base-height;
         color: #7E7E7E;
@@ -75,6 +76,7 @@
     height: $base-height;
     padding: 0 16px;
     border-bottom: 1px solid $base-gray-to-white;
+    box-sizing: border-box;
 
     &:hover {
       opacity: 0.5;
