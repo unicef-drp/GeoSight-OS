@@ -58,16 +58,6 @@ export default function ToggleLeftPanel(
     }
   };
 
-  // let active = ''
-  // if (
-  //   (props.className === 'LeftButton' && state === LEFT) ||
-  //   (props.className === 'RightButton' && state === RIGHT)
-  // ) {
-  //   active = 'Active'
-  // }
-
-  // const className = `${props.className} ${active}`
-
   return (
     <Plugin className={props.className}>
       <div className={active}>

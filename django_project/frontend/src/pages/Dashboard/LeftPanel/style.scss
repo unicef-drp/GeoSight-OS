@@ -429,9 +429,12 @@
 }
 
 .MuiTabs-flexContainer {
+  height: 40px;
   button {
     text-transform: none;
     width: 50%;
+    font-size: 14px !important;
+    margin-top: -10px;
   }
 }
 
