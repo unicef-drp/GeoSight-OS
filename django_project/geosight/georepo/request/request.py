@@ -138,7 +138,6 @@ class GeorepoUrl:
         return {
             'domain': self.georepo_domain,
             'api': self.georepo_url,
-            'reference_layer_list': reverse('reference-layer-list-api'),
             'reference_layer_detail': self.reference_layer_detail(
                 '<identifier>'
             ),

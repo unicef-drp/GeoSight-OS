@@ -22,7 +22,9 @@ from django.test.testcases import TestCase
 from django.urls import reverse
 
 from geosight.data.models import Indicator, IndicatorGroup
-from geosight.georepo.models import ReferenceLayer, ReferenceLayerIndicator
+from geosight.georepo.models import (
+    ReferenceLayerView, ReferenceLayerIndicator
+)
 from geosight.importer.importers.query_data import Aggregations
 from geosight.permission.tests._base import BasePermissionTest
 
@@ -43,9 +45,9 @@ class DatasetListApiTest(BasePermissionTest, TestCase):
         payload['group'] = IndicatorGroup.objects.create(name='name')
 
         # Create reference layers
-        self.ref_0 = ReferenceLayer.objects.create(identifier='name_1')
-        self.ref_1 = ReferenceLayer.objects.create(identifier='name_1')
-        self.ref_2 = ReferenceLayer.objects.create(identifier='name_2')
+        self.ref_0 = ReferenceLayerView.objects.create(identifier='name_1')
+        self.ref_1 = ReferenceLayerView.objects.create(identifier='name_1')
+        self.ref_2 = ReferenceLayerView.objects.create(identifier='name_2')
 
         payload['name'] = 'name_0'
         self.indicator_0 = Indicator.objects.create(**payload)
@@ -144,7 +146,7 @@ class DatasetListApiTest(BasePermissionTest, TestCase):
         )
 
     def create_value(
-            self, reference_layer: ReferenceLayer, indicator: Indicator,
+            self, reference_layer: ReferenceLayerView, indicator: Indicator,
             date_str,
             admin_level, geom_id, value
     ):
