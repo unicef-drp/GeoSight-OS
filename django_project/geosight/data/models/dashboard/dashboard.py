@@ -119,7 +119,7 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData):
             DashboardIndicatorLayerConfig,
             DashboardRelatedTable,
             DashboardIndicatorLayerRule as DSLayerRule,
-            DashboardIndicatorLayerIndicatorRule as DSLayerIndicatorLayerRule,
+            DashboardIndicatorLayerIndicatorRule as DSLayerIndicatorRule,
             DashboardIndicatorLayerField as IndicatorLayerField
         )
         from geosight.data.models.style.indicator_style import (
@@ -393,8 +393,7 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData):
                     if not style_data:
                         style_data = []
                     for idx, rule in enumerate(style_data):
-                        _rule, created = DSLayerIndicatorLayerRule. \
-                            objects.get_or_create(
+                        _rule, _ = DSLayerIndicatorRule.objects.get_or_create(
                             object=layer,
                             name=rule['name']
                         )
