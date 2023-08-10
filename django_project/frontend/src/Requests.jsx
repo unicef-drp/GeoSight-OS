@@ -63,7 +63,7 @@ export async function fetchJSON(url, options, useCache = true) {
       const response = await fetch(url, options);
 
       // Check if using georepo auth and status is 403
-      if (USE_GEOREPO_AUTH && response.status === 403) {
+      if (USE_GEOREPO_AUTH && [401, 403].includes(response.status)) {
         if (new URL(GEOREPO_AZURE_AUTHENTICATION_URL).origin === new URL(url).origin) {
           if (!preferences.georepo_api.is_api_key) {
             Cookies.set('georepo-token', '')
