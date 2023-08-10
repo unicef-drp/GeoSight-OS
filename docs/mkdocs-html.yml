@@ -111,3 +111,5 @@ plugins:
 # Note that although the above link implies you can use UUIDs, you have to use numeric IDS not UUIDS
 hooks:
   - ./hook.py
+  - ./update_python_manual.py
+
