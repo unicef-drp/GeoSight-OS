@@ -20,6 +20,8 @@
 @import '../../../../app/variables';
 
 .MapLegend {
+  position: fixed;
+  top: 160px;
 
   .MapLegendSection {
     padding: 0.5rem;
@@ -40,8 +42,9 @@
     }
 
     .MapLegendSectionTitle {
-      color: $secondary-color;
+      color: #041217;
       font-weight: 500;
+      font-size: 10px;
       margin-bottom: 0.5rem;
     }
   }

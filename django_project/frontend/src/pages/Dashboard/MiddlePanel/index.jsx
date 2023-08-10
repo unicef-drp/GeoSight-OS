@@ -17,7 +17,6 @@ import React from 'react';
 import MapLegend from "./MapLegend";
 import Basemaps from './Basemaps'
 import { EmbedConfig } from "../../../utils/embed";
-import ReferenceLayerSection from "./ReferenceLayer";
 import GlobalDateSelector from "./GlobalDateSelector";
 import LayerConfig from "./LayerConfig";
 
@@ -38,9 +37,6 @@ export default function MiddlePanel(
     <div className='TopContent'>
       <div className='MapNavbar'>
         <div className='LeftMapNavbar'></div>
-        {/*<div className='RightMapNavbar'>*/}
-        {/*  <ReferenceLayerSection/>*/}
-        {/*</div>*/}
       </div>
       {children}
       <LayerConfig/>
@@ -51,10 +47,12 @@ export default function MiddlePanel(
           <div className='ContentLine Inner'>
             <Basemaps/>
           </div>
+          <div className='ContentLine Inner'>
+            <MapLegend/>
+          </div>
           <div className='Disclaimer'>{preferences.disclaimer}</div>
         </div>
         <div className='RightSection'>
-          <MapLegend/>
         </div>
       </div>
       <div className='ContentLine'>

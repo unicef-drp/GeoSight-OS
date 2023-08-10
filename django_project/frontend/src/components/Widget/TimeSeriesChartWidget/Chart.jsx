@@ -57,13 +57,6 @@ export default function Chart(
   if (chartData) {
     if (chartData.datasets.length === chartData.datasets.filter(dataset => dataset.data.length === 0).length) {
       empty = true
-    } else {
-      chartData.datasets = chartData.datasets.map(dataset => {
-        dataset.fill = fill
-        // add lighter fill color
-        dataset.backgroundColor = newShade(dataset.borderColor, 150)
-        return dataset
-      })
     }
   }
 
@@ -79,8 +72,7 @@ export default function Chart(
               <Line
                 options={{
                   radius: (context) => {
-                    const radius = context?.raw?.x === selectedLabel ? 6 : 3;
-                    return showPoint ? radius : 0;
+                    return  context?.raw?.x === selectedLabel ? 6 : 3;
                   },
                   borderWidth: 2,
                   responsive: true,
