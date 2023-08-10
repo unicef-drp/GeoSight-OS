@@ -64,25 +64,39 @@
     padding: 0 1rem;
   }
 
-  .MultipleSelectWithSearch,
-  .SelectWithSearchInput,
-  .SelectWithSearch {
-    height: 24px !important;
-    min-height: 24px !important;
-    background-color: unset !important;
-    border: $border;
-
+  .WhereConfigurationQuery {
+    & > .MultipleSelectWithSearch,
+    & > .SelectWithSearchInput,
     & > .SelectWithSearch {
-      border: unset !important;
+      height: 24px !important;
+      min-height: 24px !important;
+      background-color: white !important;
+      border: $border;
+      outline: unset !important;
+
+      & > .SelectWithSearch {
+        border: unset !important;
+        height: 100%;
+      }
+
+      fieldset {
+        border: unset !important;
+      }
+
+      .MuiInputBase-root {
+        height: 23px !important;
+        min-height: 23px !important;
+      }
+
+      input {
+        min-height: 24px !important;
+      }
     }
 
-    fieldset {
-      border: unset !important;
-    }
-
-    .MuiInputBase-root {
-      height: 23px !important;
-      min-height: 23px !important;
+    & > .SelectWithSearchInput {
+      height: 25px !important;
+      min-height: 25px !important;
+      padding: 0 !important;
     }
   }
 
@@ -175,9 +189,7 @@
       }
 
       .MuiInputBase-root {
-        border-radius: $border-radius !important;
         font-size: 0.9rem !important;
-        box-shadow: $box-shadow-sm-strong;
         background-color: white !important;
       }
     }
@@ -187,12 +199,6 @@
     height: 34px;
     padding: 4px 20px 0 20px !important;
     pointer-events: auto !important;
-
-    .MuiSlider-root {
-      & > span {
-        box-shadow: $box-shadow-sm-strong;
-      }
-    }
   }
 
   .MuiInputSliderWithInput {
@@ -202,7 +208,7 @@
     background-color: unset !important;
 
     input {
-      padding-bottom: 0;
+      height: 100%;
     }
 
     .MuiInputSlider {
@@ -232,7 +238,6 @@
     .MuiInputBase-root {
       height: 25px;
       border: $border !important;
-      border-radius: $border-radius !important;
       margin-right: 5px;
       padding: 0 !important;
       pointer-events: auto !important;
