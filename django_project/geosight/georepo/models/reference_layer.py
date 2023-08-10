@@ -26,6 +26,8 @@ from geosight.georepo.request.data import GeorepoEntity
 from geosight.permission.models.manager import PermissionManager
 
 
+# TODO:
+#  Deprecated, we use ReferenceLayerView instead Dataset
 class ReferenceLayer(models.Model):
     """Dataset of georepo."""
 

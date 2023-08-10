@@ -59,7 +59,7 @@ export function returnLayerStyleConfig(layer, indicators) {
   }
 
   // If from style from library
-  if (config.style_type === STYLE_FORM_LIBRARY) {
+  if (config.style_type === STYLE_FORM_LIBRARY && config.style_data) {
     config = config.style_data
   }
   return config
