@@ -66,7 +66,7 @@
     }
 
     .ProjectOverview-Icon {
-      top: 20%;
+      top: 100px;
       position: fixed;
       border: 1px solid $tab-inactive-color !important;
       width: 40px !important;
@@ -80,13 +80,24 @@
     }
 
     .TiltControl {
-      top: 40%;
+      top: 610px;
       position: fixed;
       border: 1px solid $tab-inactive-color !important;
-      width: 40px !important;
-      height: 40px !important;
-      margin-left: 5px;
+      width: 27px !important;
+      height: 27px !important;
+      margin-left: 2px !important;
       background-color: $white !important;
+
+      .ToolbarChild {
+        width: inherit !important;
+
+        .TiltDegree {
+          width: inherit !important;
+          color: $black;
+          margin-left: -10px;
+          margin-top: -2px;
+        }
+      }
 
       svg {
         margin-top: 20%;
@@ -309,7 +320,7 @@ $nav-disabled-color: '%23CCCCCC';
 .maplibregl-ctrl-compass {
   border: 1px solid $tab-inactive-color !important;
   position: relative;
-  bottom: 120px;
+  bottom: 100px;
 
   .maplibregl-ctrl-icon {
     @include compass-icon($nav-enabled-color);
