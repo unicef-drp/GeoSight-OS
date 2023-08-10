@@ -50,7 +50,6 @@ nav:
                         - Guide:
                                 - user/guide/index.md
                                 - Disclaimer: about/disclaimer.md
-                                - Credits: about/credits.md
                                 - License: about/license.md
                         - Manual: 
                                 - user/manual/index.md
@@ -67,8 +66,8 @@ nav:
                         - developer/index.md
                         - API:
                                 - developer/api/index.md
-                                - Guide: developer/api/api-guide/index.md
-                                - Reference: developer/api/api-reference/index.md
+                                - Guide: developer/api/guide/index.md
+                                - Reference: developer/api/manual/index.md
                         - Guide:
                                 - Overview: developer/guide/index.md
                                 - Architecture: developer/guide/architecture.md
