@@ -59,6 +59,7 @@
 
     .EmbedControl {
       margin-right: 10px;
+
       svg {
         width: 40px !important;
         margin-top: 5px;
@@ -273,7 +274,7 @@ $nav-disabled-color: '%23CCCCCC';
   }
 
   button {
-      background-color: $white;
+    background-color: $white;
   }
 }
 
@@ -312,9 +313,21 @@ $nav-disabled-color: '%23CCCCCC';
   bottom: 120px;
 
   .maplibregl-ctrl-icon {
-    @include compass-icon($nav-enabled-color);
-    background-size: 22px !important;
-    transform: rotate(-45deg);
+    position: relative;
+    background-image: unset !important;
+
+    &::after {
+      display: block;
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      content: "";
+      @include compass-icon($nav-enabled-color);
+      background-size: 22px !important;
+      height: 22px;
+      width: 22px;
+      transform: rotate(-45deg);
+    }
   }
 }
 
