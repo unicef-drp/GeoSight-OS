@@ -32,6 +32,7 @@ in pkgs.mkShell rec {
     libxslt
     libzip
     zlib
+    gnused
     httplz # for serving up the static site while testing
   ];
 
