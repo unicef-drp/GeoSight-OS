@@ -39,10 +39,7 @@ nav:
         - Home:
                 - index.md
                 - About: about/index.md
-                - Contributing:
-                        - about/contributing.md
-                        - Commit Messages: about/documentation/commit-message-convention.md
-                        - Pull Request Template: about/documentation/pull-request-template.md
+                - Contributing: about/contributing.md
                 - Code of Conduct: about/code-of-conduct.md
                 - Running Instances: about/running-instances.md
         - Users:
@@ -76,26 +73,22 @@ nav:
                                 - Overview: developer/guide/index.md
                                 - Architecture: developer/guide/architecture.md
                                 - Design: developer/guide/design.md
-                                - Project Prerequisites: developer/guide/project-prerequisites.md
-                                - Setting up your IDE: developer/guide/ide-setup.md
-                                - Checking Out The Code: developer/guide/checking-out-the-code.md
+                                - Prerequisites: developer/guide/project-prerequisites.md
+                                - IDE Setup: developer/guide/ide-setup.md
+                                - Cloning: developer/guide/checking-out-the-code.md
                                 - Configuration: developer/guide/configuration.md
-                                - Building/Compiling Code: developer/guide/building.md
-                                - Developer Workflows: developer/guide/developer-workflows.md
+                                - Building: developer/guide/building.md
+                                - Workflows: developer/guide/developer-workflows.md
                                 - Road Map: developer/guide/roadmap.md
-
-
-                        - Documentation:
-                                - Writing documentation: developer/documentation/index.md
+                                # Pages to render but exclude from Nav
+                                - "": about/documentation/commit-message-convention.md
+                                - "": about/documentation/pull-request-template.md 
+                        - Documentation: developer/documentation/index.md
                         - Manual:
                                 - developer/manual/index.md
                         - License: about/license.md
-        - DevOps:
-                - Overview:
-                        - devops/index.md
-                        - Guide:
-                                - devops/guide/index.md
-                                - Tutorial 1: devops/guide/tutorial1.md
-                        - Manual:
-                                - devops/manual/index.md
+        - DevOps: 
+                - devops/index.md
+                - Guide: devops/guide/index.md
+                - Manual: devops/manual/index.md
 

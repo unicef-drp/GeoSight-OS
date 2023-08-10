@@ -11,10 +11,7 @@ license: This program is free software; you can redistribute it and/or modify it
 #context_id: 1234
 ---
 
-# DevOps Tutorial
+# DevOps Guide
 <!-- Replace all of the titles with relevant titles -->
 <!-- More content to be added -->
 
-## Tutorial 1
-<!-- e.g. starting a new project (change title per project and give good name) -->
-[link to tutorial 1](tutorial1.md)
