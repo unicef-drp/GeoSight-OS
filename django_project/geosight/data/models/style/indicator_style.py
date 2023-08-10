@@ -63,10 +63,10 @@ class IndicatorStyleBaseModel(models.Model):
         """Return query rules."""
         raise NotImplemented()
 
-    def obj_style(self, user):
+    def style_obj(self, user):
         """Return object style."""
         from geosight.data.serializer.dashboard_indicator_layer import (
-            DashboardIndicatorLayerRule
+            DashboardIndicatorLayerRuleSerializer
         )
         if self.style_type == IndicatorStyleType.LIBRARY and self.style:
             if self.style.permission.has_read_data_perm(user):
@@ -75,7 +75,7 @@ class IndicatorStyleBaseModel(models.Model):
                 ).data
             return []
         else:
-            return DashboardIndicatorLayerRule(
+            return DashboardIndicatorLayerRuleSerializer(
                 self.rules.all(), many=True
             ).data
         return None

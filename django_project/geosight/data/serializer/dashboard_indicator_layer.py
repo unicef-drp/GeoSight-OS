@@ -115,7 +115,7 @@ class DashboardIndicatorLayerSerializer(DashboardSerializer):
             ).data
         else:
             if obj.is_using_obj_style:
-                return obj.obj_style(self.context.get('user', None))
+                return obj.style_obj(self.context.get('user', None))
         return []
 
     def get_style_id(self, obj: DashboardIndicatorLayer):
@@ -166,12 +166,12 @@ class DashboardIndicatorLayerSerializer(DashboardSerializer):
             'chart_style', 'config', 'last_update',
             'style', 'style_id', 'style_type', 'style_data', 'style_config',
             'label_config', 'level_config', 'data_fields',
-            'popup_template', 'popup_type'
+            'popup_template', 'popup_type', 'multi_indicator_mode'
         )
         fields += DashboardSerializer.Meta.fields
 
 
-class DashboardIndicatorLayerRule(serializers.ModelSerializer):
+class DashboardIndicatorLayerRuleSerializer(serializers.ModelSerializer):
     """Serializer for DashboardIndicatorLayerRule."""
 
     class Meta:  # noqa: D106
@@ -219,6 +219,11 @@ class DashboardIndicatorLayerIndicatorSerializer(
     indicator = serializers.SerializerMethodField()
     shortcode = serializers.SerializerMethodField()
 
+    style = serializers.SerializerMethodField()
+    style_id = serializers.SerializerMethodField()
+    style_type = serializers.SerializerMethodField()
+    style_data = serializers.SerializerMethodField()
+
     def get_indicator(self, obj: DashboardIndicatorLayerIndicator):
         """Return dashboard group name."""
         return obj.indicator.__str__()
@@ -227,11 +232,50 @@ class DashboardIndicatorLayerIndicatorSerializer(
         """Return indicator shortcode."""
         return obj.indicator.shortcode
 
+    def get_style(self, obj: DashboardIndicatorLayerIndicator):
+        """Return style."""
+        if obj.override_style:
+            return None
+        return obj.indicator.style_obj(self.context.get('user', None))
+
+    def get_style_id(self, obj: DashboardIndicatorLayerIndicator):
+        """Return rules."""
+        if obj.override_style:
+            return None
+        if obj.style:
+            return obj.style.id
+        return None
+
+    def get_style_type(self, obj: DashboardIndicatorLayerIndicator):
+        """Return rules."""
+        if obj.override_style:
+            return None
+        return obj.style_type
+
+    def get_style_data(self, obj: DashboardIndicatorLayerIndicator):
+        """Return rules."""
+        if obj.override_style:
+            return None
+        if obj.style:
+            data = StyleSerializer(
+                obj.style,
+                fields=[
+                    'name', 'id', 'style_type', 'style_config', 'styles'
+                ]
+            ).data
+            data['style'] = data['styles']
+            del data['styles']
+            return data
+        else:
+            return None
+
     class Meta:  # noqa: D106
         model = DashboardIndicatorLayerIndicator
         fields = (
             'id', 'indicator', 'rule', 'order',
-            'name', 'color', 'active', 'shortcode'
+            'name', 'color', 'active', 'shortcode',
+            'style', 'style_id', 'style_type', 'style_data', 'style_config',
+            'override_style'
         )
 
 
