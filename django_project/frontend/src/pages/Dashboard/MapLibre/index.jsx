@@ -57,7 +57,7 @@ const BASEMAP_ID = `basemap`
  * MapLibre component.
  */
 export default function MapLibre(
-  { leftPanelProps, ...props }
+  { leftPanelProps, rightPanelProps, ...props }
 ) {
   const dispatch = useDispatch()
   const [map, setMap] = useState(null);
@@ -251,6 +251,21 @@ export default function MapLibre(
           <Bookmark map={map}/>
         </Plugin>
       </div>
+      {
+        rightPanelProps ?
+          <
+            ToggleLeftPanel
+            className={rightPanelProps.className}
+            initState={rightPanelProps.leftExpanded}
+            active={rightPanelProps.active}
+            onLeft={() => {
+              rightPanelProps.onLeft()
+            }}
+            onRight={() => {
+              rightPanelProps.onRight()
+            }}
+          /> : null
+      }
     </div>
 
     <ReferenceLayer map={map} deckgl={deckgl} is3DView={is3dMode}/>

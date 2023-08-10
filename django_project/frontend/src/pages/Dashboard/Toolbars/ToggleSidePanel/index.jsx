@@ -20,15 +20,15 @@
 import React, {useEffect, useState} from 'react';
 
 import {Plugin, PluginChild} from "../../MapLibre/Plugin";
-import { ToggleLeftPanelIcon } from "../../../../components/Icons/index"
+import { GraphIcon, LeftPanelIcon} from "../../../../components/Icons/index"
 
 import './style.scss';
 import {LEFT, RIGHT} from "../../../../components/ToggleButton";
 
 /**
- * ToggleLeftPanel.
+ * ToggleSidePanel.
  */
-export default function ToggleLeftPanel(
+export default function ToggleSidePanel(
   { initState, onLeft, onRight, ...props }
 ) {
   const [state, setState] = useState(LEFT);
@@ -62,12 +62,12 @@ export default function ToggleLeftPanel(
     <Plugin className={props.className}>
       <div className={active}>
         <PluginChild
-          title={'Toggle Left Panel'}
+          title={'Toggle Panel'}
           onClick={() => {
            change()
          }}
         >
-          <ToggleLeftPanelIcon/>
+          { props.className === 'LeftButton' ? <LeftPanelIcon/> : <GraphIcon/>}
         </PluginChild>
       </div>
     </Plugin>

@@ -124,7 +124,7 @@ export default function Embed({ map }) {
         <ModalHeader onClosed={() => {
           setOpen(false)
         }}>
-          Create embed snippet for this map.
+          <b>Create embed snippet for this map.</b>
         </ModalHeader>
         <ModalContent>
           <div className='AdminForm'>

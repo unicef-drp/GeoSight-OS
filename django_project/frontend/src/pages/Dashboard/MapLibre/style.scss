@@ -80,6 +80,11 @@
       }
     }
 
+    .RightButton {
+      position: fixed;
+      right: 0px;
+    }
+
     .TiltControl {
       top: 610px;
       position: fixed;
@@ -122,7 +127,7 @@
 
     .Toolbar-Right {
       position: fixed;
-      right: 6%;
+      right: 70px;
     }
 
     button {
