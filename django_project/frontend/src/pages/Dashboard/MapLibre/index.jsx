@@ -90,6 +90,10 @@ export default function MapLibre(
         setMap(newMap)
       })
       newMap.addControl(new maplibregl.NavigationControl(), 'bottom-left');
+      newMap.addControl(
+        new maplibregl.FullscreenControl({container: document.querySelector('body')}),
+        'bottom-right'
+      );
 
       const deckgl = new MapboxOverlay({
         interleaved: true,

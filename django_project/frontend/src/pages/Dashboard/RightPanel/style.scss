@@ -24,7 +24,8 @@
   width: 20%;
   transition: margin-right 0.3s;
   padding-top: 48px;
-  background-color: $white;
+  background-color: rgba(0, 0, 0, 0) !important;
+  height: 90% !important;
 
   @include media(small-down) {
     width: 20%;
@@ -47,7 +48,7 @@
     max-height: 100%;
     overflow-y: auto;
     min-height: 100%;
-    background-color: $white !important;
+    background-color: rgba(0, 0, 0, 0) !important;
     border-top: 1px solid $border-gray;
     padding-top: 1rem;
 
@@ -58,7 +59,7 @@
     .dashboard__content {
       min-height: 3rem;
       padding-top: 0;
-      background-color: $white !important;
+      background-color: rgba(0, 0, 0, 0) !important;
     }
   }
 }

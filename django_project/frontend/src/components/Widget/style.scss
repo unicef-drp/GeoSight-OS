@@ -72,7 +72,10 @@
   }
 
   .widget__fill {
+    border-radius: 0px;
     min-height: 2rem;
+    background-color: $white;
+    box-shadow: 0px 0px 10px 0px #0000004D;
 
     > .widget__error {
       text-align: center;
@@ -94,13 +97,32 @@
   overflow-y: auto;
 }
 
-.widget__sw {
-  text-align: center;
+.widget__sw,
+.widget__gw {
+  text-align: left;
 
-  .widget__sw__title {
-    color: $base-font-color;
+  .widget__sw__title,
+  .widget__gw__title{
+    color: $widget-title;
     font-size: 1.5rem;
     margin-bottom: 10px;
+
+    font-family: $base-font-family;
+    font-weight: 300;
+    line-height: 17px;
+    letter-spacing: 0em;
+  }
+
+  .widget__sw__content,
+  .widget__gw__content {
+    color: $base-font-color;
+    font-size: 3rem;
+    margin-bottom: 10px;
+
+    font-family: $base-font-family;
+    font-weight: 300;
+    line-height: 36px;
+    letter-spacing: 0em;
   }
 }
 

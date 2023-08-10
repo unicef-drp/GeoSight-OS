@@ -357,3 +357,25 @@ $nav-disabled-color: '%23CCCCCC';
     }
   }
 }
+
+.maplibregl-ctrl-bottom-right,
+.mapboxgl-ctrl-bottom-right {
+  right: 55px;
+  height: 100% !important;
+
+  .maplibregl-ctrl-group {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+  }
+}
+
+.maplibregl-ctrl-fullscreen,
+.mapboxgl-ctrl-fullscreen {
+  position: absolute;
+  bottom: 0;
+
+  //.maplibregl-ctrl-icon {
+  //  @include fullscreen-icon($nav-enabled-color);
+  //}
+}
