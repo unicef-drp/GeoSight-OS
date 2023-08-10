@@ -284,6 +284,11 @@ class DashboardIndicatorLayerIndicator(
         """If using obj style."""
         return self.indicator.type == TYPE_DYNAMIC_INDICATOR
 
+    @property
+    def rules(self):
+        """Return query rules."""
+        return self.dashboardindicatorlayerindicatorrule_set.all()
+
     class Meta:  # noqa: D106
         ordering = ('order',)
 

@@ -110,9 +110,7 @@ class DashboardIndicatorLayerSerializer(DashboardSerializer):
         """Return style."""
         indicators = obj.dashboardindicatorlayerindicator_set.all()
         if indicators.count() >= 2:
-            return DashboardIndicatorLayerIndicatorSerializer(
-                obj.dashboardindicatorlayerindicator_set, many=True
-            ).data
+            return []
         else:
             if obj.is_using_obj_style:
                 return obj.style_obj(self.context.get('user', None))
@@ -234,13 +232,13 @@ class DashboardIndicatorLayerIndicatorSerializer(
 
     def get_style(self, obj: DashboardIndicatorLayerIndicator):
         """Return style."""
-        if obj.override_style:
+        if not obj.override_style:
             return None
-        return obj.indicator.style_obj(self.context.get('user', None))
+        return obj.style_obj(self.context.get('user', None))
 
     def get_style_id(self, obj: DashboardIndicatorLayerIndicator):
         """Return rules."""
-        if obj.override_style:
+        if not obj.override_style:
             return None
         if obj.style:
             return obj.style.id
@@ -248,13 +246,13 @@ class DashboardIndicatorLayerIndicatorSerializer(
 
     def get_style_type(self, obj: DashboardIndicatorLayerIndicator):
         """Return rules."""
-        if obj.override_style:
+        if not obj.override_style:
             return None
         return obj.style_type
 
     def get_style_data(self, obj: DashboardIndicatorLayerIndicator):
         """Return rules."""
-        if obj.override_style:
+        if not obj.override_style:
             return None
         if obj.style:
             data = StyleSerializer(

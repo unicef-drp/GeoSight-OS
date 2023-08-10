@@ -38,6 +38,10 @@ import {
 import PopupConfigForm from "../PopupConfigForm";
 import { dataFieldsDefault } from "../../../../../../utils/indicatorLayer";
 import { CogIcon } from "../../../../../../components/Icons";
+import {
+  SelectWithSearch
+} from "../../../../../../components/Input/SelectWithSearch";
+import Config from "./Config"
 
 import './style.scss';
 
@@ -53,6 +57,9 @@ const chartTypes = [
   defaultChartType,
   "Bar"
 ]
+
+const ChartMode = "Chart"
+const PinMode = "Pin"
 
 /**
  * MultiIndicatorConfig
@@ -87,14 +94,8 @@ export default function MultiIndicatorConfig(
       },
       level_config: {},
       data_fields: dataFieldsDefault(),
-      type: 'Multi Indicator'
-    }
-  }
-  const defaultIndicatorStyle = (indicator) => {
-    return {
-      id: indicator.id,
-      name: indicator.name,
-      color: '#000000'
+      type: 'Multi Indicator',
+      multi_indicator_mode: ChartMode
     }
   }
 
@@ -260,86 +261,132 @@ export default function MultiIndicatorConfig(
                 ),
                 'Style': (
                   <div>
+                    <div className="BasicFormSection">
+                      <label className="form-label" htmlFor="group">
+                        Mode
+                      </label>
+                      <SelectWithSearch
+                        options={[ChartMode, PinMode]}
+                        value={data.multi_indicator_mode ? data.multi_indicator_mode : ChartMode}
+                        onChangeFn={evt => {
+                          data.chart_style = {
+                            ...data.chart_style,
+                            sizeType: 'Fixed size'
+                          }
+                          data.multi_indicator_mode = evt
+                          setData({ ...data })
+                        }}
+                        disableCloseOnSelect={false}
+                      />
+                    </div>
                     <MultiSelectorConfig
                       items={indicators}
                       selectedItems={data?.indicators ? data?.indicators : []}
                       setSelectedItems={items => {
-                        data.indicators = items
+                        data.indicators = items.map(item => {
+                          if (!item.override_style) {
+                            const indicator = indicators.find(indicator => indicator.id === item.id)
+                            if (indicator) {
+                              item.style = indicator.style
+                              item.style_id = indicator.style_id
+                              item.style_type = indicator.style_type
+                              item.style_data = indicator.style_data
+                              item.style_config = indicator.style_config
+                            }
+                          }
+                          return item
+                        })
                         updateData()
                       }}
                       additionalFields={['name']}
-                      headers={['indicator', 'label', 'color']}
+                      action={
+                        (
+                          data.multi_indicator_mode === PinMode ?
+                            <Config/> : null
+                        )
+                      }
+                      headers={
+                        (data.multi_indicator_mode === ChartMode ? ['indicator', 'label', 'color'] : ['indicator', 'label', 'config'])
+                      }
+                      noColor={data.multi_indicator_mode === PinMode}
                     />
                     <div className='IndicatorsStyle'>
-                      <div>
-                        <FormControl>
+                      {data.multi_indicator_mode === ChartMode ?
+                        <Fragment>
                           <div>
-                            <b className='light'>Chart Type</b>
+                            <FormControl>
+                              <div>
+                                <b className='light'>Chart Type</b>
+                              </div>
+                              <RadioGroup
+                                value={data.chart_style.chartType}
+                                className='IndicatorsStyle-Size'
+                                onChange={(evt) => {
+                                  data.chart_style.chartType = evt.target.value
+                                  updateData()
+                                }}
+                              >
+                                {
+                                  chartTypes.map(type => {
+                                    return <FormControlLabel
+                                      key={type} value={type}
+                                      control={<Radio/>}
+                                      label={type}/>
+                                  })
+                                }
+                              </RadioGroup>
+                            </FormControl>
                           </div>
-                          <RadioGroup
-                            value={data.chart_style.chartType}
-                            className='IndicatorsStyle-Size'
-                            onChange={(evt) => {
-                              data.chart_style.chartType = evt.target.value
-                              updateData()
-                            }}
-                          >
-                            {
-                              chartTypes.map(type => {
-                                return <FormControlLabel
-                                  key={type} value={type} control={<Radio/>}
-                                  label={type}/>
-                              })
-                            }
-                          </RadioGroup>
-                        </FormControl>
-                      </div>
-                      <div>
-                        <FormControl>
                           <div>
-                            <b className='light'>Size</b>
+                            <FormControl>
+                              <div>
+                                <b className='light'>Size</b>
+                              </div>
+                              <RadioGroup
+                                value={data.chart_style.sizeType}
+                                className='IndicatorsStyle-Size'
+                                onChange={(evt) => {
+                                  switch (evt.target.value) {
+                                    case FixedSize:
+                                      data.chart_style = {
+                                        ...data.chart_style,
+                                        sizeType: evt.target.value,
+                                        size: data.chart_style.size ? data.chart_style.size : 10
+                                      }
+                                      break
+                                    default:
+                                      data.chart_style = {
+                                        ...data.chart_style,
+                                        sizeType: evt.target.value,
+                                        minSize: data.chart_style.minSize ? data.chart_style.minSize : defaultMinSize,
+                                        maxSize: data.chart_style.maxSize ? data.chart_style.maxSize : defaultMaxSize,
+                                      }
+                                  }
+                                  updateData()
+                                }}
+                              >
+                                {
+                                  sizeTypes.map(type => {
+                                    return <FormControlLabel
+                                      key={type} value={type}
+                                      control={<Radio/>}
+                                      label={type}/>
+                                  })
+                                }
+                              </RadioGroup>
+                            </FormControl>
                           </div>
-                          <RadioGroup
-                            value={data.chart_style.sizeType}
-                            className='IndicatorsStyle-Size'
-                            onChange={(evt) => {
-                              switch (evt.target.value) {
-                                case FixedSize:
-                                  data.chart_style = {
-                                    ...data.chart_style,
-                                    sizeType: evt.target.value,
-                                    size: data.chart_style.size ? data.chart_style.size : 10
-                                  }
-                                  break
-                                default:
-                                  data.chart_style = {
-                                    ...data.chart_style,
-                                    sizeType: evt.target.value,
-                                    minSize: data.chart_style.minSize ? data.chart_style.minSize : defaultMinSize,
-                                    maxSize: data.chart_style.maxSize ? data.chart_style.maxSize : defaultMaxSize,
-                                  }
-                              }
-                              updateData()
-                            }}
-                          >
-                            {
-                              sizeTypes.map(type => {
-                                return <FormControlLabel
-                                  key={type} value={type} control={<Radio/>}
-                                  label={type}/>
-                              })
-                            }
-                          </RadioGroup>
-                        </FormControl>
-                      </div>
+                        </Fragment>
+                        : null
+                      }
                       <div>
                         <div><b className='light'>Symbol Size</b></div>
+                        <br/>
                         {
                           data.chart_style.sizeType === FixedSize ? <Fragment>
                             <table>
                               <tbody>
                               <tr>
-                                <td>Size :</td>
                                 <td>
                                   <input
                                     min={defaultMinSize}
@@ -349,7 +396,7 @@ export default function MultiIndicatorConfig(
                                       updateData()
                                     }}/>
                                 </td>
-                                <td>px</td>
+                                <td>&nbsp;px</td>
                               </tr>
                               </tbody>
                             </table>

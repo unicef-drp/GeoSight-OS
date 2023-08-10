@@ -302,6 +302,7 @@ export function DashboardSaveForm(
         'show_splash_first_open': splashScreen,
         'truncate_indicator_layer_name': truncateIndicatorName
       }
+      console.log(dashboardData)
 
       // onOpen();
       var formData = new FormData()
