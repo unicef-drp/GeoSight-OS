@@ -11,24 +11,12 @@ license: This program is free software; you can redistribute it and/or modify it
 #context_id: 1234
 ---
 
-# Developer Reference Manual
-<!-- Replace all of the titles with relevant titles -->
-<!-- Should be mkdocs generated content -->
+# Python Reference Manual
+::: django_project.manage
+    handler: python
+    options:
+        docstring_style: sphinx
+        heading_level: 1
+        show_source: true
+        show_root_heading: false
 
-## Setting up the Development Environment
-
-## Coding Conventions
-
-## Contributor/Contribution Guidelines
-<!-- Actual Guidelines or link to Guidelines -->
-
-## Project SCRUM
-<!-- Info on how work gets organised -->
-
-## How to Test Local Instance
-
-### Adapting tests for later down pipeline
-
-## License
-
-[Project License]()<!-- Link to Project License in About -->

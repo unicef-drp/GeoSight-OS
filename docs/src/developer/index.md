@@ -16,4 +16,3 @@ license: This program is free software; you can redistribute it and/or modify it
 
 This is the homepage for all developer related documentation.
 
-![Screenshot](../img/screenshot.png)

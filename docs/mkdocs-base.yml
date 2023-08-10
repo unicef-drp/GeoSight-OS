@@ -35,7 +35,6 @@ markdown_extensions:
                   emoji_generator: !!python/name:materialx.emoji.to_svg
                   emoji_index: !!python/name:materialx.emoji.twemoji
 
-
 nav:
         - Home:
                 - index.md
@@ -45,6 +44,7 @@ nav:
                         - Commit Messages: about/documentation/commit-message-convention.md
                         - Pull Request Template: about/documentation/pull-request-template.md
                 - Code of Conduct: about/code-of-conduct.md
+                - Running Instances: about/running-instances.md
         - Users:
                 - Overview: 
                         - user/index.md
@@ -68,40 +68,28 @@ nav:
         - Developers:
                 - Overview:
                         - developer/index.md
-                        - Guide:
-                                - developer/guide/index.md
-                                - Project Prerequisites: developer/guide/project-prerequisites.md
-                                - IDE to Use: developer/guide/ide-to-use.md
-                                - Checking Out The Code: developer/guide/checking-out-the-code.md
-                                - Building/Compiling Code: developer/guide/building-compiling-code.md
-                                - Running Instances: developer/guide/running-instances.md
-                                - Setup:
-                                        - developer/guide/setup/index.md
-                                        - Installation:
-                                                - developer/guide/setup/installation/index.md
-                                                - Preparation: developer/guide/setup/installation/preparation.md
-                                                - Project setup: developer/guide/setup/installation/project-setup.md
-                                        - Development setup:
-                                                - developer/guide/setup/installation/development-setup/index.md
-                                                - Overview: developer/guide/setup/installation/development-setup/index.md
-                                                - Using pycharm: developer/guide/setup/installation/development-setup/pycharm.md
-                                        - Road Map: developer/guide/setup/roadmap.md
-                                        - Configuration:
-                                                - developer/guide/setup/configuration/index.md
-                                - Developer Workflows: developer/guide/developer-workflows.md
-                        - Architecture:
-                                - developer/architecture/index.md
-                        - Documentation:
-                                - developer/documentation/index.md
-                        - Manual:
-                                - developer/manual/index.md
-                                - License: about/license.md
                         - API:
                                 - developer/api/index.md
-                                - API Manual: developer/api/guide.md
-                                - API Settings: developer/api/api_settings.md
-                        - Design:
-                                - developer/design/index.md
+                                - Guide: developer/api/api-guide/index.md
+                                - Reference: developer/api/api-reference/index.md
+                        - Guide:
+                                - Overview: developer/guide/index.md
+                                - Architecture: developer/guide/architecture.md
+                                - Design: developer/guide/design.md
+                                - Project Prerequisites: developer/guide/project-prerequisites.md
+                                - Setting up your IDE: developer/guide/ide-setup.md
+                                - Checking Out The Code: developer/guide/checking-out-the-code.md
+                                - Configuration: developer/guide/configuration.md
+                                - Building/Compiling Code: developer/guide/building.md
+                                - Developer Workflows: developer/guide/developer-workflows.md
+                                - Road Map: developer/guide/roadmap.md
+
+
+                        - Documentation:
+                                - Writing documentation: developer/documentation/index.md
+                        - Manual:
+                                - developer/manual/index.md
+                        - License: about/license.md
         - DevOps:
                 - Overview:
                         - devops/index.md

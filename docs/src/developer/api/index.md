@@ -17,4 +17,4 @@ license: This program is free software; you can redistribute it and/or modify it
 ## Sections to the Guide
 
 1. [Swagger API Manual]() <!-- Link To Swagger API page -->
-2. [API Guide](./guide.md)
+2. [API Guide](./api-guide/index.md)
