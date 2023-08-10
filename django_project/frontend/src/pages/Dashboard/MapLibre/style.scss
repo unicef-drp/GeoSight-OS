@@ -309,7 +309,7 @@ $nav-disabled-color: '%23CCCCCC';
 
   .maplibregl-ctrl-icon {
     @include plus-icon($nav-enabled-color);
-    background-size: 22px !important;
+    background-size: 10px !important;
   }
 }
 
@@ -318,7 +318,7 @@ $nav-disabled-color: '%23CCCCCC';
 
   .maplibregl-ctrl-icon {
     @include minus-icon($nav-enabled-color);
-    background-size: 22px !important;
+    background-size: 10px !important;
   }
 }
 
@@ -374,8 +374,11 @@ $nav-disabled-color: '%23CCCCCC';
 .mapboxgl-ctrl-fullscreen {
   position: absolute;
   bottom: 0;
+  size: 28px !important;
 
-  //.maplibregl-ctrl-icon {
-  //  @include fullscreen-icon($nav-enabled-color);
-  //}
+
+  .maplibregl-ctrl-icon {
+    @include fullscreen-icon($nav-enabled-color);
+    background-size: 14px !important;
+  }
 }

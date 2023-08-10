@@ -46,11 +46,11 @@ export default function MiddlePanel(
         <div className='LeftSection'>
           <div className='ContentLine Inner'>
             <Basemaps/>
+            <div className='Disclaimer'>{preferences.disclaimer}</div>
           </div>
           <div className='ContentLine Inner'>
             <MapLegend/>
           </div>
-          <div className='Disclaimer'>{preferences.disclaimer}</div>
         </div>
         <div className='RightSection'>
         </div>

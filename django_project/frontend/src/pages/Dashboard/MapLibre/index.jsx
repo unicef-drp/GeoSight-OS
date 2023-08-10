@@ -47,9 +47,7 @@ import { Actions } from "../../../store/dashboard";
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 import './style.scss';
-import {LEFT, RIGHT} from "../../../components/ToggleButton";
 import ReferenceLayerSection from "../MiddlePanel/ReferenceLayer";
-import {TimeIcon} from "../../../components/Icons";
 
 const BASEMAP_ID = `basemap`
 
@@ -88,6 +86,13 @@ export default function MapLibre(
       });
       newMap.once("load", () => {
         setMap(newMap)
+        setTimeout(() =>
+            document.querySelector('.mapboxgl-ctrl-compass')
+            .addEventListener('click', () => {
+              newMap.easeTo({pitch: 0, bearing: 0})
+             }),
+             500,
+        )
       })
       newMap.addControl(new maplibregl.NavigationControl(), 'bottom-left');
       newMap.addControl(
@@ -108,7 +113,6 @@ export default function MapLibre(
           newMap.resize();
         }, 1);
       });
-
     }
   }, []);
 
@@ -233,6 +237,9 @@ export default function MapLibre(
               disabled={!map}
               active={is3dMode}
               onClick={() => {
+                if (is3dMode) {
+                  map.easeTo({ pitch: 0 })
+                }
                 dispatch(Actions.Map.change3DMode(!is3dMode))
               }}>
               { is3dMode ? <ThreeDimensionOnIcon/> : <ThreeDimensionOffIcon/> }

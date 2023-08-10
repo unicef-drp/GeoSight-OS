@@ -96,7 +96,18 @@
 
     .Disclaimer {
       margin-top: 0.5rem;
+      margin-left: 20px;
       font-size: 0.8rem;
+      box-shadow: 0px 0px 10px 0px #0000004D;
+      background-color: $white;
+      opacity: 0.94;
+      width: 637px;
+      font-family: $base-font-family;
+      font-size: 9px;
+      font-weight: $base-font-regular;
+      line-height: 14px;
+      letter-spacing: 0em;
+      text-align: center;
     }
 
     .ContentLine {
