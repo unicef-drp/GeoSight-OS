@@ -70,16 +70,20 @@ plugins:
   - mkdocstrings:
       handlers:
         python:
-          paths: [..]
+          paths: [../django_project]
           import:
             - https://docs.python.org/3/objects.inv
             - https://mkdocstrings.github.io/autorefs/objects.inv
           options:
             docstring_style: sphinx
+            heading_level: 1
+            show_source: true
+            show_root_heading: false
             separate_signature: true
             merge_init_into_class: true
             docstring_options:
               ignore_init_summary: true
+
   - redirects:
       redirect_maps:
         #see https://github.com/mkdocs/mkdocs-redirects/tree/master#using
@@ -97,6 +101,7 @@ plugins:
         - user/index.md
         - administrator/index.md
         - developer/index.md
+        - developer/manual/*.md
         - devops/index.md
       restart_increment_after:
         - second_section.md

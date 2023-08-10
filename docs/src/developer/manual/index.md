@@ -12,11 +12,7 @@ license: This program is free software; you can redistribute it and/or modify it
 ---
 
 # Python Reference Manual
-::: django_project.manage
-    handler: python
-    options:
-        docstring_style: sphinx
-        heading_level: 1
-        show_source: true
-        show_root_heading: false
-
+::: core.admin
+::: core.celery
+::: core.email
+::: core.exceptions
