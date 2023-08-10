@@ -111,5 +111,5 @@ plugins:
 # Note that although the above link implies you can use UUIDs, you have to use numeric IDS not UUIDS
 hooks:
   - ./uuid_redirects_hook.py
-  - ./python_manual_hoo.py
+  - ./python_manual_hook.py
 
