@@ -91,7 +91,7 @@ class GeorepoUrl:
             self.api_key_is_public = True
 
         self.headers = {
-            'Authorization': f'Bearer {self.georepo_api_key}'
+            'Authorization': f'Token {self.georepo_api_key}'
         }
         logger.debug(f'Georepo API Key : {self.georepo_api_key}')
 
