@@ -20,42 +20,10 @@ from geosight.data.models.indicator.indicator_value import (
     IndicatorValueWithGeo
 )
 from geosight.georepo.models import (
-    ReferenceLayer, ReferenceLayerIndicator,
+    ReferenceLayerIndicator,
     ReferenceLayerView
 )
-from geosight.georepo.request import GeorepoRequest
 from geosight.georepo.tasks import fetch_reference_codes
-
-
-@admin.action(description='Pull latest reference layer.')
-def fetch_new(modeladmin, request, queryset):
-    """Fetch new reference layer."""
-    georepo_request = GeorepoRequest()
-    reference_layers = georepo_request.get_reference_layer_list()
-    ReferenceLayer.objects.update(in_georepo=False)
-    for reference_layer in reference_layers:
-        identifier = reference_layer['uuid']
-        name = reference_layer['name']
-        ref, created = ReferenceLayer.objects.get_or_create(
-            identifier=identifier
-        )
-        ref.name = name
-        ref.in_georepo = True
-        ref.save()
-
-
-class ReferenceLayerAdmin(admin.ModelAdmin):
-    """Reference layer admin."""
-
-    list_display = ['identifier', 'name', 'in_georepo']
-    ordering = ['name']
-    actions = [fetch_new]
-
-    def in_georepo(self, obj: ReferenceLayer):
-        """Is reference layer in georepo."""
-        if obj.in_georepo:
-            return '✓'
-        return '✕'
 
 
 @admin.action(description='Update meta')
@@ -94,6 +62,5 @@ class ReferenceLayerViewAdmin(admin.ModelAdmin):
         ).count()
 
 
-admin.site.register(ReferenceLayer, ReferenceLayerAdmin)
 admin.site.register(ReferenceLayerIndicator, admin.ModelAdmin)
 admin.site.register(ReferenceLayerView, ReferenceLayerViewAdmin)
