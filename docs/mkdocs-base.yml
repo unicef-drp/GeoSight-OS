@@ -81,8 +81,8 @@ nav:
                                 - Workflows: developer/guide/developer-workflows.md
                                 - Road Map: developer/guide/roadmap.md
                                 # Pages to render but exclude from Nav
-                                - "": about/documentation/commit-message-convention.md
-                                - "": about/documentation/pull-request-template.md 
+                                - "": developer/guide/templates/commit-message-convention.md
+                                - "": developer/guide/templates/pull-request-template.md 
                         - Documentation: developer/documentation/index.md
                         - Manual:
                                 - developer/manual/index.md

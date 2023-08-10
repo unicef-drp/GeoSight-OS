@@ -32,9 +32,9 @@ license: This program is free software; you can redistribute it and/or modify it
 
 ### Committing To Project
 
-Follow our [commit message conventions](../../about/documentation/commit-message-convention.md).
+Follow our [commit message conventions](./templates/commit-message-convention.md).
 
 ### Pull Request Template
 
 If it has related issues, add links to the issues(like `#123`) in the description.
-Fill in the [Pull Request Template](../../about/documentation/pull-request-template.md) by check your case.
+Fill in the [Pull Request Template](./templates/pull-request-template.md) by check your case.
