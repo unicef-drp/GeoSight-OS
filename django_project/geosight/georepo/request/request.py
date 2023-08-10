@@ -22,7 +22,6 @@ import requests
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import MultipleObjectsReturned
-from django.urls import reverse
 
 from core.models.preferences import SitePreferences
 from geosight.georepo.request.data import GeorepoEntity
