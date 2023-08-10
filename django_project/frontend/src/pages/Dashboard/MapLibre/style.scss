@@ -41,18 +41,12 @@
     }
   }
 
-
-  .maplibregl-ctrl-top-left {
-    background-color: #eee;
-    padding-left: 175px !important;
+  .Toolbar {
+    border-bottom: 1px solid $border-gray;
+    z-index: 1002;
   }
 
   .Toolbar {
-    border-bottom: 1px solid $border-gray;
-  }
-
-  .Toolbar,
-  .maplibregl-ctrl-top-left {
     background-color: $white !important;
     display: flex;
     height: 49px;
@@ -62,6 +56,62 @@
     top: 0;
     transition: left 0.3s;
     width: 100vw;
+
+    .EmbedControl {
+      margin-right: 10px;
+      svg {
+        width: 40px !important;
+        margin-top: 5px;
+      }
+    }
+
+    .ProjectOverview-Icon {
+      top: 20%;
+      position: fixed;
+      border: 1px solid $tab-inactive-color !important;
+      width: 40px !important;
+      height: 40px !important;
+      margin-left: 5px;
+      background-color: $white !important;
+
+      svg {
+        margin-top: 20%;
+      }
+    }
+
+    .TiltControl {
+      top: 40%;
+      position: fixed;
+      border: 1px solid $tab-inactive-color !important;
+      width: 40px !important;
+      height: 40px !important;
+      margin-left: 5px;
+      background-color: $white !important;
+
+      svg {
+        margin-top: 20%;
+      }
+    }
+
+    .Toolbar-Left,
+    .Toolbar-Middle,
+    .Toolbar-Right {
+      display: flex;
+    }
+
+    .Toolbar-Left {
+      width: 15%;
+    }
+
+    .Toolbar-Middle {
+      position: fixed;
+      left: 34%;
+    }
+
+    .Toolbar-Right {
+      position: fixed;
+      right: 6%;
+    }
 
     button {
       background-color: unset;
@@ -94,14 +144,6 @@
       }
     }
 
-
-    .Active {
-      a, span {
-        background-color: $primary-color !important;
-        color: white !important;
-      }
-    }
-
     &.Disabled {
       a, span {
         color: $disabled-color !important;
@@ -114,9 +156,7 @@
       }
     }
 
-    .ToolbarControl,
-    .maplibregl-ctrl,
-    .mapboxgl-ctrl {
+    .ToolbarControl {
       border: none;
       display: flex;
       margin-left: 0;
@@ -126,6 +166,19 @@
       float: unset;
       background: none;
       border-radius: 0;
+      height: 28px;
+
+      .Active {
+        a, span {
+          color: $primary-color !important;
+          background-color: rgba(0, 0, 0, 0) !important;
+        }
+      }
+
+      a, span {
+        color: $tab-inactive-color !important;
+        background-color: rgba(0, 0, 0, 0) !important;
+      }
 
       a {
         margin: 0 5px;
@@ -133,6 +186,7 @@
         line-height: 30px;
         width: 30px;
         height: 30px;
+
 
         &:hover, {
           background-color: #ddd;
@@ -171,19 +225,8 @@
 
 .LeftExpanded {
   .Toolbar,
-  .maplibregl-ctrl-top-left {
+  .maplibregl-ctrl-bottom-left {
     left: 20%;
-  }
-}
-
-
-// NAVBAR
-.maplibregl-ctrl-group,
-.mapboxgl-ctrl-group {
-  span {
-    background-size: 24px !important;
-    background-repeat: no-repeat;
-    background-position: 50% 50%;
   }
 }
 
@@ -191,38 +234,6 @@
 //  We need to fix the color using variable
 $nav-enabled-color: '%231CABE2';
 $nav-disabled-color: '%23CCCCCC';
-
-
-.mapbox-gl-draw_polygon {
-  @include measurement-icon($nav-enabled-color);
-  background-size: 24px !important;
-}
-
-.mapbox-gl-draw_trash {
-  display: none !important;
-}
-
-.maplibregl-ctrl-zoom-in {
-  .maplibregl-ctrl-icon {
-    @include plus-icon($nav-enabled-color);
-    background-size: 22px !important;
-  }
-}
-
-.maplibregl-ctrl-zoom-out {
-  .maplibregl-ctrl-icon {
-    @include minus-icon($nav-enabled-color);
-    background-size: 22px !important;
-  }
-}
-
-
-.maplibregl-ctrl-compass {
-  .maplibregl-ctrl-icon {
-    @include compass-icon($nav-enabled-color);
-    background-size: 30px !important;
-  }
-}
 
 .IconMarker {
   background-size: contain;
@@ -241,11 +252,78 @@ $nav-disabled-color: '%23CCCCCC';
   }
 }
 
+.mapboxgl-ctrl-group:not(:empty),
+.maplibregl-ctrl-group:not(:empty) {
+  box-shadow: none;
+}
+
+// NAVBAR
+.maplibregl-ctrl-group,
+.mapboxgl-ctrl-group {
+  border: none !important;
+  box-shadow: none;
+  position: fixed;
+  bottom: 15%;
+  background-color: rgba(0, 0, 0, 0);
+
+  span {
+    background-size: 24px !important;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+  }
+
+  button {
+      background-color: $white;
+  }
+}
+
+
+.mapbox-gl-draw_polygon {
+  @include measurement-icon($nav-enabled-color);
+  background-size: 24px !important;
+}
+
+.mapbox-gl-draw_trash {
+  display: none !important;
+}
+
+.maplibregl-ctrl-zoom-in {
+  border: 1px solid $tab-inactive-color !important;
+
+  .maplibregl-ctrl-icon {
+    @include plus-icon($nav-enabled-color);
+    background-size: 22px !important;
+  }
+}
+
+.maplibregl-ctrl-zoom-out {
+  border: 1px solid $tab-inactive-color !important;
+
+  .maplibregl-ctrl-icon {
+    @include minus-icon($nav-enabled-color);
+    background-size: 22px !important;
+  }
+}
+
+
+.maplibregl-ctrl-compass {
+  border: 1px solid $tab-inactive-color !important;
+  position: relative;
+  bottom: 120px;
+
+  .maplibregl-ctrl-icon {
+    @include compass-icon($nav-enabled-color);
+    background-size: 22px !important;
+    transform: rotate(-45deg);
+  }
+}
+
+
 .maplibregl-ctrl {
   &.maplibregl-ctrl-group {
     &.mapboxgl-ctrl {
       &.mapboxgl-ctrl-group {
-        margin-left: 40px;
+        margin-left: 15px;
       }
     }
   }

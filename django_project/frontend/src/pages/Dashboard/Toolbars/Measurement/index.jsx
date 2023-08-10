@@ -19,7 +19,6 @@
 
 import React, { useEffect, useState } from 'react';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import SquareFootIcon from '@mui/icons-material/SquareFoot';
 import CancelIcon from '@mui/icons-material/Cancel';
 import AddLocationIcon from '@mui/icons-material/AddLocation';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
@@ -35,6 +34,7 @@ import { ThemeButton } from "../../../../components/Elements/Button";
 import { numberWithCommas } from "../../../../utils/main";
 import { SelectWithList } from "../../../../components/Input/SelectWithList";
 import { DeleteIcon } from "../../../../components/Icons";
+import { MeasurementOffIcon, MeasurementOnIcon } from "../../../../components/Icons"
 
 import './style.scss';
 
@@ -216,17 +216,19 @@ export default function Measurement({ map }) {
   }
 
   return <Plugin className={'MeasurementComponent'}>
-    <PluginChild
-      title={'Start Measurement'}
-      disabled={!map || !draw}
-      active={start}
-      onClick={() => {
-        if (map && draw) {
-          setStart(!start)
-        }
-      }}>
-      <SquareFootIcon/>
-    </PluginChild>
+    <div className='Active'>
+      <PluginChild
+        title={'Start Measurement'}
+        disabled={!map || !draw}
+        active={start}
+        onClick={() => {
+          if (map && draw) {
+            setStart(!start)
+          }
+        }}>
+        {start ? <MeasurementOnIcon/> : <MeasurementOffIcon/>}
+      </PluginChild>
+    </div>
     {
       start ?
         <div className={'MeasurementComponentPopup'}>

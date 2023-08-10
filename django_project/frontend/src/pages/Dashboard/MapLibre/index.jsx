@@ -21,12 +21,12 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import maplibregl from 'maplibre-gl';
 import { MapboxOverlay } from '@deck.gl/mapbox/typed';
-import ViewInArIcon from '@mui/icons-material/ViewInAr';
 import ReferenceLayerCentroid from './ReferenceLayerCentroid'
 import ReferenceLayer from "./Layers/ReferenceLayer";
 import ContextLayers from "./Layers/ContextLayers";
 import { Plugin, PluginChild } from "./Plugin";
 import { removeLayer, removeSource } from "./utils"
+import { ThreeDimensionOnIcon, ThreeDimensionOffIcon } from '../../../components/Icons'
 
 // Toolbars
 import {
@@ -48,6 +48,8 @@ import { Actions } from "../../../store/dashboard";
 import 'maplibre-gl/dist/maplibre-gl.css';
 import './style.scss';
 import {LEFT, RIGHT} from "../../../components/ToggleButton";
+import ReferenceLayerSection from "../MiddlePanel/ReferenceLayer";
+import {TimeIcon} from "../../../components/Icons";
 
 const BASEMAP_ID = `basemap`
 
@@ -87,7 +89,7 @@ export default function MapLibre(
       newMap.once("load", () => {
         setMap(newMap)
       })
-      newMap.addControl(new maplibregl.NavigationControl(), 'top-left');
+      newMap.addControl(new maplibregl.NavigationControl(), 'bottom-left');
 
       const deckgl = new MapboxOverlay({
         interleaved: true,
@@ -186,52 +188,69 @@ export default function MapLibre(
     <div id="map"></div>
     {/* TOOLBARS */}
     <div className='Toolbar'>
-      {
-        leftPanelProps ?
-          <
-            ToggleLeftPanel
-            className={leftPanelProps.className}
-            initState={leftPanelProps.leftExpanded}
-            active={leftPanelProps.active}
-            onLeft={() => {
-              leftPanelProps.onLeft()
-            }}
-            onRight={() => {
-              leftPanelProps.onRight()
-            }}
-          /> : null
-      }
       <ProjectOverview/>
-      <MovementHistories map={map}/>
       <TiltControl map={map} is3DView={is3dMode} force={force}/>
-      <Measurement map={map}/>
-      <LabelToggler/>
-      <Plugin className='BookmarkControl'>
-        <Bookmark map={map}/>
-      </Plugin>
-      <DownloaderData/>
-      <CompareLayer disabled={is3dMode}/>
+      <div className='Toolbar-Left'>
+          {
+          leftPanelProps ?
+            <
+              ToggleLeftPanel
+              className={leftPanelProps.className}
+              initState={leftPanelProps.leftExpanded}
+              active={leftPanelProps.active}
+              onLeft={() => {
+                leftPanelProps.onLeft()
+              }}
+              onRight={() => {
+                leftPanelProps.onRight()
+              }}
+            /> : null
+        }
+        <GlobalDateSelector/>
+        <Plugin className={'ReferenceLayerToolbar'}>
+          <div>
+            <PluginChild title={'Reference Layer selection'}>
+              <ReferenceLayerSection/>
+            </PluginChild>
+          </div>
+        </Plugin>
+      </div>
 
-      {/* 3D View */}
-      <Plugin>
-        <PluginChild
-          title={'3D layer'}
-          disabled={!map}
-          active={is3dMode}
-          onClick={() => {
-            dispatch(Actions.Map.change3DMode(!is3dMode))
-          }}>
-          <ViewInArIcon/>
-        </PluginChild>
-      </Plugin>
+      <div className='Toolbar-Middle'>
+        <MovementHistories map={map} showHome={true}/>
+        <Measurement map={map}/>
+        <LabelToggler/>
+        <CompareLayer disabled={is3dMode}/>
+        {/* 3D View */}
+        <Plugin>
+          <div className='Active'>
+            <PluginChild
+              title={'3D layer'}
+              disabled={!map}
+              active={is3dMode}
+              onClick={() => {
+                dispatch(Actions.Map.change3DMode(!is3dMode))
+              }}>
+              { is3dMode ? <ThreeDimensionOnIcon/> : <ThreeDimensionOffIcon/> }
+            </PluginChild>
+          </div>
+        </Plugin>
+      </div>
 
       {/* Embed */}
-      <Plugin className='EmbedControl'>
-        <PluginChild title={'Get embed code'}>
-          <EmbedControl map={map}/>
-        </PluginChild>
-      </Plugin>
-      <GlobalDateSelector/>
+      <div className='Toolbar-Right'>
+        <Plugin className='EmbedControl'>
+          <div className='Active'>
+            <PluginChild title={'Get embed code'}>
+              <EmbedControl map={map}/>
+            </PluginChild>
+          </div>
+        </Plugin>
+        <DownloaderData/>
+        <Plugin className='BookmarkControl'>
+          <Bookmark map={map}/>
+        </Plugin>
+      </div>
     </div>
 
     <ReferenceLayer map={map} deckgl={deckgl} is3DView={is3dMode}/>

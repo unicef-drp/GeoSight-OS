@@ -19,10 +19,9 @@
 
 import React from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import FontDownloadIcon from '@mui/icons-material/FontDownload';
-import FontDownloadOffIcon from '@mui/icons-material/FontDownloadOff';
 import { Plugin, PluginChild } from "../../MapLibre/Plugin";
 import { Actions } from '../../../../store/dashboard'
+import { LabelOffIcon, LabelOnIcon } from '../../../../components/Icons'
 
 import './style.scss';
 
@@ -35,19 +34,21 @@ export default function LabelToggler() {
 
   return (
     <Plugin>
-      <PluginChild
+      <div className='Active'>
+        <PluginChild
         title={(showIndicatorMapLabel ? 'Hide' : 'Show') + ' map labels'}
-      >
-        {
-          showIndicatorMapLabel ?
-            <FontDownloadIcon onClick={() => {
-              dispatch(Actions.GlobalState.update({ showIndicatorMapLabel: false }))
-            }}/> :
-            <FontDownloadOffIcon onClick={() => {
-              dispatch(Actions.GlobalState.update({ showIndicatorMapLabel: true }))
-            }}/>
-        }
-      </PluginChild>
+        >
+          {
+            showIndicatorMapLabel ?
+              <LabelOnIcon onClick={() => {
+                dispatch(Actions.GlobalState.update({ showIndicatorMapLabel: false }))
+              }}/> :
+              <LabelOffIcon onClick={() => {
+                dispatch(Actions.GlobalState.update({ showIndicatorMapLabel: true }))
+              }}/>
+          }
+        </PluginChild>
+      </div>
     </Plugin>
   )
 }

@@ -38,9 +38,9 @@ export default function MiddlePanel(
     <div className='TopContent'>
       <div className='MapNavbar'>
         <div className='LeftMapNavbar'></div>
-        <div className='RightMapNavbar'>
-          <ReferenceLayerSection/>
-        </div>
+        {/*<div className='RightMapNavbar'>*/}
+        {/*  <ReferenceLayerSection/>*/}
+        {/*</div>*/}
       </div>
       {children}
       <LayerConfig/>
