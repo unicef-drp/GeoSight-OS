@@ -103,9 +103,15 @@ When you have completed making additions to (or editing) the documentation, (1) 
 ![Web Editor 6](img/dev-docs-web-editor-6.png)
 
 Once you have committed your changes, (1) Click on the burger menu and then (2) click on `Go To Repository`
-![Web Editor 6](img/dev-docs-web-editor-7.png)
+![Web Editor 7](img/dev-docs-web-editor-7.png)
 
 Your fork of the repository will be opened in a new tab within your browser, navigate to that tab. Once there (1) switch to the docs branch, you should see how many commits ahead of the upstream branch you are, then (2) click on `Contribute`-> `Open pull request`.
+![Pull Request 1](img/dev-docs-pull-request-1.png)
+
+On the next screen, (1) give your pull request a meaningful title, (2) give additional details regarding changes made in the larger text box, then (3) click on `Create pull request`. Also ensure you are creating a pull request to the upstream `docs` branch from your `docs` branch.
+![Pull Request 2](img/dev-docs-pull-request-2.png)
+
+Once your pull request is opened you need to wait for it to be merged before you can open a new one.
 
 ### Generating PDFS
 <!-- To Be Populated -->
