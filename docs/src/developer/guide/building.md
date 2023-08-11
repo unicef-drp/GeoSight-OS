@@ -11,11 +11,4 @@ license: This program is free software; you can redistribute it and/or modify it
 #context_id: 1234
 ---
 
-# User Manual
-
-This section of the documentation describes every page in the application and
-what the various components of that page do. The manual is intended to function
-as a reference for the application. For narrative / workflow based tutorials,
-you may prefer to work through our [user guide](../guide/index.md).
-
-1. [Home Page](home.md): This is the 'landing page' that you arrive on when you open the site.
+# Building/Compiling the Code

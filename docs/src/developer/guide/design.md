@@ -11,11 +11,10 @@ license: This program is free software; you can redistribute it and/or modify it
 #context_id: 1234
 ---
 
-# User Manual
+# Design
+<!-- Replace all of the titles with relevant titles -->
 
-This section of the documentation describes every page in the application and
-what the various components of that page do. The manual is intended to function
-as a reference for the application. For narrative / workflow based tutorials,
-you may prefer to work through our [user guide](../guide/index.md).
+## Design Sheet
 
-1. [Home Page](home.md): This is the 'landing page' that you arrive on when you open the site.
+## Wire-frame Model
+<!-- Link to wire-frame or screenshots of wire-frame -->

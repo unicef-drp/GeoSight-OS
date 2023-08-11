@@ -11,11 +11,22 @@ license: This program is free software; you can redistribute it and/or modify it
 #context_id: 1234
 ---
 
-# User Manual
+# Roadmap
 
-This section of the documentation describes every page in the application and
-what the various components of that page do. The manual is intended to function
-as a reference for the application. For narrative / workflow based tutorials,
-you may prefer to work through our [user guide](../guide/index.md).
+Like most Open Source Software, this project is an ongoing work in progress.
 
-1. [Home Page](home.md): This is the 'landing page' that you arrive on when you open the site.
+This document outlines the various ongoing activities and critical changes 
+expected to be introduced.
+
+## Future plans
+
+- A data model for scenarios instead of pulling in google sheets or similar
+- More ingestors for risk data
+- Hazard data support with auto aggregation of risk factors such as population
+  counts etc.
+- Single sign on support
+
+## Considerations
+
+The current **main** branch is under heavy development and should be considered
+unstable.
