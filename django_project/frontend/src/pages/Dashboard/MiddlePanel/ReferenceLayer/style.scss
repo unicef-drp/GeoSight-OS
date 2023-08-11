@@ -22,31 +22,24 @@
 .ReferenceLayerLevelSelector {
   margin-right: 1rem;
   box-sizing: border-box;
-  opacity: 0.8;
   text-align: center;
   cursor: pointer;
-  height: 26px;
+  height: 28px;
   z-index: 999;
   border: 1px solid $primary-color;
   width: 107px;
-
-  &:hover {
-    opacity: 1;
-  }
 
   .ReferenceLayerLevelOption {
     cursor: pointer;
     background-color: $white;
 
     &:hover {
-      opacity: 0.8;
       background-color: #eee !important;
     }
   }
 
   .ReferenceLayerLevelOptions {
     height: 0;
-    opacity: 0;
     overflow: hidden;
     background-color: rgb(255, 255, 255);
     border-radius: $border-radius;
@@ -58,7 +51,6 @@
   &:hover {
     .ReferenceLayerLevelOptions {
       height: fit-content;
-      opacity: 1;
     }
   }
 

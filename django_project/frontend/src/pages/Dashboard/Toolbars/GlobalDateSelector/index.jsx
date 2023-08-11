@@ -34,7 +34,7 @@ export default function GlobalDateSelector() {
   const { globalDateSelectorOpened } = useSelector(state => state.globalState)
 
   return (
-    <Plugin>
+    <Plugin className='GlobalDateSelector'>
       <div className={(globalDateSelectorOpened ? "Active" : "Inactive")}>
         <PluginChild title={'Show global time configuration'}>
           <TimeIcon

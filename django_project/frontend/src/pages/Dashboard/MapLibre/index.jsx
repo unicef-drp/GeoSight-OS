@@ -35,12 +35,13 @@ import {
   DownloaderData,
   EmbedControl,
   GlobalDateSelector,
+  FullScreen,
   Measurement,
   MovementHistories,
   TiltControl,
   LabelToggler,
   ProjectOverview,
-  ToggleLeftPanel
+  ToggleSidePanel,
 } from '../Toolbars'
 import { EmbedConfig } from "../../../utils/embed";
 import { Actions } from "../../../store/dashboard";
@@ -95,10 +96,6 @@ export default function MapLibre(
         )
       })
       newMap.addControl(new maplibregl.NavigationControl(), 'bottom-left');
-      newMap.addControl(
-        new maplibregl.FullscreenControl({container: document.querySelector('body')}),
-        'bottom-right'
-      );
 
       const deckgl = new MapboxOverlay({
         interleaved: true,
@@ -202,7 +199,7 @@ export default function MapLibre(
           {
           leftPanelProps ?
             <
-              ToggleLeftPanel
+              ToggleSidePanel
               className={leftPanelProps.className}
               initState={leftPanelProps.leftExpanded}
               active={leftPanelProps.active}
@@ -265,7 +262,7 @@ export default function MapLibre(
       {
         rightPanelProps ?
           <
-            ToggleLeftPanel
+            ToggleSidePanel
             className={rightPanelProps.className}
             initState={rightPanelProps.leftExpanded}
             active={rightPanelProps.active}
@@ -277,6 +274,7 @@ export default function MapLibre(
             }}
           /> : null
       }
+      <FullScreen/>
     </div>
 
     <ReferenceLayer map={map} deckgl={deckgl} is3DView={is3dMode}/>

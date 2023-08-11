@@ -138,7 +138,7 @@
       margin: 0 5px;
       padding: 3px;
 
-      &:hover, {
+      &:hover {
         background-color: #ddd;
       }
 
@@ -205,13 +205,13 @@
         height: 30px;
 
 
-        &:hover, {
+        &:hover {
           background-color: #ddd;
         }
 
         svg {
-          height: 100%;
-          width: 100%;
+          width: 28px;
+          height: 28px;
         }
       }
 
@@ -224,7 +224,13 @@
         display: block;
       }
 
-      &.LeftButton {
+      &.FullScreen {
+        position: fixed;
+        bottom: 15px;
+        right: 10px;
+      }
+
+      &.LeftButton, &.GlobalDateSelector {
         .Active {
           a, span {
             color: $primary-color !important;
@@ -234,6 +240,12 @@
 
         a, span {
           color: $tab-inactive-color !important;
+        }
+      }
+
+      &.ReferenceLayerToolbar {
+        a {
+          opacity: 1;
         }
       }
     }
@@ -358,27 +370,27 @@ $nav-disabled-color: '%23CCCCCC';
   }
 }
 
-.maplibregl-ctrl-bottom-right,
-.mapboxgl-ctrl-bottom-right {
-  right: 55px;
-  height: 100% !important;
-
-  .maplibregl-ctrl-group {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-  }
-}
-
-.maplibregl-ctrl-fullscreen,
-.mapboxgl-ctrl-fullscreen {
-  position: absolute;
-  bottom: 0;
-  size: 28px !important;
-
-
-  .maplibregl-ctrl-icon {
-    @include fullscreen-icon($nav-enabled-color);
-    background-size: 14px !important;
-  }
-}
+//.maplibregl-ctrl-bottom-right,
+//.mapboxgl-ctrl-bottom-right {
+//  right: 55px;
+//  height: 100% !important;
+//
+//  .maplibregl-ctrl-group {
+//    position: absolute;
+//    top: 0;
+//    bottom: 0;
+//  }
+//}
+//
+//.maplibregl-ctrl-fullscreen,
+//.mapboxgl-ctrl-fullscreen {
+//  position: absolute;
+//  bottom: 0;
+//  size: 28px !important;
+//
+//
+//  .maplibregl-ctrl-icon {
+//    @include expand-icon($nav-enabled-color);
+//    background-size: 14px !important;
+//  }
+//}
