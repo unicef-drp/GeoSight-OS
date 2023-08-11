@@ -72,12 +72,12 @@ nav:
                                 - Overview: developer/guide/index.md
                                 - Architecture: developer/guide/architecture.md
                                 - Design: developer/guide/design.md
-                                - Prerequisites: developer/guide/project-prerequisites.md
+                                - Prerequisites: developer/guide/prerequisites.md
                                 - IDE Setup: developer/guide/ide-setup.md
-                                - Cloning: developer/guide/checking-out-the-code.md
+                                - Cloning: developer/guide/cloning.md
                                 - Configuration: developer/guide/configuration.md
                                 - Building: developer/guide/building.md
-                                - Workflows: developer/guide/developer-workflows.md
+                                - Workflows: developer/guide/workflows.md
                                 - Road Map: developer/guide/roadmap.md
                                 # Pages to render but exclude from Nav
                                 - "": developer/guide/templates/commit-message-convention.md

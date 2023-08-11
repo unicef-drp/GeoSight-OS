@@ -19,48 +19,85 @@ The documentation is organised in the following structure:
 
 ```
 src
-├── index.md
 ├── about
-│   ├── index.md
-│   ├── code-of-conduct.md
-│   ├── contributing.md
-│   ├── credits.md
-│   ├── disclaimer.md
-│   └── license.md
+│   ├── code-of-conduct.md
+│   ├── contributing.md
+│   ├── disclaimer.md
+│   ├── img
+│   │   └── naming-convention.README
+│   ├── index.md
+│   ├── license.md
+│   └── running-instances.md
 ├── administrator
-│   ├── index.md
-│   ├── guide
-│   └── manual
-│       ├── data
-│       └── index.md
+│   ├── guide
+│   │   └── index.md
+│   ├── index.md
+│   └── manual
+│       ├── img
+│       │   └── naming-convention.README
+│       └── index.md
 ├── developer
-│   ├── index.md
-│   ├── guide
-│   │   ├── api-guide
-│   │   └── api-reference
-│   ├── documentation
-│   ├── guide
-│   │   ├── project-prerequisites.md
-│   │   ├── building-compiling-code.md
-│   │   ├── checking-out-the-code.md
-│   │   ├── vscode.md
-│   │   ├── pycharm.md
-│   │   ├── developer-workflows.md
-│   │   ├── running-instances.md
-│   │   └── roadmap.md
-│   ├── manual
-│   │   ├── index.md
-│   │   ├── architecture
-│   │   └── design
+│   ├── api
+│   │   ├── guide
+│   │   │   └── index.md
+│   │   ├── index.md
+│   │   └── manual
+│   │       └── index.md
+│   ├── documentation
+│   │   ├── img
+│   │   │   └── naming-convention.README
+│   │   └── index.md
+│   ├── guide
+│   │   ├── architecture.md
+│   │   ├── building.md
+│   │   ├── cloning.md
+│   │   ├── configuration.md
+│   │   ├── design.md
+│   │   ├── ide-setup.md
+│   │   ├── img
+│   │   │   └── naming-convention.README
+│   │   ├── index.md
+│   │   ├── prerequisites.md
+│   │   ├── roadmap.md
+│   │   ├── templates
+│   │   │   ├── commit-message-convention.md
+│   │   │   └── pull-request-template.md
+│   │   └── workflows.md
+│   ├── img
+│   │   └── naming-convention.README
+│   ├── index.md
+│   └── manual
+│       ├── index.md
+│       └── README.txt
 ├── devops
-│   ├── index.md
-│   ├── guide
-│   └── manual
+│   ├── guide
+│   │   └── index.md
+│   ├── img
+│   │   └── naming-convention.README
+│   ├── index.md
+│   └── manual
+│       └── index.md
+├── img
+│   ├── favicon.ico
+│   ├── KartozaBackgroundBorder.png
+│   ├── logo.png
+│   ├── logo.svg
+│   ├── naming-convention.README
+│   └── screenshot.png
+├── index.md
 └── user
-    ├── index.md
     ├── guide
+    │   └── index.md
+    ├── img
+    │   └── naming-convention.README
+    ├── index.md
     ├── manual
+    │   ├── home.md
+    │   ├── img
+    │   │   └── naming-convention.README
+    │   └── index.md
     └── quickstart
+        └── index.md
 ```
 
 ## Code Auto Documentation
