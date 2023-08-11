@@ -122,4 +122,4 @@ To generate PDFS, `cd` into `GEOSIGHT-OS/docs` and then run the `build-docs-pdf`
 <!-- To Be Populated -->
 
 To generate PDFS, `cd` into `GEOSIGHT-OS/docs` and then run the `build-docs-html` in a local terminal.
-You can then run `mkdocs serve` to generate the static site on your local host, 
+You can then run `mkdocs serve` to generate the static site on your local host, if there is a port conflict you can specify the port using the `-a` flag e.g `mkdocs serve -a 127.0.0.1:8001`.
