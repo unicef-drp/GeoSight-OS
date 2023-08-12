@@ -18,7 +18,7 @@ GeoSight is a UNICEF’s open-source geospatial web-based data visualization/ana
 ![Screenshot](img/screenshot.png)
 
 
-## 123
+## Overview
 
 The GeoSight platform was developed to help organisations with operational planning. It 
 harvests and aggregates data linked to management areas (e.g. national and subnational boundaries).
