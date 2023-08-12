@@ -130,6 +130,9 @@ Please follow these conventions when writing your documentation:
 2. Place the image files in the img folder adjacent to your content.
 3. Do not abbreviate any words in file names - but try to use terse, descriptive names.
 4. Place your content into the appropriate place as outline in the structure above.
+5. Each file should only one level one heading e.g. ``# Page title``
+6. Headings and subheadings should be written as a terse phrase starting with a capital letter and subsequent words in lower case unless they are proper nouns. Do not place a colon after the heading.
+
 
 ## Contributing to the documentation
 
@@ -172,6 +175,28 @@ On the next screen, (1) give your pull request a meaningful title, (2) give addi
 ![Pull Request 2](img/dev-docs-pull-request-2.png)
 
 Once your pull request is opened you need to wait for it to be merged before you can open a new one.
+
+## Creating new files
+
+Whenever you create a new file, you should add the standard header to the top of the file:
+
+```
+---
+title: GeoSight-OS Documentation 
+summary: GeoSight is UNICEF's geospatial web-based business intelligence platform.
+    - Tim Sutton
+    - Irwan Fathurrahman
+date: 2023-08-03
+copyright: Copyright 2023, Unicef
+contact: geosight-no-reply@unicef.org
+license: This program is free software; you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
+#context_id: 1234
+---
+```
+
+The summary can be updated to include your name for documents you contribute to.
+
+The context_id is used to create a unique permalink to this document, and is optional. See further down in this document for more details.
 
 ## Technical notes
 
