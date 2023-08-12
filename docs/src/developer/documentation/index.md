@@ -13,7 +13,29 @@ license: This program is free software; you can redistribute it and/or modify it
 
 # Documentation
 
-## Organisation
+## Overview 
+
+Welcome to the instructions for those wishing to contribute to our documentation!
+
+Our documentation system is based on the popular [mkdocs](https://www.mkdocs.org/) system. We encourage you to read the upstream documentation from mkdocs for the finer details of how mkdocs. In particular, read [this page](https://www.mkdocs.org/user-guide/writing-your-docs/) before you get to work. Mkdocs is not hard, but it may feel initially a little different if you are used to creating your documentation in word.
+
+We use mkdocs because it has some great and useful features. Most especially:
+
+* The code and the documentation are versioned together. This means that for whatever version of the code we have in our production release, we can be sure the documentation matches that release. We can also look back at changes over time through the version history when needed.
+* It can render beautiful static (not needing a backend server) web sites with great features like search, styling, intuitive navigation etc.
+* It can optionally render PDF documents from the same source markdown.
+* An ecosystem of plugins and themes makes mkdocs really flexible and extensible.
+
+### Some terminology
+
+In our documentation, we have organised the information using a specific nomenclature:
+
+* **guide**: A guide is a multi-step workflow / tutorial that leads your through common activities.
+* **manual**: A collection of documents that describe each part of the project in a matter of fact way without presupposing any specific workflow is being undertaken.
+
+For each of the main topic areas (user, admin, developer, devops, api user) we provide guides and manuals as is appropriate.
+
+### Organisation
 
 The documentation is organised in the following structure:
 
@@ -100,15 +122,16 @@ src
         └── index.md
 ```
 
-## Code Auto Documentation
-<!-- mkdocstrings related -->
+## File naming conventions
 
-This process is now automated when `build-docs-html` is run in a local terminal.
+Please follow these conventions when writing your documentation:
 
-## How to Make Documentation
-<!-- To Be Populated -->
+1. Write file names in all lower case, with hyphens separating words (no spaces). e.g. ``important-file.md`` not ``Important File.md`` or other deviations.
+2. Place the image files in the img folder adjacent to your content.
+3. Do not abbreviate any words in file names - but try to use terse, descriptive names.
+4. Place your content into the appropriate place as outline in the structure above.
 
-### Adding to Documentation
+## Contributing to the documentation
 
 To start adding to the documentation navigate to the [home page](https://github.com/unicef-drp/GeoSight-OS) of the repository.
 
@@ -150,13 +173,49 @@ On the next screen, (1) give your pull request a meaningful title, (2) give addi
 
 Once your pull request is opened you need to wait for it to be merged before you can open a new one.
 
+## Technical notes
+
+### Working locally
+
+If you want to work with the documentation locally (i.e. directly on your PC), you need to follow this general process:
+
+1. Install python
+2. Install pip
+3. Install the python modules listed in docs/requirements.txt
+4. If you are on Linux or macOS, open the docs directory in a shell and run ``build-docs-html.sh``
+5. In the docs directory, run ``mkdocs serve``
+6. Open your web browser at https://localhost:8000 to view the rendered docs.
+
+Note that ``mkdocs serve`` will dynamically re-render the docs any time you make a change. The process above is illustrated in the diagram below:
+
+![Pull Request 2](img/html-workflow.png)
+
+### Hooks
+
+We implement two hooks (plugins for mkdocs that are invoked during the docs rendering process).
+
+* **uuid_redirects_hook.py** - this is used to handle page redirects from a uuid - see below for more details
+* **python_manual_hook.py** - this is used to auto-generate the reference guide for the python modules, classes and functions that make up the code base for this project.
+
+### Permalinks for user and admin docs
+
+If you are a developer, you should be aware of the workflow for creating user and administrator documentation for each page you create.
+
+Every page should have a help link on it that leads to the appropriate manual page. The workflow for doing this is:
+
+1. Generate a new page UUID using the provided python utility e.g. ``./create-uuid.py``
+2. Create a new page in the appropriate manual section e.g. ``docs/src/user/manual/login.md``
+3. In the metadata section at the top of the page, add the context id e.g. ``context_id: V4cVEFd2TmwYJVb5HvWRwa``
+4. In your django view, set up your help button to point to the site url and your context id. e.g. ``https://siteurl/V4cVEFd2TmwYJVb5HvWRwa``
+
+Whenever the user visits the page using the UUID URL, they will be redirected to the correct page e.g. ``https://siteurl/login/``. This system protects us from file renaming and reorganising on the site, and ensures that the help link will always remain valid.
+
+
 ### Generating PDFS
-<!-- To Be Populated -->
 
 To generate PDFS, `cd` into `GEOSIGHT-OS/docs` and then run the `build-docs-pdf` in a local terminal
 
 ### Generating Static Site
-<!-- To Be Populated -->
 
-To generate PDFS, `cd` into `GEOSIGHT-OS/docs` and then run the `build-docs-html` in a local terminal.
+To generate HTML, `cd` into `GEOSIGHT-OS/docs` and then run the `build-docs-html` in a local terminal.
 You can then run `mkdocs serve` to generate the static site on your local host, if there is a port conflict you can specify the port using the `-a` flag e.g `mkdocs serve -a 127.0.0.1:8001`.
