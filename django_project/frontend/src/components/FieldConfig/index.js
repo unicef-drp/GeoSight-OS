@@ -14,7 +14,6 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
-import Select from "react-select";
 import {
   DndContext,
   KeyboardSensor,
@@ -33,6 +32,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { arrayMove } from "../../utils/Array";
 import SortableItem
   from "../../pages/Admin/Dashboard/Form/ListForm/SortableItem";
+import { Select } from "../Input";
 
 
 import './style.scss';

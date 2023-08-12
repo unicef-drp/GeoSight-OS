@@ -36,6 +36,16 @@
   form {
     overflow: visible !important;
   }
+
+  .Indicator-Search {
+    padding: 1rem 2rem;
+  }
+
+  .Save-Button {
+    margin: 0 0 0 auto;
+    padding: 1rem;
+    background-color: unset;
+  }
 }
 
 .modal--box {
@@ -84,7 +94,7 @@
   overflow-x: auto;
 
   &.Gray {
-    background-color: #F4F4F4;
+    background-color: $base-to-white-color;
     padding: 0;
     padding-top: 1rem;
 
@@ -105,9 +115,9 @@
 }
 
 .modal--footer {
-  border-top: 1px solid #ddd;
-  padding: 20px;
   overflow-x: auto;
+  padding: 1rem;
+  background-color: $base-to-white-color;
 }
 
 .ModalSelection {
@@ -133,5 +143,14 @@
 .MuiBox-Large {
   .modal--box {
     max-width: 90%;
+  }
+}
+
+.modal--header--close {
+  padding-top: 3px;
+
+  svg {
+    height: 16px;
+    width: 16px;
   }
 }

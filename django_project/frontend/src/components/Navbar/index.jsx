@@ -23,16 +23,16 @@ import i18n from "i18next";
 
 import User from './User'
 import { EmbedConfig } from "../../utils/embed";
+import { CogIcon } from "../Icons";
+import { ThemeButton } from "../Elements/Button";
 
 import './style.scss';
-import { Cog } from "../Icons/svg";
-import { ThemeButton } from "../Elements/Button";
 
 /**
  * Navbar.
  * **/
-export default function NavBar() {
-  const { icon, site_title } = preferences;
+export default function NavBar({ minified }) {
+  const { icon, favicon, site_title } = preferences;
   const { username, full_name, is_staff, is_contributor } = user;
 
   // Set width of logo
@@ -48,7 +48,7 @@ export default function NavBar() {
             title={i18n.t('Homepage')}
             className='nav-header-link'
           >
-            <img src={icon} alt="Logo"/>
+            <img src={(minified ? favicon : icon)} alt="Logo"/>
           </a>
         </div>
         <a
@@ -71,7 +71,7 @@ export default function NavBar() {
                 <ThemeButton
                   variant="white"
                 >
-                  <Cog/> Admin panel
+                  <CogIcon/> Admin panel
                 </ThemeButton>
               </a>
             </div>

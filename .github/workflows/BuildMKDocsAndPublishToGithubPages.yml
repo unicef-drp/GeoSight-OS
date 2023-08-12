@@ -11,15 +11,17 @@
 # __date__ = '13/06/2023'
 # __copyright__ = ('Copyright 2023, Unicef')
 
-name: 📖 Build MKDocs And Publish To Github Pages.yml
+name: 📖 Documentation
 on:
   push:
     branches:
       - main
+      - docs
     # Paths can be used to only trigger actions when you have edited certain files, such as a file within the /docs directory
     paths:
       - ".github/workflows/BuildMKDocsAndPublishToGithubPages.yml"
       - "docs/**.md"
+      - "docs/**.py"
       - "docs/assets/**"
   # Allow manually running in the actions tab
   workflow_dispatch:

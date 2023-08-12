@@ -14,12 +14,13 @@
  */
 
 import React from "react";
+import $ from 'jquery';
 import { Checkbox, TextField } from "@mui/material";
-import Autocomplete from '@mui/material/Autocomplete';
 import CheckBoxOutlineBlankIcon
   from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { dictDeepCopy } from "../../utils/main";
+import Autocomplete from "./Autocomplete";
 
 import './style.scss';
 
@@ -43,6 +44,7 @@ export function SelectWithSearch(
     {props.iconStart ?
       <div className='IconStart'>{props.iconStart}</div> : null}
     <Autocomplete
+      id={props?.id ? props.id : null}
       autoComplete={false}
       className={
         'SelectWithSearch ' +
@@ -136,11 +138,11 @@ export function MultipleSelectWithSearch(
     renderInput={(params) => (
       <TextField
         {...params}
-        placeholder={props.placeholder ? props.placeholder : "Select 1 option"}
+        placeholder={value?.length ? '' : props.placeholder ? props.placeholder : "Select 1 option"}
       />
     )}
     onChange={(e, values) => {
-      if (e.target.getAttribute('value') === selectAllText) {
+      if (e.target.getAttribute('value') === selectAllText || $(e.target).closest('li').attr('value') === selectAllText) {
         if (!allSelected) {
           onChangeFn(options);
         } else {

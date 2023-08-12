@@ -14,7 +14,6 @@
  */
 
 import React, { Fragment, useEffect, useState } from 'react';
-import SettingsIcon from '@mui/icons-material/Settings';
 import { useSelector } from "react-redux";
 import { FormGroup } from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
@@ -38,6 +37,7 @@ import {
 } from "../../../../Components/Input/ReferenceLayerLevelConfiguration";
 import PopupConfigForm from "../PopupConfigForm";
 import { dataFieldsDefault } from "../../../../../../utils/indicatorLayer";
+import { CogIcon } from "../../../../../../components/Icons";
 
 import './style.scss';
 
@@ -182,6 +182,13 @@ export default function MultiIndicatorConfig(
           }
         </ModalHeader>
         <ModalContent className='Gray'>
+          <div className='SaveButton-Section'>
+            <SaveButton
+              variant="primary"
+              text={"Apply Changes"}
+              disabled={data.indicators.length < 2 || !data.name}
+              onClick={apply}/>
+          </div>
           <div className='AdminForm Section'>
             <AdminForm
               selectableInput={false}
@@ -402,11 +409,6 @@ export default function MultiIndicatorConfig(
                 />,
               }}
             />
-            <SaveButton
-              variant="secondary"
-              text={"Apply Changes"}
-              disabled={data.indicators.length < 2 || !data.name}
-              onClick={apply}/>
           </div>
         </ModalContent>
       </Modal>
@@ -415,7 +417,7 @@ export default function MultiIndicatorConfig(
           <ThemeButton className='IndicatorStyleButton' onClick={() => {
             setOpen(true)
           }}>
-            <SettingsIcon/> Config
+            <CogIcon/> Config
           </ThemeButton>
           : ""
       }

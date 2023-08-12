@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
@@ -30,6 +30,11 @@ import { slugify } from "../../../../../utils/main";
 import {
   ViewLevelConfiguration
 } from "../../../Components/Input/ReferenceLayerLevelConfiguration";
+import Grid from "@mui/material/Grid";
+import {
+  SelectWithSearch
+} from "../../../../../components/Input/SelectWithSearch";
+import { ImageInput } from "../../../../../components/Input/ImageInput";
 
 import './style.scss';
 
@@ -43,6 +48,7 @@ export default function SummaryDashboardForm({ changed }) {
     icon,
     name,
     description,
+    overview,
     group,
     referenceLayer,
     geoField,
@@ -52,16 +58,11 @@ export default function SummaryDashboardForm({ changed }) {
   } = useSelector(state => state.dashboard.data);
   const dispatch = useDispatch();
 
-  const imageName = (icon) => {
-    return icon ? icon.split('/')[icon.split('/').length - 1] : 'No Image'
-  }
-
   const [nameData, setNameData] = useState(name);
   const [descriptionData, setDescriptionData] = useState(description);
+  const [overviewData, setOverviewData] = useState(overview);
   const [showSplashOnFirstOpenData, setShowSplashOnFirstOpenData] = useState(show_splash_first_open);
   const [groupData, setGroupData] = useState(group);
-  const [iconSrc, setIconSrc] = useState(icon);
-  const [iconName, setIconName] = useState(imageName(icon));
   const [slugInput, setSlugInput] = useState(slug);
   const [
     truncateIndicatorName,
@@ -69,50 +70,48 @@ export default function SummaryDashboardForm({ changed }) {
   ] = useState(truncate_indicator_layer_name);
   const isCreate = id === null;
 
-  /** Image changed */
-  const imageChanged = (event) => {
-    const [file] = event.target.files
-    if (file) {
-      setIconSrc(URL.createObjectURL(file));
-      setIconName(file.name);
-      changed(true)
-    } else {
-      setIconSrc(icon);
-      setIconName(imageName(icon));
-    }
-  }
-
-  // Geofield value
-  const geoFieldUcode = geoField === 'geometry_code'
-  const geoFieldUcodeLabel = geoFieldUcode ? "Mapping indicators using latest ucodes." : "Mapping indicators using concept uuid."
+  const geoFields = [
+    { value: 'concept_uuid', label: 'Concept uuid' },
+    { value: 'geometry_code', label: 'Latest ucode' }
+  ]
 
   return (
     <div className='Summary'>
       <div className="BasicForm AdminForm">
         <div className="BasicFormSection">
-          <div>
-            <label className="form-label required" htmlFor="name">
-              Reference Dataset
-            </label>
-          </div>
-          <div className='ReferenceDatasetSection'>
-            <GeorepoViewInputSelector
-              data={referenceLayer?.identifier ? [referenceLayer] : []}
-              setData={selectedData => {
-                dispatch(Actions.ReferenceLayer.update(selectedData[0]));
-                dispatch(Actions.Geometries.deleteAll());
-              }}
-              isMultiple={false}
-              showSelected={false}
-            />
-            <FormGroup>
-              <FormControlLabel
-                control={<Checkbox checked={geoFieldUcode} onChange={
-                  _ => dispatch(Actions.Dashboard.changeGeoField())
-                }/>}
-                label={geoFieldUcodeLabel}/>
-            </FormGroup>
-          </div>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <label className="form-label required" htmlFor="name">
+                Reference Dataset
+              </label>
+              <div className='ReferenceDatasetSection'>
+                <GeorepoViewInputSelector
+                  data={referenceLayer?.identifier ? [referenceLayer] : []}
+                  setData={selectedData => {
+                    dispatch(Actions.ReferenceLayer.update(selectedData[0]));
+                    dispatch(Actions.Geometries.deleteAll());
+                  }}
+                  isMultiple={false}
+                  showSelected={false}
+                />
+              </div>
+            </Grid>
+            <Grid item xs={6}>
+              <label className="form-label required" htmlFor="name">
+                Mapping Indicators Using
+              </label>
+              <SelectWithSearch
+                options={geoFields.map(field => field.label)}
+                value={geoFields.find(field => geoField === field.value).label}
+                onChangeFn={evt => {
+                  dispatch(Actions.Dashboard.changeGeoField(geoFields.find(field => evt === field.label).value))
+                }}
+                disableCloseOnSelect={false}
+                fullWidth={true}
+                smallHeight={true}
+              />
+            </Grid>
+          </Grid>
         </div>
         <ViewLevelConfiguration
           data={levelConfig}
@@ -124,63 +123,116 @@ export default function SummaryDashboardForm({ changed }) {
           referenceLayer={referenceLayer}
         />
         <div className="BasicFormSection">
-          <div>
-            <label className="form-label required" htmlFor="name">Name</label>
-          </div>
-          <div>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <div>
+                <label className="form-label required"
+                       htmlFor="name">Name</label>
+              </div>
+              <div>
               <span className="form-input">
-              <input id="SummaryName" type="text" name="name" required={true}
-                     value={nameData}
-                     onChange={(event) => {
-                       setNameData(event.target.value)
-                       changed(true)
-                       if (isCreate) {
-                         setSlugInput(slugify(event.target.value))
-                       }
-                     }}/>
+              <input
+                id="SummaryName" type="text" name="name" required={true}
+                placeholder='Example: Afghanistan Risk Dashboard'
+                value={nameData}
+                onChange={(event) => {
+                  setNameData(event.target.value)
+                  changed(true)
+                  if (isCreate) {
+                    setSlugInput(slugify(event.target.value))
+                  }
+                }}/>
               </span>
-          </div>
-        </div>
-        <div className="BasicFormSection">
-          <div>
-            <label className="form-label required" htmlFor="name">
-              URL Shortcode
-            </label>
-          </div>
-          <div>
+              </div>
+            </Grid>
+            <Grid item xs={3}>
+              <label className="form-label required" htmlFor="name">
+                Category
+              </label>
+              <div>
               <span className="form-input">
-              <input id="SummarySlug" type="text" name="name" required={true}
-                     value={slugInput}
-                     onChange={(event) => {
-                       setSlugInput(slugify(event.target.value))
-                       changed(true)
-                     }}/>
+                <SelectWithSearch
+                  id="SummaryCategory"
+                  placeholder='Example: Lorem Ipsum'
+                  options={projectCategories}
+                  value={groupData}
+                  onChangeFn={evt => {
+                    setGroupData(evt)
+                    changed(true)
+                  }}
+                  disableCloseOnSelect={false}
+                  fullWidth={true}
+                  smallHeight={true}
+                />
               </span>
-          </div>
-          <span className='form-helptext'>
-            Url for the project in slug format. It will auto change space to "-" and to lowercase.
-            If empty, it will be generated from name.
-          </span>
-        </div>
-        <div className="BasicFormSection">
-          <div>
-            <label className="form-label" htmlFor="name">Description</label>
-          </div>
-          <div className='DescriptionInput'>
-            <div className="container">
-              <div data-color-mode="light">
-                <MDEditor
-                  id='SummaryDescription'
-                  height={200} value={descriptionData}
-                  onChange={(value) => {
-                    setDescriptionData(value)
+              </div>
+            </Grid>
+            <Grid item xs={3}>
+              <label className="form-label" htmlFor="name">
+                URL Shortcode
+              </label>
+              <div>
+                <span className="form-input">
+                <input
+                  id="SummarySlug" type="text" name="name" required={true}
+                  value={slugInput}
+                  onChange={(event) => {
+                    setSlugInput(slugify(event.target.value))
                     changed(true)
                   }}/>
+                </span>
               </div>
-            </div>
-          </div>
+              <span className='form-helptext'>
+                Url of project in slug format. It will auto change space to "-" and to lowercase.
+                It will be generated from name if empty.
+              </span>
+            </Grid>
+          </Grid>
         </div>
         <div className="BasicFormSection">
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <FormControl className='IconInput'>
+                <label className="form-label"
+                       htmlFor="name">Description</label>
+                <textarea
+                  id='SummaryDescription'
+                  name="textarea"
+                  value={descriptionData}
+                  style={{ height: "200px" }}
+                  onChange={(evt) => {
+                    setDescriptionData(evt.target.value)
+                    changed(true)
+                  }}/>
+              </FormControl>
+            </Grid>
+            <Grid item xs={6}>
+              <FormControl className='IconInput'>
+                <label className="form-label" htmlFor="name">Icon</label>
+                <ImageInput
+                  id='SummaryIcon'
+                  name="icon"
+                  image={icon}
+                  onChange={() => {
+                    changed(true)
+                  }}/>
+              </FormControl>
+            </Grid>
+          </Grid>
+        </div>
+        <div className="BasicFormSection">
+          <FormGroup>
+            <FormControlLabel
+              control={<Checkbox
+                id={'SummarySplash'}
+                checked={showSplashOnFirstOpenData}
+                onChange={(event) => {
+                  setShowSplashOnFirstOpenData((value) => !value)
+                  changed(true)
+                }}
+              />}
+              label={'Show as a splash screen when opening project for the first time'}/>
+          </FormGroup>
           <FormGroup>
             <FormControlLabel
               control={<Checkbox
@@ -195,52 +247,6 @@ export default function SummaryDashboardForm({ changed }) {
           </FormGroup>
         </div>
         <div className="BasicFormSection">
-            <FormGroup>
-              <FormControlLabel
-                control={<Checkbox
-                    id={'SummarySplash'}
-                    checked={showSplashOnFirstOpenData}
-                    onChange={(event) => {
-                      setShowSplashOnFirstOpenData((value) => !value)
-                      changed(true)
-                    }}
-                />}
-                label={'Show as a splash screen when opening project for the first time'}/>
-            </FormGroup>
-        </div>
-        <FormControl className='IconInput'>
-          <label
-            className="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
-            data-shrink="true">Icon</label>
-          <div className='IconInputPreview'>
-            <div
-              className="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl css-1ptx2yq-MuiInputBase-root-MuiInput-root">
-              {iconName}
-              <input id="SummaryIcon" type="file" name="icon"
-                     accept="image/png, image/jpeg"
-                     onChange={imageChanged}/>
-            </div>
-            {iconSrc ? <img src={iconSrc}/> : ''}
-          </div>
-        </FormControl>
-        <div className="BasicFormSection">
-          <div>
-            <label className="form-label" htmlFor="name">
-              Category
-            </label>
-          </div>
-          <div>
-              <span className="form-input">
-              <input id="SummaryCategory" type="text" name="category"
-                     required={true} value={groupData}
-                     onChange={(event) => {
-                       setGroupData(event.target.value)
-                       changed(true)
-                     }}/>
-              </span>
-          </div>
-        </div>
-        <div className="BasicFormSection">
           <div>
             <label className="form-label required" htmlFor="name">
               Extent
@@ -248,6 +254,27 @@ export default function SummaryDashboardForm({ changed }) {
           </div>
           <MapConfig/>
         </div>
+      </div>
+      <div className="BasicFormSection">
+        <div>
+          <label className="form-label" htmlFor="name">Project
+            Overview</label>
+        </div>
+        <div className='DescriptionInput'>
+          <div className="container">
+            <div data-color-mode="light">
+              <MDEditor
+                id='SummaryOverview'
+                height={200}
+                value={overviewData}
+                onChange={(value) => {
+                  setOverviewData(value)
+                  changed(true)
+                }}/>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   )

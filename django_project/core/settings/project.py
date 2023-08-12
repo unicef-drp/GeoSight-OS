@@ -104,8 +104,6 @@ GEOREPO_AZURE_AUTH = {}
 
 USE_AZURE = os.environ.get('AZURE_B2C_CLIENT_ID', False) not in [
     False, '', "''"]
-USE_GEOREPO_B2C = USE_AZURE and os.environ.get(
-    'GEOREPO_AZURE_B2C_CLIENT_ID', False) not in [False, '', "''"]
 if USE_AZURE:
     LOGIN_URL = 'login'
     # redirect when user is not within Unicef group and
@@ -131,24 +129,10 @@ if USE_AZURE:
                                   'azure_auth.backends.AzureAuthBackend'
                               ] + AUTHENTICATION_BACKENDS
 
-    AZURE_REGISTERED_CLIENT_IDS = [
-        AZURE_AUTH['CLIENT_ID']
-    ]
-    if USE_GEOREPO_B2C:
-        GEOREPO_AZURE_AUTH = {
-            'CLIENT_ID': os.environ.get('GEOREPO_AZURE_B2C_CLIENT_ID'),
-            'CLIENT_SECRET': os.environ.get('GEOREPO_AZURE_B2C_CLIENT_SECRET'),
-            'TENANT_NAME': os.environ.get('GEOREPO_AZURE_B2C_TENANT_NAME'),
-            'POLICY_NAME': os.environ.get('GEOREPO_AZURE_B2C_POLICY_NAME'),
-            'RENAME_ATTRIBUTES': [
-                ('given_name', 'first_name'),
-                ('family_name', 'last_name'),
-                ('email', 'email')
-            ],
-            'SAVE_ID_TOKEN_CLAIMS': False,
-            # request access token
-            'SCOPES': [os.environ.get('GEOREPO_AZURE_B2C_CLIENT_ID')],
-            'PUBLIC_URLS': [],
-        }
-        AZURE_REGISTERED_CLIENT_IDS.append(GEOREPO_AZURE_AUTH['CLIENT_ID'])
-        GEOREPO_USER_NO_ACCESS_URL = 'georepo_auth_failed'
+    AZURE_REGISTERED_CLIENT_IDS = [AZURE_AUTH['CLIENT_ID']]
+
+# GEOREPO ATTRIBUTES
+USE_GEOREPO_AUTH = USE_AZURE and os.environ.get(
+    'GEOREPO_AZURE_AUTHENTICATION_URL', False) not in [False, '', "''"]
+GEOREPO_AZURE_AUTHENTICATION_URL = os.environ.get(
+    'GEOREPO_AZURE_AUTHENTICATION_URL', False)

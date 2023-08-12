@@ -18,13 +18,12 @@ import React, {
   Fragment,
   useEffect,
   useImperativeHandle,
+  useRef,
   useState
 } from 'react';
 import $ from "jquery";
-import SearchIcon from '@mui/icons-material/Search';
 
 import { GridActionsCellItem } from "@mui/x-data-grid";
-import DeleteIcon from "@mui/icons-material/Delete";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 import { AdminTable } from '../Table';
@@ -32,6 +31,7 @@ import { IconTextField } from '../../../../components/Elements/Input'
 import { fetchingData } from "../../../../Requests";
 import MoreAction from "../../../../components/Elements/MoreAction";
 import { dictDeepCopy, toSingular } from "../../../../utils/main";
+import { DeleteIcon, MagnifyIcon } from "../../../../components/Icons";
 
 import './style.scss';
 
@@ -152,17 +152,18 @@ export function COLUMNS(pageName, redirectUrl, editUrl = null, detailUrl = null)
  * @param {boolean} selectable Is selectable.
  */
 
-export const List = forwardRef(
+export const BaseList = forwardRef(
   ({
      columns, pageName, listUrl, initData, setInitData,
-     selectionChanged, sortingDefault, searchDefault,
-     selectable = true,
+     sortingDefault, searchDefault,
+     selectionModel,
+     setSelectionModel,
+     search, selectable = true,
      ...props
    }, ref
   ) => {
     const [data, setData] = useState(null);
     const [error, setError] = useState(null);
-    const [search, setSearch] = useState(searchDefault);
 
     /** Refresh data **/
     const refresh = (force) => {
@@ -202,11 +203,6 @@ export const List = forwardRef(
       }
     }, [data])
 
-    /** Search on change */
-    const searchOnChange = (evt) => {
-      setSearch(evt.target.value.toLowerCase())
-    }
-
     /** Filter by search input */
     let rows = dictDeepCopy(data);
     const fields = columns?.map(column => column.field).filter(column => column !== 'id')
@@ -233,25 +229,65 @@ export const List = forwardRef(
     /** Render **/
     return (
       <Fragment>
-        <div className='AdminBaseInput Indicator-Search'>
-          <IconTextField
-            placeholder={"Search " + pageName}
-            defaultValue={search ? search : ""}
-            iconStart={<SearchIcon/>}
-            onChange={searchOnChange}
-          />
-        </div>
-
         <div className='AdminList'>
           <AdminTable
-            rows={rows} columns={columns}
-            selectionChanged={selectionChanged}
+            rows={rows}
+            columns={columns}
+            selectionModel={selectionModel}
+            setSelectionModel={setSelectionModel}
             sortingDefault={sortingDefault}
             selectable={selectable}
             error={error}
             {...props}
           />
         </div>
+      </Fragment>
+    );
+  }
+)
+export const List = forwardRef(
+  ({
+     columns, pageName, listUrl, initData, setInitData,
+     selectionChanged, sortingDefault, searchDefault,
+     selectable = true,
+     ...props
+   }, ref
+  ) => {
+    const listRef = useRef(null);
+    const [search, setSearch] = useState(searchDefault);
+
+    // Refresh changed
+    useImperativeHandle(ref, () => ({
+      refresh() {
+        listRef.current.refresh()
+      }
+    }));
+
+    /** Render **/
+    return (
+      <Fragment>
+        <div className='AdminBaseInput Indicator-Search'>
+          <IconTextField
+            placeholder={"Search " + pageName}
+            defaultValue={search ? search : ""}
+            iconEnd={<MagnifyIcon/>}
+            onChange={evt => setSearch(evt.target.value.toLowerCase())}
+          />
+        </div>
+        <BaseList
+          columns={columns}
+          pageName={pageName}
+          listUrl={listUrl}
+          initData={initData}
+          setInitData={setInitData}
+          selectionChanged={selectionChanged}
+          sortingDefault={sortingDefault}
+          search={search}
+          searchDefault={searchDefault}
+          selectable={selectable}
+          ref={listRef}
+          {...props}
+        />
       </Fragment>
     );
   }

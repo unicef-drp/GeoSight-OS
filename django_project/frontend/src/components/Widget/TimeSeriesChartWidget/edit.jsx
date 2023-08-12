@@ -24,7 +24,6 @@ import { Button, FormControl, Radio } from "@mui/material";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormLabel from "@mui/material/FormLabel";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import RemoveIcon from "@mui/icons-material/Remove";
 
 import Modal, { ModalContent, ModalHeader } from "../../Modal";
 import { SeriesDataType, SeriesType, TimeType } from "./Definition";
@@ -37,6 +36,7 @@ import {
   indicatorLayersLikeIndicator
 } from "../../../utils/indicatorLayer";
 import ColorPaletteSelector from "../../Input/ColorPaletteSelector";
+import { RemoveIcon } from "../../Icons";
 
 /** Section config **/
 export function SectionConfig(

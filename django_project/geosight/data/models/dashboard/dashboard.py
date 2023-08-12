@@ -48,6 +48,9 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData):
     Basemap layers and context layers is based on the indicator's instance.
     """
 
+    overview = models.TextField(
+        blank=True, null=True
+    )
     reference_layer = models.ForeignKey(
         ReferenceLayerView,
         help_text=_('Reference layer.'),

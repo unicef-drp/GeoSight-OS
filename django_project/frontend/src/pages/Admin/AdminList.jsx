@@ -28,13 +28,218 @@ import {
   DeleteButton,
   ThemeButton
 } from '../../components/Elements/Button'
-import Admin from './index';
-import { List } from './Components/List'
+import { AdminPage } from './index';
+import { BaseList } from './Components/List'
+import EditIcon from "@mui/icons-material/Edit";
+import { IconTextField } from "../../components/Elements/Input";
+import { MagnifyIcon } from "../../components/Icons";
+import { ConfirmDialog } from "../../components/ConfirmDialog";
 
 import './style.scss';
-import EditIcon from "@mui/icons-material/Edit";
 
 
+/**
+ * Admin List that contains content of list
+ * @param {list} columns Columns setup.
+ * @param {String} pageName Page Name.
+ * @param {String} listUrl Url for list row.
+ * @param {function} selectionChanged Function when selection changed.
+ * @param {list} initData If there is init data.
+ * @param {React.Component} rightHeader Right header.
+ * @param {Array} sortingDefault Default for sorting.
+ * @param {str} searchDefault Default for search.
+ * @param {React.Component} children React component to be rendered
+ */
+
+export const AdminListContent = forwardRef(
+  ({
+     columns, pageName = '',
+     listUrl,
+     selectionChanged,
+     initData = null,
+     rightHeader = null,
+     sortingDefault = null,
+     searchDefault = null,
+     multipleDelete = null,
+     tableHeader,
+     otherFilters,
+     tabChildren,
+     ...props
+   }, ref
+  ) => {
+    const deleteDialogRef = useRef(null);
+    const apiBatch = props.apiBatch ? props.apiBatch : urls.api.batch
+    const apiCreate = props.apiCreate ? props.apiCreate : urls.api.create;
+    const [data, setData] = useState([]);
+    const [selectionModel, setSelectionModel] = useState([]);
+    const [isDeleting, setIsDeleting] = useState(false)
+    const listRef = useRef(null);
+    const [search, setSearch] = useState(searchDefault);
+
+    const dataName = pageName.replace(/s$/, '');
+
+    /** Refresh data **/
+    useImperativeHandle(ref, () => ({
+      refresh() {
+        listRef.current.refresh()
+      }
+    }));
+
+    // When selection changed
+    useEffect(() => {
+      if (selectionChanged) {
+        selectionChanged(selectionModel)
+      }
+    }, [selectionModel])
+
+    // When init data changed
+    useEffect(() => {
+      if (initData) {
+        const selectableIds = initData.filter(row => [null, undefined, true].includes(row.selectable)).map(row => row.id)
+        const newSelectionModel = selectionModel.filter(row => selectableIds.includes(row))
+        if (JSON.stringify(newSelectionModel) !== JSON.stringify(selectionModel)) {
+          setSelectionModel(newSelectionModel)
+        }
+      }
+    }, [initData])
+
+    /** Render **/
+    let selectableFunction = !isDeleting
+    if (!isDeleting && (multipleDelete || apiBatch)) {
+      selectableFunction = (params) => {
+        const { permission } = params.row
+        return !permission || permission.edit || permission.delete
+      }
+    }
+
+    const selectedModelData = data.filter(row => selectionModel.includes(row.id))
+    const deleteButton = () => {
+      if (user.is_creator && multipleDelete && listUrl) {
+        const selectedIds = selectedModelData.filter(row => !row.permission || row.permission.delete).map(row => row.id)
+        return <Fragment>
+          <DeleteButton
+            disabled={isDeleting || !selectedIds.length}
+            variant="Error Reverse"
+            text={"Delete"}
+            onClick={() => {
+              deleteDialogRef?.current?.open()
+            }}
+          />
+          <ConfirmDialog
+            onConfirmed={() => {
+              setIsDeleting(true)
+              $.ajax({
+                url: listUrl,
+                method: 'DELETE',
+                data: {
+                  'ids': JSON.stringify(selectedIds)
+                },
+                success: function () {
+                  setIsDeleting(false)
+                  listRef.current.refresh()
+                },
+                error: function () {
+                  setIsDeleting(false)
+                },
+                beforeSend: beforeAjaxSend
+              });
+              return false;
+            }}
+            ref={deleteDialogRef}
+          >
+            <div>
+              Are you sure want to
+              delete {selectedIds.length} {dataName.toLowerCase() + (selectedIds.length > 1 ? 's' : '')}?
+            </div>
+          </ConfirmDialog>
+        </Fragment>
+      }
+    }
+    const createButton = () => {
+      if (user.is_creator && apiCreate) {
+        return <a href={apiCreate}>
+          <AddButton
+            variant="primary"
+            text={"Add New " + pageName}
+          />
+        </a>
+      }
+    }
+    /** Button for batch edit **/
+    const batchEditButton = () => {
+      if (user.is_creator && apiBatch) {
+        const selectedIds = selectedModelData.filter(row => !row.permission || row.permission.edit).map(row => row.id)
+        return <a
+          href={apiBatch + '?ids=' + selectedIds.join(',')}>
+          <ThemeButton
+            variant="primary Basic"
+            disabled={!selectedIds.length}>
+            <EditIcon/>Edit
+          </ThemeButton>
+        </a>
+      }
+    }
+    return (
+      <div className={'AdminContent ' + props.className}>
+        <div className='AdminContentHeader'>
+          <div className='AdminContentHeader-Left'>
+            <b className='light'
+               dangerouslySetInnerHTML={{ __html: props.title ? props.title : contentTitle }}></b>
+          </div>
+          <div>
+            <IconTextField
+              placeholder={"Search " + pageName}
+              defaultValue={search ? search : ""}
+              iconEnd={<MagnifyIcon/>}
+              onChange={evt => setSearch(evt.target.value.toLowerCase())}
+            />
+          </div>
+          <div className='AdminContentHeader-Right'>
+            {rightHeader ? rightHeader : null}
+            {createButton()}
+          </div>
+        </div>
+        {otherFilters}
+        {tabChildren}
+        <BaseList
+          columns={columns}
+          pageName={pageName}
+          listUrl={listUrl}
+          initData={initData}
+          setInitData={newData => {
+            if (newData) {
+              setData(newData)
+            }
+          }}
+          sortingDefault={sortingDefault}
+          search={search}
+          searchDefault={searchDefault}
+          selectable={selectableFunction}
+          ref={listRef}
+          {...props}
+          selectionModel={selectionModel}
+          setSelectionModel={
+            selectionChanged || multipleDelete ? (
+              selectedData => {
+                setSelectionModel(selectedData)
+                if (props.selectionChanged) {
+                  props.selectionChanged(selectedData)
+                }
+              }
+            ) : null
+          }
+          header={
+            <Fragment>
+              {batchEditButton()}
+              {deleteButton()}
+              {tableHeader}
+            </Fragment>
+          }
+        />
+      </div>
+    )
+  }
+)
 /**
  * Admin List App
  * @param {list} columns Columns setup.
@@ -60,125 +265,18 @@ export const AdminList = forwardRef(
      ...props
    }, ref
   ) => {
-    const [data, setData] = useState([]);
-    const [selectionModel, setSelectionModel] = useState([]);
-    const selectionModelIds = selectionModel.map(model => model.id ? model.id : model)
-    const [isDeleting, setIsDeleting] = useState(false)
-    const listRef = useRef(null);
-
-    /** Refresh data **/
-    useImperativeHandle(ref, () => ({
-      refresh() {
-        listRef.current.refresh()
-      }
-    }));
-
-    // When selection changed
-    useEffect(() => {
-      if (selectionChanged) {
-        selectionChanged(selectionModel)
-      }
-    }, [selectionModel])
-
-
-    /** Render **/
-    let selectableFunction = !isDeleting
-    if (!isDeleting && (multipleDelete || urls.api.batch)) {
-      selectableFunction = (params) => {
-        const { permission } = params.row
-        return !permission || permission.edit || permission.delete
-      }
-    }
-
-    const selectedModelData = data.filter(row => selectionModel.includes(row.id))
-    const deleteButton = () => {
-      if (user.is_creator && multipleDelete && listUrl) {
-        const selectedIds = selectedModelData.filter(row => !row.permission || row.permission.delete).map(row => row.id)
-        return <DeleteButton
-          disabled={isDeleting || !selectedIds.length}
-          variant="secondary Reverse"
-          text={"Delete " + (selectedIds.length ? `(${selectedIds.length} Selected)` : "")}
-          onClick={() => {
-            const deleteWarning = "WARNING! Do you want to delete the selected data? This will apply directly to database."
-            if (confirm(deleteWarning) === true) {
-              setIsDeleting(true)
-              $.ajax({
-                url: listUrl,
-                method: 'DELETE',
-                data: {
-                  'ids': JSON.stringify(selectedIds)
-                },
-                success: function () {
-                  setIsDeleting(false)
-                  listRef.current.refresh()
-                },
-                error: function () {
-                  setIsDeleting(false)
-                },
-                beforeSend: beforeAjaxSend
-              });
-              return false;
-            }
-          }}
-        />
-      }
-    }
-    const createButton = () => {
-      if (user.is_creator && urls.api.create) {
-        return <a href={urls.api.create}>
-          <AddButton
-            variant="secondary"
-            text={"Add New " + pageName}
-          />
-        </a>
-      }
-    }
-    /** Button for batch edit **/
-    const batchEditButton = () => {
-      if (user.is_creator && urls.api.batch) {
-        const selectedIds = selectedModelData.filter(row => !row.permission || row.permission.edit).map(row => row.id)
-        return <a
-          href={urls.api.batch + '?ids=' + selectedIds.join(',')}>
-          <ThemeButton
-            variant="secondary Basic"
-            disabled={!selectedIds.length}>
-            <EditIcon/>Batch
-            edit {(selectedIds.length ? `(${selectedIds.length} Selected)` : "")}
-          </ThemeButton>
-        </a>
-      }
-    }
     return (
-      <Admin
-        className='Indicator'
-        pageName={pageName}
-        rightHeader={
-          <Fragment>
-            {rightHeader ? rightHeader : null}
-            {batchEditButton()}
-            {deleteButton()}
-            {createButton()}
-          </Fragment>
-        }
-      >
-        <List
-          columns={columns} pageName={pageName} listUrl={listUrl}
+      <AdminPage pageName={pageName}>
+        <AdminListContent
+          columns={columns} pageName={pageName}
+          listUrl={listUrl} selectionChanged={selectionChanged}
           initData={initData}
-          setInitData={newData => {
-            if (newData) {
-              setData(newData)
-            }
-          }}
-          selectionChanged={
-            selectionChanged || multipleDelete ? setSelectionModel : null
-          }
+          rightHeader={rightHeader}
           sortingDefault={sortingDefault}
           searchDefault={searchDefault}
-          selectable={selectableFunction}
-          ref={listRef}
+          multipleDelete={multipleDelete}
           {...props}
         />
-      </Admin>
+      </AdminPage>
     );
-  }
-)
+  })

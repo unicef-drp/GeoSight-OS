@@ -104,7 +104,7 @@ export default function ImporterLogDetail() {
     rightHeader={
       <a href={data.urls.edit}>
         <ThemeButton
-          variant="secondary"
+          variant="primary"
           disabled={!isEnded}
         >
           Edit and rerun
@@ -158,7 +158,7 @@ export default function ImporterLogDetail() {
                 <div className='DetailDataFound'>
                   <div>{data.saved_data} / {data.count_data}</div>
                   <a href={urls.api.dataView}>
-                    <ThemeButton variant="secondary">
+                    <ThemeButton variant="primary">
                       See the data
                     </ThemeButton>
                   </a>
@@ -180,7 +180,7 @@ export default function ImporterLogDetail() {
                     <div className='Separator'/>
                     <a href={urls.api.dataView}>
                       <ThemeButton
-                        variant="secondary">
+                        variant="primary">
                         See the data
                       </ThemeButton>
                     </a>
@@ -204,6 +204,23 @@ export default function ImporterLogDetail() {
           </div>
         </Grid>
       </Grid>
+      {
+        data.attributes.indicator_data_type ?
+          <Grid container spacing={2}>
+            <Grid item xs={3}>
+              <div className='DetailSection'>
+                <div>Indicator type</div>
+                <div>{data.attributes.indicator_data_type}</div>
+              </div>
+            </Grid>
+            <Grid item xs={3}>
+              <div className='DetailSection'>
+                <div>Indicator name(s)</div>
+                <div>{data.attributes.indicator_data?.name ? data.attributes.indicator_data?.name : data.attributes.indicator_data_names ? data.attributes.indicator_data_names.join(", ") : '-'}</div>
+              </div>
+            </Grid>
+          </Grid> : null
+      }
       <Grid container spacing={2}>
         <Grid item xs={3}>
           <div className='DetailSection'>

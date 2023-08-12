@@ -462,7 +462,7 @@ export default function DownloaderData() {
             <div className='DownloadButton'>
               <ThemeButton
                 disabled={disabled}
-                variant="secondary Reverse"
+                variant="primary Reverse"
                 onClick={download}
               >
                 {downloading ? <CircularProgress/> : <CloudDownloadIcon/>}

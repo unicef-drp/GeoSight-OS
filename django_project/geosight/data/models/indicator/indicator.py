@@ -115,6 +115,8 @@ class Indicator(
         ordering = ('group__name', 'name')
 
     def __str__(self):
+        if self.shortcode:
+            return f'{self.group}/{self.name} ({self.shortcode})'
         return f'{self.group}/{self.name}'
 
     @property

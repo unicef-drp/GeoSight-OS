@@ -14,7 +14,6 @@
  */
 
 import React, { Fragment, useEffect, useRef, useState } from 'react';
-import Select from "react-select";
 
 import Admin, { pageNames } from '../../index';
 import { codelistOptions, typeChoices } from "./Base";
@@ -27,9 +26,10 @@ import { dictDeepCopy, urlParams } from "../../../../utils/main";
 import DjangoTemplateForm from "../../Components/AdminForm/DjangoTemplateForm";
 import AggregationForm from "./AggregationForm";
 import LabelForm from "./LabelForm";
+import StyleConfig from "../../Style/Form/StyleConfig";
+import { Select } from "../../../../components/Input";
 
 import './style.scss';
-import StyleConfig from "../../Style/Form/StyleConfig";
 
 /*** Additional General Indicator Inputs ***/
 function AdditionalGeneralIndicator({ indicatorData, setIndicatorData }) {
@@ -158,6 +158,7 @@ export default function IndicatorForm() {
 
   return (
     <Admin
+      minifySideNavigation={true}
       className='Indicator'
       pageName={pageNames.Indicators}
       rightHeader={
@@ -165,7 +166,7 @@ export default function IndicatorForm() {
           {
             indicatorId ?
               <SaveButton
-                variant="secondary Reverse"
+                variant="primary Reverse"
                 text="Save As"
                 onClick={() => {
                   formRef.current.submit(true)
@@ -175,7 +176,7 @@ export default function IndicatorForm() {
               /> : ""
           }
           <SaveButton
-            variant="secondary"
+            variant="primary"
             text="Save"
             onClick={() => {
               formRef.current.submit()

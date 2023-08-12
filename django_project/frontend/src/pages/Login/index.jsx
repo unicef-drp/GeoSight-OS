@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import $ from 'jquery';
 import { store } from '../../store/admin';
 import App, { render } from '../../app';
@@ -75,7 +75,7 @@ export default function Login() {
               }}/>
 
               <ThemeButton
-                variant="secondary"
+                variant="primary"
                 onClick={login}
                 disabled={submitted ? true : false}
               >
@@ -86,19 +86,31 @@ export default function Login() {
         }
         {
           useAzureLogin && getNoLoginAccess() && (
-            <div style={{ marginBottom: '20px' }}>
-              <p>
-                You are not allowed to access GeoSight. Please contact
-                administrator or try to use different account!
-              </p>
-            </div>
+            <Fragment>
+              <div style={{ marginBottom: '20px' }}>
+                <p>
+                  You are not allowed to access GeoSight. Please contact
+                  administrator or try to use different account!
+                </p>
+              </div>
+              <div>
+                <a
+                  href={urls.requestAccess}>
+                  <ThemeButton variant="secondary Basic">
+                    Request Access
+                  </ThemeButton>
+                </a>
+                <br/>
+                <br/>
+              </div>
+            </Fragment>
           )
         }
         {
           useAzureLogin && (
             <div>
               <ThemeButton
-                variant="secondary"
+                variant="primary"
                 onClick={loginWithAzure}
               >
                 LOG IN
@@ -107,14 +119,6 @@ export default function Login() {
           )
         }
         <br/>
-        <div>
-          <a
-            href={urls.requestAccess}>
-            <ThemeButton variant="secondary Basic">
-              Request Access
-            </ThemeButton>
-          </a>
-        </div>
       </div>
     </App>
   )

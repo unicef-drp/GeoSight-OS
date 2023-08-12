@@ -28,7 +28,7 @@ User = get_user_model()
 class UserAdminViewTest(BaseViewTest, TestCase):
     """Test for User Admin."""
 
-    list_url_tag = 'admin-user-list-view'
+    list_url_tag = 'admin-user-and-group-list-view'
     create_url_tag = 'admin-user-create-view'
     edit_url_tag = 'admin-user-edit-view'
 

@@ -14,7 +14,7 @@
  */
 
 import React, { useEffect, useRef } from 'react';
-import Select from "react-select";
+import { Select } from "../../../components/Input";
 
 import './style.scss';
 

@@ -1,0 +1,109 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '08/08/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   Help Page Section
+   ========================================================================== */
+
+@import '../../app/variables';
+
+.HelpPageSection {
+  height: 100%;
+  position: fixed;
+  width: 100%;
+  pointer-events: none;
+  background-color: unset;
+  z-index: 99999999;
+  transition: background-color linear 0.2s;
+
+  &.Open {
+    pointer-events: auto;
+    background-color: rgba(0, 0, 0, .38);
+
+    .HelpPageSection-Content {
+      margin-right: 0;
+    }
+  }
+
+  .HelpPageSection-Content {
+    background-color: white;
+    border: 1px solid $primary-color;
+    height: 100%;
+    margin-left: auto;
+    width: 430px;
+    display: flex;
+    flex-direction: column;
+    margin-right: -430px;
+    transition: margin-right linear 0.2s;
+
+    .HelpPageSection-Close {
+      margin-left: auto;
+      padding: 1rem;
+      cursor: pointer;
+    }
+
+    .HelpPageSection-InnerContent {
+      flex-grow: 1;
+      padding: 2rem;
+      padding-top: 0;
+
+
+      .title {
+        font-size: 18px;
+      }
+
+      .section {
+        background-color: $base-to-white-color;
+        padding: 1rem;
+        margin-top: 1rem;
+        border-radius: $border-radius;
+        display: block;
+        color: black;
+
+        &:hover {
+          opacity: $base-hovered-opacity;
+        }
+
+        .title {
+          font-size: 1rem;
+        }
+
+        .content {
+          font-size: 12px;
+        }
+      }
+
+      .link {
+        display: flex;
+        font-size: 1rem;
+        margin-top: 2rem;
+        color: $primary-color;
+        align-items: center;
+
+        svg {
+          margin-left: 0.5rem;
+        }
+      }
+    }
+
+    .HelpPageSection-Footer {
+      padding: 2rem;
+
+      a {
+        margin-right: 1rem;
+      }
+    }
+  }
+}

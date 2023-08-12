@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import $ from "jquery";
@@ -20,8 +20,6 @@ import Grid from '@mui/material/Grid';
 import CircularProgress from '@mui/material/CircularProgress';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import Admin from "../../index";
 import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
@@ -32,6 +30,7 @@ import {
   Notification,
   NotificationStatus
 } from "../../../../components/Notification";
+import { DeleteIcon, EditIcon } from "../../../../components/Icons";
 
 import './style.scss';
 
@@ -109,7 +108,7 @@ export default function ImporterDetail() {
     rightHeader={
       <div>
         <ThemeButton
-          variant="secondary Basic"
+          variant="primary Basic"
           onClick={() => {
             axios.post(data.job_active ? data.urls.pause : data.urls.resume, {}, {
               headers: {
@@ -134,7 +133,7 @@ export default function ImporterDetail() {
         </ThemeButton>
         <ThemeButton
           disabled={['Start', 'Running'].includes(data.logs[0]?.status)}
-          variant="secondary Basic"
+          variant="primary Basic"
           onClick={() => {
             axios.post(data.urls.run, {}, {
               headers: {
@@ -158,7 +157,7 @@ export default function ImporterDetail() {
         </ThemeButton>
         <a
           href={data.urls.edit}>
-          <ThemeButton variant="secondary Basic">
+          <ThemeButton variant="primary Basic">
             <EditIcon/> Edit
           </ThemeButton>
         </a>
@@ -200,6 +199,23 @@ export default function ImporterDetail() {
               </div>
             </Grid>
           </Grid>
+          {
+            data.attributes.indicator_data_type ?
+              <Grid container spacing={2}>
+                <Grid item xs={3}>
+                  <div className='DetailSection'>
+                    <div>Indicator type</div>
+                    <div>{data.attributes.indicator_data_type}</div>
+                  </div>
+                </Grid>
+                <Grid item xs={3}>
+                  <div className='DetailSection'>
+                    <div>Indicator name(s)</div>
+                    <div>{data.attributes.indicator_data?.name ? data.attributes.indicator_data?.name : data.attributes.indicator_data_names ? data.attributes.indicator_data_names.join(", ") : '-'}</div>
+                  </div>
+                </Grid>
+              </Grid> : null
+          }
           <Grid container spacing={2}>
             <Grid item xs={3}>
               <div className='DetailSection'>

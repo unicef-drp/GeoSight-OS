@@ -22,7 +22,7 @@ import './style.scss';
  * Georepo authorization.
  */
 export default function GeorepoAuthorizationModal() {
-  if (!useAzureAuth) {
+  if (!USE_GEOREPO_AUTH) {
     return null
   }
   return <div className='GeorepoAuthorization'>

@@ -14,7 +14,7 @@
 */
 
 /* ==========================================================================
-   Data Importer
+   Data Management
    ========================================================================== */
 @import '../../../../app/variables';
 
@@ -37,16 +37,10 @@
     }
   }
 
-  .SelectWithList, {
-    & > div {
-      min-height: 42px;
-    }
-  }
-
   .BasicFormSection,
   .MuiGrid-item {
     & > input {
-      height: 42px;
+      height: $base-height;
     }
   }
 

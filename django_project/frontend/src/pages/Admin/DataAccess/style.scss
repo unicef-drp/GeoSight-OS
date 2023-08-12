@@ -19,59 +19,11 @@
 
 @import '../../../app/variables';
 
-.ListAdminFilters {
-  padding: 0.5rem !important;
-  display: flex;
-  flex-flow: row wrap;
-  margin: 0 1rem 1rem 1rem !important;
-
-  & > div {
-    margin-right: 0.5rem;
-  }
-
-  .MuiFormControl-root {
-    .MuiFormLabel-root {
-      top: -6px;
-    }
-  }
-
-  .MuiInputBase-root {
-    width: 200px;
-
-    input, .MuiSelect-select {
-      padding: 10px;
-      padding-right: 0 !important;
-    }
-  }
-
-  .MuiSelect-icon {
-    transform: rotate(0deg) !important;
-  }
-
-  .ModalDataSelectorSelected {
-    display: none;
-  }
-}
-
 .DataAccessAdmin {
-  display: flex;
-  flex-grow: 1;
-  flex-direction: column;
-  padding: 0 !important;
-  background-color: unset !important;
-
-
-  .DataAccessAdminTable {
-    flex-grow: 1;
-    height: unset !important;
-    background-color: white;
-  }
-
   .Loading {
     text-align: center;
     padding: 200px 20px;
   }
-
   .ModalDataSelectorSelected {
     display: none;
   }
@@ -105,7 +57,6 @@
 
     input {
       padding: 1rem;
-      min-height: 56px;
     }
   }
 }

@@ -14,11 +14,11 @@
  */
 
 import React, { useState } from 'react';
-import CreatableSelect from "react-select/creatable";
 import FormControl from "@mui/material/FormControl";
 import CustomPopover from "../../../../components/CustomPopover";
 import { IconTextField } from "../../../../components/Elements/Input";
-import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import { FilterIcon } from "../../../../components/Icons";
+import { Creatable } from "../../../../components/Input";
 
 /**
  * Filter group
@@ -49,7 +49,7 @@ export function MultipleCreatableFilter(
             : ""
         }
         <IconTextField
-          iconEnd={<FilterAltIcon/>}
+          iconEnd={<FilterIcon/>}
           value={data.length ? data.length + ' selected' : title}
           inputProps={
             { readOnly: true, }
@@ -98,7 +98,7 @@ export function MultipleCreatable({ data, setData }) {
   };
 
 
-  return <CreatableSelect
+  return <Creatable
     components={components}
     inputValue={inputValue}
     isClearable

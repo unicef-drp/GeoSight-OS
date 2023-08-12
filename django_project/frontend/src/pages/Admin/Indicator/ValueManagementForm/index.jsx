@@ -246,7 +246,7 @@ export default function ValueManagement() {
               }}
             />
             <SaveButton
-              variant="secondary"
+              variant="primary"
               text="Submit"
               onClick={evt => {
                 submit()
@@ -260,12 +260,12 @@ export default function ValueManagement() {
 
             <ThemeButton
               disabled={!levelData?.finished || !data}
-              variant="secondary"
+              variant="primary"
               onClick={() => downloadTemplate()}
             >
               Download XLS template
             </ThemeButton>
-            <ThemeButton variant="secondary" onClick={() => setOpen(true)}>
+            <ThemeButton variant="primary" onClick={() => setOpen(true)}>
               Use File to Refill Form
             </ThemeButton>
           </div>

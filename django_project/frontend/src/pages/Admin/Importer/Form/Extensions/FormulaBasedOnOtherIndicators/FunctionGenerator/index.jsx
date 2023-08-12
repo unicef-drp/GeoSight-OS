@@ -14,7 +14,6 @@
  */
 
 import React, { Fragment, useState } from 'react';
-import Select from "react-select";
 import Grid from "@mui/material/Grid";
 import { Input } from "@mui/material";
 import {
@@ -23,6 +22,7 @@ import {
 import { capitalize, nowUTC } from "../../../../../../../utils/main";
 import DateTimeInput from "../../../../../Components/Input/DateTimeInput";
 import { SaveButton } from "../../../../../../../components/Elements/Button";
+import { Select } from "../../../../../../../components/Input";
 
 import './style.scss';
 
@@ -233,7 +233,7 @@ export default function FunctionGenerator(
 
     <div className='Save-Button'>
       <SaveButton
-        variant="secondary"
+        variant="primary"
         text={"Update Selection"}
         disabled={!ready()}
         onClick={() => {

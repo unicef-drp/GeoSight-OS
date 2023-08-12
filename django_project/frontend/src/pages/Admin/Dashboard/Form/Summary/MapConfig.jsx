@@ -147,10 +147,6 @@ export default function MapConfig() {
   }, [north, south, east, west]);
 
   return <div className='ExtentConfig'>
-    <div className='helptext'>
-      Put specific extent boundary or draw on the map below
-    </div>
-    <br/>
     <div className='ExtentInput'>
       <div id="MapConfig"></div>
       <div className='ExtentManualInput'>

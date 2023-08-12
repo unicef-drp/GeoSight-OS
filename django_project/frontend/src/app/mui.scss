@@ -48,10 +48,6 @@
   &.Basic {
     padding: 0.5rem !important;
     min-width: 0;
-
-    svg {
-      margin-right: 0;
-    }
   }
 
   &.Reverse {
@@ -65,6 +61,21 @@
   background-color: $primary-color !important;
   border: 1px solid $primary-color !important;
   color: $anti-primary-color !important;
+
+  &.Reverse {
+    background-color: white !important;
+    border: 1px solid $primary-color !important;
+    color: $primary-color !important;
+  }
+
+  &.JustIcon {
+    background-color: unset !important;
+    border: unset !important;
+
+    &.Mui-disabled {
+      color: $gray-500 !important;
+    }
+  }
 }
 
 .MuiButton-Error {
@@ -74,7 +85,7 @@
 
   &.Reverse {
     background-color: white !important;
-    border: 1px solid white !important;
+    border: 1px solid $error !important;
     color: $error !important;
   }
 
@@ -129,7 +140,6 @@
       background-color: $anti-secondary-color !important;
       border: 1px solid $secondary-color !important;
       color: $secondary-color !important;
-      -webkit-text-fill-color: $secondary-color !important;
 
       svg {
         display: block !important;
@@ -141,6 +151,23 @@
 
 .MuiButton-white {
   border: 1px solid white !important;
+}
+
+.MuiButton-basic {
+  background-color: white !important;
+  border: 1px solid $border-gray !important;
+  color: black !important;
+
+  &.Mui-disabled {
+    background-color: white !important;
+    border: 1px solid $disabled-color !important;
+    color: $disabled-color !important;
+    opacity: 1;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
 }
 
 .MuiButton-primary-text {
@@ -183,9 +210,18 @@
 
   .MuiCheckbox-root {
     color: $gray-600 !important;
+    padding: 0 !important;
 
     &.Mui-checked {
       color: var(--primary-color) !important;
+    }
+  }
+
+  .MuiButtonBase-root {
+    padding: 0 5px;
+
+    .MuiTouchRipple-root {
+      display: none;
     }
   }
 
@@ -197,29 +233,28 @@
     }
   }
 
-  .MuiDataGrid-columnHeader {
-    color: $primary-color;
+  .MuiDataGrid-columnHeaders {
+    background-color: #EAEAEA;
 
-    .MuiButtonBase-root {
-      color: $primary-color;
+    .MuiDataGrid-columnHeader {
+      color: #1212127D;
+      font-size: 11px !important;
+
+      .MuiButtonBase-root {
+        color: $primary-color;
+      }
     }
 
-    .MuiDataGrid-columnHeaderTitle {
-      font-weight: 600 !important;
-    }
   }
 
   .MuiDataGrid-columnSeparator {
     display: none !important;
   }
 
-  .MuiDataGrid-row:hover {
-    background-color: $base-almost-white-color !important;
-  }
-
   .MuiDataGrid-columnHeader,
   .MuiDataGrid-cell {
-    padding: 0 1rem !important;
+    padding: 10px 1rem !important;
+    font-size: 1rem !important;
 
     &.MuiDataGrid-columnHeaderCheckbox {
       padding: 0 !important;
@@ -227,26 +262,43 @@
   }
 
   .MuiDataGrid-cell {
+    .ButtonIcon {
+      height: 100%;
+      width: 100%;
+      padding: 5px;
+      box-sizing: border-box;
+      color: $primary-color;
+      border: 1px solid $primary-color;
+    }
+
     a {
       color: inherit;
       display: block;
-      height: 20px !important;
 
       svg {
-        height: 100%;
-        width: 20px !important;
+        height: 16px;
+        width: 16px;
       }
     }
 
     button {
       &:not(.TextButton) {
+        padding-left: 0 !important;
+
         a {
-          width: 20px !important;
+          height: 25px;
+          width: 25px;
 
           svg {
-            width: 100%;
+            height: 14px;
+            width: 14px;
           }
         }
+      }
+
+      &:hover {
+        background-color: unset;
+        opacity: 0.8;
       }
     }
 
@@ -259,11 +311,13 @@
       }
 
       .MuiButtonBase-root {
-        height: 100%;
-        padding: 0 1rem !important;
+        height: 24px !important;
+        font-size: 11px;
+        padding: 0 0.5rem !important;
+        margin-top: 2px;
 
         svg {
-          height: 20px !important;
+          height: 16px !important;
         }
       }
 
@@ -272,13 +326,52 @@
       }
     }
   }
+
+  .ActionHeader {
+    height: $base-height;
+    box-sizing: border-box;
+    padding: 0 !important;
+
+    a,
+    button {
+      margin-left: 0.5rem;
+    }
+
+    .MuiDataGrid-columnHeaderTitleContainerContent,
+    .MuiDataGrid-columnHeaderTitle,
+    a,
+    button {
+      height: 100%;
+      font-size: 10px !important;
+    }
+
+    a {
+      display: flex;
+    }
+
+    button {
+      padding: 0.5rem !important;
+    }
+
+    svg {
+      height: 8px !important;
+      width: 8px !important;
+    }
+
+    .ActionsColumnHeader {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem 1rem !important;
+      box-sizing: border-box;
+      height: 100%;
+    }
+  }
 }
 
 
 .MuiButton-Div {
   align-items: center;
   display: inline-flex !important;
-  border-radius: $border-radius;
   line-height: 1.5;
 }
 
@@ -340,47 +433,70 @@
   }
 }
 
+// -----------------------------------------------
+// DATA GRID
+// -----------------------------------------------
 .MuiDataGrid-panelContent {
   overflow: visible !important;
 }
 
-// FOR DATA GRID
-.AdminList {
-  .MuiDataGrid-row {
-    max-height: unset !important;
-  }
+.MuiDataGrid-row {
+  max-height: unset !important;
 
   .MuiDataGrid-cell {
-    max-height: unset !important;
-    white-space: normal !important;
-    padding: 0.5rem 1rem !important;
-    min-height: 40px !important;
+    border-bottom: 1px solid $border-gray !important;
+    max-height: $base-height !important;
+    min-height: $base-height !important;
+    white-space: nowrap;
 
-    .MuiDataGrid-cellContent {
-      overflow-y: auto;
+    .MuiDataGrid-cellContent, .CellLink {
       max-height: 150px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     &.MuiDataGrid-ActionsColumn {
       padding: 0 1rem !important;
     }
+  }
 
-    a {
-      height: unset !important;
-
-      & > svg {
-        margin-top: 5px;
-
-      }
-    }
+  .Mui-selected {
+    background-color: $primary-color-transparency;
   }
 }
 
+.MuiDataGrid-footerContainer,
+.MuiTablePagination-toolbar {
+  min-height: $base-height !important;
+  height: $base-height !important;
+  font-size: 12px !important;
+}
+
 .MuiDataGrid-footerContainer {
-  flex-direction: row-reverse;
+  div, p {
+    font-size: 12px !important;
+  }
+
+  .MuiDataGrid-selectedRowCount {
+    opacity: 0 !important;
+  }
+
+  .MuiInputBase-root {
+    margin-right: 5px !important;
+    margin-top: 1px;
+  }
+}
+
+.MuiDataGrid-columnHeaders {
+  border-radius: 0 !important;
+  min-height: $base-height !important;
+  max-height: $base-height !important;
 }
 
 .MuiTextField-root {
+  background-color: white;
+
   textarea {
     border: none !important;
     padding: 0 !important;
@@ -395,6 +511,8 @@
 }
 
 .MuiInputAdornment-root {
+  color: $gray-500 !important;
+
   .MuiCircularProgress-root {
     width: 20px !important;
     height: 20px !important;
@@ -409,12 +527,34 @@
 
 .MuiSnackbar-root {
   background-color: unset !important;
+  padding: 0 !important;
+  height: fit-content !important;
+
+  svg {
+    height: 18px !important;
+    width: 18px !important;
+  }
+
+  .MuiAlert-action {
+    padding: 0;
+
+    .MuiButtonBase-root {
+      padding-top: 0;
+      padding-bottom: 0;
+      height: 32px !important;
+    }
+  }
 }
 
 .MuiDataGrid-cellCheckbox,
 .MuiDataGrid-columnHeaderCheckbox {
   input {
     width: 100% !important;
+  }
+
+  svg {
+    height: 1rem;
+    width: 1rem;
   }
 }
 
@@ -431,6 +571,20 @@
 
   .MuiInputBase-root {
     border-radius: 0;
+    display: flex;
+  }
+
+  .MuiAutocomplete-endAdornment {
+    height: 100%;
+    right: 0 !important;
+    top: 0;
+    width: 25px;
+    display: flex;
+    align-items: center;
+
+    button {
+      color: $svg-gray !important;
+    }
   }
 }
 
@@ -438,4 +592,74 @@
   .MuiPaper-root {
     border-radius: 0;
   }
+
+  .MuiMenuItem-root {
+    font-size: 12px !important;
+
+    svg {
+      height: 14px;
+      width: 14px;
+    }
+  }
+}
+
+.MuiOutlinedInput-root,
+.MuiButton-root {
+  border-radius: 0 !important;
+}
+
+.MuiOutlinedInput-icon {
+  .MuiOutlinedInput-root {
+    padding-right: 1rem !important;
+
+    svg {
+      color: $svg-gray;
+    }
+  }
+}
+
+.MuiAutocomplete-popper {
+  margin: 5px 0 !important;
+
+  .MuiPaper-root {
+    box-shadow: $box-shadow-sm;
+  }
+
+  .MuiAutocomplete-listbox {
+    padding: 0;
+  }
+}
+
+.ReactSelect {
+  & > div {
+    min-height: $base-height;
+    border-radius: 0;
+  }
+
+  .DropdownIndicator {
+    width: $base-height;
+    color: $svg-gray !important;
+    display: flex;
+    align-items: center;
+
+    svg {
+      margin-left: 17px;
+    }
+  }
+
+  .ReactSelect__single-value {
+    font-size: 1rem !important;
+  }
+}
+
+.MuiAutocomplete-option[aria-selected="true"],
+.SelectWithList__option--is-selected,
+.ReactSelect__option--is-selected, {
+  background-color: $primary-color-transparency !important;
+  color: black !important;
+}
+
+.SelectWithList__option--is-focused,
+.ReactSelect__option--is-focused, {
+  background-color: rgba(0, 0, 0, 0.04) !important;
 }

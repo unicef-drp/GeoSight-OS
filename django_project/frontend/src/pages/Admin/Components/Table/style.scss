@@ -25,4 +25,44 @@
       display: none;
     }
   }
+
+  .MuiDataGrid-cell {
+    &.Updated {
+      background-color: $base-alpha-color;
+    }
+
+    .MuiOutlinedInput-root {
+      height: 28px;
+    }
+  }
+}
+
+.AdminListHeader {
+  display: flex;
+  background-color: white;
+  align-items: center;
+  padding: 0 20px;
+  font-size: 12px !important;
+
+  .Separator {
+    height: $base-height;
+  }
+
+  .AdminListHeader-Count {
+    &.Empty {
+      color: $gray-400;
+    }
+  }
+
+  button {
+    height: 24px;
+    font-size: 12px !important;
+    min-width: 80px !important;
+    margin-left: 5px;
+
+    svg {
+      height: 10px;
+      width: 10px;
+    }
+  }
 }

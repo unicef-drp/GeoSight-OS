@@ -174,7 +174,7 @@ export default function Embed({ map }) {
         </ModalContent>
         <ModalFooter>
           <SaveButton
-            variant="secondary"
+            variant="primary"
             text='Generate'
             disabled={code === 'Generating'}
             onClick={() => {

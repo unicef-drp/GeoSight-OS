@@ -23,7 +23,6 @@
   flex-grow: 1;
   padding: 0 !important;
   display: flex;
-  flex-direction: column;
   overflow: hidden;
   background-color: unset !important;
   position: relative;
@@ -54,59 +53,27 @@
     }
   }
 
-  // Tab form
+
   & > .TabPrimary {
-    display: flex;
-    flex-direction: row-reverse;
+    background-color: white !important;
+    border-right: 1px solid $border-gray;
+    display: block;
+    min-width: 200px;
+    border-bottom: unset;
 
-    div {
-      border: 1px solid $gray-200;
-    }
-  }
+    & > div {
+      cursor: pointer;
+      padding: 9px 1rem;
+      text-align: left;
+      border: unset !important;
 
-  &.Wizard {
-    .TabPrimary {
-      div {
-        width: fit-content;
-        position: relative;
-        padding-left: 1.5rem;
-        padding-right: 1rem;
-        min-width: 5rem;
+      &:hover {
+        color: $primary-color;
+      }
 
-        &:hover {
-          &:after {
-            border-left: 10px solid $gray-100;
-          }
-        }
-
-        &.Disabled {
-          &:after {
-            border-left: 10px solid $gray-100;
-          }
-        }
-
-        &:last-child {
-          padding-left: 1rem;
-        }
-
-        &:after {
-          position: absolute;
-          top: 0;
-          left: 100%;
-          content: '';
-          border-left: 10px solid white;
-          border-top: 20px solid transparent;
-          border-bottom: 20px solid transparent;
-        }
-
-        &.Selected {
-          background: $primary-color;
-          color: $anti-primary-color;
-
-          &:after {
-            border-left-color: $primary-color;
-          }
-        }
+      &.Selected {
+        background: $primary-color-transparency !important;
+        border: unset !important;
       }
     }
   }

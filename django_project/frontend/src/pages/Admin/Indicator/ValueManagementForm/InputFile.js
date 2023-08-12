@@ -252,7 +252,7 @@ export default function InputFile({ data, apply, open, setOpen }) {
 
           <div>
             <SaveButton
-              variant="secondary"
+              variant="primary"
               text="Apply"
               disabled={
                 !attributes[sheetName].value ||

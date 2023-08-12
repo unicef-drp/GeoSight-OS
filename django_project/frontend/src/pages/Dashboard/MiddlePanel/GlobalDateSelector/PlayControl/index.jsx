@@ -26,7 +26,7 @@ import StopIcon from '@mui/icons-material/Stop';
 import { ThemeButton } from "../../../../../components/Elements/Button";
 import { allLayerDataIsReady } from "../../../../../utils/indicatorLayer";
 import { returnWhere } from "../../../../../utils/queryExtraction";
-import { NextEnd, PrevEnd } from "../../../../../components/Icons/svg";
+import { NextEndIcon, PrevEndIcon } from "../../../../../components/Icons/svg";
 
 import './style.scss';
 
@@ -124,7 +124,7 @@ export default function PlayControl(
         stop()
         setNextIdx(0)
       }}>
-      <PrevEnd/>
+      <PrevEndIcon/>
     </ThemeButton>
     <ThemeButton
       tabIndex="-1"
@@ -172,7 +172,7 @@ export default function PlayControl(
         stop()
         setNextIdx(dates.length - 1)
       }}>
-      <NextEnd/>
+      <NextEndIcon/>
     </ThemeButton>
     {children}
   </div>

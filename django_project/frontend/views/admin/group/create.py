@@ -37,7 +37,7 @@ class GroupCreateView(RoleSuperAdminRequiredMixin, AdminBaseView):
     @property
     def content_title(self):
         """Return content title that used on page title indicator."""
-        list_url = reverse('admin-group-list-view')
+        list_url = reverse('admin-user-and-group-list-view') + '#Groups'
         create_url = reverse('admin-group-create-view')
         return (
             f'<a href="{list_url}">Groups</a> '
@@ -60,17 +60,21 @@ class GroupCreateView(RoleSuperAdminRequiredMixin, AdminBaseView):
         form = GroupForm(request.POST)
         if form.is_valid():
             users = []
-            for key, value in request.POST.items():
-                if 'user-' in key:
-                    users.append(User.objects.get(id=value))
+
+            # Add user to group
+            for _id in request.POST.get('users', '').split(','):
+                try:
+                    users.append(User.objects.get(id=_id))
+                except (ValueError, User.DoesNotExist):
+                    pass
             group = form.save()
             group.permission.creator = request.user
             group.permission.save()
-            for user in group.user_set.all():
-                user.groups.remove(group)
             for user in users:
                 user.groups.add(group)
-            return redirect(reverse('admin-group-list-view'))
+            return redirect(
+                reverse('admin-user-and-group-list-view') + '#Groups'
+            )
         context = self.get_context_data(**kwargs)
         context['form'] = form
         return render(

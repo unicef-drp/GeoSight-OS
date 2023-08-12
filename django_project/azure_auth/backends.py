@@ -154,6 +154,7 @@ class AzureAuthBackend(ModelBackend):
         :return: Django user instance
         """
         output = None
+        user_ = None
         try:
             if not token:
                 return output
@@ -180,10 +181,17 @@ class AzureAuthBackend(ModelBackend):
 
             output = user
         except InvalidUserError as e:
+            request.session['b2c_user'] = user_
             raise e
         except Exception as e:
             logger.exception(e)
         logger.debug("authenticate: %s", output)
+
+        if output is not None:
+            try:
+                del request.session['b2c_user']
+            except KeyError:
+                pass
         return output
 
     def get_user(self, user_id):

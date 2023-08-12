@@ -26,11 +26,11 @@ import FormLabel from "@mui/material/FormLabel";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import RemoveIcon from '@mui/icons-material/Remove';
 
 import { DEFINITION } from "../index"
 import Modal, { ModalContent, ModalHeader } from "../../Modal";
 import { indicatorLayersLikeIndicator } from "../../../utils/indicatorLayer";
+import { RemoveIcon } from "../../Icons";
 
 /**
  * Edit section for widget.

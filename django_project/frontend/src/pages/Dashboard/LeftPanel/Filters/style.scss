@@ -421,6 +421,11 @@
     background: $base-alpha-color;
     padding: 10px;
 
+    .SelectWithSearchInput {
+      height: 56px;
+      background-color: white;
+    }
+
     .FilterEditModalQueryField {
       max-width: 40%;
     }
@@ -443,10 +448,6 @@
 
     .MuiAutocomplete-root {
       flex-grow: 1;
-
-      .MuiOutlinedInput-root {
-        min-height: 56px;
-      }
     }
 
     .MuiInputSliderWithInput {

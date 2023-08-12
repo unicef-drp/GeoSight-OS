@@ -112,6 +112,14 @@ class ImporterSerializer(DynamicModelSerializer):
                         pk=attrs['indicator_data_value']
                     )
                 ).data
+            else:
+                log = obj.importerlog_set.all().first()
+                if log:
+                    attrs['indicator_data_names'] = list(
+                        set(log.importerlogdata_set.all().values_list(
+                            'data__indicator_name', flat=True))
+                    )
+
         except Indicator.DoesNotExist:
             pass
         return attrs

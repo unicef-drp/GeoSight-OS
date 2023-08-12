@@ -21,40 +21,9 @@ from rest_framework.views import APIView
 
 from geosight.data.models.indicator import Indicator
 from geosight.georepo.models.entity import Entity
-from geosight.georepo.models.reference_layer import (
-    ReferenceLayer
-)
 from geosight.georepo.models.reference_layer_indicator_value import (
     reference_layer_indicator_values
 )
-from geosight.georepo.request.request import GeorepoRequest
-
-
-class ReferenceLayerListAPI(APIView):
-    """Return ReferenceLayer list."""
-
-    def get(self, request):
-        """Return BasemapLayer list."""
-        reference_layers = GeorepoRequest().get_reference_layer_list()
-        for reference_layer in reference_layers:
-            obj, _ = ReferenceLayer.objects.get_or_create(
-                identifier=reference_layer['uuid'],
-                defaults={
-                    'name': reference_layer['name']
-                }
-            )
-            reference_layer['id'] = obj.id
-        return Response(reference_layers)
-
-
-class ReferenceLayerDetailAPI(APIView):
-    """Return ReferenceLayer Detail."""
-
-    def get(self, request, identifier):
-        """Return BasemapLayer list."""
-        return Response(
-            GeorepoRequest().get_reference_layer_detail(identifier)
-        )
 
 
 class ReferenceLayerEntityDrilldownAPI(APIView):

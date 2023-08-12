@@ -33,6 +33,7 @@
       {% endif %}
 
       const definition = {{ definition|safe }};
+      const projectCategories = {{ categories|safe }};
       const batch = null
       let editMode = true;
       urls.api = {

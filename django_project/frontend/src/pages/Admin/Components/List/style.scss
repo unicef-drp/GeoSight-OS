@@ -20,17 +20,20 @@
 @import '../../../../app/variables';
 
 .AdminList {
-  background-color: white;
+  background-color: unset !important;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
   min-height: 0;
-  overflow: hidden;
+  margin: 0 !important;
   padding: 0 !important;
+  border-radius: $border-radius !important;
+  overflow: hidden;
 
   .MoreActionIcon {
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
+    color: $primary-color;
 
     svg {
       width: 100%;
@@ -42,6 +45,7 @@
     height: 100%;
     width: 100%;
     position: relative;
+    background-color: white;
 
     .AdminTableError {
       color: $error;
@@ -71,6 +75,11 @@
   .CellError {
     color: white;
     background-color: $error;
+  }
+
+  .CellWarning {
+    color: white;
+    background-color: #ed6c02;
   }
 
   .FlexCell {

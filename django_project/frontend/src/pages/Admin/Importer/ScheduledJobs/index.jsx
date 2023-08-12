@@ -1,44 +1,45 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 import React, { Fragment, useRef, useState } from 'react';
+import $ from "jquery";
 import axios from "axios";
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 
-import { ThemeButton } from "../../../../components/Elements/Button";
 import {
   Notification,
   NotificationStatus
 } from "../../../../components/Notification";
-import { render } from '../../../../app';
-import { store } from '../../../../store/admin';
-import { pageNames } from '../../index';
-import { AdminList } from "../../AdminList";
-import { urlParams } from "../../../../utils/main";
-import { COLUMNS_ACTION } from "../../Components/List";
+import { pageNames } from "../../index";
 import { COLUMNS } from "../utils";
+import { COLUMNS_ACTION } from "../../Components/List";
+import { ThemeButton } from "../../../../components/Elements/Button";
+import { AdminListContent } from "../../AdminList";
+import { UploadIcon } from "../../../../components/Icons";
+import { urlParams } from "../../../../utils/main";
 
 import './style.scss';
-import $ from "jquery";
+
+const { search } = urlParams()
 
 /**
  * Indicator List App
  */
-export default function ScheduledJobs() {
+export default function ScheduledJobs({ ...props }) {
   const [selectionModel, setSelectionModel] = useState([]);
   const listRef = useRef(null);
   // Notification
@@ -47,7 +48,6 @@ export default function ScheduledJobs() {
     notificationRef?.current?.notify(newMessage, newSeverity)
   }
 
-  const { search } = urlParams()
   const pageName = pageNames.ScheduleJobs
   const columns = [
     COLUMNS.ID,
@@ -55,7 +55,7 @@ export default function ScheduledJobs() {
       renderCell: (params) => {
         return <a
           className='MuiButtonLike CellLink'
-          href={urls.api.detailView.replace('/0', `/${params.id}`)}>
+          href={urls.api.scheduledJobs.detailView.replace('/0', `/${params.id}`)}>
           {params.value}
         </a>
       }
@@ -72,7 +72,7 @@ export default function ScheduledJobs() {
         const data = params.row
         const actions = [].concat(
           COLUMNS_ACTION(
-            params, urls.admin.scheduledJobs, urls.api.edit, urls.api.detail
+            params, urls.admin.scheduledJobs, urls.api.scheduledJobs.edit, urls.api.scheduledJobs.detail
           )
         );
         actions.unshift(
@@ -81,7 +81,7 @@ export default function ScheduledJobs() {
             icon={
               user.is_admin || params.row.creator === user.id ?
                 <ThemeButton
-                  variant="secondary Basic"
+                  variant="primary Reverse Basic"
                   onClick={() => {
                     axios.post(data.job_active ? data.urls.pause : data.urls.resume, {}, {
                       headers: {
@@ -118,10 +118,10 @@ export default function ScheduledJobs() {
     })
   ];
   return <Fragment>
-    <AdminList
+    <AdminListContent
       columns={columns}
       pageName={pageName}
-      listUrl={urls.api.list}
+      listUrl={urls.api.scheduledJobs.list}
       searchDefault={search}
       sortingDefault={[{ field: 'job_name', sort: 'asc' }]}
       selectionChanged={setSelectionModel}
@@ -129,11 +129,11 @@ export default function ScheduledJobs() {
       rightHeader={
         <Fragment>
           <ThemeButton
-            variant="secondary Basic"
+            variant="primary Basic"
             disabled={!selectionModel.length}
             onClick={() => {
               $.ajax({
-                url: urls.api.list,
+                url: urls.api.scheduledJobs.list,
                 method: 'PUT',
                 data: {
                   'ids': JSON.stringify(selectionModel),
@@ -155,11 +155,11 @@ export default function ScheduledJobs() {
             <PauseIcon/> Pause Selected
           </ThemeButton>
           <ThemeButton
-            variant="secondary Basic"
+            variant="primary Basic"
             disabled={!selectionModel.length}
             onClick={() => {
               $.ajax({
-                url: urls.api.list,
+                url: urls.api.scheduledJobs.list,
                 method: 'PUT',
                 data: {
                   'ids': JSON.stringify(selectionModel),
@@ -180,12 +180,17 @@ export default function ScheduledJobs() {
             }}>
             <PlayArrowIcon/> Resume Selected
           </ThemeButton>
+          <a
+            href={urls.admin.importer}>
+            <ThemeButton variant="primary">
+              <UploadIcon/> Import Data
+            </ThemeButton>
+          </a>
         </Fragment>
       }
       ref={listRef}
+      {...props}
     />
     <Notification ref={notificationRef}/>
   </Fragment>
 }
-
-render(ScheduledJobs, store)

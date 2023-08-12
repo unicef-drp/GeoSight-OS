@@ -31,6 +31,7 @@
   .LayerCountIndicatorWrapper {
     display: flex;
     width: 122px;
+    color: $primary-color;
 
     div:first-child {
       flex-grow: 1;
@@ -39,13 +40,12 @@
     .LayerCountIndicator {
       width: fit-content;
       height: 22px;
-      margin-top: 7px;
       display: block;
       margin-left: 0.5rem;
       background: white;
       border-radius: $border-radius;
       text-align: center;
-      padding: 2px 10px 0 10px;
+      padding: 7px 10px 0 10px;
       border: 1px solid $primary-color;
       font-size: 0.8rem;
       white-space: nowrap;
@@ -82,12 +82,13 @@
   .Section {
     background-color: unset !important;
     position: relative;
+  }
 
-    .SaveButton {
-      position: absolute;
-      top: -0.5rem;
-      right: 1rem
-    }
+  .SaveButton-Section {
+    margin-bottom: 1rem;
+    margin-right: 1rem;
+    display: flex;
+    flex-direction: row-reverse;
   }
 
   .OverrideAdminLevel {

@@ -96,7 +96,7 @@ export default function WhereInputModal(
           fields ?
             <div className='Save-Button'>
               <SaveButton
-                variant="secondary"
+                variant="primary"
                 text={"Apply"}
                 onClick={() => {
                   setValue(where)

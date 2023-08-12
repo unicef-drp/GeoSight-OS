@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 /* ==========================================================================
    Bookmark
@@ -23,7 +23,6 @@ import { useDispatch, useSelector } from "react-redux";
 import StarIcon from "@mui/icons-material/Star";
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import TextField from "@mui/material/TextField";
-import EditIcon from '@mui/icons-material/Edit';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 import { fetchingData } from "../../../../Requests";
@@ -45,6 +44,7 @@ import {
 } from "../../LeftPanel/IndicatorLayers";
 
 import './style.scss';
+import { EditIcon } from "../../../../components/Icons";
 
 /**
  * Bookmark component.
@@ -356,7 +356,7 @@ export default function Bookmark({ map }) {
         </ModalContent>
         <ModalFooter>
           <SaveButton
-            variant="secondary"
+            variant="primary"
             text='Submit'
             onClick={() => {
               if (bookmarkSave) {

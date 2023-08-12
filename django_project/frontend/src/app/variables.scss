@@ -19,6 +19,9 @@
 
 /* Settings */
 $base-hovered-opacity: 0.8;
+$base-height: 36px;
+$base-input-height: 36px;
+$base-input-padding: 10px 1rem;
 
 /* Customized Theme */
 $primary-color: var(--primary-color);
@@ -29,13 +32,19 @@ $tertiary-color: var(--tertiary-color);
 $anti-tertiary-color: var(--anti-tertiary-color);
 
 /* Colors */
+$disabled-color: #C0C0C0;
+$border-gray: #E6E8E8;
+$primary-color-transparency: #DCEEF8;
+$svg-gray: #adb5bd;
 $base-black-color: rgba(0, 0, 0, 0.87);
 $base-to-white-color: #F4F4F4;
 $base-almost-white-color: #FAFAFA;
 $base-almost-gray-color: #DDDDDD;
-$base-alpha-color: #1CABE220;
+$base-alpha-color: #1CABE215;
 $base-shadow-box: 0 0 16px 4px rgba(#000000, 0.1);
 $disabled-color: #CCCCCC;
+$base-gray: rgba(217, 217, 217, 0.4);
+$base-gray-to-white: rgba(217, 217, 217, 0.2);
 
 
 $white: #fff !default;
@@ -59,7 +68,7 @@ $error: #d32f2f !default;
 $ok: #00a51b !default;
 
 /* Fonts */
-$root-font-size: 16px;
+$root-font-size: 12px;
 
 $base-font-color: $primary-color;
 $base-font-family: 'Inter';

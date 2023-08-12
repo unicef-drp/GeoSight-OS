@@ -41,24 +41,23 @@ let conf = {
     AdminContextLayerForm: ['./src/pages/Admin/ContextLayer/Form'],
     AdminStyleList: ['./src/pages/Admin/Style/List'],
     AdminStyleForm: ['./src/pages/Admin/Style/Form'],
-    AdminUserList: ['./src/pages/Admin/User/List'],
-    AdminUserForm: ['./src/pages/Admin/User/Form'],
-    AdminGroupList: ['./src/pages/Admin/Group/List'],
-    AdminGroupForm: ['./src/pages/Admin/Group/Form'],
+    AdminUserForm: ['./src/pages/Admin/UserAndGroup/User/Form'],
+    AdminGroupForm: ['./src/pages/Admin/UserAndGroup/Group/Form'],
+    AdminUserGroupList: ['./src/pages/Admin/UserAndGroup/List'],
     AdminDataset: ['./src/pages/Admin/Dataset'],
     AdminDataAccess: ['./src/pages/Admin/DataAccess'],
     AdminRelatedTableList: ['./src/pages/Admin/RelatedTable/List'],
     AdminRelatedTableData: ['./src/pages/Admin/RelatedTable/Data'],
+
+    // DATA MANAGEMENT
+    AdminDataManagement: ['./src/pages/Admin/Importer/List'],
     AdminImporter: ['./src/pages/Admin/Importer/Form'],
     AdminImporterDetail: ['./src/pages/Admin/Importer/ImporterDetail'],
-    AdminImporterLogs: ['./src/pages/Admin/Importer/Logs'],
-    AdminScheduledJobs: ['./src/pages/Admin/Importer/ScheduledJobs'],
     AdminImporterLogDetail: ['./src/pages/Admin/Importer/LogDetail'],
     AdminImporterLogData: ['./src/pages/Admin/Importer/LogData'],
 
     // ACCESS REQUEST
-    AdminAccessRequestUserList: ['./src/pages/Admin/AccessRequest/List/User'],
-    AdminAccessRequestPermissionList: ['./src/pages/Admin/AccessRequest/List/Permission'],
+    AdminAccessRequestList: ['./src/pages/Admin/AccessRequest/List'],
     AdminAccessRequestUserDetail: ['./src/pages/Admin/AccessRequest/Detail/User'],
     AdminAccessRequestPermissionDetail: ['./src/pages/Admin/AccessRequest/Detail/Permission'],
 
@@ -73,6 +72,25 @@ let conf = {
   },
   module: {
     rules: [
+      {
+        test: /\.svg$/,
+        use: [
+          { loader: 'babel-loader' },
+          {
+            loader: 'react-svg-loader',
+            options: {
+              jsx: true,
+              svgo: {
+                plugins: [
+                  {
+                    removeViewBox: false,
+                  },
+                ],
+              }
+            },
+          },
+        ],
+      },
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,

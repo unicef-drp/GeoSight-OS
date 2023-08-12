@@ -17,29 +17,13 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.conf.urls import url
 
 from geosight.georepo.api import (
-    ReferenceLayerListAPI, ReferenceLayerDetailAPI,
     ReferenceLayerEntityDrilldownAPI
 )
-from geosight.georepo.authentication.views import azure_auth_georepo_login
 
 urlpatterns = [
-    url(
-        r'^reference-layer/list',
-        ReferenceLayerListAPI.as_view(),
-        name='reference-layer-list-api'
-    ),
-    url(
-        r'^reference-layer/(?P<identifier>[^/]+)',
-        ReferenceLayerDetailAPI.as_view(),
-        name='reference-layer-detail-api'
-    ),
     url(
         r'^entity/(?P<concept_uuid>[^/]+)/drilldown',
         ReferenceLayerEntityDrilldownAPI.as_view(),
         name='entity-drilldown-api'
-    ),
-    url(
-        "azure-auth/georepo/login",
-        azure_auth_georepo_login,
-        name="georepo_login"),
+    )
 ]

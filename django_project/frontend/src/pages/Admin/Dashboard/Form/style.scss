@@ -85,38 +85,8 @@ main {
 
 .DashboardForm {
   display: flex;
-  flex-direction: column;
   height: 100%;
   width: 100%;
-
-  .TabPrimary {
-    div {
-      min-width: 0;
-      border: 1px solid $gray-200;
-    }
-  }
-
-  .DashboardFormHeader {
-    display: flex;
-
-    & > div {
-      cursor: pointer;
-      padding: 0.5rem 1rem;
-
-      &:hover {
-        color: $primary-color;
-      }
-
-      &.active {
-        background: $primary-color;
-        color: $anti-primary-color;
-
-        &:hover {
-          color: $anti-primary-color;
-        }
-      }
-    }
-  }
 
   .DashboardFormContent {
     background-color: white;
@@ -124,6 +94,10 @@ main {
     min-height: 0;
     padding: 1rem;
     overflow-y: auto;
+
+    .AdminForm {
+      flex-direction: column;
+    }
 
     & > div {
       display: none;
@@ -292,7 +266,7 @@ main {
 
 .AdminSelectDataForm {
   .Save-Button {
-    margin-left: auto;
+    margin: 1rem 1rem 1rem auto;
     padding: 0;
   }
 }

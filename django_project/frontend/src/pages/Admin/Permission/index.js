@@ -14,17 +14,14 @@
  */
 
 import React, { Fragment, useEffect, useState } from 'react';
+import $ from "jquery";
 
-import ShareIcon from '@mui/icons-material/Share';
 import CircularProgress from '@mui/material/CircularProgress';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import DoDisturbOnIcon from '@mui/icons-material/DoDisturbOn';
-import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
+import { GridActionsCellItem } from "@mui/x-data-grid";
 
 import Modal, {
   ModalContent,
@@ -39,12 +36,13 @@ import {
 } from "../../../components/Elements/Button";
 import { fetchJSON } from "../../../Requests";
 import { dictDeepCopy } from "../../../utils/main";
-
-import './style.scss';
-import $ from "jquery";
 import { IconTextField } from "../../../components/Elements/Input";
 import SearchIcon from "@mui/icons-material/Search";
 import { USER_COLUMNS } from "../ModalSelector/User";
+import { ShareIcon } from "../../../components/Icons";
+import { MainDataGrid } from "../../../components/MainDataGrid";
+
+import './style.scss';
 
 /**
  * Permission Configuration Form Table data selection
@@ -171,7 +169,7 @@ export function PermissionFormTableDataSelection(
             <CircularProgress/>
           </div> :
           <div style={{ height: '400px' }}>
-            <DataGrid
+            <MainDataGrid
               rows={rows}
               columns={columns}
               pageSize={20}
@@ -193,7 +191,7 @@ export function PermissionFormTableDataSelection(
       }
       <div className='Save-Button'>
         <SaveButton
-          variant="secondary"
+          variant="primary"
           text={"Add " + permissionLabel + 's'}
           onClick={() => {
             const newData = data.filter(row => {
@@ -252,7 +250,7 @@ export function UpdatePermissionModal(
     <ModalFooter>
       <div className='Save-Button'>
         <SaveButton
-          variant="secondary"
+          variant="primary"
           text={"Apply Changes"}
           onClick={() => {
             selectedPermission(selected)
@@ -290,7 +288,7 @@ export function PermissionFormTable(
     <div className='PermissionFormTableHeader'>
       <DeleteButton
         disabled={!selectionModel.length}
-        variant="secondary Reverse"
+        variant="primary Reverse"
         text={"Delete"}
         onClick={() => {
           if (confirm(`Do you want to delete the selected ${permissionLabel.toLowerCase()}s?`) === true) {
@@ -302,14 +300,14 @@ export function PermissionFormTable(
       />
       <EditButton
         disabled={!selectionModel.length}
-        variant="secondary Reverse"
+        variant="primary Reverse"
         text={"Change permission"}
         onClick={() => {
           setOpenPermission(true)
         }}
       />
       <AddButton
-        variant="secondary"
+        variant="primary"
         text={"Share to new " + permissionLabel.toLowerCase() + "(s)"}
         onClick={() => {
           setOpen(true)
@@ -317,7 +315,7 @@ export function PermissionFormTable(
       />
     </div>
     <div className='PermissionFormTable MuiDataGridTable'>
-      <DataGrid
+      <MainDataGrid
         rows={dataList}
         isRowSelectable={(params) => !params.row.creator}
         columns={columns.concat([
@@ -434,135 +432,97 @@ export function PermissionForm({ data, setData, additionalTabs = {} }) {
           <CircularProgress/>
         </div> :
         <div className={'PermissionForm BasicForm ' + tab}>
-          <div className='TabPrimary'>
-            <div className={tab === 'UserAccess' ? 'Selected' : ''}
-                 onClick={() => setTab('UserAccess')}>
-              User Access ({data.user_permissions.length})
+          <div>
+            {/* ORGANIZATION ACCESS */}
+            <div className='GeneralAccess'>
+              {/* PUBLIC ACCESS */}
+              <label className="form-label">Public Access</label>
+              <div className='Separator'></div>
+              <FormControl className='BasicForm'>
+                <Select
+                  name="radio-buttons-group"
+                  value={data.public_permission}
+                  onChange={(evt) => {
+                    data.public_permission = evt.target.value
+                    setData({ ...data })
+                  }}
+                >
+                  {
+                    data.choices.public_permission.map(choice => {
+                      return <MenuItem
+                        key={choice[0]}
+                        value={choice[0]}>{choice[1]}</MenuItem>
+                    })
+                  }
+                </Select>
+              </FormControl>
             </div>
-            <div className={tab === 'GroupAccess' ? 'Selected' : ''}
-                 onClick={() => setTab('GroupAccess')}>
-              Group Access ({data.group_permissions.length})
+            {/* OTHER ACCESS */}
+            <div className='TabPrimary'>
+              <div className={tab === 'UserAccess' ? 'Selected' : ''}
+                   onClick={() => setTab('UserAccess')}>
+                User Access ({data.user_permissions.length})
+              </div>
+              <div className={tab === 'GroupAccess' ? 'Selected' : ''}
+                   onClick={() => setTab('GroupAccess')}>
+                Group Access ({data.group_permissions.length})
+              </div>
+              {
+                Object.keys(additionalTabs).map(key => {
+                  return <div
+                    key={key}
+                    className={tab === key ? 'Selected' : ''}
+                    onClick={() => setTab(key)}>
+                    {key}
+                  </div>
+                })
+              }
             </div>
-            <div className={tab === 'GeneralAccess' ? 'Selected' : ''}
-                 onClick={() => setTab('GeneralAccess')}>
-              General Access
-            </div>
+            {/* USERS ACCESS */}
+            {
+              tab === "UserAccess" ?
+                <div className="UserAccess">
+                  <PermissionFormTable
+                    permissionLabel='User'
+                    columns={USER_COLUMNS}
+                    data={data}
+                    dataListKey='user_permissions'
+                    setData={setData}
+                    permissionChoices={data.choices.user_permission}
+                    dataUrl={urls.api.users + '?role__in=Contributor,Creator,Super%20Admin'}
+                  />
+                </div> : null
+            }
+
+            {/* GROUP ACCESS */}
+            {
+              tab === "GroupAccess" ?
+                <div className="GroupAccess">
+                  <PermissionFormTable
+                    permissionLabel='Group'
+                    columns={[
+                      { field: 'id', headerName: 'id', hide: true },
+                      { field: 'name', headerName: 'Group name', flex: 1 },
+                    ]}
+                    data={data}
+                    dataListKey='group_permissions'
+                    setData={setData}
+                    permissionChoices={data.choices.group_permission}
+                    dataUrl={urls.api.groups}
+                  />
+                </div> : ""
+            }
+
+            {/* OTHER TABS */}
             {
               Object.keys(additionalTabs).map(key => {
-                return <div
-                  key={key}
-                  className={tab === key ? 'Selected' : ''}
-                  onClick={() => setTab(key)}>
-                  {key}
-                </div>
+                if (tab === key) {
+                  return additionalTabs[key]
+                }
+                return null
               })
             }
           </div>
-          {/* USERS ACCESS */}
-          {
-            tab === "UserAccess" ?
-              <div className="UserAccess">
-                <PermissionFormTable
-                  permissionLabel='User'
-                  columns={USER_COLUMNS}
-                  data={data}
-                  dataListKey='user_permissions'
-                  setData={setData}
-                  permissionChoices={data.choices.user_permission}
-                  dataUrl={urls.api.users + '?role__in=Contributor,Creator,Super%20Admin'}
-                />
-              </div> : null
-          }
-
-          {/* GROUP ACCESS */}
-          {
-            tab === "GroupAccess" ?
-              <div className="GroupAccess">
-                <PermissionFormTable
-                  permissionLabel='Group'
-                  columns={[
-                    { field: 'id', headerName: 'id', hide: true },
-                    { field: 'name', headerName: 'Group name', flex: 1 },
-                  ]}
-                  data={data}
-                  dataListKey='group_permissions'
-                  setData={setData}
-                  permissionChoices={data.choices.group_permission}
-                  dataUrl={urls.api.groups}
-                />
-              </div> : ""
-          }
-
-          {/* ORGANIZATION ACCESS */}
-          {
-            tab === "GeneralAccess" ?
-              <div className='GeneralAccess'>
-
-                {/* We don't use organization anymore */}
-                {/*<div className="BasicFormSection">*/}
-                {/*  <div>*/}
-                {/*    <label className="form-label">*/}
-                {/*      Organization Access*/}
-                {/*    </label>*/}
-                {/*  </div>*/}
-                {/*  <FormControl>*/}
-                {/*    <RadioGroup*/}
-                {/*      value={data.organization_permission}*/}
-                {/*      name="radio-buttons-group"*/}
-                {/*      onChange={(evt) => {*/}
-                {/*        data.organization_permission = evt.target.value*/}
-                {/*        setData({ ...data })*/}
-                {/*      }}*/}
-                {/*    >*/}
-                {/*      {*/}
-                {/*        data.choices.organization_permission.map(choice => {*/}
-                {/*          return <FormControlLabel*/}
-                {/*            key={choice[0]}*/}
-                {/*            value={choice[0]} control={<Radio/>}*/}
-                {/*            label={choice[1]}/>*/}
-                {/*        })*/}
-                {/*      }*/}
-                {/*    </RadioGroup>*/}
-                {/*  </FormControl>*/}
-                {/*</div>*/}
-
-                {/* PUBLIC ACCESS */}
-                <div className="BasicFormSection">
-                  <div>
-                    <label className="form-label">Public Access</label>
-                  </div>
-                  <FormControl>
-                    <RadioGroup
-                      value={data.public_permission}
-                      name="radio-buttons-group"
-                      onChange={(evt) => {
-                        data.public_permission = evt.target.value
-                        setData({ ...data })
-                      }}
-                    >
-                      {
-                        data.choices.public_permission.map(choice => {
-                          return <FormControlLabel
-                            key={choice[0]}
-                            value={choice[0]} control={<Radio/>}
-                            label={choice[1]}/>
-                        })
-                      }
-                    </RadioGroup>
-                  </FormControl>
-                </div>
-              </div> : null
-          }
-
-          {/* OTHER TABS */}
-          {
-            Object.keys(additionalTabs).map(key => {
-              if (tab === key) {
-                return additionalTabs[key]
-              }
-              return null
-            })
-          }
         </div>
     }
   </Fragment>
@@ -605,7 +565,9 @@ export default function PermissionModal(
   }, [defaultData])
 
   return <Fragment>
-    <ShareIcon onClick={() => setOpen(true)}/>
+    <div className='ButtonIcon' onClick={() => setOpen(true)}>
+      <ShareIcon onClick={() => setOpen(true)}/>
+    </div>
     <Modal
       className='PermissionFormModal'
       open={open}
@@ -628,7 +590,7 @@ export default function PermissionModal(
         <div className='Save-Button'>
           <SaveButton
             disabled={uploaded}
-            variant="secondary"
+            variant="primary"
             text={"Apply Changes"}
             onClick={() => {
               setUploaded(true)

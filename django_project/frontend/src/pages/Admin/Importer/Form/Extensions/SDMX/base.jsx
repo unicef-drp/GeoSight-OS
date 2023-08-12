@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 import React, {
   forwardRef,
@@ -22,11 +22,11 @@ import React, {
 } from 'react';
 import axios from "axios";
 import CircularProgress from "@mui/material/CircularProgress";
-import { DataGrid } from "@mui/x-data-grid";
 import { usePapaParse } from 'react-papaparse';
 
 import { updateDataWithSetState } from "../../utils";
 import { IconTextField } from "../../../../../../components/Elements/Input";
+import { MainDataGrid } from "../../../../../../components/MainDataGrid";
 
 import './style.scss';
 
@@ -176,7 +176,7 @@ export const BaseSDMXForm = forwardRef(
         <label className="form-label" htmlFor="group">
           Retrieved data
         </label>
-        <DataGrid
+        <MainDataGrid
           style={{ height: "500px" }}
           rows={loading ? [] : requestData ? requestData : []}
           columns={requestData ? Object.keys(requestData[0]).map(key => {
