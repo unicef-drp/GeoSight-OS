@@ -37,7 +37,7 @@ markdown_extensions:
 
 nav:
         - Home:
-                                # Pages to render but exclude from Nav
+                # Pages to render but exclude from Nav
                 - index.md
                 - About: about/index.md
                 - Contributing: about/contributing.md
@@ -55,14 +55,12 @@ nav:
                         - Manual: 
                                 - user/manual/index.md
                                 - Home Page: user/manual/home.md
-                - Overview:
         - Administrators:
                         - Guide:
                         - administrator/index.md
                         - Manual:
                                 - administrator/guide/index.md
                                 - administrator/manual/index.md
-                - Overview:
         - Developers:
                         - developer/index.md
                                 - developer/api/index.md
