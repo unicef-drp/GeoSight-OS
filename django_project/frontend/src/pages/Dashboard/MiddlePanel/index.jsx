@@ -45,6 +45,10 @@ export default function MiddlePanel(
     <div className='BottomContent'>
       <div className='ContentLine'>
         <div className='LeftSection'>
+          <div className='ContentLine Inner' id='tilt-control'>
+          </div>
+          <div className='ContentLine Inner' id='maplibregl-ctrl-bottom-left'>
+          </div>
           <div className='ContentLine Inner'>
             <Basemaps/>
             <div className='Disclaimer'>{preferences.disclaimer}</div>

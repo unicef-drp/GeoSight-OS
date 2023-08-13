@@ -96,6 +96,14 @@ export default function MapLibre(
       })
       newMap.addControl(new maplibregl.NavigationControl(), 'bottom-left');
 
+      let mapControl = document.querySelector('.maplibregl-ctrl-bottom-left .maplibregl-ctrl-group')
+      let parent = document.getElementById('maplibregl-ctrl-bottom-left')
+      parent.appendChild(mapControl);
+
+      let tilt = document.getElementsByClassName('TiltControl')[0]
+      parent = document.getElementById('tilt-control')
+      parent.appendChild(tilt);
+
       const deckgl = new MapboxOverlay({
         interleaved: true,
         layers: []

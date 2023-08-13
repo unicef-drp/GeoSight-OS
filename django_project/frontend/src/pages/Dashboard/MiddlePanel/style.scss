@@ -129,6 +129,35 @@
 
       .LeftSection {
         flex-grow: 1;
+
+        .maplibregl-ctrl-group {
+          position: relative;
+          margin-left: 0px;
+        }
+
+        .TiltControl {
+          position: relative;
+          box-shadow: 0px 0px 10px 0px #0000004D !important;
+          width: 29px !important;
+          height: 29px !important;
+          background-color: $white !important;
+          margin-bottom: 55px;
+
+          .ToolbarChild {
+            width: inherit !important;
+
+            .TiltDegree {
+              width: inherit !important;
+              color: $black;
+              margin-left: 5px;
+              margin-top: -12px;
+            }
+          }
+
+          svg {
+            margin-top: 20%;
+          }
+        }
       }
 
       .RightSection {

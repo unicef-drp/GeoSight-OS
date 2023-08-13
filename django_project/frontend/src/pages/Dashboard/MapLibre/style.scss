@@ -86,31 +86,6 @@
       right: 8px;
     }
 
-    .TiltControl {
-      bottom: 295px;
-      position: fixed;
-      box-shadow: 0px 0px 10px 0px #0000004D !important;
-      width: 29px !important;
-      height: 29px !important;
-      margin-left: 2px !important;
-      background-color: $white !important;
-
-      .ToolbarChild {
-        width: inherit !important;
-
-        .TiltDegree {
-          width: inherit !important;
-          color: $black;
-          margin-left: -10px;
-          margin-top: -2px;
-        }
-      }
-
-      svg {
-        margin-top: 20%;
-      }
-    }
-
     .Toolbar-Left,
     .Toolbar-Middle,
     .Toolbar-Right {
