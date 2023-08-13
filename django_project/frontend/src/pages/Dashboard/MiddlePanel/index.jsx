@@ -19,6 +19,7 @@ import Basemaps from './Basemaps'
 import { EmbedConfig } from "../../../utils/embed";
 import GlobalDateSelector from "./GlobalDateSelector";
 import LayerConfig from "./LayerConfig";
+import { FullScreen } from '../../../pages/Dashboard/Toolbars'
 
 import './style.scss';
 
@@ -53,6 +54,9 @@ export default function MiddlePanel(
           </div>
         </div>
         <div className='RightSection'>
+          <div className='ContentLine Inner'>
+            <FullScreen/>
+          </div>
         </div>
       </div>
       <div className='ContentLine'>

@@ -65,7 +65,7 @@ export default function ProjectOverview() {
   );
 
   return (
-    <Plugin className='ProjectOverview-Icon'>
+    <Plugin className='ProjectOverview-Toolbar'>
       <div className={open ? "Active" : "Inactive"}  onClick={_ => setOpen(true)}>
         <PluginChild title={'Project Overview'}>
           <InfoFillIcon/>

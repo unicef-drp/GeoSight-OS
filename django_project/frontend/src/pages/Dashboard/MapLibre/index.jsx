@@ -35,7 +35,6 @@ import {
   DownloaderData,
   EmbedControl,
   GlobalDateSelector,
-  FullScreen,
   Measurement,
   MovementHistories,
   TiltControl,
@@ -274,7 +273,6 @@ export default function MapLibre(
             }}
           /> : null
       }
-      <FullScreen/>
     </div>
 
     <ReferenceLayer map={map} deckgl={deckgl} is3DView={is3dMode}/>

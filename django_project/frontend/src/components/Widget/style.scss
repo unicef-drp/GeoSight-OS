@@ -34,14 +34,14 @@
   }
 
   > div {
-    padding: 0.5rem;
+    padding: 1rem;
   }
 
   .info__button {
     cursor: pointer;
     position: absolute;
-    right: 5px;
-    top: 5px;
+    right: 15px;
+    top: 12px;
 
     &:hover {
       opacity: 0.8;
@@ -130,10 +130,6 @@
   table {
     text-align: left;
     width: 95%;
-  }
-
-  .widget__content {
-    max-height: 200px;
   }
 
   .widget__sgw__row__name {

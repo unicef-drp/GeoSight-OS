@@ -66,31 +66,32 @@
       }
     }
 
-    .ProjectOverview-Icon {
+    .ProjectOverview-Toolbar {
       top: 100px;
       position: fixed;
-      border: 1px solid $tab-inactive-color !important;
+      box-shadow: 0px 0px 10px 0px #0000004D !important;
       width: 40px !important;
       height: 40px !important;
       margin-left: 5px;
       background-color: $white !important;
 
       svg {
-        margin-top: 20%;
+        margin-top: 3px;
+        margin-left: -2px;
       }
     }
 
     .RightButton {
       position: fixed;
-      right: 0px;
+      right: 8px;
     }
 
     .TiltControl {
-      top: 610px;
+      bottom: 295px;
       position: fixed;
-      border: 1px solid $tab-inactive-color !important;
-      width: 27px !important;
-      height: 27px !important;
+      box-shadow: 0px 0px 10px 0px #0000004D !important;
+      width: 29px !important;
+      height: 29px !important;
       margin-left: 2px !important;
       background-color: $white !important;
 
@@ -224,12 +225,6 @@
         display: block;
       }
 
-      &.FullScreen {
-        position: fixed;
-        bottom: 15px;
-        right: 10px;
-      }
-
       &.LeftButton, &.GlobalDateSelector {
         .Active {
           a, span {
@@ -317,7 +312,7 @@ $nav-disabled-color: '%23CCCCCC';
 }
 
 .maplibregl-ctrl-zoom-in {
-  border: 1px solid $tab-inactive-color !important;
+  box-shadow: 0px 0px 10px 0px #0000004D;
 
   .maplibregl-ctrl-icon {
     @include plus-icon($nav-enabled-color);
@@ -326,7 +321,9 @@ $nav-disabled-color: '%23CCCCCC';
 }
 
 .maplibregl-ctrl-zoom-out {
-  border: 1px solid $tab-inactive-color !important;
+  border: 1px !important;
+  color: $tab-inactive-color;
+  box-shadow: 0px 0px 10px 0px #0000004D;
 
   .maplibregl-ctrl-icon {
     @include minus-icon($nav-enabled-color);
@@ -336,7 +333,7 @@ $nav-disabled-color: '%23CCCCCC';
 
 
 .maplibregl-ctrl-compass {
-  border: 1px solid $tab-inactive-color !important;
+  box-shadow: 0px 0px 10px 0px #0000004D;
   position: relative;
   bottom: 100px;
 
@@ -370,27 +367,14 @@ $nav-disabled-color: '%23CCCCCC';
   }
 }
 
-//.maplibregl-ctrl-bottom-right,
-//.mapboxgl-ctrl-bottom-right {
-//  right: 55px;
-//  height: 100% !important;
-//
-//  .maplibregl-ctrl-group {
-//    position: absolute;
-//    top: 0;
-//    bottom: 0;
-//  }
-//}
-//
-//.maplibregl-ctrl-fullscreen,
-//.mapboxgl-ctrl-fullscreen {
-//  position: absolute;
-//  bottom: 0;
-//  size: 28px !important;
-//
-//
-//  .maplibregl-ctrl-icon {
-//    @include expand-icon($nav-enabled-color);
-//    background-size: 14px !important;
-//  }
-//}
+.maplibregl-ctrl-bottom-left,
+.mapboxgl-ctrl-bottom-left {
+
+  .maplibregl-ctrl-group {
+    border: none;
+
+    button:hover {
+      background-color: $tab-inactive-color;
+    }
+  }
+}

@@ -18,6 +18,7 @@
    ========================================================================== */
 
 import React from 'react';
+import { useState } from 'react'
 import { Plugin, PluginChild } from "../../MapLibre/Plugin";
 import { ExpandIcon, ShrinkIcon } from '../../../../components/Icons'
 
@@ -28,21 +29,22 @@ import './style.scss';
  */
 export default function FullScreen() {
   const isFullScreen = window.fullScreen
+  const [fullScreen, setFullScreen] = useState(isFullScreen)
 
   return (
     <Plugin className='FullScreen'>
       <div>
         <PluginChild
-          title={(isFullScreen ? 'Exit' : 'Enter') + ' fullscreen'}
+          title={(fullScreen ? 'Exit' : 'Enter') + ' fullscreen'}
+          onClick={() => {
+            fullScreen ? document.exitFullscreen() : document.body.requestFullscreen()
+            setFullScreen(!fullScreen)
+          }}
         >
           {
-            isFullScreen ?
-              <ShrinkIcon onClick={() => {
-                document.exitFullscreen()
-              }}/> :
-              <ExpandIcon onClick={() => {
-                document.body.requestFullscreen()
-              }}/>
+            fullScreen ?
+              <ShrinkIcon/> :
+              <ExpandIcon/>
           }
         </PluginChild>
       </div>
