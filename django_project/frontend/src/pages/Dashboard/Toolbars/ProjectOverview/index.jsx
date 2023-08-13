@@ -66,9 +66,9 @@ export default function ProjectOverview() {
 
   return (
     <Plugin className='ProjectOverview-Toolbar'>
-      <div className={open ? "Active" : "Inactive"}  onClick={_ => setOpen(true)}>
+      <div className={open ? "Active" : "Inactive"}>
         <PluginChild title={'Project Overview'}>
-          <InfoFillIcon/>
+          <InfoFillIcon onClick={_ => setOpen(true)}/>
           <Modal
             className='ProjectOverview'
             open={open}
@@ -103,7 +103,8 @@ export default function ProjectOverview() {
               <div className={'Separator'}></div>
               <CloseButton
                 variant="primary"
-                onClick={_ => {
+                onClick={(e) => {
+                  e.stopPropagation()
                   setOpen(false);
                 }
                 }

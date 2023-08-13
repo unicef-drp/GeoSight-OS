@@ -14,7 +14,7 @@
 */
 
 /* ==========================================================================
-   Toggle Left Panel
+   Toggle Side  Panel
    ========================================================================== */
 
 import React, {useEffect, useState} from 'react';
@@ -31,7 +31,7 @@ import {LEFT, RIGHT} from "../../../../components/ToggleButton";
 export default function ToggleSidePanel(
   { initState, onLeft, onRight, ...props }
 ) {
-  const [state, setState] = useState(LEFT);
+  const [state, setState] = useState(props.className === 'LeftButton' ? LEFT : RIGHT);
   const [active, setActive] = useState('');
 
   useEffect(() => {

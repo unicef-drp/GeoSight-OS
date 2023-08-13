@@ -197,10 +197,9 @@ export default function MapLibre(
       <div className='Toolbar-Left'>
           {
           leftPanelProps ?
-            <
-              ToggleSidePanel
+            <ToggleSidePanel
               className={leftPanelProps.className}
-              initState={leftPanelProps.leftExpanded}
+              initState={leftPanelProps.initState}
               active={leftPanelProps.active}
               onLeft={() => {
                 leftPanelProps.onLeft()
@@ -260,10 +259,9 @@ export default function MapLibre(
       </div>
       {
         rightPanelProps ?
-          <
-            ToggleSidePanel
+          <ToggleSidePanel
             className={rightPanelProps.className}
-            initState={rightPanelProps.leftExpanded}
+            initState={rightPanelProps.initState}
             active={rightPanelProps.active}
             onLeft={() => {
               rightPanelProps.onLeft()
