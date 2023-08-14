@@ -308,21 +308,23 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData):
 
             rules_ids = []
             rules = model.dashboardindicatorlayerrule_set.all()
-            for idx, rule in enumerate(layer_data.get('style', [])):
-                if 'indicator' in rule:
-                    continue
-                _rule, created = DSLayerRule.objects.get_or_create(
-                    object=model,
-                    name=rule['name']
-                )
-                _rule.rule = rule['rule']
-                _rule.color = rule['color']
-                _rule.outline_color = rule['outline_color']
-                _rule.outline_size = rule['outline_size']
-                _rule.active = rule['active']
-                _rule.order = idx
-                _rule.save()
-                rules_ids.append(_rule.id)
+            layer_data_style = layer_data.get('style', [])
+            if isinstance(layer_data_style, list):
+                for idx, rule in enumerate(layer_data_style):
+                    if 'indicator' in rule:
+                        continue
+                    _rule, created = DSLayerRule.objects.get_or_create(
+                        object=model,
+                        name=rule['name']
+                    )
+                    _rule.rule = rule['rule']
+                    _rule.color = rule['color']
+                    _rule.outline_color = rule['outline_color']
+                    _rule.outline_size = rule['outline_size']
+                    _rule.active = rule['active']
+                    _rule.order = idx
+                    _rule.save()
+                    rules_ids.append(_rule.id)
             rules.exclude(id__in=rules_ids).delete()
 
             # -----------------------------------------------------
