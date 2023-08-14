@@ -99,6 +99,7 @@ export default function Home() {
 
   // Create category
   let categories = [];
+  console.log(projects)
   if (projects) {
     categories = projects.own.concat(projects.shared).filter(project => project.category).map(project => project.category);
   }
@@ -175,7 +176,7 @@ export default function Home() {
               <ProjectGrid
                 projects={
                   projects.own.filter(
-                    project => !searchProject || project.name.includes(searchProject) || project.description.includes(searchProject)
+                    project => !searchProject || project.name.includes(searchProject) || project.description?.includes(searchProject)
                   )
                 }
               />
