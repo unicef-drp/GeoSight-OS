@@ -55,6 +55,11 @@
   .ExposedVariable {
     margin-bottom: 1rem;
 
+    input,
+    .MuiInputBase-root {
+      height: $base-input-height !important;
+    }
+
     .TitleButton {
       padding-left: 0 !important;
     }
@@ -64,12 +69,6 @@
 
       & > div {
         flex: unset !important;
-      }
-
-      .BasicForm {
-        input {
-          height: 56px !important;
-        }
       }
     }
 
@@ -87,7 +86,7 @@
 
       .MuiInputSlider {
         width: 200px;
-        padding: 0.5rem 1rem;
+        padding: $base-input-padding;
       }
 
       .MuiInputSliderWithInput {

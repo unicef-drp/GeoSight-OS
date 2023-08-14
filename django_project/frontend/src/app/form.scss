@@ -85,8 +85,13 @@
   select {
     background: white;
     box-sizing: border-box;
-    padding: 0.5rem;
+    padding: $base-input-padding;
+    min-height: $base-input-height;
     width: 100%;
+  }
+
+  input[type='file'] {
+    padding: 7px 1rem;
   }
 
   input[type='checkbox'] {
@@ -177,7 +182,7 @@
     width: 100%;
 
     input {
-      height: 2.5rem;
+      height: $base-height;
       border: none;
       outline: none !important;
     }

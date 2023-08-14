@@ -190,10 +190,6 @@
         height: 100%;
 
         &:hover {
-          display: block;
-          min-height: 100%;
-          height: unset;
-
           .ProjectGridDescription {
             overflow-y: auto;
           }
@@ -217,7 +213,7 @@
           font-size: 5rem;
           color: $base-to-white-color;
           margin: auto;
-          margin-top: 3rem;
+          margin-top: 5rem;
         }
       }
 
@@ -286,7 +282,7 @@
       }
     }
 
-    .SortSelectorInput {
+    .IconStart {
       svg {
         width: 18px;
         height: 16px;
@@ -296,6 +292,18 @@
           opacity: 0.5;
         }
       }
+    }
+  }
+
+  .SelectWithSearchInput,
+  .MultipleSelectWithSearch,
+  .SelectWithSearch {
+    position: relative;
+    height: 56px;
+
+    input {
+      min-height: 54px;
+      height: 54px;
     }
   }
 }

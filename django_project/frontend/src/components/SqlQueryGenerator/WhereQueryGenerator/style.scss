@@ -53,6 +53,12 @@
     display: flex;
     padding-bottom: 0.5rem;
 
+    .SelectWithSearchInput,
+    .MultipleSelectWithSearch,
+    .SelectWithSearch {
+      height: 42px;
+    }
+
     .MuiOutlinedInput-root {
       background-color: white;
     }
@@ -71,10 +77,6 @@
 
     .MuiAutocomplete-root {
       flex-grow: 1;
-
-      .MuiOutlinedInput-root {
-        min-height: 56px;
-      }
     }
 
     .MuiInputSliderWithInput {
@@ -125,11 +127,7 @@
 
         .MuiInputBase-root {
           &.Mui-disabled {
-            display: block !important;
-
-            input {
-              margin-top: 10px;
-            }
+            display: flex !important;
           }
         }
       }
@@ -163,7 +161,7 @@
 
       .MuiInputSliderWithInput {
         .MuiInputSlider {
-          padding-top: 16px;
+          padding-top: 12px;
           width: 10px !important;
           min-width: 10px !important;
           text-align: center;

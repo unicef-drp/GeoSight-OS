@@ -22,7 +22,6 @@ import requests
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import MultipleObjectsReturned
-from django.urls import reverse
 
 from core.models.preferences import SitePreferences
 from geosight.georepo.request.data import GeorepoEntity
@@ -91,7 +90,7 @@ class GeorepoUrl:
             self.api_key_is_public = True
 
         self.headers = {
-            'Authorization': f'Bearer {self.georepo_api_key}'
+            'Authorization': f'Token {self.georepo_api_key}'
         }
         logger.debug(f'Georepo API Key : {self.georepo_api_key}')
 
@@ -138,7 +137,6 @@ class GeorepoUrl:
         return {
             'domain': self.georepo_domain,
             'api': self.georepo_url,
-            'reference_layer_list': reverse('reference-layer-list-api'),
             'reference_layer_detail': self.reference_layer_detail(
                 '<identifier>'
             ),

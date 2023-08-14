@@ -263,16 +263,12 @@
 
   .MuiDataGrid-cell {
     .ButtonIcon {
-      height: 18px;
-      width: 18px;
-      padding: 3px;
+      height: 100%;
+      width: 100%;
+      padding: 5px;
+      box-sizing: border-box;
       color: $primary-color;
       border: 1px solid $primary-color;
-
-      svg {
-        height: 12px !important;
-        width: 12px !important;
-      }
     }
 
     a {
@@ -287,13 +283,15 @@
 
     button {
       &:not(.TextButton) {
+        padding-left: 0 !important;
+
         a {
-          height: 16px;
-          width: 16px;
+          height: 25px;
+          width: 25px;
 
           svg {
-            height: 16px;
-            width: 16px;
+            height: 14px;
+            width: 14px;
           }
         }
       }
@@ -449,20 +447,17 @@
     border-bottom: 1px solid $border-gray !important;
     max-height: $base-height !important;
     min-height: $base-height !important;
-    white-space: normal !important;
+    white-space: nowrap;
 
-    .MuiDataGrid-cellContent {
-      overflow-y: auto;
+    .MuiDataGrid-cellContent, .CellLink {
       max-height: 150px;
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     &.MuiDataGrid-ActionsColumn {
       padding: 0 1rem !important;
-    }
-
-    a {
-      height: unset !important;
     }
   }
 
@@ -576,6 +571,7 @@
 
   .MuiInputBase-root {
     border-radius: 0;
+    display: flex;
   }
 
   .MuiAutocomplete-endAdornment {

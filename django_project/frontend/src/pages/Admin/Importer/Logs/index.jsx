@@ -47,14 +47,16 @@ const LOG_COLUMNS = [
   COLUMNS.JOB_NAME,
   COLUMNS.REFERENCE_DATASET,
   Object.assign({}, COLUMNS.LAST_RUN_RESULT, {
-      field: 'status', headerName: 'Status'
+      field: 'status', headerName: 'Status',
+      flex: 0.3
     }
   ),
   Object.assign({}, COLUMNS.LAST_RUN_RESULT, {
       field: 'saved_data', headerName: 'Data saved',
       renderCell: (params) => {
         return `${params.row.saved_data} / ${params.row.count_data}`
-      }
+      },
+      flex: 0.3
     }
   ),
   Object.assign({}, COLUMNS.ACTIONS, {

@@ -1,16 +1,15 @@
-[//]: # "GeoSight is UNICEF's geospatial web-based business intelligence platform."
-[//]: # 
-[//]: # "Contact : geosight-no-reply@unicef.org"
-[//]: # 
-[//]: # ".. note:: This program is free software; you can redistribute it and/or modify"
-[//]: # "    it under the terms of the GNU Affero General Public License as published by"
-[//]: # "    the Free Software Foundation; either version 3 of the License, or"
-[//]: # "    (at your option) any later version."
-[//]: # 
-[//]: # "__author__ = 'irwan@kartoza.com'"
-[//]: # "__date__ = '13/06/2023'"
-[//]: # "__copyright__ = ('Copyright 2023, Unicef')"
-[//]: # "__copyright__ = ('Copyright 2023, Unicef')"
+---
+title: GeoSight-OS Documentation Home 
+summary: GeoSight is UNICEF's geospatial web-based business intelligence platform.
+    - Tim Sutton
+    - Irwan Fathurrahman
+date: 2023-08-03
+some_url: https://github.com/unicef-drp/GeoSight-OS
+copyright: Copyright 2023, Unicef
+contact: geosight-no-reply@unicef.org
+license: This program is free software; you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
+#context_id: 1234
+---
 
 # Contributing to GeoSight
 
@@ -107,7 +106,7 @@ If you are adding new commands or features, they must include tests.
 If you are changing functionality, update the tests if you need to.
 
 #### Commit
-Follow our [commit message conventions](./documentation/commit-message-convention.md).
+Follow our [commit message conventions](../developer/guide/templates/commit-message-convention.md).
 
 ### Yes! Pull request
 
@@ -126,7 +125,7 @@ Follow other PR title format on below.
 #### Description
 
 If it has related issues, add links to the issues(like `#123`) in the description.
-Fill in the [Pull Request Template](./documentation/pull-request-template.md) by check your case.
+Fill in the [Pull Request Template](../developer/guide/templates/pull-request-template.md) by check your case.
 
 ## Code of Conduct
 

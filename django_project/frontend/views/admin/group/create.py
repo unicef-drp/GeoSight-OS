@@ -60,14 +60,16 @@ class GroupCreateView(RoleSuperAdminRequiredMixin, AdminBaseView):
         form = GroupForm(request.POST)
         if form.is_valid():
             users = []
-            for key, value in request.POST.items():
-                if 'user-' in key:
-                    users.append(User.objects.get(id=value))
+
+            # Add user to group
+            for _id in request.POST.get('users', '').split(','):
+                try:
+                    users.append(User.objects.get(id=_id))
+                except (ValueError, User.DoesNotExist):
+                    pass
             group = form.save()
             group.permission.creator = request.user
             group.permission.save()
-            for user in group.user_set.all():
-                user.groups.remove(group)
             for user in users:
                 user.groups.add(group)
             return redirect(

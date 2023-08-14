@@ -65,6 +65,32 @@ extra_javascript:
 # Needed for the hooks below to work
 plugins:
   - search
+  - git-revision-date-localized
+  - mkdocs-video
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [../django_project]
+          import:
+            - https://docs.python.org/3/objects.inv
+            - https://mkdocstrings.github.io/autorefs/objects.inv
+          options:
+            # Lots of other nice options can be found at  
+            # https://mkdocstrings.github.io/python/usage/
+            docstring_style: sphinx
+            heading_level: 2
+            show_bases: true
+            show_signature: true
+            separate_signature: true
+            show_signature_annotations: true
+            show_source: true
+            show_root_heading: true
+            show_root_full_path: true
+            show_root_members_full_path: true
+            merge_init_into_class: true
+            docstring_options:
+              ignore_init_summary: false
+
   - redirects:
       redirect_maps:
         #see https://github.com/mkdocs/mkdocs-redirects/tree/master#using
@@ -82,6 +108,7 @@ plugins:
         - user/index.md
         - administrator/index.md
         - developer/index.md
+        - developer/manual/*.md
         - devops/index.md
       restart_increment_after:
         - second_section.md
@@ -90,4 +117,6 @@ plugins:
 # see also hook.py and https://github.com/squidfunk/mkdocs-material/discussions/3758#discussioncomment-4397373
 # Note that although the above link implies you can use UUIDs, you have to use numeric IDS not UUIDS
 hooks:
-  - ./hook.py
+  - ./uuid_redirects_hook.py
+  - ./python_manual_hook.py
+
