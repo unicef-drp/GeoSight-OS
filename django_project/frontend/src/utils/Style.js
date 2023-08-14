@@ -49,14 +49,14 @@ export function returnLayerStyleConfig(layer, indicators) {
     config = dictDeepCopy(layer)
     // Use layer rules
     // If not, use first indicator rules
-    if (layer.indicators.length === 1) {
+    if (layer.indicators?.length === 1) {
       const indicator = indicators.find(
         data => layer?.indicators[0]?.id === data.id
       )
       if (indicator) {
         config = indicator
       }
-    } else if (layer.indicators.length > 1) {
+    } else if (layer.indicators?.length > 1) {
       config.style = layer.indicators
     }
   }

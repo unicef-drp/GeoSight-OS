@@ -155,7 +155,7 @@ export default function MultiSelectorConfigRows(
                     }}
                   />
                 </td>
-                <td>{selectedItem.name}</td>
+                <td>{selectedItem.indicator ? selectedItem.indicator : selectedItem.name}</td>
                 {
                   additionalFields.map(field => {
                     return <td>
