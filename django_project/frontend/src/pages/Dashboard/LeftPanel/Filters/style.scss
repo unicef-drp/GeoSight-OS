@@ -263,10 +263,6 @@
   }
 
   .MuiPaper-root {
-    .MuiCollapse-vertical {
-      height: auto !important;
-    }
-
     &::before {
       display: none;
     }
@@ -338,8 +334,16 @@
     .MuiAccordionDetails-root {
       & > div {
         border: 1px solid #ddd;
-        padding: 0.5rem !important;
+        padding: 1rem !important;
         border-top: unset !important;
+      }
+
+      input {
+        padding: 1rem 0.5rem;
+      }
+
+      .MuiInputSlider {
+        padding-top: 3px;
       }
     }
   }
