@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 /* ==========================================================================
    MAP CONTAINER
@@ -26,7 +26,10 @@ import ReferenceLayer from "./Layers/ReferenceLayer";
 import ContextLayers from "./Layers/ContextLayers";
 import { Plugin, PluginChild } from "./Plugin";
 import { removeLayer, removeSource } from "./utils"
-import { ThreeDimensionOnIcon, ThreeDimensionOffIcon } from '../../../components/Icons'
+import {
+  ThreeDimensionOffIcon,
+  ThreeDimensionOnIcon
+} from '../../../components/Icons'
 
 // Toolbars
 import {
@@ -35,11 +38,11 @@ import {
   DownloaderData,
   EmbedControl,
   GlobalDateSelector,
+  LabelToggler,
   Measurement,
   MovementHistories,
-  TiltControl,
-  LabelToggler,
   ProjectOverview,
+  TiltControl,
   ToggleSidePanel,
 } from '../Toolbars'
 import { EmbedConfig } from "../../../utils/embed";
@@ -88,10 +91,10 @@ export default function MapLibre(
         setMap(newMap)
         setTimeout(() =>
             document.querySelector('.mapboxgl-ctrl-compass')
-            .addEventListener('click', () => {
-              newMap.easeTo({pitch: 0, bearing: 0})
-             }),
-             500,
+              .addEventListener('click', () => {
+                newMap.easeTo({ pitch: 0, bearing: 0 })
+              }),
+          500,
         )
       })
       newMap.addControl(new maplibregl.NavigationControl(), 'bottom-left');
@@ -203,7 +206,7 @@ export default function MapLibre(
       <ProjectOverview/>
       <TiltControl map={map} is3DView={is3dMode} force={force}/>
       <div className='Toolbar-Left'>
-          {
+        {
           leftPanelProps ?
             <ToggleSidePanel
               className={leftPanelProps.className}
@@ -228,13 +231,14 @@ export default function MapLibre(
       </div>
 
       <div className='Toolbar-Middle'>
+        <div className='Separator'/>
         <MovementHistories map={map} showHome={true}/>
         <Measurement map={map}/>
         <LabelToggler/>
         <CompareLayer disabled={is3dMode}/>
         {/* 3D View */}
         <Plugin>
-          <div className='Active'>
+          <div className='extrudedIcon Active'>
             <PluginChild
               title={'3D layer'}
               disabled={!map}
@@ -245,10 +249,11 @@ export default function MapLibre(
                 }
                 dispatch(Actions.Map.change3DMode(!is3dMode))
               }}>
-              { is3dMode ? <ThreeDimensionOnIcon/> : <ThreeDimensionOffIcon/> }
+              {is3dMode ? <ThreeDimensionOnIcon/> : <ThreeDimensionOffIcon/>}
             </PluginChild>
           </div>
         </Plugin>
+        <div className='Separator'/>
       </div>
 
       {/* Embed */}
@@ -264,21 +269,21 @@ export default function MapLibre(
         <Plugin className='BookmarkControl'>
           <Bookmark map={map}/>
         </Plugin>
+        {
+          rightPanelProps ?
+            <ToggleSidePanel
+              className={rightPanelProps.className}
+              initState={rightPanelProps.initState}
+              active={rightPanelProps.active}
+              onLeft={() => {
+                rightPanelProps.onLeft()
+              }}
+              onRight={() => {
+                rightPanelProps.onRight()
+              }}
+            /> : null
+        }
       </div>
-      {
-        rightPanelProps ?
-          <ToggleSidePanel
-            className={rightPanelProps.className}
-            initState={rightPanelProps.initState}
-            active={rightPanelProps.active}
-            onLeft={() => {
-              rightPanelProps.onLeft()
-            }}
-            onRight={() => {
-              rightPanelProps.onRight()
-            }}
-          /> : null
-      }
     </div>
 
     <ReferenceLayer map={map} deckgl={deckgl} is3DView={is3dMode}/>

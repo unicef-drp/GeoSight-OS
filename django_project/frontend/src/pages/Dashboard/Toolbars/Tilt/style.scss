@@ -20,6 +20,8 @@
 @import '../../../../app/variables';
 
 .TiltControl {
+  color: $primary-color;
+  cursor: pointer;
 
   a {
     position: relative;

@@ -31,8 +31,9 @@
     li {
       margin-left: -10px;
     }
+
     > li {
-        border-bottom: 1px solid #0412171A;
+      border-bottom: 1px solid #0412171A;
 
       .MuiTreeItem-content {
         flex-direction: row-reverse;
@@ -70,7 +71,8 @@
 
     .PanelInput {
       position: relative;
-      padding-top: 4px;
+      padding-top: 5px;
+      padding-right: 2px;
 
       .MuiCircularProgress-root {
         display: none;
@@ -102,7 +104,11 @@
 }
 
 .MuiTreeItem-label {
-  padding-left: 10px !important;
+  padding-left: 1rem !important;
+
+  & > span {
+    display: block;
+  }
 
   label {
     margin-right: 0;
@@ -159,6 +165,7 @@
         mark.prefix {
           padding-left: 4px;
         }
+
         mark.suffix {
           padding-right: 4px;
         }
@@ -166,6 +173,7 @@
     }
 
   }
+
   table {
     margin-left: 20px;
   }
@@ -189,7 +197,7 @@
 
   .GroupSelectable {
     .PanelCheckbox {
-      margin-top: 1px !important;
+      margin-top: 3px !important;
     }
   }
 }
@@ -209,8 +217,9 @@
 }
 
 .PanelSearchBox {
-  width: 95%;
-  height: 50px;
+  padding: 0.5rem !important;
+  box-sizing: border-box;
+  width: 100%;
 
   .MuiInputBase-root {
     width: 100%;

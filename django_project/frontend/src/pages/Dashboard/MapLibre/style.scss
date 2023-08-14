@@ -47,15 +47,18 @@
   }
 
   .Toolbar {
-    background-color: $white !important;
     display: flex;
     height: 49px;
     left: 0;
-    padding-left: 1rem;
     position: absolute;
     top: 0;
-    transition: left 0.3s;
+    transition: padding-left 0.3s;
+    box-sizing: border-box;
     width: 100vw;
+
+    & > div {
+      background-color: $white !important;
+    }
 
     .EmbedControl {
       margin-right: 10px;
@@ -67,23 +70,26 @@
     }
 
     .ProjectOverview-Toolbar {
-      top: 100px;
-      position: fixed;
-      box-shadow: 0px 0px 10px 0px #0000004D !important;
-      width: 40px !important;
-      height: 40px !important;
-      margin-left: 5px;
-      background-color: $white !important;
+      margin-top: 57px !important;
+      width: 0 !important;
 
-      svg {
-        margin-top: 3px;
-        margin-left: -2px;
+      & > div {
+        box-shadow: $box-shadow;
+        width: 29px !important;
+        height: 29px !important;
+        margin-left: 5px;
+        background-color: $white !important;
+
+        svg {
+          margin-left: -2px;
+          height: 18px !important;
+          width: 18px !important;
+        }
       }
     }
 
     .RightButton {
-      position: fixed;
-      right: 8px;
+      margin-right: 1rem;
     }
 
     .Toolbar-Left,
@@ -92,18 +98,25 @@
       display: flex;
     }
 
-    .Toolbar-Left {
-      width: 15%;
-    }
-
     .Toolbar-Middle {
-      position: fixed;
-      left: 34%;
-    }
+      flex-grow: 1;
 
-    .Toolbar-Right {
-      position: fixed;
-      right: 70px;
+      .extrudedIcon svg,
+      svg[data-testid='CompareIcon'] {
+        height: 18px;
+        width: 18px;
+      }
+
+      a {
+        margin: 0 !important;
+        padding: 6px !important;
+        line-height: unset !important;
+
+        svg {
+          height: 16px;
+          width: 16px;
+        }
+      }
     }
 
     button {
@@ -184,11 +197,6 @@
         &:hover {
           background-color: #ddd;
         }
-
-        svg {
-          width: 28px;
-          height: 28px;
-        }
       }
 
       a, span {
@@ -211,9 +219,16 @@
         a, span {
           color: $tab-inactive-color !important;
         }
+
+        svg {
+          height: 28px;
+          width: 28px;
+        }
       }
 
       &.ReferenceLayerToolbar {
+        width: 120px;
+
         a {
           opacity: 1;
         }
@@ -223,7 +238,10 @@
 }
 
 .LeftExpanded {
-  .Toolbar,
+  .Toolbar {
+    padding-left: 20%;
+  }
+
   .maplibregl-ctrl-bottom-left {
     left: 20%;
   }
@@ -287,18 +305,19 @@ $nav-disabled-color: '%23CCCCCC';
 }
 
 .maplibregl-ctrl-zoom-in {
-  box-shadow: 0px 0px 10px 0px #0000004D;
-
   .maplibregl-ctrl-icon {
     @include plus-icon($nav-enabled-color);
     background-size: 10px !important;
   }
 }
 
+.maplibregl-ctrl-group {
+  box-shadow: $box-shadow !important;
+}
+
 .maplibregl-ctrl-zoom-out {
   border: 1px !important;
   color: $tab-inactive-color;
-  box-shadow: 0px 0px 10px 0px #0000004D;
 
   .maplibregl-ctrl-icon {
     @include minus-icon($nav-enabled-color);
@@ -308,9 +327,9 @@ $nav-disabled-color: '%23CCCCCC';
 
 
 .maplibregl-ctrl-compass {
-  box-shadow: 0px 0px 10px 0px #0000004D;
+  box-shadow: $box-shadow;
   position: relative;
-  bottom: 100px;
+  bottom: 95px;
 
   .maplibregl-ctrl-icon {
     position: relative;
@@ -319,13 +338,14 @@ $nav-disabled-color: '%23CCCCCC';
     &::after {
       display: block;
       position: absolute;
-      top: 3px;
-      left: 3px;
+      top: 5px;
+      left: 5px;
       content: "";
-      @include compass-icon($nav-enabled-color);
-      background-size: 22px !important;
-      height: 22px;
-      width: 22px;
+      color: $primary-color !important;
+      @include compass-icon($primary-color);
+      background-size: 18px !important;
+      height: 18px;
+      width: 18px;
       transform: rotate(-45deg);
     }
   }
@@ -338,6 +358,13 @@ $nav-disabled-color: '%23CCCCCC';
       &.mapboxgl-ctrl-group {
         margin-left: 15px;
       }
+    }
+  }
+
+  button {
+    &:hover {
+      background: white !important;
+      opacity: $base-hovered-opacity;
     }
   }
 }

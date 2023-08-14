@@ -65,7 +65,6 @@
     font-weight: $base-font-medium;
     font-size: 12px;
     color: #7E7E7E;
-    margin-left: 20px;
   }
 
   // GROUP SWITCHER
@@ -154,23 +153,24 @@
   }
 
   .FilterGroup {
-    margin-top: 15px;
     padding: 10px 8px 10px 8px;
     position: relative;
     border-radius: $border-radius;
-    background-color: rgba(0,0,0,0.03);
+    background-color: rgba(0, 0, 0, 0.03);
 
     & > .MuiPaper-root {
       margin-top: 5px !important;
       margin-bottom: 0 !important;
 
       & > .MuiButtonBase-root {
-        align-items: unset !important;
+        align-items: center !important;
+        height: 30px;
+        min-height: 30px;
 
-        .MuiAccordionSummary-expandIconWrapper {
-          padding: 3px 0;
-          height: 0.8rem;
-          width: 0.8rem;
+        .MuiAccordionSummary-content {
+          margin: 0 !important;
+          height: 100%;
+          align-items: center;
         }
 
         .FilterEdit {
@@ -192,19 +192,15 @@
 
     .FilterGroupHeader {
       box-sizing: border-box;
-      height: 18px;
       left: 0;
-      padding: 0 0.5rem;
-      position: absolute;
-      top: -10px;
       width: 100%;
+      align-items: center;
 
       .FilterGroupOption {
         background-color: #F8F9F9;
         border-radius: $border-radius;
         display: flex;
-        padding: 0 7px;
-        height: 12px;
+        align-items: center;
 
         .MuiButtonBase-root {
           margin-top: -3px;
@@ -244,7 +240,7 @@
         .FilterGroupAddExpression,
         .FilterGroupAdd,
         .FilterGroupDelete {
-          background-color:  rgba(0, 0, 0, 0);
+          background-color: rgba(0, 0, 0, 0);
           color: #ADE0FF;
         }
 
@@ -278,7 +274,6 @@
 
   .FilterExpression {
     background-color: #FFFFFF;
-    height: 20px;
 
     &.Disabled {
       cursor: not-allowed;
@@ -300,7 +295,6 @@
     .FilterExpressionName {
       flex-grow: 1;
       display: flex;
-      margin-top: -15px;
 
       div {
         margin-top: 2px;
@@ -327,7 +321,6 @@
 
         svg {
           background-color: white;
-          border: 1px solid #ddd;
         }
       }
 
@@ -336,26 +329,18 @@
         margin-right: 3px;
       }
 
-      .FilterEdit,
-      .FilterDelete {
-        margin-top: -15px;
-      }
-
       .FilterDelete {
         color: $error;
         margin-right: 5px;
       }
-
-      .MuiSvgIcon-root {
-        height: 0.8rem;
-        width: 0.8rem;
-      }
     }
 
     .MuiAccordionDetails-root {
-      border: 1px solid #ddd;
-      padding: 10px;
-      margin-top: -1px;
+      & > div {
+        border: 1px solid #ddd;
+        padding: 0.5rem !important;
+        border-top: unset !important;
+      }
     }
   }
 
