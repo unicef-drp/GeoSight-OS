@@ -40,6 +40,7 @@ html, body {
     position: relative;
     min-height: 0;
     width: 100%;
+    z-index: 0;
 
     @include media(small-down) {
       height: fit-content;

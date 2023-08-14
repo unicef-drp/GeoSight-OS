@@ -77,7 +77,7 @@ const RenderIndicatorLegendSection = ({ rules, name }) => {
                 return <div key={rule.name} className='IndicatorLegendRow'>
                   <div
                     className='IndicatorLegendRowBlock'
-                    style={{ backgroundColor: rule.color }}>
+                    style={{ backgroundColor: rule.color, border: border }}>
                   </div>
                   <div className='IndicatorLegendRowName' title={rule.name}>
                     {rule.name}
@@ -104,23 +104,21 @@ const RenderIndicatorLegend = ({ layer, name }) => {
   const filteredGeometries = useSelector(state => state.filteredGeometries);
   if (layer.multi_indicator_mode === 'Pin') {
     return layer.indicators.map(indicator => {
-      const obj = indicators.find(ind => ind.id === indicator.id)
-      if (obj) {
-        let indicatorData = indicator
-        if (!indicator.style) {
+      let indicatorData = indicator
+      if (!indicator.style) {
+        const obj = indicators.find(ind => ind.id === indicator.id)
+        if (obj) {
           indicatorData = dictDeepCopy(obj)
           indicatorData.indicators = [indicator]
         }
-        let rules = rulesLayer(
-          indicatorData, indicators, indicatorsData, relatedTableData,
-          selectedGlobalTime, geoField, selectedAdminLevel?.level, filteredGeometries
-        )
-        return <RenderIndicatorLegendSection
-          rules={rules}
-          name={indicator.name}/>
-      } else {
-        return null
       }
+      let rules = rulesLayer(
+        indicatorData, indicators, indicatorsData, relatedTableData,
+        selectedGlobalTime, geoField, selectedAdminLevel?.level, filteredGeometries
+      )
+      return <RenderIndicatorLegendSection
+        rules={rules}
+        name={indicator.name}/>
     })
   }
   let rules = rulesLayer(

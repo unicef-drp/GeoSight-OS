@@ -274,6 +274,9 @@ export default function MultiIndicatorConfig(
                             sizeType: 'Fixed size'
                           }
                           data.multi_indicator_mode = evt
+                          if (data.multi_indicator_mode === PinMode) {
+                            data.chart_style.size = 10
+                          }
                           setData({ ...data })
                         }}
                         disableCloseOnSelect={false}
@@ -302,7 +305,7 @@ export default function MultiIndicatorConfig(
                       action={
                         (
                           data.multi_indicator_mode === PinMode ?
-                            <Config/> : null
+                            <Config indicators={indicators}/> : null
                         )
                       }
                       headers={

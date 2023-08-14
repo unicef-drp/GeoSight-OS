@@ -31,7 +31,7 @@ import { CogIcon } from "../../../../../../components/Icons";
 import './style.scss';
 
 export default function Config(
-  { indicator, update }
+  { indicator, indicators, update }
 ) {
   const [data, setData] = useState(indicator)
   const [open, setOpen] = useState(false);
@@ -87,6 +87,17 @@ export default function Config(
                         checked={data.override_style}
                         onChange={evt => {
                           data.override_style = evt.target.checked
+                          if (data.override_style && !data.style) {
+                            const indicatorData = indicators.find(ind => ind.id === data.id)
+                            if (indicatorData) {
+                              for (const [key, value] of Object.entries(indicatorData)) {
+                                if (key.includes('style')) {
+                                  data[key] = value
+                                }
+                              }
+                            }
+                            console.log(data)
+                          }
                           updateData()
                         }}/>
                     }

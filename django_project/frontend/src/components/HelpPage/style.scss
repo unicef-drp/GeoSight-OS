@@ -22,8 +22,10 @@
 .Admin {
   .HelpPageSection {
     top: 0;
-    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0;
     box-sizing: border-box;
+    z-index: 999999;
   }
 }
 
@@ -33,10 +35,11 @@
   width: 100%;
   pointer-events: none;
   background-color: unset;
-  z-index: 99999999;
+  z-index: 1;
   transition: background-color linear 0.2s;
   top: 0;
-  padding-top: $nav-header-height;
+  margin-top: $nav-header-height;
+  padding-bottom: $nav-header-height;
   box-sizing: border-box;
 
   &.Open {

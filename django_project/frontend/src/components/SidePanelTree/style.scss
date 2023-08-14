@@ -77,9 +77,10 @@
       .MuiCircularProgress-root {
         display: none;
         position: absolute;
-        top: 2px;
-        height: 18px !important;
-        width: 18px !important;
+        top: 4px;
+        left: 1px;
+        height: 14px !important;
+        width: 14px !important;
       }
 
       &.Loading {
