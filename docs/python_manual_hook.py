@@ -1,14 +1,12 @@
 import logging
 import mkdocs.plugins
 import os
-
 log = logging.getLogger('mkdocs')
 
 @mkdocs.plugins.event_priority(-50)
 
 
 def on_startup(command, dirty):
-
 
     template = """
 ---
@@ -23,12 +21,10 @@ date: 2023-08-03
     	"__init__",
     	"migrations",
         "tests"]
-
     for root, dirs, files in os.walk("../django_project"):
-        for file in files:
             file = os.path.join(root, file)
+            ignored = False;
             if file.endswith(".py"):
-                ignored = False;
                 for item in ignore_list:
                     if item in file:
                         ignored = True;
@@ -38,6 +34,6 @@ date: 2023-08-03
                     file = file.replace("/", ".")
                     file = file.replace(".py", "")
                     template = template + file + "\n"
-    file = open("docs/src/developer/manual/index.md","wt")
     file.write(template)
+    file = open("docs/src/developer/manual/index.md","wt")
     file.close()

@@ -37,6 +37,7 @@ markdown_extensions:
 
 nav:
         - Home:
+                # Pages to render but exclude from Nav
                 - index.md
                 - About: about/index.md
                 - Contributing: about/contributing.md
@@ -44,8 +45,8 @@ nav:
                 - Running Instances: about/running-instances.md
         - Users:
                 - Overview: 
-                        - user/index.md
                         - Quickstart: 
+                        - user/index.md
                                 - user/quickstart/index.md
                         - Guide:
                                 - user/guide/index.md
@@ -55,33 +56,30 @@ nav:
                                 - user/manual/index.md
                                 - Home Page: user/manual/home.md
         - Administrators:
-                - Overview:
-                        - administrator/index.md
                         - Guide:
-                                - administrator/guide/index.md
+                        - administrator/index.md
                         - Manual:
+                                - administrator/guide/index.md
                                 - administrator/manual/index.md
         - Developers:
-                - Overview:
                         - developer/index.md
-                        - API:
                                 - developer/api/index.md
-                                - Guide: developer/api/guide/index.md
+                        - API:
                                 - Reference: developer/api/manual/index.md
+                                - Guide: developer/api/guide/index.md
                         - Guide:
                                 - Overview: developer/guide/index.md
                                 - Architecture: developer/guide/architecture.md
+                                - Prerequisites: developer/guide/prerequisites.md
                                 - Design: developer/guide/design.md
-                                - Prerequisites: developer/guide/project-prerequisites.md
                                 - IDE Setup: developer/guide/ide-setup.md
                                 - Cloning: developer/guide/checking-out-the-code.md
                                 - Configuration: developer/guide/configuration.md
                                 - Building: developer/guide/building.md
-                                - Workflows: developer/guide/developer-workflows.md
                                 - Road Map: developer/guide/roadmap.md
-                                # Pages to render but exclude from Nav
-                                - "": developer/guide/templates/commit-message-convention.md
+                                - Workflows: developer/guide/developer-workflows.md
                                 - "": developer/guide/templates/pull-request-template.md 
+                                - "": developer/guide/templates/commit-message-convention.md
                         - Documentation: developer/documentation/index.md
                         - Manual:
                                 - developer/manual/index.md
