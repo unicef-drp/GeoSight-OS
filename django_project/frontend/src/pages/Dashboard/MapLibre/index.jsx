@@ -41,16 +41,15 @@ import {
   LabelToggler,
   Measurement,
   MovementHistories,
-  ProjectOverview,
   TiltControl,
   ToggleSidePanel,
 } from '../Toolbars'
 import { EmbedConfig } from "../../../utils/embed";
 import { Actions } from "../../../store/dashboard";
+import ReferenceLayerSection from "../MiddlePanel/ReferenceLayer";
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 import './style.scss';
-import ReferenceLayerSection from "../MiddlePanel/ReferenceLayer";
 
 const BASEMAP_ID = `basemap`
 
@@ -203,7 +202,6 @@ export default function MapLibre(
     <div id="map"></div>
     {/* TOOLBARS */}
     <div className='Toolbar'>
-      <ProjectOverview/>
       <TiltControl map={map} is3DView={is3dMode} force={force}/>
       <div className='Toolbar-Left'>
         {

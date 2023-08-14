@@ -47,9 +47,9 @@
   box-sizing: border-box;
   max-width: 100%;
   transition: height 0.3s;
-  width: 100%;
   z-index: 1;
   pointer-events: none !important;
+  background-color: white;
 
   .WhereConfigurationWrapper {
     width: 100%;
@@ -61,7 +61,7 @@
     height: 100%;
     width: fit-content;
     pointer-events: none !important;
-    padding: 0 1rem;
+    padding: 0;
   }
 
   .WhereConfigurationQuery {
@@ -126,7 +126,7 @@
     .WhereConfigurationQuery {
       display: block;
       padding: 0 0.5rem;
-      height: 105px;
+      height: 85px;
       pointer-events: none !important;
 
       .MuiOutlinedInput-root {

@@ -20,8 +20,7 @@
 @import '../../app/variables';
 
 .widget {
-  background-color: #F6F8FA;
-  border: 0.5px solid rgba(0, 0, 0, 0.12);
+  background-color: $white;
   border-radius: 5px;
   position: relative;
   margin-bottom: 5px;
@@ -104,7 +103,7 @@
   .widget__sw__title,
   .widget__gw__title{
     color: $widget-title;
-    font-size: 1.5rem;
+    font-size: 1rem;
     margin-bottom: 10px;
 
     font-family: $base-font-family;
@@ -116,13 +115,12 @@
   .widget__sw__content,
   .widget__gw__content {
     color: $base-font-color;
-    font-size: 3rem;
+    font-size: 1.2rem;
     margin-bottom: 10px;
 
     font-family: $base-font-family;
     font-weight: 300;
-    line-height: 36px;
-    letter-spacing: 0em;
+    letter-spacing: 0;
   }
 }
 

@@ -14,7 +14,7 @@
  */
 
 import React, { useEffect, useState } from "react";
-import { Button, FormControl, Input, InputLabel } from "@mui/material";
+import { Button, Input, InputLabel } from "@mui/material";
 import Checkbox from '@mui/material/Checkbox';
 import {
   IS_IN,
@@ -107,68 +107,70 @@ export default function FilterEditorModal(
         {data.field ? "Updating" : "Creating"} new filter
       </ModalHeader>
       <ModalContent>
-        <div>
-          <InputLabel><b>Filter Name*</b></InputLabel>
-          <Input
-            type="text" placeholder="Filter name" value={name}
-            disableUnderline={true}
-            onChange={(event) => {
-              setName(event.target.value)
-            }}/>
-          <InputLabel>Description</InputLabel>
-          <Input
-            type="text" placeholder="Filter description" value={description}
-            disableUnderline={true}
-            onChange={(event) => {
-              setDescription(event.target.value)
-            }}/>
-        </div>
-        <div className='FilterEditModalQueryWrapper'>
-          <div>Create rule</div>
-          <div className='FilterEditModalQuery'>
-            <SelectPlaceholder
-              className='FilterEditModalQueryField'
-              placeholder='Pick the field'
-              list={fields}
-              initValue={field}
-              onChangeFn={(value) => {
-                setField(value)
+        <form className='BasicForm' style={{ padding: "0" }}>
+          <div>
+            <InputLabel><b>Filter Name*</b></InputLabel>
+            <Input
+              type="text" placeholder="Filter name" value={name}
+              disableUnderline={true}
+              onChange={(event) => {
+                setName(event.target.value)
               }}/>
-            <SelectPlaceholder
-              placeholder='Pick an operation'
-              list={
-                Object.keys(OPERATOR).map((key, idx) => {
-                  return { id: key, name: OPERATOR[key] }
-                })
-              }
-              initValue={operator}
-              onChangeFn={(value) => {
-                setOperator(value)
+            <InputLabel>Description</InputLabel>
+            <Input
+              type="text" placeholder="Filter description" value={description}
+              disableUnderline={true}
+              onChange={(event) => {
+                setDescription(event.target.value)
               }}/>
-            {
-              field && operator ? <WhereInputValue
-                field={field.type} operator={operator} value={currentValue}
-                setValue={setValue} optionsData={fieldData?.data}/> : null
-            }
           </div>
-        </div>
-        <div>
-          <br/>
-          <Checkbox checked={allowModify} onChange={(evt) => {
-            setAllowChange(evt.target.checked)
-          }}/> Allow users to modify filter parameters (values)
-        </div>
-        <div className='button-div'>
-          <Button
-            variant="primary"
-            className='save__button'
-            disabled={!field || !operator || !name}
-            onClick={onSave}>
-            {
-              data.field ? "Update filter" : "Create filter"
-            }
-          </Button>
-        </div>
+          <div className='FilterEditModalQueryWrapper'>
+            <div>Create rule</div>
+            <div className='FilterEditModalQuery'>
+              <SelectPlaceholder
+                className='FilterEditModalQueryField'
+                placeholder='Pick the field'
+                list={fields}
+                initValue={field}
+                onChangeFn={(value) => {
+                  setField(value)
+                }}/>
+              <SelectPlaceholder
+                placeholder='Pick an operation'
+                list={
+                  Object.keys(OPERATOR).map((key, idx) => {
+                    return { id: key, name: OPERATOR[key] }
+                  })
+                }
+                initValue={operator}
+                onChangeFn={(value) => {
+                  setOperator(value)
+                }}/>
+              {
+                field && operator ? <WhereInputValue
+                  field={field.type} operator={operator} value={currentValue}
+                  setValue={setValue} optionsData={fieldData?.data}/> : null
+              }
+            </div>
+          </div>
+          <div>
+            <br/>
+            <Checkbox checked={allowModify} onChange={(evt) => {
+              setAllowChange(evt.target.checked)
+            }}/> Allow users to modify filter parameters (values)
+          </div>
+          <div className='button-div'>
+            <Button
+              variant="primary"
+              className='save__button'
+              disabled={!field || !operator || !name}
+              onClick={onSave}>
+              {
+                data.field ? "Update filter" : "Create filter"
+              }
+            </Button>
+          </div>
+        </form>
       </ModalContent>
     </Modal>
   </div>

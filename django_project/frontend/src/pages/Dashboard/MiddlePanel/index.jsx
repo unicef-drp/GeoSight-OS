@@ -27,7 +27,7 @@ import './style.scss';
  * Left panel.
  */
 export default function MiddlePanel(
-  { rightExpanded, children }) {
+  { rightExpanded, leftContent, rightContent }) {
   return <section
     className={
       'DashboardMiddlePanel ' +
@@ -36,11 +36,16 @@ export default function MiddlePanel(
     }
   >
     <div className='TopContent'>
-      <div className='MapNavbar'>
-        <div className='LeftMapNavbar'></div>
+      <div className='LeftContent'>
+        {leftContent}
+        <MapLegend/>
       </div>
-      {children}
-      <LayerConfig/>
+      <div className='MiddleContent'>
+        <LayerConfig/>
+      </div>
+      <div className='RightContent'>
+        {rightContent}
+      </div>
     </div>
     <div className='BottomContent'>
       <div className='ContentLine'>
@@ -53,10 +58,8 @@ export default function MiddlePanel(
             <Basemaps/>
             <div className='Disclaimer'>{preferences.disclaimer}</div>
           </div>
-          <div className='ContentLine Inner'>
-            <MapLegend/>
-          </div>
         </div>
+        <div className='Separator'/>
         <div className='RightSection'>
           <div className='ContentLine Inner'>
             <FullScreen/>

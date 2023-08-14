@@ -43,7 +43,6 @@
 
   .Toolbar {
     border-bottom: 1px solid $border-gray;
-    z-index: 1002;
   }
 
   .Toolbar {
@@ -69,27 +68,12 @@
       }
     }
 
-    .ProjectOverview-Toolbar {
-      margin-top: 57px !important;
-      width: 0 !important;
-
-      & > div {
-        box-shadow: $box-shadow;
-        width: 29px !important;
-        height: 29px !important;
-        margin-left: 5px;
-        background-color: $white !important;
-
-        svg {
-          margin-left: -2px;
-          height: 18px !important;
-          width: 18px !important;
-        }
-      }
-    }
-
     .RightButton {
       margin-right: 1rem;
+    }
+
+    .Toolbar-Left {
+      padding-left: 0.5rem;
     }
 
     .Toolbar-Left,

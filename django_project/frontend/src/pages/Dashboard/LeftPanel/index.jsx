@@ -30,7 +30,6 @@ import Indicators from './Indicators'
 import IndicatorLayersAccordion from './IndicatorLayers'
 import RelatedTables from './RelatedTable'
 import FiltersAccordion from './Filters'
-import { EmbedConfig } from "../../../utils/embed";
 import { LayerIcon, TuneIcon, VisibilityIcon, VisibilityOffIcon } from "../../../components/Icons";
 import TabPanel from "../../../components/Tabs/index"
 import { tabProps } from "../../../components/Tabs/index"
@@ -48,7 +47,7 @@ export default function LeftPanel({ leftExpanded }) {
   const {
     contextLayers
   } = useSelector(state => state.dashboard.data);
-  const [tab2Value, setTab2Value] = React.useState(contextLayers.length ? 0 : 1);
+  const [tab2Value, setTab2Value] = React.useState(1);
   const {
     contextLayersShow,
     indicatorShow
