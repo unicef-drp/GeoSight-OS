@@ -26,6 +26,7 @@ import {
   returnLayerStyleConfig
 } from "../../../../utils/Style";
 import { NO_DATA_RULE } from "../../../Admin/Style/Form/StyleRules";
+import { dictDeepCopy } from "../../../../utils/main";
 
 import './style.scss'
 
@@ -59,22 +60,11 @@ const rulesLayer = (
   return style
 }
 /**
- * Render indicator legend
+ * Render indicator legend section
  * @param {dict} layer Layer that will be checked
  * @param {str} name Name of layer
  */
-const RenderIndicatorLegend = ({ layer, name }) => {
-  const { indicators, geoField } = useSelector(state => state.dashboard.data)
-  const selectedGlobalTime = useSelector(state => state.selectedGlobalTime);
-  const selectedAdminLevel = useSelector(state => state.selectedAdminLevel)
-  const indicatorsData = useSelector(state => state.indicatorsData);
-  const relatedTableData = useSelector(state => state.relatedTableData);
-  const filteredGeometries = useSelector(state => state.filteredGeometries);
-
-  let rules = rulesLayer(
-    layer, indicators, indicatorsData, relatedTableData,
-    selectedGlobalTime, geoField, selectedAdminLevel?.level, filteredGeometries
-  )
+const RenderIndicatorLegendSection = ({ rules, name }) => {
   return (
     <div className='MapLegendSection'>
       <div className='MapLegendSectionTitle'>{name}</div>
@@ -87,7 +77,7 @@ const RenderIndicatorLegend = ({ layer, name }) => {
                 return <div key={rule.name} className='IndicatorLegendRow'>
                   <div
                     className='IndicatorLegendRowBlock'
-                    style={{ backgroundColor: rule.color }}>
+                    style={{ backgroundColor: rule.color, border: border }}>
                   </div>
                   <div className='IndicatorLegendRowName' title={rule.name}>
                     {rule.name}
@@ -99,6 +89,43 @@ const RenderIndicatorLegend = ({ layer, name }) => {
       }
     </div>
   )
+}
+/**
+ * Render indicator legend
+ * @param {dict} layer Layer that will be checked
+ * @param {str} name Name of layer
+ */
+const RenderIndicatorLegend = ({ layer, name }) => {
+  const { indicators, geoField } = useSelector(state => state.dashboard.data)
+  const selectedGlobalTime = useSelector(state => state.selectedGlobalTime);
+  const selectedAdminLevel = useSelector(state => state.selectedAdminLevel)
+  const indicatorsData = useSelector(state => state.indicatorsData);
+  const relatedTableData = useSelector(state => state.relatedTableData);
+  const filteredGeometries = useSelector(state => state.filteredGeometries);
+  if (layer.multi_indicator_mode === 'Pin') {
+    return layer.indicators.map(indicator => {
+      let indicatorData = indicator
+      if (!indicator.style) {
+        const obj = indicators.find(ind => ind.id === indicator.id)
+        if (obj) {
+          indicatorData = dictDeepCopy(obj)
+          indicatorData.indicators = [indicator]
+        }
+      }
+      let rules = rulesLayer(
+        indicatorData, indicators, indicatorsData, relatedTableData,
+        selectedGlobalTime, geoField, selectedAdminLevel?.level, filteredGeometries
+      )
+      return <RenderIndicatorLegendSection
+        rules={rules}
+        name={indicator.name}/>
+    })
+  }
+  let rules = rulesLayer(
+    layer, indicators, indicatorsData, relatedTableData,
+    selectedGlobalTime, geoField, selectedAdminLevel?.level, filteredGeometries
+  )
+  return <RenderIndicatorLegendSection rules={rules} name={name}/>
 }
 /** Map Legend.
  */

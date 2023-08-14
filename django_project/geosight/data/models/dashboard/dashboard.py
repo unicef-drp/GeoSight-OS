@@ -119,7 +119,11 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData):
             DashboardIndicatorLayerConfig,
             DashboardRelatedTable,
             DashboardIndicatorLayerRule as DSLayerRule,
+            DashboardIndicatorLayerIndicatorRule as DSLayerIndicatorRule,
             DashboardIndicatorLayerField as IndicatorLayerField
+        )
+        from geosight.data.models.style.indicator_style import (
+            IndicatorStyleType
         )
         self.permission.update(data['permission'])
 
@@ -304,21 +308,23 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData):
 
             rules_ids = []
             rules = model.dashboardindicatorlayerrule_set.all()
-            for idx, rule in enumerate(layer_data.get('style', [])):
-                if 'indicator' in rule:
-                    continue
-                _rule, created = DSLayerRule.objects.get_or_create(
-                    object=model,
-                    name=rule['name']
-                )
-                _rule.rule = rule['rule']
-                _rule.color = rule['color']
-                _rule.outline_color = rule['outline_color']
-                _rule.outline_size = rule['outline_size']
-                _rule.active = rule['active']
-                _rule.order = idx
-                _rule.save()
-                rules_ids.append(_rule.id)
+            layer_data_style = layer_data.get('style', [])
+            if isinstance(layer_data_style, list):
+                for idx, rule in enumerate(layer_data_style):
+                    if 'indicator' in rule:
+                        continue
+                    _rule, created = DSLayerRule.objects.get_or_create(
+                        object=model,
+                        name=rule['name']
+                    )
+                    _rule.rule = rule['rule']
+                    _rule.color = rule['color']
+                    _rule.outline_color = rule['outline_color']
+                    _rule.outline_size = rule['outline_size']
+                    _rule.active = rule['active']
+                    _rule.order = idx
+                    _rule.save()
+                    rules_ids.append(_rule.id)
             rules.exclude(id__in=rules_ids).delete()
 
             # -----------------------------------------------------
@@ -347,6 +353,9 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData):
             # This is for indicators
             model.name = layer_data.get('name', '')
             model.description = layer_data.get('description', '')
+            model.multi_indicator_mode = layer_data.get(
+                'multi_indicator_mode', 'Chart'
+            )
             model.save()
 
             indicatorsQuery = model.dashboardindicatorlayerindicator_set.all()
@@ -368,7 +377,37 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData):
                         )
                     layer.name = indicator['name']
                     layer.color = indicator['color']
+                    layer.override_style = indicator.get(
+                        'override_style', False
+                    )
+                    style_type = indicator.get('style_type', '')
+                    if not style_type:
+                        style_type = IndicatorStyleType.LIBRARY
+                    layer.style_type = style_type
+                    layer.style_id = indicator.get('style_id', None)
+                    layer.style_config = indicator.get('style_config', None)
                     layer.save()
+
+                    rules_ids = []
+                    rules = layer.dashboardindicatorlayerindicatorrule_set.all(
+                    )
+                    style_data = indicator.get('style', [])
+                    if not style_data:
+                        style_data = []
+                    for idx, rule in enumerate(style_data):
+                        _rule, _ = DSLayerIndicatorRule.objects.get_or_create(
+                            object=layer,
+                            name=rule['name']
+                        )
+                        _rule.rule = rule['rule']
+                        _rule.color = rule['color']
+                        _rule.outline_color = rule['outline_color']
+                        _rule.outline_size = rule['outline_size']
+                        _rule.active = rule['active']
+                        _rule.order = idx
+                        _rule.save()
+                        rules_ids.append(_rule.id)
+                    rules.exclude(id__in=rules_ids).delete()
                 except Indicator.DoesNotExist:
                     pass
 

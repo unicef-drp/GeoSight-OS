@@ -30,7 +30,8 @@ import {
   removeChildInGroupInStructure
 } from "../../../../../components/SortableTreeForm/utilities";
 import {
-  DynamicIndicatorType, isIndicatorLayerLikeIndicator,
+  DynamicIndicatorType,
+  isIndicatorLayerLikeIndicator,
   MultiIndicatorType,
   RelatedTableLayerType,
   SingleIndicatorType

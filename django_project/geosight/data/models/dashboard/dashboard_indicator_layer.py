@@ -38,6 +38,10 @@ default_chart_style = {
     "size": 50, "sizeType": "Fixed size", "chartType": "Pie"
 
 }
+MULTIPLE_LAYER_MODE = (
+    ("Chart", "Chart"),
+    ("Pin", "Pin")
+)
 POPUP_TYPES = (
     ("Simplified", "Simplified"),
     ("Custom", "Custom")
@@ -64,13 +68,6 @@ class DashboardIndicatorLayer(DashboardRelation, IndicatorStyleBaseModel):
     description = models.TextField(
         blank=True, null=True
     )
-    chart_style = models.JSONField(
-        blank=True, null=True,
-        help_text=(
-            "This is specifically used for multi indicators layer."
-            "For single layer, it will use rule of indicator"
-        )
-    )
     level_config = models.JSONField(null=True, blank=True, default=dict)
     type = models.CharField(
         max_length=48,
@@ -89,6 +86,20 @@ class DashboardIndicatorLayer(DashboardRelation, IndicatorStyleBaseModel):
     )
     override_style = models.BooleanField(default=False)
     override_label = models.BooleanField(default=False)
+
+    # For multiple indicators
+    multi_indicator_mode = models.CharField(
+        max_length=24,
+        choices=MULTIPLE_LAYER_MODE,
+        default=MULTIPLE_LAYER_MODE[0][0]
+    )
+    chart_style = models.JSONField(
+        blank=True, null=True,
+        help_text=(
+            "This is specifically used for multi indicators layer."
+            "For single layer, it will use rule of indicator"
+        )
+    )
 
     @property
     def label(self):
@@ -216,7 +227,7 @@ class DashboardIndicatorLayerConfig(models.Model):
     )
 
 
-class DashboardIndicatorLayerObject(models.Model):
+class AbstractDashboardIndicatorLayerObject(models.Model):
     """Abstract for indicator layer object."""
 
     object = models.ForeignKey(
@@ -240,22 +251,10 @@ class DashboardIndicatorLayerObject(models.Model):
         abstract = True
 
 
-class DashboardIndicatorLayerIndicator(DashboardIndicatorLayerObject):
-    """Indicator Layer x Dashboard model."""
-
-    indicator = models.ForeignKey(
-        Indicator,
-        on_delete=models.CASCADE
-    )
-
-    class Meta:  # noqa: D106
-        ordering = ('order',)
-
-
 # TODO:
 #  IndicatorStyleBaseModel is deprecated
 class DashboardIndicatorLayerRelatedTable(
-    DashboardIndicatorLayerObject, IndicatorStyleBaseModel
+    AbstractDashboardIndicatorLayerObject, IndicatorStyleBaseModel
 ):
     """RelatedTable x Dashboard model."""
 
@@ -265,4 +264,43 @@ class DashboardIndicatorLayerRelatedTable(
     )
 
     class Meta:  # noqa: D106
+        ordering = ('order',)
+
+
+# Contains indicator layer
+class DashboardIndicatorLayerIndicator(
+    AbstractDashboardIndicatorLayerObject, IndicatorStyleBaseModel
+):
+    """Indicator Layer x Dashboard model."""
+
+    indicator = models.ForeignKey(
+        Indicator,
+        on_delete=models.CASCADE
+    )
+    override_style = models.BooleanField(default=False)
+
+    @property
+    def is_using_obj_style(self):
+        """If using obj style."""
+        return self.indicator.type == TYPE_DYNAMIC_INDICATOR
+
+    @property
+    def rules(self):
+        """Return query rules."""
+        return self.dashboardindicatorlayerindicatorrule_set.all()
+
+    class Meta:  # noqa: D106
+        ordering = ('order',)
+
+
+class DashboardIndicatorLayerIndicatorRule(RuleModel):
+    """DashboardIndicatorLayerIndicator x Rule."""
+
+    object = models.ForeignKey(
+        DashboardIndicatorLayerIndicator,
+        on_delete=models.CASCADE
+    )
+
+    class Meta:  # noqa: D106
+        unique_together = ('object', 'name')
         ordering = ('order',)

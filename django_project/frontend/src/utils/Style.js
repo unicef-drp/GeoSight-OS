@@ -13,6 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 import { isArray } from "chart.js/helpers";
+import { dictDeepCopy } from "./main";
 
 
 export const STYLE_FORM_LIBRARY = 'Style from library.'
@@ -45,16 +46,18 @@ export function updateColorPaletteData(data) {
 export function returnLayerStyleConfig(layer, indicators) {
   let config = {}
   if (layer.id) {
-    config = layer
+    config = dictDeepCopy(layer)
     // Use layer rules
     // If not, use first indicator rules
-    if (layer.indicators.length === 1) {
+    if (layer.indicators?.length === 1) {
       const indicator = indicators.find(
         data => layer?.indicators[0]?.id === data.id
       )
       if (indicator) {
         config = indicator
       }
+    } else if (layer.indicators?.length > 1) {
+      config.style = layer.indicators
     }
   }
 

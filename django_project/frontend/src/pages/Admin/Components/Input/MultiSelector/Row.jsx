@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 import React, { Fragment, useEffect, useState } from 'react';
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
@@ -140,7 +140,7 @@ export default function MultiSelectorConfigRows(
         id={id} items={items}
         strategy={rectSortingStrategy}>
         {
-          items.map(item => {
+          items.map((item, idx) => {
             let selectedItem = selectedItems.find(option => option.id === item)
             if (!selectedItem) {
               return null
@@ -155,7 +155,7 @@ export default function MultiSelectorConfigRows(
                     }}
                   />
                 </td>
-                <td>{selectedItem.name}</td>
+                <td>{selectedItem.indicator ? selectedItem.indicator : selectedItem.name}</td>
                 {
                   additionalFields.map(field => {
                     return <td>
@@ -171,16 +171,33 @@ export default function MultiSelectorConfigRows(
                     </td>
                   })
                 }
-                <td>
-                   <ColorSelector
-                    color={selectedItem.color}
-                    onChange={evt => {
-                      selectedItem.color = evt.target.value
-                      setSelectedItems([...selectedItems])
-                    }}
-                    disabled={!configEnabled}
-                  />
-                </td>
+                {
+                  props.noColor ? null :
+                    <td>
+                      <ColorSelector
+                        color={selectedItem.color}
+                        onChange={evt => {
+                          selectedItem.color = evt.target.value
+                          setSelectedItems([...selectedItems])
+                        }}
+                        disabled={!configEnabled}
+                      />
+                    </td>
+                }
+                {
+                  !props.action ? null :
+                    <td>
+                      {
+                        React.cloneElement(props.action, {
+                          indicator: selectedItem,
+                          update: item => {
+                            selectedItems[idx] = item
+                            setSelectedItems([...selectedItems])
+                          }
+                        })
+                      }
+                    </td>
+                }
               </SortableItem>
             )
           })
