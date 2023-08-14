@@ -38,3 +38,4 @@ date: 2023-08-03
     file = open("src/developer/manual/index.md","wt+")
     file.write(template)
     file.close()
+    log.info("Manual written to: " + os.path.realpath(file.name))
