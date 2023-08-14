@@ -304,6 +304,7 @@ Once your pull request is opened you need to wait for it to be merged before you
 
 ## Creating new files
 
+### Page metadata
 Whenever you create a new file, you should add the standard header to the top of the file:
 
 ```
@@ -323,6 +324,21 @@ license: This program is free software; you can redistribute it and/or modify it
 The summary can be updated to include your name for documents you contribute to.
 
 The context_id is used to create a unique permalink to this document, and is optional. See further down in this document for more details.
+
+### Navigation
+
+All pages need to be added to the 'Nav' section of the `mkdocs-base.yml` file. This will ensure that it is available in the menus and that mkdocs renders without errors. For example, if you wish to add a new page to the User Guide area, in Nav you would add a line like this:
+
+
+`- "Navigating the map": users/guide/map-navigation.md`
+
+Sometimes you may not wish to have the new page displayed in the menu system (this can be useful when, for example, it is accessed via a link in another page. In these cases, leave the menu entry part blank e.g.
+
+`- "": users/guide/map-navigation.md`
+
+
+Mkdocs will still generate the page but it will not be added to the menu.
+
 
 ## Technical notes
 
