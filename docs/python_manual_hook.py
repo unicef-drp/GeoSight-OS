@@ -35,6 +35,6 @@ date: 2023-08-03
                      file = file.replace("/", ".")
                      file = file.replace(".py", "")
                      template = template + file + "\n"
-    file = open("src/developer/manual/index.md","wt")
+    file = open("src/developer/manual/index.md","wt+")
     file.write(template)
     file.close()
