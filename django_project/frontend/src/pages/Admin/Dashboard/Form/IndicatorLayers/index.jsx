@@ -352,7 +352,6 @@ export default function IndicatorLayersForm() {
           }
         } else {
           // If it is multi indicator
-          console.log(layer)
           return <div className='OtherActionFunctionsWrapper'>
             <div className='LayerCountIndicatorWrapper'>
               <div className='Separator'></div>

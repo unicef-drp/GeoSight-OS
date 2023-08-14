@@ -96,7 +96,6 @@ export default function Config(
                                 }
                               }
                             }
-                            console.log(data)
                           }
                           updateData()
                         }}/>

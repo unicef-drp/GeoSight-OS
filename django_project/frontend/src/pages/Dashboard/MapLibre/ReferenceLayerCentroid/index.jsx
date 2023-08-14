@@ -171,7 +171,7 @@ export default function ReferenceLayerCentroid({ map }) {
         charts[code].clear();
         $(`${code}-chart`).remove()
       }
-      const children = ['<div class="pin empty"></div>']
+      const children = []
       indicatorLayer.indicators.map(indicator => {
         const data = feature.properties.data?.find(row => row.indicator === indicator.indicator)
         if (data) {
