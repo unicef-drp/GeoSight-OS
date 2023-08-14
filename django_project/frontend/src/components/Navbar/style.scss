@@ -25,7 +25,7 @@ header {
   .NavHeader {
     align-items: center;
     display: flex;
-    height: 45px;
+    height: $nav-header-height;
     padding: 5px 1rem;
     position: relative;
     width: 100%;
@@ -62,6 +62,11 @@ header {
 
       }
     }
+
+    .HelpButton {
+      margin-right: 10px;
+    }
+
 
     .SvgButton {
       color: var(--anti-primary-color);

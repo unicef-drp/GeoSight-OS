@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 /* ==========================================================================
    MAP CONTAINER
@@ -21,12 +21,15 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import maplibregl from 'maplibre-gl';
 import { MapboxOverlay } from '@deck.gl/mapbox/typed';
-import ViewInArIcon from '@mui/icons-material/ViewInAr';
 import ReferenceLayerCentroid from './ReferenceLayerCentroid'
 import ReferenceLayer from "./Layers/ReferenceLayer";
 import ContextLayers from "./Layers/ContextLayers";
 import { Plugin, PluginChild } from "./Plugin";
 import { removeLayer, removeSource } from "./utils"
+import {
+  ThreeDimensionOffIcon,
+  ThreeDimensionOnIcon
+} from '../../../components/Icons'
 
 // Toolbars
 import {
@@ -35,14 +38,15 @@ import {
   DownloaderData,
   EmbedControl,
   GlobalDateSelector,
+  LabelToggler,
   Measurement,
   MovementHistories,
   TiltControl,
-  LabelToggler,
-  ProjectOverview
+  ToggleSidePanel,
 } from '../Toolbars'
 import { EmbedConfig } from "../../../utils/embed";
 import { Actions } from "../../../store/dashboard";
+import ReferenceLayerSection from "../MiddlePanel/ReferenceLayer";
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 import './style.scss';
@@ -52,7 +56,9 @@ const BASEMAP_ID = `basemap`
 /**
  * MapLibre component.
  */
-export default function MapLibre() {
+export default function MapLibre(
+  { leftPanelProps, rightPanelProps, ...props }
+) {
   const dispatch = useDispatch()
   const [map, setMap] = useState(null);
   const [deckgl, setDeckGl] = useState(null);
@@ -82,8 +88,23 @@ export default function MapLibre() {
       });
       newMap.once("load", () => {
         setMap(newMap)
+        setTimeout(() =>
+            document.querySelector('.mapboxgl-ctrl-compass')
+              .addEventListener('click', () => {
+                newMap.easeTo({ pitch: 0, bearing: 0 })
+              }),
+          500,
+        )
       })
-      newMap.addControl(new maplibregl.NavigationControl(), 'top-left');
+      newMap.addControl(new maplibregl.NavigationControl(), 'bottom-left');
+
+      let mapControl = document.querySelector('.maplibregl-ctrl-bottom-left .maplibregl-ctrl-group')
+      let parent = document.getElementById('maplibregl-ctrl-bottom-left')
+      parent.appendChild(mapControl);
+
+      let tilt = document.getElementsByClassName('TiltControl')[0]
+      parent = document.getElementById('tilt-control')
+      parent.appendChild(tilt);
 
       const deckgl = new MapboxOverlay({
         interleaved: true,
@@ -98,7 +119,6 @@ export default function MapLibre() {
           newMap.resize();
         }, 1);
       });
-
     }
   }, []);
 
@@ -182,37 +202,86 @@ export default function MapLibre() {
     <div id="map"></div>
     {/* TOOLBARS */}
     <div className='Toolbar'>
-      <ProjectOverview/>
-      <MovementHistories map={map}/>
       <TiltControl map={map} is3DView={is3dMode} force={force}/>
-      <Measurement map={map}/>
-      <LabelToggler/>
-      <Plugin className='BookmarkControl'>
-        <Bookmark map={map}/>
-      </Plugin>
-      <DownloaderData/>
-      <CompareLayer disabled={is3dMode}/>
+      <div className='Toolbar-Left'>
+        {
+          leftPanelProps ?
+            <ToggleSidePanel
+              className={leftPanelProps.className}
+              initState={leftPanelProps.initState}
+              active={leftPanelProps.active}
+              onLeft={() => {
+                leftPanelProps.onLeft()
+              }}
+              onRight={() => {
+                leftPanelProps.onRight()
+              }}
+            /> : null
+        }
+        <GlobalDateSelector/>
+        <Plugin className={'ReferenceLayerToolbar'}>
+          <div>
+            <PluginChild title={'Reference Layer selection'}>
+              <ReferenceLayerSection/>
+            </PluginChild>
+          </div>
+        </Plugin>
+      </div>
 
-      {/* 3D View */}
-      <Plugin>
-        <PluginChild
-          title={'3D layer'}
-          disabled={!map}
-          active={is3dMode}
-          onClick={() => {
-            dispatch(Actions.Map.change3DMode(!is3dMode))
-          }}>
-          <ViewInArIcon/>
-        </PluginChild>
-      </Plugin>
+      <div className='Toolbar-Middle'>
+        <div className='Separator'/>
+        <MovementHistories map={map} showHome={true}/>
+        <Measurement map={map}/>
+        <LabelToggler/>
+        <CompareLayer disabled={is3dMode}/>
+        {/* 3D View */}
+        <Plugin>
+          <div className='extrudedIcon Active'>
+            <PluginChild
+              title={'3D layer'}
+              disabled={!map}
+              active={is3dMode}
+              onClick={() => {
+                if (is3dMode) {
+                  map.easeTo({ pitch: 0 })
+                }
+                dispatch(Actions.Map.change3DMode(!is3dMode))
+              }}>
+              {is3dMode ? <ThreeDimensionOnIcon/> : <ThreeDimensionOffIcon/>}
+            </PluginChild>
+          </div>
+        </Plugin>
+        <div className='Separator'/>
+      </div>
 
       {/* Embed */}
-      <Plugin className='EmbedControl'>
-        <PluginChild title={'Get embed code'}>
-          <EmbedControl map={map}/>
-        </PluginChild>
-      </Plugin>
-      <GlobalDateSelector/>
+      <div className='Toolbar-Right'>
+        <Plugin className='EmbedControl'>
+          <div className='Active'>
+            <PluginChild title={'Get embed code'}>
+              <EmbedControl map={map}/>
+            </PluginChild>
+          </div>
+        </Plugin>
+        <DownloaderData/>
+        <Plugin className='BookmarkControl'>
+          <Bookmark map={map}/>
+        </Plugin>
+        {
+          rightPanelProps ?
+            <ToggleSidePanel
+              className={rightPanelProps.className}
+              initState={rightPanelProps.initState}
+              active={rightPanelProps.active}
+              onLeft={() => {
+                rightPanelProps.onLeft()
+              }}
+              onRight={() => {
+                rightPanelProps.onRight()
+              }}
+            /> : null
+        }
+      </div>
     </div>
 
     <ReferenceLayer map={map} deckgl={deckgl} is3DView={is3dMode}/>

@@ -63,8 +63,8 @@ export default function SummaryWidget(
   return (
     <Fragment>
       <div className='widget__sw'>
-        <div className='widget__sw__title'>{getValue()}</div>
-        <div>{name}</div>
+        <div className='widget__sw__title'>{name}</div>
+        <div className='widget__sw__content'>{getValue()}</div>
       </div>
     </Fragment>
   )

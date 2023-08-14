@@ -19,14 +19,11 @@
 
 import React, { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Accordion from "@mui/material/Accordion";
 import sqlParser from "js-sql-parser";
 
 import { Actions } from '../../../../store/dashboard'
-import OnOffSwitcher from "../../../../components/Switcher/OnOff";
 import {
   dataStructureToTreeData
 } from "../../../../components/SortableTreeForm/utilities";
@@ -258,7 +255,7 @@ export function IndicatorLayers() {
           }
           return null
         }}
-        placeholder={'Filter indicators'}
+        placeholder={'Search Indicators'}
       />
       {
         indicatorLayers.map(indicatorLayer => {
@@ -283,30 +280,13 @@ export function IndicatorLayers() {
  * @param {bool} expanded Is the accordion expanded
  * @param {function} handleChange Function when the accordion show
  */
-export default function IndicatorLayersAccordion({ expanded, handleChange }) {
-  const dispatch = useDispatch();
-  const indicatorShow = useSelector(state => state.map.indicatorShow);
+export default function IndicatorLayersAccordion({ expanded }) {
   return (
     <Accordion
       expanded={expanded}
-      onChange={handleChange('indicators')}
       className={'IndicatorLayerList'}
     >
 
-      <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
-        <div className='Name'>
-          Indicators
-        </div>
-        <OnOffSwitcher
-          checked={indicatorShow}
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-          onChange={(e) => {
-            dispatch(Actions.Map.showHideIndicator(!indicatorShow))
-            e.stopPropagation();
-          }}/>
-      </AccordionSummary>
       <AccordionDetails>
         <IndicatorLayers/>
       </AccordionDetails>

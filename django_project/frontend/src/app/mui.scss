@@ -663,3 +663,13 @@
 .ReactSelect__option--is-focused, {
   background-color: rgba(0, 0, 0, 0.04) !important;
 }
+
+.MuiTab-root {
+  &.Mui-selected {
+    color: $primary-color !important;
+  }
+}
+
+.MuiTabs-indicator {
+  background-color: $primary-color !important;
+}

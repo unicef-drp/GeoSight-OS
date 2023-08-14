@@ -17,9 +17,9 @@ import React from 'react';
 import MapLegend from "./MapLegend";
 import Basemaps from './Basemaps'
 import { EmbedConfig } from "../../../utils/embed";
-import ReferenceLayerSection from "./ReferenceLayer";
 import GlobalDateSelector from "./GlobalDateSelector";
 import LayerConfig from "./LayerConfig";
+import { FullScreen } from '../../../pages/Dashboard/Toolbars'
 
 import './style.scss';
 
@@ -27,7 +27,7 @@ import './style.scss';
  * Left panel.
  */
 export default function MiddlePanel(
-  { rightExpanded, children }) {
+  { rightExpanded, leftContent, rightContent }) {
   return <section
     className={
       'DashboardMiddlePanel ' +
@@ -36,25 +36,34 @@ export default function MiddlePanel(
     }
   >
     <div className='TopContent'>
-      <div className='MapNavbar'>
-        <div className='LeftMapNavbar'></div>
-        <div className='RightMapNavbar'>
-          <ReferenceLayerSection/>
-        </div>
+      <div className='LeftContent'>
+        {leftContent}
+        <MapLegend/>
       </div>
-      {children}
-      <LayerConfig/>
+      <div className='MiddleContent'>
+        <LayerConfig/>
+      </div>
+      <div className='RightContent'>
+        {rightContent}
+      </div>
     </div>
     <div className='BottomContent'>
       <div className='ContentLine'>
         <div className='LeftSection'>
+          <div className='ContentLine Inner' id='tilt-control'>
+          </div>
+          <div className='ContentLine Inner' id='maplibregl-ctrl-bottom-left'>
+          </div>
           <div className='ContentLine Inner'>
             <Basemaps/>
+            <div className='Disclaimer'>{preferences.disclaimer}</div>
           </div>
-          <div className='Disclaimer'>{preferences.disclaimer}</div>
         </div>
+        <div className='Separator'/>
         <div className='RightSection'>
-          <MapLegend/>
+          <div className='ContentLine Inner'>
+            <FullScreen/>
+          </div>
         </div>
       </div>
       <div className='ContentLine'>

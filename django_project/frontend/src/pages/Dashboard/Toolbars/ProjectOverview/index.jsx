@@ -21,7 +21,6 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from "react-redux";
 
 import Cookies from "js-cookie";
-import InfoIcon from '@mui/icons-material/Info';
 import MDEditor from "@uiw/react-md-editor";
 import Checkbox from "@mui/material/Checkbox";
 
@@ -32,6 +31,7 @@ import Modal, {
 } from "../../../../components/Modal";
 import { Plugin, PluginChild } from "../../MapLibre/Plugin";
 import { CloseButton } from "../../../../components/Elements/Button";
+import { InfoFillIcon } from "../../../../components/Icons";
 
 import './style.scss';
 
@@ -65,10 +65,10 @@ export default function ProjectOverview() {
   );
 
   return (
-    <Plugin>
+    <Plugin className='ProjectOverview-Toolbar'>
       <div className={open ? "Active" : "Inactive"}>
         <PluginChild title={'Project Overview'}>
-          <InfoIcon onClick={_ => setOpen(true)}/>
+          <InfoFillIcon onClick={_ => setOpen(true)}/>
           <Modal
             className='ProjectOverview'
             open={open}
@@ -103,7 +103,8 @@ export default function ProjectOverview() {
               <div className={'Separator'}></div>
               <CloseButton
                 variant="primary"
-                onClick={_ => {
+                onClick={(e) => {
+                  e.stopPropagation()
                   setOpen(false);
                 }
                 }

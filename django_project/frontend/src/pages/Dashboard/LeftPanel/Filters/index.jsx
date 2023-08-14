@@ -333,9 +333,6 @@ function FilterSection() {
 
   return <Fragment>
     <div className='FilterControl'>
-      <div className='FilterControlInfo'>
-        Filter changes based on the admin level shows on the map.
-      </div>
       <FilterControl
         filtersData={
           (filters && Object.keys(filters).length > 0) ? filters : INIT_DATA.GROUP()

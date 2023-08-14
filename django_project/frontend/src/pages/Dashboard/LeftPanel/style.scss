@@ -22,6 +22,7 @@
 .dashboard__left_side {
   position: relative;
   transition: margin-left 0.3s;
+  border-right: 1px solid $border-gray;
   width: 20%;
 
   &.right {
@@ -49,58 +50,33 @@
   .dashboard__content-wrapper {
     display: flex;
     flex-direction: column;
+    font-family: $base-font-family !important;
+    font-weight: $base-font-regular !important;
+    color: $tab-inactive-color;
+    background-color: $white;
 
-    &.LAYERS .filter-wrapper {
+    &.Layers .filter-wrapper {
       display: none !important;
     }
 
-    &.FILTERS .dataset-wrapper {
+    &.Layers svg {
+      margin-right: 5px;
+    }
+
+    &.Filters .dataset-wrapper {
       display: none !important;
     }
   }
 
-  .dashboard__content-wrapper__navbar {
-    background: #eee;
-    display: flex;
-    padding: 0.5rem;
 
-    div {
-      width: 50%;
-      cursor: pointer;
-      padding: 0.2rem;
-      text-align: center;
-      border-radius: $border-radius;
-
-      &:hover {
-        opacity: 0.5;
-      }
-
-      svg {
-        height: 15px;
-        width: 15px;
-      }
-    }
-
-    .active {
-      color: $anti-primary-color;
-      background-color: $primary-color;
-
-      &:hover {
-        opacity: 1;
-      }
-    }
+  .dashboard__content-wrapper {
+    height: 100% !important;
   }
 
-  &.expanded {
-    .dashboard__content-wrapper {
-      height: 100% !important;
-    }
-
-    .dashboard__left_side__bottom {
-      position: absolute;
-      bottom: 1rem;
-      left: 100%;
-    }
+  .dashboard__left_side__bottom {
+    position: absolute;
+    bottom: 1rem;
+    left: 100%;
   }
 
   .dashboard__left_side__bottom {
@@ -117,14 +93,60 @@
     }
   }
 
-  // For accordion
-  .dashboard__content-wrapper__inner {
-    background-color: #eee;
-    flex-grow: 1;
+  .dashboard__content-wrapper Layers {
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    padding: 0 0.5rem 0.5rem 0.5rem;
+  }
+
+  // For accordion
+  .dashboard__content-wrapper {
+    background-color: #eee;
+    flex-grow: 1;
+    display: block;
+    min-height: 0;
+
+    .layers-tab-container {
+      width: 100%;
+      margin-left: 0;
+    }
+
+    & > .MuiBox-root {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+
+      .sidepanel-tab {
+        flex-grow: 1;
+        overflow: hidden;
+        width: 100%;
+
+        &.layers-panel {
+          & > .TabPanelContent {
+            & > .MuiPaper-root {
+              height: 100%;
+              width: 100%;
+
+              & > .MuiAccordionDetails-root {
+                height: 100%;
+                width: 100%;
+
+                .TreeView {
+                  height: 100%;
+                  width: 100%;
+                  display: flex;
+                  flex-direction: column;
+
+                  ul {
+                    flex-grow: 1;
+                    overflow-y: auto;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
 
     .MuiAccordionSummary-title-desc {
       color: $base-black-color;
@@ -413,4 +435,40 @@
   color: #111;
   font-style: italic;
   font-weight: 300;
+}
+
+.MuiTabs-flexContainer {
+  height: 40px;
+
+  button {
+    text-transform: none;
+    width: 50%;
+    margin-top: -10px;
+  }
+}
+
+.dashboard__content-wrapper__inner {
+  background-color: #FFFFFF !important;
+}
+
+.sidepanel-tab {
+  .TabPanelContent {
+    height: 100%;
+    width: 100%;
+
+    & > .MuiBox-root {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+  .MuiAccordionDetails-root {
+    padding: 0 !important;
+
+    .MuiInputBase-root {
+      padding: 0;
+    }
+  }
 }

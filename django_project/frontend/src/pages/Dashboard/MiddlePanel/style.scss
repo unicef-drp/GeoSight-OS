@@ -24,13 +24,50 @@
   position: relative;
   pointer-events: none;
   height: 100%;
+  padding-top: 49px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+
+  &.RightExpanded {
+    .RightContent {
+      margin-right: 0 !important;
+    }
+  }
+
+  .RightContent {
+    margin-right: -300px;
+    width: 300px;
+    height: 100%;
+    overflow-y: auto;
+    transition: margin-right linear 0.2s;
+
+    .dashboard__content {
+      background: unset !important;
+    }
+  }
 
   .TopContent {
-    position: absolute;
-    left: 0;
+    flex-grow: 1;
     width: 100%;
     pointer-events: none;
     z-index: 2;
+    display: flex;
+    min-height: 0;
+
+    .MiddleContent {
+      pointer-events: none;
+      padding-top: 1rem;
+
+      .IndicatorLayerMiddleConfig {
+        box-shadow: $box-shadow;
+      }
+    }
+
+    .LeftContent {
+      pointer-events: none;
+      flex-grow: 1;
+    }
 
     & > div {
       pointer-events: auto;
@@ -59,49 +96,56 @@
 
   .ButtonSection {
     background-color: unset !important;
-    display: flex;
-    left: 0;
+    padding: 1rem;
     pointer-events: none !important;
-    position: absolute;
-    top: 55px;
-    width: 100%;
-    z-index: 2;
 
-    .Separator {
-      background-color: unset !important;
-      pointer-events: none;
-    }
-
-    .LeftButton {
-      border-top-right-radius: $border-radius;
-      border-bottom-right-radius: $border-radius;
-    }
-
-    .RightButton {
-      border-top-left-radius: $border-radius;
-      border-bottom-left-radius: $border-radius;
-    }
-
-    .left-right-toggle-button {
+    .ProjectOverview-Toolbar {
       width: fit-content;
-      pointer-events: auto;
+      pointer-events: auto !important;
+      cursor: pointer;
+
+      a {
+        padding: 6px;
+      }
+
+      & > div {
+        box-shadow: $box-shadow;
+        width: 29px !important;
+        height: 29px !important;
+        background-color: $white !important;
+
+        svg {
+          margin-top: 6px;
+          height: 18px !important;
+          width: 18px !important;
+        }
+      }
     }
   }
 
   .BottomContent {
-    bottom: 0;
-    position: absolute;
-    left: 0;
+    min-height: 50px;
     width: 100%;
 
     .Disclaimer {
       margin-top: 0.5rem;
-      font-size: 0.8rem;
+      margin-left: 20px;
+      box-shadow: $box-shadow;
+      background-color: $white;
+      opacity: 0.94;
+      width: 637px;
+      font-family: $base-font-family;
+      font-size: 9px;
+      font-weight: $base-font-regular;
+      line-height: 14px;
+      letter-spacing: 0em;
+      text-align: center;
     }
 
     .ContentLine {
       width: 100%;
       display: flex;
+      position: relative;
 
       & > div {
         margin-top: auto;
@@ -117,7 +161,51 @@
       }
 
       .LeftSection {
-        flex-grow: 1;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+
+        .maplibregl-ctrl-group {
+          position: relative;
+          margin-left: 0;
+          height: 58px;
+          margin-bottom: 10px;
+        }
+
+
+        .TiltControl {
+          position: relative;
+          box-shadow: $box-shadow;
+          width: 29px !important;
+          height: 29px !important;
+          background-color: $white !important;
+          margin-bottom: 44px;
+
+          .ToolbarChild {
+            width: inherit !important;
+
+            .TiltDegree {
+              width: inherit !important;
+              margin-left: 5px;
+              margin-top: -12px;
+            }
+          }
+
+          svg {
+            margin-top: 20%;
+          }
+        }
+      }
+
+      .RightSection {
+        .FullScreen {
+          z-index: 999;
+
+          svg {
+            margin-top: 6px;
+            margin-left: 6px;
+          }
+        }
       }
     }
   }

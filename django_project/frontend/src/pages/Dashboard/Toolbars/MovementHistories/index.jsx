@@ -19,9 +19,9 @@
 
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import HomeIcon from '@mui/icons-material/Home';
 import ForwardIcon from '@mui/icons-material/Forward';
 import { Actions } from '../../../../store/dashboard'
+import { HomeIcon } from "../../../../components/Icons"
 
 import { Plugin, PluginChild } from "../../MapLibre/Plugin";
 
@@ -30,7 +30,7 @@ import './style.scss';
 /**
  * Movement history component.
  */
-export default function MovementHistories({ map }) {
+export default function MovementHistories({ map, ...props }) {
   const prevState = useRef();
   const dispatch = useDispatch()
   const { extent: extentDashboard } = useSelector(state => state.dashboard.data)
@@ -104,33 +104,44 @@ export default function MovementHistories({ map }) {
   return (
     <Fragment>
       <Plugin className={'MovementHistory'}>
-        <PluginChild
-          title={'Back to home'} disabled={homeDisabled} onClick={() => {
-          if (!homeDisabled) {
-            changeBound(0)
-          }
-        }}>
-          <HomeIcon/>
-        </PluginChild>
-        <PluginChild
-          title={'Previous place'} disabled={backwardDisabled}
-          className='MovementPreviousIcon'
-          onClick={() => {
-            if (!backwardDisabled) {
-              changeBound(currentIdx - 1)
-            }
-          }}>
-          <ForwardIcon/>
-        </PluginChild>
-        <PluginChild
-          title={'Next place'} disabled={forwardDisabled}
-          onClick={() => {
-            if (!forwardDisabled) {
-              changeBound(currentIdx + 1)
-            }
-          }}>
-          <ForwardIcon/>
-        </PluginChild>
+        {
+          props.showHome ?
+            <div className={'Active'}>
+              <PluginChild
+                title={'Back to home'} disabled={homeDisabled} onClick={() => {
+                if (!homeDisabled) {
+                  changeBound(0)
+                }
+              }}>
+                <HomeIcon/>
+              </PluginChild>
+            </div> : null
+        }
+        {
+          props.showPrevious ?
+          <PluginChild
+            title={'Previous place'} disabled={backwardDisabled}
+            className='MovementPreviousIcon'
+            onClick={() => {
+              if (!backwardDisabled) {
+                changeBound(currentIdx - 1)
+              }
+            }}>
+            <ForwardIcon/>
+          </PluginChild> : null
+        }
+        {
+          props.showNext ?
+            <PluginChild
+              title={'Next place'} disabled={forwardDisabled}
+              onClick={() => {
+                if (!forwardDisabled) {
+                  changeBound(currentIdx + 1)
+                }
+              }}>
+              <ForwardIcon/>
+            </PluginChild> : null
+        }
       </Plugin>
     </Fragment>
   )

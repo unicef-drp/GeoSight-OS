@@ -22,6 +22,7 @@ import { useDispatch, useSelector } from "react-redux";
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { Plugin, PluginChild } from "../../MapLibre/Plugin";
 import { Actions } from '../../../../store/dashboard'
+import { TimeIcon } from "../../../../components/Icons";
 
 import './style.scss';
 
@@ -33,10 +34,10 @@ export default function GlobalDateSelector() {
   const { globalDateSelectorOpened } = useSelector(state => state.globalState)
 
   return (
-    <Plugin>
+    <Plugin className='GlobalDateSelector'>
       <div className={(globalDateSelectorOpened ? "Active" : "Inactive")}>
         <PluginChild title={'Show global time configuration'}>
-          <AccessTimeIcon
+          <TimeIcon
             onClick={() => {
               dispatch(
                 Actions.GlobalState.update({ globalDateSelectorOpened: !globalDateSelectorOpened })

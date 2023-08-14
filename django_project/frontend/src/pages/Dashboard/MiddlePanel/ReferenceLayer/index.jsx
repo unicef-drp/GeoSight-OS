@@ -22,6 +22,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { Actions } from '../../../../store/dashboard'
 import { extractCode, fetchFeatureList } from "../../../../utils/georepo";
+import { ArrowDownwardIcon } from "../../../../components/Icons";
 
 import './style.scss';
 
@@ -133,6 +134,7 @@ export default function ReferenceLayerSection() {
         <Fragment>
           <div className='ReferenceLayerLevelSelected'>
             <div>{level.level_name}</div>
+            <ArrowDownwardIcon/>
           </div>
           <div className='ReferenceLayerLevelOptions'>
             {

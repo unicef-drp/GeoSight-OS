@@ -19,12 +19,12 @@
 
 import React, { Fragment, useEffect, useState } from 'react';
 import { useSelector } from "react-redux";
-import InfoIcon from "@mui/icons-material/Info";
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { returnWhere } from "../../utils/queryExtraction";
 import { fetchingData } from "../../Requests";
 import SummaryWidgetView from "./Summary/View";
+import { InfoFillIcon } from '../Icons'
 
 // Widgets
 import SummaryWidget from "./Summary/SummaryWidget"
@@ -167,7 +167,7 @@ export function Widget({ idx, data }) {
 
   return (
     <div className='widget'>
-      <InfoIcon className="info__button" onClick={() => {
+      <InfoFillIcon className="info__button" onClick={() => {
         showInfoHandler()
       }}/>
       <div className='widget__fill'>

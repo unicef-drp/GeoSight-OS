@@ -17,13 +17,15 @@
    Right-side panel
    ========================================================================== */
 
-@import '../../../app/variables';
+@import '../../../../app/variables';
 
 .dashboard__right_side {
   position: relative;
   width: 20%;
   transition: margin-right 0.3s;
   padding-top: 48px;
+  background-color: rgba(0, 0, 0, 0) !important;
+  height: 97% !important;
 
   @include media(small-down) {
     width: 20%;
@@ -46,7 +48,9 @@
     max-height: 100%;
     overflow-y: auto;
     min-height: 100%;
-    background-color: #eee !important;
+    background-color: rgba(0, 0, 0, 0) !important;
+    border-top: 1px solid $border-gray;
+    padding-top: 1rem;
 
     @include media(small-down) {
       box-shadow: unset !important;
@@ -55,6 +59,7 @@
     .dashboard__content {
       min-height: 3rem;
       padding-top: 0;
+      background-color: rgba(0, 0, 0, 0) !important;
     }
   }
 }

@@ -20,7 +20,8 @@
 @import '../../../../app/variables';
 
 .TiltControl {
-  margin-left: -10px !important;
+  color: $primary-color;
+  cursor: pointer;
 
   a {
     position: relative;

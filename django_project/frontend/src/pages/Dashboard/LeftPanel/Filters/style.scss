@@ -61,6 +61,12 @@
   flex-grow: 1;
   overflow-y: auto;
 
+  .FilterControlInfo {
+    font-weight: $base-font-medium;
+    font-size: 12px;
+    color: #7E7E7E;
+  }
+
   // GROUP SWITCHER
   .GroupSwitcher {
     .Mui-checked {
@@ -68,6 +74,11 @@
         background-color: $secondary-color;
       }
     }
+  }
+
+  .ReactSelect__control {
+    background-color: #ADE0FF;
+    border-color: #ADE0FF;
   }
 
   // OPERATOR SWITCHER
@@ -142,23 +153,35 @@
   }
 
   .FilterGroup {
-    border: 1px solid $primary-color;
-    margin-top: 20px;
-    padding: 20px 8px 10px 8px;
+    padding: 10px 8px 10px 8px;
     position: relative;
     border-radius: $border-radius;
+    background-color: rgba(0, 0, 0, 0.03);
 
     & > .MuiPaper-root {
       margin-top: 5px !important;
       margin-bottom: 0 !important;
 
       & > .MuiButtonBase-root {
-        align-items: unset !important;
+        align-items: center !important;
+        height: 30px;
+        min-height: 30px;
 
-        .MuiAccordionSummary-expandIconWrapper {
-          padding: 3px 0;
-          height: 0.8rem;
-          width: 0.8rem;
+        .MuiAccordionSummary-content {
+          margin: 0 !important;
+          height: 100%;
+          align-items: center;
+        }
+
+        .FilterEdit {
+          color: $tab-inactive-color;
+          width: 12px;
+          margin-right: 5px;
+        }
+
+        .FilterDelete {
+          color: $tab-inactive-color;
+          width: 9px;
         }
       }
     }
@@ -169,19 +192,19 @@
 
     .FilterGroupHeader {
       box-sizing: border-box;
-      height: 18px;
       left: 0;
-      padding: 0 0.5rem;
-      position: absolute;
-      top: -10px;
       width: 100%;
+      align-items: center;
 
       .FilterGroupOption {
-        background-color: $primary-color;
+        background-color: #F8F9F9;
         border-radius: $border-radius;
-        color: $anti-primary-color;
         display: flex;
-        padding: 0 7px;
+        align-items: center;
+
+        .MuiButtonBase-root {
+          margin-top: -3px;
+        }
 
         .FilterGroupName {
           flex-grow: 1;
@@ -189,10 +212,6 @@
 
         .FilterGroupEnd {
           width: 5px;
-        }
-
-        .OperatorIdentifier {
-          padding: 3px 0 0 5px;
         }
 
         .MuiButtonLike {
@@ -217,6 +236,22 @@
           border-radius: 5px;
           cursor: pointer;
         }
+
+        .FilterGroupAddExpression,
+        .FilterGroupAdd,
+        .FilterGroupDelete {
+          background-color: rgba(0, 0, 0, 0);
+          color: #ADE0FF;
+        }
+
+        div.MuiInputBase-root {
+          height: 20px !important;
+          background-color: #ADE0FF;
+
+          svg {
+            color: $primary-color;
+          }
+        }
       }
     }
   }
@@ -228,17 +263,13 @@
   }
 
   .MuiPaper-root {
-    .MuiCollapse-vertical {
-      height: auto !important;
-    }
-
     &::before {
       display: none;
     }
   }
 
   .FilterExpression {
-    background: none;
+    background-color: #FFFFFF;
 
     &.Disabled {
       cursor: not-allowed;
@@ -260,6 +291,10 @@
     .FilterExpressionName {
       flex-grow: 1;
       display: flex;
+
+      div {
+        margin-top: 2px;
+      }
     }
 
     .FilterExpressionDescription {
@@ -268,7 +303,6 @@
     }
 
     .MuiAccordionSummary-root {
-      background: $base-to-white-color;
       padding: 5px !important;
       border: 1px solid #ddd;
       margin-top: -1px;
@@ -283,7 +317,6 @@
 
         svg {
           background-color: white;
-          border: 1px solid #ddd;
         }
       }
 
@@ -292,26 +325,26 @@
         margin-right: 3px;
       }
 
-      .FilterEdit,
-      .FilterDelete {
-        margin-top: 2px;
-      }
-
       .FilterDelete {
         color: $error;
         margin-right: 5px;
       }
-
-      .MuiSvgIcon-root {
-        height: 0.8rem;
-        width: 0.8rem;
-      }
     }
 
     .MuiAccordionDetails-root {
-      border: 1px solid #ddd;
-      padding: 10px;
-      margin-top: -1px;
+      & > div {
+        border: 1px solid #ddd;
+        padding: 1rem !important;
+        border-top: unset !important;
+      }
+
+      input {
+        padding: 1rem 0.5rem;
+      }
+
+      .MuiInputSlider {
+        padding-top: 3px;
+      }
     }
   }
 
@@ -407,6 +440,14 @@
     max-width: unset;
   }
 
+  .MuiInputLabel-root {
+    color: black;
+  }
+
+  .MuiInputBase-input {
+    border: 1px solid $tab-inactive-color;
+  }
+
   .MuiFormControl-root {
     margin-top: 0 !important;
   }
@@ -485,9 +526,13 @@
     }
   }
 
-  .MuiButton-root {
-    margin-top: 20px;
-    width: 100%;
+  div.button-div {
+    display: flex;
+    flex-direction: row-reverse;
+
+    .MuiButton-root {
+      width: 15%;
+    }
   }
 }
 
