@@ -19,7 +19,6 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from "react-redux";
-import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -28,6 +27,7 @@ import FormLabel from '@mui/material/FormLabel';
 import Radio from '@mui/material/Radio';
 import Checkbox from '@mui/material/Checkbox';
 import { Plugin, PluginChild } from "../../MapLibre/Plugin";
+import { DownloadIcon } from '../../../../components/Icons'
 import CustomPopover from "../../../../components/CustomPopover";
 import { ThemeButton } from "../../../../components/Elements/Button";
 import { removeElement } from "../../../../utils/Array";
@@ -337,9 +337,11 @@ export default function DownloaderData() {
             horizontal: 'center',
           }}
           Button={
-            <PluginChild title={'Download Data'}>
-              <CloudDownloadIcon/>
-            </PluginChild>
+            <div className='Active'>
+              <PluginChild title={'Download Data'}>
+                <DownloadIcon/>
+              </PluginChild>
+            </div>
           }>
           <div
             className={"DownloaderDataComponent " + (disabled ? "Disabled" : "")}
@@ -465,7 +467,7 @@ export default function DownloaderData() {
                 variant="primary Reverse"
                 onClick={download}
               >
-                {downloading ? <CircularProgress/> : <CloudDownloadIcon/>}
+                {downloading ? <CircularProgress/> : <DownloadIcon/>}
                 {downloading ? "Downloading" : "Download"}
               </ThemeButton>
             </div>

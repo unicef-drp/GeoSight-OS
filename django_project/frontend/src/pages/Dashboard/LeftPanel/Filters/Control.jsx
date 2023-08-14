@@ -23,9 +23,7 @@ import { useDispatch } from "react-redux"
 import Tooltip from '@mui/material/Tooltip'
 import { styled } from '@mui/material/styles';
 import AddCircleIcon from '@mui/icons-material/AddCircle'
-import DoDisturbOnIcon from '@mui/icons-material/DoDisturbOn';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import ModeEditIcon from '@mui/icons-material/ModeEdit'
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder'
 import Accordion from '@mui/material/Accordion'
 import AccordionSummary from '@mui/material/AccordionSummary'
@@ -44,11 +42,14 @@ import {
 import { Actions } from '../../../../store/dashboard'
 import { capitalize } from "../../../../utils/main";
 import FilterEditorModal from './Modal'
+import { DeleteIcon, EditIcon } from '../../../../components/Icons'
 
 import './style.scss'
 import {
   WhereInputValue
 } from "../../../../components/SqlQueryGenerator/WhereQueryGenerator/WhereInput";
+import Checkbox from "@mui/material/Checkbox";
+import {SelectPlaceholder} from "../../../../components/Input";
 
 const Switcher = styled(Switch)(({ theme }) => ({}));
 const expandedByFilterField = {}
@@ -115,6 +116,11 @@ export default function FilterControl(
     const [data, setData] = useState(INIT_DATA.WHERE())
     const [addType, setAddType] = useState(null)
 
+    const optionsTypes = [
+      { id: WHERE_OPERATOR.AND, name: 'And' },
+      { id: WHERE_OPERATOR.OR, name: 'Or' }
+    ]
+
     const switchWhere = (operator) => {
       setOperator(operator);
       where.operator = operator;
@@ -150,10 +156,10 @@ export default function FilterControl(
     return <div className='FilterGroup'>
       <div className='FilterGroupHeader'>
         <div className='FilterGroupOption'>
-          <Switch
+          <Checkbox
             className='GroupSwitcher'
-            size="small"
             checked={where.active}
+            size="small"
             onChange={() => {
               groupCheckedChanged(where, !where.active)
             }}
@@ -161,11 +167,14 @@ export default function FilterControl(
           {
             ableToModify ?
               <Fragment>
-                <OperatorSwitcher
-                  checked={operator === WHERE_OPERATOR.AND}
-                  onChange={() => {
-                    switchWhere(operator === WHERE_OPERATOR.AND ? WHERE_OPERATOR.OR : WHERE_OPERATOR.AND)
-                  }}/>
+                <SelectPlaceholder
+                  placeholder='Operator'
+                  list={optionsTypes}
+                  initValue={operator}
+                  onChangeFn={(value) => {
+                    switchWhere(value)
+                  }}
+                />
                 <div className='FilterGroupName'>
                 </div>
                 <Tooltip title="Add New Filter">
@@ -198,7 +207,7 @@ export default function FilterControl(
                 {
                   upperWhere ? (
                     <Tooltip title="Delete Group">
-                      <DoDisturbOnIcon
+                      <DeleteIcon
                         className='FilterGroupDelete MuiButtonLike' onClick={
                         () => {
                           let isExecuted = confirm("Do you want to delete this group?");
@@ -324,9 +333,10 @@ export default function FilterControl(
           onClick={(event) => {
             updateExpanded()
           }}>
-          <Switch
-            size="small"
+          <Checkbox
+            className='GroupSwitcher'
             checked={active}
+            size="small"
             onChange={(event) => {
               updateActive(event.target.checked)
             }}
@@ -344,7 +354,7 @@ export default function FilterControl(
         </div>
         {ableToModify ?
           <Fragment>
-            <ModeEditIcon
+            <EditIcon
               className='MuiButtonLike FilterEdit'
               onClick={(event) => {
                 event.stopPropagation()
@@ -353,7 +363,7 @@ export default function FilterControl(
             {
               upperWhere ? (
                 <Tooltip title="Delete Filter">
-                  <DoDisturbOnIcon
+                  <DeleteIcon
                     className='MuiButtonLike FilterDelete MuiButtonLike'
                     onClick={
                       (e) => {

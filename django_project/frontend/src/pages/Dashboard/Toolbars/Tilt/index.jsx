@@ -71,9 +71,6 @@ export default function Tilt({ map, is3DView, force }) {
           map.easeTo({ pitch: 60 })
         }
       }}>
-      <div className='TiltBase'/>
-      <div className='TiltDegreeLine'
-           style={{ transform: 'rotate(-' + degree + 'deg)' }}/>
       <div className='TiltDegree'>{degree}</div>
     </PluginChild>
   </Plugin>

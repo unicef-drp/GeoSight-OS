@@ -20,11 +20,11 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import $ from "jquery";
 import { useDispatch, useSelector } from "react-redux";
-import StarIcon from "@mui/icons-material/Star";
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import TextField from "@mui/material/TextField";
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
+import { StarOffIcon, StarOnIcon } from "../../../../components/Icons";
 import { fetchingData } from "../../../../Requests";
 import { Actions } from '../../../../store/dashboard'
 import {
@@ -227,9 +227,11 @@ export default function Bookmark({ map }) {
         horizontal: 'center',
       }}
       Button={
-        <PluginChild title={'Bookmark'}>
-          <StarIcon/>
-        </PluginChild>
+        <div className='Active'>
+          <PluginChild title={'Bookmark'}>
+            <StarOffIcon/>
+          </PluginChild>
+        </div>
       }>{/* LIST OF BOOKMARKS */}
       <div className='BookmarkComponent'>
         <div className='Header'>
@@ -263,7 +265,7 @@ export default function Bookmark({ map }) {
                             dispatch(Actions.SelectedBookmark.change(bookmark))
                           }}
                         >
-                          <td><StarIcon className='StarIcon'/></td>
+                          <td><StarOnIcon className='StarIcon'/></td>
                           <td>
                             <div>{bookmark.name}</div>
                           </td>

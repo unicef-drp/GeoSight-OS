@@ -13,13 +13,36 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
+@import '../../app/variables';
+
 .TreeView {
   form {
     padding: 0 !important;
+    border-bottom: 1px solid #0412171A !important;
   }
 
   ul {
     padding-right: 0;
+  }
+
+  > ul {
+    margin-left: 10px;
+
+    li {
+      margin-left: -10px;
+    }
+
+    > li {
+      border-bottom: 1px solid #0412171A;
+
+      .MuiTreeItem-content {
+        flex-direction: row-reverse;
+      }
+    }
+  }
+
+  .Mui-expanded {
+    color: $primary-color;
   }
 }
 
@@ -48,7 +71,8 @@
 
     .PanelInput {
       position: relative;
-      padding-top: 4px;
+      padding-top: 5px;
+      padding-right: 2px;
 
       .MuiCircularProgress-root {
         display: none;
@@ -80,7 +104,11 @@
 }
 
 .MuiTreeItem-label {
-  padding-left: 0 !important;
+  padding-left: 1rem !important;
+
+  & > span {
+    display: block;
+  }
 
   label {
     margin-right: 0;
@@ -104,7 +132,7 @@
     }
 
     .MuiTypography-root {
-      flex-grow: 1;
+      flex-grow: 0.05;
       display: block;
       overflow: hidden;
 
@@ -120,6 +148,7 @@
 
   .LayerName {
     width: 100%;
+    margin-top: 3px;
 
     span {
       display: inline !important;
@@ -136,6 +165,7 @@
         mark.prefix {
           padding-left: 4px;
         }
+
         mark.suffix {
           padding-right: 4px;
         }
@@ -143,6 +173,7 @@
     }
 
   }
+
   table {
     margin-left: 20px;
   }
@@ -161,11 +192,12 @@
 
   &.Mui-selected {
     background-color: white !important;
+    color: $primary-color;
   }
 
   .GroupSelectable {
     .PanelCheckbox {
-      margin-top: 1px !important;
+      margin-top: 3px !important;
     }
   }
 }
@@ -185,10 +217,13 @@
 }
 
 .PanelSearchBox {
+  padding: 0.5rem !important;
+  box-sizing: border-box;
   width: 100%;
 
   .MuiInputBase-root {
     width: 100%;
+    background-color: #F4F4F4;
 
     input {
       padding-top: 10px;

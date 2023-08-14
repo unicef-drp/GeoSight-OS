@@ -150,7 +150,7 @@ export const fetchFeatureList = async function (url, useCache = true) {
 /*** Axios georepo request */
 export const axiosGet = function (url) {
   return axios.get(url, headers).catch(function (error) {
-    if (USE_GEOREPO_AUTH && error.message === 'Request failed with status code 403') {
+    if (USE_GEOREPO_AUTH && [401, 403].includes(error.response.status)) {
       if (new URL(GEOREPO_AZURE_AUTHENTICATION_URL).origin === new URL(url).origin) {
         if (!preferences.georepo_api.is_api_key) {
           Cookies.set('georepo-token', '')

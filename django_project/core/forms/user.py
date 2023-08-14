@@ -51,6 +51,7 @@ class AzureAdminForm(forms.ModelForm):
         user = super().save(commit=False)
         if settings.USE_AZURE:
             user.username = user.email
+        user.is_superuser = user.is_staff
         user.save()
         return user
 

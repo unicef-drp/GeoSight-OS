@@ -20,11 +20,11 @@
 import React, { useState } from 'react';
 import { useSelector } from "react-redux";
 import $ from "jquery";
-import CodeIcon from '@mui/icons-material/Code';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { EmbedIcon } from '../../../../components/Icons'
 import { IconTextField } from "../../../../components/Elements/Input";
 import { SaveButton } from "../../../../components/Elements/Button";
 import Modal, {
@@ -113,7 +113,7 @@ export default function Embed({ map }) {
   }
   return (
     <div>
-      <CodeIcon onClick={_ => setOpen(true)}/>
+      <EmbedIcon onClick={_ => setOpen(true)}/>
       <Modal
         className='EmbedComponent'
         open={open}
@@ -124,7 +124,7 @@ export default function Embed({ map }) {
         <ModalHeader onClosed={() => {
           setOpen(false)
         }}>
-          Create embed snippet for this map.
+          <b>Create embed snippet for this map.</b>
         </ModalHeader>
         <ModalContent>
           <div className='AdminForm'>

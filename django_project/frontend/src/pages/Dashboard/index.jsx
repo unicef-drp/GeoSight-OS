@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 import React, { Fragment, useEffect, useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -20,18 +20,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Actions } from '../../store/dashboard';
 import LeftPanel from './LeftPanel'
 import MapLibre from './MapLibre'
-import RightPanel from './RightPanel'
+import RightPanel from './MiddlePanel/RightPanel'
 import MiddlePanel from './MiddlePanel'
 import { EmbedConfig } from "../../utils/embed";
 import GeorepoAuthorizationModal
   from '../../components/B2C/GeorepoAuthorizationModal'
-import {
-  LEFT,
-  LeftRightToggleButton,
-  RIGHT
-} from "../../components/ToggleButton";
+import { LEFT, RIGHT } from "../../components/ToggleButton";
 
 import './style.scss';
+import { ProjectOverview } from "./Toolbars";
 
 export default function Dashboard({ children }) {
   const dispatch = useDispatch();
@@ -42,6 +39,30 @@ export default function Dashboard({ children }) {
   const showWidget = !!(!!EmbedConfig().widget_tab && data?.widgets?.length)
   const [leftExpanded, setLeftExpanded] = useState(showLayerTab || showFilterTab);
   const [rightExpanded, setRightExpanded] = useState(showWidget);
+
+  const leftPanelProps = (showLayerTab || showFilterTab) ? {
+    className: 'LeftButton',
+    initState: leftExpanded ? LEFT : RIGHT,
+    active: leftExpanded,
+    onLeft: () => {
+      setLeftExpanded(true)
+    },
+    onRight: () => {
+      setLeftExpanded(false)
+    }
+  } : {}
+
+  const rightPanelProps = showWidget ? {
+    className: 'RightButton',
+    initState: rightExpanded ? LEFT : RIGHT,
+    active: rightExpanded,
+    onLeft: () => {
+      setRightExpanded(false)
+    },
+    onRight: () => {
+      setRightExpanded(true)
+    }
+  } : {}
 
   // Fetch data of dashboard
   useEffect(() => {
@@ -59,47 +80,24 @@ export default function Dashboard({ children }) {
       className={'dashboard ' + (leftExpanded ? 'LeftExpanded' : "")}>
       {data && Object.keys(data).length > 0 ?
         <Fragment>
-          <MapLibre/>
+          <MapLibre leftPanelProps={leftPanelProps}
+                    rightPanelProps={rightPanelProps}/>
           <LeftPanel leftExpanded={leftExpanded}/>
           <MiddlePanel
             leftExpanded={leftExpanded}
             setLeftExpanded={setLeftExpanded}
             rightExpanded={rightExpanded}
             setRightExpanded={setRightExpanded}
+            leftContent={
+              <div className='ButtonSection'>
+                <ProjectOverview/>
+              </div>
+            }
+            rightContent={
+              <RightPanel rightExpanded={rightExpanded}/>
+            }
           >
-            <div className='ButtonSection'>
-              {/* RIGHT SIDE TOGGLER */}
-              {
-                (showLayerTab || showFilterTab) ?
-                  <LeftRightToggleButton
-                    className={'LeftButton'}
-                    initState={leftExpanded ? LEFT : RIGHT}
-                    onLeft={() => {
-                      setLeftExpanded(true)
-                    }}
-                    onRight={() => {
-                      setLeftExpanded(false)
-                    }}/> : null
-              }
-
-              <div className='Separator'></div>
-
-              {/* WIDGET TOGGLER */}
-              {
-                showWidget ?
-                  <LeftRightToggleButton
-                    className={'RightButton'}
-                    initState={rightExpanded ? LEFT : RIGHT}
-                    onLeft={() => {
-                      setRightExpanded(false)
-                    }}
-                    onRight={() => {
-                      setRightExpanded(true)
-                    }}/> : null
-              }
-            </div>
           </MiddlePanel>
-          <RightPanel rightExpanded={rightExpanded}/>
         </Fragment> :
         <div className='LoadingElement'>
           <div className='Throbber'>

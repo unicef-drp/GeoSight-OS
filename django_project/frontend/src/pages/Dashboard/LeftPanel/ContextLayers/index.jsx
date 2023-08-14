@@ -21,13 +21,10 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 
 import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AccordionDetails from "@mui/material/AccordionDetails";
 
 import { Actions } from '../../../../store/dashboard'
 import { getLayer } from "./Layer"
-import OnOffSwitcher from "../../../../components/Switcher/OnOff";
 
 import './style.scss'
 import {
@@ -114,7 +111,7 @@ function ContextLayers() {
       groupSelectable={true}
       maxSelect={10}
       onChange={onChange}
-      placeholder={'Filter context layers'}
+      placeholder={'Search Context Layers'}
     />
   )
 }
@@ -124,7 +121,7 @@ function ContextLayers() {
  * @param {bool} expanded Is the accordion expanded.
  * @param {function} handleChange Function when the accordion show.
  */
-export default function ContextLayersAccordion({ expanded, handleChange }) {
+export default function ContextLayersAccordion({ expanded }) {
   const dispatch = useDispatch();
   const { contextLayersShow } = useSelector(state => state.map);
 
@@ -135,23 +132,8 @@ export default function ContextLayersAccordion({ expanded, handleChange }) {
   return (
     <Accordion
       expanded={expanded}
-      onChange={handleChange('contextLayers')}
       className='ContextLayersAccordion'
     >
-      <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
-        <div className='Name'>
-          Context Layers
-        </div>
-        <OnOffSwitcher
-          checked={contextLayersShow}
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-          onChange={(e) => {
-            dispatch(Actions.Map.showHideContextLayer(!contextLayersShow))
-            e.stopPropagation();
-          }}/>
-      </AccordionSummary>
       <AccordionDetails>
         <ContextLayers/>
       </AccordionDetails>

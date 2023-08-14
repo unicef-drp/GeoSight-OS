@@ -18,18 +18,22 @@
    ========================================================================== */
 
 import React, { Fragment, useEffect, useRef, useState } from 'react';
-import { Chart as ChartJs } from 'chart.js';
+import { Chart as ChartJs, Filler } from 'chart.js';
 import { Line } from "react-chartjs-2";
 import { chartAreaBorder } from "../../../utils/chart.js.plugins";
 import CircularProgress from '@mui/material/CircularProgress';
+import { newShade } from "../../../utils/main";
 
 
 /**
  * Chart data
  * @param {dict} chartData Chart data
  */
-export default function Chart({ chartData, selectedLabel }) {
+export default function Chart(
+  { chartData, selectedLabel , fill=true}
+) {
   ChartJs.register(chartAreaBorder);
+  ChartJs.register(chartAreaBorder, Filler);
 
   const prevState = useRef();
   const [selectedLegend, setSelectedLegend] = useState([]);
@@ -61,31 +65,6 @@ export default function Chart({ chartData, selectedLabel }) {
       {
         chartData ?
           <div className='widget__time_series__wrapper'>
-            <div className="widget__time_series__legend">
-              {
-                chartData.datasets.map(dataset => {
-                  const label = dataset.label
-                  const selected = selectedLegend.includes(label)
-                  return <div
-                    key={label}
-                    className={"widget__time_series__row " + (selected ? '' : 'unselected')}
-                    onClick={evt => {
-                      if (selected) {
-                        setSelectedLegend(selectedLegend.filter(legend => legend !== label))
-                      } else {
-                        setSelectedLegend([...selectedLegend, label])
-                      }
-                    }}>
-                    <div className="widget__time_series__row_inner">
-                      <div className="widget__time_series__color"
-                           style={{ backgroundColor: dataset.backgroundColor }}>
-                      </div>
-                      <div>{label.split(' (')[0]}</div>
-                    </div>
-                  </div>
-                })
-              }
-            </div>
             {
               empty ? <div className='NoDataFound'>No data found</div> : null
             }
@@ -93,9 +72,9 @@ export default function Chart({ chartData, selectedLabel }) {
               <Line
                 options={{
                   radius: (context) => {
-                    return context?.raw?.x === selectedLabel ? 6 : 3;
+                    return  context?.raw?.x === selectedLabel ? 6 : 3;
                   },
-                  borderWidth: 1,
+                  borderWidth: 2,
                   responsive: true,
                   maintainAspectRatio: false,
                   drawChartBorder: true,
@@ -124,6 +103,31 @@ export default function Chart({ chartData, selectedLabel }) {
                   ...chartData,
                   datasets: chartData.datasets.filter(data => selectedLegend.includes(data.label))
                 }}/>
+            </div>
+            <div className="widget__time_series__legend">
+              {
+                chartData.datasets.map(dataset => {
+                  const label = dataset.label
+                  const selected = selectedLegend.includes(label)
+                  return <div
+                    key={label}
+                    className={"widget__time_series__row " + (selected ? '' : 'unselected')}
+                    onClick={evt => {
+                      if (selected) {
+                        setSelectedLegend(selectedLegend.filter(legend => legend !== label))
+                      } else {
+                        setSelectedLegend([...selectedLegend, label])
+                      }
+                    }}>
+                    <div className="widget__time_series__row_inner">
+                      <div className="widget__time_series__color"
+                           style={{ backgroundColor: dataset.borderColor }}>
+                      </div>
+                      <div>{label.split(' (')[0]}</div>
+                    </div>
+                  </div>
+                })
+              }
             </div>
           </div> :
           <div className='dashboard__right_side__loading'>
