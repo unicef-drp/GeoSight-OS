@@ -22,18 +22,19 @@ date: 2023-08-03
     	"migrations",
         "tests"]
     for root, dirs, files in os.walk("../django_project"):
-            file = os.path.join(root, file)
-            ignored = False;
-            if file.endswith(".py"):
-                for item in ignore_list:
-                    if item in file:
-                        ignored = True;
-                    #print (item, file, ignored)
-                if not ignored:
-                    file = file.replace("../django_project/", "::: ")
-                    file = file.replace("/", ".")
-                    file = file.replace(".py", "")
-                    template = template + file + "\n"
+        for file in files:
+             file = os.path.join(root, file)
+             ignored = False;
+             if file.endswith(".py"):
+                 for item in ignore_list:
+                     if item in file:
+                         ignored = True;
+                     #print (item, file, ignored)
+                 if not ignored:
+                     file = file.replace("../django_project/", "::: ")
+                     file = file.replace("/", ".")
+                     file = file.replace(".py", "")
+                     template = template + file + "\n"
+    file = open("src/developer/manual/index.md","wt")
     file.write(template)
-    file = open("docs/src/developer/manual/index.md","wt")
     file.close()

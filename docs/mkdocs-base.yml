@@ -44,46 +44,44 @@ nav:
                 - Code of Conduct: about/code-of-conduct.md
                 - Running Instances: about/running-instances.md
         - Users:
-                - Overview: 
-                        - Quickstart: 
-                        - user/index.md
-                                - user/quickstart/index.md
-                        - Guide:
-                                - user/guide/index.md
-                                - Disclaimer: about/disclaimer.md
-                                - License: about/license.md
-                        - Manual: 
-                                - user/manual/index.md
-                                - Home Page: user/manual/home.md
-        - Administrators:
-                        - Guide:
-                        - administrator/index.md
-                        - Manual:
-                                - administrator/guide/index.md
-                                - administrator/manual/index.md
-        - Developers:
-                        - developer/index.md
-                                - developer/api/index.md
-                        - API:
-                                - Reference: developer/api/manual/index.md
-                                - Guide: developer/api/guide/index.md
-                        - Guide:
-                                - Overview: developer/guide/index.md
-                                - Architecture: developer/guide/architecture.md
-                                - Prerequisites: developer/guide/prerequisites.md
-                                - Design: developer/guide/design.md
-                                - IDE Setup: developer/guide/ide-setup.md
-                                - Cloning: developer/guide/checking-out-the-code.md
-                                - Configuration: developer/guide/configuration.md
-                                - Building: developer/guide/building.md
-                                - Road Map: developer/guide/roadmap.md
-                                - Workflows: developer/guide/developer-workflows.md
-                                - "": developer/guide/templates/pull-request-template.md 
-                                - "": developer/guide/templates/commit-message-convention.md
-                        - Documentation: developer/documentation/index.md
-                        - Manual:
-                                - developer/manual/index.md
+                - user/index.md
+                - Quick Start: 
+                        - user/quickstart/index.md
+                - Guide:
+                        - user/guide/index.md
+                        - Disclaimer: about/disclaimer.md
                         - License: about/license.md
+                - Manual: 
+                        - user/manual/index.md
+                        - Home Page: user/manual/home.md
+        - Administrators:
+                - administrator/index.md
+                - Guide:
+                        - administrator/guide/index.md
+                - Manual:
+                        - administrator/manual/index.md
+        - Developers:
+                - developer/index.md
+                - API:
+                        - developer/api/index.md
+                        - Reference: developer/api/manual/index.md
+                        - Guide: developer/api/guide/index.md
+                - Guide:
+                        - Overview: developer/guide/index.md
+                        - Architecture: developer/guide/architecture.md
+                        - Prerequisites: developer/guide/prerequisites.md
+                        - Design: developer/guide/design.md
+                        - IDE Setup: developer/guide/ide-setup.md
+                        - Cloning: developer/guide/cloning.md
+                        - Configuration: developer/guide/configuration.md
+                        - Building: developer/guide/building.md
+                        - Road Map: developer/guide/roadmap.md
+                        - Workflows: developer/guide/workflows.md
+                        - "": developer/guide/templates/pull-request-template.md 
+                        - "": developer/guide/templates/commit-message-convention.md
+                - Documentation: developer/documentation/index.md
+                - Manual: developer/manual/index.md
+                - License: about/license.md
         - DevOps: 
                 - devops/index.md
                 - Guide: devops/guide/index.md
