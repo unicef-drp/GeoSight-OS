@@ -78,14 +78,20 @@
   .ArcgisConfig {
 
     .Classification {
-      border: 1px solid $secondary-color;
-      padding: 0.5rem;
+      border: 1px solid $primary-color;
+      padding: 1rem 0;
+      margin-bottom: -1px;
 
       b {
         display: block;
         width: 100%;
         text-align: center;
-        color: $secondary-color;
+        color: $primary-color;
+      }
+
+      img {
+        height: 50px;
+        margin-bottom: 0.5rem;
       }
     }
   }
@@ -100,6 +106,18 @@
 
   .ArcgisConfigLabel {
     margin-bottom: 2rem;
+  }
+
+  .ContextLayerConfig-IconSize {
+    display: flex;
+
+    .ContextLayerConfig-IconSize-X {
+      padding: 7px 1rem;
+    }
+
+    input {
+      width: 100px;
+    }
   }
 }
 
