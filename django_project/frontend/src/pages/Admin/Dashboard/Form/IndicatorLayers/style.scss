@@ -51,6 +51,17 @@
       white-space: nowrap;
     }
   }
+
+  .MuiTextField-root {
+    input,
+    svg {
+      color: black !important;
+    }
+  }
+
+  .GroupEditName {
+    margin-left: 0.5rem;
+  }
 }
 
 .IndicatorLayerCreateTypeSelection {

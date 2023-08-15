@@ -175,7 +175,7 @@ export default function ReferenceLayerCentroid({ map }) {
       indicatorLayer.indicators.map(indicator => {
         const data = feature.properties.data?.find(row => row.indicator === indicator.indicator)
         if (data) {
-          children.push(`<div class="pin" style="background-color: ${data.style.color}; height: ${size}px; width: ${size}px;"></div>`)
+          children.push(`<div class="pin" title="${data.indicator} - ${data.value}" style="background-color: ${data.style.color}; height: ${size}px; width: ${size}px;"></div>`)
         } else {
           children.push(`<div class="pin empty"></div>`)
         }

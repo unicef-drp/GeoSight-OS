@@ -340,6 +340,7 @@ $nav-disabled-color: '%23CCCCCC';
   .maplibregl-ctrl-icon {
     position: relative;
     background-image: unset !important;
+    border: none !important;
 
     &::after {
       display: block;

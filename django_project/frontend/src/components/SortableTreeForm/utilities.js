@@ -14,7 +14,6 @@
  */
 
 import { arrayMove } from '@dnd-kit/sortable';
-import { dictDeepCopy } from "../../utils/main";
 
 export const iOS = /iPad|iPhone|iPod/.test(navigator.platform);
 
@@ -363,7 +362,7 @@ export function dataStructureToTreeData(data, dataStructure, groupList = []) {
     }
     if (child.group) {
       return {
-        id: groupList.concat(child.group).join('->'),
+        id: child.id ? child.id : groupList.concat(child.group).join('->'),
         name: child.group,
         isGroup: true,
         data: null,
@@ -435,27 +434,16 @@ export function dataStructureToListData(data, dataStructure, groupList = []) {
 }
 
 /** Return group in structure **/
-export function _returnGroupInStructure(structure, idList, updateFunction) {
+export function _returnGroupInStructure(structure, id, updateFunction) {
   if (!structure.children) {
     return
   }
-  idList = dictDeepCopy(idList)
-  const id = idList[0]
-  if (id === '') {
-    updateFunction(structure, structure)
-    return;
-  }
-  idList.shift()
   structure.children.map(child => {
-    if (child?.group && child?.group === id) {
-      if (idList.length) {
-        _returnGroupInStructure(child, idList, updateFunction)
-      } else {
-        updateFunction(child, structure)
-      }
+    if (child.id === id) {
+      updateFunction(child, structure)
     } else {
       if (child.children) {
-        _returnGroupInStructure(child, idList, updateFunction)
+        _returnGroupInStructure(child, id, updateFunction)
       }
     }
   })
@@ -464,7 +452,7 @@ export function _returnGroupInStructure(structure, idList, updateFunction) {
 /** Update group in structure **/
 export function updateGroupInStructure(id, structure, updateFunction) {
   if (id !== undefined) {
-    _returnGroupInStructure(structure, id.split('->'), updateFunction)
+    _returnGroupInStructure(structure, id, updateFunction)
   }
 }
 
