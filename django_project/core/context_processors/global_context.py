@@ -49,8 +49,11 @@ def global_context(request):
     return {
         'preferences': pref_data,
         'use_azure_auth': settings.USE_AZURE,
-        'use_georepo_auth': settings.USE_GEOREPO_AUTH,
+        'use_georepo_auth': settings.USE_AZURE and not (
+            not pref.georepo_azure_authentication_url
+        ),
         'georepo_azure_autehntication_url':
-            settings.GEOREPO_AZURE_AUTHENTICATION_URL,
+            pref.georepo_azure_authentication_url if
+            pref.georepo_azure_authentication_url else '',
         'version': project_version(request)
     }

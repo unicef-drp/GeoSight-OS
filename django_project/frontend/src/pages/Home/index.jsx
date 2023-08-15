@@ -99,7 +99,6 @@ export default function Home() {
 
   // Create category
   let categories = [];
-  console.log(projects)
   if (projects) {
     categories = projects.own.concat(projects.shared).filter(project => project.category).map(project => project.category);
   }
