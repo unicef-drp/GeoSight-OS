@@ -59,12 +59,28 @@
       background-color: $white !important;
     }
 
+    .EmbedControl,
+    .BookmarkControl,
+    .DownloadControl {
+      padding: 2px;
+
+      a {
+        margin: 0 !important;
+        height: 28px !important;
+        width: 28px !important;
+
+        svg {
+          width: 16px;
+          height: 16px;
+        }
+      }
+    }
+
     .EmbedControl {
       margin-right: 10px;
 
       svg {
-        width: 40px !important;
-        margin-top: 5px;
+        width: 28px !important;
       }
     }
 
@@ -88,6 +104,7 @@
       position: absolute;
       left: 50%;
       margin-left: -75px;
+      top: 2px;
 
       .extrudedIcon svg,
       svg[data-testid='CompareIcon'] {
