@@ -235,7 +235,7 @@ export default function MapLibre(
         <CompareLayer disabled={is3dMode}/>
         {/* 3D View */}
         <Plugin>
-          <div className='extrudedIcon Active'>
+          <div className='ExtrudedIcon Active'>
             <PluginChild
               title={'3D layer'}
               disabled={!map}

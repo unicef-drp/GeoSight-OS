@@ -224,19 +224,19 @@ export function IndicatorLayers() {
       }
     }
 
+    // Check selected indicator layers
     const selectedIndicatorLayers = indicatorLayers.filter(layer => selectedData.includes('' + layer.id))
+    let relatedLayer = null
+    let dynamicLayer = null
     selectedIndicatorLayers.map(layer => {
       if (layer.related_tables?.length && layer.config.where) {
-        dispatch(Actions.SelectedRelatedTableLayer.change(layer.id))
-        dispatch(Actions.SelectedDynamicIndicatorLayer.change(null))
+        relatedLayer = layer.id
       } else if (layer.type === DynamicIndicatorType) {
-        dispatch(Actions.SelectedRelatedTableLayer.change(null))
-        dispatch(Actions.SelectedDynamicIndicatorLayer.change(layer.id))
-      } else {
-        dispatch(Actions.SelectedRelatedTableLayer.change(null))
-        dispatch(Actions.SelectedDynamicIndicatorLayer.change(null))
+        dynamicLayer = layer.id
       }
     })
+    dispatch(Actions.SelectedRelatedTableLayer.change(relatedLayer))
+    dispatch(Actions.SelectedDynamicIndicatorLayer.change(dynamicLayer))
   }
 
   return (
