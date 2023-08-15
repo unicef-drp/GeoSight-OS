@@ -17,7 +17,7 @@
    RIGHT SIDE CONTAINER
    ========================================================================== */
 
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { useSelector } from "react-redux";
 
 import WidgetList from '../../../../components/Widget'
@@ -27,7 +27,11 @@ import './style.scss';
 
 export default function RightPanel({ rightExpanded }) {
   const { widgets } = useSelector(state => state.dashboard.data);
-  const state = rightExpanded ? RIGHT : LEFT
+  const [state, setState] = useState(rightExpanded ? RIGHT : LEFT)
+
+  useEffect(() => {
+    setState(rightExpanded ? RIGHT : LEFT)
+  }, [rightExpanded])
 
   const className = `${state}`
   return (

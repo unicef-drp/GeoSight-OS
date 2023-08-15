@@ -186,6 +186,7 @@ export default function ReferenceLayerCentroid({ map }) {
         closeOnClick: false,
         closeButton: false
       }).setHTML(`<div class="pins">${children.join('')}</div>`)
+      popup.addClassName('ChartPopup')
       const marker = new maplibregl.Marker(el)
         .setLngLat(feature.geometry.coordinates)
         .setPopup(popup)

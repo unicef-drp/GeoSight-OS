@@ -199,7 +199,6 @@ export default function MapLibre(
 
   return <section
     className={'DashboardMap ' + (!EmbedConfig().map ? 'Hidden' : '')}>
-    <div id="map"></div>
     {/* TOOLBARS */}
     <div className='Toolbar'>
       <TiltControl map={map} is3DView={is3dMode} force={force}/>
@@ -283,6 +282,8 @@ export default function MapLibre(
         }
       </div>
     </div>
+
+    <div id="map"></div>
 
     <ReferenceLayer map={map} deckgl={deckgl} is3DView={is3dMode}/>
     <ContextLayers map={map}/>

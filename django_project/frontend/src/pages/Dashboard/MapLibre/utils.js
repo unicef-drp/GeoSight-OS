@@ -150,6 +150,7 @@ export const addPopup = (map, id, popupRenderFn) => {
           .setHTML(popupHtml)
           .addTo(map);
       }
+      popup.addClassName('ContextPopup')
     }
   }
   map.on('click', id, functionPopup[id].click);
