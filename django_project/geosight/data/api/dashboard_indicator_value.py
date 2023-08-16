@@ -130,6 +130,7 @@ class DashboardIndicatorValueListAPI(DashboardIndicatorValuesAPI):
 
         order_by = ['-' + field for field in distinct]
         order_by.append('-date')
+        print(distinct)
         query = query.order_by(
             *[field for field in order_by]
         ).distinct(*distinct)
@@ -140,10 +141,16 @@ class DashboardIndicatorValueListAPI(DashboardIndicatorValuesAPI):
                 row.date, datetime.max.time(),
                 tzinfo=pytz.timezone(settings.TIME_ZONE)
             )
-            output.append({
+            row_data = {
                 'time': time.mktime(new_date.timetuple()),
                 'value': row.value
-            })
+            }
+            extras = request.GET.get('extras', '').split(',')
+            if 'concept_uuid' in extras:
+                row_data['concept_uuid'] = row.concept_uuid
+            if 'date' in extras:
+                row_data['date'] = row.date.strftime('%Y-%m-%d')
+            output.append(row_data)
         return Response(output)
 
 

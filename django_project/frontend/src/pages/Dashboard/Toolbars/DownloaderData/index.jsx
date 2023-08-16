@@ -46,6 +46,7 @@ import Grid from "@mui/material/Grid";
 import {
   SelectWithSearch
 } from "../../../../components/Input/SelectWithSearch";
+import { fetchingData } from "../../../../Requests";
 
 export const GeographyFilter = {
   All: 'All Geographies',
@@ -55,12 +56,17 @@ export const Format = {
   Excel: 'Excel',
   Geojson: 'Geojson'
 }
+export const TimeType = {
+  Current: 'Current date/time (active window)',
+  All: 'All history'
+}
 /**
  * DownloaderData component.
  */
 export default function DownloaderData() {
   const filteredGeometries = useSelector(state => state.filteredGeometries)
   const {
+    slug,
     indicators,
     referenceLayer,
     indicatorLayers,
@@ -87,7 +93,8 @@ export default function DownloaderData() {
     geographyFilter: GeographyFilter.All,
     indicators: [],
     format: Format.Excel,
-    excludeEmptyValue: true
+    excludeEmptyValue: true,
+    time: TimeType.Current,
   })
 
   const disabled = downloading || !state.levels.length || !state.indicators.length || !indicatorLayers.length
@@ -152,23 +159,31 @@ export default function DownloaderData() {
         let indicator = indicators.find(indicator => indicator.id === indicatorData.id)
         name = indicator?.name
         shortcode = indicator?.shortcode
-        the_data = layerData.find(row => row.indicator?.id === indicator.id)
+        the_data = layerData.filter(row => row.indicator?.id === indicator.id)
       } else {
-        the_data = layerData[0]
+        the_data = layerData
         name = indicatorLayer.name
       }
     } catch (err) {
     }
-    if (the_data || !state.excludeEmptyValue) {
-      return {
+    if (the_data?.length) {
+      return the_data.map(row => {
+        return {
+          IndicatorCode: shortcode ? shortcode : '',
+          IndicatorName: name,
+          Value: row?.value !== undefined ? '' + row?.value : '',
+          Date: row?.date ? row?.date : '',
+        }
+      })
+    } else if (!state.excludeEmptyValue) {
+      return [{
         IndicatorCode: shortcode ? shortcode : '',
         IndicatorName: name,
-        Value: the_data?.value !== undefined ? '' + the_data?.value : '',
-        Date: the_data?.date ? the_data?.date : '',
-      }
-    } else {
-      return null
+        Value: '',
+        Date: '',
+      }]
     }
+    return null
   }
   // Construct the data
   const download = () => {
@@ -180,19 +195,52 @@ export default function DownloaderData() {
           // Get the data
           const levelsUsed = levels.filter(level => state.levels.includes(level.level))
           const indicatorValueByGeometry = {}
-          state.indicators.map(indicatorId => {
-            const indicatorLayer = indicatorLayers.find(indicatorLayer => indicatorId === indicatorLayer.id)
-            if (!indicatorLayer) {
-              return
-            }
 
-            const output = getIndicatorValueByGeometry(
-              indicatorLayer, indicators, indicatorsData,
-              relatedTables, relatedTableData, selectedGlobalTime,
-              geoField, filteredGeometries
-            )
-            indicatorValueByGeometry[indicatorLayer.id] = output
-          })
+          // The data
+          if (state.time === TimeType.All) {
+            for (let i = 0; i < state.indicators.length; i++) {
+              const indicatorId = state.indicators[i]
+              const indicatorLayer = indicatorLayers.find(indicatorLayer => indicatorId === indicatorLayer.id)
+
+              // For indicator
+              if (indicatorLayer) {
+                const output = {} // Output by concept uuid
+                for (let j = 0; j < indicatorLayer.indicators.length; j++) {
+                  const indicator = indicatorLayer.indicators[j]
+                  await fetchingData(
+                    `/api/dashboard/${slug}/indicator/${indicator.id}/values`,
+                    { extras: 'concept_uuid,date' }, {}, (response, error) => {
+                      if (!error) {
+                        response.map(row => {
+                          row.indicator = indicator
+                          if (!output[row.concept_uuid]) {
+                            output[row.concept_uuid] = []
+                          }
+                          output[row.concept_uuid].push(row)
+                        })
+                      }
+                    }
+                  )
+                }
+                indicatorValueByGeometry[indicatorLayer.id] = output
+              }
+            }
+          } else if (state.time === TimeType.Current) {
+            state.indicators.map(indicatorId => {
+              const indicatorLayer = indicatorLayers.find(indicatorLayer => indicatorId === indicatorLayer.id)
+              if (!indicatorLayer) {
+                return
+              }
+
+              const output = getIndicatorValueByGeometry(
+                indicatorLayer, indicators, indicatorsData,
+                relatedTables, relatedTableData, selectedGlobalTime,
+                geoField, filteredGeometries
+              )
+              console.log(output)
+              indicatorValueByGeometry[indicatorLayer.id] = output
+            })
+          }
 
           // If excel
           if (state.format === Format.Excel) {
@@ -230,9 +278,11 @@ export default function DownloaderData() {
                     indicatorLayer, indicatorData, indicatorValueByGeometry, ucode
                   )
                   if (data) {
-                    tableData.push(
-                      Object.assign({}, row, data)
-                    )
+                    data.map(dataRow => {
+                      tableData.push(
+                        Object.assign({}, row, dataRow)
+                      )
+                    })
                   }
                 })
               })
@@ -254,13 +304,16 @@ export default function DownloaderData() {
                     indicatorLayer, null, indicatorValueByGeometry, ucode, false
                   )
                   if (data) {
-                    tableData.push(
-                      Object.assign({}, row, data)
-                    )
+                    data.map(dataRow => {
+                      tableData.push(
+                        Object.assign({}, row, dataRow)
+                      )
+                    })
                   }
                 })
               })
             })
+            console.log(tableData)
             jsonToXlsx(tableData, name + '.xls')
           }
           // else if just geojson
@@ -292,7 +345,7 @@ export default function DownloaderData() {
                   )
                   if (data) {
                     geom.properties = Object.assign(
-                      {}, geom.properties, data
+                      {}, geom.properties, data[0]
                     )
                     features.push(geom)
                   }
@@ -310,7 +363,7 @@ export default function DownloaderData() {
                   )
                   if (data) {
                     geom.properties = Object.assign(
-                      {}, geom.properties, data
+                      {}, geom.properties, data[0]
                     )
                     features.push(geom)
                   }
@@ -414,19 +467,35 @@ export default function DownloaderData() {
                 <Grid item xs={6}>
                   <FormLabel>Geographical extent</FormLabel>
                   <SelectWithSearch
+                    disableCloseOnSelect={false}
                     options={[GeographyFilter.All, GeographyFilter.Filtered]}
                     value={state.geographyFilter}
-                    onChange={(evt) => {
-                      setState({ ...state, geographyFilter: evt.target.value })
+                    onChangeFn={(value) => {
+                      setState({ ...state, geographyFilter: value })
                     }}/>
                 </Grid>
                 <Grid item xs={6}>
                   <FormLabel>Format</FormLabel>
                   <SelectWithSearch
+                    disableCloseOnSelect={false}
                     options={[Format.Geojson, Format.Excel]}
                     value={state.format}
-                    onChange={(evt) => {
-                      setState({ ...state, format: evt.target.value })
+                    onChangeFn={(value) => {
+                      setState({ ...state, format: value })
+                    }}/>
+                </Grid>
+              </Grid>
+
+              {/* TIME */}
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <FormLabel>Time filter</FormLabel>
+                  <SelectWithSearch
+                    disableCloseOnSelect={false}
+                    options={[TimeType.Current, TimeType.All]}
+                    value={state.time}
+                    onChangeFn={(value) => {
+                      setState({ ...state, time: value })
                     }}/>
                 </Grid>
               </Grid>
