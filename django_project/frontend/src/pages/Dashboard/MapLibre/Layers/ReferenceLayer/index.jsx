@@ -22,8 +22,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { MVTLayer } from '@deck.gl/geo-layers';
 import { GeoJsonLayer } from '@deck.gl/layers';
 import { DataFilterExtension } from '@deck.gl/extensions';
+import { fetchFile, load } from '@loaders.gl/core'
 import { area as turfArea, bboxPolygon, } from '@turf/turf';
-
 import { Actions } from '../../../../../store/dashboard'
 import {
   extractCode,
@@ -53,6 +53,7 @@ const MAX_ELEVATION = 500000
 const NOCOLOR = `rgba(0, 0, 0, 0)`
 const REFERENCE_LAYER_ID = `reference-layer`
 const FILL_LAYER_ID = REFERENCE_LAYER_ID + '-fill'
+const EXTRUDE_ID = REFERENCE_LAYER_ID + '-extrude'
 const OUTLINE_LAYER_ID = REFERENCE_LAYER_ID + '-outline'
 const INDICATOR_LABEL_ID = 'indicator-label'
 
@@ -249,6 +250,17 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
         },
         OUTLINE_LAYER_ID
       )
+      map.addLayer({
+        'id': EXTRUDE_ID,
+        'type': 'fill-extrusion',
+        'source': REFERENCE_LAYER_ID,
+        "source-layer": 'Level-' + currentLevel,
+        'paint': {
+          'fill-extrusion-height': 100000,
+          'fill-extrusion-base': 0,
+          'fill-extrusion-opacity': 0.8
+        }
+      })
       updateStyle()
       updateFilter()
       setLayerCreated(true)
@@ -409,6 +421,9 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
           }
         }
       }
+      fetch("http://georepo.kartoza.test")
+        .then(response => console.log("success"))
+        .catch(error => console.log("error"));
 
       // Change colors
       {
@@ -423,8 +438,10 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
         if (cases.length) {
           const paintFilters = ["case"].concat(cases).concat(noDataStyle.color)
           map.setPaintProperty(FILL_LAYER_ID, 'fill-color', paintFilters);
+          map.setPaintProperty(EXTRUDE_ID, 'fill-extrusion-color', paintFilters);
         } else {
           map.setPaintProperty(FILL_LAYER_ID, 'fill-color', noDataStyle.color);
+          map.setPaintProperty(EXTRUDE_ID, 'fill-extrusion-color', noDataStyle.color);
         }
       }
       {
@@ -518,6 +535,7 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
 
   /** Create deckGlLayer */
   const deckGLLayer = () => {
+    return;
     if (!deckgl) {
       deckGlData = {}
       return;
@@ -605,6 +623,29 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
   const deckGLLayerRender = (url, currentLevel) => {
     const isRender2DView = !is3DView && deckGlElevationTime === 100
     const layer = new MVTLayer({
+      fetch: (url, { layer, loaders, loadOptions, signal }) => {
+        loaders = loaders || layer.props.loaders
+        loadOptions = loadOptions || layer.getLoadOptions()
+
+        // directly wrote my fetch function
+        loadOptions.fetch = async (url, options) => {
+          const response = await fetchFile(url, {
+            ...options,
+            signal,
+            // options originally set to "loadOptions.fetch"
+            method: 'GET',
+            mode: 'cors',
+            credentials: 'include',
+          })
+          if (!response.ok) throw response
+          return response
+        }
+
+        return load(url, loaders, loadOptions)
+      },
+      onTileError: (error) => {
+        console.log(error)
+      },
       data: url,
       minZoom: 0,
       maxZoom: 8,
