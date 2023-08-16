@@ -108,6 +108,8 @@ class FormulaBasedOnOtherIndicatorsIndicatorValue(IndicatorValueLongFormat):
             indicators=indicators
         )
 
+        # TODO:
+        #  Change how to get the Nunjucks results without browser
         driver = None
         try:
             records = []
@@ -161,6 +163,7 @@ class FormulaBasedOnOtherIndicatorsIndicatorValue(IndicatorValueLongFormat):
             driver.close()
             return records
         except Exception as e:
+            print(e)
             if driver:
                 driver.close()
             err = f'{e}'

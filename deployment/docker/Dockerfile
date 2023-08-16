@@ -44,12 +44,13 @@ RUN apt-get install nodejs -y
 ADD django_project /home/web/django_project
 
 # Install chrome for selenium
-RUN apt-get install -y wget
-RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+# TODO: Change how to get the Nunjucks results without browser
+WORKDIR /home/web/django_project/selenium
 RUN apt-get install -y -f ./google-chrome-stable_current_amd64.deb
 
 # setup frontend
 WORKDIR /home/web/django_project/frontend
+RUN apt-get install -y wget
 RUN npm install
 RUN npm run build
 
