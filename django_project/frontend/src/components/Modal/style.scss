@@ -92,6 +92,10 @@
   padding: 20px;
   overflow-x: auto;
 
+  .BasicForm {
+    padding: 0;
+  }
+
   &.Gray {
     background-color: $base-to-white-color;
     padding: 0;
