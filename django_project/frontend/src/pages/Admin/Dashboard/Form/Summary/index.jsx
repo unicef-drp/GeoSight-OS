@@ -278,7 +278,6 @@ export default function SummaryDashboardForm({ changed }) {
             </div>
           </div>
         </div>
-
       </div>
     </div>
   )

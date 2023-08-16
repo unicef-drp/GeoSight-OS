@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 /* ==========================================================================
    MAP CONFIG CONTAINER
@@ -30,14 +30,32 @@ import { Actions } from "../../../../../store/dashboard";
 export default function MapConfig() {
   const prevState = useRef();
   const dispatcher = useDispatch();
-  const { extent } = useSelector(state => state.dashboard.data);
+  const {
+    extent,
+    referenceLayer
+  } = useSelector(state => state.dashboard.data);
   const [map, setMap] = useState(null);
   const [editableLayers, setEditableLayers] = useState(null);
+  const referenceLayerData = useSelector(state => state.referenceLayerData[referenceLayer.identifier]);
 
   const [west, setWest] = useState(extent[0]);
   const [south, setSouth] = useState(extent[1]);
   const [east, setEast] = useState(extent[2]);
   const [north, setNorth] = useState(extent[3]);
+
+  // Add history
+  useEffect(() => {
+    if (prevState.extent) {
+      prevState.extent = []
+    }
+  }, [referenceLayer]);
+
+  // Add history
+  useEffect(() => {
+    if (referenceLayerData?.data?.bbox && !prevState?.extent.length) {
+      dispatcher(Actions.Extent.changeDefault(referenceLayerData?.data?.bbox))
+    }
+  }, [referenceLayerData]);
 
   useEffect(() => {
     if (!map) {
