@@ -136,6 +136,8 @@ Please follow these conventions when writing your documentation:
 
 ## Contributing to the documentation
 
+:pencil2: Note: The repo name in the images below is blurred out, you should work against the GeoSight-OS repository when following these notes.
+
 To start adding to the documentation navigate to the [home page](https://github.com/unicef-drp/GeoSight-OS) of the repository.
 
 Once on the repository home page, (1) click on Fork
