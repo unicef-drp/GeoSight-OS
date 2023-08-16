@@ -141,16 +141,16 @@ To start adding to the documentation navigate to the [home page](https://github.
 Once on the repository home page, (1) click on Fork
 ![Fork Repository 1](img/dev-docs-fork-repo-1.png)
 
-On the next page (1) Make sure your github account is selected as the owner and (2) make sure you untick the option to  "**Copy the** `main` **branch only**" as you want to copy all branches.
+On the next page (1) Make sure your github account is selected as the owner and (2) make sure the "**Copy the** `main` **branch only**" option is ticked as you will only need the main branch.
 ![Fork Repository 2](img/dev-docs-fork-repo-2.png)
 
-Once you have forked the repository, (1) click on the drop down menu underneath the repository title and then (2) click on the `docs` branch.
-![Change Branch](img/dev-docs-change-branch.png)
+Once you have forked the repository, ensure that you are working in the main branch.
+![Change Branch](img/dev-docs-check-branch.png)
 
-Once you are in the `docs` branch on your fork of the repository, click on `.` on your keyboard. This will open a web editor where you can begin adding to, or editing, the documentation.
+Once you are in your fork of the repository, click on `.` on your keyboard. This will open a web editor where you can begin adding to, or editing, the documentation.
 ![Web Editor 1](img/dev-docs-web-editor-1.png)
 
-Once the editor loads, you will be greeted by (1) a preview of the project's README.txt. (2) Click on the `docs` directory in the menu on the left, this will expand the directory. To confirm that you are working in the right branch (3) it will say `docs` in the bottom left of the editor.
+Once the editor loads, you will be greeted by (1) a preview of the project's README.txt. (2) Click on the `docs` directory in the menu on the left, this will expand the directory. To confirm that you are working in the right branch (3) it will say `main` in the bottom left of the editor.
 ![Web Editor 2](img/dev-docs-web-editor-2.png)
 
 Once you have expanded the `docs` directory, (1) click on the `src` directory. All sub-directories within the `src` directory contain the files that become the documentation. Each sub-directory contains an `index.md` file that is required for the building of the documentation and static site. If you add a new sub-directory into any folder it must also contain a populated `index.md` file.
@@ -168,10 +168,10 @@ When you have completed making additions to (or editing) the documentation, (1) 
 Once you have committed your changes, (1) Click on the burger menu and then (2) click on `Go To Repository`
 ![Web Editor 7](img/dev-docs-web-editor-7.png)
 
-Your fork of the repository will be opened in a new tab within your browser, navigate to that tab. Once there (1) switch to the docs branch, you should see how many commits ahead of the upstream branch you are, then (2) click on `Contribute`-> `Open pull request`.
+Your fork of the repository will be opened in a new tab within your browser, navigate to that tab. Once there (1) ensure you are on the `main`, you should see how many commits ahead of the upstream branch you are, then (2) click on `Contribute`-> `Open pull request`.
 ![Pull Request 1](img/dev-docs-pull-request-1.png)
 
-On the next screen, (1) give your pull request a meaningful title, (2) give additional details regarding changes made in the larger text box, then (3) click on `Create pull request`. Also ensure you are creating a pull request to the upstream `docs` branch from your `docs` branch.
+On the next screen, (1) give your pull request a meaningful title, (2) give additional details regarding changes made in the larger text box, then (3) click on `Create pull request`. Also ensure you are creating a pull request to the upstream `main` branch from your `main` branch.
 ![Pull Request 2](img/dev-docs-pull-request-2.png)
 
 Once your pull request is opened you need to wait for it to be merged before you can open a new one.
