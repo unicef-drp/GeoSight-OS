@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 /* ==========================================================================
    DownloaderData
@@ -22,9 +22,7 @@ import { useSelector } from "react-redux";
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import CircularProgress from '@mui/material/CircularProgress';
-import RadioGroup from '@mui/material/RadioGroup';
 import FormLabel from '@mui/material/FormLabel';
-import Radio from '@mui/material/Radio';
 import Checkbox from '@mui/material/Checkbox';
 import { Plugin, PluginChild } from "../../MapLibre/Plugin";
 import { DownloadIcon } from '../../../../components/Icons'
@@ -44,6 +42,10 @@ import {
 } from "../../../../components/Notification";
 
 import './style.scss';
+import Grid from "@mui/material/Grid";
+import {
+  SelectWithSearch
+} from "../../../../components/Input/SelectWithSearch";
 
 export const GeographyFilter = {
   All: 'All Geographies',
@@ -84,7 +86,8 @@ export default function DownloaderData() {
     levels: [],
     geographyFilter: GeographyFilter.All,
     indicators: [],
-    format: Format.Excel
+    format: Format.Excel,
+    excludeEmptyValue: true
   })
 
   const disabled = downloading || !state.levels.length || !state.indicators.length || !indicatorLayers.length
@@ -149,18 +152,22 @@ export default function DownloaderData() {
         let indicator = indicators.find(indicator => indicator.id === indicatorData.id)
         name = indicator?.name
         shortcode = indicator?.shortcode
-        the_data = layerData.find(row => row?.style?.indicator === indicator.id)
+        the_data = layerData.find(row => row.indicator?.id === indicator.id)
       } else {
         the_data = layerData[0]
         name = indicatorLayer.name
       }
     } catch (err) {
     }
-    return {
-      IndicatorCode: shortcode ? shortcode : '',
-      IndicatorName: name,
-      Value: the_data?.value !== undefined ? '' + the_data?.value : '',
-      Date: the_data?.date ? the_data?.date : '',
+    if (the_data || !state.excludeEmptyValue) {
+      return {
+        IndicatorCode: shortcode ? shortcode : '',
+        IndicatorName: name,
+        Value: the_data?.value !== undefined ? '' + the_data?.value : '',
+        Date: the_data?.date ? the_data?.date : '',
+      }
+    } else {
+      return null
     }
   }
   // Construct the data
@@ -219,11 +226,14 @@ export default function DownloaderData() {
                   delete row.default
                   delete row.ucode
 
-                  tableData.push(
-                    Object.assign({}, row, getData(
-                      indicatorLayer, indicatorData, indicatorValueByGeometry, ucode
-                    ))
+                  const data = getData(
+                    indicatorLayer, indicatorData, indicatorValueByGeometry, ucode
                   )
+                  if (data) {
+                    tableData.push(
+                      Object.assign({}, row, data)
+                    )
+                  }
                 })
               })
 
@@ -240,11 +250,14 @@ export default function DownloaderData() {
                   delete row.default
                   delete row.ucode
 
-                  tableData.push(
-                    Object.assign({}, row, getData(
-                      indicatorLayer, null, indicatorValueByGeometry, ucode, false
-                    ))
+                  const data = getData(
+                    indicatorLayer, null, indicatorValueByGeometry, ucode, false
                   )
+                  if (data) {
+                    tableData.push(
+                      Object.assign({}, row, data)
+                    )
+                  }
                 })
               })
             })
@@ -273,14 +286,16 @@ export default function DownloaderData() {
               indicatorLayer.indicators.map(indicatorData => {
                 // Get per geometries
                 geometries.map(geom => {
-                  geom.properties = Object.assign(
-                    {}, geom.properties,
-                    getData(
-                      indicatorLayer, indicatorData,
-                      indicatorValueByGeometry, extractCode(geom.properties)
-                    )
+                  const data = getData(
+                    indicatorLayer, indicatorData,
+                    indicatorValueByGeometry, extractCode(geom.properties)
                   )
-                  features.push(geom)
+                  if (data) {
+                    geom.properties = Object.assign(
+                      {}, geom.properties, data
+                    )
+                    features.push(geom)
+                  }
                 })
               })
 
@@ -288,15 +303,17 @@ export default function DownloaderData() {
               indicatorLayer.related_tables.map(rt => {
                 // Get per geometries
                 geometries.map(geom => {
-                  geom.properties = Object.assign(
-                    {}, geom.properties,
-                    getData(
-                      indicatorLayer, null,
-                      indicatorValueByGeometry, extractCode(geom.properties),
-                      false
-                    )
+                  const data = getData(
+                    indicatorLayer, null,
+                    indicatorValueByGeometry, extractCode(geom.properties),
+                    false
                   )
-                  features.push(geom)
+                  if (data) {
+                    geom.properties = Object.assign(
+                      {}, geom.properties, data
+                    )
+                    features.push(geom)
+                  }
                 })
               })
             })
@@ -347,9 +364,25 @@ export default function DownloaderData() {
             className={"DownloaderDataComponent " + (disabled ? "Disabled" : "")}
           >
             <div className='DownloaderDataTitle'>
-              <b className='light'>Download selected indicators</b>
+              <b className='light'>Download data from indicators</b>
             </div>
             <div className='DownloaderDataForm'>
+              <FormControlLabel
+                key={state.excludeEmptyValue} disabled={downloading}
+                control={
+                  <Checkbox
+                    checked={state.excludeEmptyValue}
+                    onChange={evt => {
+                      setState({
+                        ...state,
+                        excludeEmptyValue: !state.excludeEmptyValue
+                      })
+                    }}/>
+                }
+                label={"Exclude records without indicator values"}
+              />
+              <br/>
+              <br/>
 
               {/* FOR ADMIN FILTER */}
               <FormGroup className={'GroupSelection'}>
@@ -371,52 +404,32 @@ export default function DownloaderData() {
                               }
                             }}/>
                         }
-                        label={level.level + ' - ' + level.level_name}
+                        label={level.level_name}
                       />
                     }) : null
                   }
                 </FormGroup>
               </FormGroup>
-
-              {/* FOR GEOGRAPHY FILTER */}
-              <FormGroup className={'GroupSelection'}>
-                <FormLabel>Geographical extent</FormLabel>
-                <RadioGroup
-                  defaultValue={state.geographyFilter}
-                  onChange={evt => {
-                    setState({ ...state, geographyFilter: evt.target.value })
-                  }}
-                >
-                  {
-                    Object.keys(GeographyFilter).map(key => {
-                      return <FormControlLabel
-                        key={key} disabled={downloading}
-                        value={GeographyFilter[key]}
-                        control={<Radio/>} label={key}/>
-                    })
-                  }
-                </RadioGroup>
-              </FormGroup>
-
-              {/* FOR FORMAT */}
-              <FormGroup className={'GroupSelection'}>
-                <FormLabel>Format</FormLabel>
-                <RadioGroup
-                  defaultValue={state.format}
-                  onChange={evt => {
-                    setState({ ...state, format: evt.target.value })
-                  }}
-                >
-                  {
-                    Object.keys(Format).map(key => {
-                      return <FormControlLabel
-                        key={key} disabled={downloading}
-                        value={Format[key]}
-                        control={<Radio/>} label={key}/>
-                    })
-                  }
-                </RadioGroup>
-              </FormGroup>
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <FormLabel>Geographical extent</FormLabel>
+                  <SelectWithSearch
+                    options={[GeographyFilter.All, GeographyFilter.Filtered]}
+                    value={state.geographyFilter}
+                    onChange={(evt) => {
+                      setState({ ...state, geographyFilter: evt.target.value })
+                    }}/>
+                </Grid>
+                <Grid item xs={6}>
+                  <FormLabel>Format</FormLabel>
+                  <SelectWithSearch
+                    options={[Format.Geojson, Format.Excel]}
+                    value={state.format}
+                    onChange={(evt) => {
+                      setState({ ...state, format: evt.target.value })
+                    }}/>
+                </Grid>
+              </Grid>
 
               {/* FOR INDICATORS FILTER */}
               {indicatorLayers.length ? <table>
