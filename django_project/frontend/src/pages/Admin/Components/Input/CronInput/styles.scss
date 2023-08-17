@@ -64,6 +64,12 @@
     padding-right: 0;
     background-color: unset;
   }
+
+  .modal--box,
+  .modal--wrapper--box,
+  .modal--content {
+    overflow: visible;
+  }
 }
 
 .ant-select-dropdown {
