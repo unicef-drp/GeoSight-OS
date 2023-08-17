@@ -444,7 +444,7 @@ export default function RelatedTableLayerConfig(
                       setData({ ...newData })
                       updateData()
                     }}
-                    defaultCodes={rows.map(row => row.value)}
+                    defaultCodes={rows ? rows.map(row => row.value) : []}
                     defaultStyleRules={data?.style ? data?.style : []}
                   />,
                 'Label': <LabelForm

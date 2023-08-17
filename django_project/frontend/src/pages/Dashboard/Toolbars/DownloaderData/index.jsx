@@ -51,6 +51,7 @@ import {
   dynamicLayerIndicatorList,
   fetchDynamicLayerData
 } from "../../../../utils/indicatorLayer";
+import { getRelatedTableData } from "../../../../utils/relatedTable";
 
 export const GeographyFilter = {
   All: 'All Geographies',
@@ -234,6 +235,8 @@ export default function DownloaderData() {
               const indicatorLayer = indicatorLayers.find(indicatorLayer => indicatorId === indicatorLayer.id)
               // For indicator
               if (indicatorLayer) {
+
+                // This is for dynamic layer
                 if (!indicatorLayer.indicators?.length && !indicatorLayer.related_tables?.length) {
                   const dynamicIndicatorsData = {}
                   const dynamicLayerIndicators = dynamicLayerIndicatorList(indicatorLayer, indicators)
@@ -270,6 +273,56 @@ export default function DownloaderData() {
                     true
                   )
                   indicatorValueByGeometry[indicatorLayer.id] = output
+                } else if (indicatorLayer.related_tables?.length) {
+                  const relatedTable = relatedTables.find(rt => rt.id === indicatorLayer.related_tables[0].id)
+                  if (relatedTable) {
+                    const params = {
+                      geography_code_field_name: relatedTable.geography_code_field_name,
+                      geography_code_type: relatedTable.geography_code_type,
+                    }
+                    if (referenceLayer) {
+                      params.reference_layer_uuid = referenceLayer.identifier
+                    }
+                    if (indicatorLayer.config.date_field) {
+                      params.date_field = indicatorLayer.config.date_field
+                    }
+                    if (indicatorLayer.config.date_format) {
+                      params.date_format = indicatorLayer.config.date_format
+                    }
+                    await fetchingData(
+                      '/api/related-table/' + relatedTable.id + '/values', params, {}, function (response, error) {
+                        if (!error) {
+                          const relatedTableData = {}
+                          relatedTableData[relatedTable.id] = {
+                            data: response,
+                            fetching: true,
+                            fetched: true
+                          }
+                          const { rows } = getRelatedTableData(
+                            response,
+                            {
+                              ...indicatorLayer.config,
+                              geography_code_field_name: relatedTable.geography_code_field_name
+                            },
+                            selectedGlobalTime,
+                            geoField,
+                            false
+                          )
+                          if (rows) {
+                            const output = {} // Output by concept uuid
+                            rows.map(row => {
+                              row.indicator = indicatorLayer
+                              if (!output[row.concept_uuid]) {
+                                output[row.concept_uuid] = []
+                              }
+                              output[row.concept_uuid].push(row)
+                            })
+                            indicatorValueByGeometry[indicatorLayer.id] = output
+                          }
+                        }
+                      }
+                    )
+                  }
                 } else {
                   const output = {} // Output by concept uuid
                   for (let j = 0; j < indicatorLayer.indicators.length; j++) {
@@ -337,28 +390,7 @@ export default function DownloaderData() {
 
                 // For related tables
                 indicatorLayer.related_tables.map(rt => {
-                  // Get per geometries
-                  geometries.map(geom => {
-                    const ucode = extractCode(geom)
-                    const row = Object.assign({}, {
-                      GeographyCode: geom.ucode,
-                      GeographyName: geom.name,
-                      GeographyLevel: levels.find(level => level.level === geom.admin_level)?.level_name,
-                    }, geom.ext_codes)
-                    delete row.default
-                    delete row.ucode
-
-                    const data = getData(
-                      indicatorLayer, null, indicatorValueByGeometry, ucode, false
-                    )
-                    if (data) {
-                      data.map(dataRow => {
-                        tableData.push(
-                          Object.assign({}, row, dataRow)
-                        )
-                      })
-                    }
-                  })
+                  cleanDataToExcel(tableData, geometries, indicatorLayer, rt, indicatorValueByGeometry, false)
                 })
               }
             })
