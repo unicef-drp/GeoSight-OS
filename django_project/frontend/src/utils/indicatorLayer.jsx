@@ -84,7 +84,7 @@ export function dynamicLayerData(indicatorLayer, context) {
  */
 export function fetchDynamicLayerData(
   indicatorLayer, indicators, indicatorsData, geoField,
-  onError, onSuccess
+  onError, onSuccess, skipAggregate
 ) {
   const dynamicLayerIndicators = dynamicLayerIndicatorList(indicatorLayer, indicators)
 
@@ -115,7 +115,10 @@ export function fetchDynamicLayerData(
     // Get data per code
     const dataDict = {}
     data.map(row => {
-      const code = extractCode(row, geoField)
+      let code = extractCode(row, geoField)
+      if (skipAggregate) {
+        code += '-' + row.date
+      }
       if (!dataDict[code]) {
         dataDict[code] = {
           admin_level: null,

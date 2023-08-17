@@ -77,6 +77,10 @@ main {
     -moz-box-sizing: border-box; /* Firefox, other Gecko */
     box-sizing: border-box; /* Opera/IE 8+ */
   }
+
+  .MuiSnackbar-root {
+    margin-top: 0;
+  }
 }
 
 .UndoRedo {

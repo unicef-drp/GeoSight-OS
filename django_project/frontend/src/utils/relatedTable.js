@@ -19,7 +19,7 @@ import { isValidDate } from "./main"
 /**
  * Return related table data
  */
-export const getRelatedTableData = (data, config, selectedGlobalTime, geoField = 'geometry_code') => {
+export const getRelatedTableData = (data, config, selectedGlobalTime, geoField = 'geometry_code', aggregateDate = true) => {
   if (data) {
     data = JSON.parse(JSON.stringify(data))
     const {
@@ -79,20 +79,21 @@ export const getRelatedTableData = (data, config, selectedGlobalTime, geoField =
           }
           return row
         })
-        let sql = `SELECT ${geography_code_field_name}             as _geometry_code,
-                          MAX(data.${date_field})                  as _date,
+        let sql = `SELECT ${geography_code_field_name}             as _geometry_code,` +
+          (aggregateDate ? `MAX(data.${date_field})` : `data.${date_field}`) + ` as _date,
                           MAX(data.concept_uuid)                   as _concept_uuid,
                           ${aggregation.replaceAll('(', '(data.')} as _value,
                           MAX(data.admin_level)        as _admin_level
-                   FROM ? as data` + (updatedWhere ? ` WHERE ${updatedWhere}` : '') + ` GROUP BY ${geography_code_field_name}  ORDER BY ${geography_code_field_name} DESC`
+                   FROM ? as data` + (updatedWhere ? ` WHERE ${updatedWhere}` : '') + ` GROUP BY ${geography_code_field_name}` + (!aggregateDate ? `, data.${date_field}` : '') + `  
+                   ORDER BY ${geography_code_field_name} DESC `
         if (['MAJORITY', 'MINORITY'].includes(aggregation_method)) {
-          sql = `SELECT ${geography_code_field_name} as _geometry_code,
-                        MAX(data.${date_field})      as _date,
+          sql = `SELECT ${geography_code_field_name} as _geometry_code,` +
+            (aggregateDate ? `MAX(data.${date_field})` : `data.${date_field}`) + ` as _date,
                         MAX(data.concept_uuid)       as _concept_uuid,
-                        ${aggregation_field}         as _value,
+                        data.${aggregation_field}         as _value,
                         COUNT(${aggregation_field})  as value_occurrence,
                         MAX(data.admin_level)        as _admin_level
-                 FROM ? as data` + (updatedWhere ? ` WHERE ${updatedWhere}` : '') + ` GROUP BY ${geography_code_field_name}, ${aggregation_field}` +
+                 FROM ? as data` + (updatedWhere ? ` WHERE ${updatedWhere}` : '') + ` GROUP BY ${geography_code_field_name}, data.${aggregation_field}` + (!aggregateDate ? `, data.${date_field}` : '') +
             ` ORDER BY ${geography_code_field_name} DESC, value_occurrence ${aggregation_method === 'MAJORITY' ? 'DESC' : 'ASC'}`
         }
         const results = alasql(sql, [data]).map((result, idx) => {

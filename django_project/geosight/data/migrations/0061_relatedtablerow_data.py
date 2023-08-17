@@ -23,7 +23,6 @@ def run(apps, schema_editor):
     queries = RelatedTableRow.objects.all()
     count = queries.count()
     for idx, row in enumerate(queries):
-        print(f'{idx}/{count}')
         row.data = row.data_from_eav_model
         row.save()
 
