@@ -35,10 +35,14 @@ import './style.scss'
  */
 const rulesLayer = (
   layer, indicators, indicatorsData,
-  relatedTableData, selectedGlobalTime, geoField, admin_level, filteredGeometries
+  relatedTableData, selectedGlobalTime, geoField, admin_level, filteredGeometries,
+  initConfig
 ) => {
   // Get rules
   let config = returnLayerStyleConfig(layer, indicators)
+  if (initConfig) {
+    config = initConfig
+  }
   let style = config.style
   if (dynamicStyleTypes.includes(config.style_type)) {
     let data = getLayerDataCleaned(
@@ -113,8 +117,9 @@ const RenderIndicatorLegend = ({ layer, name }) => {
         }
       }
       let rules = rulesLayer(
-        indicatorData, indicators, indicatorsData, relatedTableData,
-        selectedGlobalTime, geoField, selectedAdminLevel?.level, filteredGeometries
+        layer, indicators, indicatorsData, relatedTableData,
+        selectedGlobalTime, geoField, selectedAdminLevel?.level, filteredGeometries,
+        indicatorData
       )
       return <RenderIndicatorLegendSection
         rules={rules}
