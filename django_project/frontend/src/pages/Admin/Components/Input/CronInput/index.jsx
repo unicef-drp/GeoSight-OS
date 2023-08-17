@@ -28,9 +28,12 @@ import Cron from 'react-js-cron'
 
 import InputIcon from "@mui/icons-material/Input";
 import { ModalInput } from '../../../../../components/Modal/ModalInput'
-import { DeleteButton, SaveButton } from "../../../../../components/Elements/Button";
+import {
+  DeleteButton,
+  SaveButton
+} from "../../../../../components/Elements/Button";
 import { IconTextField } from "../../../../../components/Elements/Input";
-import { ModalContent, ModalFooter } from "../../../../../components/Modal";
+import { ModalContent } from "../../../../../components/Modal";
 import { getScheduleText } from "../../../../../utils/cron";
 
 import './styles.scss';
@@ -47,7 +50,7 @@ export const CronInput = forwardRef(
   ) => {
     const childRef = useRef(null);
     const scheduleDataArr = data.schedule ? data.schedule.split(' ') : []
-    const scheduleData = scheduleDataArr.length ? scheduleDataArr.slice(0, -1).join(' ') : null;
+    const scheduleData = scheduleDataArr.length ? scheduleDataArr.slice(0, -1).join(' ') : '0 0 * * *';
     const scheduleDataTimezone = scheduleDataArr[scheduleDataArr.length - 1]
 
     const [selectedTimezone, setSelectedTimezone] = useState(
@@ -80,7 +83,7 @@ export const CronInput = forwardRef(
 
     return (
       <ModalInput
-        className={'CronBuilder MuiBox-Large'}
+        className={'CronBuilder MuiBox-Large MuiBox-Tall'}
         Input={
           <IconTextField
             iconEnd={<InputIcon/>}
@@ -97,6 +100,7 @@ export const CronInput = forwardRef(
                 <FormControl
                   className="BasicFormSection InputControl">
                   <TimezoneSelect
+                    className='TimezoneInput'
                     value={selectedTimezone}
                     onChange={evt => {
                       setSelectedTimezone(evt.value)
@@ -108,6 +112,13 @@ export const CronInput = forwardRef(
                 </FormControl>
               </div>
               <Cron
+                allowedPeriods={[
+                  'year',
+                  'month',
+                  'week',
+                  'day',
+                  'hour'
+                ]}
                 value={schedule}
                 setValue={(newValue) => {
                   setSchedule(newValue)
@@ -116,12 +127,7 @@ export const CronInput = forwardRef(
               />
             </div>
             <div className='Result-Row'>
-              <IconTextField
-                value={`${schedule} ${selectedTimezone}` ? getScheduleText(`${schedule} ${selectedTimezone}`) : ''}
-                inputProps={
-                  { readOnly: true, }
-                }
-              />
+              {`${schedule} ${selectedTimezone}` ? getScheduleText(`${schedule} ${selectedTimezone}`) : ''}
             </div>
             <div className='Button-Row'>
               <div className='Clear-Button'>

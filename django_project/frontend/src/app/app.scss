@@ -469,6 +469,29 @@ header {
   }
 }
 
+.mapboxgl-popup-content {
+  .pins {
+    display: flex;
+    background-color: white;
+    box-shadow: $box-shadow;
+    padding: 3px;
+    padding-right: 0;
+    opacity: 0.8;
+    align-items: center;
+
+    .pin {
+      border-radius: 50%;
+      margin-right: 3px;
+
+      &.empty {
+        width: 4px;
+        height: 4px;
+        background: black;
+      }
+    }
+  }
+}
+
 // ------------------------------------
 // REACT SELECT
 // ------------------------------------

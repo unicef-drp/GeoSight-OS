@@ -1,23 +1,23 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 /* ==========================================================================
    Bookmark
    ========================================================================== */
 
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import { useSelector } from "react-redux";
 import $ from "jquery";
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -112,7 +112,7 @@ export default function Embed({ map }) {
     return ""
   }
   return (
-    <div>
+    <Fragment>
       <EmbedIcon onClick={_ => setOpen(true)}/>
       <Modal
         className='EmbedComponent'
@@ -195,6 +195,6 @@ export default function Embed({ map }) {
           />
         </ModalFooter>
       </Modal>
-    </div>
+    </Fragment>
   )
 }

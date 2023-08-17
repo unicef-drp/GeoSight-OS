@@ -249,7 +249,7 @@ export default function TimeSeriesChartWidgetEditor(
         className='modal__widget__editor MuiFormControl-Form MuiBox-Large'
       >
         <ModalHeader onClosed={onClosed}>
-          {name ? "Change " + name : "New Widget"}
+          {name ? "Change " + name : "New Time Series Widget"}
         </ModalHeader>
         <ModalContent>
           <div className='BasicForm'>

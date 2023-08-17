@@ -1,20 +1,20 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 import React, { Fragment, useEffect, useState } from 'react';
-
+import { v4 as uuidv4 } from 'uuid';
 import { AddButton } from "../../../../../components/Elements/Button";
 import { fetchingData } from "../../../../../Requests";
 
@@ -99,8 +99,25 @@ export default function ListForm(
     }
   }, [defaultListData])
 
+  // add uuid to the data structure
+  const updateUuid = (currDataStructure) => {
+    if (Object.keys(currDataStructure).includes('group')) {
+      if (!currDataStructure.id) {
+        currDataStructure.id = uuidv4() + '';
+      }
+      currDataStructure.children?.forEach(child => {
+        updateUuid(child)
+      })
+    }
+  }
+
   // Onload, check the default one
   useEffect(() => {
+    const oldDataStructure = JSON.stringify(dataStructure)
+    updateUuid(dataStructure)
+    if (oldDataStructure !== JSON.stringify(dataStructure)) {
+      setDataStructure({ ...dataStructure })
+    }
     setTreeData(dataStructureToTreeData(data, dataStructure))
   }, [data, dataStructure])
 
@@ -129,7 +146,7 @@ export default function ListForm(
       groupName = 'Group ' + idx;
       const group = allGroups.find(group => group.name === groupName)
       if (!group) {
-        dataStructure.children.push({
+        dataStructure.children.unshift({
           ...dictDeepCopy(groupDefault),
           group: groupName
         })

@@ -37,6 +37,7 @@ import {
 import { ImageInput } from "../../../../../components/Input/ImageInput";
 
 import './style.scss';
+import { Creatable } from "../../../../../components/Input";
 
 /**
  * Summary dashboard
@@ -151,13 +152,16 @@ export default function SummaryDashboardForm({ changed }) {
               </label>
               <div>
               <span className="form-input">
-                <SelectWithSearch
+                <Creatable
                   id="SummaryCategory"
-                  placeholder='Example: Lorem Ipsum'
-                  options={projectCategories}
-                  value={groupData}
-                  onChangeFn={evt => {
-                    setGroupData(evt)
+                  options={
+                    projectCategories.map(cat => {
+                      return { value: cat, label: cat }
+                    })
+                  }
+                  value={{ value: groupData, label: groupData }}
+                  onChange={evt => {
+                    setGroupData(evt.value)
                     changed(true)
                   }}
                   disableCloseOnSelect={false}
@@ -274,7 +278,6 @@ export default function SummaryDashboardForm({ changed }) {
             </div>
           </div>
         </div>
-
       </div>
     </div>
   )

@@ -26,9 +26,9 @@ import { EmbedConfig } from "../../utils/embed";
 import GeorepoAuthorizationModal
   from '../../components/B2C/GeorepoAuthorizationModal'
 import { LEFT, RIGHT } from "../../components/ToggleButton";
+import { ProjectOverview } from "./Toolbars";
 
 import './style.scss';
-import { ProjectOverview } from "./Toolbars";
 
 export default function Dashboard({ children }) {
   const dispatch = useDispatch();
@@ -36,7 +36,7 @@ export default function Dashboard({ children }) {
 
   const showLayerTab = !!EmbedConfig().layer_tab
   const showFilterTab = !!EmbedConfig().filter_tab
-  const showWidget = !!(!!EmbedConfig().widget_tab && data?.widgets?.length)
+  const showWidget = EmbedConfig().widget_tab
   const [leftExpanded, setLeftExpanded] = useState(showLayerTab || showFilterTab);
   const [rightExpanded, setRightExpanded] = useState(showWidget);
 
@@ -54,7 +54,7 @@ export default function Dashboard({ children }) {
 
   const rightPanelProps = showWidget ? {
     className: 'RightButton',
-    initState: rightExpanded ? LEFT : RIGHT,
+    initState: rightExpanded ? RIGHT : LEFT,
     active: rightExpanded,
     onLeft: () => {
       setRightExpanded(false)
@@ -71,17 +71,14 @@ export default function Dashboard({ children }) {
     )
   }, []);
 
-  // Check data changed
-  useEffect(() => {
-    setRightExpanded(showWidget)
-  }, [data]);
   return (
     <div
       className={'dashboard ' + (leftExpanded ? 'LeftExpanded' : "")}>
       {data && Object.keys(data).length > 0 ?
         <Fragment>
-          <MapLibre leftPanelProps={leftPanelProps}
-                    rightPanelProps={rightPanelProps}/>
+          <MapLibre
+            leftPanelProps={leftPanelProps}
+            rightPanelProps={rightPanelProps}/>
           <LeftPanel leftExpanded={leftExpanded}/>
           <MiddlePanel
             leftExpanded={leftExpanded}

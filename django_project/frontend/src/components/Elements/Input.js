@@ -16,7 +16,6 @@
 import React from 'react';
 import TextField from "@mui/material/TextField";
 import InputAdornment from '@mui/material/InputAdornment';
-import SearchIcon from "@mui/icons-material/Search";
 
 /** Input with icon
  * @param {JSX.Element} iconStart Start icon on the input.
@@ -25,9 +24,13 @@ import SearchIcon from "@mui/icons-material/Search";
  * @param {dict} props Other props for Text Field.
  */
 export function IconTextField({ iconStart, iconEnd, InputProps, ...props }) {
+  const handleFocus = (event) => event.target.select();
+
   return (
     <TextField
       {...props}
+      onFocus={handleFocus}
+      autoFocus={props.autoFocus}
       InputProps={{
         ...InputProps,
         startAdornment: iconStart ? (

@@ -149,6 +149,7 @@ export const addPopup = (map, id, popupRenderFn) => {
           .setLngLat(e.lngLat)
           .setHTML(popupHtml)
           .addTo(map);
+        popup.addClassName('ContextPopup')
       }
     }
   }

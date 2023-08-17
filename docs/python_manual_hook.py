@@ -35,6 +35,11 @@ date: 2023-08-03
                      file = file.replace("/", ".")
                      file = file.replace(".py", "")
                      template = template + file + "\n"
-    file = open("src/developer/manual/index.md","wt+")
+    output_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "src/developer/manual/index.md") 
+    log.info("Manual will be written to: " + output_path) 
+    file = open(output_path,"wt+")
     file.write(template)
     file.close()
+    log.info("Manual written to:         " + os.path.realpath(file.name)) 

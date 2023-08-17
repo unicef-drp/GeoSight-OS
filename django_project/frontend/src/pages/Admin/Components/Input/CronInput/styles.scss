@@ -13,13 +13,15 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
+@import '../../../../../app/variables';
+
 .CronBuilder {
   .cron_builder {
     box-sizing: border-box;
   }
 
   .cron-builder-bg {
-    background-color: var(--secondary-color);
+    background-color: $primary-color;
   }
 
   .well-small {
@@ -32,10 +34,12 @@
 
   .Result-Row {
     margin-top: 20px;
+    border: 1px solid $primary-color;
+    padding: 1rem;
+  }
 
-    div, input {
-      width: 100%;
-    }
+  .Save-Button {
+    margin-left: 0 !important;
   }
 
   .Button-Row {
@@ -53,6 +57,19 @@
     padding: 0;
     margin: 0;
   }
+
+  .Clear-Button {
+    margin: 0 0 0 auto;
+    padding: 1rem;
+    padding-right: 0;
+    background-color: unset;
+  }
+
+  .modal--box,
+  .modal--wrapper--box,
+  .modal--content {
+    overflow: visible;
+  }
 }
 
 .ant-select-dropdown {
@@ -62,6 +79,10 @@
 .react-js-cron {
   display: flex;
   font-weight: 500;
+
+  div {
+    text-transform: lowercase;
+  }
 
   & > div {
     display: flex;
@@ -95,12 +116,9 @@
     }
 
     > span {
-      height: 21px;
-      margin: 0.5rem 0.5rem;
-    }
-
-    .ant-select-selection-placeholder {
-      margin-top: -3px;
+      height: 42px;
+      padding: 1rem 0.5rem;
+      box-sizing: border-box;
     }
   }
 
@@ -128,7 +146,7 @@
 
   .ant-select-selector {
     min-width: 100px;
-    border-radius: 3px;
+    border-radius: 0;
     min-height: 42px;
     font-size: 1rem;
   }
@@ -136,6 +154,12 @@
   .ant-btn {
     border-radius: 3px;
     margin-left: 10px;
-    background-color: #374ea2!important;
+    background-color: #374ea2 !important;
+  }
+}
+
+.TimezoneInput {
+  > div {
+    border-radius: 0 !important;
   }
 }

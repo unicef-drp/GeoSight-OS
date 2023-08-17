@@ -74,6 +74,9 @@ class SitePreferences(SingletonModel):
         max_length=512,
         default=''
     )
+    georepo_azure_authentication_url = models.TextField(
+        blank=True, null=True
+    )
 
     # -----------------------------------------------
     # LANDING PAGE

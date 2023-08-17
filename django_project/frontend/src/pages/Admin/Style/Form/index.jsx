@@ -52,7 +52,7 @@ export default function StyleForm() {
       rightHeader={
         <SaveButton
           variant="primary"
-          text="save"
+          text="Save"
           onClick={() => {
             formRef.current.submit(true)
             setSubmitted(true)

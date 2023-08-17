@@ -40,7 +40,7 @@ class DashboardIndicatorSerializer(serializers.ModelSerializer):
     def get_style(self, obj: DashboardIndicator):
         """Return rules."""
         if obj.override_style:
-            return obj.obj_style(self.context.get('user', None))
+            return obj.style_obj(self.context.get('user', None))
         else:
             return obj.object.style_obj(self.context.get('user', None))
 

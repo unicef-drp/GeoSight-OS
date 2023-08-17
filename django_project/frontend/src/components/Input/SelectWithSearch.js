@@ -66,7 +66,11 @@ export function SelectWithSearch(
         />
       )}
       onChange={(event, values) => {
-        onChangeFn(values ? values : '');
+        if (onChangeFn) {
+          onChangeFn(values ? values : '');
+        } else if (props.onChange) {
+          props.onChange(event);
+        }
       }}
       disabled={disabled}
     />

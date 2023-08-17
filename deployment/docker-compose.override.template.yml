@@ -104,11 +104,4 @@ services:
       # for ssh
       - "2001:22"
     command: 'python manage.py runserver 0.0.0.0:8080'
-    entrypoint: []
-
-  node-red:
-    image: nodered/node-red:2.1.3
-    volumes:
-      - ./node-red:/data
-    ports:
-      - "1880:1880"
+    entrypoint: [ ]

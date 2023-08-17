@@ -26,6 +26,8 @@
   position: absolute;
   top: 0;
   left: 0;
+  display: flex;
+  flex-direction: column;
 
   #map {
     height: 100%;
@@ -47,24 +49,38 @@
 
   .Toolbar {
     display: flex;
-    height: 49px;
-    left: 0;
-    position: absolute;
-    top: 0;
+    height: 50px;
+    min-height: 50px;
     transition: padding-left 0.3s;
     box-sizing: border-box;
-    width: 100vw;
+    width: 100%;
 
     & > div {
       background-color: $white !important;
+    }
+
+    .EmbedControl,
+    .BookmarkControl,
+    .DownloadControl {
+      padding: 2px;
+
+      a {
+        margin: 0 !important;
+        height: 28px !important;
+        width: 28px !important;
+
+        svg {
+          width: 16px;
+          height: 16px;
+        }
+      }
     }
 
     .EmbedControl {
       margin-right: 10px;
 
       svg {
-        width: 40px !important;
-        margin-top: 5px;
+        width: 28px !important;
       }
     }
 
@@ -74,6 +90,7 @@
 
     .Toolbar-Left {
       padding-left: 0.5rem;
+      flex-grow: 1;
     }
 
     .Toolbar-Left,
@@ -84,11 +101,16 @@
 
     .Toolbar-Middle {
       flex-grow: 1;
+      position: absolute;
+      left: 50%;
+      margin-left: -75px;
+      top: 2px;
 
-      .extrudedIcon svg,
+      .ExtrudedIcon svg,
       svg[data-testid='CompareIcon'] {
-        height: 18px;
-        width: 18px;
+        margin-top: -3px;
+        height: 22px;
+        width: 22px;
       }
 
       a {
@@ -318,6 +340,7 @@ $nav-disabled-color: '%23CCCCCC';
   .maplibregl-ctrl-icon {
     position: relative;
     background-image: unset !important;
+    border: none !important;
 
     &::after {
       display: block;
@@ -363,4 +386,8 @@ $nav-disabled-color: '%23CCCCCC';
       background-color: $tab-inactive-color;
     }
   }
+}
+
+.ContextPopup {
+  z-index: 3;
 }

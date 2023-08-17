@@ -47,6 +47,10 @@ main {
       }
     }
   }
+
+  .Toolbar-Right {
+    margin-right: 130px;
+  }
 }
 
 .BackToForm {
@@ -54,6 +58,10 @@ main {
   top: 10px;
   right: 11px;
   z-index: 9999;
+
+  button {
+    height: 28px;
+  }
 }
 
 .Admin {
@@ -68,6 +76,10 @@ main {
     -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
     -moz-box-sizing: border-box; /* Firefox, other Gecko */
     box-sizing: border-box; /* Opera/IE 8+ */
+  }
+
+  .MuiSnackbar-root {
+    margin-top: 0;
   }
 }
 

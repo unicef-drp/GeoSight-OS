@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 /* ==========================================================================
    DownloaderData
@@ -22,9 +22,7 @@ import { useSelector } from "react-redux";
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import CircularProgress from '@mui/material/CircularProgress';
-import RadioGroup from '@mui/material/RadioGroup';
 import FormLabel from '@mui/material/FormLabel';
-import Radio from '@mui/material/Radio';
 import Checkbox from '@mui/material/Checkbox';
 import { Plugin, PluginChild } from "../../MapLibre/Plugin";
 import { DownloadIcon } from '../../../../components/Icons'
@@ -44,6 +42,16 @@ import {
 } from "../../../../components/Notification";
 
 import './style.scss';
+import Grid from "@mui/material/Grid";
+import {
+  SelectWithSearch
+} from "../../../../components/Input/SelectWithSearch";
+import { fetchingData } from "../../../../Requests";
+import {
+  dynamicLayerIndicatorList,
+  fetchDynamicLayerData
+} from "../../../../utils/indicatorLayer";
+import { getRelatedTableData } from "../../../../utils/relatedTable";
 
 export const GeographyFilter = {
   All: 'All Geographies',
@@ -53,12 +61,17 @@ export const Format = {
   Excel: 'Excel',
   Geojson: 'Geojson'
 }
+export const TimeType = {
+  Current: 'Current date/time (active window)',
+  All: 'All history'
+}
 /**
  * DownloaderData component.
  */
 export default function DownloaderData() {
   const filteredGeometries = useSelector(state => state.filteredGeometries)
   const {
+    slug,
     indicators,
     referenceLayer,
     indicatorLayers,
@@ -84,11 +97,12 @@ export default function DownloaderData() {
     levels: [],
     geographyFilter: GeographyFilter.All,
     indicators: [],
-    format: Format.Excel
+    format: Format.Excel,
+    excludeEmptyValue: true,
+    time: TimeType.Current,
   })
 
   const disabled = downloading || !state.levels.length || !state.indicators.length || !indicatorLayers.length
-
 
   // Notification
   const notificationRef = useRef(null);
@@ -149,43 +163,204 @@ export default function DownloaderData() {
         let indicator = indicators.find(indicator => indicator.id === indicatorData.id)
         name = indicator?.name
         shortcode = indicator?.shortcode
-        the_data = layerData.find(row => row?.style?.indicator === indicator.id)
+        the_data = layerData.filter(row => row.indicator?.id === indicator.id)
       } else {
-        the_data = layerData[0]
+        the_data = layerData
         name = indicatorLayer.name
       }
     } catch (err) {
     }
-    return {
-      IndicatorCode: shortcode ? shortcode : '',
-      IndicatorName: name,
-      Value: the_data?.value !== undefined ? '' + the_data?.value : '',
-      Date: the_data?.date ? the_data?.date : '',
+    if (the_data?.length) {
+      return the_data.map(row => {
+        return {
+          IndicatorCode: shortcode ? shortcode : '',
+          IndicatorName: name,
+          Value: row?.value !== undefined ? '' + row?.value : '',
+          Date: row?.date ? row?.date : '',
+        }
+      })
+    } else if (!state.excludeEmptyValue) {
+      return [{
+        IndicatorCode: shortcode ? shortcode : '',
+        IndicatorName: name,
+        Value: '',
+        Date: '',
+      }]
     }
+    return null
+  }
+
+  /** Clean data to excel **/
+  const cleanDataToExcel = (
+    tableData, geometries, indicatorLayer, indicatorData, indicatorValueByGeometry,
+    isIndicator
+  ) => {
+    // Get per geometries
+    geometries.map(geom => {
+      const ucode = extractCode(geom)
+      const row = Object.assign({}, {
+        GeographyCode: geom.ucode,
+        GeographyName: geom.name,
+        GeographyLevel: levels.find(level => level.level === geom.admin_level)?.level_name,
+      }, geom.ext_codes)
+      delete row.default
+      delete row.ucode
+
+      const data = getData(
+        indicatorLayer, indicatorData, indicatorValueByGeometry, ucode, isIndicator
+      )
+      if (data) {
+        data.map(dataRow => {
+          tableData.push(
+            Object.assign({}, row, dataRow)
+          )
+        })
+      }
+    })
   }
   // Construct the data
   const download = () => {
-    // setDownloading(true);
-
+    setDownloading(true);
     (
       async () => {
         try {
           // Get the data
           const levelsUsed = levels.filter(level => state.levels.includes(level.level))
           const indicatorValueByGeometry = {}
-          state.indicators.map(indicatorId => {
-            const indicatorLayer = indicatorLayers.find(indicatorLayer => indicatorId === indicatorLayer.id)
-            if (!indicatorLayer) {
-              return
-            }
 
-            const output = getIndicatorValueByGeometry(
-              indicatorLayer, indicators, indicatorsData,
-              relatedTables, relatedTableData, selectedGlobalTime,
-              geoField, filteredGeometries
-            )
-            indicatorValueByGeometry[indicatorLayer.id] = output
-          })
+          // The data
+          if (state.time === TimeType.All) {
+            for (let i = 0; i < state.indicators.length; i++) {
+              const indicatorId = state.indicators[i]
+              const indicatorLayer = indicatorLayers.find(indicatorLayer => indicatorId === indicatorLayer.id)
+              // For indicator
+              if (indicatorLayer) {
+
+                // This is for dynamic layer
+                if (!indicatorLayer.indicators?.length && !indicatorLayer.related_tables?.length) {
+                  const dynamicIndicatorsData = {}
+                  const dynamicLayerIndicators = dynamicLayerIndicatorList(indicatorLayer, indicators)
+                  for (let j = 0; j < dynamicLayerIndicators.length; j++) {
+                    const indicator = dynamicLayerIndicators[j]
+                    await fetchingData(
+                      `/api/dashboard/${slug}/indicator/${indicator.id}/values`,
+                      { extras: 'concept_uuid,date' }, {}, (response, error) => {
+                        if (!error) {
+                          dynamicIndicatorsData[indicator.id] = {
+                            data: response,
+                            fetching: true,
+                            fetched: true
+                          }
+                        }
+                      }
+                    )
+                  }
+                  // Create layer data
+                  const output = {} // Output by concept uuid
+                  fetchDynamicLayerData(
+                    indicatorLayer, indicators, dynamicIndicatorsData, geoField,
+                    error => {
+                    },
+                    response => {
+                      response.map(row => {
+                        row.indicator = indicatorLayer
+                        if (!output[row.concept_uuid]) {
+                          output[row.concept_uuid] = []
+                        }
+                        output[row.concept_uuid].push(row)
+                      })
+                    },
+                    true
+                  )
+                  indicatorValueByGeometry[indicatorLayer.id] = output
+                } else if (indicatorLayer.related_tables?.length) {
+                  const relatedTable = relatedTables.find(rt => rt.id === indicatorLayer.related_tables[0].id)
+                  if (relatedTable) {
+                    const params = {
+                      geography_code_field_name: relatedTable.geography_code_field_name,
+                      geography_code_type: relatedTable.geography_code_type,
+                    }
+                    if (referenceLayer) {
+                      params.reference_layer_uuid = referenceLayer.identifier
+                    }
+                    if (indicatorLayer.config.date_field) {
+                      params.date_field = indicatorLayer.config.date_field
+                    }
+                    if (indicatorLayer.config.date_format) {
+                      params.date_format = indicatorLayer.config.date_format
+                    }
+                    await fetchingData(
+                      '/api/related-table/' + relatedTable.id + '/values', params, {}, function (response, error) {
+                        if (!error) {
+                          const relatedTableData = {}
+                          relatedTableData[relatedTable.id] = {
+                            data: response,
+                            fetching: true,
+                            fetched: true
+                          }
+                          const { rows } = getRelatedTableData(
+                            response,
+                            {
+                              ...indicatorLayer.config,
+                              geography_code_field_name: relatedTable.geography_code_field_name
+                            },
+                            selectedGlobalTime,
+                            geoField,
+                            false
+                          )
+                          if (rows) {
+                            const output = {} // Output by concept uuid
+                            rows.map(row => {
+                              row.indicator = indicatorLayer
+                              if (!output[row.concept_uuid]) {
+                                output[row.concept_uuid] = []
+                              }
+                              output[row.concept_uuid].push(row)
+                            })
+                            indicatorValueByGeometry[indicatorLayer.id] = output
+                          }
+                        }
+                      }
+                    )
+                  }
+                } else {
+                  const output = {} // Output by concept uuid
+                  for (let j = 0; j < indicatorLayer.indicators.length; j++) {
+                    const indicator = indicatorLayer.indicators[j]
+                    await fetchingData(
+                      `/api/dashboard/${slug}/indicator/${indicator.id}/values`,
+                      { extras: 'concept_uuid,date' }, {}, (response, error) => {
+                        if (!error) {
+                          response.map(row => {
+                            row.indicator = indicator
+                            if (!output[row.concept_uuid]) {
+                              output[row.concept_uuid] = []
+                            }
+                            output[row.concept_uuid].push(row)
+                          })
+                        }
+                      }
+                    )
+                  }
+                  indicatorValueByGeometry[indicatorLayer.id] = output
+                }
+              }
+            }
+          } else if (state.time === TimeType.Current) {
+            state.indicators.map(indicatorId => {
+              const indicatorLayer = indicatorLayers.find(indicatorLayer => indicatorId === indicatorLayer.id)
+              if (!indicatorLayer) {
+                return
+              }
+
+              const output = getIndicatorValueByGeometry(
+                indicatorLayer, indicators, indicatorsData,
+                relatedTables, relatedTableData, selectedGlobalTime,
+                geoField, filteredGeometries
+              )
+              indicatorValueByGeometry[indicatorLayer.id] = output
+            })
+          }
 
           // If excel
           if (state.format === Format.Excel) {
@@ -205,48 +380,19 @@ export default function DownloaderData() {
             state.indicators.map(indicatorId => {
               //Get per indicator layer
               const indicatorLayer = indicatorLayers.find(indicatorLayer => indicatorId === indicatorLayer.id)
-
-              // For indicators
-              indicatorLayer.indicators.map(indicatorData => {
-                // Get per geometries
-                geometries.map(geom => {
-                  const ucode = extractCode(geom)
-                  const row = Object.assign({}, {
-                    GeographyCode: geom.ucode,
-                    GeographyName: geom.name,
-                    GeographyLevel: levels.find(level => level.level === geom.admin_level)?.level_name,
-                  }, geom.ext_codes)
-                  delete row.default
-                  delete row.ucode
-
-                  tableData.push(
-                    Object.assign({}, row, getData(
-                      indicatorLayer, indicatorData, indicatorValueByGeometry, ucode
-                    ))
-                  )
+              if (!indicatorLayer.indicators?.length && !indicatorLayer.related_tables?.length) {
+                cleanDataToExcel(tableData, geometries, indicatorLayer, indicatorLayer, indicatorValueByGeometry, false)
+              } else {
+                // For indicators
+                indicatorLayer.indicators.map(indicatorData => {
+                  cleanDataToExcel(tableData, geometries, indicatorLayer, indicatorData, indicatorValueByGeometry, true)
                 })
-              })
 
-              // For related tables
-              indicatorLayer.related_tables.map(rt => {
-                // Get per geometries
-                geometries.map(geom => {
-                  const ucode = extractCode(geom)
-                  const row = Object.assign({}, {
-                    GeographyCode: geom.ucode,
-                    GeographyName: geom.name,
-                    GeographyLevel: levels.find(level => level.level === geom.admin_level)?.level_name,
-                  }, geom.ext_codes)
-                  delete row.default
-                  delete row.ucode
-
-                  tableData.push(
-                    Object.assign({}, row, getData(
-                      indicatorLayer, null, indicatorValueByGeometry, ucode, false
-                    ))
-                  )
+                // For related tables
+                indicatorLayer.related_tables.map(rt => {
+                  cleanDataToExcel(tableData, geometries, indicatorLayer, rt, indicatorValueByGeometry, false)
                 })
-              })
+              }
             })
             jsonToXlsx(tableData, name + '.xls')
           }
@@ -273,14 +419,16 @@ export default function DownloaderData() {
               indicatorLayer.indicators.map(indicatorData => {
                 // Get per geometries
                 geometries.map(geom => {
-                  geom.properties = Object.assign(
-                    {}, geom.properties,
-                    getData(
-                      indicatorLayer, indicatorData,
-                      indicatorValueByGeometry, extractCode(geom.properties)
-                    )
+                  const data = getData(
+                    indicatorLayer, indicatorData,
+                    indicatorValueByGeometry, extractCode(geom.properties)
                   )
-                  features.push(geom)
+                  if (data) {
+                    geom.properties = Object.assign(
+                      {}, geom.properties, data[0]
+                    )
+                    features.push(geom)
+                  }
                 })
               })
 
@@ -288,15 +436,17 @@ export default function DownloaderData() {
               indicatorLayer.related_tables.map(rt => {
                 // Get per geometries
                 geometries.map(geom => {
-                  geom.properties = Object.assign(
-                    {}, geom.properties,
-                    getData(
-                      indicatorLayer, null,
-                      indicatorValueByGeometry, extractCode(geom.properties),
-                      false
-                    )
+                  const data = getData(
+                    indicatorLayer, null,
+                    indicatorValueByGeometry, extractCode(geom.properties),
+                    false
                   )
-                  features.push(geom)
+                  if (data) {
+                    geom.properties = Object.assign(
+                      {}, geom.properties, data[0]
+                    )
+                    features.push(geom)
+                  }
                 })
               })
             })
@@ -347,9 +497,25 @@ export default function DownloaderData() {
             className={"DownloaderDataComponent " + (disabled ? "Disabled" : "")}
           >
             <div className='DownloaderDataTitle'>
-              <b className='light'>Download selected indicators</b>
+              <b className='light'>Download data from indicators</b>
             </div>
             <div className='DownloaderDataForm'>
+              <FormControlLabel
+                key={state.excludeEmptyValue} disabled={downloading}
+                control={
+                  <Checkbox
+                    checked={state.excludeEmptyValue}
+                    onChange={evt => {
+                      setState({
+                        ...state,
+                        excludeEmptyValue: !state.excludeEmptyValue
+                      })
+                    }}/>
+                }
+                label={"Exclude records without indicator values"}
+              />
+              <br/>
+              <br/>
 
               {/* FOR ADMIN FILTER */}
               <FormGroup className={'GroupSelection'}>
@@ -371,52 +537,48 @@ export default function DownloaderData() {
                               }
                             }}/>
                         }
-                        label={level.level + ' - ' + level.level_name}
+                        label={level.level_name}
                       />
                     }) : null
                   }
                 </FormGroup>
               </FormGroup>
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <FormLabel>Geographical extent</FormLabel>
+                  <SelectWithSearch
+                    disableCloseOnSelect={false}
+                    options={[GeographyFilter.All, GeographyFilter.Filtered]}
+                    value={state.geographyFilter}
+                    onChangeFn={(value) => {
+                      setState({ ...state, geographyFilter: value })
+                    }}/>
+                </Grid>
+                <Grid item xs={6}>
+                  <FormLabel>Format</FormLabel>
+                  <SelectWithSearch
+                    disableCloseOnSelect={false}
+                    options={[Format.Geojson, Format.Excel]}
+                    value={state.format}
+                    onChangeFn={(value) => {
+                      setState({ ...state, format: value })
+                    }}/>
+                </Grid>
+              </Grid>
 
-              {/* FOR GEOGRAPHY FILTER */}
-              <FormGroup className={'GroupSelection'}>
-                <FormLabel>Geographical extent</FormLabel>
-                <RadioGroup
-                  defaultValue={state.geographyFilter}
-                  onChange={evt => {
-                    setState({ ...state, geographyFilter: evt.target.value })
-                  }}
-                >
-                  {
-                    Object.keys(GeographyFilter).map(key => {
-                      return <FormControlLabel
-                        key={key} disabled={downloading}
-                        value={GeographyFilter[key]}
-                        control={<Radio/>} label={key}/>
-                    })
-                  }
-                </RadioGroup>
-              </FormGroup>
-
-              {/* FOR FORMAT */}
-              <FormGroup className={'GroupSelection'}>
-                <FormLabel>Format</FormLabel>
-                <RadioGroup
-                  defaultValue={state.format}
-                  onChange={evt => {
-                    setState({ ...state, format: evt.target.value })
-                  }}
-                >
-                  {
-                    Object.keys(Format).map(key => {
-                      return <FormControlLabel
-                        key={key} disabled={downloading}
-                        value={Format[key]}
-                        control={<Radio/>} label={key}/>
-                    })
-                  }
-                </RadioGroup>
-              </FormGroup>
+              {/* TIME */}
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <FormLabel>Time filter</FormLabel>
+                  <SelectWithSearch
+                    disableCloseOnSelect={false}
+                    options={[TimeType.Current, TimeType.All]}
+                    value={state.time}
+                    onChangeFn={(value) => {
+                      setState({ ...state, time: value })
+                    }}/>
+                </Grid>
+              </Grid>
 
               {/* FOR INDICATORS FILTER */}
               {indicatorLayers.length ? <table>

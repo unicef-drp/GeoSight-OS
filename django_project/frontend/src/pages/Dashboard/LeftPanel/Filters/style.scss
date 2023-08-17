@@ -444,10 +444,6 @@
     color: black;
   }
 
-  .MuiInputBase-input {
-    border: 1px solid $tab-inactive-color;
-  }
-
   .MuiFormControl-root {
     margin-top: 0 !important;
   }
@@ -499,6 +495,10 @@
       border: 1px solid rgba(0, 0, 0, 0.23);
       overflow: hidden;
 
+      input {
+        border: unset;
+      }
+
       .MuiInputSlider {
         flex-grow: 1;
         padding: 12px 20px 0 20px;
@@ -506,7 +506,7 @@
       }
 
       .MuiInput-root {
-        padding: 5px;
+        padding: 0;
         width: 100px;
         border-radius: 0;
         border: none;
@@ -514,7 +514,8 @@
 
         input {
           -moz-appearance: textfield;
-          padding: 5px 0;
+          padding: 10px 5px;
+          height: 100%;
         }
 
         input::-webkit-outer-spin-button,

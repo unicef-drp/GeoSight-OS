@@ -37,10 +37,11 @@ import { RemoveIcon } from "../../Icons";
  * @param {bool} open Is open or close.
  * @param {Function} setData Set data function.
  * @param {object} data Widget Data.
+ * @param {String} title Title widget.
  * @param {React.Component} children React component to be rendered
  */
 export default function WidgetEditor(
-  { open, setData, data, children }
+  { open, setData, data, title, children }
 ) {
   const {
     indicators,
@@ -153,7 +154,7 @@ export default function WidgetEditor(
         className='modal__widget__editor MuiFormControl-Form'
       >
         <ModalHeader onClosed={onClosed}>
-          {name ? "Change " + name : "New Widget"}
+          {name ? "Change " + name : "New " + title}
         </ModalHeader>
         <ModalContent>
           <FormControl>

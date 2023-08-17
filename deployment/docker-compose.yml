@@ -59,9 +59,6 @@ x-common-django:
     - AZURE_B2C_TENANT_NAME=${AZURE_B2C_TENANT_NAME:-''}
     - AZURE_B2C_POLICY_NAME=${AZURE_B2C_POLICY_NAME:-''}
 
-    # GeoRepo Azure configuration
-    - GEOREPO_AZURE_AUTHENTICATION_URL=${GEOREPO_AZURE_AUTHENTICATION_URL:-''}
-
     # email variables
     - EMAIL_HOST=${EMAIL_HOST:-smtp}
     - EMAIL_PORT=${EMAIL_PORT:-25}
@@ -152,10 +149,3 @@ services:
     ports:
       - "${HTTP_PORT:-80}:8080"
     restart: on-failure:5
-
-  node-red:
-    image: nodered/node-red:2.1.3
-    volumes:
-      - node-red:/data
-    ports:
-      - "1880:1880"

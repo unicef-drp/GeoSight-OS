@@ -37,7 +37,7 @@ export const HelpPage = forwardRef(
 
     useImperativeHandle(ref, () => ({
       open() {
-        return setOpen(true)
+        return setOpen(_ => !_)
       }
     }));
 

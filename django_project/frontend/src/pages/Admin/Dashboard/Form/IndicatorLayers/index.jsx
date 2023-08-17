@@ -30,7 +30,8 @@ import {
   removeChildInGroupInStructure
 } from "../../../../../components/SortableTreeForm/utilities";
 import {
-  DynamicIndicatorType, isIndicatorLayerLikeIndicator,
+  DynamicIndicatorType,
+  isIndicatorLayerLikeIndicator,
   MultiIndicatorType,
   RelatedTableLayerType,
   SingleIndicatorType
@@ -355,7 +356,7 @@ export default function IndicatorLayersForm() {
             <div className='LayerCountIndicatorWrapper'>
               <div className='Separator'></div>
               <div className='LayerCountIndicator'>
-                {layer.indicators.length + ' Layers'}
+                {layer.indicators.length + ' Layers (' + (layer.multi_indicator_mode) + ')'}
               </div>
             </div>
             <MultiIndicatorConfig

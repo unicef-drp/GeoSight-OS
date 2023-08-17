@@ -175,7 +175,7 @@ export default function Home() {
               <ProjectGrid
                 projects={
                   projects.own.filter(
-                    project => !searchProject || project.name.includes(searchProject) || project.description.includes(searchProject)
+                    project => !searchProject || project.name.includes(searchProject) || project.description?.includes(searchProject)
                   )
                 }
               />

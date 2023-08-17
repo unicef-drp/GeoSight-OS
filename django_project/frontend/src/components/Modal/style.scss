@@ -28,6 +28,7 @@
 
 .modal--wrapper--box {
   padding: 1.75rem 0;
+  box-sizing: border-box;
 
   &:focus-visible {
     outline: none;
@@ -91,6 +92,10 @@
 .modal--content {
   padding: 20px;
   overflow-x: auto;
+
+  .BasicForm {
+    padding: 0;
+  }
 
   &.Gray {
     background-color: $base-to-white-color;

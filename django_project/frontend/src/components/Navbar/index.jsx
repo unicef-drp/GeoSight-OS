@@ -17,7 +17,7 @@
    NAVBAR
    ========================================================================== */
 
-import React, { useRef } from 'react';
+import React, { Fragment, useRef } from 'react';
 import $ from 'jquery';
 import i18n from "i18next";
 
@@ -25,9 +25,9 @@ import User from './User'
 import { EmbedConfig } from "../../utils/embed";
 import { CogIcon, HelpIcon } from "../Icons";
 import { ThemeButton } from "../Elements/Button";
+import { HelpPage } from "../HelpPage";
 
 import './style.scss';
-import { HelpPage } from "../HelpPage";
 
 /**
  * Navbar.
@@ -42,54 +42,56 @@ export default function NavBar({ minified }) {
   $('.page__header-logo').width($('.page__header-link').width());
   const canAccessAdmin = is_contributor && !EmbedConfig().id
   return (
-    <header>
-      <div className='NavHeader'>
-        <div className='NavHeaderLogo'>
+    <Fragment>
+      <header>
+        <div className='NavHeader'>
+          <div className='NavHeaderLogo'>
+            <a
+              href='/'
+              title={i18n.t('Homepage')}
+              className='nav-header-link'
+            >
+              <img src={(minified ? favicon : icon)} alt="Logo"/>
+            </a>
+          </div>
           <a
             href='/'
             title={i18n.t('Homepage')}
-            className='nav-header-link'
+            className='NavHeaderLink'
           >
-            <img src={(minified ? favicon : icon)} alt="Logo"/>
+            {site_title}
           </a>
+          <div className='Separator'></div>
+          {
+            headerTitle ?
+              <div className='MiddleSection'>{headerTitle}</div> : null
+          }
+          <div className='Separator'></div>
+          {
+            canAccessAdmin ? (
+              <div className='LinkButton' style={{ marginRight: "1rem" }}>
+                <a href={urls.admin.dashboardList}>
+                  <ThemeButton
+                    variant="white"
+                  >
+                    <CogIcon/> Admin panel
+                  </ThemeButton>
+                </a>
+              </div>
+            ) : null
+          }
+          <div className='HelpButton .SvgButton'>
+            <a href='#' onClick={_ => {
+              helpPageRef?.current.open()
+            }}>
+              <HelpIcon/>
+            </a>
+          </div>
+          <User/>
         </div>
-        <a
-          href='/'
-          title={i18n.t('Homepage')}
-          className='NavHeaderLink'
-        >
-          {site_title}
-        </a>
-        <div className='Separator'></div>
-        {
-          headerTitle ?
-            <div className='MiddleSection'>{headerTitle}</div> : null
-        }
-        <div className='Separator'></div>
-        {
-          canAccessAdmin ? (
-            <div className='LinkButton' style={{ marginRight: "1rem" }}>
-              <a href={urls.admin.dashboardList}>
-                <ThemeButton
-                  variant="white"
-                >
-                  <CogIcon/> Admin panel
-                </ThemeButton>
-              </a>
-            </div>
-          ) : null
-        }
-        <div className='HelpButton .SvgButton'>
-          <a href='#' onClick={_ => {
-            helpPageRef?.current.open()
-          }}>
-            <HelpIcon/>
-          </a>
-        </div>
-        <User/>
-      </div>
+      </header>
       <HelpPage ref={helpPageRef}/>
-    </header>
+    </Fragment>
   )
 }
 

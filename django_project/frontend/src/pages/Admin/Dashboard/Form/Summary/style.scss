@@ -19,6 +19,12 @@
 
 @import '../../../../../app/variables';
 
+.Summary {
+  .SelectWithSearchInput {
+    max-width: unset !important;
+  }
+}
+
 .ExtentConfig {
   .ExtentInput {
     width: 100%;

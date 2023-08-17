@@ -42,10 +42,10 @@
   }
 
   .DownloaderDataForm {
-    max-height: 300px;
+    max-height: 80%;
     overflow-y: auto;
-    margin-bottom: 0.5rem;
-    padding-right: 0.5rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
   }
 
   table {
@@ -55,17 +55,13 @@
 
     thead {
       td {
-        background-color: $secondary-color;
-        color: $anti-secondary-color;
-      }
-
-      svg {
-        background-color: white;
+        background-color: $primary-color;
+        color: $anti-primary-color;
       }
     }
 
     td {
-      border: 1px solid $secondary-color;
+      border: 1px solid $primary-color;
     }
 
     tr {
@@ -85,20 +81,53 @@
     }
   }
 
+
+  .MuiFormLabel-root {
+    color: black;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .MuiFormGroup-root {
+    margin-top: 0 !important;
+  }
+
   .DownloaderDataTitle {
     padding-bottom: 0.5rem;
-    margin-bottom: 0.5rem;
-    border-bottom: 1px solid $secondary-color;
+    border-bottom: $border;
+    font-size: 12px;
   }
 
   .MuiCircularProgress-root {
     margin-right: 0.5rem;
-    color: $secondary-color !important;
+    color: $primary-color !important;
     width: 24px !important;
     height: 24px !important;
 
     svg {
       margin: 0 !important;
     }
+  }
+
+  .MuiGrid-container {
+    width: 100%;
+  }
+
+  .SelectWithSearchInput {
+    margin-top: 0.5rem;
+
+    .MuiInputBase-root {
+      min-width: unset !important;
+    }
+  }
+
+  .MuiGrid-root {
+    margin: 0 !important;
+    padding: 0 !important;
+    margin-bottom: 1rem !important;
+  }
+
+  .MuiGrid-item {
+    padding-right: 0.5rem !important;
   }
 }

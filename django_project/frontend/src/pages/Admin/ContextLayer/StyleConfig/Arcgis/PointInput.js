@@ -23,7 +23,6 @@ import { Select } from "../../../../../components/Input";
 export default function PointInput({ style, update }) {
   const optionsTypes = [
     { value: 'circle', label: 'Circle' },
-    { value: 'square', label: 'Square' },
     { value: 'icon', label: 'Icon' },
   ]
   const type = optionsTypes.find(opt => opt.value === style.type)
@@ -38,6 +37,9 @@ export default function PointInput({ style, update }) {
           options={optionsTypes} defaultValue={type}
           onChange={(evt) => {
             style.type = evt.value
+            if (style.type === 'icon' && !style.style.iconSize) {
+              style.style.iconSize = [10, 10]
+            }
             update()
           }}/>
       </div>
@@ -153,24 +155,13 @@ export default function PointInput({ style, update }) {
             <div className='ContextLayerConfig-IconSize'>
               <input
                 type="number" spellCheck="false"
-                value={style.style.iconSize ? style.style.iconSize[0] : 0}
+                value={style.style.iconSize ? style.style.iconSize[0] : 10}
                 step={0.1}
                 onChange={evt => {
                   if (!style.style.iconSize) {
                     style.style.iconSize = []
                   }
                   style.style.iconSize[0] = evt.target.value
-                  update()
-                }}/>
-              <div className='ContextLayerConfig-IconSize-X'>X</div>
-              <input
-                type="number" spellCheck="false"
-                value={style.style.iconSize ? style.style.iconSize[1] : 0}
-                step={0.1}
-                onChange={evt => {
-                  if (!style.style.iconSize) {
-                    style.style.iconSize = []
-                  }
                   style.style.iconSize[1] = evt.target.value
                   update()
                 }}/>

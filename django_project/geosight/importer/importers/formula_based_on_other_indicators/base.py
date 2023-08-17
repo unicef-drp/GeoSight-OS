@@ -108,6 +108,8 @@ class FormulaBasedOnOtherIndicatorsIndicatorValue(IndicatorValueLongFormat):
             indicators=indicators
         )
 
+        # TODO:
+        #  Change how to get the Nunjucks results without browser
         driver = None
         try:
             records = []

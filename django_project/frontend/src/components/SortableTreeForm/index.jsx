@@ -86,7 +86,7 @@ export function SortableTree({
     if (!dragged) {
       setItems(data)
     }
-  }, [data])
+  }, [data, dragged])
 
   const flattenedItems = useMemo(() => {
     const flattenedTree = flattenTree(items);

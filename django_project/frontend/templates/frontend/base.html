@@ -90,6 +90,10 @@
     return "";
   }
 
+  function deleteCookie(name) {
+    document.cookie = name + '=; Max-Age=-99999999;';
+  }
+
   const maxZoom = 24;
   {% if request.user.is_authenticated %}
     const user = {{ user|safe }};
@@ -99,6 +103,7 @@
     user.is_admin = user.is_admin === 'true'
   {% else %}
     const user = {};
+    deleteCookie('georepo-token')
   {% endif %}
 
   const USE_AZURE = '{{ use_azure_auth }}'.toLowerCase() === 'true';

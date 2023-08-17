@@ -163,7 +163,8 @@ export function DashboardSaveForm(
   {
     currentPage,
     disabled,
-    setCurrentHistoryIdx
+    setCurrentHistoryIdx,
+    setChanged
   }) {
   const {
     id,
@@ -205,7 +206,7 @@ export function DashboardSaveForm(
     const description = $('#SummaryDescription').val();
     const overview = $('#SummaryOverview textarea').val();
     const icon = $('#SummaryIcon')[0].files[0];
-    const category = $('#SummaryCategory').val();
+    const category = $('#SummaryCategory .ReactSelect__single-value').text();
     const splashScreen = $('#SummarySplash').is(':checked');
     const truncateIndicatorName = $('#SummaryTruncateIndicatorName').is(':checked');
 
@@ -335,7 +336,7 @@ export function DashboardSaveForm(
                 data: JSON.parse(JSON.stringify(data))
               }]
               setCurrentHistoryIdx(0)
-
+              setChanged(false)
             }
           }
         }
@@ -504,7 +505,9 @@ export function DashboardForm({ onPreview }) {
             <DashboardSaveForm
               currentPage={currentPage}
               disabled={currentHistoryIdx <= 0 && !changed}
-              setCurrentHistoryIdx={setCurrentHistoryIdx}/>
+              setCurrentHistoryIdx={setCurrentHistoryIdx}
+              setChanged={setChanged}
+            />
           </div>
           {
             permission?.public_permission !== 'Read' && preferences.georepo_api.api_key_is_public ?

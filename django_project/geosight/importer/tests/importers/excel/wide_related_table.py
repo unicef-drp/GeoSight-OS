@@ -73,7 +73,6 @@ class ExcelWideFormatRelatedTableTest(BaseImporterTest):
             self.importer.save_attributes(attributes, files)
 
         self.importer.run()
-        print(self.importer.importerlog_set.all().first().note)
         self.assertEqual(
             self.importer.importerlog_set.all().first().status,
             LogStatus.SUCCESS

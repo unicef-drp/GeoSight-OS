@@ -34,6 +34,8 @@ import {
   indicatorLayerId,
   isIndicatorLayerLikeIndicator
 } from "../../../../utils/indicatorLayer";
+import { dictDeepCopy } from "../../../../utils/main";
+import { UpdateStyleData } from "../../../../utils/indicatorData";
 
 let centroidMarker = []
 let charts = {}
@@ -152,8 +154,50 @@ export default function ReferenceLayerCentroid({ map }) {
     })
   }
 
+  /**
+   * Render PIN
+   * **/
+  const renderPin = (features, config, indicatorLayer) => {
+    if (JSON.stringify(config) !== JSON.stringify(centroidConfig)) {
+      return;
+    }
+    features.map(feature => {
+      const properties = feature.properties
+      const chartStyle = properties.chart_style;
+      const code = properties.code
+      const size = chartStyle.size ? chartStyle.size : 20;
+
+      if (charts[code]) {
+        charts[code].clear();
+        $(`${code}-chart`).remove()
+      }
+      const children = []
+      indicatorLayer.indicators.map(indicator => {
+        const data = feature.properties.data?.find(row => row.indicator === indicator.indicator)
+        if (data) {
+          children.push(`<div class="pin" title="${data.indicator} - ${data.value}" style="background-color: ${data.style.color}; height: ${size}px; width: ${size}px;"></div>`)
+        } else {
+          children.push(`<div class="pin empty"></div>`)
+        }
+      })
+
+      var el = document.createElement('div');
+      const popup = new maplibregl.Popup({
+        closeOnClick: false,
+        closeButton: false
+      }).setHTML(`<div class="pins">${children.join('')}</div>`)
+      popup.addClassName('ChartPopup')
+      const marker = new maplibregl.Marker(el)
+        .setLngLat(feature.geometry.coordinates)
+        .setPopup(popup)
+        .addTo(map)
+        .togglePopup();
+      centroidMarker.push(marker)
+    })
+  }
+
   /** Chart data generator **/
-  const chartData = (indicators, style) => {
+  const chartData = (indicators) => {
     const labels = []
     const data = []
     const colors = []
@@ -297,12 +341,24 @@ export default function ReferenceLayerCentroid({ map }) {
     const usedIndicatorsProperties = {}
     indicatorLayer.indicators.map(indicator => {
       usedIndicatorsData[indicator.id] = indicatorsData[indicator.id]
-      usedIndicatorsProperties[indicator.id] = indicator
+      const data = {}
+      for (const [key, value] of Object.entries(indicator)) {
+        if (!key.includes('style')) {
+          data[key] = value
+        }
+      }
+      usedIndicatorsProperties[indicator.id] = data
     })
     const layerId = indicatorLayerId(indicatorLayer)
     if (indicatorsData[layerId]) {
       usedIndicatorsData[layerId] = indicatorsData[layerId]
-      usedIndicatorsProperties[layerId] = indicatorLayer
+      const data = {}
+      for (const [key, value] of Object.entries(indicatorLayer)) {
+        if (!key.includes('style')) {
+          data[key] = value
+        }
+      }
+      usedIndicatorsProperties[layerId] = data
     }
     if (!allDataIsReady(usedIndicatorsData)) {
       rendering = false
@@ -347,16 +403,6 @@ export default function ReferenceLayerCentroid({ map }) {
     // ---------------------------------------------------------
     if (isRenderingChart) {
       // Create data per geom
-      const indicatorsByGeom = {}
-      for (const [indicatorId, indicatorData] of Object.entries(usedIndicatorsData)) {
-        indicatorData.data.forEach(function (data) {
-          const code = extractCode(data)
-          if (!indicatorsByGeom[code]) {
-            indicatorsByGeom[code] = []
-          }
-          indicatorsByGeom[code].push(Object.assign({}, data, usedIndicatorsProperties[indicatorId]));
-        })
-      }
       // Creating features for center data
       let maxValue = 0
       const features = []
@@ -365,6 +411,38 @@ export default function ReferenceLayerCentroid({ map }) {
       let theGeometries = Object.keys(geometriesData)
       if (where && filteredGeometries) {
         theGeometries = filteredGeometries
+      }
+
+      // Create style
+      const copiedUsedIndicatorsData = dictDeepCopy(usedIndicatorsData)
+      indicatorLayer.indicators.map(indicator => {
+        if (indicatorLayer.multi_indicator_mode === "Pin") {
+          let config = indicator
+          if (!indicator.style) {
+            const obj = indicators.find(ind => ind.id === indicator.id)
+            if (obj) {
+              config = dictDeepCopy(obj)
+              config.indicators = [indicator]
+            }
+          }
+          if (copiedUsedIndicatorsData[indicator.id]) {
+            copiedUsedIndicatorsData[indicator.id].data = UpdateStyleData(copiedUsedIndicatorsData[indicator.id].data, config)
+          }
+        }
+      })
+
+      // -----------------------
+      // Split data per geometry
+      // -----------------------
+      const indicatorsByGeom = {}
+      for (const [indicatorId, indicatorData] of Object.entries(copiedUsedIndicatorsData)) {
+        indicatorData.data.forEach(function (data) {
+          const code = extractCode(data)
+          if (!indicatorsByGeom[code]) {
+            indicatorsByGeom[code] = []
+          }
+          indicatorsByGeom[code].push(Object.assign({}, data, usedIndicatorsProperties[indicatorId]));
+        })
       }
       theGeometries.map(geom => {
         const geometry = geometriesData[geom]
@@ -405,24 +483,28 @@ export default function ReferenceLayerCentroid({ map }) {
           })
         }
       })
+      if (indicatorLayer.multi_indicator_mode === "Pin") {
+        renderPin(features, config, indicatorLayer)
+      } else {
 
-      // Change size of pie chart
-      switch (chartStyle.sizeType) {
-        case "Fixed size":
-          break
-        default:
-          // TODO:
-          //  We need to split the data between
-          const minSize = chartStyle.minSize
-          const maxSize = chartStyle.maxSize
-          const diffSize = maxSize - minSize
-          features.map(feature => {
-            const properties = feature.properties
-            const percentageSize = properties.total / maxValue
-            properties.chart_style.size = (percentageSize * diffSize) + minSize
-          })
+        // Change size of pie chart
+        switch (chartStyle.sizeType) {
+          case "Fixed size":
+            break
+          default:
+            // TODO:
+            //  We need to split the data between
+            const minSize = chartStyle.minSize
+            const maxSize = chartStyle.maxSize
+            const diffSize = maxSize - minSize
+            features.map(feature => {
+              const properties = feature.properties
+              const percentageSize = properties.total / maxValue
+              properties.chart_style.size = (percentageSize * diffSize) + minSize
+            })
+        }
+        renderChart(features, config)
       }
-      renderChart(features, config)
     } else {
       // ---------------------------------------------------------
       // CREATE LABEL IF SINGLE INDICATOR
