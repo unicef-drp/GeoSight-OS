@@ -237,7 +237,6 @@ export default function DownloaderData() {
                 relatedTables, relatedTableData, selectedGlobalTime,
                 geoField, filteredGeometries
               )
-              console.log(output)
               indicatorValueByGeometry[indicatorLayer.id] = output
             })
           }
@@ -313,7 +312,6 @@ export default function DownloaderData() {
                 })
               })
             })
-            console.log(tableData)
             jsonToXlsx(tableData, name + '.xls')
           }
           // else if just geojson

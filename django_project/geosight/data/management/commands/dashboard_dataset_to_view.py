@@ -28,7 +28,6 @@ class Command(BaseCommand):
         """Command handler."""
         for dashboard in Dashboard.objects.all():
             view = None
-            print(dashboard.name)
             if dashboard.dataset_identifier and not dashboard.reference_layer:
                 detail = GeorepoRequest().get_reference_layer_views(
                     dashboard.dataset_identifier

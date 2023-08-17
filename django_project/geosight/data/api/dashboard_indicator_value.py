@@ -130,7 +130,6 @@ class DashboardIndicatorValueListAPI(DashboardIndicatorValuesAPI):
 
         order_by = ['-' + field for field in distinct]
         order_by.append('-date')
-        print(distinct)
         query = query.order_by(
             *[field for field in order_by]
         ).distinct(*distinct)

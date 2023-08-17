@@ -163,7 +163,6 @@ class FormulaBasedOnOtherIndicatorsIndicatorValue(IndicatorValueLongFormat):
             driver.close()
             return records
         except Exception as e:
-            print(e)
             if driver:
                 driver.close()
             err = f'{e}'
