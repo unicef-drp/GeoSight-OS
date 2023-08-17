@@ -203,7 +203,7 @@ export function IndicatorLayers() {
     // Setup current indicator layer
     updateCurrentIndicator(currentIndicatorLayer, Actions.SelectedIndicatorLayer)
     updateCurrentIndicator(currentIndicatorSecondLayer, Actions.SelectedIndicatorSecondLayer)
-  }, [indicatorLayers, relatedTableData]);
+  }, [indicatorLayers, relatedTableData, indicatorLayersStructure]);
 
   const onChange = (selectedData) => {
     if (selectedData.length === 0) {

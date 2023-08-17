@@ -101,8 +101,10 @@ export default function ListForm(
 
   // add uuid to the data structure
   const updateUuid = (currDataStructure) => {
-    if (Object.keys(currDataStructure).includes('group') && !currDataStructure.id) {
-      currDataStructure.id = uuidv4() + '';
+    if (Object.keys(currDataStructure).includes('group')) {
+      if (!currDataStructure.id) {
+        currDataStructure.id = uuidv4() + '';
+      }
       currDataStructure.children?.forEach(child => {
         updateUuid(child)
       })
@@ -144,7 +146,7 @@ export default function ListForm(
       groupName = 'Group ' + idx;
       const group = allGroups.find(group => group.name === groupName)
       if (!group) {
-        dataStructure.children.push({
+        dataStructure.children.unshift({
           ...dictDeepCopy(groupDefault),
           group: groupName
         })
