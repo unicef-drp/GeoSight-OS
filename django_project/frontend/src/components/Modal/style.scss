@@ -28,6 +28,7 @@
 
 .modal--wrapper--box {
   padding: 1.75rem 0;
+  box-sizing: border-box;
 
   &:focus-visible {
     outline: none;
@@ -146,6 +147,17 @@
 .MuiBox-Large {
   .modal--box {
     max-width: 90%;
+  }
+}
+
+.MuiBox-Tall {
+  .modal--wrapper--box,
+  .modal--box {
+    min-height: 100%;
+
+    .modal--content {
+      min-height: 500px;
+    }
   }
 }
 
