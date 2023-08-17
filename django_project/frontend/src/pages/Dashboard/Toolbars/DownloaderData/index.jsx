@@ -47,6 +47,10 @@ import {
   SelectWithSearch
 } from "../../../../components/Input/SelectWithSearch";
 import { fetchingData } from "../../../../Requests";
+import {
+  dynamicLayerIndicatorList,
+  fetchDynamicLayerData
+} from "../../../../utils/indicatorLayer";
 
 export const GeographyFilter = {
   All: 'All Geographies',
@@ -215,8 +219,7 @@ export default function DownloaderData() {
   }
   // Construct the data
   const download = () => {
-    // setDownloading(true);
-
+    setDownloading(true);
     (
       async () => {
         try {
@@ -231,25 +234,63 @@ export default function DownloaderData() {
               const indicatorLayer = indicatorLayers.find(indicatorLayer => indicatorId === indicatorLayer.id)
               // For indicator
               if (indicatorLayer) {
-                const output = {} // Output by concept uuid
-                for (let j = 0; j < indicatorLayer.indicators.length; j++) {
-                  const indicator = indicatorLayer.indicators[j]
-                  await fetchingData(
-                    `/api/dashboard/${slug}/indicator/${indicator.id}/values`,
-                    { extras: 'concept_uuid,date' }, {}, (response, error) => {
-                      if (!error) {
-                        response.map(row => {
-                          row.indicator = indicator
-                          if (!output[row.concept_uuid]) {
-                            output[row.concept_uuid] = []
+                if (!indicatorLayer.indicators?.length && !indicatorLayer.related_tables?.length) {
+                  const dynamicIndicatorsData = {}
+                  const dynamicLayerIndicators = dynamicLayerIndicatorList(indicatorLayer, indicators)
+                  for (let j = 0; j < dynamicLayerIndicators.length; j++) {
+                    const indicator = dynamicLayerIndicators[j]
+                    await fetchingData(
+                      `/api/dashboard/${slug}/indicator/${indicator.id}/values`,
+                      { extras: 'concept_uuid,date' }, {}, (response, error) => {
+                        if (!error) {
+                          dynamicIndicatorsData[indicator.id] = {
+                            data: response,
+                            fetching: true,
+                            fetched: true
                           }
-                          output[row.concept_uuid].push(row)
-                        })
+                        }
                       }
-                    }
+                    )
+                  }
+                  // Create layer data
+                  const output = {} // Output by concept uuid
+                  fetchDynamicLayerData(
+                    indicatorLayer, indicators, dynamicIndicatorsData, geoField,
+                    error => {
+                    },
+                    response => {
+                      response.map(row => {
+                        row.indicator = indicatorLayer
+                        if (!output[row.concept_uuid]) {
+                          output[row.concept_uuid] = []
+                        }
+                        output[row.concept_uuid].push(row)
+                      })
+                    },
+                    true
                   )
+                  indicatorValueByGeometry[indicatorLayer.id] = output
+                } else {
+                  const output = {} // Output by concept uuid
+                  for (let j = 0; j < indicatorLayer.indicators.length; j++) {
+                    const indicator = indicatorLayer.indicators[j]
+                    await fetchingData(
+                      `/api/dashboard/${slug}/indicator/${indicator.id}/values`,
+                      { extras: 'concept_uuid,date' }, {}, (response, error) => {
+                        if (!error) {
+                          response.map(row => {
+                            row.indicator = indicator
+                            if (!output[row.concept_uuid]) {
+                              output[row.concept_uuid] = []
+                            }
+                            output[row.concept_uuid].push(row)
+                          })
+                        }
+                      }
+                    )
+                  }
+                  indicatorValueByGeometry[indicatorLayer.id] = output
                 }
-                indicatorValueByGeometry[indicatorLayer.id] = output
               }
             }
           } else if (state.time === TimeType.Current) {
