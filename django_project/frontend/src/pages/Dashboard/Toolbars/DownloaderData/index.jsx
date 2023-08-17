@@ -99,7 +99,6 @@ export default function DownloaderData() {
 
   const disabled = downloading || !state.levels.length || !state.indicators.length || !indicatorLayers.length
 
-
   // Notification
   const notificationRef = useRef(null);
   const notify = (newMessage, newSeverity = NotificationStatus.INFO) => {
@@ -185,6 +184,35 @@ export default function DownloaderData() {
     }
     return null
   }
+
+  /** Clean data to excel **/
+  const cleanDataToExcel = (
+    tableData, geometries, indicatorLayer, indicatorData, indicatorValueByGeometry,
+    isIndicator
+  ) => {
+    // Get per geometries
+    geometries.map(geom => {
+      const ucode = extractCode(geom)
+      const row = Object.assign({}, {
+        GeographyCode: geom.ucode,
+        GeographyName: geom.name,
+        GeographyLevel: levels.find(level => level.level === geom.admin_level)?.level_name,
+      }, geom.ext_codes)
+      delete row.default
+      delete row.ucode
+
+      const data = getData(
+        indicatorLayer, indicatorData, indicatorValueByGeometry, ucode, isIndicator
+      )
+      if (data) {
+        data.map(dataRow => {
+          tableData.push(
+            Object.assign({}, row, dataRow)
+          )
+        })
+      }
+    })
+  }
   // Construct the data
   const download = () => {
     // setDownloading(true);
@@ -201,7 +229,6 @@ export default function DownloaderData() {
             for (let i = 0; i < state.indicators.length; i++) {
               const indicatorId = state.indicators[i]
               const indicatorLayer = indicatorLayers.find(indicatorLayer => indicatorId === indicatorLayer.id)
-
               // For indicator
               if (indicatorLayer) {
                 const output = {} // Output by concept uuid
@@ -259,58 +286,40 @@ export default function DownloaderData() {
             state.indicators.map(indicatorId => {
               //Get per indicator layer
               const indicatorLayer = indicatorLayers.find(indicatorLayer => indicatorId === indicatorLayer.id)
-
-              // For indicators
-              indicatorLayer.indicators.map(indicatorData => {
-                // Get per geometries
-                geometries.map(geom => {
-                  const ucode = extractCode(geom)
-                  const row = Object.assign({}, {
-                    GeographyCode: geom.ucode,
-                    GeographyName: geom.name,
-                    GeographyLevel: levels.find(level => level.level === geom.admin_level)?.level_name,
-                  }, geom.ext_codes)
-                  delete row.default
-                  delete row.ucode
-
-                  const data = getData(
-                    indicatorLayer, indicatorData, indicatorValueByGeometry, ucode
-                  )
-                  if (data) {
-                    data.map(dataRow => {
-                      tableData.push(
-                        Object.assign({}, row, dataRow)
-                      )
-                    })
-                  }
+              if (!indicatorLayer.indicators?.length && !indicatorLayer.related_tables?.length) {
+                cleanDataToExcel(tableData, geometries, indicatorLayer, indicatorLayer, indicatorValueByGeometry, false)
+              } else {
+                // For indicators
+                indicatorLayer.indicators.map(indicatorData => {
+                  cleanDataToExcel(tableData, geometries, indicatorLayer, indicatorData, indicatorValueByGeometry, true)
                 })
-              })
 
-              // For related tables
-              indicatorLayer.related_tables.map(rt => {
-                // Get per geometries
-                geometries.map(geom => {
-                  const ucode = extractCode(geom)
-                  const row = Object.assign({}, {
-                    GeographyCode: geom.ucode,
-                    GeographyName: geom.name,
-                    GeographyLevel: levels.find(level => level.level === geom.admin_level)?.level_name,
-                  }, geom.ext_codes)
-                  delete row.default
-                  delete row.ucode
+                // For related tables
+                indicatorLayer.related_tables.map(rt => {
+                  // Get per geometries
+                  geometries.map(geom => {
+                    const ucode = extractCode(geom)
+                    const row = Object.assign({}, {
+                      GeographyCode: geom.ucode,
+                      GeographyName: geom.name,
+                      GeographyLevel: levels.find(level => level.level === geom.admin_level)?.level_name,
+                    }, geom.ext_codes)
+                    delete row.default
+                    delete row.ucode
 
-                  const data = getData(
-                    indicatorLayer, null, indicatorValueByGeometry, ucode, false
-                  )
-                  if (data) {
-                    data.map(dataRow => {
-                      tableData.push(
-                        Object.assign({}, row, dataRow)
-                      )
-                    })
-                  }
+                    const data = getData(
+                      indicatorLayer, null, indicatorValueByGeometry, ucode, false
+                    )
+                    if (data) {
+                      data.map(dataRow => {
+                        tableData.push(
+                          Object.assign({}, row, dataRow)
+                        )
+                      })
+                    }
+                  })
                 })
-              })
+              }
             })
             jsonToXlsx(tableData, name + '.xls')
           }
