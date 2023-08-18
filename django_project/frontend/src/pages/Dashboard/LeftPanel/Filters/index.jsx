@@ -348,9 +348,8 @@ function FilterSection() {
 /**
  * Filters Accordion.
  */
-export default function FiltersAccordion() {
+export default function FiltersAccordion({ isAdmin }) {
   const { filters } = useSelector(state => state.dashboard.data);
-
   return (
     <Accordion
       className='FilterAccordion'
@@ -358,7 +357,8 @@ export default function FiltersAccordion() {
     >
       <AccordionDetails>
         {
-          filters !== undefined ? <FilterSection/>
+          filters !== undefined ? (!isAdmin && !Object.keys(filters).length) ? null :
+              <FilterSection/>
             : <div>Loading</div>
         }
       </AccordionDetails>
