@@ -110,10 +110,12 @@ export default function ListForm(
       })
     }
   }
-
   // Onload, check the default one
   useEffect(() => {
     const oldDataStructure = JSON.stringify(dataStructure)
+    if (!dataStructure.children?.length && data.length) {
+      dataStructure.children = data.map(row => row.id)
+    }
     updateUuid(dataStructure)
     if (oldDataStructure !== JSON.stringify(dataStructure)) {
       setDataStructure({ ...dataStructure })
@@ -183,7 +185,9 @@ export default function ListForm(
 
   /** Remove Layer */
   const removeLayer = (layer) => {
-    removeLayerAction(layer)
+    if (layer) {
+      removeLayerAction(layer)
+    }
   }
   /** Change Layer */
   const changeLayer = (layer) => {
@@ -227,7 +231,7 @@ export default function ListForm(
             <div className='TableForm-Header-Right'>
               <AddButton
                 variant="primary" text={"Add " + singularPageName}
-                onClick={() => addLayerInGroup("")}/>
+                onClick={() => addLayerInGroup(dataStructure.id)}/>
               {
                 hasGroup ?
                   <AddButton

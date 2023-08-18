@@ -19,50 +19,12 @@
 
 import React from 'react';
 import { useSelector } from "react-redux";
-import { getLayerDataCleaned } from "../../../../utils/indicatorLayer";
-import {
-  createDynamicStyle,
-  dynamicStyleTypes,
-  returnLayerStyleConfig
-} from "../../../../utils/Style";
-import { NO_DATA_RULE } from "../../../Admin/Style/Form/StyleRules";
+import { indicatorLayerStyle } from "../../../../utils/Style";
 import { dictDeepCopy } from "../../../../utils/main";
 
 import './style.scss'
 
-/**
- * Get rules of data.
- */
-const rulesLayer = (
-  layer, indicators, indicatorsData,
-  relatedTableData, selectedGlobalTime, geoField, admin_level, filteredGeometries,
-  initConfig
-) => {
-  // Get rules
-  let config = returnLayerStyleConfig(layer, indicators)
-  if (initConfig) {
-    config = initConfig
-  }
-  let style = config.style
-  if (dynamicStyleTypes.includes(config.style_type)) {
-    let data = getLayerDataCleaned(
-      indicatorsData, relatedTableData, layer, selectedGlobalTime, geoField,
-      config?.style_config?.sync_filter ? filteredGeometries : null
-    )
-    style = createDynamicStyle(data[0]?.data, config.style_type, config.style_config, config.style_data)
-    if (style[admin_level]) {
-      const adminStyle = style[admin_level].filter(st => st.name !== NO_DATA_RULE)
-      adminStyle.reverse()
-      style = [...adminStyle, ...style['NoData']]
-    } else {
-      style = style['NoData']
-    }
-  }
-  if (style) {
-    style = style.filter(st => st.active)
-  }
-  return style
-}
+
 /**
  * Render indicator legend section
  * @param {dict} layer Layer that will be checked
@@ -116,7 +78,7 @@ const RenderIndicatorLegend = ({ layer, name }) => {
           indicatorData.indicators = [indicator]
         }
       }
-      let rules = rulesLayer(
+      let rules = indicatorLayerStyle(
         layer, indicators, indicatorsData, relatedTableData,
         selectedGlobalTime, geoField, selectedAdminLevel?.level, filteredGeometries,
         indicatorData
@@ -126,7 +88,7 @@ const RenderIndicatorLegend = ({ layer, name }) => {
         name={indicator.name}/>
     })
   }
-  let rules = rulesLayer(
+  let rules = indicatorLayerStyle(
     layer, indicators, indicatorsData, relatedTableData,
     selectedGlobalTime, geoField, selectedAdminLevel?.level, filteredGeometries
   )

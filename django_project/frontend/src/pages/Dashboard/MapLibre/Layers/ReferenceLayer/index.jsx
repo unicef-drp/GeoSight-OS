@@ -304,18 +304,17 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
 
       // Get style for no data style
       let noDataStyle = returnNoDataStyle(
-        currentIndicatorLayer,
-        getLayerData(indicatorsData, relatedTableData, currentIndicatorLayer)
+        currentIndicatorLayer, indicators
       )
       if (!noDataStyle) {
         noDataStyle = {
-          color: NOCOLOR,
-          outline_color: '#000000'
+          color: preferences.style_no_data_outline_color,
+          outline_color: preferences.style_no_data_fill_color,
+          outline_size: preferences.style_no_data_outline_size
         }
       }
       let noDataStyleSecondLayer = returnNoDataStyle(
-        currentIndicatorSecondLayer,
-        getLayerData(indicatorsData, relatedTableData, currentIndicatorSecondLayer)
+        currentIndicatorSecondLayer, indicators
       )
 
       // Get indicator data per geom
@@ -564,10 +563,7 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
       }
     }
 
-    let noDataStyle = returnNoDataStyle(
-      currentIndicatorLayer,
-      getLayerData(indicatorsData, relatedTableData, currentIndicatorLayer)
-    )
+    let noDataStyle = returnNoDataStyle(currentIndicatorLayer, indicators)
     if (!noDataStyle) {
       noDataStyle = {
         color: NOCOLOR,
