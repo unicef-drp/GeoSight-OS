@@ -13,16 +13,17 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import DataUsageIcon from "@mui/icons-material/DataUsage";
 
 import { COLUMNS_ACTION } from "../../Components/List";
 import { ThemeButton } from "../../../../components/Elements/Button";
 import { UploadIcon } from "../../../../components/Icons";
-import { AdminListContent } from "../../AdminList";
 import { urlParams } from "../../../../utils/main";
 import { COLUMNS } from "../utils";
+
+import { AdminListPagination } from "../../AdminListPagination";
 
 import './style.scss';
 
@@ -91,12 +92,17 @@ const LOG_COLUMNS = [
 
 /** Importer logs */
 export default function ImporterLogs({ ...props }) {
-  return <AdminListContent
-    columns={LOG_COLUMNS}
-    listUrl={urls.api.logs.list}
+  const tableRef = useRef(null);
+  const [disabled, setDisabled] = useState(false)
+  return <AdminListPagination
+    ref={tableRef}
+    urlData={urls.api.logs.list}
+    COLUMNS={LOG_COLUMNS}
+    disabled={disabled}
+    setDisabled={setDisabled}
+    hideSearch={true}
     searchDefault={search}
     sortingDefault={[{ field: 'start_time', sort: 'desc' }]}
-    multipleDelete={true}
     rightHeader={
       <a
         href={urls.admin.importer}>

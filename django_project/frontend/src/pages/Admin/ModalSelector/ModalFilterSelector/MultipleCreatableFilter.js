@@ -31,6 +31,7 @@ export function MultipleCreatableFilter(
   { title, data, setData, returnObject }
 ) {
   return <CustomPopover
+    className={'PopoverFilterControl'}
     anchorOrigin={{
       vertical: 'bottom',
       horizontal: 'center',

@@ -30,6 +30,7 @@ class ImporterLogSerializer(DynamicModelSerializer):
 
     count_data = serializers.SerializerMethodField()
     saved_data = serializers.SerializerMethodField()
+    permission = serializers.SerializerMethodField()
 
     def get_count_data(self, obj: ImporterLog):
         """Return count data."""
@@ -38,6 +39,10 @@ class ImporterLogSerializer(DynamicModelSerializer):
     def get_saved_data(self, obj: ImporterLog):
         """Return saved data."""
         return obj.importerlogdata_set.filter(saved=True).count()
+
+    def get_permission(self, obj: ImporterLog):
+        """Return saved data."""
+        return obj.importer.permissions(self.context.get('user', None))
 
     def to_representation(self, obj: ImporterLog):
         """Append importer."""

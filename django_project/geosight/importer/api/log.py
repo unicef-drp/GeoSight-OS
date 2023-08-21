@@ -18,10 +18,13 @@ import json
 
 from django.http import HttpResponseForbidden, Http404
 from django.shortcuts import get_object_or_404
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from core.api.base import FilteredAPI
+from core.pagination import Pagination
 from geosight.importer.models.log import (
     ImporterLog, ImporterLogDataSaveProgress
 )
@@ -32,24 +35,29 @@ from geosight.importer.serializer.log import (
 from geosight.importer.tasks import run_save_log_data
 
 
-class ImporterLogListAPI(APIView):
-    """Return ImporterLog list."""
+class ImporterLogListAPI(ListAPIView, FilteredAPI):
+    """Return Data List API List."""
 
-    def get(self, request):
-        """Return Importer Log list."""
-        query = ImporterLog.objects.order_by(
-            'importer', '-end_time').distinct('importer')
-        if not request.user.profile.is_admin:
+    pagination_class = Pagination
+    serializer_class = ImporterLogSerializer
+
+    def get_serializer_context(self):
+        """For serializer context."""
+        context = super().get_serializer_context()
+        context.update({"user": self.request.user})
+        return context
+
+    def get_queryset(self):
+        """Return queryset of API."""
+        query = ImporterLog.objects.order_by('importer', '-end_time')
+        if not self.request.user.profile.is_admin:
             query = ImporterLog.objects.filter(
                 importer__creator=self.request.user
-            ).order_by('importer', '-end_time').distinct('importer')
+            ).order_by('importer', '-end_time')
 
-        return Response(
-            ImporterLogSerializer(
-                query,
-                many=True
-            ).data
-        )
+        # Filter by parameters
+        query = self.filter_query(self.request, query, ['page', 'page_size'])
+        return query
 
     def delete(self, request):
         """Delete objects."""

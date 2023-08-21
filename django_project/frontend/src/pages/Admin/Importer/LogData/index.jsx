@@ -35,7 +35,7 @@ import {
 } from "../../../../utils/main";
 import CustomPopover from "../../../../components/CustomPopover";
 import { SelectWithList } from "../../../../components/Input/SelectWithList";
-import { DatasetList } from "../../Dataset/index";
+import DatasetList from "../../Dataset/DatasetList";
 import { NotificationStatus } from "../../../../components/Notification";
 import { axiosGet } from "../../../../utils/georepo";
 import { AdminPage, pageNames } from "../../index";
