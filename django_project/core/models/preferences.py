@@ -41,7 +41,7 @@ class SitePreferences(SingletonModel):
 
     site_url = models.CharField(
         max_length=512,
-        default='https://geosight.kartoza.com'
+        default=''
     )
 
     disclaimer = models.TextField(
@@ -64,7 +64,7 @@ class SitePreferences(SingletonModel):
     # -----------------------------------------------
     georepo_url = models.CharField(
         max_length=512,
-        default='https://georepo.kartoza.com/'
+        default=''
     )
     georepo_api_key_level_1 = models.CharField(
         max_length=512,
@@ -86,6 +86,7 @@ class SitePreferences(SingletonModel):
         upload_to='settings/images'
     )
     landing_page_banner_text = models.TextField(
+        null=True, blank=True,
         default=''
     )
 

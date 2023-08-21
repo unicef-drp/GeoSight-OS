@@ -27,6 +27,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='sitepreferences',
             name='site_url',
-            field=models.CharField(default='https://geosight.kartoza.com', max_length=512),
+            field=models.CharField(default='', max_length=512),
         ),
     ]
