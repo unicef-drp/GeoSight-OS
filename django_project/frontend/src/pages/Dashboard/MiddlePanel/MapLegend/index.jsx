@@ -39,7 +39,7 @@ const RenderIndicatorLegendSection = ({ rules, name }) => {
           <div className='IndicatorLegendSection'>
             {
               rules.map(rule => {
-                const border = `1px solid ${rule.outline_color === '#FFFFFF' ? '#DDDDDD' : rule.outline_color}`
+                const border = `1px solid ${rule.outline_color}`
                 return <div key={rule.name} className='IndicatorLegendRow'>
                   <div
                     className='IndicatorLegendRowBlock'
