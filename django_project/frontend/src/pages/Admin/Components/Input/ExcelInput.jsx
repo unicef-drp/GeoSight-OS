@@ -124,7 +124,7 @@ export default function ExcelInput(
       <Grid item xs={3}>
         <div className="BasicFormSection">
           <label className="form-label required" htmlFor="group">
-            Row number: header
+            Row number of the header
           </label>
           <input
             type='number'

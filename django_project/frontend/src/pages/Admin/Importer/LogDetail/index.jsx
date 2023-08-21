@@ -31,7 +31,7 @@ import { getScheduleText } from "../../../../utils/cron";
 import '../ImporterDetail/style.scss';
 import './style.scss';
 
-function formatData(value) {
+export function formatData(value) {
   if ([null, undefined].includes(value)) {
     return '-'
   } else if (Array.isArray(value)) {
@@ -46,6 +46,30 @@ function formatData(value) {
     }
     return value
   }
+}
+
+export function formatTitle(title) {
+  switch (title.toLowerCase()) {
+    case 'key_value':
+      title = 'column value'
+      break
+    case 'key_administration_code':
+      title = 'Geo Code Column'
+      break
+    case 'row_number_for_header':
+      title = 'Row number for the header'
+      break
+    case 'admin_level_type':
+      title = 'Admin level'
+      break
+  }
+  return capitalize(title)
+}
+
+export function filterAttributes(attributes) {
+  return Object.keys(attributes).filter(
+    attr => (!['date_time_data_type', 'date_time_data_value', 'date_time_data_field', 'date_time_data_format', 'selected_indicators', 'sharepoint_config_id'].includes(attr) && !attr.includes('aggregate_multiple_value') && !attr.includes('aggregate_upper_level') && !attr.includes('indicator_data'))
+  )
 }
 
 /**
@@ -209,8 +233,8 @@ export default function ImporterLogDetail() {
           <Grid container spacing={2}>
             <Grid item xs={3}>
               <div className='DetailSection'>
-                <div>Indicator type</div>
-                <div>{data.attributes.indicator_data_type}</div>
+                <div>Indicator</div>
+                <div>{data.attributes.indicator_data_type === 'By Value' ? 'Selected indicator' : 'Data-Driven Indicator Column'}</div>
               </div>
             </Grid>
             <Grid item xs={3}>
@@ -274,7 +298,7 @@ export default function ImporterLogDetail() {
               </Grid>
               <Grid item xs={3}>
                 <div className='DetailSection'>
-                  <div>Type fo Geo Code</div>
+                  <div>Type of Geo Code</div>
                   <div>
                     {formatData(data.admin_code_type)}
                   </div>
@@ -284,34 +308,43 @@ export default function ImporterLogDetail() {
             <Grid container spacing={2}>
               <Grid item xs={3}>
                 <div className='DetailSection'>
-                  <div>Time Settings</div>
+                  <div>Date Time Setting</div>
                   <div>
-                    {formatData(data.attributes.date_time_data_type)}
+                    <div>{data.attributes.date_time_data_type === 'By Value' ? 'Selected Date' : formatData(data.attributes.date_time_data_type)}</div>
                   </div>
                 </div>
               </Grid>
-              <Grid item xs={3}>
-                <div className='DetailSection'>
-                  <div>Field/Column or Time that being used</div>
-                  {
-                    formatData(
-                      data.attributes.date_time_data_value ?
-                        formatDateTime(new Date(data.attributes.date_time_data_value)) :
-                        data.attributes.date_time_data_field
-                    )
-                  }
-                </div>
-              </Grid>
-              <Grid item xs={3}>
-                <div className='DetailSection'>
-                  <div>Field/Column or Time format</div>
-                  {
-                    formatData(
-                      data.attributes?.date_time_data_format?.replace('%Y', 'YYYY').replace('%m', 'MM').replace('%d', 'DD').replace('%h', 'HH').replace('%m', 'MM').replace('%s', 'SS')
-                    )
-                  }
-                </div>
-              </Grid>
+              {
+                data.attributes.date_time_data_type === 'Data Driven' ?
+                  <Fragment>
+                    <Grid item xs={3}>
+                      <div className='DetailSection'>
+                        <div>Column that being used</div>
+                        {
+                          formatData(data.attributes.date_time_data_field)
+                        }
+                      </div>
+                    </Grid>
+                    <Grid item xs={3}>
+                      <div className='DetailSection'>
+                        <div>Field/Column or Time format</div>
+                        {
+                          formatData(
+                            data.attributes?.date_time_data_format?.replace('%Y', 'YYYY').replace('%m', 'MM').replace('%d', 'DD').replace('%h', 'HH').replace('%m', 'MM').replace('%s', 'SS')
+                          )
+                        }
+                      </div>
+                    </Grid>
+                  </Fragment> : data.attributes.date_time_data_type === 'Now' ? null :
+                    <Grid item xs={3}>
+                      <div className='DetailSection'>
+                        <div>Time that being used</div>
+                        {
+                          formatData(formatDateTime(new Date(data.attributes.date_time_data_value)))
+                        }
+                      </div>
+                    </Grid>
+              }
             </Grid>
           </Fragment> : null
       }
@@ -319,12 +352,10 @@ export default function ImporterLogDetail() {
       {/* Other Attributes */}
       <Grid container spacing={2}>
         {
-          Object.keys(data.attributes).filter(
-            attr => (!['date_time_data_type', 'date_time_data_value', 'date_time_data_field', 'date_time_data_format', 'selected_indicators'].includes(attr) && !attr.includes('aggregate_multiple_value') && !attr.includes('aggregate_upper_level') && !attr.includes('indicator_data'))
-          ).map(attr => {
+          filterAttributes(data.attributes).map(attr => {
             return <Grid key={attr} item xs={3}>
               <div className='DetailSection'>
-                <div>{capitalize(attr)}</div>
+                <div>{formatTitle(attr)}</div>
                 <div title={formatData(data.attributes[attr])}>
                   {formatData(data.attributes[attr])}
                 </div>

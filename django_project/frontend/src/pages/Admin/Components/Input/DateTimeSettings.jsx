@@ -227,7 +227,7 @@ export const DateTimeSettings = forwardRef(
                     <FormControlLabel
                       disabled={drivenOnly}
                       value={'By Value'} control={<Radio/>}
-                      label={'Select Date'}/>
+                      label={'Selected Date'}/>
                     <FormControlLabel
                       disabled={valueOnly}
                       value={'Data Driven'} control={<Radio/>}

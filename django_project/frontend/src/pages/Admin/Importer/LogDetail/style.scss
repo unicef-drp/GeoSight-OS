@@ -36,4 +36,13 @@
 .DetailSection {
   overflow-x: hidden;
   overflow-y: auto;
+
+  > div {
+    opacity: 0.8;
+  }
+
+  > div:first-child {
+    opacity: 1;
+    font-weight: 600 !important;
+  }
 }

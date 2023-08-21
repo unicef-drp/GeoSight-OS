@@ -104,7 +104,7 @@ export const BaseSharepointForm = forwardRef(
                     setData({ ...data })
                   }}/>
                 <span className='form-helptext'>
-                  Relative path of file from the config url.
+                  Relative path of file from the config URL, e.g. "/teams/ICTD-GeoSight/DocumentLibrary1/TESTS/sample.xlsx".
                 </span>
               </div>
             </Grid>
@@ -128,7 +128,7 @@ export const BaseSharepointForm = forwardRef(
         <Grid item xs={6}>
           <div className="BasicFormSection">
             <label className="form-label required" htmlFor="group">
-              Row number: header
+              Row number of the header
             </label>
             <input
               type='number'

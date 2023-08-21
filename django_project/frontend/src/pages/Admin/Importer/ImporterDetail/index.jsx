@@ -23,7 +23,7 @@ import PauseIcon from '@mui/icons-material/Pause';
 import Admin from "../../index";
 import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
-import { capitalize, formatDateTime } from "../../../../utils/main";
+import { formatDateTime } from "../../../../utils/main";
 import { getScheduleText } from "../../../../utils/cron";
 import { ThemeButton } from "../../../../components/Elements/Button";
 import {
@@ -31,23 +31,9 @@ import {
   NotificationStatus
 } from "../../../../components/Notification";
 import { DeleteIcon, EditIcon } from "../../../../components/Icons";
+import { filterAttributes, formatData, formatTitle } from "../LogDetail/index";
 
 import './style.scss';
-
-function formatData(value) {
-  if ([null, undefined].includes(value)) {
-    return '-'
-  } else {
-    try {
-      if (value.includes('/media/')) {
-        return <a href={value}>{value.split('/').slice(-1)[0]}</a>
-      }
-    } catch (err) {
-
-    }
-    return value
-  }
-}
 
 /**
  * Importer  Detail
@@ -204,8 +190,8 @@ export default function ImporterDetail() {
               <Grid container spacing={2}>
                 <Grid item xs={3}>
                   <div className='DetailSection'>
-                    <div>Indicator type</div>
-                    <div>{data.attributes.indicator_data_type}</div>
+                    <div>Indicator</div>
+                    <div>{data.attributes.indicator_data_type === 'By Value' ? 'Selected indicator' : 'Data-Driven Indicator Column'}</div>
                   </div>
                 </Grid>
                 <Grid item xs={3}>
@@ -260,7 +246,7 @@ export default function ImporterDetail() {
             </Grid>
             <Grid item xs={3}>
               <div className='DetailSection'>
-                <div>Type fo Geo Code</div>
+                <div>Type of Geo Code</div>
                 <div>
                   {formatData(data.admin_code_type)}
                 </div>
@@ -270,33 +256,52 @@ export default function ImporterDetail() {
           <Grid container spacing={2}>
             <Grid item xs={3}>
               <div className='DetailSection'>
-                <div>Time Settings</div>
+                <div>Date Time Setting</div>
                 <div>
-                  {formatData(data.attributes.date_time_data_type)}
+                  <div>{data.attributes.date_time_data_type === 'By Value' ? 'Selected Date' : formatData(data.attributes.date_time_data_type)}</div>
                 </div>
               </div>
             </Grid>
-            <Grid item xs={3}>
-              <div className='DetailSection'>
-                <div>Field/Column or Time that being used</div>
-                {
-                  formatData(
-                    data.attributes.date_time_data_value ?
-                      formatDateTime(new Date(data.attributes.date_time_data_value)) :
-                      data.attributes.date_time_data_field
-                  )
-                }
-              </div>
-            </Grid>
+            {
+              data.attributes.date_time_data_type === 'Data Driven' ?
+                <Fragment>
+                  <Grid item xs={3}>
+                    <div className='DetailSection'>
+                      <div>Column that being used</div>
+                      {
+                        formatData(data.attributes.date_time_data_field)
+                      }
+                    </div>
+                  </Grid>
+                  <Grid item xs={3}>
+                    <div className='DetailSection'>
+                      <div>Field/Column or Time format</div>
+                      {
+                        formatData(
+                          data.attributes?.date_time_data_format?.replace('%Y', 'YYYY').replace('%m', 'MM').replace('%d', 'DD').replace('%h', 'HH').replace('%m', 'MM').replace('%s', 'SS')
+                        )
+                      }
+                    </div>
+                  </Grid>
+                </Fragment> : data.attributes.date_time_data_type === 'Now' ? null :
+                  <Grid item xs={3}>
+                    <div className='DetailSection'>
+                      <div>Time that being used</div>
+                      {
+                        formatData(formatDateTime(new Date(data.attributes.date_time_data_value)))
+                      }
+                    </div>
+                  </Grid>
+            }
           </Grid>
 
           {/* Other Attributes */}
           <Grid container spacing={2}>
             {
-              Object.keys(data.attributes).filter(attr => !['indicator_data', 'date_time_data_type', 'date_time_data_value', 'date_time_data_field', 'selected_indicators_data'].includes(attr)).map(attr => {
+              filterAttributes(data.attributes).map(attr => {
                 return <Grid key={attr} item xs={3}>
                   <div className='DetailSection'>
-                    <div>{capitalize(attr)}</div>
+                    <div>{formatTitle(attr)}</div>
                     <div>{formatData(data.attributes[attr])}</div>
                   </div>
                 </Grid>
