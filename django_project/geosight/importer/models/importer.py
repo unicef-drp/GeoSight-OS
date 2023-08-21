@@ -393,6 +393,12 @@ class Importer(AbstractEditData):
                 return True
         return False
 
+    @property
+    def data_table_name(self):
+        """Return table name of data."""
+        fb_identifier = str(self.unique_id).replace('-', '_')
+        return f'temp_data_{fb_identifier}'
+
 
 class ImporterAlert(models.Model):
     """Alert data for the importer."""

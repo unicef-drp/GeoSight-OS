@@ -37,12 +37,11 @@ class ImporterLogListAPI(APIView):
 
     def get(self, request):
         """Return Importer Log list."""
-        query = ImporterLog.objects.order_by(
-            'importer', '-end_time').distinct('importer')
+        query = ImporterLog.objects.order_by('importer', '-end_time')
         if not request.user.profile.is_admin:
             query = ImporterLog.objects.filter(
                 importer__creator=self.request.user
-            ).order_by('importer', '-end_time').distinct('importer')
+            ).order_by('importer', '-end_time')
 
         return Response(
             ImporterLogSerializer(
