@@ -139,7 +139,6 @@ class BaseIndicatorValueImporterTest(BaseImporterTest):
         self.assertEqual(log.status, 'Success')
 
         all_tables = connection.introspection.table_names()
-        print(all_tables)
         self.assertTrue(importer.data_table_name not in all_tables)
 
     def assertImporter(self, importer):
