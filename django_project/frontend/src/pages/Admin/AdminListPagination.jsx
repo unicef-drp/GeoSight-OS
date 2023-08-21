@@ -22,7 +22,6 @@ import React, {
   useState
 } from 'react';
 import $ from "jquery";
-import { AdminPage, pageNames } from './index';
 import { dictDeepCopy, jsonToUrlParams } from "../../utils/main";
 import {
   Notification,
@@ -76,7 +75,7 @@ export const AdminListPagination = forwardRef(
      * Parameters Changed
      */
     const parametersChanged = () => {
-      const params = getParameters(parameters)
+      const params = getParameters ? getParameters(parameters) : {}
       setParameters({ ...parameters, ...params })
     }
 
@@ -136,7 +135,7 @@ export const AdminListPagination = forwardRef(
       }
     }
 
-    return <AdminPage pageName={pageNames.Dataset}>
+    return <Fragment>
       <AdminListContent
         otherFilters={otherFilters}
         tableHeader={
@@ -214,16 +213,12 @@ export const AdminListPagination = forwardRef(
         disableColumnFilter
 
         selectionChanged={(newSelectionModel) => {
-          if (data) {
-            setSelectionModel(
-              data.filter(row => row.permission.delete && newSelectionModel.includes(row.id)).map(row => row.id)
-            )
-          }
+          setSelectionModel(newSelectionModel)
         }}
         selectionParent={selectionModel}
         error={error}
         {...props}
       />
       <Notification ref={notificationRef}/>
-    </AdminPage>
+    </Fragment>
   })

@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { Fragment, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import $ from "jquery";
 import {
   LocalizationProvider
@@ -43,10 +43,11 @@ import {
 import CustomPopover from "../../../components/CustomPopover";
 import { IconTextField } from "../../../components/Elements/Input";
 import { AdminListPagination } from "../AdminListPagination";
+import { SaveButton } from "../../../components/Elements/Button";
+import { AdminPage, pageNames } from "../index";
 
 
 import './style.scss';
-import { SaveButton } from "../../../components/Elements/Button";
 
 /*** Dataset admin */
 const deleteWarning = "WARNING! Do you want to delete the selected data? This will apply directly to database."
@@ -221,7 +222,7 @@ export default function DatasetAdmin() {
     return parameters
   }
 
-  return <Fragment>
+  return <AdminPage pageName={pageNames.Dataset}>
     <AdminListPagination
       ref={tableRef}
       urlData={urls.api.datasetApi}
@@ -330,7 +331,7 @@ export default function DatasetAdmin() {
       hideSearch={true}
     />
     <Notification ref={notificationRef}/>
-  </Fragment>
+  </AdminPage>
 }
 
 render(DatasetAdmin, store)

@@ -399,6 +399,19 @@ class Importer(AbstractEditData):
         fb_identifier = str(self.unique_id).replace('-', '_')
         return f'temp_data_{fb_identifier}'
 
+    def permissions(self, user: User):
+        """Return permission."""
+        perm = False
+        if user:
+            perm = user == self.creator or user.profile.is_admin
+        return {
+            "list": perm,
+            "read": perm,
+            "edit": perm,
+            "share": perm,
+            "delete": perm
+        }
+
 
 class ImporterAlert(models.Model):
     """Alert data for the importer."""
