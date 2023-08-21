@@ -76,10 +76,16 @@ function FilterSection() {
     if (!level || !geometries[level.level]) {
       return;
     }
+    const indicatorLayerConfig = {}
+    indicatorLayers.map(layer => {
+      indicatorLayerConfig[layer.id] = layer.config
+    })
     const config = JSON.stringify({
       filter: currentFilter,
-      time: selectedGlobalTime
+      time: selectedGlobalTime,
+      indicatorLayerConfig: indicatorLayerConfig
     })
+
     const reporting_level = level.level;
     if (prevState.config !== config || prevState.level !== selectedAdminLevel.level) {
       // Doing the filter if it is different filter
@@ -99,7 +105,6 @@ function FilterSection() {
         reporting_level: level.level,
         data: data
       })
-
       // ------------------------------------------------
       // Indicator data
       // ------------------------------------------------

@@ -57,7 +57,7 @@ export default function FilterEditorModal(
   const [value, setValue] = useState(data.value ? data.value : '')
   const [name, setName] = useState(data.name ? data.name : '')
   const [description, setDescription] = useState(data.description ? data.description : '')
-  const [allowModify, setAllowChange] = useState(data.allowModify ? data.allowModify : false)
+  const [allowModify, setAllowModify] = useState(['true', true].includes(data.allowModify) ? true : false)
 
   let currentValue = updateValue(value);
 
@@ -86,6 +86,7 @@ export default function FilterEditorModal(
     return row.id === field
   })[0]
   const OPERATOR = fieldData?.type === 'String' ? STRING_OPERATORS : NUMBER_OPERATORS
+
   return <div
     onClick={(event) => {
       event.stopPropagation()
@@ -155,9 +156,11 @@ export default function FilterEditorModal(
           </div>
           <div>
             <br/>
-            <Checkbox checked={allowModify} onChange={(evt) => {
-              setAllowChange(evt.target.checked)
-            }}/> Allow users to modify filter parameters (values)
+            <Checkbox
+              checked={allowModify}
+              onClick={_ => {
+                setAllowModify(!allowModify)
+              }}/> Allow users to modify filter parameters (values)
           </div>
           <div className='button-div'>
             <Button

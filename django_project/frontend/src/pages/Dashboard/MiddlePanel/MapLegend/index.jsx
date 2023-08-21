@@ -68,6 +68,7 @@ const RenderIndicatorLegend = ({ layer, name }) => {
   const indicatorsData = useSelector(state => state.indicatorsData);
   const relatedTableData = useSelector(state => state.relatedTableData);
   const filteredGeometries = useSelector(state => state.filteredGeometries);
+
   if (layer.multi_indicator_mode === 'Pin') {
     return layer.indicators.map(indicator => {
       let indicatorData = indicator

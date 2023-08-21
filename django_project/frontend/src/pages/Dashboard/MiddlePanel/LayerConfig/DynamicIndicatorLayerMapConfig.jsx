@@ -29,7 +29,6 @@ import { Actions } from "../../../../store/dashboard";
  */
 export default function DynamicIndicatorLayerMapConfig() {
   const dispatch = useDispatch();
-  const { relatedTables } = useSelector(state => state.dashboard.data)
   const { indicatorLayers } = useSelector(state => state.dashboard.data)
   const selectedDynamicIndicatorLayer = useSelector(state => state.selectedDynamicIndicatorLayer)
 
