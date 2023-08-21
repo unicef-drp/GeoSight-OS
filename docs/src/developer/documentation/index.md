@@ -131,9 +131,9 @@ Please follow these conventions when writing your documentation:
 3. Do not abbreviate any words in file names - but try to use terse, descriptive names.
 4. Place your content into the appropriate place as outline in the structure above.
 5. Each file should only one level one heading e.g. ``# Page title``
-6. Headings and sub-headings should be written as a terse phrase starting with a capital letter and subsequent words in lower case unless they are proper nouns. Do not place a colon after the heading.
+6. Headings and subheadings should be written as a terse phrase starting with a capital letter and subsequent words in lower case unless they are proper nouns. Do not place a colon after the heading.
 7. Use unicode number markers to reference numbers in images e.g. 1️⃣
-8. Every heading / sub-heading should have a single line underneath it summarising the content that will follow. This sentence will be used in the help center in the application to give the user a reference point for the text that will follow. It also makes the help text more consistent and readable.
+8. Every heading / subheading should have a single line underneath it summarising the content that will follow. This sentence will be used in the help center in the application to give the user a reference point for the text that will follow. It also makes the help text more consistent and readable.
 9. For every section that images, the first image will be used as the thumbnail if the heading is referenced from the application.
 
 ## Contributing to the documentation
