@@ -132,11 +132,18 @@ export default function RelatedTableLayerConfig(
     if (!layer) {
       setData(defaultData)
     } else {
-      layer.description = defaultDescription(layer, relatedTableConfig);
       layer.config = Object.assign({}, defaultConfig, layer.config)
       setData(layer)
     }
   }, [open])
+
+  // Open data selection when the props true
+  useEffect(() => {
+    if (!layer && data) {
+      data.description = defaultDescription(data, relatedTableConfig);
+      setData(data)
+    }
+  }, [data])
 
   // Loading data
   useEffect(() => {
