@@ -134,4 +134,6 @@ class StyleForm(BaseStyleForm):
             del data['created_at']
         except KeyError:
             pass
+        if not model.style_config:
+            data['style_config'] = {}
         return data

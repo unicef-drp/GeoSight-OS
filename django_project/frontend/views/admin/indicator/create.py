@@ -155,7 +155,11 @@ class BaseIndicatorEditView(AdminBaseView):
             instance.creator = request.user
             instance.save()
             self.post_save(indicator=instance, data=data)
-            return redirect(reverse('admin-indicator-list-view'))
+            return redirect(
+                reverse(
+                    'admin-indicator-edit-view', kwargs={'pk': instance.id}
+                ) + '?success=true'
+            )
         context = self.get_context_data(**kwargs)
         form.indicator_data = json.dumps(
             IndicatorForm.model_to_initial(form.instance)

@@ -17,12 +17,18 @@ import React, {
   forwardRef,
   useEffect,
   useImperativeHandle,
+  useRef,
   useState
 } from 'react';
 import $ from 'jquery';
 import PermissionFormAdmin from "./PermissionFormAdmin"
 
 import './style.scss';
+import {
+  Notification,
+  NotificationStatus
+} from "../../../../components/Notification";
+import { urlParams } from "../../../../utils/main";
 
 const GeneralTab = 'General'
 const ShareTab = 'Share'
@@ -44,6 +50,21 @@ export const AdminForm = forwardRef(
       ...props
     }, ref
   ) => {
+
+    // Notification
+    const notificationRef = useRef(null);
+    const notify = (newMessage, newSeverity = NotificationStatus.INFO) => {
+      notificationRef?.current?.notify(newMessage, newSeverity)
+    }
+
+    /** When success **/
+    useEffect(() => {
+      const params = urlParams()
+      if (params.success) {
+        notify('Saved!', NotificationStatus.SUCCESS)
+      }
+    }, []);
+
 
     // Submit
     useImperativeHandle(ref, () => ({
@@ -128,6 +149,7 @@ export const AdminForm = forwardRef(
               </div> : null
           }
         </form>
+        <Notification ref={notificationRef}/>
       </div>
     );
   }

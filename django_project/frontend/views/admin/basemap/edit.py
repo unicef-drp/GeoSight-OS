@@ -91,7 +91,11 @@ class BasemapEditView(RoleContributorRequiredMixin, AdminBaseView):
             instance.permission.update_from_request_data_in_string(
                 request.POST, request.user
             )
-            return redirect(reverse('admin-basemap-list-view'))
+            return redirect(
+                reverse(
+                    'admin-basemap-edit-view', kwargs={'pk': instance.id}
+                ) + '?success=true'
+            )
         context = self.get_context_data(**kwargs)
         context['form'] = form
         return render(request, self.template_name, context)

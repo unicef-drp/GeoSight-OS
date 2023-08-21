@@ -84,7 +84,11 @@ class ContextLayerCreateView(RoleCreatorRequiredMixin, AdminBaseView):
             instance.creator = request.user
             instance.save()
             instance.save_relations(data)
-            return redirect(reverse('admin-context-layer-list-view'))
+            return redirect(
+                reverse(
+                    'admin-context-layer-edit-view', kwargs={'pk': instance.id}
+                ) + '?success=true'
+            )
         context = self.get_context_data(**kwargs)
         context['form'] = form
         return render(

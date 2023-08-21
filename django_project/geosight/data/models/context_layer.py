@@ -116,16 +116,17 @@ class ContextLayer(AbstractEditData, AbstractTerm):
     def save_relations(self, data):
         """Save all relationship data."""
         self.contextlayerfield_set.all().delete()
-        for idx, field in enumerate(json.loads(data['data_fields'])):
-            ContextLayerField.objects.get_or_create(
-                context_layer=self,
-                name=field['name'],
-                alias=field['alias'],
-                type=field['type'],
-                visible=field.get('visible', True),
-                as_label=field.get('as_label', False),
-                order=idx
-            )
+        if data['data_fields']:
+            for idx, field in enumerate(json.loads(data['data_fields'])):
+                ContextLayerField.objects.get_or_create(
+                    context_layer=self,
+                    name=field['name'],
+                    alias=field['alias'],
+                    type=field['type'],
+                    visible=field.get('visible', True),
+                    as_label=field.get('as_label', False),
+                    order=idx
+                )
 
     def _request(self, url, headers=None):
         """Return request of context layer."""

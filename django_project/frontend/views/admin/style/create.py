@@ -129,15 +129,28 @@ class BaseStyleEditingView(AdminBaseView):
                         style_rule.save()
                         order += 1
 
+    @property
+    def data(self):
+        """Update data of request."""
+        data = self.request.POST.copy()
+        if not data.get('style_config', None):
+            data['style_config'] = '{}'
+        return data
+
     def post(self, request, **kwargs):
         """Create indicator."""
-        form = StyleForm(request.POST)
+        data = self.data
+        form = StyleForm(data)
         if form.is_valid():
             instance = form.save()
             instance.creator = request.user
             instance.save()
             self.post_save(style=instance, data=request.POST)
-            return redirect(reverse('admin-style-list-view'))
+            return redirect(
+                reverse(
+                    'admin-style-edit-view', kwargs={'pk': instance.id}
+                ) + '?success=true'
+            )
         context = self.get_context_data(**kwargs)
         form.instance_data = json.dumps(
             StyleForm.model_to_initial(form.instance)

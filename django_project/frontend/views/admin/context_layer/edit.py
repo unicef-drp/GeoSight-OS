@@ -92,7 +92,11 @@ class ContextLayerEditView(RoleContributorRequiredMixin, AdminBaseView):
         if form.is_valid():
             context_layer = form.save()
             context_layer.save_relations(data)
-            return redirect(reverse('admin-context-layer-list-view'))
+            return redirect(
+                reverse(
+                    'admin-context-layer-edit-view', kwargs={'pk': instance.id}
+                ) + '?success=true'
+            )
         context = self.get_context_data(**kwargs)
         context['form'] = form
         return render(request, self.template_name, context)

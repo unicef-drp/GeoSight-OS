@@ -92,7 +92,11 @@ class IndicatorEditView(RoleContributorRequiredMixin, BaseIndicatorEditView):
             indicator.permission.update_from_request_data_in_string(
                 data, request.user
             )
-            return redirect(reverse('admin-indicator-list-view'))
+            return redirect(
+                reverse(
+                    'admin-indicator-edit-view', kwargs={'pk': indicator.id}
+                ) + '?success=true'
+            )
 
         context = self.get_context_data(**kwargs)
         form.indicator_data = json.dumps(

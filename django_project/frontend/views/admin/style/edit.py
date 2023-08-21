@@ -63,14 +63,16 @@ class StyleEditView(RoleContributorRequiredMixin, BaseStyleEditingView):
     def post(self, request, **kwargs):
         """Edit style."""
         style = get_object_or_404(Style, pk=self.kwargs.get('pk', ''))
-        form = StyleForm(
-            request.POST,
-            instance=style
-        )
+        data = self.data
+        form = StyleForm(data, instance=style)
         if form.is_valid():
             instance = form.save()
             self.post_save(style=instance, data=request.POST)
-            return redirect(reverse('admin-style-list-view'))
+            return redirect(
+                reverse(
+                    'admin-style-edit-view', kwargs={'pk': instance.id}
+                ) + '?success=true'
+            )
         context = self.get_context_data(**kwargs)
         form.instance_data = json.dumps(
             StyleForm.model_to_initial(form.instance))
