@@ -92,6 +92,13 @@ export const AdminListContent = forwardRef(
       }
     }, [selectionModel])
 
+    // When selection changed
+    useEffect(() => {
+      if (props.selectionParent) {
+        setSelectionModel(props.selectionParent)
+      }
+    }, [props.selectionParent])
+
     // When init data changed
     useEffect(() => {
       if (initData) {
@@ -111,7 +118,6 @@ export const AdminListContent = forwardRef(
         return !permission || permission.edit || permission.delete
       }
     }
-
     const selectedModelData = data.filter(row => selectionModel.includes(row.id))
     const deleteButton = () => {
       if (user.is_creator && multipleDelete && listUrl) {
@@ -187,12 +193,17 @@ export const AdminListContent = forwardRef(
                dangerouslySetInnerHTML={{ __html: props.title ? props.title : contentTitle }}></b>
           </div>
           <div>
-            <IconTextField
-              placeholder={"Search " + pageName}
-              defaultValue={search ? search : ""}
-              iconEnd={<MagnifyIcon/>}
-              onChange={evt => setSearch(evt.target.value.toLowerCase())}
-            />
+            {
+              props.hideSearch ? null :
+                <IconTextField
+                  placeholder={"Search " + pageName}
+                  defaultValue={search ? search : ""}
+                  iconEnd={<MagnifyIcon/>}
+                  onChange={evt => {
+                    setSearch(evt.target.value.toLowerCase())
+                  }}
+                />
+            }
           </div>
           <div className='AdminContentHeader-Right'>
             {rightHeader ? rightHeader : null}
