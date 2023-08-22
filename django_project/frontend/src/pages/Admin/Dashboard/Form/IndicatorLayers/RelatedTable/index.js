@@ -111,7 +111,7 @@ export default function RelatedTableLayerConfig(
     if (layer.description) return layer.description;
     let description = "Layer dynamically created based on {related-table-name} table. Data has been aggregated " +
       "using {aggr-method-name} on field {aggr-field-name}."
-    if (relatedTableConfig.query) {
+    if (relatedTableConfig?.query) {
       description = `${description}\nSource data has been filtered based on the following fields: {sql-field-names}.`;
     }
     return description
@@ -196,7 +196,7 @@ export default function RelatedTableLayerConfig(
   let error = null;
 
   // If there is main query, filter it
-  if (relatedTableConfig.query) {
+  if (relatedTableConfig?.query) {
     try {
       rows = queryData(relatedTableData, relatedTableConfig.query)
     } catch (err) {

@@ -199,7 +199,7 @@ function FilterSection() {
       fetchingData(
         url, params, {}, function (response, error) {
           let rows = response
-          if (relatedTableConfig.query) {
+          if (relatedTableConfig?.query) {
             try {
               rows = queryData(rows, relatedTableConfig.query)
             } catch (err) {
