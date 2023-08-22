@@ -19,7 +19,7 @@ from django.db import connections
 
 
 def create_temp_schema():
-    """Creating temp schema for temporary database."""
+    """Create temp schema for temporary database."""
     try:
         with connections['temp'].cursor() as cursor:
             cursor.execute(

@@ -22,7 +22,7 @@ from django.test.runner import DiscoverRunner
 
 
 def prepare_database(self):
-    # Check that postgis extension is installed.
+    """Prepare database for test."""
     with self.cursor() as cursor:
         cursor.execute('CREATE EXTENSION IF NOT EXISTS postgis')
         cursor.execute(
@@ -31,8 +31,10 @@ def prepare_database(self):
 
 
 class PostgresSchemaTestRunner(DiscoverRunner):
+    """Postgres schema test runner."""
 
     def setup_databases(self, **kwargs):
+        """Set up database for runner."""
         for connection_name in connections:
             connection = connections[connection_name]
             connection.prepare_database = MethodType(
