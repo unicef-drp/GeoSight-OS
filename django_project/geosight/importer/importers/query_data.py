@@ -177,7 +177,7 @@ class QueryDataImporter(ABC):
 
         # We do query
         try:
-            with connections['default'].cursor() as cursor:
+            with connections['temp'].cursor() as cursor:
                 self.cursor = cursor
                 self.delete_tables()
 
@@ -254,7 +254,7 @@ class QueryDataImporter(ABC):
                         records.append(record)
                 return records
         except Exception as e:
-            with connections['default'].cursor() as cursor:
+            with connections['temp'].cursor() as cursor:
                 self.cursor = cursor
                 self.delete_tables()
             raise QueryError(e)

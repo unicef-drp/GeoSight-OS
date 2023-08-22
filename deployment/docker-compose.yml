@@ -87,7 +87,7 @@ services:
       - database:/var/lib/postgresql/13
     environment:
       - ALLOW_IP_RANGE=0.0.0.0/0
-      - POSTGRES_DBNAME=${DATABASE_NAME:-django},${DATABASE_TEMP_NAME:-temp}
+      - POSTGRES_DBNAME=${DATABASE_NAME:-django}
       - POSTGRES_USER=${DATABASE_USERNAME:-docker}
       - POSTGRES_PASS=${DATABASE_PASSWORD:-docker}
     restart: on-failure:5

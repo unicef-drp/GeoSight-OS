@@ -36,6 +36,8 @@ from geosight.importer.utilities import json_from_excel
 class BaseImporterTest(TestCase):
     """Base for Importer."""
 
+    databases = {'default', 'temp'}
+
     admin_level = 1
     georepo_url = 'http://test.com'
     georepo_api_key = 'AAA'
@@ -137,7 +139,6 @@ class BaseIndicatorValueImporterTest(BaseImporterTest):
         importer.run()
         log = importer.importerlog_set.all().last()
         self.assertEqual(log.status, 'Success')
-
         all_tables = connection.introspection.table_names()
         self.assertTrue(importer.data_table_name not in all_tables)
 

@@ -25,9 +25,27 @@ ALLOWED_HOSTS = ['*']
 ADMINS = (
     ('Irwan Fathurrahman', 'irwam@kartoza.com'),
 )
+
+TEMP_SCHEMA_NAME = 'temp_upload'
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': os.environ['DATABASE_NAME'],
+        'USER': os.environ['DATABASE_USERNAME'],
+        'PASSWORD': os.environ['DATABASE_PASSWORD'],
+        'HOST': os.environ['DATABASE_HOST'],
+        'PORT': 5432,
+        'TEST_NAME': 'unittests',
+    },
+    'temp': {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'OPTIONS': {
+            'options': (
+                '-c search_path='
+                f'pg_toast,pg_catalog,'
+                f'information_schema,topology,{TEMP_SCHEMA_NAME}'
+            )
+        },
         'NAME': os.environ['DATABASE_NAME'],
         'USER': os.environ['DATABASE_USERNAME'],
         'PASSWORD': os.environ['DATABASE_PASSWORD'],

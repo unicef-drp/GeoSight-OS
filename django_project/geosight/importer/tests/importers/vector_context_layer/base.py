@@ -36,6 +36,8 @@ from geosight.importer.tests.importers._base import (
 class BaseTest(BaseIndicatorValueImporterTest):
     """Base for Api Importer."""
 
+    databases = {'default', 'temp'}
+
     arcgis_test_url = 'http://arcgis_test.com'
     attributes = {
         'indicator_data_type': IndicatorDataType.BY_VALUE,

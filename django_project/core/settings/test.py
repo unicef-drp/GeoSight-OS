@@ -1,6 +1,4 @@
 # coding=utf-8
-from __future__ import absolute_import, unicode_literals
-
 """
 GeoSight is UNICEF's geospatial web-based business intelligence platform.
 
@@ -13,23 +11,9 @@ Contact : geosight-no-reply@unicef.org
 
 """
 __author__ = 'irwan@kartoza.com'
-__date__ = '13/06/2023'
+__date__ = '22/08/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from django.apps import AppConfig
+from .prod import *  # noqa
 
-
-class Config(AppConfig):
-    """GeoSight Config App."""
-
-    label = 'geosight_importer'
-    name = 'geosight.importer'
-    verbose_name = "GeoSight Data Management"
-
-    def ready(self):
-        """Create temp schema."""
-        from core.database_setup import create_temp_schema
-        create_temp_schema()
-
-
-default_app_config = 'geosight.importer.Config'
+TEST_RUNNER = 'core.tests.runner.PostgresSchemaTestRunner'

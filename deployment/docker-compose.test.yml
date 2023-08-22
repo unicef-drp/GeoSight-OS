@@ -35,7 +35,7 @@ services:
       - DATABASE_PASSWORD=${DATABASE_PASSWORD:-docker}
       - DATABASE_HOST=${DATABASE_HOST:-db}
       - RABBITMQ_HOST=${RABBITMQ_HOST:-rabbitmq}
-      - DJANGO_SETTINGS_MODULE=core.settings.prod
+      - DJANGO_SETTINGS_MODULE=core.settings.test
       - INITIAL_FIXTURES=${INITIAL_FIXTURES:-True}
 
       # Email where alters should be sent. This will be used by let's encrypt and as the django admin email.
