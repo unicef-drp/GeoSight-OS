@@ -86,3 +86,5 @@ WEBPACK_LOADER['DEFAULT']['STATS_FILE'] = ABS_PATH(
 INSTALLED_APPS = INSTALLED_APPS + (
     'sslserver',
 )
+
+TEST_RUNNER = 'core.tests.runner.PostgresSchemaTestRunner'

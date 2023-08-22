@@ -28,6 +28,8 @@ from geosight.importer.models import (
 class ImporterFunctionsTest(TestCase):
     """Base for Importer."""
 
+    databases = {'default', 'temp'}
+
     def test_get_date_time(self):
         """Test if error attributes importer."""
         importer = Importer.objects.create(
