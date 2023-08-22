@@ -137,8 +137,7 @@ class Importer(AbstractEditData):
     def unique_name(self):
         """Return unique name."""
         return (
-            f'{self.creator.username} '
-            f'({self.created_at.strftime("%Y-%m-%d %H:%M:%S")})'
+            f'{self.creator.username} ({self.unique_id})'
         )
 
     def save(self, *args, **kwargs):
