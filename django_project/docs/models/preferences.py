@@ -19,21 +19,21 @@ from django.db import models
 from .singleton import SingletonModel
 
 
-class DocumentationPreferences(SingletonModel):
+class Preferences(SingletonModel):
     """Preference settings specifically for Documentation."""
 
     documentation_base_url = models.CharField(
         max_length=512,
-        default='https://unicef-drp.github.io/GeoSight-OS/'
+        default='https://unicef-drp.github.io/GeoSight-OS'
     )
 
     class Meta:  # noqa: D106
-        verbose_name_plural = "documentation preferences"
+        verbose_name_plural = "preferences"
 
     @staticmethod
-    def preferences() -> "DocumentationPreferences":
+    def preferences() -> "Preferences":
         """Load Site Preference."""
-        return DocumentationPreferences.load()
+        return Preferences.load()
 
     def __str__(self):
-        return 'Documentation Preference'
+        return 'Preferences'

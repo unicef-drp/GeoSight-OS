@@ -14,14 +14,18 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '22/08/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from django.apps import AppConfig
+from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from docs.models.page import Page
+from docs.serializer.page import PageSerializer
 
 
-class Config(AppConfig):
-    """Documentation app."""
+class DocumentationDetail(APIView):
+    """Documentation detail."""
 
-    name = 'docs'
-    verbose_name = "Documentation center"
-
-
-default_app_config = 'docs.Config'
+    def get(self, request, page_name, *args, **kwargs):
+        """Get access request detail."""
+        page = get_object_or_404(Page, name=page_name)
+        return Response(PageSerializer(page).data)

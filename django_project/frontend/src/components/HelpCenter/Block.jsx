@@ -21,10 +21,13 @@ import { ArrowForwardIcon } from "../Icons";
 export default function Block({ data, isRoot }) {
   const [loading, setLoading] = useState(true)
   const [open, setOpen] = useState(isRoot)
+  if (data.link[data.link.length - 1] !== '/') {
+    data.link += '/'
+  }
   const [content, setContent] = useState({
     title: data.title,
     description: data.description,
-    image: data.image,
+    thumbnail: data.thumbnail,
     html: data.html
   })
 
@@ -34,10 +37,10 @@ export default function Block({ data, isRoot }) {
       if (!content.description && element.innerText) {
         content.description = element.innerText
       }
-      if (!content.image && element.getElementsByTagName('img') && element.getElementsByTagName('img')[0]) {
+      if (!content.thumbnail && element.getElementsByTagName('img') && element.getElementsByTagName('img')[0]) {
         try {
           const source = element.getElementsByTagName('img')[0].outerHTML.split('src="')[1].split('"')[0]
-          content.image = data.link + source
+          content.thumbnail = data.link + source
         } catch (err) {
 
         }
@@ -89,8 +92,10 @@ export default function Block({ data, isRoot }) {
           }}
         >
           <div className='left'
-               style={!content.image ? { backgroundColor: "white" } : {}}>
-            {content.image ? <img src={content.image}/> : null}
+               style={!content.thumbnail ? { backgroundColor: "white" } : {}}>
+            {
+              content.thumbnail ? <img src={content.thumbnail}/> : null
+            }
           </div>
           {
             !loading ?

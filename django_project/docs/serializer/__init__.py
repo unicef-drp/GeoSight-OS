@@ -13,15 +13,3 @@ Contact : geosight-no-reply@unicef.org
 __author__ = 'irwan@kartoza.com'
 __date__ = '22/08/2023'
 __copyright__ = ('Copyright 2023, Unicef')
-
-from django.apps import AppConfig
-
-
-class Config(AppConfig):
-    """Documentation app."""
-
-    name = 'docs'
-    verbose_name = "Documentation center"
-
-
-default_app_config = 'docs.Config'

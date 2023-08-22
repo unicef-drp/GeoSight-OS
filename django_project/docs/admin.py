@@ -16,10 +16,12 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib import admin
 
-from .models.preferences import DocumentationPreferences
+from docs.models import (
+    Preferences, Block, Page, PageBlock, BlockChild
+)
 
 
-class DocumentationPreferencesAdmin(admin.ModelAdmin):
+class PreferencesAdmin(admin.ModelAdmin):
     """Documentation preferences admin."""
 
     fieldsets = (
@@ -29,6 +31,35 @@ class DocumentationPreferencesAdmin(admin.ModelAdmin):
     )
 
 
-admin.site.register(
-    DocumentationPreferences, DocumentationPreferencesAdmin
-)
+class PageBlockInline(admin.TabularInline):
+    """PageBlock inline."""
+
+    model = PageBlock
+    extra = 1
+
+
+class PageAdmin(admin.ModelAdmin):
+    """Page admin."""
+
+    list_display = ('name',)
+    inlines = (PageBlockInline,)
+
+
+class BlockChildInline(admin.TabularInline):
+    """BlockChild inline."""
+
+    fk_name = "parent"
+    model = BlockChild
+    extra = 1
+
+
+class BlockAdmin(admin.ModelAdmin):
+    """Block admin."""
+
+    list_filter = ('url', 'anchor')
+    inlines = (BlockChildInline,)
+
+
+admin.site.register(Preferences, PreferencesAdmin)
+admin.site.register(Page, PageAdmin)
+admin.site.register(Block, BlockAdmin)

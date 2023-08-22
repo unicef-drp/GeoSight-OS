@@ -13,3 +13,7 @@ Contact : geosight-no-reply@unicef.org
 __author__ = 'irwan@kartoza.com'
 __date__ = '22/08/2023'
 __copyright__ = ('Copyright 2023, Unicef')
+
+from .block import *
+from .page import *
+from .preferences import *

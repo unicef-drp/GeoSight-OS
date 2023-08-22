@@ -13,14 +13,19 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { forwardRef, useImperativeHandle, useState } from 'react';
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useState
+} from 'react';
 import { Button } from "@mui/material";
 
 import Block from "./Block";
 import { ChatBubbleIcon, CloseIcon, EmailIcon } from "../Icons";
-import data from './data.json';
 
 import './style.scss';
+import CircularProgress from "@mui/material/CircularProgress";
 
 /** Themed button
  * @param {string} buttonProps Variant of Button.
@@ -38,15 +43,31 @@ export function ThemeButton({ children, ...props }) {
 /** Help center section */
 
 export const HelpCenter = forwardRef(
-  ({}, ref
+  ({ pageName = 'global' }, ref
   ) => {
     const [open, setOpen] = useState(false)
+    const [loading, setLoading] = useState(true)
+    const [data, setData] = useState(null)
 
     useImperativeHandle(ref, () => ({
       open() {
         return setOpen(_ => !_)
       }
     }));
+
+    useEffect(
+      () => {
+        setLoading(true)
+        fetch(`/docs/${pageName}/data`)
+          .then(response => response.json())
+          .then((response) => {
+            setLoading(false)
+            setData(response)
+          })
+          .catch(err => {
+            setLoading(false)
+          })
+      }, [])
 
     return <div
       className={'HelpCenter ' + (open ? 'Open' : '')}
@@ -66,7 +87,12 @@ export const HelpCenter = forwardRef(
         {/* -------------------------------- */}
         {/* CONTENT */}
         <div className='HelpCenter-InnerContent'>
-          <Block data={data} isRoot={true}/>
+          {
+            loading ? <div className='Throbber'>
+              <CircularProgress/> Loading...
+            </div> : data ? <Block data={data} isRoot={true}/> :
+              <div>No documentation found</div>
+          }
         </div>
         {/* -------------------------------- */}
         <div className='HelpCenter-Footer'>

@@ -18,15 +18,21 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.views.generic.base import RedirectView
 
+from docs.api.documentation import DocumentationDetail
+
 admin.autodiscover()
 
 urlpatterns = [
     url(
-        r'^django-admin/documentation_center/documentationpreferences/$',
+        r'^django-admin/docs/preferences/$',
         RedirectView.as_view(
-            url='/django-admin/documentation_center/'
-                'documentationpreferences/1/change/',
+            url='/django-admin/docs/preferences/1/change/',
             permanent=False),
         name='index'
+    ),
+    url(
+        r'^docs/(?P<page_name>[^/]+)/data',
+        DocumentationDetail.as_view(),
+        name='documentation-detail'
     )
 ]
