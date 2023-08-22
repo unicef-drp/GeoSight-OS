@@ -13,7 +13,7 @@ license: This program is free software; you can redistribute it and/or modify it
 
 # Documentation
 
-## Overview 
+## Overview
 
 Welcome to the instructions for those wishing to contribute to our documentation!
 
@@ -32,6 +32,8 @@ In our documentation, we have organised the information using a specific nomencl
 
 * **guide**: A guide is a multi-step workflow / tutorial that leads your through common activities.
 * **manual**: A collection of documents that describe each part of the project in a matter of fact way without presupposing any specific workflow is being undertaken.
+* **directory**: nomenclature for folder
+* **subdirectory**: nomenclature for subfolders.
 
 For each of the main topic areas (user, admin, developer, devops, api user) we provide guides and manuals as is appropriate.
 
@@ -127,7 +129,7 @@ src
 Please follow these conventions when writing your documentation:
 
 1. Write file names in all lower case, with hyphens separating words (no spaces). e.g. ``important-file.md`` not ``Important File.md`` or other deviations.
-2. Place the image files in the img folder adjacent to your content.
+2. Place the image files in the `img` directory adjacent to your content.
 3. Do not abbreviate any words in file names - but try to use terse, descriptive names.
 4. Place your content into the appropriate place as outline in the structure above.
 5. Each file should only one level one heading e.g. ``# Page title``
@@ -157,13 +159,13 @@ Once you are in your fork of the repository, click on `.` on your keyboard. This
 Once the editor loads, you will be greeted by 1️⃣ a preview of the project's README.txt. 2️⃣ Click on the `docs` directory in the menu on the left, this will expand the directory. To confirm that you are working in the right branch 3️⃣️ it will say `main` in the bottom left of the editor.
 ![Web Editor 2](img/dev-docs-web-editor-2.png)
 
-Once you have expanded the `docs` directory, 1️⃣ click on the `src` directory. All sub-directories within the `src` directory contain the files that become the documentation. Each sub-directory contains an `index.md` file that is required for the building of the documentation and static site. If you add a new sub-directory into any folder it must also contain a populated `index.md` file.
+Once you have expanded the `docs` directory, 1️⃣ click on the `src` directory. All subdirectories within the `src` directory contain the files that become the documentation. Each subdirectory contains an `index.md` file that is required for the building of the documentation and static site. If you add a new subdirectory into any directory it must also contain a populated `index.md` file.
 ![Wed Editor 3](img/dev-docs-web-editor-3.png)
 
 Once you have chosen which section of documentation you would like to edit (e.g. user/guide/index.md), click on the file and it will open in the web editor.
 ![Web Editor 4](img/dev-docs-web-editor-4.png)
 
-Once you have the file open, you can start adding to the documentation using [Markdown](https://www.markdownguide.org/) syntax. If you need to add images to your documentation, add them to the relative `img` sub-directories following the naming conventions set out in the `naming-convention.README` within the `img` folders.
+Once you have the file open, you can start adding to the documentation using [Markdown](https://www.markdownguide.org/) syntax. If you need to add images to your documentation, add them to the relative `img` subdirectories following the naming conventions set out in the `naming-convention.README` within the `img` subdirectories (e.g. images for the *User Guide* would be added to the 1️⃣ `user/guide/img/` subdirectory).
 ![Web Editor 5](img/dev-docs-web-editor-5.png)
 
 When you have completed making additions to (or editing) the documentation, 1️⃣ click on the source control tab then 2️⃣ click on the `plus` symbol next to the changes you are finished with to stage them, 3️⃣️ add a commit message that is associated with the work you have done, and the 4️⃣ Click on `Commit & Push`
@@ -180,7 +182,36 @@ On the next screen, 1️⃣ give your pull request a meaningful title, 2️⃣ g
 
 Once your pull request is opened you need to wait for it to be merged before you can open a new one.
 
-## Creating new files
+## Creating New files
+
+Open the Web by clicking on `.` on your keyboard when you are on your fork of the repository.
+![Web Editor 1](img/dev-docs-web-editor-1.png)
+
+Navigate to the relative subdirectory within the `src` directory to which you would like to add a new file. (e.g. `src` -> `user` -> `manual`)
+![New File 1](img/dev-docs-new-file-1.png)
+
+Once you have selected a subdirectory, 1️⃣ click on the `New File...` button to the right of the repository name.
+![New File 2](img/dev-docs-new-file-2.png)
+
+Give your file a meaningful name (following the **File naming conventions** from above) and end the file name with **`.md`** to ensure that the file is saved as a markdown file.
+![New File 3](img/dev-docs-new-file-3.png)
+
+Once you have created a new file, you can start adding to the documentation using [Markdown](https://www.markdownguide.org/) syntax. If you need to add images to your documentation, add them to the relative `img` subdirectories following the naming conventions set out in the `naming-convention.README` within the `img` subdirectories (e.g. images for the *User Guide* would be added to the 1️⃣ `user/guide/img/` subdirectory).
+![Web Editor 5](img/dev-docs-web-editor-5.png)
+
+When you have completed making additions to (or editing) the documentation, 1️⃣ click on the source control tab then 2️⃣ click on the `plus` symbol next to the changes you are finished with to stage them, 3️⃣️ add a commit message that is associated with the work you have done, and the 4️⃣ Click on `Commit & Push`
+![Web Editor 6](img/dev-docs-web-editor-6.png)
+
+Once you have committed your changes, 1️⃣ Click on the burger menu and then 2️⃣ click on `Go To Repository`
+![Web Editor 7](img/dev-docs-web-editor-7.png)
+
+Your fork of the repository will be opened in a new tab within your browser, navigate to that tab. Once there 1️⃣ ensure you are on the `main`, you should see how many commits ahead of the upstream branch you are, then 2️⃣ click on `Contribute`-> `Open pull request`.
+![Pull Request 1](img/dev-docs-pull-request-1.png)
+
+On the next screen, 1️⃣ give your pull request a meaningful title, 2️⃣ give additional details regarding changes made in the larger text box, then 3️⃣️ click on `Create pull request`. Also ensure you are creating a pull request to the upstream `main` branch from your `main` branch.
+![Pull Request 2](img/dev-docs-pull-request-2.png)
+
+Once your pull request is opened you need to wait for it to be merged before you can open a new one.
 
 ### Page metadata
 Whenever you create a new file, you should add the standard header to the top of the file:
@@ -207,16 +238,31 @@ The context_id is used to create a unique permalink to this document, and is opt
 
 All pages need to be added to the 'Nav' section of the `mkdocs-base.yml` file. This will ensure that it is available in the menus and that mkdocs renders without errors. For example, if you wish to add a new page to the User Guide area, in Nav you would add a line like this:
 
-
 `- "Navigating the map": users/guide/map-navigation.md`
 
-Sometimes you may not wish to have the new page displayed in the menu system (this can be useful when, for example, it is accessed via a link in another page. In these cases, leave the menu entry part blank e.g.
+Sometimes you may not wish to have the new page displayed in the menu system this can be useful when, for example, it is accessed via a link in another page. In these cases, leave the menu entry part blank e.g.
 
 `- "": users/guide/map-navigation.md`
 
-
 Mkdocs will still generate the page but it will not be added to the menu.
 
+## Uploading Images / Media
+
+**Note:** *If you wish to upload a gif, or a small video, you can follow the same steps as below (GitHub does limit the upload size to 10 MB).*
+
+All directories and subdirectories should contain an `img` subdirectory (e.g. `user/guide/img/`) containing a `naming-convention.README`. If you add a new subdirectory, add an `img` subdirectory and copy a `naming-convention.README` from another existing `img` subdirectory.
+![Uploading Images 1](img/dev-docs-upload-img-1.png)
+
+To then upload an image, right-click on the relative `img` subdirectory and select `upload` from the menu that appears.
+![Uploading Images 2](img/dev-docs-upload-img-2.png)
+
+Select an image from your computer, using the file explore that opens, and then 1️⃣ click on the `Open` Button (The attached screenshot is from a Linux machine however, the button also says open on Windows).
+![Uploading Images 3](img/dev-docs-upload-img-3.png)
+
+If your image does not follow the naming conventions, right-click on the image, click on `Rename...` on the menu that appears, and then give your image an appropriate name.
+![Uploading Images 4](img/dev-docs-upload-img-4.png)
+
+Useful tools for capturing images and screencasts are: Peek (For screencasts), Flameshot (For images), Shutter (For images), and Lightshot (For images)
 
 ## Technical notes
 
