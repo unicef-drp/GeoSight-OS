@@ -27,7 +27,8 @@ import { Actions } from "../../../../store/dashboard";
 import {
   IDENTIFIER,
   INIT_DATA,
-  queryData
+  queryData,
+  returnWhere
 } from "../../../../utils/queryExtraction";
 import { dictDeepCopy } from "../../../../utils/main";
 import { fetchingData } from "../../../../Requests";
@@ -91,20 +92,38 @@ function FilterSection() {
       // Doing the filter if it is different filter
       // PREPARE DATA LIST
       let dataList = [];
-      const data = []
       // Geometry data
       const codes = []
-      for (const [key, geomData] of Object.entries(geometries[level.level])) {
-        const geom = JSON.parse(JSON.stringify(geomData))
-        geom.geometry_code = geom.code
-        data.push(geom)
-        codes.push(geom.geometry_code)
+      const data = []
+      const where = returnWhere(currentFilter)
+
+      for (const [level, geomDataLevel] of Object.entries(geometries)) {
+        for (const [key, geomData] of Object.entries(geomDataLevel)) {
+          codes.push(geomData.code)
+          if (where.includes('geometry_layer.')) {
+            geomData.members.map(member => {
+              data.push({
+                concept_uuid: geomData.concept_uuid,
+                ucode: member.ucode,
+                name: member.name,
+              })
+            })
+          } else {
+            data.push({
+              concept_uuid: geomData.concept_uuid,
+              ucode: geomData.ucode,
+              name: geomData.name,
+            })
+          }
+        }
       }
-      dataList.push({
-        id: `geometry_${level.level}`,
-        reporting_level: level.level,
-        data: data
-      })
+      for (const [level, geomDataLevel] of Object.entries(geometries)) {
+        dataList.push({
+          id: `geometry_layer`,
+          reporting_level: level,
+          data: data
+        })
+      }
       // ------------------------------------------------
       // Indicator data
       // ------------------------------------------------

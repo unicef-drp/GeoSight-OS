@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 /* ==========================================================================
    REFERENCE LAYER
@@ -26,13 +26,13 @@ import { ArrowDownwardIcon } from "../../../../components/Icons";
 
 import './style.scss';
 
+let currentReferenceLayer = null
 /**
  * Reference layer.
  * Contains level selector.
  */
 export default function ReferenceLayerSection() {
   const dispatch = useDispatch();
-  const geometries = useSelector(state => state.geometries)
   const {
     referenceLayer,
     levelConfig
@@ -82,37 +82,56 @@ export default function ReferenceLayerSection() {
 
   // Onload for default checked and the layer
   useEffect(() => {
-    const defaultLevel = referenceLayerData[referenceLayer.identifier]?.data?.dataset_levels
-    if (defaultLevel) {
-      defaultLevel.map(level => {
-        if (!geometries[level.level]) {
-          (
-            async () => {
-              const geometryData = await fetchFeatureList(level.url)
-              const geometryDataDict = {}
-              geometryData.map(geom => {
-                const code = extractCode(geom)
-                if (!code) {
-                  return
-                }
-                geometryDataDict[code] = {
-                  label: geom.name,
-                  name: geom.name,
-                  centroid: geom.centroid,
-                  code: code,
-                  ucode: geom.ucode,
-                  concept_uuid: code
-                }
+    const levels = referenceLayerData[referenceLayer.identifier]?.data?.dataset_levels
+    currentReferenceLayer = referenceLayer.identifier
+    if (levels) {
+      (
+        async () => {
+          const geometryUUIDByUcode = {}
+          const geometryDataByLevel = {}
+          for (let level of levels) {
+            const geometryData = await fetchFeatureList(level.url)
+            if (currentReferenceLayer !== referenceLayer.identifier) {
+              return
+            }
+            const geometryDataDict = {}
+            geometryData.map(geom => {
+              const code = extractCode(geom)
+              if (!code) {
+                return
+              }
+              geom.parents.sort(function (a, b) {
+                return a.admin_level < b.admin_level ? -1 : 1;
               })
+              const parents = geom.parents.map(parent => geometryUUIDByUcode[parent.default]).filter(parent => !!parent)
+              const memberData = {
+                name: geom.name,
+                ucode: geom.ucode,
+                code: code,
+              }
+              geometryDataDict[code] = {
+                label: geom.name,
+                name: geom.name,
+                centroid: geom.centroid,
+                code: code,
+                ucode: geom.ucode,
+                concept_uuid: code,
+                parents: parents,
+                members: parents.concat(memberData),
+              }
+              geometryUUIDByUcode[geom.ext_codes.default] = memberData
+            })
+            geometryDataByLevel[level.level] = geometryDataDict
+            if (currentReferenceLayer === referenceLayer.identifier) {
               dispatch(
                 Actions.Geometries.addLevelData(level.level, geometryDataDict)
               )
             }
-          )()
+          }
         }
-      })
+      )()
     }
-  }, [levels])
+  }, [referenceLayerData])
 
   /** Change Admin Level **/
   const onChange = (newLevel) => {

@@ -228,6 +228,9 @@ export function createDynamicStyle(data, styleType, config, styleData) {
             // Create classification
             for (let idx = 0; idx < classifications.length; idx++) {
               if (idx !== 0) {
+                if ([classifications[idx - 1], classifications[idx]].includes(undefined)) {
+                  continue
+                }
                 const below = classifications[idx - 1].toFixed(2);
                 const top = classifications[idx].toFixed(2);
                 const color = colors[idx - 1]
