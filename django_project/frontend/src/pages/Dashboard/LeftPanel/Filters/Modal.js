@@ -14,7 +14,7 @@
  */
 
 import React, { useEffect, useState } from "react";
-import { Button, Input, InputLabel } from "@mui/material";
+import { Button, FormControlLabel, Input, InputLabel } from "@mui/material";
 import Checkbox from '@mui/material/Checkbox';
 import {
   IS_IN,
@@ -156,11 +156,13 @@ export default function FilterEditorModal(
           </div>
           <div>
             <br/>
-            <Checkbox
+            <FormControlLabel
               checked={allowModify}
-              onClick={_ => {
+              control={<Checkbox/>}
+              onChange={evt => {
                 setAllowModify(!allowModify)
-              }}/> Allow users to modify filter parameters (values)
+              }}
+              label={'Allow users to modify filter parameters (values)'}/>
           </div>
           <div className='button-div'>
             <Button

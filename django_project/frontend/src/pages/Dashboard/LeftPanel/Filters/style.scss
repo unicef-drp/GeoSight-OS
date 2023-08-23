@@ -361,6 +361,11 @@
     width: 100%;
     border: 1px solid $primary-color;
 
+    .SelectWithSearchInput {
+      width: 100%;
+      border: unset !important;
+    }
+
     .MuiSvgIcon-root {
       color: #ddd;
       margin: 7px 3px;
