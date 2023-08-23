@@ -32,8 +32,6 @@ In our documentation, we have organised the information using a specific nomencl
 
 * **guide**: A guide is a multi-step workflow / tutorial that leads your through common activities.
 * **manual**: A collection of documents that describe each part of the project in a matter of fact way without presupposing any specific workflow is being undertaken.
-* **directory**: nomenclature for folder
-* **subdirectory**: nomenclature for subfolders.
 
 For each of the main topic areas (user, admin, developer, devops, api user) we provide guides and manuals as is appropriate.
 
@@ -54,7 +52,11 @@ src
 │   └── running-instances.md
 ├── administrator
 │   ├── guide
+│   │   ├── img
+│   │   │   └── naming-convention.README
 │   │   └── index.md
+│   ├── img
+│   │   └── naming-convention.README
 │   ├── index.md
 │   └── manual
 │       ├── img
@@ -63,9 +65,15 @@ src
 ├── developer
 │   ├── api
 │   │   ├── guide
+│   │   │   ├── img
+│   │   │   │   └── naming-convention.README
 │   │   │   └── index.md
+│   │   ├── img
+│   │   │   └── naming-convention.README
 │   │   ├── index.md
 │   │   └── manual
+│   │       ├── img
+│   │       │   └── naming-convention.README
 │   │       └── index.md
 │   ├── documentation
 │   │   ├── img
@@ -91,26 +99,29 @@ src
 │   │   └── naming-convention.README
 │   ├── index.md
 │   └── manual
+│       ├── img
+│       │   └── naming-convention.README
 │       ├── index.md
 │       └── README.txt
 ├── devops
 │   ├── guide
+│   │   ├── img
+│   │   │   └── naming-convention.README
 │   │   └── index.md
 │   ├── img
 │   │   └── naming-convention.README
 │   ├── index.md
 │   └── manual
+│       ├── img
+│       │   └── naming-convention.README
 │       └── index.md
 ├── img
-│   ├── favicon.ico
-│   ├── KartozaBackgroundBorder.png
-│   ├── logo.png
-│   ├── logo.svg
-│   ├── naming-convention.README
-│   └── screenshot.png
+│   └── naming-convention.README
 ├── index.md
 └── user
     ├── guide
+    │   ├── img
+    │   │   └── naming-convention.README
     │   └── index.md
     ├── img
     │   └── naming-convention.README
@@ -121,6 +132,8 @@ src
     │   │   └── naming-convention.README
     │   └── index.md
     └── quickstart
+        ├── img
+        │   └── naming-convention.README
         └── index.md
 ```
 
@@ -129,18 +142,19 @@ src
 Please follow these conventions when writing your documentation:
 
 1. Write file names in all lower case, with hyphens separating words (no spaces). e.g. ``important-file.md`` not ``Important File.md`` or other deviations.
-2. Place the image files in the `img` directory adjacent to your content.
+2. Place the image files in the `img` folder adjacent to your content.
 3. Do not abbreviate any words in file names - but try to use terse, descriptive names.
-4. Place your content into the appropriate place as outline in the structure above.
-5. Each file should only one level one heading e.g. ``# Page title``
+4. Place your content into the appropriate place as outlined in the structure above.
+5. Each file should only contain one level-one heading e.g. ``# Page title``
 6. Headings and subheadings should be written as a terse phrase starting with a capital letter and subsequent words in lower case unless they are proper nouns. Do not place a colon after the heading.
 7. Use unicode number markers to reference numbers in images e.g. 1️⃣
 8. Every heading / subheading should have a single line underneath it summarising the content that will follow. This sentence will be used in the help center in the application to give the user a reference point for the text that will follow. It also makes the help text more consistent and readable.
-9. For every section that images, the first image will be used as the thumbnail if the heading is referenced from the application.
+9. For every section that contains images, the first image will be used as the thumbnail if the heading is referenced from the application.
 
 ## Contributing to the documentation
 
-:pencil2: Note: The repo name in the images below is blurred out, you should work against the GeoSight-OS repository when following these notes.
+:pencil2: **Note:** *The repo name in the images below is blurred out, you should work against the GeoSight-OS repository when following these notes.*
+:pencil2: *Additionally **read** the text part of the instructions, **do not** just use the images as pictorial instructions!*
 
 To start adding to the documentation navigate to the [home page](https://github.com/unicef-drp/GeoSight-OS) of the repository.
 
@@ -156,19 +170,20 @@ Once you have forked the repository, ensure that you are working in the main bra
 Once you are in your fork of the repository, click on `.` on your keyboard. This will open a web editor where you can begin adding to, or editing, the documentation.
 ![Web Editor 1](img/dev-docs-web-editor-1.png)
 
-Once the editor loads, you will be greeted by 1️⃣ a preview of the project's README.txt. 2️⃣ Click on the `docs` directory in the menu on the left, this will expand the directory. To confirm that you are working in the right branch 3️⃣️ it will say `main` in the bottom left of the editor.
+Once the editor loads, you will be greeted by 1️⃣ a preview of the project's README.txt. 2️⃣ Click on the `docs` folder in the menu on the left, this will expand the folder. To confirm that you are working in the right branch 3️⃣️ it will say `main` in the bottom left of the editor. Also ensure that you are in 4️⃣ the `Explorer` tab of the web editor.
 ![Web Editor 2](img/dev-docs-web-editor-2.png)
 
-Once you have expanded the `docs` directory, 1️⃣ click on the `src` directory. All subdirectories within the `src` directory contain the files that become the documentation. Each subdirectory contains an `index.md` file that is required for the building of the documentation and static site. If you add a new subdirectory into any directory it must also contain a populated `index.md` file.
+Once you have expanded the `docs` folder, 1️⃣ click on the `src` folder. All subfolders within the `src` folder contain the files that become the documentation. Each subfolder contains an `index.md` file that is required for the building of the documentation and static site. If you add a new subfolder into any folder it must also contain a populated `index.md` file, this will be further explained in the **Creating new files** section.
 ![Wed Editor 3](img/dev-docs-web-editor-3.png)
 
 Once you have chosen which section of documentation you would like to edit (e.g. user/guide/index.md), click on the file and it will open in the web editor.
 ![Web Editor 4](img/dev-docs-web-editor-4.png)
 
-Once you have the file open, you can start adding to the documentation using [Markdown](https://www.markdownguide.org/) syntax. If you need to add images to your documentation, add them to the relative `img` subdirectories following the naming conventions set out in the `naming-convention.README` within the `img` subdirectories (e.g. images for the *User Guide* would be added to the 1️⃣ `user/guide/img/` subdirectory).
+Once you have the file open, you can start adding to the documentation using [Markdown](https://www.markdownguide.org/) syntax. If you need to add images to your documentation, add them to the relative `img` subfolders following the naming conventions set out in the `naming-convention.README` within the `img` subfolders (e.g. images for the *User Guide* would be added to the 1️⃣ `user/guide/img/` subfolder).
+**Hint:** *click on the `naming-convention.README` file to view it and, in turn, read the naming conventions*
 ![Web Editor 5](img/dev-docs-web-editor-5.png)
 
-When you have completed making additions to (or editing) the documentation, 1️⃣ click on the source control tab then 2️⃣ click on the `plus` symbol next to the changes you are finished with to stage them, 3️⃣️ add a commit message that is associated with the work you have done, and the 4️⃣ Click on `Commit & Push`
+When you have completed making additions to (or editing) the documentation, 1️⃣ click on the source control tab then 2️⃣ click on the `plus` symbol next to the changes you are finished with to stage them, 3️⃣️ add a commit message that is associated with the work you have done, and then 4️⃣ Click on `Commit & Push`
 ![Web Editor 6](img/dev-docs-web-editor-6.png)
 
 Once you have committed your changes, 1️⃣ Click on the burger menu and then 2️⃣ click on `Go To Repository`
@@ -182,21 +197,22 @@ On the next screen, 1️⃣ give your pull request a meaningful title, 2️⃣ g
 
 Once your pull request is opened you need to wait for it to be merged before you can open a new one.
 
-## Creating New files
+## Creating new files
 
-Open the Web by clicking on `.` on your keyboard when you are on your fork of the repository.
+Open the Web Editor by clicking on `.` on your keyboard when you are on your fork of the repository.
 ![Web Editor 1](img/dev-docs-web-editor-1.png)
 
-Navigate to the relative subdirectory within the `src` directory to which you would like to add a new file. (e.g. `src` -> `user` -> `manual`)
+Navigate to the relative subfolder within the `src` folder to which you would like to add a new file. (e.g. `src` -> `user` -> `manual`). Also ensure that you are in 1️⃣ the `Explorer` tab of the web editor.
 ![New File 1](img/dev-docs-new-file-1.png)
 
-Once you have selected a subdirectory, 1️⃣ click on the `New File...` button to the right of the repository name.
+Once you have selected a subfolder, 1️⃣ click on the `New File...` button to the right of the repository name.
 ![New File 2](img/dev-docs-new-file-2.png)
 
-Give your file a meaningful name (following the **File naming conventions** from above) and end the file name with **`.md`** to ensure that the file is saved as a markdown file.
+Give your file a meaningful name (following the **File naming conventions** from above) and end the file name with **`.md`** to ensure that the file is saved as a markdown file. Once you have given your file a name, click `enter` on your keyboard to finish creating it.
 ![New File 3](img/dev-docs-new-file-3.png)
 
-Once you have created a new file, you can start adding to the documentation using [Markdown](https://www.markdownguide.org/) syntax. If you need to add images to your documentation, add them to the relative `img` subdirectories following the naming conventions set out in the `naming-convention.README` within the `img` subdirectories (e.g. images for the *User Guide* would be added to the 1️⃣ `user/guide/img/` subdirectory).
+Once you have created a new file, you can start adding to the documentation using [Markdown](https://www.markdownguide.org/) syntax. If you need to add images to your documentation, add them to the relative `img` subfolders following the naming conventions set out in the `naming-convention.README` within the `img` subfolders (e.g. images for the *User Guide* would be added to the 1️⃣ `user/guide/img/` subfolder).
+**Hint:** *click on the `naming-convention.README` file to view it and, in turn, read the naming conventions*
 ![Web Editor 5](img/dev-docs-web-editor-5.png)
 
 When you have completed making additions to (or editing) the documentation, 1️⃣ click on the source control tab then 2️⃣ click on the `plus` symbol next to the changes you are finished with to stage them, 3️⃣️ add a commit message that is associated with the work you have done, and the 4️⃣ Click on `Commit & Push`
@@ -214,7 +230,8 @@ On the next screen, 1️⃣ give your pull request a meaningful title, 2️⃣ g
 Once your pull request is opened you need to wait for it to be merged before you can open a new one.
 
 ### Page metadata
-Whenever you create a new file, you should add the standard header to the top of the file:
+Whenever you create a new file, you should add the standard header (below) to the top of the file:
+**Note:** *You need to copy the entire header including the `---` at the top and bottom of the header*
 
 ```
 ---
@@ -229,6 +246,8 @@ license: This program is free software; you can redistribute it and/or modify it
 #context_id: 1234
 ---
 ```
+
+The easiest way to add the standard header to your file is to highlight the **entire** header, then press `ctrl` and `c` on your keyboard. Navigate to your file in the web editor, then click in the top of your file and press `ctrl` and `v` on your keyboard.
 
 The summary can be updated to include your name for documents you contribute to.
 
@@ -246,14 +265,14 @@ Sometimes you may not wish to have the new page displayed in the menu system thi
 
 Mkdocs will still generate the page but it will not be added to the menu.
 
-## Uploading Images / Media
+## Uploading images / media
 
 **Note:** *If you wish to upload a gif, or a small video, you can follow the same steps as below (GitHub does limit the upload size to 10 MB).*
 
-All directories and subdirectories should contain an `img` subdirectory (e.g. `user/guide/img/`) containing a `naming-convention.README`. If you add a new subdirectory, add an `img` subdirectory and copy a `naming-convention.README` from another existing `img` subdirectory.
+All folders and subfolders should contain an `img` subfolder (e.g. `user/guide/img/`) containing a `naming-convention.README`. If you add a new subfolder, add an `img` subfolder and copy a `naming-convention.README` from another existing `img` subfolder.
 ![Uploading Images 1](img/dev-docs-upload-img-1.png)
 
-To then upload an image, right-click on the relative `img` subdirectory and select `upload` from the menu that appears.
+To then upload an image, right-click on the relative `img` subfolder and select `upload` from the menu that appears.
 ![Uploading Images 2](img/dev-docs-upload-img-2.png)
 
 Select an image from your computer, using the file explore that opens, and then 1️⃣ click on the `Open` Button (The attached screenshot is from a Linux machine however, the button also says open on Windows).
@@ -306,7 +325,7 @@ Whenever the user visits the page using the UUID URL, they will be redirected to
 
 To generate PDFS, `cd` into `GEOSIGHT-OS/docs` and then run the `build-docs-pdf` in a local terminal
 
-### Generating Static Site
+### Generating static site
 
 To generate HTML, `cd` into `GEOSIGHT-OS/docs` and then run the `build-docs-html` in a local terminal.
 You can then run `mkdocs serve` to generate the static site on your local host, if there is a port conflict you can specify the port using the `-a` flag e.g `mkdocs serve -a 127.0.0.1:8001`.
