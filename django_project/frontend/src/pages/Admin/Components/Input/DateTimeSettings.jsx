@@ -84,12 +84,12 @@ export function DateTimeDataFieldSetting(
     <Grid item xs={6}>
       <label
         className="form-label required" htmlFor="group">
-        DateTime Column/Field
+        Date Time Column/Field
       </label>
       {
         attributes?.length ?
           <SelectWithList
-            placeholder={'DateTime Column/Field'}
+            placeholder={'Date Time Column/Field'}
             list={attributes}
             value={field}
             showFloatingLabel={true}
@@ -110,7 +110,7 @@ export function DateTimeDataFieldSetting(
     <Grid item xs={6}>
       <label
         className="form-label required" htmlFor="group">
-        DateTime Format
+        Date Time Format
       </label>
       <SelectWithList
         list={dateTimeFormats}

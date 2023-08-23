@@ -27,6 +27,7 @@ import {
   replaceWithBr
 } from "../../../../utils/main";
 import { getScheduleText } from "../../../../utils/cron";
+import { axiosGet, GeorepoUrls } from "../../../../utils/georepo";
 
 import '../ImporterDetail/style.scss';
 import './style.scss';
@@ -51,16 +52,13 @@ export function formatData(value) {
 export function formatTitle(title) {
   switch (title.toLowerCase()) {
     case 'key_value':
-      title = 'column value'
+      title = 'column Value'
       break
     case 'key_administration_code':
       title = 'Geo Code Column'
       break
     case 'row_number_for_header':
-      title = 'Row number for the header'
-      break
-    case 'admin_level_type':
-      title = 'Admin level'
+      title = 'Row Number For the Header'
       break
   }
   return capitalize(title)
@@ -68,8 +66,243 @@ export function formatTitle(title) {
 
 export function filterAttributes(attributes) {
   return Object.keys(attributes).filter(
-    attr => (!['date_time_data_type', 'date_time_data_value', 'date_time_data_field', 'date_time_data_format', 'selected_indicators', 'sharepoint_config_id'].includes(attr) && !attr.includes('aggregate_multiple_value') && !attr.includes('aggregate_upper_level') && !attr.includes('indicator_data'))
+    attr => (
+      !['selected_indicators_data', 'admin_level_value', 'admin_level_type', 'date_time_data_type', 'date_time_data_value', 'date_time_data_field', 'date_time_data_format', 'selected_indicators', 'sharepoint_config_id'].includes(attr)
+      && !attr.includes('aggregate_multiple_value') && !attr.includes('aggregate_upper_level') && !attr.includes('indicator_data')
+    )
   )
+}
+
+
+/** Importer detail section */
+export function ImporterDetailSection({ inputData }) {
+  const [data, setData] = useState(inputData);
+  const isIndicatorValue = data.import_type === "Indicator Value"
+
+  useEffect(() => {
+    if (data.attributes?.admin_level_type === 'Specific Level') {
+      axiosGet(GeorepoUrls.ViewDetail(data.reference_layer)).then(response => response.data).then(response => {
+        const level = response.dataset_levels.find(level => level.level + '' === data.attributes?.admin_level_value + '')
+        data.attributes.admin_level_type = level ? level.level_name : data.attributes?.admin_level_value
+        setData({ ...data })
+      });
+    }
+  }, [])
+
+  return <Fragment>
+    <Grid container spacing={2}>
+      <Grid item xs={3}>
+        <div className='DetailSection'>
+          <div>Import Type</div>
+          <div>{data.import_type}</div>
+        </div>
+      </Grid>
+      <Grid item xs={3}>
+        <div className='DetailSection'>
+          <div>Input Format</div>
+          <div>{data.input_format}</div>
+        </div>
+      </Grid>
+    </Grid>
+    {
+      data.attributes.indicator_data_type ?
+        <Grid container spacing={2}>
+          <Grid item xs={3}>
+            <div className='DetailSection'>
+              <div>Indicator</div>
+              <div>{data.attributes.indicator_data_type === 'By Value' ? 'Selected indicator' : 'Data-Driven Indicator Column'}</div>
+            </div>
+          </Grid>
+          <Grid item xs={3}>
+            <div className='DetailSection'>
+              <div>Indicator Names</div>
+              <div>{data.attributes.indicator_data?.name ? data.attributes.indicator_data?.name : data.attributes.indicator_data_names ? data.attributes.indicator_data_names.join(", ") : '-'}</div>
+            </div>
+          </Grid>
+        </Grid> : null
+    }
+    {
+      data.schedule_type !== "Single Import" ?
+        <Grid container spacing={2}>
+          <Grid item xs={3}>
+            <div className='DetailSection'>
+              <div>Schedule Type</div>
+              <div>{data.schedule_type}</div>
+            </div>
+          </Grid>
+          <Grid item xs={3}>
+            <div className='DetailSection'>
+              <div>Job Name</div>
+              <div>{
+                data.job_name ?
+                  <a
+                    className='MuiButtonLike CellLink'
+                    href={data.urls.detail}>
+                    {data.job_name}
+                  </a> : null
+              }</div>
+            </div>
+          </Grid>
+          <Grid item xs={3}>
+            <div className='DetailSection'>
+              <div>Is Active</div>
+              <div>{data.job_active ? 'Active' : 'Paused'}</div>
+            </div>
+          </Grid>
+          <Grid item xs={3}>
+            <div className='DetailSection'>
+              <div>Schedule</div>
+              <div>{data.schedule ? getScheduleText(data.schedule) : '-'}</div>
+            </div>
+          </Grid>
+        </Grid>
+        : null
+    }
+    {
+      isIndicatorValue ?
+        <Fragment>
+          <Grid container spacing={2}>
+            <Grid item xs={3}>
+              <div className='DetailSection'>
+                <div>Reference Layer</div>
+                <div>
+                  {formatData(data.reference_layer_name)}
+                </div>
+              </div>
+            </Grid>
+            <Grid item xs={3}>
+              <div className='DetailSection'>
+                <div>Type of Geo Code</div>
+                <div>
+                  {formatData(data.admin_code_type)}
+                </div>
+              </div>
+            </Grid>
+            {
+              data.attributes?.admin_level_type ? <Grid item xs={3}>
+                <div className='DetailSection'>
+                  <div>Admin Level</div>
+                  <div>
+                    {data.attributes?.admin_level_type === 'Specific Level' ? 'Loading' : formatData(data.attributes?.admin_level_type)}
+                  </div>
+                </div>
+              </Grid> : null
+            }
+          </Grid>
+          <Grid container spacing={2}>
+            <Grid item xs={3}>
+              <div className='DetailSection'>
+                <div>Date Time Setting</div>
+                <div>
+                  <div>{data.attributes.date_time_data_type === 'By Value' ? 'Selected Date' : formatData(data.attributes.date_time_data_type)}</div>
+                </div>
+              </div>
+            </Grid>
+            {
+              data.attributes.date_time_data_type === 'Data Driven' ?
+                <Fragment>
+                  <Grid item xs={3}>
+                    <div className='DetailSection'>
+                      <div>Date Time Column/Field</div>
+                      {
+                        formatData(data.attributes.date_time_data_field)
+                      }
+                    </div>
+                  </Grid>
+                  <Grid item xs={3}>
+                    <div className='DetailSection'>
+                      <div>Date Time Format</div>
+                      {
+                        formatData(
+                          data.attributes?.date_time_data_format?.replace('%Y', 'YYYY').replace('%m', 'MM').replace('%d', 'DD').replace('%h', 'HH').replace('%m', 'MM').replace('%s', 'SS')
+                        )
+                      }
+                    </div>
+                  </Grid>
+                </Fragment> : data.attributes.date_time_data_type === 'Now' ? null :
+                  <Grid item xs={3}>
+                    <div className='DetailSection'>
+                      <div>Date Time of Data</div>
+                      {
+                        formatData(formatDateTime(new Date(data.attributes.date_time_data_value)))
+                      }
+                    </div>
+                  </Grid>
+            }
+          </Grid>
+        </Fragment> : null
+    }
+
+    {/* Other Attributes */
+    }
+    <Grid container spacing={2}>
+      {
+        data.attributes.selected_indicators_data ?
+          <Grid item xs={3}>
+            <div className='DetailSection'>
+              <div>Selected Indicators</div>
+              <div
+                title={formatData(data.attributes.selected_indicators_data)}>
+                {formatData(data.attributes.selected_indicators_data)}
+              </div>
+            </div>
+          </Grid> : null
+      }
+      {
+        filterAttributes(data.attributes).map(attr => {
+          return <Grid key={attr} item xs={3}>
+            <div className='DetailSection'>
+              <div>{formatTitle(attr)}</div>
+              <div title={formatData(data.attributes[attr])}>
+                {formatData(data.attributes[attr])}
+              </div>
+            </div>
+          </Grid>
+        })
+      }
+    </Grid>
+
+    {/* Aggregations multiple value */
+    }
+    <Grid container spacing={2}>
+      {
+        Object.keys(data.attributes).filter(
+          attr => (attr.includes('aggregate_multiple_value'))
+        ).map(attr => {
+          if (attr === 'aggregate_multiple_value') {
+            if ([false, 'false'].includes(data.attributes[attr])) {
+              data.attributes[attr] = 'Last value'
+            } else {
+              data.attributes[attr] = 'Aggregate'
+            }
+          }
+          return <Grid key={attr} item xs={3}>
+            <div className='DetailSection'>
+              <div>{capitalize(attr)}</div>
+              <div>{formatData(data.attributes[attr])}</div>
+            </div>
+          </Grid>
+        })
+      }
+    </Grid>
+
+    {/* Aggregations upper level */
+    }
+    <Grid container spacing={2}>
+      {
+        Object.keys(data.attributes).filter(
+          attr => (attr.includes('aggregate_upper_level'))
+        ).map(attr => {
+          return <Grid key={attr} item xs={3}>
+            <div className='DetailSection'>
+              <div>{capitalize(attr)}</div>
+              <div>{formatData(data.attributes[attr])}</div>
+            </div>
+          </Grid>
+        })
+      }
+    </Grid>
+  </Fragment>
 }
 
 /**
@@ -95,6 +328,7 @@ export default function ImporterLogDetail() {
       }, 5000);
     })
   }
+
   useEffect(() => {
     callApi()
   }, [])
@@ -113,15 +347,19 @@ export default function ImporterLogDetail() {
       color = 'success.main'
       break
   }
+  let note = data.note
+  if (note) {
+    note = data.note.replaceAll(/Indicator.*?does not allow aggregating upper levels./g, function (matched) {
+      return '<div class="warning">' + matched + '</div>'
+    })
+  }
   const isEnded = ['Success', 'Failed'].includes(data.status)
   let text = ''
   if (isEnded) {
     text = data.status
   } else {
-    text = `${data.status} ` + (data.note ? ` - ${data.note} ` : '') + (data.progress ? `(${data.progress}%)` : '')
+    text = `${data.status} ` + (note ? ` - ${note} ` : '') + (data.progress ? `(${data.progress}%)` : '')
   }
-
-  const isIndicatorValue = data.import_type === "Indicator Value"
 
   return <Admin
     pageName={'Log Detail'}
@@ -155,13 +393,13 @@ export default function ImporterLogDetail() {
       <Grid container spacing={2}>
         <Grid item xs={3}>
           <div className='DetailSection'>
-            <div>Start at</div>
+            <div>Start At</div>
             <div>{formatDateTime(new Date(data.start_time))}</div>
           </div>
         </Grid>
         <Grid item xs={3}>
           <div className='DetailSection'>
-            <div>End at</div>
+            <div>End At</div>
             <div>
               {data.end_time ? formatDateTime(new Date(data.end_time)) : null}
             </div>
@@ -172,13 +410,13 @@ export default function ImporterLogDetail() {
             <Grid item xs={6}>
               <div className='DetailSection'>
                 {
-                  data.note ? <Fragment>
+                  note ? <Fragment>
                     <div>Note</div>
                     <div
-                      dangerouslySetInnerHTML={{ __html: replaceWithBr(data.note) }}/>
+                      dangerouslySetInnerHTML={{ __html: replaceWithBr(note) }}/>
                   </Fragment> : null
                 }
-                <div className='title'>Saved data</div>
+                <div className='title'>Saved Data</div>
                 <div className='DetailDataFound'>
                   <div>{data.saved_data} / {data.count_data}</div>
                   <a href={urls.api.dataView}>
@@ -198,7 +436,7 @@ export default function ImporterLogDetail() {
                 <div className='DetailDataFound'>
                   <div className='DetailDataFoundError'>
                     <div
-                      dangerouslySetInnerHTML={{ __html: replaceWithBr(data.note) }}></div>
+                      dangerouslySetInnerHTML={{ __html: replaceWithBr(note) }}></div>
                   </div>
                   <div className='DetailButtonButton'>
                     <div className='Separator'/>
@@ -214,188 +452,7 @@ export default function ImporterLogDetail() {
             </Grid> : null
         }
       </Grid>
-      <Grid container spacing={2}>
-        <Grid item xs={3}>
-          <div className='DetailSection'>
-            <div>Import type</div>
-            <div>{data.import_type}</div>
-          </div>
-        </Grid>
-        <Grid item xs={3}>
-          <div className='DetailSection'>
-            <div>Input format</div>
-            <div>{data.input_format}</div>
-          </div>
-        </Grid>
-      </Grid>
-      {
-        data.attributes.indicator_data_type ?
-          <Grid container spacing={2}>
-            <Grid item xs={3}>
-              <div className='DetailSection'>
-                <div>Indicator</div>
-                <div>{data.attributes.indicator_data_type === 'By Value' ? 'Selected indicator' : 'Data-Driven Indicator Column'}</div>
-              </div>
-            </Grid>
-            <Grid item xs={3}>
-              <div className='DetailSection'>
-                <div>Indicator name(s)</div>
-                <div>{data.attributes.indicator_data?.name ? data.attributes.indicator_data?.name : data.attributes.indicator_data_names ? data.attributes.indicator_data_names.join(", ") : '-'}</div>
-              </div>
-            </Grid>
-          </Grid> : null
-      }
-      <Grid container spacing={2}>
-        <Grid item xs={3}>
-          <div className='DetailSection'>
-            <div>Schedule Type</div>
-            <div>{data.schedule_type}</div>
-          </div>
-        </Grid>
-        {
-          data.schedule_type !== "Single Import" ?
-            <Grid item xs={3}>
-              <div className='DetailSection'>
-                <div>Job Name</div>
-                <div>{
-                  data.job_name ?
-                    <a
-                      className='MuiButtonLike CellLink'
-                      href={data.urls.detail}>
-                      {data.job_name}
-                    </a> : null
-                }</div>
-              </div>
-            </Grid> : null
-        }
-        <Grid item xs={3}>
-          <div className='DetailSection'>
-            <div>Is Active</div>
-            <div>{data.job_active ? 'Active' : 'Pause'}</div>
-          </div>
-        </Grid>
-        {
-          data.schedule_type !== "Single Import" ?
-            <Grid item xs={3}>
-              <div className='DetailSection'>
-                <div>Schedule</div>
-                <div>{data.schedule ? getScheduleText(data.schedule) : '-'}</div>
-              </div>
-            </Grid> : null
-        }
-      </Grid>
-      {
-        isIndicatorValue ?
-          <Fragment>
-            <Grid container spacing={2}>
-              <Grid item xs={3}>
-                <div className='DetailSection'>
-                  <div>Reference Layer</div>
-                  <div>
-                    {formatData(data.reference_layer_name)}
-                  </div>
-                </div>
-              </Grid>
-              <Grid item xs={3}>
-                <div className='DetailSection'>
-                  <div>Type of Geo Code</div>
-                  <div>
-                    {formatData(data.admin_code_type)}
-                  </div>
-                </div>
-              </Grid>
-            </Grid>
-            <Grid container spacing={2}>
-              <Grid item xs={3}>
-                <div className='DetailSection'>
-                  <div>Date Time Setting</div>
-                  <div>
-                    <div>{data.attributes.date_time_data_type === 'By Value' ? 'Selected Date' : formatData(data.attributes.date_time_data_type)}</div>
-                  </div>
-                </div>
-              </Grid>
-              {
-                data.attributes.date_time_data_type === 'Data Driven' ?
-                  <Fragment>
-                    <Grid item xs={3}>
-                      <div className='DetailSection'>
-                        <div>Column that being used</div>
-                        {
-                          formatData(data.attributes.date_time_data_field)
-                        }
-                      </div>
-                    </Grid>
-                    <Grid item xs={3}>
-                      <div className='DetailSection'>
-                        <div>Field/Column or Time format</div>
-                        {
-                          formatData(
-                            data.attributes?.date_time_data_format?.replace('%Y', 'YYYY').replace('%m', 'MM').replace('%d', 'DD').replace('%h', 'HH').replace('%m', 'MM').replace('%s', 'SS')
-                          )
-                        }
-                      </div>
-                    </Grid>
-                  </Fragment> : data.attributes.date_time_data_type === 'Now' ? null :
-                    <Grid item xs={3}>
-                      <div className='DetailSection'>
-                        <div>Time that being used</div>
-                        {
-                          formatData(formatDateTime(new Date(data.attributes.date_time_data_value)))
-                        }
-                      </div>
-                    </Grid>
-              }
-            </Grid>
-          </Fragment> : null
-      }
-
-      {/* Other Attributes */}
-      <Grid container spacing={2}>
-        {
-          filterAttributes(data.attributes).map(attr => {
-            return <Grid key={attr} item xs={3}>
-              <div className='DetailSection'>
-                <div>{formatTitle(attr)}</div>
-                <div title={formatData(data.attributes[attr])}>
-                  {formatData(data.attributes[attr])}
-                </div>
-              </div>
-            </Grid>
-          })
-        }
-      </Grid>
-
-      {/* Aggregations */}
-      <Grid container spacing={2}>
-        {
-          Object.keys(data.attributes).filter(
-            attr => (attr.includes('aggregate_multiple_value'))
-          ).map(attr => {
-            return <Grid key={attr} item xs={3}>
-              <div className='DetailSection'>
-                <div>{capitalize(attr)}</div>
-                <div>{formatData(data.attributes[attr])}</div>
-              </div>
-            </Grid>
-          })
-        }
-      </Grid>
-
-      {/* Aggregations */}
-      <Grid container spacing={2}>
-        {
-          Object.keys(data.attributes).filter(
-            attr => (attr.includes('aggregate_upper_level'))
-          ).map(attr => {
-            return <Grid key={attr} item xs={3}>
-              <div className='DetailSection'>
-                <div>{capitalize(attr)}</div>
-                <div>{formatData(data.attributes[attr])}</div>
-              </div>
-            </Grid>
-          })
-        }
-      </Grid>
+      <ImporterDetailSection inputData={data}/>
     </div>
   </Admin>
 }

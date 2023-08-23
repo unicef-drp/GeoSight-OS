@@ -24,14 +24,13 @@ import Admin from "../../index";
 import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
 import { formatDateTime } from "../../../../utils/main";
-import { getScheduleText } from "../../../../utils/cron";
 import { ThemeButton } from "../../../../components/Elements/Button";
 import {
   Notification,
   NotificationStatus
 } from "../../../../components/Notification";
 import { DeleteIcon, EditIcon } from "../../../../components/Icons";
-import { filterAttributes, formatData, formatTitle } from "../LogDetail/index";
+import { ImporterDetailSection } from "../LogDetail/index";
 
 import './style.scss';
 
@@ -171,143 +170,7 @@ export default function ImporterDetail() {
     <div className='FlexScrollableSection'>
       <Grid container spacing={2}>
         <Grid item xs={9} className={'Detail'}>
-          <Grid container spacing={2}>
-            <Grid item xs={3}>
-              <div className='DetailSection'>
-                <div>Import type</div>
-                <div>{data.import_type}</div>
-              </div>
-            </Grid>
-            <Grid item xs={3}>
-              <div className='DetailSection'>
-                <div>Input format</div>
-                <div>{data.input_format}</div>
-              </div>
-            </Grid>
-          </Grid>
-          {
-            data.attributes.indicator_data_type ?
-              <Grid container spacing={2}>
-                <Grid item xs={3}>
-                  <div className='DetailSection'>
-                    <div>Indicator</div>
-                    <div>{data.attributes.indicator_data_type === 'By Value' ? 'Selected indicator' : 'Data-Driven Indicator Column'}</div>
-                  </div>
-                </Grid>
-                <Grid item xs={3}>
-                  <div className='DetailSection'>
-                    <div>Indicator name(s)</div>
-                    <div>{data.attributes.indicator_data?.name ? data.attributes.indicator_data?.name : data.attributes.indicator_data_names ? data.attributes.indicator_data_names.join(", ") : '-'}</div>
-                  </div>
-                </Grid>
-              </Grid> : null
-          }
-          <Grid container spacing={2}>
-            <Grid item xs={3}>
-              <div className='DetailSection'>
-                <div>Schedule Type</div>
-                <div>{data.schedule_type}</div>
-              </div>
-            </Grid>
-            <Grid item xs={3}>
-              <div className='DetailSection'>
-                <div>Job Name</div>
-                <div>{
-                  data.job_name ?
-                    <a
-                      className='MuiButtonLike CellLink'
-                      href={data.urls.detail}>
-                      {data.job_name}
-                    </a> : null
-                }</div>
-              </div>
-            </Grid>
-            <Grid item xs={3}>
-              <div className='DetailSection'>
-                <div>Is Active</div>
-                <div>{data.job_active ? 'Active' : 'Paused'}</div>
-              </div>
-            </Grid>
-            <Grid item xs={3}>
-              <div className='DetailSection'>
-                <div>Schedule</div>
-                <div>{data.schedule ? getScheduleText(data.schedule) : '-'}</div>
-              </div>
-            </Grid>
-          </Grid>
-          <Grid container spacing={2}>
-            <Grid item xs={3}>
-              <div className='DetailSection'>
-                <div>Reference Layer</div>
-                <div>
-                  {formatData(data.reference_layer_name)}
-                </div>
-              </div>
-            </Grid>
-            <Grid item xs={3}>
-              <div className='DetailSection'>
-                <div>Type of Geo Code</div>
-                <div>
-                  {formatData(data.admin_code_type)}
-                </div>
-              </div>
-            </Grid>
-          </Grid>
-          <Grid container spacing={2}>
-            <Grid item xs={3}>
-              <div className='DetailSection'>
-                <div>Date Time Setting</div>
-                <div>
-                  <div>{data.attributes.date_time_data_type === 'By Value' ? 'Selected Date' : formatData(data.attributes.date_time_data_type)}</div>
-                </div>
-              </div>
-            </Grid>
-            {
-              data.attributes.date_time_data_type === 'Data Driven' ?
-                <Fragment>
-                  <Grid item xs={3}>
-                    <div className='DetailSection'>
-                      <div>Column that being used</div>
-                      {
-                        formatData(data.attributes.date_time_data_field)
-                      }
-                    </div>
-                  </Grid>
-                  <Grid item xs={3}>
-                    <div className='DetailSection'>
-                      <div>Field/Column or Time format</div>
-                      {
-                        formatData(
-                          data.attributes?.date_time_data_format?.replace('%Y', 'YYYY').replace('%m', 'MM').replace('%d', 'DD').replace('%h', 'HH').replace('%m', 'MM').replace('%s', 'SS')
-                        )
-                      }
-                    </div>
-                  </Grid>
-                </Fragment> : data.attributes.date_time_data_type === 'Now' ? null :
-                  <Grid item xs={3}>
-                    <div className='DetailSection'>
-                      <div>Time that being used</div>
-                      {
-                        formatData(formatDateTime(new Date(data.attributes.date_time_data_value)))
-                      }
-                    </div>
-                  </Grid>
-            }
-          </Grid>
-
-          {/* Other Attributes */}
-          <Grid container spacing={2}>
-            {
-              filterAttributes(data.attributes).map(attr => {
-                return <Grid key={attr} item xs={3}>
-                  <div className='DetailSection'>
-                    <div>{formatTitle(attr)}</div>
-                    <div>{formatData(data.attributes[attr])}</div>
-                  </div>
-                </Grid>
-              })
-            }
-          </Grid>
+          <ImporterDetailSection inputData={data}/>
         </Grid>
         {
           data.logs ?
