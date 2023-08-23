@@ -161,9 +161,14 @@ export function returnWhere(where, ignoreActive, ids, sameGroupOperator = true) 
         }
       }
     case TYPE.EXPRESSION:
-      const fieldId = where.field.split('.')[0]
-      const used = ignoreActive || (where.active && (!ids || ids.includes(fieldId)))
-      const field = where.field.includes(' ') ? `"${where.field}"`.replaceAll('""', '"') : where.field
+      let field = where.field.includes(' ') ? `"${where.field}"`.replaceAll('""', '"') : where.field
+      const fieldSplit = field.split('.')
+      // We put all geometry_x as geometry_layer
+      if (fieldSplit[0].includes('geometry_')) {
+        fieldSplit[0] = 'geometry_layer'
+      }
+      field = fieldSplit.join('.')
+      const used = ignoreActive || (where.active && (!ids || ids.includes(fieldSplit[0])))
       return used ? returnDataToExpression(field, where.operator, where.value) : ''
 
   }
