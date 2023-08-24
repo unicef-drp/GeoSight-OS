@@ -61,6 +61,9 @@ export const HelpCenter = forwardRef(
         fetch(`/docs/${pageName}/data`)
           .then(response => response.json())
           .then((response) => {
+            if (response.detail) {
+              throw new Error(response.detail)
+            }
             setLoading(false)
             setData(response)
           })
@@ -91,7 +94,7 @@ export const HelpCenter = forwardRef(
             loading ? <div className='Throbber'>
               <CircularProgress/> Loading...
             </div> : data ? <Block data={data} isRoot={true}/> :
-              <div>No documentation found</div>
+              <div className='NotFound'>No helps found</div>
           }
         </div>
         {/* -------------------------------- */}

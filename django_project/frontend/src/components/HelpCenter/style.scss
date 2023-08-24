@@ -61,6 +61,15 @@
     transition: margin-right linear 0.1s;
     width: 430px;
 
+    .NotFound {
+      align-items: center;
+      display: flex;
+      height: 100%;
+      justify-content: center;
+      text-align: center;
+      width: 100%;
+    }
+
     .HelpCenter-Close {
       cursor: pointer;
       margin-left: auto;
