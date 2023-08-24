@@ -15,7 +15,7 @@ license: This program is free software; you can redistribute it and/or modify it
 
 ![Home Page](img/home.png)
 
-The home page is your first destination when opening GeoSight. It contains a list of projects to which you have access. The project home page is organised into these areas:
+The home page is your first destination when opening GeoSight. It contains a banner and a list of projects to which you have access. The project home page is organised into these areas:
 
 ## The Project Gallery 
 
