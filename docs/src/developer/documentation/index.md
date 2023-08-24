@@ -180,7 +180,7 @@ Once the editor loads, you will be greeted by a preview of the project's README.
 
 ![Web Editor 2](img/dev-docs-web-editor-2.png)
 
-Once you have expanded the `docs` folder, click on the `src` folder 1️⃣. All subfolders within the `src` folder contain the files that become the documentation. Each subfolder contains an `index.md` file that is required for the building of the documentation and static site. If you add a new subfolder into any folder it must also contain a populated `index.md` file, this will be further explained in the **Creating new files** section.
+Once you have expanded the `docs` folder, click on the `src` folder 1️⃣. All subfolders within the `src` folder contain the files that become the documentation. Each subfolder contains an `index.md` file that is required for the building of the documentation and static site. If you add a new subfolder into any folder it must also contain a populated `index.md` file, this will be further explained in the [Creating new files](#creating-new-files) section.
 
 ![Wed Editor 3](img/dev-docs-web-editor-3.png)
 
@@ -188,7 +188,7 @@ Once you have chosen which section of documentation you would like to edit (e.g.
 
 ![Web Editor 4](img/dev-docs-web-editor-4.png)
 
-Once you have the file open, you can start adding to the documentation using [Markdown](https://www.markdownguide.org/) syntax. If you need to add images to your documentation, add them to the relative `img` subfolders following the naming conventions set out in the `naming-convention.README` within the `img` subfolders (e.g. images for the *User Guide* would be added to the `user/guide/img/` subfolder 1️⃣). Adding images is explained further in the **Uploading images / media** section further down the page.
+Once you have the file open, you can start adding to the documentation using [Markdown](https://www.markdownguide.org/) syntax. If you need to add images to your documentation, add them to the relative `img` subfolders following the naming conventions set out in the `naming-convention.README` within the `img` subfolders (e.g. images for the *User Guide* would be added to the `user/guide/img/` subfolder 1️⃣). Adding images is explained further in the [Uploading images / media](#uploading-images-media) section further down the page.
 
 ![Web Editor 5](img/dev-docs-web-editor-5.png)
 > **Hint:** *You can click on the `naming-convention.README` file to view it and, in turn, read the image naming conventions. Just remember to switch back to the document that you are working on!*
@@ -225,15 +225,15 @@ Once you have selected a subfolder, click on the `New File...` button 1️⃣ to
 
 ![New File 2](img/dev-docs-new-file-2.png)
 
-Give your file a meaningful name (following the **File naming conventions** from above) and end the file name with **`.md`** to ensure that the file is saved as a markdown file. Once you have given your file a name, click `Enter` on your keyboard to finish creating it.
+Give your file a meaningful name (following the [File naming conventions](#file-naming-conventions) from above) and end the file name with **`.md`** to ensure that the file is saved as a markdown file. Once you have given your file a name, click `Enter` on your keyboard to finish creating it.
 
 ![New File 3](img/dev-docs-new-file-3.png)
 
-Once you have created a new file, you can start adding to the documentation using [Markdown](https://www.markdownguide.org/) syntax. You must add a header section to each new file! Please read the **Page metadata** section below regarding adding the standard header to new files.
+Once you have created a new file, you can start adding to the documentation using [Markdown](https://www.markdownguide.org/) syntax. You must add a header section to each new file! Please read the [Page metadata](#page-metadata) section below regarding adding the standard header to new files.
 
 ![New File 4](img/dev-docs-new-file-4.png)
 
-If you need to add images to your documentation, add them to the relative `img` subfolders following the naming conventions set out in the `naming-convention.README` within the `img` subfolders (e.g. images for the *User Guide* would be added to the `user/guide/img/` subfolder 1️⃣). Adding images is explained further in the **Uploading images / media** section further down the page.
+If you need to add images to your documentation, add them to the relative `img` subfolders following the naming conventions set out in the `naming-convention.README` within the `img` subfolders (e.g. images for the *User Guide* would be added to the `user/guide/img/` subfolder 1️⃣). Adding images is explained further in the [Uploading images / media](#uploading-images-media) section further down the page.
 
 ![Web Editor 5](img/dev-docs-web-editor-5.png)
 > **Hint:** *You can click on the `naming-convention.README` file to view it and, in turn, read the image naming conventions. Just remember to switch back to the document that you are working on.*
