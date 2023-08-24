@@ -162,52 +162,52 @@ To start adding to the documentation navigate to the [home page](https://github.
 
 Once on the repository home page, click on Fork 1️⃣
 
-![Fork Repository 1](img/dev-docs-fork-repo-1.png)
+![Fork Repository 1](img/fork-repo-1.png)
 
 On the next page, make sure your github account is selected as the owner 1️⃣ and make sure the "**Copy the** `main` **branch only**" option 2️⃣ is ticked as you will only need the main branch.
 
-![Fork Repository 2](img/dev-docs-fork-repo-2.png)
+![Fork Repository 2](img/fork-repo-2.png)
 
 Once you have forked the repository, ensure that you are working in the main branch.
 
-![Change Branch](img/dev-docs-check-branch.png)
+![Change Branch](img/check-branch.png)
 
 Once you are in your fork of the repository, click on `.` on your keyboard. This will open a web editor where you can begin adding to, or editing, the documentation. The screen below should appear until the editor loads.
 
-![Web Editor 1](img/dev-docs-web-editor-1.png)
+![Web Editor 1](img/web-editor-1.png)
 
 Once the editor loads, you will be greeted by a preview of the project's README.txt 1️⃣. Click on the `docs` folder 2️⃣ in the menu on the left, this will expand the folder. To confirm that you are working in the right branch it will say `main` 3️⃣️ in the bottom left of the editor. Also ensure that you are in the `Explorer` tab 4️⃣ of the web editor.
 
-![Web Editor 2](img/dev-docs-web-editor-2.png)
+![Web Editor 2](img/web-editor-2.png)
 
 Once you have expanded the `docs` folder, click on the `src` folder 1️⃣. All subfolders within the `src` folder contain the files that become the documentation. Each subfolder contains an `index.md` file that is required for the building of the documentation and static site. If you add a new subfolder into any folder it must also contain a populated `index.md` file, this will be further explained in the [Creating new files](#creating-new-files) section.
 
-![Wed Editor 3](img/dev-docs-web-editor-3.png)
+![Wed Editor 3](img/web-editor-3.png)
 
 Once you have chosen which section of documentation you would like to edit (e.g. user/guide/index.md), click on the file and it will open in the web editor.
 
-![Web Editor 4](img/dev-docs-web-editor-4.png)
+![Web Editor 4](img/web-editor-4.png)
 
 Once you have the file open, you can start adding to the documentation using [Markdown](https://www.markdownguide.org/) syntax. If you need to add images to your documentation, add them to the relative `img` subfolders following the naming conventions set out in the `naming-convention.README` within the `img` subfolders (e.g. images for the *User Guide* would be added to the `user/guide/img/` subfolder 1️⃣). Adding images is explained further in the [Uploading images / media](#uploading-images-media) section further down the page.
 
-![Web Editor 5](img/dev-docs-web-editor-5.png)
+![Web Editor 5](img/web-editor-5.png)
 > **Hint:** *You can click on the `naming-convention.README` file to view it and, in turn, read the image naming conventions. Just remember to switch back to the document that you are working on!*
 
 When you have completed making additions to (or editing) the documentation, click on the source control tab 1️⃣, then click on the `plus` symbol 2️⃣ next to the changes you are finished with to stage them, add a commit message 3️⃣️ that is associated with the work you have done, and then click on `Commit & Push` 4️⃣.
 
-![Web Editor 6](img/dev-docs-web-editor-6.png)
+![Web Editor 6](img/web-editor-6.png)
 
 Once you have committed your changes, Click on the burger menu 1️⃣ and then click on `Go To Repository` 2️⃣.
 
-![Web Editor 7](img/dev-docs-web-editor-7.png)
+![Web Editor 7](img/web-editor-7.png)
 
 Your fork of the repository will be opened in a new tab within your browser, navigate to that tab (your browser might block pop ups, so you might need to manually open the pop up to get back to your fork of the repository). Once there, ensure you are on the `main` 1️⃣ (you should see how many commits ahead of the upstream branch you are), then click on `Contribute` 2️⃣ -> `Open pull request` 3️⃣️.
 
-![Pull Request 1](img/dev-docs-pull-request-1.png)
+![Pull Request 1](img/pull-request-1.png)
 
 On the next screen, give your pull request a meaningful title 1️⃣, give additional details regarding changes made in the larger text box 2️⃣, then click on `Create pull request` 3️⃣️. Also ensure you are creating a pull request to the upstream `main` branch from your `main` branch.
 
-![Pull Request 2](img/dev-docs-pull-request-2.png)
+![Pull Request 2](img/pull-request-2.png)
 
 Once your pull request is opened you need to wait for it to be merged before you can open a new one.
 
@@ -215,44 +215,44 @@ Once your pull request is opened you need to wait for it to be merged before you
 
 Open the Web Editor by clicking on `.` on your keyboard when you are on your fork of the repository. The screen below should appear until the editor loads.
 
-![Web Editor 1](img/dev-docs-web-editor-1.png)
+![Web Editor 1](img/web-editor-1.png)
 
 Navigate to the relative subfolder within the `src` folder to which you would like to add a new file. (e.g. `src` -> `user` -> `manual`). Also ensure that you are in the `Explorer` tab 1️⃣ of the web editor.
 
-![New File 1](img/dev-docs-new-file-1.png)
+![New File 1](img/new-file-1.png)
 
 Once you have selected a subfolder, click on the `New File...` button 1️⃣ to the right of the repository name.
 
-![New File 2](img/dev-docs-new-file-2.png)
+![New File 2](img/new-file-2.png)
 
 Give your file a meaningful name (following the [File naming conventions](#file-naming-conventions) from above) and end the file name with **`.md`** to ensure that the file is saved as a markdown file. Once you have given your file a name, click `Enter` on your keyboard to finish creating it.
 
-![New File 3](img/dev-docs-new-file-3.png)
+![New File 3](img/new-file-3.png)
 
 Once you have created a new file, you can start adding to the documentation using [Markdown](https://www.markdownguide.org/) syntax. You must add a header section to each new file! Please read the [Page metadata](#page-metadata) section below regarding adding the standard header to new files.
 
-![New File 4](img/dev-docs-new-file-4.png)
+![New File 4](img/new-file-4.png)
 
 If you need to add images to your documentation, add them to the relative `img` subfolders following the naming conventions set out in the `naming-convention.README` within the `img` subfolders (e.g. images for the *User Guide* would be added to the `user/guide/img/` subfolder 1️⃣). Adding images is explained further in the [Uploading images / media](#uploading-images-media) section further down the page.
 
-![Web Editor 5](img/dev-docs-web-editor-5.png)
+![Web Editor 5](img/web-editor-5.png)
 > **Hint:** *You can click on the `naming-convention.README` file to view it and, in turn, read the image naming conventions. Just remember to switch back to the document that you are working on.*
 
 When you have completed making additions to (or editing) the documentation, click on the source control tab 1️⃣, then click on the `plus` symbol 2️⃣ next to the changes you are finished with to stage them, add a commit message 3️⃣️ that is associated with the work you have done, and the click on `Commit & Push` 4️⃣.
 
-![Web Editor 6](img/dev-docs-web-editor-6.png)
+![Web Editor 6](img/web-editor-6.png)
 
 Once you have committed your changes, Click on the burger menu 1️⃣ and then click on `Go To Repository` 2️⃣.
 
-![Web Editor 7](img/dev-docs-web-editor-7.png)
+![Web Editor 7](img/web-editor-7.png)
 
 Your fork of the repository will be opened in a new tab within your browser, navigate to that tab (your browser might block pop ups, so you might need to manually open the pop up to get back to your fork of the repository). Once there, ensure you are on the `main` 1️⃣ (you should see how many commits ahead of the upstream branch you are), then click on `Contribute` 2️⃣ -> `Open pull request` 3️⃣️.
 
-![Pull Request 1](img/dev-docs-pull-request-1.png)
+![Pull Request 1](img/pull-request-1.png)
 
 On the next screen, give your pull request a meaningful title 1️⃣, give additional details regarding changes made in the larger text box 2️⃣, then click on `Create pull request` 3️⃣️. Also ensure you are creating a pull request to the upstream `main` branch from your `main` branch.
 
-![Pull Request 2](img/dev-docs-pull-request-2.png)
+![Pull Request 2](img/pull-request-2.png)
 
 Once your pull request is opened you need to wait for it to be merged before you can open a new one.
 
@@ -302,19 +302,19 @@ Mkdocs will still generate the page but it will not be added to the menu.
 All folders and subfolders should contain an `img` subfolder (e.g. `user/guide/img/`) containing a `naming-convention.README`.
 If you add a new folder, then you should add a new `img` subfolder and copy a `naming-convention.README` from another existing `img` subfolder into your newly created folder.
 
-![Uploading Images 1](img/dev-docs-upload-img-1.png)
+![Uploading Images 1](img/upload-img-1.png)
 
 To upload an image, right-click on the relative `img` subfolder and select `upload` from the menu that appears.
 
-![Uploading Images 2](img/dev-docs-upload-img-2.png)
+![Uploading Images 2](img/upload-img-2.png)
 
 Select an image from your computer, using the file explore that opens, and then click on the `Open` Button 1️⃣ (The attached screenshot is from a Linux machine however, Windows also has an open button).
 
-![Uploading Images 3](img/dev-docs-upload-img-3.png)
+![Uploading Images 3](img/upload-img-3.png)
 
 If your image does not follow the naming conventions, right-click on the image, click on `Rename...` on the menu that appears, and then give your image an appropriate name.
 
-![Uploading Images 4](img/dev-docs-upload-img-4.png)
+![Uploading Images 4](img/upload-img-4.png)
 
 Useful tools for capturing images and screencasts are: Peek (For screencasts), Flameshot (For images), Shutter (For images), and Lightshot (For images)
 
