@@ -260,6 +260,7 @@
     color: $base-black-color;
     font-style: italic;
     opacity: $base-hovered-opacity;
+    padding: 1rem;
   }
 
   .MuiPaper-root {
@@ -359,6 +360,11 @@
     margin-top: 5px;
     width: 100%;
     border: 1px solid $primary-color;
+
+    .SelectWithSearchInput {
+      width: 100%;
+      border: unset !important;
+    }
 
     .MuiSvgIcon-root {
       color: #ddd;
@@ -494,6 +500,7 @@
       background-color: white;
       border: 1px solid rgba(0, 0, 0, 0.23);
       overflow: hidden;
+      min-width: 300px;
 
       input {
         border: unset;
@@ -503,6 +510,7 @@
         flex-grow: 1;
         padding: 12px 20px 0 20px;
         border-left: 1px solid rgba(0, 0, 0, 0.23);
+        min-width: 100px;
       }
 
       .MuiInput-root {

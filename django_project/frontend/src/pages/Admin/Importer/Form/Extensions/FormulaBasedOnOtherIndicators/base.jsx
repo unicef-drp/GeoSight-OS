@@ -127,7 +127,7 @@ export const FormulaBasedForm = forwardRef(
         </label>
         <span className='form-helptext'>
           Formula should returns "value, time". On the expression, you need to returns {text}. <br/>
-          Time is optional, if "Date Time Setting" in "Reference Layer & Time" is "Select Date" or "Now".
+          Time is optional, if "Date Time Setting" in "Reference Layer & Time" is "Selected Date" or "Now".
           <br/> But will be required if it is "Data-Driven Date".
           <br/>
           <br/>

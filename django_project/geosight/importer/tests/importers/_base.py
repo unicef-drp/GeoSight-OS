@@ -17,6 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 from unittest.mock import patch
 
 from dateutil import parser
+from django.db import connection
 from django.test.testcases import TestCase
 
 from core.models.preferences import SitePreferences
@@ -138,6 +139,8 @@ class BaseIndicatorValueImporterTest(BaseImporterTest):
         importer.run()
         log = importer.importerlog_set.all().last()
         self.assertEqual(log.status, 'Success')
+        all_tables = connection.introspection.table_names()
+        self.assertTrue(importer.data_table_name not in all_tables)
 
     def assertImporter(self, importer):
         """Assert importer when run."""

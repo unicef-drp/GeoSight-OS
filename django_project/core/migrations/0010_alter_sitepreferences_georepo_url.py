@@ -27,6 +27,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='sitepreferences',
             name='georepo_url',
-            field=models.CharField(default='https://georepo.kartoza.com/', max_length=512),
+            field=models.CharField(default='', max_length=512),
         ),
     ]

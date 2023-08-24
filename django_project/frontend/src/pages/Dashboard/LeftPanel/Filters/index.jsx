@@ -27,7 +27,8 @@ import { Actions } from "../../../../store/dashboard";
 import {
   IDENTIFIER,
   INIT_DATA,
-  queryData
+  queryData,
+  returnWhere
 } from "../../../../utils/queryExtraction";
 import { dictDeepCopy } from "../../../../utils/main";
 import { fetchingData } from "../../../../Requests";
@@ -76,30 +77,53 @@ function FilterSection() {
     if (!level || !geometries[level.level]) {
       return;
     }
+    const indicatorLayerConfig = {}
+    indicatorLayers.map(layer => {
+      indicatorLayerConfig[layer.id] = layer.config
+    })
     const config = JSON.stringify({
       filter: currentFilter,
-      time: selectedGlobalTime
+      time: selectedGlobalTime,
+      indicatorLayerConfig: indicatorLayerConfig
     })
+
     const reporting_level = level.level;
     if (prevState.config !== config || prevState.level !== selectedAdminLevel.level) {
       // Doing the filter if it is different filter
       // PREPARE DATA LIST
       let dataList = [];
-      const data = []
       // Geometry data
       const codes = []
-      for (const [key, geomData] of Object.entries(geometries[level.level])) {
-        const geom = JSON.parse(JSON.stringify(geomData))
-        geom.geometry_code = geom.code
-        data.push(geom)
-        codes.push(geom.geometry_code)
-      }
-      dataList.push({
-        id: `geometry_${level.level}`,
-        reporting_level: level.level,
-        data: data
-      })
+      const data = []
+      const where = returnWhere(currentFilter)
 
+      for (const [level, geomDataLevel] of Object.entries(geometries)) {
+        for (const [key, geomData] of Object.entries(geomDataLevel)) {
+          codes.push(geomData.code)
+          if (where.includes('geometry_layer.')) {
+            geomData.members.map(member => {
+              data.push({
+                concept_uuid: geomData.concept_uuid,
+                ucode: member.ucode,
+                name: member.name,
+              })
+            })
+          } else {
+            data.push({
+              concept_uuid: geomData.concept_uuid,
+              ucode: geomData.ucode,
+              name: geomData.name,
+            })
+          }
+        }
+      }
+      for (const [level, geomDataLevel] of Object.entries(geometries)) {
+        dataList.push({
+          id: `geometry_layer`,
+          reporting_level: level,
+          data: data
+        })
+      }
       // ------------------------------------------------
       // Indicator data
       // ------------------------------------------------
@@ -194,7 +218,7 @@ function FilterSection() {
       fetchingData(
         url, params, {}, function (response, error) {
           let rows = response
-          if (relatedTableConfig.query) {
+          if (relatedTableConfig?.query) {
             try {
               rows = queryData(rows, relatedTableConfig.query)
             } catch (err) {
@@ -348,9 +372,8 @@ function FilterSection() {
 /**
  * Filters Accordion.
  */
-export default function FiltersAccordion() {
+export default function FiltersAccordion({ isAdmin }) {
   const { filters } = useSelector(state => state.dashboard.data);
-
   return (
     <Accordion
       className='FilterAccordion'
@@ -358,7 +381,8 @@ export default function FiltersAccordion() {
     >
       <AccordionDetails>
         {
-          filters !== undefined ? <FilterSection/>
+          filters !== undefined ? (!isAdmin && !Object.keys(filters).length) ? null :
+              <FilterSection/>
             : <div>Loading</div>
         }
       </AccordionDetails>

@@ -43,9 +43,9 @@ import {
   TableActiveIcon,
   TableIcon,
 } from "../../../../components/Icons";
+import { HelpCenter } from "../../../../components/HelpCenter";
 
 import './style.scss';
-import { HelpPage } from "../../../../components/HelpPage";
 
 
 function SidaNavigationButton({ title, minified, children }) {
@@ -232,7 +232,7 @@ export default function SideNavigation({ pageName, minified }) {
         <User detail={true}/>
       </div>
 
-      <HelpPage ref={helpPageRef}/>
+      <HelpCenter ref={helpPageRef}/>
     </div>
   );
 }

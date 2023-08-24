@@ -36,6 +36,8 @@ urlpatterns = [
     url(r'^django-admin/core/sitepreferences/$', RedirectView.as_view(
         url='/django-admin/core/sitepreferences/1/change/', permanent=False),
         name='index'),
+
+    url(r'^', include('docs.urls')),
     url(r'^django-admin/', admin.site.urls),
 ]
 

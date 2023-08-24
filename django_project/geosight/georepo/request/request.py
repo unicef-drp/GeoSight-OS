@@ -71,9 +71,6 @@ class GeorepoUrl:
     def __init__(self, api_key: str = None):
         """Init Class."""
         pref = SitePreferences.preferences()
-        if not pref.georepo_url:
-            raise GeorepoUrlDoesNotExist()
-
         self.georepo_url = pref.georepo_url.strip('/')
         parsed = urlparse(self.georepo_url)
         self.georepo_domain = parsed.scheme + '://' + parsed.netloc
@@ -173,8 +170,6 @@ class GeorepoRequest:
     def __init__(self):
         """Init Class."""
         pref = SitePreferences.preferences()
-        if not pref.georepo_url:
-            raise GeorepoUrlDoesNotExist()
         self.urls = GeorepoUrl(
             api_key=pref.georepo_api_key_level_4
         )

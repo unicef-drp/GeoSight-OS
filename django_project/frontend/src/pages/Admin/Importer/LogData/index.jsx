@@ -35,7 +35,7 @@ import {
 } from "../../../../utils/main";
 import CustomPopover from "../../../../components/CustomPopover";
 import { SelectWithList } from "../../../../components/Input/SelectWithList";
-import { DatasetList } from "../../Dataset/index";
+import DatasetList from "../../Dataset/DatasetList";
 import { NotificationStatus } from "../../../../components/Notification";
 import { axiosGet } from "../../../../utils/georepo";
 import { AdminPage, pageNames } from "../../index";
@@ -239,7 +239,7 @@ export default function ImporterLogData() {
                   </div>
                 </CustomPopover>
                 &nbsp;
-                <div title={params.value}>{params.value}</div>
+                <div title={params.value} className='MuiDataGrid-cellContent'>{params.value}</div>
               </div>
             } else if (note && key === 'value' && note.warning) {
               return <div className='FlexCell'>
@@ -260,7 +260,7 @@ export default function ImporterLogData() {
               if (isDate) {
                 return parseDateTime(params.value)
               }
-              return <div title={params.value}>{params.value}</div>
+              return <div title={params.value} className='MuiDataGrid-cellContent'>{params.value}</div>
             }
           },
           cellClassName: (params) => {

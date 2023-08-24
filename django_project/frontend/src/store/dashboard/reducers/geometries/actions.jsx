@@ -1,23 +1,24 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 import {
   GEOMETRIES_ACTION_NAME,
   GEOMETRIES_ACTION_TYPE_ADD,
   GEOMETRIES_ACTION_TYPE_ADD_LEVEL_DATA,
-  GEOMETRIES_ACTION_TYPE_DELETE_ALL
+  GEOMETRIES_ACTION_TYPE_DELETE_ALL,
+  GEOMETRIES_ACTION_TYPE_UPDATE
 } from './index';
 
 /**
@@ -58,7 +59,17 @@ export function deleteAll() {
   };
 }
 
+/**
+ * Update all data.
+ */
+export function update() {
+  return {
+    name: GEOMETRIES_ACTION_NAME,
+    type: GEOMETRIES_ACTION_TYPE_UPDATE
+  };
+}
+
 
 export default {
-  add, addLevelData, deleteAll
+  add, addLevelData, deleteAll, update
 }

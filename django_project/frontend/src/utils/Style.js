@@ -14,6 +14,8 @@
  */
 import { isArray } from "chart.js/helpers";
 import { dictDeepCopy } from "./main";
+import { NO_DATA_RULE } from "../pages/Admin/Style/Form/StyleRules";
+import { getLayerDataCleaned } from "./indicatorLayer";
 
 
 export const STYLE_FORM_LIBRARY = 'Style from library.'
@@ -66,6 +68,39 @@ export function returnLayerStyleConfig(layer, indicators) {
     config = config.style_data
   }
   return config
+}
+
+
+/** Getting style of layer ***/
+export const indicatorLayerStyle = (
+  layer, indicators, indicatorsData,
+  relatedTableData, selectedGlobalTime, geoField, admin_level, filteredGeometries,
+  initConfig
+) => {
+  // Get rules
+  let config = returnLayerStyleConfig(layer, indicators)
+  if (initConfig) {
+    config = initConfig
+  }
+  let style = config.style
+  if (dynamicStyleTypes.includes(config.style_type)) {
+    let data = getLayerDataCleaned(
+      indicatorsData, relatedTableData, layer, selectedGlobalTime, geoField,
+      config?.style_config?.sync_filter ? filteredGeometries : null
+    )
+    style = createDynamicStyle(data[0]?.data, config.style_type, config.style_config, config.style_data)
+    if (style[admin_level]) {
+      const adminStyle = style[admin_level].filter(st => st.name !== NO_DATA_RULE)
+      adminStyle.reverse()
+      style = [...adminStyle, ...style['NoData']]
+    } else {
+      style = style['NoData']
+    }
+  }
+  if (style) {
+    style = style.filter(st => st.active)
+  }
+  return style
 }
 
 /**
@@ -193,6 +228,9 @@ export function createDynamicStyle(data, styleType, config, styleData) {
             // Create classification
             for (let idx = 0; idx < classifications.length; idx++) {
               if (idx !== 0) {
+                if ([classifications[idx - 1], classifications[idx]].includes(undefined)) {
+                  continue
+                }
                 const below = classifications[idx - 1].toFixed(2);
                 const top = classifications[idx].toFixed(2);
                 const color = colors[idx - 1]
@@ -230,15 +268,12 @@ export function createDynamicStyle(data, styleType, config, styleData) {
 /**
  * Return no data style
  */
-export function returnNoDataStyle(config, data) {
+export function returnNoDataStyle(layer, indicators) {
   let noDataRule = null
-  // If from style from library
-  if (config.style_type === STYLE_FORM_LIBRARY) {
-    config = config.style_data
-  }
-  let style = config?.style
+  let config = returnLayerStyleConfig(layer, indicators)
+  let style = config.style
   if (dynamicStyleTypes.includes(config.style_type)) {
-    style = createDynamicStyle(data, config.style_type, config.style_config, config.style_data)
+    const style = createDynamicStyle([], config.style_type, config.style_config, config.style_data)
     return style['NoData'][0]
   } else {
     if (style) {

@@ -112,7 +112,7 @@ export const IndicatorSettings = forwardRef(
                   >
                     <FormControlLabel
                       value={'By Value'} control={<Radio/>}
-                      label={'Select Indicator'}/>
+                      label={'Selected Indicator'}/>
                     <FormControlLabel
                       disabled={valueOnly}
                       value={'Data Driven'} control={<Radio/>}

@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { Fragment, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import $ from "jquery";
 import {
   LocalizationProvider
@@ -27,7 +27,6 @@ import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
 import InfoIcon from "@mui/icons-material/Info";
 
 import { render } from '../../../app';
-import { AdminPage, pageNames } from '../index';
 import { store } from '../../../store/admin';
 import {
   DatasetFilterSelector,
@@ -36,97 +35,25 @@ import {
 import {
   MultipleCreatableFilter
 } from "../ModalSelector/ModalFilterSelector/MultipleCreatableFilter";
+import { deleteFromArray, splitParams, urlParams } from "../../../utils/main";
 import {
-  deleteFromArray,
-  dictDeepCopy,
-  jsonToUrlParams,
-  splitParams,
-  urlParams
-} from "../../../utils/main";
-import { NotificationStatus } from "../../../components/Notification";
-import { AdminListContent } from "../AdminList";
-import { fetchJSON } from "../../../Requests";
+  Notification,
+  NotificationStatus
+} from "../../../components/Notification";
 import CustomPopover from "../../../components/CustomPopover";
 import { IconTextField } from "../../../components/Elements/Input";
-import { DeleteButton, SaveButton } from "../../../components/Elements/Button";
-import { ConfirmDialog } from "../../../components/ConfirmDialog";
+import { AdminListPagination } from "../AdminListPagination";
+import { SaveButton } from "../../../components/Elements/Button";
+import { AdminPage, pageNames } from "../index";
+
 
 import './style.scss';
-
-/*** Dataset list **/
-export function DatasetList(
-  { filters, setFilters, rightHeader, tableHeader, ...props }
-) {
-  return <Fragment>
-    <AdminListContent
-      rightHeader={rightHeader}
-      tableHeader={tableHeader}
-      pageName={pageNames.Dataset}
-      otherFilters={
-        <div className='ListAdminFilters'>
-          <IndicatorFilterSelector
-            data={filters.indicators}
-            setData={newFilter => setFilters({
-              ...filters,
-              indicators: newFilter
-            })}/>
-          <DatasetFilterSelector
-            data={filters.datasets}
-            setData={newFilter => setFilters({
-              ...filters,
-              datasets: newFilter
-            })}/>
-          <MultipleCreatableFilter
-            title={'Filter by Level(s)'}
-            data={filters.levels}
-            setData={newFilter => setFilters({
-              ...filters,
-              levels: newFilter
-            })}/>
-          <MultipleCreatableFilter
-            title={'Filter by Geography(s)'}
-            data={filters.geographies}
-            setData={newFilter => setFilters({
-              ...filters,
-              geographies: newFilter
-            })}/>
-          <LocalizationProvider dateAdapter={AdapterMoment}>
-            <DesktopDatePicker
-              label="Filter from"
-              inputFormat="YYYY-MM-DD"
-              maxDate={filters.toTime}
-              value={filters.fromTime}
-              onChange={newFilter => setFilters({
-                ...filters,
-                fromTime: newFilter
-              })}
-              renderInput={(params) => <TextField {...params} />}
-            />
-            <DesktopDatePicker
-              label="Filter to"
-              inputFormat="YYYY-MM-DD"
-              minDate={filters.fromTime}
-              value={filters.toTime}
-              onChange={newFilter => setFilters({
-                ...filters,
-                toTime: newFilter
-              })}
-              renderInput={(params) => <TextField {...params} />}
-            />
-          </LocalizationProvider>
-        </div>
-      }
-      {...props}
-    />
-  </Fragment>
-}
 
 /*** Dataset admin */
 const deleteWarning = "WARNING! Do you want to delete the selected data? This will apply directly to database."
 
 export default function DatasetAdmin() {
-  const deleteDialogRef = useRef(null);
-  const prev = useRef();
+  const tableRef = useRef(null);
   // Notification
   const notificationRef = useRef(null);
   const notify = (newMessage, newSeverity = NotificationStatus.INFO) => {
@@ -135,13 +62,6 @@ export default function DatasetAdmin() {
 
   // Other attributes
   const defaultFilters = urlParams()
-  const pageSize = 25;
-  const [parameters, setParameters] = useState({
-    page: 0,
-    page_size: pageSize
-  })
-  const [data, setData] = useState([])
-  const [rowSize, setRowSize] = useState(0)
   const [filters, setFilters] = useState({
     indicators: defaultFilters.indicators ? splitParams(defaultFilters.indicators) : [],
     datasets: defaultFilters.datasets ? splitParams(defaultFilters.datasets) : [],
@@ -150,10 +70,13 @@ export default function DatasetAdmin() {
     fromTime: defaultFilters.fromTime ? defaultFilters.fromTime : null,
     toTime: defaultFilters.toTime ? defaultFilters.toTime : null,
   })
-  const [selectionModel, setSelectionModel] = useState([]);
   const [updatedData, setUpdatedData] = useState([]);
-  const [error, setError] = useState(null);
-  const [applying, setApplying] = useState(false);
+  const [disabled, setDisabled] = useState(false)
+
+  // When filter changed
+  useEffect(() => {
+    tableRef?.current?.refresh()
+  }, [filters])
 
   // COLUMNS
   const COLUMNS = [
@@ -245,7 +168,7 @@ export default function DatasetAdmin() {
                     'ids': JSON.stringify([params.row.id])
                   },
                   success: function () {
-                    loadData(true);
+                    tableRef?.current?.refresh()
                   },
                   error: function (error) {
                     notify(error, NotificationStatus.ERROR)
@@ -265,7 +188,7 @@ export default function DatasetAdmin() {
   /***
    * Parameters Changed
    */
-  const parametersChanged = () => {
+  const getParameters = (parameters) => {
     if (filters.indicators.length) {
       parameters['indicator_id__in'] = filters.indicators.join(',')
     } else {
@@ -296,111 +219,23 @@ export default function DatasetAdmin() {
     } else {
       delete parameters['date__lte']
     }
-    setParameters({ ...parameters })
-  }
-
-  /*** Load data */
-  const loadData = (force) => {
-    setData(null)
-    const paramsUsed = dictDeepCopy(parameters)
-    paramsUsed.page += 1
-    const params = jsonToUrlParams(paramsUsed)
-    const url = urls.api.datasetApi + '?' + params
-    if (!force && url === prev.urlRequest) {
-      return
-    }
-    prev.urlRequest = url
-
-    fetchJSON(url, {}, false)
-      .then(data => {
-        if (prev.urlRequest === url) {
-          setRowSize(data.count)
-          setData(data.results)
-        }
-      })
-      .catch(error => {
-        if (error?.response?.data) {
-          setError(error.response.data)
-        } else {
-          setError(error.message)
-        }
-      })
-  }
-  /*** When parameters changed */
-  useEffect(() => {
-    loadData()
-  }, [parameters])
-
-  /***
-   * When page size and filter changed
-   */
-  useEffect(() => {
-      parameters.page = 0
-      setRowSize(0)
-      parametersChanged()
-    }, [pageSize, filters]
-  )
-
-  // Update with edited one
-  let usedData = null
-  if (data) {
-    usedData = dictDeepCopy(data)
-    usedData.map(rowData => {
-      const foundUpdatedData = updatedData.find(row => row.id === rowData.id)
-      if (foundUpdatedData) {
-        rowData.value = foundUpdatedData.value
-        rowData.updated = true
-      }
-    })
+    return parameters
   }
 
   return <AdminPage pageName={pageNames.Dataset}>
-    <DatasetList
-      tableHeader={
-        <Fragment>
-          <DeleteButton
-            disabled={!selectionModel.length || applying}
-            variant="Error Reverse"
-            text={"Delete"}
-            onClick={() => {
-              deleteDialogRef?.current?.open()
-            }}
-          />
-          <ConfirmDialog
-            onConfirmed={() => {
-              setApplying(true)
-              $.ajax({
-                url: urls.api.datasetApi,
-                method: 'DELETE',
-                data: {
-                  'ids': JSON.stringify(selectionModel)
-                },
-                success: function () {
-                  setApplying(false)
-                  loadData(true)
-                },
-                error: function () {
-                  setApplying(false)
-                  notify(error.responseText, NotificationStatus.ERROR)
-                },
-                beforeSend: beforeAjaxSend
-              });
-            }}
-            ref={deleteDialogRef}
-          >
-            <div>
-              Are you sure want to delete {selectionModel.length} data.
-            </div>
-          </ConfirmDialog>
-        </Fragment>
-      }
+    <AdminListPagination
+      ref={tableRef}
+      urlData={urls.api.datasetApi}
+      COLUMNS={COLUMNS}
+      disabled={disabled}
+      setDisabled={setDisabled}
       rightHeader={
         <SaveButton
           variant="primary"
           text={"Apply " + updatedData.length + " Change(s)"}
-          disabled={!updatedData.length || applying}
+          disabled={!updatedData.length || disabled}
           onClick={() => {
-            setApplying(true)
+            setDisabled(true)
             $.ajax({
               url: urls.api.datasetApi,
               method: 'POST',
@@ -413,12 +248,12 @@ export default function DatasetAdmin() {
                 }))
               },
               success: function () {
-                setApplying(false)
+                setDisabled(false)
                 setUpdatedData([])
-                loadData(true);
+                tableRef?.current?.refresh()
               },
               error: function (error) {
-                setApplying(false)
+                setDisabled(false)
                 notify(error.responseText, NotificationStatus.ERROR)
               },
               beforeSend: beforeAjaxSend
@@ -426,53 +261,76 @@ export default function DatasetAdmin() {
           }}
         />
       }
-      columns={COLUMNS}
-      rows={usedData}
-      filters={filters}
-      setFilters={setFilters}
-
-      rowCount={rowSize}
-      page={parameters.page}
-
-      getCellClassName={params => {
-        let className = ''
-        if (params.row.updated) {
-          className = 'Updated '
+      otherFilters={
+        <div className='ListAdminFilters'>
+          <IndicatorFilterSelector
+            data={filters.indicators}
+            setData={newFilter => setFilters({
+              ...filters,
+              indicators: newFilter
+            })}/>
+          <DatasetFilterSelector
+            data={filters.datasets}
+            setData={newFilter => setFilters({
+              ...filters,
+              datasets: newFilter
+            })}/>
+          <MultipleCreatableFilter
+            title={'Filter by Level(s)'}
+            data={filters.levels}
+            setData={newFilter => setFilters({
+              ...filters,
+              levels: newFilter
+            })}/>
+          <MultipleCreatableFilter
+            title={'Filter by Geography(s)'}
+            data={filters.geographies}
+            setData={newFilter => setFilters({
+              ...filters,
+              geographies: newFilter
+            })}/>
+          <LocalizationProvider dateAdapter={AdapterMoment}>
+            <DesktopDatePicker
+              label="Filter from"
+              inputFormat="YYYY-MM-DD"
+              maxDate={filters.toTime}
+              value={filters.fromTime}
+              onChange={newFilter => setFilters({
+                ...filters,
+                fromTime: newFilter
+              })}
+              renderInput={(params) => <TextField {...params} />}
+            />
+            <DesktopDatePicker
+              label="Filter to"
+              inputFormat="YYYY-MM-DD"
+              minDate={filters.fromTime}
+              value={filters.toTime}
+              onChange={newFilter => setFilters({
+                ...filters,
+                toTime: newFilter
+              })}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </LocalizationProvider>
+        </div>
+      }
+      getParameters={getParameters}
+      updateData={
+        usedData => {
+          usedData.map(rowData => {
+            const foundUpdatedData = updatedData.find(row => row.id === rowData.id)
+            if (foundUpdatedData) {
+              rowData.value = foundUpdatedData.value
+              rowData.updated = true
+            }
+          })
+          return usedData
         }
-        if (["__check__", "actions"].includes(params.field)) {
-          if (!params.row.permission.delete) {
-            className += "Hide"
-          }
-        }
-        return className
-      }}
-
-      pagination
-      pageSize={parameters.page_size}
-      rowsPerPageOptions={[25, 50, 100]}
-      onPageSizeChange={(newPageSize) => {
-        parameters.page_size = newPageSize
-        parametersChanged()
-      }}
-      paginationMode="server"
-      onPageChange={(newPage) => {
-        parameters.page = newPage
-        parametersChanged()
-      }}
-
-      disableSelectionOnClick
-      disableColumnFilter
-
-      selectionChanged={(newSelectionModel) => {
-        if (data) {
-          setSelectionModel(
-            data.filter(row => row.permission.delete && newSelectionModel.includes(row.id)).map(row => row.id)
-          )
-        }
-      }}
-      selectionModel={selectionModel}
-      error={error}
+      }
+      hideSearch={true}
     />
+    <Notification ref={notificationRef}/>
   </AdminPage>
 }
 

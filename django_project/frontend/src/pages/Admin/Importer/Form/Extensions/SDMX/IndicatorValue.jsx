@@ -126,7 +126,7 @@ export const SDMXIndicatorValue = forwardRef(
             ref={indicatorRef}
           />
           <FormControl className="BasicFormSection">
-            <label className="form-label required">Column Value</label>
+            <label className="form-label required">Value Column</label>
             <SelectWithList
               list={attributes}
               value={data.key_value}

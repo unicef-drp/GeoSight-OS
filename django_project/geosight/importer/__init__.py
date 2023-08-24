@@ -26,5 +26,10 @@ class Config(AppConfig):
     name = 'geosight.importer'
     verbose_name = "GeoSight Data Management"
 
+    def ready(self):
+        """Create temp schema."""
+        from core.database_setup import create_temp_schema
+        create_temp_schema()
+
 
 default_app_config = 'geosight.importer.Config'

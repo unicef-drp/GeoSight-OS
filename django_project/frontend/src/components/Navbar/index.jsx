@@ -25,7 +25,7 @@ import User from './User'
 import { EmbedConfig } from "../../utils/embed";
 import { CogIcon, HelpIcon } from "../Icons";
 import { ThemeButton } from "../Elements/Button";
-import { HelpPage } from "../HelpPage";
+import { HelpCenter } from "../HelpCenter";
 
 import './style.scss';
 
@@ -90,7 +90,7 @@ export default function NavBar({ minified }) {
           <User/>
         </div>
       </header>
-      <HelpPage ref={helpPageRef}/>
+      <HelpCenter ref={helpPageRef}/>
     </Fragment>
   )
 }

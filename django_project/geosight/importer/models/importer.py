@@ -17,6 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 import json
 import uuid
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.gis.db import models
 from django.db.models import Q
@@ -136,8 +137,7 @@ class Importer(AbstractEditData):
     def unique_name(self):
         """Return unique name."""
         return (
-            f'{self.creator.username} '
-            f'({self.created_at.strftime("%Y-%m-%d %H:%M:%S")})'
+            f'{self.creator.username} ({self.unique_id})'
         )
 
     def save(self, *args, **kwargs):
@@ -392,6 +392,25 @@ class Importer(AbstractEditData):
             elif not self.job:
                 return True
         return False
+
+    @property
+    def data_table_name(self):
+        """Return table name of data."""
+        fb_identifier = str(self.unique_id).replace('-', '_')
+        return f'{settings.TEMP_SCHEMA_NAME}.temp_data_{fb_identifier}'
+
+    def permissions(self, user: User):
+        """Return permission."""
+        perm = False
+        if user:
+            perm = user == self.creator or user.profile.is_admin
+        return {
+            "list": perm,
+            "read": perm,
+            "edit": perm,
+            "share": perm,
+            "delete": perm
+        }
 
 
 class ImporterAlert(models.Model):

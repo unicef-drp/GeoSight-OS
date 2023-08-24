@@ -19,6 +19,11 @@
 @import '../../app/variables';
 
 .Home {
+  ::-webkit-scrollbar {
+    width: 10px !important;
+    height: 10px !important;;
+  }
+
   main {
     padding: 0;
     flex-grow: 1;

@@ -352,7 +352,7 @@ export function removeChildrenOf(items, ids) {
 }
 
 /** Data structure to tree data */
-export function dataStructureToTreeData(data, dataStructure, groupList = []) {
+export function dataStructureToTreeData(data, dataStructure, parentGroupId) {
   if (!data || !dataStructure) {
     return []
   }
@@ -361,19 +361,19 @@ export function dataStructureToTreeData(data, dataStructure, groupList = []) {
       return null
     }
     if (child.group) {
+      const groupId = child.id ? child.id : '';
       return {
-        id: child.id ? child.id : groupList.concat(child.group).join('->'),
+        id: groupId,
         name: child.group,
         isGroup: true,
         data: null,
-        children: dataStructureToTreeData(
-          data, child, groupList.concat(child.group))
+        children: dataStructureToTreeData(data, child, groupId)
 
       }
     } else {
       const layerData = data.find(row => row.id === child)
       if (layerData) {
-        layerData.group = groupList.join('->')
+        layerData.group = parentGroupId
         return {
           id: child,
           name: layerData.name,
@@ -389,7 +389,7 @@ export function dataStructureToTreeData(data, dataStructure, groupList = []) {
 }
 
 /** Data structure to tree data */
-export function dataStructureToListData(data, dataStructure, groupList = []) {
+export function dataStructureToListData(data, dataStructure, parentGroupId = []) {
   if (!data || !dataStructure) {
     return []
   }
@@ -399,9 +399,10 @@ export function dataStructureToListData(data, dataStructure, groupList = []) {
       return []
     }
     if (child.group) {
+      const groupId = child.id ? child.id : '';
       output = output.concat([
           {
-            id: groupList.concat(child.group).join('->'),
+            id: groupId,
             name: child.group,
             isGroup: true,
             data: null
@@ -410,12 +411,12 @@ export function dataStructureToListData(data, dataStructure, groupList = []) {
         ]
       )
       output = output.concat(
-        dataStructureToListData(data, child, groupList.concat(child.group))
+        dataStructureToListData(data, child, groupId)
       )
     } else {
       const layerData = data.find(row => row.id === child)
       if (layerData) {
-        layerData.group = groupList.join('->')
+        layerData.group = parentGroupId
         output = output.concat(
           [{
             id: child,
@@ -434,17 +435,16 @@ export function dataStructureToListData(data, dataStructure, groupList = []) {
 }
 
 /** Return group in structure **/
-export function _returnGroupInStructure(structure, id, updateFunction) {
+export function _returnGroupInStructure(structure, id, updateFunction, parent) {
   if (!structure.children) {
     return
   }
+  if (structure.id === id) {
+    updateFunction(structure, parent)
+  }
   structure.children.map(child => {
-    if (child.id === id) {
-      updateFunction(child, structure)
-    } else {
-      if (child.children) {
-        _returnGroupInStructure(child, id, updateFunction)
-      }
+    if (child.children) {
+      _returnGroupInStructure(child, id, updateFunction, structure)
     }
   })
 }
@@ -471,7 +471,7 @@ export function addChildToGroupInStructure(id, child, structure, callback) {
 /** Remove child from structure **/
 export function removeChildInGroupInStructure(id, child, structure, callback) {
   if (id !== undefined) {
-    _returnGroupInStructure(structure, id.split('->'), data => {
+    _returnGroupInStructure(structure, id, data => {
       const index = data.children.indexOf(child);
       if (index > -1) {
         data.children.splice(index, 1)

@@ -103,7 +103,7 @@ export const BaseWideExcelIndicatorValue = forwardRef(
 
         {/* For other data */}
         <FormControl className="BasicFormSection">
-          <label className="form-label required">Column Geo Code</label>
+          <label className="form-label required">Geo Code Column</label>
           {
             !noAttributes ?
               <SelectWithList

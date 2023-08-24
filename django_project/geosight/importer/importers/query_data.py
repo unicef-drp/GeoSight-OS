@@ -69,15 +69,11 @@ class QueryDataImporter(ABC):
             )
         ]
 
-    @property
-    def data_table_name(self):
-        """Return table name of data."""
-        fb_identifier = str(self.importer.unique_id).replace('-', '_')
-        return f'data_{fb_identifier}'
-
     def delete_tables(self):
         """Delete all tables from database."""
-        self.cursor.execute(f'DROP TABLE IF EXISTS {self.data_table_name}')
+        self.cursor.execute(
+            f'DROP TABLE IF EXISTS {self.importer.data_table_name}'
+        )
 
     def insert_features(self, data: list, table_name: str, fields: list):
         """Insert features to table."""
@@ -188,12 +184,12 @@ class QueryDataImporter(ABC):
                 # Insert features to database
                 self.insert_features(
                     data=data,
-                    table_name=self.data_table_name,
+                    table_name=self.importer.data_table_name,
                     fields=fields
                 )
                 # We do query
                 _whr = f"{'WHERE ' + ' AND '.join(filters) if filters else ''}"
-                _from = f'from {self.data_table_name} data'
+                _from = f'from {self.importer.data_table_name} data'
                 query = (
                     f'SELECT {aggregation_query} as value, {group_field}, '
                     f'COUNT(_row_) as _count_ '

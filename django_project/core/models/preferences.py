@@ -41,7 +41,7 @@ class SitePreferences(SingletonModel):
 
     site_url = models.CharField(
         max_length=512,
-        default='https://geosight.kartoza.com'
+        default=''
     )
 
     disclaimer = models.TextField(
@@ -64,7 +64,7 @@ class SitePreferences(SingletonModel):
     # -----------------------------------------------
     georepo_url = models.CharField(
         max_length=512,
-        default='https://georepo.kartoza.com/'
+        default=''
     )
     georepo_api_key_level_1 = models.CharField(
         max_length=512,
@@ -81,11 +81,12 @@ class SitePreferences(SingletonModel):
     # -----------------------------------------------
     # LANDING PAGE
     # -----------------------------------------------
-    landing_page_banner = models.FileField(
+    landing_page_banner = models.ImageField(
         null=True, blank=True,
         upload_to='settings/images'
     )
     landing_page_banner_text = models.TextField(
+        null=True, blank=True,
         default=''
     )
 
@@ -136,12 +137,12 @@ class SitePreferences(SingletonModel):
             'Anti of tertiary color that used for text in primary color.'
         )
     )
-    icon = models.FileField(
+    icon = models.ImageField(
         upload_to='settings/icons',
         null=True,
         blank=True
     )
-    favicon = models.FileField(
+    favicon = models.ImageField(
         upload_to='settings/icons',
         null=True,
         blank=True
@@ -266,7 +267,7 @@ class SitePreferencesImage(models.Model):
         SitePreferences,
         on_delete=models.CASCADE
     )
-    image = models.FileField(
+    image = models.ImageField(
         upload_to='settings/images'
     )
     title = models.CharField(

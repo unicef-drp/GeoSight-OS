@@ -18,7 +18,6 @@
    ========================================================================== */
 
 import React, { Fragment, useEffect, useState } from 'react'
-import $ from 'jquery'
 import { useDispatch } from "react-redux"
 import Tooltip from '@mui/material/Tooltip'
 import { styled } from '@mui/material/styles';
@@ -49,7 +48,7 @@ import {
   WhereInputValue
 } from "../../../../components/SqlQueryGenerator/WhereQueryGenerator/WhereInput";
 import Checkbox from "@mui/material/Checkbox";
-import {SelectPlaceholder} from "../../../../components/Input";
+import { SelectPlaceholder } from "../../../../components/Input";
 
 const Switcher = styled(Switch)(({ theme }) => ({}));
 const expandedByFilterField = {}
@@ -94,18 +93,6 @@ export default function FilterControl(
       setFilters({ ...filters });
     }
   }
-
-  // When component updated
-  useEffect(() => {
-    // We hide group if not have filter
-    $('.FilterGroup').each(function () {
-      if ($(this).find('.MuiPaper-root').length === 0) {
-        $(this).addClass('Hidden')
-      } else {
-        $(this).removeClass('Hidden')
-      }
-    })
-  });
 
   /** --------------------------------------------------
    ** Render filter group.
@@ -238,7 +225,7 @@ export default function FilterControl(
             )
           )
           :
-          <div className='FilterNote'>No filter</div>
+          <div className='FilterNote'>There is no filter for this group.</div>
       }
     </div>
   }

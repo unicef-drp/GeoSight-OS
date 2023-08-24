@@ -153,7 +153,7 @@ export default function FunctionGenerator(
   return <form className='BasicForm'>
     <div className="BasicFormSection">
       <label className="form-label required" htmlFor="group">
-        Select indicator
+        Selected indicator
       </label>
       <IndicatorInputSelector
         data={selectedIndicator}
