@@ -21,15 +21,15 @@ Published under AGPL-3. See the [full license](license.md) text.
 
 | Contributor | GitHub Handle | |
 | ----------- | ------------- |-|
-| Jan Burdziej | [janbur](https://github.com/janbur) | <img src="img/jan.png" alt= “” width="64" height="64"> |
-| Irwan Fathurrahman | [meomancer](https://github.com/meomancer) |  <img src="img/irwan.png" alt= “” width="64" height="64"> |
-| Tim Sutton | [timlinux](https://github.com/timlinux) | <img src="img/tim.png" alt= “” width="64" height="64"> |
-| Dimas Ciptura | [dimasciput](https://github.com/dimasciput) | <img src="img/dimas.png" alt= “” width="64" height="64"> |
-| Ben Norrito | [BenNorrito](https://github.com/BenNorrito) | <img src="img/ben.png" alt= “” width="64" height="64"> |
-| Amy Burness | [amyburness](https://github.com/amyburness) | <img src="img/amy.png" alt= “” width="64" height="64"> |
-| Lorenzo Libertini | [llibertini](https://github.com/llibertini) | <img src="img/lorenzo.png" alt= “” width="64" height="64"> |
-| Zulfikar Akbar Muzakki | [zamuzakki](https://github.com/zamuzakki) | <img src="img/zakki.png" alt= “” width="64" height="64"> |
-| Tharanath | [tharanathkartoza](https://github.com/tharanathkartoza) | <img src="img/tharanath.png" alt= “” width="64" height="64"> |
+| Jan Burdziej | [janbur](https://github.com/janbur) | <img src="https://github.com/janbur.png" alt= “” width="64" height="64"> |
+| Irwan Fathurrahman | [meomancer](https://github.com/meomancer) |  <img src="https://github.com/meomancer.png" alt= “” width="64" height="64"> |
+| Tim Sutton | [timlinux](https://github.com/timlinux) | <img src="https://github.com/timlinux.png" alt= “” width="64" height="64"> |
+| Dimas Ciptura | [dimasciput](https://github.com/dimasciput) | <img src="https://github.com/dimasciput.png" alt= “” width="64" height="64"> |
+| Ben Norrito | [BenNorrito](https://github.com/BenNorrito) | <img src="https://github.com/BenNorrito.png" alt= “” width="64" height="64"> |
+| Amy Burness | [amyburness](https://github.com/amyburness) | <img src="https://github.com/amyburness.png" alt= “” width="64" height="64"> |
+| Lorenzo Libertini | [llibertini](https://github.com/llibertini) | <img src="https://github.com/llibertini.png" alt= “” width="64" height="64"> |
+| Zulfikar Akbar Muzakki | [zamuzakki](https://github.com/zamuzakki) | <img src="https://github.com/zamuzakki.png" alt= “” width="64" height="64"> |
+| Tharanath | [tharanathkartoza](https://github.com/tharanathkartoza) | <img src="https://github.com/tharanathkartoza.png" alt= “” width="64" height="64"> |
 
 
 ## Project Funders/Backers
