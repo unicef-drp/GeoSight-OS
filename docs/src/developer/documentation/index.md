@@ -176,7 +176,7 @@ Once you are in your fork of the repository, click on `.` on your keyboard. This
 
 ![Web Editor 1](img/web-editor-1.png)
 
-Once the editor loads, you will be greeted by a preview of the project's README.txt 1️⃣. Click on the `docs` folder 2️⃣ in the menu on the left, this will expand the folder. To confirm that you are working in the right branch it will say `main` 3️⃣️ in the bottom left of the editor. Also ensure that you are in the `Explorer` tab 4️⃣ of the web editor.
+Once the editor loads, you will be greeted by a preview of the project's README.txt 1️⃣. Click on the `docs` folder 2️⃣ in the menu on the left, this will expand the folder. To confirm that you are working in the right branch it will say `main` branch 3️⃣️ in the bottom left of the editor. Also ensure that you are in the `Explorer` tab 4️⃣ of the web editor.
 
 ![Web Editor 2](img/web-editor-2.png)
 
@@ -246,7 +246,7 @@ Once you have committed your changes, Click on the burger menu 1️⃣ and then 
 
 ![Web Editor 7](img/web-editor-7.png)
 
-Your fork of the repository will be opened in a new tab within your browser, navigate to that tab (your browser might block pop ups, so you might need to manually open the pop up to get back to your fork of the repository). Once there, ensure you are on the `main` 1️⃣ (you should see how many commits ahead of the upstream branch you are), then click on `Contribute` 2️⃣ -> `Open pull request` 3️⃣️.
+Your fork of the repository will be opened in a new tab within your browser, navigate to that tab (your browser might block pop ups, so you might need to manually open the pop up to get back to your fork of the repository). Once there, ensure you are on the `main` branch 1️⃣ (you should see how many commits ahead of the upstream branch you are), then click on `Contribute` 2️⃣ -> `Open pull request` 3️⃣️.
 
 ![Pull Request 1](img/pull-request-1.png)
 
