@@ -55,8 +55,9 @@ class SitePreferencesAdmin(admin.ModelAdmin):
         ('GeoRepo', {
             'fields': (
                 'georepo_url',
-                'georepo_api_key_level_1', 'georepo_api_key_level_4',
-                'georepo_azure_authentication_url'
+                'georepo_api_key_level_1', 'georepo_api_key_level_1_email',
+                'georepo_api_key_level_4', 'georepo_api_key_level_4_email',
+                'georepo_using_user_api_key'
             ),
         }),
         ('Landing Page', {

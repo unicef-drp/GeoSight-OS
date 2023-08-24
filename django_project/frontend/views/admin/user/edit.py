@@ -15,16 +15,16 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib.auth import get_user_model
+from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, reverse, render
 
-from core.forms.user import UserEditForm
+from core.forms.user import UserEditForm, UserViewerEditForm
 from frontend.views.admin._base import AdminBaseView
-from geosight.permission.access import RoleSuperAdminRequiredMixin
 
 User = get_user_model()
 
 
-class UserEditView(RoleSuperAdminRequiredMixin, AdminBaseView):
+class UserEditView(AdminBaseView):
     """User Edit View."""
 
     template_name = 'frontend/admin/user/form.html'
@@ -48,6 +48,17 @@ class UserEditView(RoleSuperAdminRequiredMixin, AdminBaseView):
             f'<a href="{edit_url}">{user.__str__()}</a> '
         )
 
+    def get(self, request, **kwargs):
+        """GET function."""
+        user = get_object_or_404(
+            User, username=self.kwargs.get('username', '')
+        )
+        request_user = self.request.user
+        if not request_user.profile.is_admin and user != self.request.user:
+            return HttpResponseForbidden()
+
+        return super().get(request, **kwargs)
+
     def get_context_data(self, **kwargs) -> dict:
         """Return context data."""
         context = super().get_context_data(**kwargs)
@@ -55,11 +66,16 @@ class UserEditView(RoleSuperAdminRequiredMixin, AdminBaseView):
             User, username=self.kwargs.get('username', '')
         )
 
+        Form = UserEditForm
+        if not self.request.user.profile.is_admin:
+            Form = UserViewerEditForm
+
         context.update(
             {
-                'form': UserEditForm(
-                    initial=UserEditForm.model_to_initial(user)
-                )
+                'form': Form(
+                    initial=Form.model_to_initial(user)
+                ),
+                'own_form': user == self.request.user
             }
         )
         return context
@@ -69,17 +85,39 @@ class UserEditView(RoleSuperAdminRequiredMixin, AdminBaseView):
         user = get_object_or_404(
             User, username=self.kwargs.get('username', '')
         )
-        form = UserEditForm(
-            request.POST,
+        request_user = self.request.user
+        if not request_user.profile.is_admin and user != self.request.user:
+            return HttpResponseForbidden()
+
+        data = request.POST.copy()
+        Form = UserEditForm
+        if not self.request.user.profile.is_admin:
+            Form = UserViewerEditForm
+            data['role'] = user.profile.role
+
+        form = Form(
+            data,
             instance=user
         )
         if form.is_valid():
             user = form.save()
             user.profile.role = form.cleaned_data['role']
-            user.profile.save()
-            return redirect(
-                reverse('admin-user-and-group-list-view') + '#Users'
+            user.profile.georepo_api_key = data.get(
+                'georepo_api_key', user.profile.georepo_api_key
             )
+            user.profile.save()
+            if self.request.user.profile.is_admin:
+                return redirect(
+                    reverse('admin-user-and-group-list-view') + '#Users'
+                )
+            else:
+                return redirect(
+                    reverse(
+                        'admin-user-edit-view',
+                        kwargs={'username': user.username}
+                    ),
+
+                )
         context = self.get_context_data(**kwargs)
         context['form'] = form
         return render(request, self.template_name, context)

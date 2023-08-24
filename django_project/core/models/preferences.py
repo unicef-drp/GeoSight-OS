@@ -70,13 +70,17 @@ class SitePreferences(SingletonModel):
         max_length=512,
         default=''
     )
+    georepo_api_key_level_1_email = models.EmailField(
+        blank=True, null=True
+    )
     georepo_api_key_level_4 = models.CharField(
         max_length=512,
         default=''
     )
-    georepo_azure_authentication_url = models.TextField(
+    georepo_api_key_level_4_email = models.EmailField(
         blank=True, null=True
     )
+    georepo_using_user_api_key = models.BooleanField(default=True)
 
     # -----------------------------------------------
     # LANDING PAGE

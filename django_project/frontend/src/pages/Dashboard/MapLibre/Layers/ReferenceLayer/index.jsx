@@ -45,6 +45,8 @@ import {
   returnLayerStyleConfig,
   returnNoDataStyle
 } from "../../../../../utils/Style";
+import GeorepoAuthorizationModal
+  from "../../../../../components/GeorepoAuthorizationModal";
 
 export const BEFORE_LAYER = 'gl-draw-polygon-fill-inactive.cold'
 export const CONTEXT_LAYER_ID = `context-layer`
@@ -664,5 +666,5 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
   }
 
 
-  return null
+  return <GeorepoAuthorizationModal/>
 }

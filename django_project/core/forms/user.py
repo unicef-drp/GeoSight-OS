@@ -174,3 +174,32 @@ class UserEditForm(AzureUserForm):
         super(UserEditForm, self).__init__(*args, **kwargs)
         if settings.USE_AZURE:
             self.fields['email'].widget.attrs['readonly'] = True
+
+
+class UserViewerEditForm(AzureAdminForm):
+    """Form for user edit."""
+
+    role = forms.ChoiceField(
+        label='Role',
+        choices=ROLES_TYPES,
+        required=False,
+        widget=forms.Select()
+    )
+
+    class Meta:  # noqa: D106
+        model = User
+        fields = ('first_name', 'last_name', 'email')
+
+    def __init__(self, *args, **kwargs):
+        """Init."""
+        super(UserViewerEditForm, self).__init__(*args, **kwargs)
+        if settings.USE_AZURE:
+            self.fields['email'].widget.attrs['readonly'] = True
+        self.fields['role'].widget.attrs['readonly'] = True
+
+    @staticmethod
+    def model_to_initial(model: User):
+        """Return model data as json."""
+        initial = model_to_dict(model)
+        initial['role'] = model.profile.role
+        return initial

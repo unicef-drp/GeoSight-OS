@@ -45,15 +45,16 @@ def global_context(request):
     # Return api_key level 1 if user not have api_key
     pref = SitePreferences.preferences()
     pref_data = SitePreferencesSerializer(pref).data
-    pref_data['georepo_api'] = json.dumps(GeorepoUrl().details)
+    pref_data['georepo_api'] = GeorepoUrl().details
+    if request.user.is_authenticated and pref.georepo_using_user_api_key:
+        pref_data['georepo_api'] = GeorepoUrl(
+            api_key=request.user.profile.georepo_api_key,
+            api_key_email=request.user.email
+
+        ).details
     return {
-        'preferences': pref_data,
+        'preferences': json.dumps(pref_data),
+        'preferences_json': pref_data,
         'use_azure_auth': settings.USE_AZURE,
-        'use_georepo_auth': settings.USE_AZURE and not (
-            not pref.georepo_azure_authentication_url
-        ),
-        'georepo_azure_autehntication_url':
-            pref.georepo_azure_authentication_url if
-            pref.georepo_azure_authentication_url else '',
         'version': project_version(request)
     }

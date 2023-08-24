@@ -72,6 +72,11 @@ class Profile(models.Model):
         choices=ROLES_TYPES,
         default=ROLE_DEFAULT
     )
+    georepo_api_key = models.CharField(
+        max_length=512,
+        blank=True,
+        null=True
+    )
 
     def __str__(self):
         """Str name of profile."""

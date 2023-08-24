@@ -26,6 +26,7 @@ export { default as CheckboxUncheckedIcon } from "./checkbox-unchecked.svg";
 export { default as CloseIcon } from "./close.svg";
 export { default as ContactIcon } from "./contact.svg";
 export { default as CogIcon } from "./cog.svg";
+export { default as CopyIcon } from "./copy.svg";
 export { default as ContactActiveIcon } from "./contact-active.svg";
 export { default as DataAccessIcon } from "./data-access.svg";
 export { default as DataAccessActiveIcon } from "./data-access-active.svg"

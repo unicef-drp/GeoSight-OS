@@ -14,7 +14,6 @@
  */
 
 import axios from "axios";
-import Cookies from "js-cookie";
 
 /**
  * Perform Fetching Data
@@ -61,17 +60,6 @@ export async function fetchJSON(url, options, useCache = true) {
   if (!responseCaches[url]) {
     try {
       const response = await fetch(url, options);
-
-      // Check if using georepo auth and status is 403
-      if (USE_GEOREPO_AUTH && [401].includes(response.status)) {
-        if (new URL(GEOREPO_AZURE_AUTHENTICATION_URL).origin === new URL(url).origin) {
-          if (!preferences.georepo_api.is_api_key) {
-            Cookies.set('georepo-token', '')
-            document.location.reload()
-          }
-        }
-      }
-
       let json = null;
       try {
         json = await response.json();

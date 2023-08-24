@@ -47,13 +47,11 @@ import WidgetForm from './Widgets'
 import RelatedTableForm from './RelatedTable'
 import FiltersForm from './Filters'
 import ShareForm from './Share'
+import GeorepoAuthorizationModal
+  from "../../../../components/GeorepoAuthorizationModal";
 
 // Dashboard Preview
 import { postData } from "../../../../Requests";
-
-// Georepo authorization
-import GeorepoAuthorizationModal
-  from "../../../../components/B2C/GeorepoAuthorizationModal";
 import { dataFieldsDefault } from "../../../../utils/indicatorLayer";
 import { MapActiveIcon } from "../../../../components/Icons";
 
@@ -485,6 +483,7 @@ export function DashboardForm({ onPreview }) {
     <div className='Admin'>
       <SideNavigation pageName={pageNames.Dashboard} minified={true}/>
       <div className='AdminContent'>
+        <GeorepoAuthorizationModal/>
         <div className='AdminContentHeader'>
           <div className='AdminContentHeader-Left'>
             <b className='light'
@@ -509,10 +508,6 @@ export function DashboardForm({ onPreview }) {
               setChanged={setChanged}
             />
           </div>
-          {
-            permission?.public_permission !== 'Read' && preferences.georepo_api.api_key_is_public ?
-              <GeorepoAuthorizationModal/> : null
-          }
         </div>
 
         {/* DASHBOARD FORM */}

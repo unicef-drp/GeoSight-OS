@@ -24,7 +24,6 @@ import Fade from '@mui/material/Fade';
 import LoginIcon from '@mui/icons-material/Login';
 
 import { EmbedConfig } from "../../utils/embed";
-import GeorepoAuthorization from "../../components/B2C/GeorepoAuthorization";
 import { ThemeButton } from "../Elements/Button";
 
 /**
@@ -76,19 +75,33 @@ export default function User({ ...props }) {
           TransitionComponent={Fade}
         >
           <MenuItem className='MenuItem-Header Description'>
-            Logged as : {username}
+            Logged as : <a href={`/admin/user/${user.username}/edit`}
+                           style={{
+                             width: "fit-content",
+                             padding: 0,
+                             display: "inline-block"
+                           }}>
+            {username}
+          </a>
             {
-              USE_GEOREPO_AUTH && !preferences.georepo_api.api_key_is_public ?
-                <div style={{ color: "gray" }}>
-                  <i>Authorized to GeoRepo</i>
+              preferences.georepo_using_user_api_key && !preferences.georepo_api.api_key_is_public ?
+                <div className='Description'>
+                  Authorized to GeoRepo.
                 </div> : null
             }
           </MenuItem>
           {
-            USE_GEOREPO_AUTH && preferences.georepo_api.api_key_is_public ?
+            preferences.georepo_using_user_api_key && preferences.georepo_api.api_key_is_public ?
               <MenuItem
                 className='MenuItem-Header MenuItem-Button Description'>
-                <GeorepoAuthorization/>
+                You are not authorized to GeoRepo.<br/>
+                Please add your api key in <a
+                href={'/admin/user/' + user.username + '/edit'}
+                style={{
+                  width: "fit-content",
+                  padding: 0,
+                  display: "inline-block"
+                }}>here</a>.
               </MenuItem> : null
           }
           {
