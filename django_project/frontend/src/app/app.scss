@@ -515,3 +515,21 @@ header {
     padding: 0;
   }
 }
+
+// ------------------------------------
+// HELP CENTER
+// ------------------------------------
+.HelpCenter {
+  margin-top: $nav-header-height;
+  padding-bottom: $nav-header-height;
+}
+
+.Admin {
+  .HelpCenter {
+    box-sizing: border-box;
+    margin-top: 0;
+    padding-bottom: 0;
+    top: 0;
+    z-index: 999999;
+  }
+}

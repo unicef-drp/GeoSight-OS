@@ -1,0 +1,26 @@
+{
+  "title": "GeoSight Help Center",
+  "link": "https://unicef-drp.github.io/GeoSight-OS/",
+  "blocks": [
+    {
+      "title": "Get started with GeoSight.",
+      "description": "A quickstart to understanding geosight platform.",
+      "link": "https://unicef-drp.github.io/GeoSight-OS/",
+      "anchor": "#geosight"
+    },
+    {
+      "link": "https://unicef-drp.github.io/GeoSight-OS/about/",
+      "anchor": "#about",
+      "blocks": [
+        {
+          "link": "https://unicef-drp.github.io/GeoSight-OS/about/",
+          "anchor": "#license"
+        },
+        {
+          "link": "https://unicef-drp.github.io/GeoSight-OS/about/",
+          "anchor": "#contributors"
+        }
+      ]
+    }
+  ]
+}
