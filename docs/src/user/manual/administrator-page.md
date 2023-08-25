@@ -11,9 +11,9 @@ license: This program is free software; you can redistribute it and/or modify it
 #context_id: 1234
 ---
 
-# The Admin Page
+# The Administrator page
 
-The admin page is your first destination when creating content in GeoSight.
+The administrator page is your first destination when creating content in GeoSight.
 
-![Admin Page](img/admin-page-1.png)
+![Administrator Page](img/administrator-page-1.png)
 

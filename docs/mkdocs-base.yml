@@ -54,6 +54,7 @@ nav:
                 - Manual: 
                         - user/manual/index.md
                         - Home Page: user/manual/home.md
+                        - Administrator Page: user/manual/administrator-page.md
         - Administrators:
                 - administrator/index.md
                 - Guide:
