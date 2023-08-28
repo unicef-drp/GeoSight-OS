@@ -66,16 +66,6 @@ LOGGING = {
         },
     },
     'loggers': {
-        'django.db.backends': {
-            'level': 'ERROR',
-            'handlers': ['console'],
-            'propagate': False
-        },
-        'django': {
-            'handlers': ['console'],
-            'level': 'ERROR',
-            'propagate': False,
-        },
         'geosight': {
             'handlers': ['console'],
             'level': 'INFO',
