@@ -105,7 +105,7 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
 
   // When reference layer changed, fetch reference data
   useEffect(() => {
-    if (!referenceLayerData) {
+    if (referenceLayer.identifier && !referenceLayerData) {
       dispatch(
         Actions.ReferenceLayerData.fetch(
           dispatch, referenceLayer.identifier,
