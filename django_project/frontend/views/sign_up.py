@@ -95,13 +95,15 @@ class SignUpView(FormView):
         """Form is valid."""
         if form.is_valid():
             # if user has pending request, then skip save
-            check_exist = UserAccessRequest.objects.filter(
+            request_access = UserAccessRequest.objects.filter(
                 type=UserAccessRequest.RequestType.NEW_USER,
                 status=UserAccessRequest.RequestStatus.PENDING,
                 requester_email=form.cleaned_data['email']
-            ).exists()
-            if not check_exist:
+            ).first()
+            if not request_access:
                 form.save(self.request)
+            else:
+                form.send_email(request_access, self.request)
         return super().form_valid(form)
 
     def get(self, request, *args, **kwargs):
