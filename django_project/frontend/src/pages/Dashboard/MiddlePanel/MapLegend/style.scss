@@ -20,10 +20,15 @@
 @import '../../../../app/variables';
 
 .MapLegend {
+  direction: rtl;
+  flex-grow: 1;
+  min-height: 0;
+  margin-left: 1rem;
+  overflow-y: auto;
   width: fit-content;
-  padding-left: 1rem;
 
   .MapLegendSection {
+    direction: ltr;
     padding: 0.5rem;
     background-color: $white;
     border-radius: $border-radius;

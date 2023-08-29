@@ -186,6 +186,13 @@ devweb: db
 	@echo "------------------------------------------------------------------"
 	@docker-compose ${ARGS} up --no-recreate --no-deps -d dev
 
+devweb-entrypoint: devweb
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Running in DEVELOPMENT mode"
+	@echo "------------------------------------------------------------------"
+	@docker-compose ${ARGS} exec -T dev "/home/web/django_project/entrypoint.sh"
+
 sleep:
 	@echo
 	@echo "------------------------------------------------------------------"
@@ -199,7 +206,7 @@ devweb-test:
 	@echo "------------------------------------------------------------------"
 	@echo "Run tests"
 	@echo "------------------------------------------------------------------"
-	@docker-compose exec -T dev python manage.py collectstatic
+	@docker-compose exec -T dev python manage.py collectstatic --noinput
 	@docker-compose exec -T dev python manage.py test --keepdb --noinput
 
 devweb-shell:

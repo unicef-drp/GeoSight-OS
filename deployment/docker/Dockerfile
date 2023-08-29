@@ -48,12 +48,6 @@ ADD django_project /home/web/django_project
 WORKDIR /home/web/django_project/selenium
 RUN apt-get install -y -f ./google-chrome-stable_current_amd64.deb
 
-# setup frontend
-WORKDIR /home/web/django_project/frontend
-RUN apt-get install -y wget
-RUN npm install
-RUN npm run build
-
 # Open port 8080 as we will be running our uwsgi socket on that
 EXPOSE 8080
 

@@ -37,7 +37,6 @@ markdown_extensions:
 
 nav:
         - Home:
-                # Pages to render but exclude from Nav
                 - index.md
                 - About: about/index.md
                 - Contributing: about/contributing.md
@@ -54,6 +53,7 @@ nav:
                 - Manual: 
                         - user/manual/index.md
                         - Home Page: user/manual/home.md
+                        - Administrator Page: user/manual/administrator-page.md
         - Administrators:
                 - administrator/index.md
                 - Guide:
@@ -62,12 +62,8 @@ nav:
                         - administrator/manual/index.md
         - Developers:
                 - developer/index.md
-                - API:
-                        - developer/api/index.md
-                        - Reference: developer/api/manual/index.md
-                        - Guide: developer/api/guide/index.md
                 - Guide:
-                        - Overview: developer/guide/index.md
+                        - developer/guide/index.md
                         - Architecture: developer/guide/architecture.md
                         - Prerequisites: developer/guide/prerequisites.md
                         - Design: developer/guide/design.md
@@ -77,10 +73,15 @@ nav:
                         - Building: developer/guide/building.md
                         - Road Map: developer/guide/roadmap.md
                         - Workflows: developer/guide/workflows.md
+                        # Pages to render but exclude from navigation
                         - "": developer/guide/templates/pull-request-template.md 
                         - "": developer/guide/templates/commit-message-convention.md
-                - Documentation: developer/documentation/index.md
                 - Manual: developer/manual/index.md
+                - Documentation Writing: developer/documentation/index.md
+                - API:
+                        - developer/api/index.md
+                        - Reference: developer/api/manual/index.md
+                        - Guide: developer/api/guide/index.md
                 - License: about/license.md
         - DevOps: 
                 - devops/index.md

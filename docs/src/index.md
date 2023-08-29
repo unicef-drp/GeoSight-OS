@@ -28,7 +28,7 @@ displayed in association with the currently active indicator layer.
 There are two main areas for the platform:
 
 * the projects area - this is where users open and explore data in projects that have been created for them to support their operational work.
-* the managagement area - this is where projects are designed. Data sources are selected and the reporting areas and components are configured.
+* the management area - this is where projects are designed. Data sources are selected and the reporting areas and components are configured.
 
 ## Key Concepts
 

@@ -22,12 +22,14 @@ import LayerConfig from "./LayerConfig";
 import { FullScreen } from '../../../pages/Dashboard/Toolbars'
 
 import './style.scss';
+import { useSelector } from "react-redux";
 
 /**
  * Left panel.
  */
 export default function MiddlePanel(
   { rightExpanded, leftContent, rightContent }) {
+  const { globalDateSelectorOpened } = useSelector(state => state.globalState)
   return <section
     className={
       'DashboardMiddlePanel ' +
@@ -47,7 +49,8 @@ export default function MiddlePanel(
         {rightContent}
       </div>
     </div>
-    <div className='BottomContent'>
+    <div
+      className={'BottomContent ' + (globalDateSelectorOpened ? 'DateOpen' : '')}>
       <div className='ContentLine'>
         <div className='LeftSection'>
           <div className='ContentLine Inner' id='tilt-control'>

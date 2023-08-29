@@ -91,6 +91,8 @@ class BaseImporter(ABC):
         try:
             self.log.status = LogStatus.RUNNING
             self.log.save()
+            self.log.send_alert()
+
             self.check_attributes()
             self.log.importerlogdata_set.all().delete()
             success, note = self._process_data()
@@ -132,6 +134,7 @@ class BaseImporter(ABC):
         self.log.status = LogStatus.FAILED
         self.log.note = message
         self.log.save()
+        self.log.send_alert()
 
     def _done(self, message: str = ''):
         """Update log to done."""
@@ -140,6 +143,7 @@ class BaseImporter(ABC):
         self.log.note = message
         self.log.progress = 100
         self.log.save()
+        self.log.send_alert()
 
     def _update(self, message: str = '', progress: int = None):
         """Update note for the log."""

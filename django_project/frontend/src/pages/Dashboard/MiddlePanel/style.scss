@@ -67,6 +67,9 @@
     .LeftContent {
       pointer-events: none;
       flex-grow: 1;
+      flex-direction: column;
+      display: flex;
+      padding-bottom: 170px;
     }
 
     & > div {
@@ -124,8 +127,13 @@
   }
 
   .BottomContent {
-    min-height: 50px;
+    height: 50px;
     width: 100%;
+    transition: height linear 0.2s;
+
+    &.DateOpen {
+      height: 210px;
+    }
 
     .Disclaimer {
       margin-top: 0.5rem;
