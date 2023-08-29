@@ -67,6 +67,7 @@ services:
     image: kartoza/geosight:${DJANGO_TAG:-0.3.0}-dev
     container_name: "geosight_dev"
     volumes:
+      - ../:/home/web/project
       - ../django_project:/home/web/django_project
       - ./volumes/static:/home/web/static
       - ./volumes/media:/home/web/media

@@ -1,0 +1,45 @@
+{
+  "name": "Django Docker Environment",
+  "remoteUser": "root",
+  "dockerComposeFile": [
+    "../deployment/docker-compose.yml",
+    "../deployment/docker-compose.override.yml"
+  ],
+  "service": "dev",
+  "runServices": [
+    "db",
+    "redis",
+    "celery_beat",
+    "worker",
+    "dev"
+  ],
+  "workspaceFolder": "/home/web/project",
+  "runArgs": [
+    "--env-file",
+    "../deployment/.env"
+  ],
+  "portsAttributes": {
+    "9000": {
+      "label": "Frontend",
+      "onAutoForward": "notify"
+    }
+  },
+  "forwardPorts": [
+    8000,
+    9000,
+    51102
+  ],
+  "shutdownAction": "stopCompose",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-azuretools.vscode-docker"
+      ],
+      "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash",
+        "python.pythonPath": "/usr/local/bin/python"
+      }
+    }
+  }
+}
