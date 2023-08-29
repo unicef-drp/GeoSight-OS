@@ -33,6 +33,7 @@ x-common-django:
     - RABBITMQ_HOST=${RABBITMQ_HOST:-rabbitmq}
     - DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE:-core.settings.prod}
     - INITIAL_FIXTURES=${INITIAL_FIXTURES:-True}
+    - SECRET_KEY=${SECRET_KEY:-''}
 
     # Redis config
     - REDIS_HOST=${REDIS_HOST:-redis}

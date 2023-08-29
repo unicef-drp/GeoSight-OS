@@ -62,8 +62,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_api_key(self, obj: User):
         """Return is api_key."""
-        return obj.profile.georepo_api_key \
-            if obj.profile.georepo_api_key else ''
+        return obj.profile.georepo_api_key_val
 
     class Meta:  # noqa: D106
         model = User

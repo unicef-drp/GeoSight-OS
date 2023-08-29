@@ -21,6 +21,8 @@ from django.contrib.auth.admin import UserAdmin
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
+from core.forms.profile import ProfileForm
+from core.forms.site_preferences import SitePreferencesForm
 from core.forms.user import (
     AdminUserChangeForm, AzureAdminUserChangeForm,
     AzureAdminUserCreationForm
@@ -43,6 +45,7 @@ class SitePreferencesImageInline(admin.TabularInline):
 class SitePreferencesAdmin(admin.ModelAdmin):
     """Site Preferences admin."""
 
+    form = SitePreferencesForm
     fieldsets = (
         (None, {
             'fields': ('site_title', 'site_url', 'disclaimer')
@@ -139,6 +142,7 @@ admin.site.register(ColorPalette, ColorPaletteAdmin)
 class ProfileInline(admin.StackedInline):
     """Profile inline."""
 
+    form = ProfileForm
     model = Profile
 
 

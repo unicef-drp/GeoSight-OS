@@ -48,7 +48,7 @@ def global_context(request):
     pref_data['georepo_api'] = GeorepoUrl().details
     if request.user.is_authenticated and pref.georepo_using_user_api_key:
         pref_data['georepo_api'] = GeorepoUrl(
-            api_key=request.user.profile.georepo_api_key,
+            api_key=request.user.profile.georepo_api_key_val,
             api_key_email=request.user.email
 
         ).details

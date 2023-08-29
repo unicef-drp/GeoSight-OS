@@ -15,6 +15,7 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib.auth import get_user_model
+from django.core import signing
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, reverse, render
 
@@ -102,9 +103,11 @@ class UserEditView(AdminBaseView):
         if form.is_valid():
             user = form.save()
             user.profile.role = form.cleaned_data['role']
-            user.profile.georepo_api_key = data.get(
-                'georepo_api_key', user.profile.georepo_api_key
+            georepo_api_key = data.get(
+                'georepo_api_key', user.profile.georepo_api_key_val
             )
+            if georepo_api_key:
+                user.profile.georepo_api_key = signing.dumps(georepo_api_key)
             user.profile.save()
             if self.request.user.profile.is_admin:
                 return redirect(

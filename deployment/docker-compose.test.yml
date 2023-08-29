@@ -37,6 +37,7 @@ services:
       - RABBITMQ_HOST=${RABBITMQ_HOST:-rabbitmq}
       - DJANGO_SETTINGS_MODULE=core.settings.test
       - INITIAL_FIXTURES=${INITIAL_FIXTURES:-True}
+      - SECRET_KEY=${SECRET_KEY:-'SECRET KEY TEST'}
 
       # Email where alters should be sent. This will be used by let's encrypt and as the django admin email.
       - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}

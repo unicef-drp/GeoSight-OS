@@ -14,6 +14,8 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+from django.core import signing
+from django.core.signing import BadSignature
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -262,6 +264,22 @@ class SitePreferences(SingletonModel):
 
     def __str__(self):
         return 'Site Preference'
+
+    @property
+    def georepo_api_key_level_1_val(self):
+        """Return georepo api key level 1."""
+        try:
+            return signing.loads(self.georepo_api_key_level_1)
+        except (TypeError, BadSignature):
+            return ''
+
+    @property
+    def georepo_api_key_level_4_val(self):
+        """Return georepo api key level 4."""
+        try:
+            return signing.loads(self.georepo_api_key_level_4)
+        except (TypeError, BadSignature):
+            return ''
 
 
 class SitePreferencesImage(models.Model):
