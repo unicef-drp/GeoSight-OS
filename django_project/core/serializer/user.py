@@ -30,7 +30,7 @@ class UserSerializer(serializers.ModelSerializer):
     is_contributor = serializers.SerializerMethodField()
     is_creator = serializers.SerializerMethodField()
     is_admin = serializers.SerializerMethodField()
-    api_key = serializers.SerializerMethodField()
+    georepo_api_key = serializers.SerializerMethodField()
 
     def get_is_staff(self, obj: User):
         """Return is staff."""
@@ -60,7 +60,7 @@ class UserSerializer(serializers.ModelSerializer):
         """Return is admin."""
         return 'true' if obj.profile.is_admin else 'false'
 
-    def get_api_key(self, obj: User):
+    def get_georepo_api_key(self, obj: User):
         """Return is api_key."""
         return obj.profile.georepo_api_key_val
 
@@ -70,5 +70,5 @@ class UserSerializer(serializers.ModelSerializer):
             'id', 'username', 'email', 'first_name', 'last_name',
             'is_staff', 'name', 'email', 'role',
             'is_contributor', 'is_creator', 'is_admin', 'full_name',
-            'api_key'
+            'georepo_api_key'
         )

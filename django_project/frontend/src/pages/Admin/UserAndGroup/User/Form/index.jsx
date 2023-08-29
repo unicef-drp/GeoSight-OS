@@ -37,7 +37,7 @@ import './style.scss';
 export default function UserForm() {
   const [submitted, setSubmitted] = useState(false);
   const [role, setRole] = useState(null);
-  const [apiKey, setApiKey] = useState(user.api_key ? user.api_key : '');
+  const [apiKey, setApiKey] = useState(user.georepo_api_key ? user.georepo_api_key : '');
   const [showAPIKey, setShowAPIKey] = useState(false);
 
   /** Render **/
