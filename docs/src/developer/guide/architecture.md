@@ -12,10 +12,7 @@ license: This program is free software; you can redistribute it and/or modify it
 ---
 
 # System Architecture
-<!-- Replace all of the titles with relevant titles -->
 
-## Frameworks Used
+In this section, we outline the system architecture using ER Diagrams, Software Component Diagrams etc.
 
-## High-level System Architecture
-
-## Data Model
+## ER Diagram

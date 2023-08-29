@@ -11,6 +11,23 @@ license: This program is free software; you can redistribute it and/or modify it
 #context_id: 1234
 ---
 
+- ## Prerequisites:
+	- Using Ubuntu 22.04
+	- Official Docker installed and membership of the docker group see https://docs.docker.com/engine/install/ubuntu/
+		-
+		  ```
+		  sudo usermod -a -G docker $user
+		  ```
+		- (Restart your computer after making this change)
+	- docker-compose installed - version 1.29 or later should work fine
+		- ![image.png](../assets/image_1693206822853_0.png)
+	- Git Installed
+	- VSCode installed
+		- You need the the  VSCode Dev containers extension installed (minimum version 0.304.0)
+		  ![image.png](../assets/image_1693206558667_0.png)  
+		  ![image.png](../assets/image_1693206723551_0.png){:height 312, :width 689}  
+
+
 # Preparation 
 
 ## Dependencies installation

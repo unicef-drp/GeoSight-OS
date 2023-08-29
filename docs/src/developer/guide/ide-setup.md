@@ -11,6 +11,41 @@ license: This program is free software; you can redistribute it and/or modify it
 #context_id: 1234
 ---
 
+# Setting up your IDE
+## VS Code Setup
+ 
+- Open the project in VSCode (1️⃣, 2️⃣) by navigating the the place on your file system where you checked out the code in the pre-requisites step above (3️⃣).
+- ![image.png](../assets/image_1693207041022_0.png)
+- Accept the 'trust authors' prompt
+![image.png](../assets/image_1693207188133_0.png)  
+### Copying the .env
+
+- Copy the `template.env` to `.env`
+- ![image.png](../assets/image_1693207338450_0.png)
+- Edit the `.env` file and change the 
+
+```
+DJANGO_SETTINGS_MODULE=core.settings.prod
+```
+to   
+
+```
+DJANGO_SETTINGS_MODULE=core.settings.dev
+```
+
+- ![image.png](../assets/image_1693207523910_0.png)
+### Override Docker Configs
+We are going to copy the docker overrides template to a local file that will not be under version control.
+![image.png](../assets/image_1693293419030_0.png)
+Rename the file to `docker-compose.override.yml`
+![image.png](../assets/image_1693293500742_0.png)
+Initially you will not need to change anything in this file, though you may want to take a look through the various configurations provided here if you want to tweak your local setup.
+
+## Frameworks Used
+
+## High-level System Architecture
+
+## Data Model
 # Using pycharm
 
 This section is for using pycharm.
