@@ -101,5 +101,8 @@
     "sass-loader": "^12.6.0",
     "style-loader": "^3.3.1",
     "uuid": "^9.0.0"
+  },
+  "overrides": {
+    "@loaders.gl/loader-utils": "3.4.10"
   }
 }
