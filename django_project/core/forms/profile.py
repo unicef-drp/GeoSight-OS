@@ -29,7 +29,6 @@ class ProfileForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         """Init data."""
-
         if 'instance' in kwargs:
             pref = kwargs['instance']
             initial = {

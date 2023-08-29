@@ -42,15 +42,10 @@ class UserAdminViewTest(BaseViewTest, TestCase):
             ROLES.CONTRIBUTOR.name, password=self.password)
         self.viewer = create_user(
             ROLES.VIEWER.name, password=self.password)
-        self.resource_creator = create_user(ROLES.CREATOR.name)
+        self.resource_creator = create_user(ROLES.CONTRIBUTOR.name)
 
         # Resource layer attribute
-        self.resource = self.create_resource(self.resource_creator)
-
-    def create_resource(self, user):
-        """Create resource function."""
-        return create_user(
-            ROLES.VIEWER.name, password=self.password)
+        self.resource = self.resource_creator
 
     def get_resources(self, user):
         """Create resource function."""
@@ -76,14 +71,52 @@ class UserAdminViewTest(BaseViewTest, TestCase):
 
     def test_edit_view(self):
         """Test for edit view."""
-        url = reverse(self.edit_url_tag, kwargs={'username': 'username'})
+        url = reverse(
+            self.edit_url_tag, kwargs={'username': 'username'}
+        )
         self.assertRequestGetView(url, 302)  # Resource not found
 
         url = reverse(
-            self.edit_url_tag, kwargs={'username': self.resource.username})
+            self.edit_url_tag, kwargs={'username': self.resource.username}
+        )
         self.assertRequestGetView(url, 302)  # Non login
         self.assertRequestGetView(url, 403, self.viewer)  # Viewer
         self.assertRequestGetView(url, 403, self.contributor)  # Contributor
         self.assertRequestGetView(url, 403, self.creator)  # Creator
-        self.assertRequestGetView(url, 403, self.resource_creator)  # Creator
+        self.assertRequestGetView(url, 200, self.resource_creator)  # Creator
         self.assertRequestGetView(url, 200, self.admin)  # Admin
+
+    def test_post_edit_view(self):
+        """Test post edit view."""
+        url = reverse(
+            self.edit_url_tag, kwargs={'username': self.resource.username}
+        )
+        payload = {
+            'first_name': 'First name',
+            'last_name': 'Last name',
+            'email': 'email@example.com',
+            'georepo_api_key': 'This is test',
+        }
+        self.assertRequestPostView(url, 403, payload, self.viewer)
+        self.assertRequestPostView(url, 403, payload, self.contributor)
+        self.assertRequestPostView(url, 403, payload, self.creator)
+        self.assertRequestPostView(url, 302, payload, self.resource_creator)
+        self.resource_creator.refresh_from_db()
+        self.resource_creator.profile.refresh_from_db()
+        self.assertEquals(
+            self.resource_creator.first_name, payload['first_name']
+        )
+        self.assertEquals(
+            self.resource_creator.last_name, payload['last_name']
+        )
+        self.assertEquals(
+            self.resource_creator.email, payload['email']
+        )
+        self.assertNotEqual(
+            self.resource_creator.profile.georepo_api_key,
+            payload['georepo_api_key']
+        )
+        self.assertEquals(
+            self.resource_creator.profile.georepo_api_key_val,
+            payload['georepo_api_key']
+        )
