@@ -23,6 +23,7 @@ import { useSelector } from "react-redux";
 import Cookies from "js-cookie";
 import MDEditor from "@uiw/react-md-editor";
 import Checkbox from "@mui/material/Checkbox";
+import { FormControlLabel } from "@mui/material";
 
 import Modal, {
   ModalContent,
@@ -91,14 +92,16 @@ export default function ProjectOverview() {
             </ModalContent>
             <ModalFooter>
               {
-                isOpen ? <Checkbox
-                  checked={!showSplashScreenCheckbox}
-                  id={'hideProjectOverview'}
-                  onClick={_ => setShowSplashScreenCheckbox((current) => !current)}
-                /> : null
-              }
-              {
-                isOpen ? <p>Do not show this again!</p> : null
+                isOpen ?
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={!showSplashScreenCheckbox}
+                        onChange={evt => {
+                          setShowSplashScreenCheckbox((current) => !current)
+                        }}/>
+                    }
+                    label={"Do not show this again!"}/> : null
               }
               <div className={'Separator'}></div>
               <CloseButton

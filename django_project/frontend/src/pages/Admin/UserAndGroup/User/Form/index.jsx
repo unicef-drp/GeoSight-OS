@@ -47,6 +47,9 @@ export default function UserForm() {
 
   // If role is super admin, show the is_staff
   useEffect(() => {
+    if (!user.is_staff) {
+      $('input[name="is_staff"]').closest('.BasicFormSection').remove()
+    }
     $('input[name="is_staff"]').closest('.BasicFormSection').hide()
     $('input[name="role"]').change(function () {
       roleOnChange($(this).val())
