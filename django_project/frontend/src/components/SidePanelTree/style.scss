@@ -47,6 +47,22 @@
 }
 
 .TreeItem {
+  &.Disabled {
+    .LayerName {
+      opacity: 0.5;
+    }
+
+    .MuiTreeItem-content,
+    .MuiTreeItem-label,
+    .MuiFormControlLabel-root {
+      cursor: not-allowed;
+    }
+  }
+
+  .LayerInfoIcon {
+    cursor: pointer;
+  }
+
   .MuiTreeItem-content {
     align-items: start;
     padding-top: 5px;

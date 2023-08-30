@@ -48,9 +48,6 @@ import {
 
 import { CacheRequests } from "../../../../Requests";
 import { AggregationsAdminLevelInput } from "./AggregationsAdminLevelInput";
-import GeorepoAuthorizationModal
-  from "../../../../components/B2C/GeorepoAuthorizationModal";
-
 import './style.scss';
 
 /** ---- Definitions ---- **/
@@ -375,10 +372,6 @@ export default function ImporterForm() {
                 </div>
             }
             <Notification ref={notificationRef}/>
-            {
-              preferences.georepo_api.api_key_is_public ?
-                <GeorepoAuthorizationModal/> : null
-            }
           </Admin>
       }
     </Fragment>

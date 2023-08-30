@@ -70,7 +70,7 @@ export default function LayerDescription({ layer }) {
 
   return (
     <div
-      className={'InfoIcon LayerIcon' + (layer?.error ? ' Error' : '')}>
+      className={'LayerInfoIcon InfoIcon LayerIcon' + (layer?.error ? ' Error' : '')}>
       {
         layer?.error ?
           <CustomPopover

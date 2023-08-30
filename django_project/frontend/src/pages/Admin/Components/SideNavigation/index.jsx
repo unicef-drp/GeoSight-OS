@@ -81,132 +81,151 @@ export default function SideNavigation({ pageName, minified }) {
         <NavBar minified={minified}/>
       </div>
       <div className='SideNavigationContent'>
-        <div className='SideNavigationContentGroup'>
-          <div className='SideNavigationContentGroupTitle'>VISUALIZATION</div>
-          <SidaNavigationButton minified={minified} title='Project'>
-            <a href={dashboardList}
-               className={'SideNavigation-Row ' + (pageName === pageNames.Dashboard ? 'active' : '')}>
-              {pageName === pageNames.Dashboard ? <ProjectActiveIcon/> :
-                <ProjectIcon/>}
-              <span className='SideNavigation-Row-Name'>Project</span>
-            </a>
-          </SidaNavigationButton>
-          <SidaNavigationButton minified={minified} title='Indicators'>
-            <a href={indicatorList}
-               className={'SideNavigation-Row ' + (pageName === pageNames.Indicators ? 'active' : '')}>
-              <ListIcon/>
-              <span className='SideNavigation-Row-Name'>Indicators</span>
-            </a>
-          </SidaNavigationButton>
-          <SidaNavigationButton minified={minified} title='Context Layers'>
-            <a href={contextLayerList}
-               className={'SideNavigation-Row ' + (pageName === pageNames.ContextLayer ? 'active' : '')}>
-              {pageName === pageNames.ContextLayer ? <LayerActiveIcon/> :
-                <LayerIcon/>}
-              <span className='SideNavigation-Row-Name'>Context Layers</span>
-            </a>
-          </SidaNavigationButton>
-          <SidaNavigationButton minified={minified} title='Basemaps'>
-            <a href={basemapList}
-               className={'SideNavigation-Row ' + (pageName === pageNames.Basemaps ? 'active' : '')}>
-              {pageName === pageNames.Basemaps ? <MapActiveIcon/> : <MapIcon/>}
-              <span className='SideNavigation-Row-Name'>Basemaps</span>
-            </a>
-          </SidaNavigationButton>
-          {
-            user.is_contributor ? <Fragment>
-              <SidaNavigationButton minified={minified} title='Styles'>
-                <a href={styleList}
-                   className={'SideNavigation-Row ' + (pageName === pageNames.Styles ? 'active' : '')}>
-                  {pageName === pageNames.Styles ? <StyleActiveIcon/> :
-                    <StyleIcon/>}
-                  <span className='SideNavigation-Row-Name'>Styles</span>
-                </a>
-              </SidaNavigationButton>
-            </Fragment> : null
-          }
-        </div>
-        <div className='SideNavigationContentGroup'>
-          <div className='SideNavigationContentGroupTitle'>DATA</div>
-          {/* TODO: For new importer */}
-          {
-            user.is_contributor ?
-              <div className='SideNavigation-Row-Group'>
-                <SidaNavigationButton minified={minified}
-                                      title='Data Management'>
-                  <a href={urls.admin.dataManagement}
-                     className={'SideNavigation-Row ' + ([pageNames.Importer, pageNames.DataManagement].includes(pageName) ? 'active' : '')}>
-                    {
-                      [pageNames.Importer, pageNames.DataManagement].includes(pageName) ?
-                        <DataManagementActiveIcon/> : <DataManagementIcon/>
-                    }
-                    <span
-                      className='SideNavigation-Row-Name'>Data Management</span>
+        {
+          user.is_contributor ?
+            <Fragment>
+              <div className='SideNavigationContentGroup'>
+                <div className='SideNavigationContentGroupTitle'>VISUALIZATION
+                </div>
+                <SidaNavigationButton minified={minified} title='Project'>
+                  <a href={dashboardList}
+                     className={'SideNavigation-Row ' + (pageName === pageNames.Dashboard ? 'active' : '')}>
+                    {pageName === pageNames.Dashboard ? <ProjectActiveIcon/> :
+                      <ProjectIcon/>}
+                    <span className='SideNavigation-Row-Name'>Project</span>
                   </a>
                 </SidaNavigationButton>
-              </div> : null
-          }
-          <SidaNavigationButton minified={minified} title='Data Data Browser'>
-            <a href={dataset}
-               className={'SideNavigation-Row ' + (pageName === pageNames.Dataset ? 'active' : '')}>
-              {
-                pageName === pageNames.Dataset ? <DataBrowserActiveIcon/> :
-                  <DataBrowserIcon/>
-              }
-              <span className='SideNavigation-Row-Name'>Data Browser</span>
-            </a>
-          </SidaNavigationButton>
+                <SidaNavigationButton minified={minified} title='Indicators'>
+                  <a href={indicatorList}
+                     className={'SideNavigation-Row ' + (pageName === pageNames.Indicators ? 'active' : '')}>
+                    <ListIcon/>
+                    <span className='SideNavigation-Row-Name'>Indicators</span>
+                  </a>
+                </SidaNavigationButton>
+                <SidaNavigationButton minified={minified}
+                                      title='Context Layers'>
+                  <a href={contextLayerList}
+                     className={'SideNavigation-Row ' + (pageName === pageNames.ContextLayer ? 'active' : '')}>
+                    {pageName === pageNames.ContextLayer ? <LayerActiveIcon/> :
+                      <LayerIcon/>}
+                    <span
+                      className='SideNavigation-Row-Name'>Context Layers</span>
+                  </a>
+                </SidaNavigationButton>
+                <SidaNavigationButton minified={minified} title='Basemaps'>
+                  <a href={basemapList}
+                     className={'SideNavigation-Row ' + (pageName === pageNames.Basemaps ? 'active' : '')}>
+                    {pageName === pageNames.Basemaps ? <MapActiveIcon/> :
+                      <MapIcon/>}
+                    <span className='SideNavigation-Row-Name'>Basemaps</span>
+                  </a>
+                </SidaNavigationButton>
+                {
+                  user.is_admin ? <Fragment>
+                    <SidaNavigationButton minified={minified} title='Styles'>
+                      <a href={styleList}
+                         className={'SideNavigation-Row ' + (pageName === pageNames.Styles ? 'active' : '')}>
+                        {pageName === pageNames.Styles ? <StyleActiveIcon/> :
+                          <StyleIcon/>}
+                        <span className='SideNavigation-Row-Name'>Styles</span>
+                      </a>
+                    </SidaNavigationButton>
+                  </Fragment> : null
+                }
+              </div>
+              <div className='SideNavigationContentGroup'>
+                <div className='SideNavigationContentGroupTitle'>DATA</div>
+                <div className='SideNavigation-Row-Group'>
+                  <SidaNavigationButton
+                    minified={minified}
+                    title='Data Management'>
+                    <a href={urls.admin.dataManagement}
+                       className={'SideNavigation-Row ' + ([pageNames.Importer, pageNames.DataManagement].includes(pageName) ? 'active' : '')}>
+                      {
+                        [pageNames.Importer, pageNames.DataManagement].includes(pageName) ?
+                          <DataManagementActiveIcon/> : <DataManagementIcon/>
+                      }
+                      <span
+                        className='SideNavigation-Row-Name'>Data Management</span>
+                    </a>
+                  </SidaNavigationButton>
+                </div>
+                <SidaNavigationButton
+                  minified={minified}
+                  title='Data Data Browser'>
+                  <a href={dataset}
+                     className={'SideNavigation-Row ' + (pageName === pageNames.Dataset ? 'active' : '')}>
+                    {
+                      pageName === pageNames.Dataset ?
+                        <DataBrowserActiveIcon/> :
+                        <DataBrowserIcon/>
+                    }
+                    <span
+                      className='SideNavigation-Row-Name'>Data Browser</span>
+                  </a>
+                </SidaNavigationButton>
 
-          <SidaNavigationButton minified={minified} title='Related Tables'>
-            <a href={relatedTableList}
-               className={'SideNavigation-Row ' + (pageName === pageNames.RelatedTables ? 'active' : '')}>
-              {pageName === pageNames.RelatedTables ? <TableActiveIcon/> :
-                <TableIcon/>}
-              <span className='SideNavigation-Row-Name'>Related Tables</span>
-            </a>
-          </SidaNavigationButton>
-        </div>
-        <div className='SideNavigationContentGroup'>
-          <div className='SideNavigationContentGroupTitle'>ACCESS</div>
-          {
-            user.is_contributor ? <Fragment>
-              <SidaNavigationButton minified={minified} title='Data Access'>
-                <a href={dataAccess}
-                   className={'SideNavigation-Row ' + (pageName === pageNames.DataAccess ? 'active' : '')}>
-                  {
-                    pageName === pageNames.DataAccess ?
-                      <DataAccessActiveIcon/> : <DataAccessIcon/>
-                  }
-                  <span className='SideNavigation-Row-Name'>Data Access</span>
-                </a>
-              </SidaNavigationButton>
+                <SidaNavigationButton minified={minified}
+                                      title='Related Tables'>
+                  <a href={relatedTableList}
+                     className={'SideNavigation-Row ' + (pageName === pageNames.RelatedTables ? 'active' : '')}>
+                    {pageName === pageNames.RelatedTables ?
+                      <TableActiveIcon/> :
+                      <TableIcon/>}
+                    <span
+                      className='SideNavigation-Row-Name'>Related Tables</span>
+                  </a>
+                </SidaNavigationButton>
+              </div>
+              <div className='SideNavigationContentGroup'>
+                <div className='SideNavigationContentGroupTitle'>ACCESS</div>
+                {
+                  user.is_admin ? <Fragment>
+                    <SidaNavigationButton
+                      minified={minified}
+                      title='Data Access'>
+                      <a href={dataAccess}
+                         className={'SideNavigation-Row ' + (pageName === pageNames.DataAccess ? 'active' : '')}>
+                        {
+                          pageName === pageNames.DataAccess ?
+                            <DataAccessActiveIcon/> : <DataAccessIcon/>
+                        }
+                        <span
+                          className='SideNavigation-Row-Name'>Data Access</span>
+                      </a>
+                    </SidaNavigationButton>
+                  </Fragment> : null
+                }
+                {
+                  user.is_admin ? <Fragment>
+                    <SidaNavigationButton
+                      minified={minified}
+                      title='Users and groups'>
+                      <a href={userAndGroupList}
+                         className={'SideNavigation-Row ' + (pageName === pageNames.UsersAndGroups ? 'active' : '')}>
+                        {pageName === pageNames.UsersAndGroups ?
+                          <ContactActiveIcon/> : <ContactIcon/>}
+                        <span
+                          className='SideNavigation-Row-Name'>Users and groups</span>
+                      </a>
+                    </SidaNavigationButton>
+                  </Fragment> : null
+                }
+                <div className='SideNavigation-Row-Group'>
+                  <SidaNavigationButton
+                    minified={minified}
+                    title='Access Request'>
+                    <a href={urls.admin.accessRequest}
+                       className={'SideNavigation-Row ' + (pageNames.AccessRequestList === pageName ? 'active' : '')}>
+                      <GppMaybeIcon className='SideNavigation-Row-Icon'/>
+                      <span
+                        className='SideNavigation-Row-Name'>Access Request</span>
+                    </a>
+                  </SidaNavigationButton>
+                </div>
+              </div>
             </Fragment> : null
-          }
-          {
-            user.is_admin ? <Fragment>
-              <SidaNavigationButton minified={minified}
-                                    title='Users and groups'>
-                <a href={userAndGroupList}
-                   className={'SideNavigation-Row ' + (pageName === pageNames.UsersAndGroups ? 'active' : '')}>
-                  {pageName === pageNames.UsersAndGroups ?
-                    <ContactActiveIcon/> : <ContactIcon/>}
-                  <span
-                    className='SideNavigation-Row-Name'>Users and groups</span>
-                </a>
-              </SidaNavigationButton>
-            </Fragment> : null
-          }
-          <div className='SideNavigation-Row-Group'>
-            <SidaNavigationButton minified={minified} title='Access Request'>
-              <a href={urls.admin.accessRequest}
-                 className={'SideNavigation-Row ' + (pageNames.AccessRequestList === pageName ? 'active' : '')}>
-                <GppMaybeIcon className='SideNavigation-Row-Icon'/>
-                <span
-                  className='SideNavigation-Row-Name'>Access Request</span>
-              </a>
-            </SidaNavigationButton>
-          </div>
-        </div>
+        }
       </div>
 
       <div className='SideNavigationContentGroup ViewAllDashboard'>

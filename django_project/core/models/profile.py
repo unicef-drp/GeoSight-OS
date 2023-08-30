@@ -16,6 +16,8 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core import signing
+from django.core.signing import BadSignature
 from django.db import models
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
@@ -72,6 +74,11 @@ class Profile(models.Model):
         choices=ROLES_TYPES,
         default=ROLE_DEFAULT
     )
+    georepo_api_key = models.CharField(
+        max_length=512,
+        blank=True,
+        null=True
+    )
 
     def __str__(self):
         """Str name of profile."""
@@ -103,6 +110,14 @@ class Profile(models.Model):
         return self.role in [
             ROLES.SUPER_ADMIN.name, ROLES.CREATOR.name, ROLES.CONTRIBUTOR.name
         ] or self.user.is_superuser or self.user.is_staff
+
+    @property
+    def georepo_api_key_val(self):
+        """Return georepo api key user."""
+        try:
+            return signing.loads(self.georepo_api_key)
+        except (TypeError, BadSignature):
+            return ''
 
 
 @receiver(pre_save, sender=User)

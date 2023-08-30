@@ -3,5 +3,8 @@
 {% load static %}
 
 {% block render_bundle %}
+    <script>
+      const ownForm = '{{ own_form }}' === 'True'
+    </script>
     {% render_bundle 'AdminUserForm' %}
 {% endblock %}
