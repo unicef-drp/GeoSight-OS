@@ -176,7 +176,8 @@ class GeorepoRequest:
         """Init Class."""
         pref = SitePreferences.preferences()
         self.urls = GeorepoUrl(
-            api_key=pref.georepo_api_key_level_4
+            api_key=pref.georepo_api_key_level_4_val,
+            api_key_email=pref.georepo_api_key_level_4_email
         )
         self.View = self.ViewRequest(self, self.urls)
 

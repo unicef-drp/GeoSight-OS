@@ -34,3 +34,15 @@
     text-align: center;
   }
 }
+
+.LayerInfoIcon {
+  &.Error {
+    circle {
+      fill: #d32f2f78;
+    }
+
+    path {
+      fill: #d32f2f;
+    }
+  }
+}
