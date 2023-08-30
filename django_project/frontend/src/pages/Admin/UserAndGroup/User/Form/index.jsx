@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import $ from "jquery";
 import { IconButton } from "@mui/material";
 
@@ -28,6 +28,11 @@ import {
   VisibilityOffIcon
 } from "../../../../../components/Icons";
 import { IconTextField } from "../../../../../components/Elements/Input";
+import { urlParams } from "../../../../../utils/main";
+import {
+  Notification,
+  NotificationStatus
+} from "../../../../../components/Notification";
 
 import './style.scss';
 
@@ -35,10 +40,17 @@ import './style.scss';
  * Indicator Form App
  */
 export default function UserForm() {
+  const { success } = urlParams()
   const [submitted, setSubmitted] = useState(false);
   const [role, setRole] = useState(null);
   const [apiKey, setApiKey] = useState(user.georepo_api_key ? user.georepo_api_key : '');
   const [showAPIKey, setShowAPIKey] = useState(false);
+
+  // Notification
+  const notificationRef = useRef(null);
+  const notify = (newMessage, newSeverity = NotificationStatus.INFO) => {
+    notificationRef?.current?.notify(newMessage, newSeverity)
+  }
 
   /** Render **/
   const submit = () => {
@@ -55,6 +67,9 @@ export default function UserForm() {
       roleOnChange($(this).val())
     })
     $('input[name="role"]').trigger('change')
+    if (success) {
+      notify('Profile is updated', NotificationStatus.SUCCESS)
+    }
   }, [])
 
   const roleOnChange = (value) => {
@@ -120,6 +135,7 @@ export default function UserForm() {
             </div> : null
         }
       </AdminForm>
+      <Notification ref={notificationRef}/>
     </Admin>
   );
 }

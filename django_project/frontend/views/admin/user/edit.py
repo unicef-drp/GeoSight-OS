@@ -108,6 +108,8 @@ class UserEditView(AdminBaseView):
             )
             if georepo_api_key:
                 user.profile.georepo_api_key = signing.dumps(georepo_api_key)
+            else:
+                user.profile.georepo_api_key = ''
             user.profile.save()
             if self.request.user.profile.is_admin:
                 return redirect(
@@ -118,8 +120,7 @@ class UserEditView(AdminBaseView):
                     reverse(
                         'admin-user-edit-view',
                         kwargs={'username': user.username}
-                    ),
-
+                    ) + '?success=true'
                 )
         context = self.get_context_data(**kwargs)
         context['form'] = form
