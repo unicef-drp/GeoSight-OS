@@ -12,17 +12,24 @@ license: This program is free software; you can redistribute it and/or modify it
 ---
 
 # Setting up your IDE
+
+This section outlines the process for configuring your IDE for development.
+
+🚩 Make sure you have gone through the [Cloning Section](cloning.md) before following these notes.
 ## VS Code Setup
  
-- Open the project in VSCode (1️⃣, 2️⃣) by navigating the the place on your file system where you checked out the code in the pre-requisites step above (3️⃣).
-- ![image.png](../assets/image_1693207041022_0.png)
-- Accept the 'trust authors' prompt
-![image.png](../assets/image_1693207188133_0.png)  
+Open the project in VSCode (1️⃣, 2️⃣) by navigating the the place on your file system where you checked out the code in the pre-requisites step above (3️⃣).
+
+![image.png](./img/ide-setup-1.png)
+
+Accept the 'trust authors' prompt
+
+![image.png](./img/ide-setup-2.png)
 ### Copying the .env
 
-- Copy the `template.env` to `.env`
-- ![image.png](../assets/image_1693207338450_0.png)
-- Edit the `.env` file and change the 
+Copy the `template.env` to `.env`
+![image.png](./img/ide-setup-3.png)
+Edit the `.env` file and change the 
 
 ```
 DJANGO_SETTINGS_MODULE=core.settings.prod
@@ -33,27 +40,31 @@ to
 DJANGO_SETTINGS_MODULE=core.settings.dev
 ```
 
-- ![image.png](../assets/image_1693207523910_0.png)
+![image.png](./img/ide-setup-4.png)
 ### Override Docker Configs
 We are going to copy the docker overrides template to a local file that will not be under version control.
-![image.png](../assets/image_1693293419030_0.png)
+
+![image.png](./img/ide-setup-5.png)
+
 Rename the file to `docker-compose.override.yml`
-![image.png](../assets/image_1693293500742_0.png)
+
+![image.png](./img/ide-setup-6.png)
+
 Initially you will not need to change anything in this file, though you may want to take a look through the various configurations provided here if you want to tweak your local setup.
 
-## Frameworks Used
 
-## High-level System Architecture
+Now that you have your IDE set up, we can move on to [building the project](building.md).
 
-## Data Model
-# Using pycharm
+## Using pycharm
+
+
+📒 ⛔️ This section needs to be reviewed and organised into our docs framework.
 
 This section is for using pycharm.
 
 Requirements:
 
 - Pycharm
-
 - Finished **Setting up the project**
 
 ## Setup interpreter
@@ -110,3 +121,76 @@ This development mode is DEBUG mode, and also whenever we change the code, the s
 For more information how to set up on pycharm, please visit [Using a Docker Compose-Based Python Interpreter in PyCharm](https://kartoza.com/en/blog/using-docker-compose-based-python-interpreter-in-)
 
 
+
+## Quick Setup Guide
+
+⛔️📒 This content needs to be reviewed and moved to the readme.
+
+### Production
+
+```
+git clone https://github.com/unicef-drp/GeoSight
+cd GeoSight/deployment
+docker-compose up -d
+```
+
+The web will be available at `http://127.0.0.1/`
+
+To stop containers:
+
+```
+docker-compose kill
+```
+
+To stop and delete containers:
+
+```
+docker-compose down
+```
+
+### Development
+
+```
+git clone https://github.com/unicef-drp/GeoSight-OS
+cd GeoSight-OS/deployment
+cp .template.env .env
+cp docker-compose.override.template.yml docker-compose.override.yml
+```
+
+After that, do
+- open new terminal
+- on folder root of project, do
+```
+make frontend-dev
+```
+Wait until it is done
+when there is sentence "webpack xxx compiled successfully in xxx ms".<br>
+After that, don't close the terminal.
+If it is accidentally closed, do `make frontend-dev` again
+
+Next step:
+- Open new terminal
+- Do commands below
+```
+make up
+make dev
+```
+
+Wait until it is on.
+
+The web can be accessed using `http://localhost:2000/`
+
+If the web is taking long time to load, restart geosight_dev container by `make dev-reload`.<br>
+The sequence should be `make frontend-dev`, after that run or restart geosight_dev. 
+
+To stop dev:
+
+```
+make dev-kill
+```
+
+To reload container:
+
+```
+make dev-reload
+```

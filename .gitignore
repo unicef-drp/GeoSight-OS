@@ -38,3 +38,4 @@ docs/.direnv
 docs/src/developer/manual/*.md
 
 *.swp
+deployment/.cache/

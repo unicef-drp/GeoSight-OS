@@ -10,6 +10,7 @@ edit_uri: "https://github.com/unicef-drp/GeoSight-OS/blob/main/docs/"
 copyright: Kartoza and Contributors
 
 markdown_extensions:
+        - attr_list # lets us resize images see https://github.com/mkdocs/mkdocs/issues/1678#issuecomment-455500757
         - pymdownx.highlight:
                   anchor_linenums: true
         - pymdownx.inlinehilite
