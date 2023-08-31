@@ -55,7 +55,6 @@ jobs:
           cd ../
           make devweb
           make wait-db
-          make sleep
           make devweb-entrypoint
           make devweb-runserver
           make sleep

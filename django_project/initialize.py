@@ -82,7 +82,7 @@ except get_user_model().DoesNotExist:
     )
     print('superuser successfully created')
 
-if USE_AZURE:
+if not USE_AZURE:
     # when b2c is disabled, use ADMIN_PASSWORD
     superuser.set_password(admin_password)
     superuser.save()
