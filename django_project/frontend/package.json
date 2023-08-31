@@ -11,7 +11,7 @@
   "keywords": [],
   "repository": {
     "type": "git",
-    "url": "https://github.com/unicef-drp/GeoSight"
+    "url": "https://github.com/unicef-drp/GeoSight-OS"
   },
   "author": {
     "name": "Irwan Fathurrahman",
@@ -23,7 +23,6 @@
   },
   "homepage": "https://github.com/unicef-drp/GeoSight",
   "devDependencies": {
-    "@playwright/test": "^1.36.2",
     "@babel/core": "^7.17.10",
     "@babel/preset-env": "^7.17.10",
     "@babel/preset-react": "^7.16.7",

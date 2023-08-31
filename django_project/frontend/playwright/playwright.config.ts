@@ -10,7 +10,7 @@ import {defineConfig, devices} from '@playwright/test';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-    testDir: './e2e',
+    testDir: './tests',
     /* Run tests in files in parallel */
     timeout: 30 * 1000,
     fullyParallel: true,
@@ -28,6 +28,8 @@ export default defineConfig({
         trace: 'on-first-retry',
     },
 
+    outputDir: 'playwright-results',
+
     /* Configure projects for major browsers */
     projects: [
         // Setup project
@@ -37,7 +39,7 @@ export default defineConfig({
             use: {
                 ...devices['Desktop Chrome'],
                 // Use prepared auth state.
-                storageState: 'playwright/.auth/user.json',
+                storageState: 'states/.auth/user.json',
             },
             dependencies: ['setup'],
         },
