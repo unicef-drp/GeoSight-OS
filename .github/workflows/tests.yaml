@@ -51,6 +51,7 @@ jobs:
         run: |
           echo "Override docker-compose for testing purposes"
           cp docker-compose.test.yml docker-compose.override.yml
+          cp .template.env .env
           cd ../
           make devweb
           make wait-db
@@ -65,10 +66,10 @@ jobs:
             echo "Curl command failed"
             exit 1
           fi
-      - name: Run backend test
+      - name: Test backend
         run: make devweb-test
 
-      - name: Run E2E tests
+      - name: Test E2E
         working-directory: ./django_project/frontend
         run: |
           npm install
