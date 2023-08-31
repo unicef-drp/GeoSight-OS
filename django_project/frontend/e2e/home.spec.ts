@@ -10,8 +10,8 @@ test.describe('navigation', () => {
         await page.goto(url);
     });
 
-    // A use case tests cenarios
+    // A use case tests scenarios
     test('Page Loaded', async ({page}) => {
-        await page.waitForSelector('.PageContent', {timeout: 2000});
+        await page.waitForSelector('.Home', {timeout: 2000});
     })
 });

@@ -23,6 +23,8 @@ django_project/frontend/bundles/*
 django_project/frontend/package-lock.json
 django_project/frontend/webpack-stats.dev.json
 django_project/frontend/webpack-stats.prod.json
+django_project/frontend/playwright
+django_project/frontend/playwright-report
 
 # mkdocs related
 docs/mkdocs.yml
