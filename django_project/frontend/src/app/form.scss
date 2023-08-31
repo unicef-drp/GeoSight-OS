@@ -98,14 +98,14 @@
     width: fit-content;
   }
 
+  input[readonly],
+  textarea[readonly],
   input[disabled],
   textarea[disabled] {
-    background-color: $gray-200;
+    background-color: hsl(0, 0%, 95%);
+    color: hsl(0, 0%, 60%);
     cursor: not-allowed;
-
-    &:hover {
-      border: 1px solid rgba(0, 0, 0, 0.23);
-    }
+    border: unset !important;
   }
 
   textarea {

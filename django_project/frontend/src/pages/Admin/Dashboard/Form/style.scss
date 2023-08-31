@@ -23,6 +23,12 @@ main {
   display: block;
 }
 
+.dashboard {
+  .MuiSnackbar-root {
+    display: none;
+  }
+}
+
 .FormMode {
   .Admin {
     display: flex;

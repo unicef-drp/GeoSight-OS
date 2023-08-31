@@ -32,7 +32,13 @@ class BaseView(View):
             'user': {}
         }
         if self.request.user.is_authenticated:
-            context['user'] = UserSerializer(self.request.user).data
+            user_data = UserSerializer(self.request.user).data
+            if self.request.user.profile:
+                user_data[
+                    'georepo_api_key'
+                ] = self.request.user.profile.georepo_api_key_val
+
+            context['user'] = user_data
         return context
 
     def get(self, request, **kwargs):

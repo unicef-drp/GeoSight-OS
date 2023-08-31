@@ -21,7 +21,6 @@ import TreeView from "@mui/lab/TreeView";
 import CircularProgress from '@mui/material/CircularProgress';
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ClearIcon from '@mui/icons-material/Clear';
 import Radio from "@mui/material/Radio";
 import TextField from "@mui/material/TextField";
@@ -248,7 +247,8 @@ export default function SidePanelTreeView(
       return
     }
     return <TreeItem
-      className='TreeItem'
+      className={'TreeItem ' + (disabled ? 'Disabled' : '')}
+      disabled={disabled}
       key={nodesDataId}
       nodeId={nodesDataId}
       label={

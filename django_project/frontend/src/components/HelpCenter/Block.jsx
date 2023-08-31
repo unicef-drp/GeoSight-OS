@@ -40,7 +40,10 @@ export default function Block({ data, isRoot }) {
       if (!content.thumbnail && element.getElementsByTagName('img') && element.getElementsByTagName('img')[0]) {
         try {
           const source = element.getElementsByTagName('img')[0].outerHTML.split('src="')[1].split('"')[0]
-          content.thumbnail = data.link + source
+          content.thumbnail = source
+          if (source[0] !== 'h') {
+            content.thumbnail = data.link + source
+          }
         } catch (err) {
 
         }
@@ -68,7 +71,13 @@ export default function Block({ data, isRoot }) {
           const contents = getContents(content, _element.nextElementSibling)
           if (contents.length) {
             content.html = contents.join('').replaceAll(
-              'src="', `src="${data.link}`
+              /src="[^h]/g, function (found) {
+                return found.replace('src="', `src="${data.link}`)
+              }
+            ).replaceAll(
+              /href="[^h]/g, function (found) {
+                return found.replace('href="', `href="${data.link}`)
+              }
             )
           }
           setContent({ ...content })
@@ -134,7 +143,7 @@ export default function Block({ data, isRoot }) {
       }
       <a
         tabIndex="-1"
-        href={data.link}
+        href={data.link + (data.anchor ? data.anchor : '')}
         target={'_blank'}
         className='link'>
         Visit our Documentation <ArrowForwardIcon/>

@@ -19,7 +19,6 @@ import logging
 from urllib.parse import urlparse
 
 import requests
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import MultipleObjectsReturned
 
@@ -68,7 +67,7 @@ class GeorepoUrl:
 
     api_key_is_public = False
 
-    def __init__(self, api_key: str = None):
+    def __init__(self, api_key: str = None, api_key_email: str = None):
         """Init Class."""
         pref = SitePreferences.preferences()
         self.georepo_url = pref.georepo_url.strip('/')
@@ -77,19 +76,24 @@ class GeorepoUrl:
 
         # Provide api based on default or api_key
         self.georepo_api_key = api_key
+        self.georepo_api_key_email = api_key_email
         if not self.georepo_api_key:
-            if settings.USE_AZURE:
-                self.georepo_api_key = pref.georepo_api_key_level_1
+            if pref.georepo_using_user_api_key:
+                self.georepo_api_key = pref.georepo_api_key_level_1_val
+                self.georepo_api_key_email = pref.georepo_api_key_level_1_email
             else:
-                self.georepo_api_key = pref.georepo_api_key_level_4
+                self.georepo_api_key = pref.georepo_api_key_level_4_val
+                self.georepo_api_key_email = pref.georepo_api_key_level_4_email
 
-        if self.georepo_api_key == pref.georepo_api_key_level_1:
+        if self.georepo_api_key == pref.georepo_api_key_level_1_val:
             self.api_key_is_public = True
 
         self.headers = {
-            'Authorization': f'Token {self.georepo_api_key}'
+            'Authorization': f'Token {self.georepo_api_key}',
+            'GeoRepo-User-Key': self.georepo_api_key_email
         }
         logger.debug(f'Georepo API Key : {self.georepo_api_key}')
+        logger.debug(f'Georepo API Key Email : {self.georepo_api_key_email}')
 
     @property
     def module_list(self) -> str:
@@ -137,10 +141,11 @@ class GeorepoUrl:
             'reference_layer_detail': self.reference_layer_detail(
                 '<identifier>'
             ),
+            'headers': self.headers,
             'view_detail': self.view_detail('<identifier>'),
             'api_key': self.georepo_api_key,
-            'api_key_is_public': self.api_key_is_public,
-            'is_api_key': True,
+            'api_key_email': self.georepo_api_key_email,
+            'api_key_is_public': self.api_key_is_public
         }
 
     # -------------------------------------------
@@ -171,7 +176,8 @@ class GeorepoRequest:
         """Init Class."""
         pref = SitePreferences.preferences()
         self.urls = GeorepoUrl(
-            api_key=pref.georepo_api_key_level_4
+            api_key=pref.georepo_api_key_level_4_val,
+            api_key_email=pref.georepo_api_key_level_4_email
         )
         self.View = self.ViewRequest(self, self.urls)
 

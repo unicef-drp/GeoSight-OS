@@ -71,9 +71,6 @@ export function ModalInputSelector(
       iconEnd={<ArrowDownwardIcon/>}
       onClick={() => setOpen(true)}
       value={inputValue}
-      inputProps={
-        { readOnly: true, }
-      }
     />
     {
       React.cloneElement(children, {

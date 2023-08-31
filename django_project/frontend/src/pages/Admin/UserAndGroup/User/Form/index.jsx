@@ -13,8 +13,9 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import $ from "jquery";
+import { IconButton } from "@mui/material";
 
 import { render } from '../../../../../app';
 import { store } from '../../../../../store/admin';
@@ -22,15 +23,34 @@ import { SaveButton } from "../../../../../components/Elements/Button";
 import Admin, { pageNames } from '../../../index';
 import AdminForm from '../../../Components/Form'
 
-import './style.scss';
+import {
+  VisibilityIcon,
+  VisibilityOffIcon
+} from "../../../../../components/Icons";
+import { IconTextField } from "../../../../../components/Elements/Input";
+import { urlParams } from "../../../../../utils/main";
+import {
+  Notification,
+  NotificationStatus
+} from "../../../../../components/Notification";
 
+import './style.scss';
 
 /**
  * Indicator Form App
  */
 export default function UserForm() {
+  const { success } = urlParams()
   const [submitted, setSubmitted] = useState(false);
   const [role, setRole] = useState(null);
+  const [apiKey, setApiKey] = useState(user.georepo_api_key ? user.georepo_api_key : '');
+  const [showAPIKey, setShowAPIKey] = useState(false);
+
+  // Notification
+  const notificationRef = useRef(null);
+  const notify = (newMessage, newSeverity = NotificationStatus.INFO) => {
+    notificationRef?.current?.notify(newMessage, newSeverity)
+  }
 
   /** Render **/
   const submit = () => {
@@ -39,10 +59,17 @@ export default function UserForm() {
 
   // If role is super admin, show the is_staff
   useEffect(() => {
+    if (!user.is_staff) {
+      $('input[name="is_staff"]').closest('.BasicFormSection').remove()
+    }
+    $('input[name="is_staff"]').closest('.BasicFormSection').hide()
     $('input[name="role"]').change(function () {
       roleOnChange($(this).val())
     })
     $('input[name="role"]').trigger('change')
+    if (success) {
+      notify('Profile is updated', NotificationStatus.SUCCESS)
+    }
   }, [])
 
   const roleOnChange = (value) => {
@@ -61,13 +88,58 @@ export default function UserForm() {
           variant="primary"
           text="Save"
           onClick={submit}
-          disabled={submitted || !role}
+          disabled={submitted || (!ownForm && !role)}
         />
       }>
 
       <AdminForm isSubmitted={submitted} onChanges={{
         'role': roleOnChange
-      }}/>
+      }}>
+        {
+          ownForm ?
+            <div className='ApiKeySection'>
+              {
+                preferences.georepo_using_user_api_key ?
+                  <div className='BasicFormSection'>
+                    <div>GeoRepo API Key</div>
+                    <div className='InputInLine'>
+                      <IconTextField
+                        name={'georepo_api_key'}
+                        iconEnd={
+                          <IconButton onClick={_ => setShowAPIKey(_ => !_)}>
+                            {
+                              showAPIKey ? <VisibilityOffIcon/> :
+                                <VisibilityIcon/>
+                            }
+                          </IconButton>
+                        }
+                        type={showAPIKey ? 'text' : 'password'}
+                        value={apiKey}
+                        onChange={(evt) => {
+                          setApiKey(evt.target.value)
+                        }}
+                      />
+                    </div>
+                    <br/>
+                    <div>
+                      GeoRepo api key is used for accessing GeoRepo API and all
+                      of
+                      geosight pages that needs this access.
+                      <br/>
+                      To generate GeoRepo API Key, check <a
+                      href={new URL(preferences.georepo_url).origin + '/profile'}>the
+                      georepo website</a>.
+                      <br/>
+                      How to Generate GeoRepo API Key, check <a
+                      href='https://unicef-drp.github.io/GeoRepo-OS/developer/api/guide/#generating-an-api-key'>this
+                      documentation</a>.
+                    </div>
+                  </div> : null
+              }
+            </div> : null
+        }
+      </AdminForm>
+      <Notification ref={notificationRef}/>
     </Admin>
   );
 }

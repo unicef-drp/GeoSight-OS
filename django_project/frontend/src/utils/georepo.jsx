@@ -15,7 +15,6 @@
 
 import { fetchJSON } from '../Requests'
 import axios from "axios";
-import Cookies from "js-cookie";
 
 /** Georepo URL */
 export function updateToken(url) {
@@ -23,6 +22,7 @@ export function updateToken(url) {
     const urls = url.split('?')
     let parameters = urls[1] ? urls[1].split('&') : []
     parameters.unshift('token=' + preferences.georepo_api.api_key)
+    parameters.unshift('georepo_user_key=' + preferences.georepo_api.api_key_email)
     urls[1] = parameters.join('&')
     url = urls.join('?')
   }
@@ -31,9 +31,7 @@ export function updateToken(url) {
 
 /** Headers georepo **/
 const headers = {
-  headers: {
-    Authorization: (preferences.georepo_api.is_api_key ? 'Token ' : 'Bearer ') + preferences.georepo_api.api_key
-  }
+  headers: preferences.georepo_api.headers
 }
 
 export const GeorepoUrls = {
@@ -149,17 +147,7 @@ export const fetchFeatureList = async function (url, useCache = true) {
 
 /*** Axios georepo request */
 export const axiosGet = function (url) {
-  return axios.get(url, headers).catch(function (error) {
-    if (USE_GEOREPO_AUTH && [401].includes(error.response.status)) {
-      if (new URL(GEOREPO_AZURE_AUTHENTICATION_URL).origin === new URL(url).origin) {
-        if (!preferences.georepo_api.is_api_key) {
-          Cookies.set('georepo-token', '')
-          document.location.reload()
-        }
-      }
-    }
-    throw new Error(error);
-  });
+  return axios.get(url, headers);
 }
 
 /***

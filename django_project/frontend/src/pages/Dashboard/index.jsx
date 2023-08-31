@@ -23,8 +23,6 @@ import MapLibre from './MapLibre'
 import RightPanel from './MiddlePanel/RightPanel'
 import MiddlePanel from './MiddlePanel'
 import { EmbedConfig } from "../../utils/embed";
-import GeorepoAuthorizationModal
-  from '../../components/B2C/GeorepoAuthorizationModal'
 import { LEFT, RIGHT } from "../../components/ToggleButton";
 import { ProjectOverview } from "./Toolbars";
 
@@ -104,10 +102,6 @@ export default function Dashboard({ children }) {
         </div>
       }
       {children ? children : ""}
-      {
-        data?.permission?.public_permission !== 'Read' && preferences.georepo_api.api_key_is_public ?
-          <GeorepoAuthorizationModal/> : null
-      }
     </div>
   );
 }
