@@ -143,7 +143,7 @@ export default function Block({ data, isRoot }) {
       }
       <a
         tabIndex="-1"
-        href={data.link}
+        href={data.link + (data.anchor ? data.anchor : '')}
         target={'_blank'}
         className='link'>
         Visit our Documentation <ArrowForwardIcon/>

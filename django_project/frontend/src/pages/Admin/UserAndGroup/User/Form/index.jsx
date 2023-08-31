@@ -98,40 +98,44 @@ export default function UserForm() {
         {
           ownForm ?
             <div className='ApiKeySection'>
-              {/* API KEY */}
-              <div className='BasicFormSection'>
-                <div>GeoRepo API Key</div>
-                <div className='InputInLine'>
-                  <IconTextField
-                    name={'georepo_api_key'}
-                    iconEnd={
-                      <IconButton onClick={_ => setShowAPIKey(_ => !_)}>
-                        {
-                          showAPIKey ? <VisibilityOffIcon/> : <VisibilityIcon/>
+              {
+                preferences.georepo_using_user_api_key ?
+                  <div className='BasicFormSection'>
+                    <div>GeoRepo API Key</div>
+                    <div className='InputInLine'>
+                      <IconTextField
+                        name={'georepo_api_key'}
+                        iconEnd={
+                          <IconButton onClick={_ => setShowAPIKey(_ => !_)}>
+                            {
+                              showAPIKey ? <VisibilityOffIcon/> :
+                                <VisibilityIcon/>
+                            }
+                          </IconButton>
                         }
-                      </IconButton>
-                    }
-                    type={showAPIKey ? 'text' : 'password'}
-                    value={apiKey}
-                    onChange={(evt) => {
-                      setApiKey(evt.target.value)
-                    }}
-                  />
-                </div>
-                <br/>
-                <div>
-                  GeoRepo api key is used for accessing GeoRepo API and all of
-                  geosight pages that needs this access.
-                  <br/>
-                  To generate GeoRepo API Key, check <a
-                  href={new URL(preferences.georepo_url).origin + '/profile'}>the
-                  georepo website</a>.
-                  <br/>
-                  How to Generate GeoRepo API Key, check <a
-                  href='https://unicef-drp.github.io/GeoRepo-OS/developer/api/guide/#generating-an-api-key'>this
-                  documentation</a>.
-                </div>
-              </div>
+                        type={showAPIKey ? 'text' : 'password'}
+                        value={apiKey}
+                        onChange={(evt) => {
+                          setApiKey(evt.target.value)
+                        }}
+                      />
+                    </div>
+                    <br/>
+                    <div>
+                      GeoRepo api key is used for accessing GeoRepo API and all
+                      of
+                      geosight pages that needs this access.
+                      <br/>
+                      To generate GeoRepo API Key, check <a
+                      href={new URL(preferences.georepo_url).origin + '/profile'}>the
+                      georepo website</a>.
+                      <br/>
+                      How to Generate GeoRepo API Key, check <a
+                      href='https://unicef-drp.github.io/GeoRepo-OS/developer/api/guide/#generating-an-api-key'>this
+                      documentation</a>.
+                    </div>
+                  </div> : null
+              }
             </div> : null
         }
       </AdminForm>

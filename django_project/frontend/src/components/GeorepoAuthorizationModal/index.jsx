@@ -53,12 +53,19 @@ export default function GeorepoAuthorizationModal() {
       (permission?.public_permission !== 'Read' && preferences.georepo_api.api_key_is_public) || referenceLayerData?.error?.response?.status === 401 ?
         <div className='GeorepoAuthorization'>
           <div className='wrapper'>
-            You need to authorize to GeoRepo to access this page.
-            <br/>
-            <br/>
-            <div>Please add your api key on <a
-              href={'/admin/user/' + user.username + '/edit'}>here</a>.
-            </div>
+            {
+              preferences.georepo_using_user_api_key ?
+                <Fragment>
+                  You need to authorize to GeoRepo to access this page.
+                  <br/>
+                  <br/>
+                  <div>Please add your api key on <a
+                    href={'/admin/user/' + user.username + '/edit'}>here</a>.
+                  </div>
+                </Fragment> : <Fragment>
+                  GeoSight does not have access to this reference dataset.
+                </Fragment>
+            }
           </div>
         </div> : null
     }
