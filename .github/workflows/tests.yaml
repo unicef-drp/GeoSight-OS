@@ -15,8 +15,9 @@ name: Tests
 
 on:
   push:
-    paths:
-      - '**.py'
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   django_app_test:
@@ -51,8 +52,32 @@ jobs:
           echo "Override docker-compose for testing purposes"
           cp docker-compose.test.yml docker-compose.override.yml
           cd ../
-          make devweb-entrypoint
+          make devweb
           make wait-db
           make sleep
-          make create-test-db
-          make devweb-test
+          make devweb-entrypoint
+          make devweb-runserver
+          make sleep
+      - name: Test django endpoint
+        run: |
+          curl http://localhost:2000/
+          if [ $? -ne 0 ]; then
+            echo "Curl command failed"
+            exit 1
+          fi
+      - name: Run backend test
+        run: make devweb-test
+
+      - name: Run E2E tests
+        working-directory: ./django_project/frontend
+        run: |
+          npm install
+          npm ci
+          npx playwright install --with-deps
+          npx playwright test
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: django_project/frontend/playwright-report/
+          retention-days: 30

@@ -27,6 +27,10 @@ services:
     container_name: "geosight_dev"
     links:
       - db:db
+    volumes:
+      - ../:/home/web/project
+      - static-data:/home/web/static
+      - media-data:/home/web/media
     environment:
       # editable in .env
       - DATABASE_NAME=${DATABASE_NAME:-django}
@@ -43,7 +47,8 @@ services:
       - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
       - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@example.com}
-    entrypoint: []
-    volumes:
-      - static-data:/home/web/static
-      - media-data:/home/web/media
+      - DEBUG=True
+    entrypoint: [ ]
+    ports:
+      # for django test server
+      - "2000:8080"

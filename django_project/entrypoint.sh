@@ -24,7 +24,7 @@ echo "-----------------------------------------------------"
 # Run NPM
 cd /home/web/django_project/frontend
 echo "npm install"
-npm install --verbose
+npm install
 echo "npm build"
 npm run build
 
