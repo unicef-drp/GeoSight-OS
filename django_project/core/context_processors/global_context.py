@@ -53,8 +53,8 @@ def global_context(request):
 
         ).details
     return {
-        'preferences': json.dumps(pref_data),
-        'preferences_json': pref_data,
+        'preferences': pref_data,
+        'preferences_js': json.dumps(pref_data),
         'use_azure_auth': settings.USE_AZURE,
         'version': project_version(request)
     }

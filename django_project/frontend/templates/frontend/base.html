@@ -6,9 +6,9 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <meta name="description" content="No description yet."/>
-    <link rel="shortcut icon" href="{{ preferences_json.favicon }}"
+    <link rel="shortcut icon" href="{{ preferences.favicon }}"
           type="image/x-icon">
-    <title>{{ preferences_json.site_title }} : {{ page_title }}</title>
+    <title>{{ preferences.site_title }} : {{ page_title }}</title>
     <meta name="description"
           content="GeoSight Dashboard."/>
 
@@ -36,14 +36,14 @@
     <style>
         {# FOR THE THEME #}
         :root {
-            --primary-color: {{ preferences_json.primary_color }};
-            --anti-primary-color: {{ preferences_json.anti_primary_color }};
+            --primary-color: {{ preferences.primary_color }};
+            --anti-primary-color: {{ preferences.anti_primary_color }};
 
-            --secondary-color: {{ preferences_json.secondary_color }};
-            --anti-secondary-color: {{ preferences_json.anti_secondary_color }};
+            --secondary-color: {{ preferences.secondary_color }};
+            --anti-secondary-color: {{ preferences.anti_secondary_color }};
 
-            --tertiary-color: {{ preferences_json.tertiary_color }};
-            --anti-tertiary-color: {{ preferences_json.anti_tertiary_color }};
+            --tertiary-color: {{ preferences.tertiary_color }};
+            --anti-tertiary-color: {{ preferences.anti_tertiary_color }};
         }
 
         .primaryColorBox {
@@ -87,7 +87,7 @@
 
   const USE_AZURE = '{{ use_azure_auth }}'.toLowerCase() === 'true';
   const csrfmiddlewaretoken = '{{ csrf_token }}';
-  const preferences = {{ preferences|safe }};
+  const preferences = {{ preferences_js|safe }};
   const version = "{{ version }}";
 
   const links = {{ links|safe }};
