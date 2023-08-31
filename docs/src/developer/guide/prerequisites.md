@@ -43,7 +43,7 @@ If using VSCode (our recommended IDE), you need the the VSCode [Dev Containers](
 You will also need Gnu ['make'](https://www.gnu.org/software/make/) installed.
 
 
-If you already have all of the above criteria met, you can move on to [Cloning](cloning.md) to check out the code.
+If you already have all of the above criteria met, you can move on to [Cloning](cloning.md) to check out the code, otherwise, read on for more detailed notes on setting up your system.
 
 ## Dependencies installation
 
@@ -126,4 +126,4 @@ docker run hello-world
 
 For more information how to install docker, please visit [Install Docker Engine](https://docs.docker.com/engine/install/)
 
-If you already have all of the above criteria met, you can move on to [Cloning](cloning.md) to check out the code.
+🪧 If you already have all of the above criteria met, you can move on to [Cloning](cloning.md) to check out the code.

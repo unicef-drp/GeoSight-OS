@@ -42,3 +42,12 @@ The following diagram represents the docker containers, ports and volumes that a
 
 ![](img/architecture-docker-diagram.png)
 ## ER Diagram
+
+The following diagram represents all of the databsse entities that are created by the Django ORM (Object Relational Mapper). Right click the image and open it in its own tab to see it at full resolution.
+
+![](img/architecture-erd.png)
+
+
+
+🪧 If you already have all of the above criteria met, you can move on to [Prerequisites](prerequisites.md) to start the process of getting your local development environment set up.
+
