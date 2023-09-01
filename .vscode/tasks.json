@@ -1,38 +1,48 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "Compile PDF",
-            "command": "./build-docs-pdf.sh",
-            "args": [
-                ""
-            ],
-            "type": "shell",
-            "options": {
-                "cwd": "${workspaceFolder}/docs/"
-            },
-        },
-        {
-            "label": "Compile HTML",
-            "command": "./build-docs-html.sh",
-            "args": [
-                ""
-            ],
-            "type": "shell",
-            "options": {
-                "cwd": "${workspaceFolder}/docs/"
-            },
-        },
-        {
-            "label": "Serve HTML",
-            "command": "mkdocs",
-            "args": [
-                "serve"
-            ],
-            "type": "shell",
-            "options": {
-                "cwd": "${workspaceFolder}/docs/"
-            },
-        }
-    ]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Compile PDF",
+      "command": "./build-docs-pdf.sh",
+      "args": [
+        ""
+      ],
+      "type": "shell",
+      "options": {
+        "cwd": "${workspaceFolder}/docs/"
+      }
+    },
+    {
+      "label": "Compile HTML",
+      "command": "./build-docs-html.sh",
+      "args": [
+        ""
+      ],
+      "type": "shell",
+      "options": {
+        "cwd": "${workspaceFolder}/docs/"
+      }
+    },
+    {
+      "label": "Serve HTML",
+      "command": "mkdocs",
+      "args": [
+        "serve"
+      ],
+      "type": "shell",
+      "options": {
+        "cwd": "${workspaceFolder}/docs/"
+      }
+    },
+    {
+      "label": "React: Webpack-dev-server",
+      "type": "shell",
+      "command": "npm install --verbose; npm run dev;",
+      "options": {
+        "cwd": "${workspaceFolder}/django_project/frontend"
+      },
+      "group": "build",
+      "problemMatcher": []
+    }
+  ]
 }
