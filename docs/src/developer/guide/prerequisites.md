@@ -11,7 +11,39 @@ license: This program is free software; you can redistribute it and/or modify it
 #context_id: 1234
 ---
 
-# Preparation 
+# Prerequisites
+
+In this section we cover any tools that need to be on your system so that you can have a local development environment.
+
+## Overview
+
+We assume in our notes that you are using the current Ubuntu LTS - though we try to keep things generic so that you can repeat on other distros or WSL2 on windows.
+
+We recommend using the official Docker packages (not those provided by your distro) and assume membership of the docker group. See [docker.io's guide](https://docs.docker.com/engine/install/ubuntu/) for setup notes and below for adding yourself to the docker group.
+
+```
+sudo usermod -a -G docker $user
+```
+(Restart your computer after making this change)
+
+You need to have docker-compose installed - version 1.29 or later should work fine.
+
+![image.png](img/prerequisites-docker.png)
+
+You should have [Git](https://git-scm.com/) installed.
+
+You should have [VSCode](https://code.visualstudio.com/) installed (using PyCharm is also possible).
+
+If using VSCode (our recommended IDE), you need the the VSCode [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension installed (minimum version 0.304.0).
+
+![image.png](img/ide-dev-containers-1.png)  
+
+![image.png](img/ide-dev-containers-2.png){:height 312, :width 689}  
+
+You will also need Gnu ['make'](https://www.gnu.org/software/make/) installed.
+
+
+If you already have all of the above criteria met, you can move on to [Cloning](cloning.md) to check out the code, otherwise, read on for more detailed notes on setting up your system.
 
 ## Dependencies installation
 
@@ -33,7 +65,7 @@ apt install ca-certificates curl gnup lsb-release
 
 ## Docker installation
 
-The project needs docker to be able to run it. To install it, please follow below instruction.
+The project needs docker to be able to run it. To install docker, please follow these instructions.
 
 ```
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg     
@@ -93,3 +125,5 @@ docker run hello-world
 ```
 
 For more information how to install docker, please visit [Install Docker Engine](https://docs.docker.com/engine/install/)
+
+🪧 If you already have all of the above criteria met, you can move on to [Cloning](cloning.md) to check out the code.

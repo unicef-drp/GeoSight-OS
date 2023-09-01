@@ -11,75 +11,16 @@ license: This program is free software; you can redistribute it and/or modify it
 #context_id: 1234
 ---
 
-# GeoSight
+# GeoSight Developer Guide
 
-## QUICK INSTALLATION GUIDE
+In this section of the documentation, we aim to onboard developers onto the process of setting up a developer workstation, understanding the system architecture, contributing back to the project and so forth. Here is a brief overview of the content provided here:
 
-### Production
+* **[Architecture:](./architecture.md)** - Here we outline the system architecture using ER Diagrams, Software Component Diagrams etc.
+* **[Prerequisites:](./prerequisites.md)** - An overview of the software that needs to be installed before you can start. 
+* **[Cloning:](./cloning.md)** - In this section we cover how to make a local working copy on your own machine. 
+* **[IDE Setup:](./ide-setup.md)** - Here we walk through setting up your IDE. 
+* **[Building:](./building.md)** - This covers tasks related to building the application so you can test it in your browser.
+* **[Configuration:](./configuration.md)** - This covers standard configuration tasks that need to be done once the site is brought online.
+* **[Workflows:](./workflows.md)** - Examples of typical workflows for adding features, fixing bugs etc. 
+* **[Roadmap:](./roadmap.md)** - Here we outline future plans for the project.
 
-```
-git clone https://github.com/unicef-drp/GeoSight
-cd GeoSight/deployment
-docker-compose up -d
-```
-
-The web will be available at `http://127.0.0.1/`
-
-To stop containers:
-
-```
-docker-compose kill
-```
-
-To stop and delete containers:
-
-```
-docker-compose down
-```
-
-### Development
-
-```
-git clone https://github.com/unicef-drp/GeoSight-OS
-cd GeoSight-OS/deployment
-cp .template.env .env
-cp docker-compose.override.template.yml docker-compose.override.yml
-```
-
-After that, do
-- open new terminal
-- on folder root of project, do
-```
-make frontend-dev
-```
-Wait until it is done
-when there is sentence "webpack xxx compiled successfully in xxx ms".<br>
-After that, don't close the terminal.
-If it is accidentally closed, do `make frontend-dev` again
-
-Next step:
-- Open new terminal
-- Do commands below
-```
-make up
-make dev
-```
-
-Wait until it is on.
-
-The web can be accessed using `http://localhost:2000/`
-
-If the web is taking long time to load, restart geosight_dev container by `make dev-reload`.<br>
-The sequence should be `make frontend-dev`, after that run or restart geosight_dev. 
-
-To stop dev:
-
-```
-make dev-kill
-```
-
-To reload container:
-
-```
-make dev-reload
-```

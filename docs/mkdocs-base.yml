@@ -10,6 +10,7 @@ edit_uri: "https://github.com/unicef-drp/GeoSight-OS/blob/main/docs/"
 copyright: Kartoza and Contributors
 
 markdown_extensions:
+        - attr_list # lets us resize images see https://github.com/mkdocs/mkdocs/issues/1678#issuecomment-455500757
         - pymdownx.highlight:
                   anchor_linenums: true
         - pymdownx.inlinehilite
@@ -66,11 +67,11 @@ nav:
                         - developer/guide/index.md
                         - Architecture: developer/guide/architecture.md
                         - Prerequisites: developer/guide/prerequisites.md
-                        - Design: developer/guide/design.md
-                        - IDE Setup: developer/guide/ide-setup.md
                         - Cloning: developer/guide/cloning.md
+                        - IDE Setup: developer/guide/ide-setup.md
                         - Configuration: developer/guide/configuration.md
                         - Building: developer/guide/building.md
+                        - Design: developer/guide/design.md
                         - Road Map: developer/guide/roadmap.md
                         - Workflows: developer/guide/workflows.md
                         # Pages to render but exclude from navigation
