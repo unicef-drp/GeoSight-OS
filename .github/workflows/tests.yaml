@@ -69,7 +69,7 @@ jobs:
         run: make devweb-test
 
       - name: Test E2E
-        working-directory: ./django_project/frontend/playwright
+        working-directory: ./playwright
         run: |
           npm install
           npm ci
@@ -79,5 +79,5 @@ jobs:
         if: always()
         with:
           name: playwright-report
-          path: django_project/frontend/playwright/playwright-report/
+          path: playwright/playwright-report/
           retention-days: 30
