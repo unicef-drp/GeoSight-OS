@@ -32,6 +32,10 @@ services:
     volumes:
       - static-data:/home/web/static
       - media-data:/home/web/media
+      - ./docker/Dockerfile:/home/web/django_project/Dockerfile
+      - ./docker/requirements.txt:/home/web/django_project/requirements.txt
+      - ./docker/requirements-dev.txt:/home/web/django_project/requirements-dev.txt
+      - ./production_prep_check.py:/home/web/django_project/production_prep_check.py
     environment:
       # editable in .env
       - DATABASE_NAME=django
