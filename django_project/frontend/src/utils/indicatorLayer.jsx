@@ -24,7 +24,7 @@ export const DynamicIndicatorType = 'Dynamic Indicator'
 export const RelatedTableLayerType = 'Related Table'
 
 export const defaultFields = [
-  'indicator.value', 'indicator.time', 'indicator.label',
+  'indicator.name', 'indicator.value', 'indicator.time', 'indicator.label',
   'geometry_data.admin_level', 'geometry_data.admin_level_name',
   'geometry_data.concept_uuid', 'geometry_data.geom_code',
   'geometry_data.name',
@@ -233,11 +233,14 @@ export function allLayerDataIsReady(indicatorsData, relatedTableData, indicatorL
  */
 export function dataFieldsDefault() {
   return defaultFields.map((field, idx) => {
-    const fieldName = field.split('.')[1]
+    let fieldName = field.split('.')[1]
+    if (field === 'indicator.name') {
+      fieldName = 'indicator'
+    }
     return {
       "name": 'context.current.' + field,
       "alias": capitalize(fieldName),
-      "visible": true,
+      "visible": field.includes('geometry_data') ? false : true,
       "type": field.includes('date') ? "date" : "string",
       "order": idx
     }
