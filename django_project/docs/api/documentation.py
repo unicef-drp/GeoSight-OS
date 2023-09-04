@@ -42,8 +42,11 @@ class DocumentationDetail(APIView):
                 if len(relative_urls[:idx]):
                     urls.append(relative_urls[:idx])
             urls_query = ['/'.join(url) for url in urls]
+            urls_query += ['/'.join(url + ['']) for url in urls]
             urls_query += ['/'.join([''] + url) for url in urls]
-            page = Page.objects.filter(relative_url__in=urls_query).first()
+            urls_query += ['/'.join([''] + url + ['']) for url in urls]
+            page = Page.objects.filter(relative_url__in=urls_query).order_by(
+                '-relative_url').first()
             if not page:
                 page = root
         if not page:
