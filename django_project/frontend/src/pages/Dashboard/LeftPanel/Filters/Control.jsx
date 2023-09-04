@@ -29,6 +29,11 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from "@mui/material/Checkbox";
+import {
+  WhereInputValue
+} from "../../../../components/SqlQueryGenerator/WhereQueryGenerator/WhereInput";
+import { SelectPlaceholder } from "../../../../components/Input";
 import {
   INIT_DATA,
   IS_NOT_NULL,
@@ -44,11 +49,6 @@ import FilterEditorModal from './Modal'
 import { DeleteIcon, EditIcon } from '../../../../components/Icons'
 
 import './style.scss'
-import {
-  WhereInputValue
-} from "../../../../components/SqlQueryGenerator/WhereQueryGenerator/WhereInput";
-import Checkbox from "@mui/material/Checkbox";
-import { SelectPlaceholder } from "../../../../components/Input";
 
 const Switcher = styled(Switch)(({ theme }) => ({}));
 const expandedByFilterField = {}
@@ -140,25 +140,33 @@ export default function FilterControl(
       }
       updateFilter(true)
     }
+
+    const hasMoreQuery = where.queries.length > 1
+
     return <div className='FilterGroup'>
       <div className='FilterGroupHeader'>
         <div className='FilterGroupOption'>
-          <Checkbox
-            className='GroupSwitcher'
-            checked={where.active}
-            size="small"
-            onChange={() => {
-              groupCheckedChanged(where, !where.active)
-            }}
-          />
+          {
+            hasMoreQuery ?
+              <Checkbox
+                className='GroupSwitcher'
+                checked={where.active}
+                size="small"
+                onChange={() => {
+                  groupCheckedChanged(where, !where.active)
+                }}
+              /> : null
+          }
           {
             ableToModify ?
               <Fragment>
                 <SelectPlaceholder
+                  disabled={!hasMoreQuery}
                   placeholder='Operator'
-                  list={optionsTypes}
-                  initValue={operator}
+                  list={hasMoreQuery ? optionsTypes : [optionsTypes[0]]}
+                  initValue={hasMoreQuery ? operator : optionsTypes[0].id}
                   onChangeFn={(value) => {
+                    console.log(value)
                     switchWhere(value)
                   }}
                 />
@@ -321,7 +329,6 @@ export default function FilterControl(
             updateExpanded()
           }}>
           <Checkbox
-            className='GroupSwitcher'
             checked={active}
             size="small"
             onChange={(event) => {
