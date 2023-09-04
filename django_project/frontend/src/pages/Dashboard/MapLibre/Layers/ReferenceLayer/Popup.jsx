@@ -74,10 +74,12 @@ export const referenceLayerDefaultTemplate = `
     
     <!-- GEOMETRY -->
     {% for key, value in context.current.geometry_data %}
-        <tr>
-            <td valign="top"><b>{{ key | capitalize | humanize }}</b></td>
-            <td valign="top">{{ value | safe }}</td>
-        </tr>
+        {% if key not in ['name'] %}
+          <tr>
+              <td valign="top"><b>{{ key | capitalize | humanize }}</b></td>
+              <td valign="top">{{ value | safe }}</td>
+          </tr>
+        {% endif %}
     {% endfor %}
   </table>
 </div>
