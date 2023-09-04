@@ -21,19 +21,36 @@ class Block(models.Model):
     """Block of an page of documentation."""
 
     url = models.CharField(
+        verbose_name='Relative Documentation Url',
         max_length=128,
-        help_text='Relative url of documentation base url'
+        help_text=(
+            'Relative url of documentation base url that will be used to '
+            'autofetch the content and also will be used as '
+            '"Visit our documentation" button.'
+        )
     )
 
     anchor = models.CharField(
         max_length=128,
-        help_text='Anchor of block on the page on the documentation'
+        null=True,
+        blank=True,
+        help_text=(
+            'Anchor of block on the page on the documentation. '
+            'This will be used as a start or the content.'
+            'If the anchor is not provided, it will use whole content.'
+        )
     )
 
     thumbnail = models.ImageField(
         upload_to='docs/icons',
         null=True,
-        blank=True
+        blank=True,
+        help_text=(
+            'If no thumbnail is provided, it will use the first image '
+            'in the help page under '
+            'the anchor specified above will be used. '
+            'We recommend to normally leave this blank'
+        )
     )
 
     title = models.CharField(
@@ -41,8 +58,7 @@ class Block(models.Model):
         null=True,
         blank=True,
         help_text=(
-            'Title that will be used on the block. '
-            'If not provided, it will use the title of the anchor '
+            'If no title is provided, it will use the title of the anchor '
             'on documentation page.'
         )
     )
@@ -51,9 +67,10 @@ class Block(models.Model):
         null=True,
         blank=True,
         help_text=(
-            'Description that will be used on the block. '
-            'If not provided, it will use the first paragraph of the anchor '
-            'on the documentation page.'
+            'If no description is provided, '
+            'it will use the first paragraph from the help center under '
+            'the anchor specified above will be used. '
+            'We recommend to normally leave this blank'
         )
     )
 

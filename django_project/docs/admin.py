@@ -41,7 +41,7 @@ class PageBlockInline(admin.TabularInline):
 class PageAdmin(admin.ModelAdmin):
     """Page admin."""
 
-    list_display = ('name',)
+    list_display = ('name', 'relative_url')
     inlines = (PageBlockInline,)
 
 
