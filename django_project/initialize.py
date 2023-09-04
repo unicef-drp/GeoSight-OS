@@ -65,7 +65,8 @@ call_command('migrate', '--noinput')
 
 print("-----------------------------------------------------")
 print("3. Creating/updating superuser")
-if os.getenv('AZURE_B2C_CLIENT_ID', '') != '':
+USE_AZURE = os.getenv('AZURE_B2C_CLIENT_ID', '') not in ['', "''"]
+if USE_AZURE:
     admin_email = os.getenv('B2C_ADMIN_EMAIL', admin_email)
     admin_username = os.getenv('B2C_ADMIN_EMAIL', admin_username)
 try:
@@ -80,7 +81,8 @@ except get_user_model().DoesNotExist:
         admin_email,
     )
     print('superuser successfully created')
-if os.getenv('AZURE_B2C_CLIENT_ID', '') == '':
+
+if not USE_AZURE:
     # when b2c is disabled, use ADMIN_PASSWORD
     superuser.set_password(admin_password)
     superuser.save()

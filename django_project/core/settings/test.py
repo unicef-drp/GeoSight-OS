@@ -17,3 +17,4 @@ __copyright__ = ('Copyright 2023, Unicef')
 from .prod import *  # noqa
 
 TEST_RUNNER = 'core.tests.runner.PostgresSchemaTestRunner'
+DEBUG = True
