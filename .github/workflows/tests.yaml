@@ -60,7 +60,7 @@ jobs:
           make sleep
 
       - name: Test production config ready
-        run: python production_prep_check.py
+        run: make production-check
 
       - name: Test django endpoint
         run: |
