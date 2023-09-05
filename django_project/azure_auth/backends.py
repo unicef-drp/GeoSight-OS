@@ -84,7 +84,6 @@ class AzureAuthBackend(ModelBackend):
         domain = AzureAuthBackend.extract_domain(user['email'])
         if user['email'] == 'NoEMAIL' or not domain:
             # invalid email or non unicef user
-            logger.debug('Invalid email logged in %s', user['email'])
             if request:
                 # flush session
                 request.session.flush()
