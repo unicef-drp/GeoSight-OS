@@ -128,25 +128,15 @@ export default function MapLibre(
    * */
   useEffect(() => {
     if (map && extent && !(position && Object.keys(position).length)) {
-      const bounds = map.getBounds()
-      const newExtent = [
-        bounds._sw.lng, bounds._sw.lat,
-        bounds._ne.lng, bounds._ne.lat
-      ]
-      if (JSON.stringify(newExtent) !== JSON.stringify(extent)) {
-        setTimeout(function () {
-          map.easeTo({
-            pitch: 0,
-            bearing: 0
-          })
-          setTimeout(function () {
-            map.fitBounds([
-              [extent[0], extent[1]],
-              [extent[2], extent[3]]
-            ])
-          }, 100)
-        }, 100)
-      }
+      setTimeout(function () {
+        map.fitBounds([
+          [extent[0], extent[1]],
+          [extent[2], extent[3]]
+        ], {
+          pitch: 0,
+          bearing: 0
+        })
+      }, 100)
     }
   }, [map, extent]);
 

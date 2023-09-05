@@ -24,7 +24,11 @@ import SaveAsIcon from '@mui/icons-material/SaveAs';
 import TextField from "@mui/material/TextField";
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
-import { StarOffIcon, StarOnIcon } from "../../../../components/Icons";
+import {
+  EditIcon,
+  StarOffIcon,
+  StarOnIcon
+} from "../../../../components/Icons";
 import { fetchingData } from "../../../../Requests";
 import { Actions } from '../../../../store/dashboard'
 import {
@@ -39,12 +43,12 @@ import Modal, {
 import CustomPopover from "../../../../components/CustomPopover";
 import { PluginChild } from "../../MapLibre/Plugin";
 import { EmbedConfig } from "../../../../utils/embed";
+import { dictDeepCopy } from "../../../../utils/main";
 import {
   changeIndicatorLayersForcedUpdate
 } from "../../LeftPanel/IndicatorLayers";
 
 import './style.scss';
-import { EditIcon } from "../../../../components/Icons";
 
 /**
  * Bookmark component.
@@ -100,23 +104,6 @@ export default function Bookmark({ map }) {
 
   /** Update dashboard data with new bookmark */
   const updateDashboardData = (bookmark) => {
-    if (!bookmark.position) {
-      dashboardData.extent = bookmark.extent
-    }
-    dashboardData.basemapsLayers.map(layer => {
-      layer.visible_by_default = layer.id === bookmark.selected_basemap
-    })
-    dashboardData.indicatorLayers.map(layer => {
-      layer.visible_by_default = bookmark.selected_indicator_layer === layer.id
-    })
-    dashboardData.contextLayers.map(layer => {
-      layer.visible_by_default = bookmark.selected_context_layers.includes(layer.id)
-    })
-    dashboardData.filters = bookmark.filters
-    changeIndicatorLayersForcedUpdate(true)
-    dispatch(
-      Actions.Dashboard.update(JSON.parse(JSON.stringify(dashboardData)))
-    )
     dispatch(
       Actions.Map.update({
           is3dMode: bookmark?.is_3d_mode,
@@ -124,15 +111,30 @@ export default function Bookmark({ map }) {
         }
       )
     )
+    const newDashboard = dictDeepCopy(dashboardData)
+    newDashboard.basemapsLayers.map(layer => {
+      layer.visible_by_default = layer.id === bookmark.selected_basemap
+    })
+    newDashboard.indicatorLayers.map(layer => {
+      layer.visible_by_default = bookmark.selected_indicator_layer === layer.id
+    })
+    newDashboard.contextLayers.map(layer => {
+      layer.visible_by_default = bookmark.selected_context_layers.includes(layer.id)
+    })
+    newDashboard.filters = bookmark.filters
+    changeIndicatorLayersForcedUpdate(true)
+    setTimeout(function () {
+      dispatch(
+        Actions.Dashboard.update(JSON.parse(JSON.stringify(newDashboard)))
+      )
+    }, 100)
     dispatch(Actions.Map.showHideContextLayer(bookmark?.context_layer_show))
     dispatch(Actions.Map.showHideIndicator(bookmark?.indicator_layer_show))
 
-    if (bookmark.position) {
-      if (bookmark.selected_admin_level !== null) {
-        dispatch(Actions.SelectedAdminLevel.change({
-          level: bookmark.selected_admin_level
-        }))
-      }
+    if (bookmark.selected_admin_level !== null) {
+      dispatch(Actions.SelectedAdminLevel.change({
+        level: bookmark.selected_admin_level
+      }))
     }
   }
 
@@ -157,8 +159,7 @@ export default function Bookmark({ map }) {
     }
   }, [map])
 
-  // Update dashboard data when selected bookmark updated
-  useEffect(() => {
+  const selectedBookmarkChanged = () => {
     if (bookmarks !== null) {
       const bookmark = bookmarks.find(row => row.id === selectedBookmark.id)
       if (selectedBookmark.position) {
@@ -169,6 +170,10 @@ export default function Bookmark({ map }) {
     } else if (selectedBookmark.position) {
       updateDashboardData(selectedBookmark)
     }
+  }
+  // Update dashboard data when selected bookmark updated
+  useEffect(() => {
+    selectedBookmarkChanged()
   }, [selectedBookmark])
 
   /**
@@ -263,6 +268,7 @@ export default function Bookmark({ map }) {
                           className={'Bookmark ' + (bookmark.id === selectedBookmark.id ? 'Selected' : '')}
                           onClick={() => {
                             dispatch(Actions.SelectedBookmark.change(bookmark))
+                            selectedBookmarkChanged()
                           }}
                         >
                           <td><StarOnIcon className='StarIcon'/></td>
