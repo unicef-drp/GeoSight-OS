@@ -128,12 +128,11 @@ export default function UserForm() {
                       href={new URL(preferences.georepo_url).origin + '/profile'} target='_blank'>the
                       GeoRepo website</a>.
                       <br/>
-                      If you need more information on how to generate a GeoRepo API KEY, you can check
-                        <a
-                          href='https://unicef-drp.github.io/GeoRepo-OS/developer/api/guide/#generating-an-api-key'
-                          target='_blank'>
-                          this page
-                        </a>.
+                      If you need more information on how to generate a GeoRepo API KEY, you can check <a
+                        href='https://unicef-drp.github.io/GeoRepo-OS/user/api/guide/#generating-an-api-key'
+                        target='_blank'>
+                        this page
+                      </a>.
                     </div>
                   </div> : null
               }
