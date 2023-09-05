@@ -122,17 +122,15 @@ export default function UserForm() {
                     </div>
                     <br/>
                     <div>
-                      GeoRepo api key is used for accessing GeoRepo API and all
-                      of
-                      geosight pages that needs this access.
+                      A GeoRepo API KEY is required for authorizing GeoSight to access GeoRepo data.
                       <br/>
-                      To generate GeoRepo API Key, check <a
-                      href={new URL(preferences.georepo_url).origin + '/profile'}>the
-                      georepo website</a>.
+                      To generate a GeoRepo API KEY, go to <a
+                      href={new URL(preferences.georepo_url).origin + '/profile'} target='_blank'>the
+                      GeoRepo website</a>.
                       <br/>
-                      How to Generate GeoRepo API Key, check <a
+                      If you need more information on how to generate a GeoRepo API KEY, you can check <a
                       href='https://unicef-drp.github.io/GeoRepo-OS/developer/api/guide/#generating-an-api-key'>this
-                      documentation</a>.
+                      page</a>.
                     </div>
                   </div> : null
               }

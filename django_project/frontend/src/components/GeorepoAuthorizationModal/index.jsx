@@ -56,25 +56,11 @@ export default function GeorepoAuthorizationModal() {
             {
               preferences.georepo_using_user_api_key ?
                 <Fragment>
-                  A GeoRepo API KEY is required for authorizing GeoSight to access GeoRepo data.
+                  You need to authorize to GeoRepo to access this page.
                   <br/>
                   <br/>
-                  <div>To generate a GeoRepo API KEY,
-                    <a href='https://staging-georepo.unitst.org/profile' target="_blank">
-                      go to the GeoRepo website
-                    </a>.
-                  </div>
-                  <br/>
-                  <div>If you need more information on how to Generate a GeoRepo API KEY, you can check
-                    <a
-                      href='https://unicef-drp.github.io/GeoRepo-OS/user/api/guide/#generating-an-api-key'
-                      target="_blank">
-                      this page
-                    </a>.
-                  </div>
-                  <br/>
-                  <div>Then, add the GeoRepo API KEY
-                    <a href={'/admin/user/' + user.username + '/edit'}>here</a>.
+                  <div>Please add your api key on <a
+                    href={'/admin/user/' + user.username + '/edit'}>here</a>.
                   </div>
                 </Fragment> : <Fragment>
                   GeoSight does not have access to this reference dataset.
