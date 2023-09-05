@@ -446,7 +446,7 @@ export default function ReferenceLayerCentroid({ map }) {
       }
       theGeometries.map(geom => {
         const geometry = geometriesData[geom]
-        if (!geometry.centroid) {
+        if (!geometry?.centroid) {
           return
         }
         if (indicatorsByGeom[geometry?.code]) {
