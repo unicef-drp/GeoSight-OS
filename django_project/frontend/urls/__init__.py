@@ -17,6 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.conf.urls import url
 from django.urls import include
 
+from frontend.views.arcgis_callback import ArcGisCallbackView
 from frontend.views.georepo_auth_failed import GeoRepoAuthFailedPageView
 from frontend.views.home import HomePageView
 from frontend.views.login import LoginPageView
@@ -44,5 +45,6 @@ urlpatterns = [
     url(r'^georepo_auth_failed/', GeoRepoAuthFailedPageView.as_view(),
         name='georepo_auth_failed'),
     url(r'^admin/', include(admin_url)),
+    url(r'^arcgis-callback', ArcGisCallbackView.as_view()),
     url(r'^$', HomePageView.as_view(), name='home-view'),
 ]

@@ -37,6 +37,10 @@
 
       .MuiTreeItem-content {
         flex-direction: row-reverse;
+
+        &.Mui-disabled {
+          opacity: 1;
+        }
       }
     }
   }

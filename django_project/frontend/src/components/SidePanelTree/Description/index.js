@@ -22,6 +22,7 @@ import CustomPopover from "../../CustomPopover";
 import { fetchingData } from "../../../Requests";
 import { formatDateTime } from "../../../utils/main";
 import { InfoFillIcon } from "../../Icons/"
+import ArcGisAuthorization from "../../ArcGisAuthorization";
 
 import './style.scss';
 
@@ -65,9 +66,9 @@ export default function LayerDescription({ layer }) {
         setLoading(false)
       }
     )
-
   }
 
+  const contextLayerNeedLogin = layerType === LAYER_TYPE_CONTEXT_LAYER && ["token required", "invalid token."].includes(layer?.error?.toLowerCase())
   return (
     <div
       className={'LayerInfoIcon InfoIcon LayerIcon' + (layer?.error ? ' Error' : '')}>
@@ -83,12 +84,18 @@ export default function LayerDescription({ layer }) {
               horizontal: 'left',
             }}
             Button={
-              <InfoFillIcon fontSize={"small"}/>
+              contextLayerNeedLogin ?
+                <div>
+                  <ArcGisAuthorization data={layer}/>
+                </div> :
+                <InfoFillIcon fontSize={"small"}/>
             }
             showOnHover={true}
           >
             <div className='LayerInfoPopover'>
-              {layer.error}
+              {
+                contextLayerNeedLogin ? "You need to authorize to access this resource by click this icon" : layer.error
+              }
             </div>
           </CustomPopover>
           :

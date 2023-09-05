@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 /* ==========================================================================
    Return layer
@@ -19,6 +19,7 @@
 
 import React from 'react';
 
+import Cookies from "js-cookie";
 import EsriData from "../../../../utils/esri/esri-data";
 import { dictDeepCopy } from "../../../../utils/main";
 import { popupTemplate } from "../../MapLibre/Popup";
@@ -41,8 +42,9 @@ export function RasterTileLayer(
 export async function ArcgisLayer(
   layerData, layerFn, legendFn, errorFn, onEachFeature, objectFn
 ) {
+  const arcGisDomain = layerData.url.split('rest')[0]
   const options = {
-    token: layerData.token
+    token: layerData.token ? layerData.token : Cookies.get(arcGisDomain)
   };
   const esriData = new EsriData(
     layerData.name, layerData.url,
