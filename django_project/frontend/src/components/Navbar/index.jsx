@@ -26,6 +26,7 @@ import { EmbedConfig } from "../../utils/embed";
 import { CogIcon, HelpIcon } from "../Icons";
 import { ThemeButton } from "../Elements/Button";
 import { HelpCenter } from "../HelpCenter";
+import NotificationBadge from "../NotificationBadge";
 
 import './style.scss';
 
@@ -69,7 +70,8 @@ export default function NavBar({ minified }) {
           <div className='Separator'></div>
           {
             canAccessAdmin ? (
-              <div className='LinkButton' style={{ marginRight: "1rem" }}>
+              <div className='LinkButton AdminLinkButton'
+                   style={{ marginRight: "1rem" }}>
                 <a href={urls.admin.dashboardList}>
                   <ThemeButton
                     variant="white"
@@ -77,6 +79,7 @@ export default function NavBar({ minified }) {
                     <CogIcon/> Admin panel
                   </ThemeButton>
                 </a>
+                <NotificationBadge/>
               </div>
             ) : null
           }
