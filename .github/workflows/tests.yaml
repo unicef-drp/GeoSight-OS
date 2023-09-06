@@ -58,6 +58,10 @@ jobs:
           make devweb-entrypoint
           make devweb-runserver
           make sleep
+
+      - name: Test production config ready
+        run: make production-check
+
       - name: Test django endpoint
         run: |
           curl http://localhost:2000/
@@ -65,6 +69,7 @@ jobs:
             echo "Curl command failed"
             exit 1
           fi
+
       - name: Test backend
         run: make devweb-test
 

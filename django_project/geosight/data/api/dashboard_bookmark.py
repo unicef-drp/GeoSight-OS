@@ -46,6 +46,13 @@ class DashboardBookmarksAPI(APIView):
         basemap = dashboard.dashboardbasemap_set.filter(
             visible_by_default=True
         ).first()
+
+        level_config = dashboard.level_config
+        default_level = None
+        try:
+            default_level = level_config['default_level']
+        except KeyError:
+            pass
         default = DashboardBookmarkSerializer(
             DashboardBookmark(
                 id=0,
@@ -53,6 +60,7 @@ class DashboardBookmarksAPI(APIView):
                 extent=dashboard.extent,
                 selected_basemap=basemap.object if basemap else None,
                 selected_indicator_layer=first_layer,
+                selected_admin_level=default_level,
                 filters=dashboard.filters
             )
         ).data

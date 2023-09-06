@@ -29,7 +29,7 @@ import { DownloadIcon } from '../../../../components/Icons'
 import CustomPopover from "../../../../components/CustomPopover";
 import { ThemeButton } from "../../../../components/Elements/Button";
 import { removeElement } from "../../../../utils/Array";
-import { jsonToXlsx } from "../../../../utils/main";
+import { dictDeepCopy, jsonToXlsx } from "../../../../utils/main";
 import {
   extractCode,
   fetchFeatureList,
@@ -218,6 +218,29 @@ export default function DownloaderData() {
       }
     })
   }
+
+  /** Clean data to geojson **/
+  const cleanDataToGeojson = (
+    features, geometries, indicatorLayer, indicatorData, indicatorValueByGeometry,
+    isIndicator
+  ) => {
+    // Get per geometries
+    geometries.map(geom => {
+      const ucode = extractCode(geom.properties)
+      const data = getData(
+        indicatorLayer, indicatorData, indicatorValueByGeometry, ucode, isIndicator
+      )
+      if (data) {
+        data.map(dataRow => {
+          const usedGeom = dictDeepCopy(geom)
+          usedGeom.properties = Object.assign(
+            {}, usedGeom.properties, dataRow
+          )
+          features.push(usedGeom)
+        })
+      }
+    })
+  }
   // Construct the data
   const download = () => {
     setDownloading(true);
@@ -378,7 +401,7 @@ export default function DownloaderData() {
 
             // Get every indicators selected
             state.indicators.map(indicatorId => {
-              //Get per indicator layer
+              // Get per indicator layer
               const indicatorLayer = indicatorLayers.find(indicatorLayer => indicatorId === indicatorLayer.id)
               if (!indicatorLayer.indicators?.length && !indicatorLayer.related_tables?.length) {
                 cleanDataToExcel(tableData, geometries, indicatorLayer, indicatorLayer, indicatorValueByGeometry, false)
@@ -410,45 +433,23 @@ export default function DownloaderData() {
               geometries = geometries.concat(geometryData);
             }
 
-            // Get every indicators selected
+            // Get every selected indicators
             state.indicators.map(indicatorId => {
-              //Get per indicator layer
+              // Get per indicator layer
               const indicatorLayer = indicatorLayers.find(indicatorLayer => indicatorId === indicatorLayer.id)
-
-              // For indicators
-              indicatorLayer.indicators.map(indicatorData => {
-                // Get per geometries
-                geometries.map(geom => {
-                  const data = getData(
-                    indicatorLayer, indicatorData,
-                    indicatorValueByGeometry, extractCode(geom.properties)
-                  )
-                  if (data) {
-                    geom.properties = Object.assign(
-                      {}, geom.properties, data[0]
-                    )
-                    features.push(geom)
-                  }
+              if (!indicatorLayer.indicators?.length && !indicatorLayer.related_tables?.length) {
+                cleanDataToGeojson(features, geometries, indicatorLayer, indicatorLayer, indicatorValueByGeometry, false)
+              } else {
+                // For indicators
+                indicatorLayer.indicators.map(indicatorData => {
+                  cleanDataToGeojson(features, geometries, indicatorLayer, indicatorData, indicatorValueByGeometry, true)
                 })
-              })
 
-              // For related_tables
-              indicatorLayer.related_tables.map(rt => {
-                // Get per geometries
-                geometries.map(geom => {
-                  const data = getData(
-                    indicatorLayer, null,
-                    indicatorValueByGeometry, extractCode(geom.properties),
-                    false
-                  )
-                  if (data) {
-                    geom.properties = Object.assign(
-                      {}, geom.properties, data[0]
-                    )
-                    features.push(geom)
-                  }
+                // For related tables
+                indicatorLayer.related_tables.map(rt => {
+                  cleanDataToGeojson(features, geometries, indicatorLayer, rt, indicatorValueByGeometry, false)
                 })
-              })
+              }
             })
 
             // Download geojson

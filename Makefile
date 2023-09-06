@@ -198,6 +198,13 @@ sleep:
 	@sleep 50
 	@echo "Done"
 
+production-check:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Run production check"
+	@echo "------------------------------------------------------------------"
+	@docker-compose exec -T dev python production_prep_check.py
+
 devweb-runserver:
 	@echo
 	@echo "------------------------------------------------------------------"
