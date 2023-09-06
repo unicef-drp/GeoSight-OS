@@ -1,13 +1,13 @@
 site_name: GeoSight-OS
 site_description: "Project technical and user documentation."
-site_author: "Kartoza"
+site_author: "Unicef"
 docs_dir: ./src
 site_dir: ./site
 repo_name: "GeoSight-OS"
 repo_url: "https://github.com/unicef-drp/GeoSight-OS"
 edit_uri: "https://github.com/unicef-drp/GeoSight-OS/blob/main/docs/"
 
-copyright: Kartoza and Contributors
+copyright: Unicef and Contributors
 
 markdown_extensions:
         - attr_list # lets us resize images see https://github.com/mkdocs/mkdocs/issues/1678#issuecomment-455500757
