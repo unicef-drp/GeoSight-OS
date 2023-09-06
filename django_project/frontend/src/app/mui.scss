@@ -514,8 +514,8 @@
   color: $gray-500 !important;
 
   .MuiCircularProgress-root {
-    width: 20px !important;
-    height: 20px !important;
+    width: 16px !important;
+    height: 16px !important;
   }
 }
 
@@ -576,12 +576,14 @@
   }
 
   .MuiAutocomplete-endAdornment {
+    position: absolute;
     height: 100%;
     right: 0 !important;
     top: 0;
     width: 25px;
     display: flex;
     align-items: center;
+    max-height: unset !important;
 
     button {
       color: $svg-gray !important;

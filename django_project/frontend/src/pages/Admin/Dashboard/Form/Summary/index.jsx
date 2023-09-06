@@ -55,7 +55,8 @@ export default function SummaryDashboardForm({ changed }) {
     geoField,
     levelConfig,
     show_splash_first_open,
-    truncate_indicator_layer_name
+    truncate_indicator_layer_name,
+    enable_geometry_search
   } = useSelector(state => state.dashboard.data);
   const dispatch = useDispatch();
 
@@ -247,7 +248,21 @@ export default function SummaryDashboardForm({ changed }) {
                   changed(true)
                 }}
               />}
-              label={'Truncate long Indicator Layer name'}/>
+              label={'Truncate long indicator layer name'}/>
+          </FormGroup>
+          <FormGroup>
+            <FormControlLabel
+              control={<Checkbox
+                id={'SummaryEnableGeometrySearch'}
+                checked={enable_geometry_search}
+                onChange={(event) => {
+                  dispatch(Actions.Dashboard.updateProps({
+                    enable_geometry_search: !enable_geometry_search
+                  }))
+                  changed(true)
+                }}
+              />}
+              label={'Enable geography entity search box'}/>
           </FormGroup>
         </div>
         <div className="BasicFormSection">

@@ -41,6 +41,7 @@ import {
   LabelToggler,
   Measurement,
   MovementHistories,
+  SearchGeometryInput,
   TiltControl,
   ToggleSidePanel,
 } from '../Toolbars'
@@ -245,6 +246,7 @@ export default function MapLibre(
 
       {/* Embed */}
       <div className='Toolbar-Right'>
+        <SearchGeometryInput map={map}/>
         <Plugin className='EmbedControl'>
           <div className='Active'>
             <PluginChild title={'Get embed code'}>
