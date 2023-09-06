@@ -39,7 +39,8 @@ const LAYER_HIGHLIGHT_ID = 'reference-layer-highlight'
  */
 export default function SearchGeometryInput({ map }) {
   const {
-    referenceLayer
+    referenceLayer,
+    enable_geometry_search
   } = useSelector(state => state.dashboard.data);
   const referenceLayerData = useSelector(state => state.referenceLayerData[referenceLayer.identifier])
   const geometries = useSelector(state => state.geometries);
@@ -55,7 +56,7 @@ export default function SearchGeometryInput({ map }) {
 
   /** Create options */
   useEffect(() => {
-      if (referenceLayerData?.data?.dataset_levels) {
+      if (enable_geometry_search && referenceLayerData?.data?.dataset_levels) {
         const options = []
         referenceLayerData?.data?.dataset_levels.map(level => {
           if (geometries[level.level]) {
@@ -150,6 +151,10 @@ export default function SearchGeometryInput({ map }) {
     });
   }
 
+  if (!enable_geometry_search) {
+    return
+  }
+
   return <div className={'SelectWithSearchInput SearchGeometryInput'}>
     <Autocomplete
       value={value}
@@ -163,7 +168,7 @@ export default function SearchGeometryInput({ map }) {
       renderInput={(params) => (
         <TextField
           {...params}
-          placeholder={!loaded ? 'Loading....' : 'Search Geometry'}
+          placeholder={!loaded ? 'Loading....' : 'Search Geography Entity'}
           InputProps={{
             ...params.InputProps,
             endAdornment: (

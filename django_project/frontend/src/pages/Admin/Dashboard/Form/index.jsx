@@ -207,6 +207,7 @@ export function DashboardSaveForm(
     const category = $('#SummaryCategory .ReactSelect__single-value').text();
     const splashScreen = $('#SummarySplash').is(':checked');
     const truncateIndicatorName = $('#SummaryTruncateIndicatorName').is(':checked');
+    const enableGeometrySearch = $('#SummaryEnableGeometrySearch').is(':checked');
 
     if (!name) {
       errors.push('Name is empty, please fill it.')
@@ -299,7 +300,8 @@ export function DashboardSaveForm(
         'filters_allow_modify': filtersAllowModify,
         'permission': permission,
         'show_splash_first_open': splashScreen,
-        'truncate_indicator_layer_name': truncateIndicatorName
+        'truncate_indicator_layer_name': truncateIndicatorName,
+        'enable_geometry_search': enableGeometrySearch,
       }
 
       // onOpen();
@@ -314,6 +316,7 @@ export function DashboardSaveForm(
       formData.append('geoField', geoField)
       formData.append('show_splash_first_open', splashScreen)
       formData.append('truncate_indicator_layer_name', truncateIndicatorName)
+      formData.append('enable_geometry_search', enableGeometrySearch)
 
       postData(
         document.location.href,
