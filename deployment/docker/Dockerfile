@@ -54,6 +54,7 @@ EXPOSE 8080
 WORKDIR /home/web/django_project
 ENTRYPOINT ["/home/web/django_project/entrypoint.sh"]
 CMD ["uwsgi", "--ini", "/uwsgi.conf"]
+# end of prod Dockerfile
 
 FROM prod AS dev
 

@@ -1,29 +1,58 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Django: Run server",
+            "type": "python",
+            "request": "launch",
+            "program": "/home/web/project/django_project/manage.py",
+            "cwd": "/home/web/project/django_project",
+            "args": [
+                "runserver",
+                "8000"
+            ],
+            "envFile": "/home/web/project/deployment/.env",
+            "django": true,
+            "justMyCode": true,
+            "env": {
+                "DJANGO_SETTINGS_MODULE": "core.settings.dev"
+            }
+        },
+        {
+            "name": "React: Run webpack-dev-server",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "npm",
+            "preLaunchTask": "React: Webpack-dev-server",
+            "cwd": "/home/web/project/django_project",
+            "console": "integratedTerminal"
+        },
+        {
             "name": "Compile PDF",
             "type": "node",
-            // see tasks.json for definition
-            "preLaunchTask": "Compile PDF", // The name of the task defined above
+            "preLaunchTask": "Compile PDF",
             "request": "attach"
         },
         {
             "name": "Compile HTML",
             "type": "node",
-            // see tasks.json for definition
-            "preLaunchTask": "Compile HTML", // The name of the task defined above
+            "preLaunchTask": "Compile HTML",
             "request": "attach"
         },
         {
             "name": "Serve HTML",
             "type": "node",
-            // see tasks.json for definition
-            "preLaunchTask": "Serve HTML", // The name of the task defined above
+            "preLaunchTask": "Serve HTML",
             "request": "attach"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Django + React",
+            "configurations": [
+                "Django: Run server",
+                "React: Run webpack-dev-server"
+            ]
         }
     ]
 }

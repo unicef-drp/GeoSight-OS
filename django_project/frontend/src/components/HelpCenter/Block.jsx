@@ -63,7 +63,13 @@ export default function Block({ data, isRoot }) {
 
           const parser = new DOMParser()
           const htmlDoc = parser.parseFromString(response, 'text/html')
-          const _element = htmlDoc.getElementById(data.anchor.replace('#', ''))
+          const anchor = data.anchor.replace('#', '')
+          let _element = htmlDoc.getElementsByTagName('article')[0]
+          if (anchor) {
+            _element = htmlDoc.getElementById(data.anchor.replace('#', ''))
+          } else if (_element) {
+            _element = _element.getElementsByTagName('div')[0]?.firstChild
+          }
           if (!_element) return
           if (!content.title) {
             content.title = _element.innerText.replaceAll('¶', '')

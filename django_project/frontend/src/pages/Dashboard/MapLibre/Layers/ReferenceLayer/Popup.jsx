@@ -21,89 +21,68 @@ import { updateContextData } from "../../../../../utils/dataContext";
 import { extractCode } from "../../../../../utils/georepo";
 
 export const referenceLayerDefaultTemplate = `
+<!--  HEADER  -->
+<div class="header">
+    <b>{{ context.current.geometry_data.name }}</b>
+</div>
+
 <!--  INDICATOR LAYER SECTION  -->
 {% if context.current %}
+  <!--  CONTENT  -->
+  <div class="content">
+    <table>
+    
+    <!-- INDICATOR LAYERS DATA -->
     {% for obj in context.current.indicator_layers %}
       {% if obj.data %}
-        <!--  HEADER  -->
-        <div class="header">
-            <b>{{ obj.name }}</b>
-        </div>
-
-        <!--  CONTENT  -->
-        <div class="content">
-          <table>
-              {% for key, value in obj.data %}
-                  {% if key not in ['name'] %}
-                      <tr>
-                          <td valign="top"><b>{{ key | capitalize | humanize }}</b></td>
-                          <td valign="top">{{ value | safe }}</td>
-                      </tr>
-                  {% endif %}
-            {% endfor %}
-          </table>
-        </div>
-      {% endif %}
-    {% endfor %}
-
-    {% for obj in context.current.indicators %}
-      <!--  HEADER  -->
-      <div class="header">
-          <b>{{ obj.name }}</b>
-      </div>
-
-      <!--  CONTENT  -->
-      <div class="content">
-        <table>
-            {% for key, value in obj %}
-                {% if key not in ['name'] %}
-                    <tr>
-                        <td valign="top"><b>{{ key | capitalize | humanize }}</b></td>
-                        <td valign="top">{{ value | safe }}</td>
-                    </tr>
-                {% endif %}
-          {% endfor %}
-        </table>
-      </div>
-    {% endfor %}
-
-    {% for obj in context.current.related_tables %}
-      <!--  HEADER  -->
-      <div class="header">
-          <b>{{ obj.name }}</b>
-      </div>
-
-      <!--  CONTENT  -->
-      <div class="content">
-        <table>
-            {% for key, value in obj %}
-                {% if key not in ['name'] %}
-                    <tr>
-                        <td valign="top"><b>{{ key | capitalize | humanize }}</b></td>
-                        <td valign="top">{{ value | safe }}</td>
-                    </tr>
-                {% endif %}
-          {% endfor %}
-        </table>
-      </div>
-    {% endfor %}
-
-    <!--  2ND HEADER  -->
-    <div class="header">
-        <b>Geometry Data</b>
-    </div>
-
-    <!--  2ND CONTENT  -->
-    <div class="content">
-        <table>
-            {% for key, value in context.current.geometry_data %}
+        {% for key, value in obj.data %}
+            {% if key not in ['name'] %}
                 <tr>
                     <td valign="top"><b>{{ key | capitalize | humanize }}</b></td>
                     <td valign="top">{{ value | safe }}</td>
                 </tr>
-            {% endfor %}
-        </table>
-    </div>
+            {% endif %}
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+    
+    <!-- INDICATORS DATA -->
+    {% for obj in context.current.indicators %}
+      {% for key, value in obj %}
+          {% if key not in ['name'] %}
+              <tr>
+                  <td valign="top"><b>{{ key | capitalize | humanize }}</b></td>
+                  <td valign="top">{{ value | safe }}</td>
+              </tr>
+          {% endif %}
+      {% endfor %}
+    {% endfor %}
+
+    
+    <!-- RELATED TABLE DATA -->
+    {% for obj in context.current.related_tables %}
+      {% for key, value in obj %}
+          {% if key not in ['name'] %}
+              <tr>
+                  <td valign="top"><b>{{ key | capitalize | humanize }}</b></td>
+                  <td valign="top">{{ value | safe }}</td>
+              </tr>
+          {% endif %}
+      {% endfor %}
+    {% endfor %}
+    
+    
+    <!-- GEOMETRY -->
+    {% for key, value in context.current.geometry_data %}
+        {% if key not in ['name'] %}
+          <tr>
+              <td valign="top"><b>{{ key | capitalize | humanize }}</b></td>
+              <td valign="top">{{ value | safe }}</td>
+          </tr>
+        {% endif %}
+    {% endfor %}
+  </table>
+</div>
 {% endif %}
 `
 
@@ -344,7 +323,6 @@ export function popup(
     }
 
     try {
-      const newGeometryContext = {}
       const newIndicatorsContext = {}
       const newRelatedTablesContext = {}
       context = updateCurrent(
@@ -353,6 +331,9 @@ export function popup(
         indicatorValueByGeometry, indicatorSecondValueByGeometry,
         geom_id
       )
+      const newGeometryContext = {
+        name: context?.context?.current?.geometry_data.name
+      }
       currentIndicatorLayer.data_fields.map(field => {
         if (!field.visible) {
           return

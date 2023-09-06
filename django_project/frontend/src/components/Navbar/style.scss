@@ -154,6 +154,21 @@ header {
   }
 }
 
+.AdminLinkButton {
+  position: relative;
+
+  .NotificationBadge {
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    margin-right: 10px;
+    margin-top: -12px;
+    border: 1px solid white;
+    background: white;
+    color: $primary-color;
+  }
+}
+
 .MenuItem-Header {
   padding: 0 !important;
 

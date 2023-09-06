@@ -176,9 +176,6 @@ db:
 wait-db:
 	@docker-compose ${ARGS} exec -T db su - postgres -c "until pg_isready; do sleep 5; done"
 
-create-test-db:
-	@docker-compose ${ARGS} exec -T db su - postgres -c "psql -c 'create database test_db;'"
-
 devweb: db
 	@echo
 	@echo "------------------------------------------------------------------"
@@ -186,7 +183,7 @@ devweb: db
 	@echo "------------------------------------------------------------------"
 	@docker-compose ${ARGS} up --no-recreate --no-deps -d dev
 
-devweb-entrypoint: devweb
+devweb-entrypoint:
 	@echo
 	@echo "------------------------------------------------------------------"
 	@echo "Running in DEVELOPMENT mode"
@@ -200,6 +197,20 @@ sleep:
 	@echo "------------------------------------------------------------------"
 	@sleep 50
 	@echo "Done"
+
+production-check:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Run production check"
+	@echo "------------------------------------------------------------------"
+	@docker-compose exec -T dev python production_prep_check.py
+
+devweb-runserver:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Start django runserver in dev container"
+	@echo "------------------------------------------------------------------"
+	@docker-compose $(ARGS) exec -T dev bash -c "nohup python manage.py runserver 0.0.0.0:8080 &"
 
 devweb-test:
 	@echo

@@ -1,0 +1,31 @@
+{
+  "name": "geo-sight-dashboard",
+  "version": "0.0.1",
+  "description": "GeoSight Dashboard.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "webpack serve --mode development",
+    "build": "webpack --mode production",
+    "lint": "eslint src/**/*.jsx"
+  },
+  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/unicef-drp/GeoSight-OS"
+  },
+  "author": {
+    "name": "Irwan Fathurrahman",
+    "url": "https://github.com/meomancer"
+  },
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/unicef-drp/GeoSight/issues"
+  },
+  "homepage": "https://github.com/unicef-drp/GeoSight",
+  "devDependencies": {
+    "@playwright/test": "^1.36.2"
+  },
+  "dependencies": {
+  },
+  "overrides": {}
+}

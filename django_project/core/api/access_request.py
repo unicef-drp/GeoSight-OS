@@ -18,6 +18,7 @@ from datetime import datetime
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.db.models import Count
 from django.http import HttpResponseBadRequest, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -45,24 +46,39 @@ class AccessRequestList(APIView):
 
     permission_classes = (RoleContributorAuthenticationPermission,)
 
+    def query(self, request):
+        """Return the query."""
+        query = UserAccessRequest.objects.all()
+        if not request.user.profile.is_admin:
+            query = query.filter(request_by=request.user)
+        return query
+
     def get(self, request, request_type, *args, **kwargs):
         """Get access request list."""
         if request_type not in ACCESS_REQUEST_TYPE_LIST:
             raise ValidationError(f'Invalid request type: {request_type}')
-        status = request.GET.get('status', None)
-        results = UserAccessRequest.objects.filter(
+        results = self.query(request)
+        results = results.filter(
             type=ACCESS_REQUEST_TYPE_LIST[request_type]
         )
-
-        # If not admin, just show the user's request
-        if not request.user.profile.is_admin:
-            results = results.filter(request_by=request.user)
         results = results.order_by('-submitted_on')
+        status = request.GET.get('status', None)
         if status:
             results = results.filter(status=status)
         return Response(status=200, data=AccessRequestSerializer(
             results, many=True
         ).data)
+
+
+class AccessRequestCount(AccessRequestList):
+    """Access request count."""
+
+    def get(self, request, *args, **kwargs):
+        """Get access request list."""
+        results = self.query(request).filter(
+            status=UserAccessRequest.RequestStatus.PENDING
+        ).values('type').annotate(count=Count('type')).order_by('count')
+        return Response(status=200, data=results)
 
 
 class AccessRequestDetail(APIView):

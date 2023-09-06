@@ -28,20 +28,39 @@ class Page(models.Model):
         unique=True
     )
 
-    url = models.CharField(
+    relative_url = models.CharField(
+        verbose_name='Relative Page Url',
         max_length=128,
-        help_text='Relative url of documentation base url'
+        null=True,
+        blank=True,
+        help_text=(
+            'Relative page url as identifier to be matched for the page that '
+            'are opened. Example: put `/project`, it will use this page '
+            'as help center when we are in /project.'
+        )
+    )
+
+    url = models.CharField(
+        verbose_name='Relative Documentation Url',
+        max_length=128,
+        help_text=(
+            'Relative url of documentation base url that will be used as '
+            '"Visit our documentation" button.'
+        )
     )
 
     title = models.CharField(
         max_length=512,
-        help_text='Title that will be used on the page.'
+        help_text='Title that will be used on the page help center.'
     )
 
     intro = models.TextField(
         null=True,
         blank=True,
-        help_text='Help intro for this page.'
+        help_text=(
+            'Help intro for this page help center, '
+            'below title and upper of blocks.'
+        )
     )
 
     def __str__(self):
