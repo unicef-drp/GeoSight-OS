@@ -17,6 +17,10 @@ __copyright__ = ('Copyright 2023, Unicef')
 import os  # noqa
 
 from core.settings.utils import ABS_PATH
+from glob import glob
+
+GDAL_LIBRARY_PATH = glob('/usr/lib/libgdal.so.*')[0]
+GEOS_LIBRARY_PATH = glob('/usr/lib/libgeos_c.so.*')[0]
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -155,7 +159,7 @@ REST_FRAMEWORK = {
 LOGIN_URL = '/login/'
 SITE_ID = 1
 
-SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = 'deadbeef'
 if SECRET_KEY in ['', "''"]:
     raise Exception('SECRET_KEY is required in env.')
 

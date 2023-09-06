@@ -33,8 +33,13 @@ ENV LANG en_ZA.UTF-8
 ENV LANGUAGE en_ZA:en
 ENV LC_ALL en_ZA.UTF-8
 
-RUN apk add --no-cache --virtual .build-deps gcc libc-dev python3-dev linux-headers musl-dev libffi-dev py3-pip gdal \
-    gettext curl-dev libressl-dev py3-yuicompressor git vim dpkg ca-certificates wget curl bash chromium
+RUN apk add --force-overwrite --no-cache --virtual .build-deps gcc libc-dev python3-dev linux-headers musl musl-dev  \
+    libffi-dev libressl-dev curl-dev tar \
+    && apk add --force-overwrite --no-cache gettext py3-pip py3-yuicompressor git vim ca-certificates wget curl  \
+    bash chromium gdal geos proj binutils \
+    && ln -s /usr/lib/libproj.so.15 /usr/lib/libproj.so \
+    && ln -s /usr/lib/libgdal.so.20 /usr/lib/libgdal.so \
+    && ln -s /usr/lib/libgeos_c.so.1 /usr/lib/libgeos_c.so
 
 ADD deployment/docker/requirements.txt /requirements.txt
 RUN pip3 install --upgrade pip && pip install --upgrade pip
@@ -46,9 +51,7 @@ RUN pip install -r /requirements.txt
 ## RUN bash nodesource_setup.sh
 #RUN apk add --force-overwrite --no-cache --virtual .build-deps nodejs -y
 
-RUN wget https://unofficial-builds.nodejs.org/download/release/v18.9.1/node-v18.9.1-linux-x64-musl.tar.gz
-RUN tar -xvf node-v18.9.1-linux-x64-musl.tar.gz
-RUN rm node-v18.9.1-linux-x64-musl.tar.gz
+ADD /deployment/docker/node-v18.9.1-linux-x64-musl.tar.gz /node-v18.9.1-linux-x64-musl.tar.gz
 
 RUN ln -s /var/www/node-v18.9.1-linux-x64-musl/bin/node /usr/bin/node
 RUN ln -s /var/www/node-v18.9.1-linux-x64-musl/bin/npm /usr/bin/npm
@@ -112,5 +115,7 @@ RUN pip install -r /requirements-dev.txt
 EXPOSE 8080
 # Open port 22 as we will be using a remote interpreter from pycharm
 EXPOSE 22
+
+RUN ssh-keygen -A
 
 CMD ["/usr/sbin/sshd", "-D"]

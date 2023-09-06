@@ -104,7 +104,7 @@ shell:
 	@echo "------------------------------------------------------------------"
 	@echo "Shelling in in production mode"
 	@echo "------------------------------------------------------------------"
-	@docker-compose exec django /bin/bash
+	@docker-compose exec django bash
 
 db-bash:
 	@echo
@@ -218,7 +218,7 @@ devweb-shell:
 	@echo "------------------------------------------------------------------"
 	@echo "Run shell"
 	@echo "------------------------------------------------------------------"
-	@docker-compose exec dev /bin/bash
+	@docker-compose exec dev bash
 # --------------- TESTS ---------------
 run-flake8:
 	@echo
