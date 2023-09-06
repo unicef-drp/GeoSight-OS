@@ -46,6 +46,7 @@ import {
 import { HelpCenter } from "../../../../components/HelpCenter";
 
 import './style.scss';
+import NotificationBadge from "../../../../components/NotificationBadge";
 
 
 function SidaNavigationButton({ title, minified, children }) {
@@ -218,8 +219,10 @@ export default function SideNavigation({ pageName, minified }) {
                     <a href={urls.admin.accessRequest}
                        className={'SideNavigation-Row ' + (pageNames.AccessRequestList === pageName ? 'active' : '')}>
                       <GppMaybeIcon className='SideNavigation-Row-Icon'/>
-                      <span
-                        className='SideNavigation-Row-Name'>Access Request</span>
+                      <span className='SideNavigation-Row-Name'>
+                        Access Request
+                      </span>
+                      <NotificationBadge/>
                     </a>
                   </SidaNavigationButton>
                 </div>
