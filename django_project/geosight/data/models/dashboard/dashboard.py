@@ -103,6 +103,7 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData):
     truncate_indicator_layer_name = models.BooleanField(
         null=True, blank=True, default=False
     )
+    enable_geometry_search = models.BooleanField(default=True)
 
     @staticmethod
     def name_is_exist_of_all(slug: str) -> bool:
