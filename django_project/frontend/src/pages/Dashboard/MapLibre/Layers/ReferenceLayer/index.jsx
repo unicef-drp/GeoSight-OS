@@ -57,6 +57,7 @@ const REFERENCE_LAYER_ID = `reference-layer`
 const FILL_LAYER_ID = REFERENCE_LAYER_ID + '-fill'
 const OUTLINE_LAYER_ID = REFERENCE_LAYER_ID + '-outline'
 const INDICATOR_LABEL_ID = 'indicator-label'
+const LAYER_HIGHLIGHT_ID = 'reference-layer-highlight'
 
 const geo_field = 'concept_uuid'
 
@@ -223,6 +224,11 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
       let before = contextLayerIds[0]?.id
       if (hasLayer(map, INDICATOR_LABEL_ID)) {
         before = INDICATOR_LABEL_ID
+      }
+
+      // Before highlight
+      if (hasLayer(map, LAYER_HIGHLIGHT_ID)) {
+        before = LAYER_HIGHLIGHT_ID
       }
       map.addLayer(
         {

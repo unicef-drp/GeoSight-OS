@@ -24,4 +24,5 @@ export { default as TiltControl } from "./Tilt";
 export { default as EmbedControl } from "./Embed";
 export { default as LabelToggler } from "./LabelToggler";
 export { default as ProjectOverview } from "./ProjectOverview";
+export { default as SearchGeometryInput } from "./SearchGeometryInput";
 export { default as ToggleSidePanel } from "./ToggleSidePanel";
