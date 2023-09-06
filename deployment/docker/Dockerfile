@@ -11,11 +11,10 @@
 # __date__ = '13/06/2023'
 # __copyright__ = ('Copyright 2023, Unicef')
 
-#
-FROM python:3.8-alpine3.11 AS prod
+FROM python:3.8-alpine3.12 AS prod
 MAINTAINER Irwan Fathurrahman<meomancer@gmail.com>
 
-# Pandoc needed to generate rst dumps, uic compressor needed for django-pipeline
+# Install glibc to configure en_ZA locale
 RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub && \
     wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.25-r0/glibc-2.25-r0.apk && \
     wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.25-r0/glibc-bin-2.25-r0.apk && \
@@ -33,10 +32,11 @@ ENV LANG en_ZA.UTF-8
 ENV LANGUAGE en_ZA:en
 ENV LC_ALL en_ZA.UTF-8
 
+# Install build tools in .build-deps, so we can easliy remove them after building package
 RUN apk add --force-overwrite --no-cache --virtual .build-deps gcc libc-dev python3-dev linux-headers musl musl-dev  \
     libffi-dev libressl-dev curl-dev tar \
     && apk add --force-overwrite --no-cache gettext py3-pip py3-yuicompressor git vim ca-certificates wget curl  \
-    bash chromium gdal geos proj binutils \
+    bash gdal geos proj binutils \
     && ln -s /usr/lib/libproj.so.15 /usr/lib/libproj.so \
     && ln -s /usr/lib/libgdal.so.20 /usr/lib/libgdal.so \
     && ln -s /usr/lib/libgeos_c.so.1 /usr/lib/libgeos_c.so
@@ -46,11 +46,7 @@ RUN pip3 install --upgrade pip && pip install --upgrade pip
 RUN pip install -r /requirements.txt
 
 
-## setup node
-#RUN curl -sL https://deb.nodesource.com/setup_18.x -o nodesource_setup.sh
-## RUN bash nodesource_setup.sh
-#RUN apk add --force-overwrite --no-cache --virtual .build-deps nodejs -y
-
+# setup node
 ADD /deployment/docker/node-v18.9.1-linux-x64-musl.tar.gz /node-v18.9.1-linux-x64-musl.tar.gz
 
 RUN ln -s /var/www/node-v18.9.1-linux-x64-musl/bin/node /usr/bin/node
@@ -61,7 +57,8 @@ ADD django_project /home/web/django_project
 # Install chromium for selenium
 # TODO: Change how to get the Nunjucks results without browser
 WORKDIR /home/web/django_project/selenium
-#RUN yes | dpkg -i ./google-chrome-stable_current_amd64.deb
+RUN apk add --allow-untrusted chromium-86.0.4240.111-r0.apk chromium-chromedriver-86.0.4240.111-r0.apk  \
+    && rm chromium-86.0.4240.111-r0.apk chromium-chromedriver-86.0.4240.111-r0.apk
 
 RUN find /usr/local \
         \( -type d -a -name test -o -name tests \) \

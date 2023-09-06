@@ -20,9 +20,8 @@ from typing import List
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.service import Service as ChromiumService
 from selenium.webdriver.common.by import By
-from webdriver_manager.chrome import ChromeDriverManager
 
 from core.settings.utils import ABS_PATH
 from geosight.data.models.indicator import Indicator
@@ -120,8 +119,8 @@ class FormulaBasedOnOtherIndicatorsIndicatorValue(IndicatorValueLongFormat):
             options.add_argument('--no-sandbox')
             options.add_argument('--disable-dev-shm-usage')
             driver = webdriver.Chrome(
-                service=Service(
-                    ChromeDriverManager(version='114.0.5735.90').install()
+                service=ChromiumService(
+                    '/usr/bin/chromedriver'
                 ),
                 options=options
             )
