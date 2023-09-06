@@ -67,3 +67,5 @@ http://localhost:2000
 ![image.png](img/building-5.png)
 
 The site will be rather bare bones since it will need to be configured in the admin area to set up the theme etc.
+
+🪧 Now that you have the built the project, move on to the [Design](design.md) documentation.
