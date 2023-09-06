@@ -76,7 +76,7 @@ class AccessRequestCount(AccessRequestList):
     def get(self, request, *args, **kwargs):
         """Get access request list."""
         results = self.query(request).filter(
-            approved_date__isnull=True
+            status=UserAccessRequest.RequestStatus.PENDING
         ).values('type').annotate(count=Count('type')).order_by('count')
         return Response(status=200, data=results)
 
