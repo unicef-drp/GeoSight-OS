@@ -180,6 +180,7 @@ export function DashboardSaveForm(
     extent,
     filters,
     filtersAllowModify,
+    auto_zoom_to_filter,
     permission,
     geoField,
     levelConfig
@@ -298,6 +299,7 @@ export function DashboardSaveForm(
         'widgets_structure': widgetsStructure,
         'filters': filtersData ? filtersData : filters,
         'filters_allow_modify': filtersAllowModify,
+        'auto_zoom_to_filter': auto_zoom_to_filter,
         'permission': permission,
         'show_splash_first_open': splashScreen,
         'truncate_indicator_layer_name': truncateIndicatorName,

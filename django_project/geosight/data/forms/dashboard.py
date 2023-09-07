@@ -117,5 +117,7 @@ class DashboardForm(forms.ModelForm):
         data['filters'] = json.dumps(other_data['filters'])
         data['filters_allow_modify'] = other_data.get(
             'filters_allow_modify', False)
+        data['auto_zoom_to_filter'] = other_data.get(
+            'auto_zoom_to_filter', False)
         data['permission'] = other_data['permission']
         return data

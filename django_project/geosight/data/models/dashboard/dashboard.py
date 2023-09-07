@@ -70,6 +70,9 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData):
     filters_allow_modify = models.BooleanField(
         default=False
     )
+    auto_zoom_to_filter = models.BooleanField(
+        default=False
+    )
     geo_field = models.CharField(
         max_length=64,
         default='concept_uuid'

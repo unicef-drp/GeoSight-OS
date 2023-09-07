@@ -44,6 +44,7 @@ import {
   SearchGeometryInput,
   TiltControl,
   ToggleSidePanel,
+  ZoomToFilteredGeometries
 } from '../Toolbars'
 import { EmbedConfig } from "../../../utils/embed";
 import { Actions } from "../../../store/dashboard";
@@ -247,6 +248,7 @@ export default function MapLibre(
       {/* Embed */}
       <div className='Toolbar-Right'>
         <SearchGeometryInput map={map}/>
+        <ZoomToFilteredGeometries map={map}/>
         <Plugin className='EmbedControl'>
           <div className='Active'>
             <PluginChild title={'Get embed code'}>
