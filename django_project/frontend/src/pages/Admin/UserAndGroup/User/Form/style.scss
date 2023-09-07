@@ -28,3 +28,9 @@
     margin-top: 0.5rem;
   }
 }
+
+div[data-field-name='is_staff'] {
+  opacity: 0;
+  height: 0;
+  margin-block-end: 0 !important;
+}

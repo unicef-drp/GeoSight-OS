@@ -144,7 +144,8 @@ export default function AdminForm(
       }
     }
     // Render
-    return <div className='BasicFormSection' key={idx}>
+    return <div
+      className='BasicFormSection' key={idx} data-field-name={attrName}>
       <div dangerouslySetInnerHTML={{ __html: label }}></div>
       <div className='InputInLine'>
         {

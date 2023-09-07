@@ -61,6 +61,9 @@ class UserCreateView(RoleSuperAdminRequiredMixin, AdminBaseView):
         if form.is_valid():
             user = form.save()
             user.profile.role = form.cleaned_data['role']
+            user.profile.receive_notification = form.cleaned_data[
+                'receive_notification'
+            ]
             user.profile.save()
             return redirect(
                 reverse('admin-user-and-group-list-view') + '#Users'

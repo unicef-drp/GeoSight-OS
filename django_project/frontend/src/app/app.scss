@@ -138,11 +138,21 @@ header {
 // --------------------------------------------------------------------------
 
 .error {
-  color: red !important;
+  color: #e35f5f !important;
 
   svg {
     path {
-      fill: red;
+      fill: #e35f5f;
+    }
+  }
+}
+
+.success {
+  color: #006b1b !important;
+
+  svg {
+    path {
+      fill: #006b1b;
     }
   }
 }

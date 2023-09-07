@@ -13,9 +13,9 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import $ from "jquery";
-import { IconButton } from "@mui/material";
+import { Checkbox, FormControlLabel, IconButton } from "@mui/material";
 
 import { render } from '../../../../../app';
 import { store } from '../../../../../store/admin';
@@ -45,6 +45,8 @@ export default function UserForm() {
   const [role, setRole] = useState(null);
   const [apiKey, setApiKey] = useState(user.georepo_api_key ? user.georepo_api_key : '');
   const [showAPIKey, setShowAPIKey] = useState(false);
+  const [isStaff, setIsStaff] = useState(false);
+  const [receiveNotification, setReceiveNotification] = useState(false);
 
   // Notification
   const notificationRef = useRef(null);
@@ -61,6 +63,16 @@ export default function UserForm() {
   useEffect(() => {
     if (!user.is_staff) {
       $('input[name="is_staff"]').closest('.BasicFormSection').remove()
+      $('input[name="receive_notification"]').closest('.BasicFormSection').remove()
+    } else {
+      if ($('p[data-field-name="is_staff"]').length) {
+        setIsStaff($('#id_is_staff').is(':checked'))
+        $('p[data-field-name="is_staff"]').remove()
+      }
+      if ($('p[data-field-name="receive_notification"]').length) {
+        setReceiveNotification($('#id_receive_notification').is(':checked'))
+        $('p[data-field-name="receive_notification"]').remove()
+      }
     }
     $('input[name="is_staff"]').closest('.BasicFormSection').hide()
     $('input[name="role"]').change(function () {
@@ -96,6 +108,38 @@ export default function UserForm() {
         'role': roleOnChange
       }}>
         {
+          user.is_staff ? <Fragment>
+            <div className="BasicFormSection">
+              <FormControlLabel
+                checked={isStaff}
+                control={<Checkbox/>}
+                name='is_staff'
+                onChange={evt => {
+                  setIsStaff(val => !val)
+                }}
+                label={'Backend admin (Django Staff)'}/>
+              <div className="form-helptext">
+                Designates whether the user can access the backend (Django)
+                admin
+                site.
+              </div>
+            </div>
+            <div className="BasicFormSection">
+              <FormControlLabel
+                checked={receiveNotification}
+                control={<Checkbox/>}
+                name='receive_notification'
+                onChange={evt => {
+                  setReceiveNotification(val => !val)
+                }}
+                label={'Receive email for admin notification.'}/>
+              <div className="form-helptext">
+                Designates whether the user receive notification.
+              </div>
+            </div>
+          </Fragment> : null
+        }
+        {
           ownForm ?
             <div className='ApiKeySection'>
               {
@@ -122,17 +166,20 @@ export default function UserForm() {
                     </div>
                     <br/>
                     <div>
-                      A GeoRepo API KEY is required for authorizing GeoSight to access GeoRepo data.
+                      A GeoRepo API KEY is required for authorizing GeoSight to
+                      access GeoRepo data.
                       <br/>
                       To generate a GeoRepo API KEY, go to <a
-                      href={new URL(preferences.georepo_url).origin + '/profile'} target='_blank'>the
+                      href={new URL(preferences.georepo_url).origin + '/profile'}
+                      target='_blank'>the
                       GeoRepo website</a>.
                       <br/>
-                      If you need more information on how to generate a GeoRepo API KEY, you can check <a
-                        href='https://unicef-drp.github.io/GeoRepo-OS/user/api/guide/#generating-an-api-key'
-                        target='_blank'>
-                        this page
-                      </a>.
+                      If you need more information on how to generate a GeoRepo
+                      API KEY, you can check <a
+                      href='https://unicef-drp.github.io/GeoRepo-OS/user/api/guide/#generating-an-api-key'
+                      target='_blank'>
+                      this page
+                    </a>.
                     </div>
                   </div> : null
               }

@@ -19,6 +19,8 @@ import { GridActionsCellItem } from "@mui/x-data-grid";
 import Tooltip from "@mui/material/Tooltip";
 import StorageIcon from "@mui/icons-material/Storage";
 import { AdminListContent } from "../../AdminList";
+import CancelIcon from '@mui/icons-material/Cancel';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 
 export function USER_COLUMNS() {
@@ -43,7 +45,26 @@ export function USER_COLUMNS() {
     { field: 'first_name', headerName: 'First Name', flex: 1 },
     { field: 'last_name', headerName: 'Last Name', flex: 1 },
     { field: 'role', headerName: 'Role', flex: 1 },
-    { field: 'is_staff', headerName: 'Is Django Staff', flex: 1 },
+    {
+      field: 'is_staff',
+      headerName: 'Is Django Staff',
+      width: 100,
+      renderCell: (params) => {
+        return ['true', true].includes(params.value) ?
+          <CheckCircleIcon className={'success'}/> :
+          <CancelIcon className='error'/>
+      }
+    },
+    {
+      field: 'receive_notification',
+      headerName: 'Receive notification',
+      width: 120,
+      renderCell: (params) => {
+        return ['true', true].includes(params.value) ?
+          <CheckCircleIcon className={'success'}/> :
+          <CancelIcon className='error'/>
+      }
+    },
     {
       field: 'actions',
       type: 'actions',
