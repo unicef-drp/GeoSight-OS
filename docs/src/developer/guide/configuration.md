@@ -11,6 +11,8 @@ license: This program is free software; you can redistribute it and/or modify it
 #context_id: 1234
 ---
 
+🚩 This document may contain outdated information. Please refer to the [guide](index.md).
+
 # Project Setup
 
 ## Clone GeoSight repository

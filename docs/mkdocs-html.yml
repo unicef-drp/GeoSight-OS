@@ -45,15 +45,13 @@ theme:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/kartoza
-    - icon: fontawesome/brands/docker
-      link: https://hub.docker.com/r/kartoza/
+      link: https://github.com/unicef-drp/
     - icon: fontawesome/brands/twitter
-      link: https://twitter.com/KartozaGeo
+      link: https://twitter.com/UNICEF
     - icon: fontawesome/brands/facebook
-      link: https://kartoza.com
+      link: https://www.facebook.com/unicef/
     - icon: fontawesome/solid/earth-africa
-      link: https://kartoza.com
+      link: https://www.unicef.org/
 
 extra_css:
   - css/print.css

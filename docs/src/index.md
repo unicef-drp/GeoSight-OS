@@ -118,5 +118,3 @@ You can read our license to find out what rights this license bestows to users a
 
 [License](about/license.md)
 
-<!-- Keep the Kartoza Logo at the bottom of the page if the project allows -->
-![Kartoza Logo](img/logo.svg)

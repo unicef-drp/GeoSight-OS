@@ -41,6 +41,17 @@ The following is a list, with brief descriptions, of the key components used in 
 The following diagram represents the docker containers, ports and volumes that are used to compose this platform.
 
 ![](img/architecture-docker-diagram.png)
+
+
+The docker volumes are used for the following purposes, with the following typical storage allocations:
+
+NAME | CAPACITY | ACCESS | MODES | NOTES
+-- | -- | -- | -- | --
+media-data | 10Gi | RWX | azurefile | Used for the uploaded files, example for XLS of file of importer. Azurefile and size is sufficient, mostly these files are not big.
+redis-data | 10Gi | RWX | azurefile | Used by redis for database backup (to make queue persistence when redis rerun).
+static-data | 10Gi | RWX | azurefile | Used for the static files.
+
+
 ## ER Diagram
 
 The following diagram represents all of the databsse entities that are created by the Django ORM (Object Relational Mapper). Right click the image and open it in its own tab to see it at full resolution.

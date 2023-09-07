@@ -9,7 +9,7 @@ plugins:
       # And don't get it confused with https://github.com/zhaoterryy/mkdocs-pdf-export-plugin
       # which is intended to export a single page at a time
       output_path: ../pdfs/Documenation.pdf
-      author: Kartoza Pty (Ltd.)
+      author: Unicef
       # copyright will draw in page.bottom-right
       # do it manually in templates/styles.scss
       # for more control
@@ -21,7 +21,7 @@ plugins:
       back_cover: true
       cover_title: GeoSight-OS 
       cover_subtitle: GeoSpatial Business Intelligence Platform 
-      cover_logo: ./resources/img/logo/kartoza-logo.svg
+      # cover_logo: ./resources/img/logo/logo.svg
       # Print css is defined in templates/styles.scss
       #custom_template_path: TEMPLATES PATH
       #
