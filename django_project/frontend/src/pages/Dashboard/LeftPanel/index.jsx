@@ -1,24 +1,24 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 /* ==========================================================================
    LEFT SIDE CONTAINER
    ========================================================================== */
 
-import React, { useState } from 'react';
-import {useDispatch, useSelector} from "react-redux";
+import React from 'react';
+import { useDispatch, useSelector } from "react-redux";
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -37,31 +37,57 @@ import { tabProps } from "../../../components/Tabs/index"
 import './style.scss';
 
 /**
- * Left panel.
+ * Context layer visibility
  */
-export default function LeftPanel({ leftExpanded }) {
+export function ContextLayerVisibility() {
   const dispatch = useDispatch();
-  const state = leftExpanded ? LEFT : RIGHT
-  const [tabValue, setTabValue] = React.useState(0);
-
   const {
-    contextLayers
-  } = useSelector(state => state.dashboard.data);
-  const [tab2Value, setTab2Value] = React.useState(1);
-  const {
-    contextLayersShow,
-    indicatorShow
+    contextLayersShow
   } = useSelector(state => state.map);
 
-  const handleContextLayerVisibility = (e) => {
+  const handleVisibility = (e) => {
     e.stopPropagation();
     dispatch(Actions.Map.showHideContextLayer(!contextLayersShow))
   }
+  return contextLayersShow ? <VisibilityIcon
+    className="MuiTab-iconWrapper"
+    onClick={handleVisibility}
+  /> : <VisibilityOffIcon
+    className="MuiTab-iconWrapper"
+    onClick={handleVisibility}
+  />
+}
 
-  const handleIndicatorVisibility = (e) => {
+/**
+ * Indicators visibility
+ */
+export function IndicatorsVisibility() {
+  const dispatch = useDispatch();
+  const {
+    indicatorShow
+  } = useSelector(state => state.map);
+
+  const handleVisibility = (e) => {
     e.stopPropagation();
     dispatch(Actions.Map.showHideIndicator(!indicatorShow))
   }
+
+  return indicatorShow ? <VisibilityIcon
+    className="MuiTab-iconWrapper"
+    onClick={handleVisibility}
+  /> : <VisibilityOffIcon
+    className="MuiTab-iconWrapper"
+    onClick={handleVisibility}
+  />
+}
+
+/**
+ * Left panel.
+ */
+export default function LeftPanel({ leftExpanded }) {
+  const state = leftExpanded ? LEFT : RIGHT
+  const [tabValue, setTabValue] = React.useState(0);
+  const [tab2Value, setTab2Value] = React.useState(1);
 
   const handleChangeTab = (event, newValue) => {
     setTabValue(newValue);
@@ -81,56 +107,49 @@ export default function LeftPanel({ leftExpanded }) {
       <div className={classNameWrapper}>
         <Box sx={{ width: '100%' }}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tabs value={tabValue} onChange={handleChangeTab} aria-label="basic tabs example">
+            <Tabs value={tabValue} onChange={handleChangeTab}
+                  aria-label="basic tabs example">
               <Tab
                 label="Layers"
                 icon=<LayerIcon/>
-                iconPosition="start"
-                {...tabProps('Layers')}
+              iconPosition="start"
+              {...tabProps('Layers')}
               />
               <Tab
                 label="Filters"
                 icon=<TuneIcon/>
-                iconPosition="start"
-                {...tabProps('Filters')}
+              iconPosition="start"
+              {...tabProps('Filters')}
               />
             </Tabs>
           </Box>
           <TabPanel value={tabValue} index={0} className={'sidepanel-tab'}>
             <Box sx={{ width: '100%' }}>
-              <Box sx={{ borderBottom: 1, borderColor: 'divider' }} className={'layers-tab-container'}>
-                <Tabs value={tab2Value} onChange={handleChangeTab2} aria-label="basic tabs example">
+              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}
+                   className={'layers-tab-container'}>
+                <Tabs value={tab2Value} onChange={handleChangeTab2}
+                      aria-label="basic tabs example">
                   <Tab
                     label="Context Layers"
-                    icon={
-                      contextLayersShow ? <VisibilityIcon
-                        onClick={handleContextLayerVisibility}
-                      /> : <VisibilityOffIcon
-                        onClick={handleContextLayerVisibility}
-                      />
-                    }
+                    icon={<ContextLayerVisibility/>}
                     iconPosition='end'
                     {...tabProps(0)}
                   />
                   <Tab
                     label="Indicators"
-                    icon={
-                      indicatorShow ? <VisibilityIcon
-                        onClick={handleIndicatorVisibility}
-                      /> : <VisibilityOffIcon
-                        onClick={handleIndicatorVisibility}
-                      />
-                    }
+                    icon={<IndicatorsVisibility/>}
                     iconPosition='end'
                     {...tabProps(1)}
                   />
                 </Tabs>
               </Box>
-              <TabPanel value={tab2Value} index={0} className={'sidepanel-tab layers-panel'}>
+              <TabPanel value={tab2Value} index={0}
+                        className={'sidepanel-tab layers-panel'}>
                 <ContextLayersAccordion
                 />
               </TabPanel>
-              <TabPanel value={tab2Value} index={1} className={'sidepanel-tab layers-panel'}>
+              <TabPanel value={tab2Value} index={1}
+                        className={'sidepanel-tab layers-panel'}>
                 <IndicatorLayersAccordion
                 />
               </TabPanel>
