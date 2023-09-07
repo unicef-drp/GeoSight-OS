@@ -47,8 +47,7 @@ RUN pip install -r /requirements.txt
 
 
 # setup node
-ADD /deployment/docker/node-v18.9.1-linux-x64-musl.tar.gz /node-v18.9.1-linux-x64-musl.tar.gz
-
+ADD /deployment/docker/node-v18.9.1-linux-x64-musl.tar.gz /var/www
 RUN ln -s /var/www/node-v18.9.1-linux-x64-musl/bin/node /usr/bin/node
 RUN ln -s /var/www/node-v18.9.1-linux-x64-musl/bin/npm /usr/bin/npm
 
