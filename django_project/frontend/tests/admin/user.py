@@ -96,6 +96,7 @@ class UserAdminViewTest(BaseViewTest, TestCase):
             'last_name': 'Last name',
             'email': 'email@example.com',
             'georepo_api_key': 'This is test',
+            'receive_notification': False
         }
         self.assertRequestPostView(url, 403, payload, self.viewer)
         self.assertRequestPostView(url, 403, payload, self.contributor)

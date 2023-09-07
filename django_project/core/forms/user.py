@@ -193,6 +193,11 @@ class UserViewerEditForm(AzureAdminForm):
         required=False,
         widget=forms.Select()
     )
+    receive_notification = forms.BooleanField(
+        required=False,
+        label='Receive admin notification',
+        help_text='Designates whether the user receive notification.'
+    )
 
     class Meta:  # noqa: D106
         model = User

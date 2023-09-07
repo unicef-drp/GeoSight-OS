@@ -95,6 +95,7 @@ class UserEditView(AdminBaseView):
         if not self.request.user.profile.is_admin:
             Form = UserViewerEditForm
             data['role'] = user.profile.role
+            data['receive_notification'] = user.profile.receive_notification
 
         form = Form(
             data,
