@@ -142,7 +142,8 @@ class ProfileInline(admin.StackedInline):
 
 
 class CustomUserAdmin(UserAdmin):
-    """Custom user that has """
+    """Custom user that has profile model."""
+
     list_display = (
         'username', 'email', 'first_name', 'last_name', 'is_staff',
         'role', 'receive_notification'
