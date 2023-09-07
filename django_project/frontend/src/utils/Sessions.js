@@ -32,8 +32,6 @@ export class Session {
   get isValid() {
     if (this.expires) {
       const now = new Date().getTime()
-      console.log(now - this.currentSession)
-      console.log(this.expires)
       return sessions[this.name] === this.currentSession && now < this.currentSession + this.expires
     }
     return sessions[this.name] === this.currentSession

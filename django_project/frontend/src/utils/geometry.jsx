@@ -17,7 +17,6 @@
 export function GeometriesBBOX(geometries) {
   let output = null
   geometries.map(geom => {
-    console.log(geom.bbox)
     if (!output) {
       output = geom.bbox
     } else {
