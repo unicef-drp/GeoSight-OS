@@ -78,7 +78,10 @@ nav:
                         - "": developer/guide/templates/pull-request-template.md 
                         - "": developer/guide/templates/commit-message-convention.md
                 - Manual: developer/manual/index.md
-                - Documentation Writing: developer/documentation/index.md
+                - Documentation: 
+                        - developer/documentation/index.md
+                        - "Overview": developer/documentation/overview.md
+                        - "Context Help": developer/documentation/context-help.md
                 - API:
                         - developer/api/index.md
                         - Reference: developer/api/manual/index.md
