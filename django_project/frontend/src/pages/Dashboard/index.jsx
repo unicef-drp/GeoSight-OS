@@ -30,7 +30,7 @@ import './style.scss';
 
 export default function Dashboard({ children }) {
   const dispatch = useDispatch();
-  const { data } = useSelector(state => state.dashboard);
+  const { user_permission } = useSelector(state => state.dashboard.data);
 
   const showLayerTab = !!EmbedConfig().layer_tab
   const showFilterTab = !!EmbedConfig().filter_tab
@@ -72,7 +72,7 @@ export default function Dashboard({ children }) {
   return (
     <div
       className={'dashboard ' + (leftExpanded ? 'LeftExpanded' : "")}>
-      {data && Object.keys(data).length > 0 ?
+      {user_permission ?
         <Fragment>
           <MapLibre
             leftPanelProps={leftPanelProps}

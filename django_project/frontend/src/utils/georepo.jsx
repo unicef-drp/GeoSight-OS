@@ -150,6 +150,32 @@ export const axiosGet = function (url) {
   return axios.get(url, headers);
 }
 
+/*** Axios georepo request json */
+export const fetchJson = async function (url) {
+  if (!url.includes('http')) {
+    url = preferences.georepo_api.api + url
+  }
+  return await fetchJSON(url, headers)
+}
+
+/*** Axios georepo request with cache */
+export const axiosGetCache = function (url) {
+  if (!url.includes('http')) {
+    url = preferences.georepo_api.api + url
+  }
+  return new Promise((resolve, reject) => {
+    (
+      async () => {
+        try {
+          resolve(await fetchJSON(url, headers));
+        } catch (err) {
+          reject(err)
+        }
+      }
+    )()
+  });
+}
+
 /***
  * Change code to ucode
  */

@@ -55,7 +55,7 @@ src
 │   ├── guide
 │   └── manual
 └── user
-│   ├── api
+    ├── api
     ├── guide
     ├── manual
     └── quickstart

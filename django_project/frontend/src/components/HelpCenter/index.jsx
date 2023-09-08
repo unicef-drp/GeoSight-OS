@@ -20,12 +20,12 @@ import React, {
   useState
 } from 'react';
 import { Button } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import Block from "./Block";
 import { ChatBubbleIcon, CloseIcon, EmailIcon } from "../Icons";
 
 import './style.scss';
-import CircularProgress from "@mui/material/CircularProgress";
 
 /** Themed button
  * @param {string} buttonProps Variant of Button.
@@ -62,6 +62,7 @@ export const HelpCenter = forwardRef(({}, ref) => {
             if (response.detail) {
               throw new Error(response.detail)
             }
+            response.html = response.intro
             setLoading(false)
             setData(response)
           })

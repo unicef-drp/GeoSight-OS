@@ -27,10 +27,9 @@ import { axiosGet, GeorepoUrls, updateToken } from "../../../../utils/georepo";
 import Autocomplete from "../../../../components/Input/Autocomplete";
 import { removeLayer, removeSource } from "../../MapLibre/utils";
 import { CloseIcon } from "../../../../components/Icons";
+import { Session } from "../../../../utils/Sessions";
 
 import './style.scss';
-
-let session = null;
 
 const LAYER_HIGHLIGHT_ID = 'reference-layer-highlight'
 
@@ -62,7 +61,7 @@ export default function SearchGeometryInput({ map }) {
           if (geometries[level.level]) {
             for (const [concept_uuid, geometry] of Object.entries(geometries[level.level])) {
               options.push({
-                id: concept_uuid,
+                id: geometry.concept_uuid,
                 label: geometry.label,
                 level_name: level.level_name,
                 level: level.level,
@@ -89,8 +88,7 @@ export default function SearchGeometryInput({ map }) {
 
   const selected = (input) => {
     const $input = $('.SearchGeometryInput');
-    const currentSession = new Date().getTime();
-    session = currentSession
+    const session = new Session('SearchGeometryInput')
 
     const newSelectedGeometryInput = input?.id;
     removeLayer(map, LAYER_HIGHLIGHT_ID)
@@ -107,7 +105,7 @@ export default function SearchGeometryInput({ map }) {
       .then(response => response.data)
       .then(extent => {
         $input.removeClass('Loading')
-        if (currentSession === session && extent?.length === 4) {
+        if (session.isValid && extent?.length === 4) {
           map.fitBounds([
               [extent[0], extent[1]],
               [extent[2], extent[3]]
@@ -140,7 +138,7 @@ export default function SearchGeometryInput({ map }) {
           map.setFilter(LAYER_HIGHLIGHT_ID, ['in', 'concept_uuid'].concat([newSelectedGeometryInput]));
 
           setTimeout(function () {
-            if (currentSession === session) {
+            if (session.isValid) {
               removeLayer(map, LAYER_HIGHLIGHT_ID)
               removeSource(map, LAYER_HIGHLIGHT_ID)
             }

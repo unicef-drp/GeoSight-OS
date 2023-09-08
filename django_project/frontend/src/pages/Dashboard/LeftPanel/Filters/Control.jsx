@@ -166,7 +166,6 @@ export default function FilterControl(
                   list={hasMoreQuery ? optionsTypes : [optionsTypes[0]]}
                   initValue={hasMoreQuery ? operator : optionsTypes[0].id}
                   onChangeFn={(value) => {
-                    console.log(value)
                     switchWhere(value)
                   }}
                 />
