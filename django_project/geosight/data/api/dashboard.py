@@ -15,21 +15,21 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import json
+import uuid
 
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from geosight.data.models.dashboard import (
-    Dashboard
-)
+from core.models.preferences import SitePreferences
+from geosight.data.models.basemap_layer import BasemapLayer
+from geosight.data.models.dashboard import Dashboard
+from geosight.data.serializer.basemap_layer import BasemapLayerSerializer
 from geosight.data.serializer.dashboard import (
     DashboardBasicSerializer, DashboardSerializer
 )
-from geosight.permission.access import (
-    delete_permission_resource
-)
+from geosight.permission.access import delete_permission_resource
 
 
 class DashboardListAPI(APIView):
@@ -82,5 +82,27 @@ class DashboardData(APIView):
             dashboard = Dashboard()
             data = DashboardSerializer(
                 dashboard, context={'user': request.user}).data
+
+            # Put the default basemap
+            preferences = SitePreferences.preferences()
+            if preferences.default_basemap:
+                try:
+                    default_basemap = BasemapLayer.objects.get(
+                        id=preferences.default_basemap
+                    )
+                    if default_basemap.permission.has_list_perm(request.user):
+                        data['basemaps_layers_structure'] = {
+                            "id": str(uuid.uuid4()),
+                            "group": "",
+                            "children": [default_basemap.id]
+                        }
+                        basemap = BasemapLayerSerializer(
+                            default_basemap,
+                            context={'user': request.user}
+                        ).data
+                        basemap['visible_by_default'] = True
+                        data['basemaps_layers'] = [basemap]
+                except BasemapLayer.DoesNotExist:
+                    pass
 
         return Response(data)

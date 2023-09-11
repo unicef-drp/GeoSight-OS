@@ -48,7 +48,9 @@ class SitePreferencesAdmin(admin.ModelAdmin):
     form = SitePreferencesForm
     fieldsets = (
         (None, {
-            'fields': ('site_title', 'site_url', 'disclaimer')
+            'fields': (
+                'site_title', 'site_url', 'disclaimer', 'default_basemap'
+            )
         }),
         ('GeoRepo', {
             'fields': (

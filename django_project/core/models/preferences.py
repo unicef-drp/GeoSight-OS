@@ -53,6 +53,13 @@ class SitePreferences(SingletonModel):
             'the United Nations.'
         )
     )
+    default_basemap = models.IntegerField(
+        null=True, blank=True,
+        help_text=(
+            'Basemap that will be autoadded to new project '
+            'if user has list access.'
+        )
+    )
     # -----------------------------------------------
     # GEOREPO
     # -----------------------------------------------

@@ -18,10 +18,16 @@ from django import forms
 from django.core import signing
 
 from core.models.preferences import SitePreferences
+from geosight.data.models.basemap_layer import BasemapLayer
 
 
 class SitePreferencesForm(forms.ModelForm):
     """SitePreferences form."""
+
+    default_basemap = forms.ModelChoiceField(
+        queryset=BasemapLayer.objects.all(),
+        required=False
+    )
 
     class Meta:  # noqa: D106
         model = SitePreferences
@@ -53,3 +59,11 @@ class SitePreferencesForm(forms.ModelForm):
             return signing.dumps(georepo_api_key)
         else:
             return ''
+
+    def clean_default_basemap(self):
+        """Clean default basemap."""
+        default_basemap = self.cleaned_data['default_basemap']
+        if default_basemap:
+            return default_basemap.id
+        else:
+            return None
