@@ -96,6 +96,11 @@ class AzureUserForm(AzureAdminForm):
             'the backend (Django) admin site.'
         )
     )
+    receive_notification = forms.BooleanField(
+        required=False,
+        label='Receive admin notification',
+        help_text='Designates whether the user receive notification.'
+    )
 
     def clean_is_staff(self):
         """Check is_staff."""
@@ -108,7 +113,8 @@ class AzureUserForm(AzureAdminForm):
     class Meta:  # noqa: D106
         model = User
         fields = (
-            'first_name', 'last_name', 'email', 'role', 'is_staff'
+            'first_name', 'last_name', 'email', 'role',
+            'is_staff', 'receive_notification'
         )
 
     @staticmethod
@@ -116,6 +122,7 @@ class AzureUserForm(AzureAdminForm):
         """Return model data as json."""
         initial = model_to_dict(model)
         initial['role'] = model.profile.role
+        initial['receive_notification'] = model.profile.receive_notification
         return initial
 
 
@@ -167,6 +174,7 @@ class UserEditForm(AzureUserForm):
         model = User
         fields = (
             'first_name', 'last_name', 'role', 'email', 'is_staff',
+            'receive_notification'
         )
 
     def __init__(self, *args, **kwargs):
@@ -184,6 +192,11 @@ class UserViewerEditForm(AzureAdminForm):
         choices=ROLES_TYPES,
         required=False,
         widget=forms.Select()
+    )
+    receive_notification = forms.BooleanField(
+        required=False,
+        label='Receive admin notification',
+        help_text='Designates whether the user receive notification.'
     )
 
     class Meta:  # noqa: D106

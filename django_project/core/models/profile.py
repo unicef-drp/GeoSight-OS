@@ -79,6 +79,10 @@ class Profile(models.Model):
         blank=True,
         null=True
     )
+    receive_notification = models.BooleanField(
+        default=False,
+        help_text='Designates whether the user receive notification.'
+    )
 
     def __str__(self):
         """Str name of profile."""

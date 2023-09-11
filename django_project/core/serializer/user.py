@@ -30,6 +30,7 @@ class UserSerializer(serializers.ModelSerializer):
     is_contributor = serializers.SerializerMethodField()
     is_creator = serializers.SerializerMethodField()
     is_admin = serializers.SerializerMethodField()
+    receive_notification = serializers.SerializerMethodField()
 
     def get_is_staff(self, obj: User):
         """Return is staff."""
@@ -59,10 +60,15 @@ class UserSerializer(serializers.ModelSerializer):
         """Return is admin."""
         return 'true' if obj.profile.is_admin else 'false'
 
+    def get_receive_notification(self, obj: User):
+        """Return is admin."""
+        return 'true' if obj.profile.receive_notification else 'false'
+
     class Meta:  # noqa: D106
         model = User
         fields = (
             'id', 'username', 'email', 'first_name', 'last_name',
             'is_staff', 'name', 'email', 'role',
-            'is_contributor', 'is_creator', 'is_admin', 'full_name'
+            'is_contributor', 'is_creator', 'is_admin', 'full_name',
+            'receive_notification'
         )

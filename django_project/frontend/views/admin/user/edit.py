@@ -95,6 +95,7 @@ class UserEditView(AdminBaseView):
         if not self.request.user.profile.is_admin:
             Form = UserViewerEditForm
             data['role'] = user.profile.role
+            data['receive_notification'] = user.profile.receive_notification
 
         form = Form(
             data,
@@ -103,6 +104,9 @@ class UserEditView(AdminBaseView):
         if form.is_valid():
             user = form.save()
             user.profile.role = form.cleaned_data['role']
+            user.profile.receive_notification = form.cleaned_data[
+                'receive_notification'
+            ]
             georepo_api_key = data.get(
                 'georepo_api_key', user.profile.georepo_api_key_val
             )

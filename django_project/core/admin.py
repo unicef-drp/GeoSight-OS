@@ -50,11 +50,6 @@ class SitePreferencesAdmin(admin.ModelAdmin):
         (None, {
             'fields': ('site_title', 'site_url', 'disclaimer')
         }),
-        ('Email', {
-            'fields': (
-                'default_admin_emails',
-            )
-        }),
         ('GeoRepo', {
             'fields': (
                 'georepo_url',
@@ -146,18 +141,38 @@ class ProfileInline(admin.StackedInline):
     model = Profile
 
 
+class CustomUserAdmin(UserAdmin):
+    """Custom user that has profile model."""
+
+    list_display = (
+        'username', 'email', 'first_name', 'last_name', 'is_staff',
+        'role', 'receive_notification'
+    )
+    inlines = (ProfileInline,)
+
+    def role(self, obj):
+        """Role of user."""
+        if obj.profile:
+            return obj.profile.role
+        return '-'
+
+    def receive_notification(self, obj):
+        """receive_notification of user."""
+        if obj.profile:
+            return obj.profile.receive_notification
+        return False
+
+    receive_notification.boolean = True
+
+
 # USER ADMIN BASED ON USING AZURE OR NOT
 if settings.USE_AZURE:
-    class UserProfileAdmin(UserAdmin):
+    class UserProfileAdmin(CustomUserAdmin):
         """User profile admin."""
 
         add_form_template = None
         form = AzureAdminUserChangeForm
         add_form = AzureAdminUserCreationForm
-        inlines = (ProfileInline,)
-        list_display = (
-            'username', 'email', 'first_name', 'last_name', 'is_staff'
-        )
         add_fieldsets = (
             (None, {
                 'classes': ('wide',),
@@ -180,11 +195,10 @@ if settings.USE_AZURE:
 
     admin.site.register(User, UserProfileAdmin)
 else:
-    class UserProfileAdmin(UserAdmin):
+    class UserProfileAdmin(CustomUserAdmin):
         """User profile admin."""
 
         form = AdminUserChangeForm
-        inlines = (ProfileInline,)
 
 
     admin.site.register(User, UserProfileAdmin)

@@ -54,14 +54,6 @@ class SitePreferences(SingletonModel):
         )
     )
     # -----------------------------------------------
-    # Default Admin Email Addresses
-    # send email notification from SignUp and Access Request
-    # -----------------------------------------------
-    default_admin_emails = models.JSONField(
-        default=list,
-        blank=True
-    )
-    # -----------------------------------------------
     # GEOREPO
     # -----------------------------------------------
     georepo_url = models.CharField(
@@ -280,6 +272,18 @@ class SitePreferences(SingletonModel):
             return signing.loads(self.georepo_api_key_level_4)
         except (TypeError, BadSignature):
             return ''
+
+    @property
+    def default_admin_emails(self):
+        """Return admin emails."""
+        from core.models.profile import Profile
+        return list(
+            Profile.objects.filter(
+                receive_notification=True
+            ).filter(
+                user__email__isnull=False
+            ).values_list('user__email', flat=True)
+        )
 
 
 class SitePreferencesImage(models.Model):
