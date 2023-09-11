@@ -231,7 +231,7 @@ export default function SidePanelTreeView(
   const renderTree = (treeData) => {
     const nodesDataId = treeData.data ? '' + treeData.data.id : treeData.id;
     let loading = treeData?.data?.loading;
-    const disabled = treeData.data ? !!treeData.data.error || loading : false;
+    const disabled = treeData.data ? !!treeData.data.error : false;
     const itemDeep = getDepth(data, treeData.id)
     const maxWord = parseInt(
       '' + ((width - (TREE_INDENT_SPACE * itemDeep)) / 9)

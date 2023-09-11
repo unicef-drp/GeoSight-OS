@@ -173,7 +173,11 @@ export function createDynamicStyle(data, styleType, config, styleData) {
           values = Array.from(new Set(values))
           numClass = values.length
         } else if (styleType === DYNAMIC_QUANTITATIVE) {
-          numClass = config.dynamic_class_num > values.length - 1 ? values.length - 1 : config.dynamic_class_num
+          const uniqueValues = Array.from(new Set(values))
+          if (uniqueValues.length === 1) {
+            uniqueValues.push(uniqueValues[0])
+          }
+          numClass = config.dynamic_class_num > uniqueValues.length - 1 ? uniqueValues.length - 1 : config.dynamic_class_num
         }
         const colors = createColors(config.color_palette, numClass)
         if (config.color_palette_reverse) {
