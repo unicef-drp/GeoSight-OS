@@ -67,3 +67,9 @@
     height: unset !important;
   }
 }
+
+.ModalSelector {
+  .MuiDataGrid-row {
+    cursor: pointer;
+  }
+}

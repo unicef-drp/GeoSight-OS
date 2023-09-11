@@ -218,6 +218,7 @@ export default function ModalSelector(
 
         <div className='AdminList'>
           <MainDataGrid
+            className='ModalSelector'
             rows={rows ? rows : []}
             columns={columns}
             pagination
@@ -229,8 +230,6 @@ export default function ModalSelector(
                 sortModel: defaultSorting,
               },
             }}
-            disableSelectionOnClick
-
             checkboxSelection={true}
             onSelectionModelChange={(ouput) => {
               let newSelectionModel = Array.from(new Set(ouput.concat(excludedSelectionModel)))

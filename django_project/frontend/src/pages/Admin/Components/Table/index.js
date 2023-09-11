@@ -88,6 +88,7 @@ export function AdminTable(
       }
       <div className='AdminTable'>
         <MainDataGrid
+          className={props.enableSelectionOnClick ? 'SelectionOnClick' : ''}
           getRowClassName={(params) => {
             return !params.row.permission || params.row.permission.read ? 'ResourceRow Readable' : 'ResourceRow'
           }}
@@ -110,9 +111,9 @@ export function AdminTable(
             errorOverlayDefaultLabel: <div
               className='error'>{props.error}</div>
           }}
-          disableSelectionOnClick
+          disableSelectionOnClick={!props.enableSelectionOnClick}
 
-          checkboxSelection={columns?.length && !!setSelectionModel}
+          checkboxSelection={columns?.length && !!setSelectionModel && !props.enableSelectionOnClick}
           onSelectionModelChange={(newSelectionModel) => {
             setSelectionModel(newSelectionModel);
           }}

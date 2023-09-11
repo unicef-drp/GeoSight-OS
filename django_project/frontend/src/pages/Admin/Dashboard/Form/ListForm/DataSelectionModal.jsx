@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 import React, { useEffect, useState } from "react";
 import { GridActionsCellItem } from "@mui/x-data-grid";
@@ -87,6 +87,18 @@ export default function DataSelectionModal(
     return !nonGroupSelectedDataIds.includes(row.id)
   }) : null
 
+  const updateList = (id, checked) => {
+    if (checked) {
+      groupSelectedDataIds.push(id)
+    } else {
+      const index = groupSelectedDataIds.indexOf(id);
+      if (index !== -1) {
+        groupSelectedDataIds.splice(index, 1);
+      }
+    }
+    setGroupSelectedDataIds([...groupSelectedDataIds])
+  }
+
   // ----------------------------------------------
   // Restructure columns
   const columns = initColumns ? dictDeepCopy(initColumns) : [].concat(COLUMNS(pageName));
@@ -103,15 +115,7 @@ export default function DataSelectionModal(
             <Checkbox
               checked={groupSelectedDataIds.includes(params.id)}
               onChange={(evt) => {
-                if (evt.target.checked) {
-                  groupSelectedDataIds.push(params.id)
-                } else {
-                  const index = groupSelectedDataIds.indexOf(params.id);
-                  if (index !== -1) {
-                    groupSelectedDataIds.splice(index, 1);
-                  }
-                }
-                setGroupSelectedDataIds([...groupSelectedDataIds])
+                updateList(params.id, evt.target.checked)
               }}
             />
           }
@@ -158,7 +162,17 @@ export default function DataSelectionModal(
       <List
         columns={columns}
         pageName={pageName}
-        initData={cleanListData}/>
+        initData={cleanListData}
+        enableSelectionOnClick={true}
+        setSelectionModel={(newSelectionModel) => {
+          newSelectionModel.map(id => {
+            const checked = !groupSelectedDataIds.includes(id)
+            console.log(checked)
+            console.log(id)
+            updateList(id, checked)
+          })
+        }}
+      />
       <div className='Save-Button'>
         <SaveButton
           variant="primary"

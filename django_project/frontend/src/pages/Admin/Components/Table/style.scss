@@ -35,6 +35,12 @@
       height: 28px;
     }
   }
+
+  .SelectionOnClick {
+    .MuiDataGrid-row {
+      cursor: pointer;
+    }
+  }
 }
 
 .AdminListHeader {
