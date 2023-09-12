@@ -162,7 +162,7 @@ export const BaseList = forwardRef(
      ...props
    }, ref
   ) => {
-    const [data, setData] = useState(null);
+    const [data, setData] = useState(initData);
     const [error, setError] = useState(null);
 
     /** Refresh data **/

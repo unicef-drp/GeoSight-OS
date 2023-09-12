@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 /**
  * INDICATOR reducer
@@ -20,6 +20,7 @@
 export const INDICATOR_ACTION_NAME = 'INDICATOR';
 export const INDICATOR_ACTION_TYPE_ADD = 'INDICATOR/ADD';
 export const INDICATOR_ACTION_TYPE_REMOVE = 'INDICATOR/REMOVE';
+export const INDICATOR_ACTION_TYPE_BATCH_REMOVE = 'INDICATOR/BATCH_REMOVE';
 export const INDICATOR_ACTION_TYPE_UPDATE = 'INDICATOR/UPDATE';
 export const INDICATOR_ACTION_TYPE_REARRANGE = 'INDICATOR/REARRANGE';
 // export const INDICATOR_ACTION_TYPE_REARRANGE_TREE = 'INDICATOR/REARRANGE_UPDATE_TREE';
@@ -49,6 +50,24 @@ export default function indicatorReducer(state = initialState, action) {
           newState.push(indicator)
         }
       })
+      return newState
+    }
+
+    case INDICATOR_ACTION_TYPE_BATCH_REMOVE: {
+      const newState = []
+      let ids = action.payload;
+      let foundVisibleByDefault = false;
+      state.forEach(function (indicator) {
+        if (!ids.includes(indicator.id)) {
+          newState.push(indicator)
+          if (indicator.visible_by_default) {
+            foundVisibleByDefault = true
+          }
+        }
+      })
+      if (!foundVisibleByDefault && newState[0]) {
+        newState[0].visible_by_default = true
+      }
       return newState
     }
     case INDICATOR_ACTION_TYPE_UPDATE: {

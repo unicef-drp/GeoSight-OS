@@ -27,6 +27,7 @@ import {
   updateGroupInStructure
 } from "../../../../../components/SortableTreeForm/utilities";
 import { dictDeepCopy } from "../../../../../utils/main";
+import { BaseList } from "../../../Components/List";
 
 import './style.scss';
 
@@ -75,6 +76,7 @@ export default function ListForm(
     setOpenDataSelection,
     hasGroup = true,
     initColumns = null,
+    ...props
   }
 ) {
   // GLOBAL DATA
@@ -241,21 +243,27 @@ export default function ListForm(
               }
             </div>
           </div>
-
-          <SortableTree
-            data={treeData}
-            changeGroupName={changeGroupName}
-            changeLayer={changeLayer}
-            otherActionsFunction={otherActionsFunction}
-            rearrangeLayers={structure => {
-              setDataStructure({ ...structure })
-            }}
-            addLayerInGroup={addLayerInGroup}
-            removeGroup={removeGroup}
-            removeLayer={removeLayer}
-            editLayerInGroupAction={editLayerInGroupAction}
-            isIndicator={pageName === 'Indicators'}
-            collapsible indicator/>
+          {
+            props.listConfig ?
+              <BaseList
+                pageName={pageName}
+                {...props.listConfig}
+              /> :
+              <SortableTree
+                data={treeData}
+                changeGroupName={changeGroupName}
+                changeLayer={changeLayer}
+                otherActionsFunction={otherActionsFunction}
+                rearrangeLayers={structure => {
+                  setDataStructure({ ...structure })
+                }}
+                addLayerInGroup={addLayerInGroup}
+                removeGroup={removeGroup}
+                removeLayer={removeLayer}
+                editLayerInGroupAction={editLayerInGroupAction}
+                isIndicator={pageName === 'Indicators'}
+                collapsible indicator/>
+          }
 
           {
             open ?

@@ -25,21 +25,17 @@
 }
 
 .TableForm.Indicators {
+  display: flex;
+  flex-direction: column !important;
+  height: 100%;
 
-  .VisibilityIcon,
-  .VisibilityAction,
-  .DragDropItem-Drag,
-  .GroupEditName,
-  .AddGroupButton,
-  .AddButton {
-    display: none !important;
-  }
+  .AdminList {
+    display: block;
+    flex-grow: 1;
 
-  li {
-    div {
-      button {
-        display: none !important;
-      }
+    .AdminTable {
+      padding-bottom: 36px;
+      box-sizing: border-box;
     }
   }
 }
