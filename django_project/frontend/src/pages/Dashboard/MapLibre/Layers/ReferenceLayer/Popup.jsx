@@ -126,7 +126,7 @@ function renderRow(name, alias) {
   `
 }
 
-export function getDefault(currentIndicatorLayer) {
+export function getDefaultPopup(currentIndicatorLayer) {
   let table = ''
   currentIndicatorLayer?.data_fields.map(field => {
     const names = field.name.split('.')
@@ -208,18 +208,26 @@ export function updateCurrent(
         })
       }
       context.context.current.indicator_layers.map(indicatorLayer => {
+        const relatedTable = indicatorLayer.related_tables?.find(indicator => indicator.id === data.related_table?.id)
+        const indicator = indicatorLayer.indicators?.find(indicator => indicator.id === data.indicator?.id)
         if (indicatorLayer.id === data.indicatorLayer?.id) {
           indicatorLayer.time = _data.time
           indicatorLayer.value = _data.value
           indicatorLayer.label = _data.label
-        } else if (indicatorLayer.indicators.find(indicator => indicator.id === data.indicator?.id)) {
+        } else if (indicator) {
           indicatorLayer.time = _data.time
           indicatorLayer.value = _data.value
           indicatorLayer.label = _data.label
-        } else if (indicatorLayer.related_tables.find(indicator => indicator.id === data.related_table?.id)) {
+          indicator.time = _data.time
+          indicator.value = _data.value
+          indicator.label = _data.label
+        } else if (relatedTable) {
           indicatorLayer.time = _data.time
           indicatorLayer.value = _data.value
           indicatorLayer.label = _data.label
+          relatedTable.time = _data.time
+          relatedTable.value = _data.value
+          relatedTable.label = _data.label
         }
       })
     })
@@ -375,9 +383,6 @@ export function popup(
             context
           )
         )
-      },
-      function (test) {
-        console.log(test)
       }
     )
 
