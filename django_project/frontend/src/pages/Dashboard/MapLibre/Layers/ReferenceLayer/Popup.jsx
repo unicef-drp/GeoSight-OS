@@ -20,7 +20,7 @@ import { fetchingData } from "../../../../../Requests";
 import { updateContextData } from "../../../../../utils/dataContext";
 import { extractCode } from "../../../../../utils/georepo";
 
-export const referenceLayerDefaultTemplate = `
+export const referenceSimpleDefaultTemplate = `
 <!--  HEADER  -->
 <div class="header">
     <b>{{ context.current.geometry_data.name }}</b>
@@ -86,6 +86,63 @@ export const referenceLayerDefaultTemplate = `
 {% endif %}
 `
 
+export const referenceLayerDefaultTemplate = `
+<!--  CUSTOM STYLE -->
+<style>
+    .popup-content tr td {
+        padding: 2px 10px;
+    }
+</style>
+
+<!--  HEADER  -->
+<div class="header">
+    {% set name = context.current.geometry_data.name %}
+    <b>{{ name }}</b>
+</div>
+
+<!--  CONTENT  -->
+<div class="content">
+    {% set indicator = context.current.indicator_layers[0].name %}
+    {% set value = context.current.indicator_layers[0].value %}
+    {% set label = context.current.indicator_layers[0].label %}
+    {% set time = context.current.indicator_layers[0].time %}
+    
+    {% set admin_level = context.current.geometry_data.admin_level %}
+    {% set admin_level_name = context.current.geometry_data.admin_level_name %}
+    {% set concept_uuid = context.current.geometry_data.concept_uuid %}
+    {% set geom_code = context.current.geometry_data.geom_code %}
+    {% set name = context.current.geometry_data.name %}
+
+    <table></table>
+</div>
+`
+
+function renderRow(name, alias) {
+  return `
+        <tr>
+            <td><b>${alias}</b></td>
+            <td>{{ ${name} }}</td>
+        </tr>
+  `
+}
+
+export function getDefault(currentIndicatorLayer) {
+  let table = ''
+  currentIndicatorLayer?.data_fields.map(field => {
+    const names = field.name.split('.')
+    let name = names[names.length - 1]
+    if (field.name === 'context.current.indicator.name') {
+      name = 'indicator'
+    } else if (field.name === 'context.current.indicator.date') {
+      name = 'time'
+    }
+    if (field.visible) {
+      table += renderRow(name, field.alias)
+    }
+  })
+  return referenceLayerDefaultTemplate.replace('<table></table>', `<table>${table}</table>`)
+}
+
 export function updateCurrent(
   context, indicators, relatedTables,
   currentIndicatorLayer, currentIndicatorSecondLayer,
@@ -100,11 +157,9 @@ export function updateCurrent(
       if (objFound) {
         indicatorsByDict[objFound.id] = {
           name: objFound.name,
-          category: objFound.category,
           description: objFound.description,
           last_update: objFound.last_update,
-          shortcode: objFound.shortcode,
-          source: objFound.source,
+          shortcode: objFound.shortcode
         }
       }
     })
@@ -130,7 +185,7 @@ export function updateCurrent(
       }
       const _data = {
         name: data.indicator?.name ? data.indicator?.name : relatedName,
-        time: data.date,
+        time: data.date.includes('T') ? data.date : data.date + 'T00:00:00+00:00',
         value: data.value,
         label: data.label,
       }
@@ -152,6 +207,21 @@ export function updateCurrent(
           }
         })
       }
+      context.context.current.indicator_layers.map(indicatorLayer => {
+        if (indicatorLayer.id === data.indicatorLayer?.id) {
+          indicatorLayer.time = _data.time
+          indicatorLayer.value = _data.value
+          indicatorLayer.label = _data.label
+        } else if (indicatorLayer.indicators.find(indicator => indicator.id === data.indicator?.id)) {
+          indicatorLayer.time = _data.time
+          indicatorLayer.value = _data.value
+          indicatorLayer.label = _data.label
+        } else if (indicatorLayer.related_tables.find(indicator => indicator.id === data.related_table?.id)) {
+          indicatorLayer.time = _data.time
+          indicatorLayer.value = _data.value
+          indicatorLayer.label = _data.label
+        }
+      })
     })
   })
 
@@ -186,6 +256,7 @@ export function getContext(
         indicators: indicatorLayer.indicators?.map(obj => {
           const objFound = indicators.find(ind => ind.id === obj.id)
           return {
+            id: objFound.id,
             name: objFound.name,
             shortcode: objFound.shortcode,
             description: objFound.description,
@@ -194,6 +265,7 @@ export function getContext(
         related_tables: indicatorLayer.related_tables?.map(obj => {
           const objFound = relatedTables.find(ind => ind.id === obj.id)
           return {
+            id: objFound.id,
             name: objFound.name,
             description: objFound.description,
           }
@@ -201,14 +273,7 @@ export function getContext(
       })
     }
   })
-  try {
-    const orderedGeometryProperties = {}
-    Object.keys(geometryProperties).sort().map(key => {
-      orderedGeometryProperties[key] = geometryProperties[key]
-    })
-    current['geometry_data'] = orderedGeometryProperties
-  } catch (err) {
-  }
+  current['geometry_data'] = geometryProperties
   const timeslice = {
     active_window_start: selectedGlobalTime.min,
     active_window_end: selectedGlobalTime.max,
@@ -310,6 +375,9 @@ export function popup(
             context
           )
         )
+      },
+      function (test) {
+        console.log(test)
       }
     )
 
@@ -323,63 +391,75 @@ export function popup(
     }
 
     try {
-      const newIndicatorsContext = {}
-      const newRelatedTablesContext = {}
       context = updateCurrent(
         context, indicators, relatedTables,
         currentIndicatorLayer, currentIndicatorSecondLayer,
         indicatorValueByGeometry, indicatorSecondValueByGeometry,
         geom_id
       )
-      const newGeometryContext = {
-        name: context?.context?.current?.geometry_data.name
-      }
-      currentIndicatorLayer.data_fields.map(field => {
-        if (!field.visible) {
-          return
-        }
-        const geometryDataId = 'context.current.geometry_data.'
-        if (field.name.includes(geometryDataId)) {
-          const contextField = field.name.replace(geometryDataId, '')
-          newGeometryContext[field.alias] = context?.context?.current?.geometry_data[contextField]
-        }
-        const indicatorId = 'context.current.indicator.'
-        if (field.name.includes(indicatorId)) {
-          const contextField = field.name.replace(indicatorId, '')
-          context?.context?.current?.indicators.map(indicator => {
-            if (!newIndicatorsContext[indicator.name]) {
-              newIndicatorsContext[indicator.name] = {
-                name: indicator.name
-              }
-            }
-            newIndicatorsContext[indicator.name][field.alias] = indicator[contextField]
-          })
-
-          // For related tables
-          context?.context?.current?.related_tables.map(indicator => {
-            if (!newRelatedTablesContext[indicator.name]) {
-              newRelatedTablesContext[indicator.name] = {
-                name: indicator.name
-              }
-            }
-            newRelatedTablesContext[indicator.name][field.alias] = indicator[contextField]
-          })
-        }
-      })
-      context.context.current.geometry_data = newGeometryContext
-      context.context.current.indicators = Object.keys(newIndicatorsContext).map(key => {
-        return newIndicatorsContext[key]
-      })
-      context.context.current.related_tables = Object.keys(newRelatedTablesContext).map(key => {
-        return newRelatedTablesContext[key]
-      })
     } catch (err) {
     }
 
+    // If not custom
+    if (currentIndicatorLayer.popup_type !== 'Custom') {
+      try {
+        const newIndicatorsContext = {}
+        const newRelatedTablesContext = {}
+        context = updateCurrent(
+          context, indicators, relatedTables,
+          currentIndicatorLayer, currentIndicatorSecondLayer,
+          indicatorValueByGeometry, indicatorSecondValueByGeometry,
+          geom_id
+        )
+        const newGeometryContext = {
+          name: context?.context?.current?.geometry_data.name
+        }
+        currentIndicatorLayer.data_fields.map(field => {
+          if (!field.visible) {
+            return
+          }
+          const geometryDataId = 'context.current.geometry_data.'
+          if (field.name.includes(geometryDataId)) {
+            const contextField = field.name.replace(geometryDataId, '')
+            newGeometryContext[field.alias] = context?.context?.current?.geometry_data[contextField]
+          }
+          const indicatorId = 'context.current.indicator.'
+          if (field.name.includes(indicatorId)) {
+            const contextField = field.name.replace(indicatorId, '')
+            context?.context?.current?.indicators.map(indicator => {
+              if (!newIndicatorsContext[indicator.name]) {
+                newIndicatorsContext[indicator.name] = {
+                  name: indicator.name
+                }
+              }
+              newIndicatorsContext[indicator.name][field.alias] = indicator[contextField]
+            })
+
+            // For related tables
+            context?.context?.current?.related_tables.map(indicator => {
+              if (!newRelatedTablesContext[indicator.name]) {
+                newRelatedTablesContext[indicator.name] = {
+                  name: indicator.name
+                }
+              }
+              newRelatedTablesContext[indicator.name][field.alias] = indicator[contextField]
+            })
+          }
+        })
+        context.context.current.geometry_data = newGeometryContext
+        context.context.current.indicators = Object.keys(newIndicatorsContext).map(key => {
+          return newIndicatorsContext[key]
+        })
+        context.context.current.related_tables = Object.keys(newRelatedTablesContext).map(key => {
+          return newRelatedTablesContext[key]
+        })
+      } catch (err) {
+      }
+    }
     return renderPopup(
       `<div id="${geomCode}">
         ${renderTemplateContent(
-        currentIndicatorLayer.popup_template && currentIndicatorLayer.popup_type !== 'Simplified' ? currentIndicatorLayer.popup_template : referenceLayerDefaultTemplate,
+        currentIndicatorLayer.popup_template && currentIndicatorLayer.popup_type !== 'Simplified' ? currentIndicatorLayer.popup_template : referenceSimpleDefaultTemplate,
         context
       )}
         <div class="copy-context"><div class="loading">Loading</div></div>

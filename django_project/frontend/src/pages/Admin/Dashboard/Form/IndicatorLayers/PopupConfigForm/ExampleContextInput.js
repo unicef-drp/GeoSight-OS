@@ -16,7 +16,8 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import {
-  getContext
+  getContext,
+  updateCurrent
 } from "../../../../../Dashboard/MapLibre/Layers/ReferenceLayer/Popup";
 import { Select } from "../../../../../../components/Input";
 
@@ -84,11 +85,28 @@ export default function ExampleContextInput(
       getContext(
         indicators, relatedTables,
         {}, {},
-        null, geometryProperties,
+        featureProperties.concept_uuid, geometryProperties,
         selectedGlobalTime, selectedGlobalTimeConfig,
         indicatorLayers, referenceLayerData,
         currentIndicatorLayer, {}, conceptUUID.value,
         function contextOnLoad(context) {
+          const indicatorValueByGeometry = {}
+          indicatorValueByGeometry[featureProperties.concept_uuid] = []
+          currentIndicatorLayer.indicators.map(indicator => {
+            let data = context.context.admin_boundary.indicators[indicator.shortcode]
+            if (data) {
+              data = data[0]
+              data.date = data?.time
+              data.indicator = indicator
+            }
+            indicatorValueByGeometry[featureProperties.concept_uuid].push({ ...indicator, ...data })
+          })
+          updateCurrent(
+            context, indicators, relatedTables,
+            currentIndicatorLayer, {},
+            indicatorValueByGeometry, {},
+            featureProperties.concept_uuid
+          )
           setContextData(JSON.stringify(context, null, 2))
           setContext(context)
         },
