@@ -20,6 +20,8 @@ import { dictDeepCopy } from "../../../../../utils/main";
 import ListForm from '../ListForm'
 import { COLUMNS } from "../../../Components/List";
 import { DeleteButton } from "../../../../../components/Elements/Button";
+import { MagnifyIcon } from "../../../../../components/Icons";
+import { IconTextField } from "../../../../../components/Elements/Input";
 
 import './style.scss';
 
@@ -29,6 +31,7 @@ import './style.scss';
 export default function IndicatorsForm() {
   const dispatch = useDispatch();
   const [selectionModel, setSelectionModel] = useState([]);
+  const [search, setSearch] = useState('');
   const { indicators } = dictDeepCopy(
     useSelector(state => state.dashboard.data)
   )
@@ -49,8 +52,9 @@ export default function IndicatorsForm() {
       }}
     />
   }
+  const pageName = 'Indicators'
   return <ListForm
-    pageName={'Indicators'}
+    pageName={pageName}
     data={indicators}
     dataStructure={{
       group: '',
@@ -68,6 +72,13 @@ export default function IndicatorsForm() {
     changeLayerAction={(layer) => {
       dispatch(Actions.Indicators.update(layer))
     }}
+    otherHeaders={
+      <IconTextField
+        placeholder={"Search " + pageName}
+        iconEnd={<MagnifyIcon/>}
+        onChange={evt => setSearch(evt.target.value.toLowerCase())}
+      />
+    }
     hasGroup={false}
     selectable={true}
     listConfig={{
@@ -75,7 +86,8 @@ export default function IndicatorsForm() {
       columns: columns,
       selectionModel: selectionModel,
       setSelectionModel: setSelectionModel,
-      header: deleteButton()
+      header: deleteButton(),
+      search: search
     }}
   />
 }

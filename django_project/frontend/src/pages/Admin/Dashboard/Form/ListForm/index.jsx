@@ -231,6 +231,7 @@ export default function ListForm(
           <div className='TableForm-Header'>
             <div className='TableForm-Header-Left'></div>
             <div className='TableForm-Header-Right'>
+              {props.otherHeaders}
               <AddButton
                 variant="primary" text={"Add " + singularPageName}
                 onClick={() => addLayerInGroup(dataStructure.id)}/>
