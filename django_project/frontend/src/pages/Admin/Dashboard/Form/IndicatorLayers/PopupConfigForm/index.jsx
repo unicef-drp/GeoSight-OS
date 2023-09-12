@@ -18,22 +18,23 @@ import { Checkbox, FormControlLabel } from "@mui/material";
 import NunjucksConfig from "../../../../../../components/Nunjucks/Config";
 import ReplayIcon from '@mui/icons-material/Replay';
 import { ThemeButton } from "../../../../../../components/Elements/Button";
-import { ExamplePopup } from "./example_popup";
 import FieldConfig from "../../../../../../components/FieldConfig";
 import ExampleContextInput from "./ExampleContextInput";
+import {
+  getDefaultPopup
+} from "../../../../../Dashboard/MapLibre/Layers/ReferenceLayer/Popup";
 
 import './style.scss';
 
 /*** Popup Config Form ***/
 export default function PopupConfigForm({ indicator, setIndicator }) {
-  let examplePopup = ExamplePopup
-  const key = indicator.indicators[0]?.shortcode ? indicator.indicators[0]?.shortcode : indicator.indicators[0]?.id
-  if (key) {
-    examplePopup = examplePopup.replaceAll('INDICATOR_A', key)
-  }
+  const examplePopup = getDefaultPopup(indicator)
+  const { popup_type } = indicator
+
   const [template, setTemplate] = useState(null)
   const [context, setContext] = useState({})
   const [defaultTemplate, setDefaultTemplate] = useState(examplePopup)
+  const [hasTemplate, setHasTemplate] = useState(!!(indicator.popup_type === 'Custom' && indicator.popup_template))
 
   /**
    * Update when indicator changed
@@ -67,7 +68,17 @@ export default function PopupConfigForm({ indicator, setIndicator }) {
     if (template !== null && indicator.popup_type === 'Custom') {
       setIndicator({ ...indicator, popup_template: template })
     }
-  }, [template, indicator.popup_type])
+  }, [template, popup_type])
+
+  /**
+   * Fetch data when list created
+   */
+  useEffect(() => {
+    if (!hasTemplate && indicator.popup_type === 'Custom') {
+      setIndicator({ ...indicator, popup_template: examplePopup })
+      setDefaultTemplate(examplePopup)
+    }
+  }, [popup_type])
 
   return <Fragment>
     <div className="BasicFormSection">

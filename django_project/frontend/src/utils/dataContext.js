@@ -16,7 +16,7 @@
 /** Utils specifically for data context **/
 
 export function updateContextData(
-  context, referenceLayerData, currentIndicatorLayer, currentIndicatorSecondLayer
+  context, referenceLayerData
 ) {
   const datasetlevelDict = {}
   referenceLayerData?.data?.dataset_levels?.map(level => {
@@ -30,21 +30,4 @@ export function updateContextData(
   context.admin_boundary.siblings.map(child => {
     child.admin_level_name = datasetlevelDict[child.admin_level]
   })
-
-  const contextIndicators = []
-  currentIndicatorLayer?.indicators?.map(indicator => {
-    contextIndicators.push({
-      id: indicator.id,
-      name: indicator.name,
-      shortcode: indicator.shortcode,
-    })
-  })
-  currentIndicatorSecondLayer?.indicators?.map(indicator => {
-    contextIndicators.push({
-      id: indicator.id,
-      name: indicator.name,
-      shortcode: indicator.shortcode,
-    })
-  })
-  context.indicators = contextIndicators
 }
