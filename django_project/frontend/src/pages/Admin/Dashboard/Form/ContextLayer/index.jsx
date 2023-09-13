@@ -118,6 +118,7 @@ export default function ContextLayerForm() {
         Actions.Dashboard.updateStructure('contextLayersStructure', structure)
       )
     }}
+    createNew={true}
     listUrl={urls.api.contextLayerListAPI}
     addLayerAction={layer => {
       layer.default_styles = {

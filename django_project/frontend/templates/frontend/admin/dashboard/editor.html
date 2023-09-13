@@ -50,6 +50,10 @@
           'create': '{% url 'admin-indicator-create-view' %}',
           'detail': '{% url 'indicator-detail-api' 0 %}',
         },
+        'context layers': {
+          'create': '{% url 'admin-context-layer-create-view' %}',
+          'detail': '{% url 'context-layer-detail-api' 0 %}',
+        },
         'permissionAdmin': '{% url 'admin-data-access-view' %}',
         'form': '{% url 'admin-indicator-value-form-manager' 0 %}',
         'map': '{% url 'admin-indicator-value-mapview-manager' 0 %}',

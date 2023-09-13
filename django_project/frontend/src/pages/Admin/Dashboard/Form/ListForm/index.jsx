@@ -222,13 +222,19 @@ export default function ListForm(
     }
   }
   /** APPLY DATA WHEN REMOVED OR DELETED **/
-  const applyData = (addedData, removeData) => {
+  const applyData = (addedData, removeData, groupName) => {
+    let usedGroupName = currentGroupName
+    if (groupName) {
+      usedGroupName = groupName
+    }
+
     addedData.map(data => {
-      data.group = currentGroupName
+      data.group = usedGroupName
+      console.log(data)
       addLayerAction(data)
     })
     removeData.map(data => {
-      removeLayerAction(data, currentGroupName)
+      removeLayerAction(data, usedGroupName)
     })
     setDataStructure({ ...dataStructure })
     setOpen(false)
@@ -253,8 +259,7 @@ export default function ListForm(
                         urls.api[pageName.toLowerCase()]?.detail.replace('0', response), {}, {},
                         (data) => {
                           deleteUrlCache(listUrl)
-                          setCurrentGroupName(dataStructure.id)
-                          applyData([data], [])
+                          applyData([data], [], dataStructure.id)
                           setApplyingCreateNew(false)
                         }
                       )
