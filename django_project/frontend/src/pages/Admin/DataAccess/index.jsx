@@ -334,7 +334,7 @@ export default function DataAccessAdmin() {
   const [defaultTableData, setDefaultTableTableData] = useState(null)
 
   const [filterByIndicators, setFilterByIndicator] = useState(splitParams(indicators))
-  const [filterByDatasets, setFilterByDataset] = useState(splitParams(datasets))
+  const [filterByDatasets, setFilterByDataset] = useState(splitParams(datasets, false))
   const [filterByPermissions, setFilterByPermission] = useState(splitParams(permissions))
   const [filterByUsers, setFilterByUsers] = useState(splitParams(users))
   const [filterByGroups, setFilterByGroups] = useState(splitParams(groups))
@@ -537,6 +537,7 @@ export default function DataAccessAdmin() {
       users.push({
         'id': idx,
         'dataset_id': obj.d,
+        'dataset_identifier': obj.di,
         'dataset_name': obj.dn,
         'indicator_id': obj.i,
         'indicator_name': obj.in,
@@ -550,6 +551,7 @@ export default function DataAccessAdmin() {
       groups.push({
         'id': idx,
         'dataset_id': obj.d,
+        'dataset_identifier': obj.di,
         'dataset_name': obj.dn,
         'indicator_id': obj.i,
         'indicator_name': obj.in,
@@ -562,6 +564,7 @@ export default function DataAccessAdmin() {
       generals.push({
         'id': idx,
         'dataset_id': obj.d,
+        'dataset_identifier': obj.di,
         'dataset_name': obj.dn,
         'indicator_id': obj.i,
         'indicator_name': obj.in,
@@ -609,7 +612,7 @@ export default function DataAccessAdmin() {
     }
     if (filterByDatasets.length) {
       filteredTableData[tab] = filteredTableData[tab].filter(data => {
-        return filterByDatasets.includes(data.dataset_id)
+        return filterByDatasets.includes(data.dataset_identifier)
       })
     }
     if (tab === UserTab && filterByUsers.length) {

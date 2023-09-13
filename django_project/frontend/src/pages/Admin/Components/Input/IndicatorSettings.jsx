@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 /** Specifically for Indicator input */
 
@@ -52,6 +52,7 @@ export const IndicatorSettings = forwardRef(
      * Switch time type
      */
     const switchTo = (type) => {
+      console.log(data)
       data.indicator_data_type = type
       switch (type) {
         case 'Data Driven': {
@@ -62,8 +63,20 @@ export const IndicatorSettings = forwardRef(
           break
         }
         case 'By Value': {
-          data.indicator_data_value = indicatorList[0].id
-          data.indicator_data = indicatorList[0]
+          let indicator_data_value = indicatorList[0].id
+          let indicator_data = indicatorList[0]
+
+          if (data.indicator_data_value) {
+            const indicator = indicatorList.find(indicator => {
+              return indicator.id === parseInt(data.indicator_data_value)
+            })
+            if (indicator) {
+              indicator_data_value = indicator.id
+              indicator_data = indicator
+            }
+          }
+          data.indicator_data_value = indicator_data_value
+          data.indicator_data = indicator_data
           delete data.indicator_data_field
           break
         }

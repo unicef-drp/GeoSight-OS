@@ -26,7 +26,10 @@ import { pageNames } from '../../index';
 import { COLUMNS, COLUMNS_ACTION } from "../../Components/List";
 import { AdminList } from "../../AdminList";
 import PermissionModal from "../../Permission";
-import { MapActiveIcon } from "../../../../components/Icons";
+import {
+  DataManagementActiveIcon,
+  MapActiveIcon
+} from "../../../../components/Icons";
 
 import './style.scss';
 
@@ -162,6 +165,23 @@ export default function IndicatorList() {
             }
             label="Management Form"
           />)
+      }
+      if (permission.edit) {
+        actions.unshift(
+          <GridActionsCellItem
+            icon={
+              <Tooltip title={`Import data`}>
+                <a
+                  href={`${urls.admin.importer}?indicator_data_value=${params.id}`}>
+                  <div className='ButtonIcon'>
+                    <DataManagementActiveIcon/>
+                  </div>
+                </a>
+              </Tooltip>
+            }
+            label="Import data"
+          />
+        )
       }
       if (permission.edit) {
         actions.unshift(

@@ -52,6 +52,7 @@ class DatasetAccessAPI(RoleSuperAdminRequiredMixin, APIView):
             for permission in ref.user_permissions.all():
                 user_permissions.append({
                     'd': ref.obj.reference_layer.id,
+                    'di': ref.obj.reference_layer.identifier,
                     'dn': ref.obj.reference_layer.name,
                     'i': ref.obj.indicator.id,
                     'in': ref.obj.indicator.name,
@@ -65,6 +66,7 @@ class DatasetAccessAPI(RoleSuperAdminRequiredMixin, APIView):
             for permission in ref.group_permissions.all():
                 group_permissions.append({
                     'd': ref.obj.reference_layer.id,
+                    'di': ref.obj.reference_layer.identifier,
                     'dn': ref.obj.reference_layer.name,
                     'i': ref.obj.indicator.id,
                     'in': ref.obj.indicator.name,
@@ -77,6 +79,7 @@ class DatasetAccessAPI(RoleSuperAdminRequiredMixin, APIView):
             id = f'{ref.obj.reference_layer.id}-{ref.obj.indicator.id}'
             general_permissions_dict[id] = {
                 'd': ref.obj.reference_layer.id,
+                'di': ref.obj.reference_layer.identifier,
                 'dn': ref.obj.reference_layer.name,
                 'i': ref.obj.indicator.id,
                 'in': ref.obj.indicator.name,
@@ -99,6 +102,7 @@ class DatasetAccessAPI(RoleSuperAdminRequiredMixin, APIView):
                     )
                     general_permissions.append({
                         'd': ref.obj.reference_layer.id,
+                        'di': ref.obj.reference_layer.identifier,
                         'dn': ref.obj.reference_layer.name,
                         'i': ref.obj.indicator.id,
                         'in': ref.obj.indicator.__str__(),

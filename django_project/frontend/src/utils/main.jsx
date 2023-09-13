@@ -177,7 +177,7 @@ export function urlParams(url) {
   const urls = url.split('?')
 
   if (urls[1]) {
-    const parameters = urls[1].split('&')
+    const parameters = urls[1].split('#')[0].split('&')
     const paramDict = {}
     parameters.map(param => {
       const splitParam = param.split('=')
@@ -190,10 +190,14 @@ export function urlParams(url) {
 }
 
 /** Split params and parse to int **/
-export const splitParams = (param) => {
+export const splitParams = (param, isInt = true) => {
   return param ? param.split(',').map(obj => {
     try {
-      return parseInt(obj)
+      if (isInt) {
+        return parseInt(obj)
+      } else {
+        return obj;
+      }
     } catch (err) {
       return obj
     }

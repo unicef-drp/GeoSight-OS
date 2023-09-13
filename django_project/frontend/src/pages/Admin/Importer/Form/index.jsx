@@ -87,7 +87,6 @@ export default function ImporterForm() {
   const [data, setData] = useState(setupDefaultData());
   const [files, setFiles] = useState({});
   const [ready, setReady] = useState({});
-  const [tab, setTab] = useState(tabs.FormType);
 
   // Set default data
   useEffect(
