@@ -167,8 +167,6 @@ export default function DataSelectionModal(
         setSelectionModel={(newSelectionModel) => {
           newSelectionModel.map(id => {
             const checked = !groupSelectedDataIds.includes(id)
-            console.log(checked)
-            console.log(id)
             updateList(id, checked)
           })
         }}

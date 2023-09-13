@@ -36,6 +36,7 @@ import { MagnifyIcon } from "../../components/Icons";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 
 import './style.scss';
+import { formWindow } from "../../utils/windows";
 
 
 /**

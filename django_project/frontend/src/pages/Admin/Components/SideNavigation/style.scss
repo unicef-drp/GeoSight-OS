@@ -19,6 +19,11 @@
 
 @import '../../../../app/variables';
 
+.PopupMode {
+  .SideNavigation {
+    display: none !important;
+  }
+}
 
 .SideNavigation {
   background: white;

@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { Actions } from "../../../../../store/dashboard";
 import { dictDeepCopy } from "../../../../../utils/main";
@@ -73,14 +73,17 @@ export default function IndicatorsForm() {
       dispatch(Actions.Indicators.update(layer))
     }}
     otherHeaders={
-      <IconTextField
-        placeholder={"Search " + pageName}
-        iconEnd={<MagnifyIcon/>}
-        onChange={evt => setSearch(evt.target.value.toLowerCase())}
-      />
+      <Fragment>
+        <IconTextField
+          placeholder={"Search " + pageName}
+          iconEnd={<MagnifyIcon/>}
+          onChange={evt => setSearch(evt.target.value.toLowerCase())}
+        />
+      </Fragment>
     }
     hasGroup={false}
     selectable={true}
+    createNew={true}
     listConfig={{
       initData: indicators,
       columns: columns,

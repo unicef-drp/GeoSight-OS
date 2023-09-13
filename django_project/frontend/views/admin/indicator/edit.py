@@ -63,6 +63,7 @@ class IndicatorEditView(RoleContributorRequiredMixin, BaseIndicatorEditView):
         context = super().get_context_data(**kwargs)
         edit_permission_resource(self.indicator, self.request.user)
         context['indicator_id'] = self.indicator.id
+        context['id'] = self.indicator.id
         return context
 
     def post(self, request, **kwargs):

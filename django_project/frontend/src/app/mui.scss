@@ -76,6 +76,15 @@
       color: $gray-500 !important;
     }
   }
+
+  .MuiCircularProgress-root {
+    color: $anti-primary-color !important;
+
+    svg {
+      height: 10px !important;
+      width: 10px !important;
+    }
+  }
 }
 
 .MuiButton-Error {

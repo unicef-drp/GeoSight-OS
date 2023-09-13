@@ -542,13 +542,17 @@ export default function StyleRules(
       (
         async () => {
           if (valuesUrl) {
-            const response = await fetchJSON(valuesUrl, {}, true);
-            setCodeChoicesFromResponse(response.map(code => {
-              return {
-                label: code,
-                value: code
-              }
-            }))
+            try {
+              const response = await fetchJSON(valuesUrl, {}, true);
+              setCodeChoicesFromResponse(response.map(code => {
+                return {
+                  label: code,
+                  value: code
+                }
+              }))
+            } catch (err) {
+
+            }
           }
         }
       )();

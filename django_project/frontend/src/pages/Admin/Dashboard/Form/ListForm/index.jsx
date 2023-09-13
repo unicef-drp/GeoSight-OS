@@ -15,8 +15,12 @@
 
 import React, { Fragment, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { AddButton } from "../../../../../components/Elements/Button";
-import { fetchingData } from "../../../../../Requests";
+import AddIcon from "@mui/icons-material/Add";
+import {
+  AddButton,
+  ThemeButton
+} from "../../../../../components/Elements/Button";
+import { deleteUrlCache, fetchingData } from "../../../../../Requests";
 
 import DataSelectionModal from './DataSelectionModal'
 
@@ -28,8 +32,10 @@ import {
 } from "../../../../../components/SortableTreeForm/utilities";
 import { dictDeepCopy } from "../../../../../utils/main";
 import { BaseList } from "../../../Components/List";
+import { formWindow } from "../../../../../utils/windows";
 
 import './style.scss';
+import CircularProgress from "@mui/material/CircularProgress";
 
 const groupDefault = {
   'group': '',
@@ -87,19 +93,23 @@ export default function ListForm(
   const [listData, setListData] = useState(null);
   const [currentGroupName, setCurrentGroupName] = useState(null);
   const [open, setOpen] = useState(false);
+  const [applyingCreateNew, setApplyingCreateNew] = useState(false);
 
   const [treeData, setTreeData] = useState(null)
 
   // Fetch data
   useEffect(() => {
     if (listUrl) {
-      fetchingData(listUrl, {}, {}, (data) => {
-        setListData(data)
-      })
+      if (open) {
+        setListData([])
+        fetchingData(listUrl, {}, {}, (data) => {
+          setListData(data)
+        })
+      }
     } else if (defaultListData) {
       setListData(defaultListData)
     }
-  }, [defaultListData])
+  }, [defaultListData, open])
 
   // add uuid to the data structure
   const updateUuid = (currDataStructure) => {
@@ -232,9 +242,39 @@ export default function ListForm(
             <div className='TableForm-Header-Left'></div>
             <div className='TableForm-Header-Right'>
               {props.otherHeaders}
+              {(props.createNew && urls.api[pageName.toLowerCase()]?.create && urls.api[pageName.toLowerCase()]?.detail) ?
+                <ThemeButton
+                  variant="primary"
+                  disabled={applyingCreateNew}
+                  onClick={() => {
+                    formWindow(urls.api[pageName.toLowerCase()]?.create).then(response => {
+                      setApplyingCreateNew(true)
+                      fetchingData(
+                        urls.api[pageName.toLowerCase()]?.detail.replace('0', response), {}, {},
+                        (data) => {
+                          deleteUrlCache(listUrl)
+                          setCurrentGroupName(dataStructure.id)
+                          applyData([data], [])
+                          setApplyingCreateNew(false)
+                        }
+                      )
+                    })
+                  }}
+                >
+                  {
+                    applyingCreateNew ? <CircularProgress/> :
+                      <AddIcon/>
+                  }
+                  {
+                    "Create New " + singularPageName
+                  }
+                </ThemeButton> : null
+
+              }
               <AddButton
                 variant="primary" text={"Add " + singularPageName}
-                onClick={() => addLayerInGroup(dataStructure.id)}/>
+                onClick={() => addLayerInGroup(dataStructure.id)}
+              />
               {
                 hasGroup ?
                   <AddButton

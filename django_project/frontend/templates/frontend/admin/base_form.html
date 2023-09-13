@@ -6,6 +6,9 @@
 {% endblock %}
 
 {% block extra_html %}
+    <script>
+      const objectId = {% if id %}{{ id }}{% else %}null{% endif %};
+    </script>
     {# To create form, please use this template #}
     <div id='FormTemplate' style="display: none">
         <p data-field-name="{{ field.name }}">

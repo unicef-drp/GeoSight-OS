@@ -44,6 +44,12 @@
         'users': '{% url 'user-list-api'%}',
         'groups': '{% url 'group-list-api'%}',
         'styles': '{% url 'style-list-api'%}',
+
+        {# This is for specific urls #}
+        'indicators': {
+          'create': '{% url 'admin-indicator-create-view' %}',
+          'detail': '{% url 'indicator-detail-api' 0 %}',
+        }
       }
 
       // Format code choices
