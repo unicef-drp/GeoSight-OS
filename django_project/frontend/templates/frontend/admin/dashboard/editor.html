@@ -46,6 +46,10 @@
         'styles': '{% url 'style-list-api'%}',
 
         {# This is for specific urls #}
+        'basemaps': {
+          'create': '{% url 'admin-basemap-create-view' %}',
+          'detail': '{% url 'basemap-detail-api' 0 %}',
+        },
         'indicators': {
           'create': '{% url 'admin-indicator-create-view' %}',
           'detail': '{% url 'indicator-detail-api' 0 %}',

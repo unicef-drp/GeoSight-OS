@@ -23,7 +23,10 @@ from rest_framework.views import APIView
 
 from geosight.data.models.basemap_layer import BasemapLayer
 from geosight.data.serializer.basemap_layer import BasemapLayerSerializer
-from geosight.permission.access import delete_permission_resource
+from geosight.permission.access import (
+    delete_permission_resource,
+    read_permission_resource
+)
 
 
 class BasemapListAPI(APIView):
@@ -51,6 +54,17 @@ class BasemapDetailAPI(APIView):
     """API for detail of basemap."""
 
     permission_classes = (IsAuthenticated,)
+
+    def get(self, request, pk):
+        """Delete an indicator."""
+        basemap = get_object_or_404(BasemapLayer, pk=pk)
+        read_permission_resource(basemap, request.user)
+        return Response(
+            BasemapLayerSerializer(
+                basemap,
+                context={'user': request.user}
+            ).data
+        )
 
     def delete(self, request, pk):
         """Delete an basemap."""
