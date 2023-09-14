@@ -13,14 +13,24 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
+import { GridActionsCellItem } from "@mui/x-data-grid";
+import Tooltip from "@mui/material/Tooltip";
+import StorageIcon from "@mui/icons-material/Storage";
+import DynamicFormIcon from "@mui/icons-material/DynamicForm";
+import DataUsageIcon from "@mui/icons-material/DataUsage";
+
 import { Actions } from "../../../../../store/dashboard";
-import { dictDeepCopy } from "../../../../../utils/main";
+import { dictDeepCopy, jsonToUrlParams } from "../../../../../utils/main";
 import ListForm from '../ListForm'
 import { COLUMNS } from "../../../Components/List";
 import { DeleteButton } from "../../../../../components/Elements/Button";
-import { MagnifyIcon } from "../../../../../components/Icons";
+import {
+  DataManagementActiveIcon,
+  MagnifyIcon,
+  MapActiveIcon
+} from "../../../../../components/Icons";
 import { IconTextField } from "../../../../../components/Elements/Input";
 
 import './style.scss';
@@ -32,13 +42,121 @@ export default function IndicatorsForm() {
   const dispatch = useDispatch();
   const [selectionModel, setSelectionModel] = useState([]);
   const [search, setSearch] = useState('');
-  const { indicators } = dictDeepCopy(
+  const { indicators, referenceLayer } = dictDeepCopy(
     useSelector(state => state.dashboard.data)
   )
   const columns = dictDeepCopy(
     COLUMNS('Indicators', urls.admin.indicatorList)
   )
-  delete columns[4]
+
+  // Other actions
+  columns[4] = {
+    field: 'actions',
+    type: 'actions',
+    cellClassName: 'MuiDataGrid-ActionsColumn',
+    width: 320,
+    getActions: (params) => {
+      const permission = params.row.permission
+      // Create actions
+      const actions = []
+      if (permission.delete) {
+        actions.unshift(
+          <GridActionsCellItem
+            icon={
+              <Tooltip title={`Go to data access.`}>
+                <a
+                  href={`${urls.api.permissionAdmin}?indicators=${params.id}&datasets=${referenceLayer?.identifier ? referenceLayer?.identifier : ''}`}>
+                  <div className='ButtonIcon'>
+                    <StorageIcon/>
+                  </div>
+                </a>
+              </Tooltip>
+            }
+            label="Go to data access."
+          />)
+      }
+
+      if (permission.edit) {
+        actions.unshift(
+          <GridActionsCellItem
+            icon={
+              <Tooltip title={`Management Map`}>
+                <a
+                  href={urls.api.map.replace('/0', `/${params.id}`)}>
+                  <div className='ButtonIcon'>
+                    <MapActiveIcon/>
+                  </div>
+                </a>
+              </Tooltip>
+            }
+            label="Edit"
+          />)
+      }
+      if (permission.edit) {
+        actions.unshift(
+          <GridActionsCellItem
+            icon={
+              <Tooltip title={`Management Form`}>
+                <a
+                  href={urls.api.form.replace('/0', `/${params.id}`)}>
+                  <div className='ButtonIcon'>
+                    <DynamicFormIcon/>
+                  </div>
+                </a>
+              </Tooltip>
+            }
+            label="Management Form"
+          />)
+      }
+      if (permission.edit) {
+        const parameters = {
+          indicator_data_value: params.id
+        }
+        if (referenceLayer?.identifier) {
+          parameters.reference_layer = referenceLayer?.identifier
+          parameters.reference_layer_name = referenceLayer?.name
+        }
+        actions.unshift(
+          <GridActionsCellItem
+            icon={
+              <Tooltip title={`Import data`}>
+                <a
+                  href={`${urls.admin.importer}?${jsonToUrlParams(parameters)}`}>
+                  <div className='ButtonIcon'>
+                    <DataManagementActiveIcon/>
+                  </div>
+                </a>
+              </Tooltip>
+            }
+            label="Import data"
+          />
+        )
+      }
+      if (permission.edit) {
+        const parameters = {
+          indicators: params.id
+        }
+        if (referenceLayer?.identifier) {
+          parameters.datasets = referenceLayer?.identifier
+        }
+        actions.unshift(
+          <GridActionsCellItem
+            className='TextButton'
+            icon={
+              <a
+                href={`${urls.api.dataBrowser}?${jsonToUrlParams(parameters)}`}>
+                <div
+                  className='MuiButton-Div MuiButtonBase-root MuiButton-primary Reverse ThemeButton'>
+                  <DataUsageIcon/> Value List
+                </div>
+              </a>
+            }
+            label="Value List"
+          />)
+      }
+      return actions
+    },
+  }
 
   // Delete Button
   const deleteButton = () => {
@@ -73,14 +191,17 @@ export default function IndicatorsForm() {
       dispatch(Actions.Indicators.update(layer))
     }}
     otherHeaders={
-      <IconTextField
-        placeholder={"Search " + pageName}
-        iconEnd={<MagnifyIcon/>}
-        onChange={evt => setSearch(evt.target.value.toLowerCase())}
-      />
+      <Fragment>
+        <IconTextField
+          placeholder={"Search " + pageName}
+          iconEnd={<MagnifyIcon/>}
+          onChange={evt => setSearch(evt.target.value.toLowerCase())}
+        />
+      </Fragment>
     }
     hasGroup={false}
     selectable={true}
+    createNew={true}
     listConfig={{
       initData: indicators,
       columns: columns,

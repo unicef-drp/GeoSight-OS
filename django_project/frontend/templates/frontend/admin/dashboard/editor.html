@@ -44,6 +44,25 @@
         'users': '{% url 'user-list-api'%}',
         'groups': '{% url 'group-list-api'%}',
         'styles': '{% url 'style-list-api'%}',
+
+        {# This is for specific urls #}
+        'basemaps': {
+          'create': '{% url 'admin-basemap-create-view' %}',
+          'detail': '{% url 'basemap-detail-api' 0 %}',
+        },
+        'indicators': {
+          'create': '{% url 'admin-indicator-create-view' %}',
+          'detail': '{% url 'indicator-detail-api' 0 %}',
+        },
+        'context layers': {
+          'create': '{% url 'admin-context-layer-create-view' %}',
+          'detail': '{% url 'context-layer-detail-api' 0 %}',
+        },
+        'permissionAdmin': '{% url 'admin-data-access-view' %}',
+        'form': '{% url 'admin-indicator-value-form-manager' 0 %}',
+        'map': '{% url 'admin-indicator-value-mapview-manager' 0 %}',
+        'values': '{% url 'admin-indicator-value-list-manager' 0 %}',
+        'dataBrowser': '{% url 'admin-dataset-view' %}',
       }
 
       // Format code choices

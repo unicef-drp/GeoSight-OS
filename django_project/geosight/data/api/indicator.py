@@ -94,7 +94,12 @@ class IndicatorDetailAPI(APIView):
         """Delete an indicator."""
         indicator = get_object_or_404(Indicator, pk=pk)
         read_permission_resource(indicator, request.user)
-        return Response('Deleted')
+        return Response(
+            IndicatorSerializer(
+                indicator,
+                context={'user': request.user}
+            ).data
+        )
 
     def delete(self, request, pk):
         """Delete an indicator."""

@@ -23,7 +23,10 @@ from rest_framework.views import APIView
 
 from geosight.data.models.context_layer import ContextLayer
 from geosight.data.serializer.context_layer import ContextLayerSerializer
-from geosight.permission.access import delete_permission_resource
+from geosight.permission.access import (
+    read_permission_resource,
+    delete_permission_resource
+)
 
 
 class ContextLayerListAPI(APIView):
@@ -51,6 +54,17 @@ class ContextLayerDetailAPI(APIView):
     """API for detail of context layer."""
 
     permission_classes = (IsAuthenticated,)
+
+    def get(self, request, pk):
+        """Delete an indicator."""
+        layer = get_object_or_404(ContextLayer, pk=pk)
+        read_permission_resource(layer, request.user)
+        return Response(
+            ContextLayerSerializer(
+                layer,
+                context={'user': request.user}
+            ).data
+        )
 
     def delete(self, request, pk):
         """Delete an basemap."""

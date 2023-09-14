@@ -64,7 +64,7 @@ export default function DatasetAdmin() {
   const defaultFilters = urlParams()
   const [filters, setFilters] = useState({
     indicators: defaultFilters.indicators ? splitParams(defaultFilters.indicators) : [],
-    datasets: defaultFilters.datasets ? splitParams(defaultFilters.datasets) : [],
+    datasets: defaultFilters.datasets ? splitParams(defaultFilters.datasets, false) : [],
     levels: defaultFilters.levels ? splitParams(defaultFilters.levels) : [],
     geographies: defaultFilters.geographies ? splitParams(defaultFilters.geographies) : [],
     fromTime: defaultFilters.fromTime ? defaultFilters.fromTime : null,

@@ -53,6 +53,10 @@ export const fetchingData = async function (
 //  Make cache in elegant way
 const responseCaches = {}
 
+export function deleteUrlCache(url) {
+  delete responseCaches[url]
+}
+
 export async function fetchJSON(url, options, useCache = true) {
   if (!useCache) {
     responseCaches[url] = null

@@ -351,6 +351,18 @@ header {
     height: 14px;
     width: 14px;
   }
+
+
+  .MuiCircularProgress-root {
+    margin-right: 5px;
+    height: 10px !important;
+    width: 10px !important;
+
+    svg {
+      height: 10px !important;
+      width: 10px !important;
+    }
+  }
 }
 
 

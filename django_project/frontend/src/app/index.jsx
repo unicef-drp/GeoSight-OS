@@ -19,6 +19,7 @@ import { Provider } from 'react-redux';
 import c from 'classnames';
 import NavBar from '../components/Navbar';
 import { EmbedConfig } from "../utils/embed";
+import { urlParams } from "../utils/main";
 
 import './mui.scss';
 import './app.scss';
@@ -32,8 +33,20 @@ import './form.small.scss';
  * @param {React.Component} children React component to be rendered
  */
 export default function App({ className, children, ...props }) {
+  // Check if child window, don't show navbar
+  const parentWindow = window.opener?.parent;
+  if (parentWindow) {
+    // This message is for form
+    const { success } = urlParams();
+    if (objectId && success) {
+      parentWindow.postMessage(objectId);
+      window.close();
+    }
+  }
+
   return (
-    <div className={c('page', className) + (EmbedConfig().id ? ' Embed' : '')}>
+    <div
+      className={c('page', className) + (EmbedConfig().id ? ' Embed' : '') + (parentWindow ? ' PopupMode' : '')}>
       {
         !props.hideNavbar ? <NavBar/> : null
       }

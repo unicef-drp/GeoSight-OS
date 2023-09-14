@@ -118,7 +118,7 @@ export function COLUMNS(pageName, redirectUrl, editUrl = null, detailUrl = null)
             {params.value}
           </a>
         } else {
-          return params.value
+          return <div className='MuiDataGrid-cellContent'>{params.value}</div>
         }
       }
     },
