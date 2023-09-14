@@ -26,6 +26,11 @@ import './form.scss';
 import './form.small.scss';
 
 
+// Sentry.init({
+//     dsn: window.SENTRY_DSN,
+// });
+
+
 /**
  * Base App
  * @param {string} className Class name for modal
