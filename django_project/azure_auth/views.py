@@ -43,7 +43,12 @@ def azure_auth_callback(request):
     handler = AzureAuthHandler(request)
     login_path = request.build_absolute_uri(
         resolve_url(settings.USER_NO_ACCESS_URL or settings.LOGIN_URL)
-    ) + '?no_access=true'
+    )
+
+    # Just show no_access when user is not cancelled
+    if 'AADB2C90091' not in request.GET.get('error_description', ''):
+        login_path += '?no_access=true'
+
     output = HttpResponseRedirect(
         handler.get_logout_uri(login_path)
     )
