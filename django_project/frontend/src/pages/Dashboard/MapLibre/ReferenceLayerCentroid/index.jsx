@@ -53,6 +53,7 @@ export default function ReferenceLayerCentroid({ map }) {
   const { showIndicatorMapLabel } = useSelector(state => state.globalState)
   const { indicatorShow } = useSelector(state => state.map)
   const geometries = useSelector(state => state.geometries)
+  const geometriesVT = useSelector(state => state.geometriesVT)
   const filteredGeometries = useSelector(state => state.filteredGeometries)
   const indicatorsData = useSelector(state => state.indicatorsData);
   const selectedIndicatorLayer = useSelector(state => state.selectedIndicatorLayer)
@@ -364,9 +365,13 @@ export default function ReferenceLayerCentroid({ map }) {
       rendering = false
     }
     // Check if geometries is exist
-    const geometriesData = geometries[selectedAdminLevel.level]
+    let geometriesData = geometries[selectedAdminLevel.level]
     if (!geometriesData) {
-      rendering = false
+      if (!geometriesVT[selectedAdminLevel.level]) {
+        rendering = false
+      } else {
+        geometriesData = geometriesVT[selectedAdminLevel.level]
+      }
     }
     if (!rendering) {
       reset()
@@ -528,7 +533,6 @@ export default function ReferenceLayerCentroid({ map }) {
       // ---------------------------------------------------------
       // LABEL
       // ---------------------------------------------------------
-      const geometriesData = geometries[selectedAdminLevel.level]
       if (!geometriesData) {
         renderLabel([], config)
         return;
@@ -544,7 +548,6 @@ export default function ReferenceLayerCentroid({ map }) {
           indicatorsByGeom[code].push(data);
         })
       }
-
       let theGeometries = Object.keys(geometriesData)
       theGeometries.map(geom => {
         const geometry = geometriesData[geom]
@@ -564,7 +567,7 @@ export default function ReferenceLayerCentroid({ map }) {
               "properties": properties,
               "geometry": {
                 "type": "Point",
-                "coordinates": geometry.centroid.replace('POINT (', '').replace(')', '').split(' ').map(coord => parseFloat(coord))
+                "coordinates": geometry.centroid.replace('POINT (', '').replace('POINT(', '').replace(')', '').split(' ').map(coord => parseFloat(coord))
               }
             })
           }
@@ -574,10 +577,10 @@ export default function ReferenceLayerCentroid({ map }) {
       renderLabel(features, config)
     }
   }, [
-    geometries, filteredGeometries, indicatorsData,
+    geometries, geometriesVT, filteredGeometries, indicatorsData,
     indicatorShow, indicatorLayers,
     selectedIndicatorLayer, selectedIndicatorSecondLayer,
-    showIndicatorMapLabel
+    showIndicatorMapLabel, selectedAdminLevel
   ]);
 
   return null

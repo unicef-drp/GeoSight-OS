@@ -106,6 +106,33 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
 
   // When reference layer changed, fetch reference data
   useEffect(() => {
+    if (map) {
+      map.on("sourcedata", function (e) {
+        if (hasLayer(map, FILL_LAYER_ID)) {
+          var features = map.queryRenderedFeatures(
+            { layers: [FILL_LAYER_ID] }
+          );
+          const geometryDataByLevel = {}
+          features.map(feature => {
+            const level = feature.properties.level;
+            if (!geometryDataByLevel[level]) {
+              geometryDataByLevel[level] = {}
+            }
+            const code = extractCode(feature.properties)
+            geometryDataByLevel[level][code] = feature.properties
+          })
+          for (const [level, data] of Object.entries(geometryDataByLevel)) {
+            dispatch(
+              Actions.GeometriesVT.addLevelData(level, data)
+            )
+          }
+        }
+      });
+    }
+  }, [map]);
+
+  // When reference layer changed, fetch reference data
+  useEffect(() => {
     if (referenceLayer.identifier && !referenceLayerData) {
       dispatch(
         Actions.ReferenceLayerData.fetch(

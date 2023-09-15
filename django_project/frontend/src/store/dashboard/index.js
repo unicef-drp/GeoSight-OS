@@ -25,6 +25,7 @@ import Filters from './reducers/filters/actions'
 import FiltersData from './reducers/filtersData/actions'
 import FilteredGeometries from './reducers/filteredGeometries/actions'
 import Geometries from './reducers/geometries/actions'
+import GeometriesVT from './reducers/geometriesVT/actions'
 import GlobalState from './reducers/globalState/actions'
 import IndicatorLayerDates from './reducers/indicatorLayerDates/actions'
 import IndicatorLayers from './reducers/indicatorLayers/actions'
@@ -59,6 +60,7 @@ const Actions = {
   FilteredGeometries,
   FiltersData,
   Geometries,
+  GeometriesVT,
   GlobalState,
   IndicatorLayerDates,
   IndicatorLayers,
