@@ -50,7 +50,7 @@ export function AdminPage({ pageName, children, ...props }) {
   return (
     <App className='Admin' hideNavbar={true}>
       <SideNavigation pageName={pageName} minified={props.minifySideNavigation}/>
-      <ErrorBoundary setErrorPage={true}>
+      <ErrorBoundary>
         {children}
       </ErrorBoundary>
     </App>

@@ -19,7 +19,6 @@ import { Provider } from 'react-redux';
 import c from 'classnames';
 import NavBar from '../components/Navbar';
 import { EmbedConfig } from "../utils/embed";
-import ErrorBoundary from "../components/ErrorBoundary";
 
 import './mui.scss';
 import './app.scss';
@@ -52,10 +51,8 @@ export default function App({ className, children, ...props }) {
 export function render(App, store) {
   const root = createRoot(document.getElementById('app'));
   root.render(
-    <ErrorBoundary setErrorPage={true}>
-      <Provider store={store}>
-        <App/>
-      </Provider>
-    </ErrorBoundary>
+    <Provider store={store}>
+      <App/>
+    </Provider>
   )
 }
