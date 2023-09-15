@@ -321,9 +321,23 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
           outline_size: preferences.style_no_data_outline_size
         }
       }
+      if (noDataStyle.outline_size) {
+        noDataStyle.outline_size = parseFloat(noDataStyle.outline_size)
+      }
+
       let noDataStyleSecondLayer = returnNoDataStyle(
         currentIndicatorSecondLayer, indicators
       )
+      if (!noDataStyleSecondLayer) {
+        noDataStyleSecondLayer = {
+          color: preferences.style_no_data_outline_color,
+          outline_color: preferences.style_no_data_fill_color,
+          outline_size: preferences.style_no_data_outline_size
+        }
+      }
+      if (noDataStyleSecondLayer.outline_size) {
+        noDataStyleSecondLayer.outline_size = parseFloat(noDataStyleSecondLayer.outline_size)
+      }
 
       // Get indicator data per geom
       // This is needed for popup and rendering
