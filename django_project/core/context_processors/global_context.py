@@ -57,5 +57,5 @@ def global_context(request):
         'preferences_js': json.dumps(pref_data),
         'use_azure_auth': settings.USE_AZURE,
         'version': project_version(request),
-        'sentry_dsn': getattr(settings, "SENTRY_DSN", "")
+        'sentry_dsn': getattr(settings, "SENTRY_DSN", "http://63444bc5c57c483fa0e05b62df1f231c@sentry.kartoza.com/39")
     }

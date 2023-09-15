@@ -155,7 +155,7 @@ REST_FRAMEWORK = {
 LOGIN_URL = '/login/'
 SITE_ID = 1
 
-SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = 'deadbeef'
 if SECRET_KEY in ['', "''"]:
     raise Exception('SECRET_KEY is required in env.')
 

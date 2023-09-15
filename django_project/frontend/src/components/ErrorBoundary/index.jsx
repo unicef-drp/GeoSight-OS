@@ -24,6 +24,7 @@ Sentry.init({
 export default class ErrorBoundary extends React.Component {
     constructor(props) {
         super(props);
+        this.setErrorPage = props.setErrorPage
         this.state = {hasError: false};
     }
 
@@ -32,29 +33,29 @@ export default class ErrorBoundary extends React.Component {
         return {hasError: true};
     }
 
+    componentDidMount() {
+        // Intercept console.error, then exception to be catched by Sentry
+        console.error = err => {
+            Sentry.withScope(scope => {
+                Sentry.captureException(err);
+            });
+        };
+        // Intercept console.warn, then mute it
+        console.warn = warning => {}
+    }
+
     componentDidCatch(error, errorInfo) {
         Sentry.withScope(scope => {
-            // @ts-ignore
             scope.setExtras(errorInfo);
             Sentry.captureException(error);
         });
-
-        // You can also log the error to an error reporting service
     }
 
     render() {
-        if (this.state.hasError) {
+        if (this.state.hasError && this.setErrorPage) {
             // You can render any custom fallback UI
             return <div className="FormContainer">
                 <h2>Something went wrong...</h2>
-                {/*{ process.env.NODE_ENV && process.env.NODE_ENV === 'development' ?*/}
-                {/*  <details style={{whiteSpace: 'pre-wrap', textAlign: 'left', color: 'red'}}>*/}
-                {/*      <pre>*/}
-                {/*      {(this.state).error && (this.state).error.toString()}*/}
-                {/*        <br/>*/}
-                {/*        {(this.state).errorInfo.componentStack}*/}
-                {/*       </pre>*/}
-                {/*  </details> : null }*/}
               </div>;
 
         }

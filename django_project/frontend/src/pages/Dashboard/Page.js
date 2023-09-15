@@ -24,7 +24,7 @@ import Dashboard from '../Dashboard'
 export default function DashboardPage() {
   return (
     <App>
-      <ErrorBoundary>
+      <ErrorBoundary setErrorPage={false}>
         <Dashboard/>
       </ErrorBoundary>
     </App>
