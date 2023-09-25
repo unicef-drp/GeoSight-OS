@@ -104,6 +104,34 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
     return map && hasLayer(map, FILL_LAYER_ID) && hasLayer(map, OUTLINE_LAYER_ID)
   }
 
+  // When source data changed, and it using from georepo layer
+  // Extract the bbox from it and save it as state
+  useEffect(() => {
+    if (map) {
+      map.on("sourcedata", function (e) {
+        if (hasLayer(map, FILL_LAYER_ID)) {
+          var features = map.queryRenderedFeatures(
+            { layers: [FILL_LAYER_ID] }
+          );
+          const geometryDataByLevel = {}
+          features.map(feature => {
+            const level = feature.properties.level;
+            if (!geometryDataByLevel[level]) {
+              geometryDataByLevel[level] = {}
+            }
+            const code = extractCode(feature.properties)
+            geometryDataByLevel[level][code] = feature.properties
+          })
+          for (const [level, data] of Object.entries(geometryDataByLevel)) {
+            dispatch(
+              Actions.GeometriesVT.addLevelData(level, data)
+            )
+          }
+        }
+      });
+    }
+  }, [map]);
+
   // When reference layer changed, fetch reference data
   useEffect(() => {
     if (referenceLayer.identifier && !referenceLayerData) {
@@ -321,9 +349,23 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
           outline_size: preferences.style_no_data_outline_size
         }
       }
+      if (noDataStyle.outline_size) {
+        noDataStyle.outline_size = parseFloat(noDataStyle.outline_size)
+      }
+
       let noDataStyleSecondLayer = returnNoDataStyle(
         currentIndicatorSecondLayer, indicators
       )
+      if (!noDataStyleSecondLayer) {
+        noDataStyleSecondLayer = {
+          color: preferences.style_no_data_outline_color,
+          outline_color: preferences.style_no_data_fill_color,
+          outline_size: preferences.style_no_data_outline_size
+        }
+      }
+      if (noDataStyleSecondLayer.outline_size) {
+        noDataStyleSecondLayer.outline_size = parseFloat(noDataStyleSecondLayer.outline_size)
+      }
 
       // Get indicator data per geom
       // This is needed for popup and rendering
@@ -574,8 +616,9 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
     let noDataStyle = returnNoDataStyle(currentIndicatorLayer, indicators)
     if (!noDataStyle) {
       noDataStyle = {
-        color: NOCOLOR,
-        outline_color: '#000000'
+        color: preferences.style_no_data_outline_color,
+        outline_color: preferences.style_no_data_fill_color,
+        outline_size: preferences.style_no_data_outline_size
       }
     }
 

@@ -230,7 +230,6 @@ export default function ListForm(
 
     addedData.map(data => {
       data.group = usedGroupName
-      console.log(data)
       addLayerAction(data)
     })
     removeData.map(data => {

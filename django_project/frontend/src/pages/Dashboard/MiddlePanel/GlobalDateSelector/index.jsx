@@ -32,7 +32,7 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
 import { fetchingData } from "../../../../Requests";
 import { Actions } from "../../../../store/dashboard";
-import { formatDate, formatDateTime } from "../../../../utils/main";
+import { formatDate, formatDateTime, nowUTC } from "../../../../utils/main";
 import {
   dateLabel,
   getDatesInRange,
@@ -299,6 +299,9 @@ export default function GlobalDateSelector() {
         fetchingData(
           indicator.url.replace('/values/latest', '/dates'), {}, {}, function (response, error) {
             if (!error) {
+              if (!response?.length) {
+                response = [nowUTC().toISOString()]
+              }
               dispatch(Actions.IndicatorLayerDates.add(id, response))
             } else {
               dispatch(Actions.IndicatorLayerDates.add(id, error.toString()))

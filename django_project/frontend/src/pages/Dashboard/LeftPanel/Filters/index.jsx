@@ -100,7 +100,7 @@ function FilterSection() {
       for (const [level, geomDataLevel] of Object.entries(geometries)) {
         for (const [key, geomData] of Object.entries(geomDataLevel)) {
           codes.push(geomData.code)
-          if (where.includes('geometry_layer.')) {
+          if (where && where.includes('geometry_layer.')) {
             geomData.members.map(member => {
               data.push({
                 concept_uuid: geomData.concept_uuid,
