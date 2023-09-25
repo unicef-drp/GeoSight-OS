@@ -43,16 +43,21 @@
     color: $primary-color;
     cursor: pointer;
 
+    div {
+      min-height: 2rem;
+      display: flex;
+      align-items: center;
+    }
+
     td {
       padding-right: 0.3rem;
       color: $base-black-color;
     }
 
     svg {
-      height: 20px;
-      width: 20px;
-      margin-right: 0.2rem;
-      margin-top: 5px;
+      height: 14px;
+      width: 14px;
+      margin-right: 5px;
     }
 
     .StarIcon {
@@ -87,6 +92,7 @@
 
     &:hover {
       opacity: $base-hovered-opacity;
+      background-color: $base-to-white-color;
     }
 
     .Creator {

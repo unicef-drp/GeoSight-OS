@@ -55,6 +55,7 @@ import './style.scss';
  */
 export default function Bookmark({ map }) {
   const dispatch = useDispatch();
+  const isEmbed = EmbedConfig().id;
   const dashboardData = useSelector(state => state.dashboard.data);
   const selectedIndicatorLayer = useSelector(state => state.selectedIndicatorLayer);
   const selectedIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer);
@@ -241,18 +242,21 @@ export default function Bookmark({ map }) {
         </div>
       }>{/* LIST OF BOOKMARKS */}
       <div className='BookmarkComponent'>
-        <div className='Header'>
+        {
+          !isEmbed ?
+            <div className='Header'>
 
-          <ThemeButton
-            variant="primary-text"
-            onClick={() => {
-              setSaveBookmarkID(null)
-              setOpen(true)
-              setName('')
-            }}>
-            <SaveAsIcon/> Save As...
-          </ThemeButton>
-        </div>
+              <ThemeButton
+                variant="primary-text"
+                onClick={() => {
+                  setSaveBookmarkID(null)
+                  setOpen(true)
+                  setName('')
+                }}>
+                <SaveAsIcon/> Save As...
+              </ThemeButton>
+            </div> : null
+        }
 
         <div className='Body'>
           <table>
@@ -278,7 +282,7 @@ export default function Bookmark({ map }) {
                             <div>{bookmark.name}</div>
                           </td>
                           {
-                            bookmark.id && (user.is_staff || user.username === bookmark.creator) ?
+                            !isEmbed && bookmark.id && (user.is_staff || user.username === bookmark.creator) ?
                               <Fragment>
                                 <td>
                                   <EditIcon
@@ -289,8 +293,6 @@ export default function Bookmark({ map }) {
                                       setName(bookmark.name)
                                       e.stopPropagation()
                                     }}/>
-                                </td>
-                                <td>
                                   <HighlightOffIcon
                                     className='DeleteIcon'
                                     onClick={(e) => {

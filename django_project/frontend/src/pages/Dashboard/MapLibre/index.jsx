@@ -262,7 +262,7 @@ export default function MapLibre(
         </Plugin>
         {
           !editMode && user_permission.edit && urls.editUrl ?
-            <Plugin>
+            <Plugin className='EditControl'>
               <div className="Active">
                 <PluginChild title={'Edit project'}>
                   <a href={urls.editUrl}>
