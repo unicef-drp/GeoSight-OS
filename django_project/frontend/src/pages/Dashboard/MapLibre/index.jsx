@@ -27,6 +27,7 @@ import ContextLayers from "./Layers/ContextLayers";
 import { Plugin, PluginChild } from "./Plugin";
 import { removeLayer, removeSource } from "./utils"
 import {
+  EditIcon,
   ThreeDimensionOffIcon,
   ThreeDimensionOnIcon
 } from '../../../components/Icons'
@@ -64,6 +65,7 @@ export default function MapLibre(
   const [map, setMap] = useState(null);
   const [deckgl, setDeckGl] = useState(null);
   const extent = useSelector(state => state.dashboard.data.extent);
+  const user_permission = useSelector(state => state.dashboard.data.user_permission);
   const {
     basemapLayer,
     is3dMode,
@@ -258,6 +260,19 @@ export default function MapLibre(
         <Plugin className='BookmarkControl'>
           <Bookmark map={map}/>
         </Plugin>
+        {
+          !editMode && user_permission.edit && urls.editUrl ?
+            <Plugin>
+              <div className="Active">
+                <PluginChild title={'Edit project'}>
+                  <a href={urls.editUrl}>
+                    <EditIcon/>
+                  </a>
+                </PluginChild>
+              </div>
+            </Plugin>
+            : null
+        }
         {
           rightPanelProps ?
             <ToggleSidePanel

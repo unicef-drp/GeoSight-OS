@@ -234,7 +234,9 @@ export default function Bookmark({ map }) {
       Button={
         <div className='Active'>
           <PluginChild title={'Bookmark'}>
-            <StarOffIcon/>
+            <a>
+              <StarOffIcon/>
+            </a>
           </PluginChild>
         </div>
       }>{/* LIST OF BOOKMARKS */}
