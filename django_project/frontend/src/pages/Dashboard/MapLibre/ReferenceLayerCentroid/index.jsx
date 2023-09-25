@@ -483,7 +483,7 @@ export default function ReferenceLayerCentroid({ map }) {
             "properties": properties,
             "geometry": {
               "type": "Point",
-              "coordinates": geometry.centroid.replace('POINT (', '').replace(')', '').split(' ').map(coord => parseFloat(coord))
+              "coordinates": geometry.centroid.replace('POINT (', '').replace('POINT(', '').replace(')', '').split(' ').map(coord => parseFloat(coord))
             }
           })
         }
