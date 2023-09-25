@@ -19,6 +19,7 @@ from django.core.signing import BadSignature
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from core.models.color import ColorPalette
 from core.models.singleton import SingletonModel
 
 DEFAULT_OUTLINE_COLOR = '#FFFFFF'
@@ -59,6 +60,15 @@ class SitePreferences(SingletonModel):
             'Basemap that will be autoadded to new project '
             'if user has list access.'
         )
+    )
+    default_color_palette = models.ForeignKey(
+        ColorPalette,
+        null=True, blank=True,
+        help_text=(
+            'Color palette that will be autoadded to new indicator '
+            'when dynamic style is selected.'
+        ),
+        on_delete=models.SET_NULL
     )
     # -----------------------------------------------
     # GEOREPO

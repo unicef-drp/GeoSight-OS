@@ -41,15 +41,21 @@ export default function DynamicStyleConfig({ data, setData }) {
     let changed = false
     if (!data.style_config) {
       data.style_config = {}
-      data.style_config.dynamic_classification = dynamicClassificationChoices[0][1]
-      data.style_config.dynamic_class_num = 2
-      data.style_config.sync_outline = true
-      data.style_config.sync_filter = false
-      data.style_config.outline_color = preferences.style_dynamic_style_outline_color
     }
+    data.style_config = Object.assign(
+      {},
+      {
+        dynamic_classification: dynamicClassificationChoices[0].value,
+        dynamic_class_num: 7,
+        sync_outline: false,
+        sync_filter: false,
+        outline_color: preferences.style_dynamic_style_outline_color,
+        outline_size: preferences.style_dynamic_style_outline_size,
+      }, data.style_config
+    )
     if (!data.style_config.no_data_rule) {
       data.style_config.no_data_rule = newRule(
-        [], false, NO_DATA_RULE, NO_DATA_RULE,
+        [], true, NO_DATA_RULE, NO_DATA_RULE,
         preferences.style_no_data_fill_color,
         preferences.style_no_data_outline_color,
         preferences.style_no_data_outline_size,

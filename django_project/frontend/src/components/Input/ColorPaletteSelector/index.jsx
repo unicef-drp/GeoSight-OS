@@ -45,7 +45,10 @@ export default function ColorPaletteSelector(
         await fetchingData(
           `/api/color/palette/list`,
           {}, {}, (response, error) => {
-            setColorPalettes(response)
+            setColorPalettes(response);
+            if (!colorPalette) {
+              onChange(preferences.default_color_palette ? preferences.default_color_palette : response[0]?.id)
+            }
           }
         )
       }
