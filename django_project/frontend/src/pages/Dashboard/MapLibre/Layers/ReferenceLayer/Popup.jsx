@@ -292,7 +292,7 @@ export function getContext(
 
   const indicatorLayersConfig = {}
   indicatorLayers.map(indicatorLayer => {
-    if (indicatorLayer.config.date_field) {
+    if (indicatorLayer?.config?.date_field) {
       indicatorLayersConfig[indicatorLayer.related_tables[0].id] = {
         date_field: indicatorLayer.config.date_field,
         date_format: indicatorLayer.config.date_format ? indicatorLayer.config.date_format : null,

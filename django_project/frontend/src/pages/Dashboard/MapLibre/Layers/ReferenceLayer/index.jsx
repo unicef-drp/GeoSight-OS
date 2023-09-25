@@ -104,7 +104,8 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
     return map && hasLayer(map, FILL_LAYER_ID) && hasLayer(map, OUTLINE_LAYER_ID)
   }
 
-  // When reference layer changed, fetch reference data
+  // When source data changed, and it using from georepo layer
+  // Extract the bbox from it and save it as state
   useEffect(() => {
     if (map) {
       map.on("sourcedata", function (e) {
@@ -615,8 +616,9 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
     let noDataStyle = returnNoDataStyle(currentIndicatorLayer, indicators)
     if (!noDataStyle) {
       noDataStyle = {
-        color: NOCOLOR,
-        outline_color: '#000000'
+        color: preferences.style_no_data_outline_color,
+        outline_color: preferences.style_no_data_fill_color,
+        outline_size: preferences.style_no_data_outline_size
       }
     }
 

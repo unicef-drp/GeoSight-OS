@@ -52,7 +52,6 @@ export const IndicatorSettings = forwardRef(
      * Switch time type
      */
     const switchTo = (type) => {
-      console.log(data)
       data.indicator_data_type = type
       switch (type) {
         case 'Data Driven': {
