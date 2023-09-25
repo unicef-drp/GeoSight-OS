@@ -30,7 +30,8 @@ from geosight.data.serializer.related_table import (
 )
 from geosight.georepo.models.entity import Entity, EntityCode
 from geosight.permission.access import (
-    read_permission_resource, delete_permission_resource
+    read_permission_resource, delete_permission_resource,
+    read_data_permission_resource
 )
 
 
@@ -92,7 +93,7 @@ class RelatedTableDataAPI(APIView):
     def get(self, request, pk):
         """Delete an basemap."""
         obj = get_object_or_404(RelatedTable, pk=pk)
-        read_permission_resource(obj, request.user)
+        read_data_permission_resource(obj, request.user)
         return Response(obj.data)
 
 
@@ -102,7 +103,7 @@ class RelatedTableValuesAPI(APIView):
     def get(self, request, pk, **kwargs):
         """Return Values."""
         related_table = get_object_or_404(RelatedTable, pk=pk)
-        read_permission_resource(related_table, request.user)
+        read_data_permission_resource(related_table, request.user)
         try:
             reference_layer_uuid = request.GET['reference_layer_uuid']
             geography_code_field_name = request.GET[
@@ -139,7 +140,7 @@ class RelatedTableFieldDataAPI(APIView):
     def get(self, request, pk, **kwargs):
         """Return Values."""
         related_table = get_object_or_404(RelatedTable, pk=pk)
-        read_permission_resource(related_table, request.user)
+        read_data_permission_resource(related_table, request.user)
         try:
             data = related_table.data_field(field=request.GET['field'])
             return Response(list(set(data)))
@@ -153,7 +154,7 @@ class RelatedTableDatesAPI(APIView):
     def get(self, request, pk, **kwargs):
         """Return Values."""
         related_table = get_object_or_404(RelatedTable, pk=pk)
-        read_permission_resource(related_table, request.user)
+        read_data_permission_resource(related_table, request.user)
         try:
             reference_layer_uuid = request.GET['reference_layer_uuid']
             geography_code_field_name = request.GET[

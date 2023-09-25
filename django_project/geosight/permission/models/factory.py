@@ -321,6 +321,9 @@ def permission_model_factory(
                 if self.public_permission == PERMISSIONS.READ.name:
                     user_role = ROLES.VIEWER.level
                     user_perm = PERMISSIONS.READ.level
+                elif self.public_permission == PERMISSIONS.READ_DATA.name:
+                    user_role = ROLES.VIEWER.level
+                    user_perm = PERMISSIONS.READ_DATA.level
             else:
                 user_role = ROLES().get_user_level(user)
                 user_perm = self.get_user_perm_level(user)

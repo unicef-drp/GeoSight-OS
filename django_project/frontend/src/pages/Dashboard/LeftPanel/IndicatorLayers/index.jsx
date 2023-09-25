@@ -182,7 +182,7 @@ export function IndicatorLayers() {
             indicatorLayer.error = "Related table does not configured properly"
           } else {
             indicatorLayer.description = updateDescription(indicatorLayer, rtConfig)
-            if (!rtConfig.permission.read) {
+            if (!rtConfig.permission.read_data) {
               indicatorLayer.error = "You don't have permission to access this resource"
             }
             if (relatedTableData[rt.id]?.fetching) {
