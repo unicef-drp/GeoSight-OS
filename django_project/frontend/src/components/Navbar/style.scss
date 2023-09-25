@@ -169,6 +169,18 @@ header {
   }
 }
 
+.EditProjectLinkButton {
+  a {
+    display: flex !important;
+    align-items: center;
+  }
+
+  svg {
+    height: 14px !important;
+    width: 14px !important;
+  }
+}
+
 .MenuItem-Header {
   padding: 0 !important;
 

@@ -18,12 +18,13 @@
    ========================================================================== */
 
 import React, { Fragment, useRef } from 'react';
+import { useSelector } from "react-redux";
 import $ from 'jquery';
 import i18n from "i18next";
 
 import User from './User'
 import { EmbedConfig } from "../../utils/embed";
-import { CogIcon, HelpIcon } from "../Icons";
+import { CogIcon, EditIcon, HelpIcon } from "../Icons";
 import { ThemeButton } from "../Elements/Button";
 import { HelpCenter } from "../HelpCenter";
 import NotificationBadge from "../NotificationBadge";
@@ -37,11 +38,19 @@ export default function NavBar({ minified }) {
   const helpPageRef = useRef(null);
   const { icon, favicon, site_title } = preferences;
   const { username, full_name, is_staff, is_contributor } = user;
+  const user_permission = useSelector(state => state.dashboard?.data?.user_permission);
 
   // Set width of logo
   // Not working using css on firefox
   $('.page__header-logo').width($('.page__header-link').width());
   const canAccessAdmin = is_contributor && !EmbedConfig().id
+  let dashboardEditUrl = null
+  try {
+    dashboardEditUrl = urls.dashboardEditUrl
+  } catch (err) {
+
+  }
+
   return (
     <Fragment>
       <header>
@@ -68,6 +77,18 @@ export default function NavBar({ minified }) {
               <div className='MiddleSection'>{headerTitle}</div> : null
           }
           <div className='Separator'></div>
+          {
+            user_permission?.edit && dashboardEditUrl ?
+              <div className='LinkButton AdminLinkButton EditProjectLinkButton'
+                   style={{ marginRight: "1rem" }}
+                   title='Edit project'
+              >
+                <a href={dashboardEditUrl}>
+                  <EditIcon/>
+                </a>
+              </div>
+              : null
+          }
           {
             canAccessAdmin ? (
               <div className='LinkButton AdminLinkButton'

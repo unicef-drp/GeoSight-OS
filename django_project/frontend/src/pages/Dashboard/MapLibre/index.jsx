@@ -249,30 +249,20 @@ export default function MapLibre(
       {/* Embed */}
       <div className='Toolbar-Right'>
         <SearchGeometryInput map={map}/>
-        <Plugin className='EmbedControl'>
-          <div className='Active'>
-            <PluginChild title={'Get embed code'}>
-              <EmbedControl map={map}/>
-            </PluginChild>
-          </div>
-        </Plugin>
+        {
+          user?.id ?
+            <Plugin className='EmbedControl'>
+              <div className='Active'>
+                <PluginChild title={'Get embed code'}>
+                  <EmbedControl map={map}/>
+                </PluginChild>
+              </div>
+            </Plugin> : null
+        }
         <DownloaderData/>
         <Plugin className='BookmarkControl'>
           <Bookmark map={map}/>
         </Plugin>
-        {
-          !editMode && user_permission.edit && urls.editUrl ?
-            <Plugin className='EditControl'>
-              <div className="Active">
-                <PluginChild title={'Edit project'}>
-                  <a href={urls.editUrl}>
-                    <EditIcon/>
-                  </a>
-                </PluginChild>
-              </div>
-            </Plugin>
-            : null
-        }
         {
           rightPanelProps ?
             <ToggleSidePanel

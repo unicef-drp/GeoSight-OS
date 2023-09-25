@@ -30,7 +30,7 @@
           'relatedTableListAPI': '{% url 'related-table-list-api' %}',
         }
       } else {
-        urls.editUrl = '{% url 'admin-dashboard-edit-view' slug=dashboard.id %}'
+        urls.dashboardEditUrl = '{% url 'admin-dashboard-edit-view' slug=dashboard.id %}'
       }
 
       const embedConfig = {% if embed_config %}{{ embed_config|safe }}{% else %}null{% endif %};
