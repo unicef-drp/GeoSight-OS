@@ -49,7 +49,8 @@ class SitePreferencesAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields': (
-                'site_title', 'site_url', 'disclaimer', 'default_basemap'
+                'site_title', 'site_url', 'disclaimer',
+                'default_basemap', 'default_color_palette'
             )
         }),
         ('GeoRepo', {

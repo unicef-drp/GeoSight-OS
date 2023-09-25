@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 import React, { Fragment, useEffect, useState } from "react";
 import { Checkbox, FormControlLabel } from "@mui/material";
@@ -64,7 +64,10 @@ export default function LabelForm({ indicator, setIndicator }) {
             label_styles={indicatorData.label_config?.style}
             update={(label_styles) => {
               if (!indicatorData.label_config) {
-                indicatorData.label_config = {}
+                indicatorData.label_config = {
+                  text: `{name}
+{value}`
+                }
               }
               indicatorData.label_config = {
                 ...indicatorData.label_config,
@@ -77,7 +80,7 @@ export default function LabelForm({ indicator, setIndicator }) {
             <label className="form-label">Text</label>
             <TextField
               multiline={true}
-              value={indicatorData.label_config?.text}
+              value={indicatorData.label_config?.text ? indicatorData.label_config?.text : ''}
               onChange={evt => {
                 if (!indicatorData.label_config) {
                   indicatorData.label_config = {}

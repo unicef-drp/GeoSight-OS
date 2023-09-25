@@ -39,7 +39,7 @@ class IndicatorStyleBaseModel(models.Model):
 
     style_type = models.CharField(
         max_length=256,
-        default=IndicatorStyleType.LIBRARY,
+        default=IndicatorStyleType.DYNAMIC_QUANTITATIVE,
         choices=IndicatorStyleTypeChoices
     )
     style = models.ForeignKey(

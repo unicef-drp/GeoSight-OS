@@ -35,13 +35,13 @@ export default function LabelStyle({ label_styles, update }) {
     minZoom: 0,
     maxZoom: 24,
     fontFamily: '"Rubik", sans-serif',
-    fontSize: 14,
+    fontSize: 13,
     fontColor: '#000000',
     fontWeight: 300,
     strokeColor: '#FFFFFF',
     strokeWeight: 0,
     haloColor: '#FFFFFF',
-    haloWeight: 0,
+    haloWeight: 2,
   }, label_styles)
 
   const prevState = useRef();

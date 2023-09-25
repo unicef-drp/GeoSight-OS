@@ -111,6 +111,7 @@
         &:disabled {
           background: $base-almost-white-color;
           cursor: not-allowed;
+          height: 100%;
         }
       }
 
