@@ -127,6 +127,22 @@ export function IndicatorLayers() {
       dispatch(Actions.SelectedIndicatorSecondLayer.change({}))
     }
   }, [compareMode]);
+
+  const updateOtherLayers = (selectedData) => {
+    // Check selected indicator layers
+    const selectedIndicatorLayers = indicatorLayers.filter(layer => selectedData.includes('' + layer.id))
+    let relatedLayer = null
+    let dynamicLayer = null
+    selectedIndicatorLayers.map(layer => {
+      if (layer.related_tables?.length && layer.config.where) {
+        relatedLayer = layer.id
+      } else if (layer.type === DynamicIndicatorType) {
+        dynamicLayer = layer.id
+      }
+    })
+    dispatch(Actions.SelectedRelatedTableLayer.change(relatedLayer))
+    dispatch(Actions.SelectedDynamicIndicatorLayer.change(dynamicLayer))
+  }
   /**
    * Init the current indicator layer
    */
@@ -203,6 +219,7 @@ export function IndicatorLayers() {
     // Setup current indicator layer
     updateCurrentIndicator(currentIndicatorLayer, Actions.SelectedIndicatorLayer)
     updateCurrentIndicator(currentIndicatorSecondLayer, Actions.SelectedIndicatorSecondLayer)
+    updateOtherLayers(['' + currentIndicatorLayer, '' + currentIndicatorSecondLayer])
   }, [indicatorLayers, relatedTableData, indicatorLayersStructure]);
 
   const onChange = (selectedData) => {
@@ -224,19 +241,7 @@ export function IndicatorLayers() {
       }
     }
 
-    // Check selected indicator layers
-    const selectedIndicatorLayers = indicatorLayers.filter(layer => selectedData.includes('' + layer.id))
-    let relatedLayer = null
-    let dynamicLayer = null
-    selectedIndicatorLayers.map(layer => {
-      if (layer.related_tables?.length && layer.config.where) {
-        relatedLayer = layer.id
-      } else if (layer.type === DynamicIndicatorType) {
-        dynamicLayer = layer.id
-      }
-    })
-    dispatch(Actions.SelectedRelatedTableLayer.change(relatedLayer))
-    dispatch(Actions.SelectedDynamicIndicatorLayer.change(dynamicLayer))
+    updateOtherLayers(selectedData)
   }
 
   return (

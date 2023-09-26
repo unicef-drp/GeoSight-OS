@@ -160,7 +160,7 @@ export default function Bookmark({ map }) {
     }
   }, [map])
 
-  const selectedBookmarkChanged = () => {
+  const selectedBookmarkChanged = (selectedBookmark) => {
     if (bookmarks !== null) {
       const bookmark = bookmarks.find(row => row.id === selectedBookmark.id)
       if (selectedBookmark.position) {
@@ -174,7 +174,7 @@ export default function Bookmark({ map }) {
   }
   // Update dashboard data when selected bookmark updated
   useEffect(() => {
-    selectedBookmarkChanged()
+    selectedBookmarkChanged(selectedBookmark)
   }, [selectedBookmark])
 
   /**
@@ -274,7 +274,6 @@ export default function Bookmark({ map }) {
                           className={'Bookmark ' + (bookmark.id === selectedBookmark.id ? 'Selected' : '')}
                           onClick={() => {
                             dispatch(Actions.SelectedBookmark.change(bookmark))
-                            selectedBookmarkChanged()
                           }}
                         >
                           <td><StarOnIcon className='StarIcon'/></td>

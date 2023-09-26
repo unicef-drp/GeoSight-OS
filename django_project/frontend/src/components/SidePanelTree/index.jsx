@@ -246,8 +246,9 @@ export default function SidePanelTreeView(
     if (!treeData.name) {
       return
     }
+    const checked = selected.indexOf(nodesDataId) >= 0
     return <TreeItem
-      className={'TreeItem ' + (disabled ? 'Disabled' : '')}
+      className={'TreeItem' + (disabled ? ' Disabled' : '') + (checked ? ' Mui-selected' : '')}
       disabled={disabled}
       key={nodesDataId}
       nodeId={nodesDataId}
@@ -266,7 +267,7 @@ export default function SidePanelTreeView(
                         size={'small'}
                         disabled={disabled}
                         value={nodesDataId}
-                        checked={selected.indexOf(nodesDataId) >= 0}
+                        checked={checked}
                         onChange={selectItem}/> :
                       <Radio
                         tabIndex="-1"
@@ -274,7 +275,7 @@ export default function SidePanelTreeView(
                         size={'small'}
                         disabled={disabled}
                         value={nodesDataId}
-                        checked={selected.indexOf(nodesDataId) >= 0}
+                        checked={checked}
                         onChange={selectItem}/>
                   }
                   <CircularProgress/>
