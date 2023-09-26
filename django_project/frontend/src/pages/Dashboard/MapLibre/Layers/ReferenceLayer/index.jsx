@@ -605,12 +605,17 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
       }
     }
     for (const [key, value] of Object.entries(indicatorValueByGeometry)) {
-      if (value[0].value > max) {
-        max = value[0].value
+      if (value[0].admin_level === currentLevel) {
+        if (value[0].value > max) {
+          max = value[0].value
+        }
+        if (min === null || value[0].value < min) {
+          min = value[0].value
+        }
       }
-      if (min === null || value[0].value < min) {
-        min = value[0].value
-      }
+    }
+    if (max === min) {
+      min = 0
     }
 
     let noDataStyle = returnNoDataStyle(currentIndicatorLayer, indicators)

@@ -176,7 +176,6 @@ export default function SearchGeometryInput({ map }) {
                   <CloseIcon
                     onClick={_ => {
                       setValue(null)
-                      session = null;
                       $('.SearchGeometryInput').removeClass('HasData')
                       removeLayer(map, LAYER_HIGHLIGHT_ID)
                       removeSource(map, LAYER_HIGHLIGHT_ID)
