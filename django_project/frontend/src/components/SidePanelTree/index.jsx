@@ -329,6 +329,9 @@ export default function SidePanelTreeView(
           className='PanelSearchBox'
           variant={'outlined'}
           value={filterText}
+          onKeyPress={(e) => {
+            e.key === 'Enter' && e.preventDefault();
+          }}
           placeholder={props.placeholder ? props.placeholder : ''}
           onChange={onFilterChange}
           InputProps={{
