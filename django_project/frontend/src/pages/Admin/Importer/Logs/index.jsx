@@ -31,6 +31,32 @@ import { AdminListPagination } from "../../AdminListPagination";
 import './style.scss';
 
 const { search } = urlParams()
+
+export function resourceActions(params) {
+  const actions = COLUMNS_ACTION(
+    params, urls.admin.dataManagement + '#Logs', urls.api.logs.edit, urls.api.logs.detail
+  )
+
+  if (params.row.count_data) {
+    actions.unshift(
+      <GridActionsCellItem
+        icon={
+          <Tooltip title={`Browse data`}>
+            <a
+              href={urls.api.logs.dataView.replace('/0', `/${params.id}`)}>
+              <div className='ButtonIcon'>
+                <DataBrowserActiveIcon/>
+              </div>
+            </a>
+          </Tooltip>
+        }
+        label="Value List"
+      />
+    )
+  }
+  return actions;
+}
+
 /**
  * Indicator List App
  */
@@ -65,29 +91,7 @@ const LOG_COLUMNS = [
   ),
   Object.assign({}, COLUMNS.ACTIONS, {
       getActions: (params) => {
-        const actions = [].concat(
-          COLUMNS_ACTION(
-            params, urls.admin.importerLogs, urls.api.logs.edit, urls.api.logs.detail
-          )
-        );
-        if (params.row.count_data) {
-          actions.unshift(
-            <GridActionsCellItem
-              icon={
-                <Tooltip title={`Browse data`}>
-                  <a
-                    href={urls.api.logs.dataView.replace('/0', `/${params.id}`)}>
-                    <div className='ButtonIcon'>
-                      <DataBrowserActiveIcon/>
-                    </div>
-                  </a>
-                </Tooltip>
-              }
-              label="Value List"
-            />
-          )
-        }
-        return actions
+        return resourceActions(params);
       },
     }
   )

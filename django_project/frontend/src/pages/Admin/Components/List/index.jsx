@@ -73,7 +73,11 @@ export function COLUMNS_ACTION(
                         url: api,
                         method: 'DELETE',
                         success: function () {
-                          window.location = redirectUrl;
+                          if (window.location.href.replace(window.location.origin, '') === redirectUrl) {
+                            location.reload();
+                          } else {
+                            window.location = redirectUrl;
+                          }
                         },
                         beforeSend: beforeAjaxSend
                       });

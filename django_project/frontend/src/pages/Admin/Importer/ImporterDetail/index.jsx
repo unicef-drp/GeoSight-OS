@@ -19,7 +19,6 @@ import axios from 'axios';
 import Grid from '@mui/material/Grid';
 import CircularProgress from '@mui/material/CircularProgress';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import PauseIcon from '@mui/icons-material/Pause';
 import Admin from "../../index";
 import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
@@ -31,6 +30,7 @@ import {
 } from "../../../../components/Notification";
 import { DeleteIcon, EditIcon } from "../../../../components/Icons";
 import { ImporterDetailSection } from "../LogDetail/index";
+import { resourceActions } from "../ScheduledJobs";
 
 import './style.scss';
 
@@ -92,30 +92,18 @@ export default function ImporterDetail() {
     pageName={' Detail'}
     rightHeader={
       <Fragment>
-        <ThemeButton
-          variant="primary Basic"
-          onClick={() => {
-            axios.post(data.job_active ? data.urls.pause : data.urls.resume, {}, {
-              headers: {
-                'Content-Type': 'multipart/form-data',
-                'X-CSRFToken': csrfmiddlewaretoken
-              }
-            }).then(response => {
-              callApi()
-            }).catch(error => {
-              if (error?.response?.data) {
-                notify(error.response.data, NotificationStatus.ERROR)
-              } else {
-                notify(error.message, NotificationStatus.ERROR)
-              }
-            })
-          }}>
-          {
-            data.job_active ?
-              <Fragment><PauseIcon/> Pause</Fragment> :
-              <Fragment><PlayArrowIcon/> Resume</Fragment>
-          }
-        </ThemeButton>
+        {
+          data?.id ?
+            resourceActions({
+              id: data?.id,
+              row: data
+            }, notify, newData => {
+              setData({
+                ...data,
+                job_active: !data.job_active
+              })
+            }) : null
+        }
         <ThemeButton
           disabled={['Start', 'Running'].includes(data.logs[0]?.status)}
           variant="primary Basic"
