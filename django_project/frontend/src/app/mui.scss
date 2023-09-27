@@ -223,6 +223,24 @@
       display: none;
     }
   }
+
+  .MuiIconButton-root {
+    height: 100% !important;
+
+    a {
+      height: 36px !important;
+      width: 36px !important;
+
+      svg {
+        height: 14px;
+        width: 14px;
+      }
+
+      .ButtonIcon {
+        padding: 10px;
+      }
+    }
+  }
 }
 
 .MuiDataGrid-cell,
@@ -234,6 +252,7 @@
     box-sizing: border-box;
     color: $primary-color;
     border: 1px solid $primary-color;
+    background-color: white;
   }
 
   a {
