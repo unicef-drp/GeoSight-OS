@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 import React from 'react';
 import { GridActionsCellItem } from "@mui/x-data-grid";
@@ -24,6 +24,10 @@ import { AdminList } from "../../AdminList";
 import PermissionModal from "../../Permission";
 
 import './style.scss';
+
+export function resourceActions(params) {
+  return COLUMNS_ACTION(params, urls.admin.basemapList)
+}
 
 /**
  * Indicator List App
@@ -40,11 +44,7 @@ export default function BasemapList() {
       const permission = params.row.permission
 
       // Create actions
-      const actions = [].concat(
-        COLUMNS_ACTION(
-          params, urls.admin.basemapList, urls.api.edit, urls.api.detail
-        )
-      );
+      const actions = resourceActions(params)
 
       // Unshift before more & edit action
       if (permission.share) {

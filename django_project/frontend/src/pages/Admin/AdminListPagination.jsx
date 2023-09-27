@@ -213,7 +213,9 @@ export const AdminListPagination = forwardRef(
         disableColumnFilter
 
         selectionChanged={(newSelectionModel) => {
-          setSelectionModel(newSelectionModel)
+          if (JSON.stringify(newSelectionModel) !== JSON.stringify(selectionModel)) {
+            setSelectionModel(newSelectionModel)
+          }
         }}
         selectionParent={selectionModel}
         error={error}

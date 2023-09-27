@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { useRef, useState } from 'react';
+import React, { Fragment, useRef, useState } from 'react';
 
 import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
@@ -25,6 +25,7 @@ import { dictDeepCopy } from "../../../../utils/main";
 import { SaveButton } from "../../../../components/Elements/Button";
 import StyleConfig from "./StyleConfig";
 import { Select } from "../../../../components/Input";
+import { resourceActions } from "../List";
 
 import './style.scss';
 
@@ -50,15 +51,27 @@ export default function StyleForm() {
       minifySideNavigation={true}
       pageName={pageNames.Styles}
       rightHeader={
-        <SaveButton
-          variant="primary"
-          text="Save"
-          onClick={() => {
-            formRef.current.submit(true)
-            setSubmitted(true)
-          }}
-          disabled={submitted ? true : false}
-        />
+        <Fragment>
+          {
+            initialData.id ?
+              resourceActions({
+                id: initialData.id,
+                row: {
+                  ...initialData,
+                  permission
+                }
+              }) : null
+          }
+          <SaveButton
+            variant="primary"
+            text="Save"
+            onClick={() => {
+              formRef.current.submit(true)
+              setSubmitted(true)
+            }}
+            disabled={submitted ? true : false}
+          />
+        </Fragment>
       }>
 
       <AdminForm

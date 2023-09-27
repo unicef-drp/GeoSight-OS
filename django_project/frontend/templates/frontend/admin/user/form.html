@@ -1,10 +1,30 @@
 {% extends 'frontend/admin/base_form.html' %}
 {% load render_bundle from webpack_loader %}
 {% load static %}
+{% load frontend %}
 
 {% block render_bundle %}
     <script>
-      const ownForm = '{{ own_form }}' === 'True'
+      const initialData = {
+        id:{{ form.initial.id }},
+        username: "{{ form.initial.username }}",
+      };
+      const ownForm = '{{ own_form }}' === 'True';
+      urls.api = {
+        user: {
+          'list': '{% url 'user-list-api' %}',
+          'edit': '{% url 'admin-user-edit-view' 0 %}',
+          'detail': '{% url 'user-detail-api' 0 %}',
+          'create': '{% url 'admin-user-create-view' %}'
+        },
+        group: {
+          'list': '{% url 'group-list-api' %}',
+          'edit': '{% url 'admin-group-edit-view' 0 %}',
+          'detail': '{% url 'group-detail-api' 0 %}',
+          'create': '{% url 'admin-group-create-view' %}'
+        },
+        'permissionAdmin': '{% url 'admin-data-access-view' %}',
+      }
     </script>
     {% render_bundle 'AdminUserForm' %}
 {% endblock %}

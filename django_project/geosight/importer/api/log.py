@@ -77,7 +77,9 @@ class ImporterLogDetailAPI(APIView):
     def get(self, request, pk):
         """Delete an basemap."""
         obj = get_object_or_404(ImporterLog, pk=pk)
-        return Response(ImporterLogSerializer(obj).data)
+        return Response(
+            ImporterLogSerializer(obj, context={'user': request.user}).data
+        )
 
     def delete(self, request, pk):
         """Delete an basemap."""

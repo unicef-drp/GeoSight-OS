@@ -212,7 +212,119 @@
 /* ==========================================================================
     MUI Data Grid
    ========================================================================== */
+.AdminContentHeader-Right {
+  display: flex;
+  align-items: center;
 
+  .MuiIconButton-root {
+    margin-left: 0 !important;
+
+    .MuiTouchRipple-root {
+      display: none;
+    }
+  }
+
+  .MuiIconButton-root {
+    height: 100% !important;
+
+    a {
+      height: 36px !important;
+      width: 36px !important;
+
+      svg {
+        height: 14px;
+        width: 14px;
+      }
+
+      .ButtonIcon {
+        padding: 10px;
+      }
+    }
+  }
+}
+
+.MuiDataGrid-cell,
+.AdminContentHeader-Right {
+  .ButtonIcon {
+    height: 100%;
+    width: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+    color: $primary-color;
+    border: 1px solid $primary-color;
+    background-color: white;
+  }
+
+  a {
+    color: inherit;
+    display: block;
+
+    svg {
+      height: 16px;
+      width: 16px;
+    }
+  }
+
+  .MoreActionIcon {
+    display: flex;
+    align-items: center;
+  }
+
+  .MuiIconButton-root {
+    &:not(.TextButton) {
+      padding-left: 0 !important;
+
+      a {
+        height: 25px;
+        width: 25px;
+
+        svg {
+          height: 14px;
+          width: 14px;
+        }
+      }
+    }
+
+    &:hover {
+      background-color: unset;
+      opacity: 0.8;
+    }
+  }
+
+  .TextButton {
+    height: 100%;
+    line-height: 1 !important;
+
+    a {
+      height: 25px !important;
+    }
+
+    .MuiButtonBase-root {
+      height: 24px !important;
+      font-size: 11px;
+      padding: 0 0.5rem !important;
+      margin-top: 2px;
+
+      svg {
+        height: 16px !important;
+      }
+    }
+
+    &:hover {
+      background-color: unset;
+    }
+
+    &.Mui-disabled {
+      opacity: 0.4;
+    }
+
+    .ThemeButton {
+      svg {
+        margin-right: 0 !important;
+      }
+    }
+  }
+}
 
 .MuiDataGrid-root {
   border: none !important;
@@ -267,82 +379,6 @@
 
     &.MuiDataGrid-columnHeaderCheckbox {
       padding: 0 !important;
-    }
-  }
-
-  .MuiDataGrid-cell {
-    .ButtonIcon {
-      height: 100%;
-      width: 100%;
-      padding: 5px;
-      box-sizing: border-box;
-      color: $primary-color;
-      border: 1px solid $primary-color;
-    }
-
-    a {
-      color: inherit;
-      display: block;
-
-      svg {
-        height: 16px;
-        width: 16px;
-      }
-    }
-
-    button {
-      &:not(.TextButton) {
-        padding-left: 0 !important;
-
-        a {
-          height: 25px;
-          width: 25px;
-
-          svg {
-            height: 14px;
-            width: 14px;
-          }
-        }
-      }
-
-      &:hover {
-        background-color: unset;
-        opacity: 0.8;
-      }
-    }
-
-    .TextButton {
-      height: 100%;
-      line-height: 1 !important;
-
-      a {
-        height: 30px !important;
-      }
-
-      .MuiButtonBase-root {
-        height: 24px !important;
-        font-size: 11px;
-        padding: 0 0.5rem !important;
-        margin-top: 2px;
-
-        svg {
-          height: 16px !important;
-        }
-      }
-
-      &:hover {
-        background-color: unset;
-      }
-
-      &.Mui-disabled {
-        opacity: 0.4;
-      }
-
-      .ThemeButton {
-        svg {
-          margin-right: 0 !important;
-        }
-      }
     }
   }
 

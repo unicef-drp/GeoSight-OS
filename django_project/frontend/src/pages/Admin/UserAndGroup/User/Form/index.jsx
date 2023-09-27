@@ -33,6 +33,7 @@ import {
   Notification,
   NotificationStatus
 } from "../../../../../components/Notification";
+import { resourceActions } from "../List";
 
 import './style.scss';
 
@@ -92,16 +93,31 @@ export default function UserForm() {
       $('input[name="is_staff"]').closest('.BasicFormSection').hide()
     }
   }
+
   return (
     <Admin
       pageName={pageNames.UsersAndGroups}
       rightHeader={
-        <SaveButton
-          variant="primary"
-          text="Save"
-          onClick={submit}
-          disabled={submitted || (!ownForm && !role)}
-        />
+        <Fragment>
+          {
+            initialData.id ?
+              resourceActions({
+                id: initialData.id,
+                row: {
+                  ...initialData,
+                  permission: {
+                    delete: (ownForm || user.is_staff)
+                  }
+                }
+              }) : null
+          }
+          <SaveButton
+            variant="primary"
+            text="Save"
+            onClick={submit}
+            disabled={submitted || (!ownForm && !role)}
+          />
+        </Fragment>
       }>
 
       <AdminForm isSubmitted={submitted} onChanges={{

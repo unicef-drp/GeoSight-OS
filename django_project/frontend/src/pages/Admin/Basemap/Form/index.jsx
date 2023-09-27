@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { useRef, useState } from 'react';
+import React, { Fragment, useRef, useState } from 'react';
 
 import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
@@ -21,6 +21,7 @@ import { SaveButton } from "../../../../components/Elements/Button";
 import Admin, { pageNames } from '../../index';
 import { AdminForm } from '../../Components/AdminForm'
 import DjangoTemplateForm from "../../Components/AdminForm/DjangoTemplateForm";
+import { resourceActions } from "../List";
 
 import './style.scss';
 
@@ -38,15 +39,27 @@ export default function BasemapForm() {
       minifySideNavigation={true}
       pageName={pageNames.Basemaps}
       rightHeader={
-        <SaveButton
-          variant="primary"
-          text="Submit"
-          onClick={() => {
-            formRef.current.submit(true)
-            setSubmitted(true)
-          }}
-          disabled={submitted ? true : false}
-        />
+        <Fragment>
+          {
+            initialData.id ?
+              resourceActions({
+                id: initialData.id,
+                row: {
+                  ...initialData,
+                  permission
+                }
+              }) : null
+          }
+          <SaveButton
+            variant="primary"
+            text="Submit"
+            onClick={() => {
+              formRef.current.submit(true)
+              setSubmitted(true)
+            }}
+            disabled={submitted ? true : false}
+          />
+        </Fragment>
       }>
       <AdminForm
         ref={formRef}

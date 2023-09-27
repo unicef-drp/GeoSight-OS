@@ -1,19 +1,19 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
-import React, { useRef, useState } from 'react';
+import React, { Fragment, useRef, useState } from 'react';
 import $ from 'jquery';
 
 import { render } from '../../../../app';
@@ -23,6 +23,7 @@ import Admin, { pageNames } from '../../index';
 import { AdminForm } from '../../Components/AdminForm'
 import StyleConfig from '../StyleConfig'
 import DjangoTemplateForm from "../../Components/AdminForm/DjangoTemplateForm";
+import { resourceActions } from "../List";
 
 import './style.scss';
 
@@ -71,15 +72,28 @@ export default function ContextLayerForm() {
       minifySideNavigation={true}
       pageName={pageNames.ContextLayer}
       rightHeader={
-        <SaveButton
-          variant="primary"
-          text="Save"
-          onClick={() => {
-            formRef.current.submit(true)
-            setSubmitted(true)
-          }}
-          disabled={submitted ? true : false}
-        />
+        <Fragment>
+
+          {
+            initialData.id ?
+              resourceActions({
+                id: initialData.id,
+                row: {
+                  ...initialData,
+                  permission
+                }
+              }) : null
+          }
+          <SaveButton
+            variant="primary"
+            text="Save"
+            onClick={() => {
+              formRef.current.submit(true)
+              setSubmitted(true)
+            }}
+            disabled={submitted ? true : false}
+          />
+        </Fragment>
       }>
       <AdminForm
         ref={formRef}

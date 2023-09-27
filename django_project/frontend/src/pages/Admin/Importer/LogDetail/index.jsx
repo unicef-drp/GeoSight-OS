@@ -28,6 +28,7 @@ import {
 } from "../../../../utils/main";
 import { getScheduleText } from "../../../../utils/cron";
 import { axiosGet, GeorepoUrls } from "../../../../utils/georepo";
+import { resourceActions } from "../Logs";
 
 import '../ImporterDetail/style.scss';
 import './style.scss';
@@ -360,18 +361,26 @@ export default function ImporterLogDetail() {
   } else {
     text = `${data.status} ` + (note ? ` - ${note} ` : '') + (data.progress ? `(${data.progress}%)` : '')
   }
-
   return <Admin
     pageName={'Log Detail'}
     rightHeader={
-      <a href={data.urls.edit}>
-        <ThemeButton
-          variant="primary"
-          disabled={!isEnded}
-        >
-          Edit and rerun
-        </ThemeButton>
-      </a>
+      <Fragment>
+        {
+          data?.id ?
+            resourceActions({
+              id: data?.id,
+              row: data
+            }) : null
+        }
+        <a href={data.urls.edit}>
+          <ThemeButton
+            variant="primary"
+            disabled={!isEnded}
+          >
+            Edit and rerun
+          </ThemeButton>
+        </a>
+      </Fragment>
     }
   >
     <div className='FlexScrollableSection Detail'>

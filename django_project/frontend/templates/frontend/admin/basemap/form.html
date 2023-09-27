@@ -1,18 +1,22 @@
 {% extends 'frontend/admin/base_form.html' %}
 {% load render_bundle from webpack_loader %}
 {% load static %}
+{% load frontend %}
 
 {% block render_bundle %}
     {% render_bundle 'AdminBasemapForm' %}
 {% endblock %}
 {% block scripts %}
     <script>
-      const permission = {{ permission|safe }}
+      const initialData = {{ form|get_data|safe }};
+      const permission = {{ permission|safe }};
+
       // Urls api
       urls.api = {
         'styles': '{% url 'style-list-api'%}',
         'users': '{% url 'user-list-api'%}',
         'groups': '{% url 'group-list-api'%}',
+        'detail': '{% url 'basemap-detail-api' 0 %}',
       }
 
       if (permission.share) {

@@ -33,8 +33,63 @@ import { UploadIcon } from "../../../../components/Icons";
 import { urlParams } from "../../../../utils/main";
 
 import './style.scss';
+import Tooltip from "@mui/material/Tooltip";
 
 const { search } = urlParams()
+
+export function resourceActions(params, notify, updateData) {
+  const data = params.row
+  const actions = COLUMNS_ACTION(
+    params, urls.admin.dataManagement + '#Scheduled%20Jobs', urls.api.scheduledJobs.edit, urls.api.scheduledJobs.detail
+  )
+  actions.unshift(
+    <GridActionsCellItem
+      icon={
+        user.is_admin || params.row.creator === user.id ?
+          <Tooltip
+            title={data.job_active ? `Pause the job` : 'Resume the job'}>
+            <a
+              onClick={(e) => {
+                axios.post(data.job_active ? data.urls.pause : data.urls.resume, {}, {
+                  headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'X-CSRFToken': csrfmiddlewaretoken
+                  }
+                }).then(response => {
+                  if (updateData) {
+                    updateData(response)
+                  }
+                  params.row.state?.data.find(row => {
+                    if (row.id === data.id) {
+                      row.job_active = !params.row.job_active
+                      params.row.state.setData([...params.row.state.data])
+                    }
+                  })
+                }).catch(error => {
+                  if (error?.response?.data) {
+                    notify(error.response.data, NotificationStatus.ERROR)
+                  } else {
+                    notify(error.message, NotificationStatus.ERROR)
+                  }
+                })
+                e.preventDefault();
+              }}
+            >
+              <div className='ButtonIcon'>
+                {
+                  data.job_active ?
+                    <PauseIcon/> :
+                    <PlayArrowIcon/>
+                }
+              </div>
+            </a>
+          </Tooltip> : null
+      }
+      label="Value List"
+    />
+  )
+  return actions
+}
 
 /**
  * Indicator List App
@@ -69,51 +124,7 @@ export default function ScheduledJobs({ ...props }) {
     Object.assign({}, COLUMNS.ACTIONS, {
       width: 200,
       getActions: (params) => {
-        const data = params.row
-        const actions = [].concat(
-          COLUMNS_ACTION(
-            params, urls.admin.scheduledJobs, urls.api.scheduledJobs.edit, urls.api.scheduledJobs.detail
-          )
-        );
-        actions.unshift(
-          <GridActionsCellItem
-            className='TextButton'
-            icon={
-              user.is_admin || params.row.creator === user.id ?
-                <ThemeButton
-                  variant="primary Reverse Basic"
-                  onClick={() => {
-                    axios.post(data.job_active ? data.urls.pause : data.urls.resume, {}, {
-                      headers: {
-                        'Content-Type': 'multipart/form-data',
-                        'X-CSRFToken': csrfmiddlewaretoken
-                      }
-                    }).then(response => {
-                      params.row.state?.data.find(row => {
-                        if (row.id === data.id) {
-                          row.job_active = !params.row.job_active
-                          params.row.state.setData([...params.row.state.data])
-                        }
-                      })
-                    }).catch(error => {
-                      if (error?.response?.data) {
-                        notify(error.response.data, NotificationStatus.ERROR)
-                      } else {
-                        notify(error.message, NotificationStatus.ERROR)
-                      }
-                    })
-                  }}>
-                  {
-                    data.job_active ?
-                      <Fragment><PauseIcon/></Fragment> :
-                      <Fragment><PlayArrowIcon/></Fragment>
-                  }
-                </ThemeButton> : <></>
-            }
-            label="Value List"
-          />
-        )
-        return actions
+        return resourceActions(params, notify)
       },
     })
   ];
