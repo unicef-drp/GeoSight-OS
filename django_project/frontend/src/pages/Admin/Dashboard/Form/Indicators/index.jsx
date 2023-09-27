@@ -17,9 +17,7 @@ import React, { Fragment, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import Tooltip from "@mui/material/Tooltip";
-import StorageIcon from "@mui/icons-material/Storage";
 import DynamicFormIcon from "@mui/icons-material/DynamicForm";
-import DataUsageIcon from "@mui/icons-material/DataUsage";
 
 import { Actions } from "../../../../../store/dashboard";
 import { dictDeepCopy, jsonToUrlParams } from "../../../../../utils/main";
@@ -27,6 +25,8 @@ import ListForm from '../ListForm'
 import { COLUMNS } from "../../../Components/List";
 import { DeleteButton } from "../../../../../components/Elements/Button";
 import {
+  DataAccessActiveIcon,
+  DataBrowserActiveIcon,
   DataManagementActiveIcon,
   MagnifyIcon,
   MapActiveIcon
@@ -67,7 +67,7 @@ export default function IndicatorsForm() {
                 <a
                   href={`${urls.api.permissionAdmin}?indicators=${params.id}&datasets=${referenceLayer?.identifier ? referenceLayer?.identifier : ''}`}>
                   <div className='ButtonIcon'>
-                    <StorageIcon/>
+                    <DataAccessActiveIcon/>
                   </div>
                 </a>
               </Tooltip>
@@ -141,15 +141,15 @@ export default function IndicatorsForm() {
         }
         actions.unshift(
           <GridActionsCellItem
-            className='TextButton'
             icon={
-              <a
-                href={`${urls.api.dataBrowser}?${jsonToUrlParams(parameters)}`}>
-                <div
-                  className='MuiButton-Div MuiButtonBase-root MuiButton-primary Reverse ThemeButton'>
-                  <DataUsageIcon/> Value List
-                </div>
-              </a>
+              <Tooltip title={`Browse data`}>
+                <a
+                  href={`${urls.api.dataBrowser}?${jsonToUrlParams(parameters)}`}>
+                  <div className='ButtonIcon'>
+                    <DataBrowserActiveIcon/>
+                  </div>
+                </a>
+              </Tooltip>
             }
             label="Value List"
           />)

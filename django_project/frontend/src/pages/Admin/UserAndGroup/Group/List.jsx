@@ -17,8 +17,8 @@ import React from 'react';
 import { COLUMNS_ACTION } from "../../Components/List";
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import Tooltip from "@mui/material/Tooltip";
-import StorageIcon from "@mui/icons-material/Storage";
 import { AdminListContent } from "../../AdminList";
+import { DataAccessActiveIcon } from "../../../../components/Icons";
 
 export function GROUP_COLUMNS() {
   const editUrl = '/admin/group/0/edit';
@@ -58,7 +58,7 @@ export function GROUP_COLUMNS() {
                 <a
                   href={urls.api.permissionAdmin + '?groups=' + params.id + '#Groups'}>
                   <div className='ButtonIcon'>
-                    <StorageIcon/>
+                    <DataAccessActiveIcon/>
                   </div>
                 </a>
               </Tooltip>

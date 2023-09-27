@@ -337,6 +337,12 @@
       &.Mui-disabled {
         opacity: 0.4;
       }
+
+      .ThemeButton {
+        svg {
+          margin-right: 0 !important;
+        }
+      }
     }
   }
 

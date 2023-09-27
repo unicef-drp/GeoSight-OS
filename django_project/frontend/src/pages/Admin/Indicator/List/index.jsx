@@ -16,8 +16,6 @@
 import React, { Fragment, useRef } from 'react';
 import Tooltip from "@mui/material/Tooltip";
 import DynamicFormIcon from '@mui/icons-material/DynamicForm';
-import DataUsageIcon from '@mui/icons-material/DataUsage';
-import StorageIcon from '@mui/icons-material/Storage';
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
@@ -27,6 +25,8 @@ import { COLUMNS, COLUMNS_ACTION } from "../../Components/List";
 import { AdminList } from "../../AdminList";
 import PermissionModal from "../../Permission";
 import {
+  DataAccessActiveIcon,
+  DataBrowserActiveIcon,
   DataManagementActiveIcon,
   MapActiveIcon
 } from "../../../../components/Icons";
@@ -125,7 +125,7 @@ export default function IndicatorList() {
                 <a
                   href={urls.api.permissionAdmin + '?indicators=' + params.id}>
                   <div className='ButtonIcon'>
-                    <StorageIcon/>
+                    <DataAccessActiveIcon/>
                   </div>
                 </a>
               </Tooltip>
@@ -186,14 +186,14 @@ export default function IndicatorList() {
       if (permission.edit) {
         actions.unshift(
           <GridActionsCellItem
-            className='TextButton'
             icon={
-              <a href={urls.api.dataBrowser + '?indicators=' + params.id}>
-                <div
-                  className='MuiButton-Div MuiButtonBase-root MuiButton-primary Reverse ThemeButton'>
-                  <DataUsageIcon/> Value List
-                </div>
-              </a>
+              <Tooltip title={`Browse data`}>
+                <a href={urls.api.dataBrowser + '?indicators=' + params.id}>
+                  <div className='ButtonIcon'>
+                    <DataBrowserActiveIcon/>
+                  </div>
+                </a>
+              </Tooltip>
             }
             label="Value List"
           />)

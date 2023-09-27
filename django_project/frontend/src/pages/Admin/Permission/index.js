@@ -18,6 +18,7 @@ import $ from "jquery";
 
 import CircularProgress from '@mui/material/CircularProgress';
 import FormControl from '@mui/material/FormControl';
+import Tooltip from "@mui/material/Tooltip";
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import DoDisturbOnIcon from '@mui/icons-material/DoDisturbOn';
@@ -565,9 +566,11 @@ export default function PermissionModal(
   }, [defaultData])
 
   return <Fragment>
-    <div className='ButtonIcon' onClick={() => setOpen(true)}>
-      <ShareIcon onClick={() => setOpen(true)}/>
-    </div>
+    <Tooltip title={`Share`}>
+      <div className='ButtonIcon' onClick={() => setOpen(true)}>
+        <ShareIcon onClick={() => setOpen(true)}/>
+      </div>
+    </Tooltip>
     <Modal
       className='PermissionFormModal'
       open={open}

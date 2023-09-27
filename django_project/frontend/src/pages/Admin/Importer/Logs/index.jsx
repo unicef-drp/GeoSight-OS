@@ -15,11 +15,14 @@
 
 import React, { useRef, useState } from 'react';
 import { GridActionsCellItem } from "@mui/x-data-grid";
-import DataUsageIcon from "@mui/icons-material/DataUsage";
+import Tooltip from "@mui/material/Tooltip";
 
 import { COLUMNS_ACTION } from "../../Components/List";
 import { ThemeButton } from "../../../../components/Elements/Button";
-import { UploadIcon } from "../../../../components/Icons";
+import {
+  DataBrowserActiveIcon,
+  UploadIcon
+} from "../../../../components/Icons";
 import { urlParams } from "../../../../utils/main";
 import { COLUMNS } from "../utils";
 
@@ -72,13 +75,14 @@ const LOG_COLUMNS = [
             <GridActionsCellItem
               className='TextButton'
               icon={
-                <a
-                  href={urls.api.logs.dataView.replace('/0', `/${params.id}`)}>
-                  <div
-                    className='MuiButton-Div MuiButtonBase-root MuiButton-primary Reverse ThemeButton'>
-                    <DataUsageIcon/> Data
-                  </div>
-                </a>
+                <Tooltip title={`Browse data`}>
+                  <a
+                    href={urls.api.logs.dataView.replace('/0', `/${params.id}`)}>
+                    <div className='ButtonIcon'>
+                      <DataBrowserActiveIcon/>
+                    </div>
+                  </a>
+                </Tooltip>
               }
               label="Value List"
             />

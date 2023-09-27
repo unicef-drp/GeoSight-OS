@@ -17,10 +17,10 @@ import React from 'react';
 import { COLUMNS_ACTION } from "../../Components/List";
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import Tooltip from "@mui/material/Tooltip";
-import StorageIcon from "@mui/icons-material/Storage";
 import { AdminListContent } from "../../AdminList";
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { DataAccessActiveIcon } from "../../../../components/Icons";
 
 
 export function USER_COLUMNS() {
@@ -81,7 +81,7 @@ export function USER_COLUMNS() {
                 <a
                   href={urls.api.permissionAdmin + '?users=' + params.id}>
                   <div className='ButtonIcon'>
-                    <StorageIcon/>
+                    <DataAccessActiveIcon/>
                   </div>
                 </a>
               </Tooltip>
