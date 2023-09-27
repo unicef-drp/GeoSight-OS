@@ -290,7 +290,6 @@ class PermissionDefault:
             default=PERMISSIONS.NONE.name,
             permissions=[
                 (PERMISSIONS.NONE.name, PERMISSIONS.NONE.name),
-                (PERMISSIONS.READ.name, PERMISSIONS.READ.name),
                 (PERMISSIONS.READ_DATA.name, PERMISSIONS.READ_DATA.name),
             ]
         )
