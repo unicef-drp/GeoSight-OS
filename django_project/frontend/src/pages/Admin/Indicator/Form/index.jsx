@@ -28,6 +28,7 @@ import AggregationForm from "./AggregationForm";
 import LabelForm from "./LabelForm";
 import StyleConfig from "../../Style/Form/StyleConfig";
 import { Select } from "../../../../components/Input";
+import { resourceActions } from "../List";
 
 import './style.scss';
 
@@ -163,6 +164,18 @@ export default function IndicatorForm() {
       pageName={pageNames.Indicators}
       rightHeader={
         <Fragment>
+          {
+            indicator.id ?
+              resourceActions(
+                {
+                  id: indicator.id,
+                  row: {
+                    ...indicator,
+                    permission
+                  }
+                }, true
+              ) : ""
+          }
           {
             indicatorId ?
               <SaveButton

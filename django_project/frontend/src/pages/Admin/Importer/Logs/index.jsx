@@ -73,7 +73,6 @@ const LOG_COLUMNS = [
         if (params.row.count_data) {
           actions.unshift(
             <GridActionsCellItem
-              className='TextButton'
               icon={
                 <Tooltip title={`Browse data`}>
                   <a

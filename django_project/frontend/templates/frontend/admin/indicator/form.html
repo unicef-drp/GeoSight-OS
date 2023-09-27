@@ -24,11 +24,11 @@
     <script>
       const indicator = {{ form.indicator_data|safe }};
       const indicatorId = {% if indicator_id %}{{ indicator_id }}{% else %}null{% endif %};
-      const indicatorRules = {{ rules|safe }}
-      const types = {{ types|safe }}
-      const styleTypes = {{ styleTypes|safe }}
+      const indicatorRules = {{ rules|safe }};
+      const types = {{ types|safe }};
+      const styleTypes = {{ styleTypes|safe }};
       const dynamicClassification = {{ dynamicClassification|safe }};
-      const permission = {{ permission|safe }}
+      const permission = {{ permission|safe }};
 
       // Format code choices
       const codelists = {{ codelists|safe }};
@@ -38,13 +38,22 @@
         'styles': '{% url 'style-list-api'%}',
         'users': '{% url 'user-list-api'%}',
         'groups': '{% url 'group-list-api'%}',
+
+        {# indicator specified url#}
+        'detail': '{% url 'indicator-detail-api' 0 %}',
+        'form': '{% url 'admin-indicator-value-form-manager' 0 %}',
+        'map': '{% url 'admin-indicator-value-mapview-manager' 0 %}',
+        'values': '{% url 'admin-indicator-value-list-manager' 0 %}',
+        'dataBrowser': '{% url 'admin-dataset-view' %}',
+        'permission': '{% url 'indicator-permission-api' 0 %}',
+        'permissionAdmin': '{% url 'admin-data-access-view' %}',
       }
 
       if (permission.share) {
         {% if indicator_id %}
-            urls.api.permission = '{% url 'indicator-permission-api' indicator_id %}'
+          urls.api.permission = '{% url 'indicator-permission-api' indicator_id %}';
         {% else %}
-            urls.api.permission = '{% url 'indicator-permission-api' 0 %}'
+          urls.api.permission = '{% url 'indicator-permission-api' 0 %}';
         {% endif %}
       }
 

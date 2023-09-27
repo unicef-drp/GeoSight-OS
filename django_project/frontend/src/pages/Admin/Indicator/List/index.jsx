@@ -33,6 +33,156 @@ import {
 
 import './style.scss';
 
+
+export function resourceActions(params, noShare = false) {
+  const permission = params.row.permission
+  const actions = COLUMNS_ACTION(params, urls.admin.indicatorList)
+
+  // Unshift before more & edit action
+  if (permission.share && !noShare) {
+    actions.unshift(
+      <GridActionsCellItem
+        icon={
+          <a>
+            <PermissionModal
+              name={params.row.name}
+              urlData={urls.api.permission.replace('/0', `/${params.id}`)}
+              additionalTabs={
+                permission.edit ? {
+                  'Push API':
+                    <div className='Other'>
+                      You can push data using api POST &nbsp;
+                      <a
+                        target={"_blank"}
+                        href={location.origin + '/api/indicator/' + params.row.id + '/values/'}>
+                        {location.origin + '/api/indicator/' + params.row.id + '/values/'}
+                      </a>
+                      <br/>
+                      <br/>
+                      <div>
+                        You need to login or using Basic Authentication to
+                        push the data.
+                        You also need to have edit permission on the data,
+                        and you role should be
+                        contributor, creator or admin.
+
+                      </div>
+                      <br/>
+                      <div>
+                        Payload data that will be pushed should be in
+                        array of json.
+
+                        Example:
+                        <pre>
+                              <code dangerouslySetInnerHTML={{
+                                __html: JSON.stringify([{
+                                    "reference_layer": "-Reference layer uuid-",
+                                    "value": "-value of data-",
+                                    "admin_level": "-admin level in integer-",
+                                    "geom_id": "-geometry code-",
+                                    "geom_id_type": "-code type of geometry code. e.g : Pcode, ucode, etc-",
+                                    "timestamp": "-Timestamp of data-"
+                                  }], null, 2
+                                )
+                              }}>
+                              </code>
+                            </pre>
+
+                      </div>
+                    </div>
+                } : {}
+              }
+            />
+          </a>
+        }
+        label="Change Share Configuration."
+      />)
+  }
+
+  if (permission.delete) {
+    actions.unshift(
+      <GridActionsCellItem
+        icon={
+          <Tooltip title={`Go to data access.`}>
+            <a
+              href={urls.api.permissionAdmin + '?indicators=' + params.id}>
+              <div className='ButtonIcon'>
+                <DataAccessActiveIcon/>
+              </div>
+            </a>
+          </Tooltip>
+        }
+        label="Go to data access."
+      />)
+  }
+
+  if (permission.edit) {
+    actions.unshift(
+      <GridActionsCellItem
+        icon={
+          <Tooltip title={`Management Map`}>
+            <a
+              href={urls.api.map.replace('/0', `/${params.id}`)}>
+              <div className='ButtonIcon'>
+                <MapActiveIcon/>
+              </div>
+            </a>
+          </Tooltip>
+        }
+        label="Edit"
+      />)
+  }
+  if (permission.edit) {
+    actions.unshift(
+      <GridActionsCellItem
+        icon={
+          <Tooltip title={`Management Form`}>
+            <a
+              href={urls.api.form.replace('/0', `/${params.id}`)}>
+              <div className='ButtonIcon'>
+                <DynamicFormIcon/>
+              </div>
+            </a>
+          </Tooltip>
+        }
+        label="Management Form"
+      />)
+  }
+  if (permission.edit) {
+    actions.unshift(
+      <GridActionsCellItem
+        icon={
+          <Tooltip title={`Import data`}>
+            <a
+              href={`${urls.admin.importer}?indicator_data_value=${params.id}`}>
+              <div className='ButtonIcon'>
+                <DataManagementActiveIcon/>
+              </div>
+            </a>
+          </Tooltip>
+        }
+        label="Import data"
+      />
+    )
+  }
+  if (permission.edit) {
+    actions.unshift(
+      <GridActionsCellItem
+        icon={
+          <Tooltip title={`Browse data`}>
+            <a href={urls.api.dataBrowser + '?indicators=' + params.id}>
+              <div className='ButtonIcon'>
+                <DataBrowserActiveIcon/>
+              </div>
+            </a>
+          </Tooltip>
+        }
+        label="Value List"
+      />)
+  }
+  return actions
+}
+
 /**
  * Indicator List App
  */
@@ -51,153 +201,7 @@ export default function IndicatorList() {
     getActions: (params) => {
       const permission = params.row.permission
       // Create actions
-      const actions = [].concat(
-        COLUMNS_ACTION(
-          params, urls.admin.indicatorList, urls.api.edit, urls.api.detail
-        )
-      );
-
-      // Unshift before more & edit action
-      if (permission.share) {
-        actions.unshift(
-          <GridActionsCellItem
-            icon={
-              <a>
-                <PermissionModal
-                  name={params.row.name}
-                  urlData={urls.api.permission.replace('/0', `/${params.id}`)}
-                  additionalTabs={
-                    permission.edit ? {
-                      'Push API':
-                        <div className='Other'>
-                          You can push data using api POST &nbsp;
-                          <a
-                            target={"_blank"}
-                            href={location.origin + '/api/indicator/' + params.row.id + '/values/'}>
-                            {location.origin + '/api/indicator/' + params.row.id + '/values/'}
-                          </a>
-                          <br/>
-                          <br/>
-                          <div>
-                            You need to login or using Basic Authentication to
-                            push the data.
-                            You also need to have edit permission on the data,
-                            and you role should be
-                            contributor, creator or admin.
-
-                          </div>
-                          <br/>
-                          <div>
-                            Payload data that will be pushed should be in
-                            array of json.
-
-                            Example:
-                            <pre>
-                              <code dangerouslySetInnerHTML={{
-                                __html: JSON.stringify([{
-                                    "reference_layer": "-Reference layer uuid-",
-                                    "value": "-value of data-",
-                                    "admin_level": "-admin level in integer-",
-                                    "geom_id": "-geometry code-",
-                                    "geom_id_type": "-code type of geometry code. e.g : Pcode, ucode, etc-",
-                                    "timestamp": "-Timestamp of data-"
-                                  }], null, 2
-                                )
-                              }}>
-                              </code>
-                            </pre>
-
-                          </div>
-                        </div>
-                    } : {}
-                  }
-                />
-              </a>
-            }
-            label="Change Share Configuration."
-          />)
-      }
-      if (permission.delete) {
-        actions.unshift(
-          <GridActionsCellItem
-            icon={
-              <Tooltip title={`Go to data access.`}>
-                <a
-                  href={urls.api.permissionAdmin + '?indicators=' + params.id}>
-                  <div className='ButtonIcon'>
-                    <DataAccessActiveIcon/>
-                  </div>
-                </a>
-              </Tooltip>
-            }
-            label="Go to data access."
-          />)
-      }
-
-      if (permission.edit) {
-        actions.unshift(
-          <GridActionsCellItem
-            icon={
-              <Tooltip title={`Management Map`}>
-                <a
-                  href={urls.api.map.replace('/0', `/${params.id}`)}>
-                  <div className='ButtonIcon'>
-                    <MapActiveIcon/>
-                  </div>
-                </a>
-              </Tooltip>
-            }
-            label="Edit"
-          />)
-      }
-      if (permission.edit) {
-        actions.unshift(
-          <GridActionsCellItem
-            icon={
-              <Tooltip title={`Management Form`}>
-                <a
-                  href={urls.api.form.replace('/0', `/${params.id}`)}>
-                  <div className='ButtonIcon'>
-                    <DynamicFormIcon/>
-                  </div>
-                </a>
-              </Tooltip>
-            }
-            label="Management Form"
-          />)
-      }
-      if (permission.edit) {
-        actions.unshift(
-          <GridActionsCellItem
-            icon={
-              <Tooltip title={`Import data`}>
-                <a
-                  href={`${urls.admin.importer}?indicator_data_value=${params.id}`}>
-                  <div className='ButtonIcon'>
-                    <DataManagementActiveIcon/>
-                  </div>
-                </a>
-              </Tooltip>
-            }
-            label="Import data"
-          />
-        )
-      }
-      if (permission.edit) {
-        actions.unshift(
-          <GridActionsCellItem
-            icon={
-              <Tooltip title={`Browse data`}>
-                <a href={urls.api.dataBrowser + '?indicators=' + params.id}>
-                  <div className='ButtonIcon'>
-                    <DataBrowserActiveIcon/>
-                  </div>
-                </a>
-              </Tooltip>
-            }
-            label="Value List"
-          />)
-      }
+      const actions = resourceActions(params)
       return actions
     },
   }
