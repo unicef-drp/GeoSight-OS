@@ -91,7 +91,7 @@ export default function ImporterDetail() {
   return <Admin
     pageName={' Detail'}
     rightHeader={
-      <div>
+      <Fragment>
         <ThemeButton
           variant="primary Basic"
           onClick={() => {
@@ -164,7 +164,7 @@ export default function ImporterDetail() {
           }}>
           <DeleteIcon/> Delete
         </ThemeButton>
-      </div>
+      </Fragment>
     }
   >
     <div className='FlexScrollableSection'>

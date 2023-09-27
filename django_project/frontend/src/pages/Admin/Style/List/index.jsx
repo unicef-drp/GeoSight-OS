@@ -25,6 +25,10 @@ import PermissionModal from "../../Permission";
 
 import './style.scss';
 
+export function resourceActions(params) {
+  return COLUMNS_ACTION(params, urls.admin.list)
+}
+
 /**
  * Style List App
  */
@@ -39,9 +43,8 @@ export default function StyleList() {
     width: 100,
     getActions: (params) => {
       const permission = params.row.permission
-      const actions = COLUMNS_ACTION(
-        params, urls.admin.list, urls.api.edit, urls.api.detail
-      )
+      const actions = resourceActions(params);
+      
       // Unshift before more & edit action
       if (permission.share) {
         actions.unshift(

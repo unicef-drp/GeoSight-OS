@@ -1,6 +1,7 @@
 {% extends 'frontend/admin/base_form.html' %}
 {% load render_bundle from webpack_loader %}
 {% load static %}
+{% load frontend %}
 
 {% block render_bundle %}
     {% render_bundle 'AdminStyleForm' %}
@@ -14,6 +15,7 @@
 {% endblock %}
 {% block scripts %}
     <script>
+      const initialData = {{ form|get_data|safe }};
       const style = {{ form.instance_data|safe }};
       const currentRules = {{ rules|safe }};
       const types = {{ types|safe }};
@@ -27,6 +29,7 @@
         'styles': '{% url 'style-list-api'%}',
         'users': '{% url 'user-list-api'%}',
         'groups': '{% url 'group-list-api'%}',
+        'detail': '{% url 'style-detail-api' 0 %}',
       }
 
       if (permission.share) {

@@ -213,6 +213,9 @@
     MUI Data Grid
    ========================================================================== */
 .AdminContentHeader-Right {
+  display: flex;
+  align-items: center;
+
   .MuiIconButton-root {
     margin-left: 0 !important;
 
