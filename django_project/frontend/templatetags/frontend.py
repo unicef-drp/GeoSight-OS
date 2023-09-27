@@ -14,6 +14,8 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import json
+
 from django import template
 
 register = template.Library()
@@ -58,3 +60,15 @@ def js_json(input):
         return input
     else:
         return input
+
+
+@register.filter
+def get_data(form):
+    """Get data from form."""
+    if form.initial:
+        return json.dumps({
+            'id': form.initial['id'],
+            'name': form.initial['name'],
+        })
+    else:
+        return json.dumps({})

@@ -26,6 +26,10 @@ import { VisibilityIcon } from "../../../../components/Icons";
 
 import './style.scss';
 
+export function resourceActions(params) {
+  return COLUMNS_ACTION(params, urls.admin.dashboardList)
+}
+
 /**
  * Indicator List App
  */
@@ -42,7 +46,8 @@ export default function DashboardList() {
     width: 250,
     getActions: (params) => {
       const permission = params.row.permission
-      const actions = [].concat(COLUMNS_ACTION(params, urls.admin.dashboardList));
+      const actions = resourceActions(params);
+
       if (permission.share) {
         actions.unshift(
           <GridActionsCellItem

@@ -37,6 +37,7 @@
       const batch = null
       let editMode = true;
       urls.api = {
+        'detail': '{% url 'dashboard-detail-api' slug=dashboard.id %}',
         'basemapListAPI': '{% url 'basemap-list-api' %}',
         'indicatorListAPI': '{% url 'indicator-list-api' %}',
         'contextLayerListAPI': '{% url 'context-layer-list-api' %}',

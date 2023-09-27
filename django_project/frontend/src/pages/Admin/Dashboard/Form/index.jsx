@@ -49,6 +49,7 @@ import FiltersForm from './Filters'
 import ShareForm from './Share'
 import GeorepoAuthorizationModal
   from "../../../../components/GeorepoAuthorizationModal";
+import { resourceActions } from "../List";
 
 // Dashboard Preview
 import { postData } from "../../../../Requests";
@@ -476,7 +477,8 @@ export function DashboardFormHeader(
 export function DashboardForm({ onPreview }) {
   const {
     user_permission,
-    permission
+    id,
+    name
   } = useSelector(state => state.dashboard.data);
   const [currentPage, setCurrentPage] = useState('Summary');
   const [currentHistoryIdx, setCurrentHistoryIdx] = useState(-1);
@@ -493,6 +495,17 @@ export function DashboardForm({ onPreview }) {
                dangerouslySetInnerHTML={{ __html: contentTitle }}></b>
           </div>
           <div className='AdminContentHeader-Right'>
+            {
+              id ?
+                resourceActions({
+                  id: id,
+                  row: {
+                    id,
+                    name,
+                    permission: user_permission
+                  }
+                }) : null
+            }
             <DashboardHistory
               page={currentPage}
               setCurrentPage={setCurrentPage}
