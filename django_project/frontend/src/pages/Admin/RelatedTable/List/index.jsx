@@ -32,6 +32,61 @@ import {
 
 import './style.scss';
 
+export function resourceActions(params) {
+  const permission = params.row.permission
+  const actions = COLUMNS_ACTION(
+    params, urls.admin.relatedTableList, urls.api.edit, urls.api.detail
+  )
+// Unshift before more & edit action
+  if (permission.share) {
+    actions.unshift(
+      <GridActionsCellItem
+        icon={
+          <a>
+            <PermissionModal
+              name={params.row.name}
+              urlData={urls.api.permission.replace('/0', `/${params.id}`)}/>
+          </a>
+        }
+        label="Change Share Configuration."
+      />)
+  }
+  if (permission.edit_data) {
+    actions.unshift(
+      <GridActionsCellItem
+        icon={
+          <Tooltip title={`Replace data`}>
+            <a
+              href={`${urls.admin.importer}?import_type=Related Tables&input_format=Excel Wide Format&related_table_uuid=${params.row.unique_id}&related_table_name=${params.row.name}&related_table_id=${params.row.id}`}>
+              <div className='ButtonIcon'>
+                <DataManagementActiveIcon/>
+              </div>
+            </a>
+          </Tooltip>
+        }
+        label="Replace data"
+      />
+    )
+  }
+  if (permission.read_data) {
+    actions.unshift(
+      <GridActionsCellItem
+        icon={
+          <Tooltip title={`Browse data`}>
+            <a href={urls.api.dataView.replace('/0', `/${params.id}`)}>
+              <div className='ButtonIcon'>
+                <DataBrowserActiveIcon/>
+              </div>
+            </a>
+          </Tooltip>
+        }
+        label="Value List"
+      />
+    )
+  }
+  return actions
+}
+
 /**
  * Related Table List App
  */
@@ -44,60 +99,7 @@ export default function RelatedTableList() {
     cellClassName: 'MuiDataGrid-ActionsColumn',
     width: 350,
     getActions: (params) => {
-      const permission = params.row.permission
-      const actions = [].concat(
-        COLUMNS_ACTION(
-          params, urls.admin.relatedTableList, urls.api.edit, urls.api.detail
-        )
-      );
-      // Unshift before more & edit action
-      if (permission.share) {
-        actions.unshift(
-          <GridActionsCellItem
-            icon={
-              <a>
-                <PermissionModal
-                  name={params.row.name}
-                  urlData={urls.api.permission.replace('/0', `/${params.id}`)}/>
-              </a>
-            }
-            label="Change Share Configuration."
-          />)
-      }
-      if (permission.edit_data) {
-        actions.unshift(
-          <GridActionsCellItem
-            icon={
-              <Tooltip title={`Replace data`}>
-                <a
-                  href={`${urls.admin.importer}?import_type=Related Tables&input_format=Excel Wide Format&related_table_uuid=${params.row.unique_id}&related_table_name=${params.row.name}&related_table_id=${params.row.id}`}>
-                  <div className='ButtonIcon'>
-                    <DataManagementActiveIcon/>
-                  </div>
-                </a>
-              </Tooltip>
-            }
-            label="Replace data"
-          />
-        )
-      }
-      if (permission.read_data) {
-        actions.unshift(
-          <GridActionsCellItem
-            icon={
-              <Tooltip title={`Browse data`}>
-                <a href={urls.api.dataView.replace('/0', `/${params.id}`)}>
-                  <div className='ButtonIcon'>
-                    <DataBrowserActiveIcon/>
-                  </div>
-                </a>
-              </Tooltip>
-            }
-            label="Value List"
-          />
-        )
-      }
-      return actions
+      return resourceActions(params)
     },
   }
 
