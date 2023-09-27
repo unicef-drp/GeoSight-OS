@@ -13,9 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { useEffect, useState } from 'react';
-
-import { DataGrid } from "@mui/x-data-grid";
+import React, { Fragment, useEffect, useState } from 'react';
 import CircularProgress from "@mui/material/CircularProgress";
 
 import { render } from '../../../../../app';
@@ -29,6 +27,7 @@ import AdminForm from '../../../Components/Form'
 import { fetchJSON } from "../../../../../Requests";
 import UserSelector, { USER_COLUMNS } from "../../../ModalSelector/User";
 import { MainDataGrid } from "../../../../../components/MainDataGrid";
+import { resourceActions } from "../List";
 
 import './style.scss';
 
@@ -63,12 +62,26 @@ export default function GroupForm() {
     <Admin
       pageName={pageNames.UsersAndGroups}
       rightHeader={
-        <SaveButton
-          variant="primary"
-          text="Save"
-          onClick={submit}
-          disabled={submitted ? true : false}
-        />
+        <Fragment>
+          {
+            initialData.id ?
+              resourceActions({
+                id: initialData.id,
+                row: {
+                  ...initialData,
+                  permission: {
+                    delete: (user.is_staff)
+                  }
+                }
+              }) : null
+          }
+          <SaveButton
+            variant="primary"
+            text="Save"
+            onClick={submit}
+            disabled={submitted ? true : false}
+          />
+        </Fragment>
       }>
 
       <AdminForm isSubmitted={submitted}>

@@ -23,6 +23,26 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { DataAccessActiveIcon } from "../../../../components/Icons";
 
 
+export function resourceActions(params) {
+  const actions = COLUMNS_ACTION(params, urls.admin.userAndGroupList + '#Users', urls.api.user.edit, urls.api.user.detail)
+  // Unshift before more & edit action
+  actions.unshift(
+    <GridActionsCellItem
+      icon={
+        <Tooltip title={`Go to data access.`}>
+          <a
+            href={urls.api.permissionAdmin + '?users=' + params.id}>
+            <div className='ButtonIcon'>
+              <DataAccessActiveIcon/>
+            </div>
+          </a>
+        </Tooltip>
+      }
+      label="Go to data access."
+    />)
+  return actions;
+}
+
 export function USER_COLUMNS() {
   const editUrl = '/admin/user/0/edit';
   const detailUrl = '/admin/user/0';
@@ -70,25 +90,7 @@ export function USER_COLUMNS() {
       type: 'actions',
       width: 120,
       getActions: (params) => {
-        const actions = [].concat(
-          COLUMNS_ACTION(params, urls.admin.userList, editUrl, detailUrl)
-        );
-        // Unshift before more & edit action
-        actions.unshift(
-          <GridActionsCellItem
-            icon={
-              <Tooltip title={`Go to data access.`}>
-                <a
-                  href={urls.api.permissionAdmin + '?users=' + params.id}>
-                  <div className='ButtonIcon'>
-                    <DataAccessActiveIcon/>
-                  </div>
-                </a>
-              </Tooltip>
-            }
-            label="Go to data access."
-          />)
-        return actions
+        return resourceActions(params)
       },
     }
   ]

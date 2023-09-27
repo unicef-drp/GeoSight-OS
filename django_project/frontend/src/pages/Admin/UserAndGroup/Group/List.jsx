@@ -20,6 +20,27 @@ import Tooltip from "@mui/material/Tooltip";
 import { AdminListContent } from "../../AdminList";
 import { DataAccessActiveIcon } from "../../../../components/Icons";
 
+export function resourceActions(params) {
+  const actions = COLUMNS_ACTION(params, urls.admin.userAndGroupList + '#Groups', urls.api.group.edit, urls.api.group.detail)
+
+  // Unshift before more & edit action
+  actions.unshift(
+    <GridActionsCellItem
+      icon={
+        <Tooltip title={`Go to data access.`}>
+          <a
+            href={urls.api.permissionAdmin + '?groups=' + params.id + '#Groups'}>
+            <div className='ButtonIcon'>
+              <DataAccessActiveIcon/>
+            </div>
+          </a>
+        </Tooltip>
+      }
+      label="Go to data access."
+    />,)
+  return actions;
+}
+
 export function GROUP_COLUMNS() {
   const editUrl = '/admin/group/0/edit';
   const detailUrl = '/admin/group/0';
@@ -43,29 +64,7 @@ export function GROUP_COLUMNS() {
       type: 'actions',
       width: 120,
       getActions: (params) => {
-        // Create actions
-        const actions = [].concat(
-          COLUMNS_ACTION(
-            params, urls.admin.groupList, editUrl, detailUrl
-          )
-        );
-
-        // Unshift before more & edit action
-        actions.unshift(
-          <GridActionsCellItem
-            icon={
-              <Tooltip title={`Go to data access.`}>
-                <a
-                  href={urls.api.permissionAdmin + '?groups=' + params.id + '#Groups'}>
-                  <div className='ButtonIcon'>
-                    <DataAccessActiveIcon/>
-                  </div>
-                </a>
-              </Tooltip>
-            }
-            label="Go to data access."
-          />,)
-        return actions
+        return resourceActions(params)
       },
     }
   ]
