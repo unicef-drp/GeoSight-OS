@@ -169,8 +169,8 @@ export default function SideNavigation({ pageName, minified }) {
                 <SidaNavigationButton minified={minified}
                                       title='Related Tables'>
                   <a href={relatedTableList}
-                     className={'SideNavigation-Row ' + (pageName === pageNames.RelatedTables ? 'active' : '')}>
-                    {pageName === pageNames.RelatedTables ?
+                     className={'SideNavigation-Row ' + ([pageNames.RelatedTables, pageNames.RelatedTablesData].includes(pageName) ? 'active' : '')}>
+                    {[pageNames.RelatedTables, pageNames.RelatedTablesData].includes(pageName) ?
                       <TableActiveIcon/> :
                       <TableIcon/>}
                     <span

@@ -29,6 +29,7 @@ export const pageNames = {
   Dataset: 'Data Browser',
   DataAccess: 'Data Access',
   RelatedTables: 'Related Tables',
+  RelatedTablesData: 'Related Tables Data',
 
   // Importer
   Importer: 'Data Importer',
