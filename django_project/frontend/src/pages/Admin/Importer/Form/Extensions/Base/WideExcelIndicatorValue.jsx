@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 import React, {
   forwardRef,
@@ -29,7 +29,7 @@ import {
   SelectWithList
 } from "../../../../../../components/Input/SelectWithList";
 import Match from '../../../../../../utils/Match'
-import { isInArray } from "../../../../../../utils/main";
+import { isInOptions, optionsToList } from "../../../../../../utils/main";
 import IndicatorMapping, {
   indicatorMappingDefault
 } from "../../../../Components/Input/IndicatorMapping";
@@ -73,8 +73,8 @@ export const BaseWideExcelIndicatorValue = forwardRef(
         if (attributes?.length) {
           let newData = JSON.parse(JSON.stringify(data))
           // For key_administration_code
-          if (!isInArray(attributes, newData.key_administration_code)) {
-            newData.key_administration_code = Match.inList.geocode(attributes)
+          if (!isInOptions(attributes, newData.key_administration_code)) {
+            newData.key_administration_code = Match.inList.geocode(optionsToList(attributes))
           }
           newData = Object.assign({}, newData, indicatorMappingDefault(data, attributes, indicatorList))
           updateDataWithSetState(data, setData, newData)

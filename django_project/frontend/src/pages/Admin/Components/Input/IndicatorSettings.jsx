@@ -26,6 +26,7 @@ import Grid from '@mui/material/Grid';
 import { SelectWithList } from "../../../../components/Input/SelectWithList";
 import { IndicatorInputSelector } from "../../ModalSelector/InputSelector";
 import Match from "../../../../utils/Match";
+import { optionsToList } from "../../../../utils/main";
 
 /**
  * Indicator specified input
@@ -56,7 +57,7 @@ export const IndicatorSettings = forwardRef(
       switch (type) {
         case 'Data Driven': {
           if (!data.indicator_data_field) {
-            data.indicator_data_field = Match.inList.indicatorIdentifier(attributes)
+            data.indicator_data_field = Match.inList.indicatorIdentifier(optionsToList(attributes))
           }
           delete data.indicator_data_value
           break

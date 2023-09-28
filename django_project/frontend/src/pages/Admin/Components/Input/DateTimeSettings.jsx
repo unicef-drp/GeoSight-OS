@@ -32,6 +32,7 @@ import Grid from '@mui/material/Grid';
 import { SelectWithList } from "../../../../components/Input/SelectWithList";
 import Match from "../../../../utils/Match";
 import DateTimeInput from "./DateTimeInput";
+import { optionsToList } from "../../../../utils/main";
 
 /**
  * Date time formats, value is format on python
@@ -62,7 +63,7 @@ export function DateTimeDataFieldSetting(
   // Set default field
   useEffect(
     () => {
-      let date_field = Match.inList.date(attributes)
+      let date_field = Match.inList.date(optionsToList(attributes))
       if (field) {
         date_field = field
       }

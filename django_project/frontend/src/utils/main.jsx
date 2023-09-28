@@ -329,10 +329,21 @@ export function isValidDate(d) {
 }
 
 /***
- * Check if value in array
+ * Check if value is in options
  */
-export function isInArray(arr, value) {
-  return value && arr.includes(value)
+export function optionsToList(arr, value) {
+  let usedArr = arr
+  if (arr[0]?.constructor === Object) {
+    usedArr = arr.map(_ => _.value)
+  }
+  return usedArr
+}
+
+/***
+ * Check if value is in options
+ */
+export function isInOptions(arr, value) {
+  return value && optionsToList(arr).includes(value)
 }
 
 /**
@@ -405,4 +416,18 @@ export function uniqueList(list) {
 /*** Is valid email ***/
 export function isValidEmail(email) {
   return /\S+@\S+\.\S+/.test(email);
+}
+
+/*** Is valid email ***/
+export function arrayToOptions(array) {
+  if (!array[0]) {
+    return []
+  }
+  return array[0].map((header, idx) => {
+    const example = Array.from(new Set(array.slice(1).filter(_ => _[idx] !== undefined).map(_ => _[idx])))
+    return {
+      label: header + ' (' + example.slice(0, 2).map(_ => _).concat('...').join(', ') + ')',
+      value: header
+    }
+  })
 }
