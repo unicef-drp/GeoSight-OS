@@ -15,18 +15,28 @@ else
   echo "Recording test to tests\$1"
 fi
 
+if [ -w "tests/${1}.py" ]; then
+   # File exists and write permission granted to user
+   # show prompt
+   echo "File tests/${1}.py exists. Overwrite? y/n"
+   read ANSWER
+   case $ANSWER in 
+       [yY] ) echo "Writing recorded test to tests/${1}.py" ;;
+       [nN] ) echo "Cancelled."; exit ;;
+   esac
+fi
 TESTNAME=$1
 
-playwright 
+playwright \
   codegen \
   --target python \
   --timezone="Europe/Lisbon" \
   --geolocation="41.890221,12.492348" \
   --lang="pt-PT" \
   --save-storage=geosight-auth.json \
-  -o tests/geosight.py \
+  -o tests/$TESTNAME.py \
   https://staging.geosight.kartoza.com
 
-echo "Test recording completed.
+echo "Test recording completed."
 echo "You can then run your test by doing:"
 echo "pytest tests/$1.py"
