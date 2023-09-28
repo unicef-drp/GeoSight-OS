@@ -17,11 +17,22 @@ import React from 'react';
 import ReactSelect from 'react-select'
 import { ArrowDownwardIcon } from "../Icons";
 
+const formatOptionLabel = ({ value, label, help }) => {
+  if (help) {
+    return <div>
+      {label} <span dangerouslySetInnerHTML={{ __html: help }}/>
+    </div>
+  } else {
+    return label
+  }
+};
+
 export default function Select({ ...props }) {
   return <ReactSelect
     {...props}
     className={"ReactSelect " + (props.className ? props.className : '')}
     classNamePrefix="ReactSelect"
+    formatOptionLabel={formatOptionLabel}
     components={{
       IndicatorSeparator: () => null,
       DropdownIndicator: () => <div className='DropdownIndicator'>

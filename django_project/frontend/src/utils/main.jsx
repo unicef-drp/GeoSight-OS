@@ -424,10 +424,11 @@ export function arrayToOptions(array) {
     return []
   }
   return array[0].map((header, idx) => {
-    const example = Array.from(new Set(array.slice(1).filter(_ => _[idx] !== undefined).map(_ => _[idx])))
+    const example = Array.from(new Set(array.slice(1).filter(_ => ![undefined, null, ''].includes(_[idx])).map(_ => _[idx])))
     return {
-      label: header + ' (' + example.slice(0, 2).map(_ => _).concat('...').join(', ') + ')',
-      value: header
+      label: header,
+      value: header,
+      help: '<span><i style="opacity: 0.6; font-size: 0.8rem">(' + example.slice(0, 2).map(_ => _).concat('...').join(', ') + ')</i></span>'
     }
   })
 }
