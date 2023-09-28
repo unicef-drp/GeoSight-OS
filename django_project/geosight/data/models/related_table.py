@@ -242,9 +242,10 @@ class RelatedTable(AbstractTerm, AbstractEditData):
     def fields_definition(self):
         """Return fields with it's definition."""
         fields = []
-        row = self.relatedtablerow_set.first()
+        first = self.relatedtablerow_set.first()
+        second = self.relatedtablerow_set.last()
         for field in self.related_fields:
-            value = row.data[field]
+            value = first.data[field]
             is_type_datetime = False
             try:
                 value = float(value)
@@ -274,12 +275,17 @@ class RelatedTable(AbstractTerm, AbstractEditData):
                         pass
             except (ValueError, TypeError):
                 pass
-
+            example = [first.data[field]]
+            try:
+                example.append(second.data[field])
+            except KeyError:
+                pass
             fields.append({
                 'name': field,
                 'type': 'Date' if is_type_datetime else (
                     'Number' if is_type_number else 'String'
-                )
+                ),
+                'example': example
             })
         return fields
 

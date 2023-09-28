@@ -128,7 +128,7 @@ function renderRow(name, alias) {
 
 export function getDefaultPopup(currentIndicatorLayer) {
   let table = ''
-  currentIndicatorLayer?.data_fields.map(field => {
+  currentIndicatorLayer?.data_fields?.map(field => {
     const names = field.name.split('.')
     let name = names[names.length - 1]
     if (field.name === 'context.current.indicator.name') {

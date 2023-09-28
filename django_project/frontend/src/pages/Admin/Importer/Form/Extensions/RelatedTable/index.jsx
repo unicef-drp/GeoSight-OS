@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 import React, {
   forwardRef,
@@ -41,7 +41,11 @@ import {
 import Filter from "../QueryForm/Filter"
 import Aggregation from "../QueryForm/Aggregation"
 import Match from "../../../../../../utils/Match";
-import { isInArray } from "../../../../../../utils/main";
+import {
+  arrayToOptions,
+  isInOptions,
+  optionsToList
+} from "../../../../../../utils/main";
 
 /**
  * Base Excel Form.
@@ -95,7 +99,13 @@ export const RelatedTableFormat = forwardRef(
               `/api/related-table/${relatedTable.id}`
             )
             setFields(contextLayerData.fields_definition)
-            setAttributes(contextLayerData.fields_definition.map(field => field.name))
+            const array = [[], [], []]
+            contextLayerData.fields_definition.map(field => {
+              array[0].push(field.name)
+              array[1].push(field.example[0])
+              array[2].push(field.example[1])
+            })
+            setAttributes(arrayToOptions(array))
             setFetching(false)
           }
         )()
@@ -107,8 +117,8 @@ export const RelatedTableFormat = forwardRef(
       () => {
         if (attributes?.length) {
           const newData = JSON.parse(JSON.stringify(data))
-          if (!isInArray(attributes, newData.key_administration_code)) {
-            newData.key_administration_code = Match.inList.geocode(attributes)
+          if (!isInOptions(attributes, newData.key_administration_code)) {
+            newData.key_administration_code = Match.inList.geocode(optionsToList(attributes))
           }
           updateDataWithSetState(data, setData, newData)
         }

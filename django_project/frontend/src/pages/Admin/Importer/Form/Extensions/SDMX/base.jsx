@@ -27,6 +27,7 @@ import { usePapaParse } from 'react-papaparse';
 import { updateDataWithSetState } from "../../utils";
 import { IconTextField } from "../../../../../../components/Elements/Input";
 import { MainDataGrid } from "../../../../../../components/MainDataGrid";
+import { arrayToOptions } from "../../../../../../utils/main";
 
 import './style.scss';
 
@@ -107,8 +108,17 @@ export const BaseSDMXForm = forwardRef(
                 row.id = idx
                 return row
               })
-              const header = Object.keys(json[0])
-              setAttributes(header)
+              const headers = Object.keys(json[0])
+              const array = [headers]
+              json.slice(1).map(_ => {
+                const row = []
+                headers.map(header => {
+                  row.push(_[header])
+                })
+                array.push(row)
+              })
+
+              setAttributes(arrayToOptions(array))
               if (!data.date_time_data_field) {
                 data.date_time_data_field = 'TIME_PERIOD'
               }

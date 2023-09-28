@@ -17,9 +17,9 @@ import React from 'react';
 import { dictDeepCopy } from "../../../utils/main";
 
 import FormControl from "@mui/material/FormControl";
+import { Creatable, Select } from "../index";
 
 import './style.scss'
-import { Creatable, Select } from "../index";
 
 /** Main button
  * @param {string} buttonProps Variant of Button.
@@ -46,7 +46,8 @@ export function SelectWithList(
     list.map((row, idx) => {
       const option = {
         value: row.value !== undefined ? row.value : row,
-        label: row.name !== undefined ? row.name : row.label !== undefined ? row.label : row
+        label: row.name !== undefined ? row.name : row.label !== undefined ? row.label : row,
+        help: row.help
       }
       if (keepData) {
         option.data = dictDeepCopy(row)
