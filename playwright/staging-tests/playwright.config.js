@@ -35,7 +35,11 @@ module.exports = defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { ...devices['Desktop Chrome'],
+      // Use prepared auth state.
+      storageState: 'geosight-auth.json',
+      },
+      dependencies: ['setup'],
     },
 
     {
