@@ -27,7 +27,6 @@ import ContextLayers from "./Layers/ContextLayers";
 import { Plugin, PluginChild } from "./Plugin";
 import { removeLayer, removeSource } from "./utils"
 import {
-  EditIcon,
   ThreeDimensionOffIcon,
   ThreeDimensionOnIcon
 } from '../../../components/Icons'
@@ -39,9 +38,9 @@ import {
   DownloaderData,
   EmbedControl,
   GlobalDateSelector,
+  HomeButton,
   LabelToggler,
   Measurement,
-  MovementHistories,
   SearchGeometryInput,
   TiltControl,
   ToggleSidePanel,
@@ -65,7 +64,6 @@ export default function MapLibre(
   const [map, setMap] = useState(null);
   const [deckgl, setDeckGl] = useState(null);
   const extent = useSelector(state => state.dashboard.data.extent);
-  const user_permission = useSelector(state => state.dashboard.data.user_permission);
   const {
     basemapLayer,
     is3dMode,
@@ -222,7 +220,7 @@ export default function MapLibre(
 
       <div className='Toolbar-Middle'>
         <div className='Separator'/>
-        <MovementHistories map={map} showHome={true}/>
+        <HomeButton map={map}/>
         <Measurement map={map}/>
         <LabelToggler/>
         <CompareLayer disabled={is3dMode}/>
