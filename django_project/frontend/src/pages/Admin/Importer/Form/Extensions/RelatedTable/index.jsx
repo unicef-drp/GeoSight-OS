@@ -41,7 +41,11 @@ import {
 import Filter from "../QueryForm/Filter"
 import Aggregation from "../QueryForm/Aggregation"
 import Match from "../../../../../../utils/Match";
-import { isInOptions, optionsToList } from "../../../../../../utils/main";
+import {
+  arrayToOptions,
+  isInOptions,
+  optionsToList
+} from "../../../../../../utils/main";
 
 /**
  * Base Excel Form.
@@ -95,7 +99,13 @@ export const RelatedTableFormat = forwardRef(
               `/api/related-table/${relatedTable.id}`
             )
             setFields(contextLayerData.fields_definition)
-            setAttributes(contextLayerData.fields_definition.map(field => field.name))
+            const array = [[], [], []]
+            contextLayerData.fields_definition.map(field => {
+              array[0].push(field.name)
+              array[1].push(field.example[0])
+              array[2].push(field.example[1])
+            })
+            setAttributes(arrayToOptions(array))
             setFetching(false)
           }
         )()
