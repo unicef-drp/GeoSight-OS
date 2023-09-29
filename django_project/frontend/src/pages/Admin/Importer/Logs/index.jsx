@@ -42,8 +42,7 @@ export function resourceActions(params) {
       <GridActionsCellItem
         icon={
           <Tooltip title={`Browse data`}>
-            <a
-              href={urls.api.logs.dataView.replace('/0', `/${params.id}`)}>
+            <a href={params.row.browse_url}>
               <div className='ButtonIcon'>
                 <DataBrowserActiveIcon/>
               </div>

@@ -68,7 +68,7 @@ export function formatTitle(title) {
 export function filterAttributes(attributes) {
   return Object.keys(attributes).filter(
     attr => (
-      !['selected_indicators_data', 'admin_level_value', 'admin_level_type', 'date_time_data_type', 'date_time_data_value', 'date_time_data_field', 'date_time_data_format', 'selected_indicators', 'sharepoint_config_id'].includes(attr)
+      !['related_table_id', 'selected_indicators_data', 'admin_level_value', 'admin_level_type', 'date_time_data_type', 'date_time_data_value', 'date_time_data_field', 'date_time_data_format', 'selected_indicators', 'sharepoint_config_id'].includes(attr)
       && !attr.includes('aggregate_multiple_value') && !attr.includes('aggregate_upper_level') && !attr.includes('indicator_data')
     )
   )
@@ -428,7 +428,7 @@ export default function ImporterLogDetail() {
                 <div className='title'>Saved Data</div>
                 <div className='DetailDataFound'>
                   <div>{data.saved_data} / {data.count_data}</div>
-                  <a href={urls.api.dataView}>
+                  <a href={data.browse_url}>
                     <ThemeButton variant="primary">
                       See the data
                     </ThemeButton>

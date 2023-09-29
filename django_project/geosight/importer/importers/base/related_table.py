@@ -21,8 +21,6 @@ from typing import List
 from geosight.data.models.related_table import RelatedTable
 from geosight.importer.attribute import ImporterAttribute
 from geosight.importer.exception import ImporterError
-from geosight.importer.models.log import ImporterLogData
-from geosight.permission.models.manager import PermissionException
 from ._base import BaseImporter
 
 
@@ -79,38 +77,8 @@ class AbstractImporterRelatedTable(BaseImporter, ABC):
 
         :rtype (data, note): (dict, dict)
         """
-        data['related_table_uuid'] = self.get_attribute('related_table_uuid')
-        return data, note
+        raise NotImplemented()
 
-    def _save_log_data_to_model(self, log_data: ImporterLogData):
+    def _save_log_data_to_model(self, data: dict):
         """Save data from log to actual model."""
-        data = log_data.data
-        uuid = data['related_table_uuid']
-        name = self.get_attribute('related_table_name')
-        try:
-            related_table = self.objects[uuid]
-        except KeyError:
-            try:
-                name = name if name else self.importer.__str__()
-                related_table, _ = RelatedTable.permissions.get_or_create(
-                    user=self.importer.creator,
-                    unique_id=uuid,
-                    defaults={
-                        'name': name
-                    }
-                )
-                related_table.relatedtablerow_set.all().delete()
-                related_table.name = name
-                related_table.save()
-                self.objects[uuid] = related_table
-            except PermissionException:
-                raise ImporterError(
-                    "Your ROLE needs to be creator to create new related table"
-                )
-
-        # Delete unnecessary data
-        del data['related_table_uuid']
-        related_table.insert_row(data, replace=True)
-        related_table.check_relation()
-        log_data.saved = True
-        log_data.save()
+        pass
