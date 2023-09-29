@@ -64,11 +64,20 @@ export default function Bookmark({ map }) {
   const {
     basemapLayer,
     contextLayers,
-    extent,
     indicatorShow,
     contextLayersShow,
     is3dMode
   } = useSelector(state => state.map)
+
+  // Extent
+  const bounds = map?.getBounds()
+  let extent = null
+  if (bounds) {
+    extent = [
+      bounds._sw.lng, bounds._sw.lat,
+      bounds._ne.lng, bounds._ne.lat
+    ]
+  }
 
   const [open, setOpen] = useState(false)
   const [name, setName] = useState('')
