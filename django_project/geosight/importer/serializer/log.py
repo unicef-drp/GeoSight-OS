@@ -18,6 +18,7 @@ from django.shortcuts import reverse
 from rest_framework import serializers
 
 from core.serializer.dynamic_serializer import DynamicModelSerializer
+from geosight.data.models.related_table import RelatedTable
 from geosight.georepo.models.reference_layer import ReferenceLayerView
 from geosight.importer.models.importer import ImportType
 from geosight.importer.models.log import (
@@ -44,6 +45,13 @@ class ImporterLogSerializer(DynamicModelSerializer):
         """Return saved data."""
         return obj.importer.permissions(self.context.get('user', None))
 
+    def get_browse_url(self, obj: ImporterLog):
+        """Return url for data browse."""
+        return reverse(
+            'admin-importer-log-data-view',
+            kwargs={"pk": obj.pk}
+        )
+
     def to_representation(self, obj: ImporterLog):
         """Append importer."""
         from geosight.importer.serializer.importer import ImporterSerializer
@@ -60,6 +68,22 @@ class ImporterLogSerializer(DynamicModelSerializer):
                     'admin-importer-edit-view', args=[obj.importer.id]
                 )
         except KeyError:
+            pass
+
+        # Update for related table
+        try:
+            related_table = RelatedTable.objects.get(
+                id=obj.importer.attributes['related_table_id']
+            )
+            count_data = related_table.relatedtablerow_set.count()
+            representation['saved_data'] = count_data
+            representation['count_data'] = count_data
+            representation['browse_url'] = reverse(
+                'admin-related-table-data-view',
+                kwargs={"pk": related_table.pk}
+            )
+
+        except (KeyError, RelatedTable.DoesNotExist):
             pass
 
         return representation
