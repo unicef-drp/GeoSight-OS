@@ -20,7 +20,7 @@ from typing import List
 import pytz
 from django.conf import settings
 
-from geosight.data.models.related_table import RelatedTable
+from geosight.data.models.related_table import RelatedTable, RelatedTableRow
 from geosight.importer.attribute import ImporterAttribute
 from geosight.importer.exception import ImporterError
 from geosight.importer.importers.base.related_table import (
@@ -85,6 +85,8 @@ class RelatedTableWideFormat(AbstractImporterRelatedTable):
         success = True
         total = len(records)
         last_progress = 0
+        rows = []
+        order = 0
         for line_idx, record in enumerate(records):
             if not record:
                 continue
@@ -94,7 +96,7 @@ class RelatedTableWideFormat(AbstractImporterRelatedTable):
             if progress != last_progress:
                 # Update log
                 self._update(
-                    f'Saving data to database {line_idx}/{total}',
+                    f'Prepare data {line_idx}/{total}',
                     progress=progress
                 )
 
@@ -119,8 +121,18 @@ class RelatedTableWideFormat(AbstractImporterRelatedTable):
                     value = value.timestamp()
                 data[key] = value
 
-            # Save data to model
-            related_table.insert_row(data, replace=True)
+            # Prepare data
+            order += 1
+            rows.append(
+                RelatedTableRow(
+                    table=related_table,
+                    order=order,
+                    data=data
+                )
+            )
+
+        self._update('Save to database', progress=100)
+        RelatedTableRow.objects.bulk_create(rows)
 
         # Check relation for other place
         related_table.check_relation()
