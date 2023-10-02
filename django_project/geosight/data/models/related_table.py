@@ -97,7 +97,9 @@ class RelatedTable(AbstractTerm, AbstractEditData):
         """Return fields of table."""
         row = self.relatedtablerow_set.first()
         if row:
-            return self.relatedtablerow_set.first().data.keys()
+            first_data = self.relatedtablerow_set.first()
+            if first_data and first_data.data:
+                return first_data.data.keys()
         return []
 
     def check_relation(self):

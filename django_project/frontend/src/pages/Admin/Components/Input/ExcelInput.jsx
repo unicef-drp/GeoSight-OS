@@ -13,8 +13,9 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
+import CircularProgress from "@mui/material/CircularProgress";
 import { SelectWithList } from "../../../../components/Input/SelectWithList";
 import { arrayToOptions } from "../../../../utils/main";
 
@@ -35,6 +36,7 @@ export default function ExcelInput(
     setFileChanged
   }
 ) {
+  const [reading, setReading] = useState(false);
   const [state, setState] = useState({
     sheets: [],
     workbook: null
@@ -52,7 +54,6 @@ export default function ExcelInput(
       });
 
       // Change the options
-      console.log(array)
       setAttributes(arrayToOptions(array.slice(inputHeaderRowNumber - 1)))
     }
   }
@@ -68,38 +69,43 @@ export default function ExcelInput(
   // When file changed
   const fileChanged = (evt) => {
     // Read excel
-    const file = evt.target.files[0];
-    setFileChanged(file)
-    if (!file) {
-      setState({
-        sheets: [],
-        workbook: null
-      })
-      setInputSheet(null)
-      setAttributes([])
-    } else {
-      const fr = new FileReader();
-      fr.onload = function () {
-        const workbook = XLSX.read(fr.result, {
-          type: 'binary'
-        });
-
-        const sheetsOptions = []
-        workbook.Workbook.Sheets.map(sheet => {
-          if (sheet.Hidden === 0) {
-            sheetsOptions.push(sheet.name)
-          }
-        })
-
-        // Set all states
+    setReading(true)
+    setTimeout(function () {
+      const file = evt.target.files[0];
+      setFileChanged(file)
+      if (!file) {
         setState({
-          sheets: sheetsOptions,
-          workbook: workbook
+          sheets: [],
+          workbook: null
         })
-        setInputSheet(sheetsOptions[0])
+        setInputSheet(null)
+        setAttributes([])
+        setReading(false)
+      } else {
+        const fr = new FileReader();
+        fr.onload = function () {
+          const workbook = XLSX.read(fr.result, {
+            type: 'binary'
+          });
+
+          const sheetsOptions = []
+          workbook.Workbook.Sheets.map(sheet => {
+            if (sheet.Hidden === 0) {
+              sheetsOptions.push(sheet.name)
+            }
+          })
+
+          // Set all states
+          setState({
+            sheets: sheetsOptions,
+            workbook: workbook
+          })
+          setInputSheet(sheetsOptions[0])
+          setReading(false)
+        }
+        fr.readAsBinaryString(file)
       }
-      fr.readAsBinaryString(file)
-    }
+    }, 200)
   }
 
   return (
@@ -108,8 +114,14 @@ export default function ExcelInput(
         <div className="BasicFormSection">
           <label className="form-label required" htmlFor="group">
             Excel file
+            {
+              reading ?
+                <Fragment>&nbsp;<CircularProgress size={10}/></Fragment> : null
+            }
           </label>
-          <input type="file" accept='.xlsx,.xls' onChange={fileChanged}/>
+          <input
+            type="file" accept='.xlsx,.xls'
+            onChange={fileChanged}/>
         </div>
       </Grid>
       <Grid item xs={3}>

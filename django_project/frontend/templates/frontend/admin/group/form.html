@@ -1,16 +1,14 @@
 {% extends 'frontend/admin/base_form.html' %}
 {% load render_bundle from webpack_loader %}
 {% load static %}
+{% load frontend %}
 
 {% block render_bundle %}
     {% render_bundle 'AdminGroupForm' %}
 {% endblock %}
 {% block scripts %}
     <script>
-      const initialData = {
-        id:{{ form.initial.id }},
-        name: "{{ form.initial.name }}",
-      };
+      const initialData = {{ form|get_data|safe }};
       urls.api = {
         'detail': '{{ group_detail_api }}',
         'users': '{% url 'user-list-api'%}',

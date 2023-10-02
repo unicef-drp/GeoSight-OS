@@ -67,14 +67,8 @@ class BaseImporter(ABC):
         if success:
             if not self.log.importer.need_review:
                 logs = self.log.importerlogdata_set.order_by('id')
-                total = logs.count()
                 for line_idx, log in enumerate(logs):
                     self._save_log_data_to_model(log)
-                    if self.importer.import_type == ImportType.RELATED_TABLE:
-                        self._update(
-                            f'Save the data to be database {line_idx}/{total}',
-                            progress=int((line_idx / total) * 50) + 50
-                        )
 
         elif not success:
             error = (
@@ -98,9 +92,7 @@ class BaseImporter(ABC):
             success, note = self._process_data()
 
             # Use transaction atomic when indicator value
-            if self.importer.import_type == ImportType.RELATED_TABLE:
-                self.after_import(success, note)
-            else:
+            if self.importer.import_type != ImportType.RELATED_TABLE:
                 with transaction.atomic():
                     self.after_import(success, note)
 

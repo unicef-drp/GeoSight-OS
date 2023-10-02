@@ -71,4 +71,7 @@ def get_data(form):
             'name': form.initial['name'],
         })
     else:
-        return json.dumps({})
+        return json.dumps({
+            'id': 0,
+            'name': ''
+        })

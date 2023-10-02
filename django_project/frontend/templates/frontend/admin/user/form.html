@@ -6,7 +6,7 @@
 {% block render_bundle %}
     <script>
       const initialData = {
-        id:{{ form.initial.id }},
+        id: {% if form.initial.id %}{{ form.initial.id }}{% else %}null{% endif %},
         username: "{{ form.initial.username }}",
       };
       const ownForm = '{{ own_form }}' === 'True';
