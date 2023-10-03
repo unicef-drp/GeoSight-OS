@@ -378,14 +378,15 @@ export default function ReferenceLayerCentroid({ map }) {
       centroidConfig = {}
       return;
     }
+    const geometriesLevel = Object.keys(geometriesData);
+    const usedFilteredGeometries = filteredGeometries.filter(geom => geometriesLevel.includes(geom))
 
     // Check by config
     const config = {
       indicators: indicatorLayer.indicators.map(indicator => indicator.id),
       indicatorLayer: indicatorLayer.id,
       indicatorLayerConfig: isIndicatorLayerLikeIndicator(indicatorLayer) ? indicatorLayer.config : {},
-      geometries: Object.keys(geometriesData),
-      filteredGeometries: filteredGeometries,
+      filteredGeometries: usedFilteredGeometries,
       indicatorShow: indicatorShow
     }
     if (!isRenderingChart) {
@@ -414,8 +415,8 @@ export default function ReferenceLayerCentroid({ map }) {
 
       const chartStyle = indicatorLayer.chart_style
       let theGeometries = Object.keys(geometriesData)
-      if (where && filteredGeometries) {
-        theGeometries = filteredGeometries
+      if (where && usedFilteredGeometries) {
+        theGeometries = usedFilteredGeometries
       }
 
       // Create style
@@ -553,7 +554,7 @@ export default function ReferenceLayerCentroid({ map }) {
         const geometry = geometriesData[geom]
         const code = extractCode(geometry)
         const indicator = indicatorsByGeom[code] ? indicatorsByGeom[code][0] : null
-        if (filteredGeometries && !filteredGeometries.includes(code)) {
+        if (usedFilteredGeometries && !usedFilteredGeometries.includes(code)) {
           return
         }
         let properties = geometry
