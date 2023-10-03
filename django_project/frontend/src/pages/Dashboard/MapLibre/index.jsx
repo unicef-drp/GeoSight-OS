@@ -247,16 +247,13 @@ export default function MapLibre(
       {/* Embed */}
       <div className='Toolbar-Right'>
         <SearchGeometryInput map={map}/>
-        {
-          user?.id ?
-            <Plugin className='EmbedControl'>
-              <div className='Active'>
-                <PluginChild title={'Get embed code'}>
-                  <EmbedControl map={map}/>
-                </PluginChild>
-              </div>
-            </Plugin> : null
-        }
+        <Plugin className='EmbedControl'>
+          <div className='Active'>
+            <PluginChild title={'Get embed code'}>
+              <EmbedControl map={map}/>
+            </PluginChild>
+          </div>
+        </Plugin>
         <DownloaderData/>
         <Plugin className='BookmarkControl'>
           <Bookmark map={map}/>
