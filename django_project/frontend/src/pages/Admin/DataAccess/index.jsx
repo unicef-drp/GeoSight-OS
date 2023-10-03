@@ -49,10 +49,10 @@ import Modal, {
   ModalHeader
 } from "../../../components/Modal";
 import { AdminTable } from "../Components/Table";
+import { ConfirmDialog } from "../../../components/ConfirmDialog";
 
 import '../../Admin/Components/List/style.scss';
 import './style.scss';
-import { ConfirmDialog } from "../../../components/ConfirmDialog";
 
 /***
  * Add new data
@@ -440,14 +440,6 @@ export default function DataAccessAdmin() {
     { field: 'id', headerName: 'id', hide: true },
     { field: 'indicator_name', headerName: 'Indicator', flex: 1 },
     { field: 'dataset_name', headerName: 'Dataset', flex: 0.5 },
-
-    // We don't use organization anymore
-    // {
-    //   field: 'organization', headerName: 'Organization', width: 200,
-    //   renderCell: (params) => {
-    //     return renderCell(params, 'organization')
-    //   }
-    // },
     {
       field: 'public', headerName: 'Public', width: 200,
       renderCell: (params) => {
@@ -748,7 +740,7 @@ export default function DataAccessAdmin() {
           className={tab === GeneralTab ? "Selected" : ""}
           onClick={() => setTab(GeneralTab)}
         >
-          General
+          Public
         </div>
       </div>
       <AccessData
