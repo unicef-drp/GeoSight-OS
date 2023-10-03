@@ -32,6 +32,7 @@ class ImporterLogSerializer(DynamicModelSerializer):
     count_data = serializers.SerializerMethodField()
     saved_data = serializers.SerializerMethodField()
     permission = serializers.SerializerMethodField()
+    browse_url = serializers.SerializerMethodField()
 
     def get_count_data(self, obj: ImporterLog):
         """Return count data."""
@@ -115,7 +116,7 @@ class ImporterLogDataSerializer(DynamicModelSerializer):
                 ref_layer = ReferenceLayerView.objects.get(
                     identifier=data.get('reference_layer_identifier')
                 )
-                data['reference_layer_name'] = ref_layer.name
+                data['reference_layer_name'] = ref_layer.get_name()
                 data['reference_layer_id'] = ref_layer.id
             except ReferenceLayerView.DoesNotExist:
                 pass

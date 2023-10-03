@@ -380,6 +380,7 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
         geoField, filteredGeometries
       )
       // Create colors
+      const hideAndGeom = []
       const fillColorsAndGeom = {}
       const outlineColorsAndGeom = {}
       const outlineSizesAndGeom = {}
@@ -389,6 +390,10 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
         for (const [key, value] of Object.entries(indicatorValueByGeometry)) {
           {
             const style = returnStyle(currentIndicatorLayer, value, noDataStyle)
+            if (style.hide) {
+              hideAndGeom.push(key)
+            }
+
             {
               // Check fill color
               const color = style?.color
@@ -475,6 +480,19 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
         } else {
           map.setPaintProperty(FILL_LAYER_ID, 'fill-color', noDataStyle.color);
         }
+
+        // Hide non valued one
+        if (hideAndGeom.length) {
+          map.setPaintProperty(FILL_LAYER_ID, 'fill-opacity', [
+              "case",
+              ["in", ["get", geomFieldOnVectorTile], ["literal", hideAndGeom]],
+              0,
+              1
+            ]
+          );
+        } else {
+          map.setPaintProperty(FILL_LAYER_ID, 'fill-opacity', 1);
+        }
       }
       {
         // OUTLINE
@@ -497,6 +515,19 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
         } else {
           map.setPaintProperty(OUTLINE_LAYER_ID, 'line-color', noDataStyle.outline_color);
           map.setPaintProperty(FILL_LAYER_ID, 'fill-outline-color', noDataStyle.outline_color);
+        }
+
+        // Hide non valued one
+        if (hideAndGeom.length) {
+          map.setPaintProperty(OUTLINE_LAYER_ID, 'line-opacity', [
+              "case",
+              ["in", ["get", geomFieldOnVectorTile], ["literal", hideAndGeom]],
+              0,
+              1
+            ]
+          );
+        } else {
+          map.setPaintProperty(OUTLINE_LAYER_ID, 'line-opacity', 1);
         }
       }
       {

@@ -235,13 +235,15 @@ export function createDynamicStyle(data, styleType, config, styleData) {
                 if ([classifications[idx - 1], classifications[idx]].includes(undefined)) {
                   continue
                 }
-                const below = classifications[idx - 1].toFixed(2);
-                const top = classifications[idx].toFixed(2);
+                const below = classifications[idx - 1];
+                const top = classifications[idx];
+                const belowLabel = below.toFixed(2);
+                const topLabel = top.toFixed(2);
                 const color = colors[idx - 1]
                 styles.push(
                   {
                     id: idx,
-                    name: below === top ? below : `${below} - ${top}`,
+                    name: below === top ? belowLabel : `${belowLabel} - ${topLabel}`,
                     rule: below === top ? `x==${below}` : `x>=${below} and x<=${top}`,
                     color: color,
                     outline_color: !config.sync_outline ? config.outline_color : color,

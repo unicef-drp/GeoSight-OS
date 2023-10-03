@@ -48,7 +48,7 @@ export default function Dashboard({ children }) {
     onRight: () => {
       setLeftExpanded(false)
     }
-  } : {}
+  } : null
 
   const rightPanelProps = showWidget ? {
     className: 'RightButton',
@@ -60,7 +60,7 @@ export default function Dashboard({ children }) {
     onRight: () => {
       setRightExpanded(true)
     }
-  } : {}
+  } : null
 
   // Fetch data of dashboard
   useEffect(() => {

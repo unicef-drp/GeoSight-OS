@@ -189,7 +189,7 @@ export default function MapLibre(
   }, [map, basemapLayer]);
 
   return <section
-    className={'DashboardMap ' + (!EmbedConfig().map ? 'Hidden' : '')}>
+    className={'DashboardMap' + (!EmbedConfig().map ? ' HideMap' : '')}>
     {/* TOOLBARS */}
     <div className='Toolbar'>
       <TiltControl map={map} is3DView={is3dMode} force={force}/>
@@ -247,16 +247,13 @@ export default function MapLibre(
       {/* Embed */}
       <div className='Toolbar-Right'>
         <SearchGeometryInput map={map}/>
-        {
-          user?.id ?
-            <Plugin className='EmbedControl'>
-              <div className='Active'>
-                <PluginChild title={'Get embed code'}>
-                  <EmbedControl map={map}/>
-                </PluginChild>
-              </div>
-            </Plugin> : null
-        }
+        <Plugin className='EmbedControl'>
+          <div className='Active'>
+            <PluginChild title={'Get embed code'}>
+              <EmbedControl map={map}/>
+            </PluginChild>
+          </div>
+        </Plugin>
         <DownloaderData/>
         <Plugin className='BookmarkControl'>
           <Bookmark map={map}/>

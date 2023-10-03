@@ -85,7 +85,8 @@ class DashboardBookmarkAPI(APIView):
             json.loads(request.POST.copy()['data'])
         )
         data['dashboard'] = dashboard.id
-        data['creator'] = request.user
+        if request.user.is_authenticated:
+            data['creator'] = request.user
 
         try:
             data['selected_basemap'] = BasemapLayer.objects.get(

@@ -25,6 +25,30 @@
   border-right: 1px solid $border-gray;
   width: 20%;
 
+  &.HideLayer {
+    .layers-tab {
+      display: none;
+    }
+
+    .MuiTabs-root {
+      .filters-tab {
+        width: 100%;
+      }
+    }
+  }
+
+  &.HideFilter {
+    .filters-tab {
+      display: none;
+    }
+
+    .MuiTabs-root {
+      .layers-tab {
+        width: 100%;
+      }
+    }
+  }
+
   &.right {
     margin-left: -20%;
   }

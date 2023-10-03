@@ -27,7 +27,8 @@
   height: 28px;
   z-index: 999;
   border: 1px solid $primary-color;
-  width: 107px;
+  min-width: 107px;
+  width: fit-content;
 
   .ReferenceLayerLevelOption {
     cursor: pointer;
@@ -57,19 +58,21 @@
     color: $primary-color;
     border-radius: $border-radius;
     font-weight: 400;
-    padding: 0;
+    padding: 0 6px;
     height: 100%;
     display: flex;
     align-items: center;
     text-align: center;
+    width: fit-content;
 
     svg {
       width: 10px !important;
-      margin-right: 10px !important;
     }
 
     div {
       flex-grow: 1;
+      white-space: nowrap;
+      margin-right: 6px;
     }
   }
 }

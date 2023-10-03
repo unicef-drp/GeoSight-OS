@@ -28,11 +28,12 @@ const formatOptionLabel = ({ value, label, help }) => {
 };
 
 export default function Select({ ...props }) {
+  const formatOptionLabelfn = props.options[0]?.help ? formatOptionLabel : null;
   return <ReactSelect
     {...props}
     className={"ReactSelect " + (props.className ? props.className : '')}
     classNamePrefix="ReactSelect"
-    formatOptionLabel={formatOptionLabel}
+    formatOptionLabel={formatOptionLabelfn}
     components={{
       IndicatorSeparator: () => null,
       DropdownIndicator: () => <div className='DropdownIndicator'>
