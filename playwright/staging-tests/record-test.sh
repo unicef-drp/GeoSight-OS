@@ -35,7 +35,7 @@ playwright \
   --lang="pt-PT" \
   --load-storage=geosight-auth.json \
   -o tests/$TESTNAME.py \
-  https://staging.geosight.kartoza.com
+  https://staging-geosight.unitst.org
 
 echo "Test recording completed."
 echo "You can then run your test by doing:"

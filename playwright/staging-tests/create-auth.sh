@@ -24,7 +24,7 @@ playwright \
   --lang="pt-PT" \
   --save-storage=geosight-auth.json \
   -o tests/deleteme.py \
-  https://staging.geosight.kartoza.com
+  https://staging-geosight.unitst.org
 
 # We are only interested in geosight-auth.json
 rm tests/deleteme.py
