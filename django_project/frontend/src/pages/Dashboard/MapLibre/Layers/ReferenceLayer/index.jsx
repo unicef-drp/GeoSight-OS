@@ -390,7 +390,7 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
         for (const [key, value] of Object.entries(indicatorValueByGeometry)) {
           {
             const style = returnStyle(currentIndicatorLayer, value, noDataStyle)
-            if (style.hide) {
+            if (style?.hide) {
               hideAndGeom.push(key)
             }
 
