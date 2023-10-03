@@ -95,7 +95,7 @@ export function returnStyle(layer, values, noDataStyle) {
     if (values) {
       const indicatorData = values[0];
       if (indicatorData) {
-        style = indicatorData.style
+        style = indicatorData.style ? indicatorData.style : { hide: true }
       } else {
         style = noDataStyle;
       }

@@ -32,6 +32,7 @@ class ImporterLogSerializer(DynamicModelSerializer):
     count_data = serializers.SerializerMethodField()
     saved_data = serializers.SerializerMethodField()
     permission = serializers.SerializerMethodField()
+    browse_url = serializers.SerializerMethodField()
 
     def get_count_data(self, obj: ImporterLog):
         """Return count data."""
