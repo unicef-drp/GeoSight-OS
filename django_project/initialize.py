@@ -116,15 +116,3 @@ call_command('collectstatic', '--noinput', verbosity=0)
 
 print("-----------------------------------------------------")
 print("5. Loading fixtures")
-
-# Disable fixtures loading in prod by including environment variable:
-#  INITIAL_FIXTURES=False
-import ast
-
-# To conform with original behaviour of GeoNode, we need to set it to True
-# as default value
-_load_initial_fixtures = ast.literal_eval(
-    os.getenv('INITIAL_FIXTURES', 'True')
-)
-if _load_initial_fixtures:
-    call_command('loaddata', 'core/fixtures/color_palette.json')
