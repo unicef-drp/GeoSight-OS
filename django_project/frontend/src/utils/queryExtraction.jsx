@@ -355,7 +355,7 @@ export function queryFromDictionary(inputData, dictionary, ignoreActive) {
   inputData.map(rowData => {
     const id = `${rowData.id}`;
     const data = rowData.data;
-    if (data && (id === 'geometry_layer' || (id !== 'geometry_layer' && where.includes(id)))) {
+    if (data && (id === 'geometry_layer' || (id !== 'geometry_layer' && where?.includes(id)))) {
       if (idx === 0) {
         mainFrom = `${id}`;
         query += `? ${id}`;

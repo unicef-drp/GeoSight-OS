@@ -379,7 +379,7 @@ export default function ReferenceLayerCentroid({ map }) {
       return;
     }
     const geometriesLevel = Object.keys(geometriesData);
-    const usedFilteredGeometries = filteredGeometries.filter(geom => geometriesLevel.includes(geom))
+    const usedFilteredGeometries = filteredGeometries?.filter(geom => geometriesLevel.includes(geom))
 
     // Check by config
     const config = {
