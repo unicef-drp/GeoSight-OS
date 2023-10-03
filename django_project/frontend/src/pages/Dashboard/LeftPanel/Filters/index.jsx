@@ -58,6 +58,7 @@ function FilterSection() {
   const indicatorsData = useSelector(state => state.indicatorsData)
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel)
   const geometries = useSelector(state => state.geometries);
+  const geometriesVT = useSelector(state => state.geometriesVT);
   const dispatcher = useDispatch();
 
   const [relatedTableData, setRelatedTableData] = useState({})
@@ -67,40 +68,39 @@ function FilterSection() {
   const prevState = useRef();
   /** Filter data **/
   const filter = async (currentFilter) => {
+    const where = returnWhere(currentFilter)
     if (!levels) {
       return;
     }
-    if (!allDataIsReady(indicatorsData)) {
+    if (where && !allDataIsReady(indicatorsData)) {
       return
     }
     const level = levels.find(level => level.level === selectedAdminLevel.level)
-    if (!level || !geometries[level.level]) {
-      return;
-    }
     const indicatorLayerConfig = {}
     indicatorLayers.map(layer => {
       indicatorLayerConfig[layer.id] = layer.config
     })
-    const config = JSON.stringify({
-      filter: currentFilter,
-      time: selectedGlobalTime,
-      indicatorLayerConfig: indicatorLayerConfig
-    })
 
     const reporting_level = level.level;
-    if (prevState.config !== config || prevState.level !== selectedAdminLevel.level) {
-      // Doing the filter if it is different filter
-      // PREPARE DATA LIST
-      let dataList = [];
-      // Geometry data
-      const codes = []
-      const data = []
-      const where = returnWhere(currentFilter)
+    // Doing the filter if it is different filter
+    // PREPARE DATA LIST
+    let dataList = [];
 
-      for (const [level, geomDataLevel] of Object.entries(geometries)) {
-        for (const [key, geomData] of Object.entries(geomDataLevel)) {
+    // ---------------------------------------
+    // Geometry data
+    // ---------------------------------------
+    const codes = []
+    const codesCurrentLevel = []
+    const data = []
+    levels.map(level => {
+      const geoms = geometries[level.level] ? geometries[level.level] : geometriesVT[level.level]
+      if (geoms) {
+        for (const [key, geomData] of Object.entries(geoms)) {
           codes.push(geomData.code)
-          if (where && where.includes('geometry_layer.')) {
+          if (reporting_level === level.level) {
+            codesCurrentLevel.push(geomData.code)
+          }
+          if (where && where.includes('geometry_layer.') && geomData.members) {
             geomData.members.map(member => {
               data.push({
                 concept_uuid: geomData.concept_uuid,
@@ -117,79 +117,83 @@ function FilterSection() {
           }
         }
       }
-      for (const [level, geomDataLevel] of Object.entries(geometries)) {
-        dataList.push({
-          id: `geometry_layer`,
-          reporting_level: level,
-          data: data
+    })
+    levels.map(level => {
+      dataList.push({
+        id: `geometry_layer`,
+        reporting_level: level.level,
+        data: data
+      })
+    })
+    // ------------------------------------------------
+    // Indicator data
+    // ------------------------------------------------
+    for (const [key, indicatorDataRow] of Object.entries(indicatorsData)) {
+      const indicator = dictDeepCopy(indicatorDataRow)
+      if (!isNaN(indicator.id)) {
+        indicator.id = `indicator_${indicator.id}`
+      }
+      indicator.reporting_level = reporting_level
+      dataList.push(indicator)
+      if (indicator.data && Array.isArray(indicator.data)) {
+        const indicatorCodes = indicator.data.map(data => data.concept_uuid)
+        const missingCodes = codes.filter(code => !indicatorCodes.includes(code))
+        missingCodes.map(code => {
+          indicator.data.push({
+            concept_uuid: code,
+            indicator_id: indicator.id
+          })
         })
       }
-      // ------------------------------------------------
-      // Indicator data
-      // ------------------------------------------------
-      for (const [key, indicatorDataRow] of Object.entries(indicatorsData)) {
-        const indicator = dictDeepCopy(indicatorDataRow)
-        if (!isNaN(indicator.id)) {
-          indicator.id = `indicator_${indicator.id}`
-        }
-        indicator.reporting_level = reporting_level
-        dataList.push(indicator)
-        if (indicator.data) {
-          const indicatorCodes = indicator.data.map(data => data.concept_uuid)
+    }
+
+    // ------------------------------------------------
+    // Related table data
+    // ------------------------------------------------
+    relatedTables.map(relatedTable => {
+      const objData = relatedTableData[relatedTable.id]
+      if (objData) {
+        const data = dictDeepCopy(objData)
+        data.id = `related_table_${relatedTable.id}`
+        data.reporting_level = reporting_level
+        dataList.push(data)
+        const codes = geometries[reporting_level] ? Object.keys(geometries[reporting_level]) : []
+        if (data.data) {
+          // TODO :
+          //  We need to update if the related table can receive other code
+          // We assign geometry code as the related table geography code field name
+          data.data.map(obj => {
+            obj.geometry_code = obj[relatedTable.geography_code_field_name]
+          })
+          const indicatorCodes = data.data.map(data => data.concept_uuid)
           const missingCodes = codes.filter(code => !indicatorCodes.includes(code))
           missingCodes.map(code => {
-            indicator.data.push({
+            data.data.push({
               concept_uuid: code,
-              indicator_id: indicator.id
+              id: relatedTable.id
             })
           })
         }
       }
+    })
 
-      // ------------------------------------------------
-      // Related table data
-      // ------------------------------------------------
-      relatedTables.map(relatedTable => {
-        const objData = relatedTableData[relatedTable.id]
-        if (objData) {
-          const data = dictDeepCopy(objData)
-          data.id = `related_table_${relatedTable.id}`
-          data.reporting_level = reporting_level
-          dataList.push(data)
-          const codes = geometries[reporting_level] ? Object.keys(geometries[reporting_level]) : []
-          if (data.data) {
-            // TODO :
-            //  We need to update if the related table can receive other code
-            // We assign geometry code as the related table geography code field name
-            data.data.map(obj => {
-              obj.geometry_code = obj[relatedTable.geography_code_field_name]
-            })
-            const indicatorCodes = data.data.map(data => data.concept_uuid)
-            const missingCodes = codes.filter(code => !indicatorCodes.includes(code))
-            missingCodes.map(code => {
-              data.data.push({
-                concept_uuid: code,
-                id: relatedTable.id
-              })
-            })
-          }
-        }
-      })
-
-      // DOING FILTERING
-      const filteredGeometries = filteredGeoms(
-        dataList, currentFilter, selectedAdminLevel.level
-      )
-      if (filteredGeometries) {
+    // DOING FILTERING
+    const filteredGeometries = filteredGeoms(
+      dataList, currentFilter, selectedAdminLevel.level
+    )
+    if (filteredGeometries) {
+      const usedFilteredGeometry = Array.from(new Set(filteredGeometries))
+      usedFilteredGeometry.sort()
+      if (prevState.usedFilteredGeometry !== usedFilteredGeometry) {
         dispatcher(
-          Actions.FilteredGeometries.update(Array.from(new Set(filteredGeometries)))
+          Actions.FilteredGeometries.update(usedFilteredGeometry)
         )
+        prevState.usedFilteredGeometry = usedFilteredGeometry
       }
-      dispatcher(
-        Actions.FiltersData.update(currentFilter)
-      );
-      prevState.config = config
-      prevState.level = selectedAdminLevel.level
+    }
+    if (JSON.stringify(prevState.currentFilter) !== JSON.stringify(currentFilter)) {
+      dispatcher(Actions.FiltersData.update(currentFilter));
+      prevState.currentFilter = currentFilter
     }
   }
 
@@ -199,7 +203,7 @@ function FilterSection() {
       referenceLayerData[referenceLayer.identifier].data.dataset_levels) {
       filter(filters)
     }
-  }, [filters, indicatorsData, relatedTableData, geometries, selectedAdminLevel]);
+  }, [filters, indicatorsData, relatedTableData, geometries, geometriesVT, selectedAdminLevel]);
 
   // FETCH RELATED TABLE DATA
   useEffect(() => {

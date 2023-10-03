@@ -120,6 +120,7 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
               geometryDataByLevel[level] = {}
             }
             const code = extractCode(feature.properties)
+            feature.properties.code = code
             geometryDataByLevel[level][code] = feature.properties
           })
           for (const [level, data] of Object.entries(geometryDataByLevel)) {

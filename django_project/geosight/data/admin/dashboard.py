@@ -23,6 +23,8 @@ from geosight.data.models.dashboard import (
     DashboardIndicatorRule, DashboardBookmark,
     DashboardIndicatorLayer,
     DashboardIndicatorLayerIndicator,
+    DashboardIndicatorLayerRelatedTable,
+    DashboardRelatedTable,
     DashboardRelationGroup
 )
 
@@ -58,10 +60,26 @@ class DashboardIndicatorAdmin(admin.ModelAdmin):
     inlines = (DashboardIndicatorRuleInline,)
 
 
-class DashboardIndicatorLayerIndicatorInline(admin.TabularInline):
+class DashboardRelatedTableAdmin(admin.ModelAdmin):
+    """DashboardRelatedTable admin."""
+
+    list_display = (
+        'dashboard', 'object', 'visible_by_default'
+    )
+    list_filter = ('dashboard', 'object')
+
+
+class DashboardIndicatorLayerIndicatorInline(admin.StackedInline):
     """DashboardIndicatorLayerIndicator inline."""
 
     model = DashboardIndicatorLayerIndicator
+    extra = 0
+
+
+class DashboardIndicatorLayerRelatedTableInline(admin.StackedInline):
+    """DashboardIndicatorLayerRelatedTable inline."""
+
+    model = DashboardIndicatorLayerRelatedTable
     extra = 0
 
 
@@ -70,7 +88,10 @@ class DashboardIndicatorLayerAdmin(admin.ModelAdmin):
 
     list_display = ('dashboard', 'label', 'visible_by_default')
     list_filter = ('dashboard',)
-    inlines = (DashboardIndicatorLayerIndicatorInline,)
+    inlines = (
+        DashboardIndicatorLayerIndicatorInline,
+        DashboardIndicatorLayerRelatedTableInline
+    )
 
 
 class DashboardContextLayerInline(admin.TabularInline):
@@ -124,6 +145,7 @@ class DashboardRelationGroupAdmin(admin.ModelAdmin):
 admin.site.register(Dashboard, DashboardAdmin)
 admin.site.register(DashboardContextLayer, DashboardContextLayerAdmin)
 admin.site.register(DashboardIndicator, DashboardIndicatorAdmin)
+admin.site.register(DashboardRelatedTable, DashboardRelatedTableAdmin)
 admin.site.register(DashboardIndicatorLayer, DashboardIndicatorLayerAdmin)
 admin.site.register(DashboardBookmark, DashboardBookmarkAdmin)
 admin.site.register(DashboardRelationGroup, DashboardRelationGroupAdmin)

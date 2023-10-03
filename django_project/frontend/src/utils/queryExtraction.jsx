@@ -124,7 +124,7 @@ export function queryData(data, whereQuery) {
  * @param ids
  * @param sameGroupOperator If the operator are same in groups queries.
  */
-export function returnWhere(where, ignoreActive, ids, sameGroupOperator = true) {
+export function returnWhere(where, ignoreActive, ids, sameGroupOperator = true, changeGeometryId = true) {
   switch (where.type) {
     case TYPE.GROUP:
       const queriesData = where.queries.filter(query => {
@@ -134,7 +134,7 @@ export function returnWhere(where, ignoreActive, ids, sameGroupOperator = true) 
         return true
       });
       const queries = queriesData.map((query, idx) => {
-        const queryStr = returnWhere(query, ignoreActive, ids, sameGroupOperator)
+        const queryStr = returnWhere(query, ignoreActive, ids, sameGroupOperator, changeGeometryId)
         if (sameGroupOperator || idx === where.queries.length - 1) {
           return queryStr
         } else {
@@ -164,7 +164,7 @@ export function returnWhere(where, ignoreActive, ids, sameGroupOperator = true) 
       let field = where.field.includes(' ') ? `"${where.field}"`.replaceAll('""', '"') : where.field
       const fieldSplit = field.split('.')
       // We put all geometry_x as geometry_layer
-      if (fieldSplit[0].includes('geometry_')) {
+      if (changeGeometryId && fieldSplit[0].includes('geometry_')) {
         fieldSplit[0] = 'geometry_layer'
       }
       field = fieldSplit.join('.')
@@ -343,14 +343,19 @@ export function returnDataToExpression(field, operator, value) {
  * Return query from dictionary
  */
 export function queryFromDictionary(inputData, dictionary, ignoreActive) {
+  const ids = inputData.map(indicator => {
+    return indicator.id
+  })
+  const where = returnWhere(dictionary, ignoreActive, ids);
+
   let query = 'SELECT * FROM '
   let mainFrom = '';
   const dataList = [];
   let idx = 0
   inputData.map(rowData => {
+    const id = `${rowData.id}`;
     const data = rowData.data;
-    if (data) {
-      const id = `${rowData.id}`;
+    if (data && (id === 'geometry_layer' || (id !== 'geometry_layer' && where?.includes(id)))) {
       if (idx === 0) {
         mainFrom = `${id}`;
         query += `? ${id}`;
@@ -361,12 +366,6 @@ export function queryFromDictionary(inputData, dictionary, ignoreActive) {
       idx += 1
     }
   })
-
-  const ids = inputData.map(indicator => {
-    return indicator.id
-  })
-
-  const where = returnWhere(dictionary, ignoreActive, ids);
   if (where) {
     query += ' WHERE ' + where;
   }
