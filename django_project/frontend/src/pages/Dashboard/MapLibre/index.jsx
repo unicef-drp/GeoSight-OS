@@ -189,7 +189,7 @@ export default function MapLibre(
   }, [map, basemapLayer]);
 
   return <section
-    className={'DashboardMap ' + (!EmbedConfig().map ? 'Hidden' : '')}>
+    className={'DashboardMap' + (!EmbedConfig().map ? ' HideMap' : '')}>
     {/* TOOLBARS */}
     <div className='Toolbar'>
       <TiltControl map={map} is3DView={is3dMode} force={force}/>

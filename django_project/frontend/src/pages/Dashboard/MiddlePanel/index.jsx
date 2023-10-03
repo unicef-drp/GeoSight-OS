@@ -14,6 +14,7 @@
  */
 
 import React from 'react';
+import { useSelector } from "react-redux";
 import MapLegend from "./MapLegend";
 import Basemaps from './Basemaps'
 import { EmbedConfig } from "../../../utils/embed";
@@ -22,7 +23,6 @@ import LayerConfig from "./LayerConfig";
 import { FullScreen } from '../../../pages/Dashboard/Toolbars'
 
 import './style.scss';
-import { useSelector } from "react-redux";
 
 /**
  * Left panel.
@@ -34,7 +34,7 @@ export default function MiddlePanel(
     className={
       'DashboardMiddlePanel ' +
       (rightExpanded ? 'RightExpanded ' : '') +
-      (!EmbedConfig().map ? 'Hidden ' : '')
+      (!EmbedConfig().map ? 'HiddenMap ' : '')
     }
   >
     <div className='TopContent'>

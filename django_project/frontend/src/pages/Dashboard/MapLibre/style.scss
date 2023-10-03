@@ -29,6 +29,26 @@
   display: flex;
   flex-direction: column;
 
+  &.HideMap {
+    .GlobalDateSelector,
+    .ReferenceLayerToolbar,
+    .Toolbar-Middle,
+    .SearchGeometryInput,
+    .BookmarkControl,
+    .DownloadControl {
+      display: none !important;
+    }
+
+    #map {
+      display: none;
+    }
+
+    .Toolbar-Right {
+      width: 100%;
+      justify-content: end;
+    }
+  }
+
   #map {
     height: 100%;
     width: 100%;
@@ -278,7 +298,7 @@ $nav-disabled-color: '%23CCCCCC';
 // This is for embed mode
 .Embed {
   .EmbedControl,
-  .EditControl,{
+  .EditControl, {
     display: none !important;
   }
 }

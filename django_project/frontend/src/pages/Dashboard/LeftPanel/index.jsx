@@ -31,8 +31,8 @@ import IndicatorLayersAccordion from './IndicatorLayers'
 import RelatedTables from './RelatedTable'
 import FiltersAccordion from './Filters'
 import { LayerIcon, TuneIcon, VisibilityIcon, VisibilityOffIcon } from "../../../components/Icons";
-import TabPanel from "../../../components/Tabs/index"
-import { tabProps } from "../../../components/Tabs/index"
+import TabPanel, { tabProps } from "../../../components/Tabs/index"
+import { EmbedConfig } from "../../../utils/embed";
 
 import './style.scss';
 
@@ -86,7 +86,9 @@ export function IndicatorsVisibility() {
  */
 export default function LeftPanel({ leftExpanded }) {
   const state = leftExpanded ? LEFT : RIGHT
-  const [tabValue, setTabValue] = React.useState(0);
+  const showLayerTab = !!EmbedConfig().layer_tab
+  const showFilterTab = !!EmbedConfig().filter_tab
+  const [tabValue, setTabValue] = React.useState(showLayerTab ? 0 : 1);
   const [tab2Value, setTab2Value] = React.useState(1);
 
   const handleChangeTab = (event, newValue) => {
@@ -99,10 +101,9 @@ export default function LeftPanel({ leftExpanded }) {
 
   const className = `dashboard__panel dashboard__left_side ${state}`
   const classNameWrapper = `dashboard__content-wrapper`
-
   return (
     <section
-      className={className}
+      className={className + (!showLayerTab ? ' HideLayer' : '') + (!showFilterTab ? ' HideFilter' : '')}
     >
       <div className={classNameWrapper}>
         <Box sx={{ width: '100%' }}>
@@ -110,12 +111,14 @@ export default function LeftPanel({ leftExpanded }) {
             <Tabs value={tabValue} onChange={handleChangeTab}
                   aria-label="basic tabs example">
               <Tab
+                className='layers-tab'
                 label="Layers"
                 icon=<LayerIcon/>
               iconPosition="start"
               {...tabProps('Layers')}
               />
               <Tab
+                className='filters-tab'
                 label="Filters"
                 icon=<TuneIcon/>
               iconPosition="start"
@@ -123,7 +126,8 @@ export default function LeftPanel({ leftExpanded }) {
               />
             </Tabs>
           </Box>
-          <TabPanel value={tabValue} index={0} className={'sidepanel-tab'}>
+          <TabPanel value={tabValue} index={0}
+                    className={'sidepanel-tab layers-tab'}>
             <Box sx={{ width: '100%' }}>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}
                    className={'layers-tab-container'}>
@@ -157,7 +161,8 @@ export default function LeftPanel({ leftExpanded }) {
             <Indicators/>
             <RelatedTables/>
           </TabPanel>
-          <TabPanel value={tabValue} index={1} className={'sidepanel-tab'}>
+          <TabPanel value={tabValue} index={1}
+                    className={'sidepanel-tab filters-tab'}>
             <FiltersAccordion/>
           </TabPanel>
         </Box>
