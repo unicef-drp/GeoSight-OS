@@ -69,19 +69,25 @@ class ReferenceLayerView(models.Model):
 
     in_georepo = models.BooleanField(default=True)
 
+    def get_name(self):
+        """Return name."""
+        if not self.name:
+            try:
+                self.update_meta()
+            except GeorepoRequestError:
+                pass
+        return self.name
+
     def __str__(self):
         """Return str."""
-        return f'{self.name} ({self.identifier})'
+        return f'{self.get_name()} ({self.identifier})'
 
     def save(self, *args, **kwargs):
         """On save method."""
         from geosight.georepo.tasks import fetch_reference_codes
         super(ReferenceLayerView, self).save(*args, **kwargs)
         if not self.name:
-            try:
-                self.update_meta()
-            except GeorepoRequestError:
-                pass
+            self.get_name()
             fetch_reference_codes.delay(self.id)
 
     def update_meta(self):
@@ -94,7 +100,7 @@ class ReferenceLayerView(models.Model):
 
     def full_name(self):
         """Return str."""
-        return f'{self.name} ({self.identifier})'
+        return f'{self.get_name()} ({self.identifier})'
 
     def bbox(self):
         """Return bbox of reference layer."""

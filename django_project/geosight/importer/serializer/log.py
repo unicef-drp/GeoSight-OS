@@ -116,7 +116,7 @@ class ImporterLogDataSerializer(DynamicModelSerializer):
                 ref_layer = ReferenceLayerView.objects.get(
                     identifier=data.get('reference_layer_identifier')
                 )
-                data['reference_layer_name'] = ref_layer.name
+                data['reference_layer_name'] = ref_layer.get_name()
                 data['reference_layer_id'] = ref_layer.id
             except ReferenceLayerView.DoesNotExist:
                 pass
