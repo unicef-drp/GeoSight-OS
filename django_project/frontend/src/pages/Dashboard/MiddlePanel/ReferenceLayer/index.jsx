@@ -64,7 +64,7 @@ export default function ReferenceLayerSection() {
   // Onload for default checked and the layer
   useEffect(() => {
     if (levels && levels[0]) {
-      if (!selectedAdminLevel?.level) {
+      if ([undefined, null].includes(selectedAdminLevel?.level)) {
         if (defaultLevel) {
           onChange(defaultLevel)
         } else {
