@@ -120,17 +120,12 @@ export const fetchGeojson = async function (url, useCache = true) {
   return data
 }
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 /***
  * Return feature list paginated
  */
 export const fetchFeatureList = async function (url, useCache = true) {
   let data = []
   const _fetchJson = async function (page = 1) {
-    await sleep(1000);
     try {
       const response = await fetchJSON(url + '?geom=centroid&cache=false&page=' + page, headers, useCache);
       if (response.results) {

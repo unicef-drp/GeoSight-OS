@@ -241,14 +241,14 @@ export default function FilterControl(
    ** -------------------------------------------------- **/
   const FilterInput = ({ where, upperWhere }) => {
     const [expanded, setExpanded] = useState(
-      expandedByFilterField[where.field] && where.active ? expandedByFilterField[where.field] : false
+      expandedByFilterField[where.name] ? expandedByFilterField[where.name] : false
     )
     const [open, setOpen] = useState(false)
     const [active, setActive] = useState(where.active)
 
     const updateExpanded = () => {
       setExpanded(!expanded)
-      expandedByFilterField[where.field] = !expanded
+      expandedByFilterField[where.name] = !expanded
     }
     const updateActive = (active) => {
       setActive(active)
@@ -262,6 +262,7 @@ export default function FilterControl(
       where.name = newWhere.name
       where.description = newWhere.description
       where.allowModify = newWhere.allowModify
+      expandedByFilterField[where.name] = expanded
       updateFilter(true)
     }
     const field = where.field
