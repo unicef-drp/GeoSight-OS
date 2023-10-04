@@ -151,6 +151,7 @@ class VectorContextLayerIndicatorValue(
 
         # -------------------------------------------------
         # Get data with ucode on it
+        self._update('Check geom data on georepo.')
         data = GeorepoRequest().View.containment(
             self.importer.reference_layer.identifier,
             spatial_query=spatial_operator_param,
@@ -158,7 +159,6 @@ class VectorContextLayerIndicatorValue(
             admin_level=admin_level,
             geojson=data
         )
-        self._update('Check geom data on georepo.')
 
         # -------------------------------------------------
         # Get field definition
@@ -187,6 +187,7 @@ class VectorContextLayerIndicatorValue(
             })
 
         # Return data by querying it
+        self._update('Doing query data.')
         return self.querying_data(
             data=[feature['properties'] for feature in data['features']],
             fields=fields,

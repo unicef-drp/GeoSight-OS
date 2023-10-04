@@ -193,7 +193,7 @@ function FilterSection() {
     }
     if (JSON.stringify(prevState.currentFilter) !== JSON.stringify(currentFilter)) {
       dispatcher(Actions.FiltersData.update(currentFilter));
-      prevState.currentFilter = currentFilter
+      prevState.currentFilter = dictDeepCopy(currentFilter)
     }
   }
 

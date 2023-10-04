@@ -48,7 +48,7 @@ export default function Config(
   }
 
   /** Update data **/
-  const updateData = () => {
+  const updateData = (data) => {
     setData(dictDeepCopy(data, true))
   }
 
@@ -91,13 +91,13 @@ export default function Config(
                             const indicatorData = indicators.find(ind => ind.id === data.id)
                             if (indicatorData) {
                               for (const [key, value] of Object.entries(indicatorData)) {
-                                if (key.includes('style')) {
+                                if (key.includes('style_')) {
                                   data[key] = value
                                 }
                               }
                             }
                           }
-                          updateData()
+                          updateData(data)
                         }}/>
                     }
                     label={"Override style from indicator style"}/>
@@ -108,8 +108,7 @@ export default function Config(
                   <StyleConfig
                     data={data}
                     setData={newData => {
-                      setData({ ...newData })
-                      updateData()
+                      updateData(newData)
                     }}
                     valuesUrl={`/api/indicator/${data.id}/values/flat/`}
                     defaultStyleRules={data?.style ? data?.style : []}
