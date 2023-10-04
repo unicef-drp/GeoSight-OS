@@ -51,26 +51,10 @@ import Modal, {
 import { AdminTable } from "../Components/Table";
 import { ConfirmDialog } from "../../../components/ConfirmDialog";
 import { UpdatePermissionModal } from "./UpdatePermissionModal";
-import PublicDataAccess from "./Public";
 
 import '../../Admin/Components/List/style.scss';
 import './style.scss';
-
-
-const PERMISSIONS = [
-  [
-    "None",
-    "None"
-  ],
-  [
-    "Read",
-    "Read"
-  ],
-  [
-    "Write",
-    "Write"
-  ]
-]
+import PublicDataAccess from "./Public";
 
 /***
  * Add new data
@@ -301,14 +285,11 @@ export default function DataAccessAdmin() {
   const [tableData, setTableData] = useState(null)
   const [defaultTableData, setDefaultTableTableData] = useState(null)
 
-  const [filters, setFilters] = useState({
-    indicators: splitParams(indicators),
-    datasets: splitParams(datasets, false),
-    permissions: splitParams(permissions),
-    users: splitParams(users),
-    groups: splitParams(groups),
-  })
-
+  const [filterByIndicators, setFilterByIndicator] = useState(splitParams(indicators))
+  const [filterByDatasets, setFilterByDataset] = useState(splitParams(datasets, false))
+  const [filterByPermissions, setFilterByPermission] = useState(splitParams(permissions))
+  const [filterByUsers, setFilterByUsers] = useState(splitParams(users))
+  const [filterByGroups, setFilterByGroups] = useState(splitParams(groups))
   const [selectionModel, setSelectionModel] = useState([]);
   const [updatePermissionOpen, setUpdatePermissionOpen] = useState(false);
   const [addPermissionOpen, setAddPermissionOpen] = useState(false);
@@ -568,34 +549,34 @@ export default function DataAccessAdmin() {
   const filteredTableData = dictDeepCopy(tableData)
   if (filteredTableData) {
     filteredTableData[tab] = filteredTableData[tab].filter(data => !data.is_deleted)
-    if (filters.indicators.length) {
+    if (filterByIndicators.length) {
       filteredTableData[tab] = filteredTableData[tab].filter(data => {
-        return filters.indicators.includes(data.indicator_id)
+        return filterByIndicators.includes(data.indicator_id)
       })
     }
-    if (filters.datasets.length) {
+    if (filterByDatasets.length) {
       filteredTableData[tab] = filteredTableData[tab].filter(data => {
-        return filters.datasets.includes(data.dataset_identifier)
+        return filterByDatasets.includes(data.dataset_identifier)
       })
     }
-    if (tab === UserTab && filters.users.length) {
+    if (tab === UserTab && filterByUsers.length) {
       filteredTableData[tab] = filteredTableData[tab].filter(data => {
-        return filters.users.includes(data.user_id)
+        return filterByUsers.includes(data.user_id)
       })
     }
-    if (tab === GroupTab && filters.groups.length) {
+    if (tab === GroupTab && filterByGroups.length) {
       filteredTableData[tab] = filteredTableData[tab].filter(data => {
-        return filters.groups.includes(data.group_id)
+        return filterByGroups.includes(data.group_id)
       })
     }
-    if (filters.permissions.length) {
+    if (filterByPermissions.length) {
       if (tab !== GeneralTab) {
         filteredTableData[tab] = filteredTableData[tab].filter(data => {
-          return filters.permissions.includes(data.permission)
+          return filterByPermissions.includes(data.permission)
         })
       } else {
         filteredTableData[tab] = filteredTableData[tab].filter(data => {
-          return filters.permissions.includes(data.organization) || filters.permissions.includes(data.public)
+          return filterByPermissions.includes(data.organization) || filterByPermissions.includes(data.public)
         })
       }
     }
@@ -673,34 +654,24 @@ export default function DataAccessAdmin() {
       {/* FILTERS */}
       <div className='ListAdminFilters'>
         <IndicatorFilterSelector
-          data={filters.indicators}
-          setData={(data) => {
-            setFilters({ ...filters, indicators: data })
-          }}/>
+          data={filterByIndicators}
+          setData={setFilterByIndicator}/>
         <DatasetFilterSelector
-          data={filters.datasets}
-          setData={(data) => {
-            setFilters({ ...filters, datasets: data })
-          }}/>
+          data={filterByDatasets}
+          setData={setFilterByDataset}/>
         <SelectFilter
-          title={'Filter by Permission'} data={filters.permissions}
-          options={PERMISSIONS}
-          setData={(data) => {
-            setFilters({ ...filters, permissions: data })
-          }}/>
+          title={'Filter by Permission'} data={filterByPermissions}
+          setData={setFilterByPermission}
+          options={data ? data.permission_choices : []}/>
         {
           tab === UserTab ? (
             <UserFilterSelector
-              data={filters.users}
-              setData={(data) => {
-                setFilters({ ...filters, users: data })
-              }}/>
+              data={filterByUsers}
+              setData={setFilterByUsers}/>
           ) : tab === GroupTab ? (
             <GroupFilterSelector
-              data={filters.groups}
-              setData={(data) => {
-                setFilters({ ...filters, groups: data })
-              }}/>
+              data={filterByGroups}
+              setData={setFilterByGroups}/>
           ) : ""
         }
       </div>
@@ -726,7 +697,7 @@ export default function DataAccessAdmin() {
       </div>
       {
         tab === GeneralTab ?
-          <PublicDataAccess filters={filters}/> :
+          <PublicDataAccess/> :
           <AccessData
             rows={filteredTableData ? filteredTableData[tab] : null}
             columns={COLUMNS[tab]}

@@ -119,6 +119,14 @@ class Indicator(
             return f'{self.group}/{self.name} ({self.shortcode})'
         return f'{self.group}/{self.name}'
 
+    def save(self, *args, **kwargs):
+        """On save method."""
+        from geosight.georepo.tasks import create_data_access_indicator
+        created = self.pk is None
+        super(Indicator, self).save(*args, **kwargs)
+        if created:
+            create_data_access_indicator.delay(self.pk)
+
     @property
     def last_update(self):
         """Return reporting level."""

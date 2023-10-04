@@ -17,7 +17,11 @@ __copyright__ = ('Copyright 2023, Unicef')
 from celery.utils.log import get_task_logger
 
 from core.celery import app
-from geosight.georepo.models.reference_layer import ReferenceLayerView
+from geosight.data.models.indicator import Indicator
+from geosight.georepo.models.reference_layer import (
+    ReferenceLayerView, ReferenceLayerIndicator
+)
+from geosight.georepo.request.request import GeorepoRequest
 
 logger = get_task_logger(__name__)
 
@@ -30,3 +34,57 @@ def fetch_reference_codes(_id):
         reference_layer_view.sync_entities_code()
     except ReferenceLayerView.DoesNotExist:
         logger.error(f'Reference Layer View {_id} does not exist')
+
+
+@app.task
+def fetch_datasets():
+    """Fetch reference codes."""
+    datasets = GeorepoRequest().get_reference_layer_list()
+    for dataset in datasets:
+        reference_layer_list = GeorepoRequest().get_reference_layer_views(
+            dataset['uuid']
+        )
+        for reference_layer in reference_layer_list:
+            ref, _ = ReferenceLayerView.objects.get_or_create(
+                identifier=reference_layer['uuid'],
+                defaults={
+                    'name': reference_layer['name'],
+                    'description': reference_layer['description']
+                }
+            )
+            create_data_access_reference_layer_view(ref.id)
+
+
+@app.task
+def create_data_access_indicator(_id):
+    """Create data access of indicator for all reference layer view."""
+    try:
+        indicator = Indicator.objects.get(id=_id)
+        for reference_layer in ReferenceLayerView.objects.all():
+            ReferenceLayerIndicator.objects.get_or_create(
+                reference_layer=reference_layer,
+                indicator=indicator
+            )
+    except Indicator.DoesNotExist:
+        pass
+
+
+@app.task
+def create_data_access_reference_layer_view(_id):
+    """Create data access of indicator for all reference layer view."""
+    try:
+        reference_layer = ReferenceLayerView.objects.get(id=_id)
+        for indicator in Indicator.objects.all():
+            ReferenceLayerIndicator.objects.get_or_create(
+                reference_layer=reference_layer,
+                indicator=indicator
+            )
+    except ReferenceLayerView.DoesNotExist:
+        pass
+
+
+@app.task
+def create_data_access():
+    """Create data access."""
+    for indicator in Indicator.objects.all():
+        create_data_access_indicator(indicator.id)

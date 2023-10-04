@@ -85,10 +85,14 @@ class ReferenceLayerView(models.Model):
     def save(self, *args, **kwargs):
         """On save method."""
         from geosight.georepo.tasks import fetch_reference_codes
+        from geosight.georepo.tasks import (
+            create_data_access_reference_layer_view
+        )
         super(ReferenceLayerView, self).save(*args, **kwargs)
         if not self.name:
             self.get_name()
             fetch_reference_codes.delay(self.id)
+            create_data_access_reference_layer_view.delay(self.id)
 
     def update_meta(self):
         """Update meta."""

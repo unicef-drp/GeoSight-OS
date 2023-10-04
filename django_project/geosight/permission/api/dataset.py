@@ -17,9 +17,12 @@ __copyright__ = ('Copyright 2023, Unicef')
 import json
 
 from django.contrib.auth import get_user_model
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from core.api.base import FilteredAPI
+from core.pagination import Pagination
 from geosight.data.models import Indicator
 from geosight.georepo.models import ReferenceLayerView, ReferenceLayerIndicator
 from geosight.permission.access import RoleSuperAdminRequiredMixin
@@ -28,6 +31,11 @@ from geosight.permission.models import (
     ReferenceLayerIndicatorPermission as Permission,
     ReferenceLayerIndicatorUserPermission as UserPermission,
     ReferenceLayerIndicatorGroupPermission as GroupPermission
+)
+from geosight.permission.serializer.data_access import (
+    GeneralPermissionsSerializer,
+    UsersPermissionsSerializer,
+    GroupsPermissionsSerializer
 )
 
 User = get_user_model()
@@ -193,3 +201,90 @@ class DatasetAccessAPI(RoleSuperAdminRequiredMixin, APIView):
                 perm.permission = permission['p']
                 perm.save()
         return Response('OK')
+
+
+class DataAccessGeneralAPI(
+    RoleSuperAdminRequiredMixin, ListAPIView, FilteredAPI
+):
+    """Data access General."""
+
+    pagination_class = Pagination
+    serializer_class = GeneralPermissionsSerializer
+
+    def get_queryset(self):
+        """Return queryset of API."""
+        query = ReferenceLayerIndicator.objects.all()
+        query = self.filter_query(
+            self.request, query,
+            ignores=[],
+            fields=['reference_layer_id', 'indicator_id']
+        )
+        output = Permission.objects.filter(
+            obj_id__in=query.values_list('id')
+        )
+        if 'permission__in' in self.request.GET:
+            permissions = self.request.GET.get('permission__in').split(',')
+            output = output.filter(public_permission__in=permissions)
+        return output.order_by(
+            'obj__indicator__name', 'obj__reference_layer__name'
+        )
+
+
+class DataAccessUsersAPI(
+    RoleSuperAdminRequiredMixin, ListAPIView, FilteredAPI
+):
+    """Data access Users."""
+
+    pagination_class = Pagination
+    serializer_class = UsersPermissionsSerializer
+
+    def get_queryset(self):
+        """Return queryset of API."""
+        query = ReferenceLayerIndicator.objects.all()
+        query = self.filter_query(
+            self.request, query,
+            ignores=[],
+            fields=['reference_layer_id', 'indicator_id']
+        )
+        output = UserPermission.objects.filter(
+            obj__obj_id__in=query.values_list('id')
+        )
+        output = self.filter_query(
+            self.request, output,
+            ignores=[],
+            fields=['permission', 'user_id']
+        )
+        return output.order_by(
+            'obj__obj__indicator__name',
+            'obj__obj__reference_layer__name'
+        )
+
+
+class DataAccessGroupsAPI(
+    RoleSuperAdminRequiredMixin, ListAPIView, FilteredAPI
+):
+    """Data access Groups."""
+
+    pagination_class = Pagination
+    serializer_class = GroupsPermissionsSerializer
+
+    def get_queryset(self):
+        """Return queryset of API."""
+        query = ReferenceLayerIndicator.objects.all()
+        query = self.filter_query(
+            self.request, query,
+            ignores=[],
+            fields=['reference_layer_id', 'indicator_id']
+        )
+        output = GroupPermission.objects.filter(
+            obj__obj_id__in=query.values_list('id')
+        )
+        output = self.filter_query(
+            self.request, output,
+            ignores=[],
+            fields=['permission', 'group_id']
+        )
+        return output.order_by(
+            'obj__obj__indicator__name',
+            'obj__obj__reference_layer__name'
+        )

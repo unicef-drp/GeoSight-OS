@@ -213,13 +213,7 @@ class GeorepoRequest:
     def get_reference_layer_views(self, reference_layer_identifier: str):
         """Return reference layer."""
         url = self.urls.reference_layer_views(reference_layer_identifier)
-        response = self.get(url)
-        if response.status_code != 200:
-            raise GeorepoRequestError(
-                f"Fetching reference layer detail error "
-                f"- {response.status_code} - {response.text}"
-            )
-        return response.json()
+        return self._request_paginated(url)
 
     def _request_paginated(self, url: str, page: int = 1) -> list:
         """Return list of responses of paginated request."""

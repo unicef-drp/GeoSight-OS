@@ -20,10 +20,11 @@ from geosight.data.models.indicator.indicator_value import (
     IndicatorValueWithGeo
 )
 from geosight.georepo.models import (
-    ReferenceLayerIndicator,
     ReferenceLayerView
 )
-from geosight.georepo.tasks import fetch_reference_codes
+from geosight.georepo.tasks import (
+    fetch_reference_codes, fetch_datasets
+)
 
 
 @admin.action(description='Update meta')
@@ -38,6 +39,12 @@ def sync_codes(modeladmin, request, queryset):
     """Fetch new reference layer."""
     for reference_layer in queryset:
         fetch_reference_codes.delay(reference_layer.id)
+
+
+@admin.action(description='Fetch new reference layer view')
+def sync_codes(modeladmin, request, queryset):
+    """Fetch new reference layer."""
+    fetch_datasets.delay()
 
 
 class ReferenceLayerViewAdmin(admin.ModelAdmin):
@@ -62,5 +69,4 @@ class ReferenceLayerViewAdmin(admin.ModelAdmin):
         ).count()
 
 
-admin.site.register(ReferenceLayerIndicator, admin.ModelAdmin)
 admin.site.register(ReferenceLayerView, ReferenceLayerViewAdmin)

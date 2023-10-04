@@ -37,7 +37,7 @@ class FilteredAPI(object):
                 continue
 
             if fields and field not in fields:
-                pass
+                continue
 
             if '_in' in param:
                 value = value.split(',')
