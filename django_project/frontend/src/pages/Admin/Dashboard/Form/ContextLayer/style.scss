@@ -25,3 +25,16 @@
     margin-bottom: 0 !important;
   }
 }
+
+.ContextLayers {
+  .MuiTextField-root {
+    input,
+    svg {
+      color: black !important;
+    }
+  }
+
+  .GroupEditName {
+    margin-left: 0.5rem;
+  }
+}

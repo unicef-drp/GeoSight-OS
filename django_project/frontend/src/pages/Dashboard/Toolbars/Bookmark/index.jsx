@@ -47,6 +47,7 @@ import { dictDeepCopy } from "../../../../utils/main";
 import {
   changeIndicatorLayersForcedUpdate
 } from "../../LeftPanel/IndicatorLayers";
+import { compareFilters, filtersToFlatDict } from "../../../../utils/filters";
 
 import './style.scss';
 
@@ -57,6 +58,7 @@ export default function Bookmark({ map }) {
   const dispatch = useDispatch();
   const isEmbed = EmbedConfig().id;
   const dashboardData = useSelector(state => state.dashboard.data);
+  const filtersData = useSelector(state => state.filtersData);
   const selectedIndicatorLayer = useSelector(state => state.selectedIndicatorLayer);
   const selectedIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer);
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel);
@@ -86,7 +88,6 @@ export default function Bookmark({ map }) {
   // Bookmarks
   const [bookmarks, setBookmarks] = useState(null)
   const [saveBookmarkID, setSaveBookmarkID] = useState(null)
-
   /***
    * Get data of bookmark
    */
@@ -97,7 +98,7 @@ export default function Bookmark({ map }) {
       selectedIndicatorLayer: selectedIndicatorLayer?.id,
       selectedIndicatorSecondLayer: selectedIndicatorSecondLayer?.id,
       selectedContextLayers: Object.keys(contextLayers).map(id => parseInt(id)),
-      filters: dashboardData.filters,
+      filters: filtersData,
       extent: extent,
       indicatorShow: indicatorShow,
       contextLayersShow: contextLayersShow,
@@ -131,7 +132,9 @@ export default function Bookmark({ map }) {
     newDashboard.contextLayers.map(layer => {
       layer.visible_by_default = bookmark.selected_context_layers.includes(layer.id)
     })
-    newDashboard.filters = bookmark.filters
+    newDashboard.filters = compareFilters(
+      newDashboard.filters, filtersToFlatDict(bookmark.filters)
+    )
     changeIndicatorLayersForcedUpdate(true)
     setTimeout(function () {
       dispatch(
@@ -243,7 +246,7 @@ export default function Bookmark({ map }) {
       }}
       Button={
         <div className='Active'>
-          <PluginChild title={'Bookmark'}>
+          <PluginChild title={'Bookmark'} disabled={!filtersData}>
             <a>
               <StarOffIcon/>
             </a>
