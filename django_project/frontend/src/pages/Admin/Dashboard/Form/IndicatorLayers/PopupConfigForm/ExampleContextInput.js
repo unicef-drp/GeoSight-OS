@@ -98,8 +98,10 @@ export default function ExampleContextInput(
               data = data[0]
               data.date = data?.time
               data.indicator = indicator
+              indicatorValueByGeometry[featureProperties.concept_uuid].push({ ...indicator, ...data })
+            } else {
+              indicatorValueByGeometry[featureProperties.concept_uuid].push({ ...indicator })
             }
-            indicatorValueByGeometry[featureProperties.concept_uuid].push({ ...indicator, ...data })
           })
           updateCurrent(
             context, indicators, relatedTables,

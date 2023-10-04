@@ -183,6 +183,9 @@ export function updateCurrent(
         relatedNames.pop()
         relatedName = relatedNames.join('(')
       }
+      if (!data.date) {
+        return
+      }
       const _data = {
         name: data.indicator?.name ? data.indicator?.name : relatedName,
         time: data.date.includes('T') ? data.date : data.date + 'T00:00:00+00:00',
