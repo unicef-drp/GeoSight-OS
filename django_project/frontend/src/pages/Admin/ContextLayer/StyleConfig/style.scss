@@ -67,6 +67,16 @@
   }
 }
 
+.modal--wrapper--box {
+  #ContextLayerConfig {
+    .ArcgisConfig {
+      .Classification {
+        padding: 1rem;
+      }
+    }
+  }
+}
+
 #ContextLayerConfig {
   text-align: left;
 
