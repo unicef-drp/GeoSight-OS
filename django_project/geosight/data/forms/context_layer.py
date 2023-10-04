@@ -70,6 +70,18 @@ class ContextLayerForm(forms.ModelForm):
         )
         return group
 
+    def clean_styles(self):
+        """Return styles."""
+        if self.instance and not self.cleaned_data['styles']:
+            return self.instance.styles
+        return self.cleaned_data['styles']
+
+    def clean_label_styles(self):
+        """Return label_styles."""
+        if self.instance and not self.cleaned_data['label_styles']:
+            return self.instance.label_styles
+        return self.cleaned_data['label_styles']
+
     class Meta:  # noqa: D106
         model = ContextLayer
         exclude = ('created_at', 'creator', 'modified_at')
