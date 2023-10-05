@@ -44,6 +44,7 @@ class DataAccessAPI(
     RoleSuperAdminRequiredMixin, ListAPIView, FilteredAPI
 ):
     """Abstract API for data access."""
+
     pagination_class = Pagination
     query_class = Permission
     PERMISSIONS = [
@@ -203,6 +204,7 @@ class DataAccessUsersAPI(DataAccessAPI):
 
 class DataAccessGroupsAPI(DataAccessAPI):
     """Data access Groups."""
+
     serializer_class = GroupsPermissionsSerializer
     query_class = GroupPermission
 
