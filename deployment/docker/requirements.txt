@@ -35,5 +35,5 @@ django-webpack-loader==1.8.1
 Office365-REST-Python-Client==2.4.2
 pyjwt==2.6.0
 msal==1.21.0
-selenium==4.10.0
-webdriver-manager==3.8.6
+selenium==4.13.0
+webdriver-manager==4.0.1
