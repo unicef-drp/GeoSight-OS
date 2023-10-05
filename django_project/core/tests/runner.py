@@ -45,13 +45,18 @@ class PostgresSchemaTestRunner(DiscoverRunner):
 
     @staticmethod
     def __disable_celery():
-        settings.CELERY_BROKER_URL = current_app.conf.CELERY_BROKER_URL = f'filesystem:///dev/null/'
-        settings.BROKER_TRANSPORT_OPTIONS = current_app.conf.BROKER_TRANSPORT_OPTIONS = {
+        """Disabling celery."""
+        settings.CELERY_BROKER_URL = \
+            current_app.conf.CELERY_BROKER_URL = 'filesystem:///dev/null/'
+        data = {
             'data_folder_in': '/tmp',
             'data_folder_out': '/tmp',
             'data_folder_processed': '/tmp',
         }
+        settings.BROKER_TRANSPORT_OPTIONS = \
+            current_app.conf.BROKER_TRANSPORT_OPTIONS = data
 
     def setup_test_environment(self, **kwargs):
+        """Prepare test env."""
         PostgresSchemaTestRunner.__disable_celery()
         super(PostgresSchemaTestRunner, self).setup_test_environment(**kwargs)
