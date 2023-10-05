@@ -22,11 +22,10 @@ import React, {
   useState
 } from 'react';
 import { MainDataGrid } from "../../../../components/MainDataGrid";
-
-import './style.scss';
-import { NotificationStatus } from "../../../../components/Notification";
 import { dictDeepCopy, jsonToUrlParams } from "../../../../utils/main";
 import { fetchJSON } from "../../../../Requests";
+
+import './style.scss';
 
 /**
  * Admin Table
@@ -49,20 +48,6 @@ export const ServerTable = forwardRef(
   ) => {
     const prev = useRef();
 
-    /** Refresh data **/
-    useImperativeHandle(ref, () => ({
-      refresh() {
-        parametersChanged()
-        loadData(true)
-      }
-    }));
-
-    // Notification
-    const notificationRef = useRef(null);
-    const notify = (newMessage, newSeverity = NotificationStatus.INFO) => {
-      notificationRef?.current?.notify(newMessage, newSeverity)
-    }
-
     // Other attributes
     const pageSize = 25;
     const [parameters, setParameters] = useState({
@@ -71,7 +56,19 @@ export const ServerTable = forwardRef(
     })
     const [data, setData] = useState(null)
     const [rowSize, setRowSize] = useState(0)
-    const [error, setError] = useState(null);
+    const [error, setError] = useState(null)
+
+    /** Refresh data **/
+    useImperativeHandle(ref, () => ({
+      refresh() {
+        parametersChanged()
+        loadData(true)
+      },
+      updateData(fn) {
+        const newData = fn(data)
+        setData([...newData])
+      }
+    }));
 
     /***
      * Parameters Changed
@@ -155,6 +152,9 @@ export const ServerTable = forwardRef(
               let className = ''
               if (params.row.updated) {
                 className = 'Updated '
+              }
+              if (params.row.updating) {
+                className = 'Updating '
               }
               if (["__check__", "actions"].includes(params.field)) {
                 if (!params.row.permission.delete) {

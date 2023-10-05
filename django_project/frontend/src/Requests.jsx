@@ -173,3 +173,17 @@ export const CacheRequests = {
     return axios.post(url, data, config)
   }
 }
+
+/***
+ * Request using cache
+ */
+export const DjangoRequests = {
+  put: (url, data, options = {}) => {
+    return axios.put(url, data, {
+      ...options,
+      headers: {
+        'X-CSRFToken': csrfmiddlewaretoken
+      }
+    })
+  }
+}

@@ -31,20 +31,23 @@ import './style.scss';
  * Update permission modal
  */
 export function UpdatePermissionModal(
-  { choices, open, setOpen, selectedPermission }
+  { choices, state, onClosed, selectedPermission }
 ) {
   const [selected, setSelected] = useState(choices[0][0])
 
   return <Modal
     className='PermissionFormModal'
-    open={open}
+    open={state.open}
     onClosed={() => {
-      setOpen(false)
+      onClosed()
     }}
   >
-    <ModalHeader onClosed={() => {
-      setOpen(false)
-    }}>Update permission</ModalHeader>
+    <ModalHeader
+      onClosed={() => {
+        onClosed()
+      }}>
+      Update permission
+    </ModalHeader>
     <ModalContent>
       <FormControl className='BasicForm'>
         <Select
@@ -66,6 +69,7 @@ export function UpdatePermissionModal(
     <ModalFooter>
       <div className='Save-Button'>
         <SaveButton
+          disabled={state.updating}
           variant="primary"
           text={"Apply Changes"}
           onClick={() => {

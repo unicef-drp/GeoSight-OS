@@ -17,6 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 import json
 
 from django.contrib.auth import get_user_model
+from django.http import HttpResponse, HttpResponseBadRequest
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -27,6 +28,7 @@ from geosight.data.models import Indicator
 from geosight.georepo.models import ReferenceLayerView, ReferenceLayerIndicator
 from geosight.permission.access import RoleSuperAdminRequiredMixin
 from geosight.permission.models import (
+    PERMISSIONS,
     default_permission,
     ReferenceLayerIndicatorPermission as Permission,
     ReferenceLayerIndicatorUserPermission as UserPermission,
@@ -203,13 +205,46 @@ class DatasetAccessAPI(RoleSuperAdminRequiredMixin, APIView):
         return Response('OK')
 
 
-class DataAccessGeneralAPI(
+class DataAccessAPI(
     RoleSuperAdminRequiredMixin, ListAPIView, FilteredAPI
 ):
+    """Abstract API for data access."""
+    pagination_class = Pagination
+    query_class = Permission
+    PERMISSIONS = [
+        PERMISSIONS.NONE.name, PERMISSIONS.READ.name, PERMISSIONS.WRITE.name
+    ]
+
+    def put(self, request):
+        """Update data."""
+        try:
+            ids = request.data['ids']
+            permission = request.data['permission']
+            if permission not in self.PERMISSIONS:
+                return HttpResponseBadRequest(
+                    f'Permission not recognized. Choices : {self.PERMISSIONS}'
+                )
+            if self.query_class == Permission:
+                self.query_class.objects.filter(id__in=ids).update(
+                    public_permission=permission
+                )
+            else:
+                self.query_class.objects.filter(id__in=ids).update(
+                    permission=permission
+                )
+        except KeyError as e:
+            return HttpResponseBadRequest(f'{e}')
+        return HttpResponse(status=204)
+
+
+class DataAccessGeneralAPI(DataAccessAPI):
     """Data access General."""
 
-    pagination_class = Pagination
     serializer_class = GeneralPermissionsSerializer
+    query_class = Permission
+    permissions = [
+        PERMISSIONS.NONE.name, PERMISSIONS.READ.name
+    ]
 
     def get_queryset(self):
         """Return queryset of API."""
@@ -230,13 +265,11 @@ class DataAccessGeneralAPI(
         )
 
 
-class DataAccessUsersAPI(
-    RoleSuperAdminRequiredMixin, ListAPIView, FilteredAPI
-):
+class DataAccessUsersAPI(DataAccessAPI):
     """Data access Users."""
 
-    pagination_class = Pagination
     serializer_class = UsersPermissionsSerializer
+    query_class = UserPermission
 
     def get_queryset(self):
         """Return queryset of API."""
@@ -260,13 +293,10 @@ class DataAccessUsersAPI(
         )
 
 
-class DataAccessGroupsAPI(
-    RoleSuperAdminRequiredMixin, ListAPIView, FilteredAPI
-):
+class DataAccessGroupsAPI(DataAccessAPI):
     """Data access Groups."""
-
-    pagination_class = Pagination
     serializer_class = GroupsPermissionsSerializer
+    query_class = GroupPermission
 
     def get_queryset(self):
         """Return queryset of API."""

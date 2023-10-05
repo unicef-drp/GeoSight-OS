@@ -52,26 +52,28 @@ export default function GeorepoViewSelector(
 ) {
 
   const [references, setReferences] = useState([])
-  const [inputData, setInputData] = useState(null)
   const [reference, setReference] = useState(null)
+  const [inputData, setInputData] = useState(null)
 
   /** On load functions */
   useEffect(
     () => {
-      (
-        async () => {
-          const responseData = await fetchReferenceLayerList()
-          const references = responseData.map(row => {
-            row.value = row.identifier
-            return row
-          })
-          if (!reference) {
-            setReference(references[0].value)
+      if (open && !references.length) {
+        (
+          async () => {
+            const responseData = await fetchReferenceLayerList()
+            const references = responseData.map(row => {
+              row.value = row.identifier
+              return row
+            })
+            if (!reference) {
+              setReference(references[0].value)
+            }
+            setReferences(references)
           }
-          setReferences(references)
-        }
-      )();
-    }, []
+        )();
+      }
+    }, [open]
   )
 
   /** On load functions */

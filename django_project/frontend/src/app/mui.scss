@@ -504,6 +504,24 @@
     min-height: $base-height !important;
     white-space: nowrap;
 
+
+    .Mui-disabled {
+      .MuiOutlinedInput-notchedOutline {
+        border-width: 1px !important;
+      }
+    }
+
+    .Mui-focused {
+      .MuiOutlinedInput-notchedOutline {
+        border-color: rgba(0, 0, 0, 0.23) !important;
+        border-width: 1px !important;
+
+        &:hover {
+          border-color: rgba(0, 0, 0, 1) !important;
+        }
+      }
+    }
+
     .MuiDataGrid-cellContent, .CellLink {
       max-height: 150px;
       white-space: nowrap;

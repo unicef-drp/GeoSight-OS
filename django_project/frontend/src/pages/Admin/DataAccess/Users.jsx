@@ -27,22 +27,31 @@ const PERMISSIONS = [
   [
     "Read",
     "Read"
+  ],
+  [
+    "Write",
+    "Write"
   ]
 ]
 
 const COLUMNS = [
   { field: 'id', headerName: 'id', hide: true },
   { field: 'indicator_name', headerName: 'Indicator', flex: 1 },
-  { field: 'dataset_name', headerName: 'Dataset', flex: 0.5 }
+  { field: 'dataset_name', headerName: 'Dataset', flex: 0.5 },
+  { field: 'user_username', headerName: 'User', flex: 0.5 },
+  { field: 'user_role', headerName: 'Role', flex: 0.5 }
 ]
 
 /**
  * Render public data access table
  */
-export default function PublicDataAccess({ filters }) {
+export default function UsersDataAccess({ filters }) {
   return <DataAccessTable
-    urlData={urls.api.data.general}
+    urlData={urls.api.data.users}
     filters={filters}
     COLUMNS={COLUMNS}
-    PERMISSIONS={PERMISSIONS}/>
+    ableToDelete={true}
+    PERMISSIONS={PERMISSIONS}
+    dataName='user'
+  />
 }

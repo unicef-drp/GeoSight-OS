@@ -15,8 +15,6 @@
 
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import $ from 'jquery';
-import SettingsBackupRestoreIcon
-  from '@mui/icons-material/SettingsBackupRestore';
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
@@ -37,9 +35,7 @@ import Admin, { pageNames } from '../index';
 import {
   AddButton,
   DeleteButton,
-  EditButton,
-  SaveButton,
-  ThemeButton
+  SaveButton
 } from "../../../components/Elements/Button";
 import { fetchJSON } from "../../../Requests";
 import { dictDeepCopy, splitParams, urlParams } from "../../../utils/main";
@@ -50,11 +46,12 @@ import Modal, {
 } from "../../../components/Modal";
 import { AdminTable } from "../Components/Table";
 import { ConfirmDialog } from "../../../components/ConfirmDialog";
-import { UpdatePermissionModal } from "./UpdatePermissionModal";
 import PublicDataAccess from "./Public";
 
 import '../../Admin/Components/List/style.scss';
 import './style.scss';
+import UsersDataAccess from "./Users";
+import GroupsDataAccess from "./Groups";
 
 
 const PERMISSIONS = [
@@ -543,16 +540,6 @@ export default function DataAccessAdmin() {
     setDefaultTableTableData(dictDeepCopy(tableData))
   }
 
-
-  /** Fetch permission **/
-  useEffect(() => {
-    fetchJSON(urls.api.permissions)
-      .then(data => {
-        setData(data)
-        formatData(data)
-      })
-  }, [])
-
   /** When tab changes **/
   useEffect(() => {
     window.location.hash = tab
@@ -612,25 +599,8 @@ export default function DataAccessAdmin() {
       pageName={pageNames.DataAccess}
       rightHeader={
         <Fragment>
-          {/* ------------------------------ */}
-          <ThemeButton
-            variant="primary" onClick={() => {
-            setTableData(dictDeepCopy(defaultTableData))
-          }}
-            disabled={!changed || submitted}>
-            <SettingsBackupRestoreIcon/> Default
-          </ThemeButton>
-          <SaveButton
-            id={buttonID}
-            variant="primary Reverse"
-            text="Apply"
-            onClick={submit}
-            disabled={!changed || submitted}
-          />
-          {/* ------------------------------ */}
-          {/* OTHER BUTTONS */}
           {
-            [UserTab, GroupTab].includes(tab) && data ?
+            [UserTab, GroupTab].includes(tab) ?
               <Fragment>
                 <AddButton
                   variant="primary"
@@ -642,14 +612,10 @@ export default function DataAccessAdmin() {
                 <AddData
                   open={addPermissionOpen}
                   setOpen={setAddPermissionOpen}
-                  permissions={data['permission_choices'].filter(choice => {
-                    return !(tab !== 'Generals' && choice[0] === 'None')
-                  })}
+                  permissions={PERMISSIONS}
                   tab={tab}
-                  data={tableData[tab]}
+                  data={null}
                   updateData={(data) => {
-                    tableData[tab] = data
-                    setTableData({ ...tableData })
                   }}
                 />
               </Fragment> : null
@@ -672,6 +638,21 @@ export default function DataAccessAdmin() {
       }>
       {/* FILTERS */}
       <div className='ListAdminFilters'>
+        {
+          tab === UserTab ? (
+            <UserFilterSelector
+              data={filters.users}
+              setData={(data) => {
+                setFilters({ ...filters, users: data })
+              }}/>
+          ) : tab === GroupTab ? (
+            <GroupFilterSelector
+              data={filters.groups}
+              setData={(data) => {
+                setFilters({ ...filters, groups: data })
+              }}/>
+          ) : ""
+        }
         <IndicatorFilterSelector
           data={filters.indicators}
           setData={(data) => {
@@ -688,21 +669,6 @@ export default function DataAccessAdmin() {
           setData={(data) => {
             setFilters({ ...filters, permissions: data })
           }}/>
-        {
-          tab === UserTab ? (
-            <UserFilterSelector
-              data={filters.users}
-              setData={(data) => {
-                setFilters({ ...filters, users: data })
-              }}/>
-          ) : tab === GroupTab ? (
-            <GroupFilterSelector
-              data={filters.groups}
-              setData={(data) => {
-                setFilters({ ...filters, groups: data })
-              }}/>
-          ) : ""
-        }
       </div>
       <div className='Tab TabPrimary'>
         <div
@@ -727,51 +693,10 @@ export default function DataAccessAdmin() {
       {
         tab === GeneralTab ?
           <PublicDataAccess filters={filters}/> :
-          <AccessData
-            rows={filteredTableData ? filteredTableData[tab] : null}
-            columns={COLUMNS[tab]}
-            selected={[UserTab, GroupTab].includes(tab)}
-            selectionModel={selectionModel}
-            setSelectionModel={setSelectionModel}
-            onDelete={_ => {
-              tableData[tab].filter(data => selectionModel.includes(data.id)).map(row => {
-                row.is_deleted = true
-              })
-              setTableData({ ...tableData })
-              setSelectionModel([])
-            }}
-            tab={tab}
-          >
-            {
-              data ? <Fragment>
-                <EditButton
-                  disabled={!selectionModel.length}
-                  variant="primary Reverse"
-                  text={"Change permission"}
-                  onClick={() => {
-                    setUpdatePermissionOpen(true)
-                  }}
-                />
-                <UpdatePermissionModal
-                  open={updatePermissionOpen}
-                  setOpen={setUpdatePermissionOpen}
-                  choices={data['permission_choices'].filter(choice => {
-                    return !(tab !== 'Generals' && choice[0] === 'None')
-                  })}
-                  selectedPermission={(permission) => {
-                    tableData[tab].filter(data => {
-                      if (selectionModel.includes(data.id)) {
-                        data.permission = permission
-                      }
-                    })
-                    setTableData({ ...tableData })
-                    setSelectionModel([])
-                    setUpdatePermissionOpen(false)
-                  }}
-                />
-              </Fragment> : null
-            }
-          </AccessData>
+          tab === UserTab ?
+            <UsersDataAccess filters={filters}/> :
+            tab === GroupTab ?
+              <GroupsDataAccess filters={filters}/> : null
       }
     </Admin>
   );

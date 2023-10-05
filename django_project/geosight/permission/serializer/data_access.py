@@ -70,6 +70,7 @@ class UsersPermissionsSerializer(serializers.ModelSerializer):
     indicator_name = serializers.SerializerMethodField()
     user_id = serializers.SerializerMethodField()
     user_username = serializers.SerializerMethodField()
+    user_role = serializers.SerializerMethodField()
     permission = serializers.SerializerMethodField()
 
     def get_dataset_id(self, obj: UserPermission):
@@ -96,6 +97,12 @@ class UsersPermissionsSerializer(serializers.ModelSerializer):
         """Return username."""
         return obj.user.username
 
+    def get_user_role(self, obj: UserPermission):
+        """Return role."""
+        if obj.user.profile:
+            return obj.user.profile.role
+        return '-'
+
     def get_permission(self, obj: UserPermission):
         """Return permission."""
         return obj.permission
@@ -106,7 +113,7 @@ class UsersPermissionsSerializer(serializers.ModelSerializer):
             'id',
             'dataset_id', 'dataset_name',
             'indicator_id', 'indicator_name',
-            'user_id', 'user_username',
+            'user_id', 'user_username', 'user_role',
             'permission'
         ]
 

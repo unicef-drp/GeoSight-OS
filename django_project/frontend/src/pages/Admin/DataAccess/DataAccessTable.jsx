@@ -14,13 +14,21 @@
  */
 
 import React, { Fragment, useEffect, useRef, useState } from 'react';
+import { GridActionsCellItem } from "@mui/x-data-grid";
+import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import { NotificationStatus } from "../../../components/Notification";
+
+import { ConfirmDialog } from "../../../components/ConfirmDialog";
+import {
+  Notification,
+  NotificationStatus
+} from "../../../components/Notification";
 import { ServerTable } from "../Components/Table/ServerTable";
-import { EditButton } from "../../../components/Elements/Button";
+import { DeleteButton, EditButton } from "../../../components/Elements/Button";
 import { UpdatePermissionModal } from "./UpdatePermissionModal";
+import { DjangoRequests } from "../../../Requests";
 
 import './style.scss';
 
@@ -28,9 +36,12 @@ import './style.scss';
  * Render public data access table
  */
 export default function DataAccessTable(
-  { urlData, filters, COLUMNS, PERMISSIONS }
+  { urlData, filters, ableToDelete, COLUMNS, PERMISSIONS, dataName = 'Public' }
 ) {
+  const deleteDialogRef = useRef(null);
   const tableRef = useRef(null);
+  const [deletingIds, setDeletingIds] = useState([]);
+
   // Notification
   const notificationRef = useRef(null);
   const notify = (newMessage, newSeverity = NotificationStatus.INFO) => {
@@ -38,17 +49,17 @@ export default function DataAccessTable(
   }
 
   const [selectionModel, setSelectionModel] = useState([]);
-  const [updatePermissionOpen, setUpdatePermissionOpen] = useState(false);
-  const [data, setData] = useState(null);
+  const [updatePermission, setUpdatePermission] = useState({
+    open: false,
+    updating: false
+  });
 
   // When filter changed
   useEffect(() => {
     tableRef?.current?.refresh()
   }, [filters])
 
-  /***
-   * Parameters Changed
-   */
+  /*** Parameters Changed */
   const getParameters = (parameters) => {
     if (filters.indicators?.length) {
       parameters['indicator_id__in'] = filters.indicators.join(',')
@@ -66,36 +77,171 @@ export default function DataAccessTable(
       delete parameters['permission__in']
     }
     if (filters.users?.length) {
-      parameters['user__id__in'] = filters.users.join(',')
+      parameters['user_id__in'] = filters.users.join(',')
     } else {
-      delete parameters['user__id__in']
+      delete parameters['user_id__in']
     }
     if (filters.groups?.length) {
-      parameters['group__id__in'] = filters.groups.join(',')
+      parameters['group_id__in'] = filters.groups.join(',')
     } else {
-      delete parameters['group__id__in']
+      delete parameters['group_id__in']
     }
     return parameters
+  }
+
+  // ----------------------------
+  // Render Permission
+  // ----------------------------
+  const renderPermission = (params) => {
+    return <FormControl className='BasicForm'>
+      <Select
+        value={params.value}
+        disabled={params.row.updating}
+        onChange={(evt) => {
+          let prevPermission = null
+          tableRef?.current?.updateData(data => {
+            const row = data.find(row => row.id === params.id);
+            if (row) {
+              prevPermission = row.permission
+              row.permission = evt.target.value
+              row.updating = true
+            }
+            return data
+          })
+          DjangoRequests.put(
+            urlData,
+            { ids: [params.id], permission: evt.target.value }
+          ).then(response => {
+            tableRef?.current?.updateData(data => {
+              const row = data.find(row => row.id === params.id);
+              if (row) {
+                row.updating = false
+              }
+              return data
+            })
+          }).catch(error => {
+              notify('Failed to update data', NotificationStatus.ERROR);
+              tableRef?.current?.updateData(data => {
+                const row = data.find(row => row.id === params.id);
+                if (row) {
+                  row.permission = prevPermission
+                  row.updating = false
+                }
+                return data
+              })
+            }
+          )
+        }}
+      >
+        {
+          PERMISSIONS.map(choice => {
+            return <MenuItem
+              key={choice[0]}
+              value={choice[0]}>
+              {choice[1]}
+            </MenuItem>
+          })
+        }
+      </Select>
+    </FormControl>
+  }
+  if (!COLUMNS.find(col => col.field === 'permission')) {
+    COLUMNS.push(
+      {
+        field: 'permission', headerName: 'Permission', width: 200,
+        renderCell: (params) => {
+          return renderPermission(params, 'permission')
+        }
+      })
+  }
+
+  // ----------------------------
+  // Render Delete Action
+  // ----------------------------
+  const actions = (params) => {
+    return [
+      <GridActionsCellItem
+        icon={
+          <DoDisturbOnIcon
+            className='DeleteButton'/>
+        }
+        onClick={() => {
+          setDeletingIds([params.id])
+          deleteDialogRef?.current?.open()
+        }}
+        label="Delete"
+      />
+    ]
+  }
+  if (ableToDelete) {
+    if (!COLUMNS.find(col => col.field === 'actions')) {
+      COLUMNS.push({
+        field: 'actions',
+        type: 'actions',
+        width: 80,
+        getActions: (params) => {
+          return actions(params)
+        },
+      })
+    }
   }
 
   return <div className='AdminList DataAccessAdminTable'>
     <ServerTable
       header={
         <Fragment>
+          {
+            ableToDelete ? <DeleteButton
+              disabled={!selectionModel.length}
+              variant="Error Reverse"
+              text={"Delete"}
+              onClick={() => {
+                setDeletingIds(selectionModel)
+                deleteDialogRef?.current?.open()
+              }}
+            /> : null
+          }
           <EditButton
             disabled={!selectionModel.length}
             variant="primary Reverse"
             text={"Change permission"}
             onClick={() => {
-              setUpdatePermissionOpen(true)
+              setUpdatePermission({ ...updatePermission, open: true })
             }}
           />
           <UpdatePermissionModal
-            open={updatePermissionOpen}
-            setOpen={setUpdatePermissionOpen}
+            state={updatePermission}
+            onClosed={() => setUpdatePermission({
+              ...updatePermission,
+              open: false
+            })}
             choices={PERMISSIONS}
             selectedPermission={(permission) => {
-              console.log(permission)
+
+              // Update bulk permission
+              setUpdatePermission({
+                ...updatePermission,
+                updating: true
+              })
+
+              DjangoRequests.put(
+                urlData,
+                { ids: selectionModel, permission: permission }
+              ).then(response => {
+                tableRef?.current?.refresh();
+                setUpdatePermission({
+                  ...updatePermission,
+                  updating: false,
+                  open: false
+                })
+              }).catch(error => {
+                  notify('Failed to update data', NotificationStatus.ERROR);
+                  setUpdatePermission({
+                    ...updatePermission,
+                    updating: false
+                  })
+                }
+              )
             }}
           />
         </Fragment>
@@ -108,5 +254,19 @@ export default function DataAccessTable(
       checkboxSelection={true}
       ref={tableRef}
     />
+    <ConfirmDialog
+      onConfirmed={() => {
+        console.log('test')
+      }}
+      ref={deleteDialogRef}
+    >
+      <div>
+        Are you sure want to
+        delete {deletingIds.length ? deletingIds.length : 1}&nbsp;
+        {dataName.toLowerCase() + (deletingIds.length > 1 ? 's' : '')} data
+        access?
+      </div>
+    </ConfirmDialog>
+    <Notification ref={notificationRef}/>
   </div>
 }
