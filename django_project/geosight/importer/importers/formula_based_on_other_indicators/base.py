@@ -121,7 +121,7 @@ class FormulaBasedOnOtherIndicatorsIndicatorValue(IndicatorValueLongFormat):
             options.add_argument('--disable-dev-shm-usage')
             driver = webdriver.Chrome(
                 service=Service(
-                    ChromeDriverManager(version='114.0.5735.90').install()
+                    ChromeDriverManager('117.0.5938.149').install()
                 ),
                 options=options
             )
