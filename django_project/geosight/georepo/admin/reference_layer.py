@@ -23,7 +23,8 @@ from geosight.georepo.models import (
     ReferenceLayerView
 )
 from geosight.georepo.tasks import (
-    fetch_reference_codes, fetch_datasets
+    fetch_reference_codes, fetch_datasets,
+    create_data_access
 )
 
 
@@ -42,9 +43,15 @@ def sync_codes(modeladmin, request, queryset):
 
 
 @admin.action(description='Fetch new reference layer view')
-def sync_codes(modeladmin, request, queryset):
+def action_fetch_datasets(modeladmin, request, queryset):
     """Fetch new reference layer."""
     fetch_datasets.delay()
+
+
+@admin.action(description='Create all data access')
+def action_create_data_access(modeladmin, request, queryset):
+    """Fetch new reference layer."""
+    create_data_access.delay()
 
 
 class ReferenceLayerViewAdmin(admin.ModelAdmin):
@@ -54,7 +61,10 @@ class ReferenceLayerViewAdmin(admin.ModelAdmin):
         'identifier', 'name', 'description', 'in_georepo', 'number_of_value'
     ]
     ordering = ['name']
-    actions = [update_meta, sync_codes]
+    actions = [
+        update_meta, sync_codes, action_fetch_datasets,
+        action_create_data_access
+    ]
 
     def in_georepo(self, obj: ReferenceLayerView):
         """Is reference layer in georepo."""

@@ -45,14 +45,15 @@ def fetch_datasets():
             dataset['uuid']
         )
         for reference_layer in reference_layer_list:
-            ref, _ = ReferenceLayerView.objects.get_or_create(
+            ref, created = ReferenceLayerView.objects.get_or_create(
                 identifier=reference_layer['uuid'],
                 defaults={
                     'name': reference_layer['name'],
                     'description': reference_layer['description']
                 }
             )
-            create_data_access_reference_layer_view(ref.id)
+            if created:
+                create_data_access_reference_layer_view(ref.id)
 
 
 @app.task
