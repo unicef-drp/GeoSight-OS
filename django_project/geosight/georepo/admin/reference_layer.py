@@ -20,10 +20,12 @@ from geosight.data.models.indicator.indicator_value import (
     IndicatorValueWithGeo
 )
 from geosight.georepo.models import (
-    ReferenceLayerIndicator,
     ReferenceLayerView
 )
-from geosight.georepo.tasks import fetch_reference_codes
+from geosight.georepo.tasks import (
+    fetch_reference_codes, fetch_datasets,
+    create_data_access
+)
 
 
 @admin.action(description='Update meta')
@@ -40,6 +42,18 @@ def sync_codes(modeladmin, request, queryset):
         fetch_reference_codes.delay(reference_layer.id)
 
 
+@admin.action(description='Fetch new reference layer view')
+def action_fetch_datasets(modeladmin, request, queryset):
+    """Fetch new reference layer."""
+    fetch_datasets.delay()
+
+
+@admin.action(description='Create all data access')
+def action_create_data_access(modeladmin, request, queryset):
+    """Fetch new reference layer."""
+    create_data_access.delay()
+
+
 class ReferenceLayerViewAdmin(admin.ModelAdmin):
     """ReferenceLayerView admin."""
 
@@ -47,7 +61,10 @@ class ReferenceLayerViewAdmin(admin.ModelAdmin):
         'identifier', 'name', 'description', 'in_georepo', 'number_of_value'
     ]
     ordering = ['name']
-    actions = [update_meta, sync_codes]
+    actions = [
+        update_meta, sync_codes, action_fetch_datasets,
+        action_create_data_access
+    ]
 
     def in_georepo(self, obj: ReferenceLayerView):
         """Is reference layer in georepo."""
@@ -62,5 +79,4 @@ class ReferenceLayerViewAdmin(admin.ModelAdmin):
         ).count()
 
 
-admin.site.register(ReferenceLayerIndicator, admin.ModelAdmin)
 admin.site.register(ReferenceLayerView, ReferenceLayerViewAdmin)

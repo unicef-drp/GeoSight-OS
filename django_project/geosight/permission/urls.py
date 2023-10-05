@@ -22,7 +22,9 @@ from geosight.permission.api import (
     DashboardPermissionAPI,
     GroupPermissionAPI,
     IndicatorPermissionAPI,
-    DatasetAccessAPI,
+    DataAccessGeneralAPI,
+    DataAccessUsersAPI,
+    DataAccessGroupsAPI,
     RelatedTablePermissionAPI,
     StylePermissionAPI
 )
@@ -54,9 +56,19 @@ urlpatterns = [
         name='indicator-permission-api'
     ),
     url(
-        r'^dataset/data-access',
-        DatasetAccessAPI.as_view(),
-        name='dataset-access-api'
+        r'^data-access/general',
+        DataAccessGeneralAPI.as_view(),
+        name='data-access-general-api'
+    ),
+    url(
+        r'^data-access/users',
+        DataAccessUsersAPI.as_view(),
+        name='data-access-users-api'
+    ),
+    url(
+        r'^data-access/groups',
+        DataAccessGroupsAPI.as_view(),
+        name='data-access-groups-api'
     ),
     url(
         r'^related-table/(?P<pk>\d+)',

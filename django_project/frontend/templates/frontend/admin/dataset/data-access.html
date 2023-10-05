@@ -11,11 +11,15 @@
 {% block scripts %}
     <script>
       urls.api = {
-        'permissions': '{% url 'dataset-access-api' %}',
         'detail': '{{ group_detail_api }}',
         'users': '{% url 'user-list-api'%}',
         'groups': '{% url 'group-list-api'%}',
         'indicators': '{% url 'indicator-basic-list-api'%}',
+        'data': {
+          'users': '{% url 'data-access-users-api' %}',
+          'groups': '{% url 'data-access-groups-api' %}',
+          'general': '{% url 'data-access-general-api' %}',
+        }
       }
     </script>
 {% endblock %}

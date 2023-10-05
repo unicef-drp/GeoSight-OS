@@ -63,4 +63,11 @@
     -ms-user-select: none;
     user-select: none;
   }
+
+  input[readonly] {
+    background-color: white !important;
+    color: rgba(0, 0, 0, 0.6) !important;
+    cursor: pointer !important;
+    border: inherit !important;
+  }
 }

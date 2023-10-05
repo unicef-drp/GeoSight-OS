@@ -52,8 +52,8 @@ export default function GeorepoViewSelector(
 ) {
 
   const [references, setReferences] = useState([])
-  const [inputData, setInputData] = useState(null)
   const [reference, setReference] = useState(null)
+  const [inputData, setInputData] = useState(null)
 
   /** On load functions */
   useEffect(

@@ -79,7 +79,27 @@ class DatasetPermissionTest(TestCase):
 
     def test_get_api(self):
         """Test list of resource."""
-        url = reverse('dataset-access-api')
+        url = reverse('data-access-general-api')
+
+        self.assertRequestGetView(url, 302)  # Non login
+        self.assertRequestGetView(url, 403, self.viewer)
+        self.assertRequestGetView(url, 403, self.contributor)
+        self.assertRequestGetView(url, 403, self.creator)
+        self.assertRequestGetView(url, 403, self.resource_creator)
+        self.assertRequestGetView(url, 403, self.viewer_in_group)
+        self.assertRequestGetView(url, 200, self.admin)
+
+        url = reverse('data-access-users-api')
+
+        self.assertRequestGetView(url, 302)  # Non login
+        self.assertRequestGetView(url, 403, self.viewer)
+        self.assertRequestGetView(url, 403, self.contributor)
+        self.assertRequestGetView(url, 403, self.creator)
+        self.assertRequestGetView(url, 403, self.resource_creator)
+        self.assertRequestGetView(url, 403, self.viewer_in_group)
+        self.assertRequestGetView(url, 200, self.admin)
+
+        url = reverse('data-access-groups-api')
 
         self.assertRequestGetView(url, 302)  # Non login
         self.assertRequestGetView(url, 403, self.viewer)
