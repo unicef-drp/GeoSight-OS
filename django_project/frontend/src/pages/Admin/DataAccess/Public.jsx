@@ -14,7 +14,7 @@
  */
 
 import React from 'react';
-import DataAccessTable from "./DataAccessTable";
+import { DataAccessTable } from "./DataAccessTable";
 
 import './style.scss';
 

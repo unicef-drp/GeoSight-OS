@@ -14,22 +14,19 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-import json
-
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from rest_framework.generics import ListAPIView
-from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from core.api.base import FilteredAPI
 from core.pagination import Pagination
 from geosight.data.models import Indicator
-from geosight.georepo.models import ReferenceLayerView, ReferenceLayerIndicator
+from geosight.georepo.models import (
+    ReferenceLayerIndicator, ReferenceLayerView
+)
 from geosight.permission.access import RoleSuperAdminRequiredMixin
 from geosight.permission.models import (
     PERMISSIONS,
-    default_permission,
     ReferenceLayerIndicatorPermission as Permission,
     ReferenceLayerIndicatorUserPermission as UserPermission,
     ReferenceLayerIndicatorGroupPermission as GroupPermission
@@ -41,168 +38,6 @@ from geosight.permission.serializer.data_access import (
 )
 
 User = get_user_model()
-
-
-class DatasetAccessAPI(RoleSuperAdminRequiredMixin, APIView):
-    """API for list of group."""
-
-    def get(self, request):
-        """Return permission data of group.
-
-        Returning all or resources and also the permission.
-        On resources, it is list of [id, name].
-        On permissions, it is {d,i,u,p}.
-        d = dataset id
-        i = indicator id
-        u = user id
-        p = permission
-        """
-        user_permissions = []
-        for ref in Permission.objects.all():
-            for permission in ref.user_permissions.all():
-                user_permissions.append({
-                    'd': ref.obj.reference_layer.id,
-                    'di': ref.obj.reference_layer.identifier,
-                    'dn': ref.obj.reference_layer.name,
-                    'i': ref.obj.indicator.id,
-                    'in': ref.obj.indicator.name,
-                    'o': permission.user.id,
-                    'on': permission.user.username,
-                    'or': permission.user.profile.role,
-                    'p': permission.permission
-                })
-        group_permissions = []
-        for ref in Permission.objects.all():
-            for permission in ref.group_permissions.all():
-                group_permissions.append({
-                    'd': ref.obj.reference_layer.id,
-                    'di': ref.obj.reference_layer.identifier,
-                    'dn': ref.obj.reference_layer.name,
-                    'i': ref.obj.indicator.id,
-                    'in': ref.obj.indicator.name,
-                    'o': permission.group.id,
-                    'on': permission.group.name,
-                    'p': permission.permission
-                })
-        general_permissions_dict = {}
-        for ref in Permission.objects.all():
-            id = f'{ref.obj.reference_layer.id}-{ref.obj.indicator.id}'
-            general_permissions_dict[id] = {
-                'd': ref.obj.reference_layer.id,
-                'di': ref.obj.reference_layer.identifier,
-                'dn': ref.obj.reference_layer.name,
-                'i': ref.obj.indicator.id,
-                'in': ref.obj.indicator.name,
-                'o': ref.organization_permission,
-                'p': ref.public_permission
-            }
-
-        general_permissions = []
-        for indicator in Indicator.objects.all():
-            for reference_layer in ReferenceLayerView.objects.all():
-                id = f'{reference_layer.id}-{indicator.id}'
-                try:
-                    general_permissions.append(general_permissions_dict[id])
-                except KeyError:
-                    ref = Permission(
-                        obj=ReferenceLayerIndicator(
-                            reference_layer=reference_layer,
-                            indicator=indicator
-                        )
-                    )
-                    general_permissions.append({
-                        'd': ref.obj.reference_layer.id,
-                        'di': ref.obj.reference_layer.identifier,
-                        'dn': ref.obj.reference_layer.name,
-                        'i': ref.obj.indicator.id,
-                        'in': ref.obj.indicator.__str__(),
-                        'o': ref.organization_permission,
-                        'p': ref.public_permission
-                    })
-
-        # Get permission choices
-        obj = Permission()
-        org_perm_choices = obj.get_organization_permission_display.keywords[
-            'field'].choices
-
-        return Response(
-            {
-                'permissions': {
-                    'users': user_permissions,
-                    'groups': group_permissions,
-                    'generals': general_permissions
-                },
-                'permission_choices': org_perm_choices
-            }
-        )
-
-    def post(self, request):
-        """Post permission of dataset."""
-        data = json.loads(request.data['data'])
-
-        for permission in data['generals']:
-            reference_layer = ReferenceLayerView.get_by_identifier(
-                permission['d'])
-            if not reference_layer:
-                continue
-
-            permission['d'] = reference_layer.id
-            ref, created = ReferenceLayerIndicator.objects.get_or_create(
-                reference_layer_id=permission['d'],
-                indicator_id=permission['i']
-            )
-            obj, created = Permission.objects.get_or_create(
-                obj=ref)
-            obj.organization_permission = permission.get(
-                'o', default_permission.organization.default
-            )
-            obj.public_permission = permission['p']
-            obj.save()
-
-        # Save users
-        for permission in data['users']:
-            reference_layer = ReferenceLayerView.get_by_identifier(
-                permission['d'])
-            if not reference_layer:
-                continue
-            ref, created = ReferenceLayerIndicator.objects.get_or_create(
-                reference_layer_id=reference_layer.id,
-                indicator_id=permission['i']
-            )
-            obj, created = Permission.objects.get_or_create(
-                obj=ref)
-            perm, _ = UserPermission.objects.get_or_create(
-                obj=obj,
-                user_id=permission['o']
-            )
-            if 'is_del' in permission and permission['is_del']:
-                perm.delete()
-            else:
-                perm.permission = permission['p']
-                perm.save()
-
-        # Save groups
-        for permission in data['groups']:
-            reference_layer = ReferenceLayerView.get_by_identifier(
-                permission['d'])
-            if not reference_layer:
-                continue
-            ref, created = ReferenceLayerIndicator.objects.get_or_create(
-                reference_layer_id=reference_layer.id,
-                indicator_id=permission['i']
-            )
-            obj, created = Permission.objects.get_or_create(
-                obj=ref)
-            perm, _ = GroupPermission.objects.get_or_create(
-                obj=obj,
-                group_id=permission['o']
-            )
-            if 'is_del' in permission and permission['is_del']:
-                perm.delete()
-            else:
-                perm.permission = permission['p']
-                perm.save()
-        return Response('OK')
 
 
 class DataAccessAPI(
@@ -235,6 +70,68 @@ class DataAccessAPI(
         except KeyError as e:
             return HttpResponseBadRequest(f'{e}')
         return HttpResponse(status=204)
+
+    def post(self, request):
+        """Delete data."""
+        if self.query_class == Permission:
+            return Http404('No post action found.')
+        try:
+            indicators = request.data['indicators']
+            datasets = request.data['datasets']
+            objects = request.data['objects']
+            permission = request.data['permission']
+            if permission not in self.PERMISSIONS:
+                return HttpResponseBadRequest(
+                    f'Permission not recognized. Choices : {self.PERMISSIONS}'
+                )
+
+            indicators_query = Indicator.objects.all()
+            if indicators:
+                indicators_query = indicators_query.filter(id__in=indicators)
+
+            ref_query = ReferenceLayerView.objects.all()
+            if datasets:
+                ref_query = []
+                for dataset in datasets:
+                    ref, _ = ReferenceLayerView.objects.get_or_create(
+                        identifier=dataset
+                    )
+                    ref_query.append(ref)
+
+            # Create data per indicator, ref and
+            for indicator in indicators_query:
+                for reference_layer in ref_query:
+                    obj, _ = ReferenceLayerIndicator.objects.get_or_create(
+                        reference_layer=reference_layer,
+                        indicator=indicator
+                    )
+                    try:
+                        permission_obj = obj.permission
+                    except Permission.DoesNotExist:
+                        permission_obj, _ = Permission.objects.get_or_create(
+                            obj=obj
+                        )
+
+                    for obj_id in objects:
+                        if self.query_class == UserPermission:
+                            self.query_class.objects.get_or_create(
+                                obj=permission_obj,
+                                user_id=obj_id,
+                                defaults={
+                                    'permission': permission
+                                }
+                            )
+                        elif self.query_class == GroupPermission:
+                            self.query_class.objects.get_or_create(
+                                obj=permission_obj,
+                                group_id=obj_id,
+                                defaults={
+                                    'permission': permission
+                                }
+                            )
+        except KeyError as e:
+            return HttpResponseBadRequest(f'{e}')
+        return HttpResponse(status=201)
 
     def delete(self, request):
         """Delete data."""

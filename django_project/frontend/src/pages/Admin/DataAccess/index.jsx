@@ -14,13 +14,9 @@
  */
 
 import React, { Fragment, useEffect, useRef, useState } from 'react';
-import $ from 'jquery';
-import { GridActionsCellItem } from "@mui/x-data-grid";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import Popover from "@mui/material/Popover";
-import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
 
 import { render } from '../../../app';
 import {
@@ -32,26 +28,19 @@ import {
 } from "../ModalSelector/ModalFilterSelector";
 import { store } from '../../../store/admin';
 import Admin, { pageNames } from '../index';
-import {
-  AddButton,
-  DeleteButton,
-  SaveButton
-} from "../../../components/Elements/Button";
-import { fetchJSON } from "../../../Requests";
-import { dictDeepCopy, splitParams, urlParams } from "../../../utils/main";
+import { AddButton, SaveButton } from "../../../components/Elements/Button";
+import { splitParams, urlParams } from "../../../utils/main";
 import Modal, {
   ModalContent,
   ModalFooter,
   ModalHeader
 } from "../../../components/Modal";
-import { AdminTable } from "../Components/Table";
-import { ConfirmDialog } from "../../../components/ConfirmDialog";
 import PublicDataAccess from "./Public";
+import { UsersDataAccess } from "./Users";
+import { GroupsDataAccess } from "./Groups";
 
 import '../../Admin/Components/List/style.scss';
 import './style.scss';
-import UsersDataAccess from "./Users";
-import GroupsDataAccess from "./Groups";
 
 
 const PERMISSIONS = [
@@ -73,14 +62,13 @@ const PERMISSIONS = [
  * Add new data
  */
 export function AddData(
-  {
-    tab, permissions, open, setOpen, data, updateData
-  }
+  { tab, open, setOpen, tableRef }
 ) {
   const [indicators, setIndicators] = useState([])
   const [datasets, setDatasets] = useState([])
   const [objects, setObjects] = useState([])
-  const [permission, setPermission] = useState(permissions[0][0])
+  const [permission, setPermission] = useState(PERMISSIONS[1][0])
+  const [creating, setCreating] = useState(false)
 
   useEffect(() => {
     setIndicators([])
@@ -97,7 +85,19 @@ export function AddData(
   >
     <ModalHeader onClosed={() => {
       setOpen(false)
-    }}>Update permission</ModalHeader>
+    }}>
+      Add permission
+      <div className='helptext'>
+        Automatically create multiple dataset.<br/>
+        {tab === UserTab ? 'Users' : 'Groups'} and permission is required.<br/>
+        You can put indicators or datasets empty to auto assign to all of the
+        empty one.<br/>
+        Example: We select indicator A and B, and dataset is empty, <br/>
+        it will auto assign data access all of dataset for indicator A and
+        B.<br/>
+        This just create new data access, not updating existing one.<br/>
+      </div>
+    </ModalHeader>
     <ModalContent>
       <FormControl className='BasicForm'>
         <label className="form-label">Indicators</label>
@@ -135,7 +135,7 @@ export function AddData(
           }}
         >
           {
-            permissions.map(choice => {
+            PERMISSIONS.map(choice => {
               return <MenuItem
                 key={choice[0]}
                 value={choice[0]}>{choice[1]}</MenuItem>
@@ -147,129 +147,31 @@ export function AddData(
     <ModalFooter>
       <div className='Save-Button'>
         <SaveButton
+          disabled={creating || !tableRef?.current || !permission || !objects.length || !(indicators.length || datasets.length)}
           variant="primary"
           text={"Apply Changes"}
           onClick={() => {
-            let maxId = data.length ? Math.max(...data.map(row => row.id)) : 0
-            indicators.map(indicator => {
-              datasets.map(dataset => {
-                objects.map(object => {
-                  if (tab === UserTab) {
-                    const dataFound = data.filter(row => {
-                      return row.indicator_id === indicator.id &&
-                        row.dataset_id === dataset.id && row.user_id === object.id
-                    })[0]
-                    if (dataFound) {
-                      dataFound.permission = permission
-                    } else {
-                      maxId += 1
-                      data.push({
-                        'id': maxId + 1,
-                        'dataset_id': dataset.id,
-                        'dataset_name': dataset.name,
-                        'indicator_id': indicator.id,
-                        'indicator_name': indicator.name,
-                        'user_id': object.id,
-                        'user_name': object.username,
-                        'user_role': object.role,
-                        'permission': permission
-                      })
-                    }
-                  } else if (tab === GroupTab) {
-                    const dataFound = data.filter(row => {
-                      return row.indicator_id === indicator.id &&
-                        row.dataset_id === dataset.id && row.group_id === object.id
-                    })[0]
-                    if (dataFound) {
-                      dataFound.permission = permission
-                    } else {
-                      maxId += 1
-                      data.push({
-                        'id': maxId,
-                        'dataset_id': dataset.id,
-                        'dataset_name': dataset.name,
-                        'indicator_id': indicator.id,
-                        'indicator_name': indicator.name,
-                        'group_id': object.id,
-                        'group_name': object.name,
-                        'permission': permission
-                      })
-                    }
-                  }
-                })
-              })
-            })
-            updateData(data)
-            setOpen(false)
+            setCreating(true)
+            tableRef?.current.createData(
+              {
+                indicators: indicators.map(row => row.id),
+                datasets: datasets.map(row => row.identifier),
+                objects: objects.map(row => row.id),
+                permission: permission,
+              },
+              () => {
+                setOpen(false)
+                setCreating(false)
+              },
+              () => {
+                setCreating(false)
+              }
+            )
           }}
         />
       </div>
     </ModalFooter>
   </Modal>
-}
-
-/**
- * Access data
- */
-export function AccessData(
-  {
-    rows,
-    columns,
-    selected,
-    selectionModel,
-    setSelectionModel,
-    tab,
-    onDelete,
-    children
-  }) {
-  const deleteDialogRef = useRef(null);
-  const dataName = tab.replace(/s$/, '');
-
-  return <div className='AdminList DataAccessAdminTable'>
-    <AdminTable
-      header={
-        <Fragment>
-          {children}
-          <DeleteButton
-            disabled={!selectionModel.length}
-            variant="Error Reverse"
-            text={"Delete"}
-            onClick={() => {
-              deleteDialogRef?.current?.open()
-            }}
-          />
-          <ConfirmDialog
-            onConfirmed={() => {
-              onDelete()
-            }}
-            ref={deleteDialogRef}
-          >
-            <div>
-              Are you sure want to
-              delete {selectionModel.length} data access
-              for {dataName.toLowerCase() + (selectionModel.length > 1 ? 's' : '')}?
-              <br/>
-              <br/>
-              To apply it to database, please hit "Apply" button.
-            </div>
-          </ConfirmDialog>
-        </Fragment>
-      }
-      rows={rows} columns={columns}
-      setSelectionModel={setSelectionModel}
-      initialState={{
-        sorting: {
-          sortModel: [
-            { field: 'indicator_name', sort: 'asc' },
-          ],
-        },
-      }}
-      disableSelectionOnClick
-      disableColumnFilter
-      checkboxSelection={selected}
-      selectionModel={selectionModel}
-    />
-  </div>
 }
 
 const UserTab = 'users'
@@ -286,17 +188,15 @@ export default function DataAccessAdmin() {
     users,
     groups
   } = urlParams()
+  const usersRef = useRef(null);
+  const groupsRef = useRef(null);
 
   let paramTab = window.location.hash.replace('#', '').replaceAll('%20', ' ').toLowerCase()
   if (![UserTab, GroupTab, GeneralTab].includes(paramTab)) {
     paramTab = UserTab
   }
 
-  const [submitted, setSubmitted] = useState(false)
   const [tab, setTab] = useState(paramTab ? paramTab : UserTab)
-  const [data, setData] = useState(null)
-  const [tableData, setTableData] = useState(null)
-  const [defaultTableData, setDefaultTableTableData] = useState(null)
 
   const [filters, setFilters] = useState({
     indicators: splitParams(indicators),
@@ -305,295 +205,13 @@ export default function DataAccessAdmin() {
     users: splitParams(users),
     groups: splitParams(groups),
   })
-
-  const [selectionModel, setSelectionModel] = useState([]);
-  const [updatePermissionOpen, setUpdatePermissionOpen] = useState(false);
   const [addPermissionOpen, setAddPermissionOpen] = useState(false);
-
-  // for popover
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [info, setInfo] = useState(null);
-
-  // Render Cell
-  const renderCell = (params, key) => {
-    return <FormControl className='BasicForm'>
-      <Select
-        value={params.row[key]}
-        onChange={(evt) => {
-          tableData[tab][params.row.id][key] = evt.target.value
-          setTableData({ ...tableData })
-        }}
-      >
-        {
-          data['permission_choices'].map(choice => {
-            if (
-              (tab !== GeneralTab && choice[0] === 'None') ||
-              (tab === GeneralTab && choice[0] === 'Write' && key === 'public')
-            ) {
-              return
-            }
-            return <MenuItem
-              key={choice[0]}
-              value={choice[0]}>{choice[1]}</MenuItem>
-          })
-        }
-      </Select>
-    </FormControl>
-  }
-
-  const actions = (params) => {
-    return [
-      <GridActionsCellItem
-        icon={
-          <DoDisturbOnIcon
-            className='DeleteButton'/>
-        }
-        onClick={() => {
-          tableData[tab].map(row => {
-            if (row.id === params.row.id) {
-              row.is_deleted = true
-            }
-          })
-          setTableData({ ...tableData })
-        }}
-        label="Delete"
-      />
-    ]
-  }
-
-  // Columns for each tab
-  const COLUMNS = {}
-  COLUMNS[UserTab] = [
-    { field: 'id', headerName: 'id', hide: true },
-    { field: 'indicator_name', headerName: 'Indicator', flex: 1 },
-    { field: 'dataset_name', headerName: 'Dataset', flex: 0.5 },
-    { field: 'user_name', headerName: 'User', flex: 0.5 },
-    { field: 'user_role', headerName: 'Role', flex: 0.5 },
-    {
-      field: 'permission', headerName: 'Permission', width: 200,
-      renderCell: (params) => {
-        return renderCell(params, 'permission')
-      }
-    },
-    {
-      field: 'actions',
-      type: 'actions',
-      width: 80,
-      getActions: (params) => {
-        return actions(params)
-      },
-    }
-  ]
-  COLUMNS[GroupTab] = [
-    { field: 'id', headerName: 'id', hide: true },
-    { field: 'indicator_name', headerName: 'Indicator', flex: 1 },
-    { field: 'dataset_name', headerName: 'Dataset', flex: 0.5 },
-    { field: 'group_name', headerName: 'Group', flex: 0.5 },
-    {
-      field: 'permission', headerName: 'Permission', width: 200,
-      renderCell: (params) => {
-        return renderCell(params, 'permission')
-      }
-    },
-    {
-      field: 'actions',
-      type: 'actions',
-      width: 80,
-      getActions: (params) => {
-        return actions(params)
-      },
-    }
-  ]
-  COLUMNS[GeneralTab] = [
-    { field: 'id', headerName: 'id', hide: true },
-    { field: 'indicator_name', headerName: 'Indicator', flex: 1 },
-    { field: 'dataset_name', headerName: 'Dataset', flex: 0.5 },
-    {
-      field: 'public', headerName: 'Public', width: 200,
-      renderCell: (params) => {
-        return renderCell(params, 'public')
-      }
-    }
-  ]
-
-  /** Submit function **/
-  const submit = (event) => {
-    const target = event.currentTarget
-    const permissions = []
-    const users = tableData[UserTab].filter(data => {
-      return data.permission !== 'None'
-    }).map(data => {
-      const id = data.dataset_id + '-' + data.indicator_id
-      permissions.push(id)
-      return {
-        d: data.dataset_id,
-        i: data.indicator_id,
-        o: data.user_id,
-        p: data.permission,
-        is_del: data.is_deleted,
-      }
-    })
-    const groups = tableData[GroupTab].filter(data => {
-      return data.permission !== 'None'
-    }).map(data => {
-      const id = data.dataset_id + '-' + data.indicator_id
-      permissions.push(id)
-      return {
-        d: data.dataset_id,
-        i: data.indicator_id,
-        o: data.group_id,
-        p: data.permission,
-        is_del: data.is_deleted,
-      }
-    })
-    const generals = tableData[GeneralTab].filter(data => {
-      const id = data.dataset_id + '-' + data.indicator_id
-      return permissions.includes(id) ||
-        data.organization !== 'None' ||
-        data.public !== 'None'
-    }).map(data => {
-      return {
-        d: data.dataset_id,
-        i: data.indicator_id,
-        o: data.organization,
-        p: data.public,
-        is_del: data.is_deleted,
-      }
-    })
-    const payload = {
-      'users': users,
-      'groups': groups,
-      'generals': generals,
-    }
-    setSubmitted(true)
-    $.ajax({
-      url: urls.api.permissions,
-      data: {
-        data: JSON.stringify(payload)
-      },
-      dataType: 'json',
-      type: 'POST',
-      success: function () {
-        setSubmitted(false)
-        setAnchorEl(target)
-        setInfo("<div class='FormOk'>Configuration has been saved!</div>")
-        setDefaultTableTableData(dictDeepCopy(tableData))
-      },
-      error: function (error, textStatus, request) {
-        setSubmitted(false)
-        setAnchorEl(target)
-        setInfo("<div class='FormError'>" + textStatus + "</div>")
-      },
-      beforeSend: beforeAjaxSend
-    });
-  }
-
-  /** Format data to table data **/
-  const formatData = (data) => {
-    const users = []
-    const groups = []
-    const generals = []
-    data['permissions'][UserTab].map((obj, idx) => {
-      users.push({
-        'id': idx,
-        'dataset_id': obj.d,
-        'dataset_identifier': obj.di,
-        'dataset_name': obj.dn,
-        'indicator_id': obj.i,
-        'indicator_name': obj.in,
-        'user_id': obj.o,
-        'user_name': obj.on,
-        'user_role': obj.or,
-        'permission': obj.p
-      })
-    })
-    data['permissions'][GroupTab].map((obj, idx) => {
-      groups.push({
-        'id': idx,
-        'dataset_id': obj.d,
-        'dataset_identifier': obj.di,
-        'dataset_name': obj.dn,
-        'indicator_id': obj.i,
-        'indicator_name': obj.in,
-        'group_id': obj.o,
-        'group_name': obj.on,
-        'permission': obj.p
-      })
-    })
-    data['permissions'][GeneralTab].map((obj, idx) => {
-      generals.push({
-        'id': idx,
-        'dataset_id': obj.d,
-        'dataset_identifier': obj.di,
-        'dataset_name': obj.dn,
-        'indicator_id': obj.i,
-        'indicator_name': obj.in,
-        'organization': obj.o,
-        'public': obj.p,
-      })
-    })
-    const tableData = {}
-    tableData[UserTab] = users
-    tableData[GroupTab] = groups
-    tableData[GeneralTab] = generals
-    setTableData(tableData)
-    setDefaultTableTableData(dictDeepCopy(tableData))
-  }
 
   /** When tab changes **/
   useEffect(() => {
     window.location.hash = tab
   }, [tab]);
 
-  // Check if the data changed
-  let changed = false;
-  if (tableData) {
-    changed = JSON.stringify(tableData) !== JSON.stringify(defaultTableData)
-  }
-
-  // For filtered data
-  const filteredTableData = dictDeepCopy(tableData)
-  if (filteredTableData) {
-    filteredTableData[tab] = filteredTableData[tab].filter(data => !data.is_deleted)
-    if (filters.indicators.length) {
-      filteredTableData[tab] = filteredTableData[tab].filter(data => {
-        return filters.indicators.includes(data.indicator_id)
-      })
-    }
-    if (filters.datasets.length) {
-      filteredTableData[tab] = filteredTableData[tab].filter(data => {
-        return filters.datasets.includes(data.dataset_identifier)
-      })
-    }
-    if (tab === UserTab && filters.users.length) {
-      filteredTableData[tab] = filteredTableData[tab].filter(data => {
-        return filters.users.includes(data.user_id)
-      })
-    }
-    if (tab === GroupTab && filters.groups.length) {
-      filteredTableData[tab] = filteredTableData[tab].filter(data => {
-        return filters.groups.includes(data.group_id)
-      })
-    }
-    if (filters.permissions.length) {
-      if (tab !== GeneralTab) {
-        filteredTableData[tab] = filteredTableData[tab].filter(data => {
-          return filters.permissions.includes(data.permission)
-        })
-      } else {
-        filteredTableData[tab] = filteredTableData[tab].filter(data => {
-          return filters.permissions.includes(data.organization) || filters.permissions.includes(data.public)
-        })
-      }
-    }
-  }
-
-  // For notification
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-  const open = Boolean(anchorEl);
-  const buttonID = open ? "Button-Save" : undefined;
   return (
     <Admin
       pageName={pageNames.DataAccess}
@@ -612,28 +230,11 @@ export default function DataAccessAdmin() {
                 <AddData
                   open={addPermissionOpen}
                   setOpen={setAddPermissionOpen}
-                  permissions={PERMISSIONS}
                   tab={tab}
-                  data={null}
-                  updateData={(data) => {
-                  }}
+                  tableRef={tab === UserTab ? usersRef : groupsRef}
                 />
               </Fragment> : null
           }
-          <Popover
-            id={buttonID}
-            open={open}
-            anchorEl={anchorEl}
-            onClose={handleClose}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'left',
-            }}
-          >
-            <div className='Popover-Submit'
-                 dangerouslySetInnerHTML={{ __html: info }}>
-            </div>
-          </Popover>
         </Fragment>
       }>
       {/* FILTERS */}
@@ -694,9 +295,9 @@ export default function DataAccessAdmin() {
         tab === GeneralTab ?
           <PublicDataAccess filters={filters}/> :
           tab === UserTab ?
-            <UsersDataAccess filters={filters}/> :
+            <UsersDataAccess filters={filters} ref={usersRef}/> :
             tab === GroupTab ?
-              <GroupsDataAccess filters={filters}/> : null
+              <GroupsDataAccess filters={filters} ref={groupsRef}/> : null
       }
     </Admin>
   );

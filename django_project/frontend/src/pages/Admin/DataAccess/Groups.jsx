@@ -13,8 +13,8 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React from 'react';
-import DataAccessTable from "./DataAccessTable";
+import React, { forwardRef, useImperativeHandle, useRef } from 'react';
+import { DataAccessTable } from "./DataAccessTable";
 
 import './style.scss';
 
@@ -44,13 +44,28 @@ const COLUMNS = [
 /**
  * Render public data access table
  */
-export default function GroupsDataAccess({ filters }) {
-  return <DataAccessTable
-    urlData={urls.api.data.groups}
-    filters={filters}
-    COLUMNS={COLUMNS}
-    ableToDelete={true}
-    PERMISSIONS={PERMISSIONS}
-    dataName='group'
-  />
-}
+/**
+ * Render public data access table
+ */
+export const GroupsDataAccess = forwardRef(
+  ({ filters }, ref
+  ) => {
+    const tableRef = useRef(null);
+
+    /** Refresh data **/
+    useImperativeHandle(ref, () => ({
+      createData(data, success, failed) {
+        return tableRef?.current?.createData(data, success, failed)
+      },
+    }));
+    return <DataAccessTable
+      urlData={urls.api.data.groups}
+      filters={filters}
+      COLUMNS={COLUMNS}
+      ableToDelete={true}
+      PERMISSIONS={PERMISSIONS}
+      dataName='group'
+      ref={tableRef}
+    />
+  }
+)

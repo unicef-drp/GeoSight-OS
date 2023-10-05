@@ -13,7 +13,14 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { Fragment, useEffect, useRef, useState } from 'react';
+import React, {
+  forwardRef,
+  Fragment,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState
+} from 'react';
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
@@ -36,247 +43,273 @@ import './style.scss';
 /**
  * Render public data access table
  */
-export default function DataAccessTable(
-  { urlData, filters, ableToDelete, COLUMNS, PERMISSIONS, dataName = 'Public' }
-) {
-  const deleteDialogRef = useRef(null);
-  const tableRef = useRef(null);
-  const [deletingIds, setDeletingIds] = useState([]);
+export const DataAccessTable = forwardRef(
+  ({
+     urlData,
+     filters,
+     ableToDelete,
+     COLUMNS,
+     PERMISSIONS,
+     dataName = 'Public'
+   }, ref
+  ) => {
+    const deleteDialogRef = useRef(null);
+    const tableRef = useRef(null);
+    const [deletingIds, setDeletingIds] = useState([]);
 
-  // Notification
-  const notificationRef = useRef(null);
-  const notify = (newMessage, newSeverity = NotificationStatus.INFO) => {
-    notificationRef?.current?.notify(newMessage, newSeverity)
-  }
+    /** Refresh data **/
+    useImperativeHandle(ref, () => ({
+      createData(data, success, failed) {
+        return DjangoRequests.post(
+          urlData,
+          data
+        ).then(response => {
+          success();
+          tableRef?.current?.refresh()
+        }).catch(error => {
+            notify('Failed to update data', NotificationStatus.ERROR);
+            failed();
+          }
+        )
+      },
+    }));
 
-  const [selectionModel, setSelectionModel] = useState([]);
-  const [updatePermission, setUpdatePermission] = useState({
-    open: false,
-    updating: false
-  });
+    // Notification
+    const notificationRef = useRef(null);
+    const notify = (newMessage, newSeverity = NotificationStatus.INFO) => {
+      notificationRef?.current?.notify(newMessage, newSeverity)
+    }
 
-  // When filter changed
-  useEffect(() => {
-    tableRef?.current?.refresh()
-  }, [filters])
+    const [selectionModel, setSelectionModel] = useState([]);
+    const [updatePermission, setUpdatePermission] = useState({
+      open: false,
+      updating: false
+    });
 
-  /*** Parameters Changed */
-  const getParameters = (parameters) => {
-    if (filters.indicators?.length) {
-      parameters['indicator_id__in'] = filters.indicators.join(',')
-    } else {
-      delete parameters['indicator_id__in']
-    }
-    if (filters.datasets?.length) {
-      parameters['reference_layer_id__in'] = filters.datasets.join(',')
-    } else {
-      delete parameters['reference_layer_id__in']
-    }
-    if (filters.permissions?.length) {
-      parameters['permission__in'] = filters.permissions.join(',')
-    } else {
-      delete parameters['permission__in']
-    }
-    if (filters.users?.length) {
-      parameters['user_id__in'] = filters.users.join(',')
-    } else {
-      delete parameters['user_id__in']
-    }
-    if (filters.groups?.length) {
-      parameters['group_id__in'] = filters.groups.join(',')
-    } else {
-      delete parameters['group_id__in']
-    }
-    return parameters
-  }
+    // When filter changed
+    useEffect(() => {
+      tableRef?.current?.refresh()
+      setSelectionModel([])
+    }, [filters])
 
-  // ----------------------------
-  // Render Permission
-  // ----------------------------
-  const renderPermission = (params) => {
-    return <FormControl className='BasicForm'>
-      <Select
-        value={params.value}
-        disabled={params.row.updating}
-        onChange={(evt) => {
-          let prevPermission = null
-          tableRef?.current?.updateData(data => {
-            const row = data.find(row => row.id === params.id);
-            if (row) {
-              prevPermission = row.permission
-              row.permission = evt.target.value
-              row.updating = true
-            }
-            return data
-          })
-          DjangoRequests.put(
-            urlData,
-            { ids: [params.id], permission: evt.target.value }
-          ).then(response => {
+    /*** Parameters Changed */
+    const getParameters = (parameters) => {
+      if (filters.indicators?.length) {
+        parameters['indicator_id__in'] = filters.indicators.join(',')
+      } else {
+        delete parameters['indicator_id__in']
+      }
+      if (filters.datasets?.length) {
+        parameters['reference_layer_id__in'] = filters.datasets.join(',')
+      } else {
+        delete parameters['reference_layer_id__in']
+      }
+      if (filters.permissions?.length) {
+        parameters['permission__in'] = filters.permissions.join(',')
+      } else {
+        delete parameters['permission__in']
+      }
+      if (filters.users?.length) {
+        parameters['user_id__in'] = filters.users.join(',')
+      } else {
+        delete parameters['user_id__in']
+      }
+      if (filters.groups?.length) {
+        parameters['group_id__in'] = filters.groups.join(',')
+      } else {
+        delete parameters['group_id__in']
+      }
+      return parameters
+    }
+
+    // ----------------------------
+    // Render Permission
+    // ----------------------------
+    const renderPermission = (params) => {
+      return <FormControl className='BasicForm'>
+        <Select
+          value={params.value}
+          disabled={params.row.updating}
+          onChange={(evt) => {
+            let prevPermission = null
             tableRef?.current?.updateData(data => {
               const row = data.find(row => row.id === params.id);
               if (row) {
-                row.updating = false
+                prevPermission = row.permission
+                row.permission = evt.target.value
+                row.updating = true
               }
               return data
             })
-          }).catch(error => {
-              notify('Failed to update data', NotificationStatus.ERROR);
+            DjangoRequests.put(
+              urlData,
+              { ids: [params.id], permission: evt.target.value }
+            ).then(response => {
               tableRef?.current?.updateData(data => {
                 const row = data.find(row => row.id === params.id);
                 if (row) {
-                  row.permission = prevPermission
                   row.updating = false
                 }
                 return data
               })
+            }).catch(error => {
+                notify('Failed to update data', NotificationStatus.ERROR);
+                tableRef?.current?.updateData(data => {
+                  const row = data.find(row => row.id === params.id);
+                  if (row) {
+                    row.permission = prevPermission
+                    row.updating = false
+                  }
+                  return data
+                })
+              }
+            )
+          }}
+        >
+          {
+            PERMISSIONS.map(choice => {
+              return <MenuItem
+                key={choice[0]}
+                value={choice[0]}>
+                {choice[1]}
+              </MenuItem>
+            })
+          }
+        </Select>
+      </FormControl>
+    }
+    if (!COLUMNS.find(col => col.field === 'permission')) {
+      COLUMNS.push(
+        {
+          field: 'permission', headerName: 'Permission', width: 200,
+          renderCell: (params) => {
+            return renderPermission(params, 'permission')
+          }
+        })
+    }
+
+    // ----------------------------
+    // Render Delete Action
+    // ----------------------------
+    const actions = (params) => {
+      return [
+        <MoreAction moreIcon={<MoreVertIcon/>}>
+          <div className='error' onClick={
+            () => {
+              setDeletingIds([params.id]);
+              deleteDialogRef?.current?.open();
+            }
+          }>
+            <DeleteIcon/> Delete
+          </div>
+        </MoreAction>
+      ]
+    }
+    if (ableToDelete) {
+      if (!COLUMNS.find(col => col.field === 'actions')) {
+        COLUMNS.push({
+          field: 'actions',
+          type: 'actions',
+          width: 80,
+          getActions: (params) => {
+            return actions(params)
+          },
+        })
+      }
+    }
+
+    return <div className='AdminList DataAccessAdminTable'>
+      <ServerTable
+        header={
+          <Fragment>
+            {
+              ableToDelete ? <DeleteButton
+                disabled={!selectionModel.length}
+                variant="Error Reverse"
+                text={"Delete"}
+                onClick={() => {
+                  setDeletingIds(selectionModel)
+                  deleteDialogRef?.current?.open()
+                }}
+              /> : null
+            }
+            <EditButton
+              disabled={!selectionModel.length}
+              variant="primary Reverse"
+              text={"Change permission"}
+              onClick={() => {
+                setUpdatePermission({ ...updatePermission, open: true })
+              }}
+            />
+            <UpdatePermissionModal
+              state={updatePermission}
+              onClosed={() => setUpdatePermission({
+                ...updatePermission,
+                open: false
+              })}
+              choices={PERMISSIONS}
+              selectedPermission={(permission) => {
+
+                // Update bulk permission
+                setUpdatePermission({
+                  ...updatePermission,
+                  updating: true
+                })
+
+                DjangoRequests.put(
+                  urlData,
+                  { ids: selectionModel, permission: permission }
+                ).then(response => {
+                  tableRef?.current?.refresh();
+                  setUpdatePermission({
+                    ...updatePermission,
+                    updating: false,
+                    open: false
+                  })
+                }).catch(error => {
+                    notify('Failed to update data', NotificationStatus.ERROR);
+                    setUpdatePermission({
+                      ...updatePermission,
+                      updating: false
+                    })
+                  }
+                )
+              }}
+            />
+          </Fragment>
+        }
+        urlData={urlData}
+        columns={COLUMNS}
+        selectionModel={selectionModel}
+        setSelectionModel={setSelectionModel}
+        getParameters={getParameters}
+        checkboxSelection={true}
+        ref={tableRef}
+      />
+      <ConfirmDialog
+        onConfirmed={() => {
+          DjangoRequests.delete(
+            urlData,
+            { ids: deletingIds }
+          ).then(response => {
+            tableRef?.current?.refresh();
+            setSelectionModel(selectionModel.filter(id => !deletingIds.includes(id)))
+            setDeletingIds([])
+          }).catch(error => {
+              notify('Failed to update data', NotificationStatus.ERROR);
             }
           )
         }}
+        ref={deleteDialogRef}
       >
-        {
-          PERMISSIONS.map(choice => {
-            return <MenuItem
-              key={choice[0]}
-              value={choice[0]}>
-              {choice[1]}
-            </MenuItem>
-          })
-        }
-      </Select>
-    </FormControl>
-  }
-  if (!COLUMNS.find(col => col.field === 'permission')) {
-    COLUMNS.push(
-      {
-        field: 'permission', headerName: 'Permission', width: 200,
-        renderCell: (params) => {
-          return renderPermission(params, 'permission')
-        }
-      })
-  }
-
-  // ----------------------------
-  // Render Delete Action
-  // ----------------------------
-  const actions = (params) => {
-    return [
-      <MoreAction moreIcon={<MoreVertIcon/>}>
-        <div className='error' onClick={
-          () => {
-            setDeletingIds([params.id]);
-            deleteDialogRef?.current?.open();
-          }
-        }>
-          <DeleteIcon/> Delete
+        <div>
+          Are you sure want to
+          delete {deletingIds.length ? deletingIds.length : 1}&nbsp;
+          {dataName.toLowerCase() + (deletingIds.length > 1 ? 's' : '')} data
+          access?
         </div>
-      </MoreAction>
-    ]
+      </ConfirmDialog>
+      <Notification ref={notificationRef}/>
+    </div>
   }
-  if (ableToDelete) {
-    if (!COLUMNS.find(col => col.field === 'actions')) {
-      COLUMNS.push({
-        field: 'actions',
-        type: 'actions',
-        width: 80,
-        getActions: (params) => {
-          return actions(params)
-        },
-      })
-    }
-  }
-
-  return <div className='AdminList DataAccessAdminTable'>
-    <ServerTable
-      header={
-        <Fragment>
-          {
-            ableToDelete ? <DeleteButton
-              disabled={!selectionModel.length}
-              variant="Error Reverse"
-              text={"Delete"}
-              onClick={() => {
-                setDeletingIds(selectionModel)
-                deleteDialogRef?.current?.open()
-              }}
-            /> : null
-          }
-          <EditButton
-            disabled={!selectionModel.length}
-            variant="primary Reverse"
-            text={"Change permission"}
-            onClick={() => {
-              setUpdatePermission({ ...updatePermission, open: true })
-            }}
-          />
-          <UpdatePermissionModal
-            state={updatePermission}
-            onClosed={() => setUpdatePermission({
-              ...updatePermission,
-              open: false
-            })}
-            choices={PERMISSIONS}
-            selectedPermission={(permission) => {
-
-              // Update bulk permission
-              setUpdatePermission({
-                ...updatePermission,
-                updating: true
-              })
-
-              DjangoRequests.put(
-                urlData,
-                { ids: selectionModel, permission: permission }
-              ).then(response => {
-                tableRef?.current?.refresh();
-                setUpdatePermission({
-                  ...updatePermission,
-                  updating: false,
-                  open: false
-                })
-              }).catch(error => {
-                  notify('Failed to update data', NotificationStatus.ERROR);
-                  setUpdatePermission({
-                    ...updatePermission,
-                    updating: false
-                  })
-                }
-              )
-            }}
-          />
-        </Fragment>
-      }
-      urlData={urlData}
-      columns={COLUMNS}
-      selectionModel={selectionModel}
-      setSelectionModel={setSelectionModel}
-      getParameters={getParameters}
-      checkboxSelection={true}
-      ref={tableRef}
-    />
-    <ConfirmDialog
-      onConfirmed={() => {
-        DjangoRequests.delete(
-          urlData,
-          { ids: deletingIds }
-        ).then(response => {
-          tableRef?.current?.refresh();
-          setSelectionModel(selectionModel.filter(id => !deletingIds.includes(id)))
-          setDeletingIds([])
-        }).catch(error => {
-            notify('Failed to update data', NotificationStatus.ERROR);
-          }
-        )
-      }}
-      ref={deleteDialogRef}
-    >
-      <div>
-        Are you sure want to
-        delete {deletingIds.length ? deletingIds.length : 1}&nbsp;
-        {dataName.toLowerCase() + (deletingIds.length > 1 ? 's' : '')} data
-        access?
-      </div>
-    </ConfirmDialog>
-    <Notification ref={notificationRef}/>
-  </div>
-}
+)

@@ -58,22 +58,20 @@ export default function GeorepoViewSelector(
   /** On load functions */
   useEffect(
     () => {
-      if (open && !references.length) {
-        (
-          async () => {
-            const responseData = await fetchReferenceLayerList()
-            const references = responseData.map(row => {
-              row.value = row.identifier
-              return row
-            })
-            if (!reference) {
-              setReference(references[0].value)
-            }
-            setReferences(references)
+      (
+        async () => {
+          const responseData = await fetchReferenceLayerList()
+          const references = responseData.map(row => {
+            row.value = row.identifier
+            return row
+          })
+          if (!reference) {
+            setReference(references[0].value)
           }
-        )();
-      }
-    }, [open]
+          setReferences(references)
+        }
+      )();
+    }, []
   )
 
   /** On load functions */
