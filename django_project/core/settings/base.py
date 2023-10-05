@@ -17,6 +17,10 @@ __copyright__ = ('Copyright 2023, Unicef')
 import os  # noqa
 
 from core.settings.utils import ABS_PATH
+from glob import glob
+
+GDAL_LIBRARY_PATH = glob('/usr/lib/libgdal.so.*')[0]
+GEOS_LIBRARY_PATH = glob('/usr/lib/libgeos_c.so.*')[0]
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name

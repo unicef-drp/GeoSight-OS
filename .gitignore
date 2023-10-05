@@ -39,3 +39,4 @@ docs/src/developer/manual/*.md
 
 *.swp
 deployment/.cache/
+/node_modules/
