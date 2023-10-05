@@ -185,5 +185,10 @@ export const DjangoRequests = {
         'X-CSRFToken': csrfmiddlewaretoken
       }
     })
+  },
+  delete: (url, data, options = {}) => {
+    return axios.delete(url, {
+      headers: { 'X-CSRFToken': csrfmiddlewaretoken }, data: data
+    })
   }
 }

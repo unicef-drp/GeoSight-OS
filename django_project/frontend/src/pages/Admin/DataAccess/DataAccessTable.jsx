@@ -14,12 +14,13 @@
  */
 
 import React, { Fragment, useEffect, useRef, useState } from 'react';
-import { GridActionsCellItem } from "@mui/x-data-grid";
-import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
+import { DeleteIcon } from "../../../components/Icons";
+import MoreAction from "../../../components/Elements/MoreAction";
 import { ConfirmDialog } from "../../../components/ConfirmDialog";
 import {
   Notification,
@@ -160,17 +161,16 @@ export default function DataAccessTable(
   // ----------------------------
   const actions = (params) => {
     return [
-      <GridActionsCellItem
-        icon={
-          <DoDisturbOnIcon
-            className='DeleteButton'/>
-        }
-        onClick={() => {
-          setDeletingIds([params.id])
-          deleteDialogRef?.current?.open()
-        }}
-        label="Delete"
-      />
+      <MoreAction moreIcon={<MoreVertIcon/>}>
+        <div className='error' onClick={
+          () => {
+            setDeletingIds([params.id]);
+            deleteDialogRef?.current?.open();
+          }
+        }>
+          <DeleteIcon/> Delete
+        </div>
+      </MoreAction>
     ]
   }
   if (ableToDelete) {
@@ -256,7 +256,17 @@ export default function DataAccessTable(
     />
     <ConfirmDialog
       onConfirmed={() => {
-        console.log('test')
+        DjangoRequests.delete(
+          urlData,
+          { ids: deletingIds }
+        ).then(response => {
+          tableRef?.current?.refresh();
+          setSelectionModel(selectionModel.filter(id => !deletingIds.includes(id)))
+          setDeletingIds([])
+        }).catch(error => {
+            notify('Failed to update data', NotificationStatus.ERROR);
+          }
+        )
       }}
       ref={deleteDialogRef}
     >

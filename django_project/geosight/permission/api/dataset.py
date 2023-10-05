@@ -17,7 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 import json
 
 from django.contrib.auth import get_user_model
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -232,6 +232,17 @@ class DataAccessAPI(
                 self.query_class.objects.filter(id__in=ids).update(
                     permission=permission
                 )
+        except KeyError as e:
+            return HttpResponseBadRequest(f'{e}')
+        return HttpResponse(status=204)
+
+    def delete(self, request):
+        """Delete data."""
+        if self.query_class == Permission:
+            return Http404('No delete action found.')
+        try:
+            ids = request.data['ids']
+            self.query_class.objects.filter(id__in=ids).delete()
         except KeyError as e:
             return HttpResponseBadRequest(f'{e}')
         return HttpResponse(status=204)
