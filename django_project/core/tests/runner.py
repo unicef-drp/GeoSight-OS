@@ -16,6 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from types import MethodType
 
+from celery import current_app
 from django.conf import settings
 from django.db import connections
 from django.test.runner import DiscoverRunner
@@ -41,3 +42,16 @@ class PostgresSchemaTestRunner(DiscoverRunner):
                 prepare_database, connection
             )
         return super().setup_databases(**kwargs)
+
+    @staticmethod
+    def __disable_celery():
+        settings.CELERY_BROKER_URL = current_app.conf.CELERY_BROKER_URL = f'filesystem:///dev/null/'
+        settings.BROKER_TRANSPORT_OPTIONS = current_app.conf.BROKER_TRANSPORT_OPTIONS = {
+            'data_folder_in': '/tmp',
+            'data_folder_out': '/tmp',
+            'data_folder_processed': '/tmp',
+        }
+
+    def setup_test_environment(self, **kwargs):
+        PostgresSchemaTestRunner.__disable_celery()
+        super(PostgresSchemaTestRunner, self).setup_test_environment(**kwargs)
