@@ -53,6 +53,11 @@ class SitePreferencesAdmin(admin.ModelAdmin):
                 'default_basemap', 'default_color_palette'
             )
         }),
+        ('Environment', {
+            'fields': (
+                'sentry_dsn', 'sentry_environment'
+            )
+        }),
         ('GeoRepo', {
             'fields': (
                 'georepo_url',
@@ -111,6 +116,7 @@ class SitePreferencesAdmin(admin.ModelAdmin):
         }),
     )
     inlines = (SitePreferencesImageInline,)
+    readonly_fields = ('sentry_dsn', 'sentry_environment')
 
 
 admin.site.register(SitePreferences, SitePreferencesAdmin)

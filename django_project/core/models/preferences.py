@@ -14,6 +14,7 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+from django.conf import settings
 from django.core import signing
 from django.core.signing import BadSignature
 from django.db import models
@@ -301,6 +302,16 @@ class SitePreferences(SingletonModel):
                 user__email__isnull=False
             ).values_list('user__email', flat=True)
         )
+
+    @property
+    def sentry_dsn(self):
+        """Return admin emails."""
+        return settings.SENTRY_DSN
+
+    @property
+    def sentry_environment(self):
+        """Return admin emails."""
+        return settings.SENTRY_ENVIRONMENT
 
 
 class SitePreferencesImage(models.Model):

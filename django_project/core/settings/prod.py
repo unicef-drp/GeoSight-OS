@@ -83,6 +83,8 @@ LOGGING = {
 # ----------            SENTRY          ------------ #
 # -------------------------------------------------- #
 SENTRY_DSN = os.environ.get('SENTRY_DSN', None)
+SENTRY_ENVIRONMENT = os.environ.get('SENTRY_ENVIRONMENT', None)
+
 if SENTRY_DSN and SENTRY_DSN != "''":
     from rest_framework.exceptions import (
         NotAuthenticated, PermissionDenied as RestPermissionDenied
