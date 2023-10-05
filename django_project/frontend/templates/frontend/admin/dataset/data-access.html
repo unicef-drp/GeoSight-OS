@@ -11,7 +11,6 @@
 {% block scripts %}
     <script>
       urls.api = {
-        'permissions': '{% url 'dataset-access-api' %}',
         'detail': '{{ group_detail_api }}',
         'users': '{% url 'user-list-api'%}',
         'groups': '{% url 'group-list-api'%}',
