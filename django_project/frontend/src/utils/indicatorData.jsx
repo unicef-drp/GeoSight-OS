@@ -63,7 +63,7 @@ export function UpdateStyleData(data, config) {
         rule => rule.active
       ).find(rule => rule.rule.toLowerCase() === 'other data')
     }
-    data.forEach(function (data) {
+    data?.forEach(function (data) {
       const filteredRules = styleRules.filter(rule => {
         let ruleStr = rule.rule.replaceAll('x', data.value).replaceAll('and', '&&').replaceAll('or', '||')
         if (rule?.rule?.includes('includes')) {
