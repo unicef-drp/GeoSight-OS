@@ -40,10 +40,6 @@
       }
     }
   }
-
-  .Mui-expanded {
-    color: $primary-color;
-  }
 }
 
 .TreeItem {
@@ -175,6 +171,10 @@
   .LayerName {
     width: 100%;
     margin-top: 3px;
+
+    &.Group {
+      font-weight: 600;
+    }
 
     span {
       display: inline !important;

@@ -21,12 +21,14 @@ import _ from 'lodash';
  * Description layer.
  * @param {Object} layer Layer data.
  */
-export default function Highlighted({ text = '', highlight = '' }) {
+export default function Highlighted(
+  { text = '', highlight = '', isGroup = false }
+) {
   const { truncate_indicator_layer_name } = useSelector(state => state.dashboard.data);
   const ellipsisClass = truncate_indicator_layer_name ? 'Ellipsis' : '';
   if (!highlight.trim()) {
     return <span
-      className={`LayerName ${ellipsisClass}`}
+      className={`LayerName ${ellipsisClass} ${isGroup ? 'Group' : ''}`}
       title={text}>
       {text}
     </span>
@@ -46,7 +48,9 @@ export default function Highlighted({ text = '', highlight = '' }) {
   }
 
   return (
-    <span className={`LayerName ${ellipsisClass}`} title={text}>
+    <span
+      className={`LayerName ${ellipsisClass} ${isGroup ? 'Group' : ''}`}
+      title={text}>
       <div>
         {parts.filter(part => part).map((part, i) => (
           regex.test(part) ?

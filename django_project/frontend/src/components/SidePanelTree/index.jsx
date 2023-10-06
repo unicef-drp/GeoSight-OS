@@ -298,18 +298,24 @@ export default function SidePanelTreeView(
                 dangerouslySetInnerHTML={{ __html: treeData.data?.legend }}></div> : ''}
           </div> : groupSelectable ?
             <FormControlLabel
-              className='GroupSelectable'
+              className='GroupSelectable Group'
               onClick={(e) => e.stopPropagation()}
               control={
                 <Checkbox
                   checked={selectedGroups.length > 0 && selectedGroups.indexOf(treeData.id) >= 0}
                   onClick={(e) => e.stopPropagation()}
                   onChange={selectGroup} className='PanelCheckbox' size={'small'}
-                  value={treeData.id}/>} label={
-              <Highlighted text={treeData.name ? treeData.name : 'No Name'}
-                           highlight={filterText}/>}/> :
-            <Highlighted text={treeData.name ? treeData.name : 'No Name'}
-                         highlight={filterText}/>
+                  value={treeData.id}/>}
+              label={
+                <Highlighted
+                  isGroup={true}
+                  text={treeData.name ? treeData.name : 'No Name'}
+                  highlight={filterText}/>}
+            /> :
+            <Highlighted
+              isGroup={true}
+              text={treeData.name ? treeData.name : 'No Name'}
+              highlight={filterText}/>
       }>
       {Array.isArray(treeData.children)
         ? treeData.children.map((node) => renderTree(node))
