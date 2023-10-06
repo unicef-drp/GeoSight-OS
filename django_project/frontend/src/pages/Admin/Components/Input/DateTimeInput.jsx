@@ -63,5 +63,6 @@ export default function DateTimeInput(
         }
       }}
     />
+    <span className='form-helptext'>Selected date time of data should be in UTC.</span>
   </LocalizationProvider>
 }
