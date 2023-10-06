@@ -35,9 +35,9 @@ import {
   SelectWithSearch
 } from "../../../../../components/Input/SelectWithSearch";
 import { ImageInput } from "../../../../../components/Input/ImageInput";
+import { Creatable } from "../../../../../components/Input";
 
 import './style.scss';
-import { Creatable } from "../../../../../components/Input";
 
 /**
  * Summary dashboard
@@ -90,7 +90,11 @@ export default function SummaryDashboardForm({ changed }) {
                 <GeorepoViewInputSelector
                   data={referenceLayer?.identifier ? [referenceLayer] : []}
                   setData={selectedData => {
-                    dispatch(Actions.ReferenceLayer.update(selectedData[0]));
+                    let selected = { identifier: '', detail_url: '' }
+                    if (selectedData[0]) {
+                      selected = selectedData[0]
+                    }
+                    dispatch(Actions.ReferenceLayer.update(selected));
                     dispatch(Actions.Geometries.deleteAll());
                   }}
                   isMultiple={false}
