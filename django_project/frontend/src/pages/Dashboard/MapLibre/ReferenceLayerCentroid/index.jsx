@@ -307,7 +307,10 @@ export default function ReferenceLayerCentroid({ map }) {
         source: INDICATOR_LABEL_ID,
         filter: ['==', '$type', 'Point'],
         layout: layout,
-        paint: paint
+        paint: paint,
+        maxzoom: maxZoom,
+        minzoom: minZoom
+
       },
       contextLayerIds[0]?.id
     );
