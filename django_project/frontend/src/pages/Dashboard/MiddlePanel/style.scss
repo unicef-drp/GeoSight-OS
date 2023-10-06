@@ -56,8 +56,21 @@
     margin-right: -300px;
     width: 300px;
     height: 100%;
-    overflow-y: auto;
     transition: margin-right linear 0.2s;
+    pointer-events: none !important;
+
+    section {
+      max-height: 100%;
+      overflow-y: auto;
+      pointer-events: auto;
+      margin-top: 10px;
+      margin-right: 10px;
+
+
+      .dashboard__content {
+        padding: 0;
+      }
+    }
 
     .dashboard__content {
       background: unset !important;
