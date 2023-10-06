@@ -62,8 +62,10 @@ function AdditionalGeneralIndicator({ indicatorData, setIndicatorData }) {
           label='Codelist'
           attrName='codelist'
           helptext={
-            'Code list that being used as code of value. The code is in bracket.\n' +
-            'Example: Male (m), the value that expected for indicator is \'m\'.'
+            `
+            Code list that being used as code of value. The code is in bracket. Example: Male (m), the value that expected for indicator is 'm'. 
+            Codelists can be managed by super-admins. Please contact GeoSight administrator(s) if you need to create a new codelist or add a new value to the existing codelist.
+            `
           }
         >
           <Select
