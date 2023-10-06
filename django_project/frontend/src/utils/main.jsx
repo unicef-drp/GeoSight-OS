@@ -432,3 +432,8 @@ export function arrayToOptions(array) {
     }
   })
 }
+
+/*** Is ASCII ***/
+export function isASCII(str) {
+    return /^[\x00-\x7F]*$/.test(str);
+}

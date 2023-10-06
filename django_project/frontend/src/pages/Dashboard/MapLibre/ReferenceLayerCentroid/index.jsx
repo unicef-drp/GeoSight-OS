@@ -29,13 +29,14 @@ import { BEFORE_LAYER, CONTEXT_LAYER_ID } from "../Layers/ReferenceLayer";
 import { extractCode } from "../../../../utils/georepo";
 import { allDataIsReady } from "../../../../utils/indicators";
 
-import './style.scss';
 import {
   indicatorLayerId,
   isIndicatorLayerLikeIndicator
 } from "../../../../utils/indicatorLayer";
-import { dictDeepCopy } from "../../../../utils/main";
+import { dictDeepCopy, isASCII } from "../../../../utils/main";
 import { UpdateStyleData } from "../../../../utils/indicatorData";
+
+import './style.scss';
 
 let centroidMarker = []
 let charts = {}
@@ -293,7 +294,7 @@ export default function ReferenceLayerCentroid({ map }) {
       'type': 'geojson',
       'data': {
         type: 'FeatureCollection',
-        features: features
+        features: features.filter(feature => isASCII(feature.properties.name))
       }
     });
     const contextLayerIds = map.getStyle().layers.filter(
@@ -306,9 +307,7 @@ export default function ReferenceLayerCentroid({ map }) {
         source: INDICATOR_LABEL_ID,
         filter: ['==', '$type', 'Point'],
         layout: layout,
-        paint: paint,
-        maxzoom: maxZoom,
-        minzoom: minZoom
+        paint: paint
       },
       contextLayerIds[0]?.id
     );
@@ -379,7 +378,10 @@ export default function ReferenceLayerCentroid({ map }) {
       return;
     }
     const geometriesLevel = Object.keys(geometriesData);
-    const usedFilteredGeometries = filteredGeometries?.filter(geom => geometriesLevel.includes(geom))
+    let usedFilteredGeometries = filteredGeometries?.filter(geom => geometriesLevel.includes(geom))
+    if (!usedFilteredGeometries && geometriesData) {
+      usedFilteredGeometries = geometriesLevel
+    }
 
     // Check by config
     const config = {
