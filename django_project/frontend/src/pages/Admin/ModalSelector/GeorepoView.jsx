@@ -55,6 +55,14 @@ export default function GeorepoViewSelector(
   const [reference, setReference] = useState(null)
   const [inputData, setInputData] = useState(null)
 
+  if (selectedData) {
+    selectedData.map(_data => {
+      if (!_data.id) {
+        _data.id = _data?.identifier
+      }
+    })
+  }
+
   /** On load functions */
   useEffect(
     () => {
