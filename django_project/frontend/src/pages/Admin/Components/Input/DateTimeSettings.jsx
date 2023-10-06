@@ -167,7 +167,7 @@ export const DateTimeSettings = forwardRef(
           break
         }
         case 'By Value': {
-          data.date_time_data_value = new Date().toISOString()
+          data.date_time_data_value = new Date(new Date().setUTCHours(0, 0, 0, 0)).toISOString()
           delete data.date_time_data_field
           delete data.date_time_data_format
           delete data.date_data_field
@@ -205,7 +205,6 @@ export const DateTimeSettings = forwardRef(
         }
       }, [attributes]
     )
-
     return (
       <div>
         {

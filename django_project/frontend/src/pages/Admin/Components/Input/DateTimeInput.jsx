@@ -15,13 +15,18 @@
 
 /** Specifically for Reference Layer <> Level input */
 
-import React, { useState } from 'react';
+import React from 'react';
 import TextField from '@mui/material/TextField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import {
   LocalizationProvider
 } from '@mui/x-date-pickers/LocalizationProvider';
+
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
 
 /**
  * Specific for date time field settings.
@@ -32,11 +37,10 @@ import {
 export default function DateTimeInput(
   { label = "Date time", value, onChange }
 ) {
-  const [error, setError] = useState('');
-  if (value) {
-    const date = new Date(value)
-    date.setSeconds(0);
-    value = date.toISOString()
+  let usedValue = value
+  try {
+    usedValue = dayjs.utc(value)
+  } catch (err) {
   }
   return <LocalizationProvider dateAdapter={AdapterDayjs}>
     <DateTimePicker
@@ -44,23 +48,20 @@ export default function DateTimeInput(
       inputFormat="YYYY-MM-DD HH:mm:ss"
       renderInput={(props) => <TextField {...props} />}
       label={label}
-      value={value}
+      value={usedValue}
       onChange={(newValue) => {
         try {
           onChange({
             value: new Date(newValue).toISOString(),
             error: false
           })
-          setError('')
         } catch (err) {
-          setError('Not the time format')
           onChange({
             value: value,
-            error: true
+            error: false
           })
         }
       }}
     />
-    <span className='form-helptext error'>{error}</span>
   </LocalizationProvider>
 }

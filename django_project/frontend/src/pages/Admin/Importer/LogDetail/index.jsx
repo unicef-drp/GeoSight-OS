@@ -225,7 +225,7 @@ export function ImporterDetailSection({ inputData }) {
                     <div className='DetailSection'>
                       <div>Date Time of Data</div>
                       {
-                        formatData(formatDateTime(new Date(data.attributes.date_time_data_value)))
+                        formatData(formatDateTime(new Date(data.attributes.date_time_data_value), false, true))
                       }
                     </div>
                   </Grid>
