@@ -159,7 +159,7 @@ class Indicator(
                 self.indicatorrule_set.all(), many=True
             ).data
         if self.style_type == IndicatorStyleType.LIBRARY and self.style:
-            if self.style.permission.has_read_perm(user):
+            if self.style.permission.has_read_data_perm(user):
                 return StyleRuleSerializer(
                     self.style.stylerule_set.all(), many=True
                 ).data
