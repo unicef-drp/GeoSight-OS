@@ -19,9 +19,6 @@ esac
 playwright \
   codegen \
   --target python \
-  --timezone="Europe/Lisbon" \
-  --geolocation="41.890221,12.492348" \
-  --lang="pt-PT" \
   --save-storage=geosight-auth.json \
   -o tests/deleteme.py \
   https://staging-geosight.unitst.org

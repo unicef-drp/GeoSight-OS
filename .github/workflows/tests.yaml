@@ -74,7 +74,7 @@ jobs:
         run: make devweb-test
 
       - name: Test E2E
-        working-directory: ./playwright
+        working-directory: ./playwright/ci-test
         run: |
           npm install
           npm ci
@@ -84,5 +84,5 @@ jobs:
         if: always()
         with:
           name: playwright-report
-          path: playwright/playwright-report/
+          path: playwright/ci-test/playwright-report/
           retention-days: 30
