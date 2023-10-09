@@ -46,6 +46,9 @@ import {
   isInOptions,
   optionsToList
 } from "../../../../../../utils/main";
+import {
+  IndicatorSettings
+} from "../../../../Components/Input/IndicatorSettings";
 
 /**
  * Base Excel Form.
@@ -137,10 +140,16 @@ export const RelatedTableFormat = forwardRef(
           data={data} setData={setData}
           attributes={attributes}
           ref={dateTimeSettingsRef}
-          drivenOnly={true}
         />
       </div>
       <div className='FormAttribute'>
+        <IndicatorSettings
+          data={data}
+          setData={setData}
+          attributes={attributes}
+          indicatorList={indicatorList}
+          ref={indicatorRef}
+        />
         <FormControl className="BasicFormSection">
           <div>
             <label className="form-label required">

@@ -242,6 +242,7 @@ export default function InputFile({ data, apply, open, setOpen }) {
               value={attributes[valueExtraColumn].value}
               isMulti
               menuPlacement='top'
+              className='Dynamic'
               onChange={evt => {
                 attributes[valueExtraColumn].value = evt.map(row => {
                   return row.value

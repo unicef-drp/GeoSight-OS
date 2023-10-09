@@ -528,6 +528,23 @@ header {
     height: $base-input-height;
   }
 
+  &.Dynamic {
+    height: unset !important;
+    min-height: $base-input-height !important;
+
+    .ReactSelect__control,
+    .ReactSelect__value-container,
+    .ReactSelect__input-container {
+      height: unset !important;
+      min-height: $base-input-height !important;
+    }
+
+    .ReactSelect__multi-value {
+      margin-top: 6px;
+      margin-bottom: 6px;
+    }
+  }
+
   .ReactSelect__value-container {
     padding: 0 8px;
   }
