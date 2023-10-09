@@ -33,7 +33,7 @@ import {
   indicatorLayerId,
   isIndicatorLayerLikeIndicator
 } from "../../../../utils/indicatorLayer";
-import { dictDeepCopy, isASCII } from "../../../../utils/main";
+import { dictDeepCopy } from "../../../../utils/main";
 import { UpdateStyleData } from "../../../../utils/indicatorData";
 
 import './style.scss';
@@ -262,7 +262,10 @@ export default function ReferenceLayerCentroid({ map }) {
       maxZoom = style.maxZoom ? style.maxZoom : maxZoom
       paint['text-color'] = style.fontColor.replaceAll('##', '#')
       if (style.fontFamily) {
-        layout['text-font'] = [style.fontFamily.split(',')[0].replaceAll('"', '')]
+        const font = style.fontFamily.split(',')[0].replaceAll('"', '')
+        layout['text-font'] = [font, font]
+      } else {
+        layout['text-font'] = ['Arial', 'Arial']
       }
       layout['text-size'] = style.fontSize
       paint['text-halo-color'] = style.haloColor.replaceAll('##', '#')
@@ -294,7 +297,7 @@ export default function ReferenceLayerCentroid({ map }) {
       'type': 'geojson',
       'data': {
         type: 'FeatureCollection',
-        features: features.filter(feature => isASCII(feature.properties.name))
+        features: features
       }
     });
     const contextLayerIds = map.getStyle().layers.filter(
