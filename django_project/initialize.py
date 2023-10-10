@@ -14,6 +14,7 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import ast
 import os
 import shutil
 import time
@@ -113,6 +114,10 @@ call_command('collectstatic', '--noinput', verbosity=0)
 #########################################################
 # 5. Loading fixtures
 #########################################################
-
-print("-----------------------------------------------------")
-print("5. Loading fixtures")
+load_demo_fixtures = ast.literal_eval(
+    os.getenv('DEMO_FIXTURES', 'False')
+)
+if load_demo_fixtures:
+    print("-----------------------------------------------------")
+    print("5. Loading demo fixtures")
+    call_command('loaddata', 'core/fixtures/demo.json')
