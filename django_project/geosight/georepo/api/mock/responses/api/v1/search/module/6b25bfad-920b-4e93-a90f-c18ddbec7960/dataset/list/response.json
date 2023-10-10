@@ -1,0 +1,14 @@
+{
+    "page": 1,
+    "page_size": 100000,
+    "total_page": 1,
+    "results": [
+        {
+            "name": "Global Administrative Boundaries",
+            "uuid": "cea137b9-61a5-42d3-966d-e432c4336349",
+            "short_code": "OAB",
+            "type": "Admin Boundaries",
+            "last_update": "2023-09-29T09:40:46.252353Z"
+        }
+    ]
+}

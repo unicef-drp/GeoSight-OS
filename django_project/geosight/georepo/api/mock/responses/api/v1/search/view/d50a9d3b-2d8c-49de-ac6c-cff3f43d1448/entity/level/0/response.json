@@ -1,0 +1,43 @@
+{
+    "page": 1,
+    "page_size": 100000,
+    "total_page": 1,
+    "results": [
+        {
+            "ucode": "SOM_V1",
+            "concept_ucode": "#SOM_1",
+            "uuid": "444f1b66-8abf-4fca-a86d-ed24a8804c5b",
+            "concept_uuid": "a2006979-4f25-448c-891b-3935c4bcf6f0",
+            "is_latest": true,
+            "start_date": "2023-09-06T10:53:54.775779+00:00",
+            "name": "Somalia",
+            "admin_level": 0,
+            "level_name": "Admin Level 0",
+            "type": "State",
+            "ext_codes": {
+                "ISO3": "SOM",
+                "UcodeIn": "SOM",
+                "WFP_ID": "226",
+                "default": "SOM"
+            },
+            "names": [
+                {
+                    "name": "Somalia",
+                    "lang": "EN"
+                },
+                {
+                    "name": "Somalia",
+                    "lang": "EN",
+                    "label": "Map label"
+                }
+            ],
+            "parents": [],
+            "bbox": [
+                40.99431700000008,
+                -1.6568399629999249,
+                51.415078333000054,
+                11.988388100000066
+            ]
+        }
+    ]
+}

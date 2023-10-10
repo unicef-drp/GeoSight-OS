@@ -1,0 +1,15 @@
+{
+    "page": 1,
+    "page_size": 100000,
+    "total_page": 1,
+    "results": [
+        {
+            "name": "Boundary Lines",
+            "uuid": "28e79d93-ec7d-4b7b-be34-ce9dcc627729"
+        },
+        {
+            "name": "Admin Boundaries",
+            "uuid": "6b25bfad-920b-4e93-a90f-c18ddbec7960"
+        }
+    ]
+}
