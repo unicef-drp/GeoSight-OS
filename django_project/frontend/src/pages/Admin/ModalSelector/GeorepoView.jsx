@@ -57,7 +57,7 @@ export default function GeorepoViewSelector(
 
   if (selectedData) {
     selectedData.map(_data => {
-      if (!_data.id) {
+      if (_data.constructor === Object && !_data.id) {
         _data.id = _data?.identifier
       }
     })

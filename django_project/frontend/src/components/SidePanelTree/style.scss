@@ -221,6 +221,10 @@
     background-color: white !important;
   }
 
+  &.Mui-disabled {
+    opacity: 1 !important;
+  }
+
   .GroupSelectable {
     .PanelCheckbox {
       margin-top: 3px !important;
@@ -233,6 +237,10 @@
     .MuiTreeItem-content {
       padding-left: 22px !important;
     }
+  }
+
+  .MuiCircularProgress-root {
+    left: -1px !important;
   }
 }
 

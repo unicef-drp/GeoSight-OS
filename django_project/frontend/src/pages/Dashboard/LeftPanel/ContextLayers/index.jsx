@@ -41,10 +41,40 @@ function ContextLayers() {
   const [treeData, setTreeData] = useState([])
   const [selectedLayer, setSelectedLayer] = useState([])
   const [layers, setLayers] = useState({})
+  const [errors, setErrors] = useState({})
+
+  const updateTree = (_contextLayers) => {
+    if (_contextLayers) {
+      try {
+        _contextLayers?.map(ctx => {
+          if (errors[ctx.id]) {
+            ctx.error = errors[ctx.id]
+          }
+          if (!layers[ctx.id] && !ctx.error) {
+            ctx.loading = true
+            ctx.disabled = true
+          } else {
+            ctx.loading = false
+            ctx.disabled = false
+          }
+        })
+      } catch (err) {
+
+      }
+      setTreeData([
+          ...dataStructureToTreeData(_contextLayers, contextLayersStructure)
+        ]
+      )
+    }
+  }
 
   useEffect(() => {
     initialize(contextLayers)
   }, [contextLayers])
+
+  useEffect(() => {
+    updateTree(contextLayers)
+  }, [errors, layers])
 
   useEffect(() => {
     for (const contextLayer of contextLayers) {
@@ -87,23 +117,22 @@ function ContextLayers() {
             }
           }),
           (legend) => contextLayer.legend = legend,
-          (error) => contextLayer.error = error,
+          (error) => {
+            setErrors(prevState => {
+                return { ...prevState, [contextLayer.id + '']: error.toString() }
+              }
+            )
+          },
           null
         )
       }
     }
-    if (_contextLayers) {
-      setTreeData([
-          ...dataStructureToTreeData(_contextLayers, contextLayersStructure)
-        ]
-      )
-    }
+    updateTree(contextLayers)
   }
 
   const onChange = (selectedData, layersData = null) => {
     setSelectedLayer([...selectedData])
   }
-
   return (
     <SidePanelTreeView
       data={treeData}
