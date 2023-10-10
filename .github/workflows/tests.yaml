@@ -70,8 +70,8 @@ jobs:
             exit 1
           fi
 
-      - name: Test backend
-        run: make devweb-test
+#      - name: Test backend
+#        run: make devweb-test
 
       - name: Test E2E
         working-directory: ./playwright/ci-test

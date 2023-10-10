@@ -17,7 +17,7 @@ test.describe('Create project', () => {
         await expect(page.getByText('Add New Project')).toBeVisible();
         await page.getByText('Add New Project').click();
         await expect(page.getByText('Save')).toBeVisible();
-        await page.getByPlaceholder('Select reference dataset ').click();
+        await page.locator(".ReferenceDatasetSection input").click();
         await page.locator(".ModalDataSelector .MuiDataGrid-row").click();
         await page.locator("#SummaryName").fill('Test Project');
         await page.locator("#SummaryCategory").click();
