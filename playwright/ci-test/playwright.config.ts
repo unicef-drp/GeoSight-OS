@@ -29,6 +29,7 @@ export default defineConfig({
     },
 
     outputDir: 'playwright-results',
+    testMatch: /.*\.ts/,
 
     /* Configure projects for major browsers */
     projects: [
