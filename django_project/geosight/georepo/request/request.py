@@ -85,7 +85,9 @@ class GeorepoUrl:
                 self.georepo_api_key = pref.georepo_api_key_level_4_val
                 self.georepo_api_key_email = pref.georepo_api_key_level_4_email
 
-        if self.georepo_api_key == pref.georepo_api_key_level_1_val:
+        if self.georepo_api_key == pref.georepo_api_key_level_4_val:
+            self.api_key_is_public = False
+        elif self.georepo_api_key == pref.georepo_api_key_level_1_val:
             self.api_key_is_public = True
 
         self.headers = {
