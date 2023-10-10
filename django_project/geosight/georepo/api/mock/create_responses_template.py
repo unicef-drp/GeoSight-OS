@@ -103,6 +103,17 @@ class GeorepoGenerator:
         """GET requests."""
         return requests.post(url, json=data, headers=self.urls.headers)
 
+    def _file(self, url):
+        """Return file of response."""
+        # Writing to response.json
+        parsed_url = urlparse(url)
+
+        _folder = os.path.join(self.FOLDER, parsed_url.path[1:])
+        if not os.path.exists(_folder):
+            os.makedirs(_folder)
+
+        return os.path.join(_folder, 'response.json')
+
     def save_response(self, url: str, data: dict):
         """Save response."""
         print('----------------------')
@@ -114,15 +125,7 @@ class GeorepoGenerator:
             GEOREPO_API_URL,
             '/georepo/mock/api/v1/'
         )
-
-        # Writing to response.json
-        parsed_url = urlparse(url)
-
-        _folder = os.path.join(self.FOLDER, parsed_url.path[1:])
-        if not os.path.exists(_folder):
-            os.makedirs(_folder)
-
-        _file = os.path.join(_folder, 'response.json')
+        _file = self._file(url)
         with open(_file, 'w+') as outfile:
             outfile.write(json_str)
 
