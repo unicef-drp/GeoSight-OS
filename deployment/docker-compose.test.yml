@@ -62,4 +62,4 @@ services:
     entrypoint: [ ]
     ports:
       # for django test server
-      - "2000:8080"
+      - "8080:8080"
