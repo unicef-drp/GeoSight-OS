@@ -270,7 +270,20 @@ class SitePreferences(SingletonModel):
     @staticmethod
     def preferences() -> "SitePreferences":
         """Load Site Preference."""
-        return SitePreferences.load()
+        obj = SitePreferences.load()
+        try:
+            if settings.MOCK_GEOREPO:
+                if not obj.georepo_api_key_level_1_val:
+                    obj.georepo_url = \
+                        'http://localhost:2000/georepo/mock/api/v1/'
+                    obj.georepo_api_key_level_1 = signing.dumps('Level 1')
+                    obj.georepo_api_key_level_4 = signing.dumps('Level 4')
+                    obj.georepo_using_user_api_key = False
+                    obj.save()
+        except AttributeError:
+            pass
+
+        return obj
 
     def __str__(self):
         return 'Site Preference'

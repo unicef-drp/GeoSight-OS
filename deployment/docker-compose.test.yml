@@ -21,9 +21,7 @@ volumes:
 # different port for the web.
 version: '3.4'
 services:
-  django:
-    environment:
-      - DEMO_FIXTURES=${DEMO_FIXTURES:-False}
+
   dev:
     image: ${APP_IMAGE}:dev
     container_name: "geosight_dev"
@@ -48,6 +46,7 @@ services:
       - DJANGO_SETTINGS_MODULE=core.settings.test
       - INITIAL_FIXTURES=True
       - SECRET_KEY=SECRET_KEY
+      - DEMO_FIXTURES=True
 
       # Redis config
       - REDIS_HOST=redis
