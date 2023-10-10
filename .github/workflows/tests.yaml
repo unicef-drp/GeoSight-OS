@@ -64,7 +64,7 @@ jobs:
 
       - name: Test django endpoint
         run: |
-          curl http://localhost:8080/
+          curl http://localhost:2000/
           if [ $? -ne 0 ]; then
             echo "Curl command failed"
             exit 1

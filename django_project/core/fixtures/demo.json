@@ -8,7 +8,7 @@
       "disclaimer": "The boundaries and names shown and the designations used on this map do not imply official endorsement or acceptance by the United Nations.",
       "default_basemap": 1,
       "default_color_palette": null,
-      "georepo_url": "http://localhost:8080/georepo/mock/api/v1/",
+      "georepo_url": "http://localhost:2000/georepo/mock/api/v1/",
       "georepo_api_key_level_1": "IkxldmVsIDEi:1qq6Tn:Dzl9W8VYyrr7WcLc92pa780Oitevj6O-7GIG-UBv4IQ",
       "georepo_api_key_level_1_email": null,
       "georepo_api_key_level_4": "IkxldmVsIDIi:1qq6Tn:em2GO8SjGudcStwhNYqoQZM0nlvjj8UceHhmvHo3t5Y",

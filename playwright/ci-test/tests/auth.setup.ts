@@ -1,7 +1,7 @@
 import {test as setup} from '@playwright/test';
 
 const authFile = 'states/.auth/user.json';
-let url = 'http://localhost:8080/';
+let url = 'http://localhost:2000/';
 
 setup('authenticate', async ({page}) => {
 

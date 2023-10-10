@@ -1,7 +1,7 @@
 import {expect, test} from '@playwright/test';
 
 // URL That we need to check
-let url = 'http://localhost:8080';
+let url = 'http://localhost:2000';
 
 
 test.describe('navigation', () => {
