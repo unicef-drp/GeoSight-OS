@@ -39,7 +39,7 @@ function removeLayers(map, id) {
   if (!map) {
     return
   }
-  const layers = map.getStyle().layers.filter(layer => layer.id.includes(id + '-'))
+  const layers = map.getStyle().layers.filter(layer => layer.id.includes(id + '-') || layer.id === id)
   layers.map(layer => {
     removeLayer(map, layer.id)
   })
