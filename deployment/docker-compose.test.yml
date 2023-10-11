@@ -46,6 +46,7 @@ services:
       - DJANGO_SETTINGS_MODULE=core.settings.test
       - INITIAL_FIXTURES=True
       - SECRET_KEY=SECRET_KEY
+      - DEMO_FIXTURES=True
 
       # Redis config
       - REDIS_HOST=redis
@@ -60,4 +61,4 @@ services:
     entrypoint: [ ]
     ports:
       # for django test server
-      - "2000:8080"
+      - "2000:2000"

@@ -18,3 +18,4 @@ from .prod import *  # noqa
 
 TEST_RUNNER = 'core.tests.runner.PostgresSchemaTestRunner'
 DEBUG = True
+MOCK_GEOREPO = True
