@@ -102,7 +102,7 @@ services:
       - GEOREPO_AZURE_B2C_POLICY_NAME=${GEOREPO_AZURE_B2C_POLICY_NAME:-''}
     ports:
       # for django test server
-      - "2000:8080"
+      #- "2000:8080"
       # for ssh
       - "2001:22"
     command: 'python manage.py runserver 0.0.0.0:8080'

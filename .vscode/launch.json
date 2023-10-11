@@ -9,7 +9,7 @@
             "cwd": "/home/web/project/django_project",
             "args": [
                 "runserver",
-                "8000"
+                "2000"
             ],
             "envFile": "/home/web/project/deployment/.env",
             "django": true,
