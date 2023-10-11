@@ -28,14 +28,11 @@ urlpatterns = [
     )
 ]
 
-try:
-    if settings.MOCK_GEOREPO:
-        urlpatterns += [
-            url(
-                r'^mock',
-                MockGeorepoAPI.as_view(),
-                name='mock-georepo-api'
-            ),
-        ]
-except AttributeError:
-    pass
+if settings.MOCK_GEOREPO:
+    urlpatterns += [
+        url(
+            r'^mock',
+            MockGeorepoAPI.as_view(),
+            name='mock-georepo-api'
+        ),
+    ]
