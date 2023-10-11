@@ -63,7 +63,7 @@ export default function Block({ data, isRoot }) {
 
           const parser = new DOMParser()
           const htmlDoc = parser.parseFromString(response, 'text/html')
-          const anchor = data.anchor.replace('#', '')
+          const anchor = data.anchor?.replace('#', '')
           let _element = htmlDoc.getElementsByTagName('article')[0]
           if (anchor) {
             _element = htmlDoc.getElementById(data.anchor.replace('#', ''))
