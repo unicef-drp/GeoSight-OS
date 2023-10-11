@@ -179,13 +179,10 @@ class GeorepoGenerator:
     def run(self):
         """Run the generation."""
         if GEOREPO_API_URL == '':
-            print('GEOREPO_API_URL is empty. Update this on this file.')
             return
         if GEOREPO_TOKEN == '':
-            print('GEOREPO_TOKEN is empty. Update this on this file.')
             return
         if GEOREPO_TOKEN_EMAIL == '':
-            print('GEOREPO_TOKEN_EMAIL is empty. Update this on this file.')
             return
 
         # Extract modules responses
