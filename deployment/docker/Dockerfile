@@ -45,8 +45,15 @@ ADD django_project /home/web/django_project
 
 # Install chrome for selenium
 # TODO: Change how to get the Nunjucks results without browser
-WORKDIR /home/web/django_project/selenium
-RUN apt-get install -y -f ./google-chrome-stable_current_amd64.deb
+# This will not works on ARM (Macbook M1/M2) Ubuntu VM
+# WORKDIR /home/web/django_project/selenium
+# RUN apt-get install chromium-browser -y
+RUN echo "deb http://archive.ubuntu.com/ubuntu/ bionic-updates universe" >> /etc/apt/sources.list.d/bionic-updates.list
+RUN echo "Package: chromium-browser chromium-browser-l10n chromium-codecs-ffmpeg-extra chromium-codecs-ffmpeg\n\
+Pin: release a=bionic-updates\n\
+Pin-Priority: 900" >> /etc/apt/preferences.d/chromium-deb-bionic-updates
+RUN apt update
+RUN apt-get install chromium-browser -y
 
 # Open port 8080 as we will be running our uwsgi socket on that
 EXPOSE 8080
