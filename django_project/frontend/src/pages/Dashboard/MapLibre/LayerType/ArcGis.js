@@ -17,6 +17,24 @@ import FeatureService from 'mapbox-gl-arcgis-featureserver'
 import parseArcRESTStyle from "../../../../utils/esri/esri-style";
 import { addPopup, hasLayer, hasSource, loadImageToMap } from "../utils";
 
+/***
+ * To prevent attribution created duplicated
+ */
+class CustomFeatureService extends FeatureService {
+  _setAttribution() {
+    const POWERED_BY_ESRI_ATTRIBUTION_STRING = 'Powered by <a href="https://www.esri.com">Esri</a>';
+    const attributionController = this._map._controls.find(c => '_attribHTML' in c);
+    if (attributionController) {
+      if (this._esriServiceOptions.setAttributionFromService && this.serviceMetadata.copyrightText.length > 0) {
+        this._map.style.sourceCaches[this.sourceId]._source.attribution = this.serviceMetadata.copyrightText;
+      } else {
+        this._map.style.sourceCaches[this.sourceId]._source.attribution = POWERED_BY_ESRI_ATTRIBUTION_STRING;
+      }
+      attributionController._updateAttributions();
+    }
+  }
+}
+
 /*** Arcgis style */
 function ArcGisStyle(map, id, layer) {
   const casesByType = {}
@@ -319,7 +337,7 @@ export default function arcGisLayer(map, id, data, contextLayerData, popupFeatur
       token: data.token,
       minZoom: 0
     })
-    new FeatureService(id, map, params)
+    new CustomFeatureService(id, map, params)
   }
   const fillId = id + '-fill'
   const outlineId = id + '-outline'

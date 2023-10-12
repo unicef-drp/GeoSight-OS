@@ -1,0 +1,53 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   Attributions
+   ========================================================================== */
+
+@import '../../../../app/variables';
+
+.Attributions {
+  display: flex;
+  margin-right: 6px;
+  background-color: white;
+  border-radius: 12px;
+
+  .Button {
+    cursor: pointer;
+    height: 18px;
+    width: 18px;
+    border-radius: 12px;
+    background-color: rgb(0 0 0/5%);
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width=%2718%27 height=%2718%27 viewBox=%270 0 20 20%27 xmlns=%27http://www.w3.org/2000/svg%27 fill-rule=%27evenodd%27%3E%3Cpath d=%27M4 10a6 6 0 1 0 12 0 6 6 0 1 0-12 0m5-3a1 1 0 1 0 2 0 1 1 0 1 0-2 0m0 3a1 1 0 1 1 2 0v3a1 1 0 1 1-2 0%27/%3E%3C/svg%3E");
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  .Content {
+    display: none;
+    white-space: nowrap;
+    max-width: 400px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 2px 6px 0 12px;
+
+    &.Open {
+      display: block;
+    }
+  }
+}

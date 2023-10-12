@@ -21,6 +21,7 @@ import { EmbedConfig } from "../../../utils/embed";
 import GlobalDateSelector from "./GlobalDateSelector";
 import LayerConfig from "./LayerConfig";
 import { FullScreen } from '../../../pages/Dashboard/Toolbars'
+import Attributions from "../Toolbars/Attributions";
 
 import './style.scss';
 
@@ -65,6 +66,7 @@ export default function MiddlePanel(
         <div className='Separator'/>
         <div className='RightSection'>
           <div className='ContentLine Inner'>
+            <Attributions/>
             <FullScreen/>
           </div>
         </div>

@@ -71,6 +71,31 @@ export default function MapLibre(
     force
   } = useSelector(state => state.map);
 
+
+  /***
+   * Make attribution call Attributions component instead
+   */
+  class AttributionControl extends maplibregl.AttributionControl {
+    _updateCompact() {
+      if (this._map?.style) {
+        const attributions = []
+        for (const [key, layer] of Object.entries(this._map.style._layers)) {
+          const source = this._map.style.sourceCaches[layer.source]
+          if (this._map.style.sourceCaches[layer.source]) {
+            if (source._source.attribution) {
+              attributions.push(source._source.attribution)
+            }
+          }
+        }
+        dispatch(
+          Actions.GlobalState.update(
+            { attributions: Array.from(new Set(attributions)) }
+          )
+        )
+      }
+    }
+  }
+
   /**
    * FIRST INITIATE
    * */
@@ -85,8 +110,11 @@ export default function MapLibre(
           glyphs: "/static/fonts/{fontstack}/{range}.pbf"
         },
         center: [0, 0],
-        zoom: 1
-      });
+        zoom: 1,
+        attributionControl: false
+      }).addControl(new AttributionControl({
+        compact: true
+      }));
       newMap.once("load", () => {
         setMap(newMap)
         setTimeout(() =>

@@ -166,18 +166,11 @@
     }
 
     .Disclaimer {
-      margin-top: 0.5rem;
-      margin-left: 20px;
       box-shadow: $box-shadow;
       background-color: $white;
-      opacity: 0.94;
+      margin-top: 0.5rem;
+      margin-left: 20px;
       width: 637px;
-      font-family: $base-font-family;
-      font-size: 9px;
-      font-weight: $base-font-regular;
-      line-height: 14px;
-      letter-spacing: 0em;
-      text-align: center;
     }
 
     .ContentLine {
@@ -247,4 +240,15 @@
       }
     }
   }
+}
+
+.Attributions,
+.BottomContent .Disclaimer {
+  opacity: 0.94;
+  font-family: $base-font-family;
+  font-size: 9px;
+  font-weight: $base-font-regular;
+  line-height: 14px;
+  letter-spacing: 0em;
+  text-align: center;
 }
