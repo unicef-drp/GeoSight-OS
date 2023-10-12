@@ -93,6 +93,7 @@ export default function NavBar({ minified }) {
             canAccessAdmin ? (
               <div className='LinkButton AdminLinkButton'
                    style={{ marginRight: "1rem" }}>
+                <NotificationBadge/>
                 <a href={urls.admin.dashboardList}>
                   <ThemeButton
                     variant="white"
@@ -100,7 +101,6 @@ export default function NavBar({ minified }) {
                     <CogIcon/> Admin panel
                   </ThemeButton>
                 </a>
-                <NotificationBadge/>
               </div>
             ) : null
           }

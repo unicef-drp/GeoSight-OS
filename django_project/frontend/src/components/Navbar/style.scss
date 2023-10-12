@@ -156,16 +156,16 @@ header {
 
 .AdminLinkButton {
   position: relative;
+  display: flex;
+  align-items: center;
 
   .NotificationBadge {
-    position: absolute;
-    top: 50%;
-    right: 100%;
     margin-right: 10px;
-    margin-top: -12px;
     border: 1px solid white;
     background: white;
     color: $primary-color;
+    position: relative;
+    height: 12px;
   }
 }
 
