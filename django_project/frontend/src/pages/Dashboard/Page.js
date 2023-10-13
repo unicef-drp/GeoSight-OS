@@ -16,6 +16,7 @@
 import React from 'react';
 import App, { render } from '../../app';
 import { store } from '../../store/dashboard';
+import ErrorBoundary from '../../components/ErrorBoundary';
 
 import Dashboard from '../Dashboard'
 
@@ -23,7 +24,9 @@ import Dashboard from '../Dashboard'
 export default function DashboardPage() {
   return (
     <App>
-      <Dashboard/>
+      <ErrorBoundary>
+        <Dashboard/>
+      </ErrorBoundary>
     </App>
   );
 }

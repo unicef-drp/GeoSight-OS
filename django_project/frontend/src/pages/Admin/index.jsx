@@ -16,6 +16,7 @@
 import React from 'react';
 import App from '../../app';
 import SideNavigation from './Components/SideNavigation'
+import ErrorBoundary from '../../components/ErrorBoundary';
 
 import './style.scss';
 
@@ -50,7 +51,9 @@ export function AdminPage({ pageName, children, ...props }) {
   return (
     <App className='Admin' hideNavbar={true}>
       <SideNavigation pageName={pageName} minified={props.minifySideNavigation}/>
-      {children}
+      <ErrorBoundary>
+        {children}
+      </ErrorBoundary>
     </App>
   );
 }

@@ -55,6 +55,8 @@
     "@mui/material": "^5.10.11",
     "@mui/x-data-grid": "^5.12.0",
     "@mui/x-date-pickers": "^5.0.8",
+    "@sentry/browser": "^6.19.7",
+    "@sentry/react": "^6.19.7",
     "@turf/turf": "^6.5.0",
     "@uiw/react-md-editor": "^3.17.2",
     "alasql": "^1.7.3",

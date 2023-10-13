@@ -106,6 +106,13 @@ shell:
 	@echo "------------------------------------------------------------------"
 	@docker-compose exec django /bin/bash
 
+run-local:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Running django in dev mode"
+	@echo "------------------------------------------------------------------"
+	@docker-compose exec dev python manage.py runserver --verbosity 3 0.0.0.0:8080 --settings=core.settings.dev
+
 db-bash:
 	@echo
 	@echo "------------------------------------------------------------------"
