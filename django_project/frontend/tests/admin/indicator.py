@@ -42,13 +42,30 @@ class IndicatorAdminViewTest(BaseViewTest, TestCase):
         'name': 'name',
         'group': 'group',
         'shortcode': 'SHORT',
-        'style_type': IndicatorStyleType.PREDEFINED,
+        'style_type': IndicatorStyleType.DYNAMIC_QUANTITATIVE,
         'type': IndicatorType.FLOAT
+    }
+    style_config = {
+        "sync_filter": "on",
+        "no_data_rule": {
+            "name": "No data",
+            "rule": "No data",
+            "color": "#D8D8D8",
+            "active": "true",
+            "outline_size": "0.5",
+            "outline_color": "#FFFFFF"
+        },
+        "outline_size": 0.5, "sync_outline": False,
+        "color_palette": 1, "outline_color": "#FFFFFF",
+        "dynamic_class_num": "7",
+        "color_palette_reverse": False,
+        "dynamic_classification": "Natural breaks."
     }
 
     def create_resource(self, user):
         """Create resource function."""
         payload = copy.deepcopy(self.payload)
+        payload['style_config'] = self.style_config
         del payload['group']
         return Indicator.permissions.create(
             user=user,
@@ -170,3 +187,12 @@ class IndicatorAdminViewTest(BaseViewTest, TestCase):
         self.assertRequestPostView(
             url, 302, payload, self.contributor_in_group)
         self.assertRequestPostView(url, 302, payload, self.creator_in_group)
+
+    def test_check_style_config(self):
+        """Test for edit view."""
+        url = reverse(self.edit_url_tag, kwargs={'pk': self.resource.id})
+        self.assertEquals(self.resource.style_config, self.style_config)
+        new_payload = copy.deepcopy(self.payload)
+        self.assertRequestPostView(url, 302, new_payload, self.admin)
+        self.resource.refresh_from_db()
+        self.assertEquals(self.resource.style_config, self.style_config)

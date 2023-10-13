@@ -29,7 +29,7 @@ class BaseStyleForm(forms.ModelForm):
         preferences = SitePreferences.preferences()
         if self.data.get('style_type', None) in [
             StyleType.DYNAMIC_QUALITATIVE, StyleType.DYNAMIC_QUANTITATIVE
-        ]:
+        ] and self.data.get('color_palette', None):
             color_palette = self.data.get('color_palette', None)
             color_palette_reverse = self.data.get(
                 'color_palette_reverse', False
@@ -80,7 +80,10 @@ class BaseStyleForm(forms.ModelForm):
                     ),
                 }
             }
-        return {}
+        if self.instance:
+            return self.instance.style_config
+        else:
+            return {}
 
 
 class StyleForm(BaseStyleForm):
