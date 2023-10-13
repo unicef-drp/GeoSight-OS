@@ -26,3 +26,4 @@ export { default as LabelToggler } from "./LabelToggler";
 export { default as ProjectOverview } from "./ProjectOverview";
 export { default as SearchGeometryInput } from "./SearchGeometryInput";
 export { default as ToggleSidePanel } from "./ToggleSidePanel";
+export { default as ZoomToFilteredGeometries } from "./ZoomToFilteredGeometries";

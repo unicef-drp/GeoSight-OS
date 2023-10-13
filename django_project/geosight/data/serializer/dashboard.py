@@ -237,7 +237,7 @@ class DashboardSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'slug', 'icon', 'name', 'description',
             'category', 'group',
-            'extent', 'filters', 'filters_allow_modify',
+            'extent', 'filters', 'filters_allow_modify', 'auto_zoom_to_filter',
             'reference_layer', 'level_config',
             'indicators', 'indicator_layers', 'indicator_layers_structure',
             'context_layers', 'context_layers_structure',

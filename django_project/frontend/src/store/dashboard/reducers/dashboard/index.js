@@ -39,6 +39,7 @@ export const DASHBOARD_ACTION_NAME = 'DASHBOARD';
 export const DASHBOARD_ACTION_TYPE_UPDATE = 'DASHBOARD/UPDATE';
 export const DASHBOARD_ACTION_TYPE_UPDATE_PROPS = 'DASHBOARD/UPDATE_PROPS';
 export const DASHBOARD_ACTION_TYPE_FILTERS_ALLOW_MODIFY = 'DASHBOARD/FILTERS_ALLOW_MODIFY';
+export const DASHBOARD_ACTION_TYPE_AUTO_ZOOM_TO_FILTER = 'DASHBOARD/AUTO_ZOOM_TO_FILTER';
 export const DASHBOARD_ACTION_TYPE_UPDATE_SHARE = 'DASHBOARD/UPDATE_SHARE';
 export const DASHBOARD_ACTION_TYPE_UPDATE_GEOFIELD = 'DASHBOARD/UPDATE_GEOFIELD';
 export const DASHBOARD_ACTION_TYPE_UPDATE_STRUCTURE = 'DASHBOARD/UPDATE_STRUCTURE';
@@ -77,6 +78,15 @@ export default function dashboardReducer(
             data: {
               ...state.data,
               filtersAllowModify: !state.data.filtersAllowModify
+            }
+          }
+        }
+        case DASHBOARD_ACTION_TYPE_AUTO_ZOOM_TO_FILTER: {
+          return {
+            ...state,
+            data: {
+              ...state.data,
+              auto_zoom_to_filter: !state.data.auto_zoom_to_filter
             }
           }
         }
