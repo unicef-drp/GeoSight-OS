@@ -26,8 +26,11 @@ import './style.scss';
  * FullScreen component.
  */
 export default function Attributions() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const { attributions } = useSelector(state => state.globalState);
+  if (!attributions?.length) {
+    return null
+  }
   return <div className='Attributions' title='Attributions'>
     <div
       className={'Content' + (open ? ' Open' : '')}
