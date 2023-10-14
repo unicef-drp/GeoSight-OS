@@ -24,7 +24,6 @@ from rest_framework.response import Response
 from core.api.base import FilteredAPI
 from core.pagination import Pagination
 from geosight.data.models.indicator import (
-    Indicator,
     IndicatorValue, IndicatorValueWithGeo, IndicatorValueRejectedError
 )
 from geosight.data.serializer.indicator import (
@@ -66,21 +65,11 @@ class DatasetApiList(ListAPIView, FilteredAPI):
         # If not query
         if not query:
             filters = None
-
             # Filter using indicator
-            for indicator in Indicator.permissions.read(
-                    user=self.request.user
-            ):
-                row_query = Q(indicator_id=indicator.id)
-                if not filters:
-                    filters = row_query
-                else:
-                    filters.add(row_query, Q.OR)
-
-                    # Filter using indicator
-            for dataset in ReferenceLayerIndicatorPermission.permissions.list(
-                    user=self.request.user
-            ):
+            query = ReferenceLayerIndicatorPermission.permissions.list(
+                user=self.request.user
+            )
+            for dataset in query:
                 obj = dataset.obj
                 row_query = Q(indicator_id=obj.indicator.id)
                 row_query.add(
