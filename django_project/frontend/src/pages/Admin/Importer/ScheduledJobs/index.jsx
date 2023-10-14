@@ -83,7 +83,7 @@ export function resourceActions(params, notify, updateData) {
                 }
               </div>
             </a>
-          </Tooltip> : null
+          </Tooltip> : <div></div>
       }
       label="Value List"
     />
