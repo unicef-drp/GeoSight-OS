@@ -152,21 +152,21 @@ export default function SideNavigation({ pageName, minified }) {
                   </SidaNavigationButton>
                 </div>
                 {
-                   user.is_admin ?
-                  <SidaNavigationButton
-                    minified={minified}
-                    title='Data Data Browser'>
-                    <a href={dataset}
-                       className={'SideNavigation-Row ' + (pageName === pageNames.Dataset ? 'active' : '')}>
-                      {
-                        pageName === pageNames.Dataset ?
-                          <DataBrowserActiveIcon/> :
-                          <DataBrowserIcon/>
-                      }
-                      <span
-                        className='SideNavigation-Row-Name'>Data Browser</span>
-                    </a>
-                  </SidaNavigationButton> : null
+                  user.is_admin ?
+                    <SidaNavigationButton
+                      minified={minified}
+                      title='Data Data Browser'>
+                      <a href={dataset}
+                         className={'SideNavigation-Row ' + (pageName === pageNames.Dataset ? 'active' : '')}>
+                        {
+                          pageName === pageNames.Dataset ?
+                            <DataBrowserActiveIcon/> :
+                            <DataBrowserIcon/>
+                        }
+                        <span
+                          className='SideNavigation-Row-Name'>Data Browser</span>
+                      </a>
+                    </SidaNavigationButton> : null
                 }
 
                 <SidaNavigationButton minified={minified}
