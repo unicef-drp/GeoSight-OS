@@ -164,20 +164,6 @@ export const AdminListPagination = forwardRef(
         leftHeader={
           <Fragment>
             {
-              filtered ? <i>(Filtered)</i> : ""
-            }
-            {
-              selectionModel.length ?
-                <ThemeButton
-                  variant="primary Reverse"
-                  onClick={() => {
-                    setSelectionModel([])
-                  }}
-                >
-                  Clear selection.
-                </ThemeButton> : null
-            }
-            {
               props.selectAllUrl && rowSize && rowSize !== selectionModel.length ?
                 <ThemeButton
                   variant="primary Reverse"

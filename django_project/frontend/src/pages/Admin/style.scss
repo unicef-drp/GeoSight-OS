@@ -154,6 +154,20 @@ main {
   flex-flow: row wrap;
   margin: 0 1rem 1rem 1rem !important;
 
+  .MultipleSelectWithSearch {
+    height: 37px;
+
+    input::placeholder {
+      color: rgba(0, 0, 0, 1) !important;
+      opacity: 1; /* Firefox */
+    }
+
+    input::-ms-input-placeholder { /* Edge 12 -18 */
+      color: rgba(0, 0, 0, 1) !important;
+      opacity: 1; /* Firefox */
+    }
+  }
+
   & > div {
     margin-right: 0.5rem;
   }

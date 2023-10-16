@@ -15,6 +15,7 @@
 
 import React, { Fragment, useEffect, useState } from 'react';
 import { MainDataGrid } from "../../../../components/MainDataGrid";
+import { ThemeButton } from "../../../../components/Elements/Button";
 
 import './style.scss';
 
@@ -79,6 +80,17 @@ export function AdminTable(
             <div
               className={'AdminListHeader-Count ' + (!selectionModel.length ? 'Empty' : '')}>
               {selectionModel.length + ' item' + (selectionModel.length > 1 ? 's' : '') + ' on this list ' + (selectionModel.length > 1 ? 'are' : 'is') + ' selected. '}
+              {
+                selectionModel.length ?
+                  <ThemeButton
+                    variant="primary Reverse"
+                    onClick={() => {
+                      setSelectionModel([])
+                    }}
+                  >
+                    Clear selection.
+                  </ThemeButton> : null
+              }
               {props.leftHeader ? props.leftHeader : null}
             </div>
             <div className='Separator'/>

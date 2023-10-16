@@ -26,6 +26,8 @@ import CheckIcon from "@mui/icons-material/Check";
 import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import Box from "@mui/material/Box";
+import $ from "jquery";
+import LinearProgress from "@mui/material/LinearProgress";
 
 import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
@@ -51,12 +53,13 @@ import { AdminListPagination } from "../../AdminListPagination";
 import { AdminPage, pageNames } from "../../index";
 import { fetchJSON } from "../../../../Requests";
 import { axiosGet } from "../../../../utils/georepo";
+import { SaveButton } from "../../../../components/Elements/Button";
 
 
 import './style.scss';
-import { SaveButton } from "../../../../components/Elements/Button";
-import $ from "jquery";
-import LinearProgress from "@mui/material/LinearProgress";
+import {
+  MultipleSelectWithSearch
+} from "../../../../components/Input/SelectWithSearch";
 
 let inProgress = false
 
@@ -76,6 +79,7 @@ export default function ImporterLogData() {
     indicators: defaultFilters.indicators ? splitParams(defaultFilters.indicators) : [],
     datasets: defaultFilters.datasets ? splitParams(defaultFilters.datasets, false) : [],
     levels: defaultFilters.levels ? splitParams(defaultFilters.levels) : [],
+    status: defaultFilters.status ? splitParams(defaultFilters.status) : [],
     geographies: defaultFilters.geographies ? splitParams(defaultFilters.geographies) : [],
     fromTime: defaultFilters.fromTime ? defaultFilters.fromTime : null,
     toTime: defaultFilters.toTime ? defaultFilters.toTime : null,
@@ -274,7 +278,11 @@ export default function ImporterLogData() {
           response.data.saved_ids.length / response.data.target_ids.length
         ) * 100
       )
-    })
+    }).catch(err => {
+      setProgress(100)
+      tableRef?.current?.refresh()
+      setSelectionModel([])
+    });
   }
 
   // Check the progress
@@ -287,6 +295,11 @@ export default function ImporterLogData() {
    * Parameters Changed
    */
   const getParameters = (parameters) => {
+    if (filters.status.length) {
+      parameters['status__in'] = filters.status.join(',')
+    } else {
+      delete parameters['status__in']
+    }
     if (filters.indicators.length) {
       parameters['data__indicator_id__in'] = filters.indicators.join(',')
     } else {
@@ -372,6 +385,15 @@ export default function ImporterLogData() {
       }
       otherFilters={
         <div className='ListAdminFilters'>
+          <MultipleSelectWithSearch
+            placeholder={'Filter by status(s)'}
+            options={['Warning and Error']}
+            value={filters.status ? filters.status : []}
+            onChangeFn={newFilter => setFilters({
+              ...filters,
+              status: newFilter
+            })}
+          />
           <IndicatorFilterSelector
             data={filters.indicators}
             setData={newFilter => setFilters({
@@ -429,7 +451,7 @@ export default function ImporterLogData() {
       setSelectionModel={setSelectionModel}
       hideSearch={true}
       enableSelectionOnClick={impoterStatus !== 'Success'}
-      selectAllUrl={urls.api.data + '/ids'}
+      selectAllUrl={impoterStatus === 'Success' ? urls.api.data + '/ids' : null}
       selectable={(param) => {
         return progress >= 100 && ['Review', 'Warning'].includes(param.row.status)
       }}

@@ -95,10 +95,13 @@ class ImporterLogDataBaseAPI(FilteredAPI):
         try:
             pk = self.kwargs['pk']
             obj = get_object_or_404(ImporterLog, pk=pk)
-            return self.filter_query(
+            query = self.filter_query(
                 self.request, obj.importerlogdata_set.all(),
-                ['page', 'page_size']
+                ['page', 'page_size', 'status']
             )
+            if self.request.GET.get('status__in'):
+                query = query.exclude(note={})
+            return query
         except KeyError:
             raise Http404()
 
