@@ -22,15 +22,12 @@ import { addPopup, hasLayer, hasSource, loadImageToMap } from "../utils";
  */
 class CustomFeatureService extends FeatureService {
   _setAttribution() {
-    const POWERED_BY_ESRI_ATTRIBUTION_STRING = 'Powered by <a href="https://www.esri.com">Esri</a>';
     const attributionController = this._map._controls.find(c => '_attribHTML' in c);
     if (attributionController) {
       if (this._esriServiceOptions.setAttributionFromService && this.serviceMetadata.copyrightText.length > 0) {
         this._map.style.sourceCaches[this.sourceId]._source.attribution = this.serviceMetadata.copyrightText;
-      } else {
-        this._map.style.sourceCaches[this.sourceId]._source.attribution = POWERED_BY_ESRI_ATTRIBUTION_STRING;
+        attributionController._updateAttributions();
       }
-      attributionController._updateAttributions();
     }
   }
 }
