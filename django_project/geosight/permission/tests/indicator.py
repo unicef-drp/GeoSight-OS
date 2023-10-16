@@ -100,24 +100,24 @@ class IndicatorPermissionTest(TestCase):
         resource_3.permission.save()
 
         self.assertEqual(self.get_resources(self.admin).count(), 4)
-        self.assertEqual(self.get_resources(creator).count(), 3)
-        self.assertEqual(self.get_resources(self.contributor).count(), 1)
-        self.assertEqual(self.get_resources(self.viewer).count(), 1)
+        self.assertEqual(self.get_resources(creator).count(), 2)
+        self.assertEqual(self.get_resources(self.contributor).count(), 0)
+        self.assertEqual(self.get_resources(self.viewer).count(), 0)
         self.assertEqual(self.get_resources(None).count(), 0)
 
         resource_3.permission.update_user_permission(creator, PERMISSIONS.LIST)
-        self.assertEqual(self.get_resources(creator).count(), 4)
+        self.assertEqual(self.get_resources(creator).count(), 3)
 
         resource_2.permission.update_user_permission(
             self.contributor, PERMISSIONS.LIST)
         resource_3.permission.update_user_permission(
             self.contributor, PERMISSIONS.LIST)
-        self.assertEqual(self.get_resources(self.contributor).count(), 3)
+        self.assertEqual(self.get_resources(self.contributor).count(), 2)
 
-        self.assertEqual(self.get_resources(self.viewer_in_group).count(), 1)
+        self.assertEqual(self.get_resources(self.viewer_in_group).count(), 0)
         resource_3.permission.update_group_permission(
             self.group, PERMISSIONS.LIST)
-        self.assertEqual(self.get_resources(self.viewer_in_group).count(), 2)
+        self.assertEqual(self.get_resources(self.viewer_in_group).count(), 1)
 
     def test_admin_layer_permission(self):
         """Check admin permission."""

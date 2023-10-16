@@ -20,7 +20,7 @@ from django.test.testcases import TestCase
 
 from core.models.group import GeosightGroup
 from core.models.profile import ROLES
-from core.tests.model_factories import GroupF, create_user
+from core.tests.model_factories import create_user
 from geosight.permission.models.factory import PERMISSIONS
 from geosight.permission.models.manager import PermissionException
 
@@ -51,7 +51,7 @@ class GroupPermissionTest(TestCase):
         self.viewer = create_user(ROLES.VIEWER.name)
         self.resource_creator = create_user(ROLES.CREATOR.name)
 
-        self.group = GroupF()
+        self.group = self.create_resource(self.resource_creator)
         self.viewer_in_group = create_user(ROLES.VIEWER.name)
         self.viewer_in_group.groups.add(self.group)
 

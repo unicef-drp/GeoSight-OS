@@ -125,12 +125,12 @@ class ContextLayerListApiTest(BasePermissionTest, TestCase):
 
         response = self.assertRequestGetView(
             reverse('context-layer-list-api'), 200, self.creator)
-        self.assertEqual(len(response.json()), 2)
+        self.assertEqual(len(response.json()), 1)
 
         self.assertRequestDeleteView(url, 200, self.creator)
         response = self.assertRequestGetView(
             reverse('context-layer-list-api'), 200, self.creator)
-        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(len(response.json()), 0)
 
     def test_delete_multiple_api(self):
         """Test list API."""

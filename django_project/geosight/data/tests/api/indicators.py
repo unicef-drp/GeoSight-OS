@@ -120,9 +120,9 @@ class IndicatorListApiTest(BasePermissionTest, TestCase):
 
         response = self.assertRequestGetView(
             reverse('indicator-list-api'), 200, self.creator)
-        self.assertEqual(len(response.json()), 2)
+        self.assertEqual(len(response.json()), 1)
 
         self.assertRequestDeleteView(url, 200, self.creator)
         response = self.assertRequestGetView(
             reverse('indicator-list-api'), 200, self.creator)
-        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(len(response.json()), 0)

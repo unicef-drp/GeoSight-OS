@@ -61,6 +61,17 @@ class PERMISSIONS:
         except AttributeError:
             return -1
 
+    def get_permissions(self, minimum: PermissionDetail):
+        """Return the list of data."""
+        level = minimum.level
+        permissions = []
+        for name in dir(self):
+            attr = getattr(self, name)
+            if getattr(self, name).__class__ == PermissionDetail:
+                if attr.level >= level:
+                    permissions.append(attr.name)
+        return permissions
+
 
 def permission_model_factory(
         object_model,

@@ -15,7 +15,11 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib.auth import get_user_model
+from django.core.exceptions import FieldError
 from django.db import models
+from django.db.models import Q
+
+from geosight.permission.models.factory import PERMISSIONS
 
 User = get_user_model()
 
@@ -75,122 +79,130 @@ class PermissionManager(models.Manager):
             self.save_creator(obj, user)
         return obj
 
-    def list(self, user: User):
-        """Get list resources by user."""
+    def query_by_permission(
+            self, user, minimum_permission, minimum_role=None
+    ):
+        """Query based on the permission."""
+        from core.models.profile import ROLES
+        from geosight.georepo.models.reference_layer import (
+            ReferenceLayerIndicator
+        )
+        from geosight.data.models.indicator import Indicator
+        try:
+            if user.profile.is_admin:
+                return self.all()
+        except AttributeError:
+            user = None
+
+        # If has minimum role
+        if minimum_role:
+            if not user:
+                return self.none()
+
+            user_role = ROLES().get_user_level(user)
+            if user_role < minimum_role:
+                return self.none()
+
+        permissions = PERMISSIONS().get_permissions(minimum_permission)
+
+        groups = []
+        if user:
+            groups = user.groups.all()
+
+        permission_query = self
+        try:
+            _ = self.model.minimum_delete_role_level  # noqa: F841
+        except AttributeError:
+            permission_model = self.model.permission.related.related_model
+            permission_query = permission_model.objects
+
+        # Check permission query
         if user:
             try:
-                if user.profile.is_admin:
-                    return self.all()
-            except AttributeError:
-                user = None
-
-            obj_ids = []
-            for obj in self.all():
-                try:
-                    if obj.permission.has_list_perm(user):
-                        obj_ids.append(obj.id)
-                except Exception:
-                    try:
-                        if obj.has_list_perm(user):
-                            obj_ids.append(obj.id)
-                    except Exception:
-                        pass
-            return self.filter(id__in=obj_ids)
+                permission_query = permission_query.filter(
+                    Q(creator=user) |
+                    Q(public_permission__in=permissions) |
+                    Q(
+                        Q(user_permissions__user=user) &
+                        Q(user_permissions__permission__in=permissions)
+                    ) |
+                    Q(
+                        Q(group_permissions__group__in=groups) &
+                        Q(group_permissions__permission__in=permissions)
+                    )
+                )
+            except FieldError:
+                permission_query = permission_query.filter(
+                    Q(public_permission__in=permissions) |
+                    Q(
+                        Q(user_permissions__user=user) &
+                        Q(user_permissions__permission__in=permissions)
+                    ) |
+                    Q(
+                        Q(group_permissions__group__in=groups) &
+                        Q(group_permissions__permission__in=permissions)
+                    )
+                )
         else:
-            return self.none()
+            permission_query = permission_query.filter(
+                Q(public_permission__in=permissions)
+            )
+
+        # Return query
+        try:
+            _ = self.model.minimum_delete_role_level  # noqa: F841
+            return permission_query
+        except AttributeError:
+            query = Q(
+                id__in=permission_query.values_list('obj_id', flat=True)
+            )
+            try:
+                return self.filter(Q(creator=user) | query)
+            except FieldError:
+                if self.model == ReferenceLayerIndicator:
+                    return self.filter(
+                        Q(
+                            indicator__in=
+                            Indicator.permissions.query_by_permission(
+                                user, minimum_permission, minimum_role
+                            )
+                        ) | query
+                    )
+                return self.filter(query)
+
+    def list(self, user: User):
+        """Get list resources by user."""
+        return self.query_by_permission(user, PERMISSIONS.LIST)
 
     def read(self, user: User):
         """Get read resources by user."""
-        if user:
-            try:
-                if user.profile.is_admin:
-                    return self.all()
-            except AttributeError:
-                user = None
-
-            obj_ids = []
-            for obj in self.all():
-                try:
-                    if obj.permission.has_read_perm(user):
-                        obj_ids.append(obj.id)
-                except Exception:
-                    try:
-                        if obj.has_read_perm(user):
-                            obj_ids.append(obj.id)
-                    except Exception:
-                        pass
-            return self.filter(id__in=obj_ids)
-        else:
-            return self.none()
+        return self.query_by_permission(user, PERMISSIONS.READ)
 
     def edit(self, user: User):
         """Get read resources by user."""
-        if user:
-            try:
-                if user.profile.is_admin:
-                    return self.all()
-            except AttributeError:
-                user = None
-
-            obj_ids = []
-            for obj in self.all():
-                try:
-                    if obj.permission.has_edit_perm(user):
-                        obj_ids.append(obj.id)
-                except Exception:
-                    try:
-                        if obj.has_edit_perm(user):
-                            obj_ids.append(obj.id)
-                    except Exception:
-                        pass
-            return self.filter(id__in=obj_ids)
-        else:
-            return self.none()
+        try:
+            minimum_role = self.first().minimum_edit_role_level
+        except AttributeError:
+            perm_model = self.model.permission.related.related_model
+            minimum_role = perm_model.objects.first().minimum_edit_role_level
+        return self.query_by_permission(user, PERMISSIONS.WRITE, minimum_role)
 
     def edit_data(self, user: User):
         """Get create resources by user."""
-        if user:
-            try:
-                if user.profile.is_admin:
-                    return self.all()
-            except AttributeError:
-                user = None
-
-            obj_ids = []
-            for obj in self.all():
-                try:
-                    if obj.permission.has_edit_data_perm(user):
-                        obj_ids.append(obj.id)
-                except Exception:
-                    try:
-                        if obj.has_edit_data_perm(user):
-                            obj_ids.append(obj.id)
-                    except Exception:
-                        pass
-            return self.filter(id__in=obj_ids)
-        else:
-            return self.none()
+        try:
+            minimum_role = self.first().minimum_edit_role_level
+        except AttributeError:
+            perm_model = self.model.permission.related.related_model
+            minimum_role = perm_model.objects.first().minimum_edit_role_level
+        return self.query_by_permission(
+            user, PERMISSIONS.WRITE_DATA, minimum_role
+        )
 
     def delete(self, user: User):
         """Get create resources by user."""
-        if user:
-            try:
-                if user.profile.is_admin:
-                    return self.all()
-            except AttributeError:
-                user = None
-
-            obj_ids = []
-            for obj in self.all():
-                try:
-                    if obj.permission.has_delete_perm(user):
-                        obj_ids.append(obj.id)
-                except Exception:
-                    try:
-                        if obj.has_delete_perm(user):
-                            obj_ids.append(obj.id)
-                    except Exception:
-                        pass
-            return self.filter(id__in=obj_ids)
-        else:
-            return self.none()
+        try:
+            minimum_role = self.first().minimum_delete_role_level
+        except AttributeError:
+            perm_model = self.model.permission.related.related_model
+            minimum_role = perm_model.objects.first().minimum_delete_role_level
+        return self.query_by_permission(user, PERMISSIONS.OWNER, minimum_role)
