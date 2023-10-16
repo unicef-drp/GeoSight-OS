@@ -34,7 +34,7 @@ const LAYER_TYPE_INDICATOR = 'Indicator';
  */
 export default function LayerDescription({ layer }) {
   const dispatch = useDispatch();
-  const { slug } = useSelector(state => state.dashboard.data);
+  const { slug, indicators } = useSelector(state => state.dashboard.data);
   const layerType = layer.indicators === undefined ? LAYER_TYPE_CONTEXT_LAYER : LAYER_TYPE_INDICATOR;
   const [loading, setLoading] = useState(false);
 
@@ -47,6 +47,20 @@ export default function LayerDescription({ layer }) {
       setLoading(true)
     }
   }, [])
+
+  const sources = []
+  const units = []
+  layer?.indicators?.map(indicator => {
+    const found = indicators.find(ind => ind.id === indicator.id)
+    if (found) {
+      if (found.source && !sources.includes(found.source)) {
+        sources.push(found.source)
+      }
+      if (found.unit && !units.includes(found.unit)) {
+        units.push(found.unit)
+      }
+    }
+  })
 
   /***
    * Fetch last update.
@@ -131,9 +145,26 @@ export default function LayerDescription({ layer }) {
                             }
                           </div> : null
                       }
-                      <div style={{ whiteSpace: "pre-wrap" }}>
+                      <div style={{
+                        whiteSpace: "pre-wrap",
+                        marginTop: "5px"
+                      }}>
                         <b className='light'>Description: </b>
                         {layer.description ? layer.description : '-'}
+                      </div>
+                      <div style={{
+                        whiteSpace: "pre-wrap",
+                        marginTop: "5px"
+                      }}>
+                        <b className='light'>Source: </b>
+                        {sources.length ? sources.join(',') : '-'}
+                      </div>
+                      <div style={{
+                        whiteSpace: "pre-wrap",
+                        marginTop: "5px"
+                      }}>
+                        <b className='light'>Unit: </b>
+                        {units.length ? units.join(',') : '-'}
                       </div>
                     </Fragment>
                 }

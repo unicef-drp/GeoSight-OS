@@ -41,6 +41,7 @@ import './style.scss';
 
 
 const TREE_INDENT_SPACE = 40
+let unexpandedGroups = []
 
 /**
  * SidePanelTreeView component
@@ -202,6 +203,7 @@ export default function SidePanelTreeView(
 
   const handleToggle = (event, nodeIds) => {
     setGroups(nodeIds);
+    unexpandedGroups = getGroups(data).filter(id => !nodeIds.includes(id))
   };
 
   const handleSelect = (event, nodeIds) => {
@@ -231,7 +233,7 @@ export default function SidePanelTreeView(
   const renderTree = (treeData) => {
     const nodesDataId = treeData.data ? '' + treeData.data.id : treeData.id;
     let loading = treeData?.data?.loading;
-    const disabled = treeData.data ? treeData.data.disabled ? true: !!treeData.data.error : false;
+    const disabled = treeData.data ? treeData.data.disabled ? true : !!treeData.data.error : false;
     const itemDeep = getDepth(data, treeData.id)
     const maxWord = parseInt(
       '' + ((width - (TREE_INDENT_SPACE * itemDeep)) / 9)
@@ -356,7 +358,7 @@ export default function SidePanelTreeView(
         aria-label="rich object"
         ref={layerGroupListRef}
         defaultCollapseIcon={<ExpandMoreIcon/>}
-        expanded={groups}
+        expanded={groups.filter(group => !unexpandedGroups.includes(group))}
         onNodeToggle={handleToggle}
         onNodeSelect={handleSelect}
         defaultExpandIcon={<ExpandLessIcon/>}

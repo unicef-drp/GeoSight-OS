@@ -108,6 +108,20 @@
     }
   }
 
+  .react-js-cron-period {
+    .react-js-cron-select {
+      margin-top: -10px;
+    }
+
+    .ant-select-selection-item {
+      margin-top: 0;
+    }
+
+    .ant-select-arrow {
+      margin-top: 0;
+    }
+  }
+
   .react-js-cron-hours {
     display: flex;
 
