@@ -22,6 +22,7 @@ import React, {
   useState
 } from 'react';
 import $ from "jquery";
+import CircularProgress from "@mui/material/CircularProgress";
 import { dictDeepCopy, jsonToUrlParams } from "../../utils/main";
 import {
   Notification,
@@ -167,12 +168,17 @@ export const AdminListPagination = forwardRef(
               props.selectAllUrl && rowSize && rowSize !== selectionModel.length ?
                 <ThemeButton
                   variant="primary Reverse"
+                  className='SelectAllButton'
                   disabled={fetchingIds}
                   onClick={() => {
+                    setSelectionModel([])
                     loadIds()
                   }}
                 >
                   Select all {rowSize} {filtered ? 'filtered ' : ''}data.
+                  {
+                    fetchingIds ? <CircularProgress/> : null
+                  }
                 </ThemeButton> : null
             }
           </Fragment>

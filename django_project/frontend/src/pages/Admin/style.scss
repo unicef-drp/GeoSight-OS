@@ -213,3 +213,10 @@ main {
     }
   }
 }
+
+.SelectAllButton {
+  .MuiCircularProgress-root {
+    color: $primary-color !important;
+    margin-left: 5px;
+  }
+}
