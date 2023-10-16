@@ -78,7 +78,8 @@ export function AdminTable(
           <div className='AdminListHeader'>
             <div
               className={'AdminListHeader-Count ' + (!selectionModel.length ? 'Empty' : '')}>
-              {selectionModel.length + ' item' + (selectionModel.length > 1 ? 's' : '') + ' on this list ' + (selectionModel.length > 1 ? 'are' : 'is') + ' selected.'}
+              {selectionModel.length + ' item' + (selectionModel.length > 1 ? 's' : '') + ' on this list ' + (selectionModel.length > 1 ? 'are' : 'is') + ' selected. '}
+              {props.leftHeader ? props.leftHeader : null}
             </div>
             <div className='Separator'/>
             <div className='AdminListHeader-Right'>
