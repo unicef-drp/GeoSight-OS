@@ -81,7 +81,6 @@ class ImporterCreateView(RoleContributorRequiredMixin, AdminBaseView):
         )
 
         form = ImporterForm(data, instance=self.instance)
-
         if form.is_valid():
             try:
                 with transaction.atomic():

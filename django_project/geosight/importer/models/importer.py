@@ -373,6 +373,7 @@ class Importer(AbstractEditData):
                 self.job.crontab.delete()
                 self.job.delete()
             self.job_name = None
+            self.job = None
             self.save()
 
     @property
