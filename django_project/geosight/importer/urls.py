@@ -22,8 +22,10 @@ from geosight.importer.api.importer import (
     ImporterJobResumeAPI, ImporterJobPauseAPI
 )
 from geosight.importer.api.log import (
-    ImporterLogListAPI, ImporterLogDataAPI, ImporterLogDetailAPI,
-    ImporterLogDataProgresAPI
+    ImporterLogListAPI, ImporterLogDetailAPI,
+)
+from geosight.importer.api.log_data import (
+    ImporterLogDataAPI, ImporterLogDataIdsAPI, ImporterLogDataProgresAPI
 )
 from geosight.importer.api.scheduled_job import ScheduleJobListAPI
 
@@ -36,6 +38,10 @@ importer_log_api = [
         r'^(?P<pk>\d+)/data/progress',
         ImporterLogDataProgresAPI.as_view(),
         name='importer-log-data-save-progress-api'
+    ),
+    url(
+        r'^(?P<pk>\d+)/data/ids',
+        ImporterLogDataIdsAPI.as_view(), name='importer-log-data-ids-api'
     ),
     url(
         r'^(?P<pk>\d+)/data',

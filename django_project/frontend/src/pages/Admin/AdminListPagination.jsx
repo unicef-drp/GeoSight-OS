@@ -22,6 +22,7 @@ import React, {
   useState
 } from 'react';
 import $ from "jquery";
+import CircularProgress from "@mui/material/CircularProgress";
 import { dictDeepCopy, jsonToUrlParams } from "../../utils/main";
 import {
   Notification,
@@ -29,7 +30,7 @@ import {
 } from "../../components/Notification";
 import { AdminListContent } from "./AdminList";
 import { fetchJSON } from "../../Requests";
-import { DeleteButton } from "../../components/Elements/Button";
+import { DeleteButton, ThemeButton } from "../../components/Elements/Button";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 
 import './style.scss';
@@ -68,8 +69,15 @@ export const AdminListPagination = forwardRef(
     })
     const [data, setData] = useState([])
     const [rowSize, setRowSize] = useState(0)
-    const [selectionModel, setSelectionModel] = useState([]);
     const [error, setError] = useState(null);
+    const [fetchingIds, setFetchingIds] = useState(null);
+    let [selectionModel, setSelectionModel] = useState([]);
+
+    // Use parent's selection model if it has
+    if (props.selectionModel) {
+      selectionModel = props.selectionModel
+      setSelectionModel = props.setSelectionModel
+    }
 
     /***
      * Parameters Changed
@@ -111,6 +119,23 @@ export const AdminListPagination = forwardRef(
           }
         })
     }
+
+    /*** Load ids data */
+    const loadIds = () => {
+      setFetchingIds(true)
+      const paramsUsed = dictDeepCopy(parameters)
+      const params = jsonToUrlParams(paramsUsed)
+      const url = props.selectAllUrl + '?' + params
+      fetchJSON(url, {}, false)
+        .then(data => {
+          setFetchingIds(false)
+          setSelectionModel(data)
+        })
+        .catch(error => {
+          notify(error, NotificationStatus.ERROR)
+          setFetchingIds(false)
+        })
+    }
     /*** When parameters changed */
     useEffect(() => {
       loadData()
@@ -134,48 +159,70 @@ export const AdminListPagination = forwardRef(
         usedData = updateData(usedData)
       }
     }
-
+    const filtered = Object.keys(parameters).filter(param => !['page', 'page_size'].includes(param)).length;
     return <Fragment>
       <AdminListContent
+        leftHeader={
+          <Fragment>
+            {
+              props.selectAllUrl && rowSize && rowSize !== selectionModel.length ?
+                <ThemeButton
+                  variant="primary Reverse"
+                  className='SelectAllButton'
+                  disabled={fetchingIds}
+                  onClick={() => {
+                    setSelectionModel([])
+                    loadIds()
+                  }}
+                >
+                  Select all {rowSize} {filtered ? 'filtered ' : ''}data.
+                  {
+                    fetchingIds ? <CircularProgress/> : null
+                  }
+                </ThemeButton> : null
+            }
+          </Fragment>
+        }
         otherFilters={otherFilters}
         tableHeader={
-          <Fragment>
-            <DeleteButton
-              disabled={!selectionModel.length || disabled}
-              variant="Error Reverse"
-              text={"Delete"}
-              onClick={() => {
-                deleteDialogRef?.current?.open()
-              }}
-            />
-            <ConfirmDialog
-              onConfirmed={() => {
-                setDisabled(true)
-                $.ajax({
-                  url: urlData,
-                  method: 'DELETE',
-                  data: {
-                    'ids': JSON.stringify(selectionModel)
-                  },
-                  success: function () {
-                    setDisabled(false)
-                    setSelectionModel([])
-                    loadData(true)
-                  },
-                  error: function () {
-                    setDisabled(false)
-                    notify(error.responseText, NotificationStatus.ERROR)
-                  },
-                  beforeSend: beforeAjaxSend
-                });
-              }}
-              ref={deleteDialogRef}
-            >
-              <div>
-                Are you sure want to delete {selectionModel.length} data.
-              </div>
-            </ConfirmDialog>
-          </Fragment>
+          props.disabledDelete ? null :
+            <Fragment>
+              <DeleteButton
+                disabled={!selectionModel.length || disabled}
+                variant="Error Reverse"
+                text={"Delete"}
+                onClick={() => {
+                  deleteDialogRef?.current?.open()
+                }}
+              />
+              <ConfirmDialog
+                onConfirmed={() => {
+                  setDisabled(true)
+                  $.ajax({
+                    url: urlData,
+                    method: 'DELETE',
+                    data: {
+                      'ids': JSON.stringify(selectionModel)
+                    },
+                    success: function () {
+                      setDisabled(false)
+                      setSelectionModel([])
+                      loadData(true)
+                    },
+                    error: function () {
+                      setDisabled(false)
+                      notify(error.responseText, NotificationStatus.ERROR)
+                    },
+                    beforeSend: beforeAjaxSend
+                  });
+                }}
+                ref={deleteDialogRef}
+              >
+                <div>
+                  Are you sure want to delete {selectionModel.length} data.
+                </div>
+              </ConfirmDialog>
+            </Fragment>
         }
         columns={COLUMNS}
         rows={usedData}
@@ -189,7 +236,7 @@ export const AdminListPagination = forwardRef(
             className = 'Updated '
           }
           if (["__check__", "actions"].includes(params.field)) {
-            if (!params.row.permission.delete) {
+            if (!params.row.permission?.delete) {
               className += "Hide"
             }
           }

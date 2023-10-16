@@ -16,7 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import json
 
-from django.http import HttpResponseForbidden, Http404
+from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -26,13 +26,11 @@ from rest_framework.views import APIView
 from core.api.base import FilteredAPI
 from core.pagination import Pagination
 from geosight.importer.models.log import (
-    ImporterLog, ImporterLogDataSaveProgress
+    ImporterLog
 )
 from geosight.importer.serializer.log import (
-    ImporterLogSerializer, ImporterLogDataSerializer,
-    ImporterLogDataSaveProgressSerializer
+    ImporterLogSerializer
 )
-from geosight.importer.tasks import run_save_log_data
 
 
 class ImporterLogListAPI(ListAPIView, FilteredAPI):
@@ -88,46 +86,3 @@ class ImporterLogDetailAPI(APIView):
             return HttpResponseForbidden()
         obj.delete()
         return Response('Deleted')
-
-
-class ImporterLogDataAPI(APIView):
-    """API for detail of Importer Log."""
-
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request, pk):
-        """Delete an basemap."""
-        obj = get_object_or_404(ImporterLog, pk=pk)
-        return Response(
-            ImporterLogDataSerializer(
-                obj.importerlogdata_set.all(), many=True
-            ).data
-        )
-
-    def post(self, request, pk):
-        """Delete an basemap."""
-        obj = get_object_or_404(ImporterLog, pk=pk)
-        progress = ImporterLogDataSaveProgress.objects.create(
-            log=obj, target_ids=json.loads(request.data['data'])
-        )
-        run_save_log_data.delay(progress.id)
-        return Response('OK')
-
-
-class ImporterLogDataProgresAPI(APIView):
-    """API for detail of Importer Log."""
-
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request, pk):
-        """Delete an basemap."""
-        obj = get_object_or_404(ImporterLog, pk=pk)
-        progress = ImporterLogDataSaveProgress.objects.filter(
-            log=obj, done=False
-        ).first()
-        if progress:
-            return Response(
-                ImporterLogDataSaveProgressSerializer(progress).data
-            )
-        else:
-            raise Http404()

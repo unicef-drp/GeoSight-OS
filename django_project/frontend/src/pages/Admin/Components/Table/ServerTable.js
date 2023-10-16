@@ -26,6 +26,7 @@ import { dictDeepCopy, jsonToUrlParams } from "../../../../utils/main";
 import { fetchJSON } from "../../../../Requests";
 
 import './style.scss';
+import { ThemeButton } from "../../../../components/Elements/Button";
 
 /**
  * Admin Table
@@ -133,6 +134,17 @@ export const ServerTable = forwardRef(
               <div
                 className={'AdminListHeader-Count ' + (!selectionModel.length ? 'Empty' : '')}>
                 {selectionModel.length + ' item' + (selectionModel.length > 1 ? 's' : '') + ' on this list ' + (selectionModel.length > 1 ? 'are' : 'is') + ' selected.'}
+                {
+                  selectionModel.length ?
+                    <ThemeButton
+                      variant="primary Reverse"
+                      onClick={() => {
+                        setSelectionModel([])
+                      }}
+                    >
+                      Clear selection.
+                    </ThemeButton> : null
+                }
               </div>
               <div className='Separator'/>
               <div className='AdminListHeader-Right'>
