@@ -542,103 +542,115 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
             # AGGREGATION UPPER LEVEL
             # Group records by indicator_id
             # --------------------------------------------------
-            records_by_indicator = self.group_records_by_indicator(records)
-            for indicator_id, _records in records_by_indicator.items():
-                indicator = self.get_indicator(
-                    {'indicator_id': indicator_id}
-                )
-                if not indicator.aggregation_upper_level_allowed:
-                    additional_notes.append(
-                        f'Indicator {indicator.name} '
-                        f'does not allow aggregating upper levels.'
+            aggregate_upper_level_up_to = self.get_attribute(
+                'aggregate_upper_level_up_to'
+            )
+            aggregate_upper_level_n_level_up = self.get_attribute(
+                'aggregate_upper_level_n_level_up'
+            )
+            aggregate_upper_level = (
+                    aggregate_upper_level_up_to is not None or
+                    aggregate_upper_level_n_level_up is not None
+            )
+            if aggregate_upper_level:
+                records_by_indicator = self.group_records_by_indicator(records)
+                for indicator_id, _records in records_by_indicator.items():
+                    indicator = self.get_indicator(
+                        {'indicator_id': indicator_id}
                     )
-                    continue
-
-                upper_level_records = []
-                for record in _records:
-                    # We need to check the geopgraphy code
-                    entity, error = self.get_entity(record, 'ucode')
-                    if not entity:
+                    if not indicator.aggregation_upper_level_allowed:
                         additional_notes.append(
-                            f'ucode for {record["geo_code"]} - {error}'
+                            f'Indicator {indicator.name} '
+                            f'does not allow aggregating upper levels.'
                         )
-                        upper_level_records = []
-                        success = False
                         continue
 
-                    parents_records = self.get_parents_records(
-                        record, entity
-                    )
-                    for _pr in parents_records:
-                        exist = False
-                        for idx, _r in enumerate(records):
-                            if _r['indicator_id'] == _pr['indicator_id'] and \
-                                    _r['date_time'] == _pr['date_time'] and \
-                                    _r['geo_code'] == _pr['geo_code']:
-                                exist = True
-                                warning = (
-                                    'Conflict between generated one and '
-                                    'source data. It is using source data'
-                                )
-                                notes[idx].update({'warning': warning})
-                                break
-                        if not exist:
-                            upper_level_records += [_pr]
+                    upper_level_records = []
+                    for record in _records:
+                        # We need to check the geopgraphy code
+                        entity, error = self.get_entity(record, 'ucode')
+                        if not entity:
+                            additional_notes.append(
+                                f'ucode for {record["geo_code"]} - {error}'
+                            )
+                            upper_level_records = []
+                            success = False
+                            continue
 
-                if not upper_level_records:
-                    continue
+                        parents_records = self.get_parents_records(
+                            record, entity
+                        )
+                        for _pr in parents_records:
+                            exist = False
+                            for idx, _r in enumerate(records):
+                                if _r['indicator_id'] == _pr[
+                                    'indicator_id'] and \
+                                        _r['date_time'] == _pr['date_time'] \
+                                        and _r['geo_code'] == _pr['geo_code']:
+                                    exist = True
+                                    warning = (
+                                        'Conflict between generated one and '
+                                        'source data. It is using source data'
+                                    )
+                                    notes[idx].update({'warning': warning})
+                                    break
+                            if not exist:
+                                upper_level_records += [_pr]
 
-                # Aggregate it
-                aggregate_type = self.get_attribute(
-                    'aggregate_upper_level_type'
-                )
-                aggregate_multiple_value_number = self.get_attribute(
-                    'aggregate_upper_level_number'
-                )
-                aggregate_multiple_value_string = self.get_attribute(
-                    'aggregate_upper_level_string'
-                )
-                aggregation = None
-                # Get Aggregation
-                if aggregate_type == \
-                        MultipleValueAggregationType.BY_INDICATOR:
-                    aggregation = indicator.aggregation_upper_level
-                elif indicator.type == IndicatorType.STRING:
-                    if not aggregate_multiple_value_string:
-                        raise ImporterError(
-                            'aggregate_upper_level__string is empty'
-                        )
-                    aggregation = aggregate_multiple_value_string
-                elif indicator.type != IndicatorType.STRING:
-                    if not aggregate_multiple_value_number:
-                        raise ImporterError(
-                            'aggregate_upper_level_string is empty'
-                        )
-                    aggregation = aggregate_multiple_value_number
+                    if not upper_level_records:
+                        continue
 
-                upper_level_records = self.querying_data(
-                    data=upper_level_records,
-                    fields=self.get_indicator_fields(indicator),
-                    group_field=(
-                        'indicator_id,date_time,geo_code,admin_level,'
-                        'reference_layer_identifier'
-                    ),
-                    aggregation=aggregation
-                )
-                for record in upper_level_records:
-                    record['date_time'] = datetime.fromtimestamp(
-                        record['date_time']
+                    # Aggregate it
+                    aggregate_type = self.get_attribute(
+                        'aggregate_upper_level_type'
                     )
-                    record['date_time'] = int(
-                        datetime.timestamp(record['date_time'])
+                    aggregate_multiple_value_number = self.get_attribute(
+                        'aggregate_upper_level_number'
                     )
-                    try:
-                        record['description'] += (
-                            f" (from level {record['admin_level'] + 1})"
+                    aggregate_multiple_value_string = self.get_attribute(
+                        'aggregate_upper_level_string'
+                    )
+                    aggregation = None
+                    # Get Aggregation
+                    if aggregate_type == \
+                            MultipleValueAggregationType.BY_INDICATOR:
+                        aggregation = indicator.aggregation_upper_level
+                    elif indicator.type == IndicatorType.STRING:
+                        if not aggregate_multiple_value_string:
+                            raise ImporterError(
+                                'aggregate_upper_level__string is empty'
+                            )
+                        aggregation = aggregate_multiple_value_string
+                    elif indicator.type != IndicatorType.STRING:
+                        if not aggregate_multiple_value_number:
+                            raise ImporterError(
+                                'aggregate_upper_level_string is empty'
+                            )
+                        aggregation = aggregate_multiple_value_number
+
+                    upper_level_records = self.querying_data(
+                        data=upper_level_records,
+                        fields=self.get_indicator_fields(indicator),
+                        group_field=(
+                            'indicator_id,date_time,geo_code,admin_level,'
+                            'reference_layer_identifier'
+                        ),
+                        aggregation=aggregation
+                    )
+                    for record in upper_level_records:
+                        record['date_time'] = datetime.fromtimestamp(
+                            record['date_time']
                         )
-                    except KeyError:
-                        pass
-                records += upper_level_records
+                        record['date_time'] = int(
+                            datetime.timestamp(record['date_time'])
+                        )
+                        try:
+                            record['description'] += (
+                                f" (from level {record['admin_level'] + 1})"
+                            )
+                        except KeyError:
+                            pass
+                    records += upper_level_records
 
         # --------------------------------------------------
         # SAVE THE DATA
