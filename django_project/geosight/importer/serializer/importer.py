@@ -129,7 +129,10 @@ class ImporterSerializer(DynamicModelSerializer):
         from geosight.importer.serializer.log import ImporterLogSerializer
         return ImporterLogSerializer(
             obj.importerlog_set.all()[:5], many=True,
-            fields=['id', 'start_time', 'end_time', 'status'],
+            fields=[
+                'id', 'start_time', 'end_time', 'status',
+                'count_data', 'saved_data'
+            ],
             ignore_to_presentation=True
         ).data
 

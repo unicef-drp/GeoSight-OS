@@ -183,6 +183,10 @@ export default function ImporterDetail() {
                         <td>End Time</td>
                         <td>{log.end_time ? formatDateTime(new Date(log.end_time)) : '-'}</td>
                       </tr>
+                      <tr>
+                        <td>Saved data</td>
+                        <td>{log.saved_data}/{log.count_data}</td>
+                      </tr>
                     </table>
                   </div>
                 })
