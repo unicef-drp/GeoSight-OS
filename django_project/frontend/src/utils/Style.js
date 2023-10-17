@@ -206,52 +206,70 @@ export function createDynamicStyle(data, styleType, config, styleData) {
         /** Generate quantitative styles**/
         else if (styleType === DYNAMIC_QUANTITATIVE) {
           values = values.filter(val => !isNaN(val))
-          if (values.length) {
-            const series = new geostats(values)
-            switch (config.dynamic_classification) {
-              case NATURAL_BREAKS:
-                classifications = series.getClassJenks(numClass)
-                break
-              case EQUIDISTANT:
-                classifications = series.getEqInterval(numClass)
-                break
-              case QUANTILE:
-                classifications = series.getQuantile(numClass)
-                break
-              case STD_DEFIATION:
-                classifications = series.getStdDeviation(numClass)
-                break
-              case ARITHMETIC_PROGRESSION:
-                classifications = series.getArithmeticProgression(numClass)
-                break
-              case GEOMETRIC_PROGRESSION:
-                classifications = series.getGeometricProgression(numClass)
-                break
-            }
-
-            // Create classification
-            for (let idx = 0; idx < classifications.length; idx++) {
-              if (idx !== 0) {
-                if ([classifications[idx - 1], classifications[idx]].includes(undefined)) {
-                  continue
+          if (numClass === 2 && numClass < config.dynamic_class_num) {
+            colors.map((color, idx) => {
+              const usedValue = values[idx]
+              styles.push(
+                {
+                  id: idx,
+                  name: usedValue,
+                  rule: `x==${usedValue}`,
+                  color: color,
+                  outline_color: !config.sync_outline ? config.outline_color : color,
+                  outline_size: config.outline_size,
+                  order: idx,
+                  active: true
                 }
-                const below = classifications[idx - 1];
-                const top = classifications[idx];
-                const belowLabel = below.toFixed(2);
-                const topLabel = top.toFixed(2);
-                const color = colors[idx - 1]
-                styles.push(
-                  {
-                    id: idx,
-                    name: below === top ? belowLabel : `${belowLabel} - ${topLabel}`,
-                    rule: below === top ? `x==${below}` : `x>=${below} and x<=${top}`,
-                    color: color,
-                    outline_color: !config.sync_outline ? config.outline_color : color,
-                    outline_size: config.outline_size,
-                    order: idx,
-                    active: true
+              )
+            })
+          } else {
+            if (values.length) {
+              const series = new geostats(values)
+              switch (config.dynamic_classification) {
+                case NATURAL_BREAKS:
+                  classifications = series.getClassJenks(numClass)
+                  break
+                case EQUIDISTANT:
+                  classifications = series.getEqInterval(numClass)
+                  break
+                case QUANTILE:
+                  classifications = series.getQuantile(numClass)
+                  break
+                case STD_DEFIATION:
+                  classifications = series.getStdDeviation(numClass)
+                  break
+                case ARITHMETIC_PROGRESSION:
+                  classifications = series.getArithmeticProgression(numClass)
+                  break
+                case GEOMETRIC_PROGRESSION:
+                  classifications = series.getGeometricProgression(numClass)
+                  break
+              }
+
+              // Create classification
+              for (let idx = 0; idx < classifications.length; idx++) {
+                if (idx !== 0) {
+                  if ([classifications[idx - 1], classifications[idx]].includes(undefined)) {
+                    continue
                   }
-                )
+                  const below = classifications[idx - 1];
+                  const top = classifications[idx];
+                  const belowLabel = below.toFixed(2);
+                  const topLabel = top.toFixed(2);
+                  const color = colors[idx - 1]
+                  styles.push(
+                    {
+                      id: idx,
+                      name: below === top ? belowLabel : `${belowLabel} - ${topLabel}`,
+                      rule: below === top ? `x==${below}` : `x>=${below} and x<=${top}`,
+                      color: color,
+                      outline_color: !config.sync_outline ? config.outline_color : color,
+                      outline_size: config.outline_size,
+                      order: idx,
+                      active: true
+                    }
+                  )
+                }
               }
             }
           }
