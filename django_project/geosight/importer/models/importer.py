@@ -385,12 +385,8 @@ class Importer(AbstractEditData):
     @property
     def need_review(self):
         """Return if the data is still in review."""
-        from geosight.importer.models.log import ImporterLogData
         if self.import_type == ImportType.INDICATOR_VALUE:
-            if not ImporterLogData.objects.filter(
-                    log__importer=self, saved=True).count():
-                return True
-            elif not self.job:
+            if not self.job:
                 return True
         return False
 
