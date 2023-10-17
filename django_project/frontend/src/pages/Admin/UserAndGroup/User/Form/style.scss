@@ -34,3 +34,9 @@ div[data-field-name='is_staff'] {
   height: 0;
   margin-block-end: 0 !important;
 }
+
+.GeorepoApiKeyInput {
+  fieldset {
+    border: 2px solid red !important;
+  }
+}

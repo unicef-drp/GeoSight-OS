@@ -19,7 +19,10 @@ import { Checkbox, FormControlLabel, IconButton } from "@mui/material";
 
 import { render } from '../../../../../app';
 import { store } from '../../../../../store/admin';
-import { SaveButton } from "../../../../../components/Elements/Button";
+import {
+  SaveButton,
+  ThemeButton
+} from "../../../../../components/Elements/Button";
 import Admin, { pageNames } from '../../../index';
 import AdminForm from '../../../Components/Form'
 
@@ -100,6 +103,16 @@ export default function UserForm() {
       rightHeader={
         <Fragment>
           {
+            ownForm && preferences.georepo_using_user_api_key && !apiKey ?
+              <ThemeButton variant="Error" className='GeorepoApiKeyBtn'>
+                <a
+                  href={new URL(preferences.georepo_url).origin + '/profile?tab=2'}>
+                  Generate GeoRepo API Key
+                </a>
+              </ThemeButton>
+              : null
+          }
+          {
             initialData.id ?
               resourceActions({
                 id: initialData.id,
@@ -162,7 +175,9 @@ export default function UserForm() {
                 preferences.georepo_using_user_api_key ?
                   <div className='BasicFormSection'>
                     <div>GeoRepo API Key</div>
-                    <div className='InputInLine'>
+                    <div
+                      className={'InputInLine ' + (apiKey ? '' : 'GeorepoApiKeyInput')}
+                    >
                       <IconTextField
                         name={'georepo_api_key'}
                         iconEnd={
@@ -185,10 +200,24 @@ export default function UserForm() {
                       A GeoRepo API KEY is required for authorizing GeoSight to
                       access GeoRepo data.
                       <br/>
-                      To generate a GeoRepo API KEY, go to <a
-                      href={new URL(preferences.georepo_url).origin + '/profile'}
-                      target='_blank'>the
-                      GeoRepo website</a>.
+                      To generate a GeoRepo API KEY, go to
+                      {
+                        !apiKey ?
+                          <ThemeButton
+                            variant="Error"
+                            style={{ marginLeft: "3px" }}>
+                            <a
+                              href={new URL(preferences.georepo_url).origin + '/profile?tab=2'}
+                              style={{
+                                color: "white",
+                              }}
+                              target='_blank'>
+                              GeoRepo website.
+                            </a>
+                          </ThemeButton> : <a
+                            href={new URL(preferences.georepo_url).origin + '/profile'}
+                            target='_blank'> GeoRepo website</a>
+                      }
                       <br/>
                       If you need more information on how to generate a GeoRepo
                       API KEY, you can check <a

@@ -90,6 +90,14 @@ export default function NavBar({ minified }) {
               : null
           }
           {
+            username && preferences.georepo_using_user_api_key && preferences.georepo_api.api_key_is_public ?
+              <ThemeButton variant="Error" className='GeorepoApiKeyBtn'>
+                <a href={'/admin/user/' + user.username + '/edit'}>
+                  Click to add GeoRepo API Key
+                </a>
+              </ThemeButton> : null
+          }
+          {
             canAccessAdmin ? (
               <div className='LinkButton AdminLinkButton'
                    style={{ marginRight: "1rem" }}>

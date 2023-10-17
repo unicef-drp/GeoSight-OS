@@ -98,6 +98,7 @@ export default function User({ ...props }) {
                 Please add your api key in <a
                 href={'/admin/user/' + user.username + '/edit'}
                 style={{
+                  color: "red",
                   width: "fit-content",
                   padding: 0,
                   display: "inline-block"
