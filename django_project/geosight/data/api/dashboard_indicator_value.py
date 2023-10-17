@@ -32,6 +32,7 @@ from geosight.data.models.dashboard import (
     Dashboard
 )
 from geosight.data.models.indicator import Indicator
+from geosight.data.serializer.indicator import IndicatorValueWithGeoSerializer
 from geosight.georepo.models.reference_layer import ReferenceLayerIndicator
 from geosight.georepo.serializer.entity import EntitySerializer
 from geosight.permission.access import (
@@ -96,6 +97,26 @@ class DashboardIndicatorValuesAPI(_DashboardIndicatorValuesAPI):
                 admin_level=request.GET.get('admin_level', None),
                 reference_layer=dashboard.reference_layer
             )
+        )
+
+
+class DashboardIndicatorAllValuesAPI(_DashboardIndicatorValuesAPI):
+    """API for all Values of indicator."""
+
+    def get(self, request, slug, pk, **kwargs):
+        """Return Values."""
+        dashboard = get_object_or_404(Dashboard, slug=slug)
+        indicator = get_object_or_404(Indicator, pk=pk)
+        self.check_permission(request.user, dashboard, indicator)
+
+        query = indicator.query_values(
+            reference_layer=dashboard.reference_layer
+        )
+        query = query.order_by(
+            'concept_uuid', 'geom_id', '-date'
+        )
+        return Response(
+            IndicatorValueWithGeoSerializer(query, many=True).data
         )
 
 
@@ -176,6 +197,36 @@ class DashboardIndicatorDatesAPI(DashboardIndicatorValuesAPI):
         dates.sort()
 
         return Response(dates)
+
+
+class DashboardIndicatorDatesAndCountAPI(DashboardIndicatorValuesAPI):
+    """API for of indicator."""
+
+    def get(self, request, slug, pk, **kwargs):
+        """Return Values."""
+        dashboard = get_object_or_404(Dashboard, slug=slug)
+        indicator = get_object_or_404(Indicator, pk=pk)
+        self.check_permission(request.user, dashboard, indicator)
+
+        dates = [
+            datetime.combine(
+                date_str, datetime.min.time(),
+                tzinfo=pytz.timezone(settings.TIME_ZONE)
+            ).isoformat()
+            for date_str in set(
+                indicator.query_values(
+                    reference_layer=dashboard.reference_layer
+                ).values_list('date', flat=True)
+            )
+        ]
+        dates.sort()
+
+        return Response({
+            'dates': dates,
+            'count': indicator.query_values(
+                reference_layer=dashboard.reference_layer
+            ).count()
+        })
 
 
 class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
