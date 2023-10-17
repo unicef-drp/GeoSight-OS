@@ -59,7 +59,7 @@ export default function GeorepoAuthorizationModal() {
                   You need to authorize to GeoRepo to access this page.
                   <br/>
                   <br/>
-                  <div>Please add your api key on <a
+                  <div>Please add your API Key on <a
                     href={'/admin/user/' + user.username + '/edit'}>here</a>.
                   </div>
                 </Fragment> : <Fragment>

@@ -79,7 +79,7 @@ The sequence should be `make frontend-dev`, after that run or restart geosight_d
 
 There are GeoRepo configurations that are needed for geosight.<br>
 Go to '/django-admin/core/sitepreferences/1/change/', use admin username/password on .env file (ADMIN_USERNAME and ADMIN_PASSWORD).<br>
-Change Georepo url and fill Georepo api key. For Georepo api key, you can ask georepo for the key.
+Change Georepo url and fill Georepo API Key. For Georepo API Key, you can ask georepo for the key.
 
 # Building the documentation as a PDF
 
