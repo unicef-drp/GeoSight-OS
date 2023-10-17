@@ -297,12 +297,16 @@ export default function GlobalDateSelector() {
         indicatorLayerDates[id] = null
 
         fetchingData(
-          indicator.url.replace('/values/latest', '/dates'), {}, {}, function (response, error) {
+          indicator.url.replace('/values/latest', '/dates-count'), {}, {}, function (response, error) {
             if (!error) {
-              if (!response?.length) {
-                response = [nowUTC().toISOString()]
+              if (!response?.dates?.length) {
+                response = {
+                  dates: [nowUTC().toISOString()],
+                  count: 0
+                }
               }
-              dispatch(Actions.IndicatorLayerDates.add(id, response))
+              dispatch(Actions.IndicatorsAllData.addCount(id, response.count))
+              dispatch(Actions.IndicatorLayerDates.add(id, response.dates))
             } else {
               dispatch(Actions.IndicatorLayerDates.add(id, error.toString()))
             }

@@ -31,6 +31,7 @@ import IndicatorLayerDates from './reducers/indicatorLayerDates/actions'
 import IndicatorLayers from './reducers/indicatorLayers/actions'
 import Indicators from './reducers/indicators/actions'
 import IndicatorsData from './reducers/indicatorsData/actions'
+import IndicatorsAllData from './reducers/indicatorsAllData/actions'
 import Map from './reducers/map/actions'
 import MapMode from './reducers/mapMode/actions'
 import ReferenceLayer from './reducers/referenceLayer/actions'
@@ -66,6 +67,7 @@ const Actions = {
   IndicatorLayers,
   Indicators,
   IndicatorsData,
+  IndicatorsAllData,
   Map,
   MapMode,
   RelatedTable,

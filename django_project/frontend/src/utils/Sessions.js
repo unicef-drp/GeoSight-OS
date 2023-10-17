@@ -34,6 +34,9 @@ export class Session {
       const now = new Date().getTime()
       return sessions[this.name] === this.currentSession && now < this.currentSession + this.expires
     }
+    console.log('--------------------------')
+    console.log(this.currentSession)
+    console.log(sessions[this.name])
     return sessions[this.name] === this.currentSession
   }
 }

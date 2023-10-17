@@ -21,13 +21,17 @@ import React, { useEffect, useRef } from 'react';
 import $ from "jquery";
 import { useDispatch, useSelector } from "react-redux";
 import { Actions } from "../../../../store/dashboard";
-import { fetchingData } from "../../../../Requests";
+import { fetchingData, fetchJSON } from "../../../../Requests";
 import { removeElement } from "../../../../utils/Array";
-import { UpdateStyleData } from "../../../../utils/indicatorData";
+import {
+  filterIndicatorsData,
+  UpdateStyleData
+} from "../../../../utils/indicatorData";
 
 /** Indicators data. */
 let indicatorFetchingSession = null
 export let indicatorFetchingIds = []
+const MAX_COUNT_FOR_ALL_DATA = 10000
 
 export default function Indicators() {
   const prevState = useRef();
@@ -36,6 +40,9 @@ export default function Indicators() {
     indicators,
     indicatorLayers
   } = useSelector(state => state.dashboard.data);
+  const currentIndicatorLayer = useSelector(state => state.selectedIndicatorLayer);
+  const currentIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer);
+  const indicatorsAllData = useSelector(state => state.indicatorsAllData);
   const selectedGlobalTime = useSelector(state => state.selectedGlobalTime);
   const selectedGlobalTimeStr = JSON.stringify(selectedGlobalTime);
 
@@ -74,7 +81,15 @@ export default function Indicators() {
       $('#Indicator-Radio-' + indicatorLayer.id).removeClass('Loading')
     })
   }
-
+  const getData = async (id, url) => {
+    if (indicatorsAllData[id].count < MAX_COUNT_FOR_ALL_DATA) {
+      let data = indicatorsAllData[id].data
+      if (!indicatorsAllData[id].data) {
+        data = await fetchJSON(url.replace('latest', 'all'), {})
+        dispatch(Actions.IndicatorsAllData.addData(id, data))
+      }
+    }
+  }
 
   /** Fetch all data */
   const fetchData = () => {
@@ -86,9 +101,12 @@ export default function Indicators() {
 
     // Get queue
     let defaultIds = []
-    indicatorLayers.filter(layer => layer.visible_by_default).map(
-      layer => defaultIds = defaultIds.concat(layer.indicators.map(indicator => indicator.id))
-    )
+    if (currentIndicatorLayer?.indicators) {
+      defaultIds = defaultIds.concat(currentIndicatorLayer?.indicators?.map(_ => _.id))
+    }
+    if (currentIndicatorSecondLayer?.indicators) {
+      defaultIds = defaultIds.concat(currentIndicatorSecondLayer?.indicators?.map(_ => _.id))
+    }
     const requestQueue = defaultIds.concat(
       indicators.filter(
         indicator => !defaultIds.includes(indicator.id)
@@ -125,13 +143,20 @@ export default function Indicators() {
               done(id)
             }
             // Fetch data, when 10, wait data
-            if (idx % 10 === 0) {
-              await fetchingData(url, params, {}, onResponse)
-            } else {
+            const dataId = 'indicator-' + indicator.id
+            // For data that has less than 10k data
+            // Return all data first
+            if (!indicatorsAllData[dataId].count > MAX_COUNT_FOR_ALL_DATA) {
               fetchingData(url, params, {}, onResponse)
+            } else {
+              const data = indicatorsAllData[dataId].data
+              if (data && dataId === 'indicator-318') {
+                onResponse(filterIndicatorsData(selectedGlobalTime.min, selectedGlobalTime.max, data))
+              } else {
+                fetchingData(url, params, {}, onResponse)
+                getData(dataId, url, onResponse)
+              }
             }
-          } else {
-            done(id)
           }
           if (indicatorFetchingSession !== session) {
             break
@@ -140,5 +165,6 @@ export default function Indicators() {
       }
     )()
   }
+
   return null
 }
