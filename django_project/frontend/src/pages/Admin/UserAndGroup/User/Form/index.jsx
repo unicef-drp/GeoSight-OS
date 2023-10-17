@@ -103,7 +103,7 @@ export default function UserForm() {
       rightHeader={
         <Fragment>
           {
-            ownForm && preferences.georepo_using_user_api_key && !apiKey ?
+            ownForm && preferences.georepo_using_user_api_key && (!user.georepo_api_key || !apiKey) ?
               <ThemeButton variant="Error" className='GeorepoApiKeyBtn'>
                 <a
                   href={new URL(preferences.georepo_url).origin + '/profile?tab=2'}>
@@ -176,7 +176,7 @@ export default function UserForm() {
                   <div className='BasicFormSection'>
                     <div>GeoRepo API Key</div>
                     <div
-                      className={'InputInLine ' + (apiKey ? '' : 'GeorepoApiKeyInput')}
+                      className={'InputInLine ' + (!user.georepo_api_key || !apiKey ? 'GeorepoApiKeyInput' : '')}
                     >
                       <IconTextField
                         name={'georepo_api_key'}
@@ -202,7 +202,7 @@ export default function UserForm() {
                       <br/>
                       To generate a GeoRepo API KEY, go to
                       {
-                        !apiKey ?
+                        !user.georepo_api_key || !apiKey ?
                           <ThemeButton
                             variant="Error"
                             style={{ marginLeft: "3px" }}>
