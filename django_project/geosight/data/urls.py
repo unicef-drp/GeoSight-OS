@@ -37,6 +37,7 @@ from geosight.data.api.dashboard_indicator_layer import (
 )
 from geosight.data.api.dashboard_indicator_value import (
     DashboardIndicatorValuesAPI, DashboardIndicatorDatesAPI,
+    DashboardIndicatorDatesAndCountAPI, DashboardIndicatorAllValuesAPI,
     DashboardIndicatorValueListAPI, DashboardEntityDrilldown
 )
 from geosight.data.api.dataset import DatasetApiList
@@ -91,6 +92,16 @@ dashboard_specific_api = [
         r'^indicator/(?P<pk>\d+)/values/latest$',
         DashboardIndicatorValuesAPI.as_view(),
         name='dashboard-indicator-values-api'
+    ),
+    url(
+        r'^indicator/(?P<pk>\d+)/values/all$',
+        DashboardIndicatorAllValuesAPI.as_view(),
+        name='dashboard-indicator-values-all-api'
+    ),
+    url(
+        r'^indicator/(?P<pk>\d+)/dates-count$',
+        DashboardIndicatorDatesAndCountAPI.as_view(),
+        name='dashboard-indicator-dates-count-api'
     ),
     url(
         r'^indicator/(?P<pk>\d+)/dates$',

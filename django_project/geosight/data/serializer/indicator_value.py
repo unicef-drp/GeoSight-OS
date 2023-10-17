@@ -14,9 +14,15 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+from datetime import datetime
+
+import pytz
+from django.conf import settings
 from rest_framework import serializers
 
-from geosight.data.models.indicator import IndicatorValue
+from geosight.data.models.indicator import (
+    IndicatorValue, IndicatorValueWithGeo
+)
 from geosight.georepo.models.entity import Entity
 
 
@@ -127,3 +133,26 @@ class IndicatorValueBasicSerializer(serializers.ModelSerializer):
     class Meta:  # noqa: D106
         model = IndicatorValue
         exclude = ('indicator', 'geom_id')
+
+
+class IndicatorValueWithGeoSerializer(serializers.ModelSerializer):
+    """Serializer for IndicatorValueWithGeo."""
+    geometry_code = serializers.SerializerMethodField()
+    time = serializers.SerializerMethodField()
+
+    def get_geometry_code(self, obj: IndicatorValueWithGeo):
+        """Return geometry_code."""
+        return obj.geom_id
+
+    def get_time(self, obj: IndicatorValueWithGeo):
+        """Return date."""
+        return datetime.combine(
+            obj.date, datetime.min.time(),
+            tzinfo=pytz.timezone(settings.TIME_ZONE)
+        ).timestamp()
+
+    class Meta:  # noqa: D106
+        model = IndicatorValueWithGeo
+        fields = (
+            'geometry_code', 'value', 'concept_uuid', 'admin_level', 'time'
+        )
