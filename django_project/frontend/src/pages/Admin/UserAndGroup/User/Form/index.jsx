@@ -106,7 +106,8 @@ export default function UserForm() {
             ownForm && preferences.georepo_using_user_api_key && (!user.georepo_api_key || !apiKey) ?
               <ThemeButton variant="Error" className='GeorepoApiKeyBtn'>
                 <a
-                  href={new URL(preferences.georepo_url).origin + '/profile?tab=2'}>
+                  href={new URL(preferences.georepo_url).origin + '/profile?tab=2'}
+                  target='_blank'>
                   Generate GeoRepo API Key
                 </a>
               </ThemeButton>

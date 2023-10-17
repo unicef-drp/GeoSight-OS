@@ -144,6 +144,7 @@ export function createDynamicStyle(data, styleType, config, styleData) {
     config = styleData.style_config
   }
   let valuesByAdmin = {}
+  let uniqueValues = []
   const output = {}
   if (!(
     !data || !isArray(data) || !config || config?.color_palette === undefined ||
@@ -170,10 +171,11 @@ export function createDynamicStyle(data, styleType, config, styleData) {
           values.push(values[0])
         }
         if (styleType === DYNAMIC_QUALITATIVE) {
+          uniqueValues = Array.from(new Set(values))
           values = Array.from(new Set(values))
           numClass = values.length
         } else if (styleType === DYNAMIC_QUANTITATIVE) {
-          const uniqueValues = Array.from(new Set(values))
+          uniqueValues = Array.from(new Set(values))
           if (uniqueValues.length === 1) {
             uniqueValues.push(uniqueValues[0])
           }
@@ -206,7 +208,10 @@ export function createDynamicStyle(data, styleType, config, styleData) {
         /** Generate quantitative styles**/
         else if (styleType === DYNAMIC_QUANTITATIVE) {
           values = values.filter(val => !isNaN(val))
-          if (numClass === 2 && numClass < config.dynamic_class_num) {
+          // If the unique values are just 2
+          // We can show exactly 2 classification
+          if (uniqueValues.length === 2) {
+            const colors = createColors(config.color_palette, uniqueValues.length)
             colors.map((color, idx) => {
               const usedValue = values[idx]
               styles.push(
