@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { Fragment, useRef } from 'react';
+import React, { Fragment, useState } from 'react';
 import GppMaybeIcon from '@mui/icons-material/GppMaybe';
 import Tooltip from "@mui/material/Tooltip";
 
@@ -43,10 +43,12 @@ import {
   TableActiveIcon,
   TableIcon,
 } from "../../../../components/Icons";
-import { HelpCenter } from "../../../../components/HelpCenter";
+import NotificationBadge from "../../../../components/NotificationBadge";
 
 import './style.scss';
-import NotificationBadge from "../../../../components/NotificationBadge";
+import {
+  DocsCrawlerGeosight
+} from "../../../../components/DocsCrawlerGeosight";
 
 
 function SidaNavigationButton({ title, minified, children }) {
@@ -74,7 +76,8 @@ export default function SideNavigation({ pageName, minified }) {
   const dataset = urls.admin.dataset; // eslint-disable-line no-undef
   const dataAccess = urls.admin.dataAccess; // eslint-disable-line no-undef
   const relatedTableList = urls.admin.relatedTableList; // eslint-disable-line no-undef
-  const helpPageRef = useRef(null);
+
+  const [openHelp, setOpenHelp] = useState(false)
 
   return (
     <div className={'SideNavigation ' + (minified ? 'Minified' : '')}>
@@ -246,7 +249,7 @@ export default function SideNavigation({ pageName, minified }) {
         </SidaNavigationButton>
         <SidaNavigationButton minified={minified} title='Help'>
           <a href='#' className='SideNavigation-Row' onClick={_ => {
-            helpPageRef?.current.open()
+            setOpenHelp(true)
           }}>
             <HelpIcon/>
             <span className='SideNavigation-Row-Name'>Help</span>
@@ -257,7 +260,7 @@ export default function SideNavigation({ pageName, minified }) {
         <User detail={true}/>
       </div>
 
-      <HelpCenter ref={helpPageRef}/>
+      <DocsCrawlerGeosight open={openHelp} setOpen={setOpenHelp}/>
     </div>
   );
 }

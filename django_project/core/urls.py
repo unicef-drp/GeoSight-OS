@@ -37,7 +37,7 @@ urlpatterns = [
         url='/django-admin/core/sitepreferences/1/change/', permanent=False),
         name='index'),
 
-    url(r'^', include('docs.urls')),
+    url(r'^', include('docs_crawler.urls')),
     url(r'^django-admin/', admin.site.urls),
 ]
 

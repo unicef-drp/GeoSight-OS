@@ -66,6 +66,7 @@
     "css-loader": "^6.7.1",
     "dayjs": "^1.11.7",
     "deck.gl": "~8.8.27",
+    "django-docs-crawler-react": "^0.0.2",
     "esri-leaflet": "^3.0.8",
     "i18next": "^21.8.0",
     "jquery": "^3.6.0",
