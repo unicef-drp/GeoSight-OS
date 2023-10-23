@@ -38,6 +38,10 @@ import { ImageInput } from "../../../../../components/Input/ImageInput";
 import { Creatable } from "../../../../../components/Input";
 
 import './style.scss';
+import { INTERVALS } from "../../../../../utils/Dates";
+import {
+  SelectWithList
+} from "../../../../../components/Input/SelectWithList";
 
 /**
  * Summary dashboard
@@ -56,9 +60,15 @@ export default function SummaryDashboardForm({ changed }) {
     levelConfig,
     show_splash_first_open,
     truncate_indicator_layer_name,
-    enable_geometry_search
+    enable_geometry_search,
+    default_time_mode
   } = useSelector(state => state.dashboard.data);
   const dispatch = useDispatch();
+  const {
+    default_interval,
+    fit_to_current_indicator_range,
+    show_last_known_value_in_range
+  } = default_time_mode
 
   const [nameData, setNameData] = useState(name);
   const [descriptionData, setDescriptionData] = useState(description);
@@ -195,6 +205,81 @@ export default function SummaryDashboardForm({ changed }) {
                 Url of project in slug format. It will auto change space to "-" and to lowercase.
                 It will be generated from name if empty.
               </span>
+            </Grid>
+          </Grid>
+        </div>
+        {/* DEFAULT TIME MODE */}
+        <div className="BasicFormSection">
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <FormControl>
+                    <label
+                      className="form-label"
+                      htmlFor="name">Default time mode</label>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          id={'fit_to_current_indicator_range'}
+                          checked={fit_to_current_indicator_range}
+                          onChange={(event) => {
+                            dispatch(
+                              Actions.Dashboard.updateProps({
+                                default_time_mode: {
+                                  ...default_time_mode,
+                                  fit_to_current_indicator_range: !fit_to_current_indicator_range
+                                }
+                              })
+                            )
+                          }}
+                        />
+                      }
+                      label={'Fit to current indicator range'}/>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          id={'show_last_known_value_in_range'}
+                          checked={show_last_known_value_in_range}
+                          onChange={(event) => {
+                            dispatch(
+                              Actions.Dashboard.updateProps({
+                                default_time_mode: {
+                                  ...default_time_mode,
+                                  show_last_known_value_in_range: !show_last_known_value_in_range
+                                }
+                              })
+                            )
+                          }}
+                        />
+                      }
+                      label={'Show last known value in range'}/>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={6}>
+                  <FormControl>
+                    <label className="form-label"
+                           htmlFor="name">Default interval</label>
+                    <SelectWithList
+                      id='default_interval'
+                      tabIndex="-1"
+                      list={[INTERVALS.DAILY, INTERVALS.MONTHLY, INTERVALS.YEARLY]}
+                      required={true}
+                      value={default_interval}
+                      classNamePrefix={'ReactSelect'}
+                      onChange={evt => {
+                        dispatch(
+                          Actions.Dashboard.updateProps({
+                            default_time_mode: {
+                              ...default_time_mode,
+                              default_interval: evt.value
+                            }
+                          })
+                        )
+                      }}/>
+                  </FormControl>
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
         </div>

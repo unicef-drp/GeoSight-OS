@@ -164,6 +164,26 @@ class SitePreferences(SingletonModel):
         blank=True
     )
     # -----------------------------------------------
+    # DEFAULT TIME MODE
+    # -----------------------------------------------
+    fit_to_current_indicator_range = models.BooleanField(
+        default=False
+    )
+    show_last_known_value_in_range = models.BooleanField(
+        default=True
+    )
+
+    TIME_MODE_INTERVAL = [
+        ("Daily", "Daily"),
+        ("Monthly", "Monthly"),
+        ("Yearly", "Yearly")
+    ]
+    default_interval = models.CharField(
+        max_length=16,
+        choices=TIME_MODE_INTERVAL,
+        default='Monthly',
+    )
+    # -----------------------------------------------
     # LAYER RELATED
     # -----------------------------------------------
     style_new_rule_fill_color = models.CharField(

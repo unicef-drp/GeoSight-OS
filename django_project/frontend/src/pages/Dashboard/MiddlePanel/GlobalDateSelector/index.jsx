@@ -52,7 +52,8 @@ export default function GlobalDateSelector() {
   const { globalDateSelectorOpened } = useSelector(state => state.globalState)
   const {
     indicators,
-    indicatorLayers
+    indicatorLayers,
+    default_time_mode
   } = useSelector(state => state.dashboard.data);
   const indicatorLayerDates = useSelector(state => state.indicatorLayerDates);
   const selectedGlobalTime = useSelector(state => state.selectedGlobalTime);
@@ -61,11 +62,15 @@ export default function GlobalDateSelector() {
   const currentIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer);
 
   const [dates, setDates] = useState([])
-
-  const [isInLatestValue, setIsInLatestValue] = useState(true)
-  const [isFitToIndicatorRange, setIsFitToIndicatorRange] = useState(true)
+  const {
+    default_interval,
+    fit_to_current_indicator_range,
+    show_last_known_value_in_range
+  } = default_time_mode
+  const [isInLatestValue, setIsInLatestValue] = useState(show_last_known_value_in_range === undefined ? false : show_last_known_value_in_range)
+  const [isFitToIndicatorRange, setIsFitToIndicatorRange] = useState(fit_to_current_indicator_range === undefined ? false : fit_to_current_indicator_range)
   const [selectedDatePoint, setSelectedDatePoint] = useState(null)
-  const [interval, setInterval] = useState(INTERVALS.MONTHLY)
+  const [interval, setInterval] = useState(default_interval ? default_interval : INTERVALS.MONTHLY)
   const [minDate, setMinDate] = useState(null)
   const [maxDate, setMaxDate] = useState(null)
 
