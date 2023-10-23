@@ -137,6 +137,7 @@ class IndicatorValueBasicSerializer(serializers.ModelSerializer):
 
 class IndicatorValueWithGeoSerializer(serializers.ModelSerializer):
     """Serializer for IndicatorValueWithGeo."""
+
     geometry_code = serializers.SerializerMethodField()
     time = serializers.SerializerMethodField()
 
