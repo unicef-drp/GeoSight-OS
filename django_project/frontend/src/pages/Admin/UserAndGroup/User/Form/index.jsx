@@ -106,7 +106,8 @@ export default function UserForm() {
             ownForm && preferences.georepo_using_user_api_key && (!user.georepo_api_key || !apiKey) ?
               <ThemeButton variant="Error" className='GeorepoApiKeyBtn'>
                 <a
-                  href={new URL(preferences.georepo_url).origin + '/profile?tab=2'}>
+                  href={new URL(preferences.georepo_url).origin + '/profile?tab=2'}
+                  target='_blank'>
                   Generate GeoRepo API Key
                 </a>
               </ThemeButton>
@@ -197,15 +198,15 @@ export default function UserForm() {
                     </div>
                     <br/>
                     <div>
-                      A GeoRepo API KEY is required for authorizing GeoSight to
+                      A GeoRepo API Key is required for authorizing GeoSight to
                       access GeoRepo data.
                       <br/>
-                      To generate a GeoRepo API KEY, go to
+                      To generate a GeoRepo API Key, go to
                       {
                         !user.georepo_api_key || !apiKey ?
                           <ThemeButton
                             variant="Error"
-                            style={{ marginLeft: "3px" }}>
+                            style={{ marginLeft: "3px", marginRight: "3px" }}>
                             <a
                               href={new URL(preferences.georepo_url).origin + '/profile?tab=2'}
                               style={{
@@ -216,11 +217,13 @@ export default function UserForm() {
                             </a>
                           </ThemeButton> : <a
                             href={new URL(preferences.georepo_url).origin + '/profile'}
-                            target='_blank'> GeoRepo website</a>
+                            target='_blank'> GeoRepo website. </a>
                       }
+                      Paste the API key in the field above and click
+                      the <b>Save</b> button in the top right corner.
                       <br/>
                       If you need more information on how to generate a GeoRepo
-                      API KEY, you can check <a
+                      API Key, you can check <a
                       href='https://unicef-drp.github.io/GeoRepo-OS/user/api/guide/#generating-an-api-key'
                       target='_blank'>
                       this page

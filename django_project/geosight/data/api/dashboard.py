@@ -29,7 +29,9 @@ from geosight.data.serializer.basemap_layer import BasemapLayerSerializer
 from geosight.data.serializer.dashboard import (
     DashboardBasicSerializer, DashboardSerializer
 )
-from geosight.permission.access import delete_permission_resource
+from geosight.permission.access import (
+    delete_permission_resource, read_permission_resource
+)
 
 
 class DashboardListAPI(APIView):
@@ -76,6 +78,7 @@ class DashboardData(APIView):
         """Return all context analysis data."""
         if slug != CREATE_SLUG:
             dashboard = get_object_or_404(Dashboard, slug=slug)
+            read_permission_resource(dashboard, request.user)
             data = DashboardSerializer(
                 dashboard, context={'user': request.user}).data
         else:

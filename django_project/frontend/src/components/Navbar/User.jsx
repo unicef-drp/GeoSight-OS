@@ -95,7 +95,7 @@ export default function User({ ...props }) {
               <MenuItem
                 className='MenuItem-Header MenuItem-Button Description'>
                 You are not authorized to GeoRepo.<br/>
-                Please add your api key in <a
+                Please add your API Key in <a
                 href={'/admin/user/' + user.username + '/edit'}
                 style={{
                   color: "red",

@@ -79,6 +79,13 @@ class SitePreferencesAdmin(admin.ModelAdmin):
                 'icon', 'favicon'
             ),
         }),
+        ('Default Time Mode', {
+            'fields': (
+                'fit_to_current_indicator_range',
+                'show_last_known_value_in_range',
+                'default_interval'
+            ),
+        }),
         ('Default Style Configuration', {
             'fields': (),
         }),

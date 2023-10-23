@@ -39,29 +39,39 @@ export default function GeorepoAuthorizationModal() {
   useEffect(() => {
     if (referenceLayerData?.error?.response?.status === 404) {
       notify('Reference layer dataset does not found in GeoRepo.', NotificationStatus.ERROR)
-    } else if (referenceLayerData?.error?.response?.status === 403) {
-      notify(
-        `You don't have right to access this GeoRepo view. Please ask GeoRepo admin for the access by clicking <a target="_blank" href='${new URL(preferences.georepo_url).origin + '/profile?tab=2'}'>here.</a>`,
-        NotificationStatus.ERROR
-      )
     }
   }, [referenceLayerData]);
 
   return <Fragment>
     <Notification ref={notificationRef}/>
     {
-      (permission?.public_permission !== 'Read' && preferences.georepo_api.api_key_is_public) || referenceLayerData?.error?.response?.status === 401 ?
+      [401, 403].includes(referenceLayerData?.error?.response?.status) ?
         <div className='GeorepoAuthorization'>
           <div className='wrapper'>
             {
               preferences.georepo_using_user_api_key ?
                 <Fragment>
-                  You need to authorize to GeoRepo to access this page.
-                  <br/>
-                  <br/>
-                  <div>Please add your api key on <a
-                    href={'/admin/user/' + user.username + '/edit'}>here</a>.
-                  </div>
+                  {
+                    preferences.georepo_api.api_key_is_public ?
+                      <Fragment>
+                        You need to authorize to GeoRepo to access this page.
+                        <br/>
+                        <br/>
+                        <div>Please add your API Key in <a
+                          href={'/admin/user/' + user.username + '/edit'}>here</a>.
+                        </div>
+                      </Fragment> : <Fragment>
+                        You don't have rights to access this GeoRepo view.
+                        <br/>
+                        <br/>
+                        Please ask GeoRepo admin for the access by clicking&nbsp;
+                        <a
+                          target="_blank"
+                          href={new URL(preferences.georepo_url).origin + '/profile?tab=2'}>
+                          here.
+                        </a>
+                      </Fragment>
+                  }
                 </Fragment> : <Fragment>
                   GeoSight does not have access to this reference dataset.
                 </Fragment>
