@@ -62,6 +62,7 @@ export default function GlobalDateSelector() {
   const currentIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer);
 
   const [dates, setDates] = useState([])
+  const [selectedDatePointSelected, setSelectedDatePointSelected] = useState(false)
   const {
     default_interval,
     fit_to_current_indicator_range,
@@ -284,7 +285,7 @@ export default function GlobalDateSelector() {
    * Update Global Dates
    */
   useEffect(() => {
-    if (!(selectedDatePoint >= minDate && selectedDatePoint <= maxDate)) {
+    if (!selectedDatePointSelected || (!(selectedDatePoint >= minDate && selectedDatePoint <= maxDate))) {
       setSelectedDatePoint(maxDate)
     }
     if (isInLatestValue && selectedGlobalTime?.min !== minDate) {
@@ -439,6 +440,7 @@ export default function GlobalDateSelector() {
                           const selectedMark = marks.find(mark => mark.value === evt.value)
                           if (selectedMark) {
                             setSelectedDatePoint(selectedMark.date)
+                            setSelectedDatePointSelected(true)
                           }
                         }}/>
                       &nbsp;&nbsp;
@@ -534,6 +536,7 @@ export default function GlobalDateSelector() {
                           const selectedMark = marks.find(mark => mark.value === evt.target.value)
                           if (selectedMark) {
                             setSelectedDatePoint(selectedMark.date)
+                            setSelectedDatePointSelected(true)
                           }
                         }}
                       />
