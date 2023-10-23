@@ -104,6 +104,7 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData):
         null=True, blank=True, default=False
     )
     enable_geometry_search = models.BooleanField(default=True)
+    default_time_mode = models.JSONField(null=True, blank=True)
 
     @staticmethod
     def name_is_exist_of_all(slug: str) -> bool:

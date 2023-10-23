@@ -183,7 +183,8 @@ export function DashboardSaveForm(
     filtersAllowModify,
     permission,
     geoField,
-    levelConfig
+    levelConfig,
+    default_time_mode
   } = useSelector(state => state.dashboard.data);
   const { data } = useSelector(state => state.dashboard);
   const filtersData = useSelector(state => state.filtersData);
@@ -318,6 +319,7 @@ export function DashboardSaveForm(
       formData.append('show_splash_first_open', splashScreen)
       formData.append('truncate_indicator_layer_name', truncateIndicatorName)
       formData.append('enable_geometry_search', enableGeometrySearch)
+      formData.append('default_time_mode', JSON.stringify(default_time_mode))
 
       postData(
         document.location.href,

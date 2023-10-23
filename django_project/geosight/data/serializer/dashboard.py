@@ -19,6 +19,7 @@ import json
 from django.shortcuts import reverse
 from rest_framework import serializers
 
+from core.models.preferences import SitePreferences
 from geosight.data.models.dashboard import Dashboard
 from geosight.data.serializer.basemap_layer import BasemapLayerSerializer
 from geosight.data.serializer.context_layer import ContextLayerSerializer
@@ -57,6 +58,7 @@ class DashboardSerializer(serializers.ModelSerializer):
     user_permission = serializers.SerializerMethodField()
     geo_field = serializers.SerializerMethodField()
     level_config = serializers.SerializerMethodField()
+    default_time_mode = serializers.SerializerMethodField()
 
     def get_description(self, obj: Dashboard):
         """Return description."""
@@ -232,6 +234,20 @@ class DashboardSerializer(serializers.ModelSerializer):
         """Return level_config."""
         return obj.level_config if obj.level_config else {}
 
+    def get_default_time_mode(self, obj: Dashboard):
+        """Return default_time_mode."""
+        if obj.default_time_mode:
+            return obj.default_time_mode
+        else:
+            pref = SitePreferences.preferences()
+            return {
+                'fit_to_current_indicator_range':
+                    pref.fit_to_current_indicator_range,
+                'show_last_known_value_in_range':
+                    pref.show_last_known_value_in_range,
+                'default_interval': pref.default_interval,
+            }
+
     class Meta:  # noqa: D106
         model = Dashboard
         fields = (
@@ -247,7 +263,7 @@ class DashboardSerializer(serializers.ModelSerializer):
             'permission', 'user_permission',
             'geo_field', 'show_splash_first_open',
             'truncate_indicator_layer_name', 'enable_geometry_search',
-            'overview'
+            'overview', 'default_time_mode'
         )
 
 
