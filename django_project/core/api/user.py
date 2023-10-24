@@ -18,14 +18,19 @@ import json
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
+from knox.models import AuthToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from core.api.base import FilteredAPI
+from core.models.api_key import ApiKey
 from core.models.profile import Profile
 from core.permissions import AdminAuthenticationPermission
+from core.serializer.api_key import ApiKeySerializer
 from core.serializer.user import UserSerializer
 from geosight.permission.access import RoleContributorRequiredMixin
 
@@ -69,3 +74,76 @@ class UserDetailAPI(APIView):
         user = get_object_or_404(User, pk=pk)
         user.delete()
         return Response('Deleted')
+
+
+class UserApiKey(UserPassesTestMixin, APIView):
+    permission_classes = [IsAuthenticated]
+
+    def handle_no_permission(self):
+        return HttpResponseForbidden('No permission')
+
+    def test_func(self):
+        if not self.request.user.is_authenticated:
+            return False
+        if self.request.user.is_superuser:
+            return True
+        user_id = int(self.kwargs.get('id'))
+        return self.request.user.id == user_id
+
+    def get(self, request, id):
+        api_key = ApiKey.objects.filter(token__user_id=id)
+        return Response(status=200, data=(
+            ApiKeySerializer(api_key, many=True).data
+        ))
+
+    def put(self, request, id):
+        # activate/deactivate token
+        if not self.request.user.is_superuser:
+            return HttpResponseForbidden('No permission')
+        api_key = ApiKey.objects.filter(token__user_id=id)
+        api_key.update(is_active=request.data.get('is_active'))
+        return Response(status=204)
+
+    def post(self, request, id):
+        # create new token
+        user = get_object_or_404(User, id=id)
+        existing = ApiKey.objects.filter(
+            token__user_id=id
+        )
+        if existing.exists():
+            return Response(status=400, data={
+                'detail': (
+                    'You have existing API Key! '
+                    'Please remove the existing one!'
+                )
+            })
+        # create token
+        auth_token, token = AuthToken.objects.create(
+            user=user
+        )
+        ApiKey.objects.create(
+            token=auth_token,
+            platform=request.data.get('platform', ''),
+            owner=request.data.get('owner', user.email),
+            contact=request.data.get('contact', ''),
+        )
+        return Response(
+            status=201,
+            data={
+                'user_id': id,
+                'api_key': token,
+                'created': auth_token.created
+            }
+        )
+
+    def delete(self, request, id):
+        # delete token API Key
+        api_key = ApiKey.objects.filter(token__user_id=id).first()
+        if not api_key:
+            return Response(status=404, data={
+                'detail': 'not found'
+            })
+        if not api_key.is_active and not request.user.is_superuser:
+            return HttpResponseForbidden('No permission')
+        AuthToken.objects.filter(user_id=id).delete()
+        return Response(status=204)

@@ -27,7 +27,9 @@ from core.forms.user import (
     AdminUserChangeForm, AzureAdminUserChangeForm,
     AzureAdminUserCreationForm
 )
-from core.models import SitePreferences, SitePreferencesImage, Profile
+from core.models import (
+    SitePreferences, SitePreferencesImage, Profile, ApiKey
+)
 from core.models.access_request import UserAccessRequest
 from core.models.color import ColorPalette
 
@@ -40,6 +42,10 @@ class SitePreferencesImageInline(admin.TabularInline):
 
     model = SitePreferencesImage
     extra = 0
+
+
+class APIKeyInline(admin.StackedInline):
+    model = ApiKey
 
 
 class SitePreferencesAdmin(admin.ModelAdmin):
@@ -236,3 +242,27 @@ class UserAccessRequestAdmin(admin.ModelAdmin):
 
 
 admin.site.register(UserAccessRequest, UserAccessRequestAdmin)
+
+
+class APIKeyAdmin(admin.ModelAdmin):
+    """API key admin admin."""
+
+    list_display = (
+        'get_user', 'platform', 'owner', 'contact', 'get_created', 'is_active'
+    )
+    fields = ('platform', 'owner', 'contact', 'is_active')
+
+    @admin.display(ordering='token__user__username', description='User')
+    def get_user(self, obj):
+        return obj.token.user
+
+    @admin.display(ordering='token__created', description='Created')
+    def get_created(self, obj):
+        return obj.token.created
+
+    def has_add_permission(self, request, obj=None):
+        # creation of API key is from FrontEnd
+        return False
+
+
+admin.site.register(ApiKey, APIKeyAdmin)

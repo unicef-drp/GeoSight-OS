@@ -28,7 +28,7 @@ from core.api.color import ColorPaletteListAPI
 from core.api.group import GroupListAPI, GroupDetailAPI
 from core.api.proxy import ProxyView
 from core.api.sentry import trigger_error
-from core.api.user import UserListAPI, UserDetailAPI
+from core.api.user import UserListAPI, UserDetailAPI, UserApiKey
 
 admin.autodiscover()
 
@@ -61,6 +61,11 @@ user_api = [
     url(
         r'^list',
         UserListAPI.as_view(), name='user-list-api'
+    ),
+    url(
+        r'token/(?P<id>\d+)/?$',
+        UserApiKey.as_view(),
+        name='user-api-key'
     ),
     url(
         r'^(?P<pk>\d+)',
