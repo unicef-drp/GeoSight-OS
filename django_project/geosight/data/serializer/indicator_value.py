@@ -21,7 +21,7 @@ from django.conf import settings
 from rest_framework import serializers
 
 from geosight.data.models.indicator import (
-    IndicatorValue, IndicatorValueWithGeo
+    IndicatorValue, IndicatorValueWithGeo, IndicatorExtraValue
 )
 from geosight.georepo.models.entity import Entity
 
@@ -135,18 +135,42 @@ class IndicatorValueBasicSerializer(serializers.ModelSerializer):
         exclude = ('indicator', 'geom_id')
 
 
-class IndicatorValueWithGeoSerializer(serializers.ModelSerializer):
+class _BaseIndicatorValueWithGeoSerializer(serializers.ModelSerializer):
     """Serializer for IndicatorValueWithGeo."""
 
     geometry_code = serializers.SerializerMethodField()
-    time = serializers.SerializerMethodField()
 
     def get_geometry_code(self, obj: IndicatorValueWithGeo):
         """Return geometry_code."""
         return obj.geom_id
 
+    def to_representation(self, obj: IndicatorValueWithGeo):
+        """To representation of indicator value."""
+        data = super(
+            _BaseIndicatorValueWithGeoSerializer, self
+        ).to_representation(obj)
+
+        for extra in IndicatorExtraValue.objects.filter(
+                indicator_value_id=obj.id
+        ):
+            data[extra.name] = extra.value
+        data['geometry_code'] = obj.geom_id
+        return data
+
+    class Meta:  # noqa: D106
+        model = IndicatorValueWithGeo
+        fields = (
+            'geometry_code', 'value', 'concept_uuid', 'admin_level',
+        )
+
+
+class IndicatorValueWithGeoSerializer(_BaseIndicatorValueWithGeoSerializer):
+    """Serializer for IndicatorValueWithGeo."""
+
+    time = serializers.SerializerMethodField()
+
     def get_time(self, obj: IndicatorValueWithGeo):
-        """Return date."""
+        """Return time."""
         return datetime.combine(
             obj.date, datetime.min.time(),
             tzinfo=pytz.timezone(settings.TIME_ZONE)
@@ -156,4 +180,22 @@ class IndicatorValueWithGeoSerializer(serializers.ModelSerializer):
         model = IndicatorValueWithGeo
         fields = (
             'geometry_code', 'value', 'concept_uuid', 'admin_level', 'time'
+        )
+
+
+class IndicatorValueWithGeoDateSerializer(
+    _BaseIndicatorValueWithGeoSerializer
+):
+    """Serializer for IndicatorValueWithGeo."""
+
+    date = serializers.SerializerMethodField()
+
+    def get_date(self, obj: IndicatorValueWithGeo):
+        """Return date."""
+        return obj.date.strftime("%d-%m-%Y")
+
+    class Meta:  # noqa: D106
+        model = IndicatorValueWithGeo
+        fields = (
+            'geometry_code', 'value', 'concept_uuid', 'admin_level', 'date'
         )

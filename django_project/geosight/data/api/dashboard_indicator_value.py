@@ -32,7 +32,10 @@ from geosight.data.models.dashboard import (
     Dashboard
 )
 from geosight.data.models.indicator import Indicator
-from geosight.data.serializer.indicator import IndicatorValueWithGeoSerializer
+from geosight.data.serializer.indicator import (
+    IndicatorValueWithGeoSerializer,
+    IndicatorValueWithGeoDateSerializer
+)
 from geosight.georepo.models.reference_layer import ReferenceLayerIndicator
 from geosight.georepo.serializer.entity import EntitySerializer
 from geosight.permission.access import (
@@ -90,13 +93,14 @@ class DashboardIndicatorValuesAPI(_DashboardIndicatorValuesAPI):
         indicator = get_object_or_404(Indicator, pk=pk)
         self.check_permission(request.user, dashboard, indicator)
         min_time, max_time = self.return_parameters(request)
+        query = indicator.values(
+            date_data=max_time,
+            min_date_data=min_time,
+            admin_level=request.GET.get('admin_level', None),
+            reference_layer=dashboard.reference_layer
+        )
         return Response(
-            indicator.values(
-                date_data=max_time,
-                min_date_data=min_time,
-                admin_level=request.GET.get('admin_level', None),
-                reference_layer=dashboard.reference_layer
-            )
+            IndicatorValueWithGeoDateSerializer(query, many=True).data
         )
 
 
@@ -109,11 +113,8 @@ class DashboardIndicatorAllValuesAPI(_DashboardIndicatorValuesAPI):
         indicator = get_object_or_404(Indicator, pk=pk)
         self.check_permission(request.user, dashboard, indicator)
 
-        query = indicator.query_values(
+        query = indicator.values(
             reference_layer=dashboard.reference_layer
-        )
-        query = query.order_by(
-            'concept_uuid', 'geom_id', '-date'
         )
         return Response(
             IndicatorValueWithGeoSerializer(query, many=True).data
@@ -282,11 +283,10 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
                     min_date_data=None,
                     reference_layer=dashboard.reference_layer,
                     concept_uuids=concept_uuids,
-                    last_value=False,
-                    use_time=True
+                    last_value=False
                 )
                 for value in values:
-                    key = value['concept_uuid']
+                    key = value.concept_uuid
                     if key not in indicators:
                         indicators[key] = {}
 
@@ -296,8 +296,11 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
                         indicators[key][indicator_key] = []
 
                     indicators[key][indicator_key].append({
-                        'value': value['value'],
-                        'time': value['time']
+                        'value': value.value,
+                        'time': datetime.combine(
+                            value.date, datetime.min.time(),
+                            tzinfo=pytz.timezone(settings.TIME_ZONE)
+                        ).isoformat()
                     })
             except ResourcePermissionDenied:
                 pass
