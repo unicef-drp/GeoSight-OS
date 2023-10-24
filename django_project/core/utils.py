@@ -16,6 +16,8 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import uuid
 
+from drf_yasg import openapi
+
 
 def string_is_true(string: str):
     """Return is true or false of string contains true like string."""
@@ -29,3 +31,24 @@ def is_valid_uuid(value):
         return True
     except ValueError:
         return False
+
+
+common_api_params = [
+    openapi.Parameter(
+        'page', openapi.IN_QUERY,
+        description='Page number in pagination',
+        type=openapi.TYPE_INTEGER,
+        default=1
+    ), openapi.Parameter(
+        'page_size', openapi.IN_QUERY,
+        description='Total records in a page',
+        type=openapi.TYPE_INTEGER,
+        default=50
+    )
+]
+
+
+class ApiTag:
+    """Return API Tags."""
+
+    DATASET = 'Dataset'

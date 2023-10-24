@@ -18,11 +18,19 @@ import json
 
 from django.db.models import Q
 from django.http import HttpResponseBadRequest
+from django.utils.decorators import method_decorator
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework.authentication import (
+    SessionAuthentication, BasicAuthentication
+)
 from rest_framework.generics import ListAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from core.api.base import FilteredAPI
+from core.auth import BearerAuthentication
 from core.pagination import Pagination
+from core.utils import common_api_params, ApiTag
 from geosight.data.models.indicator import (
     IndicatorValue, IndicatorValueWithGeo, IndicatorValueRejectedError
 )
@@ -34,9 +42,43 @@ from geosight.permission.models.resource import (
 )
 
 
+@method_decorator(
+    name='get',
+    decorator=swagger_auto_schema(
+        operation_id='dataset-list-get',
+        tags=[ApiTag.DATASET],
+        manual_parameters=[
+            *common_api_params
+        ]
+    )
+)
+@method_decorator(
+    name='put',
+    decorator=swagger_auto_schema(
+        operation_id='dataset-list-put',
+        tags=[ApiTag.DATASET],
+        manual_parameters=[],
+        request_body=IndicatorValueWithPermissionSerializer.
+        Meta.swagger_schema_fields['put_body'],
+    )
+)
+@method_decorator(
+    name='delete',
+    decorator=swagger_auto_schema(
+        operation_id='dataset-list-delete',
+        tags=[ApiTag.DATASET],
+        manual_parameters=[],
+        request_body=IndicatorValueWithPermissionSerializer.
+        Meta.swagger_schema_fields['delete_body'],
+    )
+)
 class DatasetApiList(ListAPIView, FilteredAPI):
     """Return Data List API List."""
 
+    authentication_classes = [
+        SessionAuthentication, BasicAuthentication, BearerAuthentication
+    ]
+    permission_classes = (IsAuthenticated,)
     pagination_class = Pagination
     serializer_class = IndicatorValueWithPermissionSerializer
 
@@ -93,26 +135,34 @@ class DatasetApiList(ListAPIView, FilteredAPI):
         )
 
     def put(self, request):
-        """Delete data."""
-        data = json.loads(request.data['data'])
-        for row in data:
+        """Update value of dataset."""
+        try:
+            data = request.data
             try:
-                value = IndicatorValue.objects.get(id=row['id'])
-                if value.permissions(request.user)['edit']:
-                    edited_value = float(row['value'])
-                    value.indicator.validate(edited_value)
-                    value.value = edited_value
-                    value.save()
-            except (IndicatorValue.DoesNotExist, ValueError):
+                data = request.data['data']
+                data = json.loads(request.data['data'])
+            except TypeError:
                 pass
-            except IndicatorValueRejectedError as e:
-                return HttpResponseBadRequest(
-                    f'Indicator {value.indicator} : {e}'
-                )
-        return Response('OK')
+            for row in data:
+                try:
+                    value = IndicatorValue.objects.get(id=row['id'])
+                    if value.permissions(request.user)['edit']:
+                        edited_value = row['value']
+                        value.indicator.validate(edited_value)
+                        value.value = edited_value
+                        value.save()
+                except (IndicatorValue.DoesNotExist, ValueError):
+                    pass
+                except IndicatorValueRejectedError as e:
+                    return HttpResponseBadRequest(
+                        f'Indicator {value.indicator} : {e}'
+                    )
+            return Response('OK')
+        except KeyError:
+            return HttpResponseBadRequest('`data` is required on payload')
 
     def delete(self, request):
-        """Delete data."""
+        """Batch delete dataset."""
         ids = json.loads(request.data['ids'])
         for value in IndicatorValue.objects.filter(id__in=ids):
             if value.permissions(request.user)['delete']:

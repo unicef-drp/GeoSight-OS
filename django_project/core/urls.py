@@ -150,7 +150,7 @@ api = [
 ]
 urlpatterns += [
     url(r'^proxy', ProxyView.as_view(), name='proxy-view'),
-    url(r'^api/v1', include('core.urls_v1')),
+    url(r'^api/v1/', include('core.urls_v1')),
     url(r'^api/', include(api)),
     url(r'^sentry-debug', trigger_error),
     url(r'^captcha/', include('captcha.urls')),
