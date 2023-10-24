@@ -58,7 +58,7 @@ export default function GeorepoAuthorizationModal() {
           <br/>
           <br/>
           <div>
-            Please check your API Key in <a
+            Please update your API Key in <a
             href={'/admin/user/' + user.username + '/edit'}>
             here
           </a>.
@@ -67,7 +67,6 @@ export default function GeorepoAuthorizationModal() {
       }
     } else {
       if (preferences.georepo_api.api_key_is_public) {
-        console.log(referenceLayerData?.error?.response?.status)
         return <Fragment>
           You need to authorize to GeoRepo to access this page.
           <br/>

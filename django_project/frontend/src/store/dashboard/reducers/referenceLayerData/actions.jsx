@@ -15,6 +15,7 @@
 
 import { REFERENCE_LAYER_DATA_ACTION_NAME } from './index'
 import { axiosGet, headers } from "../../../../utils/georepo";
+import $ from "jquery";
 
 const REQUEST_REFERENCE_LAYER_DATA = 'REQUEST/' + REFERENCE_LAYER_DATA_ACTION_NAME;
 const RECEIVE_REFERENCE_LAYER_DATA = 'RECEIVE/' + REFERENCE_LAYER_DATA_ACTION_NAME;
@@ -48,6 +49,8 @@ export function fetch(dispatch, id, url) {
     preferences.georepo_api.headers = preferences.georepo_api.public_headers
     preferences.georepo_api.api_key = preferences.georepo_api.api_key_public.api_key
     preferences.georepo_api.api_key_email = preferences.georepo_api.api_key_public.email
+    preferences.georepo_api.api_key_not_working = true
+    $('#GeorepoApiKeyBtnUpdate').removeClass('Hidden')
     // We use public key
     axiosGet(url).then(response => {
       dispatch(
