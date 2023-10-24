@@ -92,7 +92,7 @@ class DatasetApiList(ListAPIView, FilteredAPI):
             'indicator_id', '-date', 'geom_id'
         )
 
-    def post(self, request):
+    def put(self, request):
         """Delete data."""
         data = json.loads(request.data['data'])
         for row in data:

@@ -20,6 +20,10 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 from django.views.generic.base import RedirectView
+from drf_yasg import openapi
+from drf_yasg.generators import OpenAPISchemaGenerator
+from drf_yasg.views import get_schema_view
+from rest_framework import permissions
 
 from core.api.access_request import (
     AccessRequestList, AccessRequestDetail, AccessRequestCount
@@ -30,6 +34,29 @@ from core.api.proxy import ProxyView
 from core.api.sentry import trigger_error
 from core.api.user import UserListAPI, UserDetailAPI, UserApiKey
 
+
+class CustomSchemaGenerator(OpenAPISchemaGenerator):
+    def get_schema(self, request=None, public=False):
+        schema = super().get_schema(request, public)
+        schema.schemes = ['https']
+        if settings.DEBUG:
+            schema.schemes = ['http'] + schema.schemes
+        return schema
+
+
+schema_view_v1 = get_schema_view(
+    openapi.Info(
+        title="GeoSight API",
+        default_version='v1.0.0'
+    ),
+    public=True,
+    permission_classes=[permissions.AllowAny],
+    generator_class=CustomSchemaGenerator,
+    patterns=[
+        path(r'^api/v1/',
+             include(('core.urls_v1', 'api'), namespace='v1'))
+    ],
+)
 admin.autodiscover()
 
 urlpatterns = [
@@ -39,6 +66,9 @@ urlpatterns = [
 
     url(r'^', include('docs.urls')),
     url(r'^django-admin/', admin.site.urls),
+    url(r'^api/v1/docs/$', schema_view_v1.with_ui(
+        'swagger', cache_timeout=0),
+        name='schema-swagger-ui'),
 ]
 
 if settings.USE_AZURE:
@@ -120,6 +150,7 @@ api = [
 ]
 urlpatterns += [
     url(r'^proxy', ProxyView.as_view(), name='proxy-view'),
+    url(r'^api/v1', include('core.urls_v1')),
     url(r'^api/', include(api)),
     url(r'^sentry-debug', trigger_error),
     url(r'^captcha/', include('captcha.urls')),

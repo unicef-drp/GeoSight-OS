@@ -1,0 +1,18 @@
+.swagger-ui .topbar {
+    background-color: var(--primary-color);
+}
+
+.swagger-ui .topbar .download-url-wrapper {
+    display: none;
+}
+
+.swagger-ui .topbar .topbar-wrapper img[alt="Swagger UI"] {
+    display: none;
+}
+
+.swagger-ui .topbar .topbar-wrapper a:after {
+    content: url(logo__unicef-large.svg);
+    color: #fff;
+    visibility: visible;
+    display: block;
+}

@@ -25,6 +25,7 @@ INSTALLED_APPS = INSTALLED_APPS + (
     'django_celery_results',
     'captcha',
     'knox',
+    'drf_yasg',
 )
 WEBPACK_LOADER = {
     'DEFAULT': {
@@ -42,3 +43,16 @@ WEBPACK_LOADER = {
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend'
 ]
+
+# swagger UI settings
+SWAGGER_SETTINGS = {
+    'TAGS_SORTER': 'alpha',
+    'showCommonExtensions': 'true',
+    'SECURITY_DEFINITIONS': {
+        'ApiKey Auth': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'Authorization'
+        }
+    }
+}

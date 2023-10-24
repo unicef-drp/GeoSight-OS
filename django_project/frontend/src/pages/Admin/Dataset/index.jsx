@@ -238,7 +238,7 @@ export default function DatasetAdmin() {
             setDisabled(true)
             $.ajax({
               url: urls.api.datasetApi,
-              method: 'POST',
+              method: 'PUT',
               data: {
                 'data': JSON.stringify(updatedData.map(data => {
                   return {
