@@ -63,7 +63,7 @@ user_api = [
         UserListAPI.as_view(), name='user-list-api'
     ),
     url(
-        r'token/(?P<id>\d+)/?$',
+        r'^(?P<pk>\d+)/token',
         UserApiKey.as_view(),
         name='user-api-key'
     ),

@@ -87,28 +87,28 @@ class UserApiKey(UserPassesTestMixin, APIView):
             return False
         if self.request.user.is_superuser:
             return True
-        user_id = int(self.kwargs.get('id'))
+        user_id = int(self.kwargs.get('pk'))
         return self.request.user.id == user_id
 
-    def get(self, request, id):
-        api_key = ApiKey.objects.filter(token__user_id=id)
+    def get(self, request, pk):
+        api_key = ApiKey.objects.filter(token__user_id=pk)
         return Response(status=200, data=(
             ApiKeySerializer(api_key, many=True).data
         ))
 
-    def put(self, request, id):
+    def put(self, request, pk):
         # activate/deactivate token
         if not self.request.user.is_superuser:
             return HttpResponseForbidden('No permission')
-        api_key = ApiKey.objects.filter(token__user_id=id)
+        api_key = ApiKey.objects.filter(token__user_id=pk)
         api_key.update(is_active=request.data.get('is_active'))
         return Response(status=204)
 
-    def post(self, request, id):
+    def post(self, request, pk):
         # create new token
-        user = get_object_or_404(User, id=id)
+        user = get_object_or_404(User, id=pk)
         existing = ApiKey.objects.filter(
-            token__user_id=id
+            token__user_id=pk
         )
         if existing.exists():
             return Response(status=400, data={
@@ -130,20 +130,20 @@ class UserApiKey(UserPassesTestMixin, APIView):
         return Response(
             status=201,
             data={
-                'user_id': id,
+                'user_id': pk,
                 'api_key': token,
                 'created': auth_token.created
             }
         )
 
-    def delete(self, request, id):
+    def delete(self, request, pk):
         # delete token API Key
-        api_key = ApiKey.objects.filter(token__user_id=id).first()
+        api_key = ApiKey.objects.filter(token__user_id=pk).first()
         if not api_key:
             return Response(status=404, data={
                 'detail': 'not found'
             })
         if not api_key.is_active and not request.user.is_superuser:
             return HttpResponseForbidden('No permission')
-        AuthToken.objects.filter(user_id=id).delete()
+        AuthToken.objects.filter(user_id=pk).delete()
         return Response(status=204)

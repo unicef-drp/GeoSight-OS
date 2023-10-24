@@ -15,7 +15,8 @@
           'list': '{% url 'user-list-api' %}',
           'edit': '{% url 'admin-user-edit-view' 0 %}',
           'detail': '{% url 'user-detail-api' 0 %}',
-          'create': '{% url 'admin-user-create-view' %}'
+          'create': '{% url 'admin-user-create-view' %}',
+          'apiKey': '{% url 'user-api-key' request.user.id %}',
         },
         group: {
           'list': '{% url 'group-list-api' %}',
