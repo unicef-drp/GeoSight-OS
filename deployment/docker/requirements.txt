@@ -18,6 +18,7 @@ django-celery-results==2.4.0
 django-simple-captcha==0.5.17
 djangorestframework==3.14.0
 djangorestframework-gis==1.0
+django-rest-knox==4.2.0
 
 requests==2.31.0
 celery==5.3.1

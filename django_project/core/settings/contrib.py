@@ -23,7 +23,8 @@ INSTALLED_APPS = INSTALLED_APPS + (
     'webpack_loader',
     'django_celery_beat',
     'django_celery_results',
-    'captcha'
+    'captcha',
+    'knox',
 )
 WEBPACK_LOADER = {
     'DEFAULT': {
