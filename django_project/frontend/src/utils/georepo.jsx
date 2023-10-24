@@ -30,7 +30,7 @@ export function updateToken(url) {
 }
 
 /** Headers georepo **/
-const headers = {
+export const headers = {
   headers: preferences.georepo_api.headers
 }
 
