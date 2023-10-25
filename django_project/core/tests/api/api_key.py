@@ -36,14 +36,14 @@ class ApiKeyApiTest(BaseTest, TestCase):
 
     def test_get_api(self):
         """Test get API."""
-        url = reverse('user-api-key', kwargs={'id': self.user.id})
+        url = reverse('user-api-key', kwargs={'pk': self.user.id})
         self.assertRequestGetView(url, 403)  # Non login
         self.assertRequestGetView(url, 403, user=self.admin)  # Admin
         self.assertRequestGetView(url, 200, user=self.user)  # Owner
 
     def test_post_api(self):
         """Test get API."""
-        url = reverse('user-api-key', kwargs={'id': self.user.id})
+        url = reverse('user-api-key', kwargs={'pk': self.user.id})
         self.assertRequestPostView(url, 403, data={})  # Non login
         self.assertRequestPostView(url, 403, user=self.admin, data={})  # Admin
         response = self.assertRequestPostView(
@@ -60,14 +60,14 @@ class ApiKeyApiTest(BaseTest, TestCase):
 
     def test_put_api(self):
         """Test get API."""
-        url = reverse('user-api-key', kwargs={'id': self.user.id})
+        url = reverse('user-api-key', kwargs={'pk': self.user.id})
         self.assertRequestGetView(url, 403)  # Non login
         self.assertRequestGetView(url, 403, user=self.admin)  # Admin
         self.assertRequestGetView(url, 200, user=self.user)  # Owner
 
     def test_delete_api(self):
         """Test get API."""
-        url = reverse('user-api-key', kwargs={'id': self.user.id})
+        url = reverse('user-api-key', kwargs={'pk': self.user.id})
         self.assertRequestDeleteView(url, 403)  # Non login
         self.assertRequestDeleteView(url, 403, user=self.admin)  # Admin
         self.assertRequestDeleteView(url, 404, user=self.user)  # Owner
