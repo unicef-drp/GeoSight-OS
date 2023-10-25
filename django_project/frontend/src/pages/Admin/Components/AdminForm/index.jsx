@@ -73,13 +73,19 @@ export const AdminForm = forwardRef(
       }
     }));
 
-    const [tab, setTab] = useState(GeneralTab);
+    let defaultTab = window.location.hash.replace('#', '').replaceAll('%20', ' ')
+    if (!Object.keys(forms).includes(defaultTab)) {
+      defaultTab = Object.keys(forms)[0]
+    }
+    const [tab, setTab] = useState(defaultTab);
 
     /** When tab changes **/
     useEffect(() => {
       if (onTabChanges) {
         onTabChanges(tab)
       }
+
+      window.location.hash = tab
     }, [tab]);
 
     /** Render **/

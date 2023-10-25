@@ -174,6 +174,9 @@ class IndicatorValueWithGeo(models.Model):
 
     # Value control
     indicator_type = models.CharField(max_length=256, null=True, blank=True)
+    indicator_shortcode = models.CharField(
+        max_length=256, null=True, blank=True
+    )
 
     @property
     def indicator_value(self):
