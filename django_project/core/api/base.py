@@ -48,6 +48,12 @@ class FilteredAPI(object):
                     identifier__in=value
                 ).values_list('id', flat=True)
 
+            if 'dataset_uuid__in' in param:
+                value = ReferenceLayerView.objects.filter(
+                    identifier__in=value
+                ).values_list('id', flat=True)
+                param = 'reference_layer_id__in'
+
             if 'date' in param:
                 try:
                     value = datetime.fromtimestamp(int(value))

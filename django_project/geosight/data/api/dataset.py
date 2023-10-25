@@ -16,9 +16,9 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import json
 
+from django.core.exceptions import SuspiciousOperation
 from django.db.models import Q
 from django.http import HttpResponseBadRequest
-from django.utils.decorators import method_decorator
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.authentication import (
     SessionAuthentication, BasicAuthentication
@@ -28,9 +28,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from core.api.base import FilteredAPI
+from core.api_utils import common_api_params, ApiTag, ApiParams
 from core.auth import BearerAuthentication
 from core.pagination import Pagination
-from core.utils import common_api_params, ApiTag
 from geosight.data.models.indicator import (
     IndicatorValue, IndicatorValueWithGeo, IndicatorValueRejectedError
 )
@@ -42,36 +42,6 @@ from geosight.permission.models.resource import (
 )
 
 
-@method_decorator(
-    name='get',
-    decorator=swagger_auto_schema(
-        operation_id='dataset-list-get',
-        tags=[ApiTag.DATASET],
-        manual_parameters=[
-            *common_api_params
-        ]
-    )
-)
-@method_decorator(
-    name='put',
-    decorator=swagger_auto_schema(
-        operation_id='dataset-list-put',
-        tags=[ApiTag.DATASET],
-        manual_parameters=[],
-        request_body=IndicatorValueWithPermissionSerializer.
-        Meta.swagger_schema_fields['put_body'],
-    )
-)
-@method_decorator(
-    name='delete',
-    decorator=swagger_auto_schema(
-        operation_id='dataset-list-delete',
-        tags=[ApiTag.DATASET],
-        manual_parameters=[],
-        request_body=IndicatorValueWithPermissionSerializer.
-        Meta.swagger_schema_fields['delete_body'],
-    )
-)
 class DatasetApiList(ListAPIView, FilteredAPI):
     """Return Data List API List."""
 
@@ -128,14 +98,38 @@ class DatasetApiList(ListAPIView, FilteredAPI):
                 query = IndicatorValueWithGeo.objects.filter(filters)
 
         # Filter by parameters
-        query = self.filter_query(self.request, query, ['page', 'page_size'])
+        query = self.filter_query(
+            self.request, query, ['page', 'page_size']
+        )
+
         ids = query.values_list('id', flat=True)
         return IndicatorValue.objects.filter(id__in=ids).order_by(
             'indicator_id', '-date', 'geom_id'
         )
 
+    @swagger_auto_schema(
+        operation_id='dataset-list-get',
+        tags=[ApiTag.DATASET],
+        manual_parameters=[
+            *common_api_params,
+            ApiParams.INDICATOR_ID,
+            ApiParams.INDICATOR_SHORTCODE,
+            ApiParams.DATASET_UUID,
+            ApiParams.ADMIN_LEVEL,
+            ApiParams.GEOM_ID,
+            ApiParams.DATE_FROM,
+            ApiParams.DATE_TO,
+        ]
+    )
+    def get(self, request, *args, **kwargs):
+        try:
+            return self.list(request, *args, **kwargs)
+        except SuspiciousOperation as e:
+            return HttpResponseBadRequest(f'{e}')
+
+    @swagger_auto_schema(auto_schema=None)
     def put(self, request):
-        """Update value of dataset."""
+        """Batch update value of dataset."""
         try:
             data = request.data
             try:
@@ -161,6 +155,13 @@ class DatasetApiList(ListAPIView, FilteredAPI):
         except KeyError:
             return HttpResponseBadRequest('`data` is required on payload')
 
+    @swagger_auto_schema(
+        operation_id='dataset-list-delete',
+        tags=[ApiTag.DATASET],
+        manual_parameters=[],
+        request_body=IndicatorValueWithPermissionSerializer.
+        Meta.swagger_schema_fields['delete_body'],
+    )
     def delete(self, request):
         """Batch delete dataset."""
         ids = json.loads(request.data['ids'])

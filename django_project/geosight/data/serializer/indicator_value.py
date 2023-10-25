@@ -31,11 +31,21 @@ class IndicatorValueSerializer(serializers.ModelSerializer):
     """Serializer for IndicatorValue."""
 
     indicator = serializers.SerializerMethodField()
+    indicator_id = serializers.SerializerMethodField()
+    indicator_shortcode = serializers.SerializerMethodField()
     value = serializers.SerializerMethodField()
 
     def get_indicator(self, obj: IndicatorValue):
         """Return indicator name."""
         return obj.indicator.__str__()
+
+    def get_indicator_id(self, obj: IndicatorValue):
+        """Return indicator id."""
+        return obj.indicator.id
+
+    def get_indicator_shortcode(self, obj: IndicatorValue):
+        """Return indicator shortcode."""
+        return obj.indicator.shortcode
 
     def get_value(self, obj: IndicatorValue):
         """Return value of indicator."""
@@ -92,6 +102,14 @@ class IndicatorValueWithPermissionSerializer(IndicatorValueSerializer):
                 ),
                 'indicator': openapi.Schema(
                     title='Indicator',
+                    type=openapi.TYPE_STRING
+                ),
+                'indicator_id': openapi.Schema(
+                    title='Indicator id',
+                    type=openapi.TYPE_NUMBER
+                ),
+                'indicator_shortcode': openapi.Schema(
+                    title='Indicator shortcode',
                     type=openapi.TYPE_STRING
                 ),
                 'value': openapi.Schema(
@@ -161,6 +179,8 @@ class IndicatorValueWithPermissionSerializer(IndicatorValueSerializer):
             'example': {
                 "id": 1,
                 "indicator": "Test indicator",
+                "indicator_id": 1,
+                "indicator_shortcode": "TEST",
                 "value": 0,
                 "permission": {
                     "list": True,
