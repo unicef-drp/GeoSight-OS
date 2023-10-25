@@ -22,6 +22,8 @@ from knox.models import AuthToken
 
 
 class ApiKey(models.Model):
+    """API Key class."""
+
     token = models.OneToOneField(
         AuthToken,
         on_delete=models.CASCADE,
@@ -50,7 +52,7 @@ class ApiKey(models.Model):
         default=True,
     )
 
-    class Meta:
+    class Meta:  # noqa: D106
         verbose_name = _("API Key")
         verbose_name_plural = _("API Keys")
 
@@ -60,4 +62,5 @@ class ApiKey(models.Model):
 
 @receiver(post_delete, sender=ApiKey)
 def api_key_on_delete(sender, instance, using, **kwargs):
+    """Delete token when api key deleted."""
     instance.token.delete()

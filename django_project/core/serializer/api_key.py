@@ -20,16 +20,20 @@ from core.models.api_key import ApiKey
 
 
 class ApiKeySerializer(serializers.ModelSerializer):
+    """Serializer of Api Key."""
+
     user_id = serializers.SerializerMethodField()
     created = serializers.SerializerMethodField()
 
     def get_user_id(self, obj: ApiKey):
+        """Return user id of api."""
         return obj.token.user.id if obj.token else ''
 
     def get_created(self, obj: ApiKey):
+        """Return created date of api."""
         return obj.token.created
 
-    class Meta:
+    class Meta:  # noqa: D106
         model = ApiKey
         fields = [
             'user_id',

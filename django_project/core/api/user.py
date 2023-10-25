@@ -77,12 +77,16 @@ class UserDetailAPI(APIView):
 
 
 class UserApiKey(UserPassesTestMixin, APIView):
+    """API for user API Key."""
+
     permission_classes = [IsAuthenticated]
 
     def handle_no_permission(self):
+        """Handle no permission."""
         return HttpResponseForbidden('No permission')
 
     def test_func(self):
+        """Test function of api."""
         if not self.request.user.is_authenticated:
             return False
         if self.request.user.is_superuser:
@@ -91,13 +95,14 @@ class UserApiKey(UserPassesTestMixin, APIView):
         return self.request.user.id == user_id
 
     def get(self, request, pk):
+        """Get token API Key."""
         api_key = ApiKey.objects.filter(token__user_id=pk)
         return Response(status=200, data=(
             ApiKeySerializer(api_key, many=True).data
         ))
 
     def put(self, request, pk):
-        # activate/deactivate token
+        """Activate/deactivate token API Key."""
         if not self.request.user.is_superuser:
             return HttpResponseForbidden('No permission')
         api_key = ApiKey.objects.filter(token__user_id=pk)
@@ -105,7 +110,7 @@ class UserApiKey(UserPassesTestMixin, APIView):
         return Response(status=204)
 
     def post(self, request, pk):
-        # create new token
+        """Create new token API Key."""
         user = get_object_or_404(User, id=pk)
         existing = ApiKey.objects.filter(
             token__user_id=pk
@@ -137,7 +142,7 @@ class UserApiKey(UserPassesTestMixin, APIView):
         )
 
     def delete(self, request, pk):
-        # delete token API Key
+        """Delete token API Key."""
         api_key = ApiKey.objects.filter(token__user_id=pk).first()
         if not api_key:
             return Response(status=404, data={

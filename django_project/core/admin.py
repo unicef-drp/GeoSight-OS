@@ -44,10 +44,6 @@ class SitePreferencesImageInline(admin.TabularInline):
     extra = 0
 
 
-class APIKeyInline(admin.StackedInline):
-    model = ApiKey
-
-
 class SitePreferencesAdmin(admin.ModelAdmin):
     """Site Preferences admin."""
 
@@ -254,14 +250,16 @@ class APIKeyAdmin(admin.ModelAdmin):
 
     @admin.display(ordering='token__user__username', description='User')
     def get_user(self, obj):
+        """Return user."""
         return obj.token.user
 
     @admin.display(ordering='token__created', description='Created')
     def get_created(self, obj):
+        """Return token."""
         return obj.token.created
 
     def has_add_permission(self, request, obj=None):
-        # creation of API key is from FrontEnd
+        """Remove add permission."""
         return False
 
 

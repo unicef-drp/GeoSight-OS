@@ -23,14 +23,16 @@ from core.models.api_key import ApiKey
 
 
 class CustomTokenAuthentication(TokenAuthentication):
-    """
-    Customized token based authentication.
+    """Customized token based authentication.
+
     Clients should authenticate by passing the token key in the url.
     For example:
         &token={token_key}
+        &georepo_user_key={user_email}
     """
 
     def test_jwt_token(self, token):
+        """Return jwt token."""
         try:
             jwt.get_unverified_header(token)
             return True
@@ -39,11 +41,13 @@ class CustomTokenAuthentication(TokenAuthentication):
         return False
 
     def test_user_key(self, user, user_key):
+        """Test the user key a.k.a email user."""
         if user.email != user_key:
             msg = _('Invalid token! No matching user!.')
             raise authentication.exceptions.AuthenticationFailed(msg)
 
     def get_user_key_param(self, request):
+        """Get user key from header."""
         url_string = request.META['QUERY_STRING']
         if url_string:
             params = url_string.split('&')
@@ -58,6 +62,7 @@ class CustomTokenAuthentication(TokenAuthentication):
         return ''
 
     def authenticate_credentials(self, key):
+        """Autehnticate credential."""
         user, token = (
             super(CustomTokenAuthentication, self).
             authenticate_credentials(key)
@@ -73,6 +78,7 @@ class CustomTokenAuthentication(TokenAuthentication):
         return (user, token)
 
     def authenticate(self, request):
+        """Autehnticate credential."""
         token = request.GET.get('token', '')
         if token:
             keyword = 'Token'
@@ -88,14 +94,16 @@ class CustomTokenAuthentication(TokenAuthentication):
 
 
 class BearerAuthentication(CustomTokenAuthentication):
-    """
-    Simple token based authentication using utvsapitoken.
+    """Simple token based authentication using utvsapitoken.
+
     Clients should authenticate by passing the token key in the 'Authorization'
     HTTP header, prepended with the string 'Bearer ' or 'Token '.
     """
+
     keyword = ['token', 'bearer']
 
     def authenticate(self, request):
+        """Authenticate."""
         auth = authentication.get_authorization_header(request).split()
         if not auth:
             return None
@@ -119,4 +127,5 @@ class BearerAuthentication(CustomTokenAuthentication):
         return (user, token)
 
     def authenticate_header(self, request):
+        """Header of authentication using token."""
         return self.keyword[0]

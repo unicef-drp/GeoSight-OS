@@ -36,7 +36,10 @@ from core.api.user import UserListAPI, UserDetailAPI, UserApiKey
 
 
 class CustomSchemaGenerator(OpenAPISchemaGenerator):
+    """Scheme generator of swagger."""
+
     def get_schema(self, request=None, public=False):
+        """Return schema of swagger."""
         schema = super().get_schema(request, public)
         schema.schemes = ['https']
         if settings.DEBUG:
