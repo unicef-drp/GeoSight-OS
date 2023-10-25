@@ -17,12 +17,18 @@
    BASEMAPS SELECTOR
    ========================================================================== */
 
-import React from 'react';
+import React, { Fragment } from 'react';
 import { useSelector } from "react-redux";
+import CircularProgress from "@mui/material/CircularProgress";
 import { indicatorLayerStyle } from "../../../../utils/Style";
 import { dictDeepCopy } from "../../../../utils/main";
+import {
+  getLayerData,
+  indicatorHasData
+} from "../../../../utils/indicatorLayer";
 
 import './style.scss'
+import { allDataIsReady } from "../../../../utils/indicators";
 
 
 /**
@@ -35,23 +41,34 @@ const RenderIndicatorLegendSection = ({ rules, name }) => {
     <div className='MapLegendSection'>
       <div className='MapLegendSectionTitle'>{name}</div>
       {
-        rules && rules.length ?
-          <div className='IndicatorLegendSection'>
+        rules !== null ?
+          <Fragment>
             {
-              rules.map(rule => {
-                const border = `1px solid ${rule.outline_color}`
-                return <div key={rule.name} className='IndicatorLegendRow'>
-                  <div
-                    className='IndicatorLegendRowBlock'
-                    style={{ backgroundColor: rule.color, border: border }}>
-                  </div>
-                  <div className='IndicatorLegendRowName' title={rule.name}>
-                    {rule.name}
-                  </div>
-                </div>
-              })
+              rules.length ?
+                <div className='IndicatorLegendSection'>
+                  {
+                    rules.map(rule => {
+                      const border = `1px solid ${rule.outline_color}`
+                      return <div className='IndicatorLegendRow'>
+                        <div
+                          className='IndicatorLegendRowBlock'
+                          style={{
+                            backgroundColor: rule.color,
+                            border: border
+                          }}>
+                        </div>
+                        <div className='IndicatorLegendRowName'
+                             title={rule.name}>
+                          {rule.name}
+                        </div>
+                      </div>
+                    })
+                  }
+                </div> : null
             }
-          </div> : ""
+          </Fragment> : <div className='Throbber'>
+            <CircularProgress/>
+          </div>
       }
     </div>
   )
@@ -71,28 +88,37 @@ const RenderIndicatorLegend = ({ layer, name }) => {
 
   if (layer.multi_indicator_mode === 'Pin') {
     return layer.indicators.map(indicator => {
-      let indicatorData = indicator
-      if (!indicator.style) {
-        const obj = indicators.find(ind => ind.id === indicator.id)
-        if (obj) {
-          indicatorData = dictDeepCopy(obj)
-          indicatorData.indicators = [indicator]
+      const hasData = indicatorHasData(indicatorsData, indicator)
+      let rules = null
+      if (hasData) {
+        let indicatorData = indicator
+        if (!indicator.style) {
+          const obj = indicators.find(ind => ind.id === indicator.id)
+          if (obj) {
+            indicatorData = dictDeepCopy(obj)
+            indicatorData.indicators = [indicator]
+          }
         }
+        rules = indicatorLayerStyle(
+          layer, indicators, indicatorsData, relatedTableData,
+          selectedGlobalTime, geoField, selectedAdminLevel?.level, filteredGeometries,
+          indicatorData
+        )
       }
-      let rules = indicatorLayerStyle(
-        layer, indicators, indicatorsData, relatedTableData,
-        selectedGlobalTime, geoField, selectedAdminLevel?.level, filteredGeometries,
-        indicatorData
-      )
       return <RenderIndicatorLegendSection
         rules={rules}
         name={indicator.name}/>
     })
   }
-  let rules = indicatorLayerStyle(
-    layer, indicators, indicatorsData, relatedTableData,
-    selectedGlobalTime, geoField, selectedAdminLevel?.level, filteredGeometries
-  )
+  const layerData = getLayerData(indicatorsData, relatedTableData, layer)
+  const hasData = allDataIsReady(layerData)
+  let rules = null
+  if (hasData) {
+    rules = indicatorLayerStyle(
+      layer, indicators, indicatorsData, relatedTableData,
+      selectedGlobalTime, geoField, selectedAdminLevel?.level, filteredGeometries
+    )
+  }
   return <RenderIndicatorLegendSection rules={rules} name={name}/>
 }
 /** Map Legend.

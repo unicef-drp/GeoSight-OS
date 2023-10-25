@@ -172,6 +172,17 @@ export function getLayerData(indicatorsData, relatedTableData, indicatorLayer) {
 }
 
 /**
+ * Return if layer has data
+ */
+export function indicatorHasData(indicatorsData, indicator) {
+  let hasData = false
+  if (indicatorsData[indicator.id]?.fetched) {
+    hasData = true
+  }
+  return hasData
+}
+
+/**
  * Return layer data
  */
 export function getLayerDataCleaned(

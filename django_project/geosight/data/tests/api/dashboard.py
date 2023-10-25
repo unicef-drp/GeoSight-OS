@@ -20,6 +20,7 @@ from django.contrib.auth import get_user_model
 from django.test.testcases import TestCase
 from django.urls import reverse
 
+from core.models.preferences import SitePreferences
 from geosight.data.models.dashboard import Dashboard
 from geosight.permission.models.factory import PERMISSIONS
 from geosight.permission.tests._base import BasePermissionTest
@@ -103,6 +104,94 @@ class DashboardListApiTest(BasePermissionTest, TestCase):
 
         response = self.assertRequestGetView(url, 200)  # Viewer
         self.assertEqual(len(response.json()), 1)
+
+    def test_data_api(self):
+        """Test list API."""
+        resource = self.create_resource(self.creator, 'Dashboard test')
+        url = reverse('dashboard-data-api', kwargs={'slug': resource.slug})
+        permission = resource.permission
+        permission.organization_permission = PERMISSIONS.NONE.name
+        permission.public_permission = PERMISSIONS.NONE.name
+        permission.save()
+
+        # Check the list returned
+        self.assertRequestGetView(url, 403)  # Non login
+        self.assertRequestGetView(url, 403, self.viewer)  # Viewer
+        self.assertRequestGetView(url, 403, self.contributor)
+        self.assertRequestGetView(url, 200, self.creator)
+
+        self.assertRequestGetView(url, 403, self.viewer_in_group)
+        self.assertRequestGetView(url, 403, self.creator_in_group)
+
+        self.assertRequestGetView(
+            url, 403, self.resource_creator)  # Creator
+        self.assertRequestGetView(url, 200, self.admin)  # Admin
+
+        # sharing
+        permission.update_user_permission(
+            self.contributor, PERMISSIONS.READ.name)
+        self.assertRequestGetView(url, 200, self.contributor)
+        self.assertRequestGetView(url, 200, self.contributor)  # Contributor
+
+        permission.update_group_permission(
+            self.group, PERMISSIONS.READ.name)
+        self.assertRequestGetView(url, 200, self.viewer_in_group)
+        self.assertRequestGetView(url, 200, self.creator_in_group)
+
+        permission.public_permission = PERMISSIONS.READ.name
+        permission.save()
+
+        self.assertRequestGetView(url, 200, self.viewer)  # Viewer
+
+    def test_data_content_api(self):
+        """Test list API."""
+        resource = self.create_resource(self.creator, 'Dashboard test 1')
+        url = reverse('dashboard-data-api', kwargs={'slug': resource.slug})
+
+        # Test from site preferences default
+        response = self.assertRequestGetView(url, 200, self.creator)
+        data = response.json()
+        self.assertEqual(data['name'], 'Dashboard test 1')
+        self.assertEqual(data['slug'], resource.slug)
+        pref = SitePreferences.preferences()
+        self.assertEqual(data['default_time_mode'], {
+            'fit_to_current_indicator_range':
+                pref.fit_to_current_indicator_range,
+            'show_last_known_value_in_range':
+                pref.show_last_known_value_in_range,
+            'default_interval': pref.default_interval,
+        })
+        pref.fit_to_current_indicator_range = True
+        pref.show_last_known_value_in_range = False
+        pref.default_interval = 'Yearly'
+        pref.save()
+
+        # Test from updates site preferences
+        response = self.assertRequestGetView(url, 200, self.creator)
+        data = response.json()
+        self.assertEqual(data['default_time_mode'], {
+            'fit_to_current_indicator_range':
+                pref.fit_to_current_indicator_range,
+            'show_last_known_value_in_range':
+                pref.show_last_known_value_in_range,
+            'default_interval': pref.default_interval,
+        })
+
+        # Test overriden data
+        resource.default_time_mode = {
+            'fit_to_current_indicator_range': True,
+            'show_last_known_value_in_range': True,
+            'default_interval': 'Daily',
+        }
+        resource.save()
+        response = self.assertRequestGetView(url, 200, self.creator)
+        data = response.json()
+
+        self.assertEqual(data['default_time_mode'], {
+            'fit_to_current_indicator_range': True,
+            'show_last_known_value_in_range': True,
+            'default_interval': 'Daily',
+        })
 
     def test_delete_api(self):
         """Test list API."""

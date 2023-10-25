@@ -105,6 +105,11 @@ export default function User({ ...props }) {
                 }}>here</a>.
               </MenuItem> : null
           }
+          <MenuItem className='MenuItem-Header'>
+            <a href={`/admin/user/${user.username}/edit`}>
+              Profile
+            </a>
+          </MenuItem>
           {
             canAccessAdmin ? (
               <MenuItem className='MenuItem-Header DjangoAdmin'>
@@ -112,6 +117,9 @@ export default function User({ ...props }) {
               </MenuItem>
             ) : null
           }
+          <MenuItem className='MenuItem-Header'>
+            <a href='/api/v1/docs'>API Docs</a>
+          </MenuItem>
           <MenuItem className='MenuItem-Header'>
             <a href={logoutUrl}>Logout</a>
           </MenuItem>

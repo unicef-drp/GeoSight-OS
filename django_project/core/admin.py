@@ -27,7 +27,9 @@ from core.forms.user import (
     AdminUserChangeForm, AzureAdminUserChangeForm,
     AzureAdminUserCreationForm
 )
-from core.models import SitePreferences, SitePreferencesImage, Profile
+from core.models import (
+    SitePreferences, SitePreferencesImage, Profile, ApiKey
+)
 from core.models.access_request import UserAccessRequest
 from core.models.color import ColorPalette
 
@@ -77,6 +79,13 @@ class SitePreferencesAdmin(admin.ModelAdmin):
                 'secondary_color', 'anti_secondary_color',
                 'tertiary_color', 'anti_tertiary_color',
                 'icon', 'favicon'
+            ),
+        }),
+        ('Default Time Mode', {
+            'fields': (
+                'fit_to_current_indicator_range',
+                'show_last_known_value_in_range',
+                'default_interval'
             ),
         }),
         ('Default Style Configuration', {
@@ -229,3 +238,29 @@ class UserAccessRequestAdmin(admin.ModelAdmin):
 
 
 admin.site.register(UserAccessRequest, UserAccessRequestAdmin)
+
+
+class APIKeyAdmin(admin.ModelAdmin):
+    """API key admin admin."""
+
+    list_display = (
+        'get_user', 'platform', 'owner', 'contact', 'get_created', 'is_active'
+    )
+    fields = ('platform', 'owner', 'contact', 'is_active')
+
+    @admin.display(ordering='token__user__username', description='User')
+    def get_user(self, obj):
+        """Return user."""
+        return obj.token.user
+
+    @admin.display(ordering='token__created', description='Created')
+    def get_created(self, obj):
+        """Return token."""
+        return obj.token.created
+
+    def has_add_permission(self, request, obj=None):
+        """Remove add permission."""
+        return False
+
+
+admin.site.register(ApiKey, APIKeyAdmin)
