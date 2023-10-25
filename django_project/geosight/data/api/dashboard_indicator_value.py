@@ -21,13 +21,13 @@ from datetime import datetime
 import pytz
 from dateutil import parser as date_parser
 from django.conf import settings
-from django.http import (
-    HttpResponseBadRequest
-)
+from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from core.pagination import Pagination
 from geosight.data.models.dashboard import (
     Dashboard
 )
@@ -84,40 +84,46 @@ class _DashboardIndicatorValuesAPI(APIView):
         return min_time, max_time
 
 
-class DashboardIndicatorValuesAPI(_DashboardIndicatorValuesAPI):
+class DashboardIndicatorValuesAPI(
+    _DashboardIndicatorValuesAPI, ListAPIView
+):
     """API for Values of indicator."""
+    pagination_class = Pagination
+    serializer_class = IndicatorValueWithGeoDateSerializer
 
-    def get(self, request, slug, pk, **kwargs):
-        """Return Values."""
+    def get_queryset(self):
+        """Return queryset of API."""
+        slug = self.kwargs['slug']
+        pk = self.kwargs['pk']
         dashboard = get_object_or_404(Dashboard, slug=slug)
         indicator = get_object_or_404(Indicator, pk=pk)
-        self.check_permission(request.user, dashboard, indicator)
-        min_time, max_time = self.return_parameters(request)
-        query = indicator.values(
+        self.check_permission(self.request.user, dashboard, indicator)
+        min_time, max_time = self.return_parameters(self.request)
+        return indicator.values(
             date_data=max_time,
             min_date_data=min_time,
-            admin_level=request.GET.get('admin_level', None),
+            admin_level=self.request.GET.get('admin_level', None),
             reference_layer=dashboard.reference_layer
         )
-        return Response(
-            IndicatorValueWithGeoDateSerializer(query, many=True).data
-        )
 
 
-class DashboardIndicatorAllValuesAPI(_DashboardIndicatorValuesAPI):
+class DashboardIndicatorAllValuesAPI(
+    _DashboardIndicatorValuesAPI, ListAPIView
+):
     """API for all Values of indicator."""
+    pagination_class = Pagination
+    serializer_class = IndicatorValueWithGeoSerializer
 
-    def get(self, request, slug, pk, **kwargs):
-        """Return Values."""
+    def get_queryset(self):
+        """Return queryset of API."""
+        slug = self.kwargs['slug']
+        pk = self.kwargs['pk']
         dashboard = get_object_or_404(Dashboard, slug=slug)
         indicator = get_object_or_404(Indicator, pk=pk)
-        self.check_permission(request.user, dashboard, indicator)
-
-        query = indicator.values(
-            reference_layer=dashboard.reference_layer
-        )
-        return Response(
-            IndicatorValueWithGeoSerializer(query, many=True).data
+        self.check_permission(self.request.user, dashboard, indicator)
+        return indicator.values(
+            reference_layer=dashboard.reference_layer,
+            last_value=False
         )
 
 

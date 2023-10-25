@@ -21,7 +21,7 @@ import React, { useEffect, useRef } from 'react';
 import $ from "jquery";
 import { useDispatch, useSelector } from "react-redux";
 import { Actions } from "../../../../store/dashboard";
-import { fetchingData, fetchJSON } from "../../../../Requests";
+import { fetchPagination } from "../../../../Requests";
 import { removeElement } from "../../../../utils/Array";
 import {
   filterIndicatorsData,
@@ -81,13 +81,14 @@ export default function Indicators() {
       $('#Indicator-Radio-' + indicatorLayer.id).removeClass('Loading')
     })
   }
+
   const getData = async (id, url) => {
-    if (indicatorsAllData[id].count < MAX_COUNT_FOR_ALL_DATA) {
-      let data = indicatorsAllData[id].data
-      if (!indicatorsAllData[id].data) {
-        data = await fetchJSON(url.replace('latest', 'all'), {})
-        dispatch(Actions.IndicatorsAllData.addData(id, data))
-      }
+    if (!indicatorsAllData[id]?.data) {
+      fetchPagination(url.replace('latest', 'all')).then(response => {
+        dispatch(Actions.IndicatorsAllData.addData(id, response))
+      }).catch(error => {
+
+      })
     }
   }
 
@@ -134,7 +135,7 @@ export default function Indicators() {
           if (indicator) {
             const { id, url, style } = indicator
             const onResponse = (response, error) => {
-              if (indicatorFetchingSession === session) {
+              if (indicatorFetchingSession === session && response) {
                 response = UpdateStyleData(response, indicator)
                 dispatch(
                   Actions.IndicatorsData.receive(response, error, id)
@@ -146,14 +147,23 @@ export default function Indicators() {
             const dataId = 'indicator-' + indicator.id
             // For data that has less than 10k data
             // Return all data first
-            if (!indicatorsAllData[dataId].count > MAX_COUNT_FOR_ALL_DATA) {
-              fetchingData(url, params, {}, onResponse)
+            const allData = indicatorsAllData[dataId]
+            if (allData?.count && allData.count > MAX_COUNT_FOR_ALL_DATA) {
+              fetchPagination(url).then(response => {
+                onResponse(response, null)
+              }).catch(error => {
+                onResponse(null, error)
+              })
             } else {
-              const data = indicatorsAllData[dataId].data
-              if (data && dataId === 'indicator-318') {
+              const data = allData?.data
+              if (data) {
                 onResponse(filterIndicatorsData(selectedGlobalTime.min, selectedGlobalTime.max, data))
               } else {
-                fetchingData(url, params, {}, onResponse)
+                fetchPagination(url).then(response => {
+                  onResponse(response, null)
+                }).catch(error => {
+                  onResponse(null, error)
+                })
                 getData(dataId, url, onResponse)
               }
             }

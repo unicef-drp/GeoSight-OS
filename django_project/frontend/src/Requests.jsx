@@ -88,6 +88,34 @@ export async function fetchJSON(url, options, useCache = true) {
   }
 }
 
+/*** Axios georepo request with cache */
+export const fetchPagination = function (url) {
+  return new Promise((resolve, reject) => {
+    (
+      async () => {
+        let data = []
+        try {
+          const _fetchJson = async function (currUrl) {
+            try {
+              const response = await fetchJSON(currUrl, {});
+              data = data.concat(response.results)
+              if (response.next) {
+                await _fetchJson(response.next)
+              }
+            } catch (error) {
+              reject(error)
+            }
+          }
+          await _fetchJson(url)
+          resolve(data)
+        } catch (err) {
+          reject(err)
+        }
+      }
+    )()
+  });
+}
+
 /**
  * Perform Pushing Data
  *
@@ -188,10 +216,7 @@ export const DjangoRequests = {
   },
   post: (url, data, options = {}) => {
     return axios.post(url, data, {
-      ...options,
-      headers: {
-        'X-CSRFToken': csrfmiddlewaretoken
-      }
+      ...options
     })
   },
   put: (url, data, options = {}) => {
