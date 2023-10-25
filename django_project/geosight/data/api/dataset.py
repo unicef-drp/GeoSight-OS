@@ -130,7 +130,7 @@ class DatasetApiList(ListAPIView, FilteredAPI):
             return HttpResponseBadRequest(f'{e}')
 
     @swagger_auto_schema(
-        operation_id='data-browser-delete',
+        operation_id='data-browser-create',
         tags=[ApiTag.DATASET],
         manual_parameters=[],
         request_body=IndicatorValueWithPermissionSerializer.
