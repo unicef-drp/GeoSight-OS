@@ -95,7 +95,20 @@ export default function NavBar({ minified }) {
                 <a href={'/admin/user/' + user.username + '/edit'}>
                   Click to add GeoRepo API Key
                 </a>
-              </ThemeButton> : null
+              </ThemeButton> :
+              preferences.georepo_api.api_key_not_working ?
+                <ThemeButton variant="Error" className='GeorepoApiKeyBtn'>
+                  <a href={'/admin/user/' + user.username + '/edit'}>
+                    Your API Key is invalid, update your api key.
+                  </a>
+                </ThemeButton> :
+                <ThemeButton
+                  id="GeorepoApiKeyBtnUpdate" variant="Error"
+                  className='GeorepoApiKeyBtn Hidden'>
+                  <a href={'/admin/user/' + user.username + '/edit'}>
+                    Your API Key is invalid, update your API key.
+                  </a>
+                </ThemeButton>
           }
           {
             canAccessAdmin ? (
