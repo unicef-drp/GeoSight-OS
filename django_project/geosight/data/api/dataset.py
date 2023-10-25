@@ -146,7 +146,7 @@ class DatasetApiList(ListAPIView, FilteredAPI):
             if not data.get('indicator_id', 0) and not data.get(
                     'indicator_shortcode', None):
                 return HttpResponseBadRequest(
-                    f'indicator_id or indicator_shortcode is required'
+                    'indicator_id or indicator_shortcode is required'
                 )
 
             try:
