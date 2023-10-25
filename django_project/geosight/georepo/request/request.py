@@ -135,6 +135,7 @@ class GeorepoUrl:
     @property
     def details(self) -> dict:
         """Return API links in dictionary."""
+        pref = SitePreferences.preferences()
         return {
             'domain': self.georepo_domain,
             'api': self.georepo_url,
@@ -142,10 +143,18 @@ class GeorepoUrl:
                 '<identifier>'
             ),
             'headers': self.headers,
+            'public_headers': {
+                'Authorization': f'Token {pref.georepo_api_key_level_1_val}',
+                'GeoRepo-User-Key': pref.georepo_api_key_level_1_email
+            },
             'view_detail': self.view_detail('<identifier>'),
             'api_key': self.georepo_api_key,
             'api_key_email': self.georepo_api_key_email,
-            'api_key_is_public': self.api_key_is_public
+            'api_key_is_public': self.api_key_is_public,
+            'api_key_public': {
+                'api_key': pref.georepo_api_key_level_1_val,
+                'email': pref.georepo_api_key_level_1_email
+            }
         }
 
     # -------------------------------------------

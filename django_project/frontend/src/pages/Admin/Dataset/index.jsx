@@ -82,8 +82,24 @@ export default function DatasetAdmin() {
   const COLUMNS = [
     { field: 'id', headerName: 'id', hide: true },
     { field: 'indicator', headerName: 'Indicator', flex: 1 },
-    { field: 'reference_layer_name', headerName: 'Dataset', flex: 0.5 },
-    { field: 'admin_level', headerName: 'Level', width: 80 },
+    {
+      field: 'reference_layer_name', headerName: 'Dataset', flex: 0.5,
+      renderCell: (params) => {
+        const data = Array.from(new Set(params.row.geometries.map(geom => geom.dataset_name))).join(',')
+        return <div title={data} className='MuiDataGrid-cellContent'>
+          {data}
+        </div>
+      }
+    },
+    {
+      field: 'admin_level', headerName: 'Level', width: 80,
+      renderCell: (params) => {
+        const data = Array.from(new Set(params.row.geometries.map(geom => geom.admin_level))).join(',')
+        return <div title={data} className='MuiDataGrid-cellContent'>
+          {data}
+        </div>
+      }
+    },
     {
       field: 'geom_id', headerName: 'Geo Code', flex: 1,
       renderCell: (params) => {
@@ -238,7 +254,7 @@ export default function DatasetAdmin() {
             setDisabled(true)
             $.ajax({
               url: urls.api.datasetApi,
-              method: 'POST',
+              method: 'PUT',
               data: {
                 'data': JSON.stringify(updatedData.map(data => {
                   return {

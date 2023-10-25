@@ -39,6 +39,9 @@ export const pageNames = {
   AccessRequestList: 'Access Request',
   AccessRequestUserDetail: 'Request New User Detail',
   AccessRequestPermissionDetail: 'Request Permission Detail',
+
+  // Profile
+  UserProfile: 'User Profile',
 }
 
 /**

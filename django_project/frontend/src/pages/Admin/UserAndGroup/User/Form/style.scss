@@ -40,3 +40,22 @@ div[data-field-name='is_staff'] {
     border: 2px solid red !important;
   }
 }
+
+.ApiKeyUser {
+  .Detail {
+    border: 1px solid $primary-color;
+    margin-top: 1rem;
+    padding: 1rem;
+
+    .MuiTextField-root {
+      margin-bottom: 1rem;
+      cursor: default !important;
+
+      input {
+        background-color: white !important;
+        color: black !important;
+        cursor: default !important;
+      }
+    }
+  }
+}

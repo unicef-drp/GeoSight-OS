@@ -238,10 +238,9 @@ class Indicator(
 
         # Save data
         if reference_layer and isinstance(reference_layer, str):
-            reference_layer, created = \
-                ReferenceLayerView.objects.get_or_create(
-                    identifier=reference_layer
-                )
+            reference_layer, _ = ReferenceLayerView.objects.get_or_create(
+                identifier=reference_layer
+            )
 
         # Find the ucode
         try:

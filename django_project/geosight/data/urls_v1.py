@@ -14,8 +14,11 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from .api_key import *
-from .general import *
-from .preferences import *
-from .profile import *
-from .singleton import *
+from django.conf.urls import url
+from django.urls import include
+
+from .urls import dataset_api
+
+urlpatterns = [
+    url(r'^dataset/', include(dataset_api)),
+]
