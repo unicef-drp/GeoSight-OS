@@ -135,6 +135,9 @@ class DatasetApiList(ListAPIView, FilteredAPI):
         manual_parameters=[],
         request_body=IndicatorValueWithPermissionSerializer.
         Meta.swagger_schema_fields['post_body'],
+        responses={
+            201: ''
+        }
     )
     def post(self, request):
         """Post new value."""
