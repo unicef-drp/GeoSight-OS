@@ -206,6 +206,48 @@ class IndicatorValueWithPermissionSerializer(IndicatorValueSerializer):
                     }
                 ]
             },
+            'post_body': openapi.Schema(
+                description='Data that is needed for post new value.',
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'indicator_id': openapi.Schema(
+                        title='Indicator id',
+                        type=openapi.TYPE_NUMBER
+                    ),
+                    'indicator_shortcode': openapi.Schema(
+                        title='Indicator shortcode',
+                        type=openapi.TYPE_STRING
+                    ),
+                    'value': openapi.Schema(
+                        title='New value',
+                        type=openapi.TYPE_STRING
+                    ),
+                    'date': openapi.Schema(
+                        title='Date',
+                        description='Date is in YYYY-MM-DD in UTC.',
+                        type=openapi.TYPE_STRING
+                    ),
+                    'geom_id': openapi.Schema(
+                        title='Geom id',
+                        type=openapi.TYPE_STRING,
+                    ),
+                    'dataset_uuid': openapi.Schema(
+                        title='Dataset uuid',
+                        type=openapi.TYPE_STRING
+                    ),
+                    'admin_level': openapi.Schema(
+                        title='Admin level',
+                        type=openapi.TYPE_NUMBER
+                    ),
+                    'extra_value': openapi.Schema(
+                        title='Extra values',
+                        description=(
+                            'Optional to save extra values. It is in json'
+                        ),
+                        type=openapi.TYPE_OBJECT,
+                    ),
+                }
+            ),
             'put_body': openapi.Schema(
                 description='List of id with new value.',
                 type=openapi.TYPE_ARRAY,

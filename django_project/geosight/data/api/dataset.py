@@ -32,7 +32,8 @@ from core.api_utils import common_api_params, ApiTag, ApiParams
 from core.auth import BearerAuthentication
 from core.pagination import Pagination
 from geosight.data.models.indicator import (
-    IndicatorValue, IndicatorValueWithGeo, IndicatorValueRejectedError
+    Indicator, IndicatorValue, IndicatorValueWithGeo,
+    IndicatorValueRejectedError
 )
 from geosight.data.serializer.indicator import (
     IndicatorValueWithPermissionSerializer
@@ -127,6 +128,48 @@ class DatasetApiList(ListAPIView, FilteredAPI):
             return self.list(request, *args, **kwargs)
         except SuspiciousOperation as e:
             return HttpResponseBadRequest(f'{e}')
+
+    @swagger_auto_schema(
+        operation_id='data-browser-delete',
+        tags=[ApiTag.DATASET],
+        manual_parameters=[],
+        request_body=IndicatorValueWithPermissionSerializer.
+        Meta.swagger_schema_fields['post_body'],
+    )
+    def post(self, request):
+        """Post new value."""
+        try:
+            data = request.data
+            if not data.get('indicator_id', 0) and not data.get(
+                    'indicator_shortcode', None):
+                return HttpResponseBadRequest(
+                    f'indicator_id or indicator_shortcode is required'
+                )
+
+            try:
+                indicator = Indicator.objects.get(
+                    id=data.get('indicator_id', 0)
+                )
+            except Indicator.DoesNotExist:
+                try:
+                    indicator = Indicator.objects.get(
+                        shortcode=data.get('indicator_shortcode', '')
+                    )
+                except Indicator.DoesNotExist:
+                    return HttpResponseBadRequest('Indicator does not exist')
+            indicator.save_value(
+                date=data['date'],
+                geom_id=data['geom_id'],
+                reference_layer=data['dataset_uuid'],
+                admin_level=data['admin_level'],
+                value=data['value'],
+                extras=data.get('extra_value', {})
+            )
+        except KeyError as e:
+            return HttpResponseBadRequest(f'{e} is required on payload')
+        except Exception as e:
+            return HttpResponseBadRequest(f'{e}')
+        return Response(status=201)
 
     @swagger_auto_schema(auto_schema=None)
     def put(self, request):
