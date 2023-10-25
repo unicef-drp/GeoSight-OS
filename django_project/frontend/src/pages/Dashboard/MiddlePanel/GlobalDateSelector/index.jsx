@@ -311,7 +311,7 @@ export default function GlobalDateSelector() {
                   count: 0
                 }
               }
-              dispatch(Actions.IndicatorsAllData.addCount(id, response.count))
+              dispatch(Actions.IndicatorLayerMetadata.update(id, response))
               dispatch(Actions.IndicatorLayerDates.add(id, response.dates))
             } else {
               dispatch(Actions.IndicatorLayerDates.add(id, error.toString()))

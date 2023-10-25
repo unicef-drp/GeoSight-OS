@@ -27,6 +27,7 @@ import {
   filterIndicatorsData,
   UpdateStyleData
 } from "../../../../utils/indicatorData";
+import { LocalStorage } from "../../../../utils/localStorage";
 
 /** Indicators data. */
 let indicatorFetchingSession = null
@@ -42,7 +43,7 @@ export default function Indicators() {
   } = useSelector(state => state.dashboard.data);
   const currentIndicatorLayer = useSelector(state => state.selectedIndicatorLayer);
   const currentIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer);
-  const indicatorsAllData = useSelector(state => state.indicatorsAllData);
+  const indicatorLayerMetadata = useSelector(state => state.indicatorLayerMetadata);
   const selectedGlobalTime = useSelector(state => state.selectedGlobalTime);
   const selectedGlobalTimeStr = JSON.stringify(selectedGlobalTime);
 
@@ -82,14 +83,22 @@ export default function Indicators() {
     })
   }
 
-  const getData = async (id, url) => {
-    if (!indicatorsAllData[id]?.data) {
+  /***
+   * Get All Data For and Indicator
+   * Fetch it from storage or fetch it
+   */
+  const getData = (id, url) => {
+    const allDataUrl = url.replace('latest', 'all')
+    const storage = new LocalStorage(allDataUrl, allDataUrl + 'Version', 'version-1')
+    const storageData = storage.get()
+    if (!storageData) {
       fetchPagination(url.replace('latest', 'all')).then(response => {
-        dispatch(Actions.IndicatorsAllData.addData(id, response))
+        storage.save(response)
       }).catch(error => {
 
       })
     }
+    return storageData
   }
 
   /** Fetch all data */
@@ -147,24 +156,31 @@ export default function Indicators() {
             const dataId = 'indicator-' + indicator.id
             // For data that has less than 10k data
             // Return all data first
-            const allData = indicatorsAllData[dataId]
-            if (allData?.count && allData.count > MAX_COUNT_FOR_ALL_DATA) {
-              fetchPagination(url).then(response => {
+
+            const metadata = indicatorLayerMetadata[dataId]
+            /** TODO: We also save it per date range method. **/
+            if (metadata?.count && metadata.count > MAX_COUNT_FOR_ALL_DATA) {
+              fetchPagination(url, params).then(response => {
                 onResponse(response, null)
               }).catch(error => {
                 onResponse(null, error)
               })
             } else {
-              const data = allData?.data
-              if (data) {
-                onResponse(filterIndicatorsData(selectedGlobalTime.min, selectedGlobalTime.max, data))
+              const storageData = getData(dataId, url)
+              if (storageData) {
+                onResponse(
+                  filterIndicatorsData(selectedGlobalTime.min, selectedGlobalTime.max, storageData)
+                )
               } else {
-                fetchPagination(url).then(response => {
-                  onResponse(response, null)
-                }).catch(error => {
-                  onResponse(null, error)
-                })
-                getData(dataId, url, onResponse)
+                if (!storageData) {
+                  fetchPagination(url, params).then(response => {
+                    onResponse(response, null)
+                  }).catch(error => {
+                    onResponse(null, error)
+                  })
+                } else {
+                  onResponse(storageData, null)
+                }
               }
             }
           }

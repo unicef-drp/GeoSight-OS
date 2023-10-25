@@ -89,27 +89,35 @@ export async function fetchJSON(url, options, useCache = true) {
 }
 
 /*** Axios georepo request with cache */
-export const fetchPagination = function (url) {
+export const fetchPaginationAsync = async function (url) {
+  let data = []
+  const _fetchJson = async function (currUrl) {
+    const response = await fetchJSON(currUrl, {});
+    data = data.concat(response.results)
+    if (response.next) {
+      await _fetchJson(response.next)
+    }
+  }
+  await _fetchJson(url)
+  return data
+}
+
+/*** Axios georepo request with cache */
+export const fetchPagination = function (url, params) {
+  if (params && Object.keys(params).length) {
+    const paramsUrl = [];
+    for (const [key, value] of Object.entries(params)) {
+      paramsUrl.push(`${key}=${value}`)
+    }
+    url += '?' + paramsUrl.join('&')
+  }
   return new Promise((resolve, reject) => {
     (
       async () => {
-        let data = []
         try {
-          const _fetchJson = async function (currUrl) {
-            try {
-              const response = await fetchJSON(currUrl, {});
-              data = data.concat(response.results)
-              if (response.next) {
-                await _fetchJson(response.next)
-              }
-            } catch (error) {
-              reject(error)
-            }
-          }
-          await _fetchJson(url)
-          resolve(data)
-        } catch (err) {
-          reject(err)
+          resolve(await fetchPaginationAsync(url))
+        } catch (error) {
+          reject(error)
         }
       }
     )()

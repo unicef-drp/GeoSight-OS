@@ -14,32 +14,17 @@
  */
 
 import {
-  INDICATORS_ALL_DATA_ACTION_NAME,
-  INDICATORS_ALL_DATA_TYPE_ADD_COUNT,
-  INDICATORS_ALL_DATA_TYPE_ADD_DATA
+  INDICATOR_LAYER_METADATA_ACTION_NAME,
+  INDICATOR_LAYER_METADATA_TYPE_UPDATE
 } from './index'
 
 /**
  * Add count of indicator data
  */
-function addCount(id, count) {
+function update(id, data) {
   return {
-    name: INDICATORS_ALL_DATA_ACTION_NAME,
-    type: INDICATORS_ALL_DATA_TYPE_ADD_COUNT,
-    payload: {
-      id: id,
-      count: count
-    }
-  };
-}
-
-/**
- * Add data of indicator data
- */
-function addData(id, data) {
-  return {
-    name: INDICATORS_ALL_DATA_ACTION_NAME,
-    type: INDICATORS_ALL_DATA_TYPE_ADD_DATA,
+    name: INDICATOR_LAYER_METADATA_ACTION_NAME,
+    type: INDICATOR_LAYER_METADATA_TYPE_UPDATE,
     payload: {
       id: id,
       data: data
@@ -48,5 +33,5 @@ function addData(id, data) {
 }
 
 export default {
-  addCount, addData
+  update
 }

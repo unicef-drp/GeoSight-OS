@@ -17,21 +17,15 @@
  * INDICATORS_DATA reducer
  */
 
-export const INDICATORS_ALL_DATA_ACTION_NAME = 'INDICATORS_ALL_DATA';
-export const INDICATORS_ALL_DATA_TYPE_ADD_COUNT = 'INDICATORS_ALL_DATA/ADD_COUNT';
-export const INDICATORS_ALL_DATA_TYPE_ADD_DATA = 'INDICATORS_ALL_DATA/ADD_DATA';
+export const INDICATOR_LAYER_METADATA_ACTION_NAME = 'INDICATOR_LAYER_METADATA';
+export const INDICATOR_LAYER_METADATA_TYPE_UPDATE = 'INDICATOR_LAYER_METADATA/UPDATE';
 
 const initialState = {}
 export default function IndicatorsAllDataReducer(state = initialState, action) {
   switch (action.type) {
-    case INDICATORS_ALL_DATA_TYPE_ADD_COUNT: {
-      const { id, count } = action.payload
-      state[id] = { 'count': count }
-      return { ...state }
-    }
-    case INDICATORS_ALL_DATA_TYPE_ADD_DATA: {
+    case INDICATOR_LAYER_METADATA_TYPE_UPDATE: {
       const { id, data } = action.payload
-      state[id].data = data
+      state[id] = data
       return { ...state }
     }
     default:
