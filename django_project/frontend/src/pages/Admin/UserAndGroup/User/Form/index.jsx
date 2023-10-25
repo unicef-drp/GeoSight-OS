@@ -98,6 +98,7 @@ export default function UserForm() {
       $('input[name="is_staff"]').closest('.BasicFormSection').show()
     } else {
       $('input[name="is_staff"]').closest('.BasicFormSection').hide()
+      $('input[name="role"]').closest('.BasicFormSection').find('.ReactSelect__input').prop("disabled", true);
     }
   }
 
@@ -222,7 +223,7 @@ export default function UserForm() {
   return (
     <Admin
       minifySideNavigation={true}
-      pageName={pageNames.UsersAndGroups}
+      pageName={ownForm ? pageNames.UserProfile : pageNames.UsersAndGroups}
       rightHeader={
         <Fragment>
           {

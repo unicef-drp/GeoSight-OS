@@ -28,7 +28,7 @@ class CustomTokenAuthentication(TokenAuthentication):
     Clients should authenticate by passing the token key in the url.
     For example:
         &token={token_key}
-        &georepo_user_key={user_email}
+        &geosight_user_key={user_email}
     """
 
     def test_jwt_token(self, token):
@@ -53,10 +53,10 @@ class CustomTokenAuthentication(TokenAuthentication):
             params = url_string.split('&')
             user_keys = [
                 x for x in params if
-                x.startswith('georepo_user_key=')
+                x.startswith('geosight_user_key=')
             ]
             return (
-                user_keys[0].replace('georepo_user_key=', '') if
+                user_keys[0].replace('geosight_user_key=', '') if
                 user_keys else ''
             )
         return ''
@@ -121,8 +121,8 @@ class BearerAuthentication(CustomTokenAuthentication):
         if self.test_jwt_token(auth[1].decode()):
             return None
         user, token = self.authenticate_credentials(auth[1])
-        # validate if GeoRepo-User-Key match with username
-        user_key = request.META.get('HTTP_GEOREPO_USER_KEY', b'')
+        # validate if GeoSight-User-Key match with username
+        user_key = request.META.get('HTTP_GEOSIGHT_USER_KEY', b'')
         self.test_user_key(user, user_key)
         return (user, token)
 

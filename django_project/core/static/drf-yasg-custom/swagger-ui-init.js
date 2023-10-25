@@ -289,7 +289,7 @@ function applyAuth(authorization, requestUrl, requestHeaders) {
             if (key && paramName) {
                 if (_in === "header") {
                     requestHeaders[paramName] = `Token ${key}`;
-                    requestHeaders['GeoRepo-User-Key'] = key;
+                    requestHeaders['Geosight-User-Key'] = key;
                 }
                 if (_in === "query") {
                     if (requestUrl) {

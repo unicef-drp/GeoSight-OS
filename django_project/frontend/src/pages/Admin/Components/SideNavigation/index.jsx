@@ -232,6 +232,25 @@ export default function SideNavigation({ pageName, minified }) {
               </div>
             </Fragment> : null
         }
+        {
+          user.id ?
+            <div className='SideNavigationContentGroup'>
+              <div className='SideNavigationContentGroupTitle'>USER</div>
+              <div className='SideNavigation-Row-Group'>
+                <SidaNavigationButton minified={minified} title='Profile'>
+                  <a href={`/admin/user/${user.username}/edit`}
+                     className={'SideNavigation-Row ' + (pageNames.UserProfile === pageName ? 'active' : '')}>
+                    {
+                      pageName === pageNames.UserProfile ?
+                        <ContactActiveIcon/> : <ContactIcon/>
+                    }
+                    <span className='SideNavigation-Row-Name'>Profile</span>
+                    <NotificationBadge/>
+                  </a>
+                </SidaNavigationButton>
+              </div>
+            </div> : null
+        }
       </div>
 
       <div className='SideNavigationContentGroup ViewAllDashboard'>

@@ -37,7 +37,7 @@ common_api_params = [
 class ApiTag:
     """Return API Tags."""
 
-    DATASET = 'Dataset'
+    DATASET = 'Data Browser'
 
 
 class ApiParams:
@@ -67,7 +67,7 @@ class ApiParams:
         'dataset_uuid__in',
         openapi.IN_QUERY,
         description=(
-            'Filter data by multiple dataset view uuid. '
+            'Filter data by multiple reference dataset view uuid. '
             'Put multiple filter using comma separator.'
         ),
         type=openapi.TYPE_STRING

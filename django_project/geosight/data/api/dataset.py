@@ -108,7 +108,7 @@ class DatasetApiList(ListAPIView, FilteredAPI):
         )
 
     @swagger_auto_schema(
-        operation_id='dataset-list-get',
+        operation_id='data-browser-get',
         tags=[ApiTag.DATASET],
         manual_parameters=[
             *common_api_params,
@@ -122,6 +122,7 @@ class DatasetApiList(ListAPIView, FilteredAPI):
         ]
     )
     def get(self, request, *args, **kwargs):
+        """Browse indicator data."""
         try:
             return self.list(request, *args, **kwargs)
         except SuspiciousOperation as e:
@@ -129,7 +130,7 @@ class DatasetApiList(ListAPIView, FilteredAPI):
 
     @swagger_auto_schema(auto_schema=None)
     def put(self, request):
-        """Batch update value of dataset."""
+        """Batch update value of data."""
         try:
             data = request.data
             try:
@@ -156,14 +157,14 @@ class DatasetApiList(ListAPIView, FilteredAPI):
             return HttpResponseBadRequest('`data` is required on payload')
 
     @swagger_auto_schema(
-        operation_id='dataset-list-delete',
+        operation_id='data-browser-delete',
         tags=[ApiTag.DATASET],
         manual_parameters=[],
         request_body=IndicatorValueWithPermissionSerializer.
         Meta.swagger_schema_fields['delete_body'],
     )
     def delete(self, request):
-        """Batch delete dataset."""
+        """Batch delete data."""
         ids = json.loads(request.data['ids'])
         for value in IndicatorValue.objects.filter(id__in=ids):
             if value.permissions(request.user)['delete']:
