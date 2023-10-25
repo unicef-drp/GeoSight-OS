@@ -19,6 +19,7 @@
 
 export const INDICATOR_LAYER_METADATA_ACTION_NAME = 'INDICATOR_LAYER_METADATA';
 export const INDICATOR_LAYER_METADATA_TYPE_UPDATE = 'INDICATOR_LAYER_METADATA/UPDATE';
+export const INDICATOR_LAYER_METADATA_TYPE_UPDATE_DATES = 'INDICATOR_LAYER_METADATA/UPDATE_DATES';
 
 const initialState = {}
 export default function IndicatorsAllDataReducer(state = initialState, action) {
@@ -26,6 +27,14 @@ export default function IndicatorsAllDataReducer(state = initialState, action) {
     case INDICATOR_LAYER_METADATA_TYPE_UPDATE: {
       const { id, data } = action.payload
       state[id] = data
+      return { ...state }
+    }
+    case INDICATOR_LAYER_METADATA_TYPE_UPDATE_DATES: {
+      const { id, dates } = action.payload
+      if (!state[id]) {
+        state[id] = {}
+      }
+      state[id].dates = dates
       return { ...state }
     }
     default:

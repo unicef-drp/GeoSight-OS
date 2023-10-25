@@ -55,7 +55,7 @@ export default function GlobalDateSelector() {
     indicatorLayers,
     default_time_mode
   } = useSelector(state => state.dashboard.data);
-  const indicatorLayerDates = useSelector(state => state.indicatorLayerDates);
+  const indicatorLayerMetadata = useSelector(state => state.indicatorLayerMetadata);
   const selectedGlobalTime = useSelector(state => state.selectedGlobalTime);
   const relatedTableData = useSelector(state => state.relatedTableData);
   const currentIndicatorLayer = useSelector(state => state.selectedIndicatorLayer);
@@ -158,7 +158,7 @@ export default function GlobalDateSelector() {
       const indicatorLayer = indicatorLayers.find(layer => layer.id === id)
       if (indicatorLayer) {
         indicatorLayer?.indicators?.map(indicator => {
-          const indicatorDates = indicatorLayerDates['indicator-' + indicator.id]
+          const indicatorDates = indicatorLayerMetadata['indicator-' + indicator.id]?.dates
           if (typeof indicatorDates === 'string' && indicatorDates.includes('Error')) {
             errorMessage = indicatorDates
           }
@@ -168,7 +168,7 @@ export default function GlobalDateSelector() {
         })
 
         // For indicator layer
-        const indicatorDates = indicatorLayerDates[id]
+        const indicatorDates = indicatorLayerMetadata[id]?.dates
         if (typeof indicatorDates === 'string' && indicatorDates.includes('Error')) {
           errorMessage = indicatorDates
         }
@@ -299,9 +299,7 @@ export default function GlobalDateSelector() {
   useEffect(() => {
     indicators.map(indicator => {
       const id = 'indicator-' + indicator.id
-      if (!indicatorLayerDates[id]) {
-        indicatorLayerDates[id] = null
-
+      if (!indicatorLayerMetadata[id]?.dates) {
         fetchingData(
           indicator.url.replace('/values/latest', '/dates-count'), {}, {}, function (response, error) {
             if (!error) {
@@ -312,9 +310,11 @@ export default function GlobalDateSelector() {
                 }
               }
               dispatch(Actions.IndicatorLayerMetadata.update(id, response))
-              dispatch(Actions.IndicatorLayerDates.add(id, response.dates))
             } else {
-              dispatch(Actions.IndicatorLayerDates.add(id, error.toString()))
+              dispatch(Actions.IndicatorLayerMetadata.update(id, {
+                dates: error.toString(),
+                count: 0
+              }))
             }
           }
         )
@@ -348,7 +348,7 @@ export default function GlobalDateSelector() {
       }
     },
     [
-      indicatorLayerDates, currentIndicatorLayer, currentIndicatorSecondLayer, interval, isFitToIndicatorRange
+      indicatorLayerMetadata, currentIndicatorLayer, currentIndicatorSecondLayer, interval, isFitToIndicatorRange
     ]
   );
 

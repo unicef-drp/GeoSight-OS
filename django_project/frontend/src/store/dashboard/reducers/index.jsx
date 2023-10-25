@@ -18,7 +18,6 @@ import { combineReducers } from 'redux';
 import mapReducer from './map'
 import mapModeReducer from './mapMode'
 import dashboardRequestReducer from './dashboard'
-import indicatorLayerDatesReducer from "./indicatorLayerDates";
 import indicatorsDataReducer from "./indicatorsData";
 import indicatorLayerMetadataReducer from "./indicatorLayerMetadata";
 import relatedTableDataReducer from "./relatedTableData";
@@ -46,7 +45,6 @@ export default combineReducers({
 
   map: mapReducer,
   mapMode: mapModeReducer,
-  indicatorLayerDates: indicatorLayerDatesReducer,
   indicatorsData: indicatorsDataReducer,
   indicatorLayerMetadata: indicatorLayerMetadataReducer,
   referenceLayerData: ReferenceLayerDataReducer,

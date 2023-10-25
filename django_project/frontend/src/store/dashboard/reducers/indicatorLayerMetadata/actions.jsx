@@ -15,11 +15,12 @@
 
 import {
   INDICATOR_LAYER_METADATA_ACTION_NAME,
-  INDICATOR_LAYER_METADATA_TYPE_UPDATE
+  INDICATOR_LAYER_METADATA_TYPE_UPDATE,
+  INDICATOR_LAYER_METADATA_TYPE_UPDATE_DATES
 } from './index'
 
 /**
- * Add count of indicator data
+ * Update metadata of indicator layer
  */
 function update(id, data) {
   return {
@@ -32,6 +33,20 @@ function update(id, data) {
   };
 }
 
+/**
+ * Add dates of indicator data
+ */
+function updateDates(id, dates) {
+  return {
+    name: INDICATOR_LAYER_METADATA_ACTION_NAME,
+    type: INDICATOR_LAYER_METADATA_TYPE_UPDATE_DATES,
+    payload: {
+      id: id,
+      dates: dates
+    }
+  };
+}
+
 export default {
-  update
+  update, updateDates
 }

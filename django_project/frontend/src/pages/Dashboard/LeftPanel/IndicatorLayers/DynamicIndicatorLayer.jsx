@@ -37,7 +37,7 @@ export default function DynamicIndicatorLayer({ indicatorLayer }) {
   const dispatch = useDispatch()
   const prevState = useRef();
   const { indicators, geoField } = useSelector(state => state.dashboard.data)
-  const indicatorLayerDates = useSelector(state => state.indicatorLayerDates);
+  const indicatorLayerMetadata = useSelector(state => state.indicatorLayerMetadata);
   const indicatorsData = useSelector(state => state.indicatorsData);
 
   const id = indicatorLayer.id;
@@ -50,8 +50,8 @@ export default function DynamicIndicatorLayer({ indicatorLayer }) {
     let loading = false;
     let errorMessage = '';
     dynamicLayerIndicators.map(indicator => {
-      if (indicatorLayerDates['indicator-' + indicator.id]) {
-        const indicatorDates = indicatorLayerDates['indicator-' + indicator.id]
+      const indicatorDates = indicatorLayerMetadata['indicator-' + indicator.id]?.dates
+      if (indicatorDates) {
         if (typeof indicatorDates === 'string' && indicatorDates.includes('Error')) {
           errorMessage = indicatorDates
         } else {
@@ -61,21 +61,22 @@ export default function DynamicIndicatorLayer({ indicatorLayer }) {
         loading = true
       }
     })
+    const indicatorDates = indicatorLayerMetadata[id]?.dates
     if (!loading) {
       if (errorMessage) {
         dates = errorMessage
-        if (!indicatorLayerDates[id] || dates !== indicatorLayerDates[id]) {
-          dispatch(Actions.IndicatorLayerDates.add(id, dates))
+        if (!indicatorDates || dates !== indicatorDates) {
+          dispatch(Actions.IndicatorLayerMetadata.updateDates(id, dates))
         }
       } else {
         dates = Array.from(new Set(dates))
         dates.sort()
-        if (!indicatorLayerDates[id] || JSON.stringify(dates) !== JSON.stringify(indicatorLayerDates[id])) {
-          dispatch(Actions.IndicatorLayerDates.add(id, dates))
+        if (!indicatorDates || JSON.stringify(dates) !== JSON.stringify(indicatorDates)) {
+          dispatch(Actions.IndicatorLayerMetadata.updateDates(id, dates))
         }
       }
     }
-  }, [indicatorsData, indicatorLayerDates])
+  }, [indicatorsData, indicatorLayerMetadata])
 
   /** Update datas */
   useEffect(() => {
