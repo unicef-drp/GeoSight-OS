@@ -220,4 +220,5 @@ class IndicatorValueWithGeo(models.Model):
 @receiver(post_save, sender=IndicatorValue)
 @receiver(pre_delete, sender=IndicatorValue)
 def increase_version(sender, instance, **kwargs):
+    """Increase verison of indicator signal."""
     instance.indicator.increase_version()
