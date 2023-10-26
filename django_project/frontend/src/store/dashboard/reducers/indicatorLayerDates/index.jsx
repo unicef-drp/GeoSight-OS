@@ -19,6 +19,7 @@
 
 export const INDICATOR_LAYER_DATES_ACTION_NAME = 'INDICATOR_LAYER_DATES';
 export const INDICATOR_LAYER_DATES_ACTION_TYPE_ADD = 'INDICATOR_LAYER_DATES/ADD';
+export const INDICATOR_LAYER_DATES_ACTION_TYPE_ADD_BATCH = 'INDICATOR_LAYER_DATES/ADD_BATCH';
 
 const initialState = {}
 export default function indicatorLayerDatesReducer(state = initialState, action) {
@@ -28,6 +29,10 @@ export default function indicatorLayerDatesReducer(state = initialState, action)
         const { id, dates } = action
         state[id] = dates
         return { ...state }
+      }
+      case INDICATOR_LAYER_DATES_ACTION_TYPE_ADD_BATCH: {
+        const { data } = action
+        return { ...state, ...data }
       }
     }
   }

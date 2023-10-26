@@ -15,7 +15,8 @@
 
 import {
   INDICATOR_LAYER_DATES_ACTION_NAME,
-  INDICATOR_LAYER_DATES_ACTION_TYPE_ADD
+  INDICATOR_LAYER_DATES_ACTION_TYPE_ADD,
+  INDICATOR_LAYER_DATES_ACTION_TYPE_ADD_BATCH
 } from './index'
 
 /**
@@ -32,6 +33,18 @@ export function add(id, dates) {
   };
 }
 
+/**
+ * Add dates.
+ * @param {object} data Data.
+ */
+export function addBatch(data) {
+  return {
+    name: INDICATOR_LAYER_DATES_ACTION_NAME,
+    type: INDICATOR_LAYER_DATES_ACTION_TYPE_ADD_BATCH,
+    data: data
+  };
+}
+
 export default {
-  add
+  add, addBatch
 }
