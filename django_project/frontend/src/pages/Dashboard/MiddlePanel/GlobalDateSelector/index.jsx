@@ -300,11 +300,9 @@ export default function GlobalDateSelector() {
     (
       async () => {
         const data = {}
-        for (let i = 0; i < indicators.length; i++) {
-          const indicator = indicators[i]
+        const call = async (indicator) => {
           const id = 'indicator-' + indicator.id
           if (!indicatorLayerMetadata[id]?.dates) {
-
             try {
               const response = await fetchJSON(indicator.url.replace('/values/latest', '/metadata'), {});
               if (!response?.dates?.length) {
@@ -325,6 +323,7 @@ export default function GlobalDateSelector() {
             }
           }
         }
+        await Promise.all(indicators.map(indicator => call(indicator)))
         dispatch(Actions.IndicatorLayerMetadata.updateBatch(data))
       }
     )();
