@@ -310,7 +310,7 @@ export default function GlobalDateSelector() {
               data[id] = response
             }
           } catch (error) {
-            data[id] = error.toString()
+            data[id] = [nowUTC().toISOString()]
           }
         }
         await Promise.all(indicators.map(indicator => call(indicator)))
