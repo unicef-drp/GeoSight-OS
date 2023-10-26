@@ -301,19 +301,21 @@ export default function GlobalDateSelector() {
       const id = 'indicator-' + indicator.id
       if (!indicatorLayerMetadata[id]?.dates) {
         fetchingData(
-          indicator.url.replace('/values/latest', '/dates-count'), {}, {}, function (response, error) {
+          indicator.url.replace('/values/latest', '/metadata'), {}, {}, function (response, error) {
             if (!error) {
               if (!response?.dates?.length) {
                 response = {
                   dates: [nowUTC().toISOString()],
-                  count: 0
+                  count: 0,
+                  version: 'TEMP'
                 }
               }
               dispatch(Actions.IndicatorLayerMetadata.update(id, response))
             } else {
               dispatch(Actions.IndicatorLayerMetadata.update(id, {
                 dates: error.toString(),
-                count: 0
+                count: 0,
+                version: 'TEMP'
               }))
             }
           }

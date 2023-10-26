@@ -367,13 +367,22 @@ class IndicatorValueWithGeoDateSerializer(
     """Serializer for IndicatorValueWithGeo."""
 
     date = serializers.SerializerMethodField()
+    time = serializers.SerializerMethodField()
 
     def get_date(self, obj: IndicatorValueWithGeo):
         """Return date."""
         return obj.date.strftime("%d-%m-%Y")
 
+    def get_time(self, obj: IndicatorValueWithGeo):
+        """Return date."""
+        return datetime.combine(
+            obj.date, datetime.min.time(),
+            tzinfo=pytz.timezone(settings.TIME_ZONE)
+        ).timestamp()
+
     class Meta:  # noqa: D106
         model = IndicatorValueWithGeo
         fields = (
-            'geometry_code', 'value', 'concept_uuid', 'admin_level', 'date'
+            'geometry_code', 'value', 'concept_uuid',
+            'admin_level', 'date', 'time'
         )

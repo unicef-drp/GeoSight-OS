@@ -27,7 +27,11 @@ import {
   filterIndicatorsData,
   UpdateStyleData
 } from "../../../../utils/indicatorData";
-import { LocalStorage } from "../../../../utils/localStorage";
+import {
+  LocalStorage,
+  LocalStorageData
+} from "../../../../utils/localStorage";
+import { dictDeepCopy, jsonToUrlParams } from "../../../../utils/main";
 
 /** Indicators data. */
 let indicatorFetchingSession = null
@@ -87,18 +91,51 @@ export default function Indicators() {
    * Get All Data For and Indicator
    * Fetch it from storage or fetch it
    */
-  const getData = (id, url) => {
-    const allDataUrl = url.replace('latest', 'all')
-    const storage = new LocalStorage(allDataUrl, allDataUrl + 'Version', 'version-1')
+  const getAllData = (id, url, dataVersion) => {
+    const storage = new LocalStorageData(url, dataVersion)
     const storageData = storage.get()
     if (!storageData) {
-      fetchPagination(url.replace('latest', 'all')).then(response => {
-        storage.save(response)
-      }).catch(error => {
+      setTimeout(function () {
+        fetchPagination(url.replace('latest', 'all')).then(response => {
+          storage.replaceData(response)
+        }).catch(error => {
 
-      })
+        })
+      }, 500);
     }
     return storageData
+  }
+
+  /***
+   * Get Data For and Indicator by dates
+   * Fetch it from storage or fetch it
+   */
+  const getDataByDate = (id, url, params, currentGlobalTime, dataVersion, onResponse) => {
+    const storage = new LocalStorageData(url, dataVersion)
+    const storageData = storage.get()
+    // Check if the request is already requested before
+    let doRequest = false
+    const requestKey = url + '?' + jsonToUrlParams(params) + '-Version'
+    if (storageData) {
+      const requestStorage = new LocalStorage(requestKey)
+      if (requestStorage.get() !== dataVersion) {
+        doRequest = true
+      }
+    } else {
+      doRequest = true
+    }
+
+    if (doRequest) {
+      fetchPagination(url, params).then(response => {
+        storage.appendData(response)
+        new LocalStorage(requestKey).set(dataVersion)
+        onResponse(response, null)
+      }).catch(error => {
+        onResponse(null, error)
+      })
+    } else {
+      onResponse(filterIndicatorsData(currentGlobalTime.min, currentGlobalTime.max, storageData))
+    }
   }
 
   /** Fetch all data */
@@ -158,29 +195,23 @@ export default function Indicators() {
             // Return all data first
 
             const metadata = indicatorLayerMetadata[dataId]
-            /** TODO: We also save it per date range method. **/
+            const version = metadata?.version ? metadata?.version : 'TEMP'
+
             if (metadata?.count && metadata.count > MAX_COUNT_FOR_ALL_DATA) {
-              fetchPagination(url, params).then(response => {
-                onResponse(response, null)
-              }).catch(error => {
-                onResponse(null, error)
-              })
+              getDataByDate(id, url, params, dictDeepCopy(selectedGlobalTime), version, onResponse)
             } else {
-              const storageData = getData(dataId, url)
+              // FOR FETCHING ALL DATA
+              const storageData = getAllData(dataId, url, version)
               if (storageData) {
                 onResponse(
                   filterIndicatorsData(selectedGlobalTime.min, selectedGlobalTime.max, storageData)
                 )
               } else {
-                if (!storageData) {
-                  fetchPagination(url, params).then(response => {
-                    onResponse(response, null)
-                  }).catch(error => {
-                    onResponse(null, error)
-                  })
-                } else {
-                  onResponse(storageData, null)
-                }
+                fetchPagination(url, params).then(response => {
+                  onResponse(response, null)
+                }).catch(error => {
+                  onResponse(null, error)
+                })
               }
             }
           }

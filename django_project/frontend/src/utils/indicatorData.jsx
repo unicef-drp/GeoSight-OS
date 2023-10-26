@@ -120,6 +120,9 @@ export const filterIndicatorsData = (time_min, time_max, data) => {
   const min = time_min ? (new Date(time_min).getTime()) / 1000 : null
   const max = time_max ? (new Date(time_max).getTime()) / 1000 : null
   data = data.filter(row => {
+    if (!row) {
+      return false
+    }
     const geomFound = geom_found.includes(row.geometry_code)
     const used = !geomFound && row.time >= min && row.time <= max
     if (used) {

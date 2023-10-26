@@ -88,6 +88,7 @@ class DashboardIndicatorValuesAPI(
     _DashboardIndicatorValuesAPI, ListAPIView
 ):
     """API for Values of indicator."""
+
     pagination_class = Pagination
     serializer_class = IndicatorValueWithGeoDateSerializer
 
@@ -111,6 +112,7 @@ class DashboardIndicatorAllValuesAPI(
     _DashboardIndicatorValuesAPI, ListAPIView
 ):
     """API for all Values of indicator."""
+
     pagination_class = Pagination
     serializer_class = IndicatorValueWithGeoSerializer
 
@@ -206,7 +208,7 @@ class DashboardIndicatorDatesAPI(DashboardIndicatorValuesAPI):
         return Response(dates)
 
 
-class DashboardIndicatorDatesAndCountAPI(DashboardIndicatorValuesAPI):
+class DashboardIndicatorMetadataAPI(DashboardIndicatorValuesAPI):
     """API for of indicator."""
 
     def get(self, request, slug, pk, **kwargs):
@@ -232,7 +234,8 @@ class DashboardIndicatorDatesAndCountAPI(DashboardIndicatorValuesAPI):
             'dates': dates,
             'count': indicator.query_values(
                 reference_layer=dashboard.reference_layer
-            ).count()
+            ).count(),
+            'version': 1577836800
         })
 
 

@@ -14,10 +14,8 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from datetime import date, datetime
+from datetime import date
 
-import pytz
-from django.conf import settings
 from django.contrib.gis.db import models
 
 from core.models.general import AbstractTerm, AbstractSource, AbstractEditData

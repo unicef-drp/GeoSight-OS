@@ -36,7 +36,14 @@ export const fetchingData = async function (
     url += '?' + paramsUrl.join('&')
   }
   try {
-    const response = await fetchJSON(url, options, useCache);
+    let response = await fetchJSON(url, options, useCache);
+    try {
+      if (Object.keys(response).includes('results')) {
+        response = await fetchPaginationAsync(url)
+      }
+    } catch (err) {
+
+    }
     receiveAction(response, null);
   } catch (error) {
     receiveAction(null, error);

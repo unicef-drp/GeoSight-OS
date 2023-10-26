@@ -13,34 +13,70 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-
 export class LocalStorage {
-  constructor(keyData, keyVersion, version) {
-    this.keyData = keyData;
-    this.keyVersion = keyVersion + "-Version";
-    this.version = version;
-  }
-
-  save(data) {
-    localStorage.setItem(this.keyVersion, this.version);
-    localStorage.setItem(this.keyData, JSON.stringify(data));
+  constructor(key) {
+    this.key = key;
   }
 
   get() {
-    if (localStorage.getItem(this.keyData) && localStorage.getItem(this.keyVersion) === this.version) {
-      return JSON.parse(localStorage.getItem(this.keyData))
-    }
-    return null
+    return localStorage.getItem(this.key)
   }
 
-  async getOrCreate(onNoData) {
-    const storageData = this.get()
-    if (storageData) {
-      return storageData
-    } else {
-      const data = await onNoData()
-      this.save(data)
-      return data
+  set(data) {
+    return localStorage.setItem(this.key, data)
+  }
+}
+
+export class LocalStorageData {
+  constructor(key, version) {
+    this.key = key;
+    this.keyVersion = key + "-Version";
+    this.version = version;
+  }
+
+  replaceData(data) {
+    localStorage.setItem(this.keyVersion, this.version);
+    localStorage.setItem(this.key, JSON.stringify(data));
+  }
+
+  appendData(data) {
+    let newData = []
+    if (localStorage.getItem(this.keyVersion) === this.version) {
+      if (localStorage.getItem(this.key)) {
+        try {
+          newData = JSON.parse(localStorage.getItem(this.key))
+        } catch (err) {
+
+        }
+      }
     }
+    const identifiers = []
+    newData.map(row => {
+      if (row) {
+        identifiers.push(`${row.time} - ${row.concept_uuid}`)
+      }
+    })
+    if (!identifiers.length) {
+      newData = newData.concat(data)
+    } else {
+      data.map(row => {
+        if (row && !identifiers.includes(`${row.time} - ${row.concept_uuid}`)) {
+          newData.push(row)
+        }
+      })
+    }
+    localStorage.setItem(this.keyVersion, this.version);
+    localStorage.setItem(this.key, JSON.stringify(newData));
+  }
+
+  get() {
+    if (localStorage.getItem(this.key) && localStorage.getItem(this.keyVersion) === '' + this.version) {
+      try {
+        return JSON.parse(localStorage.getItem(this.key))
+      } catch (err) {
+
+      }
+    }
+    return null
   }
 }
