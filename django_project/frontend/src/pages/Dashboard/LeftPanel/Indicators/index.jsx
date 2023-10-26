@@ -199,23 +199,25 @@ export default function Indicators() {
             // Return all data first
 
             const metadata = indicatorLayerMetadata[dataId]
-            const version = metadata?.version ? metadata?.version : 'TEMP'
+            if (metadata?.version) {
+              const version = metadata?.version
 
-            if (metadata?.count && metadata.count > MAX_COUNT_FOR_ALL_DATA) {
-              getDataByDate(id, url, params, dictDeepCopy(selectedGlobalTime), version, onResponse)
-            } else {
-              // FOR FETCHING ALL DATA
-              const storageData = getAllData(dataId, url, version)
-              if (storageData) {
-                onResponse(
-                  filterIndicatorsData(selectedGlobalTime.min, selectedGlobalTime.max, storageData)
-                )
+              if (metadata?.count && metadata.count > MAX_COUNT_FOR_ALL_DATA) {
+                getDataByDate(id, url, params, dictDeepCopy(selectedGlobalTime), version, onResponse)
               } else {
-                fetchPagination(url, params).then(response => {
-                  onResponse(response, null)
-                }).catch(error => {
-                  onResponse(null, error)
-                })
+                // FOR FETCHING ALL DATA
+                const storageData = getAllData(dataId, url, version)
+                if (storageData) {
+                  onResponse(
+                    filterIndicatorsData(selectedGlobalTime.min, selectedGlobalTime.max, storageData)
+                  )
+                } else {
+                  fetchPagination(url, params).then(response => {
+                    onResponse(response, null)
+                  }).catch(error => {
+                    onResponse(null, error)
+                  })
+                }
               }
             }
           }
