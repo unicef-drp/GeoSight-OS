@@ -19,6 +19,7 @@
 
 export const INDICATOR_LAYER_METADATA_ACTION_NAME = 'INDICATOR_LAYER_METADATA';
 export const INDICATOR_LAYER_METADATA_TYPE_UPDATE = 'INDICATOR_LAYER_METADATA/UPDATE';
+export const INDICATOR_LAYER_METADATA_TYPE_UPDATE_BATCH = 'INDICATOR_LAYER_METADATA/UPDATE_BATCH';
 export const INDICATOR_LAYER_METADATA_TYPE_UPDATE_DATES = 'INDICATOR_LAYER_METADATA/UPDATE_DATES';
 
 const initialState = {}
@@ -36,6 +37,10 @@ export default function IndicatorsAllDataReducer(state = initialState, action) {
       }
       state[id].dates = dates
       return { ...state }
+    }
+    case INDICATOR_LAYER_METADATA_TYPE_UPDATE_BATCH: {
+      const { data } = action
+      return { ...state, ...data }
     }
     default:
       return state

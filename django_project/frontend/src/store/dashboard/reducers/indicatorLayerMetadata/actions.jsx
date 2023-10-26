@@ -16,7 +16,8 @@
 import {
   INDICATOR_LAYER_METADATA_ACTION_NAME,
   INDICATOR_LAYER_METADATA_TYPE_UPDATE,
-  INDICATOR_LAYER_METADATA_TYPE_UPDATE_DATES
+  INDICATOR_LAYER_METADATA_TYPE_UPDATE_BATCH,
+  INDICATOR_LAYER_METADATA_TYPE_UPDATE_DATES,
 } from './index'
 
 /**
@@ -47,6 +48,18 @@ function updateDates(id, dates) {
   };
 }
 
+/**
+ * Add dates.
+ * @param {object} data Data.
+ */
+export function updateBatch(data) {
+  return {
+    name: INDICATOR_LAYER_METADATA_ACTION_NAME,
+    type: INDICATOR_LAYER_METADATA_TYPE_UPDATE_BATCH,
+    data: data
+  };
+}
+
 export default {
-  update, updateDates
+  update, updateBatch, updateDates
 }

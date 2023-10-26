@@ -30,7 +30,7 @@ import KeyboardDoubleArrowUpIcon
   from "@mui/icons-material/KeyboardDoubleArrowUp";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
-import { fetchingData } from "../../../../Requests";
+import { fetchJSON } from "../../../../Requests";
 import { Actions } from "../../../../store/dashboard";
 import { formatDate, formatDateTime, nowUTC } from "../../../../utils/main";
 import {
@@ -297,32 +297,62 @@ export default function GlobalDateSelector() {
    * Update indicator dates
    */
   useEffect(() => {
-    indicators.map(indicator => {
-      const id = 'indicator-' + indicator.id
-      if (!indicatorLayerMetadata[id]?.dates) {
-        fetchingData(
-          indicator.url.replace('/values/latest', '/metadata'), {}, {}, function (response, error) {
-            if (!error) {
+    (
+      async () => {
+        const data = {}
+        for (let i = 0; i < indicators.length; i++) {
+          const indicator = indicators[i]
+          const id = 'indicator-' + indicator.id
+          if (!indicatorLayerMetadata[id]?.dates) {
+
+            try {
+              const response = await fetchJSON(indicator.url.replace('/values/latest', '/metadata'), {});
               if (!response?.dates?.length) {
-                response = {
+                data[id] = {
                   dates: [nowUTC().toISOString()],
                   count: 0,
                   version: 'TEMP'
                 }
+              } else {
+                data[id] = response
               }
-              dispatch(Actions.IndicatorLayerMetadata.update(id, response))
-            } else {
-              dispatch(Actions.IndicatorLayerMetadata.update(id, {
+            } catch (error) {
+              data[id] = {
                 dates: error.toString(),
                 count: 0,
                 version: 'TEMP'
-              }))
+              }
             }
           }
-        )
+        }
+        dispatch(Actions.IndicatorLayerMetadata.updateBatch(data))
       }
-    })
+    )();
   }, [indicators]);
+
+  /**
+   * Update dates
+   */
+  useEffect(() => {
+      if (
+        JSON.stringify(prevState.currentDates) !== JSON.stringify(currentDates)
+      ) {
+        let newDates = currentDates
+        setDates([...newDates])
+        prevState.currentDates = currentDates
+        const max = newDates[newDates.length - 1]
+        const min = newDates[0]
+        if (selectedDatePoint !== max) {
+          setSelectedDatePoint(max)
+          setMaxDate(max)
+          setMinDate(min)
+        }
+      }
+    },
+    [
+      indicatorLayerMetadata
+    ]
+  );
 
   /**
    * Update dates
@@ -350,7 +380,7 @@ export default function GlobalDateSelector() {
       }
     },
     [
-      indicatorLayerMetadata, currentIndicatorLayer, currentIndicatorSecondLayer, interval, isFitToIndicatorRange
+      currentIndicatorLayer, currentIndicatorSecondLayer, interval, isFitToIndicatorRange
     ]
   );
 
