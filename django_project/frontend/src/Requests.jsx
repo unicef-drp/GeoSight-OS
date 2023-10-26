@@ -99,6 +99,10 @@ export async function fetchJSON(url, options, useCache = true) {
 export const fetchPaginationAsync = async function (url) {
   let data = []
   const _fetchJson = async function (currUrl) {
+    // Force to use https
+    if (location.protocol === 'https:') {
+      currUrl = currUrl.replace('http:', location.protocol)
+    }
     const response = await fetchJSON(currUrl, {});
     data = data.concat(response.results)
     if (response.next) {
