@@ -307,9 +307,9 @@ export default function GlobalDateSelector() {
             indicatorLayerDates[id] = null
 
             try {
-              const response = await fetchJSON(indicator.url.replace('/values/latest', '/dates'), options);
+              const response = await fetchJSON(indicator.url.replace('/values/latest', '/dates'), {});
               if (!response?.length) {
-                data[id] [nowUTC().toISOString()]
+                data[id] = [nowUTC().toISOString()]
               } else {
                 data[id] = response
               }
