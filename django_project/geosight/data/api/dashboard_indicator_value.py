@@ -235,7 +235,7 @@ class DashboardIndicatorMetadataAPI(DashboardIndicatorValuesAPI):
             'count': indicator.query_values(
                 reference_layer=dashboard.reference_layer
             ).count(),
-            'version': 1577836800
+            'version': indicator.version
         })
 
 

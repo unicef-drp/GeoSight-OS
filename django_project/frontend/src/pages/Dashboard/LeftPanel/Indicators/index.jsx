@@ -32,6 +32,7 @@ import {
   LocalStorageData
 } from "../../../../utils/localStorage";
 import { dictDeepCopy, jsonToUrlParams } from "../../../../utils/main";
+import { Session } from "../../../../utils/Sessions";
 
 /** Indicators data. */
 let indicatorFetchingSession = null
@@ -95,13 +96,16 @@ export default function Indicators() {
     const storage = new LocalStorageData(url, dataVersion)
     const storageData = storage.get()
     if (!storageData) {
-      setTimeout(function () {
-        fetchPagination(url.replace('latest', 'all')).then(response => {
-          storage.replaceData(response)
-        }).catch(error => {
+      const session = new Session(url, 0, true)
+      if (session.isValid) {
+        setTimeout(function () {
+          fetchPagination(url.replace('latest', 'all')).then(response => {
+            storage.replaceData(response)
+          }).catch(error => {
 
-        })
-      }, 500);
+          })
+        }, 500);
+      }
     }
     return storageData
   }

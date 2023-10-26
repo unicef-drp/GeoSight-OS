@@ -22,11 +22,13 @@ let sessions = {}
  * Expired is in seconds. 0 is no expires
  */
 export class Session {
-  constructor(name, expires = 0) {
+  constructor(name, expires = 0, isOnce = false) {
     this.name = name;
     this.currentSession = new Date().getTime()
     this.expires = expires
-    sessions[name] = this.currentSession
+    if (!sessions[name] || (sessions[name] && !isOnce)) {
+      sessions[name] = this.currentSession
+    }
   }
 
   get isValid() {

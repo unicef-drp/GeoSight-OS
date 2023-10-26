@@ -144,9 +144,12 @@ class BaseIndicatorValueImporterTest(BaseImporterTest):
 
     def assertImporter(self, importer):
         """Assert importer when run."""
+        curr_version = self.indicator_1.version
         importer.run()
         log = importer.importerlog_set.all().last()
         self.assertEqual(log.status, 'Success')
+
+        self.assertFalse(curr_version != self.indicator_1.version)
 
         # Check for indicator 1
         values = self.indicator_1.query_values(

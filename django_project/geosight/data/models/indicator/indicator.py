@@ -18,7 +18,9 @@ from datetime import date
 
 from django.contrib.gis.db import models
 
-from core.models.general import AbstractTerm, AbstractSource, AbstractEditData
+from core.models.general import (
+    AbstractTerm, AbstractSource, AbstractEditData, AbstractVersionData
+)
 from geosight.data.models.code import CodeList
 from geosight.data.models.indicator.indicator_type import (
     IndicatorType, IndicatorTypeChoices
@@ -44,7 +46,8 @@ class IndicatorGroup(AbstractTerm):
 
 
 class Indicator(
-    IndicatorStyleBaseModel, AbstractTerm, AbstractSource, AbstractEditData
+    IndicatorStyleBaseModel, AbstractTerm, AbstractSource, AbstractEditData,
+    AbstractVersionData
 ):
     """The indicator model."""
 
