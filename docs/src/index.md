@@ -24,7 +24,7 @@ harvests and aggregates data linked to administrative areas (e.g. national and s
 These data can then be visualized as choropleth or pie chart maps. Widgets (charts, tables, summaries) can be
 displayed in association with the currently active indicator layer.
 
-There are two main areas for the platform:
+There are two main interfaces of the platform:
 
 * the dashboard view - this is where end users open and explore data in projects that have been created for them to support their operational work.
 * the admin area - this is where projects are designed and data can be managed. Data sources are selected and the reporting areas and components are configured.
