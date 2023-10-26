@@ -61,7 +61,7 @@ class IndicatorForm(BaseStyleForm):
         exclude = (
             'created_at', 'creator', 'modified_at',
             'order', 'geometry_reporting_units',
-            'instance', 'show_in_context_analysis'
+            'instance', 'show_in_context_analysis', 'version_data'
         )
 
     def clean_name(self):
@@ -117,6 +117,7 @@ class IndicatorForm(BaseStyleForm):
         """Return model data as json."""
         initial = model_to_dict(indicator)
         del initial['created_at']
+        del initial['version_data']
         try:
             initial['group'] = IndicatorGroup.objects.get(
                 id=initial['group']
