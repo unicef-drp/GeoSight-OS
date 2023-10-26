@@ -36,13 +36,16 @@ export default function RightPanel({ rightExpanded }) {
   const className = `${state}`
   return (
     <Fragment>
-      <section className={className}>
-        <div className='dashboard__content-wrapper'>
-          <div className='dashboard__content'>
-            <WidgetList widgets={widgets}/>
-          </div>
-        </div>
-      </section>
+      {
+        widgets?.filter(widget => widget.visible_by_default).length ?
+          <section className={className}>
+            <div className='dashboard__content-wrapper'>
+              <div className='dashboard__content'>
+                <WidgetList widgets={widgets}/>
+              </div>
+            </div>
+          </section> : null
+      }
     </Fragment>
   )
 }
