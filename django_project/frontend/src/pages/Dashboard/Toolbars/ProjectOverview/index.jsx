@@ -21,7 +21,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from "react-redux";
 
 import Cookies from "js-cookie";
-import MDEditor from "@uiw/react-md-editor";
+import Markdown from 'react-markdown'
 import Checkbox from "@mui/material/Checkbox";
 import { FormControlLabel } from "@mui/material";
 
@@ -84,10 +84,9 @@ export default function ProjectOverview() {
             </ModalHeader>
             <ModalContent>
               <div className='ProjectDescription'>
-                <MDEditor.Markdown
-                  source={overview ? overview : '*There is no information for this project.*'}
-                  linkTarget="_blank"
-                />
+                <Markdown>
+                  {overview ? overview : '*There is no information for this project.*'}
+                </Markdown>
               </div>
             </ModalContent>
             <ModalFooter>
