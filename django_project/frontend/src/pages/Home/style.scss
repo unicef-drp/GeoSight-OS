@@ -257,6 +257,8 @@
         overflow: hidden;
         max-height: 300px;
         background-color: $base-to-white-color;
+        line-height: 17px;
+        color: $gray-600;
 
         .wmde-markdown {
           line-height: 17px;

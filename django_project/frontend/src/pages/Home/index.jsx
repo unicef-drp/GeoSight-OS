@@ -15,7 +15,6 @@
 
 import React, { Fragment, useEffect, useState } from 'react';
 import axios from "axios";
-import MDEditor from "@uiw/react-md-editor";
 import CircularProgress from "@mui/material/CircularProgress";
 import Grid from "@mui/material/Grid";
 import ImageIcon from '@mui/icons-material/Image';
@@ -55,12 +54,11 @@ function ProjectGrid({ projects }) {
                 }
               </div>
               <div className='ProjectGridName'>{project.name}</div>
-              <div className='ProjectGridDescription'>
-                <MDEditor.Markdown
-                  source={project.description}
-                  linkTarget="_blank"
-                />
-              </div>
+              <div
+                className='ProjectGridDescription'
+                dangerouslySetInnerHTML={{
+                  __html: project.description
+                }}/>
               <div className='ProjectGridTags'>
                 {project.category ? <div>{project.category}</div> : null}
               </div>
@@ -136,10 +134,10 @@ export default function Home() {
               <div className='Separator'/>
               {
                 preferences.landing_page_banner_text ?
-                  <MDEditor.Markdown
-                    source={preferences.landing_page_banner_text}
-                    linkTarget="_blank"
-                  /> :
+                  <div dangerouslySetInnerHTML={{
+                    __html: preferences.landing_page_banner_text
+                  }}/>
+                  :
                   null
               }
               <ThemeButton
