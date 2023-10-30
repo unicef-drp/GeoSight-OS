@@ -315,6 +315,13 @@
     .FilterExpressionName {
       flex-grow: 1;
       display: flex;
+      position: relative;
+
+      .Throbber {
+        position: absolute;
+        left: 5px;
+        top: -2px;
+      }
 
       div {
         margin-top: 2px;
