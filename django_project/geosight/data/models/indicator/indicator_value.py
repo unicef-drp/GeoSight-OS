@@ -45,6 +45,9 @@ class IndicatorValue(models.Model):
     class Meta:  # noqa: D106
         unique_together = ('indicator', 'date', 'geom_id')
         ordering = ('-date',)
+        indexes = [
+            models.Index(fields=['geom_id'], name='indicator_value_geom_id'),
+        ]
 
     @property
     def val(self):
