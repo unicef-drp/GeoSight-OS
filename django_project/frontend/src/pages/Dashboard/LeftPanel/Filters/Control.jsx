@@ -30,6 +30,7 @@ import AccordionDetails from '@mui/material/AccordionDetails'
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from "@mui/material/Checkbox";
+import CircularProgress from "@mui/material/CircularProgress";
 import {
   WhereInputValue
 } from "../../../../components/SqlQueryGenerator/WhereQueryGenerator/WhereInput";
@@ -340,6 +341,11 @@ export default function FilterControl(
               e.stopPropagation()
             }}
           />
+          {
+            isLoading ?
+              <div className='Throbber'><CircularProgress size={16}/>
+              </div> : null
+          }
           {
             where.name ?
               <div>{where.name}</div> :
