@@ -22,6 +22,7 @@ import GlobalDateSelector from "./GlobalDateSelector";
 import LayerConfig from "./LayerConfig";
 import { FullScreen } from '../../../pages/Dashboard/Toolbars'
 import Attributions from "../Toolbars/Attributions";
+import DataLoadingProgress from "../Toolbars/DataLoadingProgress";
 
 import './style.scss';
 
@@ -39,6 +40,7 @@ export default function MiddlePanel(
     }
   >
     <div className='TopContent'>
+      <DataLoadingProgress/>
       <div className='LeftContent'>
         {leftContent}
         <MapLegend/>
