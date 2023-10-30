@@ -42,6 +42,8 @@ nav:
                 - About: about/index.md
                 - Contributing: about/contributing.md
                 - Code of Conduct: about/code-of-conduct.md
+                - Disclaimer: about/disclaimer.md
+                - License: about/license.md
                 - Running Instances: about/running-instances.md
         - Users:
                 - user/index.md
@@ -49,11 +51,10 @@ nav:
                         - user/quickstart/index.md
                 - Guide:
                         - user/guide/index.md
-                        - Disclaimer: about/disclaimer.md
-                        - License: about/license.md
                 - Manual: 
                         - user/manual/index.md
                         - Home Page: user/manual/home.md
+                        - Dashboard Page: user/manual/dashboard.md
                         - Administrator Page: user/manual/administrator-page.md
         - Administrators:
                 - administrator/index.md

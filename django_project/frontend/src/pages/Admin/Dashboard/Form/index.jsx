@@ -204,7 +204,7 @@ export function DashboardSaveForm(
     const name = $('#SummaryName').val();
     const slug = $('#SummarySlug').val();
     const description = $('#SummaryDescription').val();
-    const overview = $('#SummaryOverview textarea').val();
+    const overview = $('#SummaryOverview').val();
     const icon = $('#SummaryIcon')[0].files[0];
     const category = $('#SummaryCategory .ReactSelect__single-value').text();
     const splashScreen = $('#SummarySplash').is(':checked');

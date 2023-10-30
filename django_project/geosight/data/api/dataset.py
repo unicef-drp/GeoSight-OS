@@ -69,14 +69,16 @@ class DatasetApiList(ListAPIView, FilteredAPI):
     def get_queryset(self):
         """Return queryset of API."""
         query = None
+        is_admin = False
         try:
             if self.request.user.profile.is_admin:
                 query = IndicatorValueWithGeo.objects.all()
+                is_admin = True
         except AttributeError:
             pass
 
         # If not query
-        if not query:
+        if not is_admin:
             filters = None
             # Filter using indicator
             query = ReferenceLayerIndicatorPermission.permissions.list(

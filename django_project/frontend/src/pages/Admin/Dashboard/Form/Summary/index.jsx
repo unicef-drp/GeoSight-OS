@@ -16,7 +16,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { FormControl } from "@mui/material";
-import MDEditor from "@uiw/react-md-editor";
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
@@ -362,25 +361,22 @@ export default function SummaryDashboardForm({ changed }) {
           </div>
           <MapConfig/>
         </div>
-      </div>
-      <div className="BasicFormSection">
-        <div>
-          <label className="form-label" htmlFor="name">Project
-            Overview</label>
-        </div>
-        <div className='DescriptionInput'>
-          <div className="container">
-            <div data-color-mode="light">
-              <MDEditor
-                id='SummaryOverview'
-                height={200}
-                value={overviewData}
-                onChange={(value) => {
-                  setOverviewData(value)
-                  changed(true)
-                }}/>
-            </div>
-          </div>
+        <div className="BasicFormSection">
+          <FormControl className='IconInput'>
+            <label className="form-label" htmlFor="name">
+              Project Overview
+            </label>
+            <textarea
+              id='SummaryOverview'
+              name="textarea"
+              value={overviewData}
+              style={{ height: "300px" }}
+              onChange={(evt) => {
+                setOverviewData(evt.target.value)
+                changed(true)
+              }}/>
+          </FormControl>
+
         </div>
       </div>
     </div>

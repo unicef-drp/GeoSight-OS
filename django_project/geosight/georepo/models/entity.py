@@ -77,6 +77,10 @@ class Entity(models.Model):
     class Meta:  # noqa: D106
         unique_together = ('reference_layer', 'admin_level', 'geom_id')
         verbose_name_plural = "entities"
+        indexes = [
+            models.Index(fields=['geom_id'], name='entity_geom_id'),
+            models.Index(fields=['concept_uuid'], name='entity_concept_uuid'),
+        ]
 
     @staticmethod
     def get_entity(
