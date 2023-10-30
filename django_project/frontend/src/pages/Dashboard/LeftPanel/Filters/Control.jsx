@@ -316,6 +316,7 @@ export default function FilterControl(
       </div>
     }
     const ableToExpand = where.allowModify;
+    const isLoading = !fieldData?.data || fieldData?.data[0] === 'loading'
     return <Accordion
       className={'FilterExpression'}
       expanded={!ableToExpand ? false : expanded}
@@ -330,6 +331,7 @@ export default function FilterControl(
           }}>
           <Checkbox
             checked={active}
+            disabled={isLoading}
             size="small"
             onChange={(event) => {
               updateActive(event.target.checked)
