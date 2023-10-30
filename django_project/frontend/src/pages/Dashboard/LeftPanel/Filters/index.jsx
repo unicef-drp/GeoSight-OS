@@ -70,7 +70,21 @@ function FilterSection() {
     if (!levels) {
       return;
     }
-    if (where && !allDataIsReady(indicatorsData)) {
+
+    const usedData = []
+    for (const [key, value] of Object.entries(indicatorsData)) {
+      const id = `indicator_${key}`
+      if (where.includes(id)) {
+        usedData.push(value)
+      }
+    }
+    for (const [key, value] of Object.entries(relatedTableData)) {
+      const id = `related_table_${key}`
+      if (where.includes(id)) {
+        usedData.push(value)
+      }
+    }
+    if (where && !allDataIsReady(usedData)) {
       return
     }
     const level = levels.find(level => level.level === selectedAdminLevel.level)
