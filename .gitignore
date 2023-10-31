@@ -40,3 +40,4 @@ docs/src/developer/manual/*.md
 
 *.swp
 deployment/.cache/
+.DS_Store

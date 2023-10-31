@@ -49,6 +49,11 @@ cp .template.env .env
 cp docker-compose.override.template.yml docker-compose.override.yml
 ```
 
+If you are developing on an Apple Silicon or other `amd` devices, set the platform at the top of the `Dockerfile`
+```
+FROM  --platform=amd64 ubuntu:20.04 AS prod
+```  
+
 After that, do
 - open new terminal
 - on folder root of project, do

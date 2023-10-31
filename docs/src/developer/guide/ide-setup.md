@@ -52,6 +52,10 @@ Rename the file to `docker-compose.override.yml`
 
 Initially you will not need to change anything in this file, though you may want to take a look through the various configurations provided here if you want to tweak your local setup.
 
+If you are developing on an Apple Silicon or other `amd` devices, set the platform at the top of the `Dockerfile`
+```
+FROM  --platform=amd64 ubuntu:20.04 AS prod
+```  
 
 Now that you have your IDE set up, we can move on to [building the project](building.md).
 
@@ -156,6 +160,10 @@ cd GeoSight-OS/deployment
 cp .template.env .env
 cp docker-compose.override.template.yml docker-compose.override.yml
 ```
+If you are developing on an Apple Silicon or other `amd` devices, set the platform at the top of the `Dockerfile`
+```
+FROM  --platform=amd64 ubuntu:20.04 AS prod
+```  
 
 After that, do
 - open new terminal
