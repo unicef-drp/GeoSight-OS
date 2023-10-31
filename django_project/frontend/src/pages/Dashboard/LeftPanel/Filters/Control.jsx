@@ -30,6 +30,7 @@ import AccordionDetails from '@mui/material/AccordionDetails'
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from "@mui/material/Checkbox";
+import CircularProgress from "@mui/material/CircularProgress";
 import {
   WhereInputValue
 } from "../../../../components/SqlQueryGenerator/WhereQueryGenerator/WhereInput";
@@ -316,6 +317,7 @@ export default function FilterControl(
       </div>
     }
     const ableToExpand = where.allowModify;
+    const isLoading = !fieldData?.data || fieldData?.data[0] === 'loading'
     return <Accordion
       className={'FilterExpression'}
       expanded={!ableToExpand ? false : expanded}
@@ -330,6 +332,7 @@ export default function FilterControl(
           }}>
           <Checkbox
             checked={active}
+            disabled={isLoading}
             size="small"
             onChange={(event) => {
               updateActive(event.target.checked)
@@ -338,6 +341,11 @@ export default function FilterControl(
               e.stopPropagation()
             }}
           />
+          {
+            isLoading ?
+              <div className='Throbber'><CircularProgress size={16}/>
+              </div> : null
+          }
           {
             where.name ?
               <div>{where.name}</div> :

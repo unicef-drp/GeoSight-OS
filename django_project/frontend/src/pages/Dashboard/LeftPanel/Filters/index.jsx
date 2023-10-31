@@ -17,7 +17,7 @@
    Filters SELECTOR
    ========================================================================== */
 
-import React, { Fragment, useEffect, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -27,11 +27,9 @@ import { Actions } from "../../../../store/dashboard";
 import {
   IDENTIFIER,
   INIT_DATA,
-  queryData,
   returnWhere
 } from "../../../../utils/queryExtraction";
 import { dictDeepCopy } from "../../../../utils/main";
-import { fetchingData } from "../../../../Requests";
 import {
   indicatorLayerId,
   indicatorLayersLikeIndicator
@@ -56,12 +54,12 @@ function FilterSection() {
   const selectedGlobalTime = useSelector(state => state.selectedGlobalTime);
   const referenceLayerData = useSelector(state => state.referenceLayerData)
   const indicatorsData = useSelector(state => state.indicatorsData)
+  const relatedTableData = useSelector(state => state.relatedTableData)
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel)
   const geometries = useSelector(state => state.geometries);
   const geometriesVT = useSelector(state => state.geometriesVT);
   const dispatcher = useDispatch();
 
-  const [relatedTableData, setRelatedTableData] = useState({})
   const levels = referenceLayerData[referenceLayer.identifier]?.data?.dataset_levels
 
   // Set older filters
@@ -72,7 +70,21 @@ function FilterSection() {
     if (!levels) {
       return;
     }
-    if (where && !allDataIsReady(indicatorsData)) {
+
+    const usedData = []
+    for (const [key, value] of Object.entries(indicatorsData)) {
+      const id = `indicator_${key}`
+      if (where.includes(id)) {
+        usedData.push(value)
+      }
+    }
+    for (const [key, value] of Object.entries(relatedTableData)) {
+      const id = `related_table_${key}`
+      if (where.includes(id)) {
+        usedData.push(value)
+      }
+    }
+    if (where && !allDataIsReady(usedData)) {
       return
     }
     const level = levels.find(level => level.level === selectedAdminLevel.level)
@@ -204,39 +216,6 @@ function FilterSection() {
       filter(filters)
     }
   }, [filters, indicatorsData, relatedTableData, geometries, geometriesVT, selectedAdminLevel]);
-
-  // FETCH RELATED TABLE DATA
-  useEffect(() => {
-    relatedTables.map(relatedTableConfig => {
-      const params = {}
-      if (referenceLayer.identifier) {
-        params['reference_layer_uuid'] = referenceLayer.identifier
-      }
-      if (relatedTableConfig.geography_code_field_name) {
-        params['geography_code_field_name'] = relatedTableConfig.geography_code_field_name
-      }
-      if (relatedTableConfig.geography_code_type) {
-        params['geography_code_type'] = relatedTableConfig.geography_code_type
-      }
-      const url = relatedTableConfig.url.replace('data', 'values')
-      fetchingData(
-        url, params, {}, function (response, error) {
-          let rows = response
-          if (relatedTableConfig?.query) {
-            try {
-              rows = queryData(rows, relatedTableConfig.query)
-            } catch (err) {
-              error = err.toString()
-            }
-          }
-          relatedTableData[relatedTableConfig.id] = {
-            data: rows
-          }
-          setRelatedTableData({ ...relatedTableData })
-        }
-      )
-    })
-  }, [relatedTables])
 
   // FIELDS FROM GEOMETRY
   let fields = []

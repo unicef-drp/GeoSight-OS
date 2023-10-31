@@ -106,6 +106,7 @@ export default function DjangoTemplateForm(
 
       if ($select.data('autocreated')) {
         input = <Creatable
+          id={$select.attr('id')}
           options={options} defaultValue={initValue}
           name={$select.attr('name')}
           isDisabled={!selectableInputEnabled}

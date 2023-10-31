@@ -90,7 +90,7 @@ export const AdminForm = forwardRef(
 
     /** Render **/
     const submit = (saveAs = false) => {
-      const url = window.location.href.split('?')[0]
+      const url = window.location.href.split('?')[0].split('#')[0]
       if (saveAs) {
         $('#Form').attr('action', url + '?save-as=true')
       } else {
