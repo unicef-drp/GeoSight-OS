@@ -41,6 +41,9 @@ export default function IndicatorsDataReducer(state = initialState, action) {
           const newState = {
             ...state,
           }
+          if (state[id] && state[id].progress) {
+            data.progress = state[id].progress
+          }
           newState[id] = data
           return newState
         }
