@@ -96,7 +96,7 @@ export async function fetchJSON(url, options, useCache = true) {
 }
 
 /*** Axios georepo request with cache */
-export const fetchPaginationAsync = async function (url) {
+export const fetchPaginationAsync = async function (url, onProgress) {
   let data = []
   const _fetchJson = async function (currUrl) {
     // Force to use https
@@ -104,6 +104,12 @@ export const fetchPaginationAsync = async function (url) {
       currUrl = currUrl.replace('http:', location.protocol)
     }
     const response = await fetchJSON(currUrl, {});
+    if (onProgress) {
+      onProgress({
+        page: response.page,
+        page_size: response.page_size,
+      })
+    }
     data = data.concat(response.results)
     if (response.next) {
       await _fetchJson(response.next)
@@ -114,7 +120,7 @@ export const fetchPaginationAsync = async function (url) {
 }
 
 /*** Axios georepo request with cache */
-export const fetchPagination = function (url, params) {
+export const fetchPagination = function (url, params, onProgress) {
   if (params && Object.keys(params).length) {
     const paramsUrl = [];
     for (const [key, value] of Object.entries(params)) {
@@ -126,7 +132,7 @@ export const fetchPagination = function (url, params) {
     (
       async () => {
         try {
-          resolve(await fetchPaginationAsync(url))
+          resolve(await fetchPaginationAsync(url, onProgress))
         } catch (error) {
           reject(error)
         }

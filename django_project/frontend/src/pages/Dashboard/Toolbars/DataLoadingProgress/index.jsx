@@ -30,7 +30,6 @@ export default function DataLoadingProgress() {
   const indicatorsData = useSelector(state => state.indicatorsData)
   const relatedTableData = useSelector(state => state.relatedTableData)
   const {
-    indicators,
     indicatorLayers,
     relatedTables
   } = useSelector(state => state.dashboard.data)
@@ -38,19 +37,22 @@ export default function DataLoadingProgress() {
 
   /** Update progress */
   useEffect(() => {
-    let relatedTableCount = 0
+    let total = 0
     indicatorLayers.map(indicatorLayer => {
       const relatedTable = relatedTables.find(rt => rt.id === indicatorLayer.related_tables[0]?.id)
       if (!relatedTable) {
         return null
       }
-      relatedTableCount += 1
+      total += 1
     })
-    const total = (indicators?.length ? indicators?.length : 0) + relatedTableCount
     let currProgress = 0
+
     for (const [key, value] of Object.entries(indicatorsData)) {
-      if (!key.includes('layer') && value.fetched) {
-        currProgress += 1
+      if (!key.includes('layer')) {
+        if (value.fetching && value.progress?.page) {
+          total += value.progress.page_size
+          currProgress += value.progress.page
+        }
       }
     }
     for (const [key, value] of Object.entries(relatedTableData)) {
@@ -59,7 +61,7 @@ export default function DataLoadingProgress() {
       }
     }
     currProgress = currProgress * 100 / total
-    if (currProgress < 10 || currProgress > progress) {
+    if (currProgress < 10 || currProgress >= progress) {
       setProgress(currProgress)
     }
   }, [indicatorsData, relatedTableData]);

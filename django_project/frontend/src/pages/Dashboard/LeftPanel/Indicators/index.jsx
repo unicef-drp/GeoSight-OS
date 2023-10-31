@@ -193,6 +193,13 @@ export default function Indicators() {
               }
               done(id)
             }
+            const onProgress = (progress) => {
+              if (indicatorFetchingSession === session) {
+                dispatch(
+                  Actions.IndicatorsData.progress(id, progress)
+                )
+              }
+            }
             // Fetch data, when 10, wait data
             const dataId = 'indicator-' + indicator.id
             // For data that has less than 10k data
@@ -212,7 +219,7 @@ export default function Indicators() {
                     filterIndicatorsData(selectedGlobalTime.min, selectedGlobalTime.max, storageData)
                   )
                 } else {
-                  fetchPagination(url, params).then(response => {
+                  fetchPagination(url, params, onProgress).then(response => {
                     onResponse(response, null)
                   }).catch(error => {
                     onResponse(null, error)

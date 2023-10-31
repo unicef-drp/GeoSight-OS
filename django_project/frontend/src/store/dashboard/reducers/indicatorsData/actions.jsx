@@ -13,7 +13,10 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import { INDICATORS_DATA_ACTION_NAME } from './index'
+import {
+  INDICATORS_DATA_ACTION_NAME,
+  INDICATORS_DATA_ACTION_TYPE_PROGRESS
+} from './index'
 import { fetchingData } from "../../../../Requests";
 
 /**
@@ -29,6 +32,15 @@ function request(id) {
     id: id,
     name: INDICATORS_DATA_ACTION_NAME,
     type: REQUEST_INDICATOR
+  };
+}
+
+function progress(id, progress) {
+  return {
+    id: id,
+    progress: progress,
+    name: INDICATORS_DATA_ACTION_NAME,
+    type: INDICATORS_DATA_ACTION_TYPE_PROGRESS
   };
 }
 
@@ -55,5 +67,5 @@ export function fetch(dispatch, id, url) {
 }
 
 export default {
-  fetch, request, receive
+  fetch, request, receive, progress
 }
