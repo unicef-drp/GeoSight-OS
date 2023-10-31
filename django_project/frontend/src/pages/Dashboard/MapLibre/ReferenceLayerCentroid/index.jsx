@@ -273,11 +273,33 @@ export default function ReferenceLayerCentroid({ map }) {
 
       const textField = ['format']
       const formattedText = text.replaceAll('{', ' {{').replaceAll('}', '}} ')
-      var separators = [' {', '} '];
+      const separators = [' {', '} '];
       formattedText.split('\n').map((label, idx) => {
         label.split(new RegExp(separators.join('|'), 'g')).map(row => {
           if (row.includes('{')) {
             textField.push(['get', row.replace('{', '').replace('}', '')])
+          } else if (row.includes('round')) {
+            const property = textField[textField.length - 1][1]
+            if (property) {
+              const decimalNumber = row.split(/.round\(|\)/)
+              if (decimalNumber[0]) {
+                textField.push(row)
+              } else if (!isNaN(parseInt(decimalNumber[1]))) {
+                const decimalPlace = parseInt(decimalNumber[1])
+                if (decimalNumber[2]) {
+                  textField.push(decimalNumber[2])
+                }
+                features.map(feature => {
+                  if (feature.properties[property]) {
+                    try {
+                      feature.properties[property] = feature.properties[property].round(decimalPlace)
+                    } catch (err) {
+
+                    }
+                  }
+                })
+              }
+            }
           } else if (row) {
             textField.push(row)
           }
@@ -583,7 +605,7 @@ export default function ReferenceLayerCentroid({ map }) {
         }
       })
 
-      renderLabel(features, config)
+      renderLabel(dictDeepCopy(features), config)
     }
   }, [
     geometries, geometriesVT, filteredGeometries, indicatorsData,
