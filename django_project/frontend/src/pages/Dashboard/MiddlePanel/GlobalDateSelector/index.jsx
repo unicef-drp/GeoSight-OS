@@ -134,6 +134,12 @@ export default function GlobalDateSelector() {
           max = new Date(Date.UTC(maxYear, maxMonth, maxDay, 23, 59, 59)).toISOString()
           break
       }
+      if (min) {
+        min = min.replace('.000Z', '+00:00')
+      }
+      if (max) {
+        max = max.replace('.000Z', '+00:00')
+      }
       updateTime(min, max)
     }
   }
