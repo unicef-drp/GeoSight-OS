@@ -66,7 +66,7 @@ export default function LabelForm({ indicator, setIndicator }) {
               if (!indicatorData.label_config) {
                 indicatorData.label_config = {
                   text: `{name}
-{value}`
+{value}.round(2)`
                 }
               }
               indicatorData.label_config = {
@@ -93,13 +93,16 @@ export default function LabelForm({ indicator, setIndicator }) {
               }}
             />
             <span className="form-helptext">
-              {"Put any text in here. To put the value of indicator, you can put markup {<Field Name>}."}
+              {"Put any text in here. To put the value of indicator, you can put markup {<Field Name>}."}<br/>
               {"The field name that can be used are:"}<br/>
               {'"code" = geography code'}<br/>
               {'"date" = date of data'}<br/>
               {'"label" = Label of data based on legend'}<br/>
               {'"name" = Geography name'}<br/>
               {'"value" = Value of data'}<br/>
+              <br/>
+              {'and for "value", you can limit the number of decimal using .round(x)'}<br/>
+              {'example, put {value}.round(2) to make value just 2 number of decimals.'}
             </span>
           </div>
         </Fragment> : null

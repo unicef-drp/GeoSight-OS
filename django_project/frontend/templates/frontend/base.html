@@ -32,6 +32,11 @@
         }
         originalConsoleError.apply(console, args);
       };
+
+      // rounding
+      Number.prototype.round = function (places) {
+        return +(Math.round(this + "e+" + places) + "e-" + places);
+      }
     </script>
     <style>
         {# FOR THE THEME #}
