@@ -114,7 +114,7 @@ export default function Indicators() {
    * Get Data For and Indicator by dates
    * Fetch it from storage or fetch it
    */
-  const getDataByDate = (id, url, params, currentGlobalTime, dataVersion, onResponse) => {
+  const getDataByDate = (id, url, params, currentGlobalTime, dataVersion, onResponse, onProgress) => {
     const storage = new LocalStorageData(url, dataVersion)
     const storageData = storage.get()
     // Check if the request is already requested before
@@ -122,7 +122,7 @@ export default function Indicators() {
     const requestKey = url + '?' + jsonToUrlParams(params) + '-Version'
     if (storageData) {
       const requestStorage = new LocalStorage(requestKey)
-      if (requestStorage.get() !== dataVersion) {
+      if (requestStorage.get() !== '' + dataVersion) {
         doRequest = true
       }
     } else {
@@ -130,7 +130,7 @@ export default function Indicators() {
     }
 
     if (doRequest) {
-      fetchPagination(url, params).then(response => {
+      fetchPagination(url, params, onProgress).then(response => {
         storage.appendData(response)
         new LocalStorage(requestKey).set(dataVersion)
         onResponse(response, null)
@@ -210,7 +210,7 @@ export default function Indicators() {
               const version = metadata?.version
 
               if (metadata?.count && metadata.count > MAX_COUNT_FOR_ALL_DATA) {
-                getDataByDate(id, url, params, dictDeepCopy(selectedGlobalTime), version, onResponse)
+                getDataByDate(id, url, params, dictDeepCopy(selectedGlobalTime), version, onResponse, onProgress)
               } else {
                 // FOR FETCHING ALL DATA
                 const storageData = getAllData(dataId, url, version)

@@ -41,7 +41,7 @@ export class LocalStorageData {
 
   appendData(data) {
     let newData = []
-    if (localStorage.getItem(this.keyVersion) === this.version) {
+    if (localStorage.getItem(this.keyVersion) === '' + this.version) {
       if (localStorage.getItem(this.key)) {
         try {
           newData = JSON.parse(localStorage.getItem(this.key))
@@ -65,6 +65,10 @@ export class LocalStorageData {
         }
       })
     }
+    newData.sort(function (p1, p2) {
+      return (p1.time < p2.time) ? 1 : (p1.time > p2.time) ? -1 : 0;
+    });
+
     localStorage.setItem(this.keyVersion, this.version);
     localStorage.setItem(this.key, JSON.stringify(newData));
   }

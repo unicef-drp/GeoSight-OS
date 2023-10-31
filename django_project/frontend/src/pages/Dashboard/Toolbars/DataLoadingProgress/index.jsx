@@ -61,9 +61,7 @@ export default function DataLoadingProgress() {
       }
     }
     currProgress = currProgress * 100 / total
-    if (currProgress < 10 || currProgress >= progress) {
-      setProgress(currProgress)
-    }
+    setProgress(currProgress)
   }, [indicatorsData, relatedTableData]);
 
   return <div className='DataLoadingProgress'>
