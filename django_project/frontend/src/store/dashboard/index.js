@@ -27,10 +27,10 @@ import FilteredGeometries from './reducers/filteredGeometries/actions'
 import Geometries from './reducers/geometries/actions'
 import GeometriesVT from './reducers/geometriesVT/actions'
 import GlobalState from './reducers/globalState/actions'
-import IndicatorLayerDates from './reducers/indicatorLayerDates/actions'
 import IndicatorLayers from './reducers/indicatorLayers/actions'
 import Indicators from './reducers/indicators/actions'
 import IndicatorsData from './reducers/indicatorsData/actions'
+import IndicatorLayerMetadata from './reducers/indicatorLayerMetadata/actions'
 import Map from './reducers/map/actions'
 import MapMode from './reducers/mapMode/actions'
 import ReferenceLayer from './reducers/referenceLayer/actions'
@@ -62,10 +62,10 @@ const Actions = {
   Geometries,
   GeometriesVT,
   GlobalState,
-  IndicatorLayerDates,
   IndicatorLayers,
   Indicators,
   IndicatorsData,
+  IndicatorLayerMetadata,
   Map,
   MapMode,
   RelatedTable,

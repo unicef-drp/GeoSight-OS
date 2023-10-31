@@ -14,7 +14,11 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '05/07/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+from datetime import datetime
 from typing import List
+
+import pytz
+from django.conf import settings
 
 from geosight.data.models.indicator import Indicator
 from geosight.georepo.models.entity import Entity
@@ -71,11 +75,10 @@ def entity_values(
             min_date_data=None,
             reference_layer=reference_layer,
             concept_uuids=concept_uuids,
-            last_value=False,
-            use_time=True
+            last_value=False
         )
         for value in values:
-            key = value['concept_uuid']
+            key = value.concept_uuid
             if key not in indicators_data:
                 indicators_data[key] = {}
             shortcode = indicator.shortcode
@@ -84,8 +87,11 @@ def entity_values(
                 indicators_data[key][indicator_key] = []
 
             indicators_data[key][indicator_key].append({
-                'value': value['value'],
-                'time': value['time']
+                'value': value.value,
+                'time': datetime.combine(
+                    value.date, datetime.min.time(),
+                    tzinfo=pytz.timezone(settings.TIME_ZONE)
+                ).isoformat()
             })
 
     # Construct context

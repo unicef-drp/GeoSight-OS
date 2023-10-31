@@ -15,6 +15,8 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib.gis.db import models
+from django.db.models.signals import post_save, pre_delete
+from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
 from geosight.data.models.indicator.indicator import Indicator, IndicatorType
@@ -216,3 +218,10 @@ class IndicatorValueWithGeo(models.Model):
         if self.indicator_type == IndicatorType.STRING:
             return self.value_str
         return self.value
+
+
+@receiver(post_save, sender=IndicatorValue)
+@receiver(pre_delete, sender=IndicatorValue)
+def increase_version(sender, instance, **kwargs):
+    """Increase verison of indicator signal."""
+    instance.indicator.increase_version()

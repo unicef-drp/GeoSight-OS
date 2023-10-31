@@ -51,6 +51,25 @@ class AbstractSource(models.Model):
         abstract = True
 
 
+class AbstractVersionData(models.Model):
+    """Abstract model versioning data."""
+
+    version_data = models.DateTimeField(default=timezone.now)
+
+    class Meta:  # noqa: D106
+        abstract = True
+
+    def increase_version(self):
+        """Increase version."""
+        self.version_data = timezone.now()
+        self.save()
+
+    @property
+    def version(self):
+        """Return version data."""
+        return self.version_data.timestamp()
+
+
 class AbstractEditData(models.Model):
     """Abstract model with Time Editor."""
 

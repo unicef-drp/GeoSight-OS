@@ -20,11 +20,19 @@ import { APIReducer } from "../../../reducers_api";
  */
 
 export const INDICATORS_DATA_ACTION_NAME = 'INDICATORS_DATA';
+export const INDICATORS_DATA_ACTION_TYPE_PROGRESS = 'INDICATORS_DATA/UPDATE_PROGRESS';
 
 const initialState = {}
 export default function IndicatorsDataReducer(state = initialState, action) {
   if (action.name === INDICATORS_DATA_ACTION_NAME) {
     switch (action.type) {
+      case INDICATORS_DATA_ACTION_TYPE_PROGRESS: {
+        const { id, progress } = action
+        if (state[id]) {
+          state[id].progress = progress
+        }
+        return { ...state }
+      }
       default: {
         const data = APIReducer(state, action, INDICATORS_DATA_ACTION_NAME)
         const { id } = action

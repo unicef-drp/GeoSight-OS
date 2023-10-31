@@ -21,13 +21,23 @@ import React, { useEffect, useRef } from 'react';
 import $ from "jquery";
 import { useDispatch, useSelector } from "react-redux";
 import { Actions } from "../../../../store/dashboard";
-import { fetchingData } from "../../../../Requests";
+import { fetchPagination } from "../../../../Requests";
 import { removeElement } from "../../../../utils/Array";
-import { UpdateStyleData } from "../../../../utils/indicatorData";
+import {
+  filterIndicatorsData,
+  UpdateStyleData
+} from "../../../../utils/indicatorData";
+import {
+  LocalStorage,
+  LocalStorageData
+} from "../../../../utils/localStorage";
+import { dictDeepCopy, jsonToUrlParams } from "../../../../utils/main";
+import { Session } from "../../../../utils/Sessions";
 
 /** Indicators data. */
 let indicatorFetchingSession = null
 export let indicatorFetchingIds = []
+const MAX_COUNT_FOR_ALL_DATA = 10000
 
 export default function Indicators() {
   const prevState = useRef();
@@ -36,6 +46,9 @@ export default function Indicators() {
     indicators,
     indicatorLayers
   } = useSelector(state => state.dashboard.data);
+  const currentIndicatorLayer = useSelector(state => state.selectedIndicatorLayer);
+  const currentIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer);
+  const indicatorLayerMetadata = useSelector(state => state.indicatorLayerMetadata);
   const selectedGlobalTime = useSelector(state => state.selectedGlobalTime);
   const selectedGlobalTimeStr = JSON.stringify(selectedGlobalTime);
 
@@ -75,6 +88,59 @@ export default function Indicators() {
     })
   }
 
+  /***
+   * Get All Data For and Indicator
+   * Fetch it from storage or fetch it
+   */
+  const getAllData = (id, url, dataVersion) => {
+    const storage = new LocalStorageData(url, dataVersion)
+    const storageData = storage.get()
+    if (!storageData) {
+      const session = new Session(url, 0, true)
+      if (session.isValid) {
+        setTimeout(function () {
+          fetchPagination(url.replace('latest', 'all')).then(response => {
+            storage.replaceData(response)
+          }).catch(error => {
+
+          })
+        }, 500);
+      }
+    }
+    return storageData
+  }
+
+  /***
+   * Get Data For and Indicator by dates
+   * Fetch it from storage or fetch it
+   */
+  const getDataByDate = (id, url, params, currentGlobalTime, dataVersion, onResponse) => {
+    const storage = new LocalStorageData(url, dataVersion)
+    const storageData = storage.get()
+    // Check if the request is already requested before
+    let doRequest = false
+    const requestKey = url + '?' + jsonToUrlParams(params) + '-Version'
+    if (storageData) {
+      const requestStorage = new LocalStorage(requestKey)
+      if (requestStorage.get() !== dataVersion) {
+        doRequest = true
+      }
+    } else {
+      doRequest = true
+    }
+
+    if (doRequest) {
+      fetchPagination(url, params).then(response => {
+        storage.appendData(response)
+        new LocalStorage(requestKey).set(dataVersion)
+        onResponse(response, null)
+      }).catch(error => {
+        onResponse(null, error)
+      })
+    } else {
+      onResponse(filterIndicatorsData(currentGlobalTime.min, currentGlobalTime.max, storageData))
+    }
+  }
 
   /** Fetch all data */
   const fetchData = () => {
@@ -86,9 +152,12 @@ export default function Indicators() {
 
     // Get queue
     let defaultIds = []
-    indicatorLayers.filter(layer => layer.visible_by_default).map(
-      layer => defaultIds = defaultIds.concat(layer.indicators.map(indicator => indicator.id))
-    )
+    if (currentIndicatorLayer?.indicators) {
+      defaultIds = defaultIds.concat(currentIndicatorLayer?.indicators?.map(_ => _.id))
+    }
+    if (currentIndicatorSecondLayer?.indicators) {
+      defaultIds = defaultIds.concat(currentIndicatorSecondLayer?.indicators?.map(_ => _.id))
+    }
     const requestQueue = defaultIds.concat(
       indicators.filter(
         indicator => !defaultIds.includes(indicator.id)
@@ -116,7 +185,7 @@ export default function Indicators() {
           if (indicator) {
             const { id, url, style } = indicator
             const onResponse = (response, error) => {
-              if (indicatorFetchingSession === session) {
+              if (indicatorFetchingSession === session && response) {
                 response = UpdateStyleData(response, indicator)
                 dispatch(
                   Actions.IndicatorsData.receive(response, error, id)
@@ -124,14 +193,40 @@ export default function Indicators() {
               }
               done(id)
             }
-            // Fetch data, when 10, wait data
-            if (idx % 10 === 0) {
-              await fetchingData(url, params, {}, onResponse)
-            } else {
-              fetchingData(url, params, {}, onResponse)
+            const onProgress = (progress) => {
+              if (indicatorFetchingSession === session) {
+                dispatch(
+                  Actions.IndicatorsData.progress(id, progress)
+                )
+              }
             }
-          } else {
-            done(id)
+            // Fetch data, when 10, wait data
+            const dataId = 'indicator-' + indicator.id
+            // For data that has less than 10k data
+            // Return all data first
+
+            const metadata = indicatorLayerMetadata[dataId]
+            if (metadata?.version) {
+              const version = metadata?.version
+
+              if (metadata?.count && metadata.count > MAX_COUNT_FOR_ALL_DATA) {
+                getDataByDate(id, url, params, dictDeepCopy(selectedGlobalTime), version, onResponse)
+              } else {
+                // FOR FETCHING ALL DATA
+                const storageData = getAllData(dataId, url, version)
+                if (storageData) {
+                  onResponse(
+                    filterIndicatorsData(selectedGlobalTime.min, selectedGlobalTime.max, storageData)
+                  )
+                } else {
+                  fetchPagination(url, params, onProgress).then(response => {
+                    onResponse(response, null)
+                  }).catch(error => {
+                    onResponse(null, error)
+                  })
+                }
+              }
+            }
           }
           if (indicatorFetchingSession !== session) {
             break
@@ -140,5 +235,6 @@ export default function Indicators() {
       }
     )()
   }
+
   return null
 }

@@ -55,7 +55,7 @@ export default function GlobalDateSelector() {
     indicatorLayers,
     default_time_mode
   } = useSelector(state => state.dashboard.data);
-  const indicatorLayerDates = useSelector(state => state.indicatorLayerDates);
+  const indicatorLayerMetadata = useSelector(state => state.indicatorLayerMetadata);
   const selectedGlobalTime = useSelector(state => state.selectedGlobalTime);
   const relatedTableData = useSelector(state => state.relatedTableData);
   const currentIndicatorLayer = useSelector(state => state.selectedIndicatorLayer);
@@ -134,6 +134,12 @@ export default function GlobalDateSelector() {
           max = new Date(Date.UTC(maxYear, maxMonth, maxDay, 23, 59, 59)).toISOString()
           break
       }
+      if (min) {
+        min = min.replace('.000Z', '+00:00')
+      }
+      if (max) {
+        max = max.replace('.000Z', '+00:00')
+      }
       updateTime(min, max)
     }
   }
@@ -158,7 +164,7 @@ export default function GlobalDateSelector() {
       const indicatorLayer = indicatorLayers.find(layer => layer.id === id)
       if (indicatorLayer) {
         indicatorLayer?.indicators?.map(indicator => {
-          const indicatorDates = indicatorLayerDates['indicator-' + indicator.id]
+          const indicatorDates = indicatorLayerMetadata['indicator-' + indicator.id]?.dates
           if (typeof indicatorDates === 'string' && indicatorDates.includes('Error')) {
             errorMessage = indicatorDates
           }
@@ -168,7 +174,7 @@ export default function GlobalDateSelector() {
         })
 
         // For indicator layer
-        const indicatorDates = indicatorLayerDates[id]
+        const indicatorDates = indicatorLayerMetadata[id]?.dates
         if (typeof indicatorDates === 'string' && indicatorDates.includes('Error')) {
           errorMessage = indicatorDates
         }
@@ -302,22 +308,31 @@ export default function GlobalDateSelector() {
         const data = {}
         const call = async (indicator) => {
           const id = 'indicator-' + indicator.id
-          try {
-            const response = await fetchJSON(indicator.url.replace('/values/latest', '/dates'), {});
-            if (!response?.length) {
-              data[id] = [nowUTC().toISOString()]
-            } else {
-              data[id] = response
+          if (!indicatorLayerMetadata[id]?.dates) {
+            try {
+              const response = await fetchJSON(indicator.url.replace('/values/latest', '/metadata'), {});
+              if (!response?.dates?.length) {
+                data[id] = {
+                  dates: [nowUTC().toISOString()],
+                  count: 0,
+                  version: 'TEMP'
+                }
+              } else {
+                data[id] = response
+              }
+            } catch (error) {
+              data[id] = {
+                dates: error.toString(),
+                count: 0,
+                version: 'TEMP'
+              }
             }
-          } catch (error) {
-            data[id] = [nowUTC().toISOString()]
           }
         }
         await Promise.all(indicators.map(indicator => call(indicator)))
-        dispatch(Actions.IndicatorLayerDates.addBatch(data))
+        dispatch(Actions.IndicatorLayerMetadata.updateBatch(data))
       }
     )();
-
   }, [indicators]);
 
   /**
@@ -340,7 +355,7 @@ export default function GlobalDateSelector() {
       }
     },
     [
-      indicatorLayerDates
+      indicatorLayerMetadata
     ]
   );
 

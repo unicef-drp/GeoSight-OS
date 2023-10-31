@@ -21,18 +21,21 @@ from datetime import datetime
 import pytz
 from dateutil import parser as date_parser
 from django.conf import settings
-from django.http import (
-    HttpResponseBadRequest
-)
+from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from core.pagination import Pagination
 from geosight.data.models.dashboard import (
     Dashboard
 )
 from geosight.data.models.indicator import Indicator
-from geosight.data.serializer.indicator import IndicatorValueWithGeoSerializer
+from geosight.data.serializer.indicator import (
+    IndicatorValueWithGeoSerializer,
+    IndicatorValueWithGeoDateSerializer
+)
 from geosight.georepo.models.reference_layer import ReferenceLayerIndicator
 from geosight.georepo.serializer.entity import EntitySerializer
 from geosight.permission.access import (
@@ -81,42 +84,48 @@ class _DashboardIndicatorValuesAPI(APIView):
         return min_time, max_time
 
 
-class DashboardIndicatorValuesAPI(_DashboardIndicatorValuesAPI):
+class DashboardIndicatorValuesAPI(
+    _DashboardIndicatorValuesAPI, ListAPIView
+):
     """API for Values of indicator."""
 
-    def get(self, request, slug, pk, **kwargs):
-        """Return Values."""
+    pagination_class = Pagination
+    serializer_class = IndicatorValueWithGeoDateSerializer
+
+    def get_queryset(self):
+        """Return queryset of API."""
+        slug = self.kwargs['slug']
+        pk = self.kwargs['pk']
         dashboard = get_object_or_404(Dashboard, slug=slug)
         indicator = get_object_or_404(Indicator, pk=pk)
-        self.check_permission(request.user, dashboard, indicator)
-        min_time, max_time = self.return_parameters(request)
-        return Response(
-            indicator.values(
-                date_data=max_time,
-                min_date_data=min_time,
-                admin_level=request.GET.get('admin_level', None),
-                reference_layer=dashboard.reference_layer
-            )
-        )
-
-
-class DashboardIndicatorAllValuesAPI(_DashboardIndicatorValuesAPI):
-    """API for all Values of indicator."""
-
-    def get(self, request, slug, pk, **kwargs):
-        """Return Values."""
-        dashboard = get_object_or_404(Dashboard, slug=slug)
-        indicator = get_object_or_404(Indicator, pk=pk)
-        self.check_permission(request.user, dashboard, indicator)
-
-        query = indicator.query_values(
+        self.check_permission(self.request.user, dashboard, indicator)
+        min_time, max_time = self.return_parameters(self.request)
+        return indicator.values(
+            date_data=max_time,
+            min_date_data=min_time,
+            admin_level=self.request.GET.get('admin_level', None),
             reference_layer=dashboard.reference_layer
         )
-        query = query.order_by(
-            'concept_uuid', 'geom_id', '-date'
-        )
-        return Response(
-            IndicatorValueWithGeoSerializer(query, many=True).data
+
+
+class DashboardIndicatorAllValuesAPI(
+    _DashboardIndicatorValuesAPI, ListAPIView
+):
+    """API for all Values of indicator."""
+
+    pagination_class = Pagination
+    serializer_class = IndicatorValueWithGeoSerializer
+
+    def get_queryset(self):
+        """Return queryset of API."""
+        slug = self.kwargs['slug']
+        pk = self.kwargs['pk']
+        dashboard = get_object_or_404(Dashboard, slug=slug)
+        indicator = get_object_or_404(Indicator, pk=pk)
+        self.check_permission(self.request.user, dashboard, indicator)
+        return indicator.values(
+            reference_layer=dashboard.reference_layer,
+            last_value=False
         )
 
 
@@ -199,7 +208,7 @@ class DashboardIndicatorDatesAPI(DashboardIndicatorValuesAPI):
         return Response(dates)
 
 
-class DashboardIndicatorDatesAndCountAPI(DashboardIndicatorValuesAPI):
+class DashboardIndicatorMetadataAPI(DashboardIndicatorValuesAPI):
     """API for of indicator."""
 
     def get(self, request, slug, pk, **kwargs):
@@ -207,25 +216,24 @@ class DashboardIndicatorDatesAndCountAPI(DashboardIndicatorValuesAPI):
         dashboard = get_object_or_404(Dashboard, slug=slug)
         indicator = get_object_or_404(Indicator, pk=pk)
         self.check_permission(request.user, dashboard, indicator)
-
+        query = indicator.query_values(
+            reference_layer=dashboard.reference_layer
+        )
         dates = [
             datetime.combine(
                 date_str, datetime.min.time(),
                 tzinfo=pytz.timezone(settings.TIME_ZONE)
             ).isoformat()
             for date_str in set(
-                indicator.query_values(
-                    reference_layer=dashboard.reference_layer
-                ).values_list('date', flat=True)
+                query.values_list('date', flat=True)
             )
         ]
         dates.sort()
 
         return Response({
             'dates': dates,
-            'count': indicator.query_values(
-                reference_layer=dashboard.reference_layer
-            ).count()
+            'count': query.count(),
+            'version': indicator.version
         })
 
 
@@ -282,11 +290,10 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
                     min_date_data=None,
                     reference_layer=dashboard.reference_layer,
                     concept_uuids=concept_uuids,
-                    last_value=False,
-                    use_time=True
+                    last_value=False
                 )
                 for value in values:
-                    key = value['concept_uuid']
+                    key = value.concept_uuid
                     if key not in indicators:
                         indicators[key] = {}
 
@@ -296,8 +303,11 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
                         indicators[key][indicator_key] = []
 
                     indicators[key][indicator_key].append({
-                        'value': value['value'],
-                        'time': value['time']
+                        'value': value.value,
+                        'time': datetime.combine(
+                            value.date, datetime.min.time(),
+                            tzinfo=pytz.timezone(settings.TIME_ZONE)
+                        ).isoformat()
                     })
             except ResourcePermissionDenied:
                 pass

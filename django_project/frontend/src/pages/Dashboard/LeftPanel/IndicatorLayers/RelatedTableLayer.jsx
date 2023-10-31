@@ -90,9 +90,15 @@ export default function RelatedTableLayer({ relatedTableLayer }) {
       fetchingData(
         '/api/related-table/' + relatedTable.id + '/dates', params, {}, function (response, error) {
           if (!error) {
-            dispatch(Actions.IndicatorLayerDates.add(id, response))
+            dispatch(Actions.IndicatorLayerMetadata.update(id, {
+              dates: response,
+              count: 0
+            }))
           } else {
-            dispatch(Actions.IndicatorLayerDates.add(id, error.toString()))
+            dispatch(Actions.IndicatorLayerMetadata.update(id, {
+              dates: error.toString(),
+              count: 0
+            }))
           }
         }
       )

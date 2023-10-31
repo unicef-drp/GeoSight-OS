@@ -14,13 +14,13 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from datetime import date, datetime
+from datetime import date
 
-import pytz
-from django.conf import settings
 from django.contrib.gis.db import models
 
-from core.models.general import AbstractTerm, AbstractSource, AbstractEditData
+from core.models.general import (
+    AbstractTerm, AbstractSource, AbstractEditData, AbstractVersionData
+)
 from geosight.data.models.code import CodeList
 from geosight.data.models.indicator.indicator_type import (
     IndicatorType, IndicatorTypeChoices
@@ -46,7 +46,8 @@ class IndicatorGroup(AbstractTerm):
 
 
 class Indicator(
-    IndicatorStyleBaseModel, AbstractTerm, AbstractSource, AbstractEditData
+    IndicatorStyleBaseModel, AbstractTerm, AbstractSource, AbstractEditData,
+    AbstractVersionData
 ):
     """The indicator model."""
 
@@ -330,69 +331,24 @@ class Indicator(
             ).first()
         return None
 
-    def serialize(
-            self, concept_uuid, geometry_code, value, admin_level,
-            attributes=None, date=None, use_time=False
-    ):
-        """Return data."""
-        values = {
-            'geometry_code': geometry_code,
-            'value': value,
-            'concept_uuid': concept_uuid,
-            'admin_level': admin_level
-        }
-        if not use_time:
-            values['date'] = date.strftime("%d-%m-%Y")
-        else:
-            values['time'] = datetime.combine(
-                date, datetime.min.time(),
-                tzinfo=pytz.timezone(settings.TIME_ZONE)
-            ).isoformat()
-        if attributes:
-            values.update(attributes)
-        return values
-
     def values(
             self, date_data: date = None, min_date_data: date = None,
             reference_layer=None, admin_level: int = None,
-            concept_uuids: list = None, last_value=True,
-            use_time=False
+            concept_uuids: list = None, last_value=True
     ):
         """Return list data based on date.
 
         If it is upper than the reporting geometry level,
         it will be aggregate to upper level
         """
-        from geosight.data.models.indicator import IndicatorExtraValue
-        values = []
         query = self.query_values(
             date_data=date_data, min_date_data=min_date_data,
             reference_layer=reference_layer, admin_level=admin_level,
             concept_uuids=concept_uuids
         )
-        query_report = query.order_by(
+        query = query.order_by(
             'concept_uuid', 'geom_id', '-date'
         )
         if last_value:
-            query_report = query_report.distinct('geom_id', 'concept_uuid')
-
-        for indicator_value in query_report:
-            attributes = {}
-            extra_values = IndicatorExtraValue.objects.filter(
-                indicator_value_id=indicator_value.id
-            )
-            if extra_values.count():
-                attributes.update({
-                    extra.key: extra.value for extra in extra_values
-                })
-            value = self.serialize(
-                concept_uuid=indicator_value.concept_uuid,
-                geometry_code=indicator_value.geom_id,
-                value=indicator_value.val,
-                attributes=attributes,
-                date=indicator_value.date,
-                use_time=use_time,
-                admin_level=indicator_value.admin_level
-            )
-            values.append(value)
-        return values
+            query = query.distinct('geom_id', 'concept_uuid')
+        return query

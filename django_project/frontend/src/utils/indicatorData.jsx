@@ -108,3 +108,27 @@ export const getIndicatorValueByGeometry = (
     selectedGlobalTime, geoField, filteredGeometries
   )
 }
+
+/**
+ * Update indicator layer with geography code for related table
+ */
+export const filterIndicatorsData = (time_min, time_max, data) => {
+  const geom_found = [];
+  if (!time_min || !time_max) {
+    return data
+  }
+  const min = time_min ? (new Date(time_min).getTime()) / 1000 : null
+  const max = time_max ? (new Date(time_max).getTime()) / 1000 : null
+  data = data.filter(row => {
+    if (!row) {
+      return false
+    }
+    const geomFound = geom_found.includes(row.geometry_code)
+    const used = !geomFound && row.time >= min && row.time <= max
+    if (used) {
+      geom_found.push(row.geometry_code)
+    }
+    return used
+  })
+  return data
+}

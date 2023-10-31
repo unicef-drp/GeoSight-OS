@@ -29,6 +29,7 @@ class Pagination(PageNumberPagination):
             'next': self.get_next_link(),
             'previous': self.get_previous_link(),
             'count': self.page.paginator.count,
+            'page': self.page.number,
             'page_size': self.page.paginator.num_pages,
             'results': data,
         })
