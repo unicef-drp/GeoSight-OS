@@ -216,25 +216,23 @@ class DashboardIndicatorMetadataAPI(DashboardIndicatorValuesAPI):
         dashboard = get_object_or_404(Dashboard, slug=slug)
         indicator = get_object_or_404(Indicator, pk=pk)
         self.check_permission(request.user, dashboard, indicator)
-
+        query = indicator.query_values(
+            reference_layer=dashboard.reference_layer
+        )
         dates = [
             datetime.combine(
                 date_str, datetime.min.time(),
                 tzinfo=pytz.timezone(settings.TIME_ZONE)
             ).isoformat()
             for date_str in set(
-                indicator.query_values(
-                    reference_layer=dashboard.reference_layer
-                ).values_list('date', flat=True)
+                query.values_list('date', flat=True)
             )
         ]
         dates.sort()
 
         return Response({
             'dates': dates,
-            'count': indicator.query_values(
-                reference_layer=dashboard.reference_layer
-            ).count(),
+            'count': query.count(),
             'version': indicator.version
         })
 

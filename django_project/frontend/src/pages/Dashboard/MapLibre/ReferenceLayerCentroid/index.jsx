@@ -395,7 +395,8 @@ export default function ReferenceLayerCentroid({ map }) {
       indicatorLayer: indicatorLayer.id,
       indicatorLayerConfig: isIndicatorLayerLikeIndicator(indicatorLayer) ? indicatorLayer.config : {},
       filteredGeometries: usedFilteredGeometries,
-      indicatorShow: indicatorShow
+      indicatorShow: indicatorShow,
+      usedIndicatorsData: usedIndicatorsData
     }
     if (!isRenderingChart) {
       config.showIndicatorMapLabel = showIndicatorMapLabel
