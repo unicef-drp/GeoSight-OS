@@ -210,10 +210,10 @@ export function createDynamicStyle(data, styleType, config, styleData) {
           values = values.filter(val => !isNaN(val))
           // If the unique values are just 2
           // We can show exactly 2 classification
-          if (uniqueValues.length <= config.dynamic_class_num) {
+          if (uniqueValues.length === 2) {
             const colors = createColors(config.color_palette, uniqueValues.length)
             colors.map((color, idx) => {
-              const usedValue = uniqueValues[idx]
+              const usedValue = values[idx]
               styles.push(
                 {
                   id: idx,
