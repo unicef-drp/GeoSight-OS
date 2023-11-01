@@ -259,8 +259,8 @@ export function createDynamicStyle(data, styleType, config, styleData) {
                   }
                   const below = classifications[idx - 1];
                   const top = classifications[idx];
-                  const belowLabel = below.round(2);
-                  const topLabel = top.round(2);
+                  const belowLabel = below.toFixed(2);
+                  const topLabel = top.toFixed(2);
                   const color = colors[idx - 1]
                   styles.push(
                     {

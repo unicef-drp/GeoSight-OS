@@ -95,7 +95,7 @@ export function numberWithCommas(x, decimalNum = 2) {
     if (typeof x !== 'number') {
       return x
     }
-    x = x.round(decimalNum)
+    x = x.toFixed(decimalNum)
     let number = x.split('.')[0];
     let decimal = x.split('.')[1];
     let string = number.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
