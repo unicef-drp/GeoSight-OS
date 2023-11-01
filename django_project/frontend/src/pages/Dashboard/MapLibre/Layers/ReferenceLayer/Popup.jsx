@@ -391,7 +391,6 @@ export function popup(
         )
       }
     )
-    console.log(context)
 
     if (currentIndicatorLayer.popup_type === 'Custom') {
       return renderPopup(
