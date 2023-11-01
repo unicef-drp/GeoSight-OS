@@ -183,6 +183,9 @@ export function updateCurrent(
         relatedNames.pop()
         relatedName = relatedNames.join('(')
       }
+      if (!data.date && data.time) {
+        data.date = new Date(data.time * 1000).toISOString().replace('.000Z', '+00:00')
+      }
       if (!data.date) {
         return
       }
@@ -388,6 +391,7 @@ export function popup(
         )
       }
     )
+    console.log(context)
 
     if (currentIndicatorLayer.popup_type === 'Custom') {
       return renderPopup(
