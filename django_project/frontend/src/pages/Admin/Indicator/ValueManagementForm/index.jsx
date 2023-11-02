@@ -324,7 +324,7 @@ export default function ValueManagement() {
                           <div>
                             <InputForm
                               initValue={row[1].value}
-                              type='number' placeholder='New Value'
+                              placeholder='New Value'
                               name={'geometry:' + row[0]}/>
                           </div>
                           <div className='ExtraValue'>

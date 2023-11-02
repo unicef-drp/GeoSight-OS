@@ -101,8 +101,9 @@
       background: $base-almost-white-color;
       border: 1px solid $base-almost-gray-color;
       display: flex;
-      min-height: 2.8rem;
+      min-height: 38px;
       border-radius: $border-radius;
+      box-sizing: border-box;
 
       input {
         border: none;
@@ -149,7 +150,7 @@
       padding-right: 0.5rem;
       flex-grow: unset !important;
       display: block;
-      width: 25px !important;
+      width: 30px !important;
       opacity: 1;
       color: $gray-500;
 
@@ -163,7 +164,8 @@
     }
 
     input {
-      padding: 0.8rem 0.5rem;
+      padding: 10px 0.5rem;
+      height: 38px;
 
       &:focus,
       &:focus-within {

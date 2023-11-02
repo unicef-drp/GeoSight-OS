@@ -15,6 +15,7 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib import admin
+from django.utils import timezone
 
 from geosight.data.models.indicator import (
     Indicator, IndicatorGroup,
@@ -45,13 +46,21 @@ class IndicatorRuleInline(admin.TabularInline):
     extra = 0
 
 
+@admin.action(description='Invalidate cache')
+def update_meta(modeladmin, request, queryset):
+    """Invalidate cache of value on frontend."""
+    queryset.update(version_data=timezone.now())
+
+
 class IndicatorAdmin(admin.ModelAdmin):
     """Indicator admin."""
 
     list_display = ('name', 'group', 'creator', 'type', 'created_at')
     list_filter = ('group',)
     list_editable = ('creator', 'group', 'type')
+    search_fields = ('name',)
     inlines = (IndicatorRuleInline,)
+    actions = (update_meta,)
 
 
 class IndicatorGroupAdmin(admin.ModelAdmin):
