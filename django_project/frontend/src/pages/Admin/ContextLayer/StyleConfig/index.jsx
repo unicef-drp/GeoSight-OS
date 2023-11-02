@@ -131,10 +131,12 @@ export default function StyleConfig(
           }
           {
             data.layer_type === 'ARCGIS' ?
-              <ArcgisConfig
-                originalData={data} setData={setData}
-                ArcgisData={layerData} useOverride={useOverride}
-              /> :
+              <Fragment>
+                <ArcgisConfig
+                  originalData={data} setData={setData}
+                  ArcgisData={layerData} useOverride={useOverride}
+                />
+              </Fragment> :
               <Fragment>
                 <div className='ArcgisConfig Fields form-helptext'>
                   Config is not Arcgis

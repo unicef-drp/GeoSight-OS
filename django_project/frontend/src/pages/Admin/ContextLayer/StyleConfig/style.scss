@@ -84,13 +84,36 @@
     display: none;
   }
 
+  .RevertStyleButton {
+    margin-left: auto;
+    margin-bottom: 1rem;
+    display: block;
+  }
 
   .ArcgisConfig {
 
     .Classification {
       border: 1px solid $primary-color;
-      padding: 1rem 0;
+      padding: 0 0 1rem 0;
       margin-bottom: -1px;
+
+      .ClassificationLabel {
+        background-color: $primary-color;
+        color: $anti-primary-color;
+        padding: 1rem 2rem;
+        margin-bottom: 1rem;
+      }
+
+      .ClassificationValue {
+        padding: 0 2rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+
+        > div {
+          white-space: nowrap;
+        }
+      }
 
       b {
         display: block;
