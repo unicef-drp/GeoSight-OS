@@ -47,7 +47,7 @@ class IndicatorRuleInline(admin.TabularInline):
 
 
 @admin.action(description='Invalidate cache')
-def update_meta(modeladmin, request, queryset):
+def invalidate_cache(modeladmin, request, queryset):
     """Invalidate cache of value on frontend."""
     queryset.update(version_data=timezone.now())
 
@@ -60,7 +60,7 @@ class IndicatorAdmin(admin.ModelAdmin):
     list_editable = ('creator', 'group', 'type')
     search_fields = ('name',)
     inlines = (IndicatorRuleInline,)
-    actions = (update_meta,)
+    actions = (invalidate_cache,)
 
 
 class IndicatorGroupAdmin(admin.ModelAdmin):
