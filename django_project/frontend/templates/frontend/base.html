@@ -23,6 +23,7 @@
       console.error = function () {
         let args = Array.prototype.slice.call(arguments);
         let errorMsg = args.join(' ');
+        console.log(errorMsg)
         if (errorMsg.includes("georepo")) {
           return;
         }
