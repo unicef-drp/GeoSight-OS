@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 function componentToHex(c) {
   var hex = c.toString(16);
@@ -149,7 +149,16 @@ export default function parseArcRESTStyle(data) {
 
       // CHeck which field need to check as classification
       if (drawingInfo.renderer.field1) {
-        info['fieldName'] = drawingInfo.renderer.field1
+        const fields = []
+        for (let i = 1; i <= 10; i++) {
+          if (drawingInfo.renderer['field' + i]) {
+            fields.push(drawingInfo.renderer['field' + i])
+          } else {
+            break
+          }
+        }
+        info['fieldName'] = fields.join(',')
+        info.multipleField = true
       } else if (drawingInfo.renderer.field) {
         info['fieldName'] = drawingInfo.renderer.field
       }

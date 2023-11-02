@@ -89,30 +89,95 @@ function ArcGisStyle(map, id, layer) {
     }
     case "classExactValue":
       // For class exact value
-      style.classifications.map((classification, idx) => {
-        const classStyle = classification.style.style
-        for (let [key, value] of Object.entries(classStyle)) {
-          if (value) {
-            const cases = []
-            let classValue = classification.value
-            if (!isNaN(value)) {
-              value = parseFloat(value)
-            }
-            cases.push(
-              ["==", ["get", style.fieldName], classValue]
-            )
-            cases.push(value)
-            if (!isNaN(classValue)) {
-              classValue = parseFloat(classValue)
+      if (!style.multipleField) {
+        style.classifications.map((classification, idx) => {
+          const classStyle = classification.style.style
+          for (let [key, value] of Object.entries(classStyle)) {
+            if (value) {
+              const cases = []
+              let classValue = classification.value
+              if (!isNaN(value)) {
+                value = parseFloat(value)
+              }
               cases.push(
                 ["==", ["get", style.fieldName], classValue]
               )
               cases.push(value)
+              if (!isNaN(classValue)) {
+                classValue = parseFloat(classValue)
+                cases.push(
+                  ["==", ["get", style.fieldName], classValue]
+                )
+                cases.push(value)
+              }
+              assignCases(classification.style.type, key, cases)
             }
-            assignCases(classification.style.type, key, cases)
+          }
+        })
+      } else {
+        const createClassification = (fieldName, classValue) => {
+          if (classValue !== null) {
+            return [["==", ["get", fieldName], classValue]]
+          } else {
+            return [["==", ["get", fieldName], null]]
           }
         }
-      })
+        style.classifications.map((classification, idx) => {
+          const classStyle = classification.style.style
+          for (let [key, value] of Object.entries(classStyle)) {
+            if (value) {
+              const cases = []
+              let classValues = classification.value.split(',')
+              let fieldNames = style.fieldName.split(',')
+              let valueClassification = []
+              let valueClassificationNumber = []
+              if (!isNaN(value)) {
+                value = parseFloat(value)
+              }
+
+              // We create condition per field name
+              fieldNames.map((fieldName, idx) => {
+                let classValue = classValues[idx]
+                if (classValue === '<Null>') {
+                  classValue = null;
+                }
+
+                // Check if by default
+                valueClassification.push(["==", ["get", fieldName], classValue])
+
+                // Check if data is number
+                if (!isNaN(classValue) && classValue !== null) {
+                  classValue = parseFloat(classValue)
+                  valueClassificationNumber.push(["==", ["get", fieldName], classValue])
+                } else {
+                  valueClassificationNumber.push(["==", ["get", fieldName], classValue])
+                }
+              })
+              // For value classification
+              if (valueClassification.length === 1) {
+                cases.push(valueClassification[0])
+                cases.push(value)
+              } else if (valueClassification.length > 1) {
+                cases.push([
+                  "all", ...valueClassification
+                ])
+                cases.push(value)
+              }
+              // For value classification in number format
+              if (valueClassificationNumber.length === 1) {
+                cases.push(valueClassificationNumber[0])
+                cases.push(value)
+              } else if (valueClassificationNumber.length > 1) {
+                cases.push([
+                  "all", ...valueClassificationNumber
+                ])
+                cases.push(value)
+              }
+              assignCases(classification.style.type, key, cases)
+            }
+          }
+        })
+      }
       break
     case "classMaxValue": {
       // For max value type
@@ -139,7 +204,7 @@ function ArcGisStyle(map, id, layer) {
 
   // Let's repaint
   for (const [layerId, values] of Object.entries(casesByType)) {
-    if (style.fieldName) {
+    if (style.fieldName && !style.multipleField) {
       map.setFilter(layerId, ['!=', ['get', style.fieldName], null]);
     }
 
