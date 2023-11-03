@@ -165,7 +165,9 @@ export function resourceActions(params, noShare = false) {
       />
     )
   }
-  if (permission.edit) {
+  // TODO: Disable data browser for non admin.
+  //  To prevent big query for non admin
+  if (permission.edit && user.is_admin) {
     actions.unshift(
       <GridActionsCellItem
         icon={
