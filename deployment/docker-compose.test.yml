@@ -46,7 +46,6 @@ services:
       - DJANGO_SETTINGS_MODULE=core.settings.test
       - INITIAL_FIXTURES=True
       - SECRET_KEY=SECRET_KEY
-      - DEMO_FIXTURES=True
 
       # Redis config
       - REDIS_HOST=redis

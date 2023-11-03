@@ -110,14 +110,3 @@ except Exception:
     pass
 
 call_command('collectstatic', '--noinput', verbosity=0)
-
-#########################################################
-# 5. Loading fixtures
-#########################################################
-load_demo_fixtures = ast.literal_eval(
-    os.getenv('DEMO_FIXTURES', 'False')
-)
-if load_demo_fixtures:
-    print("-----------------------------------------------------")
-    print("5. Loading demo fixtures")
-    call_command('loaddata', 'core/fixtures/demo.json')
