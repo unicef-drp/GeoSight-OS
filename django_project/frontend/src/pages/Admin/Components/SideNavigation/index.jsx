@@ -152,6 +152,8 @@ export default function SideNavigation({ pageName, minified }) {
                   </SidaNavigationButton>
                 </div>
                 {
+                  // TODO: Disable data browser for non admin.
+                  //  To prevent big query for non admin
                   user.is_admin ?
                     <SidaNavigationButton
                       minified={minified}
