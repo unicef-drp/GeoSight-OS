@@ -30,14 +30,15 @@ if [ -w "tests/${1}.ts" ]; then
    esac
 fi
 TESTNAME=$1
+source base-url.sh
 
 playwright \
   codegen \
   --target playwright-test \
   --load-storage=auth.json \
   -o tests/$TESTNAME.spec.ts \
-  https://staging-geosight.unitst.org
+  $BASE_URL
 
 echo "Test recording completed."
 echo "You can then run your test by doing:"
-echo "playwright test --project chromium"
+echo "./run-tests.sh"

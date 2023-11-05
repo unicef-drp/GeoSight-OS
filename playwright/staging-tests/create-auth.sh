@@ -16,15 +16,17 @@ case $ANSWER in
   [nN] ) echo "Cancelled."; exit ;;
 esac
 
+source base-url.sh
+
 playwright \
   codegen \
   --target playwright-test \
   --save-storage=auth.json \
   -o tests/deleteme.spec.ts \
-  https://staging-geosight.unitst.org
+  $BASE_URL
 
 # We are only interested in geosight-auth.json
-rm tests/deleteme.ts
+rm tests/deleteme.spec.ts
 
 echo "Auth file creation completed."
 echo "You can then run your tests by doing e.g.:"

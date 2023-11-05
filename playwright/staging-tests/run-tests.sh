@@ -7,6 +7,7 @@ echo "./create-auth.sh"
 
 playwright \
   test \
+  --ui \
   --project chromium
 
 echo "--done--"
