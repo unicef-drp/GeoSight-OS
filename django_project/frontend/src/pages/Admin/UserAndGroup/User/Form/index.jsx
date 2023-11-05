@@ -72,6 +72,7 @@ export default function UserForm() {
     if (!user.is_staff) {
       $('input[name="is_staff"]').closest('.BasicFormSection').remove()
       $('input[name="receive_notification"]').closest('.BasicFormSection').remove()
+      $('input[name="role"]').closest('.BasicFormSection').find('.ReactSelect__input').prop("disabled", true);
     } else {
       if ($('p[data-field-name="is_staff"]').length) {
         setIsStaff($('#id_is_staff').is(':checked'))
@@ -98,7 +99,6 @@ export default function UserForm() {
       $('input[name="is_staff"]').closest('.BasicFormSection').show()
     } else {
       $('input[name="is_staff"]').closest('.BasicFormSection').hide()
-      $('input[name="role"]').closest('.BasicFormSection').find('.ReactSelect__input').prop("disabled", true);
     }
   }
 

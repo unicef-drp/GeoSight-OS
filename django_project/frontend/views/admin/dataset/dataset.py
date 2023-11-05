@@ -17,10 +17,12 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.shortcuts import reverse
 
 from frontend.views.admin._base import AdminBaseView
-from geosight.permission.access import RoleContributorRequiredMixin
+from geosight.permission.access import RoleSuperAdminRequiredMixin
 
 
-class DatasetAdminView(RoleContributorRequiredMixin, AdminBaseView):
+# TODO: Disable data browser for non admin.
+#  To prevent big query for non admin
+class DatasetAdminView(RoleSuperAdminRequiredMixin, AdminBaseView):
     """Dataset Admin View."""
 
     template_name = 'frontend/admin/dataset/dataset.html'

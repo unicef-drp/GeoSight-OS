@@ -24,8 +24,7 @@ from geosight.data.models.dashboard import (
     DashboardIndicatorLayer,
     DashboardIndicatorLayerIndicator,
     DashboardIndicatorLayerRelatedTable,
-    DashboardRelatedTable,
-    DashboardRelationGroup
+    DashboardRelatedTable
 )
 
 
@@ -136,16 +135,9 @@ class DashboardBookmarkAdmin(admin.ModelAdmin):
     filter_horizontal = ('selected_context_layers',)
 
 
-class DashboardRelationGroupAdmin(admin.ModelAdmin):
-    """Dashboard relation with group."""
-
-    list_filter = ('name', 'group')
-
-
 admin.site.register(Dashboard, DashboardAdmin)
 admin.site.register(DashboardContextLayer, DashboardContextLayerAdmin)
 admin.site.register(DashboardIndicator, DashboardIndicatorAdmin)
 admin.site.register(DashboardRelatedTable, DashboardRelatedTableAdmin)
 admin.site.register(DashboardIndicatorLayer, DashboardIndicatorLayerAdmin)
 admin.site.register(DashboardBookmark, DashboardBookmarkAdmin)
-admin.site.register(DashboardRelationGroup, DashboardRelationGroupAdmin)

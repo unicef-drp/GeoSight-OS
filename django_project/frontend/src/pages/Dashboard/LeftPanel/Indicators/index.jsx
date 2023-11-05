@@ -69,6 +69,11 @@ export default function Indicators() {
     }
   }, [indicators]);
 
+  /** At first time, put loading. */
+  useEffect(() => {
+    indicators.map(indicator => loading(indicator.id));
+  }, []);
+
   /** Loading data **/
   const loading = (id) => {
     const indicatorLayer = indicatorLayers.filter(layer => layer.indicators.map(indicator => indicator.id).includes(id))

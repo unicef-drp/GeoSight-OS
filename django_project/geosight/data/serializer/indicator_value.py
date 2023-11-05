@@ -317,10 +317,15 @@ class _BaseIndicatorValueWithGeoSerializer(serializers.ModelSerializer):
     """Serializer for IndicatorValueWithGeo."""
 
     geometry_code = serializers.SerializerMethodField()
+    value = serializers.SerializerMethodField()
 
     def get_geometry_code(self, obj: IndicatorValueWithGeo):
         """Return geometry_code."""
         return obj.geom_id
+
+    def get_value(self, obj: IndicatorValue):
+        """Return value of indicator."""
+        return obj.val
 
     def to_representation(self, obj: IndicatorValueWithGeo):
         """To representation of indicator value."""

@@ -20,7 +20,6 @@ from .context_layer import *
 from .dashboard import *
 from .dashboard_embed import *
 from .indicator import *
-from .link import *
 from .related_table import *
 from .sharepoint import *
 from .style import *

@@ -198,7 +198,7 @@ class IndicatorValueManagementTableView(
                     if value and 'geometry:' in key:
                         code = key.replace('geometry:', '')
                         indicator_value = indicator.save_value(
-                            date, code, float(value),
+                            date, code, value,
                             reference_layer=reference_layer.identifier,
                             admin_level=admin_level,
                             more_error_information=True

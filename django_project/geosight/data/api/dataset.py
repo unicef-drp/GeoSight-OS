@@ -24,7 +24,7 @@ from rest_framework.authentication import (
     SessionAuthentication, BasicAuthentication
 )
 from rest_framework.generics import ListAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 
 from core.api.base import FilteredAPI
@@ -49,7 +49,9 @@ class DatasetApiList(ListAPIView, FilteredAPI):
     authentication_classes = [
         SessionAuthentication, BasicAuthentication, BearerAuthentication
     ]
-    permission_classes = (IsAuthenticated,)
+    # TODO: Disable data browser for non admin.
+    #  To prevent big query for non admin
+    permission_classes = (IsAuthenticated, IsAdminUser)
     pagination_class = Pagination
     serializer_class = IndicatorValueWithPermissionSerializer
 
