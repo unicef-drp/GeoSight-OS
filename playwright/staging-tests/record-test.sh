@@ -4,8 +4,12 @@ if [ -z "$1" ]
 then
   echo "Usage: $0 TESTNAME"
   echo "e.g. $0 mytest"
-  echo "will write a new test to tests/mytest.ts"
+  echo "will write a new test to tests/mytest.spec.ts"
   echo "Do not use spaces in your test name."
+  echo "NOTE:"
+  echo "If you are manually creating tests, they must be"
+  echo "saved with a filename ending in .spec.ts"
+  echo "otherwise the test runner will not find them!"
   echo ""
   echo "After recording your test, close the test browser."
   echo "You can then run your test by doing:"
@@ -21,7 +25,7 @@ if [ -w "tests/${1}.ts" ]; then
    echo "File tests/${1}.ts exists. Overwrite? y/n"
    read ANSWER
    case $ANSWER in 
-       [yY] ) echo "Writing recorded test to tests/${1}.py" ;;
+       [yY] ) echo "Writing recorded test to tests/${1}.spec.ts" ;;
        [nN] ) echo "Cancelled."; exit ;;
    esac
 fi
@@ -30,10 +34,10 @@ TESTNAME=$1
 playwright \
   codegen \
   --target playwright-test \
-  --load-storage=geosight-auth.json \
-  -o tests/$TESTNAME.ts \
+  --load-storage=auth.json \
+  -o tests/$TESTNAME.spec.ts \
   https://staging-geosight.unitst.org
 
 echo "Test recording completed."
 echo "You can then run your test by doing:"
-echo "playwright test --project chromium tests/$1.ts"
+echo "playwright test --project chromium"

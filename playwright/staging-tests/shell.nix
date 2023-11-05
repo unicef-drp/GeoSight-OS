@@ -7,8 +7,8 @@ mkShell {
   buildInputs = [
     nodejs
     playwright-test
-    python311Packages.playwright
-    python311Packages.pytest
+    # python311Packages.playwright
+    # python311Packages.pytest
   ];
 
   PLAYWRIGHT_BROWSERS_PATH="${pkgs.playwright-driver.browsers}";
@@ -16,5 +16,7 @@ mkShell {
   shellHook = ''
     # Remove playwright from node_modules, so it will be taken from playwright-test
     rm node_modules/@playwright/ -R
+    export PLAYWRIGHT_BROWSERS_PATH=${pkgs.playwright-driver.browsers}
+    export PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=true
   '';
 }
