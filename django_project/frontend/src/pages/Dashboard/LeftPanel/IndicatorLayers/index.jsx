@@ -186,7 +186,9 @@ export function IndicatorLayers() {
         // Check indicators
         indicatorLayer.indicators.map(indLy => {
           const indicator = indicators.find(indicator => indicator.id === indLy.id)
-          if (!indicator.permission.read) {
+          if (!indicator) {
+            indicatorLayer.error = "There is no indicator found for this layer. Please ask admin to fix this."
+          } else if (!indicator.permission.read) {
             indicatorLayer.error = "You don't have permission to access this resource"
           }
         })
