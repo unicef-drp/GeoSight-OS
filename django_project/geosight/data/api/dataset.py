@@ -26,6 +26,7 @@ from rest_framework.authentication import (
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from core.api.base import FilteredAPI
 from core.api_utils import common_api_params, ApiTag, ApiParams
@@ -43,7 +44,7 @@ from geosight.permission.models.resource import (
 )
 
 
-class DatasetApiList(ListAPIView, FilteredAPI):
+class BaseDatasetApiList(FilteredAPI):
     """Return Data List API List."""
 
     authentication_classes = [
@@ -53,20 +54,6 @@ class DatasetApiList(ListAPIView, FilteredAPI):
     #  To prevent big query for non admin
     permission_classes = (IsAuthenticated, IsAdminUser)
     pagination_class = Pagination
-    serializer_class = IndicatorValueWithPermissionSerializer
-
-    def get_serializer_context(self):
-        """For serializer context."""
-        context = super().get_serializer_context()
-        context.update({"user": self.request.user})
-        return context
-
-    def get_param_value(self, param_key: str) -> list:
-        """Return paramater value as list."""
-        values = self.request.GET.get(param_key, None)
-        if values:
-            return values.split(',')
-        return None
 
     def get_queryset(self):
         """Return queryset of API."""
@@ -111,6 +98,18 @@ class DatasetApiList(ListAPIView, FilteredAPI):
         return IndicatorValue.objects.filter(id__in=ids).order_by(
             'indicator_id', '-date', 'geom_id'
         )
+
+
+class DatasetApiList(BaseDatasetApiList, ListAPIView):
+    """Return Data List API List."""
+
+    serializer_class = IndicatorValueWithPermissionSerializer
+
+    def get_serializer_context(self):
+        """For serializer context."""
+        context = super().get_serializer_context()
+        context.update({"user": self.request.user})
+        return context
 
     @swagger_auto_schema(
         operation_id='data-browser-get',
@@ -220,3 +219,11 @@ class DatasetApiList(ListAPIView, FilteredAPI):
             if value.permissions(request.user)['delete']:
                 value.delete()
         return Response('OK')
+
+
+class DatasetApiListIds(APIView, BaseDatasetApiList):
+    """Return Just ids Data List."""
+
+    def get(self, request):
+        """Get ids of data."""
+        return Response(self.get_queryset().values_list('id', flat=True))
