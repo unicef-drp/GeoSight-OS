@@ -36,11 +36,12 @@ import {
 import { ImageInput } from "../../../../../components/Input/ImageInput";
 import { Creatable } from "../../../../../components/Input";
 
-import './style.scss';
 import { INTERVALS } from "../../../../../utils/Dates";
 import {
   SelectWithList
 } from "../../../../../components/Input/SelectWithList";
+
+import './style.scss';
 
 /**
  * Summary dashboard
@@ -71,7 +72,6 @@ export default function SummaryDashboardForm({ changed }) {
 
   const [nameData, setNameData] = useState(name);
   const [descriptionData, setDescriptionData] = useState(description);
-  const [overviewData, setOverviewData] = useState(overview);
   const [showSplashOnFirstOpenData, setShowSplashOnFirstOpenData] = useState(show_splash_first_open);
   const [groupData, setGroupData] = useState(group);
   const [slugInput, setSlugInput] = useState(slug);
@@ -360,23 +360,6 @@ export default function SummaryDashboardForm({ changed }) {
             </label>
           </div>
           <MapConfig/>
-        </div>
-        <div className="BasicFormSection">
-          <FormControl className='IconInput'>
-            <label className="form-label" htmlFor="name">
-              Project Overview
-            </label>
-            <textarea
-              id='SummaryOverview'
-              name="textarea"
-              value={overviewData}
-              style={{ height: "300px" }}
-              onChange={(evt) => {
-                setOverviewData(evt.target.value)
-                changed(true)
-              }}/>
-          </FormControl>
-
         </div>
       </div>
     </div>

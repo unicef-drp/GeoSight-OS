@@ -22,6 +22,7 @@ import { useSelector } from "react-redux";
 
 import Cookies from "js-cookie";
 import Markdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import Checkbox from "@mui/material/Checkbox";
 import { FormControlLabel } from "@mui/material";
 
@@ -84,7 +85,7 @@ export default function ProjectOverview() {
             </ModalHeader>
             <ModalContent>
               <div className='ProjectDescription'>
-                <Markdown>
+                <Markdown remarkPlugins={[remarkGfm]}>
                   {overview ? overview : '*There is no information for this project.*'}
                 </Markdown>
               </div>
