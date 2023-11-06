@@ -115,3 +115,20 @@ def create_resource(sender, instance, created, **kwargs):
 def save_resource(sender, instance, **kwargs):
     """When resource saved."""
     instance.permission.save()
+
+
+# This is The View
+class ReferenceLayerIndicatorPermissionView(models.Model):
+    """Resource Permission."""
+
+    obj_id = models.IntegerField()
+    identifier = models.CharField(
+        max_length=256, null=True, blank=True
+    )
+
+    objects = models.Manager()
+    permissions = PermissionManager()
+
+    class Meta:  # noqa: D106
+        managed = False
+        db_table = 'v_referencelayer_indicator_permission'

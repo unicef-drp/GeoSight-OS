@@ -72,10 +72,14 @@ export default function DatasetAdmin() {
   })
   const [updatedData, setUpdatedData] = useState([]);
   const [disabled, setDisabled] = useState(false)
+  const [isInit, setIsInit] = useState(true)
 
   // When filter changed
-  useEffect(() => {
-    tableRef?.current?.refresh()
+  useEffect((prev) => {
+    if (!isInit) {
+      tableRef?.current?.refresh()
+    }
+    setIsInit(false)
   }, [filters])
 
   // COLUMNS

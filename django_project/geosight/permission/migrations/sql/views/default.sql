@@ -1,0 +1,1 @@
+DROP VIEW IF EXISTS v_referencelayer_indicator_permission;
