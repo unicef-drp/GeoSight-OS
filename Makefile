@@ -212,6 +212,15 @@ devweb-runserver:
 	@echo "------------------------------------------------------------------"
 	@docker-compose $(ARGS) exec -T dev bash -c "nohup python manage.py runserver 0.0.0.0:2000 &"
 
+devweb-load-demo-data:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Load demo data for devweb"
+	@echo "------------------------------------------------------------------"
+	@docker-compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/demo/1.core.json"
+	@docker-compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/demo/2.geosight_georepo.json"
+	@docker-compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/demo/3.geosight_data.json"
+
 devweb-test:
 	@echo
 	@echo "------------------------------------------------------------------"
