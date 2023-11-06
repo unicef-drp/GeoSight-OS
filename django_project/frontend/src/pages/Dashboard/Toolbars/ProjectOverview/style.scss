@@ -17,6 +17,7 @@
    Project Overview
    ========================================================================== */
 
+@import '../../../../app/variables';
 
 .ProjectOverview {
   .modal--footer {
@@ -39,5 +40,10 @@
         }
       }
     }
+  }
+
+  th, td {
+    padding: 6px;
+    border: 1px solid $border-gray;
   }
 }
