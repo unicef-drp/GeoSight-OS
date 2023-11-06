@@ -112,6 +112,7 @@ main {
     min-height: 0;
     padding: 1rem;
     overflow-y: auto;
+    position: relative;
 
     .AdminForm {
       flex-direction: column;
@@ -169,6 +170,12 @@ main {
   &.DashboardForm {
     &.Summary {
       .Summary {
+        display: block;
+      }
+    }
+
+    &.Overview {
+      .Overview {
         display: block;
       }
     }

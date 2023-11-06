@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { Fragment, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import $ from "jquery";
 import ViewHeadlineIcon from '@mui/icons-material/ViewHeadline';
@@ -50,6 +50,7 @@ import ShareForm from './Share'
 import GeorepoAuthorizationModal
   from "../../../../components/GeorepoAuthorizationModal";
 import { resourceActions } from "../List";
+import OverviewForm from "./Overview";
 
 // Dashboard Preview
 import { postData } from "../../../../Requests";
@@ -127,7 +128,7 @@ export function DashboardHistory(
     histories.length <= 1 || histories.length - 1 === currentHistoryIdx
   )
 
-  return <Fragment>
+  return <>
     <ThemeButton
       variant='primary Reverse JustIcon'
       className='UndoRedo'
@@ -152,7 +153,7 @@ export function DashboardHistory(
     >
       <RedoIcon/>
     </ThemeButton>
-  </Fragment>
+  </>
 }
 
 /**
@@ -351,7 +352,7 @@ export function DashboardSaveForm(
     }
   }
 
-  return <Fragment>
+  return <>
     <SaveButton
       variant="primary"
       text={submitted ? 'Saving...' : 'Save'}
@@ -359,7 +360,7 @@ export function DashboardSaveForm(
       className={submitted ? 'Submitted' : ''}
       disabled={disabled || submitted || !Object.keys(data).length}/>
     <Notification ref={notificationRef}/>
-  </Fragment>
+  </>
 }
 
 /**
@@ -370,8 +371,9 @@ export function DashboardFormContent({ changed }) {
   return (
     <div className='DashboardFormContent'>
       {Object.keys(data).length > 0 ?
-        <Fragment>
+        <>
           <SummaryDashboardForm changed={changed}/>
+          <OverviewForm changed={changed}/>
           <BasemapsForm/>
           <IndicatorsForm/>
           <IndicatorLayersForm/>
@@ -382,7 +384,7 @@ export function DashboardFormContent({ changed }) {
           {
             data?.user_permission.share ? <ShareForm/> : ""
           }
-        </Fragment> :
+        </> :
         <div className='DashboardFormLoading'>
           <div className='DashboardFormLoadingSection'>
             <CircularProgress/>
@@ -415,6 +417,12 @@ export function DashboardFormHeader(
       onClick={() => changePage('Summary')}
     >
       General
+    </div>
+    <div
+      className={currentPage === 'Overview' ? 'Selected' : 'MuiButtonLike'}
+      onClick={() => changePage('Overview')}
+    >
+      Overview
     </div>
     <div
       className={currentPage === 'Indicators' ? 'Selected' : 'MuiButtonLike'}
