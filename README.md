@@ -16,7 +16,7 @@ A **project** (dashboard) is the most important feature of GeoSight. Projects co
 
 [![Tests](https://github.com/unicef-drp/GeoSight-OS/workflows/Tests/badge.svg)](https://github.com/unicef-drp/GeoSight-OS/actions/workflows/tests.yaml)
 [![Flake8](https://github.com/unicef-drp/GeoSight-OS/workflows/Flake8/badge.svg)](https://github.com/unicef-drp/GeoSight-OS/actions/workflows/flake8.yml)
-[![Documentation](https://github.com/unicef-drp/GeoSight-OS/workflows/Documentation/badge.svg)](https://unicef-drp.github.io/GeoSight-OS/)
+[![📖 Documentation](https://github.com/unicef-drp/GeoSight-OS-Documentation/actions/workflows/BuildMKDocsAndPublishToGithubPages.yml/badge.svg)](https://github.com/unicef-drp/GeoSight-OS-Documentation/actions/workflows/BuildMKDocsAndPublishToGithubPages.yml)
 
 ### Production
 
@@ -75,11 +75,25 @@ The web can be accessed using `http://localhost:2000/`
 If the web is taking long time to load, restart geosight_dev container.<br>
 The sequence should be `make frontend-dev`, after that run or restart geosight_dev. 
 
+### Demo data
+Demo data command can be done after development server is run.
+
+Do
+```
+make devweb-load-demo-data
+```
+and it will restore demo data to GeoSight.
+After that, you need to update the GeoRepo configuration. <br/>
+The demo data is using https://georepo.unicef.org/api/v1/, so you need to ask API Key Level 1 and Level 4 from GeoRepo. <br/>
+Or you can use your API key, and just put your api key to Level 1 and Level 4 (same api key).
+
 # Setup GeoRepo configuration
 
 There are GeoRepo configurations that are needed for geosight.<br>
 Go to '/django-admin/core/sitepreferences/1/change/', use admin username/password on .env file (ADMIN_USERNAME and ADMIN_PASSWORD).<br>
 Change Georepo url and fill Georepo API Key. For Georepo API Key, you can ask georepo for the key.
+GeoRepo URL is basically, GeoRepo API URL.
+The url should be https://<domain>/api/v1/, e.g: https://georepo.unicef.org/api/v1/.
 
 # Building the documentation as a PDF
 
