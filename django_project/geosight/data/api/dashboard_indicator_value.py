@@ -88,6 +88,7 @@ class _DashboardIndicatorValuesListAPI(
     _DashboardIndicatorValuesAPI, ListAPIView
 ):
     """Base indicator values ListAPI."""
+
     pagination_class = Pagination
     serializer_class = IndicatorValueWithGeoDateSerializer
 

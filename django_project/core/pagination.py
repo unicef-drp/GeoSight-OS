@@ -24,6 +24,7 @@ class Pagination(PageNumberPagination):
     page_size_query_param = 'page_size'
 
     def get_paginated_response_data(self, data):
+        """Return paginated only data."""
         return {
             'next': self.get_next_link(),
             'previous': self.get_previous_link(),
