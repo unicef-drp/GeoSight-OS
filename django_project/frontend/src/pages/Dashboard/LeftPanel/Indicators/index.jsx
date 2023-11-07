@@ -85,6 +85,18 @@ export default function Indicators() {
       $('#Indicator-Radio-' + indicatorLayer.id).addClass('Loading')
     })
     dispatch(Actions.IndicatorsData.request(id))
+
+    // get metadata and update progress
+    const dataId = 'indicator-' + id
+    const metadata = indicatorLayerMetadata[dataId]
+    if (metadata?.version) {
+      dispatch(
+        Actions.IndicatorsMetadata.progress(id, {
+          page_size: Math.floor(metadata.count / 100),
+          page: 1
+        })
+      )
+    }
   }
 
   /** Done data **/
@@ -126,67 +138,72 @@ export default function Indicators() {
   }
 
   /***
+   * Get Data function for just returning data
+   */
+  const getDataFn = async (id, url, params, currentGlobalTime, dataVersion, onResponse, onProgress, doAll) => {
+    const storage = new LocalStorageData(url, dataVersion)
+    let storageData = storage.get()
+
+    // Check if we need to request all
+    let doRequestAll = false
+    if (doAll) {
+      const requestKey = url.replace('latest', 'all') + '-Version'
+      if (storageData) {
+        const requestStorage = new LocalStorage(requestKey)
+        if (requestStorage.get() !== '' + dataVersion) {
+          doRequestAll = true
+        }
+      } else {
+        doRequestAll = true
+      }
+    }
+    // Get quick data on current date
+    // But if it says doing request All
+    if (!storageData || doRequestAll) {
+      storageData = await getDataByDate(id, url, params, dictDeepCopy(selectedGlobalTime), dataVersion, onProgress)
+    }
+
+    // Do Request all if the data version is already ALL data
+    {
+      if (doRequestAll) {
+        let doRequest = false
+        const requestKey = url.replace('latest', 'all') + '-Version'
+        if (storageData) {
+          const requestStorage = new LocalStorage(requestKey)
+          if (requestStorage.get() !== '' + dataVersion) {
+            doRequest = true
+          }
+        } else {
+          doRequest = true
+        }
+        const session = new Session(url, 0, true)
+        if (session.isValid) {
+          if (doRequest) {
+            // Fetch all data
+            fetchPagination(url.replace('latest', 'all')).then(response => {
+              storage.replaceData(response)
+              new LocalStorage(requestKey).set(dataVersion)
+            }).catch(error => {
+
+            })
+          }
+        }
+      }
+    }
+    return storageData
+  }
+
+  /***
    * Get All Data For and Indicator
    * Fetch it from storage or fetch it
    */
-  const getData = async (id, url, params, currentGlobalTime, dataVersion, onResponse, onProgress, doAll) => {
+  const getDataPromise = async (id, url, params, currentGlobalTime, dataVersion, onResponse, onProgress, doAll) => {
     return new Promise((resolve, reject) => {
       (
         async () => {
           try {
-            const storage = new LocalStorageData(url, dataVersion)
-            let storageData = storage.get()
-
-            // Check if we need to request all
-            let doRequestAll = false
-            if (doAll) {
-              const requestKey = url.replace('latest', 'all') + '-Version'
-              if (storageData) {
-                const requestStorage = new LocalStorage(requestKey)
-                if (requestStorage.get() !== '' + dataVersion) {
-                  doRequestAll = true
-                }
-              } else {
-                doRequestAll = true
-              }
-            }
-
-            // Get quick data on current date
-            // But if it says doing request All
-            if (!storageData || doRequestAll) {
-              storageData = await getDataByDate(id, url, params, dictDeepCopy(selectedGlobalTime), dataVersion, onProgress)
-            }
-
-            // Do Request all if the data version is already ALL data
-            {
-              if (doRequestAll) {
-                let doRequest = false
-                const requestKey = url.replace('latest', 'all') + '-Version'
-                if (storageData) {
-                  const requestStorage = new LocalStorage(requestKey)
-                  if (requestStorage.get() !== '' + dataVersion) {
-                    doRequest = true
-                  }
-                } else {
-                  doRequest = true
-                }
-                const session = new Session(url, 0, true)
-                if (session.isValid) {
-                  if (doRequest) {
-                    // Fetch all data
-                    fetchPagination(url.replace('latest', 'all')).then(response => {
-                      storage.replaceData(response)
-                      new LocalStorage(requestKey).set(dataVersion)
-                    }).catch(error => {
-
-                    })
-                  }
-                }
-              }
-            }
-            resolve(storageData)
+            resolve(getDataFn(id, url, params, currentGlobalTime, dataVersion, onResponse, onProgress, doAll))
           } catch (error) {
-            console.log(error)
             reject(error)
           }
         }
@@ -244,6 +261,12 @@ export default function Indicators() {
                 dispatch(
                   Actions.IndicatorsData.receive(filterIndicatorsData(selectedGlobalTime.min, selectedGlobalTime.max, response), error, id)
                 )
+                dispatch(
+                  Actions.IndicatorsMetadata.progress(id, {
+                    page_size: Math.floor(metadata.count / 100),
+                    page: Math.floor(metadata.count / 100)
+                  })
+                )
               }
               done(id)
             }
@@ -265,14 +288,24 @@ export default function Indicators() {
             if (metadata?.version) {
               const version = metadata?.version
 
-              getData(
-                dataId, url, params, dictDeepCopy(selectedGlobalTime), version, onResponse, onProgress,
-                metadata?.count && metadata.count < MAX_COUNT_FOR_ALL_DATA
-              ).then(response => {
-                onResponse(response, null)
-              }).catch(error => {
-                onResponse(null, error)
-              })
+              // If index is 1, waiting for this to be done
+              if (idx === 1) {
+                try {
+                  const response = await getDataFn(id, url, params, dictDeepCopy(selectedGlobalTime), version, onResponse, onProgress, metadata?.count && metadata.count < MAX_COUNT_FOR_ALL_DATA)
+                  onResponse(response, null)
+                } catch (error) {
+                  onResponse(null, error)
+                }
+              } else {
+                getDataPromise(
+                  dataId, url, params, dictDeepCopy(selectedGlobalTime), version, onResponse, onProgress,
+                  metadata?.count && metadata.count < MAX_COUNT_FOR_ALL_DATA
+                ).then(response => {
+                  onResponse(response, null)
+                }).catch(error => {
+                  onResponse(null, error)
+                })
+              }
             }
           }
           if (indicatorFetchingSession !== session) {
