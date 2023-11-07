@@ -77,6 +77,7 @@
     "leaflet-navbar": "^1.0.0",
     "leaflet-vector-tile-layer": "^0.8.0",
     "leaflet.vectorgrid": "^1.3.0",
+    "lz-string": "^1.5.0",
     "mapbox-gl-arcgis-featureserver": "^0.0.7",
     "maplibre-gl": "^2.4.0",
     "mini-css-extract-plugin": "^2.6.0",
