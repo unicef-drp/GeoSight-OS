@@ -19,6 +19,11 @@ django-simple-captcha==0.5.17
 djangorestframework==3.14.0
 djangorestframework-gis==1.0
 django-rest-knox==4.2.0
+
+# TODO: Upgrade django 4
+#  Remove this after migrate to Django 4
+django-redis==5.4.0
+
 drf-yasg==1.21.7
 
 requests==2.31.0
