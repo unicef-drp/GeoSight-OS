@@ -141,6 +141,42 @@ export const fetchPagination = function (url, params, onProgress) {
   });
 }
 
+/*** Axios georepo request with cache */
+export const fetchPaginationInParallel = async function (url, params, onProgress) {
+  if (params && Object.keys(params).length) {
+    const paramsUrl = [];
+    for (const [key, value] of Object.entries(params)) {
+      paramsUrl.push(`${key}=${value}`)
+    }
+    url += '?' + paramsUrl.join('&')
+  }
+  let data = []
+  let doneCount = 0
+  // First data
+  const response = await fetchJSON(url, {});
+  const nextUrl = response.next;
+  data = data.concat(response.results)
+  doneCount += 1
+  onProgress({
+    page: doneCount,
+    page_size: response.page_size,
+  })
+  if (response.next) {
+    // Call function for other page
+    const call = async (page) => {
+      const response = await fetchJSON(nextUrl.replace('page=2', `page=${page}`), {});
+      doneCount += 1
+      onProgress({
+        page: doneCount,
+        page_size: response.page_size,
+      })
+      data = data.concat(response.results)
+    }
+    await Promise.all(Array(response.page_size - 1).fill(0).map((_, idx) => call(idx + 2)))
+  }
+  return data
+}
+
 /**
  * Perform Pushing Data
  *

@@ -49,7 +49,6 @@ export default function DataLoadingProgress() {
 
     for (const [key, value] of Object.entries(indicatorsMetadata)) {
       if (!key.includes('layer')) {
-        console.log(value)
         if (value.progress?.page) {
           total += value.progress.page_size
           currProgress += value.progress.page
@@ -61,9 +60,6 @@ export default function DataLoadingProgress() {
         currProgress += 1
       }
     }
-    console.log('-----------')
-    console.log(currProgress)
-    console.log(total)
     currProgress = currProgress * 100 / total
     setProgress(currProgress)
   }, [indicatorsMetadata, relatedTableData]);

@@ -21,7 +21,10 @@ import React, { useEffect, useRef } from 'react';
 import $ from "jquery";
 import { useDispatch, useSelector } from "react-redux";
 import { Actions } from "../../../../store/dashboard";
-import { fetchPagination } from "../../../../Requests";
+import {
+  fetchPagination,
+  fetchPaginationInParallel
+} from "../../../../Requests";
 import { removeElement } from "../../../../utils/Array";
 import {
   filterIndicatorsData,
@@ -94,32 +97,10 @@ export default function Indicators() {
   }
 
   /***
-   * Get All Data For and Indicator
-   * Fetch it from storage or fetch it
-   */
-  const getAllData = (id, url, dataVersion) => {
-    const storage = new LocalStorageData(url, dataVersion)
-    const storageData = storage.get()
-    if (!storageData) {
-      const session = new Session(url, 0, true)
-      if (session.isValid) {
-        setTimeout(function () {
-          fetchPagination(url.replace('latest', 'all')).then(response => {
-            storage.replaceData(response)
-          }).catch(error => {
-
-          })
-        }, 500);
-      }
-    }
-    return storageData
-  }
-
-  /***
    * Get Data For and Indicator by dates
    * Fetch it from storage or fetch it
    */
-  const getDataByDate = (id, url, params, currentGlobalTime, dataVersion, onResponse, onProgress) => {
+  const getDataByDate = async (id, url, params, currentGlobalTime, dataVersion, onProgress) => {
     const storage = new LocalStorageData(url, dataVersion)
     const storageData = storage.get()
     // Check if the request is already requested before
@@ -135,16 +116,82 @@ export default function Indicators() {
     }
 
     if (doRequest) {
-      fetchPagination(url, params, onProgress).then(response => {
-        storage.appendData(response)
-        new LocalStorage(requestKey).set(dataVersion)
-        onResponse(response, null)
-      }).catch(error => {
-        onResponse(null, error)
-      })
+      const response = await fetchPaginationInParallel(url, params, onProgress)
+      storage.appendData(response)
+      new LocalStorage(requestKey).set(dataVersion)
+      return response
     } else {
-      onResponse(filterIndicatorsData(currentGlobalTime.min, currentGlobalTime.max, storageData))
+      return storageData
     }
+  }
+
+  /***
+   * Get All Data For and Indicator
+   * Fetch it from storage or fetch it
+   */
+  const getData = async (id, url, params, currentGlobalTime, dataVersion, onResponse, onProgress, doAll) => {
+    return new Promise((resolve, reject) => {
+      (
+        async () => {
+          try {
+            const storage = new LocalStorageData(url, dataVersion)
+            let storageData = storage.get()
+
+            // Check if we need to request all
+            let doRequestAll = false
+            if (doAll) {
+              const requestKey = url.replace('latest', 'all') + '-Version'
+              if (storageData) {
+                const requestStorage = new LocalStorage(requestKey)
+                if (requestStorage.get() !== '' + dataVersion) {
+                  doRequestAll = true
+                }
+              } else {
+                doRequestAll = true
+              }
+            }
+
+            // Get quick data on current date
+            // But if it says doing request All
+            if (!storageData || doRequestAll) {
+              storageData = await getDataByDate(id, url, params, dictDeepCopy(selectedGlobalTime), dataVersion, onProgress)
+            }
+
+            // Do Request all if the data version is already ALL data
+            {
+              if (doRequestAll) {
+                let doRequest = false
+                const requestKey = url.replace('latest', 'all') + '-Version'
+                if (storageData) {
+                  const requestStorage = new LocalStorage(requestKey)
+                  if (requestStorage.get() !== '' + dataVersion) {
+                    doRequest = true
+                  }
+                } else {
+                  doRequest = true
+                }
+                const session = new Session(url, 0, true)
+                if (session.isValid) {
+                  if (doRequest) {
+                    // Fetch all data
+                    fetchPagination(url.replace('latest', 'all')).then(response => {
+                      storage.replaceData(response)
+                      new LocalStorage(requestKey).set(dataVersion)
+                    }).catch(error => {
+
+                    })
+                  }
+                }
+              }
+            }
+            resolve(storageData)
+          } catch (error) {
+            console.log(error)
+            reject(error)
+          }
+        }
+      )()
+    });
   }
 
   /** Fetch all data */
@@ -189,15 +236,19 @@ export default function Indicators() {
           )
           if (indicator) {
             const { id, url, style } = indicator
+
+            // On Response
             const onResponse = (response, error) => {
               if (indicatorFetchingSession === session && response) {
                 response = UpdateStyleData(response, indicator)
                 dispatch(
-                  Actions.IndicatorsData.receive(response, error, id)
+                  Actions.IndicatorsData.receive(filterIndicatorsData(selectedGlobalTime.min, selectedGlobalTime.max, response), error, id)
                 )
               }
               done(id)
             }
+
+            // On Progress
             const onProgress = (progress) => {
               if (indicatorFetchingSession === session) {
                 dispatch(
@@ -214,23 +265,14 @@ export default function Indicators() {
             if (metadata?.version) {
               const version = metadata?.version
 
-              if (metadata?.count && metadata.count > MAX_COUNT_FOR_ALL_DATA) {
-                getDataByDate(id, url, params, dictDeepCopy(selectedGlobalTime), version, onResponse, onProgress)
-              } else {
-                // FOR FETCHING ALL DATA
-                const storageData = getAllData(dataId, url, version)
-                if (storageData) {
-                  onResponse(
-                    filterIndicatorsData(selectedGlobalTime.min, selectedGlobalTime.max, storageData)
-                  )
-                } else {
-                  fetchPagination(url, params, onProgress).then(response => {
-                    onResponse(response, null)
-                  }).catch(error => {
-                    onResponse(null, error)
-                  })
-                }
-              }
+              getData(
+                dataId, url, params, dictDeepCopy(selectedGlobalTime), version, onResponse, onProgress,
+                metadata?.count && metadata.count < MAX_COUNT_FOR_ALL_DATA
+              ).then(response => {
+                onResponse(response, null)
+              }).catch(error => {
+                onResponse(null, error)
+              })
             }
           }
           if (indicatorFetchingSession !== session) {
