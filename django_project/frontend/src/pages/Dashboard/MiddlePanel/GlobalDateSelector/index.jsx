@@ -306,30 +306,23 @@ export default function GlobalDateSelector() {
     (
       async () => {
         const data = {}
-        const call = async (indicator) => {
-          const id = 'indicator-' + indicator.id
-          if (!indicatorLayerMetadata[id]?.dates) {
-            try {
-              const response = await fetchJSON(indicator.url.replace('/values/latest', '/metadata'), {});
-              if (!response?.dates?.length) {
-                data[id] = {
-                  dates: [nowUTC().toISOString()],
-                  count: 0,
-                  version: 'TEMP'
-                }
-              } else {
-                data[id] = response
-              }
-            } catch (error) {
+        if (indicators.length) {
+          const metadataUrl = indicators[0].url.replace('/values/latest', '/metadata').replace(indicators[0].id, 'all')
+          const responses = await fetchJSON(metadataUrl, {});
+          indicators.map(indicator => {
+            const response = responses[indicator.id]
+            const id = 'indicator-' + indicator.id
+            if (!response?.dates?.length) {
               data[id] = {
-                dates: error.toString(),
+                dates: [nowUTC().toISOString()],
                 count: 0,
                 version: 'TEMP'
               }
+            } else {
+              data[id] = response
             }
-          }
+          })
         }
-        await Promise.all(indicators.map(indicator => call(indicator)))
         dispatch(Actions.IndicatorLayerMetadata.updateBatch(data))
       }
     )();

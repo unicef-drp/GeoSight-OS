@@ -253,19 +253,18 @@ class DashboardIndicatorDatesAPI(DashboardIndicatorValuesAPI):
 class DashboardIndicatorMetadataAPI(DashboardIndicatorValuesAPI):
     """API for of indicator."""
 
-    def get(self, request, slug, pk, **kwargs):
-        """Return Values."""
-        dashboard = get_object_or_404(Dashboard, slug=slug)
-        indicator = get_object_or_404(Indicator, pk=pk)
+    def metadata(self, request, dashboard, indicator):
+        """Return metadata."""
         self.check_permission(request.user, dashboard, indicator)
 
         # Cache version
         cache = VersionCache(
-            key=request.get_full_path(), version=indicator.version
+            key=request.get_full_path().replace('all', f'{indicator.id}'),
+            version=indicator.version
         )
         cache_data = cache.get()
         if cache_data:
-            return Response(cache_data)
+            return cache_data
 
         query = indicator.query_values(
             reference_layer=dashboard.reference_layer
@@ -287,7 +286,37 @@ class DashboardIndicatorMetadataAPI(DashboardIndicatorValuesAPI):
             'version': indicator.version
         }
         cache.set(response)
-        return Response(response)
+        return response
+
+    def get(self, request, slug, pk, **kwargs):
+        """Return Values."""
+        dashboard = get_object_or_404(Dashboard, slug=slug)
+        indicator = get_object_or_404(Indicator, pk=pk)
+        return Response(self.metadata(request, dashboard, indicator))
+
+
+class DashboardIndicatorAllMetadataAPI(DashboardIndicatorMetadataAPI):
+    """API for all metadata of indicator on dashboard."""
+
+    def get(self, request, slug, **kwargs):
+        """Return Values."""
+        dashboard = get_object_or_404(Dashboard, slug=slug)
+        responses = {}
+        for dashboard_indicator in dashboard.dashboardindicator_set.all():
+            indicator = dashboard_indicator.object
+            try:
+                responses[dashboard_indicator.object.id] = self.metadata(
+                    request, dashboard, indicator
+                )
+            except ResourcePermissionDenied:
+                responses[dashboard_indicator.object.id] = {
+                    'dates': (
+                        "You don't have permission to access this resource"
+                    ),
+                    'count': 0,
+                    'version': indicator.version
+                }
+        return Response(responses)
 
 
 class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
