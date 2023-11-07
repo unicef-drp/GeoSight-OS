@@ -19,6 +19,7 @@ import mapReducer from './map'
 import mapModeReducer from './mapMode'
 import dashboardRequestReducer from './dashboard'
 import indicatorsDataReducer from "./indicatorsData";
+import indicatorsMetadataReducer from "./indicatorsMetadata";
 import indicatorLayerMetadataReducer from "./indicatorLayerMetadata";
 import relatedTableDataReducer from "./relatedTableData";
 import ReferenceLayerDataReducer from "./referenceLayerData";
@@ -46,6 +47,7 @@ export default combineReducers({
   map: mapReducer,
   mapMode: mapModeReducer,
   indicatorsData: indicatorsDataReducer,
+  indicatorsMetadata: indicatorsMetadataReducer,
   indicatorLayerMetadata: indicatorLayerMetadataReducer,
   referenceLayerData: ReferenceLayerDataReducer,
   relatedTableData: relatedTableDataReducer,

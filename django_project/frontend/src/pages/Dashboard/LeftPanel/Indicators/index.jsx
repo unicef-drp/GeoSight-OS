@@ -201,7 +201,7 @@ export default function Indicators() {
             const onProgress = (progress) => {
               if (indicatorFetchingSession === session) {
                 dispatch(
-                  Actions.IndicatorsData.progress(id, progress)
+                  Actions.IndicatorsMetadata.progress(id, progress)
                 )
               }
             }
