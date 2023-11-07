@@ -40,6 +40,7 @@ import { INTERVALS } from "../../../../../utils/Dates";
 import {
   SelectWithList
 } from "../../../../../components/Input/SelectWithList";
+import OverviewForm from "../Overview";
 
 import './style.scss';
 
@@ -360,6 +361,14 @@ export default function SummaryDashboardForm({ changed }) {
             </label>
           </div>
           <MapConfig/>
+        </div>
+        <div className="BasicFormSection">
+          <div>
+            <label className="form-label required" htmlFor="name">
+              Project overview
+            </label>
+          </div>
+          <OverviewForm changed={changed}/>
         </div>
       </div>
     </div>

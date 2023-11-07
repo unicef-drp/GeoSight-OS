@@ -50,7 +50,6 @@ import ShareForm from './Share'
 import GeorepoAuthorizationModal
   from "../../../../components/GeorepoAuthorizationModal";
 import { resourceActions } from "../List";
-import OverviewForm from "./Overview";
 
 // Dashboard Preview
 import { postData } from "../../../../Requests";
@@ -373,7 +372,6 @@ export function DashboardFormContent({ changed }) {
       {Object.keys(data).length > 0 ?
         <>
           <SummaryDashboardForm changed={changed}/>
-          <OverviewForm changed={changed}/>
           <BasemapsForm/>
           <IndicatorsForm/>
           <IndicatorLayersForm/>
@@ -417,12 +415,6 @@ export function DashboardFormHeader(
       onClick={() => changePage('Summary')}
     >
       General
-    </div>
-    <div
-      className={currentPage === 'Overview' ? 'Selected' : 'MuiButtonLike'}
-      onClick={() => changePage('Overview')}
-    >
-      Overview
     </div>
     <div
       className={currentPage === 'Indicators' ? 'Selected' : 'MuiButtonLike'}
