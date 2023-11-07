@@ -33,7 +33,7 @@ import {
 import { allDataIsReady } from "../../../../../utils/indicators";
 import { returnWhere } from "../../../../../utils/queryExtraction";
 import { returnStyle } from "../../../../../utils/referenceLayer";
-import { hexToRGBList } from '../../../../../utils/main'
+import { dictDeepCopy, hexToRGBList } from '../../../../../utils/main'
 import {
   getIndicatorValueByGeometry
 } from '../../../../../utils/indicatorData'
@@ -66,7 +66,7 @@ const geo_field = 'concept_uuid'
 let deckGlData = {}
 let deckGlElevationTime = 0
 let deckGlAnimationDate = null
-
+let currentRenderData = []
 /**
  * ReferenceLayer selector.
  */
@@ -148,14 +148,15 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
   // When indicator data, current layer, second layer and compare mode changed
   // Update the style
   useEffect(() => {
-    if (
-      allDataIsReady(
-        getLayerData(indicatorsData, relatedTableData, currentIndicatorLayer).concat(
-          getLayerData(indicatorsData, relatedTableData, currentIndicatorSecondLayer)
-        )
-      )
-    ) {
-      updateStyle()
+    const data = getLayerData(indicatorsData, relatedTableData, currentIndicatorLayer).concat(
+      getLayerData(indicatorsData, relatedTableData, currentIndicatorSecondLayer)
+    )
+    if (allDataIsReady(data)) {
+      const dataInString = JSON.stringify(data)
+      if (currentRenderData !== dataInString) {
+        updateStyle()
+        currentRenderData = dataInString
+      }
     }
   }, [
     indicatorsData, currentIndicatorLayer,
@@ -573,7 +574,7 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
       )
 
       // Create deck gl
-      deckGLLayer()
+      deckGLLayer(dictDeepCopy(indicatorValueByGeometry))
     }
   }
 
@@ -598,7 +599,7 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
   }
 
   /** Create deckGlLayer */
-  const deckGLLayer = () => {
+  const deckGLLayer = (indicatorValueByGeometry) => {
     if (!deckgl) {
       deckGlData = {}
       return;
@@ -617,11 +618,13 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
 
     // Get indicator data per geom
     // This is needed for popup and rendering
-    let indicatorValueByGeometry = getIndicatorValueByGeometry(
-      currentIndicatorLayer, indicators, indicatorsData,
-      relatedTables, relatedTableData, selectedGlobalTime,
-      geoField, filteredGeometries
-    )
+    if (!indicatorValueByGeometry) {
+      indicatorValueByGeometry = getIndicatorValueByGeometry(
+        currentIndicatorLayer, indicators, indicatorsData,
+        relatedTables, relatedTableData, selectedGlobalTime,
+        geoField, filteredGeometries
+      )
+    }
     if (currentIndicatorLayer.indicators?.length > 1) {
       indicatorValueByGeometry = {}
     }

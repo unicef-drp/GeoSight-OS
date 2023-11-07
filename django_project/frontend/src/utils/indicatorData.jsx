@@ -19,26 +19,35 @@ import {
   dynamicStyleTypes,
   STYLE_FORM_LIBRARY
 } from "./Style";
+import { dictDeepCopy } from "./main";
 
 /**
  * Update data with the style found
- * @param {Array} data Data that will be checked
+ * @param {Array} inputData Data that will be checked
  * @param {Object} config Layer data that own data
  */
-export function UpdateStyleData(data, config) {
+export function UpdateStyleData(inputData, config) {
   // Update the style and label
   let otherDataRule = null
   let styleRules = []
+  inputData = dictDeepCopy(inputData)
 
   // If from style from library
   if (config.style_type === STYLE_FORM_LIBRARY && config.style_data) {
     config = config.style_data
   }
   if (dynamicStyleTypes.includes(config?.style_type)) {
-    const styles = createDynamicStyle(data, config.style_type, config.style_config, config.style_data)
-    data.forEach(function (data) {
+    const styles = createDynamicStyle(inputData, config.style_type, config.style_config, config.style_data)
+    const stylesInStr = {}
+    for (const [key, value] of Object.entries(styles)) {
+      stylesInStr[key] = JSON.stringify(value)
+    }
+    inputData.forEach(function (data) {
       styleRules = styles[data.admin_level]
-      if (styles[data.admin_level]) {
+      if (styleRules) {
+        if (stylesInStr[data.admin_level] === data.styles) {
+          return
+        }
         const filteredRules = styleRules.filter(rule => {
           let ruleStr = rule.rule.replaceAll('x', data.value).replaceAll('and', '&&').replaceAll('or', '||')
           if (rule?.rule?.includes('includes')) {
@@ -51,10 +60,11 @@ export function UpdateStyleData(data, config) {
           }
         })
         data.style = filteredRules[0] ? filteredRules[0] : otherDataRule
+        data.styles = JSON.stringify(styleRules)
         data.label = data.style?.name
       }
     })
-    return data
+    return inputData
   } else {
     let style = config.style
     if (style) {
@@ -63,7 +73,7 @@ export function UpdateStyleData(data, config) {
         rule => rule.active
       ).find(rule => rule.rule.toLowerCase() === 'other data')
     }
-    data?.forEach(function (data) {
+    inputData?.forEach(function (data) {
       const filteredRules = styleRules.filter(rule => {
         let ruleStr = rule.rule.replaceAll('x', data.value).replaceAll('and', '&&').replaceAll('or', '||')
         if (rule?.rule?.includes('includes')) {
@@ -76,9 +86,10 @@ export function UpdateStyleData(data, config) {
         }
       })
       data.style = filteredRules[0] ? filteredRules[0] : otherDataRule
+      data.styles = filteredRules[0] ? filteredRules[0] : otherDataRule
       data.label = data.style?.name
     })
-    return data
+    return inputData
   }
 }
 

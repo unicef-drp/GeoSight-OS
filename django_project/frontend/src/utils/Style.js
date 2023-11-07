@@ -138,6 +138,12 @@ export function createColors(paletteId, classNum) {
  * @returns {*[]}
  */
 export function createDynamicStyle(data, styleType, config, styleData) {
+  if (config?.no_data_rule?.outline_size) {
+    config.no_data_rule.outline_size = parseFloat(config.no_data_rule.outline_size)
+    if (isNaN(config.no_data_rule.outline_size)) {
+      config.no_data_rule.outline_size = 0
+    }
+  }
   // If library, override the config
   if (styleType === STYLE_FORM_LIBRARY) {
     styleType = styleData.style_type
