@@ -245,6 +245,7 @@ export default function DatasetAdmin() {
       COLUMNS={COLUMNS}
       disabled={disabled}
       setDisabled={setDisabled}
+      selectAllUrl={urls.api.datasetApi + '/ids'}
       rightHeader={
         <SaveButton
           variant="primary"
@@ -345,6 +346,7 @@ export default function DatasetAdmin() {
         }
       }
       hideSearch={true}
+      deselectWhenParameterChanged={true}
     />
     <Notification ref={notificationRef}/>
   </AdminPage>

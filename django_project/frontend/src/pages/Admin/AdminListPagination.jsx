@@ -47,6 +47,9 @@ export const AdminListPagination = forwardRef(
     /** Refresh data **/
     useImperativeHandle(ref, () => ({
       refresh() {
+        if (props.deselectWhenParameterChanged) {
+          setSelectionModel([])
+        }
         parametersChanged()
         loadData(true)
       }

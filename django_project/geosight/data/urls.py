@@ -40,7 +40,7 @@ from geosight.data.api.dashboard_indicator_value import (
     DashboardIndicatorMetadataAPI, DashboardIndicatorAllValuesAPI,
     DashboardIndicatorValueListAPI, DashboardEntityDrilldown
 )
-from geosight.data.api.dataset import DatasetApiList
+from geosight.data.api.dataset import DatasetApiList, DatasetApiListIds
 from geosight.data.api.download_file import (
     DownloadSharepointFile,
     DownloadBackupsFile
@@ -226,6 +226,10 @@ context_layer_api = [
 # ------------------------------------------------------
 # DATASET API
 dataset_api = [
+    url(
+        r'^list/ids',
+        DatasetApiListIds.as_view(), name='dataset-list-ids-api'
+    ),
     url(
         r'^list',
         DatasetApiList.as_view(), name='dataset-list-api'
