@@ -93,6 +93,7 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
   const selectedGlobalTime = useSelector(state => state.selectedGlobalTime);
   const selectedGlobalTimeConfig = useSelector(state => state.selectedGlobalTimeConfig);
 
+  const [is3DInit, setIs3DInit] = useState(false);
   const [layerCreated, setLayerCreated] = useState(false);
   const [referenceLayerConfig, setReferenceLayerConfig] = useState({});
 
@@ -600,10 +601,11 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
 
   /** Create deckGlLayer */
   const deckGLLayer = (indicatorValueByGeometry) => {
-    if (!deckgl) {
+    if (!deckgl || (!is3DView && !is3DInit)) {
       deckGlData = {}
       return;
     }
+    setIs3DInit(true)
     const geometries = checkCodes()
     let url = null
     let levels = referenceLayerData?.data?.dataset_levels

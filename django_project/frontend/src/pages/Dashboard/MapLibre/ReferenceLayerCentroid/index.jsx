@@ -43,6 +43,7 @@ let charts = {}
 const INDICATOR_LABEL_ID = 'indicator-label'
 let centroidConfig = {}
 
+const temporary = {}
 /**
  * GeometryCenter.
  */
@@ -569,44 +570,52 @@ export default function ReferenceLayerCentroid({ map }) {
         renderLabel([], config)
         return;
       }
-      const indicatorsByGeom = {}
-      const features = []
-      for (const [indicatorId, indicatorData] of Object.entries(usedIndicatorsData)) {
-        indicatorData.data.forEach(function (data) {
-          const code = extractCode(data)
-          if (!indicatorsByGeom[code]) {
-            indicatorsByGeom[code] = []
-          }
-          indicatorsByGeom[code].push(data);
-        })
-      }
-      let theGeometries = Object.keys(geometriesData)
-      theGeometries.map(geom => {
-        const geometry = geometriesData[geom]
-        const code = extractCode(geometry)
-        const indicator = indicatorsByGeom[code] ? indicatorsByGeom[code][0] : null
-        if (usedFilteredGeometries && !usedFilteredGeometries.includes(code)) {
-          return
-        }
-        let properties = geometry
-        if (geometry) {
-          if (indicator) {
-            properties = Object.assign({}, geometry, indicator)
-          }
-          if (geometry.centroid) {
-            features.push({
-              "type": "Feature",
-              "properties": properties,
-              "geometry": {
-                "type": "Point",
-                "coordinates": geometry.centroid.replace('POINT (', '').replace('POINT(', '').replace(')', '').split(' ').map(coord => parseFloat(coord))
-              }
-            })
-          }
-        }
-      })
 
-      renderLabel(dictDeepCopy(features), config)
+      // Create features
+      let theGeometries = Object.keys(geometriesData)
+      const identifier = JSON.stringify(config) + JSON.stringify(theGeometries)
+      const temp = temporary[identifier]
+      let features = []
+      if (temp) {
+        features = temp
+      } else {
+        const indicatorsByGeom = {}
+        for (const [indicatorId, indicatorData] of Object.entries(usedIndicatorsData)) {
+          indicatorData.data.forEach(function (data) {
+            const code = extractCode(data)
+            if (!indicatorsByGeom[code]) {
+              indicatorsByGeom[code] = []
+            }
+            indicatorsByGeom[code].push(data);
+          })
+        }
+        theGeometries.map(geom => {
+          const geometry = geometriesData[geom]
+          const code = extractCode(geometry)
+          const indicator = indicatorsByGeom[code] ? indicatorsByGeom[code][0] : null
+          if (usedFilteredGeometries && !usedFilteredGeometries.includes(code)) {
+            return
+          }
+          let properties = geometry
+          if (geometry) {
+            if (indicator) {
+              properties = Object.assign({}, geometry, indicator)
+            }
+            if (geometry.centroid) {
+              features.push({
+                "type": "Feature",
+                "properties": properties,
+                "geometry": {
+                  "type": "Point",
+                  "coordinates": geometry.centroid.replace('POINT (', '').replace('POINT(', '').replace(')', '').split(' ').map(coord => parseFloat(coord))
+                }
+              })
+            }
+          }
+        })
+        temporary[identifier] = dictDeepCopy(features)
+      }
+      renderLabel(features, config)
     }
   }, [
     geometries, geometriesVT, filteredGeometries, indicatorsData,
