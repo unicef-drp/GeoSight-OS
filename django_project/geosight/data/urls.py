@@ -225,15 +225,18 @@ context_layer_api = [
 ]
 # ------------------------------------------------------
 # DATASET API
+dataset_api_v1 = [
+    url(
+        r'^list',
+        DatasetApiList.as_view(), name='dataset-list-api'
+    ),
+]
 dataset_api = [
     url(
         r'^list/ids',
         DatasetApiListIds.as_view(), name='dataset-list-ids-api'
     ),
-    url(
-        r'^list',
-        DatasetApiList.as_view(), name='dataset-list-api'
-    ),
+    url(r'^', include(dataset_api_v1)),
 ]
 # ------------------------------------------------------
 # RELATED TABLE API

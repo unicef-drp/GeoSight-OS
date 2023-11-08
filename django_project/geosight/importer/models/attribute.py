@@ -25,7 +25,7 @@ class ImporterAttribute(models.Model):
 
     importer = models.ForeignKey(Importer, on_delete=models.CASCADE)
     name = models.CharField(
-        max_length=128,
+        max_length=512,
         help_text=_("The name of attribute")
     )
     value = models.TextField(
@@ -51,7 +51,7 @@ class ImporterMapping(models.Model):
 
     importer = models.ForeignKey(Importer, on_delete=models.CASCADE)
     name = models.CharField(
-        max_length=128,
+        max_length=512,
         help_text=_("The name of attribute")
     )
     value = models.TextField(

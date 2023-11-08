@@ -17,8 +17,8 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.conf.urls import url
 from django.urls import include
 
-from .urls import dataset_api
+from .urls import dataset_api_v1
 
 urlpatterns = [
-    url(r'^dataset/', include(dataset_api)),
+    url(r'^dataset/', include(dataset_api_v1)),
 ]
