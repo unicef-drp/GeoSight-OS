@@ -277,7 +277,10 @@ export const DjangoRequests = {
   },
   post: (url, data, options = {}) => {
     return axios.post(url, data, {
-      ...options
+      ...options,
+      headers: {
+        'X-CSRFToken': csrfmiddlewaretoken
+      }
     })
   },
   put: (url, data, options = {}) => {

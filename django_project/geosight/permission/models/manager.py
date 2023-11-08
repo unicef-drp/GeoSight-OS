@@ -118,9 +118,9 @@ class PermissionManager(models.Manager):
 
         # Check permission query
         if user:
-            try:
+            if self.model.__name__ == 'ReferenceLayerIndicatorPermission':
                 permission_query = permission_query.filter(
-                    Q(creator=user) |
+                    Q(obj__indicator__creator=user) |
                     Q(public_permission__in=permissions) |
                     Q(
                         Q(user_permissions__user=user) &
@@ -131,18 +131,32 @@ class PermissionManager(models.Manager):
                         Q(group_permissions__permission__in=permissions)
                     )
                 )
-            except FieldError:
-                permission_query = permission_query.filter(
-                    Q(public_permission__in=permissions) |
-                    Q(
-                        Q(user_permissions__user=user) &
-                        Q(user_permissions__permission__in=permissions)
-                    ) |
-                    Q(
-                        Q(group_permissions__group__in=groups) &
-                        Q(group_permissions__permission__in=permissions)
+            else:
+                try:
+                    permission_query = permission_query.filter(
+                        Q(creator=user) |
+                        Q(public_permission__in=permissions) |
+                        Q(
+                            Q(user_permissions__user=user) &
+                            Q(user_permissions__permission__in=permissions)
+                        ) |
+                        Q(
+                            Q(group_permissions__group__in=groups) &
+                            Q(group_permissions__permission__in=permissions)
+                        )
                     )
-                )
+                except FieldError:
+                    permission_query = permission_query.filter(
+                        Q(public_permission__in=permissions) |
+                        Q(
+                            Q(user_permissions__user=user) &
+                            Q(user_permissions__permission__in=permissions)
+                        ) |
+                        Q(
+                            Q(group_permissions__group__in=groups) &
+                            Q(group_permissions__permission__in=permissions)
+                        )
+                    )
         else:
             permission_query = permission_query.filter(
                 Q(public_permission__in=permissions)

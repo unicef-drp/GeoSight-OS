@@ -17,15 +17,15 @@ __copyright__ = ('Copyright 2023, Unicef')
 import json
 
 from django.core.exceptions import SuspiciousOperation
-from django.db.models import Q
 from django.http import HttpResponseBadRequest
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.authentication import (
     SessionAuthentication, BasicAuthentication
 )
 from rest_framework.generics import ListAPIView
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from core.api.base import FilteredAPI
 from core.api_utils import common_api_params, ApiTag, ApiParams
@@ -39,34 +39,18 @@ from geosight.data.serializer.indicator import (
     IndicatorValueWithPermissionSerializer
 )
 from geosight.permission.models.resource import (
-    ReferenceLayerIndicatorPermission
+    ReferenceLayerIndicatorPermission, ReferenceLayerIndicatorPermissionView
 )
 
 
-class DatasetApiList(ListAPIView, FilteredAPI):
+class BaseDatasetApiList(FilteredAPI):
     """Return Data List API List."""
 
     authentication_classes = [
         SessionAuthentication, BasicAuthentication, BearerAuthentication
     ]
-    # TODO: Disable data browser for non admin.
-    #  To prevent big query for non admin
-    permission_classes = (IsAuthenticated, IsAdminUser)
+    permission_classes = (IsAuthenticated,)
     pagination_class = Pagination
-    serializer_class = IndicatorValueWithPermissionSerializer
-
-    def get_serializer_context(self):
-        """For serializer context."""
-        context = super().get_serializer_context()
-        context.update({"user": self.request.user})
-        return context
-
-    def get_param_value(self, param_key: str) -> list:
-        """Return paramater value as list."""
-        values = self.request.GET.get(param_key, None)
-        if values:
-            return values.split(',')
-        return None
 
     def get_queryset(self):
         """Return queryset of API."""
@@ -79,28 +63,20 @@ class DatasetApiList(ListAPIView, FilteredAPI):
         except AttributeError:
             pass
 
-        # If not query
+        # If not admin
         if not is_admin:
-            filters = None
-            # Filter using indicator
-            query = ReferenceLayerIndicatorPermission.permissions.list(
+            ids = ReferenceLayerIndicatorPermission.permissions.list(
                 user=self.request.user
-            )
-            for dataset in query:
-                obj = dataset.obj
-                row_query = Q(indicator_id=obj.indicator.id)
-                row_query.add(
-                    Q(reference_layer_id=obj.reference_layer.id), Q.AND
-                )
-
-                if not filters:
-                    filters = row_query
-                else:
-                    filters.add(row_query, Q.OR)
-            if not filters:
+            ).values_list('id', flat=True)
+            identifiers = ReferenceLayerIndicatorPermissionView.objects.filter(
+                id__in=list(ids)
+            ).values_list('identifier', flat=True)
+            if not identifiers.count():
                 query = IndicatorValueWithGeo.objects.none()
             else:
-                query = IndicatorValueWithGeo.objects.filter(filters)
+                query = IndicatorValueWithGeo.objects.filter(
+                    identifier__in=identifiers
+                )
 
         # Filter by parameters
         query = self.filter_query(
@@ -108,9 +84,21 @@ class DatasetApiList(ListAPIView, FilteredAPI):
         )
 
         ids = query.values_list('id', flat=True)
-        return IndicatorValue.objects.filter(id__in=ids).order_by(
+        return IndicatorValue.objects.filter(id__in=list(ids)).order_by(
             'indicator_id', '-date', 'geom_id'
         )
+
+
+class DatasetApiList(BaseDatasetApiList, ListAPIView):
+    """Return Data List API List."""
+
+    serializer_class = IndicatorValueWithPermissionSerializer
+
+    def get_serializer_context(self):
+        """For serializer context."""
+        context = super().get_serializer_context()
+        context.update({"user": self.request.user})
+        return context
 
     @swagger_auto_schema(
         operation_id='data-browser-get',
@@ -220,3 +208,11 @@ class DatasetApiList(ListAPIView, FilteredAPI):
             if value.permissions(request.user)['delete']:
                 value.delete()
         return Response('OK')
+
+
+class DatasetApiListIds(APIView, BaseDatasetApiList):
+    """Return Just ids Data List."""
+
+    def get(self, request):
+        """Get ids of data."""
+        return Response(self.get_queryset().values_list('id', flat=True))

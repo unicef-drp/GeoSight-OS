@@ -11,14 +11,16 @@ Contact : geosight-no-reply@unicef.org
 
 """
 __author__ = 'irwan@kartoza.com'
-__date__ = '13/06/2023'
+__date__ = '06/11/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from django.conf.urls import url
-from django.urls import include
+import os
 
-from .urls import dataset_api_v1
 
-urlpatterns = [
-    url(r'^dataset/', include(dataset_api_v1)),
-]
+def load_sql(folder, filename):
+    """Load sql."""
+    file_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        folder, filename
+    )
+    return open(file_path).read()
