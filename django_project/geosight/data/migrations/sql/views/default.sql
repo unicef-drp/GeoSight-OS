@@ -1,0 +1,1 @@
+DROP VIEW IF EXISTS v_indicator_value_geo;

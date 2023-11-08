@@ -139,25 +139,21 @@ export default function IndicatorsForm() {
         if (referenceLayer?.identifier) {
           parameters.datasets = referenceLayer?.identifier
         }
-        // TODO: Disable data browser for non admin.
-        //  To prevent big query for non admin
-        if (user.is_admin) {
-          actions.unshift(
-            <GridActionsCellItem
-              icon={
-                <Tooltip title={`Browse data`}>
-                  <a
-                    href={`${urls.api.dataBrowser}?${jsonToUrlParams(parameters)}`}>
-                    <div className='ButtonIcon'>
-                      <DataBrowserActiveIcon/>
-                    </div>
-                  </a>
-                </Tooltip>
-              }
-              label="Value List"
-            />
-          )
-        }
+        actions.unshift(
+          <GridActionsCellItem
+            icon={
+              <Tooltip title={`Browse data`}>
+                <a
+                  href={`${urls.api.dataBrowser}?${jsonToUrlParams(parameters)}`}>
+                  <div className='ButtonIcon'>
+                    <DataBrowserActiveIcon/>
+                  </div>
+                </a>
+              </Tooltip>
+            }
+            label="Value List"
+          />
+        )
       }
       return actions
     },

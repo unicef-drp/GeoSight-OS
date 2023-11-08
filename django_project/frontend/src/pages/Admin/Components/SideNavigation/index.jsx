@@ -151,26 +151,20 @@ export default function SideNavigation({ pageName, minified }) {
                     </a>
                   </SidaNavigationButton>
                 </div>
-                {
-                  // TODO: Disable data browser for non admin.
-                  //  To prevent big query for non admin
-                  user.is_admin ?
-                    <SidaNavigationButton
-                      minified={minified}
-                      title='Data Data Browser'>
-                      <a href={dataset}
-                         className={'SideNavigation-Row ' + (pageName === pageNames.Dataset ? 'active' : '')}>
-                        {
-                          pageName === pageNames.Dataset ?
-                            <DataBrowserActiveIcon/> :
-                            <DataBrowserIcon/>
-                        }
-                        <span
-                          className='SideNavigation-Row-Name'>Data Browser</span>
-                      </a>
-                    </SidaNavigationButton> : null
-                }
-
+                <SidaNavigationButton
+                  minified={minified}
+                  title='Data Data Browser'>
+                  <a href={dataset}
+                     className={'SideNavigation-Row ' + (pageName === pageNames.Dataset ? 'active' : '')}>
+                    {
+                      pageName === pageNames.Dataset ?
+                        <DataBrowserActiveIcon/> :
+                        <DataBrowserIcon/>
+                    }
+                    <span
+                      className='SideNavigation-Row-Name'>Data Browser</span>
+                  </a>
+                </SidaNavigationButton>
                 <SidaNavigationButton minified={minified}
                                       title='Related Tables'>
                   <a href={relatedTableList}

@@ -142,6 +142,9 @@ class IndicatorValueWithGeo(models.Model):
 
     # This is geom id for the value
     indicator_id = models.BigIntegerField()
+    identifier = models.CharField(
+        max_length=256, null=True, blank=True
+    )
     date = models.DateField(
         _('Date'),
         help_text=_('The date of the value harvested.')
