@@ -63,17 +63,17 @@ class IndicatorStyleBaseModel(models.Model):
         """Return query rules."""
         raise NotImplemented()
 
+    # TODO:
+    #  User is deprecated, we need to clean it
     def style_obj(self, user):
         """Return object style."""
         from geosight.data.serializer.dashboard_indicator_layer import (
             DashboardIndicatorLayerRuleSerializer
         )
         if self.style_type == IndicatorStyleType.LIBRARY and self.style:
-            if self.style.permission.has_read_perm(user):
-                return StyleRuleSerializer(
-                    self.style.stylerule_set.all(), many=True
-                ).data
-            return []
+            return StyleRuleSerializer(
+                self.style.stylerule_set.all(), many=True
+            ).data
         else:
             return DashboardIndicatorLayerRuleSerializer(
                 self.rules.all(), many=True
