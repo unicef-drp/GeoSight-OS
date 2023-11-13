@@ -39,12 +39,18 @@ const LAYER_HIGHLIGHT_ID = 'reference-layer-highlight'
 export default function SearchGeometryInput({ map }) {
   const {
     referenceLayer,
-    enable_geometry_search
+    enable_geometry_search,
+    levelConfig
   } = useSelector(state => state.dashboard.data);
   const referenceLayerData = useSelector(state => state.referenceLayerData[referenceLayer.identifier])
   const geometries = useSelector(state => state.geometries);
   const [value, setValue] = useState(null)
   const [options, setOptions] = useState([])
+
+  let {
+    levels: availableLevels
+  } = levelConfig
+
 
   // Vector tile url
   const vectorTiles = referenceLayerData?.data?.vector_tiles
@@ -57,7 +63,7 @@ export default function SearchGeometryInput({ map }) {
   useEffect(() => {
       if (enable_geometry_search && referenceLayerData?.data?.dataset_levels) {
         const options = []
-        referenceLayerData?.data?.dataset_levels.map(level => {
+        referenceLayerData?.data?.dataset_levels?.filter(level => availableLevels.includes(level.level)).map(level => {
           if (geometries[level.level]) {
             for (const [concept_uuid, geometry] of Object.entries(geometries[level.level])) {
               options.push({
@@ -80,7 +86,7 @@ export default function SearchGeometryInput({ map }) {
         setOptions(options)
       }
     },
-    [referenceLayerData, geometries]
+    [referenceLayerData, geometries, levelConfig]
   );
 
   // Check all geometries are loaded
