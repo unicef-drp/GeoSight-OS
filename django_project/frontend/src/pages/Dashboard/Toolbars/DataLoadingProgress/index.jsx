@@ -46,10 +46,9 @@ export default function DataLoadingProgress() {
       total += 1
     })
     let currProgress = 0
-
     for (const [key, value] of Object.entries(indicatorsMetadata)) {
       if (!key.includes('layer')) {
-        if (value.progress?.page) {
+        if (value.progress?.page_size) {
           total += value.progress.page_size
           currProgress += value.progress.page
         }
