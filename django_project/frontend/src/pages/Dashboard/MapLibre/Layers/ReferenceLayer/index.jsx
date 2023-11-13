@@ -377,11 +377,8 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
         relatedTables, relatedTableData, selectedGlobalTime,
         geoField, filteredGeometries
       )
-      const indicatorSecondValueByGeometry = getIndicatorValueByGeometry(
-        currentIndicatorSecondLayer, indicators, indicatorsData,
-        relatedTables, relatedTableData, selectedGlobalTime,
-        geoField, filteredGeometries
-      )
+      let indicatorSecondValueByGeometry = {}
+
       // Create colors
       const hideAndGeom = []
       const fillColorsAndGeom = {}
@@ -430,6 +427,11 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
           }
         }
       } else {
+        indicatorSecondValueByGeometry = getIndicatorValueByGeometry(
+          currentIndicatorSecondLayer, indicators, indicatorsData,
+          relatedTables, relatedTableData, selectedGlobalTime,
+          geoField, filteredGeometries
+        )
         // If compare mode
         // Outline is first indicator color
         // Fill is second color
