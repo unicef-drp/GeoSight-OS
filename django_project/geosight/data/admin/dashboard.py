@@ -15,6 +15,7 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib import admin
+from django.utils import timezone
 
 from geosight.data.models.dashboard import (
     Dashboard, DashboardWidget,
@@ -100,6 +101,12 @@ class DashboardContextLayerInline(admin.TabularInline):
     extra = 0
 
 
+@admin.action(description='Invalidate cache')
+def invalidate_cache(modeladmin, request, queryset):
+    """Invalidate cache of value on frontend."""
+    queryset.update(version_data=timezone.now())
+
+
 class DashboardAdmin(admin.ModelAdmin):
     """Dashboard admin."""
 
@@ -110,6 +117,7 @@ class DashboardAdmin(admin.ModelAdmin):
         DashboardWidgetInline
     )
     prepopulated_fields = {'slug': ('name',)}
+    actions = (invalidate_cache,)
 
 
 class DashboardContextLayerFieldInline(admin.TabularInline):

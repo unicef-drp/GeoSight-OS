@@ -22,9 +22,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from core.cache import VersionCache
 from core.models.preferences import SitePreferences
 from geosight.data.models.basemap_layer import BasemapLayer
+from geosight.data.models.context_layer import ContextLayer
 from geosight.data.models.dashboard import Dashboard
+from geosight.data.models.indicator import Indicator
+from geosight.data.models.related_table import RelatedTable
 from geosight.data.serializer.basemap_layer import BasemapLayerSerializer
 from geosight.data.serializer.dashboard import (
     DashboardBasicSerializer, DashboardSerializer
@@ -78,9 +82,20 @@ class DashboardData(APIView):
         """Return all context analysis data."""
         if slug != CREATE_SLUG:
             dashboard = get_object_or_404(Dashboard, slug=slug)
-            read_permission_resource(dashboard, request.user)
-            data = DashboardSerializer(
-                dashboard, context={'user': request.user}).data
+
+            # Cache version
+            cache = VersionCache(
+                key=request.get_full_path(), version=dashboard.version
+            )
+            cache_data = cache.get()
+            if cache_data:
+                data = cache_data
+            else:
+                read_permission_resource(dashboard, request.user)
+                data = DashboardSerializer(
+                    dashboard, context={'user': request.user}).data
+                cache.set(data)
+
         else:
             dashboard = Dashboard()
             data = DashboardSerializer(
@@ -108,4 +123,17 @@ class DashboardData(APIView):
                 except BasemapLayer.DoesNotExist:
                     pass
 
+        # Return permissions for the resources
+        for row in [
+            {'key': 'indicators', 'model': Indicator},
+            {'key': 'context_layers', 'model': ContextLayer},
+            {'key': 'related_tables', 'model': RelatedTable},
+        ]:
+            for resource in data[row['key']]:
+                try:
+                    resource['permission'] = row['model'].objects.get(
+                        id=resource['id']
+                    ).permission.all_permission(request.user)
+                except RelatedTable.DoesNotExist:
+                    pass
         return Response(data)

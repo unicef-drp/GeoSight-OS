@@ -127,7 +127,9 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData, AbstractVersionData):
         from geosight.data.models.style.indicator_style import (
             IndicatorStyleType
         )
-        self.permission.update(data['permission'])
+
+        if data.get('permission', None):
+            self.permission.update(data['permission'])
 
         # BASEMAPS
         widgets_new = self.save_widgets(data['widgets'])

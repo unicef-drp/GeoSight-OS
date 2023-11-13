@@ -16,12 +16,13 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from rest_framework import serializers
 
+from core.serializer.dynamic_serializer import DynamicModelSerializer
 from geosight.data.models.basemap_layer import (
     BasemapLayerParameter, BasemapLayer
 )
 
 
-class BasemapLayerSerializer(serializers.ModelSerializer):
+class BasemapLayerSerializer(DynamicModelSerializer):
     """Serializer for BasemapLayer."""
 
     category = serializers.SerializerMethodField()
