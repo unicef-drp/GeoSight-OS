@@ -63,7 +63,11 @@ export default function SearchGeometryInput({ map }) {
   useEffect(() => {
       if (enable_geometry_search && referenceLayerData?.data?.dataset_levels) {
         const options = []
-        referenceLayerData?.data?.dataset_levels?.filter(level => availableLevels.includes(level.level)).map(level => {
+        let levels = referenceLayerData?.data?.dataset_levels
+        if (levels && availableLevels) {
+          levels = levels.filter(level => availableLevels.includes(level.level))
+        }
+        levels?.map(level => {
           if (geometries[level.level]) {
             for (const [concept_uuid, geometry] of Object.entries(geometries[level.level])) {
               options.push({

@@ -13,6 +13,10 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '07/11/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import json
+import logging
+
+logger = logging.getLogger(__name__)
 from django.core.cache import cache
 
 
@@ -33,5 +37,10 @@ class VersionCache:
 
     def set(self, data: dict):
         """Set data to cache."""
-        cache.set(self.key, data)
-        cache.set(self.version_key, self.version)
+        try:
+            for key, value in data.items():
+                json.dumps(value)
+            cache.set(self.key, data)
+            cache.set(self.version_key, self.version)
+        except TypeError as e:
+            logger.exception(e)

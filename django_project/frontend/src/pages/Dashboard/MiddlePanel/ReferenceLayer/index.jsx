@@ -81,7 +81,11 @@ export default function ReferenceLayerSection() {
 
   // Onload for default checked and the layer
   useEffect(() => {
-    const levels = referenceLayerData[referenceLayer.identifier]?.data?.dataset_levels?.filter(level => availableLevels.includes(level.level))
+
+    let levels = referenceLayerData[referenceLayer.identifier]?.data?.dataset_levels;
+    if (levels && availableLevels) {
+      levels = levels.filter(level => availableLevels.includes(level.level))
+    }
     currentReferenceLayer = referenceLayer.identifier
     if (levels) {
       (

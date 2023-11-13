@@ -99,7 +99,7 @@ class RelatedTable(AbstractTerm, AbstractEditData):
         if row:
             first_data = self.relatedtablerow_set.first()
             if first_data and first_data.data:
-                return first_data.data.keys()
+                return list(first_data.data.keys())
         return []
 
     def check_relation(self):

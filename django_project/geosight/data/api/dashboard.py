@@ -92,7 +92,6 @@ class DashboardData(APIView):
             if cache_data:
                 data = cache_data
             else:
-                print('no cache')
                 data = DashboardSerializer(
                     dashboard, context={'user': request.user}).data
                 cache.set(data)
