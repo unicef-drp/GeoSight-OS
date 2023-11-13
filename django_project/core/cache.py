@@ -16,8 +16,9 @@ __copyright__ = ('Copyright 2023, Unicef')
 import json
 import logging
 
-logger = logging.getLogger(__name__)
 from django.core.cache import cache
+
+logger = logging.getLogger(__name__)
 
 
 class VersionCache:
