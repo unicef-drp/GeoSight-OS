@@ -82,6 +82,7 @@ class DashboardData(APIView):
         """Return all context analysis data."""
         if slug != CREATE_SLUG:
             dashboard = get_object_or_404(Dashboard, slug=slug)
+            read_permission_resource(dashboard, request.user)
 
             # Cache version
             cache = VersionCache(
@@ -91,7 +92,7 @@ class DashboardData(APIView):
             if cache_data:
                 data = cache_data
             else:
-                read_permission_resource(dashboard, request.user)
+                print('no cache')
                 data = DashboardSerializer(
                     dashboard, context={'user': request.user}).data
                 cache.set(data)

@@ -98,6 +98,7 @@ class DashboardEditView(
             try:
                 dashboard = form.save()
                 dashboard.save_relations(data)
+                dashboard.increase_version()
                 return redirect(
                     reverse(
                         'admin-dashboard-edit-view', args=[dashboard.slug]

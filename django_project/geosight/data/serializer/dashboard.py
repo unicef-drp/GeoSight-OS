@@ -34,7 +34,6 @@ from geosight.data.serializer.dashboard_widget import DashboardWidgetSerializer
 from geosight.data.serializer.indicator import IndicatorSerializer
 from geosight.data.serializer.related_table import RelatedTableSerializer
 from geosight.permission.models.resource.dashboard import DashboardPermission
-from geosight.permission.serializer import PermissionSerializer
 
 
 class DashboardSerializer(serializers.ModelSerializer):

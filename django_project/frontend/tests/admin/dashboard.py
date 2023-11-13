@@ -23,6 +23,9 @@ from django.urls import reverse
 
 from frontend.tests.admin._base import BaseViewTest
 from geosight.data.models.dashboard import Dashboard
+from geosight.data.tests.model_factories import (
+    BasemapLayerF, ContextLayerF, IndicatorF
+)
 from geosight.georepo.models.reference_layer import ReferenceLayerView
 from geosight.permission.models.factory import PERMISSIONS
 
@@ -159,6 +162,7 @@ class DashboardAdminViewTest(BaseViewTest, TestCase):
         self.assertRequestGetView(url, 200, self.creator_in_group)
 
         # POST it
+        last_version = self.resource.version
         new_payload = copy.deepcopy(self.payload)
         new_payload['name'] = 'name 1'
         self.assertRequestPostView(url, 302, new_payload)
@@ -169,6 +173,7 @@ class DashboardAdminViewTest(BaseViewTest, TestCase):
         self.resource.refresh_from_db()
         self.assertEqual(self.resource.name, new_payload['name'])
         self.assertEqual(self.resource.creator, self.resource_creator)
+        self.assertNotEqual(self.resource.version, last_version)
 
     def test_detail_view(self):
         """Test for create view."""
@@ -195,3 +200,60 @@ class DashboardAdminViewTest(BaseViewTest, TestCase):
         self.assertRequestGetView(url, 200, self.contributor)  # Contributor
         self.assertRequestGetView(url, 200, self.creator)  # Creator
         self.assertRequestGetView(url, 200, self.admin)  # Admin
+
+    def test_versioning(self):
+        """Test for create view."""
+        from geosight.data.models.dashboard.dashboard_relation import (
+            DashboardBasemap, DashboardContextLayer, DashboardIndicator
+        )
+        last_version = self.resource.version
+        basemap = BasemapLayerF()
+        basemap.name = 'test'
+        basemap.save()
+
+        context_layer = ContextLayerF()
+        context_layer.name = 'test'
+        context_layer.save()
+
+        indicator = IndicatorF()
+        indicator.name = 'test'
+        indicator.save()
+        self.assertEqual(self.resource.version, last_version)
+
+        DashboardBasemap.objects.create(
+            object=basemap,
+            dashboard=self.resource
+        )
+        DashboardContextLayer.objects.create(
+            object=context_layer,
+            dashboard=self.resource
+        )
+        DashboardIndicator.objects.create(
+            object=indicator,
+            dashboard=self.resource
+        )
+        self.assertEqual(self.resource.version, last_version)
+
+        # Update the basemap
+        basemap.name = 'test'
+        basemap.save()
+        self.resource.refresh_from_db()
+        self.assertNotEqual(self.resource.version, last_version)
+        last_version = self.resource.version
+        self.assertEqual(self.resource.version, last_version)
+
+        # Update the context layer
+        context_layer.name = 'test'
+        context_layer.save()
+        self.resource.refresh_from_db()
+        self.assertNotEqual(self.resource.version, last_version)
+        last_version = self.resource.version
+        self.assertEqual(self.resource.version, last_version)
+
+        # Update indicator
+        indicator.name = 'test'
+        indicator.save()
+        self.resource.refresh_from_db()
+        self.assertNotEqual(self.resource.version, last_version)
+        last_version = self.resource.version
+        self.assertEqual(self.resource.version, last_version)

@@ -154,6 +154,7 @@ class BaseIndicatorEditView(AdminBaseView):
             instance = form.instance
             instance.creator = request.user
             instance.save()
+            instance.update_dashboard_version()
             self.post_save(indicator=instance, data=data)
             return redirect(
                 reverse(
