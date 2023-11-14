@@ -14,10 +14,10 @@
  */
 
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import TreeItem from "@mui/lab/TreeItem";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { Checkbox, IconButton, Paper } from "@mui/material";
-import TreeView from "@mui/lab/TreeView";
+import { TreeView } from '@mui/x-tree-view/TreeView';
+import { TreeItem } from '@mui/x-tree-view/TreeItem';
 import CircularProgress from '@mui/material/CircularProgress';
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
