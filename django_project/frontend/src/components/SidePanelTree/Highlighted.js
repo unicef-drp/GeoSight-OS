@@ -52,15 +52,17 @@ export default function Highlighted(
       className={`LayerName ${ellipsisClass} ${isGroup ? 'Group' : ''}`}
       title={text}>
       <div>
-        {parts.filter(part => part).map((part, i) => (
-          regex.test(part) ?
-            <mark key={i} className={getMarkClass(part)}>{part}</mark> :
-            <span
-              key={i}
-              className={i === parts.length - 1 ? 'LastPart' : ''}>
+        {
+          parts.filter(part => part).map((part, i) => (
+            regex.test(part) ?
+              <mark key={i} className={getMarkClass(part)}>{part}</mark> :
+              <span
+                key={i}
+                className={i === parts.length - 1 ? 'LastPart' : ''}>
               {part}
             </span>
-        ))}
+          ))
+        }
       </div>
     </span>
   )

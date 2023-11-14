@@ -13,11 +13,18 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, {
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { Checkbox, IconButton, Paper } from "@mui/material";
 import { TreeView } from '@mui/x-tree-view/TreeView';
 import { TreeItem } from '@mui/x-tree-view/TreeItem';
+import { debounce } from '@mui/material/utils';
 import CircularProgress from '@mui/material/CircularProgress';
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
@@ -42,6 +49,54 @@ import './style.scss';
 
 const TREE_INDENT_SPACE = 40
 let unexpandedGroups = []
+
+
+/***
+ * Filter layer
+ */
+function FilterLayer({ placeholder, inputChanged }) {
+  const [value, setValue] = useState('')
+
+  const update = useMemo(
+    () =>
+      debounce(
+        (input) => {
+          inputChanged(input)
+        },
+        400
+      ),
+    []
+  )
+
+  const onChange = (e) => {
+    setValue(e.target.value)
+  }
+
+  useEffect(() => {
+    update(value)
+  }, [value])
+
+  return <TextField
+    className='PanelSearchBox'
+    variant={'outlined'}
+    value={value}
+    onKeyPress={(e) => {
+      e.key === 'Enter' && e.preventDefault();
+    }}
+    placeholder={placeholder ? placeholder : ''}
+    onChange={onChange}
+    InputProps={{
+      endAdornment: (
+        <IconButton
+          type="button" sx={{ p: '10px' }}
+          aria-label="search"
+          disabled={value.length === 0}
+          onClick={() => setValue('')}>
+          {value ? <ClearIcon/> : <MagnifyIcon/>}
+        </IconButton>
+      )
+    }}/>
+}
 
 /**
  * SidePanelTreeView component
@@ -226,10 +281,6 @@ export default function SidePanelTreeView(
     }
   }
 
-  const onFilterChange = (e) => {
-    setFilterText(e.target.value)
-  }
-
   const renderTree = (treeData) => {
     const nodesDataId = treeData.data ? '' + treeData.data.id : treeData.id;
     let loading = treeData?.data?.loading;
@@ -286,7 +337,7 @@ export default function SidePanelTreeView(
               label={
                 <span>
                   <Highlighted
-                    text={treeData.name.replace(new RegExp(`(\\w{${maxWord}})(?=\\w)`), '$1 ')}
+                    text={treeData.name.replace(new RegExp(`(\\w{${maxWord}})(?=\\w)`), '$1')}
                     highlight={filterText}/>
                   {
                     otherInfo ? otherInfo(treeData) : null
@@ -334,25 +385,9 @@ export default function SidePanelTreeView(
                alignItems: 'center', width: '100%'
              }}
       >
-        <TextField
-          className='PanelSearchBox'
-          variant={'outlined'}
-          value={filterText}
-          onKeyPress={(e) => {
-            e.key === 'Enter' && e.preventDefault();
-          }}
-          placeholder={props.placeholder ? props.placeholder : ''}
-          onChange={onFilterChange}
-          InputProps={{
-            endAdornment: (
-              <IconButton type="button" sx={{ p: '10px' }}
-                          aria-label="search"
-                          disabled={filterText.length === 0}
-                          onClick={() => setFilterText('')}>
-                {filterText ? <ClearIcon/> : <MagnifyIcon/>}
-              </IconButton>
-            )
-          }}/>
+        <FilterLayer
+          placeholder={props.placeholder}
+          inputChanged={input => setFilterText(input)}/>
       </Paper>
       <TreeView
         aria-label="rich object"
