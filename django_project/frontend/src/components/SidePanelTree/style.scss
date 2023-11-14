@@ -183,18 +183,10 @@
     &.Ellipsis {
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: nowrap;
+      white-space: pre;
 
       div {
         display: flex;
-
-        mark.prefix {
-          padding-left: 4px;
-        }
-
-        mark.suffix {
-          padding-right: 4px;
-        }
       }
     }
 
@@ -235,7 +227,7 @@
 .ContextLayersAccordion {
   .MuiTreeItem-group {
     .MuiTreeItem-content {
-      padding-left: 22px !important;
+      padding-left: 11px !important;
     }
   }
 
