@@ -87,7 +87,8 @@ class Entity(models.Model):
             original_id_type: str, original_id: str,
             reference_layer: ReferenceLayerView,
             admin_level: int = None,
-            date_time=timezone.now()
+            date_time=timezone.now(),
+            auto_fetch: bool = True
     ):
         """Return ucode for the code."""
         if not date_time:
@@ -126,10 +127,12 @@ class Entity(models.Model):
             if entity.admin_level != 0 and not entity.parents:
                 raise EntityCode.DoesNotExist()
         except (Entity.DoesNotExist, EntityCode.DoesNotExist):
+            if not auto_fetch:
+                raise GeorepoEntityDoesNotExist()
+
             entity = GeorepoRequest().View.find_entity(
                 reference_layer.identifier, original_id_type, original_id
             )
-
             obj, _ = Entity.objects.get_or_create(
                 reference_layer=reference_layer,
                 admin_level=entity.admin_level,

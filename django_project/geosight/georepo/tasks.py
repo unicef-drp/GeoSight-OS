@@ -37,7 +37,7 @@ def fetch_reference_codes(_id):
 
 
 @app.task
-def fetch_datasets():
+def fetch_datasets(fetch_code=False):
     """Fetch reference codes."""
     datasets = GeorepoRequest().get_reference_layer_list()
     for dataset in datasets:
@@ -54,6 +54,8 @@ def fetch_datasets():
             )
             if created:
                 create_data_access_reference_layer_view(ref.id)
+            if fetch_code:
+                fetch_reference_codes(ref.id)
 
 
 @app.task
