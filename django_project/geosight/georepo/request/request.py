@@ -66,7 +66,7 @@ class GeorepoEntityDoesNotExist(Exception):
 class GeorepoPostPooling:
     """Georepo url with pooling."""
 
-    LIMIT = 100  # Check result maximum 100 times
+    LIMIT = 3000  # Check result maximum 1000 times
     INTERVAL = 2  # Interval of check results
 
     def __init__(self, request, url, data):
@@ -445,9 +445,6 @@ class GeorepoRequest:
                     pass
             response['features'] = features
             return response
-
-        def identify_codes_callback(self, url_callbacl):
-            """Return url callback."""
 
         def identify_codes(
                 self, reference_layer_identifier: str, codes: list,

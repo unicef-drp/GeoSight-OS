@@ -19,6 +19,7 @@ from rest_framework import serializers
 
 from core.serializer.dynamic_serializer import DynamicModelSerializer
 from geosight.data.models.related_table import RelatedTable
+from geosight.georepo.models.entity import Entity
 from geosight.georepo.models.reference_layer import ReferenceLayerView
 from geosight.importer.models.importer import ImportType
 from geosight.importer.models.log import (
@@ -109,16 +110,28 @@ class ImporterLogDataSerializer(DynamicModelSerializer):
         data = obj.data
         if obj.log.importer.import_type == ImportType.INDICATOR_VALUE:
             try:
-                del data['indicator_shortcode']
-            except KeyError:
-                pass
-            try:
                 ref_layer = ReferenceLayerView.objects.get(
                     identifier=data.get('reference_layer_identifier')
                 )
+                key = 'admin_level'
+                try:
+                    if key not in data.keys() or data[key] is None:
+                        obj.data[key] = Entity.objects.filter(
+                            reference_layer=ref_layer,
+                            geom_id=data['geo_code']
+                        ).first().admin_level
+                        obj.save()
+                except (KeyError, AttributeError):
+                    pass
+
                 data['reference_layer_name'] = ref_layer.get_name()
                 data['reference_layer_id'] = ref_layer.id
             except ReferenceLayerView.DoesNotExist:
+                pass
+
+            try:
+                del data['indicator_shortcode']
+            except KeyError:
                 pass
         return data
 
