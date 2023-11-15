@@ -149,7 +149,7 @@ class IndicatorValueWideFormat(AbstractImporterIndicatorValue, ABC):
                         geo_code = record['geo_code']
                         codes = results[geo_code]
                         clean_records[idx]['geo_code'] = codes[len(codes) - 1]
-                    except IndexError:
+                    except (IndexError, KeyError):
                         notes[idx][code_type] = 'This code does not exist.'
                         success = False
 
