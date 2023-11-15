@@ -107,10 +107,17 @@ class IndicatorValueLongFormat(AbstractImporterIndicatorValue, ABC):
         total = len(records)
         adm_code_column = self.attributes['key_administration_code']
         value_column = self.get_attribute('key_value')
+        code_type = self.importer.admin_code_type
+
+        # Save the geocode that is not exist
+        checked_geocode = []
+        invalid_check_idx = []
 
         # Save the clean records
         clean_records = []
         notes = []
+        idx = 0
+
         for line_idx, record in enumerate(records):
             if not record:
                 continue
@@ -156,7 +163,6 @@ class IndicatorValueLongFormat(AbstractImporterIndicatorValue, ABC):
 
             # ----------------------------------------
             # Check the geocode
-            code_type = self.importer.admin_code_type
             data[code_type] = data['geo_code']
 
             # Check admin level
@@ -169,20 +175,43 @@ class IndicatorValueLongFormat(AbstractImporterIndicatorValue, ABC):
                 note['admin_level'] = 'Admin level is not integer'
 
             entity, error = self.get_entity(
-                data, self.importer.admin_code_type
+                data, self.importer.admin_code_type, auto_fetch=False
             )
             if entity:
                 data['geo_code'] = entity.geom_id
                 data['admin_level'] = entity.admin_level
             else:
-                note[code_type] = error
+                if error == 'This code does not exist.':
+                    checked_geocode.append(data['geo_code'])
+                    invalid_check_idx.append(idx)
+                else:
+                    note[code_type] = error
             # ----------------------------------------
 
             # Save to clean records
             clean_records.append(data)
             notes.append(note)
+            idx += 1
 
             # If there is note, failed
             if len(note.keys()):
                 success = False
+
+        # Checking missing geocode
+        if len(checked_geocode):
+            results = self.check_codes(codes=checked_geocode)
+            for idx in invalid_check_idx:
+                try:
+                    record = clean_records[idx]
+                except IndexError:
+                    pass
+                else:
+                    try:
+                        geo_code = record['geo_code']
+                        codes = results[geo_code]
+                        clean_records[idx]['geo_code'] = codes[len(codes) - 1]
+                    except (IndexError, KeyError):
+                        notes[idx][code_type] = 'This code does not exist.'
+                        success = False
+
         return clean_records, notes, success
