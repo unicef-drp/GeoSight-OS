@@ -67,7 +67,7 @@ class GeorepoPostPooling:
     """Georepo url with pooling."""
 
     LIMIT = 3000  # Check result maximum 1000 times
-    INTERVAL = 2  # Interval of check results
+    INTERVAL = 5  # Interval of check results
 
     def __init__(self, request, url, data):
         """init."""
@@ -99,7 +99,8 @@ class GeorepoPostPooling:
             )
         response = response.json()
         if response['status'] == 'DONE':
-            return response['results']
+            results = self.request.get(response['output_url'])
+            return results.json()
         elif response['status'] in ['ERROR', 'CANCELLED']:
             try:
                 raise GeorepoRequestError(response['error'])
@@ -455,7 +456,6 @@ class GeorepoRequest:
                 f"{self.urls.georepo_url}/search/view/"
                 f"{reference_layer_identifier}/"
                 f"entity/batch/identifier/{original_id_type}/"
-                f"return_type/{return_id_type}/"
             )
             try:
                 return GeorepoPostPooling(self.request, url, codes).results()
