@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import { useSelector } from "react-redux";
 import { MDXEditor } from '@mdxeditor/editor/MDXEditor'
 import {
@@ -49,10 +49,7 @@ import { tablePlugin } from '@mdxeditor/editor/plugins/table'
 import { thematicBreakPlugin } from '@mdxeditor/editor/plugins/thematic-break'
 import { linkDialogPlugin } from '@mdxeditor/editor/plugins/link-dialog'
 
-// TODO:
-//  Uncoment this and remove style in the style.scss
-//  Fix the imports
-// import '@mdxeditor/editor/style.css'
+
 import './style.scss';
 
 /**
@@ -71,48 +68,56 @@ export default function OverviewForm({ changed }) {
         name="textarea"
         value={overviewData}
       />
-      <MDXEditor
-        markdown={overviewData}
-        plugins={
-          [
-            headingsPlugin(), listsPlugin(), quotePlugin(), thematicBreakPlugin(),
-            tablePlugin(), linkPlugin(), linkDialogPlugin(),
-            toolbarPlugin({
-              toolbarContents: () => (
-                <>
-                  <UndoRedo/>
-                  <div data-orientation="vertical" aria-orientation="vertical"
-                       role="separator"/>
-                  <BoldItalicUnderlineToggles/>
-                  <CodeToggle/>
-                  <div data-orientation="vertical" aria-orientation="vertical"
-                       role="separator"/>
-                  <ListsToggle/>
-                  <div data-orientation="vertical" aria-orientation="vertical"
-                       role="separator"/>
-                  <BlockTypeSelect/>
-                  <div data-orientation="vertical" aria-orientation="vertical"
-                       role="separator"/>
-                  <CreateLink/>
-                  <div data-orientation="vertical" aria-orientation="vertical"
-                       role="separator"/>
-                  <InsertTable/>
-                  <InsertThematicBreak/>
-                  <div data-orientation="vertical" aria-orientation="vertical"
-                       role="separator"/>
-                </>
-              )
-            }),
-          ]
-        }
-        onChange={
-          val => {
-            setOverviewData(val)
-            changed(true)
-            console.log(val)
+      <Suspense fallback={<div>Loading...</div>}>
+        <MDXEditor
+          markdown={overviewData}
+          plugins={
+            [
+              headingsPlugin(), listsPlugin(), quotePlugin(), thematicBreakPlugin(),
+              tablePlugin(), linkPlugin(), linkDialogPlugin(),
+              toolbarPlugin({
+                toolbarContents: () => (
+                  <>
+                    <UndoRedo/>
+                    <div data-orientation="vertical"
+                         aria-orientation="vertical"
+                         role="separator"/>
+                    <BoldItalicUnderlineToggles/>
+                    <CodeToggle/>
+                    <div data-orientation="vertical"
+                         aria-orientation="vertical"
+                         role="separator"/>
+                    <ListsToggle/>
+                    <div data-orientation="vertical"
+                         aria-orientation="vertical"
+                         role="separator"/>
+                    <BlockTypeSelect/>
+                    <div data-orientation="vertical"
+                         aria-orientation="vertical"
+                         role="separator"/>
+                    <CreateLink/>
+                    <div data-orientation="vertical"
+                         aria-orientation="vertical"
+                         role="separator"/>
+                    <InsertTable/>
+                    <InsertThematicBreak/>
+                    <div data-orientation="vertical"
+                         aria-orientation="vertical"
+                         role="separator"/>
+                  </>
+                )
+              }),
+            ]
           }
-        }
-      />
+          onChange={
+            val => {
+              setOverviewData(val)
+              changed(true)
+              console.log(val)
+            }
+          }
+        />
+      </Suspense>
     </div>
   )
 }

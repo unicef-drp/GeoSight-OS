@@ -119,8 +119,11 @@ class PermissionManager(models.Manager):
         # Check permission query
         if user:
             if self.model.__name__ == 'ReferenceLayerIndicatorPermission':
+                indicators = Indicator.permissions.delete(
+                    user=user
+                ).values_list('id', flat=True)
                 permission_query = permission_query.filter(
-                    Q(obj__indicator__creator=user) |
+                    Q(obj__indicator__id__in=indicators) |
                     Q(public_permission__in=permissions) |
                     Q(
                         Q(user_permissions__user=user) &

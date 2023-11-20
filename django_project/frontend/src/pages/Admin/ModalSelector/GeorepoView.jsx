@@ -73,7 +73,7 @@ export default function GeorepoViewSelector(
             row.value = row.identifier
             return row
           })
-          if (!reference) {
+          if (!reference && references[0]) {
             setReference(references[0].value)
           }
           setReferences(references)
