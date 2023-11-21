@@ -65,11 +65,23 @@ def js_json(input):
 @register.filter
 def get_data(form):
     """Get data from form."""
+    # TODO:
+    #  Create E2E tests and remove the try catch
     if form.initial:
-        return json.dumps({
-            'id': form.initial['id'],
-            'name': form.initial['name'],
-        })
+        try:
+            data = {}
+            for key, value in form.initial.items():
+                try:
+                    json.dumps({'test': value})
+                    data[key] = value
+                except TypeError:
+                    pass
+            return json.dumps(data)
+        except Exception:
+            return json.dumps({
+                'id': form.initial['id'],
+                'name': form.initial['name'],
+            })
     else:
         return json.dumps({
             'id': 0,

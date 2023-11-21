@@ -24,9 +24,11 @@ import { AdminForm } from '../../Components/AdminForm'
 import StyleConfig from '../StyleConfig'
 import DjangoTemplateForm from "../../Components/AdminForm/DjangoTemplateForm";
 import { resourceActions } from "../List";
+import { axiosGet } from "../../../../utils/georepo";
 
 import './style.scss';
 
+let currentArcGis = null
 /**
  * Context Layer Form App
  */
@@ -67,6 +69,39 @@ export default function ContextLayerForm() {
       $('*[name="styles"]').val(JSON.stringify(newData['styles']))
     }
   }
+
+  const typeOnChange = (value) => {
+    if (value === 'ARCGIS') {
+      $('div[data-wrapper-name="arcgis_config"]').show()
+    } else {
+      $('div[data-wrapper-name="arcgis_config"]').hide()
+    }
+  }
+
+  const arcGisConfigChange = (value) => {
+    currentArcGis = value
+    if (!value) {
+      $('div[data-wrapper-name="token"]').show()
+      $('div[data-wrapper-name="username"]').show()
+      $('div[data-wrapper-name="password"]').show()
+    } else {
+      $('div[data-wrapper-name="token"]').hide()
+      $('div[data-wrapper-name="username"]').hide()
+      $('div[data-wrapper-name="password"]').hide()
+
+      axiosGet(`/api/arcgis/${value}/token`).then(response => {
+        if (currentArcGis === value) {
+          setData({
+            ...data,
+            token: response.data.result,
+            arcgis_config: value
+          })
+        }
+
+      })
+    }
+  }
+
   return (
     <Admin
       minifySideNavigation={true}
@@ -105,6 +140,11 @@ export default function ContextLayerForm() {
               selectableInput={selectableInput}
               selectableInputExcluded={['name', 'shortcode']}
               onChange={(name, value) => {
+                if (name === 'layer_type') {
+                  typeOnChange(value)
+                } else if (name === 'arcgis_config') {
+                  arcGisConfigChange(value)
+                }
                 setDataFn()
               }}
             />

@@ -160,7 +160,9 @@ export default function DjangoTemplateForm(
     }
     // Render
     return <div
-      className={'BasicFormSection ' + (isHidden ? 'Hidden' : '')} key={idx}>
+      className={'BasicFormSection ' + (isHidden ? 'Hidden' : '')} key={idx}
+      data-wrapper-name={attrName}
+    >
       <div dangerouslySetInnerHTML={{ __html: label }}></div>
       <div className='InputInLine'>
         {
