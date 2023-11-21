@@ -148,7 +148,12 @@ class IndicatorValueWideFormat(AbstractImporterIndicatorValue, ABC):
                     try:
                         geo_code = record['geo_code']
                         codes = results[geo_code]
-                        clean_records[idx]['geo_code'] = codes[len(codes) - 1]
+                        entity = codes[len(codes) - 1]
+                        entity = self.importer.reference_layer.save_entity(
+                            entity
+                        )
+                        clean_records[idx]['geo_code'] = entity.geom_id
+                        clean_records[idx]['admin_level'] = entity.admin_level
                     except (IndexError, KeyError):
                         notes[idx][code_type] = 'This code does not exist.'
                         success = False

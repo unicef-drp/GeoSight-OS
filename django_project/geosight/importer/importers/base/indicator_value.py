@@ -344,17 +344,19 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
         """Check codes to georepo."""
         from geosight.georepo.request import GeorepoRequest
         importer = self.importer
-        self._update('Identifying codes to GeoRepo')
+        self._update('Identifying codes from GeoRepo')
         try:
-            return GeorepoRequest().View.identify_codes(
+            results = GeorepoRequest().View.identify_codes(
                 reference_layer_identifier=importer.reference_layer.identifier,
                 original_id_type=importer.admin_code_type,
                 codes=codes,
                 return_id_type='ucode'
 
             )
+            self._update('Saving codes to Cache')
+            return results
         except Timeout:
-            raise ImporterError('Identifying codes to GeoRepo is timeout.')
+            raise ImporterError('Identifying codes from GeoRepo is timeout.')
 
     def _check_data_to_log(self, data: dict, note: dict) -> (dict, dict):
         """Save data that constructed from importer.

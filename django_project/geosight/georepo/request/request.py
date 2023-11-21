@@ -22,6 +22,7 @@ from urllib.parse import urlparse
 import requests
 from django.contrib.auth import get_user_model
 from django.core.exceptions import MultipleObjectsReturned
+from requests.exceptions import Timeout
 
 from core.models.preferences import SitePreferences
 from geosight.georepo.request.data import GeorepoEntity
@@ -66,8 +67,8 @@ class GeorepoEntityDoesNotExist(Exception):
 class GeorepoPostPooling:
     """Georepo url with pooling."""
 
-    LIMIT = 3000  # Check result maximum 1000 times
-    INTERVAL = 2  # Interval of check results
+    LIMIT = 1500  # Check result maximum 1500 times or 4500 seconds
+    INTERVAL = 5  # Interval of check results
 
     def __init__(self, request, url, data):
         """init."""
@@ -91,21 +92,25 @@ class GeorepoPostPooling:
         self.current_repeat += 1
         if self.current_repeat >= self.LIMIT:
             raise requests.exceptions.Timeout()
-
-        response = self.request.get(self.callback_url)
-        if response.status_code != 200:
-            raise GeorepoRequestError(
-                f'{response.status_code} - {response.text}'
-            )
-        response = response.json()
-        if response['status'] == 'DONE':
-            return response['results']
-        elif response['status'] in ['ERROR', 'CANCELLED']:
-            try:
-                raise GeorepoRequestError(response['error'])
-            except KeyError:
-                raise GeorepoRequestError(response['status'])
-        else:
+        try:
+            response = self.request.get(self.callback_url)
+            if response.status_code != 200:
+                raise GeorepoRequestError(
+                    f'{response.status_code} - {response.text}'
+                )
+            response = response.json()
+            if response['status'] == 'DONE':
+                results = self.request.get(response['output_url'])
+                return results.json()
+            elif response['status'] in ['ERROR', 'CANCELLED']:
+                try:
+                    raise GeorepoRequestError(response['error'])
+                except KeyError:
+                    raise GeorepoRequestError(response['status'])
+            else:
+                time.sleep(self.INTERVAL)
+                return self.results()
+        except requests.exceptions.Timeout:
             time.sleep(self.INTERVAL)
             return self.results()
 
@@ -316,7 +321,7 @@ class GeorepoRequest:
                     f'Error fetching on {self.urls.view_detail(identifier)} '
                     f'- response is not json'
                 )
-            except ConnectionError:
+            except Timeout:
                 raise GeorepoRequestError(
                     f'Error fetching on {self.urls.view_detail(identifier)} '
                     '- Request Time Out'
@@ -332,7 +337,7 @@ class GeorepoRequest:
             )
             try:
                 response = self.request.get(url)
-            except ConnectionError:
+            except Timeout:
                 raise GeorepoRequestError(
                     f'Error fetching on {url} - Request Time Out'
                 )
@@ -455,7 +460,6 @@ class GeorepoRequest:
                 f"{self.urls.georepo_url}/search/view/"
                 f"{reference_layer_identifier}/"
                 f"entity/batch/identifier/{original_id_type}/"
-                f"return_type/{return_id_type}/"
             )
             try:
                 return GeorepoPostPooling(self.request, url, codes).results()

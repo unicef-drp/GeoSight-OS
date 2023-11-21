@@ -114,9 +114,34 @@ class ReferenceLayerView(models.Model):
         """Return entities of reference layer view."""
         return GeorepoRequest().View.get_detail(self.identifier)
 
+    def save_entity(self, entity: GeorepoEntity):
+        """Save entities."""
+        from geosight.georepo.models.entity import Entity, EntityCode
+        entity = GeorepoEntity(entity)
+        obj, _ = Entity.objects.get_or_create(
+            reference_layer=self,
+            admin_level=entity.admin_level,
+            geom_id=entity.ucode,
+            defaults={
+                'concept_uuid': entity.concept_uuid,
+                'start_date': entity.start_date
+            }
+        )
+
+        obj.end_date = entity.end_date
+        obj.parents = entity.parents
+        obj.name = entity.name
+        obj.save()
+        for code_type, code in entity.ext_codes.items():
+            entity_code, _ = EntityCode.objects.get_or_create(
+                entity=obj,
+                code_type=code_type,
+                code=code
+            )
+        return obj
+
     def sync_entities_code(self, level=None):
         """Sync entities code."""
-        from geosight.georepo.models.entity import Entity, EntityCode
         detail = GeorepoRequest().View.get_detail(self.identifier)
         for dataset_level in detail['dataset_levels']:
             if level and dataset_level['level'] != level:
@@ -125,27 +150,7 @@ class ReferenceLayerView(models.Model):
                 self.identifier, dataset_level['level']
             )
             for entity in entities:
-                entity = GeorepoEntity(entity)
-                obj, _ = Entity.objects.get_or_create(
-                    reference_layer=self,
-                    admin_level=entity.admin_level,
-                    geom_id=entity.ucode,
-                    defaults={
-                        'concept_uuid': entity.concept_uuid,
-                        'start_date': entity.start_date
-                    }
-                )
-
-                obj.end_date = entity.end_date
-                obj.parents = entity.parents
-                obj.name = entity.name
-                obj.save()
-                for code_type, code in entity.ext_codes.items():
-                    entity_code, _ = EntityCode.objects.get_or_create(
-                        entity=obj,
-                        code_type=code_type,
-                        code=code
-                    )
+                self.save_entity(entity)
 
     @property
     def detail_url(self):
