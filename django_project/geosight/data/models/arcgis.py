@@ -38,7 +38,8 @@ url = (
 
 
 class ArcgisConfig(AbstractTerm):
-    """Sharepoint config model."""
+    """ArcGIS config model."""
+
     generate_token_url = models.CharField(
         max_length=512,
         help_text=(
