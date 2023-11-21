@@ -39,14 +39,13 @@ url = (
 
 class ArcgisConfig(AbstractTerm):
     """Sharepoint config model."""
-
     generate_token_url = models.CharField(
         max_length=512,
         help_text=(
             'You can check your generate token url in '
             f'<a href="{url}">{url}</a>.<br>'
             'If your arcgis is federated one, please use url : '
-            'https://{host}:{port}/portal/sharing/rest/generateToken.'
+            'https://{host}:{port}/portal/sharing/generateToken.'
         )
     )
     username = models.CharField(max_length=256)
