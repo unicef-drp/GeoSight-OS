@@ -17,7 +17,7 @@
    NAVBAR
    ========================================================================== */
 
-import React, { Fragment, useRef } from 'react';
+import React, { Fragment, useRef, useState } from 'react';
 import { useSelector } from "react-redux";
 import $ from 'jquery';
 import i18n from "i18next";
@@ -26,8 +26,8 @@ import User from './User'
 import { EmbedConfig } from "../../utils/embed";
 import { CogIcon, EditIcon, HelpIcon } from "../Icons";
 import { ThemeButton } from "../Elements/Button";
-import { HelpCenter } from "../HelpCenter";
 import NotificationBadge from "../NotificationBadge";
+import { DocsCrawlerGeosight } from "../DocsCrawlerGeosight";
 
 import './style.scss';
 
@@ -39,6 +39,8 @@ export default function NavBar({ minified }) {
   const { icon, favicon, site_title } = preferences;
   const { username, full_name, is_staff, is_contributor } = user;
   const user_permission = useSelector(state => state.dashboard?.data?.user_permission);
+
+  const [openHelp, setOpenHelp] = useState(false)
 
   // Set width of logo
   // Not working using css on firefox
@@ -127,7 +129,7 @@ export default function NavBar({ minified }) {
           }
           <div className='HelpButton .SvgButton'>
             <a href='#' onClick={_ => {
-              helpPageRef?.current.open()
+              setOpenHelp(true)
             }}>
               <HelpIcon/>
             </a>
@@ -135,7 +137,7 @@ export default function NavBar({ minified }) {
           <User/>
         </div>
       </header>
-      <HelpCenter ref={helpPageRef}/>
+      <DocsCrawlerGeosight open={openHelp} setOpen={setOpenHelp}/>
     </Fragment>
   )
 }

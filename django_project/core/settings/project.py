@@ -82,7 +82,7 @@ LOCALE_PATHS = (ABS_PATH('locale'),)
 INSTALLED_APPS = INSTALLED_APPS + (
     'azure_auth',
     'core',
-    'docs',
+    'docs_crawler',
     'geosight.data',
     'geosight.georepo',
     'geosight.permission',

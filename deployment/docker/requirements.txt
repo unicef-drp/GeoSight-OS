@@ -39,3 +39,5 @@ pyjwt==2.6.0
 msal==1.21.0
 selenium==4.13.0
 webdriver-manager==4.0.1
+
+-e git+https://github.com/kartoza/django-docs-crawler.git#egg=django-docs-crawler
