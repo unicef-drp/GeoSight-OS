@@ -22,7 +22,7 @@ from urllib.parse import urlparse
 import requests
 from django.contrib.auth import get_user_model
 from django.core.exceptions import MultipleObjectsReturned
-from requests.exceptions import ConnectionError
+from requests.exceptions import Timeout
 
 from core.models.preferences import SitePreferences
 from geosight.georepo.request.data import GeorepoEntity
@@ -321,7 +321,7 @@ class GeorepoRequest:
                     f'Error fetching on {self.urls.view_detail(identifier)} '
                     f'- response is not json'
                 )
-            except ConnectionError:
+            except Timeout:
                 raise GeorepoRequestError(
                     f'Error fetching on {self.urls.view_detail(identifier)} '
                     '- Request Time Out'
@@ -337,7 +337,7 @@ class GeorepoRequest:
             )
             try:
                 response = self.request.get(url)
-            except ConnectionError:
+            except Timeout:
                 raise GeorepoRequestError(
                     f'Error fetching on {url} - Request Time Out'
                 )
