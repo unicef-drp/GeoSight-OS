@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 /**
  * WIDGETS reducer
@@ -25,6 +25,7 @@ export const CONTEXT_LAYER_ACTION_NAME = 'CONTEXT_LAYER';
 export const CONTEXT_LAYER_ACTION_TYPE_ADD = 'CONTEXT_LAYER/ADD';
 export const CONTEXT_LAYER_ACTION_TYPE_REMOVE = 'CONTEXT_LAYER/REMOVE';
 export const CONTEXT_LAYER_ACTION_TYPE_UPDATE = 'CONTEXT_LAYER/UPDATE';
+export const CONTEXT_LAYER_ACTION_TYPE_UPDATE_JSON = 'CONTEXT_LAYER/UPDATE_JSON';
 export const CONTEXT_LAYER_ACTION_TYPE_REARRANGE = 'CONTEXT_LAYER/REARRANGE';
 export const CONTEXT_LAYER_ACTION_TYPE_STYLE = 'CONTEXT_LAYER/STYLE';
 
@@ -64,6 +65,20 @@ export default function contextLayersReducer(state = initialState, action, dashb
           }
         })
         return contextLayers
+      }
+      case CONTEXT_LAYER_ACTION_TYPE_UPDATE_JSON: {
+        let newState = state
+        state.forEach(function (layer) {
+          const { id, data } = action.payload;
+          if (layer.id === id) {
+            for (const [key, value] of Object.entries(data)) {
+              layer[key] = value
+            }
+            newState = [...state]
+            return
+          }
+        })
+        return newState
       }
 
       case CONTEXT_LAYER_ACTION_TYPE_REARRANGE: {

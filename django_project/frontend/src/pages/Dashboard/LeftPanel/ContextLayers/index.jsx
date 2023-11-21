@@ -93,7 +93,7 @@ function ContextLayers() {
     }
   }, [layers, selectedLayer])
 
-  const initialize = (_contextLayers) => {
+  const initialize = async (_contextLayers) => {
     if (selectedLayer.length > 0) {
       selectedLayer.forEach(layer => {
         dispatch(
@@ -117,11 +117,34 @@ function ContextLayers() {
             }
           }),
           (legend) => contextLayer.legend = legend,
-          (error) => {
-            setErrors(prevState => {
-                return { ...prevState, [contextLayer.id + '']: error.toString() }
+          async (error) => {
+            if (contextLayer.arcgis_config && ['Token Required', 'Invalid Token'].includes(error)) {
+              try {
+                const response = await fetch(`/api/arcgis/${contextLayer.arcgis_config}/token`)
+                const output = await response.json()
+                dispatch(
+                  Actions.ContextLayers.updateJson(
+                    contextLayer.id, { token: output.result }
+                  )
+                )
+              } catch (error) {
+                setErrors(prevState => {
+                    return {
+                      ...prevState,
+                      [contextLayer.id + '']: error.toString()
+                    }
+                  }
+                )
               }
-            )
+            } else {
+              setErrors(prevState => {
+                  return {
+                    ...prevState,
+                    [contextLayer.id + '']: error.toString()
+                  }
+                }
+              )
+            }
           },
           null
         )

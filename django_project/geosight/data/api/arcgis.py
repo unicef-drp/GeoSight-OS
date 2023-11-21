@@ -14,13 +14,19 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from .arcgis import *
-from .basemap_layer import *
-from .code import *
-from .context_layer import *
-from .dashboard import *
-from .dashboard_embed import *
-from .indicator import *
-from .related_table import *
-from .sharepoint import *
-from .style import *
+from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from geosight.data.models.arcgis import ArcgisConfig
+
+
+class ArcgisConfigTokenAPI(APIView):
+    """API for detail of ArcgisConfig."""
+
+    def get(self, request, pk):
+        """Reurn token of arcgis."""
+        config = get_object_or_404(ArcgisConfig, pk=pk)
+        return Response({
+            'result': config.token_val
+        })

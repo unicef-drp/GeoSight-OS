@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 import {
   CONTEXT_LAYER_ACTION_NAME,
@@ -19,7 +19,8 @@ import {
   CONTEXT_LAYER_ACTION_TYPE_REARRANGE,
   CONTEXT_LAYER_ACTION_TYPE_REMOVE,
   CONTEXT_LAYER_ACTION_TYPE_STYLE,
-  CONTEXT_LAYER_ACTION_TYPE_UPDATE
+  CONTEXT_LAYER_ACTION_TYPE_UPDATE,
+  CONTEXT_LAYER_ACTION_TYPE_UPDATE_JSON
 } from './index'
 
 
@@ -60,6 +61,22 @@ export function update(payload) {
 }
 
 /**
+ * Update context layer with specific data.
+ * @param {int} id ID of context layer.
+ * @param {object} data Data that will be updated.
+ */
+export function updateJson(id, data) {
+  return {
+    name: CONTEXT_LAYER_ACTION_NAME,
+    type: CONTEXT_LAYER_ACTION_TYPE_UPDATE_JSON,
+    payload: {
+      id,
+      data
+    }
+  };
+}
+
+/**
  * Rearrange context layer.
  * @param {object} payload Context layer data.
  */
@@ -84,5 +101,5 @@ export function updateStyle(payload) {
 }
 
 export default {
-  add, remove, update, rearrange, updateStyle
+  add, remove, update, updateJson, rearrange, updateStyle
 }
