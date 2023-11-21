@@ -346,9 +346,11 @@ export default function SidePanelTreeView(
                 </span>
               }
             />
-            {treeData.data?.legend && selected.indexOf(nodesDataId) >= 0 ?
-              <div
-                dangerouslySetInnerHTML={{ __html: treeData.data?.legend }}></div> : ''}
+            {
+              treeData.data?.legend && selected.indexOf(nodesDataId) >= 0 ?
+                <div
+                  dangerouslySetInnerHTML={{ __html: treeData.data?.legend }}></div> : ''
+            }
           </div> : groupSelectable ?
             <FormControlLabel
               className='GroupSelectable Group'
@@ -370,9 +372,11 @@ export default function SidePanelTreeView(
               text={treeData.name ? treeData.name : 'No Name'}
               highlight={filterText}/>
       }>
-      {Array.isArray(treeData.children)
-        ? treeData.children.map((node) => renderTree(node))
-        : null}
+      {
+        Array.isArray(treeData.children)
+          ? treeData.children.map((node) => renderTree(node))
+          : null
+      }
     </TreeItem>
   };
 

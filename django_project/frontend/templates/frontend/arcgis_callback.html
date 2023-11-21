@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<head></head>
+<body>
+<script>
+  // try to match an access token in window.location.hash
+  const match = (window.location.hash) ? window.location.hash.match(/#access_token=([^&]+)/) : false;
+  // if we found an access token in the URL pass the token up to a global function in
+  if (match[1]) {
+    const parentWindow = (window.opener && window.opener.parent) ? window.opener.parent : window
+    parentWindow.postMessage(match[1]);
+  }
+  window.close();
+</script>
+</body>
+</html>
