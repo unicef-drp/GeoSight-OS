@@ -91,7 +91,7 @@ class ContextLayer(AbstractEditData, AbstractTerm):
         on_delete=models.SET_NULL,
         help_text=_(
             'ArcGis configuration that contains username/password '
-            'that will be used for autogenerate the token.'
+            'that will be used to autogenerate the token.'
         )
     )
     url_legend = models.CharField(

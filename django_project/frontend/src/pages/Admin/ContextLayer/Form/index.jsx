@@ -70,7 +70,7 @@ export default function ContextLayerForm() {
     }
   }
 
-  const typeOnChange = (value) => {
+  const typeChange = (value) => {
     if (value === 'ARCGIS') {
       $('div[data-wrapper-name="arcgis_config"]').show()
     } else {
@@ -141,7 +141,7 @@ export default function ContextLayerForm() {
               selectableInputExcluded={['name', 'shortcode']}
               onChange={(name, value) => {
                 if (name === 'layer_type') {
-                  typeOnChange(value)
+                  typeChange(value)
                 } else if (name === 'arcgis_config') {
                   arcGisConfigChange(value)
                 }
