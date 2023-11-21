@@ -61,8 +61,11 @@ class ArcgisConfig(AbstractTerm):
         null=True, blank=True, help_text='The expires date of token.'
     )
     message = models.TextField(
-        null=True, blank=True, help_text='Messasge when generate token error.'
+        null=True, blank=True, help_text='Message when generate token error.'
     )
+
+    class Meta:  # noqa: D106
+        ordering = ('name',)
 
     def full_name(self):
         """Return full name."""
