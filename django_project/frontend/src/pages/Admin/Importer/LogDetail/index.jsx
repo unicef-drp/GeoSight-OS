@@ -271,7 +271,7 @@ export function ImporterDetailSection({ inputData }) {
           attr => (attr.includes('aggregate_multiple_value'))
         ).map(attr => {
           if (attr === 'aggregate_multiple_value') {
-            if ([false, 'false'].includes(data.attributes[attr])) {
+            if ([false, 'false', 'Last value'].includes(data.attributes[attr])) {
               data.attributes[attr] = 'Last value'
             } else {
               data.attributes[attr] = 'Aggregate'
