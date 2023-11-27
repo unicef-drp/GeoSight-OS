@@ -316,9 +316,9 @@ export default function ImporterLogData() {
       delete parameters['data__admin_level__in']
     }
     if (filters.geographies.length) {
-      parameters['data__geom_id__in'] = filters.geographies.join(',')
+      parameters['data__geo_code__icontains'] = filters.geographies.join(',')
     } else {
-      delete parameters['data__geom_id__in']
+      delete parameters['data__geo_code__icontains']
     }
     if (filters.fromTime) {
       parameters['data__date_time__gte'] = parseInt(filters.toTime.format("X"));
@@ -414,11 +414,11 @@ export default function ImporterLogData() {
               levels: newFilter
             })}/>
           <MultipleCreatableFilter
-            title={'Filter by Geography(s)'}
+            title={'Filter by Geo Code(s)'}
             data={filters.geographies}
             setData={newFilter => setFilters({
               ...filters,
-              geographies: newFilter
+              geographies: !newFilter.length ? [] : [newFilter[newFilter.length - 1]]
             })}/>
           <LocalizationProvider dateAdapter={AdapterMoment}>
             <DesktopDatePicker

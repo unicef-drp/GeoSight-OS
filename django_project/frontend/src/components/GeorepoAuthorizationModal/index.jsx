@@ -37,7 +37,7 @@ export default function GeorepoAuthorizationModal() {
   /** Check reference layer data */
   useEffect(() => {
     if (referenceLayerData?.error?.response?.status === 404) {
-      notify('Reference layer dataset does not found in GeoRepo.', NotificationStatus.ERROR)
+      notify('View does not found in GeoRepo.', NotificationStatus.ERROR)
     }
   }, [referenceLayerData]);
 

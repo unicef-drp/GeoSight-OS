@@ -215,7 +215,7 @@ export function DashboardSaveForm(
       errors.push('Name is empty, please fill it.')
     }
     if (Object.keys(referenceLayer).length === 0 || !referenceLayer.identifier) {
-      errors.push('Need to select Reference Dataset in Summary.')
+      errors.push('Need to select View in Summary.')
     }
     if (basemapsLayers.length === 0) {
       errors.push('Basemap is empty, please select one or more basemap.')

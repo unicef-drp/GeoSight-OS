@@ -111,7 +111,7 @@ export default function GeorepoViewSelector(
   }
 
   return <ModalSelector
-    title={"Reference Dataset(s)"}
+    title={"View(s)"}
     inputData={inputData}
     columns={columns}
     open={open}

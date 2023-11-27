@@ -37,7 +37,7 @@ const PERMISSIONS = [
 const COLUMNS = [
   { field: 'id', headerName: 'id', hide: true },
   { field: 'indicator_name', headerName: 'Indicator', flex: 1 },
-  { field: 'dataset_name', headerName: 'Dataset', flex: 0.5 },
+  { field: 'dataset_name', headerName: 'View', flex: 0.5 },
   { field: 'user_username', headerName: 'User', flex: 0.5 },
   { field: 'user_role', headerName: 'Role', flex: 0.5 }
 ]

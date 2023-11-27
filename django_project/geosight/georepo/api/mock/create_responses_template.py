@@ -169,7 +169,7 @@ class GeorepoGenerator:
         response = self.get(url)
         if response.status_code != 200:
             raise Exception(
-                f'Fetching reference layer detail error '
+                f'Fetching view detail error '
                 f'- {response.status_code} - {response.text}'
             )
         data = response.json()

@@ -99,7 +99,7 @@ export function IndicatorFilterSelector({ data, setData, returnObject }) {
  */
 export function DatasetFilterSelector({ data, setData, returnObject }) {
   return <ModalFilterSelector
-    placeholder={'Filter by Dataset(s)'}
+    placeholder={'Filter by View(s)'}
     data={data}
     setData={setData}
     returnObject={returnObject}

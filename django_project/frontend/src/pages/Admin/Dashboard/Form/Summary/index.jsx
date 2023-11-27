@@ -94,7 +94,7 @@ export default function SummaryDashboardForm({ changed }) {
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <label className="form-label required" htmlFor="name">
-                Reference Dataset
+                View
               </label>
               <div className='ReferenceDatasetSection'>
                 <GeorepoViewInputSelector

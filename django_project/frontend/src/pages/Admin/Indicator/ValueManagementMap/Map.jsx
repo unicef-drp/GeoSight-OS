@@ -282,7 +282,7 @@ export default function Map() {
     <div className='ReferenceList'>{
       <Fragment>
         <div className='ReferenceLayerSelection'>
-          <b className='light'>Reference Dataset</b>
+          <b className='light'>View</b>
         </div>
         <div className='ReferenceLayerSelection'>
           <GeorepoViewInputSelector

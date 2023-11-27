@@ -25,7 +25,7 @@ class ReferenceLayerF(factory.django.DjangoModelFactory):
     """Model Factory for ReferenceLayer."""
 
     identifier = factory.Sequence(lambda n: str(uuid.uuid4()))
-    name = factory.Sequence(lambda n: 'Reference layer {}'.format(n))
+    name = factory.Sequence(lambda n: 'View {}'.format(n))
 
     class Meta:  # noqa: D106
         model = ReferenceLayerView

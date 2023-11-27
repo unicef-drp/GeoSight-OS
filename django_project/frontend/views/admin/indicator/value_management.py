@@ -178,7 +178,7 @@ class IndicatorValueManagementTableView(
         reference_layer = request.POST.get('reference_layer', None)
         admin_level = request.POST.get('admin_level', None)
         if not reference_layer:
-            return HttpResponseBadRequest('Reference layer is needed.')
+            return HttpResponseBadRequest('View uuid is needed.')
 
         reference_layer, created = ReferenceLayerView.objects.get_or_create(
             identifier=reference_layer

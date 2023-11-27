@@ -82,7 +82,7 @@ export const COLUMNS = {
     field: 'input_format', headerName: 'Input format', flex: 0.5
   },
   REFERENCE_DATASET: {
-    field: 'reference_layer_name', headerName: 'Reference Dataset', flex: 1
+    field: 'reference_layer_name', headerName: 'View', flex: 1
   },
   ADMIN_LEVEL: {
     field: 'admin_level_value', headerName: 'Admin level', flex: 0.3

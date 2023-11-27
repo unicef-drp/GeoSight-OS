@@ -87,7 +87,7 @@ export default function DatasetAdmin() {
     { field: 'id', headerName: 'id', hide: true },
     { field: 'indicator', headerName: 'Indicator', flex: 1 },
     {
-      field: 'reference_layer_name', headerName: 'Dataset', flex: 0.5,
+      field: 'reference_layer_name', headerName: 'View', flex: 0.5,
       renderCell: (params) => {
         const data = Array.from(new Set(params.row.geometries.map(geom => geom.dataset_name))).join(',')
         return <div title={data} className='MuiDataGrid-cellContent'>
@@ -225,9 +225,9 @@ export default function DatasetAdmin() {
       delete parameters['admin_level__in']
     }
     if (filters.geographies.length) {
-      parameters['geom_id__in'] = filters.geographies.join(',')
+      parameters['geom_id__icontains'] = filters.geographies.join(',')
     } else {
-      delete parameters['geom_id__in']
+      delete parameters['geom_id__icontains']
     }
     if (filters.fromTime) {
       parameters['date__gte'] = filters.fromTime.format('YYYY-MM-DD');
@@ -304,11 +304,11 @@ export default function DatasetAdmin() {
               levels: newFilter
             })}/>
           <MultipleCreatableFilter
-            title={'Filter by Geography(s)'}
+            title={'Filter by Geo Code(s)'}
             data={filters.geographies}
             setData={newFilter => setFilters({
               ...filters,
-              geographies: newFilter
+              geographies: !newFilter.length ? [] : [newFilter[newFilter.length - 1]]
             })}/>
           <LocalizationProvider dateAdapter={AdapterMoment}>
             <DesktopDatePicker

@@ -270,7 +270,7 @@ export default function ValueManagement() {
             </ThemeButton>
           </div>
           <div className='ReferenceLayerSelection'>
-            <b className='light'>Reference Dataset</b>
+            <b className='light'>View</b>
           </div>
           <div className='ReferenceLayerSelection'>
             <input name={'reference_layer'}
