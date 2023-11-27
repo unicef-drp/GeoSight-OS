@@ -437,3 +437,12 @@ export function arrayToOptions(array) {
 export function isASCII(str) {
   return /^[\x00-\x7F]*$/.test(str);
 }
+
+export function toFloat(val) {
+  if (typeof val === 'string' || val instanceof String) {
+    if (!isNaN(parseFloat(val))) {
+      return parseFloat(val)
+    }
+  }
+  return val
+}

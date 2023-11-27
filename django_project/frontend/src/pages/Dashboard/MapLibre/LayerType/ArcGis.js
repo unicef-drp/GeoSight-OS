@@ -16,6 +16,7 @@
 import FeatureService from 'mapbox-gl-arcgis-featureserver'
 import parseArcRESTStyle from "../../../../utils/esri/esri-style";
 import { addPopup, hasLayer, hasSource, loadImageToMap } from "../utils";
+import { toFloat } from "../../../../utils/main";
 
 /***
  * To prevent attribution created duplicated
@@ -67,6 +68,10 @@ function ArcGisStyle(map, id, layer) {
         layerId = lineId
         break
       }
+      case 'outline': {
+        layerId = outlineId
+        break
+      }
     }
     if (layerId) {
       casesByType[layerId] = casesByType[layerId] ? casesByType[layerId] : {}
@@ -82,7 +87,13 @@ function ArcGisStyle(map, id, layer) {
       for (const [key, value] of Object.entries(classStyle)) {
         if (value) {
           const cases = [value]
-          assignCases(style.style.type, key, cases)
+          let layerType = style.style.type
+          if (layerType === 'polygon') {
+            if (['color', 'weight'].includes(key)) {
+              layerType = 'outline'
+            }
+          }
+          assignCases(layerType, key, cases)
         }
       }
       break
@@ -234,6 +245,7 @@ function ArcGisStyle(map, id, layer) {
               paintProperty = 'fill-outline-color'
               break
             }
+            case outlineId:
             case lineId: {
               paintProperty = 'line-color'
               break
@@ -278,6 +290,7 @@ function ArcGisStyle(map, id, layer) {
           break;
         case 'weight':
           switch (layerId) {
+            case outlineId:
             case lineId: {
               paintProperty = 'line-width'
               break
@@ -354,6 +367,9 @@ function ArcGisStyle(map, id, layer) {
             let paint = defaultValue
             if (cases.length === 1) {
               paint = cases[0]
+              if (paintProperty.includes('opacity') || paintProperty.includes('width')) {
+                paint = toFloat(paint)
+              }
             } else if (cases.length) {
               paint = ["case"].concat(cases).concat(defaultValue)
             }
@@ -440,7 +456,7 @@ export default function arcGisLayer(map, id, data, contextLayerData, popupFeatur
       source: id,
       filter: ['==', '$type', 'Polygon'],
       paint: {
-        'line-opacity': 0
+        'line-width': 0
       }
     }, lineId)
     map.addLayer({
