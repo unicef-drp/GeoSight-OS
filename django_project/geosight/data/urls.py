@@ -17,6 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.conf.urls import url
 from django.urls import include
 
+from geosight.data.api.arcgis import ArcgisConfigTokenAPI
 from geosight.data.api.basemap import (
     BasemapListAPI, BasemapDetailAPI
 )
@@ -281,6 +282,14 @@ sharepoint_api = [
     ),
 ]
 # ------------------------------------------------------
+# ARCGIS API
+arcgis_api = [
+    url(
+        r'^(?P<pk>\d+)/token',
+        ArcgisConfigTokenAPI.as_view(), name='arcgis-config-token-api'
+    ),
+]
+# ------------------------------------------------------
 api = [
     url(r'^dashboard/', include(dashboard_api)),
     url(r'^basemap/', include(basemap_api)),
@@ -291,6 +300,7 @@ api = [
     url(r'^permission/', include('geosight.permission.urls')),
     url(r'^related-table/', include(related_table_api)),
     url(r'^sharepoint/', include(sharepoint_api)),
+    url(r'^arcgis/', include(arcgis_api)),
 ]
 
 download = [

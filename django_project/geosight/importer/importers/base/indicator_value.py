@@ -20,6 +20,7 @@ from datetime import datetime, date
 from typing import List
 
 from django.core.exceptions import ValidationError
+from requests.exceptions import Timeout
 
 from core.utils import string_is_true
 from geosight.data.models.indicator import (
@@ -309,7 +310,9 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
             indicator.validate(data['value'])
         return indicator
 
-    def get_entity(self, data, original_id_type: str):
+    def get_entity(
+            self, data, original_id_type: str, auto_fetch: bool = True
+    ):
         """Get entity of data."""
         from geosight.georepo.models.entity import Entity
         from geosight.georepo.request import (
@@ -324,7 +327,8 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
                 original_id_type=original_id_type,
                 original_id=adm_code,
                 admin_level=admin_level,
-                date_time=data['date_time']
+                date_time=data['date_time'],
+                auto_fetch=auto_fetch
             )
             return entity, None
         except GeorepoEntityDoesNotExist:
@@ -335,6 +339,24 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
             return None, f'{e}'
         except ValidationError:
             return None, 'This code does not exist because of error time.'
+
+    def check_codes(self, codes: list):
+        """Check codes to georepo."""
+        from geosight.georepo.request import GeorepoRequest
+        importer = self.importer
+        self._update('Identifying codes from GeoRepo')
+        try:
+            results = GeorepoRequest().View.identify_codes(
+                reference_layer_identifier=importer.reference_layer.identifier,
+                original_id_type=importer.admin_code_type,
+                codes=codes,
+                return_id_type='ucode'
+
+            )
+            self._update('Saving codes to Cache')
+            return results
+        except Timeout:
+            raise ImporterError('Identifying codes from GeoRepo is timeout.')
 
     def _check_data_to_log(self, data: dict, note: dict) -> (dict, dict):
         """Save data that constructed from importer.
@@ -417,7 +439,7 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
             'aggregate_upper_level_n_level_up'
         )
         upper_level_count = 0
-        admin_level = int(record['admin_level'])
+        admin_level = entity.admin_level
         if aggregate_upper_level_up_to is not None:
             aggregate_upper_level_up_to = int(aggregate_upper_level_up_to)
             upper_level_count = admin_level - aggregate_upper_level_up_to
@@ -567,7 +589,7 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
 
                     upper_level_records = []
                     for record in _records:
-                        # We need to check the geopgraphy code
+                        # We need to check the geography code
                         entity, error = self.get_entity(record, 'ucode')
                         if not entity:
                             additional_notes.append(

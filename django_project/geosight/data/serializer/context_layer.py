@@ -35,6 +35,7 @@ class ContextLayerSerializer(DynamicModelSerializer):
     data_fields = serializers.SerializerMethodField()
     label_styles = serializers.SerializerMethodField()
     permission = serializers.SerializerMethodField()
+    token = serializers.SerializerMethodField()
 
     def get_url(self, obj: ContextLayer):
         """Url."""
@@ -74,6 +75,12 @@ class ContextLayerSerializer(DynamicModelSerializer):
         return obj.permission.all_permission(
             self.context.get('user', None)
         )
+
+    def get_token(self, obj: ContextLayer):
+        """Return token."""
+        if obj.arcgis_config:
+            return obj.arcgis_config.token_val
+        return obj.token
 
     class Meta:  # noqa: D106
         model = ContextLayer

@@ -204,6 +204,8 @@ class Indicator(
                             f'Value is more than {self.max_value}')
             except ValueError:
                 raise IndicatorValueRejectedError('Value is not float')
+            except TypeError:
+                raise IndicatorValueRejectedError('Value is empty')
         elif self.type == IndicatorType.STRING:
             if isinstance(value, str):
                 if self.codelist:

@@ -24,6 +24,7 @@ from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
 from core.models import AbstractEditData, AbstractTerm
+from geosight.data.models.arcgis import ArcgisConfig
 from geosight.data.models.field_layer import FieldLayerAbstract
 from geosight.permission.models.manager import PermissionManager
 
@@ -67,14 +68,8 @@ class ContextLayer(AbstractEditData, AbstractTerm):
     url = models.CharField(
         max_length=10240,
         help_text=(
-            "Can put full url with parameters and system will use that. "
-            "Or system will use 'CONTEXT LAYER PARAMETERS' "
-            "if there is no parameters on the url."
+            "Put full url with parameters that are needed. "
         )
-    )
-    url_legend = models.CharField(
-        max_length=256,
-        null=True, blank=True
     )
     layer_type = models.CharField(
         max_length=256,
@@ -83,27 +78,52 @@ class ContextLayer(AbstractEditData, AbstractTerm):
             (LayerType.ARCGIS, LayerType.ARCGIS),
             (LayerType.GEOJSON, LayerType.GEOJSON),
             (LayerType.RASTER_TILE, LayerType.RASTER_TILE),
+        ),
+        help_text=_(
+            'The type of layer for this context layer.<br>'
+            'For <b>ArcGIS</b>, put feature server of REST. e.g : '
+            'https://{host}/rest/services/{layer}/FeatureServer/1.<br>'
+            'For <b>GeoJson</b>, put url of geojson.<br>'
+            'For <b>Raster tile</b>, put XYZ url.'
+        )
+    )
+    arcgis_config = models.ForeignKey(
+        ArcgisConfig,
+        null=True, blank=True,
+        on_delete=models.SET_NULL,
+        help_text=_(
+            'ArcGis configuration that contains username/password '
+            'that will be used to autogenerate the token.'
+        )
+    )
+    url_legend = models.CharField(
+        max_length=256,
+        null=True, blank=True,
+        help_text=_(
+            'This is the url of image that will be rendered as legend. '
+            'ArcGis type can be generated automatically, '
+            'but if you fill this url legend, it will be overridden'
         )
     )
     token = models.CharField(
         max_length=512,
         null=True, blank=True,
         help_text=_(
-            "Token to access the layer if needed."
+            'Token to access the layer if needed.'
         )
     )
     username = models.CharField(
         max_length=512,
         null=True, blank=True,
         help_text=_(
-            "Username to access the layer if needed."
+            'Username to access the layer if needed.'
         )
     )
     password = models.CharField(
         max_length=512,
         null=True, blank=True,
         help_text=_(
-            "Password to access the layer if needed."
+            'Password to access the layer if needed.'
         )
     )
     styles = models.TextField(

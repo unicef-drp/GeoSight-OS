@@ -16,11 +16,13 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import json
 import logging
+import time
 from urllib.parse import urlparse
 
 import requests
 from django.contrib.auth import get_user_model
 from django.core.exceptions import MultipleObjectsReturned
+from requests.exceptions import Timeout
 
 from core.models.preferences import SitePreferences
 from geosight.georepo.request.data import GeorepoEntity
@@ -60,6 +62,57 @@ class GeorepoEntityDoesNotExist(Exception):
         message = 'Georepo entity does not exist.'
         logger.error(message)
         super().__init__(message)
+
+
+class GeorepoPostPooling:
+    """Georepo url with pooling."""
+
+    LIMIT = 1500  # Check result maximum 1500 times or 4500 seconds
+    INTERVAL = 5  # Interval of check results
+
+    def __init__(self, request, url, data):
+        """init."""
+        self.request = request
+        self.current_repeat = 0
+
+        response = request.post(url, data)
+        if response.status_code != 200:
+            raise GeorepoRequestError(
+                f"Identify codes error "
+                f"- {response.status_code} - {response.text}"
+            )
+        response = response.json()
+        try:
+            self.callback_url = response['status_url']
+        except KeyError:
+            raise GeorepoRequestError('Status url is not found.')
+
+    def results(self):
+        """Return results of data."""
+        self.current_repeat += 1
+        if self.current_repeat >= self.LIMIT:
+            raise requests.exceptions.Timeout()
+        try:
+            response = self.request.get(self.callback_url)
+            if response.status_code != 200:
+                raise GeorepoRequestError(
+                    f'{response.status_code} - {response.text}'
+                )
+            response = response.json()
+            if response['status'] == 'DONE':
+                results = self.request.get(response['output_url'])
+                return results.json()
+            elif response['status'] in ['ERROR', 'CANCELLED']:
+                try:
+                    raise GeorepoRequestError(response['error'])
+                except KeyError:
+                    raise GeorepoRequestError(response['status'])
+            else:
+                time.sleep(self.INTERVAL)
+                return self.results()
+        except requests.exceptions.Timeout:
+            time.sleep(self.INTERVAL)
+            return self.results()
 
 
 class GeorepoUrl:
@@ -268,7 +321,7 @@ class GeorepoRequest:
                     f'Error fetching on {self.urls.view_detail(identifier)} '
                     f'- response is not json'
                 )
-            except ConnectionError:
+            except Timeout:
                 raise GeorepoRequestError(
                     f'Error fetching on {self.urls.view_detail(identifier)} '
                     '- Request Time Out'
@@ -284,7 +337,7 @@ class GeorepoRequest:
             )
             try:
                 response = self.request.get(url)
-            except ConnectionError:
+            except Timeout:
                 raise GeorepoRequestError(
                     f'Error fetching on {url} - Request Time Out'
                 )
@@ -397,3 +450,20 @@ class GeorepoRequest:
                     pass
             response['features'] = features
             return response
+
+        def identify_codes(
+                self, reference_layer_identifier: str, codes: list,
+                original_id_type: str, return_id_type: str
+        ):
+            """Identify codes and return the ucodes."""
+            url = (
+                f"{self.urls.georepo_url}/search/view/"
+                f"{reference_layer_identifier}/"
+                f"entity/batch/identifier/{original_id_type}/"
+            )
+            try:
+                return GeorepoPostPooling(self.request, url, codes).results()
+            except GeorepoRequestError as e:
+                raise GeorepoRequestError(
+                    f'Error when identifying codes - {e}'
+                )

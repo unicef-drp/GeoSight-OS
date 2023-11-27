@@ -21,9 +21,9 @@ from geosight.georepo.models.reference_layer import ReferenceLayerView
 def mock_get_entity(
         original_id_type: str, original_id: str,
         reference_layer: ReferenceLayerView, admin_level=None,
-        date_time=None
+        date_time=None, auto_fetch=True
 ):
-    """Mock for sharepoint request."""
+    """Mock for get entity request."""
     entity, _ = Entity.objects.get_or_create(
         reference_layer=reference_layer,
         geom_id=original_id,

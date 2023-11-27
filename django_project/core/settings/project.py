@@ -16,6 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import os  # noqa
 
+from celery.schedules import crontab
 from django.utils.translation import ugettext_lazy as _
 
 from .contrib import *  # noqa
@@ -141,3 +142,11 @@ if USE_AZURE:
                               ] + AUTHENTICATION_BACKENDS
 
     AZURE_REGISTERED_CLIENT_IDS = [AZURE_AUTH['CLIENT_ID']]
+
+CELERY_BEAT_SCHEDULE = {
+    'fetch_datasets_nightly': {
+        'task': 'geosight.georepo.tasks.fetch_datasets',
+        'schedule': crontab(minute='0', hour='0'),
+        'args': (True,),
+    }
+}

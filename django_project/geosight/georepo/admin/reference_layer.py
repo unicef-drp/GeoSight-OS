@@ -35,7 +35,7 @@ def update_meta(modeladmin, request, queryset):
         reference_layer.update_meta()
 
 
-@admin.action(description='Sync codes')
+@admin.action(description='Sync entities')
 def sync_codes(modeladmin, request, queryset):
     """Fetch new reference layer."""
     for reference_layer in queryset:
