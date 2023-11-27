@@ -103,6 +103,13 @@ export const INIT_DATA = {
   }
 }
 
+export function spacedField(field) {
+  if (!field.includes('`') && field.includes(' ')) {
+    field = '`' + field + '`'
+  }
+  return field
+}
+
 /**
  * Return indicator query
  * @param {array} data Data that will be filtered.
