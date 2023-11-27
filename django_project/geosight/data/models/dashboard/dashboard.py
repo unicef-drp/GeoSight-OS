@@ -19,7 +19,7 @@ from django.contrib.gis.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from core.models.general import (
-    SlugTerm, IconTerm, AbstractTerm, AbstractEditData
+    SlugTerm, IconTerm, AbstractTerm, AbstractEditData, AbstractVersionData
 )
 from geosight.data.models.basemap_layer import BasemapLayer
 from geosight.data.models.context_layer import ContextLayer
@@ -38,7 +38,7 @@ class DashboardGroup(AbstractTerm):
     pass
 
 
-class Dashboard(SlugTerm, IconTerm, AbstractEditData):
+class Dashboard(SlugTerm, IconTerm, AbstractEditData, AbstractVersionData):
     """Dashboard model.
 
     One dashboard just contains one indicator.
@@ -127,7 +127,9 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData):
         from geosight.data.models.style.indicator_style import (
             IndicatorStyleType
         )
-        self.permission.update(data['permission'])
+
+        if data.get('permission', None):
+            self.permission.update(data['permission'])
 
         # BASEMAPS
         widgets_new = self.save_widgets(data['widgets'])

@@ -163,3 +163,22 @@ if SECRET_KEY in ['', "''"]:
 STATICFILES_STORAGE = (
     'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 )
+
+# TODO: Upgrade django 4
+#  Change this to django django.core.cache.backends.redis.RedisCache
+#  After upgrading to django 4
+CACHES = {
+    'default': {
+        "BACKEND": "django_redis.cache.RedisCache",
+        'LOCATION': (
+            f'redis://default:{os.environ.get("REDIS_PASSWORD", "")}'
+            f'@{os.environ.get("REDIS_HOST", "")}',
+        ),
+        "OPTIONS": {
+            "SOCKET_CONNECT_TIMEOUT": 5,
+            "SOCKET_TIMEOUT": 5,
+            "COMPRESSOR": "django_redis.compressors.zlib.ZlibCompressor",
+            "IGNORE_EXCEPTIONS": True,
+        }
+    }
+}

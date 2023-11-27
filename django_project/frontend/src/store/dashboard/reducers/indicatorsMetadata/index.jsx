@@ -9,34 +9,31 @@
  *     (at your option) any later version.
  *
  * __author__ = 'irwan@kartoza.com'
- * __date__ = '13/06/2023'
+ * __date__ = '17/10/2023'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
-
-import { APIReducer } from "../../../reducers_api";
 
 /**
  * INDICATORS_DATA reducer
  */
 
-export const INDICATORS_DATA_ACTION_NAME = 'INDICATORS_DATA';
+export const INDICATOR_METADATA_ACTION_NAME = 'INDICATOR_METADATA';
+export const INDICATOR_METADATA_TYPE_PROGRESS = 'INDICATOR_METADATA/PROGRESS';
 
 const initialState = {}
-export default function IndicatorsDataReducer(state = initialState, action) {
-  if (action.name === INDICATORS_DATA_ACTION_NAME) {
+export default function IndicatorsAllDataReducer(state = initialState, action) {
+  if (action.name === INDICATOR_METADATA_ACTION_NAME) {
     switch (action.type) {
-      default: {
-        const data = APIReducer(state, action, INDICATORS_DATA_ACTION_NAME)
-        const { id } = action
-        if (Object.keys(data).length !== 0) {
-          data.id = id;
-          const newState = {
-            ...state,
-          }
-          newState[id] = data
-          return newState
+      case INDICATOR_METADATA_TYPE_PROGRESS: {
+        const { id, data } = action
+        if (!state[id]) {
+          state[id] = {}
         }
+        state[id].progress = data
+        return { ...state }
       }
+      default:
+        return state
     }
   }
   return state

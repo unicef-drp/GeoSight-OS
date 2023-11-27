@@ -93,6 +93,7 @@ class IndicatorEditView(RoleContributorRequiredMixin, BaseIndicatorEditView):
             indicator.permission.update_from_request_data_in_string(
                 data, request.user
             )
+            indicator.update_dashboard_version()
             return redirect(
                 reverse(
                     'admin-indicator-edit-view', kwargs={'pk': indicator.id}

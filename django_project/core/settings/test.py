@@ -19,3 +19,10 @@ from .prod import *  # noqa
 TEST_RUNNER = 'core.tests.runner.PostgresSchemaTestRunner'
 DEBUG = True
 MOCK_GEOREPO = True
+
+# Disable caching while in development
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    }
+}

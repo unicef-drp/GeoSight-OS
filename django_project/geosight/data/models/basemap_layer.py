@@ -15,6 +15,8 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib.gis.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
 from core.models import AbstractEditData, AbstractTerm, IconTerm
@@ -58,6 +60,22 @@ class BasemapLayer(AbstractEditData, AbstractTerm, IconTerm):
 
     class Meta:  # noqa: D106
         ordering = ('name',)
+
+    def update_dashboard_version(self):
+        """Update dashboard version."""
+        from django.utils import timezone
+        from geosight.data.models.dashboard import Dashboard
+        Dashboard.objects.filter(
+            id__in=self.dashboardbasemap_set.values_list(
+                'dashboard', flat=True
+            )
+        ).update(version_data=timezone.now())
+
+
+@receiver(post_save, sender=BasemapLayer)
+def increase_version(sender, instance, **kwargs):
+    """Increase version of dashboard signal."""
+    instance.update_dashboard_version()
 
 
 class BasemapLayerParameter(models.Model):

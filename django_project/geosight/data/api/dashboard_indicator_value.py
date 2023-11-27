@@ -27,13 +27,13 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from core.cache import VersionCache
 from core.pagination import Pagination
 from geosight.data.models.dashboard import (
     Dashboard
 )
 from geosight.data.models.indicator import Indicator
 from geosight.data.serializer.indicator import (
-    IndicatorValueWithGeoSerializer,
     IndicatorValueWithGeoDateSerializer
 )
 from geosight.georepo.models.reference_layer import ReferenceLayerIndicator
@@ -84,13 +84,50 @@ class _DashboardIndicatorValuesAPI(APIView):
         return min_time, max_time
 
 
-class DashboardIndicatorValuesAPI(
+class _DashboardIndicatorValuesListAPI(
     _DashboardIndicatorValuesAPI, ListAPIView
 ):
-    """API for Values of indicator."""
+    """Base indicator values ListAPI."""
 
     pagination_class = Pagination
     serializer_class = IndicatorValueWithGeoDateSerializer
+
+    def get(self, request, *args, **kwargs):
+        """Return Values."""
+        slug = self.kwargs['slug']
+        pk = self.kwargs['pk']
+        dashboard = get_object_or_404(Dashboard, slug=slug)
+        indicator = get_object_or_404(Indicator, pk=pk)
+        self.check_permission(self.request.user, dashboard, indicator)
+
+        # Cache version
+        cache = VersionCache(
+            key=request.get_full_path(), version=indicator.version
+        )
+        cache_data = cache.get()
+        if cache_data:
+            return Response(cache_data)
+        queryset = self.filter_queryset(self.get_queryset())
+
+        # Get list data and save it to cache
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            assert self.paginator is not None
+            response = self.paginator.get_paginated_response_data(
+                serializer.data
+            )
+            cache.set(response)
+            return Response(response)
+
+        serializer = self.get_serializer(queryset, many=True)
+        response = serializer.data
+        cache.set(response)
+        return Response(response)
+
+
+class DashboardIndicatorValuesAPI(_DashboardIndicatorValuesListAPI):
+    """API for Values of indicator."""
 
     def get_queryset(self):
         """Return queryset of API."""
@@ -108,13 +145,8 @@ class DashboardIndicatorValuesAPI(
         )
 
 
-class DashboardIndicatorAllValuesAPI(
-    _DashboardIndicatorValuesAPI, ListAPIView
-):
+class DashboardIndicatorAllValuesAPI(_DashboardIndicatorValuesListAPI):
     """API for all Values of indicator."""
-
-    pagination_class = Pagination
-    serializer_class = IndicatorValueWithGeoSerializer
 
     def get_queryset(self):
         """Return queryset of API."""
@@ -137,6 +169,15 @@ class DashboardIndicatorValueListAPI(DashboardIndicatorValuesAPI):
         dashboard = get_object_or_404(Dashboard, slug=slug)
         indicator = get_object_or_404(Indicator, pk=pk)
         self.check_permission(request.user, dashboard, indicator)
+
+        # Cache version
+        cache = VersionCache(
+            key=request.get_full_path(), version=indicator.version
+        )
+        cache_data = cache.get()
+        if cache_data:
+            return Response(cache_data)
+
         min_time, max_time = self.return_parameters(request)
         concept_uuid = request.GET.get('concept_uuid', None)
 
@@ -180,6 +221,8 @@ class DashboardIndicatorValueListAPI(DashboardIndicatorValuesAPI):
             if 'date' in extras:
                 row_data['date'] = row.date.strftime('%Y-%m-%d')
             output.append(row_data)
+
+        cache.set(output)
         return Response(output)
 
 
@@ -211,11 +254,19 @@ class DashboardIndicatorDatesAPI(DashboardIndicatorValuesAPI):
 class DashboardIndicatorMetadataAPI(DashboardIndicatorValuesAPI):
     """API for of indicator."""
 
-    def get(self, request, slug, pk, **kwargs):
-        """Return Values."""
-        dashboard = get_object_or_404(Dashboard, slug=slug)
-        indicator = get_object_or_404(Indicator, pk=pk)
+    def metadata(self, request, dashboard, indicator):
+        """Return metadata."""
         self.check_permission(request.user, dashboard, indicator)
+
+        # Cache version
+        cache = VersionCache(
+            key=request.get_full_path().replace('all', f'{indicator.id}'),
+            version=indicator.version
+        )
+        cache_data = cache.get()
+        if cache_data:
+            return cache_data
+
         query = indicator.query_values(
             reference_layer=dashboard.reference_layer
         )
@@ -230,11 +281,43 @@ class DashboardIndicatorMetadataAPI(DashboardIndicatorValuesAPI):
         ]
         dates.sort()
 
-        return Response({
+        response = {
             'dates': dates,
             'count': query.count(),
             'version': indicator.version
-        })
+        }
+        cache.set(response)
+        return response
+
+    def get(self, request, slug, pk, **kwargs):
+        """Return Values."""
+        dashboard = get_object_or_404(Dashboard, slug=slug)
+        indicator = get_object_or_404(Indicator, pk=pk)
+        return Response(self.metadata(request, dashboard, indicator))
+
+
+class DashboardIndicatorAllMetadataAPI(DashboardIndicatorMetadataAPI):
+    """API for all metadata of indicator on dashboard."""
+
+    def get(self, request, slug, **kwargs):
+        """Return Values."""
+        dashboard = get_object_or_404(Dashboard, slug=slug)
+        responses = {}
+        for dashboard_indicator in dashboard.dashboardindicator_set.all():
+            indicator = dashboard_indicator.object
+            try:
+                responses[dashboard_indicator.object.id] = self.metadata(
+                    request, dashboard, indicator
+                )
+            except ResourcePermissionDenied:
+                responses[dashboard_indicator.object.id] = {
+                    'dates': (
+                        "You don't have permission to access this resource"
+                    ),
+                    'count': 0,
+                    'version': indicator.version
+                }
+        return Response(responses)
 
 
 class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):

@@ -32,7 +32,7 @@ class ArcgisConfigAdmin(admin.ModelAdmin):
 
     form = ArcgisConfigForm
     list_display = ('name', 'generate_token_url', 'username')
-    readonly_fields = ('token', 'expires', 'message')
+    readonly_fields = ('token', 'token_val', 'expires', 'message')
     actions = (generate_token,)
 
 

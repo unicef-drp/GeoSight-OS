@@ -12,6 +12,7 @@
  * __date__ = '25/10/2023'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
+import { compressLZW, decompressLZW } from "./compress";
 
 export class LocalStorage {
   constructor(key) {
@@ -36,15 +37,15 @@ export class LocalStorageData {
 
   replaceData(data) {
     localStorage.setItem(this.keyVersion, this.version);
-    localStorage.setItem(this.key, JSON.stringify(data));
+    this.setItem(data);
   }
 
   appendData(data) {
     let newData = []
     if (localStorage.getItem(this.keyVersion) === '' + this.version) {
-      if (localStorage.getItem(this.key)) {
+      if (this.getItem()) {
         try {
-          newData = JSON.parse(localStorage.getItem(this.key))
+          newData = JSON.parse(this.getItem())
         } catch (err) {
 
         }
@@ -70,13 +71,21 @@ export class LocalStorageData {
     });
 
     localStorage.setItem(this.keyVersion, this.version);
-    localStorage.setItem(this.key, JSON.stringify(newData));
+    this.setItem(newData);
+  }
+
+  getItem() {
+    return decompressLZW(localStorage.getItem(this.key), true)
+  }
+
+  setItem(data) {
+    localStorage.setItem(this.key, compressLZW(data));
   }
 
   get() {
     if (localStorage.getItem(this.key) && localStorage.getItem(this.keyVersion) === '' + this.version) {
       try {
-        return JSON.parse(localStorage.getItem(this.key))
+        return this.getItem()
       } catch (err) {
 
       }

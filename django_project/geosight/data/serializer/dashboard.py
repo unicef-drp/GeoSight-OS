@@ -34,7 +34,6 @@ from geosight.data.serializer.dashboard_widget import DashboardWidgetSerializer
 from geosight.data.serializer.indicator import IndicatorSerializer
 from geosight.data.serializer.related_table import RelatedTableSerializer
 from geosight.permission.models.resource.dashboard import DashboardPermission
-from geosight.permission.serializer import PermissionSerializer
 
 
 class DashboardSerializer(serializers.ModelSerializer):
@@ -54,7 +53,6 @@ class DashboardSerializer(serializers.ModelSerializer):
     basemaps_layers = serializers.SerializerMethodField()
     related_tables = serializers.SerializerMethodField()
     filters = serializers.SerializerMethodField()
-    permission = serializers.SerializerMethodField()
     user_permission = serializers.SerializerMethodField()
     geo_field = serializers.SerializerMethodField()
     level_config = serializers.SerializerMethodField()
@@ -107,14 +105,15 @@ class DashboardSerializer(serializers.ModelSerializer):
             data = IndicatorSerializer(
                 model.object,
                 context={'user': self.context.get('user', None)},
-                exclude=['last_update']
+                exclude=['last_update', 'permission']
             ).data
             data['url'] = reverse(
                 'dashboard-indicator-values-api',
                 args=[obj.slug, model.object.id]
             )
             dashboard_data = DashboardIndicatorSerializer(
-                model, context={'user': self.context.get('user', None)}
+                model,
+                context={'user': self.context.get('user', None)}
             ).data
             if dashboard_data['override_style']:
                 del data['style']
@@ -144,7 +143,11 @@ class DashboardSerializer(serializers.ModelSerializer):
         """Return basemapsLayers."""
         output = []
         for model in obj.dashboardbasemap_set.all():
-            data = BasemapLayerSerializer(model.object).data
+            data = BasemapLayerSerializer(
+                model.object,
+                context={'user': self.context.get('user', None)},
+                exclude=['permission']
+            ).data
             data.update(
                 DashboardBasemapSerializer(
                     model, context={'user': self.context.get('user', None)}
@@ -159,10 +162,13 @@ class DashboardSerializer(serializers.ModelSerializer):
         output = []
         for model in obj.dashboardcontextlayer_set.all():
             data = ContextLayerSerializer(
-                model.object, context={'user': self.context.get('user', None)}
+                model.object,
+                context={'user': self.context.get('user', None)},
+                exclude=['permission']
             ).data
             dashboard_data = DashboardContextLayerSerializer(
-                model, context={'user': self.context.get('user', None)}
+                model,
+                context={'user': self.context.get('user', None)}
             ).data
             if dashboard_data['data_fields']:
                 del data['data_fields']
@@ -185,8 +191,9 @@ class DashboardSerializer(serializers.ModelSerializer):
         output = []
         for model in obj.dashboardrelatedtable_set.all():
             data = RelatedTableSerializer(
-                model.object, exclude=['rows'],
-                context={'user': self.context.get('user', None)}
+                model.object,
+                context={'user': self.context.get('user', None)},
+                exclude=['rows', 'permission']
             ).data
             data.update(
                 DashboardRelatedTableSerializer(
@@ -207,13 +214,6 @@ class DashboardSerializer(serializers.ModelSerializer):
             return json.loads(obj.filters)
         else:
             return []
-
-    def get_permission(self, obj: Dashboard):
-        """Return permissions of dashboard."""
-        try:
-            return PermissionSerializer(obj=obj.permission).data
-        except DashboardPermission.DoesNotExist:
-            return PermissionSerializer(obj=DashboardPermission()).data
 
     def get_user_permission(self, obj: Dashboard):
         """Return permissions of dashboard."""
@@ -260,7 +260,7 @@ class DashboardSerializer(serializers.ModelSerializer):
             'basemaps_layers', 'basemaps_layers_structure',
             'widgets', 'widgets_structure',
             'related_tables',
-            'permission', 'user_permission',
+            'user_permission',
             'geo_field', 'show_splash_first_open',
             'truncate_indicator_layer_name', 'enable_geometry_search',
             'overview', 'default_time_mode'

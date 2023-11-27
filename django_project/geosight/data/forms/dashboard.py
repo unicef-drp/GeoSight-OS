@@ -44,7 +44,8 @@ class DashboardForm(forms.ModelForm):
         model = Dashboard
         exclude = (
             'basemap_layers', 'default_basemap_layer', 'indicators',
-            'context_layers', 'created_at')
+            'context_layers', 'created_at', 'version_data'
+        )
 
     def __init__(self, *args, **kwargs):
         """Init."""
@@ -117,5 +118,8 @@ class DashboardForm(forms.ModelForm):
         data['filters'] = json.dumps(other_data['filters'])
         data['filters_allow_modify'] = other_data.get(
             'filters_allow_modify', False)
-        data['permission'] = other_data['permission']
+        try:
+            data['permission'] = other_data['permission']
+        except KeyError:
+            data['permission'] = None
         return data

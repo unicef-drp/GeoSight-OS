@@ -30,6 +30,7 @@ import GlobalState from './reducers/globalState/actions'
 import IndicatorLayers from './reducers/indicatorLayers/actions'
 import Indicators from './reducers/indicators/actions'
 import IndicatorsData from './reducers/indicatorsData/actions'
+import IndicatorsMetadata from './reducers/indicatorsMetadata/actions'
 import IndicatorLayerMetadata from './reducers/indicatorLayerMetadata/actions'
 import Map from './reducers/map/actions'
 import MapMode from './reducers/mapMode/actions'
@@ -65,6 +66,7 @@ const Actions = {
   IndicatorLayers,
   Indicators,
   IndicatorsData,
+  IndicatorsMetadata,
   IndicatorLayerMetadata,
   Map,
   MapMode,

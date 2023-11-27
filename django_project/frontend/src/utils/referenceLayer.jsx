@@ -21,6 +21,9 @@ import {
   isIndicatorLayerLikeIndicator
 } from "./indicatorLayer";
 import { dynamicStyleTypes, returnLayerStyleConfig } from "./Style";
+import { dictDeepCopy } from "./main";
+
+const temporary = {}
 
 /**
  * Return value by geometry
@@ -29,6 +32,14 @@ export function returnValueByGeometry(
   layer, indicators, indicatorsData, relatedTableData,
   selectedGlobalTime, geoField, filteredGeometries
 ) {
+  const identifier = JSON.stringify(layer) + JSON.stringify(indicators) + JSON.stringify(indicatorsData) + JSON.stringify(relatedTableData) + JSON.stringify(selectedGlobalTime) + JSON.stringify(geoField) + JSON.stringify(filteredGeometries)
+  const temp = temporary[identifier]
+  if (temp) {
+    return temp
+  }
+  indicatorsData = dictDeepCopy(indicatorsData)
+  relatedTableData = dictDeepCopy(relatedTableData)
+
   let allData = []
   if (Object.keys(layer).length) {
     const id = indicatorLayerId(layer)
@@ -83,6 +94,9 @@ export function returnValueByGeometry(
     }
     byGeometry[code].push(rowData);
   })
+
+  // Save to temporary
+  temporary[identifier] = byGeometry
   return byGeometry
 }
 

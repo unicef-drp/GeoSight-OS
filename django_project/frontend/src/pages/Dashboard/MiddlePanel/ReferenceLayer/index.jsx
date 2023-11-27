@@ -45,7 +45,7 @@ export default function ReferenceLayerSection() {
 
   let {
     default_level: defaultLevel,
-    levels: availableLayers
+    levels: availableLevels
   } = levelConfig
 
   if (selectedIndicatorLayer?.level_config?.default_level !== undefined) {
@@ -53,12 +53,12 @@ export default function ReferenceLayerSection() {
   }
 
   if (selectedIndicatorLayer?.level_config?.levels !== undefined) {
-    availableLayers = selectedIndicatorLayer?.level_config?.levels
+    availableLevels = selectedIndicatorLayer?.level_config?.levels
   }
 
   // Filter the levels
-  if (levels && availableLayers) {
-    levels = levels.filter(level => availableLayers.includes(level.level))
+  if (levels && availableLevels) {
+    levels = levels.filter(level => availableLevels.includes(level.level))
   }
 
   // Onload for default checked and the layer
@@ -79,10 +79,13 @@ export default function ReferenceLayerSection() {
     }
   }, [referenceLayerData, selectedIndicatorLayer])
 
-
   // Onload for default checked and the layer
   useEffect(() => {
-    const levels = referenceLayerData[referenceLayer.identifier]?.data?.dataset_levels
+
+    let levels = referenceLayerData[referenceLayer.identifier]?.data?.dataset_levels;
+    if (levels && availableLevels) {
+      levels = levels.filter(level => availableLevels.includes(level.level))
+    }
     currentReferenceLayer = referenceLayer.identifier
     if (levels) {
       (

@@ -21,7 +21,10 @@ import React, { useEffect, useRef } from 'react';
 import $ from "jquery";
 import { useDispatch, useSelector } from "react-redux";
 import { Actions } from "../../../../store/dashboard";
-import { fetchPagination } from "../../../../Requests";
+import {
+  fetchPagination,
+  fetchPaginationInParallel
+} from "../../../../Requests";
 import { removeElement } from "../../../../utils/Array";
 import {
   filterIndicatorsData,
@@ -82,6 +85,18 @@ export default function Indicators() {
       $('#Indicator-Radio-' + indicatorLayer.id).addClass('Loading')
     })
     dispatch(Actions.IndicatorsData.request(id))
+
+    // get metadata and update progress
+    const dataId = 'indicator-' + id
+    const metadata = indicatorLayerMetadata[dataId]
+    if (metadata?.version) {
+      dispatch(
+        Actions.IndicatorsMetadata.progress(id, {
+          page_size: Math.ceil(metadata.count / 100),
+          page: 0
+        })
+      )
+    }
   }
 
   /** Done data **/
@@ -94,32 +109,10 @@ export default function Indicators() {
   }
 
   /***
-   * Get All Data For and Indicator
-   * Fetch it from storage or fetch it
-   */
-  const getAllData = (id, url, dataVersion) => {
-    const storage = new LocalStorageData(url, dataVersion)
-    const storageData = storage.get()
-    if (!storageData) {
-      const session = new Session(url, 0, true)
-      if (session.isValid) {
-        setTimeout(function () {
-          fetchPagination(url.replace('latest', 'all')).then(response => {
-            storage.replaceData(response)
-          }).catch(error => {
-
-          })
-        }, 500);
-      }
-    }
-    return storageData
-  }
-
-  /***
    * Get Data For and Indicator by dates
    * Fetch it from storage or fetch it
    */
-  const getDataByDate = (id, url, params, currentGlobalTime, dataVersion, onResponse, onProgress) => {
+  const getDataByDate = async (id, url, params, currentGlobalTime, dataVersion, onProgress) => {
     const storage = new LocalStorageData(url, dataVersion)
     const storageData = storage.get()
     // Check if the request is already requested before
@@ -135,16 +128,87 @@ export default function Indicators() {
     }
 
     if (doRequest) {
-      fetchPagination(url, params, onProgress).then(response => {
-        storage.appendData(response)
-        new LocalStorage(requestKey).set(dataVersion)
-        onResponse(response, null)
-      }).catch(error => {
-        onResponse(null, error)
-      })
+      const response = await fetchPaginationInParallel(url, params, onProgress)
+      storage.appendData(response)
+      new LocalStorage(requestKey).set(dataVersion)
+      return response
     } else {
-      onResponse(filterIndicatorsData(currentGlobalTime.min, currentGlobalTime.max, storageData))
+      return storageData
     }
+  }
+
+  /***
+   * Get Data function for just returning data
+   */
+  const getDataFn = async (id, url, params, currentGlobalTime, dataVersion, onResponse, onProgress, doAll) => {
+    const storage = new LocalStorageData(url, dataVersion)
+    let storageData = storage.get()
+
+    // Check if we need to request all
+    let doRequestAll = false
+    if (doAll) {
+      const requestKey = url.replace('latest', 'all') + '-Version'
+      if (storageData) {
+        const requestStorage = new LocalStorage(requestKey)
+        if (requestStorage.get() !== '' + dataVersion) {
+          doRequestAll = true
+        }
+      } else {
+        doRequestAll = true
+      }
+    }
+    // Get quick data on current date
+    // But if it says doing request All
+    if (!storageData || doRequestAll) {
+      storageData = await getDataByDate(id, url, params, dictDeepCopy(selectedGlobalTime), dataVersion, onProgress)
+    }
+
+    // Do Request all if the data version is already ALL data
+    {
+      if (doRequestAll) {
+        let doRequest = false
+        const requestKey = url.replace('latest', 'all') + '-Version'
+        if (storageData) {
+          const requestStorage = new LocalStorage(requestKey)
+          if (requestStorage.get() !== '' + dataVersion) {
+            doRequest = true
+          }
+        } else {
+          doRequest = true
+        }
+        const session = new Session(url, 0, true)
+        if (session.isValid) {
+          if (doRequest) {
+            // Fetch all data
+            fetchPagination(url.replace('latest', 'all')).then(response => {
+              storage.replaceData(response)
+              new LocalStorage(requestKey).set(dataVersion)
+            }).catch(error => {
+
+            })
+          }
+        }
+      }
+    }
+    return storageData
+  }
+
+  /***
+   * Get All Data For and Indicator
+   * Fetch it from storage or fetch it
+   */
+  const getDataPromise = async (id, url, params, currentGlobalTime, dataVersion, onResponse, onProgress, doAll) => {
+    return new Promise((resolve, reject) => {
+      (
+        async () => {
+          try {
+            resolve(getDataFn(id, url, params, currentGlobalTime, dataVersion, onResponse, onProgress, doAll))
+          } catch (error) {
+            reject(error)
+          }
+        }
+      )()
+    });
   }
 
   /** Fetch all data */
@@ -189,19 +253,29 @@ export default function Indicators() {
           )
           if (indicator) {
             const { id, url, style } = indicator
+
+            // On Response
             const onResponse = (response, error) => {
               if (indicatorFetchingSession === session && response) {
                 response = UpdateStyleData(response, indicator)
                 dispatch(
-                  Actions.IndicatorsData.receive(response, error, id)
+                  Actions.IndicatorsData.receive(filterIndicatorsData(selectedGlobalTime.min, selectedGlobalTime.max, response), error, id)
+                )
+                dispatch(
+                  Actions.IndicatorsMetadata.progress(id, {
+                    page_size: Math.ceil(response.length / 100),
+                    page: Math.ceil(response.length / 100)
+                  })
                 )
               }
               done(id)
             }
+
+            // On Progress
             const onProgress = (progress) => {
               if (indicatorFetchingSession === session) {
                 dispatch(
-                  Actions.IndicatorsData.progress(id, progress)
+                  Actions.IndicatorsMetadata.progress(id, progress)
                 )
               }
             }
@@ -214,22 +288,23 @@ export default function Indicators() {
             if (metadata?.version) {
               const version = metadata?.version
 
-              if (metadata?.count && metadata.count > MAX_COUNT_FOR_ALL_DATA) {
-                getDataByDate(id, url, params, dictDeepCopy(selectedGlobalTime), version, onResponse, onProgress)
-              } else {
-                // FOR FETCHING ALL DATA
-                const storageData = getAllData(dataId, url, version)
-                if (storageData) {
-                  onResponse(
-                    filterIndicatorsData(selectedGlobalTime.min, selectedGlobalTime.max, storageData)
-                  )
-                } else {
-                  fetchPagination(url, params, onProgress).then(response => {
-                    onResponse(response, null)
-                  }).catch(error => {
-                    onResponse(null, error)
-                  })
+              // If index is 1, waiting for this to be done
+              if (idx === 1) {
+                try {
+                  const response = await getDataFn(id, url, params, dictDeepCopy(selectedGlobalTime), version, onResponse, onProgress, metadata?.count && metadata.count < MAX_COUNT_FOR_ALL_DATA)
+                  onResponse(response, null)
+                } catch (error) {
+                  onResponse(null, error)
                 }
+              } else {
+                getDataPromise(
+                  dataId, url, params, dictDeepCopy(selectedGlobalTime), version, onResponse, onProgress,
+                  metadata?.count && metadata.count < MAX_COUNT_FOR_ALL_DATA
+                ).then(response => {
+                  onResponse(response, null)
+                }).catch(error => {
+                  onResponse(null, error)
+                })
               }
             }
           }

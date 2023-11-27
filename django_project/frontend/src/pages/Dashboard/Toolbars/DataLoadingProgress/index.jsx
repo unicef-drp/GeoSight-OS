@@ -27,7 +27,7 @@ import './style.scss';
  * FullScreen component.
  */
 export default function DataLoadingProgress() {
-  const indicatorsData = useSelector(state => state.indicatorsData)
+  const indicatorsMetadata = useSelector(state => state.indicatorsMetadata)
   const relatedTableData = useSelector(state => state.relatedTableData)
   const {
     indicatorLayers,
@@ -46,10 +46,9 @@ export default function DataLoadingProgress() {
       total += 1
     })
     let currProgress = 0
-
-    for (const [key, value] of Object.entries(indicatorsData)) {
+    for (const [key, value] of Object.entries(indicatorsMetadata)) {
       if (!key.includes('layer')) {
-        if (value.progress?.page) {
+        if (value.progress?.page_size) {
           total += value.progress.page_size
           currProgress += value.progress.page
         }
@@ -62,7 +61,7 @@ export default function DataLoadingProgress() {
     }
     currProgress = currProgress * 100 / total
     setProgress(currProgress)
-  }, [indicatorsData, relatedTableData]);
+  }, [indicatorsMetadata, relatedTableData]);
 
   return <div className='DataLoadingProgress'>
     {
