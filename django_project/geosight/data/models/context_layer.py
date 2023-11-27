@@ -262,6 +262,13 @@ class ContextLayer(AbstractEditData, AbstractTerm):
             )
         ).update(version_data=timezone.now())
 
+    @property
+    def token_val(self):
+        """Return token."""
+        if self.arcgis_config:
+            return self.arcgis_config.token_val
+        return self.token
+
 
 @receiver(post_save, sender=ContextLayer)
 def increase_version(sender, instance, **kwargs):

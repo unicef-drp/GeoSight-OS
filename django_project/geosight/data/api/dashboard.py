@@ -131,9 +131,17 @@ class DashboardData(APIView):
         ]:
             for resource in data[row['key']]:
                 try:
-                    resource['permission'] = row['model'].objects.get(
-                        id=resource['id']
-                    ).permission.all_permission(request.user)
-                except RelatedTable.DoesNotExist:
+                    obj = row['model'].objects.get(id=resource['id'])
+                    resource['permission'] = obj.permission.all_permission(
+                        request.user
+                    )
+                    if row['model'] == ContextLayer:
+                        resource['token'] = obj.token_val
+                        print(obj.token_val)
+                except (
+                        RelatedTable.DoesNotExist,
+                        Indicator.DoesNotExist,
+                        ContextLayer.DoesNotExist
+                ):
                     pass
         return Response(data)

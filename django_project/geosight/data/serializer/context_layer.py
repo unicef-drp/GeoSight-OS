@@ -78,9 +78,7 @@ class ContextLayerSerializer(DynamicModelSerializer):
 
     def get_token(self, obj: ContextLayer):
         """Return token."""
-        if obj.arcgis_config:
-            return obj.arcgis_config.token_val
-        return obj.token
+        return obj.token_val
 
     class Meta:  # noqa: D106
         model = ContextLayer
