@@ -15,6 +15,7 @@
 
 import alasql from "alasql";
 import { isValidDate } from "./main"
+import { spacedField } from "./queryExtraction";
 
 /**
  * Return related table data
@@ -22,24 +23,26 @@ import { isValidDate } from "./main"
 export const getRelatedTableData = (data, config, selectedGlobalTime, geoField = 'geometry_code', aggregateDate = true) => {
   if (data) {
     data = JSON.parse(JSON.stringify(data))
-    const {
-      date_field, aggregation, where
-    } = config
-    const geography_code_field_name = geoField
+    const { aggregation, where } = config
+    const date_field = spacedField(config.date_field)
+    const geography_code_field_name = spacedField(geoField)
     let aggregation_method = ''
     let aggregation_field = ''
+    let aggregation_full = aggregation.replaceAll('(', '(data.')
     if (aggregation) {
       aggregation_method = aggregation.split('(')[0]
       if (aggregation.split('(')[1]) {
         aggregation_field = aggregation.split('(')[1].replace(')', '')
       }
+      aggregation_full = aggregation_full.replace(aggregation_field, spacedField(aggregation_field))
+      aggregation_field = spacedField(aggregation_field)
     }
     try {
       if (!date_field) {
-        const sql = `SELECT ${geography_code_field_name}             as _geometry_code,
-                            ${aggregation.replaceAll('(', '(data.')} as _value,
-                            MAX(data.concept_uuid)                   as _concept_uuid,
-                            MAX(data.admin_level)                    as _admin_level
+        const sql = `SELECT ${geography_code_field_name} as _geometry_code,
+                            ${aggregation_full}          as _value,
+                            MAX(data.concept_uuid)       as _concept_uuid,
+                            MAX(data.admin_level)        as _admin_level
                      FROM ? as data` + (where ? ` WHERE ${where}` : '') + ` GROUP BY ${geography_code_field_name}  ORDER BY ${geography_code_field_name} DESC`
         const results = alasql(sql, [data]).map((result, idx) => {
           return {
@@ -82,7 +85,7 @@ export const getRelatedTableData = (data, config, selectedGlobalTime, geoField =
         let sql = `SELECT ${geography_code_field_name}             as _geometry_code,` +
           (aggregateDate ? `MAX(data.${date_field})` : `data.${date_field}`) + ` as _date,
                           MAX(data.concept_uuid)                   as _concept_uuid,
-                          ${aggregation.replaceAll('(', '(data.')} as _value,
+                          ${aggregation_full} as _value,
                           MAX(data.admin_level)        as _admin_level
                    FROM ? as data` + (updatedWhere ? ` WHERE ${updatedWhere}` : '') + ` GROUP BY ${geography_code_field_name}` + (!aggregateDate ? `, data.${date_field}` : '') + `  
                    ORDER BY ${geography_code_field_name} DESC `
