@@ -208,6 +208,7 @@ header {
   .copy-context {
     padding: 0.5rem;
     text-align: center;
+    display: none;
 
     &.HasContent {
       cursor: pointer;
