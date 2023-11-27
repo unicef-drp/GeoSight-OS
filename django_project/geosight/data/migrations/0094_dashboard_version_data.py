@@ -7,7 +7,7 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('geosight_data', '0091_views_initiation'),
+        ('geosight_data', '0093_auto_20231121_0357'),
     ]
 
     operations = [
