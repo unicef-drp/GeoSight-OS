@@ -288,7 +288,7 @@ export function formatDate(d, reverseDate = false) {
  * Json to xls
  * @param {Date} d
  */
-export function formatDateTime(d, reverseDate = false, toUTC = false) {
+export function formatDateTime(d, reverseDate = false, toUTC = false, showSecond = true) {
   let month = '' + (d.getMonth() + 1),
     day = '' + d.getDate(),
     year = d.getFullYear(),
@@ -314,10 +314,14 @@ export function formatDateTime(d, reverseDate = false, toUTC = false) {
   if (second.length < 2)
     second = '0' + second;
 
+  const times = [hour, minute]
+  if (showSecond) {
+    times.push(second)
+  }
   if (reverseDate) {
-    return [day, month, year].join('-') + ' ' + [hour, minute, second].join(':');
+    return [day, month, year].join('-') + ' ' + times.join(':');
   } else {
-    return [year, month, day].join('-') + ' ' + [hour, minute, second].join(':');
+    return [year, month, day].join('-') + ' ' + times.join(':');
   }
 }
 

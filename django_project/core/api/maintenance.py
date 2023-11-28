@@ -31,8 +31,6 @@ class MaintenanceAPI(APIView):
         """Return Maintenance."""
         current_datetime = datetime.now()
         maintenance = Maintenance.objects.filter(
-            scheduled_from__lte=current_datetime
-        ).filter(
             Q(scheduled_end__isnull=True) |
             Q(scheduled_end__gte=current_datetime)
         ).order_by('scheduled_from').first()

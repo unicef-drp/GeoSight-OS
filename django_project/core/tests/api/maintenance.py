@@ -47,7 +47,10 @@ class MaintenanceApiTest(BaseTest, TestCase):
 
         url = reverse('maintenance-view')
         response = self.assertRequestGetView(url, 200)
-        self.assertFalse('id' in response.data)
+        self.assertEqual(
+            response.data['id'],
+            maintenance.id
+        )
 
         # Check scheduled
         maintenance.scheduled_from = '2023-01-06 06:00:00.000+0800'
@@ -57,3 +60,10 @@ class MaintenanceApiTest(BaseTest, TestCase):
             response.data['id'],
             maintenance.id
         )
+
+        # Check scheduled
+        maintenance.scheduled_from = '2023-01-04 06:00:00.000+0800'
+        maintenance.scheduled_end = '2023-01-05 06:00:00.000+0800'
+        maintenance.save()
+        response = self.assertRequestGetView(url, 200)
+        self.assertFalse('id' in response.data)
