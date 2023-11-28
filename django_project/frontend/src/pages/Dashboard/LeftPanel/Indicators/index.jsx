@@ -92,7 +92,7 @@ export default function Indicators() {
     if (metadata?.version) {
       dispatch(
         Actions.IndicatorsMetadata.progress(id, {
-          page_size: Math.ceil(metadata.count / 100),
+          total_page: Math.ceil(metadata.count / 100),
           page: 0
         })
       )
@@ -263,7 +263,7 @@ export default function Indicators() {
                 )
                 dispatch(
                   Actions.IndicatorsMetadata.progress(id, {
-                    page_size: Math.ceil(response.length / 100),
+                    total_page: Math.ceil(response.length / 100),
                     page: Math.ceil(response.length / 100)
                   })
                 )
