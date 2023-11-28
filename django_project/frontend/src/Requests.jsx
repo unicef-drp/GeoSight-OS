@@ -107,7 +107,7 @@ export const fetchPaginationAsync = async function (url, onProgress) {
     if (onProgress) {
       onProgress({
         page: response.page,
-        page_size: response.page_size,
+        total_page: response.total_page,
       })
     }
     data = data.concat(response.results)
@@ -159,7 +159,7 @@ export const fetchPaginationInParallel = async function (url, params, onProgress
   doneCount += 1
   onProgress({
     page: doneCount,
-    page_size: response.page_size,
+    total_page: response.total_page,
   })
   if (response.next) {
     // Call function for other page
@@ -168,11 +168,11 @@ export const fetchPaginationInParallel = async function (url, params, onProgress
       doneCount += 1
       onProgress({
         page: doneCount,
-        page_size: response.page_size,
+        total_page: response.total_page,
       })
       data = data.concat(response.results)
     }
-    await Promise.all(Array(response.page_size - 1).fill(0).map((_, idx) => call(idx + 2)))
+    await Promise.all(Array(response.total_page - 1).fill(0).map((_, idx) => call(idx + 2)))
   }
   return data
 }

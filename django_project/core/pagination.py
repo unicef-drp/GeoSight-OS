@@ -30,7 +30,8 @@ class Pagination(PageNumberPagination):
             'previous': self.get_previous_link(),
             'count': self.page.paginator.count,
             'page': self.page.number,
-            'page_size': self.page.paginator.num_pages,
+            'total_page': self.page.paginator.num_pages,
+            'page_size': self.page.paginator.per_page,
             'results': data,
         }
 
