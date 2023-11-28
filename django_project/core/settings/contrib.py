@@ -26,6 +26,7 @@ INSTALLED_APPS = INSTALLED_APPS + (
     'captcha',
     'knox',
     'drf_yasg',
+    'tinymce',
 )
 WEBPACK_LOADER = {
     'DEFAULT': {

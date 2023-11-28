@@ -26,6 +26,7 @@ Sphinx
 # pdb plus plus
 pdbpp
 responses
+mock==5.1.0
 
 # ssl server localhost
 django-sslserver==0.22

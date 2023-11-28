@@ -21,6 +21,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
+from core.forms.maintenance import MaintenanceModelForm
 from core.forms.profile import ProfileForm
 from core.forms.site_preferences import SitePreferencesForm
 from core.forms.user import (
@@ -32,6 +33,7 @@ from core.models import (
 )
 from core.models.access_request import UserAccessRequest
 from core.models.color import ColorPalette
+from core.models.maintenance import Maintenance
 
 User = get_user_model()
 admin.site.unregister(User)
@@ -264,3 +266,20 @@ class APIKeyAdmin(admin.ModelAdmin):
 
 
 admin.site.register(ApiKey, APIKeyAdmin)
+
+
+class MaintenanceAdmin(admin.ModelAdmin):
+    """Maintenance admin."""
+
+    form = MaintenanceModelForm
+    list_display = (
+        'id', 'scheduled_from', 'scheduled_end', 'creator', 'created_at'
+    )
+
+    def save_model(self, request, obj, form, change):
+        """Save maintenance model."""
+        obj.creator = request.user
+        super().save_model(request, obj, form, change)
+
+
+admin.site.register(Maintenance, MaintenanceAdmin)
