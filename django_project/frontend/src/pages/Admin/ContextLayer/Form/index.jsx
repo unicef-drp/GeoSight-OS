@@ -24,7 +24,6 @@ import { AdminForm } from '../../Components/AdminForm'
 import StyleConfig from '../StyleConfig'
 import DjangoTemplateForm from "../../Components/AdminForm/DjangoTemplateForm";
 import { resourceActions } from "../List";
-import { axiosGet } from "../../../../utils/georepo";
 
 import './style.scss';
 
@@ -89,15 +88,9 @@ export default function ContextLayerForm() {
       $('div[data-wrapper-name="username"]').hide()
       $('div[data-wrapper-name="password"]').hide()
 
-      axiosGet(`/api/arcgis/${value}/token`).then(response => {
-        if (currentArcGis === value) {
-          setData({
-            ...data,
-            token: response.data.result,
-            arcgis_config: value
-          })
-        }
-
+      setData({
+        ...data,
+        arcgis_config: value
       })
     }
   }

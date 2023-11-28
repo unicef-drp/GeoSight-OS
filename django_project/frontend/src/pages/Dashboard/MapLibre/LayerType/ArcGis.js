@@ -410,8 +410,13 @@ export default function arcGisLayer(map, id, data, contextLayerData, popupFeatur
   }
 
   if (!hasSource(map, id)) {
+    let url = data.url
+    if (data.params.url) {
+      url = url + '?url=' + data.params.url
+    }
+
     const params = Object.assign({}, data.params, {
-      url: data.url,
+      url: url,
       token: data.token,
       minZoom: 0
     })

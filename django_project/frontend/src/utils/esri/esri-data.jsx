@@ -241,7 +241,6 @@ export default class EsriData {
         break;
       }
     }
-
     return `<table>${legend}</table>`;
   }
 }

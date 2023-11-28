@@ -22,15 +22,8 @@ from rest_framework.views import APIView
 class ProxyView(APIView):
     """Proxy API for returning outside url."""
 
-    def get(self, request):
-        """GET API."""
-        url = request.GET.get('url', None)
-        if not url:
-            return HttpResponseBadRequest('url is required')
-        username = request.GET.get('username', None)
-        password = request.GET.get('password', None)
-        basic_auth = request.GET.get('basic_auth', None)
-
+    def fetch(self, url, username=None, password=None, basic_auth=None):
+        """Fetch data."""
         if username and password:
             response = requests.get(url, auth=(username, password))
         elif basic_auth:
@@ -45,3 +38,15 @@ class ProxyView(APIView):
             content_type=response.headers['Content-Type']
         )
         return django_response
+
+    def get(self, request):
+        """GET API."""
+        url = request.GET.get('url', None)
+        if not url:
+            return HttpResponseBadRequest('url is required')
+        return self.fetch(
+            url,
+            username=request.GET.get('username', None),
+            password=request.GET.get('password', None),
+            basic_auth=request.GET.get('basic_auth', None)
+        )
