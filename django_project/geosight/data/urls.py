@@ -42,7 +42,6 @@ from geosight.data.api.dashboard_indicator_value import (
     DashboardIndicatorAllValuesAPI,
     DashboardIndicatorValueListAPI, DashboardEntityDrilldown
 )
-from geosight.data.api.dataset import DatasetApiList, DatasetApiListIds
 from geosight.data.api.download_file import (
     DownloadSharepointFile,
     DownloadBackupsFile
@@ -231,21 +230,6 @@ context_layer_api = [
     ),
 ]
 # ------------------------------------------------------
-# DATASET API
-dataset_api_v1 = [
-    url(
-        r'^list',
-        DatasetApiList.as_view(), name='dataset-list-api'
-    ),
-]
-dataset_api = [
-    url(
-        r'^list/ids',
-        DatasetApiListIds.as_view(), name='dataset-list-ids-api'
-    ),
-    url(r'^', include(dataset_api_v1)),
-]
-# ------------------------------------------------------
 # RELATED TABLE API
 related_table_api = [
     url(
@@ -293,7 +277,6 @@ arcgis_api = [
 api = [
     url(r'^dashboard/', include(dashboard_api)),
     url(r'^basemap/', include(basemap_api)),
-    url(r'^dataset/', include(dataset_api)),
     url(r'^indicator/', include(indicator_api)),
     url(r'^context-layer/', include(context_layer_api)),
     url(r'^style/', include(style_api)),

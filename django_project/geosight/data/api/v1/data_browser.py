@@ -11,7 +11,7 @@ Contact : geosight-no-reply@unicef.org
 
 """
 __author__ = 'irwan@kartoza.com'
-__date__ = '13/06/2023'
+__date__ = '29/11/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import json
@@ -43,7 +43,7 @@ from geosight.permission.models.resource import (
 )
 
 
-class BaseDatasetApiList(FilteredAPI):
+class BaseDataBrowserApiList(FilteredAPI):
     """Return Data List API List."""
 
     authentication_classes = [
@@ -89,7 +89,7 @@ class BaseDatasetApiList(FilteredAPI):
         )
 
 
-class DatasetApiList(BaseDatasetApiList, ListAPIView):
+class DataBrowserApiList(BaseDataBrowserApiList, ListAPIView):
     """Return Data List API List."""
 
     serializer_class = IndicatorValueWithPermissionSerializer
@@ -102,7 +102,7 @@ class DatasetApiList(BaseDatasetApiList, ListAPIView):
 
     @swagger_auto_schema(
         operation_id='data-browser-get',
-        tags=[ApiTag.DATASET],
+        tags=[ApiTag.DATA_BROWSER],
         manual_parameters=[
             *common_api_params,
             ApiParams.INDICATOR_ID,
@@ -123,7 +123,7 @@ class DatasetApiList(BaseDatasetApiList, ListAPIView):
 
     @swagger_auto_schema(
         operation_id='data-browser-create',
-        tags=[ApiTag.DATASET],
+        tags=[ApiTag.DATA_BROWSER],
         manual_parameters=[],
         request_body=IndicatorValueWithPermissionSerializer.
         Meta.swagger_schema_fields['post_body'],
@@ -196,7 +196,7 @@ class DatasetApiList(BaseDatasetApiList, ListAPIView):
 
     @swagger_auto_schema(
         operation_id='data-browser-delete',
-        tags=[ApiTag.DATASET],
+        tags=[ApiTag.DATA_BROWSER],
         manual_parameters=[],
         request_body=IndicatorValueWithPermissionSerializer.
         Meta.swagger_schema_fields['delete_body'],
@@ -210,9 +210,24 @@ class DatasetApiList(BaseDatasetApiList, ListAPIView):
         return Response('OK')
 
 
-class DatasetApiListIds(APIView, BaseDatasetApiList):
+class DataBrowserApiListIds(APIView, BaseDataBrowserApiList):
     """Return Just ids Data List."""
 
+    @swagger_auto_schema(
+        operation_id='data-browser-ids-get',
+        tags=[ApiTag.DATA_BROWSER],
+        manual_parameters=[
+            ApiParams.INDICATOR_ID,
+            ApiParams.INDICATOR_SHORTCODE,
+            ApiParams.DATASET_UUID,
+            ApiParams.ADMIN_LEVEL,
+            ApiParams.GEOM_ID,
+            ApiParams.DATE_FROM,
+            ApiParams.DATE_TO,
+        ]
+    )
     def get(self, request):
         """Get ids of data."""
-        return Response(self.get_queryset().values_list('id', flat=True))
+        return Response(
+            self.get_queryset().values_list('id', flat=True)
+        )

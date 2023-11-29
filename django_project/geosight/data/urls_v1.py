@@ -16,9 +16,22 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.conf.urls import url
 from django.urls import include
+from rest_framework.routers import DefaultRouter
 
-from .urls import dataset_api_v1
+from geosight.data.api.v1.data_browser import (
+    DataBrowserApiList, DataBrowserApiListIds
+)
+from geosight.data.api.v1.indicator import IndicatorViewSet
+
+router = DefaultRouter()
+router.register(r'indicators', IndicatorViewSet, basename='indicators')
+
+data_browser_api_v1 = [
+    url(r'^ids', DataBrowserApiListIds.as_view(), name='dataset-list-ids-api'),
+    url(r'^', DataBrowserApiList.as_view(), name='dataset-list-api'),
+]
 
 urlpatterns = [
-    url(r'^dataset/', include(dataset_api_v1)),
+    url(r'^data-browser/', include(data_browser_api_v1)),
 ]
+urlpatterns += router.urls
