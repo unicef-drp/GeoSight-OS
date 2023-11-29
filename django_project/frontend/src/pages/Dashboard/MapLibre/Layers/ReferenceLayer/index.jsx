@@ -66,7 +66,10 @@ const geo_field = 'concept_uuid'
 let deckGlData = {}
 let deckGlElevationTime = 0
 let deckGlAnimationDate = null
-let currentRenderData = []
+let currentRenderDataString = ''
+let currentIndicatorLayerStringData = ''
+let currentIndicatorSecondLayerStringData = ''
+let currentCompareMode = false
 /**
  * ReferenceLayer selector.
  */
@@ -154,9 +157,19 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
     )
     if (allDataIsReady(data)) {
       const dataInString = JSON.stringify(data)
-      if (currentRenderData !== dataInString) {
+      const currentIndicatorLayerString = JSON.stringify(currentIndicatorLayer)
+      const currentIndicatorSecondLayerString = JSON.stringify(currentIndicatorSecondLayer)
+      if (
+        currentRenderDataString !== dataInString ||
+        currentIndicatorLayerStringData !== currentIndicatorLayerString ||
+        currentIndicatorSecondLayerStringData !== currentIndicatorSecondLayerString ||
+        currentCompareMode !== compareMode
+      ) {
         updateStyle()
-        currentRenderData = dataInString
+        currentRenderDataString = dataInString
+        currentIndicatorLayerStringData = currentIndicatorLayerString
+        currentIndicatorSecondLayerStringData = currentIndicatorSecondLayerString
+        currentCompareMode = compareMode
       }
     }
   }, [
