@@ -37,7 +37,7 @@ common_api_params = [
 class ApiTag:
     """Return API Tags."""
 
-    DATASET = 'Data Browser'
+    DATA_BROWSER = 'Data Browser'
 
 
 class ApiParams:

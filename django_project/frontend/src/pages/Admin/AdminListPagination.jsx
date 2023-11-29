@@ -126,7 +126,7 @@ export const AdminListPagination = forwardRef(
     /*** Load ids data */
     const loadIds = () => {
       setFetchingIds(true)
-      const paramsUsed = dictDeepCopy(parameters)
+      const paramsUsed = dictDeepCopy({ ...parameters, page: 1 })
       const params = jsonToUrlParams(paramsUsed)
       const url = props.selectAllUrl + '?' + params
       fetchJSON(url, {}, false)
