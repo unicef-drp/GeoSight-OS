@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+source base-url.sh
+
+source playwright-path.sh
+
 echo "This script will write a new test to tests/deleteme.spec.ts"
 echo "then delete it, leaving only the auth config."
 echo ""
@@ -12,20 +16,18 @@ echo "Recording auth token to auth.json"
 echo "Continue? y/n"
 read ANSWER
 case $ANSWER in 
-  [yY] ) echo "auth.json" ;;
+  [yY] ) echo "Writing auth.json" ;;
   [nN] ) echo "Cancelled."; exit ;;
 esac
 
-source base-url.sh
+$PLAYWRIGHT \
+	codegen \
+	--target playwright-test \
+	--save-storage=auth.json \
+	-o tests/deleteme.spec.ts \
+	$BASE_URL
 
-playwright \
-  codegen \
-  --target playwright-test \
-  --save-storage=auth.json \
-  -o tests/deleteme.spec.ts \
-  $BASE_URL
-
-# We are only interested in geosight-auth.json
+# We are only interested in auth.json
 rm tests/deleteme.spec.ts
 
 echo "Auth file creation completed."
