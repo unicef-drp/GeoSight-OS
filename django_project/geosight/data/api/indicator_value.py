@@ -31,10 +31,14 @@ from core.permissions import AdminAuthenticationPermission
 from geosight.data.models.indicator import (
     Indicator, IndicatorValue, IndicatorValueRejectedError
 )
-from geosight.data.serializer.indicator import (
-    IndicatorValueBasicSerializer, IndicatorValueSerializer,
-    IndicatorValueDetailSerializer
+from geosight.data.models.indicator.indicator_value import (
+    IndicatorValueWithGeo
 )
+from geosight.data.serializer.indicator import (
+    IndicatorValueBasicSerializer, IndicatorValueDetailSerializer
+
+)
+from geosight.data.serializer.indicator_value import IndicatorValueSerializer
 from geosight.georepo.models import ReferenceLayerIndicator
 from geosight.permission.access import (
     delete_permission_resource, read_permission_resource,
@@ -138,7 +142,10 @@ class IndicatorValueListAPI(APIView):
 
         return Response(
             IndicatorValueSerializer(
-                indicator.indicatorvalue_set.all(), many=True
+                IndicatorValueWithGeo.objects.filter(
+                    indicator_id=indicator.id
+                ),
+                many=True
             ).data
         )
 
@@ -193,7 +200,10 @@ class IndicatorValueListAPI(APIView):
                         ids.append(value.id)
             return Response(
                 IndicatorValueSerializer(
-                    indicator.indicatorvalue_set.filter(id__in=ids), many=True
+                    IndicatorValueWithGeo.objects.filter(
+                        indicator_id=indicator.id
+                    ),
+                    many=True
                 ).data
             )
         except ValueError as e:

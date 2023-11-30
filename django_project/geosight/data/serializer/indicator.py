@@ -14,8 +14,6 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from datetime import datetime
-
 from django.shortcuts import reverse
 
 from core.serializer.dynamic_serializer import DynamicModelSerializer
@@ -139,58 +137,3 @@ class IndicatorRuleSerializer(serializers.ModelSerializer):
     class Meta:  # noqa: D106
         model = IndicatorRule
         fields = '__all__'
-
-
-class IndicatorValueSerializer(serializers.ModelSerializer):
-    """Serializer for IndicatorValue."""
-
-    reference_layer = serializers.SerializerMethodField()
-    reference_layer_name = serializers.SerializerMethodField()
-    indicator_name = serializers.SerializerMethodField()
-    indicator_shortcode = serializers.SerializerMethodField()
-    value = serializers.SerializerMethodField()
-    geom_id_type = serializers.SerializerMethodField()
-    timestamp = serializers.SerializerMethodField()
-
-    def get_reference_layer(self, obj: IndicatorValue):
-        """Return reference layer."""
-        if obj.reference_layer:
-            return obj.reference_layer.identifier
-        return '-'
-
-    def get_reference_layer_name(self, obj: IndicatorValue):
-        """Return reference layer name."""
-        if obj.reference_layer:
-            return obj.reference_layer.name
-        return '-'
-
-    def get_indicator_name(self, obj: IndicatorValue):
-        """Return indicator name."""
-        return obj.indicator.__str__()
-
-    def get_indicator_shortcode(self, obj: IndicatorValue):
-        """Return indicator id."""
-        return obj.indicator.shortcode
-
-    def get_geom_id_type(self, obj: IndicatorValue):
-        """Return indicator id."""
-        if obj.geom_id == obj.original_geom_id:
-            return obj.original_geom_id_type
-        return 'ucode'
-
-    def get_value(self, obj: IndicatorValue):
-        """Return value of indicator."""
-        return obj.val
-
-    def get_timestamp(self, obj: IndicatorValue):
-        """Return timestamp of indicator."""
-        date_time = datetime.combine(obj.date, datetime.min.time())
-        return date_time.timestamp()
-
-    class Meta:  # noqa: D106
-        model = IndicatorValue
-        fields = (
-            'reference_layer', 'reference_layer_name', 'indicator_name',
-            'indicator_shortcode', 'value', 'admin_level', 'geom_id',
-            'geom_id_type', 'timestamp'
-        )

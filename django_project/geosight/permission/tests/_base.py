@@ -14,11 +14,14 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+from unittest.mock import patch
+
 from django.contrib.auth import get_user_model
 
 from core.models.profile import ROLES
 from core.tests.base_tests import BaseTest
 from core.tests.model_factories import GroupF, create_user
+from geosight.georepo.tests.mock import mock_get_entity
 
 User = get_user_model()
 
@@ -61,3 +64,17 @@ class BasePermissionTest(BaseTest):
         self.contributor_in_group.groups.add(self.group)
         self.creator_in_group = create_user(ROLES.CREATOR.name)
         self.creator_in_group.groups.add(self.group)
+
+        # Patch
+        self.entity_patcher = patch(
+            'geosight.georepo.models.entity.Entity.get_entity',
+            mock_get_entity
+        )
+        self.entity_patcher.start()
+
+    def tearDown(self):
+        """Stop the patcher."""
+        try:
+            self.entity_patcher.stop()
+        except AttributeError:
+            pass

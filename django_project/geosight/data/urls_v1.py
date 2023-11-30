@@ -27,8 +27,8 @@ router = DefaultRouter()
 router.register(r'indicators', IndicatorViewSet, basename='indicators')
 
 data_browser_api_v1 = [
-    url(r'^ids', DataBrowserApiListIds.as_view(), name='dataset-list-ids-api'),
-    url(r'^', DataBrowserApiList.as_view(), name='dataset-list-api'),
+    url(r'^ids', DataBrowserApiListIds.as_view(), name='data-browser-ids-api'),
+    url(r'^', DataBrowserApiList.as_view(), name='data-browser-api'),
 ]
 
 urlpatterns = [

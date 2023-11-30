@@ -16,6 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import json
 
+from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -40,6 +41,10 @@ class StyleListAPI(APIView):
 
     def delete(self, request):
         """Delete an basemap."""
+        user = request.user
+        if not (user.is_authenticated and user.profile.is_contributor):
+            return HttpResponseForbidden()
+
         ids = json.loads(request.data['ids'])
         for obj in Style.permissions.delete(request.user).filter(
                 id__in=ids):

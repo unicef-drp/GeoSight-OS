@@ -43,7 +43,8 @@ class StyleApiTest(BasePermissionTest, TestCase):
     def test_list_api(self):
         """Test list API."""
         url = reverse('style-list-api')
-        self.assertRequestGetView(url, 403)  # Non login
+        response = self.assertRequestGetView(url, 200)  # Non login
+        self.assertEqual(len(response.json()), 1)
         response = self.assertRequestGetView(url, 200, user=self.admin)
         self.assertEqual(len(response.json()), 1)
 
