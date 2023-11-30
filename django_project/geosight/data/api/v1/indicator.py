@@ -26,5 +26,9 @@ from .base import BaseApiV1
 class IndicatorViewSet(BaseApiV1, viewsets.ReadOnlyModelViewSet):
     """Indicator view set."""
 
-    queryset = Indicator.objects.all()
     serializer_class = IndicatorBasicListSerializer
+
+    @property
+    def queryset(self):
+        """Return the queryset."""
+        return Indicator.permissions.list(self.request.user)
