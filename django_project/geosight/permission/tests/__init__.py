@@ -14,6 +14,7 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+from .api import *  # noqa
 from .basemap_layer import *  # noqa
 from .context_layer import *  # noqa
 from .dashboard import *  # noqa
@@ -21,3 +22,4 @@ from .dataset import *  # noqa
 from .group import *  # noqa
 from .indicator import *  # noqa
 from .related_table import *  # noqa
+from .style import *  # noqa

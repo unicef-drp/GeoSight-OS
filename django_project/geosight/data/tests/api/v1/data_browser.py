@@ -25,18 +25,16 @@ from geosight.data.models import Indicator, IndicatorGroup
 from geosight.georepo.models import (
     ReferenceLayerView, ReferenceLayerIndicator
 )
-from geosight.importer.importers.query_data import Aggregations
 from geosight.permission.tests._base import BasePermissionTest
 
 User = get_user_model()
 
 
-class DatasetListApiTest(BasePermissionTest, TestCase):
+class DataBrowserApiTest(BasePermissionTest, TestCase):
     """Test for dataset list api."""
 
     payload = {
-        'name': 'name',
-        'aggregation_method': Aggregations.COUNT
+        'name': 'name'
     }
 
     def setUp(self):
@@ -45,14 +43,20 @@ class DatasetListApiTest(BasePermissionTest, TestCase):
         payload['group'] = IndicatorGroup.objects.create(name='name')
 
         # Create reference layers
-        self.ref_0 = ReferenceLayerView.objects.create(identifier='name_1')
-        self.ref_1 = ReferenceLayerView.objects.create(identifier='name_1')
-        self.ref_2 = ReferenceLayerView.objects.create(identifier='name_2')
+        self.ref_0 = ReferenceLayerView.objects.create(
+            identifier='name_1', name='name_1'
+        )
+        self.ref_1 = ReferenceLayerView.objects.create(
+            identifier='name_1', name='name_1'
+        )
+        self.ref_2 = ReferenceLayerView.objects.create(
+            identifier='name_2', name='name_1'
+        )
 
         payload['name'] = 'name_0'
         self.indicator_0 = Indicator.objects.create(**payload)
 
-        super(DatasetListApiTest, self).setUp()
+        super(DataBrowserApiTest, self).setUp()
 
         # Create indicators
         payload['name'] = 'name_1'
@@ -162,9 +166,8 @@ class DatasetListApiTest(BasePermissionTest, TestCase):
 
     def test_list_api_by_admin(self):
         """Test List API."""
-        url = reverse('dataset-list-api')
-        response = self.assertRequestGetView(url, 200)
-        self.assertEqual(len(response.json()['results']), 0)
+        url = reverse('data-browser-api')
+        self.assertRequestGetView(url, 403)
 
         # admin
         user = self.admin
@@ -173,7 +176,8 @@ class DatasetListApiTest(BasePermissionTest, TestCase):
 
         # by indicators
         response = self.assertRequestGetView(
-            f'{url}?indicator__in={",".join([f"{self.indicator_1.id}"])}', 200,
+            f'{url}?indicator_id__in={",".join([f"{self.indicator_1.id}"])}',
+            200,
             user=user
         )
         self.assertEqual(len(response.json()['results']), 18)
@@ -181,7 +185,7 @@ class DatasetListApiTest(BasePermissionTest, TestCase):
         # by reference layers
         reference_layers = ",".join([f"{self.ref_1.identifier}"])
         response = self.assertRequestGetView(
-            f'{url}?reference_layer__identifier__in={reference_layers}',
+            f'{url}?reference_layer_id__in={reference_layers}',
             200, user=user
         )
         self.assertEqual(len(response.json()['results']), 18)
@@ -207,7 +211,7 @@ class DatasetListApiTest(BasePermissionTest, TestCase):
     def test_list_api_by_creator(self):
         """Test List API."""
         user = self.creator
-        url = reverse('dataset-list-api')
+        url = reverse('data-browser-api')
 
         # admin
         response = self.assertRequestGetView(url, 200, user=user)
@@ -215,13 +219,15 @@ class DatasetListApiTest(BasePermissionTest, TestCase):
 
         # by indicators
         response = self.assertRequestGetView(
-            f'{url}?indicator__in={",".join([f"{self.indicator_1.id}"])}', 200,
+            f'{url}?indicator_id__in={",".join([f"{self.indicator_1.id}"])}',
+            200,
             user=user
         )
         self.assertEqual(len(response.json()['results']), 18)
 
         response = self.assertRequestGetView(
-            f'{url}?indicator__in={",".join([f"{self.indicator_2.id}"])}', 200,
+            f'{url}?indicator_id__in={",".join([f"{self.indicator_2.id}"])}',
+            200,
             user=user
         )
         self.assertEqual(len(response.json()['results']), 0)
@@ -229,7 +235,7 @@ class DatasetListApiTest(BasePermissionTest, TestCase):
         # by reference layers
         reference_layers = ",".join([f"{self.ref_1.identifier}"])
         response = self.assertRequestGetView(
-            f'{url}?reference_layer__identifier__in={reference_layers}',
+            f'{url}?reference_layer_id__in={reference_layers}',
             200, user=user
         )
         self.assertEqual(len(response.json()['results']), 9)

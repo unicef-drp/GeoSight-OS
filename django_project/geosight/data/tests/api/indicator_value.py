@@ -16,6 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import copy
 import json
+from datetime import datetime
 
 from django.contrib.auth import get_user_model
 from django.test.testcases import TestCase
@@ -155,5 +156,17 @@ class IndicatorValueTest(BasePermissionTest, TestCase):
             url, 200, json.dumps(data), self.resource_creator,
             content_type='application/json'
         )
-        for key, value in data[0].items():
-            self.assertEqual(response.json()[0][key], value)
+        data_time = datetime.fromtimestamp(data[0]['timestamp'])
+        self.assertEqual(
+            response.json()[0]['date'], data_time.strftime('%Y-%m-%d')
+        )
+        self.assertEqual(response.json()[0]['geom_id'], data[0]['geom_id'])
+        self.assertEqual(
+            response.json()[0]['geometries'][0]['dataset_uuid'],
+            data[0]['reference_layer']
+        )
+        self.assertEqual(
+            response.json()[0]['geometries'][0]['admin_level'],
+            data[0]['admin_level']
+        )
+        self.assertEqual(response.json()[0]['value'], data[0]['value'])

@@ -18,5 +18,9 @@ from .basemap import *  # noqa
 from .context_layer import *  # noqa
 from .dashboard import *  # noqa
 from .dashboard_bookmark import *  # noqa
+from .dashboard_embed import *  # noqa
 from .indicator import *  # noqa
+from .indicator_value import *  # noqa
 from .indicators import *  # noqa
+from .related_table import *  # noqa
+from .style import *  # noqa
