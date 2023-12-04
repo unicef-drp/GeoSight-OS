@@ -23,6 +23,7 @@ User = get_user_model()
 class BaseTest:
     """Base of test."""
 
+    JSON_CONTENT = 'application/json'
     password = 'password'
 
     def assertRequestGetView(self, url, code, user=None):
@@ -53,6 +54,17 @@ class BaseTest:
         if user:
             client.login(username=user.username, password=self.password)
         response = client.put(url, data=data, content_type=content_type)
+        self.assertEquals(response.status_code, code)
+        return response
+
+    def assertRequestPatchView(
+            self, url, code, data, user=None, content_type=MULTIPART_CONTENT
+    ):
+        """Assert request POST view with code."""
+        client = Client()
+        if user:
+            client.login(username=user.username, password=self.password)
+        response = client.patch(url, data=data, content_type=content_type)
         self.assertEquals(response.status_code, code)
         return response
 

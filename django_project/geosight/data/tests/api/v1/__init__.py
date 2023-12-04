@@ -14,4 +14,5 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '30/11/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+from .basemap import *
 from .data_browser import *

@@ -71,6 +71,11 @@ class BasemapLayer(AbstractEditData, AbstractTerm, IconTerm):
             )
         ).update(version_data=timezone.now())
 
+    @property
+    def category(self):
+        """Return category."""
+        return self.group.name if self.group else ''
+
 
 @receiver(post_save, sender=BasemapLayer)
 def increase_version(sender, instance, **kwargs):

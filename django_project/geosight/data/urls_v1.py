@@ -18,12 +18,14 @@ from django.conf.urls import url
 from django.urls import include
 from rest_framework.routers import DefaultRouter
 
+from geosight.data.api.v1.basemap import BasemapViewSet
 from geosight.data.api.v1.data_browser import (
     DataBrowserApiList, DataBrowserApiListIds
 )
 from geosight.data.api.v1.indicator import IndicatorViewSet
 
 router = DefaultRouter()
+router.register(r'basemaps', BasemapViewSet, basename='basemaps')
 router.register(r'indicators', IndicatorViewSet, basename='indicators')
 
 data_browser_api_v1 = [
