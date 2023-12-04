@@ -37,11 +37,66 @@ common_api_params = [
 class ApiTag:
     """Return API Tags."""
 
+    BASEMAPS = 'Basemaps'
     DATA_BROWSER = 'Data Browser'
 
 
 class ApiParams:
     """Return API Parameters."""
+
+    NAME_CONTAINS = openapi.Parameter(
+        'name__contains',
+        openapi.IN_QUERY,
+        description='Filter data by partial name.',
+        type=openapi.TYPE_STRING
+    )
+
+    DESCRIPTION_CONTAINS = openapi.Parameter(
+        'description__contains',
+        openapi.IN_QUERY,
+        description='Filter data by partial description.',
+        type=openapi.TYPE_STRING
+    )
+
+    CATEGORIES = openapi.Parameter(
+        'category__name__in',
+        openapi.IN_QUERY,
+        description=(
+            'Filter data by multiple category. '
+            'Put multiple filter using comma separator.'
+        ),
+        type=openapi.TYPE_STRING
+    )
+
+    TYPES = openapi.Parameter(
+        'type__in',
+        openapi.IN_QUERY,
+        description=(
+            'Filter data by multiple type. '
+            'Put multiple filter using comma separator.'
+        ),
+        type=openapi.TYPE_STRING
+    )
+
+    PROJECT_IDS = openapi.Parameter(
+        'project_id__in',
+        openapi.IN_QUERY,
+        description=(
+            'Filter data by multiple project id. '
+            'Put multiple filter using comma separator.'
+        ),
+        type=openapi.TYPE_STRING
+    )
+
+    PROJECT_SLUGS = openapi.Parameter(
+        'project_slug__in',
+        openapi.IN_QUERY,
+        description=(
+            'Filter data by multiple project slug. '
+            'Put multiple filter using comma separator.'
+        ),
+        type=openapi.TYPE_STRING
+    )
 
     INDICATOR_ID = openapi.Parameter(
         'indicator_id__in',

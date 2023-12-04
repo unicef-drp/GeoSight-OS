@@ -24,3 +24,4 @@ from .indicator_value import *  # noqa
 from .indicators import *  # noqa
 from .related_table import *  # noqa
 from .style import *  # noqa
+from .v1 import *  # noqa

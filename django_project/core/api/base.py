@@ -21,6 +21,9 @@ from django.core.exceptions import (
     FieldError, ValidationError, SuspiciousOperation
 )
 
+from geosight.data.models.dashboard import (
+    Dashboard, DashboardBasemap, DashboardIndicator
+)
 from geosight.georepo.models.reference_layer import ReferenceLayerView
 
 User = get_user_model()
@@ -53,6 +56,22 @@ class FilteredAPI(object):
                     identifier__in=value
                 ).values_list('id', flat=True)
                 param = 'reference_layer_id__in'
+
+            # Handle project filters
+            if 'project_' in field:
+                projects = Dashboard.objects.filter(
+                    **{param.replace('project_', ''): value}
+                )
+                if query.model.__name__ == "BasemapLayer":
+                    value = DashboardBasemap.objects.filter(
+                        dashboard__in=projects
+                    ).values_list('object_id', flat=True)
+                    param = 'id__in'
+                elif query.model.__name__ == "Indicator":
+                    value = DashboardIndicator.objects.filter(
+                        dashboard__in=projects
+                    ).values_list('object_id', flat=True)
+                    param = 'id__in'
 
             if 'date' in param:
                 try:
