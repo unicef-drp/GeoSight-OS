@@ -14,19 +14,31 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from django.shortcuts import get_object_or_404
-from rest_framework.response import Response
-from rest_framework.views import APIView
+from urllib import parse
 
+from django.http import HttpResponseBadRequest
+from django.shortcuts import get_object_or_404
+
+from core.api.proxy import ProxyView
+from core.utils import set_query_parameter
 from geosight.data.models.arcgis import ArcgisConfig
 
 
-class ArcgisConfigTokenAPI(APIView):
-    """API for detail of ArcgisConfig."""
+class ArcgisConfigProxy(ProxyView):
+    """Proxying arcgis."""
+
+    key = 'url'
 
     def get(self, request, pk):
         """Reurn token of arcgis."""
         config = get_object_or_404(ArcgisConfig, pk=pk)
-        return Response({
-            'result': config.token_val
-        })
+        url = request.GET.get(self.key, None)
+        if not url:
+            return HttpResponseBadRequest(f'{self.key} is required')
+        params = {}
+        for key, value in request.GET.items():
+            if key != self.key:
+                params[key] = value
+        params['token'] = config.token_val
+        url = set_query_parameter(parse.unquote(url), params)
+        return self.fetch(url)

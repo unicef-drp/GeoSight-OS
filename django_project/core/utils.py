@@ -16,6 +16,8 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import uuid
 
+from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
+
 
 def string_is_true(string: str):
     """Return is true or false of string contains true like string."""
@@ -29,3 +31,14 @@ def is_valid_uuid(value):
         return True
     except ValueError:
         return False
+
+
+def set_query_parameter(url, params):
+    """Given a URL and replace a query parameter and return modified URL."""
+    url_parse = urlparse(url)
+    query = url_parse.query
+    url_dict = dict(parse_qsl(query))
+    url_dict.update(params)
+    url_new_query = urlencode(url_dict)
+    url_parse = url_parse._replace(query=url_new_query)
+    return urlunparse(url_parse)

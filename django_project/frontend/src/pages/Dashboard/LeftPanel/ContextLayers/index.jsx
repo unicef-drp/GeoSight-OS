@@ -25,12 +25,12 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 
 import { Actions } from '../../../../store/dashboard'
 import { getLayer } from "./Layer"
-
-import './style.scss'
 import {
   dataStructureToTreeData
 } from "../../../../components/SortableTreeForm/utilities";
 import SidePanelTreeView from "../../../../components/SidePanelTree";
+
+import './style.scss'
 
 function ContextLayers() {
   const dispatch = useDispatch();
@@ -93,7 +93,7 @@ function ContextLayers() {
     }
   }, [layers, selectedLayer])
 
-  const initialize = async (_contextLayers) => {
+  const initialize = (_contextLayers) => {
     if (selectedLayer.length > 0) {
       selectedLayer.forEach(layer => {
         dispatch(
@@ -117,34 +117,11 @@ function ContextLayers() {
             }
           }),
           (legend) => contextLayer.legend = legend,
-          async (error) => {
-            if (contextLayer.arcgis_config && ['Token Required', 'Invalid Token'].includes(error)) {
-              try {
-                const response = await fetch(`/api/arcgis/${contextLayer.arcgis_config}/token`)
-                const output = await response.json()
-                dispatch(
-                  Actions.ContextLayers.updateJson(
-                    contextLayer.id, { token: output.result }
-                  )
-                )
-              } catch (error) {
-                setErrors(prevState => {
-                    return {
-                      ...prevState,
-                      [contextLayer.id + '']: error.toString()
-                    }
-                  }
-                )
+          (error) => {
+            setErrors(prevState => {
+                return { ...prevState, [contextLayer.id + '']: error.toString() }
               }
-            } else {
-              setErrors(prevState => {
-                  return {
-                    ...prevState,
-                    [contextLayer.id + '']: error.toString()
-                  }
-                }
-              )
-            }
+            )
           },
           null
         )

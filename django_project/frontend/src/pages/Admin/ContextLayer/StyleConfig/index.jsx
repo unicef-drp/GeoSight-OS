@@ -49,28 +49,7 @@ export default function StyleConfig(
     setLayer(null)
     setError(null)
     setLegend(null)
-    getLayer(data,
-      (layer) => {
-        setLayer(layer)
-      },
-      (legend) => {
-        setLegend(legend)
-      },
-      async (error) => {
-        if (data.arcgis_config && ['Token Required', 'Invalid Token'].includes(error)) {
-          try {
-            const response = await fetch(`/api/arcgis/${data.arcgis_config}/token`)
-            const output = await response.json()
-            setData({ ...data, token: output.result })
-          } catch (error) {
-            setError(error)
-          }
-        } else {
-          setError(error)
-        }
-      }, dispatch, (output) => {
-        setLayerDataClass(output)
-      });
+    getLayer(data, setLayer, setLegend, setError, dispatch, setLayerDataClass);
   }, [data, tab]);
 
   useEffect(() => {
