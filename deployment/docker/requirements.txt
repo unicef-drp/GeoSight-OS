@@ -16,6 +16,7 @@ django-braces==1.15.0
 django-celery-beat==2.4.0
 django-celery-results==2.4.0
 django-simple-captcha==0.5.17
+django-tinymce==3.4.0
 djangorestframework==3.14.0
 djangorestframework-gis==1.0
 django-rest-knox==4.2.0

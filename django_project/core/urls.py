@@ -30,6 +30,7 @@ from core.api.access_request import (
 )
 from core.api.color import ColorPaletteListAPI
 from core.api.group import GroupListAPI, GroupDetailAPI
+from core.api.maintenance import MaintenanceAPI
 from core.api.proxy import ProxyView
 from core.api.sentry import trigger_error
 from core.api.user import UserListAPI, UserDetailAPI, UserApiKey
@@ -145,6 +146,7 @@ request_access_api = [
 ]
 
 api = [
+    url(r'^maintenance$', MaintenanceAPI.as_view(), name='maintenance-view'),
     url(r'^color/palette/', include(color_api)),
     url(r'^group/', include(group_api)),
     url(r'^user/', include(user_api)),
@@ -152,6 +154,7 @@ api = [
     url(r'^access/', include(request_access_api)),
 ]
 urlpatterns += [
+    url(r'^tinymce/', include('tinymce.urls')),
     url(r'^proxy', ProxyView.as_view(), name='proxy-view'),
     url(r'^api/v1/', include('core.urls_v1')),
     url(r'^api/', include(api)),

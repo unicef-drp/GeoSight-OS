@@ -47,6 +47,8 @@ import { HelpCenter } from "../../../../components/HelpCenter";
 
 import './style.scss';
 import NotificationBadge from "../../../../components/NotificationBadge";
+import NotificationMaintenance
+  from "../../../../components/NotificationMaintenance";
 
 
 function SidaNavigationButton({ title, minified, children }) {
@@ -241,7 +243,6 @@ export default function SideNavigation({ pageName, minified }) {
                         <ContactActiveIcon/> : <ContactIcon/>
                     }
                     <span className='SideNavigation-Row-Name'>Profile</span>
-                    <NotificationBadge/>
                   </a>
                 </SidaNavigationButton>
               </div>
@@ -267,6 +268,7 @@ export default function SideNavigation({ pageName, minified }) {
             <span className='SideNavigation-Row-Name'>Help</span>
           </a>
         </SidaNavigationButton>
+        <NotificationMaintenance/>
       </div>
       <div className='SideNavigationFooter'>
         <User detail={true}/>

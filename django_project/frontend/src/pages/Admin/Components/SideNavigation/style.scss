@@ -42,12 +42,33 @@
     color: $primary-color;
   }
 
+  .SideNavigationContentGroup {
+
+    .NotificationMaintenance {
+      margin: 0 0.5rem;
+      border: none;
+
+      .NotificationMaintenanceWrapper {
+        height: auto;
+      }
+
+      .NotificationMaintenanceWrapperInfo {
+        white-space: unset;
+      }
+
+      svg {
+        display: none;
+      }
+    }
+  }
+
   .NavHeader {
     .Separator,
     .LinkButton,
     .NavbarAccount,
     .MiddleSection,
     .GeorepoApiKeyBtn,
+    .NotificationMaintenanceWrapper,
     .HelpButton {
       display: none !important;
     }

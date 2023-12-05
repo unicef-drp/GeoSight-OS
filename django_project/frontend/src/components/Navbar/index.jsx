@@ -28,6 +28,7 @@ import { CogIcon, EditIcon, HelpIcon } from "../Icons";
 import { ThemeButton } from "../Elements/Button";
 import { HelpCenter } from "../HelpCenter";
 import NotificationBadge from "../NotificationBadge";
+import NotificationMaintenance from "../NotificationMaintenance";
 
 import './style.scss';
 
@@ -71,6 +72,7 @@ export default function NavBar({ minified }) {
           >
             {site_title}
           </a>
+          <NotificationMaintenance/>
           <div className='Separator'></div>
           {
             headerTitle ?
