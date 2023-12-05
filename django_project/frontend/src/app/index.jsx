@@ -36,11 +36,15 @@ export default function App({ className, children, ...props }) {
   // Check if child window, don't show navbar
   const parentWindow = window.opener?.parent;
   if (parentWindow) {
-    // This message is for form
-    const { success } = urlParams();
-    if (objectId && success) {
-      parentWindow.postMessage(objectId);
-      window.close();
+    try {
+      // This message is for form
+      const { success } = urlParams();
+      if (objectId && success) {
+        parentWindow.postMessage(objectId);
+        window.close();
+      }
+    } catch (err) {
+
     }
   }
 
