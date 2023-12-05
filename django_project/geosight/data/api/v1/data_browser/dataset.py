@@ -67,8 +67,6 @@ class DatasetApiList(BaseDataApiList, ListAPIView):
         """Return queryset of API."""
         return super().get_queryset().values(
             'indicator_id', 'reference_layer_id', 'admin_level'
-        ).filter(
-            admin_level__isnull=False
         ).annotate(
             id=Concat(
                 F('indicator_id'), Value('-'), F('reference_layer_id'),

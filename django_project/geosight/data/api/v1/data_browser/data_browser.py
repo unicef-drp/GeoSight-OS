@@ -63,6 +63,13 @@ class DataBrowserApiList(BaseDataBrowserApiList, ListAPIView):
         """For serializer context."""
         context = super().get_serializer_context()
         context.update({"user": self.request.user})
+        reference_layers = self.request.GET.get('reference_layer_id__in', None)
+        context.update(
+            {
+                "reference_layers": reference_layers.split(',')
+                if reference_layers else None
+            }
+        )
         return context
 
     @swagger_auto_schema(

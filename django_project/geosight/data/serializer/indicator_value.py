@@ -60,6 +60,12 @@ class IndicatorValueSerializer(serializers.ModelSerializer):
             entities = Entity.objects.filter(
                 geom_id=instance.geom_id
             )
+            if self.context.get('reference_layers', None):
+                entities = entities.filter(
+                    reference_layer__identifier__in=self.context.get(
+                        'reference_layers', []
+                    )
+                )
 
             for entity in entities:
                 if not entity.reference_layer:

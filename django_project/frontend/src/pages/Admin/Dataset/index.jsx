@@ -15,12 +15,6 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import $ from "jquery";
-import {
-  LocalizationProvider
-} from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import TextField from '@mui/material/TextField';
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
 import Tooltip from "@mui/material/Tooltip";
@@ -63,9 +57,6 @@ export default function DatasetAdmin() {
     indicators: defaultFilters.indicators ? splitParams(defaultFilters.indicators) : [],
     datasets: defaultFilters.datasets ? splitParams(defaultFilters.datasets, false) : [],
     levels: defaultFilters.levels ? splitParams(defaultFilters.levels) : [],
-    geographies: defaultFilters.geographies ? splitParams(defaultFilters.geographies) : [],
-    fromTime: defaultFilters.fromTime ? defaultFilters.fromTime : null,
-    toTime: defaultFilters.toTime ? defaultFilters.toTime : null,
   })
   const [disabled, setDisabled] = useState(false)
   const [isInit, setIsInit] = useState(true)
@@ -155,21 +146,6 @@ export default function DatasetAdmin() {
     } else {
       delete parameters['admin_level__in']
     }
-    if (filters.geographies.length) {
-      parameters['geom_id__icontains'] = filters.geographies.join(',')
-    } else {
-      delete parameters['geom_id__icontains']
-    }
-    if (filters.fromTime) {
-      parameters['date__gte'] = filters.fromTime.format('YYYY-MM-DD');
-    } else {
-      delete parameters['date__gte']
-    }
-    if (filters.toTime) {
-      parameters['date__lte'] = filters.toTime.format('YYYY-MM-DD');
-    } else {
-      delete parameters['date__lte']
-    }
     return parameters
   }
 
@@ -202,30 +178,6 @@ export default function DatasetAdmin() {
               ...filters,
               levels: newFilter
             })}/>
-          <LocalizationProvider dateAdapter={AdapterMoment}>
-            <DesktopDatePicker
-              label="Filter from"
-              inputFormat="YYYY-MM-DD"
-              maxDate={filters.toTime}
-              value={filters.fromTime}
-              onChange={newFilter => setFilters({
-                ...filters,
-                fromTime: newFilter
-              })}
-              renderInput={(params) => <TextField {...params} />}
-            />
-            <DesktopDatePicker
-              label="Filter to"
-              inputFormat="YYYY-MM-DD"
-              minDate={filters.fromTime}
-              value={filters.toTime}
-              onChange={newFilter => setFilters({
-                ...filters,
-                toTime: newFilter
-              })}
-              renderInput={(params) => <TextField {...params} />}
-            />
-          </LocalizationProvider>
         </div>
       }
       getParameters={getParameters}
