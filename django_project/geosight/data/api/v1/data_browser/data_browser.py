@@ -19,70 +19,27 @@ import json
 from django.core.exceptions import SuspiciousOperation
 from django.http import HttpResponseBadRequest
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework.authentication import (
-    SessionAuthentication, BasicAuthentication
-)
+from rest_framework import status
 from rest_framework.generics import ListAPIView
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from core.api.base import FilteredAPI
 from core.api_utils import common_api_params, ApiTag, ApiParams
-from core.auth import BearerAuthentication
-from core.pagination import Pagination
 from geosight.data.models.indicator import (
-    Indicator, IndicatorValue, IndicatorValueWithGeo,
-    IndicatorValueRejectedError
+    Indicator, IndicatorValue, IndicatorValueRejectedError
 )
 from geosight.data.serializer.indicator import (
     IndicatorValueWithPermissionSerializer
 )
-from geosight.permission.models.resource import (
-    ReferenceLayerIndicatorPermission, ReferenceLayerIndicatorPermissionView
-)
+from .base import BaseDataApiList
 
 
-class BaseDataBrowserApiList(FilteredAPI):
+class BaseDataBrowserApiList(BaseDataApiList):
     """Return Data List API List."""
-
-    authentication_classes = [
-        SessionAuthentication, BasicAuthentication, BearerAuthentication
-    ]
-    permission_classes = (IsAuthenticated,)
-    pagination_class = Pagination
 
     def get_queryset(self):
         """Return queryset of API."""
-        query = None
-        is_admin = False
-        try:
-            if self.request.user.profile.is_admin:
-                query = IndicatorValueWithGeo.objects.all()
-                is_admin = True
-        except AttributeError:
-            pass
-
-        # If not admin
-        if not is_admin:
-            ids = ReferenceLayerIndicatorPermission.permissions.list(
-                user=self.request.user
-            ).values_list('id', flat=True)
-            identifiers = ReferenceLayerIndicatorPermissionView.objects.filter(
-                id__in=list(ids)
-            ).values_list('identifier', flat=True)
-            if not identifiers.count():
-                query = IndicatorValueWithGeo.objects.none()
-            else:
-                query = IndicatorValueWithGeo.objects.filter(
-                    identifier__in=identifiers
-                )
-
-        # Filter by parameters
-        query = self.filter_query(
-            self.request, query, ['page', 'page_size']
-        )
-
+        query = super().get_queryset()
         ids = query.values_list('id', flat=True)
         return IndicatorValue.objects.filter(id__in=list(ids)).order_by(
             'indicator_id', '-date', 'geom_id'
@@ -93,6 +50,14 @@ class DataBrowserApiList(BaseDataBrowserApiList, ListAPIView):
     """Return Data List API List."""
 
     serializer_class = IndicatorValueWithPermissionSerializer
+
+    def get_queryset(self):
+        """Return queryset of API."""
+        query = super().get_queryset()
+        ids = query.values_list('id', flat=True)
+        return IndicatorValue.objects.filter(id__in=list(ids)).order_by(
+            'indicator_id', '-date', 'geom_id'
+        )
 
     def get_serializer_context(self):
         """For serializer context."""
@@ -164,7 +129,7 @@ class DataBrowserApiList(BaseDataBrowserApiList, ListAPIView):
             return HttpResponseBadRequest(f'{e} is required on payload')
         except Exception as e:
             return HttpResponseBadRequest(f'{e}')
-        return Response(status=201)
+        return Response(status.HTTP_201_CREATED)
 
     @swagger_auto_schema(auto_schema=None)
     def put(self, request):
@@ -203,11 +168,14 @@ class DataBrowserApiList(BaseDataBrowserApiList, ListAPIView):
     )
     def delete(self, request):
         """Batch delete data."""
-        ids = json.loads(request.data['ids'])
+        try:
+            ids = json.loads(request.data['ids'])
+        except TypeError:
+            ids = request.data
         for value in IndicatorValue.objects.filter(id__in=ids):
             if value.permissions(request.user)['delete']:
                 value.delete()
-        return Response('OK')
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class DataBrowserApiListIds(APIView, BaseDataBrowserApiList):
