@@ -39,7 +39,6 @@ class DatasetApiList(BaseDataApiList, ListAPIView):
 
     def get_serializer(self, *args, **kwargs):
         """Return serializer of data."""
-
         data = []
         for row in args[0]:
             row['reference_layer_id'] = row['reference_layer_uuid']
@@ -109,8 +108,7 @@ class DatasetApiList(BaseDataApiList, ListAPIView):
         )
     )
     def get(self, request, *args, **kwargs):
-        """Return indicator data information by reference view, indicator
-        and level."""
+        """Return indicator data by dataset, indicator and level."""
         try:
             return self.list(request, *args, **kwargs)
         except SuspiciousOperation as e:
