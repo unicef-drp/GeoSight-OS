@@ -29,12 +29,13 @@ class IndicatorValueDataset(models.Model):
     data_count = models.IntegerField(
         null=True, blank=True
     )
-    min_date = models.DateField(
+    start_date = models.DateField(
         null=True, blank=True
     )
-    max_date = models.DateField(
+    end_date = models.DateField(
         null=True, blank=True
     )
+    reference_layer_uuid = models.UUIDField()
     reference_layer_name = models.CharField(
         max_length=256, null=True, blank=True
     )

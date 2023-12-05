@@ -178,6 +178,7 @@ class IndicatorValueWithGeo(models.Model):
     reference_layer_name = models.CharField(
         max_length=256, null=True, blank=True
     )
+    reference_layer_uuid = models.UUIDField()
     admin_level = models.IntegerField(
         null=True, blank=True
     )

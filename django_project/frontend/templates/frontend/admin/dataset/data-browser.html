@@ -5,13 +5,13 @@
 {% endblock %}
 
 {% block render_bundle %}
-    {% render_bundle 'AdminDataset' %}
+    {% render_bundle 'AdminDataBrowser' %}
 {% endblock %}
 
 {% block scripts %}
     <script>
       urls.api = {
-        'datasetApi': '{% url 'dataset-api'%}',
+        'datasetApi': '{% url 'data-browser-api'%}',
         'indicators': '{% url 'indicator-basic-list-api'%}',
       }
     </script>

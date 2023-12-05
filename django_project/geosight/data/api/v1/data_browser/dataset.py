@@ -23,14 +23,12 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework.generics import ListAPIView
 
 from core.api_utils import common_api_params, ApiTag, ApiParams
-from geosight.data.models.indicator import Indicator
 from geosight.data.models.indicator.indicator_value_dataset import (
     IndicatorValueDataset
 )
 from geosight.data.serializer.indicator_value_dataset import (
     IndicatorValueDatasetSerializer
 )
-from geosight.georepo.models.reference_layer import ReferenceLayerView
 from .base import BaseDataApiList
 
 
@@ -43,40 +41,8 @@ class DatasetApiList(BaseDataApiList, ListAPIView):
         """Return serializer of data."""
 
         data = []
-        ref_views = {}
-        indicators = {}
         for row in args[0]:
-            # Get reference layer name
-            reference_layer_id = row['reference_layer_id']
-            obj = None
-            try:
-                obj = ref_views[reference_layer_id]
-            except KeyError:
-                try:
-                    obj = ReferenceLayerView.objects.get(
-                        id=reference_layer_id
-                    )
-                    ref_views[reference_layer_id] = obj
-                except ReferenceLayerView.DoesNotExist:
-                    pass
-            if obj:
-                row['reference_layer_name'] = obj.name
-                row['reference_layer_id'] = obj.identifier
-
-            # Get indicator name
-            indicator_id = row['indicator_id']
-            obj = None
-            try:
-                obj = indicators[indicator_id]
-            except KeyError:
-                try:
-                    obj = Indicator.objects.get(id=indicator_id)
-                    indicators[indicator_id] = obj
-                except Indicator.DoesNotExist:
-                    pass
-            if obj:
-                row['indicator_name'] = obj.__str__()
-
+            row['reference_layer_id'] = row['reference_layer_uuid']
             data.append(IndicatorValueDataset(**row))
         serializer_class = self.get_serializer_class()
         kwargs.setdefault('context', self.get_serializer_context())
@@ -101,6 +67,8 @@ class DatasetApiList(BaseDataApiList, ListAPIView):
         """Return queryset of API."""
         return super().get_queryset().values(
             'indicator_id', 'reference_layer_id', 'admin_level'
+        ).filter(
+            admin_level__isnull=False
         ).annotate(
             id=Concat(
                 F('indicator_id'), Value('-'), F('reference_layer_id'),
@@ -112,13 +80,19 @@ class DatasetApiList(BaseDataApiList, ListAPIView):
         ).annotate(
             identifier=F('identifier')
         ).annotate(
+            indicator_name=F('indicator_name')
+        ).annotate(
             indicator_shortcode=F('indicator_shortcode')
         ).annotate(
-            max_date=Max('date')
+            reference_layer_name=F('reference_layer_name')
         ).annotate(
-            min_date=Max('date')
+            reference_layer_uuid=F('reference_layer_uuid')
+        ).annotate(
+            start_date=Max('date')
+        ).annotate(
+            end_date=Max('date')
         ).order_by(
-            'indicator_id', 'reference_layer_id', 'admin_level'
+            'indicator_name', 'reference_layer_name', 'admin_level'
         )
 
     @swagger_auto_schema(

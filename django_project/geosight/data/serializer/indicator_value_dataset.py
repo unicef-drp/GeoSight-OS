@@ -16,6 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from urllib import parse
 
+from django.urls import reverse
 from django.utils.encoding import force_str
 from rest_framework import serializers
 
@@ -28,6 +29,7 @@ class IndicatorValueDatasetSerializer(serializers.ModelSerializer):
     """Serializer for IndicatorValue."""
 
     browse_data_api_url = serializers.SerializerMethodField()
+    browse_url = serializers.SerializerMethodField()
     permission = serializers.SerializerMethodField()
 
     def get_browse_data_api_url(self, obj: IndicatorValueDataset):
@@ -52,6 +54,15 @@ class IndicatorValueDatasetSerializer(serializers.ModelSerializer):
                 query_dict[key] = value
         query = parse.urlencode(sorted(query_dict.items()), doseq=True)
         return parse.urlunsplit((scheme, netloc, path, query, fragment))
+
+    def get_browse_url(self, obj: IndicatorValueDataset):
+        """Return browse data API url."""
+        return (
+            f"{reverse('admin-data-browser-view')}?"
+            f"indicators={obj.indicator_id}&"
+            f"datasets={obj.reference_layer_id}&"
+            f"levels={obj.admin_level}"
+        )
 
     def get_permission(self, obj: IndicatorValueDataset):
         """Return indicator name."""

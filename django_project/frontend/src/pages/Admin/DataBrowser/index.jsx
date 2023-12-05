@@ -21,11 +21,11 @@ import {
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import TextField from '@mui/material/TextField';
+import HistoryIcon from "@mui/icons-material/History";
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
-import Tooltip from "@mui/material/Tooltip";
+import InfoIcon from "@mui/icons-material/Info";
 
-import { DataBrowserActiveIcon } from "../../../components/Icons";
 import { render } from '../../../app';
 import { store } from '../../../store/admin';
 import {
@@ -35,21 +35,24 @@ import {
 import {
   MultipleCreatableFilter
 } from "../ModalSelector/ModalFilterSelector/MultipleCreatableFilter";
-import { splitParams, urlParams } from "../../../utils/main";
+import { deleteFromArray, splitParams, urlParams } from "../../../utils/main";
 import {
   Notification,
   NotificationStatus
 } from "../../../components/Notification";
+import CustomPopover from "../../../components/CustomPopover";
+import { IconTextField } from "../../../components/Elements/Input";
 import { AdminListPagination } from "../AdminListPagination";
+import { SaveButton } from "../../../components/Elements/Button";
 import { AdminPage, pageNames } from "../index";
 
 
 import './style.scss';
 
-/*** Dataset admin */
+/*** Data Browser admin */
 const deleteWarning = "WARNING! Do you want to delete the selected data? This will apply directly to database."
 
-export default function DatasetAdmin() {
+export default function DataBrowserAdmin() {
   const tableRef = useRef(null);
   // Notification
   const notificationRef = useRef(null);
@@ -67,6 +70,7 @@ export default function DatasetAdmin() {
     fromTime: defaultFilters.fromTime ? defaultFilters.fromTime : null,
     toTime: defaultFilters.toTime ? defaultFilters.toTime : null,
   })
+  const [updatedData, setUpdatedData] = useState([]);
   const [disabled, setDisabled] = useState(false)
   const [isInit, setIsInit] = useState(true)
 
@@ -81,30 +85,95 @@ export default function DatasetAdmin() {
   // COLUMNS
   const COLUMNS = [
     { field: 'id', headerName: 'id', hide: true },
-    { field: 'indicator_name', headerName: 'Indicator', flex: 1 },
-    { field: 'reference_layer_name', headerName: 'View', flex: 0.5 },
-    { field: 'admin_level', headerName: 'Level', width: 80 },
-    { field: 'start_date', headerName: 'Start date', width: 130 },
-    { field: 'end_date', headerName: 'End date', width: 130 },
-    { field: 'data_count', headerName: 'Data count', width: 80 },
+    { field: 'indicator', headerName: 'Indicator', flex: 1 },
+    {
+      field: 'reference_layer_name', headerName: 'View', flex: 0.5,
+      renderCell: (params) => {
+        const data = Array.from(new Set(params.row.geometries.map(geom => geom.dataset_name))).join(',')
+        return <div title={data} className='MuiDataGrid-cellContent'>
+          {data}
+        </div>
+      }
+    },
+    {
+      field: 'admin_level', headerName: 'Level', width: 80,
+      renderCell: (params) => {
+        const data = Array.from(new Set(params.row.geometries.map(geom => geom.admin_level))).join(',')
+        return <div title={data} className='MuiDataGrid-cellContent'>
+          {data}
+        </div>
+      }
+    },
+    {
+      field: 'geom_id', headerName: 'Geo Code', flex: 1,
+      renderCell: (params) => {
+        if (params.row.original_geom_id_type) {
+          return <div className='FlexCell'>
+            <div>{params.value}</div>
+            <CustomPopover
+              anchorOrigin={{
+                vertical: 'center',
+                horizontal: 'right',
+              }}
+              transformOrigin={{
+                vertical: 'center',
+                horizontal: 'left',
+              }}
+              Button={
+                <InfoIcon fontSize={"small"}/>
+              }
+              showOnHover={true}
+            >
+              <div className='MuiPopover-Info'>
+                {params.row.original_geom_id_type} : {params.row.original_geom_id}
+              </div>
+            </CustomPopover>
+          </div>
+        } else {
+          return params.value
+        }
+      }
+    },
+    { field: 'date', headerName: 'Time', width: 130 },
+    {
+      field: 'value', headerName: 'Value', width: 150,
+      renderCell: (params) => {
+        const rowData = updatedData.find(row => row.id === params.row.id)
+        const permission = params.row.permission
+        if (permission.edit) {
+          return <IconTextField
+            iconEnd={
+              rowData ?
+                <HistoryIcon title='Revert to default value' onClick={() => {
+                  setUpdatedData([...deleteFromArray(rowData, updatedData)])
+                }}/> : ""
+            }
+            className='ValueInput'
+            value={params.value}
+            onChange={val => {
+              if (rowData?.value !== val.target.value) {
+                if (!rowData) {
+                  params.row.value = val.target.value
+                  updatedData.push(params.row)
+                } else {
+                  rowData.value = val.target.value
+                }
+                setUpdatedData([...updatedData])
+              } else {
+                setUpdatedData([...deleteFromArray(rowData, updatedData)])
+              }
+            }}/>
+        } else {
+          return params.value
+        }
+      }
+    },
     {
       field: 'actions',
       type: 'actions',
       width: 60,
       getActions: (params) => {
         return [
-          <GridActionsCellItem
-            icon={
-              <Tooltip title={`Browse data`}>
-                <a href={params.row.browse_url}>
-                  <div className='ButtonIcon'>
-                    <DataBrowserActiveIcon/>
-                  </div>
-                </a>
-              </Tooltip>
-            }
-            label="Browse data"
-          />,
           <GridActionsCellItem
             icon={
               <DoDisturbOnIcon
@@ -181,6 +250,38 @@ export default function DatasetAdmin() {
       disabled={disabled}
       setDisabled={setDisabled}
       selectAllUrl={urls.api.datasetApi + 'ids'}
+      rightHeader={
+        <SaveButton
+          variant="primary"
+          text={"Apply " + updatedData.length + " Change(s)"}
+          disabled={!updatedData.length || disabled}
+          onClick={() => {
+            setDisabled(true)
+            $.ajax({
+              url: urls.api.datasetApi,
+              method: 'PUT',
+              data: {
+                'data': JSON.stringify(updatedData.map(data => {
+                  return {
+                    id: data.id,
+                    value: data.value,
+                  }
+                }))
+              },
+              success: function () {
+                setDisabled(false)
+                setUpdatedData([])
+                tableRef?.current?.refresh()
+              },
+              error: function (error) {
+                setDisabled(false)
+                notify(error.responseText, NotificationStatus.ERROR)
+              },
+              beforeSend: beforeAjaxSend
+            });
+          }}
+        />
+      }
       otherFilters={
         <div className='ListAdminFilters'>
           <IndicatorFilterSelector
@@ -201,6 +302,13 @@ export default function DatasetAdmin() {
             setData={newFilter => setFilters({
               ...filters,
               levels: newFilter
+            })}/>
+          <MultipleCreatableFilter
+            title={'Filter by Geo Code(s)'}
+            data={filters.geographies}
+            setData={newFilter => setFilters({
+              ...filters,
+              geographies: !newFilter.length ? [] : [newFilter[newFilter.length - 1]]
             })}/>
           <LocalizationProvider dateAdapter={AdapterMoment}>
             <DesktopDatePicker
@@ -229,6 +337,18 @@ export default function DatasetAdmin() {
         </div>
       }
       getParameters={getParameters}
+      updateData={
+        usedData => {
+          usedData.map(rowData => {
+            const foundUpdatedData = updatedData.find(row => row.id === rowData.id)
+            if (foundUpdatedData) {
+              rowData.value = foundUpdatedData.value
+              rowData.updated = true
+            }
+          })
+          return usedData
+        }
+      }
       hideSearch={true}
       deselectWhenParameterChanged={true}
     />
@@ -236,4 +356,4 @@ export default function DatasetAdmin() {
   </AdminPage>
 }
 
-render(DatasetAdmin, store)
+render(DataBrowserAdmin, store)

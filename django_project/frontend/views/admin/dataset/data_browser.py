@@ -20,10 +20,10 @@ from frontend.views.admin._base import AdminBaseView
 from geosight.permission.access import RoleContributorRequiredMixin
 
 
-class DatasetAdminView(RoleContributorRequiredMixin, AdminBaseView):
-    """Dataset Admin View."""
+class DataBrowserAdminView(RoleContributorRequiredMixin, AdminBaseView):
+    """Data Browser Admin View."""
 
-    template_name = 'frontend/admin/dataset/dataset.html'
+    template_name = 'frontend/admin/dataset/data-browser.html'
 
     @property
     def page_title(self):
@@ -34,4 +34,9 @@ class DatasetAdminView(RoleContributorRequiredMixin, AdminBaseView):
     def content_title(self):
         """Return content title that used on page title indicator."""
         list_url = reverse('admin-dataset-view')
-        return f'<a href="{list_url}">Data Browser</a>'
+        detail_url = reverse('admin-data-browser-view')
+        return (
+            f'<a href="{list_url}">Data Browser</a>'
+            f'<span>></span> '
+            f'<a href="{detail_url}">Data</a> '
+        )
