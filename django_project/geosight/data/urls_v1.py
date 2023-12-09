@@ -23,10 +23,12 @@ from geosight.data.api.v1.data_browser import (
     DataBrowserApiList, DataBrowserApiListIds
 )
 from geosight.data.api.v1.indicator import IndicatorViewSet
+from geosight.data.api.v1.codelist import CodeListViewSet
 
 router = DefaultRouter()
 router.register(r'basemaps', BasemapViewSet, basename='basemaps')
 router.register(r'indicators', IndicatorViewSet, basename='indicators')
+router.register(r'codelist', CodeListViewSet, basename='codelist')
 
 data_browser_api_v1 = [
     url(r'^ids', DataBrowserApiListIds.as_view(), name='data-browser-ids-api'),
