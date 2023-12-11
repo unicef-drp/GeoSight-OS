@@ -17,6 +17,8 @@ __copyright__ = ('Copyright 2023, Unicef')
 import json
 import time
 from datetime import datetime
+from urllib import parse
+from urllib.parse import parse_qs, urlencode, urlunparse
 
 import pytz
 from dateutil import parser as date_parser
@@ -32,11 +34,13 @@ from core.pagination import Pagination
 from geosight.data.models.dashboard import (
     Dashboard
 )
-from geosight.data.models.indicator import Indicator
+from geosight.data.models.indicator import Indicator, IndicatorValueWithGeo
 from geosight.data.serializer.indicator import (
     IndicatorValueWithGeoDateSerializer
 )
-from geosight.georepo.models.reference_layer import ReferenceLayerIndicator
+from geosight.georepo.models.reference_layer import (
+    ReferenceLayerIndicator, ReferenceLayerView
+)
 from geosight.georepo.serializer.entity import EntitySerializer
 from geosight.permission.access import (
     read_permission_resource, ResourcePermissionDenied
@@ -45,6 +49,21 @@ from geosight.permission.models.factory import PERMISSIONS
 from geosight.permission.models.resource import (
     ReferenceLayerIndicatorPermission
 )
+
+
+def version_cache(url: str, indicator: Indicator, reference_layer_uuid: str):
+    """Return version cache."""
+    version = indicator.version_with_reference_layer_uuid(
+        reference_layer_uuid
+    )
+    component = parse.urlparse(url)
+    query = parse_qs(component.query, keep_blank_values=True)
+    query.pop('reference_layer_uuid', None)
+    component = component._replace(query=urlencode(query, True))
+    return VersionCache(
+        key=urlunparse(component),
+        version=version
+    )
 
 
 class _DashboardIndicatorValuesAPI(APIView):
@@ -101,8 +120,10 @@ class _DashboardIndicatorValuesListAPI(
         self.check_permission(self.request.user, dashboard, indicator)
 
         # Cache version
-        cache = VersionCache(
-            key=request.get_full_path(), version=indicator.version
+        cache = version_cache(
+            url=request.get_full_path(),
+            reference_layer_uuid=request.GET.get('reference_layer_uuid', ''),
+            indicator=indicator
         )
         cache_data = cache.get()
         if cache_data:
@@ -169,15 +190,6 @@ class DashboardIndicatorValueListAPI(DashboardIndicatorValuesAPI):
         dashboard = get_object_or_404(Dashboard, slug=slug)
         indicator = get_object_or_404(Indicator, pk=pk)
         self.check_permission(request.user, dashboard, indicator)
-
-        # Cache version
-        cache = VersionCache(
-            key=request.get_full_path(), version=indicator.version
-        )
-        cache_data = cache.get()
-        if cache_data:
-            return Response(cache_data)
-
         min_time, max_time = self.return_parameters(request)
         concept_uuid = request.GET.get('concept_uuid', None)
 
@@ -222,7 +234,6 @@ class DashboardIndicatorValueListAPI(DashboardIndicatorValuesAPI):
                 row_data['date'] = row.date.strftime('%Y-%m-%d')
             output.append(row_data)
 
-        cache.set(output)
         return Response(output)
 
 
@@ -259,17 +270,26 @@ class DashboardIndicatorMetadataAPI(DashboardIndicatorValuesAPI):
         self.check_permission(request.user, dashboard, indicator)
 
         # Cache version
-        cache = VersionCache(
-            key=request.get_full_path().replace('all', f'{indicator.id}'),
-            version=indicator.version
+        cache = version_cache(
+            url=request.get_full_path().replace('all', f'{indicator.id}'),
+            reference_layer_uuid=request.GET.get('reference_layer_uuid', ''),
+            indicator=indicator
         )
         cache_data = cache.get()
         if cache_data:
             return cache_data
 
-        query = indicator.query_values(
-            reference_layer=dashboard.reference_layer
-        )
+        try:
+            query = indicator.query_values(
+                reference_layer=ReferenceLayerView.objects.get(
+                    identifier=request.GET.get(
+                        'reference_layer_uuid',
+                        dashboard.reference_layer.identifier
+                    )
+                )
+            )
+        except ReferenceLayerView.DoesNotExist:
+            query = IndicatorValueWithGeo.objects.none()
         dates = [
             datetime.combine(
                 date_str, datetime.min.time(),
@@ -284,7 +304,7 @@ class DashboardIndicatorMetadataAPI(DashboardIndicatorValuesAPI):
         response = {
             'dates': dates,
             'count': query.count(),
-            'version': indicator.version
+            'version': cache.version
         }
         cache.set(response)
         return response
