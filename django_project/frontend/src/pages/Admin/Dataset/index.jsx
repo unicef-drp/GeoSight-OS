@@ -108,7 +108,7 @@ export default function DatasetAdmin() {
                 <a>
                   <PermissionModal
                     name={params.row.indicator_name + ' - ' + params.row.reference_layer_name}
-                    help='This permission is applied to all of level'
+                    help='This permission is applied to all of admin level.'
                     urlData={`/api/permission/dataset/${params.row.indicator_id}/${params.row.reference_layer_id}`}/>
                 </a>
               }
