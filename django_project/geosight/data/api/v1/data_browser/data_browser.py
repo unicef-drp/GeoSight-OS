@@ -188,19 +188,7 @@ class DataBrowserApiList(BaseDataBrowserApiList, ListAPIView):
 class DataBrowserApiListIds(APIView, BaseDataBrowserApiList):
     """Return Just ids Data List."""
 
-    @swagger_auto_schema(
-        operation_id='data-browser-ids-get',
-        tags=[ApiTag.DATA_BROWSER],
-        manual_parameters=[
-            ApiParams.INDICATOR_ID,
-            ApiParams.INDICATOR_SHORTCODE,
-            ApiParams.DATASET_UUID,
-            ApiParams.ADMIN_LEVEL,
-            ApiParams.GEOM_ID,
-            ApiParams.DATE_FROM,
-            ApiParams.DATE_TO,
-        ]
-    )
+    @swagger_auto_schema(auto_schema=None)
     def get(self, request):
         """Get ids of data."""
         return Response(

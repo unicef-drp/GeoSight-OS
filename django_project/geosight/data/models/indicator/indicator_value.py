@@ -150,6 +150,9 @@ class IndicatorValueWithGeo(models.Model):
     identifier = models.CharField(
         max_length=256, null=True, blank=True
     )
+    identifier_with_level = models.CharField(
+        max_length=256, null=True, blank=True
+    )
     date = models.DateField(
         _('Date'),
         help_text=_('The date of the value harvested.')

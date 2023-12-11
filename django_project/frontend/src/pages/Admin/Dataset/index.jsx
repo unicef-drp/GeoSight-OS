@@ -83,7 +83,8 @@ export default function DatasetAdmin() {
       type: 'actions',
       width: 60,
       getActions: (params) => {
-        return [
+        const permission = params.row.permission
+        const actions = [
           <GridActionsCellItem
             icon={
               <Tooltip title={`Browse data`}>
@@ -95,34 +96,39 @@ export default function DatasetAdmin() {
               </Tooltip>
             }
             label="Browse data"
-          />,
-          <GridActionsCellItem
-            icon={
-              <DoDisturbOnIcon
-                className='DeleteButton'/>
-            }
-            onClick={() => {
-              if (confirm(deleteWarning) === true) {
-                $.ajax({
-                  url: urls.api.datasetApi,
-                  method: 'DELETE',
-                  data: {
-                    'ids': JSON.stringify([params.row.id])
-                  },
-                  success: function () {
-                    tableRef?.current?.refresh()
-                  },
-                  error: function (error) {
-                    notify(error, NotificationStatus.ERROR)
-                  },
-                  beforeSend: beforeAjaxSend
-                });
-                return false;
-              }
-            }}
-            label="Delete"
           />
         ]
+        if (permission.delete) {
+          actions.push(
+            <GridActionsCellItem
+              icon={
+                <DoDisturbOnIcon
+                  className='DeleteButton'/>
+              }
+              onClick={() => {
+                if (confirm(deleteWarning) === true) {
+                  $.ajax({
+                    url: urls.api.datasetApi,
+                    method: 'DELETE',
+                    data: {
+                      'ids': JSON.stringify([params.row.id])
+                    },
+                    success: function () {
+                      tableRef?.current?.refresh()
+                    },
+                    error: function (error) {
+                      notify(error, NotificationStatus.ERROR)
+                    },
+                    beforeSend: beforeAjaxSend
+                  });
+                  return false;
+                }
+              }}
+              label="Delete"
+            />
+          )
+        }
+        return actions
       }
     }
   ]
@@ -156,7 +162,7 @@ export default function DatasetAdmin() {
       COLUMNS={COLUMNS}
       disabled={disabled}
       setDisabled={setDisabled}
-      selectAllUrl={urls.api.datasetApi + 'ids'}
+      selectAllUrl={urls.api.datasetApi + '/ids'}
       otherFilters={
         <div className='ListAdminFilters'>
           <IndicatorFilterSelector

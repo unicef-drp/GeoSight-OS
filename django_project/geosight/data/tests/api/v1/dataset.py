@@ -25,6 +25,7 @@ from geosight.data.models import Indicator, IndicatorGroup
 from geosight.georepo.models import (
     ReferenceLayerView, ReferenceLayerIndicator
 )
+from geosight.permission.models.factory import PERMISSIONS
 from geosight.permission.tests._base import BasePermissionTest
 
 User = get_user_model()
@@ -44,7 +45,7 @@ class DatasetApiTest(BasePermissionTest, TestCase):
 
         # Create reference layers
         self.ref_0 = ReferenceLayerView.objects.create(
-            identifier='name_1', name='name_1'
+            identifier='name_0', name='name_0'
         )
         self.ref_1 = ReferenceLayerView.objects.create(
             identifier='name_1', name='name_1'
@@ -70,14 +71,20 @@ class DatasetApiTest(BasePermissionTest, TestCase):
         self.indicator_2.save()
 
         # Reference layer indicators
-        self.create_reference_layer_indicator(
-            self.creator, self.ref_1, self.indicator_1
+        permission = self.create_reference_layer_indicator(
+            self.creator_in_group, self.ref_1, self.indicator_1
+        ).permission
+        permission.update_user_permission(
+            self.creator_in_group, PERMISSIONS.READ_DATA.name
+        )
+        permission = self.create_reference_layer_indicator(
+            self.creator, self.ref_2, self.indicator_1
+        ).permission
+        permission.update_user_permission(
+            self.creator_in_group, PERMISSIONS.READ_DATA.name
         )
         self.create_reference_layer_indicator(
-            self.creator, self.ref_1, self.indicator_2
-        )
-        self.create_reference_layer_indicator(
-            self.creator_in_group, self.ref_2, self.indicator_1
+            self.creator_in_group, self.ref_1, self.indicator_2
         )
         self.create_reference_layer_indicator(
             self.creator_in_group, self.ref_2, self.indicator_2
@@ -240,3 +247,21 @@ class DatasetApiTest(BasePermissionTest, TestCase):
             f'{url}?admin_level__in=1', 200, user=user
         )
         self.assertEqual(self.data_count(response), 10)
+
+    def test_delete_api(self):
+        """Test List API."""
+        user = self.creator_in_group
+        url = reverse('dataset-api')
+
+        # admin
+        response = self.assertRequestGetView(
+            f'{url}?admin_level__in=1', 200, user=user
+        )
+        self.assertEqual(self.data_count(response), 20)
+
+        ids = [res['id'] for res in response.json()['results']]
+        self.assertRequestDeleteView(url, 204, user=user, data=ids)
+
+        # admin
+        response = self.assertRequestGetView(url, 200, user=user)
+        self.assertEqual(self.data_count(response), 26)

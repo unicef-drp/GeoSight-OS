@@ -12,7 +12,8 @@ SELECT value.*,
     indicator.type                  as indicator_type,
     indicator.shortcode             as indicator_shortcode,
     indicator.name                  as indicator_name,
-    value.indicator_id || '-' || entity.reference_layer_id AS identifier
+    concat(value.indicator_id, '-', entity.reference_layer_id) AS identifier,
+    concat(value.indicator_id, '-', entity.reference_layer_id, '-', entity.admin_level) AS identifier_with_level
 FROM geosight_data_indicatorvalue as value
      LEFT JOIN geosight_georepo_entity as entity ON value.geom_id = entity.geom_id
      LEFT JOIN geosight_georepo_referencelayerview as ref_view ON ref_view.id = entity.reference_layer_id

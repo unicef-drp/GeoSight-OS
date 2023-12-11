@@ -20,7 +20,8 @@ from rest_framework.routers import DefaultRouter
 
 from geosight.data.api.v1.basemap import BasemapViewSet
 from geosight.data.api.v1.data_browser import (
-    DataBrowserApiList, DataBrowserApiListIds, DatasetApiList
+    DataBrowserApiList, DataBrowserApiListIds,
+    DatasetApiList, DatasetApiListIds
 )
 from geosight.data.api.v1.indicator import IndicatorViewSet
 
@@ -35,6 +36,7 @@ data_browser_api_v1 = [
 
 urlpatterns = [
     url(r'^data-browser/', include(data_browser_api_v1)),
+    url(r'^dataset/ids', DatasetApiListIds.as_view(), name='dataset-ids-api'),
     url(r'^dataset', DatasetApiList.as_view(), name='dataset-api'),
 ]
 urlpatterns += router.urls

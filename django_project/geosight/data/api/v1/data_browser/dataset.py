@@ -14,25 +14,62 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '29/11/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import json
+
 from django.core.exceptions import SuspiciousOperation
-from django.db.models import Count, F, Max, Value, CharField
-from django.db.models.functions import Concat
+from django.db.models import Count, F, Max
 from django.http import HttpResponseBadRequest
 from django.urls import reverse
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework import status
 from rest_framework.generics import ListAPIView
+from rest_framework.response import Response
 
 from core.api_utils import common_api_params, ApiTag, ApiParams
+from geosight.data.models.indicator import (
+    IndicatorValueWithGeo, IndicatorValue
+)
 from geosight.data.models.indicator.indicator_value_dataset import (
     IndicatorValueDataset
 )
 from geosight.data.serializer.indicator_value_dataset import (
     IndicatorValueDatasetSerializer
 )
+from geosight.georepo.models.reference_layer import ReferenceLayerIndicator
 from .base import BaseDataApiList
 
 
-class DatasetApiList(BaseDataApiList, ListAPIView):
+class BaseDatasetApiList:
+    """Contains queryset."""
+
+    def get_queryset(self):
+        """Return queryset of API."""
+        return super().get_queryset().values(
+            'indicator_id', 'reference_layer_id', 'admin_level'
+        ).annotate(
+            id=F('identifier_with_level')
+        ).annotate(
+            data_count=Count('*')
+        ).annotate(
+            identifier=F('identifier')
+        ).annotate(
+            indicator_name=F('indicator_name')
+        ).annotate(
+            indicator_shortcode=F('indicator_shortcode')
+        ).annotate(
+            reference_layer_name=F('reference_layer_name')
+        ).annotate(
+            reference_layer_uuid=F('reference_layer_uuid')
+        ).annotate(
+            start_date=Max('date')
+        ).annotate(
+            end_date=Max('date')
+        ).order_by(
+            'indicator_name', 'reference_layer_name', 'admin_level'
+        )
+
+
+class DatasetApiList(BaseDatasetApiList, BaseDataApiList, ListAPIView):
     """Return Dataset with indicator x reference layer x level."""
 
     serializer_class = IndicatorValueDatasetSerializer
@@ -62,36 +99,6 @@ class DatasetApiList(BaseDataApiList, ListAPIView):
         )
         return context
 
-    def get_queryset(self):
-        """Return queryset of API."""
-        return super().get_queryset().values(
-            'indicator_id', 'reference_layer_id', 'admin_level'
-        ).annotate(
-            id=Concat(
-                F('indicator_id'), Value('-'), F('reference_layer_id'),
-                Value('-'), F('admin_level'),
-                output_field=CharField()
-            )
-        ).annotate(
-            data_count=Count('*')
-        ).annotate(
-            identifier=F('identifier')
-        ).annotate(
-            indicator_name=F('indicator_name')
-        ).annotate(
-            indicator_shortcode=F('indicator_shortcode')
-        ).annotate(
-            reference_layer_name=F('reference_layer_name')
-        ).annotate(
-            reference_layer_uuid=F('reference_layer_uuid')
-        ).annotate(
-            start_date=Max('date')
-        ).annotate(
-            end_date=Max('date')
-        ).order_by(
-            'indicator_name', 'reference_layer_name', 'admin_level'
-        )
-
     @swagger_auto_schema(
         operation_id='dataset-get',
         tags=[ApiTag.DATA_BROWSER],
@@ -113,3 +120,47 @@ class DatasetApiList(BaseDataApiList, ListAPIView):
             return self.list(request, *args, **kwargs)
         except SuspiciousOperation as e:
             return HttpResponseBadRequest(f'{e}')
+
+    @swagger_auto_schema(auto_schema=None)
+    def delete(self, request):
+        """Batch delete data."""
+        try:
+            ids = json.loads(request.data['ids'])
+        except TypeError:
+            ids = request.data
+        user = request.user
+        to_be_deleted = []
+        for _id in ids:
+            is_delete = False
+            [indicator_id, reference_layer_id, admin_level] = _id.split('-')
+            # If user is admin
+            if user.is_authenticated and user.profile.is_admin:
+                is_delete = True
+            else:
+                try:
+                    resource = ReferenceLayerIndicator.objects.get(
+                        reference_layer_id=reference_layer_id,
+                        indicator_id=indicator_id
+                    )
+                    if resource.permission.has_delete_perm(self.request.user):
+                        is_delete = True
+                except ReferenceLayerIndicator.DoesNotExist:
+                    pass
+            if is_delete:
+                to_be_deleted.append(_id)
+        ids = IndicatorValueWithGeo.objects.filter(
+            identifier_with_level__in=to_be_deleted
+        ).values_list('id', flat=True)
+        IndicatorValue.objects.filter(id__in=list(ids)).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class DatasetApiListIds(BaseDatasetApiList, BaseDataApiList, ListAPIView):
+    """Return Just ids Data List."""
+
+    @swagger_auto_schema(auto_schema=None)
+    def get(self, request):
+        """Get ids of data."""
+        return Response(
+            self.get_queryset().values_list('id', flat=True)
+        )
