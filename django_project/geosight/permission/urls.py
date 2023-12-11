@@ -26,7 +26,8 @@ from geosight.permission.api import (
     DataAccessUsersAPI,
     DataAccessGroupsAPI,
     RelatedTablePermissionAPI,
-    StylePermissionAPI
+    StylePermissionAPI,
+    IndicatorReferenceLayerPermissionAPI
 )
 
 urlpatterns = [
@@ -74,6 +75,11 @@ urlpatterns = [
         r'^related-table/(?P<pk>\d+)',
         RelatedTablePermissionAPI.as_view(),
         name='related-table-permission-api'
+    ),
+    url(
+        r'^dataset/(?P<indicator_id>\d+)/(?P<reference_layer_id>[^/]+)',
+        IndicatorReferenceLayerPermissionAPI.as_view(),
+        name='dataset-permission-api'
     ),
     url(
         r'^style/(?P<pk>\d+)',

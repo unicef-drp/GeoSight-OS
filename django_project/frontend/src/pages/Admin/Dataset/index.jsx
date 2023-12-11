@@ -39,6 +39,7 @@ import { AdminPage, pageNames } from "../index";
 
 
 import './style.scss';
+import PermissionModal from "../Permission";
 
 /*** Dataset admin */
 const deleteWarning = "WARNING! Do you want to delete the selected data? This will apply directly to database."
@@ -81,7 +82,8 @@ export default function DatasetAdmin() {
     {
       field: 'actions',
       type: 'actions',
-      width: 60,
+      width: 100,
+      cellClassName: 'MuiDataGrid-ActionsColumn',
       getActions: (params) => {
         const permission = params.row.permission
         const actions = [
@@ -98,6 +100,21 @@ export default function DatasetAdmin() {
             label="Browse data"
           />
         ]
+        // Unshift before more & edit action
+        if (permission.share && params.row.reference_layer_id) {
+          actions.unshift(
+            <GridActionsCellItem
+              icon={
+                <a>
+                  <PermissionModal
+                    name={params.row.indicator_name + ' - ' + params.row.reference_layer_name}
+                    help='This permission is applied to all of level'
+                    urlData={`/api/permission/dataset/${params.row.indicator_id}/${params.row.reference_layer_id}`}/>
+                </a>
+              }
+              label="Change Share Configuration."
+            />)
+        }
         if (permission.delete) {
           actions.push(
             <GridActionsCellItem

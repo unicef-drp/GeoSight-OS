@@ -190,7 +190,7 @@ export function PermissionFormTableDataSelection(
             />
           </div>
       }
-      <div className='Save-Button'>
+      <div className='Save-Button' style={{ padding: "1rem" }}>
         <SaveButton
           variant="primary"
           text={"Add " + permissionLabel + 's'}
@@ -323,6 +323,14 @@ export function PermissionFormTable(
           {
             field: 'permission', headerName: 'Permission', flex: 1,
             renderCell: (params) => {
+              let options = permissionChoices
+              if (params.row.creator) {
+                const ownerOption = options.find(option => option[0] === 'OWNER')
+                if (!ownerOption) {
+                  options = dictDeepCopy(permissionChoices)
+                  options.push(['Owner', 'Owner'])
+                }
+              }
               return <FormControl className='BasicForm'>
                 <Select
                   disabled={params.row.creator}
@@ -333,7 +341,7 @@ export function PermissionFormTable(
                   }}
                 >
                   {
-                    permissionChoices.map(choice => {
+                    options.map(choice => {
                       return <MenuItem
                         key={choice[0]}
                         value={choice[0]}>{choice[1]}</MenuItem>
@@ -536,7 +544,7 @@ export function PermissionForm({ data, setData, additionalTabs = {} }) {
  * @param {dict} additionalTabs Other tabs.
  * */
 export default function PermissionModal(
-  { name, urlData, additionalTabs = {} }
+  { name, urlData, additionalTabs = {}, ...props }
 ) {
   const [open, setOpen] = useState(false)
   const [defaultData, setDefaultData] = useState(null)
@@ -583,6 +591,9 @@ export default function PermissionModal(
       }}>
         {
           data ? "Share '" + name + "'" : 'Loading'
+        }
+        {
+          props?.help ? <div className='help-text'>{props?.help}</div> : null
         }
       </ModalHeader>
       <ModalContent>
