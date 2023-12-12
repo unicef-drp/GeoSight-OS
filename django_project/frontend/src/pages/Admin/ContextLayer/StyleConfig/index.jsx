@@ -115,12 +115,16 @@ export default function StyleConfig(
             tab === 'Map' ?
               <div className='MapWrapper Map'>
                 <div className='legend'>
-                  <div className='title'><b className='light'>Legend</b></div>
-                  {
-                    legend ?
-                      <div
-                        dangerouslySetInnerHTML={{ __html: legend }}></div> : ""
-                  }
+                  <div className='wrapper'>
+                    <div className='title'>
+                      <b className='light'>Legend</b>
+                    </div>
+                    {
+                      legend ?
+                        <div
+                          dangerouslySetInnerHTML={{ __html: legend }}></div> : ""
+                    }
+                  </div>
                 </div>
                 <MapConfig data={data} layerInput={{
                   layer: layer,

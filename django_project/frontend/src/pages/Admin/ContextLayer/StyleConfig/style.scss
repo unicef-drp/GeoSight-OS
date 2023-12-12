@@ -20,13 +20,61 @@
 @import '../../../../app/variables';
 
 
+.BasicForm.Map {
+  height: 100%;
+  box-sizing: border-box;
+  padding: 0 !important;
+
+  .Map {
+    height: 100%;
+  }
+
+  .error,
+  .form-helptext {
+    padding: 2rem;
+    position: absolute;
+    text-align: center;
+    padding-right: 40rem !important;
+    width: 100%;
+    z-index: 1;
+    box-sizing: border-box;
+  }
+}
+
 .ContextLayerConfig-Wrapper {
   text-align: center;
   width: 100%;
+  position: relative;
+
+  &.Map {
+    height: fit-content;
+
+    #ContextLayerConfig {
+      padding: 1rem !important;
+      padding-right: 40rem !important;
+      position: relative;
+
+      .Style {
+        background-color: white;
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100%;
+        padding: 1rem;
+        overflow-y: auto;
+        width: 40rem;
+        box-sizing: border-box;
+      }
+    }
+  }
 
   #ContextLayerConfig {
-    padding: 1rem;
     flex-grow: 1;
+    margin: 0 !important;
+  }
+
+  .ContextLayerConfigInput {
+    padding: 0;
   }
 
   .AdminForm {
@@ -43,8 +91,16 @@
   }
 
   &.Map {
+    .AdminForm {
+      height: 100%;
+    }
+
     .Map {
       display: flex !important;
+    }
+
+    .Style {
+      display: block !important;
     }
   }
 
@@ -59,23 +115,8 @@
       display: block !important;
     }
   }
-
-  &.Style {
-    .Style {
-      display: block !important;
-    }
-  }
 }
 
-.modal--wrapper--box {
-  #ContextLayerConfig {
-    .ArcgisConfig {
-      .Classification {
-        padding: 1rem;
-      }
-    }
-  }
-}
 
 #ContextLayerConfig {
   text-align: left;
@@ -84,13 +125,67 @@
     display: none;
   }
 
+  .RevertStyleButton {
+    margin-left: auto;
+    margin-bottom: 1rem;
+    display: flex;
+  }
 
   .ArcgisConfig {
 
     .Classification {
       border: 1px solid $primary-color;
-      padding: 1rem 0;
+      padding: 0;
       margin-bottom: -1px;
+
+      .ContextLayerConfigInput {
+        padding: 1rem 1rem 0 1rem;
+      }
+
+      .BasicFormSectionInline {
+        display: flex;
+        justify-content: space-between;
+
+        & > div {
+          flex: 1 1 0;
+        }
+      }
+
+      .ColorConfig {
+        height: 36px;
+        border: unset;
+
+        .ColorConfigPreview {
+          outline: 1px solid #DDDDDD;
+          height: 36px;
+        }
+      }
+
+      .ClassificationLabel {
+        background-color: $primary-color;
+        color: $anti-primary-color;
+        margin-bottom: 1rem;
+
+        input {
+          background-color: unset;
+          color: $anti-primary-color;
+          border: 1px solid $primary-color;
+
+          &:hover {
+            border: 1px solid $secondary-color;
+          }
+        }
+      }
+
+      .ClassificationValue {
+        padding: 0 2rem;
+        display: flex;
+        align-items: center;
+
+        > div {
+          white-space: nowrap;
+        }
+      }
 
       b {
         display: block;
@@ -133,13 +228,24 @@
 
 .MapWrapper {
   display: flex;
-  height: 500px;
+  height: 100%;
+  position: relative;
 
   .legend {
-    width: 200px;
+    left: 0;
     max-height: 100%;
     overflow-y: auto;
     padding: 0.5rem;
+    position: absolute;
+    top: 0;
+    width: 200px;
+    z-index: 1;
+
+    .wrapper {
+      background-color: white;
+      border-radius: 0.5rem;
+      padding: 0.5rem;
+    }
 
     .title {
       text-align: center;

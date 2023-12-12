@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 /* ==========================================================================
    Context Layers SELECTOR
@@ -209,17 +209,18 @@ export default class EsriData {
       case 'esriGeometryPoint': {
         if (style.classifications) {
           style.classifications.forEach(function (classification, index) {
+            const label = style.classifications.length === 1 ? that.name : classification.label;
             switch (classification.style.type) {
               case 'circle': {
-                legend += circle(classification.style.style, classification.label)
+                legend += circle(classification.style.style, label)
                 break
               }
               case 'square': {
-                legend += square(classification.style.style, classification.label)
+                legend += square(classification.style.style, label)
                 break
               }
               case 'icon':
-                legend += icon(classification.style.style, classification.label)
+                legend += icon(classification.style.style, label)
                 break
             }
           });
