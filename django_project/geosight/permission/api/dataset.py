@@ -14,9 +14,15 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import json
+
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse, HttpResponseBadRequest, Http404
+from django.shortcuts import get_object_or_404
 from rest_framework.generics import ListAPIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from core.api.base import FilteredAPI
 from core.pagination import Pagination
@@ -24,13 +30,17 @@ from geosight.data.models import Indicator
 from geosight.georepo.models import (
     ReferenceLayerIndicator, ReferenceLayerView
 )
-from geosight.permission.access import RoleSuperAdminRequiredMixin
+from geosight.permission.access import (
+    share_permission_resource,
+    RoleSuperAdminRequiredMixin
+)
 from geosight.permission.models import (
     PERMISSIONS,
     ReferenceLayerIndicatorPermission as Permission,
     ReferenceLayerIndicatorUserPermission as UserPermission,
     ReferenceLayerIndicatorGroupPermission as GroupPermission
 )
+from geosight.permission.serializer import PermissionSerializer
 from geosight.permission.serializer.data_access import (
     GeneralPermissionsSerializer,
     UsersPermissionsSerializer,
@@ -228,3 +238,54 @@ class DataAccessGroupsAPI(DataAccessAPI):
             'obj__obj__indicator__name',
             'obj__obj__reference_layer__name'
         )
+
+
+class IndicatorReferenceLayerPermissionAPI(APIView):
+    """Permision for dataset : indicator x reference layer."""
+
+    permission_classes = (IsAuthenticated,)
+
+    def obj(self, indicator_id, reference_layer_id):
+        """Return object."""
+        indicator = get_object_or_404(Indicator, pk=indicator_id)
+        reference_layer = get_object_or_404(
+            ReferenceLayerView, identifier=reference_layer_id
+        )
+        try:
+            obj = ReferenceLayerIndicator.objects.get(
+                reference_layer=reference_layer,
+                indicator=indicator,
+            )
+        except ReferenceLayerIndicator.DoesNotExist:
+            obj = ReferenceLayerIndicator.permissions.create(
+                user=self.request.user,
+                **{
+                    'reference_layer': reference_layer,
+                    'indicator': indicator
+                }
+            )
+        return obj
+
+    def get(self, request, indicator_id, reference_layer_id):
+        """Return permission dataset."""
+        obj = self.obj(indicator_id, reference_layer_id)
+        share_permission_resource(obj, request.user)
+        return Response(
+            PermissionSerializer(obj=obj.permission).data
+        )
+
+    def post(self, request, indicator_id, reference_layer_id):
+        """Return permission data of indicator."""
+        obj = self.obj(indicator_id, reference_layer_id)
+        share_permission_resource(obj, request.user)
+        data = json.loads(request.data['data'])
+        try:
+            user_permissions = []
+            for user_permission in data['user_permissions']:
+                if user_permission['permission'] != PERMISSIONS.OWNER.name:
+                    user_permissions.append(user_permission)
+            data['user_permissions'] = user_permissions
+        except Exception:
+            pass
+        obj.permission.update(data)
+        return Response('OK')

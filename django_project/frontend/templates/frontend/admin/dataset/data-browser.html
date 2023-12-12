@@ -5,19 +5,14 @@
 {% endblock %}
 
 {% block render_bundle %}
-    {% render_bundle 'AdminDataset' %}
+    {% render_bundle 'AdminDataBrowser' %}
 {% endblock %}
 
 {% block scripts %}
     <script>
       urls.api = {
-        'datasetApi': '{% url 'dataset-api'%}',
+        'datasetApi': '{% url 'data-browser-api'%}',
         'indicators': '{% url 'indicator-basic-list-api'%}',
-        'users': '{% url 'user-list-api'%}',
-        'groups': '{% url 'group-list-api'%}',
-
-        {# permission #}
-        'permission': '{% url 'dataset-permission-api' 0 1 %}',
       }
     </script>
 {% endblock %}

@@ -560,6 +560,14 @@ header {
 // ------------------------------------
 // HELP CENTER
 // ------------------------------------
+
+.help-text {
+  color: #121212 !important;;
+  opacity: 0.6 !important;
+  font-size: 10px;
+  display: block;
+}
+
 .HelpCenter {
   margin-top: $nav-header-height;
   padding-bottom: $nav-header-height;

@@ -47,9 +47,10 @@ class FilteredAPI(object):
 
             # Handle reference layer
             if 'reference_layer_id__in' in param:
-                value = ReferenceLayerView.objects.filter(
-                    identifier__in=value
-                ).values_list('id', flat=True)
+                if 'None' not in value:
+                    value = ReferenceLayerView.objects.filter(
+                        identifier__in=value
+                    ).values_list('id', flat=True)
 
             if 'dataset_uuid__in' in param:
                 value = ReferenceLayerView.objects.filter(
@@ -79,7 +80,12 @@ class FilteredAPI(object):
                 except (ValueError, TypeError):
                     pass
             try:
-                query = query.filter(**{param: value})
+                if 'NaN' in value or 'None' in value:
+                    param = f'{field}__isnull'
+                    value = True
+                    query = query.filter(**{param: value})
+                else:
+                    query = query.filter(**{param: value})
             except FieldError:
                 raise SuspiciousOperation(f'Can not query param {param}')
             except ValidationError as e:

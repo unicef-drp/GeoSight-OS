@@ -45,6 +45,7 @@ let conf = {
     AdminGroupForm: ['./src/pages/Admin/UserAndGroup/Group/Form'],
     AdminUserGroupList: ['./src/pages/Admin/UserAndGroup/List'],
     AdminDataset: ['./src/pages/Admin/Dataset'],
+    AdminDataBrowser: ['./src/pages/Admin/DataBrowser'],
     AdminDataAccess: ['./src/pages/Admin/DataAccess'],
     AdminRelatedTableList: ['./src/pages/Admin/RelatedTable/List'],
     AdminRelatedTableData: ['./src/pages/Admin/RelatedTable/Data'],

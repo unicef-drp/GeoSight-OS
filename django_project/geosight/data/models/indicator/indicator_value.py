@@ -58,29 +58,30 @@ class IndicatorValue(models.Model):
             return self.value_str
         return self.value
 
-    def permissions(self, user):
-        """Return permission of user."""
+    @staticmethod
+    def value_permissions(user, indicator, reference_layer=None):
+        """Return value permissions for an user."""
         if user.profile.is_admin:
             return {
                 'list': True, 'read': True, 'edit': True, 'share': True,
                 'delete': True
             }
-        elif self.indicator.permission.has_delete_perm(user):
+        elif indicator and indicator.permission.has_delete_perm(user):
             return {
                 'list': True, 'read': True, 'edit': True, 'share': True,
                 'delete': True
             }
-        elif self.indicator.permission.has_share_perm(user):
+        elif indicator and indicator.permission.has_share_perm(user):
             return {
                 'list': True, 'read': True, 'edit': True, 'share': True,
                 'delete': False
             }
-        elif self.indicator.permission.has_edit_perm(user):
+        elif indicator and indicator.permission.has_edit_perm(user):
             return {
                 'list': True, 'read': True, 'edit': True, 'share': True,
                 'delete': True
             }
-        elif self.indicator.permission.has_read_perm(user):
+        elif indicator and indicator.permission.has_read_perm(user):
             return {
                 'list': True, 'read': True, 'edit': False, 'share': False,
                 'delete': False
@@ -104,6 +105,10 @@ class IndicatorValue(models.Model):
         #         ReferenceLayerIndicator.DoesNotExist
         # ):
         #     pass
+
+    def permissions(self, user):
+        """Return permission of user."""
+        return IndicatorValue.value_permissions(user, self.indicator)
 
 
 class IndicatorExtraValue(models.Model):
@@ -145,6 +150,9 @@ class IndicatorValueWithGeo(models.Model):
     identifier = models.CharField(
         max_length=256, null=True, blank=True
     )
+    identifier_with_level = models.CharField(
+        max_length=256, null=True, blank=True
+    )
     date = models.DateField(
         _('Date'),
         help_text=_('The date of the value harvested.')
@@ -170,6 +178,10 @@ class IndicatorValueWithGeo(models.Model):
     )
     # By Level
     reference_layer_id = models.BigIntegerField()
+    reference_layer_name = models.CharField(
+        max_length=256, null=True, blank=True
+    )
+    reference_layer_uuid = models.UUIDField()
     admin_level = models.IntegerField(
         null=True, blank=True
     )
@@ -183,6 +195,9 @@ class IndicatorValueWithGeo(models.Model):
     # Value control
     indicator_type = models.CharField(max_length=256, null=True, blank=True)
     indicator_shortcode = models.CharField(
+        max_length=256, null=True, blank=True
+    )
+    indicator_name = models.CharField(
         max_length=256, null=True, blank=True
     )
 
