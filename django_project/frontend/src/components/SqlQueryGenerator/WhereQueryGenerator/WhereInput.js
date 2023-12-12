@@ -291,7 +291,7 @@ export default function WhereInput(
   // If it has :interval, it is last x (time)
   const value = where.value
   const field = where.field
-  const currentField = fields.find(fieldDef => fieldDef.name === field)
+  const currentField = fields.find(fieldDef => fieldDef.name === field.replaceAll('"', ''))
   let operator = ('' + value)?.includes(INTERVAL_IDENTIFIER) ? OPERATOR_WITH_INTERVAL : where.operator;
 
   // Check the input type

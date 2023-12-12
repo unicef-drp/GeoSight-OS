@@ -23,7 +23,8 @@ import { spacedField } from "./queryExtraction";
 export const getRelatedTableData = (data, config, selectedGlobalTime, geoField = 'geometry_code', aggregateDate = true) => {
   if (data) {
     data = JSON.parse(JSON.stringify(data))
-    const { aggregation, where } = config
+    const { aggregation } = config
+    const where = config?.where.replaceAll('"', '`')
     const date_field = spacedField(config.date_field)
     const geography_code_field_name = spacedField(geoField)
     let aggregation_method = ''
