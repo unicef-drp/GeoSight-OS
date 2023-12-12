@@ -39,6 +39,14 @@
     z-index: 1;
     box-sizing: border-box;
   }
+
+  .ShowStyle {
+    .error,
+    .form-helptext {
+      padding-right: 40rem !important;
+    }
+
+  }
 }
 
 .ContextLayerConfig-Wrapper {
@@ -51,8 +59,11 @@
 
     #ContextLayerConfig {
       padding: 1rem !important;
-      padding-right: 40rem !important;
       position: relative;
+
+      &.ShowStyle {
+        padding-right: 40rem !important;
+      }
 
       .Style {
         background-color: white;

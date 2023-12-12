@@ -110,7 +110,7 @@ export default function StyleConfig(
               </Fragment> : ""
           }
         </div>
-        <div id='ContextLayerConfig' className="BasicFormSection">
+        <div id='ContextLayerConfig' className={"BasicFormSection " + (data.layer_type === 'ARCGIS' ? 'ShowStyle': '')}>
           {
             tab === 'Map' ?
               <div className='MapWrapper Map'>
@@ -141,9 +141,6 @@ export default function StyleConfig(
               /> :
               <Fragment>
                 <div className='ArcgisConfig Fields form-helptext'>
-                  Config is not Arcgis
-                </div>
-                <div className='ArcgisConfig Style form-helptext'>
                   Config is not Arcgis
                 </div>
               </Fragment>
