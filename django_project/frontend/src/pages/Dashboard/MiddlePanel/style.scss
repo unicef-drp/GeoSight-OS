@@ -53,11 +53,13 @@
   }
 
   .RightContent {
-    margin-right: -300px;
+    margin-right: -320px;
     height: 100%;
     transition: margin-right linear 0.2s;
     pointer-events: none !important;
     margin-left: 1rem;
+    padding-bottom: 1rem;
+    box-sizing: border-box;
 
     section {
       max-height: 100%;

@@ -25,9 +25,9 @@ class VersionCache:
 
     def __init__(self, key, version):
         """Initiate data."""
-        self.version = version
         self.key = key
-        self.version_key = f'{key}-{version}'
+        self.version_key = f'{key}-version'
+        self.version = version
 
     def get(self):
         """Return data from cache."""

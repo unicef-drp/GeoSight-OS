@@ -51,6 +51,8 @@ export default function GlobalDateSelector() {
   const dispatch = useDispatch();
   const { globalDateSelectorOpened } = useSelector(state => state.globalState)
   const {
+    slug,
+    referenceLayer,
     indicators,
     indicatorLayers,
     default_time_mode
@@ -307,7 +309,7 @@ export default function GlobalDateSelector() {
       async () => {
         const data = {}
         if (indicators.length) {
-          const metadataUrl = indicators[0].url.replace('/values/latest', '/metadata').replace(indicators[0].id, 'all')
+          const metadataUrl = `/api/dashboard/${slug}/indicator/all/metadata?reference_layer_uuid=` + referenceLayer?.identifier
           const responses = await fetchJSON(metadataUrl, {});
           indicators.map(indicator => {
             const response = responses[indicator.id]
@@ -326,7 +328,7 @@ export default function GlobalDateSelector() {
         dispatch(Actions.IndicatorLayerMetadata.updateBatch(data))
       }
     )();
-  }, [indicators]);
+  }, [indicators, referenceLayer]);
 
   /**
    * Update dates

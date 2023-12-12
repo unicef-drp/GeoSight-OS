@@ -46,6 +46,7 @@ export default function Indicators() {
   const prevState = useRef();
   const dispatch = useDispatch();
   const {
+    referenceLayer,
     indicators,
     indicatorLayers
   } = useSelector(state => state.dashboard.data);
@@ -157,6 +158,7 @@ export default function Indicators() {
         doRequestAll = true
       }
     }
+    params.reference_layer_uuid = referenceLayer?.identifier
     // Get quick data on current date
     // But if it says doing request All
     if (!storageData || doRequestAll) {
