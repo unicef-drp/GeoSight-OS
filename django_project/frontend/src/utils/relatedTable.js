@@ -90,6 +90,8 @@ export const getRelatedTableData = (data, config, selectedGlobalTime, geoField =
         let sql = `SELECT ${geography_code_field_name}             as _geometry_code,` +
           (aggregateDate ? `MAX(data.${date_field})` : `data.${date_field}`) + ` as _date,
                           MAX(data.concept_uuid)                   as _concept_uuid,
+                          MAX(data.geometry_code)                  as _ucode,
+                          MAX(data.geometry_name)                  as _geometry_name,
                           ${aggregation_full} as _value,
                           MAX(data.admin_level)        as _admin_level
                    FROM ? as data` + (updatedWhere ? ` WHERE ${updatedWhere}` : '') + ` GROUP BY ${geography_code_field_name}` + (!aggregateDate ? `, data.${date_field}` : '') + `  
@@ -98,6 +100,8 @@ export const getRelatedTableData = (data, config, selectedGlobalTime, geoField =
           sql = `SELECT ${geography_code_field_name} as _geometry_code,` +
             (aggregateDate ? `MAX(data.${date_field})` : `data.${date_field}`) + ` as _date,
                         MAX(data.concept_uuid)       as _concept_uuid,
+                        MAX(data.geometry_code)      as _ucode,
+                        MAX(data.geometry_name)      as _geometry_name,
                         data.${aggregation_field}         as _value,
                         COUNT(${aggregation_field})  as value_occurrence,
                         MAX(data.admin_level)        as _admin_level
@@ -108,6 +112,8 @@ export const getRelatedTableData = (data, config, selectedGlobalTime, geoField =
           sql = `SELECT ${geography_code_field_name}             as _geometry_code,` +
             (aggregateDate ? `MAX(data.${date_field})` : `data.${date_field}`) + ` as _date,
                           MAX(data.concept_uuid)                   as _concept_uuid,
+                          MAX(data.geometry_code)                   as _ucode,
+                          MAX(data.geometry_name)                   as _geometry_name,
                           COUNT(DISTINCT(data.${aggregation_field})) as _value,
                           MAX(data.admin_level)        as _admin_level
                    FROM ? as data` + (updatedWhere ? ` WHERE ${updatedWhere}` : '') + ` GROUP BY ${geography_code_field_name}` + (!aggregateDate ? `, data.${date_field}` : '') + `  
@@ -118,7 +124,9 @@ export const getRelatedTableData = (data, config, selectedGlobalTime, geoField =
             id: idx,
             admin_level: result._admin_level,
             geometry_code: result._geometry_code,
+            geometry_name: result._geometry_name,
             concept_uuid: result._concept_uuid,
+            ucode: result._ucode,
             date: result._date,
             value: result._value,
           }

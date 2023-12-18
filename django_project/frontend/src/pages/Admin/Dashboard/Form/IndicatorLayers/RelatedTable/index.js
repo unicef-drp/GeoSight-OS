@@ -226,7 +226,6 @@ export default function RelatedTableLayerConfig(
   if (!relatedTables[0]) {
     return ""
   }
-
   return (
     <Fragment>
       <Modal
@@ -424,8 +423,13 @@ export default function RelatedTableLayerConfig(
                           columns={[
                             { field: 'id', headerName: 'id', hide: true },
                             {
-                              field: 'geometry_code',
-                              headerName: 'Geometry Code',
+                              field: 'geometry_name',
+                              headerName: 'Name',
+                              flex: 1
+                            },
+                            {
+                              field: 'ucode',
+                              headerName: 'Ucode',
                               flex: 1
                             },
                             { field: 'value', headerName: 'Value', flex: 1 },
