@@ -14,7 +14,7 @@
  */
 
 import alasql from "alasql";
-import { isValidDate } from "./main"
+import { isValidDate, parseDateTime } from "./main"
 import { spacedField } from "./queryExtraction";
 import { COUNT_UNIQUE } from "../components/SqlQueryGenerator/Aggregation";
 
@@ -25,7 +25,12 @@ export const getRelatedTableData = (data, config, selectedGlobalTime, geoField =
   if (data) {
     data = JSON.parse(JSON.stringify(data))
     const { aggregation } = config
-    const where = config?.where.replaceAll('"', '`')
+    const where = config?.where.replaceAll('"', '`').replace(/`(.*?)`/g, function (match, text, href) {
+      if (match.includes("'")) {
+        return match.replaceAll('`', '"')
+      }
+      return match
+    });
     const date_field = spacedField(config.date_field)
     const geography_code_field_name = spacedField(geoField)
     let aggregation_method = ''
@@ -167,4 +172,20 @@ export function getRelatedTableFields(relatedTable, relatedTableData) {
   } else {
     return []
   }
+}
+
+/** Update related table response */
+export function updateRelatedTableResponse(response) {
+  response.map(row => {
+    for (const [key, value] of Object.entries(row)) {
+      const isDate = (
+        key.toLowerCase().replaceAll('_', '').includes('date') ||
+        key.toLowerCase().replaceAll('_', '').includes('time')
+      )
+      if (isDate && !isNaN(value)) {
+        row[key] = parseDateTime(value)
+      }
+    }
+  })
+  return response
 }

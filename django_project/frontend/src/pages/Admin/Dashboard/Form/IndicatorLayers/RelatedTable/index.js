@@ -31,7 +31,8 @@ import Modal, {
 import { dictDeepCopy, parseDateTime } from "../../../../../../utils/main";
 import {
   getRelatedTableData,
-  getRelatedTableFields
+  getRelatedTableFields,
+  updateRelatedTableResponse
 } from "../../../../../../utils/relatedTable";
 import {
   SelectWithList
@@ -173,7 +174,9 @@ export default function RelatedTableLayerConfig(
       setRelatedTableData(null)
       fetchingData(
         url, params, {}, function (response, error) {
-          setRelatedTableData(dictDeepCopy(response))
+          setRelatedTableData(
+            dictDeepCopy(updateRelatedTableResponse(response))
+          )
         }
       )
     }

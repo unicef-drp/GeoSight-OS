@@ -22,6 +22,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Actions } from "../../../../store/dashboard";
 import { fetchingData } from "../../../../Requests";
 import { queryData } from "../../../../utils/queryExtraction";
+import { updateRelatedTableResponse } from "../../../../utils/relatedTable";
 
 
 /**
@@ -81,7 +82,7 @@ export function RelatedTable(
           setResponseAndTime({
             'timeStr': selectedGlobalTimeStr,
             'params': params,
-            'response': response,
+            'response': updateRelatedTableResponse(response),
             'error': error
           })
         }
