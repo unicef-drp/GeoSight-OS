@@ -86,7 +86,8 @@ export default function Home() {
   // Fetch data
   useEffect(() => {
     axios.get('/api/dashboard/list').then(response => {
-      setSelectedCategories(response.data.filter(project => project.category).map(project => project.category))
+      const categories = response.data.filter(project => project.category).map(project => project.category)
+      setSelectedCategories([...new Set(categories)])
       setProjects({
         own: response.data.filter(row => row.creator === user.id),
         shared: response.data.filter(row => row.creator !== user.id)
@@ -98,7 +99,7 @@ export default function Home() {
   // Create category
   let categories = [];
   if (projects) {
-    categories = projects.own.concat(projects.shared).filter(project => project.category).map(project => project.category);
+    categories = [...new Set(projects.own.concat(projects.shared).filter(project => project.category).map(project => project.category))];
   }
 
   // We do filter and sort

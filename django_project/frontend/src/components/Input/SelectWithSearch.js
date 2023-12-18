@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React from "react";
+import React, { useState } from "react";
 import $ from 'jquery';
 import { Checkbox, TextField } from "@mui/material";
 import CheckBoxOutlineBlankIcon
@@ -96,11 +96,11 @@ export function MultipleSelectWithSearch(
     ...props
   }
 ) {
+  const [inputValue, setInputValue] = useState('')
   const isCompact = props.isCompact
   const selectAllText = 'Select all'
   const allSelected = value.length === options.length
   const optionsWithSelectAll = [selectAllText].concat(options)
-
   return <Autocomplete
     autoComplete={false}
     className={
@@ -139,12 +139,12 @@ export function MultipleSelectWithSearch(
         {option}
       </li>
     }}
-    renderInput={(params) => (
-      <TextField
+    renderInput={(params) => {
+      params.inputProps.placeholder = allSelected ? 'All selected' : value.length ? (value.length + ' selected') : props.placeholder ? props.placeholder : "Select 1 option"
+      return <TextField
         {...params}
-        placeholder={value?.length ? '' : props.placeholder ? props.placeholder : "Select 1 option"}
       />
-    )}
+    }}
     onChange={(e, values) => {
       if (e.target.getAttribute('value') === selectAllText || $(e.target).closest('li').attr('value') === selectAllText) {
         if (!allSelected) {
