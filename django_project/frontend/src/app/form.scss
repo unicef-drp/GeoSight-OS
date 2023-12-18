@@ -106,6 +106,10 @@
     color: hsl(0, 0%, 60%);
     cursor: not-allowed;
     border: unset !important;
+
+    &.ClickedReadOnly {
+      cursor: pointer;
+    }
   }
 
   textarea {
