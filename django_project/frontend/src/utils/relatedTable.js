@@ -16,6 +16,7 @@
 import alasql from "alasql";
 import { isValidDate } from "./main"
 import { spacedField } from "./queryExtraction";
+import { COUNT_UNIQUE } from "../components/SqlQueryGenerator/Aggregation";
 
 /**
  * Return related table data
@@ -83,6 +84,9 @@ export const getRelatedTableData = (data, config, selectedGlobalTime, geoField =
           }
           return row
         })
+        // -----------------------------------
+        // Create SQL query
+        // -----------------------------------
         let sql = `SELECT ${geography_code_field_name}             as _geometry_code,` +
           (aggregateDate ? `MAX(data.${date_field})` : `data.${date_field}`) + ` as _date,
                           MAX(data.concept_uuid)                   as _concept_uuid,
@@ -99,6 +103,15 @@ export const getRelatedTableData = (data, config, selectedGlobalTime, geoField =
                         MAX(data.admin_level)        as _admin_level
                  FROM ? as data` + (updatedWhere ? ` WHERE ${updatedWhere}` : '') + ` GROUP BY ${geography_code_field_name}, data.${aggregation_field}` + (!aggregateDate ? `, data.${date_field}` : '') +
             ` ORDER BY ${geography_code_field_name} DESC, value_occurrence ${aggregation_method === 'MAJORITY' ? 'DESC' : 'ASC'}`
+        }
+        if ([COUNT_UNIQUE].includes(aggregation_method)) {
+          sql = `SELECT ${geography_code_field_name}             as _geometry_code,` +
+            (aggregateDate ? `MAX(data.${date_field})` : `data.${date_field}`) + ` as _date,
+                          MAX(data.concept_uuid)                   as _concept_uuid,
+                          COUNT(DISTINCT(data.${aggregation_field})) as _value,
+                          MAX(data.admin_level)        as _admin_level
+                   FROM ? as data` + (updatedWhere ? ` WHERE ${updatedWhere}` : '') + ` GROUP BY ${geography_code_field_name}` + (!aggregateDate ? `, data.${date_field}` : '') + `  
+                   ORDER BY ${geography_code_field_name} DESC `
         }
         const results = alasql(sql, [data]).map((result, idx) => {
           return {
