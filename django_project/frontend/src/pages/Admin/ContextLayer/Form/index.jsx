@@ -147,7 +147,6 @@ export default function ContextLayerForm() {
           ),
           'Fields': <div/>,
           'Label': <div/>,
-          'Style': <div/>,
         }}
       />
     </Admin>

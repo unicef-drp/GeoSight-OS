@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { Fragment } from 'react';
+import React from 'react';
 import ColorSelector from "../../../../../components/Input/ColorSelector";
 import { Select } from "../../../../../components/Input";
 
@@ -30,7 +30,7 @@ export default function PointInput({ style, update }) {
   return <div className='ContextLayerConfigInput BasicForm'>
     <div className="BasicFormSection">
       <div>
-        <label className="form-label">Type</label>
+        <label className="form-label">Style type</label>
       </div>
       <div>
         <Select
@@ -46,7 +46,7 @@ export default function PointInput({ style, update }) {
     </div>
     {
       style.type !== 'icon' ?
-        <Fragment>
+        <>
           <div className="BasicFormSection">
             <div>
               <label className="form-label">Radius</label>
@@ -63,70 +63,74 @@ export default function PointInput({ style, update }) {
               />
             </div>
           </div>
-          <div className="BasicFormSection">
-            <div>
-              <label className="form-label">Border Color</label>
+          <div className="BasicFormSectionInline">
+            <div className="BasicFormSection">
+              <div>
+                <label className="form-label">Border Color</label>
+              </div>
+              <div>
+                <ColorSelector
+                  color={style.style.color}
+                  onChange={evt => {
+                    style.style.color = evt.target.value
+                    update()
+                  }}
+                  hideInput={true}
+                  fullWidth={true}
+                />
+              </div>
             </div>
-            <div>
-              <ColorSelector
-                color={style.style.color}
-                onChange={evt => {
-                  style.style.color = evt.target.value
-                  update()
-                }}
-                hideInput={true}
-                fullWidth={true}
-              />
-            </div>
-          </div>
-          <div className="BasicFormSection">
-            <div>
-              <label className="form-label">Border Weight</label>
-            </div>
-            <div>
-              <input
-                type="number" spellCheck="false"
-                defaultValue={style.style.weight}
-                step={0.1}
-                onChange={evt => {
-                  style.style.weight = evt.target.value
-                  update()
-                }}/>
-            </div>
-          </div>
-          <div className="BasicFormSection">
-            <div>
-              <label className="form-label">Fill Color</label>
-            </div>
-            <div>
-              <ColorSelector
-                color={style.style.fillColor}
-                onChange={evt => {
-                  style.style.fillColor = evt.target.value
-                  update()
-                }}
-                hideInput={true}
-                fullWidth={true}
-              />
+            <div className="BasicFormSection">
+              <div>
+                <label className="form-label">Border Weight</label>
+              </div>
+              <div>
+                <input
+                  type="number" spellCheck="false"
+                  defaultValue={style.style.weight}
+                  step={0.1}
+                  onChange={evt => {
+                    style.style.weight = evt.target.value
+                    update()
+                  }}/>
+              </div>
             </div>
           </div>
-          <div className="BasicFormSection">
-            <div>
-              <label className="form-label">Fill Color Opacity</label>
+          <div className="BasicFormSectionInline">
+            <div className="BasicFormSection">
+              <div>
+                <label className="form-label">Fill Color</label>
+              </div>
+              <div>
+                <ColorSelector
+                  color={style.style.fillColor}
+                  onChange={evt => {
+                    style.style.fillColor = evt.target.value
+                    update()
+                  }}
+                  hideInput={true}
+                  fullWidth={true}
+                />
+              </div>
             </div>
-            <div>
-              <input
-                type="number" spellCheck="false"
-                value={style.style.fillOpacity}
-                step={0.1}
-                max={1}
-                onChange={evt => {
-                  style.style.fillOpacity = evt.target.value
-                  update()
-                }}/>
+            <div className="BasicFormSection">
+              <div>
+                <label className="form-label">Fill Color Opacity</label>
+              </div>
+              <div>
+                <input
+                  type="number" spellCheck="false"
+                  value={style.style.fillOpacity}
+                  step={0.1}
+                  max={1}
+                  onChange={evt => {
+                    style.style.fillOpacity = evt.target.value
+                    update()
+                  }}/>
+              </div>
             </div>
           </div>
-        </Fragment> : <Fragment>
+        </> : <>
           <div className="BasicFormSection">
             <div>
               <label className="form-label">Icon</label>
@@ -156,7 +160,7 @@ export default function PointInput({ style, update }) {
               <input
                 type="number" spellCheck="false"
                 value={style.style.iconSize ? style.style.iconSize[0] : 10}
-                step={0.1}
+                step={1}
                 onChange={evt => {
                   if (!style.style.iconSize) {
                     style.style.iconSize = []
@@ -167,7 +171,7 @@ export default function PointInput({ style, update }) {
                 }}/>
             </div>
           </div>
-        </Fragment>
+        </>
     }
   </div>
 }

@@ -43,6 +43,7 @@ import {
 import LayerDescription from "./Description";
 import Highlighted from "./Highlighted";
 import { MagnifyIcon } from "../Icons";
+import { dictDeepCopy } from "../../utils/main";
 
 import './style.scss';
 
@@ -134,14 +135,14 @@ export default function SidePanelTreeView(
   useEffect(() => {
     setNodes(data)
     setGroups(getGroups(data));
-    const selected = [];
+    const newSelected = dictDeepCopy(selected);
     for (const item of flattenTree(data)) {
       if (!item.isGroup && item.data?.visible_by_default) {
-        selected.push(item.data?.id + '');
+        newSelected.push(item.data?.id + '');
       }
     }
-    if (selected.length > 0) {
-      setSelected([...selected])
+    if (newSelected.length > 0) {
+      setSelected([...new Set(newSelected)])
     }
   }, [data])
 

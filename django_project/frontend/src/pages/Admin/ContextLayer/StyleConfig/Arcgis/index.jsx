@@ -1,31 +1,33 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 /* ==========================================================================
    ARCGIS STYLE
    ========================================================================== */
 
 import React, { Fragment, useEffect } from 'react';
+import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 import parseArcRESTStyle from "../../../../../utils/esri/esri-style";
 
 import PointInput from './PointInput'
 import PolygonInput from './PolygonInput'
 import PolylineInput from './PolylineInput'
 import LabelStyle from '../../../LabelStyle'
-import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 import FieldConfig from "../../../../../components/FieldConfig";
+import { ThemeButton } from "../../../../../components/Elements/Button";
+import HistoryIcon from "@mui/icons-material/History";
 
 export function ArcgisConfigStyle({ data, update }) {
   const style = data.styles;
@@ -34,10 +36,36 @@ export function ArcgisConfigStyle({ data, update }) {
     switch (style.classificationValueMethod) {
       case "classMaxValue":
       case "classExactValue":
-        return style.classifications.map(classification => {
+        return style.classifications.map((classification, idx) => {
           return <div
             className='Classification'
-            key={classification.label}>
+            key={idx}
+          >
+            {
+              classification.label ?
+                <div className='ClassificationLabel'>
+                  <input
+                    value={classification.label}
+                    onChange={evt => {
+                      classification.label = evt.target.value
+                      update()
+                    }}
+                  />
+                </div> : null
+            }
+            {
+              style.classificationValueMethod === "classExactValue" ?
+                <div className='ClassificationValue'>
+                  <div>{style.fieldName} =&nbsp;&nbsp;</div>
+                  <input
+                    value={classification.value}
+                    onChange={evt => {
+                      classification.value = evt.target.value
+                      update()
+                    }}
+                  />
+                </div> : null
+            }
             <div>
               {
                 style.geometryType === "esriGeometryPolygon" ?
@@ -173,6 +201,20 @@ export default function ArcgisConfig(
       }
     </div>
     <div className='ArcgisConfig Style'>
+      <div style={{ width: "100%" }}>
+        <ThemeButton
+          disabled={!(ArcgisData?.data && ArcgisData?.data?.drawingInfo?.renderer)}
+          className='RevertStyleButton'
+          variant="primary Basic"
+          onClick={_ => {
+            const styles = parseArcRESTStyle(ArcgisData.data)
+            data.styles = styles
+            update()
+          }}>
+          <HistoryIcon title='Revert to style default from ArcGIS'/>
+          Revert to style default from ArcGIS
+        </ThemeButton>
+      </div>
       {
         useOverride ?
           <FormGroup>

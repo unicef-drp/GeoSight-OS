@@ -110,17 +110,21 @@ export default function StyleConfig(
               </Fragment> : ""
           }
         </div>
-        <div id='ContextLayerConfig' className="BasicFormSection">
+        <div id='ContextLayerConfig' className={"BasicFormSection " + (data.layer_type === 'ARCGIS' ? 'ShowStyle': '')}>
           {
             tab === 'Map' ?
               <div className='MapWrapper Map'>
                 <div className='legend'>
-                  <div className='title'><b className='light'>Legend</b></div>
-                  {
-                    legend ?
-                      <div
-                        dangerouslySetInnerHTML={{ __html: legend }}></div> : ""
-                  }
+                  <div className='wrapper'>
+                    <div className='title'>
+                      <b className='light'>Legend</b>
+                    </div>
+                    {
+                      legend ?
+                        <div
+                          dangerouslySetInnerHTML={{ __html: legend }}></div> : ""
+                    }
+                  </div>
                 </div>
                 <MapConfig data={data} layerInput={{
                   layer: layer,
@@ -137,9 +141,6 @@ export default function StyleConfig(
               /> :
               <Fragment>
                 <div className='ArcgisConfig Fields form-helptext'>
-                  Config is not Arcgis
-                </div>
-                <div className='ArcgisConfig Style form-helptext'>
                   Config is not Arcgis
                 </div>
               </Fragment>
