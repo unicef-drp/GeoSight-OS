@@ -114,13 +114,17 @@ class RelatedTableValuesAPI(APIView):
 
         max_time = request.GET.get('time__lte', None)
         if max_time:
-            max_time = date_parser.parse(max_time)
+            max_time = date_parser.parse(
+                max_time.replace(' ', '+')
+            )
         else:
             max_time = datetime.now()
 
         min_time = request.GET.get('time__gte', None)
         if min_time:
-            min_time = date_parser.parse(min_time).isoformat()
+            min_time = date_parser.parse(
+                min_time.replace(' ', '+')
+            ).isoformat()
 
         data = related_table.data_with_query(
             reference_layer_uuid=reference_layer_uuid,

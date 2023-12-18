@@ -54,8 +54,8 @@ export const dateLabel = (d, interval, reverse = false) => {
 /*** Return dates in range **/
 export function getDatesInRange(startDate, endDate, interval) {
   const start = new Date(new Date(startDate).setUTCHours(0, 0, 0, 0));
-  const end = new Date(new Date(endDate).setUTCHours(0, 0, 0, 0));
-  const date = new Date(start.getTime());
+  const end = new Date(new Date(endDate).setUTCHours(23, 23, 59, 0));
+  const date = new Date(start);
   const dates = [];
   while (date <= end) {
     dates.push(new Date(date));

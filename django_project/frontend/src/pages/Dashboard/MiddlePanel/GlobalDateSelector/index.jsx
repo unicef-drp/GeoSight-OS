@@ -112,14 +112,14 @@ export default function GlobalDateSelector() {
       }
 
       const selectedMinDate = new Date(selectedMinDateStr)
-      const minYear = selectedMinDate.getFullYear()
-      const minMonth = selectedMinDate.getMonth()
-      const minDay = selectedMinDate.getDate()
+      const minYear = selectedMinDate.getUTCFullYear()
+      const minMonth = selectedMinDate.getUTCMonth()
+      const minDay = selectedMinDate.getUTCDate()
 
       const selectedMaxDate = new Date(selectedMaxDateStr)
-      const maxYear = selectedMaxDate.getFullYear()
-      const maxMonth = selectedMaxDate.getMonth()
-      const maxDay = selectedMaxDate.getDate()
+      const maxYear = selectedMaxDate.getUTCFullYear()
+      const maxMonth = selectedMaxDate.getUTCMonth()
+      const maxDay = selectedMaxDate.getUTCDate()
 
       // construct min/max
       switch (interval) {
