@@ -20,12 +20,12 @@
 @import '../../../../app/variables';
 
 
-.BasicForm.Map {
+.BasicForm.Preview {
   height: 100%;
   box-sizing: border-box;
   padding: 0 !important;
 
-  .Map {
+  .Preview {
     height: 100%;
   }
 
@@ -54,7 +54,7 @@
   width: 100%;
   position: relative;
 
-  &.Map {
+  &.Preview {
     height: fit-content;
 
     #ContextLayerConfig {
@@ -101,12 +101,12 @@
     margin-bottom: 0.5rem;
   }
 
-  &.Map {
+  &.Preview {
     .AdminForm {
       height: 100%;
     }
 
-    .Map {
+    .Preview {
       display: flex !important;
     }
 
@@ -237,7 +237,7 @@
   }
 }
 
-.MapWrapper {
+.PreviewWrapper {
   display: flex;
   height: 100%;
   position: relative;

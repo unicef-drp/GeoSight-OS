@@ -74,7 +74,11 @@ class ContextLayerForm(forms.ModelForm):
         """Return styles."""
         if self.instance and not self.cleaned_data['styles']:
             return self.instance.styles
-        return self.cleaned_data['styles']
+        try:
+            if self.data['override_style']:
+                return self.cleaned_data['styles']
+        except KeyError:
+            return None
 
     def clean_label_styles(self):
         """Return label_styles."""

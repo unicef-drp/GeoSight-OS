@@ -15,6 +15,7 @@
 
 import React, { Fragment, useRef, useState } from 'react';
 import $ from 'jquery';
+import { Checkbox } from "@mui/material";
 
 import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
@@ -28,6 +29,7 @@ import { resourceActions } from "../List";
 import './style.scss';
 
 let currentArcGis = null
+let init = false
 /**
  * Context Layer Form App
  */
@@ -43,20 +45,38 @@ export default function ContextLayerForm() {
     const formData = data
     $('.BasicForm').find('input').each(function () {
       const name = $(this).attr('name');
+      if (['override_field', 'override_style'].includes(name)) {
+        return
+      }
       if (name) {
         formData[name] = $(this).val()
       }
     })
+
+    // FIELDS
+    let override_field = false
     if (formData['data_fields']) {
       formData['data_fields'] = JSON.parse(formData['data_fields'])
+      if (formData['data_fields'].length) {
+        override_field = true
+      }
     }
+
+    // STYLES
+    let override_style = false
     if (formData['styles']) {
       formData['styles'] = JSON.parse(formData['styles'])
+      override_style = true
     }
     if (formData['label_styles']) {
       formData['label_styles'] = JSON.parse(formData['label_styles'])
     }
     formData['parameters'] = formData['parameters'] ? formData['parameters'] : {}
+    if (!init) {
+      formData.override_field = override_field
+      formData.override_style = override_style
+      init = true
+    }
     setData(JSON.parse(JSON.stringify(formData)))
   }
 
@@ -94,7 +114,6 @@ export default function ContextLayerForm() {
       })
     }
   }
-
   return (
     <Admin
       minifySideNavigation={true}
@@ -133,6 +152,9 @@ export default function ContextLayerForm() {
               selectableInput={selectableInput}
               selectableInputExcluded={['name', 'shortcode']}
               onChange={(name, value) => {
+                if (['override_field', 'override_style'].includes(name)) {
+                  return
+                }
                 if (name === 'layer_type') {
                   typeChange(value)
                 } else if (name === 'arcgis_config') {
@@ -140,10 +162,31 @@ export default function ContextLayerForm() {
                 }
                 setDataFn()
               }}
-            />
+            >
+              <Checkbox
+                name={'override_field'}
+                style={{ display: "none" }}
+                checked={data?.override_field ? data?.override_field : false}
+                onChange={evt => {
+                }}
+              />
+              <Checkbox
+                name={'override_style'}
+                style={{ display: "none" }}
+                checked={data?.override_style ? data?.override_style : false}
+                onChange={evt => {
+                }}
+              />
+            </DjangoTemplateForm>
           ),
-          'Map': (
-            <StyleConfig data={data} setData={updateData} defaultTab={tab}/>
+          'Preview': (
+            <StyleConfig
+              data={data}
+              setData={updateData}
+              defaultTab={tab}
+              useOverride={true}
+              useOverrideLabel={false}
+            />
           ),
           'Fields': <div/>,
           'Label': <div/>,

@@ -26,11 +26,11 @@
 }
 
 form {
-  &.Map,
+  &.Preview,
   &.Fields,
   &.Label,
   &.Style {
-    .Map {
+    .Preview {
       display: block !important;
     }
   }
