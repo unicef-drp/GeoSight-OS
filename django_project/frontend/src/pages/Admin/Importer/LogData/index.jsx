@@ -54,12 +54,13 @@ import { AdminPage, pageNames } from "../../index";
 import { fetchJSON } from "../../../../Requests";
 import { axiosGet } from "../../../../utils/georepo";
 import { SaveButton } from "../../../../components/Elements/Button";
-
-
-import './style.scss';
 import {
   MultipleSelectWithSearch
 } from "../../../../components/Input/SelectWithSearch";
+import { isValueDate } from "../../../../utils/relatedTable";
+
+
+import './style.scss';
 
 let inProgress = false
 
@@ -182,10 +183,7 @@ export default function ImporterLogData() {
           }
         }
         const columnDetail = columnsByDict[key]
-        const isDate = (
-          key.toLowerCase().replaceAll('_', '').includes('date') ||
-          key.toLowerCase().replaceAll('_', '').includes('time')
-        )
+        const isDate = isValueDate(key, columnDetail)
         columnsByDict[key] = {
           renderCell: (params) => {
             const value = params.row.data[params.field]

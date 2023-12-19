@@ -289,6 +289,25 @@ export function formatDate(d, reverseDate = false, toUTC = false) {
   }
 }
 
+/** Update date from period and interval. */
+export function updateDate(dt, amount, period) {
+  switch (period) {
+    case 'years':
+      return dt.setFullYear(dt.getFullYear() + amount) && dt;
+    case 'months':
+      return dt.setMonth(dt.getMonth() + amount) && dt;
+    case 'days':
+      return dt.setDate(dt.getDate() + amount) && dt;
+    case 'hours':
+      return dt.setHours(dt.getHours() + amount) && dt;
+    case 'minutes':
+      return dt.setMinutes(dt.getMinutes() + amount) && dt;
+    case 'seconds':
+      return dt.setSeconds(dt.getSeconds() + amount) && dt;
+  }
+  return dt
+}
+
 /**
  * Json to xls
  * @param {Date} d

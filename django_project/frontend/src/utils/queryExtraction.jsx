@@ -14,6 +14,7 @@
  */
 
 import alasql from "alasql";
+import { dictDeepCopy } from "./main";
 
 export const IDENTIFIER = 'indicator_'
 export const JOIN_IDENTIFIER = 'concept_uuid'
@@ -49,6 +50,7 @@ export const NUMBER_OPERATORS = Object.assign({}, OPERATORS, {
 });
 export const NUMBER_OPERATORS_SIMPLIFIED = {
   '=': 'Single selection',
+  'IN': 'Multi-selection',
   '>=': 'Above or equal',
   '<=': 'Below or equal',
   'BETWEEN': 'Between'
@@ -64,17 +66,27 @@ export const STRING_OPERATORS = Object.assign({}, OPERATORS, {
   'NOT LIKE': 'not like',
 });
 export const STRING_OPERATORS_SIMPLIFIED = {
-  'IN': 'Multi-selection',
   '=': 'Single selection',
+  'IN': 'Multi-selection',
+};
+
+export const DATE_OPERATORS_SIMPLIFIED = {
+  '=': 'Single selection',
+  'IN': 'Multi-selection',
+  '>=': 'After',
+  '<=': 'Before',
+  'BETWEEN': 'Between'
 };
 
 export const OPERATOR = Object.assign({}, NUMBER_OPERATORS, STRING_OPERATORS);
 
 export const getOperators = (type, isSimplified) => {
   if (type === 'text') {
-    return isSimplified ? STRING_OPERATORS_SIMPLIFIED : STRING_OPERATORS
+    return dictDeepCopy(isSimplified ? STRING_OPERATORS_SIMPLIFIED : STRING_OPERATORS)
+  } else if (type === 'date') {
+    return dictDeepCopy(isSimplified ? DATE_OPERATORS_SIMPLIFIED : DATE_OPERATORS_SIMPLIFIED)
   } else {
-    return isSimplified ? NUMBER_OPERATORS_SIMPLIFIED : NUMBER_OPERATORS
+    return dictDeepCopy(isSimplified ? NUMBER_OPERATORS_SIMPLIFIED : NUMBER_OPERATORS)
   }
 }
 

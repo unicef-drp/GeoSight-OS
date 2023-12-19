@@ -140,7 +140,7 @@ export function MultipleSelectWithSearch(
       </li>
     }}
     renderInput={(params) => {
-      params.inputProps.placeholder = allSelected ? 'All selected' : value.length ? (value.length + ' selected') : props.placeholder ? props.placeholder : "Select 1 option"
+      params.inputProps.placeholder = value.length === 1 ? '' : allSelected ? 'All selected' : value.length ? (value.length + ' selected') : props.placeholder ? props.placeholder : "Select 1 option"
       return <TextField
         {...params}
       />

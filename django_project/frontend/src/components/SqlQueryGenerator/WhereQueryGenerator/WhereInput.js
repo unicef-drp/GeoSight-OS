@@ -37,7 +37,8 @@ import {
 import Slider from "@mui/material/Slider";
 
 // VARIABLES
-export const INTERVAL = ['minutes', 'hours', 'days', 'months', 'years']
+// export const INTERVAL = ['minutes', 'hours', 'days', 'months', 'years']
+export const INTERVAL = ['days', 'months', 'years']
 const OPERATOR_WITH_INTERVAL = 'last x (time)'
 const INTERVAL_IDENTIFIER = '::interval'
 const defaultMin = 0;
@@ -87,7 +88,7 @@ export function WhereInputValue(
   let max = null
   if (optionsData) {
     const data = optionsData.filter(row => {
-      return row !== undefined && row !== null
+      return row !== undefined && row !== null && !isNaN(row)
     }).map(row => {
       return parseFloat(row)
     })
@@ -109,8 +110,17 @@ export function WhereInputValue(
   } else if ([IS_LIKE, IS_NOT_LIKE].includes(operator)) {
     return defaultInput()
   } else if (operator === OPERATOR_WITH_INTERVAL) {
-    const [timeValue, timeType] = value.replace(INTERVAL_IDENTIFIER, '').split(' ')
+    let timeValue = ""
+    let timeType = ""
+    try {
+      const [newTimeValue, newTimeType] = value.replace(INTERVAL_IDENTIFIER, '').split(' ')
+      timeValue = newTimeValue
+      timeType = newTimeType
+    } catch (err) {
+
+    }
     return <Fragment>
+      <span className='WhereConfigurationOperatorText'>Last</span>
       <Input
         type="number"
         className={'WhereConfigurationOperatorValue'}
@@ -122,6 +132,7 @@ export function WhereInputValue(
       />
       <SelectPlaceholder
         placeholder='Pick a time'
+        className={'WhereConfigurationOperatorType'}
         list={
           INTERVAL.map((key, idx) => {
             return { id: key, name: capitalize(key) }
@@ -297,8 +308,8 @@ export default function WhereInput(
   let operator = ('' + value)?.includes(INTERVAL_IDENTIFIER) ? OPERATOR_WITH_INTERVAL : where.operator;
 
   // Check the input type
-  let fieldType = 'text'
-  if (currentField?.type) {
+  let fieldType = currentField?.type ? currentField?.type : 'text'
+  if (currentField?.type !== 'date') {
     fieldType = currentField?.type
     if (currentField?.options) {
       fieldType = 'number'
@@ -359,6 +370,9 @@ export default function WhereInput(
           where.value = "now() - interval '1 days'"
         } else if ([IS_IN, IS_NOT_IN].includes(value)) {
           where.operator = value
+          if (where.value.includes('::interval')) {
+            where.value = []
+          }
           if (!Array.isArray(where.value)) {
             if (where.value) {
               where.value = ('' + where.value).split(',')

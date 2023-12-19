@@ -20,6 +20,7 @@ import { pageNames } from '../../index';
 import { AdminList } from "../../AdminList";
 import { fetchingData } from "../../../../Requests";
 import { capitalize, parseDateTime } from "../../../../utils/main";
+import { isValueDate } from "../../../../utils/relatedTable";
 
 import './style.scss';
 
@@ -38,10 +39,7 @@ export default function RelatedTableData() {
           { field: 'id', headerName: 'id', hide: true, width: 30, }
         ].concat(
           detailData.related_fields.map(field => {
-            const isDate = (
-              field.toLowerCase().replaceAll('_', '').includes('date') ||
-              field.toLowerCase().replaceAll('_', '').includes('time')
-            )
+            const isDate = isValueDate(field, null)
             return {
               field: field,
               headerName: capitalize(field),
@@ -51,8 +49,9 @@ export default function RelatedTableData() {
                 if (isDate) {
                   return parseDateTime(params.value)
                 }
-                return <div title={params.value}
-                            className='MuiDataGrid-cellContent'>
+                return <div
+                  title={params.value}
+                  className='MuiDataGrid-cellContent'>
                   {params.value}
                 </div>
               },

@@ -67,6 +67,9 @@
   .WhereConfigurationQuery {
     & > .MultipleSelectWithSearch,
     & > .SelectWithSearchInput,
+    & > .WhereConfigurationOperatorValue,
+    & > .WhereConfigurationOperatorText,
+    & > .WhereConfigurationOperatorType,
     & > .SelectWithSearch {
       height: 24px !important;
       min-height: 24px !important;
@@ -97,6 +100,23 @@
       height: 25px !important;
       min-height: 25px !important;
       padding: 0 !important;
+    }
+
+    & > .WhereConfigurationOperatorValue,
+    & > .WhereConfigurationOperatorType,
+    & > .WhereConfigurationOperatorText {
+      pointer-events: auto;
+    }
+
+    & > .WhereConfigurationOperatorValue {
+      width: 80px;
+    }
+
+    & > .WhereConfigurationOperatorText {
+      display: inline-block;
+      border: unset !important;
+      margin-right: 5px;
+
     }
   }
 
@@ -144,7 +164,9 @@
     }
 
     .WhereConfigurationField {
-      width: 100%;
+      display: block;
+      width: fit-content;
+      padding-top: 5px;
       background-color: unset !important;
       color: $primary-color !important;
       font-weight: 600;

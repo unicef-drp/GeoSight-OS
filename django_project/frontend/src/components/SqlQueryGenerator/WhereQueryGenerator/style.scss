@@ -217,11 +217,13 @@
       }
     }
 
+    .WhereConfigurationOperatorText {
+      display: none;
+    }
+
     .WhereConfigurationOperatorValue {
-      min-width: 200px;
-      flex-grow: 1;
-      border-top-left-radius: 0 !important;
-      border-bottom-left-radius: 0 !important;
+      width: 200px;
+      border-radius: 0 !important;
 
       input {
         width: 100%;
