@@ -31,7 +31,7 @@
   }
 
   .MuiAutocomplete-inputFocused {
-    color: rgb(0, 0, 0, 0);
+    color: rgba(0, 0, 0, 0.87);
     background-color: unset !important;
   }
 
@@ -141,19 +141,17 @@
         span {
           display: none;
         }
+      }
+    }
 
-        &:after {
-          content: '(Multiple Values)';
-          font-size: 1rem !important;
-        }
+    input {
+      &::placeholder {
+        color: $base-black-color !important;
+        opacity: 1 !important;
       }
 
-      .MuiInputBase-root {
-        & > .MuiButtonBase-root {
-          &:after {
-            font-size: 0.9rem !important;
-          }
-        }
+      &::-ms-input-placeholder {
+        color: $base-black-color !important;
       }
     }
   }

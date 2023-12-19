@@ -87,7 +87,7 @@ export function WhereInputValue(
   let max = null
   if (optionsData) {
     const data = optionsData.filter(row => {
-      return row !== undefined
+      return row !== undefined && row !== null
     }).map(row => {
       return parseFloat(row)
     })
@@ -99,9 +99,11 @@ export function WhereInputValue(
     if (operator !== '=' && (isNaN(max) || !isFinite(max))) {
       max = defaultMax
     }
+    optionsData = optionsData.filter(row => {
+      return row !== undefined && row !== null && row !== 'null'
+    }).sort()
   }
   const textBasedOnMinMax = ((isNaN(min) && isNaN(max)) || (!isFinite(min) && !isFinite(max)))
-
   if ([IS_NULL, IS_NOT_NULL].includes(operator)) {
     return null
   } else if ([IS_LIKE, IS_NOT_LIKE].includes(operator)) {

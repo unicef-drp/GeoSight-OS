@@ -31,7 +31,8 @@ import Modal, {
 import { dictDeepCopy, parseDateTime } from "../../../../../../utils/main";
 import {
   getRelatedTableData,
-  getRelatedTableFields
+  getRelatedTableFields,
+  updateRelatedTableResponse
 } from "../../../../../../utils/relatedTable";
 import {
   SelectWithList
@@ -173,7 +174,9 @@ export default function RelatedTableLayerConfig(
       setRelatedTableData(null)
       fetchingData(
         url, params, {}, function (response, error) {
-          setRelatedTableData(dictDeepCopy(response))
+          setRelatedTableData(
+            dictDeepCopy(updateRelatedTableResponse(response))
+          )
         }
       )
     }
@@ -226,7 +229,6 @@ export default function RelatedTableLayerConfig(
   if (!relatedTables[0]) {
     return ""
   }
-
   return (
     <Fragment>
       <Modal
@@ -424,8 +426,13 @@ export default function RelatedTableLayerConfig(
                           columns={[
                             { field: 'id', headerName: 'id', hide: true },
                             {
-                              field: 'geometry_code',
-                              headerName: 'Geometry Code',
+                              field: 'geometry_name',
+                              headerName: 'Name',
+                              flex: 1
+                            },
+                            {
+                              field: 'ucode',
+                              headerName: 'Ucode',
                               flex: 1
                             },
                             { field: 'value', headerName: 'Value', flex: 1 },

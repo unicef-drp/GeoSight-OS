@@ -267,28 +267,6 @@
       }
     }
 
-    .CategorySelector {
-      &.MultipleValue {
-        .MuiInputBase-root {
-          & > .MuiButtonBase-root {
-            &:after {
-              content: 'Categories selected';
-            }
-          }
-        }
-      }
-
-      &.AllSelected {
-        .MuiInputBase-root {
-          & > .MuiButtonBase-root {
-            &:after {
-              content: 'All categories';
-            }
-          }
-        }
-      }
-    }
-
     .IconStart {
       svg {
         width: 18px;

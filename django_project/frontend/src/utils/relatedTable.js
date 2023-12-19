@@ -14,8 +14,9 @@
  */
 
 import alasql from "alasql";
-import { isValidDate } from "./main"
+import { isValidDate, parseDateTime } from "./main"
 import { spacedField } from "./queryExtraction";
+import { COUNT_UNIQUE } from "../components/SqlQueryGenerator/Aggregation";
 
 /**
  * Return related table data
@@ -24,7 +25,12 @@ export const getRelatedTableData = (data, config, selectedGlobalTime, geoField =
   if (data) {
     data = JSON.parse(JSON.stringify(data))
     const { aggregation } = config
-    const where = config?.where.replaceAll('"', '`')
+    const where = config?.where.replaceAll('"', '`').replace(/`(.*?)`/g, function (match, text, href) {
+      if (match.includes("'")) {
+        return match.replaceAll('`', '"')
+      }
+      return match
+    });
     const date_field = spacedField(config.date_field)
     const geography_code_field_name = spacedField(geoField)
     let aggregation_method = ''
@@ -83,9 +89,14 @@ export const getRelatedTableData = (data, config, selectedGlobalTime, geoField =
           }
           return row
         })
+        // -----------------------------------
+        // Create SQL query
+        // -----------------------------------
         let sql = `SELECT ${geography_code_field_name}             as _geometry_code,` +
           (aggregateDate ? `MAX(data.${date_field})` : `data.${date_field}`) + ` as _date,
                           MAX(data.concept_uuid)                   as _concept_uuid,
+                          MAX(data.geometry_code)                  as _ucode,
+                          MAX(data.geometry_name)                  as _geometry_name,
                           ${aggregation_full} as _value,
                           MAX(data.admin_level)        as _admin_level
                    FROM ? as data` + (updatedWhere ? ` WHERE ${updatedWhere}` : '') + ` GROUP BY ${geography_code_field_name}` + (!aggregateDate ? `, data.${date_field}` : '') + `  
@@ -94,18 +105,33 @@ export const getRelatedTableData = (data, config, selectedGlobalTime, geoField =
           sql = `SELECT ${geography_code_field_name} as _geometry_code,` +
             (aggregateDate ? `MAX(data.${date_field})` : `data.${date_field}`) + ` as _date,
                         MAX(data.concept_uuid)       as _concept_uuid,
+                        MAX(data.geometry_code)      as _ucode,
+                        MAX(data.geometry_name)      as _geometry_name,
                         data.${aggregation_field}         as _value,
                         COUNT(${aggregation_field})  as value_occurrence,
                         MAX(data.admin_level)        as _admin_level
                  FROM ? as data` + (updatedWhere ? ` WHERE ${updatedWhere}` : '') + ` GROUP BY ${geography_code_field_name}, data.${aggregation_field}` + (!aggregateDate ? `, data.${date_field}` : '') +
             ` ORDER BY ${geography_code_field_name} DESC, value_occurrence ${aggregation_method === 'MAJORITY' ? 'DESC' : 'ASC'}`
         }
+        if ([COUNT_UNIQUE].includes(aggregation_method)) {
+          sql = `SELECT ${geography_code_field_name}             as _geometry_code,` +
+            (aggregateDate ? `MAX(data.${date_field})` : `data.${date_field}`) + ` as _date,
+                          MAX(data.concept_uuid)                   as _concept_uuid,
+                          MAX(data.geometry_code)                   as _ucode,
+                          MAX(data.geometry_name)                   as _geometry_name,
+                          COUNT(DISTINCT(data.${aggregation_field})) as _value,
+                          MAX(data.admin_level)        as _admin_level
+                   FROM ? as data` + (updatedWhere ? ` WHERE ${updatedWhere}` : '') + ` GROUP BY ${geography_code_field_name}` + (!aggregateDate ? `, data.${date_field}` : '') + `  
+                   ORDER BY ${geography_code_field_name} DESC `
+        }
         const results = alasql(sql, [data]).map((result, idx) => {
           return {
             id: idx,
             admin_level: result._admin_level,
             geometry_code: result._geometry_code,
+            geometry_name: result._geometry_name,
             concept_uuid: result._concept_uuid,
+            ucode: result._ucode,
             date: result._date,
             value: result._value,
           }
@@ -146,4 +172,20 @@ export function getRelatedTableFields(relatedTable, relatedTableData) {
   } else {
     return []
   }
+}
+
+/** Update related table response */
+export function updateRelatedTableResponse(response) {
+  response.map(row => {
+    for (const [key, value] of Object.entries(row)) {
+      const isDate = (
+        key.toLowerCase().replaceAll('_', '').includes('date') ||
+        key.toLowerCase().replaceAll('_', '').includes('time')
+      )
+      if (isDate && !isNaN(value)) {
+        row[key] = parseDateTime(value)
+      }
+    }
+  })
+  return response
 }

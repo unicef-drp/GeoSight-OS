@@ -210,6 +210,7 @@ class RelatedTable(AbstractTerm, AbstractEditData):
                 if entity:
                     data['concept_uuid'] = entity.concept_uuid
                     data['geometry_code'] = entity.geom_id
+                    data['geometry_name'] = entity.name
                     data['admin_level'] = entity.admin_level
                     concept_uuid[value] = entity
                     output.append(data)

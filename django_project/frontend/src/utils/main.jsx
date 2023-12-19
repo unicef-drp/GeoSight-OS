@@ -268,10 +268,15 @@ export function nowUTC() {
  * Json to xls
  * @param {Date} d
  */
-export function formatDate(d, reverseDate = false) {
+export function formatDate(d, reverseDate = false, toUTC = false) {
   let month = '' + (d.getMonth() + 1),
     day = '' + d.getDate(),
     year = d.getFullYear();
+  if (toUTC) {
+    month = '' + (d.getUTCMonth() + 1);
+    day = '' + d.getUTCDate();
+    year = d.getUTCFullYear();
+  }
 
   if (month.length < 2)
     month = '0' + month;

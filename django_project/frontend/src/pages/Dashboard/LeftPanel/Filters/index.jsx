@@ -74,13 +74,13 @@ function FilterSection() {
     const usedData = []
     for (const [key, value] of Object.entries(indicatorsData)) {
       const id = `indicator_${key}`
-      if (where.includes(id)) {
+      if (where?.includes(id)) {
         usedData.push(value)
       }
     }
     for (const [key, value] of Object.entries(relatedTableData)) {
       const id = `related_table_${key}`
-      if (where.includes(id)) {
+      if (where?.includes(id)) {
         usedData.push(value)
       }
     }

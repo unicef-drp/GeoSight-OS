@@ -329,9 +329,10 @@ export function DashboardSaveForm(
           if (responseError) {
             notify('' + responseError, NotificationStatus.ERROR)
           } else {
+            const currUrl = window.location.href.split('#')[0]
             if (!id) {
               window.location = response.url
-            } else if (window.location.href !== response.url) {
+            } else if (currUrl !== response.url) {
               window.location = response.url
             } else {
               notify('Configuration has been saved!', NotificationStatus.SUCCESS)
