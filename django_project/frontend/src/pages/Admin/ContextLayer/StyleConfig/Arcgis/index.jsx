@@ -100,10 +100,15 @@ export function ArcgisConfigStyle({ data, update }) {
  * Map Config component.
  */
 export default function ArcgisConfig(
-  { originalData, setData, ArcgisData, useOverride = false }
+  {
+    originalData,
+    setData,
+    ArcgisData,
+    useOverride = false,
+    useOverrideLabel = true
+  }
 ) {
   const data = JSON.parse(JSON.stringify(originalData))
-
   useEffect(() => {
     if (data && ArcgisData?.data && ArcgisData?.data?.drawingInfo?.renderer) {
       const style = parseArcRESTStyle(ArcgisData.data)
@@ -138,7 +143,7 @@ export default function ArcgisConfig(
   return <Fragment>
     <div className='ArcgisConfig Label'>
       {
-        useOverride ?
+        useOverrideLabel ?
           <FormGroup>
             <FormControlLabel
               control={
@@ -154,7 +159,7 @@ export default function ArcgisConfig(
           </FormGroup> : null
       }
       {
-        (!useOverride || data.override_label) ?
+        (!useOverrideLabel || data.override_label) ?
           data.data_fields ?
             <div className='ArcgisConfigLabel'>
               <LabelStyle
@@ -182,7 +187,7 @@ export default function ArcgisConfig(
                     })
                   }}/>
               }
-              label="Override field config from context layer"/>
+              label="Override field config from default"/>
           </FormGroup> : null
       }
       {
@@ -201,20 +206,6 @@ export default function ArcgisConfig(
       }
     </div>
     <div className='ArcgisConfig Style'>
-      <div style={{ width: "100%" }}>
-        <ThemeButton
-          disabled={!(ArcgisData?.data && ArcgisData?.data?.drawingInfo?.renderer)}
-          className='RevertStyleButton'
-          variant="primary Basic"
-          onClick={_ => {
-            const styles = parseArcRESTStyle(ArcgisData.data)
-            data.styles = styles
-            update()
-          }}>
-          <HistoryIcon title='Revert to style default from ArcGIS'/>
-          Revert to style default from ArcGIS
-        </ThemeButton>
-      </div>
       {
         useOverride ?
           <FormGroup>
@@ -228,13 +219,29 @@ export default function ArcgisConfig(
                     override_style: evt.target.checked
                   })}/>
               }
-              label="Override style from context layer style"/>
+              label="Override style from default"/>
           </FormGroup> : null
       }
       {
         (!useOverride || data.override_style) ?
           data.styles ?
-            <ArcgisConfigStyle data={data} update={update}/> :
+            <>
+              <div style={{ width: "100%" }}>
+                <ThemeButton
+                  disabled={!(ArcgisData?.data && ArcgisData?.data?.drawingInfo?.renderer)}
+                  className='RevertStyleButton'
+                  variant="primary Basic"
+                  onClick={_ => {
+                    const styles = parseArcRESTStyle(ArcgisData.data)
+                    data.styles = styles
+                    update()
+                  }}>
+                  <HistoryIcon title='Revert to style default from ArcGIS'/>
+                  Revert to style default from ArcGIS
+                </ThemeButton>
+              </div>
+              <ArcgisConfigStyle data={data} update={update}/>
+            </> :
             <div>Loading</div> : null
       }
     </div>

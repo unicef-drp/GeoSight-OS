@@ -28,7 +28,13 @@ import './style.scss';
  * @param {boolean} checkConfig Checking config.
  */
 export default function StyleConfig(
-  { data, setData, useOverride = false, defaultTab = null }
+  {
+    data,
+    setData,
+    useOverride = false,
+    defaultTab = null,
+    useOverrideLabel = true
+  }
 ) {
   const dispatch = useDispatch();
   const [layer, setLayer] = useState(null);
@@ -37,7 +43,7 @@ export default function StyleConfig(
 
   const [layerData, setLayerData] = useState(null);
   const [layerDataClass, setLayerDataClass] = useState(null);
-  const [tab, setTab] = useState(data.layer_type === 'ARCGIS' ? 'Fields' : 'Map');
+  const [tab, setTab] = useState(data.layer_type === 'ARCGIS' ? 'Fields' : 'Preview');
 
   useEffect(() => {
     if (defaultTab) {
@@ -74,11 +80,11 @@ export default function StyleConfig(
         <div className='TabPrimary ContextLayerConfigTab'>
           <div
             onClick={() => {
-              setTab('Map')
+              setTab('Preview')
             }}
-            className={tab === 'Map' ? 'Selected' : ""}
+            className={tab === 'Preview' ? 'Selected' : ""}
           >
-            Map
+            Preview
           </div>
           {
             data.layer_type === 'ARCGIS' ?
@@ -99,21 +105,14 @@ export default function StyleConfig(
                 >
                   Label
                 </div>
-                <div
-                  onClick={() => {
-                    setTab('Style')
-                  }}
-                  className={tab === 'Style' ? 'Selected' : ""}
-                >
-                  Style
-                </div>
               </Fragment> : ""
           }
         </div>
-        <div id='ContextLayerConfig' className={"BasicFormSection " + (data.layer_type === 'ARCGIS' ? 'ShowStyle': '')}>
+        <div id='ContextLayerConfig'
+             className={"BasicFormSection " + (data.layer_type === 'ARCGIS' ? 'ShowStyle' : '')}>
           {
-            tab === 'Map' ?
-              <div className='MapWrapper Map'>
+            tab === 'Preview' ?
+              <div className='PreviewWrapper Preview'>
                 <div className='legend'>
                   <div className='wrapper'>
                     <div className='title'>
@@ -138,6 +137,7 @@ export default function StyleConfig(
               <ArcgisConfig
                 originalData={data} setData={setData}
                 ArcgisData={layerData} useOverride={useOverride}
+                useOverrideLabel={useOverrideLabel}
               /> :
               <Fragment>
                 <div className='ArcgisConfig Fields form-helptext'>

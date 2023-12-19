@@ -137,7 +137,6 @@ class ContextLayerEditBatchView(
         if not ids:
             return HttpResponseBadRequest('ids needs in payload')
         ids = ids.split(',')
-        data_fields = request.POST.get('data_fields', None)
         for obj in ContextLayer.permissions.edit(request.user).filter(
                 id__in=ids
         ):
@@ -151,8 +150,6 @@ class ContextLayerEditBatchView(
             form.is_valid()
             instance = form.instance
             instance.save()
-            if data_fields:
-                instance.save_relations({'data_fields': data_fields})
             # Save permission
             instance.permission.update_from_request_data_in_string(
                 request.POST, request.user
