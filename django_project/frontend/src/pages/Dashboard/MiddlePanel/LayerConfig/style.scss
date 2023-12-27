@@ -19,40 +19,17 @@
 
 @import '../../../../app/variables';
 
-.WhereConfigurationWrapper.Duplication {
-  pointer-events: auto !important;
-  height: 5px;
-
-  .WhereConfigurationQueryGroup {
-    height: 0;
-    overflow: hidden;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: unset !important;
-  }
-}
-
-.WhereConfigurationWrapper.Real {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-  pointer-events: none !important;
-
-  &::-webkit-scrollbar {
-    display: none !important;
-  }
-}
-
 .IndicatorLayerMiddleConfig {
   box-sizing: border-box;
   max-width: 100%;
   transition: height 0.3s;
   z-index: 1;
-  pointer-events: none !important;
   background-color: white;
+  pointer-events: auto !important;
 
   .WhereConfigurationWrapper {
     width: 100%;
+    max-width: 60vw;
     overflow-x: scroll;
     overflow-y: hidden;
   }
@@ -60,7 +37,6 @@
   .WhereConfiguration {
     height: 100%;
     width: fit-content;
-    pointer-events: none !important;
     padding: 0;
   }
 
@@ -70,7 +46,8 @@
     & > .WhereConfigurationOperatorValue,
     & > .WhereConfigurationOperatorText,
     & > .WhereConfigurationOperatorType,
-    & > .SelectWithSearch {
+    & > .SelectWithSearch,
+    .DatePickerInput {
       height: 24px !important;
       min-height: 24px !important;
       background-color: white !important;
@@ -96,16 +73,20 @@
       }
     }
 
+    .BetweenDash {
+      color: white;
+      width: 4px !important;
+    }
+
+    .DatePickerInput {
+      padding-top: 1px;
+      min-width: 170px;
+    }
+
     & > .SelectWithSearchInput {
       height: 25px !important;
       min-height: 25px !important;
       padding: 0 !important;
-    }
-
-    & > .WhereConfigurationOperatorValue,
-    & > .WhereConfigurationOperatorType,
-    & > .WhereConfigurationOperatorText {
-      pointer-events: auto;
     }
 
     & > .WhereConfigurationOperatorValue {
@@ -125,7 +106,6 @@
     bottom: -18px;
     left: 50%;
     height: fit-content;
-    pointer-events: auto;
     border-bottom-left-radius: $border-radius;
     border-bottom-right-radius: $border-radius;
   }
@@ -140,14 +120,12 @@
     flex-direction: row;
     flex-wrap: nowrap;
     width: fit-content;
-    pointer-events: none !important;
     padding: 0 0.5rem !important;
 
     .WhereConfigurationQuery {
       display: block;
       padding: 0 0.5rem;
       height: 85px;
-      pointer-events: none !important;
 
       .MuiOutlinedInput-root {
         min-height: 40px;
@@ -172,7 +150,6 @@
       font-weight: 600;
       min-height: 30px !important;
       height: fit-content !important;
-      pointer-events: none !important;
 
       fieldset {
         border: none !important;
@@ -202,7 +179,6 @@
         flex-wrap: nowrap;
         padding-top: 0 !important;
         padding-bottom: 0 !important;
-        pointer-events: auto !important;
       }
 
       .MuiChip-root,
@@ -220,7 +196,6 @@
   .MuiInputSlider {
     height: 34px;
     padding: 4px 20px 0 20px !important;
-    pointer-events: auto !important;
   }
 
   .MuiInputSliderWithInput {
@@ -262,7 +237,6 @@
       border: $border !important;
       margin-right: 5px;
       padding: 0 !important;
-      pointer-events: auto !important;
 
       input {
         text-align: center;
@@ -286,11 +260,9 @@
 
   .MuiAutocomplete-input {
     min-width: 0;
-    pointer-events: auto !important;
   }
 
   .MuiAutocomplete-popper {
-    pointer-events: auto !important;
 
     div, ul, li {
       min-width: fit-content;

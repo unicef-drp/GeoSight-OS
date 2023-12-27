@@ -16,6 +16,16 @@
 import React, { Fragment, useEffect, useState } from "react";
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import { Input } from "@mui/material";
+import Slider from "@mui/material/Slider";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import {
+  DesktopDateTimePicker
+} from "@mui/x-date-pickers/DesktopDateTimePicker";
+import TextField from "@mui/material/TextField";
+import {
+  LocalizationProvider
+} from "@mui/x-date-pickers/LocalizationProvider";
+
 import { SelectPlaceholder } from "../../Input";
 import {
   getOperators,
@@ -27,19 +37,18 @@ import {
   IS_NOT_NULL,
   IS_NULL,
   MULTI_SELECTABLE_OPERATORS,
+  OPERATOR_WITH_INTERVAL,
   SINGLE_SELECTABLE_OPERATORS
 } from "../../../utils/queryExtraction";
-import { capitalize, dictDeepCopy } from "../../../utils/main";
+import { capitalize, dictDeepCopy, nowUTC } from "../../../utils/main";
 import {
   MultipleSelectWithSearch,
   SelectWithSearch
 } from "../../Input/SelectWithSearch";
-import Slider from "@mui/material/Slider";
 
 // VARIABLES
 // export const INTERVAL = ['minutes', 'hours', 'days', 'months', 'years']
 export const INTERVAL = ['days', 'months', 'years']
-const OPERATOR_WITH_INTERVAL = 'last x (time)'
 const INTERVAL_IDENTIFIER = '::interval'
 const defaultMin = 0;
 const defaultMax = 0;
@@ -105,6 +114,50 @@ export function WhereInputValue(
     }).sort()
   }
   const textBasedOnMinMax = ((isNaN(min) && isNaN(max)) || (!isFinite(min) && !isFinite(max)))
+  /** -------- IF DATE --------- **/
+  if (fieldType === 'date') {
+    if ([">", ">=", "<", "<="].includes(operator)) {
+      return <LocalizationProvider dateAdapter={AdapterMoment}>
+        <DesktopDateTimePicker
+          className='DatePickerInput'
+          value={value}
+          inputFormat="YYYY-MM-DDThh:mm:ss"
+          onChange={(val) => {
+            setValue(val._d.toISOString())
+          }}
+          renderInput={(params) => <TextField {...params} />}
+        />
+      </LocalizationProvider>
+    } else if (operator === IS_BETWEEN) {
+      const min = (!(value[0]?.length > 3) ? nowUTC(true).toISOString() : value[0]).replaceAll("'", '')
+      const max = (!(value[1]?.length > 3) ? nowUTC(true).toISOString() : value[1]).replaceAll("'", '')
+      return <LocalizationProvider dateAdapter={AdapterMoment}>
+        <div style={{ display: "flex" }}>
+          <DesktopDateTimePicker
+            className='DatePickerInput'
+            value={min}
+            maxDate={max}
+            inputFormat="YYYY-MM-DDThh:mm:ss"
+            onChange={(val) => {
+              setValue([val._d.toISOString(), value[1]])
+            }}
+            renderInput={(params) => <TextField {...params} />}
+          />
+          <div className='BetweenDash'>-</div>
+          <DesktopDateTimePicker
+            className='DatePickerInput'
+            value={max}
+            minDate={min}
+            inputFormat="YYYY-MM-DDThh:mm:ss"
+            onChange={(val) => {
+              setValue([value[0], val._d.toISOString()])
+            }}
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </div>
+      </LocalizationProvider>
+    }
+  }
   if ([IS_NULL, IS_NOT_NULL].includes(operator)) {
     return null
   } else if ([IS_LIKE, IS_NOT_LIKE].includes(operator)) {
@@ -328,9 +381,6 @@ export default function WhereInput(
   }
 
   let UPDATED_OPERATOR = getOperators(fieldType, props.isSimplified)
-  if (fieldType === 'date') {
-    UPDATED_OPERATOR[OPERATOR_WITH_INTERVAL] = OPERATOR_WITH_INTERVAL
-  }
 
   return <div
     className={'WhereConfigurationQuery ' + (props.isSimplified ? 'Simplified' : '')}>

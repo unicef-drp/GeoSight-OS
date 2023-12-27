@@ -78,37 +78,8 @@ export default function RelatedTableLayerMapConfig() {
         relatedTableLayer && selectedRelatedTableLayer ?
           <Fragment>
             <div
-              id='RelatedTableLayerConfigDuplication'
-              className='WhereConfigurationWrapper Duplication'
-              onScroll={(evt) => {
-                $('#RelatedTableLayerMiddleConfigReal').scrollLeft($('#RelatedTableLayerConfigDuplication').scrollLeft())
-              }}
-            >
-              <WhereQueryGenerator
-                fields={updateFields(relatedFields)}
-                whereQuery={config.where}
-                setWhereQuery={(where) => {
-                  const indicatorLayer = indicatorLayers.find(layer => layer.id === relatedTableLayer.id)
-                  config.where = where
-                  if (JSON.stringify(indicatorLayer.config) !== JSON.stringify(config)) {
-                    indicatorLayer.config = config
-                    dispatch(Actions.IndicatorLayers.update(indicatorLayer))
-                  }
-                }}
-                disabledChanges={{
-                  add: true,
-                  remove: true,
-                  sql: true,
-                  and_or: true,
-                  field: true,
-                  operator: true,
-                }}
-                isCompact={true}
-              />
-            </div>
-            <div
               id='RelatedTableLayerMiddleConfigReal'
-              className='WhereConfigurationWrapper Real'
+              className='WhereConfigurationWrapper'
             >
               <WhereQueryGenerator
                 fields={updateFields(relatedFields)}

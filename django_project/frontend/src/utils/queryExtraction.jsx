@@ -70,6 +70,7 @@ export const STRING_OPERATORS_SIMPLIFIED = {
   'IN': 'Multi-selection',
 };
 
+export const OPERATOR_WITH_INTERVAL = 'last x (time)'
 export const DATE_OPERATORS_SIMPLIFIED = {
   '=': 'Single selection',
   'IN': 'Multi-selection',
@@ -84,7 +85,9 @@ export const getOperators = (type, isSimplified) => {
   if (type === 'text') {
     return dictDeepCopy(isSimplified ? STRING_OPERATORS_SIMPLIFIED : STRING_OPERATORS)
   } else if (type === 'date') {
-    return dictDeepCopy(isSimplified ? DATE_OPERATORS_SIMPLIFIED : DATE_OPERATORS_SIMPLIFIED)
+    const operators = dictDeepCopy(isSimplified ? DATE_OPERATORS_SIMPLIFIED : DATE_OPERATORS_SIMPLIFIED)
+    operators[OPERATOR_WITH_INTERVAL] = OPERATOR_WITH_INTERVAL
+    return operators
   } else {
     return dictDeepCopy(isSimplified ? NUMBER_OPERATORS_SIMPLIFIED : NUMBER_OPERATORS)
   }
@@ -351,6 +354,19 @@ export function returnDataToExpression(field, operator, value) {
   } else if ([IS_NULL, IS_NOT_NULL].includes(operator)) {
     return `${field} ${cleanOperator}`
   } else if ([IS_BETWEEN].includes(operator)) {
+    try {
+      if (value[0]?.includes('T') || value[1]?.includes('T')) {
+        if (value[0]?.length <= 3) {
+          value[1] = "''"
+        }
+        if (value[1]?.length <= 3) {
+          value[1] = "''"
+        }
+        return `${field} ${operator} '${value[0]}' AND '${value[1]}'`.replaceAll("''", "'")
+      }
+    } catch (err) {
+
+    }
     const min = isNaN(parseFloat(value[0])) ? 0 : parseFloat(value[0])
     const max = isNaN(parseFloat(value[1])) ? 100 : parseFloat(value[1])
     return `${field} ${operator} ${min} AND ${max}`

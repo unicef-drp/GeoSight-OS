@@ -255,12 +255,12 @@ export function jsonToXlsx(data, filename, sheetName = "Sheet 1") {
 }
 
 /** Return now date in UTC */
-export function nowUTC() {
+export function nowUTC(secondZero = false) {
   const date = new Date();
   return new Date(
     Date.UTC(date.getUTCFullYear(), date.getUTCMonth(),
       date.getUTCDate(), date.getUTCHours(),
-      date.getUTCMinutes(), date.getUTCSeconds())
+      date.getUTCMinutes(), secondZero ? 0 : date.getUTCSeconds())
   )
 }
 
