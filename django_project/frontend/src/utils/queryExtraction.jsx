@@ -15,6 +15,9 @@
 
 import alasql from "alasql";
 import { dictDeepCopy } from "./main";
+import {
+  INTERNEXT_REGEX
+} from "../components/SqlQueryGenerator/WhereQueryGenerator";
 
 export const IDENTIFIER = 'indicator_'
 export const JOIN_IDENTIFIER = 'concept_uuid'
@@ -71,6 +74,7 @@ export const STRING_OPERATORS_SIMPLIFIED = {
 };
 
 export const OPERATOR_WITH_INTERVAL = 'last x (time)'
+export const OPERATOR_WITH_INTERNEXT = 'next x (time)'
 export const DATE_OPERATORS_SIMPLIFIED = {
   '=': 'Single selection',
   'IN': 'Multi-selection',
@@ -87,6 +91,7 @@ export const getOperators = (type, isSimplified) => {
   } else if (type === 'date') {
     const operators = dictDeepCopy(isSimplified ? DATE_OPERATORS_SIMPLIFIED : DATE_OPERATORS_SIMPLIFIED)
     operators[OPERATOR_WITH_INTERVAL] = OPERATOR_WITH_INTERVAL
+    operators[OPERATOR_WITH_INTERNEXT] = OPERATOR_WITH_INTERNEXT
     return operators
   } else {
     return dictDeepCopy(isSimplified ? NUMBER_OPERATORS_SIMPLIFIED : NUMBER_OPERATORS)
@@ -330,7 +335,16 @@ export function returnDataToExpression(field, operator, value) {
 
   // if it is interval
   try {
-    const regex = /now\(\) - interval '\d+ (years|months|days|hours|minutes|seconds)'/g;
+    const regex = INTERVAL_REGEX;
+    const matches = cleanValue.match(regex);
+    if (matches) {
+      cleanValue = value
+    }
+  } catch (err) {
+
+  }
+  try {
+    const regex = INTERNEXT_REGEX;
     const matches = cleanValue.match(regex);
     if (matches) {
       cleanValue = value

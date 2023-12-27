@@ -17,6 +17,12 @@ import alasql from "alasql";
 import { isValidDate, parseDateTime, updateDate } from "./main"
 import { spacedField } from "./queryExtraction";
 import { COUNT_UNIQUE } from "../components/SqlQueryGenerator/Aggregation";
+import {
+  INTERNEXT_QUERY_BEFORE,
+  INTERNEXT_REGEX,
+  INTERVAL_QUERY_BEFORE,
+  INTERVAL_REGEX
+} from "../components/SqlQueryGenerator/WhereQueryGenerator";
 
 /**
  * Return related table data
@@ -25,24 +31,53 @@ export const getRelatedTableData = (data, config, selectedGlobalTime, geoField =
   if (data) {
     data = JSON.parse(JSON.stringify(data))
     const { aggregation } = config
-    const intervalRegex = /now\(\) - interval '\d+ (years|months|days|hours|minutes|seconds)'/g;
-    const where = config?.where.replaceAll('"', '`')
-      .replace(/`(.*?)`/g, function (match, text, href) {
-        if (match.includes("'")) {
-          return match.replaceAll('`', '"')
-        }
-        return match
-      })
-      .replace(intervalRegex, function (match, text, href) {
-        const clean = match.replace("now() - interval ", "").replaceAll("'", "").split(' ')
-        const amount = clean[0]
-        const interval = clean[1]
-        const date = new Date()
-        const now = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(),
-          date.getUTCDate(), date.getUTCHours(),
-          date.getUTCMinutes(), date.getUTCSeconds());
-        return `'${updateDate(new Date(now), -1 * parseInt(amount), interval).toISOString()}'`
-      });
+
+    // INTERVAL
+    let where = config?.where
+    {
+      const intervalRegex = INTERVAL_REGEX;
+      where = where.replaceAll('"', '`')
+        .replace(/`(.*?)`/g, function (match, text, href) {
+          if (match.includes("'")) {
+            return match.replaceAll('`', '"')
+          }
+          return match
+        })
+        .replace(intervalRegex, function (match, text, href) {
+          const clean = match.replace(INTERVAL_QUERY_BEFORE, "").replaceAll("'", "").split(' ')
+          const amount = clean[0]
+          const interval = clean[1]
+          const date = new Date()
+          const now = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(),
+            date.getUTCDate(), date.getUTCHours(),
+            date.getUTCMinutes(), date.getUTCSeconds());
+          return `BETWEEN '${updateDate(new Date(now), -1 * parseInt(amount), interval).toISOString()}' AND '${new Date(now).toISOString()}'`
+        });
+    }
+
+    // INTERNEXT
+    {
+      const intervalRegex = INTERNEXT_REGEX;
+      where = where.replaceAll('"', '`')
+        .replace(/`(.*?)`/g, function (match, text, href) {
+          if (match.includes("'")) {
+            return match.replaceAll('`', '"')
+          }
+          return match
+        })
+        .replace(intervalRegex, function (match, text, href) {
+          const clean = match.replace(INTERNEXT_QUERY_BEFORE, "").replaceAll("'", "").split(' ')
+          const amount = clean[0]
+          const interval = clean[1]
+          const date = new Date()
+          const now = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(),
+            date.getUTCDate(), date.getUTCHours(),
+            date.getUTCMinutes(), date.getUTCSeconds());
+          return `BETWEEN '${new Date(now).toISOString()}' AND '${updateDate(new Date(now), parseInt(amount), interval).toISOString()}'`
+        });
+    }
+    where = where.replaceAll('< BETWEEN', ' BETWEEN').replaceAll('> BETWEEN', ' BETWEEN').replaceAll('<= BETWEEN', ' BETWEEN').replaceAll('>= BETWEEN', ' BETWEEN')
+
     const date_field = spacedField(config.date_field)
     const geography_code_field_name = spacedField(geoField)
     let aggregation_method = ''

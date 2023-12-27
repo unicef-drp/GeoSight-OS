@@ -37,6 +37,7 @@ import {
   IS_NOT_NULL,
   IS_NULL,
   MULTI_SELECTABLE_OPERATORS,
+  OPERATOR_WITH_INTERNEXT,
   OPERATOR_WITH_INTERVAL,
   SINGLE_SELECTABLE_OPERATORS
 } from "../../../utils/queryExtraction";
@@ -45,11 +46,11 @@ import {
   MultipleSelectWithSearch,
   SelectWithSearch
 } from "../../Input/SelectWithSearch";
+import { INTERNEXT_IDENTIFIER, INTERVAL_IDENTIFIER } from "./index";
 
 // VARIABLES
 // export const INTERVAL = ['minutes', 'hours', 'days', 'months', 'years']
 export const INTERVAL = ['days', 'months', 'years']
-const INTERVAL_IDENTIFIER = '::interval'
 const defaultMin = 0;
 const defaultMax = 0;
 
@@ -178,24 +179,26 @@ export function WhereInputValue(
     return null
   } else if ([IS_LIKE, IS_NOT_LIKE].includes(operator)) {
     return defaultInput()
-  } else if (operator === OPERATOR_WITH_INTERVAL) {
+  } else if ([OPERATOR_WITH_INTERVAL, OPERATOR_WITH_INTERNEXT].includes(operator)) {
     let timeValue = ""
     let timeType = ""
+    const IDENTIFIER = operator === OPERATOR_WITH_INTERVAL ? INTERVAL_IDENTIFIER : INTERNEXT_IDENTIFIER
     try {
-      const [newTimeValue, newTimeType] = value.replace(INTERVAL_IDENTIFIER, '').split(' ')
+      const [newTimeValue, newTimeType] = value.replace(INTERVAL_IDENTIFIER, '').replace(INTERNEXT_IDENTIFIER, '').split(' ')
       timeValue = newTimeValue
       timeType = newTimeType
     } catch (err) {
 
     }
     return <Fragment>
-      <span className='WhereConfigurationOperatorText'>Last</span>
+      <span
+        className='WhereConfigurationOperatorText'>{operator === OPERATOR_WITH_INTERVAL ? 'Last' : 'Next'}</span>
       <Input
         type="number"
         className={'WhereConfigurationOperatorValue'}
         value={timeValue ? timeValue : ""}
         onChange={(evt) => {
-          setValue(`${evt.target.value ? evt.target.value : 0} ${timeType}${INTERVAL_IDENTIFIER}`)
+          setValue(`${evt.target.value && evt.target.value >= 0 ? evt.target.value : 0} ${timeType}${IDENTIFIER}`)
         }}
         disabled={disabled}
       />
@@ -209,7 +212,7 @@ export function WhereInputValue(
         }
         initValue={timeType ? timeType : ""}
         onChangeFn={(value) => {
-          setValue(`${timeValue} ${value}${INTERVAL_IDENTIFIER}`)
+          setValue(`${timeValue} ${value}${IDENTIFIER}`)
         }}
         disabled={disabled}
       />
@@ -371,7 +374,7 @@ export default function WhereInput(
   const value = where.value
   const field = where.field
   const currentField = fields.find(fieldDef => fieldDef.name === field.replaceAll('"', ''))
-  let operator = ('' + value)?.includes(INTERVAL_IDENTIFIER) ? OPERATOR_WITH_INTERVAL : where.operator;
+  let operator = ('' + value)?.includes(INTERVAL_IDENTIFIER) ? OPERATOR_WITH_INTERVAL : ('' + value)?.includes(INTERNEXT_IDENTIFIER) ? OPERATOR_WITH_INTERNEXT : where.operator;
 
   // Check the input type
   let fieldType = currentField?.type ? currentField?.type : 'text'
@@ -388,13 +391,12 @@ export default function WhereInput(
   }
 
   // Check the fields
-  if (operator === OPERATOR_WITH_INTERVAL) {
+  if ([OPERATOR_WITH_INTERVAL, OPERATOR_WITH_INTERNEXT].includes(operator)) {
     fields = dictDeepCopy(fields)
     fields = fields.filter(fieldDef => fieldDef.type === 'date')
   }
 
   let UPDATED_OPERATOR = getOperators(fieldType, props.isSimplified)
-
   return <div
     className={'WhereConfigurationQuery ' + (props.isSimplified ? 'Simplified' : '')}>
     <SelectPlaceholder
@@ -430,10 +432,13 @@ export default function WhereInput(
       onChangeFn={(value) => {
         if (value === OPERATOR_WITH_INTERVAL) {
           where.operator = '>'
-          where.value = "now() - interval '1 days'"
+          where.value = "1 days::interval"
+        } else if (value === OPERATOR_WITH_INTERNEXT) {
+          where.operator = '<'
+          where.value = "1 days::internext"
         } else if ([IS_IN, IS_NOT_IN].includes(value)) {
           where.operator = value
-          if (where.value.includes('::interval')) {
+          if (where.value.includes(INTERVAL_IDENTIFIER) || where.value.includes(INTERNEXT_IDENTIFIER)) {
             where.value = []
           }
           if (!Array.isArray(where.value)) {
@@ -449,7 +454,7 @@ export default function WhereInput(
             where.value = where.value[0]
           }
           if (where.value) {
-            where.value = ('' + where?.value).replace(INTERVAL_IDENTIFIER, '')
+            where.value = ('' + where?.value).replace(INTERVAL_IDENTIFIER, '').replace(INTERNEXT_IDENTIFIER, '')
           } else {
             where.value = ''
           }

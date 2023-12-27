@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 /* ==========================================================================
    Where Query Generator
@@ -30,8 +30,13 @@ import WhereRender from "./WhereRender"
 
 import './style.scss';
 
-const INTERVAL_IDENTIFIER = '::interval'
-const INTERVAL_QUERY_BEFORE = 'now() - interval '
+export const INTERVAL_IDENTIFIER = '::interval'
+export const INTERVAL_QUERY_BEFORE = 'now() - interval '
+export const INTERVAL_REGEX = /now\(\) - interval '\d+ (years|months|days|hours|minutes|seconds)'/g
+
+export const INTERNEXT_IDENTIFIER = '::internext'
+export const INTERNEXT_QUERY_BEFORE = 'now() + interval '
+export const INTERNEXT_REGEX = /now\(\) \+ interval '\d+ (years|months|days|hours|minutes|seconds)'/g
 
 /**
  * Left-Right toggle button.
@@ -46,18 +51,33 @@ export default function WhereQueryGenerator(
     fields, whereQuery, setWhereQuery, disabledChanges = {}, ...props
   }
 ) {
+  let cleanWhere = whereQuery
   // ---------------------------------------------------
   // Change interval with temporary one
-  let cleanWhere = whereQuery
-  const regex = /now\(\) - interval '\d+ (years|months|days|hours|minutes|seconds)'/g;
-  const matches = whereQuery.match(regex);
-  if (matches) {
-    matches.map(match => {
-      let newStr = match.replaceAll(INTERVAL_QUERY_BEFORE, '')
-      newStr = newStr.replaceAll("'", "") + INTERVAL_IDENTIFIER
-      newStr = `'${newStr}'`
-      cleanWhere = cleanWhere.replace(match, newStr)
-    })
+  {
+    const regex = INTERVAL_REGEX;
+    const matches = whereQuery.match(regex);
+    if (matches) {
+      matches.map(match => {
+        let newStr = match.replaceAll(INTERVAL_QUERY_BEFORE, '')
+        newStr = newStr.replaceAll("'", "") + INTERVAL_IDENTIFIER
+        newStr = `'${newStr}'`
+        cleanWhere = cleanWhere.replace(match, newStr)
+      })
+    }
+  }
+  // INTERNEXT
+  {
+    const regex = INTERNEXT_REGEX;
+    const matches = whereQuery.match(regex);
+    if (matches) {
+      matches.map(match => {
+        let newStr = match.replaceAll(INTERNEXT_QUERY_BEFORE, '')
+        newStr = newStr.replaceAll("'", "") + INTERNEXT_IDENTIFIER
+        newStr = `'${newStr}'`
+        cleanWhere = cleanWhere.replace(match, newStr)
+      })
+    }
   }
   // ---------------------------------------------------
 
@@ -84,14 +104,29 @@ export default function WhereQueryGenerator(
     newQuery = newQuery.substring(1)
     newQuery = newQuery.slice(0, -1);
 
-    const regex = /'\d+ (years|months|days|hours|minutes|seconds)::interval'/g;
-    const matches = newQuery.match(regex);
-    if (matches) {
-      matches.map(match => {
-        let newStr = match.replaceAll(INTERVAL_IDENTIFIER, '')
-        newStr = INTERVAL_QUERY_BEFORE + newStr
-        newQuery = newQuery.replace(match, newStr)
-      })
+    // Interval
+    {
+      const regex = /'\d+ (years|months|days|hours|minutes|seconds)::interval'/g;
+      const matches = newQuery.match(regex);
+      if (matches) {
+        matches.map(match => {
+          let newStr = match.replaceAll(INTERVAL_IDENTIFIER, '')
+          newStr = INTERVAL_QUERY_BEFORE + newStr
+          newQuery = newQuery.replace(match, newStr)
+        })
+      }
+    }
+    // Internext
+    {
+      const regex = /'\d+ (years|months|days|hours|minutes|seconds)::internext'/g;
+      const matches = newQuery.match(regex);
+      if (matches) {
+        matches.map(match => {
+          let newStr = match.replaceAll(INTERNEXT_IDENTIFIER, '')
+          newStr = INTERNEXT_QUERY_BEFORE + newStr
+          newQuery = newQuery.replace(match, newStr)
+        })
+      }
     }
     setWhereQuery(newQuery)
   }
