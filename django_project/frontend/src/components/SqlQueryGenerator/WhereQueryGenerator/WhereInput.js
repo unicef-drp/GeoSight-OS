@@ -156,6 +156,22 @@ export function WhereInputValue(
           />
         </div>
       </LocalizationProvider>
+    } else if (MULTI_SELECTABLE_OPERATORS.includes(operator)) {
+      return <MultipleSelectWithSearch
+        value={value}
+        onChangeFn={(value) => {
+          if (Array.isArray(value)) {
+            setValue(value.map(val => val.value !== undefined ? val.value : val))
+          } else {
+            setValue(value.value !== undefined ? value.value : value)
+          }
+        }}
+        options={optionsData ? optionsData : []}
+        className='FilterInput'
+        disabled={disabled}
+        quickSelection={true}
+        {...props}
+      />
     }
   }
   if ([IS_NULL, IS_NOT_NULL].includes(operator)) {
@@ -199,9 +215,6 @@ export function WhereInputValue(
       />
     </Fragment>
   } else if (MULTI_SELECTABLE_OPERATORS.includes(operator)) {
-    if (!optionsData) {
-      return defaultInput()
-    }
     return <MultipleSelectWithSearch
       value={value}
       onChangeFn={(value) => {
@@ -211,7 +224,7 @@ export function WhereInputValue(
           setValue(value.value !== undefined ? value.value : value)
         }
       }}
-      options={optionsData}
+      options={optionsData ? optionsData : []}
       className='FilterInput'
       disabled={disabled}
       {...props}

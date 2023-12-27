@@ -20,6 +20,22 @@
 @import '../../app/variables';
 
 .MultipleSelectWithSearch {
+
+  .OtherOptions {
+    color: #adb5bd !important;
+    z-index: 1;
+
+    button {
+      padding: 0 !important;
+      margin-left: 12px !important;
+    }
+
+    svg {
+      height: 11px;
+      width: 11px;
+    }
+  }
+
   .MuiChip-label {
     font-size: 1rem !important;
   }
