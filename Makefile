@@ -181,7 +181,7 @@ devweb: db
 	@echo "------------------------------------------------------------------"
 	@echo "Running in DEVELOPMENT mode"
 	@echo "------------------------------------------------------------------"
-	@docker-compose ${ARGS} up --no-recreate --no-deps -d dev
+	@docker-compose ${ARGS} up --no-recreate --no-deps -d dev redis
 
 devweb-entrypoint:
 	@echo
