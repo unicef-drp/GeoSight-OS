@@ -14,6 +14,10 @@
  */
 
 import alasql from "alasql";
+import { dictDeepCopy } from "./main";
+import {
+  INTERNEXT_REGEX
+} from "../components/SqlQueryGenerator/WhereQueryGenerator";
 
 export const IDENTIFIER = 'indicator_'
 export const JOIN_IDENTIFIER = 'concept_uuid'
@@ -49,6 +53,7 @@ export const NUMBER_OPERATORS = Object.assign({}, OPERATORS, {
 });
 export const NUMBER_OPERATORS_SIMPLIFIED = {
   '=': 'Single selection',
+  'IN': 'Multi-selection',
   '>=': 'Above or equal',
   '<=': 'Below or equal',
   'BETWEEN': 'Between'
@@ -64,17 +69,32 @@ export const STRING_OPERATORS = Object.assign({}, OPERATORS, {
   'NOT LIKE': 'not like',
 });
 export const STRING_OPERATORS_SIMPLIFIED = {
-  'IN': 'Multi-selection',
   '=': 'Single selection',
+  'IN': 'Multi-selection',
+};
+
+export const OPERATOR_WITH_INTERVAL = 'last x (time)'
+export const OPERATOR_WITH_INTERNEXT = 'next x (time)'
+export const DATE_OPERATORS_SIMPLIFIED = {
+  '=': 'Single selection',
+  'IN': 'Multi-selection',
+  '>=': 'After',
+  '<=': 'Before',
+  'BETWEEN': 'Between'
 };
 
 export const OPERATOR = Object.assign({}, NUMBER_OPERATORS, STRING_OPERATORS);
 
 export const getOperators = (type, isSimplified) => {
   if (type === 'text') {
-    return isSimplified ? STRING_OPERATORS_SIMPLIFIED : STRING_OPERATORS
+    return dictDeepCopy(isSimplified ? STRING_OPERATORS_SIMPLIFIED : STRING_OPERATORS)
+  } else if (type === 'date') {
+    const operators = dictDeepCopy(isSimplified ? DATE_OPERATORS_SIMPLIFIED : DATE_OPERATORS_SIMPLIFIED)
+    operators[OPERATOR_WITH_INTERVAL] = OPERATOR_WITH_INTERVAL
+    operators[OPERATOR_WITH_INTERNEXT] = OPERATOR_WITH_INTERNEXT
+    return operators
   } else {
-    return isSimplified ? NUMBER_OPERATORS_SIMPLIFIED : NUMBER_OPERATORS
+    return dictDeepCopy(isSimplified ? NUMBER_OPERATORS_SIMPLIFIED : NUMBER_OPERATORS)
   }
 }
 
@@ -315,7 +335,16 @@ export function returnDataToExpression(field, operator, value) {
 
   // if it is interval
   try {
-    const regex = /now\(\) - interval '\d+ (years|months|days|hours|minutes|seconds)'/g;
+    const regex = INTERVAL_REGEX;
+    const matches = cleanValue.match(regex);
+    if (matches) {
+      cleanValue = value
+    }
+  } catch (err) {
+
+  }
+  try {
+    const regex = INTERNEXT_REGEX;
     const matches = cleanValue.match(regex);
     if (matches) {
       cleanValue = value
@@ -339,6 +368,19 @@ export function returnDataToExpression(field, operator, value) {
   } else if ([IS_NULL, IS_NOT_NULL].includes(operator)) {
     return `${field} ${cleanOperator}`
   } else if ([IS_BETWEEN].includes(operator)) {
+    try {
+      if (value[0]?.includes('T') || value[1]?.includes('T')) {
+        if (value[0]?.length <= 3) {
+          value[1] = "''"
+        }
+        if (value[1]?.length <= 3) {
+          value[1] = "''"
+        }
+        return `${field} ${operator} '${value[0]}' AND '${value[1]}'`.replaceAll("''", "'")
+      }
+    } catch (err) {
+
+    }
     const min = isNaN(parseFloat(value[0])) ? 0 : parseFloat(value[0])
     const max = isNaN(parseFloat(value[1])) ? 100 : parseFloat(value[1])
     return `${field} ${operator} ${min} AND ${max}`

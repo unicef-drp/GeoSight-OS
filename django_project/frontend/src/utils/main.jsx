@@ -255,12 +255,12 @@ export function jsonToXlsx(data, filename, sheetName = "Sheet 1") {
 }
 
 /** Return now date in UTC */
-export function nowUTC() {
+export function nowUTC(secondZero = false) {
   const date = new Date();
   return new Date(
     Date.UTC(date.getUTCFullYear(), date.getUTCMonth(),
       date.getUTCDate(), date.getUTCHours(),
-      date.getUTCMinutes(), date.getUTCSeconds())
+      date.getUTCMinutes(), secondZero ? 0 : date.getUTCSeconds())
   )
 }
 
@@ -287,6 +287,25 @@ export function formatDate(d, reverseDate = false, toUTC = false) {
   } else {
     return [year, month, day].join('-');
   }
+}
+
+/** Update date from period and interval. */
+export function updateDate(dt, amount, period) {
+  switch (period) {
+    case 'years':
+      return dt.setFullYear(dt.getFullYear() + amount) && dt;
+    case 'months':
+      return dt.setMonth(dt.getMonth() + amount) && dt;
+    case 'days':
+      return dt.setDate(dt.getDate() + amount) && dt;
+    case 'hours':
+      return dt.setHours(dt.getHours() + amount) && dt;
+    case 'minutes':
+      return dt.setMinutes(dt.getMinutes() + amount) && dt;
+    case 'seconds':
+      return dt.setSeconds(dt.getSeconds() + amount) && dt;
+  }
+  return dt
 }
 
 /**
