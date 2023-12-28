@@ -86,7 +86,7 @@ export const ViewLevelConfiguration = forwardRef(
             />
           </div>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={6} className='ReferenceLayerAvailableLevelsConfiguration'>
           <div className="BasicFormSection">
             <label className="form-label" htmlFor="group">
               Available Levels

@@ -1,7 +1,5 @@
 import { expect, test } from '@playwright/test';
 
-// URL That we need to check
-let url = 'http://localhost:2000';
 const timeout = 2000;
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
@@ -9,7 +7,7 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 test.describe('Create indicator', () => {
   test.beforeEach(async ({ page }) => {
     // Go to the starting url before each test.
-    await page.goto(url);
+    await page.goto('');
   });
 
   // A use case tests scenarios
