@@ -22,10 +22,34 @@ test.describe('Create project', () => {
     await page.locator("#SummaryCategory").click();
     await page.keyboard.type('Test');
     await page.keyboard.press('Enter');
+
+    // Add indicator
+    await page.locator('.TabPrimary').getByText('Indicators').click();
+    await page.getByRole('button', { name: 'Add Indicator' }).click();
+    await page.getByText('Sample Indicator A').first().click();
+    await page.getByText('Sample Indicator B').first().click();
+    await page.locator('.AdminSelectDataForm .Save-Button button').click();
+
+    // Add indicator Layers
+    await page.locator('.TabPrimary').getByText('Indicator Layers').click();
+    await page.getByRole('button', { name: 'Add Indicator Layer' }).click();
+    await page.getByText('Single Indicator LayerSelect').click();
+    await page.getByRole('cell', {
+      name: 'Sample Indicator A',
+      exact: true
+    }).click();
+    await page.getByRole('cell', {
+      name: 'Sample Indicator B',
+      exact: true
+    }).click();
+    await page.locator('.AdminSelectDataForm .Save-Button button').click();
+
+    // Save
     await page.getByText('Save').isEnabled();
     await page.getByText('Save').click();
 
     // Check values
+    await page.waitForURL('http://localhost:2000/admin/project/test-project-default/edit')
     await expect(page.locator('.MoreActionIcon')).toBeVisible();
     await expect(page.locator('.Summary .ReferenceDatasetSection input')).toHaveValue('Global Administrative Boundaries - Somalia (Latest)');
     await expect(page.locator('.Summary .CodeMappingConfig input')).toHaveValue('Concept uuid');
@@ -44,10 +68,19 @@ test.describe('Create project', () => {
     await expect(page.locator('.ExtentManualInput input').nth(1)).toHaveValue('11.988');
     await expect(page.locator('.ExtentManualInput input').nth(2)).toHaveValue('51.415');
     await expect(page.locator('.ExtentManualInput input').nth(3)).toHaveValue('-1.657');
-    await expect(page.getByText('Monthly')).toBeVisible();
+    await expect(page.locator('#default_interval').getByText('Monthly')).toBeVisible();
     expect(await page.locator("#fit_to_current_indicator_range").isChecked()).toBeFalsy()
     expect(await page.locator("#show_last_known_value_in_range").isChecked()).toBeTruthy()
 
+    // Check indicators
+    await page.locator('.TabPrimary').getByText('Indicators').click();
+    expect(await page.getByRole('cell', { name: 'Sample Indicator A' })).toBeVisible();
+    expect(await page.getByRole('cell', { name: 'Sample Indicator B' })).toBeVisible();
+
+    // Check indicator layers
+    await page.locator('.TabPrimary').getByText('Indicator Layers').click();
+    expect(await page.getByText('Sample Indicator A').nth(1)).toBeVisible();
+    expect(await page.getByText('Sample Indicator B').nth(1)).toBeVisible();
 
     // Wait submitted
     page.on('dialog', async dialog => {
@@ -84,10 +117,34 @@ test.describe('Create project', () => {
     await page.getByText("Show last known value in range").click()
     await page.locator("#default_interval > .ReactSelect__control > .ReactSelect__value-container > .ReactSelect__input-container").click()
     await page.getByText("Yearly").click()
+
+    // Add indicator
+    await page.locator('.TabPrimary').getByText('Indicators').click();
+    await page.getByRole('button', { name: 'Add Indicator' }).click();
+    await page.getByText('Sample Indicator A').first().click();
+    await page.getByText('Sample Indicator B').first().click();
+    await page.locator('.AdminSelectDataForm .Save-Button button').click();
+
+    // Add indicator Layers
+    await page.locator('.TabPrimary').getByText('Indicator Layers').click();
+    await page.getByRole('button', { name: 'Add Indicator Layer' }).click();
+    await page.getByText('Single Indicator LayerSelect').click();
+    await page.getByRole('cell', {
+      name: 'Sample Indicator A',
+      exact: true
+    }).click();
+    await page.getByRole('cell', {
+      name: 'Sample Indicator B',
+      exact: true
+    }).click();
+    await page.locator('.AdminSelectDataForm .Save-Button button').click();
+
+    // Save
     await page.getByText('Save').isEnabled();
     await page.getByText('Save').click();
 
     // Check values
+    await page.waitForURL('http://localhost:2000/admin/project/test-project-override-config/edit')
     await expect(page.locator('.MoreActionIcon')).toBeVisible();
     await expect(page.locator('.Summary .ReferenceDatasetSection input')).toHaveValue('Global Administrative Boundaries - Somalia (Latest)');
     await expect(page.locator('.Summary .CodeMappingConfig input')).toHaveValue('Concept uuid');
@@ -106,9 +163,19 @@ test.describe('Create project', () => {
     await expect(page.locator('.ExtentManualInput input').nth(1)).toHaveValue('11.988');
     await expect(page.locator('.ExtentManualInput input').nth(2)).toHaveValue('51.415');
     await expect(page.locator('.ExtentManualInput input').nth(3)).toHaveValue('-1.657');
-    await expect(page.getByText('Yearly')).toBeVisible();
+    await expect(page.locator('#default_interval').getByText('Yearly')).toBeVisible();
     expect(await page.locator("#fit_to_current_indicator_range").isChecked()).toBeTruthy()
     expect(await page.locator("#show_last_known_value_in_range").isChecked()).toBeFalsy()
+
+    // Check indicators
+    await page.locator('.TabPrimary').getByText('Indicators').click();
+    expect(await page.getByRole('cell', { name: 'Sample Indicator A' })).toBeVisible();
+    expect(await page.getByRole('cell', { name: 'Sample Indicator B' })).toBeVisible();
+
+    // Check indicator layers
+    await page.locator('.TabPrimary').getByText('Indicator Layers').click();
+    expect(await page.getByText('Sample Indicator A').nth(1)).toBeVisible();
+    expect(await page.getByText('Sample Indicator B').nth(1)).toBeVisible();
 
     // Wait submitted
     page.on('dialog', async dialog => {
