@@ -71,9 +71,6 @@ jobs:
             exit 1
           fi
 
-      - name: Test backend
-        run: make devweb-test
-
       - name: Test E2E
         working-directory: ./playwright/ci-test
         run: |
@@ -87,3 +84,6 @@ jobs:
           name: playwright-report
           path: playwright/ci-test/playwright-report/
           retention-days: 30
+
+      - name: Test backend
+        run: make devweb-test

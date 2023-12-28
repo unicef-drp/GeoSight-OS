@@ -112,7 +112,7 @@ export default function SummaryDashboardForm({ changed }) {
                 />
               </div>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={6} className='CodeMappingConfig'>
               <label className="form-label required" htmlFor="name">
                 Mapping Indicators Using
               </label>
@@ -142,8 +142,9 @@ export default function SummaryDashboardForm({ changed }) {
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <div>
-                <label className="form-label required"
-                       htmlFor="name">Name</label>
+                <label className="form-label required" htmlFor="name">
+                  Name
+                </label>
               </div>
               <div>
               <span className="form-input">
