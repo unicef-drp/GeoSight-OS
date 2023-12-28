@@ -64,7 +64,7 @@ export function SelectWithSearch(
       renderInput={(params) => (
         <TextField
           {...params}
-          placeholder={props.placeholder ? props.placeholder : "Select 1 option"}
+          placeholder={props.placeholder ? props.placeholder : 'Select 1 option'}
         />
       )}
       onChange={(event, values) => {
@@ -100,7 +100,7 @@ export function MultipleSelectWithSearch(
 ) {
   const isCompact = props.isCompact
   const selectAllText = 'Select all'
-  const allSelected = value.length === options.length
+  const allSelected = value.length === options.length && value.length > 0
   const optionsWithSelectAll = [selectAllText].concat(options)
   return <>
     <Autocomplete
@@ -142,7 +142,11 @@ export function MultipleSelectWithSearch(
         </li>
       }}
       renderInput={(params) => {
-        params.InputProps.placeholder = value.length === 1 ? '' : allSelected ? 'All selected' : value.length ? (value.length + ' selected') : props.placeholder ? props.placeholder : "Select 1 option"
+        if (props.showValues) {
+          params.InputProps.placeholder = !value.length ? props.placeholder ? props.placeholder : 'Select 1 option' : ''
+        } else {
+          params.InputProps.placeholder = allSelected ? 'All selected' : value.length ? (value.length + ' selected') : props.placeholder ? props.placeholder : 'Select 1 option'
+        }
         if (props?.quickSelection) {
           params.InputProps.startAdornment = (
             <InputAdornment
@@ -158,12 +162,7 @@ export function MultipleSelectWithSearch(
             </InputAdornment>
           )
         }
-        return <>
-          <TextField
-            {...params}
-          />
-
-        </>
+        return <TextField {...params}/>
       }}
       onChange={(e, values) => {
         if (e.target.getAttribute('value') === selectAllText || $(e.target).closest('li').attr('value') === selectAllText) {
