@@ -75,7 +75,7 @@ class GeorepoUrl:
         """Return API of view detail."""
         return (
             f'{self.georepo_url}/search/view/{view_uuid}/'
-            f'?cached=False'
+            f'?cached=False&geom=centroid'
         )
 
 
@@ -116,9 +116,6 @@ class GeorepoGenerator:
 
     def save_response(self, url: str, data: dict):
         """Save response."""
-        print('----------------------')
-        print(url)
-        print(data)
         # Serializing json
         json_str = json.dumps(data, indent=4)
         json_str = json_str.replace(
@@ -135,6 +132,7 @@ class GeorepoGenerator:
             url_request = f'{url}?page={page}&page_size={self.page_size}'
         else:
             url_request = f'{url}&page={page}&page_size={self.page_size}'
+        print(url_request)
         response = self.get(url_request)
         if response.status_code != 200:
             raise Exception(
@@ -165,7 +163,6 @@ class GeorepoGenerator:
 
     def _save_get_request(self, url: str):
         """Return reference layer."""
-        print(url)
         response = self.get(url)
         if response.status_code != 200:
             raise Exception(
@@ -221,7 +218,7 @@ class GeorepoGenerator:
                     )
                     for level in data['dataset_levels']:
                         self._save_request_paginated(
-                            level['url']
+                            level['url'] + '?geom=centroid'
                         )
 
 

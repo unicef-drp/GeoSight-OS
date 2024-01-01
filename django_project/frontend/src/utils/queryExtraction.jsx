@@ -363,8 +363,7 @@ export function returnDataToExpression(field, operator, value) {
       cleanValue = `('')`
     }
   } else if ([IS_LIKE, IS_NOT_LIKE].includes(operator)) {
-
-    return `${field} ${cleanOperator} ${cleanValueFn(`%${value}`)}`
+    return `${field} ${cleanOperator} ${cleanValueFn(`%${value}%`)}`
   } else if ([IS_NULL, IS_NOT_NULL].includes(operator)) {
     return `${field} ${cleanOperator}`
   } else if ([IS_BETWEEN].includes(operator)) {

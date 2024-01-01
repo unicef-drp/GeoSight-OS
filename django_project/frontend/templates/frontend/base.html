@@ -79,6 +79,7 @@
 {% block pre_scripts %}
 {% endblock %}
 <script>
+  const DEBUG = {% if DEBUG %}true{% else %}false{% endif %};
   const maxZoom = 24;
   {% if request.user.is_authenticated %}
     const user = {{ user|safe }};

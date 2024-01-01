@@ -187,6 +187,7 @@ export const toUcode = (code) => {
  * Extracting ucode
  */
 export const extractCode = (properties, geoField = 'concept_uuid') => {
-  return toUcode(properties[geoField])
+  const geomFieldOnVectorTile = geoField === 'geometry_code' ? 'ucode' : geoField
+  return toUcode(properties[geoField] ? properties[geoField] : properties[geomFieldOnVectorTile])
 }
 
