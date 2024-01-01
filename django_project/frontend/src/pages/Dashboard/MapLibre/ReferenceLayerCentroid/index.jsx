@@ -35,6 +35,7 @@ import {
 } from "../../../../utils/indicatorLayer";
 import { dictDeepCopy } from "../../../../utils/main";
 import { UpdateStyleData } from "../../../../utils/indicatorData";
+import { Logger } from "../../../../utils/logger";
 
 import './style.scss';
 
@@ -43,7 +44,6 @@ let charts = {}
 const INDICATOR_LABEL_ID = 'indicator-label'
 let centroidConfig = {}
 
-const temporary = {}
 /**
  * GeometryCenter.
  */
@@ -411,6 +411,7 @@ export default function ReferenceLayerCentroid({ map }) {
     if (!usedFilteredGeometries && geometriesData) {
       usedFilteredGeometries = geometriesLevel
     }
+    Logger.log(JSON.stringify(usedFilteredGeometries))
 
     // Check by config
     const config = {
@@ -572,49 +573,42 @@ export default function ReferenceLayerCentroid({ map }) {
       }
 
       // Create features
-      let theGeometries = Object.keys(geometriesData)
-      const identifier = JSON.stringify(config) + JSON.stringify(theGeometries)
-      const temp = temporary[identifier]
       let features = []
-      if (temp) {
-        features = temp
-      } else {
-        const indicatorsByGeom = {}
-        for (const [indicatorId, indicatorData] of Object.entries(usedIndicatorsData)) {
-          indicatorData.data.forEach(function (data) {
-            const code = extractCode(data)
-            if (!indicatorsByGeom[code]) {
-              indicatorsByGeom[code] = []
-            }
-            indicatorsByGeom[code].push(data);
-          })
-        }
-        theGeometries.map(geom => {
-          const geometry = geometriesData[geom]
-          const code = extractCode(geometry)
-          const indicator = indicatorsByGeom[code] ? indicatorsByGeom[code][0] : null
-          if (usedFilteredGeometries && !usedFilteredGeometries.includes(code)) {
-            return
+      let theGeometries = Object.keys(geometriesData)
+      const indicatorsByGeom = {}
+      for (const [indicatorId, indicatorData] of Object.entries(usedIndicatorsData)) {
+        indicatorData.data.forEach(function (data) {
+          const code = extractCode(data)
+          if (!indicatorsByGeom[code]) {
+            indicatorsByGeom[code] = []
           }
-          let properties = geometry
-          if (geometry) {
-            if (indicator) {
-              properties = Object.assign({}, geometry, indicator)
-            }
-            if (geometry.centroid) {
-              features.push({
-                "type": "Feature",
-                "properties": properties,
-                "geometry": {
-                  "type": "Point",
-                  "coordinates": geometry.centroid.replace('POINT (', '').replace('POINT(', '').replace(')', '').split(' ').map(coord => parseFloat(coord))
-                }
-              })
-            }
-          }
+          indicatorsByGeom[code].push(data);
         })
-        temporary[identifier] = dictDeepCopy(features)
       }
+      theGeometries.map(geom => {
+        const geometry = geometriesData[geom]
+        const code = extractCode(geometry)
+        const indicator = indicatorsByGeom[code] ? indicatorsByGeom[code][0] : null
+        if (usedFilteredGeometries && !usedFilteredGeometries.includes(code)) {
+          return
+        }
+        let properties = geometry
+        if (geometry) {
+          if (indicator) {
+            properties = Object.assign({}, geometry, indicator)
+          }
+          if (geometry.centroid) {
+            features.push({
+              "type": "Feature",
+              "properties": properties,
+              "geometry": {
+                "type": "Point",
+                "coordinates": geometry.centroid.replace('POINT (', '').replace('POINT(', '').replace(')', '').split(' ').map(coord => parseFloat(coord))
+              }
+            })
+          }
+        }
+      })
       renderLabel(features, config)
     }
   }, [

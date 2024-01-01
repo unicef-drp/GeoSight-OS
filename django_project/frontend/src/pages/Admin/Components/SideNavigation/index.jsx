@@ -155,7 +155,7 @@ export default function SideNavigation({ pageName, minified }) {
                 </div>
                 <SidaNavigationButton
                   minified={minified}
-                  title='Data Data Browser'>
+                  title='Data Browser'>
                   <a href={dataset}
                      className={'SideNavigation-Row ' + (pageName === pageNames.Dataset ? 'active' : '')}>
                     {

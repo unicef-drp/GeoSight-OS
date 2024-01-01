@@ -499,6 +499,15 @@
     background: $base-alpha-color;
     padding: 10px;
 
+    .WhereConfigurationOperatorValue {
+      padding: 0 !important;
+
+      input {
+        border: unset !important;
+        height: 100%;
+      }
+    }
+
     .SelectWithSearchInput,
     .MuiAutocomplete-root {
       height: 56px;
