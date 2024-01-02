@@ -145,7 +145,7 @@ export function MultipleSelectWithSearch(
         if (props.showValues) {
           params.InputProps.placeholder = !value.length ? props.placeholder ? props.placeholder : 'Select 1 option' : ''
         } else {
-          params.InputProps.placeholder = allSelected ? 'All selected' : value.length ? (value.length + ' selected') : props.placeholder ? props.placeholder : 'Select 1 option'
+          params.InputProps.placeholder = value.length === 1 ? '' : allSelected ? 'All selected' : value.length ? (value.length + ' selected') : props.placeholder ? props.placeholder : 'Select 1 option'
         }
         if (props?.quickSelection) {
           params.InputProps.startAdornment = (
