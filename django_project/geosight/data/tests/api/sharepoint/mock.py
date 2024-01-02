@@ -25,5 +25,5 @@ def load_file(self, relative_url):
         _filename = os.path.join(FOLDER, '_fixtures', relative_url)
         open(_filename)
         return _filename
-    except IOError as e:
+    except IOError:
         raise Exception('File does not exist')

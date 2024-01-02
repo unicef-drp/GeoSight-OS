@@ -72,7 +72,7 @@ class SharepointApiTest(BasePermissionTest, TestCase):
         self.assertTrue('Sharepoint 2' in response.json()[1]['full_name'])
 
     def test_fetch_info_list(self):
-        """Test fetch API"""
+        """Test fetch API."""
         url = reverse('sharepoint-fetch-info-api', args=[0])
         self.assertRequestPostView(url, 403, {})
         self.assertRequestPostView(url, 403, {}, self.viewer)

@@ -24,4 +24,5 @@ export const updateDataWithSetState = (data, setData, attributes) => {
   if (JSON.stringify(newData) !== JSON.stringify(data)) {
     setData({ ...newData })
   }
+  return newData
 }
