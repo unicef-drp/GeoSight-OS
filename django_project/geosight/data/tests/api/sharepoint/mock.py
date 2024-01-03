@@ -11,18 +11,19 @@ Contact : geosight-no-reply@unicef.org
 
 """
 __author__ = 'irwan@kartoza.com'
-__date__ = '13/06/2023'
+__date__ = '02/01/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from .basemap import *  # noqa
-from .context_layer import *  # noqa
-from .dashboard import *  # noqa
-from .dashboard_bookmark import *  # noqa
-from .dashboard_embed import *  # noqa
-from .indicator import *  # noqa
-from .indicator_value import *  # noqa
-from .indicators import *  # noqa
-from .related_table import *  # noqa
-from .sharepoint import *  # noqa
-from .style import *  # noqa
-from .v1 import *  # noqa
+import os
+
+FOLDER = os.path.dirname(os.path.abspath(__file__))
+
+
+def load_file(self, relative_url):
+    """Mock for load excel."""
+    try:
+        _filename = os.path.join(FOLDER, '_fixtures', relative_url)
+        open(_filename)
+        return _filename
+    except IOError:
+        raise Exception('File does not exist')

@@ -60,7 +60,9 @@ from geosight.data.api.related_table import (
     RelatedTableListAPI, RelatedTableDetailAPI, RelatedTableDataAPI,
     RelatedTableDatesAPI, RelatedTableValuesAPI, RelatedTableFieldDataAPI
 )
-from geosight.data.api.sharepoint import SharepointConfigListAPI
+from geosight.data.api.sharepoint import (
+    SharepointConfigListAPI, SharepointInformationAPI
+)
 from geosight.data.api.style import StyleListAPI, StyleDetailAPI
 
 # ------------------------------------------------------
@@ -263,6 +265,10 @@ sharepoint_api = [
     url(
         r'^list',
         SharepointConfigListAPI.as_view(), name='sharepoint-config-list-api'
+    ),
+    url(
+        r'^(?P<pk>\d+)/info',
+        SharepointInformationAPI.as_view(), name='sharepoint-fetch-info-api'
     ),
 ]
 # ------------------------------------------------------

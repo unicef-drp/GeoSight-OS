@@ -51,7 +51,6 @@ export const SharepointLongExcelIndicatorValue = forwardRef(
         data={data} setData={setData}
         files={files} setFiles={setFiles}
         indicatorList={indicatorList}
-        noAttributes={true}
         ref={formRef}
       >
         <BaseSharepointForm/>

@@ -30,7 +30,10 @@ import './style.scss';
 
 export default function Dashboard({ children }) {
   const dispatch = useDispatch();
-  const { user_permission } = useSelector(state => state.dashboard.data);
+  const {
+    widgets,
+    user_permission
+  } = useSelector(state => state.dashboard.data);
 
   const showLayerTab = !!EmbedConfig().layer_tab
   const showFilterTab = !!EmbedConfig().filter_tab
@@ -50,7 +53,7 @@ export default function Dashboard({ children }) {
     }
   } : null
 
-  const rightPanelProps = showWidget ? {
+  const rightPanelProps = (showWidget && widgets?.filter(widget => widget.visible_by_default).length) ? {
     className: 'RightButton',
     initState: rightExpanded ? RIGHT : LEFT,
     active: rightExpanded,
