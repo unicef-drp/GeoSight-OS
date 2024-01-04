@@ -118,7 +118,7 @@ export default function MapLibre(
       newMap.once("load", () => {
         setMap(newMap)
         setTimeout(() =>
-            document.querySelector('.mapboxgl-ctrl-compass')
+            document.querySelector('.maplibregl-ctrl-compass')
               .addEventListener('click', () => {
                 newMap.easeTo({ pitch: 0, bearing: 0 })
               }),
