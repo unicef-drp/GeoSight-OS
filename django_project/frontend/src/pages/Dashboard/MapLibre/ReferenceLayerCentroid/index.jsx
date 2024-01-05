@@ -35,7 +35,6 @@ import {
 } from "../../../../utils/indicatorLayer";
 import { dictDeepCopy } from "../../../../utils/main";
 import { UpdateStyleData } from "../../../../utils/indicatorData";
-import { Logger } from "../../../../utils/logger";
 
 import './style.scss';
 
@@ -55,7 +54,6 @@ export default function ReferenceLayerCentroid({ map }) {
   const { showIndicatorMapLabel } = useSelector(state => state.globalState)
   const { indicatorShow } = useSelector(state => state.map)
   const geometries = useSelector(state => state.geometries)
-  const geometriesVT = useSelector(state => state.geometriesVT)
   const filteredGeometries = useSelector(state => state.filteredGeometries)
   const indicatorsData = useSelector(state => state.indicatorsData);
   const selectedIndicatorLayer = useSelector(state => state.selectedIndicatorLayer)
@@ -395,11 +393,7 @@ export default function ReferenceLayerCentroid({ map }) {
     // Check if geometries is exist
     let geometriesData = geometries[selectedAdminLevel.level]
     if (!geometriesData) {
-      if (!geometriesVT[selectedAdminLevel.level]) {
-        rendering = false
-      } else {
-        geometriesData = geometriesVT[selectedAdminLevel.level]
-      }
+      rendering = false
     }
     if (!rendering) {
       reset()
@@ -411,7 +405,6 @@ export default function ReferenceLayerCentroid({ map }) {
     if (!usedFilteredGeometries && geometriesData) {
       usedFilteredGeometries = geometriesLevel
     }
-    Logger.log(JSON.stringify(usedFilteredGeometries))
 
     // Check by config
     const config = {
@@ -612,7 +605,7 @@ export default function ReferenceLayerCentroid({ map }) {
       renderLabel(features, config)
     }
   }, [
-    geometries, geometriesVT, filteredGeometries, indicatorsData,
+    geometries, filteredGeometries, indicatorsData,
     indicatorShow, indicatorLayers,
     selectedIndicatorLayer, selectedIndicatorSecondLayer,
     showIndicatorMapLabel, selectedAdminLevel
