@@ -35,6 +35,8 @@ import { dictDeepCopy } from "../../../../utils/main";
 import { UpdateStyleData } from "../../../../utils/indicatorData";
 import { fetchJSON } from "../../../../Requests";
 import { hideLabel, renderLabel, showLabel } from "./Label"
+import { ExecuteWebWorker } from "../../../../utils/WebWorker";
+import worker from "./Label/worker";
 
 import './style.scss';
 
@@ -278,7 +280,7 @@ export default function ReferenceLayerCentroid({ map }) {
     }
   }
 
-  /**Resetting **/
+  /** Resetting **/
   const reset = () => {
     renderLabel(map, [], {})
     for (const [code, chart] of Object.entries(charts)) {
@@ -511,41 +513,15 @@ export default function ReferenceLayerCentroid({ map }) {
         return;
       }
 
-      // Create features
-      let features = []
-      let theGeometries = Object.keys(geometriesData)
-      const indicatorsByGeom = {}
-      for (const [indicatorId, indicatorData] of Object.entries(usedIndicatorsData)) {
-        indicatorData.data.forEach(function (data) {
-          const code = extractCode(data)
-          if (!indicatorsByGeom[code]) {
-            indicatorsByGeom[code] = []
-          }
-          indicatorsByGeom[code].push(data);
-        })
-      }
-      theGeometries.map(geom => {
-        const geometry = geometriesData[geom]
-        const code = extractCode(geometry)
-        const indicator = indicatorsByGeom[code] ? indicatorsByGeom[code][0] : null
-        if (usedFilteredGeometries && !usedFilteredGeometries.includes(code)) {
-          return
+      ExecuteWebWorker(
+        worker, {
+          geometriesData,
+          usedIndicatorsData,
+          usedFilteredGeometries
+        }, (features) => {
+          renderLabel(map, features, config)
         }
-        let properties = geometry
-        if (geometry) {
-          if (indicator) {
-            properties = Object.assign({}, geometry, indicator)
-            delete properties.geometry
-          }
-          features.push({
-            "type": "Feature",
-            "properties": properties,
-            "geometry": geometry.geometry
-          })
-        }
-      })
-      console.log(features)
-      renderLabel(map, features, config)
+      )
     }
 
   }, [

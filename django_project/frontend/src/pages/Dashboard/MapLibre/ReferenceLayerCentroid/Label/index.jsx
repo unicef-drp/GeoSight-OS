@@ -18,10 +18,8 @@
    ========================================================================== */
 
 import React from 'react';
-import { hasLayer, hasSource } from "../utils";
-import { BEFORE_LAYER, CONTEXT_LAYER_ID } from "../Layers/ReferenceLayer";
-
-import './style.scss';
+import { hasLayer, hasSource } from "../../utils";
+import { BEFORE_LAYER, CONTEXT_LAYER_ID } from "../../Layers/ReferenceLayer";
 
 const INDICATOR_LABEL_ID = 'indicator-label'
 
