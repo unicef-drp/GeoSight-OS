@@ -26,7 +26,6 @@ import ReferenceLayerDataReducer from "./referenceLayerData";
 import filtersDataReducer from "./filtersData";
 import filteredGeometriesReducer from "./filteredGeometries";
 import geometriesReducer from "./geometries";
-import geometriesVTReducer from "./geometriesVT";
 import globalStateReducer from "./globalState";
 import selectedIndicatorLayerReducer from "./selectedIndicatorLayer";
 import selectedIndicatorSecondLayerReducer
@@ -54,7 +53,6 @@ export default combineReducers({
   filtersData: filtersDataReducer,
   filteredGeometries: filteredGeometriesReducer,
   geometries: geometriesReducer,
-  geometriesVT: geometriesVTReducer,
   globalState: globalStateReducer,
   selectedAdminLevel: selectedAdminLevelReducer,
   selectedIndicatorLayer: selectedIndicatorLayerReducer,

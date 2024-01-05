@@ -57,7 +57,6 @@ function FilterSection() {
   const relatedTableData = useSelector(state => state.relatedTableData)
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel)
   const geometries = useSelector(state => state.geometries);
-  const geometriesVT = useSelector(state => state.geometriesVT);
   const dispatcher = useDispatch();
 
   const levels = referenceLayerData[referenceLayer.identifier]?.data?.dataset_levels
@@ -105,7 +104,7 @@ function FilterSection() {
     const codesCurrentLevel = []
     const data = []
     levels.map(level => {
-      const geoms = geometries[level.level] ? geometries[level.level] : geometriesVT[level.level]
+      const geoms = geometries[level.level]
       if (geoms) {
         for (const [key, geomData] of Object.entries(geoms)) {
           codes.push(geomData.code)
@@ -215,7 +214,7 @@ function FilterSection() {
       referenceLayerData[referenceLayer.identifier].data.dataset_levels) {
       filter(filters)
     }
-  }, [filters, indicatorsData, relatedTableData, geometries, geometriesVT, selectedAdminLevel]);
+  }, [filters, indicatorsData, relatedTableData, geometries, selectedAdminLevel]);
 
   // FIELDS FROM GEOMETRY
   let fields = []
