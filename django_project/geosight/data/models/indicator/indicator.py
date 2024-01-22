@@ -173,6 +173,8 @@ class Indicator(
             try:
                 if isinstance(value, str):
                     value = int(value)
+                elif value is None:
+                    raise ValueError
                 elif not isinstance(value, int):
                     if value % 1:
                         raise ValueError
