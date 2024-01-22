@@ -258,6 +258,7 @@ export function IndicatorLayers() {
       <SidePanelTreeView
         data={treeData}
         selectable={true}
+        resetSelection={true}
         maxSelect={compareMode ? 2 : 1}
         onChange={onChange}
         otherInfo={(layer) => {

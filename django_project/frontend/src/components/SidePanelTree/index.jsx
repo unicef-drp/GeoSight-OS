@@ -135,7 +135,10 @@ export default function SidePanelTreeView(
   useEffect(() => {
     setNodes(data)
     setGroups(getGroups(data));
-    const newSelected = dictDeepCopy(selected);
+    // TODO:
+    //  We need to fix this
+    //  Appending selected is done because of context layer unselected at first time
+    const newSelected = props.resetSelection ? [] : dictDeepCopy(selected);
     for (const item of flattenTree(data)) {
       if (!item.isGroup && item.data?.visible_by_default) {
         newSelected.push(item.data?.id + '');
