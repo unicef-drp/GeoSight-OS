@@ -63,7 +63,7 @@ export default function ExampleContextInput(
       const concept_uuid = Object.keys(selectedGeometries)[0]
       setConceptUUID({
         value: concept_uuid,
-        label: selectedGeometries[concept_uuid].label
+        label: selectedGeometries[concept_uuid]?.label
       })
     }
   }, [levelSelected, selectedGeometries]);
@@ -75,47 +75,49 @@ export default function ExampleContextInput(
 
       // Fetch drilldown
       const featureProperties = selectedGeometries[conceptUUID.value];
-      let geometryProperties = {
-        name: featureProperties.label,
-        geom_code: featureProperties.ucode,
-        admin_level: levelSelected.value,
-        admin_level_name: levelSelected.label,
-        concept_uuid: featureProperties.concept_uuid,
-      }
-      getContext(
-        indicators, relatedTables,
-        {}, {},
-        featureProperties.concept_uuid, geometryProperties,
-        selectedGlobalTime, selectedGlobalTimeConfig,
-        indicatorLayers, referenceLayerData,
-        currentIndicatorLayer, {}, conceptUUID.value,
-        function contextOnLoad(context) {
-          const indicatorValueByGeometry = {}
-          indicatorValueByGeometry[featureProperties.concept_uuid] = []
-          currentIndicatorLayer.indicators.map(indicator => {
-            let data = context.context.admin_boundary.indicators[indicator.shortcode]
-            if (data) {
-              data = data[0]
-              data.date = data?.time
-              data.indicator = indicator
-              indicatorValueByGeometry[featureProperties.concept_uuid].push({ ...indicator, ...data })
-            } else {
-              indicatorValueByGeometry[featureProperties.concept_uuid].push({ ...indicator })
-            }
-          })
-          updateCurrent(
-            context, indicators, relatedTables,
-            currentIndicatorLayer, {},
-            indicatorValueByGeometry, {},
-            featureProperties.concept_uuid
-          )
-          setContextData(JSON.stringify(context, null, 2))
-          setContext(context)
-        },
-        function contextOnError(context) {
-          setContextData(context)
+      if (featureProperties) {
+        let geometryProperties = {
+          name: featureProperties.label,
+          geom_code: featureProperties.ucode,
+          admin_level: levelSelected.value,
+          admin_level_name: levelSelected.label,
+          concept_uuid: featureProperties.concept_uuid,
         }
-      )
+        getContext(
+          indicators, relatedTables,
+          {}, {},
+          featureProperties.concept_uuid, geometryProperties,
+          selectedGlobalTime, selectedGlobalTimeConfig,
+          indicatorLayers, referenceLayerData,
+          currentIndicatorLayer, {}, conceptUUID.value,
+          function contextOnLoad(context) {
+            const indicatorValueByGeometry = {}
+            indicatorValueByGeometry[featureProperties.concept_uuid] = []
+            currentIndicatorLayer.indicators.map(indicator => {
+              let data = context.context.admin_boundary.indicators[indicator.shortcode]
+              if (data) {
+                data = data[0]
+                data.date = data?.time
+                data.indicator = indicator
+                indicatorValueByGeometry[featureProperties.concept_uuid].push({ ...indicator, ...data })
+              } else {
+                indicatorValueByGeometry[featureProperties.concept_uuid].push({ ...indicator })
+              }
+            })
+            updateCurrent(
+              context, indicators, relatedTables,
+              currentIndicatorLayer, {},
+              indicatorValueByGeometry, {},
+              featureProperties.concept_uuid
+            )
+            setContextData(JSON.stringify(context, null, 2))
+            setContext(context)
+          },
+          function contextOnError(context) {
+            setContextData(context)
+          }
+        )
+      }
     }
   }, [conceptUUID]);
 
@@ -142,7 +144,7 @@ export default function ExampleContextInput(
             options={Object.keys(selectedGeometries).map(concept_uuid => {
               return {
                 value: concept_uuid,
-                label: selectedGeometries[concept_uuid].label
+                label: selectedGeometries[concept_uuid]?.label
               }
             })}
             value={conceptUUID}
