@@ -71,7 +71,7 @@ export default function Indicators() {
     if (selectedGlobalTime) {
       fetchData()
     }
-  }, [indicators]);
+  }, [indicators, indicatorLayerMetadata]);
 
   /** At first time, put loading. */
   useEffect(() => {

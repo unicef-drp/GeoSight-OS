@@ -35,7 +35,6 @@ import {
 } from "../../../../utils/indicatorLayer";
 import { dictDeepCopy } from "../../../../utils/main";
 import { UpdateStyleData } from "../../../../utils/indicatorData";
-import { Logger } from "../../../../utils/logger";
 
 import './style.scss';
 
@@ -411,7 +410,6 @@ export default function ReferenceLayerCentroid({ map }) {
     if (!usedFilteredGeometries && geometriesData) {
       usedFilteredGeometries = geometriesLevel
     }
-    Logger.log(JSON.stringify(usedFilteredGeometries))
 
     // Check by config
     const config = {
