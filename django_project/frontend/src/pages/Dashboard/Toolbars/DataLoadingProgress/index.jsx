@@ -38,25 +38,25 @@ export default function DataLoadingProgress() {
   /** Update progress */
   useEffect(() => {
     let total = 0
+    let currProgress = 0
+
+    // Check related table progress
     indicatorLayers.map(indicatorLayer => {
       const relatedTable = relatedTables.find(rt => rt.id === indicatorLayer.related_tables[0]?.id)
       if (!relatedTable) {
         return null
       }
       total += 1
+      if (relatedTableData[relatedTable.id + '-og']?.fetched) {
+        currProgress += 1
+      }
     })
-    let currProgress = 0
     for (const [key, value] of Object.entries(indicatorsMetadata)) {
       if (!key.includes('layer')) {
         if (value.progress?.total_page) {
           total += value.progress.total_page
           currProgress += value.progress.page
         }
-      }
-    }
-    for (const [key, value] of Object.entries(relatedTableData)) {
-      if (!key.includes('og') && value.fetched) {
-        currProgress += 1
       }
     }
     currProgress = currProgress * 100 / total
