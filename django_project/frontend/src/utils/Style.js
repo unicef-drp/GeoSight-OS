@@ -216,7 +216,7 @@ export function createDynamicStyle(data, styleType, config, styleData) {
           if (uniqueValues.length <= 2) {
             const colors = createColors(config.color_palette, uniqueValues.length)
             colors.map((color, idx) => {
-              const usedValue = values[idx]
+              const usedValue = uniqueValues[idx]
               styles.push(
                 {
                   id: idx,
