@@ -152,6 +152,11 @@ export function IndicatorLayers() {
 
       // Indicator enabled
       let indicatorEnabled = { 'id': currentIndicatorLayer }
+      const indicatorLayersIds = indicatorLayers.map(layer => layer.id)
+      if (!indicatorLayersIds.includes(currentIndicatorLayer)) {
+        indicatorEnabled = { 'id': null }
+      }
+
       if (!indicatorEnabled.id || indicatorLayersForcedUpdate) {
         // If not force updated
         indicatorEnabled = indicatorLayersTree.find(indicator => {
@@ -211,6 +216,8 @@ export function IndicatorLayers() {
           }
         })
       })
+    } else {
+      onChange([])
     }
     setTreeData(
       [
@@ -251,6 +258,7 @@ export function IndicatorLayers() {
       <SidePanelTreeView
         data={treeData}
         selectable={true}
+        resetSelection={true}
         maxSelect={compareMode ? 2 : 1}
         onChange={onChange}
         otherInfo={(layer) => {

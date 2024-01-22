@@ -85,8 +85,7 @@ export default function FilterEditorModal(
   const fieldData = fields.filter((row) => {
     return row.id === field
   })[0]
-  const OPERATOR = fieldData?.type === 'String' ? STRING_OPERATORS : NUMBER_OPERATORS
-
+  const OPERATOR = ['string', 'text'].includes(fieldData?.type?.toLowerCase()) ? STRING_OPERATORS : NUMBER_OPERATORS
   return <div
     onClick={(event) => {
       event.stopPropagation()
@@ -149,6 +148,7 @@ export default function FilterEditorModal(
                 }}/>
               {
                 field && operator ? <WhereInputValue
+                  fieldType={fieldData?.type}
                   field={field.type} operator={operator} value={currentValue}
                   setValue={setValue} optionsData={fieldData?.data}/> : null
               }

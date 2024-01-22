@@ -47,11 +47,13 @@ export default function geometriesReducer(state = initialState, action) {
           newState[level] = data
           for (const [code, geom] of Object.entries(data)) {
             geom.parents.map((parent, geomLevel) => {
-              state[geomLevel][parent.code].members.push({
-                name: geom.name,
-                ucode: geom.ucode,
-                code: code,
-              })
+              if (state[geomLevel] && state[geomLevel][parent.code]) {
+                state[geomLevel][parent.code].members.push({
+                  name: geom.name,
+                  ucode: geom.ucode,
+                  code: code,
+                })
+              }
             })
           }
           return newState

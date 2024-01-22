@@ -306,6 +306,7 @@ export default function FilterControl(
           needsValue ?
             <div className='FilterInputWrapper'>
               <WhereInputValue
+                fieldType={fieldData?.type}
                 field={field.type} operator={operator} value={currentValue}
                 setValue={updateValue} optionsData={fieldData?.data}/>
             </div> : ""

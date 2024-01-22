@@ -344,7 +344,11 @@ export default function GlobalDateSelector() {
         const min = newDates[0]
         if (selectedDatePoint !== max) {
           setSelectedDatePoint(max)
+        }
+        if (maxDate !== max) {
           setMaxDate(max)
+        }
+        if (minDate !== min) {
           setMinDate(min)
         }
       }
