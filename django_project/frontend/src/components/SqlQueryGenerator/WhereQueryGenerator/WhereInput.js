@@ -116,7 +116,7 @@ export function WhereInputValue(
   }
   const textBasedOnMinMax = ((isNaN(min) && isNaN(max)) || (!isFinite(min) && !isFinite(max)))
   /** -------- IF DATE --------- **/
-  if (fieldType === 'date') {
+  if (fieldType?.toLowerCase() === 'date') {
     if ([">", ">=", "<", "<="].includes(operator)) {
       return <LocalizationProvider dateAdapter={AdapterMoment}>
         <DesktopDateTimePicker

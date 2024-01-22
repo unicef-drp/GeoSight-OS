@@ -518,6 +518,14 @@
       max-width: 40%;
     }
 
+    .DatePickerInput {
+      input {
+        height: 50px;
+        width: 100%;
+        min-width: 500px;
+      }
+    }
+
     .MuiOutlinedInput-root {
       background-color: white;
     }
