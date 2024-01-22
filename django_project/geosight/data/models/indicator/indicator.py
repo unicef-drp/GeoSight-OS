@@ -175,6 +175,11 @@ class Indicator(
                     value = int(value)
                 elif value is None:
                     raise ValueError
+                elif isinstance(value, float):
+                    if value.is_integer():
+                        value = int(value)
+                    else:
+                        raise ValueError
                 elif not isinstance(value, int):
                     if value % 1:
                         raise ValueError
