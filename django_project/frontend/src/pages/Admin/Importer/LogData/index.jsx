@@ -174,6 +174,28 @@ export default function ImporterLogData() {
       columnsByDict['value'] = {
         field: 'value', headerName: 'Value', minWidth: 100
       }
+      columnsByDict['PCode'] = {
+        field: 'PCode', headerName: 'PCode', minWidth: 100,
+        renderCell: (params) => {
+          const value = params.row.data['PCode']
+          return <div
+            title={value}
+            className='MuiDataGrid-cellContent'>
+            {value}
+          </div>
+        },
+      }
+      columnsByDict['description'] = {
+        field: 'description', headerName: 'Description', minWidth: 200,
+        renderCell: (params) => {
+          const value = params.row.data['description']
+          return <div
+            title={value}
+            className='MuiDataGrid-cellContent'>
+            {value}
+          </div>
+        },
+      }
     }
     responseData.results.map(row => {
       Object.keys(row.data).map(key => {

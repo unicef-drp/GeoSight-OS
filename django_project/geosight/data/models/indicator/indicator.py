@@ -167,8 +167,9 @@ class Indicator(
             ).data
         return None
 
-    def validate(self, value):
-        """Check value."""
+    def validate(self, value) -> str:
+        """Check value and return the comment."""
+        comment = ''
         if self.type == IndicatorType.INTEGER:
             try:
                 if isinstance(value, str):
@@ -176,10 +177,9 @@ class Indicator(
                 elif value is None:
                     raise ValueError
                 elif isinstance(value, float):
-                    if value.is_integer():
-                        value = int(value)
-                    else:
-                        raise ValueError
+                    if not value.is_integer():
+                        comment = 'Result was rounded to int.'
+                    value = int(value)
                 elif not isinstance(value, int):
                     if value % 1:
                         raise ValueError
@@ -223,6 +223,7 @@ class Indicator(
                         )
             else:
                 raise IndicatorValueRejectedError('Value is not string')
+        return comment
 
     def save_value(
             self,

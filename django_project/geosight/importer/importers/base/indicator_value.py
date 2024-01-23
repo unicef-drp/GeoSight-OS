@@ -307,7 +307,12 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
         """Check indicator and data."""
         indicator = self.get_indicator(data)
         if indicator:
-            indicator.validate(data['value'])
+            comment = indicator.validate(data['value'])
+            if comment:
+                try:
+                    data['description'] += ' ' + comment
+                except KeyError:
+                    data['description'] = comment
         return indicator
 
     def get_entity(
@@ -668,7 +673,7 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
                         )
                         try:
                             record['description'] += (
-                                f" (from level {record['admin_level'] + 1})"
+                                f" (from level {record['admin_level'] + 1})."
                             )
                         except KeyError:
                             pass
