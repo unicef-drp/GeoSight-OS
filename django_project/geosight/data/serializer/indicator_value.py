@@ -34,6 +34,7 @@ class IndicatorValueSerializer(serializers.ModelSerializer):
     indicator_id = serializers.SerializerMethodField()
     indicator_shortcode = serializers.SerializerMethodField()
     value = serializers.SerializerMethodField()
+    extra_value = serializers.SerializerMethodField()
 
     def get_indicator(self, obj: IndicatorValue):
         """Return indicator name."""
@@ -50,6 +51,13 @@ class IndicatorValueSerializer(serializers.ModelSerializer):
     def get_value(self, obj: IndicatorValue):
         """Return value of indicator."""
         return obj.val
+
+    def get_extra_value(self, obj: IndicatorValue):
+        """Return extra_value value of indicator."""
+        extra_value = {}
+        for extra in obj.indicatorextravalue_set.all():
+            extra_value[extra.name] = extra.value
+        return extra_value
 
     def to_representation(self, instance):
         """To representation of indicator value."""
@@ -122,6 +130,10 @@ class IndicatorValueWithPermissionSerializer(IndicatorValueSerializer):
                     title='Value',
                     type=openapi.TYPE_STRING
                 ),
+                'extra_value': openapi.Schema(
+                    title='Extra value',
+                    type=openapi.TYPE_OBJECT
+                ),
                 'permission': openapi.Schema(
                     title='Permission',
                     type=openapi.TYPE_OBJECT,
@@ -188,6 +200,9 @@ class IndicatorValueWithPermissionSerializer(IndicatorValueSerializer):
                 "indicator_id": 1,
                 "indicator_shortcode": "TEST",
                 "value": 0,
+                "extra_value": {
+                    'Value 1': 1
+                },
                 "permission": {
                     "list": True,
                     "read": True,
