@@ -151,6 +151,9 @@ function SimilarityCheck() {
     $('input[name="name"]').keyup(function () {
       setNameValue($(this).val())
     });
+    $('input[name="name"]').change(function () {
+      setNameValue($(this).val())
+    });
   }, []);
 
   /** Debounce value **/
