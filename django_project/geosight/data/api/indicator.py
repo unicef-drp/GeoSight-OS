@@ -122,17 +122,18 @@ class IndicatorValuesAPI(APIView):
 
 
 class SearchSimilarityIndicatorAPI(APIView):
-    """API for checking list of simil\arity."""
+    """API for checking list of similarity."""
 
     permission_classes = (IsAuthenticated,)
 
-    def get(self, request, **kwargs):
+    def post(self, request, **kwargs):
         """Return Values."""
+        data = request.data
         try:
             return Response(
                 Indicator.search(
-                    name=self.request.GET.get('name', ''),
-                    description=self.request.GET.get('description', '')
+                    name=data.get('name', ''),
+                    description=data.get('description', '')
                 )
             )
         except Exception as e:

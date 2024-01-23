@@ -52,12 +52,12 @@ class IndicatorSearchSimilarityApiTest(BasePermissionTest, TestCase):
 
     def test_search(self):
         """Test search indicator by similarity."""
-        self.assertRequestGetView(self.url, 403)
+        self.assertRequestPostView(self.url, 403, {})
 
-        response = self.assertRequestGetView(self.url, 200, self.admin)
+        response = self.assertRequestPostView(self.url, 200, {}, self.admin)
         self.assertEquals(len(response.json()), 0)
 
-        response = self.assertRequestGetView(
-            self.url + '?name=Indicator', 200, self.admin
+        response = self.assertRequestPostView(
+            self.url, 200, {'name': 'Indicator'}, self.admin
         )
         self.assertEquals(len(response.json()), 2)

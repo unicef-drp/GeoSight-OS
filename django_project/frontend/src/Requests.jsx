@@ -14,6 +14,7 @@
  */
 
 import axios from "axios";
+import { Session } from "./utils/Sessions";
 
 /**
  * Perform Fetching Data
@@ -296,4 +297,21 @@ export const DjangoRequests = {
       headers: { 'X-CSRFToken': csrfmiddlewaretoken }, data: data
     })
   }
+}
+
+/*** Axios georepo request */
+export const axiosPostWithSession = async function (name, url, data) {
+  const session = new Session(name)
+  return new Promise((resolve, reject) => {
+    DjangoRequests.post(url, data, {})
+      .then(response => response.data)
+      .then(data => {
+          if (session.isValid) {
+            resolve(data)
+          }
+        }
+      ).catch(err => {
+      reject(err)
+    });
+  })
 }

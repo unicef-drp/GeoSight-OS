@@ -396,7 +396,7 @@ class Indicator(
                 }
                 for row in Indicator.objects.raw(
                     f'SELECT * from ({query}) as q '
-                    f'WHERE name_score >= 0.5 OR description_score >= 0.5 '
+                    f'WHERE name_score >= 0.5 OR description_score >= 0.3 '
                     f'ORDER BY name_score DESC, description_score DESC'
                 )
 
