@@ -55,8 +55,11 @@ class IndicatorValueSerializer(serializers.ModelSerializer):
     def get_extra_value(self, obj: IndicatorValue):
         """Return extra_value value of indicator."""
         extra_value = {}
-        for extra in obj.indicatorextravalue_set.all():
-            extra_value[extra.name] = extra.value
+        try:
+            for extra in obj.indicatorextravalue_set.all():
+                extra_value[extra.name] = extra.value
+        except AttributeError:
+            pass
         return extra_value
 
     def to_representation(self, instance):
