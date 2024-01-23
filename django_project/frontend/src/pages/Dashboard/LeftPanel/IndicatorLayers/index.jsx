@@ -152,7 +152,11 @@ export function IndicatorLayers() {
 
       // Indicator enabled
       let indicatorEnabled = { 'id': currentIndicatorLayer }
-      const indicatorLayersIds = indicatorLayers.map(layer => layer.id)
+      const indicatorLayersIds = []
+      indicatorLayers.map(layer => {
+        indicatorLayersIds.push(layer.id)
+        indicatorLayersIds.push('' + layer.id)
+      })
       if (!indicatorLayersIds.includes(currentIndicatorLayer)) {
         indicatorEnabled = { 'id': null }
       }
