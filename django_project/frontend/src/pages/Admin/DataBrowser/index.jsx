@@ -172,7 +172,7 @@ export default function DataBrowserAdmin() {
     {
       field: 'extra_value', headerName: 'Extras', width: 50,
       renderCell: (params) => {
-        if (params.row.extra_value) {
+        if (params.row.extra_value && Object.keys(params.row.extra_value).length) {
           return <CustomPopover
             anchorOrigin={{
               vertical: 'center',

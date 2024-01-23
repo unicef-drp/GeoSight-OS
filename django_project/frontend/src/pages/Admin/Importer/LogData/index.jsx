@@ -177,7 +177,7 @@ export default function ImporterLogData() {
       columnsByDict['PCode'] = {
         field: 'PCode', headerName: 'PCode', minWidth: 100,
         renderCell: (params) => {
-          const value = params.row.data['PCode']
+          const value = params.row.data?.PCode
           return <div
             title={value}
             className='MuiDataGrid-cellContent'>
@@ -188,7 +188,7 @@ export default function ImporterLogData() {
       columnsByDict['description'] = {
         field: 'description', headerName: 'Description', minWidth: 200,
         renderCell: (params) => {
-          const value = params.row.data['description']
+          const value = params.row.data?.description
           return <div
             title={value}
             className='MuiDataGrid-cellContent'>
