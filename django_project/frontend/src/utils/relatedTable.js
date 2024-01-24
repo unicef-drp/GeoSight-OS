@@ -131,7 +131,7 @@ export const getRelatedTableData = (data, config, selectedGlobalTime, geoField =
           if (typeof row[date_field] === 'string') {
             const date = new Date(row[date_field])
             if (isValidDate(date)) {
-              row[date_field] = date.toISOString()
+              row[date_field] = date.toISOString().split('.')[0] + '+00:00'
             }
           }
           return row
@@ -171,6 +171,10 @@ export const getRelatedTableData = (data, config, selectedGlobalTime, geoField =
                    FROM ? as data` + (updatedWhere ? ` WHERE ${updatedWhere}` : '') + ` GROUP BY ${geography_code_field_name}` + (!aggregateDate ? `, data.${date_field}` : '') + `  
                    ORDER BY ${geography_code_field_name} DESC `
         }
+
+        console.log('----------------------')
+        console.log(data)
+        console.log(sql)
         const results = alasql(sql, [data]).map((result, idx) => {
           return {
             id: idx,
@@ -224,7 +228,7 @@ export function getRelatedTableFields(relatedTable, relatedTableData) {
 }
 
 /** Is key x value is date */
-export function isValueDate(key, value) {
+export function isValueDate(key) {
   return (
     key.toLowerCase().replaceAll('_', '').includes('date') ||
     key.toLowerCase().replaceAll('_', '').includes('time')
@@ -235,10 +239,7 @@ export function isValueDate(key, value) {
 export function updateRelatedTableResponse(response) {
   response.map(row => {
     for (const [key, value] of Object.entries(row)) {
-      const isDate = (
-        key.toLowerCase().replaceAll('_', '').includes('date') ||
-        key.toLowerCase().replaceAll('_', '').includes('time')
-      )
+      const isDate = isValueDate(key)
       if (isDate && !isNaN(value)) {
         row[key] = parseDateTime(value)
       }

@@ -132,6 +132,12 @@
         }
       }
     }
+
+    &.IsDate {
+      .SelectWithSearchInput {
+        min-width: 220px;
+      }
+    }
   }
 
   .MuiButton-root {

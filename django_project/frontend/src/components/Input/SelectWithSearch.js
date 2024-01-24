@@ -148,7 +148,7 @@ export function MultipleSelectWithSearch(
           params.InputProps.placeholder = value.length === 1 ? '' : allSelected ? 'All selected' : value.length ? (value.length + ' selected') : props.placeholder ? props.placeholder : 'Select 1 option'
         }
         if (props?.quickSelection) {
-          params.InputProps.startAdornment = (
+          params.InputProps.endAdornment = (
             <InputAdornment
               position='end'
               className='MuiAutocomplete-endAdornment OtherOptions'>
