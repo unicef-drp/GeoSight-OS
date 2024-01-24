@@ -33,6 +33,7 @@ import {
   dynamicLayerIndicatorList,
   fetchDynamicLayerData
 } from "../../../utils/indicatorLayer";
+import { Session } from "../../../utils/Sessions";
 
 /**
  * Base widget that handler widget rendering.
@@ -80,7 +81,10 @@ export default function SummaryWidgetView({ idx, data }) {
         }
         if (selectedAdminLevel?.level !== undefined) {
           params['admin_level'] = selectedAdminLevel?.level
+        } else {
+          return
         }
+        const session = new Session('Widget request ' + idx)
         setLayerData({
           fetching: true,
           fetched: false,
@@ -109,10 +113,16 @@ export default function SummaryWidgetView({ idx, data }) {
                   } else {
                     newState.data = response;
                   }
+                  if (!session.isValid) {
+                    return
+                  }
                   setLayerData(newState);
                 }
               )
             } else {
+              if (!session.isValid) {
+                return
+              }
               setLayerData({
                 fetching: false,
                 fetched: true,
@@ -153,6 +163,9 @@ export default function SummaryWidgetView({ idx, data }) {
             fetchDynamicLayerData(
               indicatorLayer, indicators, indicatorsData, geoField,
               error => {
+                if (!session.isValid) {
+                  return
+                }
                 setLayerData({
                   fetching: false,
                   fetched: true,
@@ -161,6 +174,9 @@ export default function SummaryWidgetView({ idx, data }) {
                   error: error
                 });
               }, response => {
+                if (!session.isValid) {
+                  return
+                }
                 setLayerData({
                   fetching: false,
                   fetched: true,
