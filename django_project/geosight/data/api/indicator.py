@@ -17,6 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 import json
 from datetime import datetime
 
+from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -118,3 +119,22 @@ class IndicatorValuesAPI(APIView):
         """Return Values."""
         indicator = get_object_or_404(Indicator, pk=pk)
         return Response(indicator.values(datetime.now()))
+
+
+class SearchSimilarityIndicatorAPI(APIView):
+    """API for checking list of similarity."""
+
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, **kwargs):
+        """Return Values."""
+        data = request.data
+        try:
+            return Response(
+                Indicator.search(
+                    name=data.get('name', ''),
+                    description=data.get('description', '')
+                )
+            )
+        except Exception as e:
+            return HttpResponseBadRequest(f'{e}')

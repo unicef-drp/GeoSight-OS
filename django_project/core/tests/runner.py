@@ -26,6 +26,7 @@ def prepare_database(self):
     """Prepare database for test."""
     with self.cursor() as cursor:
         cursor.execute('CREATE EXTENSION IF NOT EXISTS postgis')
+        cursor.execute('CREATE EXTENSION IF NOT EXISTS pg_trgm')
         cursor.execute(
             f'CREATE SCHEMA IF NOT EXISTS {settings.TEMP_SCHEMA_NAME}'
         )

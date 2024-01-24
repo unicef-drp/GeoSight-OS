@@ -48,7 +48,7 @@ from geosight.data.api.download_file import (
 )
 from geosight.data.api.indicator import (
     IndicatorListAPI, IndicatorAdminListAPI,
-    IndicatorDetailAPI, IndicatorValuesAPI
+    IndicatorDetailAPI, IndicatorValuesAPI, SearchSimilarityIndicatorAPI
 )
 from geosight.data.api.indicator_value import (
     IndicatorValuesByGeometry,
@@ -166,6 +166,11 @@ indicator_api = [
     url(
         r'^list',
         IndicatorListAPI.as_view(), name='indicator-list-api'
+    ),
+    url(
+        r'^search/similarity',
+        SearchSimilarityIndicatorAPI.as_view(),
+        name='indicator-search-similarity-api'
     ),
     url(
         r'^(?P<pk>\d+)/values/latest',

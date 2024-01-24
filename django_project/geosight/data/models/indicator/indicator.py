@@ -23,6 +23,7 @@ from django.dispatch import receiver
 from core.models.general import (
     AbstractTerm, AbstractSource, AbstractEditData, AbstractVersionData
 )
+from django.db import connection
 from geosight.data.models.code import CodeList
 from geosight.data.models.indicator.indicator_type import (
     IndicatorType, IndicatorTypeChoices
@@ -372,6 +373,35 @@ class Indicator(
                 'dashboard', flat=True
             )
         ).update(version_data=timezone.now())
+
+    @staticmethod
+    def search(name, description):
+        """Update dashboard version."""
+        if name:
+            with connection.cursor() as cursor:
+                cursor.execute('CREATE EXTENSION IF NOT EXISTS pg_trgm;')
+            query = (
+                f"select strict_word_similarity(name, '{name}') as name_score,"
+                f"strict_word_similarity(description, '{description}') "
+                f"as description_score,"
+                f"id, name, description from geosight_data_indicator"
+            )
+            return [
+                {
+                    'id': row.id,
+                    'name': row.name,
+                    'description': row.description,
+                    'name_score': row.name_score,
+                    'description_score': row.description_score,
+                }
+                for row in Indicator.objects.raw(
+                    f'SELECT * from ({query}) as q '
+                    f'WHERE name_score >= 0.5 OR description_score >= 0.3 '
+                    f'ORDER BY name_score DESC, description_score DESC'
+                )
+
+            ]
+        return []
 
 
 @receiver(post_save, sender=Indicator)
