@@ -171,10 +171,6 @@ export const getRelatedTableData = (data, config, selectedGlobalTime, geoField =
                    FROM ? as data` + (updatedWhere ? ` WHERE ${updatedWhere}` : '') + ` GROUP BY ${geography_code_field_name}` + (!aggregateDate ? `, data.${date_field}` : '') + `  
                    ORDER BY ${geography_code_field_name} DESC `
         }
-
-        console.log('----------------------')
-        console.log(data)
-        console.log(sql)
         const results = alasql(sql, [data]).map((result, idx) => {
           return {
             id: idx,
