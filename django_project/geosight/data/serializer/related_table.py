@@ -15,6 +15,8 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.shortcuts import reverse
+from django.utils import deprecation
+from pylint.checkers import deprecated
 from rest_framework import serializers
 
 from core.serializer.dynamic_serializer import DynamicModelSerializer
@@ -23,8 +25,33 @@ from geosight.data.models.related_table import (
 )
 
 
+class RelatedTableApiSerializer(DynamicModelSerializer):
+    url = serializers.SerializerMethodField()
+    creator = serializers.SerializerMethodField()
+    fields_definition = serializers.SerializerMethodField()
+
+    def get_url(self, obj: RelatedTable):
+        return reverse(
+            'related-tables-detail',
+            args=[obj.id]
+        )
+
+    def get_creator(self, obj: RelatedTable):
+        return obj.creator.get_full_name() if obj.creator else None
+
+    def get_fields_definition(self, obj: RelatedTable):
+        return obj.fields_definition
+
+    class Meta:
+        model = RelatedTable
+        exclude = ('unique_id',)
+
+
 class RelatedTableSerializer(DynamicModelSerializer):
-    """Serializer for RelatedTable."""
+    """
+    DEPRECATED: Legacy serializer, to be replaced with RelatedTableApiSerializer
+    Serializer for RelatedTable.
+    """
 
     url = serializers.SerializerMethodField()
     creator = serializers.SerializerMethodField()
