@@ -14,16 +14,18 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from datetime import date
+from datetime import date, datetime
 
+import pytz
+from django.conf import settings
 from django.contrib.gis.db import models
+from django.db import connection
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from core.models.general import (
     AbstractTerm, AbstractSource, AbstractEditData, AbstractVersionData
 )
-from django.db import connection
 from geosight.data.models.code import CodeList
 from geosight.data.models.indicator.indicator_type import (
     IndicatorType, IndicatorTypeChoices
@@ -402,6 +404,39 @@ class Indicator(
 
             ]
         return []
+
+    def metadata(self, reference_layer_uuid):
+        """Metadata for indicator."""
+        from geosight.georepo.models.reference_layer import ReferenceLayerView
+        from geosight.data.models.indicator.indicator_value import (
+            IndicatorValueWithGeo
+        )
+        try:
+            query = self.query_values(
+                reference_layer=ReferenceLayerView.objects.get(
+                    identifier=reference_layer_uuid
+                )
+            )
+        except ReferenceLayerView.DoesNotExist:
+            ReferenceLayerView.objects.get_or_create(
+                identifier=reference_layer_uuid
+            )
+            query = IndicatorValueWithGeo.objects.none()
+        dates = [
+            datetime.combine(
+                date_str, datetime.min.time(),
+                tzinfo=pytz.timezone(settings.TIME_ZONE)
+            ).isoformat()
+            for date_str in set(
+                query.values_list('date', flat=True)
+            )
+        ]
+        dates.sort()
+
+        return {
+            'dates': dates,
+            'count': query.count()
+        }
 
 
 @receiver(post_save, sender=Indicator)
