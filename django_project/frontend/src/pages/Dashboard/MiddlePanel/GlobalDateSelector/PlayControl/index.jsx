@@ -101,7 +101,7 @@ export default function PlayControl(
         playControlTimeout = currentPlayControlTimeout
       }
     }
-  }, [indicatorsData, selectedDatePoint, isPlay, nextIdx]);
+  }, [indicatorsData, relatedTableData, selectedDatePoint, isPlay, nextIdx]);
 
   /**
    * If is play and nextIDX changed
