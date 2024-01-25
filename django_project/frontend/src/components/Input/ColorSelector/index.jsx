@@ -14,9 +14,9 @@
  */
 
 import React from 'react';
+import { DebounceInput } from "../DebounceInput";
 
 import './style.scss';
-import { DebounceInput } from "../DebounceInput";
 
 /**
  * Color Selector

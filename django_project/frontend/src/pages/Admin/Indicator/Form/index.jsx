@@ -16,6 +16,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import $ from 'jquery';
 import CircularProgress from "@mui/material/CircularProgress";
+import { debounce } from "@mui/material/utils";
 
 import Admin, { pageNames } from '../../index';
 import { codelistOptions, typeChoices } from "./Base";
@@ -34,7 +35,6 @@ import { resourceActions } from "../List";
 import { axiosPostWithSession } from "../../../../Requests";
 
 import './style.scss';
-import { debounce } from "@mui/material/utils";
 
 /*** Additional General Indicator Inputs ***/
 function AdditionalGeneralIndicator({ indicatorData, setIndicatorData }) {
