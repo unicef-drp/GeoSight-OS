@@ -15,6 +15,7 @@
 
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
+import ColorizeIcon from '@mui/icons-material/Colorize';
 import Checkbox from '@mui/material/Checkbox';
 import {
   DndContext,
@@ -40,6 +41,11 @@ import { fetchJSON } from "../../../../../Requests";
 import { uniqueList } from "../../../../../utils/main";
 import ColorSelector from "../../../../../components/Input/ColorSelector";
 import { Creatable, Select } from "../../../../../components/Input";
+import CustomPopover from "../../../../../components/CustomPopover";
+import { DebounceInput } from "../../../../../components/Input/DebounceInput";
+import ColorPalettePopover
+  from "../../../../../components/Input/ColorPaletteSelector/Popover";
+import { createColors } from "../../../../../utils/Style";
 
 import './style.scss';
 
@@ -315,7 +321,7 @@ export function Rule(
         />
       </td>
       <td>
-        <input
+        <DebounceInput
           type="number" spellCheck="false"
           name={ruleNameOutlineSize}
           min={0.1}
@@ -363,8 +369,11 @@ export function IndicatorOtherRule(
 
   // When the rule changed
   useEffect(() => {
-    if (!outlineSize && outlineSize !== rule.outline_size) {
+    if (outlineSize !== rule.outline_size) {
       setOutlineSize(rule.outline_size)
+    }
+    if (outlineColor !== rule.outline_color) {
+      setOutlineColor(rule.outline_color)
     }
   }, [rule])
 
@@ -426,7 +435,7 @@ export function IndicatorOtherRule(
         />
       </td>
       <td>
-        <input
+        <DebounceInput
           type="number" spellCheck="false"
           name={ruleNameOutlineSize}
           min={0.1}
@@ -522,6 +531,12 @@ export default function StyleRules(
   const [codesChoicesFromResponse, setCodeChoicesFromResponse] = useState([]);
   const [rules, setStyleRules] = useState(updateStyleRules(inputStyleRules));
   const [items, setItems] = useState([]);
+
+  // Quick assign value
+  const [quickAssign, setQuickAssign] = useState({
+    outlineColor: '#ffffff',
+    outlineSize: 0.5
+  });
 
   useEffect(() => {
     if (defaultCodeChoices && JSON.stringify(codesChoices) !== JSON.stringify(defaultCodeChoices)) {
@@ -696,21 +711,119 @@ export default function StyleRules(
           </div>
         </th>
         <th valign="top">
-        <span className='ColorConfigLabel'>
-            Used for filling the geometry.
-            Put the hex color with # (e.g. #ffffff).
-        </span>
+          <span className='ColorConfigLabel'>
+              Used for filling the geometry.
+              Put the hex color with # (e.g. #ffffff).
+          </span>
+          <ColorPalettePopover
+            anchorOrigin={{
+              vertical: 'center',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'center',
+              horizontal: 'left',
+            }}
+            Button={
+              <div className='StylePopoverButton'>
+                <ColorizeIcon fontSize={"small"}/> Assign colors
+              </div>
+            }
+            onSelected={(colorPalette) => {
+              const usedRules = rules.filter(rule => ![
+                NO_DATA_RULE, OTHER_DATA_RULE
+              ].includes(rule.rule))
+              const colors = createColors(colorPalette.colors, usedRules.length)
+              let idx = 0
+              rules.map(rule => {
+                if (![
+                  NO_DATA_RULE, OTHER_DATA_RULE
+                ].includes(rule.rule)) {
+                  rule.color = colors[idx]
+                  idx += 1
+                }
+                onChange()
+              })
+            }}
+          />
         </th>
         <th valign="top">
-        <span className='ColorConfigLabel'>
-            Used for coloring the outline of the geometry.
-            Put the hex color with # (e.g. #ffffff).
-        </span>
+          <span className='ColorConfigLabel'>
+              Used for coloring the outline of the geometry.
+              Put the hex color with # (e.g. #ffffff).
+          </span>
+          <CustomPopover
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
+            }}
+            Button={
+              <div className='StylePopoverButton'>
+                <ColorizeIcon fontSize={"small"}/> Assign all outline color
+              </div>
+            }
+          >
+            <div className='StylePopover'>
+              <ColorSelector
+                color={quickAssign.outlineColor}
+                name={''}
+                onChange={
+                  evt => {
+                    setQuickAssign({
+                      ...quickAssign,
+                      outlineColor: evt.target.value
+                    })
+                    rules.map(rule => rule.outline_color = evt.target.value)
+                    onChange()
+                  }
+                }
+              />
+            </div>
+          </CustomPopover>
         </th>
         <th valign="top">
-        <span>
-            Change width of the outline (in px)
-        </span>
+          <span>
+              Change width of the outline (in px)
+          </span>
+          <CustomPopover
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
+            }}
+            Button={
+              <div className='StylePopoverButton'>
+                <ColorizeIcon fontSize={"small"}/> Assign all width
+              </div>
+            }
+          >
+            <div className='StylePopover'>
+              <DebounceInput
+                type="number"
+                spellCheck="false"
+                min={0.1}
+                step="0.1"
+                value={quickAssign.outlineSize}
+                onChange={
+                  evt => {
+                    setQuickAssign({
+                      ...quickAssign,
+                      outlineSize: evt.target.value
+                    })
+                    rules.map(rule => rule.outline_size = parseFloat(evt.target.value))
+                    onChange()
+                  }
+                }
+              />
+            </div>
+          </CustomPopover>
         </th>
       </tr>
       </thead>

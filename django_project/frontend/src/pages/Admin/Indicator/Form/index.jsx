@@ -156,7 +156,7 @@ function SimilarityCheck() {
     });
   }, []);
 
-  /** Debounce value **/
+  /** DebounceInput value **/
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       setInputValue(nameValue);
