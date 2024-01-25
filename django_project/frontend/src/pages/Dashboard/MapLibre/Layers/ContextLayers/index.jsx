@@ -141,7 +141,10 @@ export function renderLabel(id, contextLayerData, contextLayer, map) {
       maxZoom = style.maxZoom ? style.maxZoom : maxZoom
       paint['text-color'] = style.fontColor
       if (style.fontFamily) {
-        layout['text-font'] = style.fontFamily.split(',')
+        const font = style.fontFamily.split(',')[0].replaceAll('"', '')
+        layout['text-font'] = [font, font]
+      } else {
+        layout['text-font'] = ['Arial', 'Arial']
       }
       layout['text-size'] = style.fontSize
       paint['text-halo-color'] = style.haloColor
