@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import $ from 'jquery';
 import CircularProgress from "@mui/material/CircularProgress";
 
@@ -34,6 +34,7 @@ import { resourceActions } from "../List";
 import { axiosPostWithSession } from "../../../../Requests";
 
 import './style.scss';
+import { debounce } from "@mui/material/utils";
 
 /*** Additional General Indicator Inputs ***/
 function AdditionalGeneralIndicator({ indicatorData, setIndicatorData }) {
@@ -138,11 +139,9 @@ function AdditionalGeneralIndicator({ indicatorData, setIndicatorData }) {
 }
 
 /*** Similarity Check ***/
-let currUrl = ''
-
 function SimilarityCheck() {
   const [nameValue, setNameValue] = useState("")
-  const [name, setInputValue] = useState("")
+  const [name, setName] = useState("")
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState([])
 
@@ -156,12 +155,20 @@ function SimilarityCheck() {
     });
   }, []);
 
-  /** DebounceInput value **/
+  /** Name value changed, debouce **/
+  const nameValueUpdate = useMemo(
+    () =>
+      debounce(
+        (newValue) => {
+          setName(newValue)
+        },
+        400
+      ),
+    []
+  )
+  /** Name value changed **/
   useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      setInputValue(nameValue);
-    }, 500);
-    return () => clearTimeout(delayDebounceFn);
+    nameValueUpdate(nameValue)
   }, [nameValue]);
 
   /** Name changed **/
