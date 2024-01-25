@@ -41,6 +41,7 @@ import {
 import { SelectWithList } from "../../../../components/Input/SelectWithList";
 import PlayControl from "./PlayControl";
 import { ThemeButton } from "../../../../components/Elements/Button";
+import { Session } from "../../../../utils/Sessions";
 
 import './style.scss';
 
@@ -305,27 +306,51 @@ export default function GlobalDateSelector() {
    * Update indicator dates
    */
   useEffect(() => {
+    const session = new Session('GlobalDateSelector');
     (
       async () => {
         const data = {}
-        if (indicators.length) {
-          const metadataUrl = `/api/dashboard/${slug}/indicator/all/metadata?reference_layer_uuid=` + referenceLayer?.identifier
-          const responses = await fetchJSON(metadataUrl, {});
-          indicators.map(indicator => {
-            const response = responses[indicator.id]
-            const id = 'indicator-' + indicator.id
-            if (!response?.dates?.length) {
-              data[id] = {
-                dates: [nowUTC().toISOString()],
-                count: 0,
-                version: 'TEMP'
-              }
-            } else {
+        for (let x = 0; x < indicators.length; x++) {
+          const indicator = indicators[x]
+          if (!indicator.url.includes('dashboard')) {
+            const dataId = 'indicator-' + indicator.id
+            const metadata = indicatorLayerMetadata[dataId]
+            if (!metadata) {
+              const metadataUrl = `/api/indicator/${indicator.id}/metadata?reference_layer_uuid=${referenceLayer?.identifier}`
+              const response = await fetchJSON(metadataUrl, {});
+              const id = 'indicator-' + indicator.id
+              response.version = 'TEMP'
               data[id] = response
             }
-          })
+          }
         }
-        dispatch(Actions.IndicatorLayerMetadata.updateBatch(data))
+        if (indicators.length) {
+          const metadataUrl = `/api/dashboard/${slug}/indicator/all/metadata?reference_layer_uuid=` + referenceLayer?.identifier
+          try {
+            const responses = await fetchJSON(metadataUrl, {});
+            indicators.map(indicator => {
+              if (!indicator.url.includes('dashboard')) {
+                return
+              }
+              const response = responses[indicator.id]
+              const id = 'indicator-' + indicator.id
+              if (!response?.dates?.length) {
+                data[id] = {
+                  dates: [nowUTC().toISOString()],
+                  count: 0,
+                  version: 'TEMP'
+                }
+              } else {
+                data[id] = response
+              }
+            })
+          } catch (err) {
+
+          }
+        }
+        if (session.isValid) {
+          dispatch(Actions.IndicatorLayerMetadata.updateBatch(data))
+        }
       }
     )();
   }, [indicators, referenceLayer]);

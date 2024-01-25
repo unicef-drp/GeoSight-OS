@@ -34,12 +34,12 @@ from core.pagination import Pagination
 from geosight.data.models.dashboard import (
     Dashboard
 )
-from geosight.data.models.indicator import Indicator, IndicatorValueWithGeo
+from geosight.data.models.indicator import Indicator
 from geosight.data.serializer.indicator import (
     IndicatorValueWithGeoDateSerializer
 )
 from geosight.georepo.models.reference_layer import (
-    ReferenceLayerIndicator, ReferenceLayerView
+    ReferenceLayerIndicator
 )
 from geosight.georepo.serializer.entity import EntitySerializer
 from geosight.permission.access import (
@@ -265,47 +265,29 @@ class DashboardIndicatorDatesAPI(DashboardIndicatorValuesAPI):
 class DashboardIndicatorMetadataAPI(DashboardIndicatorValuesAPI):
     """API for of indicator."""
 
-    def metadata(self, request, dashboard, indicator):
+    def metadata(self, request, dashboard, indicator: Indicator):
         """Return metadata."""
         self.check_permission(request.user, dashboard, indicator)
 
         # Cache version
         cache = version_cache(
             url=request.get_full_path().replace('all', f'{indicator.id}'),
-            reference_layer_uuid=request.GET.get('reference_layer_uuid', ''),
+            reference_layer_uuid=request.GET.get(
+                'reference_layer_uuid', dashboard.reference_layer.identifier
+            ),
             indicator=indicator
         )
         cache_data = cache.get()
         if cache_data:
             return cache_data
 
-        try:
-            query = indicator.query_values(
-                reference_layer=ReferenceLayerView.objects.get(
-                    identifier=request.GET.get(
-                        'reference_layer_uuid',
-                        dashboard.reference_layer.identifier
-                    )
-                )
+        response = indicator.metadata(
+            request.GET.get(
+                'reference_layer_uuid',
+                dashboard.reference_layer.identifier
             )
-        except ReferenceLayerView.DoesNotExist:
-            query = IndicatorValueWithGeo.objects.none()
-        dates = [
-            datetime.combine(
-                date_str, datetime.min.time(),
-                tzinfo=pytz.timezone(settings.TIME_ZONE)
-            ).isoformat()
-            for date_str in set(
-                query.values_list('date', flat=True)
-            )
-        ]
-        dates.sort()
-
-        response = {
-            'dates': dates,
-            'count': query.count(),
-            'version': cache.version
-        }
+        )
+        response['version'] = cache.version
         cache.set(response)
         return response
 

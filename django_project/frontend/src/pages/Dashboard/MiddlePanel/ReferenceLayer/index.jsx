@@ -88,9 +88,10 @@ export default function ReferenceLayerSection() {
     //  This is used for just fetching levels that is selected.
     //  But the problem is the levels can be used on the filter
     //  Commented this for now
-    // if (levels && availableLevels) {
-    //   levels = levels.filter(level => availableLevels.includes(level.level))
-    // }
+    if (levels && availableLevels) {
+      const maxLevel = Math.max(...availableLevels)
+      levels = levels.filter(level => level.level <= maxLevel)
+    }
     currentReferenceLayer = referenceLayer.identifier
     if (levels) {
       (

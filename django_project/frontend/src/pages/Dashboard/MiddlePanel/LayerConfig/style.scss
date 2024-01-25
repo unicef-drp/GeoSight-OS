@@ -97,7 +97,37 @@
       display: inline-block;
       border: unset !important;
       margin-right: 5px;
+    }
 
+    &.IsDate {
+      .SelectWithSearchInput {
+        min-width: 190px;
+      }
+    }
+
+    &.ShowOperator {
+      .WhereConfigurationOperator {
+        display: inline-block;
+        height: fit-content;
+        width: fit-content;
+        min-width: unset;
+        min-height: unset !important;
+
+        div {
+          background-color: white;
+          width: fit-content;
+          padding: 5px 0.5rem;
+          display: inline-block;
+        }
+
+        fieldset, svg {
+          display: none;
+        }
+      }
+    }
+
+    .DatePickerInput {
+      display: inline-block !important;
     }
   }
 

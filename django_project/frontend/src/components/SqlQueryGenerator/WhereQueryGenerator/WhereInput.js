@@ -124,7 +124,10 @@ export function WhereInputValue(
           value={value}
           inputFormat="YYYY-MM-DDThh:mm:ss"
           onChange={(val) => {
-            setValue(val._d.toISOString())
+            try {
+              setValue(val._d.toISOString())
+            } catch (err) {
+            }
           }}
           renderInput={(params) => <TextField {...params} />}
         />
@@ -397,8 +400,16 @@ export default function WhereInput(
   }
 
   let UPDATED_OPERATOR = getOperators(fieldType, props.isSimplified)
+
+  let showOperator = false
+  let isDate = fieldType?.toLowerCase() === 'date'
+  if (fieldType?.toLowerCase() === 'date') {
+    if ([">", ">=", "<", "<="].includes(operator)) {
+      showOperator = true
+    }
+  }
   return <div
-    className={'WhereConfigurationQuery ' + (props.isSimplified ? 'Simplified' : '')}>
+    className={'WhereConfigurationQuery ' + (props.isSimplified ? 'Simplified' : '') + (showOperator ? ' ShowOperator' : '') + (isDate ? ' IsDate' : '')}>
     <SelectPlaceholder
       placeholder='Pick the field'
       className={'WhereConfigurationField'}

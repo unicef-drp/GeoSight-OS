@@ -48,7 +48,8 @@ from geosight.data.api.download_file import (
 )
 from geosight.data.api.indicator import (
     IndicatorListAPI, IndicatorAdminListAPI,
-    IndicatorDetailAPI, IndicatorValuesAPI, SearchSimilarityIndicatorAPI
+    IndicatorDetailAPI, IndicatorValuesAPI, SearchSimilarityIndicatorAPI,
+    IndicatorMetadataAPI
 )
 from geosight.data.api.indicator_value import (
     IndicatorValuesByGeometry,
@@ -198,6 +199,10 @@ indicator_api = [
     url(
         r'^(?P<pk>\d+)/detail',
         IndicatorDetailAPI.as_view(), name='indicator-detail-api'
+    ),
+    url(
+        r'^(?P<pk>\d+)/metadata',
+        IndicatorMetadataAPI.as_view(), name='indicator-metadata-api'
     ),
 ]
 # ------------------------------------------------------
