@@ -15,8 +15,6 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.shortcuts import reverse
-from django.utils import deprecation
-from pylint.checkers import deprecated
 from rest_framework import serializers
 
 from core.serializer.dynamic_serializer import DynamicModelSerializer

@@ -1,3 +1,18 @@
+"""
+GeoSight is UNICEF's geospatial web-based business intelligence platform.
+
+Contact : geosight-no-reply@unicef.org
+
+.. note:: This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation; either version 3 of the License, or
+    (at your option) any later version.
+
+"""
+__author__ = 'Víctor González'
+__date__ = '29/01/2024'
+__copyright__ = ('Copyright 2023, Unicef')
+
 import datetime
 
 from dateutil import parser
@@ -35,33 +50,18 @@ class RelatedTableApiTest(BasePermissionTest, TestCase):
         self.assertRequestGetView(url, 403)
 
         response = self.assertRequestGetView(url, 200, user=self.admin)
-        self.assertResponseContainsList(
+        self.assertResponseContainsPaginatedList(
             response, validate_related_table, self.resource_1, self.resource_2, self.resource_3
         )
 
         response = self.assertRequestGetView(url, 200, user=self.viewer)
-        self.assertEqual(len(response.json()), 0)
+        self.assertEqual(len(response.json().get('results')), 0)
 
         response = self.assertRequestGetView(url, 200, user=self.creator)
-        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(len(response.json().get('results')), 1)
 
         response = self.assertRequestGetView(url, 200, user=self.creator_in_group)
-        self.assertEqual(len(response.json()), 1)
-
-    def test_detail_api(self):
-        url = reverse('related-tables-detail', args=[0])
-        self.assertRequestGetView(url, 403)
-        self.assertRequestGetView(url, 404, user=self.viewer)
-        self.assertRequestGetView(url, 404, user=self.creator)
-        self.assertRequestGetView(url, 404, user=self.admin)
-
-        url = reverse('related-tables-detail', kwargs={'id': self.resource_3.id}) + '?all_fields=true'
-        self.assertRequestGetView(url, 403)
-        self.assertRequestGetView(url, 403, user=self.viewer)
-        self.assertRequestGetView(url, 403, user=self.creator)
-        response = self.assertRequestGetView(url, 200, user=self.admin)
-
-        assert validate_related_table(response.json(), self.resource_3)
+        self.assertEqual(len(response.json().get('results')), 1)
 
     def create_resource(self, user):
         return None

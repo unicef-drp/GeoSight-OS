@@ -80,7 +80,7 @@ class BaseTest:
         self.assertEquals(response.status_code, code)
         return response
 
-    def assertResponseContainsList(self, response, validation_function, *resources):
+    def assertResponseContainsPaginatedList(self, response, validation_function, *resources):
         """
         Assert the GET response contains a JSON array with exactly the same elements representing
          the given resources, in any order.
@@ -90,8 +90,8 @@ class BaseTest:
         and returning a boolean determining whether the json object represents the resource or not.
         """
         assert response.status_code == 200
-        json = response.json()
+        results = response.json().get('results')
 
-        assert len(json) == len(resources)
+        assert len(results) == len(resources)
         for resource in resources:
-            assert any(validation_function(json_obj, resource) for json_obj in json)
+            assert any(validation_function(json_obj, resource) for json_obj in results)
