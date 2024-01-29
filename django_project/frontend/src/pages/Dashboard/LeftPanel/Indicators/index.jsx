@@ -124,6 +124,13 @@ export default function Indicators() {
       if (requestStorage.get() !== '' + dataVersion) {
         doRequest = true
       }
+      try {
+        if (!storageData[0].concept_uuid) {
+          doRequest = true
+        }
+      } catch (err) {
+        doRequest = true
+      }
     } else {
       doRequest = true
     }

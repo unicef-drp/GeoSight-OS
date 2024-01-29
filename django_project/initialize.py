@@ -110,3 +110,21 @@ except Exception:
     pass
 
 call_command('collectstatic', '--noinput', verbosity=0)
+
+#########################################################
+# 5. Remove all cache
+#########################################################
+
+print("-----------------------------------------------------")
+print("5. Remove all cache version is different")
+from core.context_processors.global_context import project_version
+from django.core.cache import cache
+
+if cache.get('APP_KEY') != project_version(None):
+    try:
+        for key in cache.keys('*/api*'):
+            cache.delete(key)
+        cache.set('APP_KEY', project_version(None))
+        print("Version is different, remove all")
+    except Exception:
+        pass
