@@ -84,6 +84,6 @@ def validate_related_table(json, resource):
 
 
 def to_datetime(json, attribute) -> datetime.datetime:
-    """Convert a JSON attribute into a datetime."""
+    """Convert a json attribute into a datetime."""
     date = json.get(attribute)
     return parser.parse(date) if date else None
