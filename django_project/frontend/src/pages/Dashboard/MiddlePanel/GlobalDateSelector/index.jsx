@@ -30,7 +30,7 @@ import KeyboardDoubleArrowUpIcon
   from "@mui/icons-material/KeyboardDoubleArrowUp";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
-import { DjangoRequests } from "../../../../Requests";
+import { axiosPostWithSession } from "../../../../Requests";
 import { Actions } from "../../../../store/dashboard";
 import { formatDate, formatDateTime, nowUTC } from "../../../../utils/main";
 import {
@@ -309,33 +309,38 @@ export default function GlobalDateSelector() {
     const session = new Session('GlobalDateSelector');
     (
       async () => {
-        const data = {}
         if (indicators.length) {
           const metadataUrl = `/api/indicator/metadata?reference_layer_uuid=` + referenceLayer?.identifier
-          try {
-            const responses = await DjangoRequests.post(metadataUrl, indicators.map(indicator => indicator.id));
-            indicators.map(indicator => {
-              if (!indicator.url.includes('dashboard')) {
-                return
-              }
-              const response = responses[indicator.id]
-              const id = 'indicator-' + indicator.id
-              if (!response?.dates?.length) {
-                data[id] = {
-                  dates: [nowUTC().toISOString()],
-                  count: 0,
-                  version: new Date().getTime() + '-' + referenceLayer?.identifier
+          axiosPostWithSession('FetchMetadata', metadataUrl, indicators.map(indicator => indicator.id))
+            .then(responses => {
+                const data = {}
+                console.log(responses)
+                indicators.map(indicator => {
+                  if (!indicator.url.includes('dashboard')) {
+                    return
+                  }
+                  const response = responses[indicator.id]
+                  const id = 'indicator-' + indicator.id
+                  if (!response?.dates?.length) {
+                    data[id] = {
+                      dates: [nowUTC().toISOString()],
+                      count: 0,
+                      version: new Date().getTime() + '-' + referenceLayer?.identifier
+                    }
+                  } else {
+                    data[id] = response
+                  }
+                })
+                if (session.isValid) {
+                  dispatch(Actions.IndicatorLayerMetadata.updateBatch(data))
                 }
-              } else {
-                data[id] = response
               }
-            })
-          } catch (err) {
-
-          }
-        }
-        if (session.isValid) {
-          dispatch(Actions.IndicatorLayerMetadata.updateBatch(data))
+            ).catch(err => {
+              if (session.isValid) {
+                dispatch(Actions.IndicatorLayerMetadata.updateBatch({}))
+              }
+            }
+          );
         }
       }
     )();

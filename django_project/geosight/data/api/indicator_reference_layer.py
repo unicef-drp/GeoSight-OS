@@ -63,6 +63,9 @@ class _BaseAPI(APIView):
         max_time = request.GET.get('time__lte', None)
         if max_time:
             max_time = date_parser.parse(max_time)
+            max_time = datetime.combine(
+                max_time, datetime.max.time()
+            )
         else:
             max_time = datetime.now()
 
