@@ -315,11 +315,11 @@ export default function GlobalDateSelector() {
           if (!indicator.url.includes('dashboard')) {
             const dataId = 'indicator-' + indicator.id
             const metadata = indicatorLayerMetadata[dataId]
-            if (!metadata) {
+            if (!metadata?.version.includes(referenceLayer?.identifier)) {
               const metadataUrl = `/api/indicator/${indicator.id}/metadata?reference_layer_uuid=${referenceLayer?.identifier}`
               const response = await fetchJSON(metadataUrl, {});
               const id = 'indicator-' + indicator.id
-              response.version = new Date().getTime();
+              response.version = new Date().getTime() + '-' + referenceLayer?.identifier;
               data[id] = response
             }
           }
@@ -338,7 +338,7 @@ export default function GlobalDateSelector() {
                 data[id] = {
                   dates: [nowUTC().toISOString()],
                   count: 0,
-                  version: new Date().getTime()
+                  version: new Date().getTime() + '-' + referenceLayer?.identifier
                 }
               } else {
                 data[id] = response
