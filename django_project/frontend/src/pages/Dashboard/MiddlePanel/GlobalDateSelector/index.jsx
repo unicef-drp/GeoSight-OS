@@ -319,7 +319,7 @@ export default function GlobalDateSelector() {
               const metadataUrl = `/api/indicator/${indicator.id}/metadata?reference_layer_uuid=${referenceLayer?.identifier}`
               const response = await fetchJSON(metadataUrl, {});
               const id = 'indicator-' + indicator.id
-              response.version = 'TEMP'
+              response.version = new Date().getTime();
               data[id] = response
             }
           }
@@ -338,7 +338,7 @@ export default function GlobalDateSelector() {
                 data[id] = {
                   dates: [nowUTC().toISOString()],
                   count: 0,
-                  version: 'TEMP'
+                  version: new Date().getTime()
                 }
               } else {
                 data[id] = response

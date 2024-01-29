@@ -159,6 +159,13 @@ export default function Indicators() {
         if (requestStorage.get() !== '' + dataVersion) {
           doRequestAll = true
         }
+        try {
+          if (!storageData[0].concept_uuid) {
+            doRequestAll = true
+          }
+        } catch (err) {
+          doRequestAll = true
+        }
       } else {
         doRequestAll = true
       }
