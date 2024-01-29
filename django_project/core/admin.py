@@ -246,7 +246,8 @@ class APIKeyAdmin(admin.ModelAdmin):
     """API key admin admin."""
 
     list_display = (
-        'get_user', 'platform', 'owner', 'contact', 'get_created', 'is_active'
+        'get_user', 'platform', 'owner', 'contact',
+        'get_created', 'is_active', 'expiry'
     )
     fields = ('platform', 'owner', 'contact', 'is_active')
 

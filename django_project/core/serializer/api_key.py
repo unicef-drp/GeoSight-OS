@@ -41,5 +41,6 @@ class ApiKeySerializer(serializers.ModelSerializer):
             'platform',
             'owner',
             'contact',
-            'is_active'
+            'is_active',
+            'expiry'
         ]

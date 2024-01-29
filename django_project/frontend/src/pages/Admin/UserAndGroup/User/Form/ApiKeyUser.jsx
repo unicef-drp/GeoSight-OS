@@ -28,6 +28,7 @@ import {
 import { DjangoRequests } from "../../../../../Requests";
 import { CopyIcon } from "../../../../../components/Icons";
 import { IconTextField } from "../../../../../components/Elements/Input";
+import { formatDateTime } from "../../../../../utils/main";
 
 function ApiKeyDetail({ apiKey, onDelete, onError }) {
   const [submitted, setSubmitted] = useState(false);
@@ -121,9 +122,13 @@ function ApiKeyDetail({ apiKey, onDelete, onError }) {
             value={apiKey.api_key}
           /> : null
       }
-      <div>Created At : {apiKey.created}</div>
+      <div>Created At : {formatDateTime(new Date(apiKey.created))}</div>
       <div>Platform : {apiKey.platform}</div>
       <div>Status : {apiKey.is_active ? 'Active' : 'Inactive'}</div>
+      <div>
+        Expiry
+        : {!apiKey.expiry ? '-' : formatDateTime(new Date(apiKey.expiry))}
+      </div>
     </div>
     <Notification ref={notificationRef}/>
   </div>
@@ -167,6 +172,7 @@ function ApiKeyUserCreate({ onCreated, onError }) {
               'user_id': response.data['user_id'],
               'api_key': response.data['api_key'],
               'created': response.data['created'],
+              'expiry': response.data['expiry'],
               'platform': platform,
               'is_active': true
             })
