@@ -290,7 +290,8 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
         :return:
         """
         dashboard = get_object_or_404(Dashboard, slug=slug)
-        entity = dashboard.reference_layer.entity_set.filter(
+        reference_layer = self.return_reference_view()
+        entity = reference_layer.entity_set.filter(
             concept_uuid=concept_uuid
         ).first()
         if not entity:
@@ -299,19 +300,19 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
             )
         try:
             parent = entity.parents[0]
-            siblings = dashboard.reference_layer.entity_set.filter(
+            siblings = reference_layer.entity_set.filter(
                 parents__contains=parent,
                 admin_level=entity.admin_level
             ).exclude(pk=entity.pk)
-            parent = dashboard.reference_layer.entity_set.filter(
+            parent = reference_layer.entity_set.filter(
                 geom_id=parent,
-                reference_layer=dashboard.reference_layer
+                reference_layer=reference_layer
             ).first()
         except IndexError:
             siblings = []
             parent = None
 
-        children = dashboard.reference_layer.entity_set.filter(
+        children = reference_layer.entity_set.filter(
             parents__contains=entity.geom_id,
             admin_level=entity.admin_level + 1
         )
@@ -330,7 +331,7 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
                 values = indicator.values(
                     date_data=None,
                     min_date_data=None,
-                    reference_layer=dashboard.reference_layer,
+                    reference_layer=reference_layer,
                     concept_uuids=concept_uuids,
                     last_value=False
                 )
@@ -367,7 +368,7 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
             except KeyError:
                 pass
             values = related_table.data_with_query(
-                reference_layer_uuid=dashboard.reference_layer.identifier,
+                reference_layer_uuid=reference_layer.identifier,
                 geo_field=dashboard_related.geography_code_field_name,
                 geo_type=dashboard_related.geography_code_type,
                 date_field=date_field,

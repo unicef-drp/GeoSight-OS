@@ -309,7 +309,8 @@ export function getContext(
   // Fetch drilldown
   const url = urls.drilldown.replace('concept_uuid', concept_uuid)
   const params = {
-    rtconfigs: JSON.stringify(indicatorLayersConfig)
+    rtconfigs: JSON.stringify(indicatorLayersConfig),
+    reference_layer_uuid: referenceLayerData?.data?.uuid
   }
   fetchingData(
     url, params, {}, function (admin_boundary, error) {
