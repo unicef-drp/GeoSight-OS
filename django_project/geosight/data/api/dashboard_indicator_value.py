@@ -69,16 +69,17 @@ def version_cache(
 class _DashboardIndicatorValuesAPI(APIView):
     """Base indicator values API."""
 
-    def check_permission(self, user, dashboard, indicator):
+    def check_permission(self, user, indicator):
         """Check permission."""
-        if not dashboard.reference_layer:
+        reference_layer = self.return_reference_view()
+        if not reference_layer:
             return Response([])
 
         ref, created = ReferenceLayerIndicator.permissions.get_or_create(
             user=user,
             indicator=indicator,
             have_creator=False,
-            reference_layer=dashboard.reference_layer
+            reference_layer=reference_layer
         )
         try:
             read_permission_resource(ref, user)
@@ -88,6 +89,7 @@ class _DashboardIndicatorValuesAPI(APIView):
                 public_permission=PERMISSIONS.NONE.name
             )
             read_permission_resource(ref, user)
+        return reference_layer
 
     def return_parameters(self, request):
         """Return parameters for data."""
@@ -126,14 +128,11 @@ class _DashboardIndicatorValuesListAPI(
 
     def get(self, request, *args, **kwargs):
         """Return Values."""
-        slug = self.kwargs['slug']
         pk = self.kwargs['pk']
-        dashboard = get_object_or_404(Dashboard, slug=slug)
         indicator = get_object_or_404(Indicator, pk=pk)
-        self.check_permission(self.request.user, dashboard, indicator)
+        reference_layer = self.check_permission(self.request.user, indicator)
 
         # Cache version
-        reference_layer = self.return_reference_view()
         cache = version_cache(
             url=request.get_full_path(),
             reference_layer=reference_layer,
@@ -166,13 +165,10 @@ class DashboardIndicatorValuesAPI(_DashboardIndicatorValuesListAPI):
 
     def get_queryset(self):
         """Return queryset of API."""
-        slug = self.kwargs['slug']
         pk = self.kwargs['pk']
-        dashboard = get_object_or_404(Dashboard, slug=slug)
         indicator = get_object_or_404(Indicator, pk=pk)
-        self.check_permission(self.request.user, dashboard, indicator)
+        reference_layer = self.check_permission(self.request.user, indicator)
         min_time, max_time = self.return_parameters(self.request)
-        reference_layer = self.return_reference_view()
 
         return indicator.values(
             date_data=max_time,
@@ -187,12 +183,9 @@ class DashboardIndicatorAllValuesAPI(_DashboardIndicatorValuesListAPI):
 
     def get_queryset(self):
         """Return queryset of API."""
-        slug = self.kwargs['slug']
         pk = self.kwargs['pk']
-        dashboard = get_object_or_404(Dashboard, slug=slug)
         indicator = get_object_or_404(Indicator, pk=pk)
-        self.check_permission(self.request.user, dashboard, indicator)
-        reference_layer = self.return_reference_view()
+        reference_layer = self.check_permission(self.request.user, indicator)
         return indicator.values(
             last_value=False,
             reference_layer=reference_layer
@@ -204,16 +197,15 @@ class DashboardIndicatorValueListAPI(DashboardIndicatorValuesAPI):
 
     def get(self, request, slug, pk, **kwargs):
         """Return Values."""
-        dashboard = get_object_or_404(Dashboard, slug=slug)
         indicator = get_object_or_404(Indicator, pk=pk)
-        self.check_permission(request.user, dashboard, indicator)
+        reference_layer = self.check_permission(request.user, indicator)
         min_time, max_time = self.return_parameters(request)
         concept_uuid = request.GET.get('concept_uuid', None)
 
         query = indicator.query_values(
             date_data=max_time,
             min_date_data=min_time,
-            reference_layer=dashboard.reference_layer,
+            reference_layer=reference_layer,
             concept_uuid=concept_uuid
         )
         distinct = ['geom_id', 'concept_uuid']
@@ -259,9 +251,8 @@ class DashboardIndicatorDatesAPI(DashboardIndicatorValuesAPI):
 
     def get(self, request, slug, pk, **kwargs):
         """Return Values."""
-        dashboard = get_object_or_404(Dashboard, slug=slug)
         indicator = get_object_or_404(Indicator, pk=pk)
-        self.check_permission(request.user, dashboard, indicator)
+        reference_layer = self.check_permission(request.user, indicator)
 
         dates = [
             datetime.combine(
@@ -270,7 +261,7 @@ class DashboardIndicatorDatesAPI(DashboardIndicatorValuesAPI):
             ).isoformat()
             for date_str in set(
                 indicator.query_values(
-                    reference_layer=dashboard.reference_layer
+                    reference_layer=reference_layer
                 ).values_list('date', flat=True)
             )
         ]
@@ -327,7 +318,9 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
         for dashboard_indicator in dashboard.dashboardindicator_set.all():
             indicator = dashboard_indicator.object
             try:
-                self.check_permission(request.user, dashboard, indicator)
+                reference_layer = self.check_permission(
+                    request.user, indicator
+                )
                 values = indicator.values(
                     date_data=None,
                     min_date_data=None,
