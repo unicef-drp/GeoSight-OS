@@ -306,19 +306,15 @@ export default function GlobalDateSelector() {
    * Update indicator dates
    */
   useEffect(() => {
-    const session = new Session('GlobalDateSelector');
     (
       async () => {
         if (indicators.length) {
+          const session = new Session('GlobalDateSelector');
           const metadataUrl = `/api/indicator/metadata?reference_layer_uuid=` + referenceLayer?.identifier
           axiosPostWithSession('FetchMetadata', metadataUrl, indicators.map(indicator => indicator.id))
             .then(responses => {
                 const data = {}
-                console.log(responses)
                 indicators.map(indicator => {
-                  if (!indicator.url.includes('dashboard')) {
-                    return
-                  }
                   const response = responses[indicator.id]
                   const id = 'indicator-' + indicator.id
                   if (!response?.dates?.length) {
