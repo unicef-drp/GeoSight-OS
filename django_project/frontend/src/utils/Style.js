@@ -105,15 +105,10 @@ export const indicatorLayerStyle = (
 
 /**
  * Create colors from palette
- * @param paletteId
+ * @param colors
  * @param classNum
  */
-export function createColors(paletteId, classNum) {
-  const palette = COLOR_PALETTE_DATA.find(data => data.id === paletteId)
-  if (!palette || isNaN(classNum)) {
-    return []
-  }
-  const colors = palette.colors
+export function createColors(colors, classNum) {
   const out = []
   for (let idx = 0; idx < classNum; idx++) {
     let idxInColors = (colors.length - 1) * idx / (classNum - 1)
@@ -127,6 +122,19 @@ export function createColors(paletteId, classNum) {
     )
   }
   return out
+}
+
+/**
+ * Create colors from palette
+ * @param paletteId
+ * @param classNum
+ */
+export function createColorsFromPaletteId(paletteId, classNum) {
+  const palette = COLOR_PALETTE_DATA.find(data => data.id === paletteId)
+  if (!palette || isNaN(classNum)) {
+    return []
+  }
+  return createColors(palette.colors, classNum)
 }
 
 /***
@@ -184,7 +192,7 @@ export function createDynamicStyle(data, styleType, config, styleData) {
           uniqueValues = Array.from(new Set(values))
           numClass = config.dynamic_class_num > uniqueValues.length - 1 ? uniqueValues.length - 1 : config.dynamic_class_num
         }
-        const colors = createColors(config.color_palette, numClass)
+        const colors = createColorsFromPaletteId(config.color_palette, numClass)
         if (config.color_palette_reverse) {
           colors.reverse()
         }
@@ -214,7 +222,7 @@ export function createDynamicStyle(data, styleType, config, styleData) {
           // If the unique values are just 2
           // We can show exactly 2 classification
           if (uniqueValues.length <= 2) {
-            const colors = createColors(config.color_palette, uniqueValues.length)
+            const colors = createColorsFromPaletteId(config.color_palette, uniqueValues.length)
             colors.map((color, idx) => {
               const usedValue = uniqueValues[idx]
               styles.push(

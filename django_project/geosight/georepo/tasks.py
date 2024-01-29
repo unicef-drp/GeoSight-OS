@@ -32,6 +32,7 @@ def fetch_reference_codes(_id):
     try:
         reference_layer_view = ReferenceLayerView.objects.get(id=_id)
         reference_layer_view.sync_entities_code()
+        reference_layer_view.increase_version()
     except ReferenceLayerView.DoesNotExist:
         logger.error(f'View {_id} does not exist')
 

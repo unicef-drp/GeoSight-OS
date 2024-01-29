@@ -30,7 +30,7 @@ import KeyboardDoubleArrowUpIcon
   from "@mui/icons-material/KeyboardDoubleArrowUp";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
-import { fetchJSON } from "../../../../Requests";
+import { axiosPostWithSession } from "../../../../Requests";
 import { Actions } from "../../../../store/dashboard";
 import { formatDate, formatDateTime, nowUTC } from "../../../../utils/main";
 import {
@@ -306,50 +306,37 @@ export default function GlobalDateSelector() {
    * Update indicator dates
    */
   useEffect(() => {
-    const session = new Session('GlobalDateSelector');
     (
       async () => {
-        const data = {}
-        for (let x = 0; x < indicators.length; x++) {
-          const indicator = indicators[x]
-          if (!indicator.url.includes('dashboard')) {
-            const dataId = 'indicator-' + indicator.id
-            const metadata = indicatorLayerMetadata[dataId]
-            if (!metadata) {
-              const metadataUrl = `/api/indicator/${indicator.id}/metadata?reference_layer_uuid=${referenceLayer?.identifier}`
-              const response = await fetchJSON(metadataUrl, {});
-              const id = 'indicator-' + indicator.id
-              response.version = 'TEMP'
-              data[id] = response
-            }
-          }
-        }
         if (indicators.length) {
-          const metadataUrl = `/api/dashboard/${slug}/indicator/all/metadata?reference_layer_uuid=` + referenceLayer?.identifier
-          try {
-            const responses = await fetchJSON(metadataUrl, {});
-            indicators.map(indicator => {
-              if (!indicator.url.includes('dashboard')) {
-                return
-              }
-              const response = responses[indicator.id]
-              const id = 'indicator-' + indicator.id
-              if (!response?.dates?.length) {
-                data[id] = {
-                  dates: [nowUTC().toISOString()],
-                  count: 0,
-                  version: 'TEMP'
+          const session = new Session('GlobalDateSelector');
+          const metadataUrl = `/api/indicator/metadata?reference_layer_uuid=` + referenceLayer?.identifier
+          axiosPostWithSession('FetchMetadata', metadataUrl, indicators.map(indicator => indicator.id))
+            .then(responses => {
+                const data = {}
+                indicators.map(indicator => {
+                  const response = responses[indicator.id]
+                  const id = 'indicator-' + indicator.id
+                  if (!response?.dates?.length) {
+                    data[id] = {
+                      dates: [nowUTC().toISOString()],
+                      count: 0,
+                      version: new Date().getTime() + '-' + referenceLayer?.identifier
+                    }
+                  } else {
+                    data[id] = response
+                  }
+                })
+                if (session.isValid) {
+                  dispatch(Actions.IndicatorLayerMetadata.updateBatch(data))
                 }
-              } else {
-                data[id] = response
               }
-            })
-          } catch (err) {
-
-          }
-        }
-        if (session.isValid) {
-          dispatch(Actions.IndicatorLayerMetadata.updateBatch(data))
+            ).catch(err => {
+              if (session.isValid) {
+                dispatch(Actions.IndicatorLayerMetadata.updateBatch({}))
+              }
+            }
+          );
         }
       }
     )();

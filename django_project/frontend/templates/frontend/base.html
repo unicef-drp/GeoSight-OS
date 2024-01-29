@@ -96,6 +96,14 @@
   const preferences = {{ preferences_js|safe }};
   const version = "{{ version }}";
 
+  const lastVersionKey = 'APP_VERSION'
+  const lastVersion = localStorage.getItem(lastVersionKey)
+  if (lastVersion !== version) {
+    localStorage.clear()
+    localStorage.setItem(lastVersionKey, version)
+    console.log('Clear local storage')
+  }
+
   const links = {{ links|safe }};
   const contentTitle = `{{ content_title|safe }}`;
   const headerTitle = `{{ header_title|safe }}`;

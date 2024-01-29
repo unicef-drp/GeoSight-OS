@@ -13,9 +13,10 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import $ from 'jquery';
 import CircularProgress from "@mui/material/CircularProgress";
+import { debounce } from "@mui/material/utils";
 
 import Admin, { pageNames } from '../../index';
 import { codelistOptions, typeChoices } from "./Base";
@@ -138,11 +139,9 @@ function AdditionalGeneralIndicator({ indicatorData, setIndicatorData }) {
 }
 
 /*** Similarity Check ***/
-let currUrl = ''
-
 function SimilarityCheck() {
   const [nameValue, setNameValue] = useState("")
-  const [name, setInputValue] = useState("")
+  const [name, setName] = useState("")
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState([])
 
@@ -156,12 +155,20 @@ function SimilarityCheck() {
     });
   }, []);
 
-  /** Debounce value **/
+  /** Name value changed, debouce **/
+  const nameValueUpdate = useMemo(
+    () =>
+      debounce(
+        (newValue) => {
+          setName(newValue)
+        },
+        400
+      ),
+    []
+  )
+  /** Name value changed **/
   useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      setInputValue(nameValue);
-    }, 500);
-    return () => clearTimeout(delayDebounceFn);
+    nameValueUpdate(nameValue)
   }, [nameValue]);
 
   /** Name changed **/

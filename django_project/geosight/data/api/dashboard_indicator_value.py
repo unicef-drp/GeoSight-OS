@@ -31,15 +31,13 @@ from rest_framework.views import APIView
 
 from core.cache import VersionCache
 from core.pagination import Pagination
-from geosight.data.models.dashboard import (
-    Dashboard
-)
+from geosight.data.models.dashboard import Dashboard
 from geosight.data.models.indicator import Indicator
 from geosight.data.serializer.indicator import (
     IndicatorValueWithGeoDateSerializer
 )
 from geosight.georepo.models.reference_layer import (
-    ReferenceLayerIndicator
+    ReferenceLayerView, ReferenceLayerIndicator
 )
 from geosight.georepo.serializer.entity import EntitySerializer
 from geosight.permission.access import (
@@ -51,10 +49,12 @@ from geosight.permission.models.resource import (
 )
 
 
-def version_cache(url: str, indicator: Indicator, reference_layer_uuid: str):
+def version_cache(
+        url: str, indicator: Indicator, reference_layer: ReferenceLayerView
+):
     """Return version cache."""
     version = indicator.version_with_reference_layer_uuid(
-        reference_layer_uuid
+        reference_layer.version_with_uuid
     )
     component = parse.urlparse(url)
     query = parse_qs(component.query, keep_blank_values=True)
@@ -69,16 +69,17 @@ def version_cache(url: str, indicator: Indicator, reference_layer_uuid: str):
 class _DashboardIndicatorValuesAPI(APIView):
     """Base indicator values API."""
 
-    def check_permission(self, user, dashboard, indicator):
+    def check_permission(self, user, indicator):
         """Check permission."""
-        if not dashboard.reference_layer:
+        reference_layer = self.return_reference_view()
+        if not reference_layer:
             return Response([])
 
         ref, created = ReferenceLayerIndicator.permissions.get_or_create(
             user=user,
             indicator=indicator,
             have_creator=False,
-            reference_layer=dashboard.reference_layer
+            reference_layer=reference_layer
         )
         try:
             read_permission_resource(ref, user)
@@ -88,12 +89,16 @@ class _DashboardIndicatorValuesAPI(APIView):
                 public_permission=PERMISSIONS.NONE.name
             )
             read_permission_resource(ref, user)
+        return reference_layer
 
     def return_parameters(self, request):
         """Return parameters for data."""
         max_time = request.GET.get('time__lte', None)
         if max_time:
             max_time = date_parser.parse(max_time)
+            max_time = datetime.combine(
+                max_time, datetime.max.time()
+            )
         else:
             max_time = datetime.now()
 
@@ -101,6 +106,19 @@ class _DashboardIndicatorValuesAPI(APIView):
         if min_time:
             min_time = date_parser.parse(min_time).date()
         return min_time, max_time
+
+    def return_reference_view(self):
+        """Return reference view."""
+        slug = self.kwargs['slug']
+        dashboard = get_object_or_404(Dashboard, slug=slug)
+        identifier = self.request.GET.get(
+            'reference_layer_uuid',
+            dashboard.reference_layer.identifier
+        )
+        reference_layer, _ = ReferenceLayerView.objects.get_or_create(
+            identifier=identifier
+        )
+        return reference_layer
 
 
 class _DashboardIndicatorValuesListAPI(
@@ -113,16 +131,14 @@ class _DashboardIndicatorValuesListAPI(
 
     def get(self, request, *args, **kwargs):
         """Return Values."""
-        slug = self.kwargs['slug']
         pk = self.kwargs['pk']
-        dashboard = get_object_or_404(Dashboard, slug=slug)
         indicator = get_object_or_404(Indicator, pk=pk)
-        self.check_permission(self.request.user, dashboard, indicator)
+        reference_layer = self.check_permission(self.request.user, indicator)
 
         # Cache version
         cache = version_cache(
             url=request.get_full_path(),
-            reference_layer_uuid=request.GET.get('reference_layer_uuid', ''),
+            reference_layer=reference_layer,
             indicator=indicator
         )
         cache_data = cache.get()
@@ -152,17 +168,16 @@ class DashboardIndicatorValuesAPI(_DashboardIndicatorValuesListAPI):
 
     def get_queryset(self):
         """Return queryset of API."""
-        slug = self.kwargs['slug']
         pk = self.kwargs['pk']
-        dashboard = get_object_or_404(Dashboard, slug=slug)
         indicator = get_object_or_404(Indicator, pk=pk)
-        self.check_permission(self.request.user, dashboard, indicator)
+        reference_layer = self.check_permission(self.request.user, indicator)
         min_time, max_time = self.return_parameters(self.request)
+
         return indicator.values(
             date_data=max_time,
             min_date_data=min_time,
             admin_level=self.request.GET.get('admin_level', None),
-            reference_layer=dashboard.reference_layer
+            reference_layer=reference_layer
         )
 
 
@@ -171,14 +186,12 @@ class DashboardIndicatorAllValuesAPI(_DashboardIndicatorValuesListAPI):
 
     def get_queryset(self):
         """Return queryset of API."""
-        slug = self.kwargs['slug']
         pk = self.kwargs['pk']
-        dashboard = get_object_or_404(Dashboard, slug=slug)
         indicator = get_object_or_404(Indicator, pk=pk)
-        self.check_permission(self.request.user, dashboard, indicator)
+        reference_layer = self.check_permission(self.request.user, indicator)
         return indicator.values(
-            reference_layer=dashboard.reference_layer,
-            last_value=False
+            last_value=False,
+            reference_layer=reference_layer
         )
 
 
@@ -187,16 +200,15 @@ class DashboardIndicatorValueListAPI(DashboardIndicatorValuesAPI):
 
     def get(self, request, slug, pk, **kwargs):
         """Return Values."""
-        dashboard = get_object_or_404(Dashboard, slug=slug)
         indicator = get_object_or_404(Indicator, pk=pk)
-        self.check_permission(request.user, dashboard, indicator)
+        reference_layer = self.check_permission(request.user, indicator)
         min_time, max_time = self.return_parameters(request)
         concept_uuid = request.GET.get('concept_uuid', None)
 
         query = indicator.query_values(
             date_data=max_time,
             min_date_data=min_time,
-            reference_layer=dashboard.reference_layer,
+            reference_layer=reference_layer,
             concept_uuid=concept_uuid
         )
         distinct = ['geom_id', 'concept_uuid']
@@ -242,9 +254,8 @@ class DashboardIndicatorDatesAPI(DashboardIndicatorValuesAPI):
 
     def get(self, request, slug, pk, **kwargs):
         """Return Values."""
-        dashboard = get_object_or_404(Dashboard, slug=slug)
         indicator = get_object_or_404(Indicator, pk=pk)
-        self.check_permission(request.user, dashboard, indicator)
+        reference_layer = self.check_permission(request.user, indicator)
 
         dates = [
             datetime.combine(
@@ -253,73 +264,13 @@ class DashboardIndicatorDatesAPI(DashboardIndicatorValuesAPI):
             ).isoformat()
             for date_str in set(
                 indicator.query_values(
-                    reference_layer=dashboard.reference_layer
+                    reference_layer=reference_layer
                 ).values_list('date', flat=True)
             )
         ]
         dates.sort()
 
         return Response(dates)
-
-
-class DashboardIndicatorMetadataAPI(DashboardIndicatorValuesAPI):
-    """API for of indicator."""
-
-    def metadata(self, request, dashboard, indicator: Indicator):
-        """Return metadata."""
-        self.check_permission(request.user, dashboard, indicator)
-
-        # Cache version
-        cache = version_cache(
-            url=request.get_full_path().replace('all', f'{indicator.id}'),
-            reference_layer_uuid=request.GET.get(
-                'reference_layer_uuid', dashboard.reference_layer.identifier
-            ),
-            indicator=indicator
-        )
-        cache_data = cache.get()
-        if cache_data:
-            return cache_data
-
-        response = indicator.metadata(
-            request.GET.get(
-                'reference_layer_uuid',
-                dashboard.reference_layer.identifier
-            )
-        )
-        response['version'] = cache.version
-        cache.set(response)
-        return response
-
-    def get(self, request, slug, pk, **kwargs):
-        """Return Values."""
-        dashboard = get_object_or_404(Dashboard, slug=slug)
-        indicator = get_object_or_404(Indicator, pk=pk)
-        return Response(self.metadata(request, dashboard, indicator))
-
-
-class DashboardIndicatorAllMetadataAPI(DashboardIndicatorMetadataAPI):
-    """API for all metadata of indicator on dashboard."""
-
-    def get(self, request, slug, **kwargs):
-        """Return Values."""
-        dashboard = get_object_or_404(Dashboard, slug=slug)
-        responses = {}
-        for dashboard_indicator in dashboard.dashboardindicator_set.all():
-            indicator = dashboard_indicator.object
-            try:
-                responses[dashboard_indicator.object.id] = self.metadata(
-                    request, dashboard, indicator
-                )
-            except ResourcePermissionDenied:
-                responses[dashboard_indicator.object.id] = {
-                    'dates': (
-                        "You don't have permission to access this resource"
-                    ),
-                    'count': 0,
-                    'version': indicator.version
-                }
-        return Response(responses)
 
 
 class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
@@ -333,7 +284,8 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
         :return:
         """
         dashboard = get_object_or_404(Dashboard, slug=slug)
-        entity = dashboard.reference_layer.entity_set.filter(
+        reference_layer = self.return_reference_view()
+        entity = reference_layer.entity_set.filter(
             concept_uuid=concept_uuid
         ).first()
         if not entity:
@@ -342,19 +294,19 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
             )
         try:
             parent = entity.parents[0]
-            siblings = dashboard.reference_layer.entity_set.filter(
+            siblings = reference_layer.entity_set.filter(
                 parents__contains=parent,
                 admin_level=entity.admin_level
             ).exclude(pk=entity.pk)
-            parent = dashboard.reference_layer.entity_set.filter(
+            parent = reference_layer.entity_set.filter(
                 geom_id=parent,
-                reference_layer=dashboard.reference_layer
+                reference_layer=reference_layer
             ).first()
         except IndexError:
             siblings = []
             parent = None
 
-        children = dashboard.reference_layer.entity_set.filter(
+        children = reference_layer.entity_set.filter(
             parents__contains=entity.geom_id,
             admin_level=entity.admin_level + 1
         )
@@ -369,11 +321,13 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
         for dashboard_indicator in dashboard.dashboardindicator_set.all():
             indicator = dashboard_indicator.object
             try:
-                self.check_permission(request.user, dashboard, indicator)
+                reference_layer = self.check_permission(
+                    request.user, indicator
+                )
                 values = indicator.values(
                     date_data=None,
                     min_date_data=None,
-                    reference_layer=dashboard.reference_layer,
+                    reference_layer=reference_layer,
                     concept_uuids=concept_uuids,
                     last_value=False
                 )
@@ -410,7 +364,7 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
             except KeyError:
                 pass
             values = related_table.data_with_query(
-                reference_layer_uuid=dashboard.reference_layer.identifier,
+                reference_layer_uuid=reference_layer.identifier,
                 geo_field=dashboard_related.geography_code_field_name,
                 geo_type=dashboard_related.geography_code_type,
                 date_field=date_field,

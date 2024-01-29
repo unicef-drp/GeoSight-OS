@@ -59,6 +59,11 @@ class ApiKey(models.Model):
     def __str__(self):
         return f'API Key for {self.token.user.email}'
 
+    @property
+    def expiry(self):
+        """Return token."""
+        return self.token.expiry
+
 
 @receiver(post_delete, sender=ApiKey)
 def api_key_on_delete(sender, instance, using, **kwargs):

@@ -38,7 +38,6 @@ from geosight.data.api.dashboard_indicator_layer import (
 )
 from geosight.data.api.dashboard_indicator_value import (
     DashboardIndicatorValuesAPI, DashboardIndicatorDatesAPI,
-    DashboardIndicatorMetadataAPI, DashboardIndicatorAllMetadataAPI,
     DashboardIndicatorAllValuesAPI,
     DashboardIndicatorValueListAPI, DashboardEntityDrilldown
 )
@@ -50,6 +49,9 @@ from geosight.data.api.indicator import (
     IndicatorListAPI, IndicatorAdminListAPI,
     IndicatorDetailAPI, IndicatorValuesAPI, SearchSimilarityIndicatorAPI,
     IndicatorMetadataAPI
+)
+from geosight.data.api.indicator_reference_layer import (
+    IndicatorBatchMetadataAPI
 )
 from geosight.data.api.indicator_value import (
     IndicatorValuesByGeometry,
@@ -101,16 +103,6 @@ dashboard_specific_api = [
         r'^indicator/(?P<pk>\d+)/values/all$',
         DashboardIndicatorAllValuesAPI.as_view(),
         name='dashboard-indicator-values-all-api'
-    ),
-    url(
-        r'^indicator/all/metadata$',
-        DashboardIndicatorAllMetadataAPI.as_view(),
-        name='dashboard-indicator-all-metadata-api'
-    ),
-    url(
-        r'^indicator/(?P<pk>\d+)/metadata$',
-        DashboardIndicatorMetadataAPI.as_view(),
-        name='dashboard-indicator-metadata-api'
     ),
     url(
         r'^indicator/(?P<pk>\d+)/dates$',
@@ -172,6 +164,11 @@ indicator_api = [
         r'^search/similarity',
         SearchSimilarityIndicatorAPI.as_view(),
         name='indicator-search-similarity-api'
+    ),
+    url(
+        r'^metadata',
+        IndicatorBatchMetadataAPI.as_view(),
+        name='indicator-metadata-list-api'
     ),
     url(
         r'^(?P<pk>\d+)/values/latest',

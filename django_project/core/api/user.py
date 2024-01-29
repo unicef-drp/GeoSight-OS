@@ -137,7 +137,8 @@ class UserApiKey(UserPassesTestMixin, APIView):
             data={
                 'user_id': pk,
                 'api_key': token,
-                'created': auth_token.created
+                'created': auth_token.created,
+                'expiry': auth_token.expiry
             }
         )
 

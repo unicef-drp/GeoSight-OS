@@ -124,6 +124,13 @@ export default function Indicators() {
       if (requestStorage.get() !== '' + dataVersion) {
         doRequest = true
       }
+      try {
+        if (!storageData[0].concept_uuid) {
+          doRequest = true
+        }
+      } catch (err) {
+        doRequest = true
+      }
     } else {
       doRequest = true
     }
@@ -159,6 +166,13 @@ export default function Indicators() {
         if (requestStorage.get() !== '' + dataVersion) {
           doRequestAll = true
         }
+        try {
+          if (!storageData[0].concept_uuid) {
+            doRequestAll = true
+          }
+        } catch (err) {
+          doRequestAll = true
+        }
       } else {
         doRequestAll = true
       }
@@ -186,7 +200,9 @@ export default function Indicators() {
         if (session.isValid) {
           if (doRequest) {
             // Fetch all data
-            fetchPagination(url.replace('latest', 'all')).then(response => {
+            fetchPagination(url.replace('latest', 'all'), {
+              reference_layer_uuid: referenceLayer?.identifier
+            }).then(response => {
               storage.replaceData(response)
               new LocalStorage(requestKey).set(dataVersion)
             }).catch(error => {
