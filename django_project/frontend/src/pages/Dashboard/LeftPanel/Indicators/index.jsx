@@ -200,7 +200,9 @@ export default function Indicators() {
         if (session.isValid) {
           if (doRequest) {
             // Fetch all data
-            fetchPagination(url.replace('latest', 'all')).then(response => {
+            fetchPagination(url.replace('latest', 'all'), {
+              reference_layer_uuid: referenceLayer?.identifier
+            }).then(response => {
               storage.replaceData(response)
               new LocalStorage(requestKey).set(dataVersion)
             }).catch(error => {

@@ -15,6 +15,7 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib import admin
+from django.utils import timezone
 
 from geosight.data.models.indicator.indicator_value import (
     IndicatorValueWithGeo
@@ -54,6 +55,12 @@ def action_create_data_access(modeladmin, request, queryset):
     create_data_access.delay()
 
 
+@admin.action(description='Invalidate cache')
+def invalidate_cache(modeladmin, request, queryset):
+    """Invalidate cache of value on frontend."""
+    queryset.update(version_data=timezone.now())
+
+
 class ReferenceLayerViewAdmin(admin.ModelAdmin):
     """ReferenceLayerView admin."""
 
@@ -63,7 +70,7 @@ class ReferenceLayerViewAdmin(admin.ModelAdmin):
     ordering = ['name']
     actions = [
         update_meta, sync_codes, action_fetch_datasets,
-        action_create_data_access
+        action_create_data_access, invalidate_cache
     ]
 
     def in_georepo(self, obj: ReferenceLayerView):

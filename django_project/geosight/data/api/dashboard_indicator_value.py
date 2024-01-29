@@ -31,15 +31,13 @@ from rest_framework.views import APIView
 
 from core.cache import VersionCache
 from core.pagination import Pagination
-from geosight.data.models.dashboard import (
-    Dashboard
-)
+from geosight.data.models.dashboard import Dashboard
 from geosight.data.models.indicator import Indicator
 from geosight.data.serializer.indicator import (
     IndicatorValueWithGeoDateSerializer
 )
 from geosight.georepo.models.reference_layer import (
-    ReferenceLayerIndicator
+    ReferenceLayerView, ReferenceLayerIndicator
 )
 from geosight.georepo.serializer.entity import EntitySerializer
 from geosight.permission.access import (
@@ -51,10 +49,12 @@ from geosight.permission.models.resource import (
 )
 
 
-def version_cache(url: str, indicator: Indicator, reference_layer_uuid: str):
+def version_cache(
+        url: str, indicator: Indicator, reference_layer: ReferenceLayerView
+):
     """Return version cache."""
     version = indicator.version_with_reference_layer_uuid(
-        reference_layer_uuid
+        reference_layer.version_with_uuid
     )
     component = parse.urlparse(url)
     query = parse_qs(component.query, keep_blank_values=True)
@@ -102,6 +102,19 @@ class _DashboardIndicatorValuesAPI(APIView):
             min_time = date_parser.parse(min_time).date()
         return min_time, max_time
 
+    def return_reference_view(self):
+        """Return reference view."""
+        slug = self.kwargs['slug']
+        dashboard = get_object_or_404(Dashboard, slug=slug)
+        identifier = self.request.GET.get(
+            'reference_layer_uuid',
+            dashboard.reference_layer.identifier
+        )
+        reference_layer, _ = ReferenceLayerView.objects.get_or_create(
+            identifier=identifier
+        )
+        return reference_layer
+
 
 class _DashboardIndicatorValuesListAPI(
     _DashboardIndicatorValuesAPI, ListAPIView
@@ -120,9 +133,10 @@ class _DashboardIndicatorValuesListAPI(
         self.check_permission(self.request.user, dashboard, indicator)
 
         # Cache version
+        reference_layer = self.return_reference_view()
         cache = version_cache(
             url=request.get_full_path(),
-            reference_layer_uuid=request.GET.get('reference_layer_uuid', ''),
+            reference_layer=reference_layer,
             indicator=indicator
         )
         cache_data = cache.get()
@@ -158,11 +172,13 @@ class DashboardIndicatorValuesAPI(_DashboardIndicatorValuesListAPI):
         indicator = get_object_or_404(Indicator, pk=pk)
         self.check_permission(self.request.user, dashboard, indicator)
         min_time, max_time = self.return_parameters(self.request)
+        reference_layer = self.return_reference_view()
+
         return indicator.values(
             date_data=max_time,
             min_date_data=min_time,
             admin_level=self.request.GET.get('admin_level', None),
-            reference_layer=dashboard.reference_layer
+            reference_layer=reference_layer
         )
 
 
@@ -176,9 +192,10 @@ class DashboardIndicatorAllValuesAPI(_DashboardIndicatorValuesListAPI):
         dashboard = get_object_or_404(Dashboard, slug=slug)
         indicator = get_object_or_404(Indicator, pk=pk)
         self.check_permission(self.request.user, dashboard, indicator)
+        reference_layer = self.return_reference_view()
         return indicator.values(
-            reference_layer=dashboard.reference_layer,
-            last_value=False
+            last_value=False,
+            reference_layer=reference_layer
         )
 
 
@@ -270,11 +287,10 @@ class DashboardIndicatorMetadataAPI(DashboardIndicatorValuesAPI):
         self.check_permission(request.user, dashboard, indicator)
 
         # Cache version
+        reference_layer = self.return_reference_view()
         cache = version_cache(
             url=request.get_full_path().replace('all', f'{indicator.id}'),
-            reference_layer_uuid=request.GET.get(
-                'reference_layer_uuid', dashboard.reference_layer.identifier
-            ),
+            reference_layer=reference_layer,
             indicator=indicator
         )
         cache_data = cache.get()
