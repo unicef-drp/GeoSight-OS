@@ -438,6 +438,28 @@ class Indicator(
             'count': query.count()
         }
 
+    def metadata_with_cache(self, reference_layer):
+        """Metadata for indicator."""
+        from core.cache import VersionCache
+        version = self.version_with_reference_layer_uuid(
+            reference_layer.version_with_uuid
+        )
+        cache = VersionCache(
+            key=(
+                f'METADATA : '
+                f'Indicator {self.id} - {reference_layer.identifier}',
+            ),
+            version=version
+        )
+        cache_data = cache.get()
+        if cache_data:
+            return cache_data
+
+        response = self.metadata(reference_layer.identifier)
+        response['version'] = cache.version
+        cache.set(response)
+        return response
+
 
 @receiver(post_save, sender=Indicator)
 def increase_version(sender, instance, **kwargs):

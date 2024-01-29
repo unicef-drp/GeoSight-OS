@@ -279,65 +279,6 @@ class DashboardIndicatorDatesAPI(DashboardIndicatorValuesAPI):
         return Response(dates)
 
 
-class DashboardIndicatorMetadataAPI(DashboardIndicatorValuesAPI):
-    """API for of indicator."""
-
-    def metadata(self, request, dashboard, indicator: Indicator):
-        """Return metadata."""
-        self.check_permission(request.user, dashboard, indicator)
-
-        # Cache version
-        reference_layer = self.return_reference_view()
-        cache = version_cache(
-            url=request.get_full_path().replace('all', f'{indicator.id}'),
-            reference_layer=reference_layer,
-            indicator=indicator
-        )
-        cache_data = cache.get()
-        if cache_data:
-            return cache_data
-
-        response = indicator.metadata(
-            request.GET.get(
-                'reference_layer_uuid',
-                dashboard.reference_layer.identifier
-            )
-        )
-        response['version'] = cache.version
-        cache.set(response)
-        return response
-
-    def get(self, request, slug, pk, **kwargs):
-        """Return Values."""
-        dashboard = get_object_or_404(Dashboard, slug=slug)
-        indicator = get_object_or_404(Indicator, pk=pk)
-        return Response(self.metadata(request, dashboard, indicator))
-
-
-class DashboardIndicatorAllMetadataAPI(DashboardIndicatorMetadataAPI):
-    """API for all metadata of indicator on dashboard."""
-
-    def get(self, request, slug, **kwargs):
-        """Return Values."""
-        dashboard = get_object_or_404(Dashboard, slug=slug)
-        responses = {}
-        for dashboard_indicator in dashboard.dashboardindicator_set.all():
-            indicator = dashboard_indicator.object
-            try:
-                responses[dashboard_indicator.object.id] = self.metadata(
-                    request, dashboard, indicator
-                )
-            except ResourcePermissionDenied:
-                responses[dashboard_indicator.object.id] = {
-                    'dates': (
-                        "You don't have permission to access this resource"
-                    ),
-                    'count': 0,
-                    'version': indicator.version
-                }
-        return Response(responses)
-
-
 class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
     """Return all values for the geometry code."""
 

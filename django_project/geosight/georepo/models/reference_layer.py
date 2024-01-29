@@ -86,7 +86,7 @@ class ReferenceLayerView(AbstractVersionData):
     @property
     def version_with_uuid(self):
         """Return version data."""
-        return f'{self.identifier}-{self.version_data.timestamp()}'
+        return f'{self.identifier}-{self.version}'
 
     def save(self, *args, **kwargs):
         """On save method."""

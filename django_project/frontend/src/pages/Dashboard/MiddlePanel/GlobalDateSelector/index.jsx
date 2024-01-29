@@ -30,7 +30,7 @@ import KeyboardDoubleArrowUpIcon
   from "@mui/icons-material/KeyboardDoubleArrowUp";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
-import { fetchJSON } from "../../../../Requests";
+import { DjangoRequests } from "../../../../Requests";
 import { Actions } from "../../../../store/dashboard";
 import { formatDate, formatDateTime, nowUTC } from "../../../../utils/main";
 import {
@@ -310,24 +310,10 @@ export default function GlobalDateSelector() {
     (
       async () => {
         const data = {}
-        for (let x = 0; x < indicators.length; x++) {
-          const indicator = indicators[x]
-          if (!indicator.url.includes('dashboard')) {
-            const dataId = 'indicator-' + indicator.id
-            const metadata = indicatorLayerMetadata[dataId]
-            if (!metadata?.version.includes(referenceLayer?.identifier)) {
-              const metadataUrl = `/api/indicator/${indicator.id}/metadata?reference_layer_uuid=${referenceLayer?.identifier}`
-              const response = await fetchJSON(metadataUrl, {});
-              const id = 'indicator-' + indicator.id
-              response.version = new Date().getTime() + '-' + referenceLayer?.identifier;
-              data[id] = response
-            }
-          }
-        }
         if (indicators.length) {
-          const metadataUrl = `/api/dashboard/${slug}/indicator/all/metadata?reference_layer_uuid=` + referenceLayer?.identifier
+          const metadataUrl = `/api/indicator/metadata?reference_layer_uuid=` + referenceLayer?.identifier
           try {
-            const responses = await fetchJSON(metadataUrl, {});
+            const responses = await DjangoRequests.post(metadataUrl, indicators.map(indicator => indicator.id));
             indicators.map(indicator => {
               if (!indicator.url.includes('dashboard')) {
                 return

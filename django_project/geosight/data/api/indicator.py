@@ -34,8 +34,7 @@ from geosight.data.serializer.indicator import (
 )
 from geosight.georepo.models.reference_layer import ReferenceLayerView
 from geosight.permission.access import (
-    read_permission_resource,
-    delete_permission_resource
+    read_permission_resource, delete_permission_resource
 )
 
 
