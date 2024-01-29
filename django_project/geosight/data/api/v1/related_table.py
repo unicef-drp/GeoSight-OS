@@ -24,6 +24,8 @@ from geosight.data.serializer.related_table import RelatedTableApiSerializer
 
 
 class RelatedTableViewSet(BaseApiV1Resource):
+    """Related Table ViewSet."""
+
     model_class = RelatedTable
     serializer_class = RelatedTableApiSerializer
     extra_exclude_fields = []
@@ -31,7 +33,8 @@ class RelatedTableViewSet(BaseApiV1Resource):
     @swagger_auto_schema(
         operation_id='related-tables-get',
         tags=[ApiTag.RELATED_TABLES],
-        operation_description='Return list of accessible related tables for the user.',
+        operation_description=
+        'Return list of accessible related tables for the user.',
         responses={
             200: Response(
                 description="Resource fetching successful.",
@@ -43,22 +46,32 @@ class RelatedTableViewSet(BaseApiV1Resource):
         """List of related tables."""
         return super().list(request, *args, **kwargs)
 
-    @swagger_auto_schema(operation_id='related-tables-get', tags=[ApiTag.RELATED_TABLES])
+    @swagger_auto_schema(operation_id='related-tables-get',
+                         tags=[ApiTag.RELATED_TABLES])
     def retrieve(self, request, *args, **kwargs):
+        """Detail of related table."""
         raise MethodNotAllowed('GET')
 
-    @swagger_auto_schema(operation_id='related-tables-create', tags=[ApiTag.RELATED_TABLES])
+    @swagger_auto_schema(operation_id='related-tables-create',
+                         tags=[ApiTag.RELATED_TABLES])
     def create(self, request, *args, **kwargs):
+        """Create a related table."""
         raise MethodNotAllowed('POST')
 
-    @swagger_auto_schema(operation_id='related-tables-update', tags=[ApiTag.RELATED_TABLES])
+    @swagger_auto_schema(operation_id='related-tables-update',
+                         tags=[ApiTag.RELATED_TABLES])
     def update(self, request, *args, **kwargs):
+        """Update an existing related table."""
         raise MethodNotAllowed('PUT')
 
-    @swagger_auto_schema(operation_id='related-tables-partial_update', tags=[ApiTag.RELATED_TABLES])
+    @swagger_auto_schema(operation_id='related-tables-partial_update',
+                         tags=[ApiTag.RELATED_TABLES])
     def partial_update(self, request, *args, **kwargs):
+        """Update an existing related table."""
         raise MethodNotAllowed('PATCH')
 
-    @swagger_auto_schema(operation_id='related-tables-delete', tags=[ApiTag.RELATED_TABLES])
+    @swagger_auto_schema(operation_id='related-tables-delete',
+                         tags=[ApiTag.RELATED_TABLES])
     def destroy(self, request, *args, **kwargs):
+        """Delete an existing related table."""
         raise MethodNotAllowed('DELETE')

@@ -24,8 +24,8 @@ from geosight.permission.models import PERMISSIONS
 from geosight.permission.tests import BasePermissionTest
 
 
-class RelatedTableApiTest(BasePermissionTest, TestCase):
-    def setUp(self):
+class RelatedTableApiTest(BasePermissionTest, TestCase):  # noqa: D101
+    def setUp(self):  # noqa: D102
         super().setUp()
 
         self.resource_1 = RelatedTable.permissions.create(
@@ -42,16 +42,20 @@ class RelatedTableApiTest(BasePermissionTest, TestCase):
             name='Name C',
             description='Resource 3',
         )
-        self.resource_3.permission.update_user_permission(self.creator, PERMISSIONS.LIST)
-        self.resource_3.permission.update_group_permission(self.group, PERMISSIONS.OWNER)
+        self.resource_3.permission.update_user_permission(
+            self.creator, PERMISSIONS.LIST)
+        self.resource_3.permission.update_group_permission(
+            self.group, PERMISSIONS.OWNER)
 
     def test_list(self):
+        """Test GET /related-tables/ ."""
         url = reverse('related-tables-list') + '?all_fields=true'
         self.assertRequestGetView(url, 403)
 
         response = self.assertRequestGetView(url, 200, user=self.admin)
         self.assertResponseContainsPaginatedList(
-            response, validate_related_table, self.resource_1, self.resource_2, self.resource_3
+            response, validate_related_table,
+            self.resource_1, self.resource_2, self.resource_3
         )
 
         response = self.assertRequestGetView(url, 200, user=self.viewer)
@@ -60,23 +64,26 @@ class RelatedTableApiTest(BasePermissionTest, TestCase):
         response = self.assertRequestGetView(url, 200, user=self.creator)
         self.assertEqual(len(response.json().get('results')), 1)
 
-        response = self.assertRequestGetView(url, 200, user=self.creator_in_group)
+        response = self.assertRequestGetView(url, 200,
+                                             user=self.creator_in_group)
         self.assertEqual(len(response.json().get('results')), 1)
 
-    def create_resource(self, user):
+    def create_resource(self, user):  # noqa: D102
         return None
 
 
 def validate_related_table(json, resource):
-    return (json['id'] == resource.id
-            and json['name'] == resource.name
-            and json.get('description') == resource.description
-            and json['url'] == f'/api/v1/related-tables/{resource.id}/'
-            and json.get('creator') == resource.creator.get_full_name()
-            and to_datetime(json, 'created_at') == resource.created_at
-            and to_datetime(json, 'modified_at') == resource.modified_at)
+    """Validate json dict against resource."""
+    return (json['id'] == resource.id and
+            json['name'] == resource.name and
+            json.get('description') == resource.description and
+            json['url'] == f'/api/v1/related-tables/{resource.id}/' and
+            json.get('creator') == resource.creator.get_full_name() and
+            to_datetime(json, 'created_at') == resource.created_at and
+            to_datetime(json, 'modified_at') == resource.modified_at)
 
 
 def to_datetime(json, attribute) -> datetime.datetime:
+    """Convert a JSON attribute into a datetime."""
     date = json.get(attribute)
     return parser.parse(date) if date else None
