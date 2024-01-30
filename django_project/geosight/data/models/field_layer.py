@@ -44,6 +44,7 @@ class BaseFieldLayerAbstract(models.Model):
 
 class FieldLayerAbstract(BaseFieldLayerAbstract):
     """Field data of layer."""
+
     visible = models.BooleanField(
         default=True
     )
