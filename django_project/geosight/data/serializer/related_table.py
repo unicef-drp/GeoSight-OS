@@ -23,8 +23,36 @@ from geosight.data.models.related_table import (
 )
 
 
-class RelatedTableSerializer(DynamicModelSerializer):
+class RelatedTableApiSerializer(DynamicModelSerializer):
     """Serializer for RelatedTable."""
+
+    url = serializers.SerializerMethodField()
+    creator = serializers.SerializerMethodField()
+    fields_definition = serializers.SerializerMethodField()
+
+    def get_url(self, obj: RelatedTable):  # noqa: D102
+        return reverse(
+            'related-tables-detail',
+            args=[obj.id]
+        )
+
+    def get_creator(self, obj: RelatedTable):  # noqa: D102
+        return obj.creator.get_full_name() if obj.creator else None
+
+    def get_fields_definition(self, obj: RelatedTable):  # noqa: D102
+        return obj.fields_definition
+
+    class Meta:  # noqa: D106
+        model = RelatedTable
+        exclude = ('unique_id',)
+
+
+class RelatedTableSerializer(DynamicModelSerializer):
+    """
+    DEPRECATED: Legacy serializer.
+
+    To be replaced with RelatedTableApiSerializer Serializer for RelatedTable.
+    """
 
     url = serializers.SerializerMethodField()
     creator = serializers.SerializerMethodField()
