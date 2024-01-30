@@ -24,9 +24,12 @@ from geosight.data.api.v1.data_browser import (
     DatasetApiList, DatasetApiListIds
 )
 from geosight.data.api.v1.indicator import IndicatorViewSet
+from geosight.data.api.v1.related_table import RelatedTableViewSet
 
 router = DefaultRouter()
 router.register(r'basemaps', BasemapViewSet, basename='basemaps')
+router.register(
+    r'related-tables', RelatedTableViewSet, basename='related-tables')
 router.register(r'indicators', IndicatorViewSet, basename='indicators')
 
 data_browser_api_v1 = [

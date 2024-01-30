@@ -79,3 +79,26 @@ class BaseTest:
         response = client.delete(url, data=data, content_type=content_type)
         self.assertEquals(response.status_code, code)
         return response
+
+    def assertResponseContainsPaginatedList(
+            self, response, validation_function, *resources
+    ):
+        """
+        Assert GET response against resources.
+
+        Assert the GET response contains a JSON array with exactly the same
+         elements representing the given resources, in any order.
+
+        :param response: GET response
+        :param validation_function: A function receiving a json object from
+         the response and a resource
+         and returning a boolean determining whether the json object represents
+         the resource or not.
+        """
+        assert response.status_code == 200
+        results = response.json().get('results')
+
+        assert len(results) == len(resources)
+        for resource in resources:
+            assert any(validation_function(json_obj, resource)
+                       for json_obj in results)

@@ -45,6 +45,7 @@ import { IconTextField } from "../../../components/Elements/Input";
 import { AdminListPagination } from "../AdminListPagination";
 import { SaveButton } from "../../../components/Elements/Button";
 import { AdminPage, pageNames } from "../index";
+import { InfoFillIcon } from "../../../components/Icons";
 
 
 import './style.scss';
@@ -166,6 +167,37 @@ export default function DataBrowserAdmin() {
         } else {
           return params.value
         }
+      }
+    },
+    {
+      field: 'extra_value', headerName: 'Extras', width: 50,
+      renderCell: (params) => {
+        if (params.row.extra_value && Object.keys(params.row.extra_value).length) {
+          return <CustomPopover
+            anchorOrigin={{
+              vertical: 'center',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'center',
+              horizontal: 'left',
+            }}
+            Button={
+              <InfoFillIcon fontSize={"small"}/>
+            }
+            showOnHover={true}
+          >
+            <div style={{ padding: "10px" }}>
+              {
+                Object.keys(params.row.extra_value).map((key) => {
+                  return <div><b>{key}</b> : {params.row.extra_value[key]}
+                  </div>
+                })
+              }
+            </div>
+          </CustomPopover>
+        }
+        return <></>
       }
     },
     {

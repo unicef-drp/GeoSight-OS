@@ -221,3 +221,20 @@
     overflow: visible;
   }
 }
+
+.Similarity {
+  table {
+    width: 100%;
+
+    .SimilarityDescription {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 300px;
+    }
+
+    td {
+      padding: 3px 1rem;
+    }
+  }
+}

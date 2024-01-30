@@ -17,7 +17,6 @@
    NotificationMaintenance
    ========================================================================== */
 
-import { formatDateTime } from "../../utils/main";
 import React, { useEffect, useState } from 'react';
 import InfoIcon from '@mui/icons-material/Info';
 
@@ -51,18 +50,9 @@ export default function NotificationMaintenance() {
 
   const Notification = () => {
     const _from = new Date(data.scheduled_from);
-    const isUpcoming = new Date() < _from;
 
     return <span className='NotificationMaintenanceWrapperInfo'>
-      <div>
-        We {isUpcoming ? 'will be' : 'are'} peforming a maintenance
-        from <b>{formatDateTime(_from, false, false, false)}</b>
-        {
-          data.scheduled_end ? (
-            <> to <b>{formatDateTime(new Date(data.scheduled_end), false, false, false)}</b></>
-          ) : null
-        }
-      </div>
+      Scheduled maintenance
       </span>
   }
   if (!data?.id) {

@@ -71,7 +71,7 @@ class AbstractVersionData(models.Model):
 
     def version_with_reference_layer_uuid(self, reference_layer_uuid):
         """Return version data."""
-        return f'{self.version_data.timestamp()}-{reference_layer_uuid}'
+        return f'{self.version}-{reference_layer_uuid}'
 
 
 class AbstractEditData(models.Model):

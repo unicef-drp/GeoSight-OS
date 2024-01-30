@@ -71,7 +71,7 @@ export default function Indicators() {
     if (selectedGlobalTime) {
       fetchData()
     }
-  }, [indicators]);
+  }, [indicators, indicatorLayerMetadata]);
 
   /** At first time, put loading. */
   useEffect(() => {
@@ -113,7 +113,7 @@ export default function Indicators() {
    * Get Data For and Indicator by dates
    * Fetch it from storage or fetch it
    */
-  const getDataByDate = async (id, url, params, currentGlobalTime, dataVersion, onProgress) => {
+  const getDataByDate = async (id, url, params, currentGlobalTime, dataVersion, onProgress, usingCache) => {
     const storage = new LocalStorageData(url, dataVersion)
     const storageData = storage.get()
     // Check if the request is already requested before
@@ -122,6 +122,13 @@ export default function Indicators() {
     if (storageData) {
       const requestStorage = new LocalStorage(requestKey)
       if (requestStorage.get() !== '' + dataVersion) {
+        doRequest = true
+      }
+      try {
+        if (!storageData[0].concept_uuid) {
+          doRequest = true
+        }
+      } catch (err) {
         doRequest = true
       }
     } else {
@@ -142,6 +149,11 @@ export default function Indicators() {
    * Get Data function for just returning data
    */
   const getDataFn = async (id, url, params, currentGlobalTime, dataVersion, onResponse, onProgress, doAll) => {
+    const usingCache = url.includes('dashboard')
+    params.reference_layer_uuid = referenceLayer?.identifier
+    if (!usingCache) {
+      return await fetchPaginationInParallel(url, params, onProgress)
+    }
     const storage = new LocalStorageData(url, dataVersion)
     let storageData = storage.get()
 
@@ -154,11 +166,17 @@ export default function Indicators() {
         if (requestStorage.get() !== '' + dataVersion) {
           doRequestAll = true
         }
+        try {
+          if (!storageData[0].concept_uuid) {
+            doRequestAll = true
+          }
+        } catch (err) {
+          doRequestAll = true
+        }
       } else {
         doRequestAll = true
       }
     }
-    params.reference_layer_uuid = referenceLayer?.identifier
     // Get quick data on current date
     // But if it says doing request All
     if (!storageData || doRequestAll) {
@@ -182,7 +200,9 @@ export default function Indicators() {
         if (session.isValid) {
           if (doRequest) {
             // Fetch all data
-            fetchPagination(url.replace('latest', 'all')).then(response => {
+            fetchPagination(url.replace('latest', 'all'), {
+              reference_layer_uuid: referenceLayer?.identifier
+            }).then(response => {
               storage.replaceData(response)
               new LocalStorage(requestKey).set(dataVersion)
             }).catch(error => {

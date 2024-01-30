@@ -15,8 +15,6 @@ A **project** (dashboard) is the most important feature of GeoSight. Projects co
 ## :ballot_box_with_check: Project activity
 
 [![Tests](https://github.com/unicef-drp/GeoSight-OS/workflows/Tests/badge.svg)](https://github.com/unicef-drp/GeoSight-OS/actions/workflows/tests.yaml)
-[![Flake8](https://github.com/unicef-drp/GeoSight-OS/workflows/Flake8/badge.svg)](https://github.com/unicef-drp/GeoSight-OS/actions/workflows/flake8.yml)
-[![📖 Documentation](https://github.com/unicef-drp/GeoSight-OS-Documentation/actions/workflows/BuildMKDocsAndPublishToGithubPages.yml/badge.svg)](https://github.com/unicef-drp/GeoSight-OS-Documentation/actions/workflows/BuildMKDocsAndPublishToGithubPages.yml)
 
 ### Production
 

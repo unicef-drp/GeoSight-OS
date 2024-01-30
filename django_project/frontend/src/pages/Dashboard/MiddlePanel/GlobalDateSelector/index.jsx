@@ -30,7 +30,7 @@ import KeyboardDoubleArrowUpIcon
   from "@mui/icons-material/KeyboardDoubleArrowUp";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
-import { fetchJSON } from "../../../../Requests";
+import { axiosPostWithSession } from "../../../../Requests";
 import { Actions } from "../../../../store/dashboard";
 import { formatDate, formatDateTime, nowUTC } from "../../../../utils/main";
 import {
@@ -41,6 +41,7 @@ import {
 import { SelectWithList } from "../../../../components/Input/SelectWithList";
 import PlayControl from "./PlayControl";
 import { ThemeButton } from "../../../../components/Elements/Button";
+import { Session } from "../../../../utils/Sessions";
 
 import './style.scss';
 
@@ -307,25 +308,36 @@ export default function GlobalDateSelector() {
   useEffect(() => {
     (
       async () => {
-        const data = {}
         if (indicators.length) {
-          const metadataUrl = `/api/dashboard/${slug}/indicator/all/metadata?reference_layer_uuid=` + referenceLayer?.identifier
-          const responses = await fetchJSON(metadataUrl, {});
-          indicators.map(indicator => {
-            const response = responses[indicator.id]
-            const id = 'indicator-' + indicator.id
-            if (!response?.dates?.length) {
-              data[id] = {
-                dates: [nowUTC().toISOString()],
-                count: 0,
-                version: 'TEMP'
+          const session = new Session('GlobalDateSelector');
+          const metadataUrl = `/api/indicator/metadata?reference_layer_uuid=` + referenceLayer?.identifier
+          axiosPostWithSession('FetchMetadata', metadataUrl, indicators.map(indicator => indicator.id))
+            .then(responses => {
+                const data = {}
+                indicators.map(indicator => {
+                  const response = responses[indicator.id]
+                  const id = 'indicator-' + indicator.id
+                  if (!response?.dates?.length) {
+                    data[id] = {
+                      dates: [nowUTC().toISOString()],
+                      count: 0,
+                      version: new Date().getTime() + '-' + referenceLayer?.identifier
+                    }
+                  } else {
+                    data[id] = response
+                  }
+                })
+                if (session.isValid) {
+                  dispatch(Actions.IndicatorLayerMetadata.updateBatch(data))
+                }
               }
-            } else {
-              data[id] = response
+            ).catch(err => {
+              if (session.isValid) {
+                dispatch(Actions.IndicatorLayerMetadata.updateBatch({}))
+              }
             }
-          })
+          );
         }
-        dispatch(Actions.IndicatorLayerMetadata.updateBatch(data))
       }
     )();
   }, [indicators, referenceLayer]);
@@ -344,7 +356,11 @@ export default function GlobalDateSelector() {
         const min = newDates[0]
         if (selectedDatePoint !== max) {
           setSelectedDatePoint(max)
+        }
+        if (maxDate !== max) {
           setMaxDate(max)
+        }
+        if (minDate !== min) {
           setMinDate(min)
         }
       }

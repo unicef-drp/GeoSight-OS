@@ -159,29 +159,35 @@ export default function DjangoTemplateForm(
       }
     }
     // Render
-    return <div
-      className={'BasicFormSection' + (isHidden ? ' Hidden' : '')} key={idx}
-      data-wrapper-name={attrName}
-    >
-      <div dangerouslySetInnerHTML={{ __html: label }}></div>
-      <div className='InputInLine'>
-        {
-          selectableInput && attrName ?
-            <Checkbox
-              className='InputEnabler'
-              checked={selectableInputChecked}
-              onClick={evt => {
-                selectableInputState[attrName] = !selectableInputChecked
-                $('*[name="' + attrName + '"]').prop("disabled", selectableInputChecked);
-                setSelectableInputState({ ...selectableInputState })
-              }}
-            /> : null}
-        {input}
+    return <>
+      <div
+        className={'BasicFormSection' + (isHidden ? ' Hidden' : '')} key={idx}
+        data-wrapper-name={attrName}
+      >
+        <div dangerouslySetInnerHTML={{ __html: label }}></div>
+        <div className='InputInLine'>
+          {
+            selectableInput && attrName ?
+              <Checkbox
+                className='InputEnabler'
+                checked={selectableInputChecked}
+                onClick={evt => {
+                  selectableInputState[attrName] = !selectableInputChecked
+                  $('*[name="' + attrName + '"]').prop("disabled", selectableInputChecked);
+                  setSelectableInputState({ ...selectableInputState })
+                }}
+              /> : null}
+          {input}
+        </div>
+        {error ? <div dangerouslySetInnerHTML={{ __html: error }}></div> : ''}
+        {helptext ?
+          <div dangerouslySetInnerHTML={{ __html: helptext }}></div> : ''}
       </div>
-      {error ? <div dangerouslySetInnerHTML={{ __html: error }}></div> : ''}
-      {helptext ?
-        <div dangerouslySetInnerHTML={{ __html: helptext }}></div> : ''}
-    </div>
+      {
+        props.additionalElementAfter && props.additionalElementAfter[attrName] ?
+          props.additionalElementAfter[attrName] : null
+      }
+    </>
   }
 
   const params = urlParams()

@@ -43,7 +43,7 @@ class CustomTokenAuthentication(TokenAuthentication):
     def test_user_key(self, user, user_key):
         """Test the user key a.k.a email user."""
         if user.email != user_key:
-            msg = _('Invalid token! No matching user!.')
+            msg = _('Invalid email!.')
             raise authentication.exceptions.AuthenticationFailed(msg)
 
     def get_user_key_param(self, request):

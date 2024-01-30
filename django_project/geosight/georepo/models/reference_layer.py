@@ -17,6 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.contrib.gis.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from core.models.general import AbstractVersionData
 from core.utils import is_valid_uuid
 from geosight.data.models.indicator import Indicator
 from geosight.georepo.request import (
@@ -49,7 +50,7 @@ class ReferenceLayer(models.Model):
         return self.identifier
 
 
-class ReferenceLayerView(models.Model):
+class ReferenceLayerView(AbstractVersionData):
     """Reference Layer view data."""
 
     identifier = models.CharField(
@@ -81,6 +82,11 @@ class ReferenceLayerView(models.Model):
     def __str__(self):
         """Return str."""
         return f'{self.get_name()} ({self.identifier})'
+
+    @property
+    def version_with_uuid(self):
+        """Return version data."""
+        return f'{self.identifier}-{self.version}'
 
     def save(self, *args, **kwargs):
         """On save method."""

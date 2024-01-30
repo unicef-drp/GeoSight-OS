@@ -17,6 +17,17 @@ test.describe('Create indicator', () => {
     await page.getByText('Admin panel').click();
     await page.getByRole('link', { name: 'Indicators' }).click();
     await page.getByRole('button', { name: 'Add New Indicator' }).click();
+
+    // Check similarity
+    await page.locator('#Form #id_name').fill('Sample ind B');
+    await page.locator('#Form #id_description').click();
+    await expect(page.locator('.Similarity table')).toBeVisible();
+    await expect(page.locator('.Similarity table .SimilarityName a').nth(0)).toContainText('Sample Indicator B');
+    await expect(page.locator('.Similarity table .SimilarityScore').nth(0)).toContainText('60%');
+    await expect(page.locator('.Similarity table .SimilarityName a').nth(1)).toContainText('Sample Indicator A');
+    await expect(page.locator('.Similarity table .SimilarityScore').nth(1)).toContainText('50%');
+
+    // Fill correct values
     await page.locator('#Form #id_name').fill(name);
     await page.locator('#Form #id_shortcode').fill(name);
     await page.locator("#Form #id_description").fill('CI Indicator Sample Description');

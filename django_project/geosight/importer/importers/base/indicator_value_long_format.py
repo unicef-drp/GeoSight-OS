@@ -208,7 +208,7 @@ class IndicatorValueLongFormat(AbstractImporterIndicatorValue, ABC):
                 else:
                     try:
                         geo_code = record['geo_code']
-                        codes = results[geo_code]
+                        codes = results[f'{geo_code}']
                         entity = codes[len(codes) - 1]
                         entity = self.importer.reference_layer.save_entity(
                             entity

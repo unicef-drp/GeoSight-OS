@@ -38,6 +38,7 @@ class ApiTag:
     """Return API Tags."""
 
     BASEMAPS = 'Basemaps'
+    RELATED_TABLES = 'Related tables'
     DATA_BROWSER = 'Data Browser'
 
 

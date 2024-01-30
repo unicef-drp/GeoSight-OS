@@ -47,8 +47,7 @@ class ImporterLogListAPI(ListAPIView, FilteredAPI):
 
     def get_queryset(self):
         """Return queryset of API."""
-        query = ImporterLog.objects.filter(
-            importer__job__isnull=True).order_by('-start_time')
+        query = ImporterLog.objects.all().order_by('-start_time')
         if not self.request.user.profile.is_admin:
             query = ImporterLog.objects.filter(
                 importer__creator=self.request.user

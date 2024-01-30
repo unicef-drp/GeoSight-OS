@@ -148,10 +148,19 @@ export function IndicatorLayers() {
    */
   useEffect(() => {
     let indicatorLayersTree = JSON.parse(JSON.stringify(indicatorLayers))
+    const selectedIds = [currentIndicatorLayer, currentIndicatorSecondLayer]
     if (indicatorLayersTree && indicatorLayersTree.length) {
-
       // Indicator enabled
       let indicatorEnabled = { 'id': currentIndicatorLayer }
+      const indicatorLayersIds = []
+      indicatorLayers.map(layer => {
+        indicatorLayersIds.push(layer.id)
+        indicatorLayersIds.push('' + layer.id)
+      })
+      if (!indicatorLayersIds.includes(currentIndicatorLayer)) {
+        indicatorEnabled = { 'id': null }
+      }
+
       if (!indicatorEnabled.id || indicatorLayersForcedUpdate) {
         // If not force updated
         indicatorEnabled = indicatorLayersTree.find(indicator => {
@@ -165,12 +174,13 @@ export function IndicatorLayers() {
         // Change current indicator if indicators changed
         if (indicatorEnabled) {
           setCurrentIndicatorLayer(indicatorEnabled.id)
+          selectedIds[0] = indicatorEnabled.id
         } else {
           indicatorLayersTree[0].visible_by_default = true
           setCurrentIndicatorLayer(indicatorLayersTree[0].id)
+          selectedIds[0] = indicatorLayersTree[0].id
         }
       } else {
-        const selectedIds = [currentIndicatorLayer, currentIndicatorSecondLayer]
         // Change visible by default
         indicatorLayersTree.map(indicator => {
           if (selectedIds.includes(indicator.id)) {
@@ -211,6 +221,8 @@ export function IndicatorLayers() {
           }
         })
       })
+    } else {
+      onChange([])
     }
     setTreeData(
       [
@@ -221,7 +233,7 @@ export function IndicatorLayers() {
     // Setup current indicator layer
     updateCurrentIndicator(currentIndicatorLayer, Actions.SelectedIndicatorLayer)
     updateCurrentIndicator(currentIndicatorSecondLayer, Actions.SelectedIndicatorSecondLayer)
-    updateOtherLayers(['' + currentIndicatorLayer, '' + currentIndicatorSecondLayer])
+    updateOtherLayers(['' + selectedIds[0], '' + selectedIds[1]])
   }, [indicatorLayers, relatedTableData, indicatorLayersStructure]);
 
   const onChange = (selectedData) => {
@@ -251,6 +263,7 @@ export function IndicatorLayers() {
       <SidePanelTreeView
         data={treeData}
         selectable={true}
+        resetSelection={true}
         maxSelect={compareMode ? 2 : 1}
         onChange={onChange}
         otherInfo={(layer) => {

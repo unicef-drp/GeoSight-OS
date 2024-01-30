@@ -314,8 +314,9 @@ function FilterSection() {
   // FIELDS FROM RELATED TABLES
   relatedTables.map(obj => {
     const objData = relatedTableData[obj.id]
-    let keys = obj.selected_related_fields ? obj.selected_related_fields : obj.related_fields
-    keys.forEach(key => {
+    obj.fields_definition.forEach(field => {
+      const key = field.name
+      const _type = field.type
       const id = `related_table_${obj.id}.${key}`
       let data = ['loading']
       if (objData) {
@@ -332,7 +333,7 @@ function FilterSection() {
         name: `${key}`,
         group: 'Related Table - ' + obj.name,
         data: data,
-        type: key === 'value' ? obj?.type : 'String'
+        type: key === 'value' ? obj?.type : _type
       })
     })
   })

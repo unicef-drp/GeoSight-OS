@@ -17,7 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 import json
 
 from django.core.exceptions import SuspiciousOperation
-from django.db.models import Count, F, Max
+from django.db.models import Count, F, Max, Min
 from django.http import HttpResponseBadRequest
 from django.urls import reverse
 from drf_yasg.utils import swagger_auto_schema
@@ -61,7 +61,7 @@ class BaseDatasetApiList:
         ).annotate(
             reference_layer_uuid=F('reference_layer_uuid')
         ).annotate(
-            start_date=Max('date')
+            start_date=Min('date')
         ).annotate(
             end_date=Max('date')
         ).order_by(

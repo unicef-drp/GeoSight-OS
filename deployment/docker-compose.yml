@@ -79,6 +79,8 @@ services:
     container_name: "geosight_db"
     volumes:
       - database:/var/lib/postgresql/13
+    ports:
+      - "5432:5432"
     environment:
       - ALLOW_IP_RANGE=0.0.0.0/0
       - POSTGRES_DBNAME=${DATABASE_NAME:-django}
