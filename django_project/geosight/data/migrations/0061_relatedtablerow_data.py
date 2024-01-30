@@ -16,15 +16,16 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.db import migrations, models
 
-from geosight.data.models.related_table import RelatedTableRow
-
 
 def run(apps, schema_editor):
-    queries = RelatedTableRow.objects.all()
-    count = queries.count()
-    for idx, row in enumerate(queries):
-        row.data = row.data_from_eav_model
-        row.save()
+    pass
+    # TODO:
+    #  This is remove because we already data_from_eav_model is removed
+    # queries = RelatedTableRow.objects.all()
+    # count = queries.count()
+    # for idx, row in enumerate(queries):
+    #     row.data = row.data_from_eav_model
+    #     row.save()
 
 
 class Migration(migrations.Migration):

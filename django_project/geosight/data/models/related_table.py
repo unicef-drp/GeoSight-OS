@@ -19,7 +19,6 @@ import uuid
 from dateutil import parser
 from django.contrib.gis.db import models
 from django.db import transaction
-from django.utils.translation import ugettext_lazy as _
 
 from core.models.general import AbstractEditData, AbstractTerm
 from geosight.data.models.field_layer import BaseFieldLayerAbstract
@@ -66,7 +65,10 @@ class RelatedTable(AbstractTerm, AbstractEditData):
 
             row, _ = RelatedTableRow.objects.get_or_create(
                 table=self,
-                order=order
+                order=order,
+                defaults={
+                    'data': data
+                }
             )
             if replace:
                 row.data = data
@@ -96,6 +98,8 @@ class RelatedTable(AbstractTerm, AbstractEditData):
     @property
     def related_fields(self):
         """Return fields of table."""
+        if not self.relatedtablefield_set.count():
+            self.set_fields()
         return list(self.relatedtablefield_set.values_list('name', flat=True))
 
     def check_relation(self):
@@ -331,24 +335,6 @@ class RelatedTableRow(models.Model):
     class Meta:  # noqa: D106
         ordering = ('order',)
 
-    @property
-    def data_from_eav(self):
-        """Get data from eav."""
-        from geosight.data.serializer.related_table import (
-            RelatedTableRowSerializer
-        )
-        data = RelatedTableRowSerializer(self).data
-        data.update(self.data_from_eav_model)
-        return data
-
-    @property
-    def data_from_eav_model(self):
-        """Get data from eav model."""
-        data = {}
-        for eav in self.relatedtableroweav_set.all():
-            data[eav.name] = eav.cast_value
-        return data
-
 
 class RelatedTableField(BaseFieldLayerAbstract):
     """Field data of Related Table."""
@@ -362,34 +348,3 @@ class RelatedTableField(BaseFieldLayerAbstract):
 
     def __str__(self):
         return f'{self.name}'
-
-
-# TODO:
-#  This is deprecated
-class RelatedTableRowEAV(models.Model):
-    """EAV of a cell of Related Table Row."""
-
-    row = models.ForeignKey(RelatedTableRow, on_delete=models.CASCADE)
-    name = models.CharField(
-        max_length=100,
-        help_text=_("The name of attribute")
-    )
-    value = models.TextField(
-        null=True, blank=True,
-        help_text=_("The value of attribute")
-    )
-
-    class Meta:  # noqa: D106
-        unique_together = ('row', 'name')
-
-    def str(self):
-        """Return string."""
-        return f'{self.name}'
-
-    @property
-    def cast_value(self):
-        """Return value in casted."""
-        try:
-            return float(self.value)
-        except ValueError:
-            return self.value
