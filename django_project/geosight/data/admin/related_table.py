@@ -16,7 +16,16 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib import admin
 
-from geosight.data.models.related_table import RelatedTable, RelatedTableRow
+from geosight.data.models.related_table import (
+    RelatedTable, RelatedTableRow, RelatedTableField
+)
+
+
+class RelatedTableFieldInline(admin.TabularInline):
+    """RelatedTableField inline."""
+
+    model = RelatedTableField
+    extra = 0
 
 
 class RelatedTableRowAdmin(admin.ModelAdmin):
@@ -30,6 +39,7 @@ class RelatedTableAdmin(admin.ModelAdmin):
     """RelatedTable admin."""
 
     list_display = ('name', 'description')
+    inlines = (RelatedTableFieldInline,)
 
 
 admin.site.register(RelatedTable, RelatedTableAdmin)

@@ -22,6 +22,7 @@ from django.db import transaction
 from django.utils.translation import ugettext_lazy as _
 
 from core.models.general import AbstractEditData, AbstractTerm
+from geosight.data.models.field_layer import BaseFieldLayerAbstract
 from geosight.data.utils import extract_time_string
 from geosight.importer.utilities import date_from_timestamp
 from geosight.permission.models.manager import PermissionManager
@@ -95,12 +96,7 @@ class RelatedTable(AbstractTerm, AbstractEditData):
     @property
     def related_fields(self):
         """Return fields of table."""
-        row = self.relatedtablerow_set.first()
-        if row:
-            first_data = self.relatedtablerow_set.first()
-            if first_data and first_data.data:
-                return list(first_data.data.keys())
-        return []
+        return list(self.relatedtablefield_set.values_list('name', flat=True))
 
     def check_relation(self):
         """Check relation."""
@@ -244,10 +240,36 @@ class RelatedTable(AbstractTerm, AbstractEditData):
     @property
     def fields_definition(self):
         """Return fields with it's definition."""
-        fields = []
+        from geosight.data.serializer.related_table import (
+            RelatedTableFieldSerializer
+        )
+        if not self.relatedtablefield_set.count():
+            self.set_fields()
+        return RelatedTableFieldSerializer(
+            self.relatedtablefield_set.all(), many=True,
+            context={
+                'example_data': [
+                    self.relatedtablerow_set.first(),
+                    self.relatedtablerow_set.last()
+                ]
+            }
+        ).data
+
+    def set_fields(self):
+        """Set fields data."""
+        related_fields = []
+        row = self.relatedtablerow_set.first()
+        if row:
+            first_data = self.relatedtablerow_set.first()
+            if first_data and first_data.data:
+                related_fields = list(first_data.data.keys())
+
         first = self.relatedtablerow_set.first()
         second = self.relatedtablerow_set.last()
-        for field in self.related_fields:
+
+        ids = []
+        query = self.relatedtablefield_set.all()
+        for field in related_fields:
             value = first.data[field]
             is_type_datetime = False
             try:
@@ -283,14 +305,20 @@ class RelatedTable(AbstractTerm, AbstractEditData):
                 example.append(second.data[field])
             except KeyError:
                 pass
-            fields.append({
-                'name': field,
-                'type': 'Date' if is_type_datetime else (
-                    'Number' if is_type_number else 'String'
-                ),
-                'example': example
-            })
-        return fields
+
+            field, _ = query.get_or_create(
+                related_table=self,
+                name=field,
+                defaults={
+                    'alias': field,
+                    'type': 'date' if is_type_datetime else (
+                        'number' if is_type_number else 'string'
+                    )
+                }
+            )
+            ids.append(field.id)
+
+        query.exclude(id__in=ids).delete()
 
 
 class RelatedTableRow(models.Model):
@@ -320,6 +348,20 @@ class RelatedTableRow(models.Model):
         for eav in self.relatedtableroweav_set.all():
             data[eav.name] = eav.cast_value
         return data
+
+
+class RelatedTableField(BaseFieldLayerAbstract):
+    """Field data of Related Table."""
+
+    related_table = models.ForeignKey(
+        RelatedTable, on_delete=models.CASCADE
+    )
+
+    class Meta:  # noqa: D106
+        unique_together = ('related_table', 'name')
+
+    def __str__(self):
+        return f'{self.name}'
 
 
 # TODO:

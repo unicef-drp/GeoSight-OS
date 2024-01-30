@@ -16,8 +16,14 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib.gis.db import models
 
+TYPE_CHOICES = (
+    ('number', 'Number'),
+    ('string', 'String'),
+    ('date', 'Date'),
+)
 
-class FieldLayerAbstract(models.Model):
+
+class BaseFieldLayerAbstract(models.Model):
     """Field data of layer."""
 
     name = models.CharField(
@@ -26,12 +32,20 @@ class FieldLayerAbstract(models.Model):
     alias = models.CharField(
         max_length=512
     )
-    visible = models.BooleanField(
-        default=True
-    )
     type = models.CharField(
         max_length=512,
+        choices=TYPE_CHOICES,
         default='string'
+    )
+
+    class Meta:  # noqa: D106
+        abstract = True
+
+
+class FieldLayerAbstract(BaseFieldLayerAbstract):
+    """Field data of layer."""
+    visible = models.BooleanField(
+        default=True
     )
     order = models.IntegerField(
         default=0
