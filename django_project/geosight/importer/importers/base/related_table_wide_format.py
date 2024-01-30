@@ -136,4 +136,5 @@ class RelatedTableWideFormat(AbstractImporterRelatedTable):
 
         # Check relation for other place
         related_table.check_relation()
+        related_table.set_fields()
         return success, None
