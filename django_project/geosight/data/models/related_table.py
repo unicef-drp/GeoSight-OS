@@ -117,6 +117,8 @@ class RelatedTable(AbstractTerm, AbstractEditData):
         for rel_obj in DashboardRelatedTable.objects.filter(object=self):
             if rel_obj.geography_code_field_name not in related_fields:
                 rel_obj.delete()
+                rel_obj.dashboard.increase_version()
+                rel_obj.dashboard.save()
             elif rel_obj.selected_related_fields:
                 selected_related_fields = []
                 for selected in rel_obj.selected_related_fields:
@@ -124,6 +126,8 @@ class RelatedTable(AbstractTerm, AbstractEditData):
                         selected_related_fields.append(selected)
                 rel_obj.selected_related_fields = selected_related_fields
                 rel_obj.save()
+                rel_obj.dashboard.increase_version()
+                rel_obj.dashboard.save()
 
     @property
     def data(self):

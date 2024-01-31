@@ -135,6 +135,6 @@ class RelatedTableWideFormat(AbstractImporterRelatedTable):
         RelatedTableRow.objects.bulk_create(rows)
 
         # Check relation for other place
-        related_table.check_relation()
         related_table.set_fields()
+        related_table.check_relation()
         return success, None
