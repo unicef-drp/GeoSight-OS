@@ -16,3 +16,42 @@
 /* ==========================================================================
    Related Table Form style
    ========================================================================== */
+
+@import '../../../../app/variables';
+
+.FieldConfig {
+  width: 100%;
+
+  th, td {
+    border: 1px solid $primary-color;
+    padding: 0.2rem 0.5rem;
+  }
+
+  thead {
+    td {
+      background: $primary-color;
+      color: $anti-primary-color;
+
+      .form-helptext {
+        color: $anti-primary-color;
+      }
+    }
+
+    .AsField {
+      width: 10rem;
+    }
+  }
+
+  input {
+    width: fit-content;
+
+    &:focus {
+      border: 1px solid $primary-color;
+      outline: none;
+    }
+  }
+
+  input[type=checkbox] {
+    cursor: pointer;
+  }
+}

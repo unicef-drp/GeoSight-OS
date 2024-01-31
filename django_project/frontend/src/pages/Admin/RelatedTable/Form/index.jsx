@@ -13,7 +13,8 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { Fragment, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
+import $ from 'jquery';
 
 import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
@@ -22,6 +23,7 @@ import Admin, { pageNames } from '../../index';
 import { AdminForm } from '../../Components/AdminForm'
 import DjangoTemplateForm from "../../Components/AdminForm/DjangoTemplateForm";
 import { resourceActions } from "../List";
+import FieldConfig from "./Field";
 
 import './style.scss';
 
@@ -32,7 +34,17 @@ import './style.scss';
 export default function RelatedTableForm() {
   const formRef = useRef(null);
   const [submitted, setSubmitted] = useState(false);
+  const [fields, setFields] = useState([]);
   const selectableInput = batch !== null
+
+  /** On init **/
+  useEffect(() => {
+    try {
+      setFields(JSON.parse($('#id_data_fields').val()))
+    } catch (err) {
+
+    }
+  }, []);
 
   return (
     <Admin
@@ -64,14 +76,27 @@ export default function RelatedTableForm() {
       <AdminForm
         ref={formRef}
         selectableInput={selectableInput}
-        forms={{
-          'General': (
-            <DjangoTemplateForm
-              selectableInput={selectableInput}
-              selectableInputExcluded={['name', 'shortcode']}
-            />
-          ),
-        }}
+        forms={
+          batch ? {
+            'General': (
+              <DjangoTemplateForm
+                selectableInput={selectableInput}
+                selectableInputExcluded={['name', 'shortcode']}
+              />
+            )
+          } : {
+            'General': (
+              <DjangoTemplateForm
+                selectableInput={selectableInput}
+                selectableInputExcluded={['name', 'shortcode']}
+              />
+            ),
+            'Fields': <FieldConfig
+              data_fields={fields}
+              update={(fields) => {
+                $('#id_data_fields').val(JSON.stringify(fields))
+              }}/>,
+          }}
       />
     </Admin>
   );

@@ -15,6 +15,7 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import copy
+import json
 
 from django.contrib.auth import get_user_model
 from django.test.testcases import TestCase
@@ -38,11 +39,36 @@ class RelatedTableAdminViewTest(BaseViewTest, TestCase):
     payload = {
         'name': 'name',
         'description': 'description',
+        'data_fields': json.dumps([
+            {
+                'name': 'field_1',
+                'alias': 'Field 1',
+                'type': 'number',
+            },
+            {
+                'name': 'field_2',
+                'alias': 'Field 2',
+                'type': 'string',
+            },
+            {
+                'alias': 'Field 3',
+                'type': 'string',
+            },
+            {
+                'name': 'field_4',
+                'type': 'string',
+            },
+            {
+                'name': 'field_5',
+                'alias': 'Field 5'
+            },
+        ])
     }
 
     def create_resource(self, user):
         """Create resource function."""
         payload = copy.deepcopy(self.payload)
+        del payload['data_fields']
         return RelatedTable.permissions.create(
             user=user,
             **payload
@@ -55,6 +81,19 @@ class RelatedTableAdminViewTest(BaseViewTest, TestCase):
     def test_create_view(self):
         """Test for create view."""
         pass
+
+    def test_edit_view(self):
+        """Test for edit view."""
+        super().test_edit_view()
+        self.resource.refresh_from_db()
+        fields_definition = self.resource.fields_definition
+        self.assertEqual(len(fields_definition), 2)
+        self.assertEqual(fields_definition[0]['name'], 'field_1')
+        self.assertEqual(fields_definition[0]['alias'], 'Field 1')
+        self.assertEqual(fields_definition[0]['type'], 'number')
+        self.assertEqual(fields_definition[1]['name'], 'field_2')
+        self.assertEqual(fields_definition[1]['alias'], 'Field 2')
+        self.assertEqual(fields_definition[1]['type'], 'string')
 
     def test_data_view(self):
         """Test for create view."""

@@ -14,6 +14,8 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '31/01/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import json
+
 from django import forms
 from django.forms.models import model_to_dict
 
@@ -23,6 +25,11 @@ from geosight.data.models.related_table import RelatedTable
 class RelatedTableForm(forms.ModelForm):
     """RelatedTable form."""
 
+    data_fields = forms.CharField(
+        required=False,
+        widget=forms.HiddenInput()
+    )
+
     class Meta:  # noqa: D106
         model = RelatedTable
         exclude = ('created_at', 'creator', 'modified_at')
@@ -30,4 +37,6 @@ class RelatedTableForm(forms.ModelForm):
     @staticmethod
     def model_to_initial(model: RelatedTable):
         """Return model data as json."""
-        return model_to_dict(model)
+        initial = model_to_dict(model)
+        initial['data_fields'] = json.dumps(model.fields_definition)
+        return initial

@@ -79,6 +79,7 @@ class RelatedTableEditView(RoleContributorRequiredMixin, AdminBaseView):
         obj = get_object_or_404(
             RelatedTable, id=self.kwargs.get('pk', '')
         )
+        data = request.POST.copy()
         edit_permission_resource(obj, self.request.user)
         form = RelatedTableForm(
             request.POST,
@@ -91,6 +92,7 @@ class RelatedTableEditView(RoleContributorRequiredMixin, AdminBaseView):
             instance.permission.update_from_request_data_in_string(
                 request.POST, request.user
             )
+            instance.save_relations(data=data)
             return redirect(
                 reverse(
                     'admin-related-table-edit-view', kwargs={'pk': instance.id}

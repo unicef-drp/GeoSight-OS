@@ -14,6 +14,7 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import json
 import uuid
 
 from dateutil import parser
@@ -257,7 +258,7 @@ class RelatedTable(AbstractTerm, AbstractEditData):
         if not self.relatedtablefield_set.count():
             self.set_fields()
         return RelatedTableFieldSerializer(
-            self.relatedtablefield_set.all(), many=True,
+            self.relatedtablefield_set.order_by('name'), many=True,
             context={
                 'example_data': [
                     self.relatedtablerow_set.first(),
@@ -328,6 +329,35 @@ class RelatedTable(AbstractTerm, AbstractEditData):
                 }
             )
             ids.append(field.id)
+
+        query.exclude(id__in=ids).delete()
+
+    def save_relations(self, data):
+        """Save all relationship data."""
+        ids = []
+        query = self.relatedtablefield_set.all()
+        try:
+            for idx, field_data in enumerate(json.loads(data['data_fields'])):
+                try:
+                    _type = field_data['type']
+                    name = field_data['name']
+                    alias = field_data['alias']
+                    field, _ = query.get_or_create(
+                        related_table=self,
+                        name=name,
+                        defaults={
+                            'alias': alias,
+                            'type': _type
+                        }
+                    )
+                    field.alias = field_data['alias']
+                    field.type = field_data['type']
+                    field.save()
+                    ids.append(field.id)
+                except KeyError:
+                    pass
+        except Exception:
+            pass
 
         query.exclude(id__in=ids).delete()
 

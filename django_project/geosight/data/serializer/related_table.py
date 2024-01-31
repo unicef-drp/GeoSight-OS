@@ -119,7 +119,7 @@ class RelatedTableFieldSerializer(DynamicModelSerializer):
             for data in example_data:
                 try:
                     example.append(data.data[obj.name])
-                except KeyError:
+                except (KeyError, AttributeError):
                     pass
         return example
 
