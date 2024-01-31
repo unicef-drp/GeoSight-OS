@@ -34,7 +34,11 @@ class RelatedTableAdminViewTest(BaseViewTest, TestCase):
     create_url_tag = 'admin-related-table-create-view'
     edit_url_tag = 'admin-related-table-edit-view'
     data_view_url_tag = 'admin-related-table-data-view'
-    payload = {'name': 'name'}
+
+    payload = {
+        'name': 'name',
+        'description': 'description',
+    }
 
     def create_resource(self, user):
         """Create resource function."""
@@ -47,10 +51,6 @@ class RelatedTableAdminViewTest(BaseViewTest, TestCase):
     def get_resources(self, user):
         """Create resource function."""
         return RelatedTable.permissions.list(user).order_by('id')
-
-    def test_edit_view(self):
-        """Test for edit view."""
-        pass
 
     def test_create_view(self):
         """Test for create view."""
