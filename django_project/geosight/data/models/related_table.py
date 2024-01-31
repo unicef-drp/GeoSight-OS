@@ -52,6 +52,13 @@ class RelatedTable(AbstractTerm, AbstractEditData):
     def __str__(self):
         return f'{self.name} ({self.unique_id})'
 
+    def save(self, *args, **kwargs):
+        """On save method."""
+        super(RelatedTable, self).save(*args, **kwargs)
+        # Update dashboard version
+        for dashboard_rt in self.dashboardrelatedtable_set.all():
+            dashboard_rt.dashboard.increase_version()
+
     def insert_row(self, data: dict, replace=False):
         """Insert row.
 
