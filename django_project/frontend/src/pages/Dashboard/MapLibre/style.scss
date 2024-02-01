@@ -137,11 +137,21 @@
       margin-left: -75px;
       top: 9px;
 
-      .ExtrudedIcon svg,
-      svg[data-testid='CompareIcon'] {
-        margin-top: -3px;
-        height: 22px;
-        width: 22px;
+      .CompareLayerComponent svg {
+        margin-top: -1px;
+        height: 18px;
+        width: 18px;
+      }
+
+      .MovementHistory svg {
+        height: 16px;
+        width: 16px;
+      }
+
+      .ExtrudedIcon svg {
+        margin-top: -2px;
+        height: 20px;
+        width: 20px;
       }
 
       a {
