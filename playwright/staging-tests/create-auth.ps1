@@ -5,17 +5,7 @@
 Write-Host "This script will write a new test to tests/deleteme.spec.ts"
 Write-Host "then delete it, leaving only the auth config."
 Write-Host ""
-Write-Host "When the playwright browser opens, log in to the site then exit."
-Write-Host "After recording your test, close the test browser."
-Write-Host "Recording auth token to auth.json"
-
-# Prompt the user to continue
-$ANSWER = Read-Host "Continue? (y/n)"
-switch ($ANSWER) {
-    'y' { Write-Host "Writing auth.json" }
-    'n' { Write-Host "Cancelled."; exit }
-    default { Write-Host "Invalid input. Cancelled."; exit }
-}
+Write-Host "When the playwright browser opens, log in to the site then close the browser."
 
 # Run playwright codegen to generate the test
 & npx playwright codegen `
