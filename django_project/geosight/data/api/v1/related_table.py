@@ -46,11 +46,21 @@ class RelatedTableViewSet(BaseApiV1Resource):
         """List of related tables."""
         return super().list(request, *args, **kwargs)
 
-    @swagger_auto_schema(operation_id='related-tables-get',
-                         tags=[ApiTag.RELATED_TABLES])
+    @swagger_auto_schema(
+        operation_id='related-tables-detail',
+        tags=[ApiTag.RELATED_TABLES],
+        operation_description=
+        'Return detail of a related tables for the user.',
+        responses={
+            200: Response(
+                description="Resource fetching successful.",
+                schema=RelatedTableApiSerializer(many=False)
+            )
+        }
+    )
     def retrieve(self, request, *args, **kwargs):
         """Detail of related table."""
-        raise MethodNotAllowed('GET')
+        return super().retrieve(request, *args, **kwargs)
 
     @swagger_auto_schema(operation_id='related-tables-create',
                          tags=[ApiTag.RELATED_TABLES])

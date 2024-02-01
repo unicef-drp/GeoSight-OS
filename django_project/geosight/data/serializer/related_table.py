@@ -40,7 +40,11 @@ class RelatedTableApiSerializer(DynamicModelSerializer):
         return obj.creator.get_full_name() if obj.creator else None
 
     def get_fields_definition(self, obj: RelatedTable):  # noqa: D102
-        return obj.fields_definition
+        return [{
+            'name': field.get('name'),
+            'label': field.get('alias'),
+            'type': field.get('type')
+        } for field in obj.fields_definition]
 
     class Meta:  # noqa: D106
         model = RelatedTable
