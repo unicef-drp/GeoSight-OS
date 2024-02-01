@@ -17,6 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
+from rest_framework.reverse import reverse
 
 from core.models.profile import ROLES
 from core.tests.base_tests import BaseTest
@@ -78,3 +79,17 @@ class BasePermissionTest(BaseTest):
             self.entity_patcher.stop()
         except AttributeError:
             pass
+
+    def check_delete_resource_with_different_users(self, id, view_name):
+        """Check the DELETE method of the given view with different users."""
+        url = reverse(view_name, args=[id])
+        self.assertRequestDeleteView(url, 403)
+
+        url = reverse(view_name, args=[id])
+        self.assertRequestDeleteView(url, 403, user=self.viewer)
+
+        url = reverse(view_name, args=[id])
+        self.assertRequestDeleteView(url, 403, user=self.creator)
+
+        url = reverse(view_name, args=[id])
+        self.assertRequestDeleteView(url, 204, user=self.admin)
