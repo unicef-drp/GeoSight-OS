@@ -23,6 +23,7 @@ from rest_framework.views import APIView
 
 from geosight.data.models.related_table import RelatedTable
 from geosight.permission.access import share_permission_resource
+from geosight.permission.models import RelatedTablePermission
 from geosight.permission.serializer import PermissionSerializer
 
 
@@ -33,6 +34,10 @@ class RelatedTablePermissionAPI(APIView):
 
     def get(self, request, pk):
         """Return permission data of basemap."""
+        if pk == '0':
+            return Response(
+                PermissionSerializer(obj=RelatedTablePermission()).data
+            )
         obj = get_object_or_404(RelatedTable, pk=pk)
         share_permission_resource(obj, request.user)
         return Response(

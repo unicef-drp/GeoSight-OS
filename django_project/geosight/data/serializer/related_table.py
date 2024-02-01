@@ -19,7 +19,7 @@ from rest_framework import serializers
 
 from core.serializer.dynamic_serializer import DynamicModelSerializer
 from geosight.data.models.related_table import (
-    RelatedTable, RelatedTableRow
+    RelatedTable, RelatedTableRow, RelatedTableField
 )
 
 
@@ -57,8 +57,8 @@ class RelatedTableSerializer(DynamicModelSerializer):
     url = serializers.SerializerMethodField()
     creator = serializers.SerializerMethodField()
     rows = serializers.SerializerMethodField()
-    related_fields = serializers.SerializerMethodField()
     fields_definition = serializers.SerializerMethodField()
+    related_fields = serializers.SerializerMethodField()
     permission = serializers.SerializerMethodField()
 
     def get_url(self, obj: RelatedTable):
@@ -79,13 +79,13 @@ class RelatedTableSerializer(DynamicModelSerializer):
         """Return value."""
         return obj.data
 
-    def get_related_fields(self, obj: RelatedTable):
-        """Return related_fields."""
-        return obj.related_fields
-
     def get_fields_definition(self, obj: RelatedTable):
         """Return fields_definition."""
         return obj.fields_definition
+
+    def get_related_fields(self, obj: RelatedTable):
+        """Return related_fields."""
+        return obj.related_fields
 
     def get_permission(self, obj: RelatedTable):
         """Return permission."""
@@ -104,3 +104,25 @@ class RelatedTableRowSerializer(DynamicModelSerializer):
     class Meta:  # noqa: D106
         model = RelatedTableRow
         exclude = ('table', 'data')
+
+
+class RelatedTableFieldSerializer(DynamicModelSerializer):
+    """Serializer for Related table field."""
+
+    example = serializers.SerializerMethodField()
+
+    def get_example(self, obj: RelatedTableField):
+        """Return example."""
+        example = []
+        example_data = self.context.get('example_data', None)
+        if example_data:
+            for data in example_data:
+                try:
+                    example.append(data.data[obj.name])
+                except (KeyError, AttributeError):
+                    pass
+        return example
+
+    class Meta:  # noqa: D106
+        model = RelatedTableField
+        exclude = ('id', 'related_table')
