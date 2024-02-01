@@ -110,6 +110,16 @@ class IndicatorValue(models.Model):
         """Return permission of user."""
         return IndicatorValue.value_permissions(user, self.indicator)
 
+    @property
+    def attributes(self):
+        extra_value = {}
+        try:
+            for extra in self.indicatorextravalue_set.all():
+                extra_value[extra.name] = extra.value
+        except AttributeError:
+            pass
+        return extra_value
+
 
 class IndicatorExtraValue(models.Model):
     """Additional data for Indicator value data."""
@@ -236,6 +246,14 @@ class IndicatorValueWithGeo(models.Model):
         if self.indicator_type == IndicatorType.STRING:
             return self.value_str
         return self.value
+
+    @property
+    def attributes(self):
+        """Return val of value based on int or string."""
+        try:
+            return IndicatorValue.objects.get(id=self.id).attributes
+        except Indicator.DoesNotExist:
+            return {}
 
 
 @receiver(post_save, sender=IndicatorValue)

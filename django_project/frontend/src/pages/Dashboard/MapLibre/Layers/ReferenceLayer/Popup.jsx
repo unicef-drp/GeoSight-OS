@@ -196,6 +196,23 @@ export function updateCurrent(
         label: data.label,
       }
       if (data.indicator) {
+        // ------------------------------------
+        // Find Attributes
+        // ------------------------------------
+        try {
+          const drilldownIndicatorData = context.context.admin_boundary.indicators[data.indicator.shortcode]
+          if (drilldownIndicatorData) {
+            const dates = data.date.split('-')
+            dates.reverse()
+            const fullDate = dates.join('-') + 'T00:00:00+00:00'
+            const drilldownIndicatorCurrentData = drilldownIndicatorData.find(data => data.time === fullDate)
+            if (drilldownIndicatorCurrentData?.attributes) {
+              _data.attributes = drilldownIndicatorCurrentData?.attributes
+            }
+          }
+        } catch (err) {
+
+        }
         indicatorsByDict[data.indicator.id] = {
           ...indicatorsByDict[data.indicator.id],
           ..._data
