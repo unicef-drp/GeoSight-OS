@@ -329,7 +329,7 @@ export default function ValueManagement() {
                           </div>
                           <div className='ExtraValue'>
                             <div className='ExtraValueTitle form-helptext'>
-                              <div>Extra Value</div>
+                              <div>Attributes</div>
                               <div className='ExtraValueIcon MuiButtonLike'>
                                 <AddCircleOutlineIcon onClick={() => {
                                   if (!row[1].extras) {
@@ -352,7 +352,7 @@ export default function ValueManagement() {
                                       <InputForm
                                         type='text'
                                         placeholder='Name'
-                                        name={'extra_name:' + idx + ':' + row[0]}
+                                        name={'attribute_name:' + idx + ':' + row[0]}
                                         initValue={extra.name}
                                       />
                                       <div className='ExtraValueContentEqual'>
@@ -360,8 +360,8 @@ export default function ValueManagement() {
                                       </div>
                                       <InputForm
                                         type='text'
-                                        placeholder='Name'
-                                        name={'extra_value:' + idx + ':' + row[0]}
+                                        placeholder='Value'
+                                        name={'attribute_value:' + idx + ':' + row[0]}
                                         initValue={extra.value}
                                       />
                                       <CancelIcon

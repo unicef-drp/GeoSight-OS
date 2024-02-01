@@ -34,7 +34,7 @@ class IndicatorValueSerializer(serializers.ModelSerializer):
     indicator_id = serializers.SerializerMethodField()
     indicator_shortcode = serializers.SerializerMethodField()
     value = serializers.SerializerMethodField()
-    extra_value = serializers.SerializerMethodField()
+    attributes = serializers.SerializerMethodField()
 
     def get_indicator(self, obj: IndicatorValue):
         """Return indicator name."""
@@ -52,15 +52,15 @@ class IndicatorValueSerializer(serializers.ModelSerializer):
         """Return value of indicator."""
         return obj.val
 
-    def get_extra_value(self, obj: IndicatorValue):
-        """Return extra_value value of indicator."""
-        extra_value = {}
+    def get_attributes(self, obj: IndicatorValue):
+        """Return attributes value of indicator."""
+        attributes = {}
         try:
             for extra in obj.indicatorextravalue_set.all():
-                extra_value[extra.name] = extra.value
+                attributes[extra.name] = extra.value
         except AttributeError:
             pass
-        return extra_value
+        return attributes
 
     def to_representation(self, instance):
         """To representation of indicator value."""
@@ -133,8 +133,8 @@ class IndicatorValueWithPermissionSerializer(IndicatorValueSerializer):
                     title='Value',
                     type=openapi.TYPE_STRING
                 ),
-                'extra_value': openapi.Schema(
-                    title='Extra value',
+                'attributes': openapi.Schema(
+                    title='Attributes',
                     type=openapi.TYPE_OBJECT
                 ),
                 'permission': openapi.Schema(
@@ -203,7 +203,7 @@ class IndicatorValueWithPermissionSerializer(IndicatorValueSerializer):
                 "indicator_id": 1,
                 "indicator_shortcode": "TEST",
                 "value": 0,
-                "extra_value": {
+                "attributes": {
                     'Value 1': 1
                 },
                 "permission": {
@@ -263,10 +263,10 @@ class IndicatorValueWithPermissionSerializer(IndicatorValueSerializer):
                         title='Admin level',
                         type=openapi.TYPE_NUMBER
                     ),
-                    'extra_value': openapi.Schema(
-                        title='Extra values',
+                    'attributes': openapi.Schema(
+                        title='Attributes',
                         description=(
-                            'Optional to save extra values. It is in json'
+                            'Optional to save attributes. It is in json'
                         ),
                         type=openapi.TYPE_OBJECT,
                     ),

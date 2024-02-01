@@ -138,7 +138,7 @@ class IndicatorExtraValue(models.Model):
 
     @property
     def key(self):
-        """Return key of extra value in pythonic."""
+        """Return key of attributes in pythonic."""
         return self.name.replace(' ', '_').replace(':', '').lower()
 
 

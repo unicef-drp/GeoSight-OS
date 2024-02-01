@@ -94,7 +94,7 @@ class IndicatorValueDetail(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, pk, value_id):
-        """Return extra values of the indicator.
+        """Return attributes of the indicator.
 
         :param pk: pk of the indicator
         :param value_id: the id of value
