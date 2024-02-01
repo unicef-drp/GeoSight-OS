@@ -2,39 +2,6 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Compile PDF",
-      "command": "./build-docs-pdf.sh",
-      "args": [
-        ""
-      ],
-      "type": "shell",
-      "options": {
-        "cwd": "${workspaceFolder}/docs/"
-      }
-    },
-    {
-      "label": "Compile HTML",
-      "command": "./build-docs-html.sh",
-      "args": [
-        ""
-      ],
-      "type": "shell",
-      "options": {
-        "cwd": "${workspaceFolder}/docs/"
-      }
-    },
-    {
-      "label": "Serve HTML",
-      "command": "mkdocs",
-      "args": [
-        "serve"
-      ],
-      "type": "shell",
-      "options": {
-        "cwd": "${workspaceFolder}/docs/"
-      }
-    },
-    {
       "label": "React: Webpack-dev-server",
       "type": "shell",
       "command": "npm install --verbose; npm run dev;",
@@ -43,6 +10,72 @@
       },
       "group": "build",
       "problemMatcher": []
+    },
+    {
+      "label": "Playwright runner: Authentication",
+      "command": "./create-auth.sh",
+      "args": [
+        ""
+      ],
+      "type": "shell",
+      "options": {
+        "cwd": "${workspaceFolder}/playwright/staging-tests"
+      },
+      "presentation": {
+        "reveal": "silent",
+        "revealProblems": "onProblem",
+        "close": true
+      }
+    },
+    {
+      "label": "Playwright runner: Create test",
+      "command": "./record-test.sh",
+      "args": [
+        "${input:testNamePrompt}"
+      ],
+      "type": "shell",
+      "options": {
+        "cwd": "${workspaceFolder}/playwright/staging-tests"
+      },
+      "presentation": {
+        "reveal": "silent",
+        "revealProblems": "onProblem",
+        "close": true
+      }
+    },
+    {
+      "label": "Playwright runner: Authentication + Create test",
+      "type": "shell",
+      "command": "",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "Playwright runner: Authentication",
+        "Playwright runner: Create test"
+      ],
+      "presentation": {
+        "reveal": "silent",
+        "revealProblems": "onProblem",
+        "close": true
+      }
+    },
+    {
+      "label": "Playwright runner: Run test",
+      "command": "./run-tests.sh",
+      "args": [
+        ""
+      ],
+      "type": "shell",
+      "options": {
+        "cwd": "${workspaceFolder}/playwright/staging-tests"
+      }
+    },
+  ],
+  "inputs": [
+    {
+      "id": "testNamePrompt",
+      "description": "Please enter test name",
+      "default": "test",
+      "type": "promptString"
     }
   ]
 }

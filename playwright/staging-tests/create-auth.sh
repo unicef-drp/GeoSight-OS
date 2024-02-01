@@ -7,18 +7,7 @@ source playwright-path.sh
 echo "This script will write a new test to tests/deleteme.spec.ts"
 echo "then delete it, leaving only the auth config."
 echo ""
-echo "When the playwright browser opens, log in to the site then exit."
-echo "After recording your test, close the test browser."
-echo "Recording auth token to auth.json"
-
-# File exists and write permission granted to user
-# show prompt
-echo "Continue? y/n"
-read ANSWER
-case $ANSWER in 
-  [yY] ) echo "Writing auth.json" ;;
-  [nN] ) echo "Cancelled."; exit ;;
-esac
+echo "When the playwright browser opens, log in to the site then close the browser."
 
 $PLAYWRIGHT \
 	codegen \
