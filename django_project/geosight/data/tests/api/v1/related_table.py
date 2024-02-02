@@ -99,6 +99,67 @@ class RelatedTableApiTest(BasePermissionTest, TestCase):  # noqa: D101
 
         assert validate_related_table(response.json(), self.resource_1)
 
+    def test_create(self):
+        """Test POST /related-tables ."""
+        url = reverse('related-tables-list')
+        self.assertRequestPostView(url, 403, data={})
+        self.assertRequestPostView(url, 403, user=self.viewer, data={})
+        # test missing mandatory
+        # self.assertRequestPostView(url, 400, user=self.creator, data={})
+        # test invalid field type
+        self.assertRequestPostView(
+            url, 400, user=self.creator,
+            data={
+                "name": 'New name',
+                "fields_definition": [{
+                    "name": "field",
+                    "label": "field",
+                    "type": "invalid_type"
+                }]
+            },
+            content_type=self.JSON_CONTENT
+        )
+
+        # test valid request
+        response = self.assertRequestPostView(
+            url, 201, user=self.creator,
+            data={
+                "name": 'My related table',
+                "description": "Related table for tests",
+                "fields_definition": [{
+                    "name": "field_1",
+                    "label": "field 1",
+                    "type": "string"
+                }, {
+                    "name": "field_2",
+                    "label": "field 2",
+                    "type": "number"
+                }, {
+                    "name": "field_3",
+                    "label": "field 3",
+                    "type": "date"
+                }]
+            },
+            content_type=self.JSON_CONTENT
+        )
+
+        json = response.json()
+        obj = RelatedTable.objects.get(id=json['id'])
+
+        assert obj.name == json['name'] == 'My related table'
+        assert obj.description == json['description']
+        assert obj.description == 'Related table for tests'
+        assert json['url'] == f'/api/v1/related-tables/{obj.id}/'
+        assert obj.creator.get_full_name() == json['creator']
+        assert obj.created_at == parser.parse(json['created_at'])
+        assert obj.modified_at == parser.parse(json['modified_at'])
+        for index in range(0, len(obj.fields_definition)):
+            db = obj.fields_definition[index]
+            api = json['fields_definition'][index]
+            assert db['name'] == api['name']
+            assert db['alias'] == api['label']
+            assert db['type'] == api['type']
+
     def create_resource(self, user):  # noqa: D102
         return None
 

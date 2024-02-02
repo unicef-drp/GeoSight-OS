@@ -15,12 +15,50 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.shortcuts import reverse
+from drf_yasg import openapi
 from rest_framework import serializers
 
 from core.serializer.dynamic_serializer import DynamicModelSerializer
 from geosight.data.models.related_table import (
     RelatedTable, RelatedTableRow, RelatedTableField
 )
+
+
+def _string_field(name: str, read_only: bool = False) -> openapi.Schema:
+    return openapi.Schema(
+        title=name, type=openapi.TYPE_STRING, read_only=read_only
+    )
+
+
+_related_table_swagger_properties = {
+    'id': openapi.Schema(
+        title='Id',
+        type=openapi.TYPE_INTEGER,
+        read_only=True
+    ),
+    'name': _string_field('Name'),
+    'fields_definition': openapi.Schema(
+        title='Fields definition',
+        type=openapi.TYPE_ARRAY,
+        items=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'name': _string_field('Field name'),
+                'label': _string_field('Field label'),
+                'type': openapi.Schema(
+                    title='Field type',
+                    type=openapi.TYPE_STRING,
+                    pattern="date | number | string"
+                )
+            }
+        )
+    ),
+    'description': _string_field('Description'),
+    'url': _string_field('Url', read_only=True),
+    'creator': _string_field('Creator', read_only=True),
+    'created_at': _string_field('Created at', read_only=True),
+    'modified_at': _string_field('Created at', read_only=True),
+}
 
 
 class RelatedTableFieldApiSerializer(DynamicModelSerializer):
@@ -49,9 +87,54 @@ class RelatedTableApiSerializer(DynamicModelSerializer):
     def get_creator(self, obj: RelatedTable):  # noqa: D102
         return obj.creator.get_full_name() if obj.creator else None
 
+    def create(self, validated_data):  # noqa: D102
+        fields = validated_data['fields_definition']
+        data = validated_data.copy()
+        del data['fields_definition']
+        table = RelatedTable(**data)
+        table.save()
+        for definition in fields:
+            table.add_field(definition['name'],
+                            definition['alias'], definition['type'])
+        return table
+
     class Meta:  # noqa: D106
         model = RelatedTable
         exclude = ('unique_id',)
+
+        swagger_schema_fields = {
+            'type': openapi.TYPE_OBJECT,
+            'title': 'RelatedTable',
+            'required': ['name', 'fields_definition'],
+            'properties': _related_table_swagger_properties,
+            'example': {
+                "id": 1,
+                "name": 'My related table',
+                "fields_definition": [{
+                    "name": "field_1",
+                    "label": "Field 1",
+                    "type": "string",
+                }, {
+                    "name": "field_2",
+                    "label": "Field 2",
+                    "type": "date",
+                }, {
+                    "name": "field_3",
+                    "label": "Field 3",
+                    "type": "number",
+                }],
+                "description": "A related table for testing apidocs",
+                "url": "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                "creator": 'Admin',
+                "created_at": "2023-01-01T00:00:00.00000Z",
+                "modified_at": "2023-01-01T00:00:00.00000Z",
+            },
+            'post_body': openapi.Schema(
+                description='Data needed to create/edit related tables.',
+                type=openapi.TYPE_OBJECT,
+                properties=_related_table_swagger_properties
+            )
+        }
 
 
 class RelatedTableSerializer(DynamicModelSerializer):
