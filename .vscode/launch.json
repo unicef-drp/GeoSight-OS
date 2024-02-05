@@ -28,23 +28,29 @@
             "console": "integratedTerminal"
         },
         {
-            "name": "Compile PDF",
+            "name": "Playwright runner: Authentication",
             "type": "node",
-            "preLaunchTask": "Compile PDF",
+            "preLaunchTask": "Playwright runner: Authentication",
             "request": "attach"
         },
         {
-            "name": "Compile HTML",
+            "name": "Playwright runner: Authentication + Create test",
             "type": "node",
-            "preLaunchTask": "Compile HTML",
+            "preLaunchTask": "Playwright runner: Authentication + Create test",
             "request": "attach"
         },
         {
-            "name": "Serve HTML",
+            "name": "Playwright runner: Create test",
             "type": "node",
-            "preLaunchTask": "Serve HTML",
+            "preLaunchTask": "Playwright runner: Create test",
             "request": "attach"
-        }
+        },
+        {
+            "name": "Playwright runner: Run test",
+            "type": "node",
+            "preLaunchTask": "Playwright runner: Run test",
+            "request": "attach"
+        },
     ],
     "compounds": [
         {

@@ -115,7 +115,11 @@ export default function Indicators() {
    */
   const getDataByDate = async (id, url, params, currentGlobalTime, dataVersion, onProgress, usingCache) => {
     const storage = new LocalStorageData(url, dataVersion)
-    const storageData = storage.get()
+    let storageData = storage.get()
+    if (storageData) {
+      storageData = filterIndicatorsData(selectedGlobalTime.min, selectedGlobalTime.max, storageData)
+    }
+
     // Check if the request is already requested before
     let doRequest = false
     const requestKey = url + '?' + jsonToUrlParams(params) + '-Version'
@@ -156,6 +160,9 @@ export default function Indicators() {
     }
     const storage = new LocalStorageData(url, dataVersion)
     let storageData = storage.get()
+    if (storageData) {
+      storageData = filterIndicatorsData(selectedGlobalTime.min, selectedGlobalTime.max, storageData)
+    }
 
     // Check if we need to request all
     let doRequestAll = false
@@ -281,7 +288,7 @@ export default function Indicators() {
               if (indicatorFetchingSession === session && response) {
                 response = UpdateStyleData(response, indicator)
                 dispatch(
-                  Actions.IndicatorsData.receive(filterIndicatorsData(selectedGlobalTime.min, selectedGlobalTime.max, response), error, id)
+                  Actions.IndicatorsData.receive(response, error, id)
                 )
                 dispatch(
                   Actions.IndicatorsMetadata.progress(id, {

@@ -362,31 +362,9 @@ class BasemapPermissionTest(BasePermissionTest, TestCase):
     def test_delete_api(self):
         """Test DELETE API."""
         id = self.resource_1.id
-        key_view = 'basemaps-detail'
-        url = reverse(key_view, args=[id])
-        self.assertRequestDeleteView(url, 403)
-
-        url = reverse(key_view, args=[id])
-        self.assertRequestDeleteView(url, 403, user=self.viewer)
-
-        url = reverse(key_view, args=[id])
-        self.assertRequestDeleteView(url, 403, user=self.creator)
-
-        url = reverse(key_view, args=[id])
-        self.assertRequestDeleteView(url, 204, user=self.admin)
+        self.check_delete_resource_with_different_users(id, 'basemaps-detail')
         self.assertIsNone(BasemapLayer.objects.filter(id=id).first())
 
         id = self.resource_3.id
-        key_view = 'basemaps-detail'
-        url = reverse(key_view, args=[id])
-        self.assertRequestDeleteView(url, 403)
-
-        url = reverse(key_view, args=[id])
-        self.assertRequestDeleteView(url, 403, user=self.viewer)
-
-        url = reverse(key_view, args=[id])
-        self.assertRequestDeleteView(url, 403, user=self.creator)
-
-        url = reverse(key_view, args=[id])
-        self.assertRequestDeleteView(url, 204, user=self.creator_in_group)
+        self.check_delete_resource_with_different_users(id, 'basemaps-detail')
         self.assertIsNone(BasemapLayer.objects.filter(id=id).first())
