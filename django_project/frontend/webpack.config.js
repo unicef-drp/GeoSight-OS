@@ -47,6 +47,7 @@ let conf = {
     AdminDataset: ['./src/pages/Admin/Dataset'],
     AdminDataBrowser: ['./src/pages/Admin/DataBrowser'],
     AdminDataAccess: ['./src/pages/Admin/DataAccess'],
+    AdminRelatedTableForm: ['./src/pages/Admin/RelatedTable/Form'],
     AdminRelatedTableList: ['./src/pages/Admin/RelatedTable/List'],
     AdminRelatedTableData: ['./src/pages/Admin/RelatedTable/Data'],
 

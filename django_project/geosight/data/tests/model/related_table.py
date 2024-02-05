@@ -44,6 +44,12 @@ class RelatedTableTest(TestCase):
         for key, value in data.items():
             self.assertEqual(rows[0][key], value)
 
+        self.related_table.set_fields()
+        fields_definition = self.related_table.fields_definition
+        self.assertEqual(fields_definition[0]['name'], 'Field 1')
+        self.assertEqual(fields_definition[1]['name'], 'Field 2')
+        self.assertEqual(fields_definition[2]['name'], 'geom_id')
+
     def test_insert_row_with_replace(self):
         """Test insert row."""
         # Create original data

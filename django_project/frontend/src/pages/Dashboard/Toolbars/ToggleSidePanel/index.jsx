@@ -20,7 +20,12 @@
 import React, { useEffect, useState } from 'react';
 
 import { Plugin, PluginChild } from "../../MapLibre/Plugin";
-import { GraphIcon, LeftPanelIcon } from "../../../../components/Icons/index"
+import {
+  GraphCheckedIcon,
+  GraphUncheckedIcon,
+  LeftPanelCheckedIcon,
+  LeftPanelUncheckedIcon
+} from "../../../../components/Icons/index"
 import { LEFT, RIGHT } from "../../../../components/ToggleButton";
 
 import './style.scss';
@@ -60,14 +65,18 @@ export default function ToggleSidePanel(
 
   return (
     <Plugin className={props.className}>
-      <div className={active}>
+      <div className='Active'>
         <PluginChild
           title={'Toggle Panel'}
           onClick={() => {
             change()
           }}
         >
-          {props.className === 'LeftButton' ? <LeftPanelIcon/> : <GraphIcon/>}
+          {
+            props.className === 'LeftButton' ? active === 'Active' ?
+                <LeftPanelCheckedIcon/> : <LeftPanelUncheckedIcon/> :
+              active === 'Active' ? <GraphCheckedIcon/> : <GraphUncheckedIcon/>
+          }
         </PluginChild>
       </div>
     </Plugin>

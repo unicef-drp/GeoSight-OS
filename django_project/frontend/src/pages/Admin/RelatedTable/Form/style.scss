@@ -9,44 +9,49 @@
 *     (at your option) any later version.
 *
 * __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
+* __date__ = '31/01/2024'
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
 /* ==========================================================================
-   Context Layer Form style
+   Related Table Form style
    ========================================================================== */
 
 @import '../../../../app/variables';
 
+.FieldConfig {
+  width: 100%;
 
-.ContextLayerConfigButton {
-  text-align: center;
-  margin-bottom: 1rem;
-}
+  th, td {
+    border: 1px solid $primary-color;
+    padding: 0.2rem 0.5rem;
+  }
 
-form {
-  &.Preview,
-  &.Fields,
-  &.Label,
-  &.Style {
-    .Preview {
-      display: block !important;
+  thead {
+    td {
+      background: $primary-color;
+      color: $anti-primary-color;
+
+      .form-helptext {
+        color: $anti-primary-color;
+      }
+    }
+
+    .AsField {
+      width: 10rem;
     }
   }
 
-  .ContextLayerConfig-Wrapper {
-    .AdminForm {
-      width: 100%;
-      overflow: visible;
-    }
+  input {
+    width: fit-content;
 
-    .form-helptext {
-      display: none;
+    &:focus {
+      border: 1px solid $primary-color;
+      outline: none;
     }
   }
 
-  .ContextLayerConfigTab {
-    display: none !important;
+  input[type=checkbox] {
+    cursor: pointer;
   }
 }
