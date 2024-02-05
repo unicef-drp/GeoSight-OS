@@ -25,7 +25,7 @@ import Chart from 'chart.js/auto';
 import { returnWhere } from "../../../../utils/queryExtraction";
 import { popupTemplate } from "../Popup";
 import { addPopupEl } from "../utils";
-import { extractCode } from "../../../../utils/georepo";
+import { extractCode, fetchJson } from "../../../../utils/georepo";
 import { allDataIsReady } from "../../../../utils/indicators";
 import {
   indicatorLayerId,
@@ -33,20 +33,19 @@ import {
 } from "../../../../utils/indicatorLayer";
 import { dictDeepCopy } from "../../../../utils/main";
 import { UpdateStyleData } from "../../../../utils/indicatorData";
-import { fetchJSON } from "../../../../Requests";
 import { hideLabel, renderLabel, showLabel } from "./Label"
 import { ExecuteWebWorker } from "../../../../utils/WebWorker";
 import worker from "./Label/worker";
 
 import './style.scss';
-import { Logger } from "../../../../utils/logger";
+import { fetchJSON } from "../../../../Requests";
 
 let centroidMarker = []
 let charts = {}
 const INDICATOR_LABEL_ID = 'indicator-label'
 let centroidConfig = {}
-let prevUrl = null
 
+let lastRequest = null
 /**
  * GeometryCenter.
  */
@@ -72,38 +71,46 @@ export default function ReferenceLayerCentroid({ map }) {
 
   // When reference layer changed, fetch features
   useEffect(() => {
-    if (referenceLayer.identifier && !referenceLayerData) {
-      setGeometries({})
-    }
-  }, [referenceLayer]);
+    const identifier = referenceLayer?.identifier
+    if (identifier) {
+      if (lastRequest === identifier) {
+        return
+      }
+      lastRequest = identifier
+      setGeometries({});
 
-  // When level changed, fetch geometries
-  useEffect(() => {
-    if (![undefined, null].includes(selectedAdminLevel.level)) {
-      const url = `https://staging.geosight.kartoza.com/media/out_centroid/adm${selectedAdminLevel.level}.geojson`
-      prevUrl = url
-      if (!geometries[selectedAdminLevel.level]) {
-        fetchJSON(url).then(data => {
-          if (url === prevUrl) {
-            const geoms = {}
-            data.features.map(feature => {
-              const properties = {
-                concept_uuid: feature.properties.c,
-                name: feature.properties.n,
-                ucode: feature.properties.u,
-                geometry: feature.geometry
-              }
-              const code = extractCode(properties)
-              geoms[code] = properties
-            })
-            geometries[selectedAdminLevel.level] = geoms
-            setGeometries({ ...geometries })
-
+      // ----------------------------
+      // Fetch centroid
+      // ----------------------------
+      try {
+        const url = `${preferences.georepo_api.api}/search/view/${referenceLayer.identifier}/centroid/`
+        fetchJson(url).then(async data => {
+          if (identifier === lastRequest) {
+            for (let i = 0; i < data.length; i++) {
+              const row = data[i]
+              const response = await fetchJSON(row.url)
+              const geoms = {}
+              response.features.map(feature => {
+                const properties = {
+                  concept_uuid: feature.properties.c,
+                  name: feature.properties.n,
+                  ucode: feature.properties.u,
+                  geometry: feature.geometry
+                }
+                const code = extractCode(properties)
+                properties.code = code
+                geoms[code] = properties
+              })
+              geometries[row.level] = geoms
+              setGeometries({ ...geometries })
+            }
           }
         })
+      } catch (e) {
       }
+
     }
-  }, [selectedAdminLevel]);
+  }, [referenceLayerData]);
 
   /**
    * Render chart
@@ -453,14 +460,10 @@ export default function ReferenceLayerCentroid({ map }) {
           }
           properties['total'] = total
           properties['maxValue'] = maxFeatureValue
-          delete properties.geometry
           features.push({
             "type": "Feature",
             "properties": properties,
-            "geometry": {
-              "type": "Point",
-              "coordinates": geometry.geometry
-            }
+            "geometry": geometry.geometry
           })
         }
       })
