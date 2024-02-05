@@ -33,53 +33,11 @@ export const referenceSimpleDefaultTemplate = `
     <table>
     
     <!-- INDICATOR LAYERS DATA -->
-    {% for obj in context.current.indicator_layers %}
-      {% if obj.data %}
-        {% for key, value in obj.data %}
-            {% if key not in ['name'] %}
-                <tr>
-                    <td valign="top"><b>{{ key | capitalize | humanize }}</b></td>
-                    <td valign="top">{{ value | safe }}</td>
-                </tr>
-            {% endif %}
-        {% endfor %}
-      {% endif %}
-    {% endfor %}
-    
-    <!-- INDICATORS DATA -->
-    {% for obj in context.current.indicators %}
-      {% for key, value in obj %}
-          {% if key not in ['name'] %}
-              <tr>
-                  <td valign="top"><b>{{ key | capitalize | humanize }}</b></td>
-                  <td valign="top">{{ value | safe }}</td>
-              </tr>
-          {% endif %}
-      {% endfor %}
-    {% endfor %}
-
-    
-    <!-- RELATED TABLE DATA -->
-    {% for obj in context.current.related_tables %}
-      {% for key, value in obj %}
-          {% if key not in ['name'] %}
-              <tr>
-                  <td valign="top"><b>{{ key | capitalize | humanize }}</b></td>
-                  <td valign="top">{{ value | safe }}</td>
-              </tr>
-          {% endif %}
-      {% endfor %}
-    {% endfor %}
-    
-    
-    <!-- GEOMETRY -->
-    {% for key, value in context.current.geometry_data %}
-        {% if key not in ['name'] %}
-          <tr>
-              <td valign="top"><b>{{ key | capitalize | humanize }}</b></td>
-              <td valign="top">{{ value | safe }}</td>
-          </tr>
-        {% endif %}
+    {% for obj in context.current.simplified %}
+        <tr>
+            <td valign="top"><b>{{ obj.key | capitalize | humanize }}</b></td>
+            <td valign="top">{{ obj.value | safe }}</td>
+        </tr>
     {% endfor %}
   </table>
 </div>
@@ -432,17 +390,23 @@ export function popup(
     // If not custom
     if (currentIndicatorLayer.popup_type !== 'Custom') {
       try {
-        const newIndicatorsContext = {}
-        const newRelatedTablesContext = {}
+        const popupContext = new Map()
         context = updateCurrent(
           context, indicators, relatedTables,
           currentIndicatorLayer, currentIndicatorSecondLayer,
           indicatorValueByGeometry, indicatorSecondValueByGeometry,
           geom_id
         )
-        const newGeometryContext = {
-          name: context?.context?.current?.geometry_data.name
-        }
+        currentIndicatorLayer.data_fields.push({
+          "id": 66,
+          "name": "context.current.indicator.attributes",
+          "alias": "Attributes",
+          "type": "string",
+          "visible": true,
+          "order": 8,
+          "as_label": false,
+          "object": 428
+        })
         currentIndicatorLayer.data_fields.map(field => {
           if (!field.visible) {
             return
@@ -450,38 +414,29 @@ export function popup(
           const geometryDataId = 'context.current.geometry_data.'
           if (field.name.includes(geometryDataId)) {
             const contextField = field.name.replace(geometryDataId, '')
-            newGeometryContext[field.alias] = context?.context?.current?.geometry_data[contextField]
+            popupContext.set(field.alias, context?.context?.current?.geometry_data[contextField])
           }
           const indicatorId = 'context.current.indicator.'
           if (field.name.includes(indicatorId)) {
             const contextField = field.name.replace(indicatorId, '')
             context?.context?.current?.indicators.map(indicator => {
-              if (!newIndicatorsContext[indicator.name]) {
-                newIndicatorsContext[indicator.name] = {
-                  name: indicator.name
-                }
-              }
-              newIndicatorsContext[indicator.name][field.alias] = indicator[contextField]
+              popupContext.set(field.alias, indicator[contextField])
             })
 
             // For related tables
             context?.context?.current?.related_tables.map(indicator => {
-              if (!newRelatedTablesContext[indicator.name]) {
-                newRelatedTablesContext[indicator.name] = {
-                  name: indicator.name
-                }
-              }
-              newRelatedTablesContext[indicator.name][field.alias] = indicator[contextField]
+              popupContext.set(field.alias, indicator[contextField])
             })
           }
         })
-        context.context.current.geometry_data = newGeometryContext
-        context.context.current.indicators = Object.keys(newIndicatorsContext).map(key => {
-          return newIndicatorsContext[key]
-        })
-        context.context.current.related_tables = Object.keys(newRelatedTablesContext).map(key => {
-          return newRelatedTablesContext[key]
-        })
+        console.log(context.context.current)
+        context.context.current.simplified = []
+        for (var [key, value] of popupContext.entries()) {
+          context.context.current.simplified.push({
+            key: key,
+            value: value
+          })
+        }
       } catch (err) {
       }
     }
