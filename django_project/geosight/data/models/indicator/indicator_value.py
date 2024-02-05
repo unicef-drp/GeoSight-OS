@@ -112,6 +112,7 @@ class IndicatorValue(models.Model):
 
     @property
     def attributes(self):
+        """Return attributes of value."""
         extra_value = {}
         try:
             for extra in self.indicatorextravalue_set.all():

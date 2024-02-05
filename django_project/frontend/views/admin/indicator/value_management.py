@@ -211,7 +211,8 @@ class IndicatorValueManagementTableView(
                         keys = key.split(':')
                         report_id = keys[2]
                         attribute_name = request.POST.get(
-                            key.replace('attribute_value', 'attribute_name'), None
+                            key.replace('attribute_value', 'attribute_name'),
+                            None
                         )
                         if attribute_name and attribute:
                             try:
