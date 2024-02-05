@@ -27,7 +27,7 @@ export const defaultFields = [
   'indicator.name', 'indicator.value', 'indicator.label', 'indicator.time',
   'geometry_data.admin_level', 'geometry_data.admin_level_name',
   'geometry_data.concept_uuid', 'geometry_data.geom_code',
-  'geometry_data.name',
+  'geometry_data.name', 'indicator.attributes'
 ]
 
 export function indicatorLayerId(indicatorLayer) {

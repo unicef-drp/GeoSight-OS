@@ -73,6 +73,7 @@ export const referenceLayerDefaultTemplate = `
     {% set value = context.current.indicator_layers[0].value %}
     {% set label = context.current.indicator_layers[0].label %}
     {% set time = context.current.indicator_layers[0].time %}
+    {% set attributes = context.current.indicator_layers[0].attributes %}
     
     {% set admin_level = context.current.geometry_data.admin_level %}
     {% set admin_level_name = context.current.geometry_data.admin_level_name %}
@@ -104,7 +105,20 @@ export function getDefaultPopup(currentIndicatorLayer) {
       name = 'time'
     }
     if (field.visible) {
-      table += renderRow(name, field.alias)
+      if (field.name !== 'context.current.indicator.attributes') {
+        table += renderRow(name, field.alias)
+      } else {
+        table += `
+          {% if attributes %}
+            {% for key, value in attributes %}
+                  <tr>
+                      <td valign="top"><b>{{ key | capitalize | humanize }}</b></td>
+                      <td valign="top">{{ value | safe }}</td>
+                  </tr>
+            {% endfor %}
+        {% endif %}
+        `
+      }
     }
   })
   return referenceLayerDefaultTemplate.replace('<table></table>', `<table>${table}</table>`)
@@ -169,16 +183,19 @@ export function updateCurrent(
         try {
           const drilldownIndicatorData = context.context.admin_boundary.indicators[data.indicator.shortcode]
           if (drilldownIndicatorData) {
-            const dates = data.date.split('-')
-            dates.reverse()
-            const fullDate = dates.join('-') + 'T00:00:00+00:00'
+            let fullDate = data.date
+            if (!data.date.includes('T')) {
+              const dates = data.date.split('-')
+              dates.reverse()
+              fullDate = dates.join('-') + 'T00:00:00+00:00'
+            }
             const drilldownIndicatorCurrentData = drilldownIndicatorData.find(data => data.time === fullDate)
             if (drilldownIndicatorCurrentData?.attributes) {
               _data.attributes = drilldownIndicatorCurrentData?.attributes
               $('#popup-attributes-wrapper').html('')
               if (_data.attributes) {
                 for (const [key, value] of Object.entries(_data.attributes)) {
-                  $('#popup-attributes-wrapper').after(`
+                  $('#popup-attributes-wrapper').before(`
                     <tr>
                         <td valign="top"><b>${capitalize(key)}</b></td>
                         <td valign="top">${value}</td>
@@ -215,6 +232,9 @@ export function updateCurrent(
           indicatorLayer.time = _data.time
           indicatorLayer.value = _data.value
           indicatorLayer.label = _data.label
+          if (_data.attributes) {
+            indicatorLayer.attributes = _data.attributes
+          }
         } else if (indicator) {
           indicatorLayer.time = _data.time
           indicatorLayer.value = _data.value
@@ -222,6 +242,9 @@ export function updateCurrent(
           indicator.time = _data.time
           indicator.value = _data.value
           indicator.label = _data.label
+          if (_data.attributes) {
+            indicatorLayer.attributes = _data.attributes
+          }
         } else if (relatedTable) {
           indicatorLayer.time = _data.time
           indicatorLayer.value = _data.value
@@ -229,6 +252,9 @@ export function updateCurrent(
           relatedTable.time = _data.time
           relatedTable.value = _data.value
           relatedTable.label = _data.label
+          if (_data.attributes) {
+            indicatorLayer.attributes = _data.attributes
+          }
         }
       })
     })
