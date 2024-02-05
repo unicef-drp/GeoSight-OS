@@ -39,6 +39,7 @@ import { ExecuteWebWorker } from "../../../../utils/WebWorker";
 import worker from "./Label/worker";
 
 import './style.scss';
+import { Logger } from "../../../../utils/logger";
 
 let centroidMarker = []
 let charts = {}
