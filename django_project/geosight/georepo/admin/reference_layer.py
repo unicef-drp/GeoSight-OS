@@ -46,7 +46,7 @@ def sync_codes(modeladmin, request, queryset):
 @admin.action(description='Fetch new views')
 def action_fetch_datasets(modeladmin, request, queryset):
     """Fetch new reference layer."""
-    fetch_datasets.delay()
+    fetch_datasets.delay(True)
 
 
 @admin.action(description='Create all data access')
