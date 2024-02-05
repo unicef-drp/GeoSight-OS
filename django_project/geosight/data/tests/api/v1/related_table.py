@@ -19,7 +19,7 @@ from dateutil import parser
 from django.test.testcases import TestCase
 from rest_framework.reverse import reverse
 
-from geosight.data.models import RelatedTable
+from geosight.data.models import RelatedTable, RelatedTableField
 from geosight.permission.models import PERMISSIONS
 from geosight.permission.tests import BasePermissionTest
 
@@ -32,6 +32,9 @@ class RelatedTableApiTest(BasePermissionTest, TestCase):  # noqa: D101
             user=self.resource_creator,
             name='Name A',
         )
+        self.resource_1.add_field('my_number', 'My Number', 'number')
+        self.resource_1.add_field('my_date', 'My Date', 'date')
+        self.resource_1.add_field('my_string', 'My String', 'string')
         self.resource_2 = RelatedTable.permissions.create(
             user=self.resource_creator,
             name='Name B',
@@ -67,6 +70,15 @@ class RelatedTableApiTest(BasePermissionTest, TestCase):  # noqa: D101
         response = self.assertRequestGetView(url, 200,
                                              user=self.creator_in_group)
         self.assertEqual(len(response.json().get('results')), 1)
+
+    def test_delete(self):
+        """Test DELETE /related-tables/{id} ."""
+        id = self.resource_1.id
+        assert len(RelatedTableField.objects.filter(related_table_id=id)) == 3
+        self.check_delete_resource_with_different_users(
+            id, 'related-tables-detail')
+        self.assertIsNone(RelatedTable.objects.filter(id=id).first())
+        assert len(RelatedTableField.objects.filter(related_table_id=id)) == 0
 
     def create_resource(self, user):  # noqa: D102
         return None

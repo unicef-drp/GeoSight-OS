@@ -70,8 +70,12 @@ class RelatedTableViewSet(BaseApiV1Resource):
         """Update an existing related table."""
         raise MethodNotAllowed('PATCH')
 
-    @swagger_auto_schema(operation_id='related-tables-delete',
-                         tags=[ApiTag.RELATED_TABLES])
+    @swagger_auto_schema(
+        operation_id='related-tables-delete',
+        tags=[ApiTag.RELATED_TABLES],
+        manual_parameters=[],
+        operation_description='Delete a related table.'
+    )
     def destroy(self, request, *args, **kwargs):
         """Delete an existing related table."""
-        raise MethodNotAllowed('DELETE')
+        return super().destroy(request, *args, **kwargs)

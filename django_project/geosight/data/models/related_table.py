@@ -271,6 +271,21 @@ class RelatedTable(AbstractTerm, AbstractEditData):
             }
         ).data
 
+    def add_field(self, name, label, field_type):
+        """Add a new field definition to the related table."""
+        if field_type not in ['date', 'number', 'string']:
+            raise ValueError(f"Invalid type value for Related Table field: "
+                             f"{field_type}")
+        query = self.relatedtablefield_set.all()
+        if query.filter(name=name):
+            raise ValueError(f"Field already exists in Related Table: {name}")
+
+        self.relatedtablefield_set.all().get_or_create(
+            related_table=self,
+            name=name,
+            defaults={'alias': label, 'type': field_type}
+        )
+
     def set_fields(self):
         """Set fields data."""
         related_fields = []
