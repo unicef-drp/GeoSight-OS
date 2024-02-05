@@ -36,9 +36,9 @@ import { UpdateStyleData } from "../../../../utils/indicatorData";
 import { hideLabel, renderLabel, showLabel } from "./Label"
 import { ExecuteWebWorker } from "../../../../utils/WebWorker";
 import worker from "./Label/worker";
+import { fetchJSON } from "../../../../Requests";
 
 import './style.scss';
-import { fetchJSON } from "../../../../Requests";
 
 let centroidMarker = []
 let charts = {}
