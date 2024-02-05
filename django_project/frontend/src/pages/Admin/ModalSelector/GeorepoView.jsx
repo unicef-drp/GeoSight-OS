@@ -21,6 +21,7 @@ import {
   fetchReferenceLayerList,
   fetchReferenceLayerViewsList
 } from "../../../utils/georepo";
+import { Session } from "../../../utils/Sessions";
 
 import './style.scss';
 
@@ -89,11 +90,14 @@ export default function GeorepoViewSelector(
       (
         async () => {
           if (reference) {
+            const session = new Session('GeorepoViewSelector')
             const responseData = await fetchReferenceLayerViewsList(reference)
-            responseData.map(data => {
-              data.id = data.identifier
-            })
-            setInputData(responseData)
+            if (session.isValid) {
+              responseData.map(data => {
+                data.id = data.identifier
+              })
+              setInputData(responseData)
+            }
           }
         }
       )();
