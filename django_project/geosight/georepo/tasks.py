@@ -27,6 +27,13 @@ logger = get_task_logger(__name__)
 
 
 @app.task
+def fetch_reference_codes_by_ids(ids):
+    """Fetch reference codes."""
+    for reference_layer_view in ReferenceLayerView.objects.filter(id__in=ids):
+        reference_layer_view.sync_entities_code()
+        reference_layer_view.increase_version()
+
+
 def fetch_reference_codes(_id):
     """Fetch reference codes."""
     try:
@@ -38,7 +45,7 @@ def fetch_reference_codes(_id):
 
 
 @app.task
-def fetch_datasets(fetch_code=False):
+def fetch_datasets(fetch_code=True):
     """Fetch reference codes."""
     datasets = GeorepoRequest().get_reference_layer_list()
     for dataset in datasets:
