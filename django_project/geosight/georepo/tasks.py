@@ -34,6 +34,7 @@ def fetch_reference_codes_by_ids(ids):
         reference_layer_view.increase_version()
 
 
+@app.task
 def fetch_reference_codes(_id):
     """Fetch reference codes."""
     try:
