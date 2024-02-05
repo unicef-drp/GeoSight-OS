@@ -19,6 +19,7 @@ import { renderPopup, renderTemplateContent } from "../../Popup";
 import { fetchingData } from "../../../../../Requests";
 import { updateContextData } from "../../../../../utils/dataContext";
 import { extractCode } from "../../../../../utils/georepo";
+import { capitalize } from "../../../../../utils/main";
 
 export const referenceSimpleDefaultTemplate = `
 <!--  HEADER  -->
@@ -34,10 +35,18 @@ export const referenceSimpleDefaultTemplate = `
     
     <!-- INDICATOR LAYERS DATA -->
     {% for obj in context.current.simplified %}
+      {% if obj.key not in ['attributes'] %}
         <tr>
             <td valign="top"><b>{{ obj.key | capitalize | humanize }}</b></td>
             <td valign="top">{{ obj.value | safe }}</td>
         </tr>
+      {% else %}
+        <tr id="popup-attributes-wrapper">
+            <td valign="top" colspan="2" style="text-align: center">
+                loading attributes
+            </td>
+        </tr>        
+      {% endif %}        
     {% endfor %}
   </table>
 </div>
@@ -166,6 +175,17 @@ export function updateCurrent(
             const drilldownIndicatorCurrentData = drilldownIndicatorData.find(data => data.time === fullDate)
             if (drilldownIndicatorCurrentData?.attributes) {
               _data.attributes = drilldownIndicatorCurrentData?.attributes
+              $('#popup-attributes-wrapper').html('')
+              if (_data.attributes) {
+                for (const [key, value] of Object.entries(_data.attributes)) {
+                  $('#popup-attributes-wrapper').after(`
+                    <tr>
+                        <td valign="top"><b>${capitalize(key)}</b></td>
+                        <td valign="top">${value}</td>
+                    </tr>
+                  `)
+                }
+              }
             }
           }
         } catch (err) {
@@ -391,26 +411,15 @@ export function popup(
     if (currentIndicatorLayer.popup_type !== 'Custom') {
       try {
         const popupContext = new Map()
-        context = updateCurrent(
-          context, indicators, relatedTables,
-          currentIndicatorLayer, currentIndicatorSecondLayer,
-          indicatorValueByGeometry, indicatorSecondValueByGeometry,
-          geom_id
-        )
-        currentIndicatorLayer.data_fields.push({
-          "id": 66,
-          "name": "context.current.indicator.attributes",
-          "alias": "Attributes",
-          "type": "string",
-          "visible": true,
-          "order": 8,
-          "as_label": false,
-          "object": 428
-        })
         currentIndicatorLayer.data_fields.map(field => {
           if (!field.visible) {
             return
           }
+          if (field.name === "context.current.indicator.attributes") {
+            popupContext.set('attributes', null)
+            return;
+          }
+
           const geometryDataId = 'context.current.geometry_data.'
           if (field.name.includes(geometryDataId)) {
             const contextField = field.name.replace(geometryDataId, '')
@@ -419,6 +428,8 @@ export function popup(
           const indicatorId = 'context.current.indicator.'
           if (field.name.includes(indicatorId)) {
             const contextField = field.name.replace(indicatorId, '')
+
+            // For indicators
             context?.context?.current?.indicators.map(indicator => {
               popupContext.set(field.alias, indicator[contextField])
             })
@@ -427,13 +438,20 @@ export function popup(
             context?.context?.current?.related_tables.map(indicator => {
               popupContext.set(field.alias, indicator[contextField])
             })
+
+            // For indicator layers
+            context?.context?.current?.indicator_layers.map(indicator => {
+              if (indicator.data) {
+                popupContext.set(field.alias, indicator[contextField])
+              }
+            })
           }
         })
-        console.log(context.context.current)
         context.context.current.simplified = []
         for (var [key, value] of popupContext.entries()) {
           context.context.current.simplified.push({
             key: key,
+            label: key,
             value: value
           })
         }
