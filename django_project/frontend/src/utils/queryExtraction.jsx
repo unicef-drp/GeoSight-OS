@@ -90,8 +90,8 @@ export const getOperators = (type, isSimplified) => {
     return dictDeepCopy(isSimplified ? STRING_OPERATORS_SIMPLIFIED : STRING_OPERATORS)
   } else if (type === 'date') {
     const operators = dictDeepCopy(isSimplified ? DATE_OPERATORS_SIMPLIFIED : DATE_OPERATORS_SIMPLIFIED)
-    operators[OPERATOR_WITH_INTERVAL] = OPERATOR_WITH_INTERVAL
-    operators[OPERATOR_WITH_INTERNEXT] = OPERATOR_WITH_INTERNEXT
+    operators[OPERATOR_WITH_INTERVAL] = 'Last'
+    operators[OPERATOR_WITH_INTERNEXT] = 'Next'
     return operators
   } else {
     return dictDeepCopy(isSimplified ? NUMBER_OPERATORS_SIMPLIFIED : NUMBER_OPERATORS)
