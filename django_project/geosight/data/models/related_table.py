@@ -271,6 +271,16 @@ class RelatedTable(AbstractTerm, AbstractEditData):
             }
         ).data
 
+    @fields_definition.setter
+    def fields_definition(self, fields):
+        self.relatedtablefield_set.all().delete()
+        for field in fields:
+            self.add_field(
+                field.get('name'),
+                field.get('alias'),
+                field.get('type')
+            )
+
     def add_field(self, name, label, field_type):
         """Add a new field definition to the related table."""
         if field_type not in ['date', 'number', 'string']:
