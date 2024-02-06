@@ -25,6 +25,7 @@ from geosight.data.models.related_table import (
 
 class RelatedTableFieldApiSerializer(DynamicModelSerializer):
     """Serializer for RelatedTableField."""
+
     label = serializers.CharField(source='alias')
 
     class Meta:  # noqa: D106
