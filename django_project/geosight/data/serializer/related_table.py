@@ -23,12 +23,21 @@ from geosight.data.models.related_table import (
 )
 
 
+class RelatedTableFieldApiSerializer(DynamicModelSerializer):
+    """Serializer for RelatedTableField."""
+    label = serializers.CharField(source='alias')
+
+    class Meta:  # noqa: D106
+        model = RelatedTableField
+        fields = ('name', 'label', 'type')
+
+
 class RelatedTableApiSerializer(DynamicModelSerializer):
     """Serializer for RelatedTable."""
 
     url = serializers.SerializerMethodField()
     creator = serializers.SerializerMethodField()
-    fields_definition = serializers.SerializerMethodField()
+    fields_definition = RelatedTableFieldApiSerializer(many=True)
 
     def get_url(self, obj: RelatedTable):  # noqa: D102
         return reverse(
@@ -38,13 +47,6 @@ class RelatedTableApiSerializer(DynamicModelSerializer):
 
     def get_creator(self, obj: RelatedTable):  # noqa: D102
         return obj.creator.get_full_name() if obj.creator else None
-
-    def get_fields_definition(self, obj: RelatedTable):  # noqa: D102
-        return [{
-            'name': field.get('name'),
-            'label': field.get('alias'),
-            'type': field.get('type')
-        } for field in obj.fields_definition]
 
     class Meta:  # noqa: D106
         model = RelatedTable
