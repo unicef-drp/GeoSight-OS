@@ -17,25 +17,26 @@
    Geometry Center
    ========================================================================== */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from "react-redux";
 import $ from "jquery";
 import maplibregl from "maplibre-gl";
 import Chart from 'chart.js/auto';
 import { returnWhere } from "../../../../utils/queryExtraction";
 import { popupTemplate } from "../Popup";
-import { addPopupEl, hasLayer, hasSource } from "../utils";
-import { BEFORE_LAYER, CONTEXT_LAYER_ID } from "../Layers/ReferenceLayer";
-import { extractCode } from "../../../../utils/georepo";
+import { addPopupEl } from "../utils";
+import { extractCode, fetchJson } from "../../../../utils/georepo";
 import { allDataIsReady } from "../../../../utils/indicators";
-
 import {
   indicatorLayerId,
   isIndicatorLayerLikeIndicator
 } from "../../../../utils/indicatorLayer";
 import { dictDeepCopy } from "../../../../utils/main";
 import { UpdateStyleData } from "../../../../utils/indicatorData";
-import { Logger } from "../../../../utils/logger";
+import { hideLabel, renderLabel, showLabel } from "./Label"
+import { ExecuteWebWorker } from "../../../../utils/WebWorker";
+import worker from "./Label/worker";
+import { fetchJSON } from "../../../../Requests";
 
 import './style.scss';
 
@@ -44,18 +45,19 @@ let charts = {}
 const INDICATOR_LABEL_ID = 'indicator-label'
 let centroidConfig = {}
 
+let lastRequest = null
 /**
  * GeometryCenter.
  */
 export default function ReferenceLayerCentroid({ map }) {
   const {
     indicators,
-    indicatorLayers
+    indicatorLayers,
+    referenceLayer
   } = useSelector(state => state.dashboard.data)
+  const referenceLayerData = useSelector(state => state.referenceLayerData[referenceLayer.identifier]);
   const { showIndicatorMapLabel } = useSelector(state => state.globalState)
   const { indicatorShow } = useSelector(state => state.map)
-  const geometries = useSelector(state => state.geometries)
-  const geometriesVT = useSelector(state => state.geometriesVT)
   const filteredGeometries = useSelector(state => state.filteredGeometries)
   const indicatorsData = useSelector(state => state.indicatorsData);
   const selectedIndicatorLayer = useSelector(state => state.selectedIndicatorLayer)
@@ -63,7 +65,52 @@ export default function ReferenceLayerCentroid({ map }) {
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel)
   const filtersData = useSelector(state => state.filtersData);
 
+  const [geometries, setGeometries] = useState({});
+
   const where = returnWhere(filtersData ? filtersData : [])
+
+  // When reference layer changed, fetch features
+  useEffect(() => {
+    const identifier = referenceLayer?.identifier
+    if (identifier) {
+      if (lastRequest === identifier) {
+        return
+      }
+      lastRequest = identifier
+      setGeometries({});
+
+      // ----------------------------
+      // Fetch centroid
+      // ----------------------------
+      try {
+        const url = `${preferences.georepo_api.api}/search/view/${referenceLayer.identifier}/centroid/`
+        fetchJson(url).then(async data => {
+          if (identifier === lastRequest) {
+            for (let i = 0; i < data.length; i++) {
+              const row = data[i]
+              const response = await fetchJSON(row.url)
+              const geoms = {}
+              response.features.map(feature => {
+                const properties = {
+                  concept_uuid: feature.properties.c,
+                  name: feature.properties.n,
+                  ucode: feature.properties.u,
+                  geometry: feature.geometry
+                }
+                const code = extractCode(properties)
+                properties.code = code
+                geoms[code] = properties
+              })
+              geometries[row.level] = geoms
+              setGeometries({ ...geometries })
+            }
+          }
+        })
+      } catch (e) {
+      }
+
+    }
+  }, [referenceLayerData]);
 
   /**
    * Render chart
@@ -241,109 +288,9 @@ export default function ReferenceLayerCentroid({ map }) {
     }
   }
 
-  /**
-   * Render label
-   * **/
-  const renderLabel = (features, config) => {
-    const layout = {
-      'text-anchor': 'bottom',
-      'text-size': 14,
-      'text-variable-anchor': ['center'],
-    }
-    const paint = {
-      'text-halo-blur': 2
-    }
-    let minZoom = 0
-    let maxZoom = 24
-
-    // Check the style
-    const { text, style } = config
-    if (text && style) {
-      minZoom = style.minZoom ? style.minZoom : minZoom
-      maxZoom = style.maxZoom ? style.maxZoom : maxZoom
-      paint['text-color'] = style.fontColor.replaceAll('##', '#')
-      if (style.fontFamily) {
-        const font = style.fontFamily.split(',')[0].replaceAll('"', '')
-        layout['text-font'] = [font, font]
-      } else {
-        layout['text-font'] = ['Arial', 'Arial']
-      }
-      layout['text-size'] = style.fontSize
-      paint['text-halo-color'] = style.haloColor.replaceAll('##', '#')
-      paint['text-halo-width'] = style.haloWeight ? 1 : 0
-
-      const textField = ['format']
-      const formattedText = text.replaceAll('{', ' {{').replaceAll('}', '}} ')
-      const separators = [' {', '} '];
-      formattedText.split('\n').map((label, idx) => {
-        label.split(new RegExp(separators.join('|'), 'g')).map(row => {
-          if (row.includes('{')) {
-            textField.push(['get', row.replace('{', '').replace('}', '')])
-          } else if (row.includes('round')) {
-            const property = textField[textField.length - 1][1]
-            if (property) {
-              const decimalNumber = row.split(/.round\(|\)/)
-              if (decimalNumber[0]) {
-                textField.push(row)
-              } else if (!isNaN(parseInt(decimalNumber[1]))) {
-                const decimalPlace = parseInt(decimalNumber[1])
-                if (decimalNumber[2]) {
-                  textField.push(decimalNumber[2])
-                }
-                features.map(feature => {
-                  if (feature.properties[property]) {
-                    try {
-                      feature.properties[property] = feature.properties[property].round(decimalPlace)
-                    } catch (err) {
-
-                    }
-                  }
-                })
-              }
-            }
-          } else if (row) {
-            textField.push(row)
-          }
-        })
-        textField.push('\n')
-      })
-      layout['text-field'] = textField
-    }
-
-    if (hasLayer(map, INDICATOR_LABEL_ID)) {
-      map.removeLayer(INDICATOR_LABEL_ID)
-    }
-    if (hasSource(map, INDICATOR_LABEL_ID)) {
-      map.removeSource(INDICATOR_LABEL_ID)
-    }
-    map.addSource(INDICATOR_LABEL_ID, {
-      'type': 'geojson',
-      'data': {
-        type: 'FeatureCollection',
-        features: features
-      }
-    });
-    const contextLayerIds = map.getStyle().layers.filter(
-      layer => layer.id.includes(CONTEXT_LAYER_ID) || layer.id === BEFORE_LAYER
-    )
-    map.addLayer(
-      {
-        id: "indicator-label",
-        type: 'symbol',
-        source: INDICATOR_LABEL_ID,
-        filter: ['==', '$type', 'Point'],
-        layout: layout,
-        paint: paint,
-        maxzoom: maxZoom,
-        minzoom: minZoom
-
-      },
-      contextLayerIds[0]?.id
-    );
-  }
-  /**Resetting **/
+  /** Resetting **/
   const reset = () => {
-    renderLabel([], {})
+    renderLabel(map, [], {})
     for (const [code, chart] of Object.entries(charts)) {
       chart.clear();
       $(`${code}-chart`).remove()
@@ -351,7 +298,19 @@ export default function ReferenceLayerCentroid({ map }) {
     centroidMarker.map(marker => marker.remove())
     centroidMarker = []
   }
-  // When level changed
+
+  // When show label toggled
+  useEffect(() => {
+    if (showIndicatorMapLabel) {
+      showLabel(map)
+    } else {
+      hideLabel(map)
+    }
+  }, [
+    showIndicatorMapLabel
+  ]);
+
+  // When everything changed
   useEffect(() => {
     // Check if all data is ready
     let indicatorLayer = selectedIndicatorLayer
@@ -395,11 +354,7 @@ export default function ReferenceLayerCentroid({ map }) {
     // Check if geometries is exist
     let geometriesData = geometries[selectedAdminLevel.level]
     if (!geometriesData) {
-      if (!geometriesVT[selectedAdminLevel.level]) {
-        rendering = false
-      } else {
-        geometriesData = geometriesVT[selectedAdminLevel.level]
-      }
+      rendering = false
     }
     if (!rendering) {
       reset()
@@ -411,7 +366,6 @@ export default function ReferenceLayerCentroid({ map }) {
     if (!usedFilteredGeometries && geometriesData) {
       usedFilteredGeometries = geometriesLevel
     }
-    Logger.log(JSON.stringify(usedFilteredGeometries))
 
     // Check by config
     const config = {
@@ -421,9 +375,6 @@ export default function ReferenceLayerCentroid({ map }) {
       filteredGeometries: usedFilteredGeometries,
       indicatorShow: indicatorShow,
       usedIndicatorsData: usedIndicatorsData
-    }
-    if (!isRenderingChart) {
-      config.showIndicatorMapLabel = showIndicatorMapLabel
     }
     // If config is same, don't render to prevent flicker
     if (JSON.stringify(config) === JSON.stringify(centroidConfig)) {
@@ -485,9 +436,6 @@ export default function ReferenceLayerCentroid({ map }) {
       }
       theGeometries.map(geom => {
         const geometry = geometriesData[geom]
-        if (!geometry?.centroid) {
-          return
-        }
         if (indicatorsByGeom[geometry?.code]) {
           const properties = Object.assign({}, geometry, {
             chart_style: JSON.parse(JSON.stringify(chartStyle)),
@@ -515,10 +463,7 @@ export default function ReferenceLayerCentroid({ map }) {
           features.push({
             "type": "Feature",
             "properties": properties,
-            "geometry": {
-              "type": "Point",
-              "coordinates": geometry.centroid.replace('POINT (', '').replace('POINT(', '').replace(')', '').split(' ').map(coord => parseFloat(coord))
-            }
+            "geometry": geometry.geometry
           })
         }
       })
@@ -560,7 +505,7 @@ export default function ReferenceLayerCentroid({ map }) {
         config = indicatorLayer?.label_config
       }
       // When there is no config, no label rendered
-      if (!(config?.style && config?.text) || !showIndicatorMapLabel) {
+      if (!(config?.style && config?.text)) {
         reset()
         return;
       }
@@ -572,50 +517,22 @@ export default function ReferenceLayerCentroid({ map }) {
         return;
       }
 
-      // Create features
-      let features = []
-      let theGeometries = Object.keys(geometriesData)
-      const indicatorsByGeom = {}
-      for (const [indicatorId, indicatorData] of Object.entries(usedIndicatorsData)) {
-        indicatorData.data.forEach(function (data) {
-          const code = extractCode(data)
-          if (!indicatorsByGeom[code]) {
-            indicatorsByGeom[code] = []
-          }
-          indicatorsByGeom[code].push(data);
-        })
-      }
-      theGeometries.map(geom => {
-        const geometry = geometriesData[geom]
-        const code = extractCode(geometry)
-        const indicator = indicatorsByGeom[code] ? indicatorsByGeom[code][0] : null
-        if (usedFilteredGeometries && !usedFilteredGeometries.includes(code)) {
-          return
+      ExecuteWebWorker(
+        worker, {
+          geometriesData,
+          usedIndicatorsData,
+          usedFilteredGeometries
+        }, (features) => {
+          renderLabel(map, features, config)
         }
-        let properties = geometry
-        if (geometry) {
-          if (indicator) {
-            properties = Object.assign({}, geometry, indicator)
-          }
-          if (geometry.centroid) {
-            features.push({
-              "type": "Feature",
-              "properties": properties,
-              "geometry": {
-                "type": "Point",
-                "coordinates": geometry.centroid.replace('POINT (', '').replace('POINT(', '').replace(')', '').split(' ').map(coord => parseFloat(coord))
-              }
-            })
-          }
-        }
-      })
-      renderLabel(features, config)
+      )
     }
+
   }, [
-    geometries, geometriesVT, filteredGeometries, indicatorsData,
+    geometries, filteredGeometries, indicatorsData,
     indicatorShow, indicatorLayers,
     selectedIndicatorLayer, selectedIndicatorSecondLayer,
-    showIndicatorMapLabel, selectedAdminLevel
+    selectedAdminLevel
   ]);
 
   return null

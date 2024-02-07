@@ -47,6 +47,7 @@ import {
 } from "../../../../../utils/Style";
 import GeorepoAuthorizationModal
   from "../../../../../components/GeorepoAuthorizationModal";
+import { Logger } from "../../../../../utils/logger";
 
 export const BEFORE_LAYER = 'gl-draw-polygon-fill-inactive.cold'
 export const CONTEXT_LAYER_ID = `context-layer`
@@ -108,35 +109,6 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
     return map && hasLayer(map, FILL_LAYER_ID) && hasLayer(map, OUTLINE_LAYER_ID)
   }
 
-  // When source data changed, and it using from georepo layer
-  // Extract the bbox from it and save it as state
-  useEffect(() => {
-    if (map) {
-      map.on("sourcedata", function (e) {
-        if (hasLayer(map, FILL_LAYER_ID)) {
-          var features = map.queryRenderedFeatures(
-            { layers: [FILL_LAYER_ID] }
-          );
-          const geometryDataByLevel = {}
-          features.map(feature => {
-            const level = feature.properties.level;
-            if (!geometryDataByLevel[level]) {
-              geometryDataByLevel[level] = {}
-            }
-            const code = extractCode(feature.properties)
-            feature.properties.code = code
-            geometryDataByLevel[level][code] = feature.properties
-          })
-          for (const [level, data] of Object.entries(geometryDataByLevel)) {
-            dispatch(
-              Actions.GeometriesVT.addLevelData(level, data)
-            )
-          }
-        }
-      });
-    }
-  }, [map]);
-
   // When reference layer changed, fetch reference data
   useEffect(() => {
     if (referenceLayer.identifier && !referenceLayerData) {
@@ -191,6 +163,7 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
   useEffect(() => {
     const whereStr = JSON.stringify(where)
     const filteredGeometriesStr = JSON.stringify(filteredGeometries)
+    Logger.log(filteredGeometriesStr)
     if (prevState.where !== whereStr || prevState.filteredGeometries !== filteredGeometriesStr) {
       updateFilter()
       prevState.where = whereStr
