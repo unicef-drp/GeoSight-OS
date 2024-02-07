@@ -130,7 +130,7 @@ class DataBrowserApiList(BaseDataBrowserApiList, ListAPIView):
                 reference_layer=data['dataset_uuid'],
                 admin_level=data['admin_level'],
                 value=data['value'],
-                extras=data.get('extra_value', {})
+                extras=data.get('attributes', {})
             )
         except KeyError as e:
             return HttpResponseBadRequest(f'{e} is required on payload')

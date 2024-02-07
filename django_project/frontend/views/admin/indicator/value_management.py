@@ -205,24 +205,25 @@ class IndicatorValueManagementTableView(
                         )
                         indicator_values[code] = indicator_value
 
-                # we need to check extra value
-                for key, extra_value in request.POST.dict().items():
-                    if 'extra_value' in key:
+                # we need to check attributes
+                for key, attribute in request.POST.dict().items():
+                    if 'attribute' in key:
                         keys = key.split(':')
                         report_id = keys[2]
-                        extra_name = request.POST.get(
-                            key.replace('extra_value', 'extra_name'), None
+                        attribute_name = request.POST.get(
+                            key.replace('attribute_value', 'attribute_name'),
+                            None
                         )
-                        if extra_name and extra_value:
+                        if attribute_name and attribute:
                             try:
                                 indicator_value = indicator_values[report_id]
-                                indicator_extra_value, created = \
+                                indicator_attribute, created = \
                                     IndicatorExtraValue.objects.get_or_create(
                                         indicator_value=indicator_value,
-                                        name=extra_name
+                                        name=attribute_name
                                     )
-                                indicator_extra_value.value = extra_value
-                                indicator_extra_value.save()
+                                indicator_attribute.value = attribute
+                                indicator_attribute.save()
                             except KeyError:
                                 pass
             except IndicatorValueRejectedError as e:

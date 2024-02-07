@@ -346,7 +346,8 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
                         'time': datetime.combine(
                             value.date, datetime.min.time(),
                             tzinfo=pytz.timezone(settings.TIME_ZONE)
-                        ).isoformat()
+                        ).isoformat(),
+                        'attributes': value.attributes
                     })
             except ResourcePermissionDenied:
                 pass

@@ -170,9 +170,9 @@ export default function DataBrowserAdmin() {
       }
     },
     {
-      field: 'extra_value', headerName: 'Extras', width: 50,
+      field: 'attributes', headerName: 'Attributes', width: 80,
       renderCell: (params) => {
-        if (params.row.extra_value && Object.keys(params.row.extra_value).length) {
+        if (params.row.attributes && Object.keys(params.row.attributes).length) {
           return <CustomPopover
             anchorOrigin={{
               vertical: 'center',
@@ -189,8 +189,8 @@ export default function DataBrowserAdmin() {
           >
             <div style={{ padding: "10px" }}>
               {
-                Object.keys(params.row.extra_value).map((key) => {
-                  return <div><b>{key}</b> : {params.row.extra_value[key]}
+                Object.keys(params.row.attributes).map((key) => {
+                  return <div><b>{key}</b> : {params.row.attributes[key]}
                   </div>
                 })
               }

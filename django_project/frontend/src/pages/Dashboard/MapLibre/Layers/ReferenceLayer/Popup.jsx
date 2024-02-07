@@ -19,6 +19,7 @@ import { renderPopup, renderTemplateContent } from "../../Popup";
 import { fetchingData } from "../../../../../Requests";
 import { updateContextData } from "../../../../../utils/dataContext";
 import { extractCode } from "../../../../../utils/georepo";
+import { capitalize } from "../../../../../utils/main";
 
 export const referenceSimpleDefaultTemplate = `
 <!--  HEADER  -->
@@ -33,53 +34,19 @@ export const referenceSimpleDefaultTemplate = `
     <table>
     
     <!-- INDICATOR LAYERS DATA -->
-    {% for obj in context.current.indicator_layers %}
-      {% if obj.data %}
-        {% for key, value in obj.data %}
-            {% if key not in ['name'] %}
-                <tr>
-                    <td valign="top"><b>{{ key | capitalize | humanize }}</b></td>
-                    <td valign="top">{{ value | safe }}</td>
-                </tr>
-            {% endif %}
-        {% endfor %}
-      {% endif %}
-    {% endfor %}
-    
-    <!-- INDICATORS DATA -->
-    {% for obj in context.current.indicators %}
-      {% for key, value in obj %}
-          {% if key not in ['name'] %}
-              <tr>
-                  <td valign="top"><b>{{ key | capitalize | humanize }}</b></td>
-                  <td valign="top">{{ value | safe }}</td>
-              </tr>
-          {% endif %}
-      {% endfor %}
-    {% endfor %}
-
-    
-    <!-- RELATED TABLE DATA -->
-    {% for obj in context.current.related_tables %}
-      {% for key, value in obj %}
-          {% if key not in ['name'] %}
-              <tr>
-                  <td valign="top"><b>{{ key | capitalize | humanize }}</b></td>
-                  <td valign="top">{{ value | safe }}</td>
-              </tr>
-          {% endif %}
-      {% endfor %}
-    {% endfor %}
-    
-    
-    <!-- GEOMETRY -->
-    {% for key, value in context.current.geometry_data %}
-        {% if key not in ['name'] %}
-          <tr>
-              <td valign="top"><b>{{ key | capitalize | humanize }}</b></td>
-              <td valign="top">{{ value | safe }}</td>
-          </tr>
-        {% endif %}
+    {% for obj in context.current.simplified %}
+      {% if obj.key not in ['attributes'] %}
+        <tr>
+            <td valign="top"><b>{{ obj.key | capitalize | humanize }}</b></td>
+            <td valign="top">{{ obj.value | safe }}</td>
+        </tr>
+      {% else %}
+        <tr id="popup-attributes-wrapper">
+            <td valign="top" colspan="2" style="text-align: center">
+                loading attributes
+            </td>
+        </tr>        
+      {% endif %}        
     {% endfor %}
   </table>
 </div>
@@ -106,6 +73,7 @@ export const referenceLayerDefaultTemplate = `
     {% set value = context.current.indicator_layers[0].value %}
     {% set label = context.current.indicator_layers[0].label %}
     {% set time = context.current.indicator_layers[0].time %}
+    {% set attributes = context.current.indicator_layers[0].attributes %}
     
     {% set admin_level = context.current.geometry_data.admin_level %}
     {% set admin_level_name = context.current.geometry_data.admin_level_name %}
@@ -137,7 +105,20 @@ export function getDefaultPopup(currentIndicatorLayer) {
       name = 'time'
     }
     if (field.visible) {
-      table += renderRow(name, field.alias)
+      if (field.name !== 'context.current.indicator.attributes') {
+        table += renderRow(name, field.alias)
+      } else {
+        table += `
+          {% if attributes %}
+            {% for key, value in attributes %}
+                  <tr>
+                      <td valign="top"><b>{{ key | capitalize | humanize }}</b></td>
+                      <td valign="top">{{ value | safe }}</td>
+                  </tr>
+            {% endfor %}
+        {% endif %}
+        `
+      }
     }
   })
   return referenceLayerDefaultTemplate.replace('<table></table>', `<table>${table}</table>`)
@@ -196,6 +177,37 @@ export function updateCurrent(
         label: data.label,
       }
       if (data.indicator) {
+        // ------------------------------------
+        // Find Attributes
+        // ------------------------------------
+        try {
+          const drilldownIndicatorData = context.context.admin_boundary.indicators[data.indicator.shortcode]
+          if (drilldownIndicatorData) {
+            let fullDate = data.date
+            if (!data.date.includes('T')) {
+              const dates = data.date.split('-')
+              dates.reverse()
+              fullDate = dates.join('-') + 'T00:00:00+00:00'
+            }
+            const drilldownIndicatorCurrentData = drilldownIndicatorData.find(data => data.time === fullDate)
+            if (drilldownIndicatorCurrentData?.attributes) {
+              _data.attributes = drilldownIndicatorCurrentData?.attributes
+              $('#popup-attributes-wrapper').html('')
+              if (_data.attributes) {
+                for (const [key, value] of Object.entries(_data.attributes)) {
+                  $('#popup-attributes-wrapper').before(`
+                    <tr>
+                        <td valign="top"><b>${capitalize(key)}</b></td>
+                        <td valign="top">${value}</td>
+                    </tr>
+                  `)
+                }
+              }
+            }
+          }
+        } catch (err) {
+
+        }
         indicatorsByDict[data.indicator.id] = {
           ...indicatorsByDict[data.indicator.id],
           ..._data
@@ -220,6 +232,9 @@ export function updateCurrent(
           indicatorLayer.time = _data.time
           indicatorLayer.value = _data.value
           indicatorLayer.label = _data.label
+          if (_data.attributes) {
+            indicatorLayer.attributes = _data.attributes
+          }
         } else if (indicator) {
           indicatorLayer.time = _data.time
           indicatorLayer.value = _data.value
@@ -227,6 +242,9 @@ export function updateCurrent(
           indicator.time = _data.time
           indicator.value = _data.value
           indicator.label = _data.label
+          if (_data.attributes) {
+            indicatorLayer.attributes = _data.attributes
+          }
         } else if (relatedTable) {
           indicatorLayer.time = _data.time
           indicatorLayer.value = _data.value
@@ -234,6 +252,9 @@ export function updateCurrent(
           relatedTable.time = _data.time
           relatedTable.value = _data.value
           relatedTable.label = _data.label
+          if (_data.attributes) {
+            indicatorLayer.attributes = _data.attributes
+          }
         }
       })
     })
@@ -415,56 +436,51 @@ export function popup(
     // If not custom
     if (currentIndicatorLayer.popup_type !== 'Custom') {
       try {
-        const newIndicatorsContext = {}
-        const newRelatedTablesContext = {}
-        context = updateCurrent(
-          context, indicators, relatedTables,
-          currentIndicatorLayer, currentIndicatorSecondLayer,
-          indicatorValueByGeometry, indicatorSecondValueByGeometry,
-          geom_id
-        )
-        const newGeometryContext = {
-          name: context?.context?.current?.geometry_data.name
-        }
+        const popupContext = new Map()
         currentIndicatorLayer.data_fields.map(field => {
           if (!field.visible) {
             return
           }
+          if (field.name === "context.current.indicator.attributes") {
+            popupContext.set('attributes', null)
+            return;
+          }
+
           const geometryDataId = 'context.current.geometry_data.'
           if (field.name.includes(geometryDataId)) {
             const contextField = field.name.replace(geometryDataId, '')
-            newGeometryContext[field.alias] = context?.context?.current?.geometry_data[contextField]
+            popupContext.set(field.alias, context?.context?.current?.geometry_data[contextField])
           }
           const indicatorId = 'context.current.indicator.'
           if (field.name.includes(indicatorId)) {
             const contextField = field.name.replace(indicatorId, '')
+
+            // For indicators
             context?.context?.current?.indicators.map(indicator => {
-              if (!newIndicatorsContext[indicator.name]) {
-                newIndicatorsContext[indicator.name] = {
-                  name: indicator.name
-                }
-              }
-              newIndicatorsContext[indicator.name][field.alias] = indicator[contextField]
+              popupContext.set(field.alias, indicator[contextField])
             })
 
             // For related tables
             context?.context?.current?.related_tables.map(indicator => {
-              if (!newRelatedTablesContext[indicator.name]) {
-                newRelatedTablesContext[indicator.name] = {
-                  name: indicator.name
-                }
+              popupContext.set(field.alias, indicator[contextField])
+            })
+
+            // For indicator layers
+            context?.context?.current?.indicator_layers.map(indicator => {
+              if (indicator.data) {
+                popupContext.set(field.alias, indicator[contextField])
               }
-              newRelatedTablesContext[indicator.name][field.alias] = indicator[contextField]
             })
           }
         })
-        context.context.current.geometry_data = newGeometryContext
-        context.context.current.indicators = Object.keys(newIndicatorsContext).map(key => {
-          return newIndicatorsContext[key]
-        })
-        context.context.current.related_tables = Object.keys(newRelatedTablesContext).map(key => {
-          return newRelatedTablesContext[key]
-        })
+        context.context.current.simplified = []
+        for (var [key, value] of popupContext.entries()) {
+          context.context.current.simplified.push({
+            key: key,
+            label: key,
+            value: value
+          })
+        }
       } catch (err) {
       }
     }
