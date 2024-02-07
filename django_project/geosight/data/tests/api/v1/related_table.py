@@ -35,6 +35,7 @@ class RelatedTableApiTest(BasePermissionTest, TestCase):  # noqa: D101
         self.resource_1.add_field('my_number', 'My Number', 'number')
         self.resource_1.add_field('my_date', 'My Date', 'date')
         self.resource_1.add_field('my_string', 'My String', 'string')
+
         self.resource_2 = RelatedTable.permissions.create(
             user=self.resource_creator,
             name='Name B',
@@ -80,8 +81,46 @@ class RelatedTableApiTest(BasePermissionTest, TestCase):  # noqa: D101
         self.assertIsNone(RelatedTable.objects.filter(id=id).first())
         assert len(RelatedTableField.objects.filter(related_table_id=id)) == 0
 
+    def test_detail_api(self):
+        """Test GET /related-tables/{id} ."""
+        url = reverse('related-tables-detail', args=[0])
+
+        self.assertRequestGetView(url, 403)
+        self.assertRequestGetView(url, 404, user=self.viewer)
+        self.assertRequestGetView(url, 404, user=self.creator)
+        self.assertRequestGetView(url, 404, user=self.admin)
+
+        url = reverse('related-tables-detail',
+                      kwargs={'id': self.resource_1.id}) + '?all_fields=true'
+        self.assertRequestGetView(url, 403)
+        self.assertRequestGetView(url, 403, user=self.viewer)
+        self.assertRequestGetView(url, 403, user=self.creator)
+        response = self.assertRequestGetView(url, 200, user=self.admin)
+
+        assert validate_related_table(response.json(), self.resource_1)
+
     def create_resource(self, user):  # noqa: D102
         return None
+
+
+def fields_match(json, resource):
+    """Check if the field definition from a JSON and a model match."""
+    return (json['name'] == resource['name'] and
+            json['label'] == resource['alias'] and
+            json['type'] == resource['type'])
+
+
+def all_fields_match(json, resource):
+    """Check all the field definitions in the JSON against the model."""
+    json_definitions = json['fields_definition']
+    if len(json_definitions) != len(resource.fields_definition):
+        return False
+
+    for definition in resource.fields_definition:
+        if all(not fields_match(json_field, definition)
+               for json_field in json_definitions):
+            return False
+    return True
 
 
 def validate_related_table(json, resource):
@@ -92,7 +131,8 @@ def validate_related_table(json, resource):
             json['url'] == f'/api/v1/related-tables/{resource.id}/' and
             json.get('creator') == resource.creator.get_full_name() and
             to_datetime(json, 'created_at') == resource.created_at and
-            to_datetime(json, 'modified_at') == resource.modified_at)
+            to_datetime(json, 'modified_at') == resource.modified_at and
+            all_fields_match(json, resource))
 
 
 def to_datetime(json, attribute) -> datetime.datetime:
