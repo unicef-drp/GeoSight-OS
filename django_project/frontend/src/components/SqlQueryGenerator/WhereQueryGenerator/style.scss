@@ -156,6 +156,19 @@
   }
 
   .WhereConfigurationQuery {
+    display: flex;
+    border: unset;
+
+    .DateOperator {
+      & > div {
+        height: 100%;
+      }
+
+      .WhereConfigurationOperatorType {
+        margin-left: -1px;
+      }
+    }
+
     &.Simplified {
       .MuiInputSliderWithInput {
         border: none;

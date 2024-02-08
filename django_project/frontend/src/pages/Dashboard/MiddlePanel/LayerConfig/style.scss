@@ -40,7 +40,19 @@
     padding: 0;
   }
 
-  .WhereConfigurationQuery {
+  .DateOperator {
+    display: flex;
+    border: unset !important;
+    height: 26px !important;
+    min-height: 26px !important;
+
+    & > .WhereConfigurationOperatorType {
+      margin-left: -1px;
+    }
+  }
+
+  .WhereConfigurationQuery,
+  .DateOperator {
     & > .MultipleSelectWithSearch,
     & > .SelectWithSearchInput,
     & > .WhereConfigurationOperatorValue,
@@ -73,6 +85,12 @@
       }
     }
 
+    & > .WhereConfigurationOperatorValue,
+    & > .WhereConfigurationOperatorType {
+      height: 25px !important;
+      min-height: 25px !important;
+    }
+
     .BetweenDash {
       color: white;
       width: 4px !important;
@@ -94,9 +112,10 @@
     }
 
     & > .WhereConfigurationOperatorText {
-      display: inline-block;
+      display: block;
       border: unset !important;
       margin-right: 5px;
+      margin-top: 3px;
     }
 
     &.IsDate {
