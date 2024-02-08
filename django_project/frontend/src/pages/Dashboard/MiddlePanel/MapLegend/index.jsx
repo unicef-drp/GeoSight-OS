@@ -29,6 +29,7 @@ import {
 
 import './style.scss'
 import { allDataIsReady } from "../../../../utils/indicators";
+import { returnWhere } from "../../../../utils/queryExtraction";
 
 
 /**
@@ -84,7 +85,11 @@ const RenderIndicatorLegend = ({ layer, name }) => {
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel)
   const indicatorsData = useSelector(state => state.indicatorsData);
   const relatedTableData = useSelector(state => state.relatedTableData);
-  const filteredGeometries = useSelector(state => state.filteredGeometries);
+  const filteredGeometriesState = useSelector(state => state.filteredGeometries);
+  const filtersData = useSelector(state => state.filtersData);
+
+  const where = returnWhere(filtersData ? filtersData : [])
+  const filteredGeometries = where ? filteredGeometriesState : null
 
   if (layer.multi_indicator_mode === 'Pin') {
     return layer.indicators.map(indicator => {
