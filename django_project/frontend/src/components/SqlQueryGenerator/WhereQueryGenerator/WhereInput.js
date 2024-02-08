@@ -193,7 +193,7 @@ export function WhereInputValue(
     } catch (err) {
 
     }
-    return <Fragment>
+    return <div className='DateOperator'>
       <span
         className='WhereConfigurationOperatorText'>{operator === OPERATOR_WITH_INTERVAL ? 'Last' : 'Next'}</span>
       <Input
@@ -219,7 +219,7 @@ export function WhereInputValue(
         }}
         disabled={disabled}
       />
-    </Fragment>
+    </div>
   } else if (MULTI_SELECTABLE_OPERATORS.includes(operator)) {
     return <MultipleSelectWithSearch
       value={value}

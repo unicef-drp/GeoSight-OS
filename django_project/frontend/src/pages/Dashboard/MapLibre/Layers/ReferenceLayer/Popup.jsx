@@ -43,7 +43,7 @@ export const referenceSimpleDefaultTemplate = `
       {% else %}
         <tr id="popup-attributes-wrapper">
             <td valign="top" colspan="2" style="text-align: center">
-                loading attributes
+                Loading attributes
             </td>
         </tr>        
       {% endif %}        
@@ -130,6 +130,7 @@ export function updateCurrent(
   indicatorValueByGeometry, indicatorSecondValueByGeometry,
   geom_id
 ) {
+  $('#popup-attributes-wrapper').html('')
   let indicatorsByDict = {};
   let relatedTableByDict = {};
   [currentIndicatorLayer, currentIndicatorSecondLayer].map(indicatorLayer => {
@@ -192,7 +193,6 @@ export function updateCurrent(
             const drilldownIndicatorCurrentData = drilldownIndicatorData.find(data => data.time === fullDate)
             if (drilldownIndicatorCurrentData?.attributes) {
               _data.attributes = drilldownIndicatorCurrentData?.attributes
-              $('#popup-attributes-wrapper').html('')
               if (_data.attributes) {
                 for (const [key, value] of Object.entries(_data.attributes)) {
                   $('#popup-attributes-wrapper').before(`
