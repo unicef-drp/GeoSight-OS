@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import { Input } from "@mui/material";
 import Slider from "@mui/material/Slider";
