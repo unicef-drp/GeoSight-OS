@@ -27,8 +27,11 @@ export default function IndicatorsAllDataReducer(state = initialState, action) {
   switch (action.type) {
     case INDICATOR_LAYER_METADATA_TYPE_UPDATE: {
       const { id, data } = action.payload
-      state[id] = data
-      return { ...state }
+      if (!state[id] || (state[id] && JSON.stringify(state[id]) !== JSON.stringify(data))) {
+        state[id] = data
+        return { ...state }
+      }
+      return state
     }
     case INDICATOR_LAYER_METADATA_TYPE_UPDATE_DATES: {
       const { id, dates } = action.payload
