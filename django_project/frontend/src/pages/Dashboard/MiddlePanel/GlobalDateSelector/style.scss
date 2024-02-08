@@ -26,6 +26,7 @@
   height: 0;
   transition: height 0.3s;
   font-size: 0.8rem;
+  z-index: 10;
 
   .Separator {
     flex-grow: 1;

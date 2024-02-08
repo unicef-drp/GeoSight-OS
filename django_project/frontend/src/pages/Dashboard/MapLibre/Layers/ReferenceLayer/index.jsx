@@ -90,7 +90,7 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
   const indicatorsData = useSelector(state => state.indicatorsData);
   const relatedTableData = useSelector(state => state.relatedTableData);
   const filtersData = useSelector(state => state.filtersData);
-  const filteredGeometries = useSelector(state => state.filteredGeometries);
+  const filteredGeometriesState = useSelector(state => state.filteredGeometries);
   const currentIndicatorLayer = useSelector(state => state.selectedIndicatorLayer);
   const currentIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer);
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel);
@@ -105,9 +105,12 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
   const compareOutlineSize = preferences.style_compare_mode_outline_size
 
   const where = returnWhere(filtersData ? filtersData : [])
+
   const isReady = () => {
     return map && hasLayer(map, FILL_LAYER_ID) && hasLayer(map, OUTLINE_LAYER_ID)
   }
+
+  const filteredGeometries = where ? filteredGeometriesState : null
 
   // When reference layer changed, fetch reference data
   useEffect(() => {
@@ -326,7 +329,6 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
     // Filter geometry_code based on indicators layer
     // Also filter by levels that found on indicators
     if (isReady()) {
-
       // Get style for no data style
       let noDataStyle = returnNoDataStyle(
         currentIndicatorLayer, indicators
