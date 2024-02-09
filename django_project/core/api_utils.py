@@ -40,6 +40,7 @@ class ApiTag:
     BASEMAPS = 'Basemaps'
     RELATED_TABLES = 'Related tables'
     DATA_BROWSER = 'Data Browser'
+    INDICATORS = 'indicators'
 
 
 class ApiParams:
@@ -164,5 +165,18 @@ class ApiParams:
         description=(
             'Filter data up to the date in format YYYY-MM-DD.'
         ),
+        type=openapi.TYPE_STRING
+    )
+    SHORTCODE_CONTAINS = openapi.Parameter(
+        'shortcode__contains',
+        openapi.IN_QUERY,
+        description='Filter data by shortcode.',
+        type=openapi.TYPE_STRING
+    )
+
+    CREATED_BY_CONTAINS = openapi.Parameter(
+        'created__by__contains',
+        openapi.IN_QUERY,
+        description='Filter data by created date.',
         type=openapi.TYPE_STRING
     )
