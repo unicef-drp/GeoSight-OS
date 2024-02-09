@@ -24,13 +24,51 @@ test.describe('View project', () => {
     });
 
     // Check initial state
+    await page.getByRole('button', { name: 'Close' }).click();
     const layer1 = 'Sample Indicator A'
     const layer2 = 'Dynamic Layer based on a list of interventions'
     await expect(page.getByLabel(layer1)).toBeVisible();
-    await page.getByRole('button', { name: 'Close' }).click();
     await expect(page.locator('.MapLegendSectionTitle')).toContainText(layer1);
     await expect(page.getByLabel(layer1)).toBeChecked();
     await expect(page.getByLabel(layer2)).not.toBeChecked();
+
+    // Chart
+    const layer3 = 'Pie Chart layer'
+    await page.getByLabel(layer3).click();
+    await expect(page.locator('.MapLegendSectionTitle')).toContainText(layer3);
+    await expect(page.getByLabel(layer3)).toBeChecked();
+    await expect(page.locator('[id="01da401b-09fc-4910-baa1-d42bdba5235a-chart"]')).toHaveCSS("height", "40px");
+    await expect(page.locator('[id="01da401b-09fc-4910-baa1-d42bdba5235a-chart"]')).toHaveCSS("width", "40px");
+
+    // Pin layer, checking the style should be pin
+    const layer4 = 'Pins Indicator Layer'
+    await page.getByLabel(layer4).click();
+    await expect(page.locator('.MapLegendSectionTitle').nth(0)).toContainText('Sample Indicator A');
+    await expect(page.locator('.MapLegendSectionTitle').nth(1)).toContainText('Sample Indicator B');
+    await expect(page.locator('.MapLegendSectionTitle').nth(2)).toContainText('SOM_TEST_IND_C');
+    await expect(page.locator('.MapLegendSectionTitle').nth(3)).toContainText('SOM_TEST_IND_D');
+    await expect(page.getByLabel(layer4)).toBeChecked();
+
+    const pin1 = await page.locator('[id="01da401b-09fc-4910-baa1-d42bdba5235a-pin"] .pin').nth(0)
+    await expect(page.locator('[id="01da401b-09fc-4910-baa1-d42bdba5235a-pin"]')).toHaveCSS('display', 'flex');
+    await expect(pin1).toHaveAttribute('title', 'Test/Sample Indicator A (SOM_TEST2_IND_A) - 96');
+    await expect(pin1).toHaveCSS('background-color', 'rgb(215, 48, 39)');
+    await expect(pin1).toHaveCSS('height', '30px');
+    await expect(pin1).toHaveCSS('width', '30px');
+    await expect(pin1).toHaveCSS('border-radius', '50%');
+    const pin2 = await page.locator('[id="01da401b-09fc-4910-baa1-d42bdba5235a-pin"] .pin').nth(1)
+    await expect(pin2).toHaveAttribute('title', 'Test/Sample Indicator B (SOM_TEST2_IND_B) - 54');
+    await expect(pin2).toHaveCSS('background-color', 'rgb(255, 255, 191)');
+    await expect(pin2).toHaveCSS('height', '30px');
+    await expect(pin2).toHaveCSS('width', '30px');
+    await expect(pin2).toHaveCSS('border-radius', '50%');
+    const pin3 = await page.locator('[id="01da401b-09fc-4910-baa1-d42bdba5235a-pin"] .pin').nth(2)
+    await expect(pin3).toHaveAttribute('title', 'Test/SOM_TEST_IND_C (SOM_TEST_IND_C) - 91');
+    await expect(pin3).toHaveCSS('background-color', 'rgb(237, 248, 251)');
+    await expect(pin3).toHaveCSS('height', '30px');
+    await expect(pin3).toHaveCSS('width', '30px');
+    await expect(pin3).toHaveCSS('border-radius', '50%');
+
 
     // ----------------------------------------------------------------------------
     // BOOKMARK

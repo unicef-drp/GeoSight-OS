@@ -131,18 +131,15 @@ export default function ReferenceLayerCentroid({ map }) {
         $(`${code}-chart`).remove()
       }
 
-      var el = document.createElement('div');
       const popup = new maplibregl.Popup({
         closeOnClick: false,
-        closeButton: false
-      }).setHTML(`<div style="display: block; box-sizing: border-box; height: ${size}px; width: ${size}px;"><canvas id="${code}-chart" width="${size}" height="${size}" data-size="${size}"></div>`)
-      popup.addClassName('ChartPopup')
-      const marker = new maplibregl.Marker(el)
+        closeButton: false,
+        anchor: 'center'
+      })
         .setLngLat(feature.geometry.coordinates)
-        .setPopup(popup)
-        .addTo(map)
-        .togglePopup();
-      centroidMarker.push(marker)
+        .setHTML(`<div style="display: block; box-sizing: border-box; height: ${size}px; width: ${size}px;"><canvas id="${code}-chart" width="${size}" height="${size}" data-size="${size}"></div>`)
+        .addTo(map);
+      centroidMarker.push(popup)
 
       // Create charts
       setTimeout(function () {
@@ -231,18 +228,15 @@ export default function ReferenceLayerCentroid({ map }) {
         }
       })
 
-      var el = document.createElement('div');
       const popup = new maplibregl.Popup({
         closeOnClick: false,
-        closeButton: false
-      }).setHTML(`<div class="pins">${children.join('')}</div>`)
-      popup.addClassName('ChartPopup')
-      const marker = new maplibregl.Marker(el)
+        closeButton: false,
+        anchor: 'center'
+      })
         .setLngLat(feature.geometry.coordinates)
-        .setPopup(popup)
+        .setHTML(`<div id="${code}-pin" class="pins">${children.join('')}</div>`)
         .addTo(map)
-        .togglePopup();
-      centroidMarker.push(marker)
+      centroidMarker.push(popup)
     })
   }
 
