@@ -11,9 +11,21 @@ Contact : geosight-no-reply@unicef.org
 
 """
 __author__ = 'irwan@kartoza.com'
-__date__ = '13/06/2023'
+__date__ = '12/02/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from .entity import *
-from .reference_layer import *
-from .reference_layer_uploader import *
+from django.conf.urls import url
+
+from frontend.views.admin.reference_layer_view.create import (
+    ReferenceLayerViewUploaderView
+)
+
+admin_detail_url = [
+]
+urlpatterns = [
+    url(
+        r'^create',
+        ReferenceLayerViewUploaderView.as_view(),
+        name='admin-boundary-create-view'
+    ),
+]
