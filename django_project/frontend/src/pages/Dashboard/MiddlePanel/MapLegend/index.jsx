@@ -36,7 +36,8 @@ import { allDataIsReady } from "../../../../utils/indicators";
  * @param {dict} layer Layer that will be checked
  * @param {str} name Name of layer
  */
-const RenderIndicatorLegendSection = ({ rules, name }) => {
+const RenderIndicatorLegendSection = ({ rules, name, opacity, onChangeOpacity }) => {
+  console.log("RenderIndicatorLegendSection rules", rules);
   return (
     <div className='MapLegendSection'>
       <div className='MapLegendSectionTitle'>{name}</div>
@@ -79,12 +80,19 @@ const RenderIndicatorLegendSection = ({ rules, name }) => {
  * @param {str} name Name of layer
  */
 const RenderIndicatorLegend = ({ layer, name }) => {
+  console.log("RenderIndicatorLegend");
   const { indicators, geoField } = useSelector(state => state.dashboard.data)
   const selectedGlobalTime = useSelector(state => state.selectedGlobalTime);
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel)
   const indicatorsData = useSelector(state => state.indicatorsData);
   const relatedTableData = useSelector(state => state.relatedTableData);
   const filteredGeometries = useSelector(state => state.filteredGeometries);
+
+  console.log("layer.multi_indicator_mode", layer.multi_indicator_mode);
+  const opacity = 0.6;
+  const onChangeOpacity = (value) => {
+    console.log('onChangeOpacity', value);
+  };
 
   if (layer.multi_indicator_mode === 'Pin') {
     return layer.indicators.map(indicator => {
@@ -107,7 +115,10 @@ const RenderIndicatorLegend = ({ layer, name }) => {
       }
       return <RenderIndicatorLegendSection
         rules={rules}
-        name={indicator.name}/>
+        name={indicator.name}
+        opacity={opacity}
+        onChangeOpacity={onChangeOpacity}
+      />
     })
   }
   const layerData = getLayerData(indicatorsData, relatedTableData, layer)
@@ -119,7 +130,11 @@ const RenderIndicatorLegend = ({ layer, name }) => {
       selectedGlobalTime, geoField, selectedAdminLevel?.level, filteredGeometries
     )
   }
-  return <RenderIndicatorLegendSection rules={rules} name={name}/>
+  return <RenderIndicatorLegendSection
+      rules={rules} name={name}
+      opacity={opacity}
+      onChangeOpacity={onChangeOpacity}
+  />
 }
 /** Map Legend.
  */

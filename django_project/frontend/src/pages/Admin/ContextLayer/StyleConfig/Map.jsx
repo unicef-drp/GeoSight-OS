@@ -40,6 +40,8 @@ export default function MapConfig({ data, layerInput }) {
    * @param {String} before Is the layer after it.
    */
   const renderLayer = (map, id, source, layer, before = null) => {
+    // console.log("renderLayer", {map, id, source, layer});
+    // console.log('%c renderLayer', 'font-size: 22px; color: #2abbb0', );
     removeLayer(map, id)
     removeSource(map, id)
     map.addSource(id, source);
@@ -55,6 +57,7 @@ export default function MapConfig({ data, layerInput }) {
 
   useEffect(() => {
     if (!map) {
+      console.log('%c newMap', 'font-size: 22px; color: #2abbb0', );
       const newMap = new maplibregl.Map({
         container: 'StyleMapConfig',
         style: {

@@ -101,6 +101,8 @@ export default function MapLibre(
    * */
   useEffect(() => {
     if (!map) {
+      console.log('%c newMap 222', 'font-size: 22px; color: #2abbb0', );
+
       const newMap = new maplibregl.Map({
         container: 'map',
         style: {
@@ -193,6 +195,7 @@ export default function MapLibre(
    * @param {String} before Is the layer after it.
    */
   const renderLayer = (id, source, layer, before = null) => {
+    console.log('%c renderLayer ', 'font-size: 22px; color: #2abbb0', {id, source, layer} );
     removeLayer(map, id)
     removeSource(map, id)
     map.addSource(id, source)

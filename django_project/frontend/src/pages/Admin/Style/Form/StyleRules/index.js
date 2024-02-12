@@ -36,12 +36,13 @@ import SortableItem
   from '../../../../Admin/Dashboard/Form/ListForm/SortableItem'
 import { AddButton } from "../../../../../components/Elements/Button";
 import { arrayMove } from "../../../../../utils/Array";
-import { fetchJSON } from "../../../../../Requests";
-import { uniqueList } from "../../../../../utils/main";
+import { fetchingData, fetchJSON } from "../../../../../Requests";
+import { dictDeepCopy, uniqueList } from "../../../../../utils/main";
 import ColorSelector from "../../../../../components/Input/ColorSelector";
 import { Creatable, Select } from "../../../../../components/Input";
 
 import './style.scss';
+import { SelectWithList } from "../../../../../components/Input/SelectWithList";
 
 /***
  * Get rule data
@@ -69,6 +70,7 @@ const ruleTypeNumber = 'Number'
 export function Rule(
   { rule, idx, onDelete, onChange, type, codesChoices }
 ) {
+  console.log("Rule", rule);
   const ruleNameName = 'rule_name_' + idx;
   const ruleNameRule = 'rule_rule_' + idx;
   const ruleNameColor = 'rule_color_' + idx;
@@ -89,6 +91,19 @@ export function Rule(
   const [equal, setEqual] = useState('');
   const [min, setMin] = useState('');
   const [max, setMax] = useState('');
+
+  // console.log("rule.outline_size", rule.outline_size);
+  useEffect(() => {
+    setColor(rule.color)
+  }, [rule.color]);
+  useEffect(() => {
+    setOutlineColor(rule.outline_color)
+  }, [rule.outline_color]);
+  useEffect(() => {
+    setOutlineSize(rule.outline_size)
+  }, [rule.outline_size]);
+
+
 
   // Code rule
   const [ruleType, setRuleType] = useState(
@@ -320,7 +335,10 @@ export function Rule(
           name={ruleNameOutlineSize}
           min={0.1}
           step="0.1" value={outlineSize}
-          onChange={(evt) => setOutlineSize(evt.target.value)}/>
+          onChange={(evt) => {
+            console.log("outlineSize input setOutlineSize(evt.target.value) new value=", evt.target.value);
+            setOutlineSize(evt.target.value)
+          }}/>
       </td>
     </Fragment>
   )
@@ -350,6 +368,18 @@ export function IndicatorOtherRule(
   const [active, setActive] = useState(rule.active);
   const [outlineColor, setOutlineColor] = useState(rule.outline_color);
   const [outlineSize, setOutlineSize] = useState(rule.outline_size);
+
+  useEffect(() => {
+    setColor(rule.color)
+  }, [rule.color]);
+
+  useEffect(() => {
+    setOutlineColor(rule.outline_color)
+  }, [rule.outline_color]);
+
+  useEffect(() => {
+    setOutlineSize(rule.outline_size)
+  }, [rule.outline_size]);
 
   // When the rule changed
   useEffect(() => {
@@ -523,6 +553,63 @@ export default function StyleRules(
   const [rules, setStyleRules] = useState(updateStyleRules(inputStyleRules));
   const [items, setItems] = useState([]);
 
+  const [colorPalettes, setColorPalettes] = useState([]);
+  // On init
+  useEffect(() => {
+    (
+        async () => {
+          await fetchingData(
+              `/api/color/palette/list`,
+              {}, {}, (response, error) => {
+                console.log("response", response);
+                setColorPalettes(response);
+                // if (!colorPalette) {
+                //   onChange(preferences.default_color_palette ? preferences.default_color_palette : response[0]?.id)
+                // }
+              }
+          )
+        }
+    )()
+  }, [])
+
+  const [globalPalette, setGlobalPalette] = useState(null);
+  const [isGlobalPaletteReversed, setIsGlobalPaletteReversed] = useState(false);
+  const [globalOutlineColor, setGlobalOutlineColor] = useState(null);
+  const [globalOutlineSize, setGlobalOutlineSize] = useState(0.5);
+
+  useEffect(() => {
+    if (!globalPalette) {
+    return;
+    }
+    setStyleRules(rules => {
+      return isGlobalPaletteReversed
+          ? rules.map((r, index) => ({...r, color: globalPalette.colors[index] }))
+          : rules.map((r, index) => ({...r, color: globalPalette.colors.toReversed()[index] }));
+    })
+  }, [globalPalette, isGlobalPaletteReversed]);
+
+  useEffect(() => {
+    if (!globalOutlineColor) {
+      return;
+    }
+    setStyleRules(rules => {
+      return rules.map(r => ({...r, outline_color: globalOutlineColor}))
+    })
+  }, [globalOutlineColor]);
+
+
+  useEffect(() => {
+    setStyleRules(rules => {
+      return rules.map(r => ({...r, outline_size: globalOutlineSize}))
+    })
+  }, [globalOutlineSize ]);
+
+
+
+
+  // console.log("items", items);
+  // console.log("rules", rules);
+
   useEffect(() => {
     if (defaultCodeChoices && JSON.stringify(codesChoices) !== JSON.stringify(defaultCodeChoices)) {
       setCodeChoices(
@@ -652,6 +739,7 @@ export default function StyleRules(
     }
   })
 
+
   return <DndContext
     sensors={sensors}
     onDragEnd={handleDragEnd}
@@ -700,16 +788,62 @@ export default function StyleRules(
             Used for filling the geometry.
             Put the hex color with # (e.g. #ffffff).
         </span>
+          <div style={{minWidth: 225}}>
+            {colorPalettes.length > 0 && <SelectWithList
+                className={'Color-Palette-Input'}
+                list={colorPalettes}
+                value={globalPalette ? colorPalettes.find(color => color.id === globalPalette.id) : undefined}
+                onChange={evt => {
+                  console.log('onChange', evt.value.id)
+                  console.log("colorPalettes", colorPalettes);
+                  console.log("colorPalettes.find(it => it.id === evt.value.id)", colorPalettes.find(it => it.id === evt.value.id));
+                  setGlobalPalette(colorPalettes.find(it => it.id === evt.value.id))
+                  // setGlobalPalette(evt.value.id, );
+                }}
+                isDisabled={false}
+                getOptionLabel={(option) => {
+                  // console.log("getOptionLabel option", option);
+                  const colors = dictDeepCopy(option.value.colors)
+                  return <div className='Color-Palette-Option'>
+                    {
+                      colors.map(color => {
+                        return <div
+                            key={color}
+                            style={{ backgroundColor: color }}></div>
+                      })
+                    }
+                  </div>
+                }}
+            />}
+          </div>
         </th>
         <th valign="top">
+          <div>
         <span className='ColorConfigLabel'>
             Used for coloring the outline of the geometry.
             Put the hex color with # (e.g. #ffffff).
         </span>
+            <div><td>
+              <ColorSelector
+                  color={globalOutlineColor}
+                  name={"testOutlineColor"}
+                  onChange={evt => setGlobalOutlineColor(evt.target.value)}
+              />
+            </td>
+            </div>
+          </div>
         </th>
         <th valign="top">
         <span>
             Change width of the outline (in px)
+          <div>
+            <input
+                type="number" spellCheck="false"
+                name={"okok"}
+                min={0.1}
+                step="0.1" value={globalOutlineSize}
+                onChange={(evt) => setGlobalOutlineSize(evt.target.value)}/>
+          </div>
         </span>
         </th>
       </tr>

@@ -13,18 +13,20 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { Component } from 'react';
-import { createRoot } from "react-dom/client";
-import { Provider } from 'react-redux';
+import React, {Component} from 'react';
+import {createRoot} from "react-dom/client";
+import {Provider} from 'react-redux';
 import c from 'classnames';
 import NavBar from '../components/Navbar';
-import { EmbedConfig } from "../utils/embed";
-import { urlParams } from "../utils/main";
+import {EmbedConfig} from "../utils/embed";
+import {urlParams} from "../utils/main";
 
 import './mui.scss';
 import './app.scss';
 import './form.scss';
 import './form.small.scss';
+import {DevSupport} from "@react-buddy/ide-toolbox";
+import {ComponentPreviews, useInitial} from "../dev";
 
 
 /**
@@ -32,12 +34,12 @@ import './form.small.scss';
  * @param {string} className Class name for modal
  * @param {React.Component} children React component to be rendered
  */
-export default function App({ className, children, ...props }) {
+export default function App({className, children, ...props}) {
   // Check if child window, don't show navbar
   const parentWindow = window.opener?.parent;
   if (parentWindow) {
     // This message is for form
-    const { success } = urlParams();
+    const {success} = urlParams();
     if (objectId && success) {
       parentWindow.postMessage(objectId);
       window.close();
@@ -65,7 +67,11 @@ export function render(App, store) {
   const root = createRoot(document.getElementById('app'));
   root.render(
     <Provider store={store}>
-      <App/>
+      <DevSupport ComponentPreviews={ComponentPreviews}
+                  useInitialHook={useInitial}
+      >
+        <App/>
+      </DevSupport>
     </Provider>
   )
 }

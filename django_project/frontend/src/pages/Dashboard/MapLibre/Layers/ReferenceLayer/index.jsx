@@ -499,17 +499,19 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
           map.setPaintProperty(FILL_LAYER_ID, 'fill-color', noDataStyle.color);
         }
 
+        const opacity = 0.6;
+
         // Hide non valued one
         if (hideAndGeom.length) {
           map.setPaintProperty(FILL_LAYER_ID, 'fill-opacity', [
               "case",
               ["in", ["get", geomFieldOnVectorTile], ["literal", hideAndGeom]],
               0,
-              1
+            opacity
             ]
           );
         } else {
-          map.setPaintProperty(FILL_LAYER_ID, 'fill-opacity', 1);
+          map.setPaintProperty(FILL_LAYER_ID, 'fill-opacity', opacity);
         }
       }
       {

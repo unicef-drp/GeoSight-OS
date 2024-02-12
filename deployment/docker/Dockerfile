@@ -11,7 +11,8 @@
 # __date__ = '13/06/2023'
 # __copyright__ = ('Copyright 2023, Unicef')
 
-FROM ubuntu:20.04 AS prod
+# FROM ubuntu:20.04 AS prod
+FROM --platform=amd64 ubuntu:20.04 AS prod
 MAINTAINER Irwan Fathurrahman<meomancer@gmail.com>
 
 # Pandoc needed to generate rst dumps, uic compressor needed for django-pipeline
@@ -52,8 +53,8 @@ ADD django_project /home/web/django_project
 # RUN apt-get install chromium-browser -y
 RUN echo "deb http://archive.ubuntu.com/ubuntu/ bionic-updates universe" >> /etc/apt/sources.list.d/bionic-updates.list
 RUN echo "Package: chromium-browser chromium-browser-l10n chromium-codecs-ffmpeg-extra chromium-codecs-ffmpeg\n\
-Pin: release a=bionic-updates\n\
-Pin-Priority: 900" >> /etc/apt/preferences.d/chromium-deb-bionic-updates
+    Pin: release a=bionic-updates\n\
+    Pin-Priority: 900" >> /etc/apt/preferences.d/chromium-deb-bionic-updates
 RUN apt update
 RUN apt-get install chromium-browser -y
 
