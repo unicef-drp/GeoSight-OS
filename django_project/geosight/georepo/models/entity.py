@@ -74,6 +74,11 @@ class Entity(models.Model):
         default=''
     )
 
+    # Geometry field
+    geometry = models.GeometryField(
+        null=True, blank=True
+    )
+
     class Meta:  # noqa: D106
         unique_together = ('reference_layer', 'admin_level', 'geom_id')
         verbose_name_plural = "entities"

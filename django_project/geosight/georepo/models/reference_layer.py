@@ -20,34 +20,14 @@ from django.utils.translation import ugettext_lazy as _
 from core.models.general import AbstractVersionData
 from core.utils import is_valid_uuid
 from geosight.data.models.indicator import Indicator
+from geosight.georepo.models.local_manager import (
+    ReferenceLayerViewLocalManager
+)
 from geosight.georepo.request import (
     GeorepoRequest, GeorepoUrl, GeorepoRequestError
 )
 from geosight.georepo.request.data import GeorepoEntity
 from geosight.permission.models.manager import PermissionManager
-
-
-# TODO:
-#  Deprecated, we use ReferenceLayerView instead Dataset
-class ReferenceLayer(models.Model):
-    """Dataset of georepo."""
-
-    identifier = models.CharField(
-        max_length=256,
-        help_text=_("Reference layer identifier.")
-    )
-
-    name = models.CharField(
-        max_length=256,
-        help_text=_("Reference layer name."),
-        null=True, blank=True
-    )
-
-    in_georepo = models.BooleanField(default=True)
-
-    def __str__(self):
-        """Return str."""
-        return self.identifier
 
 
 class ReferenceLayerView(AbstractVersionData):
@@ -69,6 +49,9 @@ class ReferenceLayerView(AbstractVersionData):
     )
 
     in_georepo = models.BooleanField(default=True)
+
+    objects = models.Manager()
+    locals = ReferenceLayerViewLocalManager()
 
     def get_name(self):
         """Return name."""
@@ -177,6 +160,28 @@ class ReferenceLayerView(AbstractVersionData):
                 return ReferenceLayerView.objects.get(id=identifier)
             except ReferenceLayerView.DoesNotExist:
                 return
+
+    @property
+    def levels(self):
+        """Return level of reference layer."""
+        return self.referencelayerviewlevel_set.order_by('level')
+
+
+class ReferenceLayerViewLevel(models.Model):
+    """Reference Layer view level."""
+
+    reference_layer = models.ForeignKey(
+        ReferenceLayerView, on_delete=models.CASCADE
+    )
+
+    level = models.IntegerField()
+    name = models.CharField(
+        max_length=256,
+        help_text=_("Level name.")
+    )
+
+    class Meta:  # noqa: D106
+        unique_together = ('reference_layer', 'level')
 
 
 class ReferenceLayerIndicator(models.Model):
