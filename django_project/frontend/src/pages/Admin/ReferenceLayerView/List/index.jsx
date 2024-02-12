@@ -22,6 +22,9 @@ import { COLUMNS } from "../../Components/List";
 import { AdminList } from "../../AdminList";
 
 import './style.scss';
+import { GridActionsCellItem } from "@mui/x-data-grid";
+import Tooltip from "@mui/material/Tooltip";
+import { DataBrowserActiveIcon } from "../../../../components/Icons";
 
 /**
  * ReferenceLayerView App
@@ -29,7 +32,36 @@ import './style.scss';
 export default function ReferenceLayerViewList() {
   const pageName = pageNames.ReferenceLayerView
   const columns = COLUMNS(pageName, urls.admin.boundaryList);
-  const cleanColumns = [columns[0], columns[1], columns[2]]
+  const cleanColumns = [
+    columns[0], columns[1], columns[2],
+    {
+      field: 'identifier', headerName: 'Identifier', flex: 0.5
+    },
+    {
+      field: 'actions',
+      type: 'actions',
+      width: 100,
+      cellClassName: 'MuiDataGrid-ActionsColumn',
+      getActions: (params) => {
+        const actions = [
+          <GridActionsCellItem
+            icon={
+              <Tooltip title={`Browse data`}>
+                <a
+                  href={urls.api.entityBrowser.replace('0', params.row.identifier)}>
+                  <div className='ButtonIcon'>
+                    <DataBrowserActiveIcon/>
+                  </div>
+                </a>
+              </Tooltip>
+            }
+            label="Browse entities"
+          />
+        ]
+        return actions
+      }
+    }
+  ]
   return <AdminList
     columns={cleanColumns}
     pageName={pageName}

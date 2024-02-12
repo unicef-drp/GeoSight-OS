@@ -17,9 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.conf import settings
 from django.conf.urls import url
 
-from geosight.georepo.api import (
-    ReferenceLayerEntityDrilldownAPI, ReferenceLayerViewListAPI
-)
+from geosight.georepo.api import ReferenceLayerEntityDrilldownAPI
 from geosight.georepo.api.mock.api import MockGeorepoAPI
 
 urlpatterns = [

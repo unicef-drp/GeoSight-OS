@@ -14,18 +14,27 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '12/02/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from django.conf.urls import url
+from django.conf.urls import url, include
 
 from frontend.views.admin.reference_layer_view.create import (
     ReferenceLayerViewUploaderView
+)
+from frontend.views.admin.reference_layer_view.entity_browser import (
+    ReferenceLayerViewEntityListView
 )
 from frontend.views.admin.reference_layer_view.list import (
     ReferenceLayerViewListView
 )
 
 admin_detail_url = [
+    url(
+        r'^entities',
+        ReferenceLayerViewEntityListView.as_view(),
+        name='admin-reference-layer-view-entity-list-view'
+    ),
 ]
 urlpatterns = [
+    url(r'^(?P<identifier>[^/]+)/', include(admin_detail_url)),
     url(
         r'^create',
         ReferenceLayerViewUploaderView.as_view(),

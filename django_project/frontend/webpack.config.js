@@ -71,6 +71,7 @@ let conf = {
     // REFERENCE LAYER VIEW
     AdminReferenceLayerViewForm: ['./src/pages/Admin/ReferenceLayerView/Form'],
     AdminReferenceLayerViewList: ['./src/pages/Admin/ReferenceLayerView/List'],
+    AdminReferenceLayerViewEntityBrowser: ['./src/pages/Admin/ReferenceLayerView/EntityBrowser'],
   },
   output: {
     path: path.resolve(__dirname, "./bundles/frontend"),

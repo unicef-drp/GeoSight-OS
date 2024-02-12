@@ -31,3 +31,24 @@ class EntitySerializer(serializers.ModelSerializer):
     class Meta:  # noqa: D106
         model = Entity
         fields = ('name', 'geom_code', 'concept_uuid', 'admin_level')
+
+
+class ApiEntitySerializer(serializers.ModelSerializer):
+    """Serializer for Entity."""
+
+    ucode = serializers.SerializerMethodField()
+    level_name = serializers.SerializerMethodField()
+
+    def get_ucode(self, obj: Entity):
+        """Return ucode."""
+        return obj.geom_id
+
+    def get_level_name(self, obj: Entity):
+        """Return level name."""
+        return 'Level name'
+
+    class Meta:  # noqa: D106
+        model = Entity
+        fields = (
+            'id', 'name', 'ucode', 'concept_uuid', 'admin_level', 'level_name'
+        )

@@ -187,7 +187,7 @@ export default function SideNavigation({ pageName, minified }) {
                       <LayerActiveIcon/> :
                       <LayerIcon/>}
                     <span
-                      className='SideNavigation-Row-Name'>Boundary</span>
+                      className='SideNavigation-Row-Name'>Boundaries</span>
                   </a>
                 </SidaNavigationButton>
               </div>

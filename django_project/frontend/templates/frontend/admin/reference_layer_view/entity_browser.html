@@ -5,14 +5,13 @@
 {% endblock %}
 
 {% block render_bundle %}
-    {% render_bundle 'AdminReferenceLayerViewList' %}
+    {% render_bundle 'AdminReferenceLayerViewEntityBrowser' %}
 {% endblock %}
 
 {% block scripts %}
     <script>
       urls.api = {
-        'list': '{% url 'reference-layer-view-list-api' %}',
-        'entityBrowser': '{% url 'admin-reference-layer-view-entity-list-view' 0 %}',
+        'browserApi': '{% url 'reference-entity-list-api' view_identifier=view_identifier %}'
       }
     </script>
 {% endblock %}

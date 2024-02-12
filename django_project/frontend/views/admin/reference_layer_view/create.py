@@ -38,10 +38,12 @@ class ReferenceLayerViewUploaderView(RoleCreatorRequiredMixin, AdminBaseView):
     @property
     def content_title(self):
         """Return content title that used on page title indicator."""
+        list_url = reverse('admin-reference-layer-view-list-view')
+        create_url = reverse('admin-reference-layer-view-create-view')
         return (
-            f'<a">Reference Layer View</a> '
-            f'<span>></span>'
-            f'<a>Create</a> '
+            f'<a href="{list_url}">Reference Layer View</a> '
+            '<span>></span>'
+            f'<a href="{create_url}">Create</a> '
         )
 
     def get_context_data(self, **kwargs) -> dict:
@@ -99,7 +101,7 @@ class ReferenceLayerViewUploaderView(RoleCreatorRequiredMixin, AdminBaseView):
                         'admin-reference-layer-view-list-view'
                     ) + '?success=true'
                 )
-            except Exception as e:
+            except Exception:
                 pass
         context = self.get_context_data(**kwargs)
         context['form'] = form

@@ -17,8 +17,14 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.conf.urls import url
 
 from geosight.georepo.api import ReferenceLayerViewListAPI
+from geosight.georepo.api.entity import EntityApiList
 
 urlpatterns = [
+    url(
+        r'^(?P<view_identifier>[^/]+)/entity/',
+        EntityApiList.as_view(),
+        name='reference-entity-list-api'
+    ),
     url(
         r'^',
         ReferenceLayerViewListAPI.as_view(),
