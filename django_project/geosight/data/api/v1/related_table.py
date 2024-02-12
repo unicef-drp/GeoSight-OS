@@ -13,9 +13,11 @@ __author__ = 'Víctor González'
 __date__ = '29/01/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from drf_yasg.openapi import Response
+from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.exceptions import MethodNotAllowed
+from rest_framework.response import Response
+from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_201_CREATED
 
 from core.api_utils import ApiTag
 from geosight.data.api.v1.base import BaseApiV1Resource
@@ -36,7 +38,7 @@ class RelatedTableViewSet(BaseApiV1Resource):
         operation_description=
         'Return list of accessible related tables for the user.',
         responses={
-            200: Response(
+            200: openapi.Response(
                 description="Resource fetching successful.",
                 schema=RelatedTableApiSerializer(many=True)
             )
@@ -52,7 +54,7 @@ class RelatedTableViewSet(BaseApiV1Resource):
         operation_description=
         'Return detail of a related tables for the user.',
         responses={
-            200: Response(
+            200: openapi.Response(
                 description="Resource fetching successful.",
                 schema=RelatedTableApiSerializer(many=False)
             )
@@ -62,11 +64,26 @@ class RelatedTableViewSet(BaseApiV1Resource):
         """Detail of related table."""
         return super().retrieve(request, *args, **kwargs)
 
-    @swagger_auto_schema(operation_id='related-tables-create',
-                         tags=[ApiTag.RELATED_TABLES])
+    @swagger_auto_schema(
+        operation_id='related-tables-create',
+        tags=[ApiTag.RELATED_TABLES],
+        manual_parameters=[],
+        request_body=RelatedTableApiSerializer.
+        Meta.swagger_schema_fields['post_body'],
+        operation_description='Create a related table.'
+    )
     def create(self, request, *args, **kwargs):
         """Create a related table."""
-        raise MethodNotAllowed('POST')
+        serializer = self.get_serializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(dict(serializer.errors.items()),
+                            status=HTTP_400_BAD_REQUEST)
+
+        instance = serializer.create(serializer.validated_data.copy())
+        instance.creator = request.user
+        instance.save()
+        response = RelatedTableApiSerializer(instance).data
+        return Response(response, status=HTTP_201_CREATED)
 
     @swagger_auto_schema(operation_id='related-tables-update',
                          tags=[ApiTag.RELATED_TABLES])
