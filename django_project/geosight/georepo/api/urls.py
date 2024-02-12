@@ -16,24 +16,12 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.conf.urls import url
 
-from frontend.views.admin.reference_layer_view.create import (
-    ReferenceLayerViewUploaderView
-)
-from frontend.views.admin.reference_layer_view.list import (
-    ReferenceLayerViewListView
-)
+from geosight.georepo.api import ReferenceLayerViewListAPI
 
-admin_detail_url = [
-]
 urlpatterns = [
     url(
-        r'^create',
-        ReferenceLayerViewUploaderView.as_view(),
-        name='admin-reference-layer-view-create-view'
-    ),
-    url(
         r'^',
-        ReferenceLayerViewListView.as_view(),
-        name='admin-reference-layer-view-list-view'
+        ReferenceLayerViewListAPI.as_view(),
+        name='reference-layer-view-list-api'
     ),
 ]

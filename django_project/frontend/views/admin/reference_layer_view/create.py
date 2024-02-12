@@ -96,7 +96,7 @@ class ReferenceLayerViewUploaderView(RoleCreatorRequiredMixin, AdminBaseView):
                             raise Exception('There is error on level config.')
                 return redirect(
                     reverse(
-                        'admin-boundary-create-view'
+                        'admin-reference-layer-view-list-view'
                     ) + '?success=true'
                 )
             except Exception as e:
