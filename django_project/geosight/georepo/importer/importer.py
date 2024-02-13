@@ -29,7 +29,8 @@ from geosight.georepo.models.reference_layer_temporary import (
     ReferenceLayerViewTemp, EntityTemp, ReferenceLayerViewLevelTemp
 )
 from geosight.utils.fiona import (
-    open_collection_by_file, delete_tmp_shapefile
+    open_collection_by_file, delete_tmp_shapefile,
+    GEOJSON, SHAPEFILE, GEOPACKAGE
 )
 
 User = get_user_model()
@@ -60,6 +61,18 @@ def build_geom_object(geom_str: str):
     return geom
 
 
+def check_layer_type(filename: str) -> str:
+    """Check layer type of uploader."""
+    if (filename.lower().endswith('.geojson') or
+            filename.lower().endswith('.json')):
+        return GEOJSON
+    elif filename.lower().endswith('.zip'):
+        return SHAPEFILE
+    elif filename.lower().endswith('.gpkg'):
+        return GEOPACKAGE
+    return ''
+
+
 class ReferenceLayerViewImporterTask:
     """Abstract class for importer."""
 
@@ -84,7 +97,8 @@ class ReferenceLayerViewImporterTask:
         parent_ucode_field = importer_level.parent_ucode_field
 
         with open_collection_by_file(
-                importer_level.file, 'SHAPEFILE'
+                importer_level.file,
+                check_layer_type(importer_level.file.path)
         ) as features:
             data = []
             for feature_idx, feature in enumerate(features):
@@ -120,6 +134,8 @@ class ReferenceLayerViewImporterTask:
                 geom = build_geom_object(geom_str)
                 if geom and isinstance(geom, Polygon):
                     geom = MultiPolygon([geom])
+                centroid = geom.point_on_surface
+
                 data.append(
                     EntityTemp(
                         parents=parents,
@@ -128,6 +144,7 @@ class ReferenceLayerViewImporterTask:
                         geom_id=entity_ucode,
                         concept_uuid=str(uuid4()),
                         geometry=geom,
+                        centroid=centroid,
                         name=entity_name
                     )
                 )

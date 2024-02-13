@@ -107,7 +107,7 @@ test.describe('Create project', () => {
     await page.getByTitle('Edit project').getByRole('link').click();
     await page.waitForURL('http://localhost:2000/admin/project/test-project-default/edit')
     await expect(page.locator('.MoreActionIcon')).toBeVisible();
-    await expect(page.locator('.Summary .ReferenceDatasetSection input')).toHaveValue('Global Administrative Boundaries - Somalia (Latest)');
+    await expect(page.locator('.Summary .ReferenceDatasetSection input')).toHaveValue('Somalia');
     await expect(page.locator('.Summary .CodeMappingConfig input')).toHaveValue('Concept uuid');
     await expect(page.getByPlaceholder('Select default admin level')).toHaveValue('Admin Level 2');
 
@@ -210,7 +210,7 @@ test.describe('Create project', () => {
     // Check values
     await page.waitForURL('http://localhost:2000/admin/project/test-project-override-config/edit')
     await expect(page.locator('.MoreActionIcon')).toBeVisible();
-    await expect(page.locator('.Summary .ReferenceDatasetSection input')).toHaveValue('Global Administrative Boundaries - Somalia (Latest)');
+    await expect(page.locator('.Summary .ReferenceDatasetSection input')).toHaveValue('Somalia');
     await expect(page.locator('.Summary .CodeMappingConfig input')).toHaveValue('Concept uuid');
     await expect(page.getByPlaceholder('Select default admin level')).toHaveValue('Admin Level 0');
 

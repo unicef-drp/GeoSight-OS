@@ -179,8 +179,14 @@ export default function SideNavigation({ pageName, minified }) {
                       className='SideNavigation-Row-Name'>Related Tables</span>
                   </a>
                 </SidaNavigationButton>
-                <SidaNavigationButton minified={minified}
-                                      title={pageNames.ReferenceLayerView}>
+              </div>
+              <div className='SideNavigationContentGroup'>
+                <div className='SideNavigationContentGroupTitle'>
+                  BOUNDARIES
+                </div>
+                <SidaNavigationButton
+                  minified={minified}
+                  title={pageNames.ReferenceLayerView}>
                   <a href={boundaryList}
                      className={'SideNavigation-Row ' + ([pageNames.ReferenceLayerView].includes(pageName) ? 'active' : '')}>
                     {[pageNames.ReferenceLayerView].includes(pageName) ?

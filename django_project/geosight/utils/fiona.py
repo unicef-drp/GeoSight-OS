@@ -22,12 +22,16 @@ from fiona.collection import Collection
 
 import fiona
 
+GEOJSON = 'GEOJSON'
+SHAPEFILE = 'SHAPEFILE'
+GEOPACKAGE = 'GEOPACKAGE'
+
 
 def open_collection_by_file(fp, type: str) -> Collection:
     """Open collection by file."""
     result: Collection = None
     if settings.USE_AZURE:
-        if type == 'SHAPEFILE':
+        if type == SHAPEFILE:
             with (
                     NamedTemporaryFile(
                         delete=False,
@@ -41,7 +45,7 @@ def open_collection_by_file(fp, type: str) -> Collection:
         else:
             file_path = fp
     else:
-        if type == 'SHAPEFILE':
+        if type == SHAPEFILE:
             file_path = f'zip://{fp.path}'
         else:
             file_path = fp

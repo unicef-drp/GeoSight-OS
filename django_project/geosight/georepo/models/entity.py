@@ -78,6 +78,9 @@ class Entity(models.Model):
     geometry = models.GeometryField(
         null=True, blank=True
     )
+    centroid = models.PointField(
+        null=True, blank=True
+    )
 
     class Meta:  # noqa: D106
         unique_together = ('reference_layer', 'admin_level', 'geom_id')

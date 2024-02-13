@@ -103,3 +103,4 @@ class EntityTemp(models.Model):
 
     # Geometry field
     geometry = models.GeometryField()
+    centroid = models.PointField()

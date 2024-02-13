@@ -96,6 +96,7 @@ class ReferenceLayerViewImporterView(RoleCreatorRequiredMixin, AdminBaseView):
                             form.save()
                         else:
                             raise Exception('There is error on level config.')
+                        instance.run()
                 return redirect(
                     reverse(
                         'admin-reference-layer-view-list-view'
