@@ -19,21 +19,21 @@ import json
 from django.shortcuts import redirect, reverse, render
 
 from frontend.views.admin._base import AdminBaseView
-from geosight.data.forms.reference_layer_view_uploader import (
-    ReferenceLayerViewCreateForm, ReferenceLayerViewUploaderLevelForm
+from geosight.data.forms.reference_layer_view_importer import (
+    ReferenceLayerViewCreateForm, ReferenceLayerViewImporterLevelForm
 )
 from geosight.permission.access import RoleCreatorRequiredMixin
 
 
-class ReferenceLayerViewUploaderView(RoleCreatorRequiredMixin, AdminBaseView):
-    """Reference Layer Uploader View."""
+class ReferenceLayerViewImporterView(RoleCreatorRequiredMixin, AdminBaseView):
+    """Reference Layer importer View."""
 
     template_name = 'frontend/admin/reference_layer_view/form.html'
 
     @property
     def page_title(self):
         """Return page title that used on tab bar."""
-        return 'Reference Layer View'
+        return 'Boundary'
 
     @property
     def content_title(self):
@@ -41,7 +41,7 @@ class ReferenceLayerViewUploaderView(RoleCreatorRequiredMixin, AdminBaseView):
         list_url = reverse('admin-reference-layer-view-list-view')
         create_url = reverse('admin-reference-layer-view-create-view')
         return (
-            f'<a href="{list_url}">Reference Layer View</a> '
+            f'<a href="{list_url}">Boundary</a> '
             '<span>></span>'
             f'<a href="{create_url}">Create</a> '
         )
@@ -76,20 +76,20 @@ class ReferenceLayerViewUploaderView(RoleCreatorRequiredMixin, AdminBaseView):
                     if '_level_file' in key:
                         idx = key.replace('_level_file', '')
                         data = {
-                            'uploader': instance.id,
+                            'importer': instance.id,
                             'level': idx,
                             'name': request.POST.get(f'{idx}_level_name', ''),
-                            'name_column': request.POST.get(
-                                f'{idx}_column_name', ''
+                            'name_field': request.POST.get(
+                                f'{idx}_field_name', ''
                             ),
-                            'ucode_column': request.POST.get(
-                                f'{idx}_column_ucode', ''
+                            'ucode_field': request.POST.get(
+                                f'{idx}_field_ucode', ''
                             ),
-                            'parent_ucode_column': request.POST.get(
-                                f'{idx}_column_parent_ucode', ''
+                            'parent_ucode_field': request.POST.get(
+                                f'{idx}_field_parent_ucode', ''
                             ),
                         }
-                        form = ReferenceLayerViewUploaderLevelForm(data, {
+                        form = ReferenceLayerViewImporterLevelForm(data, {
                             'file': value
                         })
                         if form.is_valid():

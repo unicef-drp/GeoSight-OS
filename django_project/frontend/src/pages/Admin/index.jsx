@@ -44,7 +44,7 @@ export const pageNames = {
   UserProfile: 'User Profile',
 
   // ReferenceLayerView
-  ReferenceLayerView: 'Boundaries',
+  ReferenceLayerView: 'Boundary',
 }
 
 /**

@@ -39,14 +39,14 @@ export function ReferenceLayerViewLevelRow({ idx }) {
     <td className="isValue">
       <input
         type="text"
-        name={`${idx}_column_name`}
+        name={`${idx}_field_name`}
         placeholder="Boundary name."
       />
     </td>
     <td className="isValue">
       <input
         type="text"
-        name={`${idx}_column_ucode`}
+        name={`${idx}_field_ucode`}
         placeholder="Column name for ucode."
       />
     </td>
@@ -54,7 +54,7 @@ export function ReferenceLayerViewLevelRow({ idx }) {
       <input
         type="text"
         disabled={idx === 0}
-        name={`${idx}_column_parent_ucode`}
+        name={`${idx}_field_parent_ucode`}
         placeholder="Column name for parent ucode."
       />
     </td>

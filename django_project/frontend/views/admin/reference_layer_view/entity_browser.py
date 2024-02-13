@@ -31,7 +31,7 @@ class ReferenceLayerViewEntityListView(
     @property
     def page_title(self):
         """Return page title that used on tab bar."""
-        return 'Reference Layer View - Entity Browser'
+        return 'Boundary - Entity Browser'
 
     @property
     def content_title(self):
@@ -41,7 +41,7 @@ class ReferenceLayerViewEntityListView(
             ReferenceLayerView, identifier=self.kwargs.get('identifier', '')
         )
         return (
-            f'<a href="{list_url}">Reference Layer View</a> '
+            f'<a href="{list_url}">Boundary</a> '
             '<span>></span>'
             f'<a>{view.name}</a> '
             '<span>></span>'

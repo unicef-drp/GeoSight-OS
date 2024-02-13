@@ -17,7 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.conf.urls import url, include
 
 from frontend.views.admin.reference_layer_view.create import (
-    ReferenceLayerViewUploaderView
+    ReferenceLayerViewImporterView
 )
 from frontend.views.admin.reference_layer_view.entity_browser import (
     ReferenceLayerViewEntityListView
@@ -37,7 +37,7 @@ urlpatterns = [
     url(r'^(?P<identifier>[^/]+)/', include(admin_detail_url)),
     url(
         r'^create',
-        ReferenceLayerViewUploaderView.as_view(),
+        ReferenceLayerViewImporterView.as_view(),
         name='admin-reference-layer-view-create-view'
     ),
     url(

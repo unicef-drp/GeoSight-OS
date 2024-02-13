@@ -28,10 +28,10 @@ class ReferenceLayerViewListView(RoleContributorRequiredMixin, AdminBaseView):
     @property
     def page_title(self):
         """Return page title that used on tab bar."""
-        return 'Reference Layer View'
+        return 'Boundary'
 
     @property
     def content_title(self):
         """Return content title that used on page title indicator."""
         list_url = reverse('admin-reference-layer-view-list-view')
-        return f'<a href="{list_url}">Reference Layer View</a> '
+        return f'<a href="{list_url}">Boundary</a> '
