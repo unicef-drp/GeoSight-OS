@@ -68,7 +68,7 @@ class ReferenceLayerVectorTile(APIView):
 
     def get(self, request, identifier):
         """Return BasemapLayer list."""
-        view = get_object_or_404(
+        get_object_or_404(
             ReferenceLayerView,
             identifier=identifier
         )

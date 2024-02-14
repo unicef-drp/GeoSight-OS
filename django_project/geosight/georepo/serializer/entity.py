@@ -39,7 +39,7 @@ class EntityCentroidSerializer(GeoFeatureModelSerializer):
         """Return ucode."""
         return obj.geom_id
 
-    class Meta:
+    class Meta:  # noqa: D106
         model = Entity
         geo_field = 'centroid'
         fields = ('c', 'n', 'u')
@@ -61,8 +61,8 @@ class EntitySerializer(serializers.ModelSerializer):
 
 class ApiEntitySerializer(serializers.ModelSerializer):
     """Serializer for Entity."""
-    levels = {}
 
+    levels = {}
     parents = serializers.SerializerMethodField()
     ucode = serializers.SerializerMethodField()
     level_name = serializers.SerializerMethodField()
