@@ -15,14 +15,15 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework.exceptions import MethodNotAllowed
+from rest_framework.exceptions import MethodNotAllowed, ParseError
 from rest_framework.response import Response
-from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_201_CREATED
+from rest_framework.status import HTTP_201_CREATED
 
 from core.api_utils import ApiTag
 from geosight.data.api.v1.base import BaseApiV1Resource
 from geosight.data.models import RelatedTable
 from geosight.data.serializer.related_table import RelatedTableApiSerializer
+from geosight.permission.access import edit_permission_resource
 
 
 class RelatedTableViewSet(BaseApiV1Resource):
@@ -74,22 +75,28 @@ class RelatedTableViewSet(BaseApiV1Resource):
     )
     def create(self, request, *args, **kwargs):
         """Create a related table."""
-        serializer = self.get_serializer(data=request.data)
-        if not serializer.is_valid():
-            return Response(dict(serializer.errors.items()),
-                            status=HTTP_400_BAD_REQUEST)
-
+        serializer = self._get_valid_serializer_or_throw(request)
         instance = serializer.create(serializer.validated_data.copy())
         instance.creator = request.user
         instance.save()
         response = RelatedTableApiSerializer(instance).data
         return Response(response, status=HTTP_201_CREATED)
 
-    @swagger_auto_schema(operation_id='related-tables-update',
-                         tags=[ApiTag.RELATED_TABLES])
+    @swagger_auto_schema(
+        operation_id='related-tables-update',
+        tags=[ApiTag.RELATED_TABLES],
+        manual_parameters=[],
+        request_body=RelatedTableApiSerializer.
+        Meta.swagger_schema_fields['post_body'],
+        operation_description='Update a related table.'
+    )
     def update(self, request, *args, **kwargs):
         """Update an existing related table."""
-        raise MethodNotAllowed('PUT')
+        instance = self.get_object()
+        edit_permission_resource(instance, request.user)
+        serializer = self._get_valid_serializer_or_throw(request, instance)
+        serializer.save()
+        return Response(self.get_serializer(instance).data)
 
     @swagger_auto_schema(operation_id='related-tables-partial_update',
                          tags=[ApiTag.RELATED_TABLES])
@@ -106,3 +113,10 @@ class RelatedTableViewSet(BaseApiV1Resource):
     def destroy(self, request, *args, **kwargs):
         """Delete an existing related table."""
         return super().destroy(request, *args, **kwargs)
+
+    def _get_valid_serializer_or_throw(self, request, instance=None):
+        """Get an already validated serializer."""
+        serializer = self.get_serializer(instance, data=request.data)
+        if not serializer.is_valid():
+            raise ParseError(serializer.errors.items())
+        return serializer
