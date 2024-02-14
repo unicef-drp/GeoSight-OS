@@ -19,9 +19,26 @@ from dateutil import parser
 from django.test.testcases import TestCase
 from rest_framework.reverse import reverse
 
-from geosight.data.models import RelatedTable, RelatedTableField
+from geosight.data.models import RelatedTable, \
+    RelatedTableField, RelatedTableRow
 from geosight.permission.models import PERMISSIONS
 from geosight.permission.tests import BasePermissionTest
+
+
+def add_fields_and_rows_to_table(related_table):
+    """Add 3 fields and 2 rows to the given related table."""
+    related_table.add_field('my_number', 'My Number', 'number')
+    related_table.add_field('my_date', 'My Date', 'date')
+    related_table.add_field('my_string', 'My String', 'string')
+    related_table.insert_rows([{
+        'mynumber': 42.7,
+        'my_date': '2024-02-12T00:00:00Z',
+        'my_string': 'Hello'
+    }, {
+        'mynumber': -1.0,
+        'my_date': '2024-02-13T00:00:00Z',
+        'my_string': 'Bye'
+    }])
 
 
 class RelatedTableApiTest(BasePermissionTest, TestCase):  # noqa: D101
@@ -32,9 +49,7 @@ class RelatedTableApiTest(BasePermissionTest, TestCase):  # noqa: D101
             user=self.resource_creator,
             name='Name A',
         )
-        self.resource_1.add_field('my_number', 'My Number', 'number')
-        self.resource_1.add_field('my_date', 'My Date', 'date')
-        self.resource_1.add_field('my_string', 'My String', 'string')
+        add_fields_and_rows_to_table(self.resource_1)
 
         self.resource_2 = RelatedTable.permissions.create(
             user=self.resource_creator,
@@ -53,7 +68,7 @@ class RelatedTableApiTest(BasePermissionTest, TestCase):  # noqa: D101
 
     def test_list(self):
         """Test GET /related-tables/ ."""
-        url = reverse('related-tables-list') + '?all_fields=true'
+        url = reverse('related_tables-list') + '?all_fields=true'
         self.assertRequestGetView(url, 403)
 
         response = self.assertRequestGetView(url, 200, user=self.admin)
@@ -76,21 +91,22 @@ class RelatedTableApiTest(BasePermissionTest, TestCase):  # noqa: D101
         """Test DELETE /related-tables/{id} ."""
         id = self.resource_1.id
         assert len(RelatedTableField.objects.filter(related_table_id=id)) == 3
+        assert len(RelatedTableRow.objects.filter(table_id=id)) == 2
         self.check_delete_resource_with_different_users(
-            id, 'related-tables-detail')
+            id, 'related_tables-detail')
         self.assertIsNone(RelatedTable.objects.filter(id=id).first())
-        assert len(RelatedTableField.objects.filter(related_table_id=id)) == 0
+        assert len(RelatedTableRow.objects.filter(table_id=id)) == 0
 
     def test_detail_api(self):
         """Test GET /related-tables/{id} ."""
-        url = reverse('related-tables-detail', args=[0])
+        url = reverse('related_tables-detail', args=[0])
 
         self.assertRequestGetView(url, 403)
         self.assertRequestGetView(url, 404, user=self.viewer)
         self.assertRequestGetView(url, 404, user=self.creator)
         self.assertRequestGetView(url, 404, user=self.admin)
 
-        url = reverse('related-tables-detail',
+        url = reverse('related_tables-detail',
                       kwargs={'id': self.resource_1.id}) + '?all_fields=true'
         self.assertRequestGetView(url, 403)
         self.assertRequestGetView(url, 403, user=self.viewer)
@@ -101,7 +117,7 @@ class RelatedTableApiTest(BasePermissionTest, TestCase):  # noqa: D101
 
     def test_create(self):
         """Test POST /related-tables ."""
-        url = reverse('related-tables-list')
+        url = reverse('related_tables-list')
         self.assertRequestPostView(url, 403, data={})
         self.assertRequestPostView(url, 403, user=self.viewer, data={})
         # test missing mandatory
@@ -162,7 +178,7 @@ class RelatedTableApiTest(BasePermissionTest, TestCase):  # noqa: D101
 
     def test_update_api(self):
         """Test PUT /related-tables/{id} ."""
-        url = reverse('related-tables-detail', args=[0])
+        url = reverse('related_tables-detail', args=[0])
         # invalid id
         self.assertRequestPutView(url, 403, data={})
         self.assertRequestPutView(url, 403, user=self.viewer, data={})
@@ -170,7 +186,7 @@ class RelatedTableApiTest(BasePermissionTest, TestCase):  # noqa: D101
         self.assertRequestPutView(url, 404, user=self.admin, data={})
 
         url = reverse(
-            'related-tables-detail', kwargs={'id': self.resource_1.id}
+            'related_tables-detail', kwargs={'id': self.resource_1.id}
         )
         # invalid permissions
         self.assertRequestPutView(url, 403, data={})

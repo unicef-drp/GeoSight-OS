@@ -17,25 +17,13 @@ from django.test.testcases import TestCase
 from rest_framework.reverse import reverse
 
 from geosight.data.models import RelatedTable
+from geosight.data.tests.api.v1.related_table \
+    import add_fields_and_rows_to_table
 from geosight.permission.models import PERMISSIONS
 from geosight.permission.tests import BasePermissionTest
 
 
 class RelatedTableApiTest(BasePermissionTest, TestCase):  # noqa: D101
-    def _add_fields_and_rows_to_table(self, resource):
-        resource.add_field('my_number', 'My Number', 'number')
-        resource.add_field('my_date', 'My Date', 'date')
-        resource.add_field('my_string', 'My String', 'string')
-        resource.insert_rows([{
-            'mynumber': 42.7,
-            'my_date': '2024-02-12T00:00:00Z',
-            'my_string': 'Hello'
-        }, {
-            'mynumber': -1.0,
-            'my_date': '2024-02-13T00:00:00Z',
-            'my_string': 'Bye'
-        }])
-
     def setUp(self):  # noqa: D102
         super().setUp()
 
@@ -43,19 +31,19 @@ class RelatedTableApiTest(BasePermissionTest, TestCase):  # noqa: D101
             user=self.resource_creator,
             name='Name A',
         )
-        self._add_fields_and_rows_to_table(self.resource_1)
+        add_fields_and_rows_to_table(self.resource_1)
         self.resource_2 = RelatedTable.permissions.create(
             user=self.resource_creator,
             name='Name B',
             description='This is test',
         )
-        self._add_fields_and_rows_to_table(self.resource_2)
+        add_fields_and_rows_to_table(self.resource_2)
         self.resource_3 = RelatedTable.permissions.create(
             user=self.resource_creator,
             name='Name C',
             description='Resource 3',
         )
-        self._add_fields_and_rows_to_table(self.resource_3)
+        add_fields_and_rows_to_table(self.resource_3)
         self.resource_3.permission.update_user_permission(
             self.creator, PERMISSIONS.LIST)
         self.resource_3.permission.update_group_permission(
