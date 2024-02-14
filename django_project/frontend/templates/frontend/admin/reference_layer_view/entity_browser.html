@@ -11,7 +11,7 @@
 {% block scripts %}
     <script>
       urls.api = {
-        'browserApi': '{% url 'reference-entity-list-api' view_identifier=view_identifier %}'
+        'browserApi': '{% url 'boundary-entity-api-list' identifier=view_identifier %}'
       }
     </script>
 {% endblock %}

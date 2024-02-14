@@ -25,3 +25,4 @@ class ReferenceLayerViewSerializer(serializers.ModelSerializer):
     class Meta:  # noqa: D106
         model = ReferenceLayerView
         fields = ('id', 'name', 'identifier', 'description')
+        lookup_field = "identifier"

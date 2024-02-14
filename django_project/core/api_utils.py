@@ -41,6 +41,7 @@ class ApiTag:
     RELATED_TABLES = 'Related tables'
     RELATED_TABLES_DATA = 'Related tables data'
     DATA_BROWSER = 'Data Browser'
+    BOUNDARY = 'Boundary'
 
 
 class ApiParams:
@@ -50,6 +51,20 @@ class ApiParams:
         'name__contains',
         openapi.IN_QUERY,
         description='Filter data by partial name.',
+        type=openapi.TYPE_STRING
+    )
+
+    IDENTIFIER = openapi.Parameter(
+        'identifier__in',
+        openapi.IN_QUERY,
+        description='Filter data by identifier.',
+        type=openapi.TYPE_STRING
+    )
+
+    CONCEPT_UUID = openapi.Parameter(
+        'concept_uuid__in',
+        openapi.IN_QUERY,
+        description='Filter data by concept_uuid.',
         type=openapi.TYPE_STRING
     )
 

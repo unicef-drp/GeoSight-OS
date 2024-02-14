@@ -14,20 +14,18 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '12/02/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from django.conf.urls import url
+from rest_framework.routers import DefaultRouter
 
-from geosight.georepo.api import ReferenceLayerViewListAPI
-from geosight.georepo.api.entity import EntityApiList
+from .v1.entities import EntityViewSet
+from .v1.reference_layer import ReferenceLayerViewSet
 
-urlpatterns = [
-    url(
-        r'^(?P<view_identifier>[^/]+)/entity/',
-        EntityApiList.as_view(),
-        name='reference-entity-list-api'
-    ),
-    url(
-        r'^',
-        ReferenceLayerViewListAPI.as_view(),
-        name='reference-layer-view-list-api'
-    ),
-]
+detail_api = []
+
+router = DefaultRouter()
+router.register(
+    r'boundary/(?P<identifier>[^/]+)/entity',
+    EntityViewSet, basename='boundary-entity-api'
+)
+router.register(r'boundary', ReferenceLayerViewSet, basename='boundary-api')
+
+urlpatterns = router.urls

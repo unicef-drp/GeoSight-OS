@@ -24,21 +24,6 @@ from geosight.georepo.models.entity import Entity
 from geosight.georepo.models.reference_layer_indicator_value import (
     reference_layer_indicator_values
 )
-from geosight.georepo.serializer.reference_layer import (
-    ReferenceLayerViewSerializer, ReferenceLayerView
-)
-
-
-class ReferenceLayerViewListAPI(APIView):
-    """Return ReferenceLayerView list."""
-
-    def get(self, request):
-        """Return BasemapLayer list."""
-        return Response(
-            ReferenceLayerViewSerializer(
-                ReferenceLayerView.locals.all().order_by('name'), many=True
-            ).data
-        )
 
 
 class ReferenceLayerEntityDrilldownAPI(APIView):

@@ -1,0 +1,72 @@
+# coding=utf-8
+"""
+GeoSight is UNICEF's geospatial web-based business intelligence platform.
+
+Contact : geosight-no-reply@unicef.org
+
+.. note:: This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation; either version 3 of the License, or
+    (at your option) any later version.
+
+"""
+__author__ = 'irwan@kartoza.com'
+__date__ = '13/06/2023'
+__copyright__ = ('Copyright 2023, Unicef')
+
+from django.shortcuts import get_object_or_404
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import viewsets
+
+from core.api_utils import common_api_params, ApiTag, ApiParams
+from geosight.data.api.v1.base import BaseApiV1
+from geosight.georepo.serializer.entity import ApiEntitySerializer
+from geosight.georepo.serializer.reference_layer import (
+    ReferenceLayerView
+)
+
+
+class EntityViewSet(BaseApiV1, viewsets.ReadOnlyModelViewSet):
+    """Boundary view set."""
+
+    serializer_class = ApiEntitySerializer
+    lookup_field = 'geom_id'
+    lookup_value_regex = '[^/]+'
+
+    @property
+    def queryset(self):
+        """Return the queryset."""
+        view = get_object_or_404(
+            ReferenceLayerView,
+            identifier=self.kwargs.get('identifier', '')
+        )
+        return view.entity_set.all()
+
+    @swagger_auto_schema(
+        operation_id='boundary-entity-list',
+        tags=[ApiTag.BOUNDARY],
+        manual_parameters=[
+            *common_api_params,
+            ApiParams.NAME_CONTAINS,
+            ApiParams.CONCEPT_UUID,
+            ApiParams.ADMIN_LEVEL,
+        ],
+        operation_description=(
+                'Return list of accessed entity of boundary for the user.'
+        )
+    )
+    def list(self, request, *args, **kwargs):
+        """List of boundary."""
+        return super().list(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_id='boundary-entity-detail',
+        tags=[ApiTag.BOUNDARY],
+        manual_parameters=[],
+        operation_description=(
+                'Return detailed of entity of boundary.'
+        )
+    )
+    def retrieve(self, request, identifier=None):
+        """Return detailed of boundary."""
+        return super().retrieve(request, identifier=identifier)
