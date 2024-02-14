@@ -15,8 +15,34 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from rest_framework import serializers
+from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
 from geosight.georepo.models.entity import Entity
+
+
+class EntityCentroidSerializer(GeoFeatureModelSerializer):
+    """Centroid serializer for entity."""
+
+    c = serializers.SerializerMethodField()
+    n = serializers.SerializerMethodField()
+    u = serializers.SerializerMethodField()
+
+    def get_c(self, obj: Entity):
+        """Return concept uuid."""
+        return obj.concept_uuid
+
+    def get_n(self, obj: Entity):
+        """Return name."""
+        return obj.name
+
+    def get_u(self, obj: Entity):
+        """Return ucode."""
+        return obj.geom_id
+
+    class Meta:
+        model = Entity
+        geo_field = 'centroid'
+        fields = ('c', 'n', 'u')
 
 
 class EntitySerializer(serializers.ModelSerializer):
@@ -35,9 +61,44 @@ class EntitySerializer(serializers.ModelSerializer):
 
 class ApiEntitySerializer(serializers.ModelSerializer):
     """Serializer for Entity."""
+    levels = {}
 
+    parents = serializers.SerializerMethodField()
     ucode = serializers.SerializerMethodField()
     level_name = serializers.SerializerMethodField()
+    centroid = serializers.SerializerMethodField()
+    bbox = serializers.SerializerMethodField()
+
+    def entity_level(self, obj: Entity, admin_level: int):
+        """Return levels of entity."""
+        try:
+            levels = self.levels[obj.reference_layer.id]
+        except KeyError:
+            levels = []
+            for level in obj.reference_layer.levels:
+                levels.append({
+                    'level': level.level,
+                    'name': level.name
+                })
+        try:
+            return levels[admin_level]
+        except IndexError:
+            return None
+
+    def get_parents(self, obj: Entity):
+        """Return ucode."""
+        output = []
+        for idx, parent in enumerate(obj.parents):
+            level = self.entity_level(obj, idx)
+            output.append(
+                {
+                    "default": parent,
+                    "ucode": parent,
+                    "admin_level": idx,
+                    "type": level['name'] if level else '-'
+                }
+            )
+        return output
 
     def get_ucode(self, obj: Entity):
         """Return ucode."""
@@ -45,10 +106,20 @@ class ApiEntitySerializer(serializers.ModelSerializer):
 
     def get_level_name(self, obj: Entity):
         """Return level name."""
-        return 'Level name'
+        level = self.entity_level(obj, obj.admin_level)
+        return level['name'] if level else '-'
+
+    def get_centroid(self, obj: Entity):
+        """Return bbox."""
+        return obj.geometry.centroid.wkt
+
+    def get_bbox(self, obj: Entity):
+        """Return bbox."""
+        return obj.geometry.extent
 
     class Meta:  # noqa: D106
         model = Entity
         fields = (
-            'id', 'name', 'ucode', 'concept_uuid', 'admin_level', 'level_name'
+            'id', 'name', 'ucode', 'concept_uuid', 'admin_level', 'parents',
+            'level_name', 'bbox', 'centroid'
         )

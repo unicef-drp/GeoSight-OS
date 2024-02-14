@@ -297,7 +297,6 @@ api = [
     url(r'^related-table/', include(related_table_api)),
     url(r'^sharepoint/', include(sharepoint_api)),
     url(r'^arcgis/', include(arcgis_api)),
-    url(r'^boundary/', include('geosight.georepo.api.urls')),
 ]
 
 download = [
