@@ -68,11 +68,21 @@ class RelatedTableDataViewSet(BaseApiV1Resource):
 
     @swagger_auto_schema(
         operation_id='related-tables-data-detail',
-        tags=[ApiTag.RELATED_TABLES_DATA]
+        tags=[ApiTag.RELATED_TABLES_DATA],
+        operation_description=
+        'Return detail of a related table row for the user.',
+        responses={
+            200: openapi.Response(
+                description="Resource fetching successful.",
+                schema=RelatedTableRowApiSerializer(many=False)
+            )
+        }
     )
     def retrieve(self, request, *args, **kwargs):
         """Get a single related table row."""
-        raise MethodNotAllowed('GET')
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
     @swagger_auto_schema(
         operation_id='related-tables-data-create',

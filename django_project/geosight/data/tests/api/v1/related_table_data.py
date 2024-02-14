@@ -155,6 +155,31 @@ class RelatedTableApiTest(BasePermissionTest, TestCase):  # noqa: D101
         assert json[0]['properties'] == row1.data
         assert json[1]['properties'] == row2.data
 
+    def test_detail(self):
+        """Test GET /related-tables/{related_table_id}/data/{id} ."""
+        url = reverse('related_tables_data-detail', kwargs={
+            'related_tables_id': self.resource_1.id,
+            'id': 0
+        })
+
+        self.assertRequestGetView(url, 403)
+        self.assertRequestGetView(url, 403, user=self.viewer)
+        self.assertRequestGetView(url, 403, user=self.creator)
+        self.assertRequestGetView(url, 404, user=self.admin)
+
+        data_id = self.resource_1.data[1].get('id')
+        url = reverse('related_tables_data-detail', kwargs={
+            'related_tables_id': self.resource_1.id,
+            'id': data_id
+        })
+        self.assertRequestGetView(url, 403)
+        self.assertRequestGetView(url, 403, user=self.viewer)
+        self.assertRequestGetView(url, 403, user=self.creator)
+
+        response = self.assertRequestGetView(url, 200, user=self.admin)
+        row = self.resource_1.relatedtablerow_set.get(id=data_id)
+        assert validate_related_table_row(response.json(), row)
+
     def assert_bad_request(self, url, data):
         """Assert HTTP 400 for POST request using the given url/data."""
         self.assertRequestPostView(
