@@ -45,7 +45,7 @@ class RelatedTableDataViewSet(BaseApiV1Resource):
         return RelatedTableRowApiSerializer(*args, **kwargs)
 
     @swagger_auto_schema(
-        operation_id='related-tables-data-get',
+        operation_id='related-tables-data-list',
         tags=[ApiTag.RELATED_TABLES_DATA],
         operation_description=
         'Return list of related table rows for the user.',
@@ -84,8 +84,10 @@ class RelatedTableDataViewSet(BaseApiV1Resource):
         """Update a related table row."""
         raise MethodNotAllowed('PUT')
 
-    @swagger_auto_schema(operation_id='related-tables-data-partial_update',
-                         tags=[ApiTag.RELATED_TABLES_DATA])
+    @swagger_auto_schema(
+        operation_id='related-tables-data-partial-update',
+        tags=[ApiTag.RELATED_TABLES_DATA]
+    )
     def partial_update(self, request, *args, **kwargs):
         """Update an existing related table row."""
         raise MethodNotAllowed('PATCH')
