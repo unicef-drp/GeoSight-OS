@@ -16,6 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import json
 
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -31,6 +32,9 @@ from geosight.georepo.serializer.entity import (
 )
 from geosight.georepo.serializer.reference_layer import (
     ReferenceLayerCentroidUrlSerializer
+)
+from geosight.utils.vector_tile import (
+    querying_vector_tile
 )
 
 
@@ -66,13 +70,18 @@ class ReferenceLayerCentroidUrls(APIView):
 class ReferenceLayerVectorTile(APIView):
     """Return ReferenceLayer vector tile data."""
 
-    def get(self, request, identifier):
+    def get(self, request, identifier, z, x, y):
         """Return BasemapLayer list."""
-        get_object_or_404(
+        view = get_object_or_404(
             ReferenceLayerView,
             identifier=identifier
         )
-        return Response('OK')
+        tiles = querying_vector_tile(view, z=z, x=x, y=y)
+
+        # If no tile 404
+        if not len(tiles):
+            raise Http404()
+        return HttpResponse(tiles, content_type="application/x-protobuf")
 
 
 class ReferenceLayerEntityDrilldownAPI(APIView):
