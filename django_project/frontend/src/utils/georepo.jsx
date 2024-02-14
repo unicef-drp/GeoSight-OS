@@ -170,7 +170,7 @@ export const fetchFeatureList = async function (url, useCache = true) {
       const response = await fetchJSON(usedUrl, headers, useCache);
       if (response.results) {
         data = data.concat(response.results)
-        if (response.page >= response.total_page) {
+        if (response.page && response.page >= response.total_page) {
           return
         }
         if (response.results.length) {
