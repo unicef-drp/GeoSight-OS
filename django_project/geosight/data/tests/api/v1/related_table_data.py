@@ -114,6 +114,54 @@ class RelatedTableApiTest(BasePermissionTest, TestCase):  # noqa: D101
         row = next(row for row in rows if row.id == json['id'])
         validate_related_table_row(json, row)
 
+    def test_create(self):
+        """Test POST /related-tables/{RT_id}/data ."""
+        url = reverse('related_tables_data-list', kwargs={
+            'related_tables_id': self.resource_1.id
+        })
+        self.assertRequestPostView(url, 403, data={})
+        self.assertRequestPostView(url, 403, user=self.viewer, data={})
+        # test not an array
+        self.assert_bad_request(url, {})
+        # test empty array
+        self.assert_bad_request(url, [])
+        # test invalid object
+        self.assert_bad_request(url, [{}])
+        # test valid request
+        response = self.assertRequestPostView(
+            url, 201, user=self.admin,
+            data=[{
+                'properties': {
+                    'mynumber': 42.7,
+                    'my_date': '2024-02-12T00:00:00Z',
+                    'my_string': 'Hello'
+                }
+            }, {
+                'properties': {
+                    'mynumber': -1.0,
+                    'my_date': '2024-02-13T00:00:00Z',
+                    'my_string': 'Bye'
+                }
+            }],
+            content_type=self.JSON_CONTENT
+        )
+
+        json = response.json()
+        rows = (RelatedTable.objects.get(id=self.resource_1.id)
+                .relatedtablerow_set.all())
+        assert len(rows) == 2 + 2  # 2 existing + 2 added in the tests
+        row1 = next(row for row in rows if row.id == json[0]['id'])
+        row2 = next(row for row in rows if row.id == json[1]['id'])
+        assert json[0]['properties'] == row1.data
+        assert json[1]['properties'] == row2.data
+
+    def assert_bad_request(self, url, data):
+        """Assert HTTP 400 for POST request using the given url/data."""
+        self.assertRequestPostView(
+            url, 400, user=self.creator, data=data,
+            content_type=self.JSON_CONTENT
+        )
+
     def create_resource(self, user):  # noqa: D102
         return None
 
