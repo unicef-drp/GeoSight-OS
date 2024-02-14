@@ -17,6 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.conf.urls import url
 from django.urls import include
 from rest_framework.routers import DefaultRouter
+from rest_framework_nested.routers import NestedSimpleRouter
 
 from geosight.data.api.v1.basemap import BasemapViewSet
 from geosight.data.api.v1.data_browser import (
@@ -25,12 +26,19 @@ from geosight.data.api.v1.data_browser import (
 )
 from geosight.data.api.v1.indicator import IndicatorViewSet
 from geosight.data.api.v1.related_table import RelatedTableViewSet
+from geosight.data.api.v1.related_table_data import RelatedTableDataViewSet
 
 router = DefaultRouter()
 router.register(r'basemaps', BasemapViewSet, basename='basemaps')
-router.register(
-    r'related-tables', RelatedTableViewSet, basename='related-tables')
 router.register(r'indicators', IndicatorViewSet, basename='indicators')
+
+router.register(
+    r'related_tables', RelatedTableViewSet, basename='related_tables')
+related_tables_router = NestedSimpleRouter(
+    router, r'related_tables', lookup='related_tables')
+related_tables_router.register(
+    'data', RelatedTableDataViewSet, basename='related_tables_data'
+)
 
 data_browser_api_v1 = [
     url(r'^ids', DataBrowserApiListIds.as_view(), name='data-browser-ids-api'),
@@ -43,3 +51,4 @@ urlpatterns = [
     url(r'^dataset', DatasetApiList.as_view(), name='dataset-api'),
 ]
 urlpatterns += router.urls
+urlpatterns += related_tables_router.urls

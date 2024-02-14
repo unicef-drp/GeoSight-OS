@@ -39,6 +39,7 @@ class ApiTag:
 
     BASEMAPS = 'Basemaps'
     RELATED_TABLES = 'Related tables'
+    RELATED_TABLES_DATA = 'Related tables data'
     DATA_BROWSER = 'Data Browser'
 
 
