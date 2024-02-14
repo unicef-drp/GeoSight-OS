@@ -73,7 +73,7 @@ class DataBrowserApiList(BaseDataBrowserApiList, ListAPIView):
         return context
 
     @swagger_auto_schema(
-        operation_id='data-browser-get',
+        operation_id='data-browser-list',
         tags=[ApiTag.DATA_BROWSER],
         manual_parameters=[
             *common_api_params,

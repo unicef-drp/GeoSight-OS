@@ -32,7 +32,7 @@ class BasemapViewSet(BaseApiV1Resource):
     extra_exclude_fields = ['parameters']
 
     @swagger_auto_schema(
-        operation_id='basemaps-get',
+        operation_id='basemaps-list',
         tags=[ApiTag.BASEMAPS],
         manual_parameters=[
             *common_api_params,

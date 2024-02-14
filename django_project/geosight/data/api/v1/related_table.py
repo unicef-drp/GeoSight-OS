@@ -34,7 +34,7 @@ class RelatedTableViewSet(BaseApiV1Resource):
     extra_exclude_fields = []
 
     @swagger_auto_schema(
-        operation_id='related-tables-get',
+        operation_id='related-tables-list',
         tags=[ApiTag.RELATED_TABLES],
         operation_description=
         'Return list of accessible related tables for the user.',
@@ -98,8 +98,10 @@ class RelatedTableViewSet(BaseApiV1Resource):
         serializer.save()
         return Response(self.get_serializer(instance).data)
 
-    @swagger_auto_schema(operation_id='related-tables-partial_update',
-                         tags=[ApiTag.RELATED_TABLES])
+    @swagger_auto_schema(
+        operation_id='related-tables-partial-update',
+        tags=[ApiTag.RELATED_TABLES]
+    )
     def partial_update(self, request, *args, **kwargs):
         """Update an existing related table."""
         raise MethodNotAllowed('PATCH')
