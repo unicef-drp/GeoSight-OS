@@ -31,6 +31,12 @@ class ReferenceLayerViewSet(BaseApiV1, viewsets.ReadOnlyModelViewSet):
     lookup_field = 'identifier'
     lookup_value_regex = '[0-9A-Fa-f]{8}(-[0-9A-Fa-f]{4}){3}-[0-9A-Fa-f]{12}'
 
+    def get_serializer_context(self):
+        """Add context to serializer."""
+        context = super().get_serializer_context()
+        context.update({'request': self.request})
+        return context
+
     @property
     def queryset(self):
         """Return the queryset."""

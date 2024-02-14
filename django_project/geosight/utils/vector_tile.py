@@ -26,7 +26,7 @@ def querying_vector_tile(view: ReferenceLayerView, z: int, x: int, y: int):
         (
             SELECT name, geom_id as ucode, concept_uuid, admin_level as level,
                 ST_AsMVTGeom(
-                    ST_Transform(geometry, 3857), 
+                    ST_Transform(geometry, 3857),
                     ST_TileEnvelope({z}, {x}, {y}),
                     extent => 4096, buffer => 64
                 ) as geom
@@ -41,7 +41,7 @@ def querying_vector_tile(view: ReferenceLayerView, z: int, x: int, y: int):
            ) AS mvt
            FROM mvtgeom
            GROUP BY level
-        ) 
+        )
         SELECT string_agg(mvt, '') from tiles;
     """
 

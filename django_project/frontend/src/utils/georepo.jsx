@@ -127,9 +127,19 @@ export const fetchFeatureList = async function (url, useCache = true) {
   let data = []
   const _fetchJson = async function (page = 1) {
     try {
-      const response = await fetchJSON(url + '?geom=centroid&cache=false&page=' + page, headers, useCache);
+      let usedUrl = url + '?geom=centroid&cache=false&page=' + page
+
+      // This is for local
+      if (url.includes('boundary')) {
+        usedUrl = url + '&page=' + page
+      }
+
+      const response = await fetchJSON(usedUrl, headers, useCache);
       if (response.results) {
         data = data.concat(response.results)
+        if (response.page >= response.total_page) {
+          return
+        }
         if (response.results.length) {
           await _fetchJson(page += 1)
         }

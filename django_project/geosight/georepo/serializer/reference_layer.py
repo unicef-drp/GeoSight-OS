@@ -61,7 +61,7 @@ class ReferenceLayerViewSerializer(serializers.ModelSerializer):
 
     def get_vector_tiles(self, obj: ReferenceLayerView):
         """Return value."""
-        return reverse(
+        url = reverse(
             'boundary-vector-tile-api',
             kwargs={
                 'identifier': obj.identifier,
@@ -69,13 +69,18 @@ class ReferenceLayerViewSerializer(serializers.ModelSerializer):
                 'x': '1',
                 'y': '2',
             }
-        ).replace(
+        )
+        request = self.context.get('request', None)
+        if request:
+            url = request.build_absolute_uri(url)
+        url = url.replace(
             '/0/', '/{z}/'
         ).replace(
             '/1/', '/{x}/'
         ).replace(
             '/2/', '/{y}/'
         )
+        return url
 
     def get_possible_id_types(self, obj: ReferenceLayerView):
         """Return value."""
@@ -95,7 +100,7 @@ class ReferenceLayerViewSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'name', 'identifier', 'vector_tiles',
             'description', 'possible_id_types', 'dataset_levels',
-            'bbox'
+            'bbox', 'is_local'
         )
         lookup_field = "identifier"
 

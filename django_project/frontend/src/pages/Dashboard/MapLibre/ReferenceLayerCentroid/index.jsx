@@ -37,6 +37,7 @@ import { hideLabel, renderLabel, showLabel } from "./Label"
 import { ExecuteWebWorker } from "../../../../utils/WebWorker";
 import worker from "./Label/worker";
 import { fetchJSON } from "../../../../Requests";
+import { LocalBoundary } from "../../../../utils/urls";
 
 import './style.scss';
 
@@ -83,7 +84,10 @@ export default function ReferenceLayerCentroid({ map }) {
       // Fetch centroid
       // ----------------------------
       try {
-        const url = `${preferences.georepo_api.api}/search/view/${referenceLayer.identifier}/centroid/`
+        let url = `${preferences.georepo_api.api}/search/view/${referenceLayer.identifier}/centroid/`
+        if (referenceLayer.is_local) {
+          url = LocalBoundary.centroid(referenceLayer.identifier)
+        }
         fetchJson(url).then(async data => {
           if (identifier === lastRequest) {
             for (let i = 0; i < data.length; i++) {

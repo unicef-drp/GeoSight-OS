@@ -166,6 +166,11 @@ class ReferenceLayerView(AbstractVersionData):
         """Return level of reference layer."""
         return self.referencelayerviewlevel_set.order_by('level')
 
+    @property
+    def is_local(self):
+        """Return if view is local or not."""
+        return not self.in_georepo
+
 
 class ReferenceLayerViewLevel(models.Model):
     """Reference Layer view level."""

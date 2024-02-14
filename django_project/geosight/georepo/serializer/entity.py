@@ -68,6 +68,7 @@ class ApiEntitySerializer(serializers.ModelSerializer):
     level_name = serializers.SerializerMethodField()
     centroid = serializers.SerializerMethodField()
     bbox = serializers.SerializerMethodField()
+    ext_codes = serializers.SerializerMethodField()
 
     def entity_level(self, obj: Entity, admin_level: int):
         """Return levels of entity."""
@@ -117,9 +118,15 @@ class ApiEntitySerializer(serializers.ModelSerializer):
         """Return bbox."""
         return obj.geometry.extent
 
+    def get_ext_codes(self, obj: Entity):
+        """Return ext_codes."""
+        return {
+            "default": obj.geom_id
+        }
+
     class Meta:  # noqa: D106
         model = Entity
         fields = (
             'id', 'name', 'ucode', 'concept_uuid', 'admin_level', 'parents',
-            'level_name', 'bbox', 'centroid'
+            'level_name', 'bbox', 'centroid', 'ext_codes'
         )

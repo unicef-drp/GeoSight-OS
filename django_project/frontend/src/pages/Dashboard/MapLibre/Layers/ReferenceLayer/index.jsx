@@ -48,6 +48,7 @@ import {
 import GeorepoAuthorizationModal
   from "../../../../../components/GeorepoAuthorizationModal";
 import { Logger } from "../../../../../utils/logger";
+import { LocalBoundary } from "../../../../../utils/urls";
 
 export const BEFORE_LAYER = 'gl-draw-polygon-fill-inactive.cold'
 export const CONTEXT_LAYER_ID = `context-layer`
@@ -115,10 +116,13 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
   // When reference layer changed, fetch reference data
   useEffect(() => {
     if (referenceLayer.identifier && !referenceLayerData) {
+      let detailUrl = GeorepoUrls.ViewDetail(referenceLayer.identifier)
+      if (referenceLayer.is_local) {
+        detailUrl = LocalBoundary.detail(referenceLayer.identifier)
+      }
       dispatch(
         Actions.ReferenceLayerData.fetch(
-          dispatch, referenceLayer.identifier,
-          GeorepoUrls.ViewDetail(referenceLayer.identifier)
+          dispatch, referenceLayer.identifier, detailUrl
         )
       )
     }
