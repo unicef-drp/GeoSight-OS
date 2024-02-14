@@ -14,6 +14,9 @@
  */
 
 export const LocalBoundary = {
+  list: () => {
+    return `/api/v1/boundary/`
+  },
   detail: (identifier) => {
     return `${window.location.origin}/api/v1/boundary/${identifier}/`
   },

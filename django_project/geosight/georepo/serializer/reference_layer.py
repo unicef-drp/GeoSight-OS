@@ -52,6 +52,7 @@ class ReferenceLayerViewSerializer(serializers.ModelSerializer):
     vector_tiles = serializers.SerializerMethodField()
     possible_id_types = serializers.SerializerMethodField()
     dataset_levels = serializers.SerializerMethodField()
+    tags = serializers.SerializerMethodField()
 
     def get_bbox(self, obj: ReferenceLayerView):
         """Return value."""
@@ -84,10 +85,7 @@ class ReferenceLayerViewSerializer(serializers.ModelSerializer):
 
     def get_possible_id_types(self, obj: ReferenceLayerView):
         """Return value."""
-        return [
-            "ucode",
-            "concept_uuid"
-        ]
+        return ['ucode', 'concept_uuid']
 
     def get_dataset_levels(self, obj: ReferenceLayerView):
         """Return value."""
@@ -95,12 +93,16 @@ class ReferenceLayerViewSerializer(serializers.ModelSerializer):
             obj.referencelayerviewlevel_set.order_by('level'), many=True
         ).data
 
+    def get_tags(self, obj: ReferenceLayerView):
+        """Return value."""
+        return ['GeoSight', 'local']
+
     class Meta:  # noqa: D106
         model = ReferenceLayerView
         fields = (
-            'id', 'name', 'identifier', 'vector_tiles',
+            'name', 'identifier', 'vector_tiles',
             'description', 'possible_id_types', 'dataset_levels',
-            'bbox', 'is_local'
+            'bbox', 'is_local', 'tags'
         )
         lookup_field = "identifier"
 

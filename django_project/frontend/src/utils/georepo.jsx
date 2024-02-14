@@ -15,6 +15,9 @@
 
 import { fetchJSON } from '../Requests'
 import axios from "axios";
+import { LocalBoundary } from "./urls";
+
+const LocalGeoSightIdentifier = 'GeoSight Boundaries'
 
 /** Georepo URL */
 export function updateToken(url) {
@@ -51,13 +54,33 @@ export const GeorepoUrls = {
  */
 export const fetchReferenceLayerList = async function () {
   let data = []
-  const modules = await fetchFeatureList(
-    GeorepoUrls.WithDomain('/search/module/list/', false), true
+  let modules = [
+    {
+      name: LocalGeoSightIdentifier,
+      uuid: LocalGeoSightIdentifier
+    }
+  ]
+  modules = modules.concat(
+    await fetchFeatureList(
+      GeorepoUrls.WithDomain('/search/module/list/', false), true
+    )
   );
   for (const module of modules) {
-    const referenceLayers = await fetchFeatureList(
-      GeorepoUrls.WithDomain(`/search/module/${module.uuid}/dataset/list/`, false), true
-    );
+    let referenceLayers;
+    if (module.uuid === LocalGeoSightIdentifier) {
+      referenceLayers = [
+        {
+          "name": "GeoSight Boundaries",
+          "uuid": "GeoSight Boundaries",
+          "short_code": "GeoSight Boundaries",
+          "type": "GeoSight Boundaries"
+        }
+      ]
+    } else {
+      referenceLayers = await fetchFeatureList(
+        GeorepoUrls.WithDomain(`/search/module/${module.uuid}/dataset/list/`, false), true
+      );
+    }
     data = data.concat(referenceLayers)
   }
   data.map(row => {
@@ -80,11 +103,15 @@ export const fetchReferenceLayerList = async function () {
  */
 export const fetchReferenceLayerViewsList = async function (referenceLayerUUID) {
   let data = []
-  data = await fetchFeatureList(
-    GeorepoUrls.WithDomain(`/search/dataset/${referenceLayerUUID}/view/list/`, false), true
-  );
+  let url = GeorepoUrls.WithDomain(`/search/dataset/${referenceLayerUUID}/view/list/`, false)
+  if (referenceLayerUUID === LocalGeoSightIdentifier) {
+    url = LocalBoundary.list()
+  }
+  data = await fetchFeatureList(url, true);
   data.map(row => {
-    row.identifier = row.uuid
+    if (row.uuid) {
+      row.identifier = row.uuid
+    }
   })
   data.sort((a, b) => {
     if (a.name < b.name) {
@@ -95,6 +122,7 @@ export const fetchReferenceLayerViewsList = async function (referenceLayerUUID) 
     }
     return 0;
   })
+  console.log(data)
   return data
 }
 
@@ -129,9 +157,14 @@ export const fetchFeatureList = async function (url, useCache = true) {
     try {
       let usedUrl = url + '?geom=centroid&cache=false&page=' + page
 
-      // This is for local
+      // TODO : LOCAL BOUNDARY
+      //  This is for local
       if (url.includes('boundary')) {
-        usedUrl = url + '&page=' + page
+        if (url.includes('?')) {
+          usedUrl = url + '&page=' + page
+        } else {
+          usedUrl = url + '?page=' + page
+        }
       }
 
       const response = await fetchJSON(usedUrl, headers, useCache);
