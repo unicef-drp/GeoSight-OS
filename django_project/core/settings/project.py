@@ -21,7 +21,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from .contrib import *  # noqa
 
-MOCK_GEOREPO = False
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 ALLOWED_HOSTS = ['*']
 ADMINS = (

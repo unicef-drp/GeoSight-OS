@@ -14,14 +14,12 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from django.conf import settings
 from django.conf.urls import url, include
 
 from geosight.georepo.api import (
     ReferenceLayerEntityDrilldownAPI, ReferenceLayerVectorTile,
     ReferenceLayerCentroidUrls, ReferenceLayerCentroid
 )
-from geosight.georepo.api.mock.api import MockGeorepoAPI
 
 boundary_api = [
     url(
@@ -48,12 +46,3 @@ urlpatterns = [
     ),
     url(r'^boundary/(?P<identifier>[^/]+)/', include(boundary_api)),
 ]
-
-if settings.MOCK_GEOREPO:
-    urlpatterns += [
-        url(
-            r'^mock',
-            MockGeorepoAPI.as_view(),
-            name='mock-georepo-api'
-        ),
-    ]

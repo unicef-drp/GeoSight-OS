@@ -56,9 +56,11 @@ class ReferenceLayerViewSerializer(serializers.ModelSerializer):
 
     def get_bbox(self, obj: ReferenceLayerView):
         """Return value."""
-        return obj.entity_set.aggregate(
-            Extent('geometry')
-        )['geometry__extent']
+        return [
+            float(str(round(geom, 4))) for geom in obj.entity_set.aggregate(
+                Extent('geometry')
+            )['geometry__extent']
+        ]
 
     def get_vector_tiles(self, obj: ReferenceLayerView):
         """Return value."""
