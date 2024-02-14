@@ -17,6 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.shortcuts import reverse
 from drf_yasg import openapi
 from rest_framework import serializers
+from rest_framework.fields import JSONField
 
 from core.serializer.dynamic_serializer import DynamicModelSerializer
 from geosight.data.models.related_table import (
@@ -135,6 +136,16 @@ class RelatedTableApiSerializer(DynamicModelSerializer):
                 properties=_related_table_swagger_properties
             )
         }
+
+
+class RelatedTableRowApiSerializer(DynamicModelSerializer):
+    """Serializer for RelatedTableRow."""
+
+    properties = JSONField(required=True, source='data')
+
+    class Meta:  # noqa: D106
+        model = RelatedTableRow
+        exclude = ('table', 'order', 'data')
 
 
 class RelatedTableSerializer(DynamicModelSerializer):

@@ -105,7 +105,7 @@ class RelatedTableApiTest(BasePermissionTest, TestCase):  # noqa: D101
         self.assertRequestPostView(url, 403, data={})
         self.assertRequestPostView(url, 403, user=self.viewer, data={})
         # test missing mandatory
-        # self.assertRequestPostView(url, 400, user=self.creator, data={})
+        self.assertRequestPostView(url, 400, user=self.creator, data={})
         # test invalid field type
         self.assertRequestPostView(
             url, 400, user=self.creator,
@@ -159,6 +159,62 @@ class RelatedTableApiTest(BasePermissionTest, TestCase):  # noqa: D101
             assert db['name'] == api['name']
             assert db['alias'] == api['label']
             assert db['type'] == api['type']
+
+    def test_update_api(self):
+        """Test PUT /related-tables/{id} ."""
+        url = reverse('related-tables-detail', args=[0])
+        # invalid id
+        self.assertRequestPutView(url, 403, data={})
+        self.assertRequestPutView(url, 403, user=self.viewer, data={})
+        self.assertRequestPutView(url, 404, user=self.creator, data={})
+        self.assertRequestPutView(url, 404, user=self.admin, data={})
+
+        url = reverse(
+            'related-tables-detail', kwargs={'id': self.resource_1.id}
+        )
+        # invalid permissions
+        self.assertRequestPutView(url, 403, data={})
+        self.assertRequestPutView(url, 403, user=self.viewer, data={})
+        self.assertRequestPutView(url, 403, user=self.creator, data={})
+
+        # missing mandatory
+        self.assertRequestPutView(url, 400, user=self.resource_creator,
+                                  data={})
+        # invalid field type
+        self.assertRequestPutView(
+            url, 400, user=self.resource_creator,
+            data={
+                "name": 'New name',
+                "fields_definition": [{
+                    "name": "field",
+                    "label": "field",
+                    "type": "invalid_type"
+                }]
+            },
+            content_type=self.JSON_CONTENT
+        )
+
+        # valid request
+        self.assertRequestPutView(
+            url, 200,
+            user=self.resource_creator,
+            data={
+                "name": 'Updated name',
+                "fields_definition": [{
+                    "name": "another_field",
+                    "label": "Another field",
+                    "type": "number"
+                }]
+            },
+            content_type=self.JSON_CONTENT
+        )
+
+        saved = RelatedTable.objects.get(id=self.resource_1.id)
+        assert saved.name == 'Updated name'
+        assert len(saved.fields_definition) == 1
+        assert saved.fields_definition[0].get('name') == 'another_field'
+        assert saved.fields_definition[0].get('alias') == 'Another field'
+        assert saved.fields_definition[0].get('type') == 'number'
 
     def create_resource(self, user):  # noqa: D102
         return None
