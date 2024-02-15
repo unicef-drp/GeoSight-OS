@@ -69,7 +69,6 @@ export function AdminTable(
       }
     }
   }
-  console.log(props)
 
   // Is loading if rows are undefined or null
   const isLoading = [undefined, null].includes(rows)

@@ -66,22 +66,12 @@ export const fetchReferenceLayerList = async function () {
     )
   );
   for (const module of modules) {
-    let referenceLayers;
-    if (module.uuid === LocalGeoSightIdentifier) {
-      referenceLayers = [
-        {
-          "name": "GeoSight Boundaries",
-          "uuid": "GeoSight Boundaries",
-          "short_code": "GeoSight Boundaries",
-          "type": "GeoSight Boundaries"
-        }
-      ]
-    } else {
-      referenceLayers = await fetchFeatureList(
+    if (module.uuid !== LocalGeoSightIdentifier) {
+      const referenceLayers = await fetchFeatureList(
         GeorepoUrls.WithDomain(`/search/module/${module.uuid}/dataset/list/`, false), true
       );
+      data = data.concat(referenceLayers)
     }
-    data = data.concat(referenceLayers)
   }
   data.map(row => {
     row.identifier = row.uuid
@@ -95,6 +85,15 @@ export const fetchReferenceLayerList = async function () {
     }
     return 0;
   })
+  data = [
+    {
+      "identifier": LocalGeoSightIdentifier,
+      "name": LocalGeoSightIdentifier,
+      "uuid": LocalGeoSightIdentifier,
+      "short_code": LocalGeoSightIdentifier,
+      "type": LocalGeoSightIdentifier
+    }
+  ].concat(data)
   return data
 }
 
@@ -112,6 +111,9 @@ export const fetchReferenceLayerViewsList = async function (referenceLayerUUID) 
     if (row.uuid) {
       row.identifier = row.uuid
     }
+    if (referenceLayerUUID === LocalGeoSightIdentifier) {
+      row.is_local = true
+    }
   })
   data.sort((a, b) => {
     if (a.name < b.name) {
@@ -122,7 +124,6 @@ export const fetchReferenceLayerViewsList = async function (referenceLayerUUID) 
     }
     return 0;
   })
-  console.log(data)
   return data
 }
 

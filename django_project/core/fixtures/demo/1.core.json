@@ -77,7 +77,7 @@
     "fields": {
       "site_title": "GeoSight",
       "site_url": "https://geosight.com",
-      "disclaimer": "",
+      "disclaimer": "The boundaries and names shown and the designations used on this map do not imply official endorsement or acceptance by the United Nations.",
       "default_basemap": 1,
       "default_color_palette": 3,
       "georepo_url": "http://localhost:2000/georepo/",
