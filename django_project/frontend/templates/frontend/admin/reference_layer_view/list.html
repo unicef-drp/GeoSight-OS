@@ -14,6 +14,9 @@
         'list': '{% url 'boundary-api-list' %}',
         'create': '{% url 'admin-reference-layer-view-create-view' %}',
         'entityBrowser': '{% url 'admin-reference-layer-view-entity-list-view' 0 %}',
+
+        {# resource specified url #}
+        'permission': '{% url 'boundary-permission-api' 'identifier' %}',
       }
     </script>
 {% endblock %}

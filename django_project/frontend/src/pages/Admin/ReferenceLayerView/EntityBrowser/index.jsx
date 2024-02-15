@@ -102,6 +102,7 @@ export default function EntityBrowserAdmin() {
       getParameters={getParameters}
       hideSearch={true}
       deselectWhenParameterChanged={true}
+      disabledCheckboxSelection={true}
     />
   </AdminPage>
 }

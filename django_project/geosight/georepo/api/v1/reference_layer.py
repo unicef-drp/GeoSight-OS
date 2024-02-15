@@ -15,32 +15,38 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import viewsets
 
 from core.api_utils import common_api_params, ApiTag, ApiParams
-from geosight.data.api.v1.base import BaseApiV1
+from core.permissions import (
+    RoleContributorAuthenticationPermission,
+    RoleCreatorAuthenticationPermission
+)
+from geosight.data.api.v1.base import BaseApiV1Resource
+from geosight.georepo.models.reference_layer import ReferenceLayerView
 from geosight.georepo.serializer.reference_layer import (
-    ReferenceLayerViewSerializer, ReferenceLayerView
+    ReferenceLayerViewSerializer
 )
 
 
-class ReferenceLayerViewSet(BaseApiV1, viewsets.ReadOnlyModelViewSet):
+class ReferenceLayerViewSet(BaseApiV1Resource):
     """Boundary view set."""
 
+    model_class = ReferenceLayerView
     serializer_class = ReferenceLayerViewSerializer
+    extra_exclude_fields = ['id']
     lookup_field = 'identifier'
     lookup_value_regex = '[0-9A-Fa-f]{8}(-[0-9A-Fa-f]{4}){3}-[0-9A-Fa-f]{12}'
+    http_method_names = ['get']
 
-    def get_serializer_context(self):
-        """Add context to serializer."""
-        context = super().get_serializer_context()
-        context.update({'request': self.request})
-        return context
-
-    @property
-    def queryset(self):
-        """Return the queryset."""
-        return ReferenceLayerView.locals.all().order_by('name')
+    def get_permissions(self):
+        """Get the permissions based on the action."""
+        if self.action in ['create', 'destroy']:
+            permission_classes = [RoleCreatorAuthenticationPermission]
+        elif self.action in ['update', 'partial_update']:
+            permission_classes = [RoleContributorAuthenticationPermission]
+        else:
+            permission_classes = []
+        return [permission() for permission in permission_classes]
 
     @swagger_auto_schema(
         operation_id='boundary-list',

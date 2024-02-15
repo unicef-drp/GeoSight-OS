@@ -14,23 +14,47 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from django.contrib.gis.db import models
+from django.contrib.auth import get_user_model
+from django.contrib.gis.db.models import QuerySet
+from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from core.models.general import AbstractVersionData
+from core.models.general import AbstractVersionData, AbstractEditData
 from core.utils import is_valid_uuid
 from geosight.data.models.indicator import Indicator
-from geosight.georepo.models.local_manager import (
-    ReferenceLayerViewLocalManager
-)
 from geosight.georepo.request import (
     GeorepoRequest, GeorepoUrl, GeorepoRequestError
 )
 from geosight.georepo.request.data import GeorepoEntity
 from geosight.permission.models.manager import PermissionManager
 
+User = get_user_model()
 
-class ReferenceLayerView(AbstractVersionData):
+
+class ReferenceLayerViewLocalQuerySet(QuerySet):
+    """Queryset specifically for local reference layer."""
+
+    pass
+
+
+class ReferenceLayerViewPermissionManager(PermissionManager):
+    """Reference layer view local manager."""
+
+    def get_queryset(self):
+        """Return queryset just for non georepo."""
+        qs = ReferenceLayerViewLocalQuerySet(self.model, using=self._db)
+        return qs.filter(in_georepo=False)
+
+    def create(self, user: User, **kwargs):
+        """Create function with user."""
+        try:
+            kwargs['identifier']
+        except KeyError:
+            kwargs['identifier'] = ReferenceLayerView.get_uuid()
+        return super().create(user=user, **kwargs)
+
+
+class ReferenceLayerView(AbstractEditData, AbstractVersionData):
     """Reference Layer view data."""
 
     identifier = models.CharField(
@@ -51,7 +75,7 @@ class ReferenceLayerView(AbstractVersionData):
     in_georepo = models.BooleanField(default=True)
 
     objects = models.Manager()
-    locals = ReferenceLayerViewLocalManager()
+    permissions = ReferenceLayerViewPermissionManager()
 
     class Meta:  # noqa: D106
         indexes = [
@@ -178,6 +202,20 @@ class ReferenceLayerView(AbstractVersionData):
     def is_local(self):
         """Return if view is local or not."""
         return not self.in_georepo
+
+    @staticmethod
+    def get_uuid():
+        """Return uuid of view."""
+        from uuid import uuid4
+        from geosight.georepo.models.reference_layer_temporary import (
+            ReferenceLayerViewTemp
+        )
+        uuid = str(uuid4())
+        if ReferenceLayerView.objects.filter(identifier=uuid).exists():
+            return ReferenceLayerView.get_uuid()
+        if ReferenceLayerViewTemp.objects.filter(identifier=uuid).exists():
+            return ReferenceLayerView.get_uuid()
+        return uuid
 
 
 class ReferenceLayerViewLevel(models.Model):

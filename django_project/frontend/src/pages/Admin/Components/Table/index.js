@@ -69,6 +69,7 @@ export function AdminTable(
       }
     }
   }
+  console.log(props)
 
   // Is loading if rows are undefined or null
   const isLoading = [undefined, null].includes(rows)
@@ -126,7 +127,7 @@ export function AdminTable(
           }}
           disableSelectionOnClick={!props.enableSelectionOnClick}
 
-          checkboxSelection={columns?.length && !!setSelectionModel && !props.enableSelectionOnClick}
+          checkboxSelection={columns?.length && !!setSelectionModel && !props.enableSelectionOnClick && !props.disabledCheckboxSelection}
           onSelectionModelChange={(newSelectionModel) => {
             setSelectionModel(newSelectionModel);
           }}

@@ -80,15 +80,6 @@ class ReferenceLayerViewImporterTask:
         """Init class."""
         self.importer = importer
 
-    def get_uuid(self):
-        """Return uuid of view."""
-        uuid = str(uuid4())
-        if ReferenceLayerView.objects.filter(identifier=uuid).exists():
-            return self.get_uuid()
-        if ReferenceLayerViewTemp.objects.filter(identifier=uuid).exists():
-            return self.get_uuid()
-        return uuid
-
     def read_file(self, importer_level: ReferenceLayerViewImporterLevel):
         """Read file."""
         level = int(importer_level.level)
@@ -165,7 +156,7 @@ class ReferenceLayerViewImporterTask:
         # Create reference layer temporary
         self.temp_view = ReferenceLayerViewTemp.objects.create(
             importer=self.importer,
-            identifier=self.get_uuid(),
+            identifier=ReferenceLayerView.get_uuid(),
             name=self.importer.name,
             description=self.importer.description
         )

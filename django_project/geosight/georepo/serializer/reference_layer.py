@@ -18,6 +18,7 @@ from django.contrib.gis.db.models import Extent
 from django.urls import reverse
 from rest_framework import serializers
 
+from core.serializer.dynamic_serializer import DynamicModelSerializer
 from geosight.georepo.models.reference_layer import (
     ReferenceLayerView, ReferenceLayerViewLevel
 )
@@ -45,7 +46,7 @@ class ReferenceLayerViewLevelSerializer(serializers.ModelSerializer):
         fields = ('level', 'level_name', 'url')
 
 
-class ReferenceLayerViewSerializer(serializers.ModelSerializer):
+class ReferenceLayerViewSerializer(DynamicModelSerializer):
     """Serializer for ReferenceLayerView."""
 
     bbox = serializers.SerializerMethodField()
@@ -53,14 +54,19 @@ class ReferenceLayerViewSerializer(serializers.ModelSerializer):
     possible_id_types = serializers.SerializerMethodField()
     dataset_levels = serializers.SerializerMethodField()
     tags = serializers.SerializerMethodField()
+    permission = serializers.SerializerMethodField()
 
     def get_bbox(self, obj: ReferenceLayerView):
         """Return value."""
-        return [
-            float(str(round(geom, 4))) for geom in obj.entity_set.aggregate(
-                Extent('geometry')
-            )['geometry__extent']
-        ]
+        try:
+            return [
+                float(str(round(geom, 4))) for geom in
+                obj.entity_set.aggregate(
+                    Extent('geometry')
+                )['geometry__extent']
+            ]
+        except TypeError:
+            return None
 
     def get_vector_tiles(self, obj: ReferenceLayerView):
         """Return value."""
@@ -99,13 +105,24 @@ class ReferenceLayerViewSerializer(serializers.ModelSerializer):
         """Return value."""
         return ['GeoSight', 'local']
 
+    def get_permission(self, obj: ReferenceLayerView):
+        """Return permission."""
+        from geosight.permission.models.resource.reference_layer_view import (
+            ReferenceLayerViewPermission
+        )
+        try:
+            return obj.permission.all_permission(
+                self.context.get('user', None)
+            )
+        except ReferenceLayerViewPermission.DoesNotExist:
+            ReferenceLayerViewPermission.objects.create(obj=obj)
+        return obj.permission.all_permission(
+            self.context.get('user', None)
+        )
+
     class Meta:  # noqa: D106
         model = ReferenceLayerView
-        fields = (
-            'name', 'identifier', 'vector_tiles',
-            'description', 'possible_id_types', 'dataset_levels',
-            'bbox', 'is_local', 'tags'
-        )
+        fields = '__all__'
         lookup_field = "identifier"
 
 

@@ -14,17 +14,59 @@
  */
 
 import React from 'react';
+import { GridActionsCellItem } from "@mui/x-data-grid";
+import Tooltip from "@mui/material/Tooltip";
+import { DataBrowserActiveIcon } from "../../../../components/Icons";
 
 import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
 import { pageNames } from '../../index';
-import { COLUMNS } from "../../Components/List";
+import { COLUMNS, COLUMNS_ACTION } from "../../Components/List";
 import { AdminList } from "../../AdminList";
+import PermissionModal from "../../Permission";
 
 import './style.scss';
-import { GridActionsCellItem } from "@mui/x-data-grid";
-import Tooltip from "@mui/material/Tooltip";
-import { DataBrowserActiveIcon } from "../../../../components/Icons";
+
+
+export function resourceActions(params) {
+  const permission = params.row.permission
+  const actions = COLUMNS_ACTION(params, urls.admin.indicatorList)
+
+  // Unshift before more & edit action
+  if (permission.share) {
+    actions.unshift(
+      <GridActionsCellItem
+        icon={
+          <a>
+            <PermissionModal
+              name={params.row.name}
+              urlData={urls.api.permission.replace('/identifier', `/${params.row.identifier}`)}
+            />
+          </a>
+        }
+        label="Change Share Configuration."
+      />)
+  }
+
+  if (permission.read_data) {
+    actions.unshift(
+      <GridActionsCellItem
+        icon={
+          <Tooltip title={`Browse data`}>
+            <a
+              href={urls.api.entityBrowser.replace('0', params.row.identifier)}>
+              <div className='ButtonIcon'>
+                <DataBrowserActiveIcon/>
+              </div>
+            </a>
+          </Tooltip>
+        }
+        label="Browse entities"
+      />
+    )
+  }
+  return actions
+}
 
 /**
  * ReferenceLayerView App
@@ -43,21 +85,8 @@ export default function ReferenceLayerViewList() {
       width: 100,
       cellClassName: 'MuiDataGrid-ActionsColumn',
       getActions: (params) => {
-        const actions = [
-          <GridActionsCellItem
-            icon={
-              <Tooltip title={`Browse data`}>
-                <a
-                  href={urls.api.entityBrowser.replace('0', params.row.identifier)}>
-                  <div className='ButtonIcon'>
-                    <DataBrowserActiveIcon/>
-                  </div>
-                </a>
-              </Tooltip>
-            }
-            label="Browse entities"
-          />
-        ]
+        // Create actions
+        const actions = resourceActions(params)
         return actions
       }
     }

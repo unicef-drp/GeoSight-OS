@@ -27,15 +27,12 @@ from geosight.georepo.models.reference_layer import ReferenceLayerView
 from geosight.georepo.models.reference_layer_indicator_value import (
     reference_layer_indicator_values
 )
-from geosight.georepo.serializer.entity import (
-    EntityCentroidSerializer
-)
+from geosight.georepo.serializer.entity import EntityCentroidSerializer
 from geosight.georepo.serializer.reference_layer import (
     ReferenceLayerCentroidUrlSerializer
 )
-from geosight.utils.vector_tile import (
-    querying_vector_tile
-)
+from geosight.permission.access import read_data_permission_resource
+from geosight.utils.vector_tile import querying_vector_tile
 
 
 class ReferenceLayerCentroid(APIView):
@@ -47,6 +44,7 @@ class ReferenceLayerCentroid(APIView):
             ReferenceLayerView,
             identifier=identifier
         )
+        read_data_permission_resource(view, request.user)
         entities = view.entity_set.filter(admin_level=level)
         return Response(
             EntityCentroidSerializer(entities, many=True).data
@@ -62,6 +60,7 @@ class ReferenceLayerCentroidUrls(APIView):
             ReferenceLayerView,
             identifier=identifier
         )
+        read_data_permission_resource(view, request.user)
         return Response(
             ReferenceLayerCentroidUrlSerializer(view.levels, many=True).data
         )
@@ -76,6 +75,7 @@ class ReferenceLayerVectorTile(APIView):
             ReferenceLayerView,
             identifier=identifier
         )
+        read_data_permission_resource(view, request.user)
         tiles = querying_vector_tile(view, z=z, x=x, y=y)
 
         # If no tile 404

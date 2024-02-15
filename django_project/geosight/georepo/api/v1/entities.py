@@ -21,9 +21,8 @@ from rest_framework import viewsets
 from core.api_utils import common_api_params, ApiTag, ApiParams
 from geosight.data.api.v1.base import BaseApiV1
 from geosight.georepo.serializer.entity import ApiEntitySerializer
-from geosight.georepo.serializer.reference_layer import (
-    ReferenceLayerView
-)
+from geosight.georepo.serializer.reference_layer import ReferenceLayerView
+from geosight.permission.access import read_data_permission_resource
 
 
 class EntityViewSet(BaseApiV1, viewsets.ReadOnlyModelViewSet):
@@ -40,6 +39,7 @@ class EntityViewSet(BaseApiV1, viewsets.ReadOnlyModelViewSet):
             ReferenceLayerView,
             identifier=self.kwargs.get('identifier', '')
         )
+        read_data_permission_resource(view, self.request.user)
         return view.entity_set.all()
 
     @swagger_auto_schema(

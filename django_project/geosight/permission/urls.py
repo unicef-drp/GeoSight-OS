@@ -27,7 +27,8 @@ from geosight.permission.api import (
     DataAccessGroupsAPI,
     RelatedTablePermissionAPI,
     StylePermissionAPI,
-    IndicatorReferenceLayerPermissionAPI
+    IndicatorReferenceLayerPermissionAPI,
+    ReferenceLayerViewPermissionAPI
 )
 
 urlpatterns = [
@@ -85,5 +86,10 @@ urlpatterns = [
         r'^style/(?P<pk>\d+)',
         StylePermissionAPI.as_view(),
         name='style-permission-api'
+    ),
+    url(
+        r'^boundary/(?P<identifier>[^/]+)',
+        ReferenceLayerViewPermissionAPI.as_view(),
+        name='boundary-permission-api'
     ),
 ]
