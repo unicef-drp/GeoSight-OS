@@ -66,6 +66,7 @@ export default function ReferenceLayerViewList() {
     columns={cleanColumns}
     pageName={pageName}
     listUrl={urls.api.list}
+    getRowId={(row) => row.identifier}
   />
 }
 

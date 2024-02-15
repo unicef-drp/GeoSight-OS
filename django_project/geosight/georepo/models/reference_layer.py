@@ -53,6 +53,14 @@ class ReferenceLayerView(AbstractVersionData):
     objects = models.Manager()
     locals = ReferenceLayerViewLocalManager()
 
+    class Meta:  # noqa: D106
+        indexes = [
+            models.Index(
+                fields=['identifier'],
+                name='reference_layer_identifier'
+            )
+        ]
+
     def get_name(self):
         """Return name."""
         if not self.name:
