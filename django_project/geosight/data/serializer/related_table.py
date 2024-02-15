@@ -95,7 +95,7 @@ class RelatedTableApiSerializer(DynamicModelSerializer):
 
     def get_url(self, obj: RelatedTable):  # noqa: D102
         return reverse(
-            'related-tables-detail',
+            'related_tables-detail',
             args=[obj.id]
         )
 
