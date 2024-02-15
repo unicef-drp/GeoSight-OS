@@ -36,7 +36,7 @@ class ReferenceLayerViewSet(BaseApiV1Resource):
     extra_exclude_fields = ['id']
     lookup_field = 'identifier'
     lookup_value_regex = '[0-9A-Fa-f]{8}(-[0-9A-Fa-f]{4}){3}-[0-9A-Fa-f]{12}'
-    http_method_names = ['get']
+    http_method_names = ['get', 'delete']
 
     def get_permissions(self):
         """Get the permissions based on the action."""
@@ -71,3 +71,13 @@ class ReferenceLayerViewSet(BaseApiV1Resource):
     def retrieve(self, request, identifier=None):
         """Return detailed of boundary."""
         return super().retrieve(request, identifier=identifier)
+
+    @swagger_auto_schema(
+        operation_id='boundary-detail-delete',
+        tags=[ApiTag.BOUNDARY],
+        manual_parameters=[],
+        operation_description='Delete a boundary.'
+    )
+    def destroy(self, request, identifier=None):
+        """Destroy an object."""
+        return super().destroy(request, id=identifier)

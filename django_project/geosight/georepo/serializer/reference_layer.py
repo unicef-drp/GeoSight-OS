@@ -16,6 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib.gis.db.models import Extent
 from django.urls import reverse
+from drf_yasg import openapi
 from rest_framework import serializers
 
 from core.serializer.dynamic_serializer import DynamicModelSerializer
@@ -124,6 +125,15 @@ class ReferenceLayerViewSerializer(DynamicModelSerializer):
         model = ReferenceLayerView
         fields = '__all__'
         lookup_field = "identifier"
+        swagger_schema_fields = {
+            'delete_body': openapi.Schema(
+                description='List of identifier of values.',
+                type=openapi.TYPE_ARRAY,
+                items=openapi.Items(
+                    type=openapi.TYPE_STRING
+                )
+            )
+        }
 
 
 class ReferenceLayerCentroidUrlSerializer(serializers.ModelSerializer):

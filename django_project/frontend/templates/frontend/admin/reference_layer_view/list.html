@@ -10,9 +10,11 @@
 
 {% block scripts %}
     <script>
+      const DEFAULT_UUID = '10000000-0000-0000-0000-000000000000'
       urls.api = {
         'list': '{% url 'boundary-api-list' %}',
         'create': '{% url 'admin-reference-layer-view-create-view' %}',
+        'detail': '{% url 'boundary-api-detail' '10000000-0000-0000-0000-000000000000' %}',
         'entityBrowser': '{% url 'admin-reference-layer-view-entity-list-view' 0 %}',
 
         {# resource specified url #}

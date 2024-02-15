@@ -134,3 +134,30 @@ class ReferenceLayerViewListApiTest(BasePermissionTest, TestCase):
         self.assertEqual(
             response.json()['identifier'], self.resource.identifier
         )
+
+    def test_delete_api(self):
+        """Test list API."""
+        resource = self.create_resource(
+            self.creator, {
+                'name': 'name 3',
+                'in_georepo': False
+            }
+        )
+        url = reverse(
+            'boundary-api-detail',
+            kwargs={'identifier': resource.identifier}
+        )
+        self.assertRequestDeleteView(url, 403)
+        self.assertRequestDeleteView(url, 403, self.viewer)
+        self.assertRequestDeleteView(url, 403, self.contributor)
+        self.assertRequestDeleteView(url, 403, self.resource_creator)
+
+        response = self.assertRequestGetView(
+            reverse('boundary-api-list'), 200, self.creator)
+        print(response.json()['results'][0]['name'])
+        self.assertEqual(len(response.json()['results']), 2)
+
+        self.assertRequestDeleteView(url, 204, self.creator)
+        response = self.assertRequestGetView(
+            reverse('boundary-api-list'), 200, self.creator)
+        self.assertEqual(len(response.json()['results']), 1)
