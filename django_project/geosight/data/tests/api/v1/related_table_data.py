@@ -15,6 +15,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.test.testcases import TestCase
 from rest_framework.reverse import reverse
+from rest_framework.status import HTTP_200_OK
 
 from geosight.data.models import RelatedTable
 from geosight.permission.models import PERMISSIONS
@@ -73,6 +74,57 @@ class RelatedTableApiTest(BasePermissionTest, TestCase):  # noqa: D101
             response, validate_related_table_row,
             *[row for row in self.resource_1.relatedtablerow_set.all()]
         )
+
+    def test_update(self):
+        """Test PUT /related-tables/{RT_id}/data/{id} ."""
+        url = reverse('related_tables_data-detail', kwargs={
+            'related_tables_id': self.resource_1.id,
+            'id': 0
+        })
+
+        # invalid table permissions with invalid row id
+        self.assertRequestPutView(url, 403, data={})
+        self.assertRequestPutView(url, 403, user=self.viewer, data={})
+        self.assertRequestPutView(url, 403, user=self.creator, data={})
+        self.assertRequestPutView(url, 404, user=self.admin, data={})
+
+        data_id = self.resource_1.data[1].get('id')
+        url = reverse('related_tables_data-detail', kwargs={
+            'related_tables_id': self.resource_1.id,
+            'id': data_id
+        })
+        # invalid table permissions with valid row id
+        self.assertRequestPutView(url, 403, data={})
+        self.assertRequestPutView(url, 403, user=self.viewer, data={})
+        self.assertRequestPutView(url, 403, user=self.creator, data={})
+
+        # missing mandatory
+        self.assertRequestPutView(
+            url, 400, user=self.resource_creator, data={}
+        )
+
+        # valid request
+        response = self.assertRequestPutView(
+            url, 200,
+            user=self.resource_creator,
+            data={
+                "properties": {
+                    'mynumber': 10.5,
+                    'my_date': '2020-02-12T00:00:00Z',
+                    'my_string': 'Updated string'
+                }
+            },
+            content_type=self.JSON_CONTENT
+        )
+
+        assert response.status_code == HTTP_200_OK
+        json = response.json()
+
+        rows = (RelatedTable.objects.get(id=self.resource_1.id)
+                .relatedtablerow_set.all())
+        assert len(rows) == 2
+        row = next(row for row in rows if row.id == json['id'])
+        validate_related_table_row(json, row)
 
     def create_resource(self, user):  # noqa: D102
         return None

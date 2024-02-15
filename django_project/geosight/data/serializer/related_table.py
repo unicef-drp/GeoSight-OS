@@ -61,6 +61,20 @@ _related_table_swagger_properties = {
     'modified_at': _string_field('Created at', read_only=True),
 }
 
+_related_table_row_swagger_properties = {
+    'id': openapi.Schema(
+        title='Id',
+        type=openapi.TYPE_INTEGER,
+        read_only=True
+    ),
+    'properties': openapi.Schema(
+        title='Row values',
+        description='Keys are field names from fields_definition '
+                    'in the associated related table',
+        type=openapi.TYPE_OBJECT
+    )
+}
+
 
 class RelatedTableFieldApiSerializer(DynamicModelSerializer):
     """Serializer for RelatedTableField."""
@@ -146,6 +160,26 @@ class RelatedTableRowApiSerializer(DynamicModelSerializer):
     class Meta:  # noqa: D106
         model = RelatedTableRow
         exclude = ('table', 'order', 'data')
+
+        swagger_schema_fields = {
+            'type': openapi.TYPE_OBJECT,
+            'title': 'RelatedTableRow',
+            'required': ['properties'],
+            'properties': _related_table_row_swagger_properties,
+            'example': {
+                "id": 1,
+                "properties": {
+                    "field_1": "value_1",
+                    "field_2": "2024-02-14T00:00:00Z",
+                    "field_3": 42.7
+                }
+            },
+            'post_body': openapi.Schema(
+                description='Data needed to create/edit related table rows.',
+                type=openapi.TYPE_OBJECT,
+                properties=_related_table_row_swagger_properties
+            )
+        }
 
 
 class RelatedTableSerializer(DynamicModelSerializer):
