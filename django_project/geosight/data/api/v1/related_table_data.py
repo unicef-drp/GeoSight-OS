@@ -18,6 +18,7 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework.exceptions import MethodNotAllowed, ParseError
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
+from rest_framework.status import HTTP_201_CREATED
 
 from core.api_utils import ApiTag
 from geosight.data.api.v1.base import BaseApiV1Resource
@@ -76,10 +77,20 @@ class RelatedTableDataViewSet(BaseApiV1Resource):
     @swagger_auto_schema(
         operation_id='related-tables-data-create',
         tags=[ApiTag.RELATED_TABLES_DATA],
+        manual_parameters=[],
+        request_body=RelatedTableRowApiSerializer.
+        Meta.swagger_schema_fields['post_body'],
+        operation_description='Create related table rows.'
     )
     def create(self, request, *args, **kwargs):
-        """Create a related table row."""
-        raise MethodNotAllowed('POST')
+        """Create related table rows."""
+        serializer = self._get_valid_serializer_or_throw(request, many=True)
+        related_table = self._get_related_table()
+        edit_permission_resource(related_table, request.user)
+        inserted_rows = [related_table.insert_row(obj['data'])
+                         for obj in serializer.validated_data]
+        serializer = self.get_serializer(inserted_rows, many=True)
+        return Response(serializer.data, status=HTTP_201_CREATED)
 
     @swagger_auto_schema(
         operation_id='related-tables-data-update',
