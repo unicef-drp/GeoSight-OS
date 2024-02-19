@@ -160,7 +160,6 @@ export function IndicatorLayers() {
       if (!indicatorLayersIds.includes(currentIndicatorLayer)) {
         indicatorEnabled = { 'id': null }
       }
-      console.log(indicatorLayersForcedUpdateIds)
       if (!indicatorEnabled.id || indicatorLayersForcedUpdateIds) {
         if (!indicatorLayersForcedUpdateIds?.length) {
           // If not force updated
