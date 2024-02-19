@@ -52,7 +52,7 @@ class DashboardBookmarkApiTest(BasePermissionTest, TestCase):
             'extent': [0, 0, 0, 0],
             'filters': {},
             'indicatorShow': 0,
-            'selectedIndicatorLayer': self.layer.id,
+            'selectedIndicatorLayers': [self.layer.id],
             'selectedContextLayers': [],
             'contextLayersShow': False,
             'selectedAdminLevel': 0,
