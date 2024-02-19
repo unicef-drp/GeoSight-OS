@@ -18,14 +18,15 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework.exceptions import MethodNotAllowed, ParseError
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
-from rest_framework.status import HTTP_201_CREATED
+from rest_framework.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT
 
 from core.api_utils import ApiTag
 from geosight.data.api.v1.base import BaseApiV1Resource
 from geosight.data.models import RelatedTableRow, RelatedTable
 from geosight.data.serializer.related_table import RelatedTableRowApiSerializer
 from geosight.permission.access import \
-    read_permission_resource, edit_permission_resource
+    read_permission_resource, edit_permission_resource, \
+    delete_permission_resource
 
 
 class RelatedTableDataViewSet(BaseApiV1Resource):
@@ -136,10 +137,28 @@ class RelatedTableDataViewSet(BaseApiV1Resource):
     @swagger_auto_schema(
         operation_id='related-tables-data-delete',
         tags=[ApiTag.RELATED_TABLES_DATA],
+        manual_parameters=[],
+        operation_description='Delete a related table row.'
     )
     def destroy(self, request, *args, **kwargs):
         """Delete an existing related table row."""
-        raise MethodNotAllowed('DELETE')
+        related_table = self._get_related_table()
+        delete_permission_resource(related_table, request.user)
+        self.perform_destroy(self.get_object())
+        return Response(status=HTTP_204_NO_CONTENT)
+
+    @swagger_auto_schema(
+        operation_id='related-tables-data-delete-all',
+        tags=[ApiTag.RELATED_TABLES_DATA],
+        manual_parameters=[],
+        operation_description='Delete all related table rows.'
+    )
+    def delete(self, request, *args, **kwargs):
+        """Delete an existing related table row."""
+        related_table = self._get_related_table()
+        delete_permission_resource(related_table, request.user)
+        self.get_queryset().delete()
+        return Response(status=HTTP_204_NO_CONTENT)
 
     def _get_valid_serializer_or_throw(self, request, many):
         """Get an already validated serializer."""

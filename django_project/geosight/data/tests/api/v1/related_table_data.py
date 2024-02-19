@@ -17,7 +17,7 @@ from django.test.testcases import TestCase
 from rest_framework.reverse import reverse
 from rest_framework.status import HTTP_200_OK
 
-from geosight.data.models import RelatedTable
+from geosight.data.models import RelatedTable, RelatedTableRow
 from geosight.data.tests.api.v1.related_table \
     import add_fields_and_rows_to_table
 from geosight.permission.models import PERMISSIONS
@@ -25,6 +25,21 @@ from geosight.permission.tests import BasePermissionTest
 
 
 class RelatedTableApiTest(BasePermissionTest, TestCase):  # noqa: D101
+    def _add_fields_and_rows_to_table(self, resource):
+        resource.add_field('my_number', 'My Number', 'number')
+
+        resource.add_field('my_date', 'My Date', 'date')
+        resource.add_field('my_string', 'My String', 'string')
+        resource.insert_rows([{
+            'mynumber': 42.7,
+            'my_date': '2024-02-12T00:00:00Z',
+            'my_string': 'Hello'
+        }, {
+            'mynumber': -1.0,
+            'my_date': '2024-02-13T00:00:00Z',
+            'my_string': 'Bye'
+        }])
+
     def setUp(self):  # noqa: D102
         super().setUp()
 
@@ -113,6 +128,39 @@ class RelatedTableApiTest(BasePermissionTest, TestCase):  # noqa: D101
         assert len(rows) == 2
         row = next(row for row in rows if row.id == json['id'])
         validate_related_table_row(json, row)
+
+    def test_delete(self):
+        """Test DELETE /related-tables/{RT_id}/data/{id} ."""
+        id = self.resource_1.id
+        row_id = RelatedTableRow.objects.filter(table_id=id).first().id
+        assert len(RelatedTableRow.objects.filter(table_id=id)) == 2
+
+        url = reverse('related_tables_data-detail', kwargs={
+            'related_tables_id': id,
+            'id': row_id
+        })
+        self.assertRequestDeleteView(url, 403)
+        self.assertRequestDeleteView(url, 403, user=self.viewer)
+        self.assertRequestDeleteView(url, 403, user=self.creator)
+        self.assertRequestDeleteView(url, 204, user=self.admin)
+
+        rows = RelatedTableRow.objects.filter(table_id=id)
+        assert len(rows) == 1
+        assert rows.first().id != row_id
+
+    def test_delete_all(self):
+        """Test DELETE /related-tables/{RT_id}/data ."""
+        id = self.resource_1.id
+        assert len(RelatedTableRow.objects.filter(table_id=id)) == 2
+
+        url = reverse('related_tables_data-list', kwargs={
+            'related_tables_id': id
+        })
+        self.assertRequestDeleteView(url, 403)
+        self.assertRequestDeleteView(url, 403, user=self.viewer)
+        self.assertRequestDeleteView(url, 403, user=self.creator)
+        self.assertRequestDeleteView(url, 204, user=self.admin)
+        assert len(RelatedTableRow.objects.filter(table_id=id)) == 0
 
     def test_create(self):
         """Test POST /related-tables/{RT_id}/data ."""
