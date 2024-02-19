@@ -18,7 +18,7 @@
    ========================================================================== */
 
 import React, { useEffect, useState } from 'react';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import $ from "jquery";
 import maplibregl from "maplibre-gl";
 import Chart from 'chart.js/auto';
@@ -39,6 +39,7 @@ import worker from "./Label/worker";
 import { fetchJSON } from "../../../../Requests";
 
 import './style.scss';
+import { Actions } from "../../../../store/dashboard";
 
 let centroidMarker = []
 let charts = {}
@@ -50,6 +51,7 @@ let lastRequest = null
  * GeometryCenter.
  */
 export default function ReferenceLayerCentroid({ map }) {
+  const dispatch = useDispatch();
   const {
     indicators,
     indicatorLayers,
@@ -80,29 +82,67 @@ export default function ReferenceLayerCentroid({ map }) {
       setGeometries({});
 
       // ----------------------------
-      // Fetch centroid
+      // TODO:
+      //  Fetch reference layer entities
       // ----------------------------
       try {
+        const geometryMemberByUcode = {}
+        const geometryDataByLevel = {}
+
         const url = `${preferences.georepo_api.api}/search/view/${referenceLayer.identifier}/centroid/`
         fetchJson(url).then(async data => {
           if (identifier === lastRequest) {
             for (let i = 0; i < data.length; i++) {
-              const row = data[i]
-              const response = await fetchJSON(row.url)
+              const level = data[i]
+              const response = await fetchJSON(level.url)
+              const geometryDataDict = {}
               const geoms = {}
+
               response.features.map(feature => {
+                const name = feature.properties.n
+                const ucode = feature.properties.u
+                const concept_uuid = feature.properties.c
+                const parentsUcode = feature.properties.pu
                 const properties = {
                   concept_uuid: feature.properties.c,
-                  name: feature.properties.n,
-                  ucode: feature.properties.u,
+                  name: name,
+                  ucode: ucode,
                   geometry: feature.geometry
                 }
                 const code = extractCode(properties)
+                if (!code) {
+                  return
+                }
                 properties.code = code
                 geoms[code] = properties
+
+                // Save for geometries
+                if (parentsUcode) {
+                  const parents = parentsUcode.map(parent => geometryMemberByUcode[parent]).filter(parent => !!parent)
+                  const memberData = {
+                    name: name,
+                    ucode: ucode,
+                    code: code,
+                  }
+                  geometryDataDict[code] = {
+                    label: name,
+                    name: name,
+                    code: code,
+                    ucode: ucode,
+                    concept_uuid: concept_uuid,
+                    parents: parents,
+                    members: parents.concat(memberData),
+                  }
+                  geometryMemberByUcode[ucode] = memberData
+                }
               })
-              geometries[row.level] = geoms
-              setGeometries({ ...geometries })
+              if (identifier === lastRequest) {
+                geometries[level.level] = geoms
+                setGeometries({ ...geometries })
+                dispatch(
+                  Actions.Geometries.addLevelData(level.level, geometryDataDict)
+                )
+              }
             }
           }
         })
