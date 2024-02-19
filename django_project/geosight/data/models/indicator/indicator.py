@@ -170,7 +170,7 @@ class Indicator(
             ).data
         return None
 
-    def validate(self, value) -> str:
+    def validate(self, value):
         """Check value and return the comment."""
         comment = ''
         if self.type == IndicatorType.INTEGER:
@@ -226,7 +226,7 @@ class Indicator(
                         )
             else:
                 raise IndicatorValueRejectedError('Value is not string')
-        return comment
+        return value, comment
 
     def save_value(
             self,
@@ -244,7 +244,14 @@ class Indicator(
 
         # Validate data
         try:
-            self.validate(value)
+            value, comment = self.validate(value)
+            if comment:
+                if not extras:
+                    extras = {}
+                try:
+                    extras['description'] += ' ' + comment
+                except KeyError:
+                    extras['description'] = comment
         except IndicatorValueRejectedError as e:
             if more_error_information:
                 raise IndicatorValueRejectedError(f'Error on {geom_id}: {e}')
