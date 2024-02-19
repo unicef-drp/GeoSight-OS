@@ -20,6 +20,7 @@ import { fetchingData } from "../../../../../Requests";
 import { updateContextData } from "../../../../../utils/dataContext";
 import { extractCode } from "../../../../../utils/georepo";
 import { capitalize } from "../../../../../utils/main";
+import { Session } from "../../../../../utils/Sessions";
 
 export const referenceSimpleDefaultTemplate = `
 <!--  HEADER  -->
@@ -333,8 +334,12 @@ export function getContext(
     rtconfigs: JSON.stringify(indicatorLayersConfig),
     reference_layer_uuid: referenceLayerData?.data?.uuid
   }
+  const session = new Session('FetchingPopupContext')
   fetchingData(
     url, params, {}, function (admin_boundary, error) {
+      if (!session.isValid) {
+        return
+      }
       if (error) {
         if (contextOnError) {
           contextOnError(error)

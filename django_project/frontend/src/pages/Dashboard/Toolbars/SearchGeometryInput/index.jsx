@@ -19,6 +19,7 @@
 
 import React, { useEffect, useState } from 'react';
 import $ from "jquery";
+import { createFilterOptions } from "@mui/material/Autocomplete";
 import { useSelector } from "react-redux";
 import { InputAdornment, TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
@@ -37,6 +38,15 @@ const LAYER_HIGHLIGHT_ID = 'reference-layer-highlight'
  * CompareLayer component.
  */
 export default function SearchGeometryInput({ map }) {
+
+  // Limit a big list
+  const filterOptions = createFilterOptions({
+    ignoreCase: true,
+    matchFrom: 'any',
+    limit: 1000,
+    stringify: (option) => option.label + ' ' + option.level_name,
+  });
+
   const {
     referenceLayer,
     enable_geometry_search,
@@ -210,6 +220,7 @@ export default function SearchGeometryInput({ map }) {
           </div>
         </li>
       )}
+      filterOptions={filterOptions}
     />
 
   </div>
