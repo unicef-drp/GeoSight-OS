@@ -41,10 +41,8 @@ class DashboardBookmarkAbstract(models.Model):
         null=True, blank=True,
         on_delete=models.SET_NULL
     )
-    selected_indicator_layer = models.ForeignKey(
-        "DashboardIndicatorLayer",
-        null=True, blank=True,
-        on_delete=models.SET_NULL
+    selected_indicator_layers = models.JSONField(
+        null=True, blank=True, default=[]
     )
     selected_context_layers = models.ManyToManyField(
         ContextLayer, blank=True
@@ -54,6 +52,14 @@ class DashboardBookmarkAbstract(models.Model):
     selected_admin_level = models.FloatField(null=True, blank=True)
     is_3d_mode = models.BooleanField(default=False)
     position = models.JSONField(null=True, blank=True)
+
+    # TODO:
+    #  Deprecated
+    selected_indicator_layer = models.ForeignKey(
+        "DashboardIndicatorLayer",
+        null=True, blank=True,
+        on_delete=models.SET_NULL
+    )
 
     class Meta:  # noqa: D106
         abstract = True
