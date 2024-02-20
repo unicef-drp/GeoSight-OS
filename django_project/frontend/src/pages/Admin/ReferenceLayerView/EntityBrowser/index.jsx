@@ -13,7 +13,8 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { debounce } from "@mui/material/utils";
 
 import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
@@ -23,6 +24,8 @@ import {
 import { splitParams, urlParams } from "../../../../utils/main";
 import { AdminListPagination } from "../../AdminListPagination";
 import { AdminPage, pageNames } from "../../index";
+import { IconTextField } from "../../../../components/Elements/Input";
+import { MagnifyIcon } from "../../../../components/Icons";
 
 
 import './style.scss';
@@ -30,10 +33,12 @@ import './style.scss';
 /*** Entity Browser admin */
 export default function EntityBrowserAdmin() {
   const tableRef = useRef(null);
+  const [searchName, setSearchName] = useState('')
 
   // Other attributes
   const defaultFilters = urlParams()
   const [filters, setFilters] = useState({
+    name: defaultFilters.name ? splitParams(defaultFilters.name) : '',
     levels: defaultFilters.levels ? splitParams(defaultFilters.levels) : [],
     geographies: defaultFilters.geographies ? splitParams(defaultFilters.geographies) : []
   })
@@ -47,6 +52,26 @@ export default function EntityBrowserAdmin() {
     }
     setIsInit(false)
   }, [filters])
+
+  /** Name value changed, debouce **/
+  const nameValueUpdate = useMemo(
+    () =>
+      debounce(
+        (newValue) => {
+          setFilters({
+            ...filters,
+            name: newValue
+          })
+        },
+        400
+      ),
+    []
+  )
+
+  /** Search name value changed **/
+  useEffect(() => {
+    nameValueUpdate(searchName)
+  }, [searchName]);
 
   // COLUMNS
   const COLUMNS = [
@@ -70,6 +95,11 @@ export default function EntityBrowserAdmin() {
     } else {
       delete parameters['geom_id__icontains']
     }
+    if (filters.name) {
+      parameters['name__icontains'] = filters.name
+    } else {
+      delete parameters['name__icontains']
+    }
     return parameters
   }
 
@@ -80,15 +110,29 @@ export default function EntityBrowserAdmin() {
       COLUMNS={COLUMNS}
       disabled={disabled}
       setDisabled={setDisabled}
+      rightHeader={
+        <div>
+          <IconTextField
+            placeholder={"Search name"}
+            defaultValue={filters.name}
+            iconEnd={<MagnifyIcon/>}
+            onChange={evt => {
+              setSearchName(evt.target.value)
+            }}
+          />
+        </div>
+      }
       otherFilters={
         <div className='ListAdminFilters'>
           <MultipleCreatableFilter
             title={'Filter by Level(s)'}
             data={filters.levels}
-            setData={newFilter => setFilters({
-              ...filters,
-              levels: newFilter
-            })}/>
+            setData={
+              newFilter => setFilters({
+                ...filters,
+                levels: newFilter
+              })
+            }/>
           <MultipleCreatableFilter
             title={'Filter by Geo Code(s)'}
             data={filters.geographies}
