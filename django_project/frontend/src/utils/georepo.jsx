@@ -15,7 +15,7 @@
 
 import { fetchJSON } from '../Requests'
 import axios from "axios";
-import { InternalReferenceDatasets } from "./urls";
+import { InternalReferenceDatasets, referenceDatasetUrlBase } from "./urls";
 
 const LocalGeoSightIdentifier = 'Internal reference datasets'
 

@@ -90,6 +90,6 @@ urlpatterns = [
     url(
         r'^reference-datasets/(?P<identifier>[^/]+)',
         ReferenceLayerViewPermissionAPI.as_view(),
-        name='reference-dataset-permission-api'
+        name='reference-datasets-permission-api'
     ),
 ]

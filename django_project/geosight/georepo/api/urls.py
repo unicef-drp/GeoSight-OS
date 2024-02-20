@@ -24,11 +24,11 @@ detail_api = []
 router = DefaultRouter()
 router.register(
     r'reference-datasets/(?P<identifier>[^/]+)/entity',
-    EntityViewSet, basename='reference-dataset-entity-api'
+    EntityViewSet, basename='reference-datasets-entity-api'
 )
 router.register(
     r'reference-datasets', ReferenceLayerViewSet,
-    basename='reference-dataset-api'
+    basename='reference-datasets-api'
 )
 
 urlpatterns = router.urls

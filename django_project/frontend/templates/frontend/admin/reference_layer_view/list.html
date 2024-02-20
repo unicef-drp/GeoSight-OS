@@ -12,15 +12,15 @@
     <script>
       const DEFAULT_UUID = '10000000-0000-0000-0000-000000000000'
       urls.api = {
-        'list': '{% url 'reference-dataset-api-list' %}',
+        'list': '{% url 'reference-datasets-api-list' %}',
         'create': '{% url 'admin-reference-layer-view-create-view' %}',
-        'detail': '{% url 'reference-dataset-api-detail' '10000000-0000-0000-0000-000000000000' %}',
+        'detail': '{% url 'reference-datasets-api-detail' '10000000-0000-0000-0000-000000000000' %}',
         'entityBrowser': '{% url 'admin-reference-layer-view-entity-list-view' 0 %}',
         'users': '{% url 'user-list-api'%}',
         'groups': '{% url 'group-list-api'%}',
 
         {# resource specified url #}
-        'permission': '{% url 'reference-dataset-permission-api' 'identifier' %}',
+        'permission': '{% url 'reference-datasets-permission-api' 'identifier' %}',
       }
     </script>
 {% endblock %}

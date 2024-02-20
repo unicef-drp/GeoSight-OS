@@ -50,7 +50,7 @@ class ReferenceLayerViewListApiTest(BasePermissionTest, TestCase):
 
     def test_list_api(self):
         """Test list API."""
-        url = reverse('boundary-api-list')
+        url = reverse('reference-datasets-api-list')
         self.permission.organization_permission = PERMISSIONS.NONE.name
         self.permission.public_permission = PERMISSIONS.NONE.name
         self.permission.save()
@@ -121,7 +121,7 @@ class ReferenceLayerViewListApiTest(BasePermissionTest, TestCase):
         self.permission.public_permission = PERMISSIONS.NONE.name
         self.permission.save()
         url = reverse(
-            'boundary-api-detail',
+            'reference-datasets-api-detail',
             kwargs={'identifier': self.resource.identifier}
         )
         self.assertRequestGetView(url, 403)
@@ -144,7 +144,7 @@ class ReferenceLayerViewListApiTest(BasePermissionTest, TestCase):
             }
         )
         url = reverse(
-            'boundary-api-detail',
+            'reference-datasets-api-detail',
             kwargs={'identifier': resource.identifier}
         )
         self.assertRequestDeleteView(url, 403)
@@ -153,11 +153,11 @@ class ReferenceLayerViewListApiTest(BasePermissionTest, TestCase):
         self.assertRequestDeleteView(url, 403, self.resource_creator)
 
         response = self.assertRequestGetView(
-            reverse('boundary-api-list'), 200, self.creator)
+            reverse('reference-datasets-api-list'), 200, self.creator)
         print(response.json()['results'][0]['name'])
         self.assertEqual(len(response.json()['results']), 2)
 
         self.assertRequestDeleteView(url, 204, self.creator)
         response = self.assertRequestGetView(
-            reverse('boundary-api-list'), 200, self.creator)
+            reverse('reference-datasets-api-list'), 200, self.creator)
         self.assertEqual(len(response.json()['results']), 1)

@@ -25,17 +25,17 @@ reference_dataset_api = [
     url(
         r'^centroid/(?P<level>\d+)$',
         ReferenceLayerCentroid.as_view(),
-        name='reference-dataset-centroid-api'
+        name='reference-datasets-centroid-api'
     ),
     url(
         r'^centroid$',
         ReferenceLayerCentroidUrls.as_view(),
-        name='reference-dataset-centroid-url-api'
+        name='reference-datasets-centroid-url-api'
     ),
     url(
         r'^vector-tiles/(?P<z>\d+)/(?P<x>\d+)/(?P<y>\d+)/$',
         ReferenceLayerVectorTile.as_view(),
-        name='reference-dataset-vector-tile-api'
+        name='reference-datasets-vector-tile-api'
     ),
 ]
 urlpatterns = [

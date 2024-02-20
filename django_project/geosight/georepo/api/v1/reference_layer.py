@@ -49,7 +49,7 @@ class ReferenceLayerViewSet(BaseApiV1Resource):
         return [permission() for permission in permission_classes]
 
     @swagger_auto_schema(
-        operation_id='reference-dataset-list',
+        operation_id='reference-datasets-list',
         tags=[ApiTag.REFERENCE_DATASET],
         manual_parameters=[
             *common_api_params,
@@ -65,7 +65,7 @@ class ReferenceLayerViewSet(BaseApiV1Resource):
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(
-        operation_id='reference-dataset-detail',
+        operation_id='reference-datasets-detail',
         tags=[ApiTag.REFERENCE_DATASET],
         manual_parameters=[],
         operation_description='Return detailed of reference dataset.'
@@ -75,7 +75,7 @@ class ReferenceLayerViewSet(BaseApiV1Resource):
         return super().retrieve(request, identifier=identifier)
 
     @swagger_auto_schema(
-        operation_id='reference-dataset-detail-delete',
+        operation_id='reference-datasets-detail-delete',
         tags=[ApiTag.REFERENCE_DATASET],
         manual_parameters=[],
         operation_description='Delete a reference dataset.'

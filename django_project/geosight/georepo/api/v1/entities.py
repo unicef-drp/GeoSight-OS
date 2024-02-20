@@ -43,7 +43,7 @@ class EntityViewSet(BaseApiV1, viewsets.ReadOnlyModelViewSet):
         return view.entity_set.all()
 
     @swagger_auto_schema(
-        operation_id='reference-dataset-entity-list',
+        operation_id='reference-datasets-entity-list',
         tags=[ApiTag.REFERENCE_DATASET],
         manual_parameters=[
             *common_api_params,
@@ -61,7 +61,7 @@ class EntityViewSet(BaseApiV1, viewsets.ReadOnlyModelViewSet):
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(
-        operation_id='reference-dataset-entity-detail',
+        operation_id='reference-datasets-entity-detail',
         tags=[ApiTag.REFERENCE_DATASET],
         manual_parameters=[],
         operation_description=(
