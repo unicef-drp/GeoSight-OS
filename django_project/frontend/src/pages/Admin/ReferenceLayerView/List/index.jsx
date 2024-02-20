@@ -118,11 +118,10 @@ export function resourceActions(params) {
 export default function ReferenceLayerViewList() {
   const pageName = pageNames.ReferenceLayerView
   const columns = COLUMNS(pageName, urls.admin.boundaryList);
+  const nameColumn = columns[1];
+  nameColumn.flex = 0.5;
   const cleanColumns = [
-    columns[0], columns[1], columns[2],
-    {
-      field: 'identifier', headerName: 'Identifier', flex: 0.5
-    },
+    columns[0], nameColumn, columns[2],
     {
       field: 'actions',
       type: 'actions',
