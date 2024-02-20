@@ -23,12 +23,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='dashboardbookmark',
             name='selected_indicator_layers',
-            field=models.JSONField(blank=True, null=True, default=[]),
+            field=models.JSONField(blank=True, null=True, default=list),
         ),
         migrations.AddField(
             model_name='dashboardembed',
             name='selected_indicator_layers',
-            field=models.JSONField(blank=True, default=[], null=True),
+            field=models.JSONField(blank=True, default=list, null=True),
         ),
         migrations.RunPython(run, migrations.RunPython.noop),
     ]
