@@ -24,7 +24,8 @@ def querying_vector_tile(view: ReferenceLayerView, z: int, x: int, y: int):
     sql = f"""
         WITH mvtgeom AS
         (
-            SELECT name, geom_id as ucode, concept_uuid, admin_level as level,
+            SELECT name, name as label, geom_id as ucode, 
+            concept_uuid, admin_level as level,
                 ST_AsMVTGeom(
                     ST_Transform(geometry, 3857),
                     ST_TileEnvelope({z}, {x}, {y}),
