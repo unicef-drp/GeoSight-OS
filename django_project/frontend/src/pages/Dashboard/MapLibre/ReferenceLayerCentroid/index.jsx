@@ -57,7 +57,6 @@ export default function ReferenceLayerCentroid({ map }) {
     indicatorLayers,
     referenceLayer
   } = useSelector(state => state.dashboard.data)
-  const referenceLayerData = useSelector(state => state.referenceLayerData[referenceLayer.identifier]);
   const { showIndicatorMapLabel } = useSelector(state => state.globalState)
   const { indicatorShow } = useSelector(state => state.map)
   const filteredGeometries = useSelector(state => state.filteredGeometries)
@@ -150,7 +149,7 @@ export default function ReferenceLayerCentroid({ map }) {
       }
 
     }
-  }, [referenceLayerData]);
+  }, [referenceLayer]);
 
   /**
    * Render chart
