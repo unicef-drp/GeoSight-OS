@@ -104,15 +104,6 @@ class DashboardBookmarkAPI(APIView):
         except DashboardIndicatorLayer.DoesNotExist:
             return HttpResponseBadRequest(
                 f'{data["selectedIndicatorLayer"]} does not exist')
-
-        try:
-            layer = dashboard.dashboardindicatorlayer_set.get(
-                id=data['selectedIndicatorSecondLayer']
-            )
-            data['selected_indicator_second_layer'] = layer
-        except DashboardIndicatorLayer.DoesNotExist:
-            return HttpResponseBadRequest(
-                f'{data["selectedIndicatorLayer"]} does not exist')
         except KeyError:
             pass
         return data

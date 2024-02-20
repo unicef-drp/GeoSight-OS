@@ -39,6 +39,7 @@ class DashboardBookmarkForm(forms.ModelForm):
         data['filters'] = json.dumps(data['filters'])
         data['indicator_layer_show'] = data['indicatorShow']
         data['context_layer_show'] = data['contextLayersShow']
+        data['selected_indicator_layers'] = data['selectedIndicatorLayers']
         data['selected_admin_level'] = data['selectedAdminLevel']
         data['is_3d_mode'] = data['is3dMode']
         data['position'] = json.loads(data['position'])

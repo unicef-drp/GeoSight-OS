@@ -41,9 +41,9 @@ import './style.scss';
 
 
 /** Force indicator layer to update **/
-export let indicatorLayersForcedUpdate = false
-export const changeIndicatorLayersForcedUpdate = (force) => {
-  indicatorLayersForcedUpdate = force
+export let indicatorLayersForcedUpdateIds = null
+export const changeIndicatorLayersForcedUpdate = (ids) => {
+  indicatorLayersForcedUpdateIds = ids
 }
 
 
@@ -148,7 +148,7 @@ export function IndicatorLayers() {
    */
   useEffect(() => {
     let indicatorLayersTree = JSON.parse(JSON.stringify(indicatorLayers))
-    const selectedIds = [currentIndicatorLayer, currentIndicatorSecondLayer]
+    let selectedIds = [currentIndicatorLayer, currentIndicatorSecondLayer]
     if (indicatorLayersTree && indicatorLayersTree.length) {
       // Indicator enabled
       let indicatorEnabled = { 'id': currentIndicatorLayer }
@@ -160,14 +160,17 @@ export function IndicatorLayers() {
       if (!indicatorLayersIds.includes(currentIndicatorLayer)) {
         indicatorEnabled = { 'id': null }
       }
-
-      if (!indicatorEnabled.id || indicatorLayersForcedUpdate) {
-        // If not force updated
-        indicatorEnabled = indicatorLayersTree.find(indicator => {
-          return indicator.visible_by_default
-        })
+      if (!indicatorEnabled.id || indicatorLayersForcedUpdateIds) {
+        if (!indicatorLayersForcedUpdateIds?.length) {
+          // If not force updated
+          indicatorEnabled = indicatorLayersTree.find(indicator => {
+            return indicator.visible_by_default
+          })
+        } else {
+          selectedIds = indicatorLayersForcedUpdateIds
+        }
       }
-      indicatorLayersForcedUpdate = false
+      indicatorLayersForcedUpdateIds = null
 
       // Check default indicator as turned one
       if (currentIndicatorLayer !== indicatorEnabled?.id) {
@@ -231,8 +234,8 @@ export function IndicatorLayers() {
     )
 
     // Setup current indicator layer
-    updateCurrentIndicator(currentIndicatorLayer, Actions.SelectedIndicatorLayer)
-    updateCurrentIndicator(currentIndicatorSecondLayer, Actions.SelectedIndicatorSecondLayer)
+    updateCurrentIndicator(selectedIds[0], Actions.SelectedIndicatorLayer)
+    updateCurrentIndicator(selectedIds[1], Actions.SelectedIndicatorSecondLayer)
     updateOtherLayers(['' + selectedIds[0], '' + selectedIds[1]])
   }, [indicatorLayers, relatedTableData, indicatorLayersStructure]);
 

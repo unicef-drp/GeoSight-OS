@@ -113,7 +113,6 @@ export default function OverviewForm({ changed }) {
             val => {
               setOverviewData(val)
               changed(true)
-              console.log(val)
             }
           }
         />

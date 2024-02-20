@@ -60,27 +60,35 @@ class RelatedTable(AbstractTerm, AbstractEditData):
         for dashboard_rt in self.dashboardrelatedtable_set.all():
             dashboard_rt.dashboard.increase_version()
 
-    def insert_row(self, data: dict, replace=False):
+    def insert_row(self, data: dict, row_id=None, replace=False):
         """Insert row.
 
         It will be inserted as latest row.
         """
-        try:
-            last = self.relatedtablerow_set.last()
-            order = last.order + 1 if last else 0
-            if replace:
-                order = data.get('order', order)
+        if row_id is not None:
+            replace = True
 
-            row, _ = RelatedTableRow.objects.get_or_create(
-                table=self,
-                order=order,
-                defaults={
-                    'data': data
-                }
-            )
-            if replace:
+        try:
+            if row_id is not None:
+                row = RelatedTableRow.objects.get(pk=row_id)
                 row.data = data
+            else:
+                last = self.relatedtablerow_set.last()
+                order = last.order + 1 if last else 0
+                if replace:
+                    order = data.get('order', order)
+
+                row, _ = RelatedTableRow.objects.get_or_create(
+                    table=self,
+                    order=order,
+                    defaults={
+                        'data': data
+                    }
+                )
+                if replace:
+                    row.data = data
             row.save()
+            return row
         except KeyError as e:
             raise RelatedTableException(f'{e} is required.')
 

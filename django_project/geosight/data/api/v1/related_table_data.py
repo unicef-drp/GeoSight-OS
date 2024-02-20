@@ -15,14 +15,18 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework.exceptions import MethodNotAllowed
+from rest_framework.exceptions import MethodNotAllowed, ParseError
 from rest_framework.generics import get_object_or_404
+from rest_framework.response import Response
+from rest_framework.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT
 
 from core.api_utils import ApiTag
 from geosight.data.api.v1.base import BaseApiV1Resource
 from geosight.data.models import RelatedTableRow, RelatedTable
 from geosight.data.serializer.related_table import RelatedTableRowApiSerializer
-from geosight.permission.access import read_permission_resource
+from geosight.permission.access import \
+    read_permission_resource, edit_permission_resource, \
+    delete_permission_resource
 
 
 class RelatedTableDataViewSet(BaseApiV1Resource):
@@ -32,13 +36,16 @@ class RelatedTableDataViewSet(BaseApiV1Resource):
     serializer_class = RelatedTableRowApiSerializer
     extra_exclude_fields = []
 
-    def get_queryset(self):  # noqa: D102
+    def _get_related_table(self):  # noqa: D102
         related_table_id = self.kwargs.get('related_tables_id')
-        related_table = get_object_or_404(
+        return get_object_or_404(
             RelatedTable.objects.filter(pk=related_table_id)
         )
+
+    def get_queryset(self):  # noqa: D102
+        related_table = self._get_related_table()
         read_permission_resource(related_table, self.request.user)
-        return RelatedTableRow.objects.filter(table_id=related_table_id)
+        return RelatedTableRow.objects.filter(table_id=related_table.id)
 
     def get_serializer(self, *args, **kwargs):  # noqa: D102
         kwargs.setdefault('context', self.get_serializer_context())
@@ -62,27 +69,62 @@ class RelatedTableDataViewSet(BaseApiV1Resource):
 
     @swagger_auto_schema(
         operation_id='related-tables-data-detail',
-        tags=[ApiTag.RELATED_TABLES_DATA]
+        tags=[ApiTag.RELATED_TABLES_DATA],
+        operation_description=
+        'Return detail of a related table row for the user.',
+        responses={
+            200: openapi.Response(
+                description="Resource fetching successful.",
+                schema=RelatedTableRowApiSerializer(many=False)
+            )
+        }
     )
     def retrieve(self, request, *args, **kwargs):
         """Get a single related table row."""
-        raise MethodNotAllowed('GET')
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
     @swagger_auto_schema(
         operation_id='related-tables-data-create',
         tags=[ApiTag.RELATED_TABLES_DATA],
+        manual_parameters=[],
+        request_body=RelatedTableRowApiSerializer.
+        Meta.swagger_schema_fields['post_body'],
+        operation_description='Create related table rows.'
     )
     def create(self, request, *args, **kwargs):
-        """Create a related table row."""
-        raise MethodNotAllowed('POST')
+        """Create related table rows."""
+        serializer = self._get_valid_serializer_or_throw(request, many=True)
+        related_table = self._get_related_table()
+        edit_permission_resource(related_table, request.user)
+        inserted_rows = [related_table.insert_row(obj['data'])
+                         for obj in serializer.validated_data]
+        serializer = self.get_serializer(inserted_rows, many=True)
+        return Response(serializer.data, status=HTTP_201_CREATED)
 
     @swagger_auto_schema(
         operation_id='related-tables-data-update',
         tags=[ApiTag.RELATED_TABLES_DATA],
+        manual_parameters=[],
+        request_body=RelatedTableRowApiSerializer.
+        Meta.swagger_schema_fields['post_body'],
+        operation_description='Update a related table row.'
     )
     def update(self, request, *args, **kwargs):
         """Update a related table row."""
-        raise MethodNotAllowed('PUT')
+        # permissions
+        related_table = self._get_related_table()
+        edit_permission_resource(related_table, request.user)
+
+        # validation
+        id = kwargs.get('id')
+        get_object_or_404(RelatedTableRow.objects.filter(pk=id))
+        serializer = self._get_valid_serializer_or_throw(request, many=False)
+
+        # update and return
+        row = related_table.insert_row(serializer.validated_data, row_id=id)
+        return Response(self.get_serializer(row).data)
 
     @swagger_auto_schema(
         operation_id='related-tables-data-partial-update',
@@ -95,7 +137,32 @@ class RelatedTableDataViewSet(BaseApiV1Resource):
     @swagger_auto_schema(
         operation_id='related-tables-data-delete',
         tags=[ApiTag.RELATED_TABLES_DATA],
+        manual_parameters=[],
+        operation_description='Delete a related table row.'
     )
     def destroy(self, request, *args, **kwargs):
         """Delete an existing related table row."""
-        raise MethodNotAllowed('DELETE')
+        related_table = self._get_related_table()
+        delete_permission_resource(related_table, request.user)
+        self.perform_destroy(self.get_object())
+        return Response(status=HTTP_204_NO_CONTENT)
+
+    @swagger_auto_schema(
+        operation_id='related-tables-data-delete-all',
+        tags=[ApiTag.RELATED_TABLES_DATA],
+        manual_parameters=[],
+        operation_description='Delete all related table rows.'
+    )
+    def delete(self, request, *args, **kwargs):
+        """Delete an existing related table row."""
+        related_table = self._get_related_table()
+        delete_permission_resource(related_table, request.user)
+        self.get_queryset().delete()
+        return Response(status=HTTP_204_NO_CONTENT)
+
+    def _get_valid_serializer_or_throw(self, request, many):
+        """Get an already validated serializer."""
+        serializer = self.get_serializer(data=request.data, many=many)
+        if not serializer.is_valid() or len(serializer.validated_data) < 1:
+            raise ParseError(serializer.errors)
+        return serializer

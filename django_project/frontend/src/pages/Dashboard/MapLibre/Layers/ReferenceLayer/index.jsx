@@ -113,7 +113,11 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
 
   const filteredGeometries = where ? filteredGeometriesState : null
 
-  // When reference layer changed, fetch reference data
+  // ------------------------------------------------------------
+  // TODO:
+  //  When reference layer changed, fetch reference data
+  //  For the entity data, Check ReferenceLayerCentroid
+  // ------------------------------------------------------------
   useEffect(() => {
     if (referenceLayer.identifier && !referenceLayerData) {
       let detailUrl = GeorepoUrls.ViewDetail(referenceLayer.identifier)

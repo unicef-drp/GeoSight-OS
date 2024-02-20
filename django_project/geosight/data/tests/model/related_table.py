@@ -74,6 +74,29 @@ class RelatedTableTest(TestCase):
         for key, value in data.items():
             self.assertEqual(rows[0][key], value)
 
+    def test_insert_row_with_id(self):
+        """Test insert row."""
+        # Create original data
+        data = {
+            'geom_id': 'Geom1',
+            'Field 1': 'Field 1',
+            'Field 2': 'Field 2',
+        }
+        row = self.related_table.insert_row(data)
+
+        # insert new data
+        data = {
+            'geom_id': 'Geom2',
+            'Field 1': 'Field 1.1',
+            'Field 2': 'Field 2.1',
+        }
+
+        self.related_table.insert_row(data, row_id=row.id)
+        rows = RelatedTableSerializer(self.related_table).data['rows']
+        self.assertEqual(len(rows), 1)
+        for key, value in data.items():
+            self.assertEqual(rows[0][key], value)
+
     def test_insert_rows(self):
         """Test insert rows."""
         list_data = [

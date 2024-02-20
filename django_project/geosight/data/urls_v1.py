@@ -33,9 +33,9 @@ router.register(r'basemaps', BasemapViewSet, basename='basemaps')
 router.register(r'indicators', IndicatorViewSet, basename='indicators')
 
 router.register(
-    r'related_tables', RelatedTableViewSet, basename='related_tables')
+    r'related-tables', RelatedTableViewSet, basename='related_tables')
 related_tables_router = NestedSimpleRouter(
-    router, r'related_tables', lookup='related_tables')
+    router, r'related-tables', lookup='related_tables')
 related_tables_router.register(
     'data', RelatedTableDataViewSet, basename='related_tables_data'
 )

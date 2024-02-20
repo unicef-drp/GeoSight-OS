@@ -307,7 +307,7 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
         """Check indicator and data."""
         indicator = self.get_indicator(data)
         if indicator:
-            comment = indicator.validate(data['value'])
+            data['value'], comment = indicator.validate(data['value'])
             if comment:
                 try:
                     data['description'] += ' ' + comment
