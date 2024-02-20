@@ -38,7 +38,7 @@ class ReferenceLayerViewLevelSerializer(serializers.ModelSerializer):
     def get_url(self, obj: ReferenceLayerViewLevel):
         """Return value."""
         return reverse(
-            'boundary-entity-api-list',
+            'reference-dataset-entity-api-list',
             kwargs={'identifier': obj.reference_layer.identifier}
         ) + f'?admin_level={obj.level}'
 
@@ -72,7 +72,7 @@ class ReferenceLayerViewSerializer(DynamicModelSerializer):
     def get_vector_tiles(self, obj: ReferenceLayerView):
         """Return value."""
         url = reverse(
-            'boundary-vector-tile-api',
+            'reference-dataset-vector-tile-api',
             kwargs={
                 'identifier': obj.identifier,
                 'z': '0',
@@ -149,7 +149,7 @@ class ReferenceLayerCentroidUrlSerializer(serializers.ModelSerializer):
     def get_url(self, obj: ReferenceLayerViewLevel):
         """Return value."""
         return reverse(
-            'boundary-centroid-api',
+            'reference-dataset-centroid-api',
             kwargs={
                 'identifier': obj.reference_layer.identifier,
                 'level': obj.level

@@ -76,7 +76,7 @@ export default function SideNavigation({ pageName, minified }) {
   const dataset = urls.admin.dataset; // eslint-disable-line no-undef
   const dataAccess = urls.admin.dataAccess; // eslint-disable-line no-undef
   const relatedTableList = urls.admin.relatedTableList; // eslint-disable-line no-undef
-  const boundaryList = urls.admin.boundaryList; // eslint-disable-line no-undef
+  const referenceDatasetList = urls.admin.referenceDatasetList; // eslint-disable-line no-undef
   const helpPageRef = useRef(null);
 
   return (
@@ -182,18 +182,18 @@ export default function SideNavigation({ pageName, minified }) {
               </div>
               <div className='SideNavigationContentGroup'>
                 <div className='SideNavigationContentGroupTitle'>
-                  BOUNDARIES
+                  REFERENCE DATASETS
                 </div>
                 <SidaNavigationButton
                   minified={minified}
                   title={pageNames.ReferenceLayerView}>
-                  <a href={boundaryList}
+                  <a href={referenceDatasetList}
                      className={'SideNavigation-Row ' + ([pageNames.ReferenceLayerView].includes(pageName) ? 'active' : '')}>
                     {[pageNames.ReferenceLayerView].includes(pageName) ?
                       <LayerActiveIcon/> :
                       <LayerIcon/>}
                     <span
-                      className='SideNavigation-Row-Name'>Boundaries</span>
+                      className='SideNavigation-Row-Name'>Reference Datasets</span>
                   </a>
                 </SidaNavigationButton>
               </div>

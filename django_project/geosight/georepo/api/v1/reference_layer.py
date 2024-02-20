@@ -29,7 +29,7 @@ from geosight.georepo.serializer.reference_layer import (
 
 
 class ReferenceLayerViewSet(BaseApiV1Resource):
-    """Boundary view set."""
+    """Reference Dataset view set."""
 
     model_class = ReferenceLayerView
     serializer_class = ReferenceLayerViewSerializer
@@ -49,34 +49,36 @@ class ReferenceLayerViewSet(BaseApiV1Resource):
         return [permission() for permission in permission_classes]
 
     @swagger_auto_schema(
-        operation_id='boundary-list',
-        tags=[ApiTag.BOUNDARY],
+        operation_id='reference-dataset-list',
+        tags=[ApiTag.REFERENCE_DATASET],
         manual_parameters=[
             *common_api_params,
             ApiParams.NAME_CONTAINS,
             ApiParams.IDENTIFIER
         ],
-        operation_description='Return list of accessed boundary for the user.'
+        operation_description=(
+                'Return list of accessed reference dataset for the user.'
+        )
     )
     def list(self, request, *args, **kwargs):
-        """List of boundary."""
+        """List of reference-dataset."""
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(
-        operation_id='boundary-detail',
-        tags=[ApiTag.BOUNDARY],
+        operation_id='reference-dataset-detail',
+        tags=[ApiTag.REFERENCE_DATASET],
         manual_parameters=[],
-        operation_description='Return detailed of boundary.'
+        operation_description='Return detailed of reference dataset.'
     )
     def retrieve(self, request, identifier=None):
-        """Return detailed of boundary."""
+        """Return detailed of reference-dataset."""
         return super().retrieve(request, identifier=identifier)
 
     @swagger_auto_schema(
-        operation_id='boundary-detail-delete',
-        tags=[ApiTag.BOUNDARY],
+        operation_id='reference-dataset-detail-delete',
+        tags=[ApiTag.REFERENCE_DATASET],
         manual_parameters=[],
-        operation_description='Delete a boundary.'
+        operation_description='Delete a reference dataset.'
     )
     def destroy(self, request, identifier=None):
         """Destroy an object."""

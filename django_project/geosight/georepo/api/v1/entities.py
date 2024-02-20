@@ -26,7 +26,7 @@ from geosight.permission.access import read_data_permission_resource
 
 
 class EntityViewSet(BaseApiV1, viewsets.ReadOnlyModelViewSet):
-    """Boundary view set."""
+    """Reference dataset view set."""
 
     serializer_class = ApiEntitySerializer
     lookup_field = 'geom_id'
@@ -43,8 +43,8 @@ class EntityViewSet(BaseApiV1, viewsets.ReadOnlyModelViewSet):
         return view.entity_set.all()
 
     @swagger_auto_schema(
-        operation_id='boundary-entity-list',
-        tags=[ApiTag.BOUNDARY],
+        operation_id='reference-dataset-entity-list',
+        tags=[ApiTag.REFERENCE_DATASET],
         manual_parameters=[
             *common_api_params,
             ApiParams.NAME_CONTAINS,
@@ -52,21 +52,22 @@ class EntityViewSet(BaseApiV1, viewsets.ReadOnlyModelViewSet):
             ApiParams.ADMIN_LEVEL,
         ],
         operation_description=(
-                'Return list of accessed entity of boundary for the user.'
+                'Return list of accessed entity of '
+                'reference dataset for the user.'
         )
     )
     def list(self, request, *args, **kwargs):
-        """List of boundary."""
+        """List of reference-dataset."""
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(
-        operation_id='boundary-entity-detail',
-        tags=[ApiTag.BOUNDARY],
+        operation_id='reference-dataset-entity-detail',
+        tags=[ApiTag.REFERENCE_DATASET],
         manual_parameters=[],
         operation_description=(
-                'Return detailed of entity of boundary.'
+                'Return detailed of entity of reference dataset.'
         )
     )
     def retrieve(self, request, identifier=None):
-        """Return detailed of boundary."""
+        """Return detailed of reference-dataset."""
         return super().retrieve(request, identifier=identifier)

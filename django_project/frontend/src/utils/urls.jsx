@@ -13,14 +13,15 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-export const LocalBoundary = {
+export const referenceDatasetUrlBase = 'reference-datasets'
+export const InternalReferenceDatasets = {
   list: () => {
-    return `/api/v1/boundary/`
+    return `/api/v1/${referenceDatasetUrlBase}/`
   },
   detail: (identifier) => {
-    return `${window.location.origin}/api/v1/boundary/${identifier}/`
+    return `${window.location.origin}/api/v1/${referenceDatasetUrlBase}/${identifier}/`
   },
   centroid: (identifier) => {
-    return `${window.location.origin}/georepo/boundary/${identifier}/centroid`
+    return `${window.location.origin}/georepo/${referenceDatasetUrlBase}/${identifier}/centroid`
   }
 }

@@ -38,7 +38,7 @@ import { ExecuteWebWorker } from "../../../../utils/WebWorker";
 import worker from "./Label/worker";
 import { fetchJSON } from "../../../../Requests";
 import { Actions } from "../../../../store/dashboard";
-import { LocalBoundary } from "../../../../utils/urls";
+import { InternalReferenceDatasets } from "../../../../utils/urls";
 
 import './style.scss';
 
@@ -89,7 +89,7 @@ export default function ReferenceLayerCentroid({ map }) {
         const geometryMemberByUcode = {}
         let url = `${preferences.georepo_api.api}/search/view/${referenceLayer.identifier}/centroid/`
         if (referenceLayer.is_local) {
-          url = LocalBoundary.centroid(referenceLayer.identifier)
+          url = InternalReferenceDatasets.centroid(referenceLayer.identifier)
         }
         fetchJson(url).then(async data => {
           if (identifier === lastRequest) {

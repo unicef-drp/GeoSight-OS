@@ -41,7 +41,7 @@ class ApiTag:
     RELATED_TABLES = 'Related tables'
     RELATED_TABLES_DATA = 'Related tables data'
     DATA_BROWSER = 'Data Browser'
-    BOUNDARY = 'Boundary'
+    REFERENCE_DATASET = 'Reference Datasets'
 
 
 class ApiParams:

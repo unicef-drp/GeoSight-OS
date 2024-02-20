@@ -23,9 +23,12 @@ detail_api = []
 
 router = DefaultRouter()
 router.register(
-    r'boundary/(?P<identifier>[^/]+)/entity',
-    EntityViewSet, basename='boundary-entity-api'
+    r'reference-datasets/(?P<identifier>[^/]+)/entity',
+    EntityViewSet, basename='reference-dataset-entity-api'
 )
-router.register(r'boundary', ReferenceLayerViewSet, basename='boundary-api')
+router.register(
+    r'reference-datasets', ReferenceLayerViewSet,
+    basename='reference-dataset-api'
+)
 
 urlpatterns = router.urls

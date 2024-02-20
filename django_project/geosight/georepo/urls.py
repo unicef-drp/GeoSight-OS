@@ -21,21 +21,21 @@ from geosight.georepo.api import (
     ReferenceLayerCentroidUrls, ReferenceLayerCentroid
 )
 
-boundary_api = [
+reference_dataset_api = [
     url(
         r'^centroid/(?P<level>\d+)$',
         ReferenceLayerCentroid.as_view(),
-        name='boundary-centroid-api'
+        name='reference-dataset-centroid-api'
     ),
     url(
         r'^centroid$',
         ReferenceLayerCentroidUrls.as_view(),
-        name='boundary-centroid-url-api'
+        name='reference-dataset-centroid-url-api'
     ),
     url(
         r'^vector-tiles/(?P<z>\d+)/(?P<x>\d+)/(?P<y>\d+)/$',
         ReferenceLayerVectorTile.as_view(),
-        name='boundary-vector-tile-api'
+        name='reference-dataset-vector-tile-api'
     ),
 ]
 urlpatterns = [
@@ -44,5 +44,8 @@ urlpatterns = [
         ReferenceLayerEntityDrilldownAPI.as_view(),
         name='entity-drilldown-api'
     ),
-    url(r'^boundary/(?P<identifier>[^/]+)/', include(boundary_api)),
+    url(
+        r'^reference-datasets/(?P<identifier>[^/]+)/',
+        include(reference_dataset_api)
+    ),
 ]

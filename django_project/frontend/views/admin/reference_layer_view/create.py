@@ -33,7 +33,7 @@ class ReferenceLayerViewImporterView(RoleCreatorRequiredMixin, AdminBaseView):
     @property
     def page_title(self):
         """Return page title that used on tab bar."""
-        return 'Boundary'
+        return 'Reference Datasets'
 
     @property
     def content_title(self):
@@ -41,7 +41,7 @@ class ReferenceLayerViewImporterView(RoleCreatorRequiredMixin, AdminBaseView):
         list_url = reverse('admin-reference-layer-view-list-view')
         create_url = reverse('admin-reference-layer-view-create-view')
         return (
-            f'<a href="{list_url}">Boundary</a> '
+            f'<a href="{list_url}">Reference Datasets</a> '
             '<span>></span>'
             f'<a href="{create_url}">Create</a> '
         )

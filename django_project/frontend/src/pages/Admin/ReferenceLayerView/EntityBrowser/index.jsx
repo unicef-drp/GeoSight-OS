@@ -53,8 +53,7 @@ export default function EntityBrowserAdmin() {
     { field: 'id', headerName: 'id', hide: true },
     { field: 'name', headerName: 'Name', flex: 1 },
     { field: 'admin_level', headerName: 'Level', width: 80, },
-    { field: 'ucode', headerName: 'Geo Code', flex: 1 },
-    { field: 'concept_uuid', headerName: 'Concept UUID', flex: 1 },
+    { field: 'ucode', headerName: 'Geo Code', flex: 1 }
   ]
 
   /***

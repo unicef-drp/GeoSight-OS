@@ -88,8 +88,8 @@ urlpatterns = [
         name='style-permission-api'
     ),
     url(
-        r'^boundary/(?P<identifier>[^/]+)',
+        r'^reference-datasets/(?P<identifier>[^/]+)',
         ReferenceLayerViewPermissionAPI.as_view(),
-        name='boundary-permission-api'
+        name='reference-dataset-permission-api'
     ),
 ]

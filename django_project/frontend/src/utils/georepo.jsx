@@ -15,7 +15,7 @@
 
 import { fetchJSON } from '../Requests'
 import axios from "axios";
-import { LocalBoundary } from "./urls";
+import { InternalReferenceDatasets } from "./urls";
 
 const LocalGeoSightIdentifier = 'Internal reference datasets'
 
@@ -104,7 +104,7 @@ export const fetchReferenceLayerViewsList = async function (referenceLayerUUID) 
   let data = []
   let url = GeorepoUrls.WithDomain(`/search/dataset/${referenceLayerUUID}/view/list/`, false)
   if (referenceLayerUUID === LocalGeoSightIdentifier) {
-    url = LocalBoundary.list()
+    url = InternalReferenceDatasets.list()
   }
   data = await fetchFeatureList(url, true);
   data.map(row => {
@@ -158,9 +158,9 @@ export const fetchFeatureList = async function (url, useCache = true) {
     try {
       let usedUrl = url + '?geom=centroid&cache=false&page=' + page
 
-      // TODO : LOCAL BOUNDARY
+      // TODO : INTERNAL REFERENCE DATASETS
       //  This is for local
-      if (url.includes('boundary')) {
+      if (url.includes(referenceDatasetUrlBase)) {
         if (url.includes('?')) {
           usedUrl = url + '&page=' + page
         } else {

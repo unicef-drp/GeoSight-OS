@@ -91,7 +91,7 @@ export default function SummaryDashboardForm({ changed }) {
     <div className='Summary'>
       <div className="BasicForm AdminForm">
         <div className="BasicFormSection">
-          <Grid container spacing={2}>ucode
+          <Grid container spacing={2}>
             <Grid item xs={6}>
               <label className="form-label required" htmlFor="name">
                 View
