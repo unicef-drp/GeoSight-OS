@@ -86,7 +86,6 @@ export default function ReferenceLayerCentroid({ map }) {
       // ----------------------------
       try {
         const geometryMemberByUcode = {}
-        const geometryDataByLevel = {}
 
         const url = `${preferences.georepo_api.api}/search/view/${referenceLayer.identifier}/centroid/`
         fetchJson(url).then(async data => {
