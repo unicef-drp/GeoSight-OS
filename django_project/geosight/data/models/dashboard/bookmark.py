@@ -42,7 +42,7 @@ class DashboardBookmarkAbstract(models.Model):
         on_delete=models.SET_NULL
     )
     selected_indicator_layers = models.JSONField(
-        null=True, blank=True, default=[]
+        null=True, blank=True, default=list
     )
     selected_context_layers = models.ManyToManyField(
         ContextLayer, blank=True
