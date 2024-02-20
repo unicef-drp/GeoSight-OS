@@ -22,10 +22,13 @@ from geosight.georepo.models.entity import Entity
 
 class EntityCentroidSerializer(GeoFeatureModelSerializer):
     """Centroid serializer for entity."""
+    entities_by_ucode = {}
 
     c = serializers.SerializerMethodField()
     n = serializers.SerializerMethodField()
     u = serializers.SerializerMethodField()
+    pu = serializers.SerializerMethodField()
+    pc = serializers.SerializerMethodField()
 
     def get_c(self, obj: Entity):
         """Return concept uuid."""
@@ -39,10 +42,36 @@ class EntityCentroidSerializer(GeoFeatureModelSerializer):
         """Return ucode."""
         return obj.geom_id
 
+    def get_pu(self, obj: Entity):
+        """Return ucode."""
+        parents = obj.parents
+        parents.reverse()
+        return list(parents)
+
+    def get_pc(self, obj: Entity):
+        """Return ucode."""
+        pcs = []
+        parents = obj.parents
+        parents.reverse()
+        for parent in parents:
+            try:
+                pcs.append(self.entities_by_ucode[parent])
+            except KeyError:
+                try:
+                    entity = Entity.objects.get(
+                        reference_layer=obj.reference_layer,
+                        geom_id=parent
+                    ).concept_uuid
+                    self.entities_by_ucode[parent] = entity
+                    pcs.append(entity)
+                except Entity.DoesNotExist:
+                    pass
+        return pcs
+
     class Meta:  # noqa: D106
         model = Entity
         geo_field = 'centroid'
-        fields = ('c', 'n', 'u')
+        fields = ('c', 'n', 'u', 'pu', 'pc')
 
 
 class EntitySerializer(serializers.ModelSerializer):
