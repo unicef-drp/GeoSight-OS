@@ -22,6 +22,7 @@ from geosight.georepo.models.entity import Entity
 
 class EntityCentroidSerializer(GeoFeatureModelSerializer):
     """Centroid serializer for entity."""
+
     entities_by_ucode = {}
 
     c = serializers.SerializerMethodField()
