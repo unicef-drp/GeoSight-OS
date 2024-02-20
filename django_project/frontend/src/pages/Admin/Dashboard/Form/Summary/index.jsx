@@ -83,15 +83,15 @@ export default function SummaryDashboardForm({ changed }) {
   const isCreate = id === null;
 
   const geoFields = [
-    { value: 'concept_uuid', label: 'Concept uuid' },
-    { value: 'geometry_code', label: 'Latest ucode' }
+    { value: 'geometry_code', label: 'Latest ucode' },
+    { value: 'concept_uuid', label: 'Concept uuid' }
   ]
 
   return (
     <div className='Summary'>
       <div className="BasicForm AdminForm">
         <div className="BasicFormSection">
-          <Grid container spacing={2}>
+          <Grid container spacing={2}>ucode
             <Grid item xs={6}>
               <label className="form-label required" htmlFor="name">
                 View

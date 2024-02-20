@@ -17,7 +17,7 @@ import { fetchJSON } from '../Requests'
 import axios from "axios";
 import { LocalBoundary } from "./urls";
 
-const LocalGeoSightIdentifier = 'GeoSight Boundaries'
+const LocalGeoSightIdentifier = 'Internal reference datasets'
 
 /** Georepo URL */
 export function updateToken(url) {
