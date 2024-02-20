@@ -21,7 +21,6 @@ import React, { Fragment, useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 
 import { Actions } from '../../../../store/dashboard'
-import { extractCode, fetchFeatureList } from "../../../../utils/georepo";
 import { ArrowDownwardIcon } from "../../../../components/Icons";
 
 import './style.scss';
@@ -78,69 +77,6 @@ export default function ReferenceLayerSection() {
       }
     }
   }, [referenceLayerData, selectedIndicatorLayer])
-
-  // Onload for default checked and the layer
-  useEffect(() => {
-
-    let levels = referenceLayerData[referenceLayer.identifier]?.data?.dataset_levels;
-
-    // TODO:
-    //  This is used for just fetching levels that is selected.
-    //  But the problem is the levels can be used on the filter
-    //  Commented this for now
-    if (levels && availableLevels) {
-      const maxLevel = Math.max(...availableLevels)
-      levels = levels.filter(level => level.level <= maxLevel)
-    }
-    currentReferenceLayer = referenceLayer.identifier
-    if (levels) {
-      (
-        async () => {
-          const geometryUUIDByUcode = {}
-          const geometryDataByLevel = {}
-          for (let level of levels) {
-            const geometryData = await fetchFeatureList(level.url)
-            if (currentReferenceLayer !== referenceLayer.identifier) {
-              return
-            }
-            const geometryDataDict = {}
-            geometryData.map(geom => {
-              const code = extractCode(geom)
-              if (!code) {
-                return
-              }
-              geom.parents.sort(function (a, b) {
-                return a.admin_level < b.admin_level ? -1 : 1;
-              })
-              const parents = geom.parents.map(parent => geometryUUIDByUcode[parent.default]).filter(parent => !!parent)
-              const memberData = {
-                name: geom.name,
-                ucode: geom.ucode,
-                code: code,
-              }
-              geometryDataDict[code] = {
-                label: geom.name,
-                name: geom.name,
-                centroid: geom.centroid,
-                code: code,
-                ucode: geom.ucode,
-                concept_uuid: code,
-                parents: parents,
-                members: parents.concat(memberData),
-              }
-              geometryUUIDByUcode[geom.ext_codes.default] = memberData
-            })
-            geometryDataByLevel[level.level] = geometryDataDict
-            if (currentReferenceLayer === referenceLayer.identifier) {
-              dispatch(
-                Actions.Geometries.addLevelData(level.level, geometryDataDict)
-              )
-            }
-          }
-        }
-      )()
-    }
-  }, [referenceLayerData])
 
   /** Change Admin Level **/
   const onChange = (newLevel) => {

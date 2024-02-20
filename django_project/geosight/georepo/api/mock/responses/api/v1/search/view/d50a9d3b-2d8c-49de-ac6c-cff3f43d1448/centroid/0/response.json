@@ -1,1 +1,28 @@
-{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[46.8097,5.1661]},"properties":{"c":"a2006979-4f25-448c-891b-3935c4bcf6f0","n":"Somalia","u":"SOM_V1"}}]}
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          46.8097,
+          5.1661
+        ]
+      },
+      "properties": {
+        "c": "a2006979-4f25-448c-891b-3935c4bcf6f0",
+        "n": "Somalia",
+        "u": "SOM_V1",
+        "b": [
+          40.99432,
+          -1.65684,
+          51.41508,
+          11.98839
+        ],
+        "pc": [],
+        "pu": []
+      }
+    }
+  ]
+}
