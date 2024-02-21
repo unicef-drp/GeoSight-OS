@@ -117,25 +117,28 @@ export default function ReferenceLayerCentroid({ map }) {
                 properties.code = code
                 geoms[code] = properties
 
-                // Save for geometries
+                // Check parents
+                let parents = []
                 if (parentsUcode) {
-                  const parents = parentsUcode.map(parent => geometryMemberByUcode[parent]).filter(parent => !!parent)
-                  const memberData = {
-                    name: name,
-                    ucode: ucode,
-                    code: code,
-                  }
-                  geometryDataDict[code] = {
-                    label: name,
-                    name: name,
-                    code: code,
-                    ucode: ucode,
-                    concept_uuid: concept_uuid,
-                    parents: parents,
-                    members: parents.concat(memberData),
-                  }
-                  geometryMemberByUcode[ucode] = memberData
+                  parents = parentsUcode.map(parent => geometryMemberByUcode[parent]).filter(parent => !!parent)
                 }
+
+                // Save for geometries
+                const memberData = {
+                  name: name,
+                  ucode: ucode,
+                  code: code,
+                }
+                geometryDataDict[code] = {
+                  label: name,
+                  name: name,
+                  code: code,
+                  ucode: ucode,
+                  concept_uuid: concept_uuid,
+                  parents: parents,
+                  members: parents.concat(memberData),
+                }
+                geometryMemberByUcode[ucode] = memberData
               })
               if (identifier === lastRequest) {
                 geometries[level.level] = geoms
