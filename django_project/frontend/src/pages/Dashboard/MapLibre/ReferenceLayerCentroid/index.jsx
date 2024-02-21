@@ -114,25 +114,28 @@ export default function ReferenceLayerCentroid({ map }) {
                 properties.code = code
                 geoms[code] = properties
 
-                // Save for geometries
+                // Check parents
+                let parents = []
                 if (parentsUcode) {
-                  const parents = parentsUcode.map(parent => geometryMemberByUcode[parent]).filter(parent => !!parent)
-                  const memberData = {
-                    name: name,
-                    ucode: ucode,
-                    code: code,
-                  }
-                  geometryDataDict[code] = {
-                    label: name,
-                    name: name,
-                    code: code,
-                    ucode: ucode,
-                    concept_uuid: concept_uuid,
-                    parents: parents,
-                    members: parents.concat(memberData),
-                  }
-                  geometryMemberByUcode[ucode] = memberData
+                  parents = parentsUcode.map(parent => geometryMemberByUcode[parent]).filter(parent => !!parent)
                 }
+
+                // Save for geometries
+                const memberData = {
+                  name: name,
+                  ucode: ucode,
+                  code: code,
+                }
+                geometryDataDict[code] = {
+                  label: name,
+                  name: name,
+                  code: code,
+                  ucode: ucode,
+                  concept_uuid: concept_uuid,
+                  parents: parents,
+                  members: parents.concat(memberData),
+                }
+                geometryMemberByUcode[ucode] = memberData
               })
               if (identifier === lastRequest) {
                 geometries[level.level] = geoms
@@ -436,6 +439,9 @@ export default function ReferenceLayerCentroid({ map }) {
       }
 
       // Create style
+      console.log('----------------------')
+      console.log(geometriesData)
+      console.log(usedIndicatorsData)
       const copiedUsedIndicatorsData = dictDeepCopy(usedIndicatorsData)
       indicatorLayer.indicators.map(indicator => {
         if (indicatorLayer.multi_indicator_mode === "Pin") {
@@ -466,6 +472,8 @@ export default function ReferenceLayerCentroid({ map }) {
           indicatorsByGeom[code].push(Object.assign({}, data, usedIndicatorsProperties[indicatorId]));
         })
       }
+      console.log(copiedUsedIndicatorsData)
+      console.log(indicatorsByGeom)
       theGeometries.map(geom => {
         const geometry = geometriesData[geom]
         if (indicatorsByGeom[geometry?.code]) {
@@ -519,6 +527,8 @@ export default function ReferenceLayerCentroid({ map }) {
               properties.chart_style.size = (percentageSize * diffSize) + minSize
             })
         }
+        console.log(features)
+        console.log(config)
         renderChart(features, config)
       }
     } else {

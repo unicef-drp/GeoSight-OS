@@ -428,7 +428,7 @@
           "strokeWeight": 0
         }
       },
-      "shortcode": "SOM_TEST2_IND_A",
+      "shortcode": "SOM_TEST_IND_A",
       "group": 30,
       "unit": "Percentage",
       "aggregation_multiple_values": "SUM(value)",
@@ -469,7 +469,7 @@
           "strokeWeight": 0
         }
       },
-      "shortcode": "SOM_TEST2_IND_B",
+      "shortcode": "SOM_TEST_IND_B",
       "group": 30,
       "unit": "Percentage",
       "aggregation_multiple_values": "AVG(value)",
@@ -485,8 +485,8 @@
     "model": "geosight_data.indicator",
     "pk": 362,
     "fields": {
-      "name": "SOM_TEST_IND_C",
-      "description": "SOM_TEST_IND_C",
+      "name": "Sample Indicator C",
+      "description": "Sample Indicator C",
       "source": null,
       "version_data": "2023-11-03T08:38:19.640Z",
       "creator": 1,
@@ -525,7 +525,7 @@
     "model": "geosight_data.indicator",
     "pk": 370,
     "fields": {
-      "name": "SOM_TEST_IND_D",
+      "name": "Sample Indicator D",
       "description": "",
       "source": null,
       "version_data": "2023-11-03T08:38:18.758Z",
@@ -17689,7 +17689,7 @@
       },
       "type": "Single Indicator",
       "popup_type": "Custom",
-      "popup_template": "\n<!--  CUSTOM STYLE -->\n<style>\n    .popup-content tr td {\n        padding: 2px 10px;\n    }\n</style>\n\n{% set startDate = \"2020-01-01T00:00:00+00:00\" %}\n{% set endDate = \"2020-01-01T00:00:00+00:00\" %}\n\n<!--  HEADER  -->\n<div class=\"header\">\n\t{% set name = context.admin_boundary.name %}\n    <b>{{name}}</b>\n</div>\n\n<!--  CONTENT  -->\n<div class=\"popup-content\">\n    <table>\n        <tr>\n            <td valign=\"top\">SOM_TEST2_IND_A</td>\n            <td valign=\"top\">\n                {% set valuesInTime = [] %}\n                {% for i in context.admin_boundary.indicators[\"SOM_TEST2_IND_A\"] %}\n                    {% if i['time'] >= startDate and i['time'] <= endDate %}\n                        {% set valuesInTime = (valuesInTime.push(i), valuesInTime) %}\n                    {% endif %}\n                {% endfor %}\n                {{ valuesInTime[0]['value'] }}\n            </td>\n        </tr>\n    </table>\n</div>\n\n<!--  HEADER  -->\n<div class=\"header\">\n    <b>Other Admin Units</b>\n</div>\n\n<!--  CONTENT  -->\n<div class=\"popup-content\">\n    <table>\n        {% set value = {} %}\n{% set sumSiblings = 0 %}\n{% set countSiblings = 0 %}\n        {% for i in context.admin_boundary.siblings %}\n            {% for j in i.indicators[\"SOM_TEST2_IND_A\"] %}\n                {% if j['time'] >= startDate and j['time'] <= endDate %}\n\t\t\t\t\t<tr><td>{{i['name']}}</td><td>{{j['value']}}</td><td>{{j['time']| truncate(10, true, \"\")}}</td></tr>\n{% set sumSiblings = sumSiblings + j['value'] %}\n{% set countSiblings = countSiblings + 1 %}\n                {% endif %}\n            {% endfor %}\n        {% endfor %}\n<tr><td><b>Average:</td><td><b>{{(sumSiblings / countSiblings) | round(2)}}</td></tr>\n    </table>\n\t\n</div>",
+      "popup_template": "\n<!--  CUSTOM STYLE -->\n<style>\n    .popup-content tr td {\n        padding: 2px 10px;\n    }\n</style>\n\n{% set startDate = \"2020-01-01T00:00:00+00:00\" %}\n{% set endDate = \"2020-01-01T00:00:00+00:00\" %}\n\n<!--  HEADER  -->\n<div class=\"header\">\n\t{% set name = context.admin_boundary.name %}\n    <b>{{name}}</b>\n</div>\n\n<!--  CONTENT  -->\n<div class=\"popup-content\">\n    <table>\n        <tr>\n            <td valign=\"top\">SOM_TEST_IND_A</td>\n            <td valign=\"top\">\n                {% set valuesInTime = [] %}\n                {% for i in context.admin_boundary.indicators[\"SOM_TEST_IND_A\"] %}\n                    {% if i['time'] >= startDate and i['time'] <= endDate %}\n                        {% set valuesInTime = (valuesInTime.push(i), valuesInTime) %}\n                    {% endif %}\n                {% endfor %}\n                {{ valuesInTime[0]['value'] }}\n            </td>\n        </tr>\n    </table>\n</div>\n\n<!--  HEADER  -->\n<div class=\"header\">\n    <b>Other Admin Units</b>\n</div>\n\n<!--  CONTENT  -->\n<div class=\"popup-content\">\n    <table>\n        {% set value = {} %}\n{% set sumSiblings = 0 %}\n{% set countSiblings = 0 %}\n        {% for i in context.admin_boundary.siblings %}\n            {% for j in i.indicators[\"SOM_TEST_IND_A\"] %}\n                {% if j['time'] >= startDate and j['time'] <= endDate %}\n\t\t\t\t\t<tr><td>{{i['name']}}</td><td>{{j['value']}}</td><td>{{j['time']| truncate(10, true, \"\")}}</td></tr>\n{% set sumSiblings = sumSiblings + j['value'] %}\n{% set countSiblings = countSiblings + 1 %}\n                {% endif %}\n            {% endfor %}\n        {% endfor %}\n<tr><td><b>Average:</td><td><b>{{(sumSiblings / countSiblings) | round(2)}}</td></tr>\n    </table>\n\t\n</div>",
       "override_style": false,
       "override_label": false,
       "multi_indicator_mode": "Chart",
@@ -17720,7 +17720,7 @@
       },
       "type": "Single Indicator",
       "popup_type": "Custom",
-      "popup_template": "\n<!--  CUSTOM STYLE -->\n<style>\n    .popup-content tr td {\n        padding: 2px 10px;\n    }\n</style>\n\n{% set startDate = context.timeslice.active_window_start %}\n{% set endDate = context.timeslice.active_window_end %}\n\n<!--  HEADER  -->\n<div class=\"header\">\n\t{% set name = context.admin_boundary.name %}\n    <b>{{name}}</b>\n</div>\n\n<!--  CONTENT  -->\n<div class=\"popup-content\">\n    <table width=100%>\n        <tr>\n            <td valign=\"top\"  width=50%>SOM_TEST2_IND_A</td>\n            <td valign=\"top\" style=\"background-color: red; color: white\">\n                {% set valuesInTime = [] %}\n                {% for i in context.admin_boundary.indicators[\"SOM_TEST2_IND_A\"] %}\n                    {% if i['time'] >= startDate and i['time'] <= endDate %}\n                        {% set valuesInTime = (valuesInTime.push(i), valuesInTime) %}\n                    {% endif %}\n                {% endfor %}\n                {{ valuesInTime[0]['value'] }}\n            </td>\n        </tr>\n        <tr>\n            <td valign=\"top\">SOM_TEST2_IND_B</td>\n            <td valign=\"top\" style=\"background-color: green; color: white\"\">\n                {% set valuesInTime = [] %}\n                {% for i in context.admin_boundary.indicators[\"SOM_TEST2_IND_B\"] %}\n                    {% if i['time'] >= startDate and i['time'] <= endDate %}\n                        {% set valuesInTime = (valuesInTime.push(i), valuesInTime) %}\n                    {% endif %}\n                {% endfor %}\n                {{ valuesInTime[0]['value'] }}\n            </td>\n        </tr>\n    </table>\n</div>\n",
+      "popup_template": "\n<!--  CUSTOM STYLE -->\n<style>\n    .popup-content tr td {\n        padding: 2px 10px;\n    }\n</style>\n\n{% set startDate = context.timeslice.active_window_start %}\n{% set endDate = context.timeslice.active_window_end %}\n\n<!--  HEADER  -->\n<div class=\"header\">\n\t{% set name = context.admin_boundary.name %}\n    <b>{{name}}</b>\n</div>\n\n<!--  CONTENT  -->\n<div class=\"popup-content\">\n    <table width=100%>\n        <tr>\n            <td valign=\"top\"  width=50%>SOM_TEST_IND_A</td>\n            <td valign=\"top\" style=\"background-color: red; color: white\">\n                {% set valuesInTime = [] %}\n                {% for i in context.admin_boundary.indicators[\"SOM_TEST_IND_A\"] %}\n                    {% if i['time'] >= startDate and i['time'] <= endDate %}\n                        {% set valuesInTime = (valuesInTime.push(i), valuesInTime) %}\n                    {% endif %}\n                {% endfor %}\n                {{ valuesInTime[0]['value'] }}\n            </td>\n        </tr>\n        <tr>\n            <td valign=\"top\">SOM_TEST_IND_B</td>\n            <td valign=\"top\" style=\"background-color: green; color: white\"\">\n                {% set valuesInTime = [] %}\n                {% for i in context.admin_boundary.indicators[\"SOM_TEST_IND_B\"] %}\n                    {% if i['time'] >= startDate and i['time'] <= endDate %}\n                        {% set valuesInTime = (valuesInTime.push(i), valuesInTime) %}\n                    {% endif %}\n                {% endfor %}\n                {{ valuesInTime[0]['value'] }}\n            </td>\n        </tr>\n    </table>\n</div>\n",
       "override_style": false,
       "override_label": false,
       "multi_indicator_mode": "Chart",
@@ -18232,7 +18232,7 @@
     "fields": {
       "layer": 408,
       "name": "expression",
-      "value": "{% set a = (context.values['SOM_TEST2_IND_A']) %}\n{% set b = (context.values['SOM_TEST2_IND_B']) %}\n{% set wa = (context.values['Weight A']) %}\n{% set wb = (context.values['Weight B']) %}\n\n{% set result = ((a * wa) + (b * wb))  / (wa + wb) %}\n\n{{ result  | round(2)}}"
+      "value": "{% set a = (context.values['SOM_TEST_IND_A']) %}\n{% set b = (context.values['SOM_TEST_IND_B']) %}\n{% set wa = (context.values['Weight A']) %}\n{% set wb = (context.values['Weight B']) %}\n\n{% set result = ((a * wa) + (b * wb))  / (wa + wb) %}\n\n{{ result  | round(2)}}"
     }
   },
   {
@@ -18373,7 +18373,7 @@
       "label_config": null,
       "object": 428,
       "order": 0,
-      "name": "SOM_TEST_IND_C",
+      "name": "Sample Indicator C",
       "color": null,
       "indicator": 362,
       "override_style": false
@@ -18513,7 +18513,7 @@
       "label_config": null,
       "object": 445,
       "order": 0,
-      "name": "SOM_TEST_IND_D",
+      "name": "Sample Indicator D",
       "color": null,
       "indicator": 370,
       "override_style": false
@@ -18543,7 +18543,7 @@
       "label_config": null,
       "object": 438,
       "order": 2,
-      "name": "SOM_TEST_IND_C",
+      "name": "Sample Indicator C",
       "color": "#000000",
       "indicator": 362,
       "override_style": false
@@ -18576,7 +18576,7 @@
       "label_config": null,
       "object": 438,
       "order": 3,
-      "name": "SOM_TEST_IND_D",
+      "name": "Sample Indicator D",
       "color": "#000000",
       "indicator": 370,
       "override_style": false

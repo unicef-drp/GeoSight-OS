@@ -254,7 +254,7 @@ export function dataFieldsDefault() {
     return {
       "name": 'context.current.' + field,
       "alias": capitalize(fieldName),
-      "visible": field.includes('geometry_data') ? false : true,
+      "visible": field.includes('geometry_data') || field.includes('attributes') ? false : true,
       "type": field.includes('date') ? "date" : "string",
       "order": idx
     }
