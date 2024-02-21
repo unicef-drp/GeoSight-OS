@@ -26,6 +26,7 @@ import {
 import { dictDeepCopy } from "../../../../../../utils/main";
 
 import './style.scss';
+import { dataFieldsDefault } from "../../../../../../utils/indicatorLayer";
 
 /*** Popup Config Form ***/
 export default function PopupConfigForm({ indicator, setIndicator }) {
@@ -62,6 +63,9 @@ export default function PopupConfigForm({ indicator, setIndicator }) {
     }
 
     // Check attributes fields
+    if (!indicator.data_fields) {
+      indicator.data_fields = dataFieldsDefault()
+    }
     if (indicator.popup_type !== 'Custom') {
       const attributeField = indicator.data_fields.find(field => {
         return field.name === 'context.current.indicator.attributes'
