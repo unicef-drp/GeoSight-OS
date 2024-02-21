@@ -1,0 +1,35 @@
+{% extends 'frontend/admin/base_form.html' %}
+{% load render_bundle from webpack_loader %}
+{% load static %}
+{% load frontend %}
+
+{% block render_bundle %}
+    {% render_bundle 'AdminReferenceLayerViewForm' %}
+{% endblock %}
+{% block scripts %}
+    <script>
+      const DEFAULT_UUID = '00000000-0000-0000-0000-000000000000'
+      const initialData = {{ form|get_data|safe }};
+      const levels = {{ levels|safe }};
+      const permission = {{ permission|safe }};
+
+      // Urls api
+      urls.api = {
+        'users': '{% url 'user-list-api'%}',
+        'groups': '{% url 'group-list-api'%}',
+        'detail': '{% url 'reference-datasets-api-detail' '00000000-0000-0000-0000-000000000000' %}',
+        'entityBrowser': '{% url 'admin-reference-layer-view-entity-list-view' 0 %}',
+      }
+
+      if (permission.share) {
+        {% if id %}
+          urls.api.permission = '{% url 'reference-datasets-permission-api' id %}'
+        {% else %}
+          urls.api.permission = '{% url 'reference-datasets-permission-api' '00000000-0000-0000-0000-000000000000' %}'
+        {% endif %}
+      }
+
+      // If in batch or not
+      const batch = {% if batch %}true{% else %}null{% endif %};
+    </script>
+{% endblock %}

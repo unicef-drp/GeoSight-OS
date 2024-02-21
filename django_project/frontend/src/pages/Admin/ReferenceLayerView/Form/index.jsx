@@ -14,6 +14,7 @@
  */
 
 import React, { Fragment, useRef, useState } from 'react';
+import TextField from "@mui/material/TextField";
 
 import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
@@ -23,6 +24,7 @@ import { AdminForm } from '../../Components/AdminForm'
 import DjangoTemplateForm from "../../Components/AdminForm/DjangoTemplateForm";
 import { resourceActions } from "../List";
 
+import '../style.scss';
 import './style.scss';
 
 
@@ -48,7 +50,7 @@ export default function ReferenceLayerViewForm() {
                   ...initialData,
                   permission
                 }
-              }) : null
+              }, true) : null
           }
           <SaveButton
             variant="primary"
@@ -69,7 +71,30 @@ export default function ReferenceLayerViewForm() {
             <DjangoTemplateForm
               selectableInput={selectableInput}
               selectableInputExcluded={['name', 'shortcode']}
-            />
+            >
+              {
+                <table>
+                  <tr>
+                    <th>Level</th>
+                    <th>Level name</th>
+                  </tr>
+                  {
+                    levels.map((level, idx) => {
+                      return <tr key={idx}>
+                        <th>{level.level}</th>
+                        <td className="isValue">
+                          <TextField
+                            defaultValue={level.level_name}
+                            name={`${idx}_level_name`}
+                            placeholder="Boundary name."
+                          />
+                        </td>
+                      </tr>
+                    })
+                  }
+                </table>
+              }
+            </DjangoTemplateForm>
           ),
         }}
       />

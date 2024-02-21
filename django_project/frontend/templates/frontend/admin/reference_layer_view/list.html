@@ -10,11 +10,12 @@
 
 {% block scripts %}
     <script>
-      const DEFAULT_UUID = '10000000-0000-0000-0000-000000000000'
+      const DEFAULT_UUID = '00000000-0000-0000-0000-000000000000'
       urls.api = {
         'list': '{% url 'reference-datasets-api-list' %}',
         'create': '{% url 'admin-reference-layer-view-create-view' %}',
-        'detail': '{% url 'reference-datasets-api-detail' '10000000-0000-0000-0000-000000000000' %}',
+        'edit': '{% url 'admin-reference-layer-view-edit-view' '00000000-0000-0000-0000-000000000000' %}',
+        'detail': '{% url 'reference-datasets-api-detail' '00000000-0000-0000-0000-000000000000' %}',
         'entityBrowser': '{% url 'admin-reference-layer-view-entity-list-view' 0 %}',
         'users': '{% url 'user-list-api'%}',
         'groups': '{% url 'group-list-api'%}',

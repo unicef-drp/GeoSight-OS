@@ -25,8 +25,16 @@ from frontend.views.admin.reference_layer_view.entity_browser import (
 from frontend.views.admin.reference_layer_view.list import (
     ReferenceLayerViewListView
 )
+from frontend.views.admin.reference_layer_view.edit import (
+    ReferenceLayerViewEditView
+)
 
 admin_detail_url = [
+    url(
+        r'^edit',
+        ReferenceLayerViewEditView.as_view(),
+        name='admin-reference-layer-view-edit-view'
+    ),
     url(
         r'^entities',
         ReferenceLayerViewEntityListView.as_view(),

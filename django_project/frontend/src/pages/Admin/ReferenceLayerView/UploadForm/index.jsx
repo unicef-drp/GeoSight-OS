@@ -23,7 +23,7 @@ import Admin, { pageNames } from '../../index';
 import { AdminForm } from '../../Components/AdminForm'
 import DjangoTemplateForm from "../../Components/AdminForm/DjangoTemplateForm";
 
-import './style.scss';
+import '../style.scss';
 
 
 export function ReferenceLayerViewLevelRow({ idx }) {

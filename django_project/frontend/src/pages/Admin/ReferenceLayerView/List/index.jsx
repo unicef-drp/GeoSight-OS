@@ -34,12 +34,12 @@ import MoreAction from "../../../../components/Elements/MoreAction";
 import './style.scss';
 
 
-export function resourceActions(params) {
+export function resourceActions(params, noShare = false) {
   const permission = params.row.permission
   const actions = []
 
   // Unshift before more & edit action
-  if (permission.share) {
+  if (permission.share && !noShare) {
     actions.unshift(
       <GridActionsCellItem
         icon={
@@ -73,7 +73,7 @@ export function resourceActions(params) {
   }
   if (!permission || permission.delete) {
     const detailUrl = urls.api.detail;
-    const redirectUrl = urls.admin.boundaryList;
+    const redirectUrl = urls.admin.referenceDatasetList;
     actions.push(
       <GridActionsCellItem
         icon={
@@ -117,9 +117,21 @@ export function resourceActions(params) {
  */
 export default function ReferenceLayerViewList() {
   const pageName = pageNames.ReferenceLayerView
-  const columns = COLUMNS(pageName, urls.admin.boundaryList);
+  const columns = COLUMNS(pageName, urls.admin.referenceDatasetList);
+
   const nameColumn = columns[1];
   nameColumn.flex = 0.5;
+  nameColumn.renderCell = (params) => {
+    const permission = params.row.permission
+    if (!permission || permission.edit) {
+      const editUrl = urls.api.edit.replace('/' + DEFAULT_UUID, `/${params.id}`);
+      return <a className='MuiButtonLike CellLink' href={editUrl}>
+        {params.value}
+      </a>
+    } else {
+      return <div className='MuiDataGrid-cellContent'>{params.value}</div>
+    }
+  }
   const cleanColumns = [
     columns[0], nameColumn, columns[2],
     {
@@ -129,8 +141,7 @@ export default function ReferenceLayerViewList() {
       cellClassName: 'MuiDataGrid-ActionsColumn',
       getActions: (params) => {
         // Create actions
-        const actions = resourceActions(params)
-        return actions
+        return resourceActions(params)
       }
     }
   ]
