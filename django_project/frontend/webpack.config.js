@@ -70,6 +70,7 @@ let conf = {
 
     // REFERENCE LAYER VIEW
     AdminReferenceLayerViewForm: ['./src/pages/Admin/ReferenceLayerView/Form'],
+    AdminReferenceLayerViewUploadForm: ['./src/pages/Admin/ReferenceLayerView/UploadForm'],
     AdminReferenceLayerViewList: ['./src/pages/Admin/ReferenceLayerView/List'],
     AdminReferenceLayerViewEntityBrowser: ['./src/pages/Admin/ReferenceLayerView/EntityBrowser'],
   },

@@ -14,6 +14,7 @@
  */
 
 import React, { Fragment, useRef, useState } from 'react';
+import AddIcon from "@mui/icons-material/Add";
 
 import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
@@ -21,18 +22,89 @@ import { SaveButton } from "../../../../components/Elements/Button";
 import Admin, { pageNames } from '../../index';
 import { AdminForm } from '../../Components/AdminForm'
 import DjangoTemplateForm from "../../Components/AdminForm/DjangoTemplateForm";
-import { resourceActions } from "../List";
 
 import './style.scss';
 
 
+export function ReferenceLayerViewLevelRow({ idx }) {
+  return <tr>
+    <td>{idx}</td>
+    <td className="isValue">
+      <input
+        type="text"
+        name={`${idx}_level_name`}
+        placeholder="Boundary name."
+      />
+    </td>
+    <td className="isValue">
+      <input
+        type="text"
+        name={`${idx}_field_name`}
+        placeholder="Boundary name."
+      />
+    </td>
+    <td className="isValue">
+      <input
+        type="text"
+        name={`${idx}_field_ucode`}
+        placeholder="Column name for ucode."
+      />
+    </td>
+    <td className="isValue">
+      <input
+        type="text"
+        disabled={idx === 0}
+        name={`${idx}_field_parent_ucode`}
+        placeholder="Column name for parent ucode."
+      />
+    </td>
+    <td className="isValue">
+      <input
+        type="file"
+        name={`${idx}_level_file`}
+      />
+    </td>
+  </tr>
+}
+
+export function ReferenceLayerViewLevelForm() {
+  const [levels, setLevels] = useState([])
+
+  return <table>
+    <tr>
+      <th>Level</th>
+      <th>Level name</th>
+      <th>Property name for name boundary</th>
+      <th>Property name for unique code (ucode)</th>
+      <th>Property name for parent unique code (ucode) - 1 level above it</th>
+      <th>Zipped file (contains : shapefile)</th>
+    </tr>
+    {
+      levels.map((level, idx) => {
+        return <ReferenceLayerViewLevelRow idx={idx}/>
+      })
+    }
+    <tr>
+      <td colSpan={6}>
+        <div
+          className="AddNewLevel"
+          onClick={() => {
+            setLevels([...levels, {}])
+          }}>
+          <AddIcon/> Add new level
+        </div>
+      </td>
+    </tr>
+  </table>
+}
+
 /**
- * Indicator Form App
+ * ReferenceLayerViewForm App
  */
 export default function ReferenceLayerViewForm() {
   const formRef = useRef(null);
   const [submitted, setSubmitted] = useState(false);
-  const selectableInput = batch !== null
+  const selectableInput = false
 
   return (
     <Admin
@@ -40,16 +112,6 @@ export default function ReferenceLayerViewForm() {
       pageName={pageNames.ReferenceLayerView}
       rightHeader={
         <Fragment>
-          {
-            initialData.id ?
-              resourceActions({
-                id: initialData.id,
-                row: {
-                  ...initialData,
-                  permission
-                }
-              }) : null
-          }
           <SaveButton
             variant="primary"
             text="Submit"
@@ -69,7 +131,9 @@ export default function ReferenceLayerViewForm() {
             <DjangoTemplateForm
               selectableInput={selectableInput}
               selectableInputExcluded={['name', 'shortcode']}
-            />
+            >
+              <ReferenceLayerViewLevelForm/>
+            </DjangoTemplateForm>
           ),
         }}
       />

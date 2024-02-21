@@ -28,7 +28,7 @@ from geosight.permission.access import RoleCreatorRequiredMixin
 class ReferenceLayerViewImporterView(RoleCreatorRequiredMixin, AdminBaseView):
     """Reference Layer importer View."""
 
-    template_name = 'frontend/admin/reference_layer_view/form.html'
+    template_name = 'frontend/admin/reference_layer_view/upload_form.html'
 
     @property
     def page_title(self):
