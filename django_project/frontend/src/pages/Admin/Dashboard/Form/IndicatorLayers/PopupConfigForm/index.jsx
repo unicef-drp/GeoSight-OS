@@ -24,9 +24,9 @@ import {
   getDefaultPopup
 } from "../../../../../Dashboard/MapLibre/Layers/ReferenceLayer/Popup";
 import { dictDeepCopy } from "../../../../../../utils/main";
+import { dataFieldsDefault } from "../../../../../../utils/indicatorLayer";
 
 import './style.scss';
-import { dataFieldsDefault } from "../../../../../../utils/indicatorLayer";
 
 /*** Popup Config Form ***/
 export default function PopupConfigForm({ indicator, setIndicator }) {
