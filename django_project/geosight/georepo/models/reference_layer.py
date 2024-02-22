@@ -229,6 +229,10 @@ class ReferenceLayerViewLevel(models.Model):
     class Meta:  # noqa: D106
         unique_together = ('reference_layer', 'level')
 
+    def __str__(self):
+        """Return str."""
+        return f'{self.name} ({self.level})'
+
 
 class ReferenceLayerIndicator(models.Model):
     """Reference Layer x Indicator data."""

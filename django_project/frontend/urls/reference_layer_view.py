@@ -16,6 +16,9 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.conf.urls import url, include
 
+from frontend.views.admin.reference_layer_view.importer import (
+    ReferenceLayerViewImportDataView
+)
 from frontend.views.admin.reference_layer_view.create import (
     ReferenceLayerViewCreateView
 )
@@ -30,6 +33,11 @@ from frontend.views.admin.reference_layer_view.list import (
 )
 
 admin_detail_url = [
+    url(
+        r'^import-data',
+        ReferenceLayerViewImportDataView.as_view(),
+        name='admin-reference-layer-view-import-data-view'
+    ),
     url(
         r'^edit',
         ReferenceLayerViewEditView.as_view(),

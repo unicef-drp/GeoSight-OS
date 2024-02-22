@@ -20,6 +20,7 @@ import $ from "jquery";
 import Tooltip from "@mui/material/Tooltip";
 import {
   DataBrowserActiveIcon,
+  DataManagementActiveIcon,
   DeleteIcon
 } from "../../../../components/Icons";
 
@@ -52,6 +53,21 @@ export function resourceActions(params, noShare = false) {
         }
         label="Change Share Configuration."
       />)
+  }
+  if (permission.edit_data) {
+    actions.unshift(
+      <GridActionsCellItem
+        icon={
+          <Tooltip title={`Import data`}>
+            <a
+              href={urls.api.uploadData.replace(DEFAULT_UUID, params.row.identifier)}>
+              <div className='ButtonIcon'><DataManagementActiveIcon/></div>
+            </a>
+          </Tooltip>
+        }
+        label="Import data"
+      />
+    )
   }
 
   if (permission.read_data) {

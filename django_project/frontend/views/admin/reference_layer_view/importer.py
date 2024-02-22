@@ -11,33 +11,29 @@ Contact : geosight-no-reply@unicef.org
 
 """
 __author__ = 'irwan@kartoza.com'
-__date__ = '21/02/2023'
+__date__ = '12/02/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
-import json
-
+from django.utils import timezone
 from django.shortcuts import get_object_or_404, reverse
 
-from geosight.data.forms.reference_layer_view import ReferenceLayerViewForm
+from frontend.views.admin._base import AdminBaseView
 from geosight.georepo.models.reference_layer import (
     ReferenceLayerView
 )
-from geosight.georepo.serializer.reference_layer import (
-    ReferenceLayerViewLevelSerializer
-)
 from geosight.permission.access import (
-    edit_permission_resource,
+    edit_data_permission_resource,
     RoleContributorRequiredMixin
 )
-from .create import _BaseReferenceLayerViewView
 
 
-class ReferenceLayerViewEditView(
-    RoleContributorRequiredMixin, _BaseReferenceLayerViewView
+class ReferenceLayerViewImportDataView(
+    RoleContributorRequiredMixin,
+    AdminBaseView
 ):
-    """Reference dataset Edit View."""
+    """ReferenceLayerView View."""
 
-    template_name = 'frontend/admin/reference_layer_view/form.html'
+    template_name = 'frontend/admin/reference_layer_view/importer.html'
 
     @property
     def page_title(self):
@@ -54,10 +50,16 @@ class ReferenceLayerViewEditView(
         edit_url = reverse(
             'admin-reference-layer-view-edit-view', args=[obj.identifier]
         )
+        import_url = reverse(
+            'admin-reference-layer-view-import-data-view',
+            args=[obj.identifier]
+        )
         return (
             f'<a href="{list_url}">Reference Datasets</a> '
-            '<span>></span> '
+            '<span>></span>'
             f'<a href="{edit_url}">{obj.__str__()}</a> '
+            '<span>></span> '
+            f'<a href="{import_url}">Import data</a> '
         )
 
     def get_context_data(self, **kwargs) -> dict:
@@ -66,29 +68,12 @@ class ReferenceLayerViewEditView(
         obj = get_object_or_404(
             ReferenceLayerView, identifier=self.kwargs.get('identifier', '')
         )
-        edit_permission_resource(obj, self.request.user)
-        permission = obj.permission.all_permission(self.request.user)
-
+        edit_data_permission_resource(obj, self.request.user)
         context.update(
             {
-                'id': obj.identifier,
-                'form': ReferenceLayerViewForm(
-                    initial=ReferenceLayerViewForm.model_to_initial(obj)
-                ),
-                'levels': json.dumps(
-                    ReferenceLayerViewLevelSerializer(
-                        obj.levels, many=True
-                    ).data
-                ),
-                'permission': json.dumps(permission)
+                'identifier': obj.identifier,
+                'created_at': timezone.now().isoformat(),
+                'levels': []
             }
         )
         return context
-
-    def get_form(self):
-        """Get form."""
-        obj = get_object_or_404(
-            ReferenceLayerView, identifier=self.kwargs.get('identifier', '')
-        )
-        edit_permission_resource(obj, self.request.user)
-        return ReferenceLayerViewForm(self.request.POST, instance=obj)

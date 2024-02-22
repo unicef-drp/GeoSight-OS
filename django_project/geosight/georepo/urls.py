@@ -20,6 +20,9 @@ from geosight.georepo.api import (
     ReferenceLayerEntityDrilldownAPI, ReferenceLayerVectorTile,
     ReferenceLayerCentroidUrls, ReferenceLayerCentroid
 )
+from geosight.georepo.api.reference_layer_importer import (
+    ReferenceLayerImporterFileView, ReferenceLayerRearrangeView
+)
 
 reference_dataset_api = [
     url(
@@ -31,6 +34,16 @@ reference_dataset_api = [
         r'^centroid$',
         ReferenceLayerCentroidUrls.as_view(),
         name='reference-datasets-centroid-url-api'
+    ),
+    url(
+        r'^upload-file$',
+        ReferenceLayerImporterFileView.as_view(),
+        name='reference-datasets-upload-file-api'
+    ),
+    url(
+        r'^rearrange$',
+        ReferenceLayerRearrangeView.as_view(),
+        name='reference-datasets-rearrange-api'
     ),
     url(
         r'^vector-tiles/(?P<z>\d+)/(?P<x>\d+)/(?P<y>\d+)/$',
