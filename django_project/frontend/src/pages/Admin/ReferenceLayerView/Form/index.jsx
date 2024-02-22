@@ -15,6 +15,7 @@
 
 import React, { Fragment, useRef, useState } from 'react';
 import TextField from "@mui/material/TextField";
+import AddIcon from "@mui/icons-material/Add";
 
 import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
@@ -23,6 +24,7 @@ import Admin, { pageNames } from '../../index';
 import { AdminForm } from '../../Components/AdminForm'
 import DjangoTemplateForm from "../../Components/AdminForm/DjangoTemplateForm";
 import { resourceActions } from "../List";
+import { DeleteIcon } from "../../../../components/Icons";
 
 import '../style.scss';
 import './style.scss';
@@ -35,7 +37,7 @@ export default function ReferenceLayerViewForm() {
   const formRef = useRef(null);
   const [submitted, setSubmitted] = useState(false);
   const selectableInput = batch !== null
-
+  const [levels, setLevels] = useState(dataLevels)
   return (
     <Admin
       minifySideNavigation={true}
@@ -45,7 +47,7 @@ export default function ReferenceLayerViewForm() {
           {
             initialData.id ?
               resourceActions({
-                id: initialData.id,
+                id: initialData.identifier,
                 row: {
                   ...initialData,
                   permission
@@ -75,23 +77,49 @@ export default function ReferenceLayerViewForm() {
               {
                 <table>
                   <tr>
-                    <th>Level</th>
+                    <th className="level-column">Level</th>
                     <th>Level name</th>
+                    <th></th>
                   </tr>
                   {
                     levels.map((level, idx) => {
-                      return <tr key={idx}>
-                        <th>{level.level}</th>
+                      return <tr key={idx + level.level_name}>
+                        <td className="level-column">
+                          {idx}
+                        </td>
                         <td className="isValue">
                           <TextField
                             defaultValue={level.level_name}
-                            name={`${idx}_level_name`}
+                            name={`level_name_${idx}`}
                             placeholder="Boundary name."
                           />
+                        </td>
+                        <td className="error">
+                          <DeleteIcon onClick={
+                            () => {
+                              levels.splice(idx, 1)
+                              setLevels([...levels])
+                            }}/>
                         </td>
                       </tr>
                     })
                   }
+                  <tr>
+                    <td colSpan={6}>
+                      <div
+                        className="AddNewLevel"
+                        onClick={() => {
+                          setLevels(
+                            [
+                              ...levels,
+                              { level_name: `Level ${levels.length}` }
+                            ]
+                          )
+                        }}>
+                        <AddIcon/> Add new level
+                      </div>
+                    </td>
+                  </tr>
                 </table>
               }
             </DjangoTemplateForm>

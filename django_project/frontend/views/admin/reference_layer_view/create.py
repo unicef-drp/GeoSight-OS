@@ -11,7 +11,7 @@ Contact : geosight-no-reply@unicef.org
 
 """
 __author__ = 'irwan@kartoza.com'
-__date__ = '12/02/2024'
+__date__ = '21/02/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import json
@@ -19,95 +19,98 @@ import json
 from django.shortcuts import redirect, reverse, render
 
 from frontend.views.admin._base import AdminBaseView
-from geosight.data.forms.reference_layer_view_importer import (
-    ReferenceLayerViewCreateForm, ReferenceLayerViewImporterLevelForm
+from geosight.data.forms.reference_layer_view import ReferenceLayerViewForm
+from geosight.georepo.models.reference_layer import (
+    ReferenceLayerViewLevel as Level
 )
 from geosight.permission.access import RoleCreatorRequiredMixin
 
 
-class ReferenceLayerViewImporterView(RoleCreatorRequiredMixin, AdminBaseView):
-    """Reference Layer importer View."""
+class _BaseReferenceLayerViewView(AdminBaseView):
+    """Basemap Create View."""
 
-    template_name = 'frontend/admin/reference_layer_view/upload_form.html'
+    template_name = 'frontend/admin/reference_layer_view/form.html'
 
     @property
     def page_title(self):
         """Return page title that used on tab bar."""
-        return 'Reference Datasets'
+        return 'Create Reference Datasets'
 
     @property
     def content_title(self):
-        """Return content title that used on page title indicator."""
+        """Return content title that used on page title reference datasets."""
         list_url = reverse('admin-reference-layer-view-list-view')
         create_url = reverse('admin-reference-layer-view-create-view')
         return (
             f'<a href="{list_url}">Reference Datasets</a> '
-            '<span>></span>'
+            f'<span>></span> '
             f'<a href="{create_url}">Create</a> '
         )
 
     def get_context_data(self, **kwargs) -> dict:
         """Return context data."""
         context = super().get_context_data(**kwargs)
-        rules = []
-        initial = None
         permission = {
             'list': True, 'read': True, 'edit': True, 'share': True,
             'delete': True
         }
         context.update(
             {
-                'form': ReferenceLayerViewCreateForm(initial=initial),
-                'rules': rules,
+                'form': ReferenceLayerViewForm(),
+                'levels': [],
                 'permission': json.dumps(permission)
             }
         )
         return context
 
+    def get_form(self):
+        """Get form."""
+        return ReferenceLayerViewForm(self.request.POST)
+
     def post(self, request, **kwargs):
-        """Create indicator."""
-        form = ReferenceLayerViewCreateForm(request.POST)
+        """Create reference-layer-view."""
+        form = self.get_form()
         if form.is_valid():
-            instance = form.instance
-            instance.creator = request.user
-            instance.save()
-            try:
-                for key, value in request.FILES.items():
-                    if '_level_file' in key:
-                        idx = key.replace('_level_file', '')
-                        data = {
-                            'importer': instance.id,
-                            'level': idx,
-                            'name': request.POST.get(f'{idx}_level_name', ''),
-                            'name_field': request.POST.get(
-                                f'{idx}_field_name', ''
-                            ),
-                            'ucode_field': request.POST.get(
-                                f'{idx}_field_ucode', ''
-                            ),
-                            'parent_ucode_field': request.POST.get(
-                                f'{idx}_field_parent_ucode', ''
-                            ),
-                        }
-                        form = ReferenceLayerViewImporterLevelForm(data, {
-                            'file': value
-                        })
-                        if form.is_valid():
-                            form.save()
-                        else:
-                            raise Exception('There is error on level config.')
-                        instance.run()
-                return redirect(
-                    reverse(
-                        'admin-reference-layer-view-list-view'
-                    ) + '?success=true'
-                )
-            except Exception:
-                pass
+            instance = form.save()
+            if not instance.creator:
+                instance.creator = request.user
+                instance.save()
+
+            # Save permission
+            instance.permission.update_from_request_data_in_string(
+                request.POST, request.user
+            )
+            max_level = 0
+            for key, value in request.POST.items():
+                if 'level_name_' in key:
+                    level_idx = int(key.replace('level_name_', ''))
+                    try:
+                        level, _ = Level.objects.get_or_create(
+                            reference_layer=instance,
+                            level=level_idx
+                        )
+                        if level_idx > max_level:
+                            max_level = level_idx
+                        if level.name != value:
+                            level.name = value
+                            level.save()
+                    except Level.DoesNotExist:
+                        pass
+            instance.levels.filter(level__gt=max_level).delete()
+            return redirect(
+                reverse(
+                    'admin-reference-layer-view-edit-view',
+                    kwargs={'identifier': instance.identifier}
+                ) + '?success=true'
+            )
         context = self.get_context_data(**kwargs)
         context['form'] = form
-        return render(
-            request,
-            self.template_name,
-            context
-        )
+        return render(request, self.template_name, context)
+
+
+class ReferenceLayerViewCreateView(
+    RoleCreatorRequiredMixin, _BaseReferenceLayerViewView
+):
+    """Basemap Create View."""
+
+    pass

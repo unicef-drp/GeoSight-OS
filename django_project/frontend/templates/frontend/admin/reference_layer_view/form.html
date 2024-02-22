@@ -10,7 +10,7 @@
     <script>
       const DEFAULT_UUID = '00000000-0000-0000-0000-000000000000'
       const initialData = {{ form|get_data|safe }};
-      const levels = {{ levels|safe }};
+      const dataLevels = {{ levels|safe }};
       const permission = {{ permission|safe }};
 
       // Urls api
@@ -24,8 +24,6 @@
       if (permission.share) {
         {% if id %}
           urls.api.permission = '{% url 'reference-datasets-permission-api' id %}'
-        {% else %}
-          urls.api.permission = '{% url 'reference-datasets-permission-api' '00000000-0000-0000-0000-000000000000' %}'
         {% endif %}
       }
 

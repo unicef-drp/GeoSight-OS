@@ -207,13 +207,8 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
     def get_uuid():
         """Return uuid of view."""
         from uuid import uuid4
-        from geosight.georepo.models.reference_layer_temporary import (
-            ReferenceLayerViewTemp
-        )
         uuid = str(uuid4())
         if ReferenceLayerView.objects.filter(identifier=uuid).exists():
-            return ReferenceLayerView.get_uuid()
-        if ReferenceLayerViewTemp.objects.filter(identifier=uuid).exists():
             return ReferenceLayerView.get_uuid()
         return uuid
 

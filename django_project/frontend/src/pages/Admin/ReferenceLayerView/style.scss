@@ -26,8 +26,40 @@ table {
     border: 1px solid $primary-color;
     padding: 0.5rem;
 
+    &.level-column {
+      text-align: center;
+      width: 40px;
+    }
+
     &.isValue {
       padding: 0 !important;
+
+      .Mui-focused,
+      &:hover {
+        fieldset {
+          border: 1px solid $primary-color;
+          border-width: 1px !important;
+          border-color: $primary-color !important;
+        }
+      }
+
+      fieldset {
+        border: none;
+      }
+    }
+  }
+
+  .error {
+    width: 10px;
+
+    svg {
+      cursor: pointer;
+      height: 1rem;
+      width: 1rem;
+
+      &:hover {
+        opacity: 0.5;
+      }
     }
   }
 
@@ -35,8 +67,7 @@ table {
     align-items: center;
     cursor: pointer;
     display: flex;
-    text-align: center;
-    margin: auto;
+    text-align: left;
     width: fit-content;
 
     &:hover {

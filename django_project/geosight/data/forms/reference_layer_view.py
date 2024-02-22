@@ -19,13 +19,10 @@ from django.core.exceptions import ValidationError
 from django.forms.models import model_to_dict
 
 from geosight.georepo.models.reference_layer import ReferenceLayerView
-from geosight.georepo.models.reference_layer_importer import (
-    ReferenceLayerViewImporter, ReferenceLayerViewImporterLevel
-)
 
 
-class ReferenceLayerViewCreateForm(forms.ModelForm):
-    """ReferenceLayerViewImporter form."""
+class ReferenceLayerViewForm(forms.ModelForm):
+    """ReferenceLayerViewForm form."""
 
     def clean_name(self):
         """Return name."""
@@ -39,27 +36,24 @@ class ReferenceLayerViewCreateForm(forms.ModelForm):
             )
         return name
 
+    def save(self, commit=True):
+        """Save form."""
+        instance = super(ReferenceLayerViewForm, self).save(commit=False)
+        if not instance.identifier:
+            instance.identifier = ReferenceLayerView.get_uuid()
+        instance.in_georepo = False
+        if commit:
+            instance.save()
+        return instance
+
     class Meta:  # noqa: D106
-        model = ReferenceLayerViewImporter
+        model = ReferenceLayerView
         exclude = (
-            'created_at', 'creator', 'modified_at', 'start_time', 'end_time',
-            'progress', 'status', 'note'
+            'created_at', 'creator', 'modified_at', 'version_data',
+            'identifier', 'in_georepo'
         )
 
     @staticmethod
-    def model_to_initial(model: ReferenceLayerViewImporter):
-        """Return model data as json."""
-        return model_to_dict(model)
-
-
-class ReferenceLayerViewImporterLevelForm(forms.ModelForm):
-    """ReferenceLayerViewImporter form."""
-
-    class Meta:  # noqa: D106
-        model = ReferenceLayerViewImporterLevel
-        exclude = ('created_at', 'creator', 'modified_at')
-
-    @staticmethod
-    def model_to_initial(model: ReferenceLayerViewImporterLevel):
+    def model_to_initial(model: ReferenceLayerView):
         """Return model data as json."""
         return model_to_dict(model)

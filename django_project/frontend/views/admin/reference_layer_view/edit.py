@@ -16,14 +16,11 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import json
 
-from django.shortcuts import get_object_or_404, redirect, reverse, render
+from django.shortcuts import get_object_or_404, reverse
 
-from frontend.views.admin._base import AdminBaseView
-from geosight.data.forms.reference_layer_view_importer import (
-    ReferenceLayerViewCreateForm
-)
+from geosight.data.forms.reference_layer_view import ReferenceLayerViewForm
 from geosight.georepo.models.reference_layer import (
-    ReferenceLayerView, ReferenceLayerViewLevel
+    ReferenceLayerView
 )
 from geosight.georepo.serializer.reference_layer import (
     ReferenceLayerViewLevelSerializer
@@ -32,10 +29,13 @@ from geosight.permission.access import (
     edit_permission_resource,
     RoleContributorRequiredMixin
 )
+from .create import _BaseReferenceLayerViewView
 
 
-class ReferenceLayerViewEditView(RoleContributorRequiredMixin, AdminBaseView):
-    """Basemap Edit View."""
+class ReferenceLayerViewEditView(
+    RoleContributorRequiredMixin, _BaseReferenceLayerViewView
+):
+    """Reference dataset Edit View."""
 
     template_name = 'frontend/admin/reference_layer_view/form.html'
 
@@ -52,7 +52,7 @@ class ReferenceLayerViewEditView(RoleContributorRequiredMixin, AdminBaseView):
         )
         list_url = reverse('admin-reference-layer-view-list-view')
         edit_url = reverse(
-            'admin-reference-layer-view-edit-view', args=[obj.id]
+            'admin-reference-layer-view-edit-view', args=[obj.identifier]
         )
         return (
             f'<a href="{list_url}">Reference Datasets</a> '
@@ -72,8 +72,8 @@ class ReferenceLayerViewEditView(RoleContributorRequiredMixin, AdminBaseView):
         context.update(
             {
                 'id': obj.identifier,
-                'form': ReferenceLayerViewCreateForm(
-                    initial=ReferenceLayerViewCreateForm.model_to_initial(obj)
+                'form': ReferenceLayerViewForm(
+                    initial=ReferenceLayerViewForm.model_to_initial(obj)
                 ),
                 'levels': json.dumps(
                     ReferenceLayerViewLevelSerializer(
@@ -85,43 +85,10 @@ class ReferenceLayerViewEditView(RoleContributorRequiredMixin, AdminBaseView):
         )
         return context
 
-    def post(self, request, **kwargs):
-        """Edit reference-layer-view."""
+    def get_form(self):
+        """Get form."""
         obj = get_object_or_404(
             ReferenceLayerView, identifier=self.kwargs.get('identifier', '')
         )
         edit_permission_resource(obj, self.request.user)
-        form = ReferenceLayerViewCreateForm(
-            request.POST,
-            request.FILES,
-            instance=obj
-        )
-        if form.is_valid():
-            instance = form.save()
-            # Save permission
-            instance.permission.update_from_request_data_in_string(
-                request.POST, request.user
-            )
-            for key, value in request.POST.items():
-                try:
-                    if '_level_name' in key:
-                        level_idx = key.replace('_level_name', '')
-                        try:
-                            level = instance.levels.get(level=level_idx)
-                            if level.name != value:
-                                level.name = value
-                                level.save()
-                        except ReferenceLayerViewLevel.DoesNotExist:
-                            pass
-                except Exception:
-                    pass
-
-            return redirect(
-                reverse(
-                    'admin-reference-layer-view-edit-view',
-                    kwargs={'identifier': instance.identifier}
-                ) + '?success=true'
-            )
-        context = self.get_context_data(**kwargs)
-        context['form'] = form
-        return render(request, self.template_name, context)
+        return ReferenceLayerViewForm(self.request.POST, instance=obj)
