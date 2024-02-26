@@ -55,6 +55,10 @@ class ReferenceLayerViewImporter(AbstractEditData):
     )
     note = models.TextField(blank=True, null=True)
 
+    def __str__(self):
+        """Return str."""
+        return f'{self.start_time} - {self.creator}'
+
     def run(self):
         """Run the importer."""
         pass

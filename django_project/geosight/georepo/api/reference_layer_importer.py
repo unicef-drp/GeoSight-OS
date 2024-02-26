@@ -18,14 +18,35 @@ from django.shortcuts import get_object_or_404
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.viewsets import mixins, GenericViewSet
 
+from geosight.data.api.v1.base import BaseApiV1
 from geosight.georepo.models.reference_layer import (
     ReferenceLayerView
 )
 from geosight.georepo.models.reference_layer_importer import (
     ReferenceLayerViewImporter, ReferenceLayerViewImporterLevel
 )
+from geosight.georepo.serializer.reference_layer_importer import (
+    ReferenceLayerViewImporterSerializer
+)
 from geosight.permission.access import ResourcePermissionDenied
+
+
+class ReferenceLayerImporter(
+    BaseApiV1,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    GenericViewSet
+):
+    """Return importers."""
+
+    serializer_class = ReferenceLayerViewImporterSerializer
+
+    @property
+    def queryset(self):
+        """Return the queryset."""
+        return ReferenceLayerViewImporter.objects.all().order_by('created_at')
 
 
 class ReferenceLayerImporterFileView(APIView):

@@ -45,6 +45,7 @@ export const pageNames = {
 
   // ReferenceLayerView
   ReferenceLayerView: 'Reference Dataset',
+  referenceDatesetImporter: 'Reference Dataset Importer',
 }
 
 /**

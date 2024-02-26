@@ -36,10 +36,10 @@ import {
 } from '@dnd-kit/sortable';
 import PreviewComponent from "./Preview";
 import { dictDeepCopy } from "../../../../utils/main";
+import { DjangoRequests } from "../../../../Requests";
 
 import 'react-dropzone-uploader/dist/styles.css'
 import './style.scss';
-import { DjangoRequests } from "../../../../Requests";
 
 export const ALLOWABLE_FILE_TYPES = [
   'application/geo+json',

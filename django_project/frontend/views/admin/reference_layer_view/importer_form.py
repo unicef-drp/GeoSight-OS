@@ -14,8 +14,8 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '12/02/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from django.utils import timezone
 from django.shortcuts import get_object_or_404, reverse
+from django.utils import timezone
 
 from frontend.views.admin._base import AdminBaseView
 from geosight.georepo.models.reference_layer import (
@@ -33,12 +33,12 @@ class ReferenceLayerViewImportDataView(
 ):
     """ReferenceLayerView View."""
 
-    template_name = 'frontend/admin/reference_layer_view/importer.html'
+    template_name = 'frontend/admin/reference_layer_view/importer_form.html'
 
     @property
     def page_title(self):
         """Return page title that used on tab bar."""
-        return 'Edit Reference Datasets'
+        return 'Import Data Reference Datasets'
 
     @property
     def content_title(self):

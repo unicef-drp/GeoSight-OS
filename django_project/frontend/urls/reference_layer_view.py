@@ -16,9 +16,6 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.conf.urls import url, include
 
-from frontend.views.admin.reference_layer_view.importer import (
-    ReferenceLayerViewImportDataView
-)
 from frontend.views.admin.reference_layer_view.create import (
     ReferenceLayerViewCreateView
 )
@@ -27,6 +24,12 @@ from frontend.views.admin.reference_layer_view.edit import (
 )
 from frontend.views.admin.reference_layer_view.entity_browser import (
     ReferenceLayerViewEntityListView
+)
+from frontend.views.admin.reference_layer_view.importer_form import (
+    ReferenceLayerViewImportDataView
+)
+from frontend.views.admin.reference_layer_view.importer_list import (
+    ReferenceLayerViewImporterListView
 )
 from frontend.views.admin.reference_layer_view.list import (
     ReferenceLayerViewListView
@@ -51,6 +54,11 @@ admin_detail_url = [
 ]
 urlpatterns = [
     url(r'^(?P<identifier>[^/]+)/', include(admin_detail_url)),
+    url(
+        r'^importer',
+        ReferenceLayerViewImporterListView.as_view(),
+        name='admin-reference-layer-view-importer-list-view'
+    ),
     url(
         r'^create',
         ReferenceLayerViewCreateView.as_view(),

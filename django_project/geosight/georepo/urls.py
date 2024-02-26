@@ -15,13 +15,21 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.conf.urls import url, include
+from rest_framework.routers import DefaultRouter
 
 from geosight.georepo.api import (
     ReferenceLayerEntityDrilldownAPI, ReferenceLayerVectorTile,
     ReferenceLayerCentroidUrls, ReferenceLayerCentroid
 )
 from geosight.georepo.api.reference_layer_importer import (
-    ReferenceLayerImporterFileView, ReferenceLayerRearrangeView
+    ReferenceLayerImporterFileView, ReferenceLayerRearrangeView,
+    ReferenceLayerImporter
+)
+
+router = DefaultRouter()
+router.register(
+    r'reference-datasets-importer', ReferenceLayerImporter,
+    basename='reference-datasets-importer-api'
 )
 
 reference_dataset_api = [
@@ -62,3 +70,4 @@ urlpatterns = [
         include(reference_dataset_api)
     ),
 ]
+urlpatterns += router.urls
