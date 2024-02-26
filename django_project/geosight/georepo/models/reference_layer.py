@@ -26,6 +26,7 @@ from geosight.georepo.request import (
     GeorepoRequest, GeorepoUrl, GeorepoRequestError
 )
 from geosight.georepo.request.data import GeorepoEntity
+from geosight.permission.access import ResourcePermissionDenied
 from geosight.permission.models.manager import PermissionManager
 
 User = get_user_model()
@@ -97,6 +98,11 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
     def __str__(self):
         """Return str."""
         return f'{self.get_name()} ({self.identifier})'
+
+    def able_to_edit(self, user):
+        """Able to edit."""
+        if not user.is_authenticated or user != self.creator:
+            raise ResourcePermissionDenied
 
     @property
     def version_with_uuid(self):

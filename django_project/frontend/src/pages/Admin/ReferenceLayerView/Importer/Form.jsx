@@ -125,7 +125,6 @@ export default function ImporterEntityForm() {
 
   const handleSubmit = (files) => {
     // console.log(files.map(f => f.meta))
-    console.log('test')
   }
   return (
     <Admin

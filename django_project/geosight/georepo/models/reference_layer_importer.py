@@ -116,6 +116,12 @@ class ReferenceLayerViewImporterLevel(models.Model):
             )
             try:
                 self.properties = list(features[0].properties.keys())
+                if not self.name_field:
+                    self.name_field = self.properties[0]
+                if not self.ucode_field:
+                    self.ucode_field = self.properties[0]
+                if not self.parent_ucode_field:
+                    self.parent_ucode_field = self.properties[0]
                 self.save()
             except AttributeError:
                 pass

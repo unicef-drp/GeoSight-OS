@@ -28,9 +28,9 @@ from geosight.georepo.models.reference_layer_importer import (
     ReferenceLayerViewImporter, ReferenceLayerViewImporterLevel
 )
 from geosight.georepo.serializer.reference_layer_importer import (
-    ReferenceLayerViewImporterSerializer
+    ReferenceLayerViewImporterSerializer,
+    ReferenceLayerViewImporterLevelSerializer
 )
-from geosight.permission.access import ResourcePermissionDenied
 
 
 class ReferenceLayerImporter(
@@ -57,8 +57,7 @@ class ReferenceLayerImporterFileView(APIView):
     def post(self, request, identifier):
         """Post file."""
         layer = get_object_or_404(ReferenceLayerView, identifier=identifier)
-        if not request.user.is_authenticated or request.user != layer.creator:
-            raise ResourcePermissionDenied
+        layer.able_to_edit(request.user)
         created_at = request.data.get('createdAt', '')
         importer, _ = ReferenceLayerViewImporter.objects.get_or_create(
             reference_layer=layer,
@@ -71,10 +70,11 @@ class ReferenceLayerImporterFileView(APIView):
         )
         level_obj.file = request.FILES['file']
         level_obj.save()
+        level_obj.get_properties()
 
-        return Response({
-            'properties': level_obj.get_properties()
-        })
+        return Response(
+            ReferenceLayerViewImporterLevelSerializer(level_obj).data
+        )
 
 
 class ReferenceLayerRearrangeView(APIView):
@@ -83,13 +83,12 @@ class ReferenceLayerRearrangeView(APIView):
     def post(self, request, identifier):
         """Post file."""
         layer = get_object_or_404(ReferenceLayerView, identifier=identifier)
-        if not request.user.is_authenticated or request.user != layer.creator:
-            raise ResourcePermissionDenied
-        created_at = request.data.get('createdAt', '')
-        importer, _ = ReferenceLayerViewImporter.objects.get_or_create(
+        layer.able_to_edit(request.user)
+        importer = get_object_or_404(
+            ReferenceLayerViewImporter,
             reference_layer=layer,
             creator=self.request.user,
-            created_at=created_at
+            created_at=request.data.get('createdAt', '')
         )
         orders = request.data.get('orders', '')
         if orders:
@@ -103,4 +102,30 @@ class ReferenceLayerRearrangeView(APIView):
                 except ReferenceLayerViewImporterLevel.DoesNotExist:
                     pass
 
+        return Response(status=204)
+
+
+class ReferenceLayerImporterFileUpdateView(APIView):
+    """Rearrange data."""
+
+    def post(self, request, identifier):
+        """Post file."""
+        layer = get_object_or_404(ReferenceLayerView, identifier=identifier)
+        layer.able_to_edit(request.user)
+        importer = get_object_or_404(
+            ReferenceLayerViewImporter,
+            reference_layer=layer,
+            creator=self.request.user,
+            created_at=request.data.get('createdAt', '')
+        )
+        level_importer = get_object_or_404(
+            ReferenceLayerViewImporterLevel,
+            importer=importer,
+            file_id=request.data.get('id', '')
+        )
+        setattr(
+            level_importer, request.data.get('name', ''),
+            request.data.get('value', '')
+        )
+        level_importer.save()
         return Response(status=204)

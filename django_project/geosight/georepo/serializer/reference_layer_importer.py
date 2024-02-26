@@ -18,7 +18,7 @@ from rest_framework import serializers
 
 from core.serializer.dynamic_serializer import DynamicModelSerializer
 from geosight.georepo.models.reference_layer_importer import (
-    ReferenceLayerViewImporter
+    ReferenceLayerViewImporter, ReferenceLayerViewImporterLevel
 )
 
 
@@ -44,4 +44,12 @@ class ReferenceLayerViewImporterSerializer(DynamicModelSerializer):
 
     class Meta:  # noqa: D106
         model = ReferenceLayerViewImporter
+        fields = '__all__'
+
+
+class ReferenceLayerViewImporterLevelSerializer(DynamicModelSerializer):
+    """Serializer for ReferenceLayerViewImporterSerializer."""
+
+    class Meta:  # noqa: D106
+        model = ReferenceLayerViewImporterLevel
         fields = '__all__'

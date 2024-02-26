@@ -23,7 +23,7 @@ from geosight.georepo.api import (
 )
 from geosight.georepo.api.reference_layer_importer import (
     ReferenceLayerImporterFileView, ReferenceLayerRearrangeView,
-    ReferenceLayerImporter
+    ReferenceLayerImporter, ReferenceLayerImporterFileUpdateView
 )
 
 router = DefaultRouter()
@@ -52,6 +52,11 @@ reference_dataset_api = [
         r'^rearrange$',
         ReferenceLayerRearrangeView.as_view(),
         name='reference-datasets-rearrange-api'
+    ),
+    url(
+        r'^update-level-value$',
+        ReferenceLayerImporterFileUpdateView.as_view(),
+        name='reference-datasets-update-level-value-api'
     ),
     url(
         r'^vector-tiles/(?P<z>\d+)/(?P<x>\d+)/(?P<y>\d+)/$',

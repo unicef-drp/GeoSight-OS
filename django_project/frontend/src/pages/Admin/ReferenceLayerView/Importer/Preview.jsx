@@ -12,15 +12,17 @@
  * __date__ = '22/02/2024'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent, Grid, Typography } from "@mui/material";
 import LinearProgress from "@mui/material/LinearProgress";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Select } from "../../../../components/Input";
 import { Handle } from "../../../../components/SortableTreeForm/TreeItem";
+import { DjangoRequests } from "../../../../Requests";
 
-function Selection({ title, name, properties }) {
+function Selection({ fileId, title, name, properties }) {
+  const [loading, setLoading] = useState(false)
   const options = properties.map(prop => {
     return {
       value: prop,
@@ -31,18 +33,34 @@ function Selection({ title, name, properties }) {
     label: properties[0],
     value: properties[0],
   });
+
+  // When selection changed
+  useEffect(() => {
+    setLoading(true)
+    DjangoRequests.post(
+      urls.api.updateLevelvalue, {
+        createdAt: createdAt,
+        id: fileId,
+        name: name,
+        value: value.value,
+      }
+    ).then(() => {
+      setLoading(false)
+    })
+  }, [value])
+
   return <div className="BasicFormSection">
     <div className='RuleTable-Title'>{title}</div>
     <Select
       name={name}
       value={value}
       onChange={evt => {
-        console.log(evt.value)
         setValue(evt)
       }}
 
       options={options}
       menuPlacement={'bottom'}
+      isDisabled={loading}
     />
   </div>
 }
@@ -99,17 +117,20 @@ export default function PreviewComponent(props) {
             meta.properties ?
               <div className='property-selection'>
                 <Selection
+                  fileId={props.id}
                   title='Property name for name boundary'
-                  name={`field_name_${props.id}`}
+                  name={`name_field`}
                   properties={meta.properties}/>
                 <Selection
+                  fileId={props.id}
                   title='Column name for ucode'
-                  name={`field_ucode_${props.id}`}
+                  name={`ucode_field`}
                   properties={meta.properties}/>
                 {
                   meta.level !== 0 ? <Selection
+                    fileId={props.id}
                     title='Column name for parent ucode'
-                    name={`field_parent_ucode_${props.id}`}
+                    name={`parent_ucode_field`}
                     properties={meta.properties}/> : <></>
                 }
               </div> : <></>
