@@ -14,12 +14,20 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '12/02/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import json
+
 from django.shortcuts import get_object_or_404, reverse
 from django.utils import timezone
 
 from frontend.views.admin._base import AdminBaseView
 from geosight.georepo.models.reference_layer import (
     ReferenceLayerView
+)
+from geosight.georepo.models.reference_layer_importer import (
+    ReferenceLayerViewImporter
+)
+from geosight.georepo.serializer.reference_layer_importer import (
+    ReferenceLayerViewImporterLevelSerializer
 )
 from geosight.permission.access import (
     edit_data_permission_resource,
@@ -54,13 +62,27 @@ class ReferenceLayerViewImportDataView(
             'admin-reference-layer-view-import-data-view',
             args=[obj.identifier]
         )
-        return (
+        title = (
             f'<a href="{list_url}">Reference Datasets</a> '
             '<span>></span>'
             f'<a href="{edit_url}">{obj.__str__()}</a> '
             '<span>></span> '
             f'<a href="{import_url}">Import data</a> '
         )
+        _id = self.kwargs.get('pk', 0)
+        if _id:
+            importer = get_object_or_404(
+                ReferenceLayerViewImporter, id=_id
+            )
+            edit_import_url = reverse(
+                'admin-reference-layer-view-import-data-edit-view',
+                args=[obj.identifier, importer.pk]
+            )
+            title += (
+                '<span>></span> '
+                f'<a href="{edit_import_url}">{importer.__str__()}</a> '
+            )
+        return title
 
     def get_context_data(self, **kwargs) -> dict:
         """Return context data."""
@@ -68,12 +90,28 @@ class ReferenceLayerViewImportDataView(
         obj = get_object_or_404(
             ReferenceLayerView, identifier=self.kwargs.get('identifier', '')
         )
+        created_at = timezone.now().isoformat()
+        levels = []
+        initial_levels = []
+
+        _id = self.kwargs.get('pk', 0)
+        if _id:
+            importer = get_object_or_404(
+                ReferenceLayerViewImporter, id=_id
+            )
+            created_at = importer.created_at
+            level_set = importer.referencelayerviewimporterlevel_set.order_by(
+                'level'
+            )
+            levels = ReferenceLayerViewImporterLevelSerializer(
+                level_set, many=True
+            ).data
         edit_data_permission_resource(obj, self.request.user)
         context.update(
             {
                 'identifier': obj.identifier,
-                'created_at': timezone.now().isoformat(),
-                'levels': []
+                'created_at': created_at,
+                'levels': json.loads(json.dumps(levels))
             }
         )
         return context

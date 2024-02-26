@@ -136,6 +136,7 @@ export default function ImporterEntityForm() {
           'Files': <>
             {/* DROPZONE */}
             <Dropzone
+              initialFiles={dataLevels}
               getUploadParams={getUploadParams}
               onChangeStatus={handleChangeStatus}
               onSubmit={handleSubmit}

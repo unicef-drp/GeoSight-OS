@@ -37,6 +37,11 @@ from frontend.views.admin.reference_layer_view.list import (
 
 admin_detail_url = [
     url(
+        r'^import-data/(?P<pk>\d+)',
+        ReferenceLayerViewImportDataView.as_view(),
+        name='admin-reference-layer-view-import-data-edit-view'
+    ),
+    url(
         r'^import-data',
         ReferenceLayerViewImportDataView.as_view(),
         name='admin-reference-layer-view-import-data-view'
