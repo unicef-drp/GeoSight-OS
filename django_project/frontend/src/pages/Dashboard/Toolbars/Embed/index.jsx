@@ -75,10 +75,13 @@ export default function Embed({ map }) {
    * Get data of bookmark like
    */
   const otherData = () => {
+    const selectedIndicatorLayers = [selectedIndicatorLayer?.id]
+    if (selectedIndicatorSecondLayer?.id) {
+      selectedIndicatorLayers.push(selectedIndicatorSecondLayer?.id)
+    }
     return {
       selectedBasemap: basemapLayer?.id,
-      selectedIndicatorLayer: selectedIndicatorLayer?.id,
-      selectedIndicatorSecondLayer: selectedIndicatorSecondLayer?.id,
+      selectedIndicatorLayers: selectedIndicatorLayers,
       selectedContextLayers: Object.keys(contextLayers).map(id => parseInt(id)),
       filters: dashboardData.filters,
       extent: extent,
