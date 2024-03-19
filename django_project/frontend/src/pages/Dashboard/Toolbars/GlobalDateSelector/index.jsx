@@ -17,7 +17,7 @@
    CompareLayer
    ========================================================================== */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { Plugin, PluginChild } from "../../MapLibre/Plugin";
 import { Actions } from '../../../../store/dashboard'
@@ -34,7 +34,31 @@ import './style.scss';
 export default function GlobalDateSelector() {
   const dispatch = useDispatch()
   const { globalDateSelectorOpened } = useSelector(state => state.globalState)
+  const {
+    default_time_mode
+  } = useSelector(state => state.dashboard.data);
+  const {
+    use_only_last_known_value,
+  } = default_time_mode
 
+  /**
+   * Close time slider if use_only_last_known_value is true
+   */
+  useEffect(() => {
+      if (use_only_last_known_value) {
+        if (globalDateSelectorOpened) {
+          dispatch(
+            Actions.GlobalState.update({ globalDateSelectorOpened: false })
+          )
+        }
+      }
+    },
+    [use_only_last_known_value]
+  );
+
+  if (use_only_last_known_value) {
+    return <></>
+  }
   return (
     <Plugin>
       <div className='GlobalDateSelector Active'>

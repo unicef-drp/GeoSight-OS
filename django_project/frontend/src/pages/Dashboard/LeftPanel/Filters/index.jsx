@@ -268,7 +268,7 @@ function FilterSection() {
       }
       fields.push({
         id: id,
-        name: `${key}`,
+        name: key === 'concept_uuid' ? 'concept uuid' : `${key}`,
         group: 'Indicator - ' + indicator.name,
         data: data,
         type: key === 'value' ? indicator?.type : 'String'
@@ -303,7 +303,7 @@ function FilterSection() {
       }
       fields.push({
         id: id,
-        name: `${key}`,
+        name: key === 'concept_uuid' ? 'concept uuid' : `${key}`,
         group: 'Indicator Layer - ' + indicatorLayer.name,
         data: data,
         type: key === 'value' ? 'Number' : 'String'

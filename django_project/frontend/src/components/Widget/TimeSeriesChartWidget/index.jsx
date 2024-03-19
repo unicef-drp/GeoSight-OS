@@ -63,7 +63,13 @@ export function Selection(
  * @param {dict} data Widget Data
  */
 export default function Index({ idx, data }) {
-  const { slug } = useSelector(state => state.dashboard.data);
+  const {
+    slug,
+    default_time_mode
+  } = useSelector(state => state.dashboard.data);
+  const {
+    use_only_last_known_value
+  } = default_time_mode
   const [colorPalettes, setColorPalettes] = useState(null);
   const selectedGlobalTimeConfig = useSelector(state => state.selectedGlobalTimeConfig);
   const geometries = useSelector(state => state.geometries);
@@ -84,11 +90,11 @@ export default function Index({ idx, data }) {
 
   const { name, config } = data
   const {
-    dateTimeType,
     dateTimeConfig,
     geographicalUnitPaletteColor,
     indicatorsPaletteColor
   } = config
+  const dateTimeType = use_only_last_known_value ? TimeType.SYNC : config.dateTimeType
 
   // Get date data
   let { interval } = dateTimeConfig
@@ -279,7 +285,10 @@ export default function Index({ idx, data }) {
         geographicUnits={geographicUnits}
         indicatorSeries={indicatorSeries}
         secondSeries={secondSeries}
-        config={config}
+        config={{
+          ...config,
+          dateTimeType: dateTimeType,
+        }}
         setChartData={setChartData}
         setRequestProgress={setRequestProgress}/>
     </Fragment>

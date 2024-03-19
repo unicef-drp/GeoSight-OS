@@ -27,6 +27,7 @@ test.describe('Create complex project', () => {
     await page.keyboard.press('Enter');
     await page.getByPlaceholder('Select default admin level').click();
     await page.getByRole('option', { name: 'Admin Level 1' }).click();
+    await page.getByText('Use last know value for all').click();
 
     // Add indicator
     await page.locator('.TabPrimary').getByText('Indicators').click();
@@ -101,6 +102,20 @@ test.describe('Create complex project', () => {
     await page.getByRole('button').nth(2).click();
     await page.getByRole('button', { name: 'Apply Changes' }).click();
 
+    // Widgets
+    await page.getByText('Widgets').click();
+    await page.getByRole('button', { name: 'Add Widget' }).click();
+    await page.getByText('Summary WidgetSummarize all').click();
+    await page.getByPlaceholder('Widget name').fill('Widget 1');
+    await page.getByText('Indicator', { exact: true }).click();
+    await page.getByRole('option', { name: 'Indicator', exact: true }).click();
+    await page.getByRole('combobox').nth(1).click();
+    await page.getByRole('option', { name: 'Sample Indicator A' }).click();
+    await page.getByRole('combobox').nth(3).click();
+    await page.getByRole('option', { name: 'value' }).click();
+    await page.getByRole('button', { name: 'Apply' }).click();
+    await expect(page.locator('label').filter({ hasText: 'No filter (global latest' })).toBeDisabled();
+
     // Save
     await page.getByText('Save').isEnabled();
     await page.getByText('Save').click();
@@ -119,6 +134,9 @@ test.describe('Create complex project', () => {
     await expect(page.locator('.MapLegendSectionTitle')).toContainText(layer1);
     await expect(page.getByLabel(layer1)).toBeChecked();
     await expect(page.getByLabel(layer2)).not.toBeChecked();
+
+    // Because turn on Last Know Value, the button is hidden
+    await expect(page.getByTitle('Show global time configuration')).toBeHidden();
 
     // Chart
     const layer3 = 'Chart Layer'
