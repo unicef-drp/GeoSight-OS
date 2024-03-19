@@ -78,7 +78,7 @@ class DashboardCreateView(
             try:
                 with transaction.atomic():
                     dashboard = form.save()
-                    dashboard.save_relations(data)
+                    dashboard.save_relations(data, is_create=True)
                     dashboard.increase_version()
                     return redirect(
                         reverse(

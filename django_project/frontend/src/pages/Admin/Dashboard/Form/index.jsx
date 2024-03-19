@@ -31,7 +31,7 @@ import {
   SaveButton,
   ThemeButton
 } from "../../../../components/Elements/Button";
-import { dictDeepCopy } from "../../../../utils/main";
+import { dictDeepCopy, slugify } from "../../../../utils/main";
 import {
   Notification,
   NotificationStatus
@@ -58,6 +58,11 @@ import { MapActiveIcon } from "../../../../components/Icons";
 
 import '../../../Dashboard/style.scss';
 import './style.scss';
+import Modal, {
+  ModalContent,
+  ModalFooter,
+  ModalHeader
+} from "../../../../components/Modal";
 
 
 /**
@@ -155,6 +160,113 @@ export function DashboardHistory(
   </>
 }
 
+export function DashboardSaveAsForm({ submitted, onSaveAs }) {
+  const [openSaveAs, setOpenSaveAs] = useState(false);
+  const [nameData, setNameData] = useState('');
+  const [slugInput, setSlugInput] = useState('');
+
+  useEffect(() => {
+    if (openSaveAs) {
+      setNameData($('#SummaryName').val())
+      setSlugInput($('#SummarySlug').val())
+    }
+  }, [openSaveAs]);
+
+  useEffect(() => {
+    $('#SummaryName').val(nameData)
+  }, [nameData]);
+
+  useEffect(() => {
+    $('#SummarySlug').val(slugInput)
+  }, [slugInput]);
+
+  return <>
+    <Modal
+      className='SaveAsModal'
+      open={openSaveAs}
+      onClosed={() => {
+        setOpenSaveAs(false)
+      }}
+    >
+      <ModalHeader onClosed={() => {
+        setOpenSaveAs(false)
+      }}>
+        <b>Save project as...</b>
+      </ModalHeader>
+      <ModalContent>
+        <div className="BasicForm">
+          <div className="BasicFormSection">
+            <div>
+              <label className="form-label required" htmlFor="name">
+                Name
+              </label>
+            </div>
+            <div>
+              <span className="form-input">
+              <input
+                id="SummaryName" type="text" name="name" required={true}
+                placeholder='Example: Afghanistan Risk Dashboard'
+                value={nameData}
+                onChange={(event) => {
+                  setNameData(event.target.value)
+                  setSlugInput(slugify(event.target.value))
+                }}/>
+              </span>
+            </div>
+            <br/>
+            <label className="form-label" htmlFor="name">
+              URL Shortcode
+            </label>
+            <div>
+            <span className="form-input">
+            <input
+              type="text" name="name" required={true}
+              value={slugInput}
+              onChange={(event) => {
+                setSlugInput(slugify(event.target.value))
+              }}/>
+            </span>
+            </div>
+            <span className='form-helptext'>
+              Url of project in slug format. It will auto change space to "-" and to lowercase.
+              It will be generated from name if empty.
+              <br/>
+              Please change it if it is same with the origin one.
+            </span>
+          </div>
+        </div>
+      </ModalContent>
+      <ModalFooter>
+        <div style={{ display: "flex" }}>
+          <div className='Separator'/>
+          <ThemeButton
+            variant="Basic Reverse"
+            onClick={() => {
+              setOpenSaveAs(false)
+            }}>
+            Cancel
+          </ThemeButton>
+          <SaveButton
+            variant="primary"
+            text='Create'
+            onClick={() => {
+              onSaveAs()
+            }}/>
+        </div>
+      </ModalFooter>
+    </Modal>
+    <SaveButton
+      variant="primary"
+      text={submitted ? 'Creating...' : 'Save as'}
+      onClick={() => {
+        setOpenSaveAs(true)
+      }}
+      className={submitted ? 'Submitted' : ''}
+      disabled={submitted}
+    />
+  </>
+}
+
 /**
  * Dashboard Save Form
  */
@@ -197,9 +309,8 @@ export function DashboardSaveForm(
   }
 
   /** On save **/
-  const onSave = (event) => {
+  const onSave = (targetUrl = document.location.href) => {
     setSubmitted(true)
-    const target = event.currentTarget
     const errors = [];
     const name = $('#SummaryName').val();
     const slug = $('#SummarySlug').val();
@@ -322,7 +433,7 @@ export function DashboardSaveForm(
       formData.append('default_time_mode', JSON.stringify(default_time_mode))
 
       postData(
-        document.location.href,
+        targetUrl,
         formData,
         function (response, responseError) {
           setSubmitted(false)
@@ -353,10 +464,20 @@ export function DashboardSaveForm(
   }
 
   return <>
+    {
+      id ?
+        <DashboardSaveAsForm
+          submitted={submitted}
+          onSaveAs={() => {
+            onSave('/admin/project/create')
+          }}/> : null
+    }
     <SaveButton
       variant="primary"
       text={submitted ? 'Saving...' : 'Save'}
-      onClick={onSave}
+      onClick={() => {
+        onSave()
+      }}
       className={submitted ? 'Submitted' : ''}
       disabled={disabled || submitted || !Object.keys(data).length}/>
     <Notification ref={notificationRef}/>
