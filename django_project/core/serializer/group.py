@@ -23,6 +23,7 @@ from core.serializer.user import UserSerializer
 
 class GroupSerializer(DynamicModelSerializer):
     """Group serializer."""
+
     users = serializers.SerializerMethodField()
 
     def get_users(self, obj: Group):
