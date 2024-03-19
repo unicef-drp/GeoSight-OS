@@ -29,16 +29,22 @@ from rest_framework.views import APIView
 from core.api.base import FilteredAPI
 from core.models.api_key import ApiKey
 from core.models.profile import Profile
-from core.permissions import AdminAuthenticationPermission
+from core.permissions import (
+    AdminAuthenticationPermission,
+    RoleContributorAuthenticationPermission
+)
 from core.serializer.api_key import ApiKeySerializer
 from core.serializer.user import UserSerializer
-from geosight.permission.access import RoleContributorRequiredMixin
 
 User = get_user_model()
 
 
-class UserListAPI(RoleContributorRequiredMixin, APIView, FilteredAPI):
+class UserListAPI(APIView, FilteredAPI):
     """Return User list."""
+
+    permission_classes = (
+        IsAuthenticated, RoleContributorAuthenticationPermission,
+    )
 
     def get(self, request):
         """Return User list."""
@@ -58,16 +64,28 @@ class UserListAPI(RoleContributorRequiredMixin, APIView, FilteredAPI):
 
     def delete(self, request):
         """Delete an basemap."""
-        ids = json.loads(request.data['ids'])
-        for obj in User.objects.filter(id__in=ids):
-            obj.delete()
-        return Response('Deleted')
+        user = request.user
+        if user.is_authenticated and user.profile.is_admin:
+            try:
+                ids = json.loads(request.data['ids'])
+            except TypeError:
+                ids = request.data['ids']
+            for obj in User.objects.filter(id__in=ids):
+                obj.delete()
+            return Response('Deleted')
+        else:
+            return HttpResponseForbidden()
 
 
 class UserDetailAPI(APIView):
     """API for detail of user."""
 
     permission_classes = (IsAuthenticated, AdminAuthenticationPermission,)
+
+    def get(self, request, pk):
+        """Delete an user."""
+        user = get_object_or_404(User, pk=pk)
+        return Response(UserSerializer(user).data)
 
     def delete(self, request, pk):
         """Delete an user."""
