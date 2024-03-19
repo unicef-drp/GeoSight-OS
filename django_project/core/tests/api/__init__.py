@@ -17,3 +17,4 @@ __copyright__ = ('Copyright 2023, Unicef')
 from .api_key import *  # noqa
 from .group import *  # noqa
 from .maintenance import *  # noqa
+from .user import *  # noqa
