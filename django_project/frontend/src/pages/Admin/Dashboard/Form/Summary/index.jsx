@@ -67,6 +67,7 @@ export default function SummaryDashboardForm({ changed }) {
   const dispatch = useDispatch();
   const {
     default_interval,
+    use_only_last_known_value,
     fit_to_current_indicator_range,
     show_last_known_value_in_range
   } = default_time_mode
@@ -214,11 +215,31 @@ export default function SummaryDashboardForm({ changed }) {
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <Grid container spacing={2}>
-                <Grid item xs={6}>
+                <Grid item xs={8}>
                   <FormControl>
                     <label
                       className="form-label"
                       htmlFor="name">Default time mode</label>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          id={'use_only_last_known'}
+                          checked={use_only_last_known_value}
+                          onChange={(event) => {
+                            dispatch(
+                              Actions.Dashboard.updateProps({
+                                default_time_mode: {
+                                  ...default_time_mode,
+                                  fit_to_current_indicator_range: !use_only_last_known_value ? false : fit_to_current_indicator_range,
+                                  show_last_known_value_in_range: !use_only_last_known_value ? true : show_last_known_value_in_range,
+                                  use_only_last_known_value: !use_only_last_known_value
+                                }
+                              })
+                            )
+                          }}
+                        />
+                      }
+                      label={'Use last know value for all indicators (disables time slider)'}/>
                     <FormControlLabel
                       control={
                         <Checkbox
@@ -234,6 +255,7 @@ export default function SummaryDashboardForm({ changed }) {
                               })
                             )
                           }}
+                          disabled={use_only_last_known_value}
                         />
                       }
                       label={'Fit to current indicator range'}/>
@@ -252,12 +274,13 @@ export default function SummaryDashboardForm({ changed }) {
                               })
                             )
                           }}
+                          disabled={use_only_last_known_value}
                         />
                       }
                       label={'Show last known value in range'}/>
                   </FormControl>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={4}>
                   <FormControl>
                     <label className="form-label"
                            htmlFor="name">Default interval</label>
@@ -277,7 +300,9 @@ export default function SummaryDashboardForm({ changed }) {
                             }
                           })
                         )
-                      }}/>
+                      }}
+                      isDisabled={use_only_last_known_value}
+                    />
                   </FormControl>
                 </Grid>
               </Grid>
