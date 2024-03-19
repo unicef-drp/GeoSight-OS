@@ -356,7 +356,6 @@ export function DashboardSaveForm(
           return indicatorLayer
         }),
         'indicator_layers_structure': indicatorLayersStructure,
-
         'context_layers': contextLayers.map(function (model) {
           return {
             id: model.id,
@@ -419,6 +418,7 @@ export function DashboardSaveForm(
 
       // onOpen();
       var formData = new FormData()
+      formData.append('origin_id', data.id)
       formData.append('slug', slug)
       formData.append('icon', icon)
       formData.append('name', name)

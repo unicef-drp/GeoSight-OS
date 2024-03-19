@@ -24,9 +24,17 @@ import { ThemeButton } from "../Elements/Button";
  * @param {React.Component} children React component to be rendered.
  */
 export const ConfirmDialog = forwardRef(
-  ({ header, onConfirmed, onRejected, children, ...props }, ref
+  ({
+     header,
+     onConfirmed,
+     onRejected,
+     autoClose = true,
+     children,
+     ...props
+   }, ref
   ) => {
     const [open, setOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     // Set Open
     useImperativeHandle(ref, () => ({
@@ -39,12 +47,18 @@ export const ConfirmDialog = forwardRef(
       <Modal
         open={open}
         onClosed={() => {
+          if (loading) {
+            return
+          }
           setOpen(false)
         }}
       >
         {
           header ?
             <ModalHeader onClosed={() => {
+              if (loading) {
+                return
+              }
               setOpen(false)
             }}>
               {header}
@@ -57,6 +71,7 @@ export const ConfirmDialog = forwardRef(
           <div style={{ marginLeft: 'auto', width: 'fit-content' }}>
             <ThemeButton
               variant="Basic Reverse"
+              disabled={loading}
               onClick={() => {
                 if (onRejected) {
                   onRejected()
@@ -68,10 +83,14 @@ export const ConfirmDialog = forwardRef(
             &nbsp;
             <ThemeButton
               variant="primary Basic"
-              disabled={props.disabledConfirm}
+              disabled={loading || props.disabledConfirm}
               onClick={() => {
                 onConfirmed()
-                setOpen(false)
+                if (autoClose) {
+                  setOpen(false)
+                } else {
+                  setLoading(true)
+                }
               }}>
               Confirm
             </ThemeButton>
