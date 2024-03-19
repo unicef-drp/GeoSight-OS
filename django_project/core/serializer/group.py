@@ -17,10 +17,18 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.contrib.auth.models import Group
 from rest_framework import serializers
 
+from core.serializer.dynamic_serializer import DynamicModelSerializer
+from core.serializer.user import UserSerializer
 
-class GroupSerializer(serializers.ModelSerializer):
+
+class GroupSerializer(DynamicModelSerializer):
     """Group serializer."""
+    users = serializers.SerializerMethodField()
+
+    def get_users(self, obj: Group):
+        """Return users."""
+        return UserSerializer(obj.user_set.all(), many=True).data
 
     class Meta:  # noqa: D106
         model = Group
-        fields = ('id', 'name')
+        fields = ('id', 'name', 'users')

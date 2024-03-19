@@ -58,10 +58,14 @@ class UserListAPI(RoleContributorRequiredMixin, APIView, FilteredAPI):
 
     def delete(self, request):
         """Delete an basemap."""
-        ids = json.loads(request.data['ids'])
-        for obj in User.objects.filter(id__in=ids):
-            obj.delete()
-        return Response('Deleted')
+        user = request.user
+        if user.is_authenticated and user.profile.is_admin:
+            ids = json.loads(request.data['ids'])
+            for obj in User.objects.filter(id__in=ids):
+                obj.delete()
+            return Response('Deleted')
+        else:
+            return HttpResponseForbidden()
 
 
 class UserDetailAPI(APIView):
