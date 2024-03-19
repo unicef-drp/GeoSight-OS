@@ -43,18 +43,24 @@ import { Session } from "../../../utils/Sessions";
 export default function SummaryWidgetView({ idx, data }) {
   const { config, type } = data
   const {
-    layer_id, layer_used, property, date_filter_type, date_filter_value
+    layer_id, layer_used, property, date_filter_value
   } = config
   const {
     indicators,
     indicatorLayers,
-    geoField
+    geoField,
+    default_time_mode
   } = useSelector(state => state.dashboard.data);
+  const {
+    use_only_last_known_value
+  } = default_time_mode
   const indicatorLayerData = useSelector(state => state.indicatorsData[layer_id]);
   const filteredGeometries = useSelector(state => state.filteredGeometries);
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel);
   const filtersData = useSelector(state => state.filtersData);
   const [layerData, setLayerData] = useState({});
+
+  const date_filter_type = use_only_last_known_value ? 'No filter' : config.date_filter_type
 
   // Fetch the data if it is using global filter
   useEffect(() => {
@@ -189,7 +195,7 @@ export default function SummaryWidgetView({ idx, data }) {
         }
       }
     )()
-  }, [data, selectedAdminLevel, indicatorLayers])
+  }, [data, selectedAdminLevel, indicatorLayers, date_filter_type])
 
   const where = returnWhere(filtersData ? filtersData : [])
   let indicatorData = null

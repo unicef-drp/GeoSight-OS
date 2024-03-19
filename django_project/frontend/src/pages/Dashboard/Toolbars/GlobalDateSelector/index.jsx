@@ -45,10 +45,12 @@ export default function GlobalDateSelector() {
    * Close time slider if use_only_last_known_value is true
    */
   useEffect(() => {
-      if (globalDateSelectorOpened) {
-        dispatch(
-          Actions.GlobalState.update({ globalDateSelectorOpened: false })
-        )
+      if (use_only_last_known_value) {
+        if (globalDateSelectorOpened) {
+          dispatch(
+            Actions.GlobalState.update({ globalDateSelectorOpened: false })
+          )
+        }
       }
     },
     [use_only_last_known_value]
