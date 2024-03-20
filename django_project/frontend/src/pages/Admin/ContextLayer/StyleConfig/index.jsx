@@ -133,6 +133,76 @@ export default function StyleConfig(
               </div> : ""
           }
           {
+            data.layer_type === 'Vector Tile' ? <>
+              <div className='Style'>
+                <div><b>Layers</b></div>
+                <span>
+                  Put layers list configurations with the mapbox format.<br/>
+                  Put source with "source" or any, it will automatically change to correct source.<br/>
+                  <a
+                    href="https://docs.mapbox.com/style-spec/reference/layers/"
+                    target="_blank">See documentation.</a>
+                </span>
+                <br/>
+                <br/>
+                <textarea
+                  placeholder={
+                    JSON.stringify([
+                      {
+                        id: "country-line",
+                        type: "line",
+                        source: "source",
+                        "source-layer": "countries",
+                        filter: [
+                          "==",
+                          "$type",
+                          "Polygon"
+                        ],
+                        paint: {
+                          "line-width": 1,
+                          "line-color": "#AAAAAA"
+                        }
+                      },
+                      {
+                        id: "country-fill",
+                        type: "fill",
+                        source: "source",
+                        "source-layer": "countries",
+                        filter: [
+                          "==",
+                          "$type",
+                          "Polygon"
+                        ],
+                        paint: {
+                          "fill-opacity": 0
+                        }
+                      }
+                    ], null, 4)
+                  }
+                  defaultValue={data.styles}
+                  style={{ minHeight: "90%" }}
+                  onChange={(evt) => {
+                    try {
+                      JSON.parse(evt.target.value)
+                      setError(null)
+                      setData(
+                        {
+                          ...data,
+                          styles: evt.target.value,
+                          override_style: true
+                        }
+                      )
+                    } catch (e) {
+                      setError((e + '').split('at')[0])
+                    }
+                  }}/>
+              </div>
+              <div className='ArcgisConfig Label form-helptext'>
+                Vector tile does not have label
+              </div>
+            </> : null
+          }
+          {
             data.layer_type === 'ARCGIS' ?
               <ArcgisConfig
                 originalData={data} setData={setData}
