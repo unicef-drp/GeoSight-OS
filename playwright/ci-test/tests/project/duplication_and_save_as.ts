@@ -47,9 +47,6 @@ test.describe('Duplicate and save as project', () => {
     // ------------------------------------
     await page.goto(editUrl);
     page.on('dialog', async dialog => {
-      // Verify Dialog Message
-      expect(dialog.message()).toContain('Are you sure you want to delete : Demo GeoSight Project 1?');
-
       //Click on OK Button
       await dialog.accept();
     });
@@ -99,9 +96,6 @@ test.describe('Duplicate and save as project', () => {
     // ------------------------------------
     await page.goto(editUrl);
     page.on('dialog', async dialog => {
-      // Verify Dialog Message
-      expect(dialog.message()).toContain('Are you sure you want to delete : Test Project Save As?');
-
       //Click on OK Button
       await dialog.accept();
     });

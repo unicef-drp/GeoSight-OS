@@ -35,6 +35,7 @@ class LayerType(object):
     ARCGIS = 'ARCGIS'
     GEOJSON = 'Geojson'
     RASTER_TILE = 'Raster Tile'
+    VECTOR_TILE = 'Vector Tile'
 
 
 class ContextLayerGroup(AbstractTerm):
@@ -65,12 +66,6 @@ class ContextLayer(AbstractEditData, AbstractTerm):
         null=True, blank=True,
         on_delete=models.SET_NULL
     )
-    url = models.CharField(
-        max_length=10240,
-        help_text=(
-            "Put full url with parameters that are needed. "
-        )
-    )
     layer_type = models.CharField(
         max_length=256,
         default=LayerType.ARCGIS,
@@ -78,13 +73,21 @@ class ContextLayer(AbstractEditData, AbstractTerm):
             (LayerType.ARCGIS, LayerType.ARCGIS),
             (LayerType.GEOJSON, LayerType.GEOJSON),
             (LayerType.RASTER_TILE, LayerType.RASTER_TILE),
+            (LayerType.VECTOR_TILE, LayerType.VECTOR_TILE),
         ),
         help_text=_(
             'The type of layer for this context layer.<br>'
             'For <b>ArcGIS</b>, put feature server of REST. e.g : '
             'https://{host}/rest/services/{layer}/FeatureServer/1.<br>'
             'For <b>GeoJson</b>, put url of geojson.<br>'
-            'For <b>Raster tile</b>, put XYZ url.'
+            'For <b>Raster tile</b>, put XYZ url.<br>'
+            'For <b>Vector tile</b>, put XYZ url.'
+        )
+    )
+    url = models.CharField(
+        max_length=10240,
+        help_text=(
+            "Put full url with parameters that are needed. "
         )
     )
     arcgis_config = models.ForeignKey(

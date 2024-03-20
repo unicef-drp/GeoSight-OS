@@ -25,6 +25,15 @@ import { popupTemplate } from "../../MapLibre/Popup";
 import { Actions } from "../../../../store/dashboard";
 import { fetchingData } from "../../../../Requests";
 
+/** Vector tile layer **/
+export function VectorTileLayer(
+  layerData, layerFn, legendFn, errorFn, onEachFeature
+) {
+  layerData.parameters['maxNativeZoom'] = 19;
+  layerData.parameters['maxZoom'] = maxZoom;
+  layerFn(layerData)
+}
+
 /** Raster tile layer **/
 export function RasterTileLayer(
   layerData, layerFn, legendFn, errorFn, onEachFeature
@@ -204,6 +213,15 @@ export const getLayer = function (
     }
     case 'Geojson': {
       return GeojsonLayer(
+        layerData,
+        (layer) => setLayer(layer),
+        (legend) => setLegend(legend),
+        (error) => setError(error),
+        onEachFeature
+      )
+    }
+    case 'Vector Tile': {
+      return RasterTileLayer(
         layerData,
         (layer) => setLayer(layer),
         (legend) => setLegend(legend),

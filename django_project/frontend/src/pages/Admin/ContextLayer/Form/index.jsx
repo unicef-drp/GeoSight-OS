@@ -25,6 +25,7 @@ import { AdminForm } from '../../Components/AdminForm'
 import StyleConfig from '../StyleConfig'
 import DjangoTemplateForm from "../../Components/AdminForm/DjangoTemplateForm";
 import { resourceActions } from "../List";
+import { dictDeepCopy } from "../../../../utils/main";
 
 import './style.scss';
 
@@ -45,7 +46,12 @@ export default function ContextLayerForm() {
     const formData = data
     $('.BasicForm').find('input').each(function () {
       const name = $(this).attr('name');
-      if (['override_field', 'override_style'].includes(name)) {
+      if (name === 'layer_type') {
+        if (!formData[name]) {
+          formData[name] = $(this).val()
+        }
+      }
+      if (['override_field', 'override_style', 'layer_type'].includes(name)) {
         return
       }
       if (name) {
@@ -77,7 +83,7 @@ export default function ContextLayerForm() {
       formData.override_style = override_style
       init = true
     }
-    setData(JSON.parse(JSON.stringify(formData)))
+    setData(dictDeepCopy(formData))
   }
 
   const updateData = (newData) => {
@@ -95,6 +101,7 @@ export default function ContextLayerForm() {
     } else {
       $('div[data-wrapper-name="arcgis_config"]').hide()
     }
+    setData({ ...data, layer_type: value })
   }
 
   const arcGisConfigChange = (value) => {
@@ -159,8 +166,10 @@ export default function ContextLayerForm() {
                   typeChange(value)
                 } else if (name === 'arcgis_config') {
                   arcGisConfigChange(value)
+                  setDataFn()
+                } else {
+                  setDataFn()
                 }
-                setDataFn()
               }}
             >
               <Checkbox
