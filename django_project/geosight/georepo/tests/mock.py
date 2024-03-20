@@ -14,16 +14,14 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from geosight.georepo.models.entity import Entity
-from geosight.georepo.models.reference_layer import ReferenceLayerView
-
 
 def mock_get_entity(
         original_id_type: str, original_id: str,
-        reference_layer: ReferenceLayerView, admin_level=None,
+        reference_layer, admin_level=None,
         date_time=None, auto_fetch=True
 ):
     """Mock for get entity request."""
+    from geosight.georepo.models.entity import Entity
     entity, _ = Entity.objects.get_or_create(
         reference_layer=reference_layer,
         geom_id=original_id,

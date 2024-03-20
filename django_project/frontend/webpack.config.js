@@ -67,6 +67,13 @@ let conf = {
     IndicatorValueList: ['./src/pages/Admin/Indicator/IndicatorValueList'],
     IndicatorValueManagementMap: ['./src/pages/Admin/Indicator/ValueManagementMap'],
     IndicatorValueManagementForm: ['./src/pages/Admin/Indicator/ValueManagementForm'],
+
+    // REFERENCE LAYER VIEW
+    AdminReferenceLayerViewForm: ['./src/pages/Admin/ReferenceLayerView/Form'],
+    AdminReferenceLayerViewList: ['./src/pages/Admin/ReferenceLayerView/List'],
+    AdminReferenceLayerViewEntityBrowser: ['./src/pages/Admin/ReferenceLayerView/EntityBrowser'],
+    AdminReferenceLayerImporterForm: ['./src/pages/Admin/ReferenceLayerView/Importer/Form'],
+    AdminReferenceLayerImporterList: ['./src/pages/Admin/ReferenceLayerView/Importer/List'],
   },
   output: {
     path: path.resolve(__dirname, "./bundles/frontend"),

@@ -126,7 +126,7 @@ export function AdminTable(
           }}
           disableSelectionOnClick={!props.enableSelectionOnClick}
 
-          checkboxSelection={columns?.length && !!setSelectionModel && !props.enableSelectionOnClick}
+          checkboxSelection={columns?.length && !!setSelectionModel && !props.enableSelectionOnClick && !props.disabledCheckboxSelection}
           onSelectionModelChange={(newSelectionModel) => {
             setSelectionModel(newSelectionModel);
           }}

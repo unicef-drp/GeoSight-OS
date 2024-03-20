@@ -88,6 +88,7 @@
     "react-chartjs-2": "^5.2.0",
     "react-datepicker": "^4.8.0",
     "react-dom": "^18.1.0",
+    "react-dropzone-uploader": "^2.11.0",
     "react-i18next": "^11.16.9",
     "react-js-cron": "^4.0.0",
     "react-markdown": "^9.0.0",

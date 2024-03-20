@@ -179,8 +179,8 @@ test.describe('Create complex project', () => {
     // --------------------------------------------------------------
     await page.getByRole('button', { name: 'Back to form' }).click();
     await expect(page.locator('.MoreActionIcon')).toBeVisible();
-    await expect(page.locator('.Summary .ReferenceDatasetSection input')).toHaveValue('Global Administrative Boundaries - Somalia (Latest)');
-    await expect(page.locator('.Summary .CodeMappingConfig input')).toHaveValue('Concept uuid');
+    await expect(page.locator('.Summary .ReferenceDatasetSection input')).toHaveValue('Somalia');
+    await expect(page.locator('.Summary .CodeMappingConfig input')).toHaveValue('Latest ucode');
     await expect(page.getByPlaceholder('Select default admin level')).toHaveValue('Admin Level 1');
 
     const availableLayers = [];
@@ -192,10 +192,10 @@ test.describe('Create complex project', () => {
     await expect(availableLayers).toEqual(['Admin Level 0', 'Admin Level 1', 'Admin Level 2']);
     await expect(page.locator('.Summary #SummaryName')).toHaveValue('Test Project Complex Config');
     expect(await page.locator('.Summary #SummaryCategory .ReactSelect__single-value').innerText()).toEqual('Complex');
-    await expect(page.locator('.ExtentManualInput input').nth(0)).toHaveValue('40.994');
-    await expect(page.locator('.ExtentManualInput input').nth(1)).toHaveValue('11.988');
-    await expect(page.locator('.ExtentManualInput input').nth(2)).toHaveValue('51.415');
-    await expect(page.locator('.ExtentManualInput input').nth(3)).toHaveValue('-1.657');
+    await expect(page.locator('.ExtentManualInput input').nth(0)).toHaveValue('40.9943');
+    await expect(page.locator('.ExtentManualInput input').nth(1)).toHaveValue('11.9884');
+    await expect(page.locator('.ExtentManualInput input').nth(2)).toHaveValue('51.4151');
+    await expect(page.locator('.ExtentManualInput input').nth(3)).toHaveValue('-1.6568');
 
     // Check indicators
     await page.locator('.TabPrimary').getByText('Indicators (2)').click();

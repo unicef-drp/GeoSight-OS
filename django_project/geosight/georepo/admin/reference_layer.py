@@ -21,11 +21,18 @@ from geosight.data.models.indicator.indicator_value import (
     IndicatorValueWithGeo
 )
 from geosight.georepo.models import (
-    ReferenceLayerView
+    ReferenceLayerView, ReferenceLayerViewLevel
 )
 from geosight.georepo.tasks import (
     fetch_reference_codes_by_ids, fetch_datasets, create_data_access
 )
+
+
+class ReferenceLayerViewLevelInline(admin.TabularInline):
+    """ReferenceLayerViewLevel inline."""
+
+    model = ReferenceLayerViewLevel
+    extra = 0
 
 
 @admin.action(description='Update meta')
@@ -73,6 +80,7 @@ class ReferenceLayerViewAdmin(admin.ModelAdmin):
         update_meta, sync_codes, action_fetch_datasets,
         action_create_data_access, invalidate_cache
     ]
+    inlines = (ReferenceLayerViewLevelInline,)
 
     def in_georepo(self, obj: ReferenceLayerView):
         """Is reference layer in georepo."""

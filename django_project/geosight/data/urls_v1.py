@@ -52,3 +52,6 @@ urlpatterns = [
 ]
 urlpatterns += router.urls
 urlpatterns += related_tables_router.urls
+urlpatterns += [
+    url(r'^', include('geosight.georepo.api.urls')),
+]

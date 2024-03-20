@@ -37,9 +37,10 @@ import { hideLabel, renderLabel, showLabel } from "./Label"
 import { ExecuteWebWorker } from "../../../../utils/WebWorker";
 import worker from "./Label/worker";
 import { fetchJSON } from "../../../../Requests";
+import { Actions } from "../../../../store/dashboard";
+import { InternalReferenceDatasets } from "../../../../utils/urls";
 
 import './style.scss';
-import { Actions } from "../../../../store/dashboard";
 
 let centroidMarker = []
 let charts = {}
@@ -86,8 +87,10 @@ export default function ReferenceLayerCentroid({ map }) {
       // ----------------------------
       try {
         const geometryMemberByUcode = {}
-
-        const url = `${preferences.georepo_api.api}/search/view/${referenceLayer.identifier}/centroid/`
+        let url = `${preferences.georepo_api.api}/search/view/${referenceLayer.identifier}/centroid/`
+        if (referenceLayer.is_local) {
+          url = InternalReferenceDatasets.centroid(referenceLayer.identifier)
+        }
         fetchJson(url).then(async data => {
           if (identifier === lastRequest) {
             for (let i = 0; i < data.length; i++) {
