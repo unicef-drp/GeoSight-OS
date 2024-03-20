@@ -241,6 +241,7 @@ class DashboardSerializer(serializers.ModelSerializer):
         else:
             pref = SitePreferences.preferences()
             return {
+                'use_only_last_known_value': True,
                 'fit_to_current_indicator_range':
                     pref.fit_to_current_indicator_range,
                 'show_last_known_value_in_range':

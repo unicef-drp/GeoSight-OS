@@ -46,12 +46,7 @@ export default function ContextLayerForm() {
     const formData = data
     $('.BasicForm').find('input').each(function () {
       const name = $(this).attr('name');
-      if (name === 'layer_type') {
-        if (!formData[name]) {
-          formData[name] = $(this).val()
-        }
-      }
-      if (['override_field', 'override_style', 'layer_type'].includes(name)) {
+      if (['override_field', 'override_style'].includes(name)) {
         return
       }
       if (name) {

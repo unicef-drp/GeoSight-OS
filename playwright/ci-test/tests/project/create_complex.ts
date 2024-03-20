@@ -27,7 +27,6 @@ test.describe('Create complex project', () => {
     await page.keyboard.press('Enter');
     await page.getByPlaceholder('Select default admin level').click();
     await page.getByRole('option', { name: 'Admin Level 1' }).click();
-    await page.getByText('Use last know value for all').click();
 
     // Add indicator
     await page.locator('.TabPrimary').getByText('Indicators').click();

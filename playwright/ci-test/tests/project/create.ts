@@ -34,6 +34,7 @@ test.describe('Create project', () => {
     await page.keyboard.press('Enter');
     await page.getByPlaceholder('Select default admin level').click();
     await page.getByRole('option', { name: 'Admin Level 2' }).click();
+    await page.getByText('Use last know value for all').click();
 
     // Add indicator
     await page.locator('.TabPrimary').getByText('Indicators').click();
@@ -177,6 +178,7 @@ test.describe('Create project', () => {
     await page.locator("#SummaryCategory").click();
     await page.keyboard.type('Overriden');
     await page.keyboard.press('Enter');
+    await page.getByText('Use last know value for all').click();
     await page.getByText("Fit to current indicator range").click()
     await page.getByText("Show last known value in range").click()
     await page.locator("#default_interval > .ReactSelect__control > .ReactSelect__value-container > .ReactSelect__input-container").click()
