@@ -122,7 +122,6 @@ test.describe('Create complex project', () => {
 
     const editUrl = 'http://localhost:2000/admin/project/test-project-complex-config/edit'
     await page.waitForURL(editUrl)
-    // await page.goto(editUrl);
 
     // --------------------------------------------------------------
     // CHECK PREVIEW
