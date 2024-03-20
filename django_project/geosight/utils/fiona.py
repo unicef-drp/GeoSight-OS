@@ -14,11 +14,12 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/02/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import os
+
+import fiona
 from django.conf import settings
 from django.core.files.temp import NamedTemporaryFile
 from fiona.collection import Collection
-
-import fiona
 
 GEOJSON = 'GEOJSON'
 SHAPEFILE = 'SHAPEFILE'
@@ -62,3 +63,16 @@ def open_collection_by_file(fp, type: str) -> Collection:
     if file_path:
         result = fiona.open(file_path, encoding='utf-8')
     return result
+
+
+def delete_tmp_shapefile(file_path: str, azure_only=True):
+    """Delete temporary shapefile."""
+    check_azure = settings.USE_AZURE
+    if not azure_only:
+        check_azure = True
+    if check_azure and file_path.endswith('.zip'):
+        cleaned_fp = file_path
+        if '/vsizip/' in file_path:
+            cleaned_fp = file_path.replace('/vsizip/', '')
+        if os.path.exists(cleaned_fp):
+            os.remove(cleaned_fp)

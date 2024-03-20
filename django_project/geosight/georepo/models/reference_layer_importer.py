@@ -61,7 +61,8 @@ class ReferenceLayerViewImporter(AbstractEditData):
 
     def run(self):
         """Run the importer."""
-        pass
+        from geosight.georepo.tasks import run_importer
+        run_importer(self.id)
 
 
 class ReferenceLayerViewImporterLevel(models.Model):
