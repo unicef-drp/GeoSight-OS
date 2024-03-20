@@ -98,7 +98,7 @@ jobs:
           npm install
           npm ci
           npx playwright install --with-deps
-          npx playwright test
+          npx playwright test --workers 1
       - uses: actions/upload-artifact@v3
         if: always()
         with:

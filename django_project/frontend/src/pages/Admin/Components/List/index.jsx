@@ -56,6 +56,7 @@ export function COLUMNS_ACTION(
   if (!permission || permission.delete) {
     actions.push(
       <GridActionsCellItem
+        data-id={params.id}
         icon={
           <MoreAction moreIcon={<MoreVertIcon/>}>
             {

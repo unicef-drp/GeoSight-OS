@@ -199,19 +199,19 @@ test.describe('Create complex project', () => {
     await expect(page.locator('.ExtentManualInput input').nth(3)).toHaveValue('-1.657');
 
     // Check indicators
-    await page.locator('.TabPrimary').getByText('Indicators').click();
+    await page.locator('.TabPrimary').getByText('Indicators (2)').click();
     expect(await page.getByRole('cell', { name: 'Sample Indicator A' })).toBeVisible();
     expect(await page.getByRole('cell', { name: 'Sample Indicator B' })).toBeVisible();
 
     // Check indicator layers
-    await page.locator('.TabPrimary').getByText('Indicator Layers').click();
+    await page.locator('.TabPrimary').getByText('Indicator Layers (5)').click();
     expect(await page.getByText('Sample Indicator A').nth(1)).toBeVisible();
     expect(await page.getByText('Sample Indicator B').nth(1)).toBeVisible();
     expect(await page.getByText('Related Table Layer').nth(1)).toBeVisible();
     expect(await page.getByText('Chart Layer').nth(1)).toBeVisible();
 
     // Check indicator layers
-    await page.locator('.TabPrimary').getByText('Related Tables').click();
+    await page.locator('.TabPrimary').getByText('Related Tables (1)').click();
     await expect(page.locator('.RelatedTableConfiguration input').nth(0)).toHaveValue('Ucode');
     await expect(page.locator('.RelatedTableConfiguration input').nth(1)).toHaveValue('ucode');
 
