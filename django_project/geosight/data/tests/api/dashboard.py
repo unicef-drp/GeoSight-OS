@@ -155,6 +155,7 @@ class DashboardListApiTest(BasePermissionTest, TestCase):
         self.assertEqual(data['slug'], resource.slug)
         pref = SitePreferences.preferences()
         self.assertEqual(data['default_time_mode'], {
+            'use_only_last_known_value': True,
             'fit_to_current_indicator_range':
                 pref.fit_to_current_indicator_range,
             'show_last_known_value_in_range':
@@ -170,6 +171,7 @@ class DashboardListApiTest(BasePermissionTest, TestCase):
         response = self.assertRequestGetView(url, 200, self.creator)
         data = response.json()
         self.assertEqual(data['default_time_mode'], {
+            'use_only_last_known_value': True,
             'fit_to_current_indicator_range':
                 pref.fit_to_current_indicator_range,
             'show_last_known_value_in_range':
@@ -179,6 +181,7 @@ class DashboardListApiTest(BasePermissionTest, TestCase):
 
         # Test overriden data
         resource.default_time_mode = {
+            'use_only_last_known_value': True,
             'fit_to_current_indicator_range': True,
             'show_last_known_value_in_range': True,
             'default_interval': 'Daily',
@@ -188,6 +191,7 @@ class DashboardListApiTest(BasePermissionTest, TestCase):
         data = response.json()
 
         self.assertEqual(data['default_time_mode'], {
+            'use_only_last_known_value': True,
             'fit_to_current_indicator_range': True,
             'show_last_known_value_in_range': True,
             'default_interval': 'Daily',
