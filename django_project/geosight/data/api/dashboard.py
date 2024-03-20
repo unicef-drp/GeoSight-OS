@@ -24,6 +24,7 @@ from rest_framework.views import APIView
 
 from core.cache import VersionCache
 from core.models.preferences import SitePreferences
+from frontend.views.admin.dashboard.create import DashboardCreateViewBase
 from geosight.data.models.basemap_layer import BasemapLayer
 from geosight.data.models.context_layer import ContextLayer
 from geosight.data.models.dashboard import Dashboard
@@ -36,6 +37,8 @@ from geosight.data.serializer.dashboard import (
 from geosight.permission.access import (
     delete_permission_resource, read_permission_resource
 )
+
+CREATE_SLUG = ':CREATE'
 
 
 class DashboardListAPI(APIView):
@@ -59,9 +62,6 @@ class DashboardListAPI(APIView):
         return Response('Deleted')
 
 
-CREATE_SLUG = ':CREATE'
-
-
 class DashboardDetail(APIView):
     """Return all dashboard data."""
 
@@ -73,6 +73,49 @@ class DashboardDetail(APIView):
         delete_permission_resource(dashboard, request.user)
         dashboard.delete()
         return Response('Deleted')
+
+
+class DashboardDuplicate(APIView, DashboardCreateViewBase):
+    """Return all dashboard data."""
+
+    permission_classes = (IsAuthenticated,)
+
+    def update_name(self, name, counter=1):
+        """Get name of data."""
+        new_name = f'{name} {counter}'
+        try:
+            Dashboard.objects.get(name=new_name)
+            return self.update_name(name, counter + 1)
+        except Dashboard.DoesNotExist:
+            return new_name
+
+    def update_slug(self, slug, counter=1):
+        """Get slug of data."""
+        new_slug = f'{slug}-{counter}'
+        try:
+            Dashboard.objects.get(slug=new_slug)
+            return self.update_slug(slug, counter + 1)
+        except Dashboard.DoesNotExist:
+            return new_slug
+
+    def post(self, request, slug):
+        """Delete an basemap."""
+        dashboard = get_object_or_404(Dashboard, slug=slug)
+        delete_permission_resource(dashboard, request.user)
+
+        data = DashboardSerializer(
+            dashboard, context={'user': request.user}
+        ).data
+        data['name'] = self.update_name(name=data['name'])
+        data['slug'] = self.update_slug(slug=data['slug'])
+        data['geoField'] = data['geo_field']
+        try:
+            data['reference_layer'] = data['reference_layer']['identifier']
+        except KeyError:
+            pass
+        data['data'] = data
+        data['origin_id'] = dashboard.id
+        return self.save(data, request.user, request.FILES)
 
 
 class DashboardData(APIView):

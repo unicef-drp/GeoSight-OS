@@ -85,7 +85,10 @@ class DashboardForm(forms.ModelForm):
         else:
             data['slug'] = slugify(data['slug'])
 
-        other_data = json.loads(data['data'])
+        try:
+            other_data = json.loads(data['data'])
+        except TypeError:
+            other_data = data['data']
 
         # save polygon
         poly = Polygon.from_bbox(other_data['extent'])

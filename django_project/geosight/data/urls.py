@@ -25,7 +25,7 @@ from geosight.data.api.context_layers import (
     ContextLayerListAPI, ContextLayerDetailAPI
 )
 from geosight.data.api.dashboard import (
-    DashboardData, DashboardDetail, DashboardListAPI
+    DashboardData, DashboardDuplicate, DashboardDetail, DashboardListAPI
 )
 from geosight.data.api.dashboard_bookmark import (
     DashboardBookmarksAPI,
@@ -74,6 +74,11 @@ dashboard_specific_api = [
         r'^data$',
         DashboardData.as_view(),
         name='dashboard-data-api'
+    ),
+    url(
+        r'^duplicate$',
+        DashboardDuplicate.as_view(),
+        name='dashboard-duplicate-api'
     ),
     url(
         r'^entity/(?P<concept_uuid>[^/]+)/drilldown$',
