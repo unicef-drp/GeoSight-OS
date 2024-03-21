@@ -21,6 +21,48 @@ import { getLayer } from '../../../Dashboard/LeftPanel/ContextLayers/Layer'
 
 import './style.scss';
 
+const defaultVectorTyleStyle = [
+  {
+    id: "country-line",
+    type: "line",
+    source: "source",
+    "source-layer": "countries",
+    filter: [
+      "==",
+      "$type",
+      "Polygon"
+    ],
+    paint: {
+      "line-width": 1,
+      "line-color": "#AAAAAA"
+    }
+  },
+  {
+    id: "country-fill",
+    type: "fill",
+    source: "source",
+    "source-layer": "countries",
+    filter: [
+      "==",
+      "$type",
+      "Polygon"
+    ],
+    paint: {
+      "fill-opacity": 0
+    }
+  }
+];
+
+const defaultPointStyle = [{
+  id: 'pointLayer',
+  type: 'circle',
+  source: 'source',
+  paint: {
+    'circle-color': '#ff7800',
+    'circle-opacity': 0.6
+  },
+  'filter': ['==', '$type', 'Point']
+}];
 
 /**
  * Indicator Form App
@@ -57,6 +99,16 @@ export default function StyleConfig(
     setLegend(null)
     getLayer(data, setLayer, setLegend, setError, dispatch, setLayerDataClass);
   }, [data, tab]);
+
+  useEffect(() => {
+    if (!data.styles && data.layer_type === 'Related Table') {
+      setData({
+        ...data,
+        styles: JSON.stringify(defaultPointStyle, null, 4),
+        override_style: true
+      })
+    }
+  }, [data]);
 
   useEffect(() => {
     if (layerDataClass) {
@@ -125,15 +177,18 @@ export default function StyleConfig(
                     }
                   </div>
                 </div>
-                <MapConfig data={data} layerInput={{
-                  layer: layer,
-                  layer_type: data.layer_type,
-                  render: true
-                }}/>
+                <MapConfig
+                  data={data}
+                  layerInput={{
+                    layer: layer,
+                    layer_type: data.layer_type,
+                    render: true
+                  }}
+                />
               </div> : ""
           }
           {
-            data.layer_type === 'Vector Tile' ? <>
+            data.layer_type === 'Vector Tile' || data.layer_type === 'Related Table' ? <>
               <div className='Style'>
                 <div><b>Layers</b></div>
                 <span>
@@ -147,37 +202,10 @@ export default function StyleConfig(
                 <br/>
                 <textarea
                   placeholder={
-                    JSON.stringify([
-                      {
-                        id: "country-line",
-                        type: "line",
-                        source: "source",
-                        "source-layer": "countries",
-                        filter: [
-                          "==",
-                          "$type",
-                          "Polygon"
-                        ],
-                        paint: {
-                          "line-width": 1,
-                          "line-color": "#AAAAAA"
-                        }
-                      },
-                      {
-                        id: "country-fill",
-                        type: "fill",
-                        source: "source",
-                        "source-layer": "countries",
-                        filter: [
-                          "==",
-                          "$type",
-                          "Polygon"
-                        ],
-                        paint: {
-                          "fill-opacity": 0
-                        }
-                      }
-                    ], null, 4)
+                    JSON.stringify(data.layer_type === 'Related Table' ?
+                      defaultPointStyle :
+                      defaultVectorTyleStyle,
+                      null, 4)
                   }
                   defaultValue={data.styles}
                   style={{ minHeight: "90%" }}
@@ -211,7 +239,7 @@ export default function StyleConfig(
               /> :
               <Fragment>
                 <div className='ArcgisConfig Fields form-helptext'>
-                  Config is not Arcgis
+                  Config is not Arcgis or Related Table Type
                 </div>
               </Fragment>
           }

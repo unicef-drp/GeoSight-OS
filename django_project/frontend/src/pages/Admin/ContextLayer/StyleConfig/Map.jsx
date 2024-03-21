@@ -86,7 +86,7 @@ export default function MapConfig({ data, layerInput }) {
   // When layer input changed, remove from map
   useEffect(() => {
     if (map) {
-      const id = 'Context-Layer'
+      const id = data.id ? `context-layer-${data.id}` : 'context-layer'
       contextLayerRendering(id, data, layerInput, map)
     }
   }, [map, layerInput]);
