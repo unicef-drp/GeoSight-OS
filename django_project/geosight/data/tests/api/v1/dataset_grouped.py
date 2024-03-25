@@ -31,7 +31,7 @@ from geosight.permission.tests._base import BasePermissionTest
 User = get_user_model()
 
 
-class DatasetApiTest(BasePermissionTest, TestCase):
+class DatasetApiGroupedDataTest(BasePermissionTest, TestCase):
     """Test for dataset list api."""
 
     payload = {
@@ -57,7 +57,7 @@ class DatasetApiTest(BasePermissionTest, TestCase):
         payload['name'] = 'name_0'
         self.indicator_0 = Indicator.objects.create(**payload)
 
-        super(DatasetApiTest, self).setUp()
+        super(DatasetApiGroupedDataTest, self).setUp()
 
         # Create indicators
         payload['name'] = 'name_1'
@@ -180,36 +180,36 @@ class DatasetApiTest(BasePermissionTest, TestCase):
 
     def test_list_api_by_admin(self):
         """Test List API."""
-        url = reverse('dataset-api')
+        url = reverse('dataset-api') + '?group_admin_level=true'
         self.assertRequestGetView(url, 403)
 
         # admin
         user = self.admin
         response = self.assertRequestGetView(url, 200, user=user)
-        self.assertEqual(response.json()['count'], 8)
+        self.assertEqual(response.json()['count'], 4)
         self.assertEqual(self.data_count(response), 36)
 
         # by indicators
         response = self.assertRequestGetView(
-            f'{url}?indicator_id__in={",".join([f"{self.indicator_1.id}"])}',
+            f'{url}&indicator_id__in={",".join([f"{self.indicator_1.id}"])}',
             200,
             user=user
         )
-        self.assertEqual(response.json()['count'], 4)
+        self.assertEqual(response.json()['count'], 2)
         self.assertEqual(self.data_count(response), 18)
 
         # by reference layers
         reference_layers = ",".join([f"{self.ref_1.identifier}"])
         response = self.assertRequestGetView(
-            f'{url}?reference_layer_id__in={reference_layers}',
+            f'{url}&reference_layer_id__in={reference_layers}',
             200, user=user
         )
-        self.assertEqual(response.json()['count'], 4)
+        self.assertEqual(response.json()['count'], 2)
         self.assertEqual(self.data_count(response), 18)
 
         # by levels
         response = self.assertRequestGetView(
-            f'{url}?admin_level__in=1', 200, user=user
+            f'{url}&admin_level__in=1', 200, user=user
         )
         self.assertEqual(response.json()['count'], 4)
         self.assertEqual(self.data_count(response), 20)
@@ -217,24 +217,24 @@ class DatasetApiTest(BasePermissionTest, TestCase):
     def test_list_api_by_creator(self):
         """Test List API."""
         user = self.creator
-        url = reverse('dataset-api')
+        url = reverse('dataset-api') + '?group_admin_level=true'
 
         # admin
         response = self.assertRequestGetView(url, 200, user=user)
-        self.assertEqual(response.json()['count'], 4)
+        self.assertEqual(response.json()['count'], 2)
         self.assertEqual(self.data_count(response), 18)
 
         # by indicators
         response = self.assertRequestGetView(
-            f'{url}?indicator_id__in={",".join([f"{self.indicator_1.id}"])}',
+            f'{url}&indicator_id__in={",".join([f"{self.indicator_1.id}"])}',
             200,
             user=user
         )
-        self.assertEqual(response.json()['count'], 4)
+        self.assertEqual(response.json()['count'], 2)
         self.assertEqual(self.data_count(response), 18)
 
         response = self.assertRequestGetView(
-            f'{url}?indicator_id__in={",".join([f"{self.indicator_2.id}"])}',
+            f'{url}&indicator_id__in={",".join([f"{self.indicator_2.id}"])}',
             200,
             user=user
         )
@@ -244,27 +244,26 @@ class DatasetApiTest(BasePermissionTest, TestCase):
         # by reference layers
         reference_layers = ",".join([f"{self.ref_1.identifier}"])
         response = self.assertRequestGetView(
-            f'{url}?reference_layer_id__in={reference_layers}',
+            f'{url}&reference_layer_id__in={reference_layers}',
             200, user=user
         )
-        self.assertEqual(response.json()['count'], 2)
+        self.assertEqual(response.json()['count'], 1)
         self.assertEqual(self.data_count(response), 9)
 
         # by levels
         response = self.assertRequestGetView(
-            f'{url}?admin_level__in=1', 200, user=user
+            f'{url}&admin_level__in=1', 200, user=user
         )
-        self.assertEqual(response.json()['count'], 2)
         self.assertEqual(self.data_count(response), 10)
 
     def test_delete_api(self):
         """Test List API."""
         user = self.creator_in_group
-        url = reverse('dataset-api')
+        url = reverse('dataset-api') + '?group_admin_level=true'
 
         # admin
         response = self.assertRequestGetView(
-            f'{url}?admin_level__in=1', 200, user=user
+            f'{url}&admin_level__in=1', 200, user=user
         )
         self.assertEqual(self.data_count(response), 20)
 
@@ -273,5 +272,5 @@ class DatasetApiTest(BasePermissionTest, TestCase):
 
         # admin
         response = self.assertRequestGetView(url, 200, user=user)
-        self.assertEqual(response.json()['count'], 6)
+        self.assertEqual(response.json()['count'], 4)
         self.assertEqual(self.data_count(response), 26)

@@ -549,22 +549,16 @@ export default function PermissionModal(
   const [open, setOpen] = useState(false)
   const [defaultData, setDefaultData] = useState(null)
   const [data, setData] = useState(null)
-  const [loaded, setLoaded] = useState(false)
   const [uploaded, setUploaded] = useState(false)
 
   /** Fetch data when modal is opened **/
   useEffect(() => {
     setUploaded(false)
     if (open) {
-      if (!loaded) {
-        setLoaded(true)
-        fetchJSON(urlData)
-          .then(data => {
-            setDefaultData(data)
-          })
-      } else {
-        setData(dictDeepCopy(defaultData))
-      }
+      fetchJSON(urlData, {}, false)
+        .then(data => {
+          setDefaultData(data)
+        })
     }
   }, [open])
 

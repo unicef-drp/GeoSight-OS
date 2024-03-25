@@ -18,6 +18,8 @@ import $ from "jquery";
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
 import Tooltip from "@mui/material/Tooltip";
+import Switch from "@mui/material/Switch";
+import { FormControlLabel, FormGroup } from "@mui/material";
 
 import { DataBrowserActiveIcon } from "../../../components/Icons";
 import { render } from '../../../app';
@@ -36,10 +38,10 @@ import {
 } from "../../../components/Notification";
 import { AdminListPagination } from "../AdminListPagination";
 import { AdminPage, pageNames } from "../index";
+import PermissionModal from "../Permission";
 
 
 import './style.scss';
-import PermissionModal from "../Permission";
 
 /*** Dataset admin */
 const deleteWarning = "WARNING! Do you want to delete the selected data? This will apply directly to database."
@@ -55,6 +57,7 @@ export default function DatasetAdmin() {
   // Other attributes
   const defaultFilters = urlParams()
   const [filters, setFilters] = useState({
+    groupAdminLevel: defaultFilters.groupAdminLevel === 'true',
     indicators: defaultFilters.indicators ? splitParams(defaultFilters.indicators) : [],
     datasets: defaultFilters.datasets ? splitParams(defaultFilters.datasets, false) : [],
     levels: defaultFilters.levels ? splitParams(defaultFilters.levels) : [],
@@ -159,6 +162,11 @@ export default function DatasetAdmin() {
     } else {
       delete parameters['indicator_id__in']
     }
+    if (filters.groupAdminLevel) {
+      parameters['group_admin_level'] = true
+    } else {
+      delete parameters['group_admin_level']
+    }
     if (filters.datasets.length) {
       parameters['reference_layer_id__in'] = filters.datasets.join(',')
     } else {
@@ -182,6 +190,19 @@ export default function DatasetAdmin() {
       selectAllUrl={urls.api.datasetApi + '/ids'}
       otherFilters={
         <div className='ListAdminFilters'>
+          <FormGroup>
+            <FormControlLabel
+              control={<Switch checked={filters.groupAdminLevel}/>}
+              label="Group all admin levels"
+              onChange={(evt) => {
+                setFilters({
+                  ...filters,
+                  groupAdminLevel: evt.target.checked
+                })
+              }}
+            />
+          </FormGroup>
+          <div className='Separator'/>
           <IndicatorFilterSelector
             data={filters.indicators}
             setData={newFilter => setFilters({
