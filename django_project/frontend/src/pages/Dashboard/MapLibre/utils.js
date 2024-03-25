@@ -180,3 +180,21 @@ export const addPopupEl = (map, el, latlng, properties, popupRenderFn, offset = 
     }
   });
 }
+/*** Create element ***/
+export const createElement = (
+  tag,
+  options
+) => {
+  const { classes, styles, attributes, events, content, appendTo } = options;
+  const el = document.createElement(tag);
+  if (classes) classes.forEach(cls => el.classList.add(cls));
+  if (styles) Object.entries(styles).forEach(prop => el.style.setProperty(...prop));
+  if (attributes) Object.entries(attributes).forEach(([name, value]) => {
+    if (value || value === 0) el.setAttribute(name, `${value}`);
+    else el.removeAttribute(name);
+  });
+  if (events) Object.entries(events).forEach(([e, listener]) => el.addEventListener(e, listener));
+  if (content) el.append(...(content.filter(Boolean)));
+  if (appendTo) appendTo.appendChild(el);
+  return el;
+};
