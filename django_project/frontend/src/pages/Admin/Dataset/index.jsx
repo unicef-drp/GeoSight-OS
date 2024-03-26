@@ -20,6 +20,7 @@ import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
 import Tooltip from "@mui/material/Tooltip";
 import Switch from "@mui/material/Switch";
 import { FormControlLabel, FormGroup } from "@mui/material";
+import AddIcon from '@mui/icons-material/Add';
 
 import { DataBrowserActiveIcon } from "../../../components/Icons";
 import { render } from '../../../app';
@@ -42,6 +43,7 @@ import PermissionModal from "../Permission";
 
 
 import './style.scss';
+import { ThemeButton } from "../../../components/Elements/Button";
 
 /*** Dataset admin */
 const deleteWarning = "WARNING! Do you want to delete the selected data? This will apply directly to database."
@@ -203,6 +205,17 @@ export default function DatasetAdmin() {
             />
           </FormGroup>
           <div className='Separator'/>
+          <ThemeButton
+            variant='primary'
+            // disabled={!(filters.datasets.length === 1 && filters.indicators.length >= 1)}
+            onClick={() => {
+              window.location.href = `/admin/project/create?dataset=${filters.datasets[0]}&indicators=${filters.indicators.join(',')}`;
+              console.log('Click')
+            }}
+          >
+            <AddIcon/> Add to New Project
+          </ThemeButton>
+          &nbsp;&nbsp;&nbsp;
           <IndicatorFilterSelector
             data={filters.indicators}
             setData={newFilter => setFilters({
