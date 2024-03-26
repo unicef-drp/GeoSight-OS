@@ -23,7 +23,8 @@ import { removeLayer, removeSource } from "../../../Dashboard/MapLibre/utils";
 import {
   contextLayerRendering
 } from "../../../Dashboard/MapLibre/Layers/ContextLayers/index";
-
+import LegendControl from 'mapboxgl-legend';
+import 'mapboxgl-legend/dist/style.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 /**

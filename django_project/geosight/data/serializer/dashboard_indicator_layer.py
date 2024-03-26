@@ -68,8 +68,20 @@ class DashboardIndicatorLayerSerializer(DashboardSerializer):
 
     def get_indicators(self, obj: DashboardIndicatorLayer):
         """Return rules."""
+        query = obj.dashboardindicatorlayerindicator_set.all()
+        try:
+            if obj.indicators:
+                query = []
+                for indicator in obj.indicators:
+                    query.append(
+                        DashboardIndicatorLayerIndicator(
+                            object=obj, indicator=indicator
+                        )
+                    )
+        except AttributeError:
+            pass
         return DashboardIndicatorLayerIndicatorSerializer(
-            obj.dashboardindicatorlayerindicator_set.all(), many=True
+            query, many=True
         ).data
 
     def get_related_tables(self, obj: DashboardIndicatorLayer):

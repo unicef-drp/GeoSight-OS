@@ -40,7 +40,7 @@ export default function DynamicIndicatorLayerMapConfig() {
   }, [selectedDynamicIndicatorLayer]);
 
   let config;
-  const layer = indicatorLayers.find(layer => layer.id === selectedDynamicIndicatorLayer)
+  const layer = indicatorLayers.find(layer => layer.id && layer.id === selectedDynamicIndicatorLayer)
   if (layer) {
     config = dictDeepCopy(layer.config)
   }

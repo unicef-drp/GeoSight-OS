@@ -16,8 +16,10 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import json
 
+from django.contrib.postgres.aggregates import StringAgg
 from django.core.exceptions import SuspiciousOperation
-from django.db.models import Count, F, Max, Min
+from django.db.models import Count, F, Max, Min, CharField, Value
+from django.db.models.functions import Concat, Cast
 from django.http import HttpResponseBadRequest
 from django.urls import reverse
 from drf_yasg.utils import swagger_auto_schema
@@ -44,35 +46,71 @@ class BaseDatasetApiList:
 
     def get_queryset(self):
         """Return queryset of API."""
-        return super().get_queryset().values(
-            'indicator_id', 'reference_layer_id', 'admin_level'
-        ).annotate(
-            id=F('identifier_with_level')
-        ).annotate(
-            data_count=Count('*')
-        ).annotate(
-            identifier=F('identifier')
-        ).annotate(
-            indicator_name=F('indicator_name')
-        ).annotate(
-            indicator_shortcode=F('indicator_shortcode')
-        ).annotate(
-            reference_layer_name=F('reference_layer_name')
-        ).annotate(
-            reference_layer_uuid=F('reference_layer_uuid')
-        ).annotate(
-            start_date=Min('date')
-        ).annotate(
-            end_date=Max('date')
-        ).order_by(
-            'indicator_name', 'reference_layer_name', 'admin_level'
-        )
+        group_admin_level = self.request.GET.get('group_admin_level', False)
+        if not group_admin_level:
+            return super().get_queryset().values(
+                'indicator_id', 'reference_layer_id', 'admin_level'
+            ).annotate(
+                id=F('identifier_with_level')
+            ).annotate(
+                data_count=Count('*')
+            ).annotate(
+                identifier=F('identifier')
+            ).annotate(
+                indicator_name=F('indicator_name')
+            ).annotate(
+                indicator_shortcode=F('indicator_shortcode')
+            ).annotate(
+                reference_layer_name=F('reference_layer_name')
+            ).annotate(
+                reference_layer_uuid=F('reference_layer_uuid')
+            ).annotate(
+                start_date=Min('date')
+            ).annotate(
+                end_date=Max('date')
+            ).order_by(
+                'indicator_name', 'reference_layer_name', 'admin_level'
+            )
+        else:
+            return super().get_queryset().values(
+                'indicator_id', 'reference_layer_id'
+            ).annotate(
+                admin_level=StringAgg(
+                    Cast('admin_level', CharField()), delimiter=', ',
+                    distinct=True,
+                    output_field=CharField()
+                )
+            ).annotate(
+                id=Concat(
+                    'identifier', Value('['), 'admin_level', Value(']'),
+                    output_field=CharField()
+                )
+            ).annotate(
+                data_count=Count('*')
+            ).annotate(
+                identifier=F('identifier')
+            ).annotate(
+                indicator_name=F('indicator_name')
+            ).annotate(
+                indicator_shortcode=F('indicator_shortcode')
+            ).annotate(
+                reference_layer_name=F('reference_layer_name')
+            ).annotate(
+                reference_layer_uuid=F('reference_layer_uuid')
+            ).annotate(
+                start_date=Min('date')
+            ).annotate(
+                end_date=Max('date')
+            ).order_by(
+                'indicator_name', 'reference_layer_name', 'admin_level'
+            )
 
 
 class DatasetApiList(BaseDatasetApiList, BaseDataApiList, ListAPIView):
     """Return Dataset with indicator x reference layer x level."""
 
     serializer_class = IndicatorValueDatasetSerializer
+    filter_query_exclude = ['page', 'page_size', 'group_admin_level']
 
     def get_serializer(self, *args, **kwargs):
         """Return serializer of data."""
@@ -131,8 +169,21 @@ class DatasetApiList(BaseDatasetApiList, BaseDataApiList, ListAPIView):
         user = request.user
         to_be_deleted = []
         for _id in ids:
+            id_tobe_deleted = [_id]
             is_delete = False
-            [indicator_id, reference_layer_id, admin_level] = _id.split('-')
+
+            try:
+                [identifier, admin_levels] = _id.split('[')
+                [indicator_id, reference_layer_id] = identifier.split('-')
+                admin_levels = admin_levels.replace(']', '').split(', ')
+                id_tobe_deleted = []
+                for admin_level in admin_levels:
+                    id_tobe_deleted.append(f'{identifier}-{admin_level}')
+            except ValueError:
+                [indicator_id, reference_layer_id, admin_level] = _id.split(
+                    '-'
+                )
+
             # If user is admin
             if user.is_authenticated and user.profile.is_admin:
                 is_delete = True
@@ -147,7 +198,7 @@ class DatasetApiList(BaseDatasetApiList, BaseDataApiList, ListAPIView):
                 except ReferenceLayerIndicator.DoesNotExist:
                     pass
             if is_delete:
-                to_be_deleted.append(_id)
+                to_be_deleted += id_tobe_deleted
         ids = IndicatorValueWithGeo.objects.filter(
             identifier_with_level__in=to_be_deleted
         ).values_list('id', flat=True)
