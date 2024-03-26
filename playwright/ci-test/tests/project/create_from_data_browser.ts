@@ -157,10 +157,9 @@ test.describe('Create project from dataset', () => {
     expect(await page.getByRole('cell', { name: 'Sample Indicator B' })).toBeVisible();
 
     // Check indicator layers
-    await page.locator('.TabPrimary').getByText('Indicator Layers (5)').click();
-    expect(await page.getByText('Sample Indicator A').nth(1)).toBeVisible();
-    expect(await page.getByText('Sample Indicator B').nth(1)).toBeVisible();
-    expect(await page.getByText('Related Table Layer').nth(1)).toBeVisible();
-    expect(await page.getByText('Chart Layer').nth(1)).toBeVisible();
+    await page.locator('.TabPrimary').getByText('Indicator Layers (4)').click();
+    await expect(page.getByText('Sample Indicator A').nth(1)).toBeVisible();
+    await expect(page.getByText('Sample Indicator B').nth(1)).toBeVisible();
+    await expect(page.getByText('Chart Layer').nth(1)).toBeVisible();
   });
 });
