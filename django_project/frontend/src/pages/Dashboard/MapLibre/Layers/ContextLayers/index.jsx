@@ -28,6 +28,7 @@ import {
   dataStructureToListData
 } from "../../../../../components/SortableTreeForm/utilities";
 import vectorTileLayer from "../../LayerType/VectorTile";
+import relatedTableLayer from "../../LayerType/RelatedTable";
 
 const ID = `context-layer`
 const markersContextLayers = {}
@@ -247,6 +248,22 @@ export function contextLayerRendering(id, contextLayerData, contextLayer, map, c
             }, contextLayerOrder
           )
           break;
+        }
+        case 'Related Table': {
+          removeLayers(map, id)
+          relatedTableLayer(
+            map, id, layer, contextLayerData, featureProperties => {
+              return popupFeature(
+                featureProperties, contextLayerData.name, null, Object.keys(featureProperties).map(property => {
+                  return {
+                    name: property,
+                    alias: property,
+                  }
+                })
+              )
+            }, contextLayerOrder
+          )
+          break
         }
       }
     }

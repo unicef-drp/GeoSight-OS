@@ -24,6 +24,7 @@ from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
 from core.models import AbstractEditData, AbstractTerm
+from geosight.data.models.related_table import RelatedTable
 from geosight.data.models.arcgis import ArcgisConfig
 from geosight.data.models.field_layer import FieldLayerAbstract
 from geosight.permission.models.manager import PermissionManager
@@ -36,6 +37,7 @@ class LayerType(object):
     GEOJSON = 'Geojson'
     RASTER_TILE = 'Raster Tile'
     VECTOR_TILE = 'Vector Tile'
+    RELATED_TABLE = 'Related Table'
 
 
 class ContextLayerGroup(AbstractTerm):
@@ -66,6 +68,15 @@ class ContextLayer(AbstractEditData, AbstractTerm):
         null=True, blank=True,
         on_delete=models.SET_NULL
     )
+    url = models.CharField(
+        null=True,
+        blank=True,
+        max_length=10240,
+        help_text=(
+            'Put full url with parameters that are needed. '
+            'Not necesary for Related Table Layer Type.'
+        )
+    )
     layer_type = models.CharField(
         max_length=256,
         default=LayerType.ARCGIS,
@@ -74,6 +85,7 @@ class ContextLayer(AbstractEditData, AbstractTerm):
             (LayerType.GEOJSON, LayerType.GEOJSON),
             (LayerType.RASTER_TILE, LayerType.RASTER_TILE),
             (LayerType.VECTOR_TILE, LayerType.VECTOR_TILE),
+            (LayerType.RELATED_TABLE, LayerType.RELATED_TABLE),
         ),
         help_text=_(
             'The type of layer for this context layer.<br>'
@@ -81,13 +93,8 @@ class ContextLayer(AbstractEditData, AbstractTerm):
             'https://{host}/rest/services/{layer}/FeatureServer/1.<br>'
             'For <b>GeoJson</b>, put url of geojson.<br>'
             'For <b>Raster tile</b>, put XYZ url.<br>'
+            'For <b>Related Table</b>, select existing related table name.'
             'For <b>Vector tile</b>, put XYZ url.'
-        )
-    )
-    url = models.CharField(
-        max_length=10240,
-        help_text=(
-            "Put full url with parameters that are needed. "
         )
     )
     arcgis_config = models.ForeignKey(
@@ -99,6 +106,29 @@ class ContextLayer(AbstractEditData, AbstractTerm):
             'that will be used to autogenerate the token.'
         )
     )
+    related_table = models.ForeignKey(
+        RelatedTable,
+        null=True, blank=True,
+        on_delete=models.SET_NULL,
+        help_text=_(
+            'Related table name.'
+        )
+    )
+
+    latitude = models.TextField(
+        null=True, blank=True
+    )
+
+    longitude = models.TextField(
+        null=True, blank=True
+    )
+
+    datetime = models.TextField(
+        null=True, blank=True
+    )
+
+    query = models.TextField(null=True, blank=True)
+
     url_legend = models.CharField(
         max_length=256,
         null=True, blank=True,

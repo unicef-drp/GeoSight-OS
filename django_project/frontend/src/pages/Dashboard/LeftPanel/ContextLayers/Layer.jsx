@@ -113,6 +113,13 @@ export function VectorTileLayer(
   layerFn(layerData)
 }
 
+/** Related Table layer **/
+export function RelatedTableLayer(
+  layerData, layerFn, legendFn, errorFn, onEachFeature
+) {
+  layerFn(layerData)
+}
+
 /** Raster tile layer **/
 export function RasterTileLayer(
   layerData, layerFn, legendFn, errorFn, onEachFeature
@@ -289,6 +296,15 @@ export const getLayer = function (
         }
       )
       return ArcGisData
+    }
+    case 'Related Table': {
+      return RelatedTableLayer(
+        layerData,
+        (layer) => setLayer(layer),
+        (legend) => setLegend(legend),
+        (error) => setError(error),
+        onEachFeature
+      )
     }
     case 'Geojson': {
       return GeojsonLayer(
