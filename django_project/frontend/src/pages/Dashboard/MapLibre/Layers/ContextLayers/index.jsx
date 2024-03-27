@@ -21,7 +21,7 @@ import React, { Fragment, useEffect } from 'react';
 import { centroid as turfCentroid } from '@turf/turf';
 import { useSelector } from "react-redux";
 import { hasLayer, hasSource, removeLayer, removeSource } from "../../utils";
-import {arcGisLayer, geojsonLayer, rasterTileLayer} from "../../LayerType"
+import { arcGisLayer, geojsonLayer, rasterTileLayer } from "../../LayerType"
 import { dictDeepCopy } from "../../../../../utils/main";
 import { popupTemplate } from "../../Popup";
 import {

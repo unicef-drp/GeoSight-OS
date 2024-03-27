@@ -18,51 +18,10 @@ import MapConfig from './Map'
 import ArcgisConfig from './Arcgis'
 import { useDispatch } from "react-redux";
 import { getLayer } from '../../../Dashboard/LeftPanel/ContextLayers/Layer'
+import { defaultPointStyle, defaultVectorTyleStyle } from './layerStyles';
 
 import './style.scss';
 
-const defaultVectorTyleStyle = [
-  {
-    id: "country-line",
-    type: "line",
-    source: "source",
-    "source-layer": "countries",
-    filter: [
-      "==",
-      "$type",
-      "Polygon"
-    ],
-    paint: {
-      "line-width": 1,
-      "line-color": "#AAAAAA"
-    }
-  },
-  {
-    id: "country-fill",
-    type: "fill",
-    source: "source",
-    "source-layer": "countries",
-    filter: [
-      "==",
-      "$type",
-      "Polygon"
-    ],
-    paint: {
-      "fill-opacity": 0
-    }
-  }
-];
-
-const defaultPointStyle = [{
-  id: 'pointLayer',
-  type: 'circle',
-  source: 'source',
-  paint: {
-    'circle-color': '#ff7800',
-    'circle-opacity': 0.6
-  },
-  'filter': ['==', '$type', 'Point']
-}];
 
 /**
  * Indicator Form App

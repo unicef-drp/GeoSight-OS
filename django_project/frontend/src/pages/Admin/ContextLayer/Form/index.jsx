@@ -225,8 +225,8 @@ export default function ContextLayerForm() {
               useOverrideLabel={false}
             />
           ),
-          'Fields': <div />,
-          'Label': <div />,
+          'Fields': <div/>,
+          'Label': <div/>,
         }}
       />
     </Admin>
