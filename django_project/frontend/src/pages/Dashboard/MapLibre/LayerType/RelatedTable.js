@@ -24,7 +24,7 @@ import { addPopup, hasLayer, hasSource } from "../utils";
 export default function relatedTableLayer(map, id, data, contextLayerData, popupFeatureFn, contextLayerOrder) {
   // Create the source
   const contextLayerId = id.replace(`context-layer-`, '')
-  if (!contextLayerData.latitude || !contextLayerData.longitude || !contextLayerData.related_table || !contextLayerId) {
+  if (!contextLayerData.latitude_field || !contextLayerData.longitude_field || !contextLayerData.related_table || !contextLayerId) {
     return
   }
 
@@ -46,7 +46,7 @@ export default function relatedTableLayer(map, id, data, contextLayerData, popup
   if (!hasSource(map, id)) {
     fetchingData(
       `/api/related-table/${data.related_table}/data`, data.params, {}, (rtData) => {
-        const geojson = buildGeojsonFromRelatedData(rtData, data.longitude, data.latitude, data.query)
+        const geojson = buildGeojsonFromRelatedData(rtData, data.longitude_field, data.latitude_field, data.query)
         const params = Object.assign({}, data.params, {
           data: geojson,
           type: 'geojson',

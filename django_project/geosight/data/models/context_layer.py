@@ -115,19 +115,33 @@ class ContextLayer(AbstractEditData, AbstractTerm):
         )
     )
 
-    latitude = models.TextField(
-        null=True, blank=True
+    latitude_field = models.TextField(
+        null=True, blank=True,
+        help_text=_(
+            'Latitude field of Related Table.'
+        )
     )
 
-    longitude = models.TextField(
-        null=True, blank=True
+    longitude_field = models.TextField(
+        null=True, blank=True,
+        help_text=_(
+            'Longitude field of Related Table.'
+        )
     )
 
-    datetime = models.TextField(
-        null=True, blank=True
+    datetime_field = models.TextField(
+        null=True, blank=True,
+        help_text=_(
+            'Datetime field of Related Table.'
+        )
     )
 
-    query = models.TextField(null=True, blank=True)
+    query = models.TextField(
+        null=True, blank=True,
+        help_text=_(
+            'Query to filter Related Table data.'
+        )
+    )
 
     url_legend = models.CharField(
         max_length=256,

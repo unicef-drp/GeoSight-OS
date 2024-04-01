@@ -89,10 +89,10 @@ export default function ContextLayerForm() {
       $('*[name="label_styles"]').val(JSON.stringify(newData['label_styles']))
       $('*[name="data_fields"]').val(JSON.stringify(newData['data_fields']))
       $('*[name="styles"]').val(JSON.stringify(newData['styles']))
-      $('*[name="latitude"]').val(newData['latitude'])
-      $('*[name="longitude"]').val(newData['longitude'])
+      $('*[name="latitude_field"]').val(newData['latitude_field'])
+      $('*[name="longitude_field"]').val(newData['longitude_field'])
       $('*[name="query"]').val(newData['query'])
-      $('*[name="datetime"]').val(newData['datetime'])
+      $('*[name="datetime_field"]').val(newData['datetime_field'])
     }
   }
 
@@ -225,8 +225,8 @@ export default function ContextLayerForm() {
               useOverrideLabel={false}
             />
           ),
-          'Fields': <div/>,
-          'Label': <div/>,
+          'Fields': <div />,
+          'Label': <div />,
         }}
       />
     </Admin>

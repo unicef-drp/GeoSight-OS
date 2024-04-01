@@ -47,17 +47,17 @@ class ContextLayerForm(forms.ModelForm):
         widget=forms.HiddenInput()
     )
 
-    longitude = forms.CharField(
+    longitude_field = forms.CharField(
         required=False,
         widget=forms.HiddenInput()
     )
 
-    latitude = forms.CharField(
+    latitude_field = forms.CharField(
         required=False,
         widget=forms.HiddenInput()
     )
 
-    datetime = forms.CharField(
+    datetime_field = forms.CharField(
         required=False,
         widget=forms.HiddenInput()
     )

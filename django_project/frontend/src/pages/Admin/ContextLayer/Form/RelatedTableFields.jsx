@@ -68,9 +68,9 @@ export default function RelatedTableFields(
         <div className='form-label'>Latitude Field</div>
         <div className='InputInLine'>
           <SelectWithSearch
-            value={data.latitude}
+            value={data.latitude_field}
             onChangeFn={evt => {
-              onSetData({ ...data, latitude: evt })
+              onSetData({ ...data, latitude_field: evt })
             }}
             options={relatedFields.filter(rf => rf.type === 'number').map(rf => rf.name)}
             className='FilterInput' />
@@ -80,9 +80,9 @@ export default function RelatedTableFields(
         <div className='form-label'>Longitude Field</div>
         <div className='InputInLine'>
           <SelectWithSearch
-            value={data.longitude}
+            value={data.longitude_field}
             onChangeFn={evt => {
-              onSetData({ ...data, longitude: evt })
+              onSetData({ ...data, longitude_field: evt })
             }}
             options={relatedFields.filter(rf => rf.type === 'number').map(rf => rf.name)}
             className='FilterInput' />
@@ -92,9 +92,9 @@ export default function RelatedTableFields(
         <div className='form-label'>Datetime field</div>
         <div className='InputInLine'>
           <SelectWithSearch
-            value={data.datetime}
+            value={data.datetime_field}
             onChangeFn={evt => {
-              onSetData({ ...data, datetime: evt })
+              onSetData({ ...data, datetime_field: evt })
             }}
             options={relatedFields.filter(rf => rf.type === 'date').map(rf => rf.name)}
             className='FilterInput' />
