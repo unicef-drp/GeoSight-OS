@@ -87,7 +87,8 @@
           & > .MuiFormControl-root {
             margin-top: 0.3rem;
           }
-          .ReactSelect__indicators{
+
+          .ReactSelect__indicators {
             padding: 0 5px;
           }
         }
@@ -227,6 +228,13 @@
 
 .GlobalDateSelection {
   &.Open {
-    height: 150px;
+    height: 140px;
+  }
+
+  &.Hide {
+    .UpperFloating,
+    .GlobalDateSelectionOuterWrapper {
+      display: none;
+    }
   }
 }
