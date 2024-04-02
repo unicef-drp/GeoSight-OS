@@ -129,12 +129,18 @@ export function createColors(colors, classNum) {
  * @param paletteId
  * @param classNum
  */
-export function createColorsFromPaletteId(paletteId, classNum) {
+export function createColorsFromPaletteId(paletteId, classNum, isReverse) {
+  let colors = []
   const palette = COLOR_PALETTE_DATA.find(data => data.id === paletteId)
   if (!palette || isNaN(classNum)) {
-    return []
+    colors = []
+  } else {
+    colors = createColors(palette.colors, classNum)
   }
-  return createColors(palette.colors, classNum)
+  if (isReverse) {
+    colors.reverse()
+  }
+  return colors
 }
 
 /***
@@ -192,10 +198,7 @@ export function createDynamicStyle(data, styleType, config, styleData) {
           uniqueValues = Array.from(new Set(values))
           numClass = config.dynamic_class_num > uniqueValues.length - 1 ? uniqueValues.length - 1 : config.dynamic_class_num
         }
-        const colors = createColorsFromPaletteId(config.color_palette, numClass)
-        if (config.color_palette_reverse) {
-          colors.reverse()
-        }
+        const colors = createColorsFromPaletteId(config.color_palette, numClass, config.color_palette_reverse)
         numClass = colors.length
 
         /** Generate qualitative styles**/
@@ -222,7 +225,7 @@ export function createDynamicStyle(data, styleType, config, styleData) {
           // If the unique values are just 2
           // We can show exactly 2 classification
           if (uniqueValues.length <= 2) {
-            const colors = createColorsFromPaletteId(config.color_palette, uniqueValues.length)
+            const colors = createColorsFromPaletteId(config.color_palette, uniqueValues.length, config.color_palette_reverse)
             colors.map((color, idx) => {
               const usedValue = uniqueValues[idx]
               styles.push(
