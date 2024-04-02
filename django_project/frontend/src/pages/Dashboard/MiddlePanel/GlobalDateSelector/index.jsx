@@ -78,6 +78,8 @@ export default function GlobalDateSelector() {
   const [interval, setInterval] = useState(default_interval ? default_interval : INTERVALS.MONTHLY)
   const [minDate, setMinDate] = useState(null)
   const [maxDate, setMaxDate] = useState(null)
+  const [animationDone, setAnimationDone] = useState(true)
+  const [hide, setHide] = useState(true)
 
   const prevState = useRef();
 
@@ -423,6 +425,38 @@ export default function GlobalDateSelector() {
     ]
   );
 
+  /**
+   * Animation done
+   */
+  useEffect(() => {
+      const wrapper = document.querySelector(".GlobalDateSelection");
+      wrapper.addEventListener("transitionstart", () => {
+        setAnimationDone(false)
+      });
+
+      wrapper.addEventListener("transitionend", () => {
+        setAnimationDone(true)
+      });
+    },
+    []
+  );
+
+  /** Everytime globalDateSelectorOpened changed, unhide it */
+  useEffect(() => {
+      setHide(false)
+    },
+    [globalDateSelectorOpened]
+  );
+
+  /** Everytime animationDone and not opened, hide it */
+  useEffect(() => {
+      if (!globalDateSelectorOpened && animationDone) {
+        setHide(true)
+      }
+    },
+    [animationDone]
+  );
+
   // Update the inputs
   let currentSelectedDatePointMark = 0
   let usedDates = dates
@@ -443,8 +477,9 @@ export default function GlobalDateSelector() {
       label: label,
     }
   })
+
   return <div
-    className={'GlobalDateSelection ' + (globalDateSelectorOpened ? 'Open' : '')}>
+    className={'GlobalDateSelection ' + (globalDateSelectorOpened ? 'Open ' : '') + (hide ? 'Hide' : '')}>
     <div className='UpperFloating'>
       <div className='Separator'/>
       <PlayControl
