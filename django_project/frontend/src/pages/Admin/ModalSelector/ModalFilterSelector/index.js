@@ -36,9 +36,10 @@ import './style.scss';
  * @param {function} setData When the value changed.
  * @param {Boolean} returnObject Is data returned whole object.
  * @param {React.Component} children React component to be rendered.
+ * @param {array} filter List of id of data that will filter the indicators.
  */
 export function ModalFilterSelector(
-  { placeholder, data, setData, returnObject, children }
+  { placeholder, data, setData, returnObject, filter, children }
 ) {
   const [open, setOpen] = useState(false)
 
@@ -56,7 +57,17 @@ export function ModalFilterSelector(
         : ""
     }
     <IconTextField
-      iconEnd={<FilterIcon/>}
+      iconEnd={
+        <FilterIcon
+          className={data.length ? 'HasValue' : ''}
+          onClick={(e) => {
+            if (data.length) {
+              setData([])
+              e.stopPropagation();
+            }
+          }}
+        />
+      }
       onClick={() => setOpen(true)}
       value={data.length ? data.length + ' selected' : placeholder}
       inputProps={
@@ -68,7 +79,8 @@ export function ModalFilterSelector(
         open: open,
         setOpen: setOpen,
         selectedData: data,
-        selectedDataChanged: updateData
+        selectedDataChanged: updateData,
+        filter: filter
       })
     }
   </FormControl>
@@ -79,13 +91,15 @@ export function ModalFilterSelector(
  * @param {array} data Selected data.
  * @param {function} setData When the value changed.
  * @param {Boolean} returnObject Is data returned whole object.
+ * @param {array} filter List of id of data that will be used to filter data.
  */
-export function IndicatorFilterSelector({ data, setData, returnObject }) {
+export function IndicatorFilterSelector({ data, setData, returnObject, filter }) {
   return <ModalFilterSelector
     placeholder={'Filter by Indicator(s)'}
     data={data}
     setData={setData}
     returnObject={returnObject}
+    filter={filter}
   >
     <IndicatorSelector/>
   </ModalFilterSelector>
@@ -96,13 +110,15 @@ export function IndicatorFilterSelector({ data, setData, returnObject }) {
  * @param {array} data Selected data.
  * @param {function} setData When the value changed.
  * @param {Boolean} returnObject Is data returned whole object.
+ * @param {array} filter List of id of data that will be used to filter data.
  */
-export function DatasetFilterSelector({ data, setData, returnObject }) {
+export function DatasetFilterSelector({ data, setData, returnObject, filter }) {
   return <ModalFilterSelector
     placeholder={'Filter by View(s)'}
     data={data}
     setData={setData}
     returnObject={returnObject}
+    filter={filter}
   >
     <GeorepoViewSelector/>
   </ModalFilterSelector>

@@ -91,7 +91,7 @@ export const AdminListPagination = forwardRef(
     }
 
     /*** Load data */
-    const loadData = (force) => {
+    const loadData = async (force) => {
       setData(null)
       setError(null)
       const paramsUsed = dictDeepCopy(parameters)
@@ -103,24 +103,43 @@ export const AdminListPagination = forwardRef(
       }
       prev.urlRequest = url
 
-      fetchJSON(url, {}, false)
-        .then(data => {
-          if (prev.urlRequest === url) {
-            setRowSize(data.count)
-            setData(data.results)
-          }
-        })
-        .catch(error => {
-          if (error.message === 'Invalid page.') {
-            setParameters({ ...parameters, page: 0 })
+      try {
+        const data = await fetchJSON(url, {}, false)
+        // Checking quick data
+        if (props.quickDataChanged) {
+          const quickParams = jsonToUrlParams(
+            dictDeepCopy(
+              getParameters ? getParameters({}) : {}
+            )
+          )
+          if (!quickParams) {
+            props.quickDataChanged({})
           } else {
-            if (error?.response?.data) {
-              setError(error.response.data)
-            } else {
-              setError(error.message)
+            const quickData = await fetchJSON(
+              urlData + 'data' + '?' + quickParams, {}, false
+            )
+            if (prev.urlRequest === url) {
+              props.quickDataChanged(quickData)
             }
           }
-        })
+        }
+
+        // Set the data
+        if (prev.urlRequest === url) {
+          setRowSize(data.count)
+          setData(data.results)
+        }
+      } catch (error) {
+        if (error.message === 'Invalid page.') {
+          setParameters({ ...parameters, page: 0 })
+        } else {
+          if (error?.response?.data) {
+            setError(error.response.data)
+          } else {
+            setError(error.message)
+          }
+        }
+      }
     }
 
     /*** Load ids data */

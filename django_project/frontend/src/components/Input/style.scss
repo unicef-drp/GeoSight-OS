@@ -191,15 +191,37 @@
     .MuiInputBase-root {
       & > .MuiButtonBase-root {
         display: inline-flex !important;
-        margin: 0 2px;
+        margin: 0;
 
         span {
           display: inline-flex !important;
         }
+      }
 
-        &:after {
+      & > .MuiButtonBase-root:not(:first-child) {
+        &:before {
           content: ',';
+          margin-right: 4px;
         }
+      }
+    }
+
+    input {
+      color: rgba(0, 0, 0, 0);
+
+      &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+        color: #121212 !important;;
+        opacity: 0.6 !important;; /* Firefox */
+      }
+
+      &:-ms-input-placeholder { /* Internet Explorer 10-11 */
+        color: #121212 !important;;
+        opacity: 0.6 !important;; /* Firefox */
+      }
+
+      &::-ms-input-placeholder { /* Microsoft Edge */
+        color: #121212 !important;
+        opacity: 0.6 !important;; /* Firefox */
       }
     }
   }

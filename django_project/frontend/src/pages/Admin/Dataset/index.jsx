@@ -29,9 +29,6 @@ import {
   DatasetFilterSelector,
   IndicatorFilterSelector,
 } from "../ModalSelector/ModalFilterSelector";
-import {
-  MultipleCreatableFilter
-} from "../ModalSelector/ModalFilterSelector/MultipleCreatableFilter";
 import { splitParams, urlParams } from "../../../utils/main";
 import {
   Notification,
@@ -40,10 +37,14 @@ import {
 import { AdminListPagination } from "../AdminListPagination";
 import { AdminPage, pageNames } from "../index";
 import PermissionModal from "../Permission";
+import { ThemeButton } from "../../../components/Elements/Button";
+import { removeElement } from "../../../utils/Array";
+import {
+  MultipleSelectWithSearch
+} from "../../../components/Input/SelectWithSearch";
 
 
 import './style.scss';
-import { ThemeButton } from "../../../components/Elements/Button";
 
 /*** Dataset admin */
 const deleteWarning = "WARNING! Do you want to delete the selected data? This will apply directly to database."
@@ -66,6 +67,8 @@ export default function DatasetAdmin() {
   })
   const [disabled, setDisabled] = useState(false)
   const [isInit, setIsInit] = useState(true)
+  const [filtersSequences, setFiltersSequences] = useState([])
+  const [quickData, setQuickData] = useState({})
 
   // When filter changed
   useEffect((prev) => {
@@ -73,6 +76,22 @@ export default function DatasetAdmin() {
       tableRef?.current?.refresh()
     }
     setIsInit(false)
+
+    // Check filter sequences
+    for (const [key, value] of Object.entries(filters)) {
+      if (key !== 'groupAdminLevel') {
+        if (value.length) {
+          if (!filtersSequences.includes(key)) {
+            filtersSequences.push(key)
+            setFiltersSequences([...filtersSequences])
+          }
+        } else {
+          if (filtersSequences.includes(key)) {
+            setFiltersSequences(removeElement(filtersSequences, key))
+          }
+        }
+      }
+    }
   }, [filters])
 
   // COLUMNS
@@ -181,7 +200,6 @@ export default function DatasetAdmin() {
     }
     return parameters
   }
-
   return <AdminPage pageName={pageNames.Dataset}>
     <AdminListPagination
       ref={tableRef}
@@ -207,10 +225,9 @@ export default function DatasetAdmin() {
           <div className='Separator'/>
           <ThemeButton
             variant='primary'
-            // disabled={!(filters.datasets.length === 1 && filters.indicators.length >= 1)}
+            disabled={!(filters.datasets.length === 1 && filters.indicators.length >= 1)}
             onClick={() => {
               window.location.href = `/admin/project/create?dataset=${filters.datasets[0]}&indicators=${filters.indicators.join(',')}`;
-              console.log('Click')
             }}
           >
             <AddIcon/> Add to New Project
@@ -221,25 +238,39 @@ export default function DatasetAdmin() {
             setData={newFilter => setFilters({
               ...filters,
               indicators: newFilter
-            })}/>
+            })}
+            filter={quickData.indicators}
+          />
           <DatasetFilterSelector
             data={filters.datasets}
             setData={newFilter => setFilters({
               ...filters,
               datasets: newFilter
-            })}/>
-          <MultipleCreatableFilter
-            title={'Filter by Level(s)'}
-            data={filters.levels}
-            setData={newFilter => setFilters({
-              ...filters,
-              levels: newFilter
-            })}/>
+            })}
+            filter={quickData.datasets}
+          />
+          <MultipleSelectWithSearch
+            placeholder={'Filter by Level(s)'}
+            options={!filtersSequences.length || !filtersSequences.indexOf('levels') ? ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'] : quickData.levels ? quickData.levels.map(level => level + '') : []}
+            value={filters.levels}
+            onChangeFn={evt => {
+              setFilters({
+                ...filters,
+                levels: evt
+              })
+            }}
+            showValues={true}
+          />
         </div>
       }
       getParameters={getParameters}
       hideSearch={true}
       deselectWhenParameterChanged={true}
+      quickDataChanged={
+        (data) => {
+          setQuickData(data)
+        }
+      }
     />
     <Notification ref={notificationRef}/>
   </AdminPage>

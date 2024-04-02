@@ -209,9 +209,52 @@ class DatasetApiList(BaseDatasetApiList, BaseDataApiList, ListAPIView):
 class DatasetApiListIds(BaseDatasetApiList, BaseDataApiList, ListAPIView):
     """Return Just ids Data List."""
 
+    filter_query_exclude = ['page', 'page_size', 'group_admin_level']
+
     @swagger_auto_schema(auto_schema=None)
     def get(self, request):
         """Get ids of data."""
         return Response(
             self.get_queryset().values_list('id', flat=True)
         )
+
+
+class DatasetApiQuickData(BaseDatasetApiList, BaseDataApiList, ListAPIView):
+    """Return quick data for the data.
+
+    Example: It will return list of indicators, datasets, levels.
+    """
+
+    filter_query_exclude = ['page', 'page_size', 'group_admin_level']
+
+    @swagger_auto_schema(auto_schema=None)
+    def get(self, request):
+        """Get ids of data."""
+        indicator_id = 'indicator_id'
+        reference_layer_uuid = 'reference_layer_uuid'
+        admin_level = 'admin_level'
+        return Response({
+            'indicators': self.get_queryset().order_by(
+                indicator_id
+            ).values(
+                indicator_id
+            ).values_list(
+                indicator_id, flat=True
+            ).distinct(),
+
+            'datasets': self.get_queryset().order_by(
+                reference_layer_uuid
+            ).values(
+                reference_layer_uuid
+            ).values_list(
+                reference_layer_uuid, flat=True
+            ).distinct(),
+
+            'levels': self.get_queryset().order_by(
+                admin_level
+            ).values(
+                admin_level
+            ).values_list(
+                admin_level, flat=True
+            ).distinct(),
+        })
