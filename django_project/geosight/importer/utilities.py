@@ -38,17 +38,24 @@ def get_data_from_record(
         key: str, record: dict, data_type=str, required=False
 ):
     """Return data from record."""
-    try:
-        keys = key.split('.')
-        keys = ''.join([f'["{_key}"]' for _key in keys])
-        if not required:
-            try:
-                return eval(f'record{keys}')
-            except KeyError:
-                return None
-        return eval(f'record{keys}')
-    except KeyError:
-        raise ImporterError(f'{key} does not exist')
+    original_key = f'["{key}"]'
+    split_keys = ''.join([f'["{_key}"]' for _key in key.split('.')])
+
+    values = []
+    for checked_key in [original_key, split_keys]:
+        try:
+            values.append(eval(f'record{checked_key}'))
+        except (TypeError, KeyError):
+            values.append(KeyError)
+
+    if required:
+        if values[0] == KeyError and values[1] == KeyError:
+            raise ImporterError(f'{key} does not exist')
+
+    for value in values:
+        if value is not KeyError:
+            return value
+    return None
 
 
 def json_from_excel(content, sheet_name):

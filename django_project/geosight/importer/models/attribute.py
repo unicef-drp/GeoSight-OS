@@ -58,3 +58,7 @@ class ImporterMapping(models.Model):
         null=True, blank=True,
         help_text=_("The value of attribute")
     )
+
+    def __str__(self):
+        """Return str."""
+        return f'{self.name}'

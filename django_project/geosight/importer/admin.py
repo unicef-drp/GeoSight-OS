@@ -17,8 +17,8 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.contrib import admin
 
 from geosight.importer.models import (
-    Importer, ImporterAttribute, ImporterLog, ImporterAlert,
-    ImporterLogDataSaveProgress
+    Importer, ImporterAttribute, ImporterMapping,
+    ImporterLog, ImporterAlert, ImporterLogDataSaveProgress
 )
 from geosight.importer.tasks import run_importer
 
@@ -61,12 +61,27 @@ class ImporterAttributeInline(admin.TabularInline):
         return False
 
 
+class ImporterMappingInline(admin.TabularInline):
+    """ImporterMapping inline."""
+
+    model = ImporterMapping
+    fields = ('value',)
+    readonly_fields = ('name',)
+    extra = 0
+
+    def has_add_permission(self, request, obj=None):
+        """Has add permission."""
+        return False
+
+
 @admin.register(Importer)
 class ImporterAdmin(admin.ModelAdmin):
     """Importer Admin."""
 
     actions = (import_data,)
-    inlines = [ImporterAlertInline, ImporterAttributeInline]
+    inlines = [
+        ImporterAlertInline, ImporterAttributeInline, ImporterMappingInline
+    ]
     list_display = (
         'id', 'unique_id', 'creator', 'import_type',
         'input_format', 'schedule_type', 'job_active'
