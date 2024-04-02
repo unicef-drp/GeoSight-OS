@@ -135,9 +135,6 @@ export default function MapConfig() {
     }
 
     if (map && extent) {
-      console.log('------------------')
-      console.log(extent)
-      console.log(prevState.extent)
       if (JSON.stringify(extent) !== JSON.stringify(prevState.extent)) {
         editableLayers.clearLayers()
         editableLayers.addLayer(

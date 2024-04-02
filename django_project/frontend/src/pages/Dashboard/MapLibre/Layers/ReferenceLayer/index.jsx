@@ -222,8 +222,7 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
     let currentLevel = selectedAdminLevel ? selectedAdminLevel.level : levels?.level
     const vectorTiles = referenceLayerData?.data?.vector_tiles
     if (vectorTiles && levels && map && currentLevel !== undefined) {
-      const url = 'https://georepo.unicef.org/layer_tiles/da79bf0b-1e8b-4f52-a70c-82331060380a/{z}/{x}/{y}?georepo_user_key=rroyolopez@unicef.org&token=dd317d964130f6408076f1148c9db515eac68bd00b9df938b5afddca54e42ff5&t=1696263343'
-      // const url = 'https://georepo.unicef.org/layer_tiles/50a9d3b-2d8c-49de-ac6c-cff3f43d1448/{z}/{x}/{y}?t=1696579727&token=dd317d964130f6408076f1148c9db515eac68bd00b9df938b5afddca54e42ff5&georepo_user_key=rroyolopez@unicef.org'
+      const url = GeorepoUrls.WithoutDomain(updateToken(vectorTiles))
       const _referenceLayerConfig = {
         tiles: [url],
         "source-layer": 'Level-' + currentLevel

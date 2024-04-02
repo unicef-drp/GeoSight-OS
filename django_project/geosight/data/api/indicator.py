@@ -67,6 +67,19 @@ class IndicatorAdminListAPI(APIView):
             ).data
         )
 
+    def post(self, request):
+        """Return Indicatorslist."""
+        ids = request.data['ids']
+        return Response(
+            IndicatorAdminListSerializer(
+                Indicator.permissions.list(request.user).filter(
+                    group__isnull=False,
+                    id__in=ids
+                ).order_by('group__name', 'name'),
+                many=True, context={'user': request.user}
+            ).data
+        )
+
     def delete(self, request):
         """Delete objects."""
         ids = json.loads(request.data['ids'])
