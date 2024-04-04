@@ -104,17 +104,17 @@ export function WhereInputValue(
     })
     min = Math.min(...data)
     max = Math.max(...data)
-    if (operator !== '=' && (isNaN(min) || !isFinite(min))) {
+    if (!SINGLE_SELECTABLE_OPERATORS.includes(operator) && (isNaN(min) || !isFinite(min))) {
       min = defaultMin
     }
-    if (operator !== '=' && (isNaN(max) || !isFinite(max))) {
+    if (!SINGLE_SELECTABLE_OPERATORS.includes(operator) && (isNaN(max) || !isFinite(max))) {
       max = defaultMax
     }
     optionsData = optionsData.filter(row => {
       return row !== undefined && row !== null && row !== 'null'
     }).sort()
   }
-  const textBasedOnMinMax = ((isNaN(min) && isNaN(max)) || (!isFinite(min) && !isFinite(max)))
+  const textBasedOnMinMax = ((isNaN(min) && isNaN(max)) || (!isFinite(min) && !isFinite(max))) || fieldType?.toLowerCase() === 'date'
   /** -------- IF DATE --------- **/
   if (fieldType?.toLowerCase() === 'date') {
     if ([">", ">=", "<", "<="].includes(operator)) {

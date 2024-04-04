@@ -71,11 +71,15 @@ export default function Filter(
             }
           }
       }
-      return {
+      const output = {
         name: field.name,
         type: fieldType,
         value: field.value
       }
+      if (field.options) {
+        output.options = Array.from(new Set(field.options))
+      }
+      return output
     })
   }
   return <Fragment>

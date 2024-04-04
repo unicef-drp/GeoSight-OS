@@ -208,6 +208,7 @@ export default function ImporterLogData() {
         const isDate = isValueDate(key, columnDetail)
         columnsByDict[key] = {
           renderCell: (params) => {
+            console.log(params.row)
             const value = params.row.data[params.field]
             const note = params.row.note
             if (note && note[key]) {

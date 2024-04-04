@@ -158,8 +158,6 @@ class IndicatorValueLongFormat(AbstractImporterIndicatorValue, ABC):
                 note['date_time'] = 'date_time is empty'
             if date_time_error:
                 note['date_time'] = date_time_error
-            if value is None:
-                note['value'] = 'Value is empty'
 
             # ----------------------------------------
             # Check the geocode

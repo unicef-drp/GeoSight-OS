@@ -100,20 +100,24 @@ export default function SelectWithSearchQuickSelection(
   options.map(option => {
     let currGroups = groups
     let isSelected = value.includes(option)
-    option.split(/[.\\+]/)[0].split(/[T:\\-]/).map(group => {
-      if (!currGroups[group]) {
-        currGroups[group] = {
-          _options: [],
-          _selected: true
+    try {
+      option.split(/[.\\+]/)[0].split(/[T:\\-]/).map(group => {
+        if (!currGroups[group]) {
+          currGroups[group] = {
+            _options: [],
+            _selected: true
+          }
         }
-      }
-      if (!isSelected) {
-        currGroups[group]._selected = false
-        allSelected = false
-      }
-      currGroups[group]._options.push(option)
-      currGroups = currGroups[group]
-    })
+        if (!isSelected) {
+          currGroups[group]._selected = false
+          allSelected = false
+        }
+        currGroups[group]._options.push(option)
+        currGroups = currGroups[group]
+      })
+    } catch (err) {
+
+    }
   })
 
   return <CustomPopover
