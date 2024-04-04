@@ -47,6 +47,26 @@ class ContextLayerForm(forms.ModelForm):
         widget=forms.HiddenInput()
     )
 
+    longitude_field = forms.CharField(
+        required=False,
+        widget=forms.HiddenInput()
+    )
+
+    latitude_field = forms.CharField(
+        required=False,
+        widget=forms.HiddenInput()
+    )
+
+    datetime_field = forms.CharField(
+        required=False,
+        widget=forms.HiddenInput()
+    )
+
+    query = forms.CharField(
+        required=False,
+        widget=forms.HiddenInput()
+    )
+
     def __init__(self, *args, **kwargs):
         """Init."""
         super().__init__(*args, **kwargs)

@@ -38,17 +38,18 @@ class ContextLayerSerializer(DynamicModelSerializer):
 
     def get_url(self, obj: ContextLayer):
         """Url."""
-        return urllib.parse.unquote(obj.url.split('?')[0])
+        return urllib.parse.unquote(obj.url.split('?')[0]) if obj.url else None
 
     def get_parameters(self, obj: ContextLayer):
         """Return parameters."""
-        urls = obj.url.split('?')
         parameters = {}
-        if len(urls) > 1:
-            for param in urls[1].split('&'):
-                params = param.split('=')
-                if params[0].lower() != 'bbox':
-                    parameters[params[0]] = '='.join(params[1:])
+        if obj.url:
+            urls = obj.url.split('?')
+            if len(urls) > 1:
+                for param in urls[1].split('&'):
+                    params = param.split('=')
+                    if params[0].lower() != 'bbox':
+                        parameters[params[0]] = '='.join(params[1:])
         return parameters
 
     def get_category(self, obj: ContextLayer):
