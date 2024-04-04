@@ -265,7 +265,15 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
             return int(self.attributes['admin_level_value'])
         elif admin_level_type == AdminLevelType.DATA_DRIVEN:
             admin_level_field = self.get_attribute('admin_level_field')
-            return int(get_data_from_record(admin_level_field, data))
+            admin_level = get_data_from_record(admin_level_field, data)
+            if isinstance(admin_level, str):
+                try:
+                    admin_level = int(admin_level)
+                except ValueError:
+                    admin_level = float(admin_level)
+                    if not admin_level.is_integer():
+                        raise ValueError()
+            return int(admin_level)
         elif admin_level_type == AdminLevelType.ANY_LEVEL:
             return None
         return None

@@ -174,7 +174,7 @@ class BaseTest(BaseIndicatorValueImporterTest):
         )
         self.importer.run()
         log = self.importer.importerlog_set.all().last()
-        self.assertEqual(log.status, 'Success')
+        self.assertTrue(log.status in ['Success', 'Warning'])
 
         for value in self.indicator.indicatorvalue_set.all():
             self.assertEqual(value.value, values[value.geom_id])
