@@ -23,6 +23,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from core.models.preferences import SitePreferences
 from geosight.importer.models.importer import Importer
+from geosight.data.models.indicator import IndicatorValueRejectedError
 
 
 class LogStatus(object):
