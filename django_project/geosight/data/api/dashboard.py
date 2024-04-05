@@ -150,11 +150,13 @@ class DashboardData(APIView):
             dashboard_indicators = []
             dashboard_indicator_layers = []
             indicator_layers_structure_children = []
-            if dataset and indicators:
+            if dataset:
                 view, _ = ReferenceLayerView.objects.get_or_create(
                     identifier=dataset
                 )
                 dashboard.reference_layer = view
+
+            if indicators:
                 for idx, indicator in enumerate(
                         Indicator.objects.filter(id__in=indicators.split(','))
                 ):

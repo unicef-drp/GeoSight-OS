@@ -60,7 +60,7 @@ export default function DatasetAdmin() {
   // Other attributes
   const defaultFilters = urlParams()
   const [filters, setFilters] = useState({
-    groupAdminLevel: defaultFilters.groupAdminLevel === 'true',
+    groupAdminLevel: defaultFilters.groupAdminLevel ? defaultFilters.groupAdminLevel === 'true' : true,
     indicators: defaultFilters.indicators ? splitParams(defaultFilters.indicators) : [],
     datasets: defaultFilters.datasets ? splitParams(defaultFilters.datasets, false) : [],
     levels: defaultFilters.levels ? splitParams(defaultFilters.levels) : [],
@@ -225,9 +225,13 @@ export default function DatasetAdmin() {
           <div className='Separator'/>
           <ThemeButton
             variant='primary'
-            disabled={!(filters.datasets.length === 1 && filters.indicators.length >= 1)}
+            disabled={!(filters.datasets.length === 1)}
             onClick={() => {
-              window.location.href = `/admin/project/create?dataset=${filters.datasets[0]}&indicators=${filters.indicators.join(',')}`;
+              let url = `/admin/project/create?dataset=${filters.datasets[0]}`
+              if (filters.indicators.length) {
+                url += `&indicators=${filters.indicators.join(',')}`
+              }
+              window.location.href = url;
             }}
           >
             <AddIcon/> Add to New Project
