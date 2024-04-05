@@ -109,6 +109,13 @@
 
     &.ClickedReadOnly {
       cursor: pointer;
+      background-color: white;
+      color: unset;
+      border: 1px solid rgba(0, 0, 0, 0.23) !important;
+
+      &:hover {
+        border: 1px solid rgba(0, 0, 0, 0.87) !important;
+      }
     }
   }
 

@@ -86,6 +86,7 @@ export default function Filter(
     <input
       disabled={!fields || onLoading}
       type="text"
+      className='ClickedReadOnly'
       placeholder={onLoading ? "Loading" : "SQL Filter"}
       readOnly={true}
       value={data}
