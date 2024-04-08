@@ -65,7 +65,7 @@ import './style.scss';
  * @param {string} referenceLayerUUID uuid of reference layer.
  * @param {boolean} configOpen Is open or close.
  * @param {Function} setConfigOpen Set Parent Open.
- * @param {Array} relatedTables List of relatedTables of selected data.LayerConfig
+ * @param {Array} relatedTables List of relatedTables of selected data.
  * @param {dict} layer Data of layer.
  * @param {Function} onUpdate Function when data updated.
  */
