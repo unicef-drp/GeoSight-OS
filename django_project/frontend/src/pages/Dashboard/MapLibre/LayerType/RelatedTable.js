@@ -43,38 +43,35 @@ export default function relatedTableLayer(map, id, data, contextLayerData, popup
     }
   }
 
-  if (true) {
-    fetchingData(
-      `/api/related-table/${data.related_table}/data`, data.params, {}, (rtData) => {
-        const geojson = buildGeojsonFromRelatedData(rtData, data.longitude_field, data.latitude_field, data.query)
-        const params = Object.assign({}, data.params, {
-          data: geojson,
-          type: 'geojson',
-        })
+  fetchingData(
+    `/api/related-table/${data.related_table}/data`, data.params, {}, (rtData) => {
+      const geojson = buildGeojsonFromRelatedData(rtData, data.longitude_field, data.latitude_field, data.query)
+      const params = Object.assign({}, data.params, {
+        data: geojson,
+        type: 'geojson',
+      })
 
-        if (!hasSource(map, id)) {
-          map.addSource(id, params);
-        } else {
-          map.getSource(id).setData(geojson);
-        };
+      if (!hasSource(map, id)) {
+        map.addSource(id, params);
+      } else {
+        map.getSource(id).setData(geojson);
+    }
 
-
-        const popupFeature = (properties) => {
-          return popupFeatureFn(properties, data?.data?.fields)
-        }
-        try {
-          const layers = JSON.parse(contextLayerData.styles)
-          layers.map(layer => {
-            layer.id = id + '-' + layer.id
-            layer.source = id
-            map.addLayer(layer, before)
-            before = layer.id
-            addPopup(map, layer.id, popupFeature)
-          })
-        } catch (e) {
-          console.log(e)
-        }
-      }
-    )
+    const popupFeature = (properties) => {
+      return popupFeatureFn(properties, data?.data?.fields)
+    }
+    try {
+      const layers = JSON.parse(contextLayerData.styles)
+      layers.map(layer => {
+        layer.id = id + '-' + layer.id
+        layer.source = id
+        map.addLayer(layer, before)
+        before = layer.id
+        addPopup(map, layer.id, popupFeature)
+      })
+    } catch (e) {
+      console.log(e)
+    }
   }
+  )
 }

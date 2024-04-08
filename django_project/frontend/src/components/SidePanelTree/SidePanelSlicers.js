@@ -8,9 +8,9 @@
  *     the Free Software Foundation; either version 3 of the License, or
  *     (at your option) any later version.
  *
- * __author__ = 'irwan@kartoza.com'
- * __date__ = '13/06/2023'
- * __copyright__ = ('Copyright 2023, Unicef')
+ * __author__ = 'francisco.perez@geomatico.es'
+ * __date__ = '08/04/2024'
+ * __copyright__ = ('Copyright 2024, Unicef')
  */
 
 import React, { Fragment, useEffect, useState } from 'react';
@@ -24,14 +24,7 @@ import { useDispatch } from 'react-redux';
 
 
 /**
- * Tree Item Component.
- * @param {array} treeData tree data, format = {
- *   'id': 'group_id',
- *   'children': [{
- *     'id': 'data_id',
- *     'children': []
- *   }]
- * }
+ * Slicers for Related Table Context Layers.
  */
 
 const SidePanelSlicers = ({ data }) => {
@@ -98,7 +91,6 @@ const SidePanelSlicers = ({ data }) => {
                     if (JSON.stringify(data.query) !== JSON.stringify(where)) {
                         data.query = where
                         dispatch(Actions.ContextLayers.update(data))
-                        //dispatch(Actions.Map.addContextLayer(data.id, { layer: data, layer_type: 'Related Table' }))
                     }
                 }}
                 disabledChanges={{
