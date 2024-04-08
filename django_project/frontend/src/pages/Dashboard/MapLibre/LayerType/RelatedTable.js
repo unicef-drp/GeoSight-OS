@@ -43,7 +43,7 @@ export default function relatedTableLayer(map, id, data, contextLayerData, popup
     }
   }
 
-  if (!hasSource(map, id)) {
+  if (true) {
     fetchingData(
       `/api/related-table/${data.related_table}/data`, data.params, {}, (rtData) => {
         const geojson = buildGeojsonFromRelatedData(rtData, data.longitude_field, data.latitude_field, data.query)
@@ -51,7 +51,13 @@ export default function relatedTableLayer(map, id, data, contextLayerData, popup
           data: geojson,
           type: 'geojson',
         })
-        map.addSource(id, params);
+
+        if (!hasSource(map, id)) {
+          map.addSource(id, params);
+        } else {
+          map.getSource(id).setData(geojson);
+        };
+
 
         const popupFeature = (properties) => {
           return popupFeatureFn(properties, data?.data?.fields)
