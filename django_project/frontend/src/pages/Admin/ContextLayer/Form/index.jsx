@@ -31,7 +31,6 @@ import { dictDeepCopy } from "../../../../utils/main";
 import './style.scss';
 
 let currentArcGis = null
-let currentRelatedTable = null
 let init = false
 /**
  * Context Layer Form App
@@ -89,6 +88,7 @@ export default function ContextLayerForm() {
       $('*[name="label_styles"]').val(JSON.stringify(newData['label_styles']))
       $('*[name="data_fields"]').val(JSON.stringify(newData['data_fields']))
       $('*[name="styles"]').val(JSON.stringify(newData['styles']))
+      $('*[name="related_table"]').val(newData['related_table'])
       $('*[name="latitude_field"]').val(newData['latitude_field'])
       $('*[name="longitude_field"]').val(newData['longitude_field'])
       $('*[name="query"]').val(newData['query'])
@@ -99,18 +99,15 @@ export default function ContextLayerForm() {
   const typeChange = (value) => {
     if (value === 'ARCGIS') {
       $('div[data-wrapper-name="arcgis_config"]').show()
-      $('div[data-wrapper-name="related_table"]').hide()
     } else if (value === 'Related Table') {
       $('div[data-wrapper-name="arcgis_config"]').hide()
       $('div[data-wrapper-name="token"]').hide()
       $('div[data-wrapper-name="username"]').hide()
       $('div[data-wrapper-name="password"]').hide()
       $('div[data-wrapper-name="url"]').hide()
-      $('div[data-wrapper-name="related_table"]').show()
     }
     else {
       $('div[data-wrapper-name="arcgis_config"]').hide()
-      $('div[data-wrapper-name="related_table"]').hide()
       $('div[data-wrapper-name="url"]').show()
     }
     setData({ ...data, layer_type: value })
@@ -134,15 +131,6 @@ export default function ContextLayerForm() {
     }
   }
 
-  const relatedTableConfigChange = (value) => {
-    currentRelatedTable = value
-    if (value) {
-      setData({
-        ...data,
-        related_table: value
-      })
-    }
-  }
   return (
     <Admin
       minifySideNavigation={true}
@@ -189,8 +177,6 @@ export default function ContextLayerForm() {
                 } else if (name === 'arcgis_config') {
                   arcGisConfigChange(value)
                   setDataFn()
-                } else if (name === 'related_table') {
-                  relatedTableConfigChange(value)
                 }
               }}
             >

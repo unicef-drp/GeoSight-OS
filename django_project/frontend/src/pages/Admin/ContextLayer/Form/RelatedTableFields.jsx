@@ -14,6 +14,7 @@
  */
 
 import React, { Fragment, useEffect, useState } from 'react';
+import $ from 'jquery';
 
 
 import { SelectWithSearch } from "../../../../components/Input/SelectWithSearch";
@@ -21,7 +22,9 @@ import WhereInputModal from "../../../../components/SqlQueryGenerator/WhereInput
 import { getRelatedTableFields } from "../../../../utils/relatedTable";
 import { fetchingData } from "../../../../Requests";
 import { dictDeepCopy } from "../../../../utils/main";
-
+import {
+  RelatedTableInputSelector
+} from "../../ModalSelector/InputSelector";
 
 /**
  * Indicator Form App
@@ -62,8 +65,45 @@ export default function RelatedTableFields(
   }, [data.related_table])
 
   const relatedFields = relatedTableInfo && relatedTableData ? getRelatedTableFields(relatedTableInfo, relatedTableData) : []
+
+  useEffect(() => {
+    if (relatedFields && !data.data_fields) {
+      onSetData({
+        ...data,
+        data_fields: relatedFields.map(field => ({
+          alias: field.alias,
+          defaultValue: null,
+          domain: null,
+          editable: false,
+          name: field.name,
+          nullable: false,
+          sqlType: "sqlTypeOther",
+          type: field.type
+        }))
+      })
+    }
+  }, [relatedFields])
+
+  const handleRelatedTableChange = newRelatedTable => {
+    onSetData({ ...data, related_table: newRelatedTable[0]?.id })
+    setRelatedTableInfo(newRelatedTable[0])
+  }
+
   return (
     <div>
+      <div className='BasicFormSection'>
+        <div>
+          <label className="form-label required">
+            Related Table
+          </label>
+        </div>
+        <RelatedTableInputSelector
+          data={relatedTableInfo ? [relatedTableInfo] : []}
+          setData={handleRelatedTableChange}
+          isMultiple={false}
+          showSelected={true}
+        />
+      </div>
       <div className='BasicFormSection'>
         <div className='form-label'>Latitude Field</div>
         <div className='InputInLine'>

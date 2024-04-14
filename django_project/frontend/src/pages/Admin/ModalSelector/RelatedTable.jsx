@@ -38,7 +38,7 @@ export default function RelatedTableSelector(
 ) {
   return <ModalSelector
     title={"Indicator(s)"}
-    api={urls.api.relatedTable}
+    api={'/api/related-table/list'}
     columns={relatedTableColumns}
     open={open}
     setOpen={setOpen}
