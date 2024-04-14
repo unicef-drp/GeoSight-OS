@@ -70,6 +70,7 @@ class ContextLayerForm(forms.ModelForm):
 
     related_table = forms.CharField(
         label='Related Table',
+        required=False,
         widget=forms.HiddenInput()
     )
 
