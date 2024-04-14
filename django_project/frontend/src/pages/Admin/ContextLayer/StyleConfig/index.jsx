@@ -171,7 +171,6 @@ export default function StyleConfig(
                   style={{ minHeight: "90%" }}
                   onChange={(evt) => {
                     try {
-                      JSON.parse(evt.target.value)
                       setError(null)
                       setData(
                         {

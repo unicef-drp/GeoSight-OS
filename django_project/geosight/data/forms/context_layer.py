@@ -95,11 +95,13 @@ class ContextLayerForm(forms.ModelForm):
             name=self.cleaned_data['group']
         )
         return group
-    
+
     def clean_related_table(self):
         """Return related table."""
         if self.instance and self.cleaned_data['related_table']:
-            return RelatedTable.objects.get(pk=self.cleaned_data['related_table'])
+            return RelatedTable.objects.get(
+                pk=self.cleaned_data['related_table']
+            )
         return None
 
     def clean_styles(self):
