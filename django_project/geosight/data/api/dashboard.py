@@ -144,18 +144,29 @@ class DashboardData(APIView):
 
         else:
             dashboard = Dashboard()
-            dataset = request.GET.get('dataset', None)
-            indicators = request.GET.get('indicators', None)
 
-            dashboard_indicators = []
-            dashboard_indicator_layers = []
-            indicator_layers_structure_children = []
+            # Get default by dataset
+            dataset = request.GET.get('dataset', None)
             if dataset:
                 view, _ = ReferenceLayerView.objects.get_or_create(
                     identifier=dataset
                 )
                 dashboard.reference_layer = view
 
+            # Get default by dataset_id
+            dataset_id = request.GET.get('dataset_id', None)
+            if dataset_id:
+                try:
+                    view = ReferenceLayerView.objects.get(id=dataset_id)
+                    dashboard.reference_layer = view
+                except ReferenceLayerView.DoesNotExist:
+                    pass
+
+            indicators = request.GET.get('indicators', None)
+
+            dashboard_indicators = []
+            dashboard_indicator_layers = []
+            indicator_layers_structure_children = []
             if indicators:
                 for idx, indicator in enumerate(
                         Indicator.objects.filter(id__in=indicators.split(','))

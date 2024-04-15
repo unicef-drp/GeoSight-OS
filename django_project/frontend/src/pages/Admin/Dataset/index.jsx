@@ -69,6 +69,7 @@ export default function DatasetAdmin() {
   const [isInit, setIsInit] = useState(true)
   const [filtersSequences, setFiltersSequences] = useState([])
   const [quickData, setQuickData] = useState({})
+  let [selectionModel, setSelectionModel] = useState([]);
 
   // When filter changed
   useEffect((prev) => {
@@ -200,6 +201,19 @@ export default function DatasetAdmin() {
     }
     return parameters
   }
+
+  // This is for selected for add to new project
+  let selectedViews = []
+  let selectedIndicators = []
+  const selectedModelIds = selectionModel.map(row => {
+    const ids = row.split('[')[0].split('-')
+    selectedViews.push(ids[1])
+    selectedIndicators.push(ids[0])
+    return ids
+  })
+  selectedViews = Array.from(new Set(selectedViews));
+  selectedIndicators = Array.from(new Set(selectedIndicators));
+
   return <AdminPage pageName={pageNames.Dataset}>
     <AdminListPagination
       ref={tableRef}
@@ -207,7 +221,7 @@ export default function DatasetAdmin() {
       COLUMNS={COLUMNS}
       disabled={disabled}
       setDisabled={setDisabled}
-      selectAllUrl={urls.api.datasetApi + '/ids'}
+      selectAllUrl={urls.api.datasetApi + 'ids'}
       otherFilters={
         <div className='ListAdminFilters'>
           <FormGroup>
@@ -225,14 +239,15 @@ export default function DatasetAdmin() {
           <div className='Separator'/>
           <ThemeButton
             variant='primary'
-            disabled={!(filters.datasets.length === 1)}
+            disabled={selectedViews.length !== 1}
             onClick={() => {
-              let url = `/admin/project/create?dataset=${filters.datasets[0]}`
-              if (filters.indicators.length) {
-                url += `&indicators=${filters.indicators.join(',')}`
+              let url = `/admin/project/create?dataset_id=${selectedViews[0]}`
+              if (selectedModelIds) {
+                url += `&indicators=${selectedIndicators.join(',')}`
               }
               window.location.href = url;
             }}
+            title={'Enable this by selecting data contain just 1 view.'}
           >
             <AddIcon/> Add to New Project
           </ThemeButton>
@@ -275,6 +290,8 @@ export default function DatasetAdmin() {
           setQuickData(data)
         }
       }
+      selectionModel={selectionModel}
+      setSelectionModel={setSelectionModel}
     />
     <Notification ref={notificationRef}/>
   </AdminPage>
