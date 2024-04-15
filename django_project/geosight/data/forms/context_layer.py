@@ -20,6 +20,7 @@ from django import forms
 from django.forms.models import model_to_dict
 
 from geosight.data.models.context_layer import ContextLayer, ContextLayerGroup
+from geosight.data.models.related_table import RelatedTable
 
 
 class ContextLayerForm(forms.ModelForm):
@@ -67,6 +68,12 @@ class ContextLayerForm(forms.ModelForm):
         widget=forms.HiddenInput()
     )
 
+    related_table = forms.CharField(
+        label='Related Table',
+        required=False,
+        widget=forms.HiddenInput()
+    )
+
     def __init__(self, *args, **kwargs):
         """Init."""
         super().__init__(*args, **kwargs)
@@ -89,6 +96,14 @@ class ContextLayerForm(forms.ModelForm):
             name=self.cleaned_data['group']
         )
         return group
+
+    def clean_related_table(self):
+        """Return related table."""
+        if self.instance and self.cleaned_data['related_table']:
+            return RelatedTable.objects.get(
+                pk=self.cleaned_data['related_table']
+            )
+        return None
 
     def clean_styles(self):
         """Return styles."""

@@ -21,6 +21,7 @@ import { getLayer } from '../../../Dashboard/LeftPanel/ContextLayers/Layer'
 import { defaultPointStyle, defaultVectorTyleStyle } from './layerStyles';
 
 import './style.scss';
+import RelatedTableConfig from './RelatedTable';
 
 
 /**
@@ -170,7 +171,6 @@ export default function StyleConfig(
                   style={{ minHeight: "90%" }}
                   onChange={(evt) => {
                     try {
-                      JSON.parse(evt.target.value)
                       setError(null)
                       setData(
                         {
@@ -195,6 +195,11 @@ export default function StyleConfig(
                 originalData={data} setData={setData}
                 ArcgisData={layerData} useOverride={useOverride}
                 useOverrideLabel={useOverrideLabel}
+              /> : data.layer_type === 'Related Table' ?
+                <RelatedTableConfig
+                  originalData={data} setData={setData}
+                  RelatedTableData={layerData} useOverride={useOverride}
+                  useOverrideLabel={useOverrideLabel}
               /> :
               <Fragment>
                 <div className='ArcgisConfig Fields form-helptext'>
