@@ -30,6 +30,7 @@ test.describe('Create project from dataset', () => {
     await page.getByRole('textbox').nth(1).click();
     await page.getByRole('cell', { name: 'Global Administrative Boundaries - Somalia (Latest)' }).click();
     await page.getByRole('button', { name: 'Update Selection' }).click();
+    await page.getByRole('button', { name: 'Select all 2 filtered data.' }).click();
     await page.getByRole('button', { name: 'Add to New Project' }).click();
     await expect(page.getByText('Save')).toBeVisible();
 
