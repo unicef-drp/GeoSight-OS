@@ -189,6 +189,7 @@ export const IndicatorStyle = forwardRef(
                                 }
                               }
                               referenceLayer={referenceLayer}
+                              ableToSelectReferenceLayer={true}
                             /> : null
                         }
                       </div>
