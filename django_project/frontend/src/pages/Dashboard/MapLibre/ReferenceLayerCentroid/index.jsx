@@ -528,11 +528,11 @@ export default function ReferenceLayerCentroid({ map }) {
       // ---------------------------------------------------------
       // CREATE LABEL IF SINGLE INDICATOR
       // ---------------------------------------------------------
-      let indicatorLayerId = null
-      if (indicatorLayer?.indicators) {
-        indicatorLayerId = indicatorLayer?.indicators[0]?.id
+      let layerId = indicatorLayerId(indicatorLayer)
+      if (indicatorLayer.indicators?.length === 1) {
+        layerId = indicatorLayer?.indicators[0]?.id
       }
-      const indicatorDetail = indicators.find(indicator => indicator.id === indicatorLayerId)
+      const indicatorDetail = indicators.find(indicator => indicator.id === layerId)
       let config;
       if (indicatorDetail) {
         config = indicatorDetail?.label_config
@@ -552,10 +552,34 @@ export default function ReferenceLayerCentroid({ map }) {
         return;
       }
 
+      // Create style
+      const copiedUsedIndicatorsData = dictDeepCopy(usedIndicatorsData)
+      if (indicatorLayer.indicators?.length === 1) {
+        const indicator = indicatorLayer.indicators[0]
+        let config = indicator
+        if (!indicator.style) {
+          const obj = indicators.find(ind => ind.id === indicator.id)
+          if (obj) {
+            config = dictDeepCopy(obj)
+            config.indicators = [indicator]
+          }
+        }
+        if (copiedUsedIndicatorsData[indicator.id]) {
+          copiedUsedIndicatorsData[indicator.id].data = UpdateStyleData(copiedUsedIndicatorsData[indicator.id].data, config)
+        }
+      } else {
+        let config = indicatorLayer
+        const layerId = indicatorLayerId(indicatorLayer)
+        if (copiedUsedIndicatorsData[layerId]) {
+          copiedUsedIndicatorsData[layerId].data = UpdateStyleData(copiedUsedIndicatorsData[layerId].data, config)
+        }
+      }
+
+
       ExecuteWebWorker(
         worker, {
           geometriesData,
-          usedIndicatorsData,
+          usedIndicatorsData: copiedUsedIndicatorsData,
           usedFilteredGeometries
         }, (features) => {
           renderLabel(map, features, config)

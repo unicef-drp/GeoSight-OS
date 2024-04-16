@@ -231,23 +231,14 @@ export default function IndicatorLayersForm() {
 
   /** Remove layer **/
   const removeLayer = (layer) => {
-    let layerFound;
-    layerFound = indicatorLayers.find(layerData => {
-      return layerData.indicators.length === 1 && layerData.indicators[0].id === layer.id
-    })
-    if (!layerFound) {
-      layerFound = layer
-    }
-    if (layerFound) {
-      removeChildInGroupInStructure(layerFound.group, layerFound.id, indicatorLayersStructure, _ => {
-        dispatch(
-          Actions.Dashboard.updateStructure(
-            'indicatorLayersStructure', indicatorLayersStructure
-          )
+    removeChildInGroupInStructure(layer.group, layer.id, indicatorLayersStructure, _ => {
+      dispatch(
+        Actions.Dashboard.updateStructure(
+          'indicatorLayersStructure', indicatorLayersStructure
         )
-      })
-      dispatch(Actions.IndicatorLayers.remove(layerFound))
-    }
+      )
+    })
+    dispatch(Actions.IndicatorLayers.remove(layer))
   }
 
   return <Fragment>
@@ -255,11 +246,7 @@ export default function IndicatorLayersForm() {
       pageName={'Indicator Layers'}
       data={
         indicatorLayers.map(layer => {
-          if (layer.indicators.length === 1) {
-            layer.trueId = layer.indicators[0].id
-          } else {
-            layer.trueId = -1
-          }
+          layer.trueId = -1
           return layer
         })
       }
@@ -271,16 +258,11 @@ export default function IndicatorLayersForm() {
       }}
       defaultListData={indicators}
       addLayerAction={(layer, group) => {
-        const layerFound = indicatorLayers.find(layerData => {
-          return layerData.indicators.length === 1 && layerData.indicators[0].id === layer.id
-        })
-        if (!layerFound) {
-          dispatch(
-            Actions.IndicatorLayers.add(
-              indicatorToIndicatorLayer(layer)
-            )
+        dispatch(
+          Actions.IndicatorLayers.add(
+            indicatorToIndicatorLayer(layer)
           )
-        }
+        )
       }}
       removeLayerAction={removeLayer}
       changeLayerAction={(layer) => {
