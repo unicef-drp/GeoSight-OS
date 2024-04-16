@@ -35,7 +35,10 @@ import RelatedTableLayer, {
 import DynamicIndicatorLayer, {
   DynamicIndicatorLayerConfig
 } from "./DynamicIndicatorLayer";
-import { DynamicIndicatorType } from "../../../../utils/indicatorLayer";
+import {
+  DynamicIndicatorType,
+  referenceLayerIndicatorLayer
+} from "../../../../utils/indicatorLayer";
 
 import './style.scss';
 
@@ -44,6 +47,30 @@ import './style.scss';
 export let indicatorLayersForcedUpdateIds = null
 export const changeIndicatorLayersForcedUpdate = (ids) => {
   indicatorLayersForcedUpdateIds = ids
+}
+
+export function IndicatorLayersReferenceControl() {
+  const dispatch = useDispatch()
+  const selectedIndicatorLayer = useSelector(state => state.selectedIndicatorLayer)
+  const selectedIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer)
+  const {
+    referenceLayer
+  } = useSelector(state => state.dashboard.data);
+
+  /** When indicator layer and second layer changed
+   * Update reference layer views
+   * */
+  useEffect(() => {
+    const views = [
+      referenceLayerIndicatorLayer(referenceLayer, selectedIndicatorLayer)
+    ]
+    if (selectedIndicatorSecondLayer?.level_config?.referenceLayer) {
+      views.push(referenceLayerIndicatorLayer(referenceLayer, selectedIndicatorSecondLayer))
+    }
+    dispatch(Actions.Map.changeReferenceLayers(views))
+  }, [referenceLayer, selectedIndicatorLayer, selectedIndicatorSecondLayer]);
+
+  return null
 }
 
 
@@ -305,14 +332,17 @@ export function IndicatorLayers() {
  */
 export default function IndicatorLayersAccordion({ expanded }) {
   return (
-    <Accordion
-      expanded={expanded}
-      className={'IndicatorLayerList'}
-    >
+    <>
+      <Accordion
+        expanded={expanded}
+        className={'IndicatorLayerList'}
+      >
 
-      <AccordionDetails>
-        <IndicatorLayers/>
-      </AccordionDetails>
-    </Accordion>
+        <AccordionDetails>
+          <IndicatorLayers/>
+        </AccordionDetails>
+      </Accordion>
+      <IndicatorLayersReferenceControl/>
+    </>
   )
 }

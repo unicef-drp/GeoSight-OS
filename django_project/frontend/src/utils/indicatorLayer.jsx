@@ -260,3 +260,10 @@ export function dataFieldsDefault() {
     }
   })
 }
+
+/**
+ * Return reference layer of indicator layer
+ */
+export function referenceLayerIndicatorLayer(referenceLayer, indicatorLayer) {
+  return indicatorLayer?.level_config?.referenceLayer ? indicatorLayer?.level_config?.referenceLayer : referenceLayer
+}

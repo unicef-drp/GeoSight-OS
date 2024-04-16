@@ -160,7 +160,6 @@ export function ContextLayerInputSelector(
 export function GeorepoViewInputSelector(
   { data, setData, isMultiple, showSelected, ...props }
 ) {
-  console.log(props.isDisabled)
   return <ModalInputSelector
     placeholder={'Select view ' + (isMultiple ? '(s)' : '')}
     data={data}
