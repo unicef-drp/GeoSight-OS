@@ -254,12 +254,10 @@ export function contextLayerRendering(id, contextLayerData, contextLayer, map, c
           relatedTableLayer(
             map, id, layer, contextLayerData, featureProperties => {
               return popupFeature(
-                featureProperties, contextLayerData.name, null, Object.keys(featureProperties).map(property => {
-                  return {
-                    name: property,
-                    alias: property,
-                  }
-                })
+                featureProperties,
+                contextLayerData.name,
+                null,
+                contextLayerData.data_fields
               )
             }, contextLayerOrder
           )

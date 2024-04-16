@@ -125,6 +125,11 @@ class SitePreferencesAdmin(admin.ModelAdmin):
                 'style_compare_mode_outline_size',
             ),
         }),
+        ('Login Page', {
+            'fields': (
+                'login_help_text',
+            )
+        })
     )
     inlines = (SitePreferencesImageInline,)
     readonly_fields = ('sentry_dsn', 'sentry_environment')
