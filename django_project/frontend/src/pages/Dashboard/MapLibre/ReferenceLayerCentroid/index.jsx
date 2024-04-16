@@ -29,7 +29,8 @@ import { extractCode, fetchJson } from "../../../../utils/georepo";
 import { allDataIsReady } from "../../../../utils/indicators";
 import {
   indicatorLayerId,
-  isIndicatorLayerLikeIndicator
+  isIndicatorLayerLikeIndicator,
+  SingleIndicatorType
 } from "../../../../utils/indicatorLayer";
 import { dictDeepCopy } from "../../../../utils/main";
 import { UpdateStyleData } from "../../../../utils/indicatorData";
@@ -402,6 +403,23 @@ export default function ReferenceLayerCentroid({ map }) {
       usedFilteredGeometries = geometriesLevel
     }
 
+
+    // ---------------------------------------------------------
+    // CREATE LABEL IF SINGLE INDICATOR
+    // ---------------------------------------------------------
+    let labelConfig = indicatorLayer.label_config
+    let styleConfig = indicatorLayer
+    if (indicatorLayer.type === SingleIndicatorType) {
+      const indicatorDetail = indicators.find(indicator => indicator.id === indicatorLayer?.indicators[0]?.id)
+      if (!indicatorLayer.override_style && indicatorDetail) {
+        styleConfig = indicatorDetail
+      }
+      if (!indicatorLayer.override_label && indicatorDetail) {
+        labelConfig = indicatorDetail.label_config
+      }
+    }
+    // ---------------------------------------------------------
+
     // Check by config
     const config = {
       indicators: indicatorLayer.indicators.map(indicator => indicator.id),
@@ -409,7 +427,8 @@ export default function ReferenceLayerCentroid({ map }) {
       indicatorLayerConfig: isIndicatorLayerLikeIndicator(indicatorLayer) ? indicatorLayer.config : {},
       filteredGeometries: usedFilteredGeometries,
       indicatorShow: indicatorShow,
-      usedIndicatorsData: usedIndicatorsData
+      usedIndicatorsData: usedIndicatorsData,
+      labelConfig: labelConfig,
     }
     // If config is same, don't render to prevent flicker
     if (JSON.stringify(config) === JSON.stringify(centroidConfig)) {
@@ -525,22 +544,8 @@ export default function ReferenceLayerCentroid({ map }) {
         renderChart(features, config)
       }
     } else {
-      // ---------------------------------------------------------
-      // CREATE LABEL IF SINGLE INDICATOR
-      // ---------------------------------------------------------
-      let layerId = indicatorLayerId(indicatorLayer)
-      if (indicatorLayer.indicators?.length === 1) {
-        layerId = indicatorLayer?.indicators[0]?.id
-      }
-      const indicatorDetail = indicators.find(indicator => indicator.id === layerId)
-      let config;
-      if (indicatorDetail) {
-        config = indicatorDetail?.label_config
-      } else {
-        config = indicatorLayer?.label_config
-      }
       // When there is no config, no label rendered
-      if (!(config?.style && config?.text)) {
+      if (!(labelConfig?.style && labelConfig?.text)) {
         reset()
         return;
       }
@@ -548,31 +553,14 @@ export default function ReferenceLayerCentroid({ map }) {
       // LABEL
       // ---------------------------------------------------------
       if (!geometriesData) {
-        renderLabel([], config)
+        renderLabel([], labelConfig)
         return;
       }
 
       // Create style
       const copiedUsedIndicatorsData = dictDeepCopy(usedIndicatorsData)
-      if (indicatorLayer.indicators?.length === 1) {
-        const indicator = indicatorLayer.indicators[0]
-        let config = indicator
-        if (!indicator.style) {
-          const obj = indicators.find(ind => ind.id === indicator.id)
-          if (obj) {
-            config = dictDeepCopy(obj)
-            config.indicators = [indicator]
-          }
-        }
-        if (copiedUsedIndicatorsData[indicator.id]) {
-          copiedUsedIndicatorsData[indicator.id].data = UpdateStyleData(copiedUsedIndicatorsData[indicator.id].data, config)
-        }
-      } else {
-        let config = indicatorLayer
-        const layerId = indicatorLayerId(indicatorLayer)
-        if (copiedUsedIndicatorsData[layerId]) {
-          copiedUsedIndicatorsData[layerId].data = UpdateStyleData(copiedUsedIndicatorsData[layerId].data, config)
-        }
+      if (copiedUsedIndicatorsData[layerId]) {
+        copiedUsedIndicatorsData[layerId].data = UpdateStyleData(copiedUsedIndicatorsData[layerId].data, styleConfig)
       }
 
 
@@ -582,11 +570,10 @@ export default function ReferenceLayerCentroid({ map }) {
           usedIndicatorsData: copiedUsedIndicatorsData,
           usedFilteredGeometries
         }, (features) => {
-          renderLabel(map, features, config)
+          renderLabel(map, features, labelConfig)
         }
       )
     }
-
   }, [
     geometries, filteredGeometries, indicatorsData,
     indicatorShow, indicatorLayers,

@@ -285,11 +285,12 @@ export default function Indicators() {
             indicator => indicator.id === requestQueue[idx - 1]
           )
           if (indicator) {
-            const { id, url } = indicator
+            const { id, url, style } = indicator
 
             // On Response
             const onResponse = (response, error) => {
               if (indicatorFetchingSession === session && response) {
+                response = UpdateStyleData(response, indicator)
                 dispatch(
                   Actions.IndicatorsData.receive(response, error, id)
                 )

@@ -51,39 +51,25 @@ export const IndicatorStyle = forwardRef(
   ) => {
     const dispatch = useDispatch();
     const { referenceLayer } = useSelector(state => state.dashboard.data);
-    const [data, setData] = useState(indicator)
     const [dataLayer, setDataLayer] = useState(indicatorLayer)
     const [open, setOpen] = useState(false);
 
     useEffect(() => {
       if (open) {
-        setData({ ...indicator })
         setDataLayer({ ...indicatorLayer })
       }
     }, [open])
 
     const apply = () => {
-      dispatch(Actions.Indicators.update({ ...data }))
-      dispatch(Actions.IndicatorLayers.update(
-        {
-          ...indicatorLayer,
-          level_config: dataLayer.level_config,
-          name: dataLayer.name,
-          description: dataLayer.description,
-          popup_template: dataLayer.popup_template,
-          popup_type: dataLayer.popup_type,
-          data_fields: dataLayer.data_fields,
-        })
-      )
+      dispatch(Actions.IndicatorLayers.update(dataLayer))
       setOpen(false)
     }
 
     /** Update data **/
     const updateData = () => {
-      setData(dictDeepCopy(data, true))
       setDataLayer(dictDeepCopy(dataLayer, true))
     }
-    const disabled = data.style_type === 'Style from library.' && !data?.style
+    const disabled = dataLayer.style_type === 'Style from library.' && !dataLayer?.style
     return (
       <Fragment>
         <Modal
@@ -122,12 +108,12 @@ export const IndicatorStyle = forwardRef(
                         <div>
                           <input
                             type="text" spellCheck="false"
-                            value={data.name}
+                            value={indicator.name}
                             disabled/>
                         </div>
                         <br/>
                         <textarea
-                          value={data.description}
+                          value={indicator.description}
                           disabled/>
                       </div>
                       <div className="BasicFormSection">
@@ -201,9 +187,15 @@ export const IndicatorStyle = forwardRef(
                         <FormControlLabel
                           control={
                             <Checkbox
-                              checked={data.override_style}
+                              checked={dataLayer.override_style}
                               onChange={evt => {
-                                data.override_style = evt.target.checked
+                                dataLayer.override_style = evt.target.checked
+                                if (dataLayer.override_style) {
+                                  dataLayer.style_id = indicator.style_id
+                                  dataLayer.style = indicator.style
+                                  dataLayer.style_config = indicator.style_config
+                                  dataLayer.style_type = indicator.style_type
+                                }
                                 updateData()
                               }}/>
                           }
@@ -211,15 +203,15 @@ export const IndicatorStyle = forwardRef(
                       </FormGroup>
                     </div>
                     {
-                      data.override_style ?
+                      dataLayer.override_style ?
                         <StyleConfig
-                          data={data}
+                          data={dataLayer}
                           setData={newData => {
-                            setData({ ...newData })
+                            setDataLayer({ ...newData })
                             updateData()
                           }}
-                          valuesUrl={`/api/indicator/${data.id}/values/flat/`}
-                          defaultStyleRules={data?.style ? data?.style : []}
+                          valuesUrl={`/api/indicator/${indicator.id}/values/flat/`}
+                          defaultStyleRules={indicator?.style ? indicator?.style : []}
                           selectableInput={batch !== null}
                         /> : null
                     }
@@ -230,9 +222,12 @@ export const IndicatorStyle = forwardRef(
                         <FormControlLabel
                           control={
                             <Checkbox
-                              checked={data.override_label}
+                              checked={dataLayer.override_label}
                               onChange={evt => {
-                                data.override_label = evt.target.checked
+                                dataLayer.override_label = evt.target.checked
+                                if (dataLayer.override_label) {
+                                  dataLayer.label_config = indicator.label_config
+                                }
                                 updateData()
                               }}/>
                           }
@@ -240,12 +235,12 @@ export const IndicatorStyle = forwardRef(
                       </FormGroup>
                     </div>
                     {
-                      data.override_label ?
+                      dataLayer.override_label ?
                         <LabelForm
-                          indicator={data}
+                          indicator={dataLayer}
                           setIndicator={newData => {
-                            setData({
-                              ...data,
+                            setDataLayer({
+                              ...dataLayer,
                               label_config: newData.label_config
                             })
                           }}/> : null

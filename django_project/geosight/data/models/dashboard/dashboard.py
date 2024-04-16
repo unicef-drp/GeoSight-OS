@@ -305,10 +305,13 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData, AbstractVersionData):
                 config.save()
 
             # ------------ INDICATOR LAYER STYLE ---------------
+            model.override_style = layer_data.get('override_style', {})
             model.style_type = layer_data.get('style_type', '')
-            model.label_config = layer_data.get('label_config', None)
             model.style_id = layer_data.get('style_id', None)
             model.style_config = layer_data.get('style_config', None)
+
+            model.override_label = layer_data.get('override_style', {})
+            model.label_config = layer_data.get('label_config', None)
 
             rules_ids = []
             rules = model.dashboardindicatorlayerrule_set.all()
