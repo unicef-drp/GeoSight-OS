@@ -53,6 +53,9 @@ export default function relatedTableLayer(map, id, data, contextLayerData, popup
 
       if (!hasSource(map, id)) {
         map.addSource(id, params);
+      } else {
+        map.getSource(id).setData(geojson);
+      }
 
     const popupFeature = (properties) => {
       return popupFeatureFn(properties, data?.data?.fields)

@@ -282,13 +282,6 @@ export function ContextLayer({ contextLayerData, map, contextLayerOrder }) {
   } else {
     removeLayers(map, id)
   }
-  // useEffect(() => {
-  //   if (map && contextLayersShow) {
-  //     contextLayerRendering(id, contextLayerData, contextLayer, map, contextLayerOrder)
-  //   } else {
-  //     removeLayers(map, id)
-  //   }
-  // }, [map, contextLayer, contextLayersShow]);
   return ""
 }
 

@@ -22,7 +22,6 @@ import { getRelatedTableFields } from '../../utils/relatedTable';
 import { Actions } from '../../store/dashboard';
 import { useDispatch } from 'react-redux';
 
-
 /**
  * Slicers for Related Table Context Layers.
  */
@@ -77,33 +76,36 @@ const SidePanelSlicers = ({ data }) => {
 
     const relatedFields = relatedTableInfo && relatedTableData ? getRelatedTableFields(relatedTableInfo, relatedTableData) : []
 
-    return <Fragment>
-        <div
-            id='RelatedTableLayerMiddleConfigReal'
-            className='WhereConfigurationWrapper'
-        >
-            <WhereQueryGenerator
-                fields={updateFields(relatedFields)}
-                isCompact={true}
-                whereQuery={data.query}
-                setWhereQuery={(where) => {
-                    console.log(where)
-                    if (JSON.stringify(data.query) !== JSON.stringify(where)) {
-                        data.query = where
-                        dispatch(Actions.ContextLayers.update(data))
-                    }
-                }}
-                disabledChanges={{
-                    add: true,
-                    remove: true,
-                    sql: true,
-                    and_or: true,
-                    field: true,
-                    operator: true,
-                }}
-            />
-        </div>
-    </Fragment>
+    return <div
+        className={'ContextLayerMiddleConfig ' + (open ? 'Open' : '')}>
+        <Fragment>
+            <div
+                id='RelatedTableLayerMiddleConfigReal'
+                className='WhereConfigurationWrapper'
+            >
+                <WhereQueryGenerator
+                    fields={updateFields(relatedFields)}
+                    isCompact={true}
+                    whereQuery={data.query}
+                    setWhereQuery={(where) => {
+                        console.log(where)
+                        if (JSON.stringify(data.query) !== JSON.stringify(where)) {
+                            data.query = where
+                            dispatch(Actions.ContextLayers.update(data))
+                        }
+                    }}
+                    disabledChanges={{
+                        add: true,
+                        remove: true,
+                        sql: true,
+                        and_or: true,
+                        field: true,
+                        operator: true,
+                    }}
+                />
+            </div>
+        </Fragment>
+    </div>
 };
 
 export default SidePanelSlicers;
