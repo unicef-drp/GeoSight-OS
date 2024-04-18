@@ -18,6 +18,23 @@ import { buildGeojsonFromRelatedData } from "../../../../utils/relatedTable";
 import { addPopup, hasLayer, hasSource } from "../utils";
 
 
+const getBeforeLayerId = (map, layerId, contextLayerOrder) => {
+  if (contextLayerOrder) {
+    const contextLayerIdx = contextLayerOrder.indexOf(layerId)
+    for (let idx = 0; idx < contextLayerOrder.length; idx++) {
+      if (map && idx > contextLayerIdx) {
+        const currentId = 'context-layer-' + contextLayerOrder[idx] + '-line'
+        if (hasLayer(map, currentId)) {
+          return currentId;
+        }
+      }
+    }
+  } else {
+    return undefined;
+  }
+};
+
+
 /***
  * Render vector tile layer
  */
@@ -26,21 +43,6 @@ export default function relatedTableLayer(map, id, data, contextLayerData, popup
   const contextLayerId = id.replace(`context-layer-`, '')
   if (!contextLayerData.latitude_field || !contextLayerData.longitude_field || !contextLayerData.related_table || !contextLayerId) {
     return
-  }
-
-  // We find the before layers
-  let before = null;
-  if (contextLayerOrder) {
-    const contextLayerIdx = contextLayerOrder.indexOf(contextLayerData.id)
-    for (let idx = 0; idx < contextLayerOrder.length; idx++) {
-      if (map && idx > contextLayerIdx) {
-        const currentId = 'context-layer-' + contextLayerOrder[idx] + '-line'
-        if (hasLayer(map, currentId)) {
-          before = currentId
-          break;
-        }
-      }
-    }
   }
 
   fetchingData(
@@ -62,6 +64,7 @@ export default function relatedTableLayer(map, id, data, contextLayerData, popup
     }
     try {
       const layers = JSON.parse(contextLayerData.styles)
+      const before = getBeforeLayerId(map, contextLayerData.id, contextLayerOrder)
       layers.map(layer => {
         layer.id = id + '-' + layer.id
         layer.source = id

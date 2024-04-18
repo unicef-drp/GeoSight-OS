@@ -50,7 +50,7 @@ export default function MapConfig({ data, layerInput }) {
         id: id,
         source: id,
       },
-      before
+      before && map.getLayer(before) ? before : undefined
     );
   }
 
