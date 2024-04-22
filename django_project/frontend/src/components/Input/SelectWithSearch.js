@@ -59,7 +59,7 @@ export function SelectWithSearch(
       }
       value={value}
       options={options}
-      disableCloseOnSelect={props.disableCloseOnSelect !== undefined ? props.disableCloseOnSelect : true}
+      disableCloseOnSelect={props.disableCloseOnSelect !== undefined ? props.disableCloseOnSelect : false}
       getOptionLabel={(option) => option}
       renderInput={(params) => (
         <TextField

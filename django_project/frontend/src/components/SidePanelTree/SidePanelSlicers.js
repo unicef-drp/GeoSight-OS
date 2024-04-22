@@ -88,7 +88,6 @@ const SidePanelSlicers = ({ data }) => {
                     isCompact={true}
                     whereQuery={data.query}
                     setWhereQuery={(where) => {
-                        console.log(where)
                         if (JSON.stringify(data.query) !== JSON.stringify(where)) {
                             data.query = where
                             dispatch(Actions.ContextLayers.update(data))

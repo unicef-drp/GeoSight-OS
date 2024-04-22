@@ -94,6 +94,16 @@ function ContextLayers() {
   }, [layers, selectedLayer])
 
   const initialize = (_contextLayers) => {
+    if (selectedLayer.length > 0) {
+      selectedLayer.forEach(layer => {
+        dispatch(
+          Actions.Map.removeContextLayer(layer)
+        )
+      })
+    }
+    setSelectedLayer(
+      contextLayers.filter(row => (row.visible_by_default || selectedLayer.includes(row.id + ''))).map(row => row.id + '')
+    )
 
     for (const contextLayer of _contextLayers) {
       if (!contextLayer.permission.read) {
@@ -125,7 +135,6 @@ function ContextLayers() {
   const onChange = (selectedData, layersData = null) => {
     setSelectedLayer([...selectedData])
   }
-
   return (
     <SidePanelTreeView
       data={treeData}

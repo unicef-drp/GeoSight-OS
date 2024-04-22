@@ -277,11 +277,13 @@ export function ContextLayer({ contextLayerData, map, contextLayerOrder }) {
   const id = ID + '-' + contextLayerData.id
 
   /** CONTEXT LAYER CHANGED */
-  if (map && contextLayersShow) {
-    contextLayerRendering(id, contextLayerData, contextLayer, map, contextLayerOrder)
-  } else {
-    removeLayers(map, id)
-  }
+  useEffect(() => {
+    if (map && contextLayersShow) {
+      contextLayerRendering(id, contextLayerData, contextLayer, map, contextLayerOrder)
+    } else {
+      removeLayers(map, id)
+    }
+  }, [map, contextLayer, contextLayersShow]);
   return ""
 }
 

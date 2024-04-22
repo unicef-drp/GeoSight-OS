@@ -40,8 +40,7 @@ const getBeforeLayerId = (map, layerId, contextLayerOrder) => {
  */
 export default function relatedTableLayer(map, id, data, contextLayerData, popupFeatureFn, contextLayerOrder) {
   // Create the source
-  const contextLayerId = id.replace(`context-layer-`, '')
-  if (!contextLayerData.latitude_field || !contextLayerData.longitude_field || !contextLayerData.related_table || !contextLayerId) {
+  if (!contextLayerData.latitude_field || !contextLayerData.longitude_field || !contextLayerData.related_table) {
     return
   }
 
@@ -59,22 +58,22 @@ export default function relatedTableLayer(map, id, data, contextLayerData, popup
         map.getSource(id).setData(geojson);
       }
 
-    const popupFeature = (properties) => {
-      return popupFeatureFn(properties, data?.data?.fields)
+      const popupFeature = (properties) => {
+        return popupFeatureFn(properties, data?.data?.fields)
+      }
+      try {
+        const layers = JSON.parse(contextLayerData.styles)
+        let before = getBeforeLayerId(map, contextLayerData.id, contextLayerOrder)
+        layers.map(layer => {
+          layer.id = id + '-' + layer.id
+          layer.source = id
+          map.addLayer(layer, before)
+          before = layer.id
+          addPopup(map, layer.id, popupFeature)
+        })
+      } catch (e) {
+        console.log(e)
+      }
     }
-    try {
-      const layers = JSON.parse(contextLayerData.styles)
-      const before = getBeforeLayerId(map, contextLayerData.id, contextLayerOrder)
-      layers.map(layer => {
-        layer.id = id + '-' + layer.id
-        layer.source = id
-        map.addLayer(layer, before)
-        before = layer.id
-        addPopup(map, layer.id, popupFeature)
-      })
-    } catch (e) {
-      console.log(e)
-    }
-  }
   )
 }
