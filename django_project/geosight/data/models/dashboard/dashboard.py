@@ -310,7 +310,7 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData, AbstractVersionData):
             model.style_id = layer_data.get('style_id', None)
             model.style_config = layer_data.get('style_config', None)
 
-            model.override_label = layer_data.get('override_style', {})
+            model.override_label = layer_data.get('override_label', {})
             model.label_config = layer_data.get('label_config', None)
 
             rules_ids = []
