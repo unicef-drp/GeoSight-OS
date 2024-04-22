@@ -54,11 +54,13 @@ export const CONTEXT_LAYER_ID = `context-layer`
 const MAX_ELEVATION = 500000
 
 const NOCOLOR = `rgba(0, 0, 0, 0)`
-const REFERENCE_LAYER_ID = `reference-layer`
-const FILL_LAYER_ID = REFERENCE_LAYER_ID + '-fill'
-const OUTLINE_LAYER_ID = REFERENCE_LAYER_ID + '-outline'
 const INDICATOR_LABEL_ID = 'indicator-label'
 const LAYER_HIGHLIGHT_ID = 'reference-layer-highlight'
+
+// Layer keys
+const REFERENCE_LAYER_ID_KEY = `reference-layer`
+const FILL_LAYER_ID_KEY = REFERENCE_LAYER_ID_KEY + '-fill'
+const OUTLINE_LAYER_ID_KEY = REFERENCE_LAYER_ID_KEY + '-outline'
 
 const geo_field = 'concept_uuid'
 
@@ -71,14 +73,20 @@ let currentRenderDataString = ''
 let currentIndicatorLayerStringData = ''
 let currentIndicatorSecondLayerStringData = ''
 let currentCompareMode = false
+
 /**
  * ReferenceLayer selector.
  */
-export default function ReferenceLayer({ map, deckgl, is3DView }) {
+export function ReferenceLayer(
+  { idx, map, referenceLayer, deckgl, is3DView }
+) {
+  const REFERENCE_LAYER_ID = REFERENCE_LAYER_ID_KEY + '-' + idx
+  const FILL_LAYER_ID = FILL_LAYER_ID_KEY + '-' + idx
+  const OUTLINE_LAYER_ID = OUTLINE_LAYER_ID_KEY + '-' + idx
+
   const prevState = useRef()
   const dispatch = useDispatch()
   const {
-    referenceLayer,
     indicatorLayers,
     indicators,
     relatedTables,
@@ -86,7 +94,7 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
   } = useSelector(state => state.dashboard.data);
   const { indicatorShow } = useSelector(state => state.map);
   const { compareMode } = useSelector(state => state.mapMode)
-  const referenceLayerData = useSelector(state => state.referenceLayerData[referenceLayer.identifier]);
+  const referenceLayerData = useSelector(state => state.referenceLayerData[referenceLayer?.identifier]);
   const indicatorsData = useSelector(state => state.indicatorsData);
   const relatedTableData = useSelector(state => state.relatedTableData);
   const filtersData = useSelector(state => state.filtersData);
@@ -118,7 +126,7 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
   //  For the entity data, Check ReferenceLayerCentroid
   // ------------------------------------------------------------
   useEffect(() => {
-    if (referenceLayer.identifier && !referenceLayerData) {
+    if (referenceLayer?.identifier && !referenceLayerData) {
       dispatch(
         Actions.ReferenceLayerData.fetch(
           dispatch, referenceLayer.identifier,
@@ -162,6 +170,8 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
   useEffect(() => {
     if (referenceLayerData) {
       createLayer()
+    } else {
+      removeAllLayers()
     }
   }, [referenceLayer, referenceLayerData, selectedAdminLevel]);
 
@@ -751,5 +761,23 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
   }
 
 
-  return <GeorepoAuthorizationModal/>
+  return null
+}
+
+export default function ReferenceLayers({ map, deckgl, is3DView }) {
+  const {
+    referenceLayers
+  } = useSelector(state => state.map);
+
+  return map ? <>
+    <ReferenceLayer
+      idx={0} map={map}
+      referenceLayer={referenceLayers[0]} deckgl={deckgl} is3DView={is3DView}
+    />
+    <ReferenceLayer
+      idx={1} map={map}
+      referenceLayer={referenceLayers[1]} deckgl={deckgl} is3DView={is3DView}
+    />
+    <GeorepoAuthorizationModal/>
+  </> : null
 }

@@ -22,7 +22,7 @@ import { useDispatch, useSelector } from "react-redux";
 import maplibregl from 'maplibre-gl';
 import { MapboxOverlay } from '@deck.gl/mapbox/typed';
 import ReferenceLayerCentroid from './ReferenceLayerCentroid'
-import ReferenceLayer from "./Layers/ReferenceLayer";
+import ReferenceLayers from "./Layers/ReferenceLayer";
 import ContextLayers from "./Layers/ContextLayers";
 import { Plugin, PluginChild } from "./Plugin";
 import { removeLayer, removeSource } from "./utils"
@@ -305,7 +305,7 @@ export default function MapLibre(
 
     <div id="map"></div>
 
-    <ReferenceLayer map={map} deckgl={deckgl} is3DView={is3dMode}/>
+    <ReferenceLayers map={map} deckgl={deckgl} is3DView={is3dMode}/>
     <ContextLayers map={map}/>
     {
       map ?

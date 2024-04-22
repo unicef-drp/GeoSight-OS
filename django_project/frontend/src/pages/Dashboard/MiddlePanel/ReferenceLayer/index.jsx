@@ -33,14 +33,29 @@ let currentReferenceLayer = null
 export default function ReferenceLayerSection() {
   const dispatch = useDispatch();
   const {
-    referenceLayer,
     levelConfig
   } = useSelector(state => state.dashboard.data)
+  const { referenceLayers } = useSelector(state => state.map)
   const referenceLayerData = useSelector(state => state.referenceLayerData)
   const selectedIndicatorLayer = useSelector(state => state.selectedIndicatorLayer)
 
+  // TODO:
+  //  Need to fix when in compare mode
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel)
-  let levels = referenceLayerData[referenceLayer.identifier]?.data?.dataset_levels
+  let levels = null
+  referenceLayers.map(referenceLayer => {
+    if (referenceLayerData[referenceLayers[0].identifier]?.data?.dataset_levels) {
+      if (!levels) {
+        levels = referenceLayerData[referenceLayers[0].identifier]?.data?.dataset_levels
+      } else {
+        referenceLayerData[referenceLayers[0].identifier]?.data?.dataset_levels.map(level => {
+          if (!levels[level.level]) {
+            levels[level.level] = level
+          }
+        })
+      }
+    }
+  });
 
   let {
     default_level: defaultLevel,
