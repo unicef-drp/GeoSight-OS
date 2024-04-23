@@ -437,14 +437,13 @@ header {
   display: flex;
   align-items: center;
   justify-content: center;
+  color: $primary-color;
+  padding-bottom: 1rem;
+  gap: 0.5rem;
 
   .Throbber {
     color: $primary-color;
     text-align: center;
-
-    .MuiCircularProgress-root {
-      margin-bottom: 1rem;
-    }
   }
 }
 

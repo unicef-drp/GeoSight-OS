@@ -13,18 +13,36 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React from 'react';
+import React, { useRef } from 'react';
 import { COLUMNS_ACTION } from "../../Components/List";
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import Tooltip from "@mui/material/Tooltip";
 import { AdminListContent } from "../../AdminList";
 import { DataAccessActiveIcon } from "../../../../components/Icons";
+import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
+import { BatchUserForm } from "./BatchUserForm";
 
 export function resourceActions(params) {
+  const batchFormRef = useRef(null);
   const actions = COLUMNS_ACTION(params, urls.admin.userAndGroupList + '#Groups', urls.api.group.edit, urls.api.group.detail)
 
   // Unshift before more & edit action
   actions.unshift(
+    <BatchUserForm ref={batchFormRef} data={params.row}/>,
+    <GridActionsCellItem
+      icon={
+        <Tooltip title={`Update user in batch.`}>
+          <a onClick={() => {
+            batchFormRef.current.open(params.row)
+          }}>
+            <div className='ButtonIcon'>
+              <SystemUpdateAltIcon/>
+            </div>
+          </a>
+        </Tooltip>
+      }
+      label="Update user in batch."
+    />,
     <GridActionsCellItem
       icon={
         <Tooltip title={`Go to data access.`}>
@@ -37,7 +55,8 @@ export function resourceActions(params) {
         </Tooltip>
       }
       label="Go to data access."
-    />,)
+    />
+  )
   return actions;
 }
 
