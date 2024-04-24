@@ -13,10 +13,17 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
+@import '../../../../../app/variables';
+
 .BatchUserFormModal {
   .Updated,
   .Throbber {
     color: green;
+  }
+
+  .Error,
+  .Throbber {
+    color: $error;
   }
 
   svg {

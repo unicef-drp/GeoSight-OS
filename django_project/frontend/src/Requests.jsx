@@ -316,11 +316,12 @@ export const DjangoRequests = {
       }
     })
   },
-  put: (url, data, options = {}) => {
+  put: (url, data, options = {}, headers = {}) => {
     return axios.put(url, data, {
       ...options,
       headers: {
-        'X-CSRFToken': csrfmiddlewaretoken
+        'X-CSRFToken': csrfmiddlewaretoken,
+        ...headers
       }
     })
   },
