@@ -30,6 +30,7 @@ User = get_user_model()
 
 class RoleDoesNotFound(Exception):
     """Exception that is thrown when role does not found."""
+
     pass
 
 
