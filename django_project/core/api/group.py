@@ -99,10 +99,13 @@ class GroupUpdateBatchUserAPI(APIView):
     def put(self, request, pk):
         """Delete an user."""
         group = get_object_or_404(GeosightGroup, pk=pk)
-        reader = csv.DictReader(
-            request.FILES['file'].read().decode('utf-8').splitlines(),
-            delimiter=','
-        )
+        try:
+            reader = csv.DictReader(
+                request.FILES['file'].read().decode('utf-8').splitlines(),
+                delimiter=','
+            )
+        except KeyError:
+            return HttpResponseBadRequest('CSV should bin in file payload')
 
         with transaction.atomic():
             # Delete all user
