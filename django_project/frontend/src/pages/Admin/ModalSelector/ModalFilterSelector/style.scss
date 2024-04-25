@@ -70,4 +70,13 @@
     cursor: pointer !important;
     border: inherit !important;
   }
+
+  .HasValue {
+    color: $secondary-color;
+    cursor: pointer;
+
+    &:hover {
+      opacity: $base-hovered-opacity;
+    }
+  }
 }

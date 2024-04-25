@@ -45,8 +45,12 @@ export default function WidgetEditor(
 ) {
   const {
     indicators,
-    indicatorLayers
+    indicatorLayers,
+    default_time_mode
   } = useSelector(state => state.dashboard.data);
+  const {
+    use_only_last_known_value,
+  } = default_time_mode
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [layerID, setLayerID] = useState('');
@@ -277,12 +281,15 @@ export default function WidgetEditor(
               setDateFilterType(evt.target.value)
             }}>
               <FormControlLabel
+                disabled={use_only_last_known_value}
                 value="No filter" control={<Radio/>}
                 label="No filter (global latest values will be used)"/>
               <FormControlLabel
+                disabled={use_only_last_known_value}
                 value="Global datetime filter" control={<Radio/>}
                 label="Use datetime filter from Dashboard level."/>
               <FormControlLabel
+                disabled={use_only_last_known_value}
                 value="Custom filter" control={<Radio/>}
                 label="Use custom datetime filter."/>
             </RadioGroup>

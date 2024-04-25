@@ -200,6 +200,36 @@ export const getRelatedTableData = (data, config, selectedGlobalTime, geoField =
 }
 
 /***
+ * Return geojson from related table data, based on lat and lon field, and a optional query
+ */
+export const buildGeojsonFromRelatedData = (data, lon_field, lat_field, query = undefined) => {
+  const where = query.replaceAll('"', '`')
+  const sql = `SELECT * FROM ? as data WHERE ${where}`;
+
+  const finalData = where ?
+    alasql(sql, [data]) :
+    data
+
+  const features = finalData.map(result => ({
+    type: 'Feature',
+    properties: result,
+    geometry: {
+      type: 'Point',
+      coordinates: [result[lon_field], result[lat_field]]
+    }
+  }));
+
+  const featureCollection = {
+    type: 'FeatureCollection',
+    features
+  }
+
+  return featureCollection;
+};
+
+
+
+/***
  * Return table fields ready for the query
  */
 export function getRelatedTableFields(relatedTable, relatedTableData) {

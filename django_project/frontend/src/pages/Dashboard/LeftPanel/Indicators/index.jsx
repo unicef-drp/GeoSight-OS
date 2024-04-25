@@ -48,8 +48,12 @@ export default function Indicators() {
   const {
     referenceLayer,
     indicators,
-    indicatorLayers
+    indicatorLayers,
+    default_time_mode
   } = useSelector(state => state.dashboard.data);
+  const {
+    use_only_last_known_value
+  } = default_time_mode
   const currentIndicatorLayer = useSelector(state => state.selectedIndicatorLayer);
   const currentIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer);
   const indicatorLayerMetadata = useSelector(state => state.indicatorLayerMetadata);
@@ -316,19 +320,19 @@ export default function Indicators() {
             const metadata = indicatorLayerMetadata[dataId]
             if (metadata?.version) {
               const version = metadata?.version
+              const doAll = !use_only_last_known_value && metadata?.count && metadata.count < MAX_COUNT_FOR_ALL_DATA
 
               // If index is 1, waiting for this to be done
               if (idx === 1) {
                 try {
-                  const response = await getDataFn(id, url, params, dictDeepCopy(selectedGlobalTime), version, onResponse, onProgress, metadata?.count && metadata.count < MAX_COUNT_FOR_ALL_DATA)
+                  const response = await getDataFn(id, url, params, dictDeepCopy(selectedGlobalTime), version, onResponse, onProgress, doAll)
                   onResponse(response, null)
                 } catch (error) {
                   onResponse(null, error)
                 }
               } else {
                 getDataPromise(
-                  dataId, url, params, dictDeepCopy(selectedGlobalTime), version, onResponse, onProgress,
-                  metadata?.count && metadata.count < MAX_COUNT_FOR_ALL_DATA
+                  dataId, url, params, dictDeepCopy(selectedGlobalTime), version, onResponse, onProgress, doAll
                 ).then(response => {
                   onResponse(response, null)
                 }).catch(error => {

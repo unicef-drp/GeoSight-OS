@@ -40,6 +40,7 @@ const columns = [
  * @param {Function} selectedDataChanged Function of Selected group changed.
  * @param {Boolean} isMultiple Is data returned multiple object.
  * @param {Boolean} showSelected Is Showing selected data.
+ * @param {array} filter List of id of data that will be used to filter data.
  * */
 export default function GeorepoViewSelector(
   {
@@ -48,7 +49,8 @@ export default function GeorepoViewSelector(
     selectedData,
     selectedDataChanged,
     isMultiple = true,
-    showSelected = true
+    showSelected = true,
+    filter = false
   }
 ) {
 
@@ -113,10 +115,15 @@ export default function GeorepoViewSelector(
         }}>{tag}</span>
     })
   }
+  let usedInputData = inputData
+  if (filter && usedInputData) {
+    const newFilter = filter.concat(selectedData)
+    usedInputData = usedInputData.filter(data => newFilter.includes(data.identifier))
+  }
 
   return <ModalSelector
     title={"View(s)"}
-    inputData={inputData}
+    inputData={usedInputData}
     columns={columns}
     open={open}
     setOpen={setOpen}

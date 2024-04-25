@@ -101,13 +101,26 @@ test.describe('Create complex project', () => {
     await page.getByRole('button').nth(2).click();
     await page.getByRole('button', { name: 'Apply Changes' }).click();
 
+    // Widgets
+    await page.getByText('Widgets').click();
+    await page.getByRole('button', { name: 'Add Widget' }).click();
+    await page.getByText('Summary WidgetSummarize all').click();
+    await page.getByPlaceholder('Widget name').fill('Widget 1');
+    await page.getByText('Indicator', { exact: true }).click();
+    await page.getByRole('option', { name: 'Indicator', exact: true }).click();
+    await page.getByRole('combobox').nth(1).click();
+    await page.getByRole('option', { name: 'Sample Indicator A' }).click();
+    await page.getByRole('combobox').nth(3).click();
+    await page.getByRole('option', { name: 'value' }).click();
+    await page.getByRole('button', { name: 'Apply' }).click();
+    await expect(page.locator('label').filter({ hasText: 'No filter (global latest' })).toBeDisabled();
+
     // Save
     await page.getByText('Save').isEnabled();
     await page.getByText('Save').click();
 
     const editUrl = 'http://localhost:2000/admin/project/test-project-complex-config/edit'
     await page.waitForURL(editUrl)
-    // await page.goto(editUrl);
 
     // --------------------------------------------------------------
     // CHECK PREVIEW
@@ -119,6 +132,9 @@ test.describe('Create complex project', () => {
     await expect(page.locator('.MapLegendSectionTitle')).toContainText(layer1);
     await expect(page.getByLabel(layer1)).toBeChecked();
     await expect(page.getByLabel(layer2)).not.toBeChecked();
+
+    // Because turn on Last Know Value, the button is hidden
+    await expect(page.getByTitle('Show global time configuration')).toBeHidden();
 
     // Chart
     const layer3 = 'Chart Layer'
@@ -182,19 +198,19 @@ test.describe('Create complex project', () => {
     await expect(page.locator('.ExtentManualInput input').nth(3)).toHaveValue('-1.6568');
 
     // Check indicators
-    await page.locator('.TabPrimary').getByText('Indicators').click();
+    await page.locator('.TabPrimary').getByText('Indicators (2)').click();
     expect(await page.getByRole('cell', { name: 'Sample Indicator A' })).toBeVisible();
     expect(await page.getByRole('cell', { name: 'Sample Indicator B' })).toBeVisible();
 
     // Check indicator layers
-    await page.locator('.TabPrimary').getByText('Indicator Layers').click();
+    await page.locator('.TabPrimary').getByText('Indicator Layers (5)').click();
     expect(await page.getByText('Sample Indicator A').nth(1)).toBeVisible();
     expect(await page.getByText('Sample Indicator B').nth(1)).toBeVisible();
     expect(await page.getByText('Related Table Layer').nth(1)).toBeVisible();
     expect(await page.getByText('Chart Layer').nth(1)).toBeVisible();
 
     // Check indicator layers
-    await page.locator('.TabPrimary').getByText('Related Tables').click();
+    await page.locator('.TabPrimary').getByText('Related Tables (1)').click();
     await expect(page.locator('.RelatedTableConfiguration input').nth(0)).toHaveValue('Ucode');
     await expect(page.locator('.RelatedTableConfiguration input').nth(1)).toHaveValue('ucode');
 

@@ -94,7 +94,7 @@ class IndicatorValueWideFormat(AbstractImporterIndicatorValue, ABC):
                         except Indicator.DoesNotExist:
                             note['indicator_id'] = 'Indicator does not exist'
                     if not geo_code:
-                        note['value'] = 'administrative code is empty'
+                        note['geo_code'] = 'administrative code is empty'
                     if not date_time:
                         note['date_time'] = 'date_time is empty'
                     if date_time_error:

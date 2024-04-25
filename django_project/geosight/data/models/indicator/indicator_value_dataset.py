@@ -25,7 +25,7 @@ class IndicatorValueDataset(models.Model):
     id = models.CharField(max_length=256, primary_key=True)
     indicator_id = models.BigIntegerField()
     reference_layer_id = models.UUIDField()
-    admin_level = models.IntegerField()
+    admin_level = models.CharField(max_length=256)
     data_count = models.IntegerField(
         null=True, blank=True
     )

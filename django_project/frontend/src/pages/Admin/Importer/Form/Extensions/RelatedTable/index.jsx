@@ -50,6 +50,7 @@ import {
   IndicatorSettings
 } from "../../../../Components/Input/IndicatorSettings";
 
+let lastId = null;
 /**
  * Base Excel Form.
  * @param {dict} data .
@@ -98,18 +99,30 @@ export const RelatedTableFormat = forwardRef(
         (
           async () => {
             setFetching(true)
-            const contextLayerData = await fetchJSON(
+            lastId = relatedTable.id
+            const relatedTableDetail = await fetchJSON(
               `/api/related-table/${relatedTable.id}`
             )
-            setFields(contextLayerData.fields_definition)
             const array = [[], [], []]
-            contextLayerData.fields_definition.map(field => {
+            relatedTableDetail.fields_definition.map(field => {
+              field.value = field.name
               array[0].push(field.name)
               array[1].push(field.example[0])
               array[2].push(field.example[1])
             })
-            setAttributes(arrayToOptions(array))
-            setFetching(false)
+            const relatedTableData = await fetchJSON(
+              `/api/related-table/${relatedTable.id}/data`
+            )
+            relatedTableDetail.fields_definition.map(field => {
+              field.options = relatedTableData.map(
+                row => row[field.name]
+              ).filter(row => !!row)
+            })
+            if (lastId === relatedTable.id) {
+              setFields(relatedTableDetail.fields_definition)
+              setAttributes(arrayToOptions(array))
+              setFetching(false)
+            }
           }
         )()
       }

@@ -22,7 +22,7 @@ from rest_framework_nested.routers import NestedSimpleRouter
 from geosight.data.api.v1.basemap import BasemapViewSet
 from geosight.data.api.v1.data_browser import (
     DataBrowserApiList, DataBrowserApiListIds,
-    DatasetApiList, DatasetApiListIds
+    DatasetApiList, DatasetApiListIds, DatasetApiQuickData
 )
 from geosight.data.api.v1.indicator import IndicatorViewSet
 from geosight.data.api.v1.related_table import RelatedTableViewSet
@@ -45,10 +45,18 @@ data_browser_api_v1 = [
     url(r'^', DataBrowserApiList.as_view(), name='data-browser-api'),
 ]
 
+dataset_api_v1 = [
+    url(
+        r'^data', DatasetApiQuickData.as_view(),
+        name='dataset-quick-data-api'
+    ),
+    url(r'^ids', DatasetApiListIds.as_view(), name='dataset-ids-api'),
+    url(r'^', DatasetApiList.as_view(), name='dataset-api'),
+]
+
 urlpatterns = [
     url(r'^data-browser/', include(data_browser_api_v1)),
-    url(r'^dataset/ids', DatasetApiListIds.as_view(), name='dataset-ids-api'),
-    url(r'^dataset', DatasetApiList.as_view(), name='dataset-api'),
+    url(r'^dataset/', include(dataset_api_v1)),
 ]
 urlpatterns += router.urls
 urlpatterns += related_tables_router.urls

@@ -111,7 +111,7 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData, AbstractVersionData):
         """Check of name is exist."""
         return Dashboard.objects.filter(slug=slug).first() is not None
 
-    def save_relations(self, data):
+    def save_relations(self, data, is_create=False):
         """Save all relationship data."""
         from geosight.data.models.dashboard import (
             DashboardIndicator, DashboardIndicatorRule, DashboardBasemap,
@@ -342,10 +342,16 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData, AbstractVersionData):
                 )
                 objects.delete()
                 for idx, field in enumerate(layer_data['data_fields']):
-                    obj, _ = IndicatorLayerField.objects.get_or_create(
-                        object=model,
-                        id=field.get('id', None)
-                    )
+                    if is_create:
+                        obj, _ = IndicatorLayerField.objects.get_or_create(
+                            object=model,
+                            id=None
+                        )
+                    else:
+                        obj, _ = IndicatorLayerField.objects.get_or_create(
+                            object=model,
+                            id=field.get('id', None)
+                        )
                     obj.name = field['name']
                     obj.alias = field['alias']
                     obj.visible = field.get('visible', True)

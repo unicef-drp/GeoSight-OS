@@ -24,18 +24,24 @@ from rest_framework.views import APIView
 
 from core.cache import VersionCache
 from core.models.preferences import SitePreferences
+from frontend.views.admin.dashboard.create import DashboardCreateViewBase
 from geosight.data.models.basemap_layer import BasemapLayer
 from geosight.data.models.context_layer import ContextLayer
-from geosight.data.models.dashboard import Dashboard
+from geosight.data.models.dashboard import (
+    Dashboard, DashboardIndicator, DashboardIndicatorLayer
+)
 from geosight.data.models.indicator import Indicator
 from geosight.data.models.related_table import RelatedTable
 from geosight.data.serializer.basemap_layer import BasemapLayerSerializer
 from geosight.data.serializer.dashboard import (
     DashboardBasicSerializer, DashboardSerializer
 )
+from geosight.georepo.models.reference_layer import ReferenceLayerView
 from geosight.permission.access import (
     delete_permission_resource, read_permission_resource
 )
+
+CREATE_SLUG = ':CREATE'
 
 
 class DashboardListAPI(APIView):
@@ -59,9 +65,6 @@ class DashboardListAPI(APIView):
         return Response('Deleted')
 
 
-CREATE_SLUG = ':CREATE'
-
-
 class DashboardDetail(APIView):
     """Return all dashboard data."""
 
@@ -73,6 +76,49 @@ class DashboardDetail(APIView):
         delete_permission_resource(dashboard, request.user)
         dashboard.delete()
         return Response('Deleted')
+
+
+class DashboardDuplicate(APIView, DashboardCreateViewBase):
+    """Return all dashboard data."""
+
+    permission_classes = (IsAuthenticated,)
+
+    def update_name(self, name, counter=1):
+        """Get name of data."""
+        new_name = f'{name} {counter}'
+        try:
+            Dashboard.objects.get(name=new_name)
+            return self.update_name(name, counter + 1)
+        except Dashboard.DoesNotExist:
+            return new_name
+
+    def update_slug(self, slug, counter=1):
+        """Get slug of data."""
+        new_slug = f'{slug}-{counter}'
+        try:
+            Dashboard.objects.get(slug=new_slug)
+            return self.update_slug(slug, counter + 1)
+        except Dashboard.DoesNotExist:
+            return new_slug
+
+    def post(self, request, slug):
+        """Delete an basemap."""
+        dashboard = get_object_or_404(Dashboard, slug=slug)
+        delete_permission_resource(dashboard, request.user)
+
+        data = DashboardSerializer(
+            dashboard, context={'user': request.user}
+        ).data
+        data['name'] = self.update_name(name=data['name'])
+        data['slug'] = self.update_slug(slug=data['slug'])
+        data['geoField'] = data['geo_field']
+        try:
+            data['reference_layer'] = data['reference_layer']['identifier']
+        except KeyError:
+            pass
+        data['data'] = data
+        data['origin_id'] = dashboard.id
+        return self.save(data, request.user, request.FILES)
 
 
 class DashboardData(APIView):
@@ -98,8 +144,63 @@ class DashboardData(APIView):
 
         else:
             dashboard = Dashboard()
+
+            # Get default by dataset
+            dataset = request.GET.get('dataset', None)
+            if dataset:
+                view, _ = ReferenceLayerView.objects.get_or_create(
+                    identifier=dataset
+                )
+                dashboard.reference_layer = view
+
+            # Get default by dataset_id
+            dataset_id = request.GET.get('dataset_id', None)
+            if dataset_id:
+                try:
+                    view = ReferenceLayerView.objects.get(id=dataset_id)
+                    dashboard.reference_layer = view
+                except ReferenceLayerView.DoesNotExist:
+                    pass
+
+            indicators = request.GET.get('indicators', None)
+
+            dashboard_indicators = []
+            dashboard_indicator_layers = []
+            indicator_layers_structure_children = []
+            if indicators:
+                for idx, indicator in enumerate(
+                        Indicator.objects.filter(id__in=indicators.split(','))
+                ):
+                    dashboard_indicators.append(
+                        DashboardIndicator(
+                            object=indicator
+                        )
+                    )
+                    indicator_layers = DashboardIndicatorLayer(
+                        id=idx + 1,
+                        dashboard=dashboard,
+                        name=indicator.name
+                    )
+                    indicator_layers.indicators = [indicator]
+                    dashboard_indicator_layers.append(
+                        indicator_layers
+                    )
+                    indicator_layers_structure_children.append(idx + 1)
+
             data = DashboardSerializer(
-                dashboard, context={'user': request.user}).data
+                dashboard,
+                context={
+                    'user': request.user,
+                    'dashboard_indicators': dashboard_indicators,
+                    'dashboard_indicator_layers': dashboard_indicator_layers,
+                }
+            ).data
+            if indicator_layers_structure_children:
+                data['indicator_layers_structure'] = {
+                    "id": str(uuid.uuid4()),
+                    "group": "",
+                    "children": indicator_layers_structure_children
+                }
 
             # Put the default basemap
             preferences = SitePreferences.preferences()

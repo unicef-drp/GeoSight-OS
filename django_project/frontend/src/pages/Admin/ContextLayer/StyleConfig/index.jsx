@@ -18,8 +18,10 @@ import MapConfig from './Map'
 import ArcgisConfig from './Arcgis'
 import { useDispatch } from "react-redux";
 import { getLayer } from '../../../Dashboard/LeftPanel/ContextLayers/Layer'
+import { defaultPointStyle, defaultVectorTyleStyle } from './layerStyles';
 
 import './style.scss';
+import RelatedTableConfig from './RelatedTable';
 
 
 /**
@@ -57,6 +59,16 @@ export default function StyleConfig(
     setLegend(null)
     getLayer(data, setLayer, setLegend, setError, dispatch, setLayerDataClass);
   }, [data, tab]);
+
+  useEffect(() => {
+    if (!data.styles && data.layer_type === 'Related Table') {
+      setData({
+        ...data,
+        styles: JSON.stringify(defaultPointStyle, null, 4),
+        override_style: true
+      })
+    }
+  }, [data]);
 
   useEffect(() => {
     if (layerDataClass) {
@@ -125,12 +137,57 @@ export default function StyleConfig(
                     }
                   </div>
                 </div>
-                <MapConfig data={data} layerInput={{
-                  layer: layer,
-                  layer_type: data.layer_type,
-                  render: true
-                }}/>
+                <MapConfig
+                  data={data}
+                  layerInput={{
+                    layer: layer,
+                    layer_type: data.layer_type,
+                    render: true
+                  }}
+                />
               </div> : ""
+          }
+          {
+            data.layer_type === 'Vector Tile' || data.layer_type === 'Related Table' ? <>
+              <div className='Style'>
+                <div><b>Layers</b></div>
+                <span>
+                  Put layers list configurations with the mapbox format.<br/>
+                  Put source with "source" or any, it will automatically change to correct source.<br/>
+                  <a
+                    href="https://docs.mapbox.com/style-spec/reference/layers/"
+                    target="_blank">See documentation.</a>
+                </span>
+                <br/>
+                <br/>
+                <textarea
+                  placeholder={
+                    JSON.stringify(data.layer_type === 'Related Table' ?
+                      defaultPointStyle :
+                      defaultVectorTyleStyle,
+                      null, 4)
+                  }
+                  defaultValue={data.styles}
+                  style={{ minHeight: "90%" }}
+                  onChange={(evt) => {
+                    try {
+                      setError(null)
+                      setData(
+                        {
+                          ...data,
+                          styles: evt.target.value,
+                          override_style: true
+                        }
+                      )
+                    } catch (e) {
+                      setError((e + '').split('at')[0])
+                    }
+                  }}/>
+              </div>
+              <div className='ArcgisConfig Label form-helptext'>
+                Vector tile does not have label
+              </div>
+            </> : null
           }
           {
             data.layer_type === 'ARCGIS' ?
@@ -138,10 +195,15 @@ export default function StyleConfig(
                 originalData={data} setData={setData}
                 ArcgisData={layerData} useOverride={useOverride}
                 useOverrideLabel={useOverrideLabel}
+              /> : data.layer_type === 'Related Table' ?
+                <RelatedTableConfig
+                  originalData={data} setData={setData}
+                  RelatedTableData={layerData} useOverride={useOverride}
+                  useOverrideLabel={useOverrideLabel}
               /> :
               <Fragment>
                 <div className='ArcgisConfig Fields form-helptext'>
-                  Config is not Arcgis
+                  Config is not Arcgis or Related Table Type
                 </div>
               </Fragment>
           }

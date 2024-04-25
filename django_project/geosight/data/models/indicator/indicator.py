@@ -36,6 +36,8 @@ from geosight.data.models.style.indicator_style import (
 from geosight.data.serializer.style import StyleRuleSerializer
 from geosight.permission.models.manager import PermissionManager
 
+VALUE_IS_EMPTY_TEXT = 'Value is empty'
+
 
 class IndicatorValueRejectedError(Exception):
     """Exceptions for value rejected."""
@@ -173,13 +175,17 @@ class Indicator(
     def validate(self, value):
         """Check value and return the comment."""
         comment = ''
+        if value in [None, '']:
+            raise IndicatorValueRejectedError(VALUE_IS_EMPTY_TEXT)
+
         if self.type == IndicatorType.INTEGER:
             try:
                 if isinstance(value, str):
-                    value = int(value)
-                elif value is None:
-                    raise ValueError
-                elif isinstance(value, float):
+                    try:
+                        value = int(value)
+                    except ValueError:
+                        value = float(value)
+                if isinstance(value, float):
                     if not value.is_integer():
                         comment = 'Result was rounded to int.'
                     value = int(value)
@@ -215,7 +221,7 @@ class Indicator(
             except ValueError:
                 raise IndicatorValueRejectedError('Value is not float')
             except TypeError:
-                raise IndicatorValueRejectedError('Value is empty')
+                raise IndicatorValueRejectedError(VALUE_IS_EMPTY_TEXT)
         elif self.type == IndicatorType.STRING:
             if isinstance(value, str):
                 if self.codelist:

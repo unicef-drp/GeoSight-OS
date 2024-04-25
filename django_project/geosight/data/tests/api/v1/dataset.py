@@ -186,6 +186,7 @@ class DatasetApiTest(BasePermissionTest, TestCase):
         # admin
         user = self.admin
         response = self.assertRequestGetView(url, 200, user=user)
+        self.assertEqual(response.json()['count'], 8)
         self.assertEqual(self.data_count(response), 36)
 
         # by indicators
@@ -194,6 +195,7 @@ class DatasetApiTest(BasePermissionTest, TestCase):
             200,
             user=user
         )
+        self.assertEqual(response.json()['count'], 4)
         self.assertEqual(self.data_count(response), 18)
 
         # by reference layers
@@ -202,12 +204,14 @@ class DatasetApiTest(BasePermissionTest, TestCase):
             f'{url}?reference_layer_id__in={reference_layers}',
             200, user=user
         )
+        self.assertEqual(response.json()['count'], 4)
         self.assertEqual(self.data_count(response), 18)
 
         # by levels
         response = self.assertRequestGetView(
             f'{url}?admin_level__in=1', 200, user=user
         )
+        self.assertEqual(response.json()['count'], 4)
         self.assertEqual(self.data_count(response), 20)
 
     def test_list_api_by_creator(self):
@@ -217,6 +221,7 @@ class DatasetApiTest(BasePermissionTest, TestCase):
 
         # admin
         response = self.assertRequestGetView(url, 200, user=user)
+        self.assertEqual(response.json()['count'], 4)
         self.assertEqual(self.data_count(response), 18)
 
         # by indicators
@@ -225,6 +230,7 @@ class DatasetApiTest(BasePermissionTest, TestCase):
             200,
             user=user
         )
+        self.assertEqual(response.json()['count'], 4)
         self.assertEqual(self.data_count(response), 18)
 
         response = self.assertRequestGetView(
@@ -232,6 +238,7 @@ class DatasetApiTest(BasePermissionTest, TestCase):
             200,
             user=user
         )
+        self.assertEqual(response.json()['count'], 0)
         self.assertEqual(self.data_count(response), 0)
 
         # by reference layers
@@ -240,12 +247,14 @@ class DatasetApiTest(BasePermissionTest, TestCase):
             f'{url}?reference_layer_id__in={reference_layers}',
             200, user=user
         )
+        self.assertEqual(response.json()['count'], 2)
         self.assertEqual(self.data_count(response), 9)
 
         # by levels
         response = self.assertRequestGetView(
             f'{url}?admin_level__in=1', 200, user=user
         )
+        self.assertEqual(response.json()['count'], 2)
         self.assertEqual(self.data_count(response), 10)
 
     def test_delete_api(self):
@@ -264,4 +273,5 @@ class DatasetApiTest(BasePermissionTest, TestCase):
 
         # admin
         response = self.assertRequestGetView(url, 200, user=user)
+        self.assertEqual(response.json()['count'], 6)
         self.assertEqual(self.data_count(response), 26)

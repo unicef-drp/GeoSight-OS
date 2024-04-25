@@ -18,7 +18,6 @@
    ========================================================================== */
 
 import React, { Fragment, useEffect, useState } from 'react';
-import $ from 'jquery';
 import { useDispatch, useSelector } from "react-redux";
 
 import { Actions } from '../../../../store/dashboard'
@@ -46,7 +45,9 @@ export default function RelatedTableLayerMapConfig() {
   let config;
   let relatedFields;
   let selectedRelatedTableLayerId = selectedRelatedTableLayer
-  const relatedTableLayer = indicatorLayers.find(layer => layer.id === selectedRelatedTableLayerId)
+  const relatedTableLayer = indicatorLayers.find(
+    layer => layer.id && layer.id === selectedRelatedTableLayerId
+  )
   if (relatedTableLayer) {
     const relatedTable = relatedTableLayer.related_tables[0]
     const relatedTableData = relatedTableDataState[relatedTableLayer.related_tables[0].id]?.data

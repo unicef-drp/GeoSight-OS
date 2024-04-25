@@ -101,7 +101,9 @@ function ContextLayers() {
         )
       })
     }
-    setSelectedLayer(contextLayers.filter(row => row.visible_by_default).map(row => row.id + ''))
+    setSelectedLayer(
+      contextLayers.filter(row => (row.visible_by_default || selectedLayer.includes(row.id + ''))).map(row => row.id + '')
+    )
 
     for (const contextLayer of _contextLayers) {
       if (!contextLayer.permission.read) {

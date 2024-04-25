@@ -61,18 +61,33 @@ export default function Login() {
     return false
   }
 
+  const getLoginHelpText = () => {
+    let _element = $('#FormTemplate').find('.form-login-help-text')
+    if (_element && _element.length) {
+      return $(_element[0]).text()
+    }
+    return ''
+  }
+
+  const loginHelpText = getLoginHelpText()
+
   /** Render **/
   return (
     <App className='Login'>
       <div className='Background'></div>
       <div className='Login'>
         <div className='LoginHeader'>Welcome to {preferences.site_title}</div>
+        {!getNoLoginAccess() && loginHelpText && (
+          <div className='HelpText'>
+            <p>{loginHelpText}</p>
+          </div>
+        )}
         {
           !useAzureLogin && (
             <div>
               <AdminForm isSubmitted={submitted} submit={() => {
                 setSubmitted(true)
-              }}/>
+              }} />
 
               <ThemeButton
                 variant="primary"
@@ -100,8 +115,8 @@ export default function Login() {
                     Request Access
                   </ThemeButton>
                 </a>
-                <br/>
-                <br/>
+                <br />
+                <br />
               </div>
             </Fragment>
           )
@@ -118,7 +133,7 @@ export default function Login() {
             </div>
           )
         }
-        <br/>
+        <br />
       </div>
     </App>
   )

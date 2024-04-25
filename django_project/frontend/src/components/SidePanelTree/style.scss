@@ -168,6 +168,10 @@
     }
   }
 
+  img {
+    max-width: 100%;
+  }
+
   .LayerName {
     width: 100%;
     margin-top: 3px;
@@ -254,6 +258,315 @@
     input {
       padding-top: 10px;
       padding-bottom: 10px;
+    }
+  }
+}
+.ContextLayerMiddleConfig {
+  box-sizing: border-box;
+  max-width: 100%;
+  transition: height 0.3s;
+  z-index: 1;
+  background-color: white;
+  pointer-events: auto !important;
+
+  .WhereConfigurationWrapper {
+    width: 100%;
+    max-width: 60vw;
+    overflow-x: scroll;
+    overflow-y: hidden;
+  }
+
+  .WhereConfiguration {
+    height: 100%;
+    padding: 0;
+    display: flex;
+  }
+
+  .DateOperator {
+    display: flex;
+    border: unset !important;
+    height: 26px !important;
+    min-height: 26px !important;
+
+    &>.WhereConfigurationOperatorType {
+      margin-left: -1px;
+    }
+  }
+
+  .WhereConfigurationQuery,
+  .DateOperator {
+
+    &>.MultipleSelectWithSearch,
+    &>.SelectWithSearchInput,
+    &>.WhereConfigurationOperatorValue,
+    &>.WhereConfigurationOperatorText,
+    &>.WhereConfigurationOperatorType,
+    &>.SelectWithSearch,
+    .DatePickerInput {
+      height: 24px !important;
+      min-height: 24px !important;
+      background-color: white !important;
+      border: $border;
+      outline: unset !important;
+
+      &>.SelectWithSearch {
+        border: unset !important;
+        height: 100%;
+      }
+
+      fieldset {
+        border: unset !important;
+      }
+
+      .MuiInputBase-root {
+        height: 23px !important;
+        min-height: 23px !important;
+      }
+
+      input {
+        min-height: 24px !important;
+      }
+    }
+
+    &>.WhereConfigurationOperatorValue,
+    &>.WhereConfigurationOperatorType {
+      height: 25px !important;
+      min-height: 25px !important;
+    }
+
+    .BetweenDash {
+      color: white;
+      width: 4px !important;
+    }
+
+    .DatePickerInput {
+      padding-top: 1px;
+      min-width: 170px;
+    }
+
+    &>.SelectWithSearchInput {
+      height: 25px !important;
+      min-height: 25px !important;
+      padding: 0 !important;
+    }
+
+    &>.WhereConfigurationOperatorValue {
+      width: 80px;
+    }
+
+    &>.WhereConfigurationOperatorText {
+      display: block;
+      border: unset !important;
+      margin-right: 5px;
+      margin-top: 3px;
+    }
+
+    &.IsDate {
+      .SelectWithSearchInput {
+        min-width: 190px;
+      }
+    }
+
+    &.ShowOperator {
+      .WhereConfigurationOperator {
+        display: inline-block;
+        height: fit-content;
+        width: fit-content;
+        min-width: unset;
+        min-height: unset !important;
+
+        div {
+          background-color: white;
+          width: fit-content;
+          padding: 5px 0.5rem;
+          display: inline-block;
+        }
+
+        fieldset,
+        svg {
+          display: none;
+        }
+      }
+    }
+
+    .DatePickerInput {
+      display: inline-block !important;
+    }
+  }
+
+  .top-bottom-toggle-button {
+    position: absolute;
+    bottom: -18px;
+    left: 50%;
+    height: fit-content;
+    border-bottom-left-radius: $border-radius;
+    border-bottom-right-radius: $border-radius;
+  }
+
+  .WhereConfigurationResult {
+    display: none;
+  }
+
+  .WhereConfigurationQueryGroup {
+    border: none;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    width: fit-content;
+    padding: 0 0.5rem !important;
+    flex-grow: 2;
+
+    .WhereConfigurationQuery {
+      display: block;
+      padding: 0 0.5rem;
+      height: 60px;
+
+      .MuiOutlinedInput-root {
+        min-height: 40px;
+        font-size: 0.9rem !important;
+      }
+    }
+
+    .WhereConfigurationOrAndWrapper {
+      display: none;
+    }
+
+    .WhereConfigurationOperator {
+      display: none;
+    }
+
+    .WhereConfigurationField {
+      display: block;
+      width: fit-content;
+      padding-top: 5px;
+      background-color: unset !important;
+      color: $primary-color !important;
+      font-weight: 600;
+      min-height: 25px !important;
+      height: fit-content !important;
+
+      fieldset {
+        border: none !important;
+      }
+
+      svg {
+        display: none;
+      }
+
+      .MuiSelect-select {
+        color: $primary-color !important;
+        background-color: white;
+        padding: 0;
+        font-size: 0.9rem !important;
+        cursor: default !important;
+        width: fit-content;
+        text-shadow: -0.5px -0.5px 0 white, 0.5px -0.5px 0 white, -0.5px 0.5px 0 white, 0.5px 0.5px 0 white;
+      }
+
+      div {
+        background-color: unset !important;
+      }
+    }
+
+    .FilterInput {
+      .MuiInputBase-root {
+        flex-wrap: nowrap;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+      }
+
+      .MuiChip-root,
+      .MuiInput-root {
+        background-color: unset !important;
+      }
+
+      .MuiInputBase-root {
+        font-size: 0.9rem !important;
+        background-color: white !important;
+      }
+    }
+  }
+
+  .MuiInputSlider {
+    height: 34px;
+    padding: 4px 20px 0 20px !important;
+  }
+
+  .MuiInputSliderWithInput {
+    overflow: visible !important;
+    position: relative;
+    border: unset !important;
+    background-color: unset !important;
+
+    input {
+      height: 100%;
+    }
+
+    .MuiInputSlider {
+      position: absolute;
+      box-sizing: border-box;
+      top: 25px;
+      left: 0;
+      width: 100%;
+      border: unset !important;
+      padding: 0 8px !important;
+      min-width: unset !important;
+
+      .MuiSlider-root {
+        height: 1px;
+      }
+
+      .MuiSlider-thumb {
+        height: 10px;
+        width: 10px;
+      }
+
+      .MuiSlider-rail {
+        border: 1px solid currentColor;
+      }
+    }
+
+    .MuiInputBase-root {
+      height: 25px;
+      border: $border !important;
+      margin-right: 5px;
+      padding: 0 !important;
+
+      input {
+        text-align: center;
+      }
+
+      &.Mui-disabled {
+        display: block !important;
+
+        input {
+          margin-top: 1px;
+        }
+      }
+    }
+
+    &.Single {
+      .MinValue {
+        display: none !important;
+      }
+    }
+  }
+
+  .MuiAutocomplete-input {
+    min-width: 0;
+  }
+
+  .MuiAutocomplete-popper {
+
+    div,
+    ul,
+    li {
+      min-width: fit-content;
+      padding-left: 10px;
+    }
+
+    li {
+      text-wrap: none;
     }
   }
 }

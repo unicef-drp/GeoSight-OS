@@ -50,7 +50,17 @@ export function MultipleCreatableFilter(
             : ""
         }
         <IconTextField
-          iconEnd={<FilterIcon/>}
+          iconEnd={
+            <FilterIcon
+              className={data.length ? 'HasValue' : ''}
+              onClick={(e) => {
+                if (data.length) {
+                  setData([])
+                  e.stopPropagation();
+                }
+              }}
+            />
+          }
           value={data.length ? data.length + ' selected' : title}
           inputProps={
             { readOnly: true, }

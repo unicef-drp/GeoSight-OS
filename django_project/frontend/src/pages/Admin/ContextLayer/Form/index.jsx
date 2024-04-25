@@ -21,10 +21,12 @@ import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
 import { SaveButton } from "../../../../components/Elements/Button";
 import Admin, { pageNames } from '../../index';
-import { AdminForm } from '../../Components/AdminForm'
-import StyleConfig from '../StyleConfig'
+import { AdminForm } from '../../Components/AdminForm';
+import StyleConfig from '../StyleConfig';
+import RelatedTableFields from './RelatedTableFields';
 import DjangoTemplateForm from "../../Components/AdminForm/DjangoTemplateForm";
 import { resourceActions } from "../List";
+import { dictDeepCopy } from "../../../../utils/main";
 
 import './style.scss';
 
@@ -77,7 +79,7 @@ export default function ContextLayerForm() {
       formData.override_style = override_style
       init = true
     }
-    setData(JSON.parse(JSON.stringify(formData)))
+    setData(dictDeepCopy(formData))
   }
 
   const updateData = (newData) => {
@@ -86,20 +88,34 @@ export default function ContextLayerForm() {
       $('*[name="label_styles"]').val(JSON.stringify(newData['label_styles']))
       $('*[name="data_fields"]').val(JSON.stringify(newData['data_fields']))
       $('*[name="styles"]').val(JSON.stringify(newData['styles']))
+      $('*[name="related_table"]').val(newData['related_table'])
+      $('*[name="latitude_field"]').val(newData['latitude_field'])
+      $('*[name="longitude_field"]').val(newData['longitude_field'])
+      $('*[name="query"]').val(newData['query'])
+      $('*[name="datetime_field"]').val(newData['datetime_field'])
     }
   }
 
   const typeChange = (value) => {
     if (value === 'ARCGIS') {
       $('div[data-wrapper-name="arcgis_config"]').show()
-    } else {
+    } else if (value === 'Related Table') {
       $('div[data-wrapper-name="arcgis_config"]').hide()
+      $('div[data-wrapper-name="token"]').hide()
+      $('div[data-wrapper-name="username"]').hide()
+      $('div[data-wrapper-name="password"]').hide()
+      $('div[data-wrapper-name="url"]').hide()
     }
+    else {
+      $('div[data-wrapper-name="arcgis_config"]').hide()
+      $('div[data-wrapper-name="url"]').show()
+    }
+    setData({ ...data, layer_type: value })
   }
 
   const arcGisConfigChange = (value) => {
     currentArcGis = value
-    if (!value) {
+    if (!value && data.layer_type === 'ARCGIS') {
       $('div[data-wrapper-name="token"]').show()
       $('div[data-wrapper-name="username"]').show()
       $('div[data-wrapper-name="password"]').show()
@@ -114,6 +130,7 @@ export default function ContextLayerForm() {
       })
     }
   }
+
   return (
     <Admin
       minifySideNavigation={true}
@@ -159,8 +176,8 @@ export default function ContextLayerForm() {
                   typeChange(value)
                 } else if (name === 'arcgis_config') {
                   arcGisConfigChange(value)
+                  setDataFn()
                 }
-                setDataFn()
               }}
             >
               <Checkbox
@@ -177,6 +194,12 @@ export default function ContextLayerForm() {
                 onChange={evt => {
                 }}
               />
+              {data.layer_type === 'Related Table' ?
+                <RelatedTableFields
+                  data={data}
+                  onSetData={updateData}
+                /> : undefined
+              }
             </DjangoTemplateForm>
           ),
           'Preview': (
@@ -188,8 +211,8 @@ export default function ContextLayerForm() {
               useOverrideLabel={false}
             />
           ),
-          'Fields': <div/>,
-          'Label': <div/>,
+          'Fields': <div />,
+          'Label': <div />,
         }}
       />
     </Admin>

@@ -116,6 +116,7 @@ main {
 
     .AdminForm {
       flex-direction: column;
+      overflow: visible;
     }
 
     & > div {
@@ -295,5 +296,11 @@ main {
 .SaveButton {
   &.Submitted {
     cursor: progress !important;
+  }
+}
+
+.SaveAsModal {
+  .modal--wrapper--box {
+    padding-top: 7rem;
   }
 }

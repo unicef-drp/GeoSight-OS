@@ -17,7 +17,8 @@ __copyright__ = ('Copyright 2023, Unicef')
 from .excel import *
 from .formula_based_on_other_indicators import *
 from .functions import *
-from .schedule import *
 from .related_table import *
+from .schedule import *
 from .sharepoint import *
+from .utilities import *
 from .vector_context_layer import *

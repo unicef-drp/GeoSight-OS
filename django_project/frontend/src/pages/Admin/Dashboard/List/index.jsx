@@ -13,9 +13,11 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React from 'react';
+import React, { useRef } from 'react';
+import $ from "jquery";
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
 import { pageNames } from '../../index';
@@ -23,11 +25,53 @@ import { COLUMNS, COLUMNS_ACTION } from "../../Components/List";
 import { AdminList } from "../../AdminList";
 import PermissionModal from "../../Permission";
 import { VisibilityIcon } from "../../../../components/Icons";
+import { ConfirmDialog } from "../../../../components/ConfirmDialog";
 
 import './style.scss';
 
 export function resourceActions(params) {
   return COLUMNS_ACTION(params, urls.admin.dashboardList)
+}
+
+export function resourceActionsList(params) {
+  const approveRef = useRef(null);
+  const detailUrl = urls.api.detail;
+  const permission = params.row.permission
+  return COLUMNS_ACTION(
+    params, urls.admin.dashboardList, null, null,
+    !permission || permission.delete ? <>
+      <div onClick={
+        () => {
+          approveRef?.current?.open()
+        }
+      }>
+        <ContentCopyIcon/> Duplicate
+      </div>
+      {/* APPROVE */}
+      <ConfirmDialog
+        header='Approve duplication'
+        autoClose={false}
+        onConfirmed={() => {
+          const api = detailUrl.replace('/0', `/${params.id}`) + 'duplicate';
+          $.ajax({
+            url: api,
+            method: 'POST',
+            success: function () {
+              location.reload();
+            },
+            beforeSend: beforeAjaxSend
+          });
+        }}
+        ref={approveRef}
+      >
+        <div>
+          Are you sure you want to duplicate
+          : {params.row.name ? params.row.name : params.row.id}?
+        </div>
+        <br/>
+      </ConfirmDialog>
+    </> : null
+  )
 }
 
 /**
@@ -46,7 +90,7 @@ export default function DashboardList() {
     width: 250,
     getActions: (params) => {
       const permission = params.row.permission
-      const actions = resourceActions(params);
+      const actions = resourceActionsList(params);
 
       if (permission.share) {
         actions.unshift(

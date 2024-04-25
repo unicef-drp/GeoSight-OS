@@ -18,6 +18,9 @@ import $ from "jquery";
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
 import Tooltip from "@mui/material/Tooltip";
+import Switch from "@mui/material/Switch";
+import { FormControlLabel, FormGroup } from "@mui/material";
+import AddIcon from '@mui/icons-material/Add';
 
 import { DataBrowserActiveIcon } from "../../../components/Icons";
 import { render } from '../../../app';
@@ -26,9 +29,6 @@ import {
   DatasetFilterSelector,
   IndicatorFilterSelector,
 } from "../ModalSelector/ModalFilterSelector";
-import {
-  MultipleCreatableFilter
-} from "../ModalSelector/ModalFilterSelector/MultipleCreatableFilter";
 import { splitParams, urlParams } from "../../../utils/main";
 import {
   Notification,
@@ -36,10 +36,15 @@ import {
 } from "../../../components/Notification";
 import { AdminListPagination } from "../AdminListPagination";
 import { AdminPage, pageNames } from "../index";
+import PermissionModal from "../Permission";
+import { ThemeButton } from "../../../components/Elements/Button";
+import { removeElement } from "../../../utils/Array";
+import {
+  MultipleSelectWithSearch
+} from "../../../components/Input/SelectWithSearch";
 
 
 import './style.scss';
-import PermissionModal from "../Permission";
 
 /*** Dataset admin */
 const deleteWarning = "WARNING! Do you want to delete the selected data? This will apply directly to database."
@@ -55,12 +60,16 @@ export default function DatasetAdmin() {
   // Other attributes
   const defaultFilters = urlParams()
   const [filters, setFilters] = useState({
+    groupAdminLevel: defaultFilters.groupAdminLevel ? defaultFilters.groupAdminLevel === 'true' : true,
     indicators: defaultFilters.indicators ? splitParams(defaultFilters.indicators) : [],
     datasets: defaultFilters.datasets ? splitParams(defaultFilters.datasets, false) : [],
     levels: defaultFilters.levels ? splitParams(defaultFilters.levels) : [],
   })
   const [disabled, setDisabled] = useState(false)
   const [isInit, setIsInit] = useState(true)
+  const [filtersSequences, setFiltersSequences] = useState([])
+  const [quickData, setQuickData] = useState({})
+  let [selectionModel, setSelectionModel] = useState([]);
 
   // When filter changed
   useEffect((prev) => {
@@ -68,6 +77,22 @@ export default function DatasetAdmin() {
       tableRef?.current?.refresh()
     }
     setIsInit(false)
+
+    // Check filter sequences
+    for (const [key, value] of Object.entries(filters)) {
+      if (key !== 'groupAdminLevel') {
+        if (value.length) {
+          if (!filtersSequences.includes(key)) {
+            filtersSequences.push(key)
+            setFiltersSequences([...filtersSequences])
+          }
+        } else {
+          if (filtersSequences.includes(key)) {
+            setFiltersSequences(removeElement(filtersSequences, key))
+          }
+        }
+      }
+    }
   }, [filters])
 
   // COLUMNS
@@ -159,6 +184,11 @@ export default function DatasetAdmin() {
     } else {
       delete parameters['indicator_id__in']
     }
+    if (filters.groupAdminLevel) {
+      parameters['group_admin_level'] = true
+    } else {
+      delete parameters['group_admin_level']
+    }
     if (filters.datasets.length) {
       parameters['reference_layer_id__in'] = filters.datasets.join(',')
     } else {
@@ -172,6 +202,18 @@ export default function DatasetAdmin() {
     return parameters
   }
 
+  // This is for selected for add to new project
+  let selectedViews = []
+  let selectedIndicators = []
+  const selectedModelIds = selectionModel.map(row => {
+    const ids = row.split('[')[0].split('-')
+    selectedViews.push(ids[1])
+    selectedIndicators.push(ids[0])
+    return ids
+  })
+  selectedViews = Array.from(new Set(selectedViews));
+  selectedIndicators = Array.from(new Set(selectedIndicators));
+
   return <AdminPage pageName={pageNames.Dataset}>
     <AdminListPagination
       ref={tableRef}
@@ -179,33 +221,77 @@ export default function DatasetAdmin() {
       COLUMNS={COLUMNS}
       disabled={disabled}
       setDisabled={setDisabled}
-      selectAllUrl={urls.api.datasetApi + '/ids'}
+      selectAllUrl={urls.api.datasetApi + 'ids'}
       otherFilters={
         <div className='ListAdminFilters'>
+          <FormGroup>
+            <FormControlLabel
+              control={<Switch checked={filters.groupAdminLevel}/>}
+              label="Group all admin levels"
+              onChange={(evt) => {
+                setFilters({
+                  ...filters,
+                  groupAdminLevel: evt.target.checked
+                })
+              }}
+            />
+          </FormGroup>
+          <div className='Separator'/>
+          <ThemeButton
+            variant='primary'
+            disabled={selectedViews.length !== 1}
+            onClick={() => {
+              let url = `/admin/project/create?dataset_id=${selectedViews[0]}`
+              if (selectedModelIds) {
+                url += `&indicators=${selectedIndicators.join(',')}`
+              }
+              window.location.href = url;
+            }}
+            title={'Enable this by selecting data contain just 1 view.'}
+          >
+            <AddIcon/> Add to New Project
+          </ThemeButton>
+          &nbsp;&nbsp;&nbsp;
           <IndicatorFilterSelector
             data={filters.indicators}
             setData={newFilter => setFilters({
               ...filters,
               indicators: newFilter
-            })}/>
+            })}
+            filter={quickData.indicators}
+          />
           <DatasetFilterSelector
             data={filters.datasets}
             setData={newFilter => setFilters({
               ...filters,
               datasets: newFilter
-            })}/>
-          <MultipleCreatableFilter
-            title={'Filter by Level(s)'}
-            data={filters.levels}
-            setData={newFilter => setFilters({
-              ...filters,
-              levels: newFilter
-            })}/>
+            })}
+            filter={quickData.datasets}
+          />
+          <MultipleSelectWithSearch
+            placeholder={'Filter by Level(s)'}
+            options={!filtersSequences.length || !filtersSequences.indexOf('levels') ? ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'] : quickData.levels ? quickData.levels.map(level => level + '') : []}
+            value={filters.levels}
+            onChangeFn={evt => {
+              setFilters({
+                ...filters,
+                levels: evt
+              })
+            }}
+            showValues={true}
+          />
         </div>
       }
       getParameters={getParameters}
       hideSearch={true}
       deselectWhenParameterChanged={true}
+      quickDataChanged={
+        (data) => {
+          setQuickData(data)
+        }
+      }
+      selectionModel={selectionModel}
+      setSelectionModel={setSelectionModel}
     />
     <Notification ref={notificationRef}/>
   </AdminPage>

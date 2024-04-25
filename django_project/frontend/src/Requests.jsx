@@ -189,7 +189,7 @@ export const postData = async function (
   url, data, receiveAction
 ) {
   try {
-    const response = await postJSON(url, data);
+    const response = await postDataBody(url, data);
     receiveAction(response, null);
   } catch (error) {
     receiveAction(null, error);
@@ -202,7 +202,7 @@ export const postData = async function (
  * @param {string} url Url to query
  * @param {object} data Data to be pushed
  */
-export async function postJSON(url, data) {
+export async function postDataBody(url, data) {
   try {
     const response = await fetch(url, {
       method: 'POST',
@@ -239,6 +239,38 @@ export async function postJSON(url, data) {
   } catch (error) {
     throw error;
   }
+}
+
+/**
+ * Post JSON Data
+ *
+ * @param {string} url Url to query
+ * @param {object} data Data to be pushed
+ */
+export async function postJSON(url, data) {
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'X-CSRFToken': csrfmiddlewaretoken,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+  let json = null;
+  try {
+    json = await response.json();
+  } catch (error) {
+    json = {
+      message: response.status + ' ' + response.statusText,
+      detail: response.status + ' ' + response.statusText
+    }
+  }
+  if (response.status >= 400) {
+    const err = new Error(json.message ? json.message : json.detail);
+    err.data = json;
+    throw err;
+  }
+  return json;
 }
 
 /***

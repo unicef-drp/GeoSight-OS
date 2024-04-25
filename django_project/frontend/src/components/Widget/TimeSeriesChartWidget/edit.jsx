@@ -102,7 +102,11 @@ export default function TimeSeriesChartWidgetEditor(
   const {
     indicators,
     indicatorLayers,
+    default_time_mode
   } = useSelector(state => state.dashboard.data);
+  const {
+    use_only_last_known_value,
+  } = default_time_mode
   const geometries = useSelector(state => state.geometries);
 
   const [name, setName] = useState('');
@@ -341,6 +345,7 @@ export default function TimeSeriesChartWidgetEditor(
                 {
                   Object.keys(TimeType).map(key => {
                     return <FormControlLabel
+                      disabled={use_only_last_known_value}
                       key={key}
                       value={TimeType[key]} control={<Radio/>}
                       label={TimeType[key]}/>
@@ -361,7 +366,9 @@ export default function TimeSeriesChartWidgetEditor(
                             ...dateTimeConfig,
                             interval: evt.value
                           })
-                        }}/>
+                        }}
+                        isDisabled={use_only_last_known_value}
+                      />
                       <div className='Separator'>FROM</div>
                       <DatePicker
                         showTimeSelect
@@ -374,6 +381,7 @@ export default function TimeSeriesChartWidgetEditor(
                             minDateFilter: new Date(date).toISOString()
                           })
                         }}
+                        disabled={use_only_last_known_value}
                       />
                       <div className='Separator'><RemoveIcon/></div>
                       <div className='react-datepicker-wrapper'>
@@ -392,6 +400,7 @@ export default function TimeSeriesChartWidgetEditor(
                               maxDateFilter: newDate
                             })
                           }}
+                          disabled={use_only_last_known_value}
                         />
                         <div className='helptext' style={{ width: '100%' }}>
                           Make the max date empty to make the data filtered up

@@ -41,6 +41,7 @@
 
 :root {
   font-size: $root-font-size;
+  --map-legend-label-color: rgba(0, 0, 0, 0.87) !important;
 }
 
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */

@@ -20,7 +20,7 @@ from django.shortcuts import reverse
 from rest_framework import serializers
 
 from core.models.preferences import SitePreferences
-from geosight.data.models.dashboard import Dashboard
+from geosight.data.models.dashboard import Dashboard, DashboardIndicator
 from geosight.data.serializer.basemap_layer import BasemapLayerSerializer
 from geosight.data.serializer.context_layer import ContextLayerSerializer
 from geosight.data.serializer.dashboard_indicator_layer import (
@@ -98,41 +98,57 @@ class DashboardSerializer(serializers.ModelSerializer):
                 'detail_url': ''
             }
 
-    def get_indicators(self, obj: Dashboard):
-        """Return indicators."""
-        output = []
-        for model in obj.dashboardindicator_set.all():
-            data = IndicatorSerializer(
-                model.object,
-                context={'user': self.context.get('user', None)},
-                exclude=['last_update', 'permission']
-            ).data
+    def _get_indicator(self, obj: Dashboard, model: DashboardIndicator):
+        """Return indicator data."""
+        data = IndicatorSerializer(
+            model.object,
+            context={'user': self.context.get('user', None)},
+            exclude=['last_update', 'permission']
+        ).data
+        if obj.slug:
             data['url'] = reverse(
                 'dashboard-indicator-values-api',
                 args=[obj.slug, model.object.id]
             )
-            dashboard_data = DashboardIndicatorSerializer(
-                model,
-                context={'user': self.context.get('user', None)}
-            ).data
-            if dashboard_data['override_style']:
-                del data['style']
-                del data['style_config']
-                del data['style_type']
-            else:
-                del dashboard_data['style']
-                del dashboard_data['style_config']
-                del dashboard_data['style_type']
-            data.update(dashboard_data)
-            output.append(data)
+        dashboard_data = DashboardIndicatorSerializer(
+            model,
+            context={'user': self.context.get('user', None)}
+        ).data
+        if dashboard_data['override_style']:
+            del data['style']
+            del data['style_config']
+            del data['style_type']
+        else:
+            del dashboard_data['style']
+            del dashboard_data['style_config']
+            del dashboard_data['style_type']
+        data.update(dashboard_data)
+        return data
+
+    def get_indicators(self, obj: Dashboard):
+        """Return indicators."""
+        output = []
+        dashboard_indicators = self.context.get(
+            'dashboard_indicators', None
+        )
+        for model in obj.dashboardindicator_set.all():
+            output.append(self._get_indicator(obj, model))
+
+        # Added data if the data added manually
+        if dashboard_indicators:
+            for model in dashboard_indicators:
+                output.append(self._get_indicator(obj, model))
 
         return output
 
     def get_indicator_layers(self, obj: Dashboard):
         """Return indicator_layers."""
-        dashboard_indicator_layers = []
-        for indicator_layer in obj.dashboardindicatorlayer_set.all():
-            dashboard_indicator_layers.append(indicator_layer)
+        dashboard_indicator_layers = self.context.get(
+            'dashboard_indicator_layers', None
+        )
+        if not dashboard_indicator_layers:
+            dashboard_indicator_layers = obj.dashboardindicatorlayer_set.all()
+
         return DashboardIndicatorLayerSerializer(
             dashboard_indicator_layers, many=True,
             context={'user': self.context.get('user', None)},
@@ -241,6 +257,7 @@ class DashboardSerializer(serializers.ModelSerializer):
         else:
             pref = SitePreferences.preferences()
             return {
+                'use_only_last_known_value': True,
                 'fit_to_current_indicator_range':
                     pref.fit_to_current_indicator_range,
                 'show_last_known_value_in_range':

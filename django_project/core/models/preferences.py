@@ -284,6 +284,16 @@ class SitePreferences(SingletonModel):
         verbose_name="Outline size"
     )
 
+    # -----------------------------------------------
+    # Login page config
+    # -----------------------------------------------
+    login_help_text = models.TextField(
+        default='',
+        help_text=_(
+            'Help text to show in login page.'
+        ),
+    )
+
     class Meta:  # noqa: D106
         verbose_name_plural = "site preferences"
 

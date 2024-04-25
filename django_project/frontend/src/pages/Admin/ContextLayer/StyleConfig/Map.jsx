@@ -23,7 +23,8 @@ import { removeLayer, removeSource } from "../../../Dashboard/MapLibre/utils";
 import {
   contextLayerRendering
 } from "../../../Dashboard/MapLibre/Layers/ContextLayers/index";
-
+import LegendControl from 'mapboxgl-legend';
+import 'mapboxgl-legend/dist/style.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 /**
@@ -49,7 +50,7 @@ export default function MapConfig({ data, layerInput }) {
         id: id,
         source: id,
       },
-      before
+      before && map.getLayer(before) ? before : undefined
     );
   }
 
@@ -86,7 +87,7 @@ export default function MapConfig({ data, layerInput }) {
   // When layer input changed, remove from map
   useEffect(() => {
     if (map) {
-      const id = 'Context-Layer'
+      const id = data.id ? `context-layer-${data.id}` : 'context-layer'
       contextLayerRendering(id, data, layerInput, map)
     }
   }, [map, layerInput]);

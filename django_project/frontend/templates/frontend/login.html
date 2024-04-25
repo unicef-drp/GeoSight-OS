@@ -6,15 +6,18 @@
 {% block style %}
     <style>
         {% if preferences.background_image %}
-            .Background {
-                background: url("{{ preferences.background_image }}") no-repeat;
-                background-size: cover;
-            }
+          .Background {
+            background: url("{{ preferences.background_image }}") no-repeat;
+            background-size: cover;
+          }
         {% endif %}
     </style>
 {% endblock %}
 {% block extra_html %}
     <div id='FormTemplate' style="display: none">
+        {% if not no_access and login_help_text != '' %}
+            <span class="form-login-help-text">{{ login_help_text }}</span>
+        {% endif %}
         {% if no_access %}
             <span class="form-login-no-access">1</span>
         {% endif %}
@@ -28,14 +31,15 @@
         {% for field in form %}
             <p data-field-name="{{ field.name }}">
                 <label class="form-label {% if field.field.required %}required{% endif %}"
-                       for="{{ field.name }}">{{ field.label }}
+                       for="{{ field.name }}">
+                    {{ field.label }}
                 </label>
                 {% if field.errors %}
                     <span class="form-error">
-                    {% for error in field.errors %}
-                        <span>{{ error }}</span>
-                    {% endfor %}
-                    </span>
+            {% for error in field.errors %}
+                <span>{{ error }}</span>
+            {% endfor %}
+        </span>
                 {% endif %}
                 <span class="form-input">{{ field }}</span>
                 {% if field.help_text %}
