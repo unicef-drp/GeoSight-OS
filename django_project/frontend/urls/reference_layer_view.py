@@ -28,6 +28,9 @@ from frontend.views.admin.reference_layer_view.entity_browser import (
 from frontend.views.admin.reference_layer_view.importer_form import (
     ReferenceLayerViewImportDataView
 )
+from frontend.views.admin.reference_layer_view.importer_detail import (
+    ReferenceLayerViewImporterDetailView
+)
 from frontend.views.admin.reference_layer_view.importer_list import (
     ReferenceLayerViewImporterListView
 )
@@ -38,8 +41,8 @@ from frontend.views.admin.reference_layer_view.list import (
 admin_detail_url = [
     url(
         r'^import-data/(?P<pk>\d+)',
-        ReferenceLayerViewImportDataView.as_view(),
-        name='admin-reference-layer-view-import-data-edit-view'
+        ReferenceLayerViewImporterDetailView.as_view(),
+        name='admin-reference-layer-view-import-data-detail-view'
     ),
     url(
         r'^import-data',

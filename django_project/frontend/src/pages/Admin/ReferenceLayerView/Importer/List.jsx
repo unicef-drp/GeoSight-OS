@@ -31,7 +31,22 @@ export default function ImporterEntityList() {
   const pageName = pageNames.referenceDatesetImporter
   const LOG_COLUMNS = [
     COLUMNS.ID,
-    COLUMNS.IMPORTER_BY,
+    {
+      field: 'created_by',
+      headerName: 'Imported By',
+      flex: 0.5,
+      renderCell: (params) => {
+        const urlDetail = params.row.urls.detail
+        if (urlDetail) {
+          return <a
+            className='MuiButtonLike CellLink'
+            href={urlDetail.replace('00000000-0000-0000-0000-000000000000', 'test')}>
+            {params.value}
+          </a>
+        }
+        return params.value
+      }
+    },
     COLUMNS.START_AT,
     COLUMNS.REFERENCE_DATASET,
     COLUMNS.STATUS,

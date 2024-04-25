@@ -34,16 +34,6 @@ router.register(
 
 reference_dataset_api = [
     url(
-        r'^centroid/(?P<level>\d+)$',
-        ReferenceLayerCentroid.as_view(),
-        name='reference-datasets-centroid-api'
-    ),
-    url(
-        r'^centroid$',
-        ReferenceLayerCentroidUrls.as_view(),
-        name='reference-datasets-centroid-url-api'
-    ),
-    url(
         r'^upload-file$',
         ReferenceLayerImporterFileView.as_view(),
         name='reference-datasets-upload-file-api'
@@ -57,6 +47,17 @@ reference_dataset_api = [
         r'^update-level-value$',
         ReferenceLayerImporterFileUpdateView.as_view(),
         name='reference-datasets-update-level-value-api'
+    ),
+    # Other API
+    url(
+        r'^centroid/(?P<level>\d+)$',
+        ReferenceLayerCentroid.as_view(),
+        name='reference-datasets-centroid-api'
+    ),
+    url(
+        r'^centroid$',
+        ReferenceLayerCentroidUrls.as_view(),
+        name='reference-datasets-centroid-url-api'
     ),
     url(
         r'^vector-tiles/(?P<z>\d+)/(?P<x>\d+)/(?P<y>\d+)/$',

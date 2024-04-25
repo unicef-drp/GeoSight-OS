@@ -77,7 +77,10 @@ class ReferenceLayerViewImporterTask:
         """Init class."""
         self.importer = importer
 
-    def read_file(self, importer_level: ReferenceLayerViewImporterLevel):
+    def read_file(
+            self, importer_level: ReferenceLayerViewImporterLevel,
+            progress_changed
+    ):
         """Read file."""
         reference_layer = importer_level.importer.reference_layer
         level = int(importer_level.level)
@@ -90,7 +93,8 @@ class ReferenceLayerViewImporterTask:
                 check_layer_type(importer_level.file.path)
         ) as features:
             data = []
-            for feature_idx, feature in enumerate(features):
+            count = len(features)
+            for idx, feature in enumerate(features):
                 # default name
                 entity_name = get_feature_value(
                     feature, name_field
@@ -140,6 +144,8 @@ class ReferenceLayerViewImporterTask:
                 if len(data) == 5:
                     Entity.objects.bulk_create(data, batch_size=5)
                     data.clear()
+
+                progress_changed((idx + 1) / count)
             if len(data) > 0:
                 Entity.objects.bulk_create(data)
             delete_tmp_shapefile(features.path)
@@ -152,13 +158,26 @@ class ReferenceLayerViewImporterTask:
         reference_layer.entity_set.all().delete()
 
         total = self.importer.referencelayerviewimporterlevel_set.count()
+        min_progress = 0
+        max_progress = 80
+        progress_section = max_progress / total
         for idx, level in enumerate(
                 self.importer.referencelayerviewimporterlevel_set.all()
         ):
-            self.importer.progress = idx / total
+            self.importer.note = f'Importing level {idx}'
+            self.importer.progress = (progress_section * idx)
             self.importer.save()
-            self.read_file(level)
+
+            def progress_update(progress):
+                """Update progress based on feature saved."""
+                progress = progress_section * progress
+                self.importer.progress = progress + min_progress
+                self.importer.save()
+
+            self.read_file(level, progress_update)
+            min_progress = self.importer.progress
 
         self.importer.progress = 100
         self.importer.status = LogStatus.SUCCESS
+        self.importer.note = 'All data has been imported'
         self.importer.save()

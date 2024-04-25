@@ -40,10 +40,14 @@ class ReferenceLayerViewEntityListView(
         view = get_object_or_404(
             ReferenceLayerView, identifier=self.kwargs.get('identifier', '')
         )
+        edit_url = reverse(
+            'admin-reference-layer-view-edit-view',
+            args=[view.identifier]
+        )
         return (
             f'<a href="{list_url}">Reference Datasets</a> '
             '<span>></span>'
-            f'<a>{view.name}</a> '
+            f'<a href="{edit_url}">{view.__str__()}</a> '
             '<span>></span>'
             f'<a>Entities</a> '
         )

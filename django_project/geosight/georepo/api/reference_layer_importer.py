@@ -46,7 +46,7 @@ class ReferenceLayerImporter(
     @property
     def queryset(self):
         """Return the queryset."""
-        return ReferenceLayerViewImporter.objects.all().order_by('created_at')
+        return ReferenceLayerViewImporter.objects.all().order_by('-created_at')
 
 
 class ReferenceLayerImporterFileView(APIView):

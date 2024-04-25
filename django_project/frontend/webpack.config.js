@@ -74,6 +74,7 @@ let conf = {
     AdminReferenceLayerViewEntityBrowser: ['./src/pages/Admin/ReferenceLayerView/EntityBrowser'],
     AdminReferenceLayerImporterForm: ['./src/pages/Admin/ReferenceLayerView/Importer/Form'],
     AdminReferenceLayerImporterList: ['./src/pages/Admin/ReferenceLayerView/Importer/List'],
+    AdminReferenceLayerImporterDetail: ['./src/pages/Admin/ReferenceLayerView/ImporterDetail'],
   },
   output: {
     path: path.resolve(__dirname, "./bundles/frontend"),

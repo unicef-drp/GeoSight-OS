@@ -16,6 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import mimetypes
 
+from django.shortcuts import reverse
 from rest_framework import serializers
 
 from core.serializer.dynamic_serializer import DynamicModelSerializer
@@ -29,6 +30,8 @@ class ReferenceLayerViewImporterSerializer(DynamicModelSerializer):
 
     created_by = serializers.SerializerMethodField()
     reference_layer_name = serializers.SerializerMethodField()
+    urls = serializers.SerializerMethodField()
+    levels = serializers.SerializerMethodField()
 
     def get_created_by(self, obj: ReferenceLayerViewImporter):
         """Return creator name."""
@@ -43,6 +46,22 @@ class ReferenceLayerViewImporterSerializer(DynamicModelSerializer):
             return obj.reference_layer.full_name()
         else:
             return None
+
+    def get_urls(self, obj: ReferenceLayerViewImporter):
+        """Return urls of importer."""
+        detail_url = reverse(
+            'admin-reference-layer-view-import-data-detail-view',
+            args=[obj.reference_layer.identifier, obj.id]
+        )
+        return {
+            'detail': detail_url
+        }
+
+    def get_levels(self, obj: ReferenceLayerViewImporter):
+        """Return urls of importer."""
+        return ReferenceLayerViewImporterLevelSerializer(
+            obj.referencelayerviewimporterlevel_set.all(), many=True
+        ).data
 
     class Meta:  # noqa: D106
         model = ReferenceLayerViewImporter
