@@ -15,9 +15,13 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib.gis.db import models
+from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
 from core.models.general import AbstractEditData
+from core.signals import (
+    delete_file_on_delete, delete_file_on_change,
+)
 from geosight.georepo.models.reference_layer import ReferenceLayerView
 
 
@@ -127,3 +131,22 @@ class ReferenceLayerViewImporterLevel(models.Model):
             except AttributeError:
                 pass
         return self.properties if self.properties else []
+
+
+@receiver(models.signals.post_delete, sender=ReferenceLayerViewImporterLevel)
+def auto_delete_file_on_delete(sender, instance, **kwargs):
+    """Deletes file from filesystem.
+
+    when corresponding `MediaFile` object is deleted.
+    """
+    delete_file_on_delete(sender, instance, **kwargs)
+
+
+@receiver(models.signals.pre_save, sender=ReferenceLayerViewImporterLevel)
+def auto_delete_file_on_change(sender, instance, **kwargs):
+    """Deletes old file from filesystem.
+
+    when corresponding `MediaFile` object is updated
+    with new file.
+    """
+    delete_file_on_change(sender, instance, **kwargs)
