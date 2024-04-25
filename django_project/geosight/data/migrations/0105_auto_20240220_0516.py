@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('geosight_data', '0101_auto_20240219_0320'),
+        ('geosight_data', '0104_auto_20240401_1048'),
     ]
 
     operations = [
