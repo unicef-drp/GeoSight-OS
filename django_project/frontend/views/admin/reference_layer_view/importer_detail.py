@@ -14,7 +14,7 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '26/02/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from django.shortcuts import get_object_or_404, reverse
+from django.shortcuts import redirect, get_object_or_404, reverse
 
 from frontend.views.admin._base import AdminBaseView
 from geosight.georepo.models.reference_layer import (
@@ -74,3 +74,20 @@ class ReferenceLayerViewImporterDetailView(
         context['obj_id'] = self.importer.id
         context['identifier'] = self.importer.reference_layer.identifier
         return context
+
+    def post(self, request, **kwargs):
+        """POST to run the importer."""
+        _id = self.kwargs.get('pk', 0)
+        importer = get_object_or_404(
+            ReferenceLayerViewImporter, id=_id
+        )
+        importer.run()
+        return redirect(
+            reverse(
+                'admin-reference-layer-view-import-data-detail-view',
+                kwargs={
+                    'identifier': importer.reference_layer.identifier,
+                    'pk': importer.id
+                }
+            )
+        )

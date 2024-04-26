@@ -14,6 +14,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
+import $ from 'jquery';
 import Dropzone from 'react-dropzone-uploader'
 
 import { render } from '../../../../app';
@@ -55,6 +56,8 @@ export const ALLOWABLE_FILE_TYPES = [
 export default function ImporterEntityForm() {
   const [itemMeta, setItemMeta] = useState({})
   const [items, setItems] = useState([])
+  const [id, setId] = useState(null)
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -115,8 +118,9 @@ export default function ImporterEntityForm() {
       }
       case 'done': {
         if (xhr) {
-          const { properties } = JSON.parse(xhr.responseText);
+          const { importer, properties } = JSON.parse(xhr.responseText);
           meta.properties = properties
+          setId(importer)
           rearrange()
         }
       }
@@ -124,16 +128,21 @@ export default function ImporterEntityForm() {
   }
 
   const handleSubmit = (files) => {
-    // console.log(files.map(f => f.meta))
+    $('form').submit()
   }
+
   return (
     <Admin
       minifySideNavigation={true}
       pageName={pageNames.ReferenceLayerView}
     >
       <AdminForm
+        action={id ? window.location.href.split('#')[0] + '/' + id : ''}
         forms={{
           'Files': <>
+            <input
+              type="hidden" name="csrfmiddlewaretoken"
+              value={csrftoken}/>
             {/* DROPZONE */}
             <Dropzone
               initialFiles={dataLevels}

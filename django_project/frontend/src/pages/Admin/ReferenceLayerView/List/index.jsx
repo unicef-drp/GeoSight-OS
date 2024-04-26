@@ -153,7 +153,7 @@ export default function ReferenceLayerViewList() {
     {
       field: 'actions',
       type: 'actions',
-      width: 100,
+      width: 130,
       cellClassName: 'MuiDataGrid-ActionsColumn',
       getActions: (params) => {
         // Create actions

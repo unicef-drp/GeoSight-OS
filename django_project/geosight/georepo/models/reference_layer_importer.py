@@ -66,7 +66,8 @@ class ReferenceLayerViewImporter(AbstractEditData):
     def run(self):
         """Run the importer."""
         from geosight.georepo.tasks import run_importer
-        run_importer(self.id)
+        if self.status is not LogStatus.RUNNING:
+            run_importer.delay(self.id)
 
 
 class ReferenceLayerViewImporterLevel(models.Model):
