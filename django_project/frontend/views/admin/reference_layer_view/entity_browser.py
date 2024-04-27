@@ -18,11 +18,11 @@ from django.shortcuts import get_object_or_404, reverse
 
 from frontend.views.admin._base import AdminBaseView
 from geosight.georepo.models.reference_layer import ReferenceLayerView
-from geosight.permission.access import RoleContributorRequiredMixin
+from geosight.permission.access import RoleLocalDatasetManagerRequiredMixin
 
 
 class ReferenceLayerViewEntityListView(
-    RoleContributorRequiredMixin, AdminBaseView
+    RoleLocalDatasetManagerRequiredMixin, AdminBaseView
 ):
     """ReferenceLayerView View."""
 

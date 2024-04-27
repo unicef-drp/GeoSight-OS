@@ -171,7 +171,7 @@ class CustomUserAdmin(UserAdmin):
 
     list_display = (
         'username', 'email', 'first_name', 'last_name', 'is_staff',
-        'role', 'receive_notification'
+        'role', 'receive_notification', 'able_to_manage_local_dataset'
     )
     inlines = (ProfileInline,)
 
@@ -187,7 +187,14 @@ class CustomUserAdmin(UserAdmin):
             return obj.profile.receive_notification
         return False
 
+    def able_to_manage_local_dataset(self, obj):
+        """receive_notification of user."""
+        if obj.profile:
+            return obj.profile.able_to_manage_local_dataset
+        return False
+
     receive_notification.boolean = True
+    able_to_manage_local_dataset.boolean = True
 
 
 # USER ADMIN BASED ON USING AZURE OR NOT

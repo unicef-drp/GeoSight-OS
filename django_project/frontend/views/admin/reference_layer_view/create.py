@@ -23,7 +23,9 @@ from geosight.data.forms.reference_layer_view import ReferenceLayerViewForm
 from geosight.georepo.models.reference_layer import (
     ReferenceLayerViewLevel as Level
 )
-from geosight.permission.access import RoleCreatorRequiredMixin
+from geosight.permission.access import (
+    RoleCreatorRequiredMixin, RoleLocalDatasetManagerRequiredMixin
+)
 
 
 class _BaseReferenceLayerViewView(AdminBaseView):
@@ -109,7 +111,8 @@ class _BaseReferenceLayerViewView(AdminBaseView):
 
 
 class ReferenceLayerViewCreateView(
-    RoleCreatorRequiredMixin, _BaseReferenceLayerViewView
+    RoleCreatorRequiredMixin, RoleLocalDatasetManagerRequiredMixin,
+    _BaseReferenceLayerViewView
 ):
     """Basemap Create View."""
 

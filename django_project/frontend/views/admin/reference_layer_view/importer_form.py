@@ -31,12 +31,12 @@ from geosight.georepo.serializer.reference_layer_importer import (
 )
 from geosight.permission.access import (
     edit_data_permission_resource,
-    RoleContributorRequiredMixin
+    RoleLocalDatasetManagerRequiredMixin
 )
 
 
 class ReferenceLayerViewImportDataView(
-    RoleContributorRequiredMixin,
+    RoleLocalDatasetManagerRequiredMixin,
     AdminBaseView
 ):
     """ReferenceLayerView View."""

@@ -17,10 +17,12 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.shortcuts import reverse
 
 from frontend.views.admin._base import AdminBaseView
-from geosight.permission.access import RoleContributorRequiredMixin
+from geosight.permission.access import RoleLocalDatasetManagerRequiredMixin
 
 
-class ReferenceLayerViewListView(RoleContributorRequiredMixin, AdminBaseView):
+class ReferenceLayerViewListView(
+    RoleLocalDatasetManagerRequiredMixin, AdminBaseView
+):
     """ReferenceLayerView View."""
 
     template_name = 'frontend/admin/reference_layer_view/list.html'

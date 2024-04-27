@@ -86,6 +86,16 @@ export function USER_COLUMNS() {
       }
     },
     {
+      field: 'manage_local_dataset',
+      headerName: 'Able to manage local dataset',
+      width: 120,
+      renderCell: (params) => {
+        return ['true', true].includes(params.value) ?
+          <CheckCircleIcon className={'success'}/> :
+          <CancelIcon className='error'/>
+      }
+    },
+    {
       field: 'actions',
       type: 'actions',
       width: 120,

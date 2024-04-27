@@ -83,10 +83,6 @@
   const maxZoom = 24;
   {% if request.user.is_authenticated %}
     const user = {{ user|safe }};
-    user.is_staff = user.is_staff === 'true'
-    user.is_contributor = user.is_contributor === 'true'
-    user.is_creator = user.is_creator === 'true'
-    user.is_admin = user.is_admin === 'true'
   {% else %}
     const user = {};
   {% endif %}

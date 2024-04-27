@@ -24,12 +24,12 @@ from geosight.georepo.models.reference_layer_importer import (
     ReferenceLayerViewImporter
 )
 from geosight.permission.access import (
-    RoleContributorRequiredMixin
+    RoleLocalDatasetManagerRequiredMixin
 )
 
 
 class ReferenceLayerViewImporterDetailView(
-    RoleContributorRequiredMixin,
+    RoleLocalDatasetManagerRequiredMixin,
     AdminBaseView
 ):
     """ReferenceLayerView View."""

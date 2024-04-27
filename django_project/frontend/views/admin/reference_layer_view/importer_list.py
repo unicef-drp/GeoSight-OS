@@ -18,12 +18,12 @@ from django.shortcuts import reverse
 
 from frontend.views.admin._base import AdminBaseView
 from geosight.permission.access import (
-    RoleContributorRequiredMixin
+    RoleLocalDatasetManagerRequiredMixin
 )
 
 
 class ReferenceLayerViewImporterListView(
-    RoleContributorRequiredMixin,
+    RoleLocalDatasetManagerRequiredMixin,
     AdminBaseView
 ):
     """ReferenceLayerView View."""

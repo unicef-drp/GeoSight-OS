@@ -27,13 +27,13 @@ from geosight.georepo.serializer.reference_layer import (
 )
 from geosight.permission.access import (
     edit_permission_resource,
-    RoleContributorRequiredMixin
+    RoleLocalDatasetManagerRequiredMixin
 )
 from .create import _BaseReferenceLayerViewView
 
 
 class ReferenceLayerViewEditView(
-    RoleContributorRequiredMixin, _BaseReferenceLayerViewView
+    RoleLocalDatasetManagerRequiredMixin, _BaseReferenceLayerViewView
 ):
     """Reference dataset Edit View."""
 

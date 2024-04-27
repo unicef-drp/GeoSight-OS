@@ -181,35 +181,38 @@ export default function SideNavigation({ pageName, minified }) {
                   </a>
                 </SidaNavigationButton>
               </div>
-              <div className='SideNavigationContentGroup'>
-                <div className='SideNavigationContentGroupTitle'>
-                  REFERENCE DATASETS
-                </div>
-                <SidaNavigationButton
-                  minified={minified}
-                  title={pageNames.ReferenceLayerView}>
-                  <a href={referenceDatasetList}
-                     className={'SideNavigation-Row ' + ([pageNames.ReferenceLayerView].includes(pageName) ? 'active' : '')}>
-                    {[pageNames.ReferenceLayerView].includes(pageName) ?
-                      <LayerActiveIcon/> :
-                      <LayerIcon/>}
-                    <span
-                      className='SideNavigation-Row-Name'>Reference Datasets</span>
-                  </a>
-                </SidaNavigationButton>
-                <SidaNavigationButton
-                  minified={minified}
-                  title={pageNames.referenceDatesetImporter}>
-                  <a href={referenceDatesetImporterList}
-                     className={'SideNavigation-Row ' + ([pageNames.referenceDatesetImporter].includes(pageName) ? 'active' : '')}>
-                    {[pageNames.referenceDatesetImporter].includes(pageName) ?
-                      <LayerActiveIcon/> :
-                      <LayerIcon/>}
-                    <span
-                      className='SideNavigation-Row-Name'>Importers</span>
-                  </a>
-                </SidaNavigationButton>
-              </div>
+              {
+                user.manage_local_dataset ?
+                  <div className='SideNavigationContentGroup'>
+                    <div className='SideNavigationContentGroupTitle'>
+                      REFERENCE DATASETS
+                    </div>
+                    <SidaNavigationButton
+                      minified={minified}
+                      title={pageNames.ReferenceLayerView}>
+                      <a href={referenceDatasetList}
+                         className={'SideNavigation-Row ' + ([pageNames.ReferenceLayerView].includes(pageName) ? 'active' : '')}>
+                        {[pageNames.ReferenceLayerView].includes(pageName) ?
+                          <LayerActiveIcon/> :
+                          <LayerIcon/>}
+                        <span
+                          className='SideNavigation-Row-Name'>Reference Datasets</span>
+                      </a>
+                    </SidaNavigationButton>
+                    <SidaNavigationButton
+                      minified={minified}
+                      title={pageNames.referenceDatesetImporter}>
+                      <a href={referenceDatesetImporterList}
+                         className={'SideNavigation-Row ' + ([pageNames.referenceDatesetImporter].includes(pageName) ? 'active' : '')}>
+                        {[pageNames.referenceDatesetImporter].includes(pageName) ?
+                          <LayerActiveIcon/> :
+                          <LayerIcon/>}
+                        <span
+                          className='SideNavigation-Row-Name'>Importers</span>
+                      </a>
+                    </SidaNavigationButton>
+                  </div> : null
+              }
               <div className='SideNavigationContentGroup'>
                 <div className='SideNavigationContentGroupTitle'>ACCESS</div>
                 {

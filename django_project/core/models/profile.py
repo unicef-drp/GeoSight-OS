@@ -83,6 +83,10 @@ class Profile(models.Model):
         default=False,
         help_text='Designates whether the user receive notification.'
     )
+    manage_local_dataset = models.BooleanField(
+        default=False,
+        help_text='Designates whether the user able to manage local dataset.'
+    )
 
     def __str__(self):
         """Str name of profile."""
@@ -94,6 +98,11 @@ class Profile(models.Model):
         profile, created = Profile.objects.get_or_create(user=user)
         profile.role = role
         profile.save()
+
+    @property
+    def able_to_manage_local_dataset(self):
+        """Return if user is admin or not."""
+        return self.is_admin or self.manage_local_dataset
 
     @property
     def is_admin(self):
@@ -147,6 +156,8 @@ def post_profile_saved(sender, instance, **kwargs):
 
     If yes, user that profile.
     """
+    if instance.is_admin:
+        instance.manage_local_dataset = True
     if not instance.id:
         try:
             profile = Profile.objects.get(user=instance.user)
