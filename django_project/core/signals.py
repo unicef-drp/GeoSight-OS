@@ -17,7 +17,7 @@ import os
 
 
 def delete_file_on_delete(sender, instance, **kwargs):
-    """Deletes file from filesystem.
+    """Delete file from filesystem.
 
     when corresponding `MediaFile` object is deleted.
     """
@@ -27,7 +27,7 @@ def delete_file_on_delete(sender, instance, **kwargs):
 
 
 def delete_file_on_change(Sender, instance, **kwargs):
-    """Deletes old file from filesystem.
+    """Delete old file from filesystem.
 
     when corresponding `MediaFile` object is updated
     with new file.

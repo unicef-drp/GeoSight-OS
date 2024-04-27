@@ -92,7 +92,6 @@ class ReferenceLayerViewImportDataView(
         )
         created_at = timezone.now().isoformat()
         levels = []
-        initial_levels = []
 
         _id = self.kwargs.get('pk', 0)
         if _id:

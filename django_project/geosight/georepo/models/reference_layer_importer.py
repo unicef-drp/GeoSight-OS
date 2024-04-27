@@ -136,7 +136,7 @@ class ReferenceLayerViewImporterLevel(models.Model):
 
 @receiver(models.signals.post_delete, sender=ReferenceLayerViewImporterLevel)
 def auto_delete_file_on_delete(sender, instance, **kwargs):
-    """Deletes file from filesystem.
+    """Delete file from filesystem.
 
     when corresponding `MediaFile` object is deleted.
     """
@@ -145,7 +145,7 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
 
 @receiver(models.signals.pre_save, sender=ReferenceLayerViewImporterLevel)
 def auto_delete_file_on_change(sender, instance, **kwargs):
-    """Deletes old file from filesystem.
+    """Delete old file from filesystem.
 
     when corresponding `MediaFile` object is updated
     with new file.
