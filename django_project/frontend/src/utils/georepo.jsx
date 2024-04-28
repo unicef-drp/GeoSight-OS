@@ -17,7 +17,7 @@ import { fetchJSON } from '../Requests'
 import axios from "axios";
 import { InternalReferenceDatasets, referenceDatasetUrlBase } from "./urls";
 
-const LocalGeoSightIdentifier = 'Internal reference datasets'
+export const LocalGeoSightIdentifier = 'Internal reference datasets'
 
 /** Georepo URL */
 export function updateToken(url) {
@@ -54,24 +54,14 @@ export const GeorepoUrls = {
  */
 export const fetchReferenceLayerList = async function () {
   let data = []
-  let modules = [
-    {
-      name: LocalGeoSightIdentifier,
-      uuid: LocalGeoSightIdentifier
-    }
-  ]
-  modules = modules.concat(
-    await fetchFeatureList(
-      GeorepoUrls.WithDomain('/search/module/list/', false), true
-    )
+  const modules = await fetchFeatureList(
+    GeorepoUrls.WithDomain('/search/module/list/', false), true
   );
   for (const module of modules) {
-    if (module.uuid !== LocalGeoSightIdentifier) {
-      const referenceLayers = await fetchFeatureList(
-        GeorepoUrls.WithDomain(`/search/module/${module.uuid}/dataset/list/`, false), true
-      );
-      data = data.concat(referenceLayers)
-    }
+    const referenceLayers = await fetchFeatureList(
+      GeorepoUrls.WithDomain(`/search/module/${module.uuid}/dataset/list/`, false), true
+    );
+    data = data.concat(referenceLayers)
   }
   data.map(row => {
     row.identifier = row.uuid
@@ -85,15 +75,6 @@ export const fetchReferenceLayerList = async function () {
     }
     return 0;
   })
-  data = [
-    {
-      "identifier": LocalGeoSightIdentifier,
-      "name": LocalGeoSightIdentifier,
-      "uuid": LocalGeoSightIdentifier,
-      "short_code": LocalGeoSightIdentifier,
-      "type": LocalGeoSightIdentifier
-    }
-  ].concat(data)
   return data
 }
 
