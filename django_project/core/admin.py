@@ -54,7 +54,8 @@ class SitePreferencesAdmin(admin.ModelAdmin):
         (None, {
             'fields': (
                 'site_title', 'site_url', 'disclaimer',
-                'default_basemap', 'default_color_palette'
+                'default_basemap', 'default_color_palette',
+                'activate_local_dataset'
             )
         }),
         ('Environment', {

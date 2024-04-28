@@ -71,6 +71,12 @@ class SitePreferences(SingletonModel):
         ),
         on_delete=models.SET_NULL
     )
+    activate_local_dataset = models.BooleanField(
+        default=True,
+        help_text=(
+            'Activate feature to use local datasets alongside georepo.'
+        )
+    )
     # -----------------------------------------------
     # GEOREPO
     # -----------------------------------------------
@@ -289,6 +295,7 @@ class SitePreferences(SingletonModel):
     # -----------------------------------------------
     login_help_text = models.TextField(
         default='',
+        null=True, blank=True,
         help_text=_(
             'Help text to show in login page.'
         ),

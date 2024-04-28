@@ -60,7 +60,7 @@ export default function GeorepoViewSelector(
     filter = false
   }
 ) {
-  const [sourceType, setSourceType] = useState('local')
+  const [sourceType, setSourceType] = useState(preferences.activate_local_dataset ? 'local' : 'remote')
   const [inputData, setInputData] = useState(null)
 
   // This is for remote data
@@ -165,16 +165,20 @@ export default function GeorepoViewSelector(
     showSelected={showSelected}
     beforeChildren={
       <>
-        <FormControl className='RadioButtonControl'>
-          <RadioGroup
-            value={sourceType}
-            onChange={evt => setSourceType(evt.target.value)}
-          >
-            <FormControlLabel value="local" control={<Radio/>} label="Local"/>
-            <FormControlLabel value="remote" control={<Radio/>}
-                              label="Remote"/>
-          </RadioGroup>
-        </FormControl>
+        {
+          preferences.activate_local_dataset ?
+            <FormControl className='RadioButtonControl'>
+              <RadioGroup
+                value={sourceType}
+                onChange={evt => setSourceType(evt.target.value)}
+              >
+                <FormControlLabel
+                  value="local" control={<Radio/>} label="Local"/>
+                <FormControlLabel
+                  value="remote" control={<Radio/>} label="Remote"/>
+              </RadioGroup>
+            </FormControl> : null
+        }
         {
           sourceType === 'remote' ?
             <FormControl className='InputControl'>

@@ -15,10 +15,12 @@ __date__ = '13/02/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import json
+import traceback
 from uuid import uuid4
 
 from django.contrib.auth import get_user_model
 from django.contrib.gis.geos import GEOSGeometry, Polygon, MultiPolygon
+from django.utils import timezone
 from fiona.model import to_dict
 
 from geosight.georepo.models.entity import Entity
@@ -150,34 +152,51 @@ class ReferenceLayerViewImporterTask:
                 Entity.objects.bulk_create(data)
             delete_tmp_shapefile(features.path)
 
+    def _error(self, message: str):
+        """Raise error and update log."""
+        self.importer.end_time = timezone.now()
+        self.importer.status = LogStatus.FAILED
+        self.importer.note = message
+        self.importer.save()
+
+    def _done(self, message: str = ''):
+        """Update log to done."""
+        self.importer.end_time = timezone.now()
+        self.importer.status = LogStatus.SUCCESS
+        self.importer.note = message
+        self.importer.progress = 100
+        self.importer.save()
+
     def run(self):
         """To run the process."""
-        self.importer.status = LogStatus.RUNNING
-        self.importer.save()
-        reference_layer = self.importer.reference_layer
-        reference_layer.entity_set.all().delete()
-
-        total = self.importer.referencelayerviewimporterlevel_set.count()
-        min_progress = 0
-        max_progress = 80
-        progress_section = max_progress / total
-        for idx, level in enumerate(
-                self.importer.referencelayerviewimporterlevel_set.all()
-        ):
-            self.importer.note = f'Importing level {idx}'
-            self.importer.progress = (progress_section * idx)
+        try:
+            self.importer.status = LogStatus.RUNNING
             self.importer.save()
+            reference_layer = self.importer.reference_layer
+            reference_layer.entity_set.all().delete()
 
-            def progress_update(progress):
-                """Update progress based on feature saved."""
-                progress = progress_section * progress
-                self.importer.progress = progress + min_progress
+            total = self.importer.referencelayerviewimporterlevel_set.count()
+            min_progress = 0
+            max_progress = 80
+            progress_section = max_progress / total
+            for idx, level in enumerate(
+                    self.importer.referencelayerviewimporterlevel_set.all()
+            ):
+                self.importer.note = f'Importing level {idx}'
+                self.importer.progress = (progress_section * idx)
                 self.importer.save()
 
-            self.read_file(level, progress_update)
-            min_progress = self.importer.progress
+                def progress_update(progress):
+                    """Update progress based on feature saved."""
+                    progress = progress_section * progress
+                    self.importer.progress = progress + min_progress
+                    self.importer.save()
 
-        self.importer.progress = 100
-        self.importer.status = LogStatus.SUCCESS
-        self.importer.note = 'All data has been imported'
-        self.importer.save()
+                self.read_file(level, progress_update)
+                min_progress = self.importer.progress
+
+            self._done('All data has been imported')
+        except Exception:
+            self._error(
+                f'{traceback.format_exc().replace(" File", "<br>File")}'
+            )
