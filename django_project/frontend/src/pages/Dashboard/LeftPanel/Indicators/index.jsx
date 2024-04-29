@@ -21,26 +21,16 @@ import { useEffect, useRef } from 'react';
 import $ from "jquery";
 import { useDispatch, useSelector } from "react-redux";
 import { Actions } from "../../../../store/dashboard";
-import {
-  fetchPagination,
-  fetchPaginationInParallel
-} from "../../../../Requests";
+import { fetchPaginationInParallel } from "../../../../Requests";
 import { removeElement } from "../../../../utils/Array";
-import {
-  filterIndicatorsData,
-  UpdateStyleData
-} from "../../../../utils/indicatorData";
-import {
-  LocalStorage,
-  LocalStorageData
-} from "../../../../utils/localStorage";
-import { dictDeepCopy, jsonToUrlParams } from "../../../../utils/main";
-import { Session } from "../../../../utils/Sessions";
+import { UpdateStyleData } from "../../../../utils/indicatorData";
+import { dictDeepCopy } from "../../../../utils/main";
 
 /** Indicators data. */
 let indicatorFetchingSession = null
 export let indicatorFetchingIds = []
 const MAX_COUNT_FOR_ALL_DATA = 10000
+const allRequestStatus = {}
 
 export default function Indicators() {
   const prevState = useRef();
@@ -113,112 +103,29 @@ export default function Indicators() {
    * Fetch it from storage or fetch it
    */
   const getDataByDate = async (id, url, params, currentGlobalTime, dataVersion, onProgress, usingCache) => {
-    const storage = new LocalStorageData(url, dataVersion)
-    let storageData = storage.get()
-    if (storageData) {
-      storageData = filterIndicatorsData(selectedGlobalTime.min, selectedGlobalTime.max, storageData)
-    }
-
-    // Check if the request is already requested before
-    let doRequest = false
-    const requestKey = url + '?' + jsonToUrlParams(params) + '-Version'
-    if (storageData) {
-      const requestStorage = new LocalStorage(requestKey)
-      if (requestStorage.get() !== '' + dataVersion) {
-        doRequest = true
-      }
-      try {
-        if (!storageData[0].concept_uuid) {
-          doRequest = true
-        }
-      } catch (err) {
-        doRequest = true
-      }
-    } else {
-      doRequest = true
-    }
-
-    if (doRequest) {
-      const response = await fetchPaginationInParallel(url, params, onProgress)
-      storage.appendData(response)
-      new LocalStorage(requestKey).set(dataVersion)
-      return response
-    } else {
-      return storageData
-    }
+    return await fetchPaginationInParallel(url, params, onProgress)
   }
 
   /***
    * Get Data function for just returning data
    */
   const getDataFn = async (id, url, params, currentGlobalTime, dataVersion, onResponse, onProgress, doAll, referenceLayerIdentifier) => {
-    const usingCache = url.includes('dashboard')
-    params.reference_layer_uuid = referenceLayerIdentifier
-    if (!usingCache) {
-      return await fetchPaginationInParallel(url, params, onProgress)
+    const identifier = url + '?reference_layer_uuid=' + referenceLayerIdentifier
+    if (allRequestStatus[identifier] !== 'done') {
+      params.reference_layer_uuid = referenceLayerIdentifier
+      params.version = dataVersion
+      const dateResponse = await getDataByDate(id, url, params, dictDeepCopy(selectedGlobalTime), dataVersion, onProgress)
+      onResponse(dateResponse)
     }
-    const storage = new LocalStorageData(url, dataVersion)
-    let storageData = storage.get()
-    if (storageData) {
-      storageData = filterIndicatorsData(selectedGlobalTime.min, selectedGlobalTime.max, storageData)
-    }
-
-    // Check if we need to request all
-    let doRequestAll = false
     if (doAll) {
-      const requestKey = url.replace('latest', 'all') + '-Version'
-      if (storageData) {
-        const requestStorage = new LocalStorage(requestKey)
-        if (requestStorage.get() !== '' + dataVersion) {
-          doRequestAll = true
-        }
-        try {
-          if (!storageData[0].concept_uuid) {
-            doRequestAll = true
-          }
-        } catch (err) {
-          doRequestAll = true
-        }
-      } else {
-        doRequestAll = true
-      }
+      const allDataResponse = await fetchPaginationInParallel(url, {
+        reference_layer_uuid: referenceLayerIdentifier,
+        version: dataVersion,
+        last_value: false
+      })
+      allRequestStatus[identifier] = 'done'
+      onResponse(allDataResponse, null, true)
     }
-    // Get quick data on current date
-    // But if it says doing request All
-    if (!storageData || doRequestAll) {
-      storageData = await getDataByDate(id, url, params, dictDeepCopy(selectedGlobalTime), dataVersion, onProgress)
-    }
-
-    // Do Request all if the data version is already ALL data
-    {
-      if (doRequestAll) {
-        let doRequest = false
-        const requestKey = url.replace('latest', 'all') + '-Version'
-        if (storageData) {
-          const requestStorage = new LocalStorage(requestKey)
-          if (requestStorage.get() !== '' + dataVersion) {
-            doRequest = true
-          }
-        } else {
-          doRequest = true
-        }
-        const session = new Session(url, 0, true)
-        if (session.isValid) {
-          if (doRequest) {
-            // Fetch all data
-            fetchPagination(url.replace('latest', 'all'), {
-              reference_layer_uuid: referenceLayerIdentifier
-            }).then(response => {
-              storage.replaceData(response)
-              new LocalStorage(requestKey).set(dataVersion)
-            }).catch(error => {
-
-            })
-          }
-        }
-      }
-    }
-    return storageData
   }
 
   /***
@@ -230,7 +137,7 @@ export default function Indicators() {
       (
         async () => {
           try {
-            resolve(getDataFn(id, url, params, currentGlobalTime, dataVersion, onResponse, onProgress, doAll, referenceLayerIdentifier))
+            await getDataFn(id, url, params, currentGlobalTime, dataVersion, onResponse, onProgress, doAll, referenceLayerIdentifier)
           } catch (error) {
             reject(error)
           }
@@ -298,17 +205,19 @@ export default function Indicators() {
             const referenceLayerIdentifier = referenceLayer?.identifier
 
             // On Response
-            const onResponse = (response, error) => {
-              if (indicatorFetchingSession === session && response) {
+            const onResponse = (response, error, force) => {
+              if ((indicatorFetchingSession === session && response) || force) {
                 response = UpdateStyleData(response, indicator)
                 dispatch(
                   Actions.IndicatorsData.receive(response, error, id)
                 )
                 dispatch(
-                  Actions.IndicatorsMetadata.progress(id, {
-                    total_page: Math.ceil(response.length / 100),
-                    page: Math.ceil(response.length / 100)
-                  })
+                  Actions.IndicatorsMetadata.progress(
+                    id, {
+                      total_page: Math.ceil(response.length / 100),
+                      page: Math.ceil(response.length / 100)
+                    }
+                  )
                 )
               }
               done(id)
@@ -333,22 +242,11 @@ export default function Indicators() {
               const doAll = !use_only_last_known_value && metadata?.count && metadata.count < MAX_COUNT_FOR_ALL_DATA
 
               // If index is 1, waiting for this to be done
-              if (idx === 1) {
-                try {
-                  const response = await getDataFn(id, url, params, dictDeepCopy(selectedGlobalTime), version, onResponse, onProgress, doAll, referenceLayerIdentifier)
-                  onResponse(response, null)
-                } catch (error) {
-                  onResponse(null, error)
-                }
-              } else {
-                getDataPromise(
-                  dataId, url, params, dictDeepCopy(selectedGlobalTime), version, onResponse, onProgress, doAll, referenceLayerIdentifier
-                ).then(response => {
-                  onResponse(response, null)
-                }).catch(error => {
-                  onResponse(null, error)
-                })
-              }
+              getDataPromise(
+                dataId, url, params, dictDeepCopy(selectedGlobalTime), version, onResponse, onProgress, doAll, referenceLayerIdentifier
+              ).catch(error => {
+                onResponse(null, error)
+              })
             }
           }
           if (indicatorFetchingSession !== session) {
