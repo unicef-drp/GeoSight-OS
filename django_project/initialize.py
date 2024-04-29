@@ -14,7 +14,6 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-import ast
 import os
 import shutil
 import time
@@ -128,3 +127,18 @@ if cache.get('APP_KEY') != project_version(None):
         print("Version is different, remove all")
     except Exception:
         pass
+
+#########################################################
+# 6. Restart backgrounds functions
+#########################################################
+
+try:
+    from geosight.importer.restart_functions import RestartFunctions
+
+    print("-----------------------------------------------------")
+    print("6. Restart backgrounds functions")
+
+    RestartFunctions().restart_log_sata_save_progress()
+except Exception as e:
+    print(f'{e}')
+    pass

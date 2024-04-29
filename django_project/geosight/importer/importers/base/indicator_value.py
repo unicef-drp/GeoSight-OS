@@ -417,6 +417,9 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
             # Skip if the value is empty
             if data['value'] in [None, '']:
                 return
+            # Skip if the geo_code is empty
+            if data['geo_code'] in [None, '']:
+                return
 
             indicator.save_value(
                 datetime.fromtimestamp(data['date_time']),
