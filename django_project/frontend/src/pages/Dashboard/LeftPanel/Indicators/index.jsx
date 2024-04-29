@@ -17,7 +17,7 @@
    INDICATOR
    ========================================================================== */
 
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import $ from "jquery";
 import { useDispatch, useSelector } from "react-redux";
 import { Actions } from "../../../../store/dashboard";
@@ -76,11 +76,6 @@ export default function Indicators() {
       fetchData()
     }
   }, [indicators, indicatorLayerMetadata]);
-
-  /** At first time, put loading. */
-  useEffect(() => {
-    indicators.map(indicator => loading(indicator.id));
-  }, []);
 
   /** Loading data **/
   const loading = (id) => {
@@ -156,9 +151,9 @@ export default function Indicators() {
   /***
    * Get Data function for just returning data
    */
-  const getDataFn = async (id, url, params, currentGlobalTime, dataVersion, onResponse, onProgress, doAll) => {
+  const getDataFn = async (id, url, params, currentGlobalTime, dataVersion, onResponse, onProgress, doAll, referenceLayerIdentifier) => {
     const usingCache = url.includes('dashboard')
-    params.reference_layer_uuid = referenceLayer?.identifier
+    params.reference_layer_uuid = referenceLayerIdentifier
     if (!usingCache) {
       return await fetchPaginationInParallel(url, params, onProgress)
     }
@@ -212,7 +207,7 @@ export default function Indicators() {
           if (doRequest) {
             // Fetch all data
             fetchPagination(url.replace('latest', 'all'), {
-              reference_layer_uuid: referenceLayer?.identifier
+              reference_layer_uuid: referenceLayerIdentifier
             }).then(response => {
               storage.replaceData(response)
               new LocalStorage(requestKey).set(dataVersion)
@@ -230,12 +225,12 @@ export default function Indicators() {
    * Get All Data For and Indicator
    * Fetch it from storage or fetch it
    */
-  const getDataPromise = async (id, url, params, currentGlobalTime, dataVersion, onResponse, onProgress, doAll) => {
+  const getDataPromise = async (id, url, params, currentGlobalTime, dataVersion, onResponse, onProgress, doAll, referenceLayerIdentifier) => {
     return new Promise((resolve, reject) => {
       (
         async () => {
           try {
-            resolve(getDataFn(id, url, params, currentGlobalTime, dataVersion, onResponse, onProgress, doAll))
+            resolve(getDataFn(id, url, params, currentGlobalTime, dataVersion, onResponse, onProgress, doAll, referenceLayerIdentifier))
           } catch (error) {
             reject(error)
           }
@@ -247,6 +242,9 @@ export default function Indicators() {
   /** Fetch all data */
   const fetchData = () => {
     if (!selectedGlobalTime.max) {
+      return
+    }
+    if (!referenceLayer?.identifier) {
       return
     }
     indicatorFetchingSession = new Date().getTime()
@@ -273,19 +271,31 @@ export default function Indicators() {
     if (selectedGlobalTime.min) {
       params['time__gte'] = selectedGlobalTime.min
     }
-    indicatorFetchingIds = []
-    requestQueue.map(id => loading(id));
+    indicatorFetchingIds = [];
 
     //   Fetch all indicator data
     (
       async () => {
+        // Create loading
+        for (var idx = 1; idx <= requestQueue.length; idx++) {
+          const indicator = indicators.find(
+            indicator => indicator.id === requestQueue[idx - 1]
+          )
+          if (indicator) {
+            const { id, url } = indicator
+            const referenceLayerIdentifier = referenceLayer?.identifier;
+            loading(id, referenceLayerIdentifier)
+          }
+        }
+
         // Create request state
         for (var idx = 1; idx <= requestQueue.length; idx++) {
           const indicator = indicators.find(
             indicator => indicator.id === requestQueue[idx - 1]
           )
           if (indicator) {
-            const { id, url, style } = indicator
+            const { id, url } = indicator
+            const referenceLayerIdentifier = referenceLayer?.identifier
 
             // On Response
             const onResponse = (response, error) => {
@@ -325,14 +335,14 @@ export default function Indicators() {
               // If index is 1, waiting for this to be done
               if (idx === 1) {
                 try {
-                  const response = await getDataFn(id, url, params, dictDeepCopy(selectedGlobalTime), version, onResponse, onProgress, doAll)
+                  const response = await getDataFn(id, url, params, dictDeepCopy(selectedGlobalTime), version, onResponse, onProgress, doAll, referenceLayerIdentifier)
                   onResponse(response, null)
                 } catch (error) {
                   onResponse(null, error)
                 }
               } else {
                 getDataPromise(
-                  dataId, url, params, dictDeepCopy(selectedGlobalTime), version, onResponse, onProgress, doAll
+                  dataId, url, params, dictDeepCopy(selectedGlobalTime), version, onResponse, onProgress, doAll, referenceLayerIdentifier
                 ).then(response => {
                   onResponse(response, null)
                 }).catch(error => {

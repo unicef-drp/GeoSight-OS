@@ -51,6 +51,7 @@ export default function DataLoadingProgress() {
         currProgress += 1
       }
     })
+    console.log(indicatorsMetadata)
     for (const [key, value] of Object.entries(indicatorsMetadata)) {
       if (!key.includes('layer')) {
         if (value.progress?.total_page) {
