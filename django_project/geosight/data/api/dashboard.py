@@ -131,16 +131,16 @@ class DashboardData(APIView):
             read_permission_resource(dashboard, request.user)
 
             # Cache version
-            # cache = VersionCache(
-            #     key=request.get_full_path(), version=dashboard.version
-            # )
-            # cache_data = cache.get()
-            # if cache_data:
-            #     data = cache_data
-            # else:
-            data = DashboardSerializer(
-                dashboard, context={'user': request.user}).data
-            # cache.set(data)
+            cache = VersionCache(
+                key=request.get_full_path(), version=dashboard.version
+            )
+            cache_data = cache.get()
+            if cache_data:
+                data = cache_data
+            else:
+                data = DashboardSerializer(
+                    dashboard, context={'user': request.user}).data
+                cache.set(data)
 
         else:
             dashboard = Dashboard()

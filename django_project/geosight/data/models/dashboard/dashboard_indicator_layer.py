@@ -169,6 +169,7 @@ class DashboardIndicatorLayer(DashboardRelation, IndicatorStyleBaseModel):
 
     @property
     def is_single(self):
+        """Return indicator layer is single."""
         return self.type == TYPE_SINGLE_INDICATOR or 'Float'
 
     @property
