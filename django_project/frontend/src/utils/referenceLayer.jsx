@@ -14,7 +14,7 @@
  */
 
 import { getRelatedTableData } from "./relatedTable";
-import { UpdateStyleData } from "./indicatorData";
+import { getIndicatorDataByLayer, UpdateStyleData } from "./indicatorData";
 import { extractCode } from "./georepo";
 import {
   indicatorLayerId,
@@ -30,7 +30,7 @@ const temporary = {}
  */
 export function returnValueByGeometry(
   layer, indicators, indicatorsData, relatedTableData,
-  selectedGlobalTime, geoField, filteredGeometries
+  selectedGlobalTime, geoField, filteredGeometries, referenceLayer
 ) {
   const identifier = JSON.stringify(layer) + JSON.stringify(indicators) + JSON.stringify(indicatorsData) + JSON.stringify(relatedTableData) + JSON.stringify(selectedGlobalTime) + JSON.stringify(geoField) + JSON.stringify(filteredGeometries)
   const temp = temporary[identifier]
@@ -54,8 +54,9 @@ export function returnValueByGeometry(
     if (layer.indicators.length) {
       layer.indicators.map(indicatorLayer => {
         const indicator = indicators.find(indicator => indicatorLayer.id === indicator.id)
-        if (indicator && indicatorsData[indicator.id]?.fetched) {
-          indicatorsData[indicator.id]?.data.forEach(function (data) {
+        const indicatorData = getIndicatorDataByLayer(indicator.id, indicatorsData, layer, referenceLayer)
+        if (indicator && indicatorData?.fetched) {
+          indicatorData?.data.forEach(function (data) {
             data.indicator = indicator
             allData.push(data);
           })

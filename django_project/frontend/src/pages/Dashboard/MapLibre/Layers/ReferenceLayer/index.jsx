@@ -360,7 +360,7 @@ export function ReferenceLayer(
       const indicatorValueByGeometry = getIndicatorValueByGeometry(
         currentIndicatorLayer, indicators, indicatorsData,
         relatedTables, relatedTableData, selectedGlobalTime,
-        geoField, filteredGeometries
+        geoField, filteredGeometries, referenceLayerProject
       )
       let indicatorSecondValueByGeometry = {}
 
@@ -415,7 +415,7 @@ export function ReferenceLayer(
         indicatorSecondValueByGeometry = getIndicatorValueByGeometry(
           currentIndicatorSecondLayer, indicators, indicatorsData,
           relatedTables, relatedTableData, selectedGlobalTime,
-          geoField, filteredGeometries
+          geoField, filteredGeometries, referenceLayerProject
         )
         // If compare mode
         // Outline is first indicator color
@@ -611,7 +611,7 @@ export function ReferenceLayer(
       indicatorValueByGeometry = getIndicatorValueByGeometry(
         currentIndicatorLayer, indicators, indicatorsData,
         relatedTables, relatedTableData, selectedGlobalTime,
-        geoField, filteredGeometries
+        geoField, filteredGeometries, referenceLayerProject
       )
     }
     if (currentIndicatorLayer.indicators?.length > 1) {

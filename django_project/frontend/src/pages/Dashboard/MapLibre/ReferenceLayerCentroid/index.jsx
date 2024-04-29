@@ -33,7 +33,10 @@ import {
   SingleIndicatorType
 } from "../../../../utils/indicatorLayer";
 import { dictDeepCopy } from "../../../../utils/main";
-import { UpdateStyleData } from "../../../../utils/indicatorData";
+import {
+  getIndicatorDataByLayer,
+  UpdateStyleData
+} from "../../../../utils/indicatorData";
 import { hideLabel, renderLabel, showLabel } from "./Label"
 import { ExecuteWebWorker } from "../../../../utils/WebWorker";
 import worker from "./Label/worker";
@@ -54,6 +57,7 @@ let lastRequest = null
 export default function ReferenceLayerCentroid({ map }) {
   const dispatch = useDispatch();
   const {
+    referenceLayer,
     indicators,
     indicatorLayers
   } = useSelector(state => state.dashboard.data)
@@ -376,7 +380,8 @@ export default function ReferenceLayerCentroid({ map }) {
     const usedIndicatorsData = {}
     const usedIndicatorsProperties = {}
     indicatorLayer.indicators.map(indicator => {
-      usedIndicatorsData[indicator.id] = indicatorsData[indicator.id]
+      const indicatorData = getIndicatorDataByLayer(indicator.id, indicatorsData, indicatorLayer, referenceLayer)
+      usedIndicatorsData[indicator.id] = indicatorData
       const data = {}
       for (const [key, value] of Object.entries(indicator)) {
         if (!key.includes('style')) {

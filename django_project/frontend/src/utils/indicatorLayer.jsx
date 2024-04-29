@@ -17,7 +17,7 @@ import { capitalize, dictDeepCopy } from "./main";
 import nunjucks from "nunjucks";
 import { extractCode } from "./georepo";
 import { getRelatedTableData } from "./relatedTable";
-import { getIndicatorDataId } from "./indicatorData";
+import { getIndicatorDataByLayer } from "./indicatorData";
 
 export const SingleIndicatorType = 'Single Indicator'
 export const MultiIndicatorType = 'Multi Indicator'
@@ -158,11 +158,10 @@ export function getLayerData(
   indicatorsData, relatedTableData, indicatorLayer, referenceLayer, ignoreRT
 ) {
   const data = []
-  const referenceLayerOfIndicator = referenceLayerIndicatorLayer(referenceLayer, indicatorLayer)
-  indicatorLayer.indicators?.map(obj => {
-    const _id = getIndicatorDataId(obj.id, referenceLayer.identifier, referenceLayerOfIndicator.identifier)
-    if (indicatorsData[_id]) {
-      data.push(indicatorsData[_id])
+  indicatorLayer.indicators?.map(indicator => {
+    const indicatorData = getIndicatorDataByLayer(indicator.id, indicatorsData, indicatorLayer, referenceLayer)
+    if (indicatorData) {
+      data.push(indicatorData)
     }
   })
   if (indicatorsData[indicatorLayerId(indicatorLayer)]) {
