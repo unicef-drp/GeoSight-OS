@@ -22,10 +22,10 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { Actions } from '../../../../store/dashboard'
 import { ArrowDownwardIcon } from "../../../../components/Icons";
+import { GeorepoUrls } from "../../../../utils/georepo";
 
 import './style.scss';
 
-let currentReferenceLayer = null
 /**
  * Reference layer.
  * Contains level selector.
@@ -38,6 +38,25 @@ export default function ReferenceLayerSection() {
   const { referenceLayers } = useSelector(state => state.map)
   const referenceLayerData = useSelector(state => state.referenceLayerData)
   const selectedIndicatorLayer = useSelector(state => state.selectedIndicatorLayer)
+
+  // ------------------------------------------------------------
+  // TODO:
+  //  When reference layer changed, fetch reference data
+  //  For the entity data, Check ReferenceLayerCentroid
+  // ------------------------------------------------------------
+  useEffect(() => {
+    referenceLayers.map(referenceLayer => {
+      const identifier = referenceLayer.identifier
+      if (!referenceLayerData[identifier]) {
+        dispatch(
+          Actions.ReferenceLayerData.fetch(
+            dispatch, identifier,
+            GeorepoUrls.ViewDetail(identifier)
+          )
+        )
+      }
+    })
+  }, [referenceLayers]);
 
   // TODO:
   //  Need to fix when in compare mode

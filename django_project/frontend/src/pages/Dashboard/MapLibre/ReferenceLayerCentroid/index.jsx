@@ -17,7 +17,7 @@
    Geometry Center
    ========================================================================== */
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import $ from "jquery";
 import maplibregl from "maplibre-gl";
@@ -38,9 +38,9 @@ import { hideLabel, renderLabel, showLabel } from "./Label"
 import { ExecuteWebWorker } from "../../../../utils/WebWorker";
 import worker from "./Label/worker";
 import { fetchJSON } from "../../../../Requests";
+import { Actions } from "../../../../store/dashboard";
 
 import './style.scss';
-import { Actions } from "../../../../store/dashboard";
 
 let centroidMarker = []
 let charts = {}
@@ -55,11 +55,10 @@ export default function ReferenceLayerCentroid({ map }) {
   const dispatch = useDispatch();
   const {
     indicators,
-    indicatorLayers,
-    referenceLayer
+    indicatorLayers
   } = useSelector(state => state.dashboard.data)
+  const { referenceLayers, indicatorShow } = useSelector(state => state.map)
   const { showIndicatorMapLabel } = useSelector(state => state.globalState)
-  const { indicatorShow } = useSelector(state => state.map)
   const filteredGeometries = useSelector(state => state.filteredGeometries)
   const indicatorsData = useSelector(state => state.indicatorsData);
   const selectedIndicatorLayer = useSelector(state => state.selectedIndicatorLayer)
@@ -73,28 +72,32 @@ export default function ReferenceLayerCentroid({ map }) {
 
   // When reference layer changed, fetch features
   useEffect(() => {
-    const identifier = referenceLayer?.identifier
-    if (identifier) {
-      if (lastRequest === identifier) {
-        return
-      }
-      lastRequest = identifier
-      setGeometries({});
+    const currentDatasets = dictDeepCopy(referenceLayers.map(referenceLayer => referenceLayer.identifier))
+    currentDatasets.sort()
+    if (JSON.stringify(lastRequest) === JSON.stringify(currentDatasets)) {
+      return
+    }
+    dispatch(Actions.Geometries.deleteAll());
+    lastRequest = currentDatasets
+
+    setGeometries({});
+    const currGeometries = {}
+    referenceLayers.map(referenceLayer => {
+      const identifier = referenceLayer.identifier
 
       // ----------------------------
       // TODO:
       //  Fetch reference layer entities
       // ----------------------------
       try {
+        const geometryDataDict = {}
         const geometryMemberByUcode = {}
-
         const url = `${preferences.georepo_api.api}/search/view/${referenceLayer.identifier}/centroid/`
         fetchJson(url).then(async data => {
-          if (identifier === lastRequest) {
+          if (lastRequest.includes(identifier)) {
             for (let i = 0; i < data.length; i++) {
               const level = data[i]
               const response = await fetchJSON(level.url)
-              const geometryDataDict = {}
               const geoms = {}
 
               response.features.map(feature => {
@@ -127,7 +130,10 @@ export default function ReferenceLayerCentroid({ map }) {
                   ucode: ucode,
                   code: code,
                 }
-                geometryDataDict[code] = {
+                if (!geometryDataDict[level.level]) {
+                  geometryDataDict[level.level] = {}
+                }
+                geometryDataDict[level.level][code] = {
                   label: name,
                   name: name,
                   code: code,
@@ -138,11 +144,18 @@ export default function ReferenceLayerCentroid({ map }) {
                 }
                 geometryMemberByUcode[ucode] = memberData
               })
-              if (identifier === lastRequest) {
-                geometries[level.level] = geoms
-                setGeometries({ ...geometries })
+              if (lastRequest.includes(identifier)) {
+                if (!currGeometries[level.level]) {
+                  currGeometries[level.level] = {}
+                }
+                currGeometries[level.level] = {
+                  ...currGeometries[level.level], ...geoms
+                }
+                setGeometries({ ...currGeometries })
                 dispatch(
-                  Actions.Geometries.addLevelData(level.level, geometryDataDict)
+                  Actions.Geometries.addLevelData(
+                    level.level, geometryDataDict[level.level]
+                  )
                 )
               }
             }
@@ -150,9 +163,8 @@ export default function ReferenceLayerCentroid({ map }) {
         })
       } catch (e) {
       }
-
-    }
-  }, [referenceLayer]);
+    })
+  }, [referenceLayers]);
 
   /**
    * Render chart

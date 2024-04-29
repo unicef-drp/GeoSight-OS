@@ -120,22 +120,6 @@ export function ReferenceLayer(
 
   const filteredGeometries = where ? filteredGeometriesState : null
 
-  // ------------------------------------------------------------
-  // TODO:
-  //  When reference layer changed, fetch reference data
-  //  For the entity data, Check ReferenceLayerCentroid
-  // ------------------------------------------------------------
-  useEffect(() => {
-    if (referenceLayer?.identifier && !referenceLayerData) {
-      dispatch(
-        Actions.ReferenceLayerData.fetch(
-          dispatch, referenceLayer.identifier,
-          GeorepoUrls.ViewDetail(referenceLayer.identifier)
-        )
-      )
-    }
-  }, [referenceLayer]);
-
   // When indicator data, current layer, second layer and compare mode changed
   // Update the style
   useEffect(() => {
