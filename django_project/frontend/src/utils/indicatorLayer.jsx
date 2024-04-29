@@ -153,21 +153,27 @@ export function fetchDynamicLayerData(
 /**
  * Return layer data
  */
-export function getLayerData(indicatorsData, relatedTableData, indicatorLayer) {
+export function getLayerData(
+  indicatorsData, relatedTableData, indicatorLayer, referenceLayer, ignoreRT
+) {
   const data = []
+  const referenceLayerOfIndicator = referenceLayerIndicatorLayer(referenceLayer, indicatorLayer)
   indicatorLayer.indicators?.map(obj => {
-    if (indicatorsData[obj.id]) {
-      data.push(indicatorsData[obj.id])
+    const _id = referenceLayerOfIndicator.identifier === referenceLayer.identifier ? obj.id : obj.id + '-' + referenceLayerOfIndicator.identifier
+    if (indicatorsData[_id]) {
+      data.push(indicatorsData[_id])
     }
   })
   if (indicatorsData[indicatorLayerId(indicatorLayer)]) {
     data.push(indicatorsData[indicatorLayerId(indicatorLayer)])
   }
-  indicatorLayer.related_tables?.map(obj => {
-    if (relatedTableData[obj.id]) {
-      data.push(relatedTableData[obj.id])
-    }
-  })
+  if (!ignoreRT) {
+    indicatorLayer.related_tables?.map(obj => {
+      if (relatedTableData[obj.id]) {
+        data.push(relatedTableData[obj.id])
+      }
+    })
+  }
   return data
 }
 
@@ -187,19 +193,11 @@ export function indicatorHasData(indicatorsData, indicator) {
  */
 export function getLayerDataCleaned(
   indicatorsData, relatedTableData, indicatorLayer, selectedGlobalTime, geoField,
-  filteredGeometries
+  filteredGeometries, referenceLayer
 ) {
-  let data = []
   indicatorsData = dictDeepCopy(indicatorsData)
   relatedTableData = dictDeepCopy(relatedTableData)
-  indicatorLayer.indicators?.map(obj => {
-    if (indicatorsData[obj.id]) {
-      data.push(indicatorsData[obj.id])
-    }
-  })
-  if (indicatorsData[indicatorLayerId(indicatorLayer)]) {
-    data.push(indicatorsData[indicatorLayerId(indicatorLayer)])
-  }
+  let data = getLayerData(indicatorsData, relatedTableData, indicatorLayer, referenceLayer)
   indicatorLayer.related_tables?.map(obj => {
     if (relatedTableData[obj.id]) {
       const { rows } = getRelatedTableData(
@@ -225,12 +223,13 @@ export function getLayerDataCleaned(
  * @param indicatorsData
  * @param relatedTableData
  * @param indicatorLayers
+ * @param referenceLayer
  * @returns {boolean}
  */
-export function allLayerDataIsReady(indicatorsData, relatedTableData, indicatorLayers) {
+export function allLayerDataIsReady(indicatorsData, relatedTableData, indicatorLayers, referenceLayer) {
   let done = true
   indicatorLayers.map(indicatorLayer => {
-    getLayerData(indicatorsData, relatedTableData, indicatorLayer).map(data => {
+    getLayerData(indicatorsData, relatedTableData, indicatorLayer, referenceLayer).map(data => {
       if (data?.fetching) {
         done = false
       }

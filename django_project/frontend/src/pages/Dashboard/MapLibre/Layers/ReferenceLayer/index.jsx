@@ -23,8 +23,6 @@ import { MVTLayer } from '@deck.gl/geo-layers';
 import { GeoJsonLayer } from '@deck.gl/layers';
 import { DataFilterExtension } from '@deck.gl/extensions';
 import { area as turfArea, bboxPolygon, } from '@turf/turf';
-
-import { Actions } from '../../../../../store/dashboard'
 import {
   extractCode,
   GeorepoUrls,
@@ -87,6 +85,7 @@ export function ReferenceLayer(
   const prevState = useRef()
   const dispatch = useDispatch()
   const {
+    referenceLayer: referenceLayerProject,
     indicatorLayers,
     indicators,
     relatedTables,
@@ -123,8 +122,8 @@ export function ReferenceLayer(
   // When indicator data, current layer, second layer and compare mode changed
   // Update the style
   useEffect(() => {
-    const data = getLayerData(indicatorsData, relatedTableData, currentIndicatorLayer).concat(
-      getLayerData(indicatorsData, relatedTableData, currentIndicatorSecondLayer)
+    const data = getLayerData(indicatorsData, relatedTableData, currentIndicatorLayer, referenceLayerProject).concat(
+      getLayerData(indicatorsData, relatedTableData, currentIndicatorSecondLayer, referenceLayerProject)
     )
     if (allDataIsReady(data)) {
       const dataInString = JSON.stringify(data)

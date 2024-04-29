@@ -73,7 +73,7 @@ export function returnLayerStyleConfig(layer, indicators) {
 export const indicatorLayerStyle = (
   layer, indicators, indicatorsData,
   relatedTableData, selectedGlobalTime, geoField, admin_level, filteredGeometries,
-  initConfig
+  initConfig, referenceLayer
 ) => {
   // Get rules
   let config = returnLayerStyleConfig(layer, indicators)
@@ -84,7 +84,8 @@ export const indicatorLayerStyle = (
   if (dynamicStyleTypes.includes(config.style_type)) {
     let data = getLayerDataCleaned(
       indicatorsData, relatedTableData, layer, selectedGlobalTime, geoField,
-      config?.style_config?.sync_filter ? filteredGeometries : null
+      config?.style_config?.sync_filter ? filteredGeometries : null,
+      referenceLayer
     )
     style = createDynamicStyle(data[0]?.data, config.style_type, config.style_config, config.style_data)
     if (style[admin_level]) {
