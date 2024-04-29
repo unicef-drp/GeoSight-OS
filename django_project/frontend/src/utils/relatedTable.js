@@ -203,9 +203,10 @@ export const getRelatedTableData = (data, config, selectedGlobalTime, geoField =
  * Return geojson from related table data, based on lat and lon field, and a optional query
  */
 export const buildGeojsonFromRelatedData = (data, lon_field, lat_field, query = undefined) => {
-  const sql = `SELECT * FROM ? as data WHERE ${query}`;
+  const where = query.replaceAll('"', '`')
+  const sql = `SELECT * FROM ? as data WHERE ${where}`;
 
-  const finalData = query ?
+  const finalData = where ?
     alasql(sql, [data]) :
     data
 

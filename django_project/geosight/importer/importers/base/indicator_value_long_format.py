@@ -152,17 +152,12 @@ class IndicatorValueLongFormat(AbstractImporterIndicatorValue, ABC):
 
             if not indicator:
                 note['indicator_name'] = 'Indicator does not found'
-            if not geo_code:
-                note['value'] = 'Administrative code is empty'
             if not date_time:
                 note['date_time'] = 'date_time is empty'
             if date_time_error:
                 note['date_time'] = date_time_error
 
             # ----------------------------------------
-            # Check the geocode
-            data[code_type] = data['geo_code']
-
             # Check admin level
             try:
                 admin_level = self.get_admin_level_from_data(record)
@@ -172,18 +167,24 @@ class IndicatorValueLongFormat(AbstractImporterIndicatorValue, ABC):
             except ValueError:
                 note['admin_level'] = 'Admin level is not integer'
 
-            entity, error = self.get_entity(
-                data, self.importer.admin_code_type, auto_fetch=False
-            )
-            if entity:
-                data['geo_code'] = entity.geom_id
-                data['admin_level'] = entity.admin_level
+            # ----------------------------------------
+            # Check the geocode
+            if not geo_code:
+                note['warning'] = 'Administrative code is empty'
             else:
-                if error == 'This code does not exist.':
-                    checked_geocode.append(data['geo_code'])
-                    invalid_check_idx.append(idx)
+                data[code_type] = geo_code
+                entity, error = self.get_entity(
+                    data, self.importer.admin_code_type, auto_fetch=False
+                )
+                if entity:
+                    data['geo_code'] = entity.geom_id
+                    data['admin_level'] = entity.admin_level
                 else:
-                    note[code_type] = error
+                    if error == 'This code does not exist.':
+                        checked_geocode.append(data['geo_code'])
+                        invalid_check_idx.append(idx)
+                    else:
+                        note[code_type] = error
             # ----------------------------------------
 
             # Save to clean records
@@ -192,7 +193,12 @@ class IndicatorValueLongFormat(AbstractImporterIndicatorValue, ABC):
             idx += 1
 
             # If there is note, failed
-            if len(note.keys()):
+            note_keys = list(note.keys())
+            try:
+                note_keys.remove('warning')
+            except ValueError:
+                pass
+            if len(note_keys):
                 success = False
 
         # Checking missing geocode
@@ -214,7 +220,14 @@ class IndicatorValueLongFormat(AbstractImporterIndicatorValue, ABC):
                         clean_records[idx]['geo_code'] = entity.geom_id
                         clean_records[idx]['admin_level'] = entity.admin_level
                     except (IndexError, KeyError):
-                        notes[idx][code_type] = 'This code does not exist.'
-                        success = False
+                        try:
+                            if record['geo_code']:
+                                notes[idx][
+                                    'geo_code'
+                                ] = 'This code does not exist.'
+                                success = False
+                        except KeyError:
+                            notes[idx][code_type] = 'This code does not exist.'
+                            success = False
 
         return clean_records, notes, success
