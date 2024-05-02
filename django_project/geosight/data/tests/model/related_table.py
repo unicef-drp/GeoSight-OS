@@ -14,7 +14,7 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from django.test.testcases import TestCase
+from core.tests.base_tests import TenantTestCase as TestCase
 
 from geosight.data.models.dashboard import Dashboard, DashboardRelatedTable
 from geosight.data.models.related_table import (

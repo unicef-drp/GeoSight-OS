@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             schema_name='public', name='Main'
         )
         Domain.objects.get_or_create(
-            domain='127.0.0.1',
+            domain='localhost',
             tenant=client, defaults={
                 'is_primary': True
             }

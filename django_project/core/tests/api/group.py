@@ -16,7 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import json
 
-from django.test.testcases import TestCase
+from core.tests.base_tests import TenantTestCase as TestCase
 from django.urls import reverse
 
 from core.models.group import GeosightGroup

@@ -41,7 +41,7 @@ DATABASES = {
         'TEST_NAME': 'unittests',
     },
     'temp': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'ENGINE': 'django_tenants.postgresql_backend',
         'OPTIONS': {
             'options': (
                 '-c search_path='

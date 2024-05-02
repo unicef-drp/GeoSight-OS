@@ -16,7 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import factory
 from django.contrib.auth import get_user_model
-from django.test.testcases import TestCase
+from core.tests.base_tests import TenantTestCase as TestCase
 
 from core.models.profile import ROLES
 from core.tests.model_factories import GroupF, create_user

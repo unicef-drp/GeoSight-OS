@@ -16,7 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 import datetime
 
 from dateutil import parser
-from django.test.testcases import TestCase
+from core.tests.base_tests import TenantTestCase as TestCase
 from rest_framework.reverse import reverse
 
 from geosight.data.models import RelatedTable, \
