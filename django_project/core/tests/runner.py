@@ -34,6 +34,7 @@ def prepare_database(self):
 
 class PostgresSchemaTestRunner(DiscoverRunner):
     """Postgres schema test runner."""
+
     keepdb_input = None
 
     def setup_databases(self, **kwargs):

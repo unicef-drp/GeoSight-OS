@@ -32,6 +32,7 @@ class TenantTestCase(DjangoTenantTestCase):
 
     @classmethod
     def setUpClass(cls):
+        """Initiate tenant and domain for test."""
         try:
             cls.tenant = get_tenant_model().objects.get(
                 schema_name=cls.get_test_schema_name()
@@ -62,6 +63,7 @@ class TenantTestCase(DjangoTenantTestCase):
 
     @classmethod
     def tearDownClass(cls):
+        """Tear down function."""
         connection.set_schema_to_public()
 
 

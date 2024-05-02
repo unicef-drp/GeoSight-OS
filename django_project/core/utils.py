@@ -48,7 +48,6 @@ def set_query_parameter(url, params):
 
 def create_superuser(tenant=None):
     """Create superuser."""
-
     # Getting the secrets
     admin_username = os.getenv('ADMIN_USERNAME')
     admin_password = os.getenv('ADMIN_PASSWORD')

@@ -49,4 +49,5 @@ class Domain(DomainMixin):
 
     @property
     def schema_name(self):
+        """Return schema name of domain."""
         return self.tenant.schema_name
