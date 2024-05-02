@@ -14,9 +14,11 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import os
 import uuid
-
 from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
+
+from django.contrib.auth import get_user_model
 
 
 def string_is_true(string: str):
@@ -42,3 +44,36 @@ def set_query_parameter(url, params):
     url_new_query = urlencode(url_dict)
     url_parse = url_parse._replace(query=url_new_query)
     return urlunparse(url_parse)
+
+
+def create_superuser(tenant=None):
+    """Create superuser."""
+
+    # Getting the secrets
+    admin_username = os.getenv('ADMIN_USERNAME')
+    admin_password = os.getenv('ADMIN_PASSWORD')
+    admin_email = os.getenv('ADMIN_EMAIL')
+
+    print(
+        f'Creating/updating superuser for '
+        f'{tenant.schema_name if tenant else "public"}'
+    )
+    USE_AZURE = os.getenv('AZURE_B2C_CLIENT_ID', '') not in ['', "''"]
+    if USE_AZURE:
+        admin_email = os.getenv('B2C_ADMIN_EMAIL', admin_email)
+        admin_username = os.getenv('B2C_ADMIN_EMAIL', admin_username)
+    try:
+        superuser = get_user_model().objects.get(username=admin_username)
+        superuser.is_active = True
+        superuser.email = admin_email
+        superuser.save()
+        print('superuser successfully updated')
+    except get_user_model().DoesNotExist:
+        superuser = get_user_model().objects.create_superuser(
+            admin_username,
+            admin_email,
+        )
+        print('superuser successfully created')
+
+    superuser.set_password(admin_password)
+    superuser.save()

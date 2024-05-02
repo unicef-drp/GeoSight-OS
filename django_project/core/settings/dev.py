@@ -74,14 +74,4 @@ WEBPACK_LOADER['DEFAULT']['CACHE'] = DEBUG
 WEBPACK_LOADER['DEFAULT']['STATS_FILE'] = ABS_PATH(
     'frontend', 'webpack-stats.dev.json'
 )
-
-try:
-    # use ssl
-    import sslserver  # noqa:F401
-
-    INSTALLED_APPS = INSTALLED_APPS + (
-        'sslserver',
-    )
-except ImportError:
-    pass
 MOCK_GEOREPO = True

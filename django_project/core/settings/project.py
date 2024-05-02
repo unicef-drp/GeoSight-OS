@@ -19,6 +19,7 @@ import os  # noqa
 from celery.schedules import crontab
 from django.utils.translation import ugettext_lazy as _
 
+from .app import *  # noqa
 from .contrib import *  # noqa
 
 MOCK_GEOREPO = False
@@ -31,7 +32,7 @@ ADMINS = (
 TEMP_SCHEMA_NAME = 'temp_upload'
 DATABASES = {
     'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'ENGINE': 'django_tenants.postgresql_backend',
         'NAME': os.environ['DATABASE_NAME'],
         'USER': os.environ['DATABASE_USERNAME'],
         'PASSWORD': os.environ['DATABASE_PASSWORD'],
@@ -56,7 +57,11 @@ DATABASES = {
         'TEST_NAME': 'unittests',
     }
 }
-DATABASE_ROUTERS = ['core.router.Router']
+ORIGINAL_BACKEND = "django.contrib.gis.db.backends.postgis"
+DATABASE_ROUTERS = (
+    'django_tenants.routers.TenantSyncRouter',
+    'core.router.Router'
+)
 
 # Due to profile page does not available,
 # this will redirect to home page after login
@@ -77,18 +82,6 @@ LANGUAGES = (
 
 # Set storage path for the translation files
 LOCALE_PATHS = (ABS_PATH('locale'),)
-
-# Extra installed apps
-INSTALLED_APPS = INSTALLED_APPS + (
-    'azure_auth',
-    'core',
-    'docs',
-    'geosight.data',
-    'geosight.georepo',
-    'geosight.permission',
-    'geosight.importer',
-    'frontend',
-)
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000
 
