@@ -31,4 +31,4 @@ class ClientAdmin(TenantAdminMixin, admin.ModelAdmin):
 class DomainAdmin(TenantAdminMixin, admin.ModelAdmin):
     """Domain admin."""
 
-    list_display = ('domain', 'tenant', 'schema_name')
+    list_display = ('domain', 'tenant', 'schema_name', 'is_primary')

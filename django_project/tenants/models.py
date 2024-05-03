@@ -45,7 +45,7 @@ class Client(TenantMixin):
 class Domain(DomainMixin):
     """Client name for the tenant."""
 
-    is_primary = models.BooleanField(default=False, db_index=True)
+    is_primary = models.BooleanField(default=True, db_index=True)
 
     @property
     def schema_name(self):

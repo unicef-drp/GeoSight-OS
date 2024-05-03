@@ -3,8 +3,6 @@ from __future__ import absolute_import, unicode_literals
 
 import os
 
-from celery import Celery
-
 """
 GeoSight is UNICEF's geospatial web-based business intelligence platform.
 
@@ -20,6 +18,8 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+from tenant_schemas_celery.app import CeleryApp as TenantAwareCeleryApp
+
 # set the default Django settings module for the 'celery' program.
 # this is also used in manage.py
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
@@ -30,7 +30,7 @@ BASE_REDIS_URL = (
     f'@{os.environ.get("REDIS_HOST", "")}',
 )
 
-app = Celery('geosight')
+app = TenantAwareCeleryApp('geosight')
 
 # Using a string here means the worker don't have to serialize
 # the configuration object to child processes.
