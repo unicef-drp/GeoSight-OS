@@ -104,12 +104,12 @@ class BaseExcelFormatImporter(ABC):
             row = {}
             for idx, header in enumerate(headers):
                 try:
-                    row[header] = clean_value(record[idx])
+                    row[header.strip()] = clean_value(record[idx])
                 except (ValueError, IndexError):
                     pass
             for key, value in self.mapping.items():
                 try:
-                    row[value] = clean_value(row[key])
+                    row[value] = clean_value(row[key.strip()])
                 except KeyError:
                     pass
             data.append(row)

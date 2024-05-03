@@ -150,10 +150,12 @@ export const fetchPaginationInParallel = async function (url, params, onProgress
     const call = async (page) => {
       const response = await fetchJSON(nextUrl.replace('page=2', `page=${page}`), {});
       doneCount += 1
-      onProgress({
-        page: doneCount,
-        total_page: response.total_page,
-      })
+      if (onProgress) {
+        onProgress({
+          page: doneCount,
+          total_page: response.total_page,
+        })
+      }
       data = data.concat(response.results)
     }
     await Promise.all(Array(response.total_page - 1).fill(0).map((_, idx) => call(idx + 2)))

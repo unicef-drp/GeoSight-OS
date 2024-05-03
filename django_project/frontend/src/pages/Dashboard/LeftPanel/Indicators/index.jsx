@@ -24,6 +24,7 @@ import { Actions } from "../../../../store/dashboard";
 import { fetchPaginationInParallel } from "../../../../Requests";
 import { removeElement } from "../../../../utils/Array";
 import {
+  filterIndicatorsData,
   getIndicatorDataId,
   UpdateStyleData
 } from "../../../../utils/indicatorData";
@@ -35,8 +36,8 @@ import {
 /** Indicators data. */
 let indicatorFetchingSession = null
 export let indicatorFetchingIds = []
-const MAX_COUNT_FOR_ALL_DATA = 10000
 const allRequestStatus = {}
+const MAX_COUNT_FOR_ALL_DATA = 10000
 
 export default function Indicators() {
   const prevState = useRef();
@@ -117,21 +118,29 @@ export default function Indicators() {
    */
   const getDataFn = async (id, url, params, currentGlobalTime, dataVersion, onResponse, onProgress, doAll, referenceLayerIdentifier) => {
     const identifier = url + '?reference_layer_uuid=' + referenceLayerIdentifier
+    let byDateRequested = false
+    let response = []
     if (allRequestStatus[identifier] !== 'done') {
+      byDateRequested = true
       params.reference_layer_uuid = referenceLayerIdentifier
       params.version = dataVersion
-      const dateResponse = await getDataByDate(id, url, params, dictDeepCopy(selectedGlobalTime), dataVersion, onProgress)
-      onResponse(dateResponse)
+      response = await getDataByDate(id, url, params, dictDeepCopy(selectedGlobalTime), dataVersion, onProgress)
     }
     if (doAll) {
-      const allDataResponse = await fetchPaginationInParallel(url, {
-        reference_layer_uuid: referenceLayerIdentifier,
-        version: dataVersion,
-        last_value: false
-      })
-      allRequestStatus[identifier] = 'done'
-      onResponse(allDataResponse, null, true)
+      if (allRequestStatus[identifier] !== 'request') {
+        allRequestStatus[identifier] = 'request'
+        const allDataResponse = await fetchPaginationInParallel(url, {
+          reference_layer_uuid: referenceLayerIdentifier,
+          version: dataVersion,
+          last_value: false
+        })
+        allRequestStatus[identifier] = 'done'
+        if (!byDateRequested) {
+          response = filterIndicatorsData(currentGlobalTime.min, currentGlobalTime.max, allDataResponse)
+        }
+      }
     }
+    return response
   }
 
   /***
@@ -143,7 +152,7 @@ export default function Indicators() {
       (
         async () => {
           try {
-            await getDataFn(id, url, params, currentGlobalTime, dataVersion, onResponse, onProgress, doAll, referenceLayerIdentifier)
+            resolve(getDataFn(id, url, params, currentGlobalTime, dataVersion, onResponse, onProgress, doAll, referenceLayerIdentifier))
           } catch (error) {
             reject(error)
           }
@@ -218,6 +227,7 @@ export default function Indicators() {
         })
 
         // Create request state
+        let promises = []
         for (var idx = 0; idx <= indicatorsWithDataset.length - 1; idx++) {
           const { id: _id, datasets } = indicatorsWithDataset[idx]
           const indicator = indicators.find(
@@ -231,15 +241,14 @@ export default function Indicators() {
               const indicatorDataId = getIndicatorDataId(id, referenceLayer.identifier, referenceLayerIdentifier)
 
               // On Response
-              const onResponse = (response, error, force) => {
-                if ((indicatorFetchingSession === session && response) || force) {
+              const onResponse = (response, error) => {
+                if (indicatorFetchingSession === session && response) {
                   response = UpdateStyleData(response, indicator)
                   dispatch(
                     Actions.IndicatorsData.receive(response, error, indicatorDataId)
                   )
                   dispatch(
-                    Actions.IndicatorsMetadata.progress(
-                      id, {
+                    Actions.IndicatorsMetadata.progress(id, {
                         total_page: Math.ceil(response.length / 100),
                         page: Math.ceil(response.length / 100)
                       }
@@ -268,11 +277,20 @@ export default function Indicators() {
                 const doAll = !use_only_last_known_value && metadata?.count && metadata.count < MAX_COUNT_FOR_ALL_DATA
 
                 // If index is 1, waiting for this to be done
-                getDataPromise(
-                  dataId, url, params, dictDeepCopy(selectedGlobalTime), version, onResponse, onProgress, doAll, referenceLayerIdentifier
-                ).catch(error => {
-                  onResponse(null, error)
-                })
+                promises.push(
+                  getDataPromise(
+                    dataId, url, params, dictDeepCopy(selectedGlobalTime), version, onResponse, onProgress, doAll, referenceLayerIdentifier
+                  ).then(response => {
+                    onResponse(response, null)
+                  }).catch(error => {
+                    onResponse(null, error)
+                  })
+                )
+
+                if (promises.length === 2) {
+                  await Promise.allSettled(promises)
+                  promises = []
+                }
               }
             }
           }
