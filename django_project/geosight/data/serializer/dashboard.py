@@ -105,11 +105,6 @@ class DashboardSerializer(serializers.ModelSerializer):
             context={'user': self.context.get('user', None)},
             exclude=['last_update', 'permission']
         ).data
-        if obj.slug:
-            data['url'] = reverse(
-                'dashboard-indicator-values-api',
-                args=[obj.slug, model.object.id]
-            )
         dashboard_data = DashboardIndicatorSerializer(
             model,
             context={'user': self.context.get('user', None)}
