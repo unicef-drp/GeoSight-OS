@@ -287,7 +287,7 @@ export default function Indicators() {
                   })
                 )
 
-                if (promises.length === 2) {
+                if (promises.length === 10) {
                   await Promise.allSettled(promises)
                   promises = []
                 }
