@@ -18,6 +18,8 @@ import json
 
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_control
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -127,6 +129,7 @@ class IndicatorDetailAPI(APIView):
         return Response('Deleted')
 
 
+@method_decorator(cache_control(public=True, max_age=864000), name='dispatch')
 class IndicatorValuesAPI(
     _DashboardIndicatorValuesAPI, ListAPIView
 ):
@@ -152,7 +155,8 @@ class IndicatorValuesAPI(
             date_data=max_time,
             min_date_data=min_time,
             admin_level=self.request.GET.get('admin_level', None),
-            reference_layer=reference_layer
+            reference_layer=reference_layer,
+            last_value=self.request.GET.get('last_value', 'true') == 'true'
         )
 
     def get(self, request, **kwargs):
