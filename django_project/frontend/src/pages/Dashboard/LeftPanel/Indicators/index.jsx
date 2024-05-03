@@ -256,7 +256,7 @@ export default function Indicators() {
                 })
               )
 
-              if (idx % 10 === 0) {
+              if (idx % 50 === 0) {
                 await Promise.allSettled(promises)
                 promises = []
               }
