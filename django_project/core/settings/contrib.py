@@ -55,3 +55,6 @@ REST_KNOX = {
     'TOKEN_LIMIT_PER_USER': 1,
     'AUTO_REFRESH': False,
 }
+
+# Multi tenant
+PERIODIC_TASK_TENANT_LINK_MODEL = "tenants.PeriodicTaskTenantLink"

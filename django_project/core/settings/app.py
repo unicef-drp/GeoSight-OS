@@ -35,6 +35,7 @@ SHARED_APPS = (
     'webpack_loader',
     'django_celery_beat',
     'django_celery_results',
+    'django_tenants_celery_beat',
     'captcha',
     'knox',
     'drf_yasg',

@@ -17,11 +17,15 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.db import models
 from django_tenants.models import TenantMixin, DomainMixin
 from django_tenants.utils import tenant_context
+from django_tenants_celery_beat.models import (
+    TenantTimezoneMixin,
+    PeriodicTaskTenantLinkMixin
+)
 
 from core.utils import create_superuser
 
 
-class Client(TenantMixin):
+class Client(TenantTimezoneMixin, TenantMixin):
     """Client name for the tenant."""
 
     auto_create_schema = True
@@ -51,3 +55,9 @@ class Domain(DomainMixin):
     def schema_name(self):
         """Return schema name of domain."""
         return self.tenant.schema_name
+
+
+class PeriodicTaskTenantLink(PeriodicTaskTenantLinkMixin):
+    """Model to link periodic tasks with tenant."""
+
+    pass

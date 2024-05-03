@@ -20,6 +20,7 @@ import uuid
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.gis.db import models
+from django.db import connection
 from django.db.models import Q
 from django.shortcuts import reverse
 from django.utils.translation import ugettext_lazy as _
@@ -360,11 +361,13 @@ class Importer(AbstractEditData):
                     crontab.save()
                 except Exception as e:
                     raise ImporterError(f'{e}')
+                tenant = connection.get_tenant()
                 self.job = PeriodicTask.objects.create(
                     name=self.unique_name,
                     task='geosight.importer.tasks.run_importer',
                     kwargs=kwargs,
-                    crontab=crontab
+                    crontab=crontab,
+                    headers=json.dumps({'_schema_name': tenant.schema_name}),
                 )
                 self.job.save()
                 self.save()
