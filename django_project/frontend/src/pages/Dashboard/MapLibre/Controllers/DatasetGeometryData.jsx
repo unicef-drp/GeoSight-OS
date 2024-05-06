@@ -46,6 +46,10 @@ export default function DatasetGeometryData() {
     (
       async () => {
         // Fetch reference layer data
+        dispatch(
+          Actions.GlobalState.update({ datasets: datasets })
+        )
+
         const referenceLayerData = dictDeepCopy(referenceLayerDataState)
         for (let i = 0; i < datasets.length; i++) {
           const identifier = datasets[i]

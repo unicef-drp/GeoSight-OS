@@ -34,7 +34,6 @@ import {
   indicatorLayerId,
   indicatorLayersLikeIndicator
 } from "../../../../utils/indicatorLayer";
-import { datasetListFromDashboardData } from "../../../../utils/geometry";
 
 import './style.scss';
 
@@ -59,10 +58,10 @@ function FilterSection() {
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel)
   const datasetGeometries = useSelector(state => state.datasetGeometries);
   const geometries = useSelector(state => state.datasetGeometries[referenceLayer.identifier]);
+  const datasets = useSelector(state => state.globalState['datasets'])
 
   const ableToModify = filtersAllowModify || editMode;
   const dispatcher = useDispatch();
-  const datasets = datasetListFromDashboardData(data)
 
   const levels = referenceLayerData[referenceLayer.identifier]?.data?.dataset_levels
 
