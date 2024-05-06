@@ -30,7 +30,7 @@ import { allDataIsReady } from "../../../../utils/indicators";
 import {
   indicatorLayerId,
   isIndicatorLayerLikeIndicator,
-  SingleIndicatorType
+  SingleIndicatorTypes
 } from "../../../../utils/indicatorLayer";
 import { dictDeepCopy } from "../../../../utils/main";
 import {
@@ -345,7 +345,7 @@ export default function ReferenceLayerCentroid({ map }) {
     // ---------------------------------------------------------
     let labelConfig = indicatorLayer.label_config
     let styleConfig = indicatorLayer
-    if (indicatorLayer.type === SingleIndicatorType) {
+    if ([SingleIndicatorTypes].includes(indicatorLayer.type)) {
       const indicatorDetail = indicators.find(indicator => indicator.id === indicatorLayer?.indicators[0]?.id)
       if (!indicatorLayer.override_style && indicatorDetail) {
         styleConfig = indicatorDetail

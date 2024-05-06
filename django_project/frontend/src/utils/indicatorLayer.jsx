@@ -20,6 +20,7 @@ import { getRelatedTableData } from "./relatedTable";
 import { getIndicatorDataByLayer } from "./indicatorData";
 
 export const SingleIndicatorType = 'Single Indicator'
+export const SingleIndicatorTypes = [SingleIndicatorType, 'Float']
 export const MultiIndicatorType = 'Multi Indicator'
 export const DynamicIndicatorType = 'Dynamic Indicator'
 export const RelatedTableLayerType = 'Related Table'
@@ -197,7 +198,7 @@ export function getLayerDataCleaned(
 ) {
   indicatorsData = dictDeepCopy(indicatorsData)
   relatedTableData = dictDeepCopy(relatedTableData)
-  let data = getLayerData(indicatorsData, relatedTableData, indicatorLayer, referenceLayer)
+  let data = getLayerData(indicatorsData, relatedTableData, indicatorLayer, referenceLayer, true)
   indicatorLayer.related_tables?.map(obj => {
     if (relatedTableData[obj.id]) {
       const { rows } = getRelatedTableData(
@@ -211,6 +212,7 @@ export function getLayerDataCleaned(
       })
     }
   })
+  console.log(data)
 
   if (filteredGeometries && Array.isArray(data[0]?.data)) {
     data[0].data = data[0].data.filter(row => filteredGeometries.includes(row.concept_uuid))

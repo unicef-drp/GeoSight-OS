@@ -15,7 +15,7 @@
 import { isArray } from "chart.js/helpers";
 import { dictDeepCopy } from "./main";
 import { NO_DATA_RULE } from "../pages/Admin/Style/Form/StyleRules";
-import { getLayerDataCleaned, SingleIndicatorType } from "./indicatorLayer";
+import { getLayerDataCleaned, SingleIndicatorTypes } from "./indicatorLayer";
 
 
 export const STYLE_FORM_LIBRARY = 'Style from library.'
@@ -51,7 +51,7 @@ export function returnLayerStyleConfig(layer, indicators) {
     config = dictDeepCopy(layer)
     // Use layer rules
     // If not, use first indicator rules
-    if (layer.type === SingleIndicatorType) {
+    if (SingleIndicatorTypes.includes(layer.type)) {
       const indicatorDetail = indicators.find(indicator => indicator.id === layer?.indicators[0]?.id)
       if (!layer.override_style && indicatorDetail) {
         config = indicatorDetail
