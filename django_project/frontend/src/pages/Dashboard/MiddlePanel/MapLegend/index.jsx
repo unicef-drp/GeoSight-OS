@@ -109,7 +109,10 @@ const RenderIndicatorLegend = ({ layer, name }) => {
           }
         }
         rules = indicatorLayerStyle(
-          layer, indicators, indicatorsData, relatedTableData,
+          {
+            ...layer,
+            indicators: [indicator]
+          }, indicators, indicatorsData, relatedTableData,
           selectedGlobalTime, geoField, selectedAdminLevel?.level, filteredGeometries,
           indicatorData, referenceLayer
         )
