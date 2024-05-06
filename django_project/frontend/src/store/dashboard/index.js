@@ -25,7 +25,6 @@ import Extent from './reducers/extent/actions'
 import Filters from './reducers/filters/actions'
 import FiltersData from './reducers/filtersData/actions'
 import FilteredGeometries from './reducers/filteredGeometries/actions'
-import Geometries from './reducers/geometries/actions'
 import GlobalState from './reducers/globalState/actions'
 import IndicatorLayers from './reducers/indicatorLayers/actions'
 import Indicators from './reducers/indicators/actions'
@@ -61,7 +60,6 @@ const Actions = {
   Filters,
   FilteredGeometries,
   FiltersData,
-  Geometries,
   GlobalState,
   IndicatorLayers,
   Indicators,
