@@ -48,6 +48,7 @@ import {
 import { EmbedConfig } from "../../../utils/embed";
 import { Actions } from "../../../store/dashboard";
 import ReferenceLayerSection from "../MiddlePanel/ReferenceLayer";
+import DatasetGeometryData from "./Controllers/DatasetGeometryData";
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 import './style.scss';
@@ -308,8 +309,10 @@ export default function MapLibre(
     <ReferenceLayers map={map} deckgl={deckgl} is3DView={is3dMode}/>
     <ContextLayers map={map}/>
     {
-      map ?
-        <ReferenceLayerCentroid map={map}/> : ""
+      map ? <>
+        <DatasetGeometryData/>
+        <ReferenceLayerCentroid map={map}/>
+      </> : null
     }
   </section>
 }

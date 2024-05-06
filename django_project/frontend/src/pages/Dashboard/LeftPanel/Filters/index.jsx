@@ -87,11 +87,13 @@ function FilterSection() {
       return
     }
     const level = levels.find(level => level.level === selectedAdminLevel.level)
+    if (!level) {
+      return
+    }
     const indicatorLayerConfig = {}
     indicatorLayers.map(layer => {
       indicatorLayerConfig[layer.id] = layer.config
     })
-
     const reporting_level = level.level;
     // Doing the filter if it is different filter
     // PREPARE DATA LIST

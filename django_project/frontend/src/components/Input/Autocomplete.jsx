@@ -18,7 +18,7 @@ import ReactAutocomplete from '@mui/material/Autocomplete';
 import { ArrowDownwardIcon } from "../Icons";
 
 export default function Autocomplete({ ...props }) {
-  if (!props.options.includes(props.value)) {
+  if (props.value && !props.options.includes(props.value)) {
     props.options.push(props.value)
   }
   return <ReactAutocomplete

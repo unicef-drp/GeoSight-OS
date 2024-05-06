@@ -20,6 +20,7 @@ import rootReducer from './reducers';
 import Basemaps from './reducers/basemap/actions'
 import ContextLayers from './reducers/contextLayers/actions'
 import Dashboard from './reducers/dashboard/actions'
+import DatasetGeometries from './reducers/datasetGeometries/actions'
 import Extent from './reducers/extent/actions'
 import Filters from './reducers/filters/actions'
 import FiltersData from './reducers/filtersData/actions'
@@ -55,6 +56,7 @@ const Actions = {
   Basemaps,
   ContextLayers,
   Dashboard,
+  DatasetGeometries,
   Extent,
   Filters,
   FilteredGeometries,
