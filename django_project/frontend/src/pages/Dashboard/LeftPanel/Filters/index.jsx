@@ -34,6 +34,7 @@ import {
   indicatorLayerId,
   indicatorLayersLikeIndicator
 } from "../../../../utils/indicatorLayer";
+import { datasetListFromDashboardData } from "../../../../utils/geometry";
 
 import './style.scss';
 
@@ -42,6 +43,7 @@ import './style.scss';
  * Filter section.
  */
 function FilterSection() {
+  const { data } = useSelector(state => state.dashboard);
   const {
     filters,
     indicators,
@@ -50,14 +52,17 @@ function FilterSection() {
     relatedTables,
     filtersAllowModify
   } = useSelector(state => state.dashboard.data);
-  const ableToModify = filtersAllowModify || editMode;
-  const selectedGlobalTime = useSelector(state => state.selectedGlobalTime);
+  const { referenceLayers, indicatorShow } = useSelector(state => state.map)
   const referenceLayerData = useSelector(state => state.referenceLayerData)
   const indicatorsData = useSelector(state => state.indicatorsData)
   const relatedTableData = useSelector(state => state.relatedTableData)
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel)
-  const geometries = useSelector(state => state.geometries);
+  const datasetGeometries = useSelector(state => state.datasetGeometries);
+  const geometries = useSelector(state => state.datasetGeometries[referenceLayer.identifier]);
+
+  const ableToModify = filtersAllowModify || editMode;
   const dispatcher = useDispatch();
+  const datasets = datasetListFromDashboardData(data)
 
   const levels = referenceLayerData[referenceLayer.identifier]?.data?.dataset_levels
 
@@ -103,41 +108,44 @@ function FilterSection() {
     // Geometry data
     // ---------------------------------------
     const codes = []
-    const codesCurrentLevel = []
     const data = []
-    levels.map(level => {
-      const geoms = geometries[level.level]
-      if (geoms) {
-        for (const [key, geomData] of Object.entries(geoms)) {
-          codes.push(geomData.code)
-          if (reporting_level === level.level) {
-            codesCurrentLevel.push(geomData.code)
-          }
-          if (where && where.includes('geometry_layer.') && geomData.members) {
-            geomData.members.map(member => {
-              data.push({
-                concept_uuid: geomData.concept_uuid,
-                ucode: member.ucode,
-                name: member.name,
-              })
-            })
-          } else {
-            data.push({
-              concept_uuid: geomData.concept_uuid,
-              ucode: geomData.ucode,
-              name: geomData.name,
-            })
+    datasets.map(identifier => {
+      const geometries = datasetGeometries[identifier]
+      const levels = referenceLayerData[identifier]?.data?.dataset_levels
+      levels.map(level => {
+        if (geometries) {
+          const geoms = geometries[level.level]
+          if (geoms) {
+            for (const [key, geomData] of Object.entries(geoms)) {
+              codes.push(geomData.code)
+              if (where && where.includes('geometry_layer.') && geomData.members) {
+                geomData.members.map(member => {
+                  data.push({
+                    concept_uuid: geomData.concept_uuid,
+                    ucode: member.ucode,
+                    name: member.name,
+                  })
+                })
+              } else {
+                data.push({
+                  concept_uuid: geomData.concept_uuid,
+                  ucode: geomData.ucode,
+                  name: geomData.name,
+                })
+              }
+            }
           }
         }
-      }
-    })
-    levels.map(level => {
-      dataList.push({
-        id: `geometry_layer`,
-        reporting_level: level.level,
-        data: data
+      })
+      levels.map(level => {
+        dataList.push({
+          id: identifier === referenceLayer?.identifier ? `geometry_layer` : `geometry_layer.${identifier}`,
+          reporting_level: level.level,
+          data: data
+        })
       })
     })
+
     // ------------------------------------------------
     // Indicator data
     // ------------------------------------------------
@@ -170,7 +178,7 @@ function FilterSection() {
         data.id = `related_table_${relatedTable.id}`
         data.reporting_level = reporting_level
         dataList.push(data)
-        const codes = geometries[reporting_level] ? Object.keys(geometries[reporting_level]) : []
+        const codes = geometries && geometries[reporting_level] ? Object.keys(geometries[reporting_level]) : []
         if (data.data) {
           // TODO :
           //  We need to update if the related table can receive other code
@@ -216,16 +224,31 @@ function FilterSection() {
       referenceLayerData[referenceLayer.identifier].data.dataset_levels) {
       filter(filters)
     }
-  }, [filters, indicatorsData, relatedTableData, geometries, selectedAdminLevel]);
+  }, [
+    datasets, referenceLayers,
+    filters, indicatorsData, relatedTableData, geometries, selectedAdminLevel
+  ]);
 
-  // FIELDS FROM GEOMETRY
+  // Geometry data from default project
   let fields = []
-  if (levels) {
+  datasets.map(identifier => {
+    const geometries = datasetGeometries[identifier]
+    const datasetData = referenceLayerData[identifier]?.data
+    if (!datasetData) {
+      return
+    }
+    const {
+      dataset_levels: levels,
+      name
+    } = referenceLayerData[identifier]?.data
+    if (!levels) {
+      return;
+    }
     levels.map(level => {
       ['ucode', 'name'].map(key => {
-        const id = `geometry_${level.level}.${key}`
+        const id = identifier === referenceLayer?.identifier ? `geometry_${level.level}.${key}` : `geometry_${level.level}_${identifier.replaceAll('-', '_')}.${key}`
         let data = ['loading']
-        if (geometries[level.level]) {
+        if (geometries && geometries[level.level]) {
           data = [...new Set(
             Object.keys(geometries[level.level]).map(geom => {
               return geometries[level.level][geom][key]
@@ -235,14 +258,14 @@ function FilterSection() {
         fields.push({
           id: id,
           name: `${key}`,
-          group: `Admin - ${level.level_name}`,
+          group: `${name} - ${level.level_name}`,
           data: data,
           level: level.level,
           type: 'String'
         })
       })
     })
-  }
+  })
 
   // FIELDS FROM INDICATORS
   indicators.map(indicator => {
@@ -339,7 +362,6 @@ function FilterSection() {
       })
     })
   })
-
   return <Fragment>
     <div className='FilterControl'>
       <FilterControl

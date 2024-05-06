@@ -18,14 +18,14 @@
    ========================================================================== */
 
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import $ from "jquery";
 import maplibregl from "maplibre-gl";
 import Chart from 'chart.js/auto';
 import { returnWhere } from "../../../../utils/queryExtraction";
 import { popupTemplate } from "../Popup";
 import { addPopupEl } from "../utils";
-import { extractCode, fetchJson } from "../../../../utils/georepo";
+import { extractCode } from "../../../../utils/georepo";
 import { allDataIsReady } from "../../../../utils/indicators";
 import {
   indicatorLayerId,
@@ -40,8 +40,6 @@ import {
 import { hideLabel, renderLabel, showLabel } from "./Label"
 import { ExecuteWebWorker } from "../../../../utils/WebWorker";
 import worker from "./Label/worker";
-import { fetchJSON } from "../../../../Requests";
-import { Actions } from "../../../../store/dashboard";
 
 import './style.scss';
 
@@ -55,7 +53,6 @@ let lastRequest = null
  * GeometryCenter.
  */
 export default function ReferenceLayerCentroid({ map }) {
-  const dispatch = useDispatch();
   const {
     referenceLayer,
     indicators,
@@ -69,6 +66,7 @@ export default function ReferenceLayerCentroid({ map }) {
   const selectedIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer)
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel)
   const filtersData = useSelector(state => state.filtersData);
+  const datasetGeometries = useSelector(state => state.datasetGeometries)
 
   const [geometries, setGeometries] = useState({});
 
@@ -76,99 +74,20 @@ export default function ReferenceLayerCentroid({ map }) {
 
   // When reference layer changed, fetch features
   useEffect(() => {
-    const currentDatasets = dictDeepCopy(referenceLayers.map(referenceLayer => referenceLayer.identifier))
-    currentDatasets.sort()
-    if (JSON.stringify(lastRequest) === JSON.stringify(currentDatasets)) {
-      return
-    }
-    dispatch(Actions.Geometries.deleteAll());
-    lastRequest = currentDatasets
-
-    setGeometries({});
     const currGeometries = {}
     referenceLayers.map(referenceLayer => {
-      const identifier = referenceLayer.identifier
-
-      // ----------------------------
-      // TODO:
-      //  Fetch reference layer entities
-      // ----------------------------
-      try {
-        const geometryDataDict = {}
-        const geometryMemberByUcode = {}
-        const url = `${preferences.georepo_api.api}/search/view/${referenceLayer.identifier}/centroid/`
-        fetchJson(url).then(async data => {
-          if (lastRequest.includes(identifier)) {
-            for (let i = 0; i < data.length; i++) {
-              const level = data[i]
-              const response = await fetchJSON(level.url)
-              const geoms = {}
-
-              response.features.map(feature => {
-                const name = feature.properties.n
-                const ucode = feature.properties.u
-                const concept_uuid = feature.properties.c
-                const parentsUcode = feature.properties.pu
-                const properties = {
-                  concept_uuid: feature.properties.c,
-                  name: name,
-                  ucode: ucode,
-                  geometry: feature.geometry
-                }
-                const code = extractCode(properties)
-                if (!code) {
-                  return
-                }
-                properties.code = code
-                geoms[code] = properties
-
-                // Check parents
-                let parents = []
-                if (parentsUcode) {
-                  parents = parentsUcode.map(parent => geometryMemberByUcode[parent]).filter(parent => !!parent)
-                }
-
-                // Save for geometries
-                const memberData = {
-                  name: name,
-                  ucode: ucode,
-                  code: code,
-                }
-                if (!geometryDataDict[level.level]) {
-                  geometryDataDict[level.level] = {}
-                }
-                geometryDataDict[level.level][code] = {
-                  label: name,
-                  name: name,
-                  code: code,
-                  ucode: ucode,
-                  concept_uuid: concept_uuid,
-                  parents: parents,
-                  members: parents.concat(memberData),
-                }
-                geometryMemberByUcode[ucode] = memberData
-              })
-              if (lastRequest.includes(identifier)) {
-                if (!currGeometries[level.level]) {
-                  currGeometries[level.level] = {}
-                }
-                currGeometries[level.level] = {
-                  ...currGeometries[level.level], ...geoms
-                }
-                setGeometries({ ...currGeometries })
-                dispatch(
-                  Actions.Geometries.addLevelData(
-                    level.level, geometryDataDict[level.level]
-                  )
-                )
-              }
-            }
+      const geoms = datasetGeometries[referenceLayer.identifier]
+      if (geoms) {
+        for (const [level, data] of Object.entries(geoms)) {
+          if (!currGeometries[level]) {
+            currGeometries[level] = {}
           }
-        })
-      } catch (e) {
+          currGeometries[level] = { ...currGeometries[level], ...data }
+        }
       }
     })
-  }, [referenceLayers]);
+    setGeometries(currGeometries)
+  }, [referenceLayers, datasetGeometries]);
 
   /**
    * Render chart
@@ -595,7 +514,7 @@ export default function ReferenceLayerCentroid({ map }) {
     geometries, filteredGeometries, indicatorsData,
     indicatorShow, indicatorLayers,
     selectedIndicatorLayer, selectedIndicatorSecondLayer,
-    selectedAdminLevel
+    selectedAdminLevel, referenceLayers
   ]);
 
   return null
