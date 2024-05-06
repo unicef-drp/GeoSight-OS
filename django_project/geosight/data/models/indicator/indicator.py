@@ -367,7 +367,6 @@ class Indicator(
         If it is upper than the reporting geometry level,
         it will be aggregate to upper level
         """
-        print(last_value)
         query = self.query_values(
             date_data=date_data, min_date_data=min_date_data,
             reference_layer=reference_layer, admin_level=admin_level,

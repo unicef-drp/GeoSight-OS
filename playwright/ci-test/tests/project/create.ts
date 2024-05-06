@@ -58,6 +58,7 @@ test.describe('Create project', () => {
     await page.locator('.AdminSelectDataForm .Save-Button button').click();
 
     // Add filters
+    await new Promise(r => setTimeout(r, 2000));
     await page.locator('.TabPrimary').getByText('Filters').click();
     await page.locator('.Filters').getByTestId('AddCircleIcon').click();
     await page.getByPlaceholder('Filter name').click();
