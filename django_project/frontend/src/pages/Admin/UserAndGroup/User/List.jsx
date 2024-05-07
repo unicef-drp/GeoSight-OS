@@ -61,13 +61,13 @@ export function USER_COLUMNS() {
         }
       }
     },
-    { field: 'email', headerName: 'Email', flex: 1 },
-    { field: 'first_name', headerName: 'First Name', flex: 1 },
-    { field: 'last_name', headerName: 'Last Name', flex: 1 },
+    { field: 'email', headerName: 'Email address', flex: 1 },
+    { field: 'first_name', headerName: 'First name', flex: 1 },
+    { field: 'last_name', headerName: 'Last name', flex: 1 },
     { field: 'role', headerName: 'Role', flex: 1 },
     {
       field: 'is_staff',
-      headerName: 'Is Django Staff',
+      headerName: 'Is django staff',
       width: 100,
       renderCell: (params) => {
         return ['true', true].includes(params.value) ?

@@ -29,7 +29,9 @@ from core.api.access_request import (
     AccessRequestList, AccessRequestDetail, AccessRequestCount
 )
 from core.api.color import ColorPaletteListAPI
-from core.api.group import GroupListAPI, GroupDetailAPI
+from core.api.group import (
+    GroupListAPI, GroupDetailAPI, GroupUpdateBatchUserAPI
+)
 from core.api.maintenance import MaintenanceAPI
 from core.api.proxy import ProxyView
 from core.api.sentry import trigger_error
@@ -111,6 +113,10 @@ group_api = [
     url(
         r'^list',
         GroupListAPI.as_view(), name='group-list-api'
+    ),
+    url(
+        r'^(?P<pk>\d+)/batch-update-user',
+        GroupUpdateBatchUserAPI.as_view(), name='group-batch-update-user-api'
     ),
     url(
         r'^(?P<pk>\d+)',

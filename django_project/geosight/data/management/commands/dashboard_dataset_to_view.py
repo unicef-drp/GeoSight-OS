@@ -22,7 +22,7 @@ from geosight.georepo.request.request import GeorepoRequest
 
 
 class Command(BaseCommand):
-    """Update all fixtures."""
+    """Update all _fixtures."""
 
     def handle(self, *args, **options):
         """Command handler."""
