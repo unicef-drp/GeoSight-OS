@@ -26,7 +26,7 @@ from geosight.data.models.dashboard.dashboard_indicator_layer import (
 
 
 class Command(BaseCommand):
-    """Update all _fixtures."""
+    """Update all fixtures."""
 
     def handle(self, *args, **options):
         """Command handler."""
