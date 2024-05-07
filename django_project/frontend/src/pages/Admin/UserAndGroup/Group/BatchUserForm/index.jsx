@@ -53,7 +53,7 @@ export const BatchUserForm = forwardRef(
       setUpdating(true)
       setUpdated(false)
 
-      DjangoRequests.put(
+      DjangoRequests.post(
         `/api/group/${data.id}/batch-update-user`,
         formData, {}, {
           'Content-Type': 'multipart/form-data'

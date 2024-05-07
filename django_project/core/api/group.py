@@ -96,7 +96,7 @@ class GroupUpdateBatchUserAPI(APIView):
         IsAuthenticated, AdminAuthenticationPermission,
     )
 
-    def put(self, request, pk):
+    def post(self, request, pk):
         """Delete an user."""
         group = get_object_or_404(GeosightGroup, pk=pk)
         try:
@@ -118,7 +118,7 @@ class GroupUpdateBatchUserAPI(APIView):
                         data = {
                             'first_name': row['First name'],
                             'last_name': row['Last name'],
-                            'email': row['Email']
+                            'email': row['Email address']
                         }
                         role = row['Role']
                         try:
@@ -154,6 +154,7 @@ class GroupUpdateBatchUserAPI(APIView):
                                 raise RoleDoesNotFound(
                                     f'Role of row {idx} does not exist'
                                 )
+                            user.groups.add(group)
                     except KeyError as e:
                         raise KeyError(
                             f'CSV should contains {e} column'
