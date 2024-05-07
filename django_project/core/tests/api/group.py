@@ -113,7 +113,6 @@ class GroupApiTest(BaseTest, TestCase):
             'core', 'tests', '_fixtures', 'batch.group.csv'
         )
 
-        members = {}
         with open(filepath) as _file:
             self.assertRequestPostView(
                 url, 200, {'file': _file}, user=self.admin
