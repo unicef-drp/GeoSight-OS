@@ -58,3 +58,5 @@ REST_KNOX = {
 
 # Multi tenant
 PERIODIC_TASK_TENANT_LINK_MODEL = "tenants.PeriodicTaskTenantLink"
+DEFAULT_FILE_STORAGE = "django_tenants.files.storage.TenantFileSystemStorage"
+MULTITENANT_RELATIVE_MEDIA_ROOT = ""

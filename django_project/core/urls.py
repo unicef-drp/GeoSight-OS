@@ -34,6 +34,7 @@ from core.api.maintenance import MaintenanceAPI
 from core.api.proxy import ProxyView
 from core.api.sentry import trigger_error
 from core.api.user import UserListAPI, UserDetailAPI, UserApiKey
+from tenants.views.static import serve
 
 
 class CustomSchemaGenerator(OpenAPISchemaGenerator):
@@ -87,7 +88,8 @@ else:
 
 if settings.DEBUG:
     urlpatterns += static(
-        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+        settings.MEDIA_URL, view=serve, document_root=settings.MEDIA_ROOT
+    )
 
 # ------------------------------------------------------
 # USER API
