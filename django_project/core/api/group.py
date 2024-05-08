@@ -106,6 +106,8 @@ class GroupUpdateBatchUserAPI(APIView):
             )
         except KeyError:
             return HttpResponseBadRequest('CSV should bin in file payload')
+        except Exception as e:
+            return HttpResponseBadRequest(f'{e}')
 
         with transaction.atomic():
             # Delete all user
