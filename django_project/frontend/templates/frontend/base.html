@@ -138,6 +138,14 @@
     'api': {}
   }
 
+  urls.statics = {
+    sample:{% if USE_AZURE %}
+      '{% static "sample/batch.group.azure.csv" %}'
+    {% else %}
+      '{% static "sample/batch.group.csv" %}'
+    {% endif %}
+  }
+
   /**
    * Function before ajax
    */
