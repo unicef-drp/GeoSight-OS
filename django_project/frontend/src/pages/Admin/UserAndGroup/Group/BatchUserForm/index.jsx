@@ -78,6 +78,10 @@ export const BatchUserForm = forwardRef(
         setOpen(false)
       }}>
         Update user for {data.name} in batch using csv file.
+        <br/>
+        <span className='helptext'>
+          You can get the csv file in <a href={urls.statics.sample}>here</a>.
+        </span>
       </ModalHeader>
       <div className='AdminContent'>
         {

@@ -26,5 +26,12 @@
         },
         'permissionAdmin': '{% url 'admin-data-access-view' %}',
       }
+      urls.statics = {
+        sample:{% if USE_AZURE %}
+          '{% static "sample/batch.group.azure.csv" %}'
+        {% else %}
+          '{% static "sample/batch.group.csv" %}'
+        {% endif %}
+      }
     </script>
 {% endblock %}
