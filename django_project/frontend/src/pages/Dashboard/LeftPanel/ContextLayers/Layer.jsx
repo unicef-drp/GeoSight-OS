@@ -17,8 +17,6 @@
    Return layer
    ========================================================================== */
 
-import React from 'react';
-
 import EsriData from "../../../../utils/esri/esri-data";
 import { dictDeepCopy } from "../../../../utils/main";
 import { popupTemplate } from "../../MapLibre/Popup";
@@ -110,13 +108,6 @@ export function VectorTileLayer(
   }
   layerData.parameters['maxNativeZoom'] = 19;
   layerData.parameters['maxZoom'] = maxZoom;
-  layerFn(layerData)
-}
-
-/** Related Table layer **/
-export function RelatedTableLayer(
-  layerData, layerFn, legendFn, errorFn, onEachFeature
-) {
   layerFn(layerData)
 }
 
@@ -298,7 +289,7 @@ export const getLayer = function (
       return ArcGisData
     }
     case 'Related Table': {
-      return RelatedTableLayer(
+      return VectorTileLayer(
         layerData,
         (layer) => setLayer(layer),
         (legend) => setLegend(legend),
