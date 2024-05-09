@@ -133,6 +133,14 @@ export function spacedField(field) {
 }
 
 /**
+ * Return if the field needs quote on the sql
+ * @param field
+ */
+export function isNeedQuote(field) {
+  return (field[0] === field[0].toUpperCase()) || field.includes(' ') || field.includes('-')
+}
+
+/**
  * Return indicator query
  * @param {array} data Data that will be filtered.
  * @param {string} whereQuery String where query.
@@ -190,7 +198,7 @@ export function returnWhere(where, ignoreActive, ids, sameGroupOperator = true, 
         }
       }
     case TYPE.EXPRESSION:
-      const needQuote = where.field.includes(' ') || (where.field[0] === where.field[0].toUpperCase())
+      const needQuote = isNeedQuote(where.field)
       let field = needQuote ? `"${where.field}"`.replaceAll('""', '"') : where.field
       const fieldSplit = field.split('.')
       // We put all geometry_x as geometry_layer

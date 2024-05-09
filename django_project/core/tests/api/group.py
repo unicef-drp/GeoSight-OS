@@ -14,6 +14,7 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '24/10/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import csv
 import json
 
 from core.tests.base_tests import TenantTestCase as TestCase
@@ -21,6 +22,7 @@ from django.urls import reverse
 
 from core.models.group import GeosightGroup
 from core.models.profile import ROLES
+from core.settings.utils import ABS_PATH
 from core.tests.base_tests import BaseTest
 from core.tests.model_factories import create_user
 
@@ -100,3 +102,26 @@ class GroupApiTest(BaseTest, TestCase):
         self.assertRequestDeleteView(url, 200, user=self.admin)  # Owner
         url = reverse('group-detail-api', kwargs={'pk': self.group.id})
         self.assertRequestGetView(url, 404, user=self.admin)  # Admin
+
+    def test_batch_update_member(self):
+        """Test get API."""
+        url = reverse(
+            'group-batch-update-user-api',
+            kwargs={'pk': self.group.id}
+        )
+        filepath = ABS_PATH(
+            'core', 'tests', '_fixtures', 'batch.group.csv'
+        )
+
+        with open(filepath) as _file:
+            self.assertRequestPostView(
+                url, 200, {'file': _file}, user=self.admin
+            )
+        _file.close()
+        with open(filepath) as _file:
+            reader = csv.DictReader(_file, delimiter=',')
+            for idx, row in enumerate(list(reader)):
+                user = self.group.user_set.get(username=row['Username'])
+                self.assertEqual(user.first_name, row['First name'])
+                self.assertEqual(user.last_name, row['Last name'])
+                self.assertEqual(user.profile.role, row['Role'])
