@@ -15,7 +15,7 @@
 
 import alasql from "alasql";
 import { isValidDate, parseDateTime, updateDate } from "./main"
-import { spacedField } from "./queryExtraction";
+import { queryData, spacedField } from "./queryExtraction";
 import { COUNT_UNIQUE } from "../components/SqlQueryGenerator/Aggregation";
 import {
   INTERNEXT_QUERY_BEFORE,
@@ -23,6 +23,7 @@ import {
   INTERVAL_QUERY_BEFORE,
   INTERVAL_REGEX
 } from "../components/SqlQueryGenerator/WhereQueryGenerator";
+import { deepClone } from "@mui/x-data-grid/utils/utils";
 
 /**
  * Return related table data
@@ -203,12 +204,16 @@ export const getRelatedTableData = (data, config, selectedGlobalTime, geoField =
  * Return geojson from related table data, based on lat and lon field, and a optional query
  */
 export const buildGeojsonFromRelatedData = (data, lon_field, lat_field, query = undefined) => {
-  const where = query.replaceAll('"', '`')
-  const sql = `SELECT * FROM ? as data WHERE ${where}`;
+  const where = query.replaceAll('"', '`').replace(/`(.*?)`/g, function (match, text, href) {
+    if (match.includes("'")) {
+      return match.replaceAll('`', '"')
+    }
+    return match
+  }).replaceAll('value', '_value');
 
-  const finalData = where ?
-    alasql(sql, [data]) :
-    data
+  const cleanData = deepClone(data)
+  cleanData.map(row => row._value = row.value)
+  const finalData = queryData(cleanData, where);
 
   const features = finalData.map(result => ({
     type: 'Feature',
@@ -226,7 +231,6 @@ export const buildGeojsonFromRelatedData = (data, lon_field, lat_field, query = 
 
   return featureCollection;
 };
-
 
 
 /***
