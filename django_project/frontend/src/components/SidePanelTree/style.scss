@@ -261,6 +261,7 @@
     }
   }
 }
+
 .ContextLayerMiddleConfig {
   box-sizing: border-box;
   max-width: 100%;
@@ -288,7 +289,7 @@
     height: 26px !important;
     min-height: 26px !important;
 
-    &>.WhereConfigurationOperatorType {
+    & > .WhereConfigurationOperatorType {
       margin-left: -1px;
     }
   }
@@ -296,12 +297,12 @@
   .WhereConfigurationQuery,
   .DateOperator {
 
-    &>.MultipleSelectWithSearch,
-    &>.SelectWithSearchInput,
-    &>.WhereConfigurationOperatorValue,
-    &>.WhereConfigurationOperatorText,
-    &>.WhereConfigurationOperatorType,
-    &>.SelectWithSearch,
+    & > .MultipleSelectWithSearch,
+    & > .SelectWithSearchInput,
+    & > .WhereConfigurationOperatorValue,
+    & > .WhereConfigurationOperatorText,
+    & > .WhereConfigurationOperatorType,
+    & > .SelectWithSearch,
     .DatePickerInput {
       height: 24px !important;
       min-height: 24px !important;
@@ -309,7 +310,7 @@
       border: $border;
       outline: unset !important;
 
-      &>.SelectWithSearch {
+      & > .SelectWithSearch {
         border: unset !important;
         height: 100%;
       }
@@ -328,8 +329,8 @@
       }
     }
 
-    &>.WhereConfigurationOperatorValue,
-    &>.WhereConfigurationOperatorType {
+    & > .WhereConfigurationOperatorValue,
+    & > .WhereConfigurationOperatorType {
       height: 25px !important;
       min-height: 25px !important;
     }
@@ -344,17 +345,17 @@
       min-width: 170px;
     }
 
-    &>.SelectWithSearchInput {
+    & > .SelectWithSearchInput {
       height: 25px !important;
       min-height: 25px !important;
       padding: 0 !important;
     }
 
-    &>.WhereConfigurationOperatorValue {
+    & > .WhereConfigurationOperatorValue {
       width: 80px;
     }
 
-    &>.WhereConfigurationOperatorText {
+    & > .WhereConfigurationOperatorText {
       display: block;
       border: unset !important;
       margin-right: 5px;
@@ -414,16 +415,19 @@
     flex-wrap: nowrap;
     width: fit-content;
     padding: 0 0.5rem !important;
-    flex-grow: 2;
 
     .WhereConfigurationQuery {
       display: block;
       padding: 0 0.5rem;
-      height: 60px;
+      margin-bottom: 1rem;
 
       .MuiOutlinedInput-root {
         min-height: 40px;
         font-size: 0.9rem !important;
+      }
+
+      .MuiInputSliderWithInput {
+        min-height: 40px;
       }
     }
 

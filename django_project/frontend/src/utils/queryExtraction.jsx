@@ -334,7 +334,7 @@ export function returnWhereToDict(where, upperWhere) {
  * Return value
  */
 const cleanValueFn = (value, returnEmpty = false) => {
-  return !value ? returnEmpty ? '' : "''" : (isNaN(value) ? `${value.includes("'") ? `"${value}"` : `'${value}'`}` : value);
+  return [null, undefined, ''].includes(value) ? returnEmpty ? '' : "''" : (isNaN(value) ? `${value.includes("'") ? `"${value}"` : `'${value}'`}` : value);
 }
 
 /**
