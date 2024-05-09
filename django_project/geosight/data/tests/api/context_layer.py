@@ -18,7 +18,7 @@ import copy
 import json
 
 from django.contrib.auth import get_user_model
-from django.test.testcases import TestCase
+from core.tests.base_tests import TenantTestCase as TestCase
 from django.urls import reverse
 
 from geosight.data.models.context_layer import ContextLayer, LayerType

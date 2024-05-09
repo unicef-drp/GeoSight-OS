@@ -16,18 +16,6 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from .base import *  # noqa
 
-# Extra installed apps
-INSTALLED_APPS = INSTALLED_APPS + (
-    'rest_framework',
-    'rest_framework_gis',
-    'webpack_loader',
-    'django_celery_beat',
-    'django_celery_results',
-    'captcha',
-    'knox',
-    'drf_yasg',
-    'tinymce',
-)
 WEBPACK_LOADER = {
     'DEFAULT': {
         'CACHE': True,
@@ -67,3 +55,8 @@ REST_KNOX = {
     'TOKEN_LIMIT_PER_USER': 1,
     'AUTO_REFRESH': False,
 }
+
+# Multi tenant
+PERIODIC_TASK_TENANT_LINK_MODEL = "tenants.PeriodicTaskTenantLink"
+DEFAULT_FILE_STORAGE = "django_tenants.files.storage.TenantFileSystemStorage"
+MULTITENANT_RELATIVE_MEDIA_ROOT = ""

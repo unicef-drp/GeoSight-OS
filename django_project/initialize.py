@@ -20,6 +20,9 @@ import time
 
 import django
 
+from core.utils import create_superuser
+from tenants.models import Client
+
 django.setup()
 
 #########################################################
@@ -27,7 +30,6 @@ django.setup()
 #########################################################
 from django.db import connection
 from django.db.utils import OperationalError
-from django.contrib.auth import get_user_model
 from django.core.management import call_command
 
 # Getting the secrets
@@ -63,30 +65,11 @@ call_command('migrate', '--noinput')
 #########################################################
 # 3. Creating superuser if it doesn't exist
 #########################################################
-
 print("-----------------------------------------------------")
 print("3. Creating/updating superuser")
-USE_AZURE = os.getenv('AZURE_B2C_CLIENT_ID', '') not in ['', "''"]
-if USE_AZURE:
-    admin_email = os.getenv('B2C_ADMIN_EMAIL', admin_email)
-    admin_username = os.getenv('B2C_ADMIN_EMAIL', admin_username)
-try:
-    superuser = get_user_model().objects.get(username=admin_username)
-    superuser.is_active = True
-    superuser.email = admin_email
-    superuser.save()
-    print('superuser successfully updated')
-except get_user_model().DoesNotExist:
-    superuser = get_user_model().objects.create_superuser(
-        admin_username,
-        admin_email,
-    )
-    print('superuser successfully created')
-
-if not USE_AZURE:
-    # when b2c is disabled, use ADMIN_PASSWORD
-    superuser.set_password(admin_password)
-    superuser.save()
+create_superuser()
+for client in Client.objects.all():
+    client.create_superuser()
 
 #########################################################
 # 4. Collecting static files
