@@ -28,10 +28,10 @@ class TenantMainMiddleware(TenantMainMiddlewareDefault):
     """Return schema name by domain."""
 
     def process_request(self, request):
-        """Connection needs first to be at the public schema.
-        as this is where the tenant metadata is stored.
-        """
+        """Check connection needs first to be at the public schema.
 
+        As this is where the tenant metadata is stored.
+        """
         # Skip using tenant if schema-name-by-domain
         url = request.build_absolute_uri()
         if 'schema-name-by-domain' in url:

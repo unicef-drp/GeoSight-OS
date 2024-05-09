@@ -3,6 +3,8 @@ from __future__ import absolute_import, unicode_literals
 
 import os
 
+from tenant_schemas_celery.app import CeleryApp as TenantAwareCeleryApp
+
 """
 GeoSight is UNICEF's geospatial web-based business intelligence platform.
 
@@ -14,11 +16,10 @@ Contact : geosight-no-reply@unicef.org
     (at your option) any later version.
 
 """
+
 __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
-
-from tenant_schemas_celery.app import CeleryApp as TenantAwareCeleryApp
 
 # set the default Django settings module for the 'celery' program.
 # this is also used in manage.py
