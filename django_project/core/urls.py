@@ -162,6 +162,7 @@ urlpatterns += [
     url(r'^api/', include(api)),
     url(r'^sentry-debug', trigger_error),
     url(r'^captcha/', include('captcha.urls')),
+    url(r'^tenants/', include('tenants.urls')),
     url(r'^', include('geosight.urls')),
     url(r'^', include('frontend.urls')),
 ]

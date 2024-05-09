@@ -76,7 +76,7 @@ STATICFILES_DIRS = (
 CACHE_MIDDLEWARE_KEY_PREFIX = 'dashboard'
 
 MIDDLEWARE = (
-    'django_tenants.middleware.main.TenantMainMiddleware',
+    'tenants.middleware.main.TenantMainMiddleware',
     'django.middleware.gzip.GZipMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
