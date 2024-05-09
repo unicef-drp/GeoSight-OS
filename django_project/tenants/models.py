@@ -14,7 +14,11 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '02/05/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import json
+
+import pytz
 from django.db import models
+from django_celery_beat.models import CrontabSchedule
 from django_tenants.models import TenantMixin, DomainMixin
 from django_tenants.utils import tenant_context
 from django_tenants_celery_beat.models import (
@@ -60,4 +64,38 @@ class Domain(DomainMixin):
 class PeriodicTaskTenantLink(PeriodicTaskTenantLinkMixin):
     """Model to link periodic tasks with tenant."""
 
-    pass
+    def save(self, *args, **kwargs):
+        """Make PeriodicTask tenant-aware.
+
+        Inserts correct `_schema_name` for `self.tenant` and into
+        `self.periodic_task.headers`.
+        If `self.periodic_task` uses a crontab schedule and the tenant timezone
+        should be used, the crontab is adjusted to use the timezone of
+        the tenant.
+        """
+        update_fields = ["headers"]
+
+        headers = json.loads(self.periodic_task.headers)
+        headers["_schema_name"] = self.tenant.schema_name
+        self.use_tenant_timezone = headers.pop(
+            "_use_tenant_timezone", self.use_tenant_timezone
+        )
+        self.periodic_task.headers = json.dumps(headers)
+
+        if self.periodic_task.crontab is not None:
+            task_tz = self.periodic_task.crontab.schedule.tz
+            if not task_tz:
+                task_tz = pytz.utc
+
+            tz = self.tenant.timezone if self.use_tenant_timezone else task_tz
+            schedule = self.periodic_task.crontab.schedule
+            if schedule.tz != tz:
+                schedule.tz = tz
+                crontab = CrontabSchedule.from_schedule(schedule)
+                if not crontab.id:
+                    crontab.save()
+                self.periodic_task.crontab = crontab
+                update_fields.append("crontab")
+
+        self.periodic_task.save(update_fields=update_fields)
+        super(PeriodicTaskTenantLinkMixin, self).save(*args, **kwargs)
