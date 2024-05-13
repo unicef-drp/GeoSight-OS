@@ -24,6 +24,7 @@ import { Actions } from '../../../../store/dashboard'
 import { ArrowDownwardIcon } from "../../../../components/Icons";
 
 import './style.scss';
+import { dictDeepCopy } from "../../../../utils/main";
 
 /**
  * Reference layer.
@@ -38,18 +39,23 @@ export default function ReferenceLayerSection() {
   const referenceLayerData = useSelector(state => state.referenceLayerData)
   const selectedIndicatorLayer = useSelector(state => state.selectedIndicatorLayer)
 
-  // TODO:
-  //  Need to fix when in compare mode
+  // Get level list for dropdown
+  // If it has the same levels from multiple dataset
+  // Append the level name with /
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel)
   let levels = null
   referenceLayers.map(referenceLayer => {
-    if (referenceLayerData[referenceLayers[0].identifier]?.data?.dataset_levels) {
+    let datasetLevels = referenceLayerData[referenceLayer.identifier]?.data?.dataset_levels
+    if (datasetLevels) {
+      datasetLevels = dictDeepCopy(datasetLevels)
       if (!levels) {
-        levels = referenceLayerData[referenceLayers[0].identifier]?.data?.dataset_levels
+        levels = datasetLevels
       } else {
-        referenceLayerData[referenceLayers[0].identifier]?.data?.dataset_levels.map(level => {
+        datasetLevels.map(level => {
           if (!levels[level.level]) {
             levels[level.level] = level
+          } else {
+            levels[level.level].level_name += ' / ' + level.level_name
           }
         })
       }
