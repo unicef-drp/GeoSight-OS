@@ -35,10 +35,7 @@ import RelatedTableLayer, {
 import DynamicIndicatorLayer, {
   DynamicIndicatorLayerConfig
 } from "./DynamicIndicatorLayer";
-import {
-  DynamicIndicatorType,
-  referenceLayerIndicatorLayer
-} from "../../../../utils/indicatorLayer";
+import { DynamicIndicatorType } from "../../../../utils/indicatorLayer";
 
 import './style.scss';
 
@@ -47,37 +44,6 @@ import './style.scss';
 export let indicatorLayersForcedUpdateIds = null
 export const changeIndicatorLayersForcedUpdate = (ids) => {
   indicatorLayersForcedUpdateIds = ids
-}
-
-export function IndicatorLayersReferenceControl() {
-  const dispatch = useDispatch()
-  const selectedIndicatorLayer = useSelector(state => state.selectedIndicatorLayer)
-  const selectedIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer)
-  const {
-    referenceLayer
-  } = useSelector(state => state.dashboard.data);
-
-  /** When indicator layer and second layer changed
-   * Update reference layer views
-   * */
-  useEffect(() => {
-    const views = []
-    if (Object.keys(selectedIndicatorLayer).length) {
-      const view = referenceLayerIndicatorLayer(referenceLayer, selectedIndicatorLayer)
-      if (!views.find(view => view.identifier === view)) {
-        views.push(view)
-      }
-    }
-    if (Object.keys(selectedIndicatorSecondLayer).length) {
-      const view = referenceLayerIndicatorLayer(referenceLayer, selectedIndicatorSecondLayer)
-      if (!views.find(view => view.identifier === view)) {
-        views.push(view)
-      }
-    }
-    dispatch(Actions.Map.changeReferenceLayers(views))
-  }, [referenceLayer, selectedIndicatorLayer, selectedIndicatorSecondLayer]);
-
-  return null
 }
 
 
@@ -349,7 +315,6 @@ export default function IndicatorLayersAccordion({ expanded }) {
           <IndicatorLayers/>
         </AccordionDetails>
       </Accordion>
-      <IndicatorLayersReferenceControl/>
     </>
   )
 }

@@ -49,6 +49,8 @@ import { EmbedConfig } from "../../../utils/embed";
 import { Actions } from "../../../store/dashboard";
 import ReferenceLayerSection from "../MiddlePanel/ReferenceLayer";
 import DatasetGeometryData from "./Controllers/DatasetGeometryData";
+import IndicatorLayersReferenceControl
+  from "./IndicatorLayersReferenceControl";
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 import './style.scss';
@@ -310,6 +312,7 @@ export default function MapLibre(
     <ContextLayers map={map}/>
     {
       map ? <>
+        <IndicatorLayersReferenceControl map={map}/>
         <DatasetGeometryData/>
         <ReferenceLayerCentroid map={map}/>
       </> : null
