@@ -212,7 +212,6 @@ export function getLayerDataCleaned(
       })
     }
   })
-  console.log(data)
 
   if (filteredGeometries && Array.isArray(data[0]?.data)) {
     data[0].data = data[0].data.filter(row => filteredGeometries.includes(row.concept_uuid))

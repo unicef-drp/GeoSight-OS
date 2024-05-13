@@ -18,7 +18,7 @@
    ========================================================================== */
 
 import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { MVTLayer } from '@deck.gl/geo-layers';
 import { GeoJsonLayer } from '@deck.gl/layers';
 import { DataFilterExtension } from '@deck.gl/extensions';
@@ -83,7 +83,6 @@ export function ReferenceLayer(
   const OUTLINE_LAYER_ID = OUTLINE_LAYER_ID_KEY + '-' + idx
 
   const prevState = useRef()
-  const dispatch = useDispatch()
   const {
     referenceLayer: referenceLayerProject,
     indicatorLayers,
@@ -154,6 +153,7 @@ export function ReferenceLayer(
     if (referenceLayerData) {
       createLayer()
     } else {
+      setReferenceLayerConfig({})
       removeAllLayers()
     }
   }, [referenceLayer, referenceLayerData, selectedAdminLevel]);

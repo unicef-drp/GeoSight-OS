@@ -61,11 +61,18 @@ export function IndicatorLayersReferenceControl() {
    * Update reference layer views
    * */
   useEffect(() => {
-    const views = [
-      referenceLayerIndicatorLayer(referenceLayer, selectedIndicatorLayer)
-    ]
-    if (selectedIndicatorSecondLayer?.level_config?.referenceLayer) {
-      views.push(referenceLayerIndicatorLayer(referenceLayer, selectedIndicatorSecondLayer))
+    const views = []
+    if (Object.keys(selectedIndicatorLayer).length) {
+      const view = referenceLayerIndicatorLayer(referenceLayer, selectedIndicatorLayer)
+      if (!views.find(view => view.identifier === view)) {
+        views.push(view)
+      }
+    }
+    if (Object.keys(selectedIndicatorSecondLayer).length) {
+      const view = referenceLayerIndicatorLayer(referenceLayer, selectedIndicatorSecondLayer)
+      if (!views.find(view => view.identifier === view)) {
+        views.push(view)
+      }
     }
     dispatch(Actions.Map.changeReferenceLayers(views))
   }, [referenceLayer, selectedIndicatorLayer, selectedIndicatorSecondLayer]);

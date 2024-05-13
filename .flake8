@@ -6,4 +6,5 @@ max-line-length = 79
 # E251 no spaces around keyword / parameter equals
 # E303 too many blank lines (3)
 # F405 name may be undefined, or defined from star imports: module
-ignore = E125,E126,E251,E303,F405,W504,W605,F901,D105
+ignore = E125,E126,E251,E303,F405,W504,W605,F901,D105,W503
+extend-exclude=django_project/frontend/node_modules/,django_project/core/settings/secret.py
