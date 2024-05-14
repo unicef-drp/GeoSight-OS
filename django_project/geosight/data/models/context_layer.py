@@ -24,9 +24,9 @@ from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
 from core.models import AbstractEditData, AbstractTerm
-from geosight.data.models.related_table import RelatedTable
 from geosight.data.models.arcgis import ArcgisConfig
 from geosight.data.models.field_layer import FieldLayerAbstract
+from geosight.data.models.related_table import RelatedTable
 from geosight.permission.models.manager import PermissionManager
 
 
@@ -115,34 +115,6 @@ class ContextLayer(AbstractEditData, AbstractTerm):
         )
     )
 
-    latitude_field = models.TextField(
-        null=True, blank=True,
-        help_text=_(
-            'Latitude field of Related Table.'
-        )
-    )
-
-    longitude_field = models.TextField(
-        null=True, blank=True,
-        help_text=_(
-            'Longitude field of Related Table.'
-        )
-    )
-
-    datetime_field = models.TextField(
-        null=True, blank=True,
-        help_text=_(
-            'Datetime field of Related Table.'
-        )
-    )
-
-    query = models.TextField(
-        null=True, blank=True,
-        help_text=_(
-            'Query to filter Related Table data.'
-        )
-    )
-
     url_legend = models.CharField(
         max_length=256,
         null=True, blank=True,
@@ -177,6 +149,9 @@ class ContextLayer(AbstractEditData, AbstractTerm):
         null=True, blank=True
     )
     label_styles = models.TextField(
+        null=True, blank=True
+    )
+    configuration = models.JSONField(
         null=True, blank=True
     )
     objects = models.Manager()

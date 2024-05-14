@@ -33,7 +33,7 @@ export function VectorTileLayer(
   layerData, layerFn, legendFn, errorFn, onEachFeature
 ) {
   // If there is url legend, use the image
-  if (!layerData.url_legend) {
+  if (layerData.url_legend && layerData.url_legend.includes('http')) {
     legendFn(`<img src="${layerData.url_legend}"/>`)
   } else {
     try {

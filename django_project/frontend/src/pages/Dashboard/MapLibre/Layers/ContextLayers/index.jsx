@@ -70,6 +70,12 @@ const popupFeature = (featureProperties, name, fields, defaultField) => {
   if (defaultField?.length) {
     fields = defaultField
   }
+  if (properties.cluster) {
+    fields = null
+    delete properties['cluster']
+    delete properties['cluster_id']
+  }
+  let newProperties = properties
   if (fields) {
     fields.map(field => {
       if (field.visible !== false) {
@@ -93,16 +99,16 @@ const popupFeature = (featureProperties, name, fields, defaultField) => {
       }
     })
 
-    let newProperties = {}
+    newProperties = {}
     fields.forEach((field, idx) => {
       newProperties[field.alias] = properties[field.alias]
     })
-
-    return popupTemplate(null, newProperties, {
-      name: name,
-      color: '#eee'
-    })
   }
+
+  return popupTemplate(null, newProperties, {
+    name: name,
+    color: '#eee'
+  })
 }
 
 /**

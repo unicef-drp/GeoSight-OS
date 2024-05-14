@@ -14,7 +14,6 @@
  */
 
 import React, { Fragment, useEffect, useState } from 'react';
-import _ from 'lodash';
 import { fetchingData } from '../../Requests';
 import WhereQueryGenerator from '../SqlQueryGenerator/WhereQueryGenerator';
 import { dictDeepCopy } from '../../utils/main';
@@ -28,83 +27,98 @@ import { useDispatch } from 'react-redux';
 
 const SidePanelSlicers = ({ data }) => {
 
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-    const [relatedTableInfo, setRelatedTableInfo] = useState(null)
-    const [relatedTableData, setRelatedTableData] = useState(null)
+  const [relatedTableInfo, setRelatedTableInfo] = useState(null)
+  const [relatedTableData, setRelatedTableData] = useState(null)
 
 
-    /** Update fields to required fields **/
-    const updateFields = (fields) => {
-        if (!fields) {
-            return fields
-        }
-        return fields.map(field => {
-            return {
-                name: field.name,
-                type: field.type ? field.type : 'text',
-                value: field.name,
-                options: field?.options
-            }
-        })
+  /** Update fields to required fields **/
+  const updateFields = (fields) => {
+    if (!fields) {
+      return fields
     }
+    return fields.map(field => {
+      return {
+        name: field.name,
+        type: field.type ? field.type : 'text',
+        value: field.name,
+        options: field?.options
+      }
+    })
+  }
 
-    // Loading data
-    useEffect(() => {
-        if (!open) {
-            return
+  // Loading data
+  useEffect(() => {
+    if (!open) {
+      return
+    }
+    if (data.related_table) {
+      const params = {}
+      const url_info = `/api/related-table/${data.related_table}`
+      const url_data = `/api/related-table/${data.related_table}/data`
+      setRelatedTableInfo(null)
+      setRelatedTableData(null)
+      fetchingData(
+        url_data, params, {}, function (response, error) {
+          setRelatedTableData(dictDeepCopy(response))
         }
-        if (data.related_table) {
-            const params = {}
-            const url_info = `/api/related-table/${data.related_table}`
-            const url_data = `/api/related-table/${data.related_table}/data`
-            setRelatedTableInfo(null)
-            setRelatedTableData(null)
-            fetchingData(
-                url_data, params, {}, function (response, error) {
-                    setRelatedTableData(dictDeepCopy(response))
-                }
-            )
-            fetchingData(
-                url_info, params, {}, function (response, error) {
-                    setRelatedTableInfo(dictDeepCopy(response))
-                }
-            )
+      )
+      fetchingData(
+        url_info, params, {}, function (response, error) {
+          setRelatedTableInfo(dictDeepCopy(response))
         }
-    }, [data.related_table])
+      )
+    }
+  }, [data.related_table])
 
 
-    const relatedFields = relatedTableInfo && relatedTableData ? getRelatedTableFields(relatedTableInfo, relatedTableData) : []
+  const relatedFields = relatedTableInfo && relatedTableData ? getRelatedTableFields(relatedTableInfo, relatedTableData) : []
 
-    return <div
-        className={'ContextLayerMiddleConfig ' + (open ? 'Open' : '')}>
-        <Fragment>
-            <div
-                id='RelatedTableLayerMiddleConfigReal'
-                className='WhereConfigurationWrapper'
-            >
-                <WhereQueryGenerator
-                    fields={updateFields(relatedFields)}
-                    isCompact={true}
-                    whereQuery={data.query}
-                    setWhereQuery={(where) => {
-                        if (JSON.stringify(data.query) !== JSON.stringify(where)) {
-                            data.query = where
-                            dispatch(Actions.ContextLayers.update(data))
-                        }
-                    }}
-                    disabledChanges={{
-                        add: true,
-                        remove: true,
-                        sql: true,
-                        and_or: true,
-                        field: true,
-                        operator: true,
-                    }}
-                />
-            </div>
-        </Fragment>
-    </div>
+  // Create the source
+  let configuration;
+  try {
+    if (typeof data.configuration === 'string' || data.configuration instanceof String) {
+      configuration = JSON.parse(data.configuration)
+    } else {
+      configuration = data.configuration
+    }
+  } catch (e) {
+    configuration = {}
+  }
+  const { query } = configuration
+  if (!query) {
+    return null;
+  }
+  return <div
+    className={'ContextLayerMiddleConfig ' + (open ? 'Open' : '')}>
+    <Fragment>
+      <div
+        id='RelatedTableLayerMiddleConfigReal'
+        className='WhereConfigurationWrapper'
+      >
+        <WhereQueryGenerator
+          fields={updateFields(relatedFields)}
+          isCompact={true}
+          whereQuery={query}
+          setWhereQuery={(where) => {
+            if (JSON.stringify(query) !== JSON.stringify(where)) {
+              data.configuration = { ...configuration, query: where }
+              dispatch(Actions.ContextLayers.update(data))
+            }
+          }}
+          disabledChanges={{
+            add: true,
+            remove: true,
+            sql: true,
+            and_or: true,
+            field: true,
+            operator: true,
+          }}
+        />
+      </div>
+    </Fragment>
+  </div>
 };
 
 export default SidePanelSlicers;

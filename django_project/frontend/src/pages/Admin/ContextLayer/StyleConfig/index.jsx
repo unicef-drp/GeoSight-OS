@@ -18,10 +18,15 @@ import MapConfig from './Map'
 import ArcgisConfig from './Arcgis'
 import { useDispatch } from "react-redux";
 import { getLayer } from '../../../Dashboard/LeftPanel/ContextLayers/Layer'
-import { defaultPointStyle, defaultVectorTyleStyle } from './layerStyles';
+import {
+  defaultAggregationStyle,
+  defaultPointStyle,
+  defaultVectorTyleStyle
+} from './layerStyles';
+import RelatedTableConfig from './RelatedTable';
+import AggregationStyleGuide from "./AggregationStyleGuide";
 
 import './style.scss';
-import RelatedTableConfig from './RelatedTable';
 
 
 /**
@@ -42,6 +47,7 @@ export default function StyleConfig(
   const [layer, setLayer] = useState(null);
   const [error, setError] = useState(null);
   const [legend, setLegend] = useState(null);
+  const [inputStyle, setInputStyle] = useState(null);
 
   const [layerData, setLayerData] = useState(null);
   const [layerDataClass, setLayerDataClass] = useState(null);
@@ -67,6 +73,9 @@ export default function StyleConfig(
         styles: JSON.stringify(defaultPointStyle, null, 4),
         override_style: true
       })
+    }
+    if (!inputStyle) {
+      setInputStyle(data.styles)
     }
   }, [data]);
 
@@ -148,11 +157,24 @@ export default function StyleConfig(
               </div> : ""
           }
           {
-            data.layer_type === 'Vector Tile' || data.layer_type === 'Related Table' ? <>
+            ['Related Table', 'Vector Tile'].includes(data.layer_type) ? <>
               <div className='Style'>
-                <div><b>Layers</b></div>
+                <div><b>Styles</b></div>
+                {
+                  data.configuration?.field_aggregation ?
+                    <AggregationStyleGuide data={data} styleChanged={val => {
+                      setInputStyle(val)
+                      setData(
+                        {
+                          ...data,
+                          styles: val,
+                          override_style: true
+                        }
+                      )
+                    }}/> : null
+                }
                 <span>
-                  Put layers list configurations with the mapbox format.<br/>
+                  Put layer list configurations with the mapbox format.<br/>
                   Put source with "source" or any, it will automatically change to correct source.<br/>
                   <a
                     href="https://docs.mapbox.com/style-spec/reference/layers/"
@@ -162,14 +184,15 @@ export default function StyleConfig(
                 <br/>
                 <textarea
                   placeholder={
-                    JSON.stringify(data.layer_type === 'Related Table' ?
-                      defaultPointStyle :
-                      defaultVectorTyleStyle,
+                    JSON.stringify(data.configuration?.field_aggregation ? defaultAggregationStyle : data.layer_type === 'Related Table' ?
+                        defaultPointStyle :
+                        defaultVectorTyleStyle,
                       null, 4)
                   }
-                  defaultValue={data.styles}
+                  value={inputStyle}
                   style={{ minHeight: "90%" }}
                   onChange={(evt) => {
+                    setInputStyle(evt.target.value)
                     try {
                       setError(null)
                       setData(
@@ -200,12 +223,12 @@ export default function StyleConfig(
                   originalData={data} setData={setData}
                   RelatedTableData={layerData} useOverride={useOverride}
                   useOverrideLabel={useOverrideLabel}
-              /> :
-              <Fragment>
-                <div className='ArcgisConfig Fields form-helptext'>
-                  Config is not Arcgis or Related Table Type
-                </div>
-              </Fragment>
+                /> :
+                <Fragment>
+                  <div className='ArcgisConfig Fields form-helptext'>
+                    Config is not Arcgis or Related Table Type
+                  </div>
+                </Fragment>
           }
         </div>
       </div>

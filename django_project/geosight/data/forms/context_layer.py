@@ -48,28 +48,13 @@ class ContextLayerForm(forms.ModelForm):
         widget=forms.HiddenInput()
     )
 
-    longitude_field = forms.CharField(
-        required=False,
-        widget=forms.HiddenInput()
-    )
-
-    latitude_field = forms.CharField(
-        required=False,
-        widget=forms.HiddenInput()
-    )
-
-    datetime_field = forms.CharField(
-        required=False,
-        widget=forms.HiddenInput()
-    )
-
-    query = forms.CharField(
-        required=False,
-        widget=forms.HiddenInput()
-    )
-
     related_table = forms.CharField(
         label='Related Table',
+        required=False,
+        widget=forms.HiddenInput()
+    )
+
+    configuration = forms.CharField(
         required=False,
         widget=forms.HiddenInput()
     )

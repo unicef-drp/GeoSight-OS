@@ -168,6 +168,7 @@ export const AggregationsMultiValueInput = forwardRef(
                           }
                           aggregateValueType={'Number'}
                         />
+                        <br/>
                         <label className="form-label required">
                           Categories
                         </label>

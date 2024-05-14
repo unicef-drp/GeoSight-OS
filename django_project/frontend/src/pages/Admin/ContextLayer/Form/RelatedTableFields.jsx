@@ -13,18 +13,19 @@
  * __copyright__ = ('Copyright 2024, Unicef')
  */
 
-import React, { Fragment, useEffect, useState } from 'react';
-import $ from 'jquery';
+import React, { useEffect, useState } from 'react';
+import Grid from "@mui/material/Grid";
 
-
-import { SelectWithSearch } from "../../../../components/Input/SelectWithSearch";
-import WhereInputModal from "../../../../components/SqlQueryGenerator/WhereInputModal";
+import {
+  SelectWithSearch
+} from "../../../../components/Input/SelectWithSearch";
+import WhereInputModal
+  from "../../../../components/SqlQueryGenerator/WhereInputModal";
 import { getRelatedTableFields } from "../../../../utils/relatedTable";
 import { fetchingData } from "../../../../Requests";
 import { dictDeepCopy } from "../../../../utils/main";
-import {
-  RelatedTableInputSelector
-} from "../../ModalSelector/InputSelector";
+import { RelatedTableInputSelector } from "../../ModalSelector/InputSelector";
+import { SelectWithList } from "../../../../components/Input/SelectWithList";
 
 /**
  * Indicator Form App
@@ -39,6 +40,23 @@ export default function RelatedTableFields(
 ) {
   const [relatedTableInfo, setRelatedTableInfo] = useState(null)
   const [relatedTableData, setRelatedTableData] = useState(null)
+  // Create the source
+  let configuration;
+  try {
+    if (typeof data.configuration === 'string' || data.configuration instanceof String) {
+      configuration = JSON.parse(data.configuration)
+    } else {
+      configuration = data.configuration
+    }
+  } catch (e) {
+    configuration = {}
+  }
+  const {
+    field_aggregation,
+    latitude_field,
+    longitude_field,
+    query
+  } = configuration;
 
   // Loading data
   useEffect(() => {
@@ -89,14 +107,16 @@ export default function RelatedTableFields(
     setRelatedTableInfo(newRelatedTable[0])
   }
 
+  const fieldOptions = relatedFields ? relatedFields.filter(
+    field => ['Number', 'number'].includes(field.type)
+  ).map(field => field.name) : []
+
   return (
-    <div>
+    <>
       <div className='BasicFormSection'>
-        <div>
-          <label className="form-label required">
-            Related Table
-          </label>
-        </div>
+        <label className="form-label required">
+          Related Table
+        </label>
         <RelatedTableInputSelector
           data={relatedTableInfo ? [relatedTableInfo] : []}
           setData={handleRelatedTableChange}
@@ -105,50 +125,102 @@ export default function RelatedTableFields(
         />
       </div>
       <div className='BasicFormSection'>
-        <div className='form-label'>Latitude Field</div>
-        <div className='InputInLine'>
-          <SelectWithSearch
-            value={data.latitude_field}
-            onChangeFn={evt => {
-              onSetData({ ...data, latitude_field: evt })
-            }}
-            options={relatedFields.filter(rf => rf.type === 'number').map(rf => rf.name)}
-            className='FilterInput' />
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <div className='form-label'>Latitude Field</div>
+            <div className='InputInLine'>
+              <SelectWithSearch
+                value={latitude_field ? latitude_field : ''}
+                onChangeFn={evt => {
+                  onSetData({
+                    ...data,
+                    configuration: { ...configuration, latitude_field: evt }
+                  })
+                }}
+                options={relatedFields.filter(rf => rf.type === 'number').map(rf => rf.name)}
+                className='FilterInput'
+                disableCloseOnSelect={false}
+              />
+            </div>
+            <div>
+              <span className="form-helptext">
+                The field name that will be used as Latitude.
+              </span>
+            </div>
+          </Grid>
+          <Grid item xs={6}>
+            <div className='form-label'>Longitude Field</div>
+            <div className='InputInLine'>
+              <SelectWithSearch
+                value={longitude_field ? longitude_field : ''}
+                onChangeFn={evt => {
+                  onSetData({
+                    ...data,
+                    configuration: { ...configuration, longitude_field: evt }
+                  })
+                }}
+                options={relatedFields.filter(rf => rf.type === 'number').map(rf => rf.name)}
+                className='FilterInput'
+                disableCloseOnSelect={false}
+              />
+            </div>
+            <div>
+              <span className="form-helptext">
+                The field name that will be used as Longitude.
+              </span>
+            </div>
+          </Grid>
+        </Grid>
+      </div>
+      <div className='BasicFormSection WhereInput'>
+        <WhereInputModal
+          value={query ? query : ''}
+          fields={relatedFields}
+          setValue={evt => {
+            onSetData({
+              ...data,
+              configuration: { ...configuration, query: evt }
+            })
+          }}
+          title={"Filter"}
+        />
+        <div>
+          <span className="form-helptext">
+            This will be used to filter the data by default.<br/>
+            It will also create slicer on the website that will be used for user
+            to change the filter.
+          </span>
         </div>
       </div>
-      <div className='BasicFormSection'>
-        <div className='form-label'>Longitude Field</div>
-        <div className='InputInLine'>
-          <SelectWithSearch
-            value={data.longitude_field}
-            onChangeFn={evt => {
-              onSetData({ ...data, longitude_field: evt })
-            }}
-            options={relatedFields.filter(rf => rf.type === 'number').map(rf => rf.name)}
-            className='FilterInput' />
+      <div className='BasicFormSection Aggregation'>
+        <label className="form-label">
+          Aggregate data by field name
+        </label>
+        <SelectWithList
+          list={
+            [
+              {
+                name: '------------------------',
+                value: null,
+              },
+              ...fieldOptions]
+          }
+          placeholder={!relatedFields ? "Loading" : "Select.."}
+          value={field_aggregation ? field_aggregation : null}
+          isDisabled={!data.data_fields}
+          onChange={evt => {
+            onSetData({
+              ...data,
+              configuration: { ...configuration, field_aggregation: evt.value }
+            })
+          }}/>
+        <div>
+          <span className="form-helptext">
+            Field name that will be used to aggregate data.
+            Aggregation will be use to make clustering of the points on the map.
+          </span>
         </div>
       </div>
-      <div className='BasicFormSection'>
-        <div className='form-label'>Datetime field</div>
-        <div className='InputInLine'>
-          <SelectWithSearch
-            value={data.datetime_field}
-            onChangeFn={evt => {
-              onSetData({ ...data, datetime_field: evt })
-            }}
-            options={relatedFields.filter(rf => rf.type === 'date').map(rf => rf.name)}
-            className='FilterInput' />
-        </div>
-      </div>
-
-      <WhereInputModal
-        value={data.query ? data.query : ''}
-        fields={relatedFields}
-        setValue={evt => {
-          onSetData({ ...data, query: evt })
-        }}
-        title={"Filter the Data"}
-      />
-    </div>
+    </>
   )
 }

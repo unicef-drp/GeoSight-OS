@@ -141,7 +141,10 @@ export const addPopup = (map, id, popupRenderFn) => {
       })
 
       if (id === clickedId) {
-        const popupHtml = popupRenderFn(e.features[0].properties)
+        let popupHtml = popupRenderFn(e.features[0].properties)
+        if (!popupHtml) {
+          popupHtml = ''
+        }
         if (popup) {
           popup.remove()
         }
