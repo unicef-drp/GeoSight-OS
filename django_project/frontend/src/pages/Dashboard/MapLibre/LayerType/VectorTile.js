@@ -21,7 +21,6 @@ import { addPopup, hasLayer, hasSource } from "../utils";
  */
 export default function vectorTileLayer(map, id, data, contextLayerData, popupFeatureFn, contextLayerOrder) {
   // Create the source
-  console.log(data)
   if (!data.url) {
     return
   }
