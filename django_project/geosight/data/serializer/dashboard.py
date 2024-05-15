@@ -193,7 +193,15 @@ class DashboardSerializer(serializers.ModelSerializer):
                 del data['label_styles']
             else:
                 del dashboard_data['label_styles']
+
+            configuration = {}
+            if data['configuration']:
+                configuration = data['configuration']
+            if dashboard_data['configuration']:
+                configuration.update(dashboard_data['configuration'])
+
             data.update(dashboard_data)
+            data['configuration'] = configuration
             output.append(data)
         return output
 

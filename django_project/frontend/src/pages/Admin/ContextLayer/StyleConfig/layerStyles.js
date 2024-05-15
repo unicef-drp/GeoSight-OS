@@ -55,3 +55,80 @@ export const defaultPointStyle = [{
     },
     'filter': ['==', '$type', 'Point']
 }];
+
+export const defaultAggregationStyle =  [
+  {
+    "id": "clusterLabel",
+    "type": "symbol",
+    "source": "source",
+    "filter": ["has", "point_count"],
+    "layout": {
+      "text-field": ["format", ["get", "_value_text_"]],
+      "text-font": ["Rubik", "Rubik"],
+      "text-size": 10
+    },
+    "paint": {
+      "text-color": [
+        "step",
+        ["get", "_value_"],
+        "#000000",
+        250,
+        "#000000",
+        500,
+        "#FFFFFF",
+        750,
+        "#FFFFFF",
+        1000,
+        "#FFFFFF"
+      ]
+    }
+  },
+  {
+    "id": "clusterLayer",
+    "type": "circle",
+    "source": "source",
+    "filter": ["has", "point_count"],
+    "paint": {
+      "circle-color": [
+        "step",
+        ["get", "_value_"],
+        "#5fff5f",
+        250,
+        "#4bd448",
+        500,
+        "#36aa32",
+        750,
+        "#21831d",
+        1000,
+        "#004b00"
+      ],
+      "circle-radius": [
+        "step",
+        ["get", "_value_"],
+        10,
+        250,
+        15,
+        500,
+        20,
+        750,
+        25,
+        1000,
+        30
+      ],
+      "circle-stroke-width": 1,
+      "circle-stroke-color": "#004b00"
+    }
+  },
+  {
+    "id": "unclusterLayer",
+    "type": "circle",
+    "source": "source",
+    "filter": ["!", ["has", "point_count"]],
+    "paint": {
+      "circle-color": "#0000FF",
+      "circle-radius": 4,
+      "circle-stroke-width": 1,
+      "circle-stroke-color": "#000000"
+    }
+  }
+]

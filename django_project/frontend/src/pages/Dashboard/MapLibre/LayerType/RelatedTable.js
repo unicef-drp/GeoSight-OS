@@ -15,7 +15,14 @@
 
 import { fetchingData } from "../../../../Requests";
 import { buildGeojsonFromRelatedData } from "../../../../utils/relatedTable";
-import { addPopup, hasLayer, hasSource } from "../utils";
+import {
+  addPopup,
+  hasLayer,
+  hasSource,
+  removeLayer,
+  removeSource
+} from "../utils";
+import { toJson } from "../../../../utils/main";
 
 
 const getBeforeLayerId = (map, layerId, contextLayerOrder) => {
@@ -39,18 +46,33 @@ const getBeforeLayerId = (map, layerId, contextLayerOrder) => {
  * Render vector tile layer
  */
 export default function relatedTableLayer(map, id, data, contextLayerData, popupFeatureFn, contextLayerOrder) {
-  // Create the source
-  if (!contextLayerData.latitude_field || !contextLayerData.longitude_field || !contextLayerData.related_table) {
+  const {
+    field_aggregation,
+    latitude_field,
+    longitude_field,
+    query
+  } = toJson(data.configuration);
+  if (!latitude_field || !longitude_field || !contextLayerData.related_table) {
     return
   }
-
   fetchingData(
     `/api/related-table/${data.related_table}/data`, data.params, {}, (rtData) => {
-      const geojson = buildGeojsonFromRelatedData(rtData, data.longitude_field, data.latitude_field, data.query)
+      const geojson = buildGeojsonFromRelatedData(rtData, longitude_field, latitude_field, query)
       const params = Object.assign({}, data.params, {
         data: geojson,
-        type: 'geojson',
+        type: 'geojson'
       })
+      if (field_aggregation) {
+        params.cluster = true
+        params.clusterRadius = 50;
+        params.clusterMaxZoom = 14
+        params.clusterProperties = {
+          sum: ["+", ["get", field_aggregation]],
+          max: ["max", ["get", field_aggregation]],
+          min: ["min", ["get", field_aggregation]]
+        }
+      }
+      removeSource(map, id)
 
       if (!hasSource(map, id)) {
         map.addSource(id, params);
@@ -67,6 +89,7 @@ export default function relatedTableLayer(map, id, data, contextLayerData, popup
         layers.map(layer => {
           layer.id = id + '-' + layer.id
           layer.source = id
+          removeLayer(map, layer.id)
           map.addLayer(layer, before)
           before = layer.id
           addPopup(map, layer.id, popupFeature)

@@ -54,6 +54,9 @@ export const hasSource = (map, id) => {
  * @param {String} id of layer
  */
 export const removeSource = (map, id) => {
+  map.getStyle().layers.filter(layer => layer.source === id).map(layer => {
+    removeLayer(map, layer.id)
+  })
   if (typeof map.getSource(id) !== 'undefined') {
     map.removeSource(id);
   }
@@ -141,7 +144,10 @@ export const addPopup = (map, id, popupRenderFn) => {
       })
 
       if (id === clickedId) {
-        const popupHtml = popupRenderFn(e.features[0].properties)
+        let popupHtml = popupRenderFn(e.features[0].properties)
+        if (!popupHtml) {
+          popupHtml = ''
+        }
         if (popup) {
           popup.remove()
         }

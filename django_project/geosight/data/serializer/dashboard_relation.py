@@ -174,7 +174,7 @@ class DashboardContextLayerSerializer(DashboardSerializer):
         fields = (
             'data_fields', 'styles', 'label_styles',
             'override_style', 'override_label', 'override_field',
-            'default_styles'
+            'default_styles', 'configuration'
         )
         fields += DashboardSerializer.Meta.fields
 

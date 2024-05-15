@@ -29,6 +29,8 @@ import { resourceActions } from "../List";
 import { dictDeepCopy } from "../../../../utils/main";
 
 import './style.scss';
+import WhereInputModal
+  from "../../../../components/SqlQueryGenerator/WhereInputModal";
 
 let currentArcGis = null
 let init = false
@@ -79,6 +81,13 @@ export default function ContextLayerForm() {
       formData.override_style = override_style
       init = true
     }
+    if (formData['configuration']) {
+      try {
+        formData['configuration'] = JSON.parse(formData['configuration'])
+      } catch (e) {
+        formData['configuration'] = {}
+      }
+    }
     setData(dictDeepCopy(formData))
   }
 
@@ -89,10 +98,7 @@ export default function ContextLayerForm() {
       $('*[name="data_fields"]').val(JSON.stringify(newData['data_fields']))
       $('*[name="styles"]').val(JSON.stringify(newData['styles']))
       $('*[name="related_table"]').val(newData['related_table'])
-      $('*[name="latitude_field"]').val(newData['latitude_field'])
-      $('*[name="longitude_field"]').val(newData['longitude_field'])
-      $('*[name="query"]').val(newData['query'])
-      $('*[name="datetime_field"]').val(newData['datetime_field'])
+      $('*[name="configuration"]').val(JSON.stringify(newData['configuration']))
     }
   }
 
@@ -105,8 +111,7 @@ export default function ContextLayerForm() {
       $('div[data-wrapper-name="username"]').hide()
       $('div[data-wrapper-name="password"]').hide()
       $('div[data-wrapper-name="url"]').hide()
-    }
-    else {
+    } else {
       $('div[data-wrapper-name="arcgis_config"]').hide()
       $('div[data-wrapper-name="url"]').show()
     }
@@ -177,6 +182,8 @@ export default function ContextLayerForm() {
                 } else if (name === 'arcgis_config') {
                   arcGisConfigChange(value)
                   setDataFn()
+                } else if (['url', 'url_legend'].includes(name)) {
+                  setDataFn()
                 }
               }}
             >
@@ -194,11 +201,12 @@ export default function ContextLayerForm() {
                 onChange={evt => {
                 }}
               />
-              {data.layer_type === 'Related Table' ?
-                <RelatedTableFields
-                  data={data}
-                  onSetData={updateData}
-                /> : undefined
+              {
+                data.layer_type === 'Related Table' ?
+                  <RelatedTableFields
+                    data={data}
+                    onSetData={updateData}
+                  /> : undefined
               }
             </DjangoTemplateForm>
           ),
@@ -207,12 +215,12 @@ export default function ContextLayerForm() {
               data={data}
               setData={updateData}
               defaultTab={tab}
-              useOverride={true}
+              useOverride={data.layer_type === 'ARCGIS'}
               useOverrideLabel={false}
             />
           ),
-          'Fields': <div />,
-          'Label': <div />,
+          'Fields': <div/>,
+          'Label': <div/>,
         }}
       />
     </Admin>

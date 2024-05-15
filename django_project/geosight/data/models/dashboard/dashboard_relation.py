@@ -140,6 +140,9 @@ class DashboardContextLayer(DashboardRelation):
     override_style = models.BooleanField(default=False)
     override_field = models.BooleanField(default=False)
     override_label = models.BooleanField(default=False)
+    configuration = models.JSONField(
+        null=True, blank=True
+    )
 
     class Meta:  # noqa: D106
         ordering = ('order',)

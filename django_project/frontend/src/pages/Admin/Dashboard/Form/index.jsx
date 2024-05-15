@@ -367,6 +367,7 @@ export function DashboardSaveForm(
             override_style: model.override_style,
             override_label: model.override_label,
             override_field: model.override_field,
+            configuration: model.configuration,
           }
         }),
         'context_layers_structure': contextLayersStructure,

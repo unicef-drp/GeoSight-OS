@@ -18,7 +18,7 @@
    ========================================================================== */
 
 import EsriData from "../../../../utils/esri/esri-data";
-import { dictDeepCopy } from "../../../../utils/main";
+import { dictDeepCopy, toJson } from "../../../../utils/main";
 import { popupTemplate } from "../../MapLibre/Popup";
 import { createElement } from "../../MapLibre/utils";
 import { Actions } from "../../../../store/dashboard";
@@ -33,11 +33,14 @@ export function VectorTileLayer(
   layerData, layerFn, legendFn, errorFn, onEachFeature
 ) {
   // If there is url legend, use the image
-  if (!layerData.url_legend) {
+  if (layerData.url_legend && layerData.url_legend.includes('http')) {
     legendFn(`<img src="${layerData.url_legend}"/>`)
   } else {
     try {
-      const layers = JSON.parse(layerData.styles)
+      let layers = toJson(layerData.styles)
+      if (!Array.isArray(layers)) {
+        layers = []
+      }
       const legend = new LegendControl();
       const legendHtml = []
       const blocksExist = []
