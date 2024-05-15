@@ -15,7 +15,13 @@
 
 import { fetchingData } from "../../../../Requests";
 import { buildGeojsonFromRelatedData } from "../../../../utils/relatedTable";
-import { addPopup, hasLayer, hasSource, removeLayer } from "../utils";
+import {
+  addPopup,
+  hasLayer,
+  hasSource,
+  removeLayer,
+  removeSource
+} from "../utils";
 import { toJson } from "../../../../utils/main";
 
 
@@ -66,6 +72,7 @@ export default function relatedTableLayer(map, id, data, contextLayerData, popup
           min: ["min", ["get", field_aggregation]]
         }
       }
+      removeSource(map, id)
 
       if (!hasSource(map, id)) {
         map.addSource(id, params);

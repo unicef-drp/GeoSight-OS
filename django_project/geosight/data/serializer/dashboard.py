@@ -199,9 +199,9 @@ class DashboardSerializer(serializers.ModelSerializer):
                 configuration = data['configuration']
             if dashboard_data['configuration']:
                 configuration.update(dashboard_data['configuration'])
-            data['configuration'] = configuration
 
             data.update(dashboard_data)
+            data['configuration'] = configuration
             output.append(data)
         return output
 

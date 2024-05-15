@@ -74,10 +74,10 @@ const SidePanelSlicers = ({ data }) => {
 
 
   const relatedFields = relatedTableInfo && relatedTableData ? getRelatedTableFields(relatedTableInfo, relatedTableData) : []
-
+  const configuration = toJson(data.configuration);
   const {
     query
-  } = toJson(data.configuration);
+  } = configuration;
   if (!query) {
     return null;
   }

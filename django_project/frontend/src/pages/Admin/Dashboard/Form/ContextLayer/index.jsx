@@ -36,6 +36,9 @@ import { fetchingData } from "../../../../../Requests";
 
 import './style.scss';
 import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
+import {
+  SelectWithList
+} from "../../../../../components/Input/SelectWithList";
 
 /**
  * Context Layer Style
@@ -88,10 +91,16 @@ function ContextLayerStyle({ contextLayer }) {
   }, [data.related_table])
 
   const relatedFields = relatedTableInfo && relatedTableData ? getRelatedTableFields(relatedTableInfo, relatedTableData) : []
+  const fieldOptions = relatedFields ? relatedFields.filter(
+    field => ['Number', 'number'].includes(field.type)
+  ).map(field => field.name) : []
+
   const configuration = toJson(data.configuration);
   const {
     query,
-    override_query
+    override_query,
+    field_aggregation,
+    override_field_aggregation
   } = configuration;
 
   const {
@@ -130,6 +139,7 @@ function ContextLayerStyle({ contextLayer }) {
                 {
                   data.layer_type === 'Related Table' ?
                     <div className='ArcgisConfig General_Override'>
+                      {/* OVERRIDE QUERY */}
                       <FormGroup>
                         <FormControlLabel
                           control={
@@ -171,6 +181,56 @@ function ContextLayerStyle({ contextLayer }) {
                           </span>
                             </div>
                           </div> : null
+                      }
+
+                      {/* OVERRIDE AGGREGATION */}
+                      <FormGroup>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={override_field_aggregation ? override_field_aggregation : false}
+                              onChange={evt => updateData({
+                                ...data,
+                                configuration: {
+                                  ...configuration,
+                                  query: original_query,
+                                  override_field_aggregation: evt.target.checked
+                                }
+                              })}/>
+                          }
+                          label="Override aggregate data by field name"/>
+                      </FormGroup>
+                      {
+                        override_field_aggregation ?
+                          <>
+                            <SelectWithList
+                              list={
+                                [
+                                  {
+                                    name: '------------------------',
+                                    value: null,
+                                  },
+                                  ...fieldOptions]
+                              }
+                              placeholder={!relatedFields ? "Loading" : "Select.."}
+                              value={field_aggregation ? field_aggregation : null}
+                              isDisabled={!data.data_fields}
+                              onChange={evt => {
+                                updateData({
+                                  ...data,
+                                  configuration: {
+                                    ...configuration,
+                                    field_aggregation: evt.value
+                                  }
+                                })
+                              }}/>
+                            <div>
+                            <span className="form-helptext">
+                              Field name that will be used to aggregate data.
+                              Aggregation will be use to make clustering of the points on the map.
+                            </span>
+                            </div>
+                          </> : null
                       }
                     </div> : null
                 }
