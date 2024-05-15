@@ -18950,7 +18950,7 @@
     "model": "geosight_data.dashboardwidget",
     "pk": 34,
     "fields": {
-      "name": "Sample indicator A total",
+      "name": "Total of Sample indicator A",
       "description": "",
       "dashboard": 53,
       "order": 2,
