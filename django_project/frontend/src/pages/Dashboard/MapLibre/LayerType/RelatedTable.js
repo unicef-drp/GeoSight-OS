@@ -16,6 +16,7 @@
 import { fetchingData } from "../../../../Requests";
 import { buildGeojsonFromRelatedData } from "../../../../utils/relatedTable";
 import { addPopup, hasLayer, hasSource, removeLayer } from "../utils";
+import { toJson } from "../../../../utils/main";
 
 
 const getBeforeLayerId = (map, layerId, contextLayerOrder) => {
@@ -39,19 +40,13 @@ const getBeforeLayerId = (map, layerId, contextLayerOrder) => {
  * Render vector tile layer
  */
 export default function relatedTableLayer(map, id, data, contextLayerData, popupFeatureFn, contextLayerOrder) {
-  // Create the source
-  let configuration;
-  try {
-    if (typeof data.configuration === 'string' || data.configuration instanceof String) {
-      configuration = JSON.parse(data.configuration)
-    } else {
-      configuration = data.configuration
-    }
-  } catch (e) {
-    configuration = {}
-  }
-  const { field_aggregation, latitude_field, longitude_field, query } = configuration;
-  if (!latitude_field|| !longitude_field|| !contextLayerData.related_table) {
+  const {
+    field_aggregation,
+    latitude_field,
+    longitude_field,
+    query
+  } = toJson(data.configuration);
+  if (!latitude_field || !longitude_field || !contextLayerData.related_table) {
     return
   }
   fetchingData(

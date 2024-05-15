@@ -23,7 +23,7 @@ import WhereInputModal
   from "../../../../components/SqlQueryGenerator/WhereInputModal";
 import { getRelatedTableFields } from "../../../../utils/relatedTable";
 import { fetchingData } from "../../../../Requests";
-import { dictDeepCopy } from "../../../../utils/main";
+import { dictDeepCopy, toJson } from "../../../../utils/main";
 import { RelatedTableInputSelector } from "../../ModalSelector/InputSelector";
 import { SelectWithList } from "../../../../components/Input/SelectWithList";
 
@@ -40,17 +40,8 @@ export default function RelatedTableFields(
 ) {
   const [relatedTableInfo, setRelatedTableInfo] = useState(null)
   const [relatedTableData, setRelatedTableData] = useState(null)
-  // Create the source
-  let configuration;
-  try {
-    if (typeof data.configuration === 'string' || data.configuration instanceof String) {
-      configuration = JSON.parse(data.configuration)
-    } else {
-      configuration = data.configuration
-    }
-  } catch (e) {
-    configuration = {}
-  }
+
+  const configuration = toJson(data.configuration)
   const {
     field_aggregation,
     latitude_field,
@@ -60,9 +51,6 @@ export default function RelatedTableFields(
 
   // Loading data
   useEffect(() => {
-    if (!open) {
-      return
-    }
     if (data.related_table) {
       const params = {}
       const url_info = `/api/related-table/${data.related_table}`

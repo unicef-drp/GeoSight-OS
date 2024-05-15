@@ -58,4 +58,9 @@ class Migration(migrations.Migration):
             model_name='contextlayer',
             name='query',
         ),
+        migrations.AddField(
+            model_name='dashboardcontextlayer',
+            name='configuration',
+            field=models.JSONField(blank=True, null=True),
+        ),
     ]

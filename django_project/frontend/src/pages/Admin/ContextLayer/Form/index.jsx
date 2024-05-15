@@ -29,6 +29,8 @@ import { resourceActions } from "../List";
 import { dictDeepCopy } from "../../../../utils/main";
 
 import './style.scss';
+import WhereInputModal
+  from "../../../../components/SqlQueryGenerator/WhereInputModal";
 
 let currentArcGis = null
 let init = false
@@ -180,6 +182,8 @@ export default function ContextLayerForm() {
                 } else if (name === 'arcgis_config') {
                   arcGisConfigChange(value)
                   setDataFn()
+                } else if (['url', 'url_legend'].includes(name)) {
+                  setDataFn()
                 }
               }}
             >
@@ -211,7 +215,7 @@ export default function ContextLayerForm() {
               data={data}
               setData={updateData}
               defaultTab={tab}
-              useOverride={true}
+              useOverride={data.layer_type === 'ARCGIS'}
               useOverrideLabel={false}
             />
           ),

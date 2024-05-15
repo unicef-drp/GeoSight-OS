@@ -14,17 +14,14 @@
  */
 
 import React, { Fragment, useEffect, useState } from 'react';
+import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 import MapConfig from './Map'
 import ArcgisConfig from './Arcgis'
 import { useDispatch } from "react-redux";
 import { getLayer } from '../../../Dashboard/LeftPanel/ContextLayers/Layer'
-import {
-  defaultAggregationStyle,
-  defaultPointStyle,
-  defaultVectorTyleStyle
-} from './layerStyles';
+import { defaultPointStyle } from './layerStyles';
 import RelatedTableConfig from './RelatedTable';
-import AggregationStyleGuide from "./AggregationStyleGuide";
+import AggregationStyleConfig from "./AggregationStyleConfig";
 
 import './style.scss';
 
@@ -40,14 +37,14 @@ export default function StyleConfig(
     setData,
     useOverride = false,
     defaultTab = null,
-    useOverrideLabel = true
+    useOverrideLabel = true,
+    children
   }
 ) {
   const dispatch = useDispatch();
   const [layer, setLayer] = useState(null);
   const [error, setError] = useState(null);
   const [legend, setLegend] = useState(null);
-  const [inputStyle, setInputStyle] = useState(null);
 
   const [layerData, setLayerData] = useState(null);
   const [layerDataClass, setLayerDataClass] = useState(null);
@@ -67,15 +64,12 @@ export default function StyleConfig(
   }, [data, tab]);
 
   useEffect(() => {
-    if (!data.styles && data.layer_type === 'Related Table') {
+    if (!data.styles && ['Related Table', 'Vector Tile'].includes(data.layer_type)) {
       setData({
         ...data,
         styles: JSON.stringify(defaultPointStyle, null, 4),
         override_style: true
       })
-    }
-    if (!inputStyle) {
-      setInputStyle(data.styles)
     }
   }, [data]);
 
@@ -99,6 +93,19 @@ export default function StyleConfig(
       <div className='AdminForm'>
         {/* FOR CONFIG */}
         <div className='TabPrimary ContextLayerConfigTab'>
+          {
+            data.layer_type === 'Related Table' ?
+              <>
+                <div
+                  onClick={() => {
+                    setTab('General_Override')
+                  }}
+                  className={tab === 'General' ? 'Selected' : ""}
+                >
+                  General
+                </div>
+              </> : null
+          }
           <div
             onClick={() => {
               setTab('Preview')
@@ -158,57 +165,34 @@ export default function StyleConfig(
           }
           {
             ['Related Table', 'Vector Tile'].includes(data.layer_type) ? <>
-              <div className='Style'>
-                <div><b>Styles</b></div>
+              <div className='ArcgisConfig Style'>
                 {
-                  data.configuration?.field_aggregation ?
-                    <AggregationStyleGuide data={data} styleChanged={val => {
-                      setInputStyle(val)
-                      setData(
-                        {
-                          ...data,
-                          styles: val,
-                          override_style: true
+                  useOverride ?
+                    <FormGroup>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={data?.override_style ? data?.override_style : false}
+                            onChange={evt => setData({
+                              ...data,
+                              styles: data.original_styles,
+                              override_style: evt.target.checked
+                            })}/>
                         }
-                      )
-                    }}/> : null
+                        label="Override style from default"/>
+                    </FormGroup> : null
                 }
-                <span>
-                  Put layer list configurations with the mapbox format.<br/>
-                  Put source with "source" or any, it will automatically change to correct source.<br/>
-                  <a
-                    href="https://docs.mapbox.com/style-spec/reference/layers/"
-                    target="_blank">See documentation.</a>
-                </span>
-                <br/>
-                <br/>
-                <textarea
-                  placeholder={
-                    JSON.stringify(data.configuration?.field_aggregation ? defaultAggregationStyle : data.layer_type === 'Related Table' ?
-                        defaultPointStyle :
-                        defaultVectorTyleStyle,
-                      null, 4)
-                  }
-                  value={inputStyle}
-                  style={{ minHeight: "90%" }}
-                  onChange={(evt) => {
-                    setInputStyle(evt.target.value)
-                    try {
-                      setError(null)
-                      setData(
-                        {
-                          ...data,
-                          styles: evt.target.value,
-                          override_style: true
-                        }
-                      )
-                    } catch (e) {
-                      setError((e + '').split('at')[0])
-                    }
-                  }}/>
+                {
+                  (!useOverride || data.override_style) ?
+                    data.styles ?
+                      <AggregationStyleConfig
+                        data={data} setData={setData} setError={setError}
+                      /> :
+                      <div>Loading</div> : null
+                }
               </div>
               <div className='ArcgisConfig Label form-helptext'>
-                Vector tile does not have label
+                {data.layer_type} does not have label
               </div>
             </> : null
           }
@@ -221,6 +205,7 @@ export default function StyleConfig(
               /> : data.layer_type === 'Related Table' ?
                 <RelatedTableConfig
                   originalData={data} setData={setData}
+                  setError={setError}
                   RelatedTableData={layerData} useOverride={useOverride}
                   useOverrideLabel={useOverrideLabel}
                 /> :
@@ -230,6 +215,7 @@ export default function StyleConfig(
                   </div>
                 </Fragment>
           }
+          {children}
         </div>
       </div>
     </div>

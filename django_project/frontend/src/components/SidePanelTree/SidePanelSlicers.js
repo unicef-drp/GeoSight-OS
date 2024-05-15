@@ -16,7 +16,7 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { fetchingData } from '../../Requests';
 import WhereQueryGenerator from '../SqlQueryGenerator/WhereQueryGenerator';
-import { dictDeepCopy } from '../../utils/main';
+import { dictDeepCopy, toJson } from '../../utils/main';
 import { getRelatedTableFields } from '../../utils/relatedTable';
 import { Actions } from '../../store/dashboard';
 import { useDispatch } from 'react-redux';
@@ -75,18 +75,9 @@ const SidePanelSlicers = ({ data }) => {
 
   const relatedFields = relatedTableInfo && relatedTableData ? getRelatedTableFields(relatedTableInfo, relatedTableData) : []
 
-  // Create the source
-  let configuration;
-  try {
-    if (typeof data.configuration === 'string' || data.configuration instanceof String) {
-      configuration = JSON.parse(data.configuration)
-    } else {
-      configuration = data.configuration
-    }
-  } catch (e) {
-    configuration = {}
-  }
-  const { query } = configuration
+  const {
+    query
+  } = toJson(data.configuration);
   if (!query) {
     return null;
   }

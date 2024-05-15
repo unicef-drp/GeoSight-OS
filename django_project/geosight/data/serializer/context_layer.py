@@ -35,6 +35,9 @@ class ContextLayerSerializer(DynamicModelSerializer):
     data_fields = serializers.SerializerMethodField()
     label_styles = serializers.SerializerMethodField()
     permission = serializers.SerializerMethodField()
+    original_styles = serializers.SerializerMethodField()
+    original_configuration = serializers.SerializerMethodField()
+    configuration = serializers.SerializerMethodField()
 
     def get_url(self, obj: ContextLayer):
         """Url."""
@@ -66,6 +69,10 @@ class ContextLayerSerializer(DynamicModelSerializer):
         """Return category name."""
         return json.loads(obj.styles) if obj.styles else None
 
+    def get_original_styles(self, obj: ContextLayer):
+        """Return original_styles."""
+        return json.loads(obj.styles) if obj.styles else None
+
     def get_label_styles(self, obj: ContextLayer):
         """Return category name."""
         return json.loads(obj.label_styles) if obj.label_styles else {}
@@ -75,6 +82,22 @@ class ContextLayerSerializer(DynamicModelSerializer):
         return obj.permission.all_permission(
             self.context.get('user', None)
         )
+
+    def get_configuration(self, obj: ContextLayer):
+        """Return original_configuration."""
+        if not obj.configuration:
+            return None
+        if isinstance(obj.configuration, str):
+            return json.loads(obj.configuration)
+        return obj.configuration
+
+    def get_original_configuration(self, obj: ContextLayer):
+        """Return original_configuration."""
+        if not obj.configuration:
+            return None
+        if isinstance(obj.configuration, str):
+            return json.loads(obj.configuration)
+        return obj.configuration
 
     class Meta:  # noqa: D106
         model = ContextLayer

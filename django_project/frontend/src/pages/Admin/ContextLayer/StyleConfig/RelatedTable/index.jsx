@@ -21,6 +21,7 @@ import React, { Fragment } from 'react';
 import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 
 import FieldConfig from "../../../../../components/FieldConfig";
+import AggregationStyleConfig from "../AggregationStyleConfig";
 
 /**
  * Map Config component.
@@ -54,9 +55,9 @@ export default function RelatedTableConfig(
                       data_fields: RelatedTableData?.data?.fields,
                       override_field: evt.target.checked
                     })
-                  }} />
+                  }}/>
               }
-              label="Override field config from default" />
+              label="Override field config from default"/>
           </FormGroup> : null
       }
       {
@@ -69,7 +70,7 @@ export default function RelatedTableConfig(
                   update={(fields) => {
                     data.data_fields = fields
                     update()
-                  }} />
+                  }}/>
               </div>
             </Fragment> : <div>Loading</div> : null
       }

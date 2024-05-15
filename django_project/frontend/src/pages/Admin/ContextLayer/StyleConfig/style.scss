@@ -126,6 +126,12 @@
       display: block !important;
     }
   }
+
+  &.General_Override {
+    .General_Override {
+      display: block !important;
+    }
+  }
 }
 
 

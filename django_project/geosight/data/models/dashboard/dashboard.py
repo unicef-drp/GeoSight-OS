@@ -495,6 +495,19 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData, AbstractVersionData):
             model.override_label = data.get('override_label', False)
             model.override_field = data.get('override_field', False)
 
+            # Configuration
+            configuration = data.get('configuration', {})
+            saved_configuration = {}
+            if configuration:
+                for key, value in configuration.items():
+                    if 'override_' in key:
+                        try:
+                            k_val = key.replace('override_', '')
+                            saved_configuration[k_val] = configuration[k_val]
+                            saved_configuration[key] = value
+                        except KeyError:
+                            pass
+            model.configuration = saved_configuration
             model.save()
             ids_new[data.get('id', 0)] = data['id']
         return ids_new
