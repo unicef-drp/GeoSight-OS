@@ -16,6 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import json
 import uuid
+from copy import deepcopy
 
 from dateutil import parser
 from django.contrib.gis.db import models
@@ -178,10 +179,18 @@ class RelatedTable(AbstractTerm, AbstractEditData):
                 reference_layer=reference_layer
             ).values_list('geom_id', flat=True)
         else:
-            codes = EntityCode.objects.filter(
-                entity__reference_layer=reference_layer,
-                code_type=geo_type
-            ).values_list('code', flat=True)
+            entity_codes = list(
+                EntityCode.objects.filter(
+                    entity__reference_layer=reference_layer,
+                    code_type=geo_type
+                ).values_list('code', flat=True)
+            )
+            codes = deepcopy(entity_codes)
+            for code in entity_codes:
+                try:
+                    codes.append(int(code))
+                except Exception:
+                    pass
 
         lookup = f'data__{geo_field}__in'
         queries = self.relatedtablerow_set.filter(**{lookup: list(codes)})
