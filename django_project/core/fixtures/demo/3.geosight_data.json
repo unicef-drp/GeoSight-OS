@@ -17108,7 +17108,8 @@
         "id": "0cf47b4d-3410-4410-b05e-4e825832350f",
         "group": "",
         "children": [
-          33
+          33,
+          34
         ]
       },
       "level_config": {
@@ -18942,6 +18943,29 @@
         "geographicalUnitType": "Predefined list",
         "indicatorsPaletteColor": 3,
         "geographicalUnitPaletteColor": 0
+      }
+    }
+  },
+  {
+    "model": "geosight_data.dashboardwidget",
+    "pk": 34,
+    "fields": {
+      "name": "Sample indicator A total",
+      "description": "",
+      "dashboard": 53,
+      "order": 2,
+      "visible_by_default": true,
+      "group": null,
+      "relation_group": null,
+      "type": "SummaryWidget",
+      "config": {
+        "unit": "",
+        "layer_id": 318,
+        "property": "value",
+        "operation": "Sum",
+        "layer_used": "Indicator",
+        "date_filter_type": "No filter",
+        "date_filter_value": "2024-12-12T00:00:00.000Z;"
       }
     }
   },

@@ -49,7 +49,8 @@ export default function SummaryWidgetView({ idx, data }) {
     indicators,
     indicatorLayers,
     geoField,
-    default_time_mode
+    default_time_mode,
+    referenceLayer
   } = useSelector(state => state.dashboard.data);
   const {
     use_only_last_known_value
@@ -59,7 +60,6 @@ export default function SummaryWidgetView({ idx, data }) {
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel);
   const filtersData = useSelector(state => state.filtersData);
   const [layerData, setLayerData] = useState({});
-
   const date_filter_type = use_only_last_known_value ? 'No filter' : config.date_filter_type
 
   // Fetch the data if it is using global filter
@@ -73,6 +73,9 @@ export default function SummaryWidgetView({ idx, data }) {
   useEffect(() => {
     (
       async () => {
+        if (!referenceLayer?.identifier) {
+          return
+        }
         let params = {}
         if (date_filter_type === 'Custom filter') {
           if (date_filter_value) {
@@ -85,6 +88,7 @@ export default function SummaryWidgetView({ idx, data }) {
             }
           }
         }
+        params['reference_layer_uuid'] = referenceLayer?.identifier
         if (selectedAdminLevel?.level !== undefined) {
           params['admin_level'] = selectedAdminLevel?.level
         } else {
@@ -195,7 +199,7 @@ export default function SummaryWidgetView({ idx, data }) {
         }
       }
     )()
-  }, [data, selectedAdminLevel, indicatorLayers, date_filter_type])
+  }, [data, selectedAdminLevel, indicatorLayers, date_filter_type, referenceLayer])
 
   const where = returnWhere(filtersData ? filtersData : [])
   let indicatorData = null
