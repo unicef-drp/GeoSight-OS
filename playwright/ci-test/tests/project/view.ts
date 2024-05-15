@@ -32,6 +32,9 @@ test.describe('View project', () => {
     await expect(page.getByLabel(layer1)).toBeChecked();
     await expect(page.getByLabel(layer2)).not.toBeChecked();
 
+    // Check widgets
+    await expect(page.locator('.widget__sw__content')).toContainText('895');
+
     // Chart
     const layer3 = 'Pie Chart layer'
     await page.getByLabel(layer3).click();

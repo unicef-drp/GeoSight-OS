@@ -108,7 +108,8 @@ class IndicatorBatchMetadataAPI(_BaseAPI):
                 )
             except ResourcePermissionDenied:
                 responses[indicator.id] = {
-                    'dates': (
+                    'dates': [],
+                    'error': (
                         "You don't have permission to access this resource"
                     ),
                     'count': 0,
