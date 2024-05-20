@@ -22,7 +22,7 @@ djangorestframework-gis==1.0
 django-rest-knox==4.2.0
 drf-nested-routers==0.93.5
 django-tenants==3.6.1
-tenant-schemas-celery==2.2.0
+tenant-schemas-celery==3.0.0
 django-tenants-celery-beat==0.2.1
 
 # TODO: Upgrade django 4

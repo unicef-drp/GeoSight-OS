@@ -34,7 +34,7 @@ class Client(TenantTimezoneMixin, TenantMixin):
 
     auto_create_schema = True
     name = models.CharField(max_length=100)
-    created_on = models.DateField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name

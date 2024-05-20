@@ -50,7 +50,7 @@ class Migration(migrations.Migration):
                     timezone_field.fields.TimeZoneField(default='UTC')
                 ),
                 ('name', models.CharField(max_length=100)),
-                ('created_on', models.DateField(auto_now_add=True)),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
             ],
             options={
                 'abstract': False,

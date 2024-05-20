@@ -57,6 +57,8 @@ REST_KNOX = {
 }
 
 # Multi tenant
+TENANT_MODEL = "tenants.Client"
+TENANT_DOMAIN_MODEL = "tenants.Domain"
 PERIODIC_TASK_TENANT_LINK_MODEL = "tenants.PeriodicTaskTenantLink"
 DEFAULT_FILE_STORAGE = "django_tenants.files.storage.TenantFileSystemStorage"
 MULTITENANT_RELATIVE_MEDIA_ROOT = ""
