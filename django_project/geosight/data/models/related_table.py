@@ -260,7 +260,7 @@ class RelatedTable(AbstractTerm, AbstractEditData):
         for code in entity_codes:
             try:
                 codes.append(int(code))
-            except Exception as e:
+            except Exception:
                 pass
         lookup = f'data__{geo_field}__in'
         value_list = f'data__{date_field}'
