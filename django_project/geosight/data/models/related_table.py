@@ -227,9 +227,15 @@ class RelatedTable(AbstractTerm, AbstractEditData):
                             reference_layer=reference_layer
                         ).first()
                     else:
+                        codes = [value]
+                        try:
+                            codes.append(int(value))
+                        except Exception:
+                            pass
+
                         entity_code = EntityCode.objects.filter(
                             entity__reference_layer=reference_layer,
-                            code=value,
+                            code__in=codes,
                             code_type=geo_type
                         ).first()
                         if entity_code:
@@ -247,8 +253,15 @@ class RelatedTable(AbstractTerm, AbstractEditData):
                 pass
         return output
 
-    def dates_with_query(self, codes, geo_field, date_field, date_format):
+    def dates_with_query(
+            self, entity_codes, geo_field, date_field, date_format):
         """Return data of related table."""
+        codes = deepcopy(entity_codes)
+        for code in entity_codes:
+            try:
+                codes.append(int(code))
+            except Exception as e:
+                pass
         lookup = f'data__{geo_field}__in'
         value_list = f'data__{date_field}'
         dates = self.relatedtablerow_set.filter(
