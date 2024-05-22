@@ -181,7 +181,7 @@ class RelatedTableDatesAPI(APIView):
             return HttpResponseBadRequest(f'{e} is required')
 
         data = related_table.dates_with_query(
-            codes, geography_code_field_name, date_field,
+            list(codes), geography_code_field_name, date_field,
             date_format=request.GET.get('date_format', None)
         )
         return Response(data)
