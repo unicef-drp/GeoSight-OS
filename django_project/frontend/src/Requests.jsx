@@ -97,7 +97,7 @@ export async function fetchJSON(url, options, useCache = true) {
 }
 
 /*** Axios georepo request with cache */
-export const fetchPaginationAsync = async function (url, onProgress) {
+export const fetchPaginationAsync = async function (url, onProgress, pageSize = null) {
   let data = []
   const _fetchJson = async function (currUrl) {
     // Force to use https

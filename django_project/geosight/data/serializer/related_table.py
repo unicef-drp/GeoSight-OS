@@ -182,6 +182,22 @@ class RelatedTableRowApiSerializer(DynamicModelSerializer):
         }
 
 
+class RelatedTableRowApiFlatSerializer(DynamicModelSerializer):
+    """Serializer for RelatedTableRow."""
+
+    class Meta:  # noqa: D106
+        model = RelatedTableRow
+        fields = ('id',)
+
+    def to_representation(self, instance):
+        """Update custom data."""
+        data = super(RelatedTableRowApiFlatSerializer, self).to_representation(
+            instance
+        )
+        data.update(instance.data)
+        return data
+
+
 class RelatedTableSerializer(DynamicModelSerializer):
     """
     DEPRECATED: Legacy serializer.
