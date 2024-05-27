@@ -211,6 +211,7 @@ class RelatedTableSerializer(DynamicModelSerializer):
     fields_definition = serializers.SerializerMethodField()
     related_fields = serializers.SerializerMethodField()
     permission = serializers.SerializerMethodField()
+    version_data = serializers.SerializerMethodField()
 
     def get_url(self, obj: RelatedTable):
         """Return url."""
@@ -243,6 +244,10 @@ class RelatedTableSerializer(DynamicModelSerializer):
         return obj.permission.all_permission(
             self.context.get('user', None)
         )
+
+    def get_version_data(self, obj: RelatedTable):
+        """Return permission."""
+        return obj.version
 
     class Meta:  # noqa: D106
         model = RelatedTable

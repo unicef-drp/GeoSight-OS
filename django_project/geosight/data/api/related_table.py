@@ -20,18 +20,20 @@ from datetime import datetime
 from dateutil import parser as date_parser
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from core.decorators import cache_control
 from geosight.data.models.related_table import RelatedTable
 from geosight.data.serializer.related_table import (
     RelatedTableSerializer
 )
 from geosight.georepo.models.entity import Entity, EntityCode
 from geosight.permission.access import (
-    read_permission_resource, delete_permission_resource,
-    read_data_permission_resource
+    read_data_permission_resource, read_permission_resource,
+    delete_permission_resource
 )
 
 
@@ -97,6 +99,7 @@ class RelatedTableDataAPI(APIView):
         return Response(obj.data)
 
 
+@method_decorator(cache_control(public=True, max_age=864000), name='dispatch')
 class RelatedTableValuesAPI(APIView):
     """API for Values of indicator."""
 
@@ -152,6 +155,7 @@ class RelatedTableFieldDataAPI(APIView):
             return HttpResponseBadRequest(f'{e} is required')
 
 
+@method_decorator(cache_control(public=True, max_age=864000), name='dispatch')
 class RelatedTableDatesAPI(APIView):
     """API for of related table."""
 

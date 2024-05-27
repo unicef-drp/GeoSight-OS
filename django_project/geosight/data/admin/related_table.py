@@ -15,10 +15,17 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib import admin
+from django.utils import timezone
 
 from geosight.data.models.related_table import (
     RelatedTable, RelatedTableRow, RelatedTableField
 )
+
+
+@admin.action(description='Invalidate cache')
+def invalidate_cache(modeladmin, request, queryset):
+    """Invalidate cache of value on frontend."""
+    queryset.update(version_data=timezone.now())
 
 
 class RelatedTableFieldInline(admin.TabularInline):
@@ -40,6 +47,7 @@ class RelatedTableAdmin(admin.ModelAdmin):
 
     list_display = ('name', 'description')
     inlines = (RelatedTableFieldInline,)
+    actions = (invalidate_cache,)
 
 
 admin.site.register(RelatedTable, RelatedTableAdmin)

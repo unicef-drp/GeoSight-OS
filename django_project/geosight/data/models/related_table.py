@@ -22,7 +22,9 @@ from dateutil import parser
 from django.contrib.gis.db import models
 from django.db import transaction
 
-from core.models.general import AbstractEditData, AbstractTerm
+from core.models.general import (
+    AbstractEditData, AbstractTerm, AbstractVersionData
+)
 from geosight.data.models.field_layer import BaseFieldLayerAbstract
 from geosight.data.utils import extract_time_string
 from geosight.importer.utilities import date_from_timestamp
@@ -38,7 +40,7 @@ class RelatedTableException(Exception):
         super().__init__(self.message)
 
 
-class RelatedTable(AbstractTerm, AbstractEditData):
+class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
     """Related table data."""
 
     unique_id = models.UUIDField(
@@ -254,6 +256,7 @@ class RelatedTable(AbstractTerm, AbstractEditData):
         dates = self.relatedtablerow_set.filter(
             **{lookup: list(codes)}
         ).values_list(value_list, flat=True)
+        dates = list(set(dates))
 
         output = []
         for value in dates:
@@ -268,7 +271,7 @@ class RelatedTable(AbstractTerm, AbstractEditData):
 
             except (KeyError, ValueError):
                 pass
-        return list(set(output))
+        return output
 
     @property
     def fields_definition(self):

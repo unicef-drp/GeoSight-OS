@@ -87,6 +87,7 @@ export default function RelatedTableLayer({ relatedTableLayer }) {
       if (indicatorLayer.config.date_format) {
         params.date_format = indicatorLayer.config.date_format
       }
+      params.version = relatedTable.version
       fetchingData(
         '/api/related-table/' + relatedTable.id + '/dates', params, {}, function (response, error) {
           if (!error) {
