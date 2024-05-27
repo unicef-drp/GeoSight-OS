@@ -101,7 +101,7 @@ export function RelatedTable(
           )
         }
       )
-      // dispatch(Actions.RelatedTableData.request(id))
+      dispatch(Actions.RelatedTableData.request(id))
     }
   }, [selectedGlobalTime, referenceLayerUUID, indicatorLayer]);
 
