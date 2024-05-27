@@ -43,6 +43,10 @@ export function RelatedTable(
   // TODO:
   //  Fix this to use id of layer
   const { id, url, query } = relatedTable
+  useEffect(() => {
+    dispatch(Actions.RelatedTableData.request(id))
+  }, []);
+
   /**
    * Fetch related table data by the current global selected time
    */
