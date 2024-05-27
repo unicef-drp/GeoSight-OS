@@ -162,7 +162,7 @@ class RelatedTable(AbstractTerm, AbstractEditData):
     ):
         """Return data of related table."""
         from geosight.data.serializer.related_table import (
-            RelatedTableRowSerializer
+            RelatedTableRowApiFlatSerializer
         )
         from geosight.georepo.models.reference_layer import ReferenceLayerView
         from geosight.georepo.models.entity import Entity, EntityCode
@@ -174,32 +174,45 @@ class RelatedTable(AbstractTerm, AbstractEditData):
             return []
 
         # Check codes based on code type
+        entities_data = {}
         if geo_type.lower() == 'ucode':
-            codes = Entity.objects.filter(
+            entities = Entity.objects.filter(
                 reference_layer=reference_layer
-            ).values_list('geom_id', flat=True)
+            ).values_list(
+                'geom_id', 'concept_uuid', 'name', 'admin_level'
+            )
+            for entity in entities:
+                entities_data[entity[0]] = {
+                    'geom_id': entity[0],
+                    'concept_uuid': entity[1],
+                    'name': entity[2],
+                    'admin_level': entity[3],
+                }
         else:
-            entity_codes = list(
-                EntityCode.objects.filter(
+            for entity_code in EntityCode.objects.filter(
                     entity__reference_layer=reference_layer,
                     code_type=geo_type
-                ).values_list('code', flat=True)
-            )
-            codes = deepcopy(entity_codes)
-            for code in entity_codes:
+            ):
+                entity = entity_code.entity
+                entity_data = {
+                    'geom_id': entity.geom_id,
+                    'concept_uuid': entity.concept_uuid,
+                    'name': entity.name,
+                    'admin_level': entity.admin_level
+
+                }
+                entities_data[entity_code.code] = entity_data
                 try:
-                    codes.append(int(code))
+                    entities_data[int(entity_code.code)] = entity_data
                 except Exception:
                     pass
 
         lookup = f'data__{geo_field}__in'
-        queries = self.relatedtablerow_set.filter(**{lookup: list(codes)})
-        output = []
-        concept_uuid = {}
-        for row in queries:
-            data = RelatedTableRowSerializer(row).data
-            data.update(row.data)
-
+        queries = self.relatedtablerow_set.filter(
+            **{lookup: list(entities_data.keys())}
+        )
+        output = RelatedTableRowApiFlatSerializer(queries, many=True).data
+        for data in output:
             try:
                 if date_field:
                     # Update date field
@@ -216,39 +229,13 @@ class RelatedTable(AbstractTerm, AbstractEditData):
                         continue
 
                 # Update geo field
-                entity = None
-                value = data[geo_field]
-                if value in concept_uuid:
-                    entity = concept_uuid[value]
-                else:
-                    if geo_type.lower() == 'ucode':
-                        entity = Entity.objects.filter(
-                            geom_id=value,
-                            reference_layer=reference_layer
-                        ).first()
-                    else:
-                        codes = [value]
-                        try:
-                            codes.append(int(value))
-                        except Exception:
-                            pass
-
-                        entity_code = EntityCode.objects.filter(
-                            entity__reference_layer=reference_layer,
-                            code__in=codes,
-                            code_type=geo_type
-                        ).first()
-                        if entity_code:
-                            entity = entity_code.entity
-
+                entity = entities_data[data[geo_field]]
                 # If entity exist, add to output
                 if entity:
-                    data['concept_uuid'] = entity.concept_uuid
-                    data['geometry_code'] = entity.geom_id
-                    data['geometry_name'] = entity.name
-                    data['admin_level'] = entity.admin_level
-                    concept_uuid[value] = entity
-                    output.append(data)
+                    data['concept_uuid'] = entity['concept_uuid']
+                    data['geometry_code'] = entity['geom_id']
+                    data['geometry_name'] = entity['name']
+                    data['admin_level'] = entity['admin_level']
             except (KeyError, ValueError, Entity.DoesNotExist):
                 pass
         return output
