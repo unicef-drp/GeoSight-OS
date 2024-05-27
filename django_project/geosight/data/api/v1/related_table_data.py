@@ -40,6 +40,7 @@ class RelatedTableDataViewSet(BaseApiV1Resource):
 
     @property
     def serializer_class(self):
+        """Return serializer."""
         is_flat = self.request.GET.get('flat', None)
         if is_flat:
             return RelatedTableRowApiFlatSerializer

@@ -20,6 +20,8 @@ from django.utils.cache import patch_cache_control
 
 
 def cache_control(**kwargs):
+    """Cache control for decorated functions."""
+
     def _cache_controller(viewfunc):
         @wraps(viewfunc)
         def _cache_controlled(request, *args, **kw):
