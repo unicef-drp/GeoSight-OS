@@ -195,6 +195,9 @@ class RelatedTableRowApiFlatSerializer(DynamicModelSerializer):
             instance
         )
         data.update(instance.data)
+        to_representation = self.context.get('to_representation', None)
+        if to_representation:
+            to_representation(data)
         return data
 
 

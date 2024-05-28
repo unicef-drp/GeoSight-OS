@@ -129,6 +129,7 @@ class RelatedTableValuesAPI(APIView):
                 min_time.replace(' ', '+')
             ).isoformat()
 
+        first = datetime.now().timestamp()
         data = related_table.data_with_query(
             reference_layer_uuid=reference_layer_uuid,
             geo_field=geography_code_field_name,
@@ -138,6 +139,7 @@ class RelatedTableValuesAPI(APIView):
             max_time=max_time.isoformat(),
             min_time=min_time
         )
+        print(datetime.now().timestamp() - first)
         return Response(data)
 
 

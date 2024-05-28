@@ -81,6 +81,8 @@ def update_structure(structure: dict, id_mapping: dict):
 
 def extract_time_string(format_time, value):
     """Return time from string."""
+    if value is None:
+        return None
     if value.__class__ in [int, float] and len(str(value)) in [10, 13]:
         if len(str(value)) == 13:
             value = value / 1000

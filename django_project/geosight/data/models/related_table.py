@@ -213,8 +213,9 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
         queries = self.relatedtablerow_set.filter(
             **{lookup: list(entities_data.keys())}
         )
-        output = RelatedTableRowApiFlatSerializer(queries, many=True).data
-        for data in output:
+
+        def to_representation(data):
+            """To representation."""
             try:
                 if date_field:
                     # Update date field
@@ -224,12 +225,6 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                         value=value
                     ).isoformat()
 
-                    # Filter by date
-                    if max_time and data[date_field] > max_time:
-                        continue
-                    if min_time and data[date_field] < min_time:
-                        continue
-
                 # Update geo field
                 entity = entities_data[data[geo_field]]
                 # If entity exist, add to output
@@ -238,9 +233,24 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                     data['geometry_code'] = entity['geom_id']
                     data['geometry_name'] = entity['name']
                     data['admin_level'] = entity['admin_level']
-            except (KeyError, ValueError, Entity.DoesNotExist):
+            except (KeyError, ValueError):
                 pass
-        return output
+
+        output = RelatedTableRowApiFlatSerializer(
+            queries, context={
+                'to_representation': to_representation
+            }, many=True
+        ).data
+
+        def filter_date(data):
+            # Filter by date
+            if max_time and data[date_field] > max_time:
+                return False
+            if min_time and data[date_field] < min_time:
+                return False
+            return True
+
+        return filter(filter_date, output)
 
     def dates_with_query(
             self, entity_codes, geo_field, date_field, date_format):
