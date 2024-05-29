@@ -259,7 +259,6 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                     f"entity.reference_layer_id={reference_layer.id} "
                     f"ORDER BY data ->> '{date_field}'"
                 )
-            print(query)
             cursor.execute(query)
             dates = []
             for row in cursor.fetchall():
