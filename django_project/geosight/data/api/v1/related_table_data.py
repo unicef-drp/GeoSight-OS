@@ -23,33 +23,51 @@ from rest_framework.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT
 from core.api_utils import ApiTag
 from geosight.data.api.v1.base import BaseApiV1Resource
 from geosight.data.models import RelatedTableRow, RelatedTable
-from geosight.data.serializer.related_table import RelatedTableRowApiSerializer
-from geosight.permission.access import \
-    read_permission_resource, edit_permission_resource, \
+from geosight.data.serializer.related_table import (
+    RelatedTableRowApiSerializer, RelatedTableRowApiFlatSerializer
+)
+from geosight.permission.access import (
+    read_permission_resource, edit_permission_resource,
     delete_permission_resource
+)
 
 
 class RelatedTableDataViewSet(BaseApiV1Resource):
     """Related Table Data ViewSet."""
 
     model_class = RelatedTableRow
-    serializer_class = RelatedTableRowApiSerializer
     extra_exclude_fields = []
+
+    @property
+    def serializer_class(self):
+        """Return serializer."""
+        is_flat = self.request.GET.get('flat', None)
+        if is_flat:
+            return RelatedTableRowApiFlatSerializer
+        else:
+            return RelatedTableRowApiSerializer
 
     def _get_related_table(self):  # noqa: D102
         related_table_id = self.kwargs.get('related_tables_id')
-        return get_object_or_404(
+        related_table = get_object_or_404(
             RelatedTable.objects.filter(pk=related_table_id)
         )
-
-    def get_queryset(self):  # noqa: D102
-        related_table = self._get_related_table()
         read_permission_resource(related_table, self.request.user)
-        return RelatedTableRow.objects.filter(table_id=related_table.id)
+        return related_table
+
+    def get_queryset(self):
+        """Return queryset of API."""
+        related_table = self._get_related_table()
+        query = RelatedTableRow.objects.filter(
+            table_id=related_table.id
+        ).order_by('id')
+        return self.filter_query(
+            self.request, query, ['page', 'page_size', 'flat']
+        )
 
     def get_serializer(self, *args, **kwargs):  # noqa: D102
         kwargs.setdefault('context', self.get_serializer_context())
-        return RelatedTableRowApiSerializer(*args, **kwargs)
+        return self.serializer_class(*args, **kwargs)
 
     @swagger_auto_schema(
         operation_id='related-tables-data-list',

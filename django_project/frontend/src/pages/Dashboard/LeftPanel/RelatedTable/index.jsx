@@ -22,7 +22,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { Actions } from "../../../../store/dashboard";
 import { fetchingData } from "../../../../Requests";
 import { queryData } from "../../../../utils/queryExtraction";
-import { updateRelatedTableResponse } from "../../../../utils/relatedTable";
+import { ExecuteWebWorker } from "../../../../utils/WebWorker";
+import worker from "./Worker";
 
 
 /**
@@ -43,6 +44,10 @@ export function RelatedTable(
   // TODO:
   //  Fix this to use id of layer
   const { id, url, query } = relatedTable
+  useEffect(() => {
+    dispatch(Actions.RelatedTableData.request(id))
+  }, []);
+
   /**
    * Fetch related table data by the current global selected time
    */
@@ -68,6 +73,7 @@ export function RelatedTable(
     if (relatedTable.geography_code_type) {
       params['geography_code_type'] = relatedTable.geography_code_type
     }
+    params.version = relatedTable.version
     if (
       selectedGlobalTime.max &&
       JSON.stringify(params) !== JSON.stringify(prevState.params)
@@ -79,12 +85,22 @@ export function RelatedTable(
           if (error?.toString().includes('have permission')) {
             error = "You don't have permission to access this resource"
           }
-          setResponseAndTime({
-            'timeStr': selectedGlobalTimeStr,
-            'params': params,
-            'response': updateRelatedTableResponse(response),
-            'error': error
-          })
+
+          if (!error?.toString()) {
+            // Update data by executed worker
+            ExecuteWebWorker(
+              worker, {
+                response
+              }, (response) => {
+                setResponseAndTime({
+                  'timeStr': selectedGlobalTimeStr,
+                  'params': params,
+                  'response': response,
+                  'error': error
+                })
+              }
+            )
+          }
         }
       )
       dispatch(Actions.RelatedTableData.request(id))
