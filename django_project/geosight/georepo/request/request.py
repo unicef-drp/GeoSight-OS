@@ -243,16 +243,9 @@ class GeorepoRequest:
         )
         self.View = self.ViewRequest(self, self.urls)
 
-    def get(self, url, retry=0):
+    def get(self, url):
         """GET requests."""
-        try:
-            print(url)
-            return requests.get(url, headers=self.urls.headers)
-        except Exception as e:
-            if retry < 5:
-                return self.get(url, retry=retry + 1)
-            else:
-                raise Exception(e)
+        return requests.get(url, headers=self.urls.headers)
 
     def post(self, url, data: json):
         """GET requests."""
