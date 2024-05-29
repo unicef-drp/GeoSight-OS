@@ -86,19 +86,21 @@ export function RelatedTable(
             error = "You don't have permission to access this resource"
           }
 
-          // Update data by executed worker
-          ExecuteWebWorker(
-            worker, {
-              response
-            }, (response) => {
-              setResponseAndTime({
-                'timeStr': selectedGlobalTimeStr,
-                'params': params,
-                'response': response,
-                'error': error
-              })
-            }
-          )
+          if (!error?.toString()) {
+            // Update data by executed worker
+            ExecuteWebWorker(
+              worker, {
+                response
+              }, (response) => {
+                setResponseAndTime({
+                  'timeStr': selectedGlobalTimeStr,
+                  'params': params,
+                  'response': response,
+                  'error': error
+                })
+              }
+            )
+          }
         }
       )
       dispatch(Actions.RelatedTableData.request(id))

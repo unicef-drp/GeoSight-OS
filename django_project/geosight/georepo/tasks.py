@@ -54,6 +54,7 @@ def fetch_datasets(fetch_code=True):
             dataset['uuid']
         )
         for reference_layer in reference_layer_list:
+            print(reference_layer['name'])
             ref, created = ReferenceLayerView.objects.get_or_create(
                 identifier=reference_layer['uuid'],
                 defaults={
@@ -63,8 +64,8 @@ def fetch_datasets(fetch_code=True):
             )
             if created:
                 create_data_access_reference_layer_view(ref.id)
-            if fetch_code:
-                fetch_reference_codes(ref.id)
+                if fetch_code:
+                    fetch_reference_codes(ref.id)
 
 
 @app.task

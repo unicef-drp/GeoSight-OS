@@ -30,7 +30,6 @@ from geosight.data.models.related_table import RelatedTable
 from geosight.data.serializer.related_table import (
     RelatedTableSerializer
 )
-from geosight.georepo.models.entity import Entity, EntityCode
 from geosight.permission.access import (
     read_data_permission_resource, read_permission_resource,
     delete_permission_resource
@@ -129,7 +128,6 @@ class RelatedTableValuesAPI(APIView):
                 min_time.replace(' ', '+')
             ).isoformat()
 
-        first = datetime.now().timestamp()
         data = related_table.data_with_query(
             reference_layer_uuid=reference_layer_uuid,
             geo_field=geography_code_field_name,
@@ -139,7 +137,6 @@ class RelatedTableValuesAPI(APIView):
             max_time=max_time.isoformat(),
             min_time=min_time
         )
-        print(datetime.now().timestamp() - first)
         return Response(data)
 
 
@@ -170,24 +167,14 @@ class RelatedTableDatesAPI(APIView):
             geography_code_field_name = request.GET[
                 'geography_code_field_name']
             geography_code_type = request.GET['geography_code_type']
-
-            # Check codes based on code type
-            if geography_code_type.lower() == 'ucode':
-                codes = Entity.objects.filter(
-                    reference_layer__identifier=reference_layer_uuid
-                ).values_list('geom_id', flat=True)
-            else:
-                codes = EntityCode.objects.filter(
-                    entity__reference_layer__identifier=reference_layer_uuid,
-                    code_type=geography_code_type
-                ).values_list('code', flat=True)
-
-            date_field = request.GET['date_field']
         except KeyError as e:
             return HttpResponseBadRequest(f'{e} is required')
 
         data = related_table.dates_with_query(
-            list(codes), geography_code_field_name, date_field,
-            date_format=request.GET.get('date_format', None)
+            reference_layer_uuid=reference_layer_uuid,
+            geo_field=geography_code_field_name,
+            geo_type=geography_code_type,
+            date_field=request.GET.get('date_field', None),
+            date_format=request.GET.get('date_format', None),
         )
         return Response(data)
