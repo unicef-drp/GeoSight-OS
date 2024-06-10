@@ -25,11 +25,34 @@ import {
 } from "../components/SqlQueryGenerator/WhereQueryGenerator";
 import { deepClone } from "@mui/x-data-grid/utils/utils";
 
+const cache = {}
 /**
  * Return related table data
  */
-export const getRelatedTableData = (data, config, selectedGlobalTime, geoField = 'geometry_code', aggregateDate = true) => {
+export const getRelatedTableData = (data, config, selectedGlobalTime, geoField = 'geometry_code', aggregateDate = true, adminLevel = null) => {
   if (data) {
+    // Get admin level
+    if (adminLevel == null) {
+      adminLevel = data[0].admin_level
+    }
+    const identifier = JSON.stringify(
+      {
+        count: data.length,
+        config: config,
+        selectedGlobalTime: selectedGlobalTime,
+        geoField: geoField,
+        aggregateDate: aggregateDate,
+        adminLevel: adminLevel
+      }
+    )
+    if (cache[identifier]) {
+      return cache[identifier]
+    }
+
+    // Filter by admin level
+    if (adminLevel !== null) {
+      data = data.filter(row => row.admin_level == adminLevel)
+    }
     data = JSON.parse(JSON.stringify(data))
     const { aggregation } = config
 
@@ -109,6 +132,9 @@ export const getRelatedTableData = (data, config, selectedGlobalTime, geoField =
             value: result._value,
           }
         })
+        cache[identifier] = {
+          rows: results
+        }
         return {
           rows: results
         }
@@ -184,6 +210,9 @@ export const getRelatedTableData = (data, config, selectedGlobalTime, geoField =
             value: result._value,
           }
         })
+        cache[identifier] = {
+          rows: results
+        }
         return {
           rows: results
         }

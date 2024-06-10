@@ -20,7 +20,7 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { Actions } from "../../../../store/dashboard";
-import { fetchingData } from "../../../../Requests";
+import { fetchPagination } from "../../../../Requests";
 import { queryData } from "../../../../utils/queryExtraction";
 import { ExecuteWebWorker } from "../../../../utils/WebWorker";
 import worker from "./Worker";
@@ -80,29 +80,33 @@ export function RelatedTable(
     ) {
       prevState.params = params
       setResponseAndTime(null)
-      fetchingData(
-        url, params, {}, function (response, error) {
-          if (error?.toString().includes('have permission')) {
-            error = "You don't have permission to access this resource"
+      fetchPagination(
+        url, { ...params, page: 1, page_size: 10000 }
+      ).then(response => {
+        // Update data by executed worker
+        ExecuteWebWorker(
+          worker, {
+            response
+          }, (response) => {
+            setResponseAndTime({
+              'timeStr': selectedGlobalTimeStr,
+              'params': params,
+              'response': response,
+              'error': null
+            })
           }
-
-          if (!error?.toString()) {
-            // Update data by executed worker
-            ExecuteWebWorker(
-              worker, {
-                response
-              }, (response) => {
-                setResponseAndTime({
-                  'timeStr': selectedGlobalTimeStr,
-                  'params': params,
-                  'response': response,
-                  'error': error
-                })
-              }
-            )
-          }
+        )
+      }).catch(error => {
+        if (error?.toString().includes('have permission')) {
+          error = "You don't have permission to access this resource"
         }
-      )
+        setResponseAndTime({
+          'timeStr': selectedGlobalTimeStr,
+          'params': params,
+          'response': [],
+          'error': error
+        })
+      })
       dispatch(Actions.RelatedTableData.request(id))
     }
   }, [selectedGlobalTime, referenceLayerUUID, indicatorLayer]);

@@ -30,9 +30,12 @@ const temporary = {}
  */
 export function returnValueByGeometry(
   layer, indicators, indicatorsData, relatedTableData,
-  selectedGlobalTime, geoField, filteredGeometries
+  selectedGlobalTime, geoField, filteredGeometries, selectedAdminLevel
 ) {
-  const identifier = JSON.stringify(layer) + JSON.stringify(indicators) + JSON.stringify(indicatorsData) + JSON.stringify(relatedTableData) + JSON.stringify(selectedGlobalTime) + JSON.stringify(geoField) + JSON.stringify(filteredGeometries)
+  let identifier = JSON.stringify(layer) + JSON.stringify(indicators) + JSON.stringify(indicatorsData) + JSON.stringify(relatedTableData) + JSON.stringify(selectedGlobalTime) + JSON.stringify(geoField) + JSON.stringify(filteredGeometries)
+  if (selectedAdminLevel) {
+    identifier += selectedAdminLevel
+  }
   const temp = temporary[identifier]
   if (temp) {
     return temp
@@ -66,7 +69,9 @@ export function returnValueByGeometry(
         relatedTableData[layer.related_tables[0].id]?.data,
         layer.config,
         selectedGlobalTime,
-        geoField
+        geoField,
+        true,
+        selectedAdminLevel
       )
       if (rows) {
         const data = UpdateStyleData(rows, layer)

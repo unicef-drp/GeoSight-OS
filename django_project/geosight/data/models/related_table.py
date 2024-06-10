@@ -159,7 +159,7 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
     def data_with_query(
             self, reference_layer_uuid,
             geo_field, date_field=None, date_format=None, geo_type='ucode',
-            max_time=None, min_time=None
+            max_time=None, min_time=None, limit=25, offset=None
     ):
         """Return data of related table."""
         from geosight.georepo.models.reference_layer import ReferenceLayerView
@@ -172,10 +172,11 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
 
         # Check codes based on code type
         output = []
+        has_next = False
         with connection.cursor() as cursor:
             if geo_type.lower() == 'ucode':
                 query = (
-                    f"select row.id, row.order, row.data, "
+                    f"select row.id, row.order, row.data::json, "
                     f"geom_id, concept_uuid, name, admin_level "
                     f"from geosight_data_relatedtablerow as row "
                     f"LEFT JOIN geosight_georepo_entity as entity "
@@ -186,7 +187,7 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                 )
             else:
                 query = (
-                    f"select row.id, row.order, row.data, "
+                    f"select row.id, row.order, row.data::json, "
                     f"geom_id, concept_uuid, name, admin_level "
                     f"from geosight_data_relatedtablerow as row "
                     f"LEFT JOIN geosight_georepo_entitycode as entity_code "
@@ -198,17 +199,24 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                     f"entity.reference_layer_id={reference_layer.id} "
                     f"ORDER BY row.id"
                 )
+
+            if offset is not None:
+                query += f' LIMIT {limit} OFFSET {offset}'
+
             cursor.execute(query)
-            for row in cursor.fetchall():
-                data = {
+            rows = cursor.fetchall()
+            if len(rows) > 0:
+                has_next = True
+            for idx, row in enumerate(rows):
+                data = row[2]
+                data.update({
                     'id': row[0],
                     'order': row[1],
                     'concept_uuid': row[4],
                     'geometry_code': row[3],
                     'geometry_name': row[5],
                     'admin_level': row[6],
-                }
-                data.update(json.loads(row[2]))
+                })
                 # Update date field
                 value = data[date_field]
                 data[date_field] = extract_time_string(
@@ -221,7 +229,7 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                 if min_time and data[date_field] < min_time:
                     continue
                 output.append(data)
-        return output
+        return output, has_next
 
     def dates_with_query(
             self, reference_layer_uuid,

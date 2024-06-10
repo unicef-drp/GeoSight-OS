@@ -71,6 +71,7 @@ let currentRenderDataString = ''
 let currentIndicatorLayerStringData = ''
 let currentIndicatorSecondLayerStringData = ''
 let currentCompareMode = false
+let prevCurrentLevel = null
 /**
  * ReferenceLayer selector.
  */
@@ -111,6 +112,7 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
   }
 
   const filteredGeometries = where ? filteredGeometriesState : null
+  let currentLevel = selectedAdminLevel ? selectedAdminLevel.level : levels?.level
 
   // ------------------------------------------------------------
   // TODO:
@@ -142,19 +144,21 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
         currentRenderDataString !== dataInString ||
         currentIndicatorLayerStringData !== currentIndicatorLayerString ||
         currentIndicatorSecondLayerStringData !== currentIndicatorSecondLayerString ||
-        currentCompareMode !== compareMode
+        currentCompareMode !== compareMode ||
+        currentLevel !== prevCurrentLevel
       ) {
         updateStyle()
         currentRenderDataString = dataInString
         currentIndicatorLayerStringData = currentIndicatorLayerString
         currentIndicatorSecondLayerStringData = currentIndicatorSecondLayerString
         currentCompareMode = compareMode
+        prevCurrentLevel = currentLevel
       }
     }
   }, [
     indicatorsData, currentIndicatorLayer,
     currentIndicatorSecondLayer, compareMode,
-    layerCreated, relatedTableData, geoField
+    layerCreated, relatedTableData, geoField, currentLevel
   ]);
 
   // When reference layer, it's data, admin and show/hide changed.
@@ -219,7 +223,6 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
       return;
     }
     let levels = referenceLayerData?.data?.dataset_levels
-    let currentLevel = selectedAdminLevel ? selectedAdminLevel.level : levels?.level
     const vectorTiles = referenceLayerData?.data?.vector_tiles
     if (vectorTiles && levels && map && currentLevel !== undefined) {
       const url = GeorepoUrls.WithoutDomain(updateToken(vectorTiles))
@@ -367,7 +370,7 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
       const indicatorValueByGeometry = getIndicatorValueByGeometry(
         currentIndicatorLayer, indicators, indicatorsData,
         relatedTables, relatedTableData, selectedGlobalTime,
-        geoField, filteredGeometries
+        geoField, filteredGeometries, currentLevel
       )
       let indicatorSecondValueByGeometry = {}
 
@@ -422,7 +425,7 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
         indicatorSecondValueByGeometry = getIndicatorValueByGeometry(
           currentIndicatorSecondLayer, indicators, indicatorsData,
           relatedTables, relatedTableData, selectedGlobalTime,
-          geoField, filteredGeometries
+          geoField, filteredGeometries, currentLevel
         )
         // If compare mode
         // Outline is first indicator color
@@ -618,7 +621,7 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
       indicatorValueByGeometry = getIndicatorValueByGeometry(
         currentIndicatorLayer, indicators, indicatorsData,
         relatedTables, relatedTableData, selectedGlobalTime,
-        geoField, filteredGeometries
+        geoField, filteredGeometries, currentLevel
       )
     }
     if (currentIndicatorLayer.indicators?.length > 1) {
