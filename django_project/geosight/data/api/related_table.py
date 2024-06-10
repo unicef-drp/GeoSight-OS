@@ -103,6 +103,7 @@ class RelatedTableDataAPI(APIView):
 
 class RelatedTableValuesPagination(Pagination):
     """Return pagination."""
+
     has_next = False
     page_number = 0
 
@@ -115,6 +116,7 @@ class RelatedTableValuesPagination(Pagination):
         return replace_query_param(url, self.page_query_param, page_number)
 
     def get_previous_link(self):
+        """Return previous link."""
         has_previous = self.page_number > 1
         if not has_previous:
             return None
