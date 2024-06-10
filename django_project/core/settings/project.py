@@ -87,6 +87,7 @@ INSTALLED_APPS = INSTALLED_APPS + (
     'geosight.georepo',
     'geosight.permission',
     'geosight.importer',
+    'geosight.cloud_native_gis',
     'frontend',
 )
 

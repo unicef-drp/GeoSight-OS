@@ -17,13 +17,14 @@
    Return layer
    ========================================================================== */
 
+import LegendControl from "mapboxgl-legend";
 import EsriData from "../../../../utils/esri/esri-data";
 import { dictDeepCopy, toJson } from "../../../../utils/main";
 import { popupTemplate } from "../../MapLibre/Popup";
 import { createElement } from "../../MapLibre/utils";
 import { Actions } from "../../../../store/dashboard";
 import { fetchingData } from "../../../../Requests";
-import LegendControl from "mapboxgl-legend";
+import { Variables } from "../../../../utils/Variables";
 
 import 'mapboxgl-legend/dist/style.css';
 import './style.scss'
@@ -310,6 +311,15 @@ export const getLayer = function (
       )
     }
     case 'Vector Tile': {
+      return VectorTileLayer(
+        layerData,
+        (layer) => setLayer(layer),
+        (legend) => setLegend(legend),
+        (error) => setError(error),
+        onEachFeature
+      )
+    }
+    case Variables.TERMS.CLOUD_NATIVE_GIS: {
       return VectorTileLayer(
         layerData,
         (layer) => setLayer(layer),

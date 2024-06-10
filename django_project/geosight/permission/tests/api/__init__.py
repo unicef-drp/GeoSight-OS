@@ -15,7 +15,10 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from .basemap import *
+from .cloud_native_gis import *
 from .context_layer import *
 from .dashboard import *
 from .dataset import *
 from .indicator import *
+from .related_table import *
+from .style import *

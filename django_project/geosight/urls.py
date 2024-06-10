@@ -21,4 +21,5 @@ urlpatterns = [
     url(r'^importer/', include('geosight.importer.urls')),
     url(r'^georepo/', include('geosight.georepo.urls')),
     url(r'^', include('geosight.data.urls')),
+    url(r'^', include('geosight.cloud_native_gis.urls')),
 ]

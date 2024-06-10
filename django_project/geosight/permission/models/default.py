@@ -321,3 +321,30 @@ class PermissionDefault:
             ]
         )
     )
+
+    # Cloud Native GIS Layer
+    CLOUD_NATIVE_GIS_LAYER = PermissionResourceDefault(
+        user=PermissionDefaultDetail(
+            default=PERMISSIONS.READ.name,
+            permissions=ALL_PERMISSIONS
+        ),
+        group=PermissionDefaultDetail(
+            default=PERMISSIONS.READ.name,
+            permissions=ALL_PERMISSIONS
+        ),
+        organization=PermissionDefaultDetail(
+            default=PERMISSIONS.READ.name,
+            permissions=[
+                (PERMISSIONS.NONE.name, PERMISSIONS.NONE.name),
+                (PERMISSIONS.LIST.name, PERMISSIONS.LIST.name),
+                (PERMISSIONS.READ.name, PERMISSIONS.READ.name),
+            ]
+        ),
+        public=PermissionDefaultDetail(
+            default=PERMISSIONS.READ.name,
+            permissions=[
+                (PERMISSIONS.NONE.name, PERMISSIONS.NONE.name),
+                (PERMISSIONS.READ.name, PERMISSIONS.READ.name),
+            ]
+        )
+    )
