@@ -33,7 +33,7 @@ export const getRelatedTableData = (data, config, selectedGlobalTime, geoField =
   if (data) {
     // Get admin level
     if (adminLevel == null) {
-      adminLevel = data[0].admin_level
+      adminLevel = data[0]?.admin_level
     }
     const identifier = JSON.stringify(
       {
