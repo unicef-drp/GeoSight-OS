@@ -18,14 +18,17 @@ import json
 from datetime import datetime
 
 from dateutil import parser as date_parser
+from django.conf import settings
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.utils.urls import replace_query_param
 from rest_framework.views import APIView
 
 from core.decorators import cache_control
+from core.pagination import Pagination
 from geosight.data.models.related_table import RelatedTable
 from geosight.data.serializer.related_table import (
     RelatedTableSerializer
@@ -98,6 +101,30 @@ class RelatedTableDataAPI(APIView):
         return Response(obj.data)
 
 
+class RelatedTableValuesPagination(Pagination):
+    """Return pagination."""
+
+    has_next = False
+    page_number = 0
+
+    def get_next_link(self):
+        """Return next link."""
+        if not self.has_next:
+            return None
+        url = self.request.build_absolute_uri()
+        page_number = self.page_number + 1
+        return replace_query_param(url, self.page_query_param, page_number)
+
+    def get_previous_link(self):
+        """Return previous link."""
+        has_previous = self.page_number > 1
+        if not has_previous:
+            return None
+        url = self.request.build_absolute_uri()
+        page_number = self.page_number - 1
+        return replace_query_param(url, self.page_query_param, page_number)
+
+
 @method_decorator(cache_control(public=True, max_age=864000), name='dispatch')
 class RelatedTableValuesAPI(APIView):
     """API for Values of indicator."""
@@ -128,15 +155,41 @@ class RelatedTableValuesAPI(APIView):
                 min_time.replace(' ', '+')
             ).isoformat()
 
-        data = related_table.data_with_query(
+        page_size = request.GET.get('page_size', settings.DEFAULT_PAGE_SIZE)
+        page = request.GET.get('page', None)
+        offset = None
+        if page is not None:
+            page = int(page)
+            if page == 0:
+                return HttpResponseBadRequest("Page can't be zero")
+            offset = (page - 1) * int(page_size)
+        data, has_next = related_table.data_with_query(
             reference_layer_uuid=reference_layer_uuid,
             geo_field=geography_code_field_name,
             geo_type=geography_code_type,
             date_field=request.GET.get('date_field', None),
             date_format=request.GET.get('date_format', None),
             max_time=max_time.isoformat(),
-            min_time=min_time
+            min_time=min_time,
+            limit=page_size,
+            offset=offset
         )
+
+        # -------------------------------------
+        # If needs pagination
+        # -------------------------------------
+        if page is not None:
+            pagination = RelatedTableValuesPagination()
+            pagination.page_number = int(page)
+            pagination.page_size = page_size
+            pagination.request = self.request
+            pagination.has_next = has_next
+            data = {
+                'next': pagination.get_next_link(),
+                'previous': pagination.get_previous_link(),
+                'page_size': page_size,
+                'results': data
+            }
         return Response(data)
 
 

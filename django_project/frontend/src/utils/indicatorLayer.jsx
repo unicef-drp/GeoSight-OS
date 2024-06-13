@@ -187,7 +187,7 @@ export function indicatorHasData(indicatorsData, indicator) {
  */
 export function getLayerDataCleaned(
   indicatorsData, relatedTableData, indicatorLayer, selectedGlobalTime, geoField,
-  filteredGeometries
+  filteredGeometries, adminLevel
 ) {
   let data = []
   indicatorsData = dictDeepCopy(indicatorsData)
@@ -206,7 +206,9 @@ export function getLayerDataCleaned(
         relatedTableData[indicatorLayer.related_tables[0].id]?.data,
         indicatorLayer.config,
         selectedGlobalTime,
-        geoField
+        geoField,
+        true,
+        adminLevel
       )
       data.push({
         data: rows

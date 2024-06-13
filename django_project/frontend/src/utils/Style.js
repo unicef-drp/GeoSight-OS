@@ -86,7 +86,8 @@ export const indicatorLayerStyle = (
   if (dynamicStyleTypes.includes(config.style_type)) {
     let data = getLayerDataCleaned(
       indicatorsData, relatedTableData, layer, selectedGlobalTime, geoField,
-      config?.style_config?.sync_filter ? filteredGeometries : null
+      config?.style_config?.sync_filter ? filteredGeometries : null,
+      admin_level
     )
     style = createDynamicStyle(data[0]?.data, config.style_type, config.style_config, config.style_data)
     if (style[admin_level]) {
