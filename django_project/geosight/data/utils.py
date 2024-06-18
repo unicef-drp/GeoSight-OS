@@ -94,8 +94,8 @@ def extract_time_string(format_time, value):
             format_time = 'timestamp'
         try:
             if format_time == 'timestamp':
-                value_int = int(value)
-                value_str = str(value_int)
+                value = int(float(value))
+                value_str = str(value)
                 # If len is not 10 or 13
                 if len(value_str) not in [10, 13]:
                     raise ValueError()
@@ -103,7 +103,6 @@ def extract_time_string(format_time, value):
                 # If 13, which is has microseconds
                 if len(value_str) == 13:
                     value = value / 1000
-
                 return datetime.fromtimestamp(
                     value
                 ).replace(tzinfo=pytz.timezone(settings.TIME_ZONE))
