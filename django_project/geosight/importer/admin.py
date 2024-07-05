@@ -65,8 +65,7 @@ class ImporterMappingInline(admin.TabularInline):
     """ImporterMapping inline."""
 
     model = ImporterMapping
-    fields = ('value',)
-    readonly_fields = ('name',)
+    fields = ('name', 'value')
     extra = 0
 
     def has_add_permission(self, request, obj=None):
