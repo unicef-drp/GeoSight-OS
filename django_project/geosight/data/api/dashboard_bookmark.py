@@ -23,7 +23,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from core.permissions import AdminAuthenticationPermission
+from core.permissions import (
+    RoleContributorAuthenticationPermission
+)
 from geosight.data.forms.dashboard_bookmark import DashboardBookmarkForm
 from geosight.data.models.basemap_layer import BasemapLayer
 from geosight.data.models.dashboard import (
@@ -32,6 +34,7 @@ from geosight.data.models.dashboard import (
 from geosight.data.serializer.dashboard_bookmark import (
     DashboardBookmarkSerializer
 )
+from geosight.permission.access import edit_permission_resource
 
 
 class DashboardBookmarksAPI(APIView):
@@ -163,9 +166,12 @@ class DashboardBookmarkDetailAPI(DashboardBookmarkAPI):
 class DashboardBookmarkCreateAPI(DashboardBookmarkAPI):
     """Return all dashboard data."""
 
-    permission_classes = (IsAuthenticated, AdminAuthenticationPermission,)
+    permission_classes = (
+        IsAuthenticated, RoleContributorAuthenticationPermission
+    )
 
     def post(self, request, slug):
         """Return Dashboard Bookmark list."""
         dashboard = get_object_or_404(Dashboard, slug=slug)
+        edit_permission_resource(dashboard, request.user)
         return self.save_bookmark(request, dashboard, None)
