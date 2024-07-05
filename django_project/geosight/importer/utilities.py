@@ -38,6 +38,7 @@ def get_data_from_record(
         key: str, record: dict, data_type=str, required=False
 ):
     """Return data from record."""
+    key = key.strip()
     original_key = f'["{key}"]'
     split_keys = ''.join([f'["{_key}"]' for _key in key.split('.')])
 
