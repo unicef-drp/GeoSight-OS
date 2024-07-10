@@ -25,14 +25,14 @@ from geosight.cloud_native_gis.api.v1.cloud_native_gis import (
 router = DefaultRouter()
 router.register(
     r'cloud-native-gis-layer', CloudNativeGISLayerViewSet,
-    basename='cloud-native-gis-layer-view-set'
+    basename='cloud-native-gis-layer'
 )
 layer_router = NestedSimpleRouter(
     router, r'cloud-native-gis-layer', lookup='layer'
 )
 layer_router.register(
     'style', LayerStyleViewSet,
-    basename='cloud-native-gis-style-view-set'
+    basename='cloud-native-gis-style'
 )
 
 urlpatterns = router.urls

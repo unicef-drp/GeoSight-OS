@@ -35,12 +35,12 @@ class CloudNativeGISLayerApiTest(BasePermissionTest, TestCase):
         """Create resource function."""
         return None
 
-    def create_layer(self, user, name, type, description=None):
+    def create_layer(self, user, name, layer_type, description=None):
         """Create resource function."""
         obj = CloudNativeGISLayer.permissions.create(
             user=self.resource_creator,
             name=name,
-            type=type,
+            layer_type=layer_type,
             description=description
         )
         obj.permission.public_permission = PERMISSIONS.LIST.name
@@ -59,19 +59,19 @@ class CloudNativeGISLayerApiTest(BasePermissionTest, TestCase):
         self.resource_1 = self.create_layer(
             user=self.resource_creator,
             name='Name A',
-            type=LayerType.VECTOR_TILE
+            layer_type=LayerType.VECTOR_TILE
         )
         self.resource_2 = self.create_layer(
             user=self.resource_creator,
             name='Name B',
             description='This is test',
-            type=LayerType.VECTOR_TILE
+            layer_type=LayerType.VECTOR_TILE
         )
         self.resource_3 = self.create_layer(
             user=self.resource_creator,
             name='Name C',
             description='Resource 3',
-            type=LayerType.RASTER_TILE
+            layer_type=LayerType.RASTER_TILE
         )
         self.resource_3.permission.update_user_permission(
             self.creator, PERMISSIONS.LIST
@@ -82,7 +82,7 @@ class CloudNativeGISLayerApiTest(BasePermissionTest, TestCase):
 
     def test_list_api_by_permission(self):
         """Test List API."""
-        url = reverse('cloud-native-gis-layer-list-api')
+        url = reverse('cloud-native-gis-layer-list')
         self.assertRequestGetView(url, 403)
 
         response = self.assertRequestGetView(url, 200, user=self.admin)
@@ -106,7 +106,7 @@ class CloudNativeGISLayerApiTest(BasePermissionTest, TestCase):
                 'name__contains': 'ame C'
             }
         )
-        url = reverse('cloud-native-gis-layer-list-api') + '?' + params
+        url = reverse('cloud-native-gis-layer-list') + '?' + params
         response = self.assertRequestGetView(url, 200, user=self.admin)
         self.assertEqual(len(response.json()['results']), 1)
         self.assertEqual(
@@ -118,7 +118,7 @@ class CloudNativeGISLayerApiTest(BasePermissionTest, TestCase):
                 'description__contains': 'test'
             }
         )
-        url = reverse('cloud-native-gis-layer-list-api') + '?' + params
+        url = reverse('cloud-native-gis-layer-list') + '?' + params
         response = self.assertRequestGetView(url, 200, user=self.admin)
         self.assertEqual(len(response.json()['results']), 1)
         self.assertEqual(
@@ -127,10 +127,10 @@ class CloudNativeGISLayerApiTest(BasePermissionTest, TestCase):
 
         params = urllib.parse.urlencode(
             {
-                'type__in': LayerType.VECTOR_TILE
+                'layer_type__in': LayerType.VECTOR_TILE
             }
         )
-        url = reverse('cloud-native-gis-layer-list-api') + '?' + params
+        url = reverse('cloud-native-gis-layer-list') + '?' + params
         response = self.assertRequestGetView(url, 200, user=self.admin)
         self.assertEqual(len(response.json()['results']), 2)
         for resource in response.json()['results']:
@@ -140,7 +140,7 @@ class CloudNativeGISLayerApiTest(BasePermissionTest, TestCase):
 
     def test_create_api(self):
         """Test POST API."""
-        url = reverse('cloud-native-gis-layer-list-api')
+        url = reverse('cloud-native-gis-layer-list')
         self.assertRequestPostView(url, 403, data={})
         self.assertRequestPostView(url, 403, user=self.viewer, data={})
         response = self.assertRequestPostView(
@@ -148,7 +148,7 @@ class CloudNativeGISLayerApiTest(BasePermissionTest, TestCase):
             user=self.creator,
             data={
                 "name": 'New name',
-                "type": LayerType.VECTOR_TILE
+                "layer_type": LayerType.VECTOR_TILE
             },
             content_type=self.JSON_CONTENT
         )
@@ -157,8 +157,8 @@ class CloudNativeGISLayerApiTest(BasePermissionTest, TestCase):
         self.assertEqual(response.json()['name'], 'New name')
         self.assertEqual(obj.creator, self.creator)
         self.assertEqual(response.json()['created_by'], self.creator.username)
-        self.assertEqual(obj.type, LayerType.VECTOR_TILE)
-        self.assertEqual(response.json()['type'], LayerType.VECTOR_TILE)
+        self.assertEqual(obj.layer_type, LayerType.VECTOR_TILE)
+        self.assertEqual(response.json()['layer_type'], LayerType.VECTOR_TILE)
 
     def test_detail_api(self):
         """Test GET DETAIL API."""
@@ -178,7 +178,7 @@ class CloudNativeGISLayerApiTest(BasePermissionTest, TestCase):
         response = self.assertRequestGetView(url, 200, user=self.admin)
 
         self.assertEqual(response.json()['name'], self.resource_3.name)
-        self.assertEqual(response.json()['type'], self.resource_3.type)
+        self.assertEqual(response.json()['layer_type'], self.resource_3.layer_type)
         self.assertEqual(
             response.json()['created_by'], self.resource_3.creator.username
         )
@@ -203,8 +203,7 @@ class CloudNativeGISLayerApiTest(BasePermissionTest, TestCase):
             user=self.creator_in_group,
             data={
                 "name": self.resource_3.name,
-                "url": self.resource_3.url,
-                "type": self.resource_3.type,
+                "layer_type": self.resource_3.layer_type,
                 "category": 'Test'
             },
             content_type=self.JSON_CONTENT
@@ -234,8 +233,7 @@ class CloudNativeGISLayerApiTest(BasePermissionTest, TestCase):
             user=self.creator_in_group,
             data={
                 "name": self.resource_3.name,
-                "url": self.resource_3.url,
-                "type": self.resource_3.type
+                "layer_type": self.resource_3.layer_type
             },
             content_type=self.JSON_CONTENT
         )
@@ -244,7 +242,7 @@ class CloudNativeGISLayerApiTest(BasePermissionTest, TestCase):
             'Name C'
         )
         self.assertEqual(
-            CloudNativeGISLayer.objects.get(id=self.resource_3.id).type,
+            CloudNativeGISLayer.objects.get(id=self.resource_3.id).layer_type,
             LayerType.RASTER_TILE
         )
 

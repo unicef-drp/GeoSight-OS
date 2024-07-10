@@ -75,10 +75,11 @@ class CloudNativeGISLayerGroupPermission(GroupResourcePermission):
 
 
 @receiver(post_save, sender=Layer)
+@receiver(post_save, sender=CloudNativeGISLayer)
 def create_resource(sender, instance, created, **kwargs):
     """When resource created."""
     if created:
-        CloudNativeGISLayerPermission.objects.create(obj=instance)
+        CloudNativeGISLayerPermission.objects.get_or_create(obj=instance)
 
 
 @receiver(post_save, sender=Layer)
