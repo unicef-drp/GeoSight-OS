@@ -127,7 +127,10 @@ export const fetchPagination = function (url, params, onProgress) {
     for (const [key, value] of Object.entries(params)) {
       paramsUrl.push(`${key}=${value}`)
     }
-    url += '?' + paramsUrl.join('&')
+    if (!url.includes('?')) {
+      url += '?'
+    }
+    url += paramsUrl.join('&')
   }
   return new Promise((resolve, reject) => {
     (

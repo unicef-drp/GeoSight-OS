@@ -14,8 +14,6 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from rest_framework.permissions import IsAuthenticated
-
 from geosight.data.models.basemap_layer import BasemapLayer
 from geosight.permission.models import BasemapLayerPermission
 from .resource import ResourcePermissionAPI

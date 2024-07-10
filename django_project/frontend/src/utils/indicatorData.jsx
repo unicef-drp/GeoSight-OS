@@ -111,12 +111,12 @@ const updateIndicatorLayerWithGeographyCode = (indicatorLayer, relatedTables) =>
  */
 export const getIndicatorValueByGeometry = (
   indicatorLayer, indicators, indicatorsData, relatedTables, relatedTableData,
-  selectedGlobalTime, geoField, filteredGeometries
+  selectedGlobalTime, geoField, filteredGeometries, selectedAdminLevel
 ) => {
   updateIndicatorLayerWithGeographyCode(indicatorLayer, relatedTables)
   return returnValueByGeometry(
     indicatorLayer, indicators, indicatorsData, relatedTableData,
-    selectedGlobalTime, geoField, filteredGeometries
+    selectedGlobalTime, geoField, filteredGeometries, selectedAdminLevel
   )
 }
 
