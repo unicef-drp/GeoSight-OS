@@ -178,7 +178,9 @@ class CloudNativeGISLayerApiTest(BasePermissionTest, TestCase):
         response = self.assertRequestGetView(url, 200, user=self.admin)
 
         self.assertEqual(response.json()['name'], self.resource_3.name)
-        self.assertEqual(response.json()['layer_type'], self.resource_3.layer_type)
+        self.assertEqual(
+            response.json()['layer_type'], self.resource_3.layer_type
+        )
         self.assertEqual(
             response.json()['created_by'], self.resource_3.creator.username
         )

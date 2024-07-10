@@ -105,7 +105,9 @@ class ScheduleImporterTest(BaseImporterTest):
         self.assertEqual(importer.job.crontab.day_of_month, '3')
         self.assertEqual(importer.job.crontab.month_of_year, '10')
         self.assertEqual(importer.job.crontab.day_of_week, '1')
-        self.assertEqual(importer.job.crontab.timezone.key, 'Africa/Johannesburg')
+        self.assertEqual(
+            importer.job.crontab.timezone.key, 'Africa/Johannesburg'
+        )
 
         # Change the schedule
         importer.change_job('1 2 3 4 5 UTC')
