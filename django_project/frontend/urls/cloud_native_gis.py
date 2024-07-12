@@ -11,13 +11,23 @@ Contact : geosight-no-reply@unicef.org
 
 """
 __author__ = 'irwan@kartoza.com'
-__date__ = '06/06/2024'
+__date__ = '12/07/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from cloud_native_gis.api.vector_tile import VectorTileLayer
+from django.conf.urls import url
+from django.urls import include
 
+from frontend.views.admin.cloud_native_gis.layer.list import (
+    CloudNativeGISLayerListView
+)
 
-class CloudNativeGISLayerVectorTile(VectorTileLayer):
-    """Return Layer in vector tile protobuf."""
-
-    pass
+layer_url = [
+    url(
+        r'^',
+        CloudNativeGISLayerListView.as_view(),
+        name='admin-cloud-native-gis-layer-list-view'
+    ),
+]
+urlpatterns = [
+    url(r'^layer/', include(layer_url)),
+]

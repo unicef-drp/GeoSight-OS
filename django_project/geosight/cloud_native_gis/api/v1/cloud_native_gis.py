@@ -15,21 +15,12 @@ __date__ = '06/06/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from cloud_native_gis.forms.layer import LayerForm
-from cloud_native_gis.serializer.layer import LayerSerializer
 
-from core.serializer.dynamic_serializer import DynamicModelSerializer
 from geosight.cloud_native_gis.models import (
     CloudNativeGISLayer
 )
+from geosight.cloud_native_gis.serializer import CloudNativeGISLayerSerializer
 from geosight.data.api.v1.base import BaseApiV1Resource
-
-
-class CloudNativeGISSerializer(
-    LayerSerializer, DynamicModelSerializer
-):
-    """Layer serializer."""
-
-    pass
 
 
 class CloudNativeGISLayerViewSet(BaseApiV1Resource):
@@ -37,5 +28,5 @@ class CloudNativeGISLayerViewSet(BaseApiV1Resource):
 
     model_class = CloudNativeGISLayer
     form_class = LayerForm
-    serializer_class = CloudNativeGISSerializer
+    serializer_class = CloudNativeGISLayerSerializer
     extra_exclude_fields = ['parameters']

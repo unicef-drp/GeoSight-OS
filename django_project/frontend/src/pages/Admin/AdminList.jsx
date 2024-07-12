@@ -36,7 +36,6 @@ import { MagnifyIcon } from "../../components/Icons";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 
 import './style.scss';
-import { formWindow } from "../../utils/windows";
 
 
 /**
@@ -202,6 +201,9 @@ export const AdminListContent = forwardRef(
                   iconEnd={<MagnifyIcon/>}
                   onChange={evt => {
                     setSearch(evt.target.value.toLowerCase())
+                    if (props.setSearch) {
+                      props.setSearch(evt.target.value.toLowerCase())
+                    }
                   }}
                 />
             }

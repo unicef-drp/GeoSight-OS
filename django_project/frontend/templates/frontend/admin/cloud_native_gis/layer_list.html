@@ -1,0 +1,22 @@
+{% extends 'frontend/admin/base.html' %}
+{% load render_bundle from webpack_loader %}
+
+{% block extrastyle %}
+{% endblock %}
+
+{% block render_bundle %}
+    {% render_bundle 'AdminCloudNativeGISLayerList' %}
+{% endblock %}
+
+{% block scripts %}
+    <script>
+      urls.api = {
+        'list': '{% url 'cloud-native-gis-layer-list' %}',
+        'users': '{% url 'user-list-api'%}',
+        'groups': '{% url 'group-list-api'%}',
+
+        {# basemap specified url#}
+        'permission': '{% url 'basemap-permission-api' 0 %}',
+      }
+    </script>
+{% endblock %}

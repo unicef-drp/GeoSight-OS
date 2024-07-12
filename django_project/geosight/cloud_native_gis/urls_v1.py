@@ -11,7 +11,7 @@ Contact : geosight-no-reply@unicef.org
 
 """
 __author__ = 'irwan@kartoza.com'
-__date__ = '06/06/2023'
+__date__ = '06/06/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from cloud_native_gis.api.layer import LayerStyleViewSet

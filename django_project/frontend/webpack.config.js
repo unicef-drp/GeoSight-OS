@@ -67,6 +67,9 @@ let conf = {
     IndicatorValueList: ['./src/pages/Admin/Indicator/IndicatorValueList'],
     IndicatorValueManagementMap: ['./src/pages/Admin/Indicator/ValueManagementMap'],
     IndicatorValueManagementForm: ['./src/pages/Admin/Indicator/ValueManagementForm'],
+
+    // CLOUD NATIVE GIS
+    AdminCloudNativeGISLayerList: ['./src/pages/Admin/CloudNativeGIS/LayerList'],
   },
   output: {
     path: path.resolve(__dirname, "./bundles/frontend"),

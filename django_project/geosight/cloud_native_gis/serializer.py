@@ -11,7 +11,7 @@ Contact : geosight-no-reply@unicef.org
 
 """
 __author__ = 'irwan@kartoza.com'
-__date__ = '13/06/2023'
+__date__ = '13/06/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from cloud_native_gis.serializer.layer import LayerSerializer
@@ -28,6 +28,7 @@ class CloudNativeGISLayerSerializer(
 
     created_by = serializers.SerializerMethodField()
     permission = serializers.SerializerMethodField()
+    maputnik_url = serializers.SerializerMethodField()
 
     def get_created_by(self, obj: CloudNativeGISLayer):
         """Return created by."""
@@ -38,6 +39,10 @@ class CloudNativeGISLayerSerializer(
         return obj.permission.all_permission(
             self.context.get('user', None)
         )
+
+    def get_maputnik_url(self, obj: CloudNativeGISLayer):
+        """Return maputnik_url."""
+        return obj.maputnik_url(self.context.get("request"))
 
     class Meta:  # noqa: D106
         model = CloudNativeGISLayer

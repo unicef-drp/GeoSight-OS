@@ -42,6 +42,9 @@ export const pageNames = {
 
   // Profile
   UserProfile: 'User Profile',
+
+  // Cloud Native GIS
+  CloudNativeGIS: 'Cloud Native GIS',
 }
 
 /**

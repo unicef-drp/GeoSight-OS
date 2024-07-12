@@ -11,7 +11,7 @@ Contact : geosight-no-reply@unicef.org
 
 """
 __author__ = 'irwan@kartoza.com'
-__date__ = '06/06/2023'
+__date__ = '06/06/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.conf.urls import url
@@ -19,18 +19,12 @@ from django.urls import include
 from django.views.generic import TemplateView
 
 from geosight.cloud_native_gis.api.cloud_native_gis import (
-    CloudNativeGISLayerVectorTile,
-    CloudNativeGISLayerListAPI
+    CloudNativeGISLayerVectorTile
 )
 
 # ------------------------------------------------------
 # CONTEXT LAYER MANAGEMENT
 cloud_native_gis_layer = [
-    url(
-        r'^layer/list/$',
-        CloudNativeGISLayerListAPI.as_view(),
-        name='cloud-native-gis-layer-list-api'
-    ),
     url(
         r'^(?P<identifier>[^/]+)/tiles/(?P<z>\d+)/(?P<x>\d+)/(?P<y>\d+)/$',
         CloudNativeGISLayerVectorTile.as_view(),
