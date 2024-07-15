@@ -40,8 +40,10 @@ export default () => {
     let {
       response
     } = e.data;
-
     response.map(row => {
+      if (!row) {
+        return
+      }
       for (const [key, value] of Object.entries(row)) {
         const isDate = isValueDate(key)
         if (isDate && !isNaN(value)) {
