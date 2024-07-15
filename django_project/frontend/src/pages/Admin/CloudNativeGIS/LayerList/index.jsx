@@ -31,7 +31,7 @@ import Tooltip from "@mui/material/Tooltip";
 const PAGE_NAME = pageNames.CloudNativeGIS
 
 export function resourceActions(params) {
-  return COLUMNS_ACTION(params, urls.admin.basemapList)
+  return COLUMNS_ACTION(params, urls.admin.cloudNativeGISLayerList)
 }
 
 export function columns() {
@@ -68,7 +68,7 @@ export function columns() {
         actions.unshift(
           <GridActionsCellItem
             icon={
-              <a href={params.row.maputnik_url}>
+              <a href={params.row.maputnik_url} target='_blank'>
                 <Tooltip title={`Editor`}>
                   <div className='ButtonIcon'>
                     <MapIcon/>
@@ -92,6 +92,7 @@ export default function CloudNativeGISLayerList() {
   const tableRef = useRef(null);
   // Search
   const [search, setSearch] = useState('');
+  const [disabled, setDisabled] = useState(false)
 
   const updateSearch = useMemo(
     () =>
@@ -129,6 +130,8 @@ export default function CloudNativeGISLayerList() {
       columns={columns()}
       getParameters={getParameters}
       setSearch={setSearch}
+      disabled={disabled}
+      setDisabled={setDisabled}
     />
   </AdminPage>
 }

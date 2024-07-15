@@ -14,7 +14,10 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '06/06/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import json
+
 from cloud_native_gis.forms.layer import LayerForm
+from rest_framework.response import Response
 
 from geosight.cloud_native_gis.models import (
     CloudNativeGISLayer
@@ -30,3 +33,11 @@ class CloudNativeGISLayerViewSet(BaseApiV1Resource):
     form_class = LayerForm
     serializer_class = CloudNativeGISLayerSerializer
     extra_exclude_fields = ['parameters']
+
+    def delete(self, request):
+        """Delete layer in batch."""
+        ids = json.loads(request.data['ids'])
+        for obj in CloudNativeGISLayer.permissions.delete(request.user).filter(
+                id__in=ids):
+            obj.delete()
+        return Response('Deleted')
