@@ -22,6 +22,7 @@ import Admin, { pageNames } from '../../index';
 import { AdminForm } from '../../Components/AdminForm'
 import DjangoTemplateForm from "../../Components/AdminForm/DjangoTemplateForm";
 import { resourceActions } from "../LayerList";
+import StreamUploadFile from "./StreamUploadFile";
 
 import './style.scss';
 
@@ -69,7 +70,9 @@ export default function CloudNativeGISLayerForm() {
             <DjangoTemplateForm
               selectableInput={selectableInput}
               selectableInputExcluded={['name', 'shortcode']}
-            />
+            >
+              <StreamUploadFile/>
+            </DjangoTemplateForm>
           ),
         }}
       />

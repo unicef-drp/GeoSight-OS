@@ -14,6 +14,7 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
+from cloud_native_gis.models.layer_upload import LayerUpload
 from cloud_native_gis.serializer.layer import LayerSerializer
 from rest_framework import serializers
 
@@ -46,4 +47,12 @@ class CloudNativeGISLayerSerializer(
 
     class Meta:  # noqa: D106
         model = CloudNativeGISLayer
+        exclude = ()
+
+
+class LayerUploadSerializer(DynamicModelSerializer):
+    """Serializer for LayerUpload."""
+
+    class Meta:  # noqa: D106
+        model = LayerUpload
         exclude = ()

@@ -19,12 +19,23 @@ from django.urls import include
 from django.views.generic import TemplateView
 
 from geosight.cloud_native_gis.api.cloud_native_gis import (
-    CloudNativeGISLayerVectorTile
+    CloudNativeGISLayerVectorTile, CloudNativeGISLayerImporterFileView,
+    CloudNativeGISLayerLastImporter
 )
 
 # ------------------------------------------------------
 # CONTEXT LAYER MANAGEMENT
 cloud_native_gis_layer = [
+    url(
+        r'^(?P<pk>[^/]+)/last-importer/$',
+        CloudNativeGISLayerLastImporter.as_view(),
+        name='cloud-native-gis-last-importer'
+    ),
+    url(
+        r'^(?P<pk>[^/]+)/upload/$',
+        CloudNativeGISLayerImporterFileView.as_view(),
+        name='cloud-native-gis-upload'
+    ),
     url(
         r'^(?P<identifier>[^/]+)/tiles/(?P<z>\d+)/(?P<x>\d+)/(?P<y>\d+)/$',
         CloudNativeGISLayerVectorTile.as_view(),

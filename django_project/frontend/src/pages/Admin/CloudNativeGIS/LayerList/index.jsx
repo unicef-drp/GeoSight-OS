@@ -33,7 +33,41 @@ import './style.scss';
 const PAGE_NAME = pageNames.CloudNativeGIS
 
 export function resourceActions(params) {
-  return COLUMNS_ACTION(params, urls.admin.cloudNativeGISLayerList)
+  const permission = params.row.permission
+
+  // Create actions
+  const actions = COLUMNS_ACTION(params, urls.admin.cloudNativeGISLayerList)
+
+  // Unshift before more & edit action
+  if (permission.share) {
+    actions.unshift(
+      <GridActionsCellItem
+        icon={
+          <a>
+            <PermissionModal
+              name={params.row.name}
+              urlData={urls.api.permission.replace('/0', `/${params.id}`)}/>
+          </a>
+        }
+        label="Change Share Configuration."
+      />)
+  }
+  if (permission.edit && params.row.maputnik_url) {
+    actions.unshift(
+      <GridActionsCellItem
+        icon={
+          <a href={params.row.maputnik_url} target='_blank'>
+            <Tooltip title={`Editor`}>
+              <div className='ButtonIcon'>
+                <MapIcon/>
+              </div>
+            </Tooltip>
+          </a>
+        }
+        label="Change Share Configuration."
+      />)
+  }
+  return actions
 }
 
 export function columns() {
@@ -57,41 +91,7 @@ export function columns() {
     cellClassName: 'MuiDataGrid-ActionsColumn',
     width: 150,
     getActions: (params) => {
-      const permission = params.row.permission
-
-      // Create actions
-      const actions = resourceActions(params)
-
-      // Unshift before more & edit action
-      if (permission.share) {
-        actions.unshift(
-          <GridActionsCellItem
-            icon={
-              <a>
-                <PermissionModal
-                  name={params.row.name}
-                  urlData={urls.api.permission.replace('/0', `/${params.id}`)}/>
-              </a>
-            }
-            label="Change Share Configuration."
-          />)
-      }
-      if (permission.edit && params.row.maputnik_url) {
-        actions.unshift(
-          <GridActionsCellItem
-            icon={
-              <a href={params.row.maputnik_url} target='_blank'>
-                <Tooltip title={`Editor`}>
-                  <div className='ButtonIcon'>
-                    <MapIcon/>
-                  </div>
-                </Tooltip>
-              </a>
-            }
-            label="Change Share Configuration."
-          />)
-      }
-      return actions
+      return resourceActions(params)
     }
   }
   return columns

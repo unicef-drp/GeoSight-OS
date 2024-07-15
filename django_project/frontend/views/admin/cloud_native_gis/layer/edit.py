@@ -62,11 +62,13 @@ class CloudNativeGISLayerEditView(RoleContributorRequiredMixin, AdminBaseView):
         edit_permission_resource(obj, self.request.user)
         permission = obj.permission.all_permission(self.request.user)
 
+        initial = CloudNativeGISLayerForm.model_to_initial(obj)
+        initial['maputnik_url'] = obj.maputnik_url(self.request)
         context.update(
             {
                 'id': obj.id,
                 'form': CloudNativeGISLayerForm(
-                    initial=CloudNativeGISLayerForm.model_to_initial(obj)
+                    initial=initial
                 ),
                 'permission': json.dumps(permission)
             }

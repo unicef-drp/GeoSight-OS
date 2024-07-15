@@ -21,6 +21,8 @@
       if (permission.share) {
         {% if id %}
           urls.api.permission = '{% url 'cloud-native-gis-layer-permission-api' id %}'
+          urls.api.uploadFile = '{% url 'cloud-native-gis-upload' id %}'
+          urls.api.lastImporter = '{% url 'cloud-native-gis-last-importer' id %}'
         {% else %}
           urls.api.permission = '{% url 'cloud-native-gis-layer-permission-api' 0 %}'
         {% endif %}
