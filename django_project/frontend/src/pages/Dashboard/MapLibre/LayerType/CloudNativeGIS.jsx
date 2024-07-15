@@ -65,7 +65,7 @@ export default function cloudNativeGISLayer(map, id, data, contextLayerData, pop
           layers = await (await fetch(info.default_style?.style_url)).json()
           layers =  layers.layers
         }
-        layers.map(layer => {
+        layers.reverse().map(layer => {
           layer.id = id + '-' + layer.id
           layer.source = id
           layer['source-layer'] = 'default'
