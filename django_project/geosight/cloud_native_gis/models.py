@@ -14,9 +14,16 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '06/06/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
+from cloud_native_gis.models.general import (
+    AbstractTerm, AbstractResource, License
+)
 from cloud_native_gis.models.layer import Layer
+from cloud_native_gis.models.style import Style
+from cloud_native_gis.utils.connection import delete_table
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 
 from geosight.permission.models.manager import (
     PermissionException, PermissionManager
@@ -64,3 +71,9 @@ class CloudNativeGISLayer(Layer):
     def creator(self):
         """Return creator of permission."""
         return self.created_by
+
+
+@receiver(post_delete, sender=CloudNativeGISLayer)
+def layer_on_delete(sender, instance: Layer, using, **kwargs):
+    """Delete table when the layer deleted."""
+    delete_table(instance.schema_name, instance.table_name)
