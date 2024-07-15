@@ -17,11 +17,22 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.conf.urls import url
 from django.urls import include
 
+from frontend.views.admin.cloud_native_gis.layer.edit import (
+    CloudNativeGISLayerEditView
+)
 from frontend.views.admin.cloud_native_gis.layer.list import (
     CloudNativeGISLayerListView
 )
 
+layer_detail_url = [
+    url(
+        r'^edit',
+        CloudNativeGISLayerEditView.as_view(),
+        name='admin-cloud-native-gis-layer-edit-view'
+    ),
+]
 layer_url = [
+    url(r'^(?P<pk>\d+)/', include(layer_detail_url)),
     url(
         r'^',
         CloudNativeGISLayerListView.as_view(),

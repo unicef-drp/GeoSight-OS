@@ -12,12 +12,13 @@
     <script>
       urls.api = {
         'list': '{% url 'cloud-native-gis-layer-list' %}',
+        'edit': '{% url 'admin-cloud-native-gis-layer-edit-view' 0 %}',
         'users': '{% url 'user-list-api'%}',
         'groups': '{% url 'group-list-api'%}',
         'detail': '{% url 'cloud-native-gis-layer-detail' 0 %}',
 
         {# basemap specified url#}
-        'permission': '{% url 'basemap-permission-api' 0 %}',
+        'permission': '{% url 'cloud-native-gis-layer-permission-api' 0 %}',
       }
     </script>
 {% endblock %}

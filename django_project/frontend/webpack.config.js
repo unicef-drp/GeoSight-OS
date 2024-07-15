@@ -70,6 +70,7 @@ let conf = {
 
     // CLOUD NATIVE GIS
     AdminCloudNativeGISLayerList: ['./src/pages/Admin/CloudNativeGIS/LayerList'],
+    AdminCloudNativeGISLayerEdit: ['./src/pages/Admin/CloudNativeGIS/LayerForm'],
   },
   output: {
     path: path.resolve(__dirname, "./bundles/frontend"),
