@@ -63,7 +63,7 @@ export function IndicatorLayerConfig(
         className="ModalSelection IndicatorLayerCreateTypeSelection"
       >
         <ModalHeader onClosed={onClosed}>
-          Add new widget
+          Add new indicator layer
         </ModalHeader>
         <ModalContent>
           <div
