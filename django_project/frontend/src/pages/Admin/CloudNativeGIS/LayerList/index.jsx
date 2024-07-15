@@ -16,6 +16,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import { debounce } from "@mui/material/utils";
+import Tooltip from "@mui/material/Tooltip";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
@@ -23,10 +26,9 @@ import { AdminPage, pageNames } from '../../index';
 import { COLUMNS, COLUMNS_ACTION } from "../../Components/List";
 import PermissionModal from "../../Permission";
 import { AdminListPagination } from "../../AdminListPagination";
+import { MapIcon } from "../../../../components/Icons";
 
 import './style.scss';
-import { MapIcon } from "../../../../components/Icons";
-import Tooltip from "@mui/material/Tooltip";
 
 const PAGE_NAME = pageNames.CloudNativeGIS
 
@@ -37,13 +39,23 @@ export function resourceActions(params) {
 export function columns() {
   // Columns for the list
   const columns = COLUMNS(PAGE_NAME, urls.admin.cloudNativeGISLayerList);
-  columns[3] = { field: 'created_by', headerName: 'Created by', flex: 0.5 }
-  columns[4] = { field: 'layer_type', headerName: 'Layer type', flex: 0.5 }
+  columns[3] = { field: 'created_by', headerName: 'Created by', width: 150 }
+  columns[4] = { field: 'layer_type', headerName: 'Layer type', width: 150 }
   columns[5] = {
+    field: 'is_ready',
+    headerName: 'Is layer ready',
+    width: 100,
+    renderCell: (params) => {
+      return ['true', true].includes(params.value) ?
+        <CheckCircleIcon className={'success'}/> :
+        <CancelIcon className='error'/>
+    }
+  }
+  columns[6] = {
     field: 'actions',
     type: 'actions',
     cellClassName: 'MuiDataGrid-ActionsColumn',
-    width: 100,
+    width: 150,
     getActions: (params) => {
       const permission = params.row.permission
 
