@@ -1,6 +1,8 @@
 """GeoRepo Authentication failed View."""
-from frontend.views._base import BaseView
+import json
+
 from core.serializer.user import UserSerializer
+from frontend.views._base import BaseView
 
 
 class GeoRepoAuthFailedPageView(BaseView):
@@ -29,5 +31,7 @@ class GeoRepoAuthFailedPageView(BaseView):
             'redirect_next_uri': next
         })
         if self.request.user.is_authenticated:
-            context['user'] = UserSerializer(self.request.user).data
+            context['user'] = json.dumps(
+                UserSerializer(self.request.user).data
+            )
         return context

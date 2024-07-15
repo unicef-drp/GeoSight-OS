@@ -38,6 +38,21 @@ class ResourcePermissionDenied(PermissionDenied):
     default_code = 'error'
 
 
+class RoleLocalDatasetManagerRequiredMixin(RedirectLoginRequiredMixin):
+    """Mixin allowing Contributor."""
+
+    def dispatch(self, request, *args, **kwargs):
+        """Dispatch the permission."""
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
+
+        user = request.user
+        if user.is_authenticated and user.profile.is_contributor \
+                and user.profile.able_to_manage_local_dataset:
+            return super().dispatch(request, *args, **kwargs)
+        raise ResourcePermissionDenied
+
+
 class RoleContributorRequiredMixin(RedirectLoginRequiredMixin):
     """Mixin allowing Contributor."""
 

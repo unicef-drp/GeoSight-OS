@@ -15,6 +15,9 @@
 
 import { fetchJSON } from '../Requests'
 import axios from "axios";
+import { InternalReferenceDatasets, referenceDatasetUrlBase } from "./urls";
+
+export const LocalGeoSightIdentifier = 'Internal reference datasets'
 
 /** Georepo URL */
 export function updateToken(url) {
@@ -80,11 +83,18 @@ export const fetchReferenceLayerList = async function () {
  */
 export const fetchReferenceLayerViewsList = async function (referenceLayerUUID) {
   let data = []
-  data = await fetchFeatureList(
-    GeorepoUrls.WithDomain(`/search/dataset/${referenceLayerUUID}/view/list/`, false), true
-  );
+  let url = GeorepoUrls.WithDomain(`/search/dataset/${referenceLayerUUID}/view/list/`, false)
+  if (referenceLayerUUID === LocalGeoSightIdentifier) {
+    url = InternalReferenceDatasets.list()
+  }
+  data = await fetchFeatureList(url, true);
   data.map(row => {
-    row.identifier = row.uuid
+    if (row.uuid) {
+      row.identifier = row.uuid
+    }
+    if (referenceLayerUUID === LocalGeoSightIdentifier) {
+      row.is_local = true
+    }
   })
   data.sort((a, b) => {
     if (a.name < b.name) {
@@ -127,9 +137,24 @@ export const fetchFeatureList = async function (url, useCache = true) {
   let data = []
   const _fetchJson = async function (page = 1) {
     try {
-      const response = await fetchJSON(url + '?geom=centroid&cache=false&page=' + page, headers, useCache);
+      let usedUrl = url + '?geom=centroid&cache=false&page=' + page
+
+      // TODO : INTERNAL REFERENCE DATASETS
+      //  This is for local
+      if (url.includes(referenceDatasetUrlBase)) {
+        if (url.includes('?')) {
+          usedUrl = url + '&page=' + page
+        } else {
+          usedUrl = url + '?page=' + page
+        }
+      }
+
+      const response = await fetchJSON(usedUrl, headers, useCache);
       if (response.results) {
         data = data.concat(response.results)
+        if (response.page && response.page >= response.total_page) {
+          return
+        }
         if (response.results.length) {
           await _fetchJson(page += 1)
         }

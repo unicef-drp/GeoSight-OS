@@ -37,6 +37,19 @@
       padding: 0;
     }
   }
+
+  .RadioButtonControl {
+    background-color: unset !important;
+
+    .MuiRadioGroup-root {
+      flex-direction: row;
+      margin-bottom: 1rem;
+
+      label {
+        margin-left: 0;
+      }
+    }
+  }
 }
 
 .ModalDataSelectorSelected {

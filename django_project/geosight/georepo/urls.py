@@ -14,25 +14,66 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from django.conf import settings
-from django.conf.urls import url
+from django.conf.urls import url, include
+from rest_framework.routers import DefaultRouter
 
-from geosight.georepo.api import ReferenceLayerEntityDrilldownAPI
-from geosight.georepo.api.mock.api import MockGeorepoAPI
+from geosight.georepo.api import (
+    ReferenceLayerEntityDrilldownAPI, ReferenceLayerVectorTile,
+    ReferenceLayerCentroidUrls, ReferenceLayerCentroid
+)
+from geosight.georepo.api.reference_layer_importer import (
+    ReferenceLayerImporterFileView, ReferenceLayerRearrangeView,
+    ReferenceLayerImporter, ReferenceLayerImporterFileUpdateView
+)
 
+router = DefaultRouter()
+router.register(
+    r'reference-datasets-importer', ReferenceLayerImporter,
+    basename='reference-datasets-importer-api'
+)
+
+reference_dataset_api = [
+    url(
+        r'^upload-file$',
+        ReferenceLayerImporterFileView.as_view(),
+        name='reference-datasets-upload-file-api'
+    ),
+    url(
+        r'^rearrange$',
+        ReferenceLayerRearrangeView.as_view(),
+        name='reference-datasets-rearrange-api'
+    ),
+    url(
+        r'^update-level-value$',
+        ReferenceLayerImporterFileUpdateView.as_view(),
+        name='reference-datasets-update-level-value-api'
+    ),
+    # Other API
+    url(
+        r'^centroid/(?P<level>\d+)$',
+        ReferenceLayerCentroid.as_view(),
+        name='reference-datasets-centroid-api'
+    ),
+    url(
+        r'^centroid$',
+        ReferenceLayerCentroidUrls.as_view(),
+        name='reference-datasets-centroid-url-api'
+    ),
+    url(
+        r'^vector-tiles/(?P<z>\d+)/(?P<x>\d+)/(?P<y>\d+)/$',
+        ReferenceLayerVectorTile.as_view(),
+        name='reference-datasets-vector-tile-api'
+    ),
+]
 urlpatterns = [
     url(
         r'^entity/(?P<concept_uuid>[^/]+)/drilldown',
         ReferenceLayerEntityDrilldownAPI.as_view(),
         name='entity-drilldown-api'
-    )
+    ),
+    url(
+        r'^reference-datasets/(?P<identifier>[^/]+)/',
+        include(reference_dataset_api)
+    ),
 ]
-
-if settings.MOCK_GEOREPO:
-    urlpatterns += [
-        url(
-            r'^mock',
-            MockGeorepoAPI.as_view(),
-            name='mock-georepo-api'
-        ),
-    ]
+urlpatterns += router.urls

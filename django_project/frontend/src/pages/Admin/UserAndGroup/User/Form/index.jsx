@@ -54,6 +54,7 @@ export default function UserForm() {
   const [showAPIKey, setShowAPIKey] = useState(false);
   const [isStaff, setIsStaff] = useState(false);
   const [receiveNotification, setReceiveNotification] = useState(false);
+  const [manageLocalDataset, setManageLocalDataset] = useState(false);
 
   // Notification
   const notificationRef = useRef(null);
@@ -72,6 +73,7 @@ export default function UserForm() {
     if (!user.is_staff) {
       $('input[name="is_staff"]').closest('.BasicFormSection').remove()
       $('input[name="receive_notification"]').closest('.BasicFormSection').remove()
+      $('input[name="id_manage_local_dataset"]').closest('.BasicFormSection').remove()
       $('input[name="role"]').closest('.BasicFormSection').find('.ReactSelect__input').prop("disabled", true);
     } else {
       if ($('p[data-field-name="is_staff"]').length) {
@@ -81,6 +83,10 @@ export default function UserForm() {
       if ($('p[data-field-name="receive_notification"]').length) {
         setReceiveNotification($('#id_receive_notification').is(':checked'))
         $('p[data-field-name="receive_notification"]').remove()
+      }
+      if ($('p[data-field-name="manage_local_dataset"]').length) {
+        setManageLocalDataset($('#id_manage_local_dataset').is(':checked'))
+        $('p[data-field-name="manage_local_dataset"]').remove()
       }
     }
     $('input[name="is_staff"]').closest('.BasicFormSection').hide()
@@ -139,6 +145,19 @@ export default function UserForm() {
               label={'Receive email for admin notification.'}/>
             <div className="form-helptext">
               Designates whether the user receive notification.
+            </div>
+          </div>
+          <div className="BasicFormSection">
+            <FormControlLabel
+              checked={manageLocalDataset}
+              control={<Checkbox/>}
+              name='manage_local_dataset'
+              onChange={evt => {
+                setManageLocalDataset(val => !val)
+              }}
+              label={'Able to manage local dataset.'}/>
+            <div className="form-helptext">
+              Designates whether the user able to manage local dataset.
             </div>
           </div>
         </Fragment> : null

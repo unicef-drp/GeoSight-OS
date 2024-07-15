@@ -31,6 +31,7 @@ class UserSerializer(serializers.ModelSerializer):
     is_creator = serializers.SerializerMethodField()
     is_admin = serializers.SerializerMethodField()
     receive_notification = serializers.SerializerMethodField()
+    manage_local_dataset = serializers.SerializerMethodField()
 
     def get_is_staff(self, obj: User):
         """Return is staff."""
@@ -50,19 +51,23 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_is_contributor(self, obj: User):
         """Return is contributor."""
-        return 'true' if obj.profile.is_contributor else 'false'
+        return obj.profile.is_contributor
 
     def get_is_creator(self, obj: User):
         """Return is creator."""
-        return 'true' if obj.profile.is_creator else 'false'
+        return obj.profile.is_creator
 
     def get_is_admin(self, obj: User):
         """Return is admin."""
-        return 'true' if obj.profile.is_admin else 'false'
+        return obj.profile.is_admin
 
     def get_receive_notification(self, obj: User):
         """Return is admin."""
-        return 'true' if obj.profile.receive_notification else 'false'
+        return obj.profile.receive_notification
+
+    def get_manage_local_dataset(self, obj: User):
+        """Return is admin."""
+        return obj.profile.able_to_manage_local_dataset
 
     class Meta:  # noqa: D106
         model = User
@@ -70,5 +75,5 @@ class UserSerializer(serializers.ModelSerializer):
             'id', 'username', 'email', 'first_name', 'last_name',
             'is_staff', 'name', 'email', 'role',
             'is_contributor', 'is_creator', 'is_admin', 'full_name',
-            'receive_notification'
+            'receive_notification', 'manage_local_dataset'
         )
