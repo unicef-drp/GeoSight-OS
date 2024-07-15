@@ -99,6 +99,7 @@ TEMPLATES = [
         'DIRS': [
             # Put Templates Hers
             ABS_PATH('core', 'templates'),
+            ABS_PATH('frontend', 'templates'),
         ],
         'OPTIONS': {
             'loaders': [
