@@ -14,7 +14,7 @@
  */
 
 import React from 'react';
-import ModalSelector from './Modal'
+import ModalPaginationServer from "./ModalPaginationServer";
 
 import './style.scss';
 
@@ -40,15 +40,14 @@ export default function CloudNativeGISSelector(
     isMultiple
   }
 ) {
-  return <ModalSelector
+  return <ModalPaginationServer
     title={'Cloud native GIS layer ' + (isMultiple ? '(s)' : '')}
-    api={'/api/cloud-native-gis/layer/list/'}
+    api={'/api/v1/cloud-native-gis-layer/'}
     columns={columns}
     open={open}
     setOpen={setOpen}
     selectedData={selectedData}
     selectedDataChanged={selectedDataChanged}
-    defaultSorting={[{ field: 'name', sort: 'asc' }]}
     isMultiple={isMultiple}
   />
 
