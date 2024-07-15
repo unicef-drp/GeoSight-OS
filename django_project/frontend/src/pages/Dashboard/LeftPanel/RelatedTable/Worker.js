@@ -40,7 +40,6 @@ export default () => {
     let {
       response
     } = e.data;
-
     response.map(row => {
       for (const [key, value] of Object.entries(row)) {
         const isDate = isValueDate(key)

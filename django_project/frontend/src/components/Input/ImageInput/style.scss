@@ -22,6 +22,7 @@ __date__ = '02/08/2023'
   height: 200px;
   border: 1px solid rgba(0, 0, 0, 0.23);
   position: relative;
+  overflow: hidden;
 
   .ImageInput-Input,
   button {
@@ -54,6 +55,4 @@ __date__ = '02/08/2023'
     object-fit: cover;
     width: 100%;
   }
-
-  overflow: hidden;
 }
