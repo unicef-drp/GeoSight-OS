@@ -14,11 +14,7 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '06/06/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from cloud_native_gis.models.general import (
-    AbstractTerm, AbstractResource, License
-)
 from cloud_native_gis.models.layer import Layer
-from cloud_native_gis.models.style import Style
 from cloud_native_gis.utils.connection import delete_table
 from django.contrib.auth import get_user_model
 from django.db import models
