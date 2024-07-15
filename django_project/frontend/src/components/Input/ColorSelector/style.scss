@@ -27,12 +27,12 @@
 
 .ColorConfig {
   input {
+    background-color: white;
+
     &:focus,
     &:focus-visible, {
       outline: unset;
     }
-
-    background-color: white;
   }
 }
 
