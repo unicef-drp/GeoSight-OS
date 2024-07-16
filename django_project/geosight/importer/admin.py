@@ -97,7 +97,7 @@ class ImporterLogAdmin(admin.ModelAdmin):
     readonly_fields = ('importer', 'start_time', 'end_time')
     list_filter = ('status',)
     inlines = [ImporterLogDataSaveProgressInline]
-    search_fields = ('note',)
+    search_fields = ('note', 'importer__unique_id')
 
     def has_add_permission(self, request, obj=None):
         """Has add permission."""
