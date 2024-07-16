@@ -35,6 +35,7 @@ class RelatedTableFieldInline(admin.TabularInline):
     extra = 0
 
 
+@admin.register(RelatedTableRow)
 class RelatedTableRowAdmin(admin.ModelAdmin):
     """RelatedTableRow admin."""
 
@@ -42,13 +43,11 @@ class RelatedTableRowAdmin(admin.ModelAdmin):
     list_editable = ('order',)
 
 
+@admin.register(RelatedTable)
 class RelatedTableAdmin(admin.ModelAdmin):
     """RelatedTable admin."""
 
     list_display = ('name', 'description')
     inlines = (RelatedTableFieldInline,)
     actions = (invalidate_cache,)
-
-
-admin.site.register(RelatedTable, RelatedTableAdmin)
-admin.site.register(RelatedTableRow, RelatedTableRowAdmin)
+    readonly_fields = ('last_importer',)

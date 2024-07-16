@@ -118,7 +118,11 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
         """Return fields of table."""
         if not self.relatedtablefield_set.count():
             self.set_fields()
-        return list(self.relatedtablefield_set.values_list('name', flat=True))
+        return list(
+            self.relatedtablefield_set.values_list(
+                'name', flat=True
+            ).order_by('name')
+        )
 
     def check_relation(self):
         """Check relation."""
@@ -209,6 +213,10 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                 has_next = True
             for idx, row in enumerate(rows):
                 data = row[2]
+                try:
+                    date_time = data[date_field]
+                except KeyError:
+                    continue
                 data.update({
                     'id': row[0],
                     'order': row[1],
@@ -218,10 +226,9 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                     'admin_level': row[6],
                 })
                 # Update date field
-                value = data[date_field]
                 data[date_field] = extract_time_string(
                     format_time=date_format,
-                    value=value
+                    value=date_time
                 ).isoformat()
                 # Filter by date
                 if max_time and data[date_field] > max_time:
@@ -270,12 +277,13 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
             cursor.execute(query)
             dates = []
             for row in cursor.fetchall():
-                dates.append(
-                    extract_time_string(
-                        format_time=date_format,
-                        value=row[0]
-                    ).isoformat()
-                )
+                if row[0]:
+                    dates.append(
+                        extract_time_string(
+                            format_time=date_format,
+                            value=row[0]
+                        ).isoformat()
+                    )
         return dates
 
     @property
@@ -414,6 +422,21 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
             pass
 
         query.exclude(id__in=ids).delete()
+
+    @property
+    def last_importer(self):
+        """Return last importer."""
+        from django.urls import reverse
+        from geosight.importer.models.attribute import ImporterAttribute
+        attribute = ImporterAttribute.objects.filter(
+            name='related_table_id', value=self.id
+        ).order_by('importer_id').last()
+        if attribute:
+            return reverse(
+                'admin:geosight_importer_importer_change',
+                args=(attribute.importer.id,)
+            )
+        return None
 
 
 class RelatedTableRow(models.Model):

@@ -79,7 +79,6 @@ export default function LayerDescription({ layer }) {
         setLoading(false)
       }
     )
-
   }
 
   return (
@@ -102,7 +101,7 @@ export default function LayerDescription({ layer }) {
             showOnHover={true}
           >
             <div className='LayerInfoPopover'>
-              {layer.error}
+              {'' + layer.error}
             </div>
           </CustomPopover>
           :
