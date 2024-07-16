@@ -433,7 +433,8 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
         ).order_by('importer_id').last()
         if attribute:
             return reverse(
-                'admin:geosight_importer_importer_change', args=(attribute.importer.id,)
+                'admin:geosight_importer_importer_change',
+                args=(attribute.importer.id,)
             )
         return None
 
