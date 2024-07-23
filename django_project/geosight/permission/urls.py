@@ -18,7 +18,6 @@ from django.conf.urls import url
 
 from geosight.permission.api import (
     BasemapPermissionAPI,
-    CloudNativeGISLayerPermissionAPI,
     ContextLayerPermissionAPI,
     DashboardPermissionAPI,
     GroupPermissionAPI,
@@ -86,10 +85,5 @@ urlpatterns = [
         r'^style/(?P<pk>\d+)',
         StylePermissionAPI.as_view(),
         name='style-permission-api'
-    ),
-    url(
-        r'^cloud-native-gis/layer/(?P<pk>\d+)',
-        CloudNativeGISLayerPermissionAPI.as_view(),
-        name='cloud-native-gis-layer-permission-api'
     ),
 ]
