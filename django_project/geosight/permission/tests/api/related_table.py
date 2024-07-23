@@ -37,7 +37,6 @@ class RelatedTableListApiTest(BasePermissionTest, TestCase):
     def create_resource(self, user):
         """Create resource function."""
         payload = copy.deepcopy(self.payload)
-        del payload['group']
         return RelatedTable.permissions.create(
             user=user,
             **payload

@@ -127,6 +127,7 @@ class BaseApiV1Resource(
         """Update an object."""
         data = request.data.copy()
         form = self.form_class(data)
+        form.user = request.user
         if form.is_valid():
             instance = form.save()
             instance.creator = request.user

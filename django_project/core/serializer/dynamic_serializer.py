@@ -37,4 +37,7 @@ class DynamicModelSerializer(serializers.ModelSerializer):
 
         if exclude:
             for field in exclude:
-                self.fields.pop(field)
+                try:
+                    self.fields.pop(field)
+                except KeyError:
+                    pass
