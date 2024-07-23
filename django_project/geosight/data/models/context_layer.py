@@ -18,13 +18,13 @@ import json
 from base64 import b64encode
 
 import requests
+from cloud_native_gis.models.layer import Layer as CloudNativeGISLayer
 from django.contrib.gis.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
 from core.models import AbstractEditData, AbstractTerm
-from geosight.cloud_native_gis.models import CloudNativeGISLayer
 from geosight.data.models.arcgis import ArcgisConfig
 from geosight.data.models.field_layer import FieldLayerAbstract
 from geosight.data.models.related_table import RelatedTable

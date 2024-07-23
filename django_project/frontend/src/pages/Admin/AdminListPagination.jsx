@@ -184,8 +184,6 @@ export const AdminListPagination = forwardRef(
     const filtered = Object.keys(parameters).filter(param => !['page', 'page_size'].includes(param)).length;
     return <Fragment>
       <AdminListContent
-        setSearch={props.setSearch}
-        hideSearch={!props.setSearch}
         leftHeader={
           <Fragment>
             {

@@ -16,10 +16,10 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import json
 
+from cloud_native_gis.models import Layer as CloudNativeGISLayer
 from django import forms
 from django.forms.models import model_to_dict
 
-from geosight.cloud_native_gis.models import CloudNativeGISLayer
 from geosight.data.models.context_layer import (
     ContextLayer, ContextLayerGroup, LayerType
 )

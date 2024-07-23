@@ -18,5 +18,4 @@ from django.conf.urls import url, include
 
 urlpatterns = [
     url(r'^', include('geosight.data.urls_v1')),
-    url(r'^', include('geosight.cloud_native_gis.urls_v1')),
 ]

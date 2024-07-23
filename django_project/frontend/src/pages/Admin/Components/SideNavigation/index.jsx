@@ -76,7 +76,6 @@ export default function SideNavigation({ pageName, minified }) {
   const dataset = urls.admin.dataset; // eslint-disable-line no-undef
   const dataAccess = urls.admin.dataAccess; // eslint-disable-line no-undef
   const relatedTableList = urls.admin.relatedTableList; // eslint-disable-line no-undef
-  const cloudNativeGISLayerList = urls.admin.cloudNativeGISLayerList; // eslint-disable-line no-undef
   const helpPageRef = useRef(null);
 
   return (
@@ -177,24 +176,6 @@ export default function SideNavigation({ pageName, minified }) {
                       <TableIcon/>}
                     <span
                       className='SideNavigation-Row-Name'>Related Tables</span>
-                  </a>
-                </SidaNavigationButton>
-              </div>
-              <div className='SideNavigationContentGroup'>
-                <div className='SideNavigationContentGroupTitle'>
-                  CLOUD NATIVE GIS
-                </div>
-                <SidaNavigationButton
-                  minified={minified} title='Cloud Native GIS Layer'
-                >
-                  <a href={cloudNativeGISLayerList}
-                     className={'SideNavigation-Row ' + (pageName === pageNames.CloudNativeGIS ? 'active' : '')}>
-                    {
-                      pageName === pageNames.CloudNativeGIS ?
-                        <LayerActiveIcon/> :
-                        <LayerIcon/>
-                    }
-                    <span className='SideNavigation-Row-Name'>Layer</span>
                   </a>
                 </SidaNavigationButton>
               </div>

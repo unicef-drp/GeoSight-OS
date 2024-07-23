@@ -13,11 +13,7 @@
  * __copyright__ = ('Copyright 2024, Unicef')
  */
 
-import React, { useEffect, useState } from 'react';
-import {
-  CloudNativeGISInputSelector
-} from "../../ModalSelector/InputSelector";
-import { GET_RESOURCE } from "../../../../utils/ResourceRequests";
+import React from 'react';
 
 /**
  * Cloud Native GIS specific fields
@@ -30,35 +26,12 @@ export default function CloudNativeGISFields(
     onSetData
   }
 ) {
-  const [info, setInfo] = useState(null)
-
-  // Loading data
-  useEffect(() => {
-    if (data.cloud_native_gis_layer) {
-      (
-        async () => {
-          setInfo(await GET_RESOURCE.CLOUD_NATIVE_GIS.DETAIL(data.cloud_native_gis_layer))
-        }
-      )()
-    }
-  }, [data.cloud_native_gis_layer])
-
-  const onChange = value => {
-    onSetData({ ...data, cloud_native_gis_layer: value[0]?.id })
-    setInfo(value[0])
-  }
 
   return (
     <div className='BasicFormSection'>
       <label className="form-label required">
-        Layer
+        Cloud Native GIS detail
       </label>
-      <CloudNativeGISInputSelector
-        data={info ? [info] : []}
-        setData={onChange}
-        isMultiple={false}
-        showSelected={true}
-      />
     </div>
   )
 }

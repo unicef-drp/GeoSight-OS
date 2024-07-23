@@ -23,9 +23,9 @@ import { defaultPointStyle } from './layerStyles';
 import RelatedTableConfig from './RelatedTable';
 import AggregationStyleConfig from "./AggregationStyleConfig";
 import { Variables } from "../../../../utils/Variables";
+import { GET_RESOURCE } from "../../../../utils/ResourceRequests";
 
 import './style.scss';
-import { GET_RESOURCE } from "../../../../utils/ResourceRequests";
 
 
 /**
@@ -66,9 +66,8 @@ export default function StyleConfig(
   }, [data, tab]);
 
   useEffect(() => {
-    // For
+    // For cloud native GIS
     if (!data.styles && data.override_style && data.layer_type === Variables.TERMS.CLOUD_NATIVE_GIS) {
-      console.log('Fetch style');
       (
         async () => {
           try {

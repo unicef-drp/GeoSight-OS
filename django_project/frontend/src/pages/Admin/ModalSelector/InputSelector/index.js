@@ -22,7 +22,6 @@ import {
   IndicatorSelector,
   RelatedTableSelector
 } from "../index";
-import CloudNativeGISSelector from "../CloudNativeGIS";
 import { ArrowDownwardIcon } from "../../../../components/Icons";
 
 import './style.scss';
@@ -169,26 +168,5 @@ export function GeorepoViewInputSelector(
     hideLabel={true}
   >
     <GeorepoViewSelector/>
-  </ModalInputSelector>
-}
-
-/**
- * Local cloud native GIS input selected
- * @param {array} data Selected data.
- * @param {function} setData When the value changed.
- * @param {Boolean} isMultiple Is data returned multiple object.
- * @param {Boolean} showSelected Is Showing selected data.
- */
-export function CloudNativeGISInputSelector(
-  { data, setData, isMultiple, showSelected }
-) {
-  return <ModalInputSelector
-    placeholder={'Select cloud native gis layer ' + (isMultiple ? '(s)' : '')}
-    data={data}
-    setData={setData}
-    isMultiple={isMultiple}
-    showSelected={showSelected}
-  >
-    <CloudNativeGISSelector/>
   </ModalInputSelector>
 }
