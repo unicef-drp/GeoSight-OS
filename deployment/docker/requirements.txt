@@ -47,4 +47,4 @@ msal==1.21.0
 selenium==4.13.0
 webdriver-manager==4.0.1
 
-git+https://github.com/kartoza/CloudNativeGIS.git@updates
+git+https://github.com/kartoza/CloudNativeGIS.git

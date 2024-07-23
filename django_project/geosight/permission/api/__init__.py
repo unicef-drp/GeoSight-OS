@@ -21,5 +21,3 @@ from .dashboard import *
 from .dataset import *
 from .group import *
 from .indicator import *
-from .related_table import *
-from .style import *

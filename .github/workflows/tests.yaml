@@ -42,7 +42,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   django_app_test:
-    needs: flake8_py3
     name: 'Django App'
     runs-on: ubuntu-latest
     env:

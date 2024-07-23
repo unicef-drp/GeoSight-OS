@@ -16,7 +16,6 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from .api import *  # noqa
 from .basemap_layer import *  # noqa
-from .cloud_native_gis import *  # noqa
 from .context_layer import *  # noqa
 from .dashboard import *  # noqa
 from .dataset import *  # noqa
