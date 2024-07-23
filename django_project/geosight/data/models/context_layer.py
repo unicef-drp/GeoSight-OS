@@ -122,7 +122,7 @@ class ContextLayer(AbstractEditData, AbstractTerm):
             'Related table name.'
         )
     )
-    cloud_native_gis_layer = models.ForeignKey(
+    cloud_native_gis_layer = models.OneToOneField(
         CloudNativeGISLayer,
         null=True, blank=True,
         on_delete=models.SET_NULL,

@@ -11,16 +11,19 @@ Contact : geosight-no-reply@unicef.org
 
 """
 __author__ = 'irwan@kartoza.com'
-__date__ = '13/06/2023'
+__date__ = '06/06/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.conf.urls import url
-from django.urls import include
+
+from geosight.cloud_native_gis.api.cloud_native_gis import (
+    CloudNativeGISLayerUploadCreate
+)
 
 urlpatterns = [
-    url(r'^importer/', include('geosight.importer.urls')),
-    url(r'^georepo/', include('geosight.georepo.urls')),
-    url(r'^', include('geosight.data.urls')),
-    url(r'^cloud-native-gis/', include('cloud_native_gis.urls')),
-    url(r'^cloud-native-gis/', include('geosight.cloud_native_gis.urls')),
+    url(
+        r'^upload-create$',
+        CloudNativeGISLayerUploadCreate.as_view(),
+        name='cloud-native-gis-upload-create'
+    ),
 ]

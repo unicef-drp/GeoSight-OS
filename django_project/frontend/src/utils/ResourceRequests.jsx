@@ -20,7 +20,7 @@ export const GET_RESOURCE = {
     DETAIL: async (id) => {
       let data = null
       await fetchingData(
-        `/api/v1/cloud-native-gis-layer/${id}`,
+        `/cloud-native-gis/api/layer/${id}/`,
         {}, {}, (response, error) => {
           data = response
         }

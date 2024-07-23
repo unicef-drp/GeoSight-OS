@@ -13,7 +13,9 @@
  * __copyright__ = ('Copyright 2024, Unicef')
  */
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import CloudNativeGISStreamUpload from "./CloudNativeGISStreamUpload";
+import { GET_RESOURCE } from "../../../../utils/ResourceRequests";
 
 /**
  * Cloud Native GIS specific fields
@@ -26,12 +28,32 @@ export default function CloudNativeGISFields(
     onSetData
   }
 ) {
+  const [info, setInfo] = useState(null)
+
+  // Loading data
+  useEffect(() => {
+    if (data.cloud_native_gis_layer) {
+      (
+        async () => {
+          setInfo(await GET_RESOURCE.CLOUD_NATIVE_GIS.DETAIL(data.cloud_native_gis_layer))
+        }
+      )()
+    }
+  }, [data.cloud_native_gis_layer])
+
 
   return (
     <div className='BasicFormSection'>
       <label className="form-label required">
         Cloud Native GIS detail
       </label>
+      <CloudNativeGISStreamUpload
+        layerId={data.cloud_native_gis_layer}
+        setLayerIdChanged={(id) => onSetData({
+          ...data,
+          cloud_native_gis_layer: id
+        })}
+      />
     </div>
   )
 }
