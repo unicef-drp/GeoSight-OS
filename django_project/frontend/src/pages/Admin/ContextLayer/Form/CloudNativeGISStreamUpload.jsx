@@ -65,6 +65,7 @@ export default function CloudNativeGISStreamUpload(
    */
   const fetch = (importer) => {
     if (!layerId || importer) {
+      setLayerIdChanged(layerId)
       return
     }
     fetchJSON(urls.api.cloudNativeGISImportHistory.replace('0', layerId), {}, false)
@@ -83,6 +84,7 @@ export default function CloudNativeGISStreamUpload(
         }
       })
   }
+
   // Fetch the last importer
   useEffect(() => {
     fetch(lastImporter)

@@ -66,26 +66,6 @@ export default function StyleConfig(
   }, [data, tab]);
 
   useEffect(() => {
-    // For cloud native GIS
-    if ((!data.styles || data.override_style) && data.layer_type === Variables.TERMS.CLOUD_NATIVE_GIS) {
-      (
-        async () => {
-          try {
-            const json = await GET_RESOURCE.CLOUD_NATIVE_GIS.DETAIL(data.cloud_native_gis_layer);
-            if (json?.default_style?.style_url) {
-              const style = await (await fetch(json.default_style.style_url)).json();
-              setData({
-                ...data,
-                styles: JSON.stringify(style.layers, null, 4)
-              })
-            }
-          } catch (err) {
-            console.log(err)
-          }
-        }
-      )();
-      return;
-    }
     if (!data.styles && Variables.LIST.VECTOR_TILE_TYPES.includes(data.layer_type) && !Variables.LIST.OVERRIDE_STYLES.includes(data.layer_type)) {
       setData({
         ...data,

@@ -29,17 +29,32 @@ export default function CloudNativeGISFields(
   }
 ) {
   const [info, setInfo] = useState(null)
+  const [initialized, setInitialized] = useState(false)
 
   // Loading data
   useEffect(() => {
     if (data.cloud_native_gis_layer) {
       (
         async () => {
-          setInfo(await GET_RESOURCE.CLOUD_NATIVE_GIS.DETAIL(data.cloud_native_gis_layer))
+          const _info = await GET_RESOURCE.CLOUD_NATIVE_GIS.DETAIL(data.cloud_native_gis_layer)
+          let defaultStyle;
+          if (_info.default_style?.style_url) {
+            defaultStyle = await (await fetch(_info.default_style?.style_url)).json()
+          }
+          setInfo(_info)
+          const newData = {
+            ...data,
+            cloud_native_gis_layer_detail: _info,
+            mapbox_style: defaultStyle
+          }
+          if (data.last_update) {
+            newData.styles = JSON.stringify(defaultStyle.layers, null, 4)
+          }
+          onSetData(newData)
         }
       )()
     }
-  }, [data.cloud_native_gis_layer])
+  }, [data.last_update])
 
 
   return (
@@ -49,12 +64,17 @@ export default function CloudNativeGISFields(
       </label>
       <CloudNativeGISStreamUpload
         layerId={data.cloud_native_gis_layer}
-        setLayerIdChanged={(id) => onSetData({
-          ...data,
-          cloud_native_gis_layer: id,
-          last_update: new Date().getTime(),
-          styles: null
-        })}
+        setLayerIdChanged={(id) => {
+          if (id && initialized) {
+            onSetData({
+              ...data,
+              cloud_native_gis_layer: id,
+              last_update: new Date().getTime(),
+              styles: null
+            })
+          }
+          setInitialized(true)
+        }}
       />
     </div>
   )

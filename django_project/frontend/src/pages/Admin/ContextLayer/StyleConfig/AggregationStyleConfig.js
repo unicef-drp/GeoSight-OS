@@ -22,13 +22,14 @@ import {
 } from "./layerStyles";
 import { toJson } from "../../../../utils/main";
 import AggregationStyleGuide from "./AggregationStyleGuide";
+import { v4 as uuidv4 } from "uuid";
 
 
 export default function AggregationStyleConfig({ data, setData, setError }) {
   const [inputStyle, setInputStyle] = useState(null);
 
   useEffect(() => {
-    if (!inputStyle) {
+    if (data.styles !== inputStyle) {
       setInputStyle(data.styles)
     }
   }, [data]);
@@ -37,6 +38,21 @@ export default function AggregationStyleConfig({ data, setData, setError }) {
     field_aggregation
   } = toJson(data.configuration);
 
+  const updateStyle = (newStyle) => {
+    setInputStyle(newStyle)
+    try {
+      setError(null)
+      setData(
+        {
+          ...data,
+          styles: newStyle,
+          override_style: true
+        }
+      )
+    } catch (e) {
+      setError((e + '').split('at')[0])
+    }
+  }
   return <>
     <div><b>Styles</b></div>
     {
@@ -61,6 +77,25 @@ export default function AggregationStyleConfig({ data, setData, setError }) {
     </span>
     <br/>
     <br/>
+    {
+      data.mapbox_style ?
+        <div onClick={() => {
+          let uuid = uuidv4();
+          const _window = window.open('/cloud-native-gis/maputnik/', uuid, "popup=true");
+          _window.inputStyle = JSON.stringify({
+            ...data.mapbox_style,
+            layers: inputStyle ? JSON.parse(inputStyle) : data.mapbox_style.layers
+          })
+          window.addEventListener('message', (event) => {
+            if (event.source?.name === uuid) {
+              const layers = event.data.layers.filter(layer => layer.id !== 'openstreetmap')
+              updateStyle(JSON.stringify(layers, null, 4))
+            }
+          }, false);
+        }}>
+          Editor
+        </div> : null
+    }
     <textarea
       placeholder={
         JSON.stringify(field_aggregation ? defaultAggregationStyle : data.layer_type === 'Related Table' ?
@@ -71,19 +106,7 @@ export default function AggregationStyleConfig({ data, setData, setError }) {
       value={inputStyle}
       style={{ minHeight: "90%" }}
       onChange={(evt) => {
-        setInputStyle(evt.target.value)
-        try {
-          setError(null)
-          setData(
-            {
-              ...data,
-              styles: evt.target.value,
-              override_style: true
-            }
-          )
-        } catch (e) {
-          setError((e + '').split('at')[0])
-        }
+        updateStyle(evt.target.value)
       }}/>
   </>
 }
