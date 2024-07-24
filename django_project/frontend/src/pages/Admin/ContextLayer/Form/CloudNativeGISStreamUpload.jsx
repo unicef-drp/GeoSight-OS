@@ -78,6 +78,8 @@ export default function CloudNativeGISStreamUpload(
           setTimeout(function () {
             fetch()
           }, 1000);
+        } else {
+          setLayerIdChanged(layerId)
         }
       })
   }

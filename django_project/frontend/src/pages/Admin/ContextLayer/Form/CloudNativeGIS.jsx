@@ -51,7 +51,9 @@ export default function CloudNativeGISFields(
         layerId={data.cloud_native_gis_layer}
         setLayerIdChanged={(id) => onSetData({
           ...data,
-          cloud_native_gis_layer: id
+          cloud_native_gis_layer: id,
+          last_update: new Date().getTime(),
+          styles: null
         })}
       />
     </div>

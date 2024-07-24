@@ -67,16 +67,18 @@ export default function StyleConfig(
 
   useEffect(() => {
     // For cloud native GIS
-    if (!data.styles && data.override_style && data.layer_type === Variables.TERMS.CLOUD_NATIVE_GIS) {
+    if ((!data.styles || data.override_style) && data.layer_type === Variables.TERMS.CLOUD_NATIVE_GIS) {
       (
         async () => {
           try {
             const json = await GET_RESOURCE.CLOUD_NATIVE_GIS.DETAIL(data.cloud_native_gis_layer);
-            const style = await (await fetch(json.default_style.style_url)).json();
-            setData({
-              ...data,
-              styles: JSON.stringify(style.layers, null, 4)
-            })
+            if (json?.default_style?.style_url) {
+              const style = await (await fetch(json.default_style.style_url)).json();
+              setData({
+                ...data,
+                styles: JSON.stringify(style.layers, null, 4)
+              })
+            }
           } catch (err) {
             console.log(err)
           }

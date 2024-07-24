@@ -21,6 +21,6 @@ export const Variables = {
   },
   LIST: {
     VECTOR_TILE_TYPES: ['Related Table', 'Vector Tile', CLOUD_NATIVE_GIS],
-    OVERRIDE_STYLES: ['ARCGIS', CLOUD_NATIVE_GIS]
+    OVERRIDE_STYLES: ['ARCGIS']
   }
 }

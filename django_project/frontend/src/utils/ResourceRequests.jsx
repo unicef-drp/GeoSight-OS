@@ -23,7 +23,7 @@ export const GET_RESOURCE = {
         `/cloud-native-gis/api/layer/${id}/`,
         {}, {}, (response, error) => {
           data = response
-        }
+        }, false
       )
       return data
     }
