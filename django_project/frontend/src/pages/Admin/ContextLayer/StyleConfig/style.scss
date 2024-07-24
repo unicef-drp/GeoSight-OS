@@ -278,3 +278,11 @@
     height: 100%;
   }
 }
+
+.EditorButton {
+  background-color: $primary-color;
+  color: $anti-primary-color;
+  cursor: pointer;
+  padding: 3px 6px;
+  width: fit-content;
+}

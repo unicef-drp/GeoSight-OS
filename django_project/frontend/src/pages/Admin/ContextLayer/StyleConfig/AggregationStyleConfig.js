@@ -79,7 +79,7 @@ export default function AggregationStyleConfig({ data, setData, setError }) {
     <br/>
     {
       data.mapbox_style ?
-        <div onClick={() => {
+        <div className='EditorButton' onClick={() => {
           let uuid = uuidv4();
           const _window = window.open('/cloud-native-gis/maputnik/', uuid, "popup=true");
           _window.inputStyle = JSON.stringify({
