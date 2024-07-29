@@ -372,6 +372,7 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
         relatedTables, relatedTableData, selectedGlobalTime,
         geoField, filteredGeometries, currentLevel
       )
+      dispatch(Actions.MapGeometryValue.update(indicatorValueByGeometry))
       let indicatorSecondValueByGeometry = {}
 
       // Create colors
