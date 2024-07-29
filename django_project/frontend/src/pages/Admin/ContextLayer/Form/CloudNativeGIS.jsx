@@ -15,7 +15,7 @@
 
 import React, { useEffect, useState } from 'react';
 import CloudNativeGISStreamUpload from "./CloudNativeGISStreamUpload";
-import { returnLayerDetail } from "../../../../utils/CloudNativeGIS";
+import { updateDataWithMapbox } from "../../../../utils/CloudNativeGIS";
 
 /**
  * Cloud Native GIS specific fields
@@ -28,7 +28,6 @@ export default function CloudNativeGISFields(
     onSetData
   }
 ) {
-  const [info, setInfo] = useState(null)
   const [initialized, setInitialized] = useState(false)
 
   // Loading data
@@ -36,14 +35,11 @@ export default function CloudNativeGISFields(
     if (data.cloud_native_gis_layer) {
       (
         async () => {
-          const _detail = returnLayerDetail(data.cloud_native_gis_layer)
-          const newData = {
-            ...data,
-            cloud_native_gis_layer_detail: _detail,
-            mapbox_style: _detail.mapbox_style
-          }
+          const newData = await updateDataWithMapbox(data)
           if (data.last_update) {
-            newData.styles = JSON.stringify(_detail.mapbox_style.layers, null, 4)
+            newData.styles = JSON.stringify(
+              newData.mapbox_style.layers, null, 4
+            )
           }
           onSetData(newData)
         }

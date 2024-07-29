@@ -23,6 +23,8 @@ import {
 import { toJson } from "../../../../utils/main";
 import AggregationStyleGuide from "./AggregationStyleGuide";
 import { v4 as uuidv4 } from "uuid";
+import { ThemeButton } from "../../../../components/Elements/Button";
+import { updateDataWithMapbox } from "../../../../utils/CloudNativeGIS";
 
 
 export default function AggregationStyleConfig({ data, setData, setError }) {
@@ -31,6 +33,19 @@ export default function AggregationStyleConfig({ data, setData, setError }) {
   useEffect(() => {
     if (data.styles !== inputStyle) {
       setInputStyle(data.styles)
+    }
+    if (data.cloud_native_gis_layer) {
+      (
+        async () => {
+          const newData = await updateDataWithMapbox(data)
+          if (data.last_update) {
+            newData.styles = JSON.stringify(
+              newData.mapbox_style.layers, null, 4
+            )
+          }
+          setData(newData)
+        }
+      )()
     }
   }, [data]);
 
@@ -79,22 +94,24 @@ export default function AggregationStyleConfig({ data, setData, setError }) {
     <br/>
     {
       data.mapbox_style ?
-        <div className='EditorButton' onClick={() => {
-          let uuid = uuidv4();
-          const _window = window.open('/cloud-native-gis/maputnik/', uuid, "popup=true");
-          _window.inputStyle = JSON.stringify({
-            ...data.mapbox_style,
-            layers: inputStyle ? JSON.parse(inputStyle) : data.mapbox_style.layers
-          })
-          window.addEventListener('message', (event) => {
-            if (event.source?.name === uuid) {
-              const layers = event.data.layers.filter(layer => layer.id !== 'openstreetmap')
-              updateStyle(JSON.stringify(layers, null, 4))
-            }
-          }, false);
-        }}>
+        <ThemeButton
+          variant="primary"
+          onClick={() => {
+            let uuid = uuidv4();
+            const _window = window.open('/cloud-native-gis/maputnik/', uuid, "popup=true");
+            _window.inputStyle = JSON.stringify({
+              ...data.mapbox_style,
+              layers: inputStyle.length ? JSON.parse(inputStyle) : data.mapbox_style.layers
+            })
+            window.addEventListener('message', (event) => {
+              if (event.source?.name === uuid) {
+                const layers = event.data.layers.filter(layer => layer.id !== 'openstreetmap')
+                updateStyle(JSON.stringify(layers, null, 4))
+              }
+            }, false);
+          }}>
           Editor
-        </div> : null
+        </ThemeButton> : null
     }
     <textarea
       placeholder={

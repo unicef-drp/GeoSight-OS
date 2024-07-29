@@ -23,3 +23,12 @@ export async function returnLayerDetail(layerId) {
   _detail.mapbox_style = defaultStyle
   return _detail
 }
+
+export async function updateDataWithMapbox(data) {
+  const _detail = await returnLayerDetail(data.cloud_native_gis_layer)
+  return {
+    ...data,
+    cloud_native_gis_layer_detail: _detail,
+    mapbox_style: _detail.mapbox_style
+  }
+}
