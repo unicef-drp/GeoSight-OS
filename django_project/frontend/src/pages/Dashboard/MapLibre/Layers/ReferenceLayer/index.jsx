@@ -47,6 +47,7 @@ import {
 } from "../../../../../utils/Style";
 import GeorepoAuthorizationModal
   from "../../../../../components/GeorepoAuthorizationModal";
+import { Logger } from "../../../../../utils/logger";
 
 export const BEFORE_LAYER = 'gl-draw-polygon-fill-inactive.cold'
 export const CONTEXT_LAYER_ID = `context-layer`
@@ -173,6 +174,7 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
   useEffect(() => {
     const whereStr = JSON.stringify(where)
     const filteredGeometriesStr = JSON.stringify(filteredGeometries)
+    Logger.log(filteredGeometriesStr)
     if (prevState.where !== whereStr || prevState.filteredGeometries !== filteredGeometriesStr) {
       updateFilter()
       prevState.where = whereStr
