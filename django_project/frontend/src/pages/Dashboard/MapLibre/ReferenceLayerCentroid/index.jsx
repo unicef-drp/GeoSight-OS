@@ -17,14 +17,9 @@
    Geometry Center
    ========================================================================== */
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import $ from "jquery";
-import maplibregl from "maplibre-gl";
-import Chart from 'chart.js/auto';
 import { returnWhere } from "../../../../utils/queryExtraction";
-import { popupTemplate } from "../Popup";
-import { addPopupEl } from "../utils";
 import { extractCode, fetchJson } from "../../../../utils/georepo";
 import { allDataIsReady } from "../../../../utils/indicators";
 import {
@@ -33,20 +28,17 @@ import {
 } from "../../../../utils/indicatorLayer";
 import { dictDeepCopy } from "../../../../utils/main";
 import { UpdateStyleData } from "../../../../utils/indicatorData";
-import { hideLabel, renderLabel, showLabel } from "./Label"
+import { hideLabel, renderLabel, resetLabel, showLabel } from "./Label"
 import { ExecuteWebWorker } from "../../../../utils/WebWorker";
 import worker from "./Label/worker";
 import { fetchJSON } from "../../../../Requests";
+import { Actions } from "../../../../store/dashboard";
+import { renderChart, renderPin, resetCharts } from "./Chart";
 
 import './style.scss';
-import { Actions } from "../../../../store/dashboard";
 
-let centroidMarker = []
-let charts = {}
-const INDICATOR_LABEL_ID = 'indicator-label'
-let centroidConfig = {}
-
-let lastRequest = null
+let lastConfig = {};
+let lastRequest = null;
 /**
  * GeometryCenter.
  */
@@ -64,6 +56,7 @@ export default function ReferenceLayerCentroid({ map }) {
   const selectedIndicatorLayer = useSelector(state => state.selectedIndicatorLayer)
   const selectedIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer)
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel)
+  const mapGeometryValue = useSelector(state => state.mapGeometryValue)
   const filtersData = useSelector(state => state.filtersData);
 
   const [geometries, setGeometries] = useState({});
@@ -153,134 +146,6 @@ export default function ReferenceLayerCentroid({ map }) {
     }
   }, [referenceLayer]);
 
-  /**
-   * Render chart
-   * **/
-  const renderChart = (features, config) => {
-    if (JSON.stringify(config) !== JSON.stringify(centroidConfig)) {
-      return;
-    }
-    features.map(feature => {
-      const properties = feature.properties
-      const chartStyle = properties.chart_style;
-      const code = properties.code
-      const size = chartStyle.size;
-      const { labels, data, colors, options } = properties.chartData
-
-      if (charts[code]) {
-        charts[code].clear();
-        $(`${code}-chart`).remove()
-      }
-
-      const popup = new maplibregl.Popup({
-        closeOnClick: false,
-        closeButton: false,
-        anchor: 'center'
-      })
-        .setLngLat(feature.geometry.coordinates)
-        .setHTML(`<div style="display: block; box-sizing: border-box; height: ${size}px; width: ${size}px;"><canvas id="${code}-chart" width="${size}" height="${size}" data-size="${size}"></div>`)
-        .addTo(map);
-      centroidMarker.push(popup)
-
-      // Create charts
-      setTimeout(function () {
-        // Don't render if config is not same
-        if (JSON.stringify(config) !== JSON.stringify(centroidConfig)) {
-          return;
-        }
-        const el = document.getElementById(`${code}-chart`)
-        if (!el) {
-          return
-        }
-        const ctx = el.getContext('2d');
-        try {
-          const chart = new Chart(ctx, {
-            type: chartStyle.chartType ? chartStyle.chartType.toLowerCase() : 'pie',
-            data: {
-              labels: labels,
-              datasets: [{
-                data: data,
-                backgroundColor: colors,
-                borderWidth: 1,
-                barPercentage: 1.0,
-                categoryPercentage: 1.0
-              }]
-            },
-            options: options
-          });
-          charts[code] = chart
-
-          // Popup for marker
-          addPopupEl(map, el, feature.geometry.coordinates, properties, properties => {
-              const markerProperties = JSON.parse(JSON.stringify(properties))
-              const maxValue = properties.maxValue
-              const cleanProperties = {}
-              markerProperties.data.map(data => {
-                cleanProperties[data.name] = `
-              <div class="PopupMultiDataTable">
-                <div class="PopupMultiDataTableGraph" style="background-color: ${data.color}; width: ${(data.value / maxValue) * 100}%"></div>
-                <div class="PopupMultiDataTableValue">${data.value}</div>
-              </div>`
-              })
-              const name = markerProperties['name']
-              cleanProperties['code'] = markerProperties['code']
-              cleanProperties['label'] = markerProperties['label']
-              cleanProperties['type'] = markerProperties['type']
-              return popupTemplate(null, cleanProperties, {
-                name: name,
-                color: '#eee'
-              })
-            },
-            {
-              'bottom': [0, -1 * size],
-            }
-          )
-        } catch (err) {
-
-        }
-      }, 200)
-    })
-  }
-
-  /**
-   * Render PIN
-   * **/
-  const renderPin = (features, config, indicatorLayer) => {
-    if (JSON.stringify(config) !== JSON.stringify(centroidConfig)) {
-      return;
-    }
-    features.map(feature => {
-      const properties = feature.properties
-      const chartStyle = properties.chart_style;
-      const code = properties.code
-      const size = chartStyle.size ? chartStyle.size : 20;
-
-      if (charts[code]) {
-        charts[code].clear();
-        $(`${code}-chart`).remove()
-      }
-      const children = []
-      indicatorLayer.indicators.map(indicator => {
-        const data = feature.properties.data?.find(row => row.indicator === indicator.indicator)
-        if (data) {
-          children.push(`<div class="pin" title="${data.indicator} - ${data.value}" style="background-color: ${data.style?.color}; height: ${size}px; width: ${size}px;"></div>`)
-        } else {
-          children.push(`<div class="pin empty"></div>`)
-        }
-      })
-
-      const popup = new maplibregl.Popup({
-        closeOnClick: false,
-        closeButton: false,
-        anchor: 'center'
-      })
-        .setLngLat(feature.geometry.coordinates)
-        .setHTML(`<div id="${code}-pin" class="pins">${children.join('')}</div>`)
-        .addTo(map)
-      centroidMarker.push(popup)
-    })
-  }
-
   /** Chart data generator **/
   const chartData = (indicators) => {
     const labels = []
@@ -324,14 +189,9 @@ export default function ReferenceLayerCentroid({ map }) {
   }
 
   /** Resetting **/
-  const reset = () => {
-    renderLabel(map, [], {})
-    for (const [code, chart] of Object.entries(charts)) {
-      chart.clear();
-      $(`${code}-chart`).remove()
-    }
-    centroidMarker.map(marker => marker.remove())
-    centroidMarker = []
+  const reset = (map) => {
+    resetLabel(map)
+    resetCharts()
   }
 
   // When show label toggled
@@ -347,53 +207,27 @@ export default function ReferenceLayerCentroid({ map }) {
 
   // When everything changed
   useEffect(() => {
-    // Check if all data is ready
+    if (!map) {
+      return;
+    }
+    let rendering = true
+    // Check if multiple indicator or not
     let indicatorLayer = selectedIndicatorLayer
     if (selectedIndicatorSecondLayer?.indicators?.length >= 2) {
       indicatorLayer = selectedIndicatorSecondLayer
     }
     if (!indicatorLayer.indicators) {
-      reset()
-      return;
-    }
-
-    const isRenderingChart = indicatorLayer?.indicators?.length >= 2
-
-    let rendering = true
-    const usedIndicatorsData = {}
-    const usedIndicatorsProperties = {}
-    indicatorLayer.indicators.map(indicator => {
-      usedIndicatorsData[indicator.id] = indicatorsData[indicator.id]
-      const data = {}
-      for (const [key, value] of Object.entries(indicator)) {
-        if (!key.includes('style')) {
-          data[key] = value
-        }
-      }
-      usedIndicatorsProperties[indicator.id] = data
-    })
-    const layerId = indicatorLayerId(indicatorLayer)
-    if (indicatorsData[layerId]) {
-      usedIndicatorsData[layerId] = indicatorsData[layerId]
-      const data = {}
-      for (const [key, value] of Object.entries(indicatorLayer)) {
-        if (!key.includes('style')) {
-          data[key] = value
-        }
-      }
-      usedIndicatorsProperties[layerId] = data
-    }
-    if (!allDataIsReady(usedIndicatorsData)) {
       rendering = false
     }
-    // Check if geometries is exist
+
+    // Check if geometries data is exist
     let geometriesData = geometries[selectedAdminLevel.level]
     if (!geometriesData) {
       rendering = false
     }
     if (!rendering) {
-      reset()
-      centroidConfig = {}
+      lastConfig = {}
+      reset(map)
       return;
     }
     const geometriesLevel = Object.keys(geometriesData);
@@ -402,37 +236,68 @@ export default function ReferenceLayerCentroid({ map }) {
       usedFilteredGeometries = geometriesLevel
     }
 
-    // Check by config
-    const config = {
-      indicators: indicatorLayer.indicators.map(indicator => indicator.id),
-      indicatorLayer: indicatorLayer.id,
-      indicatorLayerConfig: isIndicatorLayerLikeIndicator(indicatorLayer) ? indicatorLayer.config : {},
-      filteredGeometries: usedFilteredGeometries,
-      indicatorShow: indicatorShow,
-      usedIndicatorsData: usedIndicatorsData
-    }
-    // If config is same, don't render to prevent flicker
-    if (JSON.stringify(config) === JSON.stringify(centroidConfig)) {
-      return;
-    }
-    reset()
-    centroidConfig = config
-
-    // If not show
-    if (!indicatorShow) {
-      return;
-    }
-
     // ---------------------------------------------------------
     // CREATE CHARTS IF MULTIPLE INDICATORS
     // ---------------------------------------------------------
+    const isRenderingChart = indicatorLayer?.indicators?.length >= 2
     if (isRenderingChart) {
+      // Remove label when in chart
+      resetLabel(map)
+
+      // Get all data
+      const usedIndicatorsData = {}
+      const usedIndicatorsProperties = {}
+      indicatorLayer.indicators.map(indicator => {
+        usedIndicatorsData[indicator.id] = indicatorsData[indicator.id]
+        const data = {}
+        for (const [key, value] of Object.entries(indicator)) {
+          if (!key.includes('style')) {
+            data[key] = value
+          }
+        }
+        usedIndicatorsProperties[indicator.id] = data
+      })
+      const layerId = indicatorLayerId(indicatorLayer)
+      if (indicatorsData[layerId]) {
+        usedIndicatorsData[layerId] = indicatorsData[layerId]
+        const data = {}
+        for (const [key, value] of Object.entries(indicatorLayer)) {
+          if (!key.includes('style')) {
+            data[key] = value
+          }
+        }
+        usedIndicatorsProperties[layerId] = data
+      }
+      if (!allDataIsReady(usedIndicatorsData)) {
+        rendering = false
+      }
+      if (!rendering) {
+        reset(map)
+        lastConfig = {}
+        return;
+      }
+
+      // Check by config
+      const chartStyle = indicatorLayer.chart_style
+      const config = {
+        indicators: indicatorLayer.indicators.map(indicator => indicator.id),
+        indicatorLayer: indicatorLayer.id,
+        indicatorLayerConfig: isIndicatorLayerLikeIndicator(indicatorLayer) ? indicatorLayer.config : {},
+        filteredGeometries: usedFilteredGeometries,
+        indicatorShow: indicatorShow,
+        usedIndicatorsData: usedIndicatorsData,
+        chartStyle: chartStyle
+      }
+      // If config is same, don't render to prevent flicker
+      if (JSON.stringify(config) === JSON.stringify(lastConfig)) {
+        return;
+      }
+
       // Create data per geom
       // Creating features for center data
       let maxValue = 0
       const features = []
 
-      const chartStyle = indicatorLayer.chart_style
       let theGeometries = Object.keys(geometriesData)
       if (where && usedFilteredGeometries) {
         theGeometries = usedFilteredGeometries
@@ -502,10 +367,14 @@ export default function ReferenceLayerCentroid({ map }) {
           })
         }
       })
-      if (indicatorLayer.multi_indicator_mode === "Pin") {
-        renderPin(features, config, indicatorLayer)
-      } else {
 
+      // ------------------------------
+      // Check the style
+      // ------------------------------
+      reset(map)
+      if (indicatorLayer.multi_indicator_mode === "Pin") {
+        renderPin(map, features, indicatorLayer, lastConfig, config)
+      } else {
         // Change size of pie chart
         switch (chartStyle.sizeType) {
           case "Fixed size":
@@ -522,17 +391,27 @@ export default function ReferenceLayerCentroid({ map }) {
               properties.chart_style.size = (percentageSize * diffSize) + minSize
             })
         }
-        renderChart(features, config)
+        renderChart(map, features, lastConfig, config)
       }
+      lastConfig = config
     } else {
+      lastConfig = {}
       // ---------------------------------------------------------
       // CREATE LABEL IF SINGLE INDICATOR
       // ---------------------------------------------------------
-      let indicatorLayerId = null
-      if (indicatorLayer?.indicators) {
-        indicatorLayerId = indicatorLayer?.indicators[0]?.id
+      // Remove charts when label
+      resetCharts()
+
+      // Hide label if indicator not show
+      if (!indicatorShow) {
+        reset(map)
+        return;
       }
-      const indicatorDetail = indicators.find(indicator => indicator.id === indicatorLayerId)
+
+      // Check the data
+      const indicatorDetail = indicators.find(
+        indicator => indicator.id === indicatorLayer?.indicators[0]?.id
+      )
       let config;
       if (indicatorDetail) {
         config = indicatorDetail?.label_config
@@ -541,21 +420,21 @@ export default function ReferenceLayerCentroid({ map }) {
       }
       // When there is no config, no label rendered
       if (!(config?.style && config?.text)) {
-        reset()
+        reset(map)
         return;
       }
       // ---------------------------------------------------------
       // LABEL
       // ---------------------------------------------------------
       if (!geometriesData) {
-        renderLabel([], config)
+        renderLabel(map, [], config)
         return;
       }
 
       ExecuteWebWorker(
         worker, {
           geometriesData,
-          usedIndicatorsData,
+          mapGeometryValue,
           usedFilteredGeometries
         }, (features) => {
           renderLabel(map, features, config)
@@ -567,7 +446,7 @@ export default function ReferenceLayerCentroid({ map }) {
     geometries, filteredGeometries, indicatorsData,
     indicatorShow, indicatorLayers,
     selectedIndicatorLayer, selectedIndicatorSecondLayer,
-    selectedAdminLevel
+    selectedAdminLevel, mapGeometryValue
   ]);
 
   return null

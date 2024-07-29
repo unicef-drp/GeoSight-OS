@@ -17,11 +17,19 @@
    Geometry Center
    ========================================================================== */
 
-import React from 'react';
-import { hasLayer, hasSource } from "../../utils";
+import { hasLayer, hasSource, removeLayer } from "../../utils";
 import { BEFORE_LAYER, CONTEXT_LAYER_ID } from "../../Layers/ReferenceLayer";
 
 const INDICATOR_LABEL_ID = 'indicator-label'
+let lastFeatures = null;
+
+/** Remove label **/
+export const resetLabel = (map) => {
+  lastFeatures = null;
+  if (hasLayer(map, INDICATOR_LABEL_ID)) {
+    removeLayer(map, INDICATOR_LABEL_ID);
+  }
+}
 
 /** Show Label **/
 export const showLabel = (map) => {
@@ -39,6 +47,10 @@ export const hideLabel = (map) => {
 
 /** Render label **/
 export const renderLabel = (map, features, config) => {
+  if (JSON.stringify(features) === JSON.stringify(lastFeatures)) {
+    return
+  }
+  lastFeatures = features
   const layout = {
     'text-anchor': 'bottom',
     'text-size': 14,

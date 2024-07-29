@@ -16,6 +16,7 @@
 import { combineReducers } from 'redux';
 
 import mapReducer from './map'
+import mapGeometryValue from './mapGeometryValue'
 import mapModeReducer from './mapMode'
 import dashboardRequestReducer from './dashboard'
 import indicatorsDataReducer from "./indicatorsData";
@@ -44,6 +45,7 @@ export default combineReducers({
   dashboard: dashboardRequestReducer,
 
   map: mapReducer,
+  mapGeometryValue: mapGeometryValue,
   mapMode: mapModeReducer,
   indicatorsData: indicatorsDataReducer,
   indicatorsMetadata: indicatorsMetadataReducer,
