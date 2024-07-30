@@ -55,8 +55,12 @@ const MapboxStyleInformationModal = forwardRef(
             There are some information to control the Legend.
           </div>
           <ul>
-            <li>Add <b>"hide-layer" : true</b> to a layer you wish to hide from legend.</li>
-            <li>Add <b>"name" : [any name]</b> to a layer that you want override the legend text.</li>
+            <li>
+              Add <b>"hide-layer" : true</b> to a layer you wish to hide from legend.
+            </li>
+            <li>
+              Add <b>"name" : [any name]</b> to a layer that you want override the legend text.
+            </li>
           </ul>
         </span>
       </ModalContent>
@@ -77,8 +81,6 @@ export default function MapboxStyleInformation({ inIcon = true }) {
       More information
     </span>
     }
-    <MapboxStyleInformationModal
-      ref={ref}
-    />
+    <MapboxStyleInformationModal ref={ref}/>
   </>
 }
