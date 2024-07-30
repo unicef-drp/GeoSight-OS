@@ -22,6 +22,8 @@ import {
 } from "./layerStyles";
 import { toJson } from "../../../../utils/main";
 import AggregationStyleGuide from "./AggregationStyleGuide";
+import MapboxStyleInformation
+  from "../../../../components/Buttons/MapboxStyleInformation";
 
 
 export default function AggregationStyleConfig({ data, setData, setError }) {
@@ -55,9 +57,7 @@ export default function AggregationStyleConfig({ data, setData, setError }) {
     <span>
       Put layer list configurations with the mapbox format.<br/>
       Put source with "source" or any, it will automatically change to correct source.<br/>
-      <a
-        href="https://docs.mapbox.com/style-spec/reference/layers/"
-        target="_blank">See documentation.</a>
+     <MapboxStyleInformation inIcon={false}/>
     </span>
     <br/>
     <br/>
