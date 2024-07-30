@@ -26,6 +26,7 @@ admin.site.unregister(Layer)
 
 class HasContextLayerFilter(SimpleListFilter):
     """Filter if layer has context layer or Not."""
+
     title = 'Has Context Layer'
     parameter_name = 'has_context_layer'
 
