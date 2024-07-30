@@ -20,6 +20,7 @@ from django.utils import timezone
 from geosight.data.models.related_table import (
     RelatedTable, RelatedTableRow, RelatedTableField
 )
+from geosight.importer.models.attribute import ImporterAttribute
 
 
 @admin.action(description='Invalidate cache')
@@ -47,7 +48,18 @@ class RelatedTableRowAdmin(admin.ModelAdmin):
 class RelatedTableAdmin(admin.ModelAdmin):
     """RelatedTable admin."""
 
-    list_display = ('name', 'description')
+    list_display = ('name', 'description', 'importer')
     inlines = (RelatedTableFieldInline,)
     actions = (invalidate_cache,)
     readonly_fields = ('last_importer',)
+
+    def importer(self, obj: RelatedTable):
+        """Return importer from this RT."""
+        attribute = ImporterAttribute.objects.filter(
+            name='related_table_id'
+        ).filter(
+            value=obj.id
+        ).first()
+        if attribute:
+            return attribute.importer
+        return None

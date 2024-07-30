@@ -87,6 +87,7 @@ class ImporterAdmin(admin.ModelAdmin):
     )
     list_filter = ('import_type', 'input_format',)
     readonly_fields = ('unique_id',)
+    search_fields = ('unique_id',)
 
 
 @admin.register(ImporterLog)
