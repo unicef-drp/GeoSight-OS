@@ -32,6 +32,7 @@ import IndicatorsData from './reducers/indicatorsData/actions'
 import IndicatorsMetadata from './reducers/indicatorsMetadata/actions'
 import IndicatorLayerMetadata from './reducers/indicatorLayerMetadata/actions'
 import Map from './reducers/map/actions'
+import MapGeometryValue from './reducers/mapGeometryValue/actions'
 import MapMode from './reducers/mapMode/actions'
 import ReferenceLayer from './reducers/referenceLayer/actions'
 import ReferenceLayerData from './reducers/referenceLayerData/actions'
@@ -68,6 +69,7 @@ const Actions = {
   IndicatorLayerMetadata,
   Map,
   MapMode,
+  MapGeometryValue,
   RelatedTable,
   RelatedTableData,
   ReferenceLayer,

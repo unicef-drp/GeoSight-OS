@@ -18,7 +18,9 @@ import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 import MapConfig from './Map'
 import ArcgisConfig from './Arcgis'
 import { useDispatch } from "react-redux";
-import { getLayer } from '../../../Dashboard/LeftPanel/ContextLayers/Layer'
+import {
+  getLayer
+} from '../../../Dashboard/MapLibre/Layers/ContextLayers/Layer'
 import { defaultPointStyle } from './layerStyles';
 import RelatedTableConfig from './RelatedTable';
 import AggregationStyleConfig from "./AggregationStyleConfig";
