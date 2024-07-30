@@ -233,16 +233,18 @@ export const getRelatedTableData = (data, config, selectedGlobalTime, geoField =
  * Return geojson from related table data, based on lat and lon field, and a optional query
  */
 export const buildGeojsonFromRelatedData = (data, lon_field, lat_field, query = undefined) => {
-  const where = query.replaceAll('"', '`').replace(/`(.*?)`/g, function (match, text, href) {
-    if (match.includes("'")) {
-      return match.replaceAll('`', '"')
-    }
-    return match
-  }).replaceAll('value', '_value');
-
   const cleanData = deepClone(data)
   cleanData.map(row => row._value = row.value)
-  const finalData = queryData(cleanData, where);
+  let finalData = data
+  if (query) {
+    const where = query.replaceAll('"', '`').replace(/`(.*?)`/g, function (match, text, href) {
+      if (match.includes("'")) {
+        return match.replaceAll('`', '"')
+      }
+      return match
+    }).replaceAll('value', '_value');
+    finalData = queryData(cleanData, where);
+  }
 
   const features = finalData.map(result => ({
     type: 'Feature',

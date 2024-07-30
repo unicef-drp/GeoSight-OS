@@ -250,19 +250,17 @@
 
   .legend {
     left: 0;
-    max-height: 100%;
-    overflow-y: auto;
+    height: fit-content;
+    max-height: 60%;
     padding: 0.5rem;
     position: absolute;
     top: 0;
     width: 200px;
     z-index: 1;
-
-    .wrapper {
-      background-color: white;
-      border-radius: 0.5rem;
-      padding: 0.5rem;
-    }
+    background-color: white;
+    border-radius: 0.5rem;
+    margin: 0.5rem;
+    overflow-y: auto;
 
     .title {
       text-align: center;
