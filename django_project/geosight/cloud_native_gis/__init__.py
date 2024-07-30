@@ -1,4 +1,6 @@
 # coding=utf-8
+from __future__ import absolute_import, unicode_literals
+
 """
 GeoSight is UNICEF's geospatial web-based business intelligence platform.
 
@@ -14,8 +16,15 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '06/06/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from django.conf.urls import url, include
+from django.apps import AppConfig
 
-urlpatterns = [
-    url(r'^', include('geosight.data.urls_v1')),
-]
+
+class Config(AppConfig):
+    """GeoSight Config App."""
+
+    label = 'geosight_cloud_native_gis'
+    name = 'geosight.cloud_native_gis'
+    verbose_name = "GeoSight Cloud Native GIS"
+
+
+default_app_config = 'geosight.cloud_native_gis.Config'

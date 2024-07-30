@@ -13,9 +13,3 @@ Contact : geosight-no-reply@unicef.org
 __author__ = 'irwan@kartoza.com'
 __date__ = '06/06/2024'
 __copyright__ = ('Copyright 2023, Unicef')
-
-from django.conf.urls import url, include
-
-urlpatterns = [
-    url(r'^', include('geosight.data.urls_v1')),
-]

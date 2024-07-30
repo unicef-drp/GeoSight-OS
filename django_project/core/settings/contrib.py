@@ -27,6 +27,7 @@ INSTALLED_APPS = INSTALLED_APPS + (
     'knox',
     'drf_yasg',
     'tinymce',
+    'cloud_native_gis',
 )
 WEBPACK_LOADER = {
     'DEFAULT': {

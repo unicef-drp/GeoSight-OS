@@ -14,8 +14,16 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '06/06/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from django.conf.urls import url, include
+from django.conf.urls import url
+
+from geosight.cloud_native_gis.api.cloud_native_gis import (
+    CloudNativeGISLayerUploadCreate
+)
 
 urlpatterns = [
-    url(r'^', include('geosight.data.urls_v1')),
+    url(
+        r'^upload-create$',
+        CloudNativeGISLayerUploadCreate.as_view(),
+        name='cloud-native-gis-upload-create'
+    ),
 ]
