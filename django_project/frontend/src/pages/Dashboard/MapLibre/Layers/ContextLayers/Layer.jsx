@@ -17,7 +17,7 @@
    Return layer
    ========================================================================== */
 
-import { Variables } from "../../../../utils/Variables";
+import { Variables } from "../../../../../utils/Variables";
 import { Actions } from "../../../../../store/dashboard";
 import { popupTemplate } from "../../Popup";
 import EsriData from "../../../../../utils/esri/esri-data";
@@ -44,7 +44,6 @@ export function VectorTileLayer(
         layers = []
       }
       const legend = vectorTileLegend(layers)
-      console.log(legend)
       legendFn(
         `<div class="mapboxgl-ctrl-legend">${legend}</div>`
       )
