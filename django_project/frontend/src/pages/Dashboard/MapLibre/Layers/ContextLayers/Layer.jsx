@@ -17,94 +17,36 @@
    Return layer
    ========================================================================== */
 
-import EsriData from "../../../../utils/esri/esri-data";
-import { dictDeepCopy, toJson } from "../../../../utils/main";
-import { popupTemplate } from "../../MapLibre/Popup";
-import { createElement } from "../../MapLibre/utils";
-import { Actions } from "../../../../store/dashboard";
-import { fetchingData } from "../../../../Requests";
-import LegendControl from "mapboxgl-legend";
+import { Actions } from "../../../../../store/dashboard";
+import { popupTemplate } from "../../Popup";
+import EsriData from "../../../../../utils/esri/esri-data";
+import { dictDeepCopy, toJson } from "../../../../../utils/main";
+import { fetchingData } from "../../../../../Requests";
+import { vectorTileLegend } from "../../../../../utils/Legend/VectorTile";
 
 import 'mapboxgl-legend/dist/style.css';
 import './style.scss'
 
-/** Vector tile layer **/
+
+/** ------- Vector tile layer ------- **/
 export function VectorTileLayer(
   layerData, layerFn, legendFn, errorFn, onEachFeature
 ) {
   // If there is url legend, use the image
-  if (layerData.url_legend && layerData.url_legend.includes('http')) {
-    legendFn(`<img src="${layerData.url_legend}"/>`)
+  const urlLegend = layerData.url_legend
+  if (urlLegend?.includes('http')) {
+    legendFn(`<img src="${urlLegend}"/>`)
   } else {
     try {
       let layers = toJson(layerData.styles)
       if (!Array.isArray(layers)) {
         layers = []
       }
-      const legend = new LegendControl();
-      const legendHtml = []
-      const blocksExist = []
-      layers.filter(layer => layer.source && layer.source !== 'composite').forEach(layer => {
-        const { id, layout, paint, metadata } = layer;
-
-        // Construct all required blocks, break if none
-        let paneBlocks = Object.entries({ ...layout, ...paint })
-          .reduce((acc, [attribute, value]) => {
-            const blocks = legend._getBlocks("Key", layer, attribute, value);
-            blocks?.forEach(block => acc.push(block));
-            return acc;
-          }, []);
-        if (paneBlocks.length <= 1) return;
-
-        // Filter if the legend is already there
-        paneBlocks = paneBlocks.filter(block => {
-          const added = !blocksExist.includes(block.outerHTML)
-          blocksExist.push(block.outerHTML)
-          return added
-        })
-
-        const pane = createElement('details', {
-          classes: ['mapboxgl-ctrl-legend-pane'],
-          attributes: { open: true },
-          content: [
-            createElement('summary', {
-              content: [
-                metadata?.name || id,
-              ],
-            }),
-            ...paneBlocks,
-          ],
-        });
-
-        // Update value for case
-        let outerHtml = pane.outerHTML
-        for (const [key, value] of Object.entries(layer.paint)) {
-          if (value[0] === 'case') {
-            const paints = dictDeepCopy(value)
-            paints.shift();
-            let last = paints.pop();
-            paints.map((paint, idx) => {
-              if (idx % 2 !== 0) {
-                const _case = paints[idx - 1]
-                if (_case[2] !== undefined) {
-                  let operator = ''
-                  if (_case[0] !== '==') {
-                    operator = _case[0]
-                  }
-                  let label = `${_case[2]}`
-                  if (operator) {
-                    label = `${operator} ${label}`
-                  }
-                  outerHtml = outerHtml.replace(`>${paint}`, `>${label}`)
-                }
-              }
-            })
-            outerHtml = outerHtml.replace(`>${last}`, `>other`)
-          }
-        }
-        legendHtml.push(outerHtml)
-      });
-      legendFn('<div class="mapboxgl-ctrl-legend">' + legendHtml.join('<br/>') + '</div>')
+      const legend = vectorTileLegend(layers)
+      console.log(legend)
+      legendFn(
+        `<div class="mapboxgl-ctrl-legend">${legend}</div>`
+      )
     } catch (e) {
       console.log(e)
     }
@@ -114,7 +56,8 @@ export function VectorTileLayer(
   layerFn(layerData)
 }
 
-/** Raster tile layer **/
+
+/** ------- Raster tile layer ------- **/
 export function RasterTileLayer(
   layerData, layerFn, legendFn, errorFn, onEachFeature
 ) {
@@ -126,7 +69,8 @@ export function RasterTileLayer(
   layerFn(layerData)
 }
 
-/** Arcgis layer **/
+
+/** --------- Arcgis layer --------- **/
 export async function ArcgisLayer(
   layerData, layerFn, legendFn, errorFn, onEachFeature, objectFn
 ) {
@@ -160,7 +104,7 @@ export async function ArcgisLayer(
   return esriData
 }
 
-/** Geojson layer **/
+/** --------- Geojson layer --------- **/
 export function GeojsonLayer(
   layerData, layerFn, legendFn, errorFn, onEachFeature
 ) {
