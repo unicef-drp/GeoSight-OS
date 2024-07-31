@@ -24,7 +24,8 @@ import { extractCode } from "../../../../utils/georepo";
 import { allDataIsReady } from "../../../../utils/indicators";
 import {
   indicatorLayerId,
-  isIndicatorLayerLikeIndicator
+  isIndicatorLayerLikeIndicator,
+  SingleIndicatorTypes
 } from "../../../../utils/indicatorLayer";
 import { dictDeepCopy } from "../../../../utils/main";
 import {
@@ -171,6 +172,22 @@ export default function ReferenceLayerCentroid({ map }) {
     if (!usedFilteredGeometries && geometriesData) {
       usedFilteredGeometries = geometriesLevel
     }
+
+    // ---------------------------------------------------------
+    // CREATE LABEL IF SINGLE INDICATOR
+    // ---------------------------------------------------------
+    let labelConfig = indicatorLayer.label_config
+    let styleConfig = indicatorLayer
+    if (SingleIndicatorTypes.includes(indicatorLayer.type)) {
+      const indicatorDetail = indicators.find(indicator => indicator.id === indicatorLayer?.indicators[0]?.id)
+      if (!indicatorLayer.override_style && indicatorDetail) {
+        styleConfig = indicatorDetail
+      }
+      if (!labelConfig || !indicatorLayer.override_label && indicatorDetail) {
+        labelConfig = indicatorDetail.label_config
+      }
+    }
+    // ---------------------------------------------------------
 
     // ---------------------------------------------------------
     // CREATE CHARTS IF MULTIPLE INDICATORS
@@ -344,19 +361,9 @@ export default function ReferenceLayerCentroid({ map }) {
         reset(map)
         return;
       }
-
-      // Check the data
-      const indicatorDetail = indicators.find(
-        indicator => indicator.id === indicatorLayer?.indicators[0]?.id
-      )
-      let config;
-      if (indicatorDetail?.label_config?.text) {
-        config = indicatorDetail?.label_config
-      } else {
-        config = indicatorLayer?.label_config
-      }
+      console.log(labelConfig)
       // When there is no config, no label rendered
-      if (!(config?.style && config?.text)) {
+      if (!labelConfig) {
         reset(map)
         return;
       }
@@ -364,18 +371,16 @@ export default function ReferenceLayerCentroid({ map }) {
       // LABEL
       // ---------------------------------------------------------
       if (!geometriesData) {
-        renderLabel(map, [], config)
+        renderLabel(map, [], labelConfig)
         return;
       }
-      console.log('-------')
-      console.log(mapGeometryValue)
       ExecuteWebWorker(
         worker, {
           geometriesData,
           mapGeometryValue,
           usedFilteredGeometries
         }, (features) => {
-          renderLabel(map, features, config)
+          renderLabel(map, features, labelConfig)
         }
       )
     }

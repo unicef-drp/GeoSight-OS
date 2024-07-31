@@ -26,7 +26,8 @@ def run(apps, schema_editor):
             TYPE_DYNAMIC_INDICATOR,
             TYPE_RELATED_TABLE
         ]:
-            layer_indicator = layer.dashboardindicatorlayerindicator_set.first()
+            layer_indicator = layer.dashboardindicatorlayerindicator_set.first(
+            )
             if layer_indicator:
                 try:
                     indicator = DashboardIndicator.objects.get(
