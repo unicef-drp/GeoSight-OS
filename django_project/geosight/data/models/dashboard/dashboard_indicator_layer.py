@@ -146,7 +146,7 @@ class DashboardIndicatorLayer(DashboardRelation, IndicatorStyleBaseModel):
                     get(name='date_format').value
             except DashboardIndicatorLayerConfig.DoesNotExist:
                 date_format = None
-            data = dil_related_table.related_table.data_with_query(
+            data, has_next = dil_related_table.related_table.data_with_query(
                 reference_layer_uuid=self.dashboard.reference_layer.identifier,
                 geo_field=dashboard_related_table.geography_code_field_name,
                 geo_type=dashboard_related_table.geography_code_type,
