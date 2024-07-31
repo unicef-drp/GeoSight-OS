@@ -29,6 +29,8 @@ import {
 } from "../../../../../components/SortableTreeForm/utilities";
 import vectorTileLayer from "../../LayerType/VectorTile";
 import relatedTableLayer from "../../LayerType/RelatedTable";
+import { Variables } from "../../../../../utils/Variables";
+import cloudNativeGISLayer from "../../LayerType/CloudNativeGIS";
 
 const ID = `context-layer`
 const markersContextLayers = {}
@@ -258,6 +260,20 @@ export function contextLayerRendering(id, contextLayerData, contextLayer, map, c
         case 'Related Table': {
           removeLayers(map, id)
           relatedTableLayer(
+            map, id, layer, contextLayerData, featureProperties => {
+              return popupFeature(
+                featureProperties,
+                contextLayerData.name,
+                null,
+                contextLayerData.data_fields
+              )
+            }, contextLayerOrder
+          )
+          break
+        }
+        case Variables.TERMS.CLOUD_NATIVE_GIS: {
+          removeLayers(map, id)
+          cloudNativeGISLayer(
             map, id, layer, contextLayerData, featureProperties => {
               return popupFeature(
                 featureProperties,

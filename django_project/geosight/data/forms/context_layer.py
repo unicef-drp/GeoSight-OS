@@ -16,10 +16,13 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import json
 
+from cloud_native_gis.models import Layer as CloudNativeGISLayer
 from django import forms
 from django.forms.models import model_to_dict
 
-from geosight.data.models.context_layer import ContextLayer, ContextLayerGroup
+from geosight.data.models.context_layer import (
+    ContextLayer, ContextLayerGroup, LayerType
+)
 from geosight.data.models.related_table import RelatedTable
 
 
@@ -50,6 +53,12 @@ class ContextLayerForm(forms.ModelForm):
 
     related_table = forms.CharField(
         label='Related Table',
+        required=False,
+        widget=forms.HiddenInput()
+    )
+
+    cloud_native_gis_layer = forms.CharField(
+        label='Cloud Native GIS Layer',
         required=False,
         widget=forms.HiddenInput()
     )
@@ -90,10 +99,19 @@ class ContextLayerForm(forms.ModelForm):
             )
         return None
 
+    def clean_cloud_native_gis_layer(self):
+        """Return layer of cloud_native_gis_layer."""
+        if self.instance and self.cleaned_data['cloud_native_gis_layer']:
+            return CloudNativeGISLayer.objects.get(
+                pk=self.cleaned_data['cloud_native_gis_layer']
+            )
+        return None
+
     def clean_styles(self):
         """Return styles."""
-        if self.instance and not self.cleaned_data['styles']:
-            return self.instance.styles
+        if self.data['layer_type'] != LayerType.CLOUD_NATIVE_GIS_LAYER:
+            if self.instance and not self.cleaned_data['styles']:
+                return self.instance.styles
         try:
             if self.data['override_style']:
                 return self.cleaned_data['styles']

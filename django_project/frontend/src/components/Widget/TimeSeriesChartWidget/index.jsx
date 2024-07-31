@@ -65,6 +65,7 @@ export function Selection(
 export default function Index({ idx, data }) {
   const {
     slug,
+    referenceLayer,
     default_time_mode
   } = useSelector(state => state.dashboard.data);
   const {
@@ -72,7 +73,7 @@ export default function Index({ idx, data }) {
   } = default_time_mode
   const [colorPalettes, setColorPalettes] = useState(null);
   const selectedGlobalTimeConfig = useSelector(state => state.selectedGlobalTimeConfig);
-  const geometries = useSelector(state => state.geometries);
+  const geometries = useSelector(state => state.datasetGeometries[referenceLayer.identifier]);
   const filteredGeometries = useSelector(state => state.filteredGeometries);
   const selectedIndicatorLayer = useSelector(state => state.selectedIndicatorLayer)
   const selectedIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer)
@@ -218,7 +219,7 @@ export default function Index({ idx, data }) {
 
   // Geometries of data
   useEffect(() => {
-    if (colorPalettes === null) {
+    if (colorPalettes === null || !geometries) {
       return
     }
     const color = colorPalettes.find(color => color.id === geographicalUnitPaletteColor)

@@ -17,29 +17,12 @@ import { fetchingData } from "../../../../Requests";
 import { buildGeojsonFromRelatedData } from "../../../../utils/relatedTable";
 import {
   addPopup,
-  hasLayer,
+  getBeforeLayerId,
   hasSource,
   removeLayer,
   removeSource
 } from "../utils";
 import { toJson } from "../../../../utils/main";
-
-
-const getBeforeLayerId = (map, layerId, contextLayerOrder) => {
-  if (contextLayerOrder) {
-    const contextLayerIdx = contextLayerOrder.indexOf(layerId)
-    for (let idx = 0; idx < contextLayerOrder.length; idx++) {
-      if (map && idx > contextLayerIdx) {
-        const currentId = 'context-layer-' + contextLayerOrder[idx] + '-line'
-        if (hasLayer(map, currentId)) {
-          return currentId;
-        }
-      }
-    }
-  } else {
-    return undefined;
-  }
-};
 
 
 /***

@@ -16,6 +16,21 @@
 import axios from "axios";
 import { Session } from "./utils/Sessions";
 
+
+export const constructUrl = function (url, params) {
+  if (params && Object.keys(params).length) {
+    const paramsUrl = [];
+    for (const [key, value] of Object.entries(params)) {
+      paramsUrl.push(`${key}=${value}`)
+    }
+    if (url.includes('?')) {
+      url += '&' + paramsUrl.join('&')
+    } else {
+      url += '?' + paramsUrl.join('&')
+    }
+  }
+  return url
+}
 /**
  * Perform Fetching Data
  *
@@ -29,13 +44,7 @@ export const fetchingData = async function (
   url, params, options,
   receiveAction, useCache = true
 ) {
-  if (params && Object.keys(params).length) {
-    const paramsUrl = [];
-    for (const [key, value] of Object.entries(params)) {
-      paramsUrl.push(`${key}=${value}`)
-    }
-    url += '?' + paramsUrl.join('&')
-  }
+  url = constructUrl(url, params)
   try {
     let response = await fetchJSON(url, options, useCache);
     try {
@@ -124,16 +133,7 @@ export const fetchPaginationAsync = async function (url, onProgress) {
 
 /*** Axios georepo request with cache */
 export const fetchPagination = function (url, params, onProgress) {
-  if (params && Object.keys(params).length) {
-    const paramsUrl = [];
-    for (const [key, value] of Object.entries(params)) {
-      paramsUrl.push(`${key}=${value}`)
-    }
-    if (!url.includes('?')) {
-      url += '?'
-    }
-    url += paramsUrl.join('&')
-  }
+  url = constructUrl(url, params)
   return new Promise((resolve, reject) => {
     (
       async () => {
@@ -149,13 +149,7 @@ export const fetchPagination = function (url, params, onProgress) {
 
 /*** Axios georepo request with cache */
 export const fetchPaginationInParallel = async function (url, params, onProgress) {
-  if (params && Object.keys(params).length) {
-    const paramsUrl = [];
-    for (const [key, value] of Object.entries(params)) {
-      paramsUrl.push(`${key}=${value}`)
-    }
-    url += '?' + paramsUrl.join('&')
-  }
+  url = constructUrl(url, params)
   let data = []
   let doneCount = 0
   // First data

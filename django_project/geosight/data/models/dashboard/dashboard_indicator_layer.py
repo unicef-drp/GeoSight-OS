@@ -168,10 +168,25 @@ class DashboardIndicatorLayer(DashboardRelation, IndicatorStyleBaseModel):
         return None
 
     @property
+    def is_single(self):
+        """Return indicator layer is single."""
+        return self.type == TYPE_SINGLE_INDICATOR or 'Float'
+
+    @property
     def is_using_obj_style(self):
         """If using obj style."""
-        return self.type == TYPE_DYNAMIC_INDICATOR or self. \
-            dashboardindicatorlayerrelatedtable_set.first()
+        return (
+                self.is_single and self.override_style
+        ) or self.type == TYPE_DYNAMIC_INDICATOR \
+            or self.dashboardindicatorlayerrelatedtable_set.first()
+
+    @property
+    def is_using_obj_label(self):
+        """If using obj style."""
+        return (
+                self.is_single and self.override_label
+        ) or self.type == TYPE_DYNAMIC_INDICATOR \
+            or self.dashboardindicatorlayerrelatedtable_set.first()
 
     @property
     def rules(self):

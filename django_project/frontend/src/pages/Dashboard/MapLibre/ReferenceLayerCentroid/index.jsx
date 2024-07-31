@@ -18,39 +18,41 @@
    ========================================================================== */
 
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { returnWhere } from "../../../../utils/queryExtraction";
-import { extractCode, fetchJson } from "../../../../utils/georepo";
+import { extractCode } from "../../../../utils/georepo";
 import { allDataIsReady } from "../../../../utils/indicators";
 import {
   indicatorLayerId,
   isIndicatorLayerLikeIndicator
 } from "../../../../utils/indicatorLayer";
 import { dictDeepCopy } from "../../../../utils/main";
-import { UpdateStyleData } from "../../../../utils/indicatorData";
+import {
+  getIndicatorDataByLayer,
+  UpdateStyleData
+} from "../../../../utils/indicatorData";
 import { hideLabel, renderLabel, resetLabel, showLabel } from "./Label"
 import { ExecuteWebWorker } from "../../../../utils/WebWorker";
 import worker from "./Label/worker";
-import { fetchJSON } from "../../../../Requests";
-import { Actions } from "../../../../store/dashboard";
 import { renderChart, renderPin, resetCharts } from "./Chart";
 
 import './style.scss';
 
 let lastConfig = {};
 let lastRequest = null;
+
 /**
  * GeometryCenter.
  */
 export default function ReferenceLayerCentroid({ map }) {
-  const dispatch = useDispatch();
   const {
     indicators,
     indicatorLayers,
     referenceLayer
   } = useSelector(state => state.dashboard.data)
   const { showIndicatorMapLabel } = useSelector(state => state.globalState)
-  const { indicatorShow } = useSelector(state => state.map)
+  const { referenceLayers, indicatorShow } = useSelector(state => state.map)
+  const datasetGeometries = useSelector(state => state.datasetGeometries)
   const filteredGeometries = useSelector(state => state.filteredGeometries)
   const indicatorsData = useSelector(state => state.indicatorsData);
   const selectedIndicatorLayer = useSelector(state => state.selectedIndicatorLayer)
@@ -65,86 +67,20 @@ export default function ReferenceLayerCentroid({ map }) {
 
   // When reference layer changed, fetch features
   useEffect(() => {
-    const identifier = referenceLayer?.identifier
-    if (identifier) {
-      if (lastRequest === identifier) {
-        return
-      }
-      lastRequest = identifier
-      setGeometries({});
-
-      // ----------------------------
-      // TODO:
-      //  Fetch reference layer entities
-      // ----------------------------
-      try {
-        const geometryMemberByUcode = {}
-
-        const url = `${preferences.georepo_api.api}/search/view/${referenceLayer.identifier}/centroid/`
-        fetchJson(url).then(async data => {
-          if (identifier === lastRequest) {
-            for (let i = 0; i < data.length; i++) {
-              const level = data[i]
-              const response = await fetchJSON(level.url)
-              const geometryDataDict = {}
-              const geoms = {}
-
-              response.features.map(feature => {
-                const name = feature.properties.n
-                const ucode = feature.properties.u
-                const concept_uuid = feature.properties.c
-                const parentsUcode = feature.properties.pu
-                const properties = {
-                  concept_uuid: feature.properties.c,
-                  name: name,
-                  ucode: ucode,
-                  geometry: feature.geometry
-                }
-                const code = extractCode(properties)
-                if (!code) {
-                  return
-                }
-                properties.code = code
-                geoms[code] = properties
-
-                // Check parents
-                let parents = []
-                if (parentsUcode) {
-                  parents = parentsUcode.map(parent => geometryMemberByUcode[parent]).filter(parent => !!parent)
-                }
-
-                // Save for geometries
-                const memberData = {
-                  name: name,
-                  ucode: ucode,
-                  code: code,
-                }
-                geometryDataDict[code] = {
-                  label: name,
-                  name: name,
-                  code: code,
-                  ucode: ucode,
-                  concept_uuid: concept_uuid,
-                  parents: parents,
-                  members: parents.concat(memberData),
-                }
-                geometryMemberByUcode[ucode] = memberData
-              })
-              if (identifier === lastRequest) {
-                geometries[level.level] = geoms
-                setGeometries({ ...geometries })
-                dispatch(
-                  Actions.Geometries.addLevelData(level.level, geometryDataDict)
-                )
-              }
-            }
+    const currGeometries = {}
+    referenceLayers.map(referenceLayer => {
+      const geoms = datasetGeometries[referenceLayer.identifier]
+      if (geoms) {
+        for (const [level, data] of Object.entries(geoms)) {
+          if (!currGeometries[level]) {
+            currGeometries[level] = {}
           }
-        })
-      } catch (e) {
+          currGeometries[level] = { ...currGeometries[level], ...data }
+        }
       }
-
-    }
-  }, [referenceLayer]);
+    })
+    setGeometries(currGeometries)
+  }, [referenceLayers, datasetGeometries]);
 
   /** Chart data generator **/
   const chartData = (indicators) => {
@@ -248,7 +184,8 @@ export default function ReferenceLayerCentroid({ map }) {
       const usedIndicatorsData = {}
       const usedIndicatorsProperties = {}
       indicatorLayer.indicators.map(indicator => {
-        usedIndicatorsData[indicator.id] = indicatorsData[indicator.id]
+        const indicatorData = getIndicatorDataByLayer(indicator.id, indicatorsData, indicatorLayer, referenceLayer)
+        usedIndicatorsData[indicator.id] = indicatorData
         const data = {}
         for (const [key, value] of Object.entries(indicator)) {
           if (!key.includes('style')) {
@@ -413,7 +350,7 @@ export default function ReferenceLayerCentroid({ map }) {
         indicator => indicator.id === indicatorLayer?.indicators[0]?.id
       )
       let config;
-      if (indicatorDetail) {
+      if (indicatorDetail?.label_config?.text) {
         config = indicatorDetail?.label_config
       } else {
         config = indicatorLayer?.label_config
@@ -430,7 +367,8 @@ export default function ReferenceLayerCentroid({ map }) {
         renderLabel(map, [], config)
         return;
       }
-
+      console.log('-------')
+      console.log(mapGeometryValue)
       ExecuteWebWorker(
         worker, {
           geometriesData,
@@ -446,7 +384,7 @@ export default function ReferenceLayerCentroid({ map }) {
     geometries, filteredGeometries, indicatorsData,
     indicatorShow, indicatorLayers,
     selectedIndicatorLayer, selectedIndicatorSecondLayer,
-    selectedAdminLevel, mapGeometryValue
+    selectedAdminLevel, mapGeometryValue, referenceLayers
   ]);
 
   return null
