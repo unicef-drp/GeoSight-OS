@@ -111,6 +111,9 @@ function FilterSection() {
     datasets.map(identifier => {
       const geometries = datasetGeometries[identifier]
       const levels = referenceLayerData[identifier]?.data?.dataset_levels
+      if (!levels) {
+        return
+      }
       levels.map(level => {
         if (geometries) {
           const geoms = geometries[level.level]

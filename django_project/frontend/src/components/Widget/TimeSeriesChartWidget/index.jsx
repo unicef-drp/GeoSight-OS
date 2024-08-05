@@ -65,15 +65,16 @@ export function Selection(
 export default function Index({ idx, data }) {
   const {
     slug,
-    referenceLayer,
     default_time_mode
   } = useSelector(state => state.dashboard.data);
+  const { referenceLayers } = useSelector(state => state.map)
+  const referenceLayer = referenceLayers[0]
   const {
     use_only_last_known_value
   } = default_time_mode
   const [colorPalettes, setColorPalettes] = useState(null);
   const selectedGlobalTimeConfig = useSelector(state => state.selectedGlobalTimeConfig);
-  const geometries = useSelector(state => state.datasetGeometries[referenceLayer.identifier]);
+  const geometries = useSelector(state => state.datasetGeometries[referenceLayer?.identifier]);
   const filteredGeometries = useSelector(state => state.filteredGeometries);
   const selectedIndicatorLayer = useSelector(state => state.selectedIndicatorLayer)
   const selectedIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer)
@@ -236,7 +237,8 @@ export default function Index({ idx, data }) {
           newGeographicUnits.push({
             id: geom.concept_uuid,
             name: geom.name,
-            color: '' + getRandomColor()
+            color: '' + getRandomColor(),
+            reference_layer_uuid: referenceLayer.identifier
           })
         } else {
           newGeographicUnits.push(geomInList)

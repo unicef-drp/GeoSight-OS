@@ -361,7 +361,6 @@ export default function ReferenceLayerCentroid({ map }) {
         reset(map)
         return;
       }
-      console.log(labelConfig)
       // When there is no config, no label rendered
       if (!labelConfig) {
         reset(map)
