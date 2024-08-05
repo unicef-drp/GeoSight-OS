@@ -18,6 +18,7 @@ deployment/node-red/*
 !deployment/node-red/package.json
 
 # frontend
+django_project/control
 django_project/frontend/node_modules
 django_project/control
 django_project/frontend/bundles/*
