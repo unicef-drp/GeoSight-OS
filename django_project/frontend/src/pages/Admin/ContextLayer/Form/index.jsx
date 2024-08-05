@@ -27,10 +27,10 @@ import RelatedTableFields from './RelatedTableFields';
 import DjangoTemplateForm from "../../Components/AdminForm/DjangoTemplateForm";
 import { resourceActions } from "../List";
 import { dictDeepCopy } from "../../../../utils/main";
+import { Variables } from "../../../../utils/Variables";
+import CloudNativeGISFields from "./CloudNativeGIS";
 
 import './style.scss';
-import WhereInputModal
-  from "../../../../components/SqlQueryGenerator/WhereInputModal";
 
 let currentArcGis = null
 let init = false
@@ -98,6 +98,7 @@ export default function ContextLayerForm() {
       $('*[name="data_fields"]').val(JSON.stringify(newData['data_fields']))
       $('*[name="styles"]').val(JSON.stringify(newData['styles']))
       $('*[name="related_table"]').val(newData['related_table'])
+      $('*[name="cloud_native_gis_layer"]').val(newData['cloud_native_gis_layer'])
       $('*[name="configuration"]').val(JSON.stringify(newData['configuration']))
     }
   }
@@ -105,7 +106,7 @@ export default function ContextLayerForm() {
   const typeChange = (value) => {
     if (value === 'ARCGIS') {
       $('div[data-wrapper-name="arcgis_config"]').show()
-    } else if (value === 'Related Table') {
+    } else if (['Related Table', Variables.TERMS.CLOUD_NATIVE_GIS].includes(value)) {
       $('div[data-wrapper-name="arcgis_config"]').hide()
       $('div[data-wrapper-name="token"]').hide()
       $('div[data-wrapper-name="username"]').hide()
@@ -208,6 +209,13 @@ export default function ContextLayerForm() {
                     onSetData={updateData}
                   /> : undefined
               }
+              {
+                data.layer_type === Variables.TERMS.CLOUD_NATIVE_GIS ?
+                  <CloudNativeGISFields
+                    data={data}
+                    onSetData={updateData}
+                  /> : null
+              }
             </DjangoTemplateForm>
           ),
           'Preview': (
@@ -215,7 +223,9 @@ export default function ContextLayerForm() {
               data={data}
               setData={updateData}
               defaultTab={tab}
-              useOverride={data.layer_type === 'ARCGIS'}
+              useOverride={
+                Variables.LIST.OVERRIDE_STYLES.includes(data.layer_type)
+              }
               useOverrideLabel={false}
             />
           ),

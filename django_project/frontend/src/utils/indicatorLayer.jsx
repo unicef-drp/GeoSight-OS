@@ -17,8 +17,10 @@ import { capitalize, dictDeepCopy } from "./main";
 import nunjucks from "nunjucks";
 import { extractCode } from "./georepo";
 import { getRelatedTableData } from "./relatedTable";
+import { getIndicatorDataByLayer } from "./indicatorData";
 
 export const SingleIndicatorType = 'Single Indicator'
+export const SingleIndicatorTypes = [SingleIndicatorType, 'Float']
 export const MultiIndicatorType = 'Multi Indicator'
 export const DynamicIndicatorType = 'Dynamic Indicator'
 export const RelatedTableLayerType = 'Related Table'
@@ -153,21 +155,26 @@ export function fetchDynamicLayerData(
 /**
  * Return layer data
  */
-export function getLayerData(indicatorsData, relatedTableData, indicatorLayer) {
+export function getLayerData(
+  indicatorsData, relatedTableData, indicatorLayer, referenceLayer, ignoreRT
+) {
   const data = []
-  indicatorLayer.indicators?.map(obj => {
-    if (indicatorsData[obj.id]) {
-      data.push(indicatorsData[obj.id])
+  indicatorLayer.indicators?.map(indicator => {
+    const indicatorData = getIndicatorDataByLayer(indicator.id, indicatorsData, indicatorLayer, referenceLayer)
+    if (indicatorData) {
+      data.push(indicatorData)
     }
   })
   if (indicatorsData[indicatorLayerId(indicatorLayer)]) {
     data.push(indicatorsData[indicatorLayerId(indicatorLayer)])
   }
-  indicatorLayer.related_tables?.map(obj => {
-    if (relatedTableData[obj.id]) {
-      data.push(relatedTableData[obj.id])
-    }
-  })
+  if (!ignoreRT) {
+    indicatorLayer.related_tables?.map(obj => {
+      if (relatedTableData[obj.id]) {
+        data.push(relatedTableData[obj.id])
+      }
+    })
+  }
   return data
 }
 
@@ -187,19 +194,11 @@ export function indicatorHasData(indicatorsData, indicator) {
  */
 export function getLayerDataCleaned(
   indicatorsData, relatedTableData, indicatorLayer, selectedGlobalTime, geoField,
-  filteredGeometries, adminLevel
+  filteredGeometries, referenceLayer, adminLevel
 ) {
-  let data = []
   indicatorsData = dictDeepCopy(indicatorsData)
   relatedTableData = dictDeepCopy(relatedTableData)
-  indicatorLayer.indicators?.map(obj => {
-    if (indicatorsData[obj.id]) {
-      data.push(indicatorsData[obj.id])
-    }
-  })
-  if (indicatorsData[indicatorLayerId(indicatorLayer)]) {
-    data.push(indicatorsData[indicatorLayerId(indicatorLayer)])
-  }
+  let data = getLayerData(indicatorsData, relatedTableData, indicatorLayer, referenceLayer, true)
   indicatorLayer.related_tables?.map(obj => {
     if (relatedTableData[obj.id]) {
       const { rows } = getRelatedTableData(
@@ -227,12 +226,13 @@ export function getLayerDataCleaned(
  * @param indicatorsData
  * @param relatedTableData
  * @param indicatorLayers
+ * @param referenceLayer
  * @returns {boolean}
  */
-export function allLayerDataIsReady(indicatorsData, relatedTableData, indicatorLayers) {
+export function allLayerDataIsReady(indicatorsData, relatedTableData, indicatorLayers, referenceLayer) {
   let done = true
   indicatorLayers.map(indicatorLayer => {
-    getLayerData(indicatorsData, relatedTableData, indicatorLayer).map(data => {
+    getLayerData(indicatorsData, relatedTableData, indicatorLayer, referenceLayer).map(data => {
       if (data?.fetching) {
         done = false
       }
@@ -261,4 +261,11 @@ export function dataFieldsDefault() {
       "order": idx
     }
   })
+}
+
+/**
+ * Return reference layer of indicator layer
+ */
+export function referenceLayerIndicatorLayer(referenceLayer, indicatorLayer) {
+  return indicatorLayer?.level_config?.referenceLayer ? indicatorLayer?.level_config?.referenceLayer : referenceLayer
 }

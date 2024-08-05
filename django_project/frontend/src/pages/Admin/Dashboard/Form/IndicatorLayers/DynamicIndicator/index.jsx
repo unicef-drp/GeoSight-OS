@@ -204,6 +204,7 @@ export default function DynamicIndicatorConfig(
                               }
                             }
                             referenceLayer={referenceLayer}
+                            ableToSelectReferenceLayer={true}
                           /> : null
                       }
                     </div>

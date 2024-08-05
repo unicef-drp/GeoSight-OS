@@ -13,6 +13,24 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
+
+export const apiReceive = ({ data, error, receivedAt }) => {
+  let newState = {
+    fetching: false,
+    fetched: true,
+    receivedAt: receivedAt ? receivedAt : Date.now(),
+    data: null,
+    error: null
+  };
+
+  if (error) {
+    newState.error = error;
+  } else {
+    newState.data = data;
+  }
+  return newState;
+}
+
 /**
  * Base reducer for an api request.
  *
@@ -31,20 +49,7 @@ export function APIReducer(state, action, actionName, defaultData) {
         error: null
       };
     case `RECEIVE/${actionName}`:
-      let newState = {
-        fetching: false,
-        fetched: true,
-        receivedAt: action.receivedAt,
-        data: null,
-        error: null
-      };
-
-      if (action.error) {
-        newState.error = action.error;
-      } else {
-        newState.data = action.data;
-      }
-      return newState;
+      return apiReceive(action);
   }
   return state;
 }

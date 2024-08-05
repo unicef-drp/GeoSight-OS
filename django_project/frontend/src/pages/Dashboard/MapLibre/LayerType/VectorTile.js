@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import { addPopup, hasLayer, hasSource } from "../utils";
+import { addPopup, getBeforeLayerId, hasLayer, hasSource } from "../utils";
 
 
 /***
@@ -31,15 +31,9 @@ export default function vectorTileLayer(map, id, data, contextLayerData, popupFe
     before = null
   }
   if (contextLayerOrder) {
-    const contextLayerIdx = contextLayerOrder.indexOf(contextLayerData.id)
-    for (let idx = 0; idx < contextLayerOrder.length; idx++) {
-      if (map && idx > contextLayerIdx) {
-        const currentId = 'context-layer-' + contextLayerOrder[idx] + '-line'
-        if (hasLayer(map, currentId)) {
-          before = currentId
-          break;
-        }
-      }
+    const beforeOrder = getBeforeLayerId(map, id, contextLayerOrder)
+    if (beforeOrder) {
+      before = beforeOrder
     }
   }
 

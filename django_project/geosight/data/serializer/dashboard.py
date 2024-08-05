@@ -27,7 +27,7 @@ from geosight.data.serializer.dashboard_indicator_layer import (
     DashboardIndicatorLayerSerializer
 )
 from geosight.data.serializer.dashboard_relation import (
-    DashboardIndicatorSerializer, DashboardBasemapSerializer,
+    DashboardBasemapSerializer,
     DashboardContextLayerSerializer, DashboardRelatedTableSerializer
 )
 from geosight.data.serializer.dashboard_widget import DashboardWidgetSerializer
@@ -105,19 +105,6 @@ class DashboardSerializer(serializers.ModelSerializer):
             context={'user': self.context.get('user', None)},
             exclude=['last_update', 'permission']
         ).data
-        dashboard_data = DashboardIndicatorSerializer(
-            model,
-            context={'user': self.context.get('user', None)}
-        ).data
-        if dashboard_data['override_style']:
-            del data['style']
-            del data['style_config']
-            del data['style_type']
-        else:
-            del dashboard_data['style']
-            del dashboard_data['style_config']
-            del dashboard_data['style_type']
-        data.update(dashboard_data)
         return data
 
     def get_indicators(self, obj: Dashboard):

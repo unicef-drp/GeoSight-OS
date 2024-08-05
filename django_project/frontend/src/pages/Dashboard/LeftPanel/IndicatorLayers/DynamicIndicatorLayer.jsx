@@ -100,7 +100,6 @@ export default function DynamicIndicatorLayer({ indicatorLayer }) {
         error => {
           dispatch(Actions.IndicatorsData.receive([], error, id))
         }, response => {
-          response = UpdateStyleData(response, indicatorLayer)
           if (JSON.stringify(response) !== prevState.lastData) {
             dispatch(Actions.IndicatorsData.receive(response, '', id))
             prevState.lastData = JSON.stringify(response)

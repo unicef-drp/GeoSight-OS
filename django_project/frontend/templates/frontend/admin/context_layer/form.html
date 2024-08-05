@@ -17,6 +17,7 @@
     <script>
       const initialData = {{ form|get_data|safe }};
       const permission = {{ permission|safe }};
+
       // Urls api
       urls.api = {
         'styles': '{% url 'style-list-api'%}',
@@ -28,10 +29,14 @@
       if (permission.share) {
         {% if id %}
           urls.api.permission = '{% url 'context-layer-permission-api' id %}'
+          urls.api.cloudNativeGISUploadFile = '{% url 'cloud-native-gis-layer-upload-list' 0 %}'.replace('0', initialData.cloud_native_gis_layer)
         {% else %}
           urls.api.permission = '{% url 'context-layer-permission-api' 0 %}'
+          urls.api.cloudNativeGISUploadFile = '{% url 'cloud-native-gis-upload-create' %}'
+          urls.api.cloudNativeGISUploadFileMain = '{% url 'cloud-native-gis-layer-upload-list' 0 %}'
         {% endif %}
       }
+      urls.api.cloudNativeGISImportHistory = '{% url 'cloud-native-gis-layer-upload-list' 0 %}?page_size=1'
 
       // If in batch or not
       const batch = {% if batch %}true{% else %}null{% endif %};

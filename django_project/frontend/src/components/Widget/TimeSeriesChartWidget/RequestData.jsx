@@ -17,7 +17,7 @@
    SHOW DATA IN TIME SERIES IN CHART WIDGET
    ========================================================================== */
 
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSelector } from "react-redux";
 import { SeriesType, TimeType } from "./Definition";
 import { fetchingData } from "../../../Requests";
@@ -132,6 +132,9 @@ export default function RequestDataIndicator(
               frequency: interval,
               time__lte: maxDateFilter ? maxDateFilter : new Date().toISOString()
             }
+            if (unit.reference_layer_uuid) {
+              parameters.reference_layer_uuid = unit.reference_layer_uuid
+            }
             if (minDateFilter) {
               parameters['time__gte'] = minDateFilter
             }
@@ -224,13 +227,13 @@ export default function RequestDataIndicator(
                   backgroundColor: color
                 })
               }
-            }
 
-            // Update progress
-            setRequestProgress({
-              progress: (x + 1) * (y + 1),
-              total: total
-            })
+              // Update progress
+              setRequestProgress({
+                progress: (x + 1) * (y + 1),
+                total: total
+              })
+            }
           }
         }
         if (prevState.session === session) {

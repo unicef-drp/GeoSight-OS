@@ -106,7 +106,6 @@ export default function SummaryDashboardForm({ changed }) {
                       selected = selectedData[0]
                     }
                     dispatch(Actions.ReferenceLayer.update(selected));
-                    dispatch(Actions.Geometries.deleteAll());
                   }}
                   isMultiple={false}
                   showSelected={false}

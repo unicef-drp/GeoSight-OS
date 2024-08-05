@@ -79,7 +79,9 @@ class AbstractEditData(models.Model):
 
     creator = models.ForeignKey(
         User, on_delete=models.CASCADE,
-        null=True, blank=True
+        null=True, blank=True,
+        related_name="%(app_label)s_%(class)s_related",
+        related_query_name="%(app_label)s_%(class)ss",
     )
     created_at = models.DateTimeField(default=timezone.now)
     modified_at = models.DateTimeField(auto_now=True)

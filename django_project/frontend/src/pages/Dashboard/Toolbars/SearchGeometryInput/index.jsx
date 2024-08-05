@@ -48,59 +48,50 @@ export default function SearchGeometryInput({ map }) {
   });
 
   const {
-    referenceLayer,
-    enable_geometry_search,
-    levelConfig
+    enable_geometry_search
   } = useSelector(state => state.dashboard.data);
-  const referenceLayerData = useSelector(state => state.referenceLayerData[referenceLayer.identifier])
-  const geometries = useSelector(state => state.geometries);
+  const datasets = useSelector(state => state.globalState['datasets'])
+  const referenceLayerDataState = useSelector(state => state.referenceLayerData)
+  const datasetGeometries = useSelector(state => state.datasetGeometries);
   const [value, setValue] = useState(null)
   const [options, setOptions] = useState([])
 
-  let {
-    levels: availableLevels
-  } = levelConfig
-
-
-  // Vector tile url
-  const vectorTiles = referenceLayerData?.data?.vector_tiles
-  let vectorTileUrl = null
-  if (vectorTiles && map) {
-    vectorTileUrl = GeorepoUrls.WithoutDomain(updateToken(vectorTiles))
-  }
-
   /** Create options */
   useEffect(() => {
-      if (enable_geometry_search && referenceLayerData?.data?.dataset_levels) {
-        const options = []
-        let levels = referenceLayerData?.data?.dataset_levels
-        if (levels && availableLevels) {
-          levels = levels.filter(level => availableLevels.includes(level.level))
-        }
-        levels?.map(level => {
-          if (geometries[level.level]) {
-            for (const [concept_uuid, geometry] of Object.entries(geometries[level.level])) {
+      const options = []
+      datasets.map(dataset => {
+        const referenceLayerData = referenceLayerDataState[dataset]
+        const geometries = datasetGeometries[dataset]
+
+        // Vector tile url
+        const levels = referenceLayerData?.data?.dataset_levels
+        if (levels && map && enable_geometry_search) {
+          levels?.map(level => {
+            if (geometries && geometries[level.level]) {
+              for (const [concept_uuid, geometry] of Object.entries(geometries[level.level])) {
+                options.push({
+                  id: geometry.concept_uuid,
+                  label: geometry.label,
+                  level_name: level.level_name,
+                  level: level.level,
+                  dataset: dataset
+                })
+              }
+            } else {
               options.push({
-                id: geometry.concept_uuid,
-                label: geometry.label,
+                id: level.level,
+                label: 'Loading...',
                 level_name: level.level_name,
                 level: level.level,
+                disabled: true
               })
             }
-          } else {
-            options.push({
-              id: level.level,
-              label: 'Loading...',
-              level_name: level.level_name,
-              level: level.level,
-              disabled: true
-            })
-          }
-        })
-        setOptions(options)
-      }
+          })
+        }
+      })
+      setOptions(options)
     },
-    [referenceLayerData, geometries, levelConfig]
+    [referenceLayerDataState, datasetGeometries, enable_geometry_search]
   );
 
   // Check all geometries are loaded
@@ -111,6 +102,16 @@ export default function SearchGeometryInput({ map }) {
     const session = new Session('SearchGeometryInput')
 
     const newSelectedGeometryInput = input?.id;
+    const datasetIdentifier = input?.dataset;
+
+    // Vector tile url
+    const referenceLayerData = referenceLayerDataState[datasetIdentifier]
+    const vectorTiles = referenceLayerData?.data?.vector_tiles
+    let vectorTileUrl = null
+    if (vectorTiles && map) {
+      vectorTileUrl = GeorepoUrls.WithoutDomain(updateToken(vectorTiles))
+    }
+
     removeLayer(map, LAYER_HIGHLIGHT_ID)
     removeSource(map, LAYER_HIGHLIGHT_ID)
     if (!newSelectedGeometryInput) {
@@ -121,7 +122,7 @@ export default function SearchGeometryInput({ map }) {
 
     $input.addClass('HasData')
     $input.addClass('Loading')
-    axiosGet(preferences.georepo_api.api + `/operation/view/${referenceLayer.identifier}/bbox/concept_uuid/${newSelectedGeometryInput}/`)
+    axiosGet(preferences.georepo_api.api + `/operation/view/${datasetIdentifier}/bbox/concept_uuid/${newSelectedGeometryInput}/`)
       .then(response => response.data)
       .then(extent => {
         $input.removeClass('Loading')

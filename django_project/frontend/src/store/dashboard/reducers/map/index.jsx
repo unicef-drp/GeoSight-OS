@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 /** MAP reducer */
 
@@ -31,7 +31,7 @@ export const MAP_IS_3D_MODE = `MAP/IS_3D_MODE`;
 export const MAP_UPDATE_CONFIG = `MAP/UPDATE_CONFIG`;
 
 const mapInitialState = {
-  referenceLayer: null,
+  referenceLayers: [],
   basemapLayer: null,
   contextLayers: {},
   center: null,
@@ -83,9 +83,17 @@ export default function mapReducer(state = mapInitialState, action) {
         }
       }
       case MAP_REFERENCE_LAYER_CHANGED: {
-        return {
-          ...state,
-          referenceLayer: action.payload
+        const identifierList = []
+        const views = action.payload.filter(view => {
+          const found = identifierList.includes(view.identifier)
+          identifierList.push(view.identifier)
+          return !found
+        })
+        if (JSON.stringify(state.referenceLayers) !== JSON.stringify(views)) {
+          return {
+            ...state,
+            referenceLayers: views
+          }
         }
       }
       case MAP_CENTER: {

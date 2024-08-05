@@ -67,6 +67,7 @@ export default function RelatedTableData() {
       columns={columns}
       disabledDelete={true}
       checkboxSelection={false}
+      hideSearch={true}
       getParameters={() => {
         return {
           flat: true

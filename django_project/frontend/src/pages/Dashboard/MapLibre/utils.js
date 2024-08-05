@@ -204,3 +204,26 @@ export const createElement = (
   if (appendTo) appendTo.appendChild(el);
   return el;
 };
+
+/**
+ * Get before layer
+ * @param map
+ * @param layerId
+ * @param contextLayerOrder
+ * @returns {undefined|string}
+ */
+export const getBeforeLayerId = (map, layerId, contextLayerOrder) => {
+  if (contextLayerOrder) {
+    const contextLayerIdx = contextLayerOrder.indexOf(layerId)
+    for (let idx = 0; idx < contextLayerOrder.length; idx++) {
+      if (map && idx > contextLayerIdx) {
+        const currentId = 'context-layer-' + contextLayerOrder[idx] + '-line'
+        if (hasLayer(map, currentId)) {
+          return currentId;
+        }
+      }
+    }
+  } else {
+    return undefined;
+  }
+};

@@ -36,3 +36,20 @@ export function GeometriesBBOX(geometries) {
   })
   return output
 }
+
+/**
+ * Return dataset list from dashboard
+ */
+export function datasetListFromDashboardData(data) {
+  let datasets = []
+  data?.indicatorLayers?.map(indicatorLayer => {
+    if (indicatorLayer?.level_config?.referenceLayer?.identifier) {
+      datasets.push(indicatorLayer?.level_config?.referenceLayer?.identifier)
+    }
+  })
+  if (data?.referenceLayer?.identifier) {
+    datasets = [data?.referenceLayer?.identifier, ...datasets]
+  }
+
+  return [...new Set(datasets)]
+}

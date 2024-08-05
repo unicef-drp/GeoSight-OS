@@ -38,7 +38,10 @@ let playControlTimeout = null
 export default function PlayControl(
   { dates, selectedDatePoint, setSelectedDatePoint, children }
 ) {
-  const indicatorLayers = useSelector(state => state.dashboard.data?.indicatorLayers)
+  const {
+    referenceLayer,
+    indicatorLayers
+  } = useSelector(state => state.dashboard.data)
   const filtersData = useSelector(state => state.filtersData);
   const indicatorsData = useSelector(state => state.indicatorsData)
   const relatedTableData = useSelector(state => state.relatedTableData)
@@ -89,7 +92,7 @@ export default function PlayControl(
         layers = indicatorLayers
       }
       const ready = allLayerDataIsReady(
-        indicatorsData, relatedTableData, layers
+        indicatorsData, relatedTableData, layers, referenceLayer
       )
       if (ready) {
         stopTimeout()
