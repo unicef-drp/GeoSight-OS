@@ -19,6 +19,7 @@ import mapReducer from './map'
 import mapGeometryValue from './mapGeometryValue'
 import mapModeReducer from './mapMode'
 import dashboardRequestReducer from './dashboard'
+import datasetGeometriesReducer from './datasetGeometries'
 import indicatorsDataReducer from "./indicatorsData";
 import indicatorsMetadataReducer from "./indicatorsMetadata";
 import indicatorLayerMetadataReducer from "./indicatorLayerMetadata";
@@ -26,7 +27,6 @@ import relatedTableDataReducer from "./relatedTableData";
 import ReferenceLayerDataReducer from "./referenceLayerData";
 import filtersDataReducer from "./filtersData";
 import filteredGeometriesReducer from "./filteredGeometries";
-import geometriesReducer from "./geometries";
 import globalStateReducer from "./globalState";
 import selectedIndicatorLayerReducer from "./selectedIndicatorLayer";
 import selectedIndicatorSecondLayerReducer
@@ -47,6 +47,7 @@ export default combineReducers({
   map: mapReducer,
   mapGeometryValue: mapGeometryValue,
   mapMode: mapModeReducer,
+  datasetGeometries: datasetGeometriesReducer,
   indicatorsData: indicatorsDataReducer,
   indicatorsMetadata: indicatorsMetadataReducer,
   indicatorLayerMetadata: indicatorLayerMetadataReducer,
@@ -54,7 +55,6 @@ export default combineReducers({
   relatedTableData: relatedTableDataReducer,
   filtersData: filtersDataReducer,
   filteredGeometries: filteredGeometriesReducer,
-  geometries: geometriesReducer,
   globalState: globalStateReducer,
   selectedAdminLevel: selectedAdminLevelReducer,
   selectedIndicatorLayer: selectedIndicatorLayerReducer,

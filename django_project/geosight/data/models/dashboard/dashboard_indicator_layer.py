@@ -146,7 +146,7 @@ class DashboardIndicatorLayer(DashboardRelation, IndicatorStyleBaseModel):
                     get(name='date_format').value
             except DashboardIndicatorLayerConfig.DoesNotExist:
                 date_format = None
-            data = dil_related_table.related_table.data_with_query(
+            data, has_next = dil_related_table.related_table.data_with_query(
                 reference_layer_uuid=self.dashboard.reference_layer.identifier,
                 geo_field=dashboard_related_table.geography_code_field_name,
                 geo_type=dashboard_related_table.geography_code_type,
@@ -168,10 +168,25 @@ class DashboardIndicatorLayer(DashboardRelation, IndicatorStyleBaseModel):
         return None
 
     @property
+    def is_single(self):
+        """Return indicator layer is single."""
+        return self.type == TYPE_SINGLE_INDICATOR or 'Float'
+
+    @property
     def is_using_obj_style(self):
         """If using obj style."""
-        return self.type == TYPE_DYNAMIC_INDICATOR or self. \
-            dashboardindicatorlayerrelatedtable_set.first()
+        return (
+                self.is_single and self.override_style
+        ) or self.type == TYPE_DYNAMIC_INDICATOR \
+            or self.dashboardindicatorlayerrelatedtable_set.first()
+
+    @property
+    def is_using_obj_label(self):
+        """If using obj style."""
+        return (
+                self.is_single and self.override_label
+        ) or self.type == TYPE_DYNAMIC_INDICATOR \
+            or self.dashboardindicatorlayerrelatedtable_set.first()
 
     @property
     def rules(self):

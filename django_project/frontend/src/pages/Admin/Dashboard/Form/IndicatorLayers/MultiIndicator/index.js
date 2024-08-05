@@ -254,6 +254,7 @@ export default function MultiIndicatorConfig(
                               }
                             }
                             referenceLayer={referenceLayer}
+                            ableToSelectReferenceLayer={true}
                           /> : null
                       }
                     </div>

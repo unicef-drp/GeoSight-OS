@@ -172,7 +172,7 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                 identifier=reference_layer_uuid
             )
         except ReferenceLayerView.DoesNotExist:
-            return []
+            return [], False
 
         # Check codes based on code type
         output = []

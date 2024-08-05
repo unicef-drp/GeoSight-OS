@@ -100,6 +100,7 @@ export default function TimeSeriesChartWidgetEditor(
   { open, setData, data }
 ) {
   const {
+    referenceLayer,
     indicators,
     indicatorLayers,
     default_time_mode
@@ -107,7 +108,7 @@ export default function TimeSeriesChartWidgetEditor(
   const {
     use_only_last_known_value,
   } = default_time_mode
-  const geometries = useSelector(state => state.geometries);
+  const geometries = useSelector(state => state.datasetGeometries[referenceLayer.identifier]);
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
