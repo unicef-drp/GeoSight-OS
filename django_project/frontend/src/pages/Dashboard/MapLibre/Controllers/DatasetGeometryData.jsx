@@ -105,11 +105,10 @@ export default function DatasetGeometryData() {
               });
             });
           }
-        }
 
-        // Geometry data
-        for (let i = 0; i < datasets.length; i++) {
-          const identifier = datasets[i].identifier
+          // ------------------------------------------
+          // ----------- CENTROID DATA ----------------
+          // ------------------------------------------
           const currGeometries = {}
           const geometryDataDict = {}
           const geometryMemberByUcode = {}

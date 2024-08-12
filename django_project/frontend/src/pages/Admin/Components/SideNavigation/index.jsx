@@ -182,7 +182,7 @@ export default function SideNavigation({ pageName, minified }) {
                 </SidaNavigationButton>
               </div>
               {
-                user.manage_local_dataset && preferences.activate_local_dataset ?
+                user.manage_local_dataset && preferences.enable_local_dataset ?
                   <div className='SideNavigationContentGroup'>
                     <div className='SideNavigationContentGroupTitle'>
                       REFERENCE DATASETS

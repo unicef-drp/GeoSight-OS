@@ -60,7 +60,7 @@ export default function GeorepoViewSelector(
     filter = false
   }
 ) {
-  const [sourceType, setSourceType] = useState(preferences.activate_local_dataset ? 'local' : 'remote')
+  const [sourceType, setSourceType] = useState(preferences.enable_local_dataset ? 'local' : 'remote')
   const [inputData, setInputData] = useState(null)
 
   // This is for remote data
@@ -166,7 +166,7 @@ export default function GeorepoViewSelector(
     beforeChildren={
       <>
         {
-          preferences.activate_local_dataset ?
+          preferences.enable_local_dataset ?
             <FormControl className='RadioButtonControl'>
               <RadioGroup
                 value={sourceType}

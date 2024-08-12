@@ -55,7 +55,7 @@ class SitePreferencesAdmin(admin.ModelAdmin):
             'fields': (
                 'site_title', 'site_url', 'disclaimer',
                 'default_basemap', 'default_color_palette',
-                'activate_local_dataset'
+                'enable_local_dataset'
             )
         }),
         ('Environment', {
@@ -68,7 +68,7 @@ class SitePreferencesAdmin(admin.ModelAdmin):
                 'georepo_url',
                 'georepo_api_key_level_1', 'georepo_api_key_level_1_email',
                 'georepo_api_key_level_4', 'georepo_api_key_level_4_email',
-                'georepo_using_user_api_key'
+                'georepo_using_user_api_key', 'enable_georepo'
             ),
         }),
         ('Landing Page', {
