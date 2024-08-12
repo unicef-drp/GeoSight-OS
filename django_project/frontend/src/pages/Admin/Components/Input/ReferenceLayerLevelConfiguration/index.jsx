@@ -14,13 +14,21 @@
  */
 
 /** Reference layer view configuration. */
-import React, { forwardRef, useEffect } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import Checkbox from "@mui/material/Checkbox";
 import {
   MultipleSelectWithSearch,
   SelectWithSearch
-} from "../../../../components/Input/SelectWithSearch";
+} from "../../../../../components/Input/SelectWithSearch";
+import {
+  GeorepoViewInputSelector
+} from "../../../ModalSelector/InputSelector";
+import { Actions } from "../../../../../store/dashboard";
+import { GeorepoUrls } from "../../../../../utils/georepo";
+import { FormControlLabel, FormGroup } from "@mui/material";
+import './styles.scss';
 
 /**
  * Reference layer view configuration.
@@ -32,9 +40,15 @@ import {
  */
 export const ViewLevelConfiguration = forwardRef(
   ({
-     data = {}, setData, referenceLayer
+     data = {}, setData, referenceLayer, ableToSelectReferenceLayer = false
    }, ref
   ) => {
+    const dispatch = useDispatch()
+    const [overrideView, setOverrideView] = useState(!!data.referenceLayer);
+    if (overrideView) {
+      referenceLayer = data.referenceLayer ? data.referenceLayer : referenceLayer
+    }
+
     const referenceLayerRequest = useSelector(state => state.referenceLayerData[referenceLayer.identifier]);
     const referenceLayerData = referenceLayerRequest?.data
 
@@ -59,13 +73,79 @@ export const ViewLevelConfiguration = forwardRef(
       }
     }, [referenceLayerData, data]);
 
+    useEffect(() => {
+      if (referenceLayer.identifier && !referenceLayerData) {
+        dispatch(
+          Actions.ReferenceLayerData.fetch(
+            dispatch, referenceLayer.identifier,
+            GeorepoUrls.ViewDetail(referenceLayer.identifier)
+          )
+        )
+      }
+    }, [referenceLayer]);
+
     // Create choices from levels
     const levels = datasetLevels ? datasetLevels.map(level => level.level_name) : []
     const defaultLevel = datasetLevels?.find(level => level.level === data.default_level)?.level_name
     const availableLayers = datasetLevels?.filter(level => data?.levels?.includes(level.level)).map(level => level.level_name)
 
-    return (
-      <Grid container spacing={2} className='ReferenceLayerLevelConfiguration'>
+    return <>
+      {
+        ableToSelectReferenceLayer ?
+          <div className="ReferenceLayerLevelConfigurationView">
+            <label className="form-label" htmlFor="group">View</label>
+            <Grid container spacing={2}
+                  className='ReferenceLayerLevelConfigurationCheckbox'>
+              <Grid item>
+                <FormGroup>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={overrideView}
+                        onChange={evt => {
+                          setOverrideView(evt.target.checked)
+                          delete data.referenceLayer
+                          setData({ ...data })
+                        }}/>
+                    }
+                    label=''/>
+                </FormGroup>
+              </Grid>
+              <Grid item
+                    className='ReferenceLayerLevelConfigurationViewSelector'>
+                <div className="BasicFormSection">
+                  <div className='ReferenceDatasetSection'>
+                    <GeorepoViewInputSelector
+                      data={
+                        referenceLayer?.identifier ? [{
+                          ...referenceLayer,
+                          name: referenceLayerData?.name
+                        }] : []
+                      }
+                      setData={selectedData => {
+                        let selected = { identifier: '', detail_url: '' }
+                        if (selectedData[0]) {
+                          const identifier = selectedData[0].identifier
+                          selected = {
+                            identifier: identifier,
+                            detail_url: GeorepoUrls.ViewDetail(identifier),
+                          }
+                        }
+                        setData({ ...data, referenceLayer: selected })
+                      }}
+                      isMultiple={false}
+                      showSelected={false}
+                      disabled={!overrideView}
+                    />
+                  </div>
+                </div>
+              </Grid>
+            </Grid>
+          </div>
+          : null
+      }
+      <Grid container spacing={2}
+            className='ReferenceLayerLevelConfiguration'>
         <Grid item xs={6}>
           <div className="BasicFormSection">
             <label className="form-label" htmlFor="group">
@@ -86,7 +166,8 @@ export const ViewLevelConfiguration = forwardRef(
             />
           </div>
         </Grid>
-        <Grid item xs={6} className='ReferenceLayerAvailableLevelsConfiguration'>
+        <Grid item xs={6}
+              className='ReferenceLayerAvailableLevelsConfiguration'>
           <div className="BasicFormSection">
             <label className="form-label" htmlFor="group">
               Available Levels
@@ -106,6 +187,6 @@ export const ViewLevelConfiguration = forwardRef(
           </div>
         </Grid>
       </Grid>
-    );
+    </>
   }
 )

@@ -18,15 +18,16 @@ import json
 from base64 import b64encode
 
 import requests
+from cloud_native_gis.models.layer import Layer as CloudNativeGISLayer
 from django.contrib.gis.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
 from core.models import AbstractEditData, AbstractTerm
-from geosight.data.models.related_table import RelatedTable
 from geosight.data.models.arcgis import ArcgisConfig
 from geosight.data.models.field_layer import FieldLayerAbstract
+from geosight.data.models.related_table import RelatedTable
 from geosight.permission.models.manager import PermissionManager
 
 
@@ -38,6 +39,7 @@ class LayerType(object):
     RASTER_TILE = 'Raster Tile'
     VECTOR_TILE = 'Vector Tile'
     RELATED_TABLE = 'Related Table'
+    CLOUD_NATIVE_GIS_LAYER = 'Cloud Native GIS Layer'
 
 
 class ContextLayerGroup(AbstractTerm):
@@ -86,6 +88,10 @@ class ContextLayer(AbstractEditData, AbstractTerm):
             (LayerType.RASTER_TILE, LayerType.RASTER_TILE),
             (LayerType.VECTOR_TILE, LayerType.VECTOR_TILE),
             (LayerType.RELATED_TABLE, LayerType.RELATED_TABLE),
+            (
+                LayerType.CLOUD_NATIVE_GIS_LAYER,
+                LayerType.CLOUD_NATIVE_GIS_LAYER
+            ),
         ),
         help_text=_(
             'The type of layer for this context layer.<br>'
@@ -93,8 +99,10 @@ class ContextLayer(AbstractEditData, AbstractTerm):
             'https://{host}/rest/services/{layer}/FeatureServer/1.<br>'
             'For <b>GeoJson</b>, put url of geojson.<br>'
             'For <b>Raster tile</b>, put XYZ url.<br>'
-            'For <b>Related Table</b>, select existing related table name.'
+            'For <b>Related table</b>, select existing related table name.'
             'For <b>Vector tile</b>, put XYZ url.'
+            'For <b>Cloud native gis layer</b>, '
+            'select the layer from cloud native gis.'
         )
     )
     arcgis_config = models.ForeignKey(
@@ -114,32 +122,12 @@ class ContextLayer(AbstractEditData, AbstractTerm):
             'Related table name.'
         )
     )
-
-    latitude_field = models.TextField(
+    cloud_native_gis_layer = models.OneToOneField(
+        CloudNativeGISLayer,
         null=True, blank=True,
+        on_delete=models.SET_NULL,
         help_text=_(
-            'Latitude field of Related Table.'
-        )
-    )
-
-    longitude_field = models.TextField(
-        null=True, blank=True,
-        help_text=_(
-            'Longitude field of Related Table.'
-        )
-    )
-
-    datetime_field = models.TextField(
-        null=True, blank=True,
-        help_text=_(
-            'Datetime field of Related Table.'
-        )
-    )
-
-    query = models.TextField(
-        null=True, blank=True,
-        help_text=_(
-            'Query to filter Related Table data.'
+            'Using layer from cloud native gis.'
         )
     )
 
@@ -177,6 +165,9 @@ class ContextLayer(AbstractEditData, AbstractTerm):
         null=True, blank=True
     )
     label_styles = models.TextField(
+        null=True, blank=True
+    )
+    configuration = models.JSONField(
         null=True, blank=True
     )
     objects = models.Manager()

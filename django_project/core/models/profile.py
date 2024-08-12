@@ -28,6 +28,12 @@ from geosight.permission.models import PermissionDetail, PERMISSIONS_LENGTH
 User = get_user_model()
 
 
+class RoleDoesNotFound(Exception):
+    """Exception that is thrown when role does not found."""
+
+    pass
+
+
 class ROLES:
     """Roles list."""
 
@@ -96,6 +102,11 @@ class Profile(models.Model):
     def update_role(user: User, role: str):
         """When user role."""
         profile, created = Profile.objects.get_or_create(user=user)
+        if role not in [
+            ROLES.SUPER_ADMIN.name, ROLES.CREATOR.name, ROLES.CONTRIBUTOR.name,
+            ROLES.VIEWER.name
+        ]:
+            raise RoleDoesNotFound()
         profile.role = role
         profile.save()
 

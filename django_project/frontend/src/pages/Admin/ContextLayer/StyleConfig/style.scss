@@ -126,6 +126,12 @@
       display: block !important;
     }
   }
+
+  &.General_Override {
+    .General_Override {
+      display: block !important;
+    }
+  }
 }
 
 
@@ -244,19 +250,17 @@
 
   .legend {
     left: 0;
-    max-height: 100%;
-    overflow-y: auto;
+    height: fit-content;
+    max-height: 60%;
     padding: 0.5rem;
     position: absolute;
     top: 0;
     width: 200px;
     z-index: 1;
-
-    .wrapper {
-      background-color: white;
-      border-radius: 0.5rem;
-      padding: 0.5rem;
-    }
+    background-color: white;
+    border-radius: 0.5rem;
+    margin: 0.5rem;
+    overflow-y: auto;
 
     .title {
       text-align: center;
@@ -271,4 +275,12 @@
     flex-grow: 1;
     height: 100%;
   }
+}
+
+.EditorButton {
+  background-color: $primary-color;
+  color: $anti-primary-color;
+  cursor: pointer;
+  padding: 3px 6px;
+  width: fit-content;
 }

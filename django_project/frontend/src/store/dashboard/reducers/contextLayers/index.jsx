@@ -114,6 +114,7 @@ export default function contextLayersReducer(state = initialState, action, dashb
             contextLayer.override_style = action.payload.override_style
             contextLayer.override_label = action.payload.override_label
             contextLayer.override_field = action.payload.override_field
+            contextLayer.configuration = action.payload.configuration
           }
           contextLayers.push(contextLayer)
         })

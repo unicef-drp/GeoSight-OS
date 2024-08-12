@@ -114,6 +114,15 @@ export function ImporterDetailSection({ inputData }) {
               <div>{data.attributes.indicator_data_type === 'By Value' ? 'Selected indicator' : 'Data-Driven Indicator Column'}</div>
             </div>
           </Grid>
+          {
+            data.attributes.indicator_data_type !== 'By Value' ?
+              <Grid item xs={3}>
+                <div className='DetailSection'>
+                  <div>Indicator Column</div>
+                  <div>{data.attributes.indicator_data_field}</div>
+                </div>
+              </Grid> : null
+          }
           <Grid item xs={3}>
             <div className='DetailSection'>
               <div>Indicator Names</div>
@@ -449,7 +458,7 @@ export default function ImporterLogDetail() {
                   </div>
                   <div className='DetailButtonButton'>
                     <div className='Separator'/>
-                    <a href={urls.api.dataView}>
+                    <a href={urls.api.dataView+'?status=Warning and Error'}>
                       <ThemeButton
                         variant="primary">
                         See the data

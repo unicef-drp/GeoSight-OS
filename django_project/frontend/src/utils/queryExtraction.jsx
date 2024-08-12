@@ -124,10 +124,20 @@ export const INIT_DATA = {
 }
 
 export function spacedField(field) {
-  if (!field.includes('`') && field.includes(' ')) {
+  if (!field.includes('`') && (
+    field.includes(' ') || field.includes('-') || field[0] === field[0].toUpperCase())
+  ) {
     field = '`' + field + '`'
   }
   return field
+}
+
+/**
+ * Return if the field needs quote on the sql
+ * @param field
+ */
+export function isNeedQuote(field) {
+  return (field[0] === field[0].toUpperCase()) || field.includes(' ') || field.includes('-')
 }
 
 /**
@@ -188,7 +198,8 @@ export function returnWhere(where, ignoreActive, ids, sameGroupOperator = true, 
         }
       }
     case TYPE.EXPRESSION:
-      let field = where.field.includes(' ') ? `"${where.field}"`.replaceAll('""', '"') : where.field
+      const needQuote = isNeedQuote(where.field)
+      let field = needQuote ? `"${where.field}"`.replaceAll('""', '"') : where.field
       const fieldSplit = field.split('.')
       // We put all geometry_x as geometry_layer
       if (changeGeometryId && fieldSplit[0].includes('geometry_')) {
@@ -323,7 +334,7 @@ export function returnWhereToDict(where, upperWhere) {
  * Return value
  */
 const cleanValueFn = (value, returnEmpty = false) => {
-  return !value ? returnEmpty ? '' : "''" : (isNaN(value) ? `${value.includes("'") ? `"${value}"` : `'${value}'`}` : value);
+  return [null, undefined, ''].includes(value) ? returnEmpty ? '' : "''" : (isNaN(value) ? `${value.includes("'") ? `"${value}"` : `'${value}'`}` : value);
 }
 
 /**

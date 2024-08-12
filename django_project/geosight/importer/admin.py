@@ -65,8 +65,7 @@ class ImporterMappingInline(admin.TabularInline):
     """ImporterMapping inline."""
 
     model = ImporterMapping
-    fields = ('value',)
-    readonly_fields = ('name',)
+    fields = ('name', 'value')
     extra = 0
 
     def has_add_permission(self, request, obj=None):
@@ -88,6 +87,7 @@ class ImporterAdmin(admin.ModelAdmin):
     )
     list_filter = ('import_type', 'input_format',)
     readonly_fields = ('unique_id',)
+    search_fields = ('unique_id',)
 
 
 @admin.register(ImporterLog)
@@ -98,7 +98,7 @@ class ImporterLogAdmin(admin.ModelAdmin):
     readonly_fields = ('importer', 'start_time', 'end_time')
     list_filter = ('status',)
     inlines = [ImporterLogDataSaveProgressInline]
-    search_fields = ('note',)
+    search_fields = ('note', 'importer__unique_id')
 
     def has_add_permission(self, request, obj=None):
         """Has add permission."""

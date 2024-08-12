@@ -20,11 +20,11 @@ import rootReducer from './reducers';
 import Basemaps from './reducers/basemap/actions'
 import ContextLayers from './reducers/contextLayers/actions'
 import Dashboard from './reducers/dashboard/actions'
+import DatasetGeometries from './reducers/datasetGeometries/actions'
 import Extent from './reducers/extent/actions'
 import Filters from './reducers/filters/actions'
 import FiltersData from './reducers/filtersData/actions'
 import FilteredGeometries from './reducers/filteredGeometries/actions'
-import Geometries from './reducers/geometries/actions'
 import GlobalState from './reducers/globalState/actions'
 import IndicatorLayers from './reducers/indicatorLayers/actions'
 import Indicators from './reducers/indicators/actions'
@@ -32,6 +32,7 @@ import IndicatorsData from './reducers/indicatorsData/actions'
 import IndicatorsMetadata from './reducers/indicatorsMetadata/actions'
 import IndicatorLayerMetadata from './reducers/indicatorLayerMetadata/actions'
 import Map from './reducers/map/actions'
+import MapGeometryValue from './reducers/mapGeometryValue/actions'
 import MapMode from './reducers/mapMode/actions'
 import ReferenceLayer from './reducers/referenceLayer/actions'
 import ReferenceLayerData from './reducers/referenceLayerData/actions'
@@ -55,11 +56,11 @@ const Actions = {
   Basemaps,
   ContextLayers,
   Dashboard,
+  DatasetGeometries,
   Extent,
   Filters,
   FilteredGeometries,
   FiltersData,
-  Geometries,
   GlobalState,
   IndicatorLayers,
   Indicators,
@@ -68,6 +69,7 @@ const Actions = {
   IndicatorLayerMetadata,
   Map,
   MapMode,
+  MapGeometryValue,
   RelatedTable,
   RelatedTableData,
   ReferenceLayer,

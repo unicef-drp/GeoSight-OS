@@ -44,9 +44,9 @@ import LayerDescription from "./Description";
 import Highlighted from "./Highlighted";
 import { MagnifyIcon } from "../Icons";
 import { dictDeepCopy } from "../../utils/main";
+import SidePanelSlicers from './SidePanelSlicers';
 
 import './style.scss';
-import SidePanelSlicers from './SidePanelSlicers';
 
 
 const TREE_INDENT_SPACE = 40
@@ -355,8 +355,10 @@ export default function SidePanelTreeView(
             {treeData.data?.legend && selected.indexOf(nodesDataId) >= 0 ?
               <div
                 dangerouslySetInnerHTML={{ __html: treeData.data?.legend }}></div> : ''}
-            {treeData.data.related_table && treeData.data.query && selected.indexOf(nodesDataId) >= 0 ?
-              <SidePanelSlicers data={treeData.data} /> : ''}
+            {
+              treeData.data.related_table && selected.indexOf(nodesDataId) >= 0 ?
+                <SidePanelSlicers data={treeData.data}/> : null
+            }
           </div> : groupSelectable ?
             <FormControlLabel
               className='GroupSelectable Group'

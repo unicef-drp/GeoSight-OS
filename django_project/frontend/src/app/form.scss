@@ -127,14 +127,13 @@
   input,
   select {
     border: 1px solid rgba(0, 0, 0, 0.23);
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: 300;
 
     &:hover {
       border: 1px solid rgba(0, 0, 0, 0.87);
     }
-
-    font-family: inherit;
-    font-size: inherit;
-    font-weight: 300;
 
     &:focus,
     &:focus-within,

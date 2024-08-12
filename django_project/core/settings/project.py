@@ -86,6 +86,7 @@ INSTALLED_APPS = INSTALLED_APPS + (
     'geosight.georepo',
     'geosight.permission',
     'geosight.importer',
+    'geosight.cloud_native_gis',
     'frontend',
 )
 
@@ -147,5 +148,9 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'geosight.georepo.tasks.fetch_datasets',
         'schedule': crontab(minute='0', hour='0'),
         'args': (True,),
+    },
+    'clean_cloud_native': {
+        'task': 'geosight.cloud_native_gis.tasks.clean_cloud_native_layer',
+        'schedule': crontab(minute='0', hour='0'),
     }
 }

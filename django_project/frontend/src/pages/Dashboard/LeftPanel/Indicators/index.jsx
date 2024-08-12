@@ -17,29 +17,26 @@
    INDICATOR
    ========================================================================== */
 
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import $ from "jquery";
 import { useDispatch, useSelector } from "react-redux";
 import { Actions } from "../../../../store/dashboard";
-import {
-  fetchPagination,
-  fetchPaginationInParallel
-} from "../../../../Requests";
+import { fetchPaginationInParallel } from "../../../../Requests";
 import { removeElement } from "../../../../utils/Array";
 import {
   filterIndicatorsData,
+  getIndicatorDataId,
   UpdateStyleData
 } from "../../../../utils/indicatorData";
+import { dictDeepCopy } from "../../../../utils/main";
 import {
-  LocalStorage,
-  LocalStorageData
-} from "../../../../utils/localStorage";
-import { dictDeepCopy, jsonToUrlParams } from "../../../../utils/main";
-import { Session } from "../../../../utils/Sessions";
+  referenceLayerIndicatorLayer
+} from "../../../../utils/indicatorLayer";
 
 /** Indicators data. */
 let indicatorFetchingSession = null
 export let indicatorFetchingIds = []
+const allRequestStatus = {}
 const MAX_COUNT_FOR_ALL_DATA = 10000
 
 export default function Indicators() {
@@ -77,11 +74,6 @@ export default function Indicators() {
     }
   }, [indicators, indicatorLayerMetadata]);
 
-  /** At first time, put loading. */
-  useEffect(() => {
-    indicators.map(indicator => loading(indicator.id));
-  }, []);
-
   /** Loading data **/
   const loading = (id) => {
     const indicatorLayer = indicatorLayers.filter(layer => layer.indicators.map(indicator => indicator.id).includes(id))
@@ -118,124 +110,49 @@ export default function Indicators() {
    * Fetch it from storage or fetch it
    */
   const getDataByDate = async (id, url, params, currentGlobalTime, dataVersion, onProgress, usingCache) => {
-    const storage = new LocalStorageData(url, dataVersion)
-    let storageData = storage.get()
-    if (storageData) {
-      storageData = filterIndicatorsData(selectedGlobalTime.min, selectedGlobalTime.max, storageData)
-    }
-
-    // Check if the request is already requested before
-    let doRequest = false
-    const requestKey = url + '?' + jsonToUrlParams(params) + '-Version'
-    if (storageData) {
-      const requestStorage = new LocalStorage(requestKey)
-      if (requestStorage.get() !== '' + dataVersion) {
-        doRequest = true
-      }
-      try {
-        if (!storageData[0].concept_uuid) {
-          doRequest = true
-        }
-      } catch (err) {
-        doRequest = true
-      }
-    } else {
-      doRequest = true
-    }
-
-    if (doRequest) {
-      const response = await fetchPaginationInParallel(url, params, onProgress)
-      storage.appendData(response)
-      new LocalStorage(requestKey).set(dataVersion)
-      return response
-    } else {
-      return storageData
-    }
+    return await fetchPaginationInParallel(url, params, onProgress)
   }
 
   /***
    * Get Data function for just returning data
    */
-  const getDataFn = async (id, url, params, currentGlobalTime, dataVersion, onResponse, onProgress, doAll) => {
-    const usingCache = url.includes('dashboard')
-    params.reference_layer_uuid = referenceLayer?.identifier
-    if (!usingCache) {
-      return await fetchPaginationInParallel(url, params, onProgress)
+  const getDataFn = async (id, url, params, currentGlobalTime, dataVersion, onResponse, onProgress, doAll, referenceLayerIdentifier) => {
+    const identifier = url + '?reference_layer_uuid=' + referenceLayerIdentifier
+    let byDateRequested = false
+    let response = []
+    if (allRequestStatus[identifier] !== 'done') {
+      byDateRequested = true
+      params.reference_layer_uuid = referenceLayerIdentifier
+      params.version = dataVersion
+      response = await getDataByDate(id, url, params, dictDeepCopy(selectedGlobalTime), dataVersion, onProgress)
     }
-    const storage = new LocalStorageData(url, dataVersion)
-    let storageData = storage.get()
-    if (storageData) {
-      storageData = filterIndicatorsData(selectedGlobalTime.min, selectedGlobalTime.max, storageData)
-    }
-
-    // Check if we need to request all
-    let doRequestAll = false
     if (doAll) {
-      const requestKey = url.replace('latest', 'all') + '-Version'
-      if (storageData) {
-        const requestStorage = new LocalStorage(requestKey)
-        if (requestStorage.get() !== '' + dataVersion) {
-          doRequestAll = true
-        }
-        try {
-          if (!storageData[0].concept_uuid) {
-            doRequestAll = true
-          }
-        } catch (err) {
-          doRequestAll = true
-        }
-      } else {
-        doRequestAll = true
-      }
-    }
-    // Get quick data on current date
-    // But if it says doing request All
-    if (!storageData || doRequestAll) {
-      storageData = await getDataByDate(id, url, params, dictDeepCopy(selectedGlobalTime), dataVersion, onProgress)
-    }
-
-    // Do Request all if the data version is already ALL data
-    {
-      if (doRequestAll) {
-        let doRequest = false
-        const requestKey = url.replace('latest', 'all') + '-Version'
-        if (storageData) {
-          const requestStorage = new LocalStorage(requestKey)
-          if (requestStorage.get() !== '' + dataVersion) {
-            doRequest = true
-          }
-        } else {
-          doRequest = true
-        }
-        const session = new Session(url, 0, true)
-        if (session.isValid) {
-          if (doRequest) {
-            // Fetch all data
-            fetchPagination(url.replace('latest', 'all'), {
-              reference_layer_uuid: referenceLayer?.identifier
-            }).then(response => {
-              storage.replaceData(response)
-              new LocalStorage(requestKey).set(dataVersion)
-            }).catch(error => {
-
-            })
-          }
+      if (allRequestStatus[identifier] !== 'request') {
+        allRequestStatus[identifier] = 'request'
+        const allDataResponse = await fetchPaginationInParallel(url, {
+          reference_layer_uuid: referenceLayerIdentifier,
+          version: dataVersion,
+          last_value: false
+        })
+        allRequestStatus[identifier] = 'done'
+        if (!byDateRequested) {
+          response = filterIndicatorsData(currentGlobalTime.min, currentGlobalTime.max, allDataResponse)
         }
       }
     }
-    return storageData
+    return response
   }
 
   /***
    * Get All Data For and Indicator
    * Fetch it from storage or fetch it
    */
-  const getDataPromise = async (id, url, params, currentGlobalTime, dataVersion, onResponse, onProgress, doAll) => {
+  const getDataPromise = async (id, url, params, currentGlobalTime, dataVersion, onResponse, onProgress, doAll, referenceLayerIdentifier) => {
     return new Promise((resolve, reject) => {
       (
         async () => {
           try {
-            resolve(getDataFn(id, url, params, currentGlobalTime, dataVersion, onResponse, onProgress, doAll))
+            resolve(getDataFn(id, url, params, currentGlobalTime, dataVersion, onResponse, onProgress, doAll, referenceLayerIdentifier))
           } catch (error) {
             reject(error)
           }
@@ -249,22 +166,38 @@ export default function Indicators() {
     if (!selectedGlobalTime.max) {
       return
     }
+    if (!referenceLayer?.identifier) {
+      return
+    }
     indicatorFetchingSession = new Date().getTime()
     const session = indicatorFetchingSession
 
-    // Get queue
-    let defaultIds = []
-    if (currentIndicatorLayer?.indicators) {
-      defaultIds = defaultIds.concat(currentIndicatorLayer?.indicators?.map(_ => _.id))
-    }
-    if (currentIndicatorSecondLayer?.indicators) {
-      defaultIds = defaultIds.concat(currentIndicatorSecondLayer?.indicators?.map(_ => _.id))
-    }
-    const requestQueue = defaultIds.concat(
-      indicators.filter(
-        indicator => !defaultIds.includes(indicator.id)
-      ).map(indicator => indicator.id)
-    )
+    const indicatorsWithDataset = [];
+    [currentIndicatorLayer, currentIndicatorSecondLayer].concat(indicatorLayers).map(layer => {
+      const identifier = referenceLayerIndicatorLayer(referenceLayer, layer)?.identifier;
+      layer?.indicators?.map(_ => {
+        const data = indicatorsWithDataset.find(row => row.id === _.id)
+        if (!data) {
+          indicatorsWithDataset.push({
+            id: _.id,
+            datasets: [identifier]
+          })
+        } else {
+          data.datasets.push(identifier)
+        }
+      })
+    })
+    indicators.map(_ => {
+      const data = indicatorsWithDataset.find(row => row.id === _.id)
+      if (!data) {
+        indicatorsWithDataset.push({
+          id: _.id,
+          datasets: [referenceLayer.identifier]
+        })
+      } else {
+        data.datasets.push(referenceLayer.identifier)
+      }
+    })
 
     // Get parameter
     const params = {
@@ -273,71 +206,91 @@ export default function Indicators() {
     if (selectedGlobalTime.min) {
       params['time__gte'] = selectedGlobalTime.min
     }
-    indicatorFetchingIds = []
-    requestQueue.map(id => loading(id));
+    indicatorFetchingIds = [];
 
     //   Fetch all indicator data
     (
       async () => {
-        // Create request state
-        for (var idx = 1; idx <= requestQueue.length; idx++) {
+        // Create loading
+        // TODO:
+        //  Loading by datasets
+        indicatorsWithDataset.map(row => {
           const indicator = indicators.find(
-            indicator => indicator.id === requestQueue[idx - 1]
+            indicator => indicator.id === row.id
           )
           if (indicator) {
-            const { id, url, style } = indicator
+            const { id } = indicator
+            const referenceLayerIdentifier = referenceLayer?.identifier;
+            loading(id, referenceLayerIdentifier)
+          }
 
-            // On Response
-            const onResponse = (response, error) => {
-              if (indicatorFetchingSession === session && response) {
-                response = UpdateStyleData(response, indicator)
-                dispatch(
-                  Actions.IndicatorsData.receive(response, error, id)
-                )
-                dispatch(
-                  Actions.IndicatorsMetadata.progress(id, {
-                    total_page: Math.ceil(response.length / 100),
-                    page: Math.ceil(response.length / 100)
+        })
+
+        // Create request state
+        let promises = []
+        for (var idx = 0; idx <= indicatorsWithDataset.length - 1; idx++) {
+          const { id: _id, datasets } = indicatorsWithDataset[idx]
+          const indicator = indicators.find(
+            indicator => indicator.id === _id
+          )
+          const referenceDatasets = Array.from(new Set(datasets))
+          if (indicator) {
+            const { id, url } = indicator
+            for (var idxY = 0; idxY <= referenceDatasets.length - 1; idxY++) {
+              const referenceLayerIdentifier = referenceDatasets[idxY]
+              const indicatorDataId = getIndicatorDataId(id, referenceLayer.identifier, referenceLayerIdentifier)
+
+              // On Response
+              const onResponse = (response, error) => {
+                if (indicatorFetchingSession === session && response) {
+                  response = UpdateStyleData(response, indicator)
+                  dispatch(
+                    Actions.IndicatorsData.receive(response, error, indicatorDataId)
+                  )
+                  dispatch(
+                    Actions.IndicatorsMetadata.progress(id, {
+                        total_page: Math.ceil(response.length / 100),
+                        page: Math.ceil(response.length / 100)
+                      }
+                    )
+                  )
+                }
+                done(id)
+              }
+
+              // On Progress
+              const onProgress = (progress) => {
+                if (indicatorFetchingSession === session) {
+                  dispatch(
+                    Actions.IndicatorsMetadata.progress(id, progress)
+                  )
+                }
+              }
+              // Fetch data, when 10, wait data
+              const dataId = 'indicator-' + indicator.id
+              // For data that has less than 10k data
+              // Return all data first
+
+              const metadata = indicatorLayerMetadata[dataId]
+              if (metadata?.version) {
+                const version = metadata?.version
+                const doAll = !use_only_last_known_value && metadata?.count && metadata.count < MAX_COUNT_FOR_ALL_DATA
+
+                // If index is 1, waiting for this to be done
+                promises.push(
+                  getDataPromise(
+                    dataId, url, params, dictDeepCopy(selectedGlobalTime), version, onResponse, onProgress, doAll, referenceLayerIdentifier
+                  ).then(response => {
+                    onResponse(response, null)
+                  }).catch(error => {
+                    onResponse(null, error)
                   })
                 )
-              }
-              done(id)
-            }
 
-            // On Progress
-            const onProgress = (progress) => {
-              if (indicatorFetchingSession === session) {
-                dispatch(
-                  Actions.IndicatorsMetadata.progress(id, progress)
-                )
-              }
-            }
-            // Fetch data, when 10, wait data
-            const dataId = 'indicator-' + indicator.id
-            // For data that has less than 10k data
-            // Return all data first
-
-            const metadata = indicatorLayerMetadata[dataId]
-            if (metadata?.version) {
-              const version = metadata?.version
-              const doAll = !use_only_last_known_value && metadata?.count && metadata.count < MAX_COUNT_FOR_ALL_DATA
-
-              // If index is 1, waiting for this to be done
-              if (idx === 1) {
-                try {
-                  const response = await getDataFn(id, url, params, dictDeepCopy(selectedGlobalTime), version, onResponse, onProgress, doAll)
-                  onResponse(response, null)
-                } catch (error) {
-                  onResponse(null, error)
+                if (idx % 50 === 0) {
+                  await Promise.allSettled(promises)
+                  promises = []
                 }
-              } else {
-                getDataPromise(
-                  dataId, url, params, dictDeepCopy(selectedGlobalTime), version, onResponse, onProgress, doAll
-                ).then(response => {
-                  onResponse(response, null)
-                }).catch(error => {
-                  onResponse(null, error)
-                })
               }
             }
           }

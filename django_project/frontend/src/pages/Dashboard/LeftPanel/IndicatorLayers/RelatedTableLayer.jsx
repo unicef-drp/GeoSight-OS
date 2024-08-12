@@ -24,6 +24,9 @@ import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import FilterAltOffIcon from "@mui/icons-material/FilterAltOff";
 import { Actions } from "../../../../store/dashboard";
 import { fetchingData } from "../../../../Requests";
+import {
+  referenceLayerIndicatorLayer
+} from "../../../../utils/indicatorLayer";
 
 /**
  * Related table layer handler
@@ -32,13 +35,14 @@ export default function RelatedTableLayer({ relatedTableLayer }) {
   const dispatch = useDispatch();
   const {
     relatedTables,
-    referenceLayer,
+    referenceLayer: referenceLayerDashboard,
     indicatorLayers
   } = useSelector(state => state.dashboard.data)
+  const referenceLayer = referenceLayerIndicatorLayer(referenceLayerDashboard, relatedTableLayer)
   const relatedTableDataState = useSelector(state => state.relatedTableData)
+  const geometries = useSelector(state => state.datasetGeometries[referenceLayer.identifier]);
 
   const relatedTable = relatedTableLayer.related_tables[0]
-  const geometries = useSelector(state => state.geometries)
   const relatedTableData = relatedTableDataState[relatedTableLayer.related_tables[0].id]?.data
   const relatedTableConfig = relatedTables.find(rt => rt.id === relatedTable.id)
 
@@ -87,6 +91,7 @@ export default function RelatedTableLayer({ relatedTableLayer }) {
       if (indicatorLayer.config.date_format) {
         params.date_format = indicatorLayer.config.date_format
       }
+      params.version = relatedTable.version
       fetchingData(
         '/api/related-table/' + relatedTable.id + '/dates', params, {}, function (response, error) {
           if (!error) {

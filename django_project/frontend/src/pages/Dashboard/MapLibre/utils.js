@@ -54,6 +54,9 @@ export const hasSource = (map, id) => {
  * @param {String} id of layer
  */
 export const removeSource = (map, id) => {
+  map.getStyle().layers.filter(layer => layer.source === id).map(layer => {
+    removeLayer(map, layer.id)
+  })
   if (typeof map.getSource(id) !== 'undefined') {
     map.removeSource(id);
   }
@@ -141,7 +144,10 @@ export const addPopup = (map, id, popupRenderFn) => {
       })
 
       if (id === clickedId) {
-        const popupHtml = popupRenderFn(e.features[0].properties)
+        let popupHtml = popupRenderFn(e.features[0].properties)
+        if (!popupHtml) {
+          popupHtml = ''
+        }
         if (popup) {
           popup.remove()
         }
@@ -197,4 +203,27 @@ export const createElement = (
   if (content) el.append(...(content.filter(Boolean)));
   if (appendTo) appendTo.appendChild(el);
   return el;
+};
+
+/**
+ * Get before layer
+ * @param map
+ * @param layerId
+ * @param contextLayerOrder
+ * @returns {undefined|string}
+ */
+export const getBeforeLayerId = (map, layerId, contextLayerOrder) => {
+  if (contextLayerOrder) {
+    const contextLayerIdx = contextLayerOrder.indexOf(layerId)
+    for (let idx = 0; idx < contextLayerOrder.length; idx++) {
+      if (map && idx > contextLayerIdx) {
+        const currentId = 'context-layer-' + contextLayerOrder[idx] + '-line'
+        if (hasLayer(map, currentId)) {
+          return currentId;
+        }
+      }
+    }
+  } else {
+    return undefined;
+  }
 };

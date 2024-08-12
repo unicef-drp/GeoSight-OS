@@ -228,6 +228,7 @@
 
 .OptionMember {
   min-height: $base-input-height;
+  padding: 0.5rem 0 !important;
 
   &.Compact {
     font-size: 0.9rem !important;
@@ -236,6 +237,4 @@
   .MuiCheckbox-root {
     padding: 0 0 0 0.5rem !important;
   }
-
-  padding: 0.5rem 0 !important;
 }

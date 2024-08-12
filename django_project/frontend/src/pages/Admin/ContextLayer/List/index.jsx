@@ -35,7 +35,8 @@ export function resourceActions(params) {
 export default function ContextLayerList() {
   const pageName = pageNames.ContextLayer
   const columns = COLUMNS(pageName, urls.admin.contextLayerList);
-  columns[4] = {
+  columns[4] = { field: 'layer_type', headerName: 'Layer type', flex: 0.5 };
+  columns[5] = {
     field: 'actions',
     type: 'actions',
     cellClassName: 'MuiDataGrid-ActionsColumn',

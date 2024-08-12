@@ -24,11 +24,11 @@ import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 
 import { Actions } from '../../../../store/dashboard'
-import { getLayer } from "./Layer"
 import {
   dataStructureToTreeData
 } from "../../../../components/SortableTreeForm/utilities";
 import SidePanelTreeView from "../../../../components/SidePanelTree";
+import { getLayer } from "../../MapLibre/Layers/ContextLayers/Layer";
 
 import './style.scss'
 

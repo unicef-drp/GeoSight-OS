@@ -20,8 +20,9 @@ import './style.scss';
 export const USER_COLUMNS = [
   { field: 'id', headerName: 'id', hide: true },
   { field: 'username', headerName: 'Username', flex: 1 },
-  { field: 'email', headerName: 'Email', flex: 1 },
-  { field: 'name', headerName: 'Name', flex: 1 },
+  { field: 'email', headerName: 'Email address', flex: 1 },
+  { field: 'first_name', headerName: 'First name', flex: 1 },
+  { field: 'last_name', headerName: 'Last name', flex: 1 },
   { field: 'role', headerName: 'Role', flex: 1 },
 ]
 if (USE_AZURE) {

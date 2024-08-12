@@ -19,9 +19,11 @@ import uuid
 
 from dateutil import parser
 from django.contrib.gis.db import models
-from django.db import transaction
+from django.db import connection, transaction
 
-from core.models.general import AbstractEditData, AbstractTerm
+from core.models.general import (
+    AbstractEditData, AbstractTerm, AbstractVersionData
+)
 from geosight.data.models.field_layer import BaseFieldLayerAbstract
 from geosight.data.utils import extract_time_string
 from geosight.importer.utilities import date_from_timestamp
@@ -37,7 +39,7 @@ class RelatedTableException(Exception):
         super().__init__(self.message)
 
 
-class RelatedTable(AbstractTerm, AbstractEditData):
+class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
     """Related table data."""
 
     unique_id = models.UUIDField(
@@ -116,7 +118,11 @@ class RelatedTable(AbstractTerm, AbstractEditData):
         """Return fields of table."""
         if not self.relatedtablefield_set.count():
             self.set_fields()
-        return list(self.relatedtablefield_set.values_list('name', flat=True))
+        return list(
+            self.relatedtablefield_set.values_list(
+                'name', flat=True
+            ).order_by('name')
+        )
 
     def check_relation(self):
         """Check relation."""
@@ -157,109 +163,128 @@ class RelatedTable(AbstractTerm, AbstractEditData):
     def data_with_query(
             self, reference_layer_uuid,
             geo_field, date_field=None, date_format=None, geo_type='ucode',
-            max_time=None, min_time=None
+            max_time=None, min_time=None, limit=25, offset=None
     ):
         """Return data of related table."""
-        from geosight.data.serializer.related_table import (
-            RelatedTableRowSerializer
-        )
         from geosight.georepo.models.reference_layer import ReferenceLayerView
-        from geosight.georepo.models.entity import Entity, EntityCode
+        try:
+            reference_layer = ReferenceLayerView.objects.get(
+                identifier=reference_layer_uuid
+            )
+        except ReferenceLayerView.DoesNotExist:
+            return [], False
+
+        # Check codes based on code type
+        output = []
+        has_next = False
+        with connection.cursor() as cursor:
+            if geo_type.lower() == 'ucode':
+                query = (
+                    f"select row.id, row.order, row.data::json, "
+                    f"geom_id, concept_uuid, name, admin_level "
+                    f"from geosight_data_relatedtablerow as row "
+                    f"LEFT JOIN geosight_georepo_entity as entity "
+                    f"ON data ->> '{geo_field}'::text=entity.geom_id::text "
+                    f"WHERE row.table_id={self.id} AND "
+                    f"entity.reference_layer_id={reference_layer.id} "
+                    f"ORDER BY row.id"
+                )
+            else:
+                query = (
+                    f"select row.id, row.order, row.data::json, "
+                    f"geom_id, concept_uuid, name, admin_level "
+                    f"from geosight_data_relatedtablerow as row "
+                    f"LEFT JOIN geosight_georepo_entitycode as entity_code "
+                    f"ON data ->> '{geo_field}'::text=entity_code.code::text "
+                    f"AND LOWER(entity_code.code_type)='{geo_type.lower()}' "
+                    f"LEFT JOIN geosight_georepo_entity as entity "
+                    f"ON entity.id=entity_code.entity_id "
+                    f"WHERE row.table_id={self.id} AND "
+                    f"entity.reference_layer_id={reference_layer.id} "
+                    f"ORDER BY row.id"
+                )
+
+            if offset is not None:
+                query += f' LIMIT {limit} OFFSET {offset}'
+
+            cursor.execute(query)
+            rows = cursor.fetchall()
+            if len(rows) > 0:
+                has_next = True
+            for idx, row in enumerate(rows):
+                data = row[2]
+                try:
+                    date_time = data[date_field]
+                except KeyError:
+                    continue
+                data.update({
+                    'id': row[0],
+                    'order': row[1],
+                    'concept_uuid': row[4],
+                    'geometry_code': row[3],
+                    'geometry_name': row[5],
+                    'admin_level': row[6],
+                })
+                # Update date field
+                data[date_field] = extract_time_string(
+                    format_time=date_format,
+                    value=date_time
+                ).isoformat()
+                # Filter by date
+                if max_time and data[date_field] > max_time:
+                    continue
+                if min_time and data[date_field] < min_time:
+                    continue
+                output.append(data)
+        return output, has_next
+
+    def dates_with_query(
+            self, reference_layer_uuid,
+            geo_field, date_field=None, date_format=None, geo_type='ucode'
+    ):
+        """Return data of related table."""
+        from geosight.georepo.models.reference_layer import ReferenceLayerView
         try:
             reference_layer = ReferenceLayerView.objects.get(
                 identifier=reference_layer_uuid
             )
         except ReferenceLayerView.DoesNotExist:
             return []
-
-        # Check codes based on code type
-        if geo_type.lower() == 'ucode':
-            codes = Entity.objects.filter(
-                reference_layer=reference_layer
-            ).values_list('geom_id', flat=True)
-        else:
-            codes = EntityCode.objects.filter(
-                entity__reference_layer=reference_layer,
-                code_type=geo_type
-            ).values_list('code', flat=True)
-
-        lookup = f'data__{geo_field}__in'
-        queries = self.relatedtablerow_set.filter(**{lookup: list(codes)})
-        output = []
-        concept_uuid = {}
-        for row in queries:
-            data = RelatedTableRowSerializer(row).data
-            data.update(row.data)
-
-            try:
-                if date_field:
-                    # Update date field
-                    value = data[date_field]
-                    data[date_field] = extract_time_string(
-                        format_time=date_format,
-                        value=value
-                    ).isoformat()
-
-                    # Filter by date
-                    if max_time and data[date_field] > max_time:
-                        continue
-                    if min_time and data[date_field] < min_time:
-                        continue
-
-                # Update geo field
-                entity = None
-                value = data[geo_field]
-                if value in concept_uuid:
-                    entity = concept_uuid[value]
-                else:
-                    if geo_type.lower() == 'ucode':
-                        entity = Entity.objects.filter(
-                            geom_id=value,
-                            reference_layer=reference_layer
-                        ).first()
-                    else:
-                        entity_code = EntityCode.objects.filter(
-                            entity__reference_layer=reference_layer,
-                            code=value,
-                            code_type=geo_type
-                        ).first()
-                        if entity_code:
-                            entity = entity_code.entity
-
-                # If entity exist, add to output
-                if entity:
-                    data['concept_uuid'] = entity.concept_uuid
-                    data['geometry_code'] = entity.geom_id
-                    data['geometry_name'] = entity.name
-                    data['admin_level'] = entity.admin_level
-                    concept_uuid[value] = entity
-                    output.append(data)
-            except (KeyError, ValueError, Entity.DoesNotExist):
-                pass
-        return output
-
-    def dates_with_query(self, codes, geo_field, date_field, date_format):
-        """Return data of related table."""
-        lookup = f'data__{geo_field}__in'
-        value_list = f'data__{date_field}'
-        dates = self.relatedtablerow_set.filter(
-            **{lookup: list(codes)}
-        ).values_list(value_list, flat=True)
-
-        output = []
-        for value in dates:
-            try:
-                # Update date field
-                output.append(
-                    extract_time_string(
-                        format_time=date_format,
-                        value=value
-                    ).isoformat()
+        with connection.cursor() as cursor:
+            if geo_type.lower() == 'ucode':
+                query = (
+                    f"select DISTINCT(data ->> '{date_field}') "
+                    f"from geosight_data_relatedtablerow as row "
+                    f"LEFT JOIN geosight_georepo_entity as entity "
+                    f"ON data ->> '{geo_field}'::text=entity.geom_id::text "
+                    f"WHERE row.table_id={self.id} AND "
+                    f"entity.reference_layer_id={reference_layer.id} "
+                    f"ORDER BY data ->> '{date_field}'"
                 )
-
-            except (KeyError, ValueError):
-                pass
-        return list(set(output))
+            else:
+                query = (
+                    f"select DISTINCT(data ->> '{date_field}') "
+                    f"from geosight_data_relatedtablerow as row "
+                    f"LEFT JOIN geosight_georepo_entitycode as entity_code "
+                    f"ON data ->> '{geo_field}'::text=entity_code.code::text "
+                    f"AND LOWER(entity_code.code_type)='{geo_type.lower()}' "
+                    f"LEFT JOIN geosight_georepo_entity as entity "
+                    f"ON entity.id=entity_code.entity_id "
+                    f"WHERE row.table_id={self.id} AND "
+                    f"entity.reference_layer_id={reference_layer.id} "
+                    f"ORDER BY data ->> '{date_field}'"
+                )
+            cursor.execute(query)
+            dates = []
+            for row in cursor.fetchall():
+                if row[0]:
+                    dates.append(
+                        extract_time_string(
+                            format_time=date_format,
+                            value=row[0]
+                        ).isoformat()
+                    )
+        return dates
 
     @property
     def fields_definition(self):
@@ -397,6 +422,21 @@ class RelatedTable(AbstractTerm, AbstractEditData):
             pass
 
         query.exclude(id__in=ids).delete()
+
+    @property
+    def last_importer(self):
+        """Return last importer."""
+        from django.urls import reverse
+        from geosight.importer.models.attribute import ImporterAttribute
+        attribute = ImporterAttribute.objects.filter(
+            name='related_table_id', value=self.id
+        ).order_by('importer_id').last()
+        if attribute:
+            return reverse(
+                'admin:geosight_importer_importer_change',
+                args=(attribute.importer.id,)
+            )
+        return None
 
 
 class RelatedTableRow(models.Model):

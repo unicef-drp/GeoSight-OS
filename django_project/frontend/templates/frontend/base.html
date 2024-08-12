@@ -130,10 +130,18 @@
       'referenceDatasetList': "{% url 'admin-reference-layer-view-list-view' %}",
       'referenceDatesetImporterList': "{% url 'admin-reference-layer-view-importer-list-view' %}",
 
-      {# ACCESS REQUEST#}
+      {# ACCESS REQUEST #}
       'accessRequest': "{% url "admin-access-request-list-view" %}",
     },
     'api': {}
+  }
+
+  urls.statics = {
+    sample:{% if USE_AZURE %}
+      '{% static "sample/batch.group.azure.csv" %}'
+    {% else %}
+      '{% static "sample/batch.group.csv" %}'
+    {% endif %}
   }
 
   /**

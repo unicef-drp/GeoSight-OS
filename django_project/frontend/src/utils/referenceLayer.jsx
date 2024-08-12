@@ -14,7 +14,7 @@
  */
 
 import { getRelatedTableData } from "./relatedTable";
-import { UpdateStyleData } from "./indicatorData";
+import { getIndicatorDataByLayer, UpdateStyleData } from "./indicatorData";
 import { extractCode } from "./georepo";
 import {
   indicatorLayerId,
@@ -30,9 +30,12 @@ const temporary = {}
  */
 export function returnValueByGeometry(
   layer, indicators, indicatorsData, relatedTableData,
-  selectedGlobalTime, geoField, filteredGeometries
+  selectedGlobalTime, geoField, filteredGeometries, referenceLayer, selectedAdminLevel
 ) {
-  const identifier = JSON.stringify(layer) + JSON.stringify(indicators) + JSON.stringify(indicatorsData) + JSON.stringify(relatedTableData) + JSON.stringify(selectedGlobalTime) + JSON.stringify(geoField) + JSON.stringify(filteredGeometries)
+  let identifier = JSON.stringify(layer) + JSON.stringify(indicators) + JSON.stringify(indicatorsData) + JSON.stringify(relatedTableData) + JSON.stringify(selectedGlobalTime) + JSON.stringify(geoField) + JSON.stringify(filteredGeometries)
+  if (selectedAdminLevel) {
+    identifier += selectedAdminLevel
+  }
   const temp = temporary[identifier]
   if (temp) {
     return temp
@@ -54,8 +57,9 @@ export function returnValueByGeometry(
     if (layer.indicators.length) {
       layer.indicators.map(indicatorLayer => {
         const indicator = indicators.find(indicator => indicatorLayer.id === indicator.id)
-        if (indicator && indicatorsData[indicator.id]?.fetched) {
-          indicatorsData[indicator.id]?.data.forEach(function (data) {
+        const indicatorData = getIndicatorDataByLayer(indicator.id, indicatorsData, layer, referenceLayer)
+        if (indicator && indicatorData?.fetched) {
+          indicatorData?.data.forEach(function (data) {
             data.indicator = indicator
             allData.push(data);
           })
@@ -66,7 +70,9 @@ export function returnValueByGeometry(
         relatedTableData[layer.related_tables[0].id]?.data,
         layer.config,
         selectedGlobalTime,
-        geoField
+        geoField,
+        true,
+        selectedAdminLevel
       )
       if (rows) {
         const data = UpdateStyleData(rows, layer)

@@ -236,6 +236,10 @@ class DashboardData(APIView):
                     resource['permission'] = obj.permission.all_permission(
                         request.user
                     )
+                    try:
+                        resource['version'] = obj.version
+                    except AttributeError:
+                        pass
                 except (
                         RelatedTable.DoesNotExist,
                         Indicator.DoesNotExist,

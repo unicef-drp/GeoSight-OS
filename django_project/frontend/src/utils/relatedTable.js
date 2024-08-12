@@ -15,7 +15,7 @@
 
 import alasql from "alasql";
 import { isValidDate, parseDateTime, updateDate } from "./main"
-import { spacedField } from "./queryExtraction";
+import { queryData, spacedField } from "./queryExtraction";
 import { COUNT_UNIQUE } from "../components/SqlQueryGenerator/Aggregation";
 import {
   INTERNEXT_QUERY_BEFORE,
@@ -23,12 +23,36 @@ import {
   INTERVAL_QUERY_BEFORE,
   INTERVAL_REGEX
 } from "../components/SqlQueryGenerator/WhereQueryGenerator";
+import { deepClone } from "@mui/x-data-grid/utils/utils";
 
+const cache = {}
 /**
  * Return related table data
  */
-export const getRelatedTableData = (data, config, selectedGlobalTime, geoField = 'geometry_code', aggregateDate = true) => {
+export const getRelatedTableData = (data, config, selectedGlobalTime, geoField = 'geometry_code', aggregateDate = true, adminLevel = null) => {
   if (data) {
+    // Get admin level
+    if (adminLevel == null) {
+      adminLevel = data[0]?.admin_level
+    }
+    const identifier = JSON.stringify(
+      {
+        count: data.length,
+        config: config,
+        selectedGlobalTime: selectedGlobalTime,
+        geoField: geoField,
+        aggregateDate: aggregateDate,
+        adminLevel: adminLevel
+      }
+    )
+    if (cache[identifier]) {
+      return cache[identifier]
+    }
+
+    // Filter by admin level
+    if (adminLevel !== null) {
+      data = data.filter(row => row.admin_level == adminLevel)
+    }
     data = JSON.parse(JSON.stringify(data))
     const { aggregation } = config
 
@@ -108,6 +132,9 @@ export const getRelatedTableData = (data, config, selectedGlobalTime, geoField =
             value: result._value,
           }
         })
+        cache[identifier] = {
+          rows: results
+        }
         return {
           rows: results
         }
@@ -183,6 +210,9 @@ export const getRelatedTableData = (data, config, selectedGlobalTime, geoField =
             value: result._value,
           }
         })
+        cache[identifier] = {
+          rows: results
+        }
         return {
           rows: results
         }
@@ -203,12 +233,18 @@ export const getRelatedTableData = (data, config, selectedGlobalTime, geoField =
  * Return geojson from related table data, based on lat and lon field, and a optional query
  */
 export const buildGeojsonFromRelatedData = (data, lon_field, lat_field, query = undefined) => {
-  const where = query.replaceAll('"', '`')
-  const sql = `SELECT * FROM ? as data WHERE ${where}`;
-
-  const finalData = where ?
-    alasql(sql, [data]) :
-    data
+  const cleanData = deepClone(data)
+  cleanData.map(row => row._value = row.value)
+  let finalData = data
+  if (query) {
+    const where = query.replaceAll('"', '`').replace(/`(.*?)`/g, function (match, text, href) {
+      if (match.includes("'")) {
+        return match.replaceAll('`', '"')
+      }
+      return match
+    }).replaceAll('value', '_value');
+    finalData = queryData(cleanData, where);
+  }
 
   const features = finalData.map(result => ({
     type: 'Feature',
@@ -226,7 +262,6 @@ export const buildGeojsonFromRelatedData = (data, lon_field, lat_field, query = 
 
   return featureCollection;
 };
-
 
 
 /***

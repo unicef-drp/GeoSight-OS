@@ -254,15 +254,15 @@ main {
     height: 90%;
 
     .MuiBox-root {
-      .AdminContent {
-        padding-top: 1rem;
-      }
-
       display: flex;
       flex-direction: column;
       width: 90%;
       height: 100%;
       max-width: 90%;
+
+      .AdminContent {
+        padding-top: 1rem;
+      }
     }
   }
 }

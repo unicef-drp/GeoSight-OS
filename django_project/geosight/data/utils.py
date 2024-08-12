@@ -81,6 +81,8 @@ def update_structure(structure: dict, id_mapping: dict):
 
 def extract_time_string(format_time, value):
     """Return time from string."""
+    if value is None:
+        return None
     if value.__class__ in [int, float] and len(str(value)) in [10, 13]:
         if len(str(value)) == 13:
             value = value / 1000
@@ -92,8 +94,8 @@ def extract_time_string(format_time, value):
             format_time = 'timestamp'
         try:
             if format_time == 'timestamp':
-                value_int = int(value)
-                value_str = str(value_int)
+                value = int(float(value))
+                value_str = str(value)
                 # If len is not 10 or 13
                 if len(value_str) not in [10, 13]:
                     raise ValueError()
@@ -101,7 +103,6 @@ def extract_time_string(format_time, value):
                 # If 13, which is has microseconds
                 if len(value_str) == 13:
                     value = value / 1000
-
                 return datetime.fromtimestamp(
                     value
                 ).replace(tzinfo=pytz.timezone(settings.TIME_ZONE))

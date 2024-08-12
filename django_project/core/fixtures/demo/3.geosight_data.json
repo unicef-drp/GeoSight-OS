@@ -492,9 +492,26 @@
       "creator": 1,
       "created_at": "2023-07-27T08:46:41.085Z",
       "modified_at": "2023-11-03T08:38:19.640Z",
-      "style_type": "Style from library.",
+      "style_type": "Dynamic quantitative style.",
       "style": 1,
-      "style_config": {},
+      "style_config": {
+        "sync_filter": false,
+        "no_data_rule": {
+          "name": "No data",
+          "rule": "No data",
+          "color": "#D8D8D8",
+          "active": "true",
+          "outline_size": "0.5",
+          "outline_color": "#ffffff"
+        },
+        "outline_size": 0.5,
+        "sync_outline": false,
+        "color_palette": 5,
+        "outline_color": "#FFFFFF",
+        "dynamic_class_num": "7",
+        "color_palette_reverse": false,
+        "dynamic_classification": "Natural breaks."
+      },
       "label_config": {
         "style": {
           "maxZoom": 24,
@@ -17108,7 +17125,8 @@
         "id": "0cf47b4d-3410-4410-b05e-4e825832350f",
         "group": "",
         "children": [
-          33
+          33,
+          34
         ]
       },
       "level_config": {
@@ -18942,6 +18960,29 @@
         "geographicalUnitType": "Predefined list",
         "indicatorsPaletteColor": 3,
         "geographicalUnitPaletteColor": 0
+      }
+    }
+  },
+  {
+    "model": "geosight_data.dashboardwidget",
+    "pk": 34,
+    "fields": {
+      "name": "Total of Sample indicator A",
+      "description": "",
+      "dashboard": 53,
+      "order": 2,
+      "visible_by_default": true,
+      "group": null,
+      "relation_group": null,
+      "type": "SummaryWidget",
+      "config": {
+        "unit": "",
+        "layer_id": 318,
+        "property": "value",
+        "operation": "Sum",
+        "layer_used": "Indicator",
+        "date_filter_type": "No filter",
+        "date_filter_value": "2024-12-12T00:00:00.000Z;"
       }
     }
   },

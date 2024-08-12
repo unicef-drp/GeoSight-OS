@@ -80,7 +80,7 @@ export default function ImporterLogData() {
     indicators: defaultFilters.indicators ? splitParams(defaultFilters.indicators) : [],
     datasets: defaultFilters.datasets ? splitParams(defaultFilters.datasets, false) : [],
     levels: defaultFilters.levels ? splitParams(defaultFilters.levels) : [],
-    status: defaultFilters.status ? splitParams(defaultFilters.status) : [],
+    status: defaultFilters.status ? splitParams(defaultFilters.status, false) : [],
     geographies: defaultFilters.geographies ? splitParams(defaultFilters.geographies) : [],
     fromTime: defaultFilters.fromTime ? defaultFilters.fromTime : null,
     toTime: defaultFilters.toTime ? defaultFilters.toTime : null,
@@ -208,7 +208,6 @@ export default function ImporterLogData() {
         const isDate = isValueDate(key, columnDetail)
         columnsByDict[key] = {
           renderCell: (params) => {
-            console.log(params.row)
             const value = params.row.data[params.field]
             const note = params.row.note
             if (note && note[key]) {

@@ -17,7 +17,7 @@ on:
   push:
     branches: [ main ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, version-2.0.0 ]
 
 jobs:
   flake8_py3:
@@ -42,6 +42,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   django_app_test:
+    needs: flake8_py3
     name: 'Django App'
     runs-on: ubuntu-latest
     env:
