@@ -14,7 +14,10 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import json
+
 from django.contrib.auth.views import LoginView
+
 from core.models.preferences import SitePreferences
 from core.serializer.user import UserSerializer
 
@@ -47,5 +50,7 @@ class LoginPageView(LoginView):
             'login_help_text': SitePreferences.preferences().login_help_text
         })
         if self.request.user.is_authenticated:
-            context['user'] = UserSerializer(self.request.user).data
+            context['user'] = json.dumps(
+                UserSerializer(self.request.user).data
+            )
         return context

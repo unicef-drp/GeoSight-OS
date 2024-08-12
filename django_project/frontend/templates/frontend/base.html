@@ -83,10 +83,6 @@
   const maxZoom = 24;
   {% if request.user.is_authenticated %}
     const user = {{ user|safe }};
-    user.is_staff = user.is_staff === 'true'
-    user.is_contributor = user.is_contributor === 'true'
-    user.is_creator = user.is_creator === 'true'
-    user.is_admin = user.is_admin === 'true'
   {% else %}
     const user = {};
   {% endif %}
@@ -131,6 +127,8 @@
       'relatedTableList': "{% url "admin-related-table-list-view" %}",
       'importer': "{% url "admin-importer-create-view" %}",
       'dataManagement': "{% url 'admin-data-management-list-view' %}",
+      'referenceDatasetList': "{% url 'admin-reference-layer-view-list-view' %}",
+      'referenceDatesetImporterList': "{% url 'admin-reference-layer-view-importer-list-view' %}",
 
       {# ACCESS REQUEST #}
       'accessRequest': "{% url "admin-access-request-list-view" %}",

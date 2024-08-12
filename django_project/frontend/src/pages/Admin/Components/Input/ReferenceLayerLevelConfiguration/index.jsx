@@ -73,17 +73,6 @@ export const ViewLevelConfiguration = forwardRef(
       }
     }, [referenceLayerData, data]);
 
-    useEffect(() => {
-      if (referenceLayer.identifier && !referenceLayerData) {
-        dispatch(
-          Actions.ReferenceLayerData.fetch(
-            dispatch, referenceLayer.identifier,
-            GeorepoUrls.ViewDetail(referenceLayer.identifier)
-          )
-        )
-      }
-    }, [referenceLayer]);
-
     // Create choices from levels
     const levels = datasetLevels ? datasetLevels.map(level => level.level_name) : []
     const defaultLevel = datasetLevels?.find(level => level.level === data.default_level)?.level_name

@@ -15,8 +15,12 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib.gis.db import models
+from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
+from core.signals import (
+    delete_file_on_delete, delete_file_on_change,
+)
 from geosight.importer.models.importer import Importer
 
 
@@ -62,3 +66,22 @@ class ImporterMapping(models.Model):
     def __str__(self):
         """Return str."""
         return f'{self.name}'
+
+
+@receiver(models.signals.post_delete, sender=ImporterAttribute)
+def auto_delete_file_on_delete(sender, instance, **kwargs):
+    """Delete file from filesystem.
+
+    when corresponding `MediaFile` object is deleted.
+    """
+    delete_file_on_delete(sender, instance, **kwargs)
+
+
+@receiver(models.signals.pre_save, sender=ImporterAttribute)
+def auto_delete_file_on_change(sender, instance, **kwargs):
+    """Delete old file from filesystem.
+
+    when corresponding `MediaFile` object is updated
+    with new file.
+    """
+    delete_file_on_change(sender, instance, **kwargs)

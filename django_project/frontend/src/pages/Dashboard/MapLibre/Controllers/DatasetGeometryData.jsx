@@ -30,6 +30,7 @@ import {
 } from "../../../../utils/georepo";
 import { apiReceive } from "../../../../store/reducers_api";
 import { fetchJSON } from "../../../../Requests";
+import { InternalReferenceDatasets } from "../../../../utils/urls";
 
 /**
  * Handling geometry data.
@@ -39,6 +40,7 @@ export default function DatasetGeometryData() {
   const { data } = useSelector(state => state.dashboard);
   const referenceLayerDataState = useSelector(state => state.referenceLayerData)
   const datasets = datasetListFromDashboardData(data)
+  const identifiers = datasets.map(dataset => dataset.identifier)
 
 
   /** Run script when data of dashboard changed */
@@ -47,19 +49,22 @@ export default function DatasetGeometryData() {
       async () => {
         // Fetch reference layer data
         dispatch(
-          Actions.GlobalState.update({ datasets: datasets })
+          Actions.GlobalState.update({ datasets: identifiers })
         )
 
         const referenceLayerData = dictDeepCopy(referenceLayerDataState)
         for (let i = 0; i < datasets.length; i++) {
-          const identifier = datasets[i]
+          const identifier = datasets[i].identifier
           if (!referenceLayerData[identifier]) {
             dispatch(
               Actions.ReferenceLayerData.request(identifier)
             )
 
             // Fetch the data
-            const url = GeorepoUrls.ViewDetail(identifier)
+            let url = GeorepoUrls.ViewDetail(identifier)
+            if (datasets[i].is_local) {
+              url = InternalReferenceDatasets.detail(identifier)
+            }
             await axiosGet(url).then(response => {
               referenceLayerData[identifier] = apiReceive({
                 data: response.data,
@@ -100,15 +105,18 @@ export default function DatasetGeometryData() {
               });
             });
           }
-        }
 
-        // Geometry data
-        for (let i = 0; i < datasets.length; i++) {
-          const identifier = datasets[i]
+          // ------------------------------------------
+          // ----------- CENTROID DATA ----------------
+          // ------------------------------------------
           const currGeometries = {}
           const geometryDataDict = {}
           const geometryMemberByUcode = {}
-          const url = `${preferences.georepo_api.api}/search/view/${identifier}/centroid/`
+          let url = `${preferences.georepo_api.api}/search/view/${identifier}/centroid/`
+          if (datasets[i].is_local) {
+            url = InternalReferenceDatasets.centroid(identifier)
+          }
+
           await axiosGet(url).then(async centroidResponse => {
             const centroids = centroidResponse.data
             for (let i = 0; i < centroids.length; i++) {
@@ -178,7 +186,7 @@ export default function DatasetGeometryData() {
         }
       }
     )()
-  }, [JSON.stringify(datasets)]);
+  }, [JSON.stringify(identifiers)]);
 
   return null
 }

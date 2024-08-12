@@ -42,6 +42,10 @@ export const pageNames = {
 
   // Profile
   UserProfile: 'User Profile',
+
+  // ReferenceLayerView
+  ReferenceLayerView: 'Reference Dataset',
+  referenceDatesetImporter: 'Reference Dataset Importer',
 }
 
 /**

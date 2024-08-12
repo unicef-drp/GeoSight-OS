@@ -101,6 +101,11 @@ class AzureUserForm(AzureAdminForm):
         label='Receive admin notification',
         help_text='Designates whether the user receive notification.'
     )
+    manage_local_dataset = forms.BooleanField(
+        required=False,
+        label='Able to manage local dataset',
+        help_text='Designates whether the user able to manage local dataset.'
+    )
 
     def clean_is_staff(self):
         """Check is_staff."""
@@ -114,7 +119,7 @@ class AzureUserForm(AzureAdminForm):
         model = User
         fields = (
             'first_name', 'last_name', 'email', 'role',
-            'is_staff', 'receive_notification'
+            'is_staff', 'receive_notification', 'manage_local_dataset'
         )
 
     @staticmethod
@@ -123,6 +128,9 @@ class AzureUserForm(AzureAdminForm):
         initial = model_to_dict(model)
         initial['role'] = model.profile.role
         initial['receive_notification'] = model.profile.receive_notification
+        initial['manage_local_dataset'] = (
+            model.profile.able_to_manage_local_dataset
+        )
         return initial
 
 
@@ -174,7 +182,7 @@ class UserEditForm(AzureUserForm):
         model = User
         fields = (
             'first_name', 'last_name', 'role', 'email', 'is_staff',
-            'receive_notification'
+            'receive_notification', 'manage_local_dataset'
         )
 
     def __init__(self, *args, **kwargs):
@@ -197,6 +205,11 @@ class UserViewerEditForm(AzureAdminForm):
         required=False,
         label='Receive admin notification',
         help_text='Designates whether the user receive notification.'
+    )
+    manage_local_dataset = forms.BooleanField(
+        required=False,
+        label='Able to manage local dataset',
+        help_text='Designates whether the user able to manage local dataset.'
     )
 
     class Meta:  # noqa: D106

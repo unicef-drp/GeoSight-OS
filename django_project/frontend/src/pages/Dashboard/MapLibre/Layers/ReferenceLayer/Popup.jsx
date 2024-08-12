@@ -332,7 +332,7 @@ export function getContext(
   const url = urls.drilldown.replace('concept_uuid', concept_uuid)
   const params = {
     rtconfigs: JSON.stringify(indicatorLayersConfig),
-    reference_layer_uuid: referenceLayerData?.data?.uuid
+    reference_layer_uuid: referenceLayerData?.data?.uuid ? referenceLayerData?.data?.uuid : referenceLayerData?.data?.identifier
   }
   const session = new Session('FetchingPopupContext')
   fetchingData(
@@ -383,11 +383,16 @@ export function popup(
 ) {
   addPopup(map, FILL_LAYER_ID, featureProperties => {
     let geom_id = extractCode(featureProperties, geomFieldOnVectorTile)
+    let levelName = featureProperties.type
+    if (!levelName) {
+      const levelFound = referenceLayerData?.data?.dataset_levels?.find(level => level.level === featureProperties.level)
+      levelName = levelFound?.level_name
+    }
     let geometryProperties = {
       name: featureProperties.label,
       geom_code: featureProperties.ucode,
       admin_level: featureProperties.level,
-      admin_level_name: featureProperties.type,
+      admin_level_name: levelName,
       concept_uuid: featureProperties.concept_uuid,
     }
     let concept_uuid = geometryProperties.concept_uuid
