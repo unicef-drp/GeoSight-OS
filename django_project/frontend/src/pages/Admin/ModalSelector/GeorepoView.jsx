@@ -166,7 +166,7 @@ export default function GeorepoViewSelector(
     beforeChildren={
       <>
         {
-          preferences.enable_local_dataset ?
+          preferences.enable_local_dataset && preferences.use_georepo ?
             <FormControl className='RadioButtonControl'>
               <RadioGroup
                 value={sourceType}
@@ -180,7 +180,7 @@ export default function GeorepoViewSelector(
             </FormControl> : null
         }
         {
-          sourceType === 'remote' ?
+          sourceType === 'remote' && preferences.use_georepo ?
             <FormControl className='InputControl'>
               <SelectWithList
                 placeholder={references ? 'Select dataset' : 'Loading'}
