@@ -16,8 +16,8 @@ test.describe('Create complex project', () => {
     // --------------------------------------------------------------
     await page.waitForSelector('.Home', { timeout: timeout });
     await page.getByText('Admin panel').click();
-    await expect(page.getByText('Add New Project')).toBeVisible();
-    await page.getByText('Add New Project').click();
+    await expect(page.getByText('Create New Project')).toBeVisible();
+    await page.getByText('Create New Project').click();
     await expect(page.getByText('Save')).toBeVisible();
     await page.locator(".ReferenceDatasetSection input").click();
     await page.locator(".ModalDataSelector .MuiDataGrid-row").click();
@@ -227,7 +227,7 @@ test.describe('Create complex project', () => {
 
     await page.locator('.MoreActionIcon').click();
     await page.locator('.MuiMenu-root .MuiButtonBase-root .error').click();
-    await expect(page.getByText('Add New Project')).toBeVisible();
+    await expect(page.getByText('Create New Project')).toBeVisible();
     await expect(page.getByText('Test Project Complex Config')).toBeHidden()
   });
 });

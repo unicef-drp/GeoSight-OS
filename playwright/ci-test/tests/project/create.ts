@@ -24,8 +24,8 @@ test.describe('Create project', () => {
     });
     await page.waitForSelector('.Home', { timeout: timeout });
     await page.getByText('Admin panel').click();
-    await expect(page.getByText('Add New Project')).toBeVisible();
-    await page.getByText('Add New Project').click();
+    await expect(page.getByText('Create New Project')).toBeVisible();
+    await page.getByText('Create New Project').click();
     await page.locator(".ReferenceDatasetSection input").click();
     await page.locator(".ModalDataSelector .MuiDataGrid-row").click();
     await page.locator("#SummaryName").fill('Test Project Default');
@@ -158,7 +158,7 @@ test.describe('Create project', () => {
 
     // TODO:
     //  Check why this is not working
-    // await expect(page.getByText('Add New Project')).toBeVisible();
+    // await expect(page.getByText('Create New Project')).toBeVisible();
     // await expect(page.getByText('Test Project Default')).toBeHidden();
   });
 
@@ -169,8 +169,8 @@ test.describe('Create project', () => {
     // --------------------------------------------------------------
     await page.waitForSelector('.Home', { timeout: timeout });
     await page.getByText('Admin panel').click();
-    await expect(page.getByText('Add New Project')).toBeVisible();
-    await page.getByText('Add New Project').click();
+    await expect(page.getByText('Create New Project')).toBeVisible();
+    await page.getByText('Create New Project').click();
     await expect(page.getByText('Save')).toBeVisible();
     await page.locator(".ReferenceDatasetSection input").click();
     await page.locator(".ModalDataSelector .MuiDataGrid-row").click();
@@ -254,7 +254,7 @@ test.describe('Create project', () => {
 
     await page.locator('.MoreActionIcon').click();
     await page.locator('.MuiMenu-root .MuiButtonBase-root .error').click();
-    await expect(page.getByText('Add New Project')).toBeVisible();
+    await expect(page.getByText('Create New Project')).toBeVisible();
     await expect(page.getByText('Test Project Override Config')).toBeHidden()
   });
 });
