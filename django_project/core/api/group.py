@@ -118,11 +118,8 @@ class GroupUpdateBatchUserAPI(APIView):
                 for idx, row in enumerate(list(reader)):
                     try:
                         data = {
-                            'first_name': row['First name'],
-                            'last_name': row['Last name'],
                             'email': row['Email address']
                         }
-                        role = row['Role']
                         try:
                             # If azure, use email instead
                             if settings.USE_AZURE:
@@ -146,11 +143,16 @@ class GroupUpdateBatchUserAPI(APIView):
                                 user = User.objects.get(username=username)
                                 user.groups.add(group)
                         except User.DoesNotExist:
+                            data.update({
+                                'first_name': row['First name'],
+                                'last_name': row['Last name'],
+                            })
                             user, _ = User.objects.get_or_create(
                                 username=data['username'],
                                 defaults=data
                             )
                             try:
+                                role = row['Role']
                                 Profile.update_role(user=user, role=role)
                             except RoleDoesNotFound:
                                 raise RoleDoesNotFound(
