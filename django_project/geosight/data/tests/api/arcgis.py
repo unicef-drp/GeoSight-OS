@@ -44,7 +44,8 @@ class ARCGISProxyApiTest(TestCase, BaseTestWithPatchResponses):
             request_method='POST'
         ),
         PatchReqeust(
-            'https://arcgis.example.test/FeatureServer/?test=true&token=ThisIsToken',
+            'https://arcgis.example.test/FeatureServer/?test='
+            'true&token=ThisIsToken',
             response={
                 'result': 'OK'
             },
