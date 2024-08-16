@@ -37,7 +37,7 @@ class ArcgisConfigProxy(ProxyView):
             return HttpResponseBadRequest(f'{self.key} is required')
 
         # Check if config host same with host
-        config_host, _ = parse_url(
+        config_host, _, _ = parse_url(
             parse.unquote(config.generate_token_url)
         )
         input_url = parse.unquote(url)
@@ -52,14 +52,14 @@ class ArcgisConfigProxy(ProxyView):
         url = set_query_parameter(
             input_url, params
         )
-        url_host, params = parse_url(parse.unquote(url))
+        url_host, path, params = parse_url(parse.unquote(url))
         if config_host != url_host:
             return HttpResponseBadRequest(
                 'Url host does not match with config'
             )
 
         # Just allow FeatureServer or MapServer
-        if all(c not in input_url for c in ['/FeatureServer/', '/MapServer/']):
+        if all(c not in path for c in ['/FeatureServer/', '/MapServer/']):
             return HttpResponseBadRequest(
                 'Just allow FeatureServer or MapServer'
             )

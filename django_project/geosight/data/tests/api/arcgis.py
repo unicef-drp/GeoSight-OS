@@ -42,6 +42,13 @@ class ARCGISProxyApiTest(TestCase, BaseTestWithPatchResponses):
                 'expires': 3600000,
             },
             request_method='POST'
+        ),
+        PatchReqeust(
+            'https://arcgis.example.test/FeatureServer/?test=true&token=ThisIsToken',
+            response={
+                'result': 'OK'
+            },
+            request_method='GET'
         )
     ]
 
@@ -100,3 +107,24 @@ class ARCGISProxyApiTest(TestCase, BaseTestWithPatchResponses):
         self.assertTrue(
             'FeatureServer' in response.content.decode('utf-8')
         )
+        _url_param = parse.quote(
+            'https://arcgis.example.test/test/?test=true&test=/FeatureServer/'
+        )
+        response = client.get(self.url + f'?url={_url_param}')
+        self.assertEqual(response.status_code, 400)
+        self.assertTrue(
+            'FeatureServer' in response.content.decode('utf-8')
+        )
+
+    @responses.activate
+    def test_url_allowed_ok(self):
+        """Test if host not same."""
+        self.init_mock_requests()
+        self.config.generate_token()
+        client = Client()
+        _url_param = parse.quote(
+            'https://arcgis.example.test/FeatureServer/?test=true'
+        )
+        response = client.get(self.url + f'?url={_url_param}')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['result'], 'OK')
