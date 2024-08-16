@@ -14,6 +14,7 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+from .arcgis import *  # noqa
 from .basemap import *  # noqa
 from .context_layer import *  # noqa
 from .dashboard import *  # noqa
