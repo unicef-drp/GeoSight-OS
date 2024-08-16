@@ -14,9 +14,13 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '16/08/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
+from urllib import parse
+
 import responses
 from django.contrib.auth import get_user_model
+from django.test.client import Client
 from django.test.testcases import TestCase
+from django.urls import reverse
 
 from core.tests.base_test_patch_responses import (
     BaseTestWithPatchResponses, PatchReqeust
@@ -52,6 +56,10 @@ class ARCGISProxyApiTest(TestCase, BaseTestWithPatchResponses):
             password='test',
         )
 
+        self.url = reverse(
+            'arcgis-config-proxy', kwargs={'pk': self.config.id}
+        )
+
     @responses.activate
     def test_token_generated(self):
         """Test if token generated"""
@@ -60,8 +68,35 @@ class ARCGISProxyApiTest(TestCase, BaseTestWithPatchResponses):
         self.assertEqual(self.config.token_val, self.token)
 
     @responses.activate
-    def test_token_generated(self):
-        """Test if token generated"""
-        self.init_mock_requests()
-        self.config.generate_token()
-        self.assertEqual(self.config.token_val, self.token)
+    def test_url_not_have_key(self):
+        """Test if host not same."""
+        client = Client()
+        response = client.get(self.url)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.content.decode('utf-8'),
+            'url is required'
+        )
+
+    @responses.activate
+    def test_url_not_same_host(self):
+        """Test if host not same."""
+        client = Client()
+        _url_param = parse.quote('https://arcgis.example.com/test/?test=true')
+        response = client.get(self.url + f'?url={_url_param}')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.content.decode('utf-8'),
+            'Url host does not match with config'
+        )
+
+    @responses.activate
+    def test_url_not_allowed_feature_map_server(self):
+        """Test if host not same."""
+        client = Client()
+        _url_param = parse.quote('https://arcgis.example.test/test/?test=true')
+        response = client.get(self.url + f'?url={_url_param}')
+        self.assertEqual(response.status_code, 400)
+        self.assertTrue(
+            'FeatureServer' in response.content.decode('utf-8')
+        )
