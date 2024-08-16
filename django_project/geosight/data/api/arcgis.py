@@ -20,6 +20,7 @@ from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 
 from core.api.proxy import ProxyView
+from core.settings.utils import ABS_PATH
 from core.utils import set_query_parameter
 from geosight.data.models.arcgis import ArcgisConfig
 
@@ -35,10 +36,17 @@ class ArcgisConfigProxy(ProxyView):
         url = request.GET.get(self.key, None)
         if not url:
             return HttpResponseBadRequest(f'{self.key} is required')
+
         params = {}
         for key, value in request.GET.items():
             if key != self.key:
                 params[key] = value
+
+
+        file = ABS_PATH('arcgis_request')
+        with open(file, 'a') as fd:
+            fd.write(f'\n{set_query_parameter(parse.unquote(url), params)}')
+
         params['token'] = config.token_val
         url = set_query_parameter(parse.unquote(url), params)
         return self.fetch(url)
