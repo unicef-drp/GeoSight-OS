@@ -48,7 +48,6 @@ class BaseTestWithPatchResponses:
 
     def _mock_request(self, patch_request: PatchReqeust):
         """Mock response with file."""
-
         request_method = patch_request.request_method
         response = patch_request.response
         file_response = patch_request.file_response

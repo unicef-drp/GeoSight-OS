@@ -34,20 +34,11 @@ def is_valid_uuid(value):
 
 
 def parse_url(url):
-    """Parse url"""
+    """Parse url."""
     parsed_url = urlparse(url)
     host = parsed_url.netloc
     params_dict = dict(parse_qsl(parsed_url.query))
     return host, params_dict
-
-
-def split_url(url, additional_params):
-    """Split url into parts."""
-    url_parse = urlparse(url)
-    query = url_parse.query
-    url_dict = dict(parse_qsl(query))
-    url_dict.update(additional_params)
-    return url_parse, url_dict
 
 
 def set_query_parameter(url, params):

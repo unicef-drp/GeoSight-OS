@@ -32,8 +32,8 @@ User = get_user_model()
 
 class ARCGISProxyApiTest(TestCase, BaseTestWithPatchResponses):
     """Test for Arcgis Proxy api."""
-    token = 'ThisIsToken'
 
+    token = 'ThisIsToken'
     mock_requests = [
         PatchReqeust(
             'https://arcgis.example.test/portal/sharing/generateToken',
@@ -62,7 +62,7 @@ class ARCGISProxyApiTest(TestCase, BaseTestWithPatchResponses):
 
     @responses.activate
     def test_token_generated(self):
-        """Test if token generated"""
+        """Test if token generated."""
         self.init_mock_requests()
         self.config.generate_token()
         self.assertEqual(self.config.token_val, self.token)
