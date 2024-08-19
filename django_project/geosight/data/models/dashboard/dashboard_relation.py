@@ -25,9 +25,9 @@ from geosight.data.models.field_layer import FieldLayerAbstract
 from geosight.data.models.indicator import Indicator
 from geosight.data.models.rule import RuleModel
 from geosight.data.models.style.indicator_style import IndicatorStyleBaseModel
+from tenants.models import BaseModelWithLimitation
 
 User = get_user_model()
-from tenants.models import BaseModelWithLimitation
 
 
 class DashboardRelationGroup(AbstractTerm):

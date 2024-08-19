@@ -48,6 +48,7 @@ class DjangoTenantObj:
 
 class TenantTestCase(TestCase):
     """Tenant test case updated."""
+
     tenant_data = [
         DjangoTenantData('test1', 'test.1.com'),
         DjangoTenantData('test2', 'test.2.com'),
@@ -56,15 +57,17 @@ class TenantTestCase(TestCase):
 
     @property
     def tenant(self):
+        """Return first tenant object."""
         return self.tenant_obj[0].tenant
 
     @property
     def domain(self):
+        """Return first domain object."""
         return self.tenant_obj[0].domain
 
     @classmethod
     def setUpTenant(cls, tenant_schema, tenant_domain):
-        """Setup tenant and domain."""
+        """Do setup tenant and domain."""
         try:
             tenant = get_tenant_model().objects.get(
                 schema_name=tenant_schema
@@ -75,7 +78,7 @@ class TenantTestCase(TestCase):
             tenant = get_tenant_model()(
                 schema_name=tenant_schema
             )
-            tenant.save(verbosity=cls.get_verbosity())
+            tenant.save(verbosity=0)
 
         # Set up domain
         domain, _ = get_tenant_domain_model().objects.get_or_create(
@@ -86,6 +89,7 @@ class TenantTestCase(TestCase):
 
     @classmethod
     def setUpClass(cls):
+        """Set up class of test."""
         for init in cls.tenant_data:
             tenant, domain = cls.setUpTenant(
                 init.tenant_schema, init.tenant_domain
@@ -96,24 +100,24 @@ class TenantTestCase(TestCase):
 
     @classmethod
     def tearDownClass(cls):
+        """Tear down class of test."""
         connection.set_schema_to_public()
 
     @classmethod
-    def get_verbosity(cls):
-        return 0
-
-    @classmethod
     def add_allowed_test_domain(cls, tenant_domain):
+        """Add allowed domain to ALLOWED_HOSTS."""
         if tenant_domain not in settings.ALLOWED_HOSTS:
             settings.ALLOWED_HOSTS += [tenant_domain]
 
     @classmethod
     def remove_allowed_test_domain(cls, tenant_domain):
+        """Remove allowed domain to ALLOWED_HOSTS."""
         if tenant_domain in settings.ALLOWED_HOSTS:
             settings.ALLOWED_HOSTS.remove(tenant_domain)
 
     @classmethod
     def sync_shared(cls):
+        """Migrate the schema."""
         call_command(
             'migrate_schemas',
             schema_name=get_public_schema_name(),

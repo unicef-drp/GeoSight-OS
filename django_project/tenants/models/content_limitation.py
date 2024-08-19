@@ -99,7 +99,7 @@ class BaseModelWithLimitation(models.Model):
 
     @staticmethod
     def cls_model_data_count(cls):
-        """Data count for the class."""
+        """Count model data for the class."""
         if cls.limit_by_field_name:
             raise AttributeError(
                 "Can't use this static method because "
