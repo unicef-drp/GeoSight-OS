@@ -27,6 +27,7 @@ from geosight.data.models.rule import RuleModel
 from geosight.data.models.style.indicator_style import IndicatorStyleBaseModel
 
 User = get_user_model()
+from tenants.models import BaseModelWithLimitation
 
 
 class DashboardRelationGroup(AbstractTerm):
@@ -46,7 +47,7 @@ class DashboardRelationGroup(AbstractTerm):
         return self.name
 
 
-class DashboardRelation(models.Model):
+class DashboardRelation(BaseModelWithLimitation):
     """Abstract Dashboard Relation.
 
     This has:
@@ -75,6 +76,8 @@ class DashboardRelation(models.Model):
         blank=True,
         on_delete=models.SET_NULL
     )
+
+    limit_by_field_name = 'dashboard_id'
 
     class Meta:  # noqa: D106
         abstract = True

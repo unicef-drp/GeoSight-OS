@@ -64,7 +64,7 @@ class ModelDataLimitation(models.Model):
 
     class Meta:  # noqa: D106
         ordering = ('content_type',)
-        unique_together = ('content_type', 'model_field_group')
+        unique_together = ('tenant', 'content_type', 'model_field_group')
 
     def update_limit(self, new_limit: int):
         """Update the limit."""
@@ -123,7 +123,7 @@ class BaseModelWithLimitation(models.Model):
 
         limit_filter = getattr(self, self.limit_by_field_name)
         return self.__class__.objects.filter(
-            **{f"{self.limit_by_field_name}": getattr(self, limit_filter)}
+            **{f"{self.limit_by_field_name}": limit_filter}
         ).count()
 
     @property

@@ -27,7 +27,7 @@ from tenants.models.content_limitation import (
 User = get_user_model()
 
 
-class ModelLimitationTest(TestCase):
+class ModelLimitationDashboardTest(TestCase):
     """Test for model limitation."""
 
     def test_dashboard_limit(self):
