@@ -14,57 +14,112 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '24/10/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.management import call_command
 from django.db import connection
+from django.test import TestCase
 from django.test.client import MULTIPART_CONTENT
-from django_tenants.test.cases import (
-    TenantTestCase as DjangoTenantTestCase,
-    get_tenant_model,
-    get_tenant_domain_model
-)
 from django_tenants.test.client import TenantClient
+from django_tenants.utils import (
+    get_tenant_model, get_tenant_domain_model, get_public_schema_name
+)
 
 User = get_user_model()
 
 
-class TenantTestCase(DjangoTenantTestCase):
-    """Tenant test case."""
+class DjangoTenantData:
+    """Object contains domain and schema."""
+
+    def __init__(self, tenant_schema, tenant_domain):
+        """Initialize the object."""
+        self.tenant_schema = tenant_schema
+        self.tenant_domain = tenant_domain
+
+
+class DjangoTenantObj:
+    """Object contains domain and schema of data."""
+
+    def __init__(self, tenant, domain):
+        """Initialize the object."""
+        self.tenant = tenant
+        self.domain = domain
+
+
+class TenantTestCase(TestCase):
+    """Tenant test case updated."""
+    tenant_data = [
+        DjangoTenantData('test1', 'test.1.com'),
+        DjangoTenantData('test2', 'test.2.com'),
+    ]
+    tenant_obj = []
+
+    @property
+    def tenant(self):
+        return self.tenant_obj[0].tenant
+
+    @property
+    def domain(self):
+        return self.tenant_obj[0].domain
 
     @classmethod
-    def setUpClass(cls):
-        """Initiate tenant and domain for test."""
+    def setUpTenant(cls, tenant_schema, tenant_domain):
+        """Setup tenant and domain."""
         try:
-            cls.tenant = get_tenant_model().objects.get(
-                schema_name=cls.get_test_schema_name()
+            tenant = get_tenant_model().objects.get(
+                schema_name=tenant_schema
             )
         except get_tenant_model().DoesNotExist:
             cls.sync_shared()
-            cls.add_allowed_test_domain()
-            cls.tenant = get_tenant_model()(
-                schema_name=cls.get_test_schema_name()
+            cls.add_allowed_test_domain(tenant_domain)
+            tenant = get_tenant_model()(
+                schema_name=tenant_schema
             )
-            cls.setup_tenant(cls.tenant)
-            cls.tenant.save(verbosity=cls.get_verbosity())
+            tenant.save(verbosity=cls.get_verbosity())
 
         # Set up domain
-        tenant_domain = cls.get_test_tenant_domain()
-        try:
-            cls.domain = get_tenant_domain_model().objects.get(
-                tenant=cls.tenant, domain=tenant_domain
-            )
-        except get_tenant_domain_model().DoesNotExist:
-            cls.domain = get_tenant_domain_model()(
-                tenant=cls.tenant, domain=tenant_domain
-            )
-            cls.setup_domain(cls.domain)
-            cls.domain.save()
+        domain, _ = get_tenant_domain_model().objects.get_or_create(
+            tenant=tenant, domain=tenant_domain
+        )
 
-        connection.set_tenant(cls.tenant)
+        return tenant, domain
+
+    @classmethod
+    def setUpClass(cls):
+        for init in cls.tenant_data:
+            tenant, domain = cls.setUpTenant(
+                init.tenant_schema, init.tenant_domain
+            )
+            cls.tenant_obj.append(DjangoTenantObj(tenant, domain))
+        tenant = cls.tenant_obj[0].tenant
+        connection.set_tenant(tenant)
 
     @classmethod
     def tearDownClass(cls):
-        """Tear down function."""
         connection.set_schema_to_public()
+
+    @classmethod
+    def get_verbosity(cls):
+        return 0
+
+    @classmethod
+    def add_allowed_test_domain(cls, tenant_domain):
+        if tenant_domain not in settings.ALLOWED_HOSTS:
+            settings.ALLOWED_HOSTS += [tenant_domain]
+
+    @classmethod
+    def remove_allowed_test_domain(cls, tenant_domain):
+        if tenant_domain in settings.ALLOWED_HOSTS:
+            settings.ALLOWED_HOSTS.remove(tenant_domain)
+
+    @classmethod
+    def sync_shared(cls):
+        call_command(
+            'migrate_schemas',
+            schema_name=get_public_schema_name(),
+            interactive=False,
+            verbosity=0
+        )
 
 
 class BaseTest:
