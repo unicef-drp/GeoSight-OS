@@ -21,7 +21,7 @@ import time
 import django
 
 from core.utils import create_superuser
-from tenants.models import Client
+from tenants.models import Client, Domain
 
 django.setup()
 
@@ -122,6 +122,27 @@ try:
     print("6. Restart backgrounds functions")
 
     RestartFunctions().restart_log_sata_save_progress()
+except Exception as e:
+    print(f'{e}')
+    pass
+
+#########################################################
+# 7. Create default domain for tenant
+#########################################################
+try:
+
+    print("-----------------------------------------------------")
+    print("7. Create default domain for tenant")
+    app_domain = os.getenv('APP_DOMAIN', 'localhost')
+    client, _ = Client.objects.get_or_create(
+        schema_name='public', name='Main'
+    )
+    Domain.objects.get_or_create(
+        domain=app_domain,
+        tenant=client, defaults={
+            'is_primary': True
+        }
+    )
 except Exception as e:
     print(f'{e}')
     pass

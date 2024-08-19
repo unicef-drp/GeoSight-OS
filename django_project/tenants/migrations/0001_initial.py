@@ -5,22 +5,9 @@ import django_tenants.postgresql_backend.base
 import timezone_field.fields
 from django.db import migrations, models
 
-from tenants.models import Client, Domain
-
 
 class Migration(migrations.Migration):
     initial = True
-
-    def run(apps, schema_editor):
-        client, _ = Client.objects.get_or_create(
-            schema_name='public', name='Main'
-        )
-        Domain.objects.get_or_create(
-            domain='localhost',
-            tenant=client, defaults={
-                'is_primary': True
-            }
-        )
 
     dependencies = [
         ('django_celery_beat', '0016_alter_crontabschedule_timezone'),
@@ -116,6 +103,5 @@ class Migration(migrations.Migration):
             options={
                 'abstract': False,
             },
-        ),
-        migrations.RunPython(run, migrations.RunPython.noop),
+        )
     ]
