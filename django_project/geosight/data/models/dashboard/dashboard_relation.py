@@ -87,6 +87,11 @@ class DashboardIndicator(IndicatorStyleBaseModel, DashboardRelation):
         Indicator,
         on_delete=models.CASCADE
     )
+
+    # TODO:
+    #  Deprecated, move override_style, override_label
+    #  and IndicatorStyleBaseModel
+    #  to indicatorLayer
     override_style = models.BooleanField(default=False)
     override_label = models.BooleanField(default=False)
 
@@ -99,6 +104,8 @@ class DashboardIndicator(IndicatorStyleBaseModel, DashboardRelation):
         return self.dashboardindicatorrule_set.all()
 
 
+# TODO:
+#  Deprecated, move this to indicatorLayer
 class DashboardIndicatorRule(RuleModel):
     """Indicator x Dashboard rule."""
 
@@ -140,6 +147,9 @@ class DashboardContextLayer(DashboardRelation):
     override_style = models.BooleanField(default=False)
     override_field = models.BooleanField(default=False)
     override_label = models.BooleanField(default=False)
+    configuration = models.JSONField(
+        null=True, blank=True
+    )
 
     class Meta:  # noqa: D106
         ordering = ('order',)

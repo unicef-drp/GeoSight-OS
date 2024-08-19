@@ -29,6 +29,8 @@ import {
 } from "../../../../../components/SortableTreeForm/utilities";
 import vectorTileLayer from "../../LayerType/VectorTile";
 import relatedTableLayer from "../../LayerType/RelatedTable";
+import { Variables } from "../../../../../utils/Variables";
+import cloudNativeGISLayer from "../../LayerType/CloudNativeGIS";
 
 const ID = `context-layer`
 const markersContextLayers = {}
@@ -70,6 +72,12 @@ const popupFeature = (featureProperties, name, fields, defaultField) => {
   if (defaultField?.length) {
     fields = defaultField
   }
+  if (properties.cluster) {
+    fields = null
+    delete properties['cluster']
+    delete properties['cluster_id']
+  }
+  let newProperties = properties
   if (fields) {
     fields.map(field => {
       if (field.visible !== false) {
@@ -93,16 +101,16 @@ const popupFeature = (featureProperties, name, fields, defaultField) => {
       }
     })
 
-    let newProperties = {}
+    newProperties = {}
     fields.forEach((field, idx) => {
       newProperties[field.alias] = properties[field.alias]
     })
-
-    return popupTemplate(null, newProperties, {
-      name: name,
-      color: '#eee'
-    })
   }
+
+  return popupTemplate(null, newProperties, {
+    name: name,
+    color: '#eee'
+  })
 }
 
 /**
@@ -252,6 +260,20 @@ export function contextLayerRendering(id, contextLayerData, contextLayer, map, c
         case 'Related Table': {
           removeLayers(map, id)
           relatedTableLayer(
+            map, id, layer, contextLayerData, featureProperties => {
+              return popupFeature(
+                featureProperties,
+                contextLayerData.name,
+                null,
+                contextLayerData.data_fields
+              )
+            }, contextLayerOrder
+          )
+          break
+        }
+        case Variables.TERMS.CLOUD_NATIVE_GIS: {
+          removeLayers(map, id)
+          cloudNativeGISLayer(
             map, id, layer, contextLayerData, featureProperties => {
               return popupFeature(
                 featureProperties,

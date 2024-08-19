@@ -492,9 +492,26 @@
       "creator": 1,
       "created_at": "2023-07-27T08:46:41.085Z",
       "modified_at": "2023-11-03T08:38:19.640Z",
-      "style_type": "Style from library.",
+      "style_type": "Dynamic quantitative style.",
       "style": 1,
-      "style_config": {},
+      "style_config": {
+        "sync_filter": false,
+        "no_data_rule": {
+          "name": "No data",
+          "rule": "No data",
+          "color": "#D8D8D8",
+          "active": "true",
+          "outline_size": "0.5",
+          "outline_color": "#ffffff"
+        },
+        "outline_size": 0.5,
+        "sync_outline": false,
+        "color_palette": 5,
+        "outline_color": "#FFFFFF",
+        "dynamic_class_num": "7",
+        "color_palette_reverse": false,
+        "dynamic_classification": "Natural breaks."
+      },
       "label_config": {
         "style": {
           "maxZoom": 24,
@@ -17030,11 +17047,11 @@
       "slug": "demo-geosight-project",
       "icon": "",
       "overview": "This is a sample Project Overview of the GeoSight Demo Project, using some custom **markdown** styling. The project showcases the use of various GeoSight functionalities, e.g. Single and Multi-Indicator Layers, Dynamic Layers, Indicator Layers created based on Related Tables etc.",
-      "reference_layer": 674,
+      "reference_layer": 1,
       "extent": "SRID=4326;POLYGON ((40.994 -1.657, 40.994 11.988, 51.415 11.988, 51.415 -1.657, 40.994 -1.657))",
       "filters": "{\"type\": \"GROUP\", \"operator\": \"AND\", \"queries\": [{\"field\": \"indicator_318.value\", \"operator\": \">\", \"whereOperator\": \"AND\", \"type\": \"EXPRESSION\", \"value\": \"60\", \"name\": \"Indicator A above X%\", \"description\": \"\", \"allowModify\": true, \"active\": false}, {\"field\": \"indicator_319.value\", \"operator\": \">\", \"whereOperator\": \"AND\", \"type\": \"EXPRESSION\", \"value\": \"60\", \"name\": \"Indicator B above 60%\", \"description\": \"\", \"allowModify\": false, \"active\": false}, {\"type\": \"GROUP\", \"operator\": \"OR\", \"queries\": [{\"field\": \"indicator_318.value\", \"operator\": \">\", \"whereOperator\": \"AND\", \"type\": \"EXPRESSION\", \"value\": \"30\", \"name\": \"Ind A Above 30%\", \"description\": \"\", \"allowModify\": false}, {\"field\": \"indicator_318.value\", \"operator\": \"<\", \"whereOperator\": \"AND\", \"type\": \"EXPRESSION\", \"value\": \"50\", \"name\": \"Indicator A Below 50%\", \"description\": \"\", \"allowModify\": false}]}, {\"field\": \"layer_408.value\", \"operator\": \">\", \"whereOperator\": \"AND\", \"type\": \"EXPRESSION\", \"value\": 50, \"name\": \"Dynamic Value Above X\", \"description\": \"\", \"allowModify\": true}, {\"field\": \"layer_408.value\", \"operator\": \">\", \"whereOperator\": \"AND\", \"type\": \"EXPRESSION\", \"value\": 40, \"name\": \"Value of Dynamic Layer\", \"description\": \"\", \"allowModify\": true, \"active\": false}, {\"type\": \"GROUP\", \"operator\": \"OR\", \"queries\": [{\"field\": \"geometry_1.name\", \"operator\": \"=\", \"whereOperator\": \"AND\", \"type\": \"EXPRESSION\", \"value\": \"Lower Juba\", \"name\": \"Region\", \"description\": \"\", \"allowModify\": true}, {\"field\": \"geometry_2.name\", \"operator\": \"=\", \"whereOperator\": \"AND\", \"type\": \"EXPRESSION\", \"value\": \"Baki\", \"name\": \"District\", \"description\": \"\", \"allowModify\": true}]}]}",
       "filters_allow_modify": false,
-      "geo_field": "concept_uuid",
+      "geo_field": "geometry_code",
       "group": 7,
       "dataset_identifier": "",
       "indicator_layers_structure": {
@@ -17108,7 +17125,8 @@
         "id": "0cf47b4d-3410-4410-b05e-4e825832350f",
         "group": "",
         "children": [
-          33
+          33,
+          34
         ]
       },
       "level_config": {
@@ -18946,34 +18964,57 @@
     }
   },
   {
-    "model": "geosight_georepo.referencelayerindicator",
-    "pk": 207873,
+    "model": "geosight_data.dashboardwidget",
+    "pk": 34,
     "fields": {
-      "reference_layer": 674,
+      "name": "Total of Sample indicator A",
+      "description": "",
+      "dashboard": 53,
+      "order": 2,
+      "visible_by_default": true,
+      "group": null,
+      "relation_group": null,
+      "type": "SummaryWidget",
+      "config": {
+        "unit": "",
+        "layer_id": 318,
+        "property": "value",
+        "operation": "Sum",
+        "layer_used": "Indicator",
+        "date_filter_type": "No filter",
+        "date_filter_value": "2024-12-12T00:00:00.000Z;"
+      }
+    }
+  },
+  {
+    "model": "geosight_georepo.referencelayerindicator",
+    "pk": 1,
+    "fields": {
+      "reference_layer": 1,
       "indicator": 318
     }
   },
   {
     "model": "geosight_georepo.referencelayerindicator",
-    "pk": 207874,
+    "pk": 2,
     "fields": {
-      "reference_layer": 674,
+      "reference_layer": 1,
       "indicator": 362
     }
   },
   {
     "model": "geosight_georepo.referencelayerindicator",
-    "pk": 207875,
+    "pk": 3,
     "fields": {
-      "reference_layer": 674,
+      "reference_layer": 1,
       "indicator": 370
     }
   },
   {
     "model": "geosight_georepo.referencelayerindicator",
-    "pk": 207876,
+    "pk": 4,
     "fields": {
-      "reference_layer": 674,
+      "reference_layer": 1,
       "indicator": 319
     }
   }

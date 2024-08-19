@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
                 ('schedule_status', models.CharField(choices=[('Active', 'Active'), ('Paused', 'Paused')], default='Active', help_text='Is the importer scheduled active or paused.', max_length=128)),
                 ('admin_level', models.IntegerField(blank=True, default=0, null=True)),
                 ('creator', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-                ('reference_layer', models.ForeignKey(blank=True, help_text='Reference layer.', null=True, on_delete=django.db.models.deletion.SET_NULL, to='geosight_georepo.referencelayer')),
+                ('reference_layer', models.ForeignKey(blank=True, help_text='Reference layer.', null=True, on_delete=django.db.models.deletion.SET_NULL, to='geosight_georepo.referencelayerview')),
             ],
             options={
                 'abstract': False,

@@ -14,5 +14,6 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from .reference_layer import *
 from .entity import *
+from .reference_layer import *
+from .reference_layer_importer import *

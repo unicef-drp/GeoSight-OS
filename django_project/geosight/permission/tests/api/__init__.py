@@ -19,3 +19,5 @@ from .context_layer import *
 from .dashboard import *
 from .dataset import *
 from .indicator import *
+from .related_table import *
+from .style import *

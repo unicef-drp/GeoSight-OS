@@ -14,14 +14,20 @@
  */
 
 import React, { Fragment, useEffect, useState } from 'react';
+import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 import MapConfig from './Map'
 import ArcgisConfig from './Arcgis'
 import { useDispatch } from "react-redux";
-import { getLayer } from '../../../Dashboard/LeftPanel/ContextLayers/Layer'
-import { defaultPointStyle, defaultVectorTyleStyle } from './layerStyles';
+import {
+  getLayer
+} from '../../../Dashboard/MapLibre/Layers/ContextLayers/Layer'
+import { defaultPointStyle } from './layerStyles';
+import RelatedTableConfig from './RelatedTable';
+import AggregationStyleConfig from "./AggregationStyleConfig";
+import { Variables } from "../../../../utils/Variables";
+import { GET_RESOURCE } from "../../../../utils/ResourceRequests";
 
 import './style.scss';
-import RelatedTableConfig from './RelatedTable';
 
 
 /**
@@ -35,7 +41,8 @@ export default function StyleConfig(
     setData,
     useOverride = false,
     defaultTab = null,
-    useOverrideLabel = true
+    useOverrideLabel = true,
+    children
   }
 ) {
   const dispatch = useDispatch();
@@ -61,7 +68,7 @@ export default function StyleConfig(
   }, [data, tab]);
 
   useEffect(() => {
-    if (!data.styles && data.layer_type === 'Related Table') {
+    if (!data.styles && Variables.LIST.VECTOR_TILE_TYPES.includes(data.layer_type) && !Variables.LIST.OVERRIDE_STYLES.includes(data.layer_type)) {
       setData({
         ...data,
         styles: JSON.stringify(defaultPointStyle, null, 4),
@@ -90,6 +97,19 @@ export default function StyleConfig(
       <div className='AdminForm'>
         {/* FOR CONFIG */}
         <div className='TabPrimary ContextLayerConfigTab'>
+          {
+            data.layer_type === 'Related Table' ?
+              <>
+                <div
+                  onClick={() => {
+                    setTab('General_Override')
+                  }}
+                  className={tab === 'General' ? 'Selected' : ""}
+                >
+                  General
+                </div>
+              </> : null
+          }
           <div
             onClick={() => {
               setTab('Preview')
@@ -148,44 +168,35 @@ export default function StyleConfig(
               </div> : ""
           }
           {
-            data.layer_type === 'Vector Tile' || data.layer_type === 'Related Table' ? <>
-              <div className='Style'>
-                <div><b>Layers</b></div>
-                <span>
-                  Put layers list configurations with the mapbox format.<br/>
-                  Put source with "source" or any, it will automatically change to correct source.<br/>
-                  <a
-                    href="https://docs.mapbox.com/style-spec/reference/layers/"
-                    target="_blank">See documentation.</a>
-                </span>
-                <br/>
-                <br/>
-                <textarea
-                  placeholder={
-                    JSON.stringify(data.layer_type === 'Related Table' ?
-                      defaultPointStyle :
-                      defaultVectorTyleStyle,
-                      null, 4)
-                  }
-                  defaultValue={data.styles}
-                  style={{ minHeight: "90%" }}
-                  onChange={(evt) => {
-                    try {
-                      setError(null)
-                      setData(
-                        {
-                          ...data,
-                          styles: evt.target.value,
-                          override_style: true
+            Variables.LIST.VECTOR_TILE_TYPES.includes(data.layer_type) ? <>
+              <div className='ArcgisConfig Style'>
+                {
+                  useOverride ?
+                    <FormGroup>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={data?.override_style ? data?.override_style : false}
+                            onChange={evt => setData({
+                              ...data,
+                              styles: data.original_styles,
+                              override_style: evt.target.checked
+                            })}/>
                         }
-                      )
-                    } catch (e) {
-                      setError((e + '').split('at')[0])
-                    }
-                  }}/>
+                        label="Override style from default"/>
+                    </FormGroup> : null
+                }
+                {
+                  (!useOverride || data.override_style) ?
+                    data.styles ?
+                      <AggregationStyleConfig
+                        data={data} setData={setData} setError={setError}
+                      /> :
+                      <div>Loading</div> : null
+                }
               </div>
               <div className='ArcgisConfig Label form-helptext'>
-                Vector tile does not have label
+                {data.layer_type} does not have label
               </div>
             </> : null
           }
@@ -198,15 +209,17 @@ export default function StyleConfig(
               /> : data.layer_type === 'Related Table' ?
                 <RelatedTableConfig
                   originalData={data} setData={setData}
+                  setError={setError}
                   RelatedTableData={layerData} useOverride={useOverride}
                   useOverrideLabel={useOverrideLabel}
-              /> :
-              <Fragment>
-                <div className='ArcgisConfig Fields form-helptext'>
-                  Config is not Arcgis or Related Table Type
-                </div>
-              </Fragment>
+                /> :
+                <Fragment>
+                  <div className='ArcgisConfig Fields form-helptext'>
+                    Config is not Arcgis or Related Table Type
+                  </div>
+                </Fragment>
           }
+          {children}
         </div>
       </div>
     </div>

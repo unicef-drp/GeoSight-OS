@@ -22,7 +22,6 @@ from django.utils.translation import ugettext_lazy as _
 from .app import *  # noqa
 from .contrib import *  # noqa
 
-MOCK_GEOREPO = False
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 ALLOWED_HOSTS = ['*']
 ADMINS = (
@@ -141,5 +140,9 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'geosight.georepo.tasks.fetch_datasets',
         'schedule': crontab(minute='0', hour='0'),
         'args': (True,),
+    },
+    'clean_cloud_native': {
+        'task': 'geosight.cloud_native_gis.tasks.clean_cloud_native_layer',
+        'schedule': crontab(minute='0', hour='0'),
     }
 }

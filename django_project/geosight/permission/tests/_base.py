@@ -22,7 +22,6 @@ from rest_framework.reverse import reverse
 from core.models.profile import ROLES
 from core.tests.base_tests import BaseTest
 from core.tests.model_factories import GroupF, create_user
-from geosight.georepo.tests.mock import mock_get_entity
 
 User = get_user_model()
 
@@ -40,6 +39,7 @@ class BasePermissionTest(BaseTest):
 
     def setUp(self):
         """To setup test."""
+        from geosight.georepo.tests.mock import mock_get_entity
         self.admin = create_user(
             ROLES.SUPER_ADMIN.name, password=self.password)
         self.creator = create_user(

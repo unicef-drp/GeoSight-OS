@@ -14,6 +14,8 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import json
+
 from django.shortcuts import render
 from django.views.generic import View
 
@@ -38,7 +40,7 @@ class BaseView(View):
                     'georepo_api_key'
                 ] = self.request.user.profile.georepo_api_key_val
 
-            context['user'] = user_data
+            context['user'] = json.dumps(user_data)
         return context
 
     def get(self, request, **kwargs):

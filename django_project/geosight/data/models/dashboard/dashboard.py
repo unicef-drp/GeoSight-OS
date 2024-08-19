@@ -72,7 +72,7 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData, AbstractVersionData):
     )
     geo_field = models.CharField(
         max_length=64,
-        default='concept_uuid'
+        default='geometry_code'
     )
 
     # group
@@ -150,9 +150,9 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData, AbstractVersionData):
                     'style_config', None
                 )
                 dashboard_indicator.style_type = indicator['style_type']
-                dashboard_indicator.override_style = indicator[
-                    'override_style'
-                ]
+                dashboard_indicator.override_style = indicator.get(
+                    'override_style', False
+                )
                 dashboard_indicator.dashboardindicatorrule_set.all().delete()
                 if dashboard_indicator.override_style:
                     for idx, rule in enumerate(indicator['style']):
@@ -173,9 +173,9 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData, AbstractVersionData):
                     )
 
                 # For label
-                dashboard_indicator.override_label = indicator[
-                    'override_label'
-                ]
+                dashboard_indicator.override_label = indicator.get(
+                    'override_label', False
+                )
                 dashboard_indicator.label_config = indicator[
                     'label_config'
                 ]
@@ -305,10 +305,13 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData, AbstractVersionData):
                 config.save()
 
             # ------------ INDICATOR LAYER STYLE ---------------
+            model.override_style = layer_data.get('override_style', False)
             model.style_type = layer_data.get('style_type', '')
-            model.label_config = layer_data.get('label_config', None)
             model.style_id = layer_data.get('style_id', None)
             model.style_config = layer_data.get('style_config', None)
+
+            model.override_label = layer_data.get('override_label', False)
+            model.label_config = layer_data.get('label_config', None)
 
             rules_ids = []
             rules = model.dashboardindicatorlayerrule_set.all()
@@ -495,6 +498,19 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData, AbstractVersionData):
             model.override_label = data.get('override_label', False)
             model.override_field = data.get('override_field', False)
 
+            # Configuration
+            configuration = data.get('configuration', {})
+            saved_configuration = {}
+            if configuration:
+                for key, value in configuration.items():
+                    if 'override_' in key:
+                        try:
+                            k_val = key.replace('override_', '')
+                            saved_configuration[k_val] = configuration[k_val]
+                            saved_configuration[key] = value
+                        except KeyError:
+                            pass
+            model.configuration = saved_configuration
             model.save()
             ids_new[data.get('id', 0)] = data['id']
         return ids_new

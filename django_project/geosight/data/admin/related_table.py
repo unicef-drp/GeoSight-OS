@@ -15,10 +15,18 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib import admin
+from django.utils import timezone
 
 from geosight.data.models.related_table import (
     RelatedTable, RelatedTableRow, RelatedTableField
 )
+from geosight.importer.models.attribute import ImporterAttribute
+
+
+@admin.action(description='Invalidate cache')
+def invalidate_cache(modeladmin, request, queryset):
+    """Invalidate cache of value on frontend."""
+    queryset.update(version_data=timezone.now())
 
 
 class RelatedTableFieldInline(admin.TabularInline):
@@ -28,6 +36,7 @@ class RelatedTableFieldInline(admin.TabularInline):
     extra = 0
 
 
+@admin.register(RelatedTableRow)
 class RelatedTableRowAdmin(admin.ModelAdmin):
     """RelatedTableRow admin."""
 
@@ -35,12 +44,22 @@ class RelatedTableRowAdmin(admin.ModelAdmin):
     list_editable = ('order',)
 
 
+@admin.register(RelatedTable)
 class RelatedTableAdmin(admin.ModelAdmin):
     """RelatedTable admin."""
 
-    list_display = ('name', 'description')
+    list_display = ('name', 'description', 'importer')
     inlines = (RelatedTableFieldInline,)
+    actions = (invalidate_cache,)
+    readonly_fields = ('last_importer',)
 
-
-admin.site.register(RelatedTable, RelatedTableAdmin)
-admin.site.register(RelatedTableRow, RelatedTableRowAdmin)
+    def importer(self, obj: RelatedTable):
+        """Return importer from this RT."""
+        attribute = ImporterAttribute.objects.filter(
+            name='related_table_id'
+        ).filter(
+            value=obj.id
+        ).first()
+        if attribute:
+            return attribute.importer
+        return None

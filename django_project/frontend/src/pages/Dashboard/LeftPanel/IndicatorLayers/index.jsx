@@ -305,14 +305,16 @@ export function IndicatorLayers() {
  */
 export default function IndicatorLayersAccordion({ expanded }) {
   return (
-    <Accordion
-      expanded={expanded}
-      className={'IndicatorLayerList'}
-    >
+    <>
+      <Accordion
+        expanded={expanded}
+        className={'IndicatorLayerList'}
+      >
 
-      <AccordionDetails>
-        <IndicatorLayers/>
-      </AccordionDetails>
-    </Accordion>
+        <AccordionDetails>
+          <IndicatorLayers/>
+        </AccordionDetails>
+      </Accordion>
+    </>
   )
 }

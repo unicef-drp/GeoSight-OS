@@ -364,7 +364,7 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
                 date_format = rt_config[f'{related_table.id}']['date_format']
             except KeyError:
                 pass
-            values = related_table.data_with_query(
+            values, has_next = related_table.data_with_query(
                 reference_layer_uuid=reference_layer.identifier,
                 geo_field=dashboard_related.geography_code_field_name,
                 geo_type=dashboard_related.geography_code_type,

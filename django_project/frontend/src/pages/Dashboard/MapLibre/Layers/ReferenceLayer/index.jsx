@@ -23,8 +23,6 @@ import { MVTLayer } from '@deck.gl/geo-layers';
 import { GeoJsonLayer } from '@deck.gl/layers';
 import { DataFilterExtension } from '@deck.gl/extensions';
 import { area as turfArea, bboxPolygon, } from '@turf/turf';
-
-import { Actions } from '../../../../../store/dashboard'
 import {
   extractCode,
   GeorepoUrls,
@@ -48,17 +46,21 @@ import {
 import GeorepoAuthorizationModal
   from "../../../../../components/GeorepoAuthorizationModal";
 import { Logger } from "../../../../../utils/logger";
+import { InternalReferenceDatasets } from "../../../../../utils/urls";
+import { Actions } from "../../../../../store/dashboard";
 
 export const BEFORE_LAYER = 'gl-draw-polygon-fill-inactive.cold'
 export const CONTEXT_LAYER_ID = `context-layer`
 const MAX_ELEVATION = 500000
 
 const NOCOLOR = `rgba(0, 0, 0, 0)`
-const REFERENCE_LAYER_ID = `reference-layer`
-const FILL_LAYER_ID = REFERENCE_LAYER_ID + '-fill'
-const OUTLINE_LAYER_ID = REFERENCE_LAYER_ID + '-outline'
 const INDICATOR_LABEL_ID = 'indicator-label'
 const LAYER_HIGHLIGHT_ID = 'reference-layer-highlight'
+
+// Layer keys
+const REFERENCE_LAYER_ID_KEY = `reference-layer`
+const FILL_LAYER_ID_KEY = REFERENCE_LAYER_ID_KEY + '-fill'
+const OUTLINE_LAYER_ID_KEY = REFERENCE_LAYER_ID_KEY + '-outline'
 
 const geo_field = 'concept_uuid'
 
@@ -71,14 +73,23 @@ let currentRenderDataString = ''
 let currentIndicatorLayerStringData = ''
 let currentIndicatorSecondLayerStringData = ''
 let currentCompareMode = false
+
+let prevCurrentLevel = null
+
 /**
  * ReferenceLayer selector.
  */
-export default function ReferenceLayer({ map, deckgl, is3DView }) {
-  const prevState = useRef()
+export function ReferenceLayer(
+  { idx, map, referenceLayer, deckgl, is3DView }
+) {
   const dispatch = useDispatch()
+  const REFERENCE_LAYER_ID = REFERENCE_LAYER_ID_KEY + '-' + idx
+  const FILL_LAYER_ID = FILL_LAYER_ID_KEY + '-' + idx
+  const OUTLINE_LAYER_ID = OUTLINE_LAYER_ID_KEY + '-' + idx
+
+  const prevState = useRef()
   const {
-    referenceLayer,
+    referenceLayer: referenceLayerProject,
     indicatorLayers,
     indicators,
     relatedTables,
@@ -86,7 +97,7 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
   } = useSelector(state => state.dashboard.data);
   const { indicatorShow } = useSelector(state => state.map);
   const { compareMode } = useSelector(state => state.mapMode)
-  const referenceLayerData = useSelector(state => state.referenceLayerData[referenceLayer.identifier]);
+  const referenceLayerData = useSelector(state => state.referenceLayerData[referenceLayer?.identifier]);
   const indicatorsData = useSelector(state => state.indicatorsData);
   const relatedTableData = useSelector(state => state.relatedTableData);
   const filtersData = useSelector(state => state.filtersData);
@@ -111,28 +122,13 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
   }
 
   const filteredGeometries = where ? filteredGeometriesState : null
-
-  // ------------------------------------------------------------
-  // TODO:
-  //  When reference layer changed, fetch reference data
-  //  For the entity data, Check ReferenceLayerCentroid
-  // ------------------------------------------------------------
-  useEffect(() => {
-    if (referenceLayer.identifier && !referenceLayerData) {
-      dispatch(
-        Actions.ReferenceLayerData.fetch(
-          dispatch, referenceLayer.identifier,
-          GeorepoUrls.ViewDetail(referenceLayer.identifier)
-        )
-      )
-    }
-  }, [referenceLayer]);
+  let currentLevel = selectedAdminLevel ? selectedAdminLevel.level : levels?.level
 
   // When indicator data, current layer, second layer and compare mode changed
   // Update the style
   useEffect(() => {
-    const data = getLayerData(indicatorsData, relatedTableData, currentIndicatorLayer).concat(
-      getLayerData(indicatorsData, relatedTableData, currentIndicatorSecondLayer)
+    const data = getLayerData(indicatorsData, relatedTableData, currentIndicatorLayer, referenceLayerProject).concat(
+      getLayerData(indicatorsData, relatedTableData, currentIndicatorSecondLayer, referenceLayerProject)
     )
     if (allDataIsReady(data)) {
       const dataInString = JSON.stringify(data)
@@ -142,19 +138,21 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
         currentRenderDataString !== dataInString ||
         currentIndicatorLayerStringData !== currentIndicatorLayerString ||
         currentIndicatorSecondLayerStringData !== currentIndicatorSecondLayerString ||
-        currentCompareMode !== compareMode
+        currentCompareMode !== compareMode ||
+        currentLevel !== prevCurrentLevel
       ) {
         updateStyle()
         currentRenderDataString = dataInString
         currentIndicatorLayerStringData = currentIndicatorLayerString
         currentIndicatorSecondLayerStringData = currentIndicatorSecondLayerString
         currentCompareMode = compareMode
+        prevCurrentLevel = currentLevel
       }
     }
   }, [
     indicatorsData, currentIndicatorLayer,
     currentIndicatorSecondLayer, compareMode,
-    layerCreated, relatedTableData, geoField
+    layerCreated, relatedTableData, geoField, currentLevel
   ]);
 
   // When reference layer, it's data, admin and show/hide changed.
@@ -162,6 +160,9 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
   useEffect(() => {
     if (referenceLayerData) {
       createLayer()
+    } else {
+      setReferenceLayerConfig({})
+      removeAllLayers()
     }
   }, [referenceLayer, referenceLayerData, selectedAdminLevel]);
 
@@ -219,7 +220,6 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
       return;
     }
     let levels = referenceLayerData?.data?.dataset_levels
-    let currentLevel = selectedAdminLevel ? selectedAdminLevel.level : levels?.level
     const vectorTiles = referenceLayerData?.data?.vector_tiles
     if (vectorTiles && levels && map && currentLevel !== undefined) {
       const url = GeorepoUrls.WithoutDomain(updateToken(vectorTiles))
@@ -367,8 +367,9 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
       const indicatorValueByGeometry = getIndicatorValueByGeometry(
         currentIndicatorLayer, indicators, indicatorsData,
         relatedTables, relatedTableData, selectedGlobalTime,
-        geoField, filteredGeometries
+        geoField, filteredGeometries, referenceLayerProject, currentLevel
       )
+      dispatch(Actions.MapGeometryValue.update(indicatorValueByGeometry))
       let indicatorSecondValueByGeometry = {}
 
       // Create colors
@@ -422,7 +423,7 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
         indicatorSecondValueByGeometry = getIndicatorValueByGeometry(
           currentIndicatorSecondLayer, indicators, indicatorsData,
           relatedTables, relatedTableData, selectedGlobalTime,
-          geoField, filteredGeometries
+          geoField, filteredGeometries, referenceLayerProject, currentLevel
         )
         // If compare mode
         // Outline is first indicator color
@@ -618,7 +619,7 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
       indicatorValueByGeometry = getIndicatorValueByGeometry(
         currentIndicatorLayer, indicators, indicatorsData,
         relatedTables, relatedTableData, selectedGlobalTime,
-        geoField, filteredGeometries
+        geoField, filteredGeometries, referenceLayerProject, currentLevel
       )
     }
     if (currentIndicatorLayer.indicators?.length > 1) {
@@ -751,5 +752,23 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
   }
 
 
-  return <GeorepoAuthorizationModal/>
+  return null
+}
+
+export default function ReferenceLayers({ map, deckgl, is3DView }) {
+  const {
+    referenceLayers
+  } = useSelector(state => state.map);
+
+  return map ? <>
+    <ReferenceLayer
+      idx={0} map={map}
+      referenceLayer={referenceLayers[0]} deckgl={deckgl} is3DView={is3DView}
+    />
+    <ReferenceLayer
+      idx={1} map={map}
+      referenceLayer={referenceLayers[1]} deckgl={deckgl} is3DView={is3DView}
+    />
+    <GeorepoAuthorizationModal/>
+  </> : null
 }

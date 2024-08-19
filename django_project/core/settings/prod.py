@@ -121,3 +121,18 @@ if SENTRY_DSN and SENTRY_DSN != "''":
         send_default_pii=True,
         before_send=before_send
     )
+
+# X-Content-Type-Options
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Strict-Transport-Security
+SECURE_HSTS_SECONDS = 15768000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+SECURE_SSL_REDIRECT = True
+
+# More security
+CSRF_COOKIE_SECURE = True
+CSRF_USE_SESSIONS = True
+CSRF_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SECURE = True

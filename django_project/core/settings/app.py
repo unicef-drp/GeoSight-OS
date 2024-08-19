@@ -40,6 +40,7 @@ SHARED_APPS = (
     'knox',
     'drf_yasg',
     'tinymce',
+    'cloud_native_gis',
 
     # Project specified
     'azure_auth',
@@ -49,6 +50,7 @@ SHARED_APPS = (
     'geosight.georepo',
     'geosight.permission',
     'geosight.importer',
+    'geosight.cloud_native_gis',
     'frontend',
 )
 
@@ -58,6 +60,7 @@ TENANT_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
     'knox',
+    'cloud_native_gis',
 
     # Project specified
     'azure_auth',
@@ -67,6 +70,7 @@ TENANT_APPS = (
     'geosight.georepo',
     'geosight.permission',
     'geosight.importer',
+    'geosight.cloud_native_gis',
     'frontend',
 )
 

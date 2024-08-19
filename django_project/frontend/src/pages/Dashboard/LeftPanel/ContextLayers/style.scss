@@ -18,15 +18,3 @@
    ========================================================================== */
 
 @import '../../../../app/variables';
-
-.mapboxgl-ctrl-legend {
-  gap: 0;
-
-  summary {
-    display: none !important;
-  }
-
-  br {
-    display: none;
-  }
-}

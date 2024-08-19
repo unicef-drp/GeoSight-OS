@@ -236,10 +236,20 @@ class DashboardData(APIView):
                     resource['permission'] = obj.permission.all_permission(
                         request.user
                     )
+                    try:
+                        resource['version'] = obj.version
+                    except AttributeError:
+                        pass
                 except (
                         RelatedTable.DoesNotExist,
                         Indicator.DoesNotExist,
                         ContextLayer.DoesNotExist
                 ):
                     pass
+
+        # Check if reference layer is local or not
+        if dashboard.reference_layer:
+            data['reference_layer']['is_local'] = (
+                dashboard.reference_layer.is_local
+            )
         return Response(data)

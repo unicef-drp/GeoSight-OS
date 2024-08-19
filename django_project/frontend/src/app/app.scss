@@ -582,3 +582,27 @@ header {
     z-index: 999999;
   }
 }
+
+.TextLinkButton {
+  align-items: center;
+  color: var(--primary-color);
+  display: inline-block;
+  cursor: pointer;
+
+  &:hover {
+    opacity: $base-hovered-opacity;
+  }
+}
+
+// ---------------------------------------------------
+// ICON BUTTONS
+// ---------------------------------------------------
+
+.InfoIconButton {
+  color: $primary-color;
+  cursor: pointer;
+
+  &:hover {
+    opacity: $base-hovered-opacity;
+  }
+}

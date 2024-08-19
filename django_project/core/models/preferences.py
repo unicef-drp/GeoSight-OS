@@ -71,6 +71,12 @@ class SitePreferences(SingletonModel):
         ),
         on_delete=models.SET_NULL
     )
+    enable_local_dataset = models.BooleanField(
+        default=True,
+        help_text=(
+            'Enable feature to use local datasets alongside georepo.'
+        )
+    )
     # -----------------------------------------------
     # GEOREPO
     # -----------------------------------------------
@@ -93,6 +99,12 @@ class SitePreferences(SingletonModel):
         blank=True, null=True
     )
     georepo_using_user_api_key = models.BooleanField(default=True)
+    enable_georepo = models.BooleanField(
+        default=True,
+        help_text=(
+            'Enable GeoRepo to use local datasets alongside local dataset.'
+        )
+    )
 
     # -----------------------------------------------
     # LANDING PAGE
@@ -289,6 +301,7 @@ class SitePreferences(SingletonModel):
     # -----------------------------------------------
     login_help_text = models.TextField(
         default='',
+        null=True, blank=True,
         help_text=_(
             'Help text to show in login page.'
         ),
@@ -301,14 +314,6 @@ class SitePreferences(SingletonModel):
     def preferences() -> "SitePreferences":
         """Load Site Preference."""
         obj = SitePreferences.load()
-        if settings.MOCK_GEOREPO:
-            if not obj.georepo_api_key_level_1_val:
-                obj.georepo_url = \
-                    'http://localhost:2000/georepo/mock/api/v1/'
-                obj.georepo_api_key_level_1 = signing.dumps('Level 1')
-                obj.georepo_api_key_level_4 = signing.dumps('Level 4')
-                obj.georepo_using_user_api_key = False
-                obj.save()
         return obj
 
     def __str__(self):

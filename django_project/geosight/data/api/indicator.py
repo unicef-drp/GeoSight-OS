@@ -135,7 +135,6 @@ class IndicatorValuesAPI(
 ):
     """API for Values of indicator."""
 
-    permission_classes = (IsAuthenticated,)
     pagination_class = Pagination
     serializer_class = IndicatorValueWithGeoDateSerializer
 
@@ -150,6 +149,7 @@ class IndicatorValuesAPI(
             )
         except ReferenceLayerView.DoesNotExist:
             reference_layer = ReferenceLayerView()
+        read_permission_resource(indicator, self.request.user)
 
         return indicator.values(
             date_data=max_time,

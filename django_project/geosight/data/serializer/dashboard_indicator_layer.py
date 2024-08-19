@@ -160,7 +160,7 @@ class DashboardIndicatorLayerSerializer(DashboardSerializer):
 
     def get_label_config(self, obj: DashboardIndicatorLayer):
         """Return style."""
-        if obj.is_using_obj_style:
+        if obj.is_using_obj_label:
             return obj.label_config
         return None
 
@@ -174,7 +174,9 @@ class DashboardIndicatorLayerSerializer(DashboardSerializer):
             'id', 'name', 'description', 'type',
             'indicators', 'related_tables',
             'chart_style', 'config', 'last_update',
+            'override_style',
             'style', 'style_id', 'style_type', 'style_data', 'style_config',
+            'override_label',
             'label_config', 'level_config', 'data_fields',
             'popup_template', 'popup_type', 'multi_indicator_mode'
         )

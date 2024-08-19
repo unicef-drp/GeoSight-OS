@@ -182,6 +182,25 @@ class RelatedTableRowApiSerializer(DynamicModelSerializer):
         }
 
 
+class RelatedTableRowApiFlatSerializer(DynamicModelSerializer):
+    """Serializer for RelatedTableRow."""
+
+    class Meta:  # noqa: D106
+        model = RelatedTableRow
+        fields = ('id',)
+
+    def to_representation(self, instance):
+        """Update custom data."""
+        data = super(RelatedTableRowApiFlatSerializer, self).to_representation(
+            instance
+        )
+        data.update(instance.data)
+        to_representation = self.context.get('to_representation', None)
+        if to_representation:
+            to_representation(data)
+        return data
+
+
 class RelatedTableSerializer(DynamicModelSerializer):
     """
     DEPRECATED: Legacy serializer.
@@ -195,6 +214,7 @@ class RelatedTableSerializer(DynamicModelSerializer):
     fields_definition = serializers.SerializerMethodField()
     related_fields = serializers.SerializerMethodField()
     permission = serializers.SerializerMethodField()
+    version_data = serializers.SerializerMethodField()
 
     def get_url(self, obj: RelatedTable):
         """Return url."""
@@ -227,6 +247,10 @@ class RelatedTableSerializer(DynamicModelSerializer):
         return obj.permission.all_permission(
             self.context.get('user', None)
         )
+
+    def get_version_data(self, obj: RelatedTable):
+        """Return permission."""
+        return obj.version
 
     class Meta:  # noqa: D106
         model = RelatedTable

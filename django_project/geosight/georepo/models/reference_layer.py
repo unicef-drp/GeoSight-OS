@@ -14,43 +14,48 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from django.contrib.gis.db import models
+from django.contrib.auth import get_user_model
+from django.contrib.gis.db.models import QuerySet
+from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from core.models.general import AbstractVersionData
+from core.models.general import AbstractVersionData, AbstractEditData
 from core.utils import is_valid_uuid
 from geosight.data.models.indicator import Indicator
 from geosight.georepo.request import (
     GeorepoRequest, GeorepoUrl, GeorepoRequestError
 )
 from geosight.georepo.request.data import GeorepoEntity
+from geosight.permission.access import ResourcePermissionDenied
 from geosight.permission.models.manager import PermissionManager
 
-
-# TODO:
-#  Deprecated, we use ReferenceLayerView instead Dataset
-class ReferenceLayer(models.Model):
-    """Dataset of georepo."""
-
-    identifier = models.CharField(
-        max_length=256,
-        help_text=_("Reference layer identifier.")
-    )
-
-    name = models.CharField(
-        max_length=256,
-        help_text=_("Reference layer name."),
-        null=True, blank=True
-    )
-
-    in_georepo = models.BooleanField(default=True)
-
-    def __str__(self):
-        """Return str."""
-        return self.identifier
+User = get_user_model()
 
 
-class ReferenceLayerView(AbstractVersionData):
+class ReferenceLayerViewLocalQuerySet(QuerySet):
+    """Queryset specifically for local reference layer."""
+
+    pass
+
+
+class ReferenceLayerViewPermissionManager(PermissionManager):
+    """Reference layer view local manager."""
+
+    def get_queryset(self):
+        """Return queryset just for non georepo."""
+        qs = ReferenceLayerViewLocalQuerySet(self.model, using=self._db)
+        return qs.filter(in_georepo=False)
+
+    def create(self, user: User, **kwargs):
+        """Create function with user."""
+        try:
+            kwargs['identifier']
+        except KeyError:
+            kwargs['identifier'] = ReferenceLayerView.get_uuid()
+        return super().create(user=user, **kwargs)
+
+
+class ReferenceLayerView(AbstractEditData, AbstractVersionData):
     """Reference Layer view data."""
 
     identifier = models.CharField(
@@ -70,6 +75,17 @@ class ReferenceLayerView(AbstractVersionData):
 
     in_georepo = models.BooleanField(default=True)
 
+    objects = models.Manager()
+    permissions = ReferenceLayerViewPermissionManager()
+
+    class Meta:  # noqa: D106
+        indexes = [
+            models.Index(
+                fields=['identifier'],
+                name='reference_layer_identifier'
+            )
+        ]
+
     def get_name(self):
         """Return name."""
         if not self.name:
@@ -82,6 +98,11 @@ class ReferenceLayerView(AbstractVersionData):
     def __str__(self):
         """Return str."""
         return f'{self.get_name()} ({self.identifier})'
+
+    def able_to_edit(self, user):
+        """Able to edit."""
+        if not user.is_authenticated or user != self.creator:
+            raise ResourcePermissionDenied
 
     @property
     def version_with_uuid(self):
@@ -177,6 +198,46 @@ class ReferenceLayerView(AbstractVersionData):
                 return ReferenceLayerView.objects.get(id=identifier)
             except ReferenceLayerView.DoesNotExist:
                 return
+
+    @property
+    def levels(self):
+        """Return level of reference layer."""
+        return self.referencelayerviewlevel_set.order_by('level')
+
+    @property
+    def is_local(self):
+        """Return if view is local or not."""
+        return not self.in_georepo
+
+    @staticmethod
+    def get_uuid():
+        """Return uuid of view."""
+        from uuid import uuid4
+        uuid = str(uuid4())
+        if ReferenceLayerView.objects.filter(identifier=uuid).exists():
+            return ReferenceLayerView.get_uuid()
+        return uuid
+
+
+class ReferenceLayerViewLevel(models.Model):
+    """Reference Layer view level."""
+
+    reference_layer = models.ForeignKey(
+        ReferenceLayerView, on_delete=models.CASCADE
+    )
+
+    level = models.IntegerField()
+    name = models.CharField(
+        max_length=256,
+        help_text=_("Level name.")
+    )
+
+    class Meta:  # noqa: D106
+        unique_together = ('reference_layer', 'level')
+
+    def __str__(self):
+        """Return str."""
+        return f'{self.name} ({self.level})'
 
 
 class ReferenceLayerIndicator(models.Model):

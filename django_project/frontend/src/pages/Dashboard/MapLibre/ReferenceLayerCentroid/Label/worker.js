@@ -28,34 +28,28 @@ export default () => {
     if (!e) return;
     let {
       geometriesData,
-      usedIndicatorsData,
+      mapGeometryValue,
       usedFilteredGeometries
     } = e.data;
 
     // Create features
     let features = []
     let theGeometries = Object.keys(geometriesData)
-    const indicatorsByGeom = {}
-    for (const [indicatorId, indicatorData] of Object.entries(usedIndicatorsData)) {
-      indicatorData.data.forEach(function (data) {
-        const code = extractCode(data)
-        if (!indicatorsByGeom[code]) {
-          indicatorsByGeom[code] = []
-        }
-        indicatorsByGeom[code].push(data);
-      })
-    }
     theGeometries.map(geom => {
       const geometry = geometriesData[geom]
+      if (!geometry) {
+        return;
+      }
+      const indicator = mapGeometryValue[geometry.concept_uuid] ? mapGeometryValue[geometry.concept_uuid][0] : {};
+
       const code = extractCode(geometry)
-      const indicator = indicatorsByGeom[code] ? indicatorsByGeom[code][0] : null
       if (usedFilteredGeometries && !usedFilteredGeometries.includes(code)) {
         return
       }
       let properties = geometry
       if (geometry) {
         if (indicator) {
-          properties = Object.assign({}, geometry, indicator)
+          properties = Object.assign({}, indicator, geometry)
           delete properties.geometry
         }
         features.push({

@@ -43,7 +43,7 @@ class TestIndicatorLayer(TestCase):
             {date_field.value: '2023-02-01T00:00:00+00:00'},
             {date_field.value: '2023-02-20T00:00:00+00:00'},
             {date_field.value: '2023-01-01T00:00:00+00:00'}
-        ]
+        ], False
 
         self.assertEquals(
             self.d_ind_layer.last_update,

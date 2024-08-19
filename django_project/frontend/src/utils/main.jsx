@@ -474,3 +474,21 @@ export function toFloat(val) {
   }
   return val
 }
+
+/**
+ * Return val as json
+ */
+export function toJson(val) {
+  if (!val) {
+    return {}
+  }
+  try {
+    if (typeof val === 'string' || val instanceof String) {
+      return JSON.parse(val)
+    } else {
+      return val
+    }
+  } catch (e) {
+    return {}
+  }
+}

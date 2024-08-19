@@ -321,3 +321,31 @@ class PermissionDefault:
             ]
         )
     )
+
+    # Reference Layer View
+    REFERENCE_LAYER_VIEW = PermissionResourceDefault(
+        user=PermissionDefaultDetail(
+            default=PERMISSIONS.READ_DATA.name,
+            permissions=ALL_PERMISSIONS_WITH_DATA
+        ),
+        group=PermissionDefaultDetail(
+            default=PERMISSIONS.READ_DATA.name,
+            permissions=ALL_PERMISSIONS_WITH_DATA
+        ),
+        organization=PermissionDefaultDetail(
+            default=PERMISSIONS.READ_DATA.name,
+            permissions=[
+                (PERMISSIONS.NONE.name, PERMISSIONS.NONE.name),
+                (PERMISSIONS.LIST.name, PERMISSIONS.LIST.name),
+                (PERMISSIONS.READ.name, PERMISSIONS.READ.name),
+                (PERMISSIONS.READ_DATA.name, PERMISSIONS.READ_DATA.name),
+            ]
+        ),
+        public=PermissionDefaultDetail(
+            default=PERMISSIONS.READ_DATA.name,
+            permissions=[
+                (PERMISSIONS.NONE.name, PERMISSIONS.NONE.name),
+                (PERMISSIONS.READ_DATA.name, PERMISSIONS.READ_DATA.name),
+            ]
+        )
+    )

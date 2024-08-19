@@ -84,8 +84,8 @@ export default function SummaryDashboardForm({ changed }) {
   const isCreate = id === null;
 
   const geoFields = [
-    { value: 'concept_uuid', label: 'Concept uuid' },
-    { value: 'geometry_code', label: 'Latest ucode' }
+    { value: 'geometry_code', label: 'Latest ucode' },
+    { value: 'concept_uuid', label: 'Concept uuid' }
   ]
 
   return (
@@ -106,7 +106,6 @@ export default function SummaryDashboardForm({ changed }) {
                       selected = selectedData[0]
                     }
                     dispatch(Actions.ReferenceLayer.update(selected));
-                    dispatch(Actions.Geometries.deleteAll());
                   }}
                   isMultiple={false}
                   showSelected={false}

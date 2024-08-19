@@ -15,7 +15,7 @@
 import { isArray } from "chart.js/helpers";
 import { dictDeepCopy } from "./main";
 import { NO_DATA_RULE } from "../pages/Admin/Style/Form/StyleRules";
-import { getLayerDataCleaned } from "./indicatorLayer";
+import { getLayerDataCleaned, SingleIndicatorTypes } from "./indicatorLayer";
 
 
 export const STYLE_FORM_LIBRARY = 'Style from library.'
@@ -51,12 +51,10 @@ export function returnLayerStyleConfig(layer, indicators) {
     config = dictDeepCopy(layer)
     // Use layer rules
     // If not, use first indicator rules
-    if (layer.indicators?.length === 1) {
-      const indicator = indicators.find(
-        data => layer?.indicators[0]?.id === data.id
-      )
-      if (indicator) {
-        config = indicator
+    if (SingleIndicatorTypes.includes(layer.type)) {
+      const indicatorDetail = indicators.find(indicator => indicator.id === layer?.indicators[0]?.id)
+      if (!layer.override_style && indicatorDetail) {
+        config = indicatorDetail
       }
     } else if (layer.indicators?.length > 1) {
       config.style = layer.indicators
@@ -75,7 +73,7 @@ export function returnLayerStyleConfig(layer, indicators) {
 export const indicatorLayerStyle = (
   layer, indicators, indicatorsData,
   relatedTableData, selectedGlobalTime, geoField, admin_level, filteredGeometries,
-  initConfig
+  initConfig, referenceLayer
 ) => {
   // Get rules
   let config = returnLayerStyleConfig(layer, indicators)
@@ -86,7 +84,8 @@ export const indicatorLayerStyle = (
   if (dynamicStyleTypes.includes(config.style_type)) {
     let data = getLayerDataCleaned(
       indicatorsData, relatedTableData, layer, selectedGlobalTime, geoField,
-      config?.style_config?.sync_filter ? filteredGeometries : null
+      config?.style_config?.sync_filter ? filteredGeometries : null,
+      referenceLayer, admin_level
     )
     style = createDynamicStyle(data[0]?.data, config.style_type, config.style_config, config.style_data)
     if (style[admin_level]) {
