@@ -14,8 +14,22 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '19/08/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from .dashboard import *  # noqa
-from .dashboard_indicator_layer import *  # noqa
-from .dashboard_related_table import *  # noqa
-from .dashboard_relation import *  # noqa
-from .dashboard_widget import *  # noqa
+import factory
+
+from geosight.data.models.dashboard.dashboard_widget import (
+    DashboardWidget
+)
+from geosight.data.tests.model_factories.dashboard.dashboard import DashboardF
+
+
+class DashboardWidgetF(factory.django.DjangoModelFactory):
+    """Factory for DashboardWidget."""
+
+    dashboard = factory.SubFactory(DashboardF)
+    type = factory.Sequence(
+        lambda n: 'type {}'.format(n)
+    )
+    config = {}
+
+    class Meta:  # noqa: D106
+        model = DashboardWidget

@@ -20,7 +20,7 @@ from django.db import connection
 
 from core.tests.base_tests import TenantTestCase as TestCase
 from geosight.data.tests.model_factories import (
-    DashboardF, DashboardIndicatorLayerF, DashboardIndicatorLayer
+    DashboardF, DashboardBasemapF, DashboardBasemap
 )
 from tenants.models.content_limitation import (
     ModelDataLimitation, AlreadyReachTheLimit
@@ -32,8 +32,8 @@ User = get_user_model()
 class ModelLimitationTest(TestCase):
     """Test for model limitation."""
 
-    Model = DashboardIndicatorLayer
-    Factory = DashboardIndicatorLayerF
+    Model = DashboardBasemap
+    Factory = DashboardBasemapF
 
     def create_instance(self, dashboard):
         """Create instance."""
