@@ -17,7 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.contrib import admin
 from django_tenants.admin import TenantAdminMixin
 
-from tenants.models import Client, Domain
+from tenants.models import Client, Domain, ModelDataLimitation
 
 
 @admin.register(Client)
@@ -32,3 +32,15 @@ class DomainAdmin(TenantAdminMixin, admin.ModelAdmin):
     """Domain admin."""
 
     list_display = ('domain', 'tenant', 'schema_name', 'is_primary')
+
+
+@admin.register(ModelDataLimitation)
+class ModelDataLimitationAdmin(TenantAdminMixin, admin.ModelAdmin):
+    """ModelDataLimitation admin."""
+
+    list_display = (
+        'tenant', 'content_type', 'model_field_group', 'limit', 'description'
+    )
+    list_filter = (
+        'tenant', 'content_type', 'model_field_group'
+    )

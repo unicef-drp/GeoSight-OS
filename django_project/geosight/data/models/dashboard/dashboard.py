@@ -28,6 +28,7 @@ from geosight.data.models.related_table import RelatedTable
 from geosight.data.utils import update_structure
 from geosight.georepo.models import ReferenceLayerView
 from geosight.permission.models.manager import PermissionManager
+from tenants.models import BaseModelWithLimitation
 
 User = get_user_model()
 
@@ -38,7 +39,10 @@ class DashboardGroup(AbstractTerm):
     pass
 
 
-class Dashboard(SlugTerm, IconTerm, AbstractEditData, AbstractVersionData):
+class Dashboard(
+    SlugTerm, IconTerm, AbstractEditData, AbstractVersionData,
+    BaseModelWithLimitation
+):
     """Dashboard model.
 
     One dashboard just contains one indicator.
