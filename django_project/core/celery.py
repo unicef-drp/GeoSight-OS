@@ -3,7 +3,7 @@ from __future__ import absolute_import, unicode_literals
 
 import os
 
-from tenant_schemas_celery.app import CeleryApp as TenantAwareCeleryApp
+from tenant_schemas_celery.app import CeleryApp as Celery
 
 """
 GeoSight is UNICEF's geospatial web-based business intelligence platform.
@@ -31,7 +31,7 @@ BASE_REDIS_URL = (
     f'@{os.environ.get("REDIS_HOST", "")}',
 )
 
-app = TenantAwareCeleryApp('geosight')
+app = Celery('geosight')
 
 # Using a string here means the worker don't have to serialize
 # the configuration object to child processes.

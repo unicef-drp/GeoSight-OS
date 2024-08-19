@@ -49,9 +49,9 @@ class UserApiTest(BaseTest, TestCase):
         response = self.assertRequestGetView(
             url, 200, user=self.admin
         )  # Admin
-        self.assertEqual(len(response.json()), 5)
+        self.assertEqual(len(response.json()), 4)
         self.assertRequestGetView(url, 200, user=self.creator)  # Creator
-        self.assertEqual(len(response.json()), 5)
+        self.assertEqual(len(response.json()), 4)
 
     def test_post_delete_api(self):
         """Test get API."""
@@ -74,9 +74,9 @@ class UserApiTest(BaseTest, TestCase):
         response = self.assertRequestGetView(
             url, 200, user=self.admin
         )  # Admin
-        self.assertEqual(len(response.json()), 4)
+        self.assertEqual(len(response.json()), 3)
         self.assertRequestGetView(url, 200, user=self.creator)  # Creator
-        self.assertEqual(len(response.json()), 4)
+        self.assertEqual(len(response.json()), 3)
 
     def test_get_api(self):
         """Test get API."""
