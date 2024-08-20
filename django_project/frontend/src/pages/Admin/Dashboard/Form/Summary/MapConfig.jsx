@@ -53,7 +53,7 @@ export default function MapConfig() {
   // Add history
   useEffect(() => {
     if (
-      referenceLayerData?.data?.bbox &&
+      referenceLayerData?.data?.bbox?.length &&
       (
         !prevState?.extent?.length ||
         JSON.stringify(referenceLayerData?.data?.bbox) !== JSON.stringify(prevState?.extent)
