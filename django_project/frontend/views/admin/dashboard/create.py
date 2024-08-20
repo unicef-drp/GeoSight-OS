@@ -33,12 +33,16 @@ class DashboardCreateViewBase:
 
     def save(self, data, user, files):
         """Save data."""
-        data = DashboardForm.update_data(data)
-        if Dashboard.name_is_exist_of_all(data['slug']):
-            return HttpResponseBadRequest(
-                f'Dashboard with this url shortcode : {data["slug"]} '
-                f'is exist. Please choose other url shortcode.'
-            )
+        try:
+            data = DashboardForm.update_data(data)
+            if Dashboard.name_is_exist_of_all(data['slug']):
+                return HttpResponseBadRequest(
+                    f'Dashboard with this url shortcode : {data["slug"]} '
+                    f'is exist. Please choose other url shortcode.'
+                )
+        except ValueError as e:
+            return HttpResponseBadRequest(e)
+
         # Get origin project
         origin = None
         origin_id = data.get('origin_id', None)
