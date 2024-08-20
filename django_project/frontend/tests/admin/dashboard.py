@@ -18,7 +18,7 @@ import copy
 import json
 
 from django.contrib.auth import get_user_model
-from core.tests.base_tests import TenantTestCase as TestCase
+from core.tests.base_tests import TestCase
 from django.urls import reverse
 
 from frontend.tests.admin._base import BaseViewTest

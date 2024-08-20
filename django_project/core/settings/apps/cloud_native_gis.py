@@ -11,24 +11,22 @@ Contact : geosight-no-reply@unicef.org
 
 """
 __author__ = 'irwan@kartoza.com'
-__date__ = '13/06/2023'
+__date__ = '20/08/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from core.tests.base_tests import TestCase
+CLOUD_NATIVE_GIS_APPS = []
+CLOUD_NATIVE_GIS_ENABLED = False
 
-from geosight.data.tests.model_factories import LinkF
+# --------------------------------------
+# FEATURE: CLOUD NATIVE GIS
+# --------------------------------------
+try:
+    import cloud_native_gis  # noqa:F401
 
-
-class LinkTest(TestCase):
-    """Test for Link model."""
-
-    def setUp(self):
-        """To setup test."""
-        self.name = 'Link1'
-
-    def test_create(self):
-        """Test create."""
-        link = LinkF(
-            name=self.name
-        )
-        self.assertEquals(link.name, self.name)
+    CLOUD_NATIVE_GIS_APPS = [
+        'cloud_native_gis',
+        'geosight.cloud_native_gis'
+    ]
+    CLOUD_NATIVE_GIS_ENABLED = True
+except ImportError:
+    pass

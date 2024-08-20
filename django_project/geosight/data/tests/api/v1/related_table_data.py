@@ -13,7 +13,7 @@ __author__ = 'Víctor González'
 __date__ = '29/01/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from core.tests.base_tests import TenantTestCase as TestCase
+from core.tests.base_tests import TestCase
 from rest_framework.reverse import reverse
 from rest_framework.status import HTTP_200_OK
 

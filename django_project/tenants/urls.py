@@ -14,13 +14,4 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '08/06/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from django.conf.urls import url
-
-from tenants.api import SchemaNameByDomain
-
-urlpatterns = [
-    url(
-        r'^schema-name-by-domain',
-        SchemaNameByDomain.as_view(), name='schema-by-domain'
-    ),
-]
+urlpatterns = []

@@ -16,7 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.core.management import call_command
 from django_celery_beat.models import CrontabSchedule
-from core.tests.base_tests import TenantTestCase as TestCase
+from core.tests.base_tests import TestCase
 
 
 class TestFixCrontabCommand(TestCase):

@@ -14,7 +14,7 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '24/10/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from core.tests.base_tests import TenantTestCase as TestCase
+from core.tests.base_tests import TestCase
 from django.urls import reverse
 
 from core.models.profile import ROLES

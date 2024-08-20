@@ -2,7 +2,7 @@
 from datetime import date, datetime
 from unittest.mock import patch
 
-from core.tests.base_tests import TenantTestCase as TestCase
+from core.tests.base_tests import TestCase
 from django.utils import timezone
 
 from geosight.data.models.related_table import RelatedTable

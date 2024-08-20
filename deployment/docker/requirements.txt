@@ -53,7 +53,7 @@ git+https://github.com/kartoza/CloudNativeGIS.git@updates
 # FEATURE: Multi tenant
 # Comment here for not include the multi tenants
 # -----------------------------------------------
-# django-tenants==3.6.1
-# tenant-schemas-celery==3.0.0
-# django-tenants-celery-beat==0.2.1
+django-tenants==3.6.1
+tenant-schemas-celery==3.0.0
+django-tenants-celery-beat==0.2.1
 # -----------------------------------------------

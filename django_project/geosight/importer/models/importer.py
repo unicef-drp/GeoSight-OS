@@ -361,13 +361,17 @@ class Importer(AbstractEditData):
                     crontab.save()
                 except Exception as e:
                     raise ImporterError(f'{e}')
-                tenant = connection.get_tenant()
+
+                headers = {}
+                if settings.TENANTS_ENABLED:
+                    tenant = connection.get_tenant()
+                    headers = {'_schema_name': tenant.schema_name}
                 self.job = PeriodicTask.objects.create(
                     name=self.unique_name,
                     task='geosight.importer.tasks.run_importer',
                     kwargs=kwargs,
                     crontab=crontab,
-                    headers=json.dumps({'_schema_name': tenant.schema_name}),
+                    headers=json.dumps(headers),
                 )
                 self.job.save()
                 self.save()

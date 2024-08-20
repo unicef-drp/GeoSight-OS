@@ -18,12 +18,17 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.management import call_command
 from django.db import connection
-from django.test import TestCase
+from django.test import TestCase as DjangoTestCase
 from django.test.client import MULTIPART_CONTENT
-from django_tenants.test.client import TenantClient
-from django_tenants.utils import (
-    get_tenant_model, get_tenant_domain_model, get_public_schema_name
-)
+
+try:
+    from django_tenants.test.client import TenantClient as Client
+    from django_tenants.utils import (
+        get_tenant_model, get_tenant_domain_model, get_public_schema_name,
+        tenant_context
+    )
+except ImportError:
+    from django.test.client import Client
 
 User = get_user_model()
 
@@ -46,100 +51,114 @@ class DjangoTenantObj:
         self.domain = domain
 
 
-class TenantTestCase(TestCase):
-    """Tenant test case updated."""
+class _BaseClientTestCase:
+    """Base client test case."""
 
-    tenant_data = [
-        DjangoTenantData('test1', 'test.1.com'),
-        DjangoTenantData('test2', 'test.2.com'),
-    ]
-    tenant_obj = []
-
-    @property
-    def tenant(self):
-        """Return first tenant object."""
-        return self.tenant_obj[0].tenant
-
-    @property
-    def domain(self):
-        """Return first domain object."""
-        return self.tenant_obj[0].domain
-
-    @classmethod
-    def setUpTenant(cls, tenant_schema, tenant_domain):
-        """Do setup tenant and domain."""
+    def test_client(self):
+        """Return client of test."""
         try:
-            tenant = get_tenant_model().objects.get(
-                schema_name=tenant_schema
+            return Client(self.tenant)
+        except AttributeError:
+            return Client()
+
+
+if settings.TENANTS_ENABLED:
+    class TestCase(_BaseClientTestCase, DjangoTestCase):
+        """Tenant test case updated."""
+
+        tenant_data = [
+            DjangoTenantData('test1', 'test.1.com'),
+            DjangoTenantData('test2', 'test.2.com'),
+        ]
+        tenant_obj = []
+
+        @property
+        def tenant(self):
+            """Return first tenant object."""
+            return self.tenant_obj[0].tenant
+
+        @property
+        def domain(self):
+            """Return first domain object."""
+            return self.tenant_obj[0].domain
+
+        @classmethod
+        def setUpTenant(cls, tenant_schema, tenant_domain):
+            """Do setup tenant and domain."""
+            try:
+                tenant = get_tenant_model().objects.get(
+                    schema_name=tenant_schema
+                )
+            except get_tenant_model().DoesNotExist:
+                cls.sync_shared()
+                cls.add_allowed_test_domain(tenant_domain)
+                tenant = get_tenant_model()(
+                    schema_name=tenant_schema
+                )
+                tenant.save(verbosity=0)
+                with tenant_context(tenant):
+                    User.objects.first().delete()
+
+            # Set up domain
+            domain, _ = get_tenant_domain_model().objects.get_or_create(
+                tenant=tenant, domain=tenant_domain
             )
-        except get_tenant_model().DoesNotExist:
-            cls.sync_shared()
-            cls.add_allowed_test_domain(tenant_domain)
-            tenant = get_tenant_model()(
-                schema_name=tenant_schema
+
+            return tenant, domain
+
+        @classmethod
+        def setUpClass(cls):
+            """Set up class of test."""
+            for init in cls.tenant_data:
+                tenant, domain = cls.setUpTenant(
+                    init.tenant_schema, init.tenant_domain
+                )
+                cls.tenant_obj.append(DjangoTenantObj(tenant, domain))
+            tenant = cls.tenant_obj[0].tenant
+            connection.set_tenant(tenant)
+
+        @classmethod
+        def tearDownClass(cls):
+            """Tear down class of test."""
+            connection.set_schema_to_public()
+
+        @classmethod
+        def add_allowed_test_domain(cls, tenant_domain):
+            """Add allowed domain to ALLOWED_HOSTS."""
+            if tenant_domain not in settings.ALLOWED_HOSTS:
+                settings.ALLOWED_HOSTS += [tenant_domain]
+
+        @classmethod
+        def remove_allowed_test_domain(cls, tenant_domain):
+            """Remove allowed domain to ALLOWED_HOSTS."""
+            if tenant_domain in settings.ALLOWED_HOSTS:
+                settings.ALLOWED_HOSTS.remove(tenant_domain)
+
+        @classmethod
+        def sync_shared(cls):
+            """Migrate the schema."""
+            call_command(
+                'migrate_schemas',
+                schema_name=get_public_schema_name(),
+                interactive=False,
+                verbosity=0
             )
-            tenant.save(verbosity=0)
+else:
+    class TestCase(_BaseClientTestCase, DjangoTestCase):
+        """Tenant test case updated."""
 
-        # Set up domain
-        domain, _ = get_tenant_domain_model().objects.get_or_create(
-            tenant=tenant, domain=tenant_domain
-        )
-
-        return tenant, domain
-
-    @classmethod
-    def setUpClass(cls):
-        """Set up class of test."""
-        for init in cls.tenant_data:
-            tenant, domain = cls.setUpTenant(
-                init.tenant_schema, init.tenant_domain
-            )
-            cls.tenant_obj.append(DjangoTenantObj(tenant, domain))
-        tenant = cls.tenant_obj[0].tenant
-        connection.set_tenant(tenant)
-
-    @classmethod
-    def tearDownClass(cls):
-        """Tear down class of test."""
-        connection.set_schema_to_public()
-
-    @classmethod
-    def add_allowed_test_domain(cls, tenant_domain):
-        """Add allowed domain to ALLOWED_HOSTS."""
-        if tenant_domain not in settings.ALLOWED_HOSTS:
-            settings.ALLOWED_HOSTS += [tenant_domain]
-
-    @classmethod
-    def remove_allowed_test_domain(cls, tenant_domain):
-        """Remove allowed domain to ALLOWED_HOSTS."""
-        if tenant_domain in settings.ALLOWED_HOSTS:
-            settings.ALLOWED_HOSTS.remove(tenant_domain)
-
-    @classmethod
-    def sync_shared(cls):
-        """Migrate the schema."""
-        call_command(
-            'migrate_schemas',
-            schema_name=get_public_schema_name(),
-            interactive=False,
-            verbosity=0
-        )
+        pass
 
 
-class BaseTest:
+class BaseTest(_BaseClientTestCase):
     """Base of test."""
 
     JSON_CONTENT = 'application/json'
     password = 'password'
 
-    @property
-    def tenant_client(self):
-        """Return client of test."""
-        return TenantClient(self.tenant)
-
     def assertRequestGetView(self, url, code, user=None):
         """Assert request GET view with code."""
-        client = self.tenant_client
+        client = self.test_client()
         if user:
             client.login(username=user.username, password=self.password)
         response = client.get(url)
@@ -150,7 +169,7 @@ class BaseTest:
             self, url, code, data, user=None, content_type=MULTIPART_CONTENT
     ):
         """Assert request POST view with code."""
-        client = self.tenant_client
+        client = self.test_client()
         if user:
             client.login(username=user.username, password=self.password)
         response = client.post(url, data=data, content_type=content_type)
@@ -161,7 +180,7 @@ class BaseTest:
             self, url, code, data, user=None, content_type=MULTIPART_CONTENT
     ):
         """Assert request POST view with code."""
-        client = self.tenant_client
+        client = self.test_client()
         if user:
             client.login(username=user.username, password=self.password)
         response = client.put(url, data=data, content_type=content_type)
@@ -172,7 +191,7 @@ class BaseTest:
             self, url, code, data, user=None, content_type=MULTIPART_CONTENT
     ):
         """Assert request POST view with code."""
-        client = self.tenant_client
+        client = self.test_client()
         if user:
             client.login(username=user.username, password=self.password)
         response = client.patch(url, data=data, content_type=content_type)
@@ -184,7 +203,7 @@ class BaseTest:
             content_type="application/json"
     ):
         """Assert request DELETE view with code."""
-        client = self.tenant_client
+        client = self.test_client()
         if user:
             client.login(username=user.username, password=self.password)
         response = client.delete(url, data=data, content_type=content_type)

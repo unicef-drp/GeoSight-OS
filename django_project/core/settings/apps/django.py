@@ -11,24 +11,23 @@ Contact : geosight-no-reply@unicef.org
 
 """
 __author__ = 'irwan@kartoza.com'
-__date__ = '13/06/2023'
+__date__ = '20/08/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from core.tests.base_tests import TestCase
-
-from geosight.data.tests.model_factories import LinkF
-
-
-class LinkTest(TestCase):
-    """Test for Link model."""
-
-    def setUp(self):
-        """To setup test."""
-        self.name = 'Link1'
-
-    def test_create(self):
-        """Test create."""
-        link = LinkF(
-            name=self.name
-        )
-        self.assertEquals(link.name, self.name)
+DJANGO_APPS = [
+    'patch',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.redirects',
+    'django.contrib.sessions',
+    'django.contrib.sites',
+    'django.contrib.sitemaps',
+    'django.contrib.staticfiles',
+    'django.contrib.gis',
+    'django.contrib.messages',
+]
+DJANGO_APPS_TENANT = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+]

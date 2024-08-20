@@ -14,6 +14,7 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.gis.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -28,7 +29,12 @@ from geosight.data.models.related_table import RelatedTable
 from geosight.data.utils import update_structure
 from geosight.georepo.models import ReferenceLayerView
 from geosight.permission.models.manager import PermissionManager
-from tenants.models import BaseModelWithLimitation
+
+# If tenant is enabled, add model limitation
+if settings.TENANTS_ENABLED:
+    from tenants.models import BaseModelWithLimitation
+else:
+    from core.models import BaseModelWithLimitation
 
 User = get_user_model()
 

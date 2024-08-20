@@ -15,9 +15,8 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.urls import reverse
-from django_tenants.test.client import TenantClient as Client
 
-from core.tests.base_tests import TenantTestCase as TestCase
+from core.tests.base_tests import TestCase
 from core.tests.model_factories import UserF
 from geosight.data.models.indicator import Indicator
 from geosight.data.tests.model_factories import IndicatorF, IndicatorGroupF
@@ -42,7 +41,7 @@ class IndicatorDetailApiTest(TestCase):
 
     def test_delete_indicator_view_no_login(self):
         """Test delete indicator with no login."""
-        client = Client(self.tenant)
+        client = self.test_client()
         response = client.delete(self.url)
         self.assertEquals(response.status_code, 403)
 
@@ -51,7 +50,7 @@ class IndicatorDetailApiTest(TestCase):
         username = 'test'
         password = 'testpassword'
         UserF(username=username, password=password, is_superuser=False)
-        client = Client(self.tenant)
+        client = self.test_client()
         client.login(username=username, password=password)
         response = client.delete(self.url)
         self.assertEquals(response.status_code, 403)
@@ -61,7 +60,7 @@ class IndicatorDetailApiTest(TestCase):
         username = 'staff'
         password = 'staffpassword'
         UserF(username=username, password=password, is_superuser=True)
-        client = Client(self.tenant)
+        client = self.test_client()
         client.login(username=username, password=password)
         response = client.delete(self.url)
         self.assertEquals(response.status_code, 200)

@@ -18,7 +18,7 @@ from unittest.mock import patch
 
 from dateutil import parser
 from django.db import connection
-from core.tests.base_tests import TenantTestCase as TestCase
+from core.tests.base_tests import TestCase
 
 from core.models.preferences import SitePreferences
 from core.tests.model_factories import UserF

@@ -18,7 +18,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.db import connection
 
-from core.tests.base_tests import TenantTestCase as TestCase
+from core.tests.base_tests import TestCase
 from geosight.data.tests.model_factories import (
     DashboardF, DashboardRelatedTableF, DashboardRelatedTable
 )

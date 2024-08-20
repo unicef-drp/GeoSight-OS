@@ -19,7 +19,7 @@ import json
 from datetime import datetime
 
 from django.contrib.auth import get_user_model
-from core.tests.base_tests import TenantTestCase as TestCase
+from core.tests.base_tests import TestCase
 from django.urls import reverse
 
 from geosight.data.models.indicator import Indicator, IndicatorGroup

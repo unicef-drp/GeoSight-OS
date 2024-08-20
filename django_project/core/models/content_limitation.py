@@ -11,24 +11,14 @@ Contact : geosight-no-reply@unicef.org
 
 """
 __author__ = 'irwan@kartoza.com'
-__date__ = '13/06/2023'
+__date__ = '19/08/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from core.tests.base_tests import TestCase
-
-from geosight.data.tests.model_factories import LinkF
+from django.contrib.gis.db import models
 
 
-class LinkTest(TestCase):
-    """Test for Link model."""
+class BaseModelWithLimitation(models.Model):
+    """Abstract base model with limitations."""
 
-    def setUp(self):
-        """To setup test."""
-        self.name = 'Link1'
-
-    def test_create(self):
-        """Test create."""
-        link = LinkF(
-            name=self.name
-        )
-        self.assertEquals(link.name, self.name)
+    class Meta:  # noqa: D106
+        abstract = True

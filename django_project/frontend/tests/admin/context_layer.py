@@ -17,7 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 import copy
 
 from django.contrib.auth import get_user_model
-from core.tests.base_tests import TenantTestCase as TestCase
+from core.tests.base_tests import TestCase
 
 from frontend.tests.admin._base import BaseViewTest
 from geosight.data.models.context_layer import ContextLayer, LayerType

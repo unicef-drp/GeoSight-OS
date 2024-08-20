@@ -21,7 +21,6 @@ import time
 import django
 
 from core.utils import create_superuser
-from tenants.models import Client, Domain
 
 django.setup()
 
@@ -63,16 +62,7 @@ call_command('makemigrations')
 call_command('migrate', '--noinput')
 
 #########################################################
-# 3. Creating superuser if it doesn't exist
-#########################################################
-print("-----------------------------------------------------")
-print("3. Creating/updating superuser")
-create_superuser()
-for client in Client.objects.all():
-    client.create_superuser()
-
-#########################################################
-# 4. Collecting static files
+# 3. Collecting static files
 #########################################################
 
 print("-----------------------------------------------------")
@@ -94,7 +84,7 @@ except Exception:
 call_command('collectstatic', '--noinput', verbosity=0)
 
 #########################################################
-# 5. Remove all cache
+# 4. Remove all cache
 #########################################################
 
 print("-----------------------------------------------------")
@@ -112,7 +102,7 @@ if cache.get('APP_KEY') != project_version(None):
         pass
 
 #########################################################
-# 6. Restart backgrounds functions
+# 5. Restart backgrounds functions
 #########################################################
 
 try:
@@ -127,9 +117,20 @@ except Exception as e:
     pass
 
 #########################################################
+# 6. Creating superuser if it doesn't exist
+#########################################################
+print("-----------------------------------------------------")
+print("3. Creating/updating superuser")
+create_superuser()
+
+#########################################################
 # 7. Create default domain for tenant
 #########################################################
 try:
+    from tenants.models import Client, Domain
+
+    for client in Client.objects.all():
+        client.create_superuser()
 
     print("-----------------------------------------------------")
     print("7. Create default domain for tenant")

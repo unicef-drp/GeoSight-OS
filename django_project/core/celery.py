@@ -3,7 +3,12 @@ from __future__ import absolute_import, unicode_literals
 
 import os
 
-from tenant_schemas_celery.app import CeleryApp as Celery
+from django.conf import settings
+
+if settings.TENANTS_ENABLED:
+    from tenant_schemas_celery.app import CeleryApp as Celery
+else:
+    from celery import Celery
 
 """
 GeoSight is UNICEF's geospatial web-based business intelligence platform.

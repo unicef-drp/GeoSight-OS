@@ -14,6 +14,7 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.gis.db import models
 
@@ -25,7 +26,12 @@ from geosight.data.models.field_layer import FieldLayerAbstract
 from geosight.data.models.indicator import Indicator
 from geosight.data.models.rule import RuleModel
 from geosight.data.models.style.indicator_style import IndicatorStyleBaseModel
-from tenants.models import BaseModelWithLimitation
+
+# If tenant is enabled, add model limitation
+if settings.TENANTS_ENABLED:
+    from tenants.models import BaseModelWithLimitation
+else:
+    from core.models import BaseModelWithLimitation
 
 User = get_user_model()
 

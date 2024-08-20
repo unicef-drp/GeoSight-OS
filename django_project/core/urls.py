@@ -35,8 +35,13 @@ from core.api.group import (
 from core.api.maintenance import MaintenanceAPI
 from core.api.proxy import ProxyView
 from core.api.sentry import trigger_error
+from core.api.tenant import TenantNameByDomain
 from core.api.user import UserListAPI, UserDetailAPI, UserApiKey
-from tenants.views.static import serve
+
+if settings.TENANTS_ENABLED:
+    from tenants.views.static import serve
+else:
+    from django.views.static import serve
 
 
 class CustomSchemaGenerator(OpenAPISchemaGenerator):
@@ -161,14 +166,21 @@ api = [
     url(r'^user/', include(user_api)),
     url(r'^access/', include(request_access_api)),
 ]
+
+# Tenants enabled
+if settings.TENANTS_ENABLED:
+    urlpatterns += [
+        url(r'^tenants/', include('tenants.urls'))
+    ]
+
 urlpatterns += [
     url(r'^tinymce/', include('tinymce.urls')),
     url(r'^proxy', ProxyView.as_view(), name='proxy-view'),
+    url(r'^tenant', TenantNameByDomain.as_view(), name='tenant-check-view'),
     url(r'^api/v1/', include('core.urls_v1')),
     url(r'^api/', include(api)),
     url(r'^sentry-debug', trigger_error),
     url(r'^captcha/', include('captcha.urls')),
-    url(r'^tenants/', include('tenants.urls')),
     url(r'^', include('geosight.urls')),
     url(r'^', include('frontend.urls')),
 ]
