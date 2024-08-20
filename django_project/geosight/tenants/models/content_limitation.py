@@ -20,7 +20,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.gis.db import models
 from django.db import connection
 
-from tenants.models.tenant import Client
+from geosight.tenants.models.tenant import Client
 
 
 class AlreadyReachTheLimit(Exception):

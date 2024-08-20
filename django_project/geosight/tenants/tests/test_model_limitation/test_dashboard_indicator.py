@@ -22,7 +22,7 @@ from core.tests.base_tests import TestCase
 from geosight.data.tests.model_factories import (
     DashboardF, DashboardIndicatorF, DashboardIndicator
 )
-from tenants.models.content_limitation import (
+from geosight.tenants.models.content_limitation import (
     ModelDataLimitation, AlreadyReachTheLimit
 )
 

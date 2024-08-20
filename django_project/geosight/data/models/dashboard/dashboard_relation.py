@@ -29,7 +29,7 @@ from geosight.data.models.style.indicator_style import IndicatorStyleBaseModel
 
 # If tenant is enabled, add model limitation
 if settings.TENANTS_ENABLED:
-    from tenants.models import BaseModelWithLimitation
+    from geosight.tenants.models import BaseModelWithLimitation
 else:
     from core.models import BaseModelWithLimitation
 

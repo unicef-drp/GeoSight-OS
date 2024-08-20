@@ -20,9 +20,9 @@ from django.db import connection
 
 from core.tests.base_tests import TestCase
 from geosight.data.tests.model_factories import (
-    DashboardF, DashboardWidgetF, DashboardWidget
+    DashboardF, DashboardRelatedTableF, DashboardRelatedTable
 )
-from tenants.models.content_limitation import (
+from geosight.tenants.models.content_limitation import (
     ModelDataLimitation, AlreadyReachTheLimit
 )
 
@@ -32,8 +32,8 @@ User = get_user_model()
 class ModelLimitationTest(TestCase):
     """Test for model limitation."""
 
-    Model = DashboardWidget
-    Factory = DashboardWidgetF
+    Model = DashboardRelatedTable
+    Factory = DashboardRelatedTableF
 
     def create_instance(self, dashboard):
         """Create instance."""

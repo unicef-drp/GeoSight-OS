@@ -127,7 +127,7 @@ create_superuser()
 # 7. Create default domain for tenant
 #########################################################
 try:
-    from tenants.models import Client, Domain
+    from geosight.tenants.models import Client, Domain
 
     for client in Client.objects.all():
         client.create_superuser()

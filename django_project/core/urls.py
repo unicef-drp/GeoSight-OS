@@ -39,7 +39,7 @@ from core.api.tenant import TenantNameByDomain
 from core.api.user import UserListAPI, UserDetailAPI, UserApiKey
 
 if settings.TENANTS_ENABLED:
-    from tenants.views.static import serve
+    from geosight.tenants.views.static import serve
 else:
     from django.views.static import serve
 
@@ -170,7 +170,7 @@ api = [
 # Tenants enabled
 if settings.TENANTS_ENABLED:
     urlpatterns += [
-        url(r'^tenants/', include('tenants.urls'))
+        url(r'^tenants/', include('geosight.tenants.urls'))
     ]
 
 urlpatterns += [

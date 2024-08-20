@@ -17,7 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.contrib import admin
 from django_tenants.admin import TenantAdminMixin
 
-from tenants.models import Client, Domain, ModelDataLimitation
+from geosight.tenants.models import Client, Domain, ModelDataLimitation
 
 
 @admin.register(Client)

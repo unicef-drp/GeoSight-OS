@@ -32,7 +32,7 @@ from geosight.permission.models.manager import PermissionManager
 
 # If tenant is enabled, add model limitation
 if settings.TENANTS_ENABLED:
-    from tenants.models import BaseModelWithLimitation
+    from geosight.tenants.models import BaseModelWithLimitation
 else:
     from core.models import BaseModelWithLimitation
 

@@ -20,7 +20,7 @@ from django.db import connection
 
 from core.tests.base_tests import TestCase
 from geosight.data.tests.model_factories import DashboardF, Dashboard
-from tenants.models.content_limitation import (
+from geosight.tenants.models.content_limitation import (
     ModelDataLimitation, AlreadyReachTheLimit
 )
 

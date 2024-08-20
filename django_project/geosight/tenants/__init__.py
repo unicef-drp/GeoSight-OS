@@ -20,8 +20,9 @@ from django.apps import AppConfig
 class Config(AppConfig):
     """Documentation app."""
 
-    name = 'tenants'
-    verbose_name = "GeoSight tenant"
+    label = 'geosight_tenants'
+    name = 'geosight.tenants'
+    verbose_name = "GeoSight Tenant"
 
 
-default_app_config = 'tenants.Config'
+default_app_config = 'geosight.tenants.Config'
