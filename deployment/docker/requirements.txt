@@ -21,9 +21,6 @@ djangorestframework==3.14.0
 djangorestframework-gis==1.0
 django-rest-knox==4.2.0
 drf-nested-routers==0.93.5
-django-tenants==3.6.1
-tenant-schemas-celery==3.0.0
-django-tenants-celery-beat==0.2.1
 
 # TODO: Upgrade django 4
 #  Remove this after migrate to Django 4
@@ -52,3 +49,11 @@ selenium==4.13.0
 webdriver-manager==4.0.1
 
 git+https://github.com/kartoza/CloudNativeGIS.git@updates
+
+# FEATURE: Multi tenant
+# Comment here for not include the multi tenants
+# -----------------------------------------------
+# django-tenants==3.6.1
+# tenant-schemas-celery==3.0.0
+# django-tenants-celery-beat==0.2.1
+# -----------------------------------------------
