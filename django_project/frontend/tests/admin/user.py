@@ -15,10 +15,10 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib.auth import get_user_model
-from core.tests.base_tests import TestCase
 from django.urls import reverse
 
 from core.models.profile import ROLES
+from core.tests.base_tests import TestCase
 from core.tests.model_factories import create_user
 from frontend.tests.admin._base import BaseViewTest
 

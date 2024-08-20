@@ -14,6 +14,7 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '08/06/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
+from django.conf import settings
 from django.http import HttpResponseForbidden
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -25,7 +26,7 @@ class TenantNameByDomain(APIView):
     def get(self, request, *args, **kwargs):
         """Get access request list."""
         tenant_name = ''
-        try:
+        if settings.TENANTS_ENABLED:
             from django_tenants.utils import (
                 remove_www, get_tenant_domain_model
             )
@@ -44,5 +45,5 @@ class TenantNameByDomain(APIView):
             return Response(
                 f'/{tenant_name}', headers={'Tenant': f'/{tenant_name}'}
             )
-        except ImportError:
+        else:
             return Response(tenant_name, headers={'Tenant': tenant_name})

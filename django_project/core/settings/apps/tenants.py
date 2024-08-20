@@ -39,7 +39,9 @@ try:
     TENANT_MODEL = "geosight_tenants.Client"
     TENANT_DOMAIN_MODEL = "geosight_tenants.Domain"
     PERIODIC_TASK_TENANT_LINK_MODEL = "geosight_tenants.PeriodicTaskTenantLink"
-    DEFAULT_FILE_STORAGE = "django_tenants.files.storage.TenantFileSystemStorage"
+    DEFAULT_FILE_STORAGE = (
+        "django_tenants.files.storage.TenantFileSystemStorage"
+    )
     MULTITENANT_RELATIVE_MEDIA_ROOT = ""
 except ImportError:
     pass

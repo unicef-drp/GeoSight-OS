@@ -15,9 +15,9 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib.auth import get_user_model
-from core.tests.base_tests import TestCase
 
 from core.models.profile import ROLES
+from core.tests.base_tests import TestCase
 from core.tests.model_factories import GroupF, create_user
 from geosight.data.models.indicator import Indicator
 from geosight.georepo.models import ReferenceLayerView

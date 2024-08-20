@@ -2,9 +2,9 @@
 from datetime import date, datetime
 from unittest.mock import patch
 
-from core.tests.base_tests import TestCase
 from django.utils import timezone
 
+from core.tests.base_tests import TestCase
 from geosight.data.models.related_table import RelatedTable
 from geosight.data.tests.model_factories import (
     DashboardIndicatorLayerF, DashboardIndicatorLayerRelatedTableF,

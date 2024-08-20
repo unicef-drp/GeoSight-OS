@@ -16,11 +16,12 @@ __copyright__ = ('Copyright 2023, Unicef')
 import datetime
 
 from dateutil import parser
-from core.tests.base_tests import TestCase
 from rest_framework.reverse import reverse
 
-from geosight.data.models import RelatedTable, \
-    RelatedTableField, RelatedTableRow
+from core.tests.base_tests import TestCase
+from geosight.data.models import (
+    RelatedTable, RelatedTableField, RelatedTableRow
+)
 from geosight.permission.models import PERMISSIONS
 from geosight.permission.tests import BasePermissionTest
 

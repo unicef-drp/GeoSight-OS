@@ -15,7 +15,6 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from .api_key import *
-from .content_limitation import *
 from .general import *
 from .preferences import *
 from .profile import *

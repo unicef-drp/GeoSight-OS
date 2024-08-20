@@ -18,9 +18,9 @@ import copy
 import json
 
 from django.contrib.auth import get_user_model
-from core.tests.base_tests import TestCase
 from django.urls import reverse
 
+from core.tests.base_tests import TestCase
 from geosight.data.models.context_layer import ContextLayer, LayerType
 from geosight.permission.models.factory import PERMISSIONS
 from geosight.permission.tests._base import BasePermissionTest

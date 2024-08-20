@@ -31,7 +31,7 @@ from geosight.data.models.style.indicator_style import IndicatorStyleBaseModel
 if settings.TENANTS_ENABLED:
     from geosight.tenants.models import BaseModelWithLimitation
 else:
-    from core.models import BaseModelWithLimitation
+    BaseModelWithLimitation = models.Model
 
 User = get_user_model()
 

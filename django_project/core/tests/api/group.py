@@ -17,13 +17,12 @@ __copyright__ = ('Copyright 2023, Unicef')
 import csv
 import json
 
-from core.tests.base_tests import TestCase
 from django.urls import reverse
 
 from core.models.group import GeosightGroup
 from core.models.profile import ROLES
 from core.settings.utils import ABS_PATH
-from core.tests.base_tests import BaseTest
+from core.tests.base_tests import TestCase, BaseTest
 from core.tests.model_factories import create_user
 
 

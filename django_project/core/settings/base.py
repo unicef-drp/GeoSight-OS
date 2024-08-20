@@ -87,11 +87,12 @@ MIDDLEWARE = (
 )
 
 try:
-    import tenants  # noqa:F401
     import django_tenants  # noqa:F401
     import django_tenants_celery_beat  # noqa:F401
 
-    MIDDLEWARE = ('tenants.middleware.main.TenantMainMiddleware',) + MIDDLEWARE
+    MIDDLEWARE = (
+                     'geosight.tenants.middleware.main.TenantMainMiddleware',
+                 ) + MIDDLEWARE
 except ImportError:
     pass
 

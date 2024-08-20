@@ -21,13 +21,13 @@ from django.db import connection
 from django.test import TestCase as DjangoTestCase
 from django.test.client import MULTIPART_CONTENT
 
-try:
+if settings.TENANTS_ENABLED:
     from django_tenants.test.client import TenantClient as Client
     from django_tenants.utils import (
         get_tenant_model, get_tenant_domain_model, get_public_schema_name,
         tenant_context
     )
-except ImportError:
+else:
     from django.test.client import Client
 
 User = get_user_model()

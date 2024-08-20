@@ -15,7 +15,6 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from core.tests.base_tests import TestCase
-
 from geosight.data.models.dashboard import Dashboard, DashboardRelatedTable
 from geosight.data.models.related_table import (
     RelatedTable

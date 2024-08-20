@@ -19,9 +19,9 @@ import json
 from datetime import datetime
 
 from django.contrib.auth import get_user_model
-from core.tests.base_tests import TestCase
 from django.urls import reverse
 
+from core.tests.base_tests import TestCase
 from geosight.data.models.indicator import Indicator, IndicatorGroup
 from geosight.georepo.tests.model_factories import ReferenceLayerF
 from geosight.permission.models.factory import PERMISSIONS

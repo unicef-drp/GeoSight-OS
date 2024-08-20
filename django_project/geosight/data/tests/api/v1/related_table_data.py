@@ -13,10 +13,10 @@ __author__ = 'Víctor González'
 __date__ = '29/01/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from core.tests.base_tests import TestCase
 from rest_framework.reverse import reverse
 from rest_framework.status import HTTP_200_OK
 
+from core.tests.base_tests import TestCase
 from geosight.data.models import RelatedTable, RelatedTableRow
 from geosight.data.tests.api.v1.related_table \
     import add_fields_and_rows_to_table

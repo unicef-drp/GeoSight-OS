@@ -34,7 +34,7 @@ from geosight.permission.models.manager import PermissionManager
 if settings.TENANTS_ENABLED:
     from geosight.tenants.models import BaseModelWithLimitation
 else:
-    from core.models import BaseModelWithLimitation
+    BaseModelWithLimitation = models.Model
 
 User = get_user_model()
 
