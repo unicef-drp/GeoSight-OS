@@ -55,7 +55,7 @@ test.describe('Duplicate and save as project', () => {
     //
     // await page.locator('.MoreActionIcon').click();
     // await page.locator('.MuiMenu-root .MuiButtonBase-root .error').click();
-    // await expect(page.getByText('Add New Project')).toBeVisible();
+    // await expect(page.getByText('Create New Project')).toBeVisible();
     // await expect(page.getByText('Demo GeoSight Project 1')).toBeHidden()
   });
 
@@ -106,7 +106,7 @@ test.describe('Duplicate and save as project', () => {
     //
     // await page.locator('.MoreActionIcon').click();
     // await page.locator('.MuiMenu-root .MuiButtonBase-root .error').click();
-    // await expect(page.getByText('Add New Project')).toBeVisible();
+    // await expect(page.getByText('Create New Project')).toBeVisible();
     // await expect(page.getByText('Test Project Save As')).toBeHidden()
   });
 });

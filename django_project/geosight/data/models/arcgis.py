@@ -82,6 +82,8 @@ class ArcgisConfig(AbstractTerm):
     @property
     def token_val(self):
         """Return token."""
+        if not self.pk:
+            return
         try:
             if self.expires and self.expires <= timezone.now():
                 return self.generate_token()
@@ -127,6 +129,7 @@ class ArcgisConfig(AbstractTerm):
             self.save()
             return token
         except Exception as e:
+            print(e)
             logger.error(f'{self.full_name} - {e}')
             self.token = None
             self.expires = None

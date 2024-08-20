@@ -12,4 +12,6 @@
 # __author__ = 'irwan@kartoza.com'
 # __date__ = '13/06/2023'
 # __copyright__ = ('Copyright 2023, Unicef')
-  exec git describe --tags > version.txt
+
+exec git describe --tags > _version.txt
+exec git rev-parse --verify HEAD > _commit_hash.txt

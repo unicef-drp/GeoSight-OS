@@ -167,7 +167,7 @@ export const AdminListContent = forwardRef(
         return <a href={apiCreate}>
           <AddButton
             variant="primary"
-            text={"Add New " + pageName}
+            text={"Create New " + pageName}
           />
         </a>
       }

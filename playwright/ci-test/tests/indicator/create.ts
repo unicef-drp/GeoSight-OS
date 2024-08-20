@@ -16,7 +16,7 @@ test.describe('Create indicator', () => {
     await page.waitForSelector('.Home', { timeout: timeout });
     await page.getByText('Admin panel').click();
     await page.getByRole('link', { name: 'Indicators' }).click();
-    await page.getByRole('button', { name: 'Add New Indicator' }).click();
+    await page.getByRole('button', { name: 'Create New Indicator' }).click();
 
     // Check similarity
     await page.locator('#Form #id_name').fill('Sample ind B');
@@ -78,7 +78,7 @@ test.describe('Create indicator', () => {
 
     await page.locator('.MoreActionIcon').click();
     await page.locator('.MuiMenu-root .MuiButtonBase-root .error').click();
-    await expect(page.getByText('Add New Indicator')).toBeVisible();
+    await expect(page.getByText('Create New Indicator')).toBeVisible();
     await expect(page.getByText(name)).toBeHidden();
   });
 })

@@ -35,6 +35,13 @@ def is_valid_uuid(value):
         return False
 
 
+def parse_url(url):
+    """Parse url."""
+    parsed_url = urlparse(url)
+    params_dict = dict(parse_qsl(parsed_url.query))
+    return parsed_url.netloc, parsed_url.path, params_dict
+
+
 def set_query_parameter(url, params):
     """Given a URL and replace a query parameter and return modified URL."""
     url_parse = urlparse(url)
