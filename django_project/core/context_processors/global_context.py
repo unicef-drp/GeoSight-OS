@@ -27,12 +27,12 @@ from geosight.georepo.request import GeorepoUrl
 
 def project_version(request):
     """Read project version from file."""
-    folder = ABS_PATH('version')
+    folder = ABS_PATH('')
     version = ''
-    version_file = os.path.join(folder, 'version.txt')
+    version_file = os.path.join(folder, '_version.txt')
     if os.path.exists(version_file):
         version += (open(version_file, 'rb').read()).decode("utf-8")
-    commit_file = os.path.join(folder, 'commit.txt')
+    commit_file = os.path.join(folder, '_commit_hash.txt')
     if os.path.exists(commit_file):
         commit = (open(commit_file, 'rb').read()).decode("utf-8")[:5]
         if commit:
