@@ -42,7 +42,7 @@ const RenderIndicatorLegendSection = ({ rules, name }) => {
     <div className='MapLegendSection'>
       <div className='MapLegendSectionTitle'>{name}</div>
       {
-        rules !== null ?
+        ![null, undefined].includes(rules) ?
           <Fragment>
             {
               rules.length ?
