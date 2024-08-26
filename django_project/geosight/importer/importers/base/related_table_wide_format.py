@@ -108,6 +108,8 @@ class RelatedTableWideFormat(AbstractImporterRelatedTable):
                 if value.__class__ is str:
                     try:
                         value = float(value)
+                        if value.is_integer():
+                            value = int(value)
                     except (ValueError, TypeError):
                         pass
 
