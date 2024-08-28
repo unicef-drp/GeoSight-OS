@@ -14,17 +14,13 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '19/08/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
-from django.db import connection
 
 from core.tests.base_tests import TestCase
 from geosight.data.tests.model_factories import DashboardF, Dashboard
 from geosight.tenants.models.content_limitation import (
     ModelDataLimitation, AlreadyReachTheLimit
 )
-
-User = get_user_model()
 
 
 class ModelLimitationDashboardTest(TestCase):
@@ -68,7 +64,7 @@ class ModelLimitationDashboardTest(TestCase):
         # ------------------------------------------
         # tenant 2
         # ------------------------------------------
-        connection.set_tenant(self.tenant_obj[1].tenant)
+        self.set_tenant_connection(self.tenants[1])
         dashboard = DashboardF()
         self.assertEqual(dashboard.model_data_count, 1)
         self.assertFalse(dashboard.has_reach_limit)

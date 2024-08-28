@@ -22,11 +22,11 @@ from django.urls import reverse
 from core.models.group import GeosightGroup
 from core.models.profile import ROLES
 from core.settings.utils import ABS_PATH
-from core.tests.base_tests import TestCase, BaseTest
+from core.tests.base_tests import APITestCase
 from core.tests.model_factories import create_user
 
 
-class GroupApiTest(BaseTest, TestCase):
+class GroupApiTest(APITestCase):
     """Test for api key."""
 
     def setUp(self):

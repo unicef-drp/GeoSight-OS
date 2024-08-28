@@ -19,8 +19,8 @@ import os  # noqa
 from celery.schedules import crontab
 from django.utils.translation import ugettext_lazy as _
 
-from .contrib import *  # noqa
 from .apps import *  # noqa
+from .contrib import *  # noqa
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 ALLOWED_HOSTS = ['*']
@@ -157,3 +157,16 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(minute='0', hour='0'),
     }
 }
+
+# ----------------------------------------
+# Setup for tenants
+# ----------------------------------------
+if TENANTS_ENABLED:
+    MIDDLEWARE = (
+                     'geosight.tenants.middleware.main.TenantMainMiddleware',
+                 ) + MIDDLEWARE
+
+    # Remove this because we use tenants admin
+    INSTALLED_APPS = [
+        app for app in INSTALLED_APPS if app != 'django.contrib.admin'
+    ]

@@ -14,7 +14,6 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '19/08/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.db import connection
 
@@ -25,8 +24,6 @@ from geosight.data.tests.model_factories import (
 from geosight.tenants.models.content_limitation import (
     ModelDataLimitation, AlreadyReachTheLimit
 )
-
-User = get_user_model()
 
 
 class ModelLimitationTest(TestCase):
@@ -102,7 +99,7 @@ class ModelLimitationTest(TestCase):
         # ------------------------------------------
         # tenant 2 dashboard 1
         # ------------------------------------------
-        connection.set_tenant(self.tenant_obj[1].tenant)
+        self.set_tenant_connection(self.tenants[1])
         dashboard = DashboardF()
         instance = self.create_instance(dashboard)
         self.assertEqual(instance.model_data_count, 1)
@@ -129,7 +126,7 @@ class ModelLimitationTest(TestCase):
         # ------------------------------------------
         # tenant 2 dashboard 2
         # ------------------------------------------
-        connection.set_tenant(self.tenant_obj[1].tenant)
+        self.set_tenant_connection(self.tenants[1])
         dashboard = DashboardF()
         instance = self.create_instance(dashboard)
         self.assertEqual(instance.model_data_count, 1)

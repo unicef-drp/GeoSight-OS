@@ -36,10 +36,11 @@ User = get_user_model()
 class DjangoTenantData:
     """Object contains domain and schema."""
 
-    def __init__(self, tenant_schema, tenant_domain):
+    def __init__(self, tenant_schema, tenant_domain, is_primary=False):
         """Initialize the object."""
         self.tenant_schema = tenant_schema
         self.tenant_domain = tenant_domain
+        self.is_primary = is_primary
 
 
 class DjangoTenantObj:
@@ -67,24 +68,26 @@ if settings.TENANTS_ENABLED:
         """Tenant test case updated."""
 
         tenant_data = [
-            DjangoTenantData('test1', 'test.1.com'),
-            DjangoTenantData('test2', 'test.2.com'),
+            DjangoTenantData(
+                'test1', 'test.1.com', is_primary=True
+            ),
+            DjangoTenantData(
+                'test2', 'test.2.com'
+            ),
         ]
         tenant_obj = []
 
         @property
         def tenant(self):
             """Return first tenant object."""
-            return self.tenant_obj[0].tenant
-
-        @property
-        def domain(self):
-            """Return first domain object."""
-            return self.tenant_obj[0].domain
+            return connection.get_tenant()
 
         @classmethod
-        def setUpTenant(cls, tenant_schema, tenant_domain):
+        def setUpTenant(cls, tenant_data: DjangoTenantData):
             """Do setup tenant and domain."""
+            tenant_schema = tenant_data.tenant_schema
+            tenant_domain = tenant_data.tenant_domain
+            is_primary = tenant_data.is_primary
             try:
                 tenant = get_tenant_model().objects.get(
                     schema_name=tenant_schema
@@ -93,7 +96,8 @@ if settings.TENANTS_ENABLED:
                 cls.sync_shared()
                 cls.add_allowed_test_domain(tenant_domain)
                 tenant = get_tenant_model()(
-                    schema_name=tenant_schema
+                    schema_name=tenant_schema,
+                    name=tenant_schema
                 )
                 tenant.save(verbosity=0)
                 with tenant_context(tenant):
@@ -103,6 +107,8 @@ if settings.TENANTS_ENABLED:
             domain, _ = get_tenant_domain_model().objects.get_or_create(
                 tenant=tenant, domain=tenant_domain
             )
+            domain.is_primary = is_primary
+            domain.save()
 
             return tenant, domain
 
@@ -110,12 +116,10 @@ if settings.TENANTS_ENABLED:
         def setUpClass(cls):
             """Set up class of test."""
             for init in cls.tenant_data:
-                tenant, domain = cls.setUpTenant(
-                    init.tenant_schema, init.tenant_domain
-                )
+                tenant, domain = cls.setUpTenant(init)
                 cls.tenant_obj.append(DjangoTenantObj(tenant, domain))
             tenant = cls.tenant_obj[0].tenant
-            connection.set_tenant(tenant)
+            cls.set_tenant_connection(tenant)
 
         @classmethod
         def tearDownClass(cls):
@@ -143,6 +147,16 @@ if settings.TENANTS_ENABLED:
                 interactive=False,
                 verbosity=0
             )
+
+        @classmethod
+        def set_tenant_connection(cls, tenant):
+            """Set tenant connection."""
+            connection.set_tenant(tenant)
+
+        @property
+        def tenants(self):
+            """Return tenants in list."""
+            return [tenant_obj.tenant for tenant_obj in self.tenant_obj]
 else:
     class TestCase(_BaseClientTestCase, DjangoTestCase):
         """Tenant test case updated."""
@@ -150,7 +164,7 @@ else:
         pass
 
 
-class BaseTest(_BaseClientTestCase):
+class APITestCase(TestCase):
     """Base of test."""
 
     JSON_CONTENT = 'application/json'

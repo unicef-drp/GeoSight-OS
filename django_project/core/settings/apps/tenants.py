@@ -28,10 +28,16 @@ try:
     TENANTS_APPS = [
         'django_tenants',
         'geosight.tenants',
+        'geosight.tenants.admin_apps.TenantsAdminConfig'
     ]
 
     TENANTS_CONTRIB_APPS = [
         'django_tenants_celery_beat'
+    ]
+
+    # APPS that can't be shown on child tenant
+    TENANTS_SECRET_APPS = [
+        'geosight_tenants'
     ]
 
     # FEATURE: Multi tenant
@@ -45,4 +51,3 @@ try:
     TENANTS_ENABLED = True
 except ImportError:
     pass
-from django_tenants.files.storage import TenantFileSystemStorage

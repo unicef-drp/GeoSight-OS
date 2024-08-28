@@ -20,13 +20,13 @@ from django.contrib.auth import get_user_model
 from rest_framework.reverse import reverse
 
 from core.models.profile import ROLES
-from core.tests.base_tests import BaseTest
+from core.tests.base_tests import APITestCase
 from core.tests.model_factories import GroupF, create_user
 
 User = get_user_model()
 
 
-class BasePermissionTest(BaseTest):
+class BasePermissionTest(APITestCase):
     """Test for Base Permission."""
 
     def create_resource(self, user):

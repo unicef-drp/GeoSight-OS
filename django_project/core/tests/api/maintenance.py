@@ -21,11 +21,11 @@ from django.urls import reverse
 
 from core.models.maintenance import Maintenance
 from core.models.profile import ROLES
-from core.tests.base_tests import TestCase, BaseTest
+from core.tests.base_tests import APITestCase
 from core.tests.model_factories import create_user
 
 
-class MaintenanceApiTest(BaseTest, TestCase):
+class MaintenanceApiTest(APITestCase):
     """Test for maintenance."""
 
     @mock.patch('core.api.maintenance.datetime')

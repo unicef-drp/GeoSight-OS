@@ -17,11 +17,11 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.urls import reverse
 
 from core.models.profile import ROLES
-from core.tests.base_tests import TestCase, BaseTest
+from core.tests.base_tests import APITestCase
 from core.tests.model_factories import create_user
 
 
-class ApiKeyApiTest(BaseTest, TestCase):
+class ApiKeyApiTest(APITestCase):
     """Test for api key."""
 
     def setUp(self):
