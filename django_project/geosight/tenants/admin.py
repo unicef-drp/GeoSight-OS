@@ -11,31 +11,66 @@ Contact : geosight-no-reply@unicef.org
 
 """
 __author__ = 'irwan@kartoza.com'
-__date__ = '02/05/2024'
+__date__ = '28/08/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib import admin
 from django_tenants.admin import TenantAdminMixin
 
 from geosight.tenants.models import Client, Domain, ModelDataLimitation
+from geosight.tenants.utils import is_public_tenant
+
+
+class TenantModelAdmin(admin.ModelAdmin):
+    """Tenant that give access to just for public tenant."""
+
+    def has_view_permission(self, request, obj=None):
+        """Has view permission."""
+        if not is_public_tenant(request):
+            return False
+        return super().has_view_permission(request, obj)
+
+    def has_add_permission(self, request):
+        """Has add permission."""
+        if not is_public_tenant(request):
+            return False
+        return super().has_add_permission(request)
+
+    def has_change_permission(self, request, obj=None):
+        """Has change permission."""
+        if not is_public_tenant(request):
+            return False
+        return super().has_change_permission(request, obj)
+
+    def has_delete_permission(self, request, obj=None):
+        """Has delete permission."""
+        if not is_public_tenant(request):
+            return False
+        return super().has_delete_permission(request, obj)
+
+    def has_module_permission(self, request):
+        """Has module permission."""
+        if not is_public_tenant(request):
+            return False
+        return super().has_module_permission(request)
 
 
 @admin.register(Client)
-class ClientAdmin(TenantAdminMixin, admin.ModelAdmin):
+class ClientAdmin(TenantAdminMixin, TenantModelAdmin):
     """Tenant admin."""
 
     list_display = ('name', 'schema_name')
 
 
 @admin.register(Domain)
-class DomainAdmin(TenantAdminMixin, admin.ModelAdmin):
+class DomainAdmin(TenantAdminMixin, TenantModelAdmin):
     """Domain admin."""
 
     list_display = ('domain', 'tenant', 'schema_name', 'is_primary')
 
 
 @admin.register(ModelDataLimitation)
-class ModelDataLimitationAdmin(TenantAdminMixin, admin.ModelAdmin):
+class ModelDataLimitationAdmin(TenantAdminMixin, TenantModelAdmin):
     """ModelDataLimitation admin."""
 
     list_display = (

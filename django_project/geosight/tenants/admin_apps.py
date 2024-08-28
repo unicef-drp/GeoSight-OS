@@ -10,13 +10,15 @@ Contact : geosight-no-reply@unicef.org
     (at your option) any later version.
 
 """
+__author__ = 'irwan@kartoza.com'
+__date__ = '28/08/2024'
+__copyright__ = ('Copyright 2023, Unicef')
 
 from django.conf import settings
 from django.contrib.admin import AdminSite
 from django.contrib.admin.apps import AdminConfig
-from django_tenants.utils import (
-    get_tenant_model, get_public_schema_name
-)
+
+from geosight.tenants.utils import is_public_tenant
 
 
 class TenantsAdminConfig(AdminConfig):
@@ -29,20 +31,15 @@ class TenantsAdminSite(AdminSite):
     """Admin site for tenants."""
 
     def get_app_list(self, request):
-        """Ger app list that can be shown on maintenants."""
+        """Ger app list that can just be shown on main tenants."""
         app_list = super().get_app_list(request)
-
-        current_tenant = get_tenant_model().objects.get(
-            schema_name=request.tenant.schema_name
-        )
 
         # Check if it is main schema or not
         # Exclude the app needs to be
-        if current_tenant.schema_name != get_public_schema_name():
+        if not is_public_tenant(request):
             # Filter out apps to hide
             app_list = [
                 app for app in app_list if
                 app['app_label'] not in settings.TENANTS_SECRET_APPS
             ]
-
         return app_list

@@ -18,14 +18,13 @@ import copy
 
 from django.contrib.auth import get_user_model
 
-from core.tests.base_tests import TestCase
 from frontend.tests.admin._base import BaseViewTest
 from geosight.data.models.basemap_layer import BasemapLayer, BasemapLayerType
 
 User = get_user_model()
 
 
-class BasemapAdminViewTest(BaseViewTest, TestCase):
+class BasemapAdminViewTest(BaseViewTest.TestCase):
     """Test for Basemap Admin."""
 
     list_url_tag = 'admin-basemap-list-view'

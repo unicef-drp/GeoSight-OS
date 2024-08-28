@@ -20,7 +20,6 @@ import json
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
-from core.tests.base_tests import TestCase
 from geosight.data.models.basemap_layer import BasemapLayer, BasemapLayerType
 from geosight.permission.models.factory import PERMISSIONS
 from geosight.permission.tests._base import BasePermissionTest
@@ -28,7 +27,7 @@ from geosight.permission.tests._base import BasePermissionTest
 User = get_user_model()
 
 
-class BasemapListApiTest(BasePermissionTest, TestCase):
+class BasemapListApiTest(BasePermissionTest.TestCase):
     """Test for basemap api."""
 
     payload = {

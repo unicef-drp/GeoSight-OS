@@ -20,7 +20,6 @@ import json
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
-from core.tests.base_tests import TestCase
 from frontend.tests.admin._base import BaseViewTest
 from geosight.data.models.related_table import RelatedTable
 from geosight.permission.models.factory import PERMISSIONS
@@ -28,7 +27,7 @@ from geosight.permission.models.factory import PERMISSIONS
 User = get_user_model()
 
 
-class RelatedTableAdminViewTest(BaseViewTest, TestCase):
+class RelatedTableAdminViewTest(BaseViewTest.TestCase):
     """Test for RelatedTable Admin."""
 
     list_url_tag = 'admin-related-table-list-view'

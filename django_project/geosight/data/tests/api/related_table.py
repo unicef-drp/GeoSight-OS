@@ -19,7 +19,6 @@ import json
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
-from core.tests.base_tests import TestCase
 from geosight.data.models import RelatedTable
 from geosight.permission.models.factory import PERMISSIONS
 from geosight.permission.tests._base import BasePermissionTest
@@ -27,7 +26,7 @@ from geosight.permission.tests._base import BasePermissionTest
 User = get_user_model()
 
 
-class RelatedTableApiTest(BasePermissionTest, TestCase):
+class RelatedTableApiTest(BasePermissionTest.TestCase):
     """Test for dashboard bookmark api."""
 
     index = 0

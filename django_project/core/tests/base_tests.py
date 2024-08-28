@@ -69,7 +69,7 @@ if settings.TENANTS_ENABLED:
 
         tenant_data = [
             DjangoTenantData(
-                'test1', 'test.1.com', is_primary=True
+                'public', 'public', is_primary=True
             ),
             DjangoTenantData(
                 'test2', 'test.2.com'

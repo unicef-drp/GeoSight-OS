@@ -19,7 +19,6 @@ import copy
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
-from core.tests.base_tests import TestCase
 from geosight.data.models.style import Style
 from geosight.permission.models.factory import PERMISSIONS
 from geosight.permission.tests._base import BasePermissionTest
@@ -27,7 +26,7 @@ from geosight.permission.tests._base import BasePermissionTest
 User = get_user_model()
 
 
-class StyleListApiTest(BasePermissionTest, TestCase):
+class StyleListApiTest(BasePermissionTest.TestCase):
     """Test for style list api."""
 
     payload = {

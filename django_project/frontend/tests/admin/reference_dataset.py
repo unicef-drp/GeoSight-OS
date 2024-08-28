@@ -19,7 +19,6 @@ import copy
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
-from core.tests.base_tests import TestCase
 from geosight.georepo.models.reference_layer import ReferenceLayerView
 from geosight.permission.models.factory import PERMISSIONS
 from geosight.permission.tests._base import BasePermissionTest
@@ -27,7 +26,7 @@ from geosight.permission.tests._base import BasePermissionTest
 User = get_user_model()
 
 
-class ReferenceDatasetViewTest(BasePermissionTest, TestCase):
+class ReferenceDatasetViewTest(BasePermissionTest.TestCase):
     """Test for Base Admin."""
 
     list_url_tag = 'admin-reference-layer-view-list-view'

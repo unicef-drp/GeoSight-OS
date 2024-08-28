@@ -20,7 +20,6 @@ from datetime import datetime
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
-from core.tests.base_tests import TestCase
 from geosight.data.models import Indicator, IndicatorGroup
 from geosight.georepo.models import (
     ReferenceLayerView, ReferenceLayerIndicator
@@ -31,7 +30,7 @@ from geosight.permission.tests._base import BasePermissionTest
 User = get_user_model()
 
 
-class DatasetApiTest(BasePermissionTest, TestCase):
+class DatasetApiTest(BasePermissionTest.TestCase):
     """Test for dataset list api."""
 
     payload = {

@@ -17,11 +17,10 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.urls import reverse
 
 from core.models.group import GeosightGroup
-from core.tests.base_tests import TestCase
 from frontend.tests.admin._base import BaseViewTest
 
 
-class GroupAdminViewTest(BaseViewTest, TestCase):
+class GroupAdminViewTest(BaseViewTest.TestCase):
     """Test for Group Admin."""
 
     list_url_tag = 'admin-user-and-group-list-view'

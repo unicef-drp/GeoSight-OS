@@ -18,14 +18,13 @@ import copy
 
 from django.contrib.auth import get_user_model
 
-from core.tests.base_tests import TestCase
 from frontend.tests.admin._base import BaseViewTest
 from geosight.data.models.context_layer import ContextLayer, LayerType
 
 User = get_user_model()
 
 
-class ContextLayerAdminViewTest(BaseViewTest, TestCase):
+class ContextLayerAdminViewTest(BaseViewTest.TestCase):
     """Test for ContextLayer Admin."""
 
     list_url_tag = 'admin-context-layer-list-view'

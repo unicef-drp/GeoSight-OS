@@ -16,12 +16,11 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.urls import reverse
 
-from core.tests.base_tests import TestCase
 from geosight.data.tests.model_factories import IndicatorF, IndicatorGroupF
 from geosight.permission.tests._base import BasePermissionTest
 
 
-class IndicatorSearchSimilarityApiTest(BasePermissionTest, TestCase):
+class IndicatorSearchSimilarityApiTest(BasePermissionTest.TestCase):
     """Test for Indicator detail api."""
 
     def create_resource(self, user):

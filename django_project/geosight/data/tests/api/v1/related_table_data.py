@@ -16,7 +16,6 @@ __copyright__ = ('Copyright 2023, Unicef')
 from rest_framework.reverse import reverse
 from rest_framework.status import HTTP_200_OK
 
-from core.tests.base_tests import TestCase
 from geosight.data.models import RelatedTable, RelatedTableRow
 from geosight.data.tests.api.v1.related_table \
     import add_fields_and_rows_to_table
@@ -24,7 +23,7 @@ from geosight.permission.models import PERMISSIONS
 from geosight.permission.tests import BasePermissionTest
 
 
-class RelatedTableApiTest(BasePermissionTest, TestCase):  # noqa: D101
+class RelatedTableApiTest(BasePermissionTest.TestCase):  # noqa: D101
     def _add_fields_and_rows_to_table(self, resource):
         resource.add_field('my_number', 'My Number', 'number')
 

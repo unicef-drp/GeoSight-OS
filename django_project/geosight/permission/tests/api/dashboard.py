@@ -17,7 +17,6 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
-from core.tests.base_tests import TestCase
 from geosight.data.models.dashboard import Dashboard
 from geosight.permission.models.factory import PERMISSIONS
 from geosight.permission.tests._base import BasePermissionTest
@@ -25,7 +24,7 @@ from geosight.permission.tests._base import BasePermissionTest
 User = get_user_model()
 
 
-class DashboardPermissionApiTest(BasePermissionTest, TestCase):
+class DashboardPermissionApiTest(BasePermissionTest.TestCase):
     """Test for dashboard list api."""
 
     def create_resource(self, user):

@@ -19,7 +19,6 @@ from unittest.mock import patch
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
-from core.tests.base_tests import TestCase
 from geosight.data.models.sharepoint import SharepointConfig
 from geosight.permission.tests._base import BasePermissionTest
 from .mock import load_file
@@ -27,7 +26,7 @@ from .mock import load_file
 User = get_user_model()
 
 
-class SharepointApiTest(BasePermissionTest, TestCase):
+class SharepointApiTest(BasePermissionTest.TestCase):
     """Test for sharepoint fetch api."""
 
     def create_resource(self, user):

@@ -14,6 +14,7 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+from abc import ABC
 from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
@@ -26,70 +27,77 @@ from core.tests.model_factories import GroupF, create_user
 User = get_user_model()
 
 
-class BasePermissionTest(APITestCase):
-    """Test for Base Permission."""
+class BasePermissionTest(object):
+    """Permission test."""
 
-    def create_resource(self, user):
-        """Create resource function."""
-        raise NotImplemented
+    class TestCase(ABC, APITestCase):
+        """Test for Base Permission."""
 
-    def get_resources(self, user):
-        """Create resource function."""
-        raise NotImplemented
+        def create_resource(self, user):
+            """Create resource function."""
+            raise NotImplemented
 
-    def setUp(self):
-        """To setup test."""
-        from geosight.georepo.tests.mock import mock_get_entity
-        self.admin = create_user(
-            ROLES.SUPER_ADMIN.name, password=self.password)
-        self.creator = create_user(
-            ROLES.CREATOR.name, password=self.password)
-        self.contributor = create_user(
-            ROLES.CONTRIBUTOR.name, password=self.password)
-        self.viewer = create_user(
-            ROLES.VIEWER.name, password=self.password)
-        self.resource_creator = create_user(ROLES.CREATOR.name)
+        def get_resources(self, user):
+            """Create resource function."""
+            raise NotImplemented
 
-        # Resource layer attribute
-        self.resource = self.create_resource(self.resource_creator)
-        try:
-            self.permission = self.resource.permission
-        except AttributeError:
-            pass
+        def setUp(self):
+            """To setup test."""
+            from geosight.georepo.tests.mock import mock_get_entity
+            self.admin = create_user(
+                ROLES.SUPER_ADMIN.name, password=self.password)
+            self.creator = create_user(
+                ROLES.CREATOR.name, password=self.password)
+            self.contributor = create_user(
+                ROLES.CONTRIBUTOR.name, password=self.password)
+            self.viewer = create_user(
+                ROLES.VIEWER.name, password=self.password)
+            self.resource_creator = create_user(ROLES.CREATOR.name)
 
-        # Creating group
-        self.group = GroupF()
-        self.viewer_in_group = create_user(ROLES.VIEWER.name)
-        self.viewer_in_group.groups.add(self.group)
-        self.contributor_in_group = create_user(ROLES.CONTRIBUTOR.name)
-        self.contributor_in_group.groups.add(self.group)
-        self.creator_in_group = create_user(ROLES.CREATOR.name)
-        self.creator_in_group.groups.add(self.group)
+            # Resource layer attribute
+            self.resource = self.create_resource(self.resource_creator)
+            try:
+                self.permission = self.resource.permission
+            except AttributeError:
+                pass
 
-        # Patch
-        self.entity_patcher = patch(
-            'geosight.georepo.models.entity.Entity.get_entity',
-            mock_get_entity
-        )
-        self.entity_patcher.start()
+            # Creating group
+            self.group = GroupF()
+            self.viewer_in_group = create_user(ROLES.VIEWER.name)
+            self.viewer_in_group.groups.add(self.group)
+            self.contributor_in_group = create_user(ROLES.CONTRIBUTOR.name)
+            self.contributor_in_group.groups.add(self.group)
+            self.creator_in_group = create_user(ROLES.CREATOR.name)
+            self.creator_in_group.groups.add(self.group)
 
-    def tearDown(self):
-        """Stop the patcher."""
-        try:
-            self.entity_patcher.stop()
-        except AttributeError:
-            pass
+            # Patch
+            self.entity_patcher = patch(
+                'geosight.georepo.models.entity.Entity.get_entity',
+                mock_get_entity
+            )
+            self.entity_patcher.start()
 
-    def check_delete_resource_with_different_users(self, id, view_name):
-        """Check the DELETE method of the given view with different users."""
-        url = reverse(view_name, args=[id])
-        self.assertRequestDeleteView(url, 403)
+        def tearDown(self):
+            """Stop the patcher."""
+            try:
+                self.entity_patcher.stop()
+            except AttributeError:
+                pass
 
-        url = reverse(view_name, args=[id])
-        self.assertRequestDeleteView(url, 403, user=self.viewer)
+        def check_delete_resource_with_different_users(self, id, view_name):
+            """Check the DELETE method of the given view with different users.
 
-        url = reverse(view_name, args=[id])
-        self.assertRequestDeleteView(url, 403, user=self.creator)
+            This test will check the DELETE method for
+            viewer, creator and admin.
+            """
+            url = reverse(view_name, args=[id])
+            self.assertRequestDeleteView(url, 403)
 
-        url = reverse(view_name, args=[id])
-        self.assertRequestDeleteView(url, 204, user=self.admin)
+            url = reverse(view_name, args=[id])
+            self.assertRequestDeleteView(url, 403, user=self.viewer)
+
+            url = reverse(view_name, args=[id])
+            self.assertRequestDeleteView(url, 403, user=self.creator)
+
+            url = reverse(view_name, args=[id])
+            self.assertRequestDeleteView(url, 204, user=self.admin)

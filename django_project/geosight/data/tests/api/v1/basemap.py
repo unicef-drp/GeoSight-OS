@@ -19,7 +19,6 @@ import urllib.parse
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
-from core.tests.base_tests import TestCase
 from geosight.data.models.basemap_layer import (
     BasemapLayer, BasemapLayerType, BasemapGroup
 )
@@ -30,7 +29,7 @@ from geosight.permission.tests._base import BasePermissionTest
 User = get_user_model()
 
 
-class BasemapPermissionTest(BasePermissionTest, TestCase):
+class BasemapPermissionTest(BasePermissionTest.TestCase):
     """Test for Basemap API."""
 
     def create_resource(self, user):

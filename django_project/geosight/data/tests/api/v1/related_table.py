@@ -18,7 +18,6 @@ import datetime
 from dateutil import parser
 from rest_framework.reverse import reverse
 
-from core.tests.base_tests import TestCase
 from geosight.data.models import (
     RelatedTable, RelatedTableField, RelatedTableRow
 )
@@ -42,7 +41,7 @@ def add_fields_and_rows_to_table(related_table):
     }])
 
 
-class RelatedTableApiTest(BasePermissionTest, TestCase):  # noqa: D101
+class RelatedTableApiTest(BasePermissionTest.TestCase):  # noqa: D101
     def setUp(self):  # noqa: D102
         super().setUp()
 

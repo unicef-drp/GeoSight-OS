@@ -39,12 +39,12 @@ class TenantAdminAccessibleTest(APITestCase):
             '/django-admin/geosight_tenants/client/', 200, tenant_1_admin
         )
 
-        # If it is not primary
+        # Test tenant that is not public
         self.set_tenant_connection(self.tenants[1])
         tenant_2_admin = create_user(
             ROLES.SUPER_ADMIN.name, password=self.password,
             username='superuser-2', is_staff=True, is_superuser=True
         )
         self.assertRequestGetView(
-            '/django-admin/geosight_tenants/client/', 404, tenant_2_admin
+            '/django-admin/geosight_tenants/client/', 403, tenant_2_admin
         )

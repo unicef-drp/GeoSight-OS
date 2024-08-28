@@ -19,7 +19,6 @@ import json
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
-from core.tests.base_tests import TestCase
 from geosight.data.models import BasemapLayer, DashboardIndicatorLayer
 from geosight.data.models.dashboard import Dashboard, DashboardEmbed
 from geosight.permission.tests._base import BasePermissionTest
@@ -27,7 +26,7 @@ from geosight.permission.tests._base import BasePermissionTest
 User = get_user_model()
 
 
-class DashboardBookmarkApiTest(BasePermissionTest, TestCase):
+class DashboardBookmarkApiTest(BasePermissionTest.TestCase):
     """Test for dashboard bookmark api."""
 
     def create_resource(self, user, name='name'):

@@ -21,7 +21,6 @@ from datetime import datetime
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
-from core.tests.base_tests import TestCase
 from geosight.data.models.indicator import Indicator, IndicatorGroup
 from geosight.georepo.tests.model_factories import ReferenceLayerF
 from geosight.permission.models.factory import PERMISSIONS
@@ -30,7 +29,7 @@ from geosight.permission.tests._base import BasePermissionTest
 User = get_user_model()
 
 
-class IndicatorValueTest(BasePermissionTest, TestCase):
+class IndicatorValueTest(BasePermissionTest.TestCase):
     """Test for context list api."""
 
     payload = {
