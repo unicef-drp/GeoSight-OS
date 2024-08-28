@@ -54,7 +54,6 @@ class ModelDataLimitation(models.Model):
         null=True, blank=True
     )
     limit = models.IntegerField(
-        default=0,
         null=True,
         blank=True,
         help_text='Limit of data allowed to the content_type.'

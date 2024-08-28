@@ -28,11 +28,12 @@ class ModelLimitationDashboardTest(TestCase):
 
     def test_dashboard_limit(self):
         """Test dashboard limit."""
+        self.change_public_tenant()
         content_type = ContentType.objects.get_for_model(Dashboard)
         self.assertEqual(
             ModelDataLimitation.objects.filter(
                 content_type=content_type
-            ).count(), 0
+            ).count(), 2
         )
         # ------------------------------------------
         # Tenant 1
@@ -58,13 +59,13 @@ class ModelLimitationDashboardTest(TestCase):
         self.assertEqual(
             ModelDataLimitation.objects.filter(
                 content_type=content_type
-            ).count(), 1
+            ).count(), 2
         )
 
         # ------------------------------------------
         # tenant 2
         # ------------------------------------------
-        self.set_tenant_connection(self.tenants[1])
+        self.change_second_tenant()
         dashboard = DashboardF()
         self.assertEqual(dashboard.model_data_count, 1)
         self.assertFalse(dashboard.has_reach_limit)

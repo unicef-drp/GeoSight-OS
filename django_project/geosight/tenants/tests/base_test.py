@@ -28,14 +28,6 @@ class BaseTenantTestCase(object):
         Test can be accessed just by primary tenant.
         """
 
-        def change_public_tenant(self):
-            """Change to public tenant."""
-            self.set_tenant_connection(self.tenants[0])
-
-        def change_second_tenant(self):
-            """Change to second tenant."""
-            self.set_tenant_connection(self.tenants[1])
-
         def setUp(self):
             """To setup test."""
             super().setUp()

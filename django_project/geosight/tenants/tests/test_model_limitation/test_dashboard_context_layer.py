@@ -15,7 +15,6 @@ __date__ = '19/08/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib.contenttypes.models import ContentType
-from django.db import connection
 
 from core.tests.base_tests import TestCase
 from geosight.data.tests.model_factories import (
@@ -38,16 +37,16 @@ class ModelLimitationTest(TestCase):
 
     def test_limit(self):
         """Test dashboard limit."""
+        self.change_public_tenant()
         content_type = ContentType.objects.get_for_model(self.Model)
         self.assertEqual(
             ModelDataLimitation.objects.filter(
                 content_type=content_type
-            ).count(), 0
+            ).count(), 2
         )
         # ------------------------------------------
         # Tenant 1 Dashboard 1
         # ------------------------------------------
-        connection.set_tenant(self.tenant_obj[0].tenant)
         dashboard = DashboardF()
         instance = self.create_instance(dashboard)
         self.assertEqual(instance.model_data_count, 1)
@@ -71,7 +70,7 @@ class ModelLimitationTest(TestCase):
             ModelDataLimitation.objects.filter(
                 content_type=content_type,
                 model_field_group=self.Model.limit_by_field_name
-            ).count(), 1
+            ).count(), 2
         )
         # ------------------------------------------
         # Tenant 1 Dashboard 2
@@ -93,13 +92,13 @@ class ModelLimitationTest(TestCase):
             ModelDataLimitation.objects.filter(
                 content_type=content_type,
                 model_field_group=self.Model.limit_by_field_name
-            ).count(), 1
+            ).count(), 2
         )
 
         # ------------------------------------------
         # tenant 2 dashboard 1
         # ------------------------------------------
-        self.set_tenant_connection(self.tenants[1])
+        self.change_second_tenant()
         dashboard = DashboardF()
         instance = self.create_instance(dashboard)
         self.assertEqual(instance.model_data_count, 1)
@@ -126,7 +125,7 @@ class ModelLimitationTest(TestCase):
         # ------------------------------------------
         # tenant 2 dashboard 2
         # ------------------------------------------
-        self.set_tenant_connection(self.tenants[1])
+        self.change_second_tenant()
         dashboard = DashboardF()
         instance = self.create_instance(dashboard)
         self.assertEqual(instance.model_data_count, 1)

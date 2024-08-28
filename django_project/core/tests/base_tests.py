@@ -77,6 +77,14 @@ if settings.TENANTS_ENABLED:
         ]
         tenant_obj = []
 
+        def change_public_tenant(self):
+            """Change to public tenant."""
+            self.set_tenant_connection(self.tenant_obj[0].tenant)
+
+        def change_second_tenant(self):
+            """Change to second tenant."""
+            self.set_tenant_connection(self.tenant_obj[1].tenant)
+
         @property
         def tenant(self):
             """Return first tenant object."""
@@ -99,7 +107,7 @@ if settings.TENANTS_ENABLED:
             for init in cls.tenant_data:
                 tenant, domain = cls.setUpTenant(init)
                 cls.tenant_obj.append(DjangoTenantObj(tenant, domain))
-            tenant = cls.tenant_obj[0].tenant
+            tenant = cls.tenant_obj[1].tenant
             cls.set_tenant_connection(tenant)
 
         @classmethod
