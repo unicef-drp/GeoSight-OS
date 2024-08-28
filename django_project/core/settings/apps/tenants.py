@@ -33,7 +33,6 @@ try:
     TENANTS_CONTRIB_APPS = [
         'django_tenants_celery_beat'
     ]
-    TENANTS_ENABLED = True
 
     # FEATURE: Multi tenant
     TENANT_MODEL = "geosight_tenants.Client"
@@ -42,6 +41,8 @@ try:
     DEFAULT_FILE_STORAGE = (
         "django_tenants.files.storage.TenantFileSystemStorage"
     )
-    MULTITENANT_RELATIVE_MEDIA_ROOT = ""
+    MULTITENANT_RELATIVE_MEDIA_ROOT = "%s"
+    TENANTS_ENABLED = True
 except ImportError:
     pass
+from django_tenants.files.storage import TenantFileSystemStorage

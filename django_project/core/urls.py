@@ -35,13 +35,7 @@ from core.api.group import (
 from core.api.maintenance import MaintenanceAPI
 from core.api.proxy import ProxyView
 from core.api.sentry import trigger_error
-from core.api.tenant import TenantNameByDomain
 from core.api.user import UserListAPI, UserDetailAPI, UserApiKey
-
-if settings.TENANTS_ENABLED:
-    from geosight.tenants.views.static import serve
-else:
-    from django.views.static import serve
 
 
 class CustomSchemaGenerator(OpenAPISchemaGenerator):
@@ -95,7 +89,7 @@ else:
 
 if settings.DEBUG:
     urlpatterns += static(
-        settings.MEDIA_URL, view=serve, document_root=settings.MEDIA_ROOT
+        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
     )
 
 # ------------------------------------------------------
@@ -176,7 +170,6 @@ if settings.TENANTS_ENABLED:
 urlpatterns += [
     url(r'^tinymce/', include('tinymce.urls')),
     url(r'^proxy', ProxyView.as_view(), name='proxy-view'),
-    url(r'^tenant', TenantNameByDomain.as_view(), name='tenant-check-view'),
     url(r'^api/v1/', include('core.urls_v1')),
     url(r'^api/', include(api)),
     url(r'^sentry-debug', trigger_error),

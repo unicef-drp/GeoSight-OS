@@ -19,8 +19,8 @@ import os  # noqa
 from celery.schedules import crontab
 from django.utils.translation import ugettext_lazy as _
 
-from .apps import *  # noqa
 from .contrib import *  # noqa
+from .apps import *  # noqa
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 ALLOWED_HOSTS = ['*']
