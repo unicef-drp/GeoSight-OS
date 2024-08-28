@@ -20,7 +20,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.gis.db import models
 from django.db import connection
 
-from geosight.tenants.models.tenant import Client
+from core.utils import child_classes
+from geosight.tenants.models.tenant import Tenant
 
 
 class AlreadyReachTheLimit(Exception):
@@ -38,7 +39,7 @@ class ModelDataLimitation(models.Model):
     """Model data limitation."""
 
     tenant = models.ForeignKey(
-        Client, on_delete=models.CASCADE
+        Tenant, on_delete=models.CASCADE
     )
     content_type = models.ForeignKey(
         ContentType, on_delete=models.CASCADE
@@ -53,6 +54,7 @@ class ModelDataLimitation(models.Model):
         null=True, blank=True
     )
     limit = models.IntegerField(
+        default=0,
         null=True,
         blank=True,
         help_text='Limit of data allowed to the content_type.'
@@ -136,3 +138,8 @@ class BaseModelWithLimitation(models.Model):
 
     class Meta:  # noqa: D106
         abstract = True
+
+    @staticmethod
+    def child_classes():
+        """Return child classes."""
+        return child_classes(BaseModelWithLimitation)

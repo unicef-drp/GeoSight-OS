@@ -11,15 +11,17 @@ Contact : geosight-no-reply@unicef.org
 
 """
 __author__ = 'irwan@kartoza.com'
-__date__ = '08/06/2024'
+__date__ = '28/08/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from rest_framework.routers import DefaultRouter
+from rest_framework.permissions import BasePermission
 
-from geosight.tenants.api.tenant import TenantListAPI
+from geosight.tenants.utils import is_public_tenant
 
-router = DefaultRouter()
-router.register(r'tenants', TenantListAPI, basename='tenants')
 
-urlpatterns = []
-urlpatterns += router.urls
+class AccessedJustByPublicTenant(BasePermission):
+    """Allows access only to public tenant."""
+
+    def has_permission(self, request, view):
+        """Check if tenant is public, give permission to request."""
+        return is_public_tenant(request)

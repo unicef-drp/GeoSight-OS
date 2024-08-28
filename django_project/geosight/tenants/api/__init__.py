@@ -11,15 +11,5 @@ Contact : geosight-no-reply@unicef.org
 
 """
 __author__ = 'irwan@kartoza.com'
-__date__ = '08/06/2024'
+__date__ = '28/08/2024'
 __copyright__ = ('Copyright 2023, Unicef')
-
-from rest_framework.routers import DefaultRouter
-
-from geosight.tenants.api.tenant import TenantListAPI
-
-router = DefaultRouter()
-router.register(r'tenants', TenantListAPI, basename='tenants')
-
-urlpatterns = []
-urlpatterns += router.urls

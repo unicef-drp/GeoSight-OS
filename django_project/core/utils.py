@@ -15,10 +15,15 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import os
+import random
+import string
 import uuid
 from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
 
 from django.contrib.auth import get_user_model
+from django_tenants.utils import (
+    get_public_schema_name
+)
 
 
 def string_is_true(string: str):
@@ -46,12 +51,30 @@ def set_query_parameter(url, params):
     return urlunparse(url_parse)
 
 
-def create_superuser(tenant=None):
+def do_random(
+        size=15,
+        chars=string.ascii_uppercase + string.ascii_lowercase + string.digits
+):
+    """Do random of text."""
+    return ''.join(random.choice(chars) for _ in range(size))
+
+
+def create_superuser(
+        tenant=None, admin_password=None, admin_email=None
+):
     """Create superuser."""
-    # Getting the secrets
     admin_username = os.getenv('ADMIN_USERNAME')
-    admin_password = os.getenv('ADMIN_PASSWORD')
-    admin_email = os.getenv('ADMIN_EMAIL')
+
+    # Check if tenant not public, random the password
+    if not admin_password:
+        admin_password = os.getenv('ADMIN_PASSWORD')
+    if tenant:
+        if tenant.schema_name != get_public_schema_name():
+            admin_password = do_random()
+            if tenant.responder_email:
+                admin_email = tenant.responder_email
+    if not admin_email:
+        admin_email = os.getenv('ADMIN_EMAIL')
 
     print(
         f'Creating/updating superuser for '
@@ -72,7 +95,23 @@ def create_superuser(tenant=None):
             admin_username,
             admin_email,
         )
-        print('superuser successfully created')
-
-    superuser.set_password(admin_password)
+        superuser.set_password(admin_password)
+        print(f'superuser successfully created with password {admin_password}')
     superuser.save()
+
+
+def child_classes(Class):
+    """Return child classes."""
+    # If has subclasses
+    if not len(Class.__subclasses__()):
+        return [Class]
+
+    # If has subclasses
+    classes = []
+    for _class in Class.__subclasses__():
+        if len(_class.__subclasses__()):
+            for child in _class.__subclasses__():
+                classes += child_classes(child)
+        else:
+            classes.append(_class)
+    return classes

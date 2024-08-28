@@ -17,7 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.contrib import admin
 from django_tenants.admin import TenantAdminMixin
 
-from geosight.tenants.models import Client, Domain, ModelDataLimitation
+from geosight.tenants.models import Tenant, Domain, ModelDataLimitation
 from geosight.tenants.utils import is_public_tenant
 
 
@@ -55,11 +55,11 @@ class TenantModelAdmin(admin.ModelAdmin):
         return super().has_module_permission(request)
 
 
-@admin.register(Client)
-class ClientAdmin(TenantAdminMixin, TenantModelAdmin):
+@admin.register(Tenant)
+class TenantAdmin(TenantAdminMixin, TenantModelAdmin):
     """Tenant admin."""
 
-    list_display = ('name', 'schema_name')
+    list_display = ('name', 'schema_name', 'responder_email')
 
 
 @admin.register(Domain)

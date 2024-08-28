@@ -24,9 +24,9 @@ from django.test.client import MULTIPART_CONTENT
 if settings.TENANTS_ENABLED:
     from django_tenants.test.client import TenantClient as Client
     from django_tenants.utils import (
-        get_tenant_model, get_tenant_domain_model, get_public_schema_name,
-        tenant_context
+        get_public_schema_name
     )
+    from geosight.tenants.utils import create_tenant
 else:
     from django.test.client import Client
 
@@ -88,28 +88,9 @@ if settings.TENANTS_ENABLED:
             tenant_schema = tenant_data.tenant_schema
             tenant_domain = tenant_data.tenant_domain
             is_primary = tenant_data.is_primary
-            try:
-                tenant = get_tenant_model().objects.get(
-                    schema_name=tenant_schema
-                )
-            except get_tenant_model().DoesNotExist:
-                cls.sync_shared()
-                cls.add_allowed_test_domain(tenant_domain)
-                tenant = get_tenant_model()(
-                    schema_name=tenant_schema,
-                    name=tenant_schema
-                )
-                tenant.save(verbosity=0)
-                with tenant_context(tenant):
-                    User.objects.first().delete()
-
-            # Set up domain
-            domain, _ = get_tenant_domain_model().objects.get_or_create(
-                tenant=tenant, domain=tenant_domain
+            tenant, domain = create_tenant(
+                tenant_schema, tenant_domain, is_primary=is_primary
             )
-            domain.is_primary = is_primary
-            domain.save()
-
             return tenant, domain
 
         @classmethod

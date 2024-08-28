@@ -11,15 +11,20 @@ Contact : geosight-no-reply@unicef.org
 
 """
 __author__ = 'irwan@kartoza.com'
-__date__ = '08/06/2024'
+__date__ = '28/08/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from rest_framework.routers import DefaultRouter
+from rest_framework import serializers
 
-from geosight.tenants.api.tenant import TenantListAPI
+from core.serializer.dynamic_serializer import DynamicModelSerializer
+from geosight.tenants.models import Tenant
 
-router = DefaultRouter()
-router.register(r'tenants', TenantListAPI, basename='tenants')
 
-urlpatterns = []
-urlpatterns += router.urls
+class TenantSerializer(DynamicModelSerializer):
+    """Serializer for Tenant."""
+
+    created_at = serializers.DateTimeField()
+
+    class Meta:  # noqa: D106
+        model = Tenant
+        exclude = ('timezone',)

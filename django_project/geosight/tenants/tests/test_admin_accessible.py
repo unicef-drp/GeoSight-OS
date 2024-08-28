@@ -16,35 +16,31 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib.auth import get_user_model
 
-from core.models.profile import ROLES
-from core.tests.base_tests import APITestCase
-from core.tests.model_factories import create_user
+from geosight.tenants.tests.base_test import BaseTenantTestCase
 
 User = get_user_model()
 
 
-class TenantAdminAccessibleTest(APITestCase):
+class TenantAdminAccessibleTest(BaseTenantTestCase.TestCase):
     """Test for Tenant admin accessible.
 
     Test can be accessed just by primary tenant.
     """
 
+    url = '/django-admin/geosight_tenants/tenant/'
+
     def test_admin_accessible(self):
         """Test can be accessed just by primary tenant."""
-        tenant_1_admin = create_user(
-            ROLES.SUPER_ADMIN.name, password=self.password,
-            username='superuser-1', is_staff=True, is_superuser=True
+        self.change_public_tenant()
+        self.assertRequestGetView(
+            self.url, 302, self.user_1
         )
         self.assertRequestGetView(
-            '/django-admin/geosight_tenants/client/', 200, tenant_1_admin
+            self.url, 200, self.admin_1
         )
 
         # Test tenant that is not public
-        self.set_tenant_connection(self.tenants[1])
-        tenant_2_admin = create_user(
-            ROLES.SUPER_ADMIN.name, password=self.password,
-            username='superuser-2', is_staff=True, is_superuser=True
-        )
+        self.change_second_tenant()
         self.assertRequestGetView(
-            '/django-admin/geosight_tenants/client/', 403, tenant_2_admin
+            self.url, 403, self.admin_2
         )

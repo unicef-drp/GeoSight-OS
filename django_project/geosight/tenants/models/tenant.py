@@ -29,25 +29,42 @@ from django_tenants_celery_beat.models import (
 from core.utils import create_superuser
 
 
-class Client(TenantTimezoneMixin, TenantMixin):
+class Tenant(TenantTimezoneMixin, TenantMixin):
     """Client name for the tenant."""
 
     auto_create_schema = True
     name = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
+    responder_email = models.EmailField(
+        max_length=254,
+        null=True, blank=True,
+        help_text='Email address who has response for this client'
+    )
 
     def __str__(self):
         return self.name
 
     def save(self, verbosity=1, *args, **kwargs):
         """Save client."""
+        created = not self.pk
         super().save(verbosity=verbosity, *args, **kwargs)
         self.create_superuser()
+
+        # Create limitation if just created
+        if created:
+            self.prepare_limitation()
 
     def create_superuser(self):
         """Create superuser for this tenant."""
         with tenant_context(self):
             create_superuser(self)
+
+    def prepare_limitation(self):
+        """Create superuser for this tenant."""
+        from geosight.tenants.models import BaseModelWithLimitation
+        with tenant_context(self):
+            for _class in BaseModelWithLimitation.child_classes():
+                _class.get_limit_obj(_class)
 
 
 class Domain(DomainMixin):
