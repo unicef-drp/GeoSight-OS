@@ -35,7 +35,7 @@ class AlreadyReachTheLimit(Exception):
         )
 
 
-class ModelDataLimitation(models.Model):
+class ContentLimitation(models.Model):
     """Model data limitation."""
 
     tenant = models.ForeignKey(
@@ -79,11 +79,11 @@ class BaseModelWithLimitation(models.Model):
     limit_by_field_name = None
 
     @staticmethod
-    def get_limit_obj(cls) -> ModelDataLimitation:
+    def get_limit_obj(cls) -> ContentLimitation:
         """Get limit of the class."""
         # We check the limitation before saving.
         tenant = connection.get_tenant()
-        data, _ = ModelDataLimitation.objects.get_or_create(
+        data, _ = ContentLimitation.objects.get_or_create(
             tenant=tenant,
             model_field_group=cls.limit_by_field_name,
             content_type=ContentType.objects.get_for_model(cls)

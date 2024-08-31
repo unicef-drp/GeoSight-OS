@@ -70,8 +70,6 @@ class Tenant(TenantTimezoneMixin, TenantMixin):
 class Domain(DomainMixin):
     """Client name for the tenant."""
 
-    is_primary = models.BooleanField(default=True, db_index=True)
-
     @property
     def schema_name(self):
         """Return schema name of domain."""

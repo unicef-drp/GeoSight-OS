@@ -16,10 +16,15 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from rest_framework.routers import DefaultRouter
 
-from geosight.tenants.api.tenant import TenantListAPI
+from geosight.tenants.api.content_limitation import ContentLimitationAPI
+from geosight.tenants.api.tenant import TenantAPI
 
 router = DefaultRouter()
-router.register(r'tenants', TenantListAPI, basename='tenants')
+router.register(
+    r'content-limitations', ContentLimitationAPI,
+    basename='content-limitations'
+)
+router.register(r'', TenantAPI, basename='tenants')
 
 urlpatterns = []
 urlpatterns += router.urls

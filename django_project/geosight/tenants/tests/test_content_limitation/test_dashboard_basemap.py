@@ -18,18 +18,18 @@ from django.contrib.contenttypes.models import ContentType
 
 from core.tests.base_tests import TestCase
 from geosight.data.tests.model_factories import (
-    DashboardF, DashboardIndicatorF, DashboardIndicator
+    DashboardF, DashboardBasemapF, DashboardBasemap
 )
 from geosight.tenants.models.content_limitation import (
-    ModelDataLimitation, AlreadyReachTheLimit
+    ContentLimitation, AlreadyReachTheLimit
 )
 
 
 class ModelLimitationTest(TestCase):
     """Test for model limitation."""
 
-    Model = DashboardIndicator
-    Factory = DashboardIndicatorF
+    Model = DashboardBasemap
+    Factory = DashboardBasemapF
 
     def create_instance(self, dashboard):
         """Create instance."""
@@ -40,7 +40,7 @@ class ModelLimitationTest(TestCase):
         self.change_public_tenant()
         content_type = ContentType.objects.get_for_model(self.Model)
         self.assertEqual(
-            ModelDataLimitation.objects.filter(
+            ContentLimitation.objects.filter(
                 content_type=content_type
             ).count(), 2
         )
@@ -67,7 +67,7 @@ class ModelLimitationTest(TestCase):
 
         # Check if model data limitation is just 1 from above creation
         self.assertEqual(
-            ModelDataLimitation.objects.filter(
+            ContentLimitation.objects.filter(
                 content_type=content_type,
                 model_field_group=self.Model.limit_by_field_name
             ).count(), 2
@@ -89,7 +89,7 @@ class ModelLimitationTest(TestCase):
 
         # Check if model data limitation is just 1 from above creation
         self.assertEqual(
-            ModelDataLimitation.objects.filter(
+            ContentLimitation.objects.filter(
                 content_type=content_type,
                 model_field_group=self.Model.limit_by_field_name
             ).count(), 2
@@ -117,7 +117,7 @@ class ModelLimitationTest(TestCase):
 
         # Check if model data limitation is 2
         self.assertEqual(
-            ModelDataLimitation.objects.filter(
+            ContentLimitation.objects.filter(
                 content_type=content_type
             ).count(), 2
         )
@@ -138,7 +138,7 @@ class ModelLimitationTest(TestCase):
 
         # Check if model data limitation is 2
         self.assertEqual(
-            ModelDataLimitation.objects.filter(
+            ContentLimitation.objects.filter(
                 content_type=content_type
             ).count(), 2
         )

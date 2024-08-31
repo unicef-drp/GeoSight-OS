@@ -27,7 +27,7 @@ from geosight.tenants.serializer import TenantSerializer
 from geosight.tenants.utils import create_tenant
 
 
-class TenantListAPI(
+class TenantAPI(
     BaseApiV1,
     mixins.ListModelMixin,
     mixins.CreateModelMixin,

@@ -164,7 +164,7 @@ api = [
 # Tenants enabled
 if settings.TENANTS_ENABLED:
     api += [
-        url(r'^', include('geosight.tenants.urls'))
+        url(r'^tenants/', include('geosight.tenants.urls'))
     ]
 
 urlpatterns += [
