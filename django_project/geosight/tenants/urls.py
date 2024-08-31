@@ -23,12 +23,12 @@ from geosight.tenants.api.tenant import TenantAPI
 
 router = DefaultRouter()
 router.register(
-    r'content-limitation', ContentLimitationAPI,
-    basename='content-limitation'
+    r'content-limitation-tenants', ContentLimitationTenantAPI,
+    basename='content-limitation-tenants'
 )
 router.register(
-    r'content-limitation-tenants', ContentLimitationTenantAPI,
-    basename='content-limitations'
+    r'content-limitation', ContentLimitationAPI,
+    basename='content-limitation'
 )
 router.register(r'', TenantAPI, basename='tenants')
 

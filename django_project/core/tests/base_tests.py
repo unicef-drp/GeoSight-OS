@@ -180,7 +180,8 @@ class APITestCase(TestCase):
         return response
 
     def assertRequestPutView(
-            self, url, code, data, user=None, content_type=MULTIPART_CONTENT
+            self, url, code, data, user=None,
+            content_type="application/json"
     ):
         """Assert request POST view with code."""
         client = self.test_client()
@@ -191,7 +192,8 @@ class APITestCase(TestCase):
         return response
 
     def assertRequestPatchView(
-            self, url, code, data, user=None, content_type=MULTIPART_CONTENT
+            self, url, code, data, user=None,
+            content_type="application/json"
     ):
         """Assert request POST view with code."""
         client = self.test_client()

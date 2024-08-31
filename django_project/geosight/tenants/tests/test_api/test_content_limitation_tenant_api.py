@@ -16,6 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.urls import reverse
 
+from geosight.tenants.models import ContentLimitationTenant
 from geosight.tenants.tests.base_test import BaseTenantTestCase
 
 
@@ -24,7 +25,7 @@ class ContentLimitationApiTest(BaseTenantTestCase.TestCase):
 
     def test_list(self):
         """Test create Content Limitation API."""
-        url = reverse('content-limitation-list')
+        url = reverse('content-limitation-tenants-list')
         self.change_public_tenant()
         self.assertRequestGetView(
             url, 403, self.user_1
@@ -32,7 +33,7 @@ class ContentLimitationApiTest(BaseTenantTestCase.TestCase):
         response = self.assertRequestGetView(
             url, 200, self.admin_1
         )
-        self.assertEqual(response.json()['count'], 7)
+        self.assertEqual(response.json()['count'], 14)
 
         # Test tenant that is not public
         self.change_second_tenant()
@@ -42,7 +43,7 @@ class ContentLimitationApiTest(BaseTenantTestCase.TestCase):
 
     def test_create(self):
         """Test create tenant API."""
-        url = reverse('content-limitation-list')
+        url = reverse('content-limitation-tenants-list')
         self.change_public_tenant()
         self.assertRequestPostView(
             url, 403, data={}, user=self.user_1
@@ -60,7 +61,7 @@ class ContentLimitationApiTest(BaseTenantTestCase.TestCase):
 
     def test_get(self):
         """Test create tenant API."""
-        url = reverse('content-limitation-detail', kwargs={'pk': 1})
+        url = reverse('content-limitation-tenants-detail', kwargs={'pk': 1})
         self.change_public_tenant()
         self.assertRequestGetView(
             url, 403, user=self.user_1
@@ -78,14 +79,14 @@ class ContentLimitationApiTest(BaseTenantTestCase.TestCase):
 
     def test_update(self):
         """Test create tenant API."""
-        url = reverse('content-limitation-detail', kwargs={'pk': 1})
+        url = reverse('content-limitation-tenants-detail', kwargs={'pk': 1})
         self.change_public_tenant()
         self.assertRequestPutView(
             url, 403, data={}, user=self.user_1
         )
         self.change_public_tenant()
         self.assertRequestPutView(
-            url, 405, data={}, user=self.admin_1
+            url, 200, data={}, user=self.admin_1
         )
 
         # Test tenant that is not public
@@ -96,15 +97,21 @@ class ContentLimitationApiTest(BaseTenantTestCase.TestCase):
 
     def test_patch(self):
         """Test create tenant API."""
-        url = reverse('content-limitation-detail', kwargs={'pk': 1})
+        limitation = ContentLimitationTenant.objects.get(pk=1)
+        self.assertEqual(limitation.limit, None)
+        url = reverse('content-limitation-tenants-detail', kwargs={'pk': 1})
         self.change_public_tenant()
         self.assertRequestPatchView(
             url, 403, data={}, user=self.user_1
         )
         self.change_public_tenant()
         self.assertRequestPatchView(
-            url, 405, data={}, user=self.admin_1
+            url, 200, data={
+                'limit': 10
+            }, user=self.admin_1
         )
+        limitation.refresh_from_db()
+        self.assertEqual(limitation.limit, 10)
 
         # Test tenant that is not public
         self.change_second_tenant()
@@ -114,7 +121,7 @@ class ContentLimitationApiTest(BaseTenantTestCase.TestCase):
 
     def test_delete(self):
         """Test create tenant API."""
-        url = reverse('content-limitation-detail', kwargs={'pk': 1})
+        url = reverse('content-limitation-tenants-detail', kwargs={'pk': 1})
         self.change_public_tenant()
         self.assertRequestDeleteView(
             url, 403, data={}, user=self.user_1
