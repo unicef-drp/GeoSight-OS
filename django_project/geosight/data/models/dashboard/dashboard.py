@@ -116,6 +116,8 @@ class Dashboard(
     enable_geometry_search = models.BooleanField(default=True)
     default_time_mode = models.JSONField(null=True, blank=True)
 
+    content_limitation_description = 'Limit the number of project items'
+
     @staticmethod
     def name_is_exist_of_all(slug: str) -> bool:
         """Check of name is exist."""

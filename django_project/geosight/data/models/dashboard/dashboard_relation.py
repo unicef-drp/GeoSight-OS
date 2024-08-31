@@ -104,6 +104,10 @@ class DashboardIndicator(IndicatorStyleBaseModel, DashboardRelation):
     override_style = models.BooleanField(default=False)
     override_label = models.BooleanField(default=False)
 
+    content_limitation_description = (
+        'Limit the number of indicator per project'
+    )
+
     class Meta:  # noqa: D106
         ordering = ('object__name',)
 
@@ -136,6 +140,8 @@ class DashboardBasemap(DashboardRelation):
         on_delete=models.CASCADE
     )
 
+    content_limitation_description = 'Limit the number of basemap per project'
+
     class Meta:  # noqa: D106
         ordering = ('order',)
 
@@ -158,6 +164,10 @@ class DashboardContextLayer(DashboardRelation):
     override_label = models.BooleanField(default=False)
     configuration = models.JSONField(
         null=True, blank=True
+    )
+
+    content_limitation_description = (
+        'Limit the number of context layer per project'
     )
 
     class Meta:  # noqa: D106

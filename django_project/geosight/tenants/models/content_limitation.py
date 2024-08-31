@@ -39,7 +39,8 @@ class ContentLimitation(models.Model):
     """Model data limitation."""
 
     content_type = models.ForeignKey(
-        ContentType, on_delete=models.CASCADE
+        ContentType, on_delete=models.CASCADE,
+        editable=False
     )
     model_field_group = models.CharField(
         max_length=126,
@@ -48,7 +49,8 @@ class ContentLimitation(models.Model):
             'e.g: Limit a Model by the field group. '
             'If it is empty, it will limit all of data.'
         ),
-        null=True, blank=True
+        null=True, blank=True,
+        editable=False
     )
     description = models.TextField(
         null=True,
@@ -57,17 +59,19 @@ class ContentLimitation(models.Model):
 
     def __str__(self):
         """Return string of model."""
-        return self.content_type
+        return self.content_type.__str__()
 
 
 class ContentLimitationTenant(models.Model):
     """Model data limitation by tenant."""
 
     content_limitation = models.ForeignKey(
-        ContentLimitation, on_delete=models.CASCADE
+        ContentLimitation, on_delete=models.CASCADE,
+        editable=False
     )
     tenant = models.ForeignKey(
-        Tenant, on_delete=models.CASCADE
+        Tenant, on_delete=models.CASCADE,
+        editable=False
     )
     limit = models.IntegerField(
         null=True,
@@ -84,11 +88,18 @@ class ContentLimitationTenant(models.Model):
         self.limit = new_limit
         self.save()
 
+    def __str__(self):
+        """Return string of model."""
+        if self.content_limitation.description:
+            return self.content_limitation.description
+        return self.content_limitation.__str__()
+
 
 class BaseModelWithLimitation(models.Model):
     """Abstract base model with limitations."""
 
     limit_by_field_name = None
+    content_limitation_description = None
 
     @staticmethod
     def get_limit_obj(cls) -> ContentLimitation:
@@ -97,7 +108,8 @@ class BaseModelWithLimitation(models.Model):
         tenant = connection.get_tenant()
         content_limitation, _ = ContentLimitation.objects.get_or_create(
             model_field_group=cls.limit_by_field_name,
-            content_type=ContentType.objects.get_for_model(cls)
+            content_type=ContentType.objects.get_for_model(cls),
+            description=cls.content_limitation_description
         )
         data, _ = ContentLimitationTenant.objects.get_or_create(
             content_limitation=content_limitation,

@@ -33,7 +33,7 @@ class ContentLimitationApiTest(BaseTenantTestCase.TestCase):
         response = self.assertRequestGetView(
             self.url, 200, self.admin_1
         )
-        self.assertEqual(response.json()['count'], 16)
+        self.assertEqual(response.json()['count'], 14)
 
         # Test tenant that is not public
         self.change_second_tenant()

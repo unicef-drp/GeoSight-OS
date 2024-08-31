@@ -57,11 +57,19 @@ class TenantModelAdmin(admin.ModelAdmin):
         return super().has_module_permission(request)
 
 
+class ContentLimitationTenantInline(admin.TabularInline):
+    """ContentLimitationTenant inline."""
+
+    model = ContentLimitationTenant
+    extra = 0
+
+
 @admin.register(Tenant)
 class TenantAdmin(TenantAdminMixin, TenantModelAdmin):
     """Tenant admin."""
 
     list_display = ('name', 'schema_name', 'responder_email')
+    inlines = (ContentLimitationTenantInline,)
 
 
 @admin.register(Domain)
@@ -80,6 +88,10 @@ class ContentLimitationAdmin(TenantAdminMixin, TenantModelAdmin):
     )
     list_filter = ('content_type',)
 
+    def has_add_permission(self, request):
+        """Has add permission."""
+        return False
+
 
 @admin.register(ContentLimitationTenant)
 class ContentLimitationTenantAdmin(TenantAdminMixin, TenantModelAdmin):
@@ -91,3 +103,7 @@ class ContentLimitationTenantAdmin(TenantAdminMixin, TenantModelAdmin):
     list_filter = (
         'tenant', 'content_limitation'
     )
+
+    def has_add_permission(self, request):
+        """Return false to add permission."""
+        return False

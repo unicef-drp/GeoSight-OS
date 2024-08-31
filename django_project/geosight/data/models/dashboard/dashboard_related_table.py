@@ -36,5 +36,9 @@ class DashboardRelatedTable(DashboardRelation):
     )
     query = models.TextField(null=True, blank=True)
 
+    content_limitation_description = (
+        'Limit the number of related table per project'
+    )
+
     class Meta:  # noqa: D106
         ordering = ('order',)
