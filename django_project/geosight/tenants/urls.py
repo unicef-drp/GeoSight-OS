@@ -16,12 +16,18 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from rest_framework.routers import DefaultRouter
 
-from geosight.tenants.api.content_limitation import ContentLimitationAPI
+from geosight.tenants.api.content_limitation import (
+    ContentLimitationAPI, ContentLimitationTenantAPI
+)
 from geosight.tenants.api.tenant import TenantAPI
 
 router = DefaultRouter()
 router.register(
-    r'content-limitations', ContentLimitationAPI,
+    r'content-limitation', ContentLimitationAPI,
+    basename='content-limitation'
+)
+router.register(
+    r'content-limitation-tenants', ContentLimitationTenantAPI,
     basename='content-limitations'
 )
 router.register(r'', TenantAPI, basename='tenants')

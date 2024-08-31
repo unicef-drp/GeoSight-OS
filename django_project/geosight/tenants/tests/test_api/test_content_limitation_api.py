@@ -21,6 +21,7 @@ from geosight.tenants.tests.base_test import BaseTenantTestCase
 
 class ContentLimitationApiTest(BaseTenantTestCase.TestCase):
     """Test for create Content Limitation."""
+
     url = reverse('content-limitations-list')
 
     def test_list(self):

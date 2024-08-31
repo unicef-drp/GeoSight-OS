@@ -18,19 +18,22 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.viewsets import mixins, GenericViewSet
 
 from geosight.data.api.v1.base import BaseApiV1
-from geosight.tenants.models.content_limitation import ContentLimitation
+from geosight.tenants.models.content_limitation import (
+    ContentLimitation, ContentLimitationTenant
+)
 from geosight.tenants.permission import AccessedJustByPublicTenant
-from geosight.tenants.serializer import ContentLimitationSerializer
+from geosight.tenants.serializer import (
+    ContentLimitationSerializer, ContentLimitationTenantSerializer
+)
 
 
 class ContentLimitationAPI(
     BaseApiV1,
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
     GenericViewSet
 ):
-    """Return tenants list."""
+    """Return content limitation list."""
 
     permission_classes = (
         IsAuthenticated, IsAdminUser, AccessedJustByPublicTenant
@@ -38,3 +41,20 @@ class ContentLimitationAPI(
     model_class = ContentLimitation
     serializer_class = ContentLimitationSerializer
     queryset = ContentLimitation.objects.all()
+
+
+class ContentLimitationTenantAPI(
+    BaseApiV1,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    GenericViewSet
+):
+    """Return content limitation for tenant list."""
+
+    permission_classes = (
+        IsAuthenticated, IsAdminUser, AccessedJustByPublicTenant
+    )
+    model_class = ContentLimitationTenant
+    serializer_class = ContentLimitationTenantSerializer
+    queryset = ContentLimitationTenant.objects.all()

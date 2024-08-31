@@ -21,7 +21,7 @@ from geosight.data.tests.model_factories import (
     DashboardF, DashboardContextLayerF, DashboardContextLayer
 )
 from geosight.tenants.models.content_limitation import (
-    ContentLimitation, AlreadyReachTheLimit
+    ContentLimitationTenant, AlreadyReachTheLimit
 )
 
 
@@ -40,8 +40,8 @@ class ModelLimitationTest(TestCase):
         self.change_public_tenant()
         content_type = ContentType.objects.get_for_model(self.Model)
         self.assertEqual(
-            ContentLimitation.objects.filter(
-                content_type=content_type
+            ContentLimitationTenant.objects.filter(
+                content_limitation__content_type=content_type
             ).count(), 2
         )
         # ------------------------------------------
@@ -67,9 +67,11 @@ class ModelLimitationTest(TestCase):
 
         # Check if model data limitation is just 1 from above creation
         self.assertEqual(
-            ContentLimitation.objects.filter(
-                content_type=content_type,
-                model_field_group=self.Model.limit_by_field_name
+            ContentLimitationTenant.objects.filter(
+                content_limitation__content_type=content_type,
+                content_limitation__model_field_group=(
+                    self.Model.limit_by_field_name
+                )
             ).count(), 2
         )
         # ------------------------------------------
@@ -89,9 +91,11 @@ class ModelLimitationTest(TestCase):
 
         # Check if model data limitation is just 1 from above creation
         self.assertEqual(
-            ContentLimitation.objects.filter(
-                content_type=content_type,
-                model_field_group=self.Model.limit_by_field_name
+            ContentLimitationTenant.objects.filter(
+                content_limitation__content_type=content_type,
+                content_limitation__model_field_group=(
+                    self.Model.limit_by_field_name
+                )
             ).count(), 2
         )
 
@@ -117,8 +121,8 @@ class ModelLimitationTest(TestCase):
 
         # Check if model data limitation is 2
         self.assertEqual(
-            ContentLimitation.objects.filter(
-                content_type=content_type
+            ContentLimitationTenant.objects.filter(
+                content_limitation__content_type=content_type
             ).count(), 2
         )
 
@@ -138,7 +142,7 @@ class ModelLimitationTest(TestCase):
 
         # Check if model data limitation is 2
         self.assertEqual(
-            ContentLimitation.objects.filter(
-                content_type=content_type
+            ContentLimitationTenant.objects.filter(
+                content_limitation__content_type=content_type
             ).count(), 2
         )

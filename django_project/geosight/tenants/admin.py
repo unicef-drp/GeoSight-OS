@@ -17,7 +17,9 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.contrib import admin
 from django_tenants.admin import TenantAdminMixin
 
-from geosight.tenants.models import Tenant, Domain, ContentLimitation
+from geosight.tenants.models import (
+    Tenant, Domain, ContentLimitation, ContentLimitationTenant
+)
 from geosight.tenants.utils import is_public_tenant
 
 
@@ -74,8 +76,18 @@ class ContentLimitationAdmin(TenantAdminMixin, TenantModelAdmin):
     """ContentLimitation admin."""
 
     list_display = (
-        'tenant', 'content_type', 'model_field_group', 'limit', 'description'
+        'content_type', 'model_field_group', 'description'
+    )
+    list_filter = ('content_type',)
+
+
+@admin.register(ContentLimitationTenant)
+class ContentLimitationTenantAdmin(TenantAdminMixin, TenantModelAdmin):
+    """ContentLimitation admin."""
+
+    list_display = (
+        'tenant', 'content_limitation', 'limit'
     )
     list_filter = (
-        'tenant', 'content_type', 'model_field_group'
+        'tenant', 'content_limitation'
     )

@@ -38,9 +38,6 @@ class AlreadyReachTheLimit(Exception):
 class ContentLimitation(models.Model):
     """Model data limitation."""
 
-    tenant = models.ForeignKey(
-        Tenant, on_delete=models.CASCADE
-    )
     content_type = models.ForeignKey(
         ContentType, on_delete=models.CASCADE
     )
@@ -53,19 +50,34 @@ class ContentLimitation(models.Model):
         ),
         null=True, blank=True
     )
-    limit = models.IntegerField(
-        null=True,
-        blank=True,
-        help_text='Limit of data allowed to the content_type.'
-    )
     description = models.TextField(
         null=True,
         blank=True
     )
 
+    def __str__(self):
+        """Return string of model."""
+        return self.content_type
+
+
+class ContentLimitationTenant(models.Model):
+    """Model data limitation by tenant."""
+
+    content_limitation = models.ForeignKey(
+        ContentLimitation, on_delete=models.CASCADE
+    )
+    tenant = models.ForeignKey(
+        Tenant, on_delete=models.CASCADE
+    )
+    limit = models.IntegerField(
+        null=True,
+        blank=True,
+        help_text='Limit of data allowed to the content_type.'
+    )
+
     class Meta:  # noqa: D106
-        ordering = ('content_type',)
-        unique_together = ('tenant', 'content_type', 'model_field_group')
+        ordering = ('content_limitation',)
+        unique_together = ('content_limitation', 'tenant')
 
     def update_limit(self, new_limit: int):
         """Update the limit."""
@@ -83,10 +95,13 @@ class BaseModelWithLimitation(models.Model):
         """Get limit of the class."""
         # We check the limitation before saving.
         tenant = connection.get_tenant()
-        data, _ = ContentLimitation.objects.get_or_create(
-            tenant=tenant,
+        content_limitation, _ = ContentLimitation.objects.get_or_create(
             model_field_group=cls.limit_by_field_name,
             content_type=ContentType.objects.get_for_model(cls)
+        )
+        data, _ = ContentLimitationTenant.objects.get_or_create(
+            content_limitation=content_limitation,
+            tenant=tenant
         )
         return data
 
