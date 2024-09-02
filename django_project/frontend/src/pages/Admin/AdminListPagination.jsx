@@ -66,10 +66,14 @@ export const AdminListPagination = forwardRef(
 
     // Other attributes
     const pageSize = 25;
-    const [parameters, setParameters] = useState({
-      page: 0,
-      page_size: pageSize
-    })
+    let initParameters = getParameters({})
+    initParameters = {
+      ...{
+        page: 0,
+        page_size: pageSize
+      }, ...initParameters
+    }
+    const [parameters, setParameters] = useState(initParameters)
     const [data, setData] = useState([])
     const [rowSize, setRowSize] = useState(0)
     const [error, setError] = useState(null);
@@ -105,7 +109,14 @@ export const AdminListPagination = forwardRef(
 
       try {
         const data = await fetchJSON(url, {}, false)
-        // Checking quick data
+
+        // Set the data
+        if (prev.urlRequest === url) {
+          setRowSize(data.count)
+          setData(data.results)
+        }
+
+        // Fetch quick data for filter
         if (props.quickDataChanged) {
           const quickParams = jsonToUrlParams(
             dictDeepCopy(
@@ -115,19 +126,17 @@ export const AdminListPagination = forwardRef(
           if (!quickParams) {
             props.quickDataChanged({})
           } else {
-            const quickData = await fetchJSON(
-              urlData + 'data' + '?' + quickParams, {}, false
-            )
-            if (prev.urlRequest === url) {
-              props.quickDataChanged(quickData)
+            try {
+              const quickData = await fetchJSON(
+                urlData + 'data' + '?' + quickParams, {}, false
+              )
+              if (prev.urlRequest === url) {
+                props.quickDataChanged(quickData)
+              }
+            } catch (e) {
+              console.log(`Quick data is error ${e}`)
             }
           }
-        }
-
-        // Set the data
-        if (prev.urlRequest === url) {
-          setRowSize(data.count)
-          setData(data.results)
         }
       } catch (error) {
         if (error.message === 'Invalid page.') {
