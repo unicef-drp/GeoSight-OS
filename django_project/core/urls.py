@@ -34,6 +34,7 @@ from core.api.group import (
 )
 from core.api.maintenance import MaintenanceAPI
 from core.api.proxy import ProxyView
+from core.api.refresh_materialized_view import RefreshMaterializedViewApi
 from core.api.sentry import trigger_error
 from core.api.user import UserListAPI, UserDetailAPI, UserApiKey
 
@@ -158,6 +159,10 @@ api = [
     url(r'^user/', include(user_api)),
     url(r'^user/', include(user_api)),
     url(r'^access/', include(request_access_api)),
+    url(
+        r'^refresh-materialized-view$', RefreshMaterializedViewApi.as_view(),
+        name='refresh-materialized-view'
+    ),
 ]
 urlpatterns += [
     url(r'^tinymce/', include('tinymce.urls')),
