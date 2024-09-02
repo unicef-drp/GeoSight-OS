@@ -26,6 +26,9 @@ from django.db import transaction
 from django.utils import timezone
 from django.utils.timezone import now
 
+from geosight.data.models.indicator.indicator_value import (
+    IndicatorValueWithGeo
+)
 from geosight.importer.attribute import ImporterAttribute
 from geosight.importer.exception import ImporterError
 from geosight.importer.models.importer_definition import ImportType
@@ -69,7 +72,7 @@ class BaseImporter(ABC):
                 logs = self.log.importerlogdata_set.order_by('id')
                 for line_idx, log in enumerate(logs):
                     self._save_log_data_to_model(log)
-
+                IndicatorValueWithGeo.refresh_materialized_views()
         elif not success:
             error = (
                 'Importing is failed. No data saved. '
