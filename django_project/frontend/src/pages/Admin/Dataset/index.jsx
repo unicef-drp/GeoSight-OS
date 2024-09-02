@@ -64,6 +64,7 @@ export default function DatasetAdmin() {
     indicators: defaultFilters.indicators ? splitParams(defaultFilters.indicators) : [],
     datasets: defaultFilters.datasets ? splitParams(defaultFilters.datasets, false) : [],
     levels: defaultFilters.levels ? splitParams(defaultFilters.levels) : [],
+    detail: true,
   })
   const [disabled, setDisabled] = useState(false)
   const [isInit, setIsInit] = useState(true)
@@ -199,6 +200,7 @@ export default function DatasetAdmin() {
     } else {
       delete parameters['admin_level__in']
     }
+    parameters['detail'] = filters.detail
     return parameters
   }
 

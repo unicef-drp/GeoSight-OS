@@ -70,6 +70,7 @@ export default function DataBrowserAdmin() {
     geographies: defaultFilters.geographies ? splitParams(defaultFilters.geographies) : [],
     fromTime: defaultFilters.fromTime ? defaultFilters.fromTime : null,
     toTime: defaultFilters.toTime ? defaultFilters.toTime : null,
+    detail: true,
   })
   const [updatedData, setUpdatedData] = useState([]);
   const [disabled, setDisabled] = useState(false)
@@ -271,6 +272,7 @@ export default function DataBrowserAdmin() {
     } else {
       delete parameters['date__lte']
     }
+    parameters['detail'] = filters.detail
     return parameters
   }
 

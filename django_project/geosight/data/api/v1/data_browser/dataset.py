@@ -28,6 +28,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 
 from core.api_utils import common_api_params, ApiTag, ApiParams
+from core.utils import string_is_true
 from geosight.data.models.indicator import (
     IndicatorValueWithGeo, IndicatorValue
 )
@@ -35,7 +36,8 @@ from geosight.data.models.indicator.indicator_value_dataset import (
     IndicatorValueDataset
 )
 from geosight.data.serializer.indicator_value_dataset import (
-    IndicatorValueDatasetSerializer
+    IndicatorValueDatasetSerializer,
+    IndicatorValueDatasetWithPermissionSerializer
 )
 from geosight.georepo.models.reference_layer import ReferenceLayerIndicator
 from .base import BaseDataApiList
@@ -43,6 +45,10 @@ from .base import BaseDataApiList
 
 class BaseDatasetApiList:
     """Contains queryset."""
+
+    filter_query_exclude = [
+        'page', 'page_size', 'group_admin_level', 'detail'
+    ]
 
     def get_queryset(self):
         """Return queryset of API."""
@@ -109,8 +115,12 @@ class BaseDatasetApiList:
 class DatasetApiList(BaseDatasetApiList, BaseDataApiList, ListAPIView):
     """Return Dataset with indicator x reference layer x level."""
 
-    serializer_class = IndicatorValueDatasetSerializer
-    filter_query_exclude = ['page', 'page_size', 'group_admin_level']
+    @property
+    def serializer_class(self):
+        """Return serialize class."""
+        if string_is_true(self.request.GET.get('detail', 'false')):
+            return IndicatorValueDatasetWithPermissionSerializer
+        return IndicatorValueDatasetSerializer
 
     def get_serializer(self, *args, **kwargs):
         """Return serializer of data."""
@@ -209,8 +219,6 @@ class DatasetApiList(BaseDatasetApiList, BaseDataApiList, ListAPIView):
 class DatasetApiListIds(BaseDatasetApiList, BaseDataApiList, ListAPIView):
     """Return Just ids Data List."""
 
-    filter_query_exclude = ['page', 'page_size', 'group_admin_level']
-
     @swagger_auto_schema(auto_schema=None)
     def get(self, request):
         """Get ids of data."""
@@ -224,8 +232,6 @@ class DatasetApiQuickData(BaseDatasetApiList, BaseDataApiList, ListAPIView):
 
     Example: It will return list of indicators, datasets, levels.
     """
-
-    filter_query_exclude = ['page', 'page_size', 'group_admin_level']
 
     @swagger_auto_schema(auto_schema=None)
     def get(self, request):
