@@ -16,4 +16,8 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunSQL(defaults, defaults),
         migrations.RunSQL(views, defaults),
+        migrations.AlterModelTable(
+            name='indicatorvaluewithgeo',
+            table='mv_indicator_value_geo',
+        ),
     ]

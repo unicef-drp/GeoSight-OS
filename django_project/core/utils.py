@@ -49,3 +49,44 @@ def set_query_parameter(url, params):
     url_new_query = urlencode(url_dict)
     url_parse = url_parse._replace(query=url_new_query)
     return urlunparse(url_parse)
+
+
+def child_classes(Class):
+    """Return child classes."""
+    # If has subclasses
+    if not len(Class.__subclasses__()):
+        return [Class]
+
+    # If has subclasses
+    classes = []
+    for _class in Class.__subclasses__():
+        if len(_class.__subclasses__()):
+            for child in _class.__subclasses__():
+                classes += child_classes(child)
+        else:
+            classes.append(_class)
+    return classes
+
+
+class temp_disconnect_signal(object):
+    """Temporarily disconnect a model from a signal."""
+
+    def __init__(self, signal, receiver, sender):
+        """Initialise the temporary disconnect signal."""
+        self.signal = signal
+        self.receiver = receiver
+        self.sender = sender
+
+    def __enter__(self):
+        """Enter the temporary disconnect signal."""
+        self.signal.disconnect(
+            receiver=self.receiver,
+            sender=self.sender
+        )
+
+    def __exit__(self, type, value, traceback):
+        """Exit the temporary disconnect signal."""
+        self.signal.connect(
+            receiver=self.receiver,
+            sender=self.sender
+        )

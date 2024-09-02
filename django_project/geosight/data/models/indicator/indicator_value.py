@@ -263,3 +263,5 @@ class IndicatorValueWithGeo(MaterializeViewModel, models.Model):
 def increase_version(sender, instance, **kwargs):
     """Increase verison of indicator signal."""
     instance.indicator.increase_version()
+    print('REFRESH FROM SIGNALS')
+    IndicatorValueWithGeo.refresh_materialized_views()

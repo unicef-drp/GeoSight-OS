@@ -23,11 +23,13 @@ import pytz
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import transaction
+from django.db.models.signals import post_save
 from django.utils import timezone
 from django.utils.timezone import now
 
+from core.utils import temp_disconnect_signal
 from geosight.data.models.indicator.indicator_value import (
-    IndicatorValueWithGeo
+    IndicatorValueWithGeo, IndicatorValue, increase_version
 )
 from geosight.importer.attribute import ImporterAttribute
 from geosight.importer.exception import ImporterError
@@ -85,6 +87,7 @@ class BaseImporter(ABC):
     def run(self):
         """To run the process."""
         from geosight.data.models.context_layer import ContextLayerRequestError
+
         try:
             self.log.status = LogStatus.RUNNING
             self.log.save()
@@ -97,7 +100,11 @@ class BaseImporter(ABC):
             # Use transaction atomic when indicator value
             if self.importer.import_type != ImportType.RELATED_TABLE:
                 with transaction.atomic():
-                    self.after_import(success, note)
+                    with temp_disconnect_signal(
+                            signal=post_save, receiver=increase_version,
+                            sender=IndicatorValue
+                    ):
+                        self.after_import(success, note)
 
             self._done(note)
         except (ImporterError, ContextLayerRequestError) as e:

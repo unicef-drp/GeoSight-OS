@@ -16,6 +16,8 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.db import connection
 
+from core.utils import child_classes
+
 
 class MaterializeViewModel:
     """Materialized view model."""
@@ -24,4 +26,11 @@ class MaterializeViewModel:
     def refresh_materialized_views(cls):
         """Refresh materialized views."""
         with connection.cursor() as cursor:
-            cursor.execute(f'REFRESH MATERIALIZED VIEW {cls._meta.db_table}')
+            query = f'REFRESH MATERIALIZED VIEW {cls._meta.db_table}'
+            print(query)
+            cursor.execute(query)
+
+    @staticmethod
+    def child_classes():
+        """Return child classes."""
+        return child_classes(MaterializeViewModel)
