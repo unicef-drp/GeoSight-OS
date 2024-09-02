@@ -11,7 +11,7 @@ Contact : geosight-no-reply@unicef.org
 
 """
 __author__ = 'irwan@kartoza.com'
-__date__ = '13/06/2023'
+__date__ = '02/10/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.db import connection
