@@ -30,7 +30,10 @@ from rest_framework.response import Response
 from core.api_utils import common_api_params, ApiTag, ApiParams
 from core.utils import string_is_true
 from geosight.data.models.indicator import (
-    IndicatorValueWithGeo, IndicatorValue
+    IndicatorValue
+)
+from geosight.data.models.indicator.indicator_value import (
+    IndicatorValueWithGeo
 )
 from geosight.data.models.indicator.indicator_value_dataset import (
     IndicatorValueDataset
@@ -213,6 +216,7 @@ class DatasetApiList(BaseDatasetApiList, BaseDataApiList, ListAPIView):
             identifier_with_level__in=to_be_deleted
         ).values_list('id', flat=True)
         IndicatorValue.objects.filter(id__in=list(ids)).delete()
+        IndicatorValueWithGeo.refresh_materialized_views()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
