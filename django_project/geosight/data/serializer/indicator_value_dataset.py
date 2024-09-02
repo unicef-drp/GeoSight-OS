@@ -72,6 +72,7 @@ class IndicatorValueDatasetWithPermissionSerializer(
     IndicatorValueDatasetSerializer
 ):
     """Serializer for IndicatorValue."""
+
     permission = serializers.SerializerMethodField()
 
     def get_permission(self, obj: IndicatorValueDataset):
