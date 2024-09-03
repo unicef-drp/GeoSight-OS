@@ -25,17 +25,25 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from core.api_utils import common_api_params, ApiTag, ApiParams
+from core.utils import string_is_true
 from geosight.data.models.indicator import (
     Indicator, IndicatorValue, IndicatorValueRejectedError
 )
+from geosight.data.models.indicator.indicator_value import (
+    IndicatorValueWithGeo
+)
 from geosight.data.serializer.indicator import (
-    IndicatorValueWithPermissionSerializer
+    IndicatorValueSerializer, IndicatorValueWithPermissionSerializer
 )
 from .base import BaseDataApiList
 
 
 class BaseDataBrowserApiList(BaseDataApiList):
     """Return Data List API List."""
+
+    filter_query_exclude = [
+        'page', 'page_size', 'group_admin_level', 'detail'
+    ]
 
     def get_queryset(self):
         """Return queryset of API."""
@@ -49,7 +57,12 @@ class BaseDataBrowserApiList(BaseDataApiList):
 class DataBrowserApiList(BaseDataBrowserApiList, ListAPIView):
     """Return Data List API List."""
 
-    serializer_class = IndicatorValueWithPermissionSerializer
+    @property
+    def serializer_class(self):
+        """Return serialize class."""
+        if string_is_true(self.request.GET.get('detail', 'false')):
+            return IndicatorValueWithPermissionSerializer
+        return IndicatorValueSerializer
 
     def get_queryset(self):
         """Return queryset of API."""
@@ -132,6 +145,7 @@ class DataBrowserApiList(BaseDataBrowserApiList, ListAPIView):
                 value=data['value'],
                 extras=data.get('attributes', {})
             )
+            IndicatorValueWithGeo.refresh_materialized_views()
         except KeyError as e:
             return HttpResponseBadRequest(f'{e} is required on payload')
         except Exception as e:
@@ -162,6 +176,7 @@ class DataBrowserApiList(BaseDataBrowserApiList, ListAPIView):
                     return HttpResponseBadRequest(
                         f'Indicator {value.indicator} : {e}'
                     )
+            IndicatorValueWithGeo.refresh_materialized_views()
             return Response('OK')
         except KeyError:
             return HttpResponseBadRequest('`data` is required on payload')

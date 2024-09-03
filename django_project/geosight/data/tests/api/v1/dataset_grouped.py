@@ -259,7 +259,7 @@ class DatasetApiGroupedDataTest(BasePermissionTest, TestCase):
     def test_delete_api(self):
         """Test List API."""
         user = self.creator_in_group
-        url = reverse('dataset-api') + '?group_admin_level=true'
+        url = reverse('dataset-api') + '?detail=true&group_admin_level=true'
 
         # admin
         response = self.assertRequestGetView(

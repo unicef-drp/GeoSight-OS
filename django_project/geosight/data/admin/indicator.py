@@ -19,7 +19,8 @@ from django.utils import timezone
 
 from geosight.data.models.indicator import (
     Indicator, IndicatorGroup,
-    IndicatorValue, IndicatorRule, IndicatorExtraValue
+    IndicatorValue, IndicatorRule, IndicatorExtraValue,
+    IndicatorValueWithGeo
 )
 
 
@@ -67,6 +68,29 @@ class IndicatorGroupAdmin(admin.ModelAdmin):
     """IndicatorGroup admin."""
 
     list_display = ('name',)
+
+
+@admin.register(IndicatorValueWithGeo)
+class IndicatorValueWithGeoAdmin(admin.ModelAdmin):
+    """Admin for checking indicator values with geometry."""
+
+    change_list_template = 'admin/indicator_value_with_geo_admin.html'
+    list_display = (
+        'reference_layer_name', 'reference_layer_uuid', 'indicator_name',
+        'date', 'value'
+    )
+
+    def has_add_permission(self, request):
+        """Return True if the user has add permission."""
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        """Return True if the user has change permission."""
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        """Return True if the user has delete permission."""
+        return False
 
 
 admin.site.register(IndicatorGroup, IndicatorGroupAdmin)

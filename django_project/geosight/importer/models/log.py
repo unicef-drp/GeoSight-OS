@@ -22,6 +22,9 @@ from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from core.models.preferences import SitePreferences
+from geosight.data.models.indicator.indicator_value import (
+    IndicatorValueWithGeo
+)
 from geosight.importer.models.importer import Importer
 
 
@@ -174,3 +177,4 @@ class ImporterLogDataSaveProgress(models.Model):
                 self.saved_ids.append(log_data.id)
                 self.save()
         self.delete()
+        IndicatorValueWithGeo.refresh_materialized_views()

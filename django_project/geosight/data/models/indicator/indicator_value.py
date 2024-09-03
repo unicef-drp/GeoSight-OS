@@ -19,6 +19,7 @@ from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
+from core.models.materialized_view import MaterializeViewModel
 from geosight.data.models.indicator.indicator import Indicator, IndicatorType
 
 
@@ -153,7 +154,7 @@ class IndicatorExtraValue(models.Model):
         return self.name.replace(' ', '_').replace(':', '').lower()
 
 
-class IndicatorValueWithGeo(models.Model):
+class IndicatorValueWithGeo(MaterializeViewModel, models.Model):
     """Indicator value x entity view."""
 
     # This is geom id for the value
@@ -239,7 +240,7 @@ class IndicatorValueWithGeo(models.Model):
     class Meta:  # noqa: D106
         managed = False
         ordering = ('-date',)
-        db_table = 'v_indicator_value_geo'
+        db_table = 'mv_indicator_value_geo'
 
     @property
     def val(self):
@@ -262,3 +263,5 @@ class IndicatorValueWithGeo(models.Model):
 def increase_version(sender, instance, **kwargs):
     """Increase verison of indicator signal."""
     instance.indicator.increase_version()
+    print('REFRESH FROM SIGNALS')
+    IndicatorValueWithGeo.refresh_materialized_views()

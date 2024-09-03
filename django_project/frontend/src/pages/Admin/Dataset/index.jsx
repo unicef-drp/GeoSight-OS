@@ -64,6 +64,7 @@ export default function DatasetAdmin() {
     indicators: defaultFilters.indicators ? splitParams(defaultFilters.indicators) : [],
     datasets: defaultFilters.datasets ? splitParams(defaultFilters.datasets, false) : [],
     levels: defaultFilters.levels ? splitParams(defaultFilters.levels) : [],
+    detail: true,
   })
   const [disabled, setDisabled] = useState(false)
   const [isInit, setIsInit] = useState(true)
@@ -98,8 +99,8 @@ export default function DatasetAdmin() {
   // COLUMNS
   const COLUMNS = [
     { field: 'id', headerName: 'id', hide: true },
-    { field: 'indicator_name', headerName: 'Indicator', flex: 1 },
-    { field: 'reference_layer_name', headerName: 'View', flex: 0.5 },
+    { field: 'indicator_name', headerName: 'Indicator', flex: 0.5 },
+    { field: 'reference_layer_name', headerName: 'View', flex: 1 },
     { field: 'admin_level', headerName: 'Level', width: 80 },
     { field: 'start_date', headerName: 'Start date', width: 130 },
     { field: 'end_date', headerName: 'End date', width: 130 },
@@ -199,6 +200,7 @@ export default function DatasetAdmin() {
     } else {
       delete parameters['admin_level__in']
     }
+    parameters['detail'] = filters.detail
     return parameters
   }
 
