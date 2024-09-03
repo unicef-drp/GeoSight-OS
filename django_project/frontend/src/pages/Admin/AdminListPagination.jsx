@@ -66,12 +66,12 @@ export const AdminListPagination = forwardRef(
 
     // Other attributes
     const pageSize = 25;
-    let initParameters = getParameters({})
-    initParameters = {
-      ...{
-        page: 0,
-        page_size: pageSize
-      }, ...initParameters
+    let initParameters = {
+      page: 0,
+      page_size: pageSize
+    }
+    if (getParameters) {
+      initParameters = getParameters(initParameters)
     }
     const [parameters, setParameters] = useState(initParameters)
     const [data, setData] = useState([])
