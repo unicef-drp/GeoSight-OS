@@ -29,7 +29,7 @@ from django.utils.timezone import now
 
 from core.utils import temp_disconnect_signal
 from geosight.data.models.indicator.indicator_value import (
-    IndicatorValueWithGeo, IndicatorValue, increase_version
+    IndicatorValue, increase_version
 )
 from geosight.importer.attribute import ImporterAttribute
 from geosight.importer.exception import ImporterError
@@ -74,7 +74,6 @@ class BaseImporter(ABC):
                 logs = self.log.importerlogdata_set.order_by('id')
                 for line_idx, log in enumerate(logs):
                     self._save_log_data_to_model(log)
-                IndicatorValueWithGeo.refresh_materialized_views()
         elif not success:
             error = (
                 'Importing is failed. No data saved. '

@@ -177,4 +177,3 @@ class ImporterLogDataSaveProgress(models.Model):
                 self.saved_ids.append(log_data.id)
                 self.save()
         self.delete()
-        IndicatorValueWithGeo.refresh_materialized_views()

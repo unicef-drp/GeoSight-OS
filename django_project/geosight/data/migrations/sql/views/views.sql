@@ -18,7 +18,3 @@ FROM geosight_data_indicatorvalue as value
      LEFT JOIN geosight_georepo_entity as entity ON value.geom_id = entity.geom_id
      LEFT JOIN geosight_georepo_referencelayerview as ref_view ON ref_view.id = entity.reference_layer_id
      LEFT JOIN geosight_data_indicator as indicator ON value.indicator_id = indicator.id;
-
-
-CREATE MATERIALIZED VIEW mv_indicator_value_geo as
-SELECT * from v_indicator_value_geo;

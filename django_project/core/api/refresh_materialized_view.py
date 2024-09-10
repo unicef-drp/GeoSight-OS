@@ -18,9 +18,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from core.permissions import AdminAuthenticationPermission
-from geosight.data.models.indicator.indicator_value import (
-    IndicatorValueWithGeo
-)
 
 
 class RefreshMaterializedViewApi(APIView):
@@ -30,7 +27,4 @@ class RefreshMaterializedViewApi(APIView):
 
     def post(self, request, *args, **kwargs):
         """Get access request list."""
-        view = request.data['view']
-        if view == IndicatorValueWithGeo._meta.db_table:
-            IndicatorValueWithGeo.refresh_materialized_views()
         return Response(status=201)

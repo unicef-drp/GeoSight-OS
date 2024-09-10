@@ -29,9 +29,6 @@ from core.utils import string_is_true
 from geosight.data.models.indicator import (
     Indicator, IndicatorValue, IndicatorValueRejectedError
 )
-from geosight.data.models.indicator.indicator_value import (
-    IndicatorValueWithGeo
-)
 from geosight.data.serializer.indicator import (
     IndicatorValueSerializer, IndicatorValueWithPermissionSerializer
 )
@@ -145,7 +142,6 @@ class DataBrowserApiList(BaseDataBrowserApiList, ListAPIView):
                 value=data['value'],
                 extras=data.get('attributes', {})
             )
-            IndicatorValueWithGeo.refresh_materialized_views()
         except KeyError as e:
             return HttpResponseBadRequest(f'{e} is required on payload')
         except Exception as e:
@@ -176,7 +172,6 @@ class DataBrowserApiList(BaseDataBrowserApiList, ListAPIView):
                     return HttpResponseBadRequest(
                         f'Indicator {value.indicator} : {e}'
                     )
-            IndicatorValueWithGeo.refresh_materialized_views()
             return Response('OK')
         except KeyError:
             return HttpResponseBadRequest('`data` is required on payload')
