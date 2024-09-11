@@ -73,7 +73,7 @@ export default function RelatedTableFields(
   const relatedFields = relatedTableInfo && relatedTableData ? getRelatedTableFields(relatedTableInfo, relatedTableData) : []
 
   useEffect(() => {
-    if (relatedFields && !data.data_fields) {
+    if (relatedFields && !data.data_fields?.length) {
       onSetData({
         ...data,
         data_fields: relatedFields.map(field => ({
