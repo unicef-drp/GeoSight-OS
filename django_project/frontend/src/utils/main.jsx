@@ -254,6 +254,25 @@ export function jsonToXlsx(data, filename, sheetName = "Sheet 1") {
   XLSX.writeFile(workbook, filename);
 }
 
+/**
+ * Multiple json to multiple sheet
+ * @param {Array} data Array of object.
+ * @param {string} filename Filename of json
+ */
+export function multiJsonToMultipleSheetsXlsx(data, filename) {
+  const workbook = XLSX.utils.book_new();
+  for (const [sheetName, sheetData] of Object.entries(data)) {
+    const worksheet = XLSX.utils.json_to_sheet(sheetData);
+    if (sheetData[0]) {
+      worksheet["!cols"] = Object.keys(sheetData[0]).map(key => {
+        return { wch: sheetData.reduce((w, r) => Math.max(w, r[key]?.length), 10) }
+      });
+    }
+    XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+  }
+  XLSX.writeFile(workbook, filename);
+}
+
 /** Return now date in UTC */
 export function nowUTC(secondZero = false) {
   const date = new Date();
