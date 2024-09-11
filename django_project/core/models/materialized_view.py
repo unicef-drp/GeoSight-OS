@@ -27,7 +27,6 @@ class MaterializeViewModel:
         """Refresh materialized views."""
         with connection.cursor() as cursor:
             query = f'REFRESH MATERIALIZED VIEW {cls._meta.db_table}'
-            print(query)
             cursor.execute(query)
 
     @staticmethod

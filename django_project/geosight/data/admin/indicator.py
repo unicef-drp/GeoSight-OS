@@ -74,7 +74,6 @@ class IndicatorGroupAdmin(admin.ModelAdmin):
 class IndicatorValueWithGeoAdmin(admin.ModelAdmin):
     """Admin for checking indicator values with geometry."""
 
-    change_list_template = 'admin/indicator_value_with_geo_admin.html'
     list_display = (
         'reference_layer_name', 'reference_layer_uuid', 'indicator_name',
         'date', 'value'

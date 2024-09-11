@@ -216,7 +216,6 @@ class DatasetApiList(BaseDatasetApiList, BaseDataApiList, ListAPIView):
             identifier_with_level__in=to_be_deleted
         ).values_list('id', flat=True)
         IndicatorValue.objects.filter(id__in=list(ids)).delete()
-        IndicatorValueWithGeo.refresh_materialized_views()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
