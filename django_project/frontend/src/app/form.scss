@@ -181,6 +181,23 @@
         }
       }
     }
+
+    &.ReferenceLayerInputSelectorWrapper {
+      .InputControl {
+        display: flex !important;
+        flex-direction: row !important;
+
+        .MuiTextField-root {
+          flex-grow: 1;
+        }
+      }
+
+      .MuiCircularProgress-root {
+        height: unset !important;
+        width: unset !important;
+        margin-right: 0.5rem;
+      }
+    }
   }
 
   .form-error {

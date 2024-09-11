@@ -41,6 +41,7 @@ const columns = [
  * @param {Boolean} isMultiple Is data returned multiple object.
  * @param {Boolean} showSelected Is Showing selected data.
  * @param {array} filter List of id of data that will be used to filter data.
+ * @param {React.Component} otherContent other content to be rendered.
  * */
 export default function GeorepoViewSelector(
   {
@@ -50,7 +51,8 @@ export default function GeorepoViewSelector(
     selectedDataChanged,
     isMultiple = true,
     showSelected = true,
-    filter = false
+    filter = false,
+    otherContent = null
   }
 ) {
 
@@ -121,28 +123,31 @@ export default function GeorepoViewSelector(
     usedInputData = usedInputData.filter(data => newFilter.includes(data.identifier))
   }
 
-  return <ModalSelector
-    title={"View(s)"}
-    inputData={usedInputData}
-    columns={columns}
-    open={open}
-    setOpen={setOpen}
-    selectedData={selectedData}
-    selectedDataChanged={selectedDataChanged}
-    defaultSorting={[{ field: 'name', sort: 'asc' }]}
-    isMultiple={isMultiple}
-    showSelected={showSelected}
-    beforeChildren={
-      <FormControl className='InputControl'>
-        <SelectWithList
-          placeholder={references ? 'Select dataset' : 'Loading'}
-          list={references}
-          value={reference}
-          onChange={evt => {
-            setReference(evt.value)
-          }}
-        />
-      </FormControl>
-    }
-  />
+  return <>
+    <ModalSelector
+      title={"View(s)"}
+      inputData={usedInputData}
+      columns={columns}
+      open={open}
+      setOpen={setOpen}
+      selectedData={selectedData}
+      selectedDataChanged={selectedDataChanged}
+      defaultSorting={[{ field: 'name', sort: 'asc' }]}
+      isMultiple={isMultiple}
+      showSelected={showSelected}
+      beforeChildren={
+        <FormControl className='InputControl'>
+          <SelectWithList
+            placeholder={references ? 'Select dataset' : 'Loading'}
+            list={references}
+            value={reference}
+            onChange={evt => {
+              setReference(evt.value)
+            }}
+          />
+        </FormControl>
+      }
+    />
+    {otherContent ? otherContent : null}
+  </>
 }
