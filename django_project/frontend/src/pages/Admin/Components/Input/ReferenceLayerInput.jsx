@@ -134,8 +134,8 @@ export const ReferenceLayerInput = forwardRef(
                     GeographyCode: data.ucode,
                     GeographyName: data.name,
                     Value: "",
-                    ExtraName1: "",
-                    ExtraName2: ""
+                    Attribute1: "",
+                    Attribute2: ""
                   }, data.ext_codes)
                 })
               }
