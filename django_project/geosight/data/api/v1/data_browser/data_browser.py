@@ -61,14 +61,6 @@ class DataBrowserApiList(BaseDataBrowserApiList, ListAPIView):
             return IndicatorValueWithPermissionSerializer
         return IndicatorValueSerializer
 
-    def get_queryset(self):
-        """Return queryset of API."""
-        query = super().get_queryset()
-        ids = query.values_list('id', flat=True)
-        return IndicatorValue.objects.filter(id__in=list(ids)).order_by(
-            'indicator_id', '-date', 'geom_id'
-        )
-
     def get_serializer_context(self):
         """For serializer context."""
         context = super().get_serializer_context()
