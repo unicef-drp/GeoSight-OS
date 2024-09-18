@@ -181,13 +181,13 @@
         }
 
         .FilterEdit {
-          color: $tab-inactive-color;
+          color: $tab-active-color;
           width: 12px;
           margin-right: 5px;
         }
 
         .FilterDelete {
-          color: $tab-inactive-color;
+          color: $tab-active-color;
           width: 9px;
         }
       }
@@ -250,7 +250,7 @@
         .FilterGroupAdd,
         .FilterGroupDelete {
           background-color: rgba(0, 0, 0, 0);
-          color: #ADE0FF;
+          color: $primary-color;
         }
 
         div.MuiInputBase-root {
