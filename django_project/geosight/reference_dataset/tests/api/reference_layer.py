@@ -19,15 +19,17 @@ import copy
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
-from geosight.georepo.models.reference_layer import ReferenceLayerView
 from geosight.permission.models.factory import PERMISSIONS
 from geosight.permission.tests._base import BasePermissionTest
+from geosight.reference_dataset.models.reference_dataset import (
+    ReferenceDataset
+)
 
 User = get_user_model()
 
 
-class ReferenceLayerViewListApiTest(BasePermissionTest.TestCase):
-    """Test for ReferenceLayerView api."""
+class ReferenceDatasetListApiTest(BasePermissionTest.TestCase):
+    """Test for ReferenceDataset api."""
 
     payload = {
         'name': 'name',
@@ -38,14 +40,14 @@ class ReferenceLayerViewListApiTest(BasePermissionTest.TestCase):
         """Create resource function."""
         if not payload:
             payload = copy.deepcopy(self.payload)
-        return ReferenceLayerView.permissions.create(
+        return ReferenceDataset.permissions.create(
             user=user,
             **payload
         )
 
     def get_resources(self, user):
         """Create resource function."""
-        return ReferenceLayerView.permissions.list(user).order_by('id')
+        return ReferenceDataset.permissions.list(user).order_by('id')
 
     def test_list_api(self):
         """Test list API."""
