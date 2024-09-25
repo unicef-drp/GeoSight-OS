@@ -25,7 +25,7 @@ export async function returnLayerDetail(layerId) {
 }
 
 export async function updateDataWithMapbox(data) {
-  const _detail = await returnLayerDetail(data.cloud_native_gis_layer)
+  const _detail = await returnLayerDetail(data.cloud_native_gis_layer_id)
   return {
     ...data,
     cloud_native_gis_layer_detail: _detail,

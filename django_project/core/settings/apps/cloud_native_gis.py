@@ -32,7 +32,7 @@ try:
     )
 except ImportError:
     pass
-print(CLOUD_NATIVE_GIS_ENABLED)
+
 if CLOUD_NATIVE_GIS_ENABLED:
     CLOUD_NATIVE_GIS_APPS = [
         'cloud_native_gis',

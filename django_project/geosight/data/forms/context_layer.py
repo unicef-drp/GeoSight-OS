@@ -57,13 +57,13 @@ class ContextLayerForm(forms.ModelForm):
         widget=forms.HiddenInput()
     )
 
-    cloud_native_gis_layer = forms.CharField(
-        label='Cloud Native GIS Layer',
+    configuration = forms.CharField(
         required=False,
         widget=forms.HiddenInput()
     )
 
-    configuration = forms.CharField(
+    cloud_native_gis_layer_id = forms.CharField(
+        label='Cloud Native GIS Layer',
         required=False,
         widget=forms.HiddenInput()
     )
@@ -105,14 +105,16 @@ class ContextLayerForm(forms.ModelForm):
             )
         return None
 
-    def clean_cloud_native_gis_layer(self):
+    def clean_cloud_native_gis_layer_id(self):
         """Return layer of cloud_native_gis_layer."""
         if settings.CLOUD_NATIVE_GIS_ENABLED:
             from cloud_native_gis.models import Layer
-            if self.instance and self.cleaned_data['cloud_native_gis_layer']:
+            if self.instance and self.cleaned_data[
+                'cloud_native_gis_layer_id'
+            ]:
                 return Layer.objects.get(
-                    pk=self.cleaned_data['cloud_native_gis_layer']
-                )
+                    pk=self.cleaned_data['cloud_native_gis_layer_id']
+                ).pk
             return None
         return None
 

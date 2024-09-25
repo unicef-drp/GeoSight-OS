@@ -32,7 +32,7 @@
 
           {# Cloud native gis urls #}
           {% if 'cloud_native_gis' in plugins %}
-            urls.api.cloudNativeGISUploadFile = '{% url 'cloud-native-gis-layer-upload-list' 0 %}'.replace('0', initialData.cloud_native_gis_layer)
+            urls.api.cloudNativeGISUploadFile = '{% url 'cloud-native-gis-layer-upload-list' 0 %}'.replace('0', initialData.cloud_native_gis_layer_id)
           {% endif %}
 
         {% else %}

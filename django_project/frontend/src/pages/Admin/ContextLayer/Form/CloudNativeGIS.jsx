@@ -32,7 +32,7 @@ export default function CloudNativeGISFields(
 
   // Loading data
   useEffect(() => {
-    if (data.cloud_native_gis_layer) {
+    if (data.cloud_native_gis_layer_id) {
       (
         async () => {
           const newData = await updateDataWithMapbox(data)
@@ -54,12 +54,12 @@ export default function CloudNativeGISFields(
         Cloud Native GIS detail
       </label>
       <CloudNativeGISStreamUpload
-        layerId={data.cloud_native_gis_layer}
+        layerId={data.cloud_native_gis_layer_id}
         setLayerIdChanged={(id) => {
           if (id && initialized) {
             onSetData({
               ...data,
-              cloud_native_gis_layer: id,
+              cloud_native_gis_layer_id: id,
               last_update: new Date().getTime(),
               styles: null
             })

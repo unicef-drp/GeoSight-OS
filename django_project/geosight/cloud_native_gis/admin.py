@@ -41,14 +41,18 @@ class HasContextLayerFilter(SimpleListFilter):
         """Return queryset."""
         if self.value() == 'Yes':
             return queryset.filter(
-                pk__in=ContextLayer.objects.all().values_list(
-                    'cloud_native_gis_layer__pk', flat=True
+                pk__in=ContextLayer.objects.filter(
+                    cloud_native_gis_layer_id__isnull=False
+                ).values_list(
+                    'cloud_native_gis_layer_id', flat=True
                 )
             )
         elif self.value() == 'No':
             return queryset.exclude(
-                pk__in=ContextLayer.objects.all().values_list(
-                    'cloud_native_gis_layer__pk', flat=True
+                pk__in=ContextLayer.objects.filter(
+                    cloud_native_gis_layer_id__isnull=False
+                ).values_list(
+                    'cloud_native_gis_layer_id', flat=True
                 )
             )
         return queryset
@@ -66,4 +70,9 @@ class LayerAdmin(LayerAdmin):
 
     def context_layer(self, obj: Layer):
         """Return context_layer."""
-        return obj.contextlayer.name
+        context_layer = ContextLayer.objects.filter(
+            cloud_native_gis_layer_id=obj.id
+        ).first()
+        if context_layer:
+            return context_layer.name
+        return None

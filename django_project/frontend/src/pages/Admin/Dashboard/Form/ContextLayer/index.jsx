@@ -37,10 +37,10 @@ import { fetchingData } from "../../../../../Requests";
 import {
   SelectWithList
 } from "../../../../../components/Input/SelectWithList";
-
-import './style.scss';
 import { Variables } from "../../../../../utils/Variables";
 import { returnLayerDetail } from "../../../../../utils/CloudNativeGIS";
+
+import './style.scss';
 
 /**
  * Context Layer Style
@@ -59,7 +59,7 @@ function ContextLayerStyle({ contextLayer }) {
     (
       async () => {
         if (nowData.layer_type === Variables.TERMS.CLOUD_NATIVE_GIS && !nowData.mapbox_style) {
-          const _detail = await returnLayerDetail(nowData.cloud_native_gis_layer)
+          const _detail = await returnLayerDetail(nowData.cloud_native_gis_layer_id)
           nowData.mapbox_style = _detail.mapbox_style
         }
       }
