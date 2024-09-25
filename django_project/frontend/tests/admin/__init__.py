@@ -20,6 +20,5 @@ from .dashboard import *  # noqa
 from .dataset import *  # noqa
 from .group import *  # noqa
 from .indicator import *  # noqa
-from .reference_dataset import *  # noqa
 from .related_table import *  # noqa
 from .user import *  # noqa

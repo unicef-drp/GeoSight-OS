@@ -145,9 +145,7 @@ class ReferenceDatasetViewTest(BasePermissionTest.TestCase):
         self.assertRequestPostView(url, 403, new_payload, self.contributor)
 
         self.assertRequestPostView(url, 403, new_payload, self.creator)
-        self.creator.profile.manage_local_dataset = True
-        self.creator.profile.save()
-        self.assertRequestPostView(url, 302, new_payload, self.creator)
+        self.assertRequestPostView(url, 302, new_payload, self.admin)
         self.resource.refresh_from_db()
         self.assertEqual(self.resource.name, new_payload['name'])
         self.assertEqual(self.resource.creator, self.resource_creator)
