@@ -18,19 +18,18 @@ from urllib import parse
 
 import responses
 from django.contrib.auth import get_user_model
-from django.test.client import Client
-from django.test.testcases import TestCase
 from django.urls import reverse
 
 from core.tests.base_test_patch_responses import (
     BaseTestWithPatchResponses, PatchReqeust
 )
+from core.tests.base_tests import APITestCase
 from geosight.data.models.arcgis import ArcgisConfig
 
 User = get_user_model()
 
 
-class ARCGISProxyApiTest(TestCase, BaseTestWithPatchResponses):
+class ARCGISProxyApiTest(APITestCase, BaseTestWithPatchResponses):
     """Test for Arcgis Proxy api."""
 
     token = 'ThisIsToken'
@@ -78,7 +77,7 @@ class ARCGISProxyApiTest(TestCase, BaseTestWithPatchResponses):
     @responses.activate
     def test_url_not_have_key(self):
         """Test if host not same."""
-        client = Client()
+        client = self.test_client()
         response = client.get(self.url)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
@@ -89,7 +88,7 @@ class ARCGISProxyApiTest(TestCase, BaseTestWithPatchResponses):
     @responses.activate
     def test_url_not_same_host(self):
         """Test if host not same."""
-        client = Client()
+        client = self.test_client()
         _url_param = parse.quote('https://arcgis.example.com/test/?test=true')
         response = client.get(self.url + f'?url={_url_param}')
         self.assertEqual(response.status_code, 400)
@@ -101,7 +100,7 @@ class ARCGISProxyApiTest(TestCase, BaseTestWithPatchResponses):
     @responses.activate
     def test_url_not_allowed_feature_map_server(self):
         """Test if host not same."""
-        client = Client()
+        client = self.test_client()
         _url_param = parse.quote('https://arcgis.example.test/test/?test=true')
         response = client.get(self.url + f'?url={_url_param}')
         self.assertEqual(response.status_code, 400)
@@ -122,7 +121,7 @@ class ARCGISProxyApiTest(TestCase, BaseTestWithPatchResponses):
         """Test if host not same."""
         self.init_mock_requests()
         self.config.generate_token()
-        client = Client()
+        client = self.test_client()
         _url_param = parse.quote(
             'https://arcgis.example.test/FeatureServer/?test=true'
         )

@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('geosight_data', '0106_relatedtable_version_data'),
+        ('geosight_data', '0108_views_initiation'),
     ]
 
     operations = [

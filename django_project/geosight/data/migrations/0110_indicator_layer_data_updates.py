@@ -61,7 +61,7 @@ def run(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('geosight_data', '0107_auto_20240924_2357')
+        ('geosight_data', '0109_auto_20240924_2357')
     ]
 
     operations = [
