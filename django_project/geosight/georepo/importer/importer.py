@@ -27,7 +27,7 @@ from geosight.georepo.models.entity import Entity
 from geosight.georepo.models.reference_layer_importer import (
     ReferenceLayerViewImporter, ReferenceLayerViewImporterLevel, LogStatus
 )
-from geosight.utils.fiona import (
+from geosight.georepo.utils.fiona import (
     open_collection_by_file, delete_tmp_shapefile,
     GEOJSON, SHAPEFILE, GEOPACKAGE
 )

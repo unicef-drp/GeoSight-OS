@@ -14,6 +14,7 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.gis.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -29,6 +30,12 @@ from geosight.data.utils import update_structure
 from geosight.georepo.models import ReferenceLayerView
 from geosight.permission.models.manager import PermissionManager
 
+# If tenant is enabled, add model limitation
+if settings.TENANTS_ENABLED:
+    from geosight.tenants.models import BaseModelWithLimitation
+else:
+    BaseModelWithLimitation = models.Model
+
 User = get_user_model()
 
 
@@ -38,7 +45,10 @@ class DashboardGroup(AbstractTerm):
     pass
 
 
-class Dashboard(SlugTerm, IconTerm, AbstractEditData, AbstractVersionData):
+class Dashboard(
+    SlugTerm, IconTerm, AbstractEditData, AbstractVersionData,
+    BaseModelWithLimitation
+):
     """Dashboard model.
 
     One dashboard just contains one indicator.
@@ -105,6 +115,8 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData, AbstractVersionData):
     )
     enable_geometry_search = models.BooleanField(default=True)
     default_time_mode = models.JSONField(null=True, blank=True)
+
+    content_limitation_description = 'Limit the number of project items'
 
     @staticmethod
     def name_is_exist_of_all(slug: str) -> bool:

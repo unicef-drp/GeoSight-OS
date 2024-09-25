@@ -16,8 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import urllib.parse
 
-from django.test.testcases import TestCase
-
+from core.tests.base_tests import TestCase
 from geosight.data.serializer.basemap_layer import BasemapLayerSerializer
 from geosight.data.tests.model_factories import (
     BasemapLayerF, BasemapLayerParameterF

@@ -15,7 +15,7 @@ name: Tests
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, version-2.0.0 ]
   pull_request:
     branches: [ main, version-2.0.0 ]
 

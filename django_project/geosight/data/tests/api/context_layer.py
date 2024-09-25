@@ -18,7 +18,6 @@ import copy
 import json
 
 from django.contrib.auth import get_user_model
-from django.test.testcases import TestCase
 from django.urls import reverse
 
 from geosight.data.models.context_layer import ContextLayer, LayerType
@@ -28,7 +27,7 @@ from geosight.permission.tests._base import BasePermissionTest
 User = get_user_model()
 
 
-class ContextLayerListApiTest(BasePermissionTest, TestCase):
+class ContextLayerListApiTest(BasePermissionTest.TestCase):
     """Test for context list api."""
 
     payload = {

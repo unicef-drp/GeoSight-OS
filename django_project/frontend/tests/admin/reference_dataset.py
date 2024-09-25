@@ -17,7 +17,6 @@ __copyright__ = ('Copyright 2023, Unicef')
 import copy
 
 from django.contrib.auth import get_user_model
-from django.test.testcases import TestCase
 from django.urls import reverse
 
 from geosight.georepo.models.reference_layer import ReferenceLayerView
@@ -27,7 +26,7 @@ from geosight.permission.tests._base import BasePermissionTest
 User = get_user_model()
 
 
-class ReferenceDatasetViewTest(BasePermissionTest, TestCase):
+class ReferenceDatasetViewTest(BasePermissionTest.TestCase):
     """Test for Base Admin."""
 
     list_url_tag = 'admin-reference-layer-view-list-view'

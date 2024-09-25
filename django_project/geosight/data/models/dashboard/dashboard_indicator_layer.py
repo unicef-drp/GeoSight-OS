@@ -101,6 +101,10 @@ class DashboardIndicatorLayer(DashboardRelation, IndicatorStyleBaseModel):
         )
     )
 
+    content_limitation_description = (
+        'Limit the number of indicator layer per project'
+    )
+
     @property
     def label(self):
         """Return label data."""

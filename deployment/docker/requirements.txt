@@ -49,3 +49,11 @@ selenium==4.13.0
 webdriver-manager==4.0.1
 
 git+https://github.com/kartoza/CloudNativeGIS.git@updates
+
+# FEATURE: Multi tenant
+# Comment below for excluding the multi tenants feature
+# -----------------------------------------------------
+django-tenants==3.6.1
+tenant-schemas-celery==3.0.0
+django-tenants-celery-beat==0.2.1
+# -----------------------------------------------------

@@ -17,7 +17,6 @@ __copyright__ = ('Copyright 2023, Unicef')
 import copy
 
 from django.contrib.auth import get_user_model
-from django.test.testcases import TestCase
 
 from frontend.tests.admin._base import BaseViewTest
 from geosight.data.models.context_layer import ContextLayer, LayerType
@@ -25,7 +24,7 @@ from geosight.data.models.context_layer import ContextLayer, LayerType
 User = get_user_model()
 
 
-class ContextLayerAdminViewTest(BaseViewTest, TestCase):
+class ContextLayerAdminViewTest(BaseViewTest.TestCase):
     """Test for ContextLayer Admin."""
 
     list_url_tag = 'admin-context-layer-list-view'

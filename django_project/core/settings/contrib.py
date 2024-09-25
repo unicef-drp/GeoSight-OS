@@ -16,19 +16,6 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from .base import *  # noqa
 
-# Extra installed apps
-INSTALLED_APPS = INSTALLED_APPS + (
-    'rest_framework',
-    'rest_framework_gis',
-    'webpack_loader',
-    'django_celery_beat',
-    'django_celery_results',
-    'captcha',
-    'knox',
-    'drf_yasg',
-    'tinymce',
-    'cloud_native_gis',
-)
 WEBPACK_LOADER = {
     'DEFAULT': {
         'CACHE': True,

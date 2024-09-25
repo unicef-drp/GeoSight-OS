@@ -15,7 +15,6 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib.auth import get_user_model
-from django.test.testcases import TestCase
 from django.urls import reverse
 
 from core.models.profile import ROLES
@@ -25,7 +24,7 @@ from frontend.tests.admin._base import BaseViewTest
 User = get_user_model()
 
 
-class UserAdminViewTest(BaseViewTest, TestCase):
+class UserAdminViewTest(BaseViewTest.TestCase):
     """Test for User Admin."""
 
     list_url_tag = 'admin-user-and-group-list-view'

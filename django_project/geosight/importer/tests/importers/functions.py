@@ -16,10 +16,10 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from datetime import datetime, date
 
-from django.test.testcases import TestCase
-
-from geosight.importer.importers.base.indicator_value import \
+from core.tests.base_tests import TestCase
+from geosight.importer.importers.base.indicator_value import (
     AbstractImporterIndicatorValue, ImporterTimeDataType
+)
 from geosight.importer.models import (
     Importer, ImportType, InputFormat, ImporterLog
 )

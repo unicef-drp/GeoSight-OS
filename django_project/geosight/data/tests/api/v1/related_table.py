@@ -16,11 +16,11 @@ __copyright__ = ('Copyright 2023, Unicef')
 import datetime
 
 from dateutil import parser
-from django.test.testcases import TestCase
 from rest_framework.reverse import reverse
 
-from geosight.data.models import RelatedTable, \
-    RelatedTableField, RelatedTableRow
+from geosight.data.models import (
+    RelatedTable, RelatedTableField, RelatedTableRow
+)
 from geosight.permission.models import PERMISSIONS
 from geosight.permission.tests import BasePermissionTest
 
@@ -41,7 +41,7 @@ def add_fields_and_rows_to_table(related_table):
     }])
 
 
-class RelatedTableApiTest(BasePermissionTest, TestCase):  # noqa: D101
+class RelatedTableApiTest(BasePermissionTest.TestCase):  # noqa: D101
     def setUp(self):  # noqa: D102
         super().setUp()
 

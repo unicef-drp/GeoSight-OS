@@ -98,7 +98,7 @@ export default function ContextLayerForm() {
       $('*[name="data_fields"]').val(JSON.stringify(newData['data_fields']))
       $('*[name="styles"]').val(JSON.stringify(newData['styles']))
       $('*[name="related_table"]').val(newData['related_table'])
-      $('*[name="cloud_native_gis_layer"]').val(newData['cloud_native_gis_layer'])
+      $('*[name="cloud_native_gis_layer_id"]').val(newData['cloud_native_gis_layer_id'])
       $('*[name="configuration"]').val(JSON.stringify(newData['configuration']))
     }
   }

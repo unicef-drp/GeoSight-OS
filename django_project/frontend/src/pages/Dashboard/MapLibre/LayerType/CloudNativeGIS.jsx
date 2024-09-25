@@ -23,11 +23,11 @@ import { GET_RESOURCE } from "../../../../utils/ResourceRequests";
 export default function cloudNativeGISLayer(map, id, data, contextLayerData, popupFeatureFn, contextLayerOrder) {
   (
     async () => {
-      if (!data.cloud_native_gis_layer) {
+      if (!data.cloud_native_gis_layer_id) {
         return
       }
 
-      const info = await GET_RESOURCE.CLOUD_NATIVE_GIS.DETAIL(data.cloud_native_gis_layer)
+      const info = await GET_RESOURCE.CLOUD_NATIVE_GIS.DETAIL(data.cloud_native_gis_layer_id)
       if (!info.tile_url) {
         return
       }

@@ -17,7 +17,6 @@ __copyright__ = ('Copyright 2023, Unicef')
 import urllib.parse
 
 from django.contrib.auth import get_user_model
-from django.test.testcases import TestCase
 from django.urls import reverse
 
 from geosight.data.models.basemap_layer import (
@@ -30,7 +29,7 @@ from geosight.permission.tests._base import BasePermissionTest
 User = get_user_model()
 
 
-class BasemapPermissionTest(BasePermissionTest, TestCase):
+class BasemapPermissionTest(BasePermissionTest.TestCase):
     """Test for Basemap API."""
 
     def create_resource(self, user):

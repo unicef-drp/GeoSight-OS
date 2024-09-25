@@ -18,7 +18,6 @@ import copy
 import json
 
 from django.contrib.auth import get_user_model
-from django.test.testcases import TestCase
 from django.urls import reverse
 
 from frontend.tests.admin._base import BaseViewTest
@@ -32,7 +31,7 @@ from geosight.permission.models.factory import PERMISSIONS
 User = get_user_model()
 
 
-class DashboardAdminViewTest(BaseViewTest, TestCase):
+class DashboardAdminViewTest(BaseViewTest.TestCase):
     """Test for Dashboard Admin."""
 
     list_url_tag = 'admin-dashboard-list-view'

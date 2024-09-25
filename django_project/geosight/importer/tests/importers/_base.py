@@ -18,9 +18,9 @@ from unittest.mock import patch
 
 from dateutil import parser
 from django.db import connection
-from django.test.testcases import TestCase
 
 from core.models.preferences import SitePreferences
+from core.tests.base_tests import TestCase
 from core.tests.model_factories import UserF
 from geosight.data.models.code import Code, CodeList, CodeInCodeList
 from geosight.data.models.indicator import IndicatorType, IndicatorValue

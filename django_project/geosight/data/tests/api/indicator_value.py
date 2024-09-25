@@ -19,7 +19,6 @@ import json
 from datetime import datetime
 
 from django.contrib.auth import get_user_model
-from django.test.testcases import TestCase
 from django.urls import reverse
 
 from geosight.data.models.indicator import Indicator, IndicatorGroup
@@ -30,7 +29,7 @@ from geosight.permission.tests._base import BasePermissionTest
 User = get_user_model()
 
 
-class IndicatorValueTest(BasePermissionTest, TestCase):
+class IndicatorValueTest(BasePermissionTest.TestCase):
     """Test for context list api."""
 
     payload = {

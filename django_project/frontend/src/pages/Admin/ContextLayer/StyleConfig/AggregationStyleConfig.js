@@ -36,7 +36,7 @@ export default function AggregationStyleConfig({ data, setData, setError }) {
     if (data.styles !== inputStyle) {
       setInputStyle(data.styles)
     }
-    if (data.cloud_native_gis_layer) {
+    if (data.cloud_native_gis_layer_id) {
       (
         async () => {
           const newData = await updateDataWithMapbox(data)

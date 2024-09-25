@@ -13,7 +13,6 @@ __author__ = 'Víctor González'
 __date__ = '29/01/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from django.test.testcases import TestCase
 from rest_framework.reverse import reverse
 from rest_framework.status import HTTP_200_OK
 
@@ -24,7 +23,7 @@ from geosight.permission.models import PERMISSIONS
 from geosight.permission.tests import BasePermissionTest
 
 
-class RelatedTableApiTest(BasePermissionTest, TestCase):  # noqa: D101
+class RelatedTableApiTest(BasePermissionTest.TestCase):  # noqa: D101
     def _add_fields_and_rows_to_table(self, resource):
         resource.add_field('my_number', 'My Number', 'number')
 

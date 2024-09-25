@@ -17,7 +17,6 @@ __copyright__ = ('Copyright 2023, Unicef')
 from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
-from django.test.testcases import TestCase
 from django.urls import reverse
 
 from geosight.data.models.sharepoint import SharepointConfig
@@ -27,7 +26,7 @@ from .mock import load_file
 User = get_user_model()
 
 
-class SharepointApiTest(BasePermissionTest, TestCase):
+class SharepointApiTest(BasePermissionTest.TestCase):
     """Test for sharepoint fetch api."""
 
     def create_resource(self, user):

@@ -32,7 +32,7 @@ from geosight.georepo.serializer.reference_layer import (
     ReferenceLayerCentroidUrlSerializer
 )
 from geosight.permission.access import read_data_permission_resource
-from geosight.utils.vector_tile import querying_vector_tile
+from geosight.georepo.utils.vector_tile import querying_vector_tile
 
 
 class ReferenceLayerCentroid(APIView):

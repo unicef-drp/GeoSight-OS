@@ -16,9 +16,9 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from unittest.mock import patch
 
-from django.test.testcases import TestCase
 from django.utils import timezone
 
+from core.tests.base_tests import TestCase
 from geosight.data.forms.arcgis import ArcgisConfigForm
 
 

@@ -113,7 +113,7 @@ class ReferenceLayerViewImporterLevel(models.Model):
 
     def get_properties(self):
         """Return properties."""
-        from geosight.utils.fiona import (
+        from geosight.georepo.utils.fiona import (
             open_collection_by_file, check_layer_type
         )
         if not self.properties:

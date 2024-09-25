@@ -18,7 +18,7 @@ import json
 from base64 import b64encode
 
 import requests
-from cloud_native_gis.models.layer import Layer as CloudNativeGISLayer
+from django.conf import settings
 from django.contrib.gis.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -122,14 +122,6 @@ class ContextLayer(AbstractEditData, AbstractTerm):
             'Related table name.'
         )
     )
-    cloud_native_gis_layer = models.OneToOneField(
-        CloudNativeGISLayer,
-        null=True, blank=True,
-        on_delete=models.SET_NULL,
-        help_text=_(
-            'Using layer from cloud native gis.'
-        )
-    )
 
     url_legend = models.CharField(
         max_length=256,
@@ -172,6 +164,14 @@ class ContextLayer(AbstractEditData, AbstractTerm):
     )
     objects = models.Manager()
     permissions = PermissionManager()
+
+    # Cloud native gis layer
+    cloud_native_gis_layer_id = models.IntegerField(
+        null=True, blank=True,
+        help_text=_(
+            'Using layer from cloud native gis.'
+        )
+    )
 
     def save_relations(self, data):
         """Save all relationship data."""
@@ -309,6 +309,19 @@ class ContextLayer(AbstractEditData, AbstractTerm):
         if self.arcgis_config:
             return self.arcgis_config.token_val
         return self.token
+
+    @property
+    def cloud_native_gis_layer(self):
+        """Return cloud native GIS."""
+        if settings.CLOUD_NATIVE_GIS_ENABLED:
+            from cloud_native_gis.models.layer import Layer
+            try:
+                return Layer.objects.get(
+                    id=self.cloud_native_gis_layer_id
+                )
+            except Layer.DoesNotExist:
+                return None
+        return None
 
 
 @receiver(post_save, sender=ContextLayer)

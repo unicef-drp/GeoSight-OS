@@ -17,7 +17,6 @@ __copyright__ = ('Copyright 2023, Unicef')
 import copy
 
 from django.contrib.auth import get_user_model
-from django.test.testcases import TestCase
 from django.urls import reverse
 
 from frontend.tests.admin._base import BaseViewTest
@@ -32,7 +31,7 @@ from geosight.permission.models.factory import PERMISSIONS
 User = get_user_model()
 
 
-class IndicatorAdminViewTest(BaseViewTest, TestCase):
+class IndicatorAdminViewTest(BaseViewTest.TestCase):
     """Test for Indicator Admin."""
 
     list_url_tag = 'admin-indicator-list-view'
