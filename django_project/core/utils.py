@@ -40,6 +40,13 @@ def is_valid_uuid(value):
         return False
 
 
+def parse_url(url):
+    """Parse url."""
+    parsed_url = urlparse(url)
+    params_dict = dict(parse_qsl(parsed_url.query))
+    return parsed_url.netloc, parsed_url.path, params_dict
+
+
 def set_query_parameter(url, params):
     """Given a URL and replace a query parameter and return modified URL."""
     url_parse = urlparse(url)
@@ -117,3 +124,27 @@ def child_classes(Class):
         else:
             classes.append(_class)
     return classes
+
+
+class temp_disconnect_signal(object):
+    """Temporarily disconnect a model from a signal."""
+
+    def __init__(self, signal, receiver, sender):
+        """Initialise the temporary disconnect signal."""
+        self.signal = signal
+        self.receiver = receiver
+        self.sender = sender
+
+    def __enter__(self):
+        """Enter the temporary disconnect signal."""
+        self.signal.disconnect(
+            receiver=self.receiver,
+            sender=self.sender
+        )
+
+    def __exit__(self, type, value, traceback):
+        """Exit the temporary disconnect signal."""
+        self.signal.connect(
+            receiver=self.receiver,
+            sender=self.sender
+        )

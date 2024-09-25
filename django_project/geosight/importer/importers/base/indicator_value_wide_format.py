@@ -72,9 +72,6 @@ class IndicatorValueWideFormat(AbstractImporterIndicatorValue, ABC):
 
             # we check the values per indicator
             for key, value in record.items():
-                if value is None:
-                    continue
-
                 if 'indicator-' in key:
                     note = {}
                     date_time, date_time_error = self.get_date_time(record)

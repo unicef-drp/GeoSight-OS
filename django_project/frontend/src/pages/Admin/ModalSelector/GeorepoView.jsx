@@ -48,6 +48,7 @@ const columns = [
  * @param {Boolean} isMultiple Is data returned multiple object.
  * @param {Boolean} showSelected Is Showing selected data.
  * @param {array} filter List of id of data that will be used to filter data.
+ * @param {React.Component} otherContent other content to be rendered.
  * */
 export default function GeorepoViewSelector(
   {
@@ -57,7 +58,8 @@ export default function GeorepoViewSelector(
     selectedDataChanged,
     isMultiple = true,
     showSelected = true,
-    filter = false
+    filter = false,
+    otherContent = null
   }
 ) {
   const [sourceType, setSourceType] = useState(preferences.enable_local_dataset ? 'local' : 'remote')
@@ -152,47 +154,50 @@ export default function GeorepoViewSelector(
     usedInputData = usedInputData.filter(data => newFilter.includes(data.identifier))
   }
 
-  return <ModalSelector
-    title={"View(s)"}
-    inputData={usedInputData}
-    columns={columns}
-    open={open}
-    setOpen={setOpen}
-    selectedData={selectedData}
-    selectedDataChanged={selectedDataChanged}
-    defaultSorting={[{ field: 'name', sort: 'asc' }]}
-    isMultiple={isMultiple}
-    showSelected={showSelected}
-    beforeChildren={
-      <>
-        {
-          preferences.enable_local_dataset && preferences.use_georepo ?
-            <FormControl className='RadioButtonControl'>
-              <RadioGroup
-                value={sourceType}
-                onChange={evt => setSourceType(evt.target.value)}
-              >
-                <FormControlLabel
-                  value="local" control={<Radio/>} label="Local"/>
-                <FormControlLabel
-                  value="remote" control={<Radio/>} label="Remote"/>
-              </RadioGroup>
-            </FormControl> : null
-        }
-        {
-          sourceType === 'remote' && preferences.use_georepo ?
-            <FormControl className='InputControl'>
-              <SelectWithList
-                placeholder={references ? 'Select dataset' : 'Loading'}
-                list={references}
-                value={reference}
-                onChange={evt => {
-                  setReference(evt.value)
-                }}
-              />
-            </FormControl> : null
-        }
-      </>
-    }
-  />
+  return <>
+    <ModalSelector
+      title={"View(s)"}
+      inputData={usedInputData}
+      columns={columns}
+      open={open}
+      setOpen={setOpen}
+      selectedData={selectedData}
+      selectedDataChanged={selectedDataChanged}
+      defaultSorting={[{ field: 'name', sort: 'asc' }]}
+      isMultiple={isMultiple}
+      showSelected={showSelected}
+      beforeChildren={
+        <>
+          {
+            preferences.enable_local_dataset && preferences.use_georepo ?
+              <FormControl className='RadioButtonControl'>
+                <RadioGroup
+                  value={sourceType}
+                  onChange={evt => setSourceType(evt.target.value)}
+                >
+                  <FormControlLabel
+                    value="local" control={<Radio/>} label="Local"/>
+                  <FormControlLabel
+                    value="remote" control={<Radio/>} label="Remote"/>
+                </RadioGroup>
+              </FormControl> : null
+          }
+          {
+            sourceType === 'remote' && preferences.use_georepo ?
+              <FormControl className='InputControl'>
+                <SelectWithList
+                  placeholder={references ? 'Select dataset' : 'Loading'}
+                  list={references}
+                  value={reference}
+                  onChange={evt => {
+                    setReference(evt.value)
+                  }}
+                />
+              </FormControl> : null
+          }
+        </>
+      }
+    />
+    {otherContent ? otherContent : null}
+  </>
 }

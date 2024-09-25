@@ -30,7 +30,6 @@ class IndicatorValueDatasetSerializer(serializers.ModelSerializer):
 
     browse_data_api_url = serializers.SerializerMethodField()
     browse_url = serializers.SerializerMethodField()
-    permission = serializers.SerializerMethodField()
 
     def get_browse_data_api_url(self, obj: IndicatorValueDataset):
         """Return browse data API url."""
@@ -64,8 +63,20 @@ class IndicatorValueDatasetSerializer(serializers.ModelSerializer):
             f"levels={obj.admin_level}"
         )
 
+    class Meta:  # noqa: D106
+        model = IndicatorValueDataset
+        exclude = ('id',)
+
+
+class IndicatorValueDatasetWithPermissionSerializer(
+    IndicatorValueDatasetSerializer
+):
+    """Serializer for IndicatorValue."""
+
+    permission = serializers.SerializerMethodField()
+
     def get_permission(self, obj: IndicatorValueDataset):
-        """Return indicator name."""
+        """Return permission."""
         return obj.permissions(self.context.get('user', None))
 
     class Meta:  # noqa: D106

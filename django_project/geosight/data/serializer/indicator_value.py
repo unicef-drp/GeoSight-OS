@@ -89,20 +89,6 @@ class IndicatorValueSerializer(serializers.ModelSerializer):
     class Meta:  # noqa: D106
         model = IndicatorValue
         exclude = ('value_str',)
-
-
-class IndicatorValueWithPermissionSerializer(IndicatorValueSerializer):
-    """Serializer for IndicatorValue."""
-
-    permission = serializers.SerializerMethodField()
-
-    def get_permission(self, obj: IndicatorValue):
-        """Return indicator name."""
-        return obj.permissions(self.context.get('user', None))
-
-    class Meta:  # noqa: D106
-        model = IndicatorValue
-        exclude = ('value_str',)
         swagger_schema_fields = {
             'type': openapi.TYPE_OBJECT,
             'title': 'IndicatorValue',
@@ -291,6 +277,16 @@ class IndicatorValueWithPermissionSerializer(IndicatorValueSerializer):
                 )
             )
         }
+
+
+class IndicatorValueWithPermissionSerializer(IndicatorValueSerializer):
+    """Serializer for IndicatorValue with permission."""
+
+    permission = serializers.SerializerMethodField()
+
+    def get_permission(self, obj: IndicatorValue):
+        """Return indicator name."""
+        return obj.permissions(self.context.get('user', None))
 
 
 class IndicatorValueDetailSerializer(IndicatorValueSerializer):

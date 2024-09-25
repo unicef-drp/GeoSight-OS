@@ -1,9 +1,9 @@
 -- Indicator Value x Geometry
 CREATE VIEW v_indicator_value_geo as
 SELECT value.*,
-    date_part('day', value.date)    as day,
-    date_part('month', value.date)  as month,
-    date_part('year', value.date)   as year,
+    date_trunc('day', value.date)    as day,
+    date_trunc('month', value.date)  as month,
+    date_trunc('year', value.date)   as year,
     entity.concept_uuid             as concept_uuid,
     entity.reference_layer_id       as reference_layer_id,
     ref_view.name                   as reference_layer_name,

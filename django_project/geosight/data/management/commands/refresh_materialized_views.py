@@ -10,9 +10,19 @@ Contact : geosight-no-reply@unicef.org
     (at your option) any later version.
 
 """
-__author__ = 'irwan@kartoza.com'
-__date__ = '13/06/2023'
+__author__ = 'zakki@kartoza.com'
+__date__ = '05/07/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-__author__ = 'Irwan Fathurrahman <meomancer@gmail.com>'
-__date__ = '02/02/21'
+from django.core.management.base import BaseCommand
+
+from core.models.materialized_view import MaterializeViewModel
+
+
+class Command(BaseCommand):
+    """Refresh materialized views."""
+
+    def handle(self, *args, **options):
+        """Command handler."""
+        for _class in MaterializeViewModel.child_classes():
+            _class.refresh_materialized_views()

@@ -66,16 +66,7 @@ export const fetchReferenceLayerList = async function () {
   data.map(row => {
     row.identifier = row.uuid
   })
-  data.sort((a, b) => {
-    if (a.name < b.name) {
-      return -1;
-    }
-    if (a.name > b.name) {
-      return 1;
-    }
-    return 0;
-  })
-  return data
+  return [].concat(data.filter(row => row.is_favorite), data.filter(row => !row.is_favorite));
 }
 
 /**

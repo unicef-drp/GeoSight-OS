@@ -156,9 +156,14 @@ export function ContextLayerInputSelector(
  * @param {function} setData When the value changed.
  * @param {Boolean} isMultiple Is data returned multiple object.
  * @param {Boolean} showSelected Is Showing selected data.
+ * @param {React.Component} otherContent other content to be rendered.
+ * @param props
  */
 export function GeorepoViewInputSelector(
-  { data, setData, isMultiple, showSelected, ...props }
+  {
+    data, setData, isMultiple, showSelected,
+    otherContent = null, ...props
+  }
 ) {
   return <ModalInputSelector
     placeholder={'Select view ' + (isMultiple ? '(s)' : '')}
@@ -169,6 +174,6 @@ export function GeorepoViewInputSelector(
     hideLabel={true}
     {...props}
   >
-    <GeorepoViewSelector/>
+    <GeorepoViewSelector otherContent={otherContent}/>
   </ModalInputSelector>
 }

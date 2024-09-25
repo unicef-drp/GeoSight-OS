@@ -21,11 +21,17 @@ import React, {
   useState
 } from 'react';
 import Grid from '@mui/material/Grid';
-import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
+import { Button, FormControlLabel, Radio, RadioGroup } from "@mui/material";
 
 import { SelectWithList } from "../../../../components/Input/SelectWithList";
 import { GeorepoViewInputSelector } from "../../ModalSelector/InputSelector";
-import { axiosGet, GeorepoUrls } from "../../../../utils/georepo";
+import {
+  axiosGet,
+  fetchFeatureList,
+  GeorepoUrls
+} from "../../../../utils/georepo";
+import CircularProgress from "@mui/material/CircularProgress";
+import { multiJsonToMultipleSheetsXlsx } from "../../../../utils/main";
 
 const defaultIdType = 'ucode'
 const ANY_LEVEL = 'Any Level (Data Driven)'
@@ -53,6 +59,7 @@ export const ReferenceLayerInput = forwardRef(
     }));
 
     const [references, setReferences] = useState([])
+    const [templateDownloading, setTemplateDownloading] = useState(false)
 
     let referenceLayer = references?.find(row => {
       return row.identifier === data?.reference_layer
@@ -107,6 +114,39 @@ export const ReferenceLayerInput = forwardRef(
           setData({ ...data })
         }
       }, [references]
+    )
+
+    // Create download data
+    useEffect(
+      () => {
+        if (templateDownloading) {
+          (
+            async () => {
+              const templateData = {}
+              let levels = referenceLayer.dataset_levels;
+              if (data.admin_level_type === BY_VALUE) {
+                levels = levels.filter(level => parseInt(data.admin_level_value) === level.level)
+              }
+              for (const level of levels) {
+                let geometryData = await fetchFeatureList(level.url)
+                templateData[level.name] = geometryData.map(data => {
+                  return Object.assign({}, {
+                    GeographyCode: data.ucode,
+                    GeographyName: data.name,
+                    Value: "",
+                    Attribute1: "",
+                    Attribute2: ""
+                  }, data.ext_codes)
+                })
+              }
+              multiJsonToMultipleSheetsXlsx(
+                templateData, 'template.xlsx'
+              )
+              setTemplateDownloading(false);
+            }
+          )()
+        }
+      }, [templateDownloading]
     )
 
     /**
@@ -180,7 +220,7 @@ export const ReferenceLayerInput = forwardRef(
     return (
       <Grid container spacing={2}>
         <Grid item xs={6}>
-          <div className="BasicFormSection">
+          <div className="BasicFormSection ReferenceLayerInputSelectorWrapper">
             <label className="form-label required" htmlFor="group">
               Reference Layer
             </label>
@@ -199,6 +239,20 @@ export const ReferenceLayerInput = forwardRef(
               }}
               isMultiple={false}
               showSelected={false}
+              otherContent={
+                <Button
+                  variant="primary"
+                  disabled={!referenceLayer || templateDownloading}
+                  onClick={() => {
+                    setTemplateDownloading(true)
+                  }}
+                >
+                  {
+                    templateDownloading ? <>
+                      <CircularProgress/>Downloading</> : 'Template'
+                  }
+                </Button>
+              }
             />
           </div>
         </Grid>

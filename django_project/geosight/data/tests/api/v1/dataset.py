@@ -263,7 +263,7 @@ class DatasetApiTest(BasePermissionTest.TestCase):
 
         # admin
         response = self.assertRequestGetView(
-            f'{url}?admin_level__in=1', 200, user=user
+            f'{url}?detail=true&admin_level__in=1', 200, user=user
         )
         self.assertEqual(self.data_count(response), 20)
 

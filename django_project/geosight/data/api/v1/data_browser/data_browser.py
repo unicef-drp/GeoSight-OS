@@ -25,17 +25,22 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from core.api_utils import common_api_params, ApiTag, ApiParams
+from core.utils import string_is_true
 from geosight.data.models.indicator import (
     Indicator, IndicatorValue, IndicatorValueRejectedError
 )
 from geosight.data.serializer.indicator import (
-    IndicatorValueWithPermissionSerializer
+    IndicatorValueSerializer, IndicatorValueWithPermissionSerializer
 )
 from .base import BaseDataApiList
 
 
 class BaseDataBrowserApiList(BaseDataApiList):
     """Return Data List API List."""
+
+    filter_query_exclude = [
+        'page', 'page_size', 'group_admin_level', 'detail'
+    ]
 
     def get_queryset(self):
         """Return queryset of API."""
@@ -49,15 +54,12 @@ class BaseDataBrowserApiList(BaseDataApiList):
 class DataBrowserApiList(BaseDataBrowserApiList, ListAPIView):
     """Return Data List API List."""
 
-    serializer_class = IndicatorValueWithPermissionSerializer
-
-    def get_queryset(self):
-        """Return queryset of API."""
-        query = super().get_queryset()
-        ids = query.values_list('id', flat=True)
-        return IndicatorValue.objects.filter(id__in=list(ids)).order_by(
-            'indicator_id', '-date', 'geom_id'
-        )
+    @property
+    def serializer_class(self):
+        """Return serialize class."""
+        if string_is_true(self.request.GET.get('detail', 'false')):
+            return IndicatorValueWithPermissionSerializer
+        return IndicatorValueSerializer
 
     def get_serializer_context(self):
         """For serializer context."""

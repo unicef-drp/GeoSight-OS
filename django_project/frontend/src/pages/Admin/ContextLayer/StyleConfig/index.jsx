@@ -210,7 +210,7 @@ export default function StyleConfig(
                 <RelatedTableConfig
                   originalData={data} setData={setData}
                   setError={setError}
-                  RelatedTableData={layerData} useOverride={useOverride}
+                  RelatedTableData={layerData} useOverride={true}
                   useOverrideLabel={useOverrideLabel}
                 /> :
                 <Fragment>

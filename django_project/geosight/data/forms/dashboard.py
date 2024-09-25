@@ -91,7 +91,13 @@ class DashboardForm(forms.ModelForm):
             other_data = data['data']
 
         # save polygon
-        poly = Polygon.from_bbox(other_data['extent'])
+        try:
+            poly = Polygon.from_bbox(other_data['extent'])
+        except ValueError:
+            raise ValueError(
+                'Invalid extent, '
+                'it seems the extent from GeoRepo is empty or not correct.'
+            )
         poly.srid = 4326
         data['extent'] = poly
 
