@@ -90,7 +90,8 @@ class DashboardSerializer(serializers.ModelSerializer):
             return {
                 'identifier': reference_layer.identifier,
                 'detail_url': reference_layer.detail_url,
-                'name': reference_layer.name
+                'name': reference_layer.name,
+                'is_local': reference_layer.is_local
             }
         else:
             return {

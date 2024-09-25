@@ -61,5 +61,5 @@ urlpatterns = [
 urlpatterns += router.urls
 urlpatterns += related_tables_router.urls
 urlpatterns += [
-    url(r'^', include('geosight.georepo.api.urls')),
+    url(r'^', include('geosight.reference_dataset.api.urls')),
 ]

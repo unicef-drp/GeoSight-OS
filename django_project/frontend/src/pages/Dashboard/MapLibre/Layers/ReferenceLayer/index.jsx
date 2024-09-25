@@ -46,7 +46,6 @@ import {
 import GeorepoAuthorizationModal
   from "../../../../../components/GeorepoAuthorizationModal";
 import { Logger } from "../../../../../utils/logger";
-import { InternalReferenceDatasets } from "../../../../../utils/urls";
 import { Actions } from "../../../../../store/dashboard";
 
 export const BEFORE_LAYER = 'gl-draw-polygon-fill-inactive.cold'

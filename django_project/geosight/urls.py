@@ -21,6 +21,7 @@ from django.urls import include
 urlpatterns = [
     url(r'^importer/', include('geosight.importer.urls')),
     url(r'^georepo/', include('geosight.georepo.urls')),
+    url(r'^reference-dataset/', include('geosight.reference_dataset.urls')),
     url(r'^', include('geosight.data.urls')),
 ]
 if settings.CLOUD_NATIVE_GIS_ENABLED:

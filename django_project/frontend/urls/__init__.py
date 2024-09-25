@@ -35,7 +35,7 @@ admin_url = [
     url(r'^dataset/', include('frontend.urls.dataset')),
     url(r'^related-table/', include('frontend.urls.related_table')),
     url(r'^importer/', include('frontend.urls.importer')),
-    url(r'^reference-datasets/', include('frontend.urls.reference_layer_view')),
+    url(r'^reference-datasets/', include('geosight.reference_dataset.urls_frontend')),
 ]
 urlpatterns = [
     url(r'^embed/', include('frontend.urls.embed')),

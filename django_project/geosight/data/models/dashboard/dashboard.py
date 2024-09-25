@@ -82,7 +82,7 @@ class Dashboard(
     )
     geo_field = models.CharField(
         max_length=64,
-        default='geometry_code'
+        default='concept_uuid'
     )
 
     # group

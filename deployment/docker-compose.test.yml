@@ -57,7 +57,7 @@ services:
       - ADMIN_EMAIL=admin@example.com
       - SENTRY_DSN=
       - SENTRY_ENVIRONMENT=staging
-      - PLUGINS=tenants
+      - PLUGINS=tenants,reference_dataset
     entrypoint: [ ]
     ports:
       # for django test server

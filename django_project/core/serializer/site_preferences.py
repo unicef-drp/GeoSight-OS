@@ -28,7 +28,6 @@ class SitePreferencesSerializer(serializers.ModelSerializer):
     favicon = serializers.SerializerMethodField()
     background_image = serializers.SerializerMethodField()
     landing_page_banner = serializers.SerializerMethodField()
-    use_georepo = serializers.SerializerMethodField()
 
     def get_icon(self, obj: SitePreferences):
         """Return icon."""
@@ -49,10 +48,6 @@ class SitePreferencesSerializer(serializers.ModelSerializer):
     def get_landing_page_banner(self, obj: SitePreferences):
         """Return landing page banner."""
         return obj.landing_page_banner.url if obj.landing_page_banner else ''
-
-    def get_use_georepo(self, obj: SitePreferences):
-        """Return if using georepo or not."""
-        return obj.enable_georepo and obj.georepo_api_key_level_1_email
 
     class Meta:  # noqa: D106
         model = SitePreferences

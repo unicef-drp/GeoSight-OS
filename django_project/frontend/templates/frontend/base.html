@@ -90,6 +90,8 @@
   const USE_AZURE = '{{ use_azure_auth }}'.toLowerCase() === 'true';
   const csrfmiddlewaretoken = '{{ csrf_token }}';
   const preferences = {{ preferences_js|safe }};
+  const plugins = {{ plugins|safe }};
+  const localReferenceDatasetEnabled = plugins.includes('reference_dataset')
   const version = "{{ version }}";
 
   const lastVersionKey = 'APP_VERSION'
@@ -127,8 +129,8 @@
       'relatedTableList': "{% url "admin-related-table-list-view" %}",
       'importer': "{% url "admin-importer-create-view" %}",
       'dataManagement': "{% url 'admin-data-management-list-view' %}",
-      'referenceDatasetList': "{% url 'admin-reference-layer-view-list-view' %}",
-      'referenceDatesetImporterList': "{% url 'admin-reference-layer-view-importer-list-view' %}",
+      'referenceDatasetList': "{% url 'admin-reference-dataset-list-view' %}",
+      'referenceDatesetImporterList': "{% url 'admin-reference-dataset-importer-list-view' %}",
 
       {# ACCESS REQUEST #}
       'accessRequest': "{% url "admin-access-request-list-view" %}",

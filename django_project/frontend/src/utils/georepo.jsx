@@ -17,7 +17,7 @@ import { fetchJSON } from '../Requests'
 import axios from "axios";
 import { InternalReferenceDatasets, referenceDatasetUrlBase } from "./urls";
 
-export const LocalGeoSightIdentifier = 'Internal reference datasets'
+export const LocalReferenceDatasetIdentifier = 'Internal reference datasets'
 
 /** Georepo URL */
 export function updateToken(url) {
@@ -75,7 +75,7 @@ export const fetchReferenceLayerList = async function () {
 export const fetchReferenceLayerViewsList = async function (referenceLayerUUID) {
   let data = []
   let url = GeorepoUrls.WithDomain(`/search/dataset/${referenceLayerUUID}/view/list/`, false)
-  if (referenceLayerUUID === LocalGeoSightIdentifier) {
+  if (referenceLayerUUID === LocalReferenceDatasetIdentifier) {
     url = InternalReferenceDatasets.list()
   }
   data = await fetchFeatureList(url, true);
@@ -83,7 +83,7 @@ export const fetchReferenceLayerViewsList = async function (referenceLayerUUID) 
     if (row.uuid) {
       row.identifier = row.uuid
     }
-    if (referenceLayerUUID === LocalGeoSightIdentifier) {
+    if (referenceLayerUUID === LocalReferenceDatasetIdentifier) {
       row.is_local = true
     }
   })

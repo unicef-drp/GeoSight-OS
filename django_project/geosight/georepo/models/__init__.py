@@ -16,5 +16,4 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from .entity import *
 from .reference_layer import *
-from .reference_layer_importer import *
 from .reference_layer_indicator_value import *

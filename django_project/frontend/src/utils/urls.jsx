@@ -22,6 +22,6 @@ export const InternalReferenceDatasets = {
     return `${window.location.origin}/api/v1/${referenceDatasetUrlBase}/${identifier}/`
   },
   centroid: (identifier) => {
-    return `${window.location.origin}/georepo/${referenceDatasetUrlBase}/${identifier}/centroid`
+    return `${window.location.origin}/reference-dataset/${referenceDatasetUrlBase}/${identifier}/centroid`
   }
 }

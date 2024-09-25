@@ -29,9 +29,6 @@ class Migration(migrations.Migration):
             model_name='widget',
             name='relation_group',
         ),
-        migrations.DeleteModel(
-            name='IndicatorValueDataset',
-        ),
         migrations.AddField(
             model_name='contextlayer',
             name='cloud_native_gis_layer_id',
@@ -56,11 +53,6 @@ class Migration(migrations.Migration):
             model_name='dashboard',
             name='creator',
             field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='geosight_data_dashboard_related', related_query_name='geosight_data_dashboards', to=settings.AUTH_USER_MODEL),
-        ),
-        migrations.AlterField(
-            model_name='dashboard',
-            name='geo_field',
-            field=models.CharField(default='geometry_code', max_length=64),
         ),
         migrations.AlterField(
             model_name='dashboardembed',
