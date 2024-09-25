@@ -97,6 +97,8 @@ def create_superuser(
         )
         superuser.set_password(admin_password)
         print(f'superuser successfully created with password {admin_password}')
+
+        # TODO: Send email to user for password to responder_email of Tenant
     superuser.save()
 
 
