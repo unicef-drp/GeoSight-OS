@@ -100,6 +100,7 @@ TEMPLATES = [
             # Put Templates Hers
             ABS_PATH('core', 'templates'),
             ABS_PATH('frontend', 'templates'),
+            ABS_PATH('geosight', 'reference_dataset', 'templates'),
         ],
         'OPTIONS': {
             'loaders': [

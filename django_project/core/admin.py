@@ -54,8 +54,7 @@ class SitePreferencesAdmin(admin.ModelAdmin):
         (None, {
             'fields': (
                 'site_title', 'site_url', 'disclaimer',
-                'default_basemap', 'default_color_palette',
-                'enable_local_dataset'
+                'default_basemap', 'default_color_palette'
             )
         }),
         ('Environment', {
@@ -68,7 +67,7 @@ class SitePreferencesAdmin(admin.ModelAdmin):
                 'georepo_url',
                 'georepo_api_key_level_1', 'georepo_api_key_level_1_email',
                 'georepo_api_key_level_4', 'georepo_api_key_level_4_email',
-                'georepo_using_user_api_key', 'enable_georepo'
+                'georepo_using_user_api_key'
             ),
         }),
         ('Landing Page', {
@@ -172,7 +171,7 @@ class CustomUserAdmin(UserAdmin):
 
     list_display = (
         'username', 'email', 'first_name', 'last_name', 'is_staff',
-        'role', 'receive_notification', 'able_to_manage_local_dataset'
+        'role', 'receive_notification'
     )
     inlines = (ProfileInline,)
 
@@ -188,14 +187,7 @@ class CustomUserAdmin(UserAdmin):
             return obj.profile.receive_notification
         return False
 
-    def able_to_manage_local_dataset(self, obj):
-        """receive_notification of user."""
-        if obj.profile:
-            return obj.profile.able_to_manage_local_dataset
-        return False
-
     receive_notification.boolean = True
-    able_to_manage_local_dataset.boolean = True
 
 
 # USER ADMIN BASED ON USING AZURE OR NOT

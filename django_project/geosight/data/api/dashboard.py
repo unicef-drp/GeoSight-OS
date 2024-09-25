@@ -247,9 +247,4 @@ class DashboardData(APIView):
                 ):
                     pass
 
-        # Check if reference layer is local or not
-        if dashboard.reference_layer:
-            data['reference_layer']['is_local'] = (
-                dashboard.reference_layer.is_local
-            )
         return Response(data)

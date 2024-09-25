@@ -15,7 +15,6 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib.auth import get_user_model
-from django.contrib.gis.db.models import QuerySet
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -26,33 +25,9 @@ from geosight.georepo.request import (
     GeorepoRequest, GeorepoUrl, GeorepoRequestError
 )
 from geosight.georepo.request.data import GeorepoEntity
-from geosight.permission.access import ResourcePermissionDenied
 from geosight.permission.models.manager import PermissionManager
 
 User = get_user_model()
-
-
-class ReferenceLayerViewLocalQuerySet(QuerySet):
-    """Queryset specifically for local reference layer."""
-
-    pass
-
-
-class ReferenceLayerViewPermissionManager(PermissionManager):
-    """Reference layer view local manager."""
-
-    def get_queryset(self):
-        """Return queryset just for non georepo."""
-        qs = ReferenceLayerViewLocalQuerySet(self.model, using=self._db)
-        return qs.filter(in_georepo=False)
-
-    def create(self, user: User, **kwargs):
-        """Create function with user."""
-        try:
-            kwargs['identifier']
-        except KeyError:
-            kwargs['identifier'] = ReferenceLayerView.get_uuid()
-        return super().create(user=user, **kwargs)
 
 
 class ReferenceLayerView(AbstractEditData, AbstractVersionData):
@@ -75,9 +50,6 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
 
     in_georepo = models.BooleanField(default=True)
 
-    objects = models.Manager()
-    permissions = ReferenceLayerViewPermissionManager()
-
     class Meta:  # noqa: D106
         indexes = [
             models.Index(
@@ -98,11 +70,6 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
     def __str__(self):
         """Return str."""
         return f'{self.get_name()} ({self.identifier})'
-
-    def able_to_edit(self, user):
-        """Able to edit."""
-        if not user.is_authenticated or user != self.creator:
-            raise ResourcePermissionDenied
 
     @property
     def version_with_uuid(self):
@@ -200,44 +167,9 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
                 return
 
     @property
-    def levels(self):
-        """Return level of reference layer."""
-        return self.referencelayerviewlevel_set.order_by('level')
-
-    @property
     def is_local(self):
         """Return if view is local or not."""
         return not self.in_georepo
-
-    @staticmethod
-    def get_uuid():
-        """Return uuid of view."""
-        from uuid import uuid4
-        uuid = str(uuid4())
-        if ReferenceLayerView.objects.filter(identifier=uuid).exists():
-            return ReferenceLayerView.get_uuid()
-        return uuid
-
-
-class ReferenceLayerViewLevel(models.Model):
-    """Reference Layer view level."""
-
-    reference_layer = models.ForeignKey(
-        ReferenceLayerView, on_delete=models.CASCADE
-    )
-
-    level = models.IntegerField()
-    name = models.CharField(
-        max_length=256,
-        help_text=_("Level name.")
-    )
-
-    class Meta:  # noqa: D106
-        unique_together = ('reference_layer', 'level')
-
-    def __str__(self):
-        """Return str."""
-        return f'{self.name} ({self.level})'
 
 
 class ReferenceLayerIndicator(models.Model):

@@ -25,7 +25,7 @@ import { SelectWithList } from "../../../components/Input/SelectWithList";
 import {
   fetchReferenceLayerList,
   fetchReferenceLayerViewsList,
-  LocalGeoSightIdentifier
+  LocalReferenceDatasetIdentifier
 } from "../../../utils/georepo";
 import { Session } from "../../../utils/Sessions";
 
@@ -62,7 +62,7 @@ export default function GeorepoViewSelector(
     otherContent = null
   }
 ) {
-  const [sourceType, setSourceType] = useState(preferences.enable_local_dataset ? 'local' : 'remote')
+  const [sourceType, setSourceType] = useState(localReferenceDatasetEnabled ? 'local' : 'remote')
   const [inputData, setInputData] = useState(null)
 
   // This is for remote data
@@ -109,7 +109,7 @@ export default function GeorepoViewSelector(
     () => {
       // Change to local module
       if (sourceType === 'local') {
-        setReference(LocalGeoSightIdentifier)
+        setReference(LocalReferenceDatasetIdentifier)
       } else {
         if (references[0]) {
           setReference(references[0].value)
@@ -169,7 +169,7 @@ export default function GeorepoViewSelector(
       beforeChildren={
         <>
           {
-            preferences.enable_local_dataset && preferences.use_georepo ?
+            localReferenceDatasetEnabled ?
               <FormControl className='RadioButtonControl'>
                 <RadioGroup
                   value={sourceType}
@@ -183,7 +183,7 @@ export default function GeorepoViewSelector(
               </FormControl> : null
           }
           {
-            sourceType === 'remote' && preferences.use_georepo ?
+            !localReferenceDatasetEnabled || sourceType === 'remote' ?
               <FormControl className='InputControl'>
                 <SelectWithList
                   placeholder={references ? 'Select dataset' : 'Loading'}

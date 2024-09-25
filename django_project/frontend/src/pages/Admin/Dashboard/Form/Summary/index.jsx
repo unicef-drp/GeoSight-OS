@@ -84,8 +84,8 @@ export default function SummaryDashboardForm({ changed }) {
   const isCreate = id === null;
 
   const geoFields = [
-    { value: 'geometry_code', label: 'Latest ucode' },
-    { value: 'concept_uuid', label: 'Concept uuid' }
+    { value: 'concept_uuid', label: 'Concept uuid' },
+    { value: 'geometry_code', label: 'Latest ucode' }
   ]
 
   return (

@@ -28,3 +28,9 @@ if settings.CLOUD_NATIVE_GIS_ENABLED:
         url(r'^cloud-native-gis/', include('cloud_native_gis.urls')),
         url(r'^cloud-native-gis/', include('geosight.cloud_native_gis.urls')),
     ]
+if settings.REFERENCE_DATASET_ENABLED:
+    urlpatterns += [
+        url(
+            r'^reference-dataset/', include('geosight.reference_dataset.urls')
+        ),
+    ]

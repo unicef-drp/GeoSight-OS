@@ -25,9 +25,11 @@ import {
 import {
   GeorepoViewInputSelector
 } from "../../../ModalSelector/InputSelector";
-import { Actions } from "../../../../../store/dashboard";
 import { GeorepoUrls } from "../../../../../utils/georepo";
 import { FormControlLabel, FormGroup } from "@mui/material";
+import { InternalReferenceDatasets } from "../../../../../utils/urls";
+import { Actions } from "../../../../../store/dashboard";
+
 import './styles.scss';
 
 /**
@@ -73,6 +75,20 @@ export const ViewLevelConfiguration = forwardRef(
       }
     }, [referenceLayerData, data]);
 
+    useEffect(() => {
+      if (referenceLayer.identifier && !referenceLayerData) {
+        let url = GeorepoUrls.ViewDetail(referenceLayer.identifier)
+        if (referenceLayer.is_local) {
+          url = InternalReferenceDatasets.detail(referenceLayer.identifier)
+        }
+        dispatch(
+          Actions.ReferenceLayerData.fetch(
+            dispatch, referenceLayer.identifier, url
+          )
+        )
+      }
+    }, [referenceLayer]);
+
     // Create choices from levels
     const levels = datasetLevels ? datasetLevels.map(level => level.level_name) : []
     const defaultLevel = datasetLevels?.find(level => level.level === data.default_level)?.level_name
@@ -117,7 +133,8 @@ export const ViewLevelConfiguration = forwardRef(
                           const identifier = selectedData[0].identifier
                           selected = {
                             identifier: identifier,
-                            detail_url: GeorepoUrls.ViewDetail(identifier),
+                            detail_url: selectedData[0].is_local ? InternalReferenceDatasets.centroid(identifier) : GeorepoUrls.ViewDetail(identifier),
+                            is_local: selectedData[0].is_local
                           }
                         }
                         setData({ ...data, referenceLayer: selected })

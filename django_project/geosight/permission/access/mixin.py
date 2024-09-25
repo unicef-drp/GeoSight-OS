@@ -47,8 +47,7 @@ class RoleLocalDatasetManagerRequiredMixin(RedirectLoginRequiredMixin):
             return self.handle_no_permission()
 
         user = request.user
-        if user.is_authenticated and user.profile.is_contributor \
-                and user.profile.able_to_manage_local_dataset:
+        if user.is_authenticated and user.profile.is_admin:
             return super().dispatch(request, *args, **kwargs)
         raise ResourcePermissionDenied
 

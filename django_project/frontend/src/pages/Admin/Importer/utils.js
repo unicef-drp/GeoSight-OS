@@ -87,9 +87,6 @@ export const COLUMNS = {
   ADMIN_LEVEL: {
     field: 'admin_level_value', headerName: 'Admin level', flex: 0.3
   },
-  STATUS: {
-    field: 'status', headerName: 'Status', flex: 0.3
-  },
   LAST_RUN: { field: 'last_run', headerName: 'Last Run', flex: 0.3 },
   LAST_RUN_RESULT: {
     field: 'last_run_result',
@@ -137,5 +134,8 @@ export const COLUMNS = {
     type: 'actions',
     cellClassName: 'MuiDataGrid-ActionsColumn',
     width: 150
+  },
+  STATUS: {
+    field: 'status', headerName: 'Status', flex: 0.3
   }
 }

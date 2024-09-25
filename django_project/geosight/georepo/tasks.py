@@ -21,9 +21,6 @@ from geosight.data.models.indicator import Indicator
 from geosight.georepo.models.reference_layer import (
     ReferenceLayerView, ReferenceLayerIndicator
 )
-from geosight.georepo.models.reference_layer_importer import (
-    ReferenceLayerViewImporter
-)
 from geosight.georepo.request.request import GeorepoRequest
 
 logger = get_task_logger(__name__)
@@ -103,14 +100,3 @@ def create_data_access():
     """Create data access."""
     for indicator in Indicator.objects.all():
         create_data_access_indicator(indicator.id)
-
-
-@app.task
-def run_importer(_id, log_id=None):
-    """Run importer by id."""
-    from geosight.georepo.importer import ReferenceLayerViewImporterTask
-    try:
-        importer = ReferenceLayerViewImporter.objects.get(id=_id)
-        ReferenceLayerViewImporterTask(importer).run()
-    except ReferenceLayerViewImporter.DoesNotExist:
-        logger.error(f'Importer {_id} does not exist')

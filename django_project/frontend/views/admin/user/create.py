@@ -64,9 +64,6 @@ class UserCreateView(RoleSuperAdminRequiredMixin, AdminBaseView):
             user.profile.receive_notification = form.cleaned_data[
                 'receive_notification'
             ]
-            user.profile.manage_local_dataset = form.cleaned_data[
-                'manage_local_dataset'
-            ]
             user.profile.save()
             return redirect(
                 reverse('admin-user-and-group-list-view') + '#Users'

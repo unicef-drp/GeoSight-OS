@@ -1,0 +1,29 @@
+[
+  {
+    "model": "geosight_reference_dataset.referencedatasetlevel",
+    "pk": 1,
+    "fields": {
+      "reference_layer": 1,
+      "level": 0,
+      "name": "Admin Level 0"
+    }
+  },
+  {
+    "model": "geosight_reference_dataset.referencedatasetlevel",
+    "pk": 2,
+    "fields": {
+      "reference_layer": 1,
+      "level": 1,
+      "name": "Admin Level 1"
+    }
+  },
+  {
+    "model": "geosight_reference_dataset.referencedatasetlevel",
+    "pk": 3,
+    "fields": {
+      "reference_layer": 1,
+      "level": 2,
+      "name": "Admin Level 2"
+    }
+  }
+]

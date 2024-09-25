@@ -31,7 +31,6 @@ class UserSerializer(serializers.ModelSerializer):
     is_creator = serializers.SerializerMethodField()
     is_admin = serializers.SerializerMethodField()
     receive_notification = serializers.SerializerMethodField()
-    manage_local_dataset = serializers.SerializerMethodField()
 
     def get_is_staff(self, obj: User):
         """Return is staff."""
@@ -65,15 +64,11 @@ class UserSerializer(serializers.ModelSerializer):
         """Return is admin."""
         return obj.profile.receive_notification
 
-    def get_manage_local_dataset(self, obj: User):
-        """Return is admin."""
-        return obj.profile.able_to_manage_local_dataset
-
     class Meta:  # noqa: D106
         model = User
         fields = (
             'id', 'username', 'email', 'first_name', 'last_name',
             'is_staff', 'name', 'email', 'role',
             'is_contributor', 'is_creator', 'is_admin', 'full_name',
-            'receive_notification', 'manage_local_dataset'
+            'receive_notification'
         )

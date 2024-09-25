@@ -107,9 +107,6 @@ class UserEditView(AdminBaseView):
             user.profile.receive_notification = form.cleaned_data[
                 'receive_notification'
             ]
-            user.profile.manage_local_dataset = form.cleaned_data[
-                'manage_local_dataset'
-            ]
             georepo_api_key = data.get(
                 'georepo_api_key', user.profile.georepo_api_key_val
             )

@@ -71,12 +71,6 @@ class SitePreferences(SingletonModel):
         ),
         on_delete=models.SET_NULL
     )
-    enable_local_dataset = models.BooleanField(
-        default=True,
-        help_text=(
-            'Enable feature to use local datasets alongside georepo.'
-        )
-    )
     # -----------------------------------------------
     # GEOREPO
     # -----------------------------------------------
@@ -99,12 +93,6 @@ class SitePreferences(SingletonModel):
         blank=True, null=True
     )
     georepo_using_user_api_key = models.BooleanField(default=True)
-    enable_georepo = models.BooleanField(
-        default=True,
-        help_text=(
-            'Enable GeoRepo to use local datasets alongside local dataset.'
-        )
-    )
 
     # -----------------------------------------------
     # LANDING PAGE
@@ -301,7 +289,6 @@ class SitePreferences(SingletonModel):
     # -----------------------------------------------
     login_help_text = models.TextField(
         default='',
-        null=True, blank=True,
         help_text=_(
             'Help text to show in login page.'
         ),

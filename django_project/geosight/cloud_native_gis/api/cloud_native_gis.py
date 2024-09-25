@@ -34,7 +34,7 @@ class CloudNativeGISLayerVectorTile(VectorTileLayer):
 
 
 class CloudNativeGISLayerUploadCreate(APIView):
-    """API layer upload style."""
+    """API for uploading Cloud Native GIS."""
 
     parser_classes = (Layer,)
 

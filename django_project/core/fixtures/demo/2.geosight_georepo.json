@@ -14,33 +14,6 @@
     }
   },
   {
-    "model": "geosight_georepo.referencelayerviewlevel",
-    "pk": 1,
-    "fields": {
-      "reference_layer": 1,
-      "level": 0,
-      "name": "Admin Level 0"
-    }
-  },
-  {
-    "model": "geosight_georepo.referencelayerviewlevel",
-    "pk": 2,
-    "fields": {
-      "reference_layer": 1,
-      "level": 1,
-      "name": "Admin Level 1"
-    }
-  },
-  {
-    "model": "geosight_georepo.referencelayerviewlevel",
-    "pk": 3,
-    "fields": {
-      "reference_layer": 1,
-      "level": 2,
-      "name": "Admin Level 2"
-    }
-  },
-  {
     "model": "geosight_georepo.entity",
     "pk": 1,
     "fields": {
