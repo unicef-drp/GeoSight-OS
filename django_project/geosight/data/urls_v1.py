@@ -14,6 +14,7 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+from django.conf import settings
 from django.conf.urls import url
 from django.urls import include
 from rest_framework.routers import DefaultRouter
@@ -60,6 +61,8 @@ urlpatterns = [
 ]
 urlpatterns += router.urls
 urlpatterns += related_tables_router.urls
-urlpatterns += [
-    url(r'^', include('geosight.reference_dataset.api.urls')),
-]
+
+if settings.REFERENCE_DATASET_ENABLED:
+    urlpatterns += [
+        url(r'^', include('geosight.reference_dataset.api.urls')),
+    ]

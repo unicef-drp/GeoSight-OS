@@ -182,7 +182,7 @@ export default function SideNavigation({ pageName, minified }) {
                 </SidaNavigationButton>
               </div>
               {
-                user.is_admin ?
+                user.is_admin && localReferenceDatasetEnabled ?
                   <div className='SideNavigationContentGroup'>
                     <div className='SideNavigationContentGroupTitle'>
                       REFERENCE DATASETS

@@ -26,6 +26,8 @@ REFERENCE_DATASET_ENABLED = False
 # FEATURE: REFERENCE DATASET
 # --------------------------------------
 try:
+    import fiona  # noqa:F401
+
     REFERENCE_DATASET_ENABLED = (
             REFERENCE_DATASET_PLUGIN_NAME
             in os.environ.get('PLUGINS', '')

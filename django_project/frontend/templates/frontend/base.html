@@ -41,29 +41,29 @@
     <style>
         {# FOR THE THEME #}
         :root {
-            --primary-color: {{ preferences.primary_color }};
-            --anti-primary-color: {{ preferences.anti_primary_color }};
+          --primary-color: {{ preferences.primary_color }};
+          --anti-primary-color: {{ preferences.anti_primary_color }};
 
-            --secondary-color: {{ preferences.secondary_color }};
-            --anti-secondary-color: {{ preferences.anti_secondary_color }};
+          --secondary-color: {{ preferences.secondary_color }};
+          --anti-secondary-color: {{ preferences.anti_secondary_color }};
 
-            --tertiary-color: {{ preferences.tertiary_color }};
-            --anti-tertiary-color: {{ preferences.anti_tertiary_color }};
+          --tertiary-color: {{ preferences.tertiary_color }};
+          --anti-tertiary-color: {{ preferences.anti_tertiary_color }};
         }
 
         .primaryColorBox {
-            background-color: var(--primary-color) !important;
-            color: var(--anti-primary-color) !important;
+          background-color: var(--primary-color) !important;
+          color: var(--anti-primary-color) !important;
         }
 
         .secondaryColorBox {
-            background-color: var(--secondary-color) !important;
-            color: var(--anti-secondary-color) !important;
+          background-color: var(--secondary-color) !important;
+          color: var(--anti-secondary-color) !important;
         }
 
         .tertiaryColorBox {
-            background-color: var(--tertiary-color) !important;
-            color: var(--anti-tertiary-color) !important;
+          background-color: var(--tertiary-color) !important;
+          color: var(--anti-tertiary-color) !important;
         }
     </style>
     {% block style %}
@@ -129,8 +129,10 @@
       'relatedTableList': "{% url "admin-related-table-list-view" %}",
       'importer': "{% url "admin-importer-create-view" %}",
       'dataManagement': "{% url 'admin-data-management-list-view' %}",
-      'referenceDatasetList': "{% url 'admin-reference-dataset-list-view' %}",
-      'referenceDatesetImporterList': "{% url 'admin-reference-dataset-importer-list-view' %}",
+      {% if 'reference_dataset' in PLUGINS %}
+        'referenceDatasetList': "{% url 'admin-reference-dataset-list-view' %}",
+        'referenceDatesetImporterList': "{% url 'admin-reference-dataset-importer-list-view' %}",
+      {% endif %}
 
       {# ACCESS REQUEST #}
       'accessRequest': "{% url "admin-access-request-list-view" %}",
