@@ -57,9 +57,12 @@ class _BaseClientTestCase:
 
     def test_client(self):
         """Return client of test."""
-        try:
-            return Client(self.tenant)
-        except AttributeError:
+        if settings.TENANTS_ENABLED:
+            try:
+                return Client(self.tenant)
+            except AttributeError:
+                return Client()
+        else:
             return Client()
 
 

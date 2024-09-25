@@ -120,7 +120,7 @@ except Exception as e:
 # 6. Creating superuser if it doesn't exist
 #########################################################
 print("-----------------------------------------------------")
-print("3. Creating/updating superuser")
+print("7. Creating/updating superuser")
 create_superuser()
 
 #########################################################
@@ -133,7 +133,7 @@ try:
         tenant.create_superuser()
 
     print("-----------------------------------------------------")
-    print("7. Create default domain for tenant")
+    print("8. Create default domain for tenant")
     app_domain = os.getenv('APP_DOMAIN', 'localhost')
     tenant, _ = Tenant.objects.get_or_create(
         schema_name='public', name='Main'

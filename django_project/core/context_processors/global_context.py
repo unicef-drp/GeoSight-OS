@@ -52,10 +52,12 @@ def global_context(request):
             api_key_email=request.user.email
 
         ).details
+
     return {
         'DEBUG': settings.DEBUG,
         'preferences': pref_data,
         'preferences_js': json.dumps(pref_data),
         'use_azure_auth': settings.USE_AZURE,
-        'version': project_version(request)
+        'version': project_version(request),
+        'plugins': settings.PLUGINS
     }

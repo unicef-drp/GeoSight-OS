@@ -16,8 +16,8 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import json
 
-from cloud_native_gis.models import Layer as CloudNativeGISLayer
 from django import forms
+from django.conf import settings
 from django.forms.models import model_to_dict
 
 from geosight.data.models.context_layer import (
@@ -84,6 +84,12 @@ class ContextLayerForm(forms.ModelForm):
         except KeyError:
             pass
 
+        if not settings.CLOUD_NATIVE_GIS_ENABLED:
+            self.fields['layer_type'].choices = [
+                choice for choice in self.fields['layer_type'].choices if
+                choice[0] != LayerType.CLOUD_NATIVE_GIS_LAYER
+            ]
+
     def clean_group(self):
         """Return group."""
         group, created = ContextLayerGroup.objects.get_or_create(
@@ -101,10 +107,13 @@ class ContextLayerForm(forms.ModelForm):
 
     def clean_cloud_native_gis_layer(self):
         """Return layer of cloud_native_gis_layer."""
-        if self.instance and self.cleaned_data['cloud_native_gis_layer']:
-            return CloudNativeGISLayer.objects.get(
-                pk=self.cleaned_data['cloud_native_gis_layer']
-            )
+        if settings.CLOUD_NATIVE_GIS_ENABLED:
+            from cloud_native_gis.models import Layer
+            if self.instance and self.cleaned_data['cloud_native_gis_layer']:
+                return Layer.objects.get(
+                    pk=self.cleaned_data['cloud_native_gis_layer']
+                )
+            return None
         return None
 
     def clean_styles(self):
