@@ -332,7 +332,7 @@ export function getContext(
   const url = urls.drilldown.replace('concept_uuid', concept_uuid)
   const params = {
     rtconfigs: JSON.stringify(indicatorLayersConfig),
-    reference_layer_uuid: referenceLayerData?.data?.uuid | referenceLayerData?.data?.identifier
+    reference_layer_uuid: referenceLayerData?.data?.uuid ? referenceLayerData?.data?.uuid : referenceLayerData?.data?.identifier
   }
   const session = new Session('FetchingPopupContext')
   fetchingData(
