@@ -246,4 +246,5 @@ class DashboardData(APIView):
                         ContextLayer.DoesNotExist
                 ):
                     pass
+
         return Response(data)

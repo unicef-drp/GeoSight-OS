@@ -17,7 +17,6 @@ __copyright__ = ('Copyright 2023, Unicef')
 import copy
 
 from django.contrib.auth import get_user_model
-from django.test.testcases import TestCase
 
 from frontend.tests.admin._base import BaseViewTest
 from geosight.data.models.basemap_layer import BasemapLayer, BasemapLayerType
@@ -25,7 +24,7 @@ from geosight.data.models.basemap_layer import BasemapLayer, BasemapLayerType
 User = get_user_model()
 
 
-class BasemapAdminViewTest(BaseViewTest, TestCase):
+class BasemapAdminViewTest(BaseViewTest.TestCase):
     """Test for Basemap Admin."""
 
     list_url_tag = 'admin-basemap-list-view'

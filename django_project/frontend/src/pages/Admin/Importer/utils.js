@@ -134,5 +134,8 @@ export const COLUMNS = {
     type: 'actions',
     cellClassName: 'MuiDataGrid-ActionsColumn',
     width: 150
+  },
+  STATUS: {
+    field: 'status', headerName: 'Status', flex: 0.3
   }
 }

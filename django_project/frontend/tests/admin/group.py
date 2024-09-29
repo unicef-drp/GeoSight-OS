@@ -14,14 +14,13 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from django.test.testcases import TestCase
 from django.urls import reverse
 
 from core.models.group import GeosightGroup
 from frontend.tests.admin._base import BaseViewTest
 
 
-class GroupAdminViewTest(BaseViewTest, TestCase):
+class GroupAdminViewTest(BaseViewTest.TestCase):
     """Test for Group Admin."""
 
     list_url_tag = 'admin-user-and-group-list-view'

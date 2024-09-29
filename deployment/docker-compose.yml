@@ -60,6 +60,9 @@ x-common-django:
     - EMAIL_USE_TLS=${EMAIL_USE_TLS:-False}
     - EMAIL_USE_SSL=${EMAIL_USE_SSL:-False}
     - DEFAULT_FROM_EMAIL=${DEFAULT_FROM_EMAIL:-noreply@kartoza.com}
+
+    # PLUGINS
+    - PLUGINS=${PLUGINS:-''}
   volumes:
     - static-data:/home/web/static
     - media-data:/home/web/media

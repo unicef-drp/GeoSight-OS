@@ -65,4 +65,4 @@ export function fetch(dispatch, id, url) {
   return request(id);
 }
 
-export default { fetch }
+export default { request, receive, fetch }

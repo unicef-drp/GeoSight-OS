@@ -22,6 +22,9 @@ import {
 import { Select } from "../../../../../../components/Input";
 
 import './style.scss';
+import {
+  referenceLayerIndicatorLayer
+} from "../../../../../../utils/indicatorLayer";
 
 /*** Popup Config Form ***/
 export default function ExampleContextInput(
@@ -29,13 +32,14 @@ export default function ExampleContextInput(
     context, setContext, currentIndicatorLayer
   }) {
   const {
-    referenceLayer,
+    referenceLayer: referenceLayerDashboard,
     indicatorLayers,
     indicators,
     relatedTables
   } = useSelector(state => state.dashboard.data);
-  const referenceLayerData = useSelector(state => state.referenceLayerData[referenceLayer.identifier]);
-  const geometries = useSelector(state => state.geometries);
+  const referenceLayer = referenceLayerIndicatorLayer(referenceLayerDashboard, currentIndicatorLayer)
+  const referenceLayerData = useSelector(state => state.referenceLayerData[referenceLayer?.identifier]);
+  const geometries = useSelector(state => state.datasetGeometries[referenceLayer?.identifier]);
   const selectedGlobalTime = useSelector(state => state.selectedGlobalTime);
   const selectedGlobalTimeConfig = useSelector(state => state.selectedGlobalTimeConfig);
 
@@ -45,7 +49,7 @@ export default function ExampleContextInput(
   const [levelSelected, setLevelSelected] = useState(null)
   const [conceptUUID, setConceptUUID] = useState(null)
   const datasetLevels = referenceLayerData?.data?.dataset_levels;
-  const selectedGeometries = geometries[levelSelected?.value]
+  const selectedGeometries = geometries ? geometries[levelSelected?.value] : null
 
   // When reference layer changed, fetch reference data
   useEffect(() => {
@@ -139,7 +143,7 @@ export default function ExampleContextInput(
             }}/>
       }
       {
-        !geometries[levelSelected?.value] ? 'Loading' :
+        !geometries || !geometries[levelSelected?.value] ? 'Loading' :
           <Select
             options={Object.keys(selectedGeometries).map(concept_uuid => {
               return {

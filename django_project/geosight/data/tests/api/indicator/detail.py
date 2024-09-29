@@ -14,10 +14,9 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from django.test import Client
-from django.test.testcases import TestCase
 from django.urls import reverse
 
+from core.tests.base_tests import TestCase
 from core.tests.model_factories import UserF
 from geosight.data.models.indicator import Indicator
 from geosight.data.tests.model_factories import IndicatorF, IndicatorGroupF
@@ -42,7 +41,7 @@ class IndicatorDetailApiTest(TestCase):
 
     def test_delete_indicator_view_no_login(self):
         """Test delete indicator with no login."""
-        client = Client()
+        client = self.test_client()
         response = client.delete(self.url)
         self.assertEquals(response.status_code, 403)
 
@@ -51,20 +50,22 @@ class IndicatorDetailApiTest(TestCase):
         username = 'test'
         password = 'testpassword'
         UserF(username=username, password=password, is_superuser=False)
-        client = Client()
+        client = self.test_client()
         client.login(username=username, password=password)
         response = client.delete(self.url)
         self.assertEquals(response.status_code, 403)
 
     def test_delete_indicator_view_staff(self):
         """Test delete indicator with as staff."""
-        username = 'admin'
-        password = 'adminpassword'
+        username = 'staff'
+        password = 'staffpassword'
         UserF(username=username, password=password, is_superuser=True)
-        client = Client()
+        client = self.test_client()
         client.login(username=username, password=password)
         response = client.delete(self.url)
         self.assertEquals(response.status_code, 200)
-        self.assertFalse(Indicator.objects.filter(
-            pk=self.indicator.pk).first()
-                         )
+        self.assertFalse(
+            Indicator.objects.filter(
+                pk=self.indicator.pk
+            ).first()
+        )

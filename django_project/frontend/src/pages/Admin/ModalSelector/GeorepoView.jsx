@@ -14,16 +14,23 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { FormControl } from "@mui/material";
+import {
+  FormControl,
+  FormControlLabel,
+  Radio,
+  RadioGroup
+} from "@mui/material";
 import ModalSelector from './Modal'
 import { SelectWithList } from "../../../components/Input/SelectWithList";
 import {
   fetchReferenceLayerList,
-  fetchReferenceLayerViewsList
+  fetchReferenceLayerViewsList,
+  LocalReferenceDatasetIdentifier
 } from "../../../utils/georepo";
 import { Session } from "../../../utils/Sessions";
 
 import './style.scss';
+
 
 const columns = [
   { field: 'id', headerName: 'id', hide: true },
@@ -55,10 +62,12 @@ export default function GeorepoViewSelector(
     otherContent = null
   }
 ) {
+  const [sourceType, setSourceType] = useState(localReferenceDatasetEnabled ? 'local' : 'remote')
+  const [inputData, setInputData] = useState(null)
 
+  // This is for remote data
   const [references, setReferences] = useState([])
   const [reference, setReference] = useState(null)
-  const [inputData, setInputData] = useState(null)
 
   if (selectedData) {
     selectedData.map(_data => {
@@ -78,13 +87,35 @@ export default function GeorepoViewSelector(
             row.value = row.identifier
             return row
           })
-          if (!reference && references[0]) {
-            setReference(references[0].value)
-          }
           setReferences(references)
         }
       )();
     }, []
+  )
+
+  /** On references loaded */
+  useEffect(
+    () => {
+      if (sourceType === 'remote') {
+        if (!reference && references[0]) {
+          setReference(references[0].value)
+        }
+      }
+    }, [references]
+  )
+
+  /** On source type changed */
+  useEffect(
+    () => {
+      // Change to local module
+      if (sourceType === 'local') {
+        setReference(LocalReferenceDatasetIdentifier)
+      } else {
+        if (references[0]) {
+          setReference(references[0].value)
+        }
+      }
+    }, [sourceType]
   )
 
   /** On load functions */
@@ -136,16 +167,35 @@ export default function GeorepoViewSelector(
       isMultiple={isMultiple}
       showSelected={showSelected}
       beforeChildren={
-        <FormControl className='InputControl'>
-          <SelectWithList
-            placeholder={references ? 'Select dataset' : 'Loading'}
-            list={references}
-            value={reference}
-            onChange={evt => {
-              setReference(evt.value)
-            }}
-          />
-        </FormControl>
+        <>
+          {
+            localReferenceDatasetEnabled ?
+              <FormControl className='RadioButtonControl'>
+                <RadioGroup
+                  value={sourceType}
+                  onChange={evt => setSourceType(evt.target.value)}
+                >
+                  <FormControlLabel
+                    value="local" control={<Radio/>} label="Local"/>
+                  <FormControlLabel
+                    value="remote" control={<Radio/>} label="Remote"/>
+                </RadioGroup>
+              </FormControl> : null
+          }
+          {
+            !localReferenceDatasetEnabled || sourceType === 'remote' ?
+              <FormControl className='InputControl'>
+                <SelectWithList
+                  placeholder={references ? 'Select dataset' : 'Loading'}
+                  list={references}
+                  value={reference}
+                  onChange={evt => {
+                    setReference(evt.value)
+                  }}
+                />
+              </FormControl> : null
+          }
+        </>
       }
     />
     {otherContent ? otherContent : null}

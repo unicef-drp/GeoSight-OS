@@ -338,6 +338,7 @@ export default function RelatedTableLayerConfig(
                               }
                             }
                             referenceLayer={referenceLayer}
+                            ableToSelectReferenceLayer={true}
                           /> : null
                       }
                     </div>

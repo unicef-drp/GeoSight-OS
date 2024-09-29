@@ -21,4 +21,5 @@ from .dataset import *
 from .group import *
 from .indicator import *
 from .related_table import *
+from .reference_layer_view import *
 from .style import *

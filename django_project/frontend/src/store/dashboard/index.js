@@ -20,11 +20,11 @@ import rootReducer from './reducers';
 import Basemaps from './reducers/basemap/actions'
 import ContextLayers from './reducers/contextLayers/actions'
 import Dashboard from './reducers/dashboard/actions'
+import DatasetGeometries from './reducers/datasetGeometries/actions'
 import Extent from './reducers/extent/actions'
 import Filters from './reducers/filters/actions'
 import FiltersData from './reducers/filtersData/actions'
 import FilteredGeometries from './reducers/filteredGeometries/actions'
-import Geometries from './reducers/geometries/actions'
 import GlobalState from './reducers/globalState/actions'
 import IndicatorLayers from './reducers/indicatorLayers/actions'
 import Indicators from './reducers/indicators/actions'
@@ -56,11 +56,11 @@ const Actions = {
   Basemaps,
   ContextLayers,
   Dashboard,
+  DatasetGeometries,
   Extent,
   Filters,
   FilteredGeometries,
   FiltersData,
-  Geometries,
   GlobalState,
   IndicatorLayers,
   Indicators,

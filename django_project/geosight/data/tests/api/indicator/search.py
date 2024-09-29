@@ -14,14 +14,13 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '23/01/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from django.test.testcases import TestCase
 from django.urls import reverse
 
 from geosight.data.tests.model_factories import IndicatorF, IndicatorGroupF
 from geosight.permission.tests._base import BasePermissionTest
 
 
-class IndicatorSearchSimilarityApiTest(BasePermissionTest, TestCase):
+class IndicatorSearchSimilarityApiTest(BasePermissionTest.TestCase):
     """Test for Indicator detail api."""
 
     def create_resource(self, user):

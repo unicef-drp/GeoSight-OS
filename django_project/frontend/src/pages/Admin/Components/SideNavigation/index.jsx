@@ -76,6 +76,8 @@ export default function SideNavigation({ pageName, minified }) {
   const dataset = urls.admin.dataset; // eslint-disable-line no-undef
   const dataAccess = urls.admin.dataAccess; // eslint-disable-line no-undef
   const relatedTableList = urls.admin.relatedTableList; // eslint-disable-line no-undef
+  const referenceDatasetList = urls.admin.referenceDatasetList; // eslint-disable-line no-undef
+  const referenceDatesetImporterList = urls.admin.referenceDatesetImporterList; // eslint-disable-line no-undef
   const helpPageRef = useRef(null);
 
   return (
@@ -179,6 +181,38 @@ export default function SideNavigation({ pageName, minified }) {
                   </a>
                 </SidaNavigationButton>
               </div>
+              {
+                user.is_admin && localReferenceDatasetEnabled ?
+                  <div className='SideNavigationContentGroup'>
+                    <div className='SideNavigationContentGroupTitle'>
+                      REFERENCE DATASETS
+                    </div>
+                    <SidaNavigationButton
+                      minified={minified}
+                      title={pageNames.ReferenceLayerView}>
+                      <a href={referenceDatasetList}
+                         className={'SideNavigation-Row ' + ([pageNames.ReferenceLayerView].includes(pageName) ? 'active' : '')}>
+                        {[pageNames.ReferenceLayerView].includes(pageName) ?
+                          <LayerActiveIcon/> :
+                          <LayerIcon/>}
+                        <span
+                          className='SideNavigation-Row-Name'>Reference Datasets</span>
+                      </a>
+                    </SidaNavigationButton>
+                    <SidaNavigationButton
+                      minified={minified}
+                      title={pageNames.referenceDatesetImporter}>
+                      <a href={referenceDatesetImporterList}
+                         className={'SideNavigation-Row ' + ([pageNames.referenceDatesetImporter].includes(pageName) ? 'active' : '')}>
+                        {[pageNames.referenceDatesetImporter].includes(pageName) ?
+                          <LayerActiveIcon/> :
+                          <LayerIcon/>}
+                        <span
+                          className='SideNavigation-Row-Name'>Importers</span>
+                      </a>
+                    </SidaNavigationButton>
+                  </div> : null
+              }
               <div className='SideNavigationContentGroup'>
                 <div className='SideNavigationContentGroupTitle'>ACCESS</div>
                 {

@@ -25,9 +25,13 @@ import { fetchPaginationInParallel } from "../../../../Requests";
 import { removeElement } from "../../../../utils/Array";
 import {
   filterIndicatorsData,
+  getIndicatorDataId,
   UpdateStyleData
 } from "../../../../utils/indicatorData";
 import { dictDeepCopy } from "../../../../utils/main";
+import {
+  referenceLayerIndicatorLayer
+} from "../../../../utils/indicatorLayer";
 
 /** Indicators data. */
 let indicatorFetchingSession = null
@@ -69,11 +73,6 @@ export default function Indicators() {
       fetchData()
     }
   }, [indicators, indicatorLayerMetadata]);
-
-  /** At first time, put loading. */
-  useEffect(() => {
-    indicators.map(indicator => loading(indicator.id));
-  }, []);
 
   /** Loading data **/
   const loading = (id) => {
@@ -120,12 +119,12 @@ export default function Indicators() {
   const getDataFn = async (id, url, params, currentGlobalTime, dataVersion, onResponse, onProgress, doAll, referenceLayerIdentifier) => {
     const identifier = url + '?reference_layer_uuid=' + referenceLayerIdentifier
     let byDateRequested = false
+    let response = []
     if (allRequestStatus[identifier] !== 'done') {
       byDateRequested = true
       params.reference_layer_uuid = referenceLayerIdentifier
       params.version = dataVersion
-      const dateResponse = await getDataByDate(id, url, params, dictDeepCopy(selectedGlobalTime), dataVersion, onProgress)
-      onResponse(dateResponse)
+      response = await getDataByDate(id, url, params, dictDeepCopy(selectedGlobalTime), dataVersion, onProgress)
     }
     if (doAll) {
       if (allRequestStatus[identifier] !== 'request') {
@@ -137,10 +136,11 @@ export default function Indicators() {
         })
         allRequestStatus[identifier] = 'done'
         if (!byDateRequested) {
-          onResponse(filterIndicatorsData(currentGlobalTime.min, currentGlobalTime.max, allDataResponse), null, true)
+          response = filterIndicatorsData(currentGlobalTime.min, currentGlobalTime.max, allDataResponse)
         }
       }
     }
+    return response
   }
 
   /***
@@ -172,19 +172,32 @@ export default function Indicators() {
     indicatorFetchingSession = new Date().getTime()
     const session = indicatorFetchingSession
 
-    // Get queue
-    let defaultIds = []
-    if (currentIndicatorLayer?.indicators) {
-      defaultIds = defaultIds.concat(currentIndicatorLayer?.indicators?.map(_ => _.id))
-    }
-    if (currentIndicatorSecondLayer?.indicators) {
-      defaultIds = defaultIds.concat(currentIndicatorSecondLayer?.indicators?.map(_ => _.id))
-    }
-    const requestQueue = defaultIds.concat(
-      indicators.filter(
-        indicator => !defaultIds.includes(indicator.id)
-      ).map(indicator => indicator.id)
-    )
+    const indicatorsWithDataset = [];
+    [currentIndicatorLayer, currentIndicatorSecondLayer].concat(indicatorLayers).map(layer => {
+      const identifier = referenceLayerIndicatorLayer(referenceLayer, layer)?.identifier;
+      layer?.indicators?.map(_ => {
+        const data = indicatorsWithDataset.find(row => row.id === _.id)
+        if (!data) {
+          indicatorsWithDataset.push({
+            id: _.id,
+            datasets: [identifier]
+          })
+        } else {
+          data.datasets.push(identifier)
+        }
+      })
+    })
+    indicators.map(_ => {
+      const data = indicatorsWithDataset.find(row => row.id === _.id)
+      if (!data) {
+        indicatorsWithDataset.push({
+          id: _.id,
+          datasets: [referenceLayer.identifier]
+        })
+      } else {
+        data.datasets.push(referenceLayer.identifier)
+      }
+    })
 
     // Get parameter
     const params = {
@@ -193,72 +206,91 @@ export default function Indicators() {
     if (selectedGlobalTime.min) {
       params['time__gte'] = selectedGlobalTime.min
     }
-    indicatorFetchingIds = []
-    requestQueue.map(id => loading(id));
+    indicatorFetchingIds = [];
 
     //   Fetch all indicator data
     (
       async () => {
-        // Create request state
-        let promises = []
-
-        // Request queue
-        for (var idx = 1; idx <= requestQueue.length; idx++) {
+        // Create loading
+        // TODO:
+        //  Loading by datasets
+        indicatorsWithDataset.map(row => {
           const indicator = indicators.find(
-            indicator => indicator.id === requestQueue[idx - 1]
+            indicator => indicator.id === row.id
           )
           if (indicator) {
-            const { id, url } = indicator
+            const { id } = indicator
+            const referenceLayerIdentifier = referenceLayer?.identifier;
+            loading(id, referenceLayerIdentifier)
+          }
 
-            // On Response
-            const onResponse = (response, error) => {
-              if (indicatorFetchingSession === session && response) {
-                response = UpdateStyleData(response, indicator)
-                dispatch(
-                  Actions.IndicatorsData.receive(response, error, id)
-                )
-                dispatch(
-                  Actions.IndicatorsMetadata.progress(id, {
-                    total_page: Math.ceil(response.length / 100),
-                    page: Math.ceil(response.length / 100)
+        })
+
+        // Create request state
+        let promises = []
+        for (var idx = 0; idx <= indicatorsWithDataset.length - 1; idx++) {
+          const { id: _id, datasets } = indicatorsWithDataset[idx]
+          const indicator = indicators.find(
+            indicator => indicator.id === _id
+          )
+          const referenceDatasets = Array.from(new Set(datasets))
+          if (indicator) {
+            const { id, url } = indicator
+            for (var idxY = 0; idxY <= referenceDatasets.length - 1; idxY++) {
+              const referenceLayerIdentifier = referenceDatasets[idxY]
+              const indicatorDataId = getIndicatorDataId(id, referenceLayer.identifier, referenceLayerIdentifier)
+
+              // On Response
+              const onResponse = (response, error) => {
+                if (indicatorFetchingSession === session && response) {
+                  response = UpdateStyleData(response, indicator)
+                  dispatch(
+                    Actions.IndicatorsData.receive(response, error, indicatorDataId)
+                  )
+                  dispatch(
+                    Actions.IndicatorsMetadata.progress(id, {
+                        total_page: Math.ceil(response.length / 100),
+                        page: Math.ceil(response.length / 100)
+                      }
+                    )
+                  )
+                }
+                done(id)
+              }
+
+              // On Progress
+              const onProgress = (progress) => {
+                if (indicatorFetchingSession === session) {
+                  dispatch(
+                    Actions.IndicatorsMetadata.progress(id, progress)
+                  )
+                }
+              }
+              // Fetch data, when 10, wait data
+              const dataId = 'indicator-' + indicator.id
+              // For data that has less than 10k data
+              // Return all data first
+
+              const metadata = indicatorLayerMetadata[dataId]
+              if (metadata?.version) {
+                const version = metadata?.version
+                const doAll = !use_only_last_known_value && metadata?.count && metadata.count < MAX_COUNT_FOR_ALL_DATA
+
+                // If index is 1, waiting for this to be done
+                promises.push(
+                  getDataPromise(
+                    dataId, url, params, dictDeepCopy(selectedGlobalTime), version, onResponse, onProgress, doAll, referenceLayerIdentifier
+                  ).then(response => {
+                    onResponse(response, null)
+                  }).catch(error => {
+                    onResponse(null, error)
                   })
                 )
-              }
-              done(id)
-            }
 
-            // On Progress
-            const onProgress = (progress) => {
-              if (indicatorFetchingSession === session) {
-                dispatch(
-                  Actions.IndicatorsMetadata.progress(id, progress)
-                )
-              }
-            }
-            // Fetch data, when 10, wait data
-            const dataId = 'indicator-' + indicator.id
-            // For data that has less than 10k data
-            // Return all data first
-
-            const metadata = indicatorLayerMetadata[dataId]
-            if (metadata?.version) {
-              const version = metadata?.version
-              const doAll = !use_only_last_known_value && metadata?.count && metadata.count < MAX_COUNT_FOR_ALL_DATA && requestQueue.length < 50
-
-              // We save to promises for calling in parallel
-              promises.push(
-                getDataPromise(
-                  dataId, url, params, dictDeepCopy(selectedGlobalTime), version, onResponse, onProgress, doAll, referenceLayer.identifier
-                ).then(response => {
-                  onResponse(response, null)
-                }).catch(error => {
-                  onResponse(null, error)
-                })
-              )
-
-              if (idx % 50 === 0) {
-                await Promise.allSettled(promises)
-                promises = []
+                if (idx % 50 === 0) {
+                  await Promise.allSettled(promises)
+                  promises = []
+                }
               }
             }
           }

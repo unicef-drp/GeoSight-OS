@@ -20,6 +20,7 @@ import {
   STYLE_FORM_LIBRARY
 } from "./Style";
 import { dictDeepCopy } from "./main";
+import { referenceLayerIndicatorLayer } from "./indicatorLayer";
 
 /**
  * Update data with the style found
@@ -111,12 +112,12 @@ const updateIndicatorLayerWithGeographyCode = (indicatorLayer, relatedTables) =>
  */
 export const getIndicatorValueByGeometry = (
   indicatorLayer, indicators, indicatorsData, relatedTables, relatedTableData,
-  selectedGlobalTime, geoField, filteredGeometries, selectedAdminLevel
+  selectedGlobalTime, geoField, filteredGeometries, referenceLayer, selectedAdminLevel
 ) => {
   updateIndicatorLayerWithGeographyCode(indicatorLayer, relatedTables)
   return returnValueByGeometry(
     indicatorLayer, indicators, indicatorsData, relatedTableData,
-    selectedGlobalTime, geoField, filteredGeometries, selectedAdminLevel
+    selectedGlobalTime, geoField, filteredGeometries, referenceLayer, selectedAdminLevel
   )
 }
 
@@ -142,4 +143,28 @@ export const filterIndicatorsData = (time_min, time_max, data) => {
     return used
   })
   return data
+}
+/**
+ * Return Indicator Data Id
+ * @param id
+ * @param referenceLayerIdentifier
+ * @param referenceLayerOfIndicatorIdentifier
+ * @returns {*|string}
+ */
+export const getIndicatorDataId = (id, referenceLayerIdentifier, referenceLayerOfIndicatorIdentifier) => {
+  return referenceLayerOfIndicatorIdentifier === referenceLayerIdentifier ? id : id + '-' + referenceLayerOfIndicatorIdentifier
+}
+
+/**
+ * Return Indicator Data by Dataset
+ * @param id
+ * @param indicatorsData
+ * @param layer
+ * @param referenceLayer
+ * @returns {*|string}
+ */
+export const getIndicatorDataByLayer = (id, indicatorsData, layer, referenceLayer) => {
+  const referenceLayerOfIndicator = referenceLayerIndicatorLayer(referenceLayer, layer)
+  const _id = getIndicatorDataId(id, referenceLayer.identifier, referenceLayerOfIndicator.identifier)
+  return indicatorsData[_id]
 }

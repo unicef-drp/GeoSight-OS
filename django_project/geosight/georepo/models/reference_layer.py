@@ -14,10 +14,11 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from django.contrib.gis.db import models
+from django.contrib.auth import get_user_model
+from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from core.models.general import AbstractVersionData
+from core.models.general import AbstractVersionData, AbstractEditData
 from core.utils import is_valid_uuid
 from geosight.data.models.indicator import Indicator
 from geosight.georepo.request import (
@@ -26,31 +27,10 @@ from geosight.georepo.request import (
 from geosight.georepo.request.data import GeorepoEntity
 from geosight.permission.models.manager import PermissionManager
 
-
-# TODO:
-#  Deprecated, we use ReferenceLayerView instead Dataset
-class ReferenceLayer(models.Model):
-    """Dataset of georepo."""
-
-    identifier = models.CharField(
-        max_length=256,
-        help_text=_("Reference layer identifier.")
-    )
-
-    name = models.CharField(
-        max_length=256,
-        help_text=_("Reference layer name."),
-        null=True, blank=True
-    )
-
-    in_georepo = models.BooleanField(default=True)
-
-    def __str__(self):
-        """Return str."""
-        return self.identifier
+User = get_user_model()
 
 
-class ReferenceLayerView(AbstractVersionData):
+class ReferenceLayerView(AbstractEditData, AbstractVersionData):
     """Reference Layer view data."""
 
     identifier = models.CharField(
@@ -69,6 +49,14 @@ class ReferenceLayerView(AbstractVersionData):
     )
 
     in_georepo = models.BooleanField(default=True)
+
+    class Meta:  # noqa: D106
+        indexes = [
+            models.Index(
+                fields=['identifier'],
+                name='reference_layer_identifier'
+            )
+        ]
 
     def get_name(self):
         """Return name."""
@@ -177,6 +165,11 @@ class ReferenceLayerView(AbstractVersionData):
                 return ReferenceLayerView.objects.get(id=identifier)
             except ReferenceLayerView.DoesNotExist:
                 return
+
+    @property
+    def is_local(self):
+        """Return if view is local or not."""
+        return not self.in_georepo
 
 
 class ReferenceLayerIndicator(models.Model):

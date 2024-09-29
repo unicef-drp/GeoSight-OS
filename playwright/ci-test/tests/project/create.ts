@@ -58,6 +58,7 @@ test.describe('Create project', () => {
     await page.locator('.AdminSelectDataForm .Save-Button button').click();
 
     // Add filters
+    await new Promise(r => setTimeout(r, 2000));
     await page.locator('.TabPrimary').getByText('Filters').click();
     await page.locator('.Filters').getByTestId('AddCircleIcon').click();
     await page.getByPlaceholder('Filter name').click();
@@ -108,8 +109,8 @@ test.describe('Create project', () => {
     await page.getByTitle('Edit project').getByRole('link').click();
     await page.waitForURL('http://localhost:2000/admin/project/test-project-default/edit')
     await expect(page.locator('.MoreActionIcon')).toBeVisible();
-    await expect(page.locator('.Summary .ReferenceDatasetSection input')).toHaveValue('Global Administrative Boundaries - Somalia (Latest)');
-    await expect(page.locator('.Summary .CodeMappingConfig input')).toHaveValue('Concept uuid');
+    await expect(page.locator('.Summary .ReferenceDatasetSection input')).toHaveValue('Somalia');
+    await expect(page.locator('.Summary .CodeMappingConfig input')).toHaveValue('Latest ucode');
     await expect(page.getByPlaceholder('Select default admin level')).toHaveValue('Admin Level 2');
 
     const availableLayers = [];
@@ -121,10 +122,10 @@ test.describe('Create project', () => {
     await expect(availableLayers).toEqual(['Admin Level 0', 'Admin Level 1', 'Admin Level 2']);
     await expect(page.locator('.Summary #SummaryName')).toHaveValue('Test Project Default');
     expect(await page.locator('.Summary #SummaryCategory .ReactSelect__single-value').innerText()).toEqual('Test');
-    await expect(page.locator('.ExtentManualInput input').nth(0)).toHaveValue('40.994');
-    await expect(page.locator('.ExtentManualInput input').nth(1)).toHaveValue('11.988');
-    await expect(page.locator('.ExtentManualInput input').nth(2)).toHaveValue('51.415');
-    await expect(page.locator('.ExtentManualInput input').nth(3)).toHaveValue('-1.657');
+    await expect(page.locator('.ExtentManualInput input').nth(0)).toHaveValue('40.9943');
+    await expect(page.locator('.ExtentManualInput input').nth(1)).toHaveValue('11.9884');
+    await expect(page.locator('.ExtentManualInput input').nth(2)).toHaveValue('51.4151');
+    await expect(page.locator('.ExtentManualInput input').nth(3)).toHaveValue('-1.6568');
     await expect(page.locator('#default_interval').getByText('Monthly')).toBeVisible();
     expect(await page.locator("#fit_to_current_indicator_range").isChecked()).toBeFalsy()
     expect(await page.locator("#show_last_known_value_in_range").isChecked()).toBeTruthy()
@@ -212,8 +213,8 @@ test.describe('Create project', () => {
     // Check values
     await page.waitForURL('http://localhost:2000/admin/project/test-project-override-config/edit')
     await expect(page.locator('.MoreActionIcon')).toBeVisible();
-    await expect(page.locator('.Summary .ReferenceDatasetSection input')).toHaveValue('Global Administrative Boundaries - Somalia (Latest)');
-    await expect(page.locator('.Summary .CodeMappingConfig input')).toHaveValue('Concept uuid');
+    await expect(page.locator('.Summary .ReferenceDatasetSection input')).toHaveValue('Somalia');
+    await expect(page.locator('.Summary .CodeMappingConfig input')).toHaveValue('Latest ucode');
     await expect(page.getByPlaceholder('Select default admin level')).toHaveValue('Admin Level 0');
 
     const availableLayers = [];
@@ -225,10 +226,10 @@ test.describe('Create project', () => {
     await expect(availableLayers).toEqual(['Admin Level 0', 'Admin Level 1', 'Admin Level 2']);
     await expect(page.locator('.Summary #SummaryName')).toHaveValue('Test Project Override Config');
     expect(await page.locator('.Summary #SummaryCategory .ReactSelect__single-value').innerText()).toEqual('Overriden');
-    await expect(page.locator('.ExtentManualInput input').nth(0)).toHaveValue('40.994');
-    await expect(page.locator('.ExtentManualInput input').nth(1)).toHaveValue('11.988');
-    await expect(page.locator('.ExtentManualInput input').nth(2)).toHaveValue('51.415');
-    await expect(page.locator('.ExtentManualInput input').nth(3)).toHaveValue('-1.657');
+    await expect(page.locator('.ExtentManualInput input').nth(0)).toHaveValue('40.9943');
+    await expect(page.locator('.ExtentManualInput input').nth(1)).toHaveValue('11.9884');
+    await expect(page.locator('.ExtentManualInput input').nth(2)).toHaveValue('51.4151');
+    await expect(page.locator('.ExtentManualInput input').nth(3)).toHaveValue('-1.6568');
     await expect(page.locator('#default_interval').getByText('Yearly')).toBeVisible();
     expect(await page.locator("#fit_to_current_indicator_range").isChecked()).toBeTruthy()
     expect(await page.locator("#show_last_known_value_in_range").isChecked()).toBeFalsy()

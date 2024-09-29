@@ -18,6 +18,7 @@ import json
 from base64 import b64encode
 
 import requests
+from django.conf import settings
 from django.contrib.gis.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -38,6 +39,7 @@ class LayerType(object):
     RASTER_TILE = 'Raster Tile'
     VECTOR_TILE = 'Vector Tile'
     RELATED_TABLE = 'Related Table'
+    CLOUD_NATIVE_GIS_LAYER = 'Cloud Native GIS Layer'
 
 
 class ContextLayerGroup(AbstractTerm):
@@ -86,6 +88,10 @@ class ContextLayer(AbstractEditData, AbstractTerm):
             (LayerType.RASTER_TILE, LayerType.RASTER_TILE),
             (LayerType.VECTOR_TILE, LayerType.VECTOR_TILE),
             (LayerType.RELATED_TABLE, LayerType.RELATED_TABLE),
+            (
+                LayerType.CLOUD_NATIVE_GIS_LAYER,
+                LayerType.CLOUD_NATIVE_GIS_LAYER
+            ),
         ),
         help_text=_(
             'The type of layer for this context layer.<br>'
@@ -93,8 +99,10 @@ class ContextLayer(AbstractEditData, AbstractTerm):
             'https://{host}/rest/services/{layer}/FeatureServer/1.<br>'
             'For <b>GeoJson</b>, put url of geojson.<br>'
             'For <b>Raster tile</b>, put XYZ url.<br>'
-            'For <b>Related Table</b>, select existing related table name.'
+            'For <b>Related table</b>, select existing related table name.'
             'For <b>Vector tile</b>, put XYZ url.'
+            'For <b>Cloud native gis layer</b>, '
+            'select the layer from cloud native gis.'
         )
     )
     arcgis_config = models.ForeignKey(
@@ -156,6 +164,14 @@ class ContextLayer(AbstractEditData, AbstractTerm):
     )
     objects = models.Manager()
     permissions = PermissionManager()
+
+    # Cloud native gis layer
+    cloud_native_gis_layer_id = models.IntegerField(
+        null=True, blank=True,
+        help_text=_(
+            'Using layer from cloud native gis.'
+        )
+    )
 
     def save_relations(self, data):
         """Save all relationship data."""
@@ -293,6 +309,19 @@ class ContextLayer(AbstractEditData, AbstractTerm):
         if self.arcgis_config:
             return self.arcgis_config.token_val
         return self.token
+
+    @property
+    def cloud_native_gis_layer(self):
+        """Return cloud native GIS."""
+        if settings.CLOUD_NATIVE_GIS_ENABLED:
+            from cloud_native_gis.models.layer import Layer
+            try:
+                return Layer.objects.get(
+                    id=self.cloud_native_gis_layer_id
+                )
+            except Layer.DoesNotExist:
+                return None
+        return None
 
 
 @receiver(post_save, sender=ContextLayer)

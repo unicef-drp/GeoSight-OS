@@ -90,7 +90,8 @@ else:
 
 if settings.DEBUG:
     urlpatterns += static(
-        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
+    )
 
 # ------------------------------------------------------
 # USER API
@@ -164,6 +165,13 @@ api = [
         name='refresh-materialized-view'
     ),
 ]
+
+# Tenants enabled
+if settings.TENANTS_ENABLED:
+    api += [
+        url(r'^tenants/', include('geosight.tenants.urls'))
+    ]
+
 urlpatterns += [
     url(r'^tinymce/', include('tinymce.urls')),
     url(r'^proxy', ProxyView.as_view(), name='proxy-view'),

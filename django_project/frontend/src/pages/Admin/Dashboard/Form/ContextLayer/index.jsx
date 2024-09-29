@@ -15,6 +15,7 @@
 
 import React, { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
+import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 
 import { Actions } from "../../../../../store/dashboard";
 import Modal, {
@@ -33,12 +34,13 @@ import WhereInputModal
 import { dictDeepCopy, toJson } from "../../../../../utils/main";
 import { getRelatedTableFields } from "../../../../../utils/relatedTable";
 import { fetchingData } from "../../../../../Requests";
-
-import './style.scss';
-import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 import {
   SelectWithList
 } from "../../../../../components/Input/SelectWithList";
+import { Variables } from "../../../../../utils/Variables";
+import { returnLayerDetail } from "../../../../../utils/CloudNativeGIS";
+
+import './style.scss';
 
 /**
  * Context Layer Style
@@ -53,7 +55,16 @@ function ContextLayerStyle({ contextLayer }) {
   const [relatedTableData, setRelatedTableData] = useState(null)
 
   useEffect(() => {
-    setData(JSON.parse(JSON.stringify(contextLayer)))
+    const nowData = JSON.parse(JSON.stringify(contextLayer));
+    (
+      async () => {
+        if (nowData.layer_type === Variables.TERMS.CLOUD_NATIVE_GIS && !nowData.mapbox_style) {
+          const _detail = await returnLayerDetail(nowData.cloud_native_gis_layer_id)
+          nowData.mapbox_style = _detail.mapbox_style
+        }
+      }
+    )()
+    setData(nowData)
   }, [open])
 
   /** Apply the data **/

@@ -17,16 +17,15 @@ __copyright__ = ('Copyright 2023, Unicef')
 from datetime import datetime
 
 import mock
-from django.test.testcases import TestCase
 from django.urls import reverse
 
 from core.models.maintenance import Maintenance
 from core.models.profile import ROLES
-from core.tests.base_tests import BaseTest
+from core.tests.base_tests import APITestCase
 from core.tests.model_factories import create_user
 
 
-class MaintenanceApiTest(BaseTest, TestCase):
+class MaintenanceApiTest(APITestCase):
     """Test for maintenance."""
 
     @mock.patch('core.api.maintenance.datetime')

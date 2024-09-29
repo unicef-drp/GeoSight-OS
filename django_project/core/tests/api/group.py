@@ -17,17 +17,17 @@ __copyright__ = ('Copyright 2023, Unicef')
 import csv
 import json
 
-from django.test.testcases import TestCase
+from django.test.client import MULTIPART_CONTENT
 from django.urls import reverse
 
 from core.models.group import GeosightGroup
 from core.models.profile import ROLES
 from core.settings.utils import ABS_PATH
-from core.tests.base_tests import BaseTest
+from core.tests.base_tests import APITestCase
 from core.tests.model_factories import create_user
 
 
-class GroupApiTest(BaseTest, TestCase):
+class GroupApiTest(APITestCase):
     """Test for api key."""
 
     def setUp(self):
@@ -115,7 +115,8 @@ class GroupApiTest(BaseTest, TestCase):
 
         with open(filepath) as _file:
             self.assertRequestPostView(
-                url, 200, {'file': _file}, user=self.admin
+                url, 200, {'file': _file}, user=self.admin,
+                content_type=MULTIPART_CONTENT
             )
         _file.close()
         with open(filepath) as _file:

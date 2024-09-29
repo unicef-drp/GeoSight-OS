@@ -71,6 +71,7 @@ export function ModalInputSelector(
       iconEnd={<ArrowDownwardIcon/>}
       onClick={() => setOpen(true)}
       value={inputValue}
+      disabled={props.disabled}
     />
     {
       React.cloneElement(children, {
@@ -156,10 +157,12 @@ export function ContextLayerInputSelector(
  * @param {Boolean} isMultiple Is data returned multiple object.
  * @param {Boolean} showSelected Is Showing selected data.
  * @param {React.Component} otherContent other content to be rendered.
+ * @param props
  */
 export function GeorepoViewInputSelector(
   {
-    data, setData, isMultiple, showSelected, otherContent = null
+    data, setData, isMultiple, showSelected,
+    otherContent = null, ...props
   }
 ) {
   return <ModalInputSelector
@@ -169,6 +172,7 @@ export function GeorepoViewInputSelector(
     isMultiple={isMultiple}
     showSelected={showSelected}
     hideLabel={true}
+    {...props}
   >
     <GeorepoViewSelector otherContent={otherContent}/>
   </ModalInputSelector>

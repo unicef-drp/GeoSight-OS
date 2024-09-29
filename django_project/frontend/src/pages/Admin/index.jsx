@@ -42,6 +42,10 @@ export const pageNames = {
 
   // Profile
   UserProfile: 'User Profile',
+
+  // ReferenceLayerView
+  ReferenceLayerView: 'Reference Dataset',
+  referenceDatesetImporter: 'Reference Dataset Importer',
 }
 
 /**
@@ -52,7 +56,8 @@ export const pageNames = {
 export function AdminPage({ pageName, children, ...props }) {
   return (
     <App className='Admin' hideNavbar={true}>
-      <SideNavigation pageName={pageName} minified={props.minifySideNavigation}/>
+      <SideNavigation pageName={pageName}
+                      minified={props.minifySideNavigation}/>
       {children}
     </App>
   );

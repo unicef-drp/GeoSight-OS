@@ -50,19 +50,19 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_is_contributor(self, obj: User):
         """Return is contributor."""
-        return 'true' if obj.profile.is_contributor else 'false'
+        return obj.profile.is_contributor
 
     def get_is_creator(self, obj: User):
         """Return is creator."""
-        return 'true' if obj.profile.is_creator else 'false'
+        return obj.profile.is_creator
 
     def get_is_admin(self, obj: User):
         """Return is admin."""
-        return 'true' if obj.profile.is_admin else 'false'
+        return obj.profile.is_admin
 
     def get_receive_notification(self, obj: User):
         """Return is admin."""
-        return 'true' if obj.profile.receive_notification else 'false'
+        return obj.profile.receive_notification
 
     class Meta:  # noqa: D106
         model = User

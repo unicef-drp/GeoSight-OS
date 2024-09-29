@@ -20,7 +20,7 @@ from abc import ABC
 from frontend.views._base import BaseView
 from geosight.data.models.code import CodeList
 from geosight.data.models.dashboard import DashboardGroup
-from geosight.data.models.dashboard.widget import LayerUsed
+from geosight.data.models.dashboard.dashboard_widget import LayerUsed
 from geosight.data.models.indicator import (
     IndicatorTypeChoices
 )

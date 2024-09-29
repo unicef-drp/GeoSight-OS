@@ -80,7 +80,8 @@ class IndicatorSerializer(DynamicModelSerializer):
             'id', 'name', 'category', 'shortcode', 'source', 'description',
             'url', 'full_name',
             'last_update', 'permission', 'type',
-            'style_id', 'style', 'style_config', 'style_type', 'unit'
+            'style_id', 'style', 'style_config', 'style_type', 'unit',
+            'label_config'
         )
 
 

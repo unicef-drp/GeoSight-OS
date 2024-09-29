@@ -15,8 +15,64 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from rest_framework import serializers
+from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
 from geosight.georepo.models.entity import Entity
+
+
+class EntityCentroidSerializer(GeoFeatureModelSerializer):
+    """Centroid serializer for entity."""
+
+    entities_by_ucode = {}
+
+    c = serializers.SerializerMethodField()
+    n = serializers.SerializerMethodField()
+    u = serializers.SerializerMethodField()
+    pu = serializers.SerializerMethodField()
+    pc = serializers.SerializerMethodField()
+
+    def get_c(self, obj: Entity):
+        """Return concept uuid."""
+        return obj.concept_uuid
+
+    def get_n(self, obj: Entity):
+        """Return name."""
+        return obj.name
+
+    def get_u(self, obj: Entity):
+        """Return ucode."""
+        return obj.geom_id
+
+    def get_pu(self, obj: Entity):
+        """Return ucode."""
+        parents = obj.parents
+        parents.reverse()
+        return list(parents)
+
+    def get_pc(self, obj: Entity):
+        """Return ucode."""
+        pcs = []
+        parents = obj.parents
+        parents.reverse()
+        for parent in parents:
+            try:
+                pcs.append(self.entities_by_ucode[parent])
+            except KeyError:
+                try:
+                    entity = Entity.objects.get(
+                        reference_layer=obj.reference_layer,
+                        geom_id=parent
+                    ).concept_uuid
+                    self.entities_by_ucode[parent] = entity
+                    pcs.append(entity)
+                except Entity.DoesNotExist:
+                    pass
+        return pcs
+
+    class Meta:  # noqa: D106
+        model = Entity
+        geo_field = 'centroid'
+        fields = ('c', 'n', 'u', 'pu', 'pc')
 
 
 class EntitySerializer(serializers.ModelSerializer):
@@ -31,3 +87,76 @@ class EntitySerializer(serializers.ModelSerializer):
     class Meta:  # noqa: D106
         model = Entity
         fields = ('name', 'geom_code', 'concept_uuid', 'admin_level')
+
+
+class ApiEntitySerializer(serializers.ModelSerializer):
+    """Serializer for Entity."""
+
+    levels = {}
+    parents = serializers.SerializerMethodField()
+    ucode = serializers.SerializerMethodField()
+    level_name = serializers.SerializerMethodField()
+    centroid = serializers.SerializerMethodField()
+    bbox = serializers.SerializerMethodField()
+    ext_codes = serializers.SerializerMethodField()
+
+    def entity_level(self, obj: Entity, admin_level: int):
+        """Return levels of entity."""
+        try:
+            levels = self.levels[obj.reference_layer.id]
+        except KeyError:
+            levels = []
+            for level in obj.reference_layer.levels:
+                levels.append({
+                    'level': level.level,
+                    'name': level.name
+                })
+        try:
+            return levels[admin_level]
+        except IndexError:
+            return None
+
+    def get_parents(self, obj: Entity):
+        """Return ucode."""
+        output = []
+        for idx, parent in enumerate(obj.parents):
+            level = self.entity_level(obj, idx)
+            output.append(
+                {
+                    "default": parent,
+                    "ucode": parent,
+                    "admin_level": idx,
+                    "type": level['name'] if level else '-'
+                }
+            )
+        return output
+
+    def get_ucode(self, obj: Entity):
+        """Return ucode."""
+        return obj.geom_id
+
+    def get_level_name(self, obj: Entity):
+        """Return level name."""
+        level = self.entity_level(obj, obj.admin_level)
+        return level['name'] if level else '-'
+
+    def get_centroid(self, obj: Entity):
+        """Return bbox."""
+        return obj.geometry.centroid.wkt
+
+    def get_bbox(self, obj: Entity):
+        """Return bbox."""
+        return obj.geometry.extent
+
+    def get_ext_codes(self, obj: Entity):
+        """Return ext_codes."""
+        return {
+            "default": obj.geom_id
+        }
+
+    class Meta:  # noqa: D106
+        model = Entity
+        fields = (
+            'id', 'name', 'ucode', 'concept_uuid', 'admin_level', 'parents',
+            'level_name', 'bbox', 'centroid', 'ext_codes'
+        )

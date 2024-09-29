@@ -24,6 +24,8 @@ import {
 import { defaultPointStyle } from './layerStyles';
 import RelatedTableConfig from './RelatedTable';
 import AggregationStyleConfig from "./AggregationStyleConfig";
+import { Variables } from "../../../../utils/Variables";
+import { GET_RESOURCE } from "../../../../utils/ResourceRequests";
 
 import './style.scss';
 
@@ -66,7 +68,7 @@ export default function StyleConfig(
   }, [data, tab]);
 
   useEffect(() => {
-    if (!data.styles && ['Related Table', 'Vector Tile'].includes(data.layer_type)) {
+    if (!data.styles && Variables.LIST.VECTOR_TILE_TYPES.includes(data.layer_type) && !Variables.LIST.OVERRIDE_STYLES.includes(data.layer_type)) {
       setData({
         ...data,
         styles: JSON.stringify(defaultPointStyle, null, 4),
@@ -166,7 +168,7 @@ export default function StyleConfig(
               </div> : ""
           }
           {
-            ['Related Table', 'Vector Tile'].includes(data.layer_type) ? <>
+            Variables.LIST.VECTOR_TILE_TYPES.includes(data.layer_type) ? <>
               <div className='ArcgisConfig Style'>
                 {
                   useOverride ?

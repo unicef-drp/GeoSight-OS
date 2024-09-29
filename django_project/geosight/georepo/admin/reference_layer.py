@@ -74,6 +74,7 @@ class ReferenceLayerViewAdmin(admin.ModelAdmin):
         action_create_data_access, invalidate_cache
     ]
 
+
     def in_georepo(self, obj: ReferenceLayerView):
         """Is reference layer in georepo."""
         if obj.in_georepo:

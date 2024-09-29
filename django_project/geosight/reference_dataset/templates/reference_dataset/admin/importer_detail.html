@@ -1,0 +1,16 @@
+{% extends 'frontend/admin/base_form.html' %}
+{% load render_bundle from webpack_loader %}
+{% load static %}
+{% load frontend %}
+
+{% block render_bundle %}
+    {% render_bundle 'AdminReferenceDatasetImporterDetail' %}
+{% endblock %}
+{% block scripts %}
+    <script>
+      urls.api = {
+        'detail': '{% url 'reference-datasets-importer-api-detail' obj_id %}',
+        'browseData': '{% url 'admin-reference-dataset-entity-list-view' identifier=identifier %}'
+      }
+    </script>
+{% endblock %}
