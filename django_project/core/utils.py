@@ -20,10 +20,8 @@ import string
 import uuid
 from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
-from django_tenants.utils import (
-    get_public_schema_name
-)
 
 
 def string_is_true(string: str):
@@ -75,7 +73,8 @@ def create_superuser(
     # Check if tenant not public, random the password
     if not admin_password:
         admin_password = os.getenv('ADMIN_PASSWORD')
-    if tenant:
+    if tenant and settings.TENANTS_ENABLED:
+        from django_tenants.utils import get_public_schema_name
         if tenant.schema_name != get_public_schema_name():
             admin_password = do_random()
             if tenant.responder_email:
