@@ -17,7 +17,9 @@ __copyright__ = ('Copyright 2023, Unicef')
 from abc import ABC
 from typing import List
 
-from geosight.data.models.indicator import Indicator
+from geosight.data.models.indicator import (
+    IndicatorValueRejectedError, VALUE_IS_EMPTY_TEXT, Indicator
+)
 from geosight.importer.attribute import ImporterAttribute
 from geosight.importer.importers.base.indicator_value import (
     AbstractImporterIndicatorValue
@@ -87,9 +89,18 @@ class IndicatorValueWideFormat(AbstractImporterIndicatorValue, ABC):
                         note['indicator_id'] = 'Indicator id is empty'
                     else:
                         try:
-                            self.get_indicator(data)
+                            indicator = self.get_indicator(data)
+
+                            # ----------------------------------------
+                            # Check the value
+                            try:
+                                indicator.validate(value)
+                            except IndicatorValueRejectedError as e:
+                                if f'{e}' != VALUE_IS_EMPTY_TEXT:
+                                    note['value'] = f'{e}'
                         except Indicator.DoesNotExist:
                             note['indicator_id'] = 'Indicator does not exist'
+
                     if not date_time:
                         note['date_time'] = 'date_time is empty'
                     if date_time_error:
@@ -131,8 +142,13 @@ class IndicatorValueWideFormat(AbstractImporterIndicatorValue, ABC):
                     notes.append(note)
                     idx += 1
 
-                    # If there is not, failed
-                    if len(note.keys()):
+                    # If there is note, failed
+                    note_keys = list(note.keys())
+                    try:
+                        note_keys.remove('warning')
+                    except ValueError:
+                        pass
+                    if len(note_keys):
                         success = False
 
         # Checking missing geocode

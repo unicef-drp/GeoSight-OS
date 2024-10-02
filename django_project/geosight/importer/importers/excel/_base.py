@@ -111,6 +111,6 @@ class BaseExcelFormatImporter(ABC):
                 try:
                     row[value] = clean_value(row[key.strip()])
                 except KeyError:
-                    pass
+                    row[value] = None
             data.append(row)
         return data

@@ -17,7 +17,9 @@ __copyright__ = ('Copyright 2023, Unicef')
 from abc import ABC
 from typing import List
 
-from geosight.data.models.indicator import Indicator
+from geosight.data.models.indicator import (
+    IndicatorValueRejectedError, VALUE_IS_EMPTY_TEXT, Indicator
+)
 from geosight.importer.attribute import ImporterAttribute
 from geosight.importer.importers.base.indicator_value import (
     AbstractImporterIndicatorValue, IndicatorDataType
@@ -152,6 +154,15 @@ class IndicatorValueLongFormat(AbstractImporterIndicatorValue, ABC):
 
             if not indicator:
                 note['indicator_name'] = 'Indicator does not found'
+            else:
+                # ----------------------------------------
+                # Check the value
+                try:
+                    indicator.validate(value)
+                except IndicatorValueRejectedError as e:
+                    if f'{e}' != VALUE_IS_EMPTY_TEXT:
+                        note['value'] = f'{e}'
+
             if not date_time:
                 note['date_time'] = 'date_time is empty'
             if date_time_error:
