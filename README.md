@@ -16,6 +16,12 @@ A **project** (dashboard) is the most important feature of GeoSight. Projects co
 
 [![Tests](https://github.com/unicef-drp/GeoSight-OS/workflows/Tests/badge.svg)](https://github.com/unicef-drp/GeoSight-OS/actions/workflows/tests.yaml)
 
+### Note for Apple Silicon
+Before proceeding with the setup, if you are developing on an Apple Silicon or other AMD-based devices, please ensure to uncomment line 16 in the deployment/docker/Dockerfile.
+```
+# FROM --platform=amd64 ubuntu:20.04 AS prod
+```  
+
 ### Production
 
 ```
@@ -39,6 +45,7 @@ docker-compose down
 ```
 
 ### Development
+
 
 ```
 git clone https://github.com/unicef-drp/GeoSight-OS
