@@ -3,13 +3,14 @@
     "model": "geosight_georepo.referencelayerview",
     "pk": 1,
     "fields": {
-      "identifier": "d50a9d3b-2d8c-49de-ac6c-cff3f43d1448",
+      "version_data": "2024-01-01T01:01:01.000Z",
       "creator": 1,
       "created_at": "2024-01-01T01:01:01.000Z",
       "modified_at": "2024-01-01T01:01:01.000Z",
-      "name": "Global Administrative Boundaries - Somalia (Latest)",
+      "identifier": "00000000-0000-0000-0000-000000000000",
+      "name": "Somalia",
       "description": "Global administrative boundaries at the country and subnational levels.. This dataset contains only the latest entities from main dataset for Somalia",
-      "in_georepo": true
+      "in_georepo": false
     }
   },
   {

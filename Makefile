@@ -220,7 +220,16 @@ devweb-load-demo-data:
 	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/demo/1.core.json"
 	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/demo/2.geosight_georepo.json"
 	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/demo/3.geosight_data.json"
-	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata geosight/reference_dataset/fixtures/demo/4.reference_dataset_levels.json"
+
+load-test-data:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Load demo data for devweb"
+	@echo "------------------------------------------------------------------"
+	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/demo_test/1.core.json"
+	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/demo_test/2.geosight_georepo.json"
+	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/demo_test/3.geosight_data.json"
+	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata geosight/reference_dataset/fixtures/demo_test/4.reference_dataset_levels.json"
 
 devweb-test:
 	@echo

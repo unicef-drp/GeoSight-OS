@@ -79,7 +79,7 @@ jobs:
           make wait-db
           make devweb-entrypoint
           make devweb-runserver
-          make devweb-load-demo-data
+          make load-test-data
           make sleep
 
       - name: Test production config ready
