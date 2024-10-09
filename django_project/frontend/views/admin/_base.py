@@ -49,8 +49,8 @@ class AdminBatchEditView(RoleContributorRequiredMixin):
     def post_update_instance(self, instance, data, request):
         """Called when instance is saved."""
         # Save permission
-        instance.permission.update_from_request_data_in_string(
-            request.POST, request.user
+        instance.permission.update_from_request_data(
+            request.POST, request.user, clean_update=False
         )
 
     def post(self, request, **kwargs):

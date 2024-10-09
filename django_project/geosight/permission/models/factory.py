@@ -159,15 +159,25 @@ def permission_model_factory(
                 return ROLES.CREATOR.level
             return self.role_to_delete_level
 
-        def update_from_request_data_in_string(self, data, user):
+        def update_from_request_data(self, data, user, clean_update=True):
             """Update from data."""
             permission = data.get('permission', None)
             if permission:
                 if self.has_share_perm(user):
-                    self.update(json.loads(permission))
+                    if isinstance(permission, str):
+                        permission = json.loads(permission)
+                    self.update(permission, clean_update)
 
-        def update(self, data):
-            """Update with new data."""
+        def update(self, data, clean_update=True):
+            """Update with new data.
+
+            :param data: data to update
+            :type data: dict
+
+            :param clean_update:
+                clean update that will delete all permissions not in the data
+            :type clean_update: bool
+            """
             self.organization_permission = data.get(
                 'organization_permission', organization_permission_default
             )
@@ -179,24 +189,39 @@ def permission_model_factory(
             except KeyError:
                 pass
 
-            user_ids = [user['id'] for user in data['user_permissions']]
-            self.user_permissions.exclude(user_id__in=user_ids).delete()
+            try:
+                user_ids = [user['id'] for user in data['user_permissions']]
+                permissions = self.user_permissions
 
-            for user in data['user_permissions']:
-                perm, crt = self.user_permissions.model.objects.get_or_create(
-                    obj=self, user_id=user['id']
-                )
-                perm.permission = user['permission']
-                perm.save()
+                if clean_update:
+                    permissions.exclude(user_id__in=user_ids).delete()
 
-            group_ids = [group['id'] for group in data['group_permissions']]
-            self.group_permissions.exclude(group_id__in=group_ids).delete()
-            for group in data['group_permissions']:
-                perm, crt = self.group_permissions.model.objects.get_or_create(
-                    obj=self, group_id=group['id']
-                )
-                perm.permission = group['permission']
-                perm.save()
+                for user in data['user_permissions']:
+                    perm, crt = permissions.model.objects.get_or_create(
+                        obj=self, user_id=user['id']
+                    )
+                    perm.permission = user['permission']
+                    perm.save()
+            except KeyError:
+                pass
+
+            try:
+                group_ids = [
+                    group['id'] for group in data['group_permissions']
+                ]
+                permissions = self.group_permissions
+
+                if clean_update:
+                    permissions.exclude(group_id__in=group_ids).delete()
+
+                for group in data['group_permissions']:
+                    perm, crt = permissions.model.objects.get_or_create(
+                        obj=self, group_id=group['id']
+                    )
+                    perm.permission = group['permission']
+                    perm.save()
+            except KeyError:
+                pass
 
             return
 

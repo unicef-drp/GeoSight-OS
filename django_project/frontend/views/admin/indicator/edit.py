@@ -89,7 +89,7 @@ class IndicatorEditView(RoleContributorRequiredMixin, BaseIndicatorEditView):
             self.post_save(indicator=indicator, data=data)
 
             # Save permission
-            indicator.permission.update_from_request_data_in_string(
+            indicator.permission.update_from_request_data(
                 data, request.user
             )
             indicator.update_dashboard_version()
@@ -156,5 +156,6 @@ class IndicatorEditBatchView(
         # Save permission
         self.post_save(
             indicator=instance, data=data,
-            save_style=data.get('style_config_enable', None)
+            save_style=data.get('style_config_enable', None),
+            clean_update_permission=False
         )

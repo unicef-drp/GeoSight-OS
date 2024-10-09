@@ -86,7 +86,7 @@ class BasemapEditView(RoleContributorRequiredMixin, AdminBaseView):
         if form.is_valid():
             instance = form.save()
             # Save permission
-            instance.permission.update_from_request_data_in_string(
+            instance.permission.update_from_request_data(
                 request.POST, request.user
             )
             return redirect(

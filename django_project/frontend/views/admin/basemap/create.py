@@ -83,7 +83,7 @@ class BasemapCreateView(RoleCreatorRequiredMixin, AdminBaseView):
             instance.creator = request.user
             instance.save()
             # Save permission
-            instance.permission.update_from_request_data_in_string(
+            instance.permission.update_from_request_data(
                 request.POST, request.user
             )
             return redirect(
