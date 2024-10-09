@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 import React, { Fragment, useEffect, useState } from 'react';
 import { fetchJSON } from "../../../../Requests";
@@ -30,7 +30,7 @@ export default function PermissionFormAdmin({ permissionApi }) {
 
   /** Return selectable input state by checked, enabled **/
   const selectableInputStateOutput = (attrName) => {
-    const selectableInputChecked = !selectableInputState[attrName] ? false : true
+    const selectableInputChecked = !!selectableInputState[attrName]
     const selectableInputEnabled = !selectableInput || selectableInputChecked
     return [selectableInputChecked, selectableInputEnabled]
   }
@@ -70,7 +70,9 @@ export default function PermissionFormAdmin({ permissionApi }) {
                 value={JSON.stringify(data)}
                 hidden={true}
               />
-              <PermissionForm data={data} setData={setData}/>
+              <PermissionForm
+                data={data} setData={setData} selectableInput={selectableInput}
+              />
             </Fragment> : <div>Loading</div> : null
       }
     </Fragment>

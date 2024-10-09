@@ -44,6 +44,7 @@ import { ShareIcon } from "../../../components/Icons";
 import { MainDataGrid } from "../../../components/MainDataGrid";
 
 import './style.scss';
+import { Checkbox } from "@mui/material";
 
 /**
  * Permission Configuration Form Table data selection
@@ -431,9 +432,52 @@ export function PermissionFormTable(
  * @param {dict} data Permission data.
  * @param {Function} setData Function of set data.
  * @param {dict} additionalTabs Other tabs.
+ * @param {boolean} selectableInput If the input is based on selectable input.
  * */
-export function PermissionForm({ data, setData, additionalTabs = {} }) {
+export function PermissionForm(
+  { data, setData, additionalTabs = {}, selectableInput = false }
+) {
   const [tab, setTab] = useState('UserAccess')
+  const [selectableInputState, setSelectableInputState] = useState({});
+  const [defaultData, setDefaultData] = useState(null);
+
+  /** Return selectable input state by checked, enabled **/
+  const selectableInputStateOutput = (attrName) => {
+    const selectableInputChecked = !selectableInputState[attrName] ? false : true
+    const selectableInputEnabled = !selectableInput || selectableInputChecked
+    return [selectableInputChecked, selectableInputEnabled]
+  }
+
+  const PUBLIC_ACCESS_ACTIVATE_KEY = 'public_access_config'
+  const public_access_activate_config = selectableInputStateOutput(PUBLIC_ACCESS_ACTIVATE_KEY)[0]
+  const public_access_activate = selectableInputStateOutput(PUBLIC_ACCESS_ACTIVATE_KEY)[1]
+
+  // If from data is undefined, use default data
+  const public_permission = data?.public_permission !== undefined ? data?.public_permission : defaultData?.public_permission
+
+  /** Fetch data when modal is opened **/
+  useEffect(() => {
+    if (!defaultData) {
+      setDefaultData({ ...data })
+      if (!public_access_activate) {
+        delete data.public_permission
+        setData({ ...data })
+      }
+    }
+  }, [data])
+
+  /** Fetch data when modal is opened **/
+  useEffect(() => {
+    if (data && defaultData) {
+      if (public_access_activate) {
+        data.public_permission = defaultData.public_permission
+      } else {
+        delete data.public_permission
+      }
+      setData({ ...data })
+    }
+  }, [defaultData, public_access_activate])
+
   return <Fragment>
     {
       !data ?
@@ -445,12 +489,29 @@ export function PermissionForm({ data, setData, additionalTabs = {} }) {
             {/* ORGANIZATION ACCESS */}
             <div className='GeneralAccess'>
               {/* PUBLIC ACCESS */}
-              <label className="form-label">Public Access</label>
+              {
+                selectableInput ?
+                  <Checkbox
+                    className='InputEnabler'
+                    checked={public_access_activate_config}
+                    onClick={evt => {
+                      selectableInputState[PUBLIC_ACCESS_ACTIVATE_KEY] = !public_access_activate_config
+                      setSelectableInputState({ ...selectableInputState })
+                    }
+                    }
+                  /> : null
+              }
+              <label
+                className={"form-label " + (!public_access_activate ? 'disabled' : '')}
+              >
+                Public Access
+              </label>
               <div className='Separator'></div>
               <FormControl className='BasicForm'>
                 <Select
                   name="radio-buttons-group"
-                  value={data.public_permission}
+                  disabled={!public_access_activate}
+                  value={public_permission}
                   onChange={(evt) => {
                     data.public_permission = evt.target.value
                     setData({ ...data })

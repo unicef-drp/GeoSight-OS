@@ -171,12 +171,16 @@ def permission_model_factory(
             self.organization_permission = data.get(
                 'organization_permission', organization_permission_default
             )
-            self.public_permission = data['public_permission']
-            self.save()
+
+            # Make public permission is optional
+            try:
+                self.public_permission = data['public_permission']
+                self.save()
+            except KeyError:
+                pass
+
             user_ids = [user['id'] for user in data['user_permissions']]
-            group_ids = [group['id'] for group in data['group_permissions']]
             self.user_permissions.exclude(user_id__in=user_ids).delete()
-            self.group_permissions.exclude(group_id__in=group_ids).delete()
 
             for user in data['user_permissions']:
                 perm, crt = self.user_permissions.model.objects.get_or_create(
@@ -185,6 +189,8 @@ def permission_model_factory(
                 perm.permission = user['permission']
                 perm.save()
 
+            group_ids = [group['id'] for group in data['group_permissions']]
+            self.group_permissions.exclude(group_id__in=group_ids).delete()
             for group in data['group_permissions']:
                 perm, crt = self.group_permissions.model.objects.get_or_create(
                     obj=self, group_id=group['id']
