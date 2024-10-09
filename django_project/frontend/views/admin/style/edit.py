@@ -17,10 +17,9 @@ __copyright__ = ('Copyright 2023, Unicef')
 import json
 
 from django.contrib.auth import get_user_model
-from django.forms.models import model_to_dict
-from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, reverse, render
 
+from frontend.views.admin._base import AdminBatchEditView
 from frontend.views.admin.style.create import BaseStyleEditingView
 from geosight.data.forms.style import StyleForm
 from geosight.data.models.style import Style
@@ -84,7 +83,7 @@ class StyleEditView(RoleContributorRequiredMixin, BaseStyleEditingView):
 
 
 class StyleEditBatchView(
-    RoleContributorRequiredMixin, BaseStyleEditingView
+    AdminBatchEditView, BaseStyleEditingView
 ):
     """Style Edit Batch View."""
 
@@ -105,30 +104,17 @@ class StyleEditBatchView(
             f'Edit Batch'
         )
 
-    def get_context_data(self, **kwargs) -> dict:
-        """Return context data."""
-        context = super().get_context_data(**kwargs)
-        context['batch'] = True
-        return context
+    @property
+    def edit_query(self):
+        """Return query for edit."""
+        return Style.permissions.edit(self.request.user)
 
-    def post(self, request, **kwargs):
-        """Edit style."""
-        data = request.POST.copy()
-        ids = data.get('ids', None)
-        if not ids:
-            return HttpResponseBadRequest('ids needs in payload')
-        ids = ids.split(',')
-        for obj in Style.permissions.edit(request.user).filter(id__in=ids):
-            # Save style if it has style on payload
-            initial_data = model_to_dict(obj)
-            for key, value in data.items():
-                initial_data[key] = value
-            form = StyleForm(initial_data, instance=obj)
-            form.is_valid()
-            instance = form.instance
-            instance.save()
-            # Save permission
-            instance.permission.update_from_request_data_in_string(
-                request.POST, request.user
-            )
-        return redirect(reverse('admin-style-list-view'))
+    @property
+    def form(self):
+        """Return form."""
+        return StyleForm
+
+    @property
+    def redirect_url(self):
+        """Return redirect url."""
+        return reverse('admin-style-list-view')
