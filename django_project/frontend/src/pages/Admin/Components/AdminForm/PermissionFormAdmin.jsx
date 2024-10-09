@@ -19,6 +19,7 @@ import { PermissionForm } from "../../Permission";
 import { Checkbox, FormControlLabel } from "@mui/material";
 
 import './style.scss';
+import { urlParams } from "../../../../utils/main";
 
 /**
  * PermissionForm
@@ -38,7 +39,15 @@ export default function PermissionFormAdmin({ permissionApi }) {
   /** Fetch data when modal is opened **/
   useEffect(() => {
     if (permissionApi) {
-      fetchJSON(permissionApi)
+      let url = permissionApi
+      if (selectableInput) {
+        // put ids to permission api
+        const { ids } = urlParams()
+        if (ids) {
+          url += '?ids=' + ids
+        }
+      }
+      fetchJSON(url)
         .then(data => {
           setData(data)
         })

@@ -43,8 +43,21 @@ class ResourcePermissionAPI(APIView):
     def get(self, request, pk):
         """Return permission data of resource."""
         if pk == '0':
+            new_permission = self.permission_model()
+
+            ids = self.request.GET.get('ids', None)
+            if ids:
+                # If there is ids
+                # we can use this for checking same permission for the data
+                Model = self.permission_model
+                output = Model.objects.values_list(
+                    'public_permission', flat=True
+                ).distinct()
+                if output.count() == 1:
+                    new_permission.public_permission = output[0]
+
             return Response(
-                PermissionSerializer(obj=self.permission_model()).data
+                PermissionSerializer(obj=new_permission).data
             )
         obj = get_object_or_404(self.model, pk=pk)
         share_permission_resource(obj, request.user)
