@@ -20,7 +20,7 @@ from geosight.permission.models.factory import PERMISSIONS
 class PermissionSerializer:
     """Serializer for Permission."""
 
-    def __init__(self, obj):
+    def __init__(self, obj, users_permissions=None, group_permissions=None):
         """Serialize permission of object."""
         self.obj = obj
         try:
@@ -31,10 +31,17 @@ class PermissionSerializer:
             except AttributeError:
                 self.creator = None
 
+        # Check user permissions init
         self.user_permissions = obj.user_permissions.exclude(
             user=self.creator
         )
+        if users_permissions:
+            self.user_permissions = users_permissions
+
+        # Check group permission init
         self.group_permissions = obj.group_permissions.all()
+        if group_permissions:
+            self.group_permissions = group_permissions
 
     @property
     def data(self):
