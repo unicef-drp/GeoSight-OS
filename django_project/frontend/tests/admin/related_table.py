@@ -27,13 +27,14 @@ from geosight.permission.models.factory import PERMISSIONS
 User = get_user_model()
 
 
-class RelatedTableAdminViewTest(BaseViewTest.TestCase):
+class RelatedTableAdminViewTest(BaseViewTest.TestCaseWithBatch):
     """Test for RelatedTable Admin."""
 
     list_url_tag = 'admin-related-table-list-view'
     create_url_tag = 'admin-related-table-create-view'
     edit_url_tag = 'admin-related-table-edit-view'
     data_view_url_tag = 'admin-related-table-data-view'
+    batch_edit_url_tag = 'admin-related-table-edit-batch-view'
 
     payload = {
         'name': 'name',

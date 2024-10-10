@@ -16,7 +16,10 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from geosight.data.models.style import Style
 from geosight.permission.api.resource import ResourcePermissionAPI
-from geosight.permission.models import StylePermission
+from geosight.permission.models import (
+    StylePermission, StyleUserPermission,
+    StyleGroupPermission
+)
 
 
 class StylePermissionAPI(ResourcePermissionAPI):
@@ -24,3 +27,5 @@ class StylePermissionAPI(ResourcePermissionAPI):
 
     model = Style
     permission_model = StylePermission
+    permission_user_model = StyleUserPermission
+    permission_group_model = StyleGroupPermission

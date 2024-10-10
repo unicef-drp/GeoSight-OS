@@ -79,7 +79,7 @@ class _BaseReferenceLayerViewView(AdminBaseView):
                 instance.save()
 
             # Save permission
-            instance.permission.update_from_request_data_in_string(
+            instance.permission.update_from_request_data(
                 request.POST, request.user
             )
             max_level = 0

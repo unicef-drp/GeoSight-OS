@@ -19,34 +19,37 @@ import copy
 from django.contrib.auth import get_user_model
 
 from frontend.tests.admin._base import BaseViewTest
-from geosight.data.models.context_layer import ContextLayer, LayerType
+from geosight.data.models.style.base import Style, StyleType, IndicatorType
 
 User = get_user_model()
 
 
-class ContextLayerAdminViewTest(BaseViewTest.TestCaseWithBatch):
-    """Test for ContextLayer Admin."""
+class StyleAdminViewTest(BaseViewTest.TestCaseWithBatch):
+    """Test for Style Admin."""
 
-    list_url_tag = 'admin-context-layer-list-view'
-    create_url_tag = 'admin-context-layer-create-view'
-    edit_url_tag = 'admin-context-layer-edit-view'
-    batch_edit_url_tag = 'admin-context-layer-edit-batch-view'
+    list_url_tag = 'admin-style-list-view'
+    create_url_tag = 'admin-style-create-view'
+    edit_url_tag = 'admin-style-edit-view'
+    batch_edit_url_tag = 'admin-style-edit-batch-view'
     payload = {
         'name': 'name',
-        'url': 'url',
-        'layer_type': LayerType.ARCGIS,
-        'group': 'group'
+        'style_type': StyleType.PREDEFINED,
+        'group': 'group',
+        'value_type': IndicatorType.FLOAT
     }
 
     def create_resource(self, user):
         """Create resource function."""
         payload = copy.deepcopy(self.payload)
         del payload['group']
-        return ContextLayer.permissions.create(
+        payload['name'] += (
+            f"{payload['name']}-{Style.objects.count()}"
+        )
+        return Style.permissions.create(
             user=user,
             **payload
         )
 
     def get_resources(self, user):
         """Create resource function."""
-        return ContextLayer.permissions.list(user).order_by('id')
+        return Style.permissions.list(user).order_by('id')

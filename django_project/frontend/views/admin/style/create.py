@@ -95,7 +95,7 @@ class BaseStyleEditingView(AdminBaseView):
         """Save rules."""
         request = self.request
         # Save permission
-        style.permission.update_from_request_data_in_string(
+        style.permission.update_from_request_data(
             data, request.user
         )
 

@@ -16,7 +16,10 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from geosight.data.models.indicator import Indicator
 from geosight.permission.api.resource import ResourcePermissionAPI
-from geosight.permission.models import IndicatorPermission
+from geosight.permission.models import (
+    IndicatorPermission, IndicatorUserPermission,
+    IndicatorGroupPermission
+)
 
 
 class IndicatorPermissionAPI(ResourcePermissionAPI):
@@ -24,3 +27,5 @@ class IndicatorPermissionAPI(ResourcePermissionAPI):
 
     model = Indicator
     permission_model = IndicatorPermission
+    permission_user_model = IndicatorUserPermission
+    permission_group_model = IndicatorGroupPermission

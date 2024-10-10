@@ -20,22 +20,34 @@ from geosight.permission.models.factory import PERMISSIONS
 class PermissionSerializer:
     """Serializer for Permission."""
 
-    def __init__(self, obj):
+    def __init__(self, obj, users_permissions=None, group_permissions=None):
         """Serialize permission of object."""
         self.obj = obj
+        try:
+            self.creator = obj.obj.creator
+        except AttributeError:
+            try:
+                self.creator = obj.creator
+            except AttributeError:
+                self.creator = None
+
+        # Check user permissions init
+        self.user_permissions = obj.user_permissions.exclude(
+            user=self.creator
+        )
+        if users_permissions:
+            self.user_permissions = users_permissions
+
+        # Check group permission init
+        self.group_permissions = obj.group_permissions.all()
+        if group_permissions:
+            self.group_permissions = group_permissions
 
     @property
     def data(self):
         """Serialize the data."""
         obj = self.obj
-        try:
-            creator = obj.obj.creator
-        except AttributeError:
-            try:
-                creator = obj.creator
-            except AttributeError:
-                creator = None
-
+        creator = self.creator
         user_permissions = []
         if creator:
             user_permissions.append(
@@ -57,16 +69,14 @@ class PermissionSerializer:
                 'email': user_permission.user.email,
                 'role': user_permission.user.profile.role,
                 'permission': user_permission.permission
-            } for user_permission in obj.user_permissions.exclude(
-                user=creator
-            )
+            } for user_permission in self.user_permissions
         ]
         group_permissions = [
             {
                 'id': group_permission.group.id,
                 'name': group_permission.group.name,
                 'permission': group_permission.permission
-            } for group_permission in obj.group_permissions.all()
+            } for group_permission in self.group_permissions
         ]
 
         org_perm_choices = obj.get_organization_permission_display.keywords[

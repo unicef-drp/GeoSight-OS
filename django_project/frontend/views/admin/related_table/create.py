@@ -24,8 +24,8 @@ from geosight.data.models.related_table import RelatedTable
 from geosight.permission.access import RoleCreatorRequiredMixin
 
 
-class RelatedTableCreateView(RoleCreatorRequiredMixin, AdminBaseView):
-    """Related Table Create View."""
+class BaseRelatedTableEditView(AdminBaseView):
+    """Base RelatedTable Edit View."""
 
     template_name = 'frontend/admin/related-table/form.html'
 
@@ -83,7 +83,7 @@ class RelatedTableCreateView(RoleCreatorRequiredMixin, AdminBaseView):
             instance.creator = request.user
             instance.save()
             # Save permission
-            instance.permission.update_from_request_data_in_string(
+            instance.permission.update_from_request_data(
                 request.POST, request.user
             )
             return redirect(
@@ -98,3 +98,11 @@ class RelatedTableCreateView(RoleCreatorRequiredMixin, AdminBaseView):
             self.template_name,
             context
         )
+
+
+class RelatedTableCreateView(
+    RoleCreatorRequiredMixin, BaseRelatedTableEditView
+):
+    """Related Table Create View."""
+
+    pass

@@ -16,7 +16,10 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from geosight.data.models.context_layer import ContextLayer
 from geosight.permission.api.resource import ResourcePermissionAPI
-from geosight.permission.models import ContextLayerPermission
+from geosight.permission.models import (
+    ContextLayerPermission, ContextLayerUserPermission,
+    ContextLayerGroupPermission
+)
 
 
 class ContextLayerPermissionAPI(ResourcePermissionAPI):
@@ -24,3 +27,5 @@ class ContextLayerPermissionAPI(ResourcePermissionAPI):
 
     model = ContextLayer
     permission_model = ContextLayerPermission
+    permission_user_model = ContextLayerUserPermission
+    permission_group_model = ContextLayerGroupPermission
