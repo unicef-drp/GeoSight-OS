@@ -195,6 +195,14 @@ def permission_model_factory(
 
                 if clean_update:
                     permissions.exclude(user_id__in=user_ids).delete()
+                else:
+                    deleted_permissions = data.get(
+                        'user_permissions_deleted', None
+                    )
+                    if deleted_permissions:
+                        permissions.filter(
+                            user_id__in=deleted_permissions
+                        ).delete()
 
                 for user in data['user_permissions']:
                     perm, crt = permissions.model.objects.get_or_create(
@@ -213,6 +221,14 @@ def permission_model_factory(
 
                 if clean_update:
                     permissions.exclude(group_id__in=group_ids).delete()
+                else:
+                    deleted_permissions = data.get(
+                        'group_permissions_deleted', None
+                    )
+                    if deleted_permissions:
+                        permissions.filter(
+                            group_id__in=deleted_permissions
+                        ).delete()
 
                 for group in data['group_permissions']:
                     perm, crt = permissions.model.objects.get_or_create(

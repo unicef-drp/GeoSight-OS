@@ -285,6 +285,19 @@ export function PermissionFormTable(
   const [openPermission, setOpenPermission] = useState(false)
   const [selectionModel, setSelectionModel] = useState([]);
   const dataList = data[dataListKey]
+  const dataListDeletedKey = dataListKey + '_deleted'
+
+  /**
+   * Delete data based on ids
+   */
+  const deleteData = (ids) => {
+    data[dataListKey] = dataList.filter(row => !ids.includes(row.id))
+    if (!data[dataListDeletedKey]) {
+      data[dataListDeletedKey] = []
+    }
+    data[dataListDeletedKey] = data[dataListDeletedKey].concat(ids);
+    setData({ ...data })
+  }
 
   return <div>
     <div className='PermissionFormTableHeader'>
@@ -294,8 +307,7 @@ export function PermissionFormTable(
         text={"Delete"}
         onClick={() => {
           if (confirm(`Do you want to delete the selected ${permissionLabel.toLowerCase()}s?`) === true) {
-            data[dataListKey] = dataList.filter(row => !selectionModel.includes(row.id))
-            setData({ ...data })
+            deleteData(selectionModel)
             setSelectionModel([])
           }
         }}
@@ -368,10 +380,7 @@ export function PermissionFormTable(
                   }
                   onClick={() => {
                     if (confirm(`Do you want to remove this ${permissionLabel.toLowerCase()}?`) === true) {
-                      data[dataListKey] = dataList.filter(row => {
-                        return row.id !== params.row.id
-                      })
-                      setData({ ...data })
+                      deleteData([params.row.id])
                     }
                   }}
                   label="Delete"
