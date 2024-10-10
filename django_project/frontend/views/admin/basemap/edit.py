@@ -19,7 +19,9 @@ import json
 from django.shortcuts import get_object_or_404, redirect, reverse, render
 
 from frontend.views.admin._base import AdminBaseView, AdminBatchEditView
-from frontend.views.admin.basemap.create import BasemapCreateView
+from frontend.views.admin.basemap.create import (
+    BaseBasemapEditView
+)
 from geosight.data.forms.basemap import BasemapForm
 from geosight.data.models.basemap_layer import BasemapLayer
 from geosight.permission.access import (
@@ -100,7 +102,7 @@ class BasemapEditView(RoleContributorRequiredMixin, AdminBaseView):
 
 
 class BasemapEditBatchView(
-    AdminBatchEditView, BasemapCreateView
+    AdminBatchEditView, BaseBasemapEditView
 ):
     """Basemap Edit Batch View."""
 

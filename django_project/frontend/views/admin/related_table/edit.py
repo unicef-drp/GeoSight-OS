@@ -19,7 +19,7 @@ import json
 from django.shortcuts import get_object_or_404, redirect, reverse, render
 
 from frontend.views.admin._base import AdminBaseView, AdminBatchEditView
-from frontend.views.admin.related_table.create import RelatedTableCreateView
+from frontend.views.admin.related_table.create import BaseRelatedTableEditView
 from geosight.data.forms.related_table import RelatedTableForm
 from geosight.data.models.related_table import RelatedTable
 from geosight.permission.access import (
@@ -102,7 +102,7 @@ class RelatedTableEditView(RoleContributorRequiredMixin, AdminBaseView):
 
 
 class RelatedTableEditBatchView(
-    AdminBatchEditView, RelatedTableCreateView
+    AdminBatchEditView, BaseRelatedTableEditView
 ):
     """RelatedTable Edit Batch View."""
 

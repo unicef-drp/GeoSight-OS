@@ -24,8 +24,8 @@ from geosight.data.models.basemap_layer import BasemapLayer
 from geosight.permission.access import RoleCreatorRequiredMixin
 
 
-class BasemapCreateView(RoleCreatorRequiredMixin, AdminBaseView):
-    """Basemap Create View."""
+class BaseBasemapEditView(AdminBaseView):
+    """Base Basemap Edit View."""
 
     template_name = 'frontend/admin/basemap/form.html'
 
@@ -98,3 +98,9 @@ class BasemapCreateView(RoleCreatorRequiredMixin, AdminBaseView):
             self.template_name,
             context
         )
+
+
+class BasemapCreateView(RoleCreatorRequiredMixin, BaseBasemapEditView):
+    """Basemap Create View."""
+
+    pass

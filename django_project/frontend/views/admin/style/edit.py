@@ -24,6 +24,7 @@ from frontend.views.admin.style.create import BaseStyleEditingView
 from geosight.data.forms.style import StyleForm
 from geosight.data.models.style import Style
 from geosight.permission.access import (
+    edit_permission_resource,
     RoleContributorRequiredMixin
 )
 
@@ -54,6 +55,15 @@ class StyleEditView(RoleContributorRequiredMixin, BaseStyleEditingView):
             f'<a href="{edit_url}">{style.__str__()}</a> '
         )
 
+    def get_context_data(self, **kwargs) -> dict:
+        """Return context data."""
+        context = super().get_context_data(**kwargs)
+        style = get_object_or_404(
+            Style, id=self.kwargs.get('pk', '')
+        )
+        edit_permission_resource(style, self.request.user)
+        return context
+
     @property
     def style(self):
         """Return style."""
@@ -62,6 +72,7 @@ class StyleEditView(RoleContributorRequiredMixin, BaseStyleEditingView):
     def post(self, request, **kwargs):
         """Edit style."""
         style = get_object_or_404(Style, pk=self.kwargs.get('pk', ''))
+        edit_permission_resource(style, self.request.user)
         data = self.data
         form = StyleForm(data, instance=style)
         if form.is_valid():

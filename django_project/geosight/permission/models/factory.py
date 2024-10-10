@@ -188,23 +188,22 @@ def permission_model_factory(
                 self.save()
             except KeyError:
                 pass
-
             try:
-                user_ids = [user['id'] for user in data['user_permissions']]
+                key = 'user_permissions'
                 permissions = self.user_permissions
 
-                if clean_update:
-                    permissions.exclude(user_id__in=user_ids).delete()
-                else:
-                    deleted_permissions = data.get(
-                        'user_permissions_deleted', None
-                    )
+                if not clean_update:
+                    deleted_permissions = data.get(f'{key}_deleted', None)
                     if deleted_permissions:
                         permissions.filter(
                             user_id__in=deleted_permissions
                         ).delete()
 
-                for user in data['user_permissions']:
+                user_ids = [user['id'] for user in data[key]]
+                if clean_update:
+                    permissions.exclude(user_id__in=user_ids).delete()
+
+                for user in data[key]:
                     perm, crt = permissions.model.objects.get_or_create(
                         obj=self, user_id=user['id']
                     )
@@ -214,23 +213,23 @@ def permission_model_factory(
                 pass
 
             try:
-                group_ids = [
-                    group['id'] for group in data['group_permissions']
-                ]
+                key = 'group_permissions'
                 permissions = self.group_permissions
 
-                if clean_update:
-                    permissions.exclude(group_id__in=group_ids).delete()
-                else:
+                if not clean_update:
                     deleted_permissions = data.get(
-                        'group_permissions_deleted', None
+                        f'{key}_deleted', None
                     )
                     if deleted_permissions:
                         permissions.filter(
                             group_id__in=deleted_permissions
                         ).delete()
 
-                for group in data['group_permissions']:
+                group_ids = [group['id'] for group in data[key]]
+                if clean_update:
+                    permissions.exclude(group_id__in=group_ids).delete()
+
+                for group in data[key]:
                     perm, crt = permissions.model.objects.get_or_create(
                         obj=self, group_id=group['id']
                     )

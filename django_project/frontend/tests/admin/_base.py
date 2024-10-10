@@ -15,10 +15,12 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import copy
+import json
 
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
+from core.tests.model_factories import GroupF
 from geosight.permission.models.factory import PERMISSIONS
 from geosight.permission.tests._base import BasePermissionTest
 
@@ -28,7 +30,7 @@ User = get_user_model()
 class BaseViewTest(object):
     """Base test view."""
 
-    class TestCase(BasePermissionTest):
+    class TestCase(BasePermissionTest.TestCase):
         """Test for Base Admin."""
 
         @property
@@ -56,7 +58,10 @@ class BaseViewTest(object):
             url = reverse(self.list_url_tag)
             self.assertRequestGetView(url, 302)  # Non login
             self.assertRequestGetView(url, 403, self.viewer)  # Viewer
-            self.assertRequestGetView(url, 200, self.contributor)  # Contributor
+            self.assertRequestGetView(
+                url, 200,
+                self.contributor
+            )  # Contributor
             self.assertRequestGetView(url, 200, self.creator)  # Creator
             self.assertRequestGetView(url, 200, self.admin)  # Admin
 
@@ -65,7 +70,9 @@ class BaseViewTest(object):
             url = reverse(self.create_url_tag)
             self.assertRequestGetView(url, 302)  # Non login
             self.assertRequestGetView(url, 403, self.viewer)  # Viewer
-            self.assertRequestGetView(url, 403, self.contributor)  # Contributor
+            self.assertRequestGetView(
+                url, 403, self.contributor
+            )  # Contributor
             self.assertRequestGetView(url, 200, self.creator)  # Creator
             self.assertRequestGetView(url, 200, self.admin)  # Admin
 
@@ -86,9 +93,13 @@ class BaseViewTest(object):
             url = reverse(self.edit_url_tag, kwargs={'pk': new_resource.id})
             self.assertRequestGetView(url, 302)  # Non login
             self.assertRequestGetView(url, 403, self.viewer)  # Viewer
-            self.assertRequestGetView(url, 403, self.contributor)  # Contributor
+            self.assertRequestGetView(
+                url, 403, self.contributor
+            )  # Contributor
             self.assertRequestGetView(url, 200, self.creator)  # Creator
-            self.assertRequestGetView(url, 403, self.resource_creator)  # Creator
+            self.assertRequestGetView(
+                url, 403, self.resource_creator
+            )  # Creator
             self.assertRequestGetView(url, 200, self.admin)  # Admin
 
         def test_edit_view(self):
@@ -99,9 +110,13 @@ class BaseViewTest(object):
             url = reverse(self.edit_url_tag, kwargs={'pk': self.resource.id})
             self.assertRequestGetView(url, 302)  # Non login
             self.assertRequestGetView(url, 403, self.viewer)  # Viewer
-            self.assertRequestGetView(url, 403, self.contributor)  # Contributor
+            self.assertRequestGetView(
+                url, 403, self.contributor
+            )  # Contributor
             self.assertRequestGetView(url, 403, self.creator)  # Creator
-            self.assertRequestGetView(url, 200, self.resource_creator)  # Creator
+            self.assertRequestGetView(
+                url, 200, self.resource_creator
+            )  # Creator
             self.assertRequestGetView(url, 200, self.admin)  # Admin
 
             # sharing
@@ -111,20 +126,24 @@ class BaseViewTest(object):
 
             # sharing
             self.permission.update_user_permission(
-                self.creator, PERMISSIONS.READ.name)
+                self.creator, PERMISSIONS.READ.name
+            )
             self.assertRequestGetView(url, 403, self.creator)  # Creator
             self.permission.update_user_permission(
-                self.creator, PERMISSIONS.WRITE.name)
+                self.creator, PERMISSIONS.WRITE.name
+            )
             self.assertRequestGetView(url, 200, self.creator)  # Creator
 
             self.permission.update_group_permission(
-                self.group, PERMISSIONS.READ.name)
+                self.group, PERMISSIONS.READ.name
+            )
             self.assertRequestGetView(url, 403, self.viewer_in_group)
             self.assertRequestGetView(url, 403, self.contributor_in_group)
             self.assertRequestGetView(url, 403, self.creator_in_group)
 
             self.permission.update_group_permission(
-                self.group, PERMISSIONS.WRITE.name)
+                self.group, PERMISSIONS.WRITE.name
+            )
             self.assertRequestGetView(url, 403, self.viewer_in_group)
             self.assertRequestGetView(url, 200, self.contributor_in_group)
             self.assertRequestGetView(url, 200, self.creator_in_group)
@@ -140,3 +159,334 @@ class BaseViewTest(object):
             self.resource.refresh_from_db()
             self.assertEqual(self.resource.name, new_payload['name'])
             self.assertEqual(self.resource.creator, self.resource_creator)
+
+    class TestCaseWithBatch(TestCase):
+        """Test for batch Edit Admin."""
+
+        @property
+        def batch_edit_url_tag(self):
+            """Url batch edit tag."""
+            raise NotImplemented
+
+        def test_batch_edit_view(self):
+            """Test for edit view."""
+            group_1 = GroupF()
+            group_2 = GroupF()
+            resources = [
+                self.create_resource(self.resource_creator),
+                self.create_resource(self.resource_creator),
+                self.create_resource(self.resource_creator)
+            ]
+            # Save access permission
+            for idx, permission in enumerate(
+                    [
+                        PERMISSIONS.NONE.name, PERMISSIONS.READ.name,
+                        PERMISSIONS.READ.name
+                    ]
+            ):
+                resources[idx].permission.public_permission = permission
+                resources[idx].permission.save()
+
+            # User permission
+            resources[0].permission.update_user_permission(
+                self.contributor, PERMISSIONS.WRITE.name
+            )
+            resources[0].permission.update_user_permission(
+                self.creator, PERMISSIONS.WRITE.name
+            )
+            resources[1].permission.update_user_permission(
+                self.contributor, PERMISSIONS.OWNER.name
+            )
+            resources[2].permission.update_user_permission(
+                self.contributor, PERMISSIONS.READ.name
+            )
+
+            # Group permission
+            resources[0].permission.update_group_permission(
+                group_1, PERMISSIONS.SHARE.name
+            )
+            resources[0].permission.update_group_permission(
+                group_2, PERMISSIONS.LIST.name
+            )
+            resources[1].permission.update_group_permission(
+                group_1, PERMISSIONS.OWNER.name
+            )
+            resources[2].permission.update_group_permission(
+                group_1, PERMISSIONS.WRITE.name
+            )
+
+            # Check batch access by role
+            url = reverse(self.batch_edit_url_tag)
+            self.assertRequestPostView(url, 302, data={})  # Non login
+            self.assertRequestPostView(
+                url, 403, data={}, user=self.viewer
+            )  # Viewer
+            self.assertRequestPostView(
+                url, 400, data={}, user=self.contributor
+            )  # Contributor
+            self.assertRequestPostView(
+                url, 400, data={}, user=self.creator
+            )  # Creator
+            self.assertRequestPostView(
+                url, 400, data={}, user=self.admin
+            )  # Admin
+
+            # Update description
+            ids = ",".join([f"{resource.id}" for resource in resources])
+            url = reverse(self.batch_edit_url_tag)
+            self.assertRequestPostView(
+                url, 302, user=self.resource_creator,
+                data={
+                    "ids": ids,
+                    "description": "new description",
+                }
+            )
+
+            # check resources and permission
+            for resource in resources:
+                resource.refresh_from_db()
+                self.assertEquals(resource.description, "new description")
+            for idx, permission in enumerate(
+                    [
+                        PERMISSIONS.NONE.name, PERMISSIONS.READ.name,
+                        PERMISSIONS.READ.name
+                    ]
+            ):
+                resources[idx].permission.refresh_from_db()
+                self.assertEquals(
+                    resources[idx].permission.public_permission,
+                    permission
+                )
+
+            # Update access permission
+            ids = ",".join([f"{resource.id}" for resource in resources])
+            url = reverse(self.batch_edit_url_tag)
+            self.assertRequestPostView(
+                url, 302, user=self.resource_creator,
+                data={
+                    "ids": ids,
+                    "description": "new description",
+                    "permission": json.dumps(
+                        {
+                            "public_permission": PERMISSIONS.READ.name
+                        }
+                    )
+                }
+            )
+            for idx, permission in enumerate(
+                    [
+                        PERMISSIONS.READ.name, PERMISSIONS.READ.name,
+                        PERMISSIONS.READ.name
+                    ]
+            ):
+                resources[idx].permission.refresh_from_db()
+                self.assertEquals(
+                    resources[idx].permission.public_permission,
+                    permission
+                )
+
+            # Check user permission
+            self.assertEquals(
+                resources[0].permission.user_permissions.get(
+                    user_id=self.contributor
+                ).permission,
+                PERMISSIONS.WRITE.name
+            )
+            self.assertEquals(
+                resources[0].permission.user_permissions.get(
+                    user_id=self.creator
+                ).permission,
+                PERMISSIONS.WRITE.name
+            )
+            self.assertEquals(
+                resources[1].permission.user_permissions.count(), 1
+            )
+            self.assertEquals(
+                resources[1].permission.user_permissions.get(
+                    user_id=self.contributor
+                ).permission,
+                PERMISSIONS.OWNER.name
+            )
+            self.assertEquals(
+                resources[2].permission.user_permissions.count(), 1
+            )
+            self.assertEquals(
+                resources[2].permission.user_permissions.get(
+                    user_id=self.contributor
+                ).permission,
+                PERMISSIONS.READ.name
+            )
+
+            # Check group permission
+            self.assertEquals(
+                resources[0].permission.group_permissions.get(
+                    group_id=group_1
+                ).permission,
+                PERMISSIONS.SHARE.name
+            )
+            self.assertEquals(
+                resources[0].permission.group_permissions.get(
+                    group_id=group_2
+                ).permission,
+                PERMISSIONS.LIST.name
+            )
+            self.assertEquals(
+                resources[1].permission.group_permissions.count(), 1
+            )
+            self.assertEquals(
+                resources[1].permission.group_permissions.get(
+                    group_id=group_1
+                ).permission,
+                PERMISSIONS.OWNER.name
+            )
+            self.assertEquals(
+                resources[2].permission.group_permissions.count(), 1
+            )
+            self.assertEquals(
+                resources[2].permission.group_permissions.get(
+                    group_id=group_1
+                ).permission,
+                PERMISSIONS.WRITE.name
+            )
+
+            # Update access permission
+            ids = ",".join([f"{resource.id}" for resource in resources])
+            url = reverse(self.batch_edit_url_tag)
+            self.assertRequestPostView(
+                url, 302, user=self.resource_creator,
+                data={
+                    "ids": ids,
+                    "description": "new description",
+                    "permission": json.dumps(
+                        {
+                            "user_permissions_deleted": [
+                                self.contributor.id
+                            ],
+                            "group_permissions_deleted": [
+                                group_1.id
+                            ]
+                        }
+                    )
+                }
+            )
+
+            # Check user permission
+            self.assertEquals(
+                resources[0].permission.user_permissions.count(), 1
+            )
+            self.assertEquals(
+                resources[0].permission.user_permissions.get(
+                    user_id=self.creator
+                ).permission,
+                PERMISSIONS.WRITE.name
+            )
+            self.assertEquals(
+                resources[1].permission.user_permissions.count(), 0
+            )
+            self.assertEquals(
+                resources[2].permission.user_permissions.count(), 0
+            )
+
+            # Check group permission
+            self.assertEquals(
+                resources[0].permission.group_permissions.count(), 1
+            )
+            self.assertEquals(
+                resources[0].permission.group_permissions.get(
+                    group_id=group_2
+                ).permission,
+                PERMISSIONS.LIST.name
+            )
+            self.assertEquals(
+                resources[1].permission.group_permissions.count(), 0
+            )
+            self.assertEquals(
+                resources[2].permission.group_permissions.count(), 0
+            )
+
+            # Update access permission
+            ids = ",".join([f"{resource.id}" for resource in resources])
+            url = reverse(self.batch_edit_url_tag)
+            self.assertRequestPostView(
+                url, 302, user=self.resource_creator,
+                data={
+                    "ids": ids,
+                    "description": "new description",
+                    "permission": json.dumps(
+                        {
+                            "user_permissions": [{
+                                'id': self.contributor.id,
+                                'permission': PERMISSIONS.OWNER.name
+                            }],
+                            "group_permissions": [{
+                                'id': group_1.id,
+                                'permission': PERMISSIONS.WRITE.name
+                            }]
+                        }
+                    )
+                }
+            )
+
+            # Check user permission
+            self.assertEquals(
+                resources[0].permission.user_permissions.get(
+                    user_id=self.contributor
+                ).permission,
+                PERMISSIONS.OWNER.name
+            )
+            self.assertEquals(
+                resources[0].permission.user_permissions.get(
+                    user_id=self.creator
+                ).permission,
+                PERMISSIONS.WRITE.name
+            )
+            self.assertEquals(
+                resources[1].permission.user_permissions.count(), 1
+            )
+            self.assertEquals(
+                resources[1].permission.user_permissions.get(
+                    user_id=self.contributor
+                ).permission,
+                PERMISSIONS.OWNER.name
+            )
+            self.assertEquals(
+                resources[2].permission.user_permissions.count(), 1
+            )
+            self.assertEquals(
+                resources[2].permission.user_permissions.get(
+                    user_id=self.contributor
+                ).permission,
+                PERMISSIONS.OWNER.name
+            )
+
+            # Check group permission
+            self.assertEquals(
+                resources[0].permission.group_permissions.get(
+                    group_id=group_1
+                ).permission,
+                PERMISSIONS.WRITE.name
+            )
+            self.assertEquals(
+                resources[0].permission.group_permissions.get(
+                    group_id=group_2
+                ).permission,
+                PERMISSIONS.LIST.name
+            )
+            self.assertEquals(
+                resources[1].permission.group_permissions.count(), 1
+            )
+            self.assertEquals(
+                resources[1].permission.group_permissions.get(
+                    group_id=group_1
+                ).permission,
+                PERMISSIONS.WRITE.name
+            )
+            self.assertEquals(
+                resources[2].permission.group_permissions.count(), 1
+            )
+            self.assertEquals(
+                resources[2].permission.group_permissions.get(
+                    group_id=group_1
+                ).permission,
+                PERMISSIONS.WRITE.name
+            )

@@ -21,5 +21,7 @@ from django.contrib.auth.models import Group
 class GroupF(factory.django.DjangoModelFactory):
     """Factory for Group."""
 
+    name = factory.Sequence(lambda n: 'group_{}'.format(n))
+
     class Meta:  # noqa: D106
         model = Group

@@ -24,8 +24,8 @@ from geosight.data.models.context_layer import ContextLayer
 from geosight.permission.access import RoleCreatorRequiredMixin
 
 
-class ContextLayerCreateView(RoleCreatorRequiredMixin, AdminBaseView):
-    """ContextLayer Create View."""
+class BaseContextLayerEditView(AdminBaseView):
+    """Base Context Layer Edit View."""
 
     template_name = 'frontend/admin/context_layer/form.html'
 
@@ -96,3 +96,10 @@ class ContextLayerCreateView(RoleCreatorRequiredMixin, AdminBaseView):
             self.template_name,
             context
         )
+
+
+class ContextLayerCreateView(
+    RoleCreatorRequiredMixin, BaseContextLayerEditView
+):
+    """ContextLayer Create View."""
+    pass

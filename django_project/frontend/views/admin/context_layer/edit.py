@@ -19,7 +19,9 @@ import json
 from django.shortcuts import get_object_or_404, redirect, reverse, render
 
 from frontend.views.admin._base import AdminBaseView, AdminBatchEditView
-from frontend.views.admin.context_layer.create import ContextLayerCreateView
+from frontend.views.admin.context_layer.create import (
+    BaseContextLayerEditView
+)
 from geosight.data.forms.context_layer import ContextLayerForm
 from geosight.data.models.context_layer import ContextLayer
 from geosight.permission.access import (
@@ -101,7 +103,7 @@ class ContextLayerEditView(RoleContributorRequiredMixin, AdminBaseView):
 
 
 class ContextLayerEditBatchView(
-    AdminBatchEditView, ContextLayerCreateView
+    AdminBatchEditView, BaseContextLayerEditView
 ):
     """ContextLayer Edit Batch View."""
 
