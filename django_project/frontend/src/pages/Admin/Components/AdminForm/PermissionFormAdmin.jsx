@@ -17,9 +17,9 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { fetchJSON } from "../../../../Requests";
 import { PermissionForm } from "../../Permission";
 import { Checkbox, FormControlLabel } from "@mui/material";
+import { urlParams } from "../../../../utils/main";
 
 import './style.scss';
-import { urlParams } from "../../../../utils/main";
 
 /**
  * PermissionForm
