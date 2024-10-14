@@ -18,13 +18,20 @@ from django.conf import settings
 from django.core import signing
 from django.core.signing import BadSignature
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from core.models.color import ColorPalette
 from core.models.singleton import SingletonModel
 
 DEFAULT_OUTLINE_COLOR = '#FFFFFF'
 DEFAULT_OUTLINE_SIZE = 0.5
+
+
+class SiteType(models.TextChoices):
+    """Choices of site type."""
+
+    STAGING = 'Staging', _('Staging')
+    PRODUCTION = 'Production', _('Production')
 
 
 class SitePreferences(SingletonModel):
@@ -46,6 +53,12 @@ class SitePreferences(SingletonModel):
     site_url = models.CharField(
         max_length=512,
         default=''
+    )
+
+    site_type = models.CharField(
+        max_length=255,
+        choices=SiteType.choices,
+        default=SiteType.PRODUCTION
     )
 
     disclaimer = models.TextField(
@@ -292,6 +305,7 @@ class SitePreferences(SingletonModel):
         help_text=_(
             'Help text to show in login page.'
         ),
+        null=True, blank=True
     )
 
     class Meta:  # noqa: D106
