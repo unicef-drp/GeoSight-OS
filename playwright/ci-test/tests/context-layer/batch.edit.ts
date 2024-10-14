@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { checkPermission, editPermission } from "../permission_utils";
+import { checkPermission, editPermission } from "../utils/permission";
 
 const timeout = 2000;
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
@@ -35,7 +35,8 @@ test.describe('Batch edit context-layer', () => {
 
   // A use case tests scenarios
   test('Batch edit description context-layer', async ({ page }) => {
-    await page.getByLabel('Select all rows').check();
+    await delay(2000);
+    await page.getByRole('checkbox', { name: 'Select all rows' }).check();
     await page.getByRole('button', { name: 'Edit' }).click();
     await page.locator('span > .MuiSvgIcon-root').first().click();
     await page.locator('#Form #id_description').fill(description);
@@ -50,6 +51,7 @@ test.describe('Batch edit context-layer', () => {
 
   // A use case tests scenarios
   test('Batch edit permission context-layer', async ({ page }) => {
+    await delay(1000);
     for (let i = 0; i < ids.length; i++) {
       const _id = ids[i]
       await editPermission(page, _id, defaultPermission[_id])
@@ -57,7 +59,9 @@ test.describe('Batch edit context-layer', () => {
     }
 
     // batch edit permission
+    await delay(1000);
     await page.getByRole('checkbox', { name: 'Select all rows' }).check();
+    await expect(page.locator('.AdminListHeader-Count ')).toContainText('2 items on this list are selected.');
     await page.getByRole('button', { name: 'Edit' }).click();
     await page.getByText('Share').click();
 

@@ -1,6 +1,14 @@
-import { expect, Page } from "@playwright/test";
+import { expect } from "@playwright/test";
 
-export async function editPermission(page: Page, id, {
+
+Object.defineProperty(String.prototype, 'capitalize', {
+  value: function () {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+  },
+  enumerable: false
+});
+
+export async function editPermission(page, id, {
   public_access,
   users,
   groups
@@ -13,7 +21,7 @@ export async function editPermission(page: Page, id, {
   await page.getByRole('button', { name: 'Share to new user(s)' }).click();
   for (let i = 0; i < users.length; i++) {
     const user = users[i]
-    await page.getByRole('row', { name: `Select row ${user}` }).getByLabel('Select row').check();
+    await page.getByRole('row', { name: `Select row ${user} ${user.capitalize()}` }).getByLabel('Select row').check();
   }
   await page.getByRole('button', { name: 'Add Users' }).click();
 
@@ -28,7 +36,7 @@ export async function editPermission(page: Page, id, {
   await page.getByRole('button', { name: 'Apply Changes' }).click();
 }
 
-export async function checkPermission(page: Page, id, {
+export async function checkPermission(page, id, {
   public_access,
   users,
   groups
