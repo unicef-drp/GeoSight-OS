@@ -52,7 +52,7 @@ export default function BasemapForm() {
           }
           <SaveButton
             variant="primary"
-            text="Submit"
+            text="Save"
             onClick={() => {
               formRef.current.submit(true)
               setSubmitted(true)
