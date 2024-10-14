@@ -16,6 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import json
 
+from django.db.models import Count
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -43,8 +44,66 @@ class ResourcePermissionAPI(APIView):
     def get(self, request, pk):
         """Return permission data of resource."""
         if pk == '0':
+            new_permission = self.permission_model()
+
+            ids = self.request.GET.get('ids', None)
+            users_permissions = []
+            group_permissions = []
+            if ids:
+                ids = ids.split(',')
+                try:
+                    permission_user_model = self.permission_user_model
+                    permission_group_model = self.permission_group_model
+
+                    # If there is ids
+                    # we can use this for checking same permission for the data
+                    Model = self.permission_model
+                    output = Model.objects.filter(
+                        obj__id__in=ids
+                    ).values_list(
+                        'public_permission', flat=True
+                    ).distinct()
+                    if output.count() == 1:
+                        new_permission.public_permission = output[0]
+
+                    # Return same users permission
+                    users = permission_user_model.objects.filter(
+                        obj__obj__id__in=ids
+                    ).values_list('user', 'permission').annotate(
+                        total=Count('obj__obj__id')
+                    )
+                    for user in users:
+                        if user[2] == len(ids):
+                            users_permissions.append(
+                                permission_user_model(
+                                    user_id=user[0],
+                                    permission=user[1],
+                                )
+                            )
+                    # Return same groups permission
+                    users = permission_group_model.objects.filter(
+                        obj__obj__id__in=ids
+                    ).values_list('group', 'permission').annotate(
+                        total=Count('obj__obj__id')
+                    )
+                    for user in users:
+                        if user[2] == len(ids):
+                            group_permissions.append(
+                                permission_group_model(
+                                    group_id=user[0],
+                                    permission=user[1],
+                                )
+                            )
+
+                except AttributeError:
+                    pass
+
             return Response(
-                PermissionSerializer(obj=self.permission_model()).data
+                PermissionSerializer(
+                    obj=new_permission,
+                    users_permissions=users_permissions,
+                    group_permissions=group_permissions
+                ).data
             )
         obj = get_object_or_404(self.model, pk=pk)
         share_permission_resource(obj, request.user)

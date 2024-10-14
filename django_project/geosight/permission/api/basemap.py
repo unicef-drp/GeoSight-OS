@@ -16,7 +16,10 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from geosight.data.models.basemap_layer import BasemapLayer
 from geosight.permission.api.resource import ResourcePermissionAPI
-from geosight.permission.models import BasemapLayerPermission
+from geosight.permission.models import (
+    BasemapLayerPermission, BasemapLayerUserPermission,
+    BasemapLayerGroupPermission
+)
 
 
 class BasemapPermissionAPI(ResourcePermissionAPI):
@@ -24,3 +27,5 @@ class BasemapPermissionAPI(ResourcePermissionAPI):
 
     model = BasemapLayer
     permission_model = BasemapLayerPermission
+    permission_user_model = BasemapLayerUserPermission
+    permission_group_model = BasemapLayerGroupPermission

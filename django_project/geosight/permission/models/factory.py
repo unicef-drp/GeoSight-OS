@@ -159,38 +159,84 @@ def permission_model_factory(
                 return ROLES.CREATOR.level
             return self.role_to_delete_level
 
-        def update_from_request_data_in_string(self, data, user):
+        def update_from_request_data(self, data, user, clean_update=True):
             """Update from data."""
             permission = data.get('permission', None)
             if permission:
                 if self.has_share_perm(user):
-                    self.update(json.loads(permission))
+                    if isinstance(permission, str):
+                        permission = json.loads(permission)
+                    self.update(permission, clean_update)
 
-        def update(self, data):
-            """Update with new data."""
+        def update(self, data, clean_update=True):
+            """Update with new data.
+
+            :param data: data to update
+            :type data: dict
+
+            :param clean_update:
+                clean update that will delete all permissions not in the data
+            :type clean_update: bool
+            """
             self.organization_permission = data.get(
                 'organization_permission', organization_permission_default
             )
-            self.public_permission = data['public_permission']
-            self.save()
-            user_ids = [user['id'] for user in data['user_permissions']]
-            group_ids = [group['id'] for group in data['group_permissions']]
-            self.user_permissions.exclude(user_id__in=user_ids).delete()
-            self.group_permissions.exclude(group_id__in=group_ids).delete()
 
-            for user in data['user_permissions']:
-                perm, crt = self.user_permissions.model.objects.get_or_create(
-                    obj=self, user_id=user['id']
-                )
-                perm.permission = user['permission']
-                perm.save()
+            # Make public permission is optional
+            try:
+                self.public_permission = data['public_permission']
+                self.save()
+            except KeyError:
+                pass
+            try:
+                key = 'user_permissions'
+                permissions = self.user_permissions
 
-            for group in data['group_permissions']:
-                perm, crt = self.group_permissions.model.objects.get_or_create(
-                    obj=self, group_id=group['id']
-                )
-                perm.permission = group['permission']
-                perm.save()
+                if not clean_update:
+                    deleted_permissions = data.get(f'{key}_deleted', None)
+                    if deleted_permissions:
+                        permissions.filter(
+                            user_id__in=deleted_permissions
+                        ).delete()
+
+                user_ids = [user['id'] for user in data[key]]
+                if clean_update:
+                    permissions.exclude(user_id__in=user_ids).delete()
+
+                for user in data[key]:
+                    perm, crt = permissions.model.objects.get_or_create(
+                        obj=self, user_id=user['id']
+                    )
+                    perm.permission = user['permission']
+                    perm.save()
+            except KeyError:
+                pass
+
+            try:
+                key = 'group_permissions'
+                permissions = self.group_permissions
+
+                if not clean_update:
+                    deleted_permissions = data.get(
+                        f'{key}_deleted', None
+                    )
+                    if deleted_permissions:
+                        permissions.filter(
+                            group_id__in=deleted_permissions
+                        ).delete()
+
+                group_ids = [group['id'] for group in data[key]]
+                if clean_update:
+                    permissions.exclude(group_id__in=group_ids).delete()
+
+                for group in data[key]:
+                    perm, crt = permissions.model.objects.get_or_create(
+                        obj=self, group_id=group['id']
+                    )
+                    perm.permission = group['permission']
+                    perm.save()
+            except KeyError:
+                pass
 
             return
 

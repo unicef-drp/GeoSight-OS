@@ -16,7 +16,10 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from geosight.data.models.related_table import RelatedTable
 from geosight.permission.api.resource import ResourcePermissionAPI
-from geosight.permission.models import RelatedTablePermission
+from geosight.permission.models import (
+    RelatedTablePermission, RelatedTableUserPermission,
+    RelatedTableGroupPermission
+)
 
 
 class RelatedTablePermissionAPI(ResourcePermissionAPI):
@@ -24,3 +27,5 @@ class RelatedTablePermissionAPI(ResourcePermissionAPI):
 
     model = RelatedTable
     permission_model = RelatedTablePermission
+    permission_user_model = RelatedTableUserPermission
+    permission_group_model = RelatedTableGroupPermission

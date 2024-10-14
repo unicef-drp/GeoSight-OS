@@ -53,7 +53,7 @@ class SitePreferencesAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields': (
-                'site_title', 'site_url', 'disclaimer',
+                'site_title', 'site_url', 'site_type', 'disclaimer',
                 'default_basemap', 'default_color_palette'
             )
         }),

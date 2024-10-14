@@ -226,10 +226,11 @@ load-test-data:
 	@echo "------------------------------------------------------------------"
 	@echo "Load demo data for devweb"
 	@echo "------------------------------------------------------------------"
-	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/demo_test/1.core.json"
-	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/demo_test/2.geosight_georepo.json"
-	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/demo_test/3.geosight_data.json"
-	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata geosight/reference_dataset/fixtures/demo_test/4.reference_dataset_levels.json"
+	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/test/1.core.json"
+	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/test/2.user_group.json"
+	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/test/3.geosight_georepo.json"
+	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/test/4.geosight_data.json"
+	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata geosight/reference_dataset/fixtures/test/4.reference_dataset_levels.json"
 
 devweb-test:
 	@echo
