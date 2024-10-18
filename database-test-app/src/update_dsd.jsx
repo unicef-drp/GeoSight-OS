@@ -1,49 +1,56 @@
 // dataflow_version is optional
 
 const update_dsd = async (
-  agencyId,
-  dataflowId,
+  agency,
+  dataflow,
   dataflow_version,
-  geographicArea,
-  indicator,
-  sex,
-  age,
-  subnationalLevel
+  dimensions,
+  subformat_options = "v2.1 structure specific"
 ) => {
   try {
     // Construct the API URL based on inputs
     // Inputs must be IDs
     // Each variable can be a group of variables, such as NT_ANT_HAZ_AVG+MG_RFGS_CNTRY_ASYLM_PER1000 for indicator
-    const apiUrlCurrentData = `https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/${agencyId},${dataflowId},${dataflow_version}/${geographicArea}.${indicator}.${sex}.${age}.${subnationalLevel}?format=fusion-json&dimensionAtObservation=AllDimensions&detail=structureOnly&includeMetrics=true&includeAllAnnotations=true`;
+
+    let urlSection = "";
+
+    const keys = [];
+
+    Object.keys(dimensions).forEach((key) => {
+      keys.push(key);
+    });
+
+    // Construct the URL section based on dimensions
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i];
+      const values = dimensions[key].join("+");
+      urlSection += `${values}`;
+      if (i < keys.length - 1) {
+        urlSection += ".";
+      }
+    }
+
+    const api_url = `https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/${agency},${dataflow},${dataflow_version}/${urlSection}?format=fusion-json&dimensionAtObservation=AllDimensions&detail=structureOnly&includeMetrics=true&includeAllAnnotations=true`;
 
     // Fetch the data from the API
-    const response = await fetch(apiUrlCurrentData);
+    const response = await fetch(api_url);
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
 
-    const jsonData = await response.json();
+    const api_response = await response.json();
 
-    const dimensions = jsonData.structure.dimensions.observation;
-    const parsedDimensions = {};
-    dimensions.forEach((dimension) => {
-      parsedDimensions[dimension.id] = [];
+    let updated_dimensions = api_response.structure.dimensions.observation;
+    const updated_dimensions_map = {};
+    updated_dimensions.forEach((dimension) => {
+      updated_dimensions_map[dimension.id] = dimension.values;
     });
+    updated_dimensions = updated_dimensions_map;
 
-    for (let i = 0; i < dimensions.length; i++) {
-      const dimensionId = dimensions[i].id;
-      const dimensionValues = dimensions[i].values.map((value) => ({
-        id: value.id,
-        name: value.name,
-        description: value.description,
-      }));
-      parsedDimensions[dimensionId] = dimensionValues;
-    }
+    const sdmxImplementation = ["implementation 1"];
 
-    // Add the SDMX implementation field
-    parsedDimensions["sdmx_implementation"] = ["implementation 1"];
-
-    return parsedDimensions;
+    // return {updated_dimensions, final_url, api_response, sdmx_implementation};
+    return { updated_dimensions, api_url, api_response, sdmxImplementation };
   } catch (error) {
     console.error("Error fetching or parsing DSD from API:", error);
     return { error: "Error fetching data" };
