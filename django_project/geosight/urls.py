@@ -28,6 +28,13 @@ if settings.CLOUD_NATIVE_GIS_ENABLED:
         url(r'^cloud-native-gis/', include('cloud_native_gis.urls')),
         url(r'^cloud-native-gis/', include('geosight.cloud_native_gis.urls')),
     ]
+if settings.MACHINE_INFO_FETCHER_ENABLED:
+    urlpatterns += [
+        url(
+            r'^machine-info-fetcher/',
+            include('geosight.machine_info_fetcher.urls')
+        ),
+    ]
 if settings.REFERENCE_DATASET_ENABLED:
     urlpatterns += [
         url(

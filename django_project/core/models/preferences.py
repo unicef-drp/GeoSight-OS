@@ -296,7 +296,6 @@ class SitePreferences(SingletonModel):
         ),
         verbose_name="Outline size"
     )
-
     # -----------------------------------------------
     # Login page config
     # -----------------------------------------------
@@ -306,6 +305,19 @@ class SitePreferences(SingletonModel):
             'Help text to show in login page.'
         ),
         null=True, blank=True
+    )
+
+    # -----------------------------------------------
+    # PLUGIN_CONFIG
+    # -----------------------------------------------
+    machine_info_fetcher_config = models.JSONField(
+        default={
+            'api_key': '',
+            'user_email': ''
+        },
+        help_text=(
+            'Config for machine info fetcher.'
+        )
     )
 
     class Meta:  # noqa: D106
