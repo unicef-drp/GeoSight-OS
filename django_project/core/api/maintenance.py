@@ -14,7 +14,7 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '20/11/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from datetime import datetime
+from django.utils import timezone
 
 from django.db.models import Q
 from rest_framework.response import Response
@@ -29,7 +29,7 @@ class MaintenanceAPI(APIView):
 
     def get(self, request):
         """Return Maintenance."""
-        current_datetime = datetime.now()
+        current_datetime = timezone.now()
         maintenance = Maintenance.objects.filter(
             Q(scheduled_end__isnull=True) |
             Q(scheduled_end__gte=current_datetime)
