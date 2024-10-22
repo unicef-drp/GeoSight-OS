@@ -58,5 +58,5 @@ tenant-schemas-celery==3.0.0
 django-tenants-celery-beat==0.2.1
 # ----------------------------------------------------
 
-# FEATURE: Multi tenant
+# FEATURE: Machine info feature
 uwsgi-tools==1.1.1
