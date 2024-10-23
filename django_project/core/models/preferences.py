@@ -27,6 +27,14 @@ DEFAULT_OUTLINE_COLOR = '#FFFFFF'
 DEFAULT_OUTLINE_SIZE = 0.5
 
 
+def default_machine_info_fetcher_config():
+    """Return default config for machine info fetcher."""
+    return {
+        'api_key': '',
+        'user_email': ''
+    }
+
+
 class SiteType(models.TextChoices):
     """Choices of site type."""
 
@@ -296,7 +304,6 @@ class SitePreferences(SingletonModel):
         ),
         verbose_name="Outline size"
     )
-
     # -----------------------------------------------
     # Login page config
     # -----------------------------------------------
@@ -306,6 +313,16 @@ class SitePreferences(SingletonModel):
             'Help text to show in login page.'
         ),
         null=True, blank=True
+    )
+
+    # -----------------------------------------------
+    # PLUGIN_CONFIG
+    # -----------------------------------------------
+    machine_info_fetcher_config = models.JSONField(
+        default=default_machine_info_fetcher_config,
+        help_text=(
+            'Config for machine info fetcher.'
+        )
     )
 
     class Meta:  # noqa: D106

@@ -62,6 +62,11 @@ class SitePreferencesAdmin(admin.ModelAdmin):
                 'sentry_dsn', 'sentry_environment'
             )
         }),
+        ('Plugins', {
+            'fields': (
+                'machine_info_fetcher_config',
+            )
+        }),
         ('GeoRepo', {
             'fields': (
                 'georepo_url',

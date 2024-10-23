@@ -15,3 +15,4 @@ FROM nginx:1.24-alpine
 MAINTAINER Irwan Fathurrahman<meomancer@gmail.com>
 
 ADD deployment/nginx/sites-enabled /etc/nginx/conf.d
+ADD deployment/nginx/nginx.conf /etc/nginx/nginx.conf

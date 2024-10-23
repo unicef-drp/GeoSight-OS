@@ -14,7 +14,7 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '28/11/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from datetime import datetime
+from django.utils import timezone
 
 from django.contrib.auth import get_user_model
 from django.db import models
@@ -30,7 +30,7 @@ class Maintenance(AbstractEditData):
     message = models.TextField(help_text='Alert for maintenance.')
 
     scheduled_from = models.DateTimeField(
-        default=datetime.now,
+        default=timezone.now,
         null=False,
         blank=False,
         help_text='Scheduled time from.'
