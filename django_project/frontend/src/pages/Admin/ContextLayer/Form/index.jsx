@@ -104,16 +104,32 @@ export default function ContextLayerForm() {
   }
 
   const typeChange = (value) => {
+    // Hide arcgis
     if (value === 'ARCGIS') {
       $('div[data-wrapper-name="arcgis_config"]').show()
-    } else if (['Related Table', Variables.TERMS.CLOUD_NATIVE_GIS].includes(value)) {
+    } else {
       $('div[data-wrapper-name="arcgis_config"]').hide()
+    }
+
+    // Hide authentication
+    if (
+      [
+        'Related Table', Variables.TERMS.CLOUD_NATIVE_GIS, Variables.TERMS.RASTER_COG
+      ].includes(value)
+    ) {
       $('div[data-wrapper-name="token"]').hide()
       $('div[data-wrapper-name="username"]').hide()
       $('div[data-wrapper-name="password"]').hide()
+    } else {
+      $('div[data-wrapper-name="token"]').show()
+      $('div[data-wrapper-name="username"]').show()
+      $('div[data-wrapper-name="password"]').show()
+    }
+
+    // Hide URL
+    if (['Related Table', Variables.TERMS.CLOUD_NATIVE_GIS].includes(value)) {
       $('div[data-wrapper-name="url"]').hide()
     } else {
-      $('div[data-wrapper-name="arcgis_config"]').hide()
       $('div[data-wrapper-name="url"]').show()
     }
     setData({ ...data, layer_type: value })

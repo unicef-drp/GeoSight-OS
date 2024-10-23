@@ -89,7 +89,7 @@ export default function LeftPanel({ leftExpanded }) {
   const showLayerTab = !!EmbedConfig().layer_tab
   const showFilterTab = !!EmbedConfig().filter_tab
   const [tabValue, setTabValue] = React.useState(showLayerTab ? 0 : 1);
-  const [tab2Value, setTab2Value] = React.useState(1);
+  const [tab2Value, setTab2Value] = React.useState(0);
 
   const handleChangeTab = (event, newValue) => {
     setTabValue(newValue);
@@ -134,27 +134,27 @@ export default function LeftPanel({ leftExpanded }) {
                 <Tabs value={tab2Value} onChange={handleChangeTab2}
                       aria-label="basic tabs example">
                   <Tab
-                    label="Context Layers"
-                    icon={<ContextLayerVisibility/>}
-                    iconPosition='end'
-                    {...tabProps(0)}
-                  />
-                  <Tab
                     label="Indicators"
                     icon={<IndicatorsVisibility/>}
                     iconPosition='end'
                     {...tabProps(1)}
                   />
+                  <Tab
+                    label="Context Layers"
+                    icon={<ContextLayerVisibility/>}
+                    iconPosition='end'
+                    {...tabProps(0)}
+                  />
                 </Tabs>
               </Box>
               <TabPanel value={tab2Value} index={0}
                         className={'sidepanel-tab layers-panel'}>
-                <ContextLayersAccordion
+                <IndicatorLayersAccordion
                 />
               </TabPanel>
               <TabPanel value={tab2Value} index={1}
                         className={'sidepanel-tab layers-panel'}>
-                <IndicatorLayersAccordion
+                <ContextLayersAccordion
                 />
               </TabPanel>
             </Box>

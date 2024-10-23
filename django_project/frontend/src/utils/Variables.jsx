@@ -14,10 +14,12 @@
  */
 
 const CLOUD_NATIVE_GIS = 'Cloud Native GIS Layer';
+const RASTER_COG = 'Raster COG';
 
 export const Variables = {
   TERMS: {
-    CLOUD_NATIVE_GIS: CLOUD_NATIVE_GIS
+    CLOUD_NATIVE_GIS: CLOUD_NATIVE_GIS,
+    RASTER_COG: RASTER_COG,
   },
   LIST: {
     VECTOR_TILE_TYPES: ['Related Table', 'Vector Tile', CLOUD_NATIVE_GIS],

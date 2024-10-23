@@ -20,6 +20,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import maplibregl from 'maplibre-gl';
+import { cogProtocol } from '@geomatico/maplibre-cog-protocol';
 import { MapboxOverlay } from '@deck.gl/mapbox/typed';
 import ReferenceLayerCentroid from './ReferenceLayerCentroid'
 import ReferenceLayers from "./Layers/ReferenceLayer";
@@ -56,6 +57,9 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import './style.scss';
 
 const BASEMAP_ID = `basemap`
+
+// Initialize cog
+maplibregl.addProtocol('cog', cogProtocol);
 
 /**
  * MapLibre component.
@@ -216,6 +220,17 @@ export default function MapLibre(
       renderLayer(
         BASEMAP_ID, basemapLayer, { type: "raster" }, layers[0]?.id
       )
+      // map.addSource('imageSource', {
+      //   type: 'raster',
+      //   url: 'cog://https://unidatadapmclimatechange.blob.core.windows.net/public/heatwave/cogs_by_hwi/average_heatwaves_duration_1960s_proj_COG.tif#color:["#ffeda0","#feb24c","#f03b20"],0,100,c',
+      //   tileSize: 256
+      // });
+      //
+      // map.addLayer({
+      //   id: 'imageLayer',
+      //   source: 'imageSource',
+      //   type: 'raster'
+      // });
     }
   }, [map, basemapLayer]);
 
