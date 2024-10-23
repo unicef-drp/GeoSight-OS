@@ -28,7 +28,7 @@ from core.tests.model_factories import create_user
 class MaintenanceApiTest(APITestCase):
     """Test for maintenance."""
 
-    @mock.patch('core.api.maintenance.datetime')
+    @mock.patch('core.api.maintenance.timezone')
     def test_maintenance_api(self, mocked_datetime):
         """Test maintenance api."""
         user = create_user(ROLES.SUPER_ADMIN.name)
