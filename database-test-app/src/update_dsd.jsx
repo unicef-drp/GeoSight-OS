@@ -1,8 +1,8 @@
-import axios from 'axios';
+import axios from "axios";
 
 const update_agency_dataflow = async (agencyParam = "", dataflowParam) => {
   // Intitialize as sets to ensure unique values
-  let agencyOptions = new Set()
+  let agencyOptions = new Set();
   let dataflowOptions = new Set();
   // Return an imiplicit agency parameter that can be used to construct URL
   let implicitAgency = agencyParam;
@@ -19,7 +19,7 @@ const update_agency_dataflow = async (agencyParam = "", dataflowParam) => {
       return { agencyOptions, dataflowOptions }; // Return empty options on error
     }
   }
-  // If the request was successful or both were not selected, restrict the other fields dynamically 
+  // If the request was successful or both were not selected, restrict the other fields dynamically
 
   // Set the API URL to get the dataflows
   apiUrl = `https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/dataflow/`;
@@ -29,35 +29,36 @@ const update_agency_dataflow = async (agencyParam = "", dataflowParam) => {
 
     // Parse the XML response using DOMParser
     const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(xmlString, 'application/xml');
+    const xmlDoc = parser.parseFromString(xmlString, "application/xml");
 
     // Parse through all dataflows
-    const dataflows = xmlDoc.getElementsByTagName('str:Dataflow');
-    Array.from(dataflows).forEach(dataflow => {
-      const agencyID = dataflow.getAttribute('agencyID');
-      const id = dataflow.getAttribute('id');
+    const dataflows = xmlDoc.getElementsByTagName("str:Dataflow");
+    Array.from(dataflows).forEach((dataflow) => {
+      const agencyID = dataflow.getAttribute("agencyID");
+      const id = dataflow.getAttribute("id");
       // If the agencyID exists, add it to all possible agencyID options
       if (agencyID) agencyOptions.add(agencyID);
       // If the agencyParam is selected, restrict dataFlow options. Otherwise, add them all.
-      if (agencyID === agencyParam || agencyParam === "") dataflowOptions.add(id);
-      if (implicitAgency === "" && id === dataflowParam) implicitAgency = agencyID;
+      if (agencyID === agencyParam || agencyParam === "")
+        dataflowOptions.add(id);
+      if (implicitAgency === "" && id === dataflowParam)
+        implicitAgency = agencyID;
     });
-
   } catch (error) {
-    console.error('Error fetching dataflows for agency:', error);
+    console.error("Error fetching dataflows for agency:", error);
   }
 
-  // 
+  //
 
   // Convert to arrays before returning
   agencyOptions = Array.from(agencyOptions);
   dataflowOptions = Array.from(dataflowOptions);
 
-  // Return both agency and dataflow options, as well as agencyParam2 to be used implicitly for 
+  // Return both agency and dataflow options, as well as agencyParam2 to be used implicitly for
   return { agencyOptions, dataflowOptions, implicitAgency };
 };
 
-const interpret_dataflow = async (dataflow) =>  {
+const interpret_dataflow = async (dataflow) => {
   let agency = "";
   let dataflowDsd = "";
   try {
@@ -69,41 +70,40 @@ const interpret_dataflow = async (dataflow) =>  {
 
     // Parse the XML response using DOMParser
     const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(xmlString, 'application/xml');
+    const xmlDoc = parser.parseFromString(xmlString, "application/xml");
 
     // Extract the Dataflow nodes
-    const dataflowNodes = xmlDoc.getElementsByTagName('str:Dataflow');
+    const dataflowNodes = xmlDoc.getElementsByTagName("str:Dataflow");
 
     // Iterate through Dataflows to find the matching dataflow by ID
     for (let i = 0; i < dataflowNodes.length; i++) {
       const dataflowNode = dataflowNodes[i];
-      const id = dataflowNode.getAttribute('id');
+      const id = dataflowNode.getAttribute("id");
 
       // Check if the ID matches the input
       if (id === dataflow) {
         // Extract agencyID and id from the Structure node
-        const structureNode = dataflowNode.getElementsByTagName('str:Structure')[0];
-        const refNode = structureNode.getElementsByTagName('Ref')[0];
+        const structureNode =
+          dataflowNode.getElementsByTagName("str:Structure")[0];
+        const refNode = structureNode.getElementsByTagName("Ref")[0];
 
-        agency = refNode.getAttribute('agencyID');
-        dataflowDsd = refNode.getAttribute('id');
+        agency = refNode.getAttribute("agencyID");
+        dataflowDsd = refNode.getAttribute("id");
         break;
       }
     }
-
-  }
-  catch(error) {
-    return { error: "Error getting dataflowDSD "}
+  } catch (error) {
+    return { error: "Error getting dataflowDSD " };
   }
 
-  return { agency, dataflowDsd }
-}
+  return { agency, dataflowDsd };
+};
 
 const update_dimensions = async (dataflow, dataflowVersion = "1.0") => {
   // Initialize dimensionSelections
   const dimensionSelections = {};
   // first, convert the dataflow to a dataflowDSD format
-  const { agency, dataflowDsd } = await interpret_dataflow(dataflow)  
+  const { agency, dataflowDsd } = await interpret_dataflow(dataflow);
 
   try {
     // Construct the API URL based on inputs
@@ -115,33 +115,37 @@ const update_dimensions = async (dataflow, dataflowVersion = "1.0") => {
 
     // Parse the XML response using DOMParser
     const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(xmlString, 'application/xml');
+    const xmlDoc = parser.parseFromString(xmlString, "application/xml");
 
     // Extract the dimensions and their possible values
     // TODO: Determine if order here works. otherwise, maybe implement as a list of objects
-    const dimensionNodes = xmlDoc.getElementsByTagName('str:Dimension');
+    const dimensionNodes = xmlDoc.getElementsByTagName("str:Dimension");
 
     // Iterate through Dimension elements and extract ConceptIdentity
     Array.from(dimensionNodes).forEach((dimension) => {
-      const conceptIdentityNode = dimension.getElementsByTagName('str:ConceptIdentity')[0];
+      const conceptIdentityNode = dimension.getElementsByTagName(
+        "str:ConceptIdentity"
+      )[0];
       if (conceptIdentityNode) {
-        const refNode = conceptIdentityNode.getElementsByTagName('Ref')[0];
+        const refNode = conceptIdentityNode.getElementsByTagName("Ref")[0];
         if (refNode) {
-          const id = refNode.getAttribute('id');
+          const id = refNode.getAttribute("id");
           dimensionSelections[id] = []; // Initialize with an empty list for each dimension
         }
       }
     });
+  } catch (error) {
+    return { error: "Error fetching dimensions" };
   }
-    catch(error) {
-      return { error: "Error fetching dimensions" };
-    }
 
-  const { updated_dimensions } = await update_dsd(dataflow, dataflowVersion, dimensionSelections)
+  const { updated_dimensions } = await update_dsd(
+    dataflow,
+    dataflowVersion,
+    dimensionSelections
+  );
 
-  return { dimensionSelections, updated_dimensions }
+  return { dimensionSelections, updated_dimensions };
 };
-
 
 const update_dsd = async (
   dataflow,
@@ -149,7 +153,7 @@ const update_dsd = async (
   dimensions,
   subformat_options = "v2.1 structure specific"
 ) => {
-  const { agency } = await interpret_dataflow(dataflow)
+  const { agency } = await interpret_dataflow(dataflow);
 
   try {
     // Construct the API URL based on inputs
@@ -178,12 +182,12 @@ const update_dsd = async (
     console.log(api_url);
 
     // Fetch the data from the API
-    const response = await fetch(api_url);
+    const response = await axios.get(api_url);
     // if (!response.ok) {
     //   throw new Error("Network response was not ok");
     // }
 
-    const api_response = await response.json();
+    const api_response = await response.data;
 
     let updated_dimensions = api_response.structure.dimensions.observation;
     const updated_dimensions_map = {};
