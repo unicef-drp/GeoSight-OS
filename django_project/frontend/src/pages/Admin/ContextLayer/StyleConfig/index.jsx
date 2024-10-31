@@ -25,8 +25,10 @@ import { defaultPointStyle } from './layerStyles';
 import RelatedTableConfig from './RelatedTable';
 import VectorStyleConfig from "./VectorStyleConfig";
 import { Variables } from "../../../../utils/Variables";
+import RasterCogLayer from "./RasterCogLayer";
 
 import './style.scss';
+import { dictDeepCopy } from "../../../../utils/main";
 
 const SelectedClass = 'Selected';
 
@@ -196,6 +198,13 @@ export default function StyleConfig(
             <div className='ArcgisConfig Label form-helptext'>
               {data.layer_type} does not have label
             </div>
+          }
+          {
+            Variables.LAYER.TYPE.RASTER_COG === data.layer_type &&
+            <RasterCogLayer
+              data={data} setData={setData}
+              useOverride={useOverride}
+            />
           }
           {
             data.layer_type === Variables.LAYER.TYPE.ARCGIS ?

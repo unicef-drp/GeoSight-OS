@@ -241,7 +241,7 @@ export function contextLayerRendering(id, contextLayerData, contextLayer, map, c
           renderLabel(id, contextLayerData, contextLayer, map)
           break;
         }
-        case 'Vector Tile': {
+        case Variables.LAYER.TYPE.VECTOR_TILE: {
           removeLayers(map, id)
           vectorTileLayer(
             map, id, layer, contextLayerData, (featureProperties) => {

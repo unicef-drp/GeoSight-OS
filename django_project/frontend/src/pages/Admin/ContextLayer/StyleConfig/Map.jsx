@@ -29,6 +29,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 
 // Initialize cog
 import { cogProtocol } from "@geomatico/maplibre-cog-protocol";
+import { Variables } from "../../../../utils/Variables";
 
 maplibregl.addProtocol('cog', cogProtocol);
 
@@ -93,6 +94,9 @@ export default function MapConfig({ data, layerInput }) {
   useEffect(() => {
     if (map) {
       const id = data.id ? `context-layer-${data.id}` : 'context-layer'
+      if ([Variables.LAYER.TYPE.RASTER_COG].includes(data.layer_type)) {
+        removeLayer(map, id)
+      }
       contextLayerRendering(id, data, layerInput, map)
     }
   }, [map, layerInput]);

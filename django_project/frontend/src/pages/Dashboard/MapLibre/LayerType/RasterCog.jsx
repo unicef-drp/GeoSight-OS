@@ -20,6 +20,7 @@ import {
   removeLayer,
   removeSource
 } from "../utils";
+import { createColorsFromPaletteId } from "../../../../utils/Style";
 
 /***
  * Render Raster Cog
@@ -27,11 +28,20 @@ import {
 export default function rasterCogLayer(map, id, data, contextLayerData, popupFeatureFn, contextLayerOrder) {
   (
     async () => {
-      console.log(data)
       // Create source
+      const {
+        min_band,
+        max_band,
+        color_palette,
+        color_palette_reverse,
+        dynamic_class_num
+      } = data?.styles;
+      const colors = createColorsFromPaletteId(color_palette, dynamic_class_num, color_palette_reverse)
+      const url = `cog://${data.url}#color:[${colors.map(color => '"' + color + '"')}],${min_band ? min_band : 0},${max_band ? max_band : 100},c`
+
       removeSource(map, id)
       const sourceParams = Object.assign({}, data.params, {
-        url: `cog://${data.url}#color:["#ffeda0","#feb24c","#f03b20"],0,100,c`,
+        url: url,
         type: 'raster',
         tileSize: 256
       })
@@ -55,7 +65,6 @@ export default function rasterCogLayer(map, id, data, contextLayerData, popupFea
         },
         before
       );
-      console.log(map.getStyle())
     }
   )()
 

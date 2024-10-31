@@ -221,17 +221,6 @@ export default function MapLibre(
       renderLayer(
         BASEMAP_ID, basemapLayer, { type: "raster" }, layers[0]?.id
       )
-      // map.addSource('imageSource', {
-      //   type: 'raster',
-      //   url: 'cog://https://unidatadapmclimatechange.blob.core.windows.net/public/heatwave/cogs_by_hwi/average_heatwaves_duration_1960s_proj_COG.tif#color:["#ffeda0","#feb24c","#f03b20"],0,100,c',
-      //   tileSize: 256
-      // });
-      //
-      // map.addLayer({
-      //   id: 'imageLayer',
-      //   source: 'imageSource',
-      //   type: 'raster'
-      // });
     }
   }, [map, basemapLayer]);
 

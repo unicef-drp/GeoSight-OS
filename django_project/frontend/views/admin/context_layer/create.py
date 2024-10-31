@@ -21,6 +21,7 @@ from django.shortcuts import redirect, reverse, render
 from frontend.views.admin._base import AdminBaseView
 from geosight.data.forms.context_layer import ContextLayerForm
 from geosight.data.models.context_layer import ContextLayer
+from geosight.data.models.style.base import DynamicClassificationTypeChoices
 from geosight.permission.access import RoleCreatorRequiredMixin
 
 
@@ -68,7 +69,10 @@ class BaseContextLayerEditView(AdminBaseView):
         context.update(
             {
                 'form': ContextLayerForm(initial=initial),
-                'permission': json.dumps(permission)
+                'permission': json.dumps(permission),
+                'dynamicClassification': json.dumps(
+                    DynamicClassificationTypeChoices
+                ),
             }
         )
         return context

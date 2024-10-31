@@ -285,7 +285,6 @@ export function ReferenceLayer(
       updateStyle()
       updateFilter()
       setLayerCreated(true)
-      console.log(map.getStyle())
     }
   }
 

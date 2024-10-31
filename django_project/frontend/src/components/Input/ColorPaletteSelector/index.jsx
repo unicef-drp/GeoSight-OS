@@ -21,6 +21,7 @@ import Checkbox from "@mui/material/Checkbox";
 
 import './style.scss';
 import { dictDeepCopy } from "../../../utils/main";
+import { updateColorPaletteData } from "../../../utils/Style";
 
 /**
  * Color Palette Selector
@@ -45,9 +46,12 @@ export default function ColorPaletteSelector(
         await fetchingData(
           `/api/color/palette/list`,
           {}, {}, (response, error) => {
-            setColorPalettes(response);
-            if (!colorPalette) {
-              onChange(preferences.default_color_palette ? preferences.default_color_palette : response[0]?.id)
+            if (response) {
+              updateColorPaletteData(response)
+              setColorPalettes(response);
+              if (!colorPalette) {
+                onChange(preferences.default_color_palette ? preferences.default_color_palette : response[0]?.id)
+              }
             }
           }
         )
