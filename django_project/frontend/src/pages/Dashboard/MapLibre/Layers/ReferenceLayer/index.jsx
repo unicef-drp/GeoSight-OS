@@ -58,7 +58,7 @@ const LAYER_HIGHLIGHT_ID = 'reference-layer-highlight'
 
 // Layer keys
 const REFERENCE_LAYER_ID_KEY = `reference-layer`
-const FILL_LAYER_ID_KEY = REFERENCE_LAYER_ID_KEY + '-fill'
+export const FILL_LAYER_ID_KEY = REFERENCE_LAYER_ID_KEY + '-fill'
 const OUTLINE_LAYER_ID_KEY = REFERENCE_LAYER_ID_KEY + '-outline'
 
 const geo_field = 'concept_uuid'
@@ -242,6 +242,8 @@ export function ReferenceLayer(
 
       // Fill layer
       const contextLayerIds = map.getStyle().layers.filter(
+        layer => layer.type !== 'raster'
+      ).filter(
         layer => layer.id.includes(CONTEXT_LAYER_ID) || layer.id === BEFORE_LAYER
       )
       let before = contextLayerIds[0]?.id
@@ -283,6 +285,7 @@ export function ReferenceLayer(
       updateStyle()
       updateFilter()
       setLayerCreated(true)
+      console.log(map.getStyle())
     }
   }
 

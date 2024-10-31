@@ -271,5 +271,14 @@ export const getLayer = function (
         onEachFeature
       )
     }
+    case Variables.TERMS.RASTER_COG: {
+      return RasterTileLayer(
+        layerData,
+        (layer) => setLayer(layer),
+        (legend) => setLegend(legend),
+        (error) => setError(error),
+        onEachFeature
+      )
+    }
   }
 }

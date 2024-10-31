@@ -20,7 +20,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import maplibregl from 'maplibre-gl';
-import { cogProtocol } from '@geomatico/maplibre-cog-protocol';
 import { MapboxOverlay } from '@deck.gl/mapbox/typed';
 import ReferenceLayerCentroid from './ReferenceLayerCentroid'
 import ReferenceLayers from "./Layers/ReferenceLayer";
@@ -56,10 +55,12 @@ import IndicatorLayersReferenceControl
 import 'maplibre-gl/dist/maplibre-gl.css';
 import './style.scss';
 
-const BASEMAP_ID = `basemap`
-
 // Initialize cog
+import { cogProtocol } from "@geomatico/maplibre-cog-protocol";
+
 maplibregl.addProtocol('cog', cogProtocol);
+
+const BASEMAP_ID = `basemap`
 
 /**
  * MapLibre component.
