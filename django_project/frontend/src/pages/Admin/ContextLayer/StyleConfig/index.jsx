@@ -51,7 +51,7 @@ export default function StyleConfig(
 
   const [layerData, setLayerData] = useState(null);
   const [layerDataClass, setLayerDataClass] = useState(null);
-  const [tab, setTab] = useState(data.layer_type === 'ARCGIS' ? 'Fields' : 'Preview');
+  const [tab, setTab] = useState(data.layer_type === Variables.LAYER.TYPE.ARCGIS ? 'Fields' : 'Preview');
 
   useEffect(() => {
     if (defaultTab) {
@@ -67,7 +67,7 @@ export default function StyleConfig(
   }, [data, tab]);
 
   useEffect(() => {
-    if (!data.styles && Variables.LIST.VECTOR_TILE_TYPES.includes(data.layer_type) && !Variables.LIST.OVERRIDE_STYLES.includes(data.layer_type)) {
+    if (!data.styles && Variables.LAYER.LIST.VECTOR_TILE_TYPES.includes(data.layer_type) && !Variables.LAYER.LIST.OVERRIDE_STYLES.includes(data.layer_type)) {
       setData({
         ...data,
         styles: JSON.stringify(defaultPointStyle, null, 4),
@@ -97,7 +97,7 @@ export default function StyleConfig(
         {/* FOR CONFIG */}
         <div className='TabPrimary ContextLayerConfigTab'>
           {
-            data.layer_type === 'Related Table' ?
+            data.layer_type === Variables.LAYER.TYPE.RELATED_TABLE ?
               <>
                 <div
                   onClick={() => {
@@ -118,7 +118,7 @@ export default function StyleConfig(
             Preview
           </div>
           {
-            data.layer_type === 'ARCGIS' ?
+            data.layer_type === Variables.LAYER.TYPE.ARCGIS ?
               <Fragment>
                 <div
                   onClick={() => {
@@ -140,7 +140,7 @@ export default function StyleConfig(
           }
         </div>
         <div id='ContextLayerConfig'
-             className={"BasicFormSection " + (data.layer_type === 'ARCGIS' ? 'ShowStyle' : '')}>
+             className={"BasicFormSection " + (data.layer_type === Variables.LAYER.TYPE.ARCGIS ? 'ShowStyle' : '')}>
           {
             tab === 'Preview' ?
               <div className='PreviewWrapper Preview'>
@@ -167,7 +167,7 @@ export default function StyleConfig(
               </div> : ""
           }
           {
-            Variables.LIST.VECTOR_TILE_TYPES.includes(data.layer_type) ? <>
+            Variables.LAYER.LIST.VECTOR_TILE_TYPES.includes(data.layer_type) ? <>
               <div className='ArcgisConfig Style'>
                 {
                   useOverride ?
@@ -200,12 +200,18 @@ export default function StyleConfig(
             </> : null
           }
           {
-            data.layer_type === 'ARCGIS' ?
+            Variables.LAYER.LIST.RASTER_TYPES.includes(data.layer_type) &&
+            <div className='ArcgisConfig Label form-helptext'>
+              {data.layer_type} does not have label
+            </div>
+          }
+          {
+            data.layer_type === Variables.LAYER.TYPE.ARCGIS ?
               <ArcgisConfig
                 originalData={data} setData={setData}
                 ArcgisData={layerData} useOverride={useOverride}
                 useOverrideLabel={useOverrideLabel}
-              /> : data.layer_type === 'Related Table' ?
+              /> : data.layer_type === Variables.LAYER.TYPE.RELATED_TABLE ?
                 <RelatedTableConfig
                   originalData={data} setData={setData}
                   setError={setError}

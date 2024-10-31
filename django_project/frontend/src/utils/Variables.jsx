@@ -15,14 +15,27 @@
 
 const CLOUD_NATIVE_GIS = 'Cloud Native GIS Layer';
 const RASTER_COG = 'Raster COG';
+const RASTER_TILE = 'Raster Tile';
+const RELATED_TABLE = 'Related Table';
+const VECTOR_TILE = 'Vector Tile';
+const ARCGIS = 'ARCGIS';
+const GEOJSON = 'Geojson';
 
 export const Variables = {
-  TERMS: {
-    CLOUD_NATIVE_GIS: CLOUD_NATIVE_GIS,
-    RASTER_COG: RASTER_COG,
-  },
-  LIST: {
-    VECTOR_TILE_TYPES: ['Related Table', 'Vector Tile', CLOUD_NATIVE_GIS],
-    OVERRIDE_STYLES: ['ARCGIS']
+  LAYER: {
+    TYPE: {
+      CLOUD_NATIVE_GIS: CLOUD_NATIVE_GIS,
+      RASTER_TILE: RASTER_TILE,
+      RASTER_COG: RASTER_COG,
+      RELATED_TABLE: RELATED_TABLE,
+      VECTOR_TILE: VECTOR_TILE,
+      ARCGIS: ARCGIS,
+      GEOJSON: GEOJSON,
+    },
+    LIST: {
+      VECTOR_TILE_TYPES: [RELATED_TABLE, VECTOR_TILE, CLOUD_NATIVE_GIS],
+      RASTER_TYPES: [RASTER_COG, RASTER_TILE],
+      OVERRIDE_STYLES: [ARCGIS]
+    }
   }
 }

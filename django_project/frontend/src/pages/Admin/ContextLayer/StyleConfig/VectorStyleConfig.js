@@ -94,7 +94,7 @@ export default function VectorStyleConfig({ data, setData, setError }) {
     <br/>
     <br/>
     {
-      data.mapbox_style && data.layer_type === Variables.TERMS.CLOUD_NATIVE_GIS ?
+      data.mapbox_style && data.layer_type === Variables.LAYER.TYPE.CLOUD_NATIVE_GIS ?
         <ThemeButton
           variant="primary"
           onClick={() => {

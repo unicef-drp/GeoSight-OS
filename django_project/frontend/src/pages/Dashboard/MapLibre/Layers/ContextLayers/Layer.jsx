@@ -211,7 +211,7 @@ export const getLayer = function (
     }
   }
   switch (layerType) {
-    case 'Raster Tile': {
+    case Variables.LAYER.TYPE.RASTER_TILE: {
       return RasterTileLayer(
         layerData,
         (layer) => setLayer(layer),
@@ -220,7 +220,7 @@ export const getLayer = function (
         onEachFeature
       )
     }
-    case 'ARCGIS': {
+    case Variables.LAYER.TYPE.ARCGIS: {
       const ArcGisData = ArcgisLayer(
         layerData,
         (layer) => setLayer(layer),
@@ -235,7 +235,7 @@ export const getLayer = function (
       )
       return ArcGisData
     }
-    case 'Related Table': {
+    case Variables.LAYER.TYPE.RELATED_TABLE: {
       return VectorTileLayer(
         layerData,
         (layer) => setLayer(layer),
@@ -244,7 +244,7 @@ export const getLayer = function (
         onEachFeature
       )
     }
-    case 'Geojson': {
+    case Variables.LAYER.TYPE.GEOJSON: {
       return GeojsonLayer(
         layerData,
         (layer) => setLayer(layer),
@@ -253,7 +253,7 @@ export const getLayer = function (
         onEachFeature
       )
     }
-    case 'Vector Tile': {
+    case Variables.LAYER.TYPE.VECTOR_TILE: {
       return VectorTileLayer(
         layerData,
         (layer) => setLayer(layer),
@@ -262,7 +262,7 @@ export const getLayer = function (
         onEachFeature
       )
     }
-    case Variables.TERMS.CLOUD_NATIVE_GIS: {
+    case Variables.LAYER.TYPE.CLOUD_NATIVE_GIS: {
       return VectorTileLayer(
         layerData,
         (layer) => setLayer(layer),
@@ -271,7 +271,7 @@ export const getLayer = function (
         onEachFeature
       )
     }
-    case Variables.TERMS.RASTER_COG: {
+    case Variables.LAYER.TYPE.RASTER_COG: {
       return RasterTileLayer(
         layerData,
         (layer) => setLayer(layer),

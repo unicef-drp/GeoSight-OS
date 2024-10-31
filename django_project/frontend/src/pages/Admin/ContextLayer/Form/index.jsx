@@ -34,6 +34,7 @@ import './style.scss';
 
 let currentArcGis = null
 let init = false
+
 /**
  * Context Layer Form App
  */
@@ -105,7 +106,7 @@ export default function ContextLayerForm() {
 
   const typeChange = (value) => {
     // Hide arcgis
-    if (value === 'ARCGIS') {
+    if (value === Variables.LAYER.TYPE.ARCGIS) {
       $('div[data-wrapper-name="arcgis_config"]').show()
     } else {
       $('div[data-wrapper-name="arcgis_config"]').hide()
@@ -114,7 +115,7 @@ export default function ContextLayerForm() {
     // Hide authentication
     if (
       [
-        'Related Table', Variables.TERMS.CLOUD_NATIVE_GIS, Variables.TERMS.RASTER_COG
+        Variables.LAYER.TYPE.RELATED_TABLE, Variables.LAYER.TYPE.CLOUD_NATIVE_GIS, Variables.LAYER.TYPE.RASTER_COG
       ].includes(value)
     ) {
       $('div[data-wrapper-name="token"]').hide()
@@ -127,7 +128,7 @@ export default function ContextLayerForm() {
     }
 
     // Hide URL
-    if (['Related Table', Variables.TERMS.CLOUD_NATIVE_GIS].includes(value)) {
+    if ([Variables.LAYER.TYPE.RELATED_TABLE, Variables.LAYER.TYPE.CLOUD_NATIVE_GIS].includes(value)) {
       $('div[data-wrapper-name="url"]').hide()
     } else {
       $('div[data-wrapper-name="url"]').show()
@@ -137,7 +138,7 @@ export default function ContextLayerForm() {
 
   const arcGisConfigChange = (value) => {
     currentArcGis = value
-    if (!value && data.layer_type === 'ARCGIS') {
+    if (!value && data.layer_type === Variables.LAYER.TYPE.ARCGIS) {
       $('div[data-wrapper-name="token"]').show()
       $('div[data-wrapper-name="username"]').show()
       $('div[data-wrapper-name="password"]').show()
@@ -219,14 +220,14 @@ export default function ContextLayerForm() {
                 }}
               />
               {
-                data.layer_type === 'Related Table' ?
+                data.layer_type === Variables.LAYER.TYPE.RELATED_TABLE ?
                   <RelatedTableFields
                     data={data}
                     onSetData={updateData}
                   /> : undefined
               }
               {
-                data.layer_type === Variables.TERMS.CLOUD_NATIVE_GIS ?
+                data.layer_type === Variables.LAYER.TYPE.CLOUD_NATIVE_GIS ?
                   <CloudNativeGISFields
                     data={data}
                     onSetData={updateData}
@@ -240,7 +241,7 @@ export default function ContextLayerForm() {
               setData={updateData}
               defaultTab={tab}
               useOverride={
-                Variables.LIST.OVERRIDE_STYLES.includes(data.layer_type)
+                Variables.LAYER.LIST.OVERRIDE_STYLES.includes(data.layer_type)
               }
               useOverrideLabel={false}
             />
