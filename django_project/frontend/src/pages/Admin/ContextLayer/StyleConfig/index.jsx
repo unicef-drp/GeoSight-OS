@@ -23,9 +23,8 @@ import {
 } from '../../../Dashboard/MapLibre/Layers/ContextLayers/Layer'
 import { defaultPointStyle } from './layerStyles';
 import RelatedTableConfig from './RelatedTable';
-import AggregationStyleConfig from "./AggregationStyleConfig";
+import VectorStyleConfig from "./VectorStyleConfig";
 import { Variables } from "../../../../utils/Variables";
-import { GET_RESOURCE } from "../../../../utils/ResourceRequests";
 
 import './style.scss';
 
@@ -189,7 +188,7 @@ export default function StyleConfig(
                 {
                   (!useOverride || data.override_style) ?
                     data.styles ?
-                      <AggregationStyleConfig
+                      <VectorStyleConfig
                         data={data} setData={setData} setError={setError}
                       /> :
                       <div>Loading</div> : null

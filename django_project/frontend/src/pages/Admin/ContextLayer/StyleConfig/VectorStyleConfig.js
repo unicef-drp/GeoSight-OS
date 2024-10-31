@@ -30,7 +30,7 @@ import MapboxStyleInformation
 import { Variables } from "../../../../utils/Variables";
 
 
-export default function AggregationStyleConfig({ data, setData, setError }) {
+export default function VectorStyleConfig({ data, setData, setError }) {
   const [inputStyle, setInputStyle] = useState(null);
 
   useEffect(() => {
