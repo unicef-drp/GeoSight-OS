@@ -28,6 +28,13 @@ import { Variables } from "../../../../utils/Variables";
 
 import './style.scss';
 
+const SelectedClass = 'Selected';
+
+// TAB value
+const GENERAL = 'General';
+const FIELDS = 'Fields';
+const PREVIEW = 'Preview';
+const LABEL = 'Label';
 
 /**
  * Indicator Form App
@@ -51,7 +58,7 @@ export default function StyleConfig(
 
   const [layerData, setLayerData] = useState(null);
   const [layerDataClass, setLayerDataClass] = useState(null);
-  const [tab, setTab] = useState(data.layer_type === Variables.LAYER.TYPE.ARCGIS ? 'Fields' : 'Preview');
+  const [tab, setTab] = useState(data.layer_type === Variables.LAYER.TYPE.ARCGIS ? FIELDS : PREVIEW);
 
   useEffect(() => {
     if (defaultTab) {
@@ -88,32 +95,22 @@ export default function StyleConfig(
         Below is for checking the configuration, overriding style and updating
         popup.
       </div>
-      {
-        error ?
-          <div className='error'>{error.toString()}</div>
-          : ""
-      }
+      {error && <div className='error'>{error.toString()}</div>}
       <div className='AdminForm'>
         {/* FOR CONFIG */}
         <div className='TabPrimary ContextLayerConfigTab'>
           {
             data.layer_type === Variables.LAYER.TYPE.RELATED_TABLE ?
-              <>
-                <div
-                  onClick={() => {
-                    setTab('General_Override')
-                  }}
-                  className={tab === 'General' ? 'Selected' : ""}
-                >
-                  General
-                </div>
-              </> : null
+              <div
+                onClick={() => setTab('General_Override')}
+                className={tab === GENERAL ? SelectedClass : ""}
+              >
+                General
+              </div> : null
           }
           <div
-            onClick={() => {
-              setTab('Preview')
-            }}
-            className={tab === 'Preview' ? 'Selected' : ""}
+            onClick={() => setTab(PREVIEW)}
+            className={tab === PREVIEW ? SelectedClass : ""}
           >
             Preview
           </div>
@@ -121,18 +118,14 @@ export default function StyleConfig(
             data.layer_type === Variables.LAYER.TYPE.ARCGIS ?
               <Fragment>
                 <div
-                  onClick={() => {
-                    setTab('Fields')
-                  }}
-                  className={tab === 'Fields' ? 'Selected' : ""}
+                  onClick={() => setTab(FIELDS)}
+                  className={tab === FIELDS ? SelectedClass : ""}
                 >
                   Fields
                 </div>
                 <div
-                  onClick={() => {
-                    setTab('Label')
-                  }}
-                  className={tab === 'Label' ? 'Selected' : ""}
+                  onClick={() => setTab(LABEL)}
+                  className={tab === LABEL ? SelectedClass : ""}
                 >
                   Label
                 </div>
@@ -150,9 +143,8 @@ export default function StyleConfig(
                       <b className='light'>Legend</b>
                     </div>
                     {
-                      legend ?
-                        <div
-                          dangerouslySetInnerHTML={{ __html: legend }}></div> : ""
+                      legend &&
+                      <div dangerouslySetInnerHTML={{ __html: legend }}></div>
                     }
                   </div>
                 </div>
@@ -164,7 +156,7 @@ export default function StyleConfig(
                     render: true
                   }}
                 />
-              </div> : ""
+              </div> : null
           }
           {
             Variables.LAYER.LIST.VECTOR_TILE_TYPES.includes(data.layer_type) ? <>
