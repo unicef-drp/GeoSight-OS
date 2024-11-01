@@ -211,15 +211,15 @@ export default function StyleConfig(
                     /> : null
                 }
               </div>
-              <div className='ArcgisConfig Label form-helptext'>
-                {data.layer_type} does not have label
-              </div>
             </> : null
           }
 
           {/* For LABEL */}
           {
-            Variables.LAYER.LIST.RASTER_TYPES.includes(data.layer_type) &&
+            (
+              Variables.LAYER.LIST.VECTOR_TILE_TYPES.includes(data.layer_type) ||
+              data.layer_type === Variables.LAYER.TYPE.RASTER_COG
+            ) &&
             <div className='ArcgisConfig Label form-helptext'>
               {data.layer_type} does not have label
             </div>
