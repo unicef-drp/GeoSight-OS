@@ -166,7 +166,9 @@ export function GeorepoViewInputSelector(
   }
 ) {
   return <ModalInputSelector
-    placeholder={'Select view ' + (isMultiple ? '(s)' : '')}
+    placeholder={
+      data[0] ? 'Loading' : 'Select view ' + (isMultiple ? '(s)' : '')
+    }
     data={data}
     setData={setData}
     isMultiple={isMultiple}

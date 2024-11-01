@@ -59,9 +59,16 @@ export const ViewLevelConfiguration = forwardRef(
     useEffect(() => {
       if (datasetLevels) {
         let updated = false
-        let levels = data.levels ? data.levels : []
+
+        // Update levels
+        let levels = data.levels ? datasetLevels.filter(
+          datasetLevel => data.levels.includes(datasetLevel.level)
+        ).map(level => level.level) : [];
+
         let default_level = data.default_level ? data.default_level : 0
-        if (!data.levels) {
+
+        // Check levels is on the dataset levels
+        if (JSON.stringify(data.levels) !== JSON.stringify(levels)) {
           levels = datasetLevels.map(level => level.level)
           updated = true
         }
@@ -99,8 +106,10 @@ export const ViewLevelConfiguration = forwardRef(
         ableToSelectReferenceLayer ?
           <div className="ReferenceLayerLevelConfigurationView">
             <label className="form-label" htmlFor="group">View</label>
-            <Grid container spacing={2}
-                  className='ReferenceLayerLevelConfigurationCheckbox'>
+            <Grid
+              container spacing={2}
+              className='ReferenceLayerLevelConfigurationCheckbox'
+            >
               <Grid item>
                 <FormGroup>
                   <FormControlLabel
@@ -116,8 +125,10 @@ export const ViewLevelConfiguration = forwardRef(
                     label=''/>
                 </FormGroup>
               </Grid>
-              <Grid item
-                    className='ReferenceLayerLevelConfigurationViewSelector'>
+              <Grid
+                item
+                className='ReferenceLayerLevelConfigurationViewSelector'
+              >
                 <div className="BasicFormSection">
                   <div className='ReferenceDatasetSection'>
                     <GeorepoViewInputSelector

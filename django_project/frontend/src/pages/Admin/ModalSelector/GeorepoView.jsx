@@ -32,6 +32,9 @@ import { Session } from "../../../utils/Sessions";
 import './style.scss';
 
 
+const VALUE_REMOTE = 'Remote'
+const VALUE_LOCAL = 'Local'
+
 const columns = [
   { field: 'id', headerName: 'id', hide: true },
   { field: 'name', headerName: 'Name', flex: 1 },
@@ -62,7 +65,7 @@ export default function GeorepoViewSelector(
     otherContent = null
   }
 ) {
-  const [sourceType, setSourceType] = useState(localReferenceDatasetEnabled ? 'local' : 'remote')
+  const [sourceType, setSourceType] = useState(localReferenceDatasetEnabled ? VALUE_LOCAL : VALUE_REMOTE)
   const [inputData, setInputData] = useState(null)
 
   // This is for remote data
@@ -96,7 +99,7 @@ export default function GeorepoViewSelector(
   /** On references loaded */
   useEffect(
     () => {
-      if (sourceType === 'remote') {
+      if (sourceType === VALUE_REMOTE) {
         if (!reference && references[0]) {
           setReference(references[0].value)
         }
@@ -108,7 +111,7 @@ export default function GeorepoViewSelector(
   useEffect(
     () => {
       // Change to local module
-      if (sourceType === 'local') {
+      if (sourceType === VALUE_LOCAL) {
         setReference(LocalReferenceDatasetIdentifier)
       } else {
         if (references[0]) {
@@ -167,7 +170,8 @@ export default function GeorepoViewSelector(
       isMultiple={isMultiple}
       showSelected={showSelected}
       beforeChildren={
-        <>
+        <div
+          className={'ReferenceLayerSelector ' + (localReferenceDatasetEnabled ? 'localReferenceDatasetEnabled' : '')}>
           {
             localReferenceDatasetEnabled ?
               <FormControl className='RadioButtonControl'>
@@ -176,15 +180,20 @@ export default function GeorepoViewSelector(
                   onChange={evt => setSourceType(evt.target.value)}
                 >
                   <FormControlLabel
-                    value="local" control={<Radio/>} label="Local"/>
+                    control={<Radio/>}
+                    value={VALUE_LOCAL}
+                    label={VALUE_LOCAL}
+                  />
                   <FormControlLabel
-                    value="remote" control={<Radio/>} label="Remote"/>
+                    control={<Radio/>}
+                    value={VALUE_REMOTE}
+                    label={VALUE_REMOTE}/>
                 </RadioGroup>
               </FormControl> : null
           }
           {
-            !localReferenceDatasetEnabled || sourceType === 'remote' ?
-              <FormControl className='InputControl'>
+            !localReferenceDatasetEnabled || sourceType === VALUE_REMOTE ?
+              <FormControl className='InputControl DatasetSelector'>
                 <SelectWithList
                   placeholder={references ? 'Select dataset' : 'Loading'}
                   list={references}
@@ -195,7 +204,7 @@ export default function GeorepoViewSelector(
                 />
               </FormControl> : null
           }
-        </>
+        </div>
       }
     />
     {otherContent ? otherContent : null}
