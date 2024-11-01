@@ -65,7 +65,6 @@ export default function ReferenceLayerCentroid({ map }) {
   const [geometries, setGeometries] = useState({});
 
   const where = returnWhere(filtersData ? filtersData : [])
-
   // When reference layer changed, fetch features
   useEffect(() => {
     const currGeometries = {}
@@ -142,8 +141,7 @@ export default function ReferenceLayerCentroid({ map }) {
     showIndicatorMapLabel
   ]);
 
-  // When everything changed
-  useEffect(() => {
+  const updateCentroid = () => {
     if (!map) {
       return;
     }
@@ -373,17 +371,26 @@ export default function ReferenceLayerCentroid({ map }) {
         renderLabel(map, [], labelConfig)
         return;
       }
+      const currRequest = new Date().getTime()
+      lastRequest = currRequest
+
       ExecuteWebWorker(
         worker, {
           geometriesData,
           mapGeometryValue,
           usedFilteredGeometries
         }, (features) => {
-          renderLabel(map, features, labelConfig)
+          if (currRequest === lastRequest) {
+            renderLabel(map, features, labelConfig)
+          }
         }
       )
     }
+  }
 
+  // When everything changed
+  useEffect(() => {
+    updateCentroid()
   }, [
     geometries, filteredGeometries, indicatorsData,
     indicatorShow, indicatorLayers,
