@@ -58,7 +58,7 @@ function ContextLayerStyle({ contextLayer }) {
     const nowData = JSON.parse(JSON.stringify(contextLayer));
     (
       async () => {
-        if (nowData.layer_type === Variables.TERMS.CLOUD_NATIVE_GIS && !nowData.mapbox_style) {
+        if (nowData.layer_type === Variables.LAYER.TYPE.CLOUD_NATIVE_GIS && !nowData.mapbox_style) {
           const _detail = await returnLayerDetail(nowData.cloud_native_gis_layer_id)
           nowData.mapbox_style = _detail.mapbox_style
         }

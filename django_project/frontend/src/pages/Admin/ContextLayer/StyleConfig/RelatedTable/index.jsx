@@ -21,7 +21,6 @@ import React, { Fragment } from 'react';
 import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 
 import FieldConfig from "../../../../../components/FieldConfig";
-import AggregationStyleConfig from "../AggregationStyleConfig";
 
 /**
  * Map Config component.

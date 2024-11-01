@@ -130,7 +130,10 @@ export function createColors(colors, classNum) {
  */
 export function createColorsFromPaletteId(paletteId, classNum, isReverse) {
   let colors = []
-  const palette = COLOR_PALETTE_DATA.find(data => data.id === paletteId)
+  let palette = null;
+  if (COLOR_PALETTE_DATA) {
+    palette = COLOR_PALETTE_DATA.find(data => data.id === paletteId)
+  }
   if (!palette || isNaN(classNum)) {
     colors = []
   } else {

@@ -55,6 +55,11 @@ import IndicatorLayersReferenceControl
 import 'maplibre-gl/dist/maplibre-gl.css';
 import './style.scss';
 
+// Initialize cog
+import { cogProtocol } from "@geomatico/maplibre-cog-protocol";
+
+maplibregl.addProtocol('cog', cogProtocol);
+
 const BASEMAP_ID = `basemap`
 
 /**

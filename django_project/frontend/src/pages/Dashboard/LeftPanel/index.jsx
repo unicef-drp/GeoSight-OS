@@ -149,13 +149,11 @@ export default function LeftPanel({ leftExpanded }) {
               </Box>
               <TabPanel value={tab2Value} index={0}
                         className={'sidepanel-tab layers-panel'}>
-                <ContextLayersAccordion
-                />
+                <ContextLayersAccordion/>
               </TabPanel>
               <TabPanel value={tab2Value} index={1}
                         className={'sidepanel-tab layers-panel'}>
-                <IndicatorLayersAccordion
-                />
+                <IndicatorLayersAccordion/>
               </TabPanel>
             </Box>
             <Indicators/>

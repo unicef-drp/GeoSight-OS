@@ -36,10 +36,16 @@ class LayerType(object):
 
     ARCGIS = 'ARCGIS'
     GEOJSON = 'Geojson'
+    RASTER_COG = 'Raster COG'
     RASTER_TILE = 'Raster Tile'
     VECTOR_TILE = 'Vector Tile'
     RELATED_TABLE = 'Related Table'
     CLOUD_NATIVE_GIS_LAYER = 'Cloud Native GIS Layer'
+
+
+LayerTypeWithOverrideStyle = [
+    LayerType.CLOUD_NATIVE_GIS_LAYER, LayerType.RASTER_COG
+]
 
 
 class ContextLayerGroup(AbstractTerm):
@@ -86,6 +92,7 @@ class ContextLayer(AbstractEditData, AbstractTerm):
             (LayerType.ARCGIS, LayerType.ARCGIS),
             (LayerType.GEOJSON, LayerType.GEOJSON),
             (LayerType.RASTER_TILE, LayerType.RASTER_TILE),
+            (LayerType.RASTER_COG, LayerType.RASTER_COG),
             (LayerType.VECTOR_TILE, LayerType.VECTOR_TILE),
             (LayerType.RELATED_TABLE, LayerType.RELATED_TABLE),
             (
@@ -99,8 +106,9 @@ class ContextLayer(AbstractEditData, AbstractTerm):
             'https://{host}/rest/services/{layer}/FeatureServer/1.<br>'
             'For <b>GeoJson</b>, put url of geojson.<br>'
             'For <b>Raster tile</b>, put XYZ url.<br>'
-            'For <b>Related table</b>, select existing related table name.'
-            'For <b>Vector tile</b>, put XYZ url.'
+            'For <b>Raster COG</b>, put url of cog.<br>'
+            'For <b>Related table</b>, select existing related table name.<br>'
+            'For <b>Vector tile</b>, put XYZ url.<br>'
             'For <b>Cloud native gis layer</b>, '
             'select the layer from cloud native gis.'
         )

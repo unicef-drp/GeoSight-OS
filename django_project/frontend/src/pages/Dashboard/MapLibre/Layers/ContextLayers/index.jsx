@@ -29,8 +29,9 @@ import {
 } from "../../../../../components/SortableTreeForm/utilities";
 import vectorTileLayer from "../../LayerType/VectorTile";
 import relatedTableLayer from "../../LayerType/RelatedTable";
-import { Variables } from "../../../../../utils/Variables";
 import cloudNativeGISLayer from "../../LayerType/CloudNativeGIS";
+import rasterCogLayer from "../../LayerType/RasterCog";
+import { Variables } from "../../../../../utils/Variables";
 
 const ID = `context-layer`
 const markersContextLayers = {}
@@ -218,7 +219,7 @@ export function contextLayerRendering(id, contextLayerData, contextLayer, map, c
     if (contextLayer?.layer && !hasLayer(map, id)) {
       const { layer, layer_type } = contextLayer
       switch (layer_type) {
-        case 'Geojson': {
+        case Variables.LAYER.TYPE.GEOJSON: {
           const markers = geojsonLayer(map, id, layer, featureProperties => {
             return popupFeature(
               featureProperties, contextLayerData.name, [], contextLayerData.data_fields
@@ -227,11 +228,11 @@ export function contextLayerRendering(id, contextLayerData, contextLayer, map, c
           markersContextLayers[id] = markers
           break;
         }
-        case 'Raster Tile': {
+        case Variables.LAYER.TYPE.RASTER_TILE: {
           rasterTileLayer(map, id, layer)
           break;
         }
-        case 'ARCGIS': {
+        case Variables.LAYER.TYPE.ARCGIS: {
           arcGisLayer(map, id, layer, contextLayerData, (featureProperties, arcgisField) => {
             return popupFeature(
               featureProperties, contextLayerData.name, arcgisField, contextLayerData.data_fields
@@ -240,7 +241,7 @@ export function contextLayerRendering(id, contextLayerData, contextLayer, map, c
           renderLabel(id, contextLayerData, contextLayer, map)
           break;
         }
-        case 'Vector Tile': {
+        case Variables.LAYER.TYPE.VECTOR_TILE: {
           removeLayers(map, id)
           vectorTileLayer(
             map, id, layer, contextLayerData, (featureProperties) => {
@@ -257,7 +258,7 @@ export function contextLayerRendering(id, contextLayerData, contextLayer, map, c
           )
           break;
         }
-        case 'Related Table': {
+        case Variables.LAYER.TYPE.RELATED_TABLE: {
           removeLayers(map, id)
           relatedTableLayer(
             map, id, layer, contextLayerData, featureProperties => {
@@ -271,9 +272,23 @@ export function contextLayerRendering(id, contextLayerData, contextLayer, map, c
           )
           break
         }
-        case Variables.TERMS.CLOUD_NATIVE_GIS: {
+        case Variables.LAYER.TYPE.CLOUD_NATIVE_GIS: {
           removeLayers(map, id)
           cloudNativeGISLayer(
+            map, id, layer, contextLayerData, featureProperties => {
+              return popupFeature(
+                featureProperties,
+                contextLayerData.name,
+                null,
+                contextLayerData.data_fields
+              )
+            }, contextLayerOrder
+          )
+          break
+        }
+        case Variables.LAYER.TYPE.RASTER_COG: {
+          removeLayers(map, id)
+          rasterCogLayer(
             map, id, layer, contextLayerData, featureProperties => {
               return popupFeature(
                 featureProperties,

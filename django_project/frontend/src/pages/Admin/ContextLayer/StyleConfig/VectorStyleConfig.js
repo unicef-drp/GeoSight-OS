@@ -30,14 +30,14 @@ import MapboxStyleInformation
 import { Variables } from "../../../../utils/Variables";
 
 
-export default function AggregationStyleConfig({ data, setData, setError }) {
+export default function VectorStyleConfig({ data, setData, setError }) {
   const [inputStyle, setInputStyle] = useState(null);
 
   useEffect(() => {
     if (data.styles !== inputStyle) {
       setInputStyle(data.styles)
     }
-    if (!data.mapbox_style) {
+    if (data.cloud_native_gis_layer_id && !data.mapbox_style) {
       (
         async () => {
           const newData = await updateDataWithMapbox(data)
@@ -94,7 +94,7 @@ export default function AggregationStyleConfig({ data, setData, setError }) {
     <br/>
     <br/>
     {
-      data.mapbox_style && data.layer_type === Variables.TERMS.CLOUD_NATIVE_GIS ?
+      data.mapbox_style && data.layer_type === Variables.LAYER.TYPE.CLOUD_NATIVE_GIS ?
         <ThemeButton
           variant="primary"
           onClick={() => {
