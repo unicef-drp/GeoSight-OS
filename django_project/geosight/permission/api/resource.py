@@ -105,7 +105,9 @@ class ResourcePermissionAPI(APIView):
                     group_permissions=group_permissions
                 ).data
             )
-        obj = get_object_or_404(self.model, pk=pk)
+        obj = get_object_or_404(
+            self.model.objects.select_related('permission'), pk=pk
+        )
         share_permission_resource(obj, request.user)
         return Response(
             PermissionSerializer(obj=obj.permission).data
