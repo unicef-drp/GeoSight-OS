@@ -28,7 +28,6 @@ import { Variables } from "../../../../utils/Variables";
 import RasterCogLayer from "./RasterCogLayer";
 
 import './style.scss';
-import { dictDeepCopy } from "../../../../utils/main";
 
 const SelectedClass = 'Selected';
 
@@ -76,10 +75,16 @@ export default function StyleConfig(
   }, [data, tab]);
 
   useEffect(() => {
-    if (!data.styles && Variables.LAYER.LIST.VECTOR_TILE_TYPES.includes(data.layer_type) && !Variables.LAYER.LIST.OVERRIDE_STYLES.includes(data.layer_type)) {
+    if (!data.styles && Variables.LAYER.LIST.VECTOR_TILE_TYPES.includes(data.layer_type)) {
       setData({
         ...data,
         styles: JSON.stringify(defaultPointStyle, null, 4),
+        override_style: true
+      })
+    } else if (data.styles?.min_band === undefined && Variables.LAYER.TYPE.RASTER_COG === data.layer_type) {
+      setData({
+        ...data,
+        styles: {},
         override_style: true
       })
     }
@@ -135,9 +140,10 @@ export default function StyleConfig(
           }
         </div>
         <div id='ContextLayerConfig'
-             className={"BasicFormSection " + (data.layer_type === Variables.LAYER.TYPE.ARCGIS ? 'ShowStyle' : '')}>
+             className={"BasicFormSection " + (data.layer_type === Variables.LAYER.TYPE.ARCGIS ? 'ShowStyle' : '')}
+        >
           {
-            tab === 'Preview' ?
+            tab === PREVIEW ?
               <div className='PreviewWrapper Preview'>
                 <div className='legend'>
                   <div className='wrapper'>
@@ -160,8 +166,14 @@ export default function StyleConfig(
                 />
               </div> : null
           }
+
+          {/* For STYLES */}
           {
-            Variables.LAYER.LIST.VECTOR_TILE_TYPES.includes(data.layer_type) ? <>
+            (
+              Variables.LAYER.LIST.VECTOR_TILE_TYPES.includes(data.layer_type) ||
+              data.layer_type === Variables.LAYER.TYPE.RASTER_COG
+            ) ? <>
+              {/* Check if override or not. */}
               <div className='ArcgisConfig Style'>
                 {
                   useOverride ?
@@ -179,13 +191,24 @@ export default function StyleConfig(
                         label="Override style from default"/>
                     </FormGroup> : null
                 }
+
+                {/* If vector tile */}
                 {
-                  (!useOverride || data.override_style) ?
+                  Variables.LAYER.LIST.VECTOR_TILE_TYPES.includes(data.layer_type) && (!useOverride || data.override_style) ?
                     data.styles ?
                       <VectorStyleConfig
                         data={data} setData={setData} setError={setError}
                       /> :
                       <div>Loading</div> : null
+                }
+
+                {/* If raster cog */}
+                {
+                  data.layer_type === Variables.LAYER.TYPE.RASTER_COG && (!useOverride || data.override_style) ?
+                    <RasterCogLayer
+                      data={data} setData={setData}
+                      useOverride={useOverride}
+                    /> : null
                 }
               </div>
               <div className='ArcgisConfig Label form-helptext'>
@@ -193,19 +216,16 @@ export default function StyleConfig(
               </div>
             </> : null
           }
+
+          {/* For LABEL */}
           {
             Variables.LAYER.LIST.RASTER_TYPES.includes(data.layer_type) &&
             <div className='ArcgisConfig Label form-helptext'>
               {data.layer_type} does not have label
             </div>
           }
-          {
-            Variables.LAYER.TYPE.RASTER_COG === data.layer_type &&
-            <RasterCogLayer
-              data={data} setData={setData}
-              useOverride={useOverride}
-            />
-          }
+
+          {/* For FIELDS */}
           {
             data.layer_type === Variables.LAYER.TYPE.ARCGIS ?
               <ArcgisConfig

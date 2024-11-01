@@ -37,7 +37,7 @@ export default function VectorStyleConfig({ data, setData, setError }) {
     if (data.styles !== inputStyle) {
       setInputStyle(data.styles)
     }
-    if (!data.mapbox_style) {
+    if (data.cloud_native_gis_layer_id && !data.mapbox_style) {
       (
         async () => {
           const newData = await updateDataWithMapbox(data)

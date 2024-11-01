@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2024, Unicef')
  */
 
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { FormControl } from "@mui/material";
 import ColorPaletteStyleConfig, {
   QUANTITATIVE_TYPE
@@ -32,75 +32,85 @@ export default function RasterCogLayer(
   }
 ) {
   const { styles } = dictDeepCopy(data);
+  useEffect(() => {
+    let newStyles = styles
+    if (!styles) {
+      newStyles = {}
+    }
+    if (newStyles.min_band === undefined) {
+      newStyles.min_band = 0;
+      newStyles.max_band = 100;
+      newStyles.dynamic_class_num = 7;
+      newStyles.dynamic_classification = dynamicClassificationChoices[0].value;
+      setData(
+        {
+          ...data,
+          styles: { ...newStyles }
+        }
+      )
+    }
+  }, [data]);
   return <>
-    <div className='Style'>
-      <label className="form-label required" htmlFor="group">
-        Band values
-      </label>
-      <FormControl
-        className="BasicFormSection">
-        <input
-          placeholder='Minimum band' type='number'
-          value={styles.min_band}
-          onChange={evt => {
-            setData({
-              ...data,
-              styles: {
-                ...styles,
-                min_band: evt.target.value
-              }
-            })
-          }}
-          style={{ width: "fit-content", flexGrow: 1 }}
-        />
-        <span> - </span>
-        <input
-          placeholder='Maximum band' type='number'
-          value={styles.max_band}
-          onChange={evt => {
-            setData({
-              ...data,
-              styles: {
-                ...styles,
-                max_band: evt.target.value
-              }
-            })
-          }}
-          style={{ width: "fit-content", flexGrow: 1 }}
-        />
-        <br/>
-        <br/>
-        {/*  Palette */}
-        <ColorPaletteStyleConfig
-          styleType={QUANTITATIVE_TYPE}
-          styleConfig={styles ? styles : {}}
-          setStyleConfig={
-            (newStyles) => {
-              if (newStyles.min_band === undefined) {
-                newStyles.min_band = 0;
-                newStyles.max_band = 100;
-                newStyles.dynamic_class_num = 7;
-                newStyles.dynamic_classification = dynamicClassificationChoices[0].value;
-              }
-              setData({
-                ...data,
-                styles: {
-                  ...styles,
-                  ...newStyles
-                }
-              })
+    <label className="form-label required" htmlFor="group">
+      Band values
+    </label>
+    <FormControl
+      className="BasicFormSection">
+      <input
+        placeholder='Minimum band' type='number'
+        value={styles.min_band}
+        onChange={evt => {
+          setData({
+            ...data,
+            styles: {
+              ...styles,
+              min_band: evt.target.value
             }
-          }
-          options={
-            [
-              {
-                label: dynamicClassificationChoices[0].label.replace('.', ''),
-                value: dynamicClassificationChoices[0].value,
+          })
+        }}
+        style={{ width: "fit-content", flexGrow: 1 }}
+      />
+      <span> - </span>
+      <input
+        placeholder='Maximum band' type='number'
+        value={styles.max_band}
+        onChange={evt => {
+          setData({
+            ...data,
+            styles: {
+              ...styles,
+              max_band: evt.target.value
+            }
+          })
+        }}
+        style={{ width: "fit-content", flexGrow: 1 }}
+      />
+      <br/>
+      <br/>
+      {/*  Palette */}
+      <ColorPaletteStyleConfig
+        styleType={QUANTITATIVE_TYPE}
+        styleConfig={styles ? styles : {}}
+        setStyleConfig={
+          (newStyles) => {
+            setData({
+              ...data,
+              styles: {
+                ...styles,
+                ...newStyles
               }
-            ]
+            })
           }
-        />
-      </FormControl>
-    </div>
+        }
+        options={
+          [
+            {
+              label: dynamicClassificationChoices[0].label.replace('.', ''),
+              value: dynamicClassificationChoices[0].value,
+            }
+          ]
+        }
+      />
+    </FormControl>
   </>
 }

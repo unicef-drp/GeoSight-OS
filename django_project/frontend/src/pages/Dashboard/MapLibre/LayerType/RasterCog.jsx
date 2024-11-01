@@ -37,6 +37,9 @@ export default function rasterCogLayer(map, id, data, contextLayerData, popupFea
         dynamic_class_num
       } = data?.styles;
       const colors = createColorsFromPaletteId(color_palette, dynamic_class_num, color_palette_reverse)
+      if (!colors.length) {
+        return
+      }
       const url = `cog://${data.url}#color:[${colors.map(color => '"' + color + '"')}],${min_band ? min_band : 0},${max_band ? max_band : 100},c`
 
       removeSource(map, id)

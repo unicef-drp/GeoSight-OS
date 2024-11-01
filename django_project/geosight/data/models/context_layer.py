@@ -43,6 +43,11 @@ class LayerType(object):
     CLOUD_NATIVE_GIS_LAYER = 'Cloud Native GIS Layer'
 
 
+LayerTypeWithOverrideStyle = [
+    LayerType.CLOUD_NATIVE_GIS_LAYER, LayerType.RASTER_COG
+]
+
+
 class ContextLayerGroup(AbstractTerm):
     """A model for the group of context layer."""
 
