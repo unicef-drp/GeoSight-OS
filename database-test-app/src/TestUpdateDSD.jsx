@@ -1,10 +1,12 @@
 // File: TestUpdateDsd.jsx
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import Select from "react-select";
 import {
-  update_agency_dataflow,
-  update_dimensions,
-  update_dsd,
+  propagateAgencyOptions,
+  restrictDataflowOptions,
+  updateDimensions,
+  updateDsd,
 } from "./update_dsd"; // Adjust the path as necessary
 
 const TestUpdateDsd = () => {
@@ -12,125 +14,205 @@ const TestUpdateDsd = () => {
   // State Variables
   // ==========================
 
-  // State for update_agency_dataflow
-  const [agencyParam, setAgencyParam] = useState("");
-  const [dataflowParam, setDataflowParam] = useState("");
-  const [agencyDataflowResult, setAgencyDataflowResult] = useState(null);
-  const [agencyDataflowError, setAgencyDataflowError] = useState(null);
-  const [agencyDataflowLoading, setAgencyDataflowLoading] = useState(false);
+  // Agency-related states
+  const [agencyOptions, setAgencyOptions] = useState([]);
+  const [selectedAgency, setSelectedAgency] = useState(null);
 
-  // State for update_dimensions
-  const [dimensionsDataflow, setDimensionsDataflow] = useState("");
-  const [dimensionsVersion, setDimensionsVersion] = useState("1.0");
-  const [dimensionsResult, setDimensionsResult] = useState(null);
-  const [dimensionsError, setDimensionsError] = useState(null);
-  const [dimensionsLoading, setDimensionsLoading] = useState(false);
-  const [agencyFromDimensions, setAgencyFromDimensions] = useState(""); // Capture agency from dimensions
-  const [dimensionSelections, setDimensionSelections] = useState({}); // Store dimensionSelections
-  const [dimensionOptions, setDimensionOptions] = useState({}); // Store dimensionOptions
+  // Dataflow-related states
+  const [dataflowOptions, setDataflowOptions] = useState([]);
+  const [selectedDataflow, setSelectedDataflow] = useState(null);
 
-  // State for update_dsd
-  const [dsdDataflow, setDsdDataflow] = useState("");
-  const [dsdVersion, setDsdVersion] = useState("1.0");
+  // Dimension-related states
+  const [dimensionSelections, setDimensionSelections] = useState({});
+  const [dimensionOptions, setDimensionOptions] = useState({});
+
+  // DSD result state
   const [dsdResult, setDsdResult] = useState(null);
-  const [dsdError, setDsdError] = useState(null);
-  const [dsdLoading, setDsdLoading] = useState(false);
-  const [upperLevel, setUpperLevel] = useState(""); // Store upperLevel
+
+  // Loading and error states
+  const [loading, setLoading] = useState({
+    agency: false,
+    dataflow: false,
+    dimensions: false,
+    dsd: false,
+  });
+  const [error, setError] = useState({
+    agency: null,
+    dataflow: null,
+    dimensions: null,
+    dsd: null,
+  });
 
   // ==========================
-  // Handlers for testing update_agency_dataflow
+  // Handlers
   // ==========================
-  const handleTestAgencyDataflow = async () => {
-    setAgencyDataflowLoading(true);
-    setAgencyDataflowError(null);
-    setAgencyDataflowResult(null);
-    try {
-      const result = await update_agency_dataflow(agencyParam, dataflowParam);
-      setAgencyDataflowResult(result);
-    } catch (error) {
-      setAgencyDataflowError(
-        error.message || "Error occurred while fetching agency and dataflow."
-      );
-    } finally {
-      setAgencyDataflowLoading(false);
-    }
-  };
 
-  // ==========================
-  // Handlers for testing update_dimensions
-  // ==========================
-  const handleTestDimensions = async () => {
-    setDimensionsLoading(true);
-    setDimensionsError(null);
-    setDimensionsResult(null);
-    setAgencyFromDimensions(""); // Reset agency from dimensions
-    setDimensionSelections({}); // Reset dimensionSelections
-    setDimensionOptions({}); // Reset dimensionOptions
-    try {
-      const dataflow = dimensionsDataflow.trim();
-      const dataflowVersion = dimensionsVersion.trim() || "1.0";
-
-      if (!dataflow || !dataflowVersion) {
-        throw new Error(
-          "Please provide all required parameters for dimensions."
+  // Fetch agency options on component mount
+  useEffect(() => {
+    const fetchAgencies = async () => {
+      setLoading((prev) => ({ ...prev, agency: true }));
+      try {
+        const agencies = await propagateAgencyOptions();
+        setAgencyOptions(
+          agencies.map((agency) => ({
+            value: agency.id,
+            label: agency.name,
+          }))
         );
+      } catch (err) {
+        setError((prev) => ({ ...prev, agency: "Error fetching agencies." }));
+      } finally {
+        setLoading((prev) => ({ ...prev, agency: false }));
       }
+    };
 
-      const result = await update_dimensions(dataflow, dataflowVersion);
-      if (result.error) {
-        throw new Error(result.error);
-      }
+    fetchAgencies();
+  }, []);
 
-      setDimensionsResult(result);
-      setAgencyFromDimensions(result.agency || ""); // Capture agency from dimensions
-      setDimensionSelections(result.dimensionSelections || {}); // Set dimensionSelections
-      setDimensionOptions(result.dimensionOptions || {}); // Set dimensionOptions
-    } catch (error) {
-      setDimensionsError(
-        error.message || "Error occurred while fetching dimensions."
-      );
-    } finally {
-      setDimensionsLoading(false);
-    }
-  };
-
-  // ==========================
-  // Handlers for testing update_dsd
-  // ==========================
-  const handleTestDsd = async () => {
-    setDsdLoading(true);
-    setDsdError(null);
-    setDsdResult(null);
-    try {
-      const dataflow = dsdDataflow.trim();
-      const dataflowVersion = dsdVersion.trim() || "1.0";
-
-      if (!dataflow || !dataflowVersion) {
-        throw new Error("Please provide both Dataflow and Dataflow Version.");
-      }
-
-      if (
-        !dimensionSelections ||
-        Object.keys(dimensionSelections).length === 0
-      ) {
-        throw new Error(
-          "Please run `update_dimensions` first to obtain dimension selections."
+  // Fetch dataflow options when an agency is selected
+  useEffect(() => {
+    const fetchDataflows = async () => {
+      if (!selectedAgency) return;
+      setLoading((prev) => ({ ...prev, dataflow: true }));
+      try {
+        const dataflows = await restrictDataflowOptions(selectedAgency.value);
+        setDataflowOptions(
+          dataflows.map((dataflow) => ({
+            value: dataflow.id,
+            label: dataflow.name,
+            dataflowAgency: dataflow.dataflowAgency,
+            dsdId: dataflow.dsdId,
+          }))
         );
+      } catch (err) {
+        setError((prev) => ({ ...prev, dataflow: "Error fetching dataflows." }));
+      } finally {
+        setLoading((prev) => ({ ...prev, dataflow: false }));
+      }
+    };
+
+    fetchDataflows();
+  }, [selectedAgency]);
+
+  // Fetch dimensions when a dataflow is selected
+  useEffect(() => {
+    const fetchDimensions = async () => {
+      if (!selectedDataflow) return;
+      setLoading((prev) => ({ ...prev, dimensions: true }));
+      try {
+        const result = await updateDimensions({
+          id: selectedDataflow.value,
+          dataflowAgency: selectedDataflow.dataflowAgency,
+          dsdId: selectedDataflow.dsdId,
+        });
+        if (result.error) throw new Error(result.error);
+
+        // Convert dimension options for React Select
+        const formattedDimensionOptions = {};
+        for (const [key, values] of Object.entries(result.updatedDimensions)) {
+          formattedDimensionOptions[key] = values
+            .map((item) => ({
+              value: item.id,
+              label: item.name || item.id,
+            }))
+            .sort((a, b) => a.label.localeCompare(b.label)); // Sort options alphabetically
+        }
+
+        setDimensionSelections(result.dimensionSelections);
+        setDimensionOptions(formattedDimensionOptions);
+      } catch (err) {
+        setError((prev) => ({
+          ...prev,
+          dimensions: "Error fetching dimensions.",
+        }));
+      } finally {
+        setLoading((prev) => ({ ...prev, dimensions: false }));
+      }
+    };
+
+    fetchDimensions();
+  }, [selectedDataflow]);
+
+  // Update DSD whenever dimension selections change
+  useEffect(() => {
+    const fetchDsd = async () => {
+      if (!selectedDataflow) return;
+      // Check if all dimensions have at least one selected value
+      const allDimensionsSelected =
+        Object.keys(dimensionSelections).length > 0 &&
+        Object.values(dimensionSelections).every(
+          (values) => values.length > 0 && values[0]
+        );
+
+      if (!allDimensionsSelected) {
+        setDsdResult(null);
+        return;
       }
 
-      const result = await update_dsd(
-        dataflow,
-        dataflowVersion,
-        dimensionSelections
-      );
-      if (result.error) {
-        throw new Error(result.error);
+      setLoading((prev) => ({ ...prev, dsd: true }));
+      try {
+        const result = await updateDsd(
+          {
+            id: selectedDataflow.value,
+            dataflowAgency: selectedDataflow.dataflowAgency,
+            dsdId: selectedDataflow.dsdId,
+          },
+          dimensionSelections
+        );
+        if (result.error) throw new Error(result.error);
+        setDsdResult(result);
+      } catch (err) {
+        setError((prev) => ({ ...prev, dsd: "Error fetching DSD." }));
+      } finally {
+        setLoading((prev) => ({ ...prev, dsd: false }));
       }
-      setDsdResult(result);
-    } catch (error) {
-      setDsdError(error.message || "Error occurred while fetching DSD.");
+    };
+
+    fetchDsd();
+  }, [dimensionSelections, selectedDataflow]);
+
+  // Handler for dimension selection changes
+  const handleDimensionChange = async (dimensionId, selectedOptions) => {
+    const values = selectedOptions ? selectedOptions.map((opt) => opt.value) : [];
+    const newSelections = {
+      ...dimensionSelections,
+      [dimensionId]: values,
+    };
+
+    setDimensionSelections(newSelections);
+
+    setLoading((prev) => ({ ...prev, dimensions: true }));
+
+    try {
+      const result = await updateDsd(
+        {
+          id: selectedDataflow.value,
+          dataflowAgency: selectedDataflow.dataflowAgency,
+          dsdId: selectedDataflow.dsdId,
+        },
+        newSelections
+      );
+      if (result.error) throw new Error(result.error);
+
+      // Convert dimension options for React Select
+      const formattedDimensionOptions = {};
+      for (const [key, values] of Object.entries(result.updatedDimensions)) {
+        formattedDimensionOptions[key] = values
+          .map((item) => ({
+            value: item.id,
+            label: item.name || item.id,
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label)); // Sort options alphabetically
+      }
+
+      setDimensionOptions(formattedDimensionOptions);
+    } catch (err) {
+      setError((prev) => ({
+        ...prev,
+        dimensions: "Error updating dimensions.",
+      }));
     } finally {
-      setDsdLoading(false);
+      setLoading((prev) => ({ ...prev, dimensions: false }));
     }
   };
 
@@ -139,224 +221,150 @@ const TestUpdateDsd = () => {
   // ==========================
   return (
     <div style={styles.container}>
-      <h1>Test Component</h1>
+      <h1 style={styles.title}>SDMX Data Explorer</h1>
 
-      {/* Section to Test update_agency_dataflow */}
+      {/* Agency Selection */}
       <section style={styles.section}>
-        <h2>Test `update_agency_dataflow`</h2>
-        <div style={styles.inputGroup}>
-          <label style={styles.label}>
-            Agency Parameter:
-            <input
-              type="text"
-              value={agencyParam}
-              onChange={(e) => setAgencyParam(e.target.value)}
-              placeholder="Enter Agency"
-              style={styles.input}
+        <h2 style={styles.sectionTitle}>Select Agency</h2>
+        {loading.agency ? (
+          <p style={styles.loadingText}>Loading agencies...</p>
+        ) : error.agency ? (
+          <p style={styles.error}>{error.agency}</p>
+        ) : (
+          <div style={styles.selectWrapper}>
+            <Select
+              options={agencyOptions}
+              value={selectedAgency}
+              onChange={(selected) => {
+                setSelectedAgency(selected);
+                setSelectedDataflow(null);
+                setDimensionSelections({});
+                setDimensionOptions({});
+                setDsdResult(null);
+              }}
+              placeholder="Select Agency"
+              styles={customSelectStyles}
             />
-          </label>
-          <label style={styles.label}>
-            Dataflow Parameter:
-            <input
-              type="text"
-              value={dataflowParam}
-              onChange={(e) => setDataflowParam(e.target.value)}
-              placeholder="Enter Dataflow"
-              style={styles.input}
-            />
-          </label>
-        </div>
-        <button
-          onClick={handleTestAgencyDataflow}
-          style={styles.button}
-          disabled={agencyDataflowLoading || (!agencyParam && !dataflowParam)}
-        >
-          {agencyDataflowLoading
-            ? "Loading..."
-            : "Test `update_agency_dataflow`"}
-        </button>
-        {agencyDataflowError && (
-          <p style={styles.error}>Error: {agencyDataflowError}</p>
-        )}
-        {agencyDataflowResult && (
-          <details style={styles.resultContainer}>
-            <summary>Agency and Dataflow Options</summary>
-            <div>
-              <p>
-                <strong>Agency Options:</strong>
-              </p>
-              <pre style={styles.pre}>
-                {JSON.stringify(agencyDataflowResult.agencyOptions, null, 2)}
-              </pre>
-              <p>
-                <strong>Dataflow Options:</strong>
-              </p>
-              <pre style={styles.pre}>
-                {JSON.stringify(agencyDataflowResult.dataflowOptions, null, 2)}
-              </pre>
-              <p>
-                <strong>Implicit Agency:</strong>{" "}
-                {agencyDataflowResult.implicitAgency}
-              </p>
-            </div>
-          </details>
-        )}
-      </section>
-
-      {/* Section to Test update_dimensions */}
-      <section style={styles.section}>
-        <h2>Test `update_dimensions`</h2>
-        <div style={styles.inputGroup}>
-          {/* Removed Agency input as update_dimensions no longer requires it */}
-          <label style={styles.label}>
-            Dataflow:
-            <input
-              type="text"
-              value={dimensionsDataflow}
-              onChange={(e) => setDimensionsDataflow(e.target.value)}
-              placeholder="Enter Dataflow"
-              style={styles.input}
-            />
-          </label>
-          <label style={styles.label}>
-            Dataflow Version:
-            <input
-              type="text"
-              value={dimensionsVersion}
-              onChange={(e) => setDimensionsVersion(e.target.value)}
-              placeholder="Enter Dataflow Version (e.g., 1.0)"
-              style={styles.input}
-            />
-          </label>
-        </div>
-        <button
-          onClick={handleTestDimensions}
-          style={styles.button}
-          disabled={
-            dimensionsLoading || !dimensionsDataflow || !dimensionsVersion
-          }
-        >
-          {dimensionsLoading ? "Loading..." : "Test `update_dimensions`"}
-        </button>
-        {dimensionsError && (
-          <p style={styles.error}>Error: {dimensionsError}</p>
-        )}
-        {dimensionsResult && (
-          <details style={styles.resultContainer}>
-            <summary>Dimension Results</summary>
-            <div>
-              <h3>Dimension Selections:</h3>
-              <pre style={styles.pre}>
-                {JSON.stringify(dimensionsResult.dimensionSelections, null, 2)}
-              </pre>
-              <h3>Dimension Options:</h3>
-              <pre style={styles.pre}>
-                {JSON.stringify(dimensionsResult.updated_dimensions, null, 2)}
-              </pre>
-              <p>
-                <strong>Agency from Dimensions:</strong>{" "}
-                {dimensionsResult.agency}
-              </p>
-            </div>
-          </details>
-        )}
-      </section>
-
-      {/* Section to Test update_dsd */}
-      <section style={styles.section}>
-        <h2>Test `update_dsd` (dependence on `update_dimensions`)</h2>
-        <div style={styles.inputGroup}>
-          <label style={styles.label}>
-            Dataflow:
-            <input
-              type="text"
-              value={dsdDataflow}
-              onChange={(e) => setDsdDataflow(e.target.value)}
-              placeholder="Enter Dataflow"
-              style={styles.input}
-            />
-          </label>
-          <label style={styles.label}>
-            Dataflow Version:
-            <input
-              type="text"
-              value={dsdVersion}
-              onChange={(e) => setDsdVersion(e.target.value)}
-              placeholder="Enter Dataflow Version (e.g., 1.0)"
-              style={styles.input}
-            />
-          </label>
-          {Object.keys(dimensionSelections).map((key) => (
-            <label key={key} style={styles.label}>
-              {key}:
-              <input
-                type="text"
-                value={dimensionSelections[key]}
-                onChange={(e) =>
-                  setDimensionSelections({
-                    ...dimensionSelections,
-                    [key]: [e.target.value],
-                  })
-                }
-                placeholder={`Enter value for ${key}`}
-                style={styles.input}
-              />
-            </label>
-          ))}
-        </div>
-
-        <button
-          onClick={handleTestDsd}
-          style={styles.button}
-          disabled={
-            dsdLoading ||
-            !dsdDataflow ||
-            !dsdVersion ||
-            Object.keys(dimensionSelections).length === 0
-          }
-        >
-          {dsdLoading ? "Loading..." : "Test `update_dsd`"}
-        </button>
-        {dsdError && <p style={styles.error}>Error: {dsdError}</p>}
-        {dsdResult && (
-          <details style={styles.resultContainer}>
-            <summary>DSD Result</summary>
-            <div>
-              <p>
-                <strong>Updated Dimensions:</strong>
-              </p>
-              <pre style={styles.pre}>
-                {JSON.stringify(dsdResult.updated_dimensions, null, 2)}
-              </pre>
-              <p>
-                <strong>Final URL:</strong> {dsdResult.api_url}
-              </p>
-              <p>
-                <strong>API Response:</strong>
-              </p>
-              <pre style={styles.pre}>
-                {JSON.stringify(dsdResult.api_response, null, 2)}
-              </pre>
-              <p>
-                <strong>SDMX Implementation:</strong>{" "}
-                {JSON.stringify(dsdResult.sdmxImplementation)}
-              </p>
-            </div>
-          </details>
-        )}
-
-        {/* Display the current dimensionSelections being used */}
-        {dimensionSelections && Object.keys(dimensionSelections).length > 0 && (
-          <div style={styles.dimensionsDisplay}>
-            <h3>Current Dimension Selections:</h3>
-            <pre style={styles.pre}>
-              {JSON.stringify(dimensionSelections, null, 2)}
-            </pre>
           </div>
         )}
       </section>
+
+      {/* Dataflow Selection */}
+      {selectedAgency && (
+        <section style={styles.section}>
+          <h2 style={styles.sectionTitle}>Select Dataflow</h2>
+          {loading.dataflow ? (
+            <p style={styles.loadingText}>Loading dataflows...</p>
+          ) : error.dataflow ? (
+            <p style={styles.error}>{error.dataflow}</p>
+          ) : dataflowOptions.length > 0 ? (
+            <div style={styles.selectWrapper}>
+              <Select
+                options={dataflowOptions}
+                value={selectedDataflow}
+                onChange={(selected) => {
+                  setSelectedDataflow(selected);
+                  setDimensionSelections({});
+                  setDimensionOptions({});
+                  setDsdResult(null);
+                }}
+                placeholder="Select Dataflow"
+                styles={customSelectStyles}
+              />
+            </div>
+          ) : (
+            <p style={styles.infoText}>No dataflows available for this agency.</p>
+          )}
+        </section>
+      )}
+
+      {/* Dimension Selection */}
+      {selectedDataflow && (
+        <section style={styles.section}>
+          <h2 style={styles.sectionTitle}>Select Dimensions</h2>
+          {loading.dimensions ? (
+            <p style={styles.loadingText}>Loading dimensions...</p>
+          ) : error.dimensions ? (
+            <p style={styles.error}>{error.dimensions}</p>
+          ) : (
+            <div style={styles.dimensionGrid}>
+              {Object.keys(dimensionOptions).map((dimensionId) => {
+                // Get selected values from other dimensions
+                const otherSelectedValues = Object.keys(dimensionSelections).reduce(
+                  (acc, key) => {
+                    if (key !== dimensionId) {
+                      acc.push(...dimensionSelections[key]);
+                    }
+                    return acc;
+                  },
+                  []
+                );
+
+                // Filter out options already selected in other dimensions
+                const availableOptions = dimensionOptions[dimensionId]
+                  .filter((option) => !otherSelectedValues.includes(option.value))
+                  .sort((a, b) => a.label.localeCompare(b.label)); // Sort options alphabetically
+
+                return (
+                  <div key={dimensionId} style={styles.dimensionContainer}>
+                    <label style={styles.dimensionLabel}>{dimensionId}</label>
+                    <Select
+                      isMulti
+                      options={availableOptions}
+                      value={
+                        dimensionSelections[dimensionId]
+                          ? availableOptions.filter((option) =>
+                              dimensionSelections[dimensionId].includes(option.value)
+                            )
+                          : []
+                      }
+                      onChange={(selectedOptions) =>
+                        handleDimensionChange(dimensionId, selectedOptions)
+                      }
+                      placeholder={`Select ${dimensionId}`}
+                      styles={customSelectStyles}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* Display DSD Result */}
+      {dsdResult && (
+        <section style={styles.section}>
+          <h2 style={styles.sectionTitle}>DSD Result</h2>
+          {loading.dsd ? (
+            <p style={styles.loadingText}>Updating DSD...</p>
+          ) : error.dsd ? (
+            <p style={styles.error}>{error.dsd}</p>
+          ) : (
+            <div style={styles.resultContainer}>
+              <pre style={styles.pre}>
+                {JSON.stringify(dsdResult.updatedDimensions, null, 2)}
+              </pre>
+            </div>
+          )}
+        </section>
+      )}
     </div>
   );
+};
+
+// ==========================
+// Custom Styles for React Select
+// ==========================
+const customSelectStyles = {
+  control: (provided) => ({
+    ...provided,
+    minHeight: "48px",
+  }),
+  menu: (provided) => ({
+    ...provided,
+    zIndex: 9999,
+  }),
 };
 
 // ==========================
@@ -365,63 +373,66 @@ const TestUpdateDsd = () => {
 const styles = {
   container: {
     padding: "20px",
-    fontFamily: "Arial, sans-serif",
-    maxWidth: "800px",
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+    maxWidth: "1000px",
     margin: "0 auto",
+    color: "#333",
+  },
+  title: {
+    textAlign: "center",
+    marginBottom: "40px",
+    color: "#2c3e50",
   },
   section: {
     marginBottom: "40px",
-    padding: "20px",
-    border: "1px solid #ccc",
+    padding: "30px",
     borderRadius: "8px",
-    backgroundColor: "#fafafa",
+    backgroundColor: "#ecf0f1",
+    boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
   },
-  inputGroup: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "15px",
-    marginBottom: "15px",
+  sectionTitle: {
+    marginBottom: "20px",
+    color: "#2980b9",
   },
-  label: {
+  selectWrapper: {
     display: "flex",
-    flexDirection: "column",
+    justifyContent: "center",
+  },
+  dimensionGrid: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "20px",
+  },
+  dimensionContainer: {
+    flex: "1 1 calc(33% - 20px)",
+    minWidth: "250px",
+  },
+  dimensionLabel: {
     fontWeight: "bold",
+    color: "#34495e",
+    marginBottom: "5px",
   },
-  input: {
-    marginTop: "5px",
-    padding: "8px",
-    borderRadius: "4px",
-    border: "1px solid #ccc",
-    fontSize: "14px",
-  },
-  button: {
-    padding: "10px 20px",
-    cursor: "pointer",
-    backgroundColor: "#007BFF",
-    color: "#fff",
-    border: "none",
-    borderRadius: "4px",
-    fontSize: "16px",
-    marginTop: "10px",
-    transition: "background-color 0.3s ease",
-    disabled: {
-      backgroundColor: "#6c757d",
-      cursor: "not-allowed",
-    },
+  loadingText: {
+    textAlign: "center",
+    color: "#e67e22",
   },
   error: {
-    color: "red",
-    marginTop: "10px",
+    color: "#e74c3c",
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+  infoText: {
+    textAlign: "center",
+    color: "#7f8c8d",
   },
   pre: {
-    backgroundColor: "#f4f4f4",
-    padding: "10px",
-    borderRadius: "4px",
+    backgroundColor: "#fff",
+    padding: "20px",
+    borderRadius: "6px",
     overflowX: "auto",
-    marginTop: "10px",
-  },
-  dimensionsDisplay: {
-    marginTop: "20px",
+    border: "1px solid #bdc3c7",
+    fontSize: "14px",
+    lineHeight: "1.5",
   },
   resultContainer: {
     marginTop: "20px",
