@@ -1,31 +1,32 @@
 import axios from "axios";
 
-const propogateAgencyOptions = async () => {
-  // Keep track of unique Agency options
-  let agencyOptions = new Set();
-  const apiUrl = `https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/dataflow/`;
+const propagateAgencyOptions = async () => {
+  const apiUrl = `https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/agencyscheme/all/all/all?format=fusion-json&detail=full&references=none&includeMetadata=true&includeAllAnnotations=true`;
+  const agencyList = [];
 
   try {
     const response = await axios.get(apiUrl);
-    const xmlString = response.data;
+    const data = response.data;
 
-    // Parse the XML response using DOMParser
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(xmlString, "application/xml");
-
-    // Parse through all dataflows
-    const dataflows = xmlDoc.getElementsByTagName("str:Dataflow");
-    Array.from(dataflows).forEach((dataflow) => {
-      const agencyID = dataflow.getAttribute("agencyID");
-      // If the agencyID exists, add it to all possible agencyID options
-      if (agencyID) agencyOptions.add(agencyID);
+    // Extract agencies from the JSON data
+    const agencySchemes = data?.AgencyScheme || [];
+    agencySchemes.forEach((scheme) => {
+      if (scheme.items && Array.isArray(scheme.items)) {
+        scheme.items.forEach((agency) => {
+          const agencyID = agency.id;
+          const agencyName = agency.names?.find(name => name.locale === "en")?.value || agencyID;
+          agencyList.push({ id: agencyID, name: agencyName });
+        });
+      }
     });
   } catch (error) {
-    console.error("Error fetching dataflows for agency:", error);
+    console.error("Error fetching agency options:", error);
   }
 
-  return Array.from(agencyOptions) // Return as iterable array
-}
+  return agencyList; // Return as a list of agency objects
+};
+
+
 
 const restrictDataflowOptions = async (agencyParam) => {
   const apiUrl = `https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/dataflow/`;
@@ -64,9 +65,9 @@ const restrictDataflowOptions = async (agencyParam) => {
 
         // Add the dataflow details to the list as an object
         dataflowDetailsList.push({
-          dataflowName,
-          dataflowID,
-          dataflowDsdID,
+          name: dataflowName,
+          id: dataflowID,
+          dsdId: dataflowDsdID,
           dataflowAgency: agencyID,
         });
       }
@@ -76,6 +77,7 @@ const restrictDataflowOptions = async (agencyParam) => {
     return { error: "Error fetching dataflows." };
   }
 
+  console.log(dataflowDetailsList)
   return dataflowDetailsList;
 };
 
@@ -85,7 +87,7 @@ const updateDimensions = async (dataflow, dataflowVersion = "1.0") => {
   
   try {
     // Construct the API URL based on inputs
-    const apiUrl = `https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/datastructure/${dataflow.dataflowAgency}/${dataflow.dataflowDsdId}/${dataflowVersion}`;
+    const apiUrl = `https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/datastructure/${dataflow.dataflowAgency}/${dataflow.dsdId}/${dataflowVersion}`;
 
     // Fetch the data from the API using axios
     const response = await axios.get(apiUrl);
@@ -115,7 +117,7 @@ const updateDimensions = async (dataflow, dataflowVersion = "1.0") => {
     return { error: "Error fetching dimensions" };
   }
 
-  const { updatedDimensions } = await updateDsd(dataflow, dataflowVersion, dimensionSelections);
+  const { updatedDimensions } = await updateDsd(dataflow, dimensionSelections, dataflowVersion);
 
   return { dimensionSelections, updatedDimensions };
 };
@@ -144,7 +146,8 @@ const updateDsd = async (dataflow, dimensions, dataflowVersion = "1.0") => {
       }
     }
 
-    const apiUrl = `https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/${dataflow.dataflowAgency},${dataflow.dataflowId},${dataflowVersion}/${urlSection}?format=fusion-json&dimensionAtObservation=AllDimensions&detail=structureOnly&includeMetrics=true&includeAllAnnotations=true`;
+    const apiUrl = `https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/${dataflow.dataflowAgency},${dataflow.id},${dataflowVersion}/${urlSection}?format=fusion-json&dimensionAtObservation=AllDimensions&detail=structureOnly&includeMetrics=true&includeAllAnnotations=true`;
+
 
     // Fetch the data from the API
     const response = await axios.get(apiUrl);
@@ -159,6 +162,7 @@ const updateDsd = async (dataflow, dimensions, dataflowVersion = "1.0") => {
     updatedDimensions = updatedDimensionsMap;
 
     const sdmxImplementation = ["implementation 1"];
+    console.log(updatedDimensions)
 
     // return {updatedDimensions, finalUrl, apiResponse, sdmxImplementation};
     return { updatedDimensions, apiUrl, apiResponse, sdmxImplementation };
@@ -168,4 +172,4 @@ const updateDsd = async (dataflow, dimensions, dataflowVersion = "1.0") => {
   }
 };
 
-export { propogateAgencyOptions, restrictDataflowOptions, updateDimensions, updateDsd }
+export { propagateAgencyOptions, restrictDataflowOptions, updateDimensions, updateDsd }
