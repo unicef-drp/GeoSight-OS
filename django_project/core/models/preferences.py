@@ -375,6 +375,29 @@ class SitePreferences(SingletonModel):
         """Return admin emails."""
         return settings.SENTRY_ENVIRONMENT
 
+    # -------------------------------------
+    # FOR PLUGINS
+    # -------------------------------------
+    @property
+    def cloud_native_gis_enabled(self):
+        """Return if CLOUD_NATIVE_GIS_ENABLED is enabled."""
+        return settings.CLOUD_NATIVE_GIS_ENABLED
+
+    @property
+    def machine_info_fetcher_enabled(self):
+        """Return if MACHINE_INFO_FETCHER_ENABLED is enabled."""
+        return settings.MACHINE_INFO_FETCHER_ENABLED
+
+    @property
+    def reference_dataset_enabled(self):
+        """Return if REFERENCE_DATASET_ENABLED is enabled."""
+        return settings.REFERENCE_DATASET_ENABLED
+
+    @property
+    def tenants_enabled(self):
+        """Return if TENANTS_ENABLED is enabled."""
+        return settings.TENANTS_ENABLED
+
 
 class SitePreferencesImage(models.Model):
     """Preference images settings specifically for website."""
