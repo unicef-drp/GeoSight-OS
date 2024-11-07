@@ -64,6 +64,10 @@ class SitePreferencesAdmin(admin.ModelAdmin):
         }),
         ('Plugins', {
             'fields': (
+                'cloud_native_gis_enabled',
+                'machine_info_fetcher_enabled',
+                'reference_dataset_enabled',
+                'tenants_enabled',
                 'machine_info_fetcher_config',
             )
         }),
@@ -137,7 +141,13 @@ class SitePreferencesAdmin(admin.ModelAdmin):
         })
     )
     inlines = (SitePreferencesImageInline,)
-    readonly_fields = ('sentry_dsn', 'sentry_environment')
+    readonly_fields = (
+        'sentry_dsn', 'sentry_environment',
+        'cloud_native_gis_enabled',
+        'machine_info_fetcher_enabled',
+        'reference_dataset_enabled',
+        'tenants_enabled'
+    )
 
 
 admin.site.register(SitePreferences, SitePreferencesAdmin)
