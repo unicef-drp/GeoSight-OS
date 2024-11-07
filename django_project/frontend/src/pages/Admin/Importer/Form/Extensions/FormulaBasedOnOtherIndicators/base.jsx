@@ -207,7 +207,7 @@ export const FormulaBasedForm = forwardRef(
           }}
         >
           <ReferenceLayerGeometrySelector
-            referenceLayer={data.reference_layer}
+            referenceLayer={data}
             onChange={config => {
               setGeomConfig(config)
             }}

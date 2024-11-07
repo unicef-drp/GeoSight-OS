@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import $ from "jquery";
@@ -31,17 +31,14 @@ import {
 } from "../../../../components/Elements/Button";
 import { SelectWithList } from "../../../../components/Input/SelectWithList";
 import InputFile from './InputFile'
-import {
-  axiosGet,
-  fetchReferenceLayerList,
-  GeorepoUrls
-} from '../../../../utils/georepo'
+import { axiosGet, fetchReferenceLayerList } from '../../../../utils/georepo'
 import { jsonToXlsx } from '../../../../utils/main'
 import { GeorepoViewInputSelector } from "../../ModalSelector/InputSelector";
 import {
   Notification,
   NotificationStatus
 } from "../../../../components/Notification";
+import { RefererenceLayerUrls } from "../../../../utils/referenceLayer";
 
 import './style.scss';
 
@@ -79,7 +76,7 @@ export default function ValueManagement() {
   }
 
   const fetchData = (level, page) => {
-    axiosGet(level.url + '?page=' + page).then(response => {
+    axiosGet(level.url, { page: page }).then(response => {
       const data = response.data
       if (!level.layer) {
         level.layer = []
@@ -106,7 +103,8 @@ export default function ValueManagement() {
         return
       }
       if (!referenceLayer.data) {
-        axiosGet(GeorepoUrls.ViewDetail(reference.identifier)).then(response => {
+        const url = RefererenceLayerUrls.ViewDetail(referenceLayer)
+        axiosGet(url).then(response => {
           const data = response.data
           referenceLayer.data = data.dataset_levels.map(level => {
             level.value = level.level

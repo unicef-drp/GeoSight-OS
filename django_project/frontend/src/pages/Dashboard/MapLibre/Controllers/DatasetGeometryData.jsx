@@ -22,15 +22,11 @@ import { useEffect } from "react";
 import { datasetListFromDashboardData } from "../../../../utils/geometry";
 import { dictDeepCopy } from "../../../../utils/main";
 import { Actions } from "../../../../store/dashboard";
-import {
-  axiosGet,
-  extractCode,
-  GeorepoUrls,
-  headers
-} from "../../../../utils/georepo";
+import { axiosGet, extractCode, headers } from "../../../../utils/georepo";
 import { apiReceive } from "../../../../store/reducers_api";
 import { fetchJSON } from "../../../../Requests";
 import { InternalReferenceDatasets } from "../../../../utils/urls";
+import { RefererenceLayerUrls } from "../../../../utils/referenceLayer";
 
 /**
  * Handling geometry data.
@@ -54,17 +50,15 @@ export default function DatasetGeometryData() {
 
         const referenceLayerData = dictDeepCopy(referenceLayerDataState)
         for (let i = 0; i < datasets.length; i++) {
-          const identifier = datasets[i].identifier
+          const referenceLayer = datasets[i]
+          const identifier = referenceLayer.identifier
           if (!referenceLayerData[identifier]) {
             dispatch(
               Actions.ReferenceLayerData.request(identifier)
             )
 
             // Fetch the data
-            let url = GeorepoUrls.ViewDetail(identifier)
-            if (datasets[i].is_local) {
-              url = InternalReferenceDatasets.detail(identifier)
-            }
+            const url = RefererenceLayerUrls.ViewDetail(referenceLayer)
             await axiosGet(url).then(response => {
               referenceLayerData[identifier] = apiReceive({
                 data: response.data,

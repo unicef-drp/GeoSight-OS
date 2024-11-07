@@ -29,6 +29,7 @@ import { GeorepoUrls } from "../../../../../utils/georepo";
 import { FormControlLabel, FormGroup } from "@mui/material";
 import { InternalReferenceDatasets } from "../../../../../utils/urls";
 import { Actions } from "../../../../../store/dashboard";
+import { RefererenceLayerUrls } from "../../../../../utils/referenceLayer";
 
 import './styles.scss';
 
@@ -84,10 +85,7 @@ export const ViewLevelConfiguration = forwardRef(
 
     useEffect(() => {
       if (referenceLayer.identifier && !referenceLayerData) {
-        let url = GeorepoUrls.ViewDetail(referenceLayer.identifier)
-        if (referenceLayer.is_local) {
-          url = InternalReferenceDatasets.detail(referenceLayer.identifier)
-        }
+        const url = RefererenceLayerUrls.ViewDetail(referenceLayer)
         dispatch(
           Actions.ReferenceLayerData.fetch(
             dispatch, referenceLayer.identifier, url

@@ -15,13 +15,14 @@
 
 import { getRelatedTableData } from "./relatedTable";
 import { getIndicatorDataByLayer, UpdateStyleData } from "./indicatorData";
-import { extractCode } from "./georepo";
+import { extractCode, GeorepoUrls } from "./georepo";
 import {
   indicatorLayerId,
   isIndicatorLayerLikeIndicator
 } from "./indicatorLayer";
 import { dynamicStyleTypes, returnLayerStyleConfig } from "./Style";
 import { dictDeepCopy } from "./main";
+import { InternalReferenceDatasets } from "./urls";
 
 const temporary = {}
 
@@ -124,4 +125,15 @@ export function returnStyle(layer, values, noDataStyle) {
     }
   }
   return style
+}
+
+export const RefererenceLayerUrls = {
+  ViewDetail: function (referenceLayerDetail) {
+    const identifier = referenceLayerDetail.identifier
+    if (referenceLayerDetail.is_local) {
+      return InternalReferenceDatasets.detail(identifier)
+    } else {
+      return GeorepoUrls.ViewDetail(identifier)
+    }
+  }
 }
