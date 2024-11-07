@@ -121,6 +121,7 @@ export function ReferenceLayer(
   }
 
   const filteredGeometries = where ? filteredGeometriesState : null
+  let levels = referenceLayerData?.data?.dataset_levels
   let currentLevel = selectedAdminLevel ? selectedAdminLevel.level : levels?.level
 
   // When indicator data, current layer, second layer and compare mode changed
@@ -218,7 +219,6 @@ export function ReferenceLayer(
     if (!indicatorShow) {
       return;
     }
-    let levels = referenceLayerData?.data?.dataset_levels
     const vectorTiles = referenceLayerData?.data?.vector_tiles
     if (vectorTiles && levels && map && currentLevel !== undefined) {
       const url = GeorepoUrls.WithoutDomain(updateToken(vectorTiles))
@@ -604,8 +604,6 @@ export function ReferenceLayer(
     setIs3DInit(true)
     const geometries = checkCodes()
     let url = null
-    let levels = referenceLayerData?.data?.dataset_levels
-    let currentLevel = selectedAdminLevel ? selectedAdminLevel.level : levels?.level
     const vectorTiles = referenceLayerData?.data?.vector_tiles
     if (vectorTiles && levels && map && currentLevel !== undefined) {
       url = GeorepoUrls.WithoutDomain(updateToken(vectorTiles))
