@@ -77,9 +77,57 @@ const restrictDataflowOptions = async (agencyParam) => {
     return { error: "Error fetching dataflows." };
   }
 
-  console.log(dataflowDetailsList)
   return dataflowDetailsList;
 };
+
+const updateDsd = async (dataflow, dimensions, dataflowVersion = "1.0") => {
+  try {
+    // Construct the API URL based on inputs
+    // Inputs must be IDs
+    // Each variable can be a group of variables, such as NT_ANT_HAZ_AVG+MG_RFGS_CNTRY_ASYLM_PER1000 for indicator
+
+    let urlSection = "";
+
+    const keys = [];
+
+    Object.keys(dimensions).forEach((key) => {
+      keys.push(key);
+    });
+
+    // Construct the URL section based on dimensions
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i];
+      const values = dimensions[key].join("+");
+      urlSection += `${values}`;
+      if (i < keys.length - 1) {
+        urlSection += ".";
+      }
+    }
+
+    const apiUrl = `https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/${dataflow.dataflowAgency},${dataflow.id},${dataflowVersion}/${urlSection}?format=fusion-json&dimensionAtObservation=AllDimensions&detail=structureOnly&includeMetrics=true&includeAllAnnotations=true`;
+
+    // Fetch the data from the API
+    const response = await axios.get(apiUrl);
+
+    const apiResponse = await response.data;
+
+    let updatedDimensions = apiResponse.structure.dimensions.observation;
+    const updatedDimensionsMap = {};
+    updatedDimensions.forEach((dimension) => {
+      updatedDimensionsMap[dimension.id] = dimension.values;
+    });
+    updatedDimensions = updatedDimensionsMap;
+
+    const sdmxImplementation = ["implementation 1"];
+
+    // return {updatedDimensions, finalUrl, apiResponse, sdmxImplementation};
+    return { updatedDimensions, apiUrl, apiResponse, sdmxImplementation };
+  } catch (error) {
+    console.error("Error fetching or parsing DSD from API:", error);
+    return { error: "Error fetching data" };
+  }
+};
+
 
 const updateDimensions = async (dataflow, dataflowVersion = "1.0") => {
   // Initialize dimensionSelections
@@ -114,62 +162,11 @@ const updateDimensions = async (dataflow, dataflowVersion = "1.0") => {
       }
     });
   } catch (error) {
-    return { error: "Error fetching dimensions" };
+    return { error: "Error fetching dimensions", error };
   }
 
   const { updatedDimensions } = await updateDsd(dataflow, dimensionSelections, dataflowVersion);
 
   return { dimensionSelections, updatedDimensions };
 };
-
-const updateDsd = async (dataflow, dimensions, dataflowVersion = "1.0") => {
-  try {
-    // Construct the API URL based on inputs
-    // Inputs must be IDs
-    // Each variable can be a group of variables, such as NT_ANT_HAZ_AVG+MG_RFGS_CNTRY_ASYLM_PER1000 for indicator
-
-    let urlSection = "";
-
-    const keys = [];
-
-    Object.keys(dimensions).forEach((key) => {
-      keys.push(key);
-    });
-
-    // Construct the URL section based on dimensions
-    for (let i = 0; i < keys.length; i++) {
-      const key = keys[i];
-      const values = dimensions[key].join("+");
-      urlSection += `${values}`;
-      if (i < keys.length - 1) {
-        urlSection += ".";
-      }
-    }
-
-    const apiUrl = `https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/${dataflow.dataflowAgency},${dataflow.id},${dataflowVersion}/${urlSection}?format=fusion-json&dimensionAtObservation=AllDimensions&detail=structureOnly&includeMetrics=true&includeAllAnnotations=true`;
-
-
-    // Fetch the data from the API
-    const response = await axios.get(apiUrl);
-
-    const apiResponse = await response.data;
-
-    let updatedDimensions = apiResponse.structure.dimensions.observation;
-    const updatedDimensionsMap = {};
-    updatedDimensions.forEach((dimension) => {
-      updatedDimensionsMap[dimension.id] = dimension.values;
-    });
-    updatedDimensions = updatedDimensionsMap;
-
-    const sdmxImplementation = ["implementation 1"];
-    console.log(updatedDimensions)
-
-    // return {updatedDimensions, finalUrl, apiResponse, sdmxImplementation};
-    return { updatedDimensions, apiUrl, apiResponse, sdmxImplementation };
-  } catch (error) {
-    console.error("Error fetching or parsing DSD from API:", error);
-    return { error: "Error fetching data" };
-  }
-};
-
 export { propagateAgencyOptions, restrictDataflowOptions, updateDimensions, updateDsd }

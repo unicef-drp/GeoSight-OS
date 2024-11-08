@@ -25,6 +25,7 @@ django_project/frontend/package-lock.json
 django_project/frontend/webpack-stats.dev.json
 django_project/frontend/webpack-stats.prod.json
 django_project/geosight/georepo/api/mock/create_responses.py
+django_project/frontend/package.json
 
 # mkdocs related
 docs/mkdocs.yml
