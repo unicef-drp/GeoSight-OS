@@ -7,7 +7,11 @@ import {
   restrictDataflowOptions,
   updateDimensions,
   updateDsd,
-} from "../../django_project/frontend/src/pages/databasePlaceHolder/update_dsd"; // Adjust the path as necessary
+} from "./update_dsd.jsx"; // Adjust the path as necessary
+import { color } from "chart.js/helpers";
+import zIndex from "@mui/material/styles/zIndex.js";
+import { getFixedT } from "i18next";
+import { max, min } from "moment";
 
 const TestUpdateDsd = () => {
   // ==========================
@@ -25,6 +29,13 @@ const TestUpdateDsd = () => {
   // Dimension-related states
   const [dimensionSelections, setDimensionSelections] = useState({});
   const [dimensionOptions, setDimensionOptions] = useState({});
+
+  const [isVisible, setIsVisible] = useState(true);
+
+  // Handler for toggling visibility
+  const handleToggle = () => {
+    setIsVisible(!isVisible);
+  };
 
   // DSD result state
   const [dsdResult, setDsdResult] = useState(null);
@@ -59,6 +70,7 @@ const TestUpdateDsd = () => {
             label: agency.name,
           }))
         );
+        setError((prev) => ({ ...prev, agency: null }));
       } catch (err) {
         setError((prev) => ({ ...prev, agency: "Error fetching agencies." }));
       } finally {
@@ -84,6 +96,7 @@ const TestUpdateDsd = () => {
             dsdId: dataflow.dsdId,
           }))
         );
+        setError((prev) => ({ ...prev, dataflow: null }));
       } catch (err) {
         setError((prev) => ({ ...prev, dataflow: "Error fetching dataflows." }));
       } finally {
@@ -120,6 +133,7 @@ const TestUpdateDsd = () => {
 
         setDimensionSelections(result.dimensionSelections);
         setDimensionOptions(formattedDimensionOptions);
+        setError((prev) => ({ ...prev, dimensions: null }));
       } catch (err) {
         setError((prev) => ({
           ...prev,
@@ -138,16 +152,19 @@ const TestUpdateDsd = () => {
     const fetchDsd = async () => {
       if (!selectedDataflow) return;
       // Check if all dimensions have at least one selected value
-      const allDimensionsSelected =
-        Object.keys(dimensionSelections).length > 0 &&
-        Object.values(dimensionSelections).every(
-          (values) => values.length > 0 && values[0]
-        );
+      // const allDimensionsSelected =
+      //   Object.keys(dimensionSelections).length > 0 &&
+      //   Object.values(dimensionSelections).every(
+      //     (values) => values.length > 0 && values[0]
+      //   );
 
-      if (!allDimensionsSelected) {
-        setDsdResult(null);
-        return;
-      }
+
+      // if (!allDimensionsSelected) {
+      //   setDsdResult(null);
+      //   console.log("HERERERER")
+      //   return;
+      // }
+
 
       setLoading((prev) => ({ ...prev, dsd: true }));
       try {
@@ -159,8 +176,10 @@ const TestUpdateDsd = () => {
           },
           dimensionSelections
         );
+        console.log("Result:", result);
         if (result.error) throw new Error(result.error);
         setDsdResult(result);
+        setError((prev) => ({ ...prev, dsd: null }));
       } catch (err) {
         setError((prev) => ({ ...prev, dsd: "Error fetching DSD." }));
       } finally {
@@ -206,6 +225,7 @@ const TestUpdateDsd = () => {
       }
 
       setDimensionOptions(formattedDimensionOptions);
+      setError((prev) => ({ ...prev, dimensions: null }));
     } catch (err) {
       setError((prev) => ({
         ...prev,
@@ -220,12 +240,18 @@ const TestUpdateDsd = () => {
   // Render
   // ==========================
   return (
-    <div style={styles.container}>
-      <h1 style={styles.title}>SDMX Data Explorer</h1>
+    <div>
+      <div
+        style={{
+          ...styles.container,
+          right: isVisible ? "0" : "-100%",
+          transition: "right 0.3s ease-in-out",
+        }}
+      >
 
       {/* Agency Selection */}
       <section style={styles.section}>
-        <h2 style={styles.sectionTitle}>Select Agency</h2>
+        <h2 style={styles.sectionTitle}>Agency</h2>
         {loading.agency ? (
           <p style={styles.loadingText}>Loading agencies...</p>
         ) : error.agency ? (
@@ -282,7 +308,8 @@ const TestUpdateDsd = () => {
       {selectedDataflow && (
         <section style={styles.section}>
           <h2 style={styles.sectionTitle}>Select Dimensions</h2>
-          {loading.dimensions ? (
+          {/* {loading.dimensions ? ( */}
+          {false ? (
             <p style={styles.loadingText}>Loading dimensions...</p>
           ) : error.dimensions ? (
             <p style={styles.error}>{error.dimensions}</p>
@@ -307,23 +334,29 @@ const TestUpdateDsd = () => {
 
                 return (
                   <div key={dimensionId} style={styles.dimensionContainer}>
-                    <label style={styles.dimensionLabel}>{dimensionId}</label>
-                    <Select
-                      isMulti
-                      options={availableOptions}
-                      value={
-                        dimensionSelections[dimensionId]
-                          ? availableOptions.filter((option) =>
-                              dimensionSelections[dimensionId].includes(option.value)
-                            )
-                          : []
-                      }
-                      onChange={(selectedOptions) =>
-                        handleDimensionChange(dimensionId, selectedOptions)
-                      }
-                      placeholder={`Select ${dimensionId}`}
-                      styles={customSelectStyles}
-                    />
+                  <label style={styles.dimensionLabel}>{dimensionId}</label>
+                  <Select
+                    isMulti
+                    options={availableOptions}
+                    value={
+                    dimensionSelections[dimensionId]
+                      ? availableOptions.filter((option) =>
+                        dimensionSelections[dimensionId].includes(option.value)
+                      )
+                      : []
+                    }
+                    onChange={(selectedOptions) =>
+                    handleDimensionChange(dimensionId, selectedOptions)
+                    }
+                    placeholder={`Select ${dimensionId}`}
+                    styles={{
+                    ...customSelectStyles,
+                    control: (provided) => ({
+                      ...provided,
+                      backgroundColor: "#fff",
+                    }),
+                    }}
+                  />
                   </div>
                 );
               })}
@@ -335,6 +368,18 @@ const TestUpdateDsd = () => {
       {/* Display DSD Result */}
       {dsdResult && (
         <section style={styles.section}>
+          <h2 style={styles.sectionTitle}>API URL</h2>
+          <div style={styles.resultContainer}>
+            <pre style={styles.pre}>{dsdResult.apiUrl}</pre>
+          </div>
+          <h2 style={styles.sectionTitle}>SDMX Implementation</h2>
+          <div style={styles.resultContainer}>
+            <pre style={styles.pre}>
+              {JSON.stringify(dsdResult.sdmxImplementation, null, 2)}
+            </pre>
+          </div>
+          <button onClick={() => alert(JSON.stringify(dsdResult.apiResponse))}>Get apiResponse</button>
+
           <h2 style={styles.sectionTitle}>DSD Result</h2>
           {loading.dsd ? (
             <p style={styles.loadingText}>Updating DSD...</p>
@@ -349,6 +394,10 @@ const TestUpdateDsd = () => {
           )}
         </section>
       )}
+      </div>
+      <button style={styles.toggleButton} onClick={handleToggle}>
+        {isVisible ? "Hide Dropdowns" : "Show Dropdowns"}
+      </button>
     </div>
   );
 };
@@ -360,11 +409,44 @@ const customSelectStyles = {
   control: (provided) => ({
     ...provided,
     minHeight: "48px",
+    width: "250px",
+    backgroundColor: "#5bc0de",
+    borderColor: "#000",
+    color: "#fff",
+    boxShadow: "inset 0 4px 4px rgba(0, 0, 0, 0.2)",
+    "&:hover, &:focus, &:active": {
+      borderColor: "#0056b3",
+      outline: "2px solid #0056b3",
+    },
   }),
   menu: (provided) => ({
     ...provided,
     zIndex: 9999,
+    color: "#fff",
+    backgroundColor: "#343a40",
   }),
+  singleValue: (provided) => ({
+    ...provided,
+    color: "#fff",
+    backgroundColor: "#5bc0de",
+  }),
+  placeholder: (provided) => ({
+    ...provided,
+    color: "#fff",
+  }),
+  option: (provided, state) => ({
+    ...provided,
+    backgroundColor: state.isSelected ? "#5bc0de" : "#fff",
+    color: state.isSelected ? "#fff" : "#000",
+    "&:hover": {
+      backgroundColor: "#f0f0f0",
+    },
+  }),
+  multiValue: (provided) => ({
+    ...provided,
+    backgroundColor: "#5bc0de",
+  }),
+
 };
 
 // ==========================
@@ -374,29 +456,36 @@ const styles = {
   container: {
     padding: "20px",
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-    maxWidth: "1000px",
+    width: "min-content",
     margin: "0 auto",
     color: "#333",
+    zIndex: 10,
+    position: "fixed",
+    right: "0",
+    top: "100px",
+    height: "50vh",
+    overflowY: "auto",
+    backgroundColor: "#f5f5f5",
+    maxWidth: "20%",
   },
-  title: {
-    textAlign: "center",
-    marginBottom: "40px",
-    color: "#2c3e50",
-  },
-  section: {
-    marginBottom: "40px",
-    padding: "30px",
-    borderRadius: "8px",
-    backgroundColor: "#ecf0f1",
-    boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+  toggleButton: {
+    position: "absolute",
+    bottom: "10px",
+    right: "10px",
+    backgroundColor: "#5bc0de",
+    color: "#fff",
+    border: "none",
+    padding: "10px",
+    cursor: "pointer",
+    zIndex: 10000,
   },
   sectionTitle: {
-    marginBottom: "20px",
-    color: "#2980b9",
+    color: "#000",
+    fontSize: "1rem",
   },
   selectWrapper: {
     display: "flex",
-    justifyContent: "center",
+    justifyContent: "start",
   },
   dimensionGrid: {
     display: "flex",
@@ -436,7 +525,7 @@ const styles = {
   },
   resultContainer: {
     marginTop: "20px",
-  },
+  }
 };
 
 export default TestUpdateDsd;
