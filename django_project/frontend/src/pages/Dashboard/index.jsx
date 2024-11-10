@@ -26,7 +26,6 @@ import { EmbedConfig } from "../../utils/embed";
 import { LEFT, RIGHT } from "../../components/ToggleButton";
 import { ProjectOverview } from "./Toolbars";
 
-import TestUpdateDsd from '../databasePlaceHolder/TestUpdateDSD';
 
 import './style.scss';
 
@@ -107,7 +106,6 @@ export default function Dashboard({ children }) {
           </div>
         </div>
       }
-      <TestUpdateDsd />
       {children ? children : ""}
     </div>
   );

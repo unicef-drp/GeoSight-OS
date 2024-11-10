@@ -29,6 +29,8 @@ import { IconTextField } from "../../../../../../components/Elements/Input";
 import { MainDataGrid } from "../../../../../../components/Table";
 import { arrayToOptions, delay } from "../../../../../../utils/main";
 
+import DsdForm from './DsdComponents/DsdForm';
+
 import './style.scss';
 
 
@@ -183,6 +185,7 @@ export const BaseSDMXForm = forwardRef(
           error ? <div className='error'>{error}</div> : null
         }
       </div>
+      <DsdForm urlChanged={urlChanged} />
       {children}
       <div className='RetrievedData'>
         <label className="form-label" htmlFor="group">

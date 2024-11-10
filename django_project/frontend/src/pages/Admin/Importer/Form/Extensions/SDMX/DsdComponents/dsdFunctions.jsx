@@ -26,8 +26,6 @@ const propagateAgencyOptions = async () => {
   return agencyList; // Return as a list of agency objects
 };
 
-
-
 const restrictDataflowOptions = async (agencyParam) => {
   const apiUrl = `https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/dataflow/`;
   const dataflowDetailsList = []; // List to hold the details of each dataflow
@@ -79,6 +77,7 @@ const restrictDataflowOptions = async (agencyParam) => {
 
   return dataflowDetailsList;
 };
+
 
 const updateDsd = async (dataflow, dimensions, dataflowVersion = "1.0") => {
   try {
