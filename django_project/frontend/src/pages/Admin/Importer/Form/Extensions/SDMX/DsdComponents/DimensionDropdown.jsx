@@ -32,6 +32,7 @@ const DimensionDropdown = ({
       onChange={(selectedOptions) => onChange(dimensionId, selectedOptions)}
       placeholder={`Select ${dimensionId}`}
       classNamePrefix={classNamePrefix}
+      formatOptionLabel={(option) => `${option.label} [${option.value}]`}
       styles={{
         control: (provided) => ({
             ...provided,
