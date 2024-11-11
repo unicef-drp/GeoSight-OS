@@ -44,6 +44,7 @@ const DropdownSection = ({
           onChange={onChange}
           placeholder={placeholder}
           classNamePrefix={classNamePrefix}
+          formatOptionLabel={(option) => `${option.label} [${option.value}]`}
             styles={{
                 control: (provided) => ({
                     ...provided,

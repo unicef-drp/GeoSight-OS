@@ -8,7 +8,7 @@ import '../style.scss';
 import '../custom-select-styles.scss';
 
 
-import {fetchAgencies, fetchDataflows, fetchDimensions, fetchDsd} from './fetchFunctions.jsx';
+import { fetchAgencies, fetchDataflows, fetchDimensions, fetchDsd } from './fetchFunctions.jsx';
 import DropdownSection from "./DropdownSection.jsx";
 import DimensionDropdown from "./DimensionDropdown.jsx";
 
@@ -106,7 +106,7 @@ const DsdForm = ({ urlChanged }) => {
         loading={loading.agency}
         error={error.agency}
         placeholder="Select Agency"
-        classNamePrefix="custom-select" 
+        classNamePrefix="custom-select"
       />
 
       {selectedAgency && (
