@@ -11,9 +11,9 @@
 # __date__ = '13/06/2023'
 # __copyright__ = ('Copyright 2023, Unicef')
 
-FROM ubuntu:20.04 AS prod
+# FROM ubuntu:20.04 AS prod
 # For Mac M1/M2 use the below code
-# FROM --platform=amd64 ubuntu:20.04 AS prod
+FROM --platform=amd64 ubuntu:20.04 AS prod
 MAINTAINER Irwan Fathurrahman<meomancer@gmail.com>
 
 # Pandoc needed to generate rst dumps, uic compressor needed for django-pipeline

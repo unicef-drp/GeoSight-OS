@@ -23,3 +23,58 @@
   border: 1px solid $primary-color;
   padding: 1rem;
 }
+.DsdForm {
+  padding: 20px;
+  border: 1px solid $primary-color;
+  z-index: 10;
+  right: 0;
+  margin: 10px 0px;
+}
+
+.SectionTitle {
+  color: #000;
+  font-size: 1rem;
+  margin-top: 0px;
+  margin-bottom: 10px;
+}
+
+.SelectWrapper {
+  display: flex;
+  justify-content: start;
+}
+
+.DimensionGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+
+}
+
+.DimensionContainer {
+  flex: 1 1 calc(20% - 20px);
+  min-width: 250px;
+}
+
+.DimensionLabel {
+  font-weight: bold;
+  color: #34495e;
+  margin-bottom: 5px;
+  font-size: 0.8rem;
+}
+
+.LoadingText {
+  text-align: center;
+  color: #e67e22;
+}
+
+.Error {
+  color: #e74c3c;
+  text-align: center;
+  font-weight: bold;
+}
+
+.InfoText {
+  text-align: center;
+  color: #7f8c8d;
+}
+

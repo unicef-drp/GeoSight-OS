@@ -129,7 +129,7 @@
       'relatedTableList': "{% url "admin-related-table-list-view" %}",
       'importer': "{% url "admin-importer-create-view" %}",
       'dataManagement': "{% url 'admin-data-management-list-view' %}",
-      {% if 'reference_dataset' in PLUGINS %}
+      {% if 'reference_dataset' in plugins %}
         'referenceDatasetList': "{% url 'admin-reference-dataset-list-view' %}",
         'referenceDatesetImporterList': "{% url 'admin-reference-dataset-importer-list-view' %}",
       {% endif %}

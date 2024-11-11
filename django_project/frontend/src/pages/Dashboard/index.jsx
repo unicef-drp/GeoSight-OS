@@ -26,6 +26,7 @@ import { EmbedConfig } from "../../utils/embed";
 import { LEFT, RIGHT } from "../../components/ToggleButton";
 import { ProjectOverview } from "./Toolbars";
 
+
 import './style.scss';
 
 export default function Dashboard({ children }) {
@@ -34,6 +35,7 @@ export default function Dashboard({ children }) {
     widgets,
     user_permission
   } = useSelector(state => state.dashboard.data);
+
 
   const showLayerTab = !!EmbedConfig().layer_tab
   const showFilterTab = !!EmbedConfig().filter_tab

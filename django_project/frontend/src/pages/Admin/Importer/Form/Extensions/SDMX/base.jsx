@@ -29,6 +29,8 @@ import { IconTextField } from "../../../../../../components/Elements/Input";
 import { MainDataGrid } from "../../../../../../components/MainDataGrid";
 import { arrayToOptions, delay } from "../../../../../../utils/main";
 
+import DsdForm from './DsdComponents/DsdForm';
+
 import './style.scss';
 
 
@@ -46,8 +48,8 @@ let sdmxApiInput = null;
  */
 export const BaseSDMXForm = forwardRef(
   ({
-     data, setData, files, setFiles, attributes, setAttributes, children
-   }, ref
+    data, setData, files, setFiles, attributes, setAttributes, children
+  }, ref
   ) => {
     const { readString } = usePapaParse();
     const [url, setUrl] = useState('');
@@ -168,21 +170,7 @@ export const BaseSDMXForm = forwardRef(
       }, 500);
     }
     return <Fragment>
-      <div className="BasicFormSection">
-        <label className="form-label required" htmlFor="group">
-          SDMX Url
-        </label>
-        <IconTextField
-          iconEnd={(loading ? <CircularProgress/> : null)}
-          value={url}
-          onChange={evt => urlChanged(evt.target.value)}
-        />
-        <label className='form-helptext'>Sample URL :
-          https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/BRAZIL_CO,BRAZIL_CO,1.0/all?format=csv</label>
-        {
-          error ? <div className='error'>{error}</div> : null
-        }
-      </div>
+      <DsdForm urlChanged={urlChanged} setRequest={setRequest} />
       {children}
       <div className='RetrievedData'>
         <label className="form-label" htmlFor="group">
