@@ -131,16 +131,12 @@ function receive(data, error = null) {
  */
 export function fetch(dispatch) {
   fetchingData(
-    urls.dashboardData, {}, {}, function (response, error) {
-      fetchingData(
-        // Fetch palette color first
-        `/api/color/palette/list`,
-        {}, {}, (palettes, paletteError) => {
-          updateColorPaletteData(palettes)
-          const recError = !error && paletteError ? paletteError : error
-          dispatch(receive(response, recError))
-        }
-      )
+    urls.dashboardData, {}, {}, async function (response, error) {
+      await updateColorPaletteData().then(palettes => {
+        dispatch(receive(response, null))
+      }).catch(error => {
+        dispatch(receive(response, error))
+      })
     }
   )
   return request();
