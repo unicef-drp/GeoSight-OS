@@ -170,7 +170,7 @@ export const BaseSDMXForm = forwardRef(
       }, 500);
     }
     return <Fragment>
-      <DsdForm urlChanged={urlChanged} />
+      <DsdForm urlChanged={urlChanged} setRequest={setRequest} />
       {children}
       <div className='RetrievedData'>
         <label className="form-label" htmlFor="group">
