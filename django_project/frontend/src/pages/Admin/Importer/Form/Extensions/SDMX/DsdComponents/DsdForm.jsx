@@ -12,7 +12,7 @@ import { fetchAgencies, fetchDataflows, fetchDimensions, fetchDsd } from './fetc
 import DropdownSection from "./DropdownSection.jsx";
 import DimensionDropdown from "./DimensionDropdown.jsx";
 
-const DsdForm = ({ urlChanged }) => {
+const DsdForm = ({ urlChanged, setRequest }) => {
   // State Variables
   const [agencyOptions, setAgencyOptions] = useState([]);
   const [selectedAgency, setSelectedAgency] = useState(null);
@@ -41,6 +41,7 @@ const DsdForm = ({ urlChanged }) => {
   // Fetch dataflows on agency selection
   useEffect(() => {
     if (!selectedAgency) return;
+    setRequest([]);
     fetchDataflows(setLoading, setDataflowOptions, setError, selectedAgency);
   }, [selectedAgency]);
 
