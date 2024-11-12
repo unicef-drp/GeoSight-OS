@@ -20,6 +20,9 @@ volumes:
   backups-data:
   rabbitmq:
   redis-data:
+  tmp-data:
+  redis-conf:
+  tmp-logrotate:
 
 x-common-django:
   &default-common-django
@@ -66,6 +69,7 @@ x-common-django:
   volumes:
     - static-data:/home/web/static
     - media-data:/home/web/media
+    - tmp-data:/tmp
   restart: on-failure
 
 services:
@@ -76,6 +80,8 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD:-redis_password}
     volumes:
       - redis-data:/bitnami/redis/data
+      - tmp-data:/tmp
+      - redis-conf:/opt/bitnami/redis/mounted-etc/overrides.conf
 
   db:
     image: kartoza/postgis:13.0
@@ -121,7 +127,7 @@ services:
   worker:
     <<: *default-common-django
     container_name: "geosight_worker"
-    command: 'celery -A core worker -l info'
+    command: 'celery -A core worker -l info --logfile=/tmp/worker.log'
     entrypoint: [ ]
     links:
       - db
@@ -132,7 +138,7 @@ services:
     <<: *default-common-django
     container_name: "geosight_celery_beat"
     entrypoint: [ ]
-    command: 'celery -A core beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler'
+    command: 'celery -A core beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler --logfile=/tmp/celery_beat.log'
     links:
       - db
       - redis
@@ -144,6 +150,19 @@ services:
     volumes:
       - static-data:/home/web/static:ro
       - media-data:/home/web/media:ro
+      - tmp-data:/tmp
     ports:
       - "${HTTP_PORT:-80}:8080"
     restart: on-failure:5
+
+  logrotate:
+    image: blacklabelops/logrotate:1.3
+    volumes:
+      - tmp-data:/logs
+      - tmp-logrotate:/tmp
+    environment:
+      - LOGS_DIRECTORIES=/logs
+      - LOGROTATE_STATUSFILE=/tmp/logrotate.status
+      - LOGROTATE_COPIES=${LOGROTATE_COPIES:-14}
+      - LOGROTATE_SIZE=${LOGROTATE_SIZE:-100M}
+      - LOGROTATE_INTERVAL=${LOGROTATE_INTERVAL:-daily}
