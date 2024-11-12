@@ -15,7 +15,6 @@ __date__ = '22/10/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import os
-import re
 import mimetypes
 from datetime import datetime
 from django.conf import settings
@@ -48,13 +47,14 @@ def list_log_files(parent_dir):
 
 
 class LogFileAdmin(admin.ModelAdmin):
-    """Admin class for LogFile."""
+    """Class that represents LogFile Admin."""
 
     list_display = (
         'filename', 'size', 'created_on', 'download_link')
     actions = ['refresh_log_files']
 
     def download_link(self, obj):
+        """Get download link for LogFile."""
         return format_html(
             '<a href="{}">Download</a>',
             reverse('admin:dashboard_download_log_file',
@@ -63,9 +63,11 @@ class LogFileAdmin(admin.ModelAdmin):
     download_link.short_description = 'Download Log File'
 
     def get_urls(self):
+        """Add url for download link LogFile."""
         urls = super().get_urls()
         custom_urls = [
-            re_path(r'^download-log-file/(?P<pk>\d+)$',
+            re_path(
+                r'^download-log-file/(?P<pk>\d+)$',
                 self.download_log_file,
                 name='dashboard_download_log_file'
             ),
@@ -73,6 +75,7 @@ class LogFileAdmin(admin.ModelAdmin):
         return custom_urls + urls
 
     def download_log_file(self, request, pk):
+        """Download log file action."""
         try:
             log_file = LogFile.objects.get(pk=pk)
             file_path = log_file.path

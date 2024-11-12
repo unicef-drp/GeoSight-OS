@@ -48,7 +48,7 @@ class LogFile(models.Model):
     created_on = models.DateTimeField()
 
     def filename(self):
-        """Extracts the filename from the path."""
+        """Get the filename from the path."""
         return self.path.split('/')[-1]
 
     def __str__(self):
