@@ -38,18 +38,3 @@ class MachineInfo(models.Model):
 
     def __str__(self):
         return f'{self.date_time}'
-
-
-class LogFile(models.Model):
-    """Class that represent log file."""
-
-    path = models.CharField(max_length=500, unique=True)
-    size = models.PositiveBigIntegerField()
-    created_on = models.DateTimeField()
-
-    def filename(self):
-        """Get the filename from the path."""
-        return self.path.split('/')[-1]
-
-    def __str__(self):
-        return self.filename()

@@ -11,11 +11,18 @@ Contact : geosight-no-reply@unicef.org
 
 """
 __author__ = 'irwan@kartoza.com'
-__date__ = '22/10/2024'
+__date__ = '13/11/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from django.contrib import admin
+from django.apps import AppConfig
 
-from geosight.machine_info_fetcher.models import MachineInfo
 
-admin.site.register(MachineInfo, admin.ModelAdmin)
+class Config(AppConfig):
+    """Machine log app."""
+
+    label = 'geosight_log'
+    name = 'geosight.log'
+    verbose_name = "GeoSight Log"
+
+
+default_app_config = 'geosight.log.Config'
