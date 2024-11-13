@@ -11,18 +11,18 @@ Contact : geosight-no-reply@unicef.org
 
 """
 __author__ = 'irwan@kartoza.com'
-__date__ = '20/08/2024'
+__date__ = '13/11/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
-PROJECT_APPS = [
-    # Project specified
-    'azure_auth',
-    'core',
-    'docs',
-    'geosight.data',
-    'geosight.georepo',
-    'geosight.permission',
-    'geosight.importer',
-    'geosight.log',
-    'frontend'
-]
+from django.apps import AppConfig
+
+
+class Config(AppConfig):
+    """Machine log app."""
+
+    label = 'geosight_log'
+    name = 'geosight.log'
+    verbose_name = "GeoSight Log"
+
+
+default_app_config = 'geosight.log.Config'

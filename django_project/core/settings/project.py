@@ -191,3 +191,10 @@ if TENANTS_ENABLED:
     INSTALLED_APPS = [
         app for app in INSTALLED_APPS if app != 'django.contrib.admin'
     ]
+
+# ----------------------------------------
+# Logs Directory
+# ----------------------------------------
+LOGS_DIRECTORY = os.environ.get(
+    'LOGS_DIRECTORY', '/home/web/logs'
+)
