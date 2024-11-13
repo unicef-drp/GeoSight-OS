@@ -30,6 +30,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 // Initialize cog
 import { cogProtocol } from "@geomatico/maplibre-cog-protocol";
 import { Variables } from "../../../../utils/Variables";
+import { updateColorPaletteData } from "../../../../utils/Style";
 
 maplibregl.addProtocol('cog', cogProtocol);
 
@@ -94,10 +95,18 @@ export default function MapConfig({ data, layerInput }) {
   useEffect(() => {
     if (map) {
       const id = data.id ? `context-layer-${data.id}` : 'context-layer'
-      if ([Variables.LAYER.TYPE.RASTER_COG].includes(data.layer_type)) {
-        removeLayer(map, id)
+      if (Variables.LAYER.LIST.LAYERS_NEED_PALETTE.includes(data.layer_type)) {
+        removeLayer(map, id);
+        // Await color palette
+        (
+          async () => {
+            await updateColorPaletteData()
+            contextLayerRendering(id, data, layerInput, map)
+          }
+        )()
+      } else {
+        contextLayerRendering(id, data, layerInput, map)
       }
-      contextLayerRendering(id, data, layerInput, map)
     }
   }, [map, layerInput]);
 
