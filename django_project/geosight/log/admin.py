@@ -59,8 +59,10 @@ class LogFileAdmin(admin.ModelAdmin):
         """Get download link for LogFile."""
         return format_html(
             '<a href="{}">Download</a>',
-            reverse('admin:dashboard_download_log_file',
-                    args=[obj.pk])
+            reverse(
+                'admin:dashboard_download_log_file',
+                args=[obj.pk]
+            )
         )
 
     download_link.short_description = 'Download Log File'

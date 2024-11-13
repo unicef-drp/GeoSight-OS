@@ -196,4 +196,5 @@ if TENANTS_ENABLED:
 # Logs Directory
 # ----------------------------------------
 LOGS_DIRECTORY = os.environ.get(
-    'LOGS_DIRECTORY', '/home/web/logs')
+    'LOGS_DIRECTORY', '/home/web/logs'
+)
