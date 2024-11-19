@@ -211,7 +211,7 @@ export const IndicatorStyle = forwardRef(
                             updateData()
                           }}
                           valuesUrl={`/api/indicator/${indicator.id}/values/flat/`}
-                          defaultStyleRules={indicator?.style ? indicator?.style : []}
+                          defaultStyleRules={dataLayer.style ? dataLayer.style : indicator?.style ? indicator?.style : []}
                           selectableInput={batch !== null}
                         /> : null
                     }

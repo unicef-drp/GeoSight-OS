@@ -91,6 +91,8 @@ export function returnValueByGeometry(
       allData = allData.filter(row => filteredGeometries.includes(row.concept_uuid))
     }
     allData = UpdateStyleData(allData, config)
+  } else if (layer.override_style) {
+    allData = UpdateStyleData(allData, layer)
   }
 
   const byGeometry = {}
