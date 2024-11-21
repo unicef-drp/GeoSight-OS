@@ -14,7 +14,7 @@
 Django==3.2.16
 django-braces==1.15.0
 django-celery-beat==2.4.0
-django-celery-results==2.4.0
+django-celery-results==2.5.1
 django-simple-captcha==0.5.17
 django-tinymce==3.4.0
 djangorestframework==3.14.0
