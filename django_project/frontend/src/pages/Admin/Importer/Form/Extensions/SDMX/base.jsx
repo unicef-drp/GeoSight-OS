@@ -13,6 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
+
 import React, {
   forwardRef,
   Fragment,
@@ -20,192 +21,273 @@ import React, {
   useImperativeHandle,
   useState
 } from 'react';
-import axios from "axios";
-import CircularProgress from "@mui/material/CircularProgress";
-import { usePapaParse } from 'react-papaparse';
-
-import { updateDataWithSetState } from "../../utils";
-import { IconTextField } from "../../../../../../components/Elements/Input";
-import { MainDataGrid } from "../../../../../../components/MainDataGrid";
-import { arrayToOptions, delay } from "../../../../../../utils/main";
+import { propagateAgencyOptions, restrictDataflowOptions, updateDimensions, updateDsd } from './update_dsd';
 
 import './style.scss';
 
+// Basic Select Component
+const SimpleSelect = ({ label, options, value, onChange, disabled = false }) => (
+  <div style={{ marginBottom: '20px' }}>
+    <label style={{ display: 'block', marginBottom: '5px' }}>{label}</label>
+    <select
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      disabled={disabled}
+      style={{
+        width: '100%',
+        padding: '8px',
+        borderRadius: '4px',
+        border: '1px solid #ccc'
+      }}
+    >
+      <option value="">Select {label}</option>
+      {options.map(option => (
+        <option key={option.id} value={option.id}>
+          {option.name}
+        </option>
+      ))}
+    </select>
+  </div>
+);
 
-let sdmxApiInput = null;
-/**
- * Base Excel Form.
- * @param {dict} data .
- * @param {Function} setData Set data.
- * @param {dict} files .
- * @param {Function} setFiles Set files.
- * @param {dict} ready .
- * @param {Function} setReady Set is ready.
- * @param {Array} attributes Data attributes.
- * @param {Function} setAttributes Set data attribute.
- */
-export const BaseSDMXForm = forwardRef(
-  ({
-     data, setData, files, setFiles, attributes, setAttributes, children
-   }, ref
-  ) => {
-    const { readString } = usePapaParse();
-    const [url, setUrl] = useState('');
-    const [request, setRequest] = useState({
-      error: '',
-      loading: false,
-      requestData: null
-    });
-    const { error, loading, requestData } = request
+// Basic Multi-Select Component
+const SimpleMultiSelect = ({ label, options, value = [], onChange, disabled = false }) => (
+  <div style={{ marginBottom: '20px' }}>
+    <label style={{ display: 'block', marginBottom: '5px' }}>{label}</label>
+    <select
+      multiple
+      value={value}
+      onChange={(e) => {
+        const values = Array.from(e.target.selectedOptions, option => option.value);
+        onChange(values);
+      }}
+      disabled={disabled}
+      style={{
+        width: '100%',
+        padding: '8px',
+        borderRadius: '4px',
+        border: '1px solid #ccc',
+        minHeight: '100px'
+      }}
+    >
+      {options.map(option => (
+        <option key={option.id} value={option.id}>
+          {`${option.name} (${option.id})`}
+        </option>
+      ))}
+    </select>
+  </div>
+);
 
-    // Ready check
-    useImperativeHandle(ref, () => ({
-      isReady(data) {
-        return !!(data.url && requestData)
-      }
-    }));
+export const BaseSDMXForm = forwardRef((props, ref) => {
+  // State
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [agencyOptions, setAgencyOptions] = useState([]);
+  const [dataflowOptions, setDataflowOptions] = useState([]);
+  const [dimensionOptions, setDimensionOptions] = useState({});
+  const [dimensionSelections, setDimensionSelections] = useState({});
+  const [apiUrl, setApiUrl] = useState('');
+  const [apiResponse, setApiResponse] = useState(null);
 
-    // Set default data
-    useEffect(
-      () => {
-        updateDataWithSetState(data, setData, {
-          'row_number_for_header': 1,
-          'sheet_name': '',
-          'url': '',
-        })
-        if (data.url) {
-          urlChanged(data.url, true)
-        }
-      }, []
-    )
+  // Form values
+  const [selectedAgency, setSelectedAgency] = useState('');
+  const [selectedDataflow, setSelectedDataflow] = useState('');
 
-    // Set default data
-    useEffect(
-      () => {
-        if (!data.row_number_for_header) {
-          updateDataWithSetState(data, setData, {
-            'row_number_for_header': 1
-          })
-        }
-      }, [data]
-    )
-
-    /** Read url **/
-    const readUrl = async (url) => {
-      if (!url || url !== sdmxApiInput) {
-        return
-      }
-      setRequest({ loading: true, error: '', requestData: null })
-      const options = { url }
-      let axiosResponse = await axios(options);
+  // Load agencies on mount
+  useEffect(() => {
+    const loadAgencies = async () => {
       try {
-        readString(axiosResponse.data, {
-          header: true,
-          worker: true,
-          complete: async (result) => {
-            if (result.errors.length <= 1) {
-              const json = result.data.map((row, idx) => {
-                row.id = idx
-                return row
-              })
-              const headers = Object.keys(json[0])
-              const array = [headers]
-              json.slice(1).map(_ => {
-                const row = []
-                headers.map(header => {
-                  row.push(_[header])
-                })
-                array.push(row)
-              })
-
-              if (!data.date_time_data_field) {
-                data.date_time_data_field = 'TIME_PERIOD'
-              }
-              if (!data.key_value) {
-                data.key_value = 'OBS_VALUE'
-              }
-              setRequest({ loading: false, error: '', requestData: json })
-              setAttributes(arrayToOptions(array))
-              await delay(500);
-              setData({ ...data })
-            } else {
-              setRequest({
-                loading: false,
-                error: 'The request is not csv format',
-                requestData: null
-              })
-            }
-          },
-        })
-      } catch (error) {
-        setRequest({
-          loading: false,
-          error: 'The request is not csv format',
-          requestData: null
-        })
-
+        setLoading(true);
+        setError('');
+        const agencies = await propagateAgencyOptions();
+        if (agencies && Array.isArray(agencies)) {
+          setAgencyOptions(agencies);
+        }
+      } catch (err) {
+        setError('Failed to load agencies');
+        console.error(err);
+      } finally {
+        setLoading(false);
       }
-    }
+    };
 
-    // When file changed
-    const urlChanged = (newUrl, force = false) => {
-      setUrl(newUrl)
-      sdmxApiInput = newUrl
-      setTimeout(function () {
-        if (force || newUrl === sdmxApiInput) {
-          const urls = newUrl.split('?')
-          if (urls[1]) {
-            newUrl = [urls[0], 'format=csv'].join('?')
-          }
-          sdmxApiInput = newUrl
-          if (force || data.url !== newUrl) {
-            data.url = newUrl
-            setData({ ...data })
-            readUrl(newUrl)
-          }
-          setUrl(newUrl)
-        }
-      }, 500);
+    loadAgencies();
+  }, []);
+
+  // Handle agency selection
+  const handleAgencyChange = async (agencyId) => {
+    try {
+      setSelectedAgency(agencyId);
+      setSelectedDataflow('');
+      setDimensionOptions({});
+      setDimensionSelections({});
+      setApiUrl('');
+      setApiResponse(null);
+
+      if (!agencyId) {
+        setDataflowOptions([]);
+        return;
+      }
+
+      setLoading(true);
+      setError('');
+      const flows = await restrictDataflowOptions(agencyId);
+      if (Array.isArray(flows)) {
+        setDataflowOptions(flows);
+      }
+    } catch (err) {
+      setError('Failed to load dataflows');
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
-    return <Fragment>
-      <div className="BasicFormSection">
-        <label className="form-label required" htmlFor="group">
-          SDMX Url
-        </label>
-        <IconTextField
-          iconEnd={(loading ? <CircularProgress/> : null)}
-          value={url}
-          onChange={evt => urlChanged(evt.target.value)}
-        />
-        <label className='form-helptext'>Sample URL :
-          https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/BRAZIL_CO,BRAZIL_CO,1.0/all?format=csv</label>
-        {
-          error ? <div className='error'>{error}</div> : null
+  };
+
+  // Handle dataflow selection
+  const handleDataflowChange = async (dataflowId) => {
+    try {
+      setSelectedDataflow(dataflowId);
+      setDimensionOptions({});
+      setDimensionSelections({});
+      setApiUrl('');
+      setApiResponse(null);
+
+      if (!dataflowId) return;
+
+      setLoading(true);
+      setError('');
+      const dataflowObj = dataflowOptions.find(df => df.id === dataflowId);
+      if (dataflowObj) {
+        // First get dimensions
+        const result = await updateDimensions(dataflowObj);
+        if (result && !result.error) {
+          // Then immediately call updateDsd to get the actual dimension values
+          const dsdResult = await updateDsd(dataflowObj, {});
+          if (dsdResult && !dsdResult.error && dsdResult.updatedDimensions) {
+            console.log('Dimension Details from updateDsd:', dsdResult.updatedDimensions);
+            setDimensionOptions(dsdResult.updatedDimensions || {});
+          }
         }
-      </div>
-      {children}
-      <div className='RetrievedData'>
-        <label className="form-label" htmlFor="group">
-          Retrieved data
-        </label>
-        <MainDataGrid
-          style={{ height: "500px" }}
-          rows={loading ? [] : requestData ? requestData : []}
-          columns={requestData ? Object.keys(requestData[0]).map(key => {
-            return {
-              field: key,
-              headerName: key,
-              hide: (key === 'id' ? true : false),
-              flex: 1,
-              minWidth: 200
-            }
-          }) : []}
-          pageSize={20}
-          rowsPerPageOptions={[20]}
-          disableSelectionOnClick
-          loading={loading}
-        />
-      </div>
-    </Fragment>
-  }
-)
+      }
+    } catch (err) {
+      setError('Failed to load dimensions');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle dimension selection
+  const handleDimensionChange = async (dimension, values) => {
+    try {
+      const newSelections = {
+        ...dimensionSelections,
+        [dimension]: values
+      };
+      setDimensionSelections(newSelections);
+
+      console.log('Current Dimension Selections:', {
+        dimension: dimension,
+        selectedValues: values,
+        allSelections: newSelections
+      });
+
+      const dataflowObj = dataflowOptions.find(df => df.id === selectedDataflow);
+      if (dataflowObj) {
+        setLoading(true);
+        setError('');
+        const result = await updateDsd(dataflowObj, newSelections);
+        if (result && !result.error) {
+          console.log('Updated Dimensions:', result.updatedDimensions);
+          // Update dimension options with the new values
+          setDimensionOptions(result.updatedDimensions);
+          setApiUrl(result.apiUrl);
+          setApiResponse(result.apiResponse);
+        }
+      }
+    } catch (err) {
+      setError('Failed to update selections');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div style={{ padding: '20px' }}>
+      <h2>SDMX Data Selection</h2>
+
+      {loading && <div style={{ color: 'blue' }}>Loading...</div>}
+      {error && <div style={{ color: 'red' }}>{error}</div>}
+
+      <SimpleSelect
+        label="Agency"
+        options={agencyOptions}
+        value={selectedAgency}
+        onChange={handleAgencyChange}
+        disabled={loading}
+      />
+
+      <SimpleSelect
+        label="Dataflow"
+        options={dataflowOptions}
+        value={selectedDataflow}
+        onChange={handleDataflowChange}
+        disabled={loading || !selectedAgency}
+      />
+
+      {Object.entries(dimensionOptions).map(([dimensionId, dimensionValues]) => {
+        // Transform the dimension values to include names
+        const options = dimensionValues.map(value => ({
+          id: value.id,
+          name: value.name || value.id
+        }));
+
+        // Use the first option's name as the label, or fallback to dimensionId
+        const dimensionLabel = dimensionValues[0]?.name || dimensionId;
+
+        return (
+          <SimpleMultiSelect
+            key={dimensionId}
+            label={dimensionLabel}  // Using only the name for the label
+            options={options}
+            value={dimensionSelections[dimensionId] || []}
+            onChange={(values) => handleDimensionChange(dimensionId, values)}
+            disabled={loading}
+          />
+        );
+      })}
+
+      {apiUrl && (
+        <div style={{ marginTop: '20px' }}>
+          <h3>Generated API URL:</h3>
+          <div style={{
+            padding: '10px',
+            backgroundColor: '#f5f5f5',
+            borderRadius: '4px',
+            wordBreak: 'break-all'
+          }}>
+            {apiUrl}
+          </div>
+        </div>
+      )}
+
+      {apiResponse && (
+        <div style={{ marginTop: '20px' }}>
+          <h3>API Response:</h3>
+          <pre style={{
+            padding: '10px',
+            backgroundColor: '#f5f5f5',
+            borderRadius: '4px',
+            overflow: 'auto'
+          }}>
+            {JSON.stringify(apiResponse, null, 2)}
+          </pre>
+        </div>
+      )}
+    </div>
+  );
+});
+
+export default BaseSDMXForm;

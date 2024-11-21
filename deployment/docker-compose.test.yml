@@ -19,9 +19,8 @@ volumes:
 
 # Exactly the same as production but for dev env, we expose the port and uses
 # different port for the web.
-version: '3.4'
+version: "3.4"
 services:
-
   dev:
     image: ${APP_IMAGE}:dev
     container_name: "geosight_dev"
@@ -58,7 +57,7 @@ services:
       - SENTRY_DSN=
       - SENTRY_ENVIRONMENT=staging
       - PLUGINS=tenants,reference_dataset
-    entrypoint: [ ]
+    entrypoint: []
     ports:
       # for django test server
       - "2000:2000"
