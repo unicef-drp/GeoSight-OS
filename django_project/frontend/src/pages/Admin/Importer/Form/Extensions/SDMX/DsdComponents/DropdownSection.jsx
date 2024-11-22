@@ -1,6 +1,6 @@
 // File: DropdownSection.jsx
 import React from "react";
-import Select from "react-select";
+import { SelectWithList } from "../../../../../../../components/Input/SelectWithList";
 
 import '../style.scss';
 
@@ -38,19 +38,12 @@ const DropdownSection = ({
       ) : error ? (
         <p className="Error">{error}</p>
       ) : (
-        <Select
-          options={options}
+        <SelectWithList
+          list={options}
           value={selectedOption}
           onChange={onChange}
-          placeholder={placeholder}
-          classNamePrefix={classNamePrefix}
           formatOptionLabel={(option) => `${option.label} [${option.value}]`}
-            styles={{
-                control: (provided) => ({
-                    ...provided,
-                    backgroundColor: 'none',
-                }),
-            }}
+          placeholder="Select..."
         />
       )}
     </section>
