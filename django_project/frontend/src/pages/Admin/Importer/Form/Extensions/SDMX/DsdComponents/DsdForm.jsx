@@ -97,7 +97,7 @@ const DsdForm = ({ urlChanged, setRequest }) => {
       <DropdownSection
         title="Agency"
         options={agencyOptions}
-        selectedOption={selectedAgency}
+        selectedOption={selectedAgency && selectedAgency.value}
         onChange={(selected) => {
           setSelectedAgency(selected);
           setSelectedDataflow(null);
@@ -106,15 +106,13 @@ const DsdForm = ({ urlChanged, setRequest }) => {
         }}
         loading={loading.agency}
         error={error.agency}
-        placeholder="Select Agency"
-        classNamePrefix="custom-select"
       />
 
       {selectedAgency && (
         <DropdownSection
           title="Dataflow"
           options={dataflowOptions}
-          selectedOption={selectedDataflow}
+          selectedOption={selectedDataflow && selectedDataflow.value}
           onChange={(selected) => {
             if (selected != selectedDataflow) {
               setSelectedDataflow(selected);
@@ -124,8 +122,6 @@ const DsdForm = ({ urlChanged, setRequest }) => {
           }}
           loading={loading.dataflow}
           error={error.dataflow}
-          placeholder="Select Dataflow"
-          classNamePrefix="custom-select"
         />
       )}
 
