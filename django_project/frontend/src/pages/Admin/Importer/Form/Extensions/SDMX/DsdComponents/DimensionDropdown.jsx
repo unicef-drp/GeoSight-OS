@@ -1,8 +1,11 @@
 // File: DimensionDropdown.jsx
 import React from "react";
-import Select from "react-select";
+
+import FormControl from "@mui/material/FormControl";
+import { Select } from "../../../../../../../components/Input/index";
 
 import '../style.scss';
+
 
 /**
  * DimensionDropdown component renders a dropdown for selecting multiple values for a given dimension.
@@ -24,22 +27,35 @@ const DimensionDropdown = ({
   classNamePrefix,
 }) => (
   <div className="DimensionContainer">
-    <label className="DimensionLabel">{dimensionId}</label>
-    <Select
-      isMulti
-      options={options}
-      value={options.filter((option) => selectedValues.includes(option.value))}
-      onChange={(selectedOptions) => onChange(dimensionId, selectedOptions)}
-      placeholder={`Select ${dimensionId}`}
-      classNamePrefix={classNamePrefix}
-      formatOptionLabel={(option) => `${option.label} [${option.value}]`}
-      styles={{
-        control: (provided) => ({
+    <label className="form-label" id={dimensionId}>
+      {dimensionId}
+    </label>
+
+    <FormControl className='InputControl'>
+      <Select
+        isMulti
+        isClearable={false}
+        options={options}
+        value={options.filter((option) => selectedValues.includes(option.value))}
+        getOptionLabel={(option) => `${option.label} [${option.value}]`}
+        getOptionValue={(option) => option.value}
+        onChange={(selectedOptions) => onChange(dimensionId, selectedOptions)}
+        closeMenuOnSelect={false}
+        styles={{
+          control: provided => ({
             ...provided,
-            backgroundColor: 'none',
-        }),
-    }}
-    />
+            backgroundColor: "none"
+          }),
+          valueContainer: provided => ({
+            ...provided,
+            overflowY: "scroll",
+          })
+        }}
+        placeholder="Select..."
+        classNamePrefix={classNamePrefix}
+        aria-labelledby={dimensionId}
+      />
+    </FormControl>
   </div>
 );
 
