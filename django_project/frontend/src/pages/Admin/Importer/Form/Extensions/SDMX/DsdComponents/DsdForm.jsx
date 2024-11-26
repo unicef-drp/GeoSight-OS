@@ -93,11 +93,11 @@ const DsdForm = ({ urlChanged, setRequest }) => {
 
   // Render
   return (
-    <div className="DsdForm">
+    <div className="FormAttribute">
       <DropdownSection
         title="Agency"
         options={agencyOptions}
-        selectedOption={selectedAgency && selectedAgency.value}
+        selectedOption={selectedAgency}
         onChange={(selected) => {
           setSelectedAgency(selected);
           setSelectedDataflow(null);
@@ -112,7 +112,7 @@ const DsdForm = ({ urlChanged, setRequest }) => {
         <DropdownSection
           title="Dataflow"
           options={dataflowOptions}
-          selectedOption={selectedDataflow && selectedDataflow.value}
+          selectedOption={selectedDataflow}
           onChange={(selected) => {
             if (selected != selectedDataflow) {
               setSelectedDataflow(selected);
@@ -126,8 +126,7 @@ const DsdForm = ({ urlChanged, setRequest }) => {
       )}
 
       {selectedDataflow && (
-        <section className="Section">
-          <h2 className="SectionTitle">Dimensions</h2>
+        <section className="BasicFormSection">
           <div className="DimensionGrid">
             {Object.keys(dimensionOptions).map((dimensionId) => (
               <DimensionDropdown

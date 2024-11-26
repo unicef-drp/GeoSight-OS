@@ -1,8 +1,9 @@
 // File: DropdownSection.jsx
 import React from "react";
-import { SelectWithList } from "../../../../../../../components/Input/SelectWithList";
-
 import '../style.scss';
+
+import FormControl from "@mui/material/FormControl";
+import { Select } from "../../../../../../../components/Input/index";
 
 /**
  * DropdownSection component renders a section with a title and a dropdown select element.
@@ -15,7 +16,6 @@ import '../style.scss';
  * @param {function} props.onChange - The function to call when the selected option changes.
  * @param {boolean} props.loading - Indicates if the data is currently loading.
  * @param {string} props.error - The error message to display if an error occurs.
- * @param {string} props.placeholder - The placeholder text for the dropdown select.
  * @param {Object} props.customStyles - Custom styles for the dropdown select.
  *
  * @returns {JSX.Element} The rendered DropdownSection component.
@@ -27,27 +27,47 @@ const DropdownSection = ({
   onChange,
   loading,
   error,
-  placeholder,
   classNamePrefix,
 }) => {
+
   return (
-    <section className="Section">
-      <h2 className="SectionTitle">{title}</h2>
+    <section className="BasicFormSection">
+      <label className="form-label required" id={title}>
+        {title}
+      </label>
+
       {loading ? (
         <p className="LoadingText">Loading {title.toLowerCase()}...</p>
       ) : error ? (
         <p className="Error">{error}</p>
       ) : (
-        <SelectWithList
-          list={options}
-          value={selectedOption}
-          onChange={onChange}
-          formatOptionLabel={(option) => `${option.label} [${option.value}]`}
-          placeholder="Select..."
-        />
+        <FormControl className='InputControl'>
+          <Select
+            menuPlacement={'auto'}
+            options={options}
+            value={selectedOption}
+            getOptionLabel={(option) => `${option.label} [${option.value}]`}
+            getOptionValue={(option) => option.value}
+            classNamePrefix={classNamePrefix}
+            styles={{
+              control: (provided) => ({
+                ...provided,
+                backgroundColor: 'none',
+              }),
+            }}
+            onChange={onChange}
+            placeholder="Select..."
+            aria-labelledby={title}
+          />
+        </FormControl>
       )}
     </section>
   );
 };
 
+
+
 export default DropdownSection;
+
+
+
