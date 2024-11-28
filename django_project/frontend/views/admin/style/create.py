@@ -155,6 +155,8 @@ class BaseStyleEditingView(AdminBaseView):
         form.instance_data = json.dumps(
             StyleForm.model_to_initial(form.instance)
         )
+        if data.get('permission', None):
+            form.permission_data = data.get('permission', None)
         context['form'] = form
         return render(
             request,

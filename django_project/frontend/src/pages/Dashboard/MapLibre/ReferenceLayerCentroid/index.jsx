@@ -181,7 +181,7 @@ export default function ReferenceLayerCentroid({ map }) {
       if (!indicatorLayer.override_style && indicatorDetail) {
         styleConfig = indicatorDetail
       }
-      if (!labelConfig || !indicatorLayer.override_label && indicatorDetail) {
+      if (indicatorDetail && (!labelConfig || !indicatorLayer.override_label)) {
         labelConfig = indicatorDetail.label_config
       }
     }

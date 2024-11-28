@@ -76,6 +76,7 @@ class BasemapEditView(RoleContributorRequiredMixin, AdminBaseView):
 
     def post(self, request, **kwargs):
         """Edit basemap."""
+        data = request.POST.copy()
         basemap = get_object_or_404(
             BasemapLayer, id=self.kwargs.get('pk', '')
         )
@@ -97,6 +98,8 @@ class BasemapEditView(RoleContributorRequiredMixin, AdminBaseView):
                 ) + '?success=true'
             )
         context = self.get_context_data(**kwargs)
+        if data.get('permission', None):
+            form.permission_data = data.get('permission', None)
         context['form'] = form
         return render(request, self.template_name, context)
 
