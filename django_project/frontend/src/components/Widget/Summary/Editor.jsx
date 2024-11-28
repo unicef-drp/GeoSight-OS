@@ -139,7 +139,11 @@ export default function WidgetEditor(
   })
   const indicatorLayerList = indicatorLayersLikeIndicator(indicatorLayers).map(function (indicator) {
     return [indicator.id, indicator.name]
-  })
+  }).concat(
+    indicatorLayers.filter(layer => layer.indicators.length === 1).map(function (indicator) {
+      return [indicator.id, indicator.name]
+    })
+  )
 
 
   let selectedData = {

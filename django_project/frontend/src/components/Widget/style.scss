@@ -101,7 +101,7 @@
   text-align: left;
 
   .widget__sw__title,
-  .widget__gw__title{
+  .widget__gw__title {
     color: $widget-title;
     font-size: 1rem;
     margin-bottom: 10px;
@@ -132,6 +132,7 @@
 
   .widget__sgw__row__name {
     width: 1%;
+    white-space: nowrap;
   }
 
   .widget__sgw__row {
