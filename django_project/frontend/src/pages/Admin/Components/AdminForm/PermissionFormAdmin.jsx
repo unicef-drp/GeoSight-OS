@@ -38,6 +38,14 @@ export default function PermissionFormAdmin({ permissionApi }) {
 
   /** Fetch data when modal is opened **/
   useEffect(() => {
+    try {
+      if (permissionFormData) {
+        setData(permissionFormData)
+        return
+      }
+    } catch (err) {
+
+    }
     if (permissionApi) {
       let url = permissionApi
       if (selectableInput) {

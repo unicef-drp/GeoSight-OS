@@ -89,6 +89,8 @@ class StyleEditView(RoleContributorRequiredMixin, BaseStyleEditingView):
 
         permission = style.permission.all_permission(self.request.user)
         context['permission'] = permission
+        if data.get('permission', None):
+            form.permission_data = data.get('permission', None)
         context['form'] = form
         return render(request, self.template_name, context)
 

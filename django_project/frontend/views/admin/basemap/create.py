@@ -77,6 +77,7 @@ class BaseBasemapEditView(AdminBaseView):
 
     def post(self, request, **kwargs):
         """Create indicator."""
+        data = request.POST.copy()
         form = BasemapForm(request.POST)
         if form.is_valid():
             instance = form.instance
@@ -92,6 +93,8 @@ class BaseBasemapEditView(AdminBaseView):
                 ) + '?success=true'
             )
         context = self.get_context_data(**kwargs)
+        if data.get('permission', None):
+            form.permission_data = data.get('permission', None)
         context['form'] = form
         return render(
             request,
