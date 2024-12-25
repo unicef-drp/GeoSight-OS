@@ -1,5 +1,3 @@
-// File: TestUpdateDsd.jsx
-
 import React, { useState, useEffect } from "react";
 import {
   updateDsd,
@@ -8,7 +6,7 @@ import '../style.scss';
 import '../custom-select-styles.scss';
 
 
-import { fetchAgencies, fetchDataflows, fetchDimensions, fetchDsd } from './fetchFunctions.jsx';
+import { fetchAgencies, fetchDataflows, fetchDataflowVersions, fetchDimensions, fetchDsd } from './fetchFunctions.jsx';
 import DropdownSection from "./DropdownSection.jsx";
 import DimensionDropdown from "./DimensionDropdown.jsx";
 
@@ -20,6 +18,9 @@ const DsdForm = ({ urlChanged, setRequest }) => {
   const [dataflowOptions, setDataflowOptions] = useState([]);
   const [selectedDataflow, setSelectedDataflow] = useState(null);
 
+  const [dataflowVersionOptions, setDataflowVersionOptions] = useState([]);
+  const [selectedDataflowVersion, setSelectedDataflowVersion] = useState(null);
+
   const [dimensionSelections, setDimensionSelections] = useState({});
   const [dimensionOptions, setDimensionOptions] = useState({});
 
@@ -28,6 +29,7 @@ const DsdForm = ({ urlChanged, setRequest }) => {
   const [loading, setLoading] = useState({
     agency: false,
     dataflow: false,
+    dataflowVersion: false,
     dimensions: false,
     dsd: false,
   });
@@ -45,18 +47,42 @@ const DsdForm = ({ urlChanged, setRequest }) => {
     fetchDataflows(setLoading, setDataflowOptions, setError, selectedAgency);
   }, [selectedAgency]);
 
-  // Fetch dimensions on dataflow selection
+  // Fetch dataflow versions on dataflow selection
   useEffect(() => {
     if (!selectedDataflow) return;
-    fetchDimensions(setLoading, setError, setDimensionOptions, setDimensionSelections, selectedDataflow);
+    setRequest([]);
+    fetchDataflowVersions(setLoading, setDataflowVersionOptions, setError, selectedDataflow);
   }, [selectedDataflow]);
+
+  // Handle updates when a dataflowVersion is selected
+  useEffect(() => {
+    if (selectedDataflowVersion && selectedDataflow) {
+      // Fetch dimensions for the updated dataflow
+      fetchDimensions(
+        setLoading,
+        setError,
+        setDimensionOptions,
+        setDimensionSelections,
+        selectedDataflow,
+        selectedDataflowVersion.value
+      );
+    }
+  }, [selectedDataflowVersion, selectedDataflow]);
+
 
   // Fetch DSD on dimension change
   useEffect(() => {
-    if (!selectedDataflow) return;
-    fetchDsd(selectedDataflow, dimensionSelections, setDsdResult, urlChanged, setError, setLoading);
+    if (!selectedDataflow || !selectedDataflowVersion) return;
+    fetchDsd(
+      selectedDataflow,
+      selectedDataflowVersion.value,
+      dimensionSelections,
+      setDsdResult,
+      urlChanged,
+      setError,
+      setLoading);
 
-  }, [dimensionSelections, selectedDataflow]);
+  }, [dimensionSelections, selectedDataflow, selectedDataflowVersion]);
 
   // Handle dimension selection change
   const handleDimensionChange = async (dimensionId, selectedOptions) => {
@@ -67,8 +93,7 @@ const DsdForm = ({ urlChanged, setRequest }) => {
     setLoading((prev) => ({ ...prev, dimensions: true }));
 
     try {
-      const { value, dataflowAgency, dsdId } = selectedDataflow;
-      const result = await updateDsd({ id: value, dataflowAgency, dsdId }, updatedSelections);
+      const result = await updateDsd(selectedDataflow, updatedSelections, selectedDataflowVersion.value);
 
       if (result.error) throw new Error(result.error);
 
@@ -103,6 +128,8 @@ const DsdForm = ({ urlChanged, setRequest }) => {
           setSelectedDataflow(null);
           setDimensionSelections({});
           setDimensionOptions({});
+          setDataflowVersionOptions([]);
+          setSelectedDataflowVersion(null);
         }}
         loading={loading.agency}
         error={error.agency}
@@ -116,6 +143,8 @@ const DsdForm = ({ urlChanged, setRequest }) => {
           onChange={(selected) => {
             if (selected != selectedDataflow) {
               setSelectedDataflow(selected);
+              setDataflowVersionOptions([]);
+              setSelectedDataflowVersion(null);
               setDimensionSelections({});
               setDimensionOptions({});
             }
@@ -126,6 +155,23 @@ const DsdForm = ({ urlChanged, setRequest }) => {
       )}
 
       {selectedDataflow && (
+        <DropdownSection
+          title="Dataflow Version"
+          options={dataflowVersionOptions}
+          selectedOption={selectedDataflowVersion}
+          onChange={(selected) => {
+            if (selected != selectedDataflowVersion) {
+              setSelectedDataflowVersion(selected);
+              setDimensionSelections({});
+              setDimensionOptions({});
+            }
+          }}
+          loading={loading.dataflowVersion}
+          error={error.dataflowVersion}
+        />
+      )}
+
+      {selectedDataflowVersion && (
         <section className="BasicFormSection">
           <div className="DimensionGrid">
             {Object.keys(dimensionOptions).map((dimensionId) => (

@@ -1,7 +1,9 @@
 import axios from "axios";
+import API_URLS from "./config"; // Import the configuration file
 
+// Function to fetch agency options and return them in a list
 const propagateAgencyOptions = async () => {
-  const apiUrl = `https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/agencyscheme/all/all/all?format=fusion-json&detail=full&references=none&includeMetadata=true&includeAllAnnotations=true`;
+  const apiUrl = API_URLS.agencyScheme;
   const agencyList = [];
 
   try {
@@ -26,14 +28,13 @@ const propagateAgencyOptions = async () => {
   return agencyList; // Return as a list of agency objects
 };
 
+// Function to fetch and restrict dataflow options based on selected agency
 const restrictDataflowOptions = async (agencyParam) => {
-  const apiUrl = `https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/dataflow/`;
+  const apiUrl = API_URLS.dataflow;
   const dataflowDetailsList = []; // List to hold the details of each dataflow
 
   // If no agency parameter is selected, return an empty list
-  if (!agencyParam) {
-    return dataflowDetailsList;
-  }
+  if (!agencyParam) return dataflowDetailsList;
 
   try {
     const response = await axios.get(apiUrl);
@@ -46,14 +47,14 @@ const restrictDataflowOptions = async (agencyParam) => {
     // Parse through all dataflows
     const dataflows = xmlDoc.getElementsByTagName("str:Dataflow");
     Array.from(dataflows).forEach((dataflowNode) => {
-      const agencyID = dataflowNode.getAttribute("agencyID");
-      const dataflowID = dataflowNode.getAttribute("id");
+      const agencyId = dataflowNode.getAttribute("agencyID");
+      const dataflowValue = dataflowNode.getAttribute("id");
 
       // Only process dataflows that match the specified agency
-      if (agencyID === agencyParam) {
+      if (agencyId === agencyParam) {
         // Extract dataflow name
         const nameNode = dataflowNode.getElementsByTagName("com:Name")[0];
-        const dataflowName = nameNode ? nameNode.textContent : "Unnamed";
+        const dataflowLabel = nameNode ? nameNode.textContent : "Unnamed";
 
         // Extract structure information
         const structureNode = dataflowNode.getElementsByTagName("str:Structure")[0];
@@ -63,10 +64,10 @@ const restrictDataflowOptions = async (agencyParam) => {
 
         // Add the dataflow details to the list as an object
         dataflowDetailsList.push({
-          name: dataflowName,
-          id: dataflowID,
+          label: dataflowLabel,
+          value: dataflowValue,
           dsdId: dataflowDsdID,
-          dataflowAgency: agencyID,
+          dataflowAgency: agencyId,
         });
       }
     });
@@ -78,63 +79,42 @@ const restrictDataflowOptions = async (agencyParam) => {
   return dataflowDetailsList;
 };
 
+const propagateDataflowVersions = async (dataflow) => {
+  const apiUrl = API_URLS.dataflowVersions(dataflow.dataflowAgency, dataflow.value)
+  const dataflowVersions = []
 
-const updateDsd = async (dataflow, dimensions, dataflowVersion = "1.0") => {
   try {
-    // Construct the API URL based on inputs
-    // Inputs must be IDs
-    // Each variable can be a group of variables, such as NT_ANT_HAZ_AVG+MG_RFGS_CNTRY_ASYLM_PER1000 for indicator
-
-    let urlSection = "";
-
-    const keys = [];
-
-    Object.keys(dimensions).forEach((key) => {
-      keys.push(key);
-    });
-
-    // Construct the URL section based on dimensions
-    for (let i = 0; i < keys.length; i++) {
-      const key = keys[i];
-      const values = dimensions[key].join("+");
-      urlSection += `${values}`;
-      if (i < keys.length - 1) {
-        urlSection += ".";
-      }
-    }
-
-    const apiUrl = `https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/${dataflow.dataflowAgency},${dataflow.id},${dataflowVersion}/${urlSection}?format=fusion-json&dimensionAtObservation=AllDimensions&detail=structureOnly&includeMetrics=true&includeAllAnnotations=true`;
-
-    // Fetch the data from the API
+    // Fetch data from API using axios
     const response = await axios.get(apiUrl);
+    const xmlString = response.data
 
-    const apiResponse = await response.data;
+    // Parse the XML response using DOMParser
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xmlString, "application/xml")
 
-    let updatedDimensions = apiResponse.structure.dimensions.observation;
-    const updatedDimensionsMap = {};
-    updatedDimensions.forEach((dimension) => {
-      updatedDimensionsMap[dimension.id] = dimension.values;
+    // Extract dataflow elements
+    const dataflowNodes = xmlDoc.getElementsByTagName("str:Dataflow");
+
+    // Iterate through Dataflow elements and extract version attributes
+    Array.from(dataflowNodes).forEach((dataflowNode) => {
+      const version = dataflowNode.getAttribute("version");
+      if (version) {
+        dataflowVersions.push(version);
+      }
     });
-    updatedDimensions = updatedDimensionsMap;
-
-    const sdmxImplementation = ["implementation 1"];
-
-    return { updatedDimensions, apiUrl, apiResponse, sdmxImplementation };
   } catch (error) {
-    console.error("Error fetching or parsing DSD from API:", error);
-    return { error: "Error fetching data" };
+    return { error: "Error fetching dataflow versions" };
   }
-};
 
+  return dataflowVersions;
+}
 
-const updateDimensions = async (dataflow, dataflowVersion = "1.0") => {
-  // Initialize dimensionSelections
+// Function to update dimension selections for a dataflow
+const updateDimensions = async (dataflow, dataflowVersion) => {
+  const apiUrl = API_URLS.datastructure(dataflow.dataflowAgency, dataflow.dsdId, dataflowVersion);
   const dimensionSelections = {};
-  
-  try {
-    // Construct the API URL based on inputs
-    const apiUrl = `https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/datastructure/${dataflow.dataflowAgency}/${dataflow.dsdId}/${dataflowVersion}`;
 
+  try {
     // Fetch the data from the API using axios
     const response = await axios.get(apiUrl);
     const xmlString = response.data;
@@ -148,9 +128,7 @@ const updateDimensions = async (dataflow, dataflowVersion = "1.0") => {
 
     // Iterate through Dimension elements and extract ConceptIdentity
     Array.from(dimensionNodes).forEach((dimension) => {
-      const conceptIdentityNode = dimension.getElementsByTagName(
-        "str:ConceptIdentity"
-      )[0];
+      const conceptIdentityNode = dimension.getElementsByTagName("str:ConceptIdentity")[0];
       if (conceptIdentityNode) {
         const refNode = conceptIdentityNode.getElementsByTagName("Ref")[0];
         if (refNode) {
@@ -160,11 +138,41 @@ const updateDimensions = async (dataflow, dataflowVersion = "1.0") => {
       }
     });
   } catch (error) {
-    return { error: "Error fetching dimensions", error };
+    return { error: "Error fetching dimensions" };
   }
 
-  const { updatedDimensions } = await updateDsd(dataflow, dimensionSelections, dataflowVersion);
+  const { updatedDimensions, apiResponse } = await updateDsd(dataflow, dimensionSelections, dataflowVersion);
 
-  return { dimensionSelections, updatedDimensions };
+  return { dimensionSelections, updatedDimensions, apiResponse };
 };
-export { propagateAgencyOptions, restrictDataflowOptions, updateDimensions, updateDsd }
+
+// Function to update DSD based on selected dimensions
+const updateDsd = async (dataflow, dimensions, dataflowVersion) => {
+  try {
+    // Construct the URL section based on dimensions
+    const urlSection = Object.entries(dimensions)
+      .map(([key, values]) => values.join("+"))
+      .join(".");
+
+    const apiUrl = API_URLS.data(dataflow.dataflowAgency, dataflow.value, dataflowVersion, urlSection);
+
+    // Fetch the data from the API
+    const response = await axios.get(apiUrl);
+    const apiResponse = response.data;
+
+    // Map updated dimensions to their values
+    const updatedDimensions = apiResponse.structure.dimensions.observation.reduce((map, dimension) => {
+      map[dimension.id] = dimension.values;
+      return map;
+    }, {});
+
+    const sdmxImplementation = ["implementation 1"];
+
+    return { updatedDimensions, apiResponse, sdmxImplementation };
+  } catch (error) {
+    console.error("Error fetching or parsing DSD from API:", error);
+    return { error: "Error fetching data" };
+  }
+};
+
+export { propagateAgencyOptions, restrictDataflowOptions, propagateDataflowVersions, updateDimensions, updateDsd };
