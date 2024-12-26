@@ -75,7 +75,7 @@ class SharepointWideFormatRelatedTableTest(BaseSharepointIndicatorValueTest):
         related_table = RelatedTable.objects.get(name='Related Table A')
         self.assertEqual(related_table.relatedtablerow_set.count(), 9)
         first_row = related_table.relatedtablerow_set.first()
-        self.assertEqual(len(first_row.data.keys()), 5)
+        self.assertEqual(len(first_row.data.keys()), 6)
         self.assertEqual(first_row.data['Population'], 1)
         self.assertEqual(first_row.data['geom_code'], 'A')
 

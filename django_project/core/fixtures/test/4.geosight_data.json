@@ -11978,7 +11978,7 @@
         "Name": "Baki",
         "Pcode": "SO1102",
         "Ucode": "SOM_0001_0001_V1",
-        "Sector": "WASH",
+        "Sector": "",
         "Partner": "Partner A",
         "NoBeneficiaries": 371.0
       }

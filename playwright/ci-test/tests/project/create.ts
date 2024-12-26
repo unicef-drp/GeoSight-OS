@@ -13,9 +13,9 @@ test.describe('Create project', () => {
   test('Create with default config', async ({ page }) => {
     let lastLog = null
     page.on('console', msg => {
-      if (msg.text().indexOf('LOGGER.log:') !== -1) {
+      if (msg.text().indexOf('FILTERED_GEOM:') !== -1) {
         try {
-          lastLog = JSON.parse(msg.text().replace('LOGGER.log:', ''))
+          lastLog = JSON.parse(msg.text().replace('FILTERED_GEOM:', ''))
         } catch (e) {
           console.log(e)
 
