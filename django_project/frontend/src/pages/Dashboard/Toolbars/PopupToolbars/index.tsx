@@ -18,15 +18,22 @@
    ========================================================================== */
 
 import React, { useRef } from 'react';
+import maplibregl from "maplibre-gl";
 import { MeasurementTool } from "./Measurement";
 import { ZonalAnalysisComponent } from "./ZonalAnalysis";
 
 import './style.scss';
 
+interface Props {
+  map: maplibregl.Map;
+  started: () => void
+}
+
+
 /**
  * PopupToolbars
  */
-export default function PopupToolbars({ map }) {
+export default function PopupToolbars({ map }: Props) {
   const measurementRef = useRef(null);
   const zonalAnalysisRef = useRef(null);
   return <>

@@ -13,18 +13,14 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
+
 import React from 'react';
 
-import './style.scss';
+declare module './Button' {
+  interface ThemeButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+    className?: string;
+    children: React.ReactNode;
+  }
 
-/**
- * Zonal Analysis Tool
- */
-export default function ZonalAnalysisTool({ map }) {
-  /** Render **/
-  return (
-    <div>
-
-    </div>
-  );
+  export function ThemeButton(props: ThemeButtonProps): JSX.Element;
 }

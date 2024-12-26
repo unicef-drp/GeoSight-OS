@@ -23,6 +23,7 @@ import React, {
   useImperativeHandle,
   useState
 } from 'react';
+import maplibregl from "maplibre-gl";
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import CancelIcon from '@mui/icons-material/Cancel';
 import AddLocationIcon from '@mui/icons-material/AddLocation';
@@ -46,11 +47,16 @@ import {
 
 import './style.scss';
 
+interface Props {
+  map: maplibregl.Map;
+  started: () => void
+}
+
 /**
  * Measurement
  */
 export const MeasurementTool = forwardRef(
-  ({ map, started }, ref
+  ({ map, started }: Props, ref
   ) => {
     const [draw, setDraw] = useState(null);
     const [start, setStart] = useState(false);
@@ -85,7 +91,7 @@ export const MeasurementTool = forwardRef(
     /**
      *
      */
-    const updateCursor = (value) => {
+    const updateCursor = (value: string) => {
       if (value === 'grab') {
         $('.maplibregl-canvas').removeClass('crosshairCursor');
         $('.maplibregl-canvas').addClass('grabCursor');
@@ -154,8 +160,7 @@ export const MeasurementTool = forwardRef(
     useEffect(() => {
       if (map && draw) {
         map.on('draw.create', (e) => {
-          map.measurementMode = false
-          updateArea(e)
+          updateArea()
         });
         map.on('draw.delete', updateArea);
         map.on('draw.update', updateArea);
@@ -163,7 +168,6 @@ export const MeasurementTool = forwardRef(
         map.on('draw.selectionchange', (e) => {
           if (e.features.length) {
             setStart(true)
-            map.measurementMode = true
           }
           setSelected(draw.getSelectedIds())
         });
@@ -178,17 +182,15 @@ export const MeasurementTool = forwardRef(
       setStartDraw(true)
       const drawMode = mode === 'Area' ? draw.modes.DRAW_POLYGON : draw.modes.DRAW_LINE_STRING
       draw.changeMode(drawMode)
-      map.measurementMode = true
     }
 
     /**
      * On Stop Measurement
      */
-    const onStop = (close) => {
+    const onStop = (close: boolean) => {
       if (!close) {
         draw.changeMode(draw.modes.SIMPLE_SELECT)
       }
-      map.measurementMode = false
       updateCursor('grab');
     }
 
@@ -199,7 +201,7 @@ export const MeasurementTool = forwardRef(
       let lengthMiles = 0
       let lengthTerm = 'Perimeter'
       let featureType = 'Polygon'
-      data.features.filter(feature => selected.includes(feature.id)).map(feature => {
+      data.features.filter((feature: any) => selected.includes(feature.id)).map((feature: any) => {
         let coordinates = null;
         if (feature.geometry.type === 'Polygon') {
           area += turfArea(feature)
@@ -258,13 +260,14 @@ export const MeasurementTool = forwardRef(
               <div style={{ textAlign: "right" }}>
                 {
                   selected.length ?
-                    <ThemeButton onClick={() => {
-                      draw.delete(selected)
-                      draw.changeMode(draw.modes.SIMPLE_SELECT)
-                      map.measurementMode = false
-                      updateArea()
-                      setStartDraw(false)
-                    }} className={'MeasurementDeleteButton'}>
+                    <ThemeButton
+                      onClick={() => {
+                        draw.delete(selected)
+                        draw.changeMode(draw.modes.SIMPLE_SELECT)
+                        updateArea()
+                        setStartDraw(false)
+                      }}
+                      className={'MeasurementDeleteButton'}>
                       <DeleteIcon/> Delete selected
                     </ThemeButton> : ""
                 }
@@ -276,9 +279,11 @@ export const MeasurementTool = forwardRef(
               }}>
                 <CancelIcon/> Cancel
               </ThemeButton>
-              <ThemeButton onClick={() => {
-                onStart()
-              }} style={{ width: '300px' }} disabled={startDraw}>
+              <ThemeButton
+                onClick={() => {
+                  onStart()
+                }}
+                style={{ width: '300px' }} disabled={startDraw}>
                 <AddLocationIcon/> Add new measurement
               </ThemeButton>
               <div className='Separator'/>
@@ -286,7 +291,7 @@ export const MeasurementTool = forwardRef(
                 isMulti={false}
                 value={mode}
                 list={['Distance', 'Area']}
-                onChange={(evt) => {
+                onChange={(evt: any) => {
                   setSelected([])
                   setMode(evt.value)
                 }}

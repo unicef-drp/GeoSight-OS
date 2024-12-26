@@ -102,6 +102,11 @@ let conf = {
         ],
       },
       {
+          test: /\.tsx?$/,
+          exclude: /node_modules/,
+          use: 'ts-loader',
+      },
+      {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         use: [{ loader: 'babel-loader' }],
@@ -140,7 +145,7 @@ let conf = {
   ],
   resolve: {
     modules: ['node_modules'],
-    extensions: ['.js', '.jsx']
+    extensions: ['.js', '.jsx', '.tsx']
   },
 };
 

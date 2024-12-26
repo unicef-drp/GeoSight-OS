@@ -18,6 +18,7 @@
    ========================================================================== */
 
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
+import maplibregl from "maplibre-gl";
 import { Plugin, PluginChild } from "../../MapLibre/Plugin";
 import {
   MeasurementOffIcon,
@@ -27,11 +28,17 @@ import ZonalAnalysisTool from "../../../../components/ZonalAnalysisTool";
 
 import './style.scss';
 
+interface Props {
+  map: maplibregl.Map;
+  started: () => void
+}
+
+
 /**
  * Zonal Analysis
  */
 export const ZonalAnalysisComponent = forwardRef((
-    { map, started }, ref
+    { map, started }: Props, ref
   ) => {
     const [active, setActive] = useState(false);
 
