@@ -100,7 +100,7 @@ export const MeasurementTool = forwardRef(
     if (draw) {
       information = draw.selectedInformation()
     }
-    return <Plugin className={'PopupToolbarIcon'}>
+    return <Plugin className='PopupToolbarIcon'>
       <div className='Active'>
         <PluginChild
           title={'Start Measurement'}
