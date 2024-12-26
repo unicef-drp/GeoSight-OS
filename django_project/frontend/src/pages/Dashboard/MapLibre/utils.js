@@ -85,7 +85,7 @@ export const loadImageToMap = (map, id, callback) => {
  * Update cursor on hovered
  */
 const updateCursorOnHovered = (map) => {
-  if (map.measurementMode) {
+  if (map.drawingMode) {
     map.getCanvas().style.cursor = 'crosshair';
   } else {
     map.getCanvas().style.cursor = 'pointer';
@@ -96,7 +96,7 @@ const updateCursorOnHovered = (map) => {
  * Update cursor on hovered
  */
 const updateCursorOnLeave = (map) => {
-  if (map.measurementMode) {
+  if (map.drawingMode) {
     map.getCanvas().style.cursor = 'crosshair';
   } else {
     map.getCanvas().style.cursor = '';
@@ -125,7 +125,7 @@ export const addPopup = (map, id, popupRenderFn) => {
 
   map.off('click', id, functionPopup[id].click);
   functionPopup[id].click = function (e) {
-    if (!map.measurementMode) {
+    if (!map.drawingMode) {
 
       // Check the id that is the most top
       let clickedId = null
@@ -175,7 +175,7 @@ export const addPopupEl = (map, el, latlng, properties, popupRenderFn, offset = 
   });
 
   el.addEventListener('click', function (e) {
-    if (!map.measurementMode) {
+    if (!map.drawingMode) {
       const popupHtml = popupRenderFn(properties)
       if (popup) {
         popup.remove()

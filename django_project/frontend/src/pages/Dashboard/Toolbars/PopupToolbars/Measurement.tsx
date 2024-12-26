@@ -139,7 +139,7 @@ export const MeasurementTool = forwardRef(
                   draw?.draw.getSelectedIds().length ?
                     <ThemeButton
                       onClick={() => {
-                        draw.delete()
+                        draw.deleteSelected()
                       }}
                       className={'MeasurementDeleteButton'}>
                       <DeleteIcon/> Delete selected
@@ -167,11 +167,19 @@ export const MeasurementTool = forwardRef(
               >
                 <AddLocationIcon/> Add new measurement
               </ThemeButton>
-              <ThemeButton onClick={() => {
-                draw.stop()
-              }}>
-                <CancelIcon/> Cancel
-              </ThemeButton>
+              {
+                draw?.isDrawing ?
+                  <ThemeButton onClick={() => {
+                    draw.stop()
+                  }}>
+                    <CancelIcon/> Cancel
+                  </ThemeButton> :
+                  <ThemeButton onClick={() => {
+                    draw.deleteFeatures()
+                  }}>
+                    <CancelIcon/> Clear
+                  </ThemeButton>
+              }
             </div>
           </div>
           : ""

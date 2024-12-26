@@ -17,14 +17,20 @@
    Zonal Analysis
    ========================================================================== */
 
-import React, { forwardRef, useImperativeHandle, useState } from 'react';
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState
+} from 'react';
 import maplibregl from "maplibre-gl";
 import { Plugin, PluginChild } from "../../MapLibre/Plugin";
 import {
   MeasurementOffIcon,
   MeasurementOnIcon
 } from "../../../../components/Icons";
-import ZonalAnalysisTool from "../../../../components/ZonalAnalysisTool";
+import { ZonalAnalysisTool } from "../../../../components/ZonalAnalysisTool";
 
 import './style.scss';
 
@@ -40,13 +46,28 @@ interface Props {
 export const ZonalAnalysisComponent = forwardRef((
     { map, started }: Props, ref
   ) => {
+    const toolRef = useRef(null);
     const [active, setActive] = useState(false);
 
     useImperativeHandle(ref, () => ({
       stop() {
+        toolRef?.current?.stop()
         setActive(false)
       }
     }));
+
+    /**
+     * Start changed
+     */
+    useEffect(() => {
+      if (map) {
+        if (active) {
+          toolRef?.current?.start()
+        } else {
+          toolRef?.current?.stop()
+        }
+      }
+    }, [map, active]);
 
     return <Plugin className='PopupToolbarIcon'>
       <div className='Active'>
@@ -65,7 +86,7 @@ export const ZonalAnalysisComponent = forwardRef((
       </div>
       {
         active ? <div className='PopupToolbarComponent'>
-          <ZonalAnalysisTool map={map}/>
+          <ZonalAnalysisTool map={map} ref={toolRef}/>
         </div> : null
       }
 

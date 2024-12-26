@@ -49,21 +49,40 @@ export class MapDrawing {
     )
     const that = this;
     map.on('draw.create', (e) => {
-      that.updateCursor('grab');
-      that.isDrawing = false;
-      that.setDrawState()
+      try {
+        that.updateCursor('grab');
+        if (!that.isDrawing) {
+          e.features.map((feature: {
+            id: string;
+          }) => that.draw.delete(feature.id))
+        }
+        that.isDrawing = false;
+        that.setDrawState()
+      } catch (err) {
+
+      }
     });
     map.on('draw.delete', setDrawState);
     map.on('draw.update', setDrawState);
     map.on('draw.selectionchange', (e) => {
+      if (!that.draw) {
+        return
+      }
       that.setDrawState()
     });
     map.addControl(this.draw as any, 'top-left')
     this.start()
+
+    // @ts-ignore
+    map.drawingMode = true;
   }
 
   destroy() {
+    this.map.off('draw.delete', this.setDrawState);
+    this.map.off('draw.update', this.setDrawState);
     this.map.removeControl(this.draw as any)
+    // @ts-ignore
+    this.map.drawingMode = true;
   }
 
   changeMode(mode: string) {
@@ -81,18 +100,23 @@ export class MapDrawing {
   }
 
   stop() {
+    this.isDrawing = false;
     this.draw.changeMode(this.draw.modes.SIMPLE_SELECT);
     this.updateCursor('grab');
-    this.isDrawing = false;
     this.setDrawState()
   }
 
-  delete() {
+  deleteSelected() {
     const draw = this.draw
     this.draw.getSelectedIds().map(id => {
       draw.delete(id)
     })
     this.setDrawState()
+  }
+
+  deleteFeatures() {
+    this.draw.deleteAll();
+    this.setDrawState();
   }
 
   selectedInformation = () => {
