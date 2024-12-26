@@ -60,13 +60,17 @@ export function SelectWithSearch(
       value={value}
       options={options}
       disableCloseOnSelect={props.disableCloseOnSelect !== undefined ? props.disableCloseOnSelect : true}
-      getOptionLabel={(option) => option}
-      renderInput={(params) => (
-        <TextField
+      getOptionLabel={(option) => option === '' ? <i>Blank</i> : option}
+      renderInput={(params) => {
+        if (params.inputProps.value === "[object Object]") {
+          params.inputProps.value = 'Blank'
+        }
+        return <TextField
           {...params}
+          value={value}
           placeholder={props.placeholder ? props.placeholder : 'Select 1 option'}
         />
-      )}
+      }}
       onChange={(event, values) => {
         if (onChangeFn) {
           onChangeFn(values ? values : '');
@@ -138,7 +142,7 @@ export function MultipleSelectWithSearch(
             style={{ marginRight: 8 }}
             checked={selected}
           />
-          {option === '' ? <i>blank</i> : option}
+          {option === '' ? <i>Blank</i> : option}
         </li>
       }}
       renderInput={(params) => {
