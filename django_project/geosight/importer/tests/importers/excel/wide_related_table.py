@@ -81,9 +81,29 @@ class ExcelWideFormatRelatedTableTest(BaseImporterTest):
         related_table = RelatedTable.objects.get(name='Related Table A')
         self.assertEqual(related_table.relatedtablerow_set.count(), 9)
         first_row = related_table.relatedtablerow_set.first()
-        self.assertEqual(len(first_row.data.keys()), 5)
+        self.assertEqual(len(first_row.data.keys()), 6)
         self.assertEqual(first_row.data['Population'], 1)
         self.assertEqual(first_row.data['geom_code'], 'A')
+
+        # Check blank data
+        self.assertEqual(
+            related_table.relatedtablerow_set.all()[0].data['geom_code'], 'A'
+        )
+        self.assertEqual(
+            related_table.relatedtablerow_set.all()[0].data['Group'], 'A'
+        )
+        self.assertEqual(
+            related_table.relatedtablerow_set.all()[1].data['geom_code'], 'B'
+        )
+        self.assertEqual(
+            related_table.relatedtablerow_set.all()[1].data['Group'], 'B'
+        )
+        self.assertEqual(
+            related_table.relatedtablerow_set.all()[2].data['geom_code'], 'C'
+        )
+        self.assertEqual(
+            related_table.relatedtablerow_set.all()[2].data['Group'], ''
+        )
 
     def test_run_replace(self):
         """Test if correct importer."""

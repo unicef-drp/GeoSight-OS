@@ -104,6 +104,7 @@ class RelatedTableWideFormat(AbstractImporterRelatedTable):
             # Construct data
             # ---------------------------------------
             data = {}
+            print(record)
             for key, value in record.items():
                 if value.__class__ is str:
                     try:
