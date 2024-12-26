@@ -24,14 +24,14 @@
 }
 
 
-.MeasurementComponent {
+.PopupToolbarIcon {
   position: relative;
 
   a {
     cursor: pointer !important;
   }
 
-  .MeasurementComponentPopup {
+  .PopupToolbarComponent {
     background: white;
     border-radius: $border-radius;
     box-shadow: $box-shadow;

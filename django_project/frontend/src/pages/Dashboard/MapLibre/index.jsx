@@ -40,7 +40,6 @@ import {
   GlobalDateSelector,
   HomeButton,
   LabelToggler,
-  Measurement,
   SearchGeometryInput,
   TiltControl,
   ToggleSidePanel,
@@ -57,6 +56,7 @@ import './style.scss';
 
 // Initialize cog
 import { cogProtocol } from "@geomatico/maplibre-cog-protocol";
+import PopupToolbars from "../Toolbars/PopupToolbars";
 
 maplibregl.addProtocol('cog', cogProtocol);
 
@@ -257,7 +257,6 @@ export default function MapLibre(
       <div className='Toolbar-Middle'>
         <div className='Separator'/>
         <HomeButton map={map}/>
-        <Measurement map={map}/>
         <LabelToggler/>
         <CompareLayer disabled={is3dMode}/>
         {/* 3D View */}
@@ -277,6 +276,12 @@ export default function MapLibre(
             </PluginChild>
           </div>
         </Plugin>
+        <div style={{
+          borderLeft: "1px solid #E6E8E8",
+          height: "30px",
+          margin: "0 0.5rem"
+        }}/>
+        <PopupToolbars map={map}/>
         <div className='Separator'/>
       </div>
 
