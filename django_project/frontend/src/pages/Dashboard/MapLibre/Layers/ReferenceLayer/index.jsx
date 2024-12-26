@@ -45,7 +45,7 @@ import {
 } from "../../../../../utils/Style";
 import GeorepoAuthorizationModal
   from "../../../../../components/GeorepoAuthorizationModal";
-import { Logger } from "../../../../../utils/logger";
+import { IS_DEBUG, Logger } from "../../../../../utils/logger";
 import { Actions } from "../../../../../store/dashboard";
 
 export const BEFORE_LAYER = 'gl-draw-polygon-fill-inactive.cold'
@@ -171,7 +171,7 @@ export function ReferenceLayer(
   useEffect(() => {
     const whereStr = JSON.stringify(where)
     const filteredGeometriesStr = JSON.stringify(filteredGeometries)
-    Logger.log(filteredGeometriesStr)
+    Logger.log('FILTERED_GEOM:', filteredGeometriesStr)
     if (prevState.where !== whereStr || prevState.filteredGeometries !== filteredGeometriesStr) {
       updateFilter()
       prevState.where = whereStr
@@ -371,6 +371,11 @@ export function ReferenceLayer(
         geoField, filteredGeometries, referenceLayerProject, currentLevel
       )
       dispatch(Actions.MapGeometryValue.update(indicatorValueByGeometry))
+      if (IS_DEBUG) {
+        const geoms = Object.keys(indicatorValueByGeometry)
+        geoms.sort()
+        Logger.log('VALUED_GEOM:', geoms)
+      }
       let indicatorSecondValueByGeometry = {}
 
       // Create colors

@@ -13,9 +13,9 @@ test.describe('View project', () => {
   test('View project', async ({ page }) => {
     let lastLog = null
     page.on('console', msg => {
-      if (msg.text().indexOf('LOGGER.log:') !== -1) {
+      if (msg.text().indexOf('VALUED_GEOM:') !== -1) {
         try {
-          lastLog = JSON.parse(msg.text().replace('LOGGER.log:', ''))
+          lastLog = msg.text().replace('VALUED_GEOM:', '')
         } catch (e) {
           console.log(e)
 
@@ -72,11 +72,9 @@ test.describe('View project', () => {
     await expect(pin3).toHaveCSS('width', '30px');
     await expect(pin3).toHaveCSS('border-radius', '50%');
 
-
-    // ----------------------------------------------------------------------------
-    // BOOKMARK
-    // ----------------------------------------------------------------------------
-    // Check if sample indicator b is checked
+    // ---------------------------------
+    // Related Table Layer
+    // ---------------------------------
     await page.getByLabel(layer2).click();
     await expect(page.getByLabel(layer1)).not.toBeChecked();
     await expect(page.getByLabel(layer2)).toBeChecked();
@@ -84,9 +82,18 @@ test.describe('View project', () => {
 
     // Click the slicer
     await page.getByRole('combobox', { name: 'Select 1 option' }).click();
+    await page.getByRole('option', { name: 'Blank' }).click();
+    await expect(lastLog).toEqual("SOM_0001_0001_V1");
+
     await page.getByRole('option', { name: 'HEALTH' }).click();
+    await expect(lastLog).toEqual("SOM_0001_0001_V1,SOM_0001_0002_V1,SOM_0001_0003_V1,SOM_0001_0004_V1,SOM_0002_0001_V1,SOM_0002_0002_V1,SOM_0004_0001_V1,SOM_0004_0002_V1,SOM_0004_0003_V1,SOM_0004_0004_V1,SOM_0004_0005_V1,SOM_0004_0006_V1,SOM_0006_0001_V1,SOM_0006_0002_V1,SOM_0006_0003_V1,SOM_0006_0004_V1,SOM_0006_0005_V1,SOM_0007_0001_V1,SOM_0007_0002_V1,SOM_0007_0003_V1,SOM_0007_0004_V1,SOM_0007_0005_V1,SOM_0009_0001_V1,SOM_0009_0002_V1,SOM_0009_0003_V1,SOM_0009_0004_V1,SOM_0010_0001_V1,SOM_0010_0002_V1,SOM_0010_0007_V1,SOM_0011_0001_V1,SOM_0011_0002_V1,SOM_0011_0003_V1,SOM_0012_0001_V1,SOM_0012_0002_V1,SOM_0012_0003_V1,SOM_0012_0004_V1,SOM_0013_0001_V1,SOM_0013_0002_V1,SOM_0014_0002_V1,SOM_0014_0003_V1,SOM_0015_0001_V1,SOM_0015_0002_V1,SOM_0015_0003_V1,SOM_0016_0001_V1,SOM_0017_0002_V1,SOM_0017_0003_V1,SOM_0017_0004_V1,SOM_0018_0001_V1,SOM_0018_0002_V1,SOM_0018_0003_V1");
+
     await page.getByRole('option', { name: 'EDU' }).click();
+    await expect(lastLog).toEqual("SOM_0002_0002_V1,SOM_0002_0003_V1,SOM_0002_0004_V1,SOM_0002_0005_V1,SOM_0003_0001_V1,SOM_0004_0006_V1,SOM_0005_0001_V1,SOM_0005_0002_V1,SOM_0005_0003_V1,SOM_0005_0004_V1,SOM_0007_0005_V1,SOM_0007_0006_V1,SOM_0008_0001_V1,SOM_0008_0002_V1,SOM_0008_0003_V1,SOM_0010_0002_V1,SOM_0010_0003_V1,SOM_0010_0004_V1,SOM_0010_0005_V1,SOM_0010_0006_V1,SOM_0013_0002_V1,SOM_0013_0003_V1,SOM_0013_0004_V1,SOM_0013_0005_V1,SOM_0014_0001_V1,SOM_0016_0001_V1,SOM_0016_0002_V1,SOM_0016_0003_V1,SOM_0016_0004_V1,SOM_0017_0001_V1");
+
     await page.getByRole('option', { name: 'WASH' }).click();
+    await expect(lastLog).toEqual("SOM_0001_0001_V1,SOM_0001_0002_V1,SOM_0002_0001_V1,SOM_0002_0003_V1,SOM_0002_0005_V1,SOM_0003_0001_V1,SOM_0004_0001_V1,SOM_0004_0002_V1,SOM_0004_0005_V1,SOM_0005_0001_V1,SOM_0005_0003_V1,SOM_0005_0004_V1,SOM_0006_0001_V1,SOM_0006_0002_V1,SOM_0006_0003_V1,SOM_0006_0004_V1,SOM_0006_0005_V1,SOM_0007_0001_V1,SOM_0007_0004_V1,SOM_0007_0006_V1,SOM_0008_0002_V1,SOM_0008_0003_V1,SOM_0009_0001_V1,SOM_0009_0002_V1,SOM_0010_0001_V1,SOM_0010_0003_V1,SOM_0010_0005_V1,SOM_0010_0006_V1,SOM_0010_0007_V1,SOM_0011_0001_V1,SOM_0011_0002_V1,SOM_0011_0003_V1,SOM_0012_0001_V1,SOM_0012_0002_V1,SOM_0013_0001_V1,SOM_0013_0003_V1,SOM_0013_0005_V1,SOM_0014_0001_V1,SOM_0014_0002_V1,SOM_0014_0003_V1,SOM_0015_0003_V1,SOM_0016_0002_V1,SOM_0016_0004_V1,SOM_0017_0001_V1,SOM_0017_0002_V1,SOM_0017_0003_V1,SOM_0017_0004_V1,SOM_0018_0001_V1,SOM_0018_0002_V1,SOM_0018_0003_V1");
+
     await expect(page.getByLabel(layer1)).not.toBeChecked();
     await expect(page.getByLabel(layer2)).toBeChecked();
     await expect(page.locator('.MapLegendSectionTitle')).toContainText(layer2);
@@ -97,6 +104,9 @@ test.describe('View project', () => {
     await expect(page.locator('.IndicatorLegendSection .IndicatorLegendRowName').nth(1)).toContainText('991');
     await expect(page.locator('.IndicatorLegendSection .IndicatorLegendRowName').nth(2)).toContainText('No data');
 
+    // ----------------------------------------------------------------------------
+    // BOOKMARK
+    // ----------------------------------------------------------------------------
     // Create bookmark with Dynamic Layer as default
     await page.getByTitle('Bookmark').locator('a').click();
     await page.getByRole('button', { name: 'Save As...' }).click();
