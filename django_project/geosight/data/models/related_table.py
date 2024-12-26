@@ -438,6 +438,18 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
             )
         return None
 
+    def make_none_to_empty_string(self):
+        """Make empty string for empty data."""
+        query = self.relatedtablerow_set.all()
+        for row in query:
+            if row.data:
+                keys = row.data.keys()
+                for key in keys:
+                    if row.data[key] is None:
+                        row.data[key] = ''
+                row.save()
+        self.increase_version()
+
 
 class RelatedTableRow(models.Model):
     """Row of Related Table."""

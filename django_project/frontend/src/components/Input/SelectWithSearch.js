@@ -138,7 +138,7 @@ export function MultipleSelectWithSearch(
             style={{ marginRight: 8 }}
             checked={selected}
           />
-          {option}
+          {option === '' ? <i>blank</i> : option}
         </li>
       }}
       renderInput={(params) => {

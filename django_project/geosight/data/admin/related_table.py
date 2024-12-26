@@ -29,6 +29,13 @@ def invalidate_cache(modeladmin, request, queryset):
     queryset.update(version_data=timezone.now())
 
 
+@admin.action(description='Change non to empty sting')
+def make_none_to_empty_string(modeladmin, request, queryset):
+    """Change non to empty string."""
+    for query in queryset:
+        query.make_none_to_empty_string()
+
+
 class RelatedTableFieldInline(admin.TabularInline):
     """RelatedTableField inline."""
 
@@ -50,7 +57,7 @@ class RelatedTableAdmin(admin.ModelAdmin):
 
     list_display = ('name', 'description', 'importer')
     inlines = (RelatedTableFieldInline,)
-    actions = (invalidate_cache,)
+    actions = (invalidate_cache, make_none_to_empty_string)
     readonly_fields = ('last_importer',)
 
     def importer(self, obj: RelatedTable):
