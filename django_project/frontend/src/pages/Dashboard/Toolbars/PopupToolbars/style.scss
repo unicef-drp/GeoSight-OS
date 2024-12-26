@@ -37,10 +37,10 @@
     box-shadow: $box-shadow;
     box-sizing: border-box;
     left: 50%;
-    margin-left: -235px;
+    margin-left: -250px;
     position: absolute;
     top: 42px;
-    width: 470px;
+    width: 500px;
 
     transform: none;
     transition: opacity 273ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 182ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
@@ -65,9 +65,8 @@
     }
 
     .Title {
-      color: $secondary-color;
-      padding-top: 0.5rem;
-      border-bottom: 1px solid $secondary-color;
+      color: $primary-color;
+      border-bottom: 1px solid $primary-color;
     }
   }
 
@@ -86,10 +85,9 @@
   }
 }
 
-.MeasurementComponentFooter {
-  border-top: 1px solid $secondary-color;
+.PopupToolbarComponentFooter {
+  border-top: 1px solid $primary-color;
   display: flex;
-  flex-direction: row-reverse;
   align-items: center;
 }
 

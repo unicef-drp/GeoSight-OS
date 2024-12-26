@@ -201,18 +201,6 @@
       border-radius: 0;
       height: 30px;
 
-      .Active {
-        a, span {
-          color: $primary-color !important;
-          background-color: rgba(0, 0, 0, 0) !important;
-        }
-      }
-
-      a, span {
-        color: $tab-inactive-color !important;
-        background-color: rgba(0, 0, 0, 0) !important;
-      }
-
       a {
         margin: 0 2px;
         line-height: 30px;

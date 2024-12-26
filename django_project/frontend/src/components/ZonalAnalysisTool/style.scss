@@ -18,3 +18,22 @@
    ========================================================================== */
 
 @import '../../app/variables';
+
+.ZonalAnalysisToolConfiguration {
+  .MuiForm-RadioGroup {
+    border: unset !important;
+  }
+
+  display: flex;
+  gap: 1rem;
+
+  .MuiFormLabel-root {
+    margin-bottom: 0.5rem !important;
+    display: block;
+  }
+
+  input {
+    padding-top: 10px;
+    padding-bottom: 9px;
+  }
+}

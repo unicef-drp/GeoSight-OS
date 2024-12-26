@@ -273,20 +273,7 @@ export const MeasurementTool = forwardRef(
                 }
               </div>
             </div>
-            <div className='MeasurementComponentFooter'>
-              <ThemeButton onClick={() => {
-                setStart(false)
-              }}>
-                <CancelIcon/> Cancel
-              </ThemeButton>
-              <ThemeButton
-                onClick={() => {
-                  onStart()
-                }}
-                style={{ width: '300px' }} disabled={startDraw}>
-                <AddLocationIcon/> Add new measurement
-              </ThemeButton>
-              <div className='Separator'/>
+            <div className='PopupToolbarComponentFooter'>
               <SelectWithList
                 isMulti={false}
                 value={mode}
@@ -296,6 +283,19 @@ export const MeasurementTool = forwardRef(
                   setMode(evt.value)
                 }}
               />
+              <div className='Separator'/>
+              <ThemeButton
+                onClick={() => {
+                  onStart()
+                }}
+                style={{ width: '300px' }} disabled={startDraw}>
+                <AddLocationIcon/> Add new measurement
+              </ThemeButton>
+              <ThemeButton onClick={() => {
+                setStart(false)
+              }}>
+                <CancelIcon/> Cancel
+              </ThemeButton>
             </div>
           </div>
           : ""
