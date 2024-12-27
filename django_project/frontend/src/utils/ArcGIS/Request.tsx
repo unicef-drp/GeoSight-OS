@@ -18,7 +18,7 @@
    ========================================================================== */
 
 import { isArray } from "chart.js/helpers";
-import { Payload } from "./DataType";
+import { ArcGISGeometry, Payload } from "./DataType";
 
 export default class ArcGISRequest {
   private url: string;
@@ -28,13 +28,14 @@ export default class ArcGISRequest {
   }
 
   /** Query data of FeatureServer **/
-  queryData = (payload: Payload) => {
+  queryData = (payload: Payload, geometry: ArcGISGeometry) => {
     const newPayload = Object.assign(
       {
         f: "json",
         where: "1=1"
       },
-      payload
+      payload,
+      geometry.payload()
     );
     const queryUrl = (this.url + '/query').replaceAll('//query', '/query')
     return this.post(queryUrl, newPayload)

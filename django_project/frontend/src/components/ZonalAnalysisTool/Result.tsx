@@ -61,14 +61,18 @@ const analyzeArcGIS = (
       setIsAnalysing(false)
   }
   if (_Class) {
-    const Feature = new _Class(features, config.buffer)
+    // Change km to meters
+    const feature = new _Class(features, config.buffer * 1000)
     const arcgisRequest = new ArcGISRequest(contextLayer.url)
 
     // outFields is based on admin config
-    arcgisRequest.queryData({
-      outFields: [config.aggregatedField],
-      returnGeometry: false
-    }).then((response) => {
+    arcgisRequest.queryData(
+      {
+        outFields: [config.aggregatedField],
+        returnGeometry: false
+      },
+      feature
+    ).then((response) => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -112,7 +116,10 @@ export const ZonalAnalysisResult = forwardRef((
             break;
           }
         }
-
+      },
+      clear() {
+        setValue(null)
+        setError(null)
       }
     }));
 

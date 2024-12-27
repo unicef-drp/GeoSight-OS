@@ -86,6 +86,7 @@ export const ZonalAnalysisTool = forwardRef((
 
     useImperativeHandle(ref, () => ({
       stop() {
+        console.log('Stop')
         if (draw) {
           draw.destroy()
         }
@@ -221,6 +222,10 @@ export const ZonalAnalysisTool = forwardRef((
                   disabled={!isAllAnalyzingDone}
                   onClick={() => {
                     draw.deleteFeatures()
+                    zonalAnalysisRefs.current.map((ref, index) => {
+                      // @ts-ignore
+                      ref.clear()
+                    })
                   }}>
                   <CancelIcon/> Clear
                 </ThemeButton>

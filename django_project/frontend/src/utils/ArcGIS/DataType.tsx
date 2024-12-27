@@ -17,7 +17,6 @@
    ARCGIS Data Type Request
    ========================================================================== */
 
-
 import { Feature } from "geojson";
 
 export interface Payload {
@@ -27,15 +26,16 @@ export interface Payload {
   where?: string;
 }
 
-class ArcGISGeometry {
+export class ArcGISGeometry {
   protected features: Feature[];
   protected type: string;
   protected esriGeometryType: string;
+  protected esriGeometryKey: string;
   protected distance: number; // distance is in meters
 
   constructor(
     features: Feature[], distance: number,
-    type: string, esriGeometryType: string
+    type: string, esriGeometryType: string, esriGeometryKey: string
   ) {
     this.features = features.filter(
       feature => feature.geometry.type === type
@@ -43,23 +43,44 @@ class ArcGISGeometry {
     this.distance = distance;
     this.type = type;
     this.esriGeometryType = esriGeometryType;
+    this.esriGeometryKey = esriGeometryKey;
+  }
+
+  geometry() {
+    const output = {}
+    if (this.type === 'Polygon') {
+      // @ts-ignore
+      return { 'rings': this.features.map(feature => feature.geometry.coordinates[0]) }
+    }
+    // @ts-ignore
+    output[this.esriGeometryKey] = this.features.map(feature => feature.geometry.coordinates)
+    return output
+  }
+
+  payload() {
+    return {
+      geometry: JSON.stringify(this.geometry()),
+      geometryType: this.esriGeometryType,
+      spatialRel: 'esriSpatialRelIntersects',
+      distance: this.distance
+    }
   }
 }
 
 export class ArcGISPolygon extends ArcGISGeometry {
   constructor(features: Feature[], distance: number) {
-    super(features, distance, 'Polygon', 'esriGeometryPolygon');
+    super(features, distance, 'Polygon', 'esriGeometryPolygon', 'rings');
   }
 }
 
 export class ArcGISLine extends ArcGISGeometry {
   constructor(features: Feature[], distance: number) {
-    super(features, distance, 'LineString', 'esriGeometryPolyline');
+    super(features, distance, 'LineString', 'esriGeometryPolyline', 'paths');
   }
 }
 
 export class ArcGISPoint extends ArcGISGeometry {
   constructor(features: Feature[], distance: number) {
-    super(features, distance, 'Point', 'esriGeometryMultipoint');
+    super(features, distance, 'Point', 'esriGeometryMultipoint', 'points');
   }
 }

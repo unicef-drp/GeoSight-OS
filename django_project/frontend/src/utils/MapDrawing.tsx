@@ -50,14 +50,12 @@ export class MapDrawing {
     const that = this;
     map.on('draw.create', (e) => {
       try {
-        that.updateCursor('grab');
         if (!that.isDrawing) {
           e.features.map((feature: {
             id: string;
           }) => that.draw.delete(feature.id))
         }
-        that.isDrawing = false;
-        that.setDrawState()
+        that.stopDrawing()
       } catch (err) {
 
       }
@@ -81,8 +79,7 @@ export class MapDrawing {
     this.map.off('draw.delete', this.setDrawState);
     this.map.off('draw.update', this.setDrawState);
     this.map.removeControl(this.draw as any)
-    // @ts-ignore
-    this.map.drawingMode = true;
+    this.stopDrawing()
   }
 
   getFeatures() {
@@ -105,14 +102,26 @@ export class MapDrawing {
 
   start() {
     this.draw.changeMode(this.mode);
-    this.updateCursor('crosshair');
-    this.isDrawing = true;
-    this.setDrawState()
+    this.startDrawing()
   }
 
   stop() {
-    this.isDrawing = false;
     this.draw.changeMode(this.draw.modes.SIMPLE_SELECT);
+    this.stopDrawing()
+  }
+
+  startDrawing() {
+    // @ts-ignore
+    this.map.drawingMode = true;
+    this.isDrawing = true;
+    this.updateCursor('crosshair');
+    this.setDrawState()
+  }
+
+  stopDrawing() {
+    // @ts-ignore
+    this.map.drawingMode = false;
+    this.isDrawing = false;
     this.updateCursor('grab');
     this.setDrawState()
   }
