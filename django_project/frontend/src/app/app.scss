@@ -427,6 +427,11 @@ header {
   padding: 1rem;
 }
 
+.CenteredFlex {
+  display: flex;
+  align-items: center;
+}
+
 .Hidden {
   display: none !important;
 }

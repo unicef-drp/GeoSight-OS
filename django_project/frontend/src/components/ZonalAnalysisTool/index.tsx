@@ -17,6 +17,7 @@ import React, {
   forwardRef,
   useEffect,
   useImperativeHandle,
+  useRef,
   useState
 } from 'react';
 import maplibregl from 'maplibre-gl';
@@ -25,42 +26,28 @@ import TextField from "@mui/material/TextField";
 import FormLabel from "@mui/material/FormLabel";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import CancelIcon from "@mui/icons-material/Cancel";
+import AddLocationIcon from "@mui/icons-material/AddLocation";
+import { useSelector } from "react-redux";
+import { ThemeButton } from "../Elements/Button";
 import { FormControl, InputAdornment, Radio } from "@mui/material";
 import { SelectWithList } from "../Input/SelectWithList";
 import { MapDrawing } from "../../utils/MapDrawing";
+import { RootState } from "../../store/dashboard/reducers";
+import { ContextLayer } from "../../store/dashboard/reducers/contextLayers";
+import { Variables } from "../../utils/Variables";
+import { ZonalAnalysisResult } from "./Result";
+import {
+  AGGREGATION_TYPES,
+  DRAW_MODE,
+  SELECTION_MODE,
+  ZonalAnalysisConfiguration
+} from "./index.d";
 
 import './style.scss';
-import CancelIcon from "@mui/icons-material/Cancel";
-import AddLocationIcon from "@mui/icons-material/AddLocation";
-import { ThemeButton } from "../Elements/Button";
 
 interface Props {
   map: maplibregl.Map;
-}
-
-export const AGGREGATION_TYPES = {
-  'SUM': 'SUM',
-  'MIN': 'MIN',
-  'MAX': 'MAX',
-  'AVG': 'AVG',
-} as const;
-
-const SELECTION_MODE = {
-  SELECT: "SELECT",
-  MANUAL: "MANUAL",
-} as const;
-
-const DRAW_MODE = {
-  POINT: "POINT",
-  LINE: "LINE",
-  POLYGON: "POLYGON",
-} as const;
-
-interface ZonalAnalysisConfiguration {
-  selectionMode: keyof typeof SELECTION_MODE;
-  drawMode: keyof typeof DRAW_MODE;
-  aggregation: keyof typeof AGGREGATION_TYPES;
-  buffer: number;
 }
 
 /**
@@ -69,6 +56,18 @@ interface ZonalAnalysisConfiguration {
 export const ZonalAnalysisTool = forwardRef((
     { map }: Props, ref
   ) => {
+    // TODO :
+    //  TSX Updates
+    // @ts-ignore
+    const { contextLayers: ctxLayer } = useSelector((state: RootState) => state.dashboard.data);
+    const contextLayers = ctxLayer as ContextLayer[];
+
+    // For ref
+    const zonalAnalysisRefs = useRef<(HTMLDivElement | null)[]>([]);
+    const addRef = (index: number, ref: HTMLDivElement | null) => {
+      zonalAnalysisRefs.current[index] = ref;
+    };
+
     const [config, setConfig] = useState<ZonalAnalysisConfiguration>(
       {
         selectionMode: SELECTION_MODE.MANUAL,
@@ -79,6 +78,10 @@ export const ZonalAnalysisTool = forwardRef((
     );
     const [draw, setDraw] = useState<MapDrawing>(null);
     const [drawState, setDrawState] = useState<number>(null);
+
+    // Analyzing state
+    const [isAnalyzing, setIsAnalyzing] = useState<boolean[]>([]);
+    const isAllAnalyzingDone = !(isAnalyzing.find(row => row))
 
     useImperativeHandle(ref, () => ({
       stop() {
@@ -110,6 +113,18 @@ export const ZonalAnalysisTool = forwardRef((
       }
     }, [config.drawMode]);
 
+    /** Analyze **/
+    const analyze = () => {
+      if (!draw) {
+        return
+      }
+      const geometries = draw.getFeatures()
+      zonalAnalysisRefs.current.map((ref, index) => {
+        // @ts-ignore
+        ref.analyze(geometries, config)
+      })
+    }
+
     return (
       <>
         <div className='Title'>Extract zonal statistic</div>
@@ -126,13 +141,14 @@ export const ZonalAnalysisTool = forwardRef((
               }}>
               <FormControlLabel
                 value={SELECTION_MODE.MANUAL}
-                control={<Radio/>}
+                control={<Radio disabled={!isAllAnalyzingDone}/>}
                 label='Draw Manually'/>
             </RadioGroup>
           </FormControl>
           <FormControl className='MuiForm-RadioGroup'>
             <FormLabel className="MuiInputLabel-root">Aggregation:</FormLabel>
             <SelectWithList
+              isDisabled={!isAllAnalyzingDone}
               isMulti={false}
               value={config.aggregation}
               list={
@@ -149,6 +165,7 @@ export const ZonalAnalysisTool = forwardRef((
           <FormControl className='MuiForm-RadioGroup'>
             <FormLabel className="MuiInputLabel-root">Buffer:</FormLabel>
             <TextField
+              disabled={!isAllAnalyzingDone}
               value={config.buffer}
               type="number"
               onChange={(evt) => {
@@ -166,40 +183,82 @@ export const ZonalAnalysisTool = forwardRef((
           </FormControl>
         </div>
         <div className='PopupToolbarComponentFooter'>
-          <SelectWithList
-            isMulti={false}
-            value={config.drawMode}
-            list={[DRAW_MODE.POINT, DRAW_MODE.LINE, DRAW_MODE.POLYGON]}
-            onChange={(evt: any) => {
-              setConfig({
-                ...config,
-                drawMode: evt.value as keyof typeof DRAW_MODE
-              })
-            }}
-          />
-          <div className='Separator'/>
-          <ThemeButton
-            disabled={draw?.isDrawing}
-            onClick={() => {
-              draw.start()
-            }}
-            style={{ width: '300px' }}
-          >
-            <AddLocationIcon/> Add new feature
-          </ThemeButton>
-          {
-            draw?.isDrawing ?
-              <ThemeButton onClick={() => {
-                draw.stop()
-              }}>
-                <CancelIcon/> Cancel
-              </ThemeButton> :
-              <ThemeButton onClick={() => {
-                draw.deleteFeatures()
-              }}>
-                <CancelIcon/> Clear
-              </ThemeButton>
-          }
+          <div className='CenteredFlex'>
+            <SelectWithList
+              isMulti={false}
+              value={config.drawMode}
+              list={[DRAW_MODE.POINT, DRAW_MODE.LINE, DRAW_MODE.POLYGON]}
+              onChange={(evt: any) => {
+                setConfig({
+                  ...config,
+                  drawMode: evt.value as keyof typeof DRAW_MODE
+                })
+              }}
+              isDisabled={!isAllAnalyzingDone}
+            />
+            <div className='Separator'/>
+            <ThemeButton
+              disabled={draw?.isDrawing || !isAllAnalyzingDone}
+              onClick={() => {
+                draw.start()
+              }}
+              style={{ width: '300px' }}
+            >
+              <AddLocationIcon/> Add new feature
+            </ThemeButton>
+            {
+              draw?.isDrawing ?
+                <ThemeButton
+                  variant='Error Reverse NoBorder'
+                  disabled={!isAllAnalyzingDone}
+                  onClick={() => {
+                    draw.stop()
+                  }}>
+                  <CancelIcon/> Cancel
+                </ThemeButton> :
+                <ThemeButton
+                  disabled={!isAllAnalyzingDone}
+                  onClick={() => {
+                    draw.deleteFeatures()
+                  }}>
+                  <CancelIcon/> Clear
+                </ThemeButton>
+            }
+          </div>
+          <div>
+            <ThemeButton
+              disabled={!(draw?.getFeatures().length) || !isAllAnalyzingDone}
+              variant="primary Basic"
+              style={{ margin: 0, marginTop: "1rem", minWidth: "100%" }}
+              onClick={analyze}
+            >
+              Run analysis
+            </ThemeButton>
+          </div>
+        </div>
+        <div className='PopupToolbarComponentFooter ZonalAnalysisTable'>
+          <table>
+            <tr>
+              <th>Source layer</th>
+              <th>Value</th>
+            </tr>
+            {
+              contextLayers.filter(ctx => ctx.layer_type === Variables.LAYER.TYPE.ARCGIS).map(
+                (ctx, index) => {
+                  return <ZonalAnalysisResult
+                    contextLayer={ctx}
+                    key={ctx.id}
+                    ref={(el: HTMLDivElement) => addRef(index, el)}
+                    isAnalyzing={isAnalyzing[index]}
+                    setIsAnalysing={(_isAnalyzing) => {
+                      isAnalyzing[index] = _isAnalyzing;
+                      setIsAnalyzing([...isAnalyzing])
+                    }}
+                  />
+                }
+              )
+            }
+          </table>
         </div>
       </>
     );

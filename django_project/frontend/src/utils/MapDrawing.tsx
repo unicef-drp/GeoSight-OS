@@ -85,6 +85,17 @@ export class MapDrawing {
     this.map.drawingMode = true;
   }
 
+  getFeatures() {
+    // @ts-ignore
+    return this.draw.getAll().features.filter(feature => {
+      if (feature.geometry.type === "Polygon" && !feature.geometry.coordinates[0][0]) {
+        return false
+      }
+      // @ts-ignore
+      return feature.geometry.coordinates[0]
+    });
+  }
+
   changeMode(mode: string) {
     this.stop()
     this.draw.deleteAll();

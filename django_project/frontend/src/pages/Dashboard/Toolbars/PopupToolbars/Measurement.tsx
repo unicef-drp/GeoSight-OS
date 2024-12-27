@@ -148,7 +148,7 @@ export const MeasurementTool = forwardRef(
               </div>
 
             </div>
-            <div className='PopupToolbarComponentFooter'>
+            <div className='PopupToolbarComponentFooter CenteredFlex'>
               <SelectWithList
                 isMulti={false}
                 value={mode}
@@ -169,9 +169,11 @@ export const MeasurementTool = forwardRef(
               </ThemeButton>
               {
                 draw?.isDrawing ?
-                  <ThemeButton onClick={() => {
-                    draw.stop()
-                  }}>
+                  <ThemeButton
+                    variant='Error Reverse NoBorder'
+                    onClick={() => {
+                      draw.stop()
+                    }}>
                     <CancelIcon/> Cancel
                   </ThemeButton> :
                   <ThemeButton onClick={() => {

@@ -37,3 +37,20 @@
     padding-bottom: 9px;
   }
 }
+
+.ZonalAnalysisTable {
+  table {
+    width: 100%;
+
+    th, td {
+      padding: 1px 3px;
+      border: 1px solid $primary-color;
+    }
+
+    th {
+      background-color: $primary-color;
+      color: white;
+      text-align: left;
+    }
+  }
+}

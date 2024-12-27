@@ -79,7 +79,6 @@
     padding: 0.5rem 0 !important;
 
     &:hover {
-      background-color: unset !important;
       opacity: $base-hovered-opacity;
     }
   }
@@ -87,8 +86,6 @@
 
 .PopupToolbarComponentFooter {
   border-top: 1px solid $primary-color;
-  display: flex;
-  align-items: center;
 }
 
 .crosshairCursor {

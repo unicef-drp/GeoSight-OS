@@ -41,11 +41,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='contextlayer',
             name='url_legend',
-            field=models.CharField(blank=True, help_text='This is the url of image that will be rendered as legend. ArcGis type can be generated automatically, but if you fill this url legend, it will be overridden', max_length=256, null=True),
+            field=models.CharField(blank=True, help_text='This is the url of image that will be rendered as legend. ArcGIS type can be generated automatically, but if you fill this url legend, it will be overridden', max_length=256, null=True),
         ),
         migrations.AddField(
             model_name='contextlayer',
             name='arcgis_config',
-            field=models.ForeignKey(blank=True, help_text='ArcGis configuration that contains username/password that will be used to autogenerate the token.', null=True, on_delete=django.db.models.deletion.SET_NULL, to='geosight_data.arcgisconfig'),
+            field=models.ForeignKey(blank=True, help_text='ArcGIS configuration that contains username/password that will be used to autogenerate the token.', null=True, on_delete=django.db.models.deletion.SET_NULL, to='geosight_data.arcgisconfig'),
         ),
     ]

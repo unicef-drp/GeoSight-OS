@@ -118,7 +118,7 @@ class ContextLayer(AbstractEditData, AbstractTerm):
         null=True, blank=True,
         on_delete=models.SET_NULL,
         help_text=_(
-            'ArcGis configuration that contains username/password '
+            'ArcGIS configuration that contains username/password '
             'that will be used to autogenerate the token.'
         )
     )
@@ -136,7 +136,7 @@ class ContextLayer(AbstractEditData, AbstractTerm):
         null=True, blank=True,
         help_text=_(
             'This is the url of image that will be rendered as legend. '
-            'ArcGis type can be generated automatically, '
+            'ArcGIS type can be generated automatically, '
             'but if you fill this url legend, it will be overridden'
         )
     )

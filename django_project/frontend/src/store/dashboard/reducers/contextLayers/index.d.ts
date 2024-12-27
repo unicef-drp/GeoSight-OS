@@ -13,15 +13,9 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-
-import React from 'react';
-
-declare module './Button' {
-  interface ThemeButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    [key: string]: any;
-
-    children: React.ReactNode;
-  }
-
-  export function ThemeButton(props: ThemeButtonProps): JSX.Element;
+export interface ContextLayer {
+  id: number;
+  name: string;
+  url: string;
+  layer_type: string;
 }

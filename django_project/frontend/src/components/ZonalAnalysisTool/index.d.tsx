@@ -12,16 +12,27 @@
  * __date__ = '26/12/2024'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
+export const AGGREGATION_TYPES = {
+  'SUM': 'SUM',
+  'MIN': 'MIN',
+  'MAX': 'MAX',
+  'AVG': 'AVG',
+} as const;
 
+export const SELECTION_MODE = {
+  SELECT: "SELECT",
+  MANUAL: "MANUAL",
+} as const;
 
-import React from 'react';
+export const DRAW_MODE = {
+  POINT: "POINT",
+  LINE: "LINE",
+  POLYGON: "POLYGON",
+} as const;
 
-declare module './Button' {
-  interface ThemeButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    [key: string]: any;
-
-    children: React.ReactNode;
-  }
-
-  export function ThemeButton(props: ThemeButtonProps): JSX.Element;
+export interface ZonalAnalysisConfiguration {
+  selectionMode: keyof typeof SELECTION_MODE;
+  drawMode: keyof typeof DRAW_MODE;
+  aggregation: keyof typeof AGGREGATION_TYPES;
+  buffer: number;
 }
