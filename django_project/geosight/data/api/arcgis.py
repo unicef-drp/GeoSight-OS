@@ -120,6 +120,7 @@ class ProxyView:
 
 @method_decorator(csrf_exempt, name='dispatch')
 def arcgis_proxy_request(request, pk):
+    """Request for proxy request of arcgis."""
     proxy = ProxyView(request)
     try:
         url = proxy.get_url(request, pk)
