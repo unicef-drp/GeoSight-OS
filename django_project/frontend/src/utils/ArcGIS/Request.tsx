@@ -25,7 +25,6 @@ export default class ArcGISRequest {
 
   constructor(featureServerURL: string) {
     this.url = featureServerURL
-    this.url = "https://services3.arcgis.com/7J7WB6yJX0pYke9q/arcgis/rest/services/som_sample_points_3/FeatureServer/0/"
   }
 
   /** Query data of FeatureServer **/

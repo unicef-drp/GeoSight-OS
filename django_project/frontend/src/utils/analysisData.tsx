@@ -9,28 +9,27 @@
  *     (at your option) any later version.
  *
  * __author__ = 'irwan@kartoza.com'
- * __date__ = '26/12/2024'
+ * __date__ = '27/12/2024'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import { AGGREGATION_TYPES } from "../../utils/analysisData";
-
-
-export const SELECTION_MODE = {
-  SELECT: "SELECT",
-  MANUAL: "MANUAL",
+export const AGGREGATION_TYPES = {
+  SUM: 'SUM',
+  MIN: 'MIN',
+  MAX: 'MAX',
+  AVG: 'AVG',
 } as const;
 
-export const DRAW_MODE = {
-  POINT: "POINT",
-  LINE: "LINE",
-  POLYGON: "POLYGON",
-} as const;
-
-export interface ZonalAnalysisConfiguration {
-  selectionMode: keyof typeof SELECTION_MODE;
-  drawMode: keyof typeof DRAW_MODE;
-  aggregation: keyof typeof AGGREGATION_TYPES;
-  aggregatedField: string;
-  buffer: number;
+export const analyzeData = (
+  operator: keyof typeof AGGREGATION_TYPES,
+  data: number[]
+) => {
+  switch (operator) {
+    case AGGREGATION_TYPES.SUM: {
+      return data.reduce((sum, num) => {
+        return sum + (isNaN(num) ? 0 : num);
+      }, 0);
+    }
+  }
+  return null
 }

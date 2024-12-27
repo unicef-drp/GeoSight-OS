@@ -19,7 +19,6 @@
 
 import React, {
   forwardRef,
-  useEffect,
   useImperativeHandle,
   useRef,
   useState
@@ -31,7 +30,6 @@ import {
   MeasurementOnIcon
 } from "../../../../components/Icons";
 import { ZonalAnalysisTool } from "../../../../components/ZonalAnalysisTool";
-import ArcGISRequest from "../../../../utils/ArcGIS/Request";
 
 import './style.scss';
 
@@ -64,26 +62,6 @@ export const ZonalAnalysisComponent = forwardRef((
       started()
       setActive(active)
     }
-
-    /** Test */
-    useEffect(() => {
-      const arcgisRequest = new ArcGISRequest('a')
-      arcgisRequest.queryData({
-        outFields: ['FID'],
-        returnGeometry: false
-      }).then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-        .then((data) => {
-          console.log("Fetched Data:", data);
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
-    }, []);
 
     return <Plugin className='PopupToolbarIcon'>
       <div className='Active'>

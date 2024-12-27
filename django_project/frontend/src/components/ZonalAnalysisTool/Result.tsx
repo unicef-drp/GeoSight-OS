@@ -19,12 +19,14 @@ import { ContextLayer } from "../../store/dashboard/reducers/contextLayers";
 import { DRAW_MODE, ZonalAnalysisConfiguration } from "./index.d";
 
 import './style.scss';
-import { Variables } from "../../utils/Variables";
 import {
   ArcGISLine,
   ArcGISPoint,
   ArcGISPolygon
 } from "../../utils/ArcGIS/DataType";
+import ArcGISRequest from "../../utils/ArcGIS/Request";
+import { Variables } from "../../utils/Variables";
+import { analyzeData } from "../../utils/analysisData";
 
 interface Props {
   contextLayer: ContextLayer;
@@ -32,6 +34,61 @@ interface Props {
   setIsAnalysing: (isDone: boolean) => void;
 }
 
+// --------------------------------
+// FOR ARCGIS
+// --------------------------------
+const analyzeArcGIS = (
+  contextLayer: ContextLayer,
+  config: ZonalAnalysisConfiguration,
+  features: Array<Feature>,
+  setIsAnalysing: (isAnalysing: boolean) => void,
+  setValue: (value: number) => void,
+  setError: (error: string) => void,
+) => {
+  let _Class = null;
+  switch (config.drawMode) {
+    case DRAW_MODE.POLYGON:
+      _Class = ArcGISPolygon;
+      break;
+    case DRAW_MODE.LINE:
+      _Class = ArcGISLine;
+      break;
+    case DRAW_MODE.POINT:
+      _Class = ArcGISPoint;
+      break;
+    default:
+      setError(`${config.drawMode} is not recognized.`)
+      setIsAnalysing(false)
+  }
+  if (_Class) {
+    const Feature = new _Class(features, config.buffer)
+    const arcgisRequest = new ArcGISRequest(contextLayer.url)
+
+    // outFields is based on admin config
+    arcgisRequest.queryData({
+      outFields: [config.aggregatedField],
+      returnGeometry: false
+    }).then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    }).then((data) => {
+      const cleanData = data.features.map((row: any) => {
+        try {
+          return row.attributes[config.aggregatedField]
+        } catch (err) {
+          return null
+        }
+      }).filter((row: any) => row !== null)
+      setValue(analyzeData(config.aggregation, cleanData))
+    }).catch((error) => {
+      setError(error.toString())
+    }).finally(() => {
+      setIsAnalysing(false)
+    })
+  }
+}
 /**
  * Zonal Analysis Tool
  */
@@ -40,44 +97,34 @@ export const ZonalAnalysisResult = forwardRef((
   ) => {
 
     const [value, setValue] = useState<number>(null);
+    const [error, setError] = useState<string>(null);
 
     useImperativeHandle(ref, () => ({
       analyze(features: Array<Feature>, config: ZonalAnalysisConfiguration) {
         setIsAnalysing(true)
-
+        setValue(null)
+        setError(null)
         switch (contextLayer.layer_type) {
-
-          // --------------------------------
-          // FOR ARCGIS
-          // --------------------------------
           case Variables.LAYER.TYPE.ARCGIS: {
-            let _Class = null;
-            switch (config.drawMode) {
-              case DRAW_MODE.POLYGON:
-                _Class = ArcGISPolygon;
-                break;
-              case DRAW_MODE.LINE:
-                _Class = ArcGISLine;
-                break;
-              case DRAW_MODE.POINT:
-                _Class = ArcGISPoint;
-                break;
-              default:
-                setIsAnalysing(false)
-            }
-            if (_Class) {
-              new _Class(features, config.buffer)
-            }
+            analyzeArcGIS(
+              contextLayer, config, features, setIsAnalysing, setValue, setError
+            )
             break;
           }
         }
+
       }
     }));
 
     return (
       <tr>
         <td>{contextLayer.name}</td>
-        <td>{isAnalyzing ? <i>Loading</i> : value ? value : '-'}</td>
+        <td>
+          {
+            isAnalyzing ? <i>Loading</i> : error ?
+              <i className='Error'>{error}</i> : value ? value : '-'
+          }
+        </td>
       </tr>
     );
   }

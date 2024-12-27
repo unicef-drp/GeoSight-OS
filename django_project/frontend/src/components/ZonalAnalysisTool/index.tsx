@@ -37,8 +37,8 @@ import { RootState } from "../../store/dashboard/reducers";
 import { ContextLayer } from "../../store/dashboard/reducers/contextLayers";
 import { Variables } from "../../utils/Variables";
 import { ZonalAnalysisResult } from "./Result";
+import { AGGREGATION_TYPES } from "../../utils/analysisData";
 import {
-  AGGREGATION_TYPES,
   DRAW_MODE,
   SELECTION_MODE,
   ZonalAnalysisConfiguration
@@ -73,7 +73,8 @@ export const ZonalAnalysisTool = forwardRef((
         selectionMode: SELECTION_MODE.MANUAL,
         drawMode: DRAW_MODE.POLYGON,
         aggregation: AGGREGATION_TYPES.SUM,
-        buffer: 0
+        buffer: 0,
+        aggregatedField: 'FID'
       }
     );
     const [draw, setDraw] = useState<MapDrawing>(null);
