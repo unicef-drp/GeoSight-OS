@@ -81,16 +81,6 @@ export const ZonalAnalysisTool = forwardRef((
     const [drawState, setDrawState] = useState<number>(null);
 
     useImperativeHandle(ref, () => ({
-      start() {
-        const mapDrawing = new MapDrawing(
-          map,
-          'draw_polygon',
-          () => {
-            setDrawState(new Date().getTime())
-          }
-        )
-        setDraw(mapDrawing)
-      },
       stop() {
         if (draw) {
           draw.destroy()
@@ -99,6 +89,18 @@ export const ZonalAnalysisTool = forwardRef((
         map.boxZoom.enable();
       }
     }));
+
+    /** When start */
+    useEffect(() => {
+      const mapDrawing = new MapDrawing(
+        map,
+        'draw_polygon',
+        () => {
+          setDrawState(new Date().getTime())
+        }
+      )
+      setDraw(mapDrawing)
+    }, []);
 
     /** Mode changed */
     useEffect(() => {

@@ -19,7 +19,6 @@
 
 import React, {
   forwardRef,
-  useEffect,
   useImperativeHandle,
   useRef,
   useState
@@ -56,18 +55,13 @@ export const ZonalAnalysisComponent = forwardRef((
       }
     }));
 
-    /**
-     * Start changed
-     */
-    useEffect(() => {
-      if (map) {
-        if (active) {
-          toolRef?.current?.start()
-        } else {
-          toolRef?.current?.stop()
-        }
+    const toggle = (active: boolean) => {
+      if (!active) {
+        toolRef?.current?.stop()
       }
-    }, [map, active]);
+      started()
+      setActive(active)
+    }
 
     return <Plugin className='PopupToolbarIcon'>
       <div className='Active'>
@@ -77,8 +71,7 @@ export const ZonalAnalysisComponent = forwardRef((
           active={active}
           onClick={() => {
             if (map) {
-              started()
-              setActive(!active)
+              toggle(!active)
             }
           }}>
           {active ? <MeasurementOnIcon/> : <MeasurementOffIcon/>}
