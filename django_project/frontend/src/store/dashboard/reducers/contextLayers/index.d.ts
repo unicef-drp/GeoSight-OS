@@ -18,4 +18,5 @@ export interface ContextLayer {
   name: string;
   url: string;
   layer_type: string;
+  arcgis_config?: number;
 }

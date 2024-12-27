@@ -47,10 +47,15 @@ export class ArcGISGeometry {
   }
 
   geometry() {
-    const output = {}
+    const output = {
+      spatialReference: { "wkid": 4326 }
+    }
     if (this.type === 'Polygon') {
-      // @ts-ignore
-      return { 'rings': this.features.map(feature => feature.geometry.coordinates[0]) }
+      return {
+        // @ts-ignore
+        rings: this.features.map(feature => feature.geometry.coordinates[0]),
+        spatialReference: { "wkid": 4326 }
+      }
     }
     // @ts-ignore
     output[this.esriGeometryKey] = this.features.map(feature => feature.geometry.coordinates)

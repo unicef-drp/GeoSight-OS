@@ -22,9 +22,11 @@ import { ArcGISGeometry, Payload } from "./DataType";
 
 export default class ArcGISRequest {
   private url: string;
+  private headers: object;
 
-  constructor(featureServerURL: string) {
+  constructor(featureServerURL: string, headers: object) {
     this.url = featureServerURL
+    this.headers = headers
   }
 
   /** Query data of FeatureServer **/
@@ -54,6 +56,8 @@ export default class ArcGISRequest {
     return fetch(url, {
       method: "POST",
       body: data,
+      // @ts-ignore
+      headers: this.headers
     });
   }
 }

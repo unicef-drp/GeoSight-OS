@@ -63,7 +63,14 @@ const analyzeArcGIS = (
   if (_Class) {
     // Change km to meters
     const feature = new _Class(features, config.buffer * 1000)
-    const arcgisRequest = new ArcGISRequest(contextLayer.url)
+
+    // Change the url
+    let url = contextLayer.url
+    let headers = {}
+    if (contextLayer.arcgis_config) {
+      url = `/api/arcgis/${contextLayer.arcgis_config}/proxy?url=` + encodeURIComponent(contextLayer.url)
+    }
+    const arcgisRequest = new ArcGISRequest(url, headers)
 
     // outFields is based on admin config
     arcgisRequest.queryData(

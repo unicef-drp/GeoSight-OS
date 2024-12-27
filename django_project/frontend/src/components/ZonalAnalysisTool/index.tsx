@@ -74,7 +74,7 @@ export const ZonalAnalysisTool = forwardRef((
         drawMode: DRAW_MODE.POLYGON,
         aggregation: AGGREGATION_TYPES.SUM,
         buffer: 0,
-        aggregatedField: 'FID'
+        aggregatedField: 'fid'
       }
     );
     const [draw, setDraw] = useState<MapDrawing>(null);
@@ -86,7 +86,6 @@ export const ZonalAnalysisTool = forwardRef((
 
     useImperativeHandle(ref, () => ({
       stop() {
-        console.log('Stop')
         if (draw) {
           draw.destroy()
         }

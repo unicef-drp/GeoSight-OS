@@ -16,25 +16,79 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from urllib import parse
 
-from django.http import HttpResponseBadRequest
+import requests
+from django.http import HttpResponseBadRequest, HttpResponse
 from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 
-from core.api.proxy import ProxyView
 from core.utils import set_query_parameter, parse_url
 from geosight.data.models.arcgis import ArcgisConfig
 
 
-class ArcgisConfigProxy(ProxyView):
-    """Proxying arcgis."""
+class ProxyView:
+    """Proxy view for Arcgis API."""
 
     key = 'url'
 
-    def get(self, request, pk):
-        """Reurn token of arcgis."""
+    def __init__(self, request):
+        """Initialize the proxy view."""
+        self.request = request
+
+    def proxy_request(
+            self, url, username=None, password=None,
+            basic_auth=None
+    ):
+        """Fetch data."""
+        request = self.request
+        method = request.method.upper()
+
+        # Prepare headers
+        headers = {}
+        if basic_auth:
+            headers["Authorization"] = f"Basic {basic_auth}"
+
+        # Add the Content-Type header if available
+        content_type = request.headers.get('Content-Type')
+        if content_type:
+            headers["Content-Type"] = content_type
+
+        if method == "GET":
+            if username and password:
+                response = requests.get(
+                    url, auth=(username, password),
+                    headers=headers
+                )
+            else:
+                response = requests.get(url, headers=headers)
+        elif method == "POST":
+            data = request.body
+            if username and password:
+                response = requests.post(
+                    url,
+                    auth=(username, password),
+                    headers=headers,
+                    data=data
+                )
+            else:
+                response = requests.post(url, headers=headers, data=data)
+        else:
+            return HttpResponse("Method not allowed", status=405)
+
+        django_response = HttpResponse(
+            content=response.content,
+            status=response.status_code,
+            content_type=response.headers.get('Content-Type', 'text/plain')
+            # Default to text/plain if Content-Type is missing
+        )
+        return django_response
+
+    def get_url(self, request, pk):
+        """Return the url to the arcgis."""
         config = get_object_or_404(ArcgisConfig, pk=pk)
         url = request.GET.get(self.key, None)
         if not url:
-            return HttpResponseBadRequest(f'{self.key} is required')
+            raise ValueError(f'{self.key} is required')
 
         # Check if config host same with host
         config_host, _, _ = parse_url(
@@ -49,18 +103,26 @@ class ArcgisConfigProxy(ProxyView):
                 params[key] = value
         params['token'] = config.token_val
 
-        url = set_query_parameter(
-            input_url, params
-        )
+        url = set_query_parameter(input_url, params)
         url_host, path, params = parse_url(parse.unquote(url))
         if config_host != url_host:
-            return HttpResponseBadRequest(
+            raise ValueError(
                 'Url host does not match with config'
             )
 
         # Just allow FeatureServer or MapServer
         if all(c not in path for c in ['/FeatureServer/', '/MapServer/']):
-            return HttpResponseBadRequest(
+            return ValueError(
                 'Just allow FeatureServer or MapServer'
             )
-        return self.fetch(url)
+        return url
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+def arcgis_proxy_request(request, pk):
+    proxy = ProxyView(request)
+    try:
+        url = proxy.get_url(request, pk)
+    except ValueError as e:
+        return HttpResponseBadRequest(f'{e}')
+    return proxy.proxy_request(url)

@@ -17,7 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.conf.urls import url
 from django.urls import include
 
-from geosight.data.api.arcgis import ArcgisConfigProxy
+from geosight.data.api.arcgis import arcgis_proxy_request
 from geosight.data.api.basemap import (
     BasemapListAPI, BasemapDetailAPI
 )
@@ -288,7 +288,7 @@ sharepoint_api = [
 arcgis_api = [
     url(
         r'^(?P<pk>\d+)/proxy$',
-        ArcgisConfigProxy.as_view(), name='arcgis-config-proxy'
+        arcgis_proxy_request, name='arcgis-config-proxy'
     ),
 ]
 # ------------------------------------------------------
