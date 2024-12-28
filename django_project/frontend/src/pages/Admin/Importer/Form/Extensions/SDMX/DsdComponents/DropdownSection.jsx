@@ -68,6 +68,3 @@ const DropdownSection = ({
 
 
 export default DropdownSection;
-
-
-

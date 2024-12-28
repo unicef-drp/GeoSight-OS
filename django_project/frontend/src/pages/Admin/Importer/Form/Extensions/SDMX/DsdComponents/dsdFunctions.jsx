@@ -168,7 +168,7 @@ const updateDsd = async (dataflow, dimensions, dataflowVersion) => {
 
     const sdmxImplementation = ["implementation 1"];
 
-    return { updatedDimensions, apiResponse, sdmxImplementation };
+    return { updatedDimensions, apiUrl, apiResponse, sdmxImplementation };
   } catch (error) {
     console.error("Error fetching or parsing DSD from API:", error);
     return { error: "Error fetching data" };

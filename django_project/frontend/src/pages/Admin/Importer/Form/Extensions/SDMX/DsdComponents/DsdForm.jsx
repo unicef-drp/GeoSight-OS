@@ -73,6 +73,7 @@ const DsdForm = ({ urlChanged, setRequest }) => {
   // Fetch DSD on dimension change
   useEffect(() => {
     if (!selectedDataflow || !selectedDataflowVersion) return;
+    
     fetchDsd(
       selectedDataflow,
       selectedDataflowVersion.value,
