@@ -16,7 +16,11 @@
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import { Feature } from "geojson";
 import { ContextLayer } from "../../store/dashboard/reducers/contextLayers";
-import { DRAW_MODE, ZonalAnalysisConfiguration } from "./index.d";
+import {
+  DRAW_MODE,
+  ZonalAnalysisConfiguration,
+  ZonalAnalysisLayerConfiguration
+} from "./index.d";
 
 import './style.scss';
 import {
@@ -27,9 +31,10 @@ import {
 import ArcGISRequest from "../../utils/ArcGIS/Request";
 import { Variables } from "../../utils/Variables";
 import { analyzeData } from "../../utils/analysisData";
+import { useSelector } from "react-redux";
 
 interface Props {
-  contextLayer: ContextLayer;
+  analysisLayer: ZonalAnalysisLayerConfiguration;
   isAnalyzing: boolean;
   setIsAnalysing: (isDone: boolean) => void;
 }
@@ -40,6 +45,7 @@ interface Props {
 const analyzeArcGIS = (
   contextLayer: ContextLayer,
   config: ZonalAnalysisConfiguration,
+  analysisLayer: ZonalAnalysisLayerConfiguration,
   features: Array<Feature>,
   setIsAnalysing: (isAnalysing: boolean) => void,
   setValue: (value: number) => void,
@@ -72,7 +78,7 @@ const analyzeArcGIS = (
     // outFields is based on admin config
     arcgisRequest.queryData(
       {
-        outFields: [config.aggregatedField],
+        outFields: [analysisLayer.aggregatedField],
         returnGeometry: false
       },
       feature
@@ -84,12 +90,12 @@ const analyzeArcGIS = (
     }).then((data) => {
       const cleanData = data.features.map((row: any) => {
         try {
-          return row.attributes[config.aggregatedField]
+          return row.attributes[analysisLayer.aggregatedField]
         } catch (err) {
           return null
         }
       }).filter((row: any) => row !== null)
-      setValue(analyzeData(config.aggregation, cleanData))
+      setValue(analyzeData(analysisLayer.aggregation, cleanData))
     }).catch((error) => {
       setError(error.toString())
     }).finally(() => {
@@ -101,11 +107,14 @@ const analyzeArcGIS = (
  * Zonal Analysis Tool
  */
 export const ZonalAnalysisResult = forwardRef((
-    { contextLayer, isAnalyzing, setIsAnalysing }: Props, ref
+    { analysisLayer, isAnalyzing, setIsAnalysing }: Props, ref
   ) => {
 
+    // @ts-ignore
+    const { contextLayers } = useSelector(state => state.dashboard.data)
     const [value, setValue] = useState<number>(null);
     const [error, setError] = useState<string>(null);
+    const contextLayer = contextLayers.find((ctx: ContextLayer) => ctx.id === analysisLayer.id)
 
     useImperativeHandle(ref, () => ({
       analyze(features: Array<Feature>, config: ZonalAnalysisConfiguration) {
@@ -115,7 +124,7 @@ export const ZonalAnalysisResult = forwardRef((
         switch (contextLayer.layer_type) {
           case Variables.LAYER.TYPE.ARCGIS: {
             analyzeArcGIS(
-              contextLayer, config, features, setIsAnalysing, setValue, setError
+              contextLayer, config, analysisLayer, features, setIsAnalysing, setValue, setError
             )
             break;
           }
@@ -127,9 +136,15 @@ export const ZonalAnalysisResult = forwardRef((
       }
     }));
 
+    if (!contextLayer) {
+      return null
+    }
+
     return (
       <tr>
-        <td>{contextLayer.name}</td>
+        <td>{contextLayer?.name}</td>
+        <td>{analysisLayer.aggregation}</td>
+        <td>{analysisLayer.aggregatedField}</td>
         <td>
           {
             isAnalyzing ? <i>Loading</i> : error ?

@@ -33,18 +33,17 @@ import { ThemeButton } from "../Elements/Button";
 import { FormControl, InputAdornment, Radio } from "@mui/material";
 import { SelectWithList } from "../Input/SelectWithList";
 import { MapDrawing } from "../../utils/MapDrawing";
-import { RootState } from "../../store/dashboard/reducers";
-import { ContextLayer } from "../../store/dashboard/reducers/contextLayers";
 import { Variables } from "../../utils/Variables";
-import { ZonalAnalysisResult } from "./Result";
-import { AGGREGATION_TYPES } from "../../utils/analysisData";
 import {
   DRAW_MODE,
   SELECTION_MODE,
-  ZonalAnalysisConfiguration
+  ZonalAnalysisConfiguration,
+  ZonalAnalysisLayerConfiguration
 } from "./index.d";
+import { DashboardTool } from "../../store/dashboard/reducers/dashboardTool";
 
 import './style.scss';
+import { ZonalAnalysisResult } from "./Result";
 
 interface Props {
   map: maplibregl.Map;
@@ -56,11 +55,13 @@ interface Props {
 export const ZonalAnalysisTool = forwardRef((
     { map }: Props, ref
   ) => {
-    // TODO :
-    //  TSX Updates
     // @ts-ignore
-    const { contextLayers: ctxLayer } = useSelector((state: RootState) => state.dashboard.data);
-    const contextLayers = ctxLayer as ContextLayer[];
+    const { tools, contextLayers } = useSelector(state => state.dashboard.data)
+    const tool: DashboardTool = tools.find((row: DashboardTool) => row.name === Variables.DASHBOARD.TOOL.ZONAL_ANALYSIS);
+    let layers: ZonalAnalysisLayerConfiguration[] = []
+    if (tool) {
+      layers = tool.config.layersConfiguration
+    }
 
     // For ref
     const zonalAnalysisRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -72,9 +73,7 @@ export const ZonalAnalysisTool = forwardRef((
       {
         selectionMode: SELECTION_MODE.MANUAL,
         drawMode: DRAW_MODE.POLYGON,
-        aggregation: AGGREGATION_TYPES.SUM,
-        buffer: 0,
-        aggregatedField: 'fid'
+        buffer: 0
       }
     );
     const [draw, setDraw] = useState<MapDrawing>(null);
@@ -145,23 +144,6 @@ export const ZonalAnalysisTool = forwardRef((
                 control={<Radio disabled={!isAllAnalyzingDone}/>}
                 label='Draw Manually'/>
             </RadioGroup>
-          </FormControl>
-          <FormControl className='MuiForm-RadioGroup'>
-            <FormLabel className="MuiInputLabel-root">Aggregation:</FormLabel>
-            <SelectWithList
-              isDisabled={!isAllAnalyzingDone}
-              isMulti={false}
-              value={config.aggregation}
-              list={
-                [AGGREGATION_TYPES.SUM, AGGREGATION_TYPES.MIN, AGGREGATION_TYPES.MAX, AGGREGATION_TYPES.AVG]
-              }
-              onChange={(evt: any) => {
-                setConfig({
-                  ...config,
-                  aggregation: evt.value as keyof typeof AGGREGATION_TYPES
-                })
-              }}
-            />
           </FormControl>
           <FormControl className='MuiForm-RadioGroup'>
             <FormLabel className="MuiInputLabel-root">Buffer:</FormLabel>
@@ -245,14 +227,15 @@ export const ZonalAnalysisTool = forwardRef((
           <table>
             <tr>
               <th>Source layer</th>
+              <th>Aggregation</th>
+              <th>Field</th>
               <th>Value</th>
             </tr>
             {
-              contextLayers.filter(ctx => ctx.layer_type === Variables.LAYER.TYPE.ARCGIS).map(
-                (ctx, index) => {
+              layers.map((layer, index) => {
                   return <ZonalAnalysisResult
-                    contextLayer={ctx}
-                    key={ctx.id}
+                    key={index}
+                    analysisLayer={layer}
                     ref={(el: HTMLDivElement) => addRef(index, el)}
                     isAnalyzing={isAnalyzing[index]}
                     setIsAnalysing={(_isAnalyzing) => {

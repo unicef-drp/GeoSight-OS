@@ -30,6 +30,18 @@ export const analyzeData = (
         return sum + (isNaN(num) ? 0 : num);
       }, 0);
     }
+    case AGGREGATION_TYPES.AVG: {
+      const total = data.reduce((sum, num) => {
+        return sum + (isNaN(num) ? 0 : num);
+      }, 0);
+      return total / data.length;
+    }
+    case AGGREGATION_TYPES.MIN: {
+      return Math.min(...data)
+    }
+    case AGGREGATION_TYPES.MAX: {
+      return Math.max(...data)
+    }
   }
   return null
 }

@@ -30,7 +30,16 @@ export const DRAW_MODE = {
 export interface ZonalAnalysisConfiguration {
   selectionMode: keyof typeof SELECTION_MODE;
   drawMode: keyof typeof DRAW_MODE;
+  buffer: number;
+}
+
+export interface ZonalAnalysisLayerConfiguration {
+  id: number;
   aggregation: keyof typeof AGGREGATION_TYPES;
   aggregatedField: string;
-  buffer: number;
+}
+
+export interface ZonalAnalysisDashboardConfiguration {
+  selectionModes: string[];
+  layersConfiguration: ZonalAnalysisLayerConfiguration[];
 }

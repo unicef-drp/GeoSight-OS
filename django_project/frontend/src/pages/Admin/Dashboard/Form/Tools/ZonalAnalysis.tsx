@@ -17,7 +17,9 @@ import React, { useEffect, useState } from 'react';
 
 import './style.scss';
 import {
-  SELECTION_MODE
+  SELECTION_MODE,
+  ZonalAnalysisDashboardConfiguration,
+  ZonalAnalysisLayerConfiguration
 } from "../../../../../components/ZonalAnalysisTool/index.d";
 import { AGGREGATION_TYPES } from "../../../../../utils/analysisData";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -44,20 +46,10 @@ import {
 } from "../../../../../components/Input/SelectWithList";
 import ArcGISRequest from "../../../../../utils/ArcGIS/Request";
 
-interface LayerConfiguration {
-  id: number;
-  aggregation: keyof typeof AGGREGATION_TYPES;
-  aggregatedField: string;
-}
-
-interface ZonalAnalysisConfigurationProps {
-  selectionModes: string[];
-  layersConfiguration: LayerConfiguration[];
-}
 
 interface Props {
-  config: ZonalAnalysisConfigurationProps;
-  setConfig: (config: ZonalAnalysisConfigurationProps) => void;
+  config: ZonalAnalysisDashboardConfiguration;
+  setConfig: (config: ZonalAnalysisDashboardConfiguration) => void;
 }
 
 
@@ -67,7 +59,7 @@ interface Props {
 export function ZonalAnalysisConfiguration(
   { config, setConfig }: Props
 ) {
-  const [data, setData] = useState<ZonalAnalysisConfigurationProps>(
+  const [data, setData] = useState<ZonalAnalysisDashboardConfiguration>(
     {
       selectionModes: [SELECTION_MODE.SELECT_ADMIN, SELECTION_MODE.MANUAL],
       layersConfiguration: []
@@ -83,7 +75,7 @@ export function ZonalAnalysisConfiguration(
   )
 
   // For new layer
-  const [newLayer, setNewLayer] = useState<LayerConfiguration>({
+  const [newLayer, setNewLayer] = useState<ZonalAnalysisLayerConfiguration>({
     id: contextLayers[0]?.id ? contextLayers[0]?.id : null,
     aggregation: AGGREGATION_TYPES.SUM,
     aggregatedField: "loading"
@@ -262,7 +254,7 @@ export function ZonalAnalysisConfiguration(
               <th></th>
             </tr>
             {
-              layersConfiguration.map((layer: LayerConfiguration, index: number) => {
+              layersConfiguration.map((layer: ZonalAnalysisLayerConfiguration, index: number) => {
                 return <tr key={index}>
                   <td>{contextLayers.find((ctx: ContextLayer) => ctx.id === layer.id)?.name}</td>
                   <td>{layer.aggregation}</td>

@@ -13,6 +13,10 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
+import {
+  ZonalAnalysisDashboardConfiguration
+} from "../../../../components/ZonalAnalysisTool/index.d";
+
 /**
  * Dashboard tools reducer
  */
@@ -25,7 +29,7 @@ export interface DashboardTool {
   id: string;
   name: string;
   visible_by_default: boolean;
-  config: object | null;
+  config: ZonalAnalysisDashboardConfiguration | null;
 }
 
 export type DashboardToolState = DashboardTool[];
