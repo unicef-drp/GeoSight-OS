@@ -112,7 +112,7 @@ class ProxyView:
 
         # Just allow FeatureServer or MapServer
         if all(c not in path for c in ['/FeatureServer/', '/MapServer/']):
-            return ValueError(
+            raise ValueError(
                 'Just allow FeatureServer or MapServer'
             )
         return url
