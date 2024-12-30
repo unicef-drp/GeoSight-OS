@@ -65,12 +65,9 @@ const analyzeArcGIS = (
     const feature = new _Class(features, config.buffer * 1000)
 
     // Change the url
-    let url = contextLayer.url
-    let headers = {}
-    if (contextLayer.arcgis_config) {
-      url = `/api/arcgis/${contextLayer.arcgis_config}/proxy?url=` + encodeURIComponent(contextLayer.url)
-    }
-    const arcgisRequest = new ArcGISRequest(url, headers)
+    const arcgisRequest = new ArcGISRequest(
+      contextLayer.url, {}, contextLayer.arcgis_config
+    )
 
     // outFields is based on admin config
     arcgisRequest.queryData(

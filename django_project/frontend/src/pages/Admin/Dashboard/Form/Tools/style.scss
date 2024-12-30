@@ -38,4 +38,52 @@
   label {
     margin: 0;
   }
+
+  .modal--box {
+    max-width: 800px;
+  }
+
+  .modal--box,
+  .modal--content {
+    overflow: visible;
+  }
+
+  .modal--content {
+    border-top: 1px solid $border-gray;
+  }
+
+  .MuiCheckbox-root {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .Creator {
+    border: 1px solid $border-gray;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    display: flex;
+  }
+
+  .LayerList {
+    table {
+      width: 100%;
+      margin-bottom: 1rem;
+
+      th, td {
+        padding: 1px 3px;
+        border: 1px solid $primary-color;
+      }
+
+      th {
+        background-color: $primary-color;
+        color: white;
+        text-align: left;
+      }
+
+      .MuiButton-Error {
+        padding: 0 !important;
+        min-width: 1px;
+      }
+    }
+  }
 }

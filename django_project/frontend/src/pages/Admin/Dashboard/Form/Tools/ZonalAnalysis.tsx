@@ -21,13 +21,28 @@ import {
 } from "../../../../../components/ZonalAnalysisTool/index.d";
 import { AGGREGATION_TYPES } from "../../../../../utils/analysisData";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { Checkbox } from "@mui/material";
+import { Checkbox, FormControl } from "@mui/material";
 import Modal, {
   ModalContent,
   ModalHeader
 } from "../../../../../components/Modal";
-import { SaveButton } from "../../../../../components/Elements/Button";
+import {
+  AddButton,
+  DeleteButton,
+  SaveButton
+} from "../../../../../components/Elements/Button";
 import EditIcon from "@mui/icons-material/Edit";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../store/dashboard/reducers";
+import { Variables } from "../../../../../utils/Variables";
+import {
+  ContextLayer
+} from "../../../../../store/dashboard/reducers/contextLayers";
+import FormLabel from "@mui/material/FormLabel";
+import {
+  SelectWithList
+} from "../../../../../components/Input/SelectWithList";
+import ArcGISRequest from "../../../../../utils/ArcGIS/Request";
 
 interface LayerConfiguration {
   id: number;
@@ -60,6 +75,21 @@ export function ZonalAnalysisConfiguration(
   );
   const [open, setOpen] = useState(false);
 
+  // Context layers
+  // @ts-ignore
+  const { contextLayers: ctxLayer } = useSelector((state: RootState) => state.dashboard.data);
+  const contextLayers = ctxLayer.filter(
+    (ctx: ContextLayer) => ctx.layer_type === Variables.LAYER.TYPE.ARCGIS
+  )
+
+  // For new layer
+  const [newLayer, setNewLayer] = useState<LayerConfiguration>({
+    id: contextLayers[0]?.id ? contextLayers[0]?.id : null,
+    aggregation: AGGREGATION_TYPES.SUM,
+    aggregatedField: "loading"
+  });
+  const [newLayerFieldOptions, setNewLayerFieldOptions] = useState<string[]>([]);
+
   /** Apply data **/
   const apply = () => {
     setConfig({ ...data })
@@ -73,11 +103,68 @@ export function ZonalAnalysisConfiguration(
     }
   }, [config])
 
+  // Loading data
+  useEffect(() => {
+    if (newLayer.id) {
+      // Get metadata
+      const contextLayer = contextLayers.find(
+        (ctx: ContextLayer) => ctx.id === newLayer.id
+      )
+      if (contextLayer) {
+        setNewLayer({
+          ...newLayer,
+          aggregatedField: "loading"
+        })
+        setNewLayerFieldOptions(["loading"])
+
+        const arcgisRequest = new ArcGISRequest(
+          contextLayer.url, {}, contextLayer.arcgis_config
+        )
+        // outFields is based on admin config
+        arcgisRequest.getMetadata(
+        ).then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json();
+        }).then((data) => {
+          const fields = data.fields.map((field: any) => field.name)
+          setNewLayer({
+            ...newLayer,
+            aggregatedField: fields[0]
+          })
+          setNewLayerFieldOptions(fields)
+        }).catch((error) => {
+          setNewLayer({
+            ...newLayer,
+            aggregatedField: "error"
+          })
+          setNewLayerFieldOptions(["error"])
+        }).finally(() => {
+        })
+        return
+      }
+    }
+
+    setNewLayer({
+      ...newLayer,
+      aggregatedField: null
+    })
+    setNewLayerFieldOptions([])
+  }, [newLayer.id])
+
   if (!data) {
     return null
   }
 
-  const { selectionModes } = data
+  const ctxOptions = contextLayers.map((ctx: ContextLayer) => {
+    return {
+      label: ctx.name,
+      value: ctx.id,
+    }
+  })
+
+  const { selectionModes, layersConfiguration } = data
   return <>
     <Modal
       className='ZonalAnalysisConfiguration'
@@ -92,6 +179,112 @@ export function ZonalAnalysisConfiguration(
         Zonal analysis configuration
       </ModalHeader>
       <ModalContent className='White'>
+
+        {/* -------------------------------------------- */}
+        {/* Creator */}
+        <div className='Creator'>
+          <FormControl style={{ minWidth: "200px" }}>
+            <FormLabel className="MuiInputLabel-root">
+              Target layer (from context layers):
+            </FormLabel>
+            <SelectWithList
+              isMulti={false}
+              value={newLayer.id}
+              list={ctxOptions}
+              onChange={(evt: any) => {
+                setNewLayer({
+                  ...newLayer,
+                  id: evt.value
+                })
+              }}
+            />
+          </FormControl>
+          <FormControl style={{ minWidth: "100px" }}>
+            <FormLabel className="MuiInputLabel-root">Aggregation:</FormLabel>
+            <SelectWithList
+              isMulti={false}
+              value={newLayer.aggregation}
+              list={
+                [AGGREGATION_TYPES.SUM, AGGREGATION_TYPES.MIN, AGGREGATION_TYPES.MAX, AGGREGATION_TYPES.AVG]
+              }
+              onChange={(evt: any) => {
+                setNewLayer({ ...newLayer, aggregation: evt.value })
+              }}
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel className="MuiInputLabel-root">Field:</FormLabel>
+            <SelectWithList
+              isMulti={false}
+              value={newLayer.aggregatedField}
+              list={newLayerFieldOptions}
+              onChange={(evt: any) => {
+                setNewLayer({ ...newLayer, aggregatedField: evt.value })
+              }}
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel
+              className="MuiInputLabel-root"
+              style={{ color: "white" }}>
+              Create
+            </FormLabel>
+            <div>
+              <AddButton
+                style={{ height: "36px" }}
+                variant="primary Reverse"
+                disabled={
+                  !!(
+                    !newLayer.id ||
+                    !newLayer.aggregation ||
+                    !newLayer.aggregatedField ||
+                    ['loading', 'error'].includes(newLayer.aggregatedField)
+                  )
+                }
+                onClick={() => {
+                  layersConfiguration.push(newLayer)
+                  setData({
+                    ...data,
+                    layersConfiguration: layersConfiguration
+                  })
+                }}
+              />
+            </div>
+          </FormControl>
+        </div>
+        {/* -------------------------------------------- */}
+        <div className='LayerList'>
+          <table>
+            <tr>
+              <th>Source layer</th>
+              <th>Aggregation</th>
+              <th>Field</th>
+              <th></th>
+            </tr>
+            {
+              layersConfiguration.map((layer: LayerConfiguration, index: number) => {
+                return <tr key={index}>
+                  <td>{contextLayers.find((ctx: ContextLayer) => ctx.id === layer.id)?.name}</td>
+                  <td>{layer.aggregation}</td>
+                  <td>{layer.aggregatedField}</td>
+                  <td>
+                    <DeleteButton
+                      variant='Error Reverse NoBorder'
+                      onClick={() => {
+                        setData(
+                          {
+                            ...data,
+                            layersConfiguration: layersConfiguration.filter((layer, idx) => index !== idx)
+                          }
+                        )
+                      }}/>
+                  </td>
+                </tr>
+              })
+            }
+          </table>
+        </div>
+
         <div className='BasicForm'>
           <div style={{
             display: "flex",

@@ -15,21 +15,20 @@
 
 
 import React from 'react';
+import { ButtonProps } from "./Button";
 
 declare module './Button' {
-  interface ThemeButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     [key: string]: any;
 
     children?: React.ReactNode;
   }
 
-  export function ThemeButton(props: ThemeButtonProps): JSX.Element;
+  export function ThemeButton(props: ButtonProps): JSX.Element;
 
-  interface SaveButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    [key: string]: any;
+  export function SaveButton(props: ButtonProps): JSX.Element;
 
-    children?: React.ReactNode;
-  }
+  export function AddButton(props: ButtonProps): JSX.Element;
 
-  export function SaveButton(props: SaveButtonProps): JSX.Element;
+  export function DeleteButton(props: ButtonProps): JSX.Element;
 }

@@ -24,7 +24,10 @@ export default class ArcGISRequest {
   private url: string;
   private headers: object;
 
-  constructor(featureServerURL: string, headers: object) {
+  constructor(featureServerURL: string, headers: object, arcgisId: number = null) {
+    if (arcgisId) {
+      featureServerURL = `/api/arcgis/${arcgisId}/proxy?url=` + encodeURIComponent(featureServerURL)
+    }
     this.url = featureServerURL
     this.headers = headers
   }
@@ -42,6 +45,15 @@ export default class ArcGISRequest {
     const queryUrl = (this.url + '/query').replaceAll('//query', '/query')
     return this.post(queryUrl, newPayload)
   }
+
+  /** Get metadata **/
+  getMetadata = () => {
+    return fetch(this.url + '?f=json', {
+      // @ts-ignore
+      headers: this.headers
+    });
+  }
+
 
   /** POST request to ArcGIS **/
   private post = (url: string, payload: object) => {
