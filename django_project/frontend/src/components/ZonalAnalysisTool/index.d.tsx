@@ -17,7 +17,7 @@ import { AGGREGATION_TYPES } from "../../utils/analysisData";
 
 
 export const SELECTION_MODE = {
-  SELECT: "SELECT",
+  SELECT_ADMIN: "SELECT_ADMIN",
   MANUAL: "MANUAL",
 } as const;
 

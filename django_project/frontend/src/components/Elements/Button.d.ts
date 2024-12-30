@@ -20,8 +20,16 @@ declare module './Button' {
   interface ThemeButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     [key: string]: any;
 
-    children: React.ReactNode;
+    children?: React.ReactNode;
   }
 
   export function ThemeButton(props: ThemeButtonProps): JSX.Element;
+
+  interface SaveButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+    [key: string]: any;
+
+    children?: React.ReactNode;
+  }
+
+  export function SaveButton(props: SaveButtonProps): JSX.Element;
 }

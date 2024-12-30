@@ -17,6 +17,8 @@ import React from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { Actions } from "../../../../../store/dashboard";
 import ListForm from '../ListForm'
+import { Variables } from "../../../../../utils/Variables";
+import { ZonalAnalysisConfiguration } from "./ZonalAnalysis";
 
 import './style.scss';
 
@@ -55,5 +57,16 @@ export default function ToolsForm() {
     }}
     initColumns={columns}
     hasGroup={false}
+    otherActionsFunction={data => {
+      if (data.name === Variables.DASHBOARD.TOOL.ZONAL_ANALYSIS) {
+        return <ZonalAnalysisConfiguration
+          config={data.config}
+          setConfig={config => {
+            dispatch(Actions.DashboardTool.update({ ...data, config: config }))
+          }}
+        />
+      }
+      return null
+    }}
   />
 }

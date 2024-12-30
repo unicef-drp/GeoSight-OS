@@ -486,7 +486,7 @@ class Dashboard(
                     name=tool['name'],
                 )
             obj.visible_by_default = tool['visible_by_default']
-            obj.config = tool.get('configuration', None)
+            obj.config = tool.get('config', None)
             obj.save()
         self.save()
 
