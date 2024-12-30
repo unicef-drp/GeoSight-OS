@@ -115,6 +115,12 @@ test.describe('Create complex project', () => {
     await page.getByRole('button', { name: 'Apply' }).click();
     await expect(page.locator('label').filter({ hasText: 'No filter (global latest' })).toBeDisabled();
 
+    // Update tools
+    await page.locator('.TabPrimary').getByText('Tools').click();
+    await page.locator('li').filter({ hasText: '3D view' }).getByRole('img').click();
+    await page.locator('li').filter({ hasText: 'Compare layers' }).getByRole('img').click();
+    await page.locator('li').filter({ hasText: 'Zonal analysis' }).getByRole('img').click();
+
     // Save
     await page.getByText('Save').isEnabled();
     await page.getByText('Save').click();
@@ -173,6 +179,16 @@ test.describe('Create complex project', () => {
     await expect(page.getByLabel(layer5)).toBeChecked();
     await expect(page.locator('.MapLegendSection .IndicatorLegendRowName').nth(0)).toContainText("4");
     await expect(page.locator('.MapLegendSection .IndicatorLegendRowName').nth(1)).toContainText("No data");
+
+    // CHECK TOOLS VISIBILITY
+    await expect(page.getByTitle('Zonal Analysis')).toBeVisible();
+    await expect(page.getByTitle('Start Measurement')).toBeVisible();
+    await expect(page.getByTitle('Turn on compare Layers')).toBeHidden();
+    await expect(page.getByTitle('3D layer')).toBeHidden();
+    await page.getByTitle('Start Measurement').click();
+    await expect(page.getByText('Measure distances and areas')).toBeVisible();
+    await page.getByTitle('Zonal Analysis').click();
+    await expect(page.getByText('Extract zonal statistic')).toBeVisible();
 
     // --------------------------------------------------------------
     // CHECK PROJECT WITH OVERRIDE CONFIG EDIT MODE

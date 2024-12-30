@@ -105,12 +105,14 @@ test.describe('View project', () => {
     await expect(page.locator('.IndicatorLegendSection .IndicatorLegendRowName').nth(2)).toContainText('No data');
 
     // ----------------------------------------------------------------------------
-    // CHECK TOOLS
+    // CHECK TOOLS VISIBILITY
     // ----------------------------------------------------------------------------
+    await expect(page.getByTitle('Start Measurement')).toBeVisible();
+    await expect(page.getByTitle('Turn on compare Layers')).toBeVisible();
+    await expect(page.getByTitle('3D layer')).toBeVisible();
+    await expect(page.getByTitle('Zonal Analysis')).toBeHidden();
     await page.getByTitle('Start Measurement').click();
     await expect(page.getByText('Measure distances and areas')).toBeVisible();
-    await page.getByTitle('Zonal Analysis').click();
-    await expect(page.getByText('Extract zonal statistic')).toBeVisible();
 
     // ----------------------------------------------------------------------------
     // BOOKMARK

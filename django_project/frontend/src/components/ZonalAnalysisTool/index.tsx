@@ -59,7 +59,7 @@ export const ZonalAnalysisTool = forwardRef((
     const { tools, contextLayers } = useSelector(state => state.dashboard.data)
     const tool: DashboardTool = tools.find((row: DashboardTool) => row.name === Variables.DASHBOARD.TOOL.ZONAL_ANALYSIS);
     let layers: ZonalAnalysisLayerConfiguration[] = []
-    if (tool) {
+    if (tool?.config) {
       layers = tool.config.layersConfiguration
     }
 
