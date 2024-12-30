@@ -20,7 +20,7 @@ import { ArrowDownwardIcon } from "../Icons";
 const formatOptionLabel = ({ value, label, help }) => {
   if (help) {
     return <div>
-      {label} <span dangerouslySetInnerHTML={{ __html: help }} />
+      {label} <span dangerouslySetInnerHTML={{ __html: help }}/>
     </div>
   } else {
     return label
@@ -37,7 +37,7 @@ export default function Select({ ...props }) {
     components={{
       IndicatorSeparator: () => null,
       DropdownIndicator: () => <div className='DropdownIndicator'>
-        <ArrowDownwardIcon /></div>,
+        <ArrowDownwardIcon/></div>,
     }}
   />
 }
