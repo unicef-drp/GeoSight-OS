@@ -57,6 +57,7 @@ import './style.scss';
 // Initialize cog
 import { cogProtocol } from "@geomatico/maplibre-cog-protocol";
 import PopupToolbars from "../Toolbars/PopupToolbars";
+import { Variables } from "../../../utils/Variables";
 
 maplibregl.addProtocol('cog', cogProtocol);
 
@@ -78,6 +79,15 @@ export default function MapLibre(
     position,
     force
   } = useSelector(state => state.map);
+
+  // Tools
+  const { tools: dashboardTools } = useSelector(state => state.dashboard.data)
+  const tools = dashboardTools.filter(
+    row => row.visible_by_default && [
+      Variables.DASHBOARD.TOOL.VIEW_3D,
+      Variables.DASHBOARD.TOOL.COMPARE_LAYERS
+    ].includes(row.name)
+  );
 
 
   /***
@@ -258,29 +268,31 @@ export default function MapLibre(
         <div className='Separator'/>
         <HomeButton map={map}/>
         <LabelToggler/>
-        <CompareLayer disabled={is3dMode}/>
+        {
+          tools.find((tool => tool.name === Variables.DASHBOARD.TOOL.COMPARE_LAYERS)) ?
+            <CompareLayer disabled={is3dMode}/> : null
+        }
         {/* 3D View */}
-        <Plugin>
-          <div className='ExtrudedIcon Active'>
-            <PluginChild
-              title={'3D layer'}
-              disabled={!map}
-              active={is3dMode}
-              onClick={() => {
-                if (is3dMode) {
-                  map.easeTo({ pitch: 0 })
-                }
-                dispatch(Actions.Map.change3DMode(!is3dMode))
-              }}>
-              {is3dMode ? <ThreeDimensionOnIcon/> : <ThreeDimensionOffIcon/>}
-            </PluginChild>
-          </div>
-        </Plugin>
-        <div style={{
-          borderLeft: "1px solid #E6E8E8",
-          height: "30px",
-          margin: "0 0.5rem"
-        }}/>
+        {
+          tools.find((tool => tool.name === Variables.DASHBOARD.TOOL.VIEW_3D)) ?
+            <Plugin>
+              <div className='ExtrudedIcon Active'>
+                <PluginChild
+                  title={'3D layer'}
+                  disabled={!map}
+                  active={is3dMode}
+                  onClick={() => {
+                    if (is3dMode) {
+                      map.easeTo({ pitch: 0 })
+                    }
+                    dispatch(Actions.Map.change3DMode(!is3dMode))
+                  }}>
+                  {is3dMode ? <ThreeDimensionOnIcon/> :
+                    <ThreeDimensionOffIcon/>}
+                </PluginChild>
+              </div>
+            </Plugin> : null
+        }
         <PopupToolbars map={map}/>
         <div className='Separator'/>
       </div>

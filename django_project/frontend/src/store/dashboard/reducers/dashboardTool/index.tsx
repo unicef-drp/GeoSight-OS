@@ -14,30 +14,49 @@
  */
 
 /**
- * RELATED TABLE reducer
+ * Dashboard tools reducer
  */
 
 
 export const DASHBOARD_TOOL_ACTION_NAME = 'DASHBOARD_TOOL';
 export const DASHBOARD_TOOL_ACTION_TYPE_UPDATE = 'DASHBOARD_TOOL/UPDATE';
 
-const initialState = []
-export default function dashboardToolReducer(state = initialState, action) {
+export interface DashboardTool {
+  id: string;
+  name: string;
+  visible_by_default: boolean;
+  config: object | null;
+}
+
+export type DashboardToolState = DashboardTool[];
+
+export interface DashboardToolAction {
+  name: string;
+  type: string;
+  payload: Partial<DashboardTool>; // Payload should match the structure of a dashboard tool
+}
+
+const initialState: DashboardToolState = [];
+export default function dashboardToolReducer(
+  state: DashboardToolState = initialState,
+  action: DashboardToolAction
+): DashboardToolState {
   if (action.name === DASHBOARD_TOOL_ACTION_NAME) {
     switch (action.type) {
       case DASHBOARD_TOOL_ACTION_TYPE_UPDATE: {
-        const dashboardTools = []
-        state.forEach(function (dashboardTool) {
+        const dashboardTools: DashboardToolState = [];
+        state.forEach((dashboardTool) => {
           if (dashboardTool.id === action.payload.id) {
-            dashboardTools.push(action.payload)
+            dashboardTools.push({ ...dashboardTool, ...action.payload }); // Update the tool
           } else {
-            dashboardTools.push(dashboardTool)
+            dashboardTools.push(dashboardTool); // Keep existing tools
           }
-        })
-        return dashboardTools
+        });
+        return dashboardTools;
       }
       default:
-        return state
+        return state;
     }
   }
+  return state;
 }

@@ -15,14 +15,15 @@
 
 import {
   DASHBOARD_TOOL_ACTION_NAME,
-  DASHBOARD_TOOL_ACTION_TYPE_UPDATE
+  DASHBOARD_TOOL_ACTION_TYPE_UPDATE,
+  DashboardTool
 } from './index'
 
 /**
  * Update dashboard tool data.
  * @param {object} payload Dashboard data.
  */
-export function update(payload) {
+export function update(payload: DashboardTool) {
   return {
     name: DASHBOARD_TOOL_ACTION_NAME,
     type: DASHBOARD_TOOL_ACTION_TYPE_UPDATE,

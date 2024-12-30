@@ -19,10 +19,15 @@
 
 import React, { useRef } from 'react';
 import maplibregl from "maplibre-gl";
+import { useSelector } from "react-redux";
 import { MeasurementTool } from "./Measurement";
 import { ZonalAnalysisComponent } from "./ZonalAnalysis";
 
+import {
+  DashboardTool
+} from "../../../../store/dashboard/reducers/dashboardTool";
 import './style.scss';
+import { Variables } from "../../../../utils/Variables";
 
 interface Props {
   map: maplibregl.Map;
@@ -36,14 +41,37 @@ interface Props {
 export default function PopupToolbars({ map }: Props) {
   const measurementRef = useRef(null);
   const zonalAnalysisRef = useRef(null);
+
+  // @ts-ignore
+  const { tools: dashboardTools } = useSelector(state => state.dashboard.data)
+  const tools = dashboardTools.filter(
+    (row: DashboardTool) => row.visible_by_default && [
+      Variables.DASHBOARD.TOOL.ZONAL_ANALYSIS,
+      Variables.DASHBOARD.TOOL.MEASUREMENT
+    ].includes(row.name)
+  );
+  if (!tools.length) {
+    return null
+  }
   return <>
-    <MeasurementTool
-      map={map} ref={measurementRef}
-      started={() => zonalAnalysisRef?.current?.stop()}
-    />
-    <ZonalAnalysisComponent
-      map={map} ref={zonalAnalysisRef}
-      started={() => measurementRef?.current?.stop()}
-    />
+    <div style={{
+      borderLeft: "1px solid #E6E8E8",
+      height: "30px",
+      margin: "0 0.5rem"
+    }}/>
+    {
+      tools.find(((tool: DashboardTool) => tool.name === Variables.DASHBOARD.TOOL.MEASUREMENT)) ?
+        <MeasurementTool
+          map={map} ref={measurementRef}
+          started={() => zonalAnalysisRef?.current?.stop()}
+        /> : null
+    }
+    {
+      tools.find(((tool: DashboardTool) => tool.name === Variables.DASHBOARD.TOOL.ZONAL_ANALYSIS)) ?
+        <ZonalAnalysisComponent
+          map={map} ref={zonalAnalysisRef}
+          started={() => measurementRef?.current?.stop()}
+        /> : null
+    }
   </>
 }
