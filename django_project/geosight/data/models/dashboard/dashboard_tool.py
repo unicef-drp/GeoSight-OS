@@ -25,10 +25,10 @@ from geosight.data.models.dashboard.dashboard_relation import (
 class ToolName(models.TextChoices):
     """Choices of request status."""
 
-    COMPARE_LAYERS = 'COMPARE_LAYERS', _('Compare layers')
-    VIEW_3D = 'VIEW_3D', _('3D view')
-    MEASUREMENT = 'MEASUREMENT', _('Measurement')
-    ZONAL_ANALYSIS = 'ZONAL_ANALYSIS', _('Zonal analysis')
+    VIEW_3D = '3D view', _('3D view')
+    COMPARE_LAYERS = 'Compare layers', _('Compare layers')
+    MEASUREMENT = 'Measurement', _('Measurement')
+    ZONAL_ANALYSIS = 'Zonal analysis', _('Zonal analysis')
 
 
 class DashboardTool(DashboardRelation):

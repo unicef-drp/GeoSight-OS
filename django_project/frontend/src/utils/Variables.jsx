@@ -38,5 +38,13 @@ export const Variables = {
       OVERRIDE_STYLES: [ARCGIS],
       LAYERS_NEED_PALETTE: [RASTER_COG],
     }
+  },
+  DASHBOARD: {
+    TOOL: {
+      VIEW_3D: "3D view",
+      COMPARE_LAYERS: "Compare layers",
+      MEASUREMENT: "Measurement",
+      ZONAL_ANALYSIS: "Zonal analysis",
+    }
   }
 }

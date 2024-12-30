@@ -212,4 +212,4 @@ class DashboardToolSerializer(serializers.ModelSerializer):
 
     class Meta:  # noqa: D106
         model = DashboardTool
-        fields = '__all__'
+        exclude = ('id', 'group', 'order', 'relation_group', 'dashboard')
