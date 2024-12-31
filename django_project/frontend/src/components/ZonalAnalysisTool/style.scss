@@ -20,21 +20,42 @@
 @import '../../app/variables';
 
 .ZonalAnalysisToolConfiguration {
-  .MuiForm-RadioGroup {
-    border: unset !important;
-  }
 
   display: flex;
   gap: 1rem;
 
+  .MuiForm-RadioGroup {
+    align-items: center;
+    display: flex !important;
+    flex-direction: row;
+    border: unset !important;
+    padding-bottom: 0 !important;
+  }
+
   .MuiFormLabel-root {
-    margin-bottom: 0.5rem !important;
     display: block;
+    margin-bottom: 0 !important;
+    margin-right: 0.5rem;
+
+    &.Mui-focused {
+      color: rgba(0, 0, 0, 0.6) !important;
+    }
+  }
+
+  .MuiFormGroup-root {
+    display: flex;
+    flex-direction: row;
+
+    .MuiFormControlLabel-root {
+      margin: 0 !important;
+      margin-right: 0.5rem !important;
+    }
   }
 
   input {
-    padding-top: 10px;
-    padding-bottom: 9px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 5px;
   }
 }
 

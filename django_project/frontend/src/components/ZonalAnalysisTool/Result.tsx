@@ -52,7 +52,8 @@ const analyzeArcGIS = (
   setError: (error: string) => void,
 ) => {
   let _Class = null;
-  switch (config.drawMode) {
+  const drawMode = config.buffer ? DRAW_MODE.POLYGON : config.drawMode;
+  switch (drawMode) {
     case DRAW_MODE.POLYGON:
       _Class = ArcGISPolygon;
       break;
@@ -63,7 +64,7 @@ const analyzeArcGIS = (
       _Class = ArcGISPoint;
       break;
     default:
-      setError(`${config.drawMode} is not recognized.`)
+      setError(`${drawMode} is not recognized.`)
       setIsAnalysing(false)
   }
   if (_Class) {

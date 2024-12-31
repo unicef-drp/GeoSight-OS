@@ -41,10 +41,10 @@ import {
   ZonalAnalysisLayerConfiguration
 } from "./index.d";
 import { DashboardTool } from "../../store/dashboard/reducers/dashboardTool";
-
-import './style.scss';
 import { ZonalAnalysisResult } from "./Result";
 import { numberWithCommas } from "../../utils/main";
+
+import './style.scss';
 
 interface Props {
   map: maplibregl.Map;
@@ -106,6 +106,20 @@ export const ZonalAnalysisTool = forwardRef((
       setDraw(mapDrawing)
     }, []);
 
+    /** Buffer changed */
+    useEffect(() => {
+      if (draw) {
+        draw.updateBuffer(config.buffer)
+      }
+    }, [draw, config.buffer]);
+
+    /** Draw changed */
+    useEffect(() => {
+      if (draw) {
+        draw.updateBuffer(config.buffer);
+      }
+    }, [drawState]);
+
     /** Mode changed */
     useEffect(() => {
       if (draw) {
@@ -114,12 +128,24 @@ export const ZonalAnalysisTool = forwardRef((
       }
     }, [config.drawMode]);
 
+    /** Selection changed */
+    useEffect(() => {
+      if (draw) {
+        draw.deleteFeatures()
+        if (config.selectionMode === SELECTION_MODE.MANUAL) {
+          draw.start()
+        } else {
+          draw.stop()
+        }
+      }
+    }, [config.selectionMode]);
+
     /** Analyze **/
     const analyze = () => {
       if (!draw) {
         return
       }
-      const geometries = draw.getFeatures()
+      const geometries = draw.getFeatures(config.buffer)
       zonalAnalysisRefs.current.map((ref, index) => {
         // @ts-ignore
         ref.analyze(geometries, config)
@@ -133,10 +159,26 @@ export const ZonalAnalysisTool = forwardRef((
     }
     return (
       <>
-        <div className='Title'>Extract zonal statistic</div>
+        <div className='Title' style={{ display: "flex", alignItems: "center" }}>
+          <div>
+            Extract zonal statistic
+          </div>
+          <div className="Separator"/>
+          <div>
+            <ThemeButton
+              disabled={!(draw?.getFeatures().length) || !isAllAnalyzingDone}
+              variant="primary Basic"
+              style={{ margin: 0, minWidth: "100%" }}
+              onClick={analyze}
+            >
+              Run analysis
+            </ThemeButton>
+          </div>
+        </div>
         <div className='ZonalAnalysisToolConfiguration'>
           <FormControl className='MuiForm-RadioGroup'>
-            <FormLabel className="MuiInputLabel-root">Selection mode:</FormLabel>
+            <FormLabel className="MuiInputLabel-root">Selection
+              mode:</FormLabel>
             <RadioGroup
               value={config.selectionMode}
               onChange={(evt) => {
@@ -148,7 +190,13 @@ export const ZonalAnalysisTool = forwardRef((
               <FormControlLabel
                 value={SELECTION_MODE.MANUAL}
                 control={<Radio disabled={!isAllAnalyzingDone}/>}
-                label='Draw Manually'/>
+                label='Draw Manually'
+              />
+              <FormControlLabel
+                value={SELECTION_MODE.SELECT_ADMIN}
+                control={<Radio disabled={!isAllAnalyzingDone}/>}
+                label='Click to select'
+              />
             </RadioGroup>
           </FormControl>
           <FormControl className='MuiForm-RadioGroup'>
@@ -173,18 +221,21 @@ export const ZonalAnalysisTool = forwardRef((
         </div>
         <div className='PopupToolbarComponentFooter'>
           <div className='CenteredFlex'>
-            <SelectWithList
-              isMulti={false}
-              value={config.drawMode}
-              list={[DRAW_MODE.POINT, DRAW_MODE.LINE, DRAW_MODE.POLYGON]}
-              onChange={(evt: any) => {
-                setConfig({
-                  ...config,
-                  drawMode: evt.value as keyof typeof DRAW_MODE
-                })
-              }}
-              isDisabled={!isAllAnalyzingDone}
-            />
+            {
+              config.selectionMode === SELECTION_MODE.MANUAL ?
+                <SelectWithList
+                  isMulti={false}
+                  value={config.drawMode}
+                  list={[DRAW_MODE.POINT, DRAW_MODE.LINE, DRAW_MODE.POLYGON]}
+                  onChange={(evt: any) => {
+                    setConfig({
+                      ...config,
+                      drawMode: evt.value as keyof typeof DRAW_MODE
+                    })
+                  }}
+                  isDisabled={!isAllAnalyzingDone}
+                /> : null
+            }
             <div style={{ marginLeft: "1rem", marginRight: "1rem" }}>
               {
                 draw?.draw.getSelectedIds().length && information ? (
@@ -198,19 +249,26 @@ export const ZonalAnalysisTool = forwardRef((
                       </div>
                     </>
                   ) :
-                  <i>Draw on map and finish by double click.</i>
+                  <i>
+                    {
+                      config.selectionMode === SELECTION_MODE.MANUAL ? 'Draw on map and finish by double click.' : "Click a feature on the map"
+                    }
+                  </i>
               }
             </div>
             <div className='Separator'/>
-            <ThemeButton
-              disabled={draw?.isDrawing || !isAllAnalyzingDone}
-              onClick={() => {
-                draw.start()
-              }}
-              style={{ width: '300px' }}
-            >
-              <AddLocationIcon/> Add new feature
-            </ThemeButton>
+            {
+              config.selectionMode === SELECTION_MODE.MANUAL ?
+                <ThemeButton
+                  disabled={draw?.isDrawing || !isAllAnalyzingDone}
+                  onClick={() => {
+                    draw.start()
+                  }}
+                  style={{ width: '300px' }}
+                >
+                  <AddLocationIcon/> Add new feature
+                </ThemeButton> : null
+            }
             {
               draw?.isDrawing ?
                 <ThemeButton
@@ -233,16 +291,6 @@ export const ZonalAnalysisTool = forwardRef((
                   <CancelIcon/> Clear
                 </ThemeButton>
             }
-          </div>
-          <div>
-            <ThemeButton
-              disabled={!(draw?.getFeatures().length) || !isAllAnalyzingDone}
-              variant="primary Basic"
-              style={{ margin: 0, marginTop: "1rem", minWidth: "100%" }}
-              onClick={analyze}
-            >
-              Run analysis
-            </ThemeButton>
           </div>
         </div>
         <div className='PopupToolbarComponentFooter ZonalAnalysisTable'>

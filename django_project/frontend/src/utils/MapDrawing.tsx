@@ -22,7 +22,7 @@ import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import $ from "jquery";
 import {
   area as turfArea,
-  buffer,
+  buffer as turfBufffer,
   length as turfLength,
   lineString,
   point,
@@ -30,6 +30,9 @@ import {
 } from "@turf/turf";
 import polygonToLine from '@turf/polygon-to-line';
 import { Variables } from "./Variables";
+import { hasLayer, hasSource } from "../pages/Dashboard/MapLibre/utils";
+
+const drawingBufferId = 'DRAWING_BUFFER_ID'
 
 export class MapDrawing {
   public draw: MapboxDraw;
@@ -63,24 +66,57 @@ export class MapDrawing {
             id: string;
           }) => that.draw.delete(feature.id))
         }
-        that.stopDrawing()
+        that.stopDrawing(true)
       } catch (err) {
 
       }
     });
-    map.on('draw.delete', setDrawState);
-    map.on('draw.update', setDrawState);
+    map.on('draw.delete', () => {
+      that.setDrawState()
+    });
+    map.on('draw.update', () => {
+      that.setDrawState()
+
+    });
     map.on('draw.selectionchange', (e) => {
       if (!that.draw) {
         return
       }
       that.setDrawState()
+      that.stopDrawing()
     });
     map.addControl(this.draw as any, 'top-left')
     this.start()
 
     // @ts-ignore
     map.drawingMode = true;
+
+    // Create the shadow with buffer
+    if (hasLayer(map, drawingBufferId)) {
+      map.removeLayer(drawingBufferId)
+    }
+    if (hasSource(map, drawingBufferId)) {
+      map.removeSource(drawingBufferId)
+    }
+    map.addSource(drawingBufferId, {
+      'type': 'geojson',
+      'data': {
+        type: 'FeatureCollection',
+        features: []
+      }
+    });
+    map.addLayer(
+      {
+        id: drawingBufferId,
+        type: 'line',
+        source: drawingBufferId,
+        paint: {
+          'line-color': '#374EA2',
+          'line-width': 2,
+          'line-dasharray': [1, 1],
+        }
+      }
+    );
   }
 
   destroy() {
@@ -88,17 +124,60 @@ export class MapDrawing {
     this.map.off('draw.update', this.setDrawState);
     this.map.removeControl(this.draw as any)
     this.stopDrawing()
+    if (hasLayer(this.map, drawingBufferId)) {
+      this.map.removeLayer(drawingBufferId)
+    }
+    if (hasSource(this.map, drawingBufferId)) {
+      this.map.removeSource(drawingBufferId)
+    }
   }
 
-  getFeatures() {
-    // @ts-ignore
-    return this.draw.getAll().features.filter(feature => {
-      if (feature.geometry.type === "Polygon" && !feature.geometry.coordinates[0][0]) {
-        return false
-      }
+  updateBuffer(buffer: number = null) {
+    let features: any = []
+    if (buffer) {
+      features = this.getFeatures(buffer)
+    }
+    const source = this.map.getSource(drawingBufferId);
+    if (source) {
       // @ts-ignore
-      return feature.geometry.coordinates[0]
-    });
+      source.setData({
+        type: 'FeatureCollection',
+        features: features
+      });
+    }
+  }
+
+  getFeatures(buffer: number = null) {
+    // @ts-ignore
+    return this.draw.getAll().features.map((feature: any) => {
+      if (!feature.geometry.coordinates[0]) {
+        return null
+      }
+      if (feature.geometry.type === "Polygon" && !feature.geometry.coordinates[0][0]) {
+        return null
+      }
+      let geom = null;
+      try {
+        switch (feature.geometry.type) {
+          case Variables.FEATURE_TYPE.POLYGON:
+            geom = polygon(feature.geometry.coordinates);
+            break;
+          case Variables.FEATURE_TYPE.LINESTRING:
+            geom = lineString(feature.geometry.coordinates);
+            break;
+          case Variables.FEATURE_TYPE.POINT:
+            geom = point(feature.geometry.coordinates);
+            break;
+        }
+        // If it has buffer in km
+        if (geom && buffer) {
+          geom = turfBufffer(geom, buffer, { units: 'kilometers' });
+        }
+      } catch (err) {
+
+      }
+      return geom
+    }).filter(feature => feature);
   }
 
   changeMode(mode: string) {
@@ -126,9 +205,15 @@ export class MapDrawing {
     this.setDrawState()
   }
 
-  stopDrawing() {
+  stopDrawing(onCreate: boolean = false) {
+    if (onCreate && this.mode === this.draw?.modes.DRAW_POINT) {
+      // @ts-ignore
+      this.map.drawingMode = true;
+    } else {
+      // @ts-ignore
+      this.map.drawingMode = false;
+    }
     // @ts-ignore
-    this.map.drawingMode = false;
     this.isDrawing = false;
     this.updateCursor('grab');
     this.setDrawState()
@@ -139,7 +224,7 @@ export class MapDrawing {
     this.draw.getSelectedIds().map(id => {
       draw.delete(id)
     })
-    this.setDrawState()
+    this.setDrawState();
   }
 
   deleteFeatures() {
@@ -147,7 +232,7 @@ export class MapDrawing {
     this.setDrawState();
   }
 
-  selectedInformation = (bufferKm: number = 0) => {
+  selectedInformation = (buffer: number = null) => {
     var data = this.draw.getAll();
     let area = 0
     let lengthMeters = 0
@@ -178,8 +263,8 @@ export class MapDrawing {
           break;
       }
       // If it has buffer in km
-      if (bufferKm) {
-        geom = buffer(geom, bufferKm, { units: 'kilometers' });
+      if (buffer) {
+        geom = turfBufffer(geom, buffer, { units: 'kilometers' });
         line = polygonToLine(geom);
         lengthTerm = 'Perimeter';
       }

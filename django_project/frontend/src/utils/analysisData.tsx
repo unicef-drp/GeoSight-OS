@@ -37,10 +37,12 @@ export const analyzeData = (
       return total / data.length;
     }
     case AGGREGATION_TYPES.MIN: {
-      return Math.min(...data)
+      const val = Math.min(...data)
+      return val === Infinity ? null : val
     }
     case AGGREGATION_TYPES.MAX: {
-      return Math.max(...data)
+      const val = Math.max(...data)
+      return val === -Infinity ? null : val
     }
   }
   return null
