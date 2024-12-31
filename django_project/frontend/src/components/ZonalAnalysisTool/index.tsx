@@ -70,8 +70,10 @@ export const ZonalAnalysisTool = forwardRef((
     const { tools, contextLayers } = useSelector(state => state.dashboard.data)
     const tool: DashboardTool = tools.find((row: DashboardTool) => row.name === Variables.DASHBOARD.TOOL.ZONAL_ANALYSIS);
     let layers: ZonalAnalysisLayerConfiguration[] = []
+    let selectionModes: string[] = [SELECTION_MODE.MANUAL, SELECTION_MODE.SELECT_ADMIN]
     if (tool?.config) {
       layers = tool.config.layersConfiguration
+      selectionModes = tool.config.selectionModes
     }
 
     // For ref
@@ -116,6 +118,12 @@ export const ZonalAnalysisTool = forwardRef((
       )
       setDraw(mapDrawing)
     }, []);
+
+    /** When start */
+    useEffect(() => {
+      // @ts-ignore
+      setConfig({ ...config, selectionMode: selectionModes[0] })
+    }, [selectionModes]);
 
     /** Buffer changed */
     useEffect(() => {
@@ -235,16 +243,22 @@ export const ZonalAnalysisTool = forwardRef((
                   selectionMode: evt.target.value as keyof typeof SELECTION_MODE
                 })
               }}>
-              <FormControlLabel
-                value={SELECTION_MODE.MANUAL}
-                control={<Radio disabled={!isAllAnalyzingDone}/>}
-                label='Draw Manually'
-              />
-              <FormControlLabel
-                value={SELECTION_MODE.SELECT_ADMIN}
-                control={<Radio disabled={!isAllAnalyzingDone}/>}
-                label='Click to select'
-              />
+              {
+                selectionModes.includes(SELECTION_MODE.MANUAL) ?
+                  <FormControlLabel
+                    value={SELECTION_MODE.MANUAL}
+                    control={<Radio disabled={!isAllAnalyzingDone}/>}
+                    label='Draw Manually'
+                  /> : null
+              }
+              {
+                selectionModes.includes(SELECTION_MODE.SELECT_ADMIN) ?
+                  <FormControlLabel
+                    value={SELECTION_MODE.SELECT_ADMIN}
+                    control={<Radio disabled={!isAllAnalyzingDone}/>}
+                    label='Click to select'
+                  /> : null
+              }
             </RadioGroup>
           </FormControl>
           <FormControl className='MuiForm-RadioGroup'>

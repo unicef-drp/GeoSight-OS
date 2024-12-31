@@ -300,7 +300,7 @@ export function ZonalAnalysisConfiguration(
                     }
                     setData({ ...data })
                   }}
-                  label={mode}/>
+                  label={mode === SELECTION_MODE.SELECT_ADMIN ? 'Click to select' : 'Draw Manually'}/>
               })
             }
           </div>
