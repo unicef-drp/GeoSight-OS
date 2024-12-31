@@ -18,7 +18,7 @@ from django.contrib.gis.db import models
 
 from core.models.general import AbstractTerm
 from geosight.data.models.dashboard.dashboard_relation import (
-    DashboardRelation
+    DashboardRelationWithLimit
 )
 
 
@@ -29,7 +29,7 @@ class LayerUsed(object):
     INDICATOR_LAYER = 'Indicator Layer'
 
 
-class DashboardWidget(AbstractTerm, DashboardRelation):
+class DashboardWidget(AbstractTerm, DashboardRelationWithLimit):
     """Dashboard Widget model."""
 
     type = models.CharField(
