@@ -71,7 +71,7 @@ export function ZonalAnalysisConfiguration(
   // @ts-ignore
   const { contextLayers: ctxLayer } = useSelector((state: RootState) => state.dashboard.data);
   const contextLayers = ctxLayer.filter(
-    (ctx: ContextLayer) => ctx.layer_type === Variables.LAYER.TYPE.ARCGIS
+    (ctx: ContextLayer) => [Variables.LAYER.TYPE.ARCGIS, Variables.LAYER.TYPE.RASTER_COG].includes(ctx.layer_type)
   )
 
   // For new layer
@@ -109,32 +109,49 @@ export function ZonalAnalysisConfiguration(
         })
         setNewLayerFieldOptions(["loading"])
 
-        const arcgisRequest = new ArcGISRequest(
-          contextLayer.url, {}, contextLayer.arcgis_config
-        )
-        // outFields is based on admin config
-        arcgisRequest.getMetadata(
-        ).then((response) => {
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          return response.json();
-        }).then((data) => {
-          const fields = data.fields.map((field: any) => field.name)
-          setNewLayer({
-            ...newLayer,
-            aggregatedField: fields[0]
-          })
-          setNewLayerFieldOptions(fields)
-        }).catch((error) => {
-          setNewLayer({
-            ...newLayer,
-            aggregatedField: "error"
-          })
-          setNewLayerFieldOptions(["error"])
-        }).finally(() => {
-        })
+        switch (contextLayer.layer_type) {
+          case Variables.LAYER.TYPE.ARCGIS:
+            const arcgisRequest = new ArcGISRequest(
+              contextLayer.url, {}, contextLayer.arcgis_config
+            )
+            // outFields is based on admin config
+            arcgisRequest.getMetadata(
+            ).then((response) => {
+              if (!response.ok) {
+                throw new Error("Network response was not ok");
+              }
+              return response.json();
+            }).then((data) => {
+              const fields = data.fields.map((field: any) => field.name)
+              setNewLayer({
+                ...newLayer,
+                aggregatedField: fields[0]
+              })
+              setNewLayerFieldOptions(fields)
+            }).catch((error) => {
+              setNewLayer({
+                ...newLayer,
+                aggregatedField: "error"
+              })
+              setNewLayerFieldOptions(["error"])
+            }).finally(() => {
+            })
+            break;
+          case Variables.LAYER.TYPE.RASTER_COG:
+            setNewLayer({
+              ...newLayer,
+              aggregatedField: "Sum pixels"
+            })
+            setNewLayerFieldOptions(["Sum pixels"])
+            break;
+        }
         return
+      } else {
+        setNewLayer({
+          ...newLayer,
+          aggregatedField: ""
+        })
+        setNewLayerFieldOptions([])
       }
     }
 
