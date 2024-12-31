@@ -12,34 +12,23 @@
  * __date__ = '31/12/2024'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
-import { ContextLayer } from "../../store/dashboard/reducers/contextLayers";
 import proj4 from 'proj4';
-import {
-  ZonalAnalysisConfiguration,
-  ZonalAnalysisLayerConfiguration
-} from "./index.d";
-import { Feature } from "geojson";
+import { FetchingFunctionProp } from "./index.d";
 import { fromUrl } from 'geotiff';
 import { Variables } from "../../utils/Variables";
-import { analyzeData } from "../../utils/analysisData";
 
-export const analyzeCOG = async (
-  contextLayer: ContextLayer,
-  config: ZonalAnalysisConfiguration,
-  analysisLayer: ZonalAnalysisLayerConfiguration,
-  features: Array<Feature>,
-  setIsAnalysing: (isAnalysing: boolean) => void,
-  setValue: (value: number) => void,
-  setError: (error: string) => void,
-) => {
+export const fetchCOGValues = async (
+  {
+    contextLayer,
+    features,
+    setData
+  }: FetchingFunctionProp) => {
   if (contextLayer.layer_type !== Variables.LAYER.TYPE.RASTER_COG) {
-    setIsAnalysing(false)
-    setValue(null)
-    setError(`Can't calculate for ${contextLayer.layer_type}`)
+    setData(null, `Can't calculate for ${contextLayer.layer_type}`)
     return;
   }
   try {
-
+    // Load file
     const geotiff = await fromUrl(contextLayer.url);
     const image = await geotiff.getImage();
     const [originX, originY] = image.getOrigin();
@@ -47,6 +36,7 @@ export const analyzeCOG = async (
     const width = image.getWidth(); // Image width in pixels
     const height = image.getHeight(); // Image height in pixels
 
+    // Coords to pixel
     const coordsToPixel = (lon: number, lat: number) => [
       Math.round((lon - originX) / resolutionX),
       Math.round((lat - originY) / resolutionY),
@@ -69,12 +59,14 @@ export const analyzeCOG = async (
             // @ts-ignore
             values.push(pixelValue[0][0]);
           }
+          break;
         }
+        default:
+          throw Error(`${type} is not covered yet.`)
       }
     }
-    setValue(analyzeData(analysisLayer.aggregation, values))
+    setData(values, null)
   } catch (err) {
-    setError(err.toString())
+    setData(null, err.toString())
   }
-  setIsAnalysing(false)
 }

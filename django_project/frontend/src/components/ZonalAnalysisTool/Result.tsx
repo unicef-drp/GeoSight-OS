@@ -14,18 +14,12 @@
  */
 
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
-import { Feature } from "geojson";
 import { useSelector } from "react-redux";
-import { Variables } from "../../utils/Variables";
-import { analyzeArcGIS } from "./AnalyzeArcGIS";
 import { ContextLayer } from "../../store/dashboard/reducers/contextLayers";
-import {
-  ZonalAnalysisConfiguration,
-  ZonalAnalysisLayerConfiguration
-} from "./index.d";
+import { ZonalAnalysisLayerConfiguration } from "./index.d";
+import { analyzeData } from "../../utils/analysisData";
 
 import './style.scss';
-import { analyzeCOG } from "./AnalyzeCOG";
 
 interface Props {
   analysisLayer: ZonalAnalysisLayerConfiguration;
@@ -47,26 +41,21 @@ export const ZonalAnalysisResult = forwardRef((
     const contextLayer = contextLayers.find((ctx: ContextLayer) => ctx.id === analysisLayer.id)
 
     useImperativeHandle(ref, () => ({
-      analyze(features: Array<Feature>, config: ZonalAnalysisConfiguration) {
+      startAnalyzing() {
         setIsAnalysing(true)
         setValue(null)
         setError(null)
-        switch (contextLayer.layer_type) {
-          case Variables.LAYER.TYPE.ARCGIS: {
-            analyzeArcGIS(
-              contextLayer, config, analysisLayer, features, setIsAnalysing, setValue, setError
-            )
-            break;
-          }
-          case Variables.LAYER.TYPE.RASTER_COG: {
-            analyzeCOG(
-              contextLayer, config, analysisLayer, features, setIsAnalysing, setValue, setError
-            )
-            break;
-          }
-          default:
-            setIsAnalysing(false)
+      },
+      finishAnalyzing(id: number, aggregatedField: string, values: number[], error: string) {
+        if (contextLayer.id !== id) {
+          return
         }
+        if (analysisLayer.aggregatedField !== aggregatedField) {
+          return
+        }
+        setError(error)
+        setValue(analyzeData(analysisLayer.aggregation, values))
+        setIsAnalysing(false)
       },
       clear() {
         setValue(null)
@@ -86,7 +75,9 @@ export const ZonalAnalysisResult = forwardRef((
         <td>
           {
             isAnalyzing ? <i>Loading</i> : error ?
-              <i className='Error'>{error}</i> : value ? value : '-'
+              <i className='Error'>
+                {error}
+              </i> : ![null, NaN].includes(value) ? value : '-'
           }
         </td>
       </tr>

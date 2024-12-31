@@ -160,6 +160,9 @@ export class MapDrawing {
       let geom = null;
       try {
         switch (feature.geometry.type) {
+          case Variables.FEATURE_TYPE.MULTIPOLYGON:
+            geom = multiPolygon(feature.geometry.coordinates);
+            break;
           case Variables.FEATURE_TYPE.POLYGON:
             geom = polygon(feature.geometry.coordinates);
             break;

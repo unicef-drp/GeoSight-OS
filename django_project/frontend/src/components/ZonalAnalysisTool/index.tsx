@@ -53,6 +53,9 @@ import {
   FILL_LAYER_ID_KEY
 } from "../../pages/Dashboard/MapLibre/Layers/ReferenceLayer";
 import { getFeatureByConceptUUID } from "../../utils/referenceLayer";
+import { ContextLayer } from "../../store/dashboard/reducers/contextLayers";
+import { fetchArcGISValues } from "./FetchArcGISValues";
+import { fetchCOGValues } from "./FetchCOGValues";
 
 interface Props {
   map: maplibregl.Map;
@@ -196,15 +199,58 @@ export const ZonalAnalysisTool = forwardRef((
       if (!draw) {
         return
       }
-      const geometries = draw.getFeatures(config.buffer)
+      const features = draw.getFeatures(config.buffer)
       zonalAnalysisRefs.current.map((ref, index) => {
         // @ts-ignore
-        ref.analyze(
-          geometries, {
-            ...config,
-            drawMode: config.selectionMode === SELECTION_MODE.MANUAL ? config.drawMode : DRAW_MODE.POLYGON
+        ref.startAnalyzing()
+      })
+      const analysisLayers: string[] = []
+      layers.map(analysisLayer => {
+        const _id = analysisLayer.id + '-' + analysisLayer.aggregatedField
+        if (!analysisLayers.includes(_id)) {
+          analysisLayers.push(_id)
+        }
+      })
+      analysisLayers.map((_id: any) => {
+        const splittedId = _id.split('-')
+        const id = splittedId[0]
+        const aggregatedField = splittedId[1]
+
+        const contextLayer = contextLayers.find((ctx: ContextLayer) => ctx.id === parseInt(id))
+        const setData = (values: number[], error: string) => {
+          zonalAnalysisRefs.current.map((ref, index) => {
+            // @ts-ignore
+            ref.finishAnalyzing(contextLayer.id, aggregatedField, values, error)
+          })
+        }
+        if (contextLayer) {
+          switch (contextLayer.layer_type) {
+            case Variables.LAYER.TYPE.ARCGIS: {
+              fetchArcGISValues({
+                contextLayer,
+                config,
+                aggregatedField,
+                features,
+                setData
+              })
+              return;
+            }
+            case Variables.LAYER.TYPE.RASTER_COG: {
+              fetchCOGValues({
+                contextLayer,
+                config,
+                aggregatedField,
+                features,
+                setData
+              })
+              return;
+            }
           }
-        )
+        }
+        zonalAnalysisRefs.current.map((ref, index) => {
+          // @ts-ignore
+          ref.finishAnalyzing(contextLayer.id, aggregatedField, null)
+        })
       })
     }
 

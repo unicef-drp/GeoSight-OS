@@ -14,7 +14,8 @@
  */
 
 import { AGGREGATION_TYPES } from "../../utils/analysisData";
-
+import { ContextLayer } from "../../store/dashboard/reducers/contextLayers";
+import { Feature } from "geojson";
 
 export const SELECTION_MODE = {
   SELECT_ADMIN: "SELECT_ADMIN",
@@ -42,4 +43,12 @@ export interface ZonalAnalysisLayerConfiguration {
 export interface ZonalAnalysisDashboardConfiguration {
   selectionModes: string[];
   layersConfiguration: ZonalAnalysisLayerConfiguration[];
+}
+
+export interface FetchingFunctionProp {
+  contextLayer: ContextLayer,
+  config: ZonalAnalysisConfiguration,
+  aggregatedField: string,
+  features: Array<Feature>,
+  setData: (values: number[], error: string) => void
 }

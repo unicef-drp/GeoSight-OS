@@ -18,6 +18,7 @@
    ========================================================================== */
 
 import { Feature } from "geojson";
+import { Variables } from "../Variables";
 
 export interface Payload {
   returnGeometry: boolean;
@@ -38,7 +39,12 @@ export class ArcGISGeometry {
     type: string, esriGeometryType: string, esriGeometryKey: string
   ) {
     this.features = features.filter(
-      feature => feature.geometry.type === type
+      feature => {
+        if (type === Variables.FEATURE_TYPE.POLYGON) {
+          return [Variables.FEATURE_TYPE.POLYGON, Variables.FEATURE_TYPE.MULTIPOLYGON].includes(feature.geometry.type)
+        }
+        return feature.geometry.type === type
+      }
     );
     this.distance = distance;
     this.type = type;
@@ -50,10 +56,28 @@ export class ArcGISGeometry {
     const output = {
       spatialReference: { "wkid": 4326 }
     }
-    if (this.type === 'Polygon') {
+    if (this.type === Variables.FEATURE_TYPE.POLYGON) {
+      const rings: any[] = []
+      this.features.map(feature => {
+        if (feature.geometry.type === Variables.FEATURE_TYPE.POLYGON) {
+          // @ts-ignore
+          rings.push(feature.geometry.coordinates[0])
+        } else {
+          // @ts-ignore
+          feature.geometry.coordinates.map(coordinates => {
+            rings.push(coordinates[0])
+          })
+        }
+      })
       return {
         // @ts-ignore
-        rings: this.features.map(feature => feature.geometry.coordinates[0]),
+        rings: rings,
+        spatialReference: { "wkid": 4326 }
+      }
+    } else if (this.type === Variables.FEATURE_TYPE.MULTIPOLYGON) {
+      return {
+        // @ts-ignore
+        rings: this.features.map(feature => feature.geometry.coordinates),
         spatialReference: { "wkid": 4326 }
       }
     }

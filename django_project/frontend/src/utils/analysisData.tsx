@@ -25,6 +25,9 @@ export const analyzeData = (
   operator: keyof typeof AGGREGATION_TYPES,
   data: number[]
 ) => {
+  if (!data?.length) {
+    return null
+  }
   switch (operator) {
     case AGGREGATION_TYPES.COUNT: {
       return data.length

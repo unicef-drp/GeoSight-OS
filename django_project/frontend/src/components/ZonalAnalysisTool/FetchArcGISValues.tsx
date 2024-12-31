@@ -12,35 +12,25 @@
  * __date__ = '31/12/2024'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
-import { ContextLayer } from "../../store/dashboard/reducers/contextLayers";
-import {
-  DRAW_MODE,
-  ZonalAnalysisConfiguration,
-  ZonalAnalysisLayerConfiguration
-} from "./index.d";
+import { DRAW_MODE, FetchingFunctionProp } from "./index.d";
 import {
   ArcGISLine,
   ArcGISPoint,
   ArcGISPolygon
 } from "../../utils/ArcGIS/DataType";
 import ArcGISRequest from "../../utils/ArcGIS/Request";
-import { analyzeData } from "../../utils/analysisData";
-import { Feature } from "geojson";
 import { Variables } from "../../utils/Variables";
 
-export const analyzeArcGIS = (
-  contextLayer: ContextLayer,
-  config: ZonalAnalysisConfiguration,
-  analysisLayer: ZonalAnalysisLayerConfiguration,
-  features: Array<Feature>,
-  setIsAnalysing: (isAnalysing: boolean) => void,
-  setValue: (value: number) => void,
-  setError: (error: string) => void,
-) => {
+export const fetchArcGISValues = (
+  {
+    contextLayer,
+    config,
+    aggregatedField,
+    features,
+    setData
+  }: FetchingFunctionProp) => {
   if (contextLayer.layer_type !== Variables.LAYER.TYPE.ARCGIS) {
-    setIsAnalysing(false)
-    setValue(null)
-    setError(`Can't calculate for ${contextLayer.layer_type}`)
+    setData(null, `Can't calculate for ${contextLayer.layer_type}`)
     return;
   }
 
@@ -57,8 +47,7 @@ export const analyzeArcGIS = (
       _Class = ArcGISPoint;
       break;
     default:
-      setError(`${drawMode} is not recognized.`)
-      setIsAnalysing(false)
+      setData(null, `${drawMode} is not recognized.`)
   }
   if (_Class) {
     // Change km to meters
@@ -72,7 +61,7 @@ export const analyzeArcGIS = (
     // outFields is based on admin config
     arcgisRequest.queryData(
       {
-        outFields: [analysisLayer.aggregatedField],
+        outFields: [aggregatedField],
         returnGeometry: false
       },
       feature
@@ -84,16 +73,14 @@ export const analyzeArcGIS = (
     }).then((data) => {
       const cleanData = data.features.map((row: any) => {
         try {
-          return row.attributes[analysisLayer.aggregatedField]
+          return row.attributes[aggregatedField]
         } catch (err) {
           return null
         }
       }).filter((row: any) => row !== null)
-      setValue(analyzeData(analysisLayer.aggregation, cleanData))
+      setData(cleanData, null)
     }).catch((error) => {
-      setError(error.toString())
-    }).finally(() => {
-      setIsAnalysing(false)
+      setData(null, error.toString())
     })
   }
 }
