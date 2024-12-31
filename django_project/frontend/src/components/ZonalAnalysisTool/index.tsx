@@ -44,6 +44,7 @@ import { DashboardTool } from "../../store/dashboard/reducers/dashboardTool";
 
 import './style.scss';
 import { ZonalAnalysisResult } from "./Result";
+import { numberWithCommas } from "../../utils/main";
 
 interface Props {
   map: maplibregl.Map;
@@ -125,6 +126,11 @@ export const ZonalAnalysisTool = forwardRef((
       })
     }
 
+    // Draw information
+    let information = null;
+    if (draw) {
+      information = draw.selectedInformation(config.buffer)
+    }
     return (
       <>
         <div className='Title'>Extract zonal statistic</div>
@@ -179,6 +185,22 @@ export const ZonalAnalysisTool = forwardRef((
               }}
               isDisabled={!isAllAnalyzingDone}
             />
+            <div style={{ marginLeft: "1rem", marginRight: "1rem" }}>
+              {
+                draw?.draw.getSelectedIds().length && information ? (
+                    <>
+                      <div>
+                        {numberWithCommas(information.area, 2)} Sq Meters
+                      </div>
+                      <div>
+                        {numberWithCommas(information.lengthMeters, 2)} Meters
+                        ({numberWithCommas(information.lengthMiles, 2)} Miles) {information.lengthTerm}
+                      </div>
+                    </>
+                  ) :
+                  <i>Draw on map and finish by double click.</i>
+              }
+            </div>
             <div className='Separator'/>
             <ThemeButton
               disabled={draw?.isDrawing || !isAllAnalyzingDone}

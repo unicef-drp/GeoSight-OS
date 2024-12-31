@@ -46,5 +46,10 @@ export const Variables = {
       MEASUREMENT: "Measurement",
       ZONAL_ANALYSIS: "Zonal analysis",
     }
+  },
+  FEATURE_TYPE:{
+    POLYGON:'Polygon',
+    LINESTRING:'LineString',
+    POINT:'Point',
   }
 }

@@ -20,8 +20,16 @@
 import maplibregl from "maplibre-gl";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import $ from "jquery";
-import { area as turfArea, length as turfLength } from "@turf/turf";
-import { lineString as turfLineString } from "@turf/helpers";
+import {
+  area as turfArea,
+  buffer,
+  length as turfLength,
+  lineString,
+  point,
+  polygon
+} from "@turf/turf";
+import polygonToLine from '@turf/polygon-to-line';
+import { Variables } from "./Variables";
 
 export class MapDrawing {
   public draw: MapboxDraw;
@@ -139,32 +147,50 @@ export class MapDrawing {
     this.setDrawState();
   }
 
-  selectedInformation = () => {
+  selectedInformation = (bufferKm: number = 0) => {
     var data = this.draw.getAll();
     let area = 0
     let lengthMeters = 0
     let lengthMiles = 0
     let lengthTerm = 'Perimeter'
     let featureType = 'Polygon'
+
     const selected = this.draw.getSelectedIds()
-    data.features.filter((feature: any) => selected.includes(feature.id)).map((feature: any) => {
-      let coordinates = null;
-      if (feature.geometry.type === 'Polygon') {
-        area += turfArea(feature)
-        coordinates = feature.geometry.coordinates[0]
-      } else if (feature.geometry.type === 'LineString') {
-        coordinates = feature.geometry.coordinates
-        lengthTerm = 'Distance'
-        featureType = 'LineString'
+    data.features.filter(
+      (feature: any) => selected.includes(feature.id)
+    ).map((feature: any) => {
+      featureType = feature.geometry.type;
+
+      let geom = null;
+      let line = null;
+      switch (feature.geometry.type) {
+        case Variables.FEATURE_TYPE.POLYGON:
+          geom = polygon(feature.geometry.coordinates);
+          line = polygonToLine(geom);
+          break;
+        case Variables.FEATURE_TYPE.LINESTRING:
+          geom = lineString(feature.geometry.coordinates);
+          line = geom
+          lengthTerm = 'Distance'
+          break;
+        case Variables.FEATURE_TYPE.POINT:
+          geom = point(feature.geometry.coordinates);
+          break;
       }
-      lengthMeters += turfLength(
-        turfLineString(coordinates),
-        { units: "meters" }
-      )
-      lengthMiles += turfLength(
-        turfLineString(coordinates),
-        { units: "miles" }
-      )
+      // If it has buffer in km
+      if (bufferKm) {
+        geom = buffer(geom, bufferKm, { units: 'kilometers' });
+        line = polygonToLine(geom);
+        lengthTerm = 'Perimeter';
+      }
+
+      if (geom) {
+        area += turfArea(geom)
+        if (line) {
+          lengthMeters += turfLength(line, { units: "meters" })
+          lengthMiles += turfLength(line, { units: "miles" })
+        }
+      }
     })
     return {
       area: area,

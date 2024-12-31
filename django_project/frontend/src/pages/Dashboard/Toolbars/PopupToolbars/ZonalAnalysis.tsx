@@ -63,7 +63,7 @@ export const ZonalAnalysisComponent = forwardRef((
       setActive(active)
     }
 
-    return <Plugin className='PopupToolbarIcon'>
+    return <Plugin className='PopupToolbarIcon ZonalAnalysisIcon'>
       <div className='Active'>
         <PluginChild
           title={'Zonal Analysis'}
