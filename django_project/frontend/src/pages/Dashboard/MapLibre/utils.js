@@ -108,6 +108,7 @@ const updateCursorOnLeave = (map) => {
 let popup = null
 let functionPopup = {}
 export const addPopup = (map, id, popupRenderFn) => {
+  console.log(id)
   if (!functionPopup[id]) {
     functionPopup[id] = {}
   }
@@ -161,6 +162,34 @@ export const addPopup = (map, id, popupRenderFn) => {
     }
   }
   map.on('click', id, functionPopup[id].click);
+}
+/**
+ * Remove click event
+ */
+export const removeClickEvent = (map, layerId, functionId) => {
+  if (functionPopup[functionId]?.click) {
+    if (layerId) {
+      map.off('click', layerId, functionPopup[functionId].click);
+    } else {
+      map.off('click', functionPopup[functionId].click);
+    }
+  }
+}
+/**
+ * Add click event
+ */
+export const addClickEvent = (map, layerId, functionId, listenerFn) => {
+  removeClickEvent(map, layerId, functionId)
+  if (!functionPopup[functionId]) {
+    functionPopup[functionId] = {}
+  }
+  functionPopup[functionId].click = listenerFn
+  if (layerId) {
+    map.on('click', layerId, functionPopup[functionId].click);
+  } else {
+    map.on('click', functionPopup[functionId].click);
+  }
+
 }
 /**
  * Popup for marker

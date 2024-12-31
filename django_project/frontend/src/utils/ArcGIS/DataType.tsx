@@ -50,6 +50,7 @@ export class ArcGISGeometry {
     const output = {
       spatialReference: { "wkid": 4326 }
     }
+    console.log(this.type)
     if (this.type === 'Polygon') {
       return {
         // @ts-ignore

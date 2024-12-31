@@ -42,13 +42,23 @@ import {
 } from "./index.d";
 import { DashboardTool } from "../../store/dashboard/reducers/dashboardTool";
 import { ZonalAnalysisResult } from "./Result";
-import { numberWithCommas } from "../../utils/main";
+import { dictDeepCopy, numberWithCommas } from "../../utils/main";
 
 import './style.scss';
+import {
+  addClickEvent,
+  removeClickEvent
+} from "../../pages/Dashboard/MapLibre/utils";
+import {
+  FILL_LAYER_ID_KEY
+} from "../../pages/Dashboard/MapLibre/Layers/ReferenceLayer";
+import { getFeatureByConceptUUID } from "../../utils/referenceLayer";
 
 interface Props {
   map: maplibregl.Map;
 }
+
+const IdFunction = 'ZonaAnalyzing'
 
 /**
  * Zonal Analysis Tool
@@ -89,6 +99,7 @@ export const ZonalAnalysisTool = forwardRef((
         if (draw) {
           draw.destroy()
         }
+        removeClickEvent(map, null, IdFunction);
         setDraw(null)
         map.boxZoom.enable();
       }
@@ -117,6 +128,10 @@ export const ZonalAnalysisTool = forwardRef((
     useEffect(() => {
       if (draw) {
         draw.updateBuffer(config.buffer);
+        if (config.selectionMode !== SELECTION_MODE.MANUAL) {
+          // @ts-ignore
+          map.drawingMode = true;
+        }
       }
     }, [drawState]);
 
@@ -131,11 +146,39 @@ export const ZonalAnalysisTool = forwardRef((
     /** Selection changed */
     useEffect(() => {
       if (draw) {
+        removeClickEvent(map, null, IdFunction);
         draw.deleteFeatures()
         if (config.selectionMode === SELECTION_MODE.MANUAL) {
           draw.start()
         } else {
           draw.stop()
+          /** Click map */
+          const onClick = (e: any) => {
+            const visibleLayerIds = map.getStyle().layers.filter(layer => layer.id.includes(FILL_LAYER_ID_KEY) || layer.id.includes('gl-draw-polygon')).map(layer => layer.id)
+            const features = map.queryRenderedFeatures(
+              e.point, { layers: visibleLayerIds }
+            );
+            if (features.length > 0) {
+              let feature = features[0];
+              let geometry = dictDeepCopy(feature.geometry)
+              let id = feature.properties.concept_uuid ? feature.properties.concept_uuid : feature.properties.id
+              try {
+                geometry = getFeatureByConceptUUID(map, feature.properties.concept_uuid).geometry
+              } catch (err) {
+                console.log(err)
+              }
+              const _feature = {
+                "type": "Feature",
+                "geometry": geometry,
+                "properties": {},
+                "id": id
+              };
+              if (_feature.id) {
+                draw.toggleGeometry(_feature)
+              }
+            }
+          }
+          addClickEvent(map, null, IdFunction, onClick);
         }
       }
     }, [config.selectionMode]);
@@ -148,14 +191,19 @@ export const ZonalAnalysisTool = forwardRef((
       const geometries = draw.getFeatures(config.buffer)
       zonalAnalysisRefs.current.map((ref, index) => {
         // @ts-ignore
-        ref.analyze(geometries, config)
+        ref.analyze(
+          geometries, {
+            ...config,
+            drawMode: config.selectionMode === SELECTION_MODE.MANUAL ? config.drawMode : DRAW_MODE.POLYGON
+          }
+        )
       })
     }
 
     // Draw information
     let information = null;
     if (draw) {
-      information = draw.selectedInformation(config.buffer)
+      information = draw.selectedInformation(config.buffer, config.selectionMode === SELECTION_MODE.MANUAL)
     }
     return (
       <>
@@ -238,7 +286,7 @@ export const ZonalAnalysisTool = forwardRef((
             }
             <div style={{ marginLeft: "1rem", marginRight: "1rem" }}>
               {
-                draw?.draw.getSelectedIds().length && information ? (
+                information ? (
                     <>
                       <div>
                         {numberWithCommas(information.area, 2)} Sq Meters

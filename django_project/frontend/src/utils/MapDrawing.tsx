@@ -25,6 +25,7 @@ import {
   buffer as turfBufffer,
   length as turfLength,
   lineString,
+  multiPolygon,
   point,
   polygon
 } from "@turf/turf";
@@ -188,6 +189,7 @@ export class MapDrawing {
   }
 
   start() {
+    this.draw.changeMode(this.draw.modes.SIMPLE_SELECT);
     this.draw.changeMode(this.mode);
     this.startDrawing()
   }
@@ -202,6 +204,16 @@ export class MapDrawing {
     this.map.drawingMode = true;
     this.isDrawing = true;
     this.updateCursor('crosshair');
+    this.setDrawState()
+  }
+
+  toggleGeometry(geometry: any) {
+    const ids = this.draw.getAll().features.map((feature: any) => feature.id)
+    if (ids.includes(geometry.id)) {
+      this.draw.delete(geometry.id)
+    } else {
+      this.draw.add(geometry)
+    }
     this.setDrawState()
   }
 
@@ -232,7 +244,7 @@ export class MapDrawing {
     this.setDrawState();
   }
 
-  selectedInformation = (buffer: number = null) => {
+  selectedInformation = (buffer: number = null, justSelected: boolean = true) => {
     var data = this.draw.getAll();
     let area = 0
     let lengthMeters = 0
@@ -240,41 +252,56 @@ export class MapDrawing {
     let lengthTerm = 'Perimeter'
     let featureType = 'Polygon'
 
-    const selected = this.draw.getSelectedIds()
-    data.features.filter(
-      (feature: any) => selected.includes(feature.id)
-    ).map((feature: any) => {
-      featureType = feature.geometry.type;
+    let features = data.features
+    if (justSelected) {
+      const selected = this.draw.getSelectedIds()
+      features = data.features.filter(
+        (feature: any) => selected.includes(feature.id)
+      )
+    }
+    if (!features.length) {
+      return null
+    }
+    features.map((feature: any) => {
+      try {
+        featureType = feature.geometry.type;
 
-      let geom = null;
-      let line = null;
-      switch (feature.geometry.type) {
-        case Variables.FEATURE_TYPE.POLYGON:
-          geom = polygon(feature.geometry.coordinates);
-          line = polygonToLine(geom);
-          break;
-        case Variables.FEATURE_TYPE.LINESTRING:
-          geom = lineString(feature.geometry.coordinates);
-          line = geom
-          lengthTerm = 'Distance'
-          break;
-        case Variables.FEATURE_TYPE.POINT:
-          geom = point(feature.geometry.coordinates);
-          break;
-      }
-      // If it has buffer in km
-      if (buffer) {
-        geom = turfBufffer(geom, buffer, { units: 'kilometers' });
-        line = polygonToLine(geom);
-        lengthTerm = 'Perimeter';
-      }
-
-      if (geom) {
-        area += turfArea(geom)
-        if (line) {
-          lengthMeters += turfLength(line, { units: "meters" })
-          lengthMiles += turfLength(line, { units: "miles" })
+        let geom = null;
+        let line = null;
+        switch (feature.geometry.type) {
+          case Variables.FEATURE_TYPE.MULTIPOLYGON:
+            geom = multiPolygon(feature.geometry.coordinates);
+            line = polygonToLine(geom);
+            break;
+          case Variables.FEATURE_TYPE.POLYGON:
+            geom = polygon(feature.geometry.coordinates);
+            line = polygonToLine(geom);
+            break;
+          case Variables.FEATURE_TYPE.LINESTRING:
+            geom = lineString(feature.geometry.coordinates);
+            line = geom
+            lengthTerm = 'Distance'
+            break;
+          case Variables.FEATURE_TYPE.POINT:
+            geom = point(feature.geometry.coordinates);
+            break;
         }
+        // If it has buffer in km
+        if (buffer) {
+          geom = turfBufffer(geom, buffer, { units: 'kilometers' });
+          line = polygonToLine(geom);
+          lengthTerm = 'Perimeter';
+        }
+
+        if (geom) {
+          area += turfArea(geom)
+          if (line) {
+            lengthMeters += turfLength(line, { units: "meters" })
+            lengthMiles += turfLength(line, { units: "miles" })
+          }
+        }
+      } catch (err) {
+
       }
     })
     return {

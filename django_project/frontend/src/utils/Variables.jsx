@@ -48,6 +48,7 @@ export const Variables = {
     }
   },
   FEATURE_TYPE:{
+    MULTIPOLYGON:"MultiPolygon",
     POLYGON:'Polygon',
     LINESTRING:'LineString',
     POINT:'Point',
