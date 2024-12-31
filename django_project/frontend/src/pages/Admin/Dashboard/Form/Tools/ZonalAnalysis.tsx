@@ -197,7 +197,7 @@ export function ZonalAnalysisConfiguration(
               isMulti={false}
               value={newLayer.aggregation}
               list={
-                [AGGREGATION_TYPES.SUM, AGGREGATION_TYPES.MIN, AGGREGATION_TYPES.MAX, AGGREGATION_TYPES.AVG]
+                [AGGREGATION_TYPES.COUNT, AGGREGATION_TYPES.SUM, AGGREGATION_TYPES.MIN, AGGREGATION_TYPES.MAX, AGGREGATION_TYPES.AVG]
               }
               onChange={(evt: any) => {
                 setNewLayer({ ...newLayer, aggregation: evt.value })

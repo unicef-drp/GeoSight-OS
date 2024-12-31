@@ -14,6 +14,7 @@
  */
 
 export const AGGREGATION_TYPES = {
+  COUNT: 'COUNT',
   SUM: 'SUM',
   MIN: 'MIN',
   MAX: 'MAX',
@@ -25,6 +26,9 @@ export const analyzeData = (
   data: number[]
 ) => {
   switch (operator) {
+    case AGGREGATION_TYPES.COUNT: {
+      return data.length
+    }
     case AGGREGATION_TYPES.SUM: {
       return data.reduce((sum, num) => {
         return sum + (isNaN(num) ? 0 : num);
