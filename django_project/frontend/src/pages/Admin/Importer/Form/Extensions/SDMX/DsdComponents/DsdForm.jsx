@@ -4,6 +4,8 @@ import {
 } from "./dsdFunctions.jsx";
 import '../style.scss';
 import '../custom-select-styles.scss';
+import { ThemeButton } from "../../../../../../../components/Elements/Button";
+import '../custom-select-styles.scss';
 
 
 import { fetchAgencies, fetchDataflows, fetchDataflowVersions, fetchDimensions, fetchDsd } from './fetchFunctions.jsx';
@@ -26,6 +28,8 @@ const DsdForm = ({ urlChanged, setRequest }) => {
 
   const [dsdResult, setDsdResult] = useState(null);
 
+  const [currentUrl, setCurrentUrl] = useState(null);
+
   const [loading, setLoading] = useState({
     agency: false,
     dataflow: false,
@@ -34,6 +38,8 @@ const DsdForm = ({ urlChanged, setRequest }) => {
     dsd: false,
   });
   const [error, setError] = useState({});
+
+  const [loadError, setLoadError] = useState("");
 
   // Fetch agency options on mount
   useEffect(() => {
@@ -73,17 +79,27 @@ const DsdForm = ({ urlChanged, setRequest }) => {
   // Fetch DSD on dimension change
   useEffect(() => {
     if (!selectedDataflow || !selectedDataflowVersion) return;
-    
+
     fetchDsd(
       selectedDataflow,
       selectedDataflowVersion.value,
       dimensionSelections,
       setDsdResult,
-      urlChanged,
+      setCurrentUrl,
       setError,
       setLoading);
 
   }, [dimensionSelections, selectedDataflow, selectedDataflowVersion]);
+
+  const handleSubmit = async () => {
+    try {
+      urlChanged(currentUrl);
+      setLoadError("");
+    }
+    catch (e) {
+      setLoadError(e);
+    }
+  }
 
   // Handle dimension selection change
   const handleDimensionChange = async (dimensionId, selectedOptions) => {
@@ -133,7 +149,7 @@ const DsdForm = ({ urlChanged, setRequest }) => {
           setSelectedDataflowVersion(null);
         }}
         loading={loading.agency}
-        error={error.agency}
+        error={error.agency ? "An error has occurred" : null}
       />
 
       {selectedAgency && (
@@ -151,7 +167,7 @@ const DsdForm = ({ urlChanged, setRequest }) => {
             }
           }}
           loading={loading.dataflow}
-          error={error.dataflow}
+          error={error.dataflow ? "An error has occurred" : null}
         />
       )}
 
@@ -168,7 +184,7 @@ const DsdForm = ({ urlChanged, setRequest }) => {
             }
           }}
           loading={loading.dataflowVersion}
-          error={error.dataflowVersion}
+          error={error.dataflowVersion ? "An error has occurred" : null}
         />
       )}
 
@@ -182,12 +198,23 @@ const DsdForm = ({ urlChanged, setRequest }) => {
                 options={dimensionOptions[dimensionId]}
                 selectedValues={dimensionSelections[dimensionId] || []}
                 onChange={handleDimensionChange}
-                classNamePrefix="custom-select-dimensions"
               />
             ))}
           </div>
         </section>
       )}
+      <span>
+        <ThemeButton
+          variant="primary Basic"
+          className="LoadDataButton"
+          disabled={!selectedAgency || !selectedDataflow || !selectedDataflowVersion}
+          onClick={handleSubmit}>
+          Load Data
+        </ThemeButton>
+        <h2 className="LoadDataError">
+          {loadError}
+        </h2>
+      </span>
     </div>
   );
 };

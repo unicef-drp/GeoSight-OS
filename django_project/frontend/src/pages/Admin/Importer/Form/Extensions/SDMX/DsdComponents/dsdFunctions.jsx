@@ -22,7 +22,7 @@ const propagateAgencyOptions = async () => {
       }
     });
   } catch (error) {
-    console.error("Error fetching agency options:", error);
+    return { error: "An error has occurred" }
   }
 
   return agencyList; // Return as a list of agency objects
@@ -72,8 +72,7 @@ const restrictDataflowOptions = async (agencyParam) => {
       }
     });
   } catch (error) {
-    console.error("Error fetching dataflows:", error);
-    return { error: "Error fetching dataflows." };
+    return { error: "An error has occurred" };
   }
 
   return dataflowDetailsList;
@@ -103,7 +102,7 @@ const propagateDataflowVersions = async (dataflow) => {
       }
     });
   } catch (error) {
-    return { error: "Error fetching dataflow versions" };
+    return { error: "An error has occurred" };
   }
 
   return dataflowVersions;
@@ -138,7 +137,7 @@ const updateDimensions = async (dataflow, dataflowVersion) => {
       }
     });
   } catch (error) {
-    return { error: "Error fetching dimensions" };
+    return { error: "An error has occurred" };
   }
 
   const { updatedDimensions, apiResponse } = await updateDsd(dataflow, dimensionSelections, dataflowVersion);
@@ -170,8 +169,7 @@ const updateDsd = async (dataflow, dimensions, dataflowVersion) => {
 
     return { updatedDimensions, apiUrl, apiResponse, sdmxImplementation };
   } catch (error) {
-    console.error("Error fetching or parsing DSD from API:", error);
-    return { error: "Error fetching data" };
+    return { error: "An error has occurred" };
   }
 };
 
