@@ -48,7 +48,6 @@ export interface ZonalAnalysisDashboardConfiguration {
 export interface FetchingFunctionProp {
   contextLayer: ContextLayer,
   config: ZonalAnalysisConfiguration,
-  aggregatedField: string,
   features: Array<Feature>,
-  setData: (values: number[], error: string) => void
+  setData: (values: object[], error: string) => void
 }

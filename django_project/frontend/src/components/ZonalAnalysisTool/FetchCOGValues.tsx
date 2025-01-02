@@ -42,7 +42,7 @@ export const fetchCOGValues = async (
       Math.round((lat - originY) / resolutionY),
     ];
 
-    const values = [];
+    const values: { Pixel: number }[] = [];
     for (let i = 0; i < features.length; i++) {
       const feature = features[i]
       // @ts-ignore
@@ -57,7 +57,7 @@ export const fetchCOGValues = async (
               window: [x, y, x + 1, y + 1],
             });
             // @ts-ignore
-            values.push(pixelValue[0][0]);
+            values.push({ Pixel: pixelValue[0][0] });
           }
           break;
         }

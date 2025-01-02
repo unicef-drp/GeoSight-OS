@@ -93,7 +93,7 @@ export function ZonalAnalysisConfiguration(
     if (config) {
       setData(config)
     }
-  }, [config])
+  }, [config, open])
 
   // Loading data
   useEffect(() => {
@@ -140,9 +140,9 @@ export function ZonalAnalysisConfiguration(
           case Variables.LAYER.TYPE.RASTER_COG:
             setNewLayer({
               ...newLayer,
-              aggregatedField: "Sum pixels"
+              aggregatedField: "Pixel"
             })
-            setNewLayerFieldOptions(["Sum pixels"])
+            setNewLayerFieldOptions(["Pixel"])
             break;
         }
         return
