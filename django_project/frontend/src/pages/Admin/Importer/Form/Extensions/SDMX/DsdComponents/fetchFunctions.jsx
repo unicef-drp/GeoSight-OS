@@ -66,7 +66,7 @@ export const fetchDimensions = async (setLoading, setError, setDimensionOptions,
   }
 };
 
-export const fetchDsd = async (selectedDataflow, selectedDataflowVersion, dimensionSelections, setDsdResult, urlChanged, setError, setLoading) => {
+export const fetchDsd = async (selectedDataflow, selectedDataflowVersion, dimensionSelections, setDsdResult, setCurrentUrl, setError, setLoading) => {
   setLoading((prev) => ({ ...prev, dsd: true }));
   try {
     const result = await updateDsd(selectedDataflow, dimensionSelections, selectedDataflowVersion);
@@ -74,7 +74,7 @@ export const fetchDsd = async (selectedDataflow, selectedDataflowVersion, dimens
     if (result.error) throw new Error(result.error);
 
     setDsdResult(result);
-    urlChanged(result.apiUrl.split("?")[0] + "?format=csv");
+    setCurrentUrl(result.apiUrl.split("?")[0] + "?format=csv");
     setError((prev) => ({ ...prev, dsd: null }));
   } catch {
     setError((prev) => ({ ...prev, dsd: "Error fetching DSD." }));

@@ -2,7 +2,8 @@
 import React from "react";
 
 import FormControl from "@mui/material/FormControl";
-import { Select } from "../../../../../../../components/Input/index";
+import Select from "react-select";
+import { ArrowDownwardIcon } from "../../../../../../../components/Icons";
 
 import '../style.scss';
 
@@ -24,7 +25,6 @@ const DimensionDropdown = ({
   options,
   selectedValues,
   onChange,
-  classNamePrefix,
 }) => (
   <div className="DimensionContainer">
     <label className="form-label" id={dimensionId}>
@@ -34,26 +34,23 @@ const DimensionDropdown = ({
     <FormControl className='InputControl'>
       <Select
         isMulti
-        isClearable={false}
         options={options}
         value={options.filter((option) => selectedValues.includes(option.value))}
-        getOptionLabel={(option) => `${option.label} [${option.value}]`}
-        getOptionValue={(option) => option.value}
         onChange={(selectedOptions) => onChange(dimensionId, selectedOptions)}
-        closeMenuOnSelect={false}
+        placeholder={`Select ${dimensionId}`}
+        className={"DimensionDropdown"}
+        classNamePrefix={"DimensionDropdown"}
+        formatOptionLabel={(option) => `${option.label} [${option.value}]`}
         styles={{
-          control: provided => ({
+          control: (provided) => ({
             ...provided,
-            backgroundColor: "none"
           }),
-          valueContainer: provided => ({
-            ...provided,
-            overflowY: "scroll",
-          })
         }}
-        placeholder="Select..."
-        classNamePrefix={classNamePrefix}
-        aria-labelledby={dimensionId}
+        components={{
+          IndicatorSeparator: () => null,
+          DropdownIndicator: () => <div className='DropdownIndicator'>
+            <ArrowDownwardIcon /></div>,
+        }}
       />
     </FormControl>
   </div>
