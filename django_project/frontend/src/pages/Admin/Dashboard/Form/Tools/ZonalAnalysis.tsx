@@ -45,6 +45,10 @@ import {
   SelectWithList
 } from "../../../../../components/Input/SelectWithList";
 import ArcGISRequest from "../../../../../utils/ArcGIS/Request";
+import RelatedTableRequest from "../../../../../utils/RelatedTable/Request";
+import {
+  RelatedTable
+} from "../../../../../store/dashboard/reducers/relatedTable";
 
 
 interface Props {
@@ -149,11 +153,16 @@ export function ZonalAnalysisConfiguration(
             setNewLayerFieldOptions(["Pixel"])
             break;
           case Variables.LAYER.TYPE.RELATED_TABLE:
-            setNewLayer({
-              ...newLayer,
-              aggregatedField: "Pixel"
+            const request = new RelatedTableRequest(contextLayer.related_table)
+
+            // @ts-ignore
+            request.getDetail().then((response: RelatedTable) => {
+              setNewLayerFieldOptions(response.related_fields)
+              setNewLayer({
+                ...newLayer,
+                aggregatedField: response.related_fields[0]
+              })
             })
-            setNewLayerFieldOptions(["Pixel"])
             break;
         }
         return
