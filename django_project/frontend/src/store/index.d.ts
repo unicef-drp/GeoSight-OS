@@ -9,15 +9,16 @@
  *     (at your option) any later version.
  *
  * __author__ = 'irwan@kartoza.com'
- * __date__ = '26/12/2024'
+ * __date__ = '02/01/2025'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-export interface ContextLayer {
-  id: number;
-  name: string;
-  url: string;
-  layer_type: string;
-  arcgis_config?: number;
-  related_table?: number;
+export interface Permission {
+  list: boolean;
+  read: boolean;
+  read_data: boolean;
+  edit: boolean;
+  edit_data: boolean;
+  share: boolean;
+  delete: boolean;
 }

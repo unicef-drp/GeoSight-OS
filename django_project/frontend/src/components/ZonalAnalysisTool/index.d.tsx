@@ -16,6 +16,7 @@
 import { AGGREGATION_TYPES } from "../../utils/analysisData";
 import { ContextLayer } from "../../store/dashboard/reducers/contextLayers";
 import { Feature } from "geojson";
+import maplibregl from "maplibre-gl";
 
 export const SELECTION_MODE = {
   SELECT_ADMIN: "SELECT_ADMIN",
@@ -49,5 +50,6 @@ export interface FetchingFunctionProp {
   contextLayer: ContextLayer,
   config: ZonalAnalysisConfiguration,
   features: Array<Feature>,
-  setData: (values: object[], error: string) => void
+  setData: (values: object[], error: string) => void,
+  map?: maplibregl.Map
 }
