@@ -3,9 +3,7 @@ import {
   updateDsd,
 } from "./dsdFunctions.jsx";
 import '../style.scss';
-import '../custom-select-styles.scss';
 import { ThemeButton } from "../../../../../../../components/Elements/Button";
-import '../custom-select-styles.scss';
 
 
 import { fetchAgencies, fetchDataflows, fetchDataflowVersions, fetchDimensions, fetchDsd } from './fetchFunctions.jsx';
