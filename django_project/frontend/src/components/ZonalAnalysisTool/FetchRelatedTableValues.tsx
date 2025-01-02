@@ -29,6 +29,12 @@ export const fetchRelatedTableValues = async (
   }
   try {
     const source = map.getStyle().sources[`context-layer-${contextLayer.id}`]
+    if (!source) {
+      setData(
+        null, 'The layer is currently not activated. Please ensure it is turned on before proceeding with the analysis.'
+      )
+      return;
+    }
     // @ts-ignore
     const targetCollection = turf.featureCollection(source.data.features);
     const filterByCollection = turf.featureCollection(features);
