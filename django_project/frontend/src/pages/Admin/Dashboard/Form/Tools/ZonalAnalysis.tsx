@@ -71,7 +71,11 @@ export function ZonalAnalysisConfiguration(
   // @ts-ignore
   const { contextLayers: ctxLayer } = useSelector((state: RootState) => state.dashboard.data);
   const contextLayers = ctxLayer.filter(
-    (ctx: ContextLayer) => [Variables.LAYER.TYPE.ARCGIS, Variables.LAYER.TYPE.RASTER_COG].includes(ctx.layer_type)
+    (ctx: ContextLayer) => [
+      Variables.LAYER.TYPE.ARCGIS,
+      Variables.LAYER.TYPE.RASTER_COG,
+      Variables.LAYER.TYPE.RELATED_TABLE
+    ].includes(ctx.layer_type)
   )
 
   // For new layer
@@ -138,6 +142,13 @@ export function ZonalAnalysisConfiguration(
             })
             break;
           case Variables.LAYER.TYPE.RASTER_COG:
+            setNewLayer({
+              ...newLayer,
+              aggregatedField: "Pixel"
+            })
+            setNewLayerFieldOptions(["Pixel"])
+            break;
+          case Variables.LAYER.TYPE.RELATED_TABLE:
             setNewLayer({
               ...newLayer,
               aggregatedField: "Pixel"
