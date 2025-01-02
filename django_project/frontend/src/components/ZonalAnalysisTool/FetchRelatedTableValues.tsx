@@ -13,6 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 import { FetchingFunctionProp } from "./index.d";
+import * as turf from '@turf/turf';
 import { Variables } from "../../utils/Variables";
 
 export const fetchRelatedTableValues = async (
@@ -26,5 +27,21 @@ export const fetchRelatedTableValues = async (
     setData(null, `Can't calculate for ${contextLayer.layer_type}`)
     return;
   }
-  console.log(map)
+  try {
+    const source = map.getStyle().sources[`context-layer-${contextLayer.id}`]
+    // @ts-ignore
+    const targetCollection = turf.featureCollection(source.data.features);
+    const filterByCollection = turf.featureCollection(features);
+    const filteredFeatures = targetCollection.features.filter(targetFeature => {
+        return filterByCollection.features.some(filterFeature => {
+          // @ts-ignore
+          return turf.booleanIntersects(targetFeature, filterFeature)
+        })
+      }
+    );
+    // @ts-ignore
+    setData(filteredFeatures.map(feature => feature.properties), null)
+  } catch (error) {
+    setData(null, error.toString())
+  }
 }

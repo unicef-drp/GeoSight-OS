@@ -56,6 +56,7 @@ import { getFeatureByConceptUUID } from "../../utils/referenceLayer";
 import { ContextLayer } from "../../store/dashboard/reducers/contextLayers";
 import { fetchArcGISValues } from "./FetchArcGISValues";
 import { fetchCOGValues } from "./FetchCOGValues";
+import { fetchRelatedTableValues } from "./FetchRelatedTableValues";
 
 interface Props {
   map: maplibregl.Map;
@@ -225,6 +226,16 @@ export const ZonalAnalysisTool = forwardRef((
             }
             case Variables.LAYER.TYPE.RASTER_COG: {
               fetchCOGValues({
+                contextLayer,
+                config,
+                features,
+                setData
+              })
+              return;
+            }
+            case Variables.LAYER.TYPE.RELATED_TABLE: {
+              fetchRelatedTableValues({
+                map,
                 contextLayer,
                 config,
                 features,
