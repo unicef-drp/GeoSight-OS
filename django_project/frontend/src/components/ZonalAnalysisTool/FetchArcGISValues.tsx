@@ -25,7 +25,6 @@ export const fetchArcGISValues = (
   {
     contextLayer,
     config,
-    aggregatedField,
     features,
     setData
   }: FetchingFunctionProp) => {
@@ -61,7 +60,7 @@ export const fetchArcGISValues = (
     // outFields is based on admin config
     arcgisRequest.queryData(
       {
-        outFields: [aggregatedField],
+        outFields: ['*'],
         returnGeometry: false
       },
       feature
@@ -73,7 +72,7 @@ export const fetchArcGISValues = (
     }).then((data) => {
       const cleanData = data.features.map((row: any) => {
         try {
-          return row.attributes[aggregatedField]
+          return row.attributes
         } catch (err) {
           return null
         }

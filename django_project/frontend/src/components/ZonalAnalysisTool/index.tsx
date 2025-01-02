@@ -204,23 +204,12 @@ export const ZonalAnalysisTool = forwardRef((
         // @ts-ignore
         ref.startAnalyzing()
       })
-      const analysisLayers: string[] = []
-      layers.map(analysisLayer => {
-        const _id = analysisLayer.id + '-' + analysisLayer.aggregatedField
-        if (!analysisLayers.includes(_id)) {
-          analysisLayers.push(_id)
-        }
-      })
-      analysisLayers.map((_id: any) => {
-        const splittedId = _id.split('-')
-        const id = splittedId[0]
-        const aggregatedField = splittedId[1]
-
-        const contextLayer = contextLayers.find((ctx: ContextLayer) => ctx.id === parseInt(id))
-        const setData = (values: number[], error: string) => {
+      layers.map((analysisLayer: ZonalAnalysisLayerConfiguration) => {
+        const contextLayer = contextLayers.find((ctx: ContextLayer) => ctx.id === analysisLayer.id)
+        const setData = (values: object[], error: string) => {
           zonalAnalysisRefs.current.map((ref, index) => {
             // @ts-ignore
-            ref.finishAnalyzing(contextLayer.id, aggregatedField, values, error)
+            ref.finishAnalyzing(contextLayer.id, values, error)
           })
         }
         if (contextLayer) {
@@ -229,7 +218,6 @@ export const ZonalAnalysisTool = forwardRef((
               fetchArcGISValues({
                 contextLayer,
                 config,
-                aggregatedField,
                 features,
                 setData
               })
@@ -239,7 +227,6 @@ export const ZonalAnalysisTool = forwardRef((
               fetchCOGValues({
                 contextLayer,
                 config,
-                aggregatedField,
                 features,
                 setData
               })
@@ -249,7 +236,7 @@ export const ZonalAnalysisTool = forwardRef((
         }
         zonalAnalysisRefs.current.map((ref, index) => {
           // @ts-ignore
-          ref.finishAnalyzing(contextLayer.id, aggregatedField, null)
+          ref.finishAnalyzing(contextLayer.id, null)
         })
       })
     }

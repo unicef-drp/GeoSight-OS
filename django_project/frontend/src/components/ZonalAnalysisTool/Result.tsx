@@ -36,6 +36,7 @@ export const ZonalAnalysisResult = forwardRef((
 
     // @ts-ignore
     const { contextLayers } = useSelector(state => state.dashboard.data)
+    const [data, setData] = useState<object[]>(null);
     const [value, setValue] = useState<number>(null);
     const [error, setError] = useState<string>(null);
     const contextLayer = contextLayers.find((ctx: ContextLayer) => ctx.id === analysisLayer.id)
@@ -46,15 +47,17 @@ export const ZonalAnalysisResult = forwardRef((
         setValue(null)
         setError(null)
       },
-      finishAnalyzing(id: number, aggregatedField: string, values: number[], error: string) {
+      finishAnalyzing(id: number, values: object[], error: string) {
         if (contextLayer.id !== id) {
           return
         }
-        if (analysisLayer.aggregatedField !== aggregatedField) {
-          return
-        }
         setError(error)
-        setValue(analyzeData(analysisLayer.aggregation, values))
+        if (values) {
+          // @ts-ignore
+          const data = values.map((value: object) => value[analysisLayer.aggregatedField]).filter(value => value !== undefined)
+          setData(data)
+          setValue(analyzeData(analysisLayer.aggregation, data))
+        }
         setIsAnalysing(false)
       },
       clear() {
