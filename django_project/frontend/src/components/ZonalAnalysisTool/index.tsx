@@ -210,7 +210,7 @@ export const ZonalAnalysisTool = forwardRef((
         const setData = (values: object[], error: string) => {
           zonalAnalysisRefs.current.map((ref, index) => {
             // @ts-ignore
-            ref.finishAnalyzing(contextLayer.id, values, error)
+            ref.finishAnalyzing(analysisLayer.id, values, error)
           })
         }
         if (contextLayer) {
@@ -247,7 +247,7 @@ export const ZonalAnalysisTool = forwardRef((
         }
         zonalAnalysisRefs.current.map((ref, index) => {
           // @ts-ignore
-          ref.finishAnalyzing(contextLayer.id, null)
+          ref.finishAnalyzing(analysisLayer.id, null)
         })
       })
     }

@@ -48,7 +48,7 @@ export const ZonalAnalysisResult = forwardRef((
         setError(null)
       },
       finishAnalyzing(id: number, values: object[], error: string) {
-        if (contextLayer.id !== id) {
+        if (analysisLayer.id !== id) {
           return
         }
         setError(error)
