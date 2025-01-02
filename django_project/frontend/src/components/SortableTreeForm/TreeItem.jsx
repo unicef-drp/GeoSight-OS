@@ -134,13 +134,16 @@ export const TreeItem = forwardRef(
       >
         <div className={styles.TreeItem} ref={ref} style={style}>
           <Handle {...handleProps} />
-          <Checkbox size={'small'} onClick={() => {
-            if (isGroup) {
-              select(value, true)
-            } else {
-              select(data.id, false)
-            }
-          }} checked={props.selected}/>
+          <Checkbox
+            className='TreeItemCheckbox'
+            size={'small'}
+            onClick={() => {
+              if (isGroup) {
+                select(value, true)
+              } else {
+                select(data.id, false)
+              }
+            }} checked={props.selected}/>
           {onCollapse && (
             <Action
               onClick={onCollapse}

@@ -27,6 +27,7 @@ import {
 import { dictDeepCopy } from "../../../../utils/main";
 import { dataFieldsDefault } from "../../../../utils/indicatorLayer";
 import { updateColorPaletteData } from "../../../../utils/Style";
+import { Variables } from "../../../../utils/Variables";
 
 const REQUEST_DASHBOARD = 'REQUEST/' + DASHBOARD_ACTION_NAME;
 const RECEIVE_DASHBOARD = 'RECEIVE/' + DASHBOARD_ACTION_NAME;
@@ -45,6 +46,18 @@ function request() {
 const groupDefault = {
   'group': '',
   'children': []
+}
+
+const toolDefaults = (tools, name, visible) => {
+  if (!tools.find(tool => tool.name === name)) {
+    tools.push(
+      {
+        "visible_by_default": visible,
+        "name": name,
+        "config": null
+      }
+    )
+  }
 }
 
 /**
@@ -115,6 +128,21 @@ function receive(data, error = null) {
       data.levelConfig = data.level_config
       delete data.level_config
     }
+
+    // Adding default tools
+    [
+      [Variables.DASHBOARD.TOOL.VIEW_3D, true],
+      [Variables.DASHBOARD.TOOL.COMPARE_LAYERS, true],
+      [Variables.DASHBOARD.TOOL.MEASUREMENT, true],
+      [Variables.DASHBOARD.TOOL.ZONAL_ANALYSIS, false],
+    ].map(tool => {
+        toolDefaults(data.tools, tool[0], tool[1])
+      }
+    )
+    data.tools.map((tool, idx) => {
+      tool.id = idx + 1;
+    })
+    data.tools.sort((a, b) => a.name.localeCompare(b.name));
   }
 
   return {

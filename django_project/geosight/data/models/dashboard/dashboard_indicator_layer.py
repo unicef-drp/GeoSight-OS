@@ -23,7 +23,9 @@ from django.contrib.gis.db import models
 from django.utils.dateparse import parse_datetime
 from django.utils.translation import ugettext_lazy as _
 
-from geosight.data.models.dashboard.dashboard_relation import DashboardRelation
+from geosight.data.models.dashboard.dashboard_relation import (
+    DashboardRelationWithLimit
+)
 from geosight.data.models.field_layer import FieldLayerAbstract
 from geosight.data.models.indicator import (
     Indicator, IndicatorValue
@@ -58,7 +60,9 @@ LAYER_TYPES = (
 )
 
 
-class DashboardIndicatorLayer(DashboardRelation, IndicatorStyleBaseModel):
+class DashboardIndicatorLayer(
+    DashboardRelationWithLimit, IndicatorStyleBaseModel
+):
     """Indicator Layer x Dashboard model."""
 
     name = models.CharField(

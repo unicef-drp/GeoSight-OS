@@ -16,11 +16,13 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib.gis.db import models
 
-from geosight.data.models.dashboard.dashboard_relation import DashboardRelation
+from geosight.data.models.dashboard.dashboard_relation import (
+    DashboardRelationWithLimit
+)
 from geosight.data.models.related_table import RelatedTable
 
 
-class DashboardRelatedTable(DashboardRelation):
+class DashboardRelatedTable(DashboardRelationWithLimit):
     """RelatedTable x Dashboard rule."""
 
     object = models.ForeignKey(

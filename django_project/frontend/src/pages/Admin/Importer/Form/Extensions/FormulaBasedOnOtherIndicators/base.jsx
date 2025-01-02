@@ -132,8 +132,8 @@ export const FormulaBasedForm = forwardRef(
           <br/>
           <br/>
           To get value of context, you can use this functions:<br/>
-          get_value(indicator, geometryType, t1, t2, aggregation) --> Return one value of context by aggregating it.<br/>
-          get_values(indicator, geometryType, t1, t2) --> Return list json of {"{admin_level, concept_uuid, geom_code, name, time, value}"}.<br/>
+          get_value(indicator, geometryType, t1, t2, aggregation) -- Return one value of context by aggregating it.<br/>
+          get_values(indicator, geometryType, t1, t2) -- Return list json of {"{admin_level, concept_uuid, geom_code, name, time, value}"}.<br/>
           Put t1 = null for not filter the data.
         </span>
         <br/>

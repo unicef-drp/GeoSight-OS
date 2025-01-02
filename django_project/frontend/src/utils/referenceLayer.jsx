@@ -23,6 +23,10 @@ import {
 import { dynamicStyleTypes, returnLayerStyleConfig } from "./Style";
 import { dictDeepCopy } from "./main";
 import { InternalReferenceDatasets } from "./urls";
+import {
+  FILL_LAYER_ID_KEY
+} from "../pages/Dashboard/MapLibre/Layers/ReferenceLayer";
+import { union } from "@turf/turf";
 
 const temporary = {}
 
@@ -138,4 +142,25 @@ export const RefererenceLayerUrls = {
       return GeorepoUrls.ViewDetail(identifier)
     }
   }
+}
+/**
+ * Get Feature by concept UUID
+ */
+export const getFeatureByConceptUUID = (map, conceptUUID) => {
+  const visibleLayerIds = map.getStyle().layers.filter(
+    layer => layer.id.includes(FILL_LAYER_ID_KEY)
+  ).map(layer => layer.id)
+  const features = map.queryRenderedFeatures({
+    layers: visibleLayerIds,
+    filter: ['==', ['get', 'concept_uuid'], conceptUUID]
+  })
+  if (!features.length) {
+    return null
+  }
+  let mergedPolygon = features[0];
+  for (let i = 1; i < features.length; i++) {
+    mergedPolygon = union(mergedPolygon, features[i]);
+  }
+  mergedPolygon.properties = features[0].properties
+  return mergedPolygon
 }

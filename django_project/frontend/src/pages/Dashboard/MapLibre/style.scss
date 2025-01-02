@@ -201,28 +201,11 @@
       border-radius: 0;
       height: 30px;
 
-      .Active {
-        a, span {
-          color: $primary-color !important;
-          background-color: rgba(0, 0, 0, 0) !important;
-        }
-      }
-
-      a, span {
-        color: $tab-inactive-color !important;
-        background-color: rgba(0, 0, 0, 0) !important;
-      }
-
       a {
         margin: 0 2px;
         line-height: 30px;
         width: 30px;
         height: 30px;
-
-
-        &:hover {
-          background-color: #ddd;
-        }
       }
 
       a, span {
@@ -268,10 +251,6 @@
         width: 30px;
         margin: 0 5px;
         padding: 3px;
-
-        &:hover {
-          background-color: #ddd;
-        }
 
         span {
           width: 100%;

@@ -85,7 +85,7 @@ export const loadImageToMap = (map, id, callback) => {
  * Update cursor on hovered
  */
 const updateCursorOnHovered = (map) => {
-  if (map.measurementMode) {
+  if (map.drawingMode) {
     map.getCanvas().style.cursor = 'crosshair';
   } else {
     map.getCanvas().style.cursor = 'pointer';
@@ -96,7 +96,7 @@ const updateCursorOnHovered = (map) => {
  * Update cursor on hovered
  */
 const updateCursorOnLeave = (map) => {
-  if (map.measurementMode) {
+  if (map.drawingMode) {
     map.getCanvas().style.cursor = 'crosshair';
   } else {
     map.getCanvas().style.cursor = '';
@@ -108,6 +108,7 @@ const updateCursorOnLeave = (map) => {
 let popup = null
 let functionPopup = {}
 export const addPopup = (map, id, popupRenderFn) => {
+  console.log(id)
   if (!functionPopup[id]) {
     functionPopup[id] = {}
   }
@@ -125,7 +126,7 @@ export const addPopup = (map, id, popupRenderFn) => {
 
   map.off('click', id, functionPopup[id].click);
   functionPopup[id].click = function (e) {
-    if (!map.measurementMode) {
+    if (!map.drawingMode) {
 
       // Check the id that is the most top
       let clickedId = null
@@ -163,6 +164,34 @@ export const addPopup = (map, id, popupRenderFn) => {
   map.on('click', id, functionPopup[id].click);
 }
 /**
+ * Remove click event
+ */
+export const removeClickEvent = (map, layerId, functionId) => {
+  if (functionPopup[functionId]?.click) {
+    if (layerId) {
+      map.off('click', layerId, functionPopup[functionId].click);
+    } else {
+      map.off('click', functionPopup[functionId].click);
+    }
+  }
+}
+/**
+ * Add click event
+ */
+export const addClickEvent = (map, layerId, functionId, listenerFn) => {
+  removeClickEvent(map, layerId, functionId)
+  if (!functionPopup[functionId]) {
+    functionPopup[functionId] = {}
+  }
+  functionPopup[functionId].click = listenerFn
+  if (layerId) {
+    map.on('click', layerId, functionPopup[functionId].click);
+  } else {
+    map.on('click', functionPopup[functionId].click);
+  }
+
+}
+/**
  * Popup for marker
  */
 export const addPopupEl = (map, el, latlng, properties, popupRenderFn, offset = {}) => {
@@ -175,7 +204,7 @@ export const addPopupEl = (map, el, latlng, properties, popupRenderFn, offset = 
   });
 
   el.addEventListener('click', function (e) {
-    if (!map.measurementMode) {
+    if (!map.drawingMode) {
       const popupHtml = popupRenderFn(properties)
       if (popup) {
         popup.remove()

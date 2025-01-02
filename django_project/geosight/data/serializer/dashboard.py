@@ -28,7 +28,8 @@ from geosight.data.serializer.dashboard_indicator_layer import (
 )
 from geosight.data.serializer.dashboard_relation import (
     DashboardBasemapSerializer,
-    DashboardContextLayerSerializer, DashboardRelatedTableSerializer
+    DashboardContextLayerSerializer, DashboardRelatedTableSerializer,
+    DashboardToolSerializer
 )
 from geosight.data.serializer.dashboard_widget import DashboardWidgetSerializer
 from geosight.data.serializer.indicator import IndicatorSerializer
@@ -57,6 +58,9 @@ class DashboardSerializer(serializers.ModelSerializer):
     geo_field = serializers.SerializerMethodField()
     level_config = serializers.SerializerMethodField()
     default_time_mode = serializers.SerializerMethodField()
+
+    # Tools
+    tools = serializers.SerializerMethodField()
 
     def get_description(self, obj: Dashboard):
         """Return description."""
@@ -256,6 +260,12 @@ class DashboardSerializer(serializers.ModelSerializer):
                 'default_interval': pref.default_interval,
             }
 
+    def get_tools(self, obj: Dashboard):
+        """Return tools."""
+        return DashboardToolSerializer(
+            obj.dashboardtool_set.all(), many=True
+        ).data
+
     class Meta:  # noqa: D106
         model = Dashboard
         fields = (
@@ -271,7 +281,7 @@ class DashboardSerializer(serializers.ModelSerializer):
             'user_permission',
             'geo_field', 'show_splash_first_open',
             'truncate_indicator_layer_name', 'enable_geometry_search',
-            'overview', 'default_time_mode'
+            'overview', 'default_time_mode', 'tools'
         )
 
 

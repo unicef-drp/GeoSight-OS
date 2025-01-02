@@ -25,7 +25,8 @@ from geosight.data.models.dashboard import (
     DashboardIndicatorLayer,
     DashboardIndicatorLayerIndicator,
     DashboardIndicatorLayerRelatedTable,
-    DashboardRelatedTable
+    DashboardRelatedTable,
+    DashboardTool
 )
 
 
@@ -33,6 +34,13 @@ class DashboardWidgetInline(admin.StackedInline):
     """DashboardWidget inline."""
 
     model = DashboardWidget
+    extra = 0
+
+
+class DashboardToolInline(admin.StackedInline):
+    """DashboardTool inline."""
+
+    model = DashboardTool
     extra = 0
 
 
@@ -114,7 +122,8 @@ class DashboardAdmin(admin.ModelAdmin):
     inlines = (
         DashboardBasemapInline,
         DashboardContextLayerInline,
-        DashboardWidgetInline
+        DashboardWidgetInline,
+        DashboardToolInline
     )
     prepopulated_fields = {'slug': ('name',)}
     actions = (invalidate_cache,)

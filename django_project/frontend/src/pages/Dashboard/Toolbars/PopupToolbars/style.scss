@@ -24,23 +24,23 @@
 }
 
 
-.MeasurementComponent {
+.PopupToolbarIcon {
   position: relative;
 
   a {
     cursor: pointer !important;
   }
 
-  .MeasurementComponentPopup {
+  .PopupToolbarComponent {
     background: white;
     border-radius: $border-radius;
     box-shadow: $box-shadow;
     box-sizing: border-box;
     left: 50%;
-    margin-left: -235px;
+    margin-left: -250px;
     position: absolute;
     top: 42px;
-    width: 470px;
+    width: 500px;
 
     transform: none;
     transition: opacity 273ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 182ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
@@ -65,9 +65,8 @@
     }
 
     .Title {
-      color: $secondary-color;
-      padding-top: 0.5rem;
-      border-bottom: 1px solid $secondary-color;
+      color: $primary-color;
+      border-bottom: 1px solid $primary-color;
     }
   }
 
@@ -80,17 +79,13 @@
     padding: 0.5rem 0 !important;
 
     &:hover {
-      background-color: unset !important;
       opacity: $base-hovered-opacity;
     }
   }
 }
 
-.MeasurementComponentFooter {
-  border-top: 1px solid $secondary-color;
-  display: flex;
-  flex-direction: row-reverse;
-  align-items: center;
+.PopupToolbarComponentFooter {
+  border-top: 1px solid $primary-color;
 }
 
 .crosshairCursor {

@@ -134,7 +134,8 @@ class Dashboard(
             DashboardRelatedTable,
             DashboardIndicatorLayerRule as DSLayerRule,
             DashboardIndicatorLayerIndicatorRule as DSLayerIndicatorRule,
-            DashboardIndicatorLayerField as IndicatorLayerField
+            DashboardIndicatorLayerField as IndicatorLayerField,
+            DashboardTool
         )
         from geosight.data.models.style.indicator_style import (
             IndicatorStyleType
@@ -206,7 +207,9 @@ class Dashboard(
             basemaps_layers_structure, basemaps_layers_new
         )
 
+        # --------------------------------
         # RELATED TABLE
+        # --------------------------------
         self.save_relation(
             DashboardRelatedTable, RelatedTable,
             self.dashboardrelatedtable_set.all(),
@@ -469,6 +472,22 @@ class Dashboard(
         self.indicator_layers_structure = update_structure(
             indicator_layers_structure, indicator_layers_new
         )
+
+        # --------------------------------
+        # TOOLS
+        # --------------------------------
+        tools = data.get('tools', [])
+        for tool in tools:
+            try:
+                obj = self.dashboardtool_set.get(name=tool['name'])
+            except DashboardTool.DoesNotExist:
+                obj = DashboardTool(
+                    dashboard=self,
+                    name=tool['name'],
+                )
+            obj.visible_by_default = tool['visible_by_default']
+            obj.config = tool.get('config', None)
+            obj.save()
         self.save()
 
     def save_relation(self, ModelClass, ObjectClass, modelQuery, inputData):

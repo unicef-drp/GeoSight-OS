@@ -40,7 +40,7 @@ import selectedDynamicIndicatorLayerReducer
   from "./selectedDynamicIndicatorLayer";
 
 
-export default combineReducers({
+const rootReducer = combineReducers({
   // Just dashboard data without adding anything in there
   dashboard: dashboardRequestReducer,
 
@@ -65,3 +65,6 @@ export default combineReducers({
   selectedRelatedTableLayer: selectedRelatedTableLayerReducer,
   selectedDynamicIndicatorLayer: selectedDynamicIndicatorLayerReducer,
 });
+
+export type RootState = ReturnType<typeof rootReducer>;
+export default rootReducer;
