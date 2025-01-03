@@ -154,7 +154,7 @@ class TestRasterZonalAnalysis(BasePermissionTest.TestCase):
             name='Test Context Layer',
             url=(
                 'https://unidatadapmclimatechange.blob.core.windows.net/public/'
-                'heatwave/cogs_by_hwi/average_heatwaves_duration_1960s_proj_COG.tif'
+                'heatwave/cogs_by_hwi/context_layer.tif'
             ),
             layer_type='Raster COG'
         )
