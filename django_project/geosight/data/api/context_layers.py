@@ -16,6 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import json
 
+from shapely.geometry import shape
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -27,6 +28,7 @@ from geosight.permission.access import (
     read_permission_resource,
     delete_permission_resource
 )
+from geosight.data.utils import run_zonal_analysis
 
 
 class ContextLayerListAPI(APIView):
@@ -72,3 +74,22 @@ class ContextLayerDetailAPI(APIView):
         delete_permission_resource(layer, request.user)
         layer.delete()
         return Response('Deleted')
+
+
+class ContextLayerZonalAnalysisAPI(APIView):
+    """API for zonal analysis for context layer."""
+
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, pk, aggregation='sum'):
+        """Run zonal analysis."""
+        geometry_datas = json.loads(request.data.get('geometries'))
+        layer = get_object_or_404(ContextLayer, pk=pk)
+        layer_path = layer.download_cog(original_name=True)
+        geometries = [shape(geometry_data) for geometry_data in geometry_datas]
+        result = run_zonal_analysis(
+            layer_path,
+            geometries,
+            aggregation
+        )
+        return Response(result)

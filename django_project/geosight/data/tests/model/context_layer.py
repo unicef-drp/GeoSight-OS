@@ -14,6 +14,10 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import os
+from unittest.mock import MagicMock, patch
+from django.conf import settings
+
 from core.tests.base_tests import TestCase
 from geosight.data.serializer.context_layer import ContextLayerSerializer
 from geosight.data.tests.model_factories import ContextLayerF
@@ -49,3 +53,42 @@ class BasemapLayerTest(TestCase):
         self.assertEquals(context_layer_data['name'], self.name)
         for key, value in context_layer_data['parameters'].items():
             self.assertEquals(self.params[key], value)
+
+    @patch('requests.get')
+    def test_download_cog(self, mock_get):
+        """Test downloading cog file."""
+        context_layer = ContextLayerF(
+            name=self.name,
+            url=(
+                'https://unidatadapmclimatechange.blob.core.'
+                'windows.net/public/'
+                'heatwave/cogs_by_hwi/context_layer.tif'
+            ),
+            layer_type='Raster COG'
+        )
+
+        file_path = (
+            '/home/web/django_project/geosight/data/'
+            'tests/data/context_layer.tif'
+        )
+
+        # Read the file in chunks and simulate `iter_content`
+        # Mock response for requests.get
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+
+        # Simulate streaming content
+        def mock_iter_content(chunk_size=8192):
+            with open(file_path, "rb") as f:
+                while chunk := f.read(chunk_size):
+                    yield chunk
+
+        mock_response.iter_content = MagicMock(side_effect=mock_iter_content)
+        mock_get.return_value = mock_response
+
+        context_layer.download_cog()
+        self.assertTrue(
+            os.path.exists(
+                os.path.join(settings.MEDIA_TEMP, 'context_layer.tif')
+            )
+        )
