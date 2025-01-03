@@ -200,16 +200,48 @@ export const ZonalAnalysisTool = forwardRef((
         return
       }
       const features = draw.getFeatures(config.buffer)
+
+      /** Start analysis **/
       zonalAnalysisRefs.current.map((ref, index) => {
         // @ts-ignore
         ref.startAnalyzing()
       })
-      layers.map((analysisLayer: ZonalAnalysisLayerConfiguration) => {
+
+      /** Loop for context layer that is calculated in Result level **/
+      layers.map((analysisLayer: ZonalAnalysisLayerConfiguration, index) => {
         const contextLayer = contextLayers.find((ctx: ContextLayer) => ctx.id === analysisLayer.id)
+        if (
+          [
+            Variables.LAYER.TYPE.RASTER_COG
+          ].includes(contextLayer.layer_type)
+        ) {
+          zonalAnalysisRefs.current.map((ref, index) => {
+            // @ts-ignore
+            ref.finishAnalyzingByIndex(index, features)
+          })
+        }
+      })
+
+      /** Calculate by context layer type that is done on this level **/
+      const contextLayerIds = layers.map((analysisLayer: ZonalAnalysisLayerConfiguration) => {
+        const contextLayer = contextLayers.find((ctx: ContextLayer) => ctx.id === analysisLayer.id)
+        if (
+          [
+            Variables.LAYER.TYPE.ARCGIS, Variables.LAYER.TYPE.RELATED_TABLE
+          ].includes(contextLayer?.layer_type)
+        ) {
+          return contextLayer.id
+        }
+        return null
+      }).filter(id => id)
+
+      // Calculate per context layer
+      contextLayerIds.map(id => {
+        const contextLayer = contextLayers.find((ctx: ContextLayer) => ctx.id === id)
         const setData = (values: object[], error: string) => {
           zonalAnalysisRefs.current.map((ref, index) => {
             // @ts-ignore
-            ref.finishAnalyzing(contextLayer.id, values, error, features)
+            ref.finishAnalyzingByContextLayer(contextLayer.id, values, error, features)
           })
         }
         if (contextLayer) {
@@ -223,10 +255,6 @@ export const ZonalAnalysisTool = forwardRef((
               })
               return;
             }
-            case Variables.LAYER.TYPE.RASTER_COG: {
-              setData(null, null)
-              return;
-            }
             case Variables.LAYER.TYPE.RELATED_TABLE: {
               fetchRelatedTableValues({
                 map,
@@ -235,14 +263,9 @@ export const ZonalAnalysisTool = forwardRef((
                 features,
                 setData
               })
-              return;
             }
           }
         }
-        zonalAnalysisRefs.current.map((ref, index) => {
-          // @ts-ignore
-          ref.finishAnalyzing(analysisLayer.id, null)
-        })
       })
     }
 
@@ -405,6 +428,7 @@ export const ZonalAnalysisTool = forwardRef((
               layers.map((layer, index) => {
                   return <ZonalAnalysisResult
                     key={index}
+                    index={index}
                     analysisLayer={layer}
                     ref={(el: HTMLDivElement) => addRef(index, el)}
                     isAnalyzing={isAnalyzing[index]}
