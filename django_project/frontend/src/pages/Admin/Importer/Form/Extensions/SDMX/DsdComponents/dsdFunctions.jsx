@@ -2,6 +2,13 @@ import axios from "axios";
 import API_URLS from "./config"; // Import the configuration file
 
 // Function to fetch agency options and return them in a list
+/**
+ * propagateAgencyOptions Function
+ *
+ * @returns {Array} A list of agencies, each specifying:
+ *   @property {string} id - The ID of the agency.
+ *   @property {string} name - The name of the agency in English, or the ID if no English name is available.
+ */
 const propagateAgencyOptions = async () => {
   const apiUrl = API_URLS.agencyScheme;
   const agencyList = [];
@@ -29,6 +36,19 @@ const propagateAgencyOptions = async () => {
 };
 
 // Function to fetch and restrict dataflow options based on selected agency
+/**
+ * restrictDataflowOptions Function
+ *
+ * @param {string} [agencyParam] - The ID of the agency to filter dataflows.
+ *
+ * @returns {Array} A list of dataflow objects, where each object contains:
+ *   @property {string} name - The name of the dataflow.
+ *   @property {string} id - The ID of the dataflow.
+ *   @property {string} dsdId - The ID of the associated DSD (Data Structure Definition).
+ *   @property {string} dataflowAgency - The ID of the agency that owns the dataflow.
+ *   If agencyParam is not provided, an empty list is returned.
+ */
+
 const restrictDataflowOptions = async (agencyParam) => {
   const apiUrl = API_URLS.dataflow;
   const dataflowDetailsList = []; // List to hold the details of each dataflow
@@ -78,6 +98,16 @@ const restrictDataflowOptions = async (agencyParam) => {
   return dataflowDetailsList;
 };
 
+/**
+ * propagateDataflowVersions Function
+ *
+ * @param {Object} dataflow - An object containing information about the selected dataflow:
+ *   @property {string} dataflowAgency - The ID of the agency owning the dataflow.
+ *   @property {string} value - The dataflow ID.
+ *
+ * @returns {Array} An array of strings, where each string represents a version of the dataflow.
+ */
+
 const propagateDataflowVersions = async (dataflow) => {
   const apiUrl = API_URLS.dataflowVersions(dataflow.dataflowAgency, dataflow.value)
   const dataflowVersions = []
@@ -109,6 +139,19 @@ const propagateDataflowVersions = async (dataflow) => {
 }
 
 // Function to update dimension selections for a dataflow
+/**
+ * updateDimensions Function
+ *
+ * @param {Object} dataflow - The dataflow object containing:
+ *   @property {string} dataflowAgency - The ID of the agency owning the dataflow.
+ *   @property {string} dsdId - The ID of the associated DSD.
+ *   @property {string} [dataflowVersion="1.0"] - The version of the dataflow (default is "1.0").
+ *
+ * @returns {Object} An object containing:
+ *   @property {Object} dimensionSelections - A mapping of dimension IDs to an empty array, initialized for each dimension.
+ *   @property {Object} updatedDimensions - A mapping of dimension IDs to their available values, updated from the API response.
+ *   If an error occurs, an object with an error property is returned.
+ */
 const updateDimensions = async (dataflow, dataflowVersion) => {
   const apiUrl = API_URLS.datastructure(dataflow.dataflowAgency, dataflow.dsdId, dataflowVersion);
   const dimensionSelections = {};
@@ -146,6 +189,22 @@ const updateDimensions = async (dataflow, dataflowVersion) => {
 };
 
 // Function to update DSD based on selected dimensions
+/**
+ * updateDsd Function
+ *
+ * @param {Object} dataflow - The dataflow object containing:
+ *   @property {string} dataflowAgency - The ID of the agency owning the dataflow.
+ *   @property {string} id - The ID of the dataflow.
+ *   @property {Object} dimensions - A mapping of dimension IDs to an array of their selected values.
+ *   @property {string} [dataflowVersion="1.0"] - The version of the dataflow (default is "1.0").
+ *
+ * @returns {Object} An object containing:
+ *   @property {Object} updatedDimensions - A mapping of dimension IDs to their available values.
+ *   @property {string} apiUrl - The constructed API URL used for the request.
+ *   @property {Object} apiResponse - The full API response from the server.
+ *   @property {Array} sdmxImplementation - A placeholder array for additional implementation details.
+ *   If an error occurs, an object with an error property is returned.
+ */
 const updateDsd = async (dataflow, dimensions, dataflowVersion) => {
   try {
     // Construct the URL section based on dimensions
