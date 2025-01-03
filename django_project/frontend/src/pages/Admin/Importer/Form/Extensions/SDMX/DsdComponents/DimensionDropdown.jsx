@@ -1,8 +1,12 @@
 // File: DimensionDropdown.jsx
 import React from "react";
+
+import FormControl from "@mui/material/FormControl";
 import Select from "react-select";
+import { ArrowDownwardIcon } from "../../../../../../../components/Icons";
 
 import '../style.scss';
+
 
 /**
  * DimensionDropdown component renders a dropdown for selecting multiple values for a given dimension.
@@ -21,25 +25,34 @@ const DimensionDropdown = ({
   options,
   selectedValues,
   onChange,
-  classNamePrefix,
 }) => (
   <div className="DimensionContainer">
-    <label className="DimensionLabel">{dimensionId}</label>
-    <Select
-      isMulti
-      options={options}
-      value={options.filter((option) => selectedValues.includes(option.value))}
-      onChange={(selectedOptions) => onChange(dimensionId, selectedOptions)}
-      placeholder={`Select ${dimensionId}`}
-      classNamePrefix={classNamePrefix}
-      formatOptionLabel={(option) => `${option.label} [${option.value}]`}
-      styles={{
-        control: (provided) => ({
+    <label className="form-label" id={dimensionId}>
+      {dimensionId}
+    </label>
+
+    <FormControl className='InputControl'>
+      <Select
+        isMulti
+        options={options}
+        value={options.filter((option) => selectedValues.includes(option.value))}
+        onChange={(selectedOptions) => onChange(dimensionId, selectedOptions)}
+        placeholder={`Select ${dimensionId}`}
+        className={"DimensionDropdown"}
+        classNamePrefix={"DimensionDropdown"}
+        formatOptionLabel={(option) => `${option.label} [${option.value}]`}
+        styles={{
+          control: (provided) => ({
             ...provided,
-            backgroundColor: 'none',
-        }),
-    }}
-    />
+          }),
+        }}
+        components={{
+          IndicatorSeparator: () => null,
+          DropdownIndicator: () => <div className='DropdownIndicator'>
+            <ArrowDownwardIcon /></div>,
+        }}
+      />
+    </FormControl>
   </div>
 );
 

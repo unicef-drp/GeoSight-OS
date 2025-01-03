@@ -23,19 +23,13 @@
   border: 1px solid $primary-color;
   padding: 1rem;
 }
+
 .DsdForm {
   padding: 20px;
   border: 1px solid $primary-color;
   z-index: 10;
   right: 0;
   margin: 10px 0px;
-}
-
-.SectionTitle {
-  color: #000;
-  font-size: 1rem;
-  margin-top: 0px;
-  margin-bottom: 10px;
 }
 
 .SelectWrapper {
@@ -46,20 +40,13 @@
 .DimensionGrid {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.2rem;
+  gap: 0.5rem;
 
 }
 
 .DimensionContainer {
   flex: 1 1 calc(20% - 20px);
   min-width: 250px;
-}
-
-.DimensionLabel {
-  font-weight: bold;
-  color: #34495e;
-  margin-bottom: 5px;
-  font-size: 0.8rem;
 }
 
 .LoadingText {
@@ -78,3 +65,82 @@
   color: #7f8c8d;
 }
 
+
+.DimensionDropdown {
+  position: relative;
+  min-height: $base-input-height;
+
+  .DimensionDropdown__control,
+  .DimensionDropdown__value-container,
+  .DimensionDropdown__input-container {
+    min-height: $base-input-height;
+  }
+
+  &.Dynamic {
+    // height: unset !important;
+    min-height: $base-input-height !important;
+
+    .DimensionDropdown__control,
+    .DimensionDropdown__value-container,
+    .DimensionDropdown__input-container {
+      // height: unset !important;
+      min-height: $base-input-height !important;
+    }
+
+    .DimensionDropdown__multi-value {
+      margin-top: 6px;
+      margin-bottom: 6px;
+    }
+  }
+
+  .DimensionDropdown__value-container {
+    padding: 0 8px;
+  }
+
+  .DimensionDropdown__input-container {
+    margin: 0;
+    box-sizing: border-box;
+    padding: 0;
+  }
+}
+
+
+.DimensionDropdown {
+  &>div {
+    min-height: $base-height;
+    border-radius: 0;
+  }
+
+  .DropdownIndicator {
+    width: $base-height;
+    color: $svg-gray !important;
+    display: flex;
+    align-items: center;
+
+    svg {
+      margin-left: 17px;
+    }
+  }
+
+  .DimensionDropdown__single-value {
+    font-size: 1rem !important;
+  }
+}
+
+.DimensionDropdown__option--is-selected {
+  background-color: $primary-color-transparency !important;
+  color: black !important;
+}
+
+.DimensionDropdown__option--is-focused {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+}
+
+
+.LoadDataButton {
+  margin: 10px auto !important;
+}
+
+.LoadDataError {
+  color: red;
+}
