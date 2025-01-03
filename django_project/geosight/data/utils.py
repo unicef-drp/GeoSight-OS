@@ -20,6 +20,12 @@ from datetime import datetime, date
 
 import pytz
 import shapely
+import rasterio
+import numpy as np
+from rasterio.mask import mask
+from shapely.ops import transform
+from pyproj import Transformer
+
 from django.conf import settings
 from django.templatetags.static import static
 
@@ -147,7 +153,7 @@ def run_zonal_analysis(raster_path: str, geometries: typing.List[shapely.Geometr
         elif aggregation == 'min':
             aggregate = np.min(data) if data.size else None
         elif aggregation == 'max':
-            aggregate = np.min(data) if data.size else None
+            aggregate = np.max(data) if data.size else None
         elif aggregation == 'avg':
             aggregate = np.average(data) if data.size else None
         return aggregate
