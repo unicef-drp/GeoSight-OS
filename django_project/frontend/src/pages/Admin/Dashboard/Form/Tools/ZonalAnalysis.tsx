@@ -234,24 +234,27 @@ export function ZonalAnalysisConfiguration(
               isMulti={false}
               value={newLayer.aggregation}
               list={
-                [AGGREGATION_TYPES.COUNT, AGGREGATION_TYPES.SUM, AGGREGATION_TYPES.MIN, AGGREGATION_TYPES.MAX, AGGREGATION_TYPES.AVG]
+                [AGGREGATION_TYPES.COUNT, AGGREGATION_TYPES.COUNT_UNIQUE, AGGREGATION_TYPES.SUM, AGGREGATION_TYPES.MIN, AGGREGATION_TYPES.MAX, AGGREGATION_TYPES.AVG]
               }
               onChange={(evt: any) => {
                 setNewLayer({ ...newLayer, aggregation: evt.value })
               }}
             />
           </FormControl>
-          <FormControl>
-            <FormLabel className="MuiInputLabel-root">Field:</FormLabel>
-            <SelectWithList
-              isMulti={false}
-              value={newLayer.aggregatedField}
-              list={newLayerFieldOptions}
-              onChange={(evt: any) => {
-                setNewLayer({ ...newLayer, aggregatedField: evt.value })
-              }}
-            />
-          </FormControl>
+          {
+            newLayer.aggregation === AGGREGATION_TYPES.COUNT ? null :
+              <FormControl>
+                <FormLabel className="MuiInputLabel-root">Field:</FormLabel>
+                <SelectWithList
+                  isMulti={false}
+                  value={newLayer.aggregatedField}
+                  list={newLayerFieldOptions}
+                  onChange={(evt: any) => {
+                    setNewLayer({ ...newLayer, aggregatedField: evt.value })
+                  }}
+                />
+              </FormControl>
+          }
           <FormControl>
             <FormLabel
               className="MuiInputLabel-root"
@@ -271,7 +274,12 @@ export function ZonalAnalysisConfiguration(
                   )
                 }
                 onClick={() => {
-                  layersConfiguration.push(newLayer)
+                  layersConfiguration.push(
+                    {
+                      ...newLayer,
+                      aggregatedField: newLayer.aggregation === AGGREGATION_TYPES.COUNT ? null : newLayer.aggregatedField
+                    }
+                  )
                   setData({
                     ...data,
                     layersConfiguration: layersConfiguration

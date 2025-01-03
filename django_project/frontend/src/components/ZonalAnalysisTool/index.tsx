@@ -158,10 +158,11 @@ export const ZonalAnalysisTool = forwardRef((
     useEffect(() => {
       if (draw) {
         removeClickEvent(map, null, IdFunction);
-        draw.deleteFeatures()
+        clearData()
         if (config.selectionMode === SELECTION_MODE.MANUAL) {
           draw.start()
         } else {
+          setConfig({ ...config, drawMode: DRAW_MODE.POLYGON })
           draw.stop()
           /** Click map */
           const onClick = (e: any) => {
@@ -193,6 +194,14 @@ export const ZonalAnalysisTool = forwardRef((
         }
       }
     }, [config.selectionMode]);
+
+    const clearData = () => {
+      zonalAnalysisRefs.current.map((ref, index) => {
+        // @ts-ignore
+        ref.clear()
+      })
+      draw.deleteFeatures()
+    }
 
     /** Analyze **/
     const analyze = () => {
@@ -406,10 +415,7 @@ export const ZonalAnalysisTool = forwardRef((
                   disabled={!isAllAnalyzingDone}
                   onClick={() => {
                     draw.deleteFeatures()
-                    zonalAnalysisRefs.current.map((ref, index) => {
-                      // @ts-ignore
-                      ref.clear()
-                    })
+                    clearData()
                   }}>
                   <CancelIcon/> Clear
                 </ThemeButton>
