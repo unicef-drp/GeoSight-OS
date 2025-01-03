@@ -30,6 +30,7 @@ import { fetchCOGValues } from "./FetchCOGValues";
 import './style.scss';
 
 interface Props {
+  index: number;
   analysisLayer: ZonalAnalysisLayerConfiguration;
   isAnalyzing: boolean;
   setIsAnalysing: (isDone: boolean) => void;
@@ -39,7 +40,7 @@ interface Props {
  * Zonal Analysis Tool
  */
 export const ZonalAnalysisResult = forwardRef((
-    { analysisLayer, isAnalyzing, setIsAnalysing }: Props, ref
+    { index, analysisLayer, isAnalyzing, setIsAnalysing }: Props, ref
   ) => {
 
     // @ts-ignore
@@ -49,54 +50,75 @@ export const ZonalAnalysisResult = forwardRef((
     const [error, setError] = useState<string>(null);
     const contextLayer = contextLayers.find((ctx: ContextLayer) => ctx.id === analysisLayer.id)
 
-
     useEffect(() => {
       if (!(value == null && error == null)) {
         setIsAnalysing(false)
       }
     }, [value, error])
 
+    const analyze = async (values: object[], features: Array<Feature>) => {
+      // This is for a context layer that does not contain values but requires a specific method
+      switch (contextLayer?.layer_type) {
+        case Variables.LAYER.TYPE.RASTER_COG:
+          try {
+            setValue(await fetchCOGValues(
+              {
+                contextLayer,
+                analysisLayer,
+                features
+              }
+            ))
+          } catch (err) {
+            setError(err.toString());
+            return;
+          }
+          break;
+      }
+
+      // This is for data that having values
+      if (values !== null) {
+        // @ts-ignore
+        const data = values.map((value: object) => value[analysisLayer.aggregatedField]).filter(value => value !== undefined)
+        setData(data)
+        setValue(analyzeData(analysisLayer.aggregation, data))
+        setIsAnalysing(false)
+      }
+    }
+
     useImperativeHandle(ref, () => ({
       startAnalyzing() {
-        setIsAnalysing(true)
-        setValue(null)
-        setError(null)
+        if (contextLayer) {
+          setIsAnalysing(true)
+          setValue(null)
+          setError(null)
+        } else {
+          setIsAnalysing(false)
+          setValue(null)
+          setError('Context layer is not setup')
+        }
       },
-      async finishAnalyzing(
+      /** Finish analyzing by context layer**/
+      finishAnalyzingByContextLayer(
         id: number, values: object[], error: string, features: Array<Feature>
       ) {
-        if (analysisLayer.id !== id) {
+        if (!contextLayer || analysisLayer.id !== id) {
           return
         }
         setError(error)
-
-        // This is for a context layer that does not contain values but requires a specific method
-        switch (contextLayer.layer_type) {
-          case Variables.LAYER.TYPE.RASTER_COG:
-            try {
-              setValue(await fetchCOGValues(
-                {
-                  contextLayer,
-                  analysisLayer,
-                  features
-                }
-              ))
-              setIsAnalysing(false)
-              return;
-            } catch (err) {
-              setError(err.toString());
-              return;
-            }
-            break;
+        if (!error) {
+          analyze(values, features)
         }
-
-        // This is for data that having values
-        if (values !== null) {
-          // @ts-ignore
-          const data = values.map((value: object) => value[analysisLayer.aggregatedField]).filter(value => value !== undefined)
-          setData(data)
-          setValue(analyzeData(analysisLayer.aggregation, data))
-          setIsAnalysing(false)
+      },
+      /** Finish analyzing by index**/
+      finishAnalyzingByIndex(
+        analysisIndex: number, features: Array<Feature>
+      ) {
+        if (!contextLayer || analysisIndex !== index) {
+          return
+        }
+        setError(error)
+        if (!error) {
+          analyze(null, features)
         }
       },
       clear() {
@@ -108,7 +130,6 @@ export const ZonalAnalysisResult = forwardRef((
     if (!contextLayer) {
       return null
     }
-
     return (
       <tr>
         <td>{contextLayer?.name}</td>
