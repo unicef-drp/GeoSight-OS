@@ -350,7 +350,7 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                 value = float(value)
             except (TypeError, ValueError):
                 pass
-            is_type_number = type(value) != str
+            is_type_number = type(value) is not str
 
             # Check if datetime
             try:
