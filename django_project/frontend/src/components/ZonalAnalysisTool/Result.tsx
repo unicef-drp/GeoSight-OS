@@ -13,11 +13,19 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { forwardRef, useImperativeHandle, useState } from 'react';
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useState
+} from 'react';
 import { useSelector } from "react-redux";
 import { ContextLayer } from "../../store/dashboard/reducers/contextLayers";
 import { ZonalAnalysisLayerConfiguration } from "./index.d";
 import { analyzeData } from "../../utils/analysisData";
+import { Variables } from "../../utils/Variables";
+import { Feature } from "geojson";
+import { fetchCOGValues } from "./FetchCOGValues";
 
 import './style.scss';
 
@@ -41,24 +49,53 @@ export const ZonalAnalysisResult = forwardRef((
     const [error, setError] = useState<string>(null);
     const contextLayer = contextLayers.find((ctx: ContextLayer) => ctx.id === analysisLayer.id)
 
+
+    useEffect(() => {
+      if (!(value == null && error == null)) {
+        setIsAnalysing(false)
+      }
+    }, [value, error])
+
     useImperativeHandle(ref, () => ({
       startAnalyzing() {
         setIsAnalysing(true)
         setValue(null)
         setError(null)
       },
-      finishAnalyzing(id: number, values: object[], error: string) {
+      async finishAnalyzing(
+        id: number, values: object[], error: string, features: Array<Feature>
+      ) {
         if (contextLayer.id !== id) {
           return
         }
         setError(error)
-        if (values) {
+
+        // This is for a context layer that does not contain values but requires a specific method
+        switch (contextLayer.layer_type) {
+          case Variables.LAYER.TYPE.RASTER_COG:
+            try {
+              setValue(await fetchCOGValues(
+                {
+                  contextLayer,
+                  analysisLayer,
+                  features
+                }
+              ))
+            } catch (err) {
+              setError(err.toString());
+              return;
+            }
+            break;
+        }
+
+        // This is for data that having values
+        if (values !== null) {
           // @ts-ignore
           const data = values.map((value: object) => value[analysisLayer.aggregatedField]).filter(value => value !== undefined)
           setData(data)
           setValue(analyzeData(analysisLayer.aggregation, data))
+          setIsAnalysing(false)
         }
-        setIsAnalysing(false)
       },
       clear() {
         setValue(null)
