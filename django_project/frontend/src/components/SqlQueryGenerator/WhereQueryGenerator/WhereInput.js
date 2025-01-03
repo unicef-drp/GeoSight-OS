@@ -449,7 +449,7 @@ export default function WhereInput(
           where.value = "1 days::internext"
         } else if ([IS_IN, IS_NOT_IN].includes(value)) {
           where.operator = value
-          if (where.value.includes(INTERVAL_IDENTIFIER) || where.value.includes(INTERNEXT_IDENTIFIER)) {
+          if (where.value?.includes(INTERVAL_IDENTIFIER) || where.value.includes(INTERNEXT_IDENTIFIER)) {
             where.value = []
           }
           if (!Array.isArray(where.value)) {

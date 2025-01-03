@@ -9,15 +9,25 @@
  *     (at your option) any later version.
  *
  * __author__ = 'irwan@kartoza.com'
- * __date__ = '26/12/2024'
+ * __date__ = '02/01/2025'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-export interface ContextLayer {
-  id: number;
-  name: string;
-  url: string;
-  layer_type: string;
-  arcgis_config?: number;
-  related_table?: number;
+import axiosRequest from "../Request";
+
+export default class RelatedTableRequest {
+  private id: number;
+
+  constructor(id: number) {
+    this.id = id
+  }
+
+  /** Get metadata **/
+  getDetail = () => {
+    return axiosRequest.get(`/api/related-table/${this.id}/`)
+  }
+  /** Get data **/
+  getData = () => {
+    return axiosRequest.get(`/api/related-table/${this.id}/data`)
+  }
 }

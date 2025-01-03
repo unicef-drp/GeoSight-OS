@@ -55,7 +55,7 @@ import {
 import { getFeatureByConceptUUID } from "../../utils/referenceLayer";
 import { ContextLayer } from "../../store/dashboard/reducers/contextLayers";
 import { fetchArcGISValues } from "./FetchArcGISValues";
-import { fetchCOGValues } from "./FetchCOGValues";
+import { fetchRelatedTableValues } from "./FetchRelatedTableValues";
 
 interface Props {
   map: maplibregl.Map;
@@ -209,7 +209,7 @@ export const ZonalAnalysisTool = forwardRef((
         const setData = (values: object[], error: string) => {
           zonalAnalysisRefs.current.map((ref, index) => {
             // @ts-ignore
-            ref.finishAnalyzing(contextLayer.id, values, error)
+            ref.finishAnalyzing(contextLayer.id, values, error, features)
           })
         }
         if (contextLayer) {
@@ -224,7 +224,12 @@ export const ZonalAnalysisTool = forwardRef((
               return;
             }
             case Variables.LAYER.TYPE.RASTER_COG: {
-              fetchCOGValues({
+              setData(null, null)
+              return;
+            }
+            case Variables.LAYER.TYPE.RELATED_TABLE: {
+              fetchRelatedTableValues({
+                map,
                 contextLayer,
                 config,
                 features,
@@ -236,7 +241,7 @@ export const ZonalAnalysisTool = forwardRef((
         }
         zonalAnalysisRefs.current.map((ref, index) => {
           // @ts-ignore
-          ref.finishAnalyzing(contextLayer.id, null)
+          ref.finishAnalyzing(analysisLayer.id, null)
         })
       })
     }

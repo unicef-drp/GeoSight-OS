@@ -12,12 +12,21 @@
  * __date__ = '26/12/2024'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
+import { Permission } from "../../../index";
 
-export interface ContextLayer {
+export interface RelatedTableField {
+  example: string[];
+  name: string;
+  alias: string;
+  type: "string" | "number";
+}
+
+export interface RelatedTable {
   id: number;
   name: string;
   url: string;
-  layer_type: string;
-  arcgis_config?: number;
-  related_table?: number;
+  version_data: number;
+  related_fields: string[];
+  fields_definition: RelatedTableField[];
+  permission: Permission;
 }
