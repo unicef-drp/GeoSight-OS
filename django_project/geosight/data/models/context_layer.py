@@ -15,6 +15,8 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import json
+import os
+import tempfile
 from base64 import b64encode
 
 import requests
@@ -329,6 +331,29 @@ class ContextLayer(AbstractEditData, AbstractTerm):
                 )
             except Layer.DoesNotExist:
                 return None
+        return None
+
+    def download_cog(self):
+        """Return geojson of context layer."""
+        if self.layer_type == LayerType.RASTER_COG:
+            """This is for Raster COG layer."""
+            file_name = os.path.basename(self.url)
+            # Download the file and save it to a temporary file with the same name
+            tmp_dir = tempfile.gettempdir()  # Temporary directory path
+            tmp_file_path = os.path.join(tmp_dir, file_name)
+
+            if not os.path.exists(tmp_file_path):
+                response = requests.get(self.url, stream=True)
+                if response.status_code == 200:
+                    with open(tmp_file_path, "wb") as tmp_file:
+                        for chunk in response.iter_content(chunk_size=8192):
+                            tmp_file.write(chunk)
+                    print(f"File downloaded to {tmp_file_path}")
+                    return tmp_file_path
+                else:
+                    raise Exception(f"Failed to download file: {response.status_code}")
+            else:
+                return tmp_file_path
         return None
 
 

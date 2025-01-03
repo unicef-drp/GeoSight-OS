@@ -19,10 +19,12 @@ import json
 
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from django.test.client import MULTIPART_CONTENT
 
 from geosight.data.models.context_layer import ContextLayer, LayerType
 from geosight.permission.models.factory import PERMISSIONS
 from geosight.permission.tests._base import BasePermissionTest
+from geosight.data.tests.model_factories import ContextLayerF
 
 User = get_user_model()
 
@@ -143,3 +145,37 @@ class ContextLayerListApiTest(BasePermissionTest.TestCase):
             url, 200, self.creator, data={'ids': json.dumps([resource.id])}
         )
         self.assertEqual(ContextLayer.objects.count(), 1)
+
+
+class TestRasterZonalAnalysis(BasePermissionTest.TestCase):
+
+    def setUp(self):
+        self.context_layer = ContextLayerF(
+            name='Test Context Layer',
+            url=(
+                'https://unidatadapmclimatechange.blob.core.windows.net/public/'
+                'heatwave/cogs_by_hwi/average_heatwaves_duration_1960s_proj_COG.tif'
+            ),
+            layer_type='Raster COG'
+        )
+
+    def test_context_layer_sum(self):
+        url = reverse('context-layer-zonal-analysis', args=[self.context_layer.id, 'sum'])
+        client = self.test_client()
+        data = {
+            "geometries": [{
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [44.04265864108643, 4.162074261628931],
+                        [45.12367932054417, 3.9905288280847344],
+                        [44.09179594469876, 3.1322947526947758],
+                        [44.04265864108643, 4.162074261628931]
+                    ]
+                ]
+            }]
+        }
+        # if self.creator:
+        #     client.login(username=self.creator.username, password=self.password)
+        # response = client.post(url, data=data, content_type=MULTIPART_CONTENT)
+        # self.assertEquals(response.status_code, code)

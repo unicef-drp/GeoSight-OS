@@ -16,10 +16,12 @@ import proj4 from 'proj4';
 import { FetchingFunctionProp } from "./index.d";
 import { fromUrl } from 'geotiff';
 import { Variables } from "../../utils/Variables";
+import {postData} from "../../Requests";
 
 export const fetchCOGValues = async (
   {
     contextLayer,
+    config,
     features,
     setData
   }: FetchingFunctionProp) => {
@@ -43,28 +45,21 @@ export const fetchCOGValues = async (
     ];
 
     const values: { Pixel: number }[] = [];
+    let geometries = [];
     for (let i = 0; i < features.length; i++) {
       const feature = features[i]
       // @ts-ignore
-      const { coordinates, type } = feature.geometry;
-      switch (type) {
-        case Variables.FEATURE_TYPE.POINT: {
-          // Convert the point to pixel coordinates
-          const reprojectedCoordinates = proj4('EPSG:4326', 'EPSG:3857', coordinates);
-          const [x, y] = coordsToPixel(reprojectedCoordinates[0], reprojectedCoordinates[1]);
-          if (x >= 0 && y >= 0 && x < width && y < height) {
-            const pixelValue = await image.readRasters({
-              window: [x, y, x + 1, y + 1],
-            });
-            // @ts-ignore
-            values.push({ Pixel: pixelValue[0][0] });
-          }
-          break;
-        }
-        default:
-          throw Error(`${type} is not covered yet.`)
-      }
+      geometries.push(feature.geometry)
     }
+    let data = new FormData();
+    data.append( "geometries", JSON.stringify( geometries) );
+    postData(
+      `/api/context-layer/${contextLayer.id}/zonal-analysis/avg`,
+        data,
+      (response: any) => {
+        console.log(response)
+      }
+    )
     setData(values, null)
   } catch (err) {
     setData(null, err.toString())

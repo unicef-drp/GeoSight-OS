@@ -14,6 +14,7 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import os
 from core.tests.base_tests import TestCase
 from geosight.data.serializer.context_layer import ContextLayerSerializer
 from geosight.data.tests.model_factories import ContextLayerF
@@ -49,3 +50,16 @@ class BasemapLayerTest(TestCase):
         self.assertEquals(context_layer_data['name'], self.name)
         for key, value in context_layer_data['parameters'].items():
             self.assertEquals(self.params[key], value)
+
+    def test_download_cog(self):
+        context_layer = ContextLayerF(
+            name=self.name,
+            url=(
+                'https://unidatadapmclimatechange.blob.core.windows.net/public/'
+                'heatwave/cogs_by_hwi/average_heatwaves_duration_1960s_proj_COG.tif'
+            ),
+            layer_type='Raster COG'
+        )
+
+        context_layer.download_cog()
+        self.assertTrue(os.path.exists('/tmp/average_heatwaves_duration_1960s_proj_COG.tif'))
