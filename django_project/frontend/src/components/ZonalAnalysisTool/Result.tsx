@@ -17,7 +17,7 @@ import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import { useSelector } from "react-redux";
 import { ContextLayer } from "../../store/dashboard/reducers/contextLayers";
 import { ZonalAnalysisLayerConfiguration } from "./index.d";
-import { analyzeData } from "../../utils/analysisData";
+import { AGGREGATION_TYPES, analyzeData } from "../../utils/analysisData";
 
 import './style.scss';
 
@@ -53,9 +53,13 @@ export const ZonalAnalysisResult = forwardRef((
         }
         setError(error)
         if (values) {
-          // @ts-ignore
-          const data = values.map((value: object) => value[analysisLayer.aggregatedField]).filter(value => value !== undefined)
+          let data = values
+          if (analysisLayer.aggregation !== AGGREGATION_TYPES.COUNT) {
+            // @ts-ignore
+            data = values.map((value: object) => value[analysisLayer.aggregatedField]).filter(value => value !== undefined)
+          }
           setData(data)
+          // @ts-ignore
           setValue(analyzeData(analysisLayer.aggregation, data))
         }
         setIsAnalysing(false)

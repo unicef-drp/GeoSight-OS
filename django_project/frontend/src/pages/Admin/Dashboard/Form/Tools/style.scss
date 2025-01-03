@@ -21,6 +21,10 @@
 
 
 .TableForm.Tools {
+  .TableForm-Header {
+    display: none;
+  }
+
   li {
     div {
       .DraggableHandler {
