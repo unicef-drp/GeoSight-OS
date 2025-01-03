@@ -240,7 +240,8 @@ context_layer_api = [
     ),
     url(
         r'^(?P<pk>\d+)/zonal-analysis/(?P<aggregation>[a-zA-Z0-9_-]+)',
-        ContextLayerZonalAnalysisAPI.as_view(), name='context-layer-zonal-analysis'
+        ContextLayerZonalAnalysisAPI.as_view(),
+        name='context-layer-zonal-analysis'
     ),
     url(
         r'^(?P<pk>\d+)',

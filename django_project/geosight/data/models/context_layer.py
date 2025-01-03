@@ -31,7 +31,6 @@ from geosight.data.models.arcgis import ArcgisConfig
 from geosight.data.models.field_layer import FieldLayerAbstract
 from geosight.data.models.related_table import RelatedTable
 from geosight.permission.models.manager import PermissionManager
-from django.conf import settings
 
 
 class LayerType(object):
@@ -345,7 +344,10 @@ class ContextLayer(AbstractEditData, AbstractTerm):
             if original_name:
                 tmp_file_path = os.path.join(settings.MEDIA_TEMP, file_name)
             else:
-                tmp_file_path = os.path.join(settings.MEDIA_TEMP, uuid.uuid4().hex)
+                tmp_file_path = os.path.join(
+                    settings.MEDIA_TEMP,
+                    uuid.uuid4().hex
+                )
 
             if not os.path.exists(tmp_file_path):
                 response = requests.get(self.url, stream=True)
@@ -355,7 +357,9 @@ class ContextLayer(AbstractEditData, AbstractTerm):
                             tmp_file.write(chunk)
                     return tmp_file_path
                 else:
-                    raise Exception(f"Failed to download file: {response.status_code}")
+                    raise Exception(
+                        f"Failed to download file: {response.status_code}"
+                    )
             else:
                 return tmp_file_path
         return None

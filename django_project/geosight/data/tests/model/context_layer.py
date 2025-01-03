@@ -56,16 +56,21 @@ class BasemapLayerTest(TestCase):
 
     @patch('requests.get')
     def test_download_cog(self, mock_get):
+        """Test downloading cog file."""
         context_layer = ContextLayerF(
             name=self.name,
             url=(
-                'https://unidatadapmclimatechange.blob.core.windows.net/public/'
+                'https://unidatadapmclimatechange.blob.core.'
+                'windows.net/public/'
                 'heatwave/cogs_by_hwi/context_layer.tif'
             ),
             layer_type='Raster COG'
         )
 
-        file_path = '/home/web/django_project/geosight/data/tests/data/context_layer.tif'
+        file_path = (
+            '/home/web/django_project/geosight/data/'
+            'tests/data/context_layer.tif'
+        )
 
         # Read the file in chunks and simulate `iter_content`
         # Mock response for requests.get
