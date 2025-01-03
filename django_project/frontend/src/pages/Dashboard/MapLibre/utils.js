@@ -108,7 +108,6 @@ const updateCursorOnLeave = (map) => {
 let popup = null
 let functionPopup = {}
 export const addPopup = (map, id, popupRenderFn) => {
-  console.log(id)
   if (!functionPopup[id]) {
     functionPopup[id] = {}
   }
@@ -162,6 +161,27 @@ export const addPopup = (map, id, popupRenderFn) => {
     }
   }
   map.on('click', id, functionPopup[id].click);
+}
+/**
+ * Add popup by properties
+ * @param map
+ * @param lngLat
+ * @param popupRenderFn
+ * @param properties
+ */
+export const addStandalonePopup = (map, lngLat, popupRenderFn, properties) => {
+  let popupHtml = popupRenderFn(properties)
+  if (!popupHtml) {
+    popupHtml = ''
+  }
+  if (popup) {
+    popup.remove()
+  }
+  popup = new maplibregl.Popup()
+    .setLngLat(lngLat)
+    .setHTML(popupHtml)
+    .addTo(map);
+  popup.addClassName('ContextPopup')
 }
 /**
  * Remove click event

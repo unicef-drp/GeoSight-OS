@@ -14,13 +14,18 @@
  */
 
 
+import $ from "jquery";
 import {
+  addClickEvent,
+  addStandalonePopup,
   getBeforeLayerId,
   getLayerIdOfReferenceLayer,
   removeLayer,
   removeSource
 } from "../utils";
 import { createColorsFromPaletteId } from "../../../../utils/Style";
+import { sleep } from "../../../../utils/main";
+import { getCogFeatureByPoint } from "../../../../utils/COGLayer";
 
 /***
  * Render Raster Cog
@@ -68,6 +73,19 @@ export default function rasterCogLayer(map, id, data, contextLayerData, popupFea
         },
         before
       );
+
+      /** Click map */
+      const onClick = async (e) => {
+        const isVisible = map.getStyle().layers.find(layer => layer.id === id)
+        if (isVisible) {
+          await sleep(100);
+          const values = await getCogFeatureByPoint(data.url, [e.lngLat.lng, e.lngLat.lat])
+          if (!$('.maplibregl-popup').length) {
+            addStandalonePopup(map, e.lngLat, popupFeatureFn, { Value: values.length ? values[0][0] : '-' })
+          }
+        }
+      }
+      addClickEvent(map, null, id, onClick)
     }
   )()
 
