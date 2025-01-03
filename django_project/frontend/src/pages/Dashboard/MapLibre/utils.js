@@ -168,8 +168,9 @@ export const addPopup = (map, id, popupRenderFn) => {
  * @param lngLat
  * @param popupRenderFn
  * @param properties
+ * @param session
  */
-export const addStandalonePopup = (map, lngLat, popupRenderFn, properties) => {
+export const addStandalonePopup = (map, lngLat, popupRenderFn, properties, session) => {
   let popupHtml = popupRenderFn(properties)
   if (!popupHtml) {
     popupHtml = ''
@@ -181,7 +182,7 @@ export const addStandalonePopup = (map, lngLat, popupRenderFn, properties) => {
     .setLngLat(lngLat)
     .setHTML(popupHtml)
     .addTo(map);
-  popup.addClassName('ContextPopup')
+  popup.addClassName(`${session}`)
 }
 /**
  * Remove click event

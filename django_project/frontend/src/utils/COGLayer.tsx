@@ -15,7 +15,7 @@
 import { fromUrl } from "geotiff";
 import proj4 from "proj4";
 
-export const getCogFeatureByPoint = async (url: string, coordinates: number[]) => {
+export const getCogFeatureByPoint = async (url: string, coordinates: number[], onDone: (values: any) => void) => {
   const geotiff = await fromUrl(url);
   const image = await geotiff.getImage();
   const [originX, originY] = image.getOrigin();
@@ -38,5 +38,5 @@ export const getCogFeatureByPoint = async (url: string, coordinates: number[]) =
     });
     values.push(pixelValue[0]);
   }
-  return values
+  onDone(values)
 }

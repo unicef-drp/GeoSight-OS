@@ -89,9 +89,17 @@ export default function rasterCogLayer(map, id, data, contextLayerData, popupFea
         const isVisible = map.getStyle().layers.find(layer => layer.id === id)
         if (isVisible) {
           await sleep(100);
-          const values = await getCogFeatureByPoint(data.url, [e.lngLat.lng, e.lngLat.lat])
           if (!$('.maplibregl-popup').length) {
-            addStandalonePopup(map, e.lngLat, popupFeatureFn, { Value: values.length ? values[0][0] : '-' })
+            const session = new Date().getTime();
+            addStandalonePopup(map, e.lngLat, popupFeatureFn, { Value: 'loading' }, session)
+            getCogFeatureByPoint(
+              data.url, [e.lngLat.lng, e.lngLat.lat],
+              (values) => {
+                if ($(`.${session}`).length) {
+                  addStandalonePopup(map, e.lngLat, popupFeatureFn, { Value: values.length ? values[0][0] : '-' })
+                }
+              }
+            )
           }
         }
       }
