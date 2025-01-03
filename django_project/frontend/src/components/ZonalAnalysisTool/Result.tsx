@@ -13,15 +13,24 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { forwardRef, useImperativeHandle, useState } from 'react';
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useState
+} from 'react';
 import { useSelector } from "react-redux";
 import { ContextLayer } from "../../store/dashboard/reducers/contextLayers";
 import { ZonalAnalysisLayerConfiguration } from "./index.d";
 import { AGGREGATION_TYPES, analyzeData } from "../../utils/analysisData";
+import { Variables } from "../../utils/Variables";
+import { Feature } from "geojson";
+import { fetchCOGValues } from "./FetchCOGValues";
 
 import './style.scss';
 
 interface Props {
+  index: number;
   analysisLayer: ZonalAnalysisLayerConfiguration;
   isAnalyzing: boolean;
   setIsAnalysing: (isDone: boolean) => void;
@@ -31,7 +40,7 @@ interface Props {
  * Zonal Analysis Tool
  */
 export const ZonalAnalysisResult = forwardRef((
-    { analysisLayer, isAnalyzing, setIsAnalysing }: Props, ref
+    { index, analysisLayer, isAnalyzing, setIsAnalysing }: Props, ref
   ) => {
 
     // @ts-ignore
@@ -41,28 +50,80 @@ export const ZonalAnalysisResult = forwardRef((
     const [error, setError] = useState<string>(null);
     const contextLayer = contextLayers.find((ctx: ContextLayer) => ctx.id === analysisLayer.id)
 
+    useEffect(() => {
+      if (!(value == null && error == null)) {
+        setIsAnalysing(false)
+      }
+    }, [value, error])
+
+    const analyze = async (values: object[], features: Array<Feature>) => {
+      // This is for a context layer that does not contain values but requires a specific method
+      switch (contextLayer?.layer_type) {
+        case Variables.LAYER.TYPE.RASTER_COG:
+          try {
+            setValue(await fetchCOGValues(
+              {
+                contextLayer,
+                analysisLayer,
+                features
+              }
+            ))
+          } catch (err) {
+            setError(err.toString());
+            return;
+          }
+          break;
+      }
+
+      // This is for data that having values
+      if (values !== null) {
+        let data = values
+        if (analysisLayer.aggregation !== AGGREGATION_TYPES.COUNT) {
+          // @ts-ignore
+          data = values.map((value: object) => value[analysisLayer.aggregatedField]).filter(value => value !== undefined)
+        }
+        setData(data)
+        // @ts-ignore
+        setValue(analyzeData(analysisLayer.aggregation, data))
+        setIsAnalysing(false)
+      }
+    }
+
     useImperativeHandle(ref, () => ({
       startAnalyzing() {
-        setIsAnalysing(true)
-        setValue(null)
-        setError(null)
+        if (contextLayer) {
+          setIsAnalysing(true)
+          setValue(null)
+          setError(null)
+        } else {
+          setIsAnalysing(false)
+          setValue(null)
+          setError('Context layer is not setup')
+        }
       },
-      finishAnalyzing(id: number, values: object[], error: string) {
-        if (analysisLayer.id !== id) {
+      /** Finish analyzing by context layer**/
+      finishAnalyzingByContextLayer(
+        id: number, values: object[], error: string, features: Array<Feature>
+      ) {
+        if (!contextLayer || analysisLayer.id !== id) {
           return
         }
         setError(error)
-        if (values) {
-          let data = values
-          if (analysisLayer.aggregation !== AGGREGATION_TYPES.COUNT) {
-            // @ts-ignore
-            data = values.map((value: object) => value[analysisLayer.aggregatedField]).filter(value => value !== undefined)
-          }
-          setData(data)
-          // @ts-ignore
-          setValue(analyzeData(analysisLayer.aggregation, data))
+        if (!error) {
+          analyze(values, features)
         }
-        setIsAnalysing(false)
+      },
+      /** Finish analyzing by index**/
+      finishAnalyzingByIndex(
+        analysisIndex: number, features: Array<Feature>
+      ) {
+        if (!contextLayer || analysisIndex !== index) {
+          return
+        }
+        setError(error)
+        if (!error) {
+          analyze(null, features)
+        }
       },
       clear() {
         setValue(null)
@@ -73,7 +134,6 @@ export const ZonalAnalysisResult = forwardRef((
     if (!contextLayer) {
       return null
     }
-
     return (
       <tr>
         <td>{contextLayer?.name}</td>

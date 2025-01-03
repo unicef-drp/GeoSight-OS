@@ -46,10 +46,17 @@ export interface ZonalAnalysisDashboardConfiguration {
   layersConfiguration: ZonalAnalysisLayerConfiguration[];
 }
 
+export interface FetchingZonalAnalysisResultProps {
+  contextLayer: ContextLayer,
+  features: Array<Feature>,
+  analysisLayer?: ZonalAnalysisLayerConfiguration,
+}
+
 export interface FetchingFunctionProp {
   contextLayer: ContextLayer,
-  config: ZonalAnalysisConfiguration,
   features: Array<Feature>,
   setData: (values: object[], error: string) => void,
+  config?: ZonalAnalysisConfiguration,
+  analysisLayer?: ZonalAnalysisLayerConfiguration,
   map?: maplibregl.Map
 }
