@@ -16,7 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import json
 import os
-import tempfile
+import uuid
 from base64 import b64encode
 
 import requests
@@ -31,6 +31,7 @@ from geosight.data.models.arcgis import ArcgisConfig
 from geosight.data.models.field_layer import FieldLayerAbstract
 from geosight.data.models.related_table import RelatedTable
 from geosight.permission.models.manager import PermissionManager
+from django.conf import settings
 
 
 class LayerType(object):
@@ -333,14 +334,18 @@ class ContextLayer(AbstractEditData, AbstractTerm):
                 return None
         return None
 
-    def download_cog(self):
+    def download_cog(self, original_name=True):
         """Return geojson of context layer."""
         if self.layer_type == LayerType.RASTER_COG:
             """This is for Raster COG layer."""
             file_name = os.path.basename(self.url)
-            # Download the file and save it to a temporary file with the same name
-            tmp_dir = tempfile.gettempdir()  # Temporary directory path
-            tmp_file_path = os.path.join(tmp_dir, file_name)
+            # Download the file and save it to
+            # a MEDIA file with the same name
+            os.makedirs(settings.MEDIA_TEMP, exist_ok=True)
+            if original_name:
+                tmp_file_path = os.path.join(settings.MEDIA_TEMP, file_name)
+            else:
+                tmp_file_path = os.path.join(settings.MEDIA_TEMP, uuid.uuid4().hex)
 
             if not os.path.exists(tmp_file_path):
                 response = requests.get(self.url, stream=True)
@@ -348,7 +353,6 @@ class ContextLayer(AbstractEditData, AbstractTerm):
                     with open(tmp_file_path, "wb") as tmp_file:
                         for chunk in response.iter_content(chunk_size=8192):
                             tmp_file.write(chunk)
-                    print(f"File downloaded to {tmp_file_path}")
                     return tmp_file_path
                 else:
                     raise Exception(f"Failed to download file: {response.status_code}")

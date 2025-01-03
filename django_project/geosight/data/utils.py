@@ -133,14 +133,25 @@ def extract_time_string(format_time, value):
         return value
 
 
-def run_zonal_analysis(raster_path: str, geometries: typing.List[shapely.Geometry], aggregation: str):
-    """
-    Runs zonal analysis on multiple geometries
-    """
+def run_zonal_analysis(
+        raster_path: str,
+        geometries: typing.List[shapely.Geometry],
+        aggregation: str
+):
+    """Run zonal analysis on multiple geometries."""
     aggregation = aggregation.lower().strip()
     with rasterio.open(raster_path) as src:
-        transformer = Transformer.from_crs("EPSG:4326", str(src.crs), always_xy=True)
-        transformed_geoms = [transform(transformer.transform, geometry) for geometry in geometries]
+        transformer = Transformer.from_crs(
+            "EPSG:4326",
+            str(src.crs),
+            always_xy=True
+        )
+        transformed_geoms = [
+            transform(
+                transformer.transform,
+                geometry
+            ) for geometry in geometries
+        ]
         out_image, out_transform = mask(src, transformed_geoms, crop=True)
         data = out_image[0]
         data = np.where(np.isnan(data), -9999, data)

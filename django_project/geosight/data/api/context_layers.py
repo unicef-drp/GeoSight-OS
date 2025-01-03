@@ -85,12 +85,11 @@ class ContextLayerZonalAnalysisAPI(APIView):
         """Run zonal analysis."""
         geometry_datas = json.loads(request.data.get('geometries'))
         layer = get_object_or_404(ContextLayer, pk=pk)
-        layer_path = layer.download_cog()
+        layer_path = layer.download_cog(original_name=True)
         geometries = [shape(geometry_data) for geometry_data in geometry_datas]
-        return Response(
-            run_zonal_analysis(
-                layer_path,
-                geometries,
-                aggregation
-            )
+        result = run_zonal_analysis(
+            layer_path,
+            geometries,
+            aggregation
         )
+        return Response(result)

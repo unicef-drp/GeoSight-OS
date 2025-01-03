@@ -16,6 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import os
 from unittest.mock import MagicMock, patch
+from django.conf import settings
 
 from core.tests.base_tests import TestCase
 from geosight.data.serializer.context_layer import ContextLayerSerializer
@@ -81,4 +82,8 @@ class BasemapLayerTest(TestCase):
         mock_get.return_value = mock_response
 
         context_layer.download_cog()
-        self.assertTrue(os.path.exists('/tmp/context_layer.tif'))
+        self.assertTrue(
+            os.path.exists(
+                os.path.join(settings.MEDIA_TEMP, 'context_layer.tif')
+            )
+        )
