@@ -76,6 +76,16 @@ export default function rasterCogLayer(map, id, data, contextLayerData, popupFea
 
       /** Click map */
       const onClick = async (e) => {
+        if (map.drawingMode) {
+          return
+        }
+        const visibleLayerIds = map.getStyle().layers.filter(layer => layer.id.includes('gl-draw-polygon')).map(layer => layer.id)
+        const features = map.queryRenderedFeatures(
+          e.point, { layers: visibleLayerIds }
+        );
+        if (features.length > 0) {
+          return
+        }
         const isVisible = map.getStyle().layers.find(layer => layer.id === id)
         if (isVisible) {
           await sleep(100);
