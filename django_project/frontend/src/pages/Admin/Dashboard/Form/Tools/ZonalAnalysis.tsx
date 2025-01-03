@@ -45,6 +45,10 @@ import {
   SelectWithList
 } from "../../../../../components/Input/SelectWithList";
 import ArcGISRequest from "../../../../../utils/ArcGIS/Request";
+import RelatedTableRequest from "../../../../../utils/RelatedTable/Request";
+import {
+  RelatedTable
+} from "../../../../../store/dashboard/reducers/relatedTable";
 
 
 interface Props {
@@ -71,7 +75,11 @@ export function ZonalAnalysisConfiguration(
   // @ts-ignore
   const { contextLayers: ctxLayer } = useSelector((state: RootState) => state.dashboard.data);
   const contextLayers = ctxLayer.filter(
-    (ctx: ContextLayer) => [Variables.LAYER.TYPE.ARCGIS, Variables.LAYER.TYPE.RASTER_COG].includes(ctx.layer_type)
+    (ctx: ContextLayer) => [
+      Variables.LAYER.TYPE.ARCGIS,
+      Variables.LAYER.TYPE.RASTER_COG,
+      Variables.LAYER.TYPE.RELATED_TABLE
+    ].includes(ctx.layer_type)
   )
 
   // For new layer
@@ -143,6 +151,18 @@ export function ZonalAnalysisConfiguration(
               aggregatedField: "Pixel"
             })
             setNewLayerFieldOptions(["Pixel"])
+            break;
+          case Variables.LAYER.TYPE.RELATED_TABLE:
+            const request = new RelatedTableRequest(contextLayer.related_table)
+
+            // @ts-ignore
+            request.getDetail().then((response: RelatedTable) => {
+              setNewLayerFieldOptions(response.related_fields)
+              setNewLayer({
+                ...newLayer,
+                aggregatedField: response.related_fields[0]
+              })
+            })
             break;
         }
         return

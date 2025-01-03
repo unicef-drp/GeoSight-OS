@@ -33,7 +33,6 @@ import WhereInputModal
   from "../../../../../components/SqlQueryGenerator/WhereInputModal";
 import { dictDeepCopy, toJson } from "../../../../../utils/main";
 import { getRelatedTableFields } from "../../../../../utils/relatedTable";
-import { fetchingData } from "../../../../../Requests";
 import {
   SelectWithList
 } from "../../../../../components/Input/SelectWithList";
@@ -41,6 +40,7 @@ import { Variables } from "../../../../../utils/Variables";
 import { returnLayerDetail } from "../../../../../utils/CloudNativeGIS";
 
 import './style.scss';
+import RelatedTableRequest from "../../../../../utils/RelatedTable/Request";
 
 /**
  * Context Layer Style
@@ -83,21 +83,15 @@ function ContextLayerStyle({ contextLayer }) {
   // Loading data
   useEffect(() => {
     if (data.related_table) {
-      const params = {}
-      const url_info = `/api/related-table/${data.related_table}`
-      const url_data = `/api/related-table/${data.related_table}/data`
       setRelatedTableInfo(null)
       setRelatedTableData(null)
-      fetchingData(
-        url_data, params, {}, function (response, error) {
-          setRelatedTableData(dictDeepCopy(response))
-        }
-      )
-      fetchingData(
-        url_info, params, {}, function (response, error) {
-          setRelatedTableInfo(dictDeepCopy(response))
-        }
-      )
+      const request = new RelatedTableRequest(data.related_table)
+      request.getDetail().then(response => {
+        setRelatedTableInfo(dictDeepCopy(response))
+      })
+      request.getData().then(response => {
+        setRelatedTableData(dictDeepCopy(response))
+      })
     }
   }, [data.related_table])
 
