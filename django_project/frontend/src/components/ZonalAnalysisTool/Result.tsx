@@ -81,6 +81,8 @@ export const ZonalAnalysisResult = forwardRef((
                   features
                 }
               ))
+              setIsAnalysing(false)
+              return;
             } catch (err) {
               setError(err.toString());
               return;
