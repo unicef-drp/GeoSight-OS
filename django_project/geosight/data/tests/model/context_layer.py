@@ -55,8 +55,8 @@ class BasemapLayerTest(TestCase):
             self.assertEquals(self.params[key], value)
 
     @patch('requests.get')
-    def test_download_cog(self, mock_get):
-        """Test downloading cog file."""
+    def test_download_raster_cog(self, mock_get):
+        """Test downloading raster cog file."""
         context_layer = ContextLayerF(
             name=self.name,
             url=(
@@ -86,9 +86,50 @@ class BasemapLayerTest(TestCase):
         mock_response.iter_content = MagicMock(side_effect=mock_iter_content)
         mock_get.return_value = mock_response
 
-        context_layer.download_cog()
+        context_layer.download_layer()
         self.assertTrue(
             os.path.exists(
                 os.path.join(settings.MEDIA_TEMP, 'context_layer.tif')
             )
         )
+
+    @patch('requests.get')
+    def test_download_wms(self, mock_get):
+        """Test downloading wms file."""
+        context_layer = ContextLayerF(
+            name=self.name,
+            url=(
+                'https://datacore.unepgrid.ch/geoserver/'
+                'grid_data_core_pro/wms?'
+                'service=WMS&version=1.1.0&request=GetMap&layers='
+                'grid_data_core_pro%3'
+                'AGHS_POP_E2020_GLOBE_R2022A_54009_1000_V1_0_wgs84_opt&'
+                'styles=&format=image%2Fpng'
+            ),
+            layer_type='Raster Tile'
+        )
+
+        file_path = (
+            '/home/web/django_project/geosight/data/'
+            'tests/data/wms.tif'
+        )
+
+        # Read the file in chunks and simulate `iter_content`
+        # Mock response for requests.get
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+
+        # Simulate streaming content
+        def mock_iter_content(chunk_size=8192):
+            with open(file_path, "rb") as f:
+                while chunk := f.read(chunk_size):
+                    yield chunk
+
+        mock_response.iter_content = MagicMock(side_effect=mock_iter_content)
+        mock_get.return_value = mock_response
+
+        tmp_file_path = context_layer.download_layer(
+            bbox=[41.0, 1.0, 51.0, 12.0]
+        )
+        self.assertTrue(os.path.exists(tmp_file_path))
+        os.remove(tmp_file_path)
