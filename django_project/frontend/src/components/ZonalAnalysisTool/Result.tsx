@@ -25,7 +25,7 @@ import { ZonalAnalysisLayerConfiguration } from "./index.d";
 import { analyzeData } from "../../utils/analysisData";
 import { Variables } from "../../utils/Variables";
 import { Feature } from "geojson";
-import { fetchCOGValues } from "./FetchCOGValues";
+import { fetchCOGWMSValues } from "./FetchCOGWMSValues";
 
 import './style.scss';
 
@@ -61,7 +61,7 @@ export const ZonalAnalysisResult = forwardRef((
       switch (contextLayer?.layer_type) {
         case Variables.LAYER.TYPE.RASTER_COG:
           try {
-            setValue(await fetchCOGValues(
+            setValue(await fetchCOGWMSValues(
               {
                 contextLayer,
                 analysisLayer,

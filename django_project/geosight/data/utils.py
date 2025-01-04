@@ -152,7 +152,10 @@ def run_zonal_analysis(
                 geometry
             ) for geometry in geometries
         ]
-        out_image, out_transform = mask(src, transformed_geoms, crop=True)
+        try:
+            out_image, out_transform = mask(src, transformed_geoms, crop=True)
+        except ValueError:
+            return None
         data = out_image[0]
         data = np.where(np.isnan(data), -9999, data)
         data = np.ma.masked_equal(data, -9999).compressed()

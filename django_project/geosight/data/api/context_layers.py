@@ -15,14 +15,16 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import json
+import os
 
 from shapely.geometry import shape
+from shapely.ops import unary_union
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from geosight.data.models.context_layer import ContextLayer
+from geosight.data.models.context_layer import ContextLayer, LayerType
 from geosight.data.serializer.context_layer import ContextLayerSerializer
 from geosight.permission.access import (
     read_permission_resource,
@@ -84,12 +86,17 @@ class ContextLayerZonalAnalysisAPI(APIView):
     def post(self, request, pk, aggregation='sum'):
         """Run zonal analysis."""
         geometry_datas = json.loads(request.data.get('geometries'))
-        layer = get_object_or_404(ContextLayer, pk=pk)
-        layer_path = layer.download_cog(original_name=True)
+        layer: ContextLayer = get_object_or_404(ContextLayer, pk=pk)
         geometries = [shape(geometry_data) for geometry_data in geometry_datas]
+
+        geometries_combined = unary_union(geometries)
+        bbox = geometries_combined.bounds
+        layer_path = layer.download_layer(original_name=True, bbox=bbox)
         result = run_zonal_analysis(
             layer_path,
             geometries,
             aggregation
         )
+        if layer.layer_type == LayerType.RASTER_TILE:
+            os.remove(layer_path)
         return Response(result)

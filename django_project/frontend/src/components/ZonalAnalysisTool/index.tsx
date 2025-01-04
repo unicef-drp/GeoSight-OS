@@ -212,7 +212,8 @@ export const ZonalAnalysisTool = forwardRef((
         const contextLayer = contextLayers.find((ctx: ContextLayer) => ctx.id === analysisLayer.id)
         if (
           [
-            Variables.LAYER.TYPE.RASTER_COG
+            Variables.LAYER.TYPE.RASTER_COG,
+            Variables.LAYER.TYPE.RASTER_TILE
           ].includes(contextLayer.layer_type)
         ) {
           zonalAnalysisRefs.current.map((ref, index) => {

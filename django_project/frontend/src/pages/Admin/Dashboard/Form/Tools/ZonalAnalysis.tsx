@@ -78,7 +78,8 @@ export function ZonalAnalysisConfiguration(
     (ctx: ContextLayer) => [
       Variables.LAYER.TYPE.ARCGIS,
       Variables.LAYER.TYPE.RASTER_COG,
-      Variables.LAYER.TYPE.RELATED_TABLE
+      Variables.LAYER.TYPE.RELATED_TABLE,
+      Variables.LAYER.TYPE.RASTER_TILE,
     ].includes(ctx.layer_type)
   )
 
@@ -151,6 +152,13 @@ export function ZonalAnalysisConfiguration(
               aggregatedField: "Pixel"
             })
             setNewLayerFieldOptions(["Pixel"])
+            break;
+          case Variables.LAYER.TYPE.RASTER_TILE:
+            setNewLayer({
+              ...newLayer,
+              aggregatedField: "GRAY_INDEX"
+            })
+            setNewLayerFieldOptions(["GRAY_INDEX"])
             break;
           case Variables.LAYER.TYPE.RELATED_TABLE:
             const request = new RelatedTableRequest(contextLayer.related_table)
