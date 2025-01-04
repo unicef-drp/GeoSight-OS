@@ -22,7 +22,7 @@ import React, {
 import { useSelector } from "react-redux";
 import { ContextLayer } from "../../store/dashboard/reducers/contextLayers";
 import { ZonalAnalysisLayerConfiguration } from "./index.d";
-import { analyzeData } from "../../utils/analysisData";
+import { AGGREGATION_TYPES, analyzeData } from "../../utils/analysisData";
 import { Variables } from "../../utils/Variables";
 import { Feature } from "geojson";
 import { fetchCOGWMSValues } from "./FetchCOGWMSValues";
@@ -77,9 +77,13 @@ export const ZonalAnalysisResult = forwardRef((
 
       // This is for data that having values
       if (values !== null) {
-        // @ts-ignore
-        const data = values.map((value: object) => value[analysisLayer.aggregatedField]).filter(value => value !== undefined)
+        let data = values
+        if (analysisLayer.aggregation !== AGGREGATION_TYPES.COUNT) {
+          // @ts-ignore
+          data = values.map((value: object) => value[analysisLayer.aggregatedField]).filter(value => value !== undefined)
+        }
         setData(data)
+        // @ts-ignore
         setValue(analyzeData(analysisLayer.aggregation, data))
         setIsAnalysing(false)
       }

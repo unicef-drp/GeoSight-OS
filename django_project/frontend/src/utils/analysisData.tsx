@@ -15,6 +15,7 @@
 
 export const AGGREGATION_TYPES = {
   COUNT: 'COUNT',
+  COUNT_UNIQUE: 'COUNT_UNIQUE',
   SUM: 'SUM',
   MIN: 'MIN',
   MAX: 'MAX',
@@ -29,6 +30,9 @@ export const analyzeData = (
     return null
   }
   switch (operator) {
+    case AGGREGATION_TYPES.COUNT_UNIQUE: {
+      return Array.from(new Set(data)).length
+    }
     case AGGREGATION_TYPES.COUNT: {
       return data.length
     }
