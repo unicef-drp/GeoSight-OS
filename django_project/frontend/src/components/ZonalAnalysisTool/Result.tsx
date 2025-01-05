@@ -60,6 +60,7 @@ export const ZonalAnalysisResult = forwardRef((
       // This is for a context layer that does not contain values but requires a specific method
       switch (contextLayer?.layer_type) {
         case Variables.LAYER.TYPE.RASTER_COG:
+        case Variables.LAYER.TYPE.RASTER_TILE:
           try {
             setValue(await fetchCOGWMSValues(
               {

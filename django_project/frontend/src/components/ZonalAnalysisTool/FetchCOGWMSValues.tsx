@@ -22,7 +22,7 @@ export const fetchCOGWMSValues = async (
     analysisLayer,
     features
   }: FetchingZonalAnalysisResultProps) => {
-  if (contextLayer.layer_type !== Variables.LAYER.TYPE.RASTER_COG || contextLayer.layer_type !== Variables.LAYER.TYPE.RASTER_TILE) {
+  if (![Variables.LAYER.TYPE.RASTER_COG, Variables.LAYER.TYPE.RASTER_TILE].includes(contextLayer.layer_type)) {
     throw Error(`Can't calculate for ${contextLayer.layer_type}`)
   }
   let geometries = [];
