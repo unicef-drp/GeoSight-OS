@@ -48,7 +48,7 @@ export default function rasterCogLayer(map, id, data, contextLayerData, popupFea
       if (!colors.length) {
         return
       }
-      const url = `cog://${data.url}`
+      const url = `cog://${data.url}`;
 
       removeSource(map, id)
 
@@ -63,14 +63,14 @@ export default function rasterCogLayer(map, id, data, contextLayerData, popupFea
           dynamic_class_num - 1 // Ensure the index does not exceed the array length
         );
         try {
-          return  result = hexToRgba(colors[index], 1);
+          return hexToRgba(colors[index], 255);
         } catch (e) {
           return [0, 0, 0 , 0];
         }
       };
 
       setColorFunction(data.url, ([value], rgba, {noData}) => {
-        if (value === noData || value === Infinity || isNaN(value) || value < min_band) {
+      if (value === noData || value === Infinity || isNaN(value) || value < min_band || value > max_band) {
           rgba.set([0, 0, 0, 0]); // noData, fillValue or NaN => transparent
         } else {
           rgba.set(getColor(value));
