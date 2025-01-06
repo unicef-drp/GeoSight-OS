@@ -42,7 +42,7 @@ def run_zonal_analysis_vector_layer(
         """
     elif aggregation in ['sum', 'max', 'min', 'avg']:
         query = f"""
-            SELECT {aggregation}({aggregation_field})
+            SELECT {aggregation}("{aggregation_field}")
             FROM {layer.schema_name}.{layer.table_name}
             WHERE ST_Intersects(
                 geometry, ST_GeomFromText('{geometry.wkt}', 4326)

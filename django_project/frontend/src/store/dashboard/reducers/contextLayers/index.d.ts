@@ -20,4 +20,5 @@ export interface ContextLayer {
   layer_type: string;
   arcgis_config?: number;
   related_table?: number;
+  cloud_native_gis_layer_id?: number;
 }

@@ -222,7 +222,8 @@ export const ZonalAnalysisTool = forwardRef((
         if (
           [
             Variables.LAYER.TYPE.RASTER_COG,
-            Variables.LAYER.TYPE.RASTER_TILE
+            Variables.LAYER.TYPE.RASTER_TILE,
+            Variables.LAYER.TYPE.CLOUD_NATIVE_GIS,
           ].includes(contextLayer.layer_type)
         ) {
           zonalAnalysisRefs.current.map((ref) => {
