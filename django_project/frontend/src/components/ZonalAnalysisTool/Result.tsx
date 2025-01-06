@@ -25,7 +25,7 @@ import { ZonalAnalysisLayerConfiguration } from "./index.d";
 import { AGGREGATION_TYPES, analyzeData } from "../../utils/analysisData";
 import { Variables } from "../../utils/Variables";
 import { Feature } from "geojson";
-import { fetchCOGValues } from "./FetchCOGValues";
+import { fetchCOGWMSValues } from "./FetchCOGWMSValues";
 
 import './style.scss';
 
@@ -60,8 +60,9 @@ export const ZonalAnalysisResult = forwardRef((
       // This is for a context layer that does not contain values but requires a specific method
       switch (contextLayer?.layer_type) {
         case Variables.LAYER.TYPE.RASTER_COG:
+        case Variables.LAYER.TYPE.RASTER_TILE:
           try {
-            setValue(await fetchCOGValues(
+            setValue(await fetchCOGWMSValues(
               {
                 contextLayer,
                 analysisLayer,
@@ -111,6 +112,8 @@ export const ZonalAnalysisResult = forwardRef((
         setError(error)
         if (!error) {
           analyze(values, features)
+        } else {
+          setIsAnalysing(false)
         }
       },
       /** Finish analyzing by index**/

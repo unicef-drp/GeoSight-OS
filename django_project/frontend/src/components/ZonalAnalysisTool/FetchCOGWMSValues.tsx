@@ -16,13 +16,13 @@ import { FetchingZonalAnalysisResultProps } from "./index.d";
 import { Variables } from "../../utils/Variables";
 import { DjangoRequests } from "../../Requests";
 
-export const fetchCOGValues = async (
+export const fetchCOGWMSValues = async (
   {
     contextLayer,
     analysisLayer,
     features
   }: FetchingZonalAnalysisResultProps) => {
-  if (contextLayer.layer_type !== Variables.LAYER.TYPE.RASTER_COG) {
+  if (![Variables.LAYER.TYPE.RASTER_COG, Variables.LAYER.TYPE.RASTER_TILE].includes(contextLayer.layer_type)) {
     throw Error(`Can't calculate for ${contextLayer.layer_type}`)
   }
   let geometries = [];

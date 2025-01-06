@@ -221,10 +221,11 @@ export const ZonalAnalysisTool = forwardRef((
         const contextLayer = contextLayers.find((ctx: ContextLayer) => ctx.id === analysisLayer.id)
         if (
           [
-            Variables.LAYER.TYPE.RASTER_COG
+            Variables.LAYER.TYPE.RASTER_COG,
+            Variables.LAYER.TYPE.RASTER_TILE
           ].includes(contextLayer.layer_type)
         ) {
-          zonalAnalysisRefs.current.map((ref, index) => {
+          zonalAnalysisRefs.current.map((ref) => {
             // @ts-ignore
             ref.finishAnalyzingByIndex(index, features)
           })
@@ -236,7 +237,8 @@ export const ZonalAnalysisTool = forwardRef((
         const contextLayer = contextLayers.find((ctx: ContextLayer) => ctx.id === analysisLayer.id)
         if (
           [
-            Variables.LAYER.TYPE.ARCGIS, Variables.LAYER.TYPE.RELATED_TABLE
+            Variables.LAYER.TYPE.ARCGIS,
+            Variables.LAYER.TYPE.RELATED_TABLE
           ].includes(contextLayer?.layer_type)
         ) {
           return contextLayer.id
