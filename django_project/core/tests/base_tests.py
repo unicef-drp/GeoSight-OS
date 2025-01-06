@@ -17,9 +17,11 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.management import call_command
-from django.db import connection
+from django.db import connection, connections
+from django.db.utils import ProgrammingError
 from django.test import TestCase as DjangoTestCase
 from django.test.client import MULTIPART_CONTENT
+from psycopg2.errors import DuplicateSchema
 
 if settings.TENANTS_ENABLED:
     from django_tenants.test.client import TenantClient as Client
@@ -102,6 +104,19 @@ if settings.TENANTS_ENABLED:
             tenant, domain = create_tenant(
                 tenant_schema, tenant_domain, is_primary=is_primary
             )
+
+            # TODO:
+            # Create schema for gis cloud native
+            # it is not being created automatically on create layer
+            connection = connections['default']
+            cursor = connection.cursor()
+            try:
+                cursor.execute(f'CREATE SCHEMA "{tenant_schema}_gis"')
+            except (DuplicateSchema, ProgrammingError):
+                pass
+            finally:
+                cursor.close()
+
             return tenant, domain
 
         @classmethod

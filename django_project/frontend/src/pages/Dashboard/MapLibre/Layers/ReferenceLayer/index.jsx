@@ -57,7 +57,7 @@ const INDICATOR_LABEL_ID = 'indicator-label'
 const LAYER_HIGHLIGHT_ID = 'reference-layer-highlight'
 
 // Layer keys
-const REFERENCE_LAYER_ID_KEY = `reference-layer`
+export const REFERENCE_LAYER_ID_KEY = `reference-layer`
 export const FILL_LAYER_ID_KEY = REFERENCE_LAYER_ID_KEY + '-fill'
 const OUTLINE_LAYER_ID_KEY = REFERENCE_LAYER_ID_KEY + '-outline'
 

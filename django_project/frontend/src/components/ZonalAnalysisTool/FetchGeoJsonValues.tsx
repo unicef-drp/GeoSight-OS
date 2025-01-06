@@ -25,7 +25,8 @@ export const fetchGeoJsonValues = async (
   }: FetchingFunctionProp) => {
   if (
     ![
-      Variables.LAYER.TYPE.RELATED_TABLE, Variables.LAYER.TYPE.GEOJSON
+      Variables.LAYER.TYPE.RELATED_TABLE,
+      Variables.LAYER.TYPE.GEOJSON
     ].includes(contextLayer.layer_type)
   ) {
     setData(null, `Can't calculate for ${contextLayer.layer_type}`)

@@ -49,13 +49,13 @@ import {
   addClickEvent,
   removeClickEvent
 } from "../../pages/Dashboard/MapLibre/utils";
-import {
-  FILL_LAYER_ID_KEY
-} from "../../pages/Dashboard/MapLibre/Layers/ReferenceLayer";
 import { getFeatureByConceptUUID } from "../../utils/referenceLayer";
 import { ContextLayer } from "../../store/dashboard/reducers/contextLayers";
 import { fetchArcGISValues } from "./FetchArcGISValues";
 import { fetchGeoJsonValues } from "./FetchGeoJsonValues";
+import {
+  REFERENCE_LAYER_ID_KEY
+} from "../../pages/Dashboard/MapLibre/Layers/ReferenceLayer";
 
 interface Props {
   map: maplibregl.Map;
@@ -166,18 +166,28 @@ export const ZonalAnalysisTool = forwardRef((
           draw.stop()
           /** Click map */
           const onClick = (e: any) => {
-            const visibleLayerIds = map.getStyle().layers.filter(layer => layer.id.includes(FILL_LAYER_ID_KEY) || layer.id.includes('gl-draw-polygon')).map(layer => layer.id)
+            const style = map.getStyle()
+            const visibleLayerIds = map.getStyle().layers.filter(
+              (layer: maplibregl.LayerSpecification) => {
+                // @ts-ignore
+                const source = style.sources[layer.source]
+                return ['vector', 'geojson'].includes(source.type)
+              }
+            ).map(layer => layer.id)
             const features = map.queryRenderedFeatures(
               e.point, { layers: visibleLayerIds }
             );
             if (features.length > 0) {
               let feature = features[0];
               let geometry = dictDeepCopy(feature.geometry)
-              let id = feature.properties.concept_uuid ? feature.properties.concept_uuid : feature.properties.id
-              try {
-                geometry = getFeatureByConceptUUID(map, feature.properties.concept_uuid).geometry
-              } catch (err) {
-                console.log(err)
+              let id = feature.properties.id ? feature.properties.id : JSON.stringify(geometry)
+              if (feature.source.includes(REFERENCE_LAYER_ID_KEY)) {
+                id = feature.properties.concept_uuid
+                try {
+                  geometry = getFeatureByConceptUUID(map, feature.properties.concept_uuid).geometry
+                } catch (err) {
+                  console.log(err)
+                }
               }
               const _feature = {
                 "type": "Feature",
@@ -222,7 +232,8 @@ export const ZonalAnalysisTool = forwardRef((
         if (
           [
             Variables.LAYER.TYPE.RASTER_COG,
-            Variables.LAYER.TYPE.RASTER_TILE
+            Variables.LAYER.TYPE.RASTER_TILE,
+            Variables.LAYER.TYPE.CLOUD_NATIVE_GIS,
           ].includes(contextLayer.layer_type)
         ) {
           zonalAnalysisRefs.current.map((ref) => {
