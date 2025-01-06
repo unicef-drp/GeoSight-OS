@@ -48,9 +48,48 @@ export class MapDrawing {
     this.map = map;
     this.mode = defaultMode;
     this.setDrawState = setDrawState;
+    const customDrawStyles = [
+      {
+          id: 'gl-draw-polygon-fill',
+          type: 'fill',
+          filter: ['all', ['==', '$type', 'Polygon'], ['!=', 'mode', 'static']],
+          paint: {
+              'fill-color': '#FF5733', // Custom fill color
+              'fill-opacity': 0.5, // Custom fill opacity
+          },
+      },
+      {
+          id: 'gl-draw-polygon-stroke-active',
+          type: 'line',
+          filter: ['all', ['==', '$type', 'Polygon'], ['!=', 'mode', 'static']],
+          paint: {
+              'line-color': '#FF5733', // Custom stroke color
+              'line-width': 2,
+          },
+      },
+      {
+          id: 'gl-draw-line-active',
+          type: 'line',
+          filter: ['all', ['==', '$type', 'LineString'], ['!=', 'mode', 'static']],
+          paint: {
+              'line-color': '#FF5733', // Custom line color
+              'line-width': 2,
+          },
+      },
+      {
+          id: 'gl-draw-point-point',
+          type: 'circle',
+          filter: ['all', ['==', '$type', 'Point'], ['==', 'meta', 'feature']],
+          paint: {
+              'circle-radius': 5,
+              'circle-color': '#FF5733',
+          },
+      }
+  ];
     this.draw = new MapboxDraw(
       {
         displayControlsDefault: false,
+        styles: customDrawStyles,
         controls: {
           polygon: true,
           line_string: true,
