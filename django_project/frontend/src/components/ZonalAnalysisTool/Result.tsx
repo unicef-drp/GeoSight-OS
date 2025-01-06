@@ -112,6 +112,8 @@ export const ZonalAnalysisResult = forwardRef((
         setError(error)
         if (!error) {
           analyze(values, features)
+        } else {
+          setIsAnalysing(false)
         }
       },
       /** Finish analyzing by index**/
