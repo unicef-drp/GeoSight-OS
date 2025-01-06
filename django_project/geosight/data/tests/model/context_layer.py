@@ -98,14 +98,7 @@ class BasemapLayerTest(TestCase):
         """Test downloading wms file."""
         context_layer = ContextLayerF(
             name=self.name,
-            url=(
-                'https://datacore.unepgrid.ch/geoserver/'
-                'grid_data_core_pro/wms?'
-                'service=WMS&version=1.1.0&request=GetMap&layers='
-                'grid_data_core_pro%3'
-                'AGHS_POP_E2020_GLOBE_R2022A_54009_1000_V1_0_wgs84_opt&'
-                'styles=&format=image%2Fpng'
-            ),
+            url='http://url.com',
             layer_type='Raster Tile'
         )
 
