@@ -48,7 +48,8 @@ export default function rasterCogLayer(map, id, data, contextLayerData, popupFea
       if (!colors.length) {
         return
       }
-      const url = `cog://${data.url}`;
+      // TODO: Handle styling when multiple, identical COG URLs are used
+      const url = `cog://${data.url}#` + contextLayerData.id;
 
       removeSource(map, id)
 
