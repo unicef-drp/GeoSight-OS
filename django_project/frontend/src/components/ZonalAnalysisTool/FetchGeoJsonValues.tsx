@@ -16,14 +16,18 @@ import { FetchingFunctionProp } from "./index.d";
 import * as turf from '@turf/turf';
 import { Variables } from "../../utils/Variables";
 
-export const fetchRelatedTableValues = async (
+export const fetchGeoJsonValues = async (
   {
     map,
     contextLayer,
     features,
     setData
   }: FetchingFunctionProp) => {
-  if (contextLayer.layer_type !== Variables.LAYER.TYPE.RELATED_TABLE) {
+  if (
+    ![
+      Variables.LAYER.TYPE.RELATED_TABLE, Variables.LAYER.TYPE.GEOJSON
+    ].includes(contextLayer.layer_type)
+  ) {
     setData(null, `Can't calculate for ${contextLayer.layer_type}`)
     return;
   }
