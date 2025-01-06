@@ -26,8 +26,8 @@ import React, {
 import maplibregl from "maplibre-gl";
 import { Plugin, PluginChild } from "../../MapLibre/Plugin";
 import {
-  MeasurementOffIcon,
-  MeasurementOnIcon
+  ZonalAnalysisOffIcon,
+  ZonalAnalysisOnIcon
 } from "../../../../components/Icons";
 import { ZonalAnalysisTool } from "../../../../components/ZonalAnalysisTool";
 
@@ -74,7 +74,7 @@ export const ZonalAnalysisComponent = forwardRef((
               toggle(!active)
             }
           }}>
-          {active ? <MeasurementOnIcon/> : <MeasurementOffIcon/>}
+          {active ? <ZonalAnalysisOnIcon/> : <ZonalAnalysisOffIcon/>}
         </PluginChild>
       </div>
       {
