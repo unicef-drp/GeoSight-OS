@@ -221,8 +221,10 @@ export function contextLayerRendering(id, contextLayerData, contextLayer, map, c
       switch (layer_type) {
         case Variables.LAYER.TYPE.GEOJSON: {
           const markers = geojsonLayer(map, id, layer, featureProperties => {
+            console.log(featureProperties)
+            console.log(contextLayerData.data_fields)
             return popupFeature(
-              featureProperties, contextLayerData.name, [], contextLayerData.data_fields
+              featureProperties, contextLayerData.name, null, null
             )
           })
           markersContextLayers[id] = markers

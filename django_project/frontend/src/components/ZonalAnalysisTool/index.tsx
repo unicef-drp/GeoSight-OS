@@ -55,7 +55,7 @@ import {
 import { getFeatureByConceptUUID } from "../../utils/referenceLayer";
 import { ContextLayer } from "../../store/dashboard/reducers/contextLayers";
 import { fetchArcGISValues } from "./FetchArcGISValues";
-import { fetchRelatedTableValues } from "./FetchRelatedTableValues";
+import { fetchGeoJsonValues } from "./FetchGeoJsonValues";
 
 interface Props {
   map: maplibregl.Map;
@@ -238,7 +238,8 @@ export const ZonalAnalysisTool = forwardRef((
         if (
           [
             Variables.LAYER.TYPE.ARCGIS,
-            Variables.LAYER.TYPE.RELATED_TABLE
+            Variables.LAYER.TYPE.RELATED_TABLE,
+            Variables.LAYER.TYPE.GEOJSON
           ].includes(contextLayer?.layer_type)
         ) {
           return contextLayer.id
@@ -266,8 +267,9 @@ export const ZonalAnalysisTool = forwardRef((
               })
               return;
             }
-            case Variables.LAYER.TYPE.RELATED_TABLE: {
-              fetchRelatedTableValues({
+            case Variables.LAYER.TYPE.RELATED_TABLE:
+            case Variables.LAYER.TYPE.GEOJSON: {
+              fetchGeoJsonValues({
                 map,
                 contextLayer,
                 config,

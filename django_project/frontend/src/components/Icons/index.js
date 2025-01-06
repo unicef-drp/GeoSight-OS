@@ -87,3 +87,5 @@ export { default as TimeUncheckedIcon } from "./time-unchecked.svg";
 export { default as UploadIcon } from "./upload.svg";
 export { default as VisibilityIcon } from "./visibility.svg";
 export { default as VisibilityOffIcon } from "./visibility-off.svg";
+export { default as ZonalAnalysisOnIcon } from "./zonal_active.svg";
+export { default as ZonalAnalysisOffIcon } from "./zonal_not-active.svg";

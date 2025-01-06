@@ -49,6 +49,7 @@ import RelatedTableRequest from "../../../../../utils/RelatedTable/Request";
 import {
   RelatedTable
 } from "../../../../../store/dashboard/reducers/relatedTable";
+import GeoJsonRequest from "../../../../../utils/GeoJson/Request";
 
 
 interface Props {
@@ -80,6 +81,7 @@ export function ZonalAnalysisConfiguration(
       Variables.LAYER.TYPE.RASTER_COG,
       Variables.LAYER.TYPE.RELATED_TABLE,
       Variables.LAYER.TYPE.RASTER_TILE,
+      Variables.LAYER.TYPE.GEOJSON
     ].includes(ctx.layer_type)
   )
 
@@ -172,6 +174,19 @@ export function ZonalAnalysisConfiguration(
               })
             })
             break;
+          case Variables.LAYER.TYPE.GEOJSON: {
+            const request = new GeoJsonRequest(contextLayer.url)
+
+            // @ts-ignore
+            request.getMetadata().then((response: string[]) => {
+              setNewLayerFieldOptions(response)
+              setNewLayer({
+                ...newLayer,
+                aggregatedField: response[0]
+              })
+            })
+            break;
+          }
         }
         return
       } else {
