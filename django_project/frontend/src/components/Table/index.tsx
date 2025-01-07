@@ -14,3 +14,4 @@
  */
 
 export { default as MainDataGrid } from "./MainDataGrid";
+export { default as ServerTable } from "./ServerTable";

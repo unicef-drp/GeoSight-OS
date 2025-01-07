@@ -121,6 +121,9 @@ export function capitalize(target) {
 export function jsonToUrlParams(object) {
   const params = []
   for (const [key, value] of Object.entries(object)) {
+    if ([null, undefined].includes(value)) {
+      return
+    }
     params.push(`${key}=${value}`)
   }
   return params.join('&')
@@ -516,5 +519,5 @@ export function toJson(val) {
  * Sleep
  */
 export function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise(resolve => setTimeout(resolve, ms));
 }

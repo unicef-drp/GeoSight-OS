@@ -21,43 +21,57 @@ import React, {
   useRef,
   useState
 } from 'react';
-import { MainDataGrid } from "../../../../components/Table";
-import { dictDeepCopy, jsonToUrlParams } from "../../../../utils/main";
-import { fetchJSON } from "../../../../Requests";
+import { ServerTableProps } from "./types";
+import { dictDeepCopy, jsonToUrlParams } from "../../utils/main";
+import { ThemeButton } from "../Elements/Button";
+import { MainDataGrid } from "./index";
+import { DjangoRequests } from "../../Requests";
 
-import './style.scss';
-import { ThemeButton } from "../../../../components/Elements/Button";
+import './ServerTable.scss';
 
-/**
- * Admin Table
- * @param {Array} rows List of data.
- * @param {Array} columns Columns for the table.
- * @param {function} selectionChanged Function when selection changed.
- * @param {function} sortingDefault The sorting default.
- * @param {boolean} selectable Is selectable.
- */
-export const ServerTable = forwardRef(
+/** Server Table */
+const ServerTable = forwardRef(
   ({
-     urlData,
+     url,
      columns,
      selectionModel,
      setSelectionModel,
      getParameters = null,
      selectable = true,
+     header = null,
+     defaultSortModel = [],
      ...props
-   }, ref
+   }: ServerTableProps, ref
   ) => {
-    const prev = useRef();
-
-    // Other attributes
+    const prev = useRef<string | null>(null);
     const pageSize = 25;
+
+    const getSort = (_sortModel: any[]) => {
+      const sort: string[] = []
+      _sortModel.map(model => {
+        const column = columns.find(column => column.field == model.field)
+
+        // @ts-ignore
+        const field = column.orderField ? column.orderField : column.field
+        sort.push(model.sort === 'asc' ? field : `-${field}`)
+      })
+      return sort
+    }
+
+    // Other parameters
     const [parameters, setParameters] = useState({
       page: 0,
-      page_size: pageSize
+      page_size: pageSize,
+      sort: getSort(defaultSortModel)
     })
-    const [data, setData] = useState(null)
-    const [rowSize, setRowSize] = useState(0)
-    const [error, setError] = useState(null)
+
+    // Sort model
+    const [sortModel, setSortModel] = useState<any[]>(defaultSortModel);
+
+    // Data states
+    const [data, setData] = useState<any[]>(null)
+    const [dataCount, setDataCount] = useState<number>(0)
+    const [error, setError] = useState<string>(null)
 
     /** Refresh data **/
     useImperativeHandle(ref, () => ({
@@ -65,65 +79,70 @@ export const ServerTable = forwardRef(
         parametersChanged()
         loadData(true)
       },
-      updateData(fn) {
-        const newData = fn(data)
-        setData([...newData])
+      /** Update data from outside **/
+      updateData(
+        fn: (data: any[]) => any[]) {
+        setData([...fn(data)])
       }
     }));
 
-    /***
-     * Parameters Changed
-     */
+    /*** Parameters Changed */
     const parametersChanged = () => {
       const params = getParameters ? getParameters(parameters) : {}
       setParameters({ ...parameters, ...params })
     }
 
     /*** Load data */
-    const loadData = (force) => {
+    const loadData = (force: boolean) => {
       setData(null)
       setError(null)
-      const paramsUsed = dictDeepCopy(parameters)
-      paramsUsed.page += 1
-      const params = jsonToUrlParams(paramsUsed)
-      const url = urlData + '?' + params
-      if (!force && url === prev.urlRequest) {
+      let _parameters = dictDeepCopy(parameters)
+      _parameters.page += 1
+      _parameters = jsonToUrlParams(_parameters)
+
+      // Construct url
+      const _url = url + '?' + _parameters
+      if (!force && _url === prev.current) {
         return
       }
-      prev.urlRequest = url
-
-      fetchJSON(url, {}, false)
-        .then(data => {
-          if (prev.urlRequest === url) {
-            setRowSize(data.count)
-            setData(data.results)
-          }
-        })
+      prev.current = _url
+      DjangoRequests.get(_url).then(data => {
+        if (prev.current === _url) {
+          setDataCount(data.data.count)
+          setData(data.data.results)
+        }
+      })
         .catch(error => {
-          if (error.message === 'Invalid page.') {
+          let errorString = error.toString()
+          if (error?.response?.data?.detail) {
+            errorString = error?.response?.data?.detail
+          } else if (error.message) {
+            errorString = error.message
+          }
+          if (errorString === 'Invalid page.') {
             setParameters({ ...parameters, page: 0 })
           } else {
-            if (error?.response?.data) {
-              setError(error.response.data)
-            } else {
-              setError(error.message)
-            }
+            setError(errorString)
           }
         })
     }
     /*** When parameters changed */
     useEffect(() => {
-      loadData()
+      loadData(false)
     }, [parameters])
 
-    /***
-     * When page size and filter changed
-     */
+    /*** When page size and filter changed */
     useEffect(() => {
         parameters.page = 0
-        setRowSize(0)
+        setDataCount(0)
         parametersChanged()
       }, [pageSize]
+    )
+
+    /*** When sortmodel changed */
+    useEffect(() => {
+        setParameters({ ...parameters, sort: getSort(sortModel) })
+      }, [sortModel]
     )
 
     return (
@@ -147,9 +166,7 @@ export const ServerTable = forwardRef(
                 }
               </div>
               <div className='Separator'/>
-              <div className='AdminListHeader-Right'>
-                {props.header}
-              </div>
+              <div className='AdminListHeader-Right'>{header}</div>
             </div>
         }
         <div className='AdminTable'>
@@ -157,10 +174,10 @@ export const ServerTable = forwardRef(
             columns={columns}
             rows={data ? data : []}
 
-            rowCount={rowSize}
+            rowCount={dataCount}
             page={parameters.page}
 
-            getCellClassName={params => {
+            getCellClassName={(params: any) => {
               let className = ''
               if (params.row.updated) {
                 className = 'Updated '
@@ -180,12 +197,12 @@ export const ServerTable = forwardRef(
             loading={!data}
             pageSize={parameters.page_size}
             rowsPerPageOptions={[25, 50, 100]}
-            onPageSizeChange={(newPageSize) => {
+            onPageSizeChange={(newPageSize: number) => {
               parameters.page_size = newPageSize
               parametersChanged()
             }}
             paginationMode="server"
-            onPageChange={(newPage) => {
+            onPageChange={(newPage: number) => {
               parameters.page = newPage
               parametersChanged()
             }}
@@ -193,13 +210,18 @@ export const ServerTable = forwardRef(
             disableSelectionOnClick
             disableColumnFilter
 
-            onSelectionModelChange={(newSelectionModel) => {
+            onSelectionModelChange={(newSelectionModel: any[]) => {
               if (JSON.stringify(newSelectionModel) !== JSON.stringify(selectionModel)) {
                 setSelectionModel(newSelectionModel)
               }
             }}
             selectionModel={selectionModel}
             error={error}
+
+            /*Multisort just enabled for PRO */
+            sortModel={sortModel}
+            onSortModelChange={(newSortModel: any[]) => setSortModel(newSortModel)}
+
             {...props}
           />
         </div>
@@ -207,3 +229,4 @@ export const ServerTable = forwardRef(
     )
   }
 )
+export default ServerTable;

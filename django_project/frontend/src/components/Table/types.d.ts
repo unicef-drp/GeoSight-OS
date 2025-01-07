@@ -13,6 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
+import { ReactNode } from 'react';
 import { GridColumns } from "@mui/x-data-grid";
 
 export interface MainDataGridProps {
@@ -20,4 +21,14 @@ export interface MainDataGridProps {
   rows: readonly any[];
 
   [key: string]: any;
+}
+
+export interface ServerTableProps extends MainDataGridProps {
+  url: string;
+  selectionModel: any[];
+  setSelectionModel: (data: any[]) => void;
+  updateParameters: (parameter: {}) => {};
+  selectable: boolean;
+  header?: ReactNode;
+  defaultSortModel?: any[];
 }

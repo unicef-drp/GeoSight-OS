@@ -33,10 +33,10 @@ import {
   Notification,
   NotificationStatus
 } from "../../../components/Notification";
-import { ServerTable } from "../Components/Table/ServerTable";
 import { DeleteButton, EditButton } from "../../../components/Elements/Button";
 import { UpdatePermissionModal } from "./UpdatePermissionModal";
 import { DjangoRequests } from "../../../Requests";
+import { ServerTable } from "../../../components/Table";
 
 import './style.scss';
 
@@ -184,7 +184,8 @@ export const DataAccessTable = forwardRef(
           field: 'permission', headerName: 'Permission', width: 200,
           renderCell: (params) => {
             return renderPermission(params, 'permission')
-          }
+          },
+          sortable: false
         })
     }
 
@@ -278,12 +279,18 @@ export const DataAccessTable = forwardRef(
             />
           </Fragment>
         }
-        urlData={urlData}
+        url={urlData}
         columns={COLUMNS}
         selectionModel={selectionModel}
         setSelectionModel={setSelectionModel}
         getParameters={getParameters}
         checkboxSelection={true}
+        defaultSortModel={
+          [
+            { field: 'indicator_name', sort: 'asc' },
+            { field: 'dataset_name', sort: 'asc' }
+          ]
+        }
         ref={tableRef}
       />
       <ConfirmDialog
