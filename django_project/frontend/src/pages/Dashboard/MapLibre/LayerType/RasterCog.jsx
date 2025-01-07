@@ -26,6 +26,9 @@ import {
 import { createColorsFromPaletteId } from "../../../../utils/Style";
 import { sleep } from "../../../../utils/main";
 import { getCogFeatureByPoint } from "../../../../utils/COGLayer";
+import {setColorFunction} from '@geomatico/maplibre-cog-protocol';
+import {hexToRgba} from '../utils';
+
 
 /***
  * Render Raster Cog
@@ -45,9 +48,35 @@ export default function rasterCogLayer(map, id, data, contextLayerData, popupFea
       if (!colors.length) {
         return
       }
-      const url = `cog://${data.url}#color:[${colors.map(color => '"' + color + '"')}],${min_band ? min_band : 0},${max_band ? max_band : 100},c`
+      // TODO: Handle styling when multiple, identical COG URLs are used
+      const url = `cog://${data.url}#` + contextLayerData.id;
 
       removeSource(map, id)
+
+      const getColor = (value) => {
+        if (value < min_band || value > max_band) {
+          throw new Error("Value is out of range");
+        }
+
+        const interval = (max_band - min_band) / dynamic_class_num; // Calculate interval size
+        const index = Math.min(
+          Math.floor((value - min_band) / interval),
+          dynamic_class_num - 1 // Ensure the index does not exceed the array length
+        );
+        try {
+          return hexToRgba(colors[index], 255);
+        } catch (e) {
+          return [0, 0, 0 , 0];
+        }
+      };
+
+      setColorFunction(data.url, ([value], rgba, {noData}) => {
+      if (value === noData || value === Infinity || isNaN(value) || value < min_band || value > max_band) {
+          rgba.set([0, 0, 0, 0]); // noData, fillValue or NaN => transparent
+        } else {
+          rgba.set(getColor(value));
+        }
+      });
       const sourceParams = Object.assign({}, data.params, {
         url: url,
         type: 'raster',

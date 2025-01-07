@@ -50,6 +50,7 @@ import {
   RelatedTable
 } from "../../../../../store/dashboard/reducers/relatedTable";
 import GeoJsonRequest from "../../../../../utils/GeoJson/Request";
+import axiosRequest from "../../../../../utils/Request";
 
 
 interface Props {
@@ -81,7 +82,8 @@ export function ZonalAnalysisConfiguration(
       Variables.LAYER.TYPE.RASTER_COG,
       Variables.LAYER.TYPE.RELATED_TABLE,
       Variables.LAYER.TYPE.RASTER_TILE,
-      Variables.LAYER.TYPE.GEOJSON
+      Variables.LAYER.TYPE.GEOJSON,
+      Variables.LAYER.TYPE.CLOUD_NATIVE_GIS
     ].includes(ctx.layer_type)
   )
 
@@ -187,6 +189,34 @@ export function ZonalAnalysisConfiguration(
             })
             break;
           }
+          case Variables.LAYER.TYPE.CLOUD_NATIVE_GIS: {
+            axiosRequest.get(
+              `/cloud-native-gis/api/layer/${contextLayer.cloud_native_gis_layer_id}/attributes/?page_size=1000`
+            ).then(response => {
+              // @ts-ignore
+              const fields = response.results.filter(result => result.attribute_type !== 'text').map(result => result.attribute_name)
+              if (fields.length) {
+                setNewLayerFieldOptions(fields)
+                setNewLayer({
+                  ...newLayer,
+                  aggregatedField: fields[0]
+                })
+              } else {
+                setNewLayer({
+                  ...newLayer,
+                  aggregatedField: "GRAY_INDEX"
+                })
+                setNewLayerFieldOptions(["GRAY_INDEX"])
+              }
+            }).catch(error => {
+              setNewLayerFieldOptions([])
+              setNewLayer({
+                ...newLayer,
+                aggregatedField: null
+              })
+            })
+            break;
+          }
         }
         return
       } else {
@@ -251,7 +281,7 @@ export function ZonalAnalysisConfiguration(
               }}
             />
           </FormControl>
-          <FormControl style={{ minWidth: "100px" }}>
+          <FormControl style={{ minWidth: "120px" }}>
             <FormLabel className="MuiInputLabel-root">Aggregation:</FormLabel>
             <SelectWithList
               isMulti={false}

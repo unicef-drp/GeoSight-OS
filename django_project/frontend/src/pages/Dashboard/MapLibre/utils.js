@@ -288,3 +288,19 @@ export const getLayerIdOfReferenceLayer = (map) => {
   const first = map.getStyle().layers.filter(layer => layer.id.includes(FILL_LAYER_ID_KEY))[0]
   return first?.id
 };
+
+export const hexToRgba = (hex, alpha = 1, format = 'array') => {
+  // Remove the hash if present
+  const hexClean = hex.replace("#", "");
+
+  // Parse the R, G, and B values
+  const r = parseInt(hexClean.substring(0, 2), 16);
+  const g = parseInt(hexClean.substring(2, 4), 16);
+  const b = parseInt(hexClean.substring(4, 6), 16);
+
+  // Return in RGBA format
+  if (format == 'array') {
+    return [r, g, b, alpha]
+  }
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};

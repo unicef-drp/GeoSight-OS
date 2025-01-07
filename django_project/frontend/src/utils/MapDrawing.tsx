@@ -484,7 +484,16 @@ export class MapDrawing {
     let lengthTerm = 'Perimeter'
     let featureType = 'Polygon'
 
-    let features = data.features
+    let features = data.features.filter(
+      feature => {
+        try {
+          // @ts-ignore
+          return feature.geometry.coordinates[0][0] != null
+        } catch (err) {
+          return true
+        }
+      }
+    )
     if (justSelected) {
       const selected = this.draw.getSelectedIds()
       features = data.features.filter(
@@ -537,6 +546,7 @@ export class MapDrawing {
       }
     })
     return {
+      count: features.length,
       area: area,
       lengthMeters: lengthMeters,
       lengthMiles: lengthMiles,
