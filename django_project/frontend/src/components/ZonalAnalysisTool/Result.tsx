@@ -124,10 +124,8 @@ export const ZonalAnalysisResult = forwardRef((
         if (!contextLayer || analysisIndex !== index) {
           return
         }
-        setError(error)
-        if (!error) {
-          analyze(null, features)
-        }
+        setError(null)
+        analyze(null, features)
       },
       clear() {
         setValue(null)
