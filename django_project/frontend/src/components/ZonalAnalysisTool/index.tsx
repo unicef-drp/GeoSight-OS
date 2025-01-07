@@ -388,7 +388,9 @@ export const ZonalAnalysisTool = forwardRef((
                 information ? (
                     <>
                       <div>
-                        {numberWithCommas(information.area, 2)} Sq Meters
+                        {numberWithCommas(information.area, 2)}
+                        Sq Meters
+                        ({information.count} feature{information.count > 1 ? 's' : ''})
                       </div>
                       <div>
                         {numberWithCommas(information.lengthMeters, 2)} Meters
