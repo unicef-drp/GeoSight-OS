@@ -9,21 +9,28 @@
  *     (at your option) any later version.
  *
  * __author__ = 'irwan@kartoza.com'
- * __date__ = '01/08/2023'
+ * __date__ = '07/01/2025'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
 import React from 'react';
 import { DataGrid } from "@mui/x-data-grid";
+import { MainDataGridProps } from "./types";
 
-/**
- * Customized Main Data Grid
- */
-export function MainDataGrid({ ...props }) {
-  return <DataGrid
-    headerHeight={36}
-    getRowHeight={() => 'auto'}
-    keepNonExistentRowsSelected
-    {...props}
-  />
+
+const MainDataGrid = (
+  { columns, rows, ...props }: MainDataGridProps
+) => {
+  return (
+    <DataGrid
+      columns={columns}
+      rows={rows}
+      headerHeight={36}
+      getRowHeight={() => 'auto'}
+      keepNonExistentRowsSelected
+      selectionModel={12}
+      {...props}
+    />
+  );
 }
+export default MainDataGrid;

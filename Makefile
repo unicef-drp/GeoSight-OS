@@ -29,7 +29,7 @@ frontend-dev:
 	@echo "------------------------------------------------------------------"
 	@echo "Run frontend dev"
 	@echo "------------------------------------------------------------------"
-	@cd django_project/frontend; npm install --verbose; npm run dev;
+	@cd django_project/frontend; npm run dev;
 
 dev:
 	@echo

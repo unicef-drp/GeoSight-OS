@@ -21,7 +21,7 @@ import React, {
   useRef,
   useState
 } from 'react';
-import { MainDataGrid } from "../../../../components/MainDataGrid";
+import { MainDataGrid } from "../../../../components/Table";
 import { dictDeepCopy, jsonToUrlParams } from "../../../../utils/main";
 import { fetchJSON } from "../../../../Requests";
 
