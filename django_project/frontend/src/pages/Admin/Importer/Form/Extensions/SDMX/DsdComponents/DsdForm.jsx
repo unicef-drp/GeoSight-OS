@@ -9,7 +9,17 @@ import { ThemeButton } from "../../../../../../../components/Elements/Button";
 import { fetchAgencies, fetchDataflows, fetchDataflowVersions, fetchDimensions, fetchDsd } from './fetchFunctions.jsx';
 import DropdownSection from "./DropdownSection.jsx";
 import DimensionDropdown from "./DimensionDropdown.jsx";
+ 
 
+/**
+ * DsdForm Component
+ *
+ * @param {Object} props - The properties object.
+ * @param {function} props.setRequest - State variable setter function that mutates `request`, the request/response payload state variable.
+ * @param {function} props.urlChanged - Function to read the API URL created based on user inputs.
+ *
+ * @returns {JSX.Element} A frontend component containing all the selection/input fields.
+ */
 const DsdForm = ({ urlChanged, setRequest }) => {
   // State Variables
   const [agencyOptions, setAgencyOptions] = useState([]);
