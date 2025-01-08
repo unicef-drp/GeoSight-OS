@@ -82,17 +82,26 @@ test.describe('Data access user admin', () => {
     await expect(page.locator('.MuiDataGrid-row .MuiSelect-nativeInput').nth(1)).toHaveValue('Write');
     await expect(page.locator('.MuiDataGrid-row .MuiSelect-nativeInput').nth(2)).toHaveValue('Write');
 
+    // Delete per row
+    await page.locator('.MuiDataGrid-row').nth(0).getByTestId('MoreVertIcon').click();
+    await page.getByRole('menuitem', { name: 'Delete' }).click();
+    await expect(page.locator('.modal--content ')).toContainText('Are you sure want to delete 1 user data access?');
+    await page.getByRole('button', { name: 'Confirm' }).click();
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–15 of 15');
+
     // Delete batch
     await page.locator('.MuiDataGrid-cellCheckbox').first().click();
     await page.locator('div:nth-child(2) > .MuiDataGrid-cellCheckbox').click();
     await page.locator('div:nth-child(3) > .MuiDataGrid-cellCheckbox').click();
     await page.getByRole('button', { name: 'Delete' }).click();
+    await expect(page.locator('.modal--content ')).toContainText('Are you sure want to delete 3 user data accesses?');
     await page.getByRole('button', { name: 'Confirm' }).click();
-    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–13 of 13');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–12 of 12');
 
     // Delete all
     await page.getByLabel('Select all rows').check();
     await page.getByRole('button', { name: 'Delete' }).click();
+    await expect(page.locator('.modal--content ')).toContainText('Are you sure want to delete 12 user data accesses?');
     await page.getByRole('button', { name: 'Confirm' }).click();
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('0–0 of 0');
   });

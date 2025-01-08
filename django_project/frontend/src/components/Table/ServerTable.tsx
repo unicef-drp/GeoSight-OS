@@ -21,6 +21,7 @@ import React, {
   useRef,
   useState
 } from 'react';
+import pluralize from 'pluralize';
 import { ServerTableProps, } from "./types";
 import { dictDeepCopy, jsonToUrlParams } from "../../utils/main";
 import { DeleteButton, ThemeButton } from "../Elements/Button";
@@ -222,7 +223,7 @@ const ServerTable = forwardRef(
                         children: <div>
                           Are you sure want to
                           delete {selectionModel.length}&nbsp;
-                          {dataName.toLowerCase() + (selectionModel.length > 1 ? 's' : '')} ?
+                          {selectionModel.length > 1 ? pluralize(dataName).toLowerCase() : dataName.toLowerCase()}?
                         </div>,
                       })
                     }}

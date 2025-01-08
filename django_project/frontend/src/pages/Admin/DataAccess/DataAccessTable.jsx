@@ -55,7 +55,6 @@ export const DataAccessTable = forwardRef(
   ) => {
     const { openConfirmDialog } = useConfirmDialog();
     const tableRef = useRef(null);
-    const [deletingIds, setDeletingIds] = useState([]);
 
     /** Refresh data **/
     useImperativeHandle(ref, () => ({
@@ -197,7 +196,7 @@ export const DataAccessTable = forwardRef(
         <MoreAction moreIcon={<MoreVertIcon/>}>
           <div className='error' onClick={
             () => {
-              setDeletingIds([params.id]);
+              const deletingIds = [params.id]
               openConfirmDialog({
                 header: 'Delete confirmation',
                 onConfirmed: () => {
@@ -207,7 +206,6 @@ export const DataAccessTable = forwardRef(
                   ).then(response => {
                     tableRef?.current?.refresh();
                     setSelectionModel(selectionModel.filter(id => !deletingIds.includes(id)))
-                    setDeletingIds([])
                   }).catch(error => {
                       notify('Failed to update data', NotificationStatus.ERROR);
                     }
@@ -218,7 +216,7 @@ export const DataAccessTable = forwardRef(
                 children: <div>
                   Are you sure want to
                   delete {deletingIds.length ? deletingIds.length : 1}&nbsp;
-                  {dataName.toLowerCase() + (deletingIds.length > 1 ? 's' : '')}?
+                  {dataName.toLowerCase()}?
                 </div>,
               })
             }
