@@ -53,7 +53,7 @@ class BaseApiV1(FilteredAPI):
 
 
 class BaseApiV1ResourceReadOnly(BaseApiV1, viewsets.ReadOnlyModelViewSet):
-    """Indicator view set."""
+    """Base api v1 for read only."""
 
     model_class = None
     lookup_field = 'id'
@@ -114,10 +114,36 @@ class BaseApiV1ResourceReadOnly(BaseApiV1, viewsets.ReadOnlyModelViewSet):
         return Response(serializer.data)
 
 
+class BaseApiV1ResourceDestroy(mixins.DestroyModelMixin):
+    """Base api v1 for destroy only."""
+
+    def destroy(self, request, *args, **kwargs):
+        """Destroy an object."""
+        instance = self.get_object()
+        delete_permission_resource(instance, request.user)
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class BaseApiV1ResourceDelete(mixins.DestroyModelMixin):
+    """Base api v1 for delete only."""
+
+    model_class = None
+
+    def delete(self, request, *args, **kwargs):
+        """Destroy an object."""
+        ids = request.data['ids']
+        for obj in self.model_class.permissions.delete(request.user).filter(
+                slug__in=ids
+        ):
+            obj.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 class BaseApiV1Resource(
     BaseApiV1ResourceReadOnly,
     mixins.CreateModelMixin,
-    mixins.DestroyModelMixin,
+    BaseApiV1ResourceDestroy,
     GenericViewSet
 ):
     """Base API V1 for Resource."""
@@ -187,10 +213,3 @@ class BaseApiV1Resource(
         """Partial update of object."""
         kwargs['partial'] = True
         return self.update(request, *args, **kwargs)
-
-    def destroy(self, request, id=None):
-        """Destroy an object."""
-        instance = self.get_object()
-        delete_permission_resource(instance, request.user)
-        self.perform_destroy(instance)
-        return Response(status=status.HTTP_204_NO_CONTENT)

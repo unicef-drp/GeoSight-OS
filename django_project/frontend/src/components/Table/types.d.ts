@@ -18,14 +18,14 @@ import { GridColumns } from "@mui/x-data-grid";
 
 export interface MainDataGridProps {
   columns: GridColumns<any>;
-  rows: readonly any[];
+  rows?: readonly any[];
 
   [key: string]: any;
 }
 
 export interface DefaultProps {
   sort: any[];
-  search?: any[];
+  search?: string;
 }
 
 export interface ServerTableProps extends MainDataGridProps {

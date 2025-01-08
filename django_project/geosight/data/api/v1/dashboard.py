@@ -19,10 +19,17 @@ from drf_yasg.utils import swagger_auto_schema
 from core.api_utils import common_api_params, ApiTag, ApiParams
 from geosight.data.models.dashboard import Dashboard
 from geosight.data.serializer.dashboard import DashboardBasicSerializer
-from .base import BaseApiV1ResourceReadOnly
+from .base import (
+    BaseApiV1ResourceReadOnly, BaseApiV1ResourceDestroy,
+    BaseApiV1ResourceDelete
+)
 
 
-class DashboardViewSet(BaseApiV1ResourceReadOnly):
+class DashboardViewSet(
+    BaseApiV1ResourceReadOnly,
+    BaseApiV1ResourceDestroy,
+    BaseApiV1ResourceDelete
+):
     """Dashboard view set."""
 
     model_class = Dashboard
@@ -54,3 +61,26 @@ class DashboardViewSet(BaseApiV1ResourceReadOnly):
     def retrieve(self, request, slug=None):
         """Return detailed of dashboard."""
         return super().retrieve(request, slug=slug)
+
+    @swagger_auto_schema(
+        operation_id='dashboard-detail-delete',
+        tags=[ApiTag.DASHBOARD],
+        manual_parameters=[],
+        operation_description='Delete a dashboard.'
+    )
+    def destroy(self, request, slug=None):
+        """Destroy an object."""
+        return super().destroy(request, slug=slug)
+
+    @swagger_auto_schema(
+        operation_id='dashboard-delete',
+        tags=[ApiTag.DASHBOARD],
+        manual_parameters=[],
+        operation_description=(
+                'Delete dashboards. '
+                'Put list of ids as payload with ids=[ids]'
+        )
+    )
+    def delete(self, request, slug=None):
+        """Destroy an object."""
+        return super().delete(request, slug=slug)

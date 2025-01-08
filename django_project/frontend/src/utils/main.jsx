@@ -16,6 +16,7 @@
 'use strict';
 
 import i18n from "i18next";
+import { isArray } from "chart.js/helpers";
 
 /**
  * Deep copy of dictionary
@@ -122,7 +123,10 @@ export function jsonToUrlParams(object) {
   const params = []
   for (const [key, value] of Object.entries(object)) {
     if ([null, undefined].includes(value)) {
-      return
+      continue
+    }
+    if (isArray(value) && !value.length) {
+      continue
     }
     params.push(`${key}=${value}`)
   }

@@ -33,7 +33,7 @@ import { dictDeepCopy, toSingular } from "../../../../utils/main";
 import { DeleteIcon, MagnifyIcon } from "../../../../components/Icons";
 
 import './style.scss';
-import { ConfirmDialog } from "../../../../components/ConfirmDialog";
+import { useConfirmDialog } from "../../../../providers/ConfirmDialog";
 
 /**
  *
@@ -48,16 +48,13 @@ import { ConfirmDialog } from "../../../../components/ConfirmDialog";
 export function COLUMNS_ACTION(
   params, redirectUrl, editUrl = null, detailUrl = null, moreActions = null
 ) {
+  const { openConfirmDialog } = useConfirmDialog();
   detailUrl = detailUrl ? detailUrl : urls.api.detail;
   const actions = []
 
   // Delete action
   const permission = params.row.permission
   if (!permission || permission.delete) {
-
-    // Delete confirm
-    const approveRef = useRef(null);
-
     actions.push(
       <GridActionsCellItem
         data-id={params.id}
@@ -71,31 +68,30 @@ export function COLUMNS_ACTION(
             {
               detailUrl && <>
                 <div className='error'
-                     onClick={() => approveRef?.current?.open()}
+                     onClick={() => {
+                       openConfirmDialog({
+                         header: 'Delete confirmation',
+                         onConfirmed: () => {
+                           const api = detailUrl.replace('/0', `/${params.id}`);
+                           DjangoRequests.delete(api, {}).then(error => {
+                             if (window.location.href.replace(window.location.origin, '') === redirectUrl) {
+                               location.reload();
+                             } else {
+                               window.location = redirectUrl;
+                             }
+                           })
+                         },
+                         onRejected: () => {
+                         },
+                         children: <div>
+                           Are you sure you want to delete
+                           : {params.row.name ? params.row.name : params.row.id}?
+                         </div>,
+                       })
+                     }}
                 >
                   <DeleteIcon/> Delete
                 </div>
-                <ConfirmDialog
-                  header='Delete confirmation'
-                  autoClose={false}
-                  onConfirmed={() => {
-                    const api = detailUrl.replace('/0', `/${params.id}`);
-                    DjangoRequests.delete(api, {}).then(error => {
-                      if (window.location.href.replace(window.location.origin, '') === redirectUrl) {
-                        location.reload();
-                      } else {
-                        window.location = redirectUrl;
-                      }
-                    })
-                  }}
-                  ref={approveRef}
-                >
-                  <div>
-                    Are you sure you want to delete
-                    : {params.row.name ? params.row.name : params.row.id}?
-                  </div>
-                  <br/>
-                </ConfirmDialog>
               </>
             }
           </MoreAction>

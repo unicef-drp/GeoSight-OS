@@ -33,7 +33,7 @@ interface ConfirmDialogProps extends React.HTMLAttributes<HTMLDivElement> {
   autoClose?: boolean;
 
   /** The content to be rendered inside the dialog. */
-  children: ReactNode;
+  children?: ReactNode;
 
   /** Disable the "Confirm" button. */
   disabledConfirm?: boolean;

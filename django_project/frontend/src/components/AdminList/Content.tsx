@@ -17,17 +17,17 @@ import React, {
   Fragment,
   useEffect,
   useImperativeHandle,
+  useMemo,
   useRef,
   useState
 } from "react";
 import { AdminListContentProps } from "./types";
-import { ConfirmDialog } from "../ConfirmDialog";
 import EditIcon from "@mui/icons-material/Edit";
 import { IconTextField } from "../Elements/Input";
 import { MagnifyIcon } from "../Icons";
-import { BaseList } from "../../pages/Admin/Components/List";
-import { AddButton, DeleteButton, ThemeButton } from "../Elements/Button";
-import { DjangoRequests } from "../../Requests";
+import { AddButton, ThemeButton } from "../Elements/Button";
+import { ServerTable } from "../Table";
+import { debounce } from "@mui/material/utils";
 
 /**
  * Admin List that contains content of list
@@ -79,13 +79,14 @@ export const AdminListContent = forwardRef(
    }: AdminListContentProps, ref
   ) => {
     // References
+    const tableRef = useRef(null);
     const deleteDialogRef = useRef(null);
     const listRef = useRef(null);
 
     const [data, setData] = useState([]);
     const [selectionModel, setSelectionModel] = useState([]);
     const [isDeleting, setIsDeleting] = useState(false)
-    const [search, setSearch] = useState(defaults.search);
+    const [search, setSearch] = useState<string>(defaults.search);
 
     const dataName = pageName.replace(/s$/, '');
 
@@ -131,54 +132,6 @@ export const AdminListContent = forwardRef(
     }
     const selectedModelData = data.filter(row => selectionModel.includes(row.id))
 
-    /** Delete button **/
-    const deleteButton = () => {
-      // TODO:
-      //  Make user as interface
-      // @ts-ignore
-      if (user.is_creator && multipleDelete && url.list) {
-        const selectedIds = selectedModelData.filter(row => !row.permission || row.permission.delete).map(row => row.id)
-
-        // Delete dialog
-        const deleteDialog = (
-          // @ts-ignore
-          <ConfirmDialog
-            onConfirmed={() => {
-              setIsDeleting(true)
-              DjangoRequests.delete(
-                url.list,
-                {
-                  'ids': JSON.stringify(selectedIds)
-                }
-              ).then(() => {
-                setIsDeleting(false)
-                listRef.current.refresh()
-              }).catch(error => {
-                setIsDeleting(false)
-              })
-              return false;
-            }}
-            ref={deleteDialogRef}
-          >
-            <div>
-              Are you sure want to
-              delete {selectedIds.length} {dataName.toLowerCase() + (selectedIds.length > 1 ? 's' : '')}?
-            </div>
-          </ConfirmDialog>
-        )
-        return <Fragment>
-          <DeleteButton
-            disabled={isDeleting || !selectedIds.length}
-            variant="Error Reverse"
-            text={"Delete"}
-            onClick={() => {
-              deleteDialogRef?.current?.open()
-            }}
-          />
-          {deleteDialog}
-        </Fragment>
-      }
-    }
     /** Create button **/
     const createButton = () => {
       // @ts-ignore
@@ -207,6 +160,34 @@ export const AdminListContent = forwardRef(
         </a>
       }
     }
+    /** Search value changed, debouce **/
+    const searchValueUpdate = useMemo(
+      () =>
+        debounce(
+          (newValue) => {
+            console.log('searchValueUpdate')
+            setSelectionModel([])
+            tableRef?.current?.refresh()
+          },
+          400
+        ),
+      []
+    )
+
+    /** Search name value changed **/
+    useEffect(() => {
+      searchValueUpdate(search)
+    }, [search]);
+
+    /*** Parameters Changed */
+    const getParameters = (parameters: any) => {
+      if (search) {
+        parameters['name__icontains'] = search
+      } else {
+        delete parameters['name__icontains']
+      }
+      return parameters
+    }
 
     /** Render **/
     return (
@@ -223,7 +204,7 @@ export const AdminListContent = forwardRef(
                   placeholder={"Search " + pageName}
                   defaultValue={search ? search : ""}
                   iconEnd={<MagnifyIcon/>}
-                  onChange={(evt: any) => {
+                  onChange={(evt: React.ChangeEvent<HTMLInputElement>) => {
                     setSearch(evt.target.value.toLowerCase())
                   }}
                 />
@@ -237,42 +218,28 @@ export const AdminListContent = forwardRef(
         <div className='AdminContentMiddle'>
           {middleContent}
         </div>
-        <BaseList
-          // @ts-ignore
-          columns={columns}
-          pageName={pageName}
-          listUrl={url.list}
-          initData={initData}
-          setInitData={(newData: any[]) => {
-            if (newData) {
-              setData(newData)
+        <div className='AdminList'>
+          <ServerTable
+            url={url.list}
+            dataName={dataName}
+            columns={columns}
+            selectionModel={selectionModel}
+            setSelectionModel={setSelectionModel}
+            getParameters={getParameters}
+            checkboxSelection={true}
+            rightHeader={
+              <>{batchEditButton()}</>
             }
-          }}
-          sortingDefault={defaults.sort}
-          searchDefault={defaults.search}
-          search={search}
-          selectable={selectableFunction}
-          ref={listRef}
-          // @ts-ignore
-          selectionModel={selectionModel}
-          setSelectionModel={
-            selectionChanged || multipleDelete ? (
-              (selectedData: any) => {
-                setSelectionModel(selectedData)
-                if (selectionChanged) {
-                  selectionChanged(selectedData)
-                }
+            defaults={defaults}
+            enable={
+              {
+                delete: true,
+                select: true
               }
-            ) : null
-          }
-          header={
-            <Fragment>
-              {batchEditButton()}
-              {deleteButton()}
-            </Fragment>
-          }
-          {...props}
-        />
+            }
+            ref={tableRef}
+          />
+        </div>
       </div>
     )
   }

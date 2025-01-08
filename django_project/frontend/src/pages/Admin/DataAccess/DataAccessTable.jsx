@@ -36,9 +36,9 @@ import { EditButton } from "../../../components/Elements/Button";
 import { UpdatePermissionModal } from "./UpdatePermissionModal";
 import { DjangoRequests } from "../../../Requests";
 import { ServerTable } from "../../../components/Table";
+import { useConfirmDialog } from "../../../providers/ConfirmDialog";
 
 import './style.scss';
-import { ConfirmDialog } from "../../../components/ConfirmDialog";
 
 /**
  * Render public data access table
@@ -53,7 +53,7 @@ export const DataAccessTable = forwardRef(
      dataName = 'Public'
    }, ref
   ) => {
-    const deleteDialogRef = useRef(null);
+    const { openConfirmDialog } = useConfirmDialog();
     const tableRef = useRef(null);
     const [deletingIds, setDeletingIds] = useState([]);
 
@@ -198,7 +198,29 @@ export const DataAccessTable = forwardRef(
           <div className='error' onClick={
             () => {
               setDeletingIds([params.id]);
-              deleteDialogRef?.current?.open();
+              openConfirmDialog({
+                header: 'Delete confirmation',
+                onConfirmed: () => {
+                  DjangoRequests.delete(
+                    urlData,
+                    { ids: deletingIds }
+                  ).then(response => {
+                    tableRef?.current?.refresh();
+                    setSelectionModel(selectionModel.filter(id => !deletingIds.includes(id)))
+                    setDeletingIds([])
+                  }).catch(error => {
+                      notify('Failed to update data', NotificationStatus.ERROR);
+                    }
+                  )
+                },
+                onRejected: () => {
+                },
+                children: <div>
+                  Are you sure want to
+                  delete {deletingIds.length ? deletingIds.length : 1}&nbsp;
+                  {dataName.toLowerCase() + (deletingIds.length > 1 ? 's' : '')}?
+                </div>,
+              })
             }
           }>
             <DeleteIcon/> Delete
@@ -289,28 +311,6 @@ export const DataAccessTable = forwardRef(
         }
         ref={tableRef}
       />
-      <ConfirmDialog
-        onConfirmed={() => {
-          DjangoRequests.delete(
-            urlData,
-            { ids: deletingIds }
-          ).then(response => {
-            tableRef?.current?.refresh();
-            setSelectionModel(selectionModel.filter(id => !deletingIds.includes(id)))
-            setDeletingIds([])
-          }).catch(error => {
-              notify('Failed to update data', NotificationStatus.ERROR);
-            }
-          )
-        }}
-        ref={deleteDialogRef}
-      >
-        <div>
-          Are you sure want to
-          delete {deletingIds.length ? deletingIds.length : 1}&nbsp;
-          {dataName.toLowerCase() + (deletingIds.length > 1 ? 's' : '')}?
-        </div>
-      </ConfirmDialog>
       <Notification ref={notificationRef}/>
     </div>
   }

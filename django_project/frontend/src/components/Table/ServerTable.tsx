@@ -27,7 +27,7 @@ import { DeleteButton, ThemeButton } from "../Elements/Button";
 import { MainDataGrid } from "./index";
 import { DjangoRequests } from "../../Requests";
 import { Notification, NotificationStatus } from "../Notification";
-import { ConfirmDialog } from "../ConfirmDialog";
+import { useConfirmDialog } from "../../providers/ConfirmDialog";
 
 import './ServerTable.scss';
 
@@ -54,12 +54,13 @@ const ServerTable = forwardRef(
      ...props
    }: ServerTableProps, ref
   ) => {
+    const { openConfirmDialog } = useConfirmDialog();
+
     // Notification
     const notificationRef = useRef(null);
     const notify = (newMessage: string, newSeverity: string = NotificationStatus.INFO) => {
       notificationRef?.current?.notify(newMessage, newSeverity)
     }
-    const deleteDialogRef = useRef(null);
 
     const prev = useRef<string | null>(null);
     const pageSize = 25;
@@ -112,8 +113,6 @@ const ServerTable = forwardRef(
 
     /*** Load data */
     const loadData = (force: boolean) => {
-      setData(null)
-      setError(null)
       let _parameters = dictDeepCopy(parameters)
       _parameters.page += 1
       _parameters = jsonToUrlParams(_parameters)
@@ -123,6 +122,8 @@ const ServerTable = forwardRef(
       if (!force && _url === prev.current) {
         return
       }
+      setData(null)
+      setError(null)
       prev.current = _url
       DjangoRequests.get(_url).then(data => {
         if (prev.current === _url) {
@@ -193,7 +194,37 @@ const ServerTable = forwardRef(
                     variant="Error Reverse"
                     text={"Delete"}
                     onClick={() => {
-                      deleteDialogRef?.current?.open()
+                      openConfirmDialog({
+                        header: 'Delete confirmation',
+                        onConfirmed: () => {
+                          const deletingIds = selectionModel.map(model => {
+                            if (typeof model === 'object') {
+                              return model.id
+                            } else {
+                              return model
+                            }
+                          })
+                          DjangoRequests.delete(
+                            url,
+                            {
+                              ids: deletingIds
+                            }
+                          ).then(response => {
+                            loadData(true)
+                            setSelectionModel([])
+                          }).catch(error => {
+                              notify('Failed to delete data', NotificationStatus.ERROR);
+                            }
+                          )
+                        },
+                        onRejected: () => {
+                        },
+                        children: <div>
+                          Are you sure want to
+                          delete {selectionModel.length}&nbsp;
+                          {dataName.toLowerCase() + (selectionModel.length > 1 ? 's' : '')} ?
+                        </div>,
+                      })
                     }}
                   /> : null
                 }
@@ -256,38 +287,6 @@ const ServerTable = forwardRef(
             {...props}
           />
         </div>
-
-        {/* DELETE IN BATCH */}
-        <ConfirmDialog
-          onConfirmed={() => {
-            const deletingIds = selectionModel.map(model => {
-              if (typeof model === 'object') {
-                return model.id
-              } else {
-                return model
-              }
-            })
-            console.log(deletingIds)
-            DjangoRequests.delete(
-              url,
-              {
-                ids: deletingIds
-              }
-            ).then(response => {
-              loadData(true)
-              setSelectionModel([])
-            }).catch(error => {
-                notify('Failed to update data', NotificationStatus.ERROR);
-              }
-            )
-          }}
-          ref={deleteDialogRef}
-        >
-          <div>
-            Are you sure want to delete {selectionModel.length}&nbsp;
-            {dataName.toLowerCase() + (selectionModel.length > 1 ? 's' : '')} ?
-          </div>
-        </ConfirmDialog>
         <Notification ref={notificationRef}/>
       </Fragment>
     )

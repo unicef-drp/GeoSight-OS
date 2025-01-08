@@ -25,9 +25,9 @@ import PermissionModal from "../../Permission";
 import { VisibilityIcon } from "../../../../components/Icons";
 import { ConfirmDialog } from "../../../../components/ConfirmDialog";
 import AdminList from "../../../../components/AdminList";
+import { DjangoRequests } from "../../../../Requests";
 
 import './style.scss';
-import { DjangoRequests } from "../../../../Requests";
 
 export function resourceActions(params) {
   return COLUMNS_ACTION(params, urls.admin.dashboardList)
@@ -35,7 +35,6 @@ export function resourceActions(params) {
 
 export function resourceActionsList(params) {
   const approveRef = useRef(null);
-  const detailUrl = urls.api.detail;
   const permission = params.row.permission
   return COLUMNS_ACTION(
     params, urls.admin.dashboardList, null, null,
@@ -52,7 +51,7 @@ export function resourceActionsList(params) {
         header='Duplication confirmation'
         autoClose={false}
         onConfirmed={() => {
-          const api = detailUrl.replace('/0', `/${params.id}`) + 'duplicate';
+          const api = `/api/dashboard/${params.id}/duplicate`;
           DjangoRequests.post(api, {}).then(response => {
             location.reload();
           })
@@ -141,6 +140,11 @@ export default function DashboardList() {
     columns={columns}
     pageName={pageName}
     multipleDelete={true}
+    defaults={{
+      sort: [
+        { field: 'name', sort: 'asc' }
+      ]
+    }}
   />
 }
 
