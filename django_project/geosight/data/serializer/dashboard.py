@@ -20,8 +20,8 @@ from django.shortcuts import reverse
 from rest_framework import serializers
 
 from core.models.preferences import SitePreferences
+from core.serializer.dynamic_serializer import DynamicModelSerializer
 from geosight.data.models.dashboard import Dashboard, DashboardIndicator
-from geosight.data.serializer.basemap_layer import BasemapLayerSerializer
 from geosight.data.serializer.context_layer import ContextLayerSerializer
 from geosight.data.serializer.dashboard_indicator_layer import (
     DashboardIndicatorLayerSerializer
@@ -285,7 +285,7 @@ class DashboardSerializer(serializers.ModelSerializer):
         )
 
 
-class DashboardBasicSerializer(serializers.ModelSerializer):
+class DashboardBasicSerializer(DynamicModelSerializer):
     """Serializer for Dashboard."""
 
     id = serializers.SerializerMethodField()
