@@ -14,21 +14,46 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '29/11/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from rest_framework import viewsets
+from drf_yasg.utils import swagger_auto_schema
 
+from core.api_utils import common_api_params, ApiTag, ApiParams
 from geosight.data.models.indicator import Indicator
 from geosight.data.serializer.indicator import (
     IndicatorBasicListSerializer
 )
-from .base import BaseApiV1
+from .base import BaseApiV1ResourceReadOnly
 
 
-class IndicatorViewSet(BaseApiV1, viewsets.ReadOnlyModelViewSet):
+class IndicatorViewSet(BaseApiV1ResourceReadOnly):
     """Indicator view set."""
 
+    model_class = Indicator
     serializer_class = IndicatorBasicListSerializer
 
-    @property
-    def queryset(self):
-        """Return the queryset."""
-        return Indicator.permissions.list(self.request.user)
+    @swagger_auto_schema(
+        operation_id='indicator-list',
+        tags=[ApiTag.INDICATOR],
+        manual_parameters=[
+            *common_api_params,
+            ApiParams.NAME_CONTAINS,
+            ApiParams.DESCRIPTION_CONTAINS,
+            ApiParams.CATEGORIES,
+            ApiParams.TYPES,
+            ApiParams.PROJECT_SLUGS,
+            ApiParams.PROJECT_IDS
+        ],
+        operation_description='Return list of accessed indicator for the user.'
+    )
+    def list(self, request, *args, **kwargs):
+        """List of indicator."""
+        return super().list(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_id='indicator-detail',
+        tags=[ApiTag.INDICATOR],
+        manual_parameters=[],
+        operation_description='Return detailed of indicator.'
+    )
+    def retrieve(self, request, id=None):
+        """Return detailed of indicator."""
+        return super().retrieve(request, id=id)
