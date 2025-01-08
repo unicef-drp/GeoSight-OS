@@ -15,11 +15,10 @@ __date__ = '29/11/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.forms.models import model_to_dict
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework.authentication import (
     SessionAuthentication, BasicAuthentication
 )
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import mixins, GenericViewSet
 
@@ -53,20 +52,11 @@ class BaseApiV1(FilteredAPI):
         )
 
 
-class BaseApiV1Resource(
-    BaseApiV1,
-    mixins.ListModelMixin,
-    mixins.CreateModelMixin,
-    mixins.RetrieveModelMixin,
-    mixins.DestroyModelMixin,
-    GenericViewSet
-):
-    """Base API V1 for Resource."""
+class BaseApiV1ResourceReadOnly(BaseApiV1, viewsets.ReadOnlyModelViewSet):
+    """Indicator view set."""
 
     model_class = None
-    form_class = None
     lookup_field = 'id'
-    extra_exclude_fields = []
 
     def get_permissions(self):
         """Get the permissions based on the action."""
@@ -75,7 +65,7 @@ class BaseApiV1Resource(
         elif self.action in ['update', 'partial_update']:
             permission_classes = [RoleContributorAuthenticationPermission]
         else:
-            permission_classes = [IsAuthenticated]
+            permission_classes = []
         return [permission() for permission in permission_classes]
 
     def get_serializer_context(self):
@@ -122,6 +112,20 @@ class BaseApiV1Resource(
         read_permission_resource(instance, request.user)
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
+
+
+class BaseApiV1Resource(
+    BaseApiV1ResourceReadOnly,
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+    GenericViewSet
+):
+    """Base API V1 for Resource."""
+
+    model_class = None
+    form_class = None
+    lookup_field = 'id'
+    extra_exclude_fields = []
 
     def create(self, request, *args, **kwargs):
         """Update an object."""

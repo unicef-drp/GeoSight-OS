@@ -21,6 +21,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_nested.routers import NestedSimpleRouter
 
 from geosight.data.api.v1.basemap import BasemapViewSet
+from geosight.data.api.v1.dashboard import DashboardViewSet
 from geosight.data.api.v1.data_browser import (
     DataBrowserApiList, DataBrowserApiListIds,
     DatasetApiList, DatasetApiListIds, DatasetApiQuickData
@@ -31,6 +32,7 @@ from geosight.data.api.v1.related_table_data import RelatedTableDataViewSet
 
 router = DefaultRouter()
 router.register(r'basemaps', BasemapViewSet, basename='basemaps')
+router.register(r'dashboards', DashboardViewSet, basename='dashboards')
 router.register(r'indicators', IndicatorViewSet, basename='indicators')
 
 router.register(

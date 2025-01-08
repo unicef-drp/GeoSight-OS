@@ -100,7 +100,7 @@ class BasemapPermissionTest(BasePermissionTest.TestCase):
     def test_list_api_by_permission(self):
         """Test List API."""
         url = reverse('basemaps-list')
-        self.assertRequestGetView(url, 403)
+        self.assertRequestGetView(url, 200)
 
         response = self.assertRequestGetView(url, 200, user=self.admin)
         self.assertEqual(len(response.json()['results']), 3)
@@ -231,7 +231,7 @@ class BasemapPermissionTest(BasePermissionTest.TestCase):
     def test_detail_api(self):
         """Test GET DETAIL API."""
         url = reverse('basemaps-detail', args=[0])
-        self.assertRequestGetView(url, 403)
+        self.assertRequestGetView(url, 404)
         self.assertRequestGetView(url, 404, user=self.viewer)
         self.assertRequestGetView(url, 404, user=self.creator)
         self.assertRequestGetView(url, 404, user=self.admin)

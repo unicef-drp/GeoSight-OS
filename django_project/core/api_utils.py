@@ -37,9 +37,11 @@ common_api_params = [
 class ApiTag:
     """Return API Tags."""
 
-    BASEMAPS = 'Basemaps'
-    RELATED_TABLES = 'Related tables'
-    RELATED_TABLES_DATA = 'Related tables data'
+    DASHBOARD = 'Dashboard'
+    BASEMAP = 'Basemap'
+    INDICATOR = 'Indicator'
+    RELATED_TABLE = 'Related table'
+    RELATED_TABLE_DATA = 'Related table data'
     DATA_BROWSER = 'Data Browser'
 
 
