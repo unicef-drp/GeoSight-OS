@@ -24,6 +24,7 @@ import { render } from '../../app';
 
 import { SearchInput } from "../../components/Input/IconInput";
 import { ThemeButton } from "../../components/Elements/Button";
+import { ProjectList } from "../../components/Home";
 import {
   MultipleSelectWithSearch,
   SelectWithSearch
@@ -60,7 +61,7 @@ function ProjectGrid({ projects }) {
                   __html: project.description
                 }}/>
               <div className='ProjectGridTags'>
-                {project.category ? <div>{project.category} | {project.created_at} | {project.modified_at} </div> : null}
+                {project.category ? <div>{project.category}</div> : null}
               </div>
             </a>
           </div>
@@ -74,131 +75,11 @@ function ProjectGrid({ projects }) {
  * Home Page App
  */
 export default function Home() {
-  // const [searchSharedProject, setSearchSharedProject] = useState('');
-    const [projectsState, setProjectsState] = useState({
-      ownProjects: {
-        search: '',
-        selectedCategories: [],
-        selectedSortBy: 'Name',
-        selectedSortByAsc: true,
-        categories: [],
-      },
-      sharedProjects: {
-        search: '',
-        selectedCategories: [],
-        selectedSortBy: 'Name',
-        selectedSortByAsc: true,
-        categories: []
-      },
-    });
-    console.log(projectsState.ownProjects)
-
-  // const [searchProject, setSearchProject] = useState('');
-  // const [selectedCategories, setSelectedCategories] = useState([]);
-  // const [selectedSortBy, setSelectedSortBy] = useState('Name');
-  // const [selectedSortByAsc, setSelectedSortByAsc] = useState(true);
-
-  const [projects, setProjects] = useState(null);
+  const [projects, setProjects] = useState({
+    own: [],
+    shared: []
+  });
   const [showBanner, setShowBanner] = useState(true);
-
-    // Update state function
-  const updateProjectState = (type, key, value) => {
-    console.log(`${type} | ${key} | ${value}`);
-    setProjectsState((prevState) => ({
-      ...prevState,
-      [type]: {
-        ...prevState[type],
-        [key]: value,
-      },
-    }));
-  };
-
-
-  // Fetch data
-  useEffect(() => {
-    axios.get('/api/dashboard/list').then(response => {
-      // const categories = response.data.filter(project => project.category).map(project => project.category)
-      const own = response.data.filter(row => row.creator === user.id);
-      const shared = response.data.filter(row => row.creator !== user.id);
-      // setSelectedCategories([...new Set(categories)])
-      const ownCategories = [...new Set(own.filter(project => project.category).map(project => project.category))];
-      const sharedCategories = [...new Set(shared.filter(project => project.category).map(project => project.category))];
-      updateProjectState(
-        'ownProjects',
-        'selectedCategories',
-        ownCategories
-      )
-      updateProjectState(
-        'sharedProjects',
-        'selectedCategories',
-        sharedCategories
-      )
-      setProjects({
-        own: own,
-        shared: shared
-      })
-    }).catch(error => {
-    })
-  }, [])
-
-  // Create category
-  let ownCategories = [];
-  let sharedCategories = [];
-  if (projects) {
-    ownCategories = [...new Set(projects.own.filter(project => project.category).map(project => project.category))];
-    sharedCategories = [...new Set(projects.shared.filter(project => project.category).map(project => project.category))];
-  }
-
-  // We do filter and sort
-  const filterAndSortProjects = (projectType, projectsList) => {
-    if (!projectsList) return null;
-
-    const selectedCategories = projectsState[projectType].selectedCategories;
-    const selectedSortBy = projectsState[projectType].selectedSortBy;
-    const selectedSortByAsc = projectsState[projectType].selectedSortByAsc;
-
-    // Filter projects
-    let filteredProjects = projectsList.filter(
-      (project) =>
-        (selectedCategories.length === 0 && !project.category) ||
-        selectedCategories.includes(project.category)
-    );
-
-    // Sort projects
-    filteredProjects.sort((a, b) => {
-      let sorted = 0;
-      switch (selectedSortBy) {
-        case 'Name':
-          sorted = a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1;
-          break;
-        case 'Date created':
-          sorted = a.created_at < b.created_at ? -1 : 1;
-          break;
-        case 'Date modified':
-          sorted = a.modified_at < b.modified_at ? -1 : 1;
-          break;
-        default:
-          break;
-      }
-      return selectedSortByAsc ? sorted : -sorted;
-    });
-
-    return filteredProjects;
-  };
-
-  // Usage for sharedProjects and ownProjects
-  let sharedProjects = projects?.shared;
-  let ownProjects = projects?.own;
-
-  if (sharedProjects) {
-    sharedProjects = filterAndSortProjects('sharedProjects', sharedProjects);
-  }
-
-  if (ownProjects) {
-    ownProjects = filterAndSortProjects('ownProjects', ownProjects);
-    console.log(ownProjects);
-  }
-
 
   return (
     <BasicPage className='Home'>
@@ -237,94 +118,33 @@ export default function Home() {
               </div>
             </div>
           ) : projects?.own?.length ?
-              <Fragment>
-                <div className='PageContent-Title'>
-                  Your projects <div className='Separator'/>
-                </div>
-                <div style={{flexGrow: 1}}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} md={6} lg={6} xl={6}>
-                      <SearchInput
-                          className='SearchInput'
-                          placeholder='Search projects' value={projectsState.ownProjects.search}
-                          onChange={(value) => updateProjectState('ownProjects', 'search', value)}
-                      />
-                    </Grid>
-                    <Grid item xs={12} md={3} lg={3} xl={2}>
-                      <MultipleSelectWithSearch
-                          value={projectsState.ownProjects.selectedCategories}
-                          onChangeFn={(value) => {
-                            updateProjectState('ownProjects', 'selectedCategories', value)
-                          }}
-                          options={ownCategories}
-                          className='CategorySelector'
-                      />
-                    </Grid>
-                    <Grid item xs={12} md={3} lg={3} xl={2}>
-                      <SelectWithSearch
-                        value={projectsState.ownProjects.selectedSortBy}
-                        onChangeFn={(value) => {
-                          updateProjectState('ownProjects', 'selectedSortBy', value)
-                        }}
-                        options={['Name', 'Date created', 'Date modified']}
-                        className='SortSelector'
-                        parentClassName='SortSelectorInput'
-                        iconStart={
-                          <div
-                            onClick={_ => updateProjectState(
-                                'ownProjects',
-                                'selectedSortByAsc',
-                                !projectsState.ownProjects.selectedSortByAsc
-                            )
-                          }>
-                            {projectsState.ownProjects.selectedSortByAsc ? <SortAscIcon/> : <SortDescIcon/>}
-                          </div>
-                        }
-                      />
-                    </Grid>
-                  </Grid>
-                </div>
-                <ProjectGrid
-                    projects={
-                      ownProjects.filter(
-                          project => !projectsState.ownProjects.search ||
-                              project.name.includes(projectsState.ownProjects.search) ||
-                              project.description?.includes(projectsState.ownProjects.search)
-                      )
-                    }
-                />
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-              </Fragment> : null
+            <ProjectList></ProjectList> : null
         }
         {/*{*/}
         {/*  !projects?.shared?.length ? null : (*/}
-        {/*      <Fragment>*/}
-        {/*        <div className='PageContent-Title'>*/}
-        {/*          Other shared projects*/}
+        {/*    <Fragment>*/}
+        {/*      <div className='PageContent-Title'>*/}
+        {/*        Other shared projects*/}
+        {/*      </div>*/}
+        {/*      <div className='PageContent-Title'>*/}
+        {/*        <div style={{ flexGrow: 1 }}>*/}
+        {/*          <MultipleSelectWithSearch*/}
+        {/*            value={selectedCategories}*/}
+        {/*            onChangeFn={(value) => {*/}
+        {/*              setSelectedCategories(value)*/}
+        {/*            }}*/}
+        {/*            options={categories}*/}
+        {/*            className='CategorySelector'*/}
+        {/*          />*/}
         {/*        </div>*/}
-        {/*        <div className='PageContent-Title'>*/}
-        {/*          <div style={{flexGrow: 1}}>*/}
-        {/*            <MultipleSelectWithSearch*/}
-        {/*                value={selectedCategories}*/}
-        {/*                onChangeFn={(value) => {*/}
-        {/*                  setSelectedCategories(value)*/}
-        {/*                }}*/}
-        {/*                options={categories}*/}
-        {/*                className='CategorySelector'*/}
-        {/*            />*/}
-        {/*          </div>*/}
-        {/*          <SelectWithSearch*/}
-        {/*              value={selectedSortBy}*/}
-        {/*              onChangeFn={(value) => {*/}
-        {/*                setSelectedSortBy(value)*/}
-        {/*              }}*/}
-        {/*              options={['Name', 'Date created', 'Date modified']}*/}
-        {/*              className='SortSelector'*/}
-        {/*              parentClassName='SortSelectorInput'*/}
+        {/*        <SelectWithSearch*/}
+        {/*          value={selectedSortBy}*/}
+        {/*          onChangeFn={(value) => {*/}
+        {/*            setSelectedSortBy(value)*/}
+        {/*          }}*/}
+        {/*          options={['Name', 'Date created', 'Date modified']}*/}
+        {/*          className='SortSelector'*/}
+        {/*          parentClassName='SortSelectorInput'*/}
         {/*          iconStart={*/}
         {/*            <div*/}
         {/*              onClick={_ => setSelectedSortByAsc(_ => !_)}>*/}
