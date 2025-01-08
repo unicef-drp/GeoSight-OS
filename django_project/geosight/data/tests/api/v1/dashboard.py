@@ -189,3 +189,16 @@ class DashboardPermissionTest(BasePermissionTest.TestCase):
         self.assertEqual(
             response.json()['created_by'], self.resource_3.creator.username
         )
+
+    def test_delete_api(self):
+        """Test DELETE API."""
+        slug = self.resource_1.slug
+        self.check_delete_resource_with_different_users(
+            slug, 'dashboards-detail')
+        self.assertIsNone(Dashboard.objects.filter(slug=slug).first())
+
+        slug = self.resource_3.slug
+        self.check_delete_resource_with_different_users(
+            slug, 'dashboards-detail'
+        )
+        self.assertIsNone(Dashboard.objects.filter(slug=slug).first())

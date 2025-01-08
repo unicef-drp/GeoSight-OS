@@ -41,7 +41,6 @@ const ServerTable = forwardRef(
      selectionModel,
      setSelectionModel,
      getParameters = null,
-     selectable = true,
      defaults = {
        sort: [],
        search: null
@@ -203,7 +202,7 @@ const ServerTable = forwardRef(
                     onClick={() => {
                       openConfirmDialog({
                         header: 'Delete confirmation',
-                        onConfirmed: () => {
+                        onConfirmed: async () => {
                           const deletingIds = selectionModel.map(model => {
                             if (typeof model === 'object') {
                               return model.id
@@ -211,7 +210,7 @@ const ServerTable = forwardRef(
                               return model
                             }
                           })
-                          DjangoRequests.delete(
+                          await DjangoRequests.delete(
                             url,
                             {
                               ids: deletingIds

@@ -84,7 +84,6 @@ export const AdminListContent = forwardRef(
 
     const [data, setData] = useState([]);
     const [selectionModel, setSelectionModel] = useState([]);
-    const [isDeleting, setIsDeleting] = useState(false)
     const [search, setSearch] = useState<string>(defaults.search);
 
     const dataName = pageName.replace(/s$/, '');
@@ -122,11 +121,11 @@ export const AdminListContent = forwardRef(
     }, [initData])
 
     // Create selectable functions
-    let selectableFunction: any = !isDeleting;
-    if (!isDeleting && (multipleDelete || url.batch)) {
+    let selectableFunction: any = false;
+    if ((multipleDelete || url.batch)) {
       selectableFunction = (params: any) => {
         const { permission } = params.row
-        return !permission || permission.edit || permission.delete
+        return (url.batch && permission?.edit) || (multipleDelete && permission?.delete)
       }
     }
     const selectedModelData = data.filter(row => selectionModel.includes(row.id))
@@ -240,6 +239,7 @@ export const AdminListContent = forwardRef(
                 select: true
               }
             }
+            isRowSelectable={selectableFunction}
             ref={tableRef}
           />
         </div>
