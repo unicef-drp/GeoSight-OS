@@ -35,6 +35,11 @@ class FilteredAPI(object):
     def filter_query(self, request, query, ignores: list, fields: list = None):
         """Return filter query."""
         for param, value in request.GET.items():
+            is_equal = True
+            if value[0] == '!':
+                value = value[1:]
+                is_equal = False
+
             field = param.split('__')[0]
             if field in ignores:
                 continue
@@ -83,9 +88,11 @@ class FilteredAPI(object):
                 if 'NaN' in value or 'None' in value:
                     param = f'{field}__isnull'
                     value = True
+
+                if is_equal:
                     query = query.filter(**{param: value})
                 else:
-                    query = query.filter(**{param: value})
+                    query = query.exclude(**{param: value})
             except FieldError:
                 raise SuspiciousOperation(f'Can not query param {param}')
             except ValidationError as e:
