@@ -9,8 +9,8 @@
  *     (at your option) any later version.
  *
  * __author__ = 'irwan@kartoza.com'
- * __date__ = '13/06/2023'
- * __copyright__ = ('Copyright 2023, Unicef')
+ * __date__ = '08/01/2025'
+ * __copyright__ = ('Copyright 2025, Unicef')
  */
 
 import React, {
@@ -21,11 +21,13 @@ import React, {
   useRef,
   useState
 } from 'react';
-import { ServerTableProps } from "./types";
+import { ServerTableProps, } from "./types";
 import { dictDeepCopy, jsonToUrlParams } from "../../utils/main";
-import { ThemeButton } from "../Elements/Button";
+import { DeleteButton, ThemeButton } from "../Elements/Button";
 import { MainDataGrid } from "./index";
 import { DjangoRequests } from "../../Requests";
+import { Notification, NotificationStatus } from "../Notification";
+import { ConfirmDialog } from "../ConfirmDialog";
 
 import './ServerTable.scss';
 
@@ -33,16 +35,38 @@ import './ServerTable.scss';
 const ServerTable = forwardRef(
   ({
      url,
+     dataName,
      columns,
      selectionModel,
      setSelectionModel,
      getParameters = null,
      selectable = true,
-     header = null,
-     defaultSortModel = [],
+     defaults = {
+       sort: [],
+       search: null
+     },
+     leftHeader = null,
+     rightHeader = null,
+     enable = {
+       select: true,
+       delete: true
+     },
      ...props
    }: ServerTableProps, ref
   ) => {
+    // Create actions for delete
+    const updatedColumns = columns
+    if (enable.delete) {
+      console.log(updatedColumns)
+    }
+
+    // Notification
+    const notificationRef = useRef(null);
+    const notify = (newMessage: string, newSeverity: string = NotificationStatus.INFO) => {
+      notificationRef?.current?.notify(newMessage, newSeverity)
+    }
+    const deleteDialogRef = useRef(null);
+
     const prev = useRef<string | null>(null);
     const pageSize = 25;
 
@@ -62,11 +86,11 @@ const ServerTable = forwardRef(
     const [parameters, setParameters] = useState({
       page: 0,
       page_size: pageSize,
-      sort: getSort(defaultSortModel)
+      sort: getSort(defaults.sort)
     })
 
     // Sort model
-    const [sortModel, setSortModel] = useState<any[]>(defaultSortModel);
+    const [sortModel, setSortModel] = useState<any[]>(defaults.sort);
 
     // Data states
     const [data, setData] = useState<any[]>(null)
@@ -164,14 +188,27 @@ const ServerTable = forwardRef(
                       Clear selection.
                     </ThemeButton> : null
                 }
+                {leftHeader}
               </div>
               <div className='Separator'/>
-              <div className='AdminListHeader-Right'>{header}</div>
+              <div className='AdminListHeader-Right'>
+                {rightHeader}
+                {
+                  enable.delete ? <DeleteButton
+                    disabled={!selectionModel.length}
+                    variant="Error Reverse"
+                    text={"Delete"}
+                    onClick={() => {
+                      deleteDialogRef?.current?.open()
+                    }}
+                  /> : null
+                }
+              </div>
             </div>
         }
         <div className='AdminTable'>
           <MainDataGrid
-            columns={columns}
+            columns={updatedColumns}
             rows={data ? data : []}
 
             rowCount={dataCount}
@@ -225,6 +262,39 @@ const ServerTable = forwardRef(
             {...props}
           />
         </div>
+
+        {/* DELETE IN BATCH */}
+        <ConfirmDialog
+          onConfirmed={() => {
+            const deletingIds = selectionModel.map(model => {
+              if (typeof model === 'object') {
+                return model.id
+              } else {
+                return model
+              }
+            })
+            console.log(deletingIds)
+            DjangoRequests.delete(
+              url,
+              {
+                ids: deletingIds
+              }
+            ).then(response => {
+              loadData(true)
+              setSelectionModel([])
+            }).catch(error => {
+                notify('Failed to update data', NotificationStatus.ERROR);
+              }
+            )
+          }}
+          ref={deleteDialogRef}
+        >
+          <div>
+            Are you sure want to delete {selectionModel.length}&nbsp;
+            {dataName.toLowerCase() + (selectionModel.length > 1 ? 's' : '')} ?
+          </div>
+        </ConfirmDialog>
+        <Notification ref={notificationRef}/>
       </Fragment>
     )
   }

@@ -23,12 +23,23 @@ export interface MainDataGridProps {
   [key: string]: any;
 }
 
+export interface DefaultProps {
+  sort: any[];
+  search?: any[];
+}
+
 export interface ServerTableProps extends MainDataGridProps {
   url: string;
+  dataName: string;
   selectionModel: any[];
   setSelectionModel: (data: any[]) => void;
   updateParameters: (parameter: {}) => {};
-  selectable: boolean;
-  header?: ReactNode;
-  defaultSortModel?: any[];
+
+  defaults?: DefaultProps;
+  rightHeader?: ReactNode;
+  leftHeader?: ReactNode;
+  enable?: {
+    select: boolean;
+    delete: boolean
+  }
 }

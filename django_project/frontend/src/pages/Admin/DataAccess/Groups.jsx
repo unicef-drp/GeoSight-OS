@@ -73,7 +73,7 @@ export const GroupsDataAccess = forwardRef(
       COLUMNS={COLUMNS}
       ableToDelete={true}
       PERMISSIONS={PERMISSIONS}
-      dataName='group'
+      dataName='group data access'
       ref={tableRef}
     />
   }

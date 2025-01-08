@@ -9,10 +9,9 @@
  *     (at your option) any later version.
  *
  * __author__ = 'irwan@kartoza.com'
- * __date__ = '13/06/2023'
+ * __date__ = '07/01/2025'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
-
 import React, {
   forwardRef,
   Fragment,
@@ -20,23 +19,15 @@ import React, {
   useImperativeHandle,
   useRef,
   useState
-} from 'react';
-import $ from "jquery";
-
-import {
-  AddButton,
-  DeleteButton,
-  ThemeButton
-} from '../../components/Elements/Button'
-import { AdminPage } from './index';
-import { BaseList } from './Components/List'
+} from "react";
+import { AdminListContentProps } from "./types";
+import { ConfirmDialog } from "../ConfirmDialog";
 import EditIcon from "@mui/icons-material/Edit";
-import { IconTextField } from "../../components/Elements/Input";
-import { MagnifyIcon } from "../../components/Icons";
-import { ConfirmDialog } from "../../components/ConfirmDialog";
-
-import './style.scss';
-
+import { IconTextField } from "../Elements/Input";
+import { MagnifyIcon } from "../Icons";
+import { BaseList } from "../../pages/Admin/Components/List";
+import { AddButton, DeleteButton, ThemeButton } from "../Elements/Button";
+import { DjangoRequests } from "../../Requests";
 
 /**
  * Admin List that contains content of list
@@ -46,36 +37,55 @@ import './style.scss';
  * @param {function} selectionChanged Function when selection changed.
  * @param {list} initData If there is init data.
  * @param {React.Component} rightHeader Right header.
- * @param {Array} sortingDefault Default for sorting.
- * @param {str} searchDefault Default for search.
+ * @param {Array} defaults.sort Default for sorting.
+ * @param {str} defaults.search Default for search.
  * @param {React.Component} children React component to be rendered
  */
 
 export const AdminListContent = forwardRef(
   ({
      columns,
-     pageName = '',
-     listUrl,
-     selectionChanged,
+     pageName,
+     title,
+     url = {
+       list: null,
+       detail: null,
+       create: null,
+       edit: null,
+       batch: null,
+     },
      initData = null,
-     rightHeader = null,
-     sortingDefault = null,
-     searchDefault = null,
-     multipleDelete = null,
-     tableHeader,
-     otherFilters,
-     tabChildren,
+     defaults = {
+       search: null,
+       sort: null
+     },
+     useSearch = true,
+
+     // Table props
+     multipleDelete,
+
+     // Styling
+     className,
+
+     // Parent selector
+     selection,
+     selectionChanged,
+
+     // Children
+     rightHeader,
+     middleContent,
+
      ...props
-   }, ref
+   }: AdminListContentProps, ref
   ) => {
+    // References
     const deleteDialogRef = useRef(null);
-    const apiBatch = props.apiBatch ? props.apiBatch : urls.api.batch
-    const apiCreate = props.apiCreate ? props.apiCreate : urls.api.create;
+    const listRef = useRef(null);
+
     const [data, setData] = useState([]);
     const [selectionModel, setSelectionModel] = useState([]);
     const [isDeleting, setIsDeleting] = useState(false)
-    const listRef = useRef(null);
-    const [search, setSearch] = useState(searchDefault);
+    const [search, setSearch] = useState(defaults.search);
 
     const dataName = pageName.replace(/s$/, '');
 
@@ -86,7 +96,7 @@ export const AdminListContent = forwardRef(
       }
     }));
 
-    // When selection changed
+    // When inner selection changed
     useEffect(() => {
       if (selectionChanged) {
         selectionChanged(selectionModel)
@@ -95,10 +105,10 @@ export const AdminListContent = forwardRef(
 
     // When selection changed
     useEffect(() => {
-      if (props.selectionParent) {
-        setSelectionModel(props.selectionParent)
+      if (selection) {
+        setSelectionModel(selection)
       }
-    }, [props.selectionParent])
+    }, [selection])
 
     // When init data changed
     useEffect(() => {
@@ -111,45 +121,41 @@ export const AdminListContent = forwardRef(
       }
     }, [initData])
 
-    /** Render **/
-    let selectableFunction = !isDeleting
-    if (!isDeleting && (multipleDelete || apiBatch)) {
-      selectableFunction = (params) => {
+    // Create selectable functions
+    let selectableFunction: any = !isDeleting;
+    if (!isDeleting && (multipleDelete || url.batch)) {
+      selectableFunction = (params: any) => {
         const { permission } = params.row
         return !permission || permission.edit || permission.delete
       }
     }
     const selectedModelData = data.filter(row => selectionModel.includes(row.id))
+
+    /** Delete button **/
     const deleteButton = () => {
-      if (user.is_creator && multipleDelete && listUrl) {
+      // TODO:
+      //  Make user as interface
+      // @ts-ignore
+      if (user.is_creator && multipleDelete && url.list) {
         const selectedIds = selectedModelData.filter(row => !row.permission || row.permission.delete).map(row => row.id)
-        return <Fragment>
-          <DeleteButton
-            disabled={isDeleting || !selectedIds.length}
-            variant="Error Reverse"
-            text={"Delete"}
-            onClick={() => {
-              deleteDialogRef?.current?.open()
-            }}
-          />
+
+        // Delete dialog
+        const deleteDialog = (
+          // @ts-ignore
           <ConfirmDialog
             onConfirmed={() => {
               setIsDeleting(true)
-              $.ajax({
-                url: listUrl,
-                method: 'DELETE',
-                data: {
+              DjangoRequests.delete(
+                url.list,
+                {
                   'ids': JSON.stringify(selectedIds)
-                },
-                success: function () {
-                  setIsDeleting(false)
-                  listRef.current.refresh()
-                },
-                error: function () {
-                  setIsDeleting(false)
-                },
-                beforeSend: beforeAjaxSend
-              });
+                }
+              ).then(() => {
+                setIsDeleting(false)
+                listRef.current.refresh()
+              }).catch(error => {
+                setIsDeleting(false)
+              })
               return false;
             }}
             ref={deleteDialogRef}
@@ -159,12 +165,25 @@ export const AdminListContent = forwardRef(
               delete {selectedIds.length} {dataName.toLowerCase() + (selectedIds.length > 1 ? 's' : '')}?
             </div>
           </ConfirmDialog>
+        )
+        return <Fragment>
+          <DeleteButton
+            disabled={isDeleting || !selectedIds.length}
+            variant="Error Reverse"
+            text={"Delete"}
+            onClick={() => {
+              deleteDialogRef?.current?.open()
+            }}
+          />
+          {deleteDialog}
         </Fragment>
       }
     }
+    /** Create button **/
     const createButton = () => {
-      if (user.is_creator && apiCreate) {
-        return <a href={apiCreate}>
+      // @ts-ignore
+      if (user.is_creator && url.create) {
+        return <a href={url.create}>
           <AddButton
             variant="primary"
             text={"Create New " + pageName}
@@ -172,12 +191,14 @@ export const AdminListContent = forwardRef(
         </a>
       }
     }
+
     /** Button for batch edit **/
     const batchEditButton = () => {
-      if (user.is_creator && apiBatch) {
+      // @ts-ignore
+      if (user.is_creator && url.batch) {
         const selectedIds = selectedModelData.filter(row => !row.permission || row.permission.edit).map(row => row.id)
         return <a
-          href={apiBatch + '?ids=' + selectedIds.join(',')}>
+          href={url.batch + '?ids=' + selectedIds.join(',')}>
           <ThemeButton
             variant="primary Basic"
             disabled={!selectedIds.length}>
@@ -186,21 +207,23 @@ export const AdminListContent = forwardRef(
         </a>
       }
     }
+
+    /** Render **/
     return (
-      <div className={'AdminContent ' + props.className}>
+      <div className={'AdminContent ' + className}>
         <div className='AdminContentHeader'>
           <div className='AdminContentHeader-Left'>
-            <b className='light'
-               dangerouslySetInnerHTML={{ __html: props.title ? props.title : contentTitle }}></b>
+            <b className='light' dangerouslySetInnerHTML={{ __html: title }}/>
           </div>
           <div>
             {
-              props.hideSearch ? null :
+              !useSearch ? null :
                 <IconTextField
+                  // @ts-ignore
                   placeholder={"Search " + pageName}
                   defaultValue={search ? search : ""}
                   iconEnd={<MagnifyIcon/>}
-                  onChange={evt => {
+                  onChange={(evt: any) => {
                     setSearch(evt.target.value.toLowerCase())
                   }}
                 />
@@ -211,31 +234,33 @@ export const AdminListContent = forwardRef(
             {createButton()}
           </div>
         </div>
-        {otherFilters}
-        {tabChildren}
+        <div className='AdminContentMiddle'>
+          {middleContent}
+        </div>
         <BaseList
+          // @ts-ignore
           columns={columns}
           pageName={pageName}
-          listUrl={listUrl}
+          listUrl={url.list}
           initData={initData}
-          setInitData={newData => {
+          setInitData={(newData: any[]) => {
             if (newData) {
               setData(newData)
             }
           }}
-          sortingDefault={sortingDefault}
+          sortingDefault={defaults.sort}
+          searchDefault={defaults.search}
           search={search}
-          searchDefault={searchDefault}
           selectable={selectableFunction}
           ref={listRef}
-          {...props}
+          // @ts-ignore
           selectionModel={selectionModel}
           setSelectionModel={
             selectionChanged || multipleDelete ? (
-              selectedData => {
+              (selectedData: any) => {
                 setSelectionModel(selectedData)
-                if (props.selectionChanged) {
-                  props.selectionChanged(selectedData)
+                if (selectionChanged) {
+                  selectionChanged(selectedData)
                 }
               }
             ) : null
@@ -244,51 +269,11 @@ export const AdminListContent = forwardRef(
             <Fragment>
               {batchEditButton()}
               {deleteButton()}
-              {tableHeader}
             </Fragment>
           }
+          {...props}
         />
       </div>
     )
   }
 )
-/**
- * Admin List App
- * @param {list} columns Columns setup.
- * @param {String} pageName Page Name.
- * @param {String} listUrl Url for list row.
- * @param {function} selectionChanged Function when selection changed.
- * @param {list} initData If there is init data.
- * @param {React.Component} rightHeader Right header.
- * @param {Array} sortingDefault Default for sorting.
- * @param {str} searchDefault Default for search.
- * @param {React.Component} children React component to be rendered
- */
-
-export const AdminList = forwardRef(
-  ({
-     columns, pageName,
-     listUrl, selectionChanged,
-     initData = null,
-     rightHeader = null,
-     sortingDefault = null,
-     searchDefault = null,
-     multipleDelete = null,
-     ...props
-   }, ref
-  ) => {
-    return (
-      <AdminPage pageName={pageName}>
-        <AdminListContent
-          columns={columns} pageName={pageName}
-          listUrl={listUrl} selectionChanged={selectionChanged}
-          initData={initData}
-          rightHeader={rightHeader}
-          sortingDefault={sortingDefault}
-          searchDefault={searchDefault}
-          multipleDelete={multipleDelete}
-          {...props}
-        />
-      </AdminPage>
-    );
-  })

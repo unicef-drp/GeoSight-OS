@@ -28,17 +28,17 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 import { DeleteIcon } from "../../../components/Icons";
 import MoreAction from "../../../components/Elements/MoreAction";
-import { ConfirmDialog } from "../../../components/ConfirmDialog";
 import {
   Notification,
   NotificationStatus
 } from "../../../components/Notification";
-import { DeleteButton, EditButton } from "../../../components/Elements/Button";
+import { EditButton } from "../../../components/Elements/Button";
 import { UpdatePermissionModal } from "./UpdatePermissionModal";
 import { DjangoRequests } from "../../../Requests";
 import { ServerTable } from "../../../components/Table";
 
 import './style.scss';
+import { ConfirmDialog } from "../../../components/ConfirmDialog";
 
 /**
  * Render public data access table
@@ -221,19 +221,8 @@ export const DataAccessTable = forwardRef(
 
     return <div className='AdminList DataAccessAdminTable'>
       <ServerTable
-        header={
+        rightHeader={
           <Fragment>
-            {
-              ableToDelete ? <DeleteButton
-                disabled={!selectionModel.length}
-                variant="Error Reverse"
-                text={"Delete"}
-                onClick={() => {
-                  setDeletingIds(selectionModel)
-                  deleteDialogRef?.current?.open()
-                }}
-              /> : null
-            }
             <EditButton
               disabled={!selectionModel.length}
               variant="primary Reverse"
@@ -280,16 +269,23 @@ export const DataAccessTable = forwardRef(
           </Fragment>
         }
         url={urlData}
+        dataName={dataName}
         columns={COLUMNS}
         selectionModel={selectionModel}
         setSelectionModel={setSelectionModel}
         getParameters={getParameters}
         checkboxSelection={true}
-        defaultSortModel={
-          [
+        defaults={{
+          sort: [
             { field: 'indicator_name', sort: 'asc' },
             { field: 'dataset_name', sort: 'asc' }
           ]
+        }}
+        enable={
+          {
+            delete: ableToDelete,
+            select: true
+          }
         }
         ref={tableRef}
       />
@@ -312,8 +308,7 @@ export const DataAccessTable = forwardRef(
         <div>
           Are you sure want to
           delete {deletingIds.length ? deletingIds.length : 1}&nbsp;
-          {dataName.toLowerCase() + (deletingIds.length > 1 ? 's' : '')} data
-          access?
+          {dataName.toLowerCase() + (deletingIds.length > 1 ? 's' : '')}?
         </div>
       </ConfirmDialog>
       <Notification ref={notificationRef}/>

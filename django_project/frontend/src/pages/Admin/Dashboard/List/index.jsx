@@ -14,7 +14,6 @@
  */
 
 import React, { useRef } from 'react';
-import $ from "jquery";
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -22,12 +21,13 @@ import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
 import { pageNames } from '../../index';
 import { COLUMNS, COLUMNS_ACTION } from "../../Components/List";
-import { AdminList } from "../../AdminList";
 import PermissionModal from "../../Permission";
 import { VisibilityIcon } from "../../../../components/Icons";
 import { ConfirmDialog } from "../../../../components/ConfirmDialog";
+import AdminList from "../../../../components/AdminList";
 
 import './style.scss';
+import { DjangoRequests } from "../../../../Requests";
 
 export function resourceActions(params) {
   return COLUMNS_ACTION(params, urls.admin.dashboardList)
@@ -49,18 +49,13 @@ export function resourceActionsList(params) {
       </div>
       {/* APPROVE */}
       <ConfirmDialog
-        header='Approve duplication'
+        header='Duplication confirmation'
         autoClose={false}
         onConfirmed={() => {
           const api = detailUrl.replace('/0', `/${params.id}`) + 'duplicate';
-          $.ajax({
-            url: api,
-            method: 'POST',
-            success: function () {
-              location.reload();
-            },
-            beforeSend: beforeAjaxSend
-          });
+          DjangoRequests.post(api, {}).then(response => {
+            location.reload();
+          })
         }}
         ref={approveRef}
       >
@@ -135,9 +130,16 @@ export default function DashboardList() {
     },
   }
   return <AdminList
+    url={{
+      list: urls.api.list,
+      batch: urls.api.batch,
+      detail: urls.api.detail,
+      edit: urls.api.edit,
+      create: urls.api.create,
+    }}
+    title={contentTitle}
     columns={columns}
     pageName={pageName}
-    listUrl={urls.api.list}
     multipleDelete={true}
   />
 }

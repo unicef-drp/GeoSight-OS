@@ -75,7 +75,7 @@ export const UsersDataAccess = forwardRef(
       COLUMNS={COLUMNS}
       ableToDelete={true}
       PERMISSIONS={PERMISSIONS}
-      dataName='user'
+      dataName='user data access'
       ref={tableRef}
     />
   }
