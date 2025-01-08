@@ -54,12 +54,6 @@ const ServerTable = forwardRef(
      ...props
    }: ServerTableProps, ref
   ) => {
-    // Create actions for delete
-    const updatedColumns = columns
-    if (enable.delete) {
-      console.log(updatedColumns)
-    }
-
     // Notification
     const notificationRef = useRef(null);
     const notify = (newMessage: string, newSeverity: string = NotificationStatus.INFO) => {
@@ -208,7 +202,7 @@ const ServerTable = forwardRef(
         }
         <div className='AdminTable'>
           <MainDataGrid
-            columns={updatedColumns}
+            columns={columns}
             rows={data ? data : []}
 
             rowCount={dataCount}
@@ -233,7 +227,7 @@ const ServerTable = forwardRef(
             pagination
             loading={!data}
             pageSize={parameters.page_size}
-            rowsPerPageOptions={[25, 50, 100]}
+            rowsPerPageOptions={[10, 25, 50, 100]}
             onPageSizeChange={(newPageSize: number) => {
               parameters.page_size = newPageSize
               parametersChanged()
