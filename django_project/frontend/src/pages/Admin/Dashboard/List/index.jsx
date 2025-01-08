@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { useRef } from 'react';
+import React from 'react';
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -23,9 +23,10 @@ import { pageNames } from '../../index';
 import { COLUMNS, COLUMNS_ACTION } from "../../Components/List";
 import PermissionModal from "../../Permission";
 import { VisibilityIcon } from "../../../../components/Icons";
-import { ConfirmDialog } from "../../../../components/ConfirmDialog";
 import AdminList from "../../../../components/AdminList";
+import { useConfirmDialog } from "../../../../providers/ConfirmDialog";
 import { DjangoRequests } from "../../../../Requests";
+
 
 import './style.scss';
 
@@ -34,36 +35,36 @@ export function resourceActions(params) {
 }
 
 export function resourceActionsList(params) {
-  const approveRef = useRef(null);
   const permission = params.row.permission
+  const { openConfirmDialog } = useConfirmDialog();
   return COLUMNS_ACTION(
     params, urls.admin.dashboardList, null, null,
     !permission || permission.delete ? <>
       <div onClick={
         () => {
-          approveRef?.current?.open()
+          openConfirmDialog({
+            header: 'Duplication confirmation',
+            onConfirmed: async () => {
+              const api = `/api/dashboard/${params.id}/duplicate`;
+              await DjangoRequests.post(api, {}).then(response => {
+                try {
+                  params.columns[params.columns.length - 1]?.tableRef.current.refresh()
+                } catch (err) {
+                  location.reload();
+                }
+              })
+            },
+            onRejected: () => {
+            },
+            children: <div>
+              Are you sure you want to duplicate
+              : {params.row.name ? params.row.name : params.row.id}?
+            </div>,
+          })
         }
       }>
         <ContentCopyIcon/> Duplicate
       </div>
-      {/* APPROVE */}
-      <ConfirmDialog
-        header='Duplication confirmation'
-        autoClose={false}
-        onConfirmed={() => {
-          const api = `/api/dashboard/${params.id}/duplicate`;
-          DjangoRequests.post(api, {}).then(response => {
-            location.reload();
-          })
-        }}
-        ref={approveRef}
-      >
-        <div>
-          Are you sure you want to duplicate
-          : {params.row.name ? params.row.name : params.row.id}?
-        </div>
-        <br/>
-      </ConfirmDialog>
     </> : null
   )
 }

@@ -80,7 +80,6 @@ export const AdminListContent = forwardRef(
   ) => {
     // References
     const tableRef = useRef(null);
-    const deleteDialogRef = useRef(null);
     const listRef = useRef(null);
 
     const [data, setData] = useState([]);
@@ -165,9 +164,8 @@ export const AdminListContent = forwardRef(
       () =>
         debounce(
           (newValue) => {
-            console.log('searchValueUpdate')
             setSelectionModel([])
-            tableRef?.current?.refresh()
+            tableRef?.current?.refresh(false)
           },
           400
         ),
@@ -188,6 +186,11 @@ export const AdminListContent = forwardRef(
       }
       return parameters
     }
+
+    columns.map(column => {
+      // @ts-ignore
+      column.tableRef = tableRef
+    })
 
     /** Render **/
     return (

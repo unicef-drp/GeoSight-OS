@@ -107,5 +107,6 @@ class FilteredAPI(object):
                 raise SuspiciousOperation(e)
 
         if sort:
-            query = query.order_by(f'{sort}')
+            query = query.order_by(sort)
+
         return query

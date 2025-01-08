@@ -89,7 +89,8 @@ test.describe('Create project', () => {
     // --------------------------------------------
     // Check the preview
     // --------------------------------------------
-    await page.waitForURL('http://localhost:2000/admin/project/test-project-default/edit')
+    const editUrl = 'http://localhost:2000/admin/project/test-project-default/edit'
+    await page.waitForURL(editUrl)
     await page.goto('/project/test-project-default');
 
     // Check filter
@@ -145,17 +146,11 @@ test.describe('Create project', () => {
     expect(await page.getByRole('button', { name: 'Indicator A more than 10' })).toBeVisible();
     expect(await page.getByRole('button', { name: 'Show SOM_0002' })).toBeVisible();
 
-    // Wait submitted
-    page.on('dialog', async dialog => {
-      // Verify Dialog Message
-      expect(dialog.message()).toContain('Are you sure you want to delete : Test Project Default?');
-
-      //Click on OK Button
-      await dialog.accept();
-    });
-
+    // Delete
     await page.locator('.MoreActionIcon').click();
     await page.locator('.MuiMenu-root .MuiButtonBase-root .error').click();
+    await expect(page.locator('.modal--content ')).toContainText(`Are you sure you want to delete : Test Project Default?`);
+    await page.getByRole('button', { name: 'Confirm' }).click();
     await expect(page.getByText('Create New Project')).toBeVisible();
     await expect(page.getByText('Test Project Default')).toBeHidden();
   });
@@ -241,18 +236,12 @@ test.describe('Create project', () => {
     expect(await page.getByText('Sample Indicator A').nth(1)).toBeVisible();
     expect(await page.getByText('Sample Indicator B').nth(1)).toBeVisible();
 
-    // Wait submitted
-    page.on('dialog', async dialog => {
-      // Verify Dialog Message
-      expect(dialog.message()).toContain('Are you sure you want to delete : Test Project Override Config?');
-
-      //Click on OK Button
-      await dialog.accept();
-    });
-
+    // Delete
     await page.locator('.MoreActionIcon').click();
     await page.locator('.MuiMenu-root .MuiButtonBase-root .error').click();
+    await expect(page.locator('.modal--content ')).toContainText(`Are you sure you want to delete : Test Project Override Config?`);
+    await page.getByRole('button', { name: 'Confirm' }).click();
     await expect(page.getByText('Create New Project')).toBeVisible();
-    await expect(page.getByText('Test Project Override Config')).toBeHidden()
+    await expect(page.getByText('Test Project Override Config')).toBeHidden();
   });
 });

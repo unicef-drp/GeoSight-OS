@@ -136,6 +136,39 @@ class DashboardPermissionTest(BasePermissionTest.TestCase):
             self.assertTrue(
                 result['id'] in [self.resource_3.slug])
 
+    def test_list_api_sort(self):
+        """Test GET LIST API."""
+        params = urllib.parse.urlencode(
+            {
+                'sort': 'name'
+            }
+        )
+        url = reverse('dashboards-list') + '?' + params
+        response = self.assertRequestGetView(url, 200, user=self.admin)
+        self.assertEqual(len(response.json()['results']), 1)
+        for result in response.json()['results']:
+            self.assertTrue(
+                result['id'] in [
+                    self.resource_1.slug, self.resource_2.slug,
+                    self.resource_3.slug
+                ]
+            )
+        params = urllib.parse.urlencode(
+            {
+                'sort': '-name'
+            }
+        )
+        url = reverse('dashboards-list') + '?' + params
+        response = self.assertRequestGetView(url, 200, user=self.admin)
+        self.assertEqual(len(response.json()['results']), 1)
+        for result in response.json()['results']:
+            self.assertTrue(
+                result['id'] in [
+                    self.resource_3.slug, self.resource_2.slug,
+                    self.resource_1.slug
+                ]
+            )
+
     def test_detail_api(self):
         """Test GET DETAIL API."""
         url = reverse('dashboards-detail', args=['name-a'])

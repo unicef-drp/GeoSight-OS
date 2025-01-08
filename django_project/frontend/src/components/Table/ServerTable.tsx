@@ -63,7 +63,11 @@ const ServerTable = forwardRef(
       notificationRef?.current?.notify(newMessage, newSeverity)
     }
 
-    const prev = useRef<string | null>(null);
+    const prev = useRef(
+      {
+        url: null
+      }
+    );
     const pageSize = 25;
 
     const getSort = (_sortModel: any[]) => {
@@ -95,9 +99,9 @@ const ServerTable = forwardRef(
 
     /** Refresh data **/
     useImperativeHandle(ref, () => ({
-      refresh() {
+      refresh(force: boolean = true) {
         parametersChanged()
-        loadData(true)
+        loadData(force)
       },
       /** Update data from outside **/
       updateData(
@@ -120,14 +124,16 @@ const ServerTable = forwardRef(
 
       // Construct url
       const _url = url + '?' + _parameters
-      if (!force && _url === prev.current) {
+
+      // not force and the url are same
+      if (!force && _url === prev.current.url) {
         return
       }
       setData(null)
       setError(null)
-      prev.current = _url
+      prev.current.url = _url
       DjangoRequests.get(_url).then(data => {
-        if (prev.current === _url) {
+        if (prev.current.url === _url) {
           setDataCount(data.data.count)
           setData(data.data.results)
         }

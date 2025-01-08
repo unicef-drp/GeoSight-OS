@@ -82,9 +82,7 @@ class BaseApiV1ResourceReadOnly(BaseApiV1, viewsets.ReadOnlyModelViewSet):
         serializer_class = self.get_serializer_class()
         kwargs.setdefault('context', self.get_serializer_context())
         if not self.request.GET.get('all_fields', False):
-            kwargs['exclude'] = [
-                                    'modified_at', 'creator'
-                                ] + self.extra_exclude_fields
+            kwargs['exclude'] = ['creator'] + self.extra_exclude_fields
         return serializer_class(*args, **kwargs)
 
     def get_queryset(self):
@@ -103,7 +101,9 @@ class BaseApiV1ResourceReadOnly(BaseApiV1, viewsets.ReadOnlyModelViewSet):
                 del self.request.GET[param]
 
         return self.filter_query(
-            self.request, query, ['page', 'page_size', 'all_fields']
+            self.request, query,
+            sort=self.request.query_params.get('sort'),
+            ignores=['page', 'page_size', 'all_fields']
         )
 
     def retrieve(self, request, *args, **kwargs):

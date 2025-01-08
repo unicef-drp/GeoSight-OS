@@ -31,9 +31,9 @@ import { DjangoRequests, fetchingData } from "../../../../Requests";
 import MoreAction from "../../../../components/Elements/MoreAction";
 import { dictDeepCopy, toSingular } from "../../../../utils/main";
 import { DeleteIcon, MagnifyIcon } from "../../../../components/Icons";
+import { useConfirmDialog } from "../../../../providers/ConfirmDialog";
 
 import './style.scss';
-import { useConfirmDialog } from "../../../../providers/ConfirmDialog";
 
 /**
  *
@@ -71,13 +71,17 @@ export function COLUMNS_ACTION(
                      onClick={() => {
                        openConfirmDialog({
                          header: 'Delete confirmation',
-                         onConfirmed: () => {
+                         onConfirmed: async () => {
                            const api = detailUrl.replace('/0', `/${params.id}`);
-                           DjangoRequests.delete(api, {}).then(error => {
-                             if (window.location.href.replace(window.location.origin, '') === redirectUrl) {
-                               location.reload();
-                             } else {
-                               window.location = redirectUrl;
+                           await DjangoRequests.delete(api, {}).then(response => {
+                             try {
+                               params.columns[params.columns.length - 1]?.tableRef.current.refresh()
+                             } catch (err) {
+                               if (window.location.href.replace(window.location.origin, '') === redirectUrl) {
+                                 location.reload();
+                               } else {
+                                 window.location = redirectUrl;
+                               }
                              }
                            })
                          },

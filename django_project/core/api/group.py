@@ -27,7 +27,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from core.models.group import GeosightGroup
-from core.models.profile import Profile, RoleDoesNotFound
 from core.permissions import (
     RoleContributorAuthenticationPermission, AdminAuthenticationPermission
 )
@@ -143,22 +142,25 @@ class GroupUpdateBatchUserAPI(APIView):
                                 user = User.objects.get(username=username)
                                 user.groups.add(group)
                         except User.DoesNotExist:
-                            data.update({
-                                'first_name': row['First name'],
-                                'last_name': row['Last name'],
-                            })
-                            user, _ = User.objects.get_or_create(
-                                username=data['username'],
-                                defaults=data
-                            )
-                            try:
-                                role = row['Role']
-                                Profile.update_role(user=user, role=role)
-                            except RoleDoesNotFound:
-                                raise RoleDoesNotFound(
-                                    f'Role of row {idx} does not exist'
-                                )
-                            user.groups.add(group)
+                            pass
+                            # TODO:
+                            #  We enable this in future
+                            # data.update({
+                            #     'first_name': row['First name'],
+                            #     'last_name': row['Last name'],
+                            # })
+                            # user, _ = User.objects.get_or_create(
+                            #     username=data['username'],
+                            #     defaults=data
+                            # )
+                            # try:
+                            #     role = row['Role']
+                            #     Profile.update_role(user=user, role=role)
+                            # except RoleDoesNotFound:
+                            #     raise RoleDoesNotFound(
+                            #         f'Role of row {idx} does not exist'
+                            #     )
+                            # user.groups.add(group)
                     except KeyError as e:
                         raise KeyError(
                             f'CSV should contains {e} column'
