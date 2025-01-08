@@ -18,7 +18,7 @@ import axios from "axios";
 import Grid from "@mui/material/Grid";
 import ImageIcon from '@mui/icons-material/Image';
 
-import {SearchInput} from "../../components/Input/IconInput";
+import {SearchInput} from "../Input/IconInput";
 import {MultipleSelectWithSearch, SelectWithSearch} from "../../components/Input/SelectWithSearch";
 import {SortAscIcon, SortDescIcon} from "../../components/Icons";
 
@@ -160,8 +160,9 @@ export default function ProjectList({ url, onSetProject }: ProjectListProps) {
               className='SearchInput'
               placeholder='Search projects' value={searchProject}
               // onChange={setSearchProject}
-              onChange={(evt: React.ChangeEvent<HTMLInputElement>) => {
-                setSearchProject(evt.target.value); // Access the input's value correctly
+              onChange={(evt: React.ChangeEvent<HTMLInputElement>): number => {
+                  setSearchProject(evt.target.value as string); // @ts-ignore
+                  return 0;
               }}
             />
           </Grid>

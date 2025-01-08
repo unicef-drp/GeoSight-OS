@@ -13,27 +13,16 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { Fragment, useEffect, useState } from 'react';
-import axios from "axios";
+import React, {useState} from 'react';
 import CircularProgress from "@mui/material/CircularProgress";
 import Grid from "@mui/material/Grid";
 import ImageIcon from '@mui/icons-material/Image';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import { store } from '../../store/admin';
-import { render } from '../../app';
-
-import { SearchInput } from "../../components/Input/IconInput";
-import { ThemeButton } from "../../components/Elements/Button";
-import { ProjectList } from "../../components/Home";
-import {
-  MultipleSelectWithSearch,
-  SelectWithSearch
-} from "../../components/Input/SelectWithSearch";
-import {
-  SortAscIcon,
-  SortDescIcon,
-  VisibilityIcon
-} from "../../components/Icons";
+import {store} from '../../store/admin';
+import {render} from '../../app';
+import {ThemeButton} from "../../components/Elements/Button";
+import ProjectList from "../../components/Home";
+import {VisibilityIcon} from "../../components/Icons";
 import Footer from "../../components/Footer";
 import BasicPage from '../Basic'
 
@@ -81,6 +70,8 @@ export default function Home() {
   });
   const [showBanner, setShowBanner] = useState(true);
 
+  const ownProjectUrl = `/api/v1/dashboards?creator=${}`
+
   return (
     <BasicPage className='Home'>
       {
@@ -118,7 +109,7 @@ export default function Home() {
               </div>
             </div>
           ) : projects?.own?.length ?
-            <ProjectList></ProjectList> : null
+            <ProjectList url={`/api/v1/dashboards?creator=${}`}></ProjectList> : null
         }
         {/*{*/}
         {/*  !projects?.shared?.length ? null : (*/}
