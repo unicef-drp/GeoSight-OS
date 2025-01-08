@@ -30,7 +30,7 @@
     min-height: 0;
   }
 
-  banner {
+  div.banner {
     height: 420px;
     position: relative;
     transition: height 0.5s;
@@ -146,13 +146,6 @@
       color: inherit;
       display: flex;
       align-items: center;
-
-      .SearchInput {
-
-        .MuiInputBase-root.MuiOutlinedInput-root {
-          width: 100%!important;
-        }
-      }
     }
 
     .PageContent-Content {

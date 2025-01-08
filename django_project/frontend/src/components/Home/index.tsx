@@ -27,7 +27,7 @@ import './style.scss';
 
 interface ProjectListProps {
   url: string;
-  onSetProject: (type: string, newValue: GeoSightProject[]) => void;
+  setIsLoading: (val: boolean) => void;
 }
 
 type Permission = {
@@ -94,11 +94,17 @@ function ProjectGrid({ projects }: ProjectGridProps) {
 /**
  * ProjectList
  */
-export default function ProjectList({ url, onSetProject }: ProjectListProps) {
+export default function ProjectList({ url, setIsLoading }: ProjectListProps) {
   const [searchProject, setSearchProject] = useState<string>('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedSortBy, setSelectedSortBy] = useState<string>('Name');
   const [selectedSortByAsc, setSelectedSortByAsc] = useState<boolean>(true);
+
+  useEffect(() => {
+
+  }, [searchProject, selectedCategories, selectedSortBy, selectedSortByAsc]);
+
+  const txt = url.includes('?creator=!') ? 'Shared projects' : 'Your projects'
 
   const [projects, setProjects] = useState<GeoSightProject[]>([]);
 
@@ -106,16 +112,12 @@ export default function ProjectList({ url, onSetProject }: ProjectListProps) {
   // Fetch data
   useEffect(() => {
     axios.get(url).then(response => {
-      const categories: string[] = response.data.filter(
+      setIsLoading(false)
+      const categories: string[] = response.data.results.filter(
           (project: GeoSightProject) => project.category
       ).map((project: GeoSightProject) => project.category)
       setSelectedCategories(Array.from(new Set(categories)))
-      setProjects(response.data)
-      if (url.includes('creator=!')) {
-        onSetProject('shared', response.data)
-      } else {
-        onSetProject('own', response.data)
-      }
+      setProjects(response.data.results)
     }).catch(error => {
     })
   }, [])
@@ -131,6 +133,7 @@ export default function ProjectList({ url, onSetProject }: ProjectListProps) {
   // We do filter and sort
   let sortedProjects = projects;
   if (sortedProjects) {
+    console.log(sortedProjects)
     sortedProjects = sortedProjects.filter(project => (selectedCategories.length === categories.length && !project.category) || selectedCategories.includes(project.category))
     sortedProjects.sort((a, b) => {
       let sorted = true
@@ -150,58 +153,55 @@ export default function ProjectList({ url, onSetProject }: ProjectListProps) {
       }
       return selectedSortByAsc ? 0 : -1
     });
+    console.log(sortedProjects)
   }
 
 
   // @ts-ignore
   return (
-    <Fragment>
+    projects ? <Fragment>
       <div className='PageContent-Title'>
-        Your projects <div className='Separator'/>
+        {txt} <div className='Separator'/>
       </div>
       <Grid container spacing={2}>
-          <Grid item xs={12} md={6} lg={6} xl={6}>
-            <SearchInput
-              className='SearchInput'
-              placeholder='Search projects' value={searchProject}
-              // onChange={setSearchProject}
-              onChange={(evt: React.ChangeEvent<HTMLInputElement>): number => {
-                  setSearchProject(evt.target.value as string); // @ts-ignore
-                  return 0;
-              }}
-            />
-          </Grid>
-          <Grid item xs={12} md={6} lg={6} xl={6}>
-            <MultipleSelectWithSearch
-              value={selectedCategories}
-              onChangeFn={(value: string[]) => {
-                setSelectedCategories(value)
-              }}
-              options={categories}
-              className='CategorySelector'
-            />
-          </Grid>
-          <Grid item xs={12} md={6} lg={6} xl={6}>
-            <SelectWithSearch
-                  value={selectedSortBy}
-                  onChangeFn={(value: string) => {
-                    setSelectedSortBy(value)
-                  }}
-                  options={['Name', 'Date created', 'Date modified']}
-                  className='SortSelector'
-                  parentClassName='SortSelectorInput'
-                  iconStart={
-                    <div
-                      onClick={_ => setSelectedSortByAsc(_ => !_)}>
-                      {selectedSortByAsc ? <SortAscIcon/> : <SortDescIcon/>}
-                    </div>
-                  }
-                />
-          </Grid>
+        <Grid item xs={12} md={6} lg={6} xl={6}>
+          <SearchInput
+            className='SearchInput'
+            placeholder='Search projects' value={searchProject}
+            onChange={setSearchProject}
+          />
+        </Grid>
+        <Grid item xs={12} md={3} lg={3} xl={3}>
+          <MultipleSelectWithSearch
+            value={selectedCategories}
+            onChangeFn={(value: string[]) => {
+              setSelectedCategories(value)
+            }}
+            options={categories}
+            className='CategorySelector'
+          />
+        </Grid>
+        <Grid item xs={12} md={3} lg={3} xl={3}>
+          <SelectWithSearch
+            value={selectedSortBy}
+            onChangeFn={(value: string) => {
+              setSelectedSortBy(value)
+            }}
+            options={['Name', 'Date created', 'Date modified']}
+            className='SortSelector'
+            parentClassName='SortSelectorInput'
+            iconStart={
+              <div
+                onClick={_ => setSelectedSortByAsc(_ => !_)}>
+                {selectedSortByAsc ? <SortAscIcon/> : <SortDescIcon/>}
+              </div>
+            }
+          />
+        </Grid>
       </Grid>
       <ProjectGrid
         projects={
-          projects.filter(
+          sortedProjects.filter(
               (project: GeoSightProject) => !searchProject || project.name.includes(searchProject) || project.description?.includes(searchProject)
           )
         }
@@ -211,6 +211,6 @@ export default function ProjectList({ url, onSetProject }: ProjectListProps) {
       <br/>
       <br/>
       <br/>
-    </Fragment>
+    </Fragment> : null
   )
 }

@@ -15,58 +15,44 @@
 
 import React, {useState} from 'react';
 import CircularProgress from "@mui/material/CircularProgress";
-import Grid from "@mui/material/Grid";
-import ImageIcon from '@mui/icons-material/Image';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import {store} from '../../store/admin';
 import {render} from '../../app';
 import {ThemeButton} from "../../components/Elements/Button";
 import ProjectList from "../../components/Home";
-import {GeoSightProject} from "../../components/Home";
 import {VisibilityIcon} from "../../components/Icons";
 import Footer from "../../components/Footer";
 import BasicPage from '../Basic'
 
 import './style.scss';
-import formatters from "chart.js/dist/core/core.ticks";
-import values = formatters.values;
 
 
 /**
  * Home Page App
  */
 export default function Home() {
-  const [projects, setProjects] = useState({
-    own: [],
-    shared: []
-  });
+  const [isLoading, setIsLoading] = useState<boolean>(true)
   const [showBanner, setShowBanner] = useState(true);
+  // @ts-ignore
+  const userId: number = user.id;
+  const mainImageTs = "{{ preferences.landing_page_banner }}";
 
-  const handleOnSetProject = (type: string, newValue: GeoSightProject[]) => {
-    if (type == 'own') {
-        setProjects({
-            ...projects,
-            own: newValue
-        })
-    } else {
-        setProjects({
-            ...projects,
-            shared: newValue
-        })
-    }
-  }
-
+  const ownProjectsUrl = userId ? `/api/v1/dashboards?creator=${userId}&all_fields=true` : null;
+  const sharedProjectsUrl = userId ? `/api/v1/dashboards?creator=!${userId}&all_fields=true` : '/api/dashboard/list';
 
   return (
     <BasicPage className='Home'>
       {
-        mainImage ?
-          <banner className={showBanner ? '' : 'Hide'}>
+        // @ts-ignore
+        mainImageTs ?
+          <div className={showBanner ? 'banner' : 'banner Hide'}>
             <div className='BannerContent'>
               <div className='Separator'/>
               {
+                // @ts-ignore
                 preferences.landing_page_banner_text ?
                   <div dangerouslySetInnerHTML={{
+                    // @ts-ignore
                     __html: preferences.landing_page_banner_text
                   }}/>
                   :
@@ -83,27 +69,33 @@ export default function Home() {
               onClick={_ => setShowBanner(true)}>
               <VisibilityIcon/> Show banner
             </ThemeButton>
-          </banner> : null
+          </div> : null
       }
-      <div className={'HomePageContent ' + (!projects ? 'Loading' : '')}>
+      <div className={'HomePageContent ' + (isLoading ? 'Loading' : '')}>
         {
-          !projects ? (
+          isLoading ? (
             <div className='LoadingElement'>
               <div className='Throbber'>
                 <CircularProgress size="10rem"/>
               </div>
             </div>
-          ) : projects?.own?.length ?
+          ) : null
+        }
+        {
+          ownProjectsUrl ? <ProjectList
+                url={ownProjectsUrl}
+                setIsLoading={setIsLoading}
+          >
+          </ProjectList> : null
+        }
+        {
+          sharedProjectsUrl ?
             <ProjectList
-                url={`/api/v1/dashboards?creator=${user.id}`}
-                onSetProject={handleOnSetProject}
+              url={sharedProjectsUrl}
+              setIsLoading={setIsLoading}
             >
             </ProjectList> : null
         }
-          {/*{*/}
-          {/*    !projects?.shared?.length ? null :*/}
-          {/*        <ProjectList url={`/api/v1/dashboards?creator=${user.id}`}></ProjectList>*/}
-          {/*}*/}
       </div>
       <div>
         <Footer/>
