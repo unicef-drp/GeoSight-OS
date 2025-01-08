@@ -27,7 +27,7 @@ import './style.scss';
 
 interface ProjectListProps {
   url: string;
-  onSetProject: () => void;
+  onSetProject: (type: string, newValue: GeoSightProject[]) => void;
 }
 
 type Permission = {
@@ -38,7 +38,7 @@ type Permission = {
   delete: boolean;
 }
 
-type GeoSightProject = {
+export interface GeoSightProject {
   id: string;               // Unique identifier for the project
   slug: string;             // Slug for the project
   icon: string | null;      // Icon for the project (can be null)
@@ -111,6 +111,11 @@ export default function ProjectList({ url, onSetProject }: ProjectListProps) {
       ).map((project: GeoSightProject) => project.category)
       setSelectedCategories(Array.from(new Set(categories)))
       setProjects(response.data)
+      if (url.includes('creator=!')) {
+        onSetProject('shared', response.data)
+      } else {
+        onSetProject('own', response.data)
+      }
     }).catch(error => {
     })
   }, [])

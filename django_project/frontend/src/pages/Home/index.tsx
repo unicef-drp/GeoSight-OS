@@ -22,43 +22,15 @@ import {store} from '../../store/admin';
 import {render} from '../../app';
 import {ThemeButton} from "../../components/Elements/Button";
 import ProjectList from "../../components/Home";
+import {GeoSightProject} from "../../components/Home";
 import {VisibilityIcon} from "../../components/Icons";
 import Footer from "../../components/Footer";
 import BasicPage from '../Basic'
 
 import './style.scss';
+import formatters from "chart.js/dist/core/core.ticks";
+import values = formatters.values;
 
-
-/** Project Grid */
-function ProjectGrid({ projects }) {
-  return <Grid container spacing={2}>
-    {
-      projects.map((project, idx) => (
-        <Grid key={idx} item xs={3}>
-          <div className='ProjectGrid'>
-            <a href={'/project/' + project.slug}>
-              <div className='ProjectGridIcon'>
-                {
-                  project.icon ? <img src={project.icon}/> :
-                    <ImageIcon/>
-                }
-              </div>
-              <div className='ProjectGridName'>{project.name}</div>
-              <div
-                className='ProjectGridDescription'
-                dangerouslySetInnerHTML={{
-                  __html: project.description
-                }}/>
-              <div className='ProjectGridTags'>
-                {project.category ? <div>{project.category}</div> : null}
-              </div>
-            </a>
-          </div>
-        </Grid>
-      ))
-    }
-  </Grid>
-}
 
 /**
  * Home Page App
@@ -70,7 +42,20 @@ export default function Home() {
   });
   const [showBanner, setShowBanner] = useState(true);
 
-  const ownProjectUrl = `/api/v1/dashboards?creator=${}`
+  const handleOnSetProject = (type: string, newValue: GeoSightProject[]) => {
+    if (type == 'own') {
+        setProjects({
+            ...projects,
+            own: newValue
+        })
+    } else {
+        setProjects({
+            ...projects,
+            shared: newValue
+        })
+    }
+  }
+
 
   return (
     <BasicPage className='Home'>
@@ -109,45 +94,16 @@ export default function Home() {
               </div>
             </div>
           ) : projects?.own?.length ?
-            <ProjectList url={`/api/v1/dashboards?creator=${}`}></ProjectList> : null
+            <ProjectList
+                url={`/api/v1/dashboards?creator=${user.id}`}
+                onSetProject={handleOnSetProject}
+            >
+            </ProjectList> : null
         }
-        {/*{*/}
-        {/*  !projects?.shared?.length ? null : (*/}
-        {/*    <Fragment>*/}
-        {/*      <div className='PageContent-Title'>*/}
-        {/*        Other shared projects*/}
-        {/*      </div>*/}
-        {/*      <div className='PageContent-Title'>*/}
-        {/*        <div style={{ flexGrow: 1 }}>*/}
-        {/*          <MultipleSelectWithSearch*/}
-        {/*            value={selectedCategories}*/}
-        {/*            onChangeFn={(value) => {*/}
-        {/*              setSelectedCategories(value)*/}
-        {/*            }}*/}
-        {/*            options={categories}*/}
-        {/*            className='CategorySelector'*/}
-        {/*          />*/}
-        {/*        </div>*/}
-        {/*        <SelectWithSearch*/}
-        {/*          value={selectedSortBy}*/}
-        {/*          onChangeFn={(value) => {*/}
-        {/*            setSelectedSortBy(value)*/}
-        {/*          }}*/}
-        {/*          options={['Name', 'Date created', 'Date modified']}*/}
-        {/*          className='SortSelector'*/}
-        {/*          parentClassName='SortSelectorInput'*/}
-        {/*          iconStart={*/}
-        {/*            <div*/}
-        {/*              onClick={_ => setSelectedSortByAsc(_ => !_)}>*/}
-        {/*              {selectedSortByAsc ? <SortAscIcon/> : <SortDescIcon/>}*/}
-        {/*            </div>*/}
-        {/*          }*/}
-        {/*        />*/}
-        {/*      </div>*/}
-        {/*      <ProjectGrid projects={sharedProjects}/>*/}
-        {/*    </Fragment>*/}
-        {/*  )*/}
-        {/*}*/}
+          {/*{*/}
+          {/*    !projects?.shared?.length ? null :*/}
+          {/*        <ProjectList url={`/api/v1/dashboards?creator=${user.id}`}></ProjectList>*/}
+          {/*}*/}
       </div>
       <div>
         <Footer/>
