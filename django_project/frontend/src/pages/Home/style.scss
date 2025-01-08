@@ -148,10 +148,9 @@
       align-items: center;
 
       .SearchInput {
-        width: 40%;
 
-        .MuiInputBase-root {
-          width: 100%;
+        .MuiInputBase-root.MuiOutlinedInput-root {
+          width: 100%!important;
         }
       }
     }
