@@ -11,11 +11,11 @@
 {% block scripts %}
     <script>
       urls.api = {
-        'list': '{% url 'context-layer-list-api' %}',
+        'list': '{% url 'context-layers-list' %}?all_fields=y',
         'create': '{% url 'admin-context-layer-create-view' %}',
         'edit': '{% url 'admin-context-layer-edit-view' 0 %}',
         'batch': '{% url 'admin-context-layer-edit-batch-view' %}',
-        'detail': '{% url 'context-layer-detail-api' 0 %}',
+        'detail': '{% url 'context-layers-detail' 0 %}',
         'users': '{% url 'user-list-api'%}',
         'groups': '{% url 'group-list-api'%}',
 

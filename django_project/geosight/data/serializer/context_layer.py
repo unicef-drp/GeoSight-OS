@@ -108,10 +108,17 @@ class ContextLayerBasicSerializer(ResourceSerializer):
     """Serializer for ContextLayer."""
 
     category = serializers.SerializerMethodField()
+    permission = serializers.SerializerMethodField()
 
     def get_category(self, obj: ContextLayer):
         """Return category name."""
         return obj.group.name if obj.group else ''
+
+    def get_permission(self, obj: ContextLayer):
+        """Return permission."""
+        return obj.permission.all_permission(
+            self.context.get('user', None)
+        )
 
     class Meta:  # noqa: D106
         model = ContextLayer
