@@ -354,7 +354,6 @@ export class MapDrawing {
     features.forEach((feature: any) => {
       this.draw.add(feature);
     });
-    console.log('redraw')
   }
 
   destroy() {
