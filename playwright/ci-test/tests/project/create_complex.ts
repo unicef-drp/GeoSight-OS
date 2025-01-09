@@ -18,7 +18,6 @@ test.describe('Create complex project', () => {
     await page.getByText('Admin panel').click();
     await expect(page.getByText('Create New Project')).toBeVisible();
     await page.getByText('Create New Project').click();
-    await expect(page.getByText('Save')).toBeVisible();
     await page.locator(".ReferenceDatasetSection input").click();
     await page.locator(".ModalDataSelector .MuiDataGrid-row").click();
     await page.locator("#SummaryName").fill('Test Project Complex Config');
@@ -112,8 +111,8 @@ test.describe('Create complex project', () => {
     await page.getByRole('option', { name: 'Sample Indicator A' }).click();
     await page.getByRole('combobox').nth(3).click();
     await page.getByRole('option', { name: 'value' }).click();
-    await page.getByRole('button', { name: 'Apply' }).click();
     await expect(page.locator('label').filter({ hasText: 'No filter (global latest' })).toBeDisabled();
+    await page.getByRole('button', { name: 'Apply' }).click();
 
     // Update tools
     await page.locator('.TabPrimary').getByText('Tools').click();
@@ -233,17 +232,11 @@ test.describe('Create complex project', () => {
     // ------------------------------------
     // DELETE PROJECT
     // ------------------------------------
-    page.on('dialog', async dialog => {
-      // Verify Dialog Message
-      expect(dialog.message()).toContain('Are you sure you want to delete : Test Project Complex Config?');
-
-      //Click on OK Button
-      await dialog.accept();
-    });
-
     await page.locator('.MoreActionIcon').click();
     await page.locator('.MuiMenu-root .MuiButtonBase-root .error').click();
+    await expect(page.locator('.modal--content ')).toContainText(`Are you sure you want to delete : Test Project Complex Config?`);
+    await page.getByRole('button', { name: 'Confirm' }).click();
     await expect(page.getByText('Create New Project')).toBeVisible();
-    await expect(page.getByText('Test Project Complex Config')).toBeHidden()
+    await expect(page.getByText('Test Project Complex Config')).toBeHidden();
   });
 });

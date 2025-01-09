@@ -34,6 +34,7 @@ import './style.scss';
 export default function GlobalDateSelector() {
   const dispatch = useDispatch()
   const { globalDateSelectorOpened } = useSelector(state => state.globalState)
+  const selectedGlobalTimeConfig = useSelector(state => state.selectedGlobalTimeConfig);
   const {
     default_time_mode
   } = useSelector(state => state.dashboard.data);
@@ -66,12 +67,22 @@ export default function GlobalDateSelector() {
           title={'Show global time configuration'}
           onClick={() => {
             dispatch(
-              Actions.GlobalState.update({ globalDateSelectorOpened: !globalDateSelectorOpened })
+              Actions.GlobalState.update({globalDateSelectorOpened: !globalDateSelectorOpened})
             )
           }}>
           {
             globalDateSelectorOpened ? <TimeCheckedIcon/> :
               <TimeUncheckedIcon/>
+          }
+        </PluginChild>
+      </div>
+      <div className='CurrentDate Active'>
+        <PluginChild>
+          {
+            selectedGlobalTimeConfig.isInLatestValue ? "<=" : null
+          }
+          {
+            selectedGlobalTimeConfig.selectedDatePoint? selectedGlobalTimeConfig.selectedDatePoint.substring(0, 10) : null
           }
         </PluginChild>
       </div>

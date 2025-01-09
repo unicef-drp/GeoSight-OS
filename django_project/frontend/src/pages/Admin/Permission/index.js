@@ -41,10 +41,10 @@ import { IconTextField } from "../../../components/Elements/Input";
 import SearchIcon from "@mui/icons-material/Search";
 import { USER_COLUMNS } from "../ModalSelector/User";
 import { ShareIcon } from "../../../components/Icons";
-import { MainDataGrid } from "../../../components/MainDataGrid";
+import { MainDataGrid } from "../../../components/Table";
+import { Checkbox } from "@mui/material";
 
 import './style.scss';
-import { Checkbox } from "@mui/material";
 
 /**
  * Permission Configuration Form Table data selection

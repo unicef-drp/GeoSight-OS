@@ -14,7 +14,7 @@
  */
 
 import React, { Fragment, useEffect, useState } from 'react';
-import { MainDataGrid } from "../../../../components/MainDataGrid";
+import { MainDataGrid } from "../../../../components/Table";
 import { ThemeButton } from "../../../../components/Elements/Button";
 
 import './style.scss';

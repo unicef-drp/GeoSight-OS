@@ -16,6 +16,7 @@
 'use strict';
 
 import i18n from "i18next";
+import { isArray } from "chart.js/helpers";
 
 /**
  * Deep copy of dictionary
@@ -121,6 +122,12 @@ export function capitalize(target) {
 export function jsonToUrlParams(object) {
   const params = []
   for (const [key, value] of Object.entries(object)) {
+    if ([null, undefined].includes(value)) {
+      continue
+    }
+    if (isArray(value) && !value.length) {
+      continue
+    }
     params.push(`${key}=${value}`)
   }
   return params.join('&')
@@ -516,5 +523,5 @@ export function toJson(val) {
  * Sleep
  */
 export function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise(resolve => setTimeout(resolve, ms));
 }

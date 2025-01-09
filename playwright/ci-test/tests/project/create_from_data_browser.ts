@@ -75,8 +75,8 @@ test.describe('Create project from dataset', () => {
     await page.getByRole('option', { name: 'Sample Indicator A' }).click();
     await page.getByRole('combobox').nth(3).click();
     await page.getByRole('option', { name: 'value' }).click();
-    await page.getByRole('button', { name: 'Apply' }).click();
     await expect(page.locator('label').filter({ hasText: 'No filter (global latest' })).toBeDisabled();
+    await page.getByRole('button', { name: 'Apply' }).click();
 
     // Save
     await page.getByText('Save').isEnabled();
@@ -162,5 +162,15 @@ test.describe('Create project from dataset', () => {
     await expect(page.getByText('Sample Indicator A').nth(1)).toBeVisible();
     await expect(page.getByText('Sample Indicator B').nth(1)).toBeVisible();
     await expect(page.getByText('Chart Layer').nth(1)).toBeVisible();
+
+    // ------------------------------------
+    // DELETE PROJECT
+    // ------------------------------------
+    await page.locator('.MoreActionIcon').click();
+    await page.locator('.MuiMenu-root .MuiButtonBase-root .error').click();
+    await expect(page.locator('.modal--content ')).toContainText(`Are you sure you want to delete : Test From Dataset?`);
+    await page.getByRole('button', { name: 'Confirm' }).click();
+    await expect(page.getByText('Create New Project')).toBeVisible();
+    await expect(page.getByText('Test From Dataset')).toBeHidden();
   });
 });

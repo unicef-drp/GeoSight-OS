@@ -15,7 +15,6 @@
 
 
 import React from 'react';
-import { ButtonProps } from "./Button";
 
 declare module './Button' {
   interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -31,4 +30,6 @@ declare module './Button' {
   export function AddButton(props: ButtonProps): JSX.Element;
 
   export function DeleteButton(props: ButtonProps): JSX.Element;
+
+  export function EditButton(props: ButtonProps): JSX.Element;
 }

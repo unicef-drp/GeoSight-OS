@@ -28,15 +28,15 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 import { DeleteIcon } from "../../../components/Icons";
 import MoreAction from "../../../components/Elements/MoreAction";
-import { ConfirmDialog } from "../../../components/ConfirmDialog";
 import {
   Notification,
   NotificationStatus
 } from "../../../components/Notification";
-import { ServerTable } from "../Components/Table/ServerTable";
-import { DeleteButton, EditButton } from "../../../components/Elements/Button";
+import { EditButton } from "../../../components/Elements/Button";
 import { UpdatePermissionModal } from "./UpdatePermissionModal";
 import { DjangoRequests } from "../../../Requests";
+import { ServerTable } from "../../../components/Table";
+import { useConfirmDialog } from "../../../providers/ConfirmDialog";
 
 import './style.scss';
 
@@ -53,9 +53,8 @@ export const DataAccessTable = forwardRef(
      dataName = 'Public'
    }, ref
   ) => {
-    const deleteDialogRef = useRef(null);
+    const { openConfirmDialog } = useConfirmDialog();
     const tableRef = useRef(null);
-    const [deletingIds, setDeletingIds] = useState([]);
 
     /** Refresh data **/
     useImperativeHandle(ref, () => ({
@@ -184,7 +183,8 @@ export const DataAccessTable = forwardRef(
           field: 'permission', headerName: 'Permission', width: 200,
           renderCell: (params) => {
             return renderPermission(params, 'permission')
-          }
+          },
+          sortable: false
         })
     }
 
@@ -196,8 +196,29 @@ export const DataAccessTable = forwardRef(
         <MoreAction moreIcon={<MoreVertIcon/>}>
           <div className='error' onClick={
             () => {
-              setDeletingIds([params.id]);
-              deleteDialogRef?.current?.open();
+              const deletingIds = [params.id]
+              openConfirmDialog({
+                header: 'Delete confirmation',
+                onConfirmed: () => {
+                  DjangoRequests.delete(
+                    urlData,
+                    { ids: deletingIds }
+                  ).then(response => {
+                    tableRef?.current?.refresh();
+                    setSelectionModel(selectionModel.filter(id => !deletingIds.includes(id)))
+                  }).catch(error => {
+                      notify('Failed to update data', NotificationStatus.ERROR);
+                    }
+                  )
+                },
+                onRejected: () => {
+                },
+                children: <div>
+                  Are you sure want to
+                  delete {deletingIds.length ? deletingIds.length : 1}&nbsp;
+                  {dataName.toLowerCase()}?
+                </div>,
+              })
             }
           }>
             <DeleteIcon/> Delete
@@ -220,19 +241,8 @@ export const DataAccessTable = forwardRef(
 
     return <div className='AdminList DataAccessAdminTable'>
       <ServerTable
-        header={
+        rightHeader={
           <Fragment>
-            {
-              ableToDelete ? <DeleteButton
-                disabled={!selectionModel.length}
-                variant="Error Reverse"
-                text={"Delete"}
-                onClick={() => {
-                  setDeletingIds(selectionModel)
-                  deleteDialogRef?.current?.open()
-                }}
-              /> : null
-            }
             <EditButton
               disabled={!selectionModel.length}
               variant="primary Reverse"
@@ -278,37 +288,27 @@ export const DataAccessTable = forwardRef(
             />
           </Fragment>
         }
-        urlData={urlData}
+        url={urlData}
+        dataName={dataName}
         columns={COLUMNS}
         selectionModel={selectionModel}
         setSelectionModel={setSelectionModel}
         getParameters={getParameters}
         checkboxSelection={true}
+        defaults={{
+          sort: [
+            { field: 'indicator_name', sort: 'asc' },
+            { field: 'dataset_name', sort: 'asc' }
+          ]
+        }}
+        enable={
+          {
+            delete: ableToDelete,
+            select: true
+          }
+        }
         ref={tableRef}
       />
-      <ConfirmDialog
-        onConfirmed={() => {
-          DjangoRequests.delete(
-            urlData,
-            { ids: deletingIds }
-          ).then(response => {
-            tableRef?.current?.refresh();
-            setSelectionModel(selectionModel.filter(id => !deletingIds.includes(id)))
-            setDeletingIds([])
-          }).catch(error => {
-              notify('Failed to update data', NotificationStatus.ERROR);
-            }
-          )
-        }}
-        ref={deleteDialogRef}
-      >
-        <div>
-          Are you sure want to
-          delete {deletingIds.length ? deletingIds.length : 1}&nbsp;
-          {dataName.toLowerCase() + (deletingIds.length > 1 ? 's' : '')} data
-          access?
-        </div>
-      </ConfirmDialog>
       <Notification ref={notificationRef}/>
     </div>
   }

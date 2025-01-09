@@ -13,8 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { useRef } from 'react';
-import $ from "jquery";
+import React from 'react';
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -22,10 +21,12 @@ import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
 import { pageNames } from '../../index';
 import { COLUMNS, COLUMNS_ACTION } from "../../Components/List";
-import { AdminList } from "../../AdminList";
 import PermissionModal from "../../Permission";
 import { VisibilityIcon } from "../../../../components/Icons";
-import { ConfirmDialog } from "../../../../components/ConfirmDialog";
+import AdminList from "../../../../components/AdminList";
+import { useConfirmDialog } from "../../../../providers/ConfirmDialog";
+import { DjangoRequests } from "../../../../Requests";
+
 
 import './style.scss';
 
@@ -34,42 +35,36 @@ export function resourceActions(params) {
 }
 
 export function resourceActionsList(params) {
-  const approveRef = useRef(null);
-  const detailUrl = urls.api.detail;
   const permission = params.row.permission
+  const { openConfirmDialog } = useConfirmDialog();
   return COLUMNS_ACTION(
     params, urls.admin.dashboardList, null, null,
     !permission || permission.delete ? <>
       <div onClick={
         () => {
-          approveRef?.current?.open()
+          openConfirmDialog({
+            header: 'Duplication confirmation',
+            onConfirmed: async () => {
+              const api = `/api/dashboard/${params.id}/duplicate`;
+              await DjangoRequests.post(api, {}).then(response => {
+                try {
+                  params.columns[params.columns.length - 1]?.tableRef.current.refresh()
+                } catch (err) {
+                  location.reload();
+                }
+              })
+            },
+            onRejected: () => {
+            },
+            children: <div>
+              Are you sure you want to duplicate
+              : {params.row.name ? params.row.name : params.row.id}?
+            </div>,
+          })
         }
       }>
         <ContentCopyIcon/> Duplicate
       </div>
-      {/* APPROVE */}
-      <ConfirmDialog
-        header='Approve duplication'
-        autoClose={false}
-        onConfirmed={() => {
-          const api = detailUrl.replace('/0', `/${params.id}`) + 'duplicate';
-          $.ajax({
-            url: api,
-            method: 'POST',
-            success: function () {
-              location.reload();
-            },
-            beforeSend: beforeAjaxSend
-          });
-        }}
-        ref={approveRef}
-      >
-        <div>
-          Are you sure you want to duplicate
-          : {params.row.name ? params.row.name : params.row.id}?
-        </div>
-        <br/>
-      </ConfirmDialog>
     </> : null
   )
 }
@@ -135,10 +130,22 @@ export default function DashboardList() {
     },
   }
   return <AdminList
+    url={{
+      list: urls.api.list,
+      batch: urls.api.batch,
+      detail: urls.api.detail,
+      edit: urls.api.edit,
+      create: urls.api.create,
+    }}
+    title={contentTitle}
     columns={columns}
     pageName={pageName}
-    listUrl={urls.api.list}
     multipleDelete={true}
+    defaults={{
+      sort: [
+        { field: 'name', sort: 'asc' }
+      ]
+    }}
   />
 }
 

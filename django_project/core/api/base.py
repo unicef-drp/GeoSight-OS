@@ -32,8 +32,16 @@ User = get_user_model()
 class FilteredAPI(object):
     """Return User list."""
 
-    def filter_query(self, request, query, ignores: list, fields: list = None):
+    def filter_query(
+            self, request, query, ignores: list, fields: list = None,
+            sort: str = None, none_is_null: bool = True,
+    ):
         """Return filter query."""
+        # Exclude sort to filter
+        if not ignores:
+            ignores = []
+        ignores.append('sort')
+
         for param, value in request.GET.items():
             is_equal = True
             if value[0] == '!':
@@ -85,7 +93,7 @@ class FilteredAPI(object):
                 except (ValueError, TypeError):
                     pass
             try:
-                if 'NaN' in value or 'None' in value:
+                if none_is_null and ('NaN' in value or 'None' in value):
                     param = f'{field}__isnull'
                     value = True
 
@@ -97,4 +105,8 @@ class FilteredAPI(object):
                 raise SuspiciousOperation(f'Can not query param {param}')
             except ValidationError as e:
                 raise SuspiciousOperation(e)
+
+        if sort:
+            query = query.order_by(sort)
+
         return query
