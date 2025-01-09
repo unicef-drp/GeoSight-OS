@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 
 // URL That we need to check
 const timeout = 2000;
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 test.describe('View project', () => {
   test.beforeEach(async ({ page }) => {
@@ -162,6 +163,7 @@ test.describe('View project', () => {
 
     // Got to embed page
     await page.goto(embedUrl);
+    await delay(2000)
     await page.getByRole('button', { name: 'Close' }).click();
     await expect(page.getByLabel(layer1)).toBeVisible();
     await expect(page.locator('.MapLegendSectionTitle')).toContainText(layer1);

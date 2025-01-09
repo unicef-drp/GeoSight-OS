@@ -26,7 +26,7 @@ import Admin, { pageNames } from '../../../index';
 import AdminForm from '../../../Components/Form'
 import { fetchJSON } from "../../../../../Requests";
 import UserSelector, { USER_COLUMNS } from "../../../ModalSelector/User";
-import { MainDataGrid } from "../../../../../components/MainDataGrid";
+import { MainDataGrid } from "../../../../../components/Table";
 import { resourceActions } from "../List";
 
 import './style.scss';

@@ -13,7 +13,12 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { forwardRef, useImperativeHandle, useState } from 'react';
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useState
+} from 'react';
 
 import Modal, { ModalContent, ModalFooter, ModalHeader } from "../Modal";
 import { ThemeButton } from "../Elements/Button";
@@ -35,6 +40,14 @@ export const ConfirmDialog = forwardRef(
   ) => {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    /*** When page size and filter changed */
+    useEffect(() => {
+        if (!open) {
+          setLoading(false)
+        }
+      }, [open]
+    )
 
     // Set Open
     useImperativeHandle(ref, () => ({
@@ -84,8 +97,9 @@ export const ConfirmDialog = forwardRef(
             <ThemeButton
               variant="primary Basic"
               disabled={loading || props.disabledConfirm}
-              onClick={() => {
-                onConfirmed()
+              onClick={async () => {
+                setLoading(true)
+                await onConfirmed()
                 if (autoClose) {
                   setOpen(false)
                 } else {

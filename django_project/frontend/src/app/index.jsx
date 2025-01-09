@@ -20,6 +20,7 @@ import c from 'classnames';
 import NavBar from '../components/Navbar';
 import { EmbedConfig } from "../utils/embed";
 import { urlParams } from "../utils/main";
+import { ConfirmDialogProvider } from "../providers/ConfirmDialog";
 
 import './mui.scss';
 import './app.scss';
@@ -69,7 +70,9 @@ export function render(App, store) {
   const root = createRoot(document.getElementById('app'));
   root.render(
     <Provider store={store}>
-      <App/>
+      <ConfirmDialogProvider>
+        <App/>
+      </ConfirmDialogProvider>
     </Provider>
   )
 }

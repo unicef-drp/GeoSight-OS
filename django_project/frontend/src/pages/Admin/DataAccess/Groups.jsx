@@ -36,9 +36,18 @@ const PERMISSIONS = [
 
 const COLUMNS = [
   { field: 'id', headerName: 'id', hide: true },
-  { field: 'indicator_name', headerName: 'Indicator', flex: 1 },
-  { field: 'dataset_name', headerName: 'View', flex: 0.5 },
-  { field: 'group_name', headerName: 'Group', flex: 0.5 }
+  {
+    field: 'indicator_name', headerName: 'Indicator', flex: 1,
+    orderField: 'obj__obj__indicator__name'
+  },
+  {
+    field: 'dataset_name', headerName: 'View', flex: 0.5,
+    orderField: 'obj__obj__reference_layer__name'
+  },
+  {
+    field: 'group_name', headerName: 'Group', flex: 0.5,
+    orderField: 'group__name'
+  }
 ]
 
 /**
@@ -64,7 +73,7 @@ export const GroupsDataAccess = forwardRef(
       COLUMNS={COLUMNS}
       ableToDelete={true}
       PERMISSIONS={PERMISSIONS}
-      dataName='group'
+      dataName='group data access'
       ref={tableRef}
     />
   }

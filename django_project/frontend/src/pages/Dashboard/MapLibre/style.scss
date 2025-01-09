@@ -217,6 +217,19 @@
         display: block;
       }
 
+      .CurrentDate {
+        margin-right: 1rem;
+        width: 100px !important;
+
+        .ToolbarChild {
+          width: 100px !important;
+
+          a {
+            width: 100px !important;
+          }
+        }
+      }
+
       &.LeftButton, &.GlobalDateSelector {
         .Active {
           a, span {
@@ -236,8 +249,6 @@
       }
 
       &.ReferenceLayerToolbar {
-        width: 120px;
-
         a {
           opacity: 1;
         }

@@ -179,9 +179,10 @@ class DataAccessGeneralAPI(DataAccessAPI):
         if 'permission__in' in self.request.GET:
             permissions = self.request.GET.get('permission__in').split(',')
             output = output.filter(public_permission__in=permissions)
-        return output.order_by(
-            'obj__indicator__name', 'obj__reference_layer__name'
-        )
+
+        if self.request.GET.get('sort'):
+            output = output.order_by(self.request.GET.get('sort'))
+        return output
 
 
 class DataAccessUsersAPI(DataAccessAPI):
@@ -201,14 +202,12 @@ class DataAccessUsersAPI(DataAccessAPI):
         output = UserPermission.objects.filter(
             obj__obj_id__in=query.values_list('id')
         )
-        output = self.filter_query(
+        return self.filter_query(
             self.request, output,
             ignores=[],
-            fields=['permission', 'user_id']
-        )
-        return output.order_by(
-            'obj__obj__indicator__name',
-            'obj__obj__reference_layer__name'
+            fields=['permission', 'user_id'],
+            sort=self.request.GET.get('sort'),
+            none_is_null=False
         )
 
 
@@ -229,14 +228,12 @@ class DataAccessGroupsAPI(DataAccessAPI):
         output = GroupPermission.objects.filter(
             obj__obj_id__in=query.values_list('id')
         )
-        output = self.filter_query(
+        return self.filter_query(
             self.request, output,
             ignores=[],
-            fields=['permission', 'group_id']
-        )
-        return output.order_by(
-            'obj__obj__indicator__name',
-            'obj__obj__reference_layer__name'
+            fields=['permission', 'group_id'],
+            sort=self.request.GET.get('sort'),
+            none_is_null=False
         )
 
 

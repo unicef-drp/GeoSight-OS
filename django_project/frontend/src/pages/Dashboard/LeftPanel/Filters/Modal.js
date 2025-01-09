@@ -136,6 +136,7 @@ export default function FilterEditorModal(
                   setField(value)
                 }}/>
               <SelectPlaceholder
+                className='FilterEditModalQueryMethod'
                 placeholder='Pick an operation'
                 list={
                   Object.keys(OPERATOR).map((key, idx) => {

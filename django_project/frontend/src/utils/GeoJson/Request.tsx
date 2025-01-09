@@ -32,7 +32,7 @@ export default class GeoJsonRequest {
       axiosRequest.get(this.url).then(response => {
         let fields: string[] = []
         // @ts-ignore
-        response.features.map(feature => {
+        response.data.features.map(feature => {
           fields = fields.concat(Object.keys(feature.properties))
         })
         resolve(Array.from(new Set(fields)))

@@ -62,3 +62,4 @@ services:
     ports:
       # for django test server
       - "2000:2000"
+    working_dir: /home/web/django_project

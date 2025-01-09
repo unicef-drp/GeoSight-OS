@@ -29,7 +29,7 @@ frontend-dev:
 	@echo "------------------------------------------------------------------"
 	@echo "Run frontend dev"
 	@echo "------------------------------------------------------------------"
-	@cd django_project/frontend; npm install --verbose; npm run dev;
+	@cd django_project/frontend; npm run dev;
 
 dev:
 	@echo
@@ -189,6 +189,13 @@ devweb-entrypoint:
 	@echo "Running in DEVELOPMENT mode"
 	@echo "------------------------------------------------------------------"
 	@docker compose ${ARGS} exec -T dev "/home/web/django_project/entrypoint.sh"
+
+devweb-initialize:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Running in DEVELOPMENT mode"
+	@echo "------------------------------------------------------------------"
+	@docker compose $(ARGS) exec -T dev bash -c "python -u /home/web/django_project/initialize.py"
 
 sleep:
 	@echo
