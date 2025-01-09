@@ -21,6 +21,7 @@ from geosight.data.models.indicator import (
     Indicator, IndicatorRule
 )
 from geosight.data.serializer.indicator_value import *  # noqa: F403
+from geosight.data.serializer.resource import ResourceSerializer
 
 
 class IndicatorSerializer(DynamicModelSerializer):
@@ -85,15 +86,12 @@ class IndicatorSerializer(DynamicModelSerializer):
         )
 
 
-class IndicatorAdminListSerializer(DynamicModelSerializer):
+class IndicatorAdminListSerializer(ResourceSerializer):
     """Serializer for Indicator."""
 
     url = serializers.SerializerMethodField()
     category = serializers.SerializerMethodField()
     permission = serializers.SerializerMethodField()
-    modified_at = serializers.SerializerMethodField()
-    created_at = serializers.SerializerMethodField()
-    created_by = serializers.SerializerMethodField()
 
     def get_url(self, obj: Indicator):
         """Return url."""
@@ -112,25 +110,12 @@ class IndicatorAdminListSerializer(DynamicModelSerializer):
             self.context.get('user', None)
         )
 
-    def get_modified_at(self, obj: Indicator):
-        """Return indicator last modified."""
-        return obj.modified_at.strftime('%Y-%m-%d %H:%M:%S')
-
-    def get_created_at(self, obj: Indicator):
-        """Return indicator created time."""
-        return obj.modified_at.strftime('%Y-%m-%d %H:%M:%S')
-
-    def get_created_by(self, obj: Indicator):
-        """Return indicator created by."""
-        return obj.creator.username if obj.creator else ''
-
     class Meta:  # noqa: D106
         model = Indicator
         fields = (
-            'id', 'name', 'category', 'source', 'shortcode',
-            'description', 'url', 'permission', 'type',
-            'modified_at', 'created_at', 'created_by'
-        )
+                     'id', 'name', 'category', 'source', 'shortcode',
+                     'description', 'url', 'permission', 'type'
+                 ) + ResourceSerializer.Meta.fields
 
 
 class IndicatorBasicListSerializer(serializers.ModelSerializer):
