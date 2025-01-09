@@ -15,8 +15,10 @@ __date__ = '30/11/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from .basemap import *
+from .dashboard import *
 from .data_browser import *
 from .dataset import *
 from .dataset_grouped import *
+from .indicator import *
 from .related_table import *
 from .related_table_data import *

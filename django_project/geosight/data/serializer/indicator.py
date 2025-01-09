@@ -91,6 +91,9 @@ class IndicatorAdminListSerializer(DynamicModelSerializer):
     url = serializers.SerializerMethodField()
     category = serializers.SerializerMethodField()
     permission = serializers.SerializerMethodField()
+    modified_at = serializers.SerializerMethodField()
+    created_at = serializers.SerializerMethodField()
+    created_by = serializers.SerializerMethodField()
 
     def get_url(self, obj: Indicator):
         """Return url."""
@@ -109,11 +112,24 @@ class IndicatorAdminListSerializer(DynamicModelSerializer):
             self.context.get('user', None)
         )
 
+    def get_modified_at(self, obj: Indicator):
+        """Return indicator last modified."""
+        return obj.modified_at.strftime('%Y-%m-%d %H:%M:%S')
+
+    def get_created_at(self, obj: Indicator):
+        """Return indicator created time."""
+        return obj.modified_at.strftime('%Y-%m-%d %H:%M:%S')
+
+    def get_created_by(self, obj: Indicator):
+        """Return indicator created by."""
+        return obj.creator.username if obj.creator else ''
+
     class Meta:  # noqa: D106
         model = Indicator
         fields = (
             'id', 'name', 'category', 'source', 'shortcode',
-            'description', 'url', 'permission', 'type'
+            'description', 'url', 'permission', 'type',
+            'modified_at', 'created_at', 'created_by'
         )
 
 
