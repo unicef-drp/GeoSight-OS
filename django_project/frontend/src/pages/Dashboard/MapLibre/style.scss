@@ -218,13 +218,14 @@
       }
 
       .CurrentDate {
-        width: 100px!important;
+        margin-right: 1rem;
+        width: 100px !important;
 
         .ToolbarChild {
-          width: 100px!important;
+          width: 100px !important;
 
           a {
-            width: 100px!important;
+            width: 100px !important;
           }
         }
       }
@@ -248,8 +249,6 @@
       }
 
       &.ReferenceLayerToolbar {
-        width: 120px;
-
         a {
           opacity: 1;
         }
