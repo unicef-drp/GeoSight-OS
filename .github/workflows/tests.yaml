@@ -114,9 +114,9 @@ jobs:
       - name: Test Backend
         run: make devweb-test
 
-  django_app_e2e_project_test:
+  django_app_e2e_project_creation_test:
     needs: build_image
-    name: 'Django App E2E Test : Project Test'
+    name: 'Django App E2E Tests : Project Creation Tests'
     runs-on: ubuntu-latest
     env:
       APP_IMAGE: kartoza/geosight
@@ -166,11 +166,11 @@ jobs:
           npm install
           npm ci
           npx playwright install --with-deps
-          npx playwright test tests/project --workers 3
+          npx playwright test tests/project_creation --workers 2
 
-  django_app_e2e_others_test:
+  django_app_e2e_project_view_test:
     needs: build_image
-    name: 'Django App E2E Test : Other Test'
+    name: 'Django App E2E Tests : Project View Tests'
     runs-on: ubuntu-latest
     env:
       APP_IMAGE: kartoza/geosight
@@ -220,4 +220,112 @@ jobs:
           npm install
           npm ci
           npx playwright install --with-deps
-          npx playwright test $(ls -d tests/* | grep -v 'project') --workers 4
+          npx playwright test tests/project_view --workers 3
+
+  django_app_e2e_admin_list_test:
+    needs: build_image
+    name: 'Django App E2E Tests : Admin List Tests'
+    runs-on: ubuntu-latest
+    env:
+      APP_IMAGE: kartoza/geosight
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Restore Docker Image from Cache
+        uses: actions/cache@v3
+        with:
+          path: /tmp/my-image.tar
+          key: ${{ runner.os }}-docker-image-${{ hashFiles('deployment/docker/Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-docker-image-
+
+      - name: Load Docker Image
+        run: docker load -i /tmp/my-image.tar
+
+      - name: Run docker-compose services
+        working-directory: deployment
+        run: |
+          echo "Override docker-compose for testing purposes"
+          cp docker-compose.test.yml docker-compose.override.yml
+          cp .template.env .env
+          cd ../
+          make devweb
+          make wait-db
+          make devweb-initialize
+          make devweb-runserver
+          make load-test-data
+          make sleep
+
+      - name: Test production config ready
+        run: make production-check
+
+      - name: Test django endpoint
+        run: |
+          curl http://localhost:2000/
+          if [ $? -ne 0 ]; then
+            echo "Curl command failed"
+            exit 1
+          fi
+
+      - name: Test E2E
+        working-directory: ./playwright/ci-test
+        run: |
+          npm install
+          npm ci
+          npx playwright install --with-deps
+          npx playwright test tests/admin_list --workers 3
+
+  django_app_e2e_admin_edit_test:
+    needs: build_image
+    name: 'Django App E2E Tests : Admin Edit Tests'
+    runs-on: ubuntu-latest
+    env:
+      APP_IMAGE: kartoza/geosight
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Restore Docker Image from Cache
+        uses: actions/cache@v3
+        with:
+          path: /tmp/my-image.tar
+          key: ${{ runner.os }}-docker-image-${{ hashFiles('deployment/docker/Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-docker-image-
+
+      - name: Load Docker Image
+        run: docker load -i /tmp/my-image.tar
+
+      - name: Run docker-compose services
+        working-directory: deployment
+        run: |
+          echo "Override docker-compose for testing purposes"
+          cp docker-compose.test.yml docker-compose.override.yml
+          cp .template.env .env
+          cd ../
+          make devweb
+          make wait-db
+          make devweb-initialize
+          make devweb-runserver
+          make load-test-data
+          make sleep
+
+      - name: Test production config ready
+        run: make production-check
+
+      - name: Test django endpoint
+        run: |
+          curl http://localhost:2000/
+          if [ $? -ne 0 ]; then
+            echo "Curl command failed"
+            exit 1
+          fi
+
+      - name: Test E2E
+        working-directory: ./playwright/ci-test
+        run: |
+          npm install
+          npm ci
+          npx playwright install --with-deps
+          npx playwright test tests/admin_edit --workers 3
