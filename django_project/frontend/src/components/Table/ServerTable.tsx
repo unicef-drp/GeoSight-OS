@@ -263,7 +263,7 @@ const ServerTable = forwardRef(
             pagination
             loading={!data}
             pageSize={parameters.page_size}
-            rowsPerPageOptions={[2, 10, 25, 50, 100]}
+            rowsPerPageOptions={[10, 25, 50, 100]}
             onPageSizeChange={(newPageSize: number) => {
               parameters.page_size = newPageSize
               parametersChanged()
