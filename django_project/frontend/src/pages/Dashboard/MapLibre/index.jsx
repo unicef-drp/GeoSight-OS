@@ -254,7 +254,6 @@ export default function MapLibre(
               }}
             /> : null
         }
-        <GlobalDateSelector/>
         <Plugin className={'ReferenceLayerToolbar'}>
           <div>
             <PluginChild title={'Reference Layer selection'}>
@@ -262,6 +261,7 @@ export default function MapLibre(
             </PluginChild>
           </div>
         </Plugin>
+        <GlobalDateSelector/>
       </div>
 
       <div className='Toolbar-Middle'>
