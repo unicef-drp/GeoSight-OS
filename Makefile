@@ -195,7 +195,7 @@ devweb-initialize:
 	@echo "------------------------------------------------------------------"
 	@echo "Running in DEVELOPMENT mode"
 	@echo "------------------------------------------------------------------"
-	@docker compose $(ARGS) exec -T dev bash -c "python -u initialize.py"
+	@docker compose $(ARGS) exec -T dev bash -c "python -u /home/web/django_project/initialize.py"
 
 sleep:
 	@echo

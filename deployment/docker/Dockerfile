@@ -104,9 +104,8 @@ CMD ["/usr/sbin/sshd", "-D"]
 FROM dev AS test
 
 # Run npm build
-WORKDIR /home/web/django_project/frontend
-RUN npm install --verbose
-RUN npm run build
+RUN npm install --verbose --prefix frontend
+RUN npm run build --prefix frontend
 
 # Open port 8080 as we will be running our django dev server on
 EXPOSE 8080

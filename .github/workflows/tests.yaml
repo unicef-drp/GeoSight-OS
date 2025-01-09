@@ -67,13 +67,18 @@ jobs:
             type=gha,scope=test
             type=gha,scope=prod
           cache-to: type=gha,scope=test
+
       - name: Save Docker Image as Tar File
-        run: docker save -o my-image.tar ${{ env.APP_IMAGE }}
-      - name: Upload Docker Image Artifact
-        uses: actions/upload-artifact@v3
+        run: docker save -o /tmp/my-image.tar ${{ env.APP_IMAGE }}
+
+      - name: Upload Docker Image Cache
+        uses: actions/cache@v3
         with:
-          name: docker-image
-          path: my-image.tar
+          path: /tmp/my-image.tar
+          key: ${{ runner.os }}-docker-image-${{ hashFiles('deployment/docker/Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-docker-image-
+
   django_app_backend_test:
     needs: build_image
     name: 'Django App Backend Tests'
@@ -83,16 +88,17 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Download Docker Image Artifact
-        uses: actions/download-artifact@v3
+
+      - name: Restore Docker Image from Cache
+        uses: actions/cache@v3
         with:
-          name: docker-image
+          path: /tmp/my-image.tar
+          key: ${{ runner.os }}-docker-image-${{ hashFiles('deployment/docker/Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-docker-image-
+
       - name: Load Docker Image
-        run: docker load -i my-image.tar
+        run: docker load -i /tmp/my-image.tar
 
       - name: Run docker-compose services
         shell: bash
@@ -117,16 +123,17 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Download Docker Image Artifact
-        uses: actions/download-artifact@v3
+
+      - name: Restore Docker Image from Cache
+        uses: actions/cache@v3
         with:
-          name: docker-image
+          path: /tmp/my-image.tar
+          key: ${{ runner.os }}-docker-image-${{ hashFiles('deployment/docker/Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-docker-image-
+
       - name: Load Docker Image
-        run: docker load -i my-image.tar
+        run: docker load -i /tmp/my-image.tar
 
       - name: Run docker-compose services
         working-directory: deployment
@@ -170,16 +177,17 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Download Docker Image Artifact
-        uses: actions/download-artifact@v3
+
+      - name: Restore Docker Image from Cache
+        uses: actions/cache@v3
         with:
-          name: docker-image
+          path: /tmp/my-image.tar
+          key: ${{ runner.os }}-docker-image-${{ hashFiles('deployment/docker/Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-docker-image-
+
       - name: Load Docker Image
-        run: docker load -i my-image.tar
+        run: docker load -i /tmp/my-image.tar
 
       - name: Run docker-compose services
         working-directory: deployment
