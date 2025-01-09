@@ -37,8 +37,8 @@ export default function Home() {
   const userId: number = user.id;
   const mainImageTs = "{{ preferences.landing_page_banner }}";
 
-  const ownProjectsUrl = userId ? `/api/v1/dashboards?creator=${userId}&all_fields=true` : null;
-  const sharedProjectsUrl = userId ? `/api/v1/dashboards?creator=!${userId}&all_fields=true` : '/api/dashboard/list';
+  const ownProjectsUrl = userId ? `/api/v1/dashboards?creator=${userId}&page=1&page_size=1&all_fields=true` : null;
+  const sharedProjectsUrl = userId ? `/api/v1/dashboards?creator=!${userId}&page=1&page_size=1&all_fields=true` : '/api/dashboard/list';
 
   return (
     <BasicPage className='Home'>

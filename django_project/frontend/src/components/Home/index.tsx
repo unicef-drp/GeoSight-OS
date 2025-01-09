@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2025, Unicef')
  */
 
-import React, {Fragment, useEffect, useState} from 'react';
+import React, {Fragment, useEffect, useState, useRef} from 'react';
 import axios from "axios";
 import Grid from "@mui/material/Grid";
 import ImageIcon from '@mui/icons-material/Image';
@@ -56,13 +56,15 @@ export interface GeoSightProject {
 
 interface ProjectGridProps {
     projects: GeoSightProject[];
+    onScrollY: (e: any) => void;
+    containerRef: any;
 }
 
 
-
 /** Project Grid */
-function ProjectGrid({ projects }: ProjectGridProps) {
-  return <Grid container spacing={2}>
+function ProjectGrid({ projects, onScrollY, containerRef }: ProjectGridProps) {
+  projects = Array(15).fill(null).map(() => ({ ...projects[0] }));
+  return <Grid container spacing={2} className='project-grid-container' onScroll={onScrollY} ref={containerRef}>
     {
       projects.map((project: GeoSightProject, idx: number) => (
         <Grid key={idx} item xs={3}>
@@ -74,7 +76,7 @@ function ProjectGrid({ projects }: ProjectGridProps) {
                     <ImageIcon/>
                 }
               </div>
-              <div className='ProjectGridName'>{project.name}</div>
+              <div className='ProjectGridName'>{project.name} | {project.created_at} | {project.modified_at}</div>
               <div
                 className='ProjectGridDescription'
                 dangerouslySetInnerHTML={{
@@ -97,29 +99,83 @@ function ProjectGrid({ projects }: ProjectGridProps) {
 export default function ProjectList({ url, setIsLoading }: ProjectListProps) {
   const [searchProject, setSearchProject] = useState<string>('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [selectedSortBy, setSelectedSortBy] = useState<string>('Name');
+  const [selectedSortBy, setSelectedSortBy] = useState<string>('Date modified');
   const [selectedSortByAsc, setSelectedSortByAsc] = useState<boolean>(true);
+  const [nextPage, setNextPage] = useState(null);
+  const [previousPage, setPreviousPage] = useState(null);
 
-  useEffect(() => {
+  const containerRef = useRef(null);
 
-  }, [searchProject, selectedCategories, selectedSortBy, selectedSortByAsc]);
+  // switch (selectedSortBy) {
+  //   case 'Date modified':
+  //     url = selectedSortByAsc ? `${url}&sort=modified_at` : `${url}&sort=-modified_at`;
+  //     break;
+  //   case 'Date created':
+  //     url = selectedSortByAsc ? `${url}&sort=created_at`: `${url}&sort=-created_at`;
+  //     break;
+  //   case 'Name':
+  //     url = selectedSortByAsc ? `${url}&sort=name`: `${url}&sort=-created_at`;
+  //     break
+  // }
 
-  const txt = url.includes('?creator=!') ? 'Shared projects' : 'Your projects'
+  const fetchProjects = async (url: string, append: boolean = true, scrollTop: number) => {
+    if (!url) return;
+    try {
+      axios.get(url).then(response => {
+        setIsLoading(false)
+        const categories: string[] = response.data.results.filter(
+            (project: GeoSightProject) => project.category
+        ).map((project: GeoSightProject) => project.category)
+        setSelectedCategories(Array.from(new Set(categories)))
+
+        if (append) {
+          // Append projects for next page
+          setProjects((prev) => [...prev, ...response.data.results]);
+        }
+        else {
+          // Prepend projects for previous page
+          setProjects((prev) => [...response.data.results, ...prev]);
+        }
+        console.log(response.data.previous)
+        setNextPage(response.data.next);
+        setPreviousPage(response.data.previous);
+        if (containerRef.current) {
+          containerRef.current.scrollTop = scrollTop;
+        }
+      }).catch(error => {
+        console.error("Failed to fetch projects:", error);
+      })
+    } catch (error) {
+      console.error("Failed to fetch projects:", error);
+    }
+  };
+
+  const handleScroll = (e: any) => {
+    const { scrollTop, clientHeight, scrollHeight } = e.target;
+
+    // Fetch the next page if scrolled to the bottom
+    if (scrollTop + clientHeight >= scrollHeight - 10) {
+      setTimeout(async () => {
+        fetchProjects(nextPage, true, 50);
+        }, 1000);
+    }
+
+    // Fetch the previous page if scrolled to the top
+    if (scrollTop <= 10) {
+      setTimeout(async () => {
+        fetchProjects(previousPage, false, clientHeight);
+      }, 1000);
+    }
+  };
+
+  const txt = url.includes('?creator=!') || url.includes('dashboard/list') ? 'Other shared projects' : 'Your projects'
 
   const [projects, setProjects] = useState<GeoSightProject[]>([]);
 
 
   // Fetch data
   useEffect(() => {
-    axios.get(url).then(response => {
-      setIsLoading(false)
-      const categories: string[] = response.data.results.filter(
-          (project: GeoSightProject) => project.category
-      ).map((project: GeoSightProject) => project.category)
-      setSelectedCategories(Array.from(new Set(categories)))
-      setProjects(response.data.results)
-    }).catch(error => {
-    })
+    fetchProjects(url, true, 0)
   }, [])
 
   // Create category
@@ -133,7 +189,6 @@ export default function ProjectList({ url, setIsLoading }: ProjectListProps) {
   // We do filter and sort
   let sortedProjects = projects;
   if (sortedProjects) {
-    console.log(sortedProjects)
     sortedProjects = sortedProjects.filter(project => (selectedCategories.length === categories.length && !project.category) || selectedCategories.includes(project.category))
     sortedProjects.sort((a, b) => {
       let sorted = true
@@ -153,7 +208,6 @@ export default function ProjectList({ url, setIsLoading }: ProjectListProps) {
       }
       return selectedSortByAsc ? 0 : -1
     });
-    console.log(sortedProjects)
   }
 
 
@@ -205,6 +259,8 @@ export default function ProjectList({ url, setIsLoading }: ProjectListProps) {
               (project: GeoSightProject) => !searchProject || project.name.includes(searchProject) || project.description?.includes(searchProject)
           )
         }
+        onScrollY={handleScroll}
+        containerRef={containerRef}
       />
       <br/>
       <br/>
