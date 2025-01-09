@@ -63,6 +63,8 @@ interface ProjectGridProps {
 
 /** Project Grid */
 function ProjectGrid({ projects, onScrollY, containerRef }: ProjectGridProps) {
+  // @ts-ignore
+  const userId: number = user.id;
   return <Grid container spacing={2} className='project-grid-container' onScroll={onScrollY} ref={containerRef}>
     {
       projects.map((project: GeoSightProject, idx: number) => (
@@ -75,7 +77,12 @@ function ProjectGrid({ projects, onScrollY, containerRef }: ProjectGridProps) {
                     <ImageIcon/>
                 }
               </div>
-              <div className='ProjectGridName'>{project.name} | {project.created_at} | {project.modified_at}</div>
+              <div className='ProjectGridName'>{project.name}</div>
+              <div className='ProjectGridDescription'>
+                {
+                  userId ? userId == project.creator ? `Modified at: ${project.modified_at}` : null : null
+                }
+              </div>
               <div
                 className='ProjectGridDescription'
                 dangerouslySetInnerHTML={{
@@ -95,7 +102,7 @@ function ProjectGrid({ projects, onScrollY, containerRef }: ProjectGridProps) {
 /**
  * ProjectList
  */
-export default function ProjectList({ url, setIsLoading }: ProjectListProps) {
+export default function ProjectList({url, setIsLoading}: ProjectListProps) {
   const [searchProject, setSearchProject] = useState<string>('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedSortBy, setSelectedSortBy] = useState<string>('Date modified');
