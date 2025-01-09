@@ -19,16 +19,25 @@ from drf_yasg.utils import swagger_auto_schema
 from core.api_utils import common_api_params, ApiTag, ApiParams
 from geosight.data.models.indicator import Indicator
 from geosight.data.serializer.indicator import (
-    IndicatorBasicListSerializer
+    IndicatorAdminListSerializer
 )
-from .base import BaseApiV1ResourceReadOnly
+from .base import (
+    BaseApiV1ResourceReadOnly,
+    BaseApiV1ResourceDestroy,
+    BaseApiV1ResourceDelete
+)
 
 
-class IndicatorViewSet(BaseApiV1ResourceReadOnly):
+class IndicatorViewSet(
+    BaseApiV1ResourceReadOnly,
+    BaseApiV1ResourceDestroy,
+    BaseApiV1ResourceDelete
+):
     """Indicator view set."""
 
     model_class = Indicator
-    serializer_class = IndicatorBasicListSerializer
+    serializer_class = IndicatorAdminListSerializer
+    extra_exclude_fields = ['url', 'permission']
 
     @swagger_auto_schema(
         operation_id='indicator-list',

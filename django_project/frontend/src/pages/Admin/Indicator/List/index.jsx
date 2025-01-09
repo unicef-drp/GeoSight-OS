@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { Fragment, useRef } from 'react';
+import React from 'react';
 import Tooltip from "@mui/material/Tooltip";
 import DynamicFormIcon from '@mui/icons-material/DynamicForm';
 import { GridActionsCellItem } from "@mui/x-data-grid";
@@ -22,7 +22,6 @@ import { store } from '../../../../store/admin';
 import { pageNames } from '../../index';
 
 import { COLUMNS, COLUMNS_ACTION } from "../../Components/List";
-import { AdminList } from "../../AdminList";
 import PermissionModal from "../../Permission";
 import {
   DataAccessActiveIcon,
@@ -30,6 +29,7 @@ import {
   DataManagementActiveIcon,
   MapActiveIcon
 } from "../../../../components/Icons";
+import AdminList from "../../../../components/AdminList";
 
 import './style.scss';
 
@@ -187,8 +187,6 @@ export function resourceActions(params, noShare = false) {
  * Indicator List App
  */
 export default function IndicatorList() {
-  const listRef = useRef(null);
-
   // Notification
   const pageName = pageNames.Indicators
   const columns = COLUMNS(pageName, urls.admin.indicatorList);
@@ -205,15 +203,24 @@ export default function IndicatorList() {
       return actions
     },
   }
-  return <Fragment>
-    <AdminList
-      columns={columns}
-      pageName={pageName}
-      listUrl={urls.api.list}
-      multipleDelete={true}
-      ref={listRef}
-    />
-  </Fragment>
+  return <AdminList
+    url={{
+      list: urls.api.list,
+      batch: urls.api.batch,
+      detail: urls.api.detail,
+      edit: urls.api.edit,
+      create: urls.api.create,
+    }}
+    title={contentTitle}
+    columns={columns}
+    pageName={pageName}
+    multipleDelete={true}
+    defaults={{
+      sort: [
+        { field: 'name', sort: 'asc' }
+      ]
+    }}
+  />
 }
 
 render(IndicatorList, store)

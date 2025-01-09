@@ -57,6 +57,7 @@ class BaseApiV1ResourceReadOnly(BaseApiV1, viewsets.ReadOnlyModelViewSet):
 
     model_class = None
     lookup_field = 'id'
+    extra_exclude_fields = []
 
     def get_permissions(self):
         """Get the permissions based on the action."""
@@ -129,12 +130,14 @@ class BaseApiV1ResourceDelete(mixins.DestroyModelMixin):
     """Base api v1 for delete only."""
 
     model_class = None
+    lookup_field = 'id'
 
     def delete(self, request, *args, **kwargs):
         """Destroy an object."""
-        ids = request.data['ids']
+        param = f'{self.lookup_field}__in'
+        value = request.data['ids']
         for obj in self.model_class.permissions.delete(request.user).filter(
-                slug__in=ids
+                **{param: value}
         ):
             obj.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

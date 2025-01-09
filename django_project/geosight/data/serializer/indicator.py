@@ -85,7 +85,7 @@ class IndicatorSerializer(DynamicModelSerializer):
         )
 
 
-class IndicatorAdminListSerializer(serializers.ModelSerializer):
+class IndicatorAdminListSerializer(DynamicModelSerializer):
     """Serializer for Indicator."""
 
     url = serializers.SerializerMethodField()
