@@ -61,7 +61,6 @@ export function resourceActionsList(params) {
             },
             beforeSend: beforeAjaxSend
           });
-          debugger
         }}
         ref={approveRef}
       >
