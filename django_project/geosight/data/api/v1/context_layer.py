@@ -68,16 +68,6 @@ class ContextLayerViewSet(
         operation_description='Return detailed of context layer.'
     )
     def retrieve(self, request, id=None):
-        """Return detailed of context_layer."""
-        return super().retrieve(request, id=id)
-
-    @swagger_auto_schema(
-        operation_id='context-layer-detail',
-        tags=[ApiTag.CONTEXT_LAYER],
-        manual_parameters=[],
-        operation_description='Return detailed of context layer.'
-    )
-    def retrieve(self, request, id=None):
         """Return detailed of context layer."""
         return super().retrieve(request, id=id)
 
