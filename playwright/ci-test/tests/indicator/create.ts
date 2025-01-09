@@ -62,15 +62,6 @@ test.describe('Create indicator', () => {
     await page.getByText('Save As').click();
     await expect(page.locator("#Form").getByText(`The shortcode has been used by ${name}`)).toBeVisible();
 
-    // Wait submitted
-    page.on('dialog', async dialog => {
-      // Verify Dialog Message
-      await expect(dialog.message()).toContain(`Are you sure you want to delete : ${name}?`);
-
-      //Click on OK Button
-      await dialog.accept();
-    });
-
     await page.getByText(`${name}/${name} (${name})`).click();
 
     // Wait 2 second
@@ -78,6 +69,8 @@ test.describe('Create indicator', () => {
 
     await page.locator('.MoreActionIcon').click();
     await page.locator('.MuiMenu-root .MuiButtonBase-root .error').click();
+    await expect(page.locator('.modal--content ')).toContainText(`Are you sure you want to delete : ${name}?`);
+    await page.getByRole('button', { name: 'Confirm' }).click();
     await expect(page.getByText('Create New Indicator')).toBeVisible();
     await expect(page.getByText(name)).toBeHidden();
   });

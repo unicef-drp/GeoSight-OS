@@ -1,11 +1,4 @@
 First name,Last name,Email address,Role,Username
-Viewer,A,viewer.a@example.com ,Viewer,viewer.a@example.com 
-Viewer,B,viewer.b@example.com,Viewer,viewer.b@example.com
-Viewer,C,viewer.c@example.com,Viewer,viewer.c@example.com
-Viewer,D,viewer.d@example.com,Viewer,viewer.d@example.com
-Viewer,E,viewer.e@example.com,Viewer,viewer.e@example.com
-Contributor,A,contributor.a@example.com,Contributor,contributor.a@example.com
-Viewer,F,viewer.f@example.com,Viewer,viewer.f@example.com
-Creator,A,creator.a@example.com,Creator,creator.a@example.com
-Viewer,G,viewer.g@example.com,Viewer,viewer.g@example.com
-Admin,A,admin.a@example.com,Super Admin,admin.a@example.com
+admin,admin,admin@example.com,Super Admin,admin
+admin,admin,admin@example.com,Super Admin,contributor
+admin,admin,admin@example.com,Super Admin,creator

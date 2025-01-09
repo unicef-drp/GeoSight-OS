@@ -21,17 +21,17 @@ import React, {
   useRef,
   useState
 } from 'react';
-import $ from "jquery";
 
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 import { AdminTable } from '../Table';
 import { IconTextField } from '../../../../components/Elements/Input'
-import { fetchingData } from "../../../../Requests";
+import { DjangoRequests, fetchingData } from "../../../../Requests";
 import MoreAction from "../../../../components/Elements/MoreAction";
 import { dictDeepCopy, toSingular } from "../../../../utils/main";
 import { DeleteIcon, MagnifyIcon } from "../../../../components/Icons";
+import { useConfirmDialog } from "../../../../providers/ConfirmDialog";
 
 import './style.scss';
 
@@ -48,6 +48,7 @@ import './style.scss';
 export function COLUMNS_ACTION(
   params, redirectUrl, editUrl = null, detailUrl = null, moreActions = null
 ) {
+  const { openConfirmDialog } = useConfirmDialog();
   detailUrl = detailUrl ? detailUrl : urls.api.detail;
   const actions = []
 
@@ -65,29 +66,37 @@ export function COLUMNS_ACTION(
               }) : ''
             }
             {
-              detailUrl ?
-                <div className='error' onClick={
-                  () => {
-                    const api = detailUrl.replace('/0', `/${params.id}`);
-                    if (confirm(`Are you sure you want to delete : ${params.row.name ? params.row.name : params.row.id}?`)) {
-                      $.ajax({
-                        url: api,
-                        method: 'DELETE',
-                        success: function () {
-                          if (window.location.href.replace(window.location.origin, '') === redirectUrl) {
-                            location.reload();
-                          } else {
-                            window.location = redirectUrl;
-                          }
-                        },
-                        beforeSend: beforeAjaxSend
-                      });
-                      return false;
-                    }
-                  }
-                }>
+              detailUrl && <>
+                <div className='error'
+                     onClick={() => {
+                       openConfirmDialog({
+                         header: 'Delete confirmation',
+                         onConfirmed: async () => {
+                           const api = detailUrl.replace('/0', `/${params.id}`);
+                           await DjangoRequests.delete(api, {}).then(response => {
+                             try {
+                               params.columns[params.columns.length - 1]?.tableRef.current.refresh()
+                             } catch (err) {
+                               if (window.location.href.replace(window.location.origin, '') === redirectUrl) {
+                                 location.reload();
+                               } else {
+                                 window.location = redirectUrl;
+                               }
+                             }
+                           })
+                         },
+                         onRejected: () => {
+                         },
+                         children: <div>
+                           Are you sure you want to delete
+                           : {params.row.name ? params.row.name : params.row.id}?
+                         </div>,
+                       })
+                     }}
+                >
                   <DeleteIcon/> Delete
-                </div> : ''
+                </div>
+              </>
             }
           </MoreAction>
         }

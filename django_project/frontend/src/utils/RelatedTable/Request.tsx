@@ -24,10 +24,22 @@ export default class RelatedTableRequest {
 
   /** Get metadata **/
   getDetail = () => {
-    return axiosRequest.get(`/api/related-table/${this.id}/`)
+    return new Promise((resolve, reject) => {
+      axiosRequest.get(`/api/related-table/${this.id}/`).then(response => {
+        resolve(response.data)
+      }).catch(error => {
+        reject(error)
+      })
+    });
   }
   /** Get data **/
   getData = () => {
-    return axiosRequest.get(`/api/related-table/${this.id}/data`)
+    return new Promise((resolve, reject) => {
+      axiosRequest.get(`/api/related-table/${this.id}/data`).then(response => {
+        resolve(response.data)
+      }).catch(error => {
+        reject(error)
+      })
+    });
   }
 }

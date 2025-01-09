@@ -112,6 +112,18 @@ class GroupApiTest(APITestCase):
         filepath = ABS_PATH(
             'core', 'tests', '_fixtures', 'batch.group.csv'
         )
+        with open(filepath) as _file:
+            reader = csv.DictReader(_file, delimiter=',')
+            for idx, row in enumerate(list(reader)):
+                print(row)
+                create_user(
+                    row['Role'],
+                    password=self.password,
+                    username=row['Username'],
+                    first_name=row['First name'],
+                    last_name=row['Last name'],
+                    email=row['Email address'],
+                )
 
         with open(filepath) as _file:
             self.assertRequestPostView(

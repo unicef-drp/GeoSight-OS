@@ -256,7 +256,7 @@ export default function MapLibre(
         }
         <Plugin className={'ReferenceLayerToolbar'}>
           <div>
-            <PluginChild title={'Reference Layer selection'}>
+            <PluginChild title={'Reference Layer selection'} className={'ReferenceLayerSelectorWrapper'}>
               <ReferenceLayerSection/>
             </PluginChild>
           </div>

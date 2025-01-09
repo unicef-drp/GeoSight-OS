@@ -26,7 +26,7 @@ import { usePapaParse } from 'react-papaparse';
 
 import { updateDataWithSetState } from "../../utils";
 import { IconTextField } from "../../../../../../components/Elements/Input";
-import { MainDataGrid } from "../../../../../../components/MainDataGrid";
+import { MainDataGrid } from "../../../../../../components/Table";
 import { arrayToOptions, delay } from "../../../../../../utils/main";
 
 import './style.scss';

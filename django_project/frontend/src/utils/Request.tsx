@@ -16,9 +16,9 @@ axiosRequest.interceptors.request.use((config: AxiosRequestConfig) => {
 });
 
 axiosRequest.interceptors.response.use(
-  (response: AxiosResponse) => {
-    cache.set(response.config.url!, response.data);
-    return response.data;
+  (response: AxiosResponse): any => {
+    cache.set(response.config.url!, response);
+    return response;
   },
   (error: any) => {
     if (error.cached) {

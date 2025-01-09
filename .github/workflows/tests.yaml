@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup Python
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v4
         with:
           python-version: 3.8.18
           architecture: x64
@@ -41,32 +41,99 @@ jobs:
           checkName: 'Python Lint'   # NOTE: this needs to be the same as the job name
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  django_app_test:
+  build_image:
     needs: flake8_py3
-    name: 'Django App'
+    name: 'Build Docker Image'
     runs-on: ubuntu-latest
     env:
-      APP_IMAGE: kartoza/geosight
+      APP_IMAGE: kartoza/geosight:dev
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v3
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Build test image
-        uses: docker/build-push-action@v2
+        uses: docker/setup-buildx-action@v2
+      - name: Build Docker Image
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: deployment/docker/Dockerfile
           push: false
           load: true
-          target: dev
-          tags: ${{ env.APP_IMAGE }}:dev
+          target: test
+          tags: ${{ env.APP_IMAGE }}
           cache-from: |
             type=gha,scope=test
             type=gha,scope=prod
           cache-to: type=gha,scope=test
+
+      - name: Save Docker Image as Tar File
+        run: docker save -o /tmp/my-image.tar ${{ env.APP_IMAGE }}
+
+      - name: Upload Docker Image Cache
+        uses: actions/cache@v3
+        with:
+          path: /tmp/my-image.tar
+          key: ${{ runner.os }}-docker-image-${{ hashFiles('deployment/docker/Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-docker-image-
+
+  django_app_backend_test:
+    needs: build_image
+    name: 'Django App Backend Tests'
+    runs-on: ubuntu-latest
+    env:
+      APP_IMAGE: kartoza/geosight
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Restore Docker Image from Cache
+        uses: actions/cache@v3
+        with:
+          path: /tmp/my-image.tar
+          key: ${{ runner.os }}-docker-image-${{ hashFiles('deployment/docker/Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-docker-image-
+
+      - name: Load Docker Image
+        run: docker load -i /tmp/my-image.tar
+
+      - name: Run docker-compose services
+        shell: bash
+        working-directory: deployment
+        run: |
+          echo "Override docker-compose for testing purposes"
+          cp docker-compose.test.yml docker-compose.override.yml
+          cp .template.env .env
+          cd ../
+          make devweb
+          make wait-db
+          make devweb-initialize
+      - name: Test Backend
+        run: make devweb-test
+
+  django_app_e2e_project_test:
+    needs: build_image
+    name: 'Django App E2E Test : Project Test'
+    runs-on: ubuntu-latest
+    env:
+      APP_IMAGE: kartoza/geosight
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Restore Docker Image from Cache
+        uses: actions/cache@v3
+        with:
+          path: /tmp/my-image.tar
+          key: ${{ runner.os }}-docker-image-${{ hashFiles('deployment/docker/Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-docker-image-
+
+      - name: Load Docker Image
+        run: docker load -i /tmp/my-image.tar
 
       - name: Run docker-compose services
         working-directory: deployment
@@ -77,7 +144,7 @@ jobs:
           cd ../
           make devweb
           make wait-db
-          make devweb-entrypoint
+          make devweb-initialize
           make devweb-runserver
           make load-test-data
           make sleep
@@ -99,13 +166,58 @@ jobs:
           npm install
           npm ci
           npx playwright install --with-deps
-          npx playwright test --workers 1
-      - uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: playwright-report
-          path: playwright/ci-test/playwright-report/
-          retention-days: 30
+          npx playwright test tests/project --workers 3
 
-      - name: Test backend
-        run: make devweb-test
+  django_app_e2e_others_test:
+    needs: build_image
+    name: 'Django App E2E Test : Other Test'
+    runs-on: ubuntu-latest
+    env:
+      APP_IMAGE: kartoza/geosight
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Restore Docker Image from Cache
+        uses: actions/cache@v3
+        with:
+          path: /tmp/my-image.tar
+          key: ${{ runner.os }}-docker-image-${{ hashFiles('deployment/docker/Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-docker-image-
+
+      - name: Load Docker Image
+        run: docker load -i /tmp/my-image.tar
+
+      - name: Run docker-compose services
+        working-directory: deployment
+        run: |
+          echo "Override docker-compose for testing purposes"
+          cp docker-compose.test.yml docker-compose.override.yml
+          cp .template.env .env
+          cd ../
+          make devweb
+          make wait-db
+          make devweb-initialize
+          make devweb-runserver
+          make load-test-data
+          make sleep
+
+      - name: Test production config ready
+        run: make production-check
+
+      - name: Test django endpoint
+        run: |
+          curl http://localhost:2000/
+          if [ $? -ne 0 ]; then
+            echo "Curl command failed"
+            exit 1
+          fi
+
+      - name: Test E2E
+        working-directory: ./playwright/ci-test
+        run: |
+          npm install
+          npm ci
+          npx playwright install --with-deps
+          npx playwright test $(ls -d tests/* | grep -v 'project') --workers 4

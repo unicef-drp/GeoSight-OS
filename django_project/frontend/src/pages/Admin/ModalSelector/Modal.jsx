@@ -19,7 +19,7 @@ import Modal, { ModalHeader } from "../../../components/Modal";
 import { IconTextField } from "../../../components/Elements/Input";
 import { SaveButton } from "../../../components/Elements/Button";
 import { fetchJSON, postJSON } from "../../../Requests";
-import { MainDataGrid } from "../../../components/MainDataGrid";
+import { MainDataGrid } from "../../../components/Table";
 import { MagnifyIcon } from "../../../components/Icons";
 
 import './style.scss';
