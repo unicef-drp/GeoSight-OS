@@ -63,7 +63,6 @@ interface ProjectGridProps {
 
 /** Project Grid */
 function ProjectGrid({ projects, onScrollY, containerRef }: ProjectGridProps) {
-  projects = Array(15).fill(null).map(() => ({ ...projects[0] }));
   return <Grid container spacing={2} className='project-grid-container' onScroll={onScrollY} ref={containerRef}>
     {
       projects.map((project: GeoSightProject, idx: number) => (
