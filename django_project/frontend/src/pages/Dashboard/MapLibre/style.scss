@@ -217,6 +217,18 @@
         display: block;
       }
 
+      .CurrentDate {
+        width: 100px!important;
+
+        .ToolbarChild {
+          width: 100px!important;
+
+          a {
+            width: 100px!important;
+          }
+        }
+      }
+
       &.LeftButton, &.GlobalDateSelector {
         .Active {
           a, span {
