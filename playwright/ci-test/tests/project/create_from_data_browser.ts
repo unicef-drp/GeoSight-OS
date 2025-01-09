@@ -75,8 +75,8 @@ test.describe('Create project from dataset', () => {
     await page.getByRole('option', { name: 'Sample Indicator A' }).click();
     await page.getByRole('combobox').nth(3).click();
     await page.getByRole('option', { name: 'value' }).click();
-    await page.getByRole('button', { name: 'Apply' }).click();
     await expect(page.locator('label').filter({ hasText: 'No filter (global latest' })).toBeDisabled();
+    await page.getByRole('button', { name: 'Apply' }).click();
 
     // Save
     await page.getByText('Save').isEnabled();

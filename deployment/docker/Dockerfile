@@ -99,3 +99,18 @@ EXPOSE 8080
 EXPOSE 22
 
 CMD ["/usr/sbin/sshd", "-D"]
+
+
+FROM dev AS test
+
+# Run npm build
+WORKDIR /home/web/django_project/frontend
+RUN npm install --verbose
+RUN npm run build
+
+# Open port 8080 as we will be running our django dev server on
+EXPOSE 8080
+# Open port 22 as we will be using a remote interpreter from pycharm
+EXPOSE 22
+
+CMD ["/usr/sbin/sshd", "-D"]

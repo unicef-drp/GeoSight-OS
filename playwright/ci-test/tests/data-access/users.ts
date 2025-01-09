@@ -13,15 +13,41 @@ test.describe('Data access user admin', () => {
   test('Test list functions', async ({ page }) => {
     await expect(page.getByRole('button', { name: 'Share to users' })).toBeVisible();
     await page.getByRole('button', { name: 'Share to users' }).click();
+
+    // Indicators
     await page.getByRole('textbox').first().click();
-    await page.getByRole('checkbox', { name: 'Select all rows' }).check();
+    await page.getByRole('cell', {
+      name: 'Sample Indicator A',
+      exact: true
+    }).click();
+    await page.getByRole('cell', {
+      name: 'Sample Indicator B',
+      exact: true
+    }).click();
+    await page.getByRole('cell', {
+      name: 'Sample Indicator C',
+      exact: true
+    }).first().click();
+    await page.getByRole('cell', {
+      name: 'Sample Indicator D',
+      exact: true
+    }).click();
     await page.getByRole('button', { name: 'Update Selection' }).click();
+
+    // Dataset
     await page.getByRole('textbox').nth(1).click();
-    await page.getByRole('checkbox', { name: 'Select all rows' }).check();
+    await page.getByRole('cell', { name: 'Somalia', exact: true }).click();
     await page.getByRole('button', { name: 'Update Selection' }).click();
+
+    // Users
     await page.getByRole('textbox').nth(2).click();
-    await page.getByRole('checkbox', { name: 'Select all rows' }).check();
+    await page.getByRole('cell', { name: 'admin', exact: true }).click();
+    await page.getByRole('cell', { name: 'contributor', exact: true }).click();
+    await page.getByRole('cell', { name: 'creator', exact: true }).click();
+    await page.getByRole('cell', { name: 'viewer', exact: true }).click();
     await page.getByRole('button', { name: 'Update Selection' }).click();
+
+    // Apply changes
     await page.getByRole('button', { name: 'Apply Changes' }).click();
     await expect(page.getByRole('grid').first()).toContainText('Sample Indicator A');
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–16 of 16');
@@ -49,12 +75,15 @@ test.describe('Data access user admin', () => {
     // Filters
     await page.reload();
     await page.getByRole('textbox').first().click();
-    await page.getByRole('cell', { name: 'Select row' }).nth(3).click();
+    await page.getByRole('cell', { name: 'viewer', exact: true }).click();
     await page.getByRole('button', { name: 'Update Selection' }).click();
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–4 of 4');
     await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(3)).toContainText('viewer');
     await page.getByRole('textbox').nth(1).click();
-    await page.getByRole('cell', { name: 'Select row' }).first().click();
+    await page.getByRole('cell', {
+      name: 'Sample Indicator A',
+      exact: true
+    }).click();
     await page.getByRole('button', { name: 'Update Selection' }).click();
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–1 of 1');
     await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Sample Indicator A');

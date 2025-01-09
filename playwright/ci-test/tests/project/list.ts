@@ -10,6 +10,46 @@ test.describe('Dashboard list admin', () => {
     await page.goto(_url);
   });
 
+  // A use case tests scenarios
+  test('Duplicate project', async ({ page }) => {
+    // --------------------------------------------------------------
+    // CREATE PROJECT WITH OVERRIDE CONFIG
+    // --------------------------------------------------------------
+    await page.locator('.MuiButtonBase-root[data-id="demo-geosight-project"]').click();
+    await page.getByRole('menuitem', { name: 'Duplicate' }).click();
+    await page.getByRole('button', { name: 'Confirm' }).click();
+    await page.getByRole('link', {
+      name: 'Demo GeoSight Project 1',
+      exact: true
+    }).click();
+
+    const editUrl = 'http://localhost:2000/admin/project/demo-geosight-project-1/edit'
+    await page.waitForURL(editUrl)
+    await expect(page.getByPlaceholder('Example: Afghanistan Risk')).toHaveValue('Demo GeoSight Project 1');
+
+    // --------------------------------------------------------------
+    // CHECK PREVIEW
+    // --------------------------------------------------------------
+    await page.getByRole('button', { name: 'Preview' }).click();
+    const layer1 = 'Sample Indicator A'
+    const layer2 = 'Sample Indicator B'
+    await expect(page.getByLabel(layer1)).toBeVisible();
+    await expect(page.locator('.MapLegendSectionTitle')).toContainText(layer1);
+    await expect(page.getByLabel(layer1)).toBeChecked();
+    await expect(page.getByLabel(layer2)).not.toBeChecked();
+
+    // ------------------------------------
+    // DELETE PROJECT
+    // ------------------------------------
+    await page.goto(editUrl);
+    await page.locator('.MoreActionIcon').click();
+    await page.locator('.MuiMenu-root .MuiButtonBase-root .error').click();
+    await expect(page.locator('.modal--content ')).toContainText(`Are you sure you want to delete : Demo GeoSight Project 1?`);
+    await page.getByRole('button', { name: 'Confirm' }).click();
+    await expect(page.getByText('Create New Project')).toBeVisible();
+    await expect(page.getByText('Demo GeoSight Project 1')).toBeHidden();
+  });
+
   const duplicate = async (page, text) => {
     // Duplicate
     await page.locator('.MuiDataGrid-row').nth(0).locator('.MoreActionIcon').click();

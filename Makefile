@@ -190,6 +190,13 @@ devweb-entrypoint:
 	@echo "------------------------------------------------------------------"
 	@docker compose ${ARGS} exec -T dev "/home/web/django_project/entrypoint.sh"
 
+devweb-initialize:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Running in DEVELOPMENT mode"
+	@echo "------------------------------------------------------------------"
+	@docker compose $(ARGS) exec -T dev bash -c "python -u initialize.py"
+
 sleep:
 	@echo
 	@echo "------------------------------------------------------------------"

@@ -76,6 +76,11 @@ test.describe('Batch edit indicator', () => {
 
     // batch edit permission
     await delay(1000);
+    for (let i = 0; i < ids.length; i++) {
+      const _id = ids[i]
+      await page.locator(`.ResourceRow[data-id="${_id}"] .MuiDataGrid-cellCheckbox`).first().click();
+    }
+
     await page.getByRole('checkbox', { name: 'Select all rows' }).check();
     await expect(page.locator('.AdminListHeader-Count ')).toContainText('4 items on this list are selected.');
     await page.getByRole('button', { name: 'Edit' }).click();
