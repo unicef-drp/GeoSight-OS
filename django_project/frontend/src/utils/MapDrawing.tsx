@@ -349,6 +349,14 @@ export class MapDrawing {
     );
   }
 
+  redraw(features: any) {
+    this.draw.deleteAll();
+    features.forEach((feature: any) => {
+      this.draw.add(feature);
+    });
+    console.log('redraw')
+  }
+
   destroy() {
     this.map.off('draw.delete', this.setDrawState);
     this.map.off('draw.update', this.setDrawState);
