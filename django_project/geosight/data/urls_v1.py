@@ -21,7 +21,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_nested.routers import NestedSimpleRouter
 
 from geosight.data.api.v1.basemap import BasemapViewSet
-from geosight.data.api.v1.dashboard import DashboardViewSet, DashboardGroupList
+from geosight.data.api.v1.dashboard import DashboardViewSet
 from geosight.data.api.v1.data_browser import (
     DataBrowserApiList, DataBrowserApiListIds,
     DatasetApiList, DatasetApiListIds, DatasetApiQuickData
@@ -60,12 +60,6 @@ dataset_api_v1 = [
 urlpatterns = [
     url(r'^data-browser/', include(data_browser_api_v1)),
     url(r'^dataset/', include(dataset_api_v1)),
-]
-urlpatterns += [
-    url(
-        r'^dashboard-groups',
-        DashboardGroupList.as_view({'get': 'list'}),
-        name='dashboard-groups-api')
 ]
 urlpatterns += router.urls
 urlpatterns += related_tables_router.urls

@@ -215,7 +215,7 @@ export default function ProjectList({baseUrl, setIsLoading}: ProjectListProps) {
 
     // Fetch data
   useEffect(() => {
-    const categoryUrl = baseUrl.replace('&page_size=25', '&page_size=1000').replace('/api/v1/dashboards', '/api/v1/dashboard-groups')
+    const categoryUrl = baseUrl.replace('&page_size=25', '&page_size=1000').replace('/api/v1/dashboards', '/api/v1/dashboards/groups')
     axios.get(categoryUrl).then(response => {
       setAllcategories(response.data)
       setSelectedCategories(response.data)

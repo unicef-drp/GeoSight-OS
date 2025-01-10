@@ -26,8 +26,8 @@ from geosight.permission.tests._base import BasePermissionTest
 User = get_user_model()
 
 
-class BaseDashboardTest(object):
-    """Base test for api/v1/dashboard."""
+class DashboardPermissionTest(BasePermissionTest.TestCase):
+    """Test for Dashboard API."""
 
     def setUp(self):
         """To setup test."""
@@ -57,10 +57,6 @@ class BaseDashboardTest(object):
         self.resource_3.permission.update_group_permission(
             self.group, PERMISSIONS.OWNER
         )
-
-
-class DashboardPermissionTest(BaseDashboardTest, BasePermissionTest.TestCase):
-    """Test for Dashboard API."""
 
     def create_resource(self, user):
         """Create resource function."""
@@ -207,19 +203,7 @@ class DashboardPermissionTest(BaseDashboardTest, BasePermissionTest.TestCase):
         )
         self.assertIsNone(Dashboard.objects.filter(slug=slug).first())
 
-
-class DashboardGroupTest(BaseDashboardTest, BasePermissionTest.TestCase):
-    """Test Dashboard Group API."""
-
-    def create_resource(self, user):
-        """Create resource function."""
-        return None
-
-    def get_resources(self, user):
-        """Create resource function."""
-        return None
-
-    def test_list_api_by_permission(self):
+    def test_list_group(self):
         """Test list dashboarg group for user API."""
         url = reverse('dashboard-groups-api')
         self.assertRequestGetView(url, 200)
