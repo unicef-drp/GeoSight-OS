@@ -17,7 +17,7 @@
    MAP CONTAINER
    ========================================================================== */
 
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import maplibregl from 'maplibre-gl';
 import { MapboxOverlay } from '@deck.gl/mapbox/typed';
@@ -56,7 +56,7 @@ import './style.scss';
 
 // Initialize cog
 import { cogProtocol } from "@geomatico/maplibre-cog-protocol";
-import PopupToolbars from "../Toolbars/PopupToolbars";
+import { PopupToolbars } from "../Toolbars/PopupToolbars";
 import { Variables } from "../../../utils/Variables";
 
 maplibregl.addProtocol('cog', cogProtocol);
@@ -88,6 +88,12 @@ export default function MapLibre(
       Variables.DASHBOARD.TOOL.COMPARE_LAYERS
     ].includes(row.name)
   );
+
+  const drawingRef = useRef(null);
+  const redrawMeasurement = () => drawingRef.current.redrawMeasurement();
+  const isMeasurementToolActive = () => drawingRef.current.isMeasurementToolActive();
+  const redrawZonalAnalysis = () => drawingRef.current.redrawZonalAnalysis();
+  const isZonalAnalysisActive = () => drawingRef.current.isZonalAnalysisActive();
 
 
   /***
@@ -158,7 +164,14 @@ export default function MapLibre(
         layers: []
       });
       newMap.addControl(deckgl);
-      setDeckGl(deckgl)
+      setDeckGl(deckgl);
+
+      const originalAddLayer = newMap.addLayer.bind(newMap);
+      newMap.addLayer = (layer, beforeId) => {
+        originalAddLayer(layer, beforeId);
+        if (isZonalAnalysisActive()) redrawZonalAnalysis();
+        if (isMeasurementToolActive()) redrawMeasurement();
+      };
 
       // Event when resized
       window.addEventListener('resize', _ => {
@@ -293,7 +306,7 @@ export default function MapLibre(
               </div>
             </Plugin> : null
         }
-        <PopupToolbars map={map}/>
+        <PopupToolbars map={map} ref={drawingRef}/>
         <div className='Separator'/>
       </div>
 

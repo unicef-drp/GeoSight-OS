@@ -107,7 +107,14 @@ export const ZonalAnalysisTool = forwardRef((
         removeClickEvent(map, null, IdFunction);
         setDraw(null)
         map.boxZoom.enable();
-      }
+      },
+      redraw() {
+        if (draw) {
+          const features = draw.getFeatures(config.buffer)
+          draw.redraw(features);
+        }
+      },
+      isActive() {return draw}
     }));
 
     /** When start */

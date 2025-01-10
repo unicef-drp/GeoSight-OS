@@ -61,7 +61,14 @@ export const MeasurementTool = forwardRef(
     useImperativeHandle(ref, () => ({
       stop() {
         setStart(false)
-      }
+      },
+      redraw() {
+        if (draw) {
+          const features = draw.getFeatures()
+          draw.redraw(features);
+        }
+      },
+      isActive() {return draw}
     }));
 
     /**

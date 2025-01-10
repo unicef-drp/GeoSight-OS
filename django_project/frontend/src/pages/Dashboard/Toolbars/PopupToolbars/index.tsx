@@ -17,7 +17,7 @@
    Popup Toolbars
    ========================================================================== */
 
-import React, { useRef } from 'react';
+import React, { useRef, forwardRef, useImperativeHandle } from 'react';
 import maplibregl from "maplibre-gl";
 import { useSelector } from "react-redux";
 import { MeasurementTool } from "./Measurement";
@@ -38,9 +38,26 @@ interface Props {
 /**
  * PopupToolbars
  */
-export default function PopupToolbars({ map }: Props) {
+export const PopupToolbars = forwardRef((
+  { map }: Props, ref
+) => {
   const measurementRef = useRef(null);
   const zonalAnalysisRef = useRef(null);
+
+  useImperativeHandle(ref, () => ({
+    redrawMeasurement() {
+      measurementRef?.current?.redraw()
+    },
+    isMeasurementToolActive() {
+      measurementRef?.current?.isActive()
+    },
+    redrawZonalAnalysis() {
+      zonalAnalysisRef?.current?.redraw()
+    },
+    isZonalAnalysisActive() {
+      zonalAnalysisRef?.current?.isActive()
+    }
+  }));
 
   // @ts-ignore
   const { tools: dashboardTools } = useSelector(state => state.dashboard.data)
@@ -74,4 +91,4 @@ export default function PopupToolbars({ map }: Props) {
         /> : null
     }
   </>
-}
+})

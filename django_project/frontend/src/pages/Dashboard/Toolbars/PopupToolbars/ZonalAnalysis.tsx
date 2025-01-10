@@ -52,6 +52,12 @@ export const ZonalAnalysisComponent = forwardRef((
       stop() {
         toolRef?.current?.stop()
         setActive(false)
+      },
+      redraw() {
+        toolRef?.current?.redraw()
+      },
+      isActive() {
+        toolRef?.current?.isActive()
       }
     }));
 
