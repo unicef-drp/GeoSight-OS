@@ -11,10 +11,10 @@
 {% block scripts %}
     <script>
       urls.api = {
-        'list': '{% url 'related-table-list-api' %}',
+        'list': '{% url 'related_tables-list' %}?fields=__all__',
         'edit': '{% url 'admin-related-table-edit-view' 0 %}',
         'batch': '{% url 'admin-related-table-edit-batch-view' %}',
-        'detail': '{% url 'related-table-detail-api' 0 %}',
+        'detail': '{% url 'related_tables-detail' 0 %}',
         'dataView': '{% url 'admin-related-table-data-view' 0 %}',
 
         'users': '{% url 'user-list-api'%}',

@@ -20,15 +20,14 @@ from core.api_utils import common_api_params, ApiTag, ApiParams
 from geosight.data.models.dashboard import Dashboard
 from geosight.data.serializer.dashboard import DashboardBasicSerializer
 from .base import (
-    BaseApiV1ResourceReadOnly, BaseApiV1ResourceDestroy,
-    BaseApiV1ResourceDelete
+    BaseApiV1ResourceReadOnly,
+    BaseApiV1ResourceDeleteOnly
 )
 
 
 class DashboardViewSet(
     BaseApiV1ResourceReadOnly,
-    BaseApiV1ResourceDestroy,
-    BaseApiV1ResourceDelete
+    BaseApiV1ResourceDeleteOnly
 ):
     """Dashboard view set."""
 
@@ -71,8 +70,3 @@ class DashboardViewSet(
     def destroy(self, request, slug=None):
         """Destroy an object."""
         return super().destroy(request, slug=slug)
-
-    @swagger_auto_schema(auto_schema=None)
-    def delete(self, request, slug=None):
-        """Delete dashboards in batch."""
-        return super().delete(request, slug=slug)

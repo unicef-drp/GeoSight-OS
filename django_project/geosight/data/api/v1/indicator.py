@@ -23,15 +23,13 @@ from geosight.data.serializer.indicator import (
 )
 from .base import (
     BaseApiV1ResourceReadOnly,
-    BaseApiV1ResourceDestroy,
-    BaseApiV1ResourceDelete
+    BaseApiV1ResourceDeleteOnly
 )
 
 
 class IndicatorViewSet(
     BaseApiV1ResourceReadOnly,
-    BaseApiV1ResourceDestroy,
-    BaseApiV1ResourceDelete
+    BaseApiV1ResourceDeleteOnly
 ):
     """Indicator view set."""
 
@@ -76,8 +74,3 @@ class IndicatorViewSet(
     def destroy(self, request, id=None):
         """Destroy an object."""
         return super().destroy(request, id=id)
-
-    @swagger_auto_schema(auto_schema=None)
-    def delete(self, request):
-        """Delete indicators in batch."""
-        return super().delete(request)

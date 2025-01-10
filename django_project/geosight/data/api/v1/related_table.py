@@ -31,7 +31,9 @@ class RelatedTableViewSet(BaseApiV1Resource):
 
     model_class = RelatedTable
     serializer_class = RelatedTableApiSerializer
-    extra_exclude_fields = []
+    extra_exclude_fields = [
+        'fields_definition', 'version_data'
+    ]
 
     @swagger_auto_schema(
         operation_id='related-table-list',

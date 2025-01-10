@@ -23,15 +23,13 @@ from geosight.data.serializer.context_layer import (
 )
 from .base import (
     BaseApiV1ResourceReadOnly,
-    BaseApiV1ResourceDestroy,
-    BaseApiV1ResourceDelete
+    BaseApiV1ResourceDeleteOnly
 )
 
 
 class ContextLayerViewSet(
     BaseApiV1ResourceReadOnly,
-    BaseApiV1ResourceDestroy,
-    BaseApiV1ResourceDelete
+    BaseApiV1ResourceDeleteOnly
 ):
     """ContextLayer view set."""
 
@@ -80,8 +78,3 @@ class ContextLayerViewSet(
     def destroy(self, request, id=None):
         """Destroy an object."""
         return super().destroy(request, id=id)
-
-    @swagger_auto_schema(auto_schema=None)
-    def delete(self, request, id=None):
-        """Return detailed of context layer."""
-        return super().delete(request, id=id)

@@ -109,8 +109,3 @@ class BasemapViewSet(BaseApiV1Resource):
     def destroy(self, request, id=None):
         """Destroy an object."""
         return super().destroy(request, id=id)
-
-    @swagger_auto_schema(auto_schema=None)
-    def delete(self, request):
-        """Delete basemap in batch."""
-        return super().delete(request)
