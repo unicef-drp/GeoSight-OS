@@ -1,0 +1,14 @@
+.SearchInput {
+  height: 100%!important;
+
+  div.MuiInputBase-root {
+    width: 100%!important;
+    height: 100%!important;
+  }
+}
+
+div.project-grid-container {
+  overflow-y: scroll;
+  max-height: 75vh;
+  margin-top: 5px;
+}

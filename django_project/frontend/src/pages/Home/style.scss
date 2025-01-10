@@ -30,7 +30,7 @@
     min-height: 0;
   }
 
-  banner {
+  div.banner {
     height: 420px;
     position: relative;
     transition: height 0.5s;
@@ -146,14 +146,6 @@
       color: inherit;
       display: flex;
       align-items: center;
-
-      .SearchInput {
-        width: 40%;
-
-        .MuiInputBase-root {
-          width: 100%;
-        }
-      }
     }
 
     .PageContent-Content {
@@ -285,6 +277,7 @@
   .SelectWithSearch {
     position: relative;
     height: 56px;
+    background-color: white;
 
     input {
       min-height: 54px;

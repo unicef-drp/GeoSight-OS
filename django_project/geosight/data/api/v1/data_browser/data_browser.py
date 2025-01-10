@@ -162,7 +162,7 @@ class DataBrowserApiList(BaseDataBrowserApiList, ListAPIView):
                     pass
                 except IndicatorValueRejectedError as e:
                     return HttpResponseBadRequest(
-                        f'Indicator {value.indicator} : {e}'
+                        f'Indicator {value.indicator}: {e}'
                     )
             return Response('OK')
         except KeyError:
