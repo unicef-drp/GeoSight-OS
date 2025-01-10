@@ -62,6 +62,7 @@ class DashboardViewSet(
     )
     @action(detail=False, methods=['get'])
     def groups(self, request):
+        """Return dashboard group list."""
         querysets = self.get_queryset()
         groups = querysets.values_list(
             'group__name', flat=True
