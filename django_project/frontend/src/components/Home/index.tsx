@@ -111,7 +111,8 @@ const generateUrl = (
   searchProject: string,
   selectedCategories: string[],
   selectedSortBy: string,
-  selectedSortByAsc: boolean
+  selectedSortByAsc: boolean,
+  allcategories: string[]
 ) => {
   let newUrl = '';
   switch (selectedSortBy) {
@@ -122,14 +123,15 @@ const generateUrl = (
       newUrl = selectedSortByAsc ? `${baseUrl}&sort=created_at`: `${baseUrl}&sort=-created_at`;
       break;
     case 'Name':
-      newUrl = selectedSortByAsc ? `${baseUrl}&sort=name`: `${baseUrl}&sort=-created_at`;
+      newUrl = selectedSortByAsc ? `${baseUrl}&sort=name`: `${baseUrl}&sort=-name`;
       break
   }
 
   if (selectedCategories.length > 0) {
-    // const categories = selectedCategories.length > 0 ? selectedCategories.join(',') : ',';
     const categories = selectedCategories.join(',');
-    newUrl = `${newUrl}&group__name__in=${categories}`;
+    newUrl = selectedCategories === allcategories ? newUrl : `${newUrl}&group__name__in=${categories}`;
+  } else if (selectedCategories.length === 0) {
+    newUrl = selectedCategories === allcategories ? newUrl : `${newUrl}&group=0`;
   }
 
   if (searchProject) {
@@ -144,7 +146,7 @@ const generateUrl = (
 export default function ProjectList({baseUrl, setIsLoading}: ProjectListProps) {
   const [searchProject, setSearchProject] = useState<string>('');
   const [allcategories, setAllcategories] = useState<string[]>([]);
-  const [selectedCategories, setselectedCategories] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedSortBy, setSelectedSortBy] = useState<string>('Date modified');
   const [selectedSortByAsc, setSelectedSortByAsc] = useState<boolean>(true);
   const [nextPage, setNextPage] = useState(null);
@@ -204,18 +206,19 @@ export default function ProjectList({baseUrl, setIsLoading}: ProjectListProps) {
   // Fetch data
   useEffect(() => {
     setTimeout(function () {
-      const categories = selectedCategories === allcategories? '' : selectedCategories;
-      const newUrl = generateUrl(baseUrl, searchProject, selectedCategories, selectedSortBy, selectedSortByAsc);
+      const categories = selectedCategories === allcategories && selectedCategories.length === 0 ? [] : selectedCategories;
+      const newUrl = generateUrl(baseUrl, searchProject, categories, selectedSortBy, selectedSortByAsc, allcategories);
       fetchProjects(newUrl, true, 0);
     }, 1000);
   }, [searchProject, searchProject, selectedCategories, selectedSortBy, selectedSortByAsc])
+
 
     // Fetch data
   useEffect(() => {
     const categoryUrl = baseUrl.replace('&page_size=25', '&page_size=1000').replace('/api/v1/dashboards', '/api/v1/dashboard-groups')
     axios.get(categoryUrl).then(response => {
       setAllcategories(response.data)
-      setselectedCategories(response.data)
+      setSelectedCategories(response.data)
     });
   }, [])
 
@@ -238,7 +241,7 @@ export default function ProjectList({baseUrl, setIsLoading}: ProjectListProps) {
             value={selectedCategories}
             onChangeFn={(value: string[]) => {
               value.sort()
-              setselectedCategories(value)
+              setSelectedCategories(value)
             }}
             options={allcategories}
             className='CategorySelector'
