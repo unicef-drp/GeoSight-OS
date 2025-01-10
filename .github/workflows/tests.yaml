@@ -29,8 +29,13 @@ jobs:
         with:
           python-version: 3.8.18
           architecture: x64
-      - name: Checkout PyTorch
-        uses: actions/checkout@master
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Display branch
+        run: git branch --show-current
+
       - name: Install flake8
         run: pip install flake8
       - name: Install flake8-docstrings
@@ -50,6 +55,11 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Display branch
+        run: git branch --show-current
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -61,7 +71,7 @@ jobs:
           file: deployment/docker/Dockerfile
           push: false
           load: true
-          target: test
+          target: dev
           tags: ${{ env.APP_IMAGE }}
           cache-from: |
             type=gha,scope=test
@@ -88,6 +98,10 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Display branch
+        run: git branch --show-current
 
       - name: Restore Docker Image from Cache
         uses: actions/cache@v3
@@ -110,7 +124,7 @@ jobs:
           cd ../
           make devweb
           make wait-db
-          make devweb-initialize
+          make devweb-entrypoint
       - name: Test Backend
         run: make devweb-test
 
@@ -123,6 +137,10 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Display branch
+        run: git branch --show-current
 
       - name: Restore Docker Image from Cache
         uses: actions/cache@v3
@@ -144,7 +162,7 @@ jobs:
           cd ../
           make devweb
           make wait-db
-          make devweb-initialize
+          make devweb-entrypoint
           make devweb-runserver
           make load-test-data
           make sleep
@@ -177,6 +195,10 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Display branch
+        run: git branch --show-current
 
       - name: Restore Docker Image from Cache
         uses: actions/cache@v3
@@ -198,7 +220,7 @@ jobs:
           cd ../
           make devweb
           make wait-db
-          make devweb-initialize
+          make devweb-entrypoint
           make devweb-runserver
           make load-test-data
           make sleep
@@ -231,6 +253,10 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Display branch
+        run: git branch --show-current
 
       - name: Restore Docker Image from Cache
         uses: actions/cache@v3
@@ -252,7 +278,7 @@ jobs:
           cd ../
           make devweb
           make wait-db
-          make devweb-initialize
+          make devweb-entrypoint
           make devweb-runserver
           make load-test-data
           make sleep
@@ -285,6 +311,10 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Display branch
+        run: git branch --show-current
 
       - name: Restore Docker Image from Cache
         uses: actions/cache@v3
@@ -306,7 +336,7 @@ jobs:
           cd ../
           make devweb
           make wait-db
-          make devweb-initialize
+          make devweb-entrypoint
           make devweb-runserver
           make load-test-data
           make sleep
