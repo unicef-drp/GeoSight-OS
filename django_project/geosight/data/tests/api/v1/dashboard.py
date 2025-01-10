@@ -26,16 +26,10 @@ from geosight.permission.tests._base import BasePermissionTest
 User = get_user_model()
 
 
-class DashboardPermissionTest(BasePermissionTest.TestCase):
-    """Test for Dashboard API."""
-
-    def create_resource(self, user):
-        """Create resource function."""
-        return None
-
-    def get_resources(self, user):
-        """Create resource function."""
-        return None
+class BaseDashboardTest(object):
+    """
+    Base test for api/v1/dashboard
+    """
 
     def setUp(self):
         """To setup test."""
@@ -65,6 +59,18 @@ class DashboardPermissionTest(BasePermissionTest.TestCase):
         self.resource_3.permission.update_group_permission(
             self.group, PERMISSIONS.OWNER
         )
+
+
+class DashboardPermissionTest(BaseDashboardTest, BasePermissionTest.TestCase):
+    """Test for Dashboard API."""
+
+    def create_resource(self, user):
+        """Create resource function."""
+        return None
+
+    def get_resources(self, user):
+        """Create resource function."""
+        return None
 
     def test_list_api_by_permission(self):
         """Test List API."""
@@ -202,3 +208,38 @@ class DashboardPermissionTest(BasePermissionTest.TestCase):
             slug, 'dashboards-detail'
         )
         self.assertIsNone(Dashboard.objects.filter(slug=slug).first())
+
+
+class DashboardGroupTest(BaseDashboardTest, BasePermissionTest.TestCase):
+    """
+    Test Dashboard Group API.
+    """
+
+    def create_resource(self, user):
+        """Create resource function."""
+        return None
+
+    def get_resources(self, user):
+        """Create resource function."""
+        return None
+
+    def test_list_api_by_permission(self):
+        """Test list dashboarg group for user API."""
+        url = reverse('dashboard-groups-api')
+        self.assertRequestGetView(url, 200)
+
+        response = self.assertRequestGetView(url, 200, user=self.admin)
+        self.assertEqual(len(response.json()), 3)
+        groups = list(Dashboard.objects.values_list('group__name', flat=True).distinct())
+        self.assertEqual(groups, groups)
+
+        response = self.assertRequestGetView(url, 200, user=self.viewer)
+        self.assertEqual(len(response.json()), 0)
+
+        response = self.assertRequestGetView(url, 200, user=self.creator)
+        self.assertEqual(len(response.json()), 1)
+
+        response = self.assertRequestGetView(
+            url, 200, user=self.creator_in_group
+        )
+        self.assertEqual(response.json(), ['Group 3'])

@@ -26,7 +26,7 @@ import './style.scss';
 
 
 interface ProjectListProps {
-  url: string;
+  baseUrl: string;
   setIsLoading: (val: boolean) => void;
 }
 
@@ -63,6 +63,12 @@ interface ProjectGridProps {
 
 /** Project Grid */
 function ProjectGrid({ projects, onScrollY, containerRef }: ProjectGridProps) {
+  // let newProjects = [];
+  // for (let i = 0; i < 13; i++) {
+  //     let baseProject = projects[i % projects.length];
+  //     if (baseProject) newProjects.push(baseProject);
+  // }
+  // projects = newProjects;
   // @ts-ignore
   const userId: number = user.id;
   return <Grid container spacing={2} className='project-grid-container' onScroll={onScrollY} ref={containerRef}>
@@ -99,50 +105,68 @@ function ProjectGrid({ projects, onScrollY, containerRef }: ProjectGridProps) {
   </Grid>
 }
 
+
+const generateUrl = (
+  baseUrl: string,
+  searchProject: string,
+  selectedCategories: string[],
+  selectedSortBy: string,
+  selectedSortByAsc: boolean
+) => {
+  let newUrl = '';
+  switch (selectedSortBy) {
+    case 'Date modified':
+      newUrl = selectedSortByAsc ? `${baseUrl}&sort=modified_at` : `${baseUrl}&sort=-modified_at`;
+      break;
+    case 'Date created':
+      newUrl = selectedSortByAsc ? `${baseUrl}&sort=created_at`: `${baseUrl}&sort=-created_at`;
+      break;
+    case 'Name':
+      newUrl = selectedSortByAsc ? `${baseUrl}&sort=name`: `${baseUrl}&sort=-created_at`;
+      break
+  }
+
+  if (selectedCategories.length > 0) {
+    // const categories = selectedCategories.length > 0 ? selectedCategories.join(',') : ',';
+    const categories = selectedCategories.join(',');
+    newUrl = `${newUrl}&group__name__in=${categories}`;
+  }
+
+  if (searchProject) {
+    newUrl = `${newUrl}&name__icontains=${searchProject}`;
+  }
+  return newUrl;
+}
+
 /**
  * ProjectList
  */
-export default function ProjectList({url, setIsLoading}: ProjectListProps) {
+export default function ProjectList({baseUrl, setIsLoading}: ProjectListProps) {
   const [searchProject, setSearchProject] = useState<string>('');
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [allcategories, setAllcategories] = useState<string[]>([]);
+  const [selectedCategories, setselectedCategories] = useState<string[]>([]);
   const [selectedSortBy, setSelectedSortBy] = useState<string>('Date modified');
   const [selectedSortByAsc, setSelectedSortByAsc] = useState<boolean>(true);
   const [nextPage, setNextPage] = useState(null);
   const [previousPage, setPreviousPage] = useState(null);
+  const [projects, setProjects] = useState<GeoSightProject[]>([]);
 
   const containerRef = useRef(null);
-
-  // switch (selectedSortBy) {
-  //   case 'Date modified':
-  //     url = selectedSortByAsc ? `${url}&sort=modified_at` : `${url}&sort=-modified_at`;
-  //     break;
-  //   case 'Date created':
-  //     url = selectedSortByAsc ? `${url}&sort=created_at`: `${url}&sort=-created_at`;
-  //     break;
-  //   case 'Name':
-  //     url = selectedSortByAsc ? `${url}&sort=name`: `${url}&sort=-created_at`;
-  //     break
-  // }
 
   const fetchProjects = async (url: string, append: boolean = true, scrollTop: number) => {
     if (!url) return;
     try {
       axios.get(url).then(response => {
         setIsLoading(false)
-        const categories: string[] = response.data.results.filter(
-            (project: GeoSightProject) => project.category
-        ).map((project: GeoSightProject) => project.category)
-        setSelectedCategories(Array.from(new Set(categories)))
 
         if (append) {
           // Append projects for next page
-          setProjects((prev) => [...prev, ...response.data.results]);
+          setProjects(response.data.results);
         }
         else {
           // Prepend projects for previous page
-          setProjects((prev) => [...response.data.results, ...prev]);
+          setProjects(response.data.results);
         }
-        console.log(response.data.previous)
         setNextPage(response.data.next);
         setPreviousPage(response.data.previous);
         if (containerRef.current) {
@@ -174,48 +198,26 @@ export default function ProjectList({url, setIsLoading}: ProjectListProps) {
     }
   };
 
-  const txt = url.includes('?creator=!') || url.includes('dashboard/list') ? 'Other shared projects' : 'Your projects'
-
-  const [projects, setProjects] = useState<GeoSightProject[]>([]);
-
+  const txt = baseUrl.includes('?creator=!') || !baseUrl.includes('?creator=') ?
+    'Other shared projects' : 'Your projects'
 
   // Fetch data
   useEffect(() => {
-    fetchProjects(url, true, 0)
-  }, [])
+    setTimeout(function () {
+      const categories = selectedCategories === allcategories? '' : selectedCategories;
+      const newUrl = generateUrl(baseUrl, searchProject, selectedCategories, selectedSortBy, selectedSortByAsc);
+      fetchProjects(newUrl, true, 0);
+    }, 1000);
+  }, [searchProject, searchProject, selectedCategories, selectedSortBy, selectedSortByAsc])
 
-  // Create category
-  let categories: string[] = [];
-  if (projects) {
-    categories = Array.from(
-      new Set(projects.filter(project => project.category).map(project => project.category))
-    );
-  }
-
-  // We do filter and sort
-  let sortedProjects = projects;
-  if (sortedProjects) {
-    sortedProjects = sortedProjects.filter(project => (selectedCategories.length === categories.length && !project.category) || selectedCategories.includes(project.category))
-    sortedProjects.sort((a, b) => {
-      let sorted = true
-      switch (selectedSortBy) {
-        case 'Name':
-          sorted = a.name.toLowerCase() < b.name.toLowerCase();
-          break
-        case 'Date created':
-          sorted = a.created_at < b.created_at;
-          break
-        case 'Date modified':
-          sorted = a.modified_at < b.modified_at;
-          break
-      }
-      if (sorted) {
-        return selectedSortByAsc ? -1 : 1
-      }
-      return selectedSortByAsc ? 0 : -1
+    // Fetch data
+  useEffect(() => {
+    const categoryUrl = baseUrl.replace('&page_size=25', '&page_size=1000').replace('/api/v1/dashboards', '/api/v1/dashboard-groups')
+    axios.get(categoryUrl).then(response => {
+      setAllcategories(response.data)
+      setselectedCategories(response.data)
     });
-  }
-
+  }, [])
 
   // @ts-ignore
   return (
@@ -235,9 +237,10 @@ export default function ProjectList({url, setIsLoading}: ProjectListProps) {
           <MultipleSelectWithSearch
             value={selectedCategories}
             onChangeFn={(value: string[]) => {
-              setSelectedCategories(value)
+              value.sort()
+              setselectedCategories(value)
             }}
-            options={categories}
+            options={allcategories}
             className='CategorySelector'
           />
         </Grid>
@@ -260,11 +263,7 @@ export default function ProjectList({url, setIsLoading}: ProjectListProps) {
         </Grid>
       </Grid>
       <ProjectGrid
-        projects={
-          sortedProjects.filter(
-              (project: GeoSightProject) => !searchProject || project.name.includes(searchProject) || project.description?.includes(searchProject)
-          )
-        }
+        projects={projects}
         onScrollY={handleScroll}
         containerRef={containerRef}
       />

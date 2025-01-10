@@ -37,8 +37,9 @@ export default function Home() {
   const userId: number = user.id;
   const mainImageTs = "{{ preferences.landing_page_banner }}";
 
-  const ownProjectsUrl = userId ? `/api/v1/dashboards?creator=${userId}&page=1&page_size=25&all_fields=true` : null;
-  const sharedProjectsUrl = userId ? `/api/v1/dashboards?creator=!${userId}&page=1&page_size=25&all_fields=true` : '/api/dashboard/list';
+  const ownProjectsUrl = userId ? `/api/v1/dashboards?creator=${userId}&all_fields=true&page=1&page_size=25` : null;
+  const sharedProjectsUrl = userId ? `/api/v1/dashboards?creator=!${userId}&all_fields=true&page=1&page_size=25` :
+    '/api/v1/dashboards?all_fields=true&page=1&page_size=25';
 
   return (
     <BasicPage className='Home'>
@@ -82,16 +83,17 @@ export default function Home() {
           ) : null
         }
         {
-          ownProjectsUrl ? <ProjectList
-                url={ownProjectsUrl}
-                setIsLoading={setIsLoading}
-          >
-          </ProjectList> : null
+          ownProjectsUrl ?
+            <ProjectList
+              baseUrl={ownProjectsUrl}
+              setIsLoading={setIsLoading}
+            >
+            </ProjectList> : null
         }
         {
           sharedProjectsUrl ?
             <ProjectList
-              url={sharedProjectsUrl}
+              baseUrl={sharedProjectsUrl}
               setIsLoading={setIsLoading}
             >
             </ProjectList> : null
