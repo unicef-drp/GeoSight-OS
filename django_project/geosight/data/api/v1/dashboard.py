@@ -88,9 +88,8 @@ class DashboardViewSet(
 
 
 class DashboardGroupList(BaseApiV1ResourceReadOnly):
-    """
-    List Dashboard Groups
-    """
+    """List Dashboard Groups."""
+
     model_class = Dashboard
     serializer_class = DashboardBasicSerializer
     extra_exclude_fields = ['parameters']
@@ -103,6 +102,9 @@ class DashboardGroupList(BaseApiV1ResourceReadOnly):
         operation_description='List project groups.'
     )
     def list(self, request, *args, **kwargs):
+        """List dashboard groups."""
         querysets = self.get_queryset()
-        groups = querysets.values_list('group__name', flat=True).distinct().order_by('group__name')
+        groups = querysets.values_list(
+            'group__name', flat=True
+        ).distinct().order_by('group__name')
         return Response(groups)

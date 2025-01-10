@@ -61,7 +61,12 @@ urlpatterns = [
     url(r'^data-browser/', include(data_browser_api_v1)),
     url(r'^dataset/', include(dataset_api_v1)),
 ]
-urlpatterns += [url(r'^dashboard-groups', DashboardGroupList.as_view({'get': 'list'}), name='dashboard-groups-api')]
+urlpatterns += [
+    url(
+        r'^dashboard-groups',
+        DashboardGroupList.as_view({'get': 'list'}),
+        name='dashboard-groups-api')
+]
 urlpatterns += router.urls
 urlpatterns += related_tables_router.urls
 

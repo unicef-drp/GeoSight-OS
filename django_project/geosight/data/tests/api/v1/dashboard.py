@@ -27,9 +27,7 @@ User = get_user_model()
 
 
 class BaseDashboardTest(object):
-    """
-    Base test for api/v1/dashboard
-    """
+    """Base test for api/v1/dashboard."""
 
     def setUp(self):
         """To setup test."""
@@ -211,9 +209,7 @@ class DashboardPermissionTest(BaseDashboardTest, BasePermissionTest.TestCase):
 
 
 class DashboardGroupTest(BaseDashboardTest, BasePermissionTest.TestCase):
-    """
-    Test Dashboard Group API.
-    """
+    """Test Dashboard Group API."""
 
     def create_resource(self, user):
         """Create resource function."""
@@ -230,7 +226,11 @@ class DashboardGroupTest(BaseDashboardTest, BasePermissionTest.TestCase):
 
         response = self.assertRequestGetView(url, 200, user=self.admin)
         self.assertEqual(len(response.json()), 3)
-        groups = list(Dashboard.objects.values_list('group__name', flat=True).distinct())
+        groups = list(
+            Dashboard.objects.values_list(
+                'group__name', flat=True
+            ).distinct()
+        )
         self.assertEqual(groups, groups)
 
         response = self.assertRequestGetView(url, 200, user=self.viewer)
