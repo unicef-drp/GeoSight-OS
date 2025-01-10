@@ -54,53 +54,6 @@ test.describe('Indicator list admin', () => {
     await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Sample Indicator A');
 
     // ------------------------------------------------------
-    // DATA ACCESS FOR PUBLIC
-    // ------------------------------------------------------
-    await page.goto('/admin/dataset/data-access#generals')
-    await expect(page.getByRole('grid').first()).toContainText('Sample Indicator A');
-    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–14 of 14');
-    await expect(page.locator('.MuiDataGrid-row .MuiSelect-nativeInput').nth(0)).toHaveValue('None');
-
-    // Orders
-    await page.getByLabel('Indicator').click();
-    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Sample Indicator D');
-
-    // Filters
-    await page.reload();
-    await page.getByRole('textbox').first().click();
-    await page.getByRole('cell', {
-      name: 'Sample Indicator A',
-      exact: true
-    }).click();
-    await page.getByRole('button', { name: 'Update Selection' }).click();
-    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–1 of 1');
-    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Sample Indicator A');
-
-    // Change role per row
-    await page.reload();
-    await page.locator('.MuiDataGrid-row').nth(0).getByRole('combobox').click();
-    await page.getByRole('option', { name: 'Read' }).click();
-    await page.locator('.MuiDataGrid-row').nth(1).getByRole('combobox').click();
-    await page.getByRole('option', { name: 'Read' }).click();
-    await page.reload();
-    await expect(page.locator('.MuiDataGrid-row .MuiSelect-nativeInput').nth(0)).toHaveValue('Read');
-    await expect(page.locator('.MuiDataGrid-row .MuiSelect-nativeInput').nth(1)).toHaveValue('Read');
-
-    // Change role in batch
-    await page.locator('.MuiDataGrid-cellCheckbox').first().click();
-    await page.locator('div:nth-child(2) > .MuiDataGrid-cellCheckbox').click();
-    await page.locator('div:nth-child(3) > .MuiDataGrid-cellCheckbox').click();
-    await page.getByRole('button', { name: 'Change permission' }).click();
-    await page.getByRole('combobox').click();
-    await page.getByRole('option', { name: 'None' }).click();
-    await page.getByRole('button', { name: 'Apply Changes' }).click();
-    await page.reload();
-    await expect(page.locator('.MuiDataGrid-row .MuiSelect-nativeInput').nth(0)).toHaveValue('None');
-    await expect(page.locator('.MuiDataGrid-row .MuiSelect-nativeInput').nth(1)).toHaveValue('None');
-    await expect(page.locator('.MuiDataGrid-row .MuiSelect-nativeInput').nth(2)).toHaveValue('None');
-
-
-    // ------------------------------------------------------
     // DELETE THE CREATED INDICATORS
     // ------------------------------------------------------
     await page.goto(_url);

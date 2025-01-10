@@ -82,8 +82,13 @@ class BaseApiV1ResourceReadOnly(BaseApiV1, viewsets.ReadOnlyModelViewSet):
         """Return the serializer instance."""
         serializer_class = self.get_serializer_class()
         kwargs.setdefault('context', self.get_serializer_context())
-        if not self.request.GET.get('all_fields', False):
+
+        fields = self.request.GET.get('fields')
+        if not fields:
             kwargs['exclude'] = ['creator'] + self.extra_exclude_fields
+        elif fields != '__all__':
+            kwargs['fields'] = self.request.GET.get('fields').split(',')
+
         return serializer_class(*args, **kwargs)
 
     def get_queryset(self):
@@ -104,7 +109,7 @@ class BaseApiV1ResourceReadOnly(BaseApiV1, viewsets.ReadOnlyModelViewSet):
         return self.filter_query(
             self.request, query,
             sort=self.request.query_params.get('sort'),
-            ignores=['page', 'page_size', 'all_fields']
+            ignores=['page', 'page_size', 'fields']
         )
 
     def retrieve(self, request, *args, **kwargs):
@@ -147,6 +152,7 @@ class BaseApiV1Resource(
     BaseApiV1ResourceReadOnly,
     mixins.CreateModelMixin,
     BaseApiV1ResourceDestroy,
+    BaseApiV1ResourceDelete,
     GenericViewSet
 ):
     """Base API V1 for Resource."""

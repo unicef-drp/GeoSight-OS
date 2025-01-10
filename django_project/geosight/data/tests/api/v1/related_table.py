@@ -68,7 +68,7 @@ class RelatedTableApiTest(BasePermissionTest.TestCase):  # noqa: D101
 
     def test_list(self):
         """Test GET /related-tables/ ."""
-        url = reverse('related_tables-list') + '?all_fields=true'
+        url = reverse('related_tables-list') + '?fields=__all__'
         self.assertRequestGetView(url, 403)
 
         response = self.assertRequestGetView(url, 200, user=self.admin)
@@ -106,8 +106,10 @@ class RelatedTableApiTest(BasePermissionTest.TestCase):  # noqa: D101
         self.assertRequestGetView(url, 404, user=self.creator)
         self.assertRequestGetView(url, 404, user=self.admin)
 
-        url = reverse('related_tables-detail',
-                      kwargs={'id': self.resource_1.id}) + '?all_fields=true'
+        url = reverse(
+            'related_tables-detail',
+            kwargs={'id': self.resource_1.id}
+        ) + '?fields=__all__'
         self.assertRequestGetView(url, 403)
         self.assertRequestGetView(url, 403, user=self.viewer)
         self.assertRequestGetView(url, 403, user=self.creator)

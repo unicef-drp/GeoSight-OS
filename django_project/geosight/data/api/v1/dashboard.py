@@ -72,15 +72,7 @@ class DashboardViewSet(
         """Destroy an object."""
         return super().destroy(request, slug=slug)
 
-    @swagger_auto_schema(
-        operation_id='dashboard-delete',
-        tags=[ApiTag.DASHBOARD],
-        manual_parameters=[],
-        operation_description=(
-                'Delete dashboards. '
-                'Put list of ids as payload with ids=[ids]'
-        )
-    )
+    @swagger_auto_schema(auto_schema=None)
     def delete(self, request, slug=None):
-        """Destroy an object."""
+        """Delete dashboards in batch."""
         return super().delete(request, slug=slug)

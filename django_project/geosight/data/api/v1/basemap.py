@@ -29,7 +29,9 @@ class BasemapViewSet(BaseApiV1Resource):
     model_class = BasemapLayer
     form_class = BasemapFormAPI
     serializer_class = BasemapLayerSerializer
-    extra_exclude_fields = ['parameters']
+    extra_exclude_fields = [
+        'parameters', 'permission', 'url', 'icon', 'group'
+    ]
 
     @swagger_auto_schema(
         operation_id='basemap-list',
@@ -107,3 +109,8 @@ class BasemapViewSet(BaseApiV1Resource):
     def destroy(self, request, id=None):
         """Destroy an object."""
         return super().destroy(request, id=id)
+
+    @swagger_auto_schema(auto_schema=None)
+    def delete(self, request):
+        """Delete basemap in batch."""
+        return super().delete(request)

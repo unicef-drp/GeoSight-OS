@@ -78,6 +78,6 @@ class IndicatorViewSet(
         return super().destroy(request, id=id)
 
     @swagger_auto_schema(auto_schema=None)
-    def delete(self, request, id=None):
-        """Return detailed of indicator."""
-        return super().delete(request, id=id)
+    def delete(self, request):
+        """Delete indicators in batch."""
+        return super().delete(request)
