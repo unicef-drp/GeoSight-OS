@@ -21,7 +21,16 @@ export const constructUrl = function (url, params) {
   if (params && Object.keys(params).length) {
     const paramsUrl = [];
     for (const [key, value] of Object.entries(params)) {
+      if ([null, undefined].includes(value)) {
+        continue
+      }
+      if (Array.isArray(value) && !value.length) {
+        continue
+      }
       paramsUrl.push(`${key}=${value}`)
+    }
+    if (!url) {
+      return url
     }
     if (url.includes('?')) {
       url += '&' + paramsUrl.join('&')

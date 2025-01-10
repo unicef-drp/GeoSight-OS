@@ -26,7 +26,7 @@ import { ServerTableProps, } from "./types";
 import { dictDeepCopy, jsonToUrlParams } from "../../utils/main";
 import { DeleteButton, ThemeButton } from "../Elements/Button";
 import { MainDataGrid } from "./index";
-import { DjangoRequests } from "../../Requests";
+import { constructUrl, DjangoRequests } from "../../Requests";
 import { Notification, NotificationStatus } from "../Notification";
 import { useConfirmDialog } from "../../providers/ConfirmDialog";
 
@@ -119,10 +119,9 @@ const ServerTable = forwardRef(
     const loadData = (force: boolean) => {
       let _parameters = dictDeepCopy(parameters)
       _parameters.page += 1
-      _parameters = jsonToUrlParams(_parameters)
 
       // Construct url
-      const _url = url + '?' + _parameters
+      const _url = constructUrl(url, _parameters)
 
       // not force and the url are same
       if (!force && _url === prev.current.url) {

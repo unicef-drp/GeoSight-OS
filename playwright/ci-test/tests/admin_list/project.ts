@@ -87,7 +87,6 @@ test.describe('Dashboard list admin', () => {
     await duplicate(page, '1–11 of 11')
     await duplicate(page, '1–12 of 12')
 
-
     // Check pagination();
     await page.reload();
     await page.getByPlaceholder('Search Project').fill('Demo GeoSight Project 1');

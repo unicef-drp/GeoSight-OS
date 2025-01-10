@@ -1,3 +1,7 @@
+/**
+ * TODO:
+ *  This is working but broken when new indicators are being created with indicator.ts
+ */
 import { expect, test } from '@playwright/test';
 
 const timeout = 2000;

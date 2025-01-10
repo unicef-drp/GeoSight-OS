@@ -14,6 +14,7 @@ __date__ = '29/01/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import datetime
+import urllib.parse
 
 from dateutil import parser
 from rest_framework.reverse import reverse
@@ -68,8 +69,8 @@ class RelatedTableApiTest(BasePermissionTest.TestCase):  # noqa: D101
 
     def test_list(self):
         """Test GET /related-tables/ ."""
-        url = reverse('related_tables-list') + '?all_fields=true'
-        self.assertRequestGetView(url, 403)
+        url = reverse('related_tables-list') + '?fields=__all__'
+        self.assertRequestGetView(url, 200)
 
         response = self.assertRequestGetView(url, 200, user=self.admin)
         self.assertResponseContainsPaginatedList(
@@ -101,13 +102,15 @@ class RelatedTableApiTest(BasePermissionTest.TestCase):  # noqa: D101
         """Test GET /related-tables/{id} ."""
         url = reverse('related_tables-detail', args=[0])
 
-        self.assertRequestGetView(url, 403)
+        self.assertRequestGetView(url, 404)
         self.assertRequestGetView(url, 404, user=self.viewer)
         self.assertRequestGetView(url, 404, user=self.creator)
         self.assertRequestGetView(url, 404, user=self.admin)
 
-        url = reverse('related_tables-detail',
-                      kwargs={'id': self.resource_1.id}) + '?all_fields=true'
+        url = reverse(
+            'related_tables-detail',
+            kwargs={'id': self.resource_1.id}
+        )
         self.assertRequestGetView(url, 403)
         self.assertRequestGetView(url, 403, user=self.viewer)
         self.assertRequestGetView(url, 403, user=self.creator)
@@ -167,8 +170,12 @@ class RelatedTableApiTest(BasePermissionTest.TestCase):  # noqa: D101
         assert obj.description == 'Related table for tests'
         assert json['url'] == f'/api/v1/related-tables/{obj.id}/'
         assert obj.creator.get_full_name() == json['creator']
-        assert obj.created_at == parser.parse(json['created_at'])
-        assert obj.modified_at == parser.parse(json['modified_at'])
+        assert obj.created_at.strftime(
+            '%Y-%m-%d %H:%M:%S'
+        ) == json['created_at']
+        assert obj.modified_at.strftime(
+            '%Y-%m-%d %H:%M:%S'
+        ) == json['modified_at']
         for index in range(0, len(obj.fields_definition)):
             db = obj.fields_definition[index]
             api = json['fields_definition'][index]
@@ -235,6 +242,57 @@ class RelatedTableApiTest(BasePermissionTest.TestCase):  # noqa: D101
     def create_resource(self, user):  # noqa: D102
         return None
 
+    def test_delete_api(self):
+        """Test DELETE API."""
+        resource_1 = RelatedTable.permissions.create(
+            user=self.resource_creator,
+            name='Name A'
+        )
+        resource_2 = RelatedTable.permissions.create(
+            user=self.resource_creator,
+            name='Name B'
+        )
+        resource_3 = RelatedTable.permissions.create(
+            user=self.resource_creator,
+            name='Name C'
+        )
+        resource_1.permission.update_user_permission(
+            self.creator, PERMISSIONS.SHARE
+        )
+        resource_2.permission.update_user_permission(
+            self.creator, PERMISSIONS.LIST
+        )
+        resource_3.permission.update_user_permission(
+            self.creator, PERMISSIONS.OWNER
+        )
+        params = urllib.parse.urlencode(
+            {
+                'sort': 'id'
+            }
+        )
+        url = reverse('related_tables-list') + '?' + params
+        response = self.assertRequestGetView(
+            url, 200, user=self.creator
+        )
+        self.assertEqual(len(response.json()['results']), 4)
+        self.assertRequestDeleteView(
+            url, 204, user=self.creator, data={
+                'ids': [resource_1.id, resource_2.id, resource_3.id]
+            }
+        )
+        response = self.assertRequestGetView(
+            url, 200, user=self.creator
+        )
+        self.assertEqual(len(response.json()['results']), 3)
+        ids = []
+        for result in response.json()['results']:
+            ids.append(result['id'])
+        self.assertEqual(
+            ids, [
+                self.resource_3.id, resource_1.id, resource_2.id
+            ]
+        )
+
 
 def fields_match(json, resource):
     """Check if the field definition from a JSON and a model match."""
@@ -263,8 +321,12 @@ def validate_related_table(json, resource):
             json.get('description') == resource.description and
             json['url'] == f'/api/v1/related-tables/{resource.id}/' and
             json.get('creator') == resource.creator.get_full_name() and
-            to_datetime(json, 'created_at') == resource.created_at and
-            to_datetime(json, 'modified_at') == resource.modified_at and
+            json.get('created_at') == resource.created_at.strftime(
+                '%Y-%m-%d %H:%M:%S'
+            ) and
+            json.get('modified_at') == resource.modified_at.strftime(
+                '%Y-%m-%d %H:%M:%S'
+            ) and
             all_fields_match(json, resource))
 
 

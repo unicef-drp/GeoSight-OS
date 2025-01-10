@@ -15,6 +15,7 @@ __date__ = '29/11/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.forms.models import model_to_dict
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.authentication import (
     SessionAuthentication, BasicAuthentication
@@ -57,6 +58,7 @@ class BaseApiV1ResourceReadOnly(BaseApiV1, viewsets.ReadOnlyModelViewSet):
 
     model_class = None
     lookup_field = 'id'
+    extra_exclude_fields = []
 
     def get_permissions(self):
         """Get the permissions based on the action."""
@@ -81,8 +83,14 @@ class BaseApiV1ResourceReadOnly(BaseApiV1, viewsets.ReadOnlyModelViewSet):
         """Return the serializer instance."""
         serializer_class = self.get_serializer_class()
         kwargs.setdefault('context', self.get_serializer_context())
-        if not self.request.GET.get('all_fields', False):
-            kwargs['exclude'] = ['creator'] + self.extra_exclude_fields
+
+        if self.action in ['list']:
+            fields = self.request.GET.get('fields')
+            if not fields:
+                kwargs['exclude'] = ['creator'] + self.extra_exclude_fields
+            elif fields != '__all__':
+                kwargs['fields'] = self.request.GET.get('fields').split(',')
+
         return serializer_class(*args, **kwargs)
 
     def get_queryset(self):
@@ -103,7 +111,7 @@ class BaseApiV1ResourceReadOnly(BaseApiV1, viewsets.ReadOnlyModelViewSet):
         return self.filter_query(
             self.request, query,
             sort=self.request.query_params.get('sort'),
-            ignores=['page', 'page_size', 'all_fields']
+            ignores=['page', 'page_size', 'fields']
         )
 
     def retrieve(self, request, *args, **kwargs):
@@ -114,9 +122,23 @@ class BaseApiV1ResourceReadOnly(BaseApiV1, viewsets.ReadOnlyModelViewSet):
         return Response(serializer.data)
 
 
-class BaseApiV1ResourceDestroy(mixins.DestroyModelMixin):
-    """Base api v1 for destroy only."""
+class BaseApiV1ResourceDeleteOnly(mixins.DestroyModelMixin):
+    """Base api v1 for delete only."""
 
+    model_class = None
+    lookup_field = 'id'
+
+    def delete(self, request, *args, **kwargs):
+        """Destroy an object."""
+        param = f'{self.lookup_field}__in'
+        value = request.data['ids']
+        for obj in self.model_class.permissions.delete(request.user).filter(
+                **{param: value}
+        ):
+            obj.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @swagger_auto_schema(auto_schema=None)
     def destroy(self, request, *args, **kwargs):
         """Destroy an object."""
         instance = self.get_object()
@@ -125,25 +147,8 @@ class BaseApiV1ResourceDestroy(mixins.DestroyModelMixin):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class BaseApiV1ResourceDelete(mixins.DestroyModelMixin):
-    """Base api v1 for delete only."""
-
-    model_class = None
-
-    def delete(self, request, *args, **kwargs):
-        """Destroy an object."""
-        ids = request.data['ids']
-        for obj in self.model_class.permissions.delete(request.user).filter(
-                slug__in=ids
-        ):
-            obj.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-class BaseApiV1Resource(
-    BaseApiV1ResourceReadOnly,
+class BaseApiV1ResourceWriteOnly(
     mixins.CreateModelMixin,
-    BaseApiV1ResourceDestroy,
     GenericViewSet
 ):
     """Base API V1 for Resource."""
@@ -213,3 +218,14 @@ class BaseApiV1Resource(
         """Partial update of object."""
         kwargs['partial'] = True
         return self.update(request, *args, **kwargs)
+
+
+class BaseApiV1Resource(
+    BaseApiV1ResourceReadOnly,
+    BaseApiV1ResourceWriteOnly,
+    BaseApiV1ResourceDeleteOnly,
+    GenericViewSet
+):
+    """Base API V1 for Resource."""
+
+    pass

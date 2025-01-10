@@ -20,8 +20,8 @@ import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
 import { pageNames } from '../../index';
 import { COLUMNS, COLUMNS_ACTION } from "../../Components/List";
-import { AdminList } from "../../AdminList";
 import PermissionModal from "../../Permission";
+import AdminList from "../../../../components/AdminList";
 
 import './style.scss';
 
@@ -44,7 +44,7 @@ export default function StyleList() {
     getActions: (params) => {
       const permission = params.row.permission
       const actions = resourceActions(params);
-      
+
       // Unshift before more & edit action
       if (permission.share) {
         actions.unshift(
@@ -63,10 +63,22 @@ export default function StyleList() {
     },
   }
   return <AdminList
+    url={{
+      list: urls.api.list,
+      batch: urls.api.batch,
+      detail: urls.api.detail,
+      edit: urls.api.edit,
+      create: urls.api.create,
+    }}
+    title={contentTitle}
     columns={columns}
     pageName={pageName}
-    listUrl={urls.api.list}
     multipleDelete={true}
+    defaults={{
+      sort: [
+        { field: 'name', sort: 'asc' }
+      ]
+    }}
   />
 }
 
