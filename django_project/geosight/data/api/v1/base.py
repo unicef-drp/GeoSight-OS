@@ -227,4 +227,5 @@ class BaseApiV1Resource(
     GenericViewSet
 ):
     """Base API V1 for Resource."""
+
     pass
