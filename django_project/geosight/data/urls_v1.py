@@ -30,11 +30,13 @@ from geosight.data.api.v1.data_browser import (
 from geosight.data.api.v1.indicator import IndicatorViewSet
 from geosight.data.api.v1.related_table import RelatedTableViewSet
 from geosight.data.api.v1.related_table_data import RelatedTableDataViewSet
+from geosight.data.api.v1.style import StyleViewSet
 
 router = DefaultRouter()
 router.register(r'basemaps', BasemapViewSet, basename='basemaps')
 router.register(r'dashboards', DashboardViewSet, basename='dashboards')
 router.register(r'indicators', IndicatorViewSet, basename='indicators')
+router.register(r'styles', StyleViewSet, basename='styles')
 router.register(
     r'context-layers', ContextLayerViewSet, basename='context-layers'
 )

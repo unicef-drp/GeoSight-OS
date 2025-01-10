@@ -67,6 +67,7 @@ class ApiTag:
     RELATED_TABLE = 'Related table'
     RELATED_TABLE_DATA = 'Related table data'
     DATA_BROWSER = 'Data Browser'
+    STYLE = 'Style'
 
 
 class ApiParams:
