@@ -158,6 +158,7 @@ export default function StyleConfig(
                 </div>
                 <MapConfig
                   data={data}
+                  setData={setData}
                   layerInput={{
                     layer: layer,
                     layer_type: data.layer_type,
@@ -188,7 +189,7 @@ export default function StyleConfig(
                               override_style: evt.target.checked
                             })}/>
                         }
-                        label="Override style from default"/>
+                        label="Override style from default haha"/>
                     </FormGroup> : null
                 }
 

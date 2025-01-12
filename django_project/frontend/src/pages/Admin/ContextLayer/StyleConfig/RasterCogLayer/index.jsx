@@ -13,15 +13,12 @@
  * __copyright__ = ('Copyright 2024, Unicef')
  */
 
-import React, { Fragment, useEffect } from 'react';
-import { FormControl } from "@mui/material";
-import ColorPaletteStyleConfig, {
-  QUANTITATIVE_TYPE
-} from "../../../Style/Form/DynamicStyleConfig/Palette";
-import { dictDeepCopy } from "../../../../../utils/main";
-import {
-  dynamicClassificationChoices
-} from "../../../Style/Form/DynamicStyleConfig";
+import React, {Fragment, useEffect} from 'react';
+import {FormControl} from "@mui/material";
+import ColorPaletteStyleConfig, {QUANTITATIVE_TYPE} from "../../../Style/Form/DynamicStyleConfig/Palette";
+import {dictDeepCopy} from "../../../../../utils/main";
+import {dynamicClassificationChoices} from "../../../Style/Form/DynamicStyleConfig";
+import ColorSelector from "../../../../../components/Input/ColorSelector";
 
 /**
  * Map Config component.
@@ -42,6 +39,9 @@ export default function RasterCogLayer(
       newStyles.max_band = 100;
       newStyles.dynamic_class_num = 7;
       newStyles.dynamic_classification = dynamicClassificationChoices[0].value;
+      newStyles.additional_nodata = null;
+      newStyles.nodata_color = '#000000';
+      newStyles.nodata_opacity = 0;
       setData(
         {
           ...data,
@@ -68,7 +68,7 @@ export default function RasterCogLayer(
             }
           })
         }}
-        style={{ width: "fit-content", flexGrow: 1 }}
+        style={{width: "fit-content", flexGrow: 1}}
       />
       <span> - </span>
       <input
@@ -83,8 +83,72 @@ export default function RasterCogLayer(
             }
           })
         }}
-        style={{ width: "fit-content", flexGrow: 1 }}
+        style={{width: "fit-content", flexGrow: 1}}
       />
+      <br/>
+      <br/>
+      <div>
+        <div className="BasicFormSection">
+          <div className='RuleTable-Title'>NoData Value</div>
+          <input
+            placeholder='NoData Value' type='text'
+            value={styles.nodata}
+            disabled={true}
+            style={{width: "fit-content", flexGrow: 1}}
+          />
+        </div>
+        <div className="BasicFormSection">
+          <div className='RuleTable-Title'>Additional NoData Value</div>
+          <input
+            placeholder='Additional NoData Value' type='number'
+            value={styles.additional_nodata_value}
+            onChange={evt => {
+              setData({
+                ...data,
+                styles: {
+                  ...styles,
+                  additional_nodata_value: parseFloat(evt.target.value)
+                }
+              })
+            }}
+            style={{width: "fit-content", flexGrow: 1}}
+          />
+        </div>
+        <div className="BasicFormSection">
+          <div className='RuleTable-Title'>NoData Color</div>
+          <ColorSelector
+            color={styles.nodata_color ? styles.nodata_color : '#000000'}
+            onChange={evt => {
+              setData({
+                ...data,
+                styles: {
+                  ...styles,
+                  nodata_color: evt.target.value
+                }
+              })
+            }}
+            hideInput={true}
+            fullWidth={true}
+          />
+        </div>
+        <div className="BasicFormSection">
+          <div className='RuleTable-Title'>NoData Opacity (0-100)</div>
+          <input
+            placeholder='NoData Opacity' type='number'
+            value={styles.nodata_opacity ? styles.nodata_opacity : 0}
+            onChange={evt => {
+              setData({
+                ...data,
+                styles: {
+                  ...styles,
+                  nodata_opacity: parseFloat(evt.target.value)
+                }
+              })
+            }}
+            style={{width: "fit-content", flexGrow: 1}}
+          />
+        </div>
+      </div>
       <br/>
       <br/>
       {/*  Palette */}

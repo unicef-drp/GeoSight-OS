@@ -525,3 +525,14 @@ export function toJson(val) {
 export function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+export function getAreaDecimalLength(num) {
+  //    1,000,000 - show 2 decimals, if between 1,000,000 - 1 - show 3 decimals, if below 0 - show 4 digits...
+  if (num >= 1000000) {
+    return 2
+  } else if (num >= 1) {
+    return 3
+  } else {
+    return 4
+  }
+}

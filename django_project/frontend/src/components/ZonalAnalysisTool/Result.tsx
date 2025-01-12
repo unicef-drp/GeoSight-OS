@@ -17,7 +17,8 @@ import React, {
   forwardRef,
   useEffect,
   useImperativeHandle,
-  useState
+  useState,
+  useRef
 } from 'react';
 import { useSelector } from "react-redux";
 import { ContextLayer } from "../../store/dashboard/reducers/contextLayers";
@@ -28,6 +29,7 @@ import { Feature } from "geojson";
 import { fetchFromAPIValues } from "./fetchFromAPIValues";
 
 import './style.scss';
+import Tooltip from "@mui/material/Tooltip";
 
 interface Props {
   index: number;
@@ -49,6 +51,7 @@ export const ZonalAnalysisResult = forwardRef((
     const [value, setValue] = useState<number>(null);
     const [error, setError] = useState<string>(null);
     const contextLayer = contextLayers.find((ctx: ContextLayer) => ctx.id === analysisLayer.id)
+    const textRef = useRef(null);
 
     useEffect(() => {
       if (!(value == null && error == null)) {
@@ -138,7 +141,17 @@ export const ZonalAnalysisResult = forwardRef((
     }
     return (
       <tr>
-        <td>{contextLayer?.name}</td>
+        <Tooltip title={contextLayer?.name}>
+          <td
+            ref={textRef}
+            style={{
+              maxWidth: "200px",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >{contextLayer?.name}</td>
+        </Tooltip>
         <td>{analysisLayer.aggregation}</td>
         <td>{analysisLayer.aggregatedField}</td>
         <td>

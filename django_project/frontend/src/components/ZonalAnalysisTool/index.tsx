@@ -42,7 +42,7 @@ import {
 } from "./index.d";
 import { DashboardTool } from "../../store/dashboard/reducers/dashboardTool";
 import { ZonalAnalysisResult } from "./Result";
-import { dictDeepCopy, numberWithCommas } from "../../utils/main";
+import { dictDeepCopy, numberWithCommas, getAreaDecimalLength } from "../../utils/main";
 
 import './style.scss';
 import {
@@ -307,22 +307,6 @@ export const ZonalAnalysisTool = forwardRef((
     }
     return (
       <>
-        <div className='Title' style={{ display: "flex", alignItems: "center" }}>
-          <div>
-            Extract zonal statistic
-          </div>
-          <div className="Separator"/>
-          <div>
-            <ThemeButton
-              disabled={!(draw?.getFeatures().length) || !isAllAnalyzingDone}
-              variant="primary Basic"
-              style={{ margin: 0, minWidth: "100%" }}
-              onClick={analyze}
-            >
-              Run analysis
-            </ThemeButton>
-          </div>
-        </div>
         <div className='ZonalAnalysisToolConfiguration'>
           <FormControl className='MuiForm-RadioGroup'>
             <FormLabel className="MuiInputLabel-root">Selection
@@ -340,7 +324,7 @@ export const ZonalAnalysisTool = forwardRef((
                   <FormControlLabel
                     value={SELECTION_MODE.MANUAL}
                     control={<Radio disabled={!isAllAnalyzingDone}/>}
-                    label='Draw Manually'
+                    label='Draw'
                   /> : null
               }
               {
@@ -353,7 +337,7 @@ export const ZonalAnalysisTool = forwardRef((
               }
             </RadioGroup>
           </FormControl>
-          <FormControl className='MuiForm-RadioGroup'>
+          <FormControl className='MuiForm-RadioGroup Buffer-Input'>
             <FormLabel className="MuiInputLabel-root">Buffer:</FormLabel>
             <TextField
               disabled={!isAllAnalyzingDone}
@@ -372,6 +356,16 @@ export const ZonalAnalysisTool = forwardRef((
               }}
             />
           </FormControl>
+          <div>
+            <ThemeButton
+              disabled={!(draw?.getFeatures().length) || !isAllAnalyzingDone}
+              variant="primary Basic"
+              style={{margin: 0, minWidth: "100%"}}
+              onClick={analyze}
+            >
+              Run analysis
+            </ThemeButton>
+          </div>
         </div>
         <div className='PopupToolbarComponentFooter'>
           <div className='CenteredFlex'>
@@ -395,13 +389,12 @@ export const ZonalAnalysisTool = forwardRef((
                 information ? (
                     <>
                       <div>
-                        {numberWithCommas(information.area, 2)}
-                        Sq Meters
+                        {`${numberWithCommas(information.area, getAreaDecimalLength(information.area))} Sq Meters `}
                         ({information.count} feature{information.count > 1 ? 's' : ''})
                       </div>
                       <div>
-                        {numberWithCommas(information.lengthMeters, 2)} Meters
-                        ({numberWithCommas(information.lengthMiles, 2)} Miles) {information.lengthTerm}
+                        {numberWithCommas(information.lengthMeters, getAreaDecimalLength(information.lengthMeters))} Meters
+                        ({numberWithCommas(information.lengthMiles, getAreaDecimalLength(information.lengthMiles))} Miles) {information.lengthTerm}
                       </div>
                     </>
                   ) :
@@ -422,7 +415,7 @@ export const ZonalAnalysisTool = forwardRef((
                   }}
                   style={{ width: '300px' }}
                 >
-                  <AddLocationIcon/> Add new feature
+                  <AddLocationIcon/> Add
                 </ThemeButton> : null
             }
             {
