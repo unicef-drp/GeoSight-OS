@@ -19,7 +19,7 @@ export { default as DownloaderData } from "./DownloaderData";
 export { default as DataLoadingProgress } from "./DataLoadingProgress";
 export { default as GlobalDateSelector } from "./GlobalDateSelector";
 export { default as FullScreen } from "./FullScreen";
-export { default as PopupToolbars } from "./PopupToolbars";
+export { PopupToolbars } from "./PopupToolbars";
 export { default as HomeButton } from "./HomeButton";
 export { default as TiltControl } from "./Tilt";
 export { default as EmbedControl } from "./Embed";
