@@ -152,10 +152,8 @@ export default function ProjectList({baseUrl, setParentLoading}: ProjectListProp
   const fetchProjects = async (url: string, append: boolean = true, scrollTop: number) => {
     if (!url) return;
     try {
-      setIsLoading(true);
       axios.get(url).then(response => {
         setParentLoading(false)
-        setIsLoading(false);
 
         if (append) {
           // Append projects for next page
@@ -238,15 +236,10 @@ export default function ProjectList({baseUrl, setParentLoading}: ProjectListProp
           />
         </Grid>
       </Grid>
-      {isLoading ? <div className='LoadingElement'>
-        <div className='Throbber'>
-          <CircularProgress size="10rem"/>
-        </div>
-      </div> : <ProjectGrid
+      <ProjectGrid
         projects={projects}
-      />}
+      />
       <br/>
-      {/*<Pagination count={10} variant="outlined" shape="rounded" />*/}
       <Box
         display="flex"
         justifyContent="center"
