@@ -7,8 +7,17 @@
   }
 }
 
+.throbber {
+  background-color: white;
+  opacity: 0.5;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
 div.project-grid-container {
   overflow-y: scroll;
   max-height: 75vh;
   margin-top: 5px;
+  //position: absolute;
 }

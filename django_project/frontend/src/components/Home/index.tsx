@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2025, Unicef')
  */
 
-import React, {Fragment, useEffect, useState, useRef, useMemo} from 'react';
+import React, {Fragment, useEffect, useMemo, useState} from 'react';
 import axios from "axios";
 import Grid from "@mui/material/Grid";
 import Pagination from '@mui/material/Pagination';
@@ -27,7 +27,7 @@ import {GeoSightProject} from '../../types';
 
 import './style.scss';
 import {debounce} from "@mui/material/utils";
-import CircularProgress from "@mui/material/CircularProgress";
+import _default from "chart.js/dist/plugins/plugin.tooltip";
 
 
 interface ProjectListProps {
@@ -37,45 +37,52 @@ interface ProjectListProps {
 
 interface ProjectGridProps {
     projects: GeoSightProject[];
+    isLoading: boolean
 }
 
 
 /** Project Grid */
-function ProjectGrid({ projects }: ProjectGridProps) {
+function ProjectGrid({ projects, isLoading }: ProjectGridProps) {
   // @ts-ignore
   const userId: number = user.id;
-  return <Grid container spacing={2} className='project-grid-container'>
+
+  return <div style={{position: "relative"}}>
     {
-      projects.map((project: GeoSightProject, idx: number) => (
-        <Grid key={idx} item xs={3}>
-          <div className='ProjectGrid'>
-            <a href={'/project/' + project.slug}>
-              <div className='ProjectGridIcon'>
-                {
-                  project.icon ? <img src={project.icon}/> :
-                    <ImageIcon/>
-                }
-              </div>
-              <div className='ProjectGridName'>{project.name}</div>
-              <div className='ProjectGridDescription'>
-                {
-                  userId ? userId == project.creator ? `Modified at: ${project.modified_at}` : null : null
-                }
-              </div>
-              <div
-                className='ProjectGridDescription'
-                dangerouslySetInnerHTML={{
-                  __html: project.description
-                }}/>
-              <div className='ProjectGridTags'>
-                {project.category ? <div>{project.category}</div> : null}
-              </div>
-            </a>
-          </div>
-        </Grid>
-      ))
+      isLoading ? <div className='throbber'></div> : null
     }
-  </Grid>
+    <Grid container spacing={2} className='project-grid-container'>
+      {
+        projects.map((project: GeoSightProject, idx: number) => (
+          <Grid key={idx} item xs={3}>
+            <div className='ProjectGrid'>
+              <a href={'/project/' + project.slug}>
+                <div className='ProjectGridIcon'>
+                  {
+                    project.icon ? <img src={project.icon}/> :
+                      <ImageIcon/>
+                  }
+                </div>
+                <div className='ProjectGridName'>{project.name}</div>
+                <div className='ProjectGridDescription'>
+                  {
+                    userId ? userId == project.creator ? `Modified at: ${project.modified_at}` : null : null
+                  }
+                </div>
+                <div
+                  className='ProjectGridDescription'
+                  dangerouslySetInnerHTML={{
+                    __html: project.description
+                  }}/>
+                <div className='ProjectGridTags'>
+                  {project.category ? <div>{project.category}</div> : null}
+                </div>
+              </a>
+            </div>
+          </Grid>
+        ))
+      }
+    </Grid>
+  </div>
 }
 
 
@@ -152,6 +159,7 @@ export default function ProjectList({baseUrl, setParentLoading}: ProjectListProp
   const fetchProjects = async (url: string, append: boolean = true, scrollTop: number) => {
     if (!url) return;
     try {
+      setIsLoading(true);
       axios.get(url).then(response => {
         setParentLoading(false)
 
@@ -165,6 +173,7 @@ export default function ProjectList({baseUrl, setParentLoading}: ProjectListProp
         }
         setTotalPage(response.data.total_page);
         setCurrentPage(response.data.page);
+        setIsLoading(false);
       }).catch(error => {
         console.error("Failed to fetch projects:", error);
       })
@@ -238,6 +247,7 @@ export default function ProjectList({baseUrl, setParentLoading}: ProjectListProp
       </Grid>
       <ProjectGrid
         projects={projects}
+        isLoading={isLoading}
       />
       <br/>
       <Box
