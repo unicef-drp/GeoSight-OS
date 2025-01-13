@@ -68,14 +68,14 @@ export default function RasterCogLayer(
   const [noDataColor, setNoDataColor] = useState(styles.nodata_color);
 
   useEffect(() => {
-    console.log('update color')
-    console.log({
-      ...data,
-      styles: {
-        ...styles,
-        nodata_color: noDataColor
-      }
-    })
+    // console.log('update color')
+    // console.log({
+    //   ...data,
+    //   styles: {
+    //     ...styles,
+    //     nodata_color: noDataColor
+    //   }
+    // })
     setData({
       ...data,
       styles: {
@@ -89,8 +89,11 @@ export default function RasterCogLayer(
   const [typedValue, setTypedValue] = useState(value);
 
   useEffect(() => {
-
-  }, [styles]);
+    setData({
+      ...data,
+      styles: value
+    })
+  }, [value]);
 
   const valueUpdate = useMemo(
     () =>
@@ -116,14 +119,11 @@ export default function RasterCogLayer(
       className="BasicFormSection">
       <input
         placeholder='Minimum band' type='number'
-        value={styles.min_band}
+        value={typedValue.min_band}
         onChange={evt => {
-          setData({
-            ...data,
-            styles: {
-              ...styles,
-              min_band: evt.target.value
-            }
+          setTypedValue({
+            ...styles,
+            min_band: evt.target.value
           })
         }}
         style={{width: "fit-content", flexGrow: 1}}
@@ -131,14 +131,11 @@ export default function RasterCogLayer(
       <span> - </span>
       <input
         placeholder='Maximum band' type='number'
-        value={styles.max_band}
+        value={typedValue.max_band}
         onChange={evt => {
-          setData({
-            ...data,
-            styles: {
-              ...styles,
+          setTypedValue({
+            ...styles,
               max_band: evt.target.value
-            }
           })
         }}
         style={{width: "fit-content", flexGrow: 1}}
@@ -159,14 +156,11 @@ export default function RasterCogLayer(
           <div className='RuleTable-Title'>Additional NoData Value</div>
           <input
             placeholder='Additional NoData Value' type='number'
-            value={styles.additional_nodata}
+            value={typedValue.additional_nodata}
             onChange={evt => {
-              setData({
-                ...data,
-                styles: {
-                  ...styles,
+              setTypedValue({
+                ...styles,
                   additional_nodata: evt.target.value
-                }
               })
             }}
             style={{width: "fit-content", flexGrow: 1}}
@@ -175,10 +169,12 @@ export default function RasterCogLayer(
         <div className="BasicFormSection">
           <div className='RuleTable-Title'>NoData Color</div>
           <ColorSelector
-            // color={styles.nodata_color ? styles.nodata_color : '#000000'}
-            color={noDataColor}
+            color={typedValue.nodata_color}
             onChange={evt => {
-              setNoDataColor(evt.target.value)
+              setTypedValue({
+                ...styles,
+                  nodata_color: evt.target.value
+              })
             }}
             hideInput={true}
             fullWidth={true}
@@ -188,14 +184,11 @@ export default function RasterCogLayer(
           <div className='RuleTable-Title'>NoData Opacity (0-100)</div>
           <input
             placeholder='NoData Opacity' type='number'
-            value={styles.nodata_opacity}
+            value={typedValue.nodata_opacity}
             onChange={evt => {
-              setData({
-                ...data,
-                styles: {
-                  ...styles,
+              setTypedValue({
+                ...styles,
                   nodata_opacity: parseFloat(evt.target.value)
-                }
               })
             }}
             style={{width: "fit-content", flexGrow: 1}}
