@@ -40,8 +40,6 @@ maplibregl.addProtocol('cog', cogProtocol);
 export default function MapConfig({ data, setData, layerInput }) {
   const [map, setMap] = useState(null);
   const [isInit, setIsInit] = useState(true);
-  console.log('MapConfig')
-  console.log(isInit)
 
   /***
    * Render layer to maplibre

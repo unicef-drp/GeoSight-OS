@@ -52,7 +52,6 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
       const ndt_opacity = nodata_opacity ? parseFloat(nodata_opacity) : nodata_opacity;
       const colors = createColorsFromPaletteId(color_palette, dynamic_class_num, color_palette_reverse);
       let init = isInit;
-      console.log(`isInit: ${isInit}`);
 
       if (!colors.length) {
         return
