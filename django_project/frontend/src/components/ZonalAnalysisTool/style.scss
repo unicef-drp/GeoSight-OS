@@ -57,9 +57,18 @@
     padding-bottom: 3px;
     padding-left: 5px;
   }
+
+  .Buffer-Input {
+    .MuiFormControl-root {
+      width: 50%!important;
+    }
+  }
 }
 
 .ZonalAnalysisTable {
+  max-height: 100px;
+  overflow-y: scroll;
+
   table {
     width: 100%;
 
