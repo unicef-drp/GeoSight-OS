@@ -316,7 +316,6 @@ const ServerTable = forwardRef(
               parametersChanged()
             }}
 
-            disableSelectionOnClick={!enable.singleSelection}
             disableColumnFilter
 
             onSelectionModelChange={(newSelectionModel: any[]) => {

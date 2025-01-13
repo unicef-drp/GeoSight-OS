@@ -38,8 +38,8 @@ import {
   SelectWithList
 } from "../../../../../components/Input/SelectWithList";
 import OverviewForm from "../Overview";
-import GeorepoViewSelector
-  from "../../../../../components/ResourceSelector/GeorepoViewSelector";
+import DatasetViewSelector
+  from "../../../../../components/ResourceSelector/DatasetViewSelector";
 
 import './style.scss';
 
@@ -97,7 +97,7 @@ export default function SummaryDashboardForm({ changed }) {
                 View
               </label>
               <div className='ReferenceDatasetSection'>
-                <GeorepoViewSelector
+                <DatasetViewSelector
                   initData={
                     referenceLayer?.identifier ? [
                       {

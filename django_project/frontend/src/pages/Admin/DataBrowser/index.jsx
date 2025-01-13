@@ -29,7 +29,6 @@ import InfoIcon from "@mui/icons-material/Info";
 import { render } from '../../../app';
 import { store } from '../../../store/admin';
 import {
-  DatasetFilterSelector,
   IndicatorFilterSelector,
 } from "../ModalSelector/ModalFilterSelector";
 import {
@@ -46,6 +45,9 @@ import { AdminListPagination } from "../AdminListPagination";
 import { SaveButton } from "../../../components/Elements/Button";
 import { AdminPage, pageNames } from "../index";
 import { InfoFillIcon } from "../../../components/Icons";
+import {
+  DatasetFilterSelector
+} from "../../../components/ResourceSelector/DatasetViewSelector";
 
 
 import './style.scss';
@@ -326,10 +328,13 @@ export default function DataBrowserAdmin() {
             })}/>
           <DatasetFilterSelector
             data={filters.datasets}
-            setData={newFilter => setFilters({
-              ...filters,
-              datasets: newFilter
-            })}/>
+            setData={newFilter => {
+              console.log(newFilter)
+              setFilters({
+                ...filters,
+                datasets: newFilter
+              })
+            }}/>
           <MultipleCreatableFilter
             title={'Filter by Level(s)'}
             data={filters.levels}

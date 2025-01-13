@@ -20,7 +20,6 @@ import MenuItem from "@mui/material/MenuItem";
 
 import { render } from '../../../app';
 import {
-  DatasetFilterSelector,
   GroupFilterSelector,
   IndicatorFilterSelector,
   SelectFilter,
@@ -38,6 +37,9 @@ import Modal, {
 import PublicDataAccess from "./Public";
 import { UsersDataAccess } from "./Users";
 import { GroupsDataAccess } from "./Groups";
+import {
+  DatasetFilterSelector
+} from "../../../components/ResourceSelector/DatasetViewSelector";
 
 import '../../Admin/Components/List/style.scss';
 import './style.scss';

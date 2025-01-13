@@ -18,7 +18,6 @@ import FormControl from "@mui/material/FormControl";
 import { IconTextField } from "../../../../components/Elements/Input";
 import {
   ContextLayer,
-  GeorepoViewSelector,
   IndicatorSelector,
   RelatedTableSelector
 } from "../index";
@@ -147,35 +146,5 @@ export function ContextLayerInputSelector(
     showSelected={showSelected}
   >
     <ContextLayer/>
-  </ModalInputSelector>
-}
-
-/**
- * Georepo View input selected
- * @param {array} data Selected data.
- * @param {function} setData When the value changed.
- * @param {Boolean} isMultiple Is data returned multiple object.
- * @param {Boolean} showSelected Is Showing selected data.
- * @param {React.Component} otherContent other content to be rendered.
- * @param props
- */
-export function GeorepoViewInputSelector(
-  {
-    data, setData, isMultiple, showSelected,
-    otherContent = null, ...props
-  }
-) {
-  return <ModalInputSelector
-    placeholder={
-      data[0] ? 'Loading' : 'Select view ' + (isMultiple ? '(s)' : '')
-    }
-    data={data}
-    setData={setData}
-    isMultiple={isMultiple}
-    showSelected={showSelected}
-    hideLabel={true}
-    {...props}
-  >
-    <GeorepoViewSelector otherContent={otherContent}/>
   </ModalInputSelector>
 }

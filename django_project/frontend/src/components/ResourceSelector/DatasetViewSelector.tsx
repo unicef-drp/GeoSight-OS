@@ -16,7 +16,7 @@
 import React, { useEffect, useState } from 'react';
 import { fetchReferenceLayerList, GeorepoUrls } from "../../utils/georepo";
 import { ModalInputSelector } from "./ModalInputSelector";
-import { ModalInputSelectorProps } from "./types";
+import { ModalFilterSelectorProps, ModalInputSelectorProps } from "./types";
 import { DatasetView } from "../../types";
 import {
   FormControl,
@@ -51,12 +51,22 @@ const columns = [
 ]
 
 /** For Georepo View selection. */
-export default function GeorepoViewSelector(
+export default function DatasetViewSelector(
   {
+    // Input properties
+    placeholder,
+    showSelected,
+    disabled,
+    mode,
+
+    // Data properties
     initData,
+
+    // Listeners
     dataSelected,
+
+    // Table properties
     multipleSelection,
-    showSelected
   }: ModalInputSelectorProps
 ) {
   const [datasets, setDatasets] = useState([])
@@ -100,19 +110,28 @@ export default function GeorepoViewSelector(
       } else {
         delete parameters['search']
       }
+    } else {
+      delete parameters['search']
     }
     return parameters
   }
 
 
   return <ModalInputSelector
-    url={url}
-    getParameters={getParameters}
-    columns={columns}
-    dataName={'View'}
-    multipleSelection={multipleSelection}
+    // Input properties
+    placeholder={placeholder}
     showSelected={showSelected}
+    disabled={disabled}
+    mode={mode}
+    dataName={'View'}
+
+    // Data properties
     initData={initData}
+
+    // Listeners
+    url={url}
+    columns={columns}
+    getParameters={getParameters}
     dataSelected={(data: any) => {
       if (dataSelected) {
         dataSelected(data.map((_row: DatasetView) => {
@@ -125,6 +144,9 @@ export default function GeorepoViewSelector(
         }))
       }
     }}
+
+    // Table properties
+    multipleSelection={multipleSelection}
     rowIdKey={'uuid'}
     topChildren={
       <div
@@ -162,5 +184,39 @@ export default function GeorepoViewSelector(
         }
       </div>
     }
+  />
+}
+
+export function DatasetFilterSelector(
+  {
+    // Input properties
+    showSelected,
+    disabled,
+
+    // Data properties
+    data,
+
+    // Listeners
+    setData
+  }: ModalFilterSelectorProps
+) {
+  return <DatasetViewSelector
+    initData={
+      data.map((row: any) => {
+        return {
+          identifier: row,
+          uuid: row
+        }
+      })
+    }
+    dataSelected={(data) => {
+      console.log(data)
+      setData(data.map((row: any) => row.identifier))
+    }}
+    multipleSelection={true}
+    showSelected={showSelected}
+    disabled={disabled}
+    placeholder={'Filter by View(s)'}
+    mode={'filter'}
   />
 }

@@ -32,7 +32,6 @@ import LinearProgress from "@mui/material/LinearProgress";
 import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
 import {
-  DatasetFilterSelector,
   IndicatorFilterSelector,
 } from "../../ModalSelector/ModalFilterSelector";
 import {
@@ -61,6 +60,9 @@ import { isValueDate } from "../../../../utils/relatedTable";
 
 
 import './style.scss';
+import {
+  DatasetFilterSelector
+} from "../../../../components/ResourceSelector/DatasetViewSelector";
 
 let inProgress = false
 
@@ -421,8 +423,8 @@ export default function ImporterLogData() {
               indicators: newFilter
             })}/>
           <DatasetFilterSelector
-            data={filters.datasets}
-            setData={newFilter => setFilters({
+            initData={filters.datasets}
+            dataSelected={(selectedData) => setFilters({
               ...filters,
               datasets: newFilter
             })}/>

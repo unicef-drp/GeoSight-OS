@@ -15,7 +15,7 @@
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { IconTextField } from "../Elements/Input";
-import { ArrowDownwardIcon, MagnifyIcon } from "../Icons";
+import { ArrowDownwardIcon, FilterIcon, MagnifyIcon } from "../Icons";
 import { ServerTable } from "../Table";
 import Modal, { ModalHeader } from "../Modal";
 import { debounce } from "@mui/material/utils";
@@ -23,6 +23,7 @@ import { headers } from "../../utils/georepo";
 import { MainDataGridProps } from "../Table/types";
 import { ModalInputSelectorProps } from "./types";
 import FormControl from "@mui/material/FormControl";
+import { SaveButton } from "../Elements/Button";
 
 import './style.scss';
 
@@ -32,18 +33,27 @@ interface Props extends MainDataGridProps, ModalInputSelectorProps {
 /** Input modal selector component */
 export function ModalInputSelector(
   {
+    // Input properties
+    mode = 'input',
+    placeholder,
+    dataName,
+    disabled,
+    showSelected,
+
+    // Data properties
     url,
     columns,
     getParameters: getParametersParent,
-    dataName,
-    multipleSelection,
-    showSelected,
-    dataSelected,
     initData = [],
+
+    // Listeners
+    dataSelected,
+
+    // Table properties
+    multipleSelection,
     defaults = {},
     rowIdKey = 'id',
-    topChildren,
-    disabled
+    topChildren
   }: Props
 ) {
   const tableRef = useRef(null);
@@ -72,7 +82,7 @@ export function ModalInputSelector(
 
   /** When open **/
   useEffect(() => {
-    setSelectionModel(initData ? initData.map(row => row.id) : [])
+    setSelectionModel(initData ? initData.map(row => row[rowIdKey]) : [])
     setSelectionModelData(initData)
   }, [open]);
 
@@ -98,15 +108,38 @@ export function ModalInputSelector(
   if (!multipleSelection && initData.length) {
     inputValue = initData[0]?.name
   }
+
   return <>
-    <FormControl className='InputControl'>
-      <IconTextField
-        placeholder={'Select view ' + (multipleSelection ? '(s)' : '')}
-        iconEnd={<ArrowDownwardIcon/>}
-        onClick={() => setOpen(true)}
-        value={inputValue}
-        disabled={disabled}
-      />
+    <FormControl
+      className={mode === 'input' ? 'InputControl' : 'FilterControl'}>
+      {
+        mode === 'input' ?
+          <IconTextField
+            placeholder={'Select view ' + (multipleSelection ? '(s)' : '')}
+            iconEnd={<ArrowDownwardIcon/>}
+            onClick={() => setOpen(true)}
+            value={inputValue}
+            disabled={disabled}
+          /> : <IconTextField
+            iconEnd={
+              <FilterIcon
+                className={selectionModel.length ? 'HasValue' : ''}
+                onClick={(e: any) => {
+                  if (selectionModel.length) {
+                    setSelectionModel([])
+                    setSelectionModelData([])
+                    e.stopPropagation();
+                  }
+                }}
+              />
+            }
+            onClick={() => setOpen(true)}
+            value={selectionModel.length ? selectionModel.length + ' selected' : placeholder}
+            inputProps={
+              { readOnly: true, }
+            }
+          />
+      }
     </FormControl>
     <Modal
       className='ModalDataSelector'
@@ -135,6 +168,7 @@ export function ModalInputSelector(
 
         <div className='AdminList'>
           <ServerTable
+            className='ModalSelector'
             url={url}
             urlHeader={headers.headers}
             columns={columns}
@@ -158,20 +192,35 @@ export function ModalInputSelector(
             selectionModelData={selectionModelData}
             setSelectionModelData={(data: any[]) => {
               setSelectionModelData(data)
-              // For single selection
-              if (dataSelected && !multipleSelection) {
-                const selected = data.find(
-                  _row => _row[rowIdKey] == selectionModel[selectionModel.length - 1]
-                )
-                if (selected) {
-                  dataSelected([selected])
-                  setOpen(false)
+              // For single selection close and trigger data selected
+              if (!multipleSelection) {
+                if (dataSelected) {
+                  const selected = data.find(
+                    _row => _row[rowIdKey] == selectionModel[selectionModel.length - 1]
+                  )
+                  if (selected) {
+                    dataSelected([selected])
+                    setOpen(false)
+                  }
                 }
               }
             }}
-            className='ModalSelector'
+            disableSelectionOnClick={false}
             ref={tableRef}
           />
+          {
+            multipleSelection ?
+              <div className='Save-Button'>
+                <SaveButton
+                  variant="primary"
+                  text={"Update Selection"}
+                  onClick={() => {
+                    dataSelected(selectionModelData)
+                    setOpen(false)
+                  }}
+                />
+              </div> : null
+          }
         </div>
       </div>
     </Modal>

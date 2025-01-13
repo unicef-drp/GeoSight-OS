@@ -106,25 +106,6 @@ export function IndicatorFilterSelector({ data, setData, returnObject, filter })
 }
 
 /**
- * Filter Dataset
- * @param {array} data Selected data.
- * @param {function} setData When the value changed.
- * @param {Boolean} returnObject Is data returned whole object.
- * @param {array} filter List of id of data that will be used to filter data.
- */
-export function DatasetFilterSelector({ data, setData, returnObject, filter }) {
-  return <ModalFilterSelector
-    placeholder={'Filter by View(s)'}
-    data={data}
-    setData={setData}
-    returnObject={returnObject}
-    filter={filter}
-  >
-    <GeorepoViewSelector/>
-  </ModalFilterSelector>
-}
-
-/**
  * Filter user
  * @param {array} data Selected data.
  * @param {function} setData When the value changed.

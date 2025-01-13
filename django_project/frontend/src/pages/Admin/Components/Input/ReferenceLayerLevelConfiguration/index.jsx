@@ -22,9 +22,6 @@ import {
   MultipleSelectWithSearch,
   SelectWithSearch
 } from "../../../../../components/Input/SelectWithSearch";
-import {
-  GeorepoViewInputSelector
-} from "../../../ModalSelector/InputSelector";
 import { GeorepoUrls } from "../../../../../utils/georepo";
 import { FormControlLabel, FormGroup } from "@mui/material";
 import { InternalReferenceDatasets } from "../../../../../utils/urls";
@@ -32,6 +29,8 @@ import { Actions } from "../../../../../store/dashboard";
 import { RefererenceLayerUrls } from "../../../../../utils/referenceLayer";
 
 import './styles.scss';
+import DatasetViewSelector
+  from "../../../../../components/ResourceSelector/DatasetViewSelector";
 
 /**
  * Reference layer view configuration.
@@ -129,14 +128,19 @@ export const ViewLevelConfiguration = forwardRef(
               >
                 <div className="BasicFormSection">
                   <div className='ReferenceDatasetSection'>
-                    <GeorepoViewInputSelector
-                      data={
-                        referenceLayer?.identifier ? [{
-                          ...referenceLayer,
-                          name: referenceLayerData?.name
-                        }] : []
+                    <DatasetViewSelector
+                      disabled={!overrideView}
+                      initData={
+                        referenceLayer?.identifier ? [
+                          {
+                            id: referenceLayer.identifier,
+                            uuid: referenceLayer.identifier,
+                            name: referenceLayerData?.name,
+                            ...referenceLayer
+                          }
+                        ] : []
                       }
-                      setData={selectedData => {
+                      dataSelected={(selectedData) => {
                         let selected = { identifier: '', detail_url: '' }
                         if (selectedData[0]) {
                           const identifier = selectedData[0].identifier
@@ -148,9 +152,6 @@ export const ViewLevelConfiguration = forwardRef(
                         }
                         setData({ ...data, referenceLayer: selected })
                       }}
-                      isMultiple={false}
-                      showSelected={false}
-                      disabled={!overrideView}
                     />
                   </div>
                 </div>

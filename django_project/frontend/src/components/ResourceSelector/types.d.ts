@@ -15,7 +15,26 @@
 import { ReactNode } from "react";
 
 
+export interface ModalFilterSelectorProps {
+
+  /** Init data for the selector. */
+  data: any[];
+
+  /** When the data selected. */
+  setData: (data: any) => void;
+
+  /** If the selected is show, it will show in the bottom of input. */
+  showSelected: boolean;
+
+  /** Is the input disabled. */
+  disabled?: boolean;
+}
+
+
 export interface ModalInputSelectorProps {
+  /** Placeholder of input. */
+  placeholder?: string;
+
   /** Init data for the selector. */
   initData: any[];
 
@@ -33,6 +52,9 @@ export interface ModalInputSelectorProps {
 
   /** Is the input disabled. */
   disabled?: boolean;
+
+  /** Mode that will be used. */
+  mode?: 'input' | 'filter';
 
   /** The content to be rendered in the top of modal. */
   topChildren?: ReactNode;

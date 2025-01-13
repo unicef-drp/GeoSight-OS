@@ -26,7 +26,6 @@ import { DataBrowserActiveIcon } from "../../../components/Icons";
 import { render } from '../../../app';
 import { store } from '../../../store/admin';
 import {
-  DatasetFilterSelector,
   IndicatorFilterSelector,
 } from "../ModalSelector/ModalFilterSelector";
 import { splitParams, urlParams } from "../../../utils/main";
@@ -42,6 +41,9 @@ import { removeElement } from "../../../utils/Array";
 import {
   MultipleSelectWithSearch
 } from "../../../components/Input/SelectWithSearch";
+import {
+  DatasetFilterSelector
+} from "../../../components/ResourceSelector/DatasetViewSelector";
 
 
 import './style.scss';
