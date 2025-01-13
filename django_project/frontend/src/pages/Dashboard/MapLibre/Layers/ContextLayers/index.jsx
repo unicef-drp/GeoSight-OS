@@ -214,7 +214,16 @@ export function renderLabel(id, contextLayerData, contextLayer, map) {
 /**
  * Context layer rendering data
  */
-export function contextLayerRendering(id, contextLayerData, setData, contextLayer, map, contextLayerOrder) {
+export function contextLayerRendering(
+  id,
+  contextLayerData,
+  setData,
+  contextLayer,
+  map,
+  contextLayerOrder,
+  isInit,
+  setIsInit
+) {
   if (map) {
     if (contextLayer?.layer && !hasLayer(map, id)) {
       const { layer, layer_type } = contextLayer
@@ -298,7 +307,7 @@ export function contextLayerRendering(id, contextLayerData, setData, contextLaye
                 null,
                 contextLayerData.data_fields
               )
-            }, contextLayerOrder
+            }, contextLayerOrder, isInit, setIsInit
           )
           break
         }

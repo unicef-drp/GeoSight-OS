@@ -39,6 +39,9 @@ maplibregl.addProtocol('cog', cogProtocol);
  */
 export default function MapConfig({ data, setData, layerInput }) {
   const [map, setMap] = useState(null);
+  const [isInit, setIsInit] = useState(true);
+  console.log('MapConfig')
+  console.log(isInit)
 
   /***
    * Render layer to maplibre
@@ -101,11 +104,11 @@ export default function MapConfig({ data, setData, layerInput }) {
         (
           async () => {
             await updateColorPaletteData()
-            contextLayerRendering(id, data, setData, layerInput, map)
+            contextLayerRendering(id, data, setData, layerInput, map, null, isInit, setIsInit)
           }
         )()
       } else {
-        contextLayerRendering(id, data, setData, layerInput, map)
+        contextLayerRendering(id, data, setData, layerInput, map, null, isInit, setIsInit)
       }
     }
   }, [map, layerInput]);

@@ -15,6 +15,7 @@
 
 
 import $ from "jquery";
+import {useEffect, useState} from 'react';
 import {
   addClickEvent,
   addStandalonePopup,
@@ -33,11 +34,10 @@ import {hexToRgba} from '../utils';
 /***
  * Render Raster Cog
  */
-export default function rasterCogLayer(map, id, data, setData, contextLayerData, popupFeatureFn, contextLayerOrder) {
+export default function rasterCogLayer(map, id, data, setData, contextLayerData, popupFeatureFn, contextLayerOrder, isInit, setIsInit) {
   (
     async () => {
       // Create source
-      console.log(data?.styles)
       const {
         min_band,
         max_band,
@@ -47,11 +47,14 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
         additional_nodata_value,
         nodata_color,
         nodata_opacity,
+        nodata
       } = data?.styles;
       const additional_ndt_val = additional_nodata_value ? parseFloat(additional_nodata_value) : additional_nodata_value;
       const ndt_opacity = nodata_opacity ? parseFloat(nodata_opacity) : nodata_opacity;
       const colors = createColorsFromPaletteId(color_palette, dynamic_class_num, color_palette_reverse);
-      let pixelCount = 0;
+      console.log(isInit);
+
+
       if (!colors.length) {
         return
       }
@@ -78,7 +81,8 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
       };
 
       setColorFunction(data.url, ([value], rgba, {noData}) => {
-        if (pixelCount === 0) {
+        if (isInit) {
+          setIsInit(!isInit);
           setData({
             ...data,
             styles: {
@@ -86,7 +90,6 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
               nodata: noData.toString()
             }
           });
-          pixelCount++;
         }
         if (value === noData || value === Infinity || isNaN(value) || value == additional_ndt_val) {
           rgba.set(hexToRgba(nodata_color, (ndt_opacity/100) * 255));

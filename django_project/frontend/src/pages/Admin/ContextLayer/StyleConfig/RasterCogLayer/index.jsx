@@ -36,19 +36,31 @@ export default function RasterCogLayer(
     }
     if (newStyles.min_band === undefined) {
       newStyles.min_band = 0;
-      newStyles.max_band = 100;
-      newStyles.dynamic_class_num = 7;
-      newStyles.dynamic_classification = dynamicClassificationChoices[0].value;
-      newStyles.additional_nodata = null;
-      newStyles.nodata_color = '#000000';
-      newStyles.nodata_opacity = 0;
-      setData(
-        {
-          ...data,
-          styles: { ...newStyles }
-        }
-      )
     }
+    if (newStyles.max_band === undefined) {
+      newStyles.max_band = 100;
+    }
+    if (newStyles.dynamic_class_num === undefined) {
+      newStyles.dynamic_class_num = 7;
+    }
+    if (newStyles.dynamic_classification === undefined) {
+      newStyles.dynamic_classification = dynamicClassificationChoices[0].value;
+    }
+    if (newStyles.additional_nodata === undefined) {
+      newStyles.additional_nodata = null;
+    }
+    if (newStyles.nodata_color === undefined) {
+      newStyles.nodata_color = '#000000';
+    }
+    if (newStyles.nodata_opacity === undefined) {
+      newStyles.nodata_opacity = 0;
+    }
+    setData(
+      {
+        ...data,
+        styles: { ...newStyles }
+      }
+    )
   }, [data]);
   return <>
     <label className="form-label required" htmlFor="group">
