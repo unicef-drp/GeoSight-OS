@@ -82,7 +82,6 @@ export const AdminListContent = forwardRef(
     const tableRef = useRef(null);
     const listRef = useRef(null);
 
-    const [data, setData] = useState([]);
     const [selectionModel, setSelectionModel] = useState([]);
     const [search, setSearch] = useState<string>(defaults.search);
 
@@ -128,7 +127,6 @@ export const AdminListContent = forwardRef(
         return (url.batch && permission?.edit) || (multipleDelete && permission?.delete)
       }
     }
-    const selectedModelData = data.filter(row => selectionModel.includes(row.id))
 
     /** Create button **/
     const createButton = () => {
@@ -147,7 +145,7 @@ export const AdminListContent = forwardRef(
     const batchEditButton = () => {
       // @ts-ignore
       if (user.is_creator && url.batch) {
-        const selectedIds = selectedModelData.filter(row => !row.permission || row.permission.edit).map(row => row.id)
+        const selectedIds = selectionModel
         return <a
           href={url.batch + '?ids=' + selectedIds.join(',')}>
           <ThemeButton

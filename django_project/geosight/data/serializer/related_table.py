@@ -23,6 +23,7 @@ from core.serializer.dynamic_serializer import DynamicModelSerializer
 from geosight.data.models.related_table import (
     RelatedTable, RelatedTableRow, RelatedTableField
 )
+from geosight.data.serializer.resource import ResourceSerializer
 
 
 def _string_field(name: str, read_only: bool = False) -> openapi.Schema:
@@ -86,12 +87,13 @@ class RelatedTableFieldApiSerializer(DynamicModelSerializer):
         fields = ('name', 'label', 'type')
 
 
-class RelatedTableApiSerializer(DynamicModelSerializer):
+class RelatedTableApiSerializer(ResourceSerializer):
     """Serializer for RelatedTable."""
 
     url = serializers.SerializerMethodField()
     creator = serializers.SerializerMethodField()
     fields_definition = RelatedTableFieldApiSerializer(many=True)
+    permission = serializers.SerializerMethodField()
 
     def get_url(self, obj: RelatedTable):  # noqa: D102
         return reverse(
@@ -112,6 +114,12 @@ class RelatedTableApiSerializer(DynamicModelSerializer):
             table.add_field(definition['name'],
                             definition['alias'], definition['type'])
         return table
+
+    def get_permission(self, obj: RelatedTable):
+        """Return permission."""
+        return obj.permission.all_permission(
+            self.context.get('user', None)
+        )
 
     class Meta:  # noqa: D106
         model = RelatedTable

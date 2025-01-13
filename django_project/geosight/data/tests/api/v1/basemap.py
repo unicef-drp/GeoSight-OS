@@ -191,7 +191,7 @@ class BasemapPermissionTest(BasePermissionTest.TestCase):
 
     def test_create_api(self):
         """Test POST API."""
-        url = reverse('basemaps-list')
+        url = reverse('basemaps-list') + '?fields=__all__'
         self.assertRequestPostView(url, 403, data={})
         self.assertRequestPostView(url, 403, user=self.viewer, data={})
         self.assertRequestPostView(
@@ -245,7 +245,6 @@ class BasemapPermissionTest(BasePermissionTest.TestCase):
         response = self.assertRequestGetView(url, 200, user=self.admin)
 
         self.assertEqual(response.json()['name'], self.resource_3.name)
-        self.assertEqual(response.json()['url'], self.resource_3.url)
         self.assertEqual(response.json()['type'], self.resource_3.type)
         self.assertEqual(response.json()['category'], self.resource_3.category)
         self.assertEqual(
@@ -358,8 +357,8 @@ class BasemapPermissionTest(BasePermissionTest.TestCase):
             BasemapLayer.objects.get(id=self.resource_3.id).group.name, 'Test'
         )
 
-    def test_delete_api(self):
-        """Test DELETE API."""
+    def test_destroy_api(self):
+        """Test DESTROY API."""
         id = self.resource_1.id
         self.check_delete_resource_with_different_users(id, 'basemaps-detail')
         self.assertIsNone(BasemapLayer.objects.filter(id=id).first())
@@ -367,3 +366,59 @@ class BasemapPermissionTest(BasePermissionTest.TestCase):
         id = self.resource_3.id
         self.check_delete_resource_with_different_users(id, 'basemaps-detail')
         self.assertIsNone(BasemapLayer.objects.filter(id=id).first())
+
+    def test_delete_api(self):
+        """Test DELETE API."""
+        resource_1 = BasemapLayer.permissions.create(
+            user=self.resource_creator,
+            name='Name A',
+            group=BasemapGroup.objects.create(name='Group 1')
+        )
+        resource_2 = BasemapLayer.permissions.create(
+            user=self.resource_creator,
+            name='Name B',
+            group=BasemapGroup.objects.create(name='Group 2'),
+            description='This is test'
+        )
+        resource_3 = BasemapLayer.permissions.create(
+            user=self.resource_creator,
+            name='Name C',
+            group=BasemapGroup.objects.create(name='Group 3'),
+            description='Resource 3'
+        )
+        resource_1.permission.update_user_permission(
+            self.creator, PERMISSIONS.SHARE
+        )
+        resource_2.permission.update_user_permission(
+            self.creator, PERMISSIONS.LIST
+        )
+        resource_3.permission.update_user_permission(
+            self.creator, PERMISSIONS.OWNER
+        )
+        params = urllib.parse.urlencode(
+            {
+                'sort': 'id'
+            }
+        )
+        url = reverse('basemaps-list') + '?' + params
+        response = self.assertRequestGetView(
+            url, 200, user=self.creator
+        )
+        self.assertEqual(len(response.json()['results']), 4)
+        self.assertRequestDeleteView(
+            url, 204, user=self.creator, data={
+                'ids': [resource_1.id, resource_2.id, resource_3.id]
+            }
+        )
+        response = self.assertRequestGetView(
+            url, 200, user=self.creator
+        )
+        self.assertEqual(len(response.json()['results']), 3)
+        ids = []
+        for result in response.json()['results']:
+            ids.append(result['id'])
+        self.assertEqual(
+            ids, [
+                self.resource_3.id, resource_1.id, resource_2.id
+            ]
+        )

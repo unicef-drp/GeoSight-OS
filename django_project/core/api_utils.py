@@ -30,6 +30,29 @@ common_api_params = [
         description='Total records in a page',
         type=openapi.TYPE_INTEGER,
         default=25
+    ),
+    openapi.Parameter(
+        'sort',
+        openapi.IN_QUERY,
+        description=(
+            'Fields to be sorted '
+            'should be specified as a comma-separated list.'
+            'e.g: sort=name for asc, -sort=name for desc'
+        ),
+        type=openapi.TYPE_STRING,
+        required=False,
+    ),
+    openapi.Parameter(
+        'fields',
+        openapi.IN_QUERY,
+        description=(
+            'Fields to be returned '
+            'should be specified as a comma-separated list.'
+            'e.g: fields=__all__ for returning all fields, '
+            'fields=name,category to return just name and category'
+        ),
+        type=openapi.TYPE_STRING,
+        required=False,
     )
 ]
 
@@ -40,9 +63,11 @@ class ApiTag:
     DASHBOARD = 'Dashboard'
     BASEMAP = 'Basemap'
     INDICATOR = 'Indicator'
+    CONTEXT_LAYER = 'Context layer'
     RELATED_TABLE = 'Related table'
     RELATED_TABLE_DATA = 'Related table data'
     DATA_BROWSER = 'Data Browser'
+    STYLE = 'Style'
 
 
 class ApiParams:

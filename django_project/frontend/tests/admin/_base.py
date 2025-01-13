@@ -231,6 +231,40 @@ class BaseViewTest(object):
                 url, 400, data={}, user=self.admin
             )  # Admin
 
+            # Update description by the non accessible
+            ids = ",".join([f"{resource.id}" for resource in resources])
+            url = reverse(self.batch_edit_url_tag)
+            self.assertRequestPostView(
+                url, 302, user=self.creator,
+                data={
+                    "ids": ids,
+                    "description": "new description",
+                }
+            )
+
+            # check resources and permission
+            for idx, resource in enumerate(resources):
+                resource.refresh_from_db()
+                if idx == 0:
+                    self.assertEquals(
+                        resource.description, "new description"
+                    )
+                else:
+                    self.assertNotEquals(
+                        resource.description, "new description"
+                    )
+            for idx, permission in enumerate(
+                    [
+                        PERMISSIONS.NONE.name, PERMISSIONS.READ.name,
+                        PERMISSIONS.READ.name
+                    ]
+            ):
+                resources[idx].permission.refresh_from_db()
+                self.assertEquals(
+                    resources[idx].permission.public_permission,
+                    permission
+                )
+
             # Update description
             ids = ",".join([f"{resource.id}" for resource in resources])
             url = reverse(self.batch_edit_url_tag)

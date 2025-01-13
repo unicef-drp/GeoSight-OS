@@ -11,7 +11,7 @@ Contact : geosight-no-reply@unicef.org
 
 """
 __author__ = 'irwan@kartoza.com'
-__date__ = '08/01/2025'
+__date__ = '09/01/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
 import urllib.parse
@@ -19,15 +19,15 @@ import urllib.parse
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
-from geosight.data.models.dashboard import Dashboard, DashboardGroup
+from geosight.data.models.context_layer import ContextLayer, ContextLayerGroup
 from geosight.permission.models.factory import PERMISSIONS
 from geosight.permission.tests._base import BasePermissionTest
 
 User = get_user_model()
 
 
-class DashboardPermissionTest(BasePermissionTest.TestCase):
-    """Test for Dashboard API."""
+class ContextLayerPermissionTest(BasePermissionTest.TestCase):
+    """Test for ContextLayer API."""
 
     def create_resource(self, user):
         """Create resource function."""
@@ -42,21 +42,21 @@ class DashboardPermissionTest(BasePermissionTest.TestCase):
         super().setUp()
 
         # Resource layer attribute
-        self.resource_1 = Dashboard.permissions.create(
+        self.resource_1 = ContextLayer.permissions.create(
             user=self.resource_creator,
             name='Name A',
-            group=DashboardGroup.objects.create(name='Group 1')
+            group=ContextLayerGroup.objects.create(name='Group 1')
         )
-        self.resource_2 = Dashboard.permissions.create(
+        self.resource_2 = ContextLayer.permissions.create(
             user=self.resource_creator,
             name='Name B',
-            group=DashboardGroup.objects.create(name='Group 2'),
+            group=ContextLayerGroup.objects.create(name='Group 2'),
             description='This is test'
         )
-        self.resource_3 = Dashboard.permissions.create(
+        self.resource_3 = ContextLayer.permissions.create(
             user=self.resource_creator,
             name='Name C',
-            group=DashboardGroup.objects.create(name='Group 3'),
+            group=ContextLayerGroup.objects.create(name='Group 3'),
             description='Resource 3'
         )
         self.resource_3.permission.update_user_permission(
@@ -68,7 +68,7 @@ class DashboardPermissionTest(BasePermissionTest.TestCase):
 
     def test_list_api_by_permission(self):
         """Test List API."""
-        url = reverse('dashboards-list')
+        url = reverse('context-layers-list')
         self.assertRequestGetView(url, 200)
 
         response = self.assertRequestGetView(url, 200, user=self.admin)
@@ -92,11 +92,11 @@ class DashboardPermissionTest(BasePermissionTest.TestCase):
                 'name__contains': 'ame C'
             }
         )
-        url = reverse('dashboards-list') + '?' + params
+        url = reverse('context-layers-list') + '?' + params
         response = self.assertRequestGetView(url, 200, user=self.admin)
         self.assertEqual(len(response.json()['results']), 1)
         self.assertEqual(
-            response.json()['results'][0]['id'], self.resource_3.slug
+            response.json()['results'][0]['id'], self.resource_3.id
         )
 
         params = urllib.parse.urlencode(
@@ -104,11 +104,11 @@ class DashboardPermissionTest(BasePermissionTest.TestCase):
                 'description__contains': 'test'
             }
         )
-        url = reverse('dashboards-list') + '?' + params
+        url = reverse('context-layers-list') + '?' + params
         response = self.assertRequestGetView(url, 200, user=self.admin)
         self.assertEqual(len(response.json()['results']), 1)
         self.assertEqual(
-            response.json()['results'][0]['id'], self.resource_2.slug
+            response.json()['results'][0]['id'], self.resource_2.id
         )
 
         params = urllib.parse.urlencode(
@@ -116,12 +116,12 @@ class DashboardPermissionTest(BasePermissionTest.TestCase):
                 'category__name__in': 'Group 1,Group 2'
             }
         )
-        url = reverse('dashboards-list') + '?' + params
+        url = reverse('context-layers-list') + '?' + params
         response = self.assertRequestGetView(url, 200, user=self.admin)
         self.assertEqual(len(response.json()['results']), 2)
         for result in response.json()['results']:
             self.assertTrue(
-                result['id'] in [self.resource_1.slug, self.resource_2.slug])
+                result['id'] in [self.resource_1.id, self.resource_2.id])
 
         # Not contains
         params = urllib.parse.urlencode(
@@ -129,12 +129,12 @@ class DashboardPermissionTest(BasePermissionTest.TestCase):
                 'category__name__in': '!Group 1,Group 2'
             }
         )
-        url = reverse('dashboards-list') + '?' + params
+        url = reverse('context-layers-list') + '?' + params
         response = self.assertRequestGetView(url, 200, user=self.admin)
         self.assertEqual(len(response.json()['results']), 1)
         for result in response.json()['results']:
             self.assertTrue(
-                result['id'] in [self.resource_3.slug])
+                result['id'] in [self.resource_3.id])
 
     def test_list_api_sort(self):
         """Test GET LIST API."""
@@ -143,7 +143,7 @@ class DashboardPermissionTest(BasePermissionTest.TestCase):
                 'sort': 'name'
             }
         )
-        url = reverse('dashboards-list') + '?' + params
+        url = reverse('context-layers-list') + '?' + params
         response = self.assertRequestGetView(url, 200, user=self.admin)
         self.assertEqual(len(response.json()['results']), 3)
         ids = []
@@ -151,8 +151,8 @@ class DashboardPermissionTest(BasePermissionTest.TestCase):
             ids.append(result['id'])
         self.assertEqual(
             ids, [
-                self.resource_1.slug, self.resource_2.slug,
-                self.resource_3.slug
+                self.resource_1.id, self.resource_2.id,
+                self.resource_3.id
             ]
         )
         params = urllib.parse.urlencode(
@@ -160,7 +160,7 @@ class DashboardPermissionTest(BasePermissionTest.TestCase):
                 'sort': '-name'
             }
         )
-        url = reverse('dashboards-list') + '?' + params
+        url = reverse('context-layers-list') + '?' + params
         response = self.assertRequestGetView(url, 200, user=self.admin)
         self.assertEqual(len(response.json()['results']), 3)
         ids = []
@@ -168,14 +168,14 @@ class DashboardPermissionTest(BasePermissionTest.TestCase):
             ids.append(result['id'])
         self.assertEqual(
             ids, [
-                self.resource_3.slug, self.resource_2.slug,
-                self.resource_1.slug
+                self.resource_3.id, self.resource_2.id,
+                self.resource_1.id
             ]
         )
 
     def test_detail_api(self):
         """Test GET DETAIL API."""
-        url = reverse('dashboards-detail', args=['name-a'])
+        url = reverse('context-layers-detail', args=[self.resource_1.id])
         self.assertRequestGetView(url, 403)
         self.assertRequestGetView(url, 403, user=self.viewer)
         self.assertRequestGetView(url, 403, user=self.creator)
@@ -183,7 +183,7 @@ class DashboardPermissionTest(BasePermissionTest.TestCase):
         self.assertRequestGetView(url, 200, user=self.admin)
 
         url = reverse(
-            'dashboards-detail', kwargs={'slug': self.resource_3.slug}
+            'context-layers-detail', kwargs={'id': self.resource_3.id}
         )
         self.assertRequestGetView(url, 403)
         self.assertRequestGetView(url, 403, user=self.viewer)
@@ -195,15 +195,71 @@ class DashboardPermissionTest(BasePermissionTest.TestCase):
             response.json()['created_by'], self.resource_3.creator.username
         )
 
+    def test_destroy_api(self):
+        """Test DESTROY API."""
+        id = self.resource_1.id
+        self.check_delete_resource_with_different_users(
+            id, 'context-layers-detail')
+        self.assertIsNone(ContextLayer.objects.filter(id=id).first())
+
+        id = self.resource_3.id
+        self.check_delete_resource_with_different_users(
+            id, 'context-layers-detail'
+        )
+        self.assertIsNone(ContextLayer.objects.filter(id=id).first())
+
     def test_delete_api(self):
         """Test DELETE API."""
-        slug = self.resource_1.slug
-        self.check_delete_resource_with_different_users(
-            slug, 'dashboards-detail')
-        self.assertIsNone(Dashboard.objects.filter(slug=slug).first())
-
-        slug = self.resource_3.slug
-        self.check_delete_resource_with_different_users(
-            slug, 'dashboards-detail'
+        resource_1 = ContextLayer.permissions.create(
+            user=self.resource_creator,
+            name='Name A',
+            group=ContextLayerGroup.objects.create(name='Group 1')
         )
-        self.assertIsNone(Dashboard.objects.filter(slug=slug).first())
+        resource_2 = ContextLayer.permissions.create(
+            user=self.resource_creator,
+            name='Name B',
+            group=ContextLayerGroup.objects.create(name='Group 2'),
+            description='This is test'
+        )
+        resource_3 = ContextLayer.permissions.create(
+            user=self.resource_creator,
+            name='Name C',
+            group=ContextLayerGroup.objects.create(name='Group 3'),
+            description='Resource 3'
+        )
+        resource_1.permission.update_user_permission(
+            self.creator, PERMISSIONS.SHARE
+        )
+        resource_2.permission.update_user_permission(
+            self.creator, PERMISSIONS.LIST
+        )
+        resource_3.permission.update_user_permission(
+            self.creator, PERMISSIONS.OWNER
+        )
+        params = urllib.parse.urlencode(
+            {
+                'sort': 'id'
+            }
+        )
+        url = reverse('context-layers-list') + '?' + params
+        response = self.assertRequestGetView(
+            url, 200, user=self.creator
+        )
+        self.assertEqual(len(response.json()['results']), 4)
+        self.assertRequestDeleteView(
+            url, 204, user=self.creator, data={
+                'ids': [resource_1.id, resource_2.id, resource_3.id]
+            }
+        )
+        response = self.assertRequestGetView(
+            url, 200, user=self.creator
+        )
+        self.assertEqual(len(response.json()['results']), 3)
+        ids = []
+        for result in response.json()['results']:
+            ids.append(result['id'])
+        self.assertEqual(
+            ids, [
+                self.resource_3.id, resource_1.id, resource_2.id
+            ]
+        )
