@@ -21,9 +21,10 @@ import React, {
   useRef,
   useState
 } from 'react';
+import axios from "axios";
 import pluralize from 'pluralize';
 import { ServerTableProps, } from "./types";
-import { dictDeepCopy, jsonToUrlParams } from "../../utils/main";
+import { dictDeepCopy } from "../../utils/main";
 import { DeleteButton, ThemeButton } from "../Elements/Button";
 import { MainDataGrid } from "./index";
 import { constructUrl, DjangoRequests } from "../../Requests";
@@ -36,10 +37,18 @@ import './ServerTable.scss';
 const ServerTable = forwardRef(
   ({
      url,
+     urlHeader,
      dataName,
      columns,
+
+     // Selection model with ids
      selectionModel,
      setSelectionModel,
+
+     // Selection model with data
+     selectionModelData = [],
+     setSelectionModelData,
+
      getParameters = null,
      defaults = {
        sort: [],
@@ -51,6 +60,7 @@ const ServerTable = forwardRef(
        select: true,
        delete: true
      },
+     rowIdKey = 'id',
      ...props
    }: ServerTableProps, ref
   ) => {
@@ -130,9 +140,9 @@ const ServerTable = forwardRef(
       setData(null)
       setError(null)
       prev.current.url = _url
-      DjangoRequests.get(_url).then(data => {
+      axios.get(_url, { headers: urlHeader }).then(data => {
         if (prev.current.url === _url) {
-          setDataCount(data.data.count)
+          setDataCount(data.data.page_size * data.data.total_page)
           setData(data.data.results)
         }
       })
@@ -162,6 +172,31 @@ const ServerTable = forwardRef(
         parametersChanged()
       }, [pageSize]
     )
+
+    /*** When selectionModel */
+    useEffect(() => {
+      if (setSelectionModelData) {
+        let newSelectedModelData = []
+        if (selectionModelData) {
+          newSelectedModelData = selectionModelData.filter(
+            row => {
+              return selectionModel.includes(row[rowIdKey])
+            }
+          )
+        }
+        if (data) {
+          newSelectedModelData = newSelectedModelData.concat(
+            data.filter(
+              row => selectionModel.includes(row[rowIdKey])
+            )
+          )
+        }
+        newSelectedModelData = Array.from(new Set(newSelectedModelData))
+        if (JSON.stringify(newSelectedModelData) !== JSON.stringify(selectionModelData)) {
+          setSelectionModelData(newSelectedModelData)
+        }
+      }
+    }, [selectionModel])
 
     /*** When sortmodel changed */
     useEffect(() => {
@@ -253,7 +288,7 @@ const ServerTable = forwardRef(
                 className = 'Updating '
               }
               if (["__check__", "actions"].includes(params.field)) {
-                if (!params.row.permission.delete) {
+                if (!params.row.permission?.delete) {
                   className += "Hide"
                 }
               }
@@ -288,6 +323,8 @@ const ServerTable = forwardRef(
             /*Multisort just enabled for PRO */
             sortModel={sortModel}
             onSortModelChange={(newSortModel: any[]) => setSortModel(newSortModel)}
+
+            getRowId={(row: any) => row[rowIdKey]}
 
             {...props}
           />
