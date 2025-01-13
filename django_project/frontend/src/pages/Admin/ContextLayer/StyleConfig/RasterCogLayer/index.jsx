@@ -36,32 +36,54 @@ export default function RasterCogLayer(
     }
     if (newStyles.min_band === undefined) {
       newStyles.min_band = 0;
-    }
-    if (newStyles.max_band === undefined) {
       newStyles.max_band = 100;
-    }
-    if (newStyles.dynamic_class_num === undefined) {
       newStyles.dynamic_class_num = 7;
-    }
-    if (newStyles.dynamic_classification === undefined) {
       newStyles.dynamic_classification = dynamicClassificationChoices[0].value;
-    }
-    if (newStyles.additional_nodata === undefined) {
       newStyles.additional_nodata = null;
-    }
-    if (newStyles.nodata_color === undefined) {
       newStyles.nodata_color = '#000000';
-    }
-    if (newStyles.nodata_opacity === undefined) {
       newStyles.nodata_opacity = 0;
+      setData(
+        {
+          ...data,
+          styles: { ...newStyles }
+        }
+      )
     }
-    setData(
-      {
-        ...data,
-        styles: { ...newStyles }
-      }
-    )
   }, [data]);
+  // useEffect(() => {
+  //   let newStyles = styles
+  //   if (!styles) {
+  //     newStyles = {}
+  //   }
+  //   if (newStyles.min_band === undefined) {
+  //     newStyles.min_band = 0;
+  //   }
+  //   if (newStyles.max_band === undefined) {
+  //     newStyles.max_band = 100;
+  //   }
+  //   if (newStyles.dynamic_class_num === undefined) {
+  //     newStyles.dynamic_class_num = 7;
+  //   }
+  //   if (newStyles.dynamic_classification === undefined) {
+  //     newStyles.dynamic_classification = dynamicClassificationChoices[0].value;
+  //   }
+  //   if (newStyles.additional_nodata === undefined) {
+  //     newStyles.additional_nodata = null;
+  //   }
+  //   if (newStyles.nodata_color === undefined) {
+  //     newStyles.nodata_color = '#000000';
+  //   }
+  //   if (newStyles.nodata_opacity === undefined) {
+  //     newStyles.nodata_opacity = 0;
+  //   }
+  //   setData(
+  //     {
+  //       ...data,
+  //       styles: { ...newStyles }
+  //     }
+  //   )
+  // }, [data]);
+  console.log(styles)
   return <>
     <label className="form-label required" htmlFor="group">
       Band values
@@ -129,7 +151,8 @@ export default function RasterCogLayer(
         <div className="BasicFormSection">
           <div className='RuleTable-Title'>NoData Color</div>
           <ColorSelector
-            color={styles.nodata_color ? styles.nodata_color : '#000000'}
+            // color={styles.nodata_color ? styles.nodata_color : '#000000'}
+            color={styles.nodata_color}
             onChange={evt => {
               setData({
                 ...data,

@@ -52,8 +52,6 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
       const additional_ndt_val = additional_nodata_value ? parseFloat(additional_nodata_value) : additional_nodata_value;
       const ndt_opacity = nodata_opacity ? parseFloat(nodata_opacity) : nodata_opacity;
       const colors = createColorsFromPaletteId(color_palette, dynamic_class_num, color_palette_reverse);
-      console.log(isInit);
-
 
       if (!colors.length) {
         return
@@ -81,15 +79,15 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
       };
 
       setColorFunction(data.url, ([value], rgba, {noData}) => {
-        if (isInit) {
-          setIsInit(!isInit);
-          setData({
-            ...data,
-            styles: {
-              ...data.styles,
-              nodata: noData.toString()
-            }
-          });
+        if (isInit && colors.length > 0) {
+          setIsInit(false);
+          // setData({
+          //   ...data,
+          //   styles: {
+          //     ...data.styles,
+          //     nodata: noData.toString()
+          //   }
+          // });
         }
         if (value === noData || value === Infinity || isNaN(value) || value == additional_ndt_val) {
           rgba.set(hexToRgba(nodata_color, (ndt_opacity/100) * 255));
