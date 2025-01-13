@@ -44,14 +44,15 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
         color_palette,
         color_palette_reverse,
         dynamic_class_num,
-        additional_nodata_value,
+        additional_nodata,
         nodata_color,
         nodata_opacity,
-        nodata
       } = data?.styles;
-      const additional_ndt_val = additional_nodata_value ? parseFloat(additional_nodata_value) : additional_nodata_value;
+      const additional_ndt_val = additional_nodata ? parseFloat(additional_nodata) : additional_nodata;
       const ndt_opacity = nodata_opacity ? parseFloat(nodata_opacity) : nodata_opacity;
       const colors = createColorsFromPaletteId(color_palette, dynamic_class_num, color_palette_reverse);
+      let init = isInit;
+      console.log(`isInit: ${isInit}`);
 
       if (!colors.length) {
         return
@@ -79,17 +80,18 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
       };
 
       setColorFunction(data.url, ([value], rgba, {noData}) => {
-        if (isInit && colors.length > 0) {
-          setIsInit(false);
-          // setData({
-          //   ...data,
-          //   styles: {
-          //     ...data.styles,
-          //     nodata: noData.toString()
-          //   }
-          // });
+        if (init && colors.length > 0) {
+          init = false
+          setIsInit(false)
+          setData({
+            ...data,
+            styles: {
+              ...data.styles,
+              nodata: noData.toString()
+            }
+          });
         }
-        if (value === noData || value === Infinity || isNaN(value) || value == additional_ndt_val) {
+        if (value === noData || value === Infinity || isNaN(value) || value === additional_ndt_val) {
           rgba.set(hexToRgba(nodata_color, (ndt_opacity/100) * 255));
         } else if (value < min_band || value > max_band) {
           rgba.set([0, 0, 0, 0]); // noData, fillValue or NaN => transparent
