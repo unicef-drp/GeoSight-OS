@@ -13,10 +13,12 @@
  * __copyright__ = ('Copyright 2025, Unicef')
  */
 
-import React, {Fragment, useEffect, useState, useRef} from 'react';
+import React, {Fragment, useEffect, useState, useRef, useMemo} from 'react';
 import axios from "axios";
 import Grid from "@mui/material/Grid";
+import Pagination from '@mui/material/Pagination';
 import ImageIcon from '@mui/icons-material/Image';
+import Box from "@mui/material/Box";
 
 import {SearchInput} from "../Input/IconInput";
 import {MultipleSelectWithSearch, SelectWithSearch} from "../../components/Input/SelectWithSearch";
@@ -24,25 +26,25 @@ import {SortAscIcon, SortDescIcon} from "../../components/Icons";
 import {GeoSightProject} from '../../types';
 
 import './style.scss';
+import {debounce} from "@mui/material/utils";
+import CircularProgress from "@mui/material/CircularProgress";
 
 
 interface ProjectListProps {
   baseUrl: string;
-  setIsLoading: (val: boolean) => void;
+  setParentLoading: (val: boolean) => void;
 }
 
 interface ProjectGridProps {
     projects: GeoSightProject[];
-    onScrollY: (e: any) => void;
-    containerRef: any;
 }
 
 
 /** Project Grid */
-function ProjectGrid({ projects, onScrollY, containerRef }: ProjectGridProps) {
+function ProjectGrid({ projects }: ProjectGridProps) {
   // @ts-ignore
   const userId: number = user.id;
-  return <Grid container spacing={2} className='project-grid-container' onScroll={onScrollY} ref={containerRef}>
+  return <Grid container spacing={2} className='project-grid-container'>
     {
       projects.map((project: GeoSightProject, idx: number) => (
         <Grid key={idx} item xs={3}>
@@ -83,7 +85,8 @@ const generateUrl = (
   selectedCategories: string[],
   selectedSortBy: string,
   selectedSortByAsc: boolean,
-  allcategories: string[]
+  allcategories: string[],
+  currentPage: number
 ) => {
   let newUrl = '';
   switch (selectedSortBy) {
@@ -108,29 +111,51 @@ const generateUrl = (
   if (searchProject) {
     newUrl = `${newUrl}&name__icontains=${searchProject}`;
   }
+
+  newUrl = newUrl.replace(/page=\d+/, `page=${currentPage}`);
   return newUrl;
 }
 
 /**
  * ProjectList
  */
-export default function ProjectList({baseUrl, setIsLoading}: ProjectListProps) {
+export default function ProjectList({baseUrl, setParentLoading}: ProjectListProps) {
+  // TODO: combine all filters into 1 veriable
   const [searchProject, setSearchProject] = useState<string>('');
+  const [typedProject, setTypedProject] = useState<string>('');
   const [allcategories, setAllcategories] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedSortBy, setSelectedSortBy] = useState<string>('Date modified');
   const [selectedSortByAsc, setSelectedSortByAsc] = useState<boolean>(true);
-  const [nextPage, setNextPage] = useState(null);
-  const [previousPage, setPreviousPage] = useState(null);
+  const [totalPage, setTotalPage] = useState<number>(1);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [projects, setProjects] = useState<GeoSightProject[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>()
 
-  const containerRef = useRef(null);
+    /** searchProject changed, debouce **/
+  const searchProjectUpdate = useMemo(
+    () =>
+      debounce(
+        (newValue) => {
+          setSearchProject(newValue)
+        },
+        400
+      ),
+    []
+  );
+
+  /** Searched project changed **/
+  useEffect(() => {
+    searchProjectUpdate(typedProject)
+  }, [typedProject]);
 
   const fetchProjects = async (url: string, append: boolean = true, scrollTop: number) => {
     if (!url) return;
     try {
+      setIsLoading(true);
       axios.get(url).then(response => {
-        setIsLoading(false)
+        setParentLoading(false)
+        setIsLoading(false);
 
         if (append) {
           // Append projects for next page
@@ -140,11 +165,8 @@ export default function ProjectList({baseUrl, setIsLoading}: ProjectListProps) {
           // Prepend projects for previous page
           setProjects(response.data.results);
         }
-        setNextPage(response.data.next);
-        setPreviousPage(response.data.previous);
-        if (containerRef.current) {
-          containerRef.current.scrollTop = scrollTop;
-        }
+        setTotalPage(response.data.total_page);
+        setCurrentPage(response.data.page);
       }).catch(error => {
         console.error("Failed to fetch projects:", error);
       })
@@ -153,35 +175,15 @@ export default function ProjectList({baseUrl, setIsLoading}: ProjectListProps) {
     }
   };
 
-  const handleScroll = (e: any) => {
-    const { scrollTop, clientHeight, scrollHeight } = e.target;
-
-    // Fetch the next page if scrolled to the bottom
-    if (scrollTop + clientHeight >= scrollHeight - 10) {
-      setTimeout(async () => {
-        fetchProjects(nextPage, true, 50);
-        }, 1000);
-    }
-
-    // Fetch the previous page if scrolled to the top
-    if (scrollTop <= 10) {
-      setTimeout(async () => {
-        fetchProjects(previousPage, false, clientHeight);
-      }, 1000);
-    }
-  };
-
   const txt = baseUrl.includes('?creator=!') || !baseUrl.includes('?creator=') ?
     'Other shared projects' : 'Your projects'
 
   // Fetch data
   useEffect(() => {
-    setTimeout(function () {
-      const categories = selectedCategories === allcategories && selectedCategories.length === 0 ? [] : selectedCategories;
-      const newUrl = generateUrl(baseUrl, searchProject, categories, selectedSortBy, selectedSortByAsc, allcategories);
-      fetchProjects(newUrl, true, 0);
-    }, 1000);
-  }, [searchProject, searchProject, selectedCategories, selectedSortBy, selectedSortByAsc])
+    const categories = selectedCategories === allcategories && selectedCategories.length === 0 ? [] : selectedCategories;
+    const newUrl = generateUrl(baseUrl, searchProject, categories, selectedSortBy, selectedSortByAsc, allcategories, currentPage);
+    fetchProjects(newUrl, true, 0);
+  }, [searchProject, searchProject, selectedCategories, selectedSortBy, selectedSortByAsc, currentPage])
 
 
     // Fetch data
@@ -203,8 +205,8 @@ export default function ProjectList({baseUrl, setIsLoading}: ProjectListProps) {
         <Grid item xs={12} md={6} lg={6} xl={6}>
           <SearchInput
             className='SearchInput'
-            placeholder='Search projects' value={searchProject}
-            onChange={setSearchProject}
+            placeholder='Search projects' value={typedProject}
+            onChange={setTypedProject}
           />
         </Grid>
         <Grid item xs={12} md={3} lg={3} xl={3}>
@@ -236,12 +238,28 @@ export default function ProjectList({baseUrl, setIsLoading}: ProjectListProps) {
           />
         </Grid>
       </Grid>
-      <ProjectGrid
+      {isLoading ? <div className='LoadingElement'>
+        <div className='Throbber'>
+          <CircularProgress size="10rem"/>
+        </div>
+      </div> : <ProjectGrid
         projects={projects}
-        onScrollY={handleScroll}
-        containerRef={containerRef}
-      />
+      />}
       <br/>
+      {/*<Pagination count={10} variant="outlined" shape="rounded" />*/}
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Pagination
+          count={totalPage}
+          page={currentPage}
+          onChange={(event, page) => setCurrentPage(page)}
+          variant="outlined"
+          shape="rounded"
+        />
+      </Box>
       <br/>
       <br/>
       <br/>
