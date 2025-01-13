@@ -149,8 +149,6 @@ export default function RasterCogLayer(
           />
         </div>
       </div>
-      <br/>
-      <br/>
       {/*  Palette */}
       <ColorPaletteStyleConfig
         styleType={QUANTITATIVE_TYPE}

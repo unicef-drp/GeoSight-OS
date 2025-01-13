@@ -356,6 +356,7 @@ export const ZonalAnalysisTool = forwardRef((
               }}
             />
           </FormControl>
+          <div className="Separator"/>
           <div>
             <ThemeButton
               disabled={!(draw?.getFeatures().length) || !isAllAnalyzingDone}
