@@ -58,9 +58,11 @@ const ServerTable = forwardRef(
      rightHeader = null,
      enable = {
        select: true,
-       delete: true
+       delete: true,
+       singleSelection: false
      },
      rowIdKey = 'id',
+     className = '',
      ...props
    }: ServerTableProps, ref
   ) => {
@@ -142,7 +144,11 @@ const ServerTable = forwardRef(
       prev.current.url = _url
       axios.get(_url, { headers: urlHeader }).then(data => {
         if (prev.current.url === _url) {
-          setDataCount(data.data.page_size * data.data.total_page)
+          if (data.data.count !== undefined) {
+            setDataCount(data.data.count)
+          } else {
+            setDataCount(data.data.page_size * data.data.total_page)
+          }
           setData(data.data.results)
         }
       })
@@ -207,7 +213,7 @@ const ServerTable = forwardRef(
     return (
       <Fragment>
         {
-          selectionModel === undefined ? null :
+          enable.singleSelection || selectionModel === undefined ? null :
             <div className='AdminListHeader'>
               <div
                 className={'AdminListHeader-Count ' + (!selectionModel.length ? 'Empty' : '')}>
@@ -273,6 +279,7 @@ const ServerTable = forwardRef(
         }
         <div className='AdminTable'>
           <MainDataGrid
+            className={className}
             columns={columns}
             rows={data ? data : []}
 
@@ -309,14 +316,27 @@ const ServerTable = forwardRef(
               parametersChanged()
             }}
 
-            disableSelectionOnClick
+            disableSelectionOnClick={!enable.singleSelection}
             disableColumnFilter
 
             onSelectionModelChange={(newSelectionModel: any[]) => {
-              if (JSON.stringify(newSelectionModel) !== JSON.stringify(selectionModel)) {
-                setSelectionModel(newSelectionModel)
+              if (enable.singleSelection) {
+                let selected = undefined
+                newSelectionModel.map(id => {
+                  if (!selectionModel.includes(id)) {
+                    selected = id
+                  }
+                })
+                if (selected) {
+                  setSelectionModel([selected])
+                }
+              } else {
+                if (JSON.stringify(newSelectionModel) !== JSON.stringify(selectionModel)) {
+                  setSelectionModel(newSelectionModel)
+                }
               }
-            }}
+            }
+            }
             selectionModel={selectionModel}
             error={error}
 

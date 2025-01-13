@@ -33,6 +33,7 @@ export interface ServerTableProps extends MainDataGridProps {
   url: string;
   urlHeader?: object;
   dataName: string;
+  className: string;
 
   // Selection model with ids
   selectionModel: any[];
@@ -50,5 +51,6 @@ export interface ServerTableProps extends MainDataGridProps {
   enable?: {
     select: boolean;
     delete: boolean;
+    singleSelection: boolean;
   }
 }

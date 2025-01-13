@@ -150,7 +150,8 @@ export function ModalInputSelector(
             enable={
               {
                 delete: false,
-                select: true
+                select: true,
+                singleSelection: !multipleSelection
               }
             }
             rowIdKey={rowIdKey}
@@ -168,6 +169,7 @@ export function ModalInputSelector(
                 }
               }
             }}
+            className='ModalSelector'
             ref={tableRef}
           />
         </div>

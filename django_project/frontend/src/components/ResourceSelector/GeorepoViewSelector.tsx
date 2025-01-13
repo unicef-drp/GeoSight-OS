@@ -35,7 +35,19 @@ const columns = [
   { field: 'name', headerName: 'Name', flex: 1 },
   { field: 'description', headerName: 'Description', flex: 1 },
   { field: 'last_update', headerName: 'Last Update', flex: 1 },
-  { field: 'tags', headerName: 'Tags', flex: 1 },
+  {
+    field: 'tags', headerName: 'Tags', flex: 1,
+    renderCell: (params: any) => {
+      return params.row.tags.map((tag: any) => {
+        return <span
+          style={{
+            padding: '0.5rem',
+            backgroundColor: '#EEE',
+            marginRight: '2px'
+          }}>{tag}</span>
+      })
+    }
+  },
 ]
 
 /** For Georepo View selection. */
