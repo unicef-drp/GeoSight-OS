@@ -189,7 +189,7 @@ export default function StyleConfig(
                               override_style: evt.target.checked
                             })}/>
                         }
-                        label="Override style from default haha"/>
+                        label="Override style from default"/>
                     </FormGroup> : null
                 }
 
