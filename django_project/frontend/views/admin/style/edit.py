@@ -74,6 +74,7 @@ class StyleEditView(RoleContributorRequiredMixin, BaseStyleEditingView):
         style = get_object_or_404(Style, pk=self.kwargs.get('pk', ''))
         edit_permission_resource(style, self.request.user)
         data = self.data
+        data['modified_by'] = request.user
         form = StyleForm(data, instance=style)
         if form.is_valid():
             instance = form.save()

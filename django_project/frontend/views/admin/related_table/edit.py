@@ -78,9 +78,10 @@ class RelatedTableEditView(RoleContributorRequiredMixin, AdminBaseView):
             RelatedTable, id=self.kwargs.get('pk', '')
         )
         data = request.POST.copy()
+        data['modified_by'] = request.user
         edit_permission_resource(obj, self.request.user)
         form = RelatedTableForm(
-            request.POST,
+            data,
             request.FILES,
             instance=obj
         )
@@ -88,7 +89,7 @@ class RelatedTableEditView(RoleContributorRequiredMixin, AdminBaseView):
             instance = form.save()
             # Save permission
             instance.permission.update_from_request_data(
-                request.POST, request.user
+                data, request.user
             )
             instance.save_relations(data=data)
             return redirect(

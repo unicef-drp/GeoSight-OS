@@ -35,11 +35,15 @@ export function resourceActions(params) {
 export default function StyleList() {
   const pageName = pageNames.Styles
   let columns = COLUMNS(pageName, urls.admin.list);
+  // pop action
   const action = columns.pop();
+  // pop category
+  columns.pop();
   columns = columns.concat([
+    { field: 'category', headerName: 'Category', flex: 0.5, sortField: 'group' },
     { field: 'style_type', headerName: 'Style type', flex: 0.5 },
     { field: 'created_at', headerName: 'Created At', flex: 0.5 },
-    { field: 'created_by', headerName: 'Created By', flex: 0.5 },
+    { field: 'created_by', headerName: 'Created By', flex: 0.5, sortField: 'creator__username' },
     { field: 'modified_at', headerName: 'Modified At', flex: 0.5 },
     { field: 'modified_by', headerName: 'Modified By', flex: 0.5 },
     action

@@ -39,7 +39,7 @@ export default function ContextLayerList() {
   columns = columns.concat([
     { field: 'layer_type', headerName: 'Layer type', flex: 0.5 },
     { field: 'created_at', headerName: 'Created At', flex: 0.5 },
-    { field: 'created_by', headerName: 'Created By', flex: 0.5 },
+    { field: 'created_by', headerName: 'Created By', flex: 0.5, sortField: 'creator__username' },
     { field: 'modified_at', headerName: 'Modified At', flex: 0.5 },
     { field: 'modified_by', headerName: 'Modified By', flex: 0.5 },
     action

@@ -17,6 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.contrib import admin
 
 from geosight.data.models.style import Style, StyleRule
+from geosight.data.admin.base import BaseAdminMixin
 
 
 class StyleRuleInline(admin.TabularInline):
@@ -26,10 +27,10 @@ class StyleRuleInline(admin.TabularInline):
     extra = 0
 
 
-class StyleAdmin(admin.ModelAdmin):
+class StyleAdmin(BaseAdminMixin, admin.ModelAdmin):
     """Style admin."""
 
-    list_display = ('name', 'description', 'group')
+    list_display = ('name', 'description', 'group', 'creator', 'modified_by')
     inlines = (StyleRuleInline,)
 
 

@@ -76,8 +76,15 @@ export default function DashboardList() {
   const pageName = pageNames.Dashboard
   const columns = COLUMNS(pageName, urls.admin.dashboardList);
   columns[2] = { field: 'description', headerName: 'Description', flex: 1 }
-  columns[3] = { field: 'category', headerName: 'Category', flex: 0.5 }
-  columns[4] = { field: 'created_by', headerName: 'Created By', flex: 0.5 }
+  columns[3] = {
+    field: 'category',
+    headerName: 'Category', flex: 0.5,
+    sortField: 'group__name'
+  }
+  columns[4] = {
+    field: 'created_by', headerName: 'Created By', flex: 0.5,
+    sortField: 'creator__username'
+  }
   columns[5] = { field: 'created_at', headerName: 'Created At', flex: 0.5 }
   columns[6] = { field: 'modified_at', headerName: 'Modified At', flex: 0.5 }
   columns[7] = { field: 'modified_by', headerName: 'Modified By', flex: 0.5 }

@@ -88,6 +88,7 @@ class ContextLayerEditView(RoleContributorRequiredMixin, AdminBaseView):
         edit_permission_resource(instance, self.request.user)
         data = request.POST.copy()
         data['data_fields'] = request.POST.get('data_fields', '[]')
+        data['modified_by'] = request.user
         form = ContextLayerForm(
             data,
             instance=instance

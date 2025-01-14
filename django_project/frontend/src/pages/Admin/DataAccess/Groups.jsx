@@ -38,15 +38,15 @@ const COLUMNS = [
   { field: 'id', headerName: 'id', hide: true },
   {
     field: 'indicator_name', headerName: 'Indicator', flex: 1,
-    orderField: 'obj__obj__indicator__name'
+    sortField: 'obj__obj__indicator__name'
   },
   {
     field: 'dataset_name', headerName: 'View', flex: 0.5,
-    orderField: 'obj__obj__reference_layer__name'
+    sortField: 'obj__obj__reference_layer__name'
   },
   {
     field: 'group_name', headerName: 'Group', flex: 0.5,
-    orderField: 'group__name'
+    sortField: 'group__name'
   }
 ]
 

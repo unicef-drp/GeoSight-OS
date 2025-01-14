@@ -19,6 +19,7 @@ from django.contrib import admin
 from geosight.data.models.basemap_layer import (
     BasemapLayer, BasemapLayerParameter
 )
+from geosight.data.admin.base import BaseAdminMixin
 
 
 class BasemapLayerParameterInline(admin.TabularInline):
@@ -28,10 +29,10 @@ class BasemapLayerParameterInline(admin.TabularInline):
     extra = 0
 
 
-class BasemapLayerAdmin(admin.ModelAdmin):
+class BasemapLayerAdmin(BaseAdminMixin, admin.ModelAdmin):
     """BasemapLayer admin."""
 
-    list_display = ('name', 'url', 'group', 'creator')
+    list_display = ('name', 'url', 'group', 'creator', 'modified_by')
     inlines = (BasemapLayerParameterInline,)
     list_editable = ('group', 'creator')
 

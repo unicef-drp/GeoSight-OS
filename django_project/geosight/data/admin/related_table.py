@@ -21,6 +21,7 @@ from geosight.data.models.related_table import (
     RelatedTable, RelatedTableRow, RelatedTableField
 )
 from geosight.importer.models.attribute import ImporterAttribute
+from geosight.data.admin.base import BaseAdminMixin
 
 
 @admin.action(description='Invalidate cache')
@@ -52,10 +53,10 @@ class RelatedTableRowAdmin(admin.ModelAdmin):
 
 
 @admin.register(RelatedTable)
-class RelatedTableAdmin(admin.ModelAdmin):
+class RelatedTableAdmin(BaseAdminMixin, admin.ModelAdmin):
     """RelatedTable admin."""
 
-    list_display = ('name', 'description', 'importer')
+    list_display = ('name', 'description', 'importer', 'creator', 'modified_by')
     inlines = (RelatedTableFieldInline,)
     actions = (invalidate_cache, make_none_to_empty_string)
     readonly_fields = ('last_importer',)

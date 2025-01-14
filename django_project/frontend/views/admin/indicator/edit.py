@@ -69,6 +69,7 @@ class IndicatorEditView(RoleContributorRequiredMixin, BaseIndicatorEditView):
         """Edit indicator."""
         save_as = string_is_true(request.GET.get('save-as', False))
         data = self.data
+        data['modified_by'] = request.user
         if save_as:
             form = IndicatorForm(data)
         else:
@@ -85,7 +86,6 @@ class IndicatorEditView(RoleContributorRequiredMixin, BaseIndicatorEditView):
             if save_as and not indicator.creator:
                 indicator.creator = request.user
                 indicator.save()
-
             self.post_save(indicator=indicator, data=data)
 
             # Save permission
