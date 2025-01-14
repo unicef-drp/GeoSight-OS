@@ -28,11 +28,10 @@ import {
   RadioGroup
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import {
-  RelatedTableInputSelector
-} from '../../../../ModalSelector/InputSelector'
 
 import '../style.scss';
+import RelatedTableSelector
+  from "../../../../../../components/ResourceSelector/RelatedTableSelector";
 
 /**
  * Related Table Excel Wide Format specific inputs.
@@ -138,12 +137,12 @@ export const BaseWideExcelRelatedTable = forwardRef(
               <label className="form-label required" htmlFor="group">
                 Related table to be replaced
               </label>
-              <RelatedTableInputSelector
-                data={selectedRelatedTable ? [selectedRelatedTable] : []}
-                setData={selectedRT => {
-                  setSelectedRelatedTable(selectedRT[0])
+              <RelatedTableSelector
+                initData={selectedRelatedTable ? [selectedRelatedTable] : []}
+                dataSelected={(selectedData) => {
+                  setSelectedRelatedTable(selectedData[0])
+
                 }}
-                isMultiple={false}
               />
             </div> : ""
         }

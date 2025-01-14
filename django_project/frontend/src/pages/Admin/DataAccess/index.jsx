@@ -20,9 +20,7 @@ import MenuItem from "@mui/material/MenuItem";
 
 import { render } from '../../../app';
 import {
-  DatasetFilterSelector,
   GroupFilterSelector,
-  IndicatorFilterSelector,
   SelectFilter,
   UserFilterSelector
 } from "../ModalSelector/ModalFilterSelector";
@@ -38,9 +36,15 @@ import Modal, {
 import PublicDataAccess from "./Public";
 import { UsersDataAccess } from "./Users";
 import { GroupsDataAccess } from "./Groups";
+import {
+  DatasetFilterSelector
+} from "../../../components/ResourceSelector/DatasetViewSelector";
 
 import '../../Admin/Components/List/style.scss';
 import './style.scss';
+import {
+  IndicatorFilterSelector
+} from "../../../components/ResourceSelector/IndicatorSelector";
 
 
 const PERMISSIONS = [
@@ -104,14 +108,15 @@ export function AddData(
         <IndicatorFilterSelector
           data={indicators}
           setData={setIndicators}
-          returnObject={true}/>
+          showSelected={true}
+        />
       </FormControl>
       <FormControl className='BasicForm'>
         <label className="form-label">Dataset</label>
         <DatasetFilterSelector
           data={datasets}
           setData={setDatasets}
-          returnObject={true}
+          showSelected={true}
         />
       </FormControl>
       <FormControl className='BasicForm'>
@@ -154,8 +159,8 @@ export function AddData(
             setCreating(true)
             tableRef?.current.createData(
               {
-                indicators: indicators.map(row => row.id),
-                datasets: datasets.map(row => row.identifier),
+                indicators: indicators,
+                datasets: datasets,
                 objects: objects.map(row => row.id),
                 permission: permission,
               },

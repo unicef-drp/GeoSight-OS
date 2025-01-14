@@ -25,10 +25,6 @@ import AddIcon from '@mui/icons-material/Add';
 import { DataBrowserActiveIcon } from "../../../components/Icons";
 import { render } from '../../../app';
 import { store } from '../../../store/admin';
-import {
-  DatasetFilterSelector,
-  IndicatorFilterSelector,
-} from "../ModalSelector/ModalFilterSelector";
 import { splitParams, urlParams } from "../../../utils/main";
 import {
   Notification,
@@ -42,9 +38,15 @@ import { removeElement } from "../../../utils/Array";
 import {
   MultipleSelectWithSearch
 } from "../../../components/Input/SelectWithSearch";
+import {
+  DatasetFilterSelector
+} from "../../../components/ResourceSelector/DatasetViewSelector";
 
 
 import './style.scss';
+import {
+  IndicatorFilterSelector
+} from "../../../components/ResourceSelector/IndicatorSelector";
 
 /*** Dataset admin */
 const deleteWarning = "WARNING! Do you want to delete the selected data? This will apply directly to database."

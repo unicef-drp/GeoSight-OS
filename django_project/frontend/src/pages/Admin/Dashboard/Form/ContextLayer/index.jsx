@@ -38,9 +38,11 @@ import {
 } from "../../../../../components/Input/SelectWithList";
 import { Variables } from "../../../../../utils/Variables";
 import { returnLayerDetail } from "../../../../../utils/CloudNativeGIS";
+import RelatedTableRequest from "../../../../../utils/RelatedTable/Request";
+import ContextLayerSelector
+  from "../../../../../components/ResourceSelector/ContextLayerSelector";
 
 import './style.scss';
-import RelatedTableRequest from "../../../../../utils/RelatedTable/Request";
 
 /**
  * Context Layer Style
@@ -292,5 +294,6 @@ export default function ContextLayerForm() {
     otherActionsFunction={(contextLayer) => {
       return <ContextLayerStyle contextLayer={contextLayer}/>
     }}
+    resourceSelector={<ContextLayerSelector/>}
   />
 }

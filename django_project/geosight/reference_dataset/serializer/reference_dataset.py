@@ -50,12 +50,17 @@ class ReferenceDatasetLevelSerializer(serializers.ModelSerializer):
 class ReferenceDatasetSerializer(DynamicModelSerializer):
     """Serializer for ReferenceDataset."""
 
+    uuid = serializers.SerializerMethodField()
     bbox = serializers.SerializerMethodField()
     vector_tiles = serializers.SerializerMethodField()
     possible_id_types = serializers.SerializerMethodField()
     dataset_levels = serializers.SerializerMethodField()
     tags = serializers.SerializerMethodField()
     permission = serializers.SerializerMethodField()
+
+    def get_uuid(self, obj: ReferenceDataset):
+        """Return uuid."""
+        return obj.identifier
 
     def get_bbox(self, obj: ReferenceDataset):
         """Return value."""

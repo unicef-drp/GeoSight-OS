@@ -22,9 +22,6 @@ import Checkbox from '@mui/material/Checkbox';
 
 import MapConfig from './MapConfig'
 import { Actions } from "../../../../../store/dashboard";
-import {
-  GeorepoViewInputSelector
-} from "../../../ModalSelector/InputSelector";
 import { slugify } from "../../../../../utils/main";
 import {
   ViewLevelConfiguration
@@ -41,6 +38,8 @@ import {
   SelectWithList
 } from "../../../../../components/Input/SelectWithList";
 import OverviewForm from "../Overview";
+import DatasetViewSelector
+  from "../../../../../components/ResourceSelector/DatasetViewSelector";
 
 import './style.scss';
 
@@ -98,17 +97,22 @@ export default function SummaryDashboardForm({ changed }) {
                 View
               </label>
               <div className='ReferenceDatasetSection'>
-                <GeorepoViewInputSelector
-                  data={referenceLayer?.identifier ? [referenceLayer] : []}
-                  setData={selectedData => {
+                <DatasetViewSelector
+                  initData={
+                    referenceLayer?.identifier ? [
+                      {
+                        id: referenceLayer.identifier,
+                        uuid: referenceLayer.identifier, ...referenceLayer
+                      }
+                    ] : []
+                  }
+                  dataSelected={(selectedData) => {
                     let selected = { identifier: '', detail_url: '' }
                     if (selectedData[0]) {
                       selected = selectedData[0]
                     }
                     dispatch(Actions.ReferenceLayer.update(selected));
                   }}
-                  isMultiple={false}
-                  showSelected={false}
                 />
               </div>
             </Grid>

@@ -16,12 +16,6 @@
 import React, { useState } from 'react';
 import FormControl from "@mui/material/FormControl";
 import { IconTextField } from "../../../../components/Elements/Input";
-import {
-  ContextLayer,
-  GeorepoViewSelector,
-  IndicatorSelector,
-  RelatedTableSelector
-} from "../index";
 import { ArrowDownwardIcon } from "../../../../components/Icons";
 
 import './style.scss';
@@ -85,97 +79,4 @@ export function ModalInputSelector(
       })
     }
   </FormControl>
-}
-
-/**
- * Related table input selected
- * @param {array} data Selected data.
- * @param {function} setData When the value changed.
- * @param {Boolean} isMultiple Is data returned multiple object.
- */
-export function RelatedTableInputSelector(
-  { data, setData, isMultiple, showSelected }
-) {
-  return <ModalInputSelector
-    placeholder={'Select related table ' + (isMultiple ? '(s)' : '')}
-    data={data}
-    setData={setData}
-    isMultiple={isMultiple}
-    showSelected={showSelected}
-  >
-    <RelatedTableSelector/>
-  </ModalInputSelector>
-}
-
-/**
- * Indicator input selected
- * @param {array} data Selected data.
- * @param {function} setData When the value changed.
- * @param {Boolean} isMultiple Is data returned multiple object.
- * @param {Boolean} showSelected Is Showing selected data.
- */
-export function IndicatorInputSelector(
-  { data, setData, isMultiple, showSelected, ...props }
-) {
-  return <ModalInputSelector
-    placeholder={'Select indicator ' + (isMultiple ? '(s)' : '')}
-    data={data}
-    setData={setData}
-    isMultiple={isMultiple}
-    showSelected={showSelected}
-    {...props}
-  >
-    <IndicatorSelector/>
-  </ModalInputSelector>
-}
-
-/**
- * Context layer input selected
- * @param {array} data Selected data.
- * @param {function} setData When the value changed.
- * @param {Boolean} isMultiple Is data returned multiple object.
- * @param {Boolean} showSelected Is Showing selected data.
- */
-export function ContextLayerInputSelector(
-  { data, setData, isMultiple, showSelected }
-) {
-  return <ModalInputSelector
-    placeholder={'Select context layer ' + (isMultiple ? '(s)' : '')}
-    data={data}
-    setData={setData}
-    isMultiple={isMultiple}
-    showSelected={showSelected}
-  >
-    <ContextLayer/>
-  </ModalInputSelector>
-}
-
-/**
- * Georepo View input selected
- * @param {array} data Selected data.
- * @param {function} setData When the value changed.
- * @param {Boolean} isMultiple Is data returned multiple object.
- * @param {Boolean} showSelected Is Showing selected data.
- * @param {React.Component} otherContent other content to be rendered.
- * @param props
- */
-export function GeorepoViewInputSelector(
-  {
-    data, setData, isMultiple, showSelected,
-    otherContent = null, ...props
-  }
-) {
-  return <ModalInputSelector
-    placeholder={
-      data[0] ? 'Loading' : 'Select view ' + (isMultiple ? '(s)' : '')
-    }
-    data={data}
-    setData={setData}
-    isMultiple={isMultiple}
-    showSelected={showSelected}
-    hideLabel={true}
-    {...props}
-  >
-    <GeorepoViewSelector otherContent={otherContent}/>
-  </ModalInputSelector>
 }

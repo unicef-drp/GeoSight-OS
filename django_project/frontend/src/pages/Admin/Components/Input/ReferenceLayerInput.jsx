@@ -21,10 +21,15 @@ import React, {
   useState
 } from 'react';
 import Grid from '@mui/material/Grid';
-import { Button, FormControlLabel, Radio, RadioGroup } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  FormControlLabel,
+  Radio,
+  RadioGroup
+} from "@mui/material";
 
 import { SelectWithList } from "../../../../components/Input/SelectWithList";
-import { GeorepoViewInputSelector } from "../../ModalSelector/InputSelector";
 import {
   axiosGet,
   fetchFeatureList,
@@ -32,6 +37,8 @@ import {
 } from "../../../../utils/georepo";
 import CircularProgress from "@mui/material/CircularProgress";
 import { multiJsonToMultipleSheetsXlsx } from "../../../../utils/main";
+import DatasetViewSelector
+  from "../../../../components/ResourceSelector/DatasetViewSelector";
 
 const defaultIdType = 'ucode'
 const ANY_LEVEL = 'Any Level (Data Driven)'
@@ -224,36 +231,48 @@ export const ReferenceLayerInput = forwardRef(
             <label className="form-label required" htmlFor="group">
               Reference Layer
             </label>
-            <GeorepoViewInputSelector
-              data={referenceLayer ? [referenceLayer] : []}
-              setData={selectedData => {
-                const reference = selectedData[0]
-                const referenceLayer = references.find(row => {
-                  return row.identifier === reference
-                })
-                if (!referenceLayer && reference) {
-                  setReferences([...references, reference])
+            <FormControl className='InputControl'>
+              <DatasetViewSelector
+                initData={
+                  referenceLayer?.identifier ? [
+                    {
+                      id: referenceLayer.identifier,
+                      uuid: referenceLayer.identifier, ...referenceLayer
+                    }
+                  ] : []
                 }
-                data.reference_layer = selectedData[0]?.identifier
-                setData({ ...data })
-              }}
-              isMultiple={false}
-              showSelected={false}
-              otherContent={
-                <Button
-                  variant="primary"
-                  disabled={!referenceLayer || templateDownloading}
-                  onClick={() => {
-                    setTemplateDownloading(true)
-                  }}
-                >
-                  {
-                    templateDownloading ? <>
-                      <CircularProgress/>Downloading</> : 'Template'
+                dataSelected={(selectedData) => {
+                  const reference = selectedData[0]
+                  const referenceLayer = references.find(row => {
+                    return row.identifier === reference
+                  })
+                  if (!referenceLayer && reference) {
+                    reference.dataset_levels = reference.dataset_levels.map(level => {
+                      level.value = level.level
+                      level.name = level.level_name
+                      return level
+                    })
+                    setReferences([...references, reference])
                   }
-                </Button>
-              }
-            />
+
+                  data.reference_layer = selectedData[0]?.identifier
+                  data.reference_layer_data = reference
+                  setData({ ...data })
+                }}
+              />
+              <Button
+                variant="primary"
+                disabled={!referenceLayer || templateDownloading}
+                onClick={() => {
+                  setTemplateDownloading(true)
+                }}
+              >
+                {
+                  templateDownloading ? <>
+                    <CircularProgress/>Downloading</> : 'Template'
+                }
+              </Button>
+            </FormControl>
           </div>
         </Grid>
         <Grid item xs={3}>

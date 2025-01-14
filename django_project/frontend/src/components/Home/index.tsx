@@ -13,21 +13,23 @@
  * __copyright__ = ('Copyright 2025, Unicef')
  */
 
-import React, {Fragment, useEffect, useMemo, useState} from 'react';
+import React, { Fragment, useEffect, useMemo, useState } from 'react';
 import axios from "axios";
 import Grid from "@mui/material/Grid";
 import Pagination from '@mui/material/Pagination';
 import ImageIcon from '@mui/icons-material/Image';
 import Box from "@mui/material/Box";
 
-import {SearchInput} from "../Input/IconInput";
-import {MultipleSelectWithSearch, SelectWithSearch} from "../../components/Input/SelectWithSearch";
-import {SortAscIcon, SortDescIcon} from "../../components/Icons";
-import {GeoSightProject} from '../../types';
+import { SearchInput } from "../Input/IconInput";
+import {
+  MultipleSelectWithSearch,
+  SelectWithSearch
+} from "../../components/Input/SelectWithSearch";
+import { SortAscIcon, SortDescIcon } from "../../components/Icons";
+import { GeoSightProject } from '../../types';
 
 import './style.scss';
-import {debounce} from "@mui/material/utils";
-import _default from "chart.js/dist/plugins/plugin.tooltip";
+import { debounce } from "@mui/material/utils";
 
 
 interface ProjectListProps {
@@ -36,8 +38,8 @@ interface ProjectListProps {
 }
 
 interface ProjectGridProps {
-    projects: GeoSightProject[];
-    isLoading: boolean
+  projects: GeoSightProject[];
+  isLoading: boolean
 }
 
 
@@ -46,7 +48,7 @@ function ProjectGrid({ projects, isLoading }: ProjectGridProps) {
   // @ts-ignore
   const userId: number = user.id;
 
-  return <div style={{position: "relative"}}>
+  return <div style={{ position: "relative" }}>
     {
       isLoading ? <div className='throbber'></div> : null
     }
@@ -101,10 +103,10 @@ const generateUrl = (
       newUrl = selectedSortByAsc ? `${baseUrl}&sort=modified_at` : `${baseUrl}&sort=-modified_at`;
       break;
     case 'Date created':
-      newUrl = selectedSortByAsc ? `${baseUrl}&sort=created_at`: `${baseUrl}&sort=-created_at`;
+      newUrl = selectedSortByAsc ? `${baseUrl}&sort=created_at` : `${baseUrl}&sort=-created_at`;
       break;
     case 'Name':
-      newUrl = selectedSortByAsc ? `${baseUrl}&sort=name`: `${baseUrl}&sort=-name`;
+      newUrl = selectedSortByAsc ? `${baseUrl}&sort=name` : `${baseUrl}&sort=-name`;
       break
   }
 
@@ -126,7 +128,12 @@ const generateUrl = (
 /**
  * ProjectList
  */
-export default function ProjectList({baseUrl, setParentLoading}: ProjectListProps) {
+export default function ProjectList(
+  {
+    baseUrl,
+    setParentLoading
+  }: ProjectListProps
+) {
   // TODO: combine all filters into 1 veriable
   const [searchProject, setSearchProject] = useState<string>('');
   const [typedProject, setTypedProject] = useState<string>('');
@@ -139,7 +146,7 @@ export default function ProjectList({baseUrl, setParentLoading}: ProjectListProp
   const [projects, setProjects] = useState<GeoSightProject[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>()
 
-    /** searchProject changed, debouce **/
+  /** searchProject changed, debouce **/
   const searchProjectUpdate = useMemo(
     () =>
       debounce(
@@ -166,8 +173,7 @@ export default function ProjectList({baseUrl, setParentLoading}: ProjectListProp
         if (append) {
           // Append projects for next page
           setProjects(response.data.results);
-        }
-        else {
+        } else {
           // Prepend projects for previous page
           setProjects(response.data.results);
         }
@@ -193,7 +199,7 @@ export default function ProjectList({baseUrl, setParentLoading}: ProjectListProp
   }, [searchProject, searchProject, selectedCategories, selectedSortBy, selectedSortByAsc, currentPage])
 
 
-    // Fetch data
+  // Fetch data
   useEffect(() => {
     const categoryUrl = baseUrl.replace('&page_size=25', '&page_size=1000').replace('/api/v1/dashboards', '/api/v1/dashboards/groups')
     axios.get(categoryUrl).then(response => {
@@ -206,14 +212,17 @@ export default function ProjectList({baseUrl, setParentLoading}: ProjectListProp
   return (
     projects ? <Fragment>
       <div className='PageContent-Title'>
-        {txt} <div className='Separator'/>
+        {txt}
+        <div className='Separator'/>
       </div>
       <Grid container spacing={2} className='input-container'>
         <Grid item xs={12} md={6} lg={6} xl={6}>
           <SearchInput
             className='SearchInput'
             placeholder='Search projects' value={typedProject}
-            onChange={setTypedProject}
+            onChange={(value: string) => {
+              setTypedProject(value)
+            }}
           />
         </Grid>
         <Grid item xs={12} md={3} lg={3} xl={3}>

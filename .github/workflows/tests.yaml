@@ -162,6 +162,7 @@ jobs:
           cd ../
           make devweb
           make wait-db
+          docker cp ./django_project geosight_dev:/home/web
           make devweb-entrypoint
           make devweb-runserver
           make load-test-data
@@ -220,6 +221,7 @@ jobs:
           cd ../
           make devweb
           make wait-db
+          docker cp ./django_project geosight_dev:/home/web
           make devweb-entrypoint
           make devweb-runserver
           make load-test-data
@@ -278,6 +280,7 @@ jobs:
           cd ../
           make devweb
           make wait-db
+          docker cp ./django_project geosight_dev:/home/web
           make devweb-entrypoint
           make devweb-runserver
           make load-test-data
@@ -336,6 +339,7 @@ jobs:
           cd ../
           make devweb
           make wait-db
+          docker cp ./django_project geosight_dev:/home/web
           make devweb-entrypoint
           make devweb-runserver
           make load-test-data

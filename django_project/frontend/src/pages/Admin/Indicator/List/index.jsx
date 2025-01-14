@@ -190,7 +190,7 @@ export default function IndicatorList() {
   // Notification
   const pageName = pageNames.Indicators
   const columns = COLUMNS(pageName, urls.admin.indicatorList);
-
+  columns[1].headerName = 'Name'
   columns[4] = {
     field: 'actions',
     type: 'actions',
