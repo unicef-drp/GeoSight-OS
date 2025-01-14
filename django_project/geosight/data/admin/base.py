@@ -19,9 +19,7 @@ class BaseAdminMixin:
     """Mixins for base admin."""
 
     def save_model(self, request, obj, form, change):
-        """
-        Save model in Django admin page.
-        """
+        """Save model in Django admin page."""
         instance = form.save(commit=False)
         instance.modified_by = request.user
         instance.save()
