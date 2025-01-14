@@ -26,6 +26,7 @@ import FormControl from "@mui/material/FormControl";
 import { SaveButton } from "../Elements/Button";
 
 import './style.scss';
+import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 
 interface Props extends MainDataGridProps, ModalInputSelectorProps {
 }
@@ -60,7 +61,7 @@ export function ModalInputSelector(
   const [open, setOpen] = useState(false)
 
   const [selectionModel, setSelectionModel] = useState([]);
-  const [selectionModelData, setSelectionModelData] = useState(initData);
+  const [selectionModelData, setSelectionModelData] = useState([]);
   const [search, setSearch] = useState<string>(defaults.search);
 
   /** Search value changed, debouce **/
@@ -82,8 +83,13 @@ export function ModalInputSelector(
 
   /** When open **/
   useEffect(() => {
-    setSelectionModel(initData ? initData.map(row => row[rowIdKey]) : [])
-    setSelectionModelData(initData)
+    if (open) {
+      const newSelectionModel = initData ? initData.map(row => row[rowIdKey]) : []
+      if (JSON.stringify(newSelectionModel) !== JSON.stringify(selectionModel)) {
+        setSelectionModel(initData ? initData.map(row => row[rowIdKey]) : [])
+        setSelectionModelData(initData)
+      }
+    }
   }, [open]);
 
   /** When url changed **/
@@ -139,6 +145,27 @@ export function ModalInputSelector(
               { readOnly: true, }
             }
           />
+      }
+
+      {
+        showSelected && multipleSelection ?
+          <div className='ModalDataSelectorSelected'>
+            {
+              selectionModelData.map(
+                _row => <div
+                  key={_row[rowIdKey]}
+                  className='ModalDataSelectorSelectedObject'
+                  title={_row.name}
+                >
+                  <div>{_row.name}</div>
+                  <RemoveCircleIcon onClick={() => {
+                    const selectedData = [...selectionModel.filter(id => id !== _row.id)]
+                    setSelectionModel(selectedData)
+                  }}/>
+                </div>
+              )
+            }
+          </div> : null
       }
     </FormControl>
     <Modal

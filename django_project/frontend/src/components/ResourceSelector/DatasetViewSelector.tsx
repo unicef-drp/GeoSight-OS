@@ -210,7 +210,6 @@ export function DatasetFilterSelector(
       })
     }
     dataSelected={(data) => {
-      console.log(data)
       setData(data.map((row: any) => row.identifier))
     }}
     multipleSelection={true}

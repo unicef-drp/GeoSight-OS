@@ -113,7 +113,7 @@ export function AddData(
         <DatasetFilterSelector
           data={datasets}
           setData={setDatasets}
-          returnObject={true}
+          showSelected={true}
         />
       </FormControl>
       <FormControl className='BasicForm'>
@@ -157,7 +157,7 @@ export function AddData(
             tableRef?.current.createData(
               {
                 indicators: indicators.map(row => row.id),
-                datasets: datasets.map(row => row.identifier),
+                datasets: datasets,
                 objects: objects.map(row => row.id),
                 permission: permission,
               },
