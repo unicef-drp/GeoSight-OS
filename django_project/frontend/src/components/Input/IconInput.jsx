@@ -22,7 +22,7 @@ export function SearchInput(
   {
     placeholder,
     value,
-    onChange = false,
+    onChange,
     ...props
   }) {
   return <IconTextField

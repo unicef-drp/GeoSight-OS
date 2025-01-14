@@ -290,7 +290,7 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
         ).first()
         if not entity:
             return HttpResponseBadRequest(
-                f'Entity with concept_uuid :{concept_uuid} does not exist.'
+                f'Entity with concept_uuid: {concept_uuid} does not exist.'
             )
         try:
             parent = entity.parents[0]
