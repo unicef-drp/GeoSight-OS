@@ -128,10 +128,12 @@ const generateUrl = (
 /**
  * ProjectList
  */
-export default function ProjectList({
-                                      baseUrl,
-                                      setParentLoading
-                                    }: ProjectListProps) {
+export default function ProjectList(
+  {
+    baseUrl,
+    setParentLoading
+  }: ProjectListProps
+) {
   // TODO: combine all filters into 1 veriable
   const [searchProject, setSearchProject] = useState<string>('');
   const [typedProject, setTypedProject] = useState<string>('');

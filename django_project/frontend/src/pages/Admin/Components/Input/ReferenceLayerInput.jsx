@@ -247,10 +247,16 @@ export const ReferenceLayerInput = forwardRef(
                     return row.identifier === reference
                   })
                   if (!referenceLayer && reference) {
+                    reference.dataset_levels = reference.dataset_levels.map(level => {
+                      level.value = level.level
+                      level.name = level.level_name
+                      return level
+                    })
                     setReferences([...references, reference])
                   }
+
                   data.reference_layer = selectedData[0]?.identifier
-                  data.reference_layer_data = selectedData[0]
+                  data.reference_layer_data = reference
                   setData({ ...data })
                 }}
               />

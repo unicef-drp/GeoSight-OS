@@ -22,13 +22,12 @@ import { ModalFilterSelectorProps, ModalInputSelectorProps } from "./types";
 const columns = [
   { field: 'id', headerName: 'id', hide: true },
   { field: 'name', headerName: 'Name', flex: 1 },
-  { field: 'shortcode', headerName: 'Code', flex: 1 },
   { field: 'description', headerName: 'Description', flex: 1 },
   { field: 'category', headerName: 'Category', flex: 1 },
 ]
 
 /** For Georepo View selection. */
-export default function IndicatorSelector(
+export default function ContextLayerSelector(
   {
     // Input properties
     placeholder,
@@ -48,33 +47,33 @@ export default function IndicatorSelector(
     defaults
   }: ModalInputSelectorProps
 ) {
-  const [indicators, setIndicators] = useState([])
-  const [indicator, setIndicator] = useState(null)
-  const url = '/api/v1/indicators/?fields=__all__'
+  const [contextLayers, setContextLayers] = useState([])
+  const [contextLayer, setContextLayer] = useState(null)
+  const url = '/api/v1/context-layers/?fields=__all__'
 
-  /** Get the Indicators */
+  /** Get the ContextLayers */
   useEffect(
     () => {
       (
         async () => {
           const responseData = await fetchReferenceLayerList()
-          const Indicators = responseData.map((row: any) => {
+          const ContextLayers = responseData.map((row: any) => {
             row.value = row.identifier
             return row
           })
-          setIndicators(Indicators)
+          setContextLayers(ContextLayers)
         }
       )();
     }, []
   )
 
-  /** On Indicators loaded */
+  /** On ContextLayers loaded */
   useEffect(
     () => {
-      if (!indicator && indicators[0]) {
-        setIndicator(indicators[0].value)
+      if (!contextLayer && contextLayers[0]) {
+        setContextLayer(contextLayers[0].value)
       }
-    }, [indicators]
+    }, [contextLayers]
   )
 
 
@@ -84,7 +83,7 @@ export default function IndicatorSelector(
     showSelected={showSelected}
     disabled={disabled}
     mode={mode}
-    dataName={'Indicator'}
+    dataName={'Context Layer'}
     opener={opener}
 
     // Data properties
@@ -105,7 +104,7 @@ export default function IndicatorSelector(
   />
 }
 
-export function IndicatorFilterSelector(
+export function ContextLayerFilterSelector(
   {
     // Input properties
     showSelected,
@@ -120,7 +119,7 @@ export function IndicatorFilterSelector(
     setData
   }: ModalFilterSelectorProps
 ) {
-  return <IndicatorSelector
+  return <ContextLayerSelector
     initData={
       data.map((row: any) => {
         return {
@@ -132,7 +131,7 @@ export function IndicatorFilterSelector(
     multipleSelection={multipleSelection}
     showSelected={showSelected}
     disabled={disabled}
-    placeholder={'Filter by Indicator(s)'}
+    placeholder={'Filter by ContextLayer(s)'}
     mode={mode}
   />
 }

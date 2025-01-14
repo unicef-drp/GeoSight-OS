@@ -61,15 +61,19 @@ test.describe('Reference dataset selector admin', () => {
     // ----------------------------------
     // Test Single Selection
     // ----------------------------------
-    await page.goto('/admin/project/create');
-    await page.locator('.ReferenceDatasetSection').click()
+    await page.goto('/admin/importer/#Reference%20Layer%20&%20Time');
+    await page.getByPlaceholder('Select View').click();
     await expect(page.locator('.ModalDataSelector')).toBeVisible()
     await testFunction(page, page.locator('.ModalDataSelector'))
 
     // Select
     await page.locator('.MuiDataGrid-row').nth(0).click();
     await expect(page.locator('.ModalDataSelector')).toBeHidden()
-    await expect(page.locator('.ReferenceDatasetSection .MuiInputBase-input')).toHaveValue('Dataset A0')
+    await expect(page.getByPlaceholder('Select View')).toHaveValue('Dataset A0')
+    await page.getByText('Specific Level').click();
+    await page.locator('.SelectWithList').nth(1).click();
+    await expect(page.getByRole('option', { name: 'ucode' })).toBeVisible();
+    await expect(page.getByRole('option', { name: 'concept_uuid' })).toBeVisible();
 
     // ----------------------------------
     // Test Filter Selection

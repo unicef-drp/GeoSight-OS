@@ -56,7 +56,9 @@ test.describe('Indicator list admin', () => {
       await duplicate(page, i)
     }
 
+    // ----------------------------------
     // Check list admin
+    // ----------------------------------
     await page.goto(_url);
     await testFunction(page, page)
 
