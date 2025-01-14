@@ -79,6 +79,23 @@ test.describe('Context layer list admin', () => {
     await expect(page.locator('.ModalDataSelector')).toBeHidden()
     await expect(page.getByPlaceholder('Select Context Layer')).toHaveValue('Context Layer A1');
 
+    // ----------------------------------
+    // Test Filter Selection
+    // ----------------------------------
+    await page.goto('/admin/project/create');
+    await page.locator('.DashboardFormHeader').getByText('Context Layers').click();
+    await page.getByRole('button', { name: 'Add Context Layer' }).click()
+    await expect(page.locator('.ModalDataSelector')).toBeVisible()
+    await testFunction(page, page.locator('.ModalDataSelector'))
+
+    // Select
+    await page.locator('.ModalDataSelector').locator('.MuiDataGrid-row').nth(0).click();
+    await page.locator('.ModalDataSelector').locator('.MuiDataGrid-row').nth(1).click();
+    await page.locator('.ModalDataSelector').getByRole('button', { name: 'Update Selection' }).click()
+    await expect(page.locator('.ModalDataSelector').locator('.ModalDataSelector')).toBeHidden()
+    await expect(page.getByText('Context Layer A0 Config')).toBeVisible();
+    await expect(page.getByText('Context Layer A1 Config')).toBeVisible();
+
     // ------------------------------------------------------
     // DELETE THE CREATED
     // ------------------------------------------------------

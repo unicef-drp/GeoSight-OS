@@ -16,7 +16,7 @@
 import React, { useState } from 'react';
 import FormControl from "@mui/material/FormControl";
 import { IconTextField } from "../../../../components/Elements/Input";
-import { ContextLayer, RelatedTableSelector } from "../index";
+import { RelatedTableSelector } from "../index";
 import { ArrowDownwardIcon } from "../../../../components/Icons";
 
 import './style.scss';
@@ -99,26 +99,5 @@ export function RelatedTableInputSelector(
     showSelected={showSelected}
   >
     <RelatedTableSelector/>
-  </ModalInputSelector>
-}
-
-/**
- * Context layer input selected
- * @param {array} data Selected data.
- * @param {function} setData When the value changed.
- * @param {Boolean} isMultiple Is data returned multiple object.
- * @param {Boolean} showSelected Is Showing selected data.
- */
-export function ContextLayerInputSelector(
-  { data, setData, isMultiple, showSelected }
-) {
-  return <ModalInputSelector
-    placeholder={'Select context layer ' + (isMultiple ? '(s)' : '')}
-    data={data}
-    setData={setData}
-    isMultiple={isMultiple}
-    showSelected={showSelected}
-  >
-    <ContextLayer/>
   </ModalInputSelector>
 }
