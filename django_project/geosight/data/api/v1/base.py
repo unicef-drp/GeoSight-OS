@@ -95,7 +95,9 @@ class BaseApiV1ResourceReadOnly(BaseApiV1, viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         """Return queryset of API."""
-        if self.action == 'list':
+        if self.action not in [
+            'retrieve', 'create', 'update', 'partial_update', 'destroy'
+        ]:
             query = self.model_class.permissions.list(self.request.user)
         else:
             query = self.model_class.objects.all()

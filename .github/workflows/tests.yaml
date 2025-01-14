@@ -124,6 +124,7 @@ jobs:
           cd ../
           make devweb
           make wait-db
+          docker cp ./django_project geosight_dev:/home/web
           make devweb-entrypoint
       - name: Test Backend
         run: make devweb-test
