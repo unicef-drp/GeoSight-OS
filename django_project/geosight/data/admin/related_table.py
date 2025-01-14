@@ -56,7 +56,10 @@ class RelatedTableRowAdmin(admin.ModelAdmin):
 class RelatedTableAdmin(BaseAdminMixin, admin.ModelAdmin):
     """RelatedTable admin."""
 
-    list_display = ('name', 'description', 'importer', 'creator', 'modified_by')
+    list_display = (
+        'name', 'description',
+        'importer', 'creator', 'modified_by'
+    )
     inlines = (RelatedTableFieldInline,)
     actions = (invalidate_cache, make_none_to_empty_string)
     readonly_fields = ('last_importer',)

@@ -119,7 +119,10 @@ def invalidate_cache(modeladmin, request, queryset):
 class DashboardAdmin(BaseAdminMixin, admin.ModelAdmin):
     """Dashboard admin."""
 
-    list_display = ('slug', 'name', 'creator', 'modified_by', 'reference_layer')
+    list_display = (
+        'slug', 'name', 'creator',
+        'modified_by', 'reference_layer'
+    )
     inlines = (
         DashboardBasemapInline,
         DashboardContextLayerInline,

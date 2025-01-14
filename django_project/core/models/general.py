@@ -96,6 +96,10 @@ class AbstractEditData(models.Model):
         abstract = True
 
     def save(self, *args, **kwargs):
+        """
+        Custom save method.
+        """
+
         if not self.modified_by:
             self.modified_by = self.creator
         obj = super().save(*args, **kwargs)
