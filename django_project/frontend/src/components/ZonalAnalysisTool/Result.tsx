@@ -17,8 +17,7 @@ import React, {
   forwardRef,
   useEffect,
   useImperativeHandle,
-  useState,
-  useRef
+  useState
 } from 'react';
 import { useSelector } from "react-redux";
 import { ContextLayer } from "../../store/dashboard/reducers/contextLayers";
@@ -51,7 +50,6 @@ export const ZonalAnalysisResult = forwardRef((
     const [value, setValue] = useState<number>(null);
     const [error, setError] = useState<string>(null);
     const contextLayer = contextLayers.find((ctx: ContextLayer) => ctx.id === analysisLayer.id)
-    const textRef = useRef(null);
 
     useEffect(() => {
       if (!(value == null && error == null)) {
@@ -141,9 +139,8 @@ export const ZonalAnalysisResult = forwardRef((
     }
     return (
       <tr>
-        <Tooltip title={contextLayer?.name}>
+        <Tooltip title={<p style={{ fontSize: "12px" }}>{contextLayer?.name}</p>}>
           <td
-            ref={textRef}
             style={{
               maxWidth: "200px",
               whiteSpace: "nowrap",

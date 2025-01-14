@@ -526,6 +526,11 @@ export function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+/**
+ * Get the number of decimal place based on the number.
+ * @param num
+ * @returns {number}
+ */
 export function getAreaDecimalLength(num) {
   //    1,000,000 - show 2 decimals, if between 1,000,000 - 1 - show 3 decimals, if below 0 - show 4 digits...
   if (num >= 1000000) {
