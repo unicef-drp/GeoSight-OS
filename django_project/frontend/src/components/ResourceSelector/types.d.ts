@@ -12,7 +12,8 @@
  * __date__ = '13/01/2025'
  * __copyright__ = ('Copyright 2025, Unicef')
  */
-import { ReactNode } from "react";
+import { ReactElement, ReactNode } from "react";
+import { DefaultProps } from "../Table/types";
 
 
 export interface ModalFilterSelectorProps {
@@ -28,6 +29,12 @@ export interface ModalFilterSelectorProps {
 
   /** Is the input disabled. */
   disabled?: boolean;
+
+  /** Mode that will be used. */
+  mode?: 'input' | 'filter';
+
+  /** Is selection is multiple. */
+  multipleSelection: boolean;
 }
 
 
@@ -58,4 +65,10 @@ export interface ModalInputSelectorProps {
 
   /** The content to be rendered in the top of modal. */
   topChildren?: ReactNode;
+
+  /** If the input selector has other opener. */
+  opener?: ReactElement;
+
+  /** Defaults properties. */
+  defaults?: DefaultProps;
 }

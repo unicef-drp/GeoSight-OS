@@ -16,11 +16,7 @@
 import React, { useState } from 'react';
 import FormControl from "@mui/material/FormControl";
 import { IconTextField } from "../../../../components/Elements/Input";
-import {
-  ContextLayer,
-  IndicatorSelector,
-  RelatedTableSelector
-} from "../index";
+import { ContextLayer, RelatedTableSelector } from "../index";
 import { ArrowDownwardIcon } from "../../../../components/Icons";
 
 import './style.scss';
@@ -103,28 +99,6 @@ export function RelatedTableInputSelector(
     showSelected={showSelected}
   >
     <RelatedTableSelector/>
-  </ModalInputSelector>
-}
-
-/**
- * Indicator input selected
- * @param {array} data Selected data.
- * @param {function} setData When the value changed.
- * @param {Boolean} isMultiple Is data returned multiple object.
- * @param {Boolean} showSelected Is Showing selected data.
- */
-export function IndicatorInputSelector(
-  { data, setData, isMultiple, showSelected, ...props }
-) {
-  return <ModalInputSelector
-    placeholder={'Select indicator ' + (isMultiple ? '(s)' : '')}
-    data={data}
-    setData={setData}
-    isMultiple={isMultiple}
-    showSelected={showSelected}
-    {...props}
-  >
-    <IndicatorSelector/>
   </ModalInputSelector>
 }
 

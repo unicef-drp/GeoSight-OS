@@ -32,9 +32,6 @@ import LinearProgress from "@mui/material/LinearProgress";
 import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
 import {
-  IndicatorFilterSelector,
-} from "../../ModalSelector/ModalFilterSelector";
-import {
   MultipleCreatableFilter
 } from "../../ModalSelector/ModalFilterSelector/MultipleCreatableFilter";
 import {
@@ -63,6 +60,9 @@ import './style.scss';
 import {
   DatasetFilterSelector
 } from "../../../../components/ResourceSelector/DatasetViewSelector";
+import {
+  IndicatorFilterSelector
+} from "../../../../components/ResourceSelector/IndicatorSelector";
 
 let inProgress = false
 

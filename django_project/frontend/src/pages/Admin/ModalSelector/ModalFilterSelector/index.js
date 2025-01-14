@@ -87,25 +87,6 @@ export function ModalFilterSelector(
 }
 
 /**
- * Filter indicator
- * @param {array} data Selected data.
- * @param {function} setData When the value changed.
- * @param {Boolean} returnObject Is data returned whole object.
- * @param {array} filter List of id of data that will be used to filter data.
- */
-export function IndicatorFilterSelector({ data, setData, returnObject, filter }) {
-  return <ModalFilterSelector
-    placeholder={'Filter by Indicator(s)'}
-    data={data}
-    setData={setData}
-    returnObject={returnObject}
-    filter={filter}
-  >
-    <IndicatorSelector/>
-  </ModalFilterSelector>
-}
-
-/**
  * Filter user
  * @param {array} data Selected data.
  * @param {function} setData When the value changed.

@@ -34,6 +34,8 @@ import {
 import { IconTextField } from "../../../../../components/Elements/Input";
 
 import './style.scss';
+import IndicatorSelector
+  from "../../../../../components/ResourceSelector/IndicatorSelector";
 
 /**
  * Basemaps dashboard
@@ -211,5 +213,6 @@ export default function IndicatorsForm() {
       header: deleteButton(),
       search: search
     }}
+    resourceSelector={<IndicatorSelector/>}
   />
 }

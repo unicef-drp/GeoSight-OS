@@ -250,6 +250,7 @@ export const ReferenceLayerInput = forwardRef(
                     setReferences([...references, reference])
                   }
                   data.reference_layer = selectedData[0]?.identifier
+                  data.reference_layer_data = selectedData[0]
                   setData({ ...data })
                 }}
               />

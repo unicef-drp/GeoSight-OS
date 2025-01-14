@@ -20,6 +20,18 @@
 
 .ModalDataSelector {
 
+  .AdminList {
+    background-color: unset !important;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    min-height: 0;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: $border-radius !important;
+    overflow: hidden;
+  }
+
   .AdminTable {
     height: 100%;
     width: 100%;

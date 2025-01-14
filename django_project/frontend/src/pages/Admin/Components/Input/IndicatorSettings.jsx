@@ -24,9 +24,10 @@ import {
 } from "@mui/material";
 import Grid from '@mui/material/Grid';
 import { SelectWithList } from "../../../../components/Input/SelectWithList";
-import { IndicatorInputSelector } from "../../ModalSelector/InputSelector";
 import Match from "../../../../utils/Match";
 import { optionsToList } from "../../../../utils/main";
+import IndicatorSelector
+  from "../../../../components/ResourceSelector/IndicatorSelector";
 
 /**
  * Indicator specified input
@@ -108,7 +109,7 @@ export const IndicatorSettings = forwardRef(
       <div>
         {
           data.indicator_data_type ?
-            <FormControl className="BasicFormSection">
+            <FormControl className="BasicFormSection IndicatorSetting">
               <div>
                 <label className="form-label required">
                   Indicator
@@ -135,15 +136,13 @@ export const IndicatorSettings = forwardRef(
                 <Grid item xs={6}>
                   {
                     data.indicator_data_type === 'By Value' ?
-                      <IndicatorInputSelector
-                        data={data.indicator_data ? [data.indicator_data] : []}
-                        setData={selectedDate => {
+                      <IndicatorSelector
+                        initData={data.indicator_data ? [data.indicator_data] : []}
+                        dataSelected={selectedDate => {
                           data.indicator_data = selectedDate[0]
                           data.indicator_data_value = selectedDate[0]?.id
                           setData({ ...data })
                         }}
-                        isMultiple={false}
-                        showSelected={false}
                       /> :
                       data.indicator_data_type === 'Data Driven' ?
                         attributes.length ?

@@ -24,9 +24,9 @@ import { MainDataGridProps } from "../Table/types";
 import { ModalInputSelectorProps } from "./types";
 import FormControl from "@mui/material/FormControl";
 import { SaveButton } from "../Elements/Button";
+import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 
 import './style.scss';
-import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 
 interface Props extends MainDataGridProps, ModalInputSelectorProps {
 }
@@ -54,7 +54,8 @@ export function ModalInputSelector(
     multipleSelection,
     defaults = {},
     rowIdKey = 'id',
-    topChildren
+    topChildren,
+    opener
   }: Props
 ) {
   const tableRef = useRef(null);
@@ -114,60 +115,68 @@ export function ModalInputSelector(
   if (!multipleSelection && initData.length) {
     inputValue = initData[0]?.name
   }
-
   return <>
-    <FormControl
-      className={mode === 'input' ? 'InputControl' : 'FilterControl'}>
-      {
-        mode === 'input' ?
-          <IconTextField
-            placeholder={'Select view ' + (multipleSelection ? '(s)' : '')}
-            iconEnd={<ArrowDownwardIcon/>}
-            onClick={() => setOpen(true)}
-            value={inputValue}
-            disabled={disabled}
-          /> : <IconTextField
-            iconEnd={
-              <FilterIcon
-                className={selectionModel.length ? 'HasValue' : ''}
-                onClick={(e: any) => {
-                  if (selectionModel.length) {
-                    setSelectionModel([])
-                    setSelectionModelData([])
-                    e.stopPropagation();
-                  }
-                }}
+    {
+      opener ? <>
+          {
+            React.cloneElement(opener, {
+              onClick: () => setOpen(true)
+            })
+          }
+        </> :
+        <FormControl
+          className={mode === 'input' ? 'InputControl' : 'FilterControl'}>
+          {
+            mode === 'input' ?
+              <IconTextField
+                placeholder={`Select ${dataName}` + (multipleSelection ? '(s)' : '')}
+                iconEnd={<ArrowDownwardIcon/>}
+                onClick={() => setOpen(true)}
+                value={inputValue}
+                disabled={disabled}
+              /> : <IconTextField
+                iconEnd={
+                  <FilterIcon
+                    className={selectionModel.length ? 'HasValue' : ''}
+                    onClick={(e: any) => {
+                      if (selectionModel.length) {
+                        setSelectionModel([])
+                        setSelectionModelData([])
+                        e.stopPropagation();
+                      }
+                    }}
+                  />
+                }
+                onClick={() => setOpen(true)}
+                value={selectionModel.length ? selectionModel.length + ' selected' : placeholder}
+                inputProps={
+                  { readOnly: true, }
+                }
               />
-            }
-            onClick={() => setOpen(true)}
-            value={selectionModel.length ? selectionModel.length + ' selected' : placeholder}
-            inputProps={
-              { readOnly: true, }
-            }
-          />
-      }
+          }
 
-      {
-        showSelected && multipleSelection ?
-          <div className='ModalDataSelectorSelected'>
-            {
-              selectionModelData.map(
-                _row => <div
-                  key={_row[rowIdKey]}
-                  className='ModalDataSelectorSelectedObject'
-                  title={_row.name}
-                >
-                  <div>{_row.name}</div>
-                  <RemoveCircleIcon onClick={() => {
-                    const selectedData = [...selectionModel.filter(id => id !== _row.id)]
-                    setSelectionModel(selectedData)
-                  }}/>
-                </div>
-              )
-            }
-          </div> : null
-      }
-    </FormControl>
+          {
+            showSelected && multipleSelection ?
+              <div className='ModalDataSelectorSelected'>
+                {
+                  selectionModelData.map(
+                    _row => <div
+                      key={_row[rowIdKey]}
+                      className='ModalDataSelectorSelectedObject'
+                      title={_row.name}
+                    >
+                      <div>{_row.name}</div>
+                      <RemoveCircleIcon onClick={() => {
+                        const selectedData = [...selectionModel.filter(id => id !== _row.id)]
+                        setSelectionModel(selectedData)
+                      }}/>
+                    </div>
+                  )
+                }
+              </div> : null
+          }
+        </FormControl>
+    }
     <Modal
       className='ModalDataSelector'
       open={open}
@@ -204,9 +213,11 @@ export function ModalInputSelector(
             getParameters={getParameters}
             checkboxSelection={true}
             defaults={{
-              sort: [
+              sort: defaults.sort ? defaults.sort : [
                 { field: 'name', sort: 'asc' }
-              ]
+              ],
+              search: defaults.search,
+              filters: defaults.filters
             }}
             enable={
               {

@@ -17,6 +17,40 @@ test.describe('Reference dataset selector admin', () => {
     });
     await page.getByRole('button', { name: 'Save', exact: true }).click();
   }
+  const testFunction = async (originalPage, page) => {
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–11 of 11');
+
+    // Check search
+    await page.getByPlaceholder('Search View').fill('A2');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–1 of 1');
+
+    // Search by new object
+    await page.getByPlaceholder('Search View').fill('Dataset A');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 10');
+
+
+    // Check pagination();
+    await page.getByPlaceholder('Search View').fill('');
+    await page.getByLabel('25').click();
+    await originalPage.getByRole('option', {
+      name: '10',
+      exact: true
+    }).click();
+    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Dataset A0');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 11');
+    await page.getByLabel('Go to next page').click();
+    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Somalia');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('11–11 of 11');
+
+    // Orders
+    await page.getByLabel('Go to previous page').click();
+    await page.getByLabel('Name').click();
+    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Somalia');
+    await page.getByLabel('Name').click();
+    await page.getByLabel('Name').click();
+    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Dataset A0');
+
+  }
 
   test('Test selections', async ({ page }) => {
     // Create new data();
@@ -30,37 +64,10 @@ test.describe('Reference dataset selector admin', () => {
     await page.goto('/admin/project/create');
     await page.locator('.ReferenceDatasetSection').click()
     await expect(page.locator('.ModalDataSelector')).toBeVisible()
-    await expect(page.locator('.ModalDataSelector .MuiTablePagination-displayedRows').first()).toContainText('1–11 of 11');
-
-    // Check search
-    await page.getByPlaceholder('Search View').fill('A2');
-    await expect(page.locator('.ModalDataSelector .MuiTablePagination-displayedRows').first()).toContainText('1–1 of 1');
-
-    // Search by new object
-    await page.getByPlaceholder('Search View').fill('Dataset A');
-    await expect(page.locator('.ModalDataSelector .MuiTablePagination-displayedRows').first()).toContainText('1–10 of 10');
-
-
-    // Check pagination();
-    await page.getByPlaceholder('Search View').fill('');
-    await page.locator('.ModalDataSelector').getByLabel('25').click();
-    await page.getByRole('option', { name: '10', exact: true }).click();
-    await expect(page.locator('.ModalDataSelector .MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Dataset A0');
-    await expect(page.locator('.ModalDataSelector .MuiTablePagination-displayedRows').first()).toContainText('1–10 of 11');
-    await page.locator('.ModalDataSelector').getByLabel('Go to next page').click();
-    await expect(page.locator('.ModalDataSelector .MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Somalia');
-    await expect(page.locator('.ModalDataSelector .MuiTablePagination-displayedRows').first()).toContainText('11–11 of 11');
-
-    // Orders
-    await page.locator('.ModalDataSelector').getByLabel('Go to previous page').click();
-    await page.locator('.ModalDataSelector').getByLabel('Name').click();
-    await expect(page.locator('.ModalDataSelector .MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Somalia');
-    await page.locator('.ModalDataSelector').getByLabel('Name').click();
-    await page.locator('.ModalDataSelector').getByLabel('Name').click();
-    await expect(page.locator('.ModalDataSelector .MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Dataset A0');
+    await testFunction(page, page.locator('.ModalDataSelector'))
 
     // Select
-    await page.locator('.ModalDataSelector .MuiDataGrid-row').nth(0).click();
+    await page.locator('.MuiDataGrid-row').nth(0).click();
     await expect(page.locator('.ModalDataSelector')).toBeHidden()
     await expect(page.locator('.ReferenceDatasetSection .MuiInputBase-input')).toHaveValue('Dataset A0')
 
@@ -70,43 +77,19 @@ test.describe('Reference dataset selector admin', () => {
     await page.goto('/admin/dataset/dataset');
     await page.locator('.FilterControl').nth(1).click();
     await expect(page.locator('.ModalDataSelector')).toBeVisible()
-    await expect(page.locator('.ModalDataSelector .MuiTablePagination-displayedRows').first()).toContainText('1–11 of 11');
-
-    // Check search
-    await page.getByPlaceholder('Search View').fill('A2');
-    await expect(page.locator('.ModalDataSelector .MuiTablePagination-displayedRows').first()).toContainText('1–1 of 1');
-
-    // Search by new object
-    await page.getByPlaceholder('Search View').fill('Dataset A');
-    await expect(page.locator('.ModalDataSelector .MuiTablePagination-displayedRows').first()).toContainText('1–10 of 10');
-
-    // Check pagination();
-    await page.getByPlaceholder('Search View').fill('');
-    await page.locator('.ModalDataSelector').getByLabel('25').click();
-    await page.getByRole('option', { name: '10', exact: true }).click();
-    await expect(page.locator('.ModalDataSelector .MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Dataset A0');
-    await expect(page.locator('.ModalDataSelector .MuiTablePagination-displayedRows').first()).toContainText('1–10 of 11');
-    await page.locator('.ModalDataSelector').getByLabel('Go to next page').click();
-    await expect(page.locator('.ModalDataSelector .MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Somalia');
-    await expect(page.locator('.ModalDataSelector .MuiTablePagination-displayedRows').first()).toContainText('11–11 of 11');
-
-    // Orders
-    await page.locator('.ModalDataSelector').getByLabel('Go to previous page').click();
-    await page.locator('.ModalDataSelector').getByLabel('Name').click();
-    await expect(page.locator('.ModalDataSelector .MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Somalia');
-    await page.locator('.ModalDataSelector').getByLabel('Name').click();
-    await page.locator('.ModalDataSelector').getByLabel('Name').click();
-    await expect(page.locator('.ModalDataSelector .MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Dataset A0');
+    await testFunction(page, page.locator('.ModalDataSelector'))
 
     // Select
-    await page.locator('.ModalDataSelector .MuiDataGrid-row').nth(0).click();
-    await page.locator('.ModalDataSelector .MuiDataGrid-row').nth(2).click();
-    await page.locator('.ModalDataSelector .MuiDataGrid-row').nth(3).click();
-    await page.getByRole('button', { name: 'Update Selection' }).click()
-    await expect(page.locator('.ModalDataSelector')).toBeHidden()
+    await page.locator('.ModalDataSelector').locator('.MuiDataGrid-row').nth(0).click();
+    await page.locator('.ModalDataSelector').locator('.MuiDataGrid-row').nth(2).click();
+    await page.locator('.ModalDataSelector').locator('.MuiDataGrid-row').nth(3).click();
+    await page.locator('.ModalDataSelector').getByRole('button', { name: 'Update Selection' }).click()
+    await expect(page.locator('.ModalDataSelector').locator('.ModalDataSelector')).toBeHidden()
     await expect(page.locator('.FilterControl').nth(1).locator('input')).toHaveValue('3 selected');
 
+    // ----------------------------------
     // Delete all
+    // ----------------------------------
     await page.goto('/django-admin/geosight_reference_dataset/referencedataset/');
     await page.locator('#searchbar').fill('Dataset A');
     await page.getByText('Search').click();

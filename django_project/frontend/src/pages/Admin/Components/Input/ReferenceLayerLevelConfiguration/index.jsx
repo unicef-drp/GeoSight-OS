@@ -27,10 +27,10 @@ import { FormControlLabel, FormGroup } from "@mui/material";
 import { InternalReferenceDatasets } from "../../../../../utils/urls";
 import { Actions } from "../../../../../store/dashboard";
 import { RefererenceLayerUrls } from "../../../../../utils/referenceLayer";
-
-import './styles.scss';
 import DatasetViewSelector
   from "../../../../../components/ResourceSelector/DatasetViewSelector";
+
+import './styles.scss';
 
 /**
  * Reference layer view configuration.

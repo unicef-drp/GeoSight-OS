@@ -15,3 +15,12 @@ export interface DatasetView {
   bbox: number[],
   tags: string[]
 }
+
+export interface Indicator {
+  id: string,
+  name: string,
+  category: string,
+  description: string,
+  shortcode: string,
+  type: string
+}

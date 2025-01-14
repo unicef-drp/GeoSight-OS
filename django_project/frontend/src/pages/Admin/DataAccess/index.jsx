@@ -21,7 +21,6 @@ import MenuItem from "@mui/material/MenuItem";
 import { render } from '../../../app';
 import {
   GroupFilterSelector,
-  IndicatorFilterSelector,
   SelectFilter,
   UserFilterSelector
 } from "../ModalSelector/ModalFilterSelector";
@@ -43,6 +42,9 @@ import {
 
 import '../../Admin/Components/List/style.scss';
 import './style.scss';
+import {
+  IndicatorFilterSelector
+} from "../../../components/ResourceSelector/IndicatorSelector";
 
 
 const PERMISSIONS = [
@@ -106,7 +108,8 @@ export function AddData(
         <IndicatorFilterSelector
           data={indicators}
           setData={setIndicators}
-          returnObject={true}/>
+          showSelected={true}
+        />
       </FormControl>
       <FormControl className='BasicForm'>
         <label className="form-label">Dataset</label>
@@ -156,7 +159,7 @@ export function AddData(
             setCreating(true)
             tableRef?.current.createData(
               {
-                indicators: indicators.map(row => row.id),
+                indicators: indicators,
                 datasets: datasets,
                 objects: objects.map(row => row.id),
                 permission: permission,

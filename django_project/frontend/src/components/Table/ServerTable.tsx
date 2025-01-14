@@ -52,7 +52,8 @@ const ServerTable = forwardRef(
      getParameters = null,
      defaults = {
        sort: [],
-       search: null
+       search: null,
+       filters: {}
      },
      leftHeader = null,
      rightHeader = null,
@@ -63,6 +64,7 @@ const ServerTable = forwardRef(
      },
      rowIdKey = 'id',
      className = '',
+     disableSelectionOnClick = true,
      ...props
    }: ServerTableProps, ref
   ) => {
@@ -94,11 +96,14 @@ const ServerTable = forwardRef(
     }
 
     // Other parameters
-    const [parameters, setParameters] = useState({
-      page: 0,
-      page_size: pageSize,
-      sort: getSort(defaults.sort)
-    })
+    const [parameters, setParameters] = useState(
+      {
+        page: 0,
+        page_size: pageSize,
+        sort: getSort(defaults.sort),
+        ...defaults.filters
+      }
+    )
 
     // Sort model
     const [sortModel, setSortModel] = useState<any[]>(defaults.sort);
@@ -183,17 +188,24 @@ const ServerTable = forwardRef(
     useEffect(() => {
       if (setSelectionModelData) {
         let newSelectedModelData = []
+        let existedId: any[] = []
         if (selectionModelData) {
           newSelectedModelData = selectionModelData.filter(
             row => {
-              return selectionModel.includes(row[rowIdKey])
+              const selected = selectionModel.includes(row[rowIdKey])
+              if (selected) {
+                existedId.push(row[rowIdKey])
+              }
+              return selected
             }
           )
         }
         if (data) {
           newSelectedModelData = newSelectedModelData.concat(
             data.filter(
-              row => selectionModel.includes(row[rowIdKey])
+              row => {
+                return selectionModel.includes(row[rowIdKey]) && !existedId.includes(row[rowIdKey])
+              }
             )
           )
         }
@@ -338,6 +350,7 @@ const ServerTable = forwardRef(
             }
             selectionModel={selectionModel}
             error={error}
+            disableSelectionOnClick={disableSelectionOnClick}
 
             /*Multisort just enabled for PRO */
             sortModel={sortModel}

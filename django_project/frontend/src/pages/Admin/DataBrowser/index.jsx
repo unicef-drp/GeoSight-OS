@@ -29,9 +29,6 @@ import InfoIcon from "@mui/icons-material/Info";
 import { render } from '../../../app';
 import { store } from '../../../store/admin';
 import {
-  IndicatorFilterSelector,
-} from "../ModalSelector/ModalFilterSelector";
-import {
   MultipleCreatableFilter
 } from "../ModalSelector/ModalFilterSelector/MultipleCreatableFilter";
 import { deleteFromArray, splitParams, urlParams } from "../../../utils/main";
@@ -51,6 +48,9 @@ import {
 
 
 import './style.scss';
+import {
+  IndicatorFilterSelector
+} from "../../../components/ResourceSelector/IndicatorSelector";
 
 /*** Data Browser admin */
 const deleteWarning = "WARNING! Do you want to delete the selected data? This will apply directly to database."

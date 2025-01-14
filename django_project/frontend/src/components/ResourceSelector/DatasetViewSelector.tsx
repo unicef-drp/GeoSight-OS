@@ -9,8 +9,8 @@
  *     (at your option) any later version.
  *
  * __author__ = 'irwan@kartoza.com'
- * __date__ = '13/06/2023'
- * __copyright__ = ('Copyright 2023, Unicef')
+ * __date__ = '14/01/2025'
+ * __copyright__ = ('Copyright 2025, Unicef')
  */
 
 import React, { useEffect, useState } from 'react';
@@ -58,6 +58,7 @@ export default function DatasetViewSelector(
     showSelected,
     disabled,
     mode,
+    opener,
 
     // Data properties
     initData,
@@ -124,6 +125,7 @@ export default function DatasetViewSelector(
     disabled={disabled}
     mode={mode}
     dataName={'View'}
+    opener={opener}
 
     // Data properties
     initData={initData}

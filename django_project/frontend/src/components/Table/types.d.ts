@@ -25,8 +25,9 @@ export interface MainDataGridProps {
 }
 
 export interface DefaultProps {
-  sort: any[];
+  sort?: any[];
   search?: string;
+  filters?: object;
 }
 
 export interface ServerTableProps extends MainDataGridProps {
@@ -45,6 +46,7 @@ export interface ServerTableProps extends MainDataGridProps {
 
   getParameters: (parameter: {}) => {};
 
+  disableSelectionOnClick: boolean;
   defaults?: DefaultProps;
   rightHeader?: ReactNode;
   leftHeader?: ReactNode;
