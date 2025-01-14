@@ -97,8 +97,9 @@ class AbstractEditData(models.Model):
 
     def save(self, *args, **kwargs):
         """
-        Save any object to DB, adding modified_by
-        if it does not have any.
+        Save any object to DB.
+
+        This will also add modified_by if it does not have any.
         """
         if not self.modified_by:
             self.modified_by = self.creator
