@@ -34,7 +34,7 @@ test.describe('Create project', () => {
     await page.getByRole('button', { name: 'Add Indicator' }).click();
     await page.getByText('Sample Indicator A').first().click();
     await page.getByText('Sample Indicator B').first().click();
-    await page.locator('.AdminSelectDataForm .Save-Button button').click();
+    await page.locator('.ModalDataSelector').getByRole('button', { name: 'Update Selection' }).click()
 
     // Add indicator Layers
     await page.locator('.TabPrimary').getByText('Indicator Layers').click();
