@@ -210,7 +210,7 @@ class DashboardPermissionTest(BasePermissionTest.TestCase):
 
     def test_list_group(self):
         """Test list dashboarg group for user API."""
-        url = reverse('dashboard-groups-api')
+        url = reverse('dashboards-groups')
         self.assertRequestGetView(url, 200)
 
         response = self.assertRequestGetView(url, 200, user=self.admin)
