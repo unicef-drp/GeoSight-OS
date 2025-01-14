@@ -13,15 +13,47 @@
  * __copyright__ = ('Copyright 2024, Unicef')
  */
 
-import React, { Fragment, useEffect } from 'react';
-import { FormControl } from "@mui/material";
-import ColorPaletteStyleConfig, {
-  QUANTITATIVE_TYPE
-} from "../../../Style/Form/DynamicStyleConfig/Palette";
-import { dictDeepCopy } from "../../../../../utils/main";
-import {
-  dynamicClassificationChoices
-} from "../../../Style/Form/DynamicStyleConfig";
+import React, {Fragment, useEffect, useState, useMemo} from 'react';
+import { debounce } from '@mui/material/utils';
+import {FormControl} from "@mui/material";
+import ColorPaletteStyleConfig, {QUANTITATIVE_TYPE} from "../../../Style/Form/DynamicStyleConfig/Palette";
+import {dictDeepCopy} from "../../../../../utils/main";
+import {dynamicClassificationChoices} from "../../../Style/Form/DynamicStyleConfig";
+import ColorSelector from "../../../../../components/Input/ColorSelector";
+
+
+
+
+const constructStyle = (styles) => {
+    let newStyles = styles
+    if (!styles) {
+      newStyles = {}
+    }
+    if (newStyles.min_band === undefined) {
+      newStyles.min_band = 0;
+    }
+    if (newStyles.max_band === undefined) {
+      newStyles.max_band = 100;
+    }
+    if (newStyles.dynamic_class_num === undefined) {
+      newStyles.dynamic_class_num = 7;
+    }
+    if (newStyles.dynamic_classification === undefined) {
+      newStyles.dynamic_classification = dynamicClassificationChoices[0].value;
+    }
+    if (newStyles.additional_nodata === undefined) {
+      newStyles.additional_nodata = null;
+    }
+    if (newStyles.nodata_color === undefined) {
+      newStyles.nodata_color = '#000000';
+    }
+    if (newStyles.nodata_opacity === undefined) {
+      newStyles.nodata_opacity = 0;
+    }
+
+    return newStyles
+}
+
 
 /**
  * Map Config component.
@@ -31,25 +63,43 @@ export default function RasterCogLayer(
     data, setData, useOverride
   }
 ) {
-  const { styles } = dictDeepCopy(data);
+  const newData = dictDeepCopy(data);
+  const styles = constructStyle(newData.styles);
+  const [noDataColor, setNoDataColor] = useState(styles.nodata_color);
+
   useEffect(() => {
-    let newStyles = styles
-    if (!styles) {
-      newStyles = {}
-    }
-    if (newStyles.min_band === undefined) {
-      newStyles.min_band = 0;
-      newStyles.max_band = 100;
-      newStyles.dynamic_class_num = 7;
-      newStyles.dynamic_classification = dynamicClassificationChoices[0].value;
-      setData(
-        {
-          ...data,
-          styles: { ...newStyles }
-        }
-      )
-    }
-  }, [data]);
+    setData({
+      ...data,
+      styles: {
+        ...styles,
+        nodata_color: noDataColor
+      }
+    })
+  }, [noDataColor]);
+
+  const [value, setValue] = useState(styles);
+  const [typedValue, setTypedValue] = useState(value);
+
+  useEffect(() => {
+
+  }, [styles]);
+
+  const valueUpdate = useMemo(
+    () =>
+      debounce(
+        (newValue) => {
+          setValue(newValue)
+        },
+        400
+      ),
+    []
+  );
+
+  /** Searched project changed **/
+  useEffect(() => {
+    valueUpdate(typedValue)
+  }, [typedValue]);
+
   return <>
     <label className="form-label required" htmlFor="group">
       Band values
@@ -68,7 +118,7 @@ export default function RasterCogLayer(
             }
           })
         }}
-        style={{ width: "fit-content", flexGrow: 1 }}
+        style={{width: "fit-content", flexGrow: 1}}
       />
       <span> - </span>
       <input
@@ -83,10 +133,66 @@ export default function RasterCogLayer(
             }
           })
         }}
-        style={{ width: "fit-content", flexGrow: 1 }}
+        style={{width: "fit-content", flexGrow: 1}}
       />
       <br/>
       <br/>
+      <div>
+        <div className="BasicFormSection">
+          <div className='RuleTable-Title'>NoData Value</div>
+          <input
+            placeholder='NoData Value' type='text'
+            value={styles.nodata}
+            disabled={true}
+            style={{width: "fit-content", flexGrow: 1}}
+          />
+        </div>
+        <div className="BasicFormSection">
+          <div className='RuleTable-Title'>Additional NoData Value</div>
+          <input
+            placeholder='Additional NoData Value' type='number'
+            value={styles.additional_nodata}
+            onChange={evt => {
+              setData({
+                ...data,
+                styles: {
+                  ...styles,
+                  additional_nodata: evt.target.value
+                }
+              })
+            }}
+            style={{width: "fit-content", flexGrow: 1}}
+          />
+        </div>
+        <div className="BasicFormSection">
+          <div className='RuleTable-Title'>NoData Color</div>
+          <ColorSelector
+            color={noDataColor}
+            onChange={evt => {
+              setNoDataColor(evt.target.value)
+            }}
+            hideInput={true}
+            fullWidth={true}
+          />
+        </div>
+        <div className="BasicFormSection">
+          <div className='RuleTable-Title'>NoData Opacity (0-100)</div>
+          <input
+            placeholder='NoData Opacity' type='number'
+            value={styles.nodata_opacity}
+            onChange={evt => {
+              setData({
+                ...data,
+                styles: {
+                  ...styles,
+                  nodata_opacity: parseFloat(evt.target.value)
+                }
+              })
+            }}
+            style={{width: "fit-content", flexGrow: 1}}
+          />
+        </div>
+      </div>
       {/*  Palette */}
       <ColorPaletteStyleConfig
         styleType={QUANTITATIVE_TYPE}

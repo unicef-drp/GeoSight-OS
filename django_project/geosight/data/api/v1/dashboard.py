@@ -15,6 +15,8 @@ __date__ = '08/01/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework.response import Response
+from rest_framework.decorators import action
 
 from core.api_utils import common_api_params, ApiTag, ApiParams
 from geosight.data.models.dashboard import Dashboard
@@ -50,6 +52,21 @@ class DashboardViewSet(
     def list(self, request, *args, **kwargs):
         """List of dashboard."""
         return super().list(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_id='dashboard-group-list',
+        tags=[ApiTag.DASHBOARD],
+        manual_parameters=[],
+        operation_description='List dashboard groups.'
+    )
+    @action(detail=False, methods=['get'])
+    def groups(self, request):
+        """Return dashboard group list."""
+        querysets = self.get_queryset()
+        groups = querysets.values_list(
+            'group__name', flat=True
+        ).distinct().order_by('group__name')
+        return Response(groups)
 
     @swagger_auto_schema(
         operation_id='dashboard-detail',

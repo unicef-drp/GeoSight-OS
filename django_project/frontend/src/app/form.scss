@@ -184,6 +184,7 @@
 
     &.ReferenceLayerInputSelectorWrapper {
       .InputControl {
+        flex-grow: 1;
         display: flex !important;
         flex-direction: row !important;
 

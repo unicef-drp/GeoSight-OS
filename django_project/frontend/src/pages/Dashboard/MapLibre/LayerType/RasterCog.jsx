@@ -15,6 +15,7 @@
 
 
 import $ from "jquery";
+import {useEffect, useState} from 'react';
 import {
   addClickEvent,
   addStandalonePopup,
@@ -33,7 +34,7 @@ import {hexToRgba} from '../utils';
 /***
  * Render Raster Cog
  */
-export default function rasterCogLayer(map, id, data, contextLayerData, popupFeatureFn, contextLayerOrder) {
+export default function rasterCogLayer(map, id, data, setData, contextLayerData, popupFeatureFn, contextLayerOrder, isInit, setIsInit) {
   (
     async () => {
       // Create source
@@ -42,9 +43,16 @@ export default function rasterCogLayer(map, id, data, contextLayerData, popupFea
         max_band,
         color_palette,
         color_palette_reverse,
-        dynamic_class_num
+        dynamic_class_num,
+        additional_nodata,
+        nodata_color,
+        nodata_opacity,
       } = data?.styles;
-      const colors = createColorsFromPaletteId(color_palette, dynamic_class_num, color_palette_reverse)
+      const additional_ndt_val = additional_nodata ? parseFloat(additional_nodata) : additional_nodata;
+      const ndt_opacity = nodata_opacity ? parseFloat(nodata_opacity) : nodata_opacity;
+      const colors = createColorsFromPaletteId(color_palette, dynamic_class_num, color_palette_reverse);
+      let init = isInit;
+
       if (!colors.length) {
         return
       }
@@ -71,7 +79,20 @@ export default function rasterCogLayer(map, id, data, contextLayerData, popupFea
       };
 
       setColorFunction(data.url, ([value], rgba, {noData}) => {
-      if (value === noData || value === Infinity || isNaN(value) || value < min_band || value > max_band) {
+        if (init && colors.length > 0) {
+          init = false
+          setIsInit(false)
+          setData({
+            ...data,
+            styles: {
+              ...data.styles,
+              nodata: noData.toString()
+            }
+          });
+        }
+        if (value === noData || value === Infinity || isNaN(value) || value === additional_ndt_val) {
+          rgba.set(hexToRgba(nodata_color, (ndt_opacity/100) * 255));
+        } else if (value < min_band || value > max_band) {
           rgba.set([0, 0, 0, 0]); // noData, fillValue or NaN => transparent
         } else {
           rgba.set(getColor(value));

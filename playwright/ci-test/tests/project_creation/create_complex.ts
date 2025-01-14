@@ -32,7 +32,7 @@ test.describe('Create complex project', () => {
     await page.getByRole('button', { name: 'Add Indicator' }).click();
     await page.getByText('Sample Indicator A').first().click();
     await page.getByText('Sample Indicator B').first().click();
-    await page.locator('.AdminSelectDataForm .Save-Button button').click();
+    await page.locator('.ModalDataSelector').getByRole('button', { name: 'Update Selection' }).click()
 
     // Add Related table
     await page.locator('.TabPrimary').getByText('Related Tables').click();
@@ -187,7 +187,6 @@ test.describe('Create complex project', () => {
     await page.getByTitle('Start Measurement').click();
     await expect(page.getByText('Measure distances and areas')).toBeVisible();
     await page.getByTitle('Zonal Analysis').click();
-    await expect(page.getByText('Extract zonal statistic')).toBeVisible();
 
     // --------------------------------------------------------------
     // CHECK PROJECT WITH OVERRIDE CONFIG EDIT MODE

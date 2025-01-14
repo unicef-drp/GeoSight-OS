@@ -200,6 +200,7 @@ export default function IndicatorList() {
     { field: 'modified_by', headerName: 'Modified By', flex: 0.5 },
     action
   ])
+  columns[1].headerName = 'Name'
 
   columns[columns.length - 1] = {
     field: 'actions',

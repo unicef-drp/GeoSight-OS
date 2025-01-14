@@ -22,9 +22,8 @@ import Checkbox from '@mui/material/Checkbox';
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { IconTextField } from "../../../../components/Elements/Input";
-import IndicatorSelector from "../Indicator";
 
-import { GeorepoViewSelector, GroupSelector, UserSelector } from "../index";
+import { GroupSelector, UserSelector } from "../index";
 import { FilterIcon } from "../../../../components/Icons";
 
 import './style.scss';
@@ -84,44 +83,6 @@ export function ModalFilterSelector(
       })
     }
   </FormControl>
-}
-
-/**
- * Filter indicator
- * @param {array} data Selected data.
- * @param {function} setData When the value changed.
- * @param {Boolean} returnObject Is data returned whole object.
- * @param {array} filter List of id of data that will be used to filter data.
- */
-export function IndicatorFilterSelector({ data, setData, returnObject, filter }) {
-  return <ModalFilterSelector
-    placeholder={'Filter by Indicator(s)'}
-    data={data}
-    setData={setData}
-    returnObject={returnObject}
-    filter={filter}
-  >
-    <IndicatorSelector/>
-  </ModalFilterSelector>
-}
-
-/**
- * Filter Dataset
- * @param {array} data Selected data.
- * @param {function} setData When the value changed.
- * @param {Boolean} returnObject Is data returned whole object.
- * @param {array} filter List of id of data that will be used to filter data.
- */
-export function DatasetFilterSelector({ data, setData, returnObject, filter }) {
-  return <ModalFilterSelector
-    placeholder={'Filter by View(s)'}
-    data={data}
-    setData={setData}
-    returnObject={returnObject}
-    filter={filter}
-  >
-    <GeorepoViewSelector/>
-  </ModalFilterSelector>
 }
 
 /**

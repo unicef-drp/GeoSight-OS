@@ -158,6 +158,7 @@ export default function StyleConfig(
                 </div>
                 <MapConfig
                   data={data}
+                  setData={setData}
                   layerInput={{
                     layer: layer,
                     layer_type: data.layer_type,

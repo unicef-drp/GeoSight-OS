@@ -214,7 +214,16 @@ export function renderLabel(id, contextLayerData, contextLayer, map) {
 /**
  * Context layer rendering data
  */
-export function contextLayerRendering(id, contextLayerData, contextLayer, map, contextLayerOrder) {
+export function contextLayerRendering(
+  id,
+  contextLayerData,
+  setData,
+  contextLayer,
+  map,
+  contextLayerOrder,
+  isInit,
+  setIsInit
+) {
   if (map) {
     if (contextLayer?.layer && !hasLayer(map, id)) {
       const { layer, layer_type } = contextLayer
@@ -291,14 +300,14 @@ export function contextLayerRendering(id, contextLayerData, contextLayer, map, c
         case Variables.LAYER.TYPE.RASTER_COG: {
           removeLayers(map, id)
           rasterCogLayer(
-            map, id, layer, contextLayerData, featureProperties => {
+            map, id, layer, setData, contextLayerData, featureProperties => {
               return popupFeature(
                 featureProperties,
                 contextLayerData.name,
                 null,
                 contextLayerData.data_fields
               )
-            }, contextLayerOrder
+            }, contextLayerOrder, isInit, setIsInit
           )
           break
         }

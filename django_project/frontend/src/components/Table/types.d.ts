@@ -19,27 +19,40 @@ import { GridColumns } from "@mui/x-data-grid";
 export interface MainDataGridProps {
   columns: GridColumns<any>;
   rows?: readonly any[];
+  rowIdKey?: string;
 
   [key: string]: any;
 }
 
 export interface DefaultProps {
-  sort: any[];
+  sort?: any[];
   search?: string;
+  filters?: object;
 }
 
 export interface ServerTableProps extends MainDataGridProps {
   url: string;
+  urlHeader?: object;
   dataName: string;
+  className: string;
+
+  // Selection model with ids
   selectionModel: any[];
   setSelectionModel: (data: any[]) => void;
-  updateParameters: (parameter: {}) => {};
 
+  // Selection model with data
+  selectionModelData: any[];
+  setSelectionModelData: (data: any[]) => void;
+
+  getParameters: (parameter: {}) => {};
+
+  disableSelectionOnClick: boolean;
   defaults?: DefaultProps;
   rightHeader?: ReactNode;
   leftHeader?: ReactNode;
   enable?: {
     select: boolean;
-    delete: boolean
+    delete: boolean;
+    singleSelection: boolean;
   }
 }

@@ -21,9 +21,10 @@ import React, {
   useRef,
   useState
 } from 'react';
+import axios from "axios";
 import pluralize from 'pluralize';
 import { ServerTableProps, } from "./types";
-import { dictDeepCopy, jsonToUrlParams } from "../../utils/main";
+import { dictDeepCopy } from "../../utils/main";
 import { DeleteButton, ThemeButton } from "../Elements/Button";
 import { MainDataGrid } from "./index";
 import { constructUrl, DjangoRequests } from "../../Requests";
@@ -36,21 +37,34 @@ import './ServerTable.scss';
 const ServerTable = forwardRef(
   ({
      url,
+     urlHeader,
      dataName,
      columns,
+
+     // Selection model with ids
      selectionModel,
      setSelectionModel,
+
+     // Selection model with data
+     selectionModelData = [],
+     setSelectionModelData,
+
      getParameters = null,
      defaults = {
        sort: [],
-       search: null
+       search: null,
+       filters: {}
      },
      leftHeader = null,
      rightHeader = null,
      enable = {
        select: true,
-       delete: true
+       delete: true,
+       singleSelection: false
      },
+     rowIdKey = 'id',
+     className = '',
+     disableSelectionOnClick = true,
      ...props
    }: ServerTableProps, ref
   ) => {
@@ -82,11 +96,14 @@ const ServerTable = forwardRef(
     }
 
     // Other parameters
-    const [parameters, setParameters] = useState({
-      page: 0,
-      page_size: pageSize,
-      sort: getSort(defaults.sort)
-    })
+    const [parameters, setParameters] = useState(
+      {
+        page: 0,
+        page_size: pageSize,
+        sort: getSort(defaults.sort),
+        ...defaults.filters
+      }
+    )
 
     // Sort model
     const [sortModel, setSortModel] = useState<any[]>(defaults.sort);
@@ -130,9 +147,13 @@ const ServerTable = forwardRef(
       setData(null)
       setError(null)
       prev.current.url = _url
-      DjangoRequests.get(_url).then(data => {
+      axios.get(_url, { headers: urlHeader }).then(data => {
         if (prev.current.url === _url) {
-          setDataCount(data.data.count)
+          if (data.data.count !== undefined) {
+            setDataCount(data.data.count)
+          } else {
+            setDataCount(data.data.page_size * data.data.total_page)
+          }
           setData(data.data.results)
         }
       })
@@ -163,6 +184,38 @@ const ServerTable = forwardRef(
       }, [pageSize]
     )
 
+    /*** When selectionModel */
+    useEffect(() => {
+      if (setSelectionModelData) {
+        let newSelectedModelData = []
+        let existedId: any[] = []
+        if (selectionModelData) {
+          newSelectedModelData = selectionModelData.filter(
+            row => {
+              const selected = selectionModel.includes(row[rowIdKey])
+              if (selected) {
+                existedId.push(row[rowIdKey])
+              }
+              return selected
+            }
+          )
+        }
+        if (data) {
+          newSelectedModelData = newSelectedModelData.concat(
+            data.filter(
+              row => {
+                return selectionModel.includes(row[rowIdKey]) && !existedId.includes(row[rowIdKey])
+              }
+            )
+          )
+        }
+        newSelectedModelData = Array.from(new Set(newSelectedModelData))
+        if (JSON.stringify(newSelectedModelData) !== JSON.stringify(selectionModelData)) {
+          setSelectionModelData(newSelectedModelData)
+        }
+      }
+    }, [selectionModel])
+
     /*** When sortmodel changed */
     useEffect(() => {
         setParameters({ ...parameters, sort: getSort(sortModel) })
@@ -172,7 +225,7 @@ const ServerTable = forwardRef(
     return (
       <Fragment>
         {
-          selectionModel === undefined ? null :
+          enable.singleSelection || selectionModel === undefined ? null :
             <div className='AdminListHeader'>
               <div
                 className={'AdminListHeader-Count ' + (!selectionModel.length ? 'Empty' : '')}>
@@ -238,6 +291,7 @@ const ServerTable = forwardRef(
         }
         <div className='AdminTable'>
           <MainDataGrid
+            className={className}
             columns={columns}
             rows={data ? data : []}
 
@@ -253,7 +307,7 @@ const ServerTable = forwardRef(
                 className = 'Updating '
               }
               if (["__check__", "actions"].includes(params.field)) {
-                if (!params.row.permission.delete) {
+                if (!params.row.permission?.delete) {
                   className += "Hide"
                 }
               }
@@ -274,20 +328,35 @@ const ServerTable = forwardRef(
               parametersChanged()
             }}
 
-            disableSelectionOnClick
             disableColumnFilter
 
             onSelectionModelChange={(newSelectionModel: any[]) => {
-              if (JSON.stringify(newSelectionModel) !== JSON.stringify(selectionModel)) {
-                setSelectionModel(newSelectionModel)
+              if (enable.singleSelection) {
+                let selected = undefined
+                newSelectionModel.map(id => {
+                  if (!selectionModel.includes(id)) {
+                    selected = id
+                  }
+                })
+                if (selected) {
+                  setSelectionModel([selected])
+                }
+              } else {
+                if (JSON.stringify(newSelectionModel) !== JSON.stringify(selectionModel)) {
+                  setSelectionModel(newSelectionModel)
+                }
               }
-            }}
+            }
+            }
             selectionModel={selectionModel}
             error={error}
+            disableSelectionOnClick={disableSelectionOnClick}
 
             /*Multisort just enabled for PRO */
             sortModel={sortModel}
             onSortModelChange={(newSortModel: any[]) => setSortModel(newSortModel)}
+
+            getRowId={(row: any) => row[rowIdKey]}
 
             {...props}
           />

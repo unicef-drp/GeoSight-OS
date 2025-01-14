@@ -31,9 +31,8 @@ import {
 } from "../../../../components/Elements/Button";
 import { SelectWithList } from "../../../../components/Input/SelectWithList";
 import InputFile from './InputFile'
-import { axiosGet, fetchReferenceLayerList } from '../../../../utils/georepo'
+import { axiosGet } from '../../../../utils/georepo'
 import { jsonToXlsx } from '../../../../utils/main'
-import { GeorepoViewInputSelector } from "../../ModalSelector/InputSelector";
 import {
   Notification,
   NotificationStatus
@@ -41,6 +40,8 @@ import {
 import { RefererenceLayerUrls } from "../../../../utils/referenceLayer";
 
 import './style.scss';
+import DatasetViewSelector
+  from "../../../../components/ResourceSelector/DatasetViewSelector";
 
 export function InputForm({ type, placeholder, name, initValue }) {
   const [value, setValue] = useState(initValue)
@@ -62,7 +63,6 @@ export function InputForm({ type, placeholder, name, initValue }) {
  */
 export default function ValueManagement() {
   const [open, setOpen] = useState(false);
-  const [references, setReferences] = useState([])
   const [reference, setReference] = useState(null)
   const [level, setLevel] = useState(null)
   const [error, setError] = useState(null)
@@ -87,7 +87,7 @@ export default function ValueManagement() {
         level.finished = true
       }
       level.page = page
-      setReferences([...references])
+      setReference({ ...reference })
     });
   }
 
@@ -96,9 +96,7 @@ export default function ValueManagement() {
     setError('')
     setData(null)
     if (reference) {
-      const referenceLayer = references.find(row => {
-        return row.identifier === reference.identifier
-      })
+      const referenceLayer = reference
       if (!referenceLayer) {
         return
       }
@@ -111,10 +109,10 @@ export default function ValueManagement() {
             level.name = level.level_name
             return level
           });
-          setReferences([...references])
           if (referenceLayer.data[0]) {
             setLevel(referenceLayer.data[0].value)
           }
+          setReference({ ...referenceLayer })
         });
       } else {
         // Check levels
@@ -157,27 +155,15 @@ export default function ValueManagement() {
         }
       }
     } else {
-      (
-        async () => {
-          const responseData = await fetchReferenceLayerList()
-          const references = responseData.map(row => {
-            row.value = row.identifier
-            return row
-          })
-          setReference(references[0].value)
-          setReferences(references)
-        }
-      )()
+      setReference(reference)
     }
-  }, [reference, references, level])
+  }, [reference, level])
 
   // Check reference layer
   let referenceLayer = null
   let levelData = null
-  if (references && reference) {
-    referenceLayer = references.filter(row => {
-      return row.identifier === reference.identifier
-    })[0]
+  if (reference) {
+    referenceLayer = reference
     if (referenceLayer?.data) {
       levelData = referenceLayer.data.find(row => {
         return row.level === level
@@ -275,20 +261,19 @@ export default function ValueManagement() {
                    type={'text'}
                    value={reference?.identifier ? reference.identifier : ''}
                    hidden/>
-            <GeorepoViewInputSelector
-              data={reference?.identifier ? [reference] : []}
-              setData={selectedData => {
+            <DatasetViewSelector
+              initData={
+                reference?.identifier ? [
+                  {
+                    id: reference.identifier,
+                    uuid: reference.identifier, ...reference
+                  }
+                ] : []
+              }
+              dataSelected={(selectedData) => {
                 const reference = selectedData[0]
-                const referenceLayer = references.find(row => {
-                  return row.identifier === reference
-                })
-                if (!referenceLayer) {
-                  setReferences([...references, reference])
-                }
                 setReference(reference)
               }}
-              isMultiple={false}
-              showSelected={false}
             />
           </div>
           <div className='ReferenceLayerSelection'>

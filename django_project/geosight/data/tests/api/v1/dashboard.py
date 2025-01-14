@@ -29,14 +29,6 @@ User = get_user_model()
 class DashboardPermissionTest(BasePermissionTest.TestCase):
     """Test for Dashboard API."""
 
-    def create_resource(self, user):
-        """Create resource function."""
-        return None
-
-    def get_resources(self, user):
-        """Create resource function."""
-        return None
-
     def setUp(self):
         """To setup test."""
         super().setUp()
@@ -65,6 +57,14 @@ class DashboardPermissionTest(BasePermissionTest.TestCase):
         self.resource_3.permission.update_group_permission(
             self.group, PERMISSIONS.OWNER
         )
+
+    def create_resource(self, user):
+        """Create resource function."""
+        return None
+
+    def get_resources(self, user):
+        """Create resource function."""
+        return None
 
     def test_list_api_by_permission(self):
         """Test List API."""
@@ -207,3 +207,28 @@ class DashboardPermissionTest(BasePermissionTest.TestCase):
             slug, 'dashboards-detail'
         )
         self.assertIsNone(Dashboard.objects.filter(slug=slug).first())
+
+    def test_list_group(self):
+        """Test list dashboarg group for user API."""
+        url = reverse('dashboard-groups-api')
+        self.assertRequestGetView(url, 200)
+
+        response = self.assertRequestGetView(url, 200, user=self.admin)
+        self.assertEqual(len(response.json()), 3)
+        groups = list(
+            Dashboard.objects.values_list(
+                'group__name', flat=True
+            ).distinct()
+        )
+        self.assertEqual(groups, groups)
+
+        response = self.assertRequestGetView(url, 200, user=self.viewer)
+        self.assertEqual(len(response.json()), 0)
+
+        response = self.assertRequestGetView(url, 200, user=self.creator)
+        self.assertEqual(len(response.json()), 1)
+
+        response = self.assertRequestGetView(
+            url, 200, user=self.creator_in_group
+        )
+        self.assertEqual(response.json(), ['Group 3'])
