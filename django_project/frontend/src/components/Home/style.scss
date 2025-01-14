@@ -1,3 +1,7 @@
+.input-container {
+  padding-right: 15px;
+}
+
 .SearchInput {
   height: 100%!important;
 
@@ -17,7 +21,8 @@
 
 div.project-grid-container {
   overflow-y: scroll;
+  overflow-x: hidden;
   max-height: 75vh;
   margin-top: 5px;
-  //position: absolute;
+  padding-right: 15px;
 }

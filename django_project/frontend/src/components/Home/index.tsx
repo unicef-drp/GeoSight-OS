@@ -208,7 +208,7 @@ export default function ProjectList({baseUrl, setParentLoading}: ProjectListProp
       <div className='PageContent-Title'>
         {txt} <div className='Separator'/>
       </div>
-      <Grid container spacing={2}>
+      <Grid container spacing={2} className='input-container'>
         <Grid item xs={12} md={6} lg={6} xl={6}>
           <SearchInput
             className='SearchInput'
