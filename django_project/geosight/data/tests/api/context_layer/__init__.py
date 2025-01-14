@@ -14,6 +14,6 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '06/01/2025'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from .cloud_native_zonal_analysis import *  # noqa
-from .raster_zonal_analysis import *  # noqa
-from .resource_api import *  # noqa
+from .cloud_native_zonal_analysis import TestCloudNativeZonalAnalysis  # noqa
+from .raster_zonal_analysis import TestRasterZonalAnalysis  # noqa
+from .resource_api import ContextLayerListApiTest  # noqa

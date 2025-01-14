@@ -244,7 +244,6 @@ devweb-test:
 	@echo "------------------------------------------------------------------"
 	@echo "Run tests"
 	@echo "------------------------------------------------------------------"
-	@docker compose exec -T dev python manage.py collectstatic --noinput
 	@docker compose exec -T dev python manage.py test --keepdb --noinput
 
 devweb-shell:
