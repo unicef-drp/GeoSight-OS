@@ -148,9 +148,11 @@ export function COLUMNS(pageName, redirectUrl, editUrl = null, detailUrl = null)
       },
     }
   ]
+  console.log(_columns)
   if (['indicator'].includes(singularPageName.toLowerCase())) {
     _columns[2] = { field: 'shortcode', headerName: 'Shortcode', flex: 0.5 }
   }
+  console.log(_columns)
   return _columns
 }
 

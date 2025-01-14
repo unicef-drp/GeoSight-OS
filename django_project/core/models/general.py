@@ -84,10 +84,22 @@ class AbstractEditData(models.Model):
         related_query_name="%(app_label)s_%(class)ss",
     )
     created_at = models.DateTimeField(default=timezone.now)
+    modified_by = models.ForeignKey(
+        User, on_delete=models.CASCADE,
+        null=True, blank=True,
+        related_name="%(app_label)s_%(class)s_modified_by_related",
+        related_query_name="%(app_label)s_%(class)ss",
+    )
     modified_at = models.DateTimeField(auto_now=True)
 
     class Meta:  # noqa: D106
         abstract = True
+
+    def save(self, *args, **kwargs):
+        if not self.modified_by:
+            self.modified_by = self.creator
+        obj = super().save(*args, **kwargs)
+        return obj
 
 
 class SlugTerm(AbstractTerm):

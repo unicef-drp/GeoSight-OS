@@ -315,7 +315,7 @@ class DashboardBasicSerializer(ResourceSerializer):
     class Meta:  # noqa: D106
         model = Dashboard
         fields = (
-                     'id', 'slug', 'icon', 'name',
-                     'description', 'group', 'category', 'permission',
-                     'reference_layer', 'creator'
-                 ) + ResourceSerializer.Meta.fields
+            'id', 'slug', 'icon', 'name',
+            'description', 'group', 'category', 'permission',
+            'reference_layer', 'creator'
+        ) + ResourceSerializer.Meta.fields

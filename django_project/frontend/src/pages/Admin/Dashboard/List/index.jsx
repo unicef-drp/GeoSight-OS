@@ -77,8 +77,11 @@ export default function DashboardList() {
   const columns = COLUMNS(pageName, urls.admin.dashboardList);
   columns[2] = { field: 'description', headerName: 'Description', flex: 1 }
   columns[3] = { field: 'category', headerName: 'Category', flex: 0.5 }
-  columns[4] = { field: 'modified_at', headerName: 'Last Modified', flex: 0.5 }
-  columns[5] = {
+  columns[4] = { field: 'created_by', headerName: 'Created By', flex: 0.5 }
+  columns[5] = { field: 'created_at', headerName: 'Created At', flex: 0.5 }
+  columns[6] = { field: 'modified_at', headerName: 'Modified At', flex: 0.5 }
+  columns[7] = { field: 'modified_by', headerName: 'Modified By', flex: 0.5 }
+  columns[8] = {
     field: 'actions',
     type: 'actions',
     cellClassName: 'MuiDataGrid-ActionsColumn',

@@ -34,9 +34,17 @@ export function resourceActions(params) {
  */
 export default function ContextLayerList() {
   const pageName = pageNames.ContextLayer
-  const columns = COLUMNS(pageName, urls.admin.contextLayerList);
-  columns[4] = { field: 'layer_type', headerName: 'Layer type', flex: 0.5 };
-  columns[5] = {
+  let columns = COLUMNS(pageName, urls.admin.contextLayerList);
+  const action = columns.pop();
+  columns = columns.concat([
+    { field: 'layer_type', headerName: 'Layer type', flex: 0.5 },
+    { field: 'created_at', headerName: 'Created At', flex: 0.5 },
+    { field: 'created_by', headerName: 'Created By', flex: 0.5 },
+    { field: 'modified_at', headerName: 'Modified At', flex: 0.5 },
+    { field: 'modified_by', headerName: 'Modified By', flex: 0.5 },
+    action
+  ])
+  columns[columns.length - 1] = {
     field: 'actions',
     type: 'actions',
     cellClassName: 'MuiDataGrid-ActionsColumn',

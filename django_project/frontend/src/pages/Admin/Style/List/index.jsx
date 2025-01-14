@@ -34,9 +34,17 @@ export function resourceActions(params) {
  */
 export default function StyleList() {
   const pageName = pageNames.Styles
-  const columns = COLUMNS(pageName, urls.admin.list);
-  columns[4] = { field: 'style_type', headerName: 'Style type', flex: 0.5 }
-  columns[5] = {
+  let columns = COLUMNS(pageName, urls.admin.list);
+  const action = columns.pop();
+  columns = columns.concat([
+    { field: 'style_type', headerName: 'Style type', flex: 0.5 },
+    { field: 'created_at', headerName: 'Created At', flex: 0.5 },
+    { field: 'created_by', headerName: 'Created By', flex: 0.5 },
+    { field: 'modified_at', headerName: 'Modified At', flex: 0.5 },
+    { field: 'modified_by', headerName: 'Modified By', flex: 0.5 },
+    action
+  ])
+  columns[columns.length - 1] = {
     field: 'actions',
     type: 'actions',
     cellClassName: 'MuiDataGrid-ActionsColumn',

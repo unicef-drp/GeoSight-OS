@@ -91,6 +91,7 @@ class DashboardEditView(
             )
 
         data['creator'] = dashboard.creator
+        data['modified_by'] = request.user
         form = DashboardForm(
             data, request.FILES, instance=dashboard
         )

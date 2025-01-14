@@ -189,9 +189,17 @@ export function resourceActions(params, noShare = false) {
 export default function IndicatorList() {
   // Notification
   const pageName = pageNames.Indicators
-  const columns = COLUMNS(pageName, urls.admin.indicatorList);
+  let columns = COLUMNS(pageName, urls.admin.indicatorList);
+  const action = columns.pop();
+  columns = columns.concat([
+    { field: 'created_at', headerName: 'Created At', flex: 0.5 },
+    { field: 'created_by', headerName: 'Created By', flex: 0.5 },
+    { field: 'modified_at', headerName: 'Modified At', flex: 0.5 },
+    { field: 'modified_by', headerName: 'Modified By', flex: 0.5 },
+    action
+  ])
 
-  columns[4] = {
+  columns[columns.length - 1] = {
     field: 'actions',
     type: 'actions',
     cellClassName: 'MuiDataGrid-ActionsColumn',

@@ -46,7 +46,7 @@ export const relatedTableColumns = [
     }
   },
   {
-    field: 'creator',
+    field: 'created_by',
     headerName: 'Created by',
     flex: 0.5
   }
