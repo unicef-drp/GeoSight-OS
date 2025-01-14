@@ -16,7 +16,6 @@
 import React, { useState } from 'react';
 import FormControl from "@mui/material/FormControl";
 import { IconTextField } from "../../../../components/Elements/Input";
-import { RelatedTableSelector } from "../index";
 import { ArrowDownwardIcon } from "../../../../components/Icons";
 
 import './style.scss';
@@ -80,24 +79,4 @@ export function ModalInputSelector(
       })
     }
   </FormControl>
-}
-
-/**
- * Related table input selected
- * @param {array} data Selected data.
- * @param {function} setData When the value changed.
- * @param {Boolean} isMultiple Is data returned multiple object.
- */
-export function RelatedTableInputSelector(
-  { data, setData, isMultiple, showSelected }
-) {
-  return <ModalInputSelector
-    placeholder={'Select related table ' + (isMultiple ? '(s)' : '')}
-    data={data}
-    setData={setData}
-    isMultiple={isMultiple}
-    showSelected={showSelected}
-  >
-    <RelatedTableSelector/>
-  </ModalInputSelector>
 }

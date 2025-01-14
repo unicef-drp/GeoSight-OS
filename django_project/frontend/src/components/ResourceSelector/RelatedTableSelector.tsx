@@ -17,17 +17,26 @@ import React, { useEffect, useState } from 'react';
 import { fetchReferenceLayerList } from "../../utils/georepo";
 import { ModalInputSelector } from "./ModalInputSelector";
 import { ModalFilterSelectorProps, ModalInputSelectorProps } from "./types";
+import { formatDateTime } from "../../utils/main";
 
 
 const columns = [
   { field: 'id', headerName: 'id', hide: true },
   { field: 'name', headerName: 'Name', flex: 1 },
-  { field: 'description', headerName: 'Description', flex: 1 },
-  { field: 'category', headerName: 'Category', flex: 1 },
+  { field: 'unique_id', headerName: 'UUID', flex: 1 },
+  {
+    field: 'created_at', headerName: 'Created at', flex: 0.5,
+    renderCell: (params: any) => {
+      return formatDateTime(new Date(params.value))
+    }
+  },
+  {
+    field: 'creator', headerName: 'Created by', flex: 0.5
+  }
 ]
 
 /** For Georepo View selection. */
-export default function ContextLayerSelector(
+export default function RelatedTableSelector(
   {
     // Input properties
     placeholder,
@@ -47,33 +56,33 @@ export default function ContextLayerSelector(
     defaults
   }: ModalInputSelectorProps
 ) {
-  const [contextLayers, setContextLayers] = useState([])
-  const [contextLayer, setContextLayer] = useState(null)
-  const url = '/api/v1/context-layers/?fields=__all__'
+  const [relatedTables, setRelatedTables] = useState([])
+  const [relatedTable, setRelatedTable] = useState(null)
+  const url = '/api/v1/related-tables/?fields=__all__'
 
-  /** Get the ContextLayers */
+  /** Get the RelatedTables */
   useEffect(
     () => {
       (
         async () => {
           const responseData = await fetchReferenceLayerList()
-          const ContextLayers = responseData.map((row: any) => {
+          const RelatedTables = responseData.map((row: any) => {
             row.value = row.identifier
             return row
           })
-          setContextLayers(ContextLayers)
+          setRelatedTables(RelatedTables)
         }
       )();
     }, []
   )
 
-  /** On ContextLayers loaded */
+  /** On RelatedTables loaded */
   useEffect(
     () => {
-      if (!contextLayer && contextLayers[0]) {
-        setContextLayer(contextLayers[0].value)
+      if (!relatedTable && relatedTables[0]) {
+        setRelatedTable(relatedTables[0].value)
       }
-    }, [contextLayers]
+    }, [relatedTables]
   )
 
 
@@ -83,7 +92,7 @@ export default function ContextLayerSelector(
     showSelected={showSelected}
     disabled={disabled}
     mode={mode}
-    dataName={'Context Layer'}
+    dataName={'Related Table'}
     opener={opener}
 
     // Data properties
@@ -104,7 +113,7 @@ export default function ContextLayerSelector(
   />
 }
 
-export function ContextLayerFilterSelector(
+export function RelatedTableFilterSelector(
   {
     // Input properties
     showSelected,
@@ -119,7 +128,7 @@ export function ContextLayerFilterSelector(
     setData
   }: ModalFilterSelectorProps
 ) {
-  return <ContextLayerSelector
+  return <RelatedTableSelector
     initData={
       data.map((row: any) => {
         return {
@@ -131,7 +140,7 @@ export function ContextLayerFilterSelector(
     multipleSelection={multipleSelection}
     showSelected={showSelected}
     disabled={disabled}
-    placeholder={'Filter by Context Layer(s)'}
+    placeholder={'Filter by Related Table(s)'}
     mode={mode}
   />
 }

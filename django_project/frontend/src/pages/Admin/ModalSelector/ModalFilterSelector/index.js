@@ -22,9 +22,8 @@ import Checkbox from '@mui/material/Checkbox';
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { IconTextField } from "../../../../components/Elements/Input";
-import IndicatorSelector from "../Indicator";
 
-import { GeorepoViewSelector, GroupSelector, UserSelector } from "../index";
+import { GroupSelector, UserSelector } from "../index";
 import { FilterIcon } from "../../../../components/Icons";
 
 import './style.scss';

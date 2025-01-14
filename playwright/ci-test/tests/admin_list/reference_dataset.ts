@@ -17,6 +17,7 @@ test.describe('Reference dataset selector admin', () => {
     });
     await page.getByRole('button', { name: 'Save', exact: true }).click();
   }
+
   const testFunction = async (originalPage, page) => {
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–11 of 11');
 
@@ -49,7 +50,6 @@ test.describe('Reference dataset selector admin', () => {
     await page.getByLabel('Name').click();
     await page.getByLabel('Name').click();
     await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Dataset A0');
-
   }
 
   test('Test selections', async ({ page }) => {

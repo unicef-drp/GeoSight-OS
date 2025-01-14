@@ -22,9 +22,6 @@ import React, {
   useState
 } from 'react';
 import { FormControl } from "@mui/material";
-import {
-  RelatedTableInputSelector
-} from "../../../../ModalSelector/InputSelector";
 import { updateDataWithSetState } from "../../utils";
 import {
   ReferenceLayerInput
@@ -49,6 +46,8 @@ import {
   IndicatorSettings
 } from "../../../../Components/Input/IndicatorSettings";
 import RelatedTableRequest from "../../../../../../utils/RelatedTable/Request";
+import RelatedTableSelector
+  from "../../../../../../components/ResourceSelector/RelatedTableSelector";
 
 let lastId = null;
 /**
@@ -167,15 +166,14 @@ export const RelatedTableFormat = forwardRef(
               Related Table
             </label>
           </div>
-          <RelatedTableInputSelector
-            data={relatedTable ? [relatedTable] : []}
-            setData={selectedDate => {
-              setRelatedTable(selectedDate[0])
-              data.related_table_id = selectedDate[0]?.id
+          <RelatedTableSelector
+            initData={relatedTable ? [relatedTable] : []}
+            dataSelected={(selectedData) => {
+              setRelatedTable(selectedData[0])
+              data.related_table_id = selectedData[0]?.id
               setData({ ...data })
+
             }}
-            isMultiple={false}
-            showSelected={false}
           />
           <span className="form-helptext">
           Related table that will be used.

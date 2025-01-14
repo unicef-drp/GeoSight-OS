@@ -19,14 +19,7 @@ test.describe('Related table list admin', () => {
     await page.getByRole('button', { name: 'Save', exact: true }).click();
   }
 
-  test('Test list functions', async ({ page }) => {
-    // Create new data();
-    for (let i = 0; i < 10; i++) {
-      await duplicate(page, i)
-    }
-
-    // Check list
-    await page.goto(_url);
+  const testFunction = async (originalPage, page) => {
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–11 of 11');
 
     // Check search
@@ -41,7 +34,7 @@ test.describe('Related table list admin', () => {
     // Check pagination();
     await page.getByPlaceholder('Search related table').fill('');
     await page.getByLabel('25').click();
-    await page.getByRole('option', { name: '10', exact: true }).click();
+    await originalPage.getByRole('option', { name: '10', exact: true }).click();
     await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Generated A0');
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 11');
     await page.getByLabel('Go to next page').click();
@@ -50,14 +43,46 @@ test.describe('Related table list admin', () => {
 
     // Orders
     await page.getByLabel('Go to previous page').click();
-    await page.getByLabel('Related Table Name').click();
+    await page.getByLabel('Name').click();
     await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('RRR');
-    await page.getByLabel('Related Table Name').click();
-    await page.getByLabel('Related Table Name').click();
+    await page.getByLabel('Name').click();
+    await page.getByLabel('Name').click();
     await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Generated A0');
+  }
+
+  test('Test list functions', async ({ page }) => {
+    // Create new data();
+    for (let i = 0; i < 10; i++) {
+      await duplicate(page, i)
+    }
+
+    // ----------------------------------
+    // Check list
+    // ----------------------------------
+    await page.goto(_url);
+    await testFunction(page, page)
+
+    // ----------------------------------
+    // Test Single Selection
+    // ----------------------------------
+    await page.goto('/admin/importer/#General');
+    await page.getByText('Related Table Format').click();
+    await page.getByText('Attributes').click();
+    await page.getByPlaceholder('Select Related Table').click();
+    await expect(page.locator('.ModalDataSelector')).toBeVisible()
+    await testFunction(page, page.locator('.ModalDataSelector'))
+
+    // Select
+    await page.locator('.MuiDataGrid-row').nth(1).click();
+    await expect(page.locator('.ModalDataSelector')).toBeHidden()
+    await expect(page.getByPlaceholder('Select Related Table')).toHaveValue('Generated A1');
+
+    // ------------------------------------------------------
+    // DELETE THE CREATED
+    // ------------------------------------------------------
 
     // Delete per row
-    await page.reload();
+    await page.goto(_url);
     await page.getByPlaceholder('Search related table').fill('Generated A');
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 10');
     await page.locator('.MuiDataGrid-row').nth(0).getByTestId('MoreVertIcon').click();

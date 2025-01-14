@@ -23,9 +23,10 @@ import WhereInputModal
   from "../../../../components/SqlQueryGenerator/WhereInputModal";
 import { getRelatedTableFields } from "../../../../utils/relatedTable";
 import { dictDeepCopy, toJson } from "../../../../utils/main";
-import { RelatedTableInputSelector } from "../../ModalSelector/InputSelector";
 import { SelectWithList } from "../../../../components/Input/SelectWithList";
 import RelatedTableRequest from "../../../../utils/RelatedTable/Request";
+import RelatedTableSelector
+  from "../../../../components/ResourceSelector/RelatedTableSelector";
 
 /**
  * Indicator Form App
@@ -99,11 +100,9 @@ export default function RelatedTableFields(
         <label className="form-label required">
           Related Table
         </label>
-        <RelatedTableInputSelector
-          data={relatedTableInfo ? [relatedTableInfo] : []}
-          setData={handleRelatedTableChange}
-          isMultiple={false}
-          showSelected={true}
+        <RelatedTableSelector
+          initData={relatedTableInfo ? [relatedTableInfo] : []}
+          dataSelected={handleRelatedTableChange}
         />
       </div>
       <div className='BasicFormSection'>

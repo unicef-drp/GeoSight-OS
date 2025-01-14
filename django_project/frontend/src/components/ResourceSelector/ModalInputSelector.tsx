@@ -125,7 +125,8 @@ export function ModalInputSelector(
           }
         </> :
         <FormControl
-          className={mode === 'input' ? 'InputControl' : 'FilterControl'}>
+          className={(mode === 'input' ? 'InputControl' : 'FilterControl') + ' ResourceSelector'}
+        >
           {
             mode === 'input' ?
               <IconTextField
