@@ -112,6 +112,7 @@ class DashboardDuplicate(APIView, DashboardCreateViewBase):
         data['name'] = self.update_name(name=data['name'])
         data['slug'] = self.update_slug(slug=data['slug'])
         data['geoField'] = data['geo_field']
+        data['creator'] = request.user
         try:
             data['reference_layer'] = data['reference_layer']['identifier']
         except KeyError:
