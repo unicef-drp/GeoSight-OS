@@ -26,5 +26,11 @@
     "@playwright/test": "^1.40.1",
     "@types/node": "^20.12.10"
   },
-  "overrides": {}
+  "overrides": {},
+  "dependencies": {
+    "ci": "^2.3.0",
+    "npm": "^11.0.0",
+    "npx": "^10.2.2",
+    "playwright": "^1.49.1"
+  }
 }

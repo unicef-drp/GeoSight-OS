@@ -157,8 +157,11 @@ def run_zonal_analysis(
         except ValueError:
             return None
         data = out_image[0]
-        data = np.where(np.isnan(data), -9999, data)
-        data = np.ma.masked_equal(data, -9999).compressed()
+
+        # mask invalid data e.g. nan and inf
+        data = np.ma.masked_invalid(data)
+        # mask nodata
+        data = np.ma.masked_equal(data, src.nodata).compressed()
         aggregate = 0
         if aggregation == 'sum':
             aggregate = np.sum(data) if data.size else None
