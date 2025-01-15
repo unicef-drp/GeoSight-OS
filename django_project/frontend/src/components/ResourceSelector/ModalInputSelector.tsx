@@ -25,6 +25,7 @@ import { ModalInputSelectorProps } from "./types";
 import FormControl from "@mui/material/FormControl";
 import { SaveButton } from "../Elements/Button";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
+import { dictDeepCopy } from "../../utils/main";
 
 import './style.scss';
 
@@ -55,7 +56,8 @@ export function ModalInputSelector(
     defaults = {},
     rowIdKey = 'id',
     topChildren,
-    opener
+    opener,
+    searchKey = 'name__icontains'
   }: Props
 ) {
   const tableRef = useRef(null);
@@ -101,9 +103,9 @@ export function ModalInputSelector(
   /*** Parameters Changed */
   const getParameters = (parameters: any) => {
     if (search) {
-      parameters['name__icontains'] = search
+      parameters[searchKey] = search
     } else {
-      delete parameters['name__icontains']
+      delete parameters[searchKey]
     }
     if (getParametersParent) {
       parameters = getParametersParent(parameters)
@@ -166,10 +168,11 @@ export function ModalInputSelector(
                       className='ModalDataSelectorSelectedObject'
                       title={_row.name}
                     >
-                      <div>{_row.name}</div>
-                      <RemoveCircleIcon onClick={() => {
+                      <div>{_row.name}&nbsp;</div>
+                      <RemoveCircleIcon
+                        style={{ color: 'red' }} onClick={() => {
                         const selectedData = [...selectionModel.filter(id => id !== _row.id)]
-                        setSelectionModel(selectedData)
+                        setSelectionModel(dictDeepCopy(selectedData))
                       }}/>
                     </div>
                   )

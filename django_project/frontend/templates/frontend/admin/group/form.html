@@ -11,19 +11,6 @@
       const initialData = {{ form|get_data|safe }};
       urls.api = {
         'detail': '{{ group_detail_api }}',
-        'users': '{% url 'user-list-api'%}',
-        user: {
-          'list': '{% url 'user-list-api' %}',
-          'edit': '{% url 'admin-user-edit-view' 0 %}',
-          'detail': '{% url 'user-detail-api' 0 %}',
-          'create': '{% url 'admin-user-create-view' %}'
-        },
-        group: {
-          'list': '{% url 'group-list-api' %}',
-          'edit': '{% url 'admin-group-edit-view' 0 %}',
-          'detail': '{% url 'group-detail-api' 0 %}',
-          'create': '{% url 'admin-group-create-view' %}'
-        },
         'permissionAdmin': '{% url 'admin-data-access-view' %}',
       }
     </script>

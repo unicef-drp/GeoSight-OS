@@ -9,6 +9,29 @@
  *     (at your option) any later version.
  *
  * __author__ = 'irwan@kartoza.com'
- * __date__ = '13/06/2023'
+ * __date__ = '15/01/2025'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
+
+import { ReactElement } from "react";
+
+export interface ContentProps {
+  name: string;
+  content: ReactElement;
+}
+
+export interface AdminTabProps {
+  tabName: string;
+  disabled: boolean;
+  selected: boolean;
+
+  onClick: () => void;
+}
+
+export interface AdminProps {
+  contents: ContentProps[];
+  pageName: string;
+  onTabChanged: (tab: string) => void;
+
+  [key: string]: any;
+}

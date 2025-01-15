@@ -65,7 +65,7 @@ test.describe('Data access groups admin', () => {
     await page.reload();
     await page.getByLabel('Indicator').click();
     await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Sample Indicator D');
-    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(3)).toContainText('unicef');
+    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(3)).toContainText('Group 1');
     await page.getByLabel('Group').click();
     await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(3)).toContainText('Group 1');
 

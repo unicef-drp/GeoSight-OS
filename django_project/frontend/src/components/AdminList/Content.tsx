@@ -60,6 +60,7 @@ export const AdminListContent = forwardRef(
        sort: null
      },
      useSearch = true,
+     searchKey = 'name__icontains',
 
      // Table props
      multipleDelete,
@@ -124,6 +125,9 @@ export const AdminListContent = forwardRef(
     if ((multipleDelete || url.batch)) {
       selectableFunction = (params: any) => {
         const { permission } = params.row
+        if (!permission) {
+          return true
+        }
         return (url.batch && permission?.edit) || (multipleDelete && permission?.delete)
       }
     }
@@ -177,9 +181,9 @@ export const AdminListContent = forwardRef(
     /*** Parameters Changed */
     const getParameters = (parameters: any) => {
       if (search) {
-        parameters['name__icontains'] = search
+        parameters[searchKey] = search
       } else {
-        delete parameters['name__icontains']
+        delete parameters[searchKey]
       }
       return parameters
     }

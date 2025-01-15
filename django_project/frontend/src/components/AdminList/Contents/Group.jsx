@@ -9,22 +9,31 @@
  *     (at your option) any later version.
  *
  * __author__ = 'irwan@kartoza.com'
- * __date__ = '13/06/2023'
- * __copyright__ = ('Copyright 2023, Unicef')
+ * __date__ = '15/01/2025'
+ * __copyright__ = ('Copyright 2025, Unicef')
  */
 
 import React, { useRef } from 'react';
-import { COLUMNS_ACTION } from "../../Components/List";
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import Tooltip from "@mui/material/Tooltip";
-import { AdminListContent } from "../../AdminList";
-import { DataAccessActiveIcon } from "../../../../components/Icons";
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
-import { BatchUserForm } from "./BatchUserForm";
+import { AdminListContent } from "../Content";
+import { COLUMNS_ACTION } from "../../../pages/Admin/Components/List";
+import {
+  BatchUserForm
+} from "../../../pages/Admin/UserAndGroup/Group/BatchUserForm";
+import { DataAccessActiveIcon } from "../../Icons";
+
+export const groupUrl = {
+  list: '/api/v1/groups/?fields=__all__',
+  detail: '/api/v1/groups/0/?fields=__all__',
+  edit: '/admin/group/0/edit/',
+  create: '/admin/group/create/',
+}
 
 export function resourceActions(params) {
   const batchFormRef = useRef(null);
-  const actions = COLUMNS_ACTION(params, urls.admin.userAndGroupList + '#Groups', urls.api.group.edit, urls.api.group.detail)
+  const actions = COLUMNS_ACTION(params, urls.admin.userAndGroupList + '#Users', groupUrl.edit, groupUrl.detail)
 
   // Unshift before more & edit action
   actions.unshift(
@@ -60,7 +69,7 @@ export function resourceActions(params) {
   return actions;
 }
 
-export function GROUP_COLUMNS() {
+export function COLUMNS() {
   const editUrl = '/admin/group/0/edit';
   const detailUrl = '/admin/group/0';
   return [
@@ -89,16 +98,21 @@ export function GROUP_COLUMNS() {
   ]
 }
 
-/**
- * Indicator List App
- */
-export default function GroupList({ ...props }) {
+/** Group List App */
+export function GroupList({ ...props }) {
   return <AdminListContent
-    columns={GROUP_COLUMNS()}
-    listUrl={urls.api.group.list}
-    apiCreate={urls.api.group.create}
-    apiBatch={urls.api.group.batch}
+    url={groupUrl}
+    title={'Groups'}
+    columns={COLUMNS()}
+    pageName={'Groups'}
     multipleDelete={true}
+    defaults={{
+      sort: [
+        { field: 'name', sort: 'asc' }
+      ]
+    }}
     {...props}
   />
 }
+
+export default GroupList;

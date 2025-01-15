@@ -20,6 +20,8 @@ from .dashboard import *
 from .data_browser import *
 from .dataset import *
 from .dataset_grouped import *
+from .group import *
 from .indicator import *
 from .related_table import *
 from .related_table_data import *
+from .user import *

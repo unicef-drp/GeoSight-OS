@@ -37,6 +37,7 @@ export interface AdminListProps extends MainDataGridProps {
   selectionChanged?: (data: any[]) => void;
   className?: string;
   useSearch?: boolean;
+  searchKey?: string;
 }
 
 export interface AdminListContentProps extends AdminListProps {
