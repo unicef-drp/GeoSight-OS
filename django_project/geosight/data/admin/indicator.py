@@ -54,14 +54,12 @@ def invalidate_cache(modeladmin, request, queryset):
     queryset.update(version_data=timezone.now())
 
 
-class IndicatorAdmin(BaseAdminResourceMixin, admin.ModelAdmin):
+class IndicatorAdmin(BaseAdminResourceMixin):
     """Indicator admin."""
 
     list_display = (
-        'name', 'group', 'type',
-        'creator', 'created_at',
-        'modified_at', 'modified_by'
-    )
+        'name', 'group', 'type'
+    ) + BaseAdminResourceMixin.list_display
     list_filter = ('group',)
     list_editable = ('creator', 'group', 'type')
     search_fields = ('name',)

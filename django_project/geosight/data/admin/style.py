@@ -27,10 +27,10 @@ class StyleRuleInline(admin.TabularInline):
     extra = 0
 
 
-class StyleAdmin(BaseAdminResourceMixin, admin.ModelAdmin):
+class StyleAdmin(BaseAdminResourceMixin):
     """Style admin."""
 
-    list_display = ('name', 'description', 'group', 'creator', 'modified_by')
+    list_display = ('name', 'description', 'group') + BaseAdminResourceMixin.list_display
     inlines = (StyleRuleInline,)
 
 

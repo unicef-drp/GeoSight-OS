@@ -53,13 +53,13 @@ class RelatedTableRowAdmin(admin.ModelAdmin):
 
 
 @admin.register(RelatedTable)
-class RelatedTableAdmin(BaseAdminResourceMixin, admin.ModelAdmin):
+class RelatedTableAdmin(BaseAdminResourceMixin):
     """RelatedTable admin."""
 
     list_display = (
         'name', 'description',
-        'importer', 'creator', 'modified_by'
-    )
+        'importer'
+    ) + BaseAdminResourceMixin.list_display
     inlines = (RelatedTableFieldInline,)
     actions = (invalidate_cache, make_none_to_empty_string)
     readonly_fields = ('last_importer',)
