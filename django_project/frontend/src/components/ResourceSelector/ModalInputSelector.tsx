@@ -56,7 +56,8 @@ export function ModalInputSelector(
     defaults = {},
     rowIdKey = 'id',
     topChildren,
-    opener
+    opener,
+    searchKey = 'name__icontains'
   }: Props
 ) {
   const tableRef = useRef(null);
@@ -102,9 +103,9 @@ export function ModalInputSelector(
   /*** Parameters Changed */
   const getParameters = (parameters: any) => {
     if (search) {
-      parameters['name__icontains'] = search
+      parameters[searchKey] = search
     } else {
-      delete parameters['name__icontains']
+      delete parameters[searchKey]
     }
     if (getParametersParent) {
       parameters = getParametersParent(parameters)

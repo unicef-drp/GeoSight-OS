@@ -111,6 +111,7 @@ export default function UserSelector(
       filters: defaults.filters
     }}
     topChildren={topChildren}
+    searchKey={'username__icontains'}
   />
 }
 
