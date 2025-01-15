@@ -20,14 +20,13 @@ import MenuItem from "@mui/material/MenuItem";
 
 import { render } from '../../../app';
 import {
-  GroupFilterSelector,
   SelectFilter,
   UserFilterSelector
 } from "../ModalSelector/ModalFilterSelector";
 import { store } from '../../../store/admin';
 import Admin, { pageNames } from '../index';
 import { AddButton, SaveButton } from "../../../components/Elements/Button";
-import { splitParams, urlParams } from "../../../utils/main";
+import { capitalize, splitParams, urlParams } from "../../../utils/main";
 import Modal, {
   ModalContent,
   ModalFooter,
@@ -45,6 +44,9 @@ import './style.scss';
 import {
   IndicatorFilterSelector
 } from "../../../components/ResourceSelector/IndicatorSelector";
+import GroupSelector, {
+  GroupFilterSelector
+} from "../../../components/ResourceSelector/GroupSelector";
 
 
 const PERMISSIONS = [
@@ -120,15 +122,19 @@ export function AddData(
         />
       </FormControl>
       <FormControl className='BasicForm'>
-        <label className="form-label">{tab}</label>
+        <label className="form-label">{capitalize(tab)}</label>
         {
           tab === UserTab ?
-            <UserFilterSelector data={objects}
-                                setData={setObjects}
-                                returnObject={true}/>
-            : <GroupFilterSelector data={objects}
-                                   setData={setObjects}
-                                   returnObject={true}/>
+            <UserFilterSelector
+              data={objects}
+              setData={setObjects}
+              returnObject={true}/>
+            : <GroupSelector
+              initData={objects}
+              dataSelected={setObjects}
+              multipleSelection={true}
+              mode={'filter'}
+            />
         }
       </FormControl>
       <FormControl className='BasicForm'>

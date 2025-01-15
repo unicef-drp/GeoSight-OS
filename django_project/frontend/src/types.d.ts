@@ -16,6 +16,11 @@ export interface DatasetView {
   tags: string[]
 }
 
+export interface Group {
+  id: string,
+  name: string,
+}
+
 export interface Indicator {
   id: string,
   name: string,

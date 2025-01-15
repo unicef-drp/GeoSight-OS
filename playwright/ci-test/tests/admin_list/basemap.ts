@@ -1,9 +1,21 @@
 import { expect, test } from '@playwright/test';
+import { checkPermission, editPermission } from "../utils/permission";
 
 const timeout = 2000;
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 const _url = '/admin/basemap/'
+
+const defaultPermission = {
+  public_access: 'None',
+  users: [],
+  groups: []
+}
+const newPermission = {
+  public_access: 'Read',
+  users: ['contributor'],
+  groups: ['Group 1']
+}
 
 test.describe('Basemap list admin', () => {
   test.beforeEach(async ({ page }) => {
@@ -27,6 +39,15 @@ test.describe('Basemap list admin', () => {
 
     // Check list
     await page.goto(_url);
+
+    // Edit permission
+    await editPermission(page, 1, newPermission);
+    await checkPermission(page, 1, newPermission);
+    await page.goto(_url);
+    await editPermission(page, 1, defaultPermission);
+    await checkPermission(page, 1, defaultPermission);
+    await page.goto(_url);
+
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–13 of 13');
 
     // Check search

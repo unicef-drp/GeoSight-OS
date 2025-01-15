@@ -14,4 +14,3 @@
  */
 
 export { default as UserSelector } from "./User";
-export { default as GroupSelector } from "./Group";

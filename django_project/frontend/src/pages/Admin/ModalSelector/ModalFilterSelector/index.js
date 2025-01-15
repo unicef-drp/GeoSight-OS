@@ -23,7 +23,7 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { IconTextField } from "../../../../components/Elements/Input";
 
-import { GroupSelector, UserSelector } from "../index";
+import { UserSelector } from "../index";
 import { FilterIcon } from "../../../../components/Icons";
 
 import './style.scss';
@@ -99,23 +99,6 @@ export function UserFilterSelector({ data, setData, returnObject }) {
     returnObject={returnObject}
   >
     <UserSelector/>
-  </ModalFilterSelector>
-}
-
-/**
- * Filter group
- * @param {array} data Selected data.
- * @param {function} setData When the value changed.
- * @param {Boolean} returnObject Is data returned whole object.
- */
-export function GroupFilterSelector({ data, setData, returnObject }) {
-  return <ModalFilterSelector
-    placeholder={'Filter by Group(s)'}
-    data={data}
-    setData={setData}
-    returnObject={returnObject}
-  >
-    <GroupSelector/>
   </ModalFilterSelector>
 }
 

@@ -95,7 +95,7 @@ class BaseApiV1ResourceReadOnly(BaseApiV1, viewsets.ReadOnlyModelViewSet):
 
     @property
     def queryset(self):
-        """Return queryset"""
+        """Return queryset."""
         if self.action not in [
             'retrieve', 'create', 'update', 'partial_update', 'destroy'
         ]:

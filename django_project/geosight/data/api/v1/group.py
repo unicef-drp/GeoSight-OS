@@ -53,7 +53,7 @@ class GroupViewSet(
 
     @property
     def queryset(self):
-        """Return queryset"""
+        """Return queryset."""
         return self.model_class.objects.all()
 
     def get_permissions(self):

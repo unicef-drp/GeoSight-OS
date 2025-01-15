@@ -36,7 +36,7 @@ import {
   SaveButton
 } from "../../../components/Elements/Button";
 import { fetchJSON } from "../../../Requests";
-import { dictDeepCopy } from "../../../utils/main";
+import { dictDeepCopy, uniqueByKey } from "../../../utils/main";
 import { IconTextField } from "../../../components/Elements/Input";
 import SearchIcon from "@mui/icons-material/Search";
 import { USER_COLUMNS } from "../ModalSelector/User";
@@ -45,6 +45,8 @@ import { MainDataGrid } from "../../../components/Table";
 import { Checkbox } from "@mui/material";
 
 import './style.scss';
+import { PermissionGroupSelection } from "./PermissionGroupSelection";
+import { useConfirmDialog } from "../../../providers/ConfirmDialog";
 
 /**
  * Permission Configuration Form Table data selection
@@ -281,6 +283,7 @@ export function PermissionFormTable(
     dataUrl
   }
 ) {
+  const { openConfirmDialog } = useConfirmDialog();
   const [open, setOpen] = useState(false)
   const [openPermission, setOpenPermission] = useState(false)
   const [selectionModel, setSelectionModel] = useState([]);
@@ -306,10 +309,19 @@ export function PermissionFormTable(
         variant="primary Reverse"
         text={"Delete"}
         onClick={() => {
-          if (confirm(`Do you want to delete the selected ${permissionLabel.toLowerCase()}s?`) === true) {
-            deleteData(selectionModel)
-            setSelectionModel([])
-          }
+          openConfirmDialog({
+            header: 'Delete confirmation',
+            onConfirmed: async () => {
+              deleteData(selectionModel)
+              setSelectionModel([])
+            },
+            onRejected: () => {
+            },
+            children: <div>
+              Do you want to delete the
+              selected <>{permissionLabel.toLowerCase()}</>s?
+            </div>
+          })
         }}
       />
       <EditButton
@@ -320,13 +332,27 @@ export function PermissionFormTable(
           setOpenPermission(true)
         }}
       />
-      <AddButton
-        variant="primary"
-        text={"Share to new " + permissionLabel.toLowerCase() + "(s)"}
-        onClick={() => {
-          setOpen(true)
-        }}
-      />
+      {
+        permissionLabel === 'Group' ? <PermissionGroupSelection
+            permissionChoices={permissionChoices}
+            setData={(permissionChoice, objects) => {
+              const newData = objects.map(row => {
+                row.permission = permissionChoice
+                return row
+              })
+              data[dataListKey] = uniqueByKey(newData.concat(data[dataListKey]), 'id')
+              setData({ ...data })
+              setOpen(false)
+            }}
+          /> :
+          <AddButton
+            variant="primary"
+            text={"Share to new " + permissionLabel.toLowerCase() + "(s)"}
+            onClick={() => {
+              setOpen(true)
+            }}
+          />
+      }
     </div>
     <div className='PermissionFormTable MuiDataGridTable'>
       <MainDataGrid
@@ -379,9 +405,18 @@ export function PermissionFormTable(
                       className='DeleteButton'/>
                   }
                   onClick={() => {
-                    if (confirm(`Do you want to remove this ${permissionLabel.toLowerCase()}?`) === true) {
-                      deleteData([params.row.id])
-                    }
+                    openConfirmDialog({
+                      header: 'Delete confirmation',
+                      onConfirmed: async () => {
+                        deleteData([params.row.id])
+                      },
+                      onRejected: () => {
+                      },
+                      children: <div>
+                        Do you want to remove
+                        this <>{permissionLabel.toLowerCase()}</>s?
+                      </div>
+                    })
                   }}
                   label="Delete"
                 />
