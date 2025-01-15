@@ -39,6 +39,7 @@ class StyleAdminViewTest(BaseDjangoAdminTest.TestCase):
     form_payload = {}
 
     def setUp(self):
+        """Prepare test data."""
         super().setUp()
         self.form_payload = copy.deepcopy(self.payload)
         self.form_payload.update({

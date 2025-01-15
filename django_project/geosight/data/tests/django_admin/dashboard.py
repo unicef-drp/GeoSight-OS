@@ -15,7 +15,6 @@ __date__ = '15/01/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
 import copy
-import json
 import uuid
 from django.contrib.auth import get_user_model
 
@@ -43,18 +42,7 @@ class DashboardAdminViewTest(BaseDjangoAdminTest.TestCase):
         "basemaps_layers_structure": '',
         "context_layers": [],
         "context_layers_structure": '',
-        "extent": json.dumps({
-            "type": "Polygon",
-            "coordinates": [
-              [
-                [0.0, 0.0],
-                [0.0, 1.0],
-                [1.0, 1.0],
-                [1.0, 0.0],
-                [0.0, 0.0]
-              ]
-            ]
-          }),
+        "extent": '',
         "widgets": [],
         "widgets_structure": '',
         "filters": '',

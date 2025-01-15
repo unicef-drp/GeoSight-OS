@@ -29,6 +29,8 @@ class BaseDjangoAdminTest(object):
     """Test for Base Admin."""
 
     class TestCase(BasePermissionTest.TestCase):
+        """Test case for Django Admin."""
+
         @property
         def list_url_tag(self):
             """Url list tag."""
@@ -55,6 +57,7 @@ class BaseDjangoAdminTest(object):
             raise NotImplementedError
 
         def setUp(self):
+            """Prepare test data."""
             super().setUp()
             self.admin = UserF(
                 is_superuser=True,
