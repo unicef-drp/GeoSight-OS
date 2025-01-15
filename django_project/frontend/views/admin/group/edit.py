@@ -55,7 +55,10 @@ class GroupEditView(RoleSuperAdminRequiredMixin, AdminBaseView):
         group = get_object_or_404(
             GeosightGroup, pk=self.kwargs.get('pk', '')
         )
-        detail_api_url = reverse('group-detail-api', args=[group.id])
+        detail_api_url = (
+                reverse('groups-detail', args=[group.id]) +
+                '?fields=__all__'
+        )
 
         context.update(
             {

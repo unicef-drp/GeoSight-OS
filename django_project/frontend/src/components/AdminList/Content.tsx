@@ -124,6 +124,9 @@ export const AdminListContent = forwardRef(
     if ((multipleDelete || url.batch)) {
       selectableFunction = (params: any) => {
         const { permission } = params.row
+        if (!permission) {
+          return true
+        }
         return (url.batch && permission?.edit) || (multipleDelete && permission?.delete)
       }
     }

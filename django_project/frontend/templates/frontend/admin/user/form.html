@@ -18,12 +18,6 @@
           'create': '{% url 'admin-user-create-view' %}',
           'apiKey': '{% url 'user-api-key' request.user.id %}',
         },
-        group: {
-          'list': '{% url 'group-list-api' %}',
-          'edit': '{% url 'admin-group-edit-view' 0 %}',
-          'detail': '{% url 'group-detail-api' 0 %}',
-          'create': '{% url 'admin-group-create-view' %}'
-        },
         'permissionAdmin': '{% url 'admin-data-access-view' %}',
       }
     </script>

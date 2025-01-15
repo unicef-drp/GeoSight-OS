@@ -27,7 +27,9 @@ import AdminForm from '../../../Components/Form'
 import { fetchJSON } from "../../../../../Requests";
 import UserSelector, { USER_COLUMNS } from "../../../ModalSelector/User";
 import { MainDataGrid } from "../../../../../components/Table";
-import { resourceActions } from "../List";
+import {
+  resourceActions, groupUrl
+} from "../../../../../components/AdminList/Contents/Group";
 
 import './style.scss';
 
@@ -98,8 +100,9 @@ export default function GroupForm() {
         {
           usersGroup ?
             <div className='UserTable'>
-              <input type={"text"} name='users' className='UserInput'
-                     value={usersGroup.map(user => user.id).join(',')}/>
+              <input
+                type={"text"} name='users' className='UserInput'
+                value={usersGroup.map(user => user.id).join(',')}/>
               <MainDataGrid
                 rows={usersGroup}
                 columns={USER_COLUMNS}

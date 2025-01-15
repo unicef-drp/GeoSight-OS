@@ -307,7 +307,7 @@ const ServerTable = forwardRef(
                 className = 'Updating '
               }
               if (["__check__", "actions"].includes(params.field)) {
-                if (!params.row.permission?.delete) {
+                if (params.row.permission && !params.row.permission.delete) {
                   className += "Hide"
                 }
               }

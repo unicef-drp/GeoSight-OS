@@ -17,10 +17,10 @@ import React from 'react';
 
 import { render } from '../../../app';
 import { store } from '../../../store/admin';
-import { MultipleAdminContent } from "../MultipleAdminContent";
 import { pageNames } from "../index";
-import UserList from "./User/List";
-import GroupList from "./Group/List";
+import MultipleAdminContent
+  from "../../../components/Admin/MultipleAdminContent";
+import GroupList from "../../../components/AdminList/Contents/Group";
 
 
 /**
@@ -30,10 +30,11 @@ export default function UserAndGroupList({ defaultTab }) {
   return <MultipleAdminContent
     pageName={pageNames.UsersAndGroups}
     defaultTab={defaultTab}
-    contents={{
-      'Users': <UserList/>,
-      'Groups': <GroupList/>
-    }}
+    contents={
+      [
+        { name: 'Group', content: <GroupList/> }
+      ]
+    }
   />
 }
 
