@@ -187,13 +187,16 @@ class APITestCase(TestCase):
         return response
 
     def assertRequestPostView(
-            self, url, code, data, user=None, content_type=MULTIPART_CONTENT
+            self, url, code, data, user=None,
+            content_type=MULTIPART_CONTENT, follow=False
     ):
         """Assert request POST view with code."""
         client = self.test_client()
         if user:
             client.login(username=user.username, password=self.password)
-        response = client.post(url, data=data, content_type=content_type)
+        response = client.post(
+            url, data=data, content_type=content_type, follow=follow
+        )
         self.assertEquals(response.status_code, code)
         return response
 

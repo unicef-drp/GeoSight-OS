@@ -16,13 +16,16 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib import admin
 
+BASE_RESOURCE_FIELD = (
+    'creator', 'created_at', 'modified_by', 'modified_at'
+)
+
 
 class BaseAdminResourceMixin(admin.ModelAdmin):
     """Mixins for base admin."""
 
-    list_display = (
-        'creator', 'created_at', 'modified_by', 'modified_at'
-    )
+    list_display = BASE_RESOURCE_FIELD
+    readonly_fields = BASE_RESOURCE_FIELD
 
     def save_model(self, request, obj, form, change):
         """Save model in Django admin page."""

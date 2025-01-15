@@ -62,7 +62,7 @@ class RelatedTableAdmin(BaseAdminResourceMixin):
     ) + BaseAdminResourceMixin.list_display
     inlines = (RelatedTableFieldInline,)
     actions = (invalidate_cache, make_none_to_empty_string)
-    readonly_fields = ('last_importer',)
+    readonly_fields = ('last_importer',) + BaseAdminResourceMixin.readonly_fields  # noqa
 
     def importer(self, obj: RelatedTable):
         """Return importer from this RT."""
