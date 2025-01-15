@@ -19,7 +19,7 @@ from django.contrib import admin
 from geosight.data.models.context_layer import (
     ContextLayerGroup, ContextLayer, ContextLayerField
 )
-from geosight.data.admin.base import BaseAdminMixin
+from geosight.data.admin.base import BaseAdminResourceMixin
 
 
 class ContextLayerFieldInline(admin.TabularInline):
@@ -29,7 +29,7 @@ class ContextLayerFieldInline(admin.TabularInline):
     extra = 0
 
 
-class ContextLayerAdmin(BaseAdminMixin, admin.ModelAdmin):
+class ContextLayerAdmin(BaseAdminResourceMixin, admin.ModelAdmin):
     """ContextLayer admin."""
 
     list_display = (

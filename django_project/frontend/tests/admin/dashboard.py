@@ -173,7 +173,7 @@ class DashboardAdminViewTest(BaseViewTest.TestCase):
         self.resource.refresh_from_db()
         self.assertEqual(self.resource.name, new_payload['name'])
         self.assertEqual(self.resource.creator, self.resource_creator)
-        self.assertEqual(self.resource.modified_by, self.resource_creator)
+        self.assertEqual(self.resource.modified_by, self.creator)
         self.assertNotEqual(self.resource.version, last_version)
 
     def test_detail_view(self):
@@ -256,6 +256,6 @@ class DashboardAdminViewTest(BaseViewTest.TestCase):
         indicator.save()
         self.resource.refresh_from_db()
         self.assertNotEqual(self.resource.version, last_version)
-        self.assertNotEqual(self.resource.modified_by, self.resource.creator)
+        self.assertEqual(self.resource.modified_by, self.resource.creator)
         last_version = self.resource.version
         self.assertEqual(self.resource.version, last_version)

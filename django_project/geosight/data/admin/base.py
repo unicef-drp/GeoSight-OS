@@ -15,12 +15,14 @@ __date__ = '14/01/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
 
-class BaseAdminMixin:
+class BaseAdminResourceMixin:
     """Mixins for base admin."""
 
     def save_model(self, request, obj, form, change):
         """Save model in Django admin page."""
         instance = form.save(commit=False)
+        if not instance.creator:
+            instance.creator = request.user
         instance.modified_by = request.user
         instance.save()
         form.save_m2m()

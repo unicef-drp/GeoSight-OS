@@ -55,7 +55,7 @@ class BasemapForm(forms.ModelForm):
 
     class Meta:  # noqa: D106
         model = BasemapLayer
-        exclude = ('created_at', 'creator', 'modified_at')
+        exclude = ('created_at', 'creator', 'modified_at', 'modified_by')
 
     @staticmethod
     def model_to_initial(model: BasemapLayer):

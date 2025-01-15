@@ -22,7 +22,7 @@ from geosight.data.models.indicator import (
     IndicatorValue, IndicatorRule, IndicatorExtraValue,
     IndicatorValueWithGeo
 )
-from geosight.data.admin.base import BaseAdminMixin
+from geosight.data.admin.base import BaseAdminResourceMixin
 
 
 class IndicatorExtraValueRuleInline(admin.TabularInline):
@@ -54,7 +54,7 @@ def invalidate_cache(modeladmin, request, queryset):
     queryset.update(version_data=timezone.now())
 
 
-class IndicatorAdmin(BaseAdminMixin, admin.ModelAdmin):
+class IndicatorAdmin(BaseAdminResourceMixin, admin.ModelAdmin):
     """Indicator admin."""
 
     list_display = (

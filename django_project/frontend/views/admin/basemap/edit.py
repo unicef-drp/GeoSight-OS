@@ -77,7 +77,6 @@ class BasemapEditView(RoleContributorRequiredMixin, AdminBaseView):
     def post(self, request, **kwargs):
         """Edit basemap."""
         data = request.POST.copy()
-        data['modified_by'] = request.user
         basemap = get_object_or_404(
             BasemapLayer, id=self.kwargs.get('pk', '')
         )
@@ -88,7 +87,9 @@ class BasemapEditView(RoleContributorRequiredMixin, AdminBaseView):
             instance=basemap
         )
         if form.is_valid():
-            instance = form.save()
+            instance = form.save(commit=False)
+            instance.modified_by = request.user
+            instance.save()
             # Save permission
             instance.permission.update_from_request_data(
                 request.POST, request.user

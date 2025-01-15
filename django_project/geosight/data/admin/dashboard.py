@@ -28,7 +28,7 @@ from geosight.data.models.dashboard import (
     DashboardRelatedTable,
     DashboardTool
 )
-from geosight.data.admin.base import BaseAdminMixin
+from geosight.data.admin.base import BaseAdminResourceMixin
 
 
 class DashboardWidgetInline(admin.StackedInline):
@@ -116,7 +116,7 @@ def invalidate_cache(modeladmin, request, queryset):
     queryset.update(version_data=timezone.now())
 
 
-class DashboardAdmin(BaseAdminMixin, admin.ModelAdmin):
+class DashboardAdmin(BaseAdminResourceMixin, admin.ModelAdmin):
     """Dashboard admin."""
 
     list_display = (
