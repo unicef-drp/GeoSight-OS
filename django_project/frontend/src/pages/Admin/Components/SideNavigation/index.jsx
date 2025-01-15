@@ -125,18 +125,14 @@ export default function SideNavigation({ pageName, minified }) {
                     <span className='SideNavigation-Row-Name'>Basemaps</span>
                   </a>
                 </SidaNavigationButton>
-                {
-                  user.is_admin ? <Fragment>
-                    <SidaNavigationButton minified={minified} title='Styles'>
-                      <a href={styleList}
-                         className={'SideNavigation-Row ' + (pageName === pageNames.Styles ? 'active' : '')}>
-                        {pageName === pageNames.Styles ? <StyleActiveIcon/> :
-                          <StyleIcon/>}
-                        <span className='SideNavigation-Row-Name'>Styles</span>
-                      </a>
-                    </SidaNavigationButton>
-                  </Fragment> : null
-                }
+                <SidaNavigationButton minified={minified} title='Styles'>
+                  <a href={styleList}
+                     className={'SideNavigation-Row ' + (pageName === pageNames.Styles ? 'active' : '')}>
+                    {pageName === pageNames.Styles ? <StyleActiveIcon/> :
+                      <StyleIcon/>}
+                    <span className='SideNavigation-Row-Name'>Styles</span>
+                  </a>
+                </SidaNavigationButton>
               </div>
               <div className='SideNavigationContentGroup'>
                 <div className='SideNavigationContentGroupTitle'>DATA</div>
