@@ -25,6 +25,7 @@ import { ModalInputSelectorProps } from "./types";
 import FormControl from "@mui/material/FormControl";
 import { SaveButton } from "../Elements/Button";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
+import { dictDeepCopy } from "../../utils/main";
 
 import './style.scss';
 
@@ -166,10 +167,11 @@ export function ModalInputSelector(
                       className='ModalDataSelectorSelectedObject'
                       title={_row.name}
                     >
-                      <div>{_row.name}</div>
-                      <RemoveCircleIcon onClick={() => {
+                      <div>{_row.name}&nbsp;</div>
+                      <RemoveCircleIcon
+                        style={{ color: 'red' }} onClick={() => {
                         const selectedData = [...selectionModel.filter(id => id !== _row.id)]
-                        setSelectionModel(selectedData)
+                        setSelectionModel(dictDeepCopy(selectedData))
                       }}/>
                     </div>
                   )

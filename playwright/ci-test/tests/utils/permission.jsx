@@ -35,13 +35,13 @@ export async function editPermission(page, id, {
   // ----------------------------
   // Users
   // ----------------------------
-  const userPage = await originalPage.locator('.PermissionFormModal')
+  const userPage = await originalPage.locator('.ModalDataSelector')
   await page.getByRole('button', { name: 'Share to new user(s)' }).click();
   for (let i = 0; i < users.length; i++) {
     const user = users[i]
     await userPage.getByRole('row', { name: `Select row ${user} ${user.capitalize()}` }).getByLabel('Select row').check();
   }
-  await userPage.getByRole('button', { name: 'Add Users' }).click();
+  await userPage.getByRole('button', { name: 'Update selection' }).click();
 
   // ----------------------------
   // Groups

@@ -30,7 +30,6 @@ import Modal, {
   ModalHeader
 } from "../../../components/Modal";
 import {
-  AddButton,
   DeleteButton,
   EditButton,
   SaveButton
@@ -39,14 +38,15 @@ import { fetchJSON } from "../../../Requests";
 import { dictDeepCopy, uniqueByKey } from "../../../utils/main";
 import { IconTextField } from "../../../components/Elements/Input";
 import SearchIcon from "@mui/icons-material/Search";
-import { USER_COLUMNS } from "../ModalSelector/User";
 import { ShareIcon } from "../../../components/Icons";
 import { MainDataGrid } from "../../../components/Table";
 import { Checkbox } from "@mui/material";
-
-import './style.scss';
 import { PermissionGroupSelection } from "./PermissionGroupSelection";
 import { useConfirmDialog } from "../../../providers/ConfirmDialog";
+import { PermissionUserSelection } from "./PermissionUserSelection";
+import { columns } from "../../../components/ResourceSelector/UserSelector";
+
+import './style.scss';
 
 /**
  * Permission Configuration Form Table data selection
@@ -345,11 +345,16 @@ export function PermissionFormTable(
               setOpen(false)
             }}
           /> :
-          <AddButton
-            variant="primary"
-            text={"Share to new " + permissionLabel.toLowerCase() + "(s)"}
-            onClick={() => {
-              setOpen(true)
+          <PermissionUserSelection
+            permissionChoices={permissionChoices}
+            setData={(permissionChoice, objects) => {
+              const newData = objects.map(row => {
+                row.permission = permissionChoice
+                return row
+              })
+              data[dataListKey] = uniqueByKey(newData.concat(data[dataListKey]), 'id')
+              setData({ ...data })
+              setOpen(false)
             }}
           />
       }
@@ -598,7 +603,7 @@ export function PermissionForm(
                 <div className="UserAccess">
                   <PermissionFormTable
                     permissionLabel='User'
-                    columns={USER_COLUMNS}
+                    columns={columns}
                     data={data}
                     dataListKey='user_permissions'
                     setData={setData}

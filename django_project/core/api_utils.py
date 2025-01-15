@@ -69,6 +69,7 @@ class ApiTag:
     DATA_BROWSER = 'Data Browser'
     STYLE = 'Style'
     GROUP = 'Group'
+    USER = 'USER'
 
 
 class ApiParams:

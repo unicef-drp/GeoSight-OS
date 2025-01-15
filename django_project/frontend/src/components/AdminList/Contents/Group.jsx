@@ -27,13 +27,13 @@ import { DataAccessActiveIcon } from "../../Icons";
 export const groupUrl = {
   list: '/api/v1/groups/?fields=__all__',
   detail: '/api/v1/groups/0/?fields=__all__',
-  edit: '/admin/group/2/edit/',
+  edit: '/admin/group/0/edit/',
   create: '/admin/group/create/',
 }
 
 export function resourceActions(params) {
   const batchFormRef = useRef(null);
-  const actions = COLUMNS_ACTION(params, urls.admin.userAndGroupList + '#Groups', groupUrl.edit, groupUrl.detail)
+  const actions = COLUMNS_ACTION(params, urls.admin.userAndGroupList + '#Users', groupUrl.edit, groupUrl.detail)
 
   // Unshift before more & edit action
   actions.unshift(
@@ -99,7 +99,7 @@ export function COLUMNS() {
 }
 
 /** Group List App */
-export function GroupList() {
+export function GroupList({ ...props }) {
   return <AdminListContent
     url={groupUrl}
     title={'Groups'}
@@ -111,6 +111,7 @@ export function GroupList() {
         { field: 'name', sort: 'asc' }
       ]
     }}
+    {...props}
   />
 }
 

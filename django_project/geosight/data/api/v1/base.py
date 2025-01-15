@@ -50,7 +50,8 @@ class BaseApiV1(FilteredAPI):
         """Return queryset of API."""
         query = self.queryset
         return self.filter_query(
-            self.request, query, ['page', 'page_size', 'fields']
+            self.request, query, ['page', 'page_size', 'fields'],
+            sort=self.request.query_params.get('sort')
         )
 
     def get_serializer_context(self):

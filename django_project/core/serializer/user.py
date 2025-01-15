@@ -17,10 +17,12 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
+from core.serializer.dynamic_serializer import DynamicModelSerializer
+
 User = get_user_model()
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserSerializer(DynamicModelSerializer):
     """User serializer."""
 
     is_staff = serializers.SerializerMethodField()

@@ -21,6 +21,7 @@ import { pageNames } from "../index";
 import MultipleAdminContent
   from "../../../components/Admin/MultipleAdminContent";
 import GroupList from "../../../components/AdminList/Contents/Group";
+import UserList from "../../../components/AdminList/Contents/User";
 
 
 /**
@@ -32,7 +33,8 @@ export default function UserAndGroupList({ defaultTab }) {
     defaultTab={defaultTab}
     contents={
       [
-        { name: 'Group', content: <GroupList/> }
+        { name: 'Users', content: <UserList/> },
+        { name: 'Groups', content: <GroupList/> },
       ]
     }
   />

@@ -12,5 +12,3 @@
  * __date__ = '13/06/2023'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
-
-export { default as UserSelector } from "./User";

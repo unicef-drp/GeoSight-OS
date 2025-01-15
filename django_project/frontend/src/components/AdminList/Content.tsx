@@ -60,6 +60,7 @@ export const AdminListContent = forwardRef(
        sort: null
      },
      useSearch = true,
+     searchKey = 'name__icontains',
 
      // Table props
      multipleDelete,
@@ -180,9 +181,9 @@ export const AdminListContent = forwardRef(
     /*** Parameters Changed */
     const getParameters = (parameters: any) => {
       if (search) {
-        parameters['name__icontains'] = search
+        parameters[searchKey] = search
       } else {
-        delete parameters['name__icontains']
+        delete parameters[searchKey]
       }
       return parameters
     }

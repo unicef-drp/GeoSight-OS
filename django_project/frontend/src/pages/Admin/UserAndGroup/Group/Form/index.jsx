@@ -25,11 +25,13 @@ import {
 import Admin, { pageNames } from '../../../index';
 import AdminForm from '../../../Components/Form'
 import { fetchJSON } from "../../../../../Requests";
-import UserSelector, { USER_COLUMNS } from "../../../ModalSelector/User";
 import { MainDataGrid } from "../../../../../components/Table";
 import {
-  resourceActions, groupUrl
+  resourceActions
 } from "../../../../../components/AdminList/Contents/Group";
+import UserSelector, {
+  columns
+} from "../../../../../components/ResourceSelector/UserSelector";
 
 import './style.scss';
 
@@ -89,12 +91,19 @@ export default function GroupForm() {
       <AdminForm isSubmitted={submitted}>
         <div className='MembersLabel'>
           <label className="form-label required" htmlFor="name">Members</label>
-          <AddButton
-            variant="primary"
-            text={"Add users"}
-            onClick={() => {
-              setOpen(true)
-            }}
+          <UserSelector
+            initData={usersGroup ? usersGroup : []}
+            dataSelected={setUsersGroup}
+            multipleSelection={true}
+            opener={
+              <AddButton
+                variant="primary"
+                text={"Add users"}
+                onClick={() => {
+                  setOpen(true)
+                }}
+              />
+            }
           />
         </div>
         {
@@ -105,7 +114,7 @@ export default function GroupForm() {
                 value={usersGroup.map(user => user.id).join(',')}/>
               <MainDataGrid
                 rows={usersGroup}
-                columns={USER_COLUMNS}
+                columns={columns}
                 pageSize={20}
                 rowsPerPageOptions={[20]}
                 initialState={{
@@ -114,12 +123,6 @@ export default function GroupForm() {
                   },
                 }}
                 disableSelectionOnClick
-              />
-              <UserSelector
-                open={open}
-                setOpen={setOpen}
-                selectedData={usersGroup}
-                selectedDataChanged={setUsersGroup}
               />
             </div> :
             <div style={{ textAlign: "center" }}>

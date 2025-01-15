@@ -33,7 +33,7 @@ from core.api.maintenance import MaintenanceAPI
 from core.api.proxy import ProxyView
 from core.api.refresh_materialized_view import RefreshMaterializedViewApi
 from core.api.sentry import trigger_error
-from core.api.user import UserListAPI, UserDetailAPI, UserApiKey
+from core.api.user import UserApiKey
 
 
 class CustomSchemaGenerator(OpenAPISchemaGenerator):
@@ -93,19 +93,19 @@ if settings.DEBUG:
 # ------------------------------------------------------
 # USER API
 user_api = [
-    url(
-        r'^list',
-        UserListAPI.as_view(), name='user-list-api'
-    ),
+    # url(
+    #     r'^list',
+    #     UserListAPI.as_view(), name='user-list-api'
+    # ),
     url(
         r'^(?P<pk>\d+)/token',
         UserApiKey.as_view(),
         name='user-api-key'
     ),
-    url(
-        r'^(?P<pk>\d+)',
-        UserDetailAPI.as_view(), name='user-detail-api'
-    ),
+    # url(
+    #     r'^(?P<pk>\d+)',
+    #     UserDetailAPI.as_view(), name='user-detail-api'
+    # ),
 ]
 # COLOR API
 color_api = [

@@ -19,10 +19,7 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 
 import { render } from '../../../app';
-import {
-  SelectFilter,
-  UserFilterSelector
-} from "../ModalSelector/ModalFilterSelector";
+import { SelectFilter } from "../ModalSelector/ModalFilterSelector";
 import { store } from '../../../store/admin';
 import Admin, { pageNames } from '../index';
 import { AddButton, SaveButton } from "../../../components/Elements/Button";
@@ -38,15 +35,18 @@ import { GroupsDataAccess } from "./Groups";
 import {
   DatasetFilterSelector
 } from "../../../components/ResourceSelector/DatasetViewSelector";
-
-import '../../Admin/Components/List/style.scss';
-import './style.scss';
 import {
   IndicatorFilterSelector
 } from "../../../components/ResourceSelector/IndicatorSelector";
 import GroupSelector, {
   GroupFilterSelector
 } from "../../../components/ResourceSelector/GroupSelector";
+import UserSelector, {
+  UserFilterSelector
+} from "../../../components/ResourceSelector/UserSelector";
+
+import '../../Admin/Components/List/style.scss';
+import './style.scss';
 
 
 const PERMISSIONS = [
@@ -125,15 +125,21 @@ export function AddData(
         <label className="form-label">{capitalize(tab)}</label>
         {
           tab === UserTab ?
-            <UserFilterSelector
-              data={objects}
-              setData={setObjects}
-              returnObject={true}/>
+            <UserSelector
+              initData={objects}
+              dataSelected={setObjects}
+              multipleSelection={true}
+              mode={'filter'}
+              showSelected={true}
+              placeholder={'Filter by User(s)'}
+            />
             : <GroupSelector
               initData={objects}
               dataSelected={setObjects}
               multipleSelection={true}
               mode={'filter'}
+              showSelected={true}
+              placeholder={'Filter by Group(s)'}
             />
         }
       </FormControl>

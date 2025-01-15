@@ -31,12 +31,12 @@ export const MultipleAdminContent = forwardRef(
    }: AdminProps, ref
   ) => {
     let defaultTab = window.location.hash.replace('#', '').replaceAll('%20', ' ')
-    let content = contents.find((content) => content.name === defaultTab)
-    if (!content) {
+    if (!contents.find((content) => content.name.toLowerCase() === defaultTab.toLowerCase())) {
       defaultTab = contents[0].name
-      content = contents[0]
     }
+
     const [tab, setTab] = useState<string>(defaultTab);
+    let content = contents.find((content) => content.name.toLowerCase() === tab.toLowerCase())
 
     /** When tab changes **/
     useEffect(() => {
@@ -51,7 +51,7 @@ export const MultipleAdminContent = forwardRef(
       {
         content && React.cloneElement(content.content, {
           pageName: content.name,
-          header: Object.keys(contents).length > 1 ?
+          middleContent: Object.keys(contents).length > 1 ?
             <div className={'TabPrimary ' + tab}>
               {
                 contents.map(_content =>

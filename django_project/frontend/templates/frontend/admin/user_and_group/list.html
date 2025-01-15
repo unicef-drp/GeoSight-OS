@@ -11,12 +11,6 @@
 {% block scripts %}
     <script>
       urls.api = {
-        user: {
-          'list': '{% url 'user-list-api' %}',
-          'edit': '{% url 'admin-user-edit-view' 0 %}',
-          'detail': '{% url 'user-detail-api' 0 %}',
-          'create': '{% url 'admin-user-create-view' %}'
-        },
         'permissionAdmin': '{% url 'admin-data-access-view' %}',
       }
     </script>
