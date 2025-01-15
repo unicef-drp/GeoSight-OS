@@ -32,9 +32,7 @@ class BasemapLayerParameterInline(admin.TabularInline):
 class BasemapLayerAdmin(BaseAdminResourceMixin):
     """BasemapLayer admin."""
 
-    list_display = (
-       'name', 'url', 'group'
-    ) + BaseAdminResourceMixin.list_display
+    list_display = ('name', 'url', 'group') + BaseAdminResourceMixin.list_display  # noqa
     inlines = (BasemapLayerParameterInline,)
     list_editable = ('group', 'creator')
 

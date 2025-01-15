@@ -30,9 +30,7 @@ class StyleRuleInline(admin.TabularInline):
 class StyleAdmin(BaseAdminResourceMixin):
     """Style admin."""
 
-    list_display = (
-       'name', 'description', 'group'
-    ) + BaseAdminResourceMixin.list_display
+    list_display = ('name', 'description', 'group') + BaseAdminResourceMixin.list_display  # noqa
     inlines = (StyleRuleInline,)
 
 
