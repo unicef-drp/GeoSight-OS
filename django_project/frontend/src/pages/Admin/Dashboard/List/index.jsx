@@ -78,7 +78,7 @@ export function resourceActionsList(params) {
 export default function DashboardList() {
   const pageName = pageNames.Dashboard
   const columns = COLUMNS(pageName, urls.admin.dashboardList);
-  // const [filterModel, setFilterModel] = useState({})
+  const [filterModel, setFilterModel] = useState({})
 
   columns[2] = { field: 'description', headerName: 'Description', flex: 1 }
   columns[3] = {
