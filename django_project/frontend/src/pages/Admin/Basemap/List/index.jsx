@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React from 'react';
+import React, {useState} from 'react';
 import { GridActionsCellItem } from "@mui/x-data-grid";
 
 import { render } from '../../../../app';
@@ -33,7 +33,7 @@ export function resourceActions(params) {
  * Indicator List App
  */
 export default function BasemapList() {
-  const pageName = pageNames.Basemaps
+  const pageName = pageNames.Basemaps;
   let columns = COLUMNS(pageName, urls.admin.basemapList);
   columns.pop();
   columns = columns.concat([

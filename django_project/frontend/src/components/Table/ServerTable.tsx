@@ -75,11 +75,13 @@ const ServerTable = forwardRef(
     if (enable.filter) {
       columns.forEach(column => {
         if (column.type === 'actions') {
-          // @ts-ignore
-          column.headerName = (
-            <DataGridFilter fields={columns} filterModel={filterModel} setFilterModel={setFilterModel}/>
-          );
-          column.headerAlign = 'right';
+          if (!column.headerName) {
+            // @ts-ignore
+            column.headerName = (
+              <DataGridFilter fields={columns} filterModel={filterModel} setFilterModel={setFilterModel}/>
+            );
+            column.headerAlign = 'right';
+          }
         }
       });
     }
