@@ -14,24 +14,9 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from django.contrib import admin
-
-from geosight.data.models.style import Style, StyleRule
-from geosight.data.admin.base import BaseAdminResourceMixin
-
-
-class StyleRuleInline(admin.TabularInline):
-    """StyleRule inline."""
-
-    model = StyleRule
-    extra = 0
-
-
-class StyleAdmin(BaseAdminResourceMixin):
-    """Style admin."""
-
-    list_display = ('name', 'description', 'group') + BaseAdminResourceMixin.list_display  # noqa
-    inlines = (StyleRuleInline,)
-
-
-admin.site.register(Style, StyleAdmin)
+from .basemap import *  # noqa
+from .context_layer import *  # noqa
+from .dashboard import *  # noqa
+from .indicator import *  # noqa
+from .related_table import *  # noqa
+from .style import *  # noqa

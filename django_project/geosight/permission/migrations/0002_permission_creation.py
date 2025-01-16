@@ -38,8 +38,8 @@ def run(apps, schema_editor):
         ContextLayerPermission.objects.get_or_create(obj=resource)
     for resource in Dashboard.objects.all():
         DashboardPermission.objects.get_or_create(obj=resource)
-    for resource in Group.objects.all():
-        GroupModelPermission.objects.get_or_create(obj=resource)
+    # for resource in Group.objects.all():
+    #     GroupModelPermission.objects.get_or_create(obj=resource)
     for resource in Indicator.objects.all():
         IndicatorPermission.objects.get_or_create(obj=resource)
 

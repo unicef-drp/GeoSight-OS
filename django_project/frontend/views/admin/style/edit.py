@@ -76,7 +76,9 @@ class StyleEditView(RoleContributorRequiredMixin, BaseStyleEditingView):
         data = self.data
         form = StyleForm(data, instance=style)
         if form.is_valid():
-            instance = form.save()
+            instance = form.save(commit=False)
+            instance.modified_by = request.user
+            instance.save()
             self.post_save(style=instance, data=request.POST)
             return redirect(
                 reverse(

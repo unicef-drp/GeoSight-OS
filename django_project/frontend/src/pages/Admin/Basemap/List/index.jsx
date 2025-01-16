@@ -34,8 +34,16 @@ export function resourceActions(params) {
  */
 export default function BasemapList() {
   const pageName = pageNames.Basemaps
-  const columns = COLUMNS(pageName, urls.admin.basemapList);
-  columns[4] = {
+  let columns = COLUMNS(pageName, urls.admin.basemapList);
+  const action = columns.pop();
+  columns = columns.concat([
+    { field: 'created_at', headerName: 'Created At', flex: 0.5 },
+    { field: 'created_by', headerName: 'Created By', flex: 0.5, sortField: 'creator__username' },
+    { field: 'modified_at', headerName: 'Modified At', flex: 0.5 },
+    { field: 'modified_by', headerName: 'Modified By', flex: 0.5 },
+    action
+  ])
+  columns[columns.length - 1] = {
     field: 'actions',
     type: 'actions',
     cellClassName: 'MuiDataGrid-ActionsColumn',

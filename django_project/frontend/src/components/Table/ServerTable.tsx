@@ -89,7 +89,7 @@ const ServerTable = forwardRef(
         const column = columns.find(column => column.field == model.field)
 
         // @ts-ignore
-        const field = column.orderField ? column.orderField : column.field
+        const field = column.sortField ? column.sortField : column.field
         sort.push(model.sort === 'asc' ? field : `-${field}`)
       })
       return sort

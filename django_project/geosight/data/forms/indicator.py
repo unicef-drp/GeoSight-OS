@@ -59,7 +59,7 @@ class IndicatorForm(BaseStyleForm):
     class Meta:  # noqa: D106
         model = Indicator
         exclude = (
-            'created_at', 'creator', 'modified_at',
+            'created_at', 'creator', 'modified_at', 'modified_by',
             'order', 'geometry_reporting_units',
             'instance', 'show_in_context_analysis', 'version_data'
         )

@@ -40,17 +40,17 @@ const COLUMNS = [
     field: 'indicator_name',
     headerName: 'Indicator',
     flex: 1,
-    orderField: 'obj__obj__indicator__name'
+    sortField: 'obj__obj__indicator__name'
   },
   {
     field: 'dataset_name',
     headerName: 'View',
     flex: 0.5,
-    orderField: 'obj__obj__reference_layer__name'
+    sortField: 'obj__obj__reference_layer__name'
   },
   {
     field: 'user_username', headerName: 'User', flex: 0.5,
-    orderField: 'user__username'
+    sortField: 'user__username'
   },
   { field: 'user_role', headerName: 'Role', flex: 0.5, sortable: false }
 ]

@@ -10,34 +10,43 @@ Contact : geosight-no-reply@unicef.org
     (at your option) any later version.
 
 """
-__author__ = 'irwan@kartoza.com'
-__date__ = '13/06/2023'
-__copyright__ = ('Copyright 2023, Unicef')
+__author__ = 'zakki@kartoza.com'
+__date__ = '15/01/2025'
+__copyright__ = ('Copyright 2025, Unicef')
 
 import copy
 
 from django.contrib.auth import get_user_model
 
-from frontend.tests.admin._base import BaseViewTest
+from geosight.data.tests.django_admin._base import BaseDjangoAdminTest
 from geosight.data.models.basemap_layer import BasemapLayer, BasemapLayerType
 
 
 User = get_user_model()
 
 
-class BasemapAdminViewTest(BaseViewTest.TestCaseWithBatch):
-    """Test for Basemap Admin."""
+class BasemapAdminViewTest(BaseDjangoAdminTest.TestCase):
+    """Test for Basemap Django Admin."""
 
-    list_url_tag = 'admin-basemap-list-view'
-    create_url_tag = 'admin-basemap-create-view'
-    edit_url_tag = 'admin-basemap-edit-view'
-    batch_edit_url_tag = 'admin-basemap-edit-batch-view'
+    list_url_tag = 'admin:geosight_data_basemaplayer_changelist'
+    create_url_tag = 'admin:geosight_data_basemaplayer_add'
+    edit_url_tag = 'admin:geosight_data_basemaplayer_change'
     payload = {
         'name': 'name',
         'url': 'url',
         'type': BasemapLayerType.XYZ_TILE,
-        'group': 'group'
+        'group': ''
     }
+    form_payload = {}
+
+    def setUp(self):
+        """Prepare test data."""
+        super().setUp()
+        self.form_payload = copy.deepcopy(self.payload)
+        self.form_payload.update({
+            'basemaplayerparameter_set-TOTAL_FORMS': 0,
+            'basemaplayerparameter_set-INITIAL_FORMS': 0,
+        })
 
     def create_resource(self, user):
         """Create resource function."""
