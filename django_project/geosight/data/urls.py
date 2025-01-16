@@ -17,12 +17,12 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.conf.urls import url
 from django.urls import include
 
-from geosight.data.api.arcgis import ArcgisConfigProxy
+from geosight.data.api.arcgis import arcgis_proxy_request
 from geosight.data.api.basemap import (
     BasemapListAPI, BasemapDetailAPI
 )
 from geosight.data.api.context_layers import (
-    ContextLayerListAPI, ContextLayerDetailAPI
+    ContextLayerListAPI, ContextLayerDetailAPI, ContextLayerZonalAnalysisAPI
 )
 from geosight.data.api.dashboard import (
     DashboardData, DashboardDuplicate, DashboardDetail, DashboardListAPI
@@ -239,9 +239,14 @@ context_layer_api = [
         ContextLayerListAPI.as_view(), name='context-layer-list-api'
     ),
     url(
+        r'^(?P<pk>\d+)/zonal-analysis/(?P<aggregation>[a-zA-Z0-9_-]+)',
+        ContextLayerZonalAnalysisAPI.as_view(),
+        name='context-layer-zonal-analysis'
+    ),
+    url(
         r'^(?P<pk>\d+)',
         ContextLayerDetailAPI.as_view(), name='context-layer-detail-api'
-    ),
+    )
 ]
 # ------------------------------------------------------
 # RELATED TABLE API
@@ -288,7 +293,7 @@ sharepoint_api = [
 arcgis_api = [
     url(
         r'^(?P<pk>\d+)/proxy$',
-        ArcgisConfigProxy.as_view(), name='arcgis-config-proxy'
+        arcgis_proxy_request, name='arcgis-config-proxy'
     ),
 ]
 # ------------------------------------------------------

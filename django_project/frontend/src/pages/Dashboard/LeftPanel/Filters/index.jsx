@@ -42,7 +42,6 @@ import './style.scss';
  * Filter section.
  */
 function FilterSection() {
-  const { data } = useSelector(state => state.dashboard);
   const {
     filters,
     indicators,

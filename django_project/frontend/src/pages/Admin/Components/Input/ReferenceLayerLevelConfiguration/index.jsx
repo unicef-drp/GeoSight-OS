@@ -22,13 +22,13 @@ import {
   MultipleSelectWithSearch,
   SelectWithSearch
 } from "../../../../../components/Input/SelectWithSearch";
-import {
-  GeorepoViewInputSelector
-} from "../../../ModalSelector/InputSelector";
 import { GeorepoUrls } from "../../../../../utils/georepo";
 import { FormControlLabel, FormGroup } from "@mui/material";
 import { InternalReferenceDatasets } from "../../../../../utils/urls";
 import { Actions } from "../../../../../store/dashboard";
+import { RefererenceLayerUrls } from "../../../../../utils/referenceLayer";
+import DatasetViewSelector
+  from "../../../../../components/ResourceSelector/DatasetViewSelector";
 
 import './styles.scss';
 
@@ -59,9 +59,16 @@ export const ViewLevelConfiguration = forwardRef(
     useEffect(() => {
       if (datasetLevels) {
         let updated = false
-        let levels = data.levels ? data.levels : []
+
+        // Update levels
+        let levels = data.levels ? datasetLevels.filter(
+          datasetLevel => data.levels.includes(datasetLevel.level)
+        ).map(level => level.level) : [];
+
         let default_level = data.default_level ? data.default_level : 0
-        if (!data.levels) {
+
+        // Check levels is on the dataset levels
+        if (JSON.stringify(data.levels) !== JSON.stringify(levels)) {
           levels = datasetLevels.map(level => level.level)
           updated = true
         }
@@ -77,10 +84,7 @@ export const ViewLevelConfiguration = forwardRef(
 
     useEffect(() => {
       if (referenceLayer.identifier && !referenceLayerData) {
-        let url = GeorepoUrls.ViewDetail(referenceLayer.identifier)
-        if (referenceLayer.is_local) {
-          url = InternalReferenceDatasets.detail(referenceLayer.identifier)
-        }
+        const url = RefererenceLayerUrls.ViewDetail(referenceLayer)
         dispatch(
           Actions.ReferenceLayerData.fetch(
             dispatch, referenceLayer.identifier, url
@@ -99,8 +103,10 @@ export const ViewLevelConfiguration = forwardRef(
         ableToSelectReferenceLayer ?
           <div className="ReferenceLayerLevelConfigurationView">
             <label className="form-label" htmlFor="group">View</label>
-            <Grid container spacing={2}
-                  className='ReferenceLayerLevelConfigurationCheckbox'>
+            <Grid
+              container spacing={2}
+              className='ReferenceLayerLevelConfigurationCheckbox'
+            >
               <Grid item>
                 <FormGroup>
                   <FormControlLabel
@@ -116,18 +122,25 @@ export const ViewLevelConfiguration = forwardRef(
                     label=''/>
                 </FormGroup>
               </Grid>
-              <Grid item
-                    className='ReferenceLayerLevelConfigurationViewSelector'>
+              <Grid
+                item
+                className='ReferenceLayerLevelConfigurationViewSelector'
+              >
                 <div className="BasicFormSection">
                   <div className='ReferenceDatasetSection'>
-                    <GeorepoViewInputSelector
-                      data={
-                        referenceLayer?.identifier ? [{
-                          ...referenceLayer,
-                          name: referenceLayerData?.name
-                        }] : []
+                    <DatasetViewSelector
+                      disabled={!overrideView}
+                      initData={
+                        referenceLayer?.identifier ? [
+                          {
+                            id: referenceLayer.identifier,
+                            uuid: referenceLayer.identifier,
+                            name: referenceLayerData?.name,
+                            ...referenceLayer
+                          }
+                        ] : []
                       }
-                      setData={selectedData => {
+                      dataSelected={(selectedData) => {
                         let selected = { identifier: '', detail_url: '' }
                         if (selectedData[0]) {
                           const identifier = selectedData[0].identifier
@@ -139,9 +152,6 @@ export const ViewLevelConfiguration = forwardRef(
                         }
                         setData({ ...data, referenceLayer: selected })
                       }}
-                      isMultiple={false}
-                      showSelected={false}
-                      disabled={!overrideView}
                     />
                   </div>
                 </div>

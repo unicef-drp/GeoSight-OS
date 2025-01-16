@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 import React, {
   forwardRef,
@@ -26,9 +26,6 @@ import { BaseIndicatorValue } from "../Base/base";
 import {
   IndicatorSettings
 } from "../../../../Components/Input/IndicatorSettings";
-import {
-  ContextLayerInputSelector
-} from "../../../../ModalSelector/InputSelector";
 import { fetchJSON } from "../../../../../../Requests";
 import {
   SelectWithList
@@ -39,6 +36,8 @@ import { updateDataWithSetState } from "../../utils";
 import Filter from "../QueryForm/Filter"
 import SpatialOperator from "../QueryForm/SpatialOperator"
 import Aggregation from "../QueryForm/Aggregation"
+import ContextLayerSelector
+  from "../../../../../../components/ResourceSelector/ContextLayerSelector";
 
 const contextLayerGeometryTypes = ['Point', 'Line', 'Polygon']
 /**
@@ -129,15 +128,13 @@ export const VectorContextLayer = forwardRef(
               Context Layer
             </label>
           </div>
-          <ContextLayerInputSelector
-            data={contextLayer ? [contextLayer] : []}
-            setData={selectedDate => {
-              setContextLayer(selectedDate[0])
-              data.context_layer_id = selectedDate[0]?.id
+          <ContextLayerSelector
+            initData={contextLayer ? [contextLayer] : []}
+            dataSelected={selectedData => {
+              setContextLayer(selectedData[0])
+              data.context_layer_id = selectedData[0]?.id
               setData({ ...data })
             }}
-            isMultiple={false}
-            showSelected={false}
           />
           <span className="form-helptext">
           Context layer that will be used.

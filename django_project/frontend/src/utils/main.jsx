@@ -16,6 +16,7 @@
 'use strict';
 
 import i18n from "i18next";
+import { isArray } from "chart.js/helpers";
 
 /**
  * Deep copy of dictionary
@@ -121,6 +122,12 @@ export function capitalize(target) {
 export function jsonToUrlParams(object) {
   const params = []
   for (const [key, value] of Object.entries(object)) {
+    if ([null, undefined].includes(value)) {
+      continue
+    }
+    if (isArray(value) && !value.length) {
+      continue
+    }
     params.push(`${key}=${value}`)
   }
   return params.join('&')
@@ -511,3 +518,41 @@ export function toJson(val) {
     return {}
   }
 }
+
+/**
+ * Sleep
+ */
+export function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/**
+ * Get the number of decimal place based on the number.
+ * @param num
+ * @returns {number}
+ */
+export function getAreaDecimalLength(num) {
+  //    1,000,000 - show 2 decimals, if between 1,000,000 - 1 - show 3 decimals, if below 0 - show 4 digits...
+  if (num >= 1000000) {
+    return 2
+  } else if (num >= 1) {
+    return 3
+  } else {
+    return 4
+  }
+}
+
+/**
+ * Make unique by key
+ * @param array
+ * @param key
+ * @returns {*}
+ */
+export const uniqueByKey = (array, key) => {
+  return array.reduce((acc, item) => {
+    if (!acc.some(el => el[key] === item[key])) {
+      acc.push(item);
+    }
+    return acc;
+  }, []);
+};

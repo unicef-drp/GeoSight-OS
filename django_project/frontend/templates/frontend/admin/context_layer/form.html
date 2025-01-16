@@ -17,12 +17,12 @@
     <script>
       const initialData = {{ form|get_data|safe }};
       const permission = {{ permission|safe }};
+      const dynamicClassification = {{ dynamicClassification|safe }};
+      const permissionFormData = {% if form.permission_data %}{{ form.permission_data|safe }}{% else %}null{% endif %};
 
       // Urls api
       urls.api = {
         'styles': '{% url 'style-list-api'%}',
-        'users': '{% url 'user-list-api'%}',
-        'groups': '{% url 'group-list-api'%}',
         'detail': '{% url 'context-layer-detail-api' 0 %}',
       }
 

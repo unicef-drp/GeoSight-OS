@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import FormControl from "@mui/material/FormControl";
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
@@ -21,142 +21,9 @@ import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import { IconTextField } from "../../../../components/Elements/Input";
-import IndicatorSelector from "../Indicator";
-
-import { GeorepoViewSelector, GroupSelector, UserSelector } from "../index";
 import { FilterIcon } from "../../../../components/Icons";
 
 import './style.scss';
-
-/**
- * Filter component
- * @param {str} placeholder Placeholder of input.
- * @param {array} data Selected data.
- * @param {function} setData When the value changed.
- * @param {Boolean} returnObject Is data returned whole object.
- * @param {React.Component} children React component to be rendered.
- * @param {array} filter List of id of data that will filter the indicators.
- */
-export function ModalFilterSelector(
-  { placeholder, data, setData, returnObject, filter, children }
-) {
-  const [open, setOpen] = useState(false)
-
-  const updateData = (changedData) => {
-    setData(
-      changedData.map(row => returnObject ? row : row.id)
-    )
-  }
-  return <FormControl className='FilterControl'>
-    {
-      data.length ?
-        <label
-          className="MuiFormLabel-root"
-          data-shrink="true">{placeholder}</label>
-        : ""
-    }
-    <IconTextField
-      iconEnd={
-        <FilterIcon
-          className={data.length ? 'HasValue' : ''}
-          onClick={(e) => {
-            if (data.length) {
-              setData([])
-              e.stopPropagation();
-            }
-          }}
-        />
-      }
-      onClick={() => setOpen(true)}
-      value={data.length ? data.length + ' selected' : placeholder}
-      inputProps={
-        { readOnly: true, }
-      }
-    />
-    {
-      React.cloneElement(children, {
-        open: open,
-        setOpen: setOpen,
-        selectedData: data,
-        selectedDataChanged: updateData,
-        filter: filter
-      })
-    }
-  </FormControl>
-}
-
-/**
- * Filter indicator
- * @param {array} data Selected data.
- * @param {function} setData When the value changed.
- * @param {Boolean} returnObject Is data returned whole object.
- * @param {array} filter List of id of data that will be used to filter data.
- */
-export function IndicatorFilterSelector({ data, setData, returnObject, filter }) {
-  return <ModalFilterSelector
-    placeholder={'Filter by Indicator(s)'}
-    data={data}
-    setData={setData}
-    returnObject={returnObject}
-    filter={filter}
-  >
-    <IndicatorSelector/>
-  </ModalFilterSelector>
-}
-
-/**
- * Filter Dataset
- * @param {array} data Selected data.
- * @param {function} setData When the value changed.
- * @param {Boolean} returnObject Is data returned whole object.
- * @param {array} filter List of id of data that will be used to filter data.
- */
-export function DatasetFilterSelector({ data, setData, returnObject, filter }) {
-  return <ModalFilterSelector
-    placeholder={'Filter by View(s)'}
-    data={data}
-    setData={setData}
-    returnObject={returnObject}
-    filter={filter}
-  >
-    <GeorepoViewSelector/>
-  </ModalFilterSelector>
-}
-
-/**
- * Filter user
- * @param {array} data Selected data.
- * @param {function} setData When the value changed.
- * @param {Boolean} returnObject Is data returned whole object.
- */
-export function UserFilterSelector({ data, setData, returnObject }) {
-  return <ModalFilterSelector
-    placeholder={'Filter by User(s)'}
-    data={data}
-    setData={setData}
-    returnObject={returnObject}
-  >
-    <UserSelector/>
-  </ModalFilterSelector>
-}
-
-/**
- * Filter group
- * @param {array} data Selected data.
- * @param {function} setData When the value changed.
- * @param {Boolean} returnObject Is data returned whole object.
- */
-export function GroupFilterSelector({ data, setData, returnObject }) {
-  return <ModalFilterSelector
-    placeholder={'Filter by Group(s)'}
-    data={data}
-    setData={setData}
-    returnObject={returnObject}
-  >
-    <GroupSelector/>
-  </ModalFilterSelector>
-}
 
 /**
  * SelectFilter component

@@ -151,12 +151,33 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'geosight.georepo.tasks.fetch_datasets',
         'schedule': crontab(minute='0', hour='0'),
         'args': (True,),
-    },
-    'clean_cloud_native': {
-        'task': 'geosight.cloud_native_gis.tasks.clean_cloud_native_layer',
-        'schedule': crontab(minute='0', hour='0'),
     }
 }
+
+# Beat schedule for plugins
+if CLOUD_NATIVE_GIS_ENABLED:
+    CELERY_BEAT_SCHEDULE.update({
+        'clean_cloud_native': {
+            'task': 'geosight.cloud_native_gis.tasks.clean_cloud_native_layer',
+            'schedule': crontab(minute='0', hour='0'),
+        }
+    })
+if MACHINE_INFO_FETCHER_ENABLED:
+    CELERY_BEAT_SCHEDULE.update({
+        'machine_info_fetcher_api': {
+            'task': (
+                'geosight.machine_info_fetcher.tasks.'
+                'trigger_storage_checker_api'
+            ),
+            'schedule': crontab(minute='*/15'),
+        },
+        'machine_info_fetcher_clean_log': {
+            'task': (
+                'geosight.machine_info_fetcher.tasks.clean_old_machine_info'
+            ),
+            'schedule': crontab(minute='0', hour='0'),
+        },
+    })
 
 # ----------------------------------------
 # Setup for tenants
@@ -170,3 +191,10 @@ if TENANTS_ENABLED:
     INSTALLED_APPS = [
         app for app in INSTALLED_APPS if app != 'django.contrib.admin'
     ]
+
+# ----------------------------------------
+# Logs Directory
+# ----------------------------------------
+LOGS_DIRECTORY = os.environ.get(
+    'LOGS_DIRECTORY', '/home/web/logs'
+)

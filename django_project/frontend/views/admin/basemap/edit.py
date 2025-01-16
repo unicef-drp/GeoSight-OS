@@ -16,12 +16,12 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import json
 
-from django.forms.models import model_to_dict
-from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, reverse, render
 
-from frontend.views.admin._base import AdminBaseView
-from frontend.views.admin.basemap.create import BasemapCreateView
+from frontend.views.admin._base import AdminBaseView, AdminBatchEditView
+from frontend.views.admin.basemap.create import (
+    BaseBasemapEditView
+)
 from geosight.data.forms.basemap import BasemapForm
 from geosight.data.models.basemap_layer import BasemapLayer
 from geosight.permission.access import (
@@ -76,6 +76,7 @@ class BasemapEditView(RoleContributorRequiredMixin, AdminBaseView):
 
     def post(self, request, **kwargs):
         """Edit basemap."""
+        data = request.POST.copy()
         basemap = get_object_or_404(
             BasemapLayer, id=self.kwargs.get('pk', '')
         )
@@ -88,7 +89,7 @@ class BasemapEditView(RoleContributorRequiredMixin, AdminBaseView):
         if form.is_valid():
             instance = form.save()
             # Save permission
-            instance.permission.update_from_request_data_in_string(
+            instance.permission.update_from_request_data(
                 request.POST, request.user
             )
             return redirect(
@@ -97,12 +98,14 @@ class BasemapEditView(RoleContributorRequiredMixin, AdminBaseView):
                 ) + '?success=true'
             )
         context = self.get_context_data(**kwargs)
+        if data.get('permission', None):
+            form.permission_data = data.get('permission', None)
         context['form'] = form
         return render(request, self.template_name, context)
 
 
 class BasemapEditBatchView(
-    RoleContributorRequiredMixin, BasemapCreateView
+    AdminBatchEditView, BaseBasemapEditView
 ):
     """Basemap Edit Batch View."""
 
@@ -123,34 +126,17 @@ class BasemapEditBatchView(
             f'Edit Batch'
         )
 
-    def get_context_data(self, **kwargs) -> dict:
-        """Return context data."""
-        context = super().get_context_data(**kwargs)
-        context['batch'] = True
-        return context
+    @property
+    def edit_query(self):
+        """Return query for edit."""
+        return BasemapLayer.permissions.edit(self.request.user)
 
-    def post(self, request, **kwargs):
-        """Edit basemap."""
-        data = request.POST.copy()
-        ids = data.get('ids', None)
-        if not ids:
-            return HttpResponseBadRequest('ids needs in payload')
-        ids = ids.split(',')
-        for basemap in BasemapLayer.permissions.edit(request.user).filter(
-                id__in=ids
-        ):
-            # Save style if it has style on payload
-            initial_data = model_to_dict(basemap)
-            if basemap.group:
-                initial_data['group'] = basemap.group.name
-            for key, value in data.items():
-                initial_data[key] = value
-            form = BasemapForm(initial_data, instance=basemap)
-            form.is_valid()
-            instance = form.instance
-            instance.save()
-            # Save permission
-            instance.permission.update_from_request_data_in_string(
-                request.POST, request.user
-            )
-        return redirect(reverse('admin-basemap-list-view'))
+    @property
+    def form(self):
+        """Return form."""
+        return BasemapForm
+
+    @property
+    def redirect_url(self):
+        """Return redirect url."""
+        return reverse('admin-basemap-list-view')

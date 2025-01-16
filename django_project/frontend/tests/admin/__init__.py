@@ -22,3 +22,4 @@ from .group import *  # noqa
 from .indicator import *  # noqa
 from .related_table import *  # noqa
 from .user import *  # noqa
+from .style import *  # noqa

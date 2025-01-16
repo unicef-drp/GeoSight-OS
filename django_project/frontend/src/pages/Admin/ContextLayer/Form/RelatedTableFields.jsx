@@ -22,10 +22,11 @@ import {
 import WhereInputModal
   from "../../../../components/SqlQueryGenerator/WhereInputModal";
 import { getRelatedTableFields } from "../../../../utils/relatedTable";
-import { fetchingData } from "../../../../Requests";
 import { dictDeepCopy, toJson } from "../../../../utils/main";
-import { RelatedTableInputSelector } from "../../ModalSelector/InputSelector";
 import { SelectWithList } from "../../../../components/Input/SelectWithList";
+import RelatedTableRequest from "../../../../utils/RelatedTable/Request";
+import RelatedTableSelector
+  from "../../../../components/ResourceSelector/RelatedTableSelector";
 
 /**
  * Indicator Form App
@@ -52,21 +53,15 @@ export default function RelatedTableFields(
   // Loading data
   useEffect(() => {
     if (data.related_table) {
-      const params = {}
-      const url_info = `/api/related-table/${data.related_table}`
-      const url_data = `/api/related-table/${data.related_table}/data`
       setRelatedTableInfo(null)
       setRelatedTableData(null)
-      fetchingData(
-        url_data, params, {}, function (response, error) {
-          setRelatedTableData(dictDeepCopy(response))
-        }
-      )
-      fetchingData(
-        url_info, params, {}, function (response, error) {
-          setRelatedTableInfo(dictDeepCopy(response))
-        }
-      )
+      const request = new RelatedTableRequest(data.related_table)
+      request.getDetail().then(response => {
+        setRelatedTableInfo(dictDeepCopy(response))
+      })
+      request.getData().then(response => {
+        setRelatedTableData(dictDeepCopy(response))
+      })
     }
   }, [data.related_table])
 
@@ -105,11 +100,9 @@ export default function RelatedTableFields(
         <label className="form-label required">
           Related Table
         </label>
-        <RelatedTableInputSelector
-          data={relatedTableInfo ? [relatedTableInfo] : []}
-          setData={handleRelatedTableChange}
-          isMultiple={false}
-          showSelected={true}
+        <RelatedTableSelector
+          initData={relatedTableInfo ? [relatedTableInfo] : []}
+          dataSelected={handleRelatedTableChange}
         />
       </div>
       <div className='BasicFormSection'>

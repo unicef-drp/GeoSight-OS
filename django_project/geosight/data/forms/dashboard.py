@@ -131,4 +131,5 @@ class DashboardForm(forms.ModelForm):
             data['permission'] = other_data['permission']
         except KeyError:
             data['permission'] = None
+        data['tools'] = other_data.get('tools', [])
         return data

@@ -23,12 +23,19 @@ import {
 } from '../../../Dashboard/MapLibre/Layers/ContextLayers/Layer'
 import { defaultPointStyle } from './layerStyles';
 import RelatedTableConfig from './RelatedTable';
-import AggregationStyleConfig from "./AggregationStyleConfig";
+import VectorStyleConfig from "./VectorStyleConfig";
 import { Variables } from "../../../../utils/Variables";
-import { GET_RESOURCE } from "../../../../utils/ResourceRequests";
+import RasterCogLayer from "./RasterCogLayer";
 
 import './style.scss';
 
+const SelectedClass = 'Selected';
+
+// TAB value
+const GENERAL = 'General';
+const FIELDS = 'Fields';
+const PREVIEW = 'Preview';
+const LABEL = 'Label';
 
 /**
  * Indicator Form App
@@ -52,7 +59,7 @@ export default function StyleConfig(
 
   const [layerData, setLayerData] = useState(null);
   const [layerDataClass, setLayerDataClass] = useState(null);
-  const [tab, setTab] = useState(data.layer_type === 'ARCGIS' ? 'Fields' : 'Preview');
+  const [tab, setTab] = useState(data.layer_type === Variables.LAYER.TYPE.ARCGIS ? FIELDS : PREVIEW);
 
   useEffect(() => {
     if (defaultTab) {
@@ -68,10 +75,16 @@ export default function StyleConfig(
   }, [data, tab]);
 
   useEffect(() => {
-    if (!data.styles && Variables.LIST.VECTOR_TILE_TYPES.includes(data.layer_type) && !Variables.LIST.OVERRIDE_STYLES.includes(data.layer_type)) {
+    if (!data.styles && Variables.LAYER.LIST.VECTOR_TILE_TYPES.includes(data.layer_type)) {
       setData({
         ...data,
         styles: JSON.stringify(defaultPointStyle, null, 4),
+        override_style: true
+      })
+    } else if (data.styles?.min_band === undefined && Variables.LAYER.TYPE.RASTER_COG === data.layer_type) {
+      setData({
+        ...data,
+        styles: {},
         override_style: true
       })
     }
@@ -89,51 +102,37 @@ export default function StyleConfig(
         Below is for checking the configuration, overriding style and updating
         popup.
       </div>
-      {
-        error ?
-          <div className='error'>{error.toString()}</div>
-          : ""
-      }
+      {error && <div className='error'>{error.toString()}</div>}
       <div className='AdminForm'>
         {/* FOR CONFIG */}
         <div className='TabPrimary ContextLayerConfigTab'>
           {
-            data.layer_type === 'Related Table' ?
-              <>
-                <div
-                  onClick={() => {
-                    setTab('General_Override')
-                  }}
-                  className={tab === 'General' ? 'Selected' : ""}
-                >
-                  General
-                </div>
-              </> : null
+            data.layer_type === Variables.LAYER.TYPE.RELATED_TABLE ?
+              <div
+                onClick={() => setTab('General_Override')}
+                className={tab === GENERAL ? SelectedClass : ""}
+              >
+                General
+              </div> : null
           }
           <div
-            onClick={() => {
-              setTab('Preview')
-            }}
-            className={tab === 'Preview' ? 'Selected' : ""}
+            onClick={() => setTab(PREVIEW)}
+            className={tab === PREVIEW ? SelectedClass : ""}
           >
             Preview
           </div>
           {
-            data.layer_type === 'ARCGIS' ?
+            data.layer_type === Variables.LAYER.TYPE.ARCGIS ?
               <Fragment>
                 <div
-                  onClick={() => {
-                    setTab('Fields')
-                  }}
-                  className={tab === 'Fields' ? 'Selected' : ""}
+                  onClick={() => setTab(FIELDS)}
+                  className={tab === FIELDS ? SelectedClass : ""}
                 >
                   Fields
                 </div>
                 <div
-                  onClick={() => {
-                    setTab('Label')
-                  }}
-                  className={tab === 'Label' ? 'Selected' : ""}
+                  onClick={() => setTab(LABEL)}
+                  className={tab === LABEL ? SelectedClass : ""}
                 >
                   Label
                 </div>
@@ -141,9 +140,10 @@ export default function StyleConfig(
           }
         </div>
         <div id='ContextLayerConfig'
-             className={"BasicFormSection " + (data.layer_type === 'ARCGIS' ? 'ShowStyle' : '')}>
+             className={"BasicFormSection " + (data.layer_type === Variables.LAYER.TYPE.ARCGIS ? 'ShowStyle' : '')}
+        >
           {
-            tab === 'Preview' ?
+            tab === PREVIEW ?
               <div className='PreviewWrapper Preview'>
                 <div className='legend'>
                   <div className='wrapper'>
@@ -151,24 +151,30 @@ export default function StyleConfig(
                       <b className='light'>Legend</b>
                     </div>
                     {
-                      legend ?
-                        <div
-                          dangerouslySetInnerHTML={{ __html: legend }}></div> : ""
+                      legend &&
+                      <div dangerouslySetInnerHTML={{ __html: legend }}></div>
                     }
                   </div>
                 </div>
                 <MapConfig
                   data={data}
+                  setData={setData}
                   layerInput={{
                     layer: layer,
                     layer_type: data.layer_type,
                     render: true
                   }}
                 />
-              </div> : ""
+              </div> : null
           }
+
+          {/* For STYLES */}
           {
-            Variables.LIST.VECTOR_TILE_TYPES.includes(data.layer_type) ? <>
+            (
+              Variables.LAYER.LIST.VECTOR_TILE_TYPES.includes(data.layer_type) ||
+              data.layer_type === Variables.LAYER.TYPE.RASTER_COG
+            ) ? <>
+              {/* Check if override or not. */}
               <div className='ArcgisConfig Style'>
                 {
                   useOverride ?
@@ -186,27 +192,48 @@ export default function StyleConfig(
                         label="Override style from default"/>
                     </FormGroup> : null
                 }
+
+                {/* If vector tile */}
                 {
-                  (!useOverride || data.override_style) ?
+                  Variables.LAYER.LIST.VECTOR_TILE_TYPES.includes(data.layer_type) && (!useOverride || data.override_style) ?
                     data.styles ?
-                      <AggregationStyleConfig
+                      <VectorStyleConfig
                         data={data} setData={setData} setError={setError}
                       /> :
                       <div>Loading</div> : null
                 }
-              </div>
-              <div className='ArcgisConfig Label form-helptext'>
-                {data.layer_type} does not have label
+
+                {/* If raster cog */}
+                {
+                  data.layer_type === Variables.LAYER.TYPE.RASTER_COG && (!useOverride || data.override_style) ?
+                    <RasterCogLayer
+                      data={data} setData={setData}
+                      useOverride={useOverride}
+                    /> : null
+                }
               </div>
             </> : null
           }
+
+          {/* For LABEL */}
           {
-            data.layer_type === 'ARCGIS' ?
+            (
+              Variables.LAYER.LIST.VECTOR_TILE_TYPES.includes(data.layer_type) ||
+              data.layer_type === Variables.LAYER.TYPE.RASTER_COG
+            ) &&
+            <div className='ArcgisConfig Label form-helptext'>
+              {data.layer_type} does not have label
+            </div>
+          }
+
+          {/* For FIELDS */}
+          {
+            data.layer_type === Variables.LAYER.TYPE.ARCGIS ?
               <ArcgisConfig
                 originalData={data} setData={setData}
                 ArcgisData={layerData} useOverride={useOverride}
                 useOverrideLabel={useOverrideLabel}
-              /> : data.layer_type === 'Related Table' ?
+              /> : data.layer_type === Variables.LAYER.TYPE.RELATED_TABLE ?
                 <RelatedTableConfig
                   originalData={data} setData={setData}
                   setError={setError}

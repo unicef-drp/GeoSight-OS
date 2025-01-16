@@ -53,7 +53,7 @@ class DashboardRelationGroup(AbstractTerm):
         return self.name
 
 
-class DashboardRelation(BaseModelWithLimitation):
+class DashboardRelation(models.Model):
     """Abstract Dashboard Relation.
 
     This has:
@@ -83,13 +83,20 @@ class DashboardRelation(BaseModelWithLimitation):
         on_delete=models.SET_NULL
     )
 
+    class Meta:  # noqa: D106
+        abstract = True
+
+
+class DashboardRelationWithLimit(DashboardRelation, BaseModelWithLimitation):
+    """Dashboard relation with limit."""
+
     limit_by_field_name = 'dashboard_id'
 
     class Meta:  # noqa: D106
         abstract = True
 
 
-class DashboardIndicator(IndicatorStyleBaseModel, DashboardRelation):
+class DashboardIndicator(IndicatorStyleBaseModel, DashboardRelationWithLimit):
     """Indicator x Dashboard model."""
 
     object = models.ForeignKey(
@@ -132,7 +139,7 @@ class DashboardIndicatorRule(RuleModel):
         ordering = ('order',)
 
 
-class DashboardBasemap(DashboardRelation):
+class DashboardBasemap(DashboardRelationWithLimit):
     """Indicator x Basemap model."""
 
     object = models.ForeignKey(
@@ -146,7 +153,7 @@ class DashboardBasemap(DashboardRelation):
         ordering = ('order',)
 
 
-class DashboardContextLayer(DashboardRelation):
+class DashboardContextLayer(DashboardRelationWithLimit):
     """Indicator x ContextLayer model."""
 
     object = models.ForeignKey(

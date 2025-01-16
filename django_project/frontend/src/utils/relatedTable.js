@@ -51,7 +51,7 @@ export const getRelatedTableData = (data, config, selectedGlobalTime, geoField =
 
     // Filter by admin level
     if (adminLevel !== null) {
-      data = data.filter(row => row.admin_level == adminLevel)
+      data = data.filter(row => row.admin_level === adminLevel)
     }
     data = JSON.parse(JSON.stringify(data))
     const { aggregation } = config
@@ -273,8 +273,8 @@ export function getRelatedTableFields(relatedTable, relatedTableData) {
       let options = null
       if (relatedTableData) {
         options = relatedTableData.map(
-          data => data[field.name] !== null ? '' + data[field.name] : null
-        ).filter(data => data !== null)
+          data => data[field.name] !== null ? '' + data[field.name] : ''
+        )
         options = Array.from(new Set(options))
       }
       field.type = field.type.toLowerCase()

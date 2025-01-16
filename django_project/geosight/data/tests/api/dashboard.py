@@ -161,14 +161,19 @@ class DashboardListApiTest(BasePermissionTest.TestCase):
                 pref.show_last_known_value_in_range,
             'default_interval': pref.default_interval,
         })
+
+        # Test from updates site preferences
         pref.fit_to_current_indicator_range = True
         pref.show_last_known_value_in_range = False
         pref.default_interval = 'Yearly'
         pref.save()
 
-        # Test from updates site preferences
+        # Second resource
+        resource = self.create_resource(self.creator, 'Dashboard test 2')
+        url = reverse('dashboard-data-api', kwargs={'slug': resource.slug})
         response = self.assertRequestGetView(url, 200, self.creator)
         data = response.json()
+
         self.assertEqual(data['default_time_mode'], {
             'use_only_last_known_value': True,
             'fit_to_current_indicator_range':
@@ -185,10 +190,10 @@ class DashboardListApiTest(BasePermissionTest.TestCase):
             'show_last_known_value_in_range': True,
             'default_interval': 'Daily',
         }
+        resource.increase_version()
         resource.save()
         response = self.assertRequestGetView(url, 200, self.creator)
         data = response.json()
-
         self.assertEqual(data['default_time_mode'], {
             'use_only_last_known_value': True,
             'fit_to_current_indicator_range': True,

@@ -18,13 +18,28 @@ from django.conf import settings
 from django.core import signing
 from django.core.signing import BadSignature
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from core.models.color import ColorPalette
 from core.models.singleton import SingletonModel
 
 DEFAULT_OUTLINE_COLOR = '#FFFFFF'
 DEFAULT_OUTLINE_SIZE = 0.5
+
+
+def default_machine_info_fetcher_config():
+    """Return default config for machine info fetcher."""
+    return {
+        'api_key': '',
+        'user_email': ''
+    }
+
+
+class SiteType(models.TextChoices):
+    """Choices of site type."""
+
+    STAGING = 'Staging', _('Staging')
+    PRODUCTION = 'Production', _('Production')
 
 
 class SitePreferences(SingletonModel):
@@ -46,6 +61,12 @@ class SitePreferences(SingletonModel):
     site_url = models.CharField(
         max_length=512,
         default=''
+    )
+
+    site_type = models.CharField(
+        max_length=255,
+        choices=SiteType.choices,
+        default=SiteType.PRODUCTION
     )
 
     disclaimer = models.TextField(
@@ -283,7 +304,6 @@ class SitePreferences(SingletonModel):
         ),
         verbose_name="Outline size"
     )
-
     # -----------------------------------------------
     # Login page config
     # -----------------------------------------------
@@ -292,6 +312,17 @@ class SitePreferences(SingletonModel):
         help_text=_(
             'Help text to show in login page.'
         ),
+        null=True, blank=True
+    )
+
+    # -----------------------------------------------
+    # PLUGIN_CONFIG
+    # -----------------------------------------------
+    machine_info_fetcher_config = models.JSONField(
+        default=default_machine_info_fetcher_config,
+        help_text=(
+            'Config for machine info fetcher.'
+        )
     )
 
     class Meta:  # noqa: D106
@@ -343,6 +374,29 @@ class SitePreferences(SingletonModel):
     def sentry_environment(self):
         """Return admin emails."""
         return settings.SENTRY_ENVIRONMENT
+
+    # -------------------------------------
+    # FOR PLUGINS
+    # -------------------------------------
+    @property
+    def cloud_native_gis_enabled(self):
+        """Return if CLOUD_NATIVE_GIS_ENABLED is enabled."""
+        return settings.CLOUD_NATIVE_GIS_ENABLED
+
+    @property
+    def machine_info_fetcher_enabled(self):
+        """Return if MACHINE_INFO_FETCHER_ENABLED is enabled."""
+        return settings.MACHINE_INFO_FETCHER_ENABLED
+
+    @property
+    def reference_dataset_enabled(self):
+        """Return if REFERENCE_DATASET_ENABLED is enabled."""
+        return settings.REFERENCE_DATASET_ENABLED
+
+    @property
+    def tenants_enabled(self):
+        """Return if TENANTS_ENABLED is enabled."""
+        return settings.TENANTS_ENABLED
 
 
 class SitePreferencesImage(models.Model):

@@ -15,12 +15,12 @@
 
 import React, { useEffect, useState } from 'react';
 import { SelectWithList } from "../SelectWithList";
-import { fetchingData } from "../../../Requests";
 import Grid from "@mui/material/Grid";
 import Checkbox from "@mui/material/Checkbox";
+import { dictDeepCopy } from "../../../utils/main";
+import { updateColorPaletteData } from "../../../utils/Style";
 
 import './style.scss';
-import { dictDeepCopy } from "../../../utils/main";
 
 /**
  * Color Palette Selector
@@ -37,20 +37,16 @@ export default function ColorPaletteSelector(
 ) {
   const [colorPalettes, setColorPalettes] = useState([]);
 
-
   // On init
   useEffect(() => {
     (
       async () => {
-        await fetchingData(
-          `/api/color/palette/list`,
-          {}, {}, (response, error) => {
-            setColorPalettes(response);
-            if (!colorPalette) {
-              onChange(preferences.default_color_palette ? preferences.default_color_palette : response[0]?.id)
-            }
+        await updateColorPaletteData().then(response => {
+          setColorPalettes(response);
+          if (!colorPalette) {
+            onChange(preferences.default_color_palette ? preferences.default_color_palette : response[0]?.id)
           }
-        )
+        })
       }
     )()
   }, [])

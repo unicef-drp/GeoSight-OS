@@ -17,20 +17,19 @@ __copyright__ = ('Copyright 2023, Unicef')
 from drf_yasg import openapi
 from rest_framework import serializers
 
-from core.serializer.dynamic_serializer import DynamicModelSerializer
 from geosight.data.models.basemap_layer import (
     BasemapLayerParameter, BasemapLayer, BasemapLayerType
 )
+from geosight.data.serializer.resource import ResourceSerializer
 
 TYPES = [BasemapLayerType.XYZ_TILE, BasemapLayerType.WMS]
 
 
-class BasemapLayerSerializer(DynamicModelSerializer):
+class BasemapLayerSerializer(ResourceSerializer):
     """Serializer for BasemapLayer."""
 
     category = serializers.SerializerMethodField()
     parameters = serializers.SerializerMethodField()
-    created_by = serializers.SerializerMethodField()
     permission = serializers.SerializerMethodField()
 
     def get_category(self, obj: BasemapLayer):
@@ -57,10 +56,6 @@ class BasemapLayerSerializer(DynamicModelSerializer):
                     parameters[params[0]] = '='.join(params[1:])
         return parameters
 
-    def get_created_by(self, obj: BasemapLayer):
-        """Return created by."""
-        return obj.creator.username if obj.creator else ''
-
     def get_permission(self, obj: BasemapLayer):
         """Return permission."""
         return obj.permission.all_permission(
@@ -69,7 +64,7 @@ class BasemapLayerSerializer(DynamicModelSerializer):
 
     class Meta:  # noqa: D106
         model = BasemapLayer
-        exclude = ('group',)
+        fields = '__all__'
         swagger_schema_fields = {
             'type': openapi.TYPE_OBJECT,
             'title': 'BasemapLayer',

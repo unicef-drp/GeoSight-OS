@@ -34,3 +34,4 @@ class ReferenceDatasetAdmin(ReferenceLayerViewAdmin):
     """ReferenceDataset admin."""
 
     inlines = (ReferenceDatasetLevelInline,)
+    search_fields = ('name',)

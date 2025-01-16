@@ -95,7 +95,7 @@ class BaseStyleEditingView(AdminBaseView):
         """Save rules."""
         request = self.request
         # Save permission
-        style.permission.update_from_request_data_in_string(
+        style.permission.update_from_request_data(
             data, request.user
         )
 
@@ -155,6 +155,8 @@ class BaseStyleEditingView(AdminBaseView):
         form.instance_data = json.dumps(
             StyleForm.model_to_initial(form.instance)
         )
+        if data.get('permission', None):
+            form.permission_data = data.get('permission', None)
         context['form'] = form
         return render(
             request,

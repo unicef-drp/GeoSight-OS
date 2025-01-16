@@ -31,11 +31,13 @@ class RelatedTableViewSet(BaseApiV1Resource):
 
     model_class = RelatedTable
     serializer_class = RelatedTableApiSerializer
-    extra_exclude_fields = []
+    extra_exclude_fields = [
+        'fields_definition', 'version_data'
+    ]
 
     @swagger_auto_schema(
-        operation_id='related-tables-list',
-        tags=[ApiTag.RELATED_TABLES],
+        operation_id='related-table-list',
+        tags=[ApiTag.RELATED_TABLE],
         operation_description=
         'Return list of accessible related tables for the user.',
         responses={
@@ -50,8 +52,8 @@ class RelatedTableViewSet(BaseApiV1Resource):
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(
-        operation_id='related-tables-detail',
-        tags=[ApiTag.RELATED_TABLES],
+        operation_id='related-table-detail',
+        tags=[ApiTag.RELATED_TABLE],
         operation_description=
         'Return detail of a related tables for the user.',
         responses={
@@ -66,8 +68,8 @@ class RelatedTableViewSet(BaseApiV1Resource):
         return super().retrieve(request, *args, **kwargs)
 
     @swagger_auto_schema(
-        operation_id='related-tables-create',
-        tags=[ApiTag.RELATED_TABLES],
+        operation_id='related-table-create',
+        tags=[ApiTag.RELATED_TABLE],
         manual_parameters=[],
         request_body=RelatedTableApiSerializer.
         Meta.swagger_schema_fields['post_body'],
@@ -83,8 +85,8 @@ class RelatedTableViewSet(BaseApiV1Resource):
         return Response(response, status=HTTP_201_CREATED)
 
     @swagger_auto_schema(
-        operation_id='related-tables-update',
-        tags=[ApiTag.RELATED_TABLES],
+        operation_id='related-table-update',
+        tags=[ApiTag.RELATED_TABLE],
         manual_parameters=[],
         request_body=RelatedTableApiSerializer.
         Meta.swagger_schema_fields['post_body'],
@@ -99,16 +101,16 @@ class RelatedTableViewSet(BaseApiV1Resource):
         return Response(self.get_serializer(instance).data)
 
     @swagger_auto_schema(
-        operation_id='related-tables-partial-update',
-        tags=[ApiTag.RELATED_TABLES]
+        operation_id='related-table-partial-update',
+        tags=[ApiTag.RELATED_TABLE]
     )
     def partial_update(self, request, *args, **kwargs):
         """Update an existing related table."""
         raise MethodNotAllowed('PATCH')
 
     @swagger_auto_schema(
-        operation_id='related-tables-delete',
-        tags=[ApiTag.RELATED_TABLES],
+        operation_id='related-table-delete',
+        tags=[ApiTag.RELATED_TABLE],
         manual_parameters=[],
         operation_description='Delete a related table.'
     )

@@ -63,6 +63,7 @@ import Modal, {
   ModalFooter,
   ModalHeader
 } from "../../../../components/Modal";
+import ToolsForm from "./Tools";
 
 
 /**
@@ -296,7 +297,8 @@ export function DashboardSaveForm(
     permission,
     geoField,
     levelConfig,
-    default_time_mode
+    default_time_mode,
+    tools
   } = useSelector(state => state.dashboard.data);
   const { data } = useSelector(state => state.dashboard);
   const filtersData = useSelector(state => state.filtersData);
@@ -415,6 +417,7 @@ export function DashboardSaveForm(
         'show_splash_first_open': splashScreen,
         'truncate_indicator_layer_name': truncateIndicatorName,
         'enable_geometry_search': enableGeometrySearch,
+        'tools': tools
       }
 
       // onOpen();
@@ -504,6 +507,7 @@ export function DashboardFormContent({ changed }) {
           <FiltersForm/>
           <WidgetForm/>
           <RelatedTableForm/>
+          <ToolsForm/>
           {
             data?.user_permission.share ? <ShareForm/> : ""
           }
@@ -585,6 +589,12 @@ export function DashboardFormHeader(
     >
       Related
       Tables {relatedTables?.length ? `(${relatedTables?.length})` : null}
+    </div>
+    <div
+      className={currentPage === 'Tools' ? 'Selected' : 'MuiButtonLike'}
+      onClick={() => changePage('Tools')}
+    >
+      Tools
     </div>
     {
       user_permission?.share ?

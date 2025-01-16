@@ -30,18 +30,21 @@ import Modal, {
   ModalHeader
 } from "../../../components/Modal";
 import {
-  AddButton,
   DeleteButton,
   EditButton,
   SaveButton
 } from "../../../components/Elements/Button";
 import { fetchJSON } from "../../../Requests";
-import { dictDeepCopy } from "../../../utils/main";
+import { dictDeepCopy, uniqueByKey } from "../../../utils/main";
 import { IconTextField } from "../../../components/Elements/Input";
 import SearchIcon from "@mui/icons-material/Search";
-import { USER_COLUMNS } from "../ModalSelector/User";
 import { ShareIcon } from "../../../components/Icons";
-import { MainDataGrid } from "../../../components/MainDataGrid";
+import { MainDataGrid } from "../../../components/Table";
+import { Checkbox } from "@mui/material";
+import { PermissionGroupSelection } from "./PermissionGroupSelection";
+import { useConfirmDialog } from "../../../providers/ConfirmDialog";
+import { PermissionUserSelection } from "./PermissionUserSelection";
+import { columns } from "../../../components/ResourceSelector/UserSelector";
 
 import './style.scss';
 
@@ -280,10 +283,24 @@ export function PermissionFormTable(
     dataUrl
   }
 ) {
+  const { openConfirmDialog } = useConfirmDialog();
   const [open, setOpen] = useState(false)
   const [openPermission, setOpenPermission] = useState(false)
   const [selectionModel, setSelectionModel] = useState([]);
   const dataList = data[dataListKey]
+  const dataListDeletedKey = dataListKey + '_deleted'
+
+  /**
+   * Delete data based on ids
+   */
+  const deleteData = (ids) => {
+    data[dataListKey] = dataList.filter(row => !ids.includes(row.id))
+    if (!data[dataListDeletedKey]) {
+      data[dataListDeletedKey] = []
+    }
+    data[dataListDeletedKey] = data[dataListDeletedKey].concat(ids);
+    setData({ ...data })
+  }
 
   return <div>
     <div className='PermissionFormTableHeader'>
@@ -292,11 +309,19 @@ export function PermissionFormTable(
         variant="primary Reverse"
         text={"Delete"}
         onClick={() => {
-          if (confirm(`Do you want to delete the selected ${permissionLabel.toLowerCase()}s?`) === true) {
-            data[dataListKey] = dataList.filter(row => !selectionModel.includes(row.id))
-            setData({ ...data })
-            setSelectionModel([])
-          }
+          openConfirmDialog({
+            header: 'Delete confirmation',
+            onConfirmed: async () => {
+              deleteData(selectionModel)
+              setSelectionModel([])
+            },
+            onRejected: () => {
+            },
+            children: <div>
+              Do you want to delete the
+              selected <>{permissionLabel.toLowerCase()}</>s?
+            </div>
+          })
         }}
       />
       <EditButton
@@ -307,13 +332,32 @@ export function PermissionFormTable(
           setOpenPermission(true)
         }}
       />
-      <AddButton
-        variant="primary"
-        text={"Share to new " + permissionLabel.toLowerCase() + "(s)"}
-        onClick={() => {
-          setOpen(true)
-        }}
-      />
+      {
+        permissionLabel === 'Group' ? <PermissionGroupSelection
+            permissionChoices={permissionChoices}
+            setData={(permissionChoice, objects) => {
+              const newData = objects.map(row => {
+                row.permission = permissionChoice
+                return row
+              })
+              data[dataListKey] = uniqueByKey(newData.concat(data[dataListKey]), 'id')
+              setData({ ...data })
+              setOpen(false)
+            }}
+          /> :
+          <PermissionUserSelection
+            permissionChoices={permissionChoices}
+            setData={(permissionChoice, objects) => {
+              const newData = objects.map(row => {
+                row.permission = permissionChoice
+                return row
+              })
+              data[dataListKey] = uniqueByKey(newData.concat(data[dataListKey]), 'id')
+              setData({ ...data })
+              setOpen(false)
+            }}
+          />
+      }
     </div>
     <div className='PermissionFormTable MuiDataGridTable'>
       <MainDataGrid
@@ -366,12 +410,18 @@ export function PermissionFormTable(
                       className='DeleteButton'/>
                   }
                   onClick={() => {
-                    if (confirm(`Do you want to remove this ${permissionLabel.toLowerCase()}?`) === true) {
-                      data[dataListKey] = dataList.filter(row => {
-                        return row.id !== params.row.id
-                      })
-                      setData({ ...data })
-                    }
+                    openConfirmDialog({
+                      header: 'Delete confirmation',
+                      onConfirmed: async () => {
+                        deleteData([params.row.id])
+                      },
+                      onRejected: () => {
+                      },
+                      children: <div>
+                        Do you want to remove
+                        this <>{permissionLabel.toLowerCase()}</>s?
+                      </div>
+                    })
                   }}
                   label="Delete"
                 />
@@ -431,9 +481,52 @@ export function PermissionFormTable(
  * @param {dict} data Permission data.
  * @param {Function} setData Function of set data.
  * @param {dict} additionalTabs Other tabs.
+ * @param {boolean} selectableInput If the input is based on selectable input.
  * */
-export function PermissionForm({ data, setData, additionalTabs = {} }) {
+export function PermissionForm(
+  { data, setData, additionalTabs = {}, selectableInput = false }
+) {
   const [tab, setTab] = useState('UserAccess')
+  const [selectableInputState, setSelectableInputState] = useState({});
+  const [defaultData, setDefaultData] = useState(null);
+
+  /** Return selectable input state by checked, enabled **/
+  const selectableInputStateOutput = (attrName) => {
+    const selectableInputChecked = !selectableInputState[attrName] ? false : true
+    const selectableInputEnabled = !selectableInput || selectableInputChecked
+    return [selectableInputChecked, selectableInputEnabled]
+  }
+
+  const PUBLIC_ACCESS_ACTIVATE_KEY = 'public_access_config'
+  const public_access_activate_config = selectableInputStateOutput(PUBLIC_ACCESS_ACTIVATE_KEY)[0]
+  const public_access_activate = selectableInputStateOutput(PUBLIC_ACCESS_ACTIVATE_KEY)[1]
+
+  // If from data is undefined, use default data
+  const public_permission = data?.public_permission !== undefined ? data?.public_permission : defaultData?.public_permission
+
+  /** Fetch data when modal is opened **/
+  useEffect(() => {
+    if (!defaultData) {
+      setDefaultData({ ...data })
+      if (!public_access_activate) {
+        delete data.public_permission
+        setData({ ...data })
+      }
+    }
+  }, [data])
+
+  /** Fetch data when modal is opened **/
+  useEffect(() => {
+    if (data && defaultData) {
+      if (public_access_activate) {
+        data.public_permission = defaultData.public_permission
+      } else {
+        delete data.public_permission
+      }
+      setData({ ...data })
+    }
+  }, [defaultData, public_access_activate])
+
   return <Fragment>
     {
       !data ?
@@ -445,12 +538,29 @@ export function PermissionForm({ data, setData, additionalTabs = {} }) {
             {/* ORGANIZATION ACCESS */}
             <div className='GeneralAccess'>
               {/* PUBLIC ACCESS */}
-              <label className="form-label">Public Access</label>
+              {
+                selectableInput ?
+                  <Checkbox
+                    className='InputEnabler'
+                    checked={public_access_activate_config}
+                    onClick={evt => {
+                      selectableInputState[PUBLIC_ACCESS_ACTIVATE_KEY] = !public_access_activate_config
+                      setSelectableInputState({ ...selectableInputState })
+                    }
+                    }
+                  /> : null
+              }
+              <label
+                className={"form-label " + (!public_access_activate ? 'disabled' : '')}
+              >
+                Public Access
+              </label>
               <div className='Separator'></div>
               <FormControl className='BasicForm'>
                 <Select
                   name="radio-buttons-group"
-                  value={data.public_permission}
+                  disabled={!public_access_activate}
+                  value={public_permission}
                   onChange={(evt) => {
                     data.public_permission = evt.target.value
                     setData({ ...data })
@@ -493,7 +603,7 @@ export function PermissionForm({ data, setData, additionalTabs = {} }) {
                 <div className="UserAccess">
                   <PermissionFormTable
                     permissionLabel='User'
-                    columns={USER_COLUMNS}
+                    columns={columns}
                     data={data}
                     dataListKey='user_permissions'
                     setData={setData}

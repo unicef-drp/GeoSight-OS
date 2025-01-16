@@ -98,6 +98,10 @@
     color: $error !important;
   }
 
+  &.NoBorder {
+    border: unset !important;
+  }
+
   &.Basic {
     padding: 0.5rem !important;
     min-width: 0;

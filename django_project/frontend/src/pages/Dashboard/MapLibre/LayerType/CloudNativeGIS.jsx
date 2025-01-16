@@ -13,7 +13,12 @@
  * __copyright__ = ('Copyright 2024, Unicef')
  */
 
-import { addPopup, getBeforeLayerId, hasLayer, hasSource } from "../utils";
+import {
+  addPopup,
+  getBeforeLayerId,
+  getLayerIdOfReferenceLayer,
+  hasSource
+} from "../utils";
 import { GET_RESOURCE } from "../../../../utils/ResourceRequests";
 
 
@@ -34,10 +39,7 @@ export default function cloudNativeGISLayer(map, id, data, contextLayerData, pop
       const url = info.tile_url
 
       // We find the before layers
-      let before = 'reference-layer-fill';
-      if (!hasLayer(map, before)) {
-        before = null
-      }
+      let before = getLayerIdOfReferenceLayer(map)
       if (contextLayerOrder) {
         const beforeOrder = getBeforeLayerId(map, id, contextLayerOrder)
         if (beforeOrder) {
@@ -63,7 +65,7 @@ export default function cloudNativeGISLayer(map, id, data, contextLayerData, pop
           layers = JSON.parse(contextLayerData.styles)
         } else if (info.default_style?.style_url) {
           layers = await (await fetch(info.default_style?.style_url)).json()
-          layers =  layers.layers
+          layers = layers.layers
         }
         layers.reverse().map(layer => {
           layer.id = id + '-' + layer.id

@@ -14,12 +14,12 @@
  */
 
 import React, { Fragment, useEffect, useState } from 'react';
-import { fetchingData } from '../../Requests';
 import WhereQueryGenerator from '../SqlQueryGenerator/WhereQueryGenerator';
 import { dictDeepCopy, toJson } from '../../utils/main';
 import { getRelatedTableFields } from '../../utils/relatedTable';
 import { Actions } from '../../store/dashboard';
 import { useDispatch } from 'react-redux';
+import RelatedTableRequest from "../../utils/RelatedTable/Request";
 
 /**
  * Slicers for Related Table Context Layers.
@@ -54,21 +54,15 @@ const SidePanelSlicers = ({ data }) => {
       return
     }
     if (data.related_table) {
-      const params = {}
-      const url_info = `/api/related-table/${data.related_table}`
-      const url_data = `/api/related-table/${data.related_table}/data`
       setRelatedTableInfo(null)
       setRelatedTableData(null)
-      fetchingData(
-        url_data, params, {}, function (response, error) {
-          setRelatedTableData(dictDeepCopy(response))
-        }
-      )
-      fetchingData(
-        url_info, params, {}, function (response, error) {
-          setRelatedTableInfo(dictDeepCopy(response))
-        }
-      )
+      const request = new RelatedTableRequest(data.related_table)
+      request.getDetail().then(response => {
+        setRelatedTableInfo(dictDeepCopy(response))
+      })
+      request.getData().then(response => {
+        setRelatedTableData(dictDeepCopy(response))
+      })
     }
   }, [data.related_table])
 

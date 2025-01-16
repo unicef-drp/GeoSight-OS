@@ -48,7 +48,7 @@ msal==1.21.0
 selenium==4.13.0
 webdriver-manager==4.0.1
 
-git+https://github.com/kartoza/CloudNativeGIS.git@updates
+git+https://github.com/kartoza/CloudNativeGIS.git@0.0.3
 
 # FEATURE: Multi tenant
 # Comment below for excluding the multi tenants feature
@@ -56,4 +56,10 @@ git+https://github.com/kartoza/CloudNativeGIS.git@updates
 django-tenants==3.6.1
 tenant-schemas-celery==3.0.0
 django-tenants-celery-beat==0.2.1
-# -----------------------------------------------------
+# ----------------------------------------------------
+
+# FEATURE: Machine info feature
+uwsgi-tools==1.1.1
+
+# Raster Analysis
+rasterio==1.3.11

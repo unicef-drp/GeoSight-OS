@@ -29,7 +29,7 @@ frontend-dev:
 	@echo "------------------------------------------------------------------"
 	@echo "Run frontend dev"
 	@echo "------------------------------------------------------------------"
-	@cd django_project/frontend; npm install --verbose; npm run dev;
+	@cd django_project/frontend; npm run dev;
 
 dev:
 	@echo
@@ -190,6 +190,13 @@ devweb-entrypoint:
 	@echo "------------------------------------------------------------------"
 	@docker compose ${ARGS} exec -T dev "/home/web/django_project/entrypoint.sh"
 
+devweb-initialize:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Running in DEVELOPMENT mode"
+	@echo "------------------------------------------------------------------"
+	@docker compose $(ARGS) exec -T dev bash -c "python -u /home/web/django_project/initialize.py"
+
 sleep:
 	@echo
 	@echo "------------------------------------------------------------------"
@@ -226,17 +233,17 @@ load-test-data:
 	@echo "------------------------------------------------------------------"
 	@echo "Load demo data for devweb"
 	@echo "------------------------------------------------------------------"
-	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/demo_test/1.core.json"
-	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/demo_test/2.geosight_georepo.json"
-	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/demo_test/3.geosight_data.json"
-	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata geosight/reference_dataset/fixtures/demo_test/4.reference_dataset_levels.json"
+	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/test/1.core.json"
+	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/test/2.user_group.json"
+	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/test/3.geosight_georepo.json"
+	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/test/4.geosight_data.json"
+	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata geosight/reference_dataset/fixtures/test/4.reference_dataset_levels.json"
 
 devweb-test:
 	@echo
 	@echo "------------------------------------------------------------------"
 	@echo "Run tests"
 	@echo "------------------------------------------------------------------"
-	@docker compose exec -T dev python manage.py collectstatic --noinput
 	@docker compose exec -T dev python manage.py test --keepdb --noinput
 
 devweb-shell:

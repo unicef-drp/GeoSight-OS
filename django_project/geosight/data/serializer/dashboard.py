@@ -28,11 +28,13 @@ from geosight.data.serializer.dashboard_indicator_layer import (
 )
 from geosight.data.serializer.dashboard_relation import (
     DashboardBasemapSerializer,
-    DashboardContextLayerSerializer, DashboardRelatedTableSerializer
+    DashboardContextLayerSerializer, DashboardRelatedTableSerializer,
+    DashboardToolSerializer
 )
 from geosight.data.serializer.dashboard_widget import DashboardWidgetSerializer
 from geosight.data.serializer.indicator import IndicatorSerializer
 from geosight.data.serializer.related_table import RelatedTableSerializer
+from geosight.data.serializer.resource import ResourceSerializer
 from geosight.permission.models.resource.dashboard import DashboardPermission
 
 
@@ -57,6 +59,9 @@ class DashboardSerializer(serializers.ModelSerializer):
     geo_field = serializers.SerializerMethodField()
     level_config = serializers.SerializerMethodField()
     default_time_mode = serializers.SerializerMethodField()
+
+    # Tools
+    tools = serializers.SerializerMethodField()
 
     def get_description(self, obj: Dashboard):
         """Return description."""
@@ -256,6 +261,12 @@ class DashboardSerializer(serializers.ModelSerializer):
                 'default_interval': pref.default_interval,
             }
 
+    def get_tools(self, obj: Dashboard):
+        """Return tools."""
+        return DashboardToolSerializer(
+            obj.dashboardtool_set.all(), many=True
+        ).data
+
     class Meta:  # noqa: D106
         model = Dashboard
         fields = (
@@ -271,18 +282,16 @@ class DashboardSerializer(serializers.ModelSerializer):
             'user_permission',
             'geo_field', 'show_splash_first_open',
             'truncate_indicator_layer_name', 'enable_geometry_search',
-            'overview', 'default_time_mode'
+            'overview', 'default_time_mode', 'tools'
         )
 
 
-class DashboardBasicSerializer(serializers.ModelSerializer):
+class DashboardBasicSerializer(ResourceSerializer):
     """Serializer for Dashboard."""
 
     id = serializers.SerializerMethodField()
     group = serializers.SerializerMethodField()
     category = serializers.SerializerMethodField()
-    modified_at = serializers.SerializerMethodField()
-    created_at = serializers.SerializerMethodField()
     permission = serializers.SerializerMethodField()
 
     def get_id(self, obj: Dashboard):
@@ -297,14 +306,6 @@ class DashboardBasicSerializer(serializers.ModelSerializer):
         """Return dashboard category name."""
         return obj.group.name if obj.group else ''
 
-    def get_modified_at(self, obj: Dashboard):
-        """Return dashboard last modified."""
-        return obj.modified_at.strftime('%Y-%m-%d %H:%M:%S')
-
-    def get_created_at(self, obj: Dashboard):
-        """Return dashboard created time."""
-        return obj.modified_at.strftime('%Y-%m-%d %H:%M:%S')
-
     def get_permission(self, obj: Dashboard):
         """Return permission."""
         return obj.permission.all_permission(
@@ -314,7 +315,7 @@ class DashboardBasicSerializer(serializers.ModelSerializer):
     class Meta:  # noqa: D106
         model = Dashboard
         fields = (
-            'id', 'slug', 'icon', 'name', 'created_at', 'modified_at',
-            'description', 'group', 'category', 'permission',
-            'reference_layer', 'creator'
-        )
+                     'id', 'slug', 'icon', 'name',
+                     'description', 'group', 'category', 'permission',
+                     'reference_layer', 'creator'
+                 ) + ResourceSerializer.Meta.fields

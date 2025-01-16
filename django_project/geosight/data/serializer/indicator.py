@@ -21,6 +21,7 @@ from geosight.data.models.indicator import (
     Indicator, IndicatorRule
 )
 from geosight.data.serializer.indicator_value import *  # noqa: F403
+from geosight.data.serializer.resource import ResourceSerializer
 
 
 class IndicatorSerializer(DynamicModelSerializer):
@@ -85,7 +86,7 @@ class IndicatorSerializer(DynamicModelSerializer):
         )
 
 
-class IndicatorAdminListSerializer(serializers.ModelSerializer):
+class IndicatorAdminListSerializer(ResourceSerializer):
     """Serializer for Indicator."""
 
     url = serializers.SerializerMethodField()
@@ -112,9 +113,9 @@ class IndicatorAdminListSerializer(serializers.ModelSerializer):
     class Meta:  # noqa: D106
         model = Indicator
         fields = (
-            'id', 'name', 'category', 'source', 'shortcode',
-            'description', 'url', 'permission', 'type'
-        )
+                     'id', 'name', 'category', 'source', 'shortcode',
+                     'description', 'url', 'permission', 'type'
+                 ) + ResourceSerializer.Meta.fields
 
 
 class IndicatorBasicListSerializer(serializers.ModelSerializer):

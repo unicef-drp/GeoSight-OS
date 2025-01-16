@@ -22,10 +22,6 @@ import React, {
 } from 'react';
 
 import { updateDataWithSetState } from "../../utils";
-
-import {
-  IndicatorInputSelector
-} from "../../../../ModalSelector/InputSelector";
 import NunjucksConfigWithRequest
   from "../../../../../../components/Nunjucks/Config/WithRequest";
 import ReferenceLayerGeometrySelector
@@ -35,6 +31,8 @@ import { ModalButton } from "../../../../../../components/Modal/ModalButton";
 import FunctionGenerator from "./FunctionGenerator";
 
 import './style.scss';
+import IndicatorSelector
+  from "../../../../../../components/ResourceSelector/IndicatorSelector";
 
 /**
  * Formula based form.
@@ -55,7 +53,7 @@ export const FormulaBasedForm = forwardRef(
     const [request, setRequest] = useState({})
     const [geomConfig, setGeomConfig] = useState({})
     const {
-      reference_layer, admin_level_value,
+      reference_layer, reference_layer_data, admin_level_value,
       expression, selected_indicators,
       selected_indicators_data
     } = data
@@ -110,14 +108,14 @@ export const FormulaBasedForm = forwardRef(
         <label className="form-label required" htmlFor="group">
           Indicators that will be used
         </label>
-        <IndicatorInputSelector
-          data={selected_indicators_data ? selected_indicators_data : []}
-          setData={selectedData => {
+        <IndicatorSelector
+          initData={selected_indicators_data}
+          dataSelected={selectedData => {
             data.selected_indicators_data = selectedData
             data.selected_indicators = selectedData.map(row => row.id)
             setData({ ...data })
           }}
-          isMultiple={true}
+          multipleSelection={true}
           showSelected={true}
         />
       </div>
@@ -132,8 +130,8 @@ export const FormulaBasedForm = forwardRef(
           <br/>
           <br/>
           To get value of context, you can use this functions:<br/>
-          get_value(indicator, geometryType, t1, t2, aggregation) --> Return one value of context by aggregating it.<br/>
-          get_values(indicator, geometryType, t1, t2) --> Return list json of {"{admin_level, concept_uuid, geom_code, name, time, value}"}.<br/>
+          get_value(indicator, geometryType, t1, t2, aggregation) -- Return one value of context by aggregating it.<br/>
+          get_values(indicator, geometryType, t1, t2) -- Return list json of {"{admin_level, concept_uuid, geom_code, name, time, value}"}.<br/>
           Put t1 = null for not filter the data.
         </span>
         <br/>
@@ -207,7 +205,9 @@ export const FormulaBasedForm = forwardRef(
           }}
         >
           <ReferenceLayerGeometrySelector
-            referenceLayer={data.reference_layer}
+            referenceLayer={reference_layer_data ? reference_layer_data : {
+              identifier: reference_layer
+            }}
             onChange={config => {
               setGeomConfig(config)
             }}

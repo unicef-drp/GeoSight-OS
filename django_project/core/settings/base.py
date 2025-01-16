@@ -44,6 +44,7 @@ BASE_DIR = ABS_PATH('')
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
 MEDIA_ROOT = '/home/web/media'
+MEDIA_TEMP = os.path.join(MEDIA_ROOT, 'temp')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.

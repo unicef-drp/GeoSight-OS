@@ -20,7 +20,6 @@ import Tooltip from "@mui/material/Tooltip";
 import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
 import { pageNames } from '../../index';
-import { AdminList } from "../../AdminList";
 import { COLUMNS_ACTION } from "../../Components/List";
 import { dictDeepCopy } from "../../../../utils/main";
 import { relatedTableColumns } from "./Attributes";
@@ -31,6 +30,7 @@ import {
 } from "../../../../components/Icons";
 
 import './style.scss';
+import AdminList from "../../../../components/AdminList";
 
 export function resourceActions(params) {
   const permission = params.row.permission
@@ -104,10 +104,22 @@ export default function RelatedTableList() {
   }
 
   return <AdminList
+    url={{
+      list: urls.api.list,
+      batch: urls.api.batch,
+      detail: urls.api.detail,
+      edit: urls.api.edit,
+      create: urls.api.create,
+    }}
+    title={contentTitle}
     columns={columns}
     pageName={pageName}
-    listUrl={urls.api.list}
     multipleDelete={true}
+    defaults={{
+      sort: [
+        { field: 'name', sort: 'asc' }
+      ]
+    }}
   />
 }
 render(RelatedTableList, store)

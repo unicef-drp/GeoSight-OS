@@ -17,7 +17,7 @@ import { capitalize, dictDeepCopy } from "./main";
 import nunjucks from "nunjucks";
 import { extractCode } from "./georepo";
 import { getRelatedTableData } from "./relatedTable";
-import { getIndicatorDataByLayer } from "./indicatorData";
+import { getIndicatorDataByLayer, UpdateStyleData } from "./indicatorData";
 
 export const SingleIndicatorType = 'Single Indicator'
 export const SingleIndicatorTypes = [SingleIndicatorType, 'Float']
@@ -86,12 +86,12 @@ export function dynamicLayerData(indicatorLayer, context) {
  */
 export function fetchDynamicLayerData(
   indicatorLayer, indicators, indicatorsData, geoField,
-  onError, onSuccess, skipAggregate
+  onError, onSuccess, skipAggregate, updateStyle = false
 ) {
   const dynamicLayerIndicators = dynamicLayerIndicatorList(indicatorLayer, indicators)
 
   let error = ''
-  const data = []
+  let data = []
   dynamicLayerIndicators.map(indicator => {
     if (indicatorsData[indicator.id]?.data) {
       indicatorsData[indicator.id].data.map(row => {
@@ -147,6 +147,9 @@ export function fetchDynamicLayerData(
         geometry_code: value.geometry_code,
         value: dynamicLayerData(indicatorLayer, value)
       })
+    }
+    if (updateStyle) {
+      response = UpdateStyleData(response, indicatorLayer)
     }
     onSuccess(response)
   }

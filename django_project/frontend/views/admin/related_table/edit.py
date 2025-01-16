@@ -16,12 +16,10 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import json
 
-from django.forms.models import model_to_dict
-from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, reverse, render
 
-from frontend.views.admin._base import AdminBaseView
-from frontend.views.admin.related_table.create import RelatedTableCreateView
+from frontend.views.admin._base import AdminBaseView, AdminBatchEditView
+from frontend.views.admin.related_table.create import BaseRelatedTableEditView
 from geosight.data.forms.related_table import RelatedTableForm
 from geosight.data.models.related_table import RelatedTable
 from geosight.permission.access import (
@@ -89,7 +87,7 @@ class RelatedTableEditView(RoleContributorRequiredMixin, AdminBaseView):
         if form.is_valid():
             instance = form.save()
             # Save permission
-            instance.permission.update_from_request_data_in_string(
+            instance.permission.update_from_request_data(
                 request.POST, request.user
             )
             instance.save_relations(data=data)
@@ -104,7 +102,7 @@ class RelatedTableEditView(RoleContributorRequiredMixin, AdminBaseView):
 
 
 class RelatedTableEditBatchView(
-    RoleContributorRequiredMixin, RelatedTableCreateView
+    AdminBatchEditView, BaseRelatedTableEditView
 ):
     """RelatedTable Edit Batch View."""
 
@@ -125,32 +123,17 @@ class RelatedTableEditBatchView(
             f'Edit Batch'
         )
 
-    def get_context_data(self, **kwargs) -> dict:
-        """Return context data."""
-        context = super().get_context_data(**kwargs)
-        context['batch'] = True
-        return context
+    @property
+    def edit_query(self):
+        """Return query for edit."""
+        return RelatedTable.permissions.edit(self.request.user)
 
-    def post(self, request, **kwargs):
-        """Edit related-table."""
-        data = request.POST.copy()
-        ids = data.get('ids', None)
-        if not ids:
-            return HttpResponseBadRequest('ids needs in payload')
-        ids = ids.split(',')
-        for related_table in RelatedTable.permissions.edit(
-                request.user
-        ).filter(id__in=ids):
-            # Save style if it has style on payload
-            initial_data = model_to_dict(related_table)
-            for key, value in data.items():
-                initial_data[key] = value
-            form = RelatedTableForm(initial_data, instance=related_table)
-            form.is_valid()
-            instance = form.instance
-            instance.save()
-            # Save permission
-            instance.permission.update_from_request_data_in_string(
-                request.POST, request.user
-            )
-        return redirect(reverse('admin-related-table-list-view'))
+    @property
+    def form(self):
+        """Return form."""
+        return RelatedTableForm
+
+    @property
+    def redirect_url(self):
+        """Return redirect url."""
+        return reverse('admin-related-table-list-view')

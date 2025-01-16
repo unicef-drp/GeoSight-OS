@@ -20,10 +20,10 @@ import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
 import { pageNames } from '../../index';
 import { COLUMNS, COLUMNS_ACTION } from "../../Components/List";
-import { AdminList } from "../../AdminList";
 import PermissionModal from "../../Permission";
 
 import './style.scss';
+import AdminList from "../../../../components/AdminList";
 
 export function resourceActions(params) {
   return COLUMNS_ACTION(params, urls.admin.basemapList)
@@ -64,10 +64,22 @@ export default function BasemapList() {
     },
   }
   return <AdminList
+    url={{
+      list: urls.api.list,
+      batch: urls.api.batch,
+      detail: urls.api.detail,
+      edit: urls.api.edit,
+      create: urls.api.create,
+    }}
+    title={contentTitle}
     columns={columns}
     pageName={pageName}
-    listUrl={urls.api.list}
     multipleDelete={true}
+    defaults={{
+      sort: [
+        { field: 'name', sort: 'asc' }
+      ]
+    }}
   />
 }
 

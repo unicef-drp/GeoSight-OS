@@ -217,6 +217,12 @@ main {
       }
     }
 
+    &.Tools {
+      .Tools {
+        display: block;
+      }
+    }
+
     .Share {
       display: block;
       height: 0;

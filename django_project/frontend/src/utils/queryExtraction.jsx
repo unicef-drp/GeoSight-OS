@@ -254,9 +254,7 @@ export function returnWhereToDict(where, upperWhere) {
         const field = where?.left?.value
         let operator = where.hasNot === "NOT" ? IS_NOT_IN : IS_IN
         let value = where?.right?.value
-        value = value.map(el => stringValueToFlat(el.value)).filter(el => {
-          return el
-        })
+        value = value.map(el => stringValueToFlat(el.value))
         return {
           ...INIT_DATA.WHERE(),
           field: field,
@@ -366,7 +364,7 @@ export function returnDataToExpression(field, operator, value) {
 
   if ([IS_IN, IS_NOT_IN].includes(operator)) {
     if (value) {
-      cleanValue = value.map(val => (cleanValueFn(val, true))).join(',')
+      cleanValue = value.map(val => (cleanValueFn(val))).join(',')
     }
     if (cleanValue) {
       cleanValue = `(${cleanValue})`

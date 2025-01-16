@@ -31,9 +31,11 @@ import SummaryWidget from "./SummaryWidget"
 import SummaryGroupWidget from "./SummaryGroupWidget"
 import {
   dynamicLayerIndicatorList,
-  fetchDynamicLayerData
+  fetchDynamicLayerData,
+  isIndicatorLayerLikeIndicator
 } from "../../../utils/indicatorLayer";
 import { Session } from "../../../utils/Sessions";
+import { UpdateStyleData } from "../../../utils/indicatorData";
 
 /**
  * Base widget that handler widget rendering.
@@ -68,6 +70,43 @@ export default function SummaryWidgetView({ idx, data }) {
       setLayerData(indicatorLayerData)
     }
   }, [indicatorLayerData])
+
+  const fetchIndicatorData = async (indicator, params, session, config) => {
+    if (indicator) {
+      await fetchingData(
+        indicator.url, params, {}, function (response, error) {
+          let newState = {
+            fetching: false,
+            fetched: true,
+            receivedAt: Date.now(),
+            data: null,
+            error: null
+          };
+
+          if (error) {
+            newState.error = error;
+          } else {
+            newState.data = UpdateStyleData(response, config.override_style ? config : indicator);
+          }
+          if (!session.isValid) {
+            return
+          }
+          setLayerData(newState);
+        }
+      )
+    } else {
+      if (!session.isValid) {
+        return
+      }
+      setLayerData({
+        fetching: false,
+        fetched: true,
+        receivedAt: Date.now(),
+        data: null,
+        error: 'Indicator does not found, please reconfig the widget.'
+      });
+    }
+  }
 
   // Fetch the data if it is using no filter or custom
   useEffect(() => {
@@ -107,46 +146,20 @@ export default function SummaryWidgetView({ idx, data }) {
             const indicator = indicators.find((layer) => {
               return layer.id === layer_id;
             })
-            if (indicator) {
-              await fetchingData(
-                indicator.url, params, {}, function (response, error) {
-                  let newState = {
-                    fetching: false,
-                    fetched: true,
-                    receivedAt: Date.now(),
-                    data: null,
-                    error: null
-                  };
-
-                  if (error) {
-                    newState.error = error;
-                  } else {
-                    newState.data = response;
-                  }
-                  if (!session.isValid) {
-                    return
-                  }
-                  setLayerData(newState);
-                }
-              )
-            } else {
-              if (!session.isValid) {
-                return
-              }
-              setLayerData({
-                fetching: false,
-                fetched: true,
-                receivedAt: Date.now(),
-                data: null,
-                error: 'Indicator does not found, please reconfig the widget.'
-              });
-            }
+            await fetchIndicatorData(indicator, params, session, indicator)
             break;
           // This is for indicator layer
           case definition.WidgetLayerUsed.INDICATOR_LAYER:
             const indicatorLayer = indicatorLayers.find((layer) => {
               return layer.id === layer_id;
             })
+            if (!isIndicatorLayerLikeIndicator(indicatorLayer)) {
+              const indicator = indicators.find((indicator) => {
+                return indicator.id === indicatorLayer.indicators[0].id;
+              })
+              await fetchIndicatorData(indicator, params, session, indicatorLayer)
+              return;
+            }
             const dynamicLayerIndicators = dynamicLayerIndicatorList(indicatorLayer, indicators)
             const indicatorsData = {}
             for (let x = 0; x < dynamicLayerIndicators.length; x++) {
@@ -183,7 +196,8 @@ export default function SummaryWidgetView({ idx, data }) {
                   data: null,
                   error: error
                 });
-              }, response => {
+              },
+              response => {
                 if (!session.isValid) {
                   return
                 }
@@ -194,7 +208,7 @@ export default function SummaryWidgetView({ idx, data }) {
                   data: response,
                   error: null
                 });
-              }
+              }, false, true
             )
         }
       }
@@ -230,7 +244,6 @@ export default function SummaryWidgetView({ idx, data }) {
         layers = indicatorLayers
         break;
     }
-
     // render widget by the type
     switch (type) {
       case DEFINITION.WidgetType.SUMMARY_WIDGET:

@@ -16,6 +16,7 @@ import { isArray } from "chart.js/helpers";
 import { dictDeepCopy } from "./main";
 import { NO_DATA_RULE } from "../pages/Admin/Style/Form/StyleRules";
 import { getLayerDataCleaned, SingleIndicatorTypes } from "./indicatorLayer";
+import { fetchingData } from "../Requests";
 
 
 export const STYLE_FORM_LIBRARY = 'Style from library.'
@@ -38,10 +39,25 @@ export let COLOR_PALETTE_DATA = null
 
 /**
  * Update color data
- * @param data
  */
-export function updateColorPaletteData(data) {
-  COLOR_PALETTE_DATA = data
+export async function updateColorPaletteData() {
+  return new Promise((resolve, reject) => {
+    if (!COLOR_PALETTE_DATA) {
+      fetchingData(
+        `/api/color/palette/list`,
+        {}, {}, (response, error) => {
+          if (response) {
+            COLOR_PALETTE_DATA = response
+            resolve(response)
+          } else {
+            reject(error)
+          }
+        }
+      )
+    } else {
+      resolve(COLOR_PALETTE_DATA)
+    }
+  });
 }
 
 /** Return layer style config */
@@ -130,7 +146,10 @@ export function createColors(colors, classNum) {
  */
 export function createColorsFromPaletteId(paletteId, classNum, isReverse) {
   let colors = []
-  const palette = COLOR_PALETTE_DATA.find(data => data.id === paletteId)
+  let palette = null;
+  if (COLOR_PALETTE_DATA) {
+    palette = COLOR_PALETTE_DATA.find(data => data.id === paletteId)
+  }
   if (!palette || isNaN(classNum)) {
     colors = []
   } else {

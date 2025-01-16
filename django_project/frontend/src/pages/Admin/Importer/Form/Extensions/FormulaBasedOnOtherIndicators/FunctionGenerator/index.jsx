@@ -16,15 +16,14 @@
 import React, { Fragment, useState } from 'react';
 import Grid from "@mui/material/Grid";
 import { Input } from "@mui/material";
-import {
-  IndicatorInputSelector
-} from "../../../../../ModalSelector/InputSelector";
 import { capitalize, nowUTC } from "../../../../../../../utils/main";
 import DateTimeInput from "../../../../../Components/Input/DateTimeInput";
 import { SaveButton } from "../../../../../../../components/Elements/Button";
 import { Select } from "../../../../../../../components/Input";
+import IndicatorSelector
+  from "../../../../../../../components/ResourceSelector/IndicatorSelector"
 
-import './style.scss';
+import './style.scss';;
 
 /**
  * Time Config
@@ -149,21 +148,20 @@ export default function FunctionGenerator(
     }
     return t1Ready && t2Ready && selectedIndicator.length && geometryType
   }
-
   return <form className='BasicForm'>
     <div className="BasicFormSection">
       <label className="form-label required" htmlFor="group">
         Selected indicator
       </label>
-      <IndicatorInputSelector
-        data={selectedIndicator}
-        setData={selectedData => {
+      <IndicatorSelector
+        initData={selectedIndicator}
+        dataSelected={selectedData => {
           setSelectedIndicator(selectedData)
         }}
-        isMultiple={false}
-        showSelected={false}
-        initFilter={{
-          id: selectedIndicators
+        defaults={{
+          filters: {
+            id__in: selectedIndicators
+          }
         }}
       />
     </div>

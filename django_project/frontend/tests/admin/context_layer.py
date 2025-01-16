@@ -24,12 +24,13 @@ from geosight.data.models.context_layer import ContextLayer, LayerType
 User = get_user_model()
 
 
-class ContextLayerAdminViewTest(BaseViewTest.TestCase):
+class ContextLayerAdminViewTest(BaseViewTest.TestCaseWithBatch):
     """Test for ContextLayer Admin."""
 
     list_url_tag = 'admin-context-layer-list-view'
     create_url_tag = 'admin-context-layer-create-view'
     edit_url_tag = 'admin-context-layer-edit-view'
+    batch_edit_url_tag = 'admin-context-layer-edit-batch-view'
     payload = {
         'name': 'name',
         'url': 'url',

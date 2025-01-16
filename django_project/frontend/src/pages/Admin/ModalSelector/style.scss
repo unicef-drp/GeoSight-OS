@@ -38,15 +38,20 @@
     }
   }
 
-  .RadioButtonControl {
-    background-color: unset !important;
+  .ReferenceLayerSelector {
+    &.localReferenceDatasetEnabled .DatasetSelector {
+      margin-top: 1rem !important;
+    }
 
-    .MuiRadioGroup-root {
-      flex-direction: row;
-      margin-bottom: 1rem;
+    .RadioButtonControl {
+      background-color: unset !important;
 
-      label {
-        margin-left: 0;
+      .MuiRadioGroup-root {
+        flex-direction: row;
+
+        label {
+          margin-left: 0;
+        }
       }
     }
   }

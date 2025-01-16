@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "outDir": "./bundles/",
+    "noImplicitAny": true,
+    "module": "esnext",
+    "target": "es5",
+    "jsx": "react",
+    "allowJs": true,
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "typeRoots": [
+      "node_modules/@types",
+      "src/@types"
+    ],
+    "esModuleInterop": true,
+    "lib": [
+      "ES2021.String",
+      "dom"
+    ]
+  }
+}

@@ -350,7 +350,7 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                 value = float(value)
             except (TypeError, ValueError):
                 pass
-            is_type_number = type(value) != str
+            is_type_number = type(value) is not str
 
             # Check if datetime
             try:
@@ -437,6 +437,18 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                 args=(attribute.importer.id,)
             )
         return None
+
+    def make_none_to_empty_string(self):
+        """Make empty string for empty data."""
+        query = self.relatedtablerow_set.all()
+        for row in query:
+            if row.data:
+                keys = row.data.keys()
+                for key in keys:
+                    if row.data[key] is None:
+                        row.data[key] = ''
+                row.save()
+        self.increase_version()
 
 
 class RelatedTableRow(models.Model):

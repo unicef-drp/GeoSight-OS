@@ -16,11 +16,10 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import json
 
-from django.forms.models import model_to_dict
-from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, reverse, render
 
 from core.utils import string_is_true
+from frontend.views.admin._base import AdminBatchEditView
 from frontend.views.admin.indicator.create import BaseIndicatorEditView
 from geosight.data.forms.indicator import IndicatorForm
 from geosight.data.models.indicator import Indicator
@@ -90,7 +89,7 @@ class IndicatorEditView(RoleContributorRequiredMixin, BaseIndicatorEditView):
             self.post_save(indicator=indicator, data=data)
 
             # Save permission
-            indicator.permission.update_from_request_data_in_string(
+            indicator.permission.update_from_request_data(
                 data, request.user
             )
             indicator.update_dashboard_version()
@@ -104,12 +103,14 @@ class IndicatorEditView(RoleContributorRequiredMixin, BaseIndicatorEditView):
         form.indicator_data = json.dumps(
             IndicatorForm.model_to_initial(form.instance)
         )
+        if data.get('permission', None):
+            form.permission_data = data.get('permission', None)
         context['form'] = form
         return render(request, self.template_name, context)
 
 
 class IndicatorEditBatchView(
-    RoleContributorRequiredMixin, BaseIndicatorEditView
+    AdminBatchEditView, BaseIndicatorEditView
 ):
     """Indicator Edit Batch View."""
 
@@ -130,38 +131,33 @@ class IndicatorEditBatchView(
             f'Edit Batch'
         )
 
-    def get_context_data(self, **kwargs) -> dict:
-        """Return context data."""
-        context = super().get_context_data(**kwargs)
-        context['batch'] = True
-        return context
+    @property
+    def edit_query(self):
+        """Return query for edit."""
+        return Indicator.permissions.edit(self.request.user)
 
-    def post(self, request, **kwargs):
-        """Edit indicator."""
-        data = request.POST.copy()
-        ids = data.get('ids', None)
-        if not ids:
-            return HttpResponseBadRequest('ids needs in payload')
-        ids = ids.split(',')
+    @property
+    def form(self):
+        """Return form."""
+        return IndicatorForm
+
+    @property
+    def redirect_url(self):
+        """Return redirect url."""
+        return reverse('admin-indicator-list-view')
+
+    def pre_update_data(self, data):
+        """Pre update data."""
         if data.get('aggregation_upper_level_allowed', None):
             data['aggregation_upper_level_allowed'] = string_is_true(
                 data.get('aggregation_upper_level_allowed', 'False')
             )
-        for indicator in Indicator.permissions.edit(request.user).filter(
-                id__in=ids
-        ):
-            # Save style if it has style on payload
-            initial_data = model_to_dict(indicator)
-            if indicator.group:
-                initial_data['group'] = indicator.group.name
-            for key, value in data.items():
-                initial_data[key] = value
-            form = IndicatorForm(initial_data, instance=indicator)
-            form.is_valid()
-            instance = form.instance
-            instance.save()
-            self.post_save(
-                indicator=indicator, data=data,
-                save_style=data.get('style_config_enable', None)
-            )
-        return redirect(reverse('admin-indicator-list-view'))
+
+    def post_update_instance(self, instance, data, request):
+        """Called when instance is saved."""
+        # Save permission
+        self.post_save(
+            indicator=instance, data=data,
+            save_style=data.get('style_config_enable', None),
+            clean_update_permission=False
+        )

@@ -45,7 +45,7 @@ import {
 } from "../../../../../utils/Style";
 import GeorepoAuthorizationModal
   from "../../../../../components/GeorepoAuthorizationModal";
-import { Logger } from "../../../../../utils/logger";
+import { IS_DEBUG, Logger } from "../../../../../utils/logger";
 import { Actions } from "../../../../../store/dashboard";
 
 export const BEFORE_LAYER = 'gl-draw-polygon-fill-inactive.cold'
@@ -57,8 +57,8 @@ const INDICATOR_LABEL_ID = 'indicator-label'
 const LAYER_HIGHLIGHT_ID = 'reference-layer-highlight'
 
 // Layer keys
-const REFERENCE_LAYER_ID_KEY = `reference-layer`
-const FILL_LAYER_ID_KEY = REFERENCE_LAYER_ID_KEY + '-fill'
+export const REFERENCE_LAYER_ID_KEY = `reference-layer`
+export const FILL_LAYER_ID_KEY = REFERENCE_LAYER_ID_KEY + '-fill'
 const OUTLINE_LAYER_ID_KEY = REFERENCE_LAYER_ID_KEY + '-outline'
 
 const geo_field = 'concept_uuid'
@@ -121,6 +121,7 @@ export function ReferenceLayer(
   }
 
   const filteredGeometries = where ? filteredGeometriesState : null
+  let levels = referenceLayerData?.data?.dataset_levels
   let currentLevel = selectedAdminLevel ? selectedAdminLevel.level : levels?.level
 
   // When indicator data, current layer, second layer and compare mode changed
@@ -170,7 +171,7 @@ export function ReferenceLayer(
   useEffect(() => {
     const whereStr = JSON.stringify(where)
     const filteredGeometriesStr = JSON.stringify(filteredGeometries)
-    Logger.log(filteredGeometriesStr)
+    Logger.log('FILTERED_GEOM:', filteredGeometriesStr)
     if (prevState.where !== whereStr || prevState.filteredGeometries !== filteredGeometriesStr) {
       updateFilter()
       prevState.where = whereStr
@@ -218,7 +219,6 @@ export function ReferenceLayer(
     if (!indicatorShow) {
       return;
     }
-    let levels = referenceLayerData?.data?.dataset_levels
     const vectorTiles = referenceLayerData?.data?.vector_tiles
     if (vectorTiles && levels && map && currentLevel !== undefined) {
       const url = GeorepoUrls.WithoutDomain(updateToken(vectorTiles))
@@ -242,6 +242,8 @@ export function ReferenceLayer(
 
       // Fill layer
       const contextLayerIds = map.getStyle().layers.filter(
+        layer => layer.type !== 'raster'
+      ).filter(
         layer => layer.id.includes(CONTEXT_LAYER_ID) || layer.id === BEFORE_LAYER
       )
       let before = contextLayerIds[0]?.id
@@ -369,6 +371,11 @@ export function ReferenceLayer(
         geoField, filteredGeometries, referenceLayerProject, currentLevel
       )
       dispatch(Actions.MapGeometryValue.update(indicatorValueByGeometry))
+      if (IS_DEBUG) {
+        const geoms = Object.keys(indicatorValueByGeometry)
+        geoms.sort()
+        Logger.log('VALUED_GEOM:', geoms)
+      }
       let indicatorSecondValueByGeometry = {}
 
       // Create colors
@@ -602,8 +609,6 @@ export function ReferenceLayer(
     setIs3DInit(true)
     const geometries = checkCodes()
     let url = null
-    let levels = referenceLayerData?.data?.dataset_levels
-    let currentLevel = selectedAdminLevel ? selectedAdminLevel.level : levels?.level
     const vectorTiles = referenceLayerData?.data?.vector_tiles
     if (vectorTiles && levels && map && currentLevel !== undefined) {
       url = GeorepoUrls.WithoutDomain(updateToken(vectorTiles))

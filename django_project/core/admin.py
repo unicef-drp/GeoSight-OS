@@ -53,13 +53,22 @@ class SitePreferencesAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields': (
-                'site_title', 'site_url', 'disclaimer',
+                'site_title', 'site_url', 'site_type', 'disclaimer',
                 'default_basemap', 'default_color_palette'
             )
         }),
         ('Environment', {
             'fields': (
                 'sentry_dsn', 'sentry_environment'
+            )
+        }),
+        ('Plugins', {
+            'fields': (
+                'cloud_native_gis_enabled',
+                'machine_info_fetcher_enabled',
+                'reference_dataset_enabled',
+                'tenants_enabled',
+                'machine_info_fetcher_config',
             )
         }),
         ('GeoRepo', {
@@ -132,7 +141,13 @@ class SitePreferencesAdmin(admin.ModelAdmin):
         })
     )
     inlines = (SitePreferencesImageInline,)
-    readonly_fields = ('sentry_dsn', 'sentry_environment')
+    readonly_fields = (
+        'sentry_dsn', 'sentry_environment',
+        'cloud_native_gis_enabled',
+        'machine_info_fetcher_enabled',
+        'reference_dataset_enabled',
+        'tenants_enabled'
+    )
 
 
 admin.site.register(SitePreferences, SitePreferencesAdmin)

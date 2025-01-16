@@ -29,10 +29,6 @@ import InfoIcon from "@mui/icons-material/Info";
 import { render } from '../../../app';
 import { store } from '../../../store/admin';
 import {
-  DatasetFilterSelector,
-  IndicatorFilterSelector,
-} from "../ModalSelector/ModalFilterSelector";
-import {
   MultipleCreatableFilter
 } from "../ModalSelector/ModalFilterSelector/MultipleCreatableFilter";
 import { deleteFromArray, splitParams, urlParams } from "../../../utils/main";
@@ -46,9 +42,15 @@ import { AdminListPagination } from "../AdminListPagination";
 import { SaveButton } from "../../../components/Elements/Button";
 import { AdminPage, pageNames } from "../index";
 import { InfoFillIcon } from "../../../components/Icons";
+import {
+  DatasetFilterSelector
+} from "../../../components/ResourceSelector/DatasetViewSelector";
 
 
 import './style.scss';
+import {
+  IndicatorFilterSelector
+} from "../../../components/ResourceSelector/IndicatorSelector";
 
 /*** Data Browser admin */
 const deleteWarning = "WARNING! Do you want to delete the selected data? This will apply directly to database."
@@ -326,10 +328,13 @@ export default function DataBrowserAdmin() {
             })}/>
           <DatasetFilterSelector
             data={filters.datasets}
-            setData={newFilter => setFilters({
-              ...filters,
-              datasets: newFilter
-            })}/>
+            setData={newFilter => {
+              console.log(newFilter)
+              setFilters({
+                ...filters,
+                datasets: newFilter
+              })
+            }}/>
           <MultipleCreatableFilter
             title={'Filter by Level(s)'}
             data={filters.levels}

@@ -93,12 +93,15 @@ class BaseIndicatorEditView(AdminBaseView):
         )
         return context
 
-    def post_save(self, indicator: Indicator, data: dict, save_style=True):
+    def post_save(
+            self, indicator: Indicator, data: dict, save_style=True,
+            clean_update_permission=True
+    ):
         """Save rules."""
         request = self.request
         # Save permission
-        indicator.permission.update_from_request_data_in_string(
-            data, request.user
+        indicator.permission.update_from_request_data(
+            data, request.user, clean_update=clean_update_permission
         )
 
         if save_style:
@@ -165,6 +168,8 @@ class BaseIndicatorEditView(AdminBaseView):
         form.indicator_data = json.dumps(
             IndicatorForm.model_to_initial(form.instance)
         )
+        if data.get('permission', None):
+            form.permission_data = data.get('permission', None)
         context['form'] = form
         return render(
             request,

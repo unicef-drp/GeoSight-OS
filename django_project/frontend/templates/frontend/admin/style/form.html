@@ -16,6 +16,7 @@
 {% block scripts %}
     <script>
       const initialData = {{ form|get_data|safe }};
+      const permissionFormData = {% if form.permission_data %}{{ form.permission_data|safe }}{% else %}null{% endif %};
       const style = {{ form.instance_data|safe }};
       const currentRules = {{ rules|safe }};
       const types = {{ types|safe }};
@@ -27,8 +28,6 @@
       // Urls api
       urls.api = {
         'styles': '{% url 'style-list-api'%}',
-        'users': '{% url 'user-list-api'%}',
-        'groups': '{% url 'group-list-api'%}',
         'detail': '{% url 'style-detail-api' 0 %}',
       }
 

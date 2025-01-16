@@ -109,7 +109,10 @@ export const fetchGeojson = async function (url, useCache = true) {
   }
   const _fetchGeojson = async function (page = 1) {
     try {
-      const response = await fetchJSON(url + '?format=geojson&page=' + page, headers, useCache);
+      var newUrl = new URL(url);
+      newUrl.searchParams.append('format', "geojson");
+      newUrl.searchParams.append('page', page);
+      const response = await fetchJSON(newUrl.toString(), headers, useCache);
       if (response?.features?.length) {
         data.features = data.features.concat(response.features)
         await _fetchGeojson(page += 1)
@@ -162,8 +165,12 @@ export const fetchFeatureList = async function (url, useCache = true) {
 }
 
 /*** Axios georepo request */
-export const axiosGet = function (url) {
-  return axios.get(url, headers);
+export const axiosGet = function (url, params = null) {
+  if (params) {
+    return axios.get(url, headers, params);
+  } else {
+    return axios.get(url, headers);
+  }
 }
 
 /*** Axios georepo request json */

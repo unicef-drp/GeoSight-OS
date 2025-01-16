@@ -96,7 +96,7 @@ export default function ReferenceLayerSection() {
         }
       }
     }
-  }, [referenceLayerData, selectedIndicatorLayer])
+  }, [referenceLayerData, selectedAdminLevel, levels])
 
   /** Change Admin Level **/
   const onChange = (newLevel) => {

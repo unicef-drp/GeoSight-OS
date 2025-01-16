@@ -15,9 +15,17 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import os
+import typing
 from datetime import datetime, date
 
 import pytz
+import shapely
+import rasterio
+import numpy as np
+from rasterio.mask import mask
+from shapely.ops import transform
+from pyproj import Transformer
+
 from django.conf import settings
 from django.templatetags.static import static
 
@@ -123,3 +131,46 @@ def extract_time_string(format_time, value):
             )
     else:
         return value
+
+
+def run_zonal_analysis(
+        raster_path: str,
+        geometries: typing.List[shapely.Geometry],
+        aggregation: str
+):
+    """Run zonal analysis on multiple geometries."""
+    aggregation = aggregation.lower().strip()
+    with rasterio.open(raster_path) as src:
+        transformer = Transformer.from_crs(
+            "EPSG:4326",
+            str(src.crs),
+            always_xy=True
+        )
+        transformed_geoms = [
+            transform(
+                transformer.transform,
+                geometry
+            ) for geometry in geometries
+        ]
+        try:
+            out_image, out_transform = mask(src, transformed_geoms, crop=True)
+        except ValueError:
+            return None
+        data = out_image[0]
+
+        # mask invalid data e.g. nan and inf
+        data = np.ma.masked_invalid(data)
+        # mask nodata
+        data = np.ma.masked_equal(data, src.nodata).compressed()
+        aggregate = 0
+        if aggregation == 'sum':
+            aggregate = np.sum(data) if data.size else None
+        elif aggregation == 'count':
+            aggregate = data.size
+        elif aggregation == 'min':
+            aggregate = np.min(data) if data.size else None
+        elif aggregation == 'max':
+            aggregate = np.max(data) if data.size else None
+        elif aggregation == 'avg':
+            aggregate = np.average(data) if data.size else None
+        return aggregate

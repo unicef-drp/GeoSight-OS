@@ -14,6 +14,7 @@
  */
 
 import maplibregl from 'maplibre-gl';
+import { FILL_LAYER_ID_KEY } from "./Layers/ReferenceLayer";
 
 const NON_ONCLICK_LAYER_IDS = ['indicator-label']
 
@@ -84,7 +85,7 @@ export const loadImageToMap = (map, id, callback) => {
  * Update cursor on hovered
  */
 const updateCursorOnHovered = (map) => {
-  if (map.measurementMode) {
+  if (map.drawingMode) {
     map.getCanvas().style.cursor = 'crosshair';
   } else {
     map.getCanvas().style.cursor = 'pointer';
@@ -95,7 +96,7 @@ const updateCursorOnHovered = (map) => {
  * Update cursor on hovered
  */
 const updateCursorOnLeave = (map) => {
-  if (map.measurementMode) {
+  if (map.drawingMode) {
     map.getCanvas().style.cursor = 'crosshair';
   } else {
     map.getCanvas().style.cursor = '';
@@ -124,7 +125,7 @@ export const addPopup = (map, id, popupRenderFn) => {
 
   map.off('click', id, functionPopup[id].click);
   functionPopup[id].click = function (e) {
-    if (!map.measurementMode) {
+    if (!map.drawingMode) {
 
       // Check the id that is the most top
       let clickedId = null
@@ -162,6 +163,56 @@ export const addPopup = (map, id, popupRenderFn) => {
   map.on('click', id, functionPopup[id].click);
 }
 /**
+ * Add popup by properties
+ * @param map
+ * @param lngLat
+ * @param popupRenderFn
+ * @param properties
+ * @param session
+ */
+export const addStandalonePopup = (map, lngLat, popupRenderFn, properties, session) => {
+  let popupHtml = popupRenderFn(properties)
+  if (!popupHtml) {
+    popupHtml = ''
+  }
+  if (popup) {
+    popup.remove()
+  }
+  popup = new maplibregl.Popup()
+    .setLngLat(lngLat)
+    .setHTML(popupHtml)
+    .addTo(map);
+  popup.addClassName(`${session}`)
+}
+/**
+ * Remove click event
+ */
+export const removeClickEvent = (map, layerId, functionId) => {
+  if (functionPopup[functionId]?.click) {
+    if (layerId) {
+      map.off('click', layerId, functionPopup[functionId].click);
+    } else {
+      map.off('click', functionPopup[functionId].click);
+    }
+  }
+}
+/**
+ * Add click event
+ */
+export const addClickEvent = (map, layerId, functionId, listenerFn) => {
+  removeClickEvent(map, layerId, functionId)
+  if (!functionPopup[functionId]) {
+    functionPopup[functionId] = {}
+  }
+  functionPopup[functionId].click = listenerFn
+  if (layerId) {
+    map.on('click', layerId, functionPopup[functionId].click);
+  } else {
+    map.on('click', functionPopup[functionId].click);
+  }
+
+}
+/**
  * Popup for marker
  */
 export const addPopupEl = (map, el, latlng, properties, popupRenderFn, offset = {}) => {
@@ -174,7 +225,7 @@ export const addPopupEl = (map, el, latlng, properties, popupRenderFn, offset = 
   });
 
   el.addEventListener('click', function (e) {
-    if (!map.measurementMode) {
+    if (!map.drawingMode) {
       const popupHtml = popupRenderFn(properties)
       if (popup) {
         popup.remove()
@@ -226,4 +277,30 @@ export const getBeforeLayerId = (map, layerId, contextLayerOrder) => {
   } else {
     return undefined;
   }
+};
+
+/**
+ * Get layer id of reference layer
+ * @param map
+ * @returns {undefined|string}
+ */
+export const getLayerIdOfReferenceLayer = (map) => {
+  const first = map.getStyle().layers.filter(layer => layer.id.includes(FILL_LAYER_ID_KEY))[0]
+  return first?.id
+};
+
+export const hexToRgba = (hex, alpha = 1, format = 'array') => {
+  // Remove the hash if present
+  const hexClean = hex.replace("#", "");
+
+  // Parse the R, G, and B values
+  const r = parseInt(hexClean.substring(0, 2), 16);
+  const g = parseInt(hexClean.substring(2, 4), 16);
+  const b = parseInt(hexClean.substring(4, 6), 16);
+
+  // Return in RGBA format
+  if (format == 'array') {
+    return [r, g, b, alpha]
+  }
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 };

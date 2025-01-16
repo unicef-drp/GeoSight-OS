@@ -14,16 +14,16 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from .arcgis import *  # noqa
-from .basemap import *  # noqa
+from .arcgis import ARCGISProxyApiTest  # noqa
+from .basemap import BasemapListApiTest  # noqa
 from .context_layer import *  # noqa
-from .dashboard import *  # noqa
-from .dashboard_bookmark import *  # noqa
-from .dashboard_embed import *  # noqa
+from .dashboard import DashboardListApiTest  # noqa
+from .dashboard_bookmark import DashboardBookmarkApiTest  # noqa
+from .dashboard_embed import DashboardBookmarkApiTest  # noqa
 from .indicator import *  # noqa
-from .indicator_value import *  # noqa
-from .indicators import *  # noqa
-from .related_table import *  # noqa
+from .indicator_value import IndicatorValueTest  # noqa
+from .indicators import IndicatorListApiTest  # noqa
+from .related_table import RelatedTableApiTest  # noqa
 from .sharepoint import *  # noqa
-from .style import *  # noqa
+from .style import StyleApiTest  # noqa
 from .v1 import *  # noqa

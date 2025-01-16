@@ -19,7 +19,7 @@ import os
 
 from django.conf import settings
 
-from core.models.preferences import SitePreferences
+from core.models.preferences import SitePreferences, SiteType
 from core.serializer.site_preferences import SitePreferencesSerializer
 from core.settings.utils import ABS_PATH
 from geosight.georepo.request import GeorepoUrl
@@ -32,11 +32,15 @@ def project_version(request):
     version_file = os.path.join(folder, '_version.txt')
     if os.path.exists(version_file):
         version += (open(version_file, 'rb').read()).decode("utf-8")
-    commit_file = os.path.join(folder, '_commit_hash.txt')
-    if os.path.exists(commit_file):
-        commit = (open(commit_file, 'rb').read()).decode("utf-8")[:5]
-        if commit:
-            version += '-' + commit
+    pref = SitePreferences.preferences()
+
+    # If not production, show commit
+    if pref.site_type != SiteType.PRODUCTION:
+        commit_file = os.path.join(folder, '_commit_hash.txt')
+        if os.path.exists(commit_file):
+            commit = (open(commit_file, 'rb').read()).decode("utf-8")[:5]
+            if commit:
+                version += '-' + commit
     return version
 
 

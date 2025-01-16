@@ -51,6 +51,7 @@ class IndicatorValueDataset(models.Model):
 
     class Meta:  # noqa: D106
         managed = False
+        db_table = "no_table"
 
     @property
     def indicator(self):

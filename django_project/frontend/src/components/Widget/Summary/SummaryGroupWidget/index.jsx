@@ -46,7 +46,7 @@ export default function Index(
    * @returns {JSX.Element}
    */
   function getValue() {
-    if (data !== null) {
+    if (data !== null && geometries) {
       switch (operation) {
         case DEFINITION.WidgetOperation.SUM:
           let maxValue = 0;

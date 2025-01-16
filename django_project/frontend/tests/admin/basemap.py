@@ -24,12 +24,13 @@ from geosight.data.models.basemap_layer import BasemapLayer, BasemapLayerType
 User = get_user_model()
 
 
-class BasemapAdminViewTest(BaseViewTest.TestCase):
+class BasemapAdminViewTest(BaseViewTest.TestCaseWithBatch):
     """Test for Basemap Admin."""
 
     list_url_tag = 'admin-basemap-list-view'
     create_url_tag = 'admin-basemap-create-view'
     edit_url_tag = 'admin-basemap-edit-view'
+    batch_edit_url_tag = 'admin-basemap-edit-batch-view'
     payload = {
         'name': 'name',
         'url': 'url',

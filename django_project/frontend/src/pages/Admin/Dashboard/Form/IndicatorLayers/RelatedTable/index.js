@@ -54,7 +54,7 @@ import {
 import LabelForm from "../../../../Indicator/Form/LabelForm";
 import PopupConfigForm from "../PopupConfigForm";
 import StyleConfig from "../../../../Style/Form/StyleConfig";
-import { MainDataGrid } from "../../../../../../components/MainDataGrid";
+import { MainDataGrid } from "../../../../../../components/Table";
 import { CogIcon } from "../../../../../../components/Icons";
 import { ExecuteWebWorker } from "../../../../../../utils/WebWorker";
 import worker from "../../../../../Dashboard/LeftPanel/RelatedTable/Worker";

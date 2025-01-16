@@ -105,7 +105,10 @@ class BaseExcelFormatImporter(ABC):
             for idx, header in enumerate(headers):
                 try:
                     row[header.strip()] = clean_value(record[idx])
-                except (ValueError, IndexError):
+                except IndexError:
+                    if row.keys():
+                        row[header.strip()] = None
+                except ValueError:
                     pass
             for key, value in self.mapping.items():
                 try:

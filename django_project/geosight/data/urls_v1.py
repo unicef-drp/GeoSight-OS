@@ -21,17 +21,29 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_nested.routers import NestedSimpleRouter
 
 from geosight.data.api.v1.basemap import BasemapViewSet
+from geosight.data.api.v1.context_layer import ContextLayerViewSet
+from geosight.data.api.v1.dashboard import DashboardViewSet
 from geosight.data.api.v1.data_browser import (
     DataBrowserApiList, DataBrowserApiListIds,
     DatasetApiList, DatasetApiListIds, DatasetApiQuickData
 )
+from geosight.data.api.v1.group import GroupViewSet
 from geosight.data.api.v1.indicator import IndicatorViewSet
 from geosight.data.api.v1.related_table import RelatedTableViewSet
 from geosight.data.api.v1.related_table_data import RelatedTableDataViewSet
+from geosight.data.api.v1.style import StyleViewSet
+from geosight.data.api.v1.users import UserViewSet
 
 router = DefaultRouter()
 router.register(r'basemaps', BasemapViewSet, basename='basemaps')
+router.register(r'dashboards', DashboardViewSet, basename='dashboards')
 router.register(r'indicators', IndicatorViewSet, basename='indicators')
+router.register(r'styles', StyleViewSet, basename='styles')
+router.register(r'users', UserViewSet, basename='users')
+router.register(
+    r'context-layers', ContextLayerViewSet, basename='context-layers'
+)
+router.register(r'groups', GroupViewSet, basename='groups')
 
 router.register(
     r'related-tables', RelatedTableViewSet, basename='related_tables')
