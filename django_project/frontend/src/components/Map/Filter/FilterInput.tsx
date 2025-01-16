@@ -21,13 +21,22 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Checkbox from "@mui/material/Checkbox";
 import DeleteFilter from "./FilterDelete";
+import { FilterInputIndicator } from "./FilterInputData";
 
 /** Filter group component */
 const FilterInputElement = memo(
   (
     {
+      operator,
+      // For layout
       name,
+      description,
       allowModify,
+
+      // Filter definition
+      field,
+      type,
+      value,
 
       // Active state
       active,
@@ -35,8 +44,9 @@ const FilterInputElement = memo(
 
       onDelete
     }: FilterInputElementProps) => {
-    const [expanded, setExpanded] = useState(false)
 
+    console.log('FilterInputElement ' + field)
+    const [expanded, setExpanded] = useState(false)
     /** Render **/
     return (
       <Accordion
@@ -71,7 +81,26 @@ const FilterInputElement = memo(
           </div>
         </AccordionSummary>
         <AccordionDetails>
-          {allowModify ? <div>THis is test</div> : ""}
+          {
+            field.includes('indicator_') ? <FilterInputIndicator
+              operator={operator}
+
+              // For layout
+              name={name}
+              description={description}
+              allowModify={allowModify}
+
+              // Filter definition
+              field={field}
+              type={type}
+              value={value}
+            /> : null
+          }
+          {
+            allowModify ? <>
+
+            </> : ""
+          }
         </AccordionDetails>
       </Accordion>
     )
@@ -100,10 +129,17 @@ const FilterInput = (
 
   // RENDER
   return <FilterInputElement
-    name={query.name}
-
-    allowModify={query.allowModify}
     operator={query.operator}
+
+    // For layout
+    name={query.name}
+    description={query.description}
+    allowModify={query.allowModify}
+
+    // Filter definition
+    field={query.field}
+    type={query.type}
+    value={query.value}
 
     /* active */
     active={query.active}

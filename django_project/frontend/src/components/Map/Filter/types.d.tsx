@@ -62,18 +62,22 @@ export interface FilterGroupDataProps extends OnDeleteProps {
   isMaster?: boolean;
 }
 
-export interface FilterInputElementProps extends BasicFilterElementProps {
-  allowModify: boolean;
+export interface FilterInputProps {
+  operator: typeof WHERE_OPERATOR[keyof typeof WHERE_OPERATOR];
 
   // For layout
   name: string;
   description?: string;
+  allowModify: boolean;
 
   // Filter definition
   field?: string;
-  whereOperator?: string;
   type?: typeof TYPE[keyof typeof TYPE];
   value?: any;
+}
+
+export interface FilterInputElementProps extends FilterInputProps, BasicFilterElementProps {
+
 }
 
 export interface FilterInputDataProps extends OnDeleteProps {
