@@ -36,6 +36,7 @@ import {
 } from "../../../../utils/indicatorLayer";
 
 import './style.scss';
+import FilterContent from "../../../../components/Map/Filter/FilterContent";
 
 
 /**
@@ -388,6 +389,7 @@ export default function FiltersAccordion({ isAdmin }) {
       expanded={true}
     >
       <AccordionDetails>
+        <FilterContent/>
         {
           filters !== undefined ? (!isAdmin && !Object.keys(filters).length) ? null :
               <FilterSection/>
