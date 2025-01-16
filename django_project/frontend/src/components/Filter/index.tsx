@@ -95,7 +95,15 @@ export const DataGridFilter = (
                           value={newFilterModel[`${field.serverKey}__lte`] ? new Date(newFilterModel[`${field.serverKey}__lte`]) : null}
                           label={`${field.headerName} (to)`}
                           inputFormat="YYYY-MM-DD"
-                          onChange={newFilter => {console.log(newFilter)}}
+                          onChange={(date: any) => {
+                            const key = `${field.serverKey}__lte`;
+                            const selectedDate = date ? Moment(date).format('YYYY-MM-DD') : null;
+                            const value = selectedDate ? `${selectedDate}T00:00:00` : null;
+                            setNewFilterModel({
+                              ...newFilterModel,
+                              [key]: value
+                            })
+                          }}
                           renderInput={(params) => <TextField {...params} />}
                         />
                       </LocalizationProvider>

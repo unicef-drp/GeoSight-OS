@@ -38,7 +38,6 @@ export const constructUrl = function (url, params) {
       url += '?' + paramsUrl.join('&')
     }
   }
-  // debugger
   return url
 }
 /**
