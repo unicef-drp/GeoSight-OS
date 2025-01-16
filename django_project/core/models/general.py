@@ -133,7 +133,7 @@ class SlugTerm(AbstractTerm):
 class IconTerm(models.Model):
     """Abstract model contains icon."""
 
-    icon = models.FileField(
+    icon = models.ImageField(
         upload_to='icons',
         null=True,
         blank=True

@@ -26,7 +26,7 @@ from geosight.data.models.basemap_layer import BasemapLayer
 from geosight.data.models.context_layer import ContextLayer
 from geosight.data.models.indicator import Indicator
 from geosight.data.models.related_table import RelatedTable
-from geosight.data.utils import update_structure
+from geosight.data.utils import update_structure, create_thumbnail
 from geosight.georepo.models import ReferenceLayerView
 from geosight.permission.models.manager import PermissionManager
 
@@ -122,6 +122,13 @@ class Dashboard(
     def name_is_exist_of_all(slug: str) -> bool:
         """Check of name is exist."""
         return Dashboard.objects.filter(slug=slug).first() is not None
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)  # Save the original image
+
+        # Create and save the thumbnail
+        if self.icon:
+            create_thumbnail(self.icon.path, self.icon.path)
 
     def save_relations(self, data, is_create=False):
         """Save all relationship data."""
