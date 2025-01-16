@@ -35,15 +35,14 @@ export function resourceActions(params) {
 export default function BasemapList() {
   const pageName = pageNames.Basemaps
   let columns = COLUMNS(pageName, urls.admin.basemapList);
-  const action = columns.pop();
+  columns.pop();
   columns = columns.concat([
-    { field: 'created_at', headerName: 'Created At', flex: 0.5 },
+    { field: 'created_at', headerName: 'Created At', flex: 0.5, type: 'date' },
     { field: 'created_by', headerName: 'Created By', flex: 0.5, serverKey: 'creator__username' },
-    { field: 'modified_at', headerName: 'Modified At', flex: 0.5 },
-    { field: 'modified_by', headerName: 'Modified By', flex: 0.5 },
-    action
+    { field: 'modified_at', headerName: 'Modified At', flex: 0.5, type: 'date' },
+    { field: 'modified_by', headerName: 'Modified By', flex: 0.5, serverKey: 'modified_by__username' },
   ])
-  columns[columns.length - 1] = {
+  columns.push({
     field: 'actions',
     type: 'actions',
     cellClassName: 'MuiDataGrid-ActionsColumn',
@@ -70,7 +69,7 @@ export default function BasemapList() {
       }
       return actions
     },
-  }
+  })
   return <AdminList
     url={{
       list: urls.api.list,
@@ -83,6 +82,7 @@ export default function BasemapList() {
     columns={columns}
     pageName={pageName}
     multipleDelete={true}
+    enableFilter={true}
     defaults={{
       sort: [
         { field: 'name', sort: 'asc' }

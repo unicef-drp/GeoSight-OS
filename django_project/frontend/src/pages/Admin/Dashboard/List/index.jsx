@@ -14,21 +14,18 @@
  */
 
 import React from 'react';
-import {useState} from 'react';
-import { GridActionsCellItem } from "@mui/x-data-grid";
-import Button from '@mui/material/Button';
+import {GridActionsCellItem} from "@mui/x-data-grid";
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import { render } from '../../../../app';
-import { store } from '../../../../store/admin';
-import { pageNames } from '../../index';
-import { COLUMNS, COLUMNS_ACTION } from "../../Components/List";
+import {render} from '../../../../app';
+import {store} from '../../../../store/admin';
+import {pageNames} from '../../index';
+import {COLUMNS, COLUMNS_ACTION} from "../../Components/List";
 import PermissionModal from "../../Permission";
-import { VisibilityIcon } from "../../../../components/Icons";
+import {VisibilityIcon} from "../../../../components/Icons";
 import AdminList from "../../../../components/AdminList";
-import { useConfirmDialog } from "../../../../providers/ConfirmDialog";
-import { DjangoRequests } from "../../../../Requests";
-import DataGridFilter from "../../../../components/Filter"
+import {useConfirmDialog} from "../../../../providers/ConfirmDialog";
+import {DjangoRequests} from "../../../../Requests";
 
 
 import './style.scss';
@@ -78,7 +75,6 @@ export function resourceActionsList(params) {
 export default function DashboardList() {
   const pageName = pageNames.Dashboard
   const columns = COLUMNS(pageName, urls.admin.dashboardList);
-  const [filterModel, setFilterModel] = useState({})
 
   columns[2] = { field: 'description', headerName: 'Description', flex: 1 }
   columns[3] = {
@@ -98,7 +94,6 @@ export default function DashboardList() {
     type: 'actions',
     cellClassName: 'MuiDataGrid-ActionsColumn',
     width: 250,
-    headerName: <DataGridFilter fields={columns} filterModel={filterModel} setFilterModel={setFilterModel}/>,
     getActions: (params) => {
       const permission = params.row.permission
       const actions = resourceActionsList(params);
@@ -161,8 +156,7 @@ export default function DashboardList() {
     defaults={{
       sort: [
         { field: 'name', sort: 'asc' }
-      ],
-      filters: filterModel
+      ]
     }}
   />
 }

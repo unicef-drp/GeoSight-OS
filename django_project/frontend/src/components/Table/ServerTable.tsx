@@ -30,6 +30,7 @@ import { MainDataGrid } from "./index";
 import { constructUrl, DjangoRequests } from "../../Requests";
 import { Notification, NotificationStatus } from "../Notification";
 import { useConfirmDialog } from "../../providers/ConfirmDialog";
+import DataGridFilter from "../Filter";
 
 import './ServerTable.scss';
 
@@ -70,6 +71,16 @@ const ServerTable = forwardRef(
    }: ServerTableProps, ref
   ) => {
     const { openConfirmDialog } = useConfirmDialog();
+    const [filterModel, setFilterModel] = useState({})
+    if (enable.filter) {
+      columns.forEach(column => {
+        if (column.type === 'actions') {
+          // @ts-ignore
+          column.headerName = (<DataGridFilter fields={columns} filterModel={filterModel} setFilterModel={setFilterModel}/>); // Set c to be the same as a
+        }
+      });
+    }
+
 
     // Notification
     const notificationRef = useRef(null);
@@ -110,9 +121,9 @@ const ServerTable = forwardRef(
       // @ts-ignore
       setParameters({
         ...parameters,
-        ...defaults.filters
+        ...filterModel
       })
-    }, [defaults]);
+    }, [filterModel]);
 
     // Sort model
     const [sortModel, setSortModel] = useState<any[]>(defaults.sort);

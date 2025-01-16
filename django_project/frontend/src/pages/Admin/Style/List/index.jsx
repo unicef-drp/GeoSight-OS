@@ -36,19 +36,18 @@ export default function StyleList() {
   const pageName = pageNames.Styles
   let columns = COLUMNS(pageName, urls.admin.list);
   // pop action
-  const action = columns.pop();
+  columns.pop();
   // pop category
   columns.pop();
   columns = columns.concat([
     { field: 'category', headerName: 'Category', flex: 0.5, serverKey: 'group' },
     { field: 'style_type', headerName: 'Style type', flex: 0.5 },
-    { field: 'created_at', headerName: 'Created At', flex: 0.5 },
+    { field: 'created_at', headerName: 'Created At', flex: 0.5, type: 'date' },
     { field: 'created_by', headerName: 'Created By', flex: 0.5, serverKey: 'creator__username' },
-    { field: 'modified_at', headerName: 'Modified At', flex: 0.5 },
-    { field: 'modified_by', headerName: 'Modified By', flex: 0.5 },
-    action
+    { field: 'modified_at', headerName: 'Modified At', flex: 0.5, type: 'date' },
+    { field: 'modified_by', headerName: 'Modified By', flex: 0.5, serverKey: 'modified_by__username' },
   ])
-  columns[columns.length - 1] = {
+  columns.push({
     field: 'actions',
     type: 'actions',
     cellClassName: 'MuiDataGrid-ActionsColumn',
@@ -73,7 +72,7 @@ export default function StyleList() {
       }
       return actions
     },
-  }
+  })
   return <AdminList
     url={{
       list: urls.api.list,
@@ -86,6 +85,7 @@ export default function StyleList() {
     columns={columns}
     pageName={pageName}
     multipleDelete={true}
+    enableFilter={true}
     defaults={{
       sort: [
         { field: 'name', sort: 'asc' }

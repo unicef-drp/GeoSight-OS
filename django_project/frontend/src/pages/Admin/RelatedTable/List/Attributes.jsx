@@ -43,7 +43,7 @@ export const relatedTableColumns = [
     field: 'created_at', headerName: 'Created at', flex: 0.5,
     renderCell: (params) => {
       return formatDateTime(new Date(params.value))
-    }
+    }, type: 'date'
   },
   {
     field: 'created_by',

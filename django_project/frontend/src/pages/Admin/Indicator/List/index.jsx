@@ -190,30 +190,27 @@ export default function IndicatorList() {
   // Notification
   const pageName = pageNames.Indicators
   let columns = COLUMNS(pageName, urls.admin.indicatorList);
-  console.log(columns)
   // pop action
-  const action = columns.pop();
+  columns.pop();
   columns = columns.concat([
-    { field: 'created_at', headerName: 'Created At', flex: 0.5 },
+    { field: 'created_at', headerName: 'Created At', flex: 0.5, type: 'date' },
     { field: 'created_by', headerName: 'Created By', flex: 0.5, serverKey: 'creator__username' },
-    { field: 'modified_at', headerName: 'Modified At', flex: 0.5 },
-    { field: 'modified_by', headerName: 'Modified By', flex: 0.5 },
-    action
+    { field: 'modified_at', headerName: 'Modified At', flex: 0.5, type: 'date' },
+    { field: 'modified_by', headerName: 'Modified By', flex: 0.5, serverKey: 'modified_by__username'  },
   ])
   columns[1].headerName = 'Name'
 
-  columns[columns.length - 1] = {
+  columns.push({
     field: 'actions',
     type: 'actions',
     cellClassName: 'MuiDataGrid-ActionsColumn',
     width: 320,
     getActions: (params) => {
-      const permission = params.row.permission
       // Create actions
       const actions = resourceActions(params)
       return actions
     },
-  }
+  })
   return <AdminList
     url={{
       list: urls.api.list,
@@ -226,6 +223,7 @@ export default function IndicatorList() {
     columns={columns}
     pageName={pageName}
     multipleDelete={true}
+    enableFilter={true}
     defaults={{
       sort: [
         { field: 'name', sort: 'asc' }
