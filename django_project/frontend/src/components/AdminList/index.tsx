@@ -85,3 +85,10 @@ export const AdminList = (
   );
 }
 export default AdminList;
+
+export const ResourceMeta: any[] = [
+  { field: 'created_at', headerName: 'Created At', flex: 0.5, type: 'date' },
+  { field: 'created_by', headerName: 'Created By', flex: 0.5, serverKey: 'creator__username' },
+  { field: 'modified_at', headerName: 'Modified At', flex: 0.5, type: 'date' },
+  { field: 'modified_by', headerName: 'Modified By', flex: 0.5, serverKey: 'modified_by__username'  },
+];

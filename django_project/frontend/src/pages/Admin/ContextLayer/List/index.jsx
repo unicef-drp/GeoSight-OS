@@ -22,6 +22,7 @@ import { pageNames } from '../../index';
 import { COLUMNS, COLUMNS_ACTION } from "../../Components/List";
 import PermissionModal from "../../Permission";
 import AdminList from "../../../../components/AdminList";
+import {ResourceMeta} from "../../../../components/AdminList";
 
 import './style.scss';
 
@@ -36,13 +37,9 @@ export default function ContextLayerList() {
   const pageName = pageNames.ContextLayer
   let columns = COLUMNS(pageName, urls.admin.contextLayerList);
   columns.pop();
-  columns = columns.concat([
-    { field: 'layer_type', headerName: 'Layer type', flex: 0.5 },
-    { field: 'created_at', headerName: 'Created At', flex: 0.5, type: 'date' },
-    { field: 'created_by', headerName: 'Created By', flex: 0.5, serverKey: 'creator__username' },
-    { field: 'modified_at', headerName: 'Modified At', flex: 0.5, type: 'date' },
-    { field: 'modified_by', headerName: 'Modified By', flex: 0.5, serverKey: 'modified_by__username' },
-  ])
+  columns = columns.concat(
+    [{ field: 'layer_type', headerName: 'Layer type', flex: 0.5 }].concat(ResourceMeta)
+  )
   columns.push({
     field: 'actions',
     type: 'actions',
