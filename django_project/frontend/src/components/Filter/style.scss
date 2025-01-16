@@ -1,0 +1,53 @@
+.react-datepicker-popper {
+  z-index: 9999!important;
+}
+
+.react-datepicker__input-container {
+  input {
+    width: 75%;
+  }
+}
+
+.DataGridFilter-Popover {
+  .MuiPaper-root {
+    position: sticky!important;
+    width: 20%!important;
+
+    .DataGridFilter-Container {
+      padding: 10px;
+
+      .Body {
+        .FilterRow {
+          margin-bottom: 2px;
+          min-height: 35px;
+          height: fit-content;
+
+          .date-text {
+            display: flex;
+            align-items: center;
+          }
+
+          .FieldName {
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+          }
+
+          .MuiInputBase-root {
+            width: 100%;
+          }
+        }
+      }
+
+      .Footer {
+        display: flex;
+        flex-direction: row-reverse;
+      }
+    }
+  }
+}
+
+//.parent:has(.DataGridFilter-Container) {
+//  position: sticky!important;
+//  width: 20%!important;
+//}

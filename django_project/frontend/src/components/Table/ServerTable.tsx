@@ -60,7 +60,8 @@ const ServerTable = forwardRef(
      enable = {
        select: true,
        delete: true,
-       singleSelection: false
+       singleSelection: false,
+       filter: false
      },
      rowIdKey = 'id',
      className = '',
@@ -89,7 +90,7 @@ const ServerTable = forwardRef(
         const column = columns.find(column => column.field == model.field)
 
         // @ts-ignore
-        const field = column.sortField ? column.sortField : column.field
+        const field = column.serverKey ? column.serverKey : column.field
         sort.push(model.sort === 'asc' ? field : `-${field}`)
       })
       return sort
@@ -104,6 +105,14 @@ const ServerTable = forwardRef(
         ...defaults.filters
       }
     )
+
+    useEffect(() => {
+      // @ts-ignore
+      setParameters({
+        ...parameters,
+        ...defaults.filters
+      })
+    }, [defaults]);
 
     // Sort model
     const [sortModel, setSortModel] = useState<any[]>(defaults.sort);
@@ -328,7 +337,7 @@ const ServerTable = forwardRef(
               parametersChanged()
             }}
 
-            disableColumnFilter
+            disableColumnFilter={!enable.filter}
 
             onSelectionModelChange={(newSelectionModel: any[]) => {
               if (enable.singleSelection) {

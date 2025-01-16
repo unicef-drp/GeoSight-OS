@@ -14,7 +14,9 @@
  */
 
 import React from 'react';
+import {useState} from 'react';
 import { GridActionsCellItem } from "@mui/x-data-grid";
+import Button from '@mui/material/Button';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { render } from '../../../../app';
@@ -26,6 +28,7 @@ import { VisibilityIcon } from "../../../../components/Icons";
 import AdminList from "../../../../components/AdminList";
 import { useConfirmDialog } from "../../../../providers/ConfirmDialog";
 import { DjangoRequests } from "../../../../Requests";
+import DataGridFilter from "../../../../components/Filter"
 
 
 import './style.scss';
@@ -75,24 +78,27 @@ export function resourceActionsList(params) {
 export default function DashboardList() {
   const pageName = pageNames.Dashboard
   const columns = COLUMNS(pageName, urls.admin.dashboardList);
+  // const [filterModel, setFilterModel] = useState({})
+
   columns[2] = { field: 'description', headerName: 'Description', flex: 1 }
   columns[3] = {
     field: 'category',
     headerName: 'Category', flex: 0.5,
-    sortField: 'group__name'
+    serverKey: 'group__name'
   }
   columns[4] = {
     field: 'created_by', headerName: 'Created By', flex: 0.5,
-    sortField: 'creator__username'
+    serverKey: 'creator__username'
   }
-  columns[5] = { field: 'created_at', headerName: 'Created At', flex: 0.5 }
-  columns[6] = { field: 'modified_at', headerName: 'Modified At', flex: 0.5 }
-  columns[7] = { field: 'modified_by', headerName: 'Modified By', flex: 0.5 }
+  columns[5] = { field: 'created_at', headerName: 'Created At', flex: 0.5, type: 'date' }
+  columns[6] = { field: 'modified_at', headerName: 'Modified At', flex: 0.5 , type: 'date' }
+  columns[7] = { field: 'modified_by', headerName: 'Modified By', flex: 0.5, serverKey: 'modified_by__username' }
   columns[8] = {
     field: 'actions',
     type: 'actions',
     cellClassName: 'MuiDataGrid-ActionsColumn',
     width: 250,
+    headerName: <DataGridFilter fields={columns} filterModel={filterModel} setFilterModel={setFilterModel}/>,
     getActions: (params) => {
       const permission = params.row.permission
       const actions = resourceActionsList(params);
@@ -151,10 +157,12 @@ export default function DashboardList() {
     columns={columns}
     pageName={pageName}
     multipleDelete={true}
+    enableFilter={true}
     defaults={{
       sort: [
         { field: 'name', sort: 'asc' }
-      ]
+      ],
+      filters: filterModel
     }}
   />
 }

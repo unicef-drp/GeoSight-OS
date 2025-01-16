@@ -60,6 +60,7 @@ export const AdminListContent = forwardRef(
        sort: null
      },
      useSearch = true,
+     enableFilter = false,
 
      // Table props
      multipleDelete,
@@ -234,7 +235,8 @@ export const AdminListContent = forwardRef(
             enable={
               {
                 delete: true,
-                select: true
+                select: true,
+                filter: enableFilter
               }
             }
             isRowSelectable={selectableFunction}

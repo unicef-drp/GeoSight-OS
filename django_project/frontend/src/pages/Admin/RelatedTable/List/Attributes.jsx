@@ -49,6 +49,6 @@ export const relatedTableColumns = [
     field: 'created_by',
     headerName: 'Created by',
     flex: 0.5,
-    sortField: 'creator__username'
+    serverKey: 'creator__username'
   }
 ]

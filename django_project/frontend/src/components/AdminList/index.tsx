@@ -35,6 +35,7 @@ export const AdminList = (
       sort: null
     },
     useSearch = true,
+    enableFilter = false,
 
     // Table props
     multipleDelete,
@@ -63,6 +64,7 @@ export const AdminList = (
         initData={initData}
         defaults={defaults}
         useSearch={useSearch}
+        enableFilter={enableFilter}
 
         // Table props
         multipleDelete={multipleDelete}
