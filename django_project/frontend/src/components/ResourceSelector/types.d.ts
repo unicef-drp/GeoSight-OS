@@ -33,6 +33,9 @@ export interface ModalFilterSelectorProps {
   /** Mode that will be used. */
   mode?: 'input' | 'filter';
 
+  /** If the input selector has other opener. */
+  opener?: ReactElement;
+
   /** Is selection is multiple. */
   multipleSelection: boolean;
 }

@@ -9,22 +9,28 @@
  *     (at your option) any later version.
  *
  * __author__ = 'irwan@kartoza.com'
- * __date__ = '13/06/2023'
- * __copyright__ = ('Copyright 2023, Unicef')
+ * __date__ = '15/01/2025'
+ * __copyright__ = ('Copyright 2025, Unicef')
  */
 
 import React from 'react';
-import { COLUMNS_ACTION } from "../../Components/List";
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import Tooltip from "@mui/material/Tooltip";
-import { AdminListContent } from "../../AdminList";
-import CancelIcon from '@mui/icons-material/Cancel';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { DataAccessActiveIcon } from "../../../../components/Icons";
+import { AdminListContent } from "../Content";
+import { COLUMNS_ACTION } from "../../../pages/Admin/Components/List";
+import { DataAccessActiveIcon } from "../../Icons";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
 
+export const userUrl = {
+  list: '/api/v1/users/?fields=__all__',
+  detail: '/api/v1/users/0/?fields=__all__',
+  edit: '/admin/user/0/edit/',
+  create: '/admin/user/create/',
+}
 
 export function resourceActions(params) {
-  const actions = COLUMNS_ACTION(params, urls.admin.userAndGroupList + '#Users', urls.api.user.edit, urls.api.user.detail)
+  const actions = COLUMNS_ACTION(params, urls.admin.userAndGroupList + '#Users', userUrl.edit, userUrl.detail)
   // Unshift before more & edit action
   actions.unshift(
     <GridActionsCellItem
@@ -43,17 +49,17 @@ export function resourceActions(params) {
   return actions;
 }
 
-export function USER_COLUMNS() {
-  const editUrl = '/admin/user/0/edit';
-  const detailUrl = '/admin/user/0';
+export function COLUMNS() {
   const columns = [
     { field: 'id', headerName: 'id', hide: true, width: 30, },
     {
       field: 'username', headerName: 'Username', flex: 1,
       renderCell: (params) => {
-        if (editUrl) {
-          return <a className='MuiButtonLike CellLink'
-                    href={editUrl.replace('/0', `/${params.row.username}`)}>
+        if (userUrl.edit) {
+          return <a
+            className='MuiButtonLike CellLink'
+            href={userUrl.edit.replace('/0', `/${params.row.username}`)}
+          >
             {params.value}
           </a>
         } else {
@@ -102,16 +108,22 @@ export function USER_COLUMNS() {
   return columns
 }
 
-/**
- * Indicator List App
- */
-export default function UserList({ ...props }) {
+/** User List App */
+export function UserList({ ...props }) {
   return <AdminListContent
-    columns={USER_COLUMNS()}
-    listUrl={urls.api.user.list}
-    apiCreate={urls.api.user.create}
-    apiBatch={urls.api.user.batch}
+    url={userUrl}
+    title={'Users'}
+    columns={COLUMNS()}
+    pageName={'Users'}
     multipleDelete={true}
+    defaults={{
+      sort: [
+        { field: 'username', sort: 'asc' }
+      ]
+    }}
+    searchKey={'username__icontains'}
     {...props}
   />
 }
+
+export default UserList;

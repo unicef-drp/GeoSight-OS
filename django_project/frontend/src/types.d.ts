@@ -16,6 +16,27 @@ export interface DatasetView {
   tags: string[]
 }
 
+export interface Group {
+  id: string,
+  name: string,
+}
+
+export interface User {
+  id: string,
+  username: string,
+  email: string,
+  first_name: string,
+  last_name: string,
+  is_staff: boolean,
+  name: string,
+  role: string,
+  is_contributor: boolean,
+  is_creator: boolean,
+  is_admin: boolean,
+  full_name: string,
+  receive_notification: boolean
+}
+
 export interface Indicator {
   id: string,
   name: string,
