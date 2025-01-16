@@ -50,13 +50,13 @@ export const DataGridFilter = (
       }}
       Button={
         <div className='Active'>
-          <PluginChild title={'Bookmark'} disabled={false} active={true}>
+          <PluginChild title={'DataGrid-Filter'} disabled={false} active={true}>
             <a>
               <Button variant="text">Filter</Button>
             </a>
           </PluginChild>
         </div>
-      }>{/* LIST OF BOOKMARKS */}
+      }>
       <div className='DataGridFilter-Container'>
         <Grid container direction='column' className='Body'>
           {
