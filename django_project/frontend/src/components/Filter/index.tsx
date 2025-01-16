@@ -13,6 +13,7 @@ import Moment from "moment/moment";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
 import {DesktopDatePicker} from "@mui/x-date-pickers/DesktopDatePicker";
+import {Actions} from "../../store/dashboard";
 
 export interface DataGridFilterProps {
   fields: any[],
@@ -61,10 +62,7 @@ export const DataGridFilter = (
         <div className='Popover-Btn'>
           <PluginChild title={'DataGrid-Filter'} disabled={false} active={true}>
             <a>
-              { isFiltered ?
-                <FilterAltIcon fontSize={"small"}/> :
-                <FilterAltOffIcon fontSize={"small"}/>
-              }
+              <FilterAltIcon className={isFiltered ? 'Active' : null} fontSize={"small"}/>
             </a>
           </PluginChild>
         </div>

@@ -12,6 +12,14 @@
   }
 }
 
+svg {
+  fill: #808080;
+
+  &.Active {
+    fill: #1CABE2;
+  }
+}
+
 .DataGridFilter-Popover {
 
   .MuiPaper-root {
