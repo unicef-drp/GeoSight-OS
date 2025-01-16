@@ -106,7 +106,6 @@ export default function RelatedTableList() {
       return resourceActions(params)
     },
   })
-  console.log(columns)
 
   return <AdminList
     url={{
