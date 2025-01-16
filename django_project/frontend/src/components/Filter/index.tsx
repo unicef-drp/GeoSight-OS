@@ -79,7 +79,7 @@ export const DataGridFilter = (
                               onChange={(date: any) => {
                                 const key = `${field.serverKey}__gte`;
                                 const selectedDate = date ? Moment(date).format('YYYY-MM-DD') : null;
-                                const value = selectedDate ? selectedDate : null;
+                                const value = selectedDate ? `${selectedDate}T00:00:00` : null;
                                 setNewFilterModel({
                                   ...newFilterModel,
                                   [key]: value
@@ -98,7 +98,7 @@ export const DataGridFilter = (
                               onChange={(date: any) => {
                                 const key = `${field.serverKey}__lte`;
                                 const selectedDate = date ? Moment(date).format('YYYY-MM-DD') : null;
-                                const value = selectedDate ? selectedDate : null;
+                                const value = selectedDate ? `${selectedDate}T23:59:59` : null;
                                 setNewFilterModel({
                                   ...newFilterModel,
                                   [key]: value
