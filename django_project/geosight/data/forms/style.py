@@ -126,7 +126,7 @@ class StyleForm(BaseStyleForm):
         model = Style
         fields = (
             'name', 'description', 'group', 'value_type', 'style_type',
-            'style_config', 'modified_by'
+            'style_config'
         )
 
     @staticmethod
