@@ -541,3 +541,18 @@ export function getAreaDecimalLength(num) {
     return 4
   }
 }
+
+/**
+ * Make unique by key
+ * @param array
+ * @param key
+ * @returns {*}
+ */
+export const uniqueByKey = (array, key) => {
+  return array.reduce((acc, item) => {
+    if (!acc.some(el => el[key] === item[key])) {
+      acc.push(item);
+    }
+    return acc;
+  }, []);
+};

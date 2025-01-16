@@ -35,6 +35,7 @@ import { debounce } from "@mui/material/utils";
 interface ProjectListProps {
   baseUrl: string;
   setParentLoading: (val: boolean) => void;
+  showTitle: boolean
 }
 
 interface ProjectGridProps {
@@ -131,7 +132,8 @@ const generateUrl = (
 export default function ProjectList(
   {
     baseUrl,
-    setParentLoading
+    setParentLoading,
+    showTitle
   }: ProjectListProps
 ) {
   // TODO: combine all filters into 1 veriable
@@ -211,10 +213,13 @@ export default function ProjectList(
   // @ts-ignore
   return (
     projects ? <Fragment>
-      <div className='PageContent-Title'>
-        {txt}
-        <div className='Separator'/>
-      </div>
+      {
+        showTitle ?
+          <div className='PageContent-Title'>
+            {txt}
+            <div className='Separator'/>
+          </div> : null
+      }
       <Grid container spacing={2} className='input-container'>
         <Grid item xs={12} md={6} lg={6} xl={6}>
           <SearchInput

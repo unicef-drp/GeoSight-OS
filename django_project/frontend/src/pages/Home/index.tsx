@@ -13,14 +13,14 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import CircularProgress from "@mui/material/CircularProgress";
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import {store} from '../../store/admin';
-import {render} from '../../app';
-import {ThemeButton} from "../../components/Elements/Button";
+import { store } from '../../store/admin';
+import { render } from '../../app';
+import { ThemeButton } from "../../components/Elements/Button";
 import ProjectList from "../../components/Home";
-import {VisibilityIcon} from "../../components/Icons";
+import { VisibilityIcon } from "../../components/Icons";
 import Footer from "../../components/Footer";
 import BasicPage from '../Basic'
 
@@ -33,10 +33,13 @@ import './style.scss';
 export default function Home() {
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [showBanner, setShowBanner] = useState(true);
+
   // @ts-ignore
   const userId: number = user.id;
   const mainImageTs = "{{ preferences.landing_page_banner }}";
 
+  // @ts-ignore
+  const hasProject = user?.is_creator;
   const ownProjectsUrl = userId ? `/api/v1/dashboards?creator=${userId}&fields=__all__&page=1&page_size=12` : null;
   const sharedProjectsUrl = userId ? `/api/v1/dashboards?creator=!${userId}&fields=__all__&page=1&page_size=12` :
     '/api/v1/dashboards?fields=__all__&page=1&page_size=12';
@@ -83,10 +86,11 @@ export default function Home() {
           ) : null
         }
         {
-          ownProjectsUrl ?
+          hasProject && ownProjectsUrl ?
             <ProjectList
               baseUrl={ownProjectsUrl}
               setParentLoading={setIsLoading}
+              showTitle={hasProject}
             >
             </ProjectList> : null
         }
@@ -95,6 +99,7 @@ export default function Home() {
             <ProjectList
               baseUrl={sharedProjectsUrl}
               setParentLoading={setIsLoading}
+              showTitle={hasProject}
             >
             </ProjectList> : null
         }

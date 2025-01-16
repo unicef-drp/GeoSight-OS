@@ -30,7 +30,6 @@ import {
   Notification,
   NotificationStatus
 } from "../../../../../components/Notification";
-import { resourceActions } from "../List";
 import { IconTextField } from "../../../../../components/Elements/Input";
 import {
   VisibilityIcon,
@@ -38,9 +37,12 @@ import {
 } from "../../../../../components/Icons";
 import DjangoTemplateForm
   from "../../../Components/AdminForm/DjangoTemplateForm";
+import ApiKeyUser from "./ApiKeyUser";
+import {
+  resourceActions
+} from "../../../../../components/AdminList/Contents/User";
 
 import './style.scss';
-import ApiKeyUser from "./ApiKeyUser";
 
 /**
  * Indicator Form App

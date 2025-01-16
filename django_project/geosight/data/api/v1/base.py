@@ -44,31 +44,15 @@ class BaseApiV1(FilteredAPI):
         SessionAuthentication, BasicAuthentication, BearerAuthentication
     ]
     pagination_class = Pagination
+    extra_exclude_fields = []
 
     def get_queryset(self):
         """Return queryset of API."""
         query = self.queryset
         return self.filter_query(
-            self.request, query, ['page', 'page_size']
+            self.request, query, ['page', 'page_size', 'fields'],
+            sort=self.request.query_params.get('sort')
         )
-
-
-class BaseApiV1ResourceReadOnly(BaseApiV1, viewsets.ReadOnlyModelViewSet):
-    """Base api v1 for read only."""
-
-    model_class = None
-    lookup_field = 'id'
-    extra_exclude_fields = []
-
-    def get_permissions(self):
-        """Get the permissions based on the action."""
-        if self.action in ['create', 'destroy']:
-            permission_classes = [RoleCreatorAuthenticationPermission]
-        elif self.action in ['update', 'partial_update']:
-            permission_classes = [RoleContributorAuthenticationPermission]
-        else:
-            permission_classes = []
-        return [permission() for permission in permission_classes]
 
     def get_serializer_context(self):
         """Extra context provided to the serializer class."""
@@ -93,14 +77,37 @@ class BaseApiV1ResourceReadOnly(BaseApiV1, viewsets.ReadOnlyModelViewSet):
 
         return serializer_class(*args, **kwargs)
 
-    def get_queryset(self):
-        """Return queryset of API."""
+
+class BaseApiV1ResourceReadOnly(BaseApiV1, viewsets.ReadOnlyModelViewSet):
+    """Base api v1 for read only."""
+
+    model_class = None
+    lookup_field = 'id'
+
+    def get_permissions(self):
+        """Get the permissions based on the action."""
+        if self.action in ['create', 'destroy']:
+            permission_classes = [RoleCreatorAuthenticationPermission]
+        elif self.action in ['update', 'partial_update']:
+            permission_classes = [RoleContributorAuthenticationPermission]
+        else:
+            permission_classes = []
+        return [permission() for permission in permission_classes]
+
+    @property
+    def queryset(self):
+        """Return queryset."""
         if self.action not in [
             'retrieve', 'create', 'update', 'partial_update', 'destroy'
         ]:
             query = self.model_class.permissions.list(self.request.user)
         else:
             query = self.model_class.objects.all()
+        return query
+
+    def get_queryset(self):
+        """Return queryset of API."""
+        query = self.queryset
 
         self.request.GET = self.request.GET.copy()
 
@@ -130,6 +137,7 @@ class BaseApiV1ResourceDeleteOnly(mixins.DestroyModelMixin):
     model_class = None
     lookup_field = 'id'
 
+    @swagger_auto_schema(auto_schema=None)
     def delete(self, request, *args, **kwargs):
         """Destroy an object."""
         param = f'{self.lookup_field}__in'
@@ -158,7 +166,6 @@ class BaseApiV1ResourceWriteOnly(
     model_class = None
     form_class = None
     lookup_field = 'id'
-    extra_exclude_fields = []
 
     def create(self, request, *args, **kwargs):
         """Update an object."""
@@ -167,7 +174,10 @@ class BaseApiV1ResourceWriteOnly(
         form.user = request.user
         if form.is_valid():
             instance = form.save()
-            instance.creator = request.user
+            try:
+                instance.creator = request.user
+            except AttributeError:
+                pass
             instance.save()
             serializer = self.get_serializer(instance)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
