@@ -15,7 +15,6 @@ __date__ = '06/24/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
 import os
-from django.core.files.images import ImageFile
 from django.core.files.base import ContentFile
 
 from core.tests.base_tests import TestCase
@@ -27,9 +26,11 @@ class DashboardTest(TestCase):
 
     def test_create(self):
         """Test create."""
-
         dashboard = DashboardF()
-        icon_path = "/home/web/django_project/geosight/data/tests/data/uniced_acled_wpop.png"
+        icon_path = (
+            "/home/web/django_project/geosight/"
+            "data/tests/data/uniced_acled_wpop.png"
+        )
         self.assertIsNone(dashboard.icon.name)
 
         with open(icon_path, "rb") as f:
@@ -40,6 +41,9 @@ class DashboardTest(TestCase):
         dashboard.icon.save("uniced_acled_wpop.png", content_file)
         dashboard.save()
 
-        # Check that file is set and the size is less than 20% the original size
+        # Check that file is set and the size is less
+        # than 20% the original size
         self.assertIsNotNone(dashboard.icon.name)
-        self.assertTrue(dashboard.icon.size < 0.2 * os.path.getsize(icon_path))
+        self.assertTrue(
+            dashboard.icon.size < 0.2 * os.path.getsize(icon_path)
+        )

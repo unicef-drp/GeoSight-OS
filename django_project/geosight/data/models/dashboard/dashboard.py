@@ -124,6 +124,7 @@ class Dashboard(
         return Dashboard.objects.filter(slug=slug).first() is not None
 
     def save(self, *args, **kwargs):
+        """Save object and create thumbnail."""
         super().save(*args, **kwargs)  # Save the original image
 
         # Create and save the thumbnail

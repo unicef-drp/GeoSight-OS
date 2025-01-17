@@ -183,10 +183,11 @@ def run_zonal_analysis(
 def create_thumbnail(
         input_path: typing.Union[str, os.PathLike],
         output_path: typing.Union[str, os.PathLike],
-        thumbnail_size=(600, 380), quality: int=85
+        thumbnail_size = (600, 380), quality: int = 85
 ):
     """
-    Resize a large image to a thumbnail size with high quality, preserving aspect ratio.
+    Resize a large image to a thumbnail size with
+    high quality, preserving aspect ratio.
 
     Args:
         input_path (str): Path to the input image file (JPG or PNG).
