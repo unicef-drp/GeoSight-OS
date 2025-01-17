@@ -14,6 +14,8 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import os.path
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.gis.db import models
@@ -123,13 +125,25 @@ class Dashboard(
         """Check of name is exist."""
         return Dashboard.objects.filter(slug=slug).first() is not None
 
+    @property
+    def thumbnail(self):
+        dir_name = os.path.dirname(self.icon.path)
+        file_name = os.path.basename(self.icon.path)
+        thumbnail_dir_name = os.path.join(dir_name, 'thumbnail')
+        thumbnail_path = os.path.join(
+            thumbnail_dir_name,
+            file_name
+        )
+        return thumbnail_path
+
     def save(self, *args, **kwargs):
         """Save object and create thumbnail."""
         super().save(*args, **kwargs)  # Save the original image
 
         # Create and save the thumbnail
-        if self.icon:
-            create_thumbnail(self.icon.path, self.icon.path)
+        if self.icon.name:
+            os.makedirs(os.path.dirname(self.thumbnail), exist_ok=True)
+            create_thumbnail(self.icon.path, self.thumbnail)
 
     def save_relations(self, data, is_create=False):
         """Save all relationship data."""

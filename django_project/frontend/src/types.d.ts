@@ -58,6 +58,7 @@ export interface GeoSightProject {
   id: string;               // Unique identifier for the project
   slug: string;             // Slug for the project
   icon: string | null;      // Icon for the project (can be null)
+  thumbnail: string | null;      // Thumbnail for the project (can be null)
   name: string;             // Name of the project
   created_at: string;       // Creation timestamp
   modified_at: string;      // Modification timestamp

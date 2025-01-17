@@ -44,6 +44,8 @@ class DashboardTest(TestCase):
         # Check that file is set and the size is less
         # than 20% the original size
         self.assertIsNotNone(dashboard.icon.name)
+
+        # check thumbnail is in correct directory
         self.assertTrue(
-            dashboard.icon.size < 0.2 * os.path.getsize(icon_path)
+            os.path.getsize(dashboard.icon.thumbnail) < 0.2 * os.path.getsize(icon_path)
         )
