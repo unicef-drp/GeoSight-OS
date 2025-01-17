@@ -87,6 +87,12 @@ class Dashboard(
         default='geometry_code'
     )
 
+    thumbnail = models.ImageField(
+        upload_to='icons/thumbnails',
+        null=True,
+        blank=True
+    )
+
     # group
     group = models.ForeignKey(
         DashboardGroup,
@@ -125,25 +131,31 @@ class Dashboard(
         """Check of name is exist."""
         return Dashboard.objects.filter(slug=slug).first() is not None
 
-    @property
-    def thumbnail(self):
-        dir_name = os.path.dirname(self.icon.path)
-        file_name = os.path.basename(self.icon.path)
-        thumbnail_dir_name = os.path.join(dir_name, 'thumbnail')
-        thumbnail_path = os.path.join(
-            thumbnail_dir_name,
-            file_name
-        )
-        return thumbnail_path
-
     def save(self, *args, **kwargs):
         """Save object and create thumbnail."""
-        super().save(*args, **kwargs)  # Save the original image
-
         # Create and save the thumbnail
-        if self.icon.name:
-            os.makedirs(os.path.dirname(self.thumbnail), exist_ok=True)
-            create_thumbnail(self.icon.path, self.thumbnail)
+        super().save()
+        if self.icon:
+            if self.thumbnail:
+                if os.path.exists(self.thumbnail.path):
+                    os.remove(self.thumbnail.path)
+            dir_name = os.path.dirname(self.icon.path)
+            file_name = os.path.basename(self.icon.path)
+            thumbnail_dir_name = os.path.join(dir_name, 'thumbnail')
+            thumbnail_path = os.path.join(
+                thumbnail_dir_name,
+                file_name
+            )
+            os.makedirs(os.path.dirname(thumbnail_path), exist_ok=True)
+            try:
+                create_thumbnail(self.icon.path, thumbnail_path)
+                self.thumbnail.name = thumbnail_path.replace(
+                    settings.MEDIA_ROOT + '/',
+                    ''
+                )
+                super().save(*args, **kwargs)
+            except Exception:
+                pass
 
     def save_relations(self, data, is_create=False):
         """Save all relationship data."""

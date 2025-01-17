@@ -294,7 +294,6 @@ class DashboardBasicSerializer(ResourceSerializer):
     group = serializers.SerializerMethodField()
     category = serializers.SerializerMethodField()
     permission = serializers.SerializerMethodField()
-    thumbnail = serializers.SerializerMethodField()
 
     def get_id(self, obj: Dashboard):
         """Return dashboard id."""
@@ -313,13 +312,6 @@ class DashboardBasicSerializer(ResourceSerializer):
         return obj.permission.all_permission(
             self.context.get('user', None)
         )
-
-    def get_thumbnail(self, obj: Dashboard):
-        """Return tools."""
-        from django.conf import settings
-        if os.path.exists(obj.thumbnail):
-            return obj.thumbnail.replace(settings.MEDIA_ROOT, 'media')
-        return None
 
     class Meta:  # noqa: D106
         model = Dashboard
