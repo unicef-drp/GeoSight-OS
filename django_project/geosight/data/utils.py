@@ -186,8 +186,7 @@ def create_thumbnail(
         thumbnail_size = (600, 380), quality: int = 85
 ):
     """
-    Resize a large image to a thumbnail size with
-    high quality, preserving aspect ratio.
+    Resize a large image to a thumbnail size with high quality, preserving aspect ratio.  # noqa
 
     Args:
         input_path (str): Path to the input image file (JPG or PNG).
