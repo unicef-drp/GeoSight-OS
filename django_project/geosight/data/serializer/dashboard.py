@@ -15,7 +15,6 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import json
-import os.path
 
 from django.shortcuts import reverse
 from rest_framework import serializers
