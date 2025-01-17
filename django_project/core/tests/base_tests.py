@@ -280,7 +280,7 @@ class BaseFileCleanupTest:
             raise NotImplementedError
 
         def setUp(self):
-            """Setup test data."""
+            """Prepare test data."""
             self.create_test_object()
             for field in self._get_image_field_file_field():
                 self._set_file_field(field, new=False)

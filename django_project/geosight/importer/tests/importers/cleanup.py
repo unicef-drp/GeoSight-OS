@@ -14,7 +14,7 @@ __author__ = 'zakki@kartoza.com'
 __date__ = '01/17/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
-from geosight.importer.tests.importers.model_factories.importer import ImporterAttributesFactory
+from geosight.importer.tests.importers.model_factories.importer import ImporterAttributesFactory  # noqa
 from core.tests.base_tests import BaseFileCleanupTest
 
 
