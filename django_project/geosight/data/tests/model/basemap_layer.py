@@ -55,7 +55,10 @@ class BasemapLayerTest(TestCase):
 
 
 class BasemapCleanupTest(BaseFileCleanupTest.TestCase):
+    """Test cleaning up Basemap file."""
+
     model = BasemapLayerF
 
     def create_test_object(self):
+        """Create test object."""
         self.test_obj = self.model()

@@ -18,7 +18,12 @@ import os
 
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.db.models.fields.files import FileField, ImageField, ImageFieldFile, FieldFile
+from django.db.models.fields.files import (
+    FileField,
+    ImageField,
+    ImageFieldFile,
+    FieldFile
+)
 from django.template.defaultfilters import slugify
 from django.utils import timezone
 
@@ -134,16 +139,17 @@ class SlugTerm(AbstractTerm):
 
 
 class AbstractFileCleanup(models.Model):
-    """
-    A mixin to automatically delete old files when a new file is set
-    or the object is deleted. Works for both FileField and ImageField.
+    """A mixin to automatically delete old files.
+
+    It will be done when a new file is set or the object
+    is deleted. Works for both FileField and ImageField.
     """
 
     class Meta:  # noqa: D106
         abstract = True
 
     def _delete_file(self, file_field):
-        """Helper method to delete a file."""
+        """Delete a file if the field is FieldFile or ImageFieldFile."""
         if file_field and isinstance(file_field, (FieldFile, ImageFieldFile)):
             file_path = file_field.path
             if os.path.isfile(file_path):
@@ -153,13 +159,16 @@ class AbstractFileCleanup(models.Model):
                     pass
 
     def save(self, *args, **kwargs):
-        # Check for old file before saving
+        """Check for old file before saving."""
         for field in self._meta.get_fields():
             if isinstance(field, (FileField, ImageField)):
                 old_file = None
                 if self.pk:  # Check if the instance already exists
                     try:
-                        old_file = getattr(self.__class__.objects.get(pk=self.pk), field.name)
+                        old_file = getattr(
+                            self.__class__.objects.get(pk=self.pk),
+                            field.name
+                        )
                     except self.__class__.DoesNotExist:
                         pass
                 new_file = getattr(self, field.name, None)
@@ -169,7 +178,7 @@ class AbstractFileCleanup(models.Model):
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
-        # Delete associated files before deleting the object
+        """Delete associated files before deleting the object."""
         for field in self._meta.get_fields():
             if isinstance(field, (FileField, ImageField)):
                 self._delete_file(getattr(self, field.name, None))

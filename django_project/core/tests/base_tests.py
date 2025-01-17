@@ -275,16 +275,12 @@ class BaseFileCleanupTest:
             "data/tests/data/test_img.jpg"
         )
 
-        @property
-        def model(self):
-            """Model of the test."""
-            raise NotImplementedError
-
         def create_test_object(self):
             """Create test object."""
             raise NotImplementedError
 
         def setUp(self):
+            """Setup test data."""
             self.create_test_object()
             for field in self._get_image_field_file_field():
                 self._set_file_field(field, new=False)
@@ -296,7 +292,7 @@ class BaseFileCleanupTest:
                     yield field
 
         def _set_file_field(self, field, new=False):
-            """Set file field"""
+            """Set file field."""
             with open(self.image_path, "rb") as f:
                 image_data = f.read()
 
@@ -319,12 +315,14 @@ class BaseFileCleanupTest:
             return paths_to_check
 
         def test_delete_do_file_cleanup(self):
+            """Test running file cleanup on delete."""
             paths_to_check = self._get_file_to_check()
             self.test_obj.delete()
             for p in paths_to_check:
                 self.assertFalse(os.path.exists(p))
 
         def test_update_do_file_cleanup(self):
+            """Test running file cleanup on update."""
             paths_to_check = self._get_file_to_check()
             for field in self._get_image_field_file_field():
                 self._set_file_field(field, new=True)

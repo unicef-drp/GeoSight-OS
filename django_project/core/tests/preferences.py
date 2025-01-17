@@ -19,7 +19,10 @@ from core.tests.base_tests import BaseFileCleanupTest
 
 
 class SitePreferenceTest(BaseFileCleanupTest.TestCase):
+    """Test cleaning up Site Preferences file."""
+
     model = SitePreferences
 
     def create_test_object(self):
+        """Create test object."""
         self.test_obj = self.model.preferences()

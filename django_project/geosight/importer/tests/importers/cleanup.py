@@ -19,7 +19,10 @@ from core.tests.base_tests import BaseFileCleanupTest
 
 
 class ImporterAttributeTest(BaseFileCleanupTest.TestCase):
+    """Test cleaning up Importer Attribute file."""
+
     model = ImporterAttributesFactory
 
     def create_test_object(self):
+        """Create test object."""
         self.test_obj = self.model()
