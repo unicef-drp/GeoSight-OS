@@ -25,7 +25,6 @@ from core.signals import (
 from geosight.reference_dataset.models.reference_dataset import (
     ReferenceDataset
 )
-from core.models.general import AbstractFileCleanup
 
 
 class LogStatus(object):
@@ -38,7 +37,7 @@ class LogStatus(object):
     SUCCESS = 'Success'
 
 
-class ReferenceDatasetImporter(AbstractFileCleanup, AbstractEditData):
+class ReferenceDatasetImporter(AbstractEditData):
     """Reference Layer view importer."""
 
     reference_layer = models.ForeignKey(
@@ -76,7 +75,7 @@ class ReferenceDatasetImporter(AbstractFileCleanup, AbstractEditData):
         app_label = 'geosight_reference_dataset'
 
 
-class ReferenceDatasetImporterLevel(AbstractFileCleanup):
+class ReferenceDatasetImporterLevel(models.Model):
     """Reference Layer view importer per level."""
 
     importer = models.ForeignKey(

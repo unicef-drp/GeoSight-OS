@@ -14,8 +14,11 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '24/10/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import os
 from django.conf import settings
+from django.db import models
 from django.contrib.auth import get_user_model
+from django.core.files.base import ContentFile
 from django.core.management import call_command
 from django.db import connection, connections
 from django.db.utils import ProgrammingError
@@ -258,3 +261,73 @@ class APITestCase(TestCase):
         for resource in resources:
             assert any(validation_function(json_obj, resource)
                        for json_obj in results)
+
+
+class BaseFileCleanupTest:
+    """Base test case for file cleanup test."""
+
+    class TestCase(TestCase):
+        """Base test case."""
+
+        model = None
+        image_path = (
+            "/home/web/django_project/geosight/"
+            "data/tests/data/test_img.jpg"
+        )
+
+        @property
+        def model(self):
+            """Model of the test."""
+            raise NotImplementedError
+
+        def create_test_object(self):
+            """Create test object."""
+            raise NotImplementedError
+
+        def setUp(self):
+            self.create_test_object()
+            for field in self._get_image_field_file_field():
+                self._set_file_field(field, new=False)
+            self.test_obj.save()
+
+        def _get_image_field_file_field(self):
+            for field in self.test_obj._meta.get_fields():
+                if isinstance(field, (models.FileField, models.ImageField)):
+                    yield field
+
+        def _set_file_field(self, field, new=False):
+            """Set file field"""
+            with open(self.image_path, "rb") as f:
+                image_data = f.read()
+
+            # Create a ContentFile object
+            extension = os.path.splitext(self.image_path)[1]
+            file_name = "{}_{}_{}_{}{}".format(
+                self.model.__name__.lower(),
+                self.test_obj.pk,
+                field.name,
+                'new' if new else 'old',
+                extension
+            )
+            content_file = ContentFile(image_data, name=file_name)
+            getattr(self.test_obj, field.name).save(file_name, content_file)
+
+        def _get_file_to_check(self):
+            paths_to_check = []
+            for field in self._get_image_field_file_field():
+                paths_to_check.append(getattr(self.test_obj, field.name).path)
+            return paths_to_check
+
+        def test_delete_do_file_cleanup(self):
+            paths_to_check = self._get_file_to_check()
+            self.test_obj.delete()
+            for p in paths_to_check:
+                self.assertFalse(os.path.exists(p))
+
+        def test_update_do_file_cleanup(self):
+            paths_to_check = self._get_file_to_check()
+            for field in self._get_image_field_file_field():
+                self._set_file_field(field, new=True)
+            self.test_obj.save()
+            for p in paths_to_check:
+                self.assertFalse(os.path.exists(p))

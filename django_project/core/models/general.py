@@ -18,7 +18,7 @@ import os
 
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.db.models.fields.files import FieldFile, ImageField
+from django.db.models.fields.files import FileField, ImageField, ImageFieldFile, FieldFile
 from django.template.defaultfilters import slugify
 from django.utils import timezone
 
@@ -144,7 +144,7 @@ class AbstractFileCleanup(models.Model):
 
     def _delete_file(self, file_field):
         """Helper method to delete a file."""
-        if file_field and isinstance(file_field, (FieldFile, ImageField)):
+        if file_field and isinstance(file_field, (FieldFile, ImageFieldFile)):
             file_path = file_field.path
             if os.path.isfile(file_path):
                 try:

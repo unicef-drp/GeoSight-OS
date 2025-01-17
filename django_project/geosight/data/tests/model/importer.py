@@ -14,12 +14,11 @@ __author__ = 'zakki@kartoza.com'
 __date__ = '01/17/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
-from core.models.preferences import SitePreferences
-from core.tests.base_tests import BaseFileCleanupTest
+from geosight.data.models
 
 
-class SitePreferenceTest(BaseFileCleanupTest.TestCase):
-    model = SitePreferences
+class BlockCleanupTest(BaseFileCleanupTest.TestCase):
+    model = Block
 
     def create_test_object(self):
-        self.test_obj = self.model.preferences()
+        self.test_obj = self.model.objects.create()
