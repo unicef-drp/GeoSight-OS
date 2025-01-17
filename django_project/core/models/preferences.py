@@ -22,6 +22,7 @@ from django.utils.translation import gettext_lazy as _
 
 from core.models.color import ColorPalette
 from core.models.singleton import SingletonModel
+from core.models.general import AbstractFileCleanup
 
 DEFAULT_OUTLINE_COLOR = '#FFFFFF'
 DEFAULT_OUTLINE_SIZE = 0.5
@@ -42,7 +43,7 @@ class SiteType(models.TextChoices):
     PRODUCTION = 'Production', _('Production')
 
 
-class SitePreferences(SingletonModel):
+class SitePreferences(AbstractFileCleanup, SingletonModel):
     """Preference settings specifically for website.
 
     Preference contains
@@ -399,7 +400,7 @@ class SitePreferences(SingletonModel):
         return settings.TENANTS_ENABLED
 
 
-class SitePreferencesImage(models.Model):
+class SitePreferencesImage(AbstractFileCleanup):
     """Preference images settings specifically for website."""
 
     preference = models.ForeignKey(

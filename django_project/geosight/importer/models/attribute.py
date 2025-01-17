@@ -22,9 +22,10 @@ from core.signals import (
     delete_file_on_delete, delete_file_on_change,
 )
 from geosight.importer.models.importer import Importer
+from core.models.general import AbstractFileCleanup
 
 
-class ImporterAttribute(models.Model):
+class ImporterAttribute(AbstractFileCleanup):
     """EAV for additional attribute for importer."""
 
     importer = models.ForeignKey(Importer, on_delete=models.CASCADE)
