@@ -47,6 +47,10 @@ export const DataGridFilter = (
     })
   }
 
+  const handleClear = () => {
+    setNewFilterModel({})
+  }
+
   return (
     <CustomPopover
       className={'DataGridFilter-Popover'}
@@ -98,7 +102,7 @@ export const DataGridFilter = (
                           onChange={(date: any) => {
                             const key = `${field.serverKey}__lte`;
                             const selectedDate = date ? Moment(date).format('YYYY-MM-DD') : null;
-                            const value = selectedDate ? `${selectedDate}T00:00:00` : null;
+                            const value = selectedDate ? `${selectedDate}T23:59:59` : null;
                             setNewFilterModel({
                               ...newFilterModel,
                               [key]: value
@@ -127,7 +131,9 @@ export const DataGridFilter = (
           }
         </Grid>
         <div className='Footer'>
-          <Button variant='contained' onClick={handleApplyFilters}>Apply Filters</Button>
+          <Button variant='contained' id={'ListFilter-Btn'} onClick={handleApplyFilters}>Apply Filters</Button>
+          <div style={{flexGrow: 0.1}}></div>
+          <Button variant='contained' onClick={handleClear} color="success">Reset</Button>
         </div>
       </div>
     </CustomPopover>

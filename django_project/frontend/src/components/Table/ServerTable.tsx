@@ -128,6 +128,7 @@ const ServerTable = forwardRef(
         ...parameters,
         ...filterModel
       })
+      console.log(filterModel)
     }, [filterModel]);
 
     // Sort model
@@ -198,7 +199,8 @@ const ServerTable = forwardRef(
     }
     /*** When parameters changed */
     useEffect(() => {
-      loadData(false)
+      console.log('load_data')
+      loadData(true)
     }, [parameters])
 
     /*** When page size and filter changed */

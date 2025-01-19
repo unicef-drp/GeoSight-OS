@@ -17,7 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.contrib import admin
 
 from geosight.data.models.basemap_layer import (
-    BasemapLayer, BasemapLayerParameter
+    BasemapLayer, BasemapLayerParameter, BasemapGroup
 )
 from geosight.data.admin.base import BaseAdminResourceMixin
 
@@ -39,3 +39,4 @@ class BasemapLayerAdmin(BaseAdminResourceMixin):
 
 
 admin.site.register(BasemapLayer, BasemapLayerAdmin)
+admin.site.register(BasemapGroup)
