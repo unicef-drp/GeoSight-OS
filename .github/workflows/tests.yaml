@@ -37,18 +37,17 @@ jobs:
         run: git branch --show-current
 
       - name: Install flake8
-        run: pip install flake8
-      - name: Install flake8-docstrings
-        run: pip install flake8-docstrings
+        run: pip install flake8 flake8-docstrings
       - name: Run flake8
         uses: suo/flake8-github-action@releases/v1
         with:
-          checkName: 'Python Lint'   # NOTE: this needs to be the same as the job name
+          checkName: 'Python Lint'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   build_image:
     needs: flake8_py3
-    name: 'Build Docker Image'
+    name: Build Docker Image
     runs-on: ubuntu-latest
     env:
       APP_IMAGE: kartoza/geosight:dev
@@ -89,10 +88,20 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-docker-image-
 
-  django_app_backend_test:
+  django_app_tests:
     needs: build_image
-    name: 'Django App Backend Tests'
+    name: Django App Tests
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        test_suite: [
+          { name: "Backend Tests", script: "make devweb-test" },
+          { name: "E2E Tests: Project Creation", path: "tests/project_creation", workers: 2 },
+          { name: "E2E Tests: Project View", path: "tests/project_view", workers: 3 },
+          { name: "E2E Tests: Admin List", path: "tests/admin_list", workers: 3 },
+          { name: "E2E Tests: Admin Edit", path: "tests/admin_edit", workers: 3 }
+        ]
     env:
       APP_IMAGE: kartoza/geosight
     steps:
@@ -115,7 +124,6 @@ jobs:
         run: docker load -i /tmp/my-image.tar
 
       - name: Run docker-compose services
-        shell: bash
         working-directory: deployment
         run: |
           echo "Override docker-compose for testing purposes"
@@ -126,53 +134,25 @@ jobs:
           make wait-db
           docker cp ./django_project geosight_dev:/home/web
           make devweb-initialize
-      - name: Test Backend
-        run: make devweb-test
 
-  django_app_e2e_project_creation_test:
-    needs: build_image
-    name: 'Django App E2E Tests : Project Creation Tests'
-    runs-on: ubuntu-latest
-    env:
-      APP_IMAGE: kartoza/geosight
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.head_ref }}
-      - name: Display branch
-        run: git branch --show-current
+      - name: Execute Test Backend
+        if: ${{ matrix.test_suite.script }}
+        run: ${{ matrix.test_suite.script }}
 
-      - name: Restore Docker Image from Cache
-        uses: actions/cache@v3
-        with:
-          path: /tmp/my-image.tar
-          key: ${{ runner.os }}-docker-image-${{ hashFiles('deployment/docker/Dockerfile') }}
-          restore-keys: |
-            ${{ runner.os }}-docker-image-
-
-      - name: Load Docker Image
-        run: docker load -i /tmp/my-image.tar
-
-      - name: Run docker-compose services
-        working-directory: deployment
+      - name: Prepare container
+        if: ${{ matrix.test_suite.path }}
         run: |
-          echo "Override docker-compose for testing purposes"
-          cp docker-compose.test.yml docker-compose.override.yml
-          cp .template.env .env
-          cd ../
-          make devweb
-          make wait-db
-          docker cp ./django_project geosight_dev:/home/web
           make devweb-entrypoint
           make devweb-runserver
           make load-test-data
           make sleep
 
       - name: Test production config ready
+        if: ${{ matrix.test_suite.path }}
         run: make production-check
 
       - name: Test django endpoint
+        if: ${{ matrix.test_suite.path }}
         run: |
           curl http://localhost:2000/
           if [ $? -ne 0 ]; then
@@ -181,186 +161,10 @@ jobs:
           fi
 
       - name: Test E2E
+        if: ${{ matrix.test_suite.path }}
         working-directory: ./playwright/ci-test
         run: |
           npm install
           npm ci
           npx playwright install --with-deps
-          npx playwright test tests/project_creation --workers 2
-
-  django_app_e2e_project_view_test:
-    needs: build_image
-    name: 'Django App E2E Tests : Project View Tests'
-    runs-on: ubuntu-latest
-    env:
-      APP_IMAGE: kartoza/geosight
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.head_ref }}
-      - name: Display branch
-        run: git branch --show-current
-
-      - name: Restore Docker Image from Cache
-        uses: actions/cache@v3
-        with:
-          path: /tmp/my-image.tar
-          key: ${{ runner.os }}-docker-image-${{ hashFiles('deployment/docker/Dockerfile') }}
-          restore-keys: |
-            ${{ runner.os }}-docker-image-
-
-      - name: Load Docker Image
-        run: docker load -i /tmp/my-image.tar
-
-      - name: Run docker-compose services
-        working-directory: deployment
-        run: |
-          echo "Override docker-compose for testing purposes"
-          cp docker-compose.test.yml docker-compose.override.yml
-          cp .template.env .env
-          cd ../
-          make devweb
-          make wait-db
-          docker cp ./django_project geosight_dev:/home/web
-          make devweb-entrypoint
-          make devweb-runserver
-          make load-test-data
-          make sleep
-
-      - name: Test production config ready
-        run: make production-check
-
-      - name: Test django endpoint
-        run: |
-          curl http://localhost:2000/
-          if [ $? -ne 0 ]; then
-            echo "Curl command failed"
-            exit 1
-          fi
-
-      - name: Test E2E
-        working-directory: ./playwright/ci-test
-        run: |
-          npm install
-          npm ci
-          npx playwright install --with-deps
-          npx playwright test tests/project_view --workers 3
-
-  django_app_e2e_admin_list_test:
-    needs: build_image
-    name: 'Django App E2E Tests : Admin List Tests'
-    runs-on: ubuntu-latest
-    env:
-      APP_IMAGE: kartoza/geosight
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.head_ref }}
-      - name: Display branch
-        run: git branch --show-current
-
-      - name: Restore Docker Image from Cache
-        uses: actions/cache@v3
-        with:
-          path: /tmp/my-image.tar
-          key: ${{ runner.os }}-docker-image-${{ hashFiles('deployment/docker/Dockerfile') }}
-          restore-keys: |
-            ${{ runner.os }}-docker-image-
-
-      - name: Load Docker Image
-        run: docker load -i /tmp/my-image.tar
-
-      - name: Run docker-compose services
-        working-directory: deployment
-        run: |
-          echo "Override docker-compose for testing purposes"
-          cp docker-compose.test.yml docker-compose.override.yml
-          cp .template.env .env
-          cd ../
-          make devweb
-          make wait-db
-          docker cp ./django_project geosight_dev:/home/web
-          make devweb-entrypoint
-          make devweb-runserver
-          make load-test-data
-          make sleep
-
-      - name: Test production config ready
-        run: make production-check
-
-      - name: Test django endpoint
-        run: |
-          curl http://localhost:2000/
-          if [ $? -ne 0 ]; then
-            echo "Curl command failed"
-            exit 1
-          fi
-
-      - name: Test E2E
-        working-directory: ./playwright/ci-test
-        run: |
-          npm install
-          npm ci
-          npx playwright install --with-deps
-          npx playwright test tests/admin_list --workers 3
-
-  django_app_e2e_admin_edit_test:
-    needs: build_image
-    name: 'Django App E2E Tests : Admin Edit Tests'
-    runs-on: ubuntu-latest
-    env:
-      APP_IMAGE: kartoza/geosight
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.head_ref }}
-      - name: Display branch
-        run: git branch --show-current
-
-      - name: Restore Docker Image from Cache
-        uses: actions/cache@v3
-        with:
-          path: /tmp/my-image.tar
-          key: ${{ runner.os }}-docker-image-${{ hashFiles('deployment/docker/Dockerfile') }}
-          restore-keys: |
-            ${{ runner.os }}-docker-image-
-
-      - name: Load Docker Image
-        run: docker load -i /tmp/my-image.tar
-
-      - name: Run docker-compose services
-        working-directory: deployment
-        run: |
-          echo "Override docker-compose for testing purposes"
-          cp docker-compose.test.yml docker-compose.override.yml
-          cp .template.env .env
-          cd ../
-          make devweb
-          make wait-db
-          docker cp ./django_project geosight_dev:/home/web
-          make devweb-entrypoint
-          make devweb-runserver
-          make load-test-data
-          make sleep
-
-      - name: Test production config ready
-        run: make production-check
-
-      - name: Test django endpoint
-        run: |
-          curl http://localhost:2000/
-          if [ $? -ne 0 ]; then
-            echo "Curl command failed"
-            exit 1
-          fi
-
-      - name: Test E2E
-        working-directory: ./playwright/ci-test
-        run: |
-          npm install
-          npm ci
-          npx playwright install --with-deps
-          npx playwright test tests/admin_edit --workers 3
+          npx playwright test ${{ matrix.test_suite.path }} --workers ${{ matrix.test_suite.workers }}
