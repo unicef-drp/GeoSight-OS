@@ -1,39 +1,30 @@
 .react-datepicker-popper {
-  z-index: 9999 !important;
+  z-index: 9999!important;
 }
 
-.Popover-Btn {
-  padding-top: 7px;
-}
-
-.react-datepicker__input-container {
-  input {
-    width: 50%;
+.MuiDataGrid-columnHeaders{
+  .Popover-Btn {
+    padding-top: 7px;
   }
-}
+  svg {
+    fill: #808080;
 
-svg {
-  fill: #808080;
-
-  &.Active {
-    fill: #1CABE2;
+    &.Active {
+      fill: #1CABE2;
+    }
   }
-}
-
-.Popover-Btn {
-  cursor: pointer;
 }
 
 .DataGridFilter-Popover {
 
   .MuiPaper-root {
-    position: sticky !important;
-    width: 20% !important;
+    position: sticky!important;
+    width: 20%!important;
     max-height: 400px;
     overflow-y: scroll;
 
     .DataGridFilter-Container {
-      padding: 1rem;
+      padding: 10px;
 
       .Body {
         .FilterRow {
