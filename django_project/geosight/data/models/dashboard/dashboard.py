@@ -141,7 +141,8 @@ class Dashboard(
 
     def save(self, *args, **kwargs):
         """Save object and create thumbnail."""
-        # Create and save the thumbnail
+        # If dashboard has icon, delete old thumbnail if exist,
+        # save dashboard, then create new thumbnail
         if self.icon.name:
             old_dashboard = Dashboard.objects.filter(id=self.id).first()
 
@@ -151,7 +152,7 @@ class Dashboard(
                     if os.path.exists(old_dashboard.thumbnail):
                         os.remove(old_dashboard.thumbnail)
             # Save dashboard
-            super().save()
+            super().save(*args, **kwargs)
 
             # create new thumbnaill
             os.makedirs(os.path.dirname(self.thumbnail), exist_ok=True)
@@ -159,6 +160,9 @@ class Dashboard(
                 create_thumbnail(self.icon.path, self.thumbnail)
             except Exception:
                 pass
+        else:
+            # If it does not have icon, just save*
+            super().save(*args, **kwargs)
 
     def save_relations(self, data, is_create=False):
         """Save all relationship data."""
