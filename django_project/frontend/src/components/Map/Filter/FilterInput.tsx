@@ -21,7 +21,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Checkbox from "@mui/material/Checkbox";
 import DeleteFilter from "./FilterDelete";
-import { FilterInputIndicator } from "./FilterInputData";
+import { FilterInputData } from "./FilterInputData";
 
 /** Filter group component */
 const FilterInputElement = memo(
@@ -37,6 +37,7 @@ const FilterInputElement = memo(
       field,
       type,
       value,
+      setValue,
 
       // Active state
       active,
@@ -81,20 +82,23 @@ const FilterInputElement = memo(
           </div>
         </AccordionSummary>
         <AccordionDetails>
+          <FilterInputData
+            operator={operator}
+
+            // For layout
+            name={name}
+            description={description}
+            allowModify={allowModify}
+
+            // Filter definition
+            field={field}
+            type={type}
+            value={value}
+            setValue={setValue}
+          />
           {
-            field.includes('indicator_') ? <FilterInputIndicator
-              operator={operator}
-
-              // For layout
-              name={name}
-              description={description}
-              allowModify={allowModify}
-
-              // Filter definition
-              field={field}
-              type={type}
-              value={value}
-            /> : null
+            description && <div
+              className='FilterExpressionDescription'>{description}</div>
           }
           {
             allowModify ? <>
@@ -127,6 +131,19 @@ const FilterInput = (
     }
   }, []);
 
+  // Value callbacks
+  const setValue = useCallback((value: boolean) => {
+    if (query.value !== value) {
+      query.value = value
+      updateQuery()
+    }
+  }, []);
+
+  // OnDelete Callback
+  const onDeleteCallback = useCallback(() => {
+    onDelete()
+  }, []);
+
   // RENDER
   return <FilterInputElement
     operator={query.operator}
@@ -140,12 +157,13 @@ const FilterInput = (
     field={query.field}
     type={query.type}
     value={query.value}
+    setValue={setValue}
 
     /* active */
     active={query.active}
     setActive={setActive}
 
-    onDelete={onDelete}
+    onDelete={onDeleteCallback}
   />
 };
 

@@ -25,7 +25,6 @@ import './style.scss';
  * @constructor
  */
 const FilterControl = () => {
-  console.log('FilterControl')
   const dispatcher = useDispatch()
   // @ts-ignore
   const filterState = useSelector(state => state.dashboard?.data['filters']);

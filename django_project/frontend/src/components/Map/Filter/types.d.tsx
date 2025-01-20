@@ -74,6 +74,7 @@ export interface FilterInputProps {
   field?: string;
   type?: typeof TYPE[keyof typeof TYPE];
   value?: any;
+  setValue?: (value:any) => void;
 }
 
 export interface FilterInputElementProps extends FilterInputProps, BasicFilterElementProps {

@@ -24,7 +24,6 @@ import {
 import {
   WhereInputValue
 } from "../../SqlQueryGenerator/WhereQueryGenerator/WhereInput";
-import CircularProgress from "@mui/material/CircularProgress";
 import { RequestState } from "../../../types";
 
 export interface FetchSourceDetail {
@@ -33,27 +32,41 @@ export interface FetchSourceDetail {
   receiveData: (data: any) => void;
 }
 
+export interface FetchGeometryData {
+  field: string;
+  receiveData: (data: any) => void;
+}
+
 export const FetchSourceDetailIndicator = memo(
   ({ id, receiveData }: FetchSourceDetail) => {
-    console.log('FetchSourceDetailIndicator')
 
     // @ts-ignore
     const { indicators } = useSelector(state => state.dashboard.data);
 
     useEffect(() => {
-      console.log('--------')
-      console.log(id)
-      console.log(indicators)
-      receiveData(indicators.find((row: any) => row.id == id))
+      receiveData(indicators.find((row: any) => row.id + '' == id + ''))
     }, [indicators]);
 
     return null
   }
 )
-export const FetchSourceDataIndicator = memo(
+
+export const FetchSourceDetailRelatedTable = memo(
+  ({ id, receiveData }: FetchSourceDetail) => {
+
+    // @ts-ignore
+    const { relatedTables } = useSelector(state => state.dashboard.data);
+    useEffect(() => {
+      receiveData(relatedTables.find((row: any) => row.id + '' == id + ''))
+    }, [relatedTables]);
+
+    return null
+  }
+)
+
+export const FetchSourceData = memo(
   ({ id, sourceKey, receiveData }: FetchSourceDetail) => {
-    console.log('FetchSourceDataIndicator')
-    const prevFetchingRef = useRef<boolean>(true);
+    const prevFetchedRef = useRef<boolean>(true);
     const stateData = useSelector((state) => {
       // @ts-ignore
       if (state[sourceKey] && state[sourceKey][id]) {
@@ -66,22 +79,56 @@ export const FetchSourceDataIndicator = memo(
     /** Fetch the data **/
     useEffect(() => {
       const fetched = !!stateData?.fetched
-      if (prevFetchingRef.current !== fetched) {
+      if (prevFetchedRef.current !== fetched) {
         receiveData(stateData)
       }
-      prevFetchingRef.current = fetched;
+      prevFetchedRef.current = fetched;
     }, [stateData]);
 
     return null
   }
 )
+
+export const FetchSourceGeometryData = memo(
+  ({ field, receiveData }: FetchGeometryData) => {
+    const key = 'datasetGeometries'
+    // @ts-ignore
+    const identifier = useSelector(state => state.dashboard?.data.referenceLayer?.identifier);
+    let usedIdentifier = identifier
+    const [keyData, level, fieldIdentifier] = field.split('.')[0].split('_')
+    if (fieldIdentifier) {
+      usedIdentifier = fieldIdentifier
+    }
+
+    // @ts-ignore
+    const referenceLayerData = useSelector((state) => {
+      let data = null
+      // @ts-ignore
+      if (state[key] && state[key][usedIdentifier] && state[key][usedIdentifier][level]) {
+        const data = []
+        // @ts-ignore
+        for (const [_, value] of Object.entries(state[key][usedIdentifier][level])) {
+          data.push(value)
+        }
+        return { data: data }
+      }
+      return data;
+    })
+
+    /** Fetch the data **/
+    useEffect(() => {
+      receiveData(referenceLayerData)
+    }, [referenceLayerData]);
+
+    return null
+  }
+)
+
 /** Filter group component */
-export const FilterInputIndicator = memo(
+export const FilterInputData = memo(
   (
     {
       // For layout
-      name,
-      description,
       allowModify,
 
       // Filter definition
@@ -89,16 +136,29 @@ export const FilterInputIndicator = memo(
       operator,
       type,
       value,
+      setValue,
     }: FilterInputProps) => {
 
-    console.log('FilterInputIndicator ' + name)
     // Get the id and keyField
-    const [id, keyField] = field.replace('indicator_', '').split('.');
+    const [id, keyField] = field.replace(
+      'indicator_', ''
+    ).replace(
+      'related_table_', ''
+    ).split('.');
 
     /** Check the source **/
     let sourceDataKey = ''
     if (field.includes('indicator_')) {
       sourceDataKey = 'indicatorsData'
+    }
+    if (field.includes('related_table_')) {
+      sourceDataKey = 'relatedTableData'
+    }
+    if (field.includes('layer_')) {
+      sourceDataKey = 'indicatorsData'
+    }
+    if (field.includes('geometry_')) {
+      sourceDataKey = 'Geometry'
     }
 
     /** The state of element **/
@@ -107,8 +167,14 @@ export const FilterInputIndicator = memo(
     const [data, setData] = useState<RequestState>(null);
 
     // Receive source detail callbacks
-    const receiveSource = useCallback((data: any) => {
-      setSource(data)
+    const receiveSource = useCallback((_data: any) => {
+      let update = true
+      if (update && JSON.stringify(_data) == JSON.stringify(data)) {
+        update = false
+      }
+      if (update) {
+        setSource(_data)
+      }
     }, []);
 
     // Receive data
@@ -125,63 +191,78 @@ export const FilterInputIndicator = memo(
     const operatorName = OPERATOR[operator]
 
     // Check the datatype
-    let dataType = source?.type
+    let dataType = keyField === 'value' ? 'Number' : 'String';
     if (sourceDataKey === 'indicatorsData') {
       dataType = keyField === 'value' ? source?.type : 'String'
     }
-    let options: any[] = []
-    if (data) {
-      options = data.data.map((row: any) => row[keyField])
+    if (sourceDataKey === 'relatedTableData') {
+      if (source?.fields_definition) {
+        const _field = source.fields_definition.find(
+          (_field: any) => _field.name == keyField
+        )
+        if (_field) {
+          dataType = _field.type
+        }
+      }
     }
 
+    let options: any[] = ['loading']
+    if (data) {
+      options = Array.from(new Set(data.data.map((row: any) => row[keyField])))
+    }
+    if (data == null || !dataType) {
+      options = ['loading']
+    }
     return <>
       {
         sourceDataKey ? <>
-          <FetchSourceDetailIndicator
-            id={id}
-            receiveData={receiveSource}
-          />
-          <FetchSourceDataIndicator
-            id={id}
-            sourceKey={sourceDataKey}
-            receiveData={receiveData}
-          />
+          {
+            sourceDataKey === 'indicatorsData' ?
+              <FetchSourceDetailIndicator
+                id={id}
+                receiveData={receiveSource}
+              /> : sourceDataKey === 'relatedTableData' ?
+                <FetchSourceDetailRelatedTable
+                  id={id}
+                  receiveData={receiveSource}
+                /> : null
+          }
+          {
+            sourceDataKey !== 'Geometry' ?
+              <FetchSourceData
+                id={id}
+                sourceKey={sourceDataKey}
+                receiveData={receiveData}
+              /> : <FetchSourceGeometryData
+                field={field}
+                receiveData={receiveData}
+              />
+          }
         </> : null
       }
-      {
-        data == null || !dataType ?
-          <div className='Throbber'
-               style={{
-                 display: 'flex',
-                 alignItems: 'center',
-                 flexDirection: 'column'
-               }}
-          >
-            <CircularProgress size={36}/>
-          </div> : <div>
-            {keyField} {operatorName}
+      <div>
+        {keyField} {operatorName}
+        {
+          needsValue &&
+          <div className='FilterInputWrapper'>
             {
               needsValue &&
-              <div className='FilterInputWrapper'>
-                {
-                  needsValue &&
-                  // @ts-ignore
-                  <WhereInputValue
-                    fieldType={dataType}
-                    field={type}
-                    operator={operator}
-                    value={currentValue}
-                    optionsData={options}
-                  />
-                }
-              </div>
-            }
-            {
-              description && <div
-                className='FilterExpressionDescription'>{description}</div>
+              // @ts-ignore
+              <WhereInputValue
+                fieldType={dataType}
+                operator={operator}
+                value={currentValue}
+                setValue={(value: any) => {
+                  setValue(value)
+                }}
+                field={type}
+                optionsData={options}
+                disabled={!allowModify}
+              />
             }
           </div>
-      }
+        }
+      </div>
     </>
 
   }
