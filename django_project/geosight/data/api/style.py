@@ -63,3 +63,60 @@ class StyleDetailAPI(APIView):
         delete_permission_resource(style, request.user)
         style.delete()
         return Response('Deleted')
+
+
+import requests
+from django.conf import settings
+from geosight.data.utils import ClassifyRasterData
+import uuid
+from rest_framework import serializers
+import os
+
+
+class GetRasterClassSerializer(serializers.Serializer):
+    url = serializers.URLField()
+    class_type = serializers.CharField()
+    class_num = serializers.IntegerField()
+    colors = serializers.ListField()
+
+
+class GetRasterClassificationAPI(APIView):
+    """API for getting style."""
+
+    permission_classes = (IsAuthenticated,)
+    serializer_class = GetRasterClassSerializer
+
+    def post(self, request):
+        """Get raster classification."""
+
+        # url = request.data.get('url')
+        # class_type = request.data.get('class_type')
+        # class_num = request.data.get('class_num')
+        serializer = self.get_serializer(data=request.data, many=many)
+
+        # if not url:
+        #     return Response('URL parameter is required', status=400)
+        # try:
+        #     class_num = int(class_num)
+        # except ValueError:
+        #     return Response('class_number parameter must be integer', status=400)
+        breakpoint()
+
+        tmp_file_path = os.path.join(
+            settings.MEDIA_TEMP,
+            os.path.basename(url)
+        )
+        response = requests.get(url, stream=True)
+        if not os.path.exists(tmp_file_path):
+            if response.status_code == 200:
+                with open(tmp_file_path, "wb") as tmp_file:
+                    for chunk in response.iter_content(chunk_size=8192):
+                        tmp_file.write(chunk)
+            else:
+                raise Exception(
+                    f"Failed to download file: {response.status_code}"
+                )
+
+        classification = ClassifyRasterData(tmp_file_path, class_type, class_number).run()
+
+        return Response(classification)

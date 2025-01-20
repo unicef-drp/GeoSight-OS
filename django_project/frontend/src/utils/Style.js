@@ -170,6 +170,7 @@ export function createColorsFromPaletteId(paletteId, classNum, isReverse) {
  * @returns {*[]}
  */
 export function createDynamicStyle(data, styleType, config, styleData) {
+  debugger
   if (config?.no_data_rule?.outline_size) {
     config.no_data_rule.outline_size = parseFloat(config.no_data_rule.outline_size)
     if (isNaN(config.no_data_rule.outline_size)) {
@@ -262,6 +263,7 @@ export function createDynamicStyle(data, styleType, config, styleData) {
           } else {
             if (values.length) {
               const series = new geostats(values)
+              console.log(series)
               switch (config.dynamic_classification) {
                 case NATURAL_BREAKS:
                   classifications = series.getClassJenks(numClass)
@@ -308,6 +310,7 @@ export function createDynamicStyle(data, styleType, config, styleData) {
                   )
                 }
               }
+              console.log(styles)
             }
           }
         }

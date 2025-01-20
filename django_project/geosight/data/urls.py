@@ -66,7 +66,11 @@ from geosight.data.api.related_table import (
 from geosight.data.api.sharepoint import (
     SharepointConfigListAPI, SharepointInformationAPI
 )
-from geosight.data.api.style import StyleListAPI, StyleDetailAPI
+from geosight.data.api.style import (
+    StyleListAPI,
+    StyleDetailAPI,
+    GetRasterClassificationAPI
+)
 
 # ------------------------------------------------------
 dashboard_specific_api = [
@@ -229,6 +233,11 @@ style_api = [
     url(
         r'^(?P<pk>\d+)',
         StyleDetailAPI.as_view(), name='style-detail-api'
+    ),
+    url(
+        (r'^raster-classification/(?P<class_type>[a-zA-Z0-9_-]+)/'
+         r'(?P<class_number>[a-zA-Z0-9_-]+)'),
+        GetRasterClassificationAPI.as_view(), name='raster-classification-api'
     ),
 ]
 # ------------------------------------------------------
