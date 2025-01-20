@@ -127,6 +127,7 @@ class Dashboard(
 
     @property
     def thumbnail(self):
+        """Get dashboard thumbnail if exists."""
         if self.icon.name:
             file_name = os.path.basename(self.icon.name)
             thumbnail_path = os.path.join(
