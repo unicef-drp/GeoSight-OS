@@ -47,7 +47,7 @@ class DashboardTest(TestCase):
         # Update dashboard icon
         self._update_icon()
 
-        old_thumbnail = self.dashboard.thumbnail.path
+        old_thumbnail = self.dashboard.thumbnail
         self.assertIsNotNone(self.dashboard.icon.name)
 
         # Update dashboard icon again
@@ -60,7 +60,7 @@ class DashboardTest(TestCase):
         # than 20% the original size
         self.assertTrue(
             os.path.getsize(
-                self.dashboard.thumbnail.path
+                self.dashboard.thumbnail
             ) < 0.2 * os.path.getsize(
                 self.icon_path
             )

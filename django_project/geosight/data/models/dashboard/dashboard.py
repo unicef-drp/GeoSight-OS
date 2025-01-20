@@ -141,15 +141,21 @@ class Dashboard(
     def save(self, *args, **kwargs):
         """Save object and create thumbnail."""
         # Create and save the thumbnail
-        if self.icon:
-            old_dashboard = Dashboard.objects.get(pk=self.pk)
-            if old_dashboard.thumbnail:
-                if os.path.exists(old_dashboard.thumbnail):
-                    os.remove(old_dashboard.thumbnail)
+        if self.icon.name:
+            old_dashboard = Dashboard.objects.filter(id=self.id).first()
+
+            # Delete old thumbnail
+            if old_dashboard:
+                if old_dashboard.thumbnail:
+                    if os.path.exists(old_dashboard.thumbnail):
+                        os.remove(old_dashboard.thumbnail)
+            # Save dashboard
+            super().save()
+
+            # create new thumbnaill
             os.makedirs(os.path.dirname(self.thumbnail), exist_ok=True)
             try:
                 create_thumbnail(self.icon.path, self.thumbnail)
-                super().save()
             except Exception:
                 pass
 
