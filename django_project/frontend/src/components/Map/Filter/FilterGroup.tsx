@@ -29,7 +29,12 @@ import {
 import Checkbox from "@mui/material/Checkbox";
 import { SelectPlaceholder } from "../../Input";
 import DeleteFilter from "./FilterDelete";
-import FilterInput from "./FilterInput";
+import Tooltip from "@mui/material/Tooltip";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
+import FilterEditor from "./FilterEditor";
+import { INIT_DATA } from "../../../utils/queryExtraction";
+import FilterInput from "./Input/Data/FilterInput";
 
 /** Filter group component */
 const FilterGroupElement = memo(
@@ -45,13 +50,20 @@ const FilterGroupElement = memo(
      // On delete
      onDelete,
 
+     // On create filter
+     onCreateNewFilter,
+
+     // On create new group
+     onCreateNewGroup,
+
      // Is master
-     isMaster
+     isMaster,
+     isAdmin
    }: FilterGroupElementProps) => {
-    console.log('FilterGroupElement ' + operator)
+    const modalRef = useRef(null);
 
     // Fetch this from global data
-    const ableToModify = true
+    const isEnabled = isAdmin
 
     const [
       result, setResult
@@ -71,7 +83,7 @@ const FilterGroupElement = memo(
             }}
           />
           {
-            ableToModify ?
+            isEnabled ?
               <Fragment>
                 <SelectPlaceholder
                   placeholder='Operator'
@@ -86,11 +98,41 @@ const FilterGroupElement = memo(
           }
           <div className='Separator'/>
           {
+            isEnabled && <>
+              <Tooltip title="Add New Filter">
+                <AddCircleIcon
+                  className='FilterGroupAddExpression MuiButtonLike'
+                  onClick={
+                    () => {
+                      modalRef.current.open(
+                        INIT_DATA.WHERE(), (newData: any) => {
+                          onCreateNewFilter(newData)
+                        }
+                      )
+                    }}/>
+              </Tooltip>
+              <Tooltip title="Add New Group">
+                <CreateNewFolderIcon
+                  className='FilterGroupAdd MuiButtonLike' onClick={
+                  () => {
+                    modalRef.current.open(
+                      INIT_DATA.WHERE(), (newData: any) => {
+                        onCreateNewGroup(newData)
+                      }
+                    )
+                  }
+                }/>
+              </Tooltip>
+            </>
+          }
+          {
             !isMaster && <DeleteFilter
               text={'Are you sure want to delete this group?'}
               onDelete={onDelete}
+              isAdmin={isAdmin}
             />
           }
+          <FilterEditor ref={modalRef}/>
         </div>
       </div>
     )
@@ -108,10 +150,11 @@ const FilterGroup = (
     isMaster,
 
     /* Event on delete */
-    onDelete
+    onDelete,
+
+    isAdmin
   }: FilterGroupDataProps
 ) => {
-  console.log('FilterGroup')
   const active = query.active;
   const prevActiveRef = useRef<boolean | undefined>();
 
@@ -173,6 +216,18 @@ const FilterGroup = (
 
       /* Event on delete */
       onDelete={onDeleteCallback}
+
+      onCreateNewFilter={data => {
+        query.queries.push(data)
+        updateQuery()
+      }}
+      onCreateNewGroup={data => {
+        const newGroup = INIT_DATA.GROUP();
+        newGroup.queries.push(data)
+        query.queries.push(newGroup)
+        updateQuery()
+      }}
+      isAdmin={isAdmin}
     />
     {
       query.queries?.length > 0 ?
@@ -193,6 +248,7 @@ const FilterGroup = (
                   )
                   updateQuery()
                 }}
+                isAdmin={isAdmin}
               /> : <FilterInput
                 query={row}
                 updateQuery={updateQuery}
@@ -201,7 +257,9 @@ const FilterGroup = (
                     (query: any, _idx: number) => _idx !== idx
                   )
                   updateQuery()
-                }}/>
+                }}
+                isAdmin={isAdmin}
+              />
 
           )
         )

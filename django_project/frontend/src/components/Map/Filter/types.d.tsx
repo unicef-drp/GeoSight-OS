@@ -31,6 +31,7 @@ export const OPTIONS_TYPES = [
 
 export interface OnDeleteProps {
   onDelete?: () => void;
+  isAdmin: boolean;
 }
 
 export interface DeleteProps extends OnDeleteProps {
@@ -51,6 +52,9 @@ export interface FilterGroupElementProps extends BasicFilterElementProps {
 
   // Is master, no delete
   isMaster?: boolean;
+
+  onCreateNewFilter?: (data: any) => void;
+  onCreateNewGroup?: (data: any) => void;
 }
 
 export interface FilterGroupDataProps extends OnDeleteProps {
@@ -60,13 +64,16 @@ export interface FilterGroupDataProps extends OnDeleteProps {
 
   // Is master, no delete
   isMaster?: boolean;
+
+  onCreateNewFilter?: (data: any) => void;
+  onCreateNewGroup?: (data: any) => void;
 }
 
 export interface FilterInputProps {
   operator: typeof WHERE_OPERATOR[keyof typeof WHERE_OPERATOR];
 
   // For layout
-  name: string;
+  name?: string;
   description?: string;
   allowModify: boolean;
 
@@ -74,7 +81,13 @@ export interface FilterInputProps {
   field?: string;
   type?: typeof TYPE[keyof typeof TYPE];
   value?: any;
-  setValue?: (value:any) => void;
+  setValue?: (value: any) => void;
+
+  // edit mode
+  editMode?: boolean;
+  onEdited?: (data: any) => void;
+
+  isAdmin: boolean;
 }
 
 export interface FilterInputElementProps extends FilterInputProps, BasicFilterElementProps {

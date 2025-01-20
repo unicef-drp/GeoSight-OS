@@ -13,18 +13,18 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import { FilterInputProps } from "./types.d";
 import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
+import { FilterInputProps } from "../../types.d";
 import {
   IS_NOT_NULL,
   IS_NULL,
   OPERATOR
-} from "../../../utils/queryExtraction";
+} from "../../../../../utils/queryExtraction";
+import { RequestState } from "../../../../../types";
 import {
   WhereInputValue
-} from "../../SqlQueryGenerator/WhereQueryGenerator/WhereInput";
-import { RequestState } from "../../../types";
+} from "../../../../SqlQueryGenerator/WhereQueryGenerator/WhereInput";
 
 export interface FetchSourceDetail {
   id: string;
@@ -66,7 +66,7 @@ export const FetchSourceDetailRelatedTable = memo(
 
 export const FetchSourceData = memo(
   ({ id, sourceKey, receiveData }: FetchSourceDetail) => {
-    const prevFetchedRef = useRef<boolean>(true);
+    const prevFetchedRef = useRef<string>('');
     const stateData = useSelector((state) => {
       // @ts-ignore
       if (state[sourceKey] && state[sourceKey][id]) {
@@ -78,12 +78,12 @@ export const FetchSourceData = memo(
 
     /** Fetch the data **/
     useEffect(() => {
-      const fetched = !!stateData?.fetched
+      const fetched = id + sourceKey + !!stateData?.fetched;
       if (prevFetchedRef.current !== fetched) {
         receiveData(stateData)
       }
       prevFetchedRef.current = fetched;
-    }, [stateData]);
+    }, [id, sourceKey, stateData]);
 
     return null
   }
@@ -134,10 +134,13 @@ export const FilterInputData = memo(
       // Filter definition
       field,
       operator,
-      type,
       value,
       setValue,
-    }: FilterInputProps) => {
+
+      isAdmin
+    }: FilterInputProps
+  ) => {
+    const isEnabled = isAdmin || allowModify;
 
     // Get the id and keyField
     const [id, keyField] = field.replace(
@@ -162,7 +165,6 @@ export const FilterInputData = memo(
     }
 
     /** The state of element **/
-    const [currentValue, setCurrentValue] = useState(value)
     const [source, setSource] = useState(null);
     const [data, setData] = useState<RequestState>(null);
 
@@ -241,7 +243,9 @@ export const FilterInputData = memo(
         </> : null
       }
       <div>
-        {keyField} {operatorName}
+        <div className='FilterInputWrapperIndicator'>
+          {keyField} {operatorName}
+        </div>
         {
           needsValue &&
           <div className='FilterInputWrapper'>
@@ -251,13 +255,12 @@ export const FilterInputData = memo(
               <WhereInputValue
                 fieldType={dataType}
                 operator={operator}
-                value={currentValue}
+                value={value}
                 setValue={(value: any) => {
                   setValue(value)
                 }}
-                field={type}
                 optionsData={options}
-                disabled={!allowModify}
+                disabled={!isEnabled}
               />
             }
           </div>

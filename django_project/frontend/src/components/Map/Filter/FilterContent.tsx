@@ -18,13 +18,19 @@ import { FilterGroupDataProps } from "./types.d";
 import FilterGroup from "./FilterGroup";
 import { INIT_DATA } from "../../../utils/queryExtraction";
 import { Actions } from "../../../store/dashboard";
+import FilterControlFiltering from "./FilterControlFiltering";
 
 import './style.scss';
+
+
+export interface Props {
+  isAdmin: boolean;
+}
 
 /** Filter control
  * @constructor
  */
-const FilterControl = () => {
+const FilterControl = ({ isAdmin }: Props) => {
   const dispatcher = useDispatch()
   // @ts-ignore
   const filterState = useSelector(state => state.dashboard?.data['filters']);
@@ -43,13 +49,24 @@ const FilterControl = () => {
 
     /* Is master */
     isMaster={true}
+    isAdmin={isAdmin}
   />
 };
 
+const FilterContent = memo(({ isAdmin }: Props) => {
+  // @ts-ignore
+  const { editMode } = useSelector(state => state.globalState)
+  // @ts-ignore
+  const { filtersAllowModify } = useSelector(state => state.dashboard?.data)
 
-const FilterContent = memo(() => {
+  if ((!isAdmin && editMode) || isAdmin && !editMode) {
+    return
+  }
   return <div className='FilterControl'>
-    <FilterControl/>
+    <FilterControl
+      isAdmin={filtersAllowModify ? filtersAllowModify : isAdmin}
+    />
+    <FilterControlFiltering/>
   </div>;
 });
 

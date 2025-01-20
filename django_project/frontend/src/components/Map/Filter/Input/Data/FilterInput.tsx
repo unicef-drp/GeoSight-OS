@@ -13,15 +13,18 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import { FilterInputDataProps, FilterInputElementProps } from "./types.d";
-import React, { memo, useCallback, useState } from "react";
+import React, { memo, useCallback, useRef, useState } from "react";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Checkbox from "@mui/material/Checkbox";
-import DeleteFilter from "./FilterDelete";
 import { FilterInputData } from "./FilterInputData";
+import { FilterInputDataProps, FilterInputElementProps } from "../../types.d";
+import DeleteFilter from "../../FilterDelete";
+import { EditIcon } from "../../../../Icons";
+import { TYPE } from "../../../../../utils/queryExtraction";
+import FilterEditor from "../../FilterEditor";
 
 /** Filter group component */
 const FilterInputElement = memo(
@@ -35,7 +38,6 @@ const FilterInputElement = memo(
 
       // Filter definition
       field,
-      type,
       value,
       setValue,
 
@@ -43,20 +45,24 @@ const FilterInputElement = memo(
       active,
       setActive,
 
-      onDelete
-    }: FilterInputElementProps) => {
+      onDelete,
+      onEdited,
 
-    console.log('FilterInputElement ' + field)
+      isAdmin
+    }: FilterInputElementProps) => {
+    const modalRef = useRef(null);
     const [expanded, setExpanded] = useState(false)
+
+    const isEnabled = isAdmin || allowModify;
     /** Render **/
     return (
       <Accordion
         className={'FilterExpression'}
-        expanded={!allowModify ? false : expanded}
+        expanded={!isEnabled ? false : expanded}
         onChange={() => setExpanded(!expanded)}
       >
         <AccordionSummary
-          expandIcon={allowModify ? <ExpandMoreIcon/> : ""}
+          expandIcon={isEnabled ? <ExpandMoreIcon/> : ""}
         >
           <div className='FilterExpressionName'>
             <Checkbox
@@ -72,10 +78,30 @@ const FilterInputElement = memo(
             <div>{name}</div>
             <div className='Separator'></div>
             {
-              allowModify && <>
+              isEnabled && <>
+                <EditIcon
+                  className='MuiButtonLike FilterEdit'
+                  onClick={(event: any) => {
+                    event.stopPropagation()
+                    modalRef.current.open(
+                      {
+                        name: name,
+                        description: description,
+                        allowModify: allowModify,
+                        field: field,
+                        operator: operator,
+                        type: TYPE.EXPRESSION,
+                        value: value,
+                      },
+                      (newData: any) => {
+                        onEdited(newData)
+                      }
+                    )
+                  }}/>
                 <DeleteFilter
                   text={'Are you sure want to delete this group?'}
                   onDelete={onDelete}
+                  isAdmin={isAdmin}
                 />
               </>
             }
@@ -86,26 +112,22 @@ const FilterInputElement = memo(
             operator={operator}
 
             // For layout
-            name={name}
             description={description}
             allowModify={allowModify}
 
             // Filter definition
             field={field}
-            type={type}
             value={value}
             setValue={setValue}
+
+            isAdmin={isAdmin}
           />
           {
             description && <div
               className='FilterExpressionDescription'>{description}</div>
           }
-          {
-            allowModify ? <>
-
-            </> : ""
-          }
         </AccordionDetails>
+        <FilterEditor ref={modalRef}/>
       </Accordion>
     )
   }
@@ -119,7 +141,9 @@ const FilterInput = (
     updateQuery,
 
     /* Event on delete */
-    onDelete
+    onDelete,
+
+    isAdmin
   }: FilterInputDataProps
 ) => {
 
@@ -144,6 +168,18 @@ const FilterInput = (
     onDelete()
   }, []);
 
+  // onEdited Callback
+  const onEditedCallback = useCallback((data: any) => {
+    query.name = data.name;
+    query.description = data.description;
+    query.allowModify = data.allowModify;
+    query.field = data.field;
+    query.operator = data.operator;
+    query.type = data.type;
+    query.value = data.value;
+    updateQuery()
+  }, []);
+
   // RENDER
   return <FilterInputElement
     operator={query.operator}
@@ -155,7 +191,6 @@ const FilterInput = (
 
     // Filter definition
     field={query.field}
-    type={query.type}
     value={query.value}
     setValue={setValue}
 
@@ -164,6 +199,9 @@ const FilterInput = (
     setActive={setActive}
 
     onDelete={onDeleteCallback}
+    onEdited={onEditedCallback}
+
+    isAdmin={isAdmin}
   />
 };
 
