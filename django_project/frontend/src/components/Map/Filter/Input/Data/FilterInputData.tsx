@@ -209,10 +209,14 @@ export const FilterInputData = memo(
     }
 
     let options: any[] = ['loading']
-    if (data) {
-      options = Array.from(new Set(data.data.map((row: any) => row[keyField])))
+    if (data?.data) {
+      try {
+        options = Array.from(new Set(data.data.map((row: any) => row[keyField])))
+      } catch (err) {
+
+      }
     }
-    if (data == null || !dataType) {
+    if (data?.data == null || !dataType) {
       options = ['loading']
     }
     return <>
@@ -267,6 +271,5 @@ export const FilterInputData = memo(
         }
       </div>
     </>
-
   }
 )

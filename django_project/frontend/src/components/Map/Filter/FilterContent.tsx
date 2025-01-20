@@ -34,7 +34,7 @@ const FilterControl = ({ isAdmin }: Props) => {
   const dispatcher = useDispatch()
   // @ts-ignore
   const filterState = useSelector(state => state.dashboard?.data['filters']);
-  const filter = (filterState ? filterState : INIT_DATA.GROUP()) as FilterGroupDataProps;
+  const filter = (filterState && Object.keys(filterState).length ? filterState : INIT_DATA.GROUP()) as FilterGroupDataProps;
 
   /** Update query */
   const updateQuery = () => {
