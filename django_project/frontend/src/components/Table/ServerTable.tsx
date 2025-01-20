@@ -78,7 +78,10 @@ const ServerTable = forwardRef(
           if (!column.headerName) {
             // @ts-ignore
             column.headerName = (
-              <DataGridFilter fields={columns} filterModel={filterModel} setFilterModel={setFilterModel}/>
+              <DataGridFilter
+                fields={columns}
+                filterModel={filterModel}
+                setFilterModel={setFilterModel}/>
             );
             column.headerAlign = 'right';
           }
@@ -128,7 +131,6 @@ const ServerTable = forwardRef(
         ...parameters,
         ...filterModel
       })
-      console.log(filterModel)
     }, [filterModel]);
 
     // Sort model
@@ -199,8 +201,7 @@ const ServerTable = forwardRef(
     }
     /*** When parameters changed */
     useEffect(() => {
-      console.log('load_data')
-      loadData(true)
+      loadData(false)
     }, [parameters])
 
     /*** When page size and filter changed */
