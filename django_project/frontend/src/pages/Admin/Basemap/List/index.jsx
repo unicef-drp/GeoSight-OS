@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React from 'react';
+import React, {useState} from 'react';
 import { GridActionsCellItem } from "@mui/x-data-grid";
 
 import { render } from '../../../../app';
@@ -24,6 +24,7 @@ import PermissionModal from "../../Permission";
 
 import './style.scss';
 import AdminList from "../../../../components/AdminList";
+import {ResourceMeta} from "../../../../components/AdminList";
 
 export function resourceActions(params) {
   return COLUMNS_ACTION(params, urls.admin.basemapList)
@@ -33,17 +34,11 @@ export function resourceActions(params) {
  * Indicator List App
  */
 export default function BasemapList() {
-  const pageName = pageNames.Basemaps
+  const pageName = pageNames.Basemaps;
   let columns = COLUMNS(pageName, urls.admin.basemapList);
-  const action = columns.pop();
-  columns = columns.concat([
-    { field: 'created_at', headerName: 'Created At', flex: 0.5 },
-    { field: 'created_by', headerName: 'Created By', flex: 0.5, sortField: 'creator__username' },
-    { field: 'modified_at', headerName: 'Modified At', flex: 0.5 },
-    { field: 'modified_by', headerName: 'Modified By', flex: 0.5 },
-    action
-  ])
-  columns[columns.length - 1] = {
+  columns.pop();
+  columns = columns.concat(ResourceMeta)
+  columns.push({
     field: 'actions',
     type: 'actions',
     cellClassName: 'MuiDataGrid-ActionsColumn',
@@ -70,7 +65,7 @@ export default function BasemapList() {
       }
       return actions
     },
-  }
+  })
   return <AdminList
     url={{
       list: urls.api.list,
@@ -83,6 +78,7 @@ export default function BasemapList() {
     columns={columns}
     pageName={pageName}
     multipleDelete={true}
+    enableFilter={true}
     defaults={{
       sort: [
         { field: 'name', sort: 'asc' }

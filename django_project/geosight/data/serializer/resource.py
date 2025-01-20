@@ -37,7 +37,7 @@ class ResourceSerializer(DynamicModelSerializer):
 
     def get_created_at(self, obj):
         """Return object created time."""
-        return obj.modified_at.strftime('%Y-%m-%d %H:%M:%S')
+        return obj.created_at.strftime('%Y-%m-%d %H:%M:%S')
 
     def get_created_by(self, obj):
         """Return object created by."""

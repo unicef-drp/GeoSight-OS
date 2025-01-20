@@ -137,7 +137,7 @@ export function COLUMNS(pageName, redirectUrl, editUrl = null, detailUrl = null)
       }
     },
     { field: 'description', headerName: 'Description', flex: 1 },
-    { field: 'category', headerName: 'Category', flex: 0.5, sortField: 'group__name' },
+    { field: 'category', headerName: 'Category', flex: 0.5, serverKey: 'group__name' },
     {
       field: 'actions',
       type: 'actions',
