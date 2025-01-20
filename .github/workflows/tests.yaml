@@ -95,15 +95,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        test_suite: [
-          { name: "Backend Tests", script: "make devweb-test" },
-          { name: "E2E Tests: Project Creation", path: "tests/project_creation", workers: 2 },
-          { name: "E2E Tests: Project View", path: "tests/project_view", workers: 3 },
-          { name: "E2E Tests: Admin List", path: "tests/admin_list", workers: 3 },
-          { name: "E2E Tests: Admin Edit", path: "tests/admin_edit", workers: 3 },
-          { name: "E2E Tests: Admin List Filter", path: "tests/admin_list_filter", workers: 3,
-            script_load : "make load-test-data-for-filter" }
-        ]
+      test_suite: [
+        { name: "Backend Tests", script: "make devweb-test" },
+        { name: "E2E Tests: Project Creation", path: "tests/project_creation", workers: 2, script_load : "make load-test-data" },
+        { name: "E2E Tests: Project View", path: "tests/project_view", workers: 3, script_load : "make load-test-data" },
+        { name: "E2E Tests: Admin List", path: "tests/admin_list", workers: 3, script_load : "make load-test-data" },
+        { name: "E2E Tests: Admin Edit", path: "tests/admin_edit", workers: 3, script_load : "make load-test-data" },
+        { name: "E2E Tests: Admin List Filter", path: "tests/admin_list_filter", workers: 3, script_load : "make load-test-data-for-filter" }
+      ]
     env:
       APP_IMAGE: kartoza/geosight
     steps:
@@ -146,11 +145,7 @@ jobs:
         run: |
           make devweb-entrypoint
           make devweb-runserver
-          if [[ -n "${{ matrix.test_suite.script_load }}" ]]; then
-            ${{ matrix.test_suite.script_load }}
-          else
-            make load-test-data
-          fi
+          ${{ matrix.test_suite.script_load }}
           make sleep
 
       - name: Test production config ready
