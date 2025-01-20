@@ -51,8 +51,8 @@ test.describe('Test filter in indicator admin', () => {
     await page.getByTitle('DataGrid-Filter').locator('a').click();
     await page.getByLabel('Created At (from)').click();
     await page.getByLabel('Created At (from)').fill('2025-01-19');
-    await page.getByLabel('Created At (from)').click();
-    await page.getByLabel('Created At (from)').fill('');
+    await page.getByLabel('Created At (to)').click();
+    await page.getByLabel('Created At (to)').fill('');
     await page.getByRole('button', { name: 'Apply Filters' }).click();
     await page.locator('.MuiBackdrop-root').click();
     await expect(page.getByRole('grid')).toContainText('Sample Indicator A A0');
@@ -63,8 +63,8 @@ test.describe('Test filter in indicator admin', () => {
     await page.getByTitle('DataGrid-Filter').locator('a').click();
     await page.getByLabel('Created At (from)').click();
     await page.getByLabel('Created At (from)').fill('2023-07-27');
-    await page.getByLabel('Created At (from)').click();
-    await page.getByLabel('Created At (from)').fill('2023-07-27');
+    await page.getByLabel('Created At (to)').click();
+    await page.getByLabel('Created At (to)').fill('2023-07-27');
     await page.getByRole('button', { name: 'Apply Filters' }).click();
     await page.locator('.MuiBackdrop-root').click();
     await expect(page.getByRole('grid')).toContainText('Sample Indicator C');
