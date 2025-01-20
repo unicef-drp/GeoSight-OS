@@ -146,7 +146,11 @@ jobs:
         run: |
           make devweb-entrypoint
           make devweb-runserver
-          ${{ matrix.test_suite.script_load }}
+          if [[ -n "${{ matrix.test_suite.script_load }}" ]]; then
+            ${{ matrix.test_suite.script_load }}
+          else
+            make load-test-data
+          fi
           make sleep
 
       - name: Test production config ready
