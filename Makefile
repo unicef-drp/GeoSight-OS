@@ -244,8 +244,8 @@ load-test-data-for-filter:
 	@echo "------------------------------------------------------------------"
 	@echo "Load test data for testing filter functionality"
 	@echo "------------------------------------------------------------------"
-	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/admin_list_filter/1.user_group.json"
-	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/admin_list_filter/2.geosight_data.json"
+	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/admin_filter/1.user_group.json"
+	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/admin_filter/2.geosight_data.json"
 
 devweb-test:
 	@echo
