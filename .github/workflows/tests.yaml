@@ -100,7 +100,9 @@ jobs:
           { name: "E2E Tests: Project Creation", path: "tests/project_creation", workers: 2 },
           { name: "E2E Tests: Project View", path: "tests/project_view", workers: 3 },
           { name: "E2E Tests: Admin List", path: "tests/admin_list", workers: 3 },
-          { name: "E2E Tests: Admin Edit", path: "tests/admin_edit", workers: 3 }
+          { name: "E2E Tests: Admin Edit", path: "tests/admin_edit", workers: 3 },
+          { name: "E2E Tests: Admin List Filter", path: "tests/admin_list_filter", workers: 3,
+            script_load : "make load-test-data-for-filter" }
         ]
     env:
       APP_IMAGE: kartoza/geosight
@@ -144,7 +146,7 @@ jobs:
         run: |
           make devweb-entrypoint
           make devweb-runserver
-          make load-test-data
+          ${{ matrix.test_suite.script_load }}
           make sleep
 
       - name: Test production config ready
