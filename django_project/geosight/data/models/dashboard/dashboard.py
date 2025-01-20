@@ -87,12 +87,6 @@ class Dashboard(
         default='geometry_code'
     )
 
-    thumbnail = models.ImageField(
-        upload_to='icons/thumbnails',
-        null=True,
-        blank=True
-    )
-
     # group
     group = models.ForeignKey(
         DashboardGroup,
@@ -131,29 +125,31 @@ class Dashboard(
         """Check of name is exist."""
         return Dashboard.objects.filter(slug=slug).first() is not None
 
+    @property
+    def thumbnail(self):
+        if self.icon.name:
+            file_name = os.path.basename(self.icon.name)
+            thumbnail_path = os.path.join(
+                settings.MEDIA_ROOT,
+                'icons',
+                'thumbnails',
+                file_name
+            )
+            return thumbnail_path
+        return None
+
     def save(self, *args, **kwargs):
         """Save object and create thumbnail."""
         # Create and save the thumbnail
-        super().save()
         if self.icon:
-            if self.thumbnail:
-                if os.path.exists(self.thumbnail.path):
-                    os.remove(self.thumbnail.path)
-            dir_name = os.path.dirname(self.icon.path)
-            file_name = os.path.basename(self.icon.path)
-            thumbnail_dir_name = os.path.join(dir_name, 'thumbnail')
-            thumbnail_path = os.path.join(
-                thumbnail_dir_name,
-                file_name
-            )
-            os.makedirs(os.path.dirname(thumbnail_path), exist_ok=True)
+            old_dashboard = Dashboard.objects.get(pk=self.pk)
+            if old_dashboard.thumbnail:
+                if os.path.exists(old_dashboard.thumbnail):
+                    os.remove(old_dashboard.thumbnail)
+            os.makedirs(os.path.dirname(self.thumbnail), exist_ok=True)
             try:
-                create_thumbnail(self.icon.path, thumbnail_path)
-                self.thumbnail.name = thumbnail_path.replace(
-                    settings.MEDIA_ROOT + '/',
-                    ''
-                )
-                super().save(*args, **kwargs)
+                create_thumbnail(self.icon.path, self.thumbnail)
+                super().save()
             except Exception:
                 pass
 
