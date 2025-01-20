@@ -22,6 +22,7 @@ import { pageNames } from '../../index';
 import { COLUMNS, COLUMNS_ACTION } from "../../Components/List";
 import PermissionModal from "../../Permission";
 import AdminList from "../../../../components/AdminList";
+import {ResourceMeta} from "../../../../components/AdminList";
 
 import './style.scss';
 
@@ -34,9 +35,12 @@ export function resourceActions(params) {
  */
 export default function ContextLayerList() {
   const pageName = pageNames.ContextLayer
-  const columns = COLUMNS(pageName, urls.admin.contextLayerList);
-  columns[4] = { field: 'layer_type', headerName: 'Layer type', flex: 0.5 };
-  columns[5] = {
+  let columns = COLUMNS(pageName, urls.admin.contextLayerList);
+  columns.pop();
+  columns = columns.concat(
+    [{ field: 'layer_type', headerName: 'Layer type', flex: 0.5 }].concat(ResourceMeta)
+  )
+  columns.push({
     field: 'actions',
     type: 'actions',
     cellClassName: 'MuiDataGrid-ActionsColumn',
@@ -61,7 +65,7 @@ export default function ContextLayerList() {
       }
       return actions
     },
-  }
+  })
   return <AdminList
     url={{
       list: urls.api.list,
@@ -74,6 +78,7 @@ export default function ContextLayerList() {
     columns={columns}
     pageName={pageName}
     multipleDelete={true}
+    enableFilter={true}
     defaults={{
       sort: [
         { field: 'name', sort: 'asc' }

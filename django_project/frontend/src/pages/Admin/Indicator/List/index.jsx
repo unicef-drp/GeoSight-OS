@@ -30,6 +30,7 @@ import {
   MapActiveIcon
 } from "../../../../components/Icons";
 import AdminList from "../../../../components/AdminList";
+import {ResourceMeta} from "../../../../components/AdminList";
 
 import './style.scss';
 
@@ -189,20 +190,23 @@ export function resourceActions(params, noShare = false) {
 export default function IndicatorList() {
   // Notification
   const pageName = pageNames.Indicators
-  const columns = COLUMNS(pageName, urls.admin.indicatorList);
+  let columns = COLUMNS(pageName, urls.admin.indicatorList);
+  // pop action
+  columns.pop();
+  columns = columns.concat(ResourceMeta)
   columns[1].headerName = 'Name'
-  columns[4] = {
+
+  columns.push({
     field: 'actions',
     type: 'actions',
     cellClassName: 'MuiDataGrid-ActionsColumn',
     width: 320,
     getActions: (params) => {
-      const permission = params.row.permission
       // Create actions
       const actions = resourceActions(params)
       return actions
     },
-  }
+  })
   return <AdminList
     url={{
       list: urls.api.list,
@@ -215,6 +219,7 @@ export default function IndicatorList() {
     columns={columns}
     pageName={pageName}
     multipleDelete={true}
+    enableFilter={true}
     defaults={{
       sort: [
         { field: 'name', sort: 'asc' }

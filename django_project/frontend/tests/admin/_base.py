@@ -88,6 +88,7 @@ class BaseViewTest(object):
             new_resource = self.get_resources(self.creator).last()
             self.assertEqual(new_resource.name, new_payload['name'])
             self.assertEqual(new_resource.creator, self.creator)
+            self.assertEqual(new_resource.modified_by, self.creator)
 
             # Check the edit permission
             url = reverse(self.edit_url_tag, kwargs={'pk': new_resource.id})
@@ -159,6 +160,7 @@ class BaseViewTest(object):
             self.resource.refresh_from_db()
             self.assertEqual(self.resource.name, new_payload['name'])
             self.assertEqual(self.resource.creator, self.resource_creator)
+            self.assertEqual(self.resource.modified_by, self.creator)
 
     class TestCaseWithBatch(TestCase):
         """Test for batch Edit Admin."""

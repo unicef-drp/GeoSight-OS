@@ -50,6 +50,7 @@ class DashboardCreateViewBase:
             origin = Dashboard.objects.get(id=origin_id)
 
         data['creator'] = user
+        data['modified_by'] = user
         form = DashboardForm(data, files)
         if form.is_valid():
             try:

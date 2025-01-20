@@ -15,9 +15,10 @@ __date__ = '22/08/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.db import models
+from core.models.general import AbstractFileCleanup
 
 
-class Block(models.Model):
+class Block(AbstractFileCleanup):
     """Block of an page of documentation."""
 
     url = models.CharField(

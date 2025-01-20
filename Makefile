@@ -239,6 +239,14 @@ load-test-data:
 	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/test/4.geosight_data.json"
 	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata geosight/reference_dataset/fixtures/test/4.reference_dataset_levels.json"
 
+load-test-data-for-filter:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Load test data for testing filter functionality"
+	@echo "------------------------------------------------------------------"
+	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/admin_filter/1.user_group.json"
+	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/admin_filter/2.geosight_data.json"
+
 devweb-test:
 	@echo
 	@echo "------------------------------------------------------------------"

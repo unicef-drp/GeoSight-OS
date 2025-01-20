@@ -138,7 +138,7 @@ class ContextLayerForm(forms.ModelForm):
     class Meta:  # noqa: D106
         model = ContextLayer
         exclude = (
-            'created_at', 'creator', 'modified_at'
+            'created_at', 'creator', 'modified_at', 'modified_by'
         )
 
     @staticmethod
