@@ -131,8 +131,8 @@ export const DataGridFilter = (
           }
         </Grid>
         <div className='Footer'>
-          <Button variant='contained' id={'ListFilter-Btn'} onClick={handleApplyFilters}>Apply Filters</Button>
-          <div style={{flexGrow: 0.1}}></div>
+          {/*<Button variant='contained' id={'ListFilter-Btn'} onClick={handleApplyFilters}>Apply Filters</Button>*/}
+          {/*<div style={{flexGrow: 0.1}}></div>*/}
           <Button variant='contained' onClick={handleClear} color="success">Reset</Button>
         </div>
       </div>
