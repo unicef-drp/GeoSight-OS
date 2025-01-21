@@ -538,7 +538,7 @@
   }
 
   .Mui-selected {
-    background-color: var(--primary-color)-transparency;
+    background-color: var(--primary-color-transparency);
   }
 }
 
@@ -733,7 +733,7 @@
 .MuiAutocomplete-option[aria-selected="true"],
 .SelectWithList__option--is-selected,
 .ReactSelect__option--is-selected, {
-  background-color: var(--primary-color)-transparency !important;
+  background-color: var(--primary-color-transparency) !important;
   color: black !important;
 }
 
