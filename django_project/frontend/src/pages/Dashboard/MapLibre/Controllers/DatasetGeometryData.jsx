@@ -19,6 +19,7 @@
 
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
+import $ from "jquery";
 import { datasetListFromDashboardData } from "../../../../utils/geometry";
 import { dictDeepCopy } from "../../../../utils/main";
 import { Actions } from "../../../../store/dashboard";
