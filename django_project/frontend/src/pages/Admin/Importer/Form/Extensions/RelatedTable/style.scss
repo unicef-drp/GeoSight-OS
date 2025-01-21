@@ -13,12 +13,6 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   VectorContextLayerHarvester Content
-   ========================================================================== */
-
-@import '../../../../../../app/variables';
-
 .InputInLine {
   display: flex;
 
@@ -39,8 +33,8 @@
 .HarvesterForm {
   .BasicFormSection {
     input:disabled {
-      border: 1px solid $disabled-color !important;
-      color: $disabled-color;
+      border: 1px solid var(--disabled-color) !important;
+      color: var(--disabled-color);
       cursor: pointer;
     }
   }

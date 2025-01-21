@@ -13,11 +13,6 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   Overview Form style
-   ========================================================================== */
-
-@import '../../../../../app/variables';
 @import '@mdxeditor/editor/style.css';
 
 #SummaryOverview {
@@ -46,11 +41,11 @@
     --text-xs: 0.9rem !important;
     --text-xxs: 0.8rem !important;
 
-    --font-mono: $base-font-family !important;
-    --font-body: $base-font-family !important;
+    --font-mono: var(--base-font-family) !important;
+    --font-body: var(--base-font-family) !important;
 
     > div:nth-child(2) {
-      border: 1px solid $border-gray;
+      border: 1px solid var(--border-gray);
     }
   }
 }

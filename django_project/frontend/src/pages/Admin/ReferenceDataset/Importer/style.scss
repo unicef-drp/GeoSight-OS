@@ -17,16 +17,14 @@
    ReferenceLayerView Form style
    ========================================================================== */
 
-@import '../../../../app/variables';
-
 .AdminForm form {
   padding: 0 !important;
 }
 
 .dzu-dropzoneActive {
-  background-color: $primary-color-transparency;
+  background-color: var(--primary-color-transparency);
   border-color: #2484FF;
-  border: 2px solid $primary-color !important;
+  border: 2px solid var(--primary-color) !important;
 }
 
 form {
@@ -48,7 +46,7 @@ form {
     .Draggable {
       .MuiPaper-root {
         padding: 1rem;
-        border: 1px solid $primary-color-transparency;
+        border: 1px solid var(--primary-color-transparency);
       }
     }
 

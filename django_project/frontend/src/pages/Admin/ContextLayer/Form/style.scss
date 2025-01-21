@@ -17,9 +17,6 @@
    Context Layer Form style
    ========================================================================== */
 
-@import '../../../../app/variables';
-
-
 .ContextLayerConfigButton {
   text-align: center;
   margin-bottom: 1rem;
@@ -56,6 +53,6 @@ form {
 }
 
 .UploadFile {
-  border: 1px solid $primary-color;
+  border: 1px solid var(--primary-color);
   padding: 1rem;
 }

@@ -13,12 +13,6 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   Filter style
-   ========================================================================== */
-
-@import '../../../../app/variables';
-
 .FilterAccordion {
   height: 100%;
 
@@ -62,7 +56,7 @@
   overflow-y: auto;
 
   .FilterControlInfo {
-    font-weight: $base-font-medium;
+    font-weight: var(--base-font-medium);
     font-size: 12px;
     color: #7E7E7E;
   }
@@ -74,7 +68,7 @@
 
     .Mui-checked {
       .MuiSwitch-thumb {
-        background-color: $secondary-color;
+        background-color: var(--secondary-color);
       }
     }
   }
@@ -109,26 +103,22 @@
         transform: translateX(34px);
 
         .MuiSwitch-thumb {
-          border-radius: 0;
-          border-bottom-right-radius: $border-radius;
-          border-top-right-radius: $border-radius;
+          border-radius: 0 var(--border-radius) var(--border-radius) 0;
         }
       }
     }
 
     .MuiSwitch-thumb {
       box-shadow: none;
-      background-color: $secondary-color;
-      border-radius: 0;
-      border-bottom-left-radius: $border-radius;
-      border-top-left-radius: $border-radius;
+      background-color: var(--secondary-color);
+      border-radius: var(--border-radius) 0 0 var(--border-radius);
       width: 32px;
       height: 16px;
     }
 
     .MuiSwitch-track {
-      background-color: $anti-primary-color !important;
-      border-radius: $border-radius;
+      background-color: var(--anti-primary-color) !important;
+      border-radius: var(--border-radius);
       opacity: 1 !important;
 
       &:before, &:after {
@@ -143,26 +133,26 @@
       &:before {
         content: 'AND';
         left: 9px;
-        color: $primary-color;
+        color: var(--primary-color);
       }
 
       &:after {
         content: 'OR';
         right: 13px;
-        color: $primary-color;
+        color: var(--primary-color);
       }
     }
   }
 
   .MuiAccordionSummary-content {
-    color: $base-black-color !important;
+    color: var(--base-black-color) !important;
     font-size: 0.8rem !important;
   }
 
   .FilterGroup {
     padding: 10px 8px 10px 8px;
     position: relative;
-    border-radius: $border-radius;
+    border-radius: var(--border-radius);
     background-color: rgba(0, 0, 0, 0.03);
 
     & > .MuiPaper-root {
@@ -181,13 +171,13 @@
         }
 
         .FilterEdit {
-          color: $tab-active-color;
+          color: var(--tab-active-color);
           width: 12px;
           margin-right: 5px;
         }
 
         .FilterDelete {
-          color: $tab-active-color;
+          color: var(--tab-active-color);
           width: 9px;
         }
       }
@@ -205,7 +195,7 @@
 
       .FilterGroupOption {
         background-color: #F8F9F9;
-        border-radius: $border-radius;
+        border-radius: var(--border-radius);
         display: flex;
         align-items: center;
         min-height: 30px;
@@ -225,7 +215,7 @@
 
         .MuiButtonLike {
           color: white;
-          background: $primary-color;
+          background: var(--primary-color);
           height: 16px;
           margin-top: 0.2rem;
           margin-left: 0.2rem;
@@ -241,7 +231,7 @@
           padding: 2px 10px;
           margin-left: 10px;
           font-size: 12px;
-          background: $primary-color;
+          background: var(--primary-color);
           border-radius: 5px;
           cursor: pointer;
         }
@@ -250,7 +240,7 @@
         .FilterGroupAdd,
         .FilterGroupDelete {
           background-color: rgba(0, 0, 0, 0);
-          color: $primary-color;
+          color: var(--primary-color);
         }
 
         div.MuiInputBase-root {
@@ -272,7 +262,7 @@
           }
 
           svg {
-            color: $primary-color;
+            color: var(--primary-color);
           }
         }
       }
@@ -280,9 +270,9 @@
   }
 
   .FilterNote {
-    color: $base-black-color;
+    color: var(--base-black-color);
     font-style: italic;
-    opacity: $base-hovered-opacity;
+    opacity: var(--base-hovered-opacity);
     padding: 1rem;
   }
 
@@ -357,7 +347,7 @@
       }
 
       .FilterDelete {
-        color: $error;
+        color: var(--error);
         margin-right: 5px;
       }
     }
@@ -389,7 +379,7 @@
     display: flex;
     margin-top: 5px;
     width: 100%;
-    border: 1px solid $primary-color;
+    border: 1px solid var(--primary-color);
 
     .SelectWithSearchInput,
     .MuiAutocomplete-root {
@@ -446,7 +436,7 @@
     }
 
     .MuiInput-root {
-      border-left: 1px solid $primary-color;
+      border-left: 1px solid var(--primary-color);
       padding: 5px 3px 0 3px;
       width: 50px;
       font-size: 0.8rem;
@@ -469,7 +459,7 @@
 
     .MuiInputBase-root:first-child {
       border-left: unset !important;
-      border-right: 1px solid $primary-color !important;
+      border-right: 1px solid var(--primary-color) !important;
     }
   }
 }
@@ -496,7 +486,7 @@
 
   .FilterEditModalQuery {
     display: flex;
-    background: $base-alpha-color;
+    background: var(--base-alpha-color);
     padding: 10px;
 
     .WhereConfigurationOperatorValue {
@@ -610,7 +600,7 @@
   padding: 10px;
 
   .FilterControlSummaryContent {
-    border: 1px solid $primary-color;
+    border: 1px solid var(--primary-color);
   }
 }
 

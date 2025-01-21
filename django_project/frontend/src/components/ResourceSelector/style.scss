@@ -13,12 +13,6 @@
 * __copyright__ = ('Copyright 2025, Unicef')
 */
 
-/* ==========================================================================
-   Modal selector
-   ========================================================================== */
-
-@import '../../app/variables';
-
 .ResourceSelector {
   input {
     cursor: pointer;
@@ -35,7 +29,7 @@
     min-height: 0;
     margin: 0 !important;
     padding: 0 !important;
-    border-radius: $border-radius !important;
+    border-radius: var(--border-radius) !important;
     overflow: hidden;
   }
 
@@ -46,7 +40,7 @@
     background-color: white;
 
     .AdminTableError {
-      color: $error;
+      color: var(--error);
       margin: auto;
       width: 100%;
       height: 100%;
@@ -66,8 +60,7 @@
       padding-top: 1rem;
 
       .AdminBaseInput {
-        padding: 1rem;
-        padding-top: 0;
+        padding: 0 1rem 1rem 1rem;
       }
     }
 
@@ -114,8 +107,8 @@
   flex-wrap: wrap;
 
   .ModalDataSelectorSelectedObject {
-    border: 1px solid $gray-400;
-    border-radius: $border-radius;
+    border: 1px solid var(--gray-400);
+    border-radius: var(--border-radius);
     padding: 0.5rem;
     margin: 2px 2px 0 0;
     width: fit-content;

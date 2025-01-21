@@ -17,8 +17,6 @@
    Label Style
    ========================================================================== */
 
-@import '../../../app/variables';
-
 .PermissionFormModal {
   .modal--box {
     min-width: 90%;
@@ -60,7 +58,7 @@
   }
 
   .form-label {
-    font-weight: $base-font-regular;
+    font-weight: var(--base-font-regular);
 
     button {
       padding-right: 0.5rem !important;
@@ -92,7 +90,7 @@
       width: fit-content;
 
       .MuiTypography-root {
-        font-weight: $base-font-weight;
+        font-weight: var(--base-font-weight);
         font-family: inherit;
       }
     }
@@ -100,7 +98,7 @@
 
 
   .Mui-disabled {
-    color: $base-black-color;
+    color: var(--base-black-color);
     cursor: not-allowed;
 
     svg {
@@ -153,9 +151,9 @@
   .GeneralAccess {
     display: flex;
     align-items: center;
-    padding: $base-input-padding;
-    background: $base-gray-to-white;
-    border: 1px solid $border-gray;
+    padding: var(--base-input-padding);
+    background: var(--base-gray-to-white);
+    border: 1px solid var(--border-gray);
     margin-bottom: 1rem;
 
     label {
@@ -163,7 +161,7 @@
     }
 
     .MuiInputBase-root {
-      height: $base-height;
+      height: var(--base-height);
       background-color: white;
     }
   }

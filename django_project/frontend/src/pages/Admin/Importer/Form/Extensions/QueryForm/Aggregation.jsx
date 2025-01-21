@@ -17,7 +17,6 @@ import React, { useEffect, useState } from 'react';
 import {
   SelectWithList
 } from "../../../../../../components/Input/SelectWithList";
-import './style.scss';
 
 export const AggregationMethod = {
   COUNT: "COUNT",

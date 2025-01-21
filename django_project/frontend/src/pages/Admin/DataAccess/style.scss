@@ -17,13 +17,12 @@
    DataAccess style
    ========================================================================== */
 
-@import '../../../app/variables';
-
 .DataAccessAdmin {
   .Loading {
     text-align: center;
     padding: 200px 20px;
   }
+
   .ModalDataSelectorSelected {
     display: none;
   }
@@ -46,7 +45,7 @@
     margin-bottom: 1rem;
 
     label {
-      font-weight: $base-font-regular;
+      font-weight: var(--base-font-regular);
     }
   }
 

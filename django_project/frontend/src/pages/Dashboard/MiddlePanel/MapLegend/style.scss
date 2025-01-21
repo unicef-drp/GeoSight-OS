@@ -17,8 +17,6 @@
    Context layers style
    ========================================================================== */
 
-@import '../../../../app/variables';
-
 .MapLegend {
   direction: rtl;
   flex-grow: 1;
@@ -30,8 +28,8 @@
   .MapLegendSection {
     direction: ltr;
     padding: 0.5rem;
-    background-color: $white;
-    border-radius: $border-radius;
+    background-color: var(--white);
+    border-radius: var(--border-radius);
     max-width: 250px;
     max-height: 600px;
     overflow-y: auto;
@@ -39,7 +37,7 @@
     pointer-events: auto;
     font-size: 0.8rem;
     box-sizing: border-box;
-    box-shadow: $box-shadow;
+    box-shadow: var(--box-shadow);
     margin-bottom: 0.5rem;
 
     .MapLegendSectionTitle {

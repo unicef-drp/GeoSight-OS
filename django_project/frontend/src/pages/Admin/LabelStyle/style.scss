@@ -17,8 +17,6 @@
    Label Style
    ========================================================================== */
 
-@import '../../../app/variables';
-
 .LabelStyle {
   .LabelStyleTitle {
     margin-bottom: 0.5rem;
@@ -38,9 +36,9 @@
   }
 
   .LabelStylePreview {
-    border-radius: $border-radius;
+    border-radius: var(--border-radius);
     padding: 1rem;
-    background-color: $primary-color;
+    background-color: var(--primary-color);
   }
 
   .ColorConfig {
@@ -64,7 +62,7 @@
     }
 
     span {
-      padding: $base-input-padding;
+      padding: var(--base-input-padding);
     }
   }
 }

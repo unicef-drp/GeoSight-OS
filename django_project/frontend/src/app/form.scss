@@ -17,8 +17,6 @@
    Form Style
    ========================================================================== */
 
-@import './variables.scss';
-
 .MuiFormControl-root {
   display: block !important;
 }
@@ -41,7 +39,7 @@
 // MENUS -------------------
 .MuiMenuItem-root {
   a, a:link, a:visited, a:hover, a:active {
-    color: $primary-color;
+    color: var(--primary-color);
     font-weight: 300;
   }
 }
@@ -73,7 +71,7 @@
     width: fit-content;
 
     &.required {
-      font-weight: $base-font-bold;
+      font-weight: var(--base-font-bold);
 
       &:after {
         content: ' *';
@@ -85,8 +83,8 @@
   select {
     background: white;
     box-sizing: border-box;
-    padding: $base-input-padding;
-    min-height: $base-input-height;
+    padding: var(--base-input-padding);
+    min-height: var(--base-input-height);
     width: 100%;
   }
 
@@ -202,7 +200,7 @@
   }
 
   .form-error {
-    color: $error;
+    color: var(--error);
     font-size: 0.8rem;
   }
 
@@ -210,14 +208,14 @@
     width: 100%;
 
     input {
-      height: $base-height;
+      height: var(--base-height);
       border: none;
       outline: none !important;
     }
   }
 
   .InputEnabler {
-    border-right: 1px solid $gray-300;
+    border-right: 1px solid var(--gray-300);
     margin-right: 1rem;
     border-radius: 0;
   }

@@ -13,12 +13,6 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   Measurement
-   ========================================================================== */
-
-@import '../../../../app/variables';
-
 .mapbox-gl-draw_polygon {
   display: none !important;
 }
@@ -33,8 +27,8 @@
 
   .PopupToolbarComponent {
     background: white;
-    border-radius: $border-radius;
-    box-shadow: $box-shadow;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
     box-sizing: border-box;
     left: 50%;
     margin-left: -250px;
@@ -61,12 +55,12 @@
     }
 
     & > div {
-      padding: $base-input-padding;
+      padding: var(--base-input-padding);
     }
 
     .Title {
-      color: $primary-color;
-      border-bottom: 1px solid $primary-color;
+      color: var(--primary-color);
+      border-bottom: 1px solid var(--primary-color);
     }
   }
 
@@ -79,13 +73,13 @@
     padding: 0.5rem 0 !important;
 
     &:hover {
-      opacity: $base-hovered-opacity;
+      opacity: var(--base-hovered-opacity);
     }
   }
 }
 
 .PopupToolbarComponentFooter {
-  border-top: 1px solid $primary-color;
+  border-top: 1px solid var(--primary-color);
 }
 
 .crosshairCursor {

@@ -13,12 +13,6 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   Zonal Analysis tools
-   ========================================================================== */
-
-@import '../../app/variables';
-
 .ZonalAnalysisToolConfiguration {
 
   display: flex;
@@ -60,7 +54,7 @@
 
   .Buffer-Input {
     .MuiFormControl-root {
-      width: 50%!important;
+      width: 50% !important;
     }
   }
 }
@@ -74,11 +68,11 @@
 
     th, td {
       padding: 1px 3px;
-      border: 1px solid $primary-color;
+      border: 1px solid var(--primary-color);
     }
 
     th {
-      background-color: $primary-color;
+      background-color: var(--primary-color);
       color: white;
       text-align: left;
     }
