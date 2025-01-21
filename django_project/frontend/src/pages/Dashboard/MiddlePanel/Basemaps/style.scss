@@ -13,23 +13,17 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-  BASEMAPS
-   ========================================================================== */
-
-@import '../../../../app/variables';
-
 .basemaps__settings {
-  background-color: $white-transparent;
+  background-color: var(--white-transparent);
   border-radius: 5px;
-  box-shadow: $box-shadow;
+  box-shadow: var(--box-shadow);
   overflow: hidden;
   padding: 5px 5px 0 5px !important;
   width: 58px;
   box-sizing: border-box;
 
   &:hover {
-    background-color: $white;
+    background-color: var(--white);
 
     .basemap__box {
       display: block;

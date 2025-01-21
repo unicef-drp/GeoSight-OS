@@ -17,8 +17,6 @@
    Indicator Layers List style
    ========================================================================== */
 
-@import '../../../../../app/variables';
-
 .IndicatorLayers {
   .OtherActionFunctions {
     width: 220px;
@@ -31,7 +29,7 @@
   .LayerCountIndicatorWrapper {
     display: flex;
     width: 122px;
-    color: $primary-color;
+    color: var(--primary-color);
 
     div:first-child {
       flex-grow: 1;
@@ -43,10 +41,10 @@
       display: block;
       margin-left: 0.5rem;
       background: white;
-      border-radius: $border-radius;
+      border-radius: var(--border-radius);
       text-align: center;
       padding: 7px 10px 0 10px;
-      border: 1px solid $primary-color;
+      border: 1px solid var(--primary-color);
       font-size: 0.8rem;
       white-space: nowrap;
     }
@@ -78,7 +76,7 @@
       cursor: pointer;
 
       &:hover {
-        opacity: $base-hovered-opacity;
+        opacity: var(--base-hovered-opacity);
       }
     }
   }

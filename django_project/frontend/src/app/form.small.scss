@@ -17,7 +17,7 @@
    Form Style Small
    ========================================================================== */
 
-@import './variables.scss';
+@use './variables.scss' as *;
 
 @include media(small-down) {
   .BasicForm {

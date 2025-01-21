@@ -45,9 +45,6 @@ import { InfoFillIcon } from "../../../components/Icons";
 import {
   DatasetFilterSelector
 } from "../../../components/ResourceSelector/DatasetViewSelector";
-
-
-import './style.scss';
 import {
   IndicatorFilterSelector
 } from "../../../components/ResourceSelector/IndicatorSelector";

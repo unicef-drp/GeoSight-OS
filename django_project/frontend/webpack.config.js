@@ -134,7 +134,12 @@ let conf = {
     ],
   },
   optimization: {
-    minimize: minimized
+    minimize: minimized,
+    splitChunks: {
+      chunks: 'all',
+      maxInitialRequests: 5,
+      minSize: 20000,
+    },
   },
   plugins: [
     new BundleTracker({ filename: statsFilename }),
@@ -146,6 +151,9 @@ let conf = {
   resolve: {
     modules: ['node_modules'],
     extensions: ['.js', '.jsx', '.tsx']
+  },
+  cache: {
+    type: 'filesystem',
   },
 };
 

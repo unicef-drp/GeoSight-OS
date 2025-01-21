@@ -13,11 +13,6 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   POPOVER
-   ========================================================================== */
-@import '../../app/variables';
-
 .MuiPopover-root {
   &.right {
 
@@ -27,8 +22,8 @@
   }
 
   .MuiPaper-root {
-    border-radius: $border-radius;
-    box-shadow: $box-shadow;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
   }
 }
 

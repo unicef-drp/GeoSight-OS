@@ -17,9 +17,6 @@
    Context Layer Style Config
    ========================================================================== */
 
-@import '../../../../app/variables';
-
-
 .BasicForm.Preview {
   height: 100%;
   box-sizing: border-box;
@@ -151,7 +148,7 @@
   .ArcgisConfig {
 
     .Classification {
-      border: 1px solid $primary-color;
+      border: 1px solid var(--primary-color);
       padding: 0;
       margin-bottom: -1px;
 
@@ -179,17 +176,17 @@
       }
 
       .ClassificationLabel {
-        background-color: $primary-color;
-        color: $anti-primary-color;
+        background-color: var(--primary-color);
+        color: var(--anti-primary-color);
         margin-bottom: 1rem;
 
         input {
           background-color: unset;
-          color: $anti-primary-color;
-          border: 1px solid $primary-color;
+          color: var(--anti-primary-color);
+          border: 1px solid var(--primary-color);
 
           &:hover {
-            border: 1px solid $secondary-color;
+            border: 1px solid var(--secondary-color);
           }
         }
       }
@@ -208,7 +205,7 @@
         display: block;
         width: 100%;
         text-align: center;
-        color: $primary-color;
+        color: var(--primary-color);
       }
 
       img {
@@ -278,8 +275,8 @@
 }
 
 .EditorButton {
-  background-color: $primary-color;
-  color: $anti-primary-color;
+  background-color: var(--primary-color);
+  color: var(--anti-primary-color);
   cursor: pointer;
   padding: 3px 6px;
   width: fit-content;
