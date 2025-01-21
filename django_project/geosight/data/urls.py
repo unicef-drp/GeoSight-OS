@@ -235,8 +235,7 @@ style_api = [
         StyleDetailAPI.as_view(), name='style-detail-api'
     ),
     url(
-        (r'^raster-classification/(?P<class_type>[a-zA-Z0-9_-]+)/'
-         r'(?P<class_number>[a-zA-Z0-9_-]+)'),
+        r'^raster-classification',
         GetRasterClassificationAPI.as_view(), name='raster-classification-api'
     ),
 ]

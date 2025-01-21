@@ -22,6 +22,7 @@ import pytz
 import shapely
 import rasterio
 import numpy as np
+from django.test.client import encode_multipart
 from rasterio.mask import mask
 from shapely.ops import transform
 from pyproj import Transformer
@@ -187,10 +188,11 @@ import xarray as xr
 class ClassifyRasterData():
     """Classify raster data."""
 
-    def __init__(self, raster_path: str, class_type: str, class_num: str):
+    def __init__(self, raster_path: str, class_type: str, class_num: str, colors):
         self.raster_path = raster_path
         self.class_type = class_type
         self.class_num = class_num
+        self.colors = colors
 
     def classify_equal_interval(self, data):
         """
@@ -260,7 +262,15 @@ class ClassifyRasterData():
         return class_labels, data_mean, data_std
 
     def build_classification(self, classification: list):
-        pass
+        result = []
+        for idx, threshold in enumerate(classification):
+            if idx < len(classification) - 1:
+                result.append({
+                    'bottom': threshold,
+                    'top': classification[idx + 1],
+                    'color': self.colors[idx]
+                })
+        return result
 
     def run(self):
         with rasterio.open(self.raster_path) as src:
@@ -313,4 +323,5 @@ class ClassifyRasterData():
             elif self.class_type == STANDARD_DEVIATION:
                 classification = self.classify_std_deviation(data)
 
-            return classification
+            result = self.build_classification(classification)
+            return result

@@ -92,7 +92,7 @@ class GetRasterClassificationAPI(APIView):
         # url = request.data.get('url')
         # class_type = request.data.get('class_type')
         # class_num = request.data.get('class_num')
-        serializer = self.get_serializer(data=request.data, many=many)
+        serializer = self.serializer_class(data=request.data)
 
         # if not url:
         #     return Response('URL parameter is required', status=400)
@@ -100,23 +100,28 @@ class GetRasterClassificationAPI(APIView):
         #     class_num = int(class_num)
         # except ValueError:
         #     return Response('class_number parameter must be integer', status=400)
-        breakpoint()
 
-        tmp_file_path = os.path.join(
-            settings.MEDIA_TEMP,
-            os.path.basename(url)
-        )
-        response = requests.get(url, stream=True)
-        if not os.path.exists(tmp_file_path):
-            if response.status_code == 200:
-                with open(tmp_file_path, "wb") as tmp_file:
-                    for chunk in response.iter_content(chunk_size=8192):
-                        tmp_file.write(chunk)
-            else:
-                raise Exception(
-                    f"Failed to download file: {response.status_code}"
-                )
+        if serializer.is_valid(raise_exception=True):
+            url = serializer.validated_data['url']
+            class_type = serializer.validated_data['class_type']
+            class_num = serializer.validated_data['class_num']
+            colors = serializer.validated_data['colors']
 
-        classification = ClassifyRasterData(tmp_file_path, class_type, class_number).run()
+            tmp_file_path = os.path.join(
+                settings.MEDIA_TEMP,
+                os.path.basename(url)
+            )
+            response = requests.get(url, stream=True)
+            if not os.path.exists(tmp_file_path):
+                if response.status_code == 200:
+                    with open(tmp_file_path, "wb") as tmp_file:
+                        for chunk in response.iter_content(chunk_size=8192):
+                            tmp_file.write(chunk)
+                else:
+                    raise Exception(
+                        f"Failed to download file: {response.status_code}"
+                    )
 
-        return Response(classification)
+            classification = ClassifyRasterData(tmp_file_path, class_type, class_num, colors).run()
+
+            return Response(classification)
