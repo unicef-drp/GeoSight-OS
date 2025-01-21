@@ -272,6 +272,7 @@ export default function FilterControl(
     const fieldData = fields.filter((row) => {
       return row.id === field
     })[0]
+    // console.log(fieldData)
     const fieldName = fieldData?.name
 
     // When fields changed, remove the where if no field found
