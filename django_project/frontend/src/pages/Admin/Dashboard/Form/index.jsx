@@ -684,7 +684,16 @@ export function DashboardForm({ onPreview }) {
  * Dashboard Form App
  */
 export default function DashboardFormApp() {
+  const dispatch = useDispatch();
   const [currentMode, setCurrentMode] = useState('FormMode');
+
+  // Change current mode
+  useEffect(() => {
+    dispatch(
+      Actions.GlobalState.update({ editMode: currentMode === 'FormMode' })
+    )
+  }, [currentMode]);
+
   return (
     <App className={currentMode}>
       {/* ADMIN SECTION */}

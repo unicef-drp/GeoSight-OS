@@ -12,10 +12,10 @@
  * __date__ = '08/01/2025'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
-
 import React, {
   createContext,
   ReactNode,
+  useCallback,
   useContext,
   useRef,
   useState
@@ -28,7 +28,6 @@ import {
 interface ConfirmDialogContextValue {
   openConfirmDialog: (options: ConfirmDialogProps) => void;
 }
-
 
 const ConfirmDialogContext = createContext<ConfirmDialogContextValue | undefined>(undefined);
 
@@ -43,12 +42,12 @@ export const ConfirmDialogProvider: React.FC<{
   });
   const confirmDialogRef = useRef<any>(null);
 
-  const openConfirmDialog = (options: ConfirmDialogProps) => {
+  const openConfirmDialog = useCallback((options: ConfirmDialogProps) => {
     if (confirmDialogRef.current) {
       setDialogOptions(options);
       confirmDialogRef.current.open();
     }
-  };
+  }, []);
 
   return (
     <ConfirmDialogContext.Provider value={{ openConfirmDialog }}>

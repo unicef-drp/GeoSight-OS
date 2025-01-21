@@ -162,7 +162,7 @@ export function WhereInputValue(
       </LocalizationProvider>
     } else if (MULTI_SELECTABLE_OPERATORS.includes(operator)) {
       return <MultipleSelectWithSearch
-        value={value}
+        value={value ? value : []}
         onChangeFn={(value) => {
           if (Array.isArray(value)) {
             setValue(value.map(val => val.value !== undefined ? val.value : val))
@@ -222,7 +222,7 @@ export function WhereInputValue(
     </div>
   } else if (MULTI_SELECTABLE_OPERATORS.includes(operator)) {
     return <MultipleSelectWithSearch
-      value={value}
+      value={value ? value : []}
       onChangeFn={(value) => {
         if (Array.isArray(value)) {
           setValue(value.map(val => val.value !== undefined ? val.value : val))
@@ -240,7 +240,7 @@ export function WhereInputValue(
       return defaultInput()
     }
     return <SelectWithSearch
-      value={value}
+      value={value ? value : []}
       onChangeFn={(value) => {
         if (Array.isArray(value)) {
           setValue(value.map(val => val.value))

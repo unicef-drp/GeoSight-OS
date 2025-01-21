@@ -24,7 +24,8 @@ const initialState = {
   globalDateSelectorOpened: false,
   showIndicatorMapLabel: true,
   attributions: [],
-  datasets: []
+  datasets: [],
+  editMode: false,
 }
 export default function globalStateReducer(state = initialState, action) {
   if (action.name === GLOBAL_STATE_ACTION_NAME) {
