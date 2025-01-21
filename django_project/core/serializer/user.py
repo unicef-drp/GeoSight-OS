@@ -36,7 +36,7 @@ class UserSerializer(DynamicModelSerializer):
 
     def get_is_staff(self, obj: User):
         """Return is staff."""
-        return 'true' if obj.is_staff else 'false'
+        return obj.is_staff
 
     def get_name(self, obj: User):
         """Return is staff."""

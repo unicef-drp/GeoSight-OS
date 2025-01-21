@@ -93,19 +93,11 @@ if settings.DEBUG:
 # ------------------------------------------------------
 # USER API
 user_api = [
-    # url(
-    #     r'^list',
-    #     UserListAPI.as_view(), name='user-list-api'
-    # ),
     url(
         r'^(?P<pk>\d+)/token',
         UserApiKey.as_view(),
         name='user-api-key'
     ),
-    # url(
-    #     r'^(?P<pk>\d+)',
-    #     UserDetailAPI.as_view(), name='user-detail-api'
-    # ),
 ]
 # COLOR API
 color_api = [

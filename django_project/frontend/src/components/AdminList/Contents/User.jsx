@@ -25,7 +25,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 export const userUrl = {
   list: '/api/v1/users/?fields=__all__',
   detail: '/api/v1/users/0/?fields=__all__',
-  edit: '/admin/user/0/edit/',
+  edit: '/admin/user/0/edit',
   create: '/admin/user/create/',
 }
 
