@@ -15,16 +15,17 @@
 
 import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { FilterInputProps } from "../types.d";
+import { FilterExpressionProps } from "../types.d";
 import {
   IS_NOT_NULL,
   IS_NULL,
-  OPERATOR
+  OPERATOR,
+  returnDataToExpression
 } from "../../../../utils/queryExtraction";
-import { RequestState } from "../../../../types";
 import {
   WhereInputValue
 } from "../../../SqlQueryGenerator/WhereQueryGenerator/WhereInput";
+import alasql from "alasql";
 
 export interface FetchSourceDetail {
   id: string;
@@ -80,7 +81,7 @@ export const FetchSourceData = memo(
     useEffect(() => {
       const fetched = id + sourceKey + !!stateData?.fetched;
       if (prevFetchedRef.current !== fetched) {
-        receiveData(stateData)
+        receiveData(stateData?.data)
       }
       prevFetchedRef.current = fetched;
     }, [id, sourceKey, stateData]);
@@ -91,7 +92,6 @@ export const FetchSourceData = memo(
 
 export const FetchSourceGeometryData = memo(
   ({ field, receiveData }: FetchGeometryData) => {
-    const key = 'datasetGeometries'
     // @ts-ignore
     const identifier = useSelector(state => state.dashboard?.data.referenceLayer?.identifier);
     let usedIdentifier = identifier
@@ -101,28 +101,41 @@ export const FetchSourceGeometryData = memo(
     }
 
     // @ts-ignore
-    const referenceLayerData = useSelector((state) => {
-      let data = null
-      // @ts-ignore
-      if (state[key] && state[key][usedIdentifier] && state[key][usedIdentifier][level]) {
-        const data = []
-        // @ts-ignore
-        for (const [_, value] of Object.entries(state[key][usedIdentifier][level])) {
-          data.push(value)
-        }
-        return { data: data }
-      }
-      return data;
-    })
+    const referenceLayerData = useSelector((state) => state.datasetGeometries?.[usedIdentifier])
 
     /** Fetch the data **/
     useEffect(() => {
-      receiveData(referenceLayerData)
+      let data = referenceLayerData ? referenceLayerData[level] : null
+      if (data) {
+        const _data = []
+        // @ts-ignore
+        for (const [_, value] of Object.entries(data)) {
+          _data.push(value)
+        }
+        data = _data
+        _data.map((row: any) => {
+          row.members.map((member: any) => {
+            data.push({
+              concept_uuid: member.code,
+              ucode: member.ucode,
+              name: row.name,
+            })
+          })
+        })
+      }
+      receiveData(data)
     }, [referenceLayerData]);
 
     return null
   }
 )
+
+
+/** Props for input data **/
+export interface Props extends FilterExpressionProps {
+  active?: boolean;
+  onFiltered?: (data: string[]) => void;
+}
 
 /** Filter group component */
 export const FilterInputData = memo(
@@ -137,8 +150,13 @@ export const FilterInputData = memo(
       value,
       setValue,
 
-      isAdmin
-    }: FilterInputProps
+      // Is active or isAdmin
+      active,
+      isAdmin,
+
+      // On Filtered
+      onFiltered
+    }: Props
   ) => {
     const isEnabled = isAdmin || allowModify;
 
@@ -166,9 +184,10 @@ export const FilterInputData = memo(
 
     /** The state of element **/
     const [source, setSource] = useState(null);
-    const [data, setData] = useState<RequestState>(null);
+    const [data, setData] = useState<any[]>(null);
+    const [result, setResult] = useState<string[]>(null);
 
-    // Receive source detail callbacks
+    /** Receive source detail callbacks **/
     const receiveSource = useCallback((_data: any) => {
       let update = true
       if (update && JSON.stringify(_data) == JSON.stringify(data)) {
@@ -179,10 +198,26 @@ export const FilterInputData = memo(
       }
     }, []);
 
-    // Receive data
-    const receiveData = useCallback((data: any) => {
+    /** Receive data **/
+    const receiveData = useCallback((data: any[]) => {
       if (data) {
-        setData(data)
+        let usedData = data
+        switch (sourceDataKey) {
+          case 'indicatorsData':
+            usedData = data.map(
+              row => {
+                return {
+                  admin_level: row.admin_level,
+                  concept_uuid: row.concept_uuid,
+                  geometry_code: row.geometry_code,
+                  label: row.label,
+                  value: row.value
+                }
+              }
+            )
+            break;
+        }
+        setData(usedData)
       } else {
         setData(null)
       }
@@ -192,7 +227,7 @@ export const FilterInputData = memo(
     // @ts-ignore
     const operatorName = OPERATOR[operator]
 
-    // Check the datatype
+    /** Check the datatype **/
     let dataType = keyField === 'value' ? 'Number' : 'String';
     if (sourceDataKey === 'indicatorsData') {
       dataType = keyField === 'value' ? source?.type : 'String'
@@ -209,16 +244,54 @@ export const FilterInputData = memo(
     }
 
     let options: any[] = ['loading']
-    if (data?.data) {
+    if (dataType && data) {
       try {
-        options = Array.from(new Set(data.data.map((row: any) => row[keyField])))
+        options = Array.from(new Set(data.map((row: any) => row[keyField])))
       } catch (err) {
 
       }
     }
-    if (data?.data == null || !dataType) {
-      options = ['loading']
-    }
+
+    // When field, operator, value changed, make geometries null
+    useEffect(() => {
+        setResult(null)
+      },
+      [data, field, operator, value]
+    );
+
+    // When active and has data, calculate filter
+    useEffect(() => {
+        if (onFiltered) {
+          if (active && result === null) {
+            if (data) {
+              // Run the calculation
+              setResult(result)
+              const queryWhere = returnDataToExpression(`data.${keyField}`, operator, value)
+              const query = `SELECT ARRAY(concept_uuid) AS concept_uuids
+                             FROM ? data
+                             WHERE ${queryWhere}
+                             ORDER BY concept_uuid`
+              const _result = alasql(query, [data])
+              setResult(_result[0].concept_uuids)
+            }
+          } else if (result) {
+            onFiltered(result)
+          }
+        }
+      },
+      [active, data]
+    );
+
+    // When data, field, operator, value changed
+    useEffect(() => {
+        if (onFiltered) {
+          // if result changed
+          onFiltered(result)
+        }
+      },
+      [result]
+    );
+
     return <>
       {
         sourceDataKey ? <>
@@ -246,7 +319,7 @@ export const FilterInputData = memo(
           }
         </> : null
       }
-      <div>
+      <div className='FilterInputWrapperWithIndicator'>
         <div className='FilterInputWrapperIndicator'>
           {keyField} {operatorName}
         </div>

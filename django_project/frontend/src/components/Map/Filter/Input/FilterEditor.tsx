@@ -26,7 +26,7 @@ import {
   IS_NOT_IN
 } from "../../../../utils/queryExtraction";
 import Modal, { ModalContent, ModalHeader } from "../../../Modal";
-import { FilterInputProps } from "../types.d";
+import { FilterExpressionProps } from "../types.d";
 import { FilterFieldOperatorInput } from "./FieldOperator";
 import { FilterInputData } from "./FilterInputData";
 
@@ -35,7 +35,7 @@ import '../style.scss';
 export interface FilterEditorModalProps {
   open: boolean;
   setOpen: (val: boolean) => void;
-  inputData: FilterInputProps;
+  inputData: FilterExpressionProps;
   onApply: (val: any) => void;
 }
 
