@@ -18,11 +18,15 @@ import os
 
 import requests
 from django.conf import settings
+from django.core.cache import cache
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from geosight.data.utils import ClassifyRasterData
+from geosight.data.utils import (
+    ClassifyRasterData,
+    generate_cache_key
+)
 from geosight.data.serializer.raster import GetRasterClassificationSerializer
 
 
@@ -37,31 +41,41 @@ class GetRasterClassificationAPI(APIView):
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid(raise_exception=True):
-            url = serializer.validated_data['url']
-            class_type = serializer.validated_data['class_type']
-            class_num = serializer.validated_data['class_num']
-            colors = serializer.validated_data.get('colors', None)
+            # Generate cache key
+            cache_key = generate_cache_key(request.path, serializer.validated_data)
 
-            tmp_file_path = os.path.join(
-                settings.MEDIA_TEMP,
-                os.path.basename(url)
-            )
-            response = requests.get(url, stream=True)
-            if not os.path.exists(tmp_file_path):
-                if response.status_code == 200:
-                    with open(tmp_file_path, "wb") as tmp_file:
-                        for chunk in response.iter_content(chunk_size=8192):
-                            tmp_file.write(chunk)
-                else:
-                    raise Exception(
-                        f"Failed to download file: {response.status_code}"
-                    )
+            # Check if cached response exists
+            cached_response = cache.get(cache_key)
+            if cached_response:
+                classification = cached_response
+            else:
+                url = serializer.validated_data['url']
+                class_type = serializer.validated_data['class_type']
+                class_num = serializer.validated_data['class_num']
+                colors = serializer.validated_data.get('colors', None)
 
-            classification = ClassifyRasterData(
-                raster_path=tmp_file_path,
-                class_type=class_type,
-                class_num=class_num,
-                colors=colors
-            ).run()
+                tmp_file_path = os.path.join(
+                    settings.MEDIA_TEMP,
+                    os.path.basename(url)
+                )
+                response = requests.get(url, stream=True)
+                if not os.path.exists(tmp_file_path):
+                    if response.status_code == 200:
+                        with open(tmp_file_path, "wb") as tmp_file:
+                            for chunk in response.iter_content(chunk_size=8192):
+                                tmp_file.write(chunk)
+                    else:
+                        raise Exception(
+                            f"Failed to download file: {response.status_code}"
+                        )
+
+                classification = ClassifyRasterData(
+                    raster_path=tmp_file_path,
+                    class_type=class_type,
+                    class_num=class_num,
+                    colors=colors
+                ).run()
+                # Cache the response for future requests
+                cache.set(cache_key, classification, timeout=300)
 
             return Response(classification)

@@ -6,3 +6,4 @@ from .utils import (
     extract_time_string
 )
 from .thumbnail import create_thumbnail
+from .cache import generate_cache_key

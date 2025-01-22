@@ -67,40 +67,31 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
         return
       }
 
-            const requestBody = {
-          url: data.url,
-          class_type: dynamic_classification,
-          class_num: dynamic_class_num,
-          colors: colors,
+      const requestBody = {
+        url: data.url,
+        class_type: dynamic_classification,
+        class_num: dynamic_class_num,
+        colors: colors,
       }
 
       let classifications = [];
 
-      const cacheKey = await generateCacheKey(data.url, requestBody);
-      const cachedData = sessionStorage.getItem(cacheKey);
-      if (cachedData) {
-        classifications = JSON.parse(cachedData);
-      } else {
-        await DjangoRequests.post(
-      `/api/raster/classification`,
-          requestBody
-        ).then(response => {;
-          let result = [];
-          response.data.forEach((threshold, idx) => {
-              if (idx < response.data.length - 1) {
-                  result.push({
-                      bottom: threshold,
-                      top: response.data[idx + 1],
-                      color: colors[idx]
-                  });
-              }
-          });
-          sessionStorage.setItem(cacheKey, JSON.stringify(result));
-          classifications = result;
-        }).catch(error => {
-          throw Error(error.toString())
-        })
-      }
+      await DjangoRequests.post(
+    `/api/raster/classification`,
+        requestBody
+      ).then(response => {
+        response.data.forEach((threshold, idx) => {
+            if (idx < response.data.length - 1) {
+                classifications.push({
+                    bottom: threshold,
+                    top: response.data[idx + 1],
+                    color: colors[idx]
+                });
+            }
+        });
+      }).catch(error => {
+        throw Error(error.toString())
+      })
 
       // TODO: Handle styling when multiple, identical COG URLs are used
       const url = `cog://${data.url}#` + contextLayerData.id;
