@@ -18,7 +18,6 @@ import { FilterGroupDataProps } from "./types.d";
 import FilterGroup from "./Group";
 import { INIT_DATA } from "../../../utils/queryExtraction";
 import { Actions } from "../../../store/dashboard";
-import FilterControlFiltering from "./FilterControlFiltering";
 
 import './style.scss';
 
@@ -79,7 +78,6 @@ const FilterContent = memo(({ isAdmin }: Props) => {
     <FilterControl
       isAdmin={filtersAllowModify ? filtersAllowModify : isAdmin}
     />
-    <FilterControlFiltering/>
   </div>;
 });
 

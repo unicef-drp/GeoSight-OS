@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 /* ==========================================================================
    WIDGET
@@ -20,15 +20,11 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { useSelector } from "react-redux";
 import CircularProgress from '@mui/material/CircularProgress';
-
-import { returnWhere } from "../../utils/queryExtraction";
 import { fetchingData } from "../../Requests";
 import SummaryWidgetView from "./Summary/View";
 import { InfoFillIcon } from '../Icons'
 
 // Widgets
-import SummaryWidget from "./Summary/SummaryWidget"
-import SummaryGroupWidget from "./Summary/SummaryGroupWidget"
 import TimeSeriesChartWidget from "./TimeSeriesChartWidget"
 
 import './style.scss';
@@ -57,7 +53,6 @@ export function Widget({ idx, data }) {
   const { indicators } = useSelector(state => state.dashboard.data);
   const indicatorLayerData = useSelector(state => state.indicatorsData[layer_id]);
   const filteredGeometries = useSelector(state => state.filteredGeometries);
-  const filtersData = useSelector(state => state.filtersData);
   const [showInfo, setShowInfo] = useState(false);
   const [layerData, setLayerData] = useState({});
 
@@ -116,13 +111,12 @@ export function Widget({ idx, data }) {
     }
   }, [data])
 
-  const where = returnWhere(filtersData ? filtersData : [])
   let indicatorData = null
   if (layer) {
     indicatorData = Object.assign({}, layerData)
     if (indicatorData.fetched && indicatorData.data) {
       indicatorData.data = indicatorData.data.filter(indicator => {
-        return !filteredGeometries || !where || filteredGeometries.includes(indicator.concept_uuid)
+        return filteredGeometries?.includes(indicator.concept_uuid)
       })
     }
   }

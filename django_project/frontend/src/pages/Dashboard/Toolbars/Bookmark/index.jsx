@@ -58,12 +58,12 @@ export default function Bookmark({ map }) {
   const dispatch = useDispatch();
   const isEmbed = EmbedConfig().id;
   const dashboardData = useSelector(state => state.dashboard.data);
-  const filtersData = useSelector(state => state.filtersData);
   const selectedIndicatorLayer = useSelector(state => state.selectedIndicatorLayer);
   const selectedIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer);
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel);
   const selectedBookmark = useSelector(state => state.selectedBookmark);
   const {
+    filters,
     basemapLayer,
     contextLayers,
     indicatorShow,
@@ -101,7 +101,7 @@ export default function Bookmark({ map }) {
       selectedBasemap: basemapLayer?.id,
       selectedIndicatorLayers: selectedIndicatorLayers,
       selectedContextLayers: Object.keys(contextLayers).map(id => parseInt(id)),
-      filters: filtersData,
+      filters: filters,
       extent: extent,
       indicatorShow: indicatorShow,
       contextLayersShow: contextLayersShow,
@@ -253,7 +253,7 @@ export default function Bookmark({ map }) {
       }}
       Button={
         <div className='Active'>
-          <PluginChild title={'Bookmark'} disabled={!filtersData}>
+          <PluginChild title={'Bookmark'}>
             <a>
               <StarOffIcon/>
             </a>

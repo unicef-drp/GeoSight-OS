@@ -29,7 +29,6 @@ import {
   updateToken
 } from '../../../../../utils/georepo'
 import { allDataIsReady } from "../../../../../utils/indicators";
-import { returnWhere } from "../../../../../utils/queryExtraction";
 import { returnStyle } from "../../../../../utils/referenceLayer";
 import { dictDeepCopy, hexToRGBList } from '../../../../../utils/main'
 import {
@@ -99,8 +98,7 @@ export function ReferenceLayer(
   const referenceLayerData = useSelector(state => state.referenceLayerData[referenceLayer?.identifier]);
   const indicatorsData = useSelector(state => state.indicatorsData);
   const relatedTableData = useSelector(state => state.relatedTableData);
-  const filtersData = useSelector(state => state.filtersData);
-  const filteredGeometriesState = useSelector(state => state.filteredGeometries);
+  const filteredGeometries = useSelector(state => state.filteredGeometries);
   const currentIndicatorLayer = useSelector(state => state.selectedIndicatorLayer);
   const currentIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer);
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel);
@@ -114,13 +112,10 @@ export function ReferenceLayer(
   const geomFieldOnVectorTile = geoField === 'geometry_code' ? 'ucode' : geoField
   const compareOutlineSize = preferences.style_compare_mode_outline_size
 
-  const where = returnWhere(filtersData ? filtersData : [])
-
   const isReady = () => {
     return map && hasLayer(map, FILL_LAYER_ID) && hasLayer(map, OUTLINE_LAYER_ID)
   }
 
-  const filteredGeometries = where ? filteredGeometriesState : null
   let levels = referenceLayerData?.data?.dataset_levels
   let currentLevel = selectedAdminLevel ? selectedAdminLevel.level : levels?.level
 
@@ -169,14 +164,7 @@ export function ReferenceLayer(
 
   // Rerender if filter changed.
   useEffect(() => {
-    const whereStr = JSON.stringify(where)
-    const filteredGeometriesStr = JSON.stringify(filteredGeometries)
-    Logger.log('FILTERED_GEOM:', filteredGeometriesStr)
-    if (prevState.where !== whereStr || prevState.filteredGeometries !== filteredGeometriesStr) {
-      updateFilter()
-      prevState.where = whereStr
-      prevState.filteredGeometries = filteredGeometriesStr
-    }
+    updateFilter()
   }, [filteredGeometries, layerCreated]);
 
   // Rerender when map changed.
@@ -292,16 +280,8 @@ export function ReferenceLayer(
    * Check codes of geometries
    */
   const checkCodes = () => {
-    let whereStr = null
-    if (where) {
-      whereStr = JSON.stringify(where)
-    }
     if (isReady()) {
-      if (whereStr && filteredGeometries) {
-        return filteredGeometries
-      } else {
-        return null
-      }
+      return filteredGeometries
     }
     return null
   }
