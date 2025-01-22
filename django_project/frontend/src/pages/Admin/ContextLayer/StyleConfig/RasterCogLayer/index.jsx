@@ -21,9 +21,7 @@ import ColorPaletteStyleConfig, {QUANTITATIVE_TYPE} from "../../../Style/Form/Dy
 import {dictDeepCopy} from "../../../../../utils/main";
 import {dynamicClassificationChoices} from "../../../Style/Form/DynamicStyleConfig";
 import ColorSelector from "../../../../../components/Input/ColorSelector";
-import ColorPickerInput from "../../../../../components/Input/ColorSelectorWithAlpha";
-
-
+import ColorPickerInput, {rgbaToHex} from "../../../../../components/Input/ColorSelectorWithAlpha";
 
 
 const constructStyle = (styles) => {
@@ -47,10 +45,7 @@ const constructStyle = (styles) => {
       newStyles.additional_nodata = null;
     }
     if (newStyles.nodata_color === undefined) {
-      newStyles.nodata_color = '#000000';
-    }
-    if (newStyles.nodata_opacity === undefined) {
-      newStyles.nodata_opacity = 0;
+      newStyles.nodata_color = '#00000000';
     }
 
     return newStyles
@@ -70,6 +65,7 @@ export default function RasterCogLayer(
   const [noDataColor, setNoDataColor] = useState(styles.nodata_color);
 
   useEffect(() => {
+    console.log(noDataColor)
     setData({
       ...data,
       styles: {
@@ -144,20 +140,17 @@ export default function RasterCogLayer(
         flexDirection={'row'}
         spacing={1}
       >
-        <Grid item md={12} xl={12} lg={12}>
-          NoData Configuration
-        </Grid>
-        <Grid item md={3} xl={3} lg={3}>
+        <Grid item md={4} xl={4} lg={4}>
           <div>
-            <div>Original NoData</div>
+            <div>NoData Value</div>
             <input
-              placeholder='Original NoData' type='text'
+              placeholder='NoData Value' type='text'
               value={styles.nodata}
               disabled={true}
             />
           </div>
         </Grid>
-        <Grid item md={3} xl={3} lg={3}>
+        <Grid item md={4} xl={4} lg={4}>
           <div>
             <div>Additional NoData</div>
             <input
@@ -175,9 +168,9 @@ export default function RasterCogLayer(
             />
           </div>
         </Grid>
-        <Grid item md={3} xl={3} lg={3}>
+        <Grid item md={4} xl={4} lg={4}>
           <div>
-            <div>Color</div>
+            <div>NoData Color</div>
             {/*<ColorSelector*/}
             {/*  color={noDataColor}*/}
             {/*  onChange={evt => {*/}
@@ -186,23 +179,10 @@ export default function RasterCogLayer(
             {/*  hideInput={true}*/}
             {/*  fullWidth={true}*/}
             {/*/>*/}
-            <ColorPickerInput/>
-          </div>
-        </Grid>
-        <Grid item md={3} xl={3} lg={3}>
-          <div>
-            <div>Opacity (0-100)</div>
-            <input
-              placeholder='Opacity' type='number'
-              value={styles.nodata_opacity}
-              onChange={evt => {
-                setData({
-                  ...data,
-                  styles: {
-                    ...styles,
-                    nodata_opacity: parseFloat(evt.target.value)
-                  }
-                })
+            <ColorPickerInput
+              color={noDataColor}
+              setColor={val => {
+                setNoDataColor(rgbaToHex(val))
               }}
             />
           </div>

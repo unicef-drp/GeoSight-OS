@@ -297,6 +297,7 @@ export const hexToRgba = (hex, alpha = 1, format = 'array') => {
   const r = parseInt(hexClean.substring(0, 2), 16);
   const g = parseInt(hexClean.substring(2, 4), 16);
   const b = parseInt(hexClean.substring(4, 6), 16);
+  alpha = hexClean.length == 8 ? parseInt(hexClean.substring(6, 8), 16) : alpha
 
   // Return in RGBA format
   if (format == 'array') {
@@ -304,3 +305,20 @@ export const hexToRgba = (hex, alpha = 1, format = 'array') => {
   }
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 };
+
+// /**
+//  * Convert RGBA to hex
+//  * @param rgba object
+//  * @returns hex color with alpha
+//  */
+// export const rgbaToHex = (rgba) => {
+//   const toHex = (value) => {
+//     const hex = Math.round(value).toString(16);
+//     return hex.padStart(2, "0");
+//   };
+
+  // const alpha = Math.round(rgba.a * 255); // Convert alpha to a value between 0-255
+
+//   // Combine RGBA components into a single HEX string
+//   return `#${toHex(rgba.r)}${toHex(rgba.g)}${toHex(rgba.b)}${toHex(alpha)}`;
+// }

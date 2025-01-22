@@ -56,10 +56,8 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
         dynamic_classification,
         additional_nodata,
         nodata_color,
-        nodata_opacity,
       } = data?.styles;
       const additional_ndt_val = additional_nodata ? parseFloat(additional_nodata) : additional_nodata;
-      const ndt_opacity = nodata_opacity ? parseFloat(nodata_opacity) : nodata_opacity;
       const colors = createColorsFromPaletteId(color_palette, dynamic_class_num, color_palette_reverse);
       let init = isInit;
 
@@ -97,11 +95,12 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
       const url = `cog://${data.url}#` + contextLayerData.id;
 
       removeSource(map, id)
+      console.log(classifications)
 
       const getColor = (value) => {
         for (const classification of classifications) {
           if (value >= classification.bottom && value < classification.top) {
-            return hexToRgba(classification.color, 255);
+            return hexToRgba(classification.color);
           }
         }
         return null;
@@ -120,7 +119,7 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
           });
         }
         if (value === noData || value === Infinity || isNaN(value) || value === additional_ndt_val) {
-          rgba.set(hexToRgba(nodata_color, (ndt_opacity/100) * 255));
+          rgba.set(hexToRgba(nodata_color));
         } else if (value < min_band || value > max_band) {
           rgba.set([0, 0, 0, 0]); // noData, fillValue or NaN => transparent
         } else {
