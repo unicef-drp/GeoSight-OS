@@ -13,18 +13,19 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { memo, useCallback, useRef, useState } from "react";
+import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Checkbox from "@mui/material/Checkbox";
 import { FilterInputData } from "./FilterInputData";
-import { FilterInputDataProps, FilterInputElementProps } from "../../types.d";
-import DeleteFilter from "../../FilterDelete";
-import { EditIcon } from "../../../../Icons";
-import { TYPE } from "../../../../../utils/queryExtraction";
-import FilterEditor from "../../FilterEditor";
+import { FilterInputElementProps, OnDeleteProps } from "../types.d";
+import DeleteFilter from "../FilterDelete";
+import { EditIcon } from "../../../Icons";
+import { TYPE } from "../../../../utils/queryExtraction";
+import FilterEditor from "./FilterEditor";
+import CircularProgress from "@mui/material/CircularProgress";
 
 /** Filter group component */
 const FilterInputElement = memo(
@@ -47,9 +48,12 @@ const FilterInputElement = memo(
 
       onDelete,
       onEdited,
+      onFiltered,
 
-      isAdmin
+      isAdmin,
+      isLoading
     }: FilterInputElementProps) => {
+
     const modalRef = useRef(null);
     const [expanded, setExpanded] = useState(false)
 
@@ -66,7 +70,7 @@ const FilterInputElement = memo(
         >
           <div className='FilterExpressionName'>
             <Checkbox
-              checked={active}
+              checked={active ? true : false}
               size="small"
               onChange={(event) => {
                 setActive(!active)
@@ -76,6 +80,12 @@ const FilterInputElement = memo(
               }}
             />
             <div>{name}</div>
+            {
+              isLoading &&
+              <div style={{ marginLeft: "0.5rem" }}>
+                <CircularProgress size="1rem"/>
+              </div>
+            }
             <div className='Separator'></div>
             {
               isEnabled && <>
@@ -121,6 +131,8 @@ const FilterInputElement = memo(
             setValue={setValue}
 
             isAdmin={isAdmin}
+            active={active}
+            onFiltered={onFiltered}
           />
           {
             description && <div
@@ -133,6 +145,13 @@ const FilterInputElement = memo(
   }
 )
 
+export interface Props extends OnDeleteProps {
+  // Global data update
+  query: FilterInputElementProps;
+  updateQuery: () => void;
+  updateFilter: (result: string[]) => void;
+}
+
 /** Filter group component */
 const FilterInput = (
   {
@@ -142,10 +161,13 @@ const FilterInput = (
 
     /* Event on delete */
     onDelete,
+    updateFilter,
 
     isAdmin
-  }: FilterInputDataProps
+  }: Props
 ) => {
+  const [isLoading, setIsLoading] = useState(false)
+  const [result, setResult] = useState<string[]>(null);
 
   // Active callbacks
   const setActive = useCallback((value: boolean) => {
@@ -180,6 +202,24 @@ const FilterInput = (
     updateQuery()
   }, []);
 
+  // result filter callback
+  const resultFilterCallback = useCallback((data: string[]) => {
+    setResult(data)
+  }, []);
+
+  // When field, operator, value changed, make geometries null
+  useEffect(() => {
+      if (!query.active) {
+        setIsLoading(false)
+        updateFilter(undefined)
+      } else {
+        setIsLoading(!result)
+        updateFilter(result)
+      }
+    },
+    [query.active, result]
+  );
+
   // RENDER
   return <FilterInputElement
     operator={query.operator}
@@ -200,8 +240,10 @@ const FilterInput = (
 
     onDelete={onDeleteCallback}
     onEdited={onEditedCallback}
+    onFiltered={resultFilterCallback}
 
     isAdmin={isAdmin}
+    isLoading={isLoading}
   />
 };
 

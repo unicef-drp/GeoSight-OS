@@ -12,13 +12,12 @@
  * __date__ = '16/01/2025'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
-import React, { memo } from "react";
+import React, { memo, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FilterGroupDataProps } from "./types.d";
-import FilterGroup from "./FilterGroup";
+import FilterGroup from "./Group";
 import { INIT_DATA } from "../../../utils/queryExtraction";
 import { Actions } from "../../../store/dashboard";
-import FilterControlFiltering from "./FilterControlFiltering";
 
 import './style.scss';
 
@@ -42,6 +41,18 @@ const FilterControl = ({ isAdmin }: Props) => {
       Actions.Filters.update({ ...filter })
     )
   }
+
+  // UpdateFilter callbacks
+  const updateFilter = useCallback((data: string[]) => {
+    if (data === undefined) {
+      dispatcher(Actions.FilteredGeometries.update(null))
+    } else if (data === null) {
+      dispatcher(Actions.FilteredGeometries.update([]))
+    } else {
+      dispatcher(Actions.FilteredGeometries.update(data))
+    }
+  }, []);
+
   return <FilterGroup
     /* Query global */
     query={filter}
@@ -50,6 +61,7 @@ const FilterControl = ({ isAdmin }: Props) => {
     /* Is master */
     isMaster={true}
     isAdmin={isAdmin}
+    updateFilter={updateFilter}
   />
 };
 
@@ -66,7 +78,6 @@ const FilterContent = memo(({ isAdmin }: Props) => {
     <FilterControl
       isAdmin={filtersAllowModify ? filtersAllowModify : isAdmin}
     />
-    <FilterControlFiltering/>
   </div>;
 });
 

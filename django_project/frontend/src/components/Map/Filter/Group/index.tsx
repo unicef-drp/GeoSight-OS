@@ -24,17 +24,20 @@ import {
   FilterGroupDataProps,
   FilterGroupElementProps,
   OPTIONS_TYPES,
-  TYPE
-} from "./types.d";
+  TYPE,
+  WHERE_OPERATOR
+} from "../types.d";
+import _ from 'lodash';
 import Checkbox from "@mui/material/Checkbox";
-import { SelectPlaceholder } from "../../Input";
-import DeleteFilter from "./FilterDelete";
+import { SelectPlaceholder } from "../../../Input";
+import DeleteFilter from "../FilterDelete";
 import Tooltip from "@mui/material/Tooltip";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
-import FilterEditor from "./FilterEditor";
-import { INIT_DATA } from "../../../utils/queryExtraction";
-import FilterInput from "./Input/Data/FilterInput";
+import FilterEditor from "../Input/FilterEditor";
+import { INIT_DATA } from "../../../../utils/queryExtraction";
+import FilterInput from "../Input";
+import CircularProgress from "@mui/material/CircularProgress";
 
 /** Filter group component */
 const FilterGroupElement = memo(
@@ -58,7 +61,8 @@ const FilterGroupElement = memo(
 
      // Is master
      isMaster,
-     isAdmin
+     isAdmin,
+     isLoading
    }: FilterGroupElementProps) => {
     const modalRef = useRef(null);
 
@@ -68,7 +72,7 @@ const FilterGroupElement = memo(
     const [
       result, setResult
     ] = useState<string[]>(null);
-    console.log(operator)
+
     /** Render **/
     return (
       <div className='FilterGroupHeader'>
@@ -95,6 +99,12 @@ const FilterGroupElement = memo(
                 />
               </Fragment> :
               <div className='OperatorIdentifier'>{operator}</div>
+          }
+          {
+            isLoading &&
+            <div style={{ marginLeft: "0.5rem" }}>
+              <CircularProgress size="1rem"/>
+            </div>
           }
           <div className='Separator'/>
           {
@@ -151,12 +161,19 @@ const FilterGroup = (
 
     /* Event on delete */
     onDelete,
+    updateFilter,
 
     isAdmin
   }: FilterGroupDataProps
 ) => {
   const active = query.active;
   const prevActiveRef = useRef<boolean | undefined>();
+
+  // For member
+  // Null meaning isLoading
+  // Undefined meaning not being used
+  const [results, setResults] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false)
 
   /** When active changed **/
   useEffect(() => {
@@ -200,6 +217,32 @@ const FilterGroup = (
   }, []);
 
 
+  // When field, operator, value changed, make geometries null
+  useEffect(() => {
+      const isLoading = !!results.includes(null);
+      setIsLoading(isLoading)
+      if (!isLoading) {
+        const _results = results.filter(row => row !== undefined);
+        if (!_results.length) {
+          updateFilter(undefined)
+        } else {
+          if (query.operator === WHERE_OPERATOR.AND) {
+            updateFilter(_.intersection(..._results));
+          } else {
+            let _array: string[] = [];
+            _results.map(result => {
+              _array = _array.concat(result)
+            })
+            updateFilter(Array.from(new Set(_array)));
+          }
+        }
+      } else {
+        updateFilter(null)
+      }
+    },
+    [results, query.operator]
+  );
+
   // RENDER
   return <div className='FilterGroup'>
     <FilterGroupElement
@@ -228,6 +271,7 @@ const FilterGroup = (
         updateQuery()
       }}
       isAdmin={isAdmin}
+      isLoading={isLoading}
     />
     {
       query.queries?.length > 0 ?
@@ -249,6 +293,12 @@ const FilterGroup = (
                   updateQuery()
                 }}
                 isAdmin={isAdmin}
+                updateFilter={
+                  (data: string[]) => {
+                    results[idx] = data
+                    setResults([...results])
+                  }
+                }
               /> : <FilterInput
                 query={row}
                 updateQuery={updateQuery}
@@ -259,6 +309,12 @@ const FilterGroup = (
                   updateQuery()
                 }}
                 isAdmin={isAdmin}
+                updateFilter={
+                  (data: string[]) => {
+                    results[idx] = data
+                    setResults([...results])
+                  }
+                }
               />
 
           )

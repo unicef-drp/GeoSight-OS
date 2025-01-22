@@ -60,11 +60,9 @@ export default function ReferenceLayerCentroid({ map }) {
   const selectedIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer)
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel)
   const mapGeometryValue = useSelector(state => state.mapGeometryValue)
-  const filtersData = useSelector(state => state.filtersData);
 
   const [geometries, setGeometries] = useState({});
 
-  const where = returnWhere(filtersData ? filtersData : [])
   // When reference layer changed, fetch features
   useEffect(() => {
     const currGeometries = {}
@@ -251,7 +249,7 @@ export default function ReferenceLayerCentroid({ map }) {
       const features = []
 
       let theGeometries = Object.keys(geometriesData)
-      if (where && usedFilteredGeometries) {
+      if (usedFilteredGeometries) {
         theGeometries = usedFilteredGeometries
       }
 

@@ -50,6 +50,7 @@ import {
 import { compareFilters, filtersToFlatDict } from "../../../../utils/filters";
 
 import './style.scss';
+import { INIT_DATA } from "../../../../utils/queryExtraction";
 
 /**
  * Bookmark component.
@@ -58,7 +59,6 @@ export default function Bookmark({ map }) {
   const dispatch = useDispatch();
   const isEmbed = EmbedConfig().id;
   const dashboardData = useSelector(state => state.dashboard.data);
-  const filtersData = useSelector(state => state.filtersData);
   const selectedIndicatorLayer = useSelector(state => state.selectedIndicatorLayer);
   const selectedIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer);
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel);
@@ -101,7 +101,7 @@ export default function Bookmark({ map }) {
       selectedBasemap: basemapLayer?.id,
       selectedIndicatorLayers: selectedIndicatorLayers,
       selectedContextLayers: Object.keys(contextLayers).map(id => parseInt(id)),
-      filters: filtersData,
+      filters: dashboardData.filters ? dashboardData.filters : INIT_DATA.GROUP(),
       extent: extent,
       indicatorShow: indicatorShow,
       contextLayersShow: contextLayersShow,
@@ -200,6 +200,7 @@ export default function Bookmark({ map }) {
    * Save function based on url
    */
   const save = (url) => {
+    console.log(data())
     $.ajax({
       url: url,
       data: {
@@ -253,7 +254,7 @@ export default function Bookmark({ map }) {
       }}
       Button={
         <div className='Active'>
-          <PluginChild title={'Bookmark'} disabled={!filtersData}>
+          <PluginChild title={'Bookmark'}>
             <a>
               <StarOffIcon/>
             </a>

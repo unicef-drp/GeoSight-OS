@@ -55,6 +55,7 @@ export interface FilterGroupElementProps extends BasicFilterElementProps {
 
   onCreateNewFilter?: (data: any) => void;
   onCreateNewGroup?: (data: any) => void;
+  isLoading: boolean;
 }
 
 export interface FilterGroupDataProps extends OnDeleteProps {
@@ -64,12 +65,13 @@ export interface FilterGroupDataProps extends OnDeleteProps {
 
   // Is master, no delete
   isMaster?: boolean;
+  updateFilter: (result: string[]) => void;
 
   onCreateNewFilter?: (data: any) => void;
   onCreateNewGroup?: (data: any) => void;
 }
 
-export interface FilterInputProps {
+export interface FilterExpressionProps {
   operator: typeof WHERE_OPERATOR[keyof typeof WHERE_OPERATOR];
 
   // For layout
@@ -90,12 +92,8 @@ export interface FilterInputProps {
   isAdmin: boolean;
 }
 
-export interface FilterInputElementProps extends FilterInputProps, BasicFilterElementProps {
+export interface FilterInputElementProps extends FilterExpressionProps, BasicFilterElementProps {
+  onFiltered?: (data: string[]) => void;
+  isLoading: boolean;
 
-}
-
-export interface FilterInputDataProps extends OnDeleteProps {
-  // Global data update
-  query: FilterInputElementProps;
-  updateQuery?: () => void;
 }

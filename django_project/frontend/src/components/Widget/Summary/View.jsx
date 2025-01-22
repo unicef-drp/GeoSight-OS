@@ -19,8 +19,6 @@
 
 import React, { useEffect, useState } from 'react';
 import { useSelector } from "react-redux";
-
-import { returnWhere } from "../../../utils/queryExtraction";
 import { cleanLayerData } from "../../../utils/indicators"
 import { fetchingData } from "../../../Requests";
 
@@ -60,7 +58,6 @@ export default function SummaryWidgetView({ idx, data }) {
   const indicatorLayerData = useSelector(state => state.indicatorsData[layer_id]);
   const filteredGeometries = useSelector(state => state.filteredGeometries);
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel);
-  const filtersData = useSelector(state => state.filtersData);
   const [layerData, setLayerData] = useState({});
   const date_filter_type = use_only_last_known_value ? 'No filter' : config.date_filter_type
 
@@ -215,13 +212,12 @@ export default function SummaryWidgetView({ idx, data }) {
     )()
   }, [data, selectedAdminLevel, indicatorLayers, date_filter_type, referenceLayer])
 
-  const where = returnWhere(filtersData ? filtersData : [])
   let indicatorData = null
   if (layerData) {
     indicatorData = Object.assign({}, layerData)
     if (indicatorData?.fetched && indicatorData?.data) {
       indicatorData.data = indicatorData.data.filter(row => {
-        return !filteredGeometries || !where || filteredGeometries.includes(row.concept_uuid)
+        return !filteredGeometries || filteredGeometries?.includes(row.concept_uuid)
       })
     }
   }

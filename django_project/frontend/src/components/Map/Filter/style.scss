@@ -61,6 +61,10 @@
   flex-grow: 1;
   overflow-y: auto;
 
+  .Mui-disabled {
+    background-color: var(--gray-200);
+  }
+
   .FilterControlInfo {
     font-weight: $base-font-medium;
     font-size: 12px;
@@ -558,11 +562,13 @@
     .MuiInputSliderWithInput {
       flex-grow: 1;
       display: flex;
-      border-radius: 4px;
       background-color: white;
       border: 1px solid rgba(0, 0, 0, 0.23);
       overflow: hidden;
       min-width: 300px;
+      height: 100%;
+      box-sizing: border-box;
+      margin-left: -1px;
 
       input {
         border: unset;

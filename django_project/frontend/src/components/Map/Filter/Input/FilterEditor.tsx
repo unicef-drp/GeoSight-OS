@@ -18,20 +18,24 @@ import React, {
   useImperativeHandle,
   useState
 } from "react";
-import { INIT_DATA, IS_IN, IS_NOT_IN } from "../../../utils/queryExtraction";
-import Modal, { ModalContent, ModalHeader } from "../../Modal";
-import { FilterInputProps } from "./types.d";
 import { Button, Checkbox, Input, InputLabel } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { FilterFieldOperatorInput } from "./Input/FieldOperator";
-import { FilterInputData } from "./Input/Data/FilterInputData";
+import {
+  INIT_DATA,
+  IS_IN,
+  IS_NOT_IN
+} from "../../../../utils/queryExtraction";
+import Modal, { ModalContent, ModalHeader } from "../../../Modal";
+import { FilterExpressionProps } from "../types.d";
+import { FilterFieldOperatorInput } from "./FieldOperator";
+import { FilterInputData } from "./FilterInputData";
 
-import './style.scss';
+import '../style.scss';
 
 export interface FilterEditorModalProps {
   open: boolean;
   setOpen: (val: boolean) => void;
-  inputData: FilterInputProps;
+  inputData: FilterExpressionProps;
   onApply: (val: any) => void;
 }
 
@@ -54,19 +58,16 @@ export function FilterEditorModal(
 
   // Field callbacks
   const setFieldCallback = (value: boolean) => {
-    console.log(data)
     setData({ ...data, field: value })
   }
 
   // Operator callbacks
   const setOperatorCallback = (value: boolean) => {
-    console.log(data)
     setData({ ...data, operator: value })
   }
 
   // Value callbacks
   const setValueCallback = (value: boolean) => {
-    console.log(data)
     setData({ ...data, value: value })
   }
 

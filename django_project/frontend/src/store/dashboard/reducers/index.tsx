@@ -25,7 +25,6 @@ import indicatorsMetadataReducer from "./indicatorsMetadata";
 import indicatorLayerMetadataReducer from "./indicatorLayerMetadata";
 import relatedTableDataReducer from "./relatedTableData";
 import ReferenceLayerDataReducer from "./referenceLayerData";
-import filtersDataReducer from "./filtersData";
 import filteredGeometriesReducer from "./filteredGeometries";
 import globalStateReducer from "./globalState";
 import selectedIndicatorLayerReducer from "./selectedIndicatorLayer";
@@ -53,7 +52,6 @@ const rootReducer = combineReducers({
   indicatorLayerMetadata: indicatorLayerMetadataReducer,
   referenceLayerData: ReferenceLayerDataReducer,
   relatedTableData: relatedTableDataReducer,
-  filtersData: filtersDataReducer,
   filteredGeometries: filteredGeometriesReducer,
   globalState: globalStateReducer,
   selectedAdminLevel: selectedAdminLevelReducer,
