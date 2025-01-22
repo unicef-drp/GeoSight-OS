@@ -68,7 +68,7 @@ const FilterGroupElement = memo(
     const [
       result, setResult
     ] = useState<string[]>(null);
-    console.log(operator)
+
     /** Render **/
     return (
       <div className='FilterGroupHeader'>
