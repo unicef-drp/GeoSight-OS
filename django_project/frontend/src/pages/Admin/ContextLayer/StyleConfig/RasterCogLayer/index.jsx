@@ -209,12 +209,12 @@ export default function RasterCogLayer(
           }
         }
         options={
-          [
-            {
-              label: dynamicClassificationChoices[0].label.replace('.', ''),
-              value: dynamicClassificationChoices[0].value,
-            }
-          ]
+           dynamicClassificationChoices.filter(
+             classification => ["Natural breaks.", "Equidistant.", "Quantile."].includes(classification.label)
+           ).map(choice => ({
+             label: choice.label.replace('.', ''),
+             value: choice.value
+           }))
         }
       />
     </FormControl>
