@@ -13,19 +13,13 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   Select with Place holder style
-   ========================================================================== */
-
-@import '../../../app/variables';
-
 .MuiSelectValue {
   height: 24px;
   margin-top: -13px;
 
   .MuiSelectValueGroup {
-    color: $secondary-color;
-    font-weight: $base-font-medium;
+    color: var(--secondary-color);
+    font-weight: var(--base-font-medium);
     font-size: 0.7rem;
     height: 18px;
     text-overflow: ellipsis;

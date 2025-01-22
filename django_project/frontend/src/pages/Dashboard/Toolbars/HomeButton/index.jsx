@@ -23,8 +23,6 @@ import { HomeIcon } from "../../../../components/Icons"
 
 import { Plugin, PluginChild } from "../../MapLibre/Plugin";
 
-import './style.scss';
-
 /**
  * Movement history component.
  */

@@ -93,13 +93,11 @@ export function resourceActions(params) {
 export default function RelatedTableList() {
   const pageName = pageNames.RelatedTables
   let columns = dictDeepCopy(relatedTableColumns, false)
-  console.log(columns)
   columns = columns.concat([
-    { field: 'modified_at', headerName: 'Modified At', flex: 0.5 },
-    { field: 'modified_by', headerName: 'Modified By', flex: 0.5 },
-    {}
+    { field: 'modified_at', headerName: 'Modified At', flex: 0.5, type: 'date' },
+    { field: 'modified_by', headerName: 'Modified By', flex: 0.5, serverKey: 'modified_by__username' },
   ])
-  columns[columns.length - 1] = {
+  columns.push({
     field: 'actions',
     type: 'actions',
     cellClassName: 'MuiDataGrid-ActionsColumn',
@@ -107,8 +105,7 @@ export default function RelatedTableList() {
     getActions: (params) => {
       return resourceActions(params)
     },
-  }
-  console.log(columns)
+  })
 
   return <AdminList
     url={{
@@ -122,6 +119,7 @@ export default function RelatedTableList() {
     columns={columns}
     pageName={pageName}
     multipleDelete={true}
+    enableFilter={true}
     defaults={{
       sort: [
         { field: 'name', sort: 'asc' }

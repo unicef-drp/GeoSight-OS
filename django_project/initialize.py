@@ -143,6 +143,22 @@ try:
             'is_primary': True
         }
     )
+
+except Exception as e:
+    print(f'{e}')
+    pass
+
+#########################################################
+# 8. Create thumbnails for Dashboard
+#########################################################
+try:
+    from geosight.data.models.dashboard import Dashboard
+
+    print("-----------------------------------------------------")
+    print("8. Create thumbnails for Dashboard")
+    for dashboard in Dashboard.objects.all():
+        dashboard.save()
+
 except Exception as e:
     print(f'{e}')
     pass

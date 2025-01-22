@@ -13,12 +13,6 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   NotificationMaintenance
-   ========================================================================== */
-
-@import '../../app/variables';
-
 .NotificationMaintenance {
   margin-left: 1rem;
 
@@ -28,7 +22,7 @@
     background-color: white;
     border-radius: 4px;
     cursor: pointer;
-    color: $warning;
+    color: var(--warning);
     display: flex;;
     font-size: 1rem;
     height: 18px;
@@ -41,7 +35,7 @@
     }
 
     &:hover {
-      opacity: $base-hovered-opacity;
+      opacity: var(--base-hovered-opacity);
     }
   }
 }

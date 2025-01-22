@@ -15,11 +15,9 @@
 
 import React from 'react';
 import { dictDeepCopy } from "../../../utils/main";
-
-import FormControl from "@mui/material/FormControl";
 import { Creatable, Select } from "../index";
 
-import './style.scss'
+import FormControl from "@mui/material/FormControl";
 
 /** Main button
  * @param {string} buttonProps Variant of Button.

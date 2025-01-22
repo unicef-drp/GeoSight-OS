@@ -13,12 +13,6 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   Users Form style
-   ========================================================================== */
-
-@import '../../../../../app/variables';
-
 .ApiKeySection {
 
   .InputInLine {
@@ -40,7 +34,7 @@ div[data-field-name='is_staff'] {
 
 .ApiKeyUser {
   .Detail {
-    border: 1px solid $primary-color;
+    border: 1px solid var(--primary-color);
     margin-top: 1rem;
     padding: 1rem;
 

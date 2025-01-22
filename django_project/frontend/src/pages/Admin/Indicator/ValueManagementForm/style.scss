@@ -13,13 +13,6 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   Indicator Form style
-   ========================================================================== */
-
-@import '../../../../app/variables';
-
-
 .AdminContentHeader-Right {
   display: flex;
 
@@ -57,11 +50,11 @@
       width: 100%;
 
       tr {
-        border: 1px solid $secondary-color;
+        border: 1px solid var(--secondary-color);
       }
 
       td {
-        padding: $base-input-padding;
+        padding: var(--base-input-padding);
       }
 
       .ReferenceLayerTable-Name,
@@ -71,7 +64,7 @@
 
       .ReferenceLayerTable-Name {
         text-align: right;
-        color: $secondary-color;
+        color: var(--secondary-color);
         padding-right: 0;
       }
 
@@ -87,7 +80,7 @@
       width: 100%;
 
       .ExtraValueContent {
-        border: 1px solid $primary-color;
+        border: 1px solid var(--primary-color);
         padding: 0.5rem;
         flex-grow: 1;
         margin-left: 0.5rem;
@@ -108,7 +101,7 @@
         }
 
         svg {
-          color: $error;
+          color: var(--error);
           margin-left: 0.5rem;
         }
       }
@@ -161,18 +154,18 @@ form {
   }
 
   b {
-    font-weight: $base-font-regular !important;
-    color: $secondary-color;
+    font-weight: var(--base-font-regular) !important;
+    color: var(--secondary-color);
   }
 
   table {
     th {
-      color: $secondary-color;
+      color: var(--secondary-color);
     }
 
     th, td {
       padding: 0.5rem;
-      border: 1px solid $secondary-color;
+      border: 1px solid var(--secondary-color);
     }
   }
 }

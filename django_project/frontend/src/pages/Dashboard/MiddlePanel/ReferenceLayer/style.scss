@@ -17,8 +17,6 @@
    Left-side panel
    ========================================================================== */
 
-@import '../../../../app/variables';
-
 .ReferenceLayerSelectorWrapper {
   width: fit-content !important;
 }
@@ -30,13 +28,13 @@
   cursor: pointer;
   height: 28px;
   z-index: 999;
-  border: 1px solid $primary-color;
+  border: 1px solid var(--primary-color);
   min-width: 107px;
   width: fit-content;
 
   .ReferenceLayerLevelOption {
     cursor: pointer;
-    background-color: $white;
+    background-color: var(--white);
 
     &:hover {
       background-color: #eee !important;
@@ -47,9 +45,9 @@
     height: 0;
     overflow: hidden;
     background-color: rgb(255, 255, 255);
-    border-radius: $border-radius;
-    box-shadow: $box-shadow;
-    color: $black;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    color: var(--black);
   }
 
   &:hover {
@@ -59,8 +57,8 @@
   }
 
   .ReferenceLayerLevelSelected {
-    color: $primary-color;
-    border-radius: $border-radius;
+    color: var(--primary-color);
+    border-radius: var(--border-radius);
     font-weight: 400;
     padding: 0 6px;
     height: 100%;

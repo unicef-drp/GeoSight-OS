@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { Component } from 'react';
+import React from 'react';
 import { createRoot } from "react-dom/client";
 import { Provider } from 'react-redux';
 import c from 'classnames';
@@ -22,8 +22,8 @@ import { EmbedConfig } from "../utils/embed";
 import { urlParams } from "../utils/main";
 import { ConfirmDialogProvider } from "../providers/ConfirmDialog";
 
-import './mui.scss';
 import './app.scss';
+import './mui.scss';
 import './form.scss';
 import './form.small.scss';
 

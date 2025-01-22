@@ -13,21 +13,15 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   Table style
-   ========================================================================== */
-
-@import '../../app/variables';
-
 .ResourceList {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
   min-width: 0;
-  background-color: $base-to-white-color;
+  background-color: var(--base-to-white-color);
 
   & > div {
-    border-radius: $border-radius;
+    border-radius: var(--border-radius);
     margin: 0 1rem 1rem 1rem;
     background-color: white;
   }
@@ -37,7 +31,7 @@
     padding: 0.5rem;
 
     .MuiFormControl-root {
-      background-color: $base-almost-white-color;
+      background-color: var(--base-almost-white-color);
       margin-top: 0 !important;
       width: 100%;
 
@@ -45,7 +39,7 @@
         width: 100%;
 
         input {
-          padding: $base-input-padding;
+          padding: var(--base-input-padding);
         }
       }
     }
@@ -60,10 +54,10 @@
   }
 
   .ResourceTableDelete {
-    color: $error;
+    color: var(--error);
   }
 
   .CellLink {
-    color: $primary-color !important;
+    color: var(--primary-color) !important;
   }
 }
