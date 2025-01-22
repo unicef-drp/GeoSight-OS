@@ -17,7 +17,7 @@ on:
   push:
     branches: [ main ]
   pull_request:
-    branches: [ main, version-2.0.0 ]
+    branches: [ main, version-2.0.0, Filter-improvement ]
 
 jobs:
   flake8_py3:
@@ -97,11 +97,11 @@ jobs:
       matrix:
         test_suite: [
           { name: "Backend Tests", script: "make devweb-test" },
-          { name: "E2E Tests: Project Creation", path: "tests/project_creation", workers: 2, script_load : "make load-test-data" },
-          { name: "E2E Tests: Project View", path: "tests/project_view", workers: 3, script_load : "make load-test-data" },
-          { name: "E2E Tests: Admin List", path: "tests/admin_list", workers: 3, script_load : "make load-test-data" },
-          { name: "E2E Tests: Admin Edit", path: "tests/admin_edit", workers: 3, script_load : "make load-test-data" },
-          { name: "E2E Tests: Admin List Filter", path: "tests/admin_filter", workers: 3, script_load : "make load-test-data-for-filter" }
+          { name: "E2E Tests: Project Creation", path: "tests/project_creation", workers: 2, script_load: "make load-test-data" },
+          { name: "E2E Tests: Project View", path: "tests/project_view", workers: 3, script_load: "make load-test-data" },
+          { name: "E2E Tests: Admin List", path: "tests/admin_list", workers: 3, script_load: "make load-test-data" },
+          { name: "E2E Tests: Admin Edit", path: "tests/admin_edit", workers: 3, script_load: "make load-test-data" },
+          { name: "E2E Tests: Admin List Filter", path: "tests/admin_filter", workers: 3, script_load: "make load-test-data-for-filter" }
         ]
     env:
       APP_IMAGE: kartoza/geosight
