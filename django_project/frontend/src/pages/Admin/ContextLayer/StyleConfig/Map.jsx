@@ -17,12 +17,13 @@
    MAP CONFIG CONTAINER
    ========================================================================== */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import maplibregl from 'maplibre-gl';
 import { removeLayer, removeSource } from "../../../Dashboard/MapLibre/utils";
 import {
   contextLayerRendering
 } from "../../../Dashboard/MapLibre/Layers/ContextLayers/index";
+import debounce from "lodash.debounce";
 import 'mapboxgl-legend/dist/style.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
@@ -30,7 +31,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 // Initialize cog
 import { cogProtocol } from "@geomatico/maplibre-cog-protocol";
 import { Variables } from "../../../../utils/Variables";
-import { updateColorPaletteData } from "../../../../utils/Style";
+import { updateColorPaletteData, updateClassification } from "../../../../utils/Style";
 
 maplibregl.addProtocol('cog', cogProtocol);
 
@@ -92,6 +93,22 @@ export default function MapConfig({ data, setData, layerInput }) {
     }
   }, [map]);
 
+  // fetch classification
+  const fetchClassifications = useCallback(
+    debounce(async (value) => {
+      console.log('fetch classs')
+      const body = {
+          url: data.url,
+          class_type: data?.styles.dynamic_classification,
+          class_num: data?.styles.dynamic_class_num
+      }
+      await updateClassification(body)
+      await updateColorPaletteData()
+      contextLayerRendering(data.id, data, setData, layerInput, map, null, isInit, setIsInit)
+    }, 500),
+    [data, layerInput, map, isInit]
+  );
+
   // When layer input changed, remove from map
   useEffect(() => {
     if (map) {
@@ -101,11 +118,21 @@ export default function MapConfig({ data, setData, layerInput }) {
         // Await color palette
         (
           async () => {
-            await updateColorPaletteData()
-            contextLayerRendering(id, data, setData, layerInput, map, null, isInit, setIsInit)
+            console.log('atas')
+            fetchClassifications()
+            // const body = {
+            //     url: data.url,
+            //     class_type: data?.styles.dynamic_classification,
+            //     class_num: data?.styles.dynamic_class_num
+            // }
+            // await updateClassification(body)
+            // await updateColorPaletteData()
+            // console.log('rerender context layer')
+            // contextLayerRendering(id, data, setData, layerInput, map, null, isInit, setIsInit)
           }
         )()
       } else {
+        console.log('bawah')
         contextLayerRendering(id, data, setData, layerInput, map, null, isInit, setIsInit)
       }
     }

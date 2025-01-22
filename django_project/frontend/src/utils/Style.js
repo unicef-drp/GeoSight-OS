@@ -16,7 +16,7 @@ import { isArray } from "chart.js/helpers";
 import { dictDeepCopy } from "./main";
 import { NO_DATA_RULE } from "../pages/Admin/Style/Form/StyleRules";
 import { getLayerDataCleaned, SingleIndicatorTypes } from "./indicatorLayer";
-import { fetchingData } from "../Requests";
+import {DjangoRequests, fetchingData} from "../Requests";
 
 
 export const STYLE_FORM_LIBRARY = 'Style from library.'
@@ -36,11 +36,13 @@ export const dynamicStyleTypes = [
 ]
 
 export let COLOR_PALETTE_DATA = null
+export let rasterValueClassification = null
 
 /**
  * Update color data
  */
 export async function updateColorPaletteData() {
+  console.log('updateColorPaletteData')
   return new Promise((resolve, reject) => {
     if (!COLOR_PALETTE_DATA) {
       fetchingData(
@@ -57,6 +59,23 @@ export async function updateColorPaletteData() {
     } else {
       resolve(COLOR_PALETTE_DATA)
     }
+  });
+}
+
+export async function updateClassification(data) {
+  console.log('updateClassification')
+  return new Promise((resolve, reject) => {
+    DjangoRequests.post(
+      `/api/raster/classification`,
+      data, (response, error) => {
+        if (response) {
+          rasterValueClassification = response
+          resolve(response)
+        } else {
+          reject(error)
+        }
+      }
+    )
   });
 }
 

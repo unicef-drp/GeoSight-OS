@@ -69,8 +69,8 @@ from geosight.data.api.sharepoint import (
 from geosight.data.api.style import (
     StyleListAPI,
     StyleDetailAPI,
-    GetRasterClassificationAPI
 )
+from geosight.data.api.raster import GetRasterClassificationAPI
 
 # ------------------------------------------------------
 dashboard_specific_api = [
@@ -233,12 +233,19 @@ style_api = [
     url(
         r'^(?P<pk>\d+)',
         StyleDetailAPI.as_view(), name='style-detail-api'
-    ),
-    url(
-        r'^raster-classification',
-        GetRasterClassificationAPI.as_view(), name='raster-classification-api'
-    ),
+    )
 ]
+
+
+# ------------------------------------------------------
+# RASTER
+raster_api = [
+    url(
+        r'^classification',
+        GetRasterClassificationAPI.as_view(), name='raster-classification-api'
+    )
+]
+
 # ------------------------------------------------------
 # CONTEXT LAYER API
 context_layer_api = [
@@ -311,6 +318,7 @@ api = [
     url(r'^indicator/', include(indicator_api)),
     url(r'^context-layer/', include(context_layer_api)),
     url(r'^style/', include(style_api)),
+    url(r'^raster/', include(raster_api)),
     url(r'^permission/', include('geosight.permission.urls')),
     url(r'^related-table/', include(related_table_api)),
     url(r'^sharepoint/', include(sharepoint_api)),

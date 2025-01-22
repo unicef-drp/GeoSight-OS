@@ -24,12 +24,20 @@ import {
   removeLayer,
   removeSource
 } from "../utils";
-import { createColorsFromPaletteId } from "../../../../utils/Style";
+import {
+  createColorsFromPaletteId,
+  rasterValueClassification
+} from "../../../../utils/Style";
 import { sleep } from "../../../../utils/main";
 import { getCogFeatureByPoint } from "../../../../utils/COGLayer";
 import {setColorFunction} from '@geomatico/maplibre-cog-protocol';
 import { DjangoRequests } from "../../../../../src/Requests";
 import {hexToRgba} from '../utils';
+
+
+const generateCacheKey = (url, body) => {
+  return `${url}:${JSON.stringify(body)}`;
+}
 
 
 /***
@@ -54,38 +62,43 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
       const colors = createColorsFromPaletteId(color_palette, dynamic_class_num, color_palette_reverse);
       let init = isInit;
 
+      console.log(rasterValueClassification)
+
       if (!colors.length) {
         return
       }
 
       let classifications = [];
 
-      await DjangoRequests.post(
-    `/api/style/raster-classification`, {
-          url: data.url,
-          class_type: 'natural_breaks',
-          class_num: dynamic_class_num,
-          colors: colors,
-      }).then(response => {
-        classifications = response.data
-      }).catch(error => {
-        throw Error(error.toString())
-      })
-
-      console.log(classifications)
-
       // TODO: Handle styling when multiple, identical COG URLs are used
       const url = `cog://${data.url}#` + contextLayerData.id;
 
       removeSource(map, id)
 
+      // const getColor = (value) => {
+      //   for (const classification of classifications) {
+      //     if (value >= classification.bottom && value < classification.top) {
+      //       return hexToRgba(classification.color, 255);
+      //     }
+      //   }
+      //   return null;
+      // };
+
       const getColor = (value) => {
-        for (const classification of classifications) {
-          if (value >= classification.bottom && value < classification.top) {
-            return hexToRgba(classification.color, 255);
-          }
+        if (value < min_band || value > max_band) {
+          throw new Error("Value is out of range");
         }
-        return null;
+
+        const interval = (max_band - min_band) / dynamic_class_num; // Calculate interval size
+        const index = Math.min(
+          Math.floor((value - min_band) / interval),
+          dynamic_class_num - 1 // Ensure the index does not exceed the array length
+        );
+        try {
+          return hexToRgba(colors[index], 255);
+        } catch (e) {
+          return [0, 0, 0 , 0];
+        }
       };
 
       setColorFunction(data.url, ([value], rgba, {noData}) => {

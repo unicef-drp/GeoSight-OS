@@ -209,10 +209,22 @@ export default function RasterCogLayer(
           }
         }
         options={
+          // dynamicClassificationChoices.filter((idx, choice) => idx < 3).map(choice => ({
+          //     label: choice.label.replace('.', ''),
+          //     value: choice.value,
+          //   }))
           [
             {
               label: dynamicClassificationChoices[0].label.replace('.', ''),
               value: dynamicClassificationChoices[0].value,
+            },
+            {
+              label: dynamicClassificationChoices[1].label.replace('.', ''),
+              value: dynamicClassificationChoices[1].value,
+            },
+            {
+              label: dynamicClassificationChoices[2].label.replace('.', ''),
+              value: dynamicClassificationChoices[2].value,
             }
           ]
         }
