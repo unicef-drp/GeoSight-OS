@@ -20,11 +20,11 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Checkbox from "@mui/material/Checkbox";
 import { FilterInputData } from "./FilterInputData";
-import { FilterInputDataProps, FilterInputElementProps } from "../../types.d";
-import DeleteFilter from "../../FilterDelete";
-import { EditIcon } from "../../../../Icons";
-import { TYPE } from "../../../../../utils/queryExtraction";
-import FilterEditor from "../../FilterEditor";
+import { FilterInputDataProps, FilterInputElementProps } from "../types.d";
+import DeleteFilter from "../FilterDelete";
+import { EditIcon } from "../../../Icons";
+import { TYPE } from "../../../../utils/queryExtraction";
+import FilterEditor from "./FilterEditor";
 
 /** Filter group component */
 const FilterInputElement = memo(

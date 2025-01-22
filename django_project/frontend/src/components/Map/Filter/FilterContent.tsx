@@ -15,7 +15,7 @@
 import React, { memo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FilterGroupDataProps } from "./types.d";
-import FilterGroup from "./FilterGroup";
+import FilterGroup from "./Group";
 import { INIT_DATA } from "../../../utils/queryExtraction";
 import { Actions } from "../../../store/dashboard";
 import FilterControlFiltering from "./FilterControlFiltering";

@@ -25,16 +25,16 @@ import {
   FilterGroupElementProps,
   OPTIONS_TYPES,
   TYPE
-} from "./types.d";
+} from "../types.d";
 import Checkbox from "@mui/material/Checkbox";
-import { SelectPlaceholder } from "../../Input";
-import DeleteFilter from "./FilterDelete";
+import { SelectPlaceholder } from "../../../Input";
+import DeleteFilter from "../FilterDelete";
 import Tooltip from "@mui/material/Tooltip";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
-import FilterEditor from "./FilterEditor";
-import { INIT_DATA } from "../../../utils/queryExtraction";
-import FilterInput from "./Input/Data/FilterInput";
+import FilterEditor from "../Input/FilterEditor";
+import { INIT_DATA } from "../../../../utils/queryExtraction";
+import FilterInput from "../Input";
 
 /** Filter group component */
 const FilterGroupElement = memo(

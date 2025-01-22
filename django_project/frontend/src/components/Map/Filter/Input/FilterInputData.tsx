@@ -15,16 +15,16 @@
 
 import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { FilterInputProps } from "../../types.d";
+import { FilterInputProps } from "../types.d";
 import {
   IS_NOT_NULL,
   IS_NULL,
   OPERATOR
-} from "../../../../../utils/queryExtraction";
-import { RequestState } from "../../../../../types";
+} from "../../../../utils/queryExtraction";
+import { RequestState } from "../../../../types";
 import {
   WhereInputValue
-} from "../../../../SqlQueryGenerator/WhereQueryGenerator/WhereInput";
+} from "../../../SqlQueryGenerator/WhereQueryGenerator/WhereInput";
 
 export interface FetchSourceDetail {
   id: string;
