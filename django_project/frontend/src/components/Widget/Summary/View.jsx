@@ -217,7 +217,7 @@ export default function SummaryWidgetView({ idx, data }) {
     indicatorData = Object.assign({}, layerData)
     if (indicatorData?.fetched && indicatorData?.data) {
       indicatorData.data = indicatorData.data.filter(row => {
-        return filteredGeometries?.includes(row.concept_uuid)
+        return !filteredGeometries || filteredGeometries?.includes(row.concept_uuid)
       })
     }
   }

@@ -53,6 +53,7 @@ const FilterInputElement = memo(
       isAdmin,
       isLoading
     }: FilterInputElementProps) => {
+
     const modalRef = useRef(null);
     const [expanded, setExpanded] = useState(false)
 
@@ -69,7 +70,7 @@ const FilterInputElement = memo(
         >
           <div className='FilterExpressionName'>
             <Checkbox
-              checked={active}
+              checked={active ? true : false}
               size="small"
               onChange={(event) => {
                 setActive(!active)

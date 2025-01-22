@@ -159,7 +159,7 @@ export default function DatasetGeometryData() {
                   ucode: ucode,
                   concept_uuid: concept_uuid,
                   parents: parents,
-                  members: [],
+                  members: parents.concat(memberData),
                   properties: properties,
                   geometry: feature.geometry,
                 }

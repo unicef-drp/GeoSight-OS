@@ -116,7 +116,7 @@ export function Widget({ idx, data }) {
     indicatorData = Object.assign({}, layerData)
     if (indicatorData.fetched && indicatorData.data) {
       indicatorData.data = indicatorData.data.filter(indicator => {
-        return filteredGeometries?.includes(indicator.concept_uuid)
+        return !filteredGeometries || filteredGeometries?.includes(indicator.concept_uuid)
       })
     }
   }

@@ -58,19 +58,16 @@ export function FilterEditorModal(
 
   // Field callbacks
   const setFieldCallback = (value: boolean) => {
-    console.log(data)
     setData({ ...data, field: value })
   }
 
   // Operator callbacks
   const setOperatorCallback = (value: boolean) => {
-    console.log(data)
     setData({ ...data, operator: value })
   }
 
   // Value callbacks
   const setValueCallback = (value: boolean) => {
-    console.log(data)
     setData({ ...data, value: value })
   }
 

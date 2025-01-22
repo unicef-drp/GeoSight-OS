@@ -50,6 +50,7 @@ import {
 import { compareFilters, filtersToFlatDict } from "../../../../utils/filters";
 
 import './style.scss';
+import { INIT_DATA } from "../../../../utils/queryExtraction";
 
 /**
  * Bookmark component.
@@ -63,7 +64,6 @@ export default function Bookmark({ map }) {
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel);
   const selectedBookmark = useSelector(state => state.selectedBookmark);
   const {
-    filters,
     basemapLayer,
     contextLayers,
     indicatorShow,
@@ -101,7 +101,7 @@ export default function Bookmark({ map }) {
       selectedBasemap: basemapLayer?.id,
       selectedIndicatorLayers: selectedIndicatorLayers,
       selectedContextLayers: Object.keys(contextLayers).map(id => parseInt(id)),
-      filters: filters,
+      filters: dashboardData.filters ? dashboardData.filters : INIT_DATA.GROUP(),
       extent: extent,
       indicatorShow: indicatorShow,
       contextLayersShow: contextLayersShow,
@@ -200,6 +200,7 @@ export default function Bookmark({ map }) {
    * Save function based on url
    */
   const save = (url) => {
+    console.log(data())
     $.ajax({
       url: url,
       data: {

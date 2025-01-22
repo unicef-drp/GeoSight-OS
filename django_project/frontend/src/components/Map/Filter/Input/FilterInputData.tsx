@@ -26,6 +26,7 @@ import {
   WhereInputValue
 } from "../../../SqlQueryGenerator/WhereQueryGenerator/WhereInput";
 import alasql from "alasql";
+import { dictDeepCopy } from "../../../../utils/main";
 
 export interface FetchSourceDetail {
   id: string;
@@ -117,7 +118,7 @@ export const FetchSourceGeometryData = memo(
           row.members.map((member: any) => {
             data.push({
               concept_uuid: member.code,
-              ucode: member.ucode,
+              ucode: row.ucode,
               name: row.name,
             })
           })

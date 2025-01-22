@@ -1,4 +1,4 @@
- /**
+/**
  * GeoSight is UNICEF's geospatial web-based business intelligence platform.
  *
  * Contact : geosight-no-reply@unicef.org
@@ -26,7 +26,7 @@ export default function IndicatorsDataReducer(state = initialState, action) {
   if (action.name === INDICATORS_DATA_ACTION_NAME) {
     switch (action.type) {
       default: {
-        const data = APIReducer(state, action, INDICATORS_DATA_ACTION_NAME)
+        const data = APIReducer(state, action, INDICATORS_DATA_ACTION_NAME, [])
         const { id } = action
         if (Object.keys(data).length !== 0) {
           data.id = id;
