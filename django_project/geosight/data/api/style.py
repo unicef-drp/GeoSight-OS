@@ -88,18 +88,7 @@ class GetRasterClassificationAPI(APIView):
 
     def post(self, request):
         """Get raster classification."""
-
-        # url = request.data.get('url')
-        # class_type = request.data.get('class_type')
-        # class_num = request.data.get('class_num')
         serializer = self.serializer_class(data=request.data)
-
-        # if not url:
-        #     return Response('URL parameter is required', status=400)
-        # try:
-        #     class_num = int(class_num)
-        # except ValueError:
-        #     return Response('class_number parameter must be integer', status=400)
 
         if serializer.is_valid(raise_exception=True):
             url = serializer.validated_data['url']

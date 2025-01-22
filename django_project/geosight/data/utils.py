@@ -183,7 +183,7 @@ STANDARD_DEVIATION = 'standard_deviation'
 
 import jenkspy
 from django.utils import timezone
-import xarray as xr
+# import xarray as xr
 
 class ClassifyRasterData():
     """Classify raster data."""
@@ -319,6 +319,7 @@ class ClassifyRasterData():
             elif self.class_type == EQUAL_INTERVAL:
                 classification = self.classify_equal_interval(data)
             elif self.class_type == QUANTILE:
+                data = np.unique(data)
                 classification = self.classify_quantile(data)
             elif self.class_type == STANDARD_DEVIATION:
                 classification = self.classify_std_deviation(data)
