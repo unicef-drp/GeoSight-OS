@@ -18,6 +18,7 @@ from rest_framework import serializers
 
 
 class GetRasterClassificationSerializer(serializers.Serializer):
+    """Serializer for raster classification."""
     url = serializers.URLField()
     class_type = serializers.CharField()
     class_num = serializers.IntegerField()

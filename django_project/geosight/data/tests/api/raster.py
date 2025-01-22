@@ -25,14 +25,15 @@ from geosight.permission.tests._base import APITestCase
 
 class GetRasterClassificationAPITest(APITestCase):
     """Test for GetRasterClassificationAPI."""
+
     url = reverse('raster-classification-api')
 
     @classmethod
     def setUpTestData(cls):
+        """Prepare test data."""
         cls.user = UserF(is_staff=True, is_superuser=True)
 
     def _send_request(self, data, mock_get):
-        client = self.test_client()
         file_path = (
             '/home/web/django_project/geosight/'
             'data/tests/data/context_layer.tif'
@@ -64,7 +65,6 @@ class GetRasterClassificationAPITest(APITestCase):
     @patch('requests.get')
     def test_get_natural_breaks(self, mock_get):
         """Test get natural breaks classification."""
-
         response = self._send_request(
             data={
                 "url": (
@@ -74,7 +74,15 @@ class GetRasterClassificationAPITest(APITestCase):
                 ),
                 "class_type": "Natural breaks.",
                 "class_num": 7,
-                "colors": [ "#d73027", "#fc8d59", "#fee08b", "#ffffbf", "#d9ef8b", "#91cf60", "#1a9850" ]
+                "colors": [
+                    "#d73027",
+                    "#fc8d59",
+                    "#fee08b",
+                    "#ffffbf",
+                    "#d9ef8b",
+                    "#91cf60",
+                    "#1a9850"
+                ]
             },
             mock_get=mock_get
         )
@@ -84,7 +92,6 @@ class GetRasterClassificationAPITest(APITestCase):
     @patch('requests.get')
     def test_get_equal_interval(self, mock_get):
         """Test get equal interval classification."""
-
         response = self._send_request(
             data={
                 "url": (
@@ -94,7 +101,15 @@ class GetRasterClassificationAPITest(APITestCase):
                 ),
                 "class_type": "Equidistant.",
                 "class_num": 7,
-                "colors": [ "#d73027", "#fc8d59", "#fee08b", "#ffffbf", "#d9ef8b", "#91cf60", "#1a9850" ]
+                "colors": [
+                    "#d73027",
+                    "#fc8d59",
+                    "#fee08b",
+                    "#ffffbf",
+                    "#d9ef8b",
+                    "#91cf60",
+                    "#1a9850"
+                ]
             },
             mock_get=mock_get
         )
@@ -113,7 +128,6 @@ class GetRasterClassificationAPITest(APITestCase):
     @patch('requests.get')
     def test_get_quantile(self, mock_get):
         """Test get quantile classification."""
-
         response = self._send_request(
             data={
                 "url": (
@@ -123,7 +137,15 @@ class GetRasterClassificationAPITest(APITestCase):
                 ),
                 "class_type": "Quantile.",
                 "class_num": 7,
-                "colors": [ "#d73027", "#fc8d59", "#fee08b", "#ffffbf", "#d9ef8b", "#91cf60", "#1a9850" ]
+                "colors": [
+                    "#d73027",
+                    "#fc8d59",
+                    "#fee08b",
+                    "#ffffbf",
+                    "#d9ef8b",
+                    "#91cf60",
+                    "#1a9850"
+                ]
             },
             mock_get=mock_get
         )
