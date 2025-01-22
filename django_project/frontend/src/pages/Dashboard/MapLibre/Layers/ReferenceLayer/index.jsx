@@ -164,6 +164,10 @@ export function ReferenceLayer(
 
   // Rerender if filter changed.
   useEffect(() => {
+    if (IS_DEBUG) {
+      const filteredGeometriesStr = JSON.stringify(filteredGeometries)
+      Logger.log('FILTERED_GEOM:', filteredGeometriesStr)
+    }
     updateFilter()
   }, [filteredGeometries, layerCreated]);
 
