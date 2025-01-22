@@ -42,7 +42,10 @@ class GetRasterClassificationAPI(APIView):
 
         if serializer.is_valid(raise_exception=True):
             # Generate cache key
-            cache_key = generate_cache_key(request.path, serializer.validated_data)
+            cache_key = generate_cache_key(
+                request.path,
+                serializer.validated_data
+            )
 
             # Check if cached response exists
             cached_response = cache.get(cache_key)
@@ -62,7 +65,9 @@ class GetRasterClassificationAPI(APIView):
                 if not os.path.exists(tmp_file_path):
                     if response.status_code == 200:
                         with open(tmp_file_path, "wb") as tmp_file:
-                            for chunk in response.iter_content(chunk_size=8192):
+                            for chunk in response.iter_content(
+                                    chunk_size=8192
+                            ):
                                 tmp_file.write(chunk)
                     else:
                         raise Exception(
