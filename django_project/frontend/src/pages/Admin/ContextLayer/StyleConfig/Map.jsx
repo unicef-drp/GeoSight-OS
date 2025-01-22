@@ -30,7 +30,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 // Initialize cog
 import { cogProtocol } from "@geomatico/maplibre-cog-protocol";
 import { Variables } from "../../../../utils/Variables";
-import { updateColorPaletteData, updateClassification } from "../../../../utils/Style";
+import { updateColorPaletteData } from "../../../../utils/Style";
 
 maplibregl.addProtocol('cog', cogProtocol);
 

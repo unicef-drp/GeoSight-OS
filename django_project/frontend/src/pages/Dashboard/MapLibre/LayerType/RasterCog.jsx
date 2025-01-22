@@ -104,7 +104,6 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
             return hexToRgba(classification.color, 255);
           }
         }
-        debugger
         return null;
       };
 

@@ -36,7 +36,6 @@ export const dynamicStyleTypes = [
 ]
 
 export let COLOR_PALETTE_DATA = null
-export let rasterValueClassification = null
 
 /**
  * Update color data
@@ -58,22 +57,6 @@ export async function updateColorPaletteData() {
     } else {
       resolve(COLOR_PALETTE_DATA)
     }
-  });
-}
-
-export async function updateClassification(data) {
-  return new Promise((resolve, reject) => {
-    DjangoRequests.post(
-      `/api/raster/classification`,
-      data, (response, error) => {
-        if (response) {
-          rasterValueClassification = response
-          resolve(response)
-        } else {
-          reject(error)
-        }
-      }
-    )
   });
 }
 
@@ -187,7 +170,6 @@ export function createColorsFromPaletteId(paletteId, classNum, isReverse) {
  * @returns {*[]}
  */
 export function createDynamicStyle(data, styleType, config, styleData) {
-  debugger
   if (config?.no_data_rule?.outline_size) {
     config.no_data_rule.outline_size = parseFloat(config.no_data_rule.outline_size)
     if (isNaN(config.no_data_rule.outline_size)) {
