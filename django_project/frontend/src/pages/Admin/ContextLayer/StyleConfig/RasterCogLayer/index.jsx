@@ -21,6 +21,7 @@ import ColorPaletteStyleConfig, {QUANTITATIVE_TYPE} from "../../../Style/Form/Dy
 import {dictDeepCopy} from "../../../../../utils/main";
 import {dynamicClassificationChoices} from "../../../Style/Form/DynamicStyleConfig";
 import ColorSelector from "../../../../../components/Input/ColorSelector";
+import ColorPickerInput from "../../../../../components/Input/ColorSelectorWithAlpha";
 
 
 
@@ -177,14 +178,15 @@ export default function RasterCogLayer(
         <Grid item md={3} xl={3} lg={3}>
           <div>
             <div>Color</div>
-            <ColorSelector
-              color={noDataColor}
-              onChange={evt => {
-                setNoDataColor(evt.target.value)
-              }}
-              hideInput={true}
-              fullWidth={true}
-            />
+            {/*<ColorSelector*/}
+            {/*  color={noDataColor}*/}
+            {/*  onChange={evt => {*/}
+            {/*    setNoDataColor(evt.target.value)*/}
+            {/*  }}*/}
+            {/*  hideInput={true}*/}
+            {/*  fullWidth={true}*/}
+            {/*/>*/}
+            <ColorPickerInput/>
           </div>
         </Grid>
         <Grid item md={3} xl={3} lg={3}>
