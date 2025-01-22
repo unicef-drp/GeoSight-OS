@@ -222,7 +222,7 @@ export function WhereInputValue(
     </div>
   } else if (MULTI_SELECTABLE_OPERATORS.includes(operator)) {
     return <MultipleSelectWithSearch
-      value={value ? value : []}
+      value={Array.isArray(value) ? value : !Array.isArray(value) ? [value] : []}
       onChangeFn={(value) => {
         if (Array.isArray(value)) {
           setValue(value.map(val => val.value !== undefined ? val.value : val))

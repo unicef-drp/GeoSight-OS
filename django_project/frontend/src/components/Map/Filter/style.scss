@@ -396,6 +396,10 @@
     width: 100%;
     border: 1px solid $primary-color;
 
+    & > .MuiInputBase-root {
+      width: 100%;
+    }
+
     .SelectWithSearchInput,
     .MuiAutocomplete-root {
       border: unset !important;
@@ -404,7 +408,6 @@
     }
 
     .MuiSvgIcon-root {
-      color: #ddd;
       margin: 7px 3px;
       width: 16px;
     }
@@ -505,6 +508,10 @@
 
   .FilterInputWrapper {
     height: 100%;
+
+    & > .MuiInputBase-root {
+      height: 100%;
+    }
   }
 
   .FilterEditModalQuery {
