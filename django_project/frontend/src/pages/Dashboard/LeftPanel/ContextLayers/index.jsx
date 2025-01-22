@@ -13,10 +13,6 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-/* ==========================================================================
-   Context Layers SELECTOR
-   ========================================================================== */
-
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 
@@ -29,8 +25,6 @@ import {
 } from "../../../../components/SortableTreeForm/utilities";
 import SidePanelTreeView from "../../../../components/SidePanelTree";
 import { getLayer } from "../../MapLibre/Layers/ContextLayers/Layer";
-
-import './style.scss'
 
 function ContextLayers() {
   const dispatch = useDispatch();

@@ -43,12 +43,12 @@ export const relatedTableColumns = [
     field: 'created_at', headerName: 'Created at', flex: 0.5,
     renderCell: (params) => {
       return formatDateTime(new Date(params.value))
-    }
+    }, type: 'date'
   },
   {
     field: 'created_by',
     headerName: 'Created by',
     flex: 0.5,
-    sortField: 'creator__username'
+    serverKey: 'creator__username'
   }
 ]

@@ -13,12 +13,6 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   Admin Form specific style
-   ========================================================================== */
-
-@import '../../../../app/variables';
-
 .AdminForm {
   background-color: white;
   flex-grow: 1;
@@ -36,9 +30,8 @@
     .AdminFormLoadingSection {
       height: fit-content;
       width: fit-content;
-      margin: auto;
       display: flex;
-      margin-top: 200px;
+      margin: 200px auto auto;
 
       div {
         margin-left: 1rem;
@@ -64,10 +57,10 @@
     }
 
     div {
-      background: $gray-100;
+      background: var(--gray-100);
       position: relative;
       width: fit-content;
-      padding: $base-input-padding;
+      padding: var(--base-input-padding);
       padding-left: 1.5rem;
       cursor: pointer;
 
@@ -76,21 +69,21 @@
       }
 
       &:hover {
-        background: $gray-200;
-        color: $primary-color;
+        background: var(--gray-200);
+        color: var(--primary-color);
 
         &:after {
-          border-left-color: $gray-200;
+          border-left-color: var(--gray-200);
         }
       }
 
       &.Disabled {
-        background: $gray-100;
-        color: $gray-500;
+        background: var(--gray-100);
+        color: var(--gray-500);
         cursor: not-allowed;
 
         &:after {
-          border-left-color: $gray-100;
+          border-left-color: var(--gray-100);
         }
       }
 
@@ -100,17 +93,17 @@
         top: 0;
         left: 100%;
         content: '';
-        border-left: 10px solid $gray-100;
+        border-left: 10px solid var(--gray-100);
         border-top: 20px solid transparent;
         border-bottom: 20px solid transparent;
       }
 
       &.Selected {
-        background: $primary-color;
-        color: $anti-primary-color;
+        background: var(--primary-color);
+        color: var(--anti-primary-color);
 
         &:after {
-          border-left-color: $primary-color;
+          border-left-color: var(--primary-color);
         }
       }
     }

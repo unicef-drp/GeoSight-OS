@@ -27,7 +27,7 @@ import { DataAccessActiveIcon } from "../../Icons";
 export const groupUrl = {
   list: '/api/v1/groups/?fields=__all__',
   detail: '/api/v1/groups/0/?fields=__all__',
-  edit: '/admin/group/0/edit/',
+  edit: '/admin/group/0/edit',
   create: '/admin/group/create/',
 }
 
@@ -70,16 +70,14 @@ export function resourceActions(params) {
 }
 
 export function COLUMNS() {
-  const editUrl = '/admin/group/0/edit';
-  const detailUrl = '/admin/group/0';
   return [
     { field: 'id', headerName: 'id', hide: true, width: 30, },
     {
       field: 'name', headerName: 'Name', flex: 1,
       renderCell: (params) => {
-        if (editUrl) {
+        if (groupUrl.edit) {
           return <a className='MuiButtonLike CellLink'
-                    href={editUrl.replace('/0', `/${params.id}`)}>
+                    href={groupUrl.edit.replace('/0', `/${params.id}`)}>
             {params.value}
           </a>
         } else {

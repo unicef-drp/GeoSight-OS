@@ -14,18 +14,18 @@
  */
 
 import React from 'react';
-import { GridActionsCellItem } from "@mui/x-data-grid";
+import {GridActionsCellItem} from "@mui/x-data-grid";
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import { render } from '../../../../app';
-import { store } from '../../../../store/admin';
-import { pageNames } from '../../index';
-import { COLUMNS, COLUMNS_ACTION } from "../../Components/List";
+import {render} from '../../../../app';
+import {store} from '../../../../store/admin';
+import {pageNames} from '../../index';
+import {COLUMNS, COLUMNS_ACTION} from "../../Components/List";
 import PermissionModal from "../../Permission";
-import { VisibilityIcon } from "../../../../components/Icons";
+import {VisibilityIcon} from "../../../../components/Icons";
 import AdminList from "../../../../components/AdminList";
-import { useConfirmDialog } from "../../../../providers/ConfirmDialog";
-import { DjangoRequests } from "../../../../Requests";
+import {useConfirmDialog} from "../../../../providers/ConfirmDialog";
+import {DjangoRequests} from "../../../../Requests";
 
 
 import './style.scss';
@@ -79,15 +79,15 @@ export default function DashboardList() {
   columns[3] = {
     field: 'category',
     headerName: 'Category', flex: 0.5,
-    sortField: 'group__name'
+    serverKey: 'group__name'
   }
   columns[4] = {
     field: 'created_by', headerName: 'Created By', flex: 0.5,
-    sortField: 'creator__username'
+    serverKey: 'creator__username'
   }
-  columns[5] = { field: 'created_at', headerName: 'Created At', flex: 0.5 }
-  columns[6] = { field: 'modified_at', headerName: 'Modified At', flex: 0.5 }
-  columns[7] = { field: 'modified_by', headerName: 'Modified By', flex: 0.5 }
+  columns[5] = { field: 'created_at', headerName: 'Created At', flex: 0.5, type: 'date' }
+  columns[6] = { field: 'modified_at', headerName: 'Modified At', flex: 0.5 , type: 'date' }
+  columns[7] = { field: 'modified_by', headerName: 'Modified By', flex: 0.5, serverKey: 'modified_by__username' }
   columns[8] = {
     field: 'actions',
     type: 'actions',
@@ -151,6 +151,7 @@ export default function DashboardList() {
     columns={columns}
     pageName={pageName}
     multipleDelete={true}
+    enableFilter={true}
     defaults={{
       sort: [
         { field: 'name', sort: 'asc' }

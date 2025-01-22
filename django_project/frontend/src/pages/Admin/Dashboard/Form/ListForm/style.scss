@@ -13,11 +13,6 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   Table Form style
-   ========================================================================== */
-
-@import '../../../../../app/variables';
 // TABLE FORM
 .DragDropTable {
   width: 100%;
@@ -36,7 +31,7 @@
   }
 
   tbody {
-    border: 1px solid $secondary-color;
+    border: 1px solid var(--secondary-color);
   }
 
   .GroupRow {
@@ -45,8 +40,8 @@
     }
 
     td {
-      background: $secondary-color;
-      color: $anti-secondary-color;
+      background: var(--secondary-color);
+      color: var(--anti-secondary-color);
     }
 
     td:first-child {
@@ -73,12 +68,12 @@
       .AddButton {
         padding: 0.5rem;
         display: flex;
-        font-weight: $base-font-medium;
+        font-weight: var(--base-font-medium);
         letter-spacing: 0.02857em;
         font-size: 1rem !important;
         line-height: 1.5 !important;
         font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-        color: $anti-secondary-color;
+        color: var(--anti-secondary-color);
 
         svg {
           margin-right: 0.5rem;
@@ -121,7 +116,7 @@
     }
 
     th {
-      font-weight: $base-font-medium;
+      font-weight: var(--base-font-medium);
       text-align: left;
     }
 

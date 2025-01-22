@@ -61,8 +61,8 @@ function ProjectGrid({ projects, isLoading }: ProjectGridProps) {
               <a href={'/project/' + project.slug}>
                 <div className='ProjectGridIcon'>
                   {
-                    project.icon ? <img src={project.icon}/> :
-                      <ImageIcon/>
+                    project.thumbnail ? <img src={project.thumbnail}/> : project.icon ? <img src={project.icon}/> :
+                    <ImageIcon/>
                   }
                 </div>
                 <div className='ProjectGridName'>{project.name}</div>

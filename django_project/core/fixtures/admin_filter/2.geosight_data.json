@@ -1,0 +1,862 @@
+[
+  {
+    "model": "geosight_data.basemapgroup",
+    "pk": 1,
+    "fields": {
+      "name": "Test",
+      "description": null
+    }
+  },
+  {
+    "model": "geosight_data.basemapgroup",
+    "pk": 2,
+    "fields": {
+      "name": "Group 2",
+      "description": "Group 2"
+    }
+  },
+  {
+    "model": "geosight_data.basemaplayer",
+    "pk": 1,
+    "fields": {
+      "name": "OSM",
+      "description": "OSM Description",
+      "creator": 1,
+      "created_at": "2022-09-14T10:15:29Z",
+      "modified_by": 1,
+      "modified_at": "2025-01-19T08:19:32.628Z",
+      "icon": "",
+      "url": "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png?noWrap=true",
+      "type": "XYZ Tile",
+      "group": 1
+    }
+  },
+  {
+    "model": "geosight_data.basemaplayer",
+    "pk": 2,
+    "fields": {
+      "name": "Open Topo Map",
+      "description": "",
+      "creator": 1,
+      "created_at": "2022-09-14T10:15:29Z",
+      "modified_by": 1,
+      "modified_at": "2025-01-14T06:16:16.862Z",
+      "icon": "",
+      "url": "https://a.tile.opentopomap.org/{z}/{x}/{y}.png?noWrap=true",
+      "type": "XYZ Tile",
+      "group": 1
+    }
+  },
+  {
+    "model": "geosight_data.basemaplayer",
+    "pk": 3,
+    "fields": {
+      "name": "Mapbox Satellite",
+      "description": "Mapbox Satellite Description",
+      "creator": 1,
+      "created_at": "2022-09-14T10:15:29Z",
+      "modified_by": 4,
+      "modified_at": "2025-01-19T08:20:20.838Z",
+      "icon": "",
+      "url": "https://a.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}@2x.jpg?access_token=pk.eyJ1IjoiYWxla29yIiwiYSI6ImNqdGZwc2FoaDBkNjAzeXJ1b3B6bzR6Z2IifQ.m6OQgD-IfmhaVS3Xh5XNoQ",
+      "type": "XYZ Tile",
+      "group": 2
+    }
+  },
+  {
+    "model": "geosight_data.basemaplayer",
+    "pk": 4,
+    "fields": {
+      "name": "Test OSM",
+      "description": "Test OSM Description",
+      "creator": 4,
+      "created_at": "2025-01-16T03:31:11.933Z",
+      "modified_by": 4,
+      "modified_at": "2025-01-19T08:19:47.041Z",
+      "icon": "",
+      "url": "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png?noWrap=true",
+      "type": "XYZ Tile",
+      "group": 2
+    }
+  },
+      {
+    "model": "geosight_data.contextlayergroup",
+    "pk": 1,
+    "fields": {
+      "name": "Test",
+      "description": ""
+    }
+  },
+          {
+    "model": "geosight_data.contextlayergroup",
+    "pk": 2,
+    "fields": {
+      "name": "Test",
+      "description": ""
+    }
+  },
+{
+    "model": "geosight_data.contextlayer",
+    "pk": 86,
+    "fields": {
+        "name": "Context Layer A0",
+        "description": "Context Layer A0 Description",
+        "creator": 1,
+        "created_at": "2025-01-01T08:06:44.785Z",
+        "modified_by": 4,
+        "modified_at": "2025-01-02T08:30:59.472Z",
+        "group": 1,
+        "url": null,
+        "layer_type": "ARCGIS",
+        "arcgis_config": null,
+        "related_table": null,
+        "url_legend": null,
+        "token": null,
+        "username": null,
+        "password": null,
+        "styles": null,
+        "label_styles": "{\"minZoom\":0,\"maxZoom\":24,\"fontFamily\":\"\\\"Rubik\\\", sans-serif\",\"fontSize\":13,\"fontColor\":\"#000000\",\"fontWeight\":300,\"strokeColor\":\"#FFFFFF\",\"strokeWeight\":0,\"haloColor\":\"#FFFFFF\",\"haloWeight\":2}",
+        "configuration": "\"\"",
+        "cloud_native_gis_layer_id": null
+    }
+},
+{
+    "model": "geosight_data.contextlayer",
+    "pk": 87,
+    "fields": {
+        "name": "Context Layer A1",
+        "description": "Context Layer A1 Description",
+        "creator": 1,
+        "created_at": "2025-01-19T08:06:46.910Z",
+        "modified_by": 4,
+        "modified_at": "2025-01-19T08:31:35.505Z",
+        "group": 2,
+        "url": null,
+        "layer_type": "Geojson",
+        "arcgis_config": null,
+        "related_table": null,
+        "url_legend": null,
+        "token": null,
+        "username": null,
+        "password": null,
+        "styles": null,
+        "label_styles": "{\"minZoom\":0,\"maxZoom\":24,\"fontFamily\":\"\\\"Rubik\\\", sans-serif\",\"fontSize\":13,\"fontColor\":\"#000000\",\"fontWeight\":300,\"strokeColor\":\"#FFFFFF\",\"strokeWeight\":0,\"haloColor\":\"#FFFFFF\",\"haloWeight\":2}",
+        "configuration": "\"\"",
+        "cloud_native_gis_layer_id": null
+    }
+},
+{
+    "model": "geosight_data.contextlayer",
+    "pk": 88,
+    "fields": {
+        "name": "Context Layer A2",
+        "description": "Context Layer A2 Description",
+        "creator": 1,
+        "created_at": "2025-01-01T08:06:48.364Z",
+        "modified_by": 4,
+        "modified_at": "2025-01-02T08:31:47.237Z",
+        "group": 1,
+        "url": null,
+        "layer_type": "Raster Tile",
+        "arcgis_config": null,
+        "related_table": null,
+        "url_legend": null,
+        "token": null,
+        "username": null,
+        "password": null,
+        "styles": null,
+        "label_styles": "{\"minZoom\":0,\"maxZoom\":24,\"fontFamily\":\"\\\"Rubik\\\", sans-serif\",\"fontSize\":13,\"fontColor\":\"#000000\",\"fontWeight\":300,\"strokeColor\":\"#FFFFFF\",\"strokeWeight\":0,\"haloColor\":\"#FFFFFF\",\"haloWeight\":2}",
+        "configuration": "\"\"",
+        "cloud_native_gis_layer_id": null
+    }
+},
+{
+    "model": "geosight_data.contextlayer",
+    "pk": 89,
+    "fields": {
+        "name": "Context Layer A3",
+        "description": "Context Layer A2 Description",
+        "creator": 1,
+        "created_at": "2025-01-01T08:06:49.731Z",
+        "modified_by": 1,
+        "modified_at": "2025-01-03T08:34:27.399Z",
+        "group": 2,
+        "url": null,
+        "layer_type": "Raster COG",
+        "arcgis_config": null,
+        "related_table": null,
+        "url_legend": null,
+        "token": null,
+        "username": null,
+        "password": null,
+        "styles": "{\"min_band\":0,\"max_band\":100,\"dynamic_class_num\":7,\"dynamic_classification\":\"Natural breaks.\",\"additional_nodata\":null,\"nodata_color\":\"#000000\",\"nodata_opacity\":0,\"color_palette\":3}",
+        "label_styles": "{\"minZoom\":0,\"maxZoom\":24,\"fontFamily\":\"\\\"Rubik\\\", sans-serif\",\"fontSize\":13,\"fontColor\":\"#000000\",\"fontWeight\":300,\"strokeColor\":\"#FFFFFF\",\"strokeWeight\":0,\"haloColor\":\"#FFFFFF\",\"haloWeight\":2}",
+        "configuration": "\"\"",
+        "cloud_native_gis_layer_id": null
+    }
+},
+{
+    "model": "geosight_data.contextlayer",
+    "pk": 90,
+    "fields": {
+        "name": "Context Layer A4",
+        "description": "Context Layer A4 Description",
+        "creator": 1,
+        "created_at": "2025-01-02T08:06:51.215Z",
+        "modified_by": 1,
+        "modified_at": "2025-01-05T08:34:19.591Z",
+        "group": 1,
+        "url": null,
+        "layer_type": "Vector Tile",
+        "arcgis_config": null,
+        "related_table": null,
+        "url_legend": null,
+        "token": null,
+        "username": null,
+        "password": null,
+        "styles": "\"[\\n    {\\n        \\\"id\\\": \\\"pointLayer\\\",\\n        \\\"type\\\": \\\"circle\\\",\\n        \\\"source\\\": \\\"source\\\",\\n        \\\"paint\\\": {\\n            \\\"circle-color\\\": \\\"#ff7800\\\",\\n            \\\"circle-opacity\\\": 0.6\\n        },\\n        \\\"filter\\\": [\\n            \\\"==\\\",\\n            \\\"$type\\\",\\n            \\\"Point\\\"\\n        ]\\n    }\\n]\"",
+        "label_styles": "{\"minZoom\":0,\"maxZoom\":24,\"fontFamily\":\"\\\"Rubik\\\", sans-serif\",\"fontSize\":13,\"fontColor\":\"#000000\",\"fontWeight\":300,\"strokeColor\":\"#FFFFFF\",\"strokeWeight\":0,\"haloColor\":\"#FFFFFF\",\"haloWeight\":2}",
+        "configuration": "\"\"",
+        "cloud_native_gis_layer_id": null
+    }
+},
+  {
+    "model": "geosight_data.indicatorgroup",
+    "pk": 30,
+    "fields": {
+      "name": "Test",
+      "description": null
+    }
+  },
+  {
+    "model": "geosight_data.indicatorgroup",
+    "pk": 31,
+    "fields": {
+      "name": "Group 2",
+      "description": "Group 2"
+    }
+  },
+  {
+    "model": "geosight_data.indicator",
+    "pk": 318,
+    "fields": {
+      "name": "Sample Indicator A",
+      "description": "This is the description for the sample indicator A. It is only for GeoSight demo purposes.",
+      "source": "Sample Source",
+      "version_data": "2025-01-08T02:48:56.667Z",
+      "creator": 1,
+      "created_at": "2023-04-06T12:20:18.439Z",
+      "modified_by": 1,
+      "modified_at": "2025-01-14T10:15:50.392Z",
+      "style_type": "Style from library.",
+      "style": 1,
+      "style_config": {},
+      "label_config": {
+        "text": "{name}\n{value}",
+        "style": {
+          "maxZoom": 24,
+          "minZoom": 0,
+          "fontSize": 14,
+          "fontColor": "#000000",
+          "haloColor": "#FFFFFF",
+          "fontFamily": "\"Rubik\", sans-serif",
+          "fontWeight": 300,
+          "haloWeight": 2,
+          "strokeColor": "#FFFFFF",
+          "strokeWeight": 0
+        }
+      },
+      "shortcode": "SOM_TEST_IND_A",
+      "group": 30,
+      "unit": "Percentage",
+      "aggregation_multiple_values": "SUM(value)",
+      "aggregation_upper_level_allowed": true,
+      "aggregation_upper_level": "SUM(value)",
+      "type": "Float",
+      "min_value": null,
+      "max_value": null,
+      "codelist": null
+    }
+  },
+  {
+    "model": "geosight_data.indicator",
+    "pk": 319,
+    "fields": {
+      "name": "Sample Indicator B",
+      "description": "This is the description for the sample indicator B. It is only for GeoSight demo purposes.",
+      "source": "Sample Source",
+      "version_data": "2025-01-08T02:48:58Z",
+      "creator": 1,
+      "created_at": "2023-04-06T12:20:33Z",
+      "modified_by": 4,
+      "modified_at": "2025-01-19T08:48:02.827Z",
+      "style_type": "Style from library.",
+      "style": 1,
+      "style_config": {},
+      "label_config": {
+        "text": "{name}\n{value}",
+        "style": {
+          "maxZoom": 24,
+          "minZoom": 0,
+          "fontSize": 14,
+          "fontColor": "#000000",
+          "haloColor": "#FFFFFF",
+          "fontFamily": "\"Rubik\", sans-serif",
+          "fontWeight": 300,
+          "haloWeight": 2,
+          "strokeColor": "#FFFFFF",
+          "strokeWeight": 0
+        }
+      },
+      "shortcode": "SOM_TEST_IND_B",
+      "group": 31,
+      "unit": "Percentage",
+      "aggregation_multiple_values": "AVG(value)",
+      "aggregation_upper_level_allowed": true,
+      "aggregation_upper_level": "AVG(value)",
+      "type": "Float",
+      "min_value": null,
+      "max_value": null,
+      "codelist": null
+    }
+  },
+  {
+    "model": "geosight_data.indicator",
+    "pk": 362,
+    "fields": {
+      "name": "Sample Indicator C",
+      "description": "Sample Indicator C",
+      "source": null,
+      "version_data": "2025-01-08T02:48:58Z",
+      "creator": 1,
+      "created_at": "2023-07-27T08:46:41Z",
+      "modified_by": 4,
+      "modified_at": "2025-01-19T08:48:09.112Z",
+      "style_type": "Dynamic quantitative style.",
+      "style": 1,
+      "style_config": {
+        "sync_filter": false,
+        "no_data_rule": {
+          "name": "No data",
+          "rule": "No data",
+          "color": "#D8D8D8",
+          "active": "true",
+          "outline_size": "0.5",
+          "outline_color": "#ffffff"
+        },
+        "outline_size": 0.5,
+        "sync_outline": false,
+        "color_palette": 4,
+        "outline_color": "#FFFFFF",
+        "dynamic_class_num": "7",
+        "color_palette_reverse": false,
+        "dynamic_classification": "Natural breaks."
+      },
+      "label_config": {
+        "style": {
+          "maxZoom": 24,
+          "minZoom": 0,
+          "fontSize": 14,
+          "fontColor": "#000000",
+          "haloColor": "#FFFFFF",
+          "fontFamily": "\"Rubik\", sans-serif",
+          "fontWeight": 300,
+          "haloWeight": 0,
+          "strokeColor": "#FFFFFF",
+          "strokeWeight": 0
+        }
+      },
+      "shortcode": "SOM_TEST_IND_C",
+      "group": 31,
+      "unit": null,
+      "aggregation_multiple_values": "COUNT",
+      "aggregation_upper_level_allowed": true,
+      "aggregation_upper_level": "SUM(value)",
+      "type": "Float",
+      "min_value": null,
+      "max_value": null,
+      "codelist": null
+    }
+  },
+  {
+    "model": "geosight_data.indicator",
+    "pk": 370,
+    "fields": {
+      "name": "Sample Indicator D",
+      "description": "",
+      "source": null,
+      "version_data": "2025-01-08T02:48:58Z",
+      "creator": 1,
+      "created_at": "2023-08-21T06:31:05Z",
+      "modified_by": 4,
+      "modified_at": "2025-01-19T08:48:14.344Z",
+      "style_type": "Dynamic quantitative style.",
+      "style": null,
+      "style_config": {
+        "sync_filter": false,
+        "no_data_rule": {
+          "name": "No data",
+          "rule": "No data",
+          "color": "#D8D8D8",
+          "active": "false",
+          "outline_size": "0.5",
+          "outline_color": "#ffffff"
+        },
+        "outline_size": 0.5,
+        "sync_outline": false,
+        "color_palette": 3,
+        "outline_color": "#FFFFFF",
+        "dynamic_class_num": "8",
+        "color_palette_reverse": false,
+        "dynamic_classification": "Natural breaks."
+      },
+      "label_config": {
+        "style": {
+          "maxZoom": 24,
+          "minZoom": 0,
+          "fontSize": 14,
+          "fontColor": "#000000",
+          "haloColor": "#FFFFFF",
+          "fontFamily": "\"Rubik\", sans-serif",
+          "fontWeight": 300,
+          "haloWeight": 0,
+          "strokeColor": "#FFFFFF",
+          "strokeWeight": 0
+        }
+      },
+      "shortcode": "SOM_TEST_IND_D",
+      "group": 31,
+      "unit": null,
+      "aggregation_multiple_values": "COUNT",
+      "aggregation_upper_level_allowed": true,
+      "aggregation_upper_level": "COUNT",
+      "type": "Float",
+      "min_value": null,
+      "max_value": null,
+      "codelist": null
+    }
+  },
+  {
+    "model": "geosight_data.indicator",
+    "pk": 371,
+    "fields": {
+      "name": "Sample Indicator A A0",
+      "description": "This is the description for the sample indicator A. It is only for GeoSight demo purposes.",
+      "source": "Sample Source",
+      "version_data": "2025-01-19T08:07:50.644Z",
+      "creator": null,
+      "created_at": "2025-01-19T08:07:50.644Z",
+      "modified_by": 1,
+      "modified_at": "2025-01-19T08:07:50.651Z",
+      "style_type": "Style from library.",
+      "style": 1,
+      "style_config": null,
+      "label_config": {
+        "text": "{name}\n{value}",
+        "style": {
+          "maxZoom": 24,
+          "minZoom": 0,
+          "fontSize": 14,
+          "fontColor": "#000000",
+          "haloColor": "#FFFFFF",
+          "fontFamily": "\"Rubik\", sans-serif",
+          "fontWeight": 300,
+          "haloWeight": 2,
+          "strokeColor": "#FFFFFF",
+          "strokeWeight": 0
+        }
+      },
+      "shortcode": "SOM_TEST_IND_A_A0",
+      "group": 30,
+      "unit": "Percentage",
+      "aggregation_multiple_values": "SUM(value)",
+      "aggregation_upper_level_allowed": true,
+      "aggregation_upper_level": "SUM(value)",
+      "type": "Float",
+      "min_value": null,
+      "max_value": null,
+      "codelist": null
+    }
+  },
+  {
+    "model": "geosight_data.indicator",
+    "pk": 372,
+    "fields": {
+      "name": "Sample Indicator A A1",
+      "description": "This is the description for the sample indicator A. It is only for GeoSight demo purposes.",
+      "source": "Sample Source",
+      "version_data": "2025-01-19T08:07:58.588Z",
+      "creator": null,
+      "created_at": "2025-01-19T08:07:58.588Z",
+      "modified_by": 1,
+      "modified_at": "2025-01-19T08:07:58.594Z",
+      "style_type": "Style from library.",
+      "style": 1,
+      "style_config": null,
+      "label_config": {
+        "text": "{name}\n{value}",
+        "style": {
+          "maxZoom": 24,
+          "minZoom": 0,
+          "fontSize": 14,
+          "fontColor": "#000000",
+          "haloColor": "#FFFFFF",
+          "fontFamily": "\"Rubik\", sans-serif",
+          "fontWeight": 300,
+          "haloWeight": 2,
+          "strokeColor": "#FFFFFF",
+          "strokeWeight": 0
+        }
+      },
+      "shortcode": "SOM_TEST_IND_A_A1",
+      "group": 30,
+      "unit": "Percentage",
+      "aggregation_multiple_values": "SUM(value)",
+      "aggregation_upper_level_allowed": true,
+      "aggregation_upper_level": "SUM(value)",
+      "type": "Float",
+      "min_value": null,
+      "max_value": null,
+      "codelist": null
+    }
+  },
+  {
+    "model": "geosight_data.style",
+    "pk": 1,
+    "fields": {
+      "description": "Generic style with 5 classes for 0-100 range (float, diverging colors, red-green)",
+      "creator": 1,
+      "created_at": "2023-05-19T08:13:55Z",
+      "modified_by": 1,
+      "modified_at": "2025-01-14T10:24:16.726Z",
+      "name": "Generic style with 5 classes for 0-100 range (float, diverging colors, red-green)",
+      "group": "Generic",
+      "style_type": "Predefined style/color rules.",
+      "style_config": null,
+      "value_type": "Float"
+    }
+  },
+  {
+    "model": "geosight_data.style",
+    "pk": 2,
+    "fields": {
+      "description": "Test 0",
+      "creator": 4,
+      "created_at": "2025-01-01T03:33:03.939Z",
+      "modified_by": 1,
+      "modified_at": "2025-01-19T07:42:15.804Z",
+      "name": "Test 0",
+      "group": "Generic",
+      "style_type": "Predefined style/color rules.",
+      "style_config": null,
+      "value_type": "Integer"
+    }
+  },
+  {
+    "model": "geosight_data.style",
+    "pk": 4,
+    "fields": {
+      "description": "Description 1",
+      "creator": 1,
+      "created_at": "2025-01-02T08:13:55Z",
+      "modified_by": 4,
+      "modified_at": "2025-01-03T07:48:40.819Z",
+      "name": "Style_1",
+      "group": "Group 2",
+      "style_type": "Dynamic quantitative style.",
+      "style_config": {
+        "sync_filter": false,
+        "no_data_rule": {
+          "name": "No data",
+          "rule": "No data",
+          "color": "#D8D8D8",
+          "active": false,
+          "outline_size": 0.5,
+          "outline_color": "#ffffff"
+        },
+        "outline_size": 0.5,
+        "sync_outline": false,
+        "color_palette": 3,
+        "outline_color": "#FFFFFF",
+        "dynamic_class_num": "7",
+        "color_palette_reverse": false,
+        "dynamic_classification": ""
+      },
+      "value_type": "Float"
+    }
+  },
+  {
+    "model": "geosight_data.style",
+    "pk": 6,
+    "fields": {
+      "description": "Description 2",
+      "creator": 1,
+      "created_at": "2023-05-19T08:13:55Z",
+      "modified_by": 4,
+      "modified_at": "2025-01-03T07:49:07.449Z",
+      "name": "Style_2",
+      "group": "Group 2",
+      "style_type": "Dynamic quantitative style.",
+      "style_config": null,
+      "value_type": "Float"
+    }
+  },
+  {
+    "model": "geosight_data.style",
+    "pk": 7,
+    "fields": {
+      "description": "Description 3",
+      "creator": 1,
+      "created_at": "2023-05-19T08:13:55Z",
+      "modified_by": 4,
+      "modified_at": "2025-01-04T07:49:14.359Z",
+      "name": "Style_3",
+      "group": "Group 2",
+      "style_type": "Dynamic qualitative style.",
+      "style_config": null,
+      "value_type": "Float"
+    }
+  },
+  {
+    "model": "geosight_data.style",
+    "pk": 8,
+    "fields": {
+      "description": "Test 0",
+      "creator": 4,
+      "created_at": "2025-01-16T03:33:03.939Z",
+      "modified_by": 1,
+      "modified_at": "2025-01-05T07:44:39.044Z",
+      "name": "Style_4",
+      "group": "Generic",
+      "style_type": "Predefined style/color rules.",
+      "style_config": null,
+      "value_type": "Integer"
+    }
+  },
+  {
+    "model": "geosight_data.dashboardgroup",
+    "pk": 1,
+    "fields": {
+      "name": "Somalia",
+      "description": null
+    }
+  },
+  {
+    "model": "geosight_data.dashboardgroup",
+    "pk": 2,
+    "fields": {
+      "name": "",
+      "description": null
+    }
+  },
+  {
+    "model": "geosight_data.dashboardgroup",
+    "pk": 3,
+    "fields": {
+      "name": "Africa",
+      "description": null
+    }
+  },
+  {
+    "model": "geosight_data.dashboardgroup",
+    "pk": 4,
+    "fields": {
+      "name": "National",
+      "description": null
+    }
+  },
+  {
+    "model": "geosight_data.dashboardgroup",
+    "pk": 5,
+    "fields": {
+      "name": "Pakistan",
+      "description": null
+    }
+  },
+  {
+    "model": "geosight_data.dashboardgroup",
+    "pk": 6,
+    "fields": {
+      "name": "Regional Analysis",
+      "description": null
+    }
+  },
+  {
+    "model": "geosight_data.dashboardgroup",
+    "pk": 7,
+    "fields": {
+      "name": "Test",
+      "description": null
+    }
+  },
+  {
+    "model": "geosight_data.dashboard",
+    "pk": 1,
+    "fields": {
+      "name": "Dashboard A",
+      "description": "Dashboard A Description",
+      "version_data": "2025-01-19T08:56:44Z",
+      "creator": 1,
+      "created_at": "2025-01-19T08:57:13.488Z",
+      "modified_by": 1,
+      "modified_at": "2025-01-19T08:57:54.293Z",
+      "slug": "dashboard-a",
+      "icon": "",
+      "overview": "",
+      "reference_layer": null,
+      "extent": null,
+      "filters": "",
+      "filters_allow_modify": false,
+      "geo_field": "geometry_code",
+      "group": 1,
+      "dataset_identifier": "",
+      "indicator_layers_structure": null,
+      "context_layers_structure": null,
+      "basemaps_layers_structure": null,
+      "widgets_structure": null,
+      "level_config": {},
+      "show_splash_first_open": true,
+      "truncate_indicator_layer_name": false,
+      "enable_geometry_search": true,
+      "default_time_mode": null
+    }
+  },
+  {
+    "model": "geosight_data.dashboard",
+    "pk": 2,
+    "fields": {
+      "name": "Dashboard B",
+      "description": "Dashboard B Description",
+      "version_data": "2025-01-01T08:56:44Z",
+      "creator": 1,
+      "created_at": "2025-01-01T08:57:13.488Z",
+      "modified_by": 1,
+      "modified_at": "2025-01-02T08:57:54.293Z",
+      "slug": "dashboard-b",
+      "icon": "",
+      "overview": "",
+      "reference_layer": null,
+      "extent": null,
+      "filters": "",
+      "filters_allow_modify": false,
+      "geo_field": "geometry_code",
+      "group": 1,
+      "dataset_identifier": "",
+      "indicator_layers_structure": null,
+      "context_layers_structure": null,
+      "basemaps_layers_structure": null,
+      "widgets_structure": null,
+      "level_config": {},
+      "show_splash_first_open": true,
+      "truncate_indicator_layer_name": false,
+      "enable_geometry_search": true,
+      "default_time_mode": null
+    }
+  },
+  {
+    "model": "geosight_data.dashboard",
+    "pk": 3,
+    "fields": {
+      "name": "Dashboard C",
+      "description": "Dashboard C Description",
+      "version_data": "2025-01-02T08:56:44Z",
+      "creator": 1,
+      "created_at": "2025-01-02T08:57:13.488Z",
+      "modified_by": 4,
+      "modified_at": "2025-01-03T08:57:54.293Z",
+      "slug": "dashboard-c",
+      "icon": "",
+      "overview": "",
+      "reference_layer": null,
+      "extent": null,
+      "filters": "",
+      "filters_allow_modify": false,
+      "geo_field": "geometry_code",
+      "group": 3,
+      "dataset_identifier": "",
+      "indicator_layers_structure": null,
+      "context_layers_structure": null,
+      "basemaps_layers_structure": null,
+      "widgets_structure": null,
+      "level_config": {},
+      "show_splash_first_open": true,
+      "truncate_indicator_layer_name": false,
+      "enable_geometry_search": true,
+      "default_time_mode": null
+    }
+  },
+  {
+    "model": "geosight_data.dashboard",
+    "pk": 4,
+    "fields": {
+      "name": "Dashboard D",
+      "description": "Dashboard D Description",
+      "version_data": "2025-01-05T08:56:44Z",
+      "creator": 1,
+      "created_at": "2025-01-05T08:57:13.488Z",
+      "modified_by": 4,
+      "modified_at": "2025-01-06T08:57:54.293Z",
+      "slug": "dashboard-d",
+      "icon": "",
+      "overview": "",
+      "reference_layer": null,
+      "extent": null,
+      "filters": "",
+      "filters_allow_modify": false,
+      "geo_field": "geometry_code",
+      "group": 3,
+      "dataset_identifier": "",
+      "indicator_layers_structure": null,
+      "context_layers_structure": null,
+      "basemaps_layers_structure": null,
+      "widgets_structure": null,
+      "level_config": {},
+      "show_splash_first_open": true,
+      "truncate_indicator_layer_name": false,
+      "enable_geometry_search": true,
+      "default_time_mode": null
+    }
+  },
+  {
+    "model": "geosight_data.relatedtable",
+    "pk": 1,
+    "fields": {
+        "name": "Related Table 1",
+        "description": "Related Table 1 Description",
+        "version_data": "2025-01-01T22:33:57Z",
+        "creator": 1,
+        "created_at": "2025-01-02T22:34:09.959Z",
+        "modified_by": 1,
+        "modified_at": "2025-01-19T22:34:09.964Z",
+        "unique_id": "f7ea565c-d867-41ad-99bf-0ebf89d5ff82"
+    }
+  },
+  {
+      "model": "geosight_data.relatedtable",
+      "pk": 2,
+      "fields": {
+          "name": "Related Table 2",
+          "description": "Related Table 2 Description",
+          "version_data": "2025-01-01T22:34:16Z",
+          "creator": 1,
+          "created_at": "2025-01-02T22:34:22.827Z",
+          "modified_by": 4,
+          "modified_at": "2025-01-19T22:34:36.717Z",
+          "unique_id": "8d2cbfea-f40c-428f-a201-bf739894ea4e"
+      }
+  },
+  {
+      "model": "geosight_data.relatedtable",
+      "pk": 3,
+      "fields": {
+          "name": "Related Table 3",
+          "description": "Related Table 3 Description",
+          "version_data": "2025-01-03T22:34:38Z",
+          "creator": 1,
+          "created_at": "2025-01-04T22:34:47.307Z",
+          "modified_by": 4,
+          "modified_at": "2025-01-19T22:34:47.310Z",
+          "unique_id": "9623f5dc-214f-4906-a061-6794b99b3b89"
+      }
+  }
+]

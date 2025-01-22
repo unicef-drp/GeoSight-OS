@@ -17,8 +17,6 @@
    More Action style
    ========================================================================== */
 
-@import '../../../app/variables';
-
 .MoreActionItem {
   & > div,
   & > a {
@@ -27,7 +25,7 @@
   }
 
   & > a {
-    color: $base-black-color !important;
+    color: var(--base-black) !important;
   }
 
   svg {

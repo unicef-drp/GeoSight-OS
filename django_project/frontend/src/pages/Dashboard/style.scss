@@ -17,7 +17,7 @@
    Dashboard specific style
    ========================================================================== */
 
-@import '../../app/variables';
+@use '../../app/variables' as *;
 
 html, body {
   height: 100%;
@@ -54,11 +54,11 @@ html, body {
     display: flex;
 
     .left-right-toggle-button {
-      background: $primary-color;
+      background: var(--primary-color);
       cursor: pointer;
       height: 30px;
       padding: 0.2rem 0.3rem;
-      color: $anti-primary-color;
+      color: var(--anti-primary-color);
 
       div {
         height: 1rem;
@@ -89,10 +89,10 @@ html, body {
     }
 
     .top-bottom-toggle-button {
-      background: $primary-color;
+      background: var(-- $primary-color);
       cursor: pointer;
       width: 46px;
-      color: $anti-primary-color;
+      color: var(--anti-primary-color);
 
       div {
         width: 100%;

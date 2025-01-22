@@ -5,3 +5,4 @@ from .utils import (
     update_structure,
     extract_time_string
 )
+from .thumbnail import create_thumbnail

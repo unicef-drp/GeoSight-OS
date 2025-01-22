@@ -17,8 +17,6 @@
    Downloader data
    ========================================================================== */
 
-@import '../../../../app/variables';
-
 .CompareLayerComponent {
   position: relative;
 
@@ -28,8 +26,8 @@
 
   .CompareLayerComponentPopup {
     background: white;
-    border-radius: $border-radius;
-    box-shadow: $box-shadow;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
     box-sizing: border-box;
     left: 50%;
     margin-left: -170px;
@@ -60,14 +58,14 @@
     }
 
     .Title {
-      color: $secondary-color;
+      color: var(--secondary-color);
       padding-top: 0.5rem;
       margin-bottom: 0.5rem;
-      border-bottom: 1px solid $secondary-color;
+      border-bottom: 1px solid var(--secondary-color);
     }
 
     i {
-      color: $error;
+      color: var(--error);
     }
   }
 }

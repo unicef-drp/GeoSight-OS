@@ -17,11 +17,9 @@
    Indicator Form style
    ========================================================================== */
 
-@import '../../../../../app/variables';
-
 
 .IndicatorStyleButton {
-  color: $primary-color !important;
+  color: var(--primary-color) !important;
 }
 
 .TableForm.Indicators {

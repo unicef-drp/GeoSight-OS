@@ -189,7 +189,7 @@ class AbstractFileCleanup(models.Model):
 class IconTerm(AbstractFileCleanup):
     """Abstract model contains icon."""
 
-    icon = models.FileField(
+    icon = models.ImageField(
         upload_to='icons',
         null=True,
         blank=True

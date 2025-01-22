@@ -13,15 +13,13 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-@import '../../../../../app/variables';
-
 .CronBuilder {
   .cron_builder {
     box-sizing: border-box;
   }
 
   .cron-builder-bg {
-    background-color: $primary-color;
+    background-color: var(--primary-color);
   }
 
   .well-small {
@@ -34,7 +32,7 @@
 
   .Result-Row {
     margin-top: 20px;
-    border: 1px solid $primary-color;
+    border: 1px solid var(--primary-color);
     padding: 1rem;
   }
 

@@ -17,9 +17,7 @@
    VectorContextLayerHarvester Content
    ========================================================================== */
 
-@import '../../../../../../app/variables';
-
 .RetrievedData {
-  border: 1px solid $primary-color;
+  border: 1px solid var(--primary-color);
   padding: 1rem;
 }

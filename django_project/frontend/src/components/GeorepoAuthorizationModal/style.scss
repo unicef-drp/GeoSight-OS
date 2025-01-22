@@ -13,8 +13,6 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-@import '../../app/variables';
-
 .GeorepoAuthorization {
   position: absolute;
   top: 0;
@@ -22,8 +20,8 @@
   width: 100%;
   height: 100%;
   z-index: 1002;
-  background-color: $white-transparent !important;
-  color: $error;
+  background-color: var(--white-transparent) !important;
+  color: var(--error);
   box-sizing: border-box;
   margin: 0 !important;
 
@@ -31,10 +29,9 @@
     background-color: white;
     padding: 1rem;
     width: fit-content;
-    border-radius: $border-radius;
-    box-shadow: $box-shadow;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
     text-align: center;
-    margin: auto;
-    margin-top: 5rem;
+    margin: 5rem auto auto auto;
   }
 }

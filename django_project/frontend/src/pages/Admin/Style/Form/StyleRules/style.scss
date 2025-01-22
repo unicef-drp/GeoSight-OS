@@ -13,12 +13,6 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   Style form style
-   ========================================================================== */
-
-@import '../../../../../app/variables';
-
 .BasicForm-Title,
 .RuleTable-Title {
   font-weight: 500;
@@ -65,7 +59,7 @@
   }
 
   tr {
-    border: 1px solid $primary-color;
+    border: 1px solid var(--primary-color);
     border-bottom: none;
   }
 
@@ -98,11 +92,11 @@
     }
 
     .RuleSection {
-      background: $base-almost-white-color;
-      border: 1px solid $base-almost-gray-color;
+      background: var(--base-almost-white-color);
+      border: 1px solid var(--base-almost-gray-color);
       display: flex;
       min-height: 38px;
-      border-radius: $border-radius;
+      border-radius: var(--border-radius);
       box-sizing: border-box;
 
       input {
@@ -110,7 +104,7 @@
         padding-right: 0 !important;
 
         &:disabled {
-          background: $base-almost-white-color;
+          background: var(--base-almost-white-color);
           cursor: not-allowed;
           height: 100%;
         }
@@ -152,7 +146,7 @@
       display: block;
       width: 30px !important;
       opacity: 1;
-      color: $gray-500;
+      color: var(--gray-500);
 
       div {
         text-align: center;
@@ -174,7 +168,7 @@
     }
 
     .Rule-Add {
-      border: 1px solid $secondary-color;
+      border: 1px solid var(--secondary-color);
 
       td {
         padding: 0;

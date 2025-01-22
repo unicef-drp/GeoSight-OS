@@ -17,10 +17,8 @@
    Map Container
    ========================================================================== */
 
-@import '../../../../app/variables';
-
 .FullScreen {
-  background-color: $white !important;
+  background-color: var(--white) !important;
   color: #04121780;
   width: 28px !important;
   height: 28px !important;
@@ -28,12 +26,13 @@
 
   &:hover {
     background-color: #ddd !important;
+
     svg {
-      color: $black !important;
+      color: var(--black) !important;
     }
   }
 
   svg {
-	width: 16px !important;
+    width: 16px !important;
   }
 }
