@@ -86,7 +86,16 @@ class GetRasterClassificationAPITest(APITestCase):
             },
             mock_get=mock_get
         )
-        expected_response = [0.0, 13.296875, 17.5, 21.203125, 25.796875, 34.90625, 48.8125, 78.8125]
+        expected_response = [
+            0.0,
+            13.296875,
+            17.5,
+            21.203125,
+            25.796875,
+            34.90625,
+            48.8125,
+            78.8125
+        ]
         self.assertListEqual(expected_response, response)
 
     @patch('requests.get')
