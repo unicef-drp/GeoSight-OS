@@ -123,4 +123,3 @@ def extract_time_string(format_time, value):
             )
     else:
         return value
-

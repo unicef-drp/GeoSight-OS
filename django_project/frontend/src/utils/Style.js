@@ -42,7 +42,6 @@ export let rasterValueClassification = null
  * Update color data
  */
 export async function updateColorPaletteData() {
-  console.log('updateColorPaletteData')
   return new Promise((resolve, reject) => {
     if (!COLOR_PALETTE_DATA) {
       fetchingData(
@@ -63,7 +62,6 @@ export async function updateColorPaletteData() {
 }
 
 export async function updateClassification(data) {
-  console.log('updateClassification')
   return new Promise((resolve, reject) => {
     DjangoRequests.post(
       `/api/raster/classification`,
@@ -282,7 +280,6 @@ export function createDynamicStyle(data, styleType, config, styleData) {
           } else {
             if (values.length) {
               const series = new geostats(values)
-              console.log(series)
               switch (config.dynamic_classification) {
                 case NATURAL_BREAKS:
                   classifications = series.getClassJenks(numClass)
@@ -329,7 +326,6 @@ export function createDynamicStyle(data, styleType, config, styleData) {
                   )
                 }
               }
-              console.log(styles)
             }
           }
         }

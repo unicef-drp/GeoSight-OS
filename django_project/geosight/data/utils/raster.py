@@ -32,8 +32,8 @@ STANDARD_DEVIATION = 'standard_deviation'
 
 def run_zonal_analysis(
         raster_path: str,
-        class_type: typing.List[shapely.Geometry],
-        class_num: str
+        geometries: typing.List[shapely.Geometry],
+        aggregation: str
 ):
     """Run zonal analysis on multiple geometries."""
     aggregation = aggregation.lower().strip()
@@ -84,6 +84,7 @@ class ClassifyRasterData():
             colors: list = None,
             classify_colors: bool = False
     ):
+        """Init classify raster data."""
         self.raster_path = raster_path
         self.class_type = class_type
         self.class_num = class_num
@@ -100,7 +101,6 @@ class ClassifyRasterData():
         Returns:
             numpy.ndarray: Array of class labels (1 to self.class_num).
         """
-
         # Fix random seed for reproducibility
         np.random.seed(42)
 
@@ -116,11 +116,19 @@ class ClassifyRasterData():
         probabilities = counts / counts.sum()
 
         # Perform stratified sampling (excluding min and max)
-        sampled_data = np.random.choice(unique, size=19998, replace=True, p=probabilities)
+        sampled_data = np.random.choice(
+            unique,
+            size=19998,
+            replace=True,
+            p=probabilities
+        )
 
         # Add min and max values back to the sampled data
         final_sample = np.concatenate(([min_value, max_value], sampled_data))
-        classification = jenkspy.jenks_breaks(final_sample, n_classes=self.class_num)
+        classification = jenkspy.jenks_breaks(
+            final_sample,
+            n_classes=self.class_num
+        )
         return classification
 
     def classify_equal_interval(self, data):
@@ -135,11 +143,15 @@ class ClassifyRasterData():
         """
         data_min = np.min(data)
         data_max = np.max(data)
-        intervals = np.linspace(data_min, data_max, self.class_num + 1)  # Create class boundaries
+        # Create class boundaries
+        intervals = np.linspace(data_min, data_max, self.class_num + 1)
 
         # Classify data into intervals
         class_labels = np.digitize(data, intervals, right=True)
-        class_labels[class_labels > self.class_num] = self.class_num  # Handle edge case for max value
+        # Handle edge case for max value
+        class_labels[
+            class_labels > self.class_num
+        ] = self.class_num
 
         return intervals
 
@@ -155,12 +167,16 @@ class ClassifyRasterData():
             numpy.ndarray: Quantile thresholds.
         """
         # Calculate quantile thresholds
-        quantiles = np.linspace(0, 1, self.class_num + 1)  # Define quantile ranges
-        thresholds = np.quantile(data, quantiles)  # Compute thresholds based on data
+        # Define quantile ranges
+        quantiles = np.linspace(0, 1, self.class_num + 1)
+        # Compute thresholds based on data
+        thresholds = np.quantile(data, quantiles)
 
         # Classify data into quantile classes
         class_labels = np.digitize(data, thresholds, right=True)
-        class_labels[class_labels > self.class_num] = self.class_num  # Ensure max value is in the last class
+        class_labels[
+            class_labels > self.class_num
+        ] = self.class_num  # Ensure max value is in the last class
 
         return thresholds
 
@@ -180,7 +196,12 @@ class ClassifyRasterData():
         data_std = np.std(data)
 
         # Define the breakpoints based on the mean and standard deviation
-        breakpoints = [data_mean + i * data_std for i in range(-self.class_num // 2, self.class_num // 2 + 1)]
+        breakpoints = [
+            data_mean + i * data_std for i in range(
+                -self.class_num // 2,
+                self.class_num // 2 + 1
+            )
+        ]
 
         # Classify data into standard deviation-based classes
         class_labels = np.digitize(data, breakpoints, right=True)
@@ -191,6 +212,7 @@ class ClassifyRasterData():
         return class_labels, data_mean, data_std
 
     def build_classification(self, classification: list):
+        """Build classification and its colors."""
         result = []
         for idx, threshold in enumerate(classification):
             if idx < len(classification) - 1:
@@ -202,13 +224,12 @@ class ClassifyRasterData():
         return result
 
     def run(self):
+        """Run raster classification."""
         with rasterio.open(self.raster_path) as src:
             data = src.read(1)
             data = np.ma.masked_invalid(data)
             data = np.ma.masked_equal(data, src.nodata).compressed()
             data = np.sort(data)
-
-            print(self.class_type, self.class_num)
 
             classification = []
             if self.class_type == NATURAL_BREAKS:

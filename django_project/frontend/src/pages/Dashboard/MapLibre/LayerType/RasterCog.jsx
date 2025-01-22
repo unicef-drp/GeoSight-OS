@@ -79,7 +79,6 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
       const cacheKey = await generateCacheKey(data.url, requestBody);
       const cachedData = sessionStorage.getItem(cacheKey);
       if (cachedData) {
-        console.log('Using cached response');
         classifications = JSON.parse(cachedData);
       } else {
         await DjangoRequests.post(
