@@ -38,7 +38,7 @@ import {
 } from "../../../../components/Notification";
 
 // Dashboard Form
-import SummaryDashboardForm from './Summary'
+import GeneralDashboardForm from './General'
 import IndicatorsForm from './Indicators'
 import IndicatorLayersForm from './IndicatorLayers'
 import ContextLayerForm from './ContextLayer'
@@ -168,17 +168,17 @@ export function DashboardSaveAsForm({ submitted, onSaveAs }) {
 
   useEffect(() => {
     if (openSaveAs) {
-      setNameData($('#SummaryName').val())
-      setSlugInput($('#SummarySlug').val())
+      setNameData($('#GeneralName').val())
+      setSlugInput($('#GeneralSlug').val())
     }
   }, [openSaveAs]);
 
   useEffect(() => {
-    $('#SummaryName').val(nameData)
+    $('#GeneralName').val(nameData)
   }, [nameData]);
 
   useEffect(() => {
-    $('#SummarySlug').val(slugInput)
+    $('#GeneralSlug').val(slugInput)
   }, [slugInput]);
 
   return <>
@@ -205,7 +205,7 @@ export function DashboardSaveAsForm({ submitted, onSaveAs }) {
             <div>
               <span className="form-input">
               <input
-                id="SummaryName" type="text" name="name" required={true}
+                id="GeneralName" type="text" name="name" required={true}
                 placeholder='Example: Afghanistan Risk Dashboard'
                 value={nameData}
                 onChange={(event) => {
@@ -313,21 +313,21 @@ export function DashboardSaveForm(
   const onSave = (targetUrl = document.location.href) => {
     setSubmitted(true)
     const errors = [];
-    const name = $('#SummaryName').val();
-    const slug = $('#SummarySlug').val();
-    const description = $('#SummaryDescription').val();
-    const overview = $('#SummaryOverview').val();
-    const icon = $('#SummaryIcon')[0].files[0];
-    const category = $('#SummaryCategory .ReactSelect__single-value').text();
-    const splashScreen = $('#SummarySplash').is(':checked');
-    const truncateIndicatorName = $('#SummaryTruncateIndicatorName').is(':checked');
-    const enableGeometrySearch = $('#SummaryEnableGeometrySearch').is(':checked');
+    const name = $('#GeneralName').val();
+    const slug = $('#GeneralSlug').val();
+    const description = $('#GeneralDescription').val();
+    const overview = $('#GeneralOverview').val();
+    const icon = $('#GeneralIcon')[0].files[0];
+    const category = $('#GeneralCategory .ReactSelect__single-value').text();
+    const splashScreen = $('#GeneralSplash').is(':checked');
+    const truncateIndicatorName = $('#GeneralTruncateIndicatorName').is(':checked');
+    const enableGeometrySearch = $('#GeneralEnableGeometrySearch').is(':checked');
 
     if (!name) {
       errors.push('Name is empty, please fill it.')
     }
     if (Object.keys(referenceLayer).length === 0 || !referenceLayer.identifier) {
-      errors.push('Need to select View in Summary.')
+      errors.push('Need to select View in General.')
     }
     if (basemapsLayers.length === 0) {
       errors.push('Basemap is empty, please select one or more basemap.')
@@ -498,7 +498,7 @@ export function DashboardFormContent({ changed }) {
     <div className='DashboardFormContent'>
       {Object.keys(data).length > 0 ?
         <>
-          <SummaryDashboardForm changed={changed}/>
+          <GeneralDashboardForm changed={changed}/>
           <BasemapsForm/>
           <IndicatorsForm/>
           <IndicatorLayersForm/>
@@ -539,8 +539,8 @@ export function DashboardFormHeader(
   } = useSelector(state => state.dashboard.data);
   return <div className='DashboardFormHeader TabPrimary'>
     <div
-      className={currentPage === 'Summary' ? 'Selected' : 'MuiButtonLike'}
-      onClick={() => changePage('Summary')}
+      className={currentPage === 'General' ? 'Selected' : 'MuiButtonLike'}
+      onClick={() => changePage('General')}
     >
       General
     </div>
@@ -616,7 +616,7 @@ export function DashboardForm({ onPreview }) {
     id,
     name
   } = useSelector(state => state.dashboard.data);
-  const [currentPage, setCurrentPage] = useState('Summary');
+  const [currentPage, setCurrentPage] = useState('General');
   const [currentHistoryIdx, setCurrentHistoryIdx] = useState(-1);
   const [changed, setChanged] = useState(false);
   const className = currentPage.replaceAll(' ', '')

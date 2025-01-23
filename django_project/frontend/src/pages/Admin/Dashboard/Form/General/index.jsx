@@ -37,7 +37,7 @@ import { INTERVALS } from "../../../../../utils/Dates";
 import {
   SelectWithList
 } from "../../../../../components/Input/SelectWithList";
-import OverviewForm from "../Overview";
+import OverviewForm from "./Overview";
 import DatasetViewSelector
   from "../../../../../components/ResourceSelector/DatasetViewSelector";
 
@@ -46,7 +46,7 @@ import './style.scss';
 /**
  * Summary dashboard
  */
-export default function SummaryDashboardForm({ changed }) {
+export default function GeneralDashboardForm({ changed }) {
   const {
     id,
     slug,
@@ -88,7 +88,7 @@ export default function SummaryDashboardForm({ changed }) {
   ]
 
   return (
-    <div className='Summary'>
+    <div className='General'>
       <div className="BasicForm AdminForm">
         <div className="BasicFormSection">
           <Grid container spacing={2}>
@@ -153,7 +153,7 @@ export default function SummaryDashboardForm({ changed }) {
               <div>
               <span className="form-input">
               <input
-                id="SummaryName" type="text" name="name" required={true}
+                id="GeneralName" type="text" name="name" required={true}
                 placeholder='Example: Afghanistan Risk Dashboard'
                 value={nameData}
                 onChange={(event) => {
@@ -173,7 +173,7 @@ export default function SummaryDashboardForm({ changed }) {
               <div>
               <span className="form-input">
                 <Creatable
-                  id="SummaryCategory"
+                  id="GeneralCategory"
                   options={
                     projectCategories.map(cat => {
                       return { value: cat, label: cat }
@@ -198,7 +198,7 @@ export default function SummaryDashboardForm({ changed }) {
               <div>
                 <span className="form-input">
                 <input
-                  id="SummarySlug" type="text" name="name" required={true}
+                  id="GeneralSlug" type="text" name="name" required={true}
                   value={slugInput}
                   onChange={(event) => {
                     setSlugInput(slugify(event.target.value))
@@ -319,7 +319,7 @@ export default function SummaryDashboardForm({ changed }) {
                 <label className="form-label"
                        htmlFor="name">Description</label>
                 <textarea
-                  id='SummaryDescription'
+                  id='GeneralDescription'
                   name="textarea"
                   value={descriptionData}
                   style={{ height: "200px" }}
@@ -333,7 +333,7 @@ export default function SummaryDashboardForm({ changed }) {
               <FormControl className='IconInput'>
                 <label className="form-label" htmlFor="name">Icon</label>
                 <ImageInput
-                  id='SummaryIcon'
+                  id='GeneralIcon'
                   name="icon"
                   image={icon}
                   onChange={() => {
@@ -347,7 +347,7 @@ export default function SummaryDashboardForm({ changed }) {
           <FormGroup>
             <FormControlLabel
               control={<Checkbox
-                id={'SummarySplash'}
+                id={'GeneralSplash'}
                 checked={showSplashOnFirstOpenData}
                 onChange={(event) => {
                   setShowSplashOnFirstOpenData((value) => !value)
@@ -359,7 +359,7 @@ export default function SummaryDashboardForm({ changed }) {
           <FormGroup>
             <FormControlLabel
               control={<Checkbox
-                id={'SummaryTruncateIndicatorName'}
+                id={'GeneralTruncateIndicatorName'}
                 checked={truncateIndicatorName}
                 onChange={(event) => {
                   setTruncateIndicatorName((value) => !value)
@@ -371,7 +371,7 @@ export default function SummaryDashboardForm({ changed }) {
           <FormGroup>
             <FormControlLabel
               control={<Checkbox
-                id={'SummaryEnableGeometrySearch'}
+                id={'GeneralEnableGeometrySearch'}
                 checked={enable_geometry_search}
                 onChange={(event) => {
                   dispatch(Actions.Dashboard.updateProps({
