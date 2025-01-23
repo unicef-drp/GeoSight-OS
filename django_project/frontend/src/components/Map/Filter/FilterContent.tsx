@@ -12,7 +12,9 @@
  * __date__ = '16/01/2025'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
-import React, { memo, useCallback } from "react";
+import React, {memo, useCallback, useState} from "react";
+import { dictDeepCopy } from "../../../../src/utils/main";
+import Button from '@mui/material/Button';
 import { useDispatch, useSelector } from "react-redux";
 import { FilterGroupDataProps } from "./types.d";
 import FilterGroup from "./Group";
@@ -66,10 +68,25 @@ const FilterControl = ({ isAdmin }: Props) => {
 };
 
 const FilterContent = memo(({ isAdmin }: Props) => {
+  const dispatcher = useDispatch();
   // @ts-ignore
   const { editMode } = useSelector(state => state.globalState)
   // @ts-ignore
   const { filtersAllowModify } = useSelector(state => state.dashboard?.data)
+
+  const filterState = useSelector((state: any) => state.dashboard?.data?.filters);
+  const [originalFilter, setOriginalFilter] = useState(filterState ? dictDeepCopy(filterState) : null)
+
+  const onReset = () => {
+    dispatcher(
+      Actions.Filters.update(null)
+    )
+    setTimeout(function () {
+      dispatcher(
+        Actions.Filters.update({...originalFilter})
+      )
+    }, 200);
+  }
 
   if ((!isAdmin && editMode) || isAdmin && !editMode) {
     return
@@ -78,6 +95,8 @@ const FilterContent = memo(({ isAdmin }: Props) => {
     <FilterControl
       isAdmin={filtersAllowModify ? filtersAllowModify : isAdmin}
     />
+    <div className={'separator'}></div>
+    <Button variant="contained" onClick={onReset} className={'FilterControl-Reset'}>Reset</Button>
   </div>;
 });
 
