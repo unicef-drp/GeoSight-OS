@@ -20,7 +20,6 @@ test.describe('Create project', () => {
     await page.locator(".ReferenceDatasetSection input").click();
     await page.locator(".ModalDataSelector .MuiDataGrid-row").click();
     await page.locator("#GeneralName").fill('Test Project Override Config');
-    await page.locator("#GeneralOverview").fill('Test overview');
     await page.locator("#GeneralCategory").click();
     await page.keyboard.type('Overriden');
     await page.keyboard.press('Enter');
@@ -29,6 +28,8 @@ test.describe('Create project', () => {
     await page.getByText("Show last known value in range").click()
     await page.locator("#default_interval > .ReactSelect__control > .ReactSelect__value-container > .ReactSelect__input-container").click()
     await page.getByText("Yearly").click()
+    await page.locator('div').filter({ hasText: /^Project overviewBlock type$/ }).getByRole('textbox').getByRole('paragraph').click();
+    await page.locator('div').filter({ hasText: /^Project overviewParagraph$/ }).getByRole('textbox').fill('Test overview');
 
     // Add indicator
     await page.locator('.TabPrimary').getByText('Indicators').click();
@@ -70,7 +71,6 @@ test.describe('Create project', () => {
     }
     await expect(availableLayers).toEqual(['Admin Level 0', 'Admin Level 1', 'Admin Level 2']);
     await expect(page.locator('.General #GeneralName')).toHaveValue('Test Project Override Config');
-    await expect(page.locator('.General #GeneralOverview')).toHaveValue('Test overview');
     expect(await page.locator('.General #GeneralCategory .ReactSelect__single-value').innerText()).toEqual('Overriden');
     await expect(page.locator('.ExtentManualInput input').nth(0)).toHaveValue('40.9943');
     await expect(page.locator('.ExtentManualInput input').nth(1)).toHaveValue('11.9884');
@@ -79,6 +79,7 @@ test.describe('Create project', () => {
     await expect(page.locator('#default_interval').getByText('Yearly')).toBeVisible();
     expect(await page.locator("#fit_to_current_indicator_range").isChecked()).toBeTruthy()
     expect(await page.locator("#show_last_known_value_in_range").isChecked()).toBeFalsy()
+    await expect(page.locator('.Overview').getByRole('paragraph')).toContainText('Test overview');
 
     // Check indicators
     await page.locator('.TabPrimary').getByText('Indicators').click();
