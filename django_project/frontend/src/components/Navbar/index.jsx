@@ -78,6 +78,14 @@ export default function NavBar({ minified }) {
   const { icon, favicon, site_title, site_type } = preferences;
   const { is_contributor } = user;
   const user_permission = useSelector(state => state.dashboard?.data?.user_permission);
+  const pageTitle = document.title;
+  let headerLink = site_title;
+  if (site_type === 'Staging') {
+    headerLink = [
+      `${site_title} : Home`,
+      `${site_title} : Project`
+    ].includes(pageTitle) ? `${site_title} Staging` : site_title
+  }
 
   // Set width of logo
   // Not working using css on firefox
@@ -93,7 +101,7 @@ export default function NavBar({ minified }) {
   return (
     <Fragment>
       <header>
-        <div className='NavHeader'>
+        <div className={`NavHeader Nav-${site_type}`}>
           <div className='NavHeaderLogo'>
             <a
               href='/'
@@ -108,7 +116,7 @@ export default function NavBar({ minified }) {
             title={i18n.t('Homepage')}
             className='NavHeaderLink'
           >
-            {site_title} {site_type}
+            {headerLink}
           </a>
           <NotificationMaintenance/>
           <div className='Separator'></div>

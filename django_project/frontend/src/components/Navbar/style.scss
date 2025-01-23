@@ -40,6 +40,10 @@ header {
     box-sizing: border-box;
     color: var(--anti-primary-color);
 
+    &.Nav-Staging {
+      background-color: #FF0000;
+    }
+
     a {
       display: block;
       color: var(--anti-primary-color);
