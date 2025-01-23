@@ -35,11 +35,6 @@ import { DjangoRequests } from "../../../../../src/Requests";
 import {hexToRgba} from '../utils';
 
 
-async function generateCacheKey(url, body) {
-  return `${url}:${JSON.stringify(body)}`;
-}
-
-
 /***
  * Render Raster Cog
  */
@@ -101,7 +96,9 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
       const getColor = (value) => {
         for (const classification of classifications) {
           if (value >= classification.bottom && value < classification.top) {
-            return hexToRgba(classification.color, 255);
+            const rgbaColor = hexToRgba(classification.color, 1)
+            rgbaColor[3] = parseInt((rgbaColor[3] * 255))
+            return rgbaColor;
           }
         }
         return null;
@@ -120,7 +117,9 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
           });
         }
         if (value === noData || value === Infinity || isNaN(value) || value === additional_ndt_val) {
-          rgba.set(hexToRgba(nodata_color, (ndt_opacity/100) * 255));
+          let rgbaColor = hexToRgba(nodata_color, (ndt_opacity/100))
+          rgbaColor[3] = parseInt((rgbaColor[3] * 255))
+          rgba.set(rgbaColor);
         } else if (value < min_band || value > max_band) {
           rgba.set([0, 0, 0, 0]); // noData, fillValue or NaN => transparent
         } else {
