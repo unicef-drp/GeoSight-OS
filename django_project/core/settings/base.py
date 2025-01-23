@@ -16,8 +16,6 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import os  # noqa
 
-from tests.settings import SECRET_KEY
-
 from core.settings.utils import ABS_PATH
 
 # Local time zone for this installation. Choices can be found here:
