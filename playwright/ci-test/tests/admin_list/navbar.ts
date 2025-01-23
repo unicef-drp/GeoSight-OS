@@ -14,15 +14,7 @@ test.describe('Check Admin Navbar', () => {
     // Check initial state
     const headerLink = page.locator('a.NavHeaderLink');
     await expect(headerLink).toHaveText('GeoSight')
-
-    const navBar = page.locator('.Nav-Production');
-    // Check the CSS property
-    const backgroundColor = await navBar.evaluate((element) =>
-      window.getComputedStyle(element).getPropertyValue('background-color')
-    );
-
-    // Assert the background color (adjust the expected value)
-    expect(backgroundColor).toBe('rgb(28, 171, 226)');
+    await expect(page.locator('.Nav-Production')).toHaveCSS("background-color", 'rgb(28, 171, 226)');
   });
 
     // A use case tests scenarios
@@ -40,14 +32,7 @@ test.describe('Check Admin Navbar', () => {
     await expect(page.locator('a.NavHeaderLink span')).toHaveCSS('display', 'none');
     await expect(page.locator('a.NavHeaderLink span')).toHaveText('Staging');
 
-    const navBar = page.locator('.Nav-Staging');
-    // Check the CSS property
-    const backgroundColor = await navBar.evaluate((element) =>
-      window.getComputedStyle(element).getPropertyValue('background-color')
-    );
-
-    // Assert the background color (adjust the expected value)
-    expect(backgroundColor).toBe('rgb(255, 0, 0)');
+    await expect(page.locator('.Nav-Staging')).toHaveCSS("background-color", 'rgb(255, 0, 0)');
   });
 
 });
