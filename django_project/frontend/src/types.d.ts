@@ -1,3 +1,12 @@
+/** The data when the request to backend **/
+export interface RequestState {
+  data: any;
+  error: string | null;
+  fetched: boolean
+  fetching: boolean
+  receivedAt: number
+}
+
 export interface PaginationResult {
   count: number,
   next: string | null,

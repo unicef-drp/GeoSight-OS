@@ -9,9 +9,15 @@
 *     (at your option) any later version.
 *
 * __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
+* __date__ = '16/01/2025'
+* __copyright__ = ('Copyright 2025, Unicef')
 */
+
+/* ==========================================================================
+   Filter style
+   ========================================================================== */
+
+@import '../../../app/variables';
 
 .FilterAccordion {
   height: 100%;
@@ -55,8 +61,12 @@
   flex-grow: 1;
   overflow-y: auto;
 
+  .Mui-disabled {
+    background-color: var(--gray-200);
+  }
+
   .FilterControlInfo {
-    font-weight: var(--base-font-medium);
+    font-weight: $base-font-medium;
     font-size: 12px;
     color: #7E7E7E;
   }
@@ -68,7 +78,7 @@
 
     .Mui-checked {
       .MuiSwitch-thumb {
-        background-color: var(--secondary-color);
+        background-color: $secondary-color;
       }
     }
   }
@@ -103,22 +113,26 @@
         transform: translateX(34px);
 
         .MuiSwitch-thumb {
-          border-radius: 0 var(--border-radius) var(--border-radius) 0;
+          border-radius: 0;
+          border-bottom-right-radius: $border-radius;
+          border-top-right-radius: $border-radius;
         }
       }
     }
 
     .MuiSwitch-thumb {
       box-shadow: none;
-      background-color: var(--secondary-color);
-      border-radius: var(--border-radius) 0 0 var(--border-radius);
+      background-color: $secondary-color;
+      border-radius: 0;
+      border-bottom-left-radius: $border-radius;
+      border-top-left-radius: $border-radius;
       width: 32px;
       height: 16px;
     }
 
     .MuiSwitch-track {
-      background-color: var(--anti-primary-color) !important;
-      border-radius: var(--border-radius);
+      background-color: $anti-primary-color !important;
+      border-radius: $border-radius;
       opacity: 1 !important;
 
       &:before, &:after {
@@ -133,26 +147,26 @@
       &:before {
         content: 'AND';
         left: 9px;
-        color: var(--primary-color);
+        color: $primary-color;
       }
 
       &:after {
         content: 'OR';
         right: 13px;
-        color: var(--primary-color);
+        color: $primary-color;
       }
     }
   }
 
   .MuiAccordionSummary-content {
-    color: var(--base-black-color) !important;
+    color: $base-black-color !important;
     font-size: 0.8rem !important;
   }
 
   .FilterGroup {
     padding: 10px 8px 10px 8px;
     position: relative;
-    border-radius: var(--border-radius);
+    border-radius: $border-radius;
     background-color: rgba(0, 0, 0, 0.03);
 
     & > .MuiPaper-root {
@@ -171,13 +185,13 @@
         }
 
         .FilterEdit {
-          color: var(--tab-active-color);
+          color: $tab-active-color;
           width: 12px;
           margin-right: 5px;
         }
 
         .FilterDelete {
-          color: var(--tab-active-color);
+          color: $tab-active-color;
           width: 9px;
         }
       }
@@ -195,11 +209,12 @@
 
       .FilterGroupOption {
         background-color: #F8F9F9;
-        border-radius: var(--border-radius);
+        border-radius: $border-radius;
         display: flex;
         align-items: center;
         min-height: 30px;
         padding-left: 8px;
+        padding-right: 8px;
 
         .MuiButtonBase-root {
           margin-top: -3px;
@@ -215,11 +230,11 @@
 
         .MuiButtonLike {
           color: white;
-          background: var(--primary-color);
+          background: $primary-color;
           height: 16px;
           margin-top: 0.2rem;
           margin-left: 0.2rem;
-          width: 18px;
+          width: 14px;
 
           &:hover {
             opacity: 0.8;
@@ -231,7 +246,7 @@
           padding: 2px 10px;
           margin-left: 10px;
           font-size: 12px;
-          background: var(--primary-color);
+          background: $primary-color;
           border-radius: 5px;
           cursor: pointer;
         }
@@ -240,7 +255,7 @@
         .FilterGroupAdd,
         .FilterGroupDelete {
           background-color: rgba(0, 0, 0, 0);
-          color: var(--primary-color);
+          color: $primary-color;
         }
 
         div.MuiInputBase-root {
@@ -262,7 +277,7 @@
           }
 
           svg {
-            color: var(--primary-color);
+            color: $primary-color;
           }
         }
       }
@@ -270,9 +285,9 @@
   }
 
   .FilterNote {
-    color: var(--base-black-color);
+    color: $base-black-color;
     font-style: italic;
-    opacity: var(--base-hovered-opacity);
+    opacity: $base-hovered-opacity;
     padding: 1rem;
   }
 
@@ -347,7 +362,7 @@
       }
 
       .FilterDelete {
-        color: var(--error);
+        color: $error;
         margin-right: 5px;
       }
     }
@@ -379,7 +394,11 @@
     display: flex;
     margin-top: 5px;
     width: 100%;
-    border: 1px solid var(--primary-color);
+    border: 1px solid $primary-color;
+
+    & > .MuiInputBase-root {
+      width: 100%;
+    }
 
     .SelectWithSearchInput,
     .MuiAutocomplete-root {
@@ -389,7 +408,6 @@
     }
 
     .MuiSvgIcon-root {
-      color: #ddd;
       margin: 7px 3px;
       width: 16px;
     }
@@ -436,7 +454,7 @@
     }
 
     .MuiInput-root {
-      border-left: 1px solid var(--primary-color);
+      border-left: 1px solid $primary-color;
       padding: 5px 3px 0 3px;
       width: 50px;
       font-size: 0.8rem;
@@ -459,7 +477,7 @@
 
     .MuiInputBase-root:first-child {
       border-left: unset !important;
-      border-right: 1px solid var(--primary-color) !important;
+      border-right: 1px solid $primary-color !important;
     }
   }
 }
@@ -484,9 +502,21 @@
     width: 100%;
   }
 
+  .FilterInputWrapperIndicator {
+    display: none;
+  }
+
+  .FilterInputWrapper {
+    height: 100%;
+
+    & > .MuiInputBase-root {
+      height: 100%;
+    }
+  }
+
   .FilterEditModalQuery {
     display: flex;
-    background: var(--base-alpha-color);
+    background: $base-alpha-color;
     padding: 10px;
 
     .WhereConfigurationOperatorValue {
@@ -539,11 +569,13 @@
     .MuiInputSliderWithInput {
       flex-grow: 1;
       display: flex;
-      border-radius: 4px;
       background-color: white;
       border: 1px solid rgba(0, 0, 0, 0.23);
       overflow: hidden;
       min-width: 300px;
+      height: 100%;
+      box-sizing: border-box;
+      margin-left: -1px;
 
       input {
         border: unset;
@@ -600,7 +632,7 @@
   padding: 10px;
 
   .FilterControlSummaryContent {
-    border: 1px solid var(--primary-color);
+    border: 1px solid $primary-color;
   }
 }
 

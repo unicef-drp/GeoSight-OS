@@ -24,7 +24,6 @@ import DashboardTool from './reducers/dashboardTool/actions'
 import DatasetGeometries from './reducers/datasetGeometries/actions'
 import Extent from './reducers/extent/actions'
 import Filters from './reducers/filters/actions'
-import FiltersData from './reducers/filtersData/actions'
 import FilteredGeometries from './reducers/filteredGeometries/actions'
 import GlobalState from './reducers/globalState/actions'
 import IndicatorLayers from './reducers/indicatorLayers/actions'
@@ -62,7 +61,6 @@ const Actions = {
   Extent,
   Filters,
   FilteredGeometries,
-  FiltersData,
   GlobalState,
   IndicatorLayers,
   Indicators,

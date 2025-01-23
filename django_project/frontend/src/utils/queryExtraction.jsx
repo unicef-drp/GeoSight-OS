@@ -339,6 +339,10 @@ const cleanValueFn = (value, returnEmpty = false) => {
  * Return DATA in SQL
  */
 export function returnDataToExpression(field, operator, value) {
+  // Fix field text
+  const needQuote = isNeedQuote(field)
+  field = needQuote ? `"${field}"`.replaceAll('""', '"') : field
+
   const cleanOperator = operator
   let cleanValue = cleanValueFn(value)
 

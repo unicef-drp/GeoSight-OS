@@ -301,7 +301,6 @@ export function DashboardSaveForm(
     tools
   } = useSelector(state => state.dashboard.data);
   const { data } = useSelector(state => state.dashboard);
-  const filtersData = useSelector(state => state.filtersData);
   const [submitted, setSubmitted] = useState(false);
 
   // Notification
@@ -411,7 +410,7 @@ export function DashboardSaveForm(
         'extent': extent,
         'widgets': widgets,
         'widgets_structure': widgetsStructure,
-        'filters': filtersData ? filtersData : filters,
+        'filters': filters,
         'filters_allow_modify': filtersAllowModify,
         'permission': permission,
         'show_splash_first_open': splashScreen,
@@ -684,7 +683,16 @@ export function DashboardForm({ onPreview }) {
  * Dashboard Form App
  */
 export default function DashboardFormApp() {
+  const dispatch = useDispatch();
   const [currentMode, setCurrentMode] = useState('FormMode');
+
+  // Change current mode
+  useEffect(() => {
+    dispatch(
+      Actions.GlobalState.update({ editMode: currentMode === 'FormMode' })
+    )
+  }, [currentMode]);
+
   return (
     <App className={currentMode}>
       {/* ADMIN SECTION */}
