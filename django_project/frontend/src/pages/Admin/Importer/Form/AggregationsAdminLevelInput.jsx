@@ -22,6 +22,7 @@ import {
   Radio,
   RadioGroup
 } from "@mui/material";
+import Tooltip from '@mui/material/Tooltip';
 import Grid from '@mui/material/Grid';
 import Aggregation from "./Extensions/QueryForm/Aggregation";
 
@@ -32,8 +33,13 @@ const aggregationEnabled = {
 }
 
 const aggregationValueType = {
-  BY_INDICATOR: 'Use aggregation from indicator',
-  DEFAULT: 'Default Aggregations'
+  BY_INDICATOR: 'Use default aggregation from indicator',
+  BY_INDICATOR_TOOLTIP: 'For each imported indicator, it\'s default aggregation method, ' +
+    'configured at the indicator level, will be used.',
+  DEFAULT: 'Use custom aggregations',
+  DEFAULT_TOOLTIP: 'Custom aggregation method will be applied to all imported indicators. ' +
+    'A separate method will be applied to all numerical (integer or float) indicators ' +
+    'and a separate method will be applied to all category-based indicators.'
 }
 
 /**
@@ -176,16 +182,20 @@ export const AggregationsAdminLevelInput = forwardRef(
                   >
                     <Grid container spacing={2}>
                       <Grid item xs={4}>
-                        <FormControlLabel
-                          value={aggregationValueType.BY_INDICATOR}
-                          control={<Radio/>}
-                          label={aggregationValueType.BY_INDICATOR}/>
+                        <Tooltip title={<p style={{ fontSize: "12px" }}>{aggregationValueType.BY_INDICATOR_TOOLTIP}</p>} className={'tooltip'}>
+                          <FormControlLabel
+                            value={aggregationValueType.BY_INDICATOR}
+                            control={<Radio/>}
+                            label={aggregationValueType.BY_INDICATOR}/>
+                        </Tooltip>
                       </Grid>
                       <Grid item xs={4}>
-                        <FormControlLabel
-                          value={aggregationValueType.DEFAULT}
-                          control={<Radio/>}
-                          label={aggregationValueType.DEFAULT}/>
+                        <Tooltip title={<p style={{ fontSize: "12px" }}>{aggregationValueType.DEFAULT_TOOLTIP}</p>} className={'tooltip'}>
+                          <FormControlLabel
+                            value={aggregationValueType.DEFAULT}
+                            control={<Radio/>}
+                            label={aggregationValueType.DEFAULT}/>
+                        </Tooltip>
                       </Grid>
                     </Grid>
                   </RadioGroup>
