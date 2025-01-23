@@ -75,7 +75,7 @@ export function GeoRepoIndicator() {
 
 export default function NavBar({ minified }) {
   const helpPageRef = useRef(null);
-  const { icon, favicon, site_title } = preferences;
+  const { icon, favicon, site_title, site_type } = preferences;
   const { is_contributor } = user;
   const user_permission = useSelector(state => state.dashboard?.data?.user_permission);
 
@@ -108,7 +108,7 @@ export default function NavBar({ minified }) {
             title={i18n.t('Homepage')}
             className='NavHeaderLink'
           >
-            {site_title}
+            {site_title} {site_type}
           </a>
           <NotificationMaintenance/>
           <div className='Separator'></div>
