@@ -245,6 +245,4 @@ const MapConfig = memo(({}: Props) => {
     </div>
   }
 )
-
-
 export default MapConfig;

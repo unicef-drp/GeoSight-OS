@@ -54,7 +54,7 @@ import './style.scss';
 
 
 /** Overview dashboard */
-export default function OverviewForm({ changed }) {
+export default function OverviewForm() {
   const {
     overview,
   } = useSelector(state => state.dashboard.data);
@@ -111,7 +111,6 @@ export default function OverviewForm({ changed }) {
           onChange={
             val => {
               setOverviewData(val)
-              changed(true)
             }
           }
         />

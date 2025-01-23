@@ -24,6 +24,13 @@ export interface ReferenceLayer {
   is_local: boolean;
 }
 
+export interface DefaultTimeMode {
+  default_interval: string;
+  use_only_last_known_value: boolean;
+  fit_to_current_indicator_range: boolean;
+  show_last_known_value_in_range: boolean
+}
+
 export interface Project {
   id: string;               // Unique identifier for the project
   slug: string;             // Slug for the project

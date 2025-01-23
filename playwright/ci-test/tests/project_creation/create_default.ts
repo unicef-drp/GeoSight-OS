@@ -28,8 +28,8 @@ test.describe('Create project', () => {
     await page.getByText('Create New Project').click();
     await page.locator(".ReferenceDatasetSection input").click();
     await page.locator(".ModalDataSelector .MuiDataGrid-row").click();
-    await page.locator("#SummaryName").fill('Test Project Default');
-    await page.locator("#SummaryCategory").click();
+    await page.locator("#GeneralName").fill('Test Project Default');
+    await page.locator("#GeneralCategory").click();
     await page.keyboard.type('Test');
     await page.keyboard.press('Enter');
     await page.getByPlaceholder('Select default admin level').click();
@@ -110,19 +110,19 @@ test.describe('Create project', () => {
     await page.getByTitle('Edit project').getByRole('link').click();
     await page.waitForURL('http://localhost:2000/admin/project/test-project-default/edit')
     await expect(page.locator('.MoreActionIcon')).toBeVisible();
-    await expect(page.locator('.Summary .ReferenceDatasetSection input')).toHaveValue('Somalia');
-    await expect(page.locator('.Summary .CodeMappingConfig input')).toHaveValue('Latest ucode');
+    await expect(page.locator('.General .ReferenceDatasetSection input')).toHaveValue('Somalia');
+    await expect(page.locator('.General .CodeMappingConfig input')).toHaveValue('Latest ucode');
     await expect(page.getByPlaceholder('Select default admin level')).toHaveValue('Admin Level 2');
 
     const availableLayers = [];
-    const selector = '.Summary .ReferenceLayerAvailableLevelsConfiguration .MuiChip-label'
+    const selector = '.General .ReferenceLayerAvailableLevelsConfiguration .MuiChip-label'
     const num = await page.locator(selector).count();
     for (let i = 0; i < num; i++) {
       availableLayers.push(await page.locator(selector).nth(i).innerText());
     }
     await expect(availableLayers).toEqual(['Admin Level 0', 'Admin Level 1', 'Admin Level 2']);
-    await expect(page.locator('.Summary #SummaryName')).toHaveValue('Test Project Default');
-    expect(await page.locator('.Summary #SummaryCategory .ReactSelect__single-value').innerText()).toEqual('Test');
+    await expect(page.locator('.General #GeneralName')).toHaveValue('Test Project Default');
+    expect(await page.locator('.General #GeneralCategory .ReactSelect__single-value').innerText()).toEqual('Test');
     await expect(page.locator('.ExtentManualInput input').nth(0)).toHaveValue('40.9943');
     await expect(page.locator('.ExtentManualInput input').nth(1)).toHaveValue('11.9884');
     await expect(page.locator('.ExtentManualInput input').nth(2)).toHaveValue('51.4151');

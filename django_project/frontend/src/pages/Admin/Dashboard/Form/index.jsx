@@ -38,7 +38,7 @@ import {
 } from "../../../../components/Notification";
 
 // Dashboard Form
-import GeneralDashboardForm from './General'
+import GeneralForm from './General'
 import IndicatorsForm from './Indicators'
 import IndicatorLayersForm from './IndicatorLayers'
 import ContextLayerForm from './ContextLayer'
@@ -498,7 +498,7 @@ export function DashboardFormContent({ changed }) {
     <div className='DashboardFormContent'>
       {Object.keys(data).length > 0 ?
         <>
-          <GeneralDashboardForm changed={changed}/>
+          <GeneralForm/>
           <BasemapsForm/>
           <IndicatorsForm/>
           <IndicatorLayersForm/>
