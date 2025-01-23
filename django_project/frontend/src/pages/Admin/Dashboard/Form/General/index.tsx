@@ -411,7 +411,10 @@ const GeneralForm = memo(({}: Props) => {
                   <ImageInput
                     id='GeneralIcon'
                     name="icon"
-                    image={icon}/>
+                    image={icon}
+                    onChange={() => {
+                    }}
+                  />
                 </FormControl>
               </Grid>
             </Grid>

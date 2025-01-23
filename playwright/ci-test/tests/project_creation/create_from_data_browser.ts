@@ -12,7 +12,7 @@ test.describe('Create project from dataset', () => {
   // A use case tests scenarios
   test('Create project from dataset', async ({ page }) => {
     // --------------------------------------------------------------
-    // CREATE PROJECT FROM DATASER
+    // CREATE PROJECT FROM DATASET
     // --------------------------------------------------------------
 
     await page.getByRole('button', { name: 'Admin panel' }).click();
@@ -40,6 +40,12 @@ test.describe('Create project from dataset', () => {
     await page.keyboard.press('Enter');
     await page.getByPlaceholder('Select default admin level').click();
     await page.getByRole('option', { name: 'Admin Level 1' }).click();
+
+    // Check extent
+    await expect(page.locator('.ExtentManualInput input').nth(0)).toHaveValue('40.9943');
+    await expect(page.locator('.ExtentManualInput input').nth(1)).toHaveValue('11.9884');
+    await expect(page.locator('.ExtentManualInput input').nth(2)).toHaveValue('51.4151');
+    await expect(page.locator('.ExtentManualInput input').nth(3)).toHaveValue('-1.6568');
 
     // Add pins layer
     await page.locator('.TabPrimary').getByText('Indicator Layers').click();
