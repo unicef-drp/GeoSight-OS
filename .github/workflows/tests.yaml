@@ -17,7 +17,7 @@ on:
   push:
     branches: [ main ]
   pull_request:
-    branches: [ main, version-2.0.0 ]
+    branches: [ main, version-2.0.0, Filter-improvement ]
 
 jobs:
   flake8_py3:
