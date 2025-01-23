@@ -40,7 +40,7 @@ import {
 import OverviewForm from "./Overview";
 import DatasetViewSelector
   from "../../../../../components/ResourceSelector/DatasetViewSelector";
-import { DefaultTimeMode, ReferenceLayer } from "../../../../../types";
+import { DefaultTimeMode, ReferenceLayer } from "../../../../../types/Project";
 
 import './style.scss';
 

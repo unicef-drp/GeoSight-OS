@@ -19,7 +19,7 @@ import L from 'leaflet';
 import 'leaflet-draw';
 
 import { Actions } from "../../../../../store/dashboard";
-import { Extent } from "../../../../../types";
+import { Extent } from "../../../../../types/Project";
 import { debounce } from "@mui/material/utils";
 
 

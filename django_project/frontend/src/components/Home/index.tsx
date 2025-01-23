@@ -26,7 +26,7 @@ import {
   SelectWithSearch
 } from "../../components/Input/SelectWithSearch";
 import { SortAscIcon, SortDescIcon } from "../../components/Icons";
-import { Project } from '../../types';
+import { Project } from '../../types/Project';
 
 import './style.scss';
 import { debounce } from "@mui/material/utils";
