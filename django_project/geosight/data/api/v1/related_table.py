@@ -72,7 +72,7 @@ class RelatedTableViewSet(BaseApiV1Resource):
         tags=[ApiTag.RELATED_TABLE],
         manual_parameters=[],
         request_body=RelatedTableApiSerializer.
-        Meta.swagger_schema_fields['post_body'],
+        Meta.post_body,
         operation_description='Create a related table.'
     )
     def create(self, request, *args, **kwargs):
@@ -89,7 +89,7 @@ class RelatedTableViewSet(BaseApiV1Resource):
         tags=[ApiTag.RELATED_TABLE],
         manual_parameters=[],
         request_body=RelatedTableApiSerializer.
-        Meta.swagger_schema_fields['post_body'],
+        Meta.post_body,
         operation_description='Update a related table.'
     )
     def update(self, request, *args, **kwargs):

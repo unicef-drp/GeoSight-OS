@@ -147,37 +147,37 @@ class BasemapLayerSerializer(ResourceSerializer):
                     "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 ),
                 "type": "XYZ",
-            },
-            'post_body': openapi.Schema(
-                description='Data that is needed to create/edit basemap.',
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'name': openapi.Schema(
-                        title='Name',
-                        type=openapi.TYPE_STRING
-                    ),
-                    'description': openapi.Schema(
-                        title='Description',
-                        type=openapi.TYPE_STRING
-                    ),
-                    'category': openapi.Schema(
-                        title='Category',
-                        type=openapi.TYPE_STRING
-                    ),
-                    'url': openapi.Schema(
-                        title='Url',
-                        type=openapi.TYPE_STRING
-                    ),
-                    'type': openapi.Schema(
-                        title='Type',
-                        type=openapi.TYPE_STRING,
-                        description=(
-                            f'The choices are {[TYPES]}'
-                        )
-                    ),
-                }
-            )
+            }
         }
+        post_body = openapi.Schema(
+            description='Data that is needed to create/edit basemap.',
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'name': openapi.Schema(
+                    title='Name',
+                    type=openapi.TYPE_STRING
+                ),
+                'description': openapi.Schema(
+                    title='Description',
+                    type=openapi.TYPE_STRING
+                ),
+                'category': openapi.Schema(
+                    title='Category',
+                    type=openapi.TYPE_STRING
+                ),
+                'url': openapi.Schema(
+                    title='Url',
+                    type=openapi.TYPE_STRING
+                ),
+                'type': openapi.Schema(
+                    title='Type',
+                    type=openapi.TYPE_STRING,
+                    description=(
+                        f'The choices are {[TYPES]}'
+                    )
+                ),
+            }
+        )
 
 
 class BasemapLayerParameterSerializer(serializers.ModelSerializer):

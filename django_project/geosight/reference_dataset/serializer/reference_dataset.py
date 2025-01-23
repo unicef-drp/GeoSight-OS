@@ -130,15 +130,13 @@ class ReferenceDatasetSerializer(DynamicModelSerializer):
         model = ReferenceDataset
         fields = '__all__'
         lookup_field = "identifier"
-        swagger_schema_fields = {
-            'delete_body': openapi.Schema(
-                description='List of identifier of values.',
-                type=openapi.TYPE_ARRAY,
-                items=openapi.Items(
-                    type=openapi.TYPE_STRING
-                )
+        delete_body = openapi.Schema(
+            description='List of identifier of values.',
+            type=openapi.TYPE_ARRAY,
+            items=openapi.Items(
+                type=openapi.TYPE_STRING
             )
-        }
+        )
 
 
 class ReferenceDatasetCentroidUrlSerializer(serializers.ModelSerializer):

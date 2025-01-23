@@ -124,7 +124,6 @@ class RelatedTableApiSerializer(ResourceSerializer):
     class Meta:  # noqa: D106
         model = RelatedTable
         exclude = ('unique_id',)
-
         swagger_schema_fields = {
             'type': openapi.TYPE_OBJECT,
             'title': 'RelatedTable',
@@ -151,13 +150,13 @@ class RelatedTableApiSerializer(ResourceSerializer):
                 "creator": 'Admin',
                 "created_at": "2023-01-01T00:00:00.00000Z",
                 "modified_at": "2023-01-01T00:00:00.00000Z",
-            },
-            'post_body': openapi.Schema(
-                description='Data needed to create/edit related tables.',
-                type=openapi.TYPE_OBJECT,
-                properties=_related_table_swagger_properties
-            )
+            }
         }
+        post_body = openapi.Schema(
+            description='Data needed to create/edit related tables.',
+            type=openapi.TYPE_OBJECT,
+            properties=_related_table_swagger_properties
+        )
 
 
 class RelatedTableRowApiSerializer(DynamicModelSerializer):
@@ -168,7 +167,6 @@ class RelatedTableRowApiSerializer(DynamicModelSerializer):
     class Meta:  # noqa: D106
         model = RelatedTableRow
         exclude = ('table', 'order', 'data')
-
         swagger_schema_fields = {
             'type': openapi.TYPE_OBJECT,
             'title': 'RelatedTableRow',
@@ -181,13 +179,13 @@ class RelatedTableRowApiSerializer(DynamicModelSerializer):
                     "field_2": "2024-02-14T00:00:00Z",
                     "field_3": 42.7
                 }
-            },
-            'post_body': openapi.Schema(
-                description='Data needed to create/edit related table rows.',
-                type=openapi.TYPE_OBJECT,
-                properties=_related_table_row_swagger_properties
-            )
+            }
         }
+        post_body = openapi.Schema(
+            description='Data needed to create/edit related table rows.',
+            type=openapi.TYPE_OBJECT,
+            properties=_related_table_row_swagger_properties
+        )
 
 
 class RelatedTableRowApiFlatSerializer(DynamicModelSerializer):
