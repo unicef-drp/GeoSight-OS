@@ -115,7 +115,7 @@ const MapConfig = memo(({}: Props) => {
           setEditedExtent(newExtent)
         }
         newMap.on('draw:created', edited);
-        newMap.on('draw:edited', function (e) {
+        newMap.on('draw:edited', function (e: any) {
           // @ts-ignore
           const layers = e.layers;
           layers.eachLayer(function (layer: any) {
