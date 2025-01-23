@@ -44,6 +44,7 @@ const MapConfig = memo(({}: Props) => {
 
     const [map, setMap] = useState(null);
     const [editableLayers, setEditableLayers] = useState(null);
+    const [identifierChanged, setIdentifierChanged] = useState(false);
 
     // west = extent[0];
     // south = extent[1];
@@ -131,19 +132,21 @@ const MapConfig = memo(({}: Props) => {
     // Change previous extent
     useEffect(() => {
       if (extentState.current) {
-        extentState.current = null
+        setIdentifierChanged(true)
       }
     }, [identifier]);
 
     // When referenceLayerData changed
     useEffect(() => {
       if (
+        identifierChanged &&
         referenceLayerData?.data?.bbox?.length &&
         JSON.stringify(referenceLayerData?.data?.bbox) !== JSON.stringify(extentState?.current)
       ) {
         dispatcher(
           Actions.Extent.changeDefault(referenceLayerData?.data?.bbox)
         )
+        setIdentifierChanged(false)
       }
     }, [referenceLayerData]);
 
