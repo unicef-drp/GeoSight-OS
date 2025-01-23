@@ -17,8 +17,18 @@ test.describe('Create project', () => {
     await expect(page.getByText('Create New Project')).toBeVisible();
     await page.getByText('Create New Project').click();
     await expect(page.getByText('Save')).toBeVisible();
+
+
+    // Select dataset
     await page.locator(".ReferenceDatasetSection input").click();
     await page.locator(".ModalDataSelector .MuiDataGrid-row").click();
+
+    // Check extent
+    await expect(page.locator('.ExtentManualInput input').nth(0)).toHaveValue('40.9943');
+    await expect(page.locator('.ExtentManualInput input').nth(1)).toHaveValue('11.9884');
+    await expect(page.locator('.ExtentManualInput input').nth(2)).toHaveValue('51.4151');
+    await expect(page.locator('.ExtentManualInput input').nth(3)).toHaveValue('-1.6568');
+
     await page.locator("#GeneralName").fill('Test Project Override Config');
     await page.locator("#GeneralCategory").click();
     await page.keyboard.type('Overriden');

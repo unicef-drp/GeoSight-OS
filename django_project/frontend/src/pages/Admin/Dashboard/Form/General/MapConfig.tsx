@@ -28,14 +28,11 @@ export interface Props {
 
 /** Map config component. */
 const MapConfig = memo(({}: Props) => {
-    const extentState = useRef<Extent | null>();
+    const extentState = useRef<Extent | null | boolean>();
     const dispatcher = useDispatch();
 
     // @ts-ignore
     let extent = useSelector(state => state.dashboard.data?.extent);
-    if (extent.length !== 4) {
-      extent = [-100, -60, 100, 60]
-    }
 
     const {
       identifier
@@ -44,7 +41,7 @@ const MapConfig = memo(({}: Props) => {
 
     const [map, setMap] = useState(null);
     const [editableLayers, setEditableLayers] = useState(null);
-    const [identifierChanged, setIdentifierChanged] = useState(false);
+    const [isInit, setIsInit] = useState(true);
 
     // west = extent[0];
     // south = extent[1];
@@ -131,22 +128,23 @@ const MapConfig = memo(({}: Props) => {
 
     // Change previous extent
     useEffect(() => {
-      if (extentState.current) {
-        setIdentifierChanged(true)
+      if (!identifier || extentState.current) {
+        extentState.current = null
       }
     }, [identifier]);
 
     // When referenceLayerData changed
     useEffect(() => {
       if (
-        identifierChanged &&
         referenceLayerData?.data?.bbox?.length &&
         JSON.stringify(referenceLayerData?.data?.bbox) !== JSON.stringify(extentState?.current)
       ) {
-        dispatcher(
-          Actions.Extent.changeDefault(referenceLayerData?.data?.bbox)
-        )
-        setIdentifierChanged(false)
+        if (!!extent || !isInit) {
+          setEditedExtent(referenceLayerData?.data?.bbox)
+        }
+        setIsInit(false)
+      } else if (referenceLayerData) {
+        extentState.current = true
       }
     }, [referenceLayerData]);
 
