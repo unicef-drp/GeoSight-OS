@@ -66,10 +66,8 @@ export default function RasterCogLayer(
   const newData = dictDeepCopy(data);
   const styles = constructStyle(newData.styles);
   const [noDataColor, setNoDataColor] = useState(styles.nodata_color);
-  console.log(`noDataColor: ${noDataColor}`)
 
   useEffect(() => {
-    console.log(noDataColor)
     setData({
       ...data,
       styles: {
