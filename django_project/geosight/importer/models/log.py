@@ -95,10 +95,14 @@ class ImporterLog(models.Model):
                 status = self.status
                 if status == LogStatus.START:
                     status = 'Started'
+                elif status == LogStatus.SUCCESS:
+                    status = 'Successful'
+
                 context = {
                     'name': self.importer.__str__(),
                     'status': status.lower(),
-                    'url': f'{pref.site_url}{log_url}'
+                    'url': f'{pref.site_url}{log_url}',
+                    'helping_verb': 'has' if self.status == LogStatus.FAILED else 'is'
                 }
 
                 message = render_to_string(
