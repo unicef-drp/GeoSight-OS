@@ -209,74 +209,57 @@ class IndicatorValueSerializer(serializers.ModelSerializer):
                         "admin_level": 0
                     }
                 ]
-            },
-            'post_body': openapi.Schema(
-                description='Data that is needed for post new value.',
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'indicator_id': openapi.Schema(
-                        title='Indicator id',
-                        type=openapi.TYPE_NUMBER
-                    ),
-                    'indicator_shortcode': openapi.Schema(
-                        title='Indicator shortcode',
-                        type=openapi.TYPE_STRING
-                    ),
-                    'value': openapi.Schema(
-                        title='New value',
-                        type=openapi.TYPE_STRING
-                    ),
-                    'date': openapi.Schema(
-                        title='Date',
-                        description='Date is in YYYY-MM-DD in UTC.',
-                        type=openapi.TYPE_STRING
-                    ),
-                    'geom_id': openapi.Schema(
-                        title='Geom id',
-                        type=openapi.TYPE_STRING,
-                    ),
-                    'dataset_uuid': openapi.Schema(
-                        title='Dataset uuid',
-                        type=openapi.TYPE_STRING
-                    ),
-                    'admin_level': openapi.Schema(
-                        title='Admin level',
-                        type=openapi.TYPE_NUMBER
-                    ),
-                    'attributes': openapi.Schema(
-                        title='Attributes',
-                        description=(
-                            'Optional to save attributes. It is in json'
-                        ),
-                        type=openapi.TYPE_OBJECT,
-                    ),
-                }
-            ),
-            'put_body': openapi.Schema(
-                description='List of id with new value.',
-                type=openapi.TYPE_ARRAY,
-                items=openapi.Items(
-                    type=openapi.TYPE_OBJECT,
-                    properties={
-                        'id': openapi.Schema(
-                            title='Id of value',
-                            type=openapi.TYPE_NUMBER
-                        ),
-                        'value': openapi.Schema(
-                            title='New value',
-                            type=openapi.TYPE_STRING
-                        )
-                    }
-                )
-            ),
-            'delete_body': openapi.Schema(
-                description='List of id of values.',
-                type=openapi.TYPE_ARRAY,
-                items=openapi.Items(
-                    type=openapi.TYPE_NUMBER
-                )
-            )
+            }
         }
+        post_body = openapi.Schema(
+            description='Data that is needed for post new value.',
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'indicator_id': openapi.Schema(
+                    title='Indicator id',
+                    type=openapi.TYPE_NUMBER
+                ),
+                'indicator_shortcode': openapi.Schema(
+                    title='Indicator shortcode',
+                    type=openapi.TYPE_STRING
+                ),
+                'value': openapi.Schema(
+                    title='New value',
+                    type=openapi.TYPE_STRING
+                ),
+                'date': openapi.Schema(
+                    title='Date',
+                    description='Date is in YYYY-MM-DD in UTC.',
+                    type=openapi.TYPE_STRING
+                ),
+                'geom_id': openapi.Schema(
+                    title='Geom id',
+                    type=openapi.TYPE_STRING,
+                ),
+                'dataset_uuid': openapi.Schema(
+                    title='Dataset uuid',
+                    type=openapi.TYPE_STRING
+                ),
+                'admin_level': openapi.Schema(
+                    title='Admin level',
+                    type=openapi.TYPE_NUMBER
+                ),
+                'attributes': openapi.Schema(
+                    title='Attributes',
+                    description=(
+                        'Optional to save attributes. It is in json'
+                    ),
+                    type=openapi.TYPE_OBJECT,
+                )
+            }
+        )
+        delete_body = openapi.Schema(
+            description='List of id of values.',
+            type=openapi.TYPE_ARRAY,
+            items=openapi.Items(
+                type=openapi.TYPE_NUMBER
+            )
+        )
 
 
 class IndicatorValueWithPermissionSerializer(IndicatorValueSerializer):

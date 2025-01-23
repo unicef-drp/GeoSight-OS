@@ -66,7 +66,7 @@ class BasemapViewSet(BaseApiV1Resource):
         tags=[ApiTag.BASEMAP],
         manual_parameters=[],
         request_body=BasemapLayerSerializer.
-        Meta.swagger_schema_fields['post_body'],
+        Meta.post_body,
         operation_description='Create a basemap.'
     )
     def create(self, request, *args, **kwargs):
@@ -78,7 +78,7 @@ class BasemapViewSet(BaseApiV1Resource):
         tags=[ApiTag.BASEMAP],
         manual_parameters=[],
         request_body=BasemapLayerSerializer.
-        Meta.swagger_schema_fields['post_body'],
+        Meta.post_body,
         operation_description='Replace a detailed of basemap.'
     )
     def update(self, request, *args, **kwargs):
@@ -90,7 +90,7 @@ class BasemapViewSet(BaseApiV1Resource):
         tags=[ApiTag.BASEMAP],
         manual_parameters=[],
         request_body=BasemapLayerSerializer.
-        Meta.swagger_schema_fields['post_body'],
+        Meta.post_body,
         operation_description=(
                 'Update just partial data based on payload '
                 'a detailed of basemap.'

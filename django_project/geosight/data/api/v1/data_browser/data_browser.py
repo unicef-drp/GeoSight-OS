@@ -100,7 +100,7 @@ class DataBrowserApiList(BaseDataBrowserApiList, ListAPIView):
         tags=[ApiTag.DATA_BROWSER],
         manual_parameters=[],
         request_body=IndicatorValueWithPermissionSerializer.
-        Meta.swagger_schema_fields['post_body'],
+        Meta.post_body,
         responses={
             201: ''
         }
@@ -173,7 +173,7 @@ class DataBrowserApiList(BaseDataBrowserApiList, ListAPIView):
         tags=[ApiTag.DATA_BROWSER],
         manual_parameters=[],
         request_body=IndicatorValueWithPermissionSerializer.
-        Meta.swagger_schema_fields['delete_body'],
+        Meta.delete_body,
     )
     def delete(self, request):
         """Batch delete data."""
