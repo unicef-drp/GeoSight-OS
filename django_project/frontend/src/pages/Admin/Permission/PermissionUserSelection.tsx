@@ -17,7 +17,7 @@ import { AddButton } from "../../../components/Elements/Button";
 import { FormControl } from "@mui/material";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import { User } from "../../../types";
+import { User } from "../../../types/User";
 import UserSelector from "../../../components/ResourceSelector/UserSelector";
 
 

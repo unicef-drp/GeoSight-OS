@@ -9,13 +9,58 @@
 *     (at your option) any later version.
 *
 * __author__ = 'irwan@kartoza.com'
-* __date__ = '02/11/2023'
+* __date__ = '13/06/2023'
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
 @import '@mdxeditor/editor/style.css';
 
-#SummaryOverview {
+.General {
+  .SelectWithSearchInput {
+    max-width: unset !important;
+  }
+}
+
+.ExtentConfig {
+  .ExtentInput {
+    width: 100%;
+    display: flex;
+
+    .ExtentManualInput {
+      width: 20%;
+      padding: 1rem;
+      box-sizing: border-box;
+    }
+
+    #MapConfig {
+      width: 80%;
+      height: 500px;
+
+      .leaflet-draw {
+        span {
+          display: none;
+        }
+      }
+    }
+  }
+}
+
+.DescriptionInput {
+  padding: 0 1px;
+
+  textarea {
+    border-radius: 0;
+    border: none;
+
+    &:hover,
+    &:focus,
+    &:focus-within {
+      border: none;
+    }
+  }
+}
+
+#GeneralOverview {
   display: none;
 }
 

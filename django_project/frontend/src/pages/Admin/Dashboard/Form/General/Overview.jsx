@@ -52,10 +52,9 @@ import { linkDialogPlugin } from '@mdxeditor/editor/plugins/link-dialog'
 
 import './style.scss';
 
-/**
- * Summary dashboard
- */
-export default function OverviewForm({ changed }) {
+
+/** Overview dashboard */
+export default function OverviewForm() {
   const {
     overview,
   } = useSelector(state => state.dashboard.data);
@@ -64,7 +63,7 @@ export default function OverviewForm({ changed }) {
   return (
     <div className='Overview'>
       <textarea
-        id='SummaryOverview'
+        id='GeneralOverview'
         name="textarea"
         value={overviewData}
       />
@@ -112,7 +111,6 @@ export default function OverviewForm({ changed }) {
           onChange={
             val => {
               setOverviewData(val)
-              changed(true)
             }
           }
         />

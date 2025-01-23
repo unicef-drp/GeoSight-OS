@@ -34,8 +34,8 @@ test.describe('Create project from dataset', () => {
     await page.getByRole('button', { name: 'Add to New Project' }).click();
     await expect(page.getByText('Save')).toBeVisible();
 
-    await page.locator("#SummaryName").fill('Test From Dataset');
-    await page.locator("#SummaryCategory").click();
+    await page.locator("#GeneralName").fill('Test From Dataset');
+    await page.locator("#GeneralCategory").click();
     await page.keyboard.type('Complex');
     await page.keyboard.press('Enter');
     await page.getByPlaceholder('Select default admin level').click();
@@ -134,19 +134,19 @@ test.describe('Create project from dataset', () => {
     // --------------------------------------------------------------
     await page.getByRole('button', { name: 'Back to form' }).click();
     await expect(page.locator('.MoreActionIcon')).toBeVisible();
-    await expect(page.locator('.Summary .ReferenceDatasetSection input')).toHaveValue('Somalia');
-    await expect(page.locator('.Summary .CodeMappingConfig input')).toHaveValue('Latest ucode');
+    await expect(page.locator('.General .ReferenceDatasetSection input')).toHaveValue('Somalia');
+    await expect(page.locator('.General .CodeMappingConfig input')).toHaveValue('Latest ucode');
     await expect(page.getByPlaceholder('Select default admin level')).toHaveValue('Admin Level 1');
 
     const availableLayers = [];
-    const selector = '.Summary .ReferenceLayerAvailableLevelsConfiguration .MuiChip-label'
+    const selector = '.General .ReferenceLayerAvailableLevelsConfiguration .MuiChip-label'
     const num = await page.locator(selector).count();
     for (let i = 0; i < num; i++) {
       availableLayers.push(await page.locator(selector).nth(i).innerText());
     }
     await expect(availableLayers).toEqual(['Admin Level 0', 'Admin Level 1', 'Admin Level 2']);
-    await expect(page.locator('.Summary #SummaryName')).toHaveValue('Test From Dataset');
-    expect(await page.locator('.Summary #SummaryCategory .ReactSelect__single-value').innerText()).toEqual('Complex');
+    await expect(page.locator('.General #GeneralName')).toHaveValue('Test From Dataset');
+    expect(await page.locator('.General #GeneralCategory .ReactSelect__single-value').innerText()).toEqual('Complex');
     await expect(page.locator('.ExtentManualInput input').nth(0)).toHaveValue('40.9943');
     await expect(page.locator('.ExtentManualInput input').nth(1)).toHaveValue('11.9884');
     await expect(page.locator('.ExtentManualInput input').nth(2)).toHaveValue('51.4151');
