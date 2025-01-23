@@ -21,7 +21,7 @@ import ColorPaletteStyleConfig, {QUANTITATIVE_TYPE} from "../../../Style/Form/Dy
 import {dictDeepCopy} from "../../../../../utils/main";
 import {dynamicClassificationChoices} from "../../../Style/Form/DynamicStyleConfig";
 import ColorSelector from "../../../../../components/Input/ColorSelector";
-import ColorPickerInput, {rgbaToHex} from "../../../../../components/Input/ColorSelectorWithAlpha";
+import ColorPickerWithAlpha, {rgbaToHex} from "../../../../../components/Input/ColorSelectorWithAlpha";
 
 
 const constructStyle = (styles) => {
@@ -45,7 +45,10 @@ const constructStyle = (styles) => {
       newStyles.additional_nodata = null;
     }
     if (newStyles.nodata_color === undefined) {
-      newStyles.nodata_color = '#00000000';
+      newStyles.nodata_color = '#000000';
+    }
+    if (newStyles.nodata_opacity === undefined) {
+      newStyles.nodata_opacity = 0;
     }
 
     return newStyles
@@ -63,6 +66,7 @@ export default function RasterCogLayer(
   const newData = dictDeepCopy(data);
   const styles = constructStyle(newData.styles);
   const [noDataColor, setNoDataColor] = useState(styles.nodata_color);
+  console.log(`noDataColor: ${noDataColor}`)
 
   useEffect(() => {
     console.log(noDataColor)
@@ -171,18 +175,18 @@ export default function RasterCogLayer(
         <Grid item md={4} xl={4} lg={4}>
           <div>
             <div>NoData Color</div>
-            {/*<ColorSelector*/}
-            {/*  color={noDataColor}*/}
-            {/*  onChange={evt => {*/}
-            {/*    setNoDataColor(evt.target.value)*/}
-            {/*  }}*/}
-            {/*  hideInput={true}*/}
-            {/*  fullWidth={true}*/}
-            {/*/>*/}
-            <ColorPickerInput
+            <ColorPickerWithAlpha
               color={noDataColor}
+              opacity={styles.nodata_opacity}
               setColor={val => {
                 setNoDataColor(rgbaToHex(val))
+                setData({
+                  ...data,
+                  styles: {
+                    ...styles,
+                    nodata_opacity: parseFloat(val.a * 100)
+                  }
+                })
               }}
             />
           </div>

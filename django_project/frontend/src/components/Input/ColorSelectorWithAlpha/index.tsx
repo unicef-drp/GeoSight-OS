@@ -1,12 +1,19 @@
 import React, { useState } from "react";
 import { SketchPicker, ColorResult, SketchPickerProps } from "react-color";
+import {hexToRgba} from "../../../pages/Dashboard/MapLibre/utils";
 // import {rgbaToHex} from "../../../pages/Dashboard/MapLibre/utils"
 
 interface ColorPickerInputProps {
   color: string;
+  opacity: number
   setColor: (val: any) => void;
 
 }
+
+const toHex = (value: number) => {
+  const hex = Math.round(value).toString(16);
+  return hex.padStart(2, "0");
+};
 
 /**
  * Convert RGBA to hex
@@ -14,25 +21,23 @@ interface ColorPickerInputProps {
  * @returns hex color with alpha
  */
 export const rgbaToHex = (rgba: { r: number; g: number; b: number; a: number }) => {
-  const toHex = (value: number) => {
-    const hex = Math.round(value).toString(16);
-    return hex.padStart(2, "0");
-  };
-
   const alpha = Math.round(rgba.a * 255); // Convert alpha to a value between 0-255
 
   // Combine RGBA components into a single HEX string
   return `#${toHex(rgba.r)}${toHex(rgba.g)}${toHex(rgba.b)}${toHex(alpha)}`;
 }
 
-export default function ColorPickerInput({color, setColor}: ColorPickerInputProps){
-  // const [color, setColor] = useState({ r: 0, g: 0, b: 0, a: 1 }); // Default RGBA color
+export default function ColorPickerWithAlpha({color, opacity, setColor}: ColorPickerInputProps){
+  if (color.length == 7) {
+    const alphaHex = toHex(Math.round((opacity / 100) * 255))
+    color = color + alphaHex
+  }
   const [showPicker, setShowPicker] = useState(false);
-  console.log(`color: ${color}`)
-
+   // Default RGBA color
+  const [currentColor, setCurrentColor] = useState(color);
   const handleColorChange = (colorResult: ColorResult) => {
     // @ts-ignore
-    setColor(colorResult.rgb);
+    setCurrentColor(rgbaToHex(colorResult.rgb))
   };
 
   const togglePicker = () => {
@@ -41,19 +46,20 @@ export default function ColorPickerInput({color, setColor}: ColorPickerInputProp
 
   const handleOk = () => {
     setShowPicker(false);
+    setColor(hexToRgba(currentColor, 1, 'object'));
   };
 
   return (
-    <div style={{ position: "relative" }}>
+    <div style={{ position: "relative", border: "1px solid rgba(0, 0, 0, 0.23)" }}>
       <input
         type="text"
-        value={color}
+        value={currentColor}
         readOnly
         onClick={togglePicker}
         style={{
-          backgroundColor: color,
+          backgroundColor: currentColor,
           cursor: "pointer",
-          border: "1px solid #ccc",
+          border: "1px solid rgba(0, 0, 0, 0.23)",
           padding: "5px",
           color: "#00000000",
         }}
@@ -61,7 +67,9 @@ export default function ColorPickerInput({color, setColor}: ColorPickerInputProp
       {showPicker && (
         <div style={{ position: "absolute", zIndex: 2, right: "0px" }}>
           {React.createElement(SketchPicker as unknown as React.ComponentType<SketchPickerProps>, {
-            color,
+            // @ts-ignore
+            // color: currentColor,
+            color: hexToRgba(currentColor, opacity / 100, 'object'),
             onChange: handleColorChange,
           })}
           <button

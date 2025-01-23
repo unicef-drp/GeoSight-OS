@@ -35,11 +35,6 @@ import { DjangoRequests } from "../../../../../src/Requests";
 import {hexToRgba} from '../utils';
 
 
-async function generateCacheKey(url, body) {
-  return `${url}:${JSON.stringify(body)}`;
-}
-
-
 /***
  * Render Raster Cog
  */
@@ -56,8 +51,13 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
         dynamic_classification,
         additional_nodata,
         nodata_color,
+        nodata_opacity,
       } = data?.styles;
       const additional_ndt_val = additional_nodata ? parseFloat(additional_nodata) : additional_nodata;
+      const ndt_opacity = nodata_opacity ? parseFloat(nodata_opacity) : nodata_opacity;
+      console.log(`ndt_opacity: ${ndt_opacity}`)
+      console.log(`additional_ndt_val: ${additional_ndt_val}`)
+      console.log(`nodata_Color: ${nodata_color}`)
       const colors = createColorsFromPaletteId(color_palette, dynamic_class_num, color_palette_reverse);
       let init = isInit;
 
@@ -95,12 +95,13 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
       const url = `cog://${data.url}#` + contextLayerData.id;
 
       removeSource(map, id)
-      console.log(classifications)
 
       const getColor = (value) => {
         for (const classification of classifications) {
           if (value >= classification.bottom && value < classification.top) {
-            return hexToRgba(classification.color);
+            const rgbaColor = hexToRgba(classification.color, 1)
+            rgbaColor[3] = parseInt((rgbaColor[3] * 255))
+            return rgbaColor;
           }
         }
         return null;
@@ -119,7 +120,9 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
           });
         }
         if (value === noData || value === Infinity || isNaN(value) || value === additional_ndt_val) {
-          rgba.set(hexToRgba(nodata_color));
+          let rgbaColor = hexToRgba(nodata_color, (ndt_opacity/100))
+          rgbaColor[3] = parseInt((rgbaColor[3] * 255))
+          rgba.set(rgbaColor);
         } else if (value < min_band || value > max_band) {
           rgba.set([0, 0, 0, 0]); // noData, fillValue or NaN => transparent
         } else {
