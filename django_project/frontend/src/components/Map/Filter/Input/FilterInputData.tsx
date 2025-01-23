@@ -26,7 +26,6 @@ import {
   WhereInputValue
 } from "../../../SqlQueryGenerator/WhereQueryGenerator/WhereInput";
 import alasql from "alasql";
-import { dictDeepCopy } from "../../../../utils/main";
 
 export interface FetchSourceDetail {
   id: string;
@@ -253,9 +252,24 @@ export const FilterInputData = memo(
       }
     }
 
+    const updateFilter = () => {
+      // Run the calculation
+      if (active) {
+        console.log(field)
+        const queryWhere = returnDataToExpression(`data.${keyField}`, operator, value)
+        const query = `SELECT ARRAY(concept_uuid) AS concept_uuids
+                       FROM ? data
+                       WHERE ${queryWhere}
+                       ORDER BY concept_uuid`
+        const _result = alasql(query, [data])
+        setResult(_result[0].concept_uuids)
+      }
+    }
+
     // When field, operator, value changed, make geometries null
     useEffect(() => {
         setResult(null)
+        updateFilter()
       },
       [data, field, operator, value]
     );
@@ -265,15 +279,7 @@ export const FilterInputData = memo(
         if (onFiltered) {
           if (active && result === null) {
             if (data) {
-              // Run the calculation
-              setResult(result)
-              const queryWhere = returnDataToExpression(`data.${keyField}`, operator, value)
-              const query = `SELECT ARRAY(concept_uuid) AS concept_uuids
-                             FROM ? data
-                             WHERE ${queryWhere}
-                             ORDER BY concept_uuid`
-              const _result = alasql(query, [data])
-              setResult(_result[0].concept_uuids)
+              updateFilter()
             }
           } else if (result) {
             onFiltered(result)
