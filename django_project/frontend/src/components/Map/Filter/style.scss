@@ -397,7 +397,7 @@
     border: 1px solid $primary-color;
 
     & > .MuiInputBase-root {
-      width: 100%;
+      width: 100% !important;
     }
 
     .SelectWithSearchInput,

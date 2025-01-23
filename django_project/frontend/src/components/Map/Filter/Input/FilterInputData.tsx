@@ -262,7 +262,7 @@ export const FilterInputData = memo(
                        WHERE ${queryWhere}
                        ORDER BY concept_uuid`
         const _result = alasql(query, [data])
-        setResult(_result[0].concept_uuids)
+        setResult(_result[0].concept_uuids ? _result[0].concept_uuids : [])
       }
     }
 
