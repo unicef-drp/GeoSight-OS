@@ -66,9 +66,14 @@ test.describe('Create project', () => {
     }).click();
     await page.locator('.AdminSelectDataForm .Save-Button button').click();
 
+
+    // --------------------------------
     // Add filters
+    // --------------------------------
     await new Promise(r => setTimeout(r, 2000));
     await page.locator('.TabPrimary').getByText('Filters').click();
+
+    // Filter 1
     await page.locator('.Filters').getByTestId('AddCircleIcon').click();
     await page.getByPlaceholder('Filter name').click();
     await page.getByText('Pick the field').click();
@@ -78,7 +83,10 @@ test.describe('Create project', () => {
     await page.getByRole('spinbutton').first().fill('70');
     await page.getByPlaceholder('Filter name').fill('Indicator A more than 10');
     await page.getByPlaceholder('Filter description').fill('Description 1');
+    await page.locator('.modal--content').getByRole('checkbox').check();
     await page.getByRole('button', { name: 'Create filter' }).click();
+
+    // Filter 1
     await page.locator('.Filters').getByTestId('AddCircleIcon').click();
     await page.getByText('Pick the field').click();
     await page.getByRole('option', { name: 'ucode' }).nth(1).click();
@@ -87,6 +95,7 @@ test.describe('Create project', () => {
     await page.getByPlaceholder('Put the value').fill('SOM_0002');
     await page.getByPlaceholder('Filter name').fill('Show SOM_0002');
     await page.getByPlaceholder('Filter description').fill('Description 2');
+    await page.locator('.modal--content').getByRole('checkbox').check();
     await page.getByRole('button', { name: 'Create filter' }).click();
 
     // --------------------------------------------
@@ -117,7 +126,7 @@ test.describe('Create project', () => {
 
     // By changing data Indicator A more than 10
     await page.getByRole('button', { name: 'Indicator A more than 10' }).click();
-    await page.getByRole('button', { name: 'Show SOM_0002 Delete Group' }).click();
+    await page.getByRole('button', { name: 'Show SOM_0002' }).click();
     await page.getByRole('button', { name: 'Indicator A more than 10' }).getByRole('checkbox').check();
     await page.getByRole('button', { name: 'Show SOM_0002' }).getByRole('checkbox').uncheck();
     await page.locator('.FilterInputWrapper').first().getByRole('spinbutton').first().fill('30');
