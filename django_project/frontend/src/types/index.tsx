@@ -14,9 +14,9 @@
  */
 
 
-export * from "./DatasetView";
-export * from "./Group";
-export * from "./Indicator";
-export * from "./Permission";
-export * from "./Project";
-export * from "./User";
+export { DatasetView } from "./DatasetView";
+export { Group } from "./Group";
+export { Indicator } from "./Indicator";
+export { Permission } from "./Permission";
+export { Project, ReferenceLayer, Extent, DefaultTimeMode } from "./Project";
+export { User } from "./User";
