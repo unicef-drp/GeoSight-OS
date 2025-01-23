@@ -26,7 +26,7 @@ import {
   SelectWithSearch
 } from "../../components/Input/SelectWithSearch";
 import { SortAscIcon, SortDescIcon } from "../../components/Icons";
-import { GeoSightProject } from '../../types';
+import { Project } from '../../types';
 
 import './style.scss';
 import { debounce } from "@mui/material/utils";
@@ -39,7 +39,7 @@ interface ProjectListProps {
 }
 
 interface ProjectGridProps {
-  projects: GeoSightProject[];
+  projects: Project[];
   isLoading: boolean
 }
 
@@ -55,7 +55,7 @@ function ProjectGrid({ projects, isLoading }: ProjectGridProps) {
     }
     <Grid container spacing={2} className='project-grid-container'>
       {
-        projects.map((project: GeoSightProject, idx: number) => (
+        projects.map((project: Project, idx: number) => (
           <Grid key={idx} item xs={3}>
             <div className='ProjectGrid'>
               <a href={'/project/' + project.slug}>
@@ -145,7 +145,7 @@ export default function ProjectList(
   const [selectedSortByAsc, setSelectedSortByAsc] = useState<boolean>(true);
   const [totalPage, setTotalPage] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [projects, setProjects] = useState<GeoSightProject[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>()
 
   /** searchProject changed, debouce **/
