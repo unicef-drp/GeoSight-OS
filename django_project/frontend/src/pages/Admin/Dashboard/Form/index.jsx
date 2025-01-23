@@ -20,7 +20,6 @@ import ViewHeadlineIcon from '@mui/icons-material/ViewHeadline';
 import ReplayIcon from '@mui/icons-material/Replay';
 import UndoIcon from "@mui/icons-material/Undo";
 import RedoIcon from "@mui/icons-material/Redo";
-import CircularProgress from '@mui/material/CircularProgress';
 
 import App, { render } from '../../../../app';
 import { pageNames } from '../../index';
@@ -38,15 +37,6 @@ import {
 } from "../../../../components/Notification";
 
 // Dashboard Form
-import GeneralForm from './General'
-import IndicatorsForm from './Indicators'
-import IndicatorLayersForm from './IndicatorLayers'
-import ContextLayerForm from './ContextLayer'
-import BasemapsForm from './Basemaps'
-import WidgetForm from './Widgets'
-import RelatedTableForm from './RelatedTable'
-import FiltersForm from './Filters'
-import ShareForm from './Share'
 import GeorepoAuthorizationModal
   from "../../../../components/GeorepoAuthorizationModal";
 import { resourceActions } from "../List";
@@ -63,7 +53,9 @@ import Modal, {
   ModalFooter,
   ModalHeader
 } from "../../../../components/Modal";
-import ToolsForm from "./Tools";
+import DashboardFormContent from "./DashboardContent";
+import { PAGES } from "./types.d";
+import DashboardFormHeader from "./DashboardFormHeader";
 
 
 /**
@@ -490,124 +482,6 @@ export function DashboardSaveForm(
 }
 
 /**
- * Dashboard Form Section Content
- */
-export function DashboardFormContent({ changed }) {
-  const { data } = useSelector(state => state.dashboard);
-  return (
-    <div className='DashboardFormContent'>
-      {Object.keys(data).length > 0 ?
-        <>
-          <GeneralForm/>
-          <BasemapsForm/>
-          <IndicatorsForm/>
-          <IndicatorLayersForm/>
-          <ContextLayerForm/>
-          <FiltersForm/>
-          <WidgetForm/>
-          <RelatedTableForm/>
-          <ToolsForm/>
-          {
-            data?.user_permission.share ? <ShareForm/> : ""
-          }
-        </> :
-        <div className='DashboardFormLoading'>
-          <div className='DashboardFormLoadingSection'>
-            <CircularProgress/>
-            <div>
-              Fetching project data...
-            </div>
-          </div>
-        </div>
-      }
-    </div>
-  )
-}
-
-/**
- * Dashboard Form Section Content
- */
-export function DashboardFormHeader(
-  { currentPage, changePage, user_permission }) {
-  const {
-    indicators,
-    indicatorLayers,
-    basemapsLayers,
-    contextLayers,
-    relatedTables,
-    widgets
-  } = useSelector(state => state.dashboard.data);
-  return <div className='DashboardFormHeader TabPrimary'>
-    <div
-      className={currentPage === 'General' ? 'Selected' : 'MuiButtonLike'}
-      onClick={() => changePage('General')}
-    >
-      General
-    </div>
-    <div
-      className={currentPage === 'Indicators' ? 'Selected' : 'MuiButtonLike'}
-      onClick={() => changePage('Indicators')}
-    >
-      Indicators {indicators?.length ? `(${indicators?.length})` : null}
-    </div>
-    <div
-      className={currentPage === 'Indicator Layers' ? 'Selected' : 'MuiButtonLike'}
-      onClick={() => changePage('Indicator Layers')}
-    >
-      Indicator
-      Layers {indicatorLayers?.length ? `(${indicatorLayers?.length})` : null}
-    </div>
-    <div
-      className={currentPage === 'Context Layers' ? 'Selected' : 'MuiButtonLike'}
-      onClick={() => changePage('Context Layers')}
-    >
-      Context
-      Layers {contextLayers?.length ? `(${contextLayers?.length})` : null}
-    </div>
-    <div
-      className={currentPage === 'Basemaps' ? 'Selected' : 'MuiButtonLike'}
-      onClick={() => changePage('Basemaps')}
-    >
-      Basemaps {basemapsLayers?.length ? `(${basemapsLayers?.length})` : null}
-    </div>
-    <div
-      className={currentPage === 'Filters' ? 'Selected' : 'MuiButtonLike'}
-      onClick={() => changePage('Filters')}
-    >
-      Filters
-    </div>
-    <div
-      className={currentPage === 'Widgets' ? 'Selected' : 'MuiButtonLike'}
-      onClick={() => changePage('Widgets')}
-    >
-      Widgets {widgets?.length ? `(${widgets?.length})` : null}
-    </div>
-    <div
-      className={currentPage === 'RelatedTables' ? 'Selected' : 'MuiButtonLike'}
-      onClick={() => changePage('RelatedTables')}
-    >
-      Related
-      Tables {relatedTables?.length ? `(${relatedTables?.length})` : null}
-    </div>
-    <div
-      className={currentPage === 'Tools' ? 'Selected' : 'MuiButtonLike'}
-      onClick={() => changePage('Tools')}
-    >
-      Tools
-    </div>
-    {
-      user_permission?.share ?
-        <div
-          className={currentPage === 'Share' ? 'Selected' : 'MuiButtonLike'}
-          onClick={() => changePage('Share')}
-        >
-          Share
-        </div> : ""
-    }
-  </div>
-}
-
-/**
  * Dashboard Form Section
  */
 export function DashboardForm({ onPreview }) {
@@ -616,7 +490,7 @@ export function DashboardForm({ onPreview }) {
     id,
     name
   } = useSelector(state => state.dashboard.data);
-  const [currentPage, setCurrentPage] = useState('General');
+  const [currentPage, setCurrentPage] = useState(PAGES.GENERAL);
   const [currentHistoryIdx, setCurrentHistoryIdx] = useState(-1);
   const [changed, setChanged] = useState(false);
   const className = currentPage.replaceAll(' ', '')
@@ -667,11 +541,12 @@ export function DashboardForm({ onPreview }) {
           <div className={'AdminForm DashboardForm ' + className}>
             {/* FORM CONTENT */}
             <DashboardFormHeader
-              currentPage={currentPage} changePage={setCurrentPage}
-              user_permission={user_permission}/>
+              page={currentPage}
+              setPage={setCurrentPage}
+            />
 
             {/* FORM CONTENT */}
-            <DashboardFormContent changed={setChanged}/>
+            <DashboardFormContent page={currentPage}/>
           </div>
         </div>
       </div>

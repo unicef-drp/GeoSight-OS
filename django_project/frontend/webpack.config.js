@@ -102,9 +102,9 @@ let conf = {
         ],
       },
       {
-          test: /\.tsx?$/,
-          exclude: /node_modules/,
-          use: 'ts-loader',
+        test: /\.tsx?$/,
+        exclude: /node_modules/,
+        use: 'ts-loader',
       },
       {
         test: /\.jsx?$/,
@@ -133,14 +133,6 @@ let conf = {
       },
     ],
   },
-  optimization: {
-    minimize: minimized,
-    splitChunks: {
-      chunks: 'all',
-      maxInitialRequests: 5,
-      minSize: 20000,
-    },
-  },
   plugins: [
     new BundleTracker({ filename: statsFilename }),
     new MiniCssExtractPlugin({
@@ -151,9 +143,6 @@ let conf = {
   resolve: {
     modules: ['node_modules'],
     extensions: ['.js', '.jsx', '.tsx']
-  },
-  cache: {
-    type: 'filesystem',
   },
 };
 
@@ -174,5 +163,18 @@ if (isDev) {
   conf['plugins'].push(
     isDev && new ReactRefreshWebpackPlugin({ overlay: false })
   )
+} else {
+  conf['optimization'] = {
+    minimize: minimized,
+    splitChunks: {
+      chunks: 'all',
+      maxInitialRequests: 5,
+      minSize: 20000,
+    },
+  }
+  conf['cache'] = {
+    type: 'filesystem',
+  }
 }
+console.log(conf)
 module.exports = conf;
