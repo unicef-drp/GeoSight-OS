@@ -143,6 +143,7 @@ test.describe('Create project', () => {
     await page.waitForTimeout(500);
     await expect(lastLog).toEqual(["6bddaec7-83a1-4da5-9d37-8a32bc925e64", "7977bca3-3645-4072-bfe9-ad342c2674e8", "998e50ae-d1c4-48fa-8357-4dcbe3574517", "9e6b0956-fd2d-403b-8752-b13993cb1cdb", "a2006979-4f25-448c-891b-3935c4bcf6f0", "b1d27efa-bfc2-4a93-99da-cac93faba80b"])
     await page.locator('.FilterInputWrapper').nth(1).locator('input').first().fill('SOM_002');
+    await page.waitForTimeout(500);
     await expect(lastLog).toEqual([])
 
     // Check values
