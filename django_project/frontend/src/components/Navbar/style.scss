@@ -43,6 +43,9 @@ header {
     &.Nav-Staging {
       background-color: #FF0000;
     }
+    &.Nav-Production {
+      background-color: var(--primary-color);
+    }
 
     a {
       display: block;
