@@ -529,7 +529,8 @@ export function DashboardForm({ onPreview }) {
             </ThemeButton>
             <DashboardSaveForm
               currentPage={currentPage}
-              disabled={currentHistoryIdx <= 0 && !changed}
+              // disabled={currentHistoryIdx <= 0 && !changed}
+              disabled={false}
               setCurrentHistoryIdx={setCurrentHistoryIdx}
               setChanged={setChanged}
             />

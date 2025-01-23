@@ -42,19 +42,19 @@ export const DashboardFormContent = memo(
         {
           user_permission !== undefined ?
             <>
+              <GeneralForm/>
               {
-                page == PAGES.GENERAL ? <GeneralForm/> :
-                  page == PAGES.BASEMAPS ? <BasemapsForm/> :
-                    page == PAGES.INDICATORS ? <IndicatorsForm/> :
-                      page == PAGES.INDICATOR_LAYERS ? <IndicatorLayersForm/> :
-                        page == PAGES.CONTEXT_LAYERS ? <ContextLayerForm/> :
-                          page == PAGES.FILTERS ? <FiltersForm/> :
-                            page == PAGES.WIDGETS ? <WidgetForm/> :
-                              page == PAGES.RELATED_TABLES ?
-                                <RelatedTableForm/> :
-                                page == PAGES.TOOLS ? <ToolsForm/> :
-                                  page == PAGES.SHARE && user_permission.share ?
-                                    <ShareForm/> : null
+                page == PAGES.BASEMAPS ? <BasemapsForm/> :
+                  page == PAGES.INDICATORS ? <IndicatorsForm/> :
+                    page == PAGES.INDICATOR_LAYERS ? <IndicatorLayersForm/> :
+                      page == PAGES.CONTEXT_LAYERS ? <ContextLayerForm/> :
+                        page == PAGES.FILTERS ? <FiltersForm/> :
+                          page == PAGES.WIDGETS ? <WidgetForm/> :
+                            page == PAGES.RELATED_TABLES ?
+                              <RelatedTableForm/> :
+                              page == PAGES.TOOLS ? <ToolsForm/> :
+                                page == PAGES.SHARE && user_permission.share ?
+                                  <ShareForm/> : null
 
               }
             </> :
