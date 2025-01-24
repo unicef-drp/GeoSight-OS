@@ -15,24 +15,20 @@
 
 
 import $ from "jquery";
-import {useEffect, useState} from 'react';
 import {
   addClickEvent,
   addStandalonePopup,
   getBeforeLayerId,
   getLayerIdOfReferenceLayer,
+  hexToRgba,
   removeLayer,
   removeSource
 } from "../utils";
-import {
-  createColorsFromPaletteId,
-  rasterValueClassification
-} from "../../../../utils/Style";
+import { createColorsFromPaletteId } from "../../../../utils/Style";
 import { sleep } from "../../../../utils/main";
 import { getCogFeatureByPoint } from "../../../../utils/COGLayer";
-import {setColorFunction} from '@geomatico/maplibre-cog-protocol';
-import { DjangoRequests } from "../../../../../src/Requests";
-import {hexToRgba} from '../utils';
+import { setColorFunction } from '@geomatico/maplibre-cog-protocol';
+import { DjangoRequests } from "../../../../Requests";
 
 
 /***
@@ -41,7 +37,6 @@ import {hexToRgba} from '../utils';
 export default function rasterCogLayer(map, id, data, setData, contextLayerData, popupFeatureFn, contextLayerOrder, isInit, setIsInit) {
   (
     async () => {
-      // Create source
       const {
         min_band,
         max_band,
@@ -57,7 +52,6 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
       const ndt_opacity = nodata_opacity ? parseFloat(nodata_opacity) : nodata_opacity;
       const colors = createColorsFromPaletteId(color_palette, dynamic_class_num, color_palette_reverse);
       let init = isInit;
-
       if (!colors.length) {
         return
       }
@@ -72,17 +66,17 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
       let classifications = [];
 
       await DjangoRequests.post(
-    `/api/raster/classification`,
+        `/api/raster/classification`,
         requestBody
       ).then(response => {
         response.data.forEach((threshold, idx) => {
-            if (idx < response.data.length - 1) {
-                classifications.push({
-                    bottom: threshold,
-                    top: response.data[idx + 1],
-                    color: colors[idx]
-                });
-            }
+          if (idx < response.data.length - 1) {
+            classifications.push({
+              bottom: threshold,
+              top: response.data[idx + 1],
+              color: colors[idx]
+            });
+          }
         });
       }).catch(error => {
         throw Error(error.toString())
@@ -104,20 +98,24 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
         return null;
       };
 
-      setColorFunction(data.url, ([value], rgba, {noData}) => {
+      setColorFunction(data.url, ([value], rgba, { noData }) => {
         if (init && colors.length > 0) {
           init = false
-          setIsInit(false)
-          setData({
-            ...data,
-            styles: {
-              ...data.styles,
-              nodata: noData.toString()
-            }
-          });
+          if (setIsInit) {
+            setIsInit(false)
+          }
+          if (setData) {
+            setData({
+              ...data,
+              styles: {
+                ...data.styles,
+                nodata: noData.toString()
+              }
+            });
+          }
         }
         if (value === noData || value === Infinity || isNaN(value) || value === additional_ndt_val) {
-          let rgbaColor = hexToRgba(nodata_color, (ndt_opacity/100))
+          let rgbaColor = hexToRgba(nodata_color, (ndt_opacity / 100))
           rgbaColor[3] = parseInt((rgbaColor[3] * 255))
           rgba.set(rgbaColor);
         } else if (value < min_band || value > max_band) {
@@ -141,7 +139,6 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
           before = beforeOrder
         }
       }
-
       removeLayer(map, id)
       map.addLayer(
         {

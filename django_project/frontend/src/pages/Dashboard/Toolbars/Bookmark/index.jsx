@@ -200,7 +200,6 @@ export default function Bookmark({ map }) {
    * Save function based on url
    */
   const save = (url) => {
-    console.log(data())
     $.ajax({
       url: url,
       data: {

@@ -128,6 +128,13 @@ export default function ListForm(
     const oldDataStructure = JSON.stringify(dataStructure)
     if (!dataStructure.children?.length && data.length) {
       dataStructure.children = data.map(row => row.id)
+    } else if (dataStructure.children?.length) {
+      dataStructure.children = Array.from(new Set(
+          dataStructure.children.concat(
+            data.filter(row => row.group == null).map(row => row.id)
+          )
+        )
+      )
     }
     updateUuid(dataStructure)
     if (oldDataStructure !== JSON.stringify(dataStructure)) {

@@ -101,32 +101,10 @@ class ContextLayerSerializer(ResourceSerializer):
 
     class Meta:  # noqa: D106
         model = ContextLayer
-        exclude = ('group',)
-
-
-class ContextLayerBasicSerializer(ResourceSerializer):
-    """Serializer for ContextLayer."""
-
-    category = serializers.SerializerMethodField()
-    permission = serializers.SerializerMethodField()
-
-    def get_category(self, obj: ContextLayer):
-        """Return category name."""
-        return obj.group.name if obj.group else ''
-
-    def get_permission(self, obj: ContextLayer):
-        """Return permission."""
-        return obj.permission.all_permission(
-            self.context.get('user', None)
-        )
-
-    class Meta:  # noqa: D106
-        model = ContextLayer
         exclude = (
-            'password', 'username', 'styles', 'label_styles',
+            'password', 'username',
             'cloud_native_gis_layer_id', 'arcgis_config',
-            'related_table', 'token', 'url_legend', 'configuration',
-            'group'
+            'related_table', 'token', 'url_legend', 'group'
         )
 
 
