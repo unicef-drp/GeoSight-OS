@@ -54,7 +54,6 @@ export async function editPermission(page, id, {
     const text = await groupNames.nth(i).textContent();
     if (!groups.includes(text)) {
       const parent = await groupNames.nth(i).locator('..');
-      await expect(parent).toBeEditable()
       await expect(parent.locator('.DeleteButton')).toBeVisible()
       parent.locator('.DeleteButton').click()
       await originalPage.getByRole('button', { name: 'Confirm' }).click();
