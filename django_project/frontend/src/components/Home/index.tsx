@@ -198,8 +198,7 @@ export default function ProjectList(
     const categories = selectedCategories === allcategories && selectedCategories.length === 0 ? [] : selectedCategories;
     const newUrl = generateUrl(baseUrl, searchProject, categories, selectedSortBy, selectedSortByAsc, allcategories, currentPage);
     fetchProjects(newUrl, true, 0);
-  }, [searchProject, searchProject, selectedCategories, selectedSortBy, selectedSortByAsc, currentPage])
-
+  }, [searchProject, selectedCategories, selectedSortBy, selectedSortByAsc, currentPage])
 
   // Fetch data
   useEffect(() => {
@@ -226,6 +225,7 @@ export default function ProjectList(
             className='SearchInput'
             placeholder='Search projects' value={typedProject}
             onChange={(value: string) => {
+              setCurrentPage(1)
               setTypedProject(value)
             }}
           />
