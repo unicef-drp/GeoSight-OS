@@ -30,8 +30,13 @@ test.describe('View project', () => {
     const layer2 = 'Dynamic Layer based on a list of interventions'
     await expect(page.getByLabel(layer1)).toBeVisible();
     await expect(page.locator('.MapLegendSectionTitle')).toContainText(layer1);
+    await expect(page.locator('.MapLegend')).toBeVisible();
     await expect(page.getByLabel(layer1)).toBeChecked();
     await expect(page.getByLabel(layer2)).not.toBeChecked();
+    await page.locator('#simple-tab-1 svg').click();
+    await expect(page.locator('.MapLegendSection')).toHaveCount(0);
+    await page.locator('#simple-tab-1 svg').click();
+    await expect(page.locator('.MapLegendSection')).toHaveCount(1);
 
     // Check widgets
     await expect(page.locator('.widget__sw__content')).toContainText('895');
