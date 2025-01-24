@@ -24,10 +24,10 @@
       let editMode = {% if edit_mode %} true {% else %} false {% endif %};
       if (editMode) {
         urls.api = {
-          'basemapListAPI': '{% url 'basemap-list-api' %}',
-          'indicatorListAPI': '{% url 'indicator-list-api' %}',
-          'contextLayerListAPI': '{% url 'context-layer-list-api' %}',
-          'relatedTableListAPI': '{% url 'related-table-list-api' %}',
+          'basemapListAPI': '{% url 'basemap-list-api' %}?field=__all__',
+          'indicatorListAPI': '{% url 'indicator-list-api' %}?field=__all__',
+          'contextLayerListAPI': '{% url 'context-layer-list-api' %}?field=__all__',
+          'relatedTableListAPI': '{% url 'related-table-list-api' %}?field=__all__',
         }
       } else {
         urls.dashboardEditUrl = '{% url 'admin-dashboard-edit-view' slug=dashboard.id %}'
