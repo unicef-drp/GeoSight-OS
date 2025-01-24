@@ -16,15 +16,15 @@
 import React, {useState} from 'react';
 import { GridActionsCellItem } from "@mui/x-data-grid";
 
-import { render } from '../../../../app';
-import { store } from '../../../../store/admin';
-import { pageNames } from '../../index';
-import { COLUMNS, COLUMNS_ACTION } from "../../Components/List";
-import PermissionModal from "../../Permission";
+import { render } from '../../../app';
+import { store } from '../../../store/admin';
+import { pageNames } from '../index';
+import { COLUMNS, COLUMNS_ACTION } from "../Components/List";
+import PermissionModal from "../Permission";
 
-import './style.scss';
-import AdminList from "../../../../components/AdminList";
-import {ResourceMeta} from "../../../../components/AdminList";
+// import './style.scss';
+import AdminList from "../../../components/AdminList";
+import {ResourceMeta} from "../../../components/AdminList";
 
 export function resourceActions(params) {
   return COLUMNS_ACTION(params, urls.admin.basemapList)
@@ -33,9 +33,9 @@ export function resourceActions(params) {
 /**
  * Indicator List App
  */
-export default function BasemapList() {
-  const pageName = pageNames.Basemaps;
-  let columns = COLUMNS(pageName, urls.admin.basemapList);
+export default function DataBrowserAdmin() {
+  const pageName = pageNames.Dataset;
+  let columns = COLUMNS(pageName, urls.admin.datasetList);
   columns.pop();
   columns = columns.concat(ResourceMeta)
   columns.push({
@@ -66,7 +66,6 @@ export default function BasemapList() {
       return actions
     },
   })
-  console.log(urls)
   return <AdminList
     url={{
       list: urls.api.list,
@@ -88,4 +87,4 @@ export default function BasemapList() {
   />
 }
 
-render(BasemapList, store)
+render(DataBrowserAdmin, store)

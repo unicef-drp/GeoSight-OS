@@ -63,6 +63,9 @@ export const AdminListContent = forwardRef(
      searchKey = 'name__icontains',
      enableFilter = false,
 
+      // Other Filters
+      otherFilters = null,
+
      // Table props
      multipleDelete,
 

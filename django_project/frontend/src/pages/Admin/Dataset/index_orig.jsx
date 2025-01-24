@@ -13,32 +13,42 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import $ from "jquery";
-import {FormControlLabel, FormGroup} from "@mui/material";
-import Switch from "@mui/material/Switch";
-import {GridActionsCellItem} from "@mui/x-data-grid";
+import { GridActionsCellItem } from "@mui/x-data-grid";
 import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
-
-import {render} from '../../../app';
-import {store} from '../../../store/admin';
-import {splitParams, urlParams} from "../../../utils/main";
-import {NotificationStatus} from "../../../components/Notification";
-import {pageNames} from "../index";
-import {DataBrowserActiveIcon} from "../../../components/Icons";
-import {DatasetFilterSelector} from "../../../components/ResourceSelector/DatasetViewSelector";
-import {IndicatorFilterSelector} from "../../../components/ResourceSelector/IndicatorSelector";
-import {ThemeButton} from "../../../components/Elements/Button";
-import AdminList from "../../../components/AdminList";
 import Tooltip from "@mui/material/Tooltip";
-import PermissionModal from "../Permission";
+import Switch from "@mui/material/Switch";
+import { FormControlLabel, FormGroup } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
-import {MultipleSelectWithSearch} from "../../../components/Input/SelectWithSearch";
+
+import { DataBrowserActiveIcon } from "../../../components/Icons";
+import { render } from '../../../app';
+import { store } from '../../../store/admin';
+import { splitParams, urlParams } from "../../../utils/main";
+import {
+  Notification,
+  NotificationStatus
+} from "../../../components/Notification";
+import { AdminListPagination } from "../AdminListPagination";
+import { AdminPage, pageNames } from "../index";
+import PermissionModal from "../Permission";
+import { ThemeButton } from "../../../components/Elements/Button";
+import { removeElement } from "../../../utils/Array";
+import {
+  MultipleSelectWithSearch
+} from "../../../components/Input/SelectWithSearch";
+import {
+  DatasetFilterSelector
+} from "../../../components/ResourceSelector/DatasetViewSelector";
 
 
 import './style.scss';
+import {
+  IndicatorFilterSelector
+} from "../../../components/ResourceSelector/IndicatorSelector";
 
-/*** Data Browser admin */
+/*** Dataset admin */
 const deleteWarning = "WARNING! Do you want to delete the selected data? This will apply directly to database."
 
 export default function DatasetAdmin() {
@@ -52,15 +62,12 @@ export default function DatasetAdmin() {
   // Other attributes
   const defaultFilters = urlParams()
   const [filters, setFilters] = useState({
+    groupAdminLevel: defaultFilters.groupAdminLevel ? defaultFilters.groupAdminLevel === 'true' : true,
     indicators: defaultFilters.indicators ? splitParams(defaultFilters.indicators) : [],
     datasets: defaultFilters.datasets ? splitParams(defaultFilters.datasets, false) : [],
     levels: defaultFilters.levels ? splitParams(defaultFilters.levels) : [],
-    geographies: defaultFilters.geographies ? splitParams(defaultFilters.geographies) : [],
-    fromTime: defaultFilters.fromTime ? defaultFilters.fromTime : null,
-    toTime: defaultFilters.toTime ? defaultFilters.toTime : null,
     detail: true,
   })
-  const [updatedData, setUpdatedData] = useState([]);
   const [disabled, setDisabled] = useState(false)
   const [isInit, setIsInit] = useState(true)
   const [filtersSequences, setFiltersSequences] = useState([])
@@ -73,19 +80,23 @@ export default function DatasetAdmin() {
       tableRef?.current?.refresh()
     }
     setIsInit(false)
-  }, [filters])
 
-    // This is for selected for add to new project
-  let selectedViews = []
-  let selectedIndicators = []
-  const selectedModelIds = selectionModel.map(row => {
-    const ids = row.split('[')[0].split('-')
-    selectedViews.push(ids[1])
-    selectedIndicators.push(ids[0])
-    return ids
-  })
-  selectedViews = Array.from(new Set(selectedViews));
-  selectedIndicators = Array.from(new Set(selectedIndicators));
+    // Check filter sequences
+    for (const [key, value] of Object.entries(filters)) {
+      if (key !== 'groupAdminLevel') {
+        if (value.length) {
+          if (!filtersSequences.includes(key)) {
+            filtersSequences.push(key)
+            setFiltersSequences([...filtersSequences])
+          }
+        } else {
+          if (filtersSequences.includes(key)) {
+            setFiltersSequences(removeElement(filtersSequences, key))
+          }
+        }
+      }
+    }
+  }, [filters])
 
   // COLUMNS
   const COLUMNS = [
@@ -176,6 +187,11 @@ export default function DatasetAdmin() {
     } else {
       delete parameters['indicator_id__in']
     }
+    if (filters.groupAdminLevel) {
+      parameters['group_admin_level'] = true
+    } else {
+      delete parameters['group_admin_level']
+    }
     if (filters.datasets.length) {
       parameters['reference_layer_id__in'] = filters.datasets.join(',')
     } else {
@@ -186,103 +202,103 @@ export default function DatasetAdmin() {
     } else {
       delete parameters['admin_level__in']
     }
-    if (filters.geographies.length) {
-      parameters['geom_id__icontains'] = filters.geographies.join(',')
-    } else {
-      delete parameters['geom_id__icontains']
-    }
-    if (filters.fromTime) {
-      parameters['date__gte'] = filters.fromTime.format('YYYY-MM-DD');
-    } else {
-      delete parameters['date__gte']
-    }
-    if (filters.toTime) {
-      parameters['date__lte'] = filters.toTime.format('YYYY-MM-DD');
-    } else {
-      delete parameters['date__lte']
-    }
     parameters['detail'] = filters.detail
     return parameters
   }
-  console.log(COLUMNS)
-  console.log(urls)
 
-  return <AdminList
-    url={{
-      list: `${urls.api.datasetApi}?detail=true`
-    }}
-    title={contentTitle}
-    columns={COLUMNS}
-    middleContent={
-      <div className='ListAdminFilters'>
-        <FormGroup>
-          <FormControlLabel
-            control={<Switch checked={filters.groupAdminLevel}/>}
-            label="Group all admin levels"
-            onChange={(evt) => {
+  // This is for selected for add to new project
+  let selectedViews = []
+  let selectedIndicators = []
+  const selectedModelIds = selectionModel.map(row => {
+    const ids = row.split('[')[0].split('-')
+    selectedViews.push(ids[1])
+    selectedIndicators.push(ids[0])
+    return ids
+  })
+  selectedViews = Array.from(new Set(selectedViews));
+  selectedIndicators = Array.from(new Set(selectedIndicators));
+
+  return <AdminPage pageName={pageNames.Dataset}>
+    <AdminListPagination
+      ref={tableRef}
+      urlData={urls.api.datasetApi}
+      COLUMNS={COLUMNS}
+      disabled={disabled}
+      setDisabled={setDisabled}
+      selectAllUrl={urls.api.datasetApi + 'ids'}
+      otherFilters={
+        <div className='ListAdminFilters'>
+          <FormGroup>
+            <FormControlLabel
+              control={<Switch checked={filters.groupAdminLevel}/>}
+              label="Group all admin levels"
+              onChange={(evt) => {
+                setFilters({
+                  ...filters,
+                  groupAdminLevel: evt.target.checked
+                })
+              }}
+            />
+          </FormGroup>
+          <div className='Separator'/>
+          <ThemeButton
+            variant='primary'
+            disabled={selectedViews.length !== 1}
+            onClick={() => {
+              let url = `/admin/project/create?dataset_id=${selectedViews[0]}`
+              if (selectedModelIds) {
+                url += `&indicators=${selectedIndicators.join(',')}`
+              }
+              window.location.href = url;
+            }}
+            title={'Enable this by selecting data contain just 1 view.'}
+          >
+            <AddIcon/> Add to New Project
+          </ThemeButton>
+          &nbsp;&nbsp;&nbsp;
+          <IndicatorFilterSelector
+            data={filters.indicators}
+            setData={newFilter => setFilters({
+              ...filters,
+              indicators: newFilter
+            })}
+            filter={quickData.indicators}
+          />
+          <DatasetFilterSelector
+            data={filters.datasets}
+            setData={newFilter => setFilters({
+              ...filters,
+              datasets: newFilter
+            })}
+            filter={quickData.datasets}
+          />
+          <MultipleSelectWithSearch
+            placeholder={'Filter by Level(s)'}
+            options={!filtersSequences.length || !filtersSequences.indexOf('levels') ? ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'] : quickData.levels ? quickData.levels.map(level => level + '') : []}
+            value={filters.levels}
+            onChangeFn={evt => {
               setFilters({
                 ...filters,
-                groupAdminLevel: evt.target.checked
+                levels: evt
               })
             }}
+            showValues={true}
           />
-        </FormGroup>
-        <div className='Separator'/>
-        <ThemeButton
-          variant='primary'
-          disabled={selectedViews.length !== 1}
-          onClick={() => {
-            let url = `/admin/project/create?dataset_id=${selectedViews[0]}`
-            if (selectedModelIds) {
-              url += `&indicators=${selectedIndicators.join(',')}`
-            }
-            window.location.href = url;
-          }}
-          title={'Enable this by selecting data contain just 1 view.'}
-        >
-          <AddIcon/> Add to New Project
-        </ThemeButton>
-        &nbsp;&nbsp;&nbsp;
-        <IndicatorFilterSelector
-          data={filters.indicators}
-          setData={newFilter => setFilters({
-            ...filters,
-            indicators: newFilter
-          })}
-          filter={quickData.indicators}
-        />
-        <DatasetFilterSelector
-          data={filters.datasets}
-          setData={newFilter => setFilters({
-            ...filters,
-            datasets: newFilter
-          })}
-          filter={quickData.datasets}
-        />
-        <MultipleSelectWithSearch
-          placeholder={'Filter by Level(s)'}
-          options={!filtersSequences.length || !filtersSequences.indexOf('levels') ? ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'] : quickData.levels ? quickData.levels.map(level => level + '') : []}
-          value={filters.levels}
-          onChangeFn={evt => {
-            setFilters({
-              ...filters,
-              levels: evt
-            })
-          }}
-          showValues={true}
-        />
-      </div>
-    }
-    pageName={pageNames.Dataset}
-    multipleDelete={true}
-    enableFilter={false}
-    useSearch={false}
-    defaults={{
-      sort: [
-        { field: 'id', sort: 'asc' }
-      ]
-    }}
-  />
+        </div>
+      }
+      getParameters={getParameters}
+      hideSearch={true}
+      deselectWhenParameterChanged={true}
+      quickDataChanged={
+        (data) => {
+          setQuickData(data)
+        }
+      }
+      selectionModel={selectionModel}
+      setSelectionModel={setSelectionModel}
+    />
+    <Notification ref={notificationRef}/>
+  </AdminPage>
 }
 
 render(DatasetAdmin, store)
