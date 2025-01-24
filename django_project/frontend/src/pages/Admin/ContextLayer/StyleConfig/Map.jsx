@@ -106,9 +106,6 @@ export default function MapConfig({ data, setData, layerInput }) {
           }
         )()
       } else {
-        console.log('----------')
-        console.log(data)
-        console.log(layerInput)
         contextLayerRendering(id, data, layerInput, map, null, setData, isInit, setIsInit)
       }
     }
