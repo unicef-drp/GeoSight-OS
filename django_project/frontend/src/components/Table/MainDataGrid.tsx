@@ -21,6 +21,9 @@ import { MainDataGridProps } from "./types";
 const MainDataGrid = (
   { columns, rows, ...props }: MainDataGridProps
 ) => {
+  console.log(columns)
+  console.log(rows)
+  console.log(props)
   return (
     <DataGrid
       columns={columns}

@@ -182,6 +182,7 @@ const ServerTable = forwardRef(
           } else {
             setDataCount(data.data.page_size * data.data.total_page)
           }
+          console.log('set data')
           setData(data.data.results)
         }
       })
