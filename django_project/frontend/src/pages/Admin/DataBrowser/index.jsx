@@ -326,7 +326,6 @@ export default function DataBrowserAdmin() {
           <DatasetFilterSelector
             data={filters.datasets}
             setData={newFilter => {
-              console.log(newFilter)
               setFilters({
                 ...filters,
                 datasets: newFilter

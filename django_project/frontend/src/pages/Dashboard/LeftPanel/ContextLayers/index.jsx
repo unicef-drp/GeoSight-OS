@@ -100,7 +100,9 @@ function ContextLayers() {
     )
 
     for (const contextLayer of _contextLayers) {
-      if (!contextLayer.permission.read) {
+      if (!contextLayer.permission) {
+        contextLayer.error = "It seems this layer already being deleted"
+      } else if (!contextLayer.permission.read) {
         contextLayer.error = "You don't have permission to access this resource"
       } else if (!layers[contextLayer.id + '']) {
         getLayer(
