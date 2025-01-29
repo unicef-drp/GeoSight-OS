@@ -225,7 +225,7 @@ class Indicator(
         elif self.type == IndicatorType.STRING:
             if isinstance(value, str):
                 if self.codelist:
-                    codes = self.codelist.codes
+                    codes = self.codelist.codes(value_only=True)
                     if codes and value not in codes:
                         raise IndicatorValueRejectedError(
                             f'Value is not in {codes}'

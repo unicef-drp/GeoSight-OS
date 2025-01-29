@@ -15,45 +15,80 @@ __date__ = '04/12/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework import status, viewsets
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
+from rest_framework.decorators import action
 
-from geosight.data.forms.style import BaseStyleForm
-from geosight.data.models.code import Code, CodeList
-from geosight.data.serializer.code import CodeListSerializer, CodeListDetailSerializer
-from rest_framework.viewsets import mixins, GenericViewSet
-from .base import BaseApiV1
+from core.api_utils import ApiTag
+from core.api_utils import common_api_params, ApiParams
+from geosight.data.models.code import CodeList
+from geosight.data.serializer.code import CodeListSerializer, CodeSerializer
+
+
+# Custom pagination class
+class CustomPagination(PageNumberPagination):
+    page_size = 10  # Number of items per page
+    page_size_query_param = "page_size"
+    max_page_size = 100  # Maximum limit
 
 
 class CodeListViewSet(
-    BaseApiV1,
-    mixins.CreateModelMixin,
-    GenericViewSet
+    viewsets.ModelViewSet
 ):
     """Code view set."""
 
     model_class = CodeList
-    form_class = BaseStyleForm
     serializer_class = CodeListSerializer
     extra_exclude_fields = ['parameters']
+    queryset = CodeList.objects.all()
+    pagination_class = CustomPagination
+
+    @swagger_auto_schema(
+        operation_id='basemap-list',
+        tags=[ApiTag.CODE_LIST],
+        manual_parameters=[
+            *common_api_params,
+            ApiParams.NAME_CONTAINS
+        ],
+        operation_description='Return list of code list.'
+    )
+    def list(self, request, *args, **kwargs):
+        """List of basemap."""
+        return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(
         operation_id='codelist-create',
+        tags=[ApiTag.CODE_LIST],
         manual_parameters=[],
         request_body=CodeListSerializer.
-        Meta.swagger_schema_fields['post_body'],
+        Meta.post_body,
         operation_description='Create a code list.'
     )
     def create(self, request, *args, **kwargs):
         """Create a code."""
-        return super().create(request, *args, **kwargs)
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED
+            )
 
     @swagger_auto_schema(
-        operation_id='codelist-update',
+        operation_id='codelist-code-add',
+        tags=[ApiTag.CODE_LIST],
         manual_parameters=[],
-        request_body=CodeListDetailSerializer.
-        Meta.swagger_schema_fields['post_body'],
-        operation_description='Update a code list.'
+        operation_description='List dashboard groups.',
+        request_body=CodeSerializer.Meta.post_body
     )
-    def update(self, request, id, *args, **kwargs):
-        """Update detailed of basemap."""
-        return super().update(request, id=id, *args, **kwargs)
-
+    @action(detail=True, methods=['post'])
+    def codes(self, request, pk):
+        """Return dashboard group list."""
+        serializer = CodeSerializer(data=request.data, context={'code_list_pk': pk})
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED
+            )

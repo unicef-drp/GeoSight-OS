@@ -45,7 +45,7 @@ router.register(
     r'context-layers', ContextLayerViewSet, basename='context-layers'
 )
 router.register(r'groups', GroupViewSet, basename='groups')
-router.register(r'codelist', CodeListViewSet, basename='codelist')
+router.register(r'code-list', CodeListViewSet, basename='code-list')
 
 router.register(
     r'related-tables', RelatedTableViewSet, basename='related_tables')
