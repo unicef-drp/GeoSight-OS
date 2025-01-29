@@ -15,6 +15,7 @@
 
 import React, {useState} from 'react';
 import { GridActionsCellItem } from "@mui/x-data-grid";
+import {useSearchParams} from "react-router-dom";
 
 import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
@@ -26,6 +27,7 @@ import './style.scss';
 import AdminList from "../../../../components/AdminList";
 import {ResourceMeta} from "../../../../components/AdminList";
 
+
 export function resourceActions(params) {
   return COLUMNS_ACTION(params, urls.admin.basemapList)
 }
@@ -34,6 +36,13 @@ export function resourceActions(params) {
  * Indicator List App
  */
 export default function BasemapList() {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  let defaultFilter = JSON.parse(window.sessionStorage.getItem(urls.api.list, "{}"))
+  if (!defaultFilter) {
+    window.sessionStorage.setItem(urls.api.list, JSON.stringify(searchParams))
+  }
+
   const pageName = pageNames.Basemaps;
   let columns = COLUMNS(pageName, urls.admin.basemapList);
   columns.pop();
@@ -82,7 +91,8 @@ export default function BasemapList() {
     defaults={{
       sort: [
         { field: 'name', sort: 'asc' }
-      ]
+      ],
+      filters: defaultFilter ? defaultFilter : {}
     }}
   />
 }

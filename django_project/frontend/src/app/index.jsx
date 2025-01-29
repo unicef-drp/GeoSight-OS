@@ -21,6 +21,7 @@ import NavBar from '../components/Navbar';
 import { EmbedConfig } from "../utils/embed";
 import { urlParams } from "../utils/main";
 import { ConfirmDialogProvider } from "../providers/ConfirmDialog";
+import { BrowserRouter } from "react-router-dom";
 
 import './app.scss';
 import './mui.scss';
@@ -71,7 +72,9 @@ export function render(App, store) {
   root.render(
     <Provider store={store}>
       <ConfirmDialogProvider>
-        <App/>
+        <BrowserRouter>
+          <App/>
+        </BrowserRouter>
       </ConfirmDialogProvider>
     </Provider>
   )

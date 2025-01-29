@@ -14,13 +14,14 @@
  */
 
 import React from 'react';
+import {useSearchParams} from "react-router-dom";
 import Tooltip from "@mui/material/Tooltip";
 import DynamicFormIcon from '@mui/icons-material/DynamicForm';
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
-import { pageNames } from '../../index';
 
+import { pageNames } from '../../index';
 import { COLUMNS, COLUMNS_ACTION } from "../../Components/List";
 import PermissionModal from "../../Permission";
 import {
@@ -30,8 +31,8 @@ import {
   MapActiveIcon
 } from "../../../../components/Icons";
 import AdminList from "../../../../components/AdminList";
-import {ResourceMeta} from "../../../../components/AdminList";
 
+import {ResourceMeta} from "../../../../components/AdminList";
 import './style.scss';
 
 
@@ -188,6 +189,12 @@ export function resourceActions(params, noShare = false) {
  * Indicator List App
  */
 export default function IndicatorList() {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  let defaultFilter = JSON.parse(window.sessionStorage.getItem(urls.api.list, {}))
+  if (!defaultFilter) {
+    window.sessionStorage.setItem(urls.api.list, JSON.stringify(searchParams))
+  }
   // Notification
   const pageName = pageNames.Indicators
   let columns = COLUMNS(pageName, urls.admin.indicatorList);
@@ -223,7 +230,8 @@ export default function IndicatorList() {
     defaults={{
       sort: [
         { field: 'name', sort: 'asc' }
-      ]
+      ],
+      filters: defaultFilter ? defaultFilter : {}
     }}
   />
 }

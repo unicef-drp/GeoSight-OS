@@ -31,6 +31,7 @@ import {
 
 import './style.scss';
 import AdminList from "../../../../components/AdminList";
+import {useSearchParams} from "react-router-dom";
 
 export function resourceActions(params) {
   const permission = params.row.permission
@@ -91,6 +92,13 @@ export function resourceActions(params) {
  * Related Table List App
  */
 export default function RelatedTableList() {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  let defaultFilter = JSON.parse(window.sessionStorage.getItem(urls.api.list, {}))
+  if (!defaultFilter) {
+    window.sessionStorage.setItem(urls.api.list, JSON.stringify(searchParams))
+  }
+
   const pageName = pageNames.RelatedTables
   let columns = dictDeepCopy(relatedTableColumns, false)
   columns = columns.concat([
@@ -123,7 +131,8 @@ export default function RelatedTableList() {
     defaults={{
       sort: [
         { field: 'name', sort: 'asc' }
-      ]
+      ],
+      filters: defaultFilter ? defaultFilter : {}
     }}
   />
 }

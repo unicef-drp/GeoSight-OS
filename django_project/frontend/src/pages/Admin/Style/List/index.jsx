@@ -25,6 +25,7 @@ import AdminList from "../../../../components/AdminList";
 import {ResourceMeta} from "../../../../components/AdminList";
 
 import './style.scss';
+import {useSearchParams} from "react-router-dom";
 
 export function resourceActions(params) {
   return COLUMNS_ACTION(params, urls.admin.list)
@@ -34,6 +35,12 @@ export function resourceActions(params) {
  * Style List App
  */
 export default function StyleList() {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  let defaultFilter = JSON.parse(window.sessionStorage.getItem(urls.api.list, {}))
+  if (!defaultFilter) {
+    window.sessionStorage.setItem(urls.api.list, JSON.stringify(searchParams))
+  }
   const pageName = pageNames.Styles
   let columns = COLUMNS(pageName, urls.admin.list);
   // pop action
@@ -86,7 +93,8 @@ export default function StyleList() {
     defaults={{
       sort: [
         { field: 'name', sort: 'asc' }
-      ]
+      ],
+      filters: defaultFilter ? defaultFilter : {}
     }}
   />
 }

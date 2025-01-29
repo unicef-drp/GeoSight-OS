@@ -15,6 +15,7 @@
 
 import React from 'react';
 import { GridActionsCellItem } from "@mui/x-data-grid";
+import {useSearchParams} from "react-router-dom";
 
 import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
@@ -34,6 +35,13 @@ export function resourceActions(params) {
  * Indicator List App
  */
 export default function ContextLayerList() {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  let defaultFilter = JSON.parse(window.sessionStorage.getItem(urls.api.list, {}))
+  if (!defaultFilter) {
+    window.sessionStorage.setItem(urls.api.list, JSON.stringify(searchParams))
+  }
+
   const pageName = pageNames.ContextLayer
   let columns = COLUMNS(pageName, urls.admin.contextLayerList);
   columns.pop();
@@ -82,7 +90,8 @@ export default function ContextLayerList() {
     defaults={{
       sort: [
         { field: 'name', sort: 'asc' }
-      ]
+      ],
+      filters: defaultFilter ? defaultFilter : {}
     }}
   />
 }
