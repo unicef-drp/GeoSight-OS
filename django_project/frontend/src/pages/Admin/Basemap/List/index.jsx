@@ -66,7 +66,7 @@ export default function BasemapList() {
       return actions
     },
   })
-  console.log(urls)
+  console.log('Basemap')
   return <AdminList
     url={{
       list: urls.api.list,

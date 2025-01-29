@@ -37,6 +37,7 @@ import {MultipleSelectWithSearch} from "../../../components/Input/SelectWithSear
 
 
 import './style.scss';
+import {removeElement} from "../../../utils/Array";
 
 /*** Data Browser admin */
 const deleteWarning = "WARNING! Do you want to delete the selected data? This will apply directly to database."
@@ -52,15 +53,12 @@ export default function DatasetAdmin() {
   // Other attributes
   const defaultFilters = urlParams()
   const [filters, setFilters] = useState({
+    groupAdminLevel: defaultFilters.groupAdminLevel ? defaultFilters.groupAdminLevel === 'true' : true,
     indicators: defaultFilters.indicators ? splitParams(defaultFilters.indicators) : [],
     datasets: defaultFilters.datasets ? splitParams(defaultFilters.datasets, false) : [],
     levels: defaultFilters.levels ? splitParams(defaultFilters.levels) : [],
-    geographies: defaultFilters.geographies ? splitParams(defaultFilters.geographies) : [],
-    fromTime: defaultFilters.fromTime ? defaultFilters.fromTime : null,
-    toTime: defaultFilters.toTime ? defaultFilters.toTime : null,
     detail: true,
   })
-  const [updatedData, setUpdatedData] = useState([]);
   const [disabled, setDisabled] = useState(false)
   const [isInit, setIsInit] = useState(true)
   const [filtersSequences, setFiltersSequences] = useState([])
@@ -69,23 +67,22 @@ export default function DatasetAdmin() {
 
   // When filter changed
   useEffect((prev) => {
-    if (!isInit) {
-      tableRef?.current?.refresh()
+    // Check filter sequences
+    for (const [key, value] of Object.entries(filters)) {
+      if (key !== 'groupAdminLevel') {
+        if (value.length) {
+          if (!filtersSequences.includes(key)) {
+            filtersSequences.push(key)
+            setFiltersSequences([...filtersSequences])
+          }
+        } else {
+          if (filtersSequences.includes(key)) {
+            setFiltersSequences(removeElement(filtersSequences, key))
+          }
+        }
+      }
     }
-    setIsInit(false)
   }, [filters])
-
-    // This is for selected for add to new project
-  let selectedViews = []
-  let selectedIndicators = []
-  const selectedModelIds = selectionModel.map(row => {
-    const ids = row.split('[')[0].split('-')
-    selectedViews.push(ids[1])
-    selectedIndicators.push(ids[0])
-    return ids
-  })
-  selectedViews = Array.from(new Set(selectedViews));
-  selectedIndicators = Array.from(new Set(selectedIndicators));
 
   // COLUMNS
   const COLUMNS = [
@@ -176,6 +173,11 @@ export default function DatasetAdmin() {
     } else {
       delete parameters['indicator_id__in']
     }
+    if (filters.groupAdminLevel) {
+      parameters['group_admin_level'] = true
+    } else {
+      parameters['group_admin_level'] = false
+    }
     if (filters.datasets.length) {
       parameters['reference_layer_id__in'] = filters.datasets.join(',')
     } else {
@@ -186,26 +188,25 @@ export default function DatasetAdmin() {
     } else {
       delete parameters['admin_level__in']
     }
-    if (filters.geographies.length) {
-      parameters['geom_id__icontains'] = filters.geographies.join(',')
-    } else {
-      delete parameters['geom_id__icontains']
-    }
-    if (filters.fromTime) {
-      parameters['date__gte'] = filters.fromTime.format('YYYY-MM-DD');
-    } else {
-      delete parameters['date__gte']
-    }
-    if (filters.toTime) {
-      parameters['date__lte'] = filters.toTime.format('YYYY-MM-DD');
-    } else {
-      delete parameters['date__lte']
-    }
     parameters['detail'] = filters.detail
     return parameters
   }
-  console.log(COLUMNS)
-  console.log(urls)
+
+  // This is for selected for add to new project
+  let selectedViews = []
+  let selectedIndicators = []
+  const selectedModelIds = selectionModel.map(row => {
+    const ids = row.split('[')[0].split('-')
+    selectedViews.push(ids[1])
+    selectedIndicators.push(ids[0])
+    return ids
+  })
+  selectedViews = Array.from(new Set(selectedViews));
+  selectedIndicators = Array.from(new Set(selectedIndicators));
+
+  useEffect(() => {
+    console.log('selectionModel changed');
+  }, [selectionModel]);
 
   return <AdminList
     url={{
@@ -275,12 +276,15 @@ export default function DatasetAdmin() {
     }
     pageName={pageNames.Dataset}
     multipleDelete={true}
-    enableFilter={false}
+    enableFilter={true}
     useSearch={false}
+    selection={selectionModel}
+    selectionChanged={setSelectionModel}
     defaults={{
       sort: [
         { field: 'id', sort: 'asc' }
-      ]
+      ],
+      filters: getParameters({})
     }}
   />
 }

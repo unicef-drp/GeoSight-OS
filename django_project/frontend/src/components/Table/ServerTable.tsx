@@ -71,24 +71,47 @@ const ServerTable = forwardRef(
    }: ServerTableProps, ref
   ) => {
     const { openConfirmDialog } = useConfirmDialog();
-    const [filterModel, setFilterModel] = useState({})
-    if (enable.filter) {
-      columns.forEach(column => {
-        if (column.type === 'actions') {
-          if (!column.headerName) {
-            // @ts-ignore
-            column.headerName = (
-              <DataGridFilter
-                fields={columns}
-                filterModel={filterModel}
-                setFilterModel={setFilterModel}/>
-            );
-            column.headerAlign = 'right';
-          }
-        }
-      });
-    }
 
+    console.log(selectionModel)
+    console.log(selectionModelData)
+
+    if (enable.filter) {
+      if (defaults.filters) {
+        useEffect(() => {
+          // @ts-ignore
+          let newParameters =       {
+            page: 0,
+            page_size: parameters.page_size,
+            sort: parameters.sort,
+            ...defaults.filters
+          }
+          setParameters(newParameters)
+        }, [defaults.filters]);
+      } else {
+        const [filterModel, setFilterModel] = useState({});
+        columns.forEach(column => {
+          if (column.type === 'actions') {
+            if (!column.headerName) {
+              // @ts-ignore
+              column.headerName = (
+                <DataGridFilter
+                  fields={columns}
+                  filterModel={filterModel}
+                  setFilterModel={setFilterModel}/>
+              );
+              column.headerAlign = 'right';
+            }
+          }
+        });
+        useEffect(() => {
+          // @ts-ignore
+          setParameters({
+            ...parameters,
+            ...filterModel
+          })
+        }, [filterModel]);
+      }
+    }
 
     // Notification
     const notificationRef = useRef(null);
@@ -124,14 +147,6 @@ const ServerTable = forwardRef(
         ...defaults.filters
       }
     )
-
-    useEffect(() => {
-      // @ts-ignore
-      setParameters({
-        ...parameters,
-        ...filterModel
-      })
-    }, [filterModel]);
 
     // Sort model
     const [sortModel, setSortModel] = useState<any[]>(defaults.sort);

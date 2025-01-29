@@ -12,10 +12,69 @@
 * __date__ = '13/06/2023'
 * __copyright__ = ('Copyright 2023, Unicef')
 */
-
 /* ==========================================================================
-   Dataset style
+   Table style
    ========================================================================== */
+.AdminList {
+  background-color: unset !important;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-height: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  border-radius: var(--border-radius) !important;
+  overflow: hidden;
+}
+.AdminList .MoreActionIcon {
+  width: 16px;
+  height: 16px;
+  color: var(--primary-color);
+}
+.AdminList .MoreActionIcon svg {
+  width: 100%;
+  height: 100%;
+}
+.AdminList .AdminTable {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  background-color: white;
+}
+.AdminList .AdminTable .AdminTableError {
+  color: var(--error);
+  margin: auto;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.5);
+  padding-top: 200px;
+  z-index: 9;
+}
+.AdminList .AdminTableDelete {
+  color: var(--error);
+}
+.AdminList .AdminTable-Loading {
+  padding: 1rem;
+}
+.AdminList .CellLink {
+  color: var(--primary-color) !important;
+}
+.AdminList .CellError {
+  color: white;
+  background-color: var(--error);
+}
+.AdminList .CellWarning {
+  color: white;
+  background-color: #ed6c02;
+}
+.AdminList .FlexCell {
+  display: flex;
+}
+.AdminList .FlexCell div {
+  margin-right: 2px;
+}
 
 .ListAdminFilters {
   &::before {
