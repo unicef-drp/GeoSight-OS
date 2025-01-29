@@ -15,13 +15,14 @@ __date__ = '04/12/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import status, viewsets
+from rest_framework import status, viewsets, permissions
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from rest_framework.decorators import action
+from rest_framework.decorators import action, permission_classes
 
 from core.api_utils import ApiTag
 from core.api_utils import common_api_params, ApiParams
+from core.permissions import AdminAuthenticationPermission
 from geosight.data.models.code import CodeList
 from geosight.data.serializer.code import CodeListSerializer, CodeSerializer
 
@@ -44,8 +45,20 @@ class CodeListViewSet(
     queryset = CodeList.objects.all()
     pagination_class = CustomPagination
 
+    def get_permissions(self):
+        """Dynamically assign permission classes."""
+        if self.action in ['create', 'codes']:
+            return [AdminAuthenticationPermission()]
+        return [permissions.IsAuthenticated()]
+
+    def get_queryset(self):
+        param = self.request.query_params.get('name__contains')
+        if param:
+            return self.queryset.filter(name__icontains=param)
+        return self.queryset
+
     @swagger_auto_schema(
-        operation_id='basemap-list',
+        operation_id=' codelist-list',
         tags=[ApiTag.CODE_LIST],
         manual_parameters=[
             *common_api_params,
@@ -63,7 +76,7 @@ class CodeListViewSet(
         manual_parameters=[],
         request_body=CodeListSerializer.
         Meta.post_body,
-        operation_description='Create a code list.'
+        operation_description='Create a code list.',
     )
     def create(self, request, *args, **kwargs):
         """Create a code."""
@@ -80,7 +93,8 @@ class CodeListViewSet(
         tags=[ApiTag.CODE_LIST],
         manual_parameters=[],
         operation_description='List dashboard groups.',
-        request_body=CodeSerializer.Meta.post_body
+        request_body=CodeSerializer.Meta.post_body,
+        permission_classes = [AdminAuthenticationPermission]
     )
     @action(detail=True, methods=['post'])
     def codes(self, request, pk):
