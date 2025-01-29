@@ -11,15 +11,13 @@
 {% block scripts %}
     <script>
       urls.api = {
-        'list': '{% url 'style-list-api' %}',
+        'list': '{% url 'styles-list' %}?fields=__all__',
         'create': '{% url 'admin-style-create-view' %}',
         'edit': '{% url 'admin-style-edit-view' 0 %}',
         'batch': '{% url 'admin-style-edit-batch-view' %}',
-        'detail': '{% url 'style-detail-api' 0 %}',
+        'detail': '{% url 'styles-detail' 0 %}',
 
         {# permissions #}
-        'users': '{% url 'user-list-api'%}',
-        'groups': '{% url 'group-list-api'%}',
         'permission': '{% url 'style-permission-api' 0 %}',
       }
     </script>

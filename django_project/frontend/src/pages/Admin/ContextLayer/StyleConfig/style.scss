@@ -17,16 +17,72 @@
    Context Layer Style Config
    ========================================================================== */
 
-@import '../../../../app/variables';
+.BasicForm.Preview {
+  height: 100%;
+  box-sizing: border-box;
+  padding: 0 !important;
 
+  .Preview {
+    height: 100%;
+  }
+
+  .error,
+  .form-helptext {
+    padding: 2rem;
+    position: absolute;
+    text-align: center;
+    padding-right: 40rem !important;
+    width: 100%;
+    z-index: 1;
+    box-sizing: border-box;
+  }
+
+  .ShowStyle {
+    .error,
+    .form-helptext {
+      padding-right: 40rem !important;
+    }
+
+  }
+}
 
 .ContextLayerConfig-Wrapper {
   text-align: center;
   width: 100%;
+  position: relative;
+
+  &.Preview {
+    height: fit-content;
+
+    #ContextLayerConfig {
+      padding: 1rem !important;
+      position: relative;
+
+      &.ShowStyle {
+        padding-right: 40rem !important;
+      }
+
+      .Style {
+        background-color: white;
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100%;
+        padding: 1rem;
+        overflow-y: auto;
+        width: 40rem;
+        box-sizing: border-box;
+      }
+    }
+  }
 
   #ContextLayerConfig {
-    padding: 1rem;
     flex-grow: 1;
+    margin: 0 !important;
+  }
+
+  .ContextLayerConfigInput {
+    padding: 0;
   }
 
   .AdminForm {
@@ -42,9 +98,17 @@
     margin-bottom: 0.5rem;
   }
 
-  &.Map {
-    .Map {
+  &.Preview {
+    .AdminForm {
+      height: 100%;
+    }
+
+    .Preview {
       display: flex !important;
+    }
+
+    .Style {
+      display: block !important;
     }
   }
 
@@ -60,22 +124,13 @@
     }
   }
 
-  &.Style {
-    .Style {
+  &.General_Override {
+    .General_Override {
       display: block !important;
     }
   }
 }
 
-.modal--wrapper--box {
-  #ContextLayerConfig {
-    .ArcgisConfig {
-      .Classification {
-        padding: 1rem;
-      }
-    }
-  }
-}
 
 #ContextLayerConfig {
   text-align: left;
@@ -84,19 +139,73 @@
     display: none;
   }
 
+  .RevertStyleButton {
+    margin-left: auto;
+    margin-bottom: 1rem;
+    display: flex;
+  }
 
   .ArcgisConfig {
 
     .Classification {
-      border: 1px solid $primary-color;
-      padding: 1rem 0;
+      border: 1px solid var(--primary-color);
+      padding: 0;
       margin-bottom: -1px;
+
+      .ContextLayerConfigInput {
+        padding: 1rem 1rem 0 1rem;
+      }
+
+      .BasicFormSectionInline {
+        display: flex;
+        justify-content: space-between;
+
+        & > div {
+          flex: 1 1 0;
+        }
+      }
+
+      .ColorConfig {
+        height: 36px;
+        border: unset;
+
+        .ColorConfigPreview {
+          outline: 1px solid #DDDDDD;
+          height: 36px;
+        }
+      }
+
+      .ClassificationLabel {
+        background-color: var(--primary-color);
+        color: var(--anti-primary-color);
+        margin-bottom: 1rem;
+
+        input {
+          background-color: unset;
+          color: var(--anti-primary-color);
+          border: 1px solid var(--primary-color);
+
+          &:hover {
+            border: 1px solid var(--secondary-color);
+          }
+        }
+      }
+
+      .ClassificationValue {
+        padding: 0 2rem;
+        display: flex;
+        align-items: center;
+
+        > div {
+          white-space: nowrap;
+        }
+      }
 
       b {
         display: block;
         width: 100%;
         text-align: center;
-        color: $primary-color;
+        color: var(--primary-color);
       }
 
       img {
@@ -131,18 +240,31 @@
   }
 }
 
-.MapWrapper {
+.PreviewWrapper {
   display: flex;
-  height: 500px;
+  height: 100%;
+  position: relative;
 
   .legend {
-    width: 200px;
-    max-height: 100%;
-    overflow-y: auto;
+    left: 0;
+    height: fit-content;
+    max-height: 60%;
     padding: 0.5rem;
+    position: absolute;
+    top: 0;
+    width: 200px;
+    z-index: 1;
+    background-color: white;
+    border-radius: 0.5rem;
+    margin: 0.5rem;
+    overflow-y: auto;
 
     .title {
       text-align: center;
+    }
+
+    img {
+      max-width: 100%;
     }
   }
 
@@ -150,4 +272,12 @@
     flex-grow: 1;
     height: 100%;
   }
+}
+
+.EditorButton {
+  background-color: var(--primary-color);
+  color: var(--anti-primary-color);
+  cursor: pointer;
+  padding: 3px 6px;
+  width: fit-content;
 }

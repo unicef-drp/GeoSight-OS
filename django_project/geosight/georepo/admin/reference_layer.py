@@ -15,6 +15,7 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib import admin
+from django.utils import timezone
 
 from geosight.data.models.indicator.indicator_value import (
     IndicatorValueWithGeo
@@ -23,8 +24,7 @@ from geosight.georepo.models import (
     ReferenceLayerView
 )
 from geosight.georepo.tasks import (
-    fetch_reference_codes, fetch_datasets,
-    create_data_access
+    fetch_reference_codes_by_ids, fetch_datasets, create_data_access
 )
 
 
@@ -38,14 +38,15 @@ def update_meta(modeladmin, request, queryset):
 @admin.action(description='Sync entities')
 def sync_codes(modeladmin, request, queryset):
     """Fetch new reference layer."""
-    for reference_layer in queryset:
-        fetch_reference_codes.delay(reference_layer.id)
+    fetch_reference_codes_by_ids.delay(
+        list(queryset.values_list('id', flat=True))
+    )
 
 
 @admin.action(description='Fetch new views')
 def action_fetch_datasets(modeladmin, request, queryset):
     """Fetch new reference layer."""
-    fetch_datasets.delay()
+    fetch_datasets.delay(True)
 
 
 @admin.action(description='Create all data access')
@@ -54,17 +55,25 @@ def action_create_data_access(modeladmin, request, queryset):
     create_data_access.delay()
 
 
+@admin.action(description='Invalidate cache')
+def invalidate_cache(modeladmin, request, queryset):
+    """Invalidate cache of value on frontend."""
+    queryset.update(version_data=timezone.now())
+
+
 class ReferenceLayerViewAdmin(admin.ModelAdmin):
     """ReferenceLayerView admin."""
 
     list_display = [
-        'identifier', 'name', 'description', 'in_georepo', 'number_of_value'
+        'identifier', 'name', 'description', 'in_georepo', 'number_of_value',
+        'number_of_entities'
     ]
     ordering = ['name']
     actions = [
         update_meta, sync_codes, action_fetch_datasets,
-        action_create_data_access
+        action_create_data_access, invalidate_cache
     ]
+
 
     def in_georepo(self, obj: ReferenceLayerView):
         """Is reference layer in georepo."""
@@ -77,6 +86,10 @@ class ReferenceLayerViewAdmin(admin.ModelAdmin):
         return IndicatorValueWithGeo.objects.filter(
             reference_layer_id=obj.id
         ).count()
+
+    def number_of_entities(self, obj: ReferenceLayerView):
+        """Return number of value for this reference layer."""
+        return obj.entity_set.count()
 
 
 admin.site.register(ReferenceLayerView, ReferenceLayerViewAdmin)

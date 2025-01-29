@@ -14,9 +14,12 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from datetime import date
+from datetime import date, datetime
 
+import pytz
+from django.conf import settings
 from django.contrib.gis.db import models
+from django.db import connection
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -32,6 +35,8 @@ from geosight.data.models.style.indicator_style import (
 )
 from geosight.data.serializer.style import StyleRuleSerializer
 from geosight.permission.models.manager import PermissionManager
+
+VALUE_IS_EMPTY_TEXT = 'Value is empty'
 
 
 class IndicatorValueRejectedError(Exception):
@@ -168,10 +173,21 @@ class Indicator(
         return None
 
     def validate(self, value):
-        """Check value."""
+        """Check value and return the comment."""
+        comment = ''
+        if value in [None, '']:
+            raise IndicatorValueRejectedError(VALUE_IS_EMPTY_TEXT)
+
         if self.type == IndicatorType.INTEGER:
             try:
                 if isinstance(value, str):
+                    try:
+                        value = int(value)
+                    except ValueError:
+                        value = float(value)
+                if isinstance(value, float):
+                    if not value.is_integer():
+                        comment = 'Result was rounded to int.'
                     value = int(value)
                 elif not isinstance(value, int):
                     if value % 1:
@@ -205,7 +221,7 @@ class Indicator(
             except ValueError:
                 raise IndicatorValueRejectedError('Value is not float')
             except TypeError:
-                raise IndicatorValueRejectedError('Value is empty')
+                raise IndicatorValueRejectedError(VALUE_IS_EMPTY_TEXT)
         elif self.type == IndicatorType.STRING:
             if isinstance(value, str):
                 if self.codelist:
@@ -216,6 +232,7 @@ class Indicator(
                         )
             else:
                 raise IndicatorValueRejectedError('Value is not string')
+        return value, comment
 
     def save_value(
             self,
@@ -233,7 +250,14 @@ class Indicator(
 
         # Validate data
         try:
-            self.validate(value)
+            value, comment = self.validate(value)
+            if comment:
+                if not extras:
+                    extras = {}
+                try:
+                    extras['description'] += ' ' + comment
+                except KeyError:
+                    extras['description'] = comment
         except IndicatorValueRejectedError as e:
             if more_error_information:
                 raise IndicatorValueRejectedError(f'Error on {geom_id}: {e}')
@@ -364,6 +388,90 @@ class Indicator(
                 'dashboard', flat=True
             )
         ).update(version_data=timezone.now())
+
+    @staticmethod
+    def search(name, description):
+        """Update dashboard version."""
+        if name:
+            with connection.cursor() as cursor:
+                cursor.execute('CREATE EXTENSION IF NOT EXISTS pg_trgm;')
+            query = (
+                f"select strict_word_similarity(name, '{name}') as name_score,"
+                f"strict_word_similarity(description, '{description}') "
+                f"as description_score,"
+                f"id, name, description from geosight_data_indicator"
+            )
+            return [
+                {
+                    'id': row.id,
+                    'name': row.name,
+                    'description': row.description,
+                    'name_score': row.name_score,
+                    'description_score': row.description_score,
+                }
+                for row in Indicator.objects.raw(
+                    f'SELECT * from ({query}) as q '
+                    f'WHERE name_score >= 0.5 OR description_score >= 0.3 '
+                    f'ORDER BY name_score DESC, description_score DESC'
+                )
+
+            ]
+        return []
+
+    def metadata(self, reference_layer_uuid):
+        """Metadata for indicator."""
+        from geosight.georepo.models.reference_layer import ReferenceLayerView
+        from geosight.data.models.indicator.indicator_value import (
+            IndicatorValueWithGeo
+        )
+        try:
+            query = self.query_values(
+                reference_layer=ReferenceLayerView.objects.get(
+                    identifier=reference_layer_uuid
+                )
+            )
+        except ReferenceLayerView.DoesNotExist:
+            ReferenceLayerView.objects.get_or_create(
+                identifier=reference_layer_uuid
+            )
+            query = IndicatorValueWithGeo.objects.none()
+        dates = [
+            datetime.combine(
+                date_str, datetime.min.time(),
+                tzinfo=pytz.timezone(settings.TIME_ZONE)
+            ).isoformat()
+            for date_str in set(
+                query.values_list('date', flat=True)
+            )
+        ]
+        dates.sort()
+
+        return {
+            'dates': dates,
+            'count': query.count()
+        }
+
+    def metadata_with_cache(self, reference_layer):
+        """Metadata for indicator."""
+        from core.cache import VersionCache
+        version = self.version_with_reference_layer_uuid(
+            reference_layer.version_with_uuid
+        )
+        cache = VersionCache(
+            key=(
+                f'METADATA : '
+                f'Indicator {self.id} - {reference_layer.identifier}',
+            ),
+            version=version
+        )
+        cache_data = cache.get()
+        if cache_data:
+            return cache_data
+
+        response = self.metadata(reference_layer.identifier)
+        response['version'] = cache.version
+        cache.set(response)
+        return response
 
 
 @receiver(post_save, sender=Indicator)

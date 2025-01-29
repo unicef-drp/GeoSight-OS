@@ -17,34 +17,112 @@ on:
   push:
     branches: [ main ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, version-2.0.0, Filter-improvement ]
 
 jobs:
-  django_app_test:
-    name: 'Django App'
+  flake8_py3:
+    name: Python Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.8.18
+          architecture: x64
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Display branch
+        run: git branch --show-current
+
+      - name: Install flake8
+        run: pip install flake8 flake8-docstrings
+      - name: Run flake8
+        uses: suo/flake8-github-action@releases/v1
+        with:
+          checkName: 'Python Lint'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build_image:
+    needs: flake8_py3
+    name: Build Docker Image
     runs-on: ubuntu-latest
     env:
-      APP_IMAGE: kartoza/geosight
+      APP_IMAGE: kartoza/geosight:dev
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Display branch
+        run: git branch --show-current
 
-      - name: Build test image
-        uses: docker/build-push-action@v2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Build Docker Image
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: deployment/docker/Dockerfile
           push: false
           load: true
           target: dev
-          tags: ${{ env.APP_IMAGE }}:dev
+          tags: ${{ env.APP_IMAGE }}
           cache-from: |
             type=gha,scope=test
             type=gha,scope=prod
           cache-to: type=gha,scope=test
+
+      - name: Save Docker Image as Tar File
+        run: docker save -o /tmp/my-image.tar ${{ env.APP_IMAGE }}
+
+      - name: Upload Docker Image Cache
+        uses: actions/cache@v3
+        with:
+          path: /tmp/my-image.tar
+          key: ${{ runner.os }}-docker-image-${{ hashFiles('deployment/docker/Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-docker-image-
+
+  django_app_tests:
+    needs: build_image
+    name: Django App Tests
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        test_suite: [
+          { name: "Backend Tests", script: "make devweb-test" },
+          { name: "E2E Tests: Project Creation", path: "tests/project_creation", workers: 2, script_load: "make load-test-data" },
+          { name: "E2E Tests: Project View", path: "tests/project_view", workers: 3, script_load: "make load-test-data" },
+          { name: "E2E Tests: Admin List", path: "tests/admin_list", workers: 3, script_load: "make load-test-data" },
+          { name: "E2E Tests: Admin Edit", path: "tests/admin_edit", workers: 3, script_load: "make load-test-data" },
+          { name: "E2E Tests: Admin List Filter", path: "tests/admin_filter", workers: 3, script_load: "make load-test-data-for-filter" }
+        ]
+    env:
+      APP_IMAGE: kartoza/geosight
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Display branch
+        run: git branch --show-current
+
+      - name: Restore Docker Image from Cache
+        uses: actions/cache@v3
+        with:
+          path: /tmp/my-image.tar
+          key: ${{ runner.os }}-docker-image-${{ hashFiles('deployment/docker/Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-docker-image-
+
+      - name: Load Docker Image
+        run: docker load -i /tmp/my-image.tar
 
       - name: Run docker-compose services
         working-directory: deployment
@@ -55,15 +133,36 @@ jobs:
           cd ../
           make devweb
           make wait-db
+          docker cp ./django_project geosight_dev:/home/web
+
+      - name: Install requirements
+        run: |
+          docker cp ./deployment/docker/requirements.txt geosight_dev:/home/web/requirements.txt
+          docker cp ./deployment/docker/requirements-dev.txt geosight_dev:/home/web/requirements-dev.txt
+          docker exec -i geosight_dev bash -c "pip install -r /home/web/requirements.txt && pip install -r /home/web/requirements-dev.txt"
+
+      - name: Initialize devweb database
+        run: |
+          make devweb-initialize
+
+      - name: Execute Test Backend
+        if: ${{ matrix.test_suite.script }}
+        run: ${{ matrix.test_suite.script }}
+
+      - name: Prepare container
+        if: ${{ matrix.test_suite.path }}
+        run: |
           make devweb-entrypoint
           make devweb-runserver
-          make devweb-load-demo-data
+          ${{ matrix.test_suite.script_load }}
           make sleep
 
       - name: Test production config ready
+        if: ${{ matrix.test_suite.path }}
         run: make production-check
 
       - name: Test django endpoint
+        if: ${{ matrix.test_suite.path }}
         run: |
           curl http://localhost:2000/
           if [ $? -ne 0 ]; then
@@ -71,19 +170,11 @@ jobs:
             exit 1
           fi
 
-      - name: Test backend
-        run: make devweb-test
-
       - name: Test E2E
+        if: ${{ matrix.test_suite.path }}
         working-directory: ./playwright/ci-test
         run: |
           npm install
           npm ci
           npx playwright install --with-deps
-          npx playwright test
-      - uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: playwright-report
-          path: playwright/ci-test/playwright-report/
-          retention-days: 30
+          npx playwright test ${{ matrix.test_suite.path }} --workers ${{ matrix.test_suite.workers }}

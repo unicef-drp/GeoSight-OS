@@ -14,6 +14,7 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+from django.conf import settings
 from django.conf.urls import url
 from django.urls import include
 
@@ -36,6 +37,13 @@ admin_url = [
     url(r'^related-table/', include('frontend.urls.related_table')),
     url(r'^importer/', include('frontend.urls.importer')),
 ]
+if settings.REFERENCE_DATASET_ENABLED:
+    admin_url += [
+        url(
+            r'^reference-datasets/',
+            include('geosight.reference_dataset.urls_frontend')
+        ),
+    ]
 urlpatterns = [
     url(r'^embed/', include('frontend.urls.embed')),
     url(r'^project/', include('frontend.urls.dashboard')),

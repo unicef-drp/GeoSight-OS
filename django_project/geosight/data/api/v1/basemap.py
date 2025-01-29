@@ -29,11 +29,13 @@ class BasemapViewSet(BaseApiV1Resource):
     model_class = BasemapLayer
     form_class = BasemapFormAPI
     serializer_class = BasemapLayerSerializer
-    extra_exclude_fields = ['parameters']
+    extra_exclude_fields = [
+        'parameters', 'permission', 'url', 'icon', 'group'
+    ]
 
     @swagger_auto_schema(
-        operation_id='basemaps-get',
-        tags=[ApiTag.BASEMAPS],
+        operation_id='basemap-list',
+        tags=[ApiTag.BASEMAP],
         manual_parameters=[
             *common_api_params,
             ApiParams.NAME_CONTAINS,
@@ -50,8 +52,8 @@ class BasemapViewSet(BaseApiV1Resource):
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(
-        operation_id='basemaps-detail',
-        tags=[ApiTag.BASEMAPS],
+        operation_id='basemap-detail',
+        tags=[ApiTag.BASEMAP],
         manual_parameters=[],
         operation_description='Return detailed of basemap.'
     )
@@ -60,11 +62,11 @@ class BasemapViewSet(BaseApiV1Resource):
         return super().retrieve(request, id=id)
 
     @swagger_auto_schema(
-        operation_id='basemaps-create',
-        tags=[ApiTag.BASEMAPS],
+        operation_id='basemap-create',
+        tags=[ApiTag.BASEMAP],
         manual_parameters=[],
         request_body=BasemapLayerSerializer.
-        Meta.swagger_schema_fields['post_body'],
+        Meta.post_body,
         operation_description='Create a basemap.'
     )
     def create(self, request, *args, **kwargs):
@@ -72,11 +74,11 @@ class BasemapViewSet(BaseApiV1Resource):
         return super().create(request, *args, **kwargs)
 
     @swagger_auto_schema(
-        operation_id='basemaps-detail-update',
-        tags=[ApiTag.BASEMAPS],
+        operation_id='basemap-detail-update',
+        tags=[ApiTag.BASEMAP],
         manual_parameters=[],
         request_body=BasemapLayerSerializer.
-        Meta.swagger_schema_fields['post_body'],
+        Meta.post_body,
         operation_description='Replace a detailed of basemap.'
     )
     def update(self, request, *args, **kwargs):
@@ -84,11 +86,11 @@ class BasemapViewSet(BaseApiV1Resource):
         return super().update(request, *args, **kwargs)
 
     @swagger_auto_schema(
-        operation_id='basemaps-detail-partial-update',
-        tags=[ApiTag.BASEMAPS],
+        operation_id='basemap-detail-partial-update',
+        tags=[ApiTag.BASEMAP],
         manual_parameters=[],
         request_body=BasemapLayerSerializer.
-        Meta.swagger_schema_fields['post_body'],
+        Meta.post_body,
         operation_description=(
                 'Update just partial data based on payload '
                 'a detailed of basemap.'
@@ -99,8 +101,8 @@ class BasemapViewSet(BaseApiV1Resource):
         return super().partial_update(request, *args, **kwargs)
 
     @swagger_auto_schema(
-        operation_id='basemaps-detail-delete',
-        tags=[ApiTag.BASEMAPS],
+        operation_id='basemap-detail-delete',
+        tags=[ApiTag.BASEMAP],
         manual_parameters=[],
         operation_description='Delete a basemap.'
     )

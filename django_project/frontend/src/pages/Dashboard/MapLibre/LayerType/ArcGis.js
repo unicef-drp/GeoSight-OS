@@ -408,13 +408,19 @@ export default function arcGisLayer(map, id, data, contextLayerData, popupFeatur
       }
     }
   }
-
   if (!hasSource(map, id)) {
+    let url = data.url
+    if (data.params.url) {
+      url = url + '?url=' + data.params.url
+    }
+
     const params = Object.assign({}, data.params, {
-      url: data.url,
-      token: data.token,
+      url: url,
       minZoom: 0
     })
+    if (data.token) {
+      params['token'] = data.token
+    }
     new CustomFeatureService(id, map, params)
   }
   const fillId = id + '-fill'

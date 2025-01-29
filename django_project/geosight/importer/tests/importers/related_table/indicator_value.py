@@ -32,6 +32,22 @@ from .base import BaseTest
 class RelatedTableLayerIndicatorValueTest(BaseTest):
     """Test for Importer : Related Table Format Indicator Value."""
 
+    def run_importer(self, attributes):
+        """Run Importer with new attribute."""
+        super().run_importer(attributes)
+
+        # Assert field definitian
+        fields_definition = sorted(
+            self.related_table.fields_definition, key=lambda d: d['name']
+        )
+        self.assertEqual(fields_definition[0]['name'], 'admin_level')
+        self.assertEqual(fields_definition[1]['name'], 'date_time')
+        self.assertEqual(fields_definition[2]['name'], 'geom_code')
+        self.assertEqual(fields_definition[3]['name'], 'indicator_shortcode')
+        self.assertEqual(fields_definition[4]['name'], 'male')
+        self.assertEqual(fields_definition[5]['name'], 'population')
+        self.assertEqual(fields_definition[6]['name'], 'value')
+
     def test_error_importer(self):
         """Test if correct importer."""
         with self.assertRaises(ImporterDoesNotExist):

@@ -32,8 +32,14 @@ const PERMISSIONS = [
 
 const COLUMNS = [
   { field: 'id', headerName: 'id', hide: true },
-  { field: 'indicator_name', headerName: 'Indicator', flex: 1 },
-  { field: 'dataset_name', headerName: 'View', flex: 0.5 }
+  {
+    field: 'indicator_name', headerName: 'Indicator', flex: 1,
+    serverKey: 'obj__indicator__name'
+  },
+  {
+    field: 'dataset_name', headerName: 'View', flex: 0.5,
+    serverKey: 'obj__reference_layer__name'
+  }
 ]
 
 /**

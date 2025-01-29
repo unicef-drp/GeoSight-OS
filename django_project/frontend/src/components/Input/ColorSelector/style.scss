@@ -13,12 +13,6 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   COLOR SELECTOR
-   ========================================================================== */
-
-@import '../../../app/variables';
-
 .ColorConfigLabel,
 .ColorConfig {
   width: 135px;
@@ -26,25 +20,37 @@
 }
 
 .ColorConfig {
-  border: 1px solid $base-almost-gray-color;
-  border-radius: $border-radius;
-  display: flex;
+  input {
+    background-color: white;
 
-  &.FullWidth {
-  width: 100%;
-
-  .ColorConfigPreview {
-    width: 100%;
+    &:focus,
+    &:focus-visible, {
+      outline: unset;
+    }
   }
 }
 
+.ColorConfig {
+  border: 1px solid var(--base-almost-gray-color);
+  border-radius: var(--border-radius);
+  display: flex;
+
+  &.FullWidth {
+    width: 100%;
+
+    .ColorConfigPreview {
+      width: 100%;
+    }
+  }
+
   input[type="text"] {
     border: none;
-    border-right: 1px solid $base-almost-gray-color;
+    border-right: 1px solid var(--base-almost-gray-color);
     flex-grow: 1;
     min-width: 3rem;
     border-bottom-right-radius: 0;
     border-top-right-radius: 0;
+    padding: 10px 0.5rem;
   }
 
   .ColorConfigPreview {

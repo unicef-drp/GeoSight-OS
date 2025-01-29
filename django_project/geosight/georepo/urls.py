@@ -14,11 +14,11 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from django.conf import settings
 from django.conf.urls import url
 
-from geosight.georepo.api import ReferenceLayerEntityDrilldownAPI
-from geosight.georepo.api.mock.api import MockGeorepoAPI
+from geosight.georepo.api import (
+    ReferenceLayerEntityDrilldownAPI
+)
 
 urlpatterns = [
     url(
@@ -27,12 +27,3 @@ urlpatterns = [
         name='entity-drilldown-api'
     )
 ]
-
-if settings.MOCK_GEOREPO:
-    urlpatterns += [
-        url(
-            r'^mock',
-            MockGeorepoAPI.as_view(),
-            name='mock-georepo-api'
-        ),
-    ]

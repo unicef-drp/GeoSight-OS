@@ -24,7 +24,7 @@ from requests.exceptions import Timeout
 
 from core.utils import string_is_true
 from geosight.data.models.indicator import (
-    Indicator, IndicatorValueRejectedError
+    Indicator, IndicatorValueRejectedError, VALUE_IS_EMPTY_TEXT
 )
 from geosight.data.models.indicator.indicator_type import (
     IndicatorType
@@ -265,7 +265,15 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
             return int(self.attributes['admin_level_value'])
         elif admin_level_type == AdminLevelType.DATA_DRIVEN:
             admin_level_field = self.get_attribute('admin_level_field')
-            return int(get_data_from_record(admin_level_field, data))
+            admin_level = get_data_from_record(admin_level_field, data)
+            if isinstance(admin_level, str):
+                try:
+                    admin_level = int(admin_level)
+                except ValueError:
+                    admin_level = float(admin_level)
+                    if not admin_level.is_integer():
+                        raise ValueError()
+            return int(admin_level)
         elif admin_level_type == AdminLevelType.ANY_LEVEL:
             return None
         return None
@@ -307,7 +315,12 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
         """Check indicator and data."""
         indicator = self.get_indicator(data)
         if indicator:
-            indicator.validate(data['value'])
+            data['value'], comment = indicator.validate(data['value'])
+            if comment:
+                try:
+                    data['description'] += ' ' + comment
+                except KeyError:
+                    data['description'] = comment
         return indicator
 
     def get_entity(
@@ -401,6 +414,13 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
                     continue
                 extras[key] = value
 
+            # Skip if the value is empty
+            if data['value'] in [None, '']:
+                return
+            # Skip if the geo_code is empty
+            if data['geo_code'] in [None, '']:
+                return
+
             indicator.save_value(
                 datetime.fromtimestamp(data['date_time']),
                 data['geo_code'],
@@ -410,10 +430,10 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
             log_data.saved = True
             log_data.save()
 
-    def process_data_from_records(self) -> (List, bool):
+    def process_data_from_records(self) -> (List, List, List, bool):
         """Process data from records.
 
-        Returning clean records, is_success
+        Returning clean records, notes, comments, is_success
         """
         raise NotImplemented()
 
@@ -421,6 +441,8 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
         """Group record by indicator."""
         records_by_indicator = {}
         for record in records:
+            if record['value'] in [None, '']:
+                continue
             indicator_id = record['indicator_id']
             if indicator_id not in records_by_indicator:
                 records_by_indicator[indicator_id] = []
@@ -668,7 +690,7 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
                         )
                         try:
                             record['description'] += (
-                                f" (from level {record['admin_level'] + 1})"
+                                f" (from level {record['admin_level'] + 1})."
                             )
                         except KeyError:
                             pass
@@ -677,19 +699,8 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
         # --------------------------------------------------
         # SAVE THE DATA
         # --------------------------------------------------
-        # Calculate warning data
-        warning_data = 0
-        for note in notes:
-            if 'warning' in note:
-                warning_data += 1
-        if warning_data:
-            additional_notes.append(
-                f'<div class="warning">'
-                f'There are {warning_data} warning(s)'
-                f'</div>'
-            )
-
         total = len(records)
+        warning_data = 0
         for line_idx, record in enumerate(records):
             self._update(
                 f'Save the data to be reviewed {line_idx}/{total}',
@@ -704,11 +715,20 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
             try:
                 self.check_indicator_and_data(record)
             except IndicatorValueRejectedError as e:
-                note['value'] = f'{e}'
+                if f'{e}' == VALUE_IS_EMPTY_TEXT:
+                    try:
+                        note['warning'] = f"{note['warning']}, {e}"
+                    except KeyError:
+                        note['warning'] = f'{e}'
+                else:
+                    note['value'] = f'{e}'
             except Indicator.DoesNotExist:
                 note['indicator_name'] = 'Indicator does not found'
             self._save_data_to_log(record, note)
 
+            # Check warning in note
+            if 'warning' in note:
+                warning_data += 1
             # If there is note, failed
             note_keys = list(note.keys())
             try:
@@ -717,5 +737,13 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
                 pass
             if len(note_keys):
                 success = False
+
+        # Calculate warning data
+        if warning_data:
+            additional_notes.append(
+                f'<div class="warning">'
+                f'There are {warning_data} warning(s)'
+                f'</div>'
+            )
 
         return success, '\n'.join(additional_notes)

@@ -12,6 +12,8 @@
 # __copyright__ = ('Copyright 2023, Unicef')
 
 FROM ubuntu:20.04 AS prod
+# For Mac M1/M2 use the below code
+# FROM --platform=amd64 ubuntu:20.04 AS prod
 MAINTAINER Irwan Fathurrahman<meomancer@gmail.com>
 
 # Pandoc needed to generate rst dumps, uic compressor needed for django-pipeline
@@ -54,8 +56,8 @@ RUN echo "deb http://archive.ubuntu.com/ubuntu/ bionic-updates universe" >> /etc
 RUN echo "Package: chromium-browser chromium-browser-l10n chromium-codecs-ffmpeg-extra chromium-codecs-ffmpeg\n\
 Pin: release a=bionic-updates\n\
 Pin-Priority: 900" >> /etc/apt/preferences.d/chromium-deb-bionic-updates
-RUN apt update
-RUN apt-get install chromium-browser -y
+RUN apt-get update
+RUN apt-get install chromium-browser -y --fix-missing
 
 # Open port 8080 as we will be running our uwsgi socket on that
 EXPOSE 8080

@@ -13,7 +13,10 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { Fragment, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import $ from 'jquery';
+import CircularProgress from "@mui/material/CircularProgress";
+import { debounce } from "@mui/material/utils";
 
 import Admin, { pageNames } from '../../index';
 import { codelistOptions, typeChoices } from "./Base";
@@ -29,6 +32,7 @@ import LabelForm from "./LabelForm";
 import StyleConfig from "../../Style/Form/StyleConfig";
 import { Select } from "../../../../components/Input";
 import { resourceActions } from "../List";
+import { axiosPostWithSession } from "../../../../Requests";
 
 import './style.scss';
 
@@ -38,7 +42,7 @@ function AdditionalGeneralIndicator({ indicatorData, setIndicatorData }) {
 
   const selectableInput = batch !== null
 
-  return <Fragment>
+  return <>
     <AdminFormInput
       selectableInput={selectableInput}
       label='Indicator type'
@@ -86,7 +90,7 @@ function AdditionalGeneralIndicator({ indicatorData, setIndicatorData }) {
             hidden={true}
           />
         </AdminFormInput> : (
-          <Fragment>
+          <>
             <AdminFormInput
               selectableInput={selectableInput}
               label='Min value'
@@ -128,10 +132,94 @@ function AdditionalGeneralIndicator({ indicatorData, setIndicatorData }) {
                   setIndicatorData({ ...indicatorData })
                 }}/>
             </AdminFormInput>
-          </Fragment>
+          </>
         )
     }
-  </Fragment>
+  </>
+}
+
+/*** Similarity Check ***/
+function SimilarityCheck() {
+  const [nameValue, setNameValue] = useState("")
+  const [name, setName] = useState("")
+  const [loading, setLoading] = useState(true)
+  const [data, setData] = useState([])
+
+  /** On init **/
+  useEffect(() => {
+    $('input[name="name"]').keyup(function () {
+      setNameValue($(this).val())
+    });
+    $('input[name="name"]').change(function () {
+      setNameValue($(this).val())
+    });
+  }, []);
+
+  /** Name value changed, debouce **/
+  const nameValueUpdate = useMemo(
+    () =>
+      debounce(
+        (newValue) => {
+          setName(newValue)
+        },
+        400
+      ),
+    []
+  )
+  /** Name value changed **/
+  useEffect(() => {
+    nameValueUpdate(nameValue)
+  }, [nameValue]);
+
+  /** Name changed **/
+  useEffect(() => {
+    setLoading(true)
+    const url = `/api/indicator/search/similarity`
+    axiosPostWithSession('SearchSimilarity', url, {
+      name: name
+    })
+      .then(data => {
+          setData(data)
+          setLoading(false)
+        }
+      ).catch(err => {
+        setLoading(false)
+      }
+    );
+
+  }, [name]);
+
+  if (!objectId && !batch && (data.length || loading)) {
+    return <div className="BasicFormSection Similarity">
+      <div>
+        <label className="form-label">
+          Similar indicators
+        </label>
+      </div>
+      {
+        loading ? <div className='Throbber'>
+          <CircularProgress size="1rem"/> Checking...
+        </div> : <table>
+          {
+            data.map((row, idx) => {
+              return <tr key={idx}>
+                <td className='SimilarityName'><a
+                  href={`/admin/indicators/${row.id}/edit`}
+                  target={"_blank"}>{row.name}</a></td>
+                <td className='SimilarityDescription' title={row.description}>
+                  {row.description}
+                </td>
+                <td
+                  className='SimilarityScore'>{Math.round(row.name_score * 100)}%
+                </td>
+              </tr>
+            })
+          }
+        </table>
+      }
+    </div>
+  }
+  return null
 }
 
 /**
@@ -165,7 +253,7 @@ export default function IndicatorForm() {
       className='Indicator'
       pageName={pageNames.Indicators}
       rightHeader={
-        <Fragment>
+        <>
           {
             indicator.id ?
               resourceActions(
@@ -199,7 +287,7 @@ export default function IndicatorForm() {
             }}
             disabled={submitted ? true : false}
           />
-        </Fragment>
+        </>
       }>
       <AdminForm
         ref={formRef}
@@ -209,6 +297,9 @@ export default function IndicatorForm() {
             <DjangoTemplateForm
               selectableInput={selectableInput}
               selectableInputExcluded={['name', 'shortcode']}
+              additionalElementAfter={{
+                'name': <SimilarityCheck/>
+              }}
             >
               <AdditionalGeneralIndicator
                 indicatorData={indicatorData}

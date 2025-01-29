@@ -17,12 +17,12 @@
    MAP CONTAINER
    ========================================================================== */
 
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import maplibregl from 'maplibre-gl';
 import { MapboxOverlay } from '@deck.gl/mapbox/typed';
 import ReferenceLayerCentroid from './ReferenceLayerCentroid'
-import ReferenceLayer from "./Layers/ReferenceLayer";
+import ReferenceLayers from "./Layers/ReferenceLayer";
 import ContextLayers from "./Layers/ContextLayers";
 import { Plugin, PluginChild } from "./Plugin";
 import { removeLayer, removeSource } from "./utils"
@@ -40,7 +40,6 @@ import {
   GlobalDateSelector,
   HomeButton,
   LabelToggler,
-  Measurement,
   SearchGeometryInput,
   TiltControl,
   ToggleSidePanel,
@@ -48,9 +47,19 @@ import {
 import { EmbedConfig } from "../../../utils/embed";
 import { Actions } from "../../../store/dashboard";
 import ReferenceLayerSection from "../MiddlePanel/ReferenceLayer";
+import DatasetGeometryData from "./Controllers/DatasetGeometryData";
+import IndicatorLayersReferenceControl
+  from "./IndicatorLayersReferenceControl";
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 import './style.scss';
+
+// Initialize cog
+import { cogProtocol } from "@geomatico/maplibre-cog-protocol";
+import { PopupToolbars } from "../Toolbars/PopupToolbars";
+import { Variables } from "../../../utils/Variables";
+
+maplibregl.addProtocol('cog', cogProtocol);
 
 const BASEMAP_ID = `basemap`
 
@@ -70,6 +79,21 @@ export default function MapLibre(
     position,
     force
   } = useSelector(state => state.map);
+
+  // Tools
+  const { tools: dashboardTools } = useSelector(state => state.dashboard.data)
+  const tools = dashboardTools.filter(
+    row => row.visible_by_default && [
+      Variables.DASHBOARD.TOOL.VIEW_3D,
+      Variables.DASHBOARD.TOOL.COMPARE_LAYERS
+    ].includes(row.name)
+  );
+
+  const drawingRef = useRef(null);
+  const redrawMeasurement = () => drawingRef.current.redrawMeasurement();
+  const isMeasurementToolActive = () => drawingRef.current.isMeasurementToolActive();
+  const redrawZonalAnalysis = () => drawingRef.current.redrawZonalAnalysis();
+  const isZonalAnalysisActive = () => drawingRef.current.isZonalAnalysisActive();
 
 
   /***
@@ -118,7 +142,7 @@ export default function MapLibre(
       newMap.once("load", () => {
         setMap(newMap)
         setTimeout(() =>
-            document.querySelector('.mapboxgl-ctrl-compass')
+            document.querySelector('.maplibregl-ctrl-compass')
               .addEventListener('click', () => {
                 newMap.easeTo({ pitch: 0, bearing: 0 })
               }),
@@ -140,7 +164,14 @@ export default function MapLibre(
         layers: []
       });
       newMap.addControl(deckgl);
-      setDeckGl(deckgl)
+      setDeckGl(deckgl);
+
+      const originalAddLayer = newMap.addLayer.bind(newMap);
+      newMap.addLayer = (layer, beforeId) => {
+        originalAddLayer(layer, beforeId);
+        if (isZonalAnalysisActive()) redrawZonalAnalysis();
+        if (isMeasurementToolActive()) redrawMeasurement();
+      };
 
       // Event when resized
       window.addEventListener('resize', _ => {
@@ -236,39 +267,46 @@ export default function MapLibre(
               }}
             /> : null
         }
-        <GlobalDateSelector/>
         <Plugin className={'ReferenceLayerToolbar'}>
           <div>
-            <PluginChild title={'Reference Layer selection'}>
+            <PluginChild title={'Reference Layer selection'} className={'ReferenceLayerSelectorWrapper'}>
               <ReferenceLayerSection/>
             </PluginChild>
           </div>
         </Plugin>
+        <GlobalDateSelector/>
       </div>
 
       <div className='Toolbar-Middle'>
         <div className='Separator'/>
         <HomeButton map={map}/>
-        <Measurement map={map}/>
         <LabelToggler/>
-        <CompareLayer disabled={is3dMode}/>
+        {
+          tools.find((tool => tool.name === Variables.DASHBOARD.TOOL.COMPARE_LAYERS)) ?
+            <CompareLayer disabled={is3dMode}/> : null
+        }
         {/* 3D View */}
-        <Plugin>
-          <div className='ExtrudedIcon Active'>
-            <PluginChild
-              title={'3D layer'}
-              disabled={!map}
-              active={is3dMode}
-              onClick={() => {
-                if (is3dMode) {
-                  map.easeTo({ pitch: 0 })
-                }
-                dispatch(Actions.Map.change3DMode(!is3dMode))
-              }}>
-              {is3dMode ? <ThreeDimensionOnIcon/> : <ThreeDimensionOffIcon/>}
-            </PluginChild>
-          </div>
-        </Plugin>
+        {
+          tools.find((tool => tool.name === Variables.DASHBOARD.TOOL.VIEW_3D)) ?
+            <Plugin>
+              <div className='ExtrudedIcon Active'>
+                <PluginChild
+                  title={'3D layer'}
+                  disabled={!map}
+                  active={is3dMode}
+                  onClick={() => {
+                    if (is3dMode) {
+                      map.easeTo({ pitch: 0 })
+                    }
+                    dispatch(Actions.Map.change3DMode(!is3dMode))
+                  }}>
+                  {is3dMode ? <ThreeDimensionOnIcon/> :
+                    <ThreeDimensionOffIcon/>}
+                </PluginChild>
+              </div>
+            </Plugin> : null
+        }
+        <PopupToolbars map={map} ref={drawingRef}/>
         <div className='Separator'/>
       </div>
 
@@ -305,11 +343,14 @@ export default function MapLibre(
 
     <div id="map"></div>
 
-    <ReferenceLayer map={map} deckgl={deckgl} is3DView={is3dMode}/>
+    <ReferenceLayers map={map} deckgl={deckgl} is3DView={is3dMode}/>
     <ContextLayers map={map}/>
     {
-      map ?
-        <ReferenceLayerCentroid map={map}/> : ""
+      map ? <>
+        <IndicatorLayersReferenceControl map={map}/>
+        <DatasetGeometryData/>
+        <ReferenceLayerCentroid map={map}/>
+      </> : null
     }
   </section>
 }

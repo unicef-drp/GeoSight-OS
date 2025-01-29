@@ -13,16 +13,25 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   COLOR SELECTOR
-   ========================================================================== */
-
-@import '../../../app/variables';
-
-
 .Color-Palette-Input {
   padding-top: 0 !important;
+}
 
+.ColorPalettePopover {
+  padding: 0 !important;
+
+  .Color-Palette-Option {
+    padding: 0.5rem;
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--gray-100);
+    }
+  }
+}
+
+.Color-Palette-Input,
+.ColorPalettePopover {
   .Color-Palette-Option {
     display: flex;
     width: fit-content;

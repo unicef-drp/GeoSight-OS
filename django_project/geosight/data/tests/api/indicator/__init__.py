@@ -14,4 +14,5 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from .detail import *  # noqa
+from .detail import IndicatorDetailApiTest  # noqa
+from .search import IndicatorSearchSimilarityApiTest  # noqa

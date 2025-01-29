@@ -13,12 +13,6 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   ON OFF SWITCHER
-   ========================================================================== */
-
-@import '../../../app/variables';
-
 .OnOffSwitcher {
   margin-left: 0 !important;
   margin-right: 0.5rem !important;
@@ -28,8 +22,8 @@
     height: 20px;
     width: 73px;
     padding: 0;
-    border: 1px solid $primary-color;
-    border-radius: $border-radius;
+    border: 1px solid var(--primary-color);
+    border-radius: var(--border-radius);
     overflow: hidden;
   }
 
@@ -44,24 +38,22 @@
       transform: translateX(38px);
 
       .MuiSwitch-thumb {
-        border-radius: 0;
-        border-bottom-right-radius: $border-radius;
-        border-top-right-radius: $border-radius;
+        border-radius: 0 var(--border-radius) var(--border-radius) 0;
       }
     }
   }
 
   .MuiSwitch-thumb {
     box-shadow: none;
-    background-color: $primary-color;
+    background-color: var(--primary-color);
     border-radius: 0;
     width: 36px;
     height: 22px;
   }
 
   .MuiSwitch-track {
-    background-color: $anti-primary-color !important;
-    border-radius: $border-radius;
+    background-color: var(--anti-primary-color) !important;
+    border-radius: var(--border-radius);
     opacity: 1 !important;
 
     &:before, &:after {
@@ -77,13 +69,13 @@
     &:before {
       content: 'ON';
       left: 10px;
-      color: $primary-color;
+      color: var(--primary-color);
     }
 
     &:after {
       content: 'OFF';
       right: 15px;
-      color: $primary-color;
+      color: var(--primary-color);
     }
   }
 }

@@ -16,8 +16,14 @@
 import React from 'react';
 import ReactAutocomplete from '@mui/material/Autocomplete';
 import { ArrowDownwardIcon } from "../Icons";
+import { isArray } from "chart.js/helpers";
 
 export default function Autocomplete({ ...props }) {
+  if (!isArray((props.value))) {
+    if (props.value && !props.options.includes(props.value)) {
+      props.options.push(props.value)
+    }
+  }
   return <ReactAutocomplete
     {...props}
     className={"ReactAutocomplete " + (props.className ? props.className : '')}

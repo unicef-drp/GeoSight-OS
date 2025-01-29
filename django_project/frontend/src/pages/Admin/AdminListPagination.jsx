@@ -66,10 +66,14 @@ export const AdminListPagination = forwardRef(
 
     // Other attributes
     const pageSize = 25;
-    const [parameters, setParameters] = useState({
+    let initParameters = {
       page: 0,
       page_size: pageSize
-    })
+    }
+    if (getParameters) {
+      initParameters = getParameters(initParameters)
+    }
+    const [parameters, setParameters] = useState(initParameters)
     const [data, setData] = useState([])
     const [rowSize, setRowSize] = useState(0)
     const [error, setError] = useState(null);
@@ -91,7 +95,7 @@ export const AdminListPagination = forwardRef(
     }
 
     /*** Load data */
-    const loadData = (force) => {
+    const loadData = async (force) => {
       setData(null)
       setError(null)
       const paramsUsed = dictDeepCopy(parameters)
@@ -103,24 +107,48 @@ export const AdminListPagination = forwardRef(
       }
       prev.urlRequest = url
 
-      fetchJSON(url, {}, false)
-        .then(data => {
-          if (prev.urlRequest === url) {
-            setRowSize(data.count)
-            setData(data.results)
-          }
-        })
-        .catch(error => {
-          if (error.message === 'Invalid page.') {
-            setParameters({ ...parameters, page: 0 })
+      try {
+        const data = await fetchJSON(url, {}, false)
+
+        // Set the data
+        if (prev.urlRequest === url) {
+          setRowSize(data.count)
+          setData(data.results)
+        }
+
+        // Fetch quick data for filter
+        if (props.quickDataChanged) {
+          const quickParams = jsonToUrlParams(
+            dictDeepCopy(
+              getParameters ? getParameters({}) : {}
+            )
+          )
+          if (!quickParams) {
+            props.quickDataChanged({})
           } else {
-            if (error?.response?.data) {
-              setError(error.response.data)
-            } else {
-              setError(error.message)
+            try {
+              const quickData = await fetchJSON(
+                urlData + 'data' + '?' + quickParams, {}, false
+              )
+              if (prev.urlRequest === url) {
+                props.quickDataChanged(quickData)
+              }
+            } catch (e) {
+              console.log(`Quick data is error ${e}`)
             }
           }
-        })
+        }
+      } catch (error) {
+        if (error.message === 'Invalid page.') {
+          setParameters({ ...parameters, page: 0 })
+        } else {
+          if (error?.response?.data) {
+            setError(error.response.data)
+          } else {
+            setError(error.message)
+          }
+        }
+      }
     }
 
     /*** Load ids data */

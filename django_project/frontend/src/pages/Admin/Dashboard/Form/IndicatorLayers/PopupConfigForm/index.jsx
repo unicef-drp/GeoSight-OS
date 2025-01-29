@@ -23,6 +23,8 @@ import ExampleContextInput from "./ExampleContextInput";
 import {
   getDefaultPopup
 } from "../../../../../Dashboard/MapLibre/Layers/ReferenceLayer/Popup";
+import { dictDeepCopy } from "../../../../../../utils/main";
+import { dataFieldsDefault } from "../../../../../../utils/indicatorLayer";
 
 import './style.scss';
 
@@ -58,6 +60,27 @@ export default function PopupConfigForm({ indicator, setIndicator }) {
       }
     } else {
       setTemplate(examplePopup)
+    }
+
+    // Check attributes fields
+    if (!indicator.data_fields) {
+      indicator.data_fields = dataFieldsDefault()
+    }
+    if (indicator.popup_type !== 'Custom') {
+      const attributeField = indicator.data_fields.find(field => {
+        return field.name === 'context.current.indicator.attributes'
+      })
+      if (!attributeField) {
+        const data_fields = dictDeepCopy(indicator.data_fields)
+        data_fields.push({
+          name: 'context.current.indicator.attributes',
+          alias: '',
+          visible: false,
+          type: "string",
+          order: indicator.data_fields.length
+        })
+        setIndicator({ ...indicator, data_fields: data_fields })
+      }
     }
   }, [indicator])
 

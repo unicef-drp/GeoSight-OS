@@ -27,6 +27,11 @@ import { popupTemplate } from "../../Popup";
 import {
   dataStructureToListData
 } from "../../../../../components/SortableTreeForm/utilities";
+import vectorTileLayer from "../../LayerType/VectorTile";
+import relatedTableLayer from "../../LayerType/RelatedTable";
+import cloudNativeGISLayer from "../../LayerType/CloudNativeGIS";
+import rasterCogLayer from "../../LayerType/RasterCog";
+import { Variables } from "../../../../../utils/Variables";
 
 const ID = `context-layer`
 const markersContextLayers = {}
@@ -68,6 +73,12 @@ const popupFeature = (featureProperties, name, fields, defaultField) => {
   if (defaultField?.length) {
     fields = defaultField
   }
+  if (properties.cluster) {
+    fields = null
+    delete properties['cluster']
+    delete properties['cluster_id']
+  }
+  let newProperties = properties
   if (fields) {
     fields.map(field => {
       if (field.visible !== false) {
@@ -91,16 +102,16 @@ const popupFeature = (featureProperties, name, fields, defaultField) => {
       }
     })
 
-    let newProperties = {}
+    newProperties = {}
     fields.forEach((field, idx) => {
       newProperties[field.alias] = properties[field.alias]
     })
-
-    return popupTemplate(null, newProperties, {
-      name: name,
-      color: '#eee'
-    })
   }
+
+  return popupTemplate(null, newProperties, {
+    name: name,
+    color: '#eee'
+  })
 }
 
 /**
@@ -141,7 +152,10 @@ export function renderLabel(id, contextLayerData, contextLayer, map) {
       maxZoom = style.maxZoom ? style.maxZoom : maxZoom
       paint['text-color'] = style.fontColor
       if (style.fontFamily) {
-        layout['text-font'] = style.fontFamily.split(',')
+        const font = style.fontFamily.split(',')[0].replaceAll('"', '')
+        layout['text-font'] = [font, font]
+      } else {
+        layout['text-font'] = ['Arial', 'Arial']
       }
       layout['text-size'] = style.fontSize
       paint['text-halo-color'] = style.haloColor
@@ -200,25 +214,35 @@ export function renderLabel(id, contextLayerData, contextLayer, map) {
 /**
  * Context layer rendering data
  */
-export function contextLayerRendering(id, contextLayerData, contextLayer, map, contextLayerOrder) {
+export function contextLayerRendering(
+  id,
+  contextLayerData,
+  contextLayer,
+  map,
+  contextLayerOrder,
+  // For map config
+  setData,
+  isInit,
+  setIsInit
+) {
   if (map) {
     if (contextLayer?.layer && !hasLayer(map, id)) {
       const { layer, layer_type } = contextLayer
       switch (layer_type) {
-        case 'Geojson': {
+        case Variables.LAYER.TYPE.GEOJSON: {
           const markers = geojsonLayer(map, id, layer, featureProperties => {
             return popupFeature(
-              featureProperties, contextLayerData.name, [], contextLayerData.data_fields
+              featureProperties, contextLayerData.name, null, null
             )
           })
           markersContextLayers[id] = markers
           break;
         }
-        case 'Raster Tile': {
+        case Variables.LAYER.TYPE.RASTER_TILE: {
           rasterTileLayer(map, id, layer)
           break;
         }
-        case 'ARCGIS': {
+        case Variables.LAYER.TYPE.ARCGIS: {
           arcGisLayer(map, id, layer, contextLayerData, (featureProperties, arcgisField) => {
             return popupFeature(
               featureProperties, contextLayerData.name, arcgisField, contextLayerData.data_fields
@@ -226,6 +250,65 @@ export function contextLayerRendering(id, contextLayerData, contextLayer, map, c
           }, contextLayerOrder)
           renderLabel(id, contextLayerData, contextLayer, map)
           break;
+        }
+        case Variables.LAYER.TYPE.VECTOR_TILE: {
+          removeLayers(map, id)
+          vectorTileLayer(
+            map, id, layer, contextLayerData, (featureProperties) => {
+              return popupFeature(
+                featureProperties, contextLayerData.name, null, Object.keys(featureProperties).map(property => {
+                  return {
+                    name: property,
+                    alias: property,
+                  }
+                })
+              )
+
+            }, contextLayerOrder
+          )
+          break;
+        }
+        case Variables.LAYER.TYPE.RELATED_TABLE: {
+          removeLayers(map, id)
+          relatedTableLayer(
+            map, id, layer, contextLayerData, featureProperties => {
+              return popupFeature(
+                featureProperties,
+                contextLayerData.name,
+                null,
+                contextLayerData.data_fields
+              )
+            }, contextLayerOrder
+          )
+          break
+        }
+        case Variables.LAYER.TYPE.CLOUD_NATIVE_GIS: {
+          removeLayers(map, id)
+          cloudNativeGISLayer(
+            map, id, layer, contextLayerData, featureProperties => {
+              return popupFeature(
+                featureProperties,
+                contextLayerData.name,
+                null,
+                contextLayerData.data_fields
+              )
+            }, contextLayerOrder
+          )
+          break
+        }
+        case Variables.LAYER.TYPE.RASTER_COG: {
+          removeLayers(map, id)
+          rasterCogLayer(
+            map, id, layer, setData, contextLayerData, featureProperties => {
+              return popupFeature(
+                featureProperties,
+                contextLayerData.name,
+                null,
+                contextLayerData.data_fields
+              )
+            }, contextLayerOrder, isInit, setIsInit
+          )
+          break
         }
       }
     }

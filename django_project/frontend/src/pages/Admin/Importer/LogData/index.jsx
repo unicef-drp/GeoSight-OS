@@ -32,10 +32,6 @@ import LinearProgress from "@mui/material/LinearProgress";
 import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
 import {
-  DatasetFilterSelector,
-  IndicatorFilterSelector,
-} from "../../ModalSelector/ModalFilterSelector";
-import {
   MultipleCreatableFilter
 } from "../../ModalSelector/ModalFilterSelector/MultipleCreatableFilter";
 import {
@@ -54,12 +50,19 @@ import { AdminPage, pageNames } from "../../index";
 import { fetchJSON } from "../../../../Requests";
 import { axiosGet } from "../../../../utils/georepo";
 import { SaveButton } from "../../../../components/Elements/Button";
+import {
+  MultipleSelectWithSearch
+} from "../../../../components/Input/SelectWithSearch";
+import { isValueDate } from "../../../../utils/relatedTable";
 
 
 import './style.scss';
 import {
-  MultipleSelectWithSearch
-} from "../../../../components/Input/SelectWithSearch";
+  DatasetFilterSelector
+} from "../../../../components/ResourceSelector/DatasetViewSelector";
+import {
+  IndicatorFilterSelector
+} from "../../../../components/ResourceSelector/IndicatorSelector";
 
 let inProgress = false
 
@@ -79,7 +82,7 @@ export default function ImporterLogData() {
     indicators: defaultFilters.indicators ? splitParams(defaultFilters.indicators) : [],
     datasets: defaultFilters.datasets ? splitParams(defaultFilters.datasets, false) : [],
     levels: defaultFilters.levels ? splitParams(defaultFilters.levels) : [],
-    status: defaultFilters.status ? splitParams(defaultFilters.status) : [],
+    status: defaultFilters.status ? splitParams(defaultFilters.status, false) : [],
     geographies: defaultFilters.geographies ? splitParams(defaultFilters.geographies) : [],
     fromTime: defaultFilters.fromTime ? defaultFilters.fromTime : null,
     toTime: defaultFilters.toTime ? defaultFilters.toTime : null,
@@ -173,6 +176,28 @@ export default function ImporterLogData() {
       columnsByDict['value'] = {
         field: 'value', headerName: 'Value', minWidth: 100
       }
+      columnsByDict['PCode'] = {
+        field: 'PCode', headerName: 'PCode', minWidth: 100,
+        renderCell: (params) => {
+          const value = params.row.data?.PCode
+          return <div
+            title={value}
+            className='MuiDataGrid-cellContent'>
+            {value}
+          </div>
+        },
+      }
+      columnsByDict['description'] = {
+        field: 'description', headerName: 'Description', minWidth: 200,
+        renderCell: (params) => {
+          const value = params.row.data?.description
+          return <div
+            title={value}
+            className='MuiDataGrid-cellContent'>
+            {value}
+          </div>
+        },
+      }
     }
     responseData.results.map(row => {
       Object.keys(row.data).map(key => {
@@ -182,10 +207,7 @@ export default function ImporterLogData() {
           }
         }
         const columnDetail = columnsByDict[key]
-        const isDate = (
-          key.toLowerCase().replaceAll('_', '').includes('date') ||
-          key.toLowerCase().replaceAll('_', '').includes('time')
-        )
+        const isDate = isValueDate(key, columnDetail)
         columnsByDict[key] = {
           renderCell: (params) => {
             const value = params.row.data[params.field]
@@ -401,8 +423,8 @@ export default function ImporterLogData() {
               indicators: newFilter
             })}/>
           <DatasetFilterSelector
-            data={filters.datasets}
-            setData={newFilter => setFilters({
+            initData={filters.datasets}
+            dataSelected={(selectedData) => setFilters({
               ...filters,
               datasets: newFilter
             })}/>

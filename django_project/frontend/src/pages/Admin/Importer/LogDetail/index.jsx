@@ -27,8 +27,9 @@ import {
   replaceWithBr
 } from "../../../../utils/main";
 import { getScheduleText } from "../../../../utils/cron";
-import { axiosGet, GeorepoUrls } from "../../../../utils/georepo";
+import { axiosGet } from "../../../../utils/georepo";
 import { resourceActions } from "../Logs";
+import { RefererenceLayerUrls } from "../../../../utils/referenceLayer";
 
 import '../ImporterDetail/style.scss';
 import './style.scss';
@@ -82,7 +83,8 @@ export function ImporterDetailSection({ inputData }) {
 
   useEffect(() => {
     if (data.attributes?.admin_level_type === 'Specific Level') {
-      axiosGet(GeorepoUrls.ViewDetail(data.reference_layer)).then(response => response.data).then(response => {
+      const url = RefererenceLayerUrls.ViewDetail(data)
+      axiosGet(url).then(response => response.data).then(response => {
         const level = response.dataset_levels.find(level => level.level + '' === data.attributes?.admin_level_value + '')
         data.attributes.admin_level_type = level ? level.level_name : data.attributes?.admin_level_value
         setData({ ...data })
@@ -114,6 +116,15 @@ export function ImporterDetailSection({ inputData }) {
               <div>{data.attributes.indicator_data_type === 'By Value' ? 'Selected indicator' : 'Data-Driven Indicator Column'}</div>
             </div>
           </Grid>
+          {
+            data.attributes.indicator_data_type !== 'By Value' ?
+              <Grid item xs={3}>
+                <div className='DetailSection'>
+                  <div>Indicator Column</div>
+                  <div>{data.attributes.indicator_data_field}</div>
+                </div>
+              </Grid> : null
+          }
           <Grid item xs={3}>
             <div className='DetailSection'>
               <div>Indicator Names</div>
@@ -449,7 +460,7 @@ export default function ImporterLogDetail() {
                   </div>
                   <div className='DetailButtonButton'>
                     <div className='Separator'/>
-                    <a href={urls.api.dataView}>
+                    <a href={urls.api.dataView + '?status=Warning and Error'}>
                       <ThemeButton
                         variant="primary">
                         See the data

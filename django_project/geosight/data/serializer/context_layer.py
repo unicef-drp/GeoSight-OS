@@ -19,13 +19,13 @@ import urllib.parse
 
 from rest_framework import serializers
 
-from core.serializer.dynamic_serializer import DynamicModelSerializer
 from geosight.data.models.context_layer import (
     ContextLayer, ContextLayerField
 )
+from geosight.data.serializer.resource import ResourceSerializer
 
 
-class ContextLayerSerializer(DynamicModelSerializer):
+class ContextLayerSerializer(ResourceSerializer):
     """Serializer for ContextLayer."""
 
     url = serializers.SerializerMethodField()
@@ -35,21 +35,24 @@ class ContextLayerSerializer(DynamicModelSerializer):
     data_fields = serializers.SerializerMethodField()
     label_styles = serializers.SerializerMethodField()
     permission = serializers.SerializerMethodField()
-    token = serializers.SerializerMethodField()
+    original_styles = serializers.SerializerMethodField()
+    original_configuration = serializers.SerializerMethodField()
+    configuration = serializers.SerializerMethodField()
 
     def get_url(self, obj: ContextLayer):
         """Url."""
-        return urllib.parse.unquote(obj.url.split('?')[0])
+        return urllib.parse.unquote(obj.url.split('?')[0]) if obj.url else None
 
     def get_parameters(self, obj: ContextLayer):
         """Return parameters."""
-        urls = obj.url.split('?')
         parameters = {}
-        if len(urls) > 1:
-            for param in urls[1].split('&'):
-                params = param.split('=')
-                if params[0].lower() != 'bbox':
-                    parameters[params[0]] = '='.join(params[1:])
+        if obj.url:
+            urls = obj.url.split('?')
+            if len(urls) > 1:
+                for param in urls[1].split('&'):
+                    params = param.split('=')
+                    if params[0].lower() != 'bbox':
+                        parameters[params[0]] = '='.join(params[1:])
         return parameters
 
     def get_category(self, obj: ContextLayer):
@@ -66,6 +69,10 @@ class ContextLayerSerializer(DynamicModelSerializer):
         """Return category name."""
         return json.loads(obj.styles) if obj.styles else None
 
+    def get_original_styles(self, obj: ContextLayer):
+        """Return original_styles."""
+        return json.loads(obj.styles) if obj.styles else None
+
     def get_label_styles(self, obj: ContextLayer):
         """Return category name."""
         return json.loads(obj.label_styles) if obj.label_styles else {}
@@ -76,13 +83,29 @@ class ContextLayerSerializer(DynamicModelSerializer):
             self.context.get('user', None)
         )
 
-    def get_token(self, obj: ContextLayer):
-        """Return token."""
-        return obj.token_val
+    def get_configuration(self, obj: ContextLayer):
+        """Return original_configuration."""
+        if not obj.configuration:
+            return None
+        if isinstance(obj.configuration, str):
+            return json.loads(obj.configuration)
+        return obj.configuration
+
+    def get_original_configuration(self, obj: ContextLayer):
+        """Return original_configuration."""
+        if not obj.configuration:
+            return None
+        if isinstance(obj.configuration, str):
+            return json.loads(obj.configuration)
+        return obj.configuration
 
     class Meta:  # noqa: D106
         model = ContextLayer
-        exclude = ('group',)
+        exclude = (
+            'password', 'username',
+            'cloud_native_gis_layer_id', 'arcgis_config',
+            'related_table', 'token', 'url_legend', 'group'
+        )
 
 
 class ContextLayerFieldSerializer(serializers.ModelSerializer):

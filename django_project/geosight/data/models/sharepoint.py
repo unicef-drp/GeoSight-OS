@@ -20,6 +20,8 @@ from django.contrib.gis.db import models
 from office365.runtime.auth.authentication_context import AuthenticationContext
 from office365.sharepoint.client_context import ClientContext
 from office365.sharepoint.files.file import File
+from pyexcel_xls import get_data as xls_get
+from pyexcel_xlsx import get_data as xlsx_get
 
 from core.models import AbstractTerm
 
@@ -63,9 +65,20 @@ class SharepointConfig(AbstractTerm):
                 return io.BytesIO(response.content)
             except Exception as e:
                 raise SharepointError(f'Error {response.status_code} : {e}')
-        elif response.status_code == 400:
+        elif response.status_code in [400, 404]:
             raise SharepointError('File does not exist.')
         else:
             raise SharepointError(
                 f'Error {response.status_code} : {response.text}'
             )
+
+    def load_excel(self, relative_url):
+        """Load excel content from relative url."""
+        content = self.load_file(relative_url=relative_url)
+        try:
+            try:
+                return xlsx_get(content)
+            except Exception:
+                return xls_get(content)
+        except Exception:
+            raise Exception('File is not excel.')

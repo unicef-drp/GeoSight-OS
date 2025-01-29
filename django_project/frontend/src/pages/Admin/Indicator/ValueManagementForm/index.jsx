@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import $ from "jquery";
@@ -31,19 +31,17 @@ import {
 } from "../../../../components/Elements/Button";
 import { SelectWithList } from "../../../../components/Input/SelectWithList";
 import InputFile from './InputFile'
-import {
-  axiosGet,
-  fetchReferenceLayerList,
-  GeorepoUrls
-} from '../../../../utils/georepo'
+import { axiosGet } from '../../../../utils/georepo'
 import { jsonToXlsx } from '../../../../utils/main'
-import { GeorepoViewInputSelector } from "../../ModalSelector/InputSelector";
 import {
   Notification,
   NotificationStatus
 } from "../../../../components/Notification";
+import { RefererenceLayerUrls } from "../../../../utils/referenceLayer";
 
 import './style.scss';
+import DatasetViewSelector
+  from "../../../../components/ResourceSelector/DatasetViewSelector";
 
 export function InputForm({ type, placeholder, name, initValue }) {
   const [value, setValue] = useState(initValue)
@@ -65,7 +63,6 @@ export function InputForm({ type, placeholder, name, initValue }) {
  */
 export default function ValueManagement() {
   const [open, setOpen] = useState(false);
-  const [references, setReferences] = useState([])
   const [reference, setReference] = useState(null)
   const [level, setLevel] = useState(null)
   const [error, setError] = useState(null)
@@ -79,7 +76,7 @@ export default function ValueManagement() {
   }
 
   const fetchData = (level, page) => {
-    axiosGet(level.url + '?page=' + page).then(response => {
+    axiosGet(level.url, { page: page }).then(response => {
       const data = response.data
       if (!level.layer) {
         level.layer = []
@@ -90,7 +87,7 @@ export default function ValueManagement() {
         level.finished = true
       }
       level.page = page
-      setReferences([...references])
+      setReference({ ...reference })
     });
   }
 
@@ -99,24 +96,23 @@ export default function ValueManagement() {
     setError('')
     setData(null)
     if (reference) {
-      const referenceLayer = references.find(row => {
-        return row.identifier === reference.identifier
-      })
+      const referenceLayer = reference
       if (!referenceLayer) {
         return
       }
       if (!referenceLayer.data) {
-        axiosGet(GeorepoUrls.ViewDetail(reference.identifier)).then(response => {
+        const url = RefererenceLayerUrls.ViewDetail(referenceLayer)
+        axiosGet(url).then(response => {
           const data = response.data
           referenceLayer.data = data.dataset_levels.map(level => {
             level.value = level.level
             level.name = level.level_name
             return level
           });
-          setReferences([...references])
           if (referenceLayer.data[0]) {
             setLevel(referenceLayer.data[0].value)
           }
+          setReference({ ...referenceLayer })
         });
       } else {
         // Check levels
@@ -159,27 +155,15 @@ export default function ValueManagement() {
         }
       }
     } else {
-      (
-        async () => {
-          const responseData = await fetchReferenceLayerList()
-          const references = responseData.map(row => {
-            row.value = row.identifier
-            return row
-          })
-          setReference(references[0].value)
-          setReferences(references)
-        }
-      )()
+      setReference(reference)
     }
-  }, [reference, references, level])
+  }, [reference, level])
 
   // Check reference layer
   let referenceLayer = null
   let levelData = null
-  if (references && reference) {
-    referenceLayer = references.filter(row => {
-      return row.identifier === reference.identifier
-    })[0]
+  if (reference) {
+    referenceLayer = reference
     if (referenceLayer?.data) {
       levelData = referenceLayer.data.find(row => {
         return row.level === level
@@ -277,20 +261,19 @@ export default function ValueManagement() {
                    type={'text'}
                    value={reference?.identifier ? reference.identifier : ''}
                    hidden/>
-            <GeorepoViewInputSelector
-              data={reference?.identifier ? [reference] : []}
-              setData={selectedData => {
+            <DatasetViewSelector
+              initData={
+                reference?.identifier ? [
+                  {
+                    id: reference.identifier,
+                    uuid: reference.identifier, ...reference
+                  }
+                ] : []
+              }
+              dataSelected={(selectedData) => {
                 const reference = selectedData[0]
-                const referenceLayer = references.find(row => {
-                  return row.identifier === reference
-                })
-                if (!referenceLayer) {
-                  setReferences([...references, reference])
-                }
                 setReference(reference)
               }}
-              isMultiple={false}
-              showSelected={false}
             />
           </div>
           <div className='ReferenceLayerSelection'>
@@ -329,7 +312,7 @@ export default function ValueManagement() {
                           </div>
                           <div className='ExtraValue'>
                             <div className='ExtraValueTitle form-helptext'>
-                              <div>Extra Value</div>
+                              <div>Attributes</div>
                               <div className='ExtraValueIcon MuiButtonLike'>
                                 <AddCircleOutlineIcon onClick={() => {
                                   if (!row[1].extras) {
@@ -352,7 +335,7 @@ export default function ValueManagement() {
                                       <InputForm
                                         type='text'
                                         placeholder='Name'
-                                        name={'extra_name:' + idx + ':' + row[0]}
+                                        name={'attribute_name:' + idx + ':' + row[0]}
                                         initValue={extra.name}
                                       />
                                       <div className='ExtraValueContentEqual'>
@@ -360,8 +343,8 @@ export default function ValueManagement() {
                                       </div>
                                       <InputForm
                                         type='text'
-                                        placeholder='Name'
-                                        name={'extra_value:' + idx + ':' + row[0]}
+                                        placeholder='Value'
+                                        name={'attribute_value:' + idx + ':' + row[0]}
                                         initValue={extra.value}
                                       />
                                       <CancelIcon

@@ -17,9 +17,13 @@ __copyright__ = ('Copyright 2023, Unicef')
 import json
 
 from django import forms
+from django.conf import settings
 from django.forms.models import model_to_dict
 
-from geosight.data.models.context_layer import ContextLayer, ContextLayerGroup
+from geosight.data.models.context_layer import (
+    ContextLayer, ContextLayerGroup, LayerType
+)
+from geosight.data.models.related_table import RelatedTable
 
 
 class ContextLayerForm(forms.ModelForm):
@@ -47,6 +51,23 @@ class ContextLayerForm(forms.ModelForm):
         widget=forms.HiddenInput()
     )
 
+    related_table = forms.CharField(
+        label='Related Table',
+        required=False,
+        widget=forms.HiddenInput()
+    )
+
+    configuration = forms.CharField(
+        required=False,
+        widget=forms.HiddenInput()
+    )
+
+    cloud_native_gis_layer_id = forms.CharField(
+        label='Cloud Native GIS Layer',
+        required=False,
+        widget=forms.HiddenInput()
+    )
+
     def __init__(self, *args, **kwargs):
         """Init."""
         super().__init__(*args, **kwargs)
@@ -63,6 +84,12 @@ class ContextLayerForm(forms.ModelForm):
         except KeyError:
             pass
 
+        if not settings.CLOUD_NATIVE_GIS_ENABLED:
+            self.fields['layer_type'].choices = [
+                choice for choice in self.fields['layer_type'].choices if
+                choice[0] != LayerType.CLOUD_NATIVE_GIS_LAYER
+            ]
+
     def clean_group(self):
         """Return group."""
         group, created = ContextLayerGroup.objects.get_or_create(
@@ -70,11 +97,37 @@ class ContextLayerForm(forms.ModelForm):
         )
         return group
 
+    def clean_related_table(self):
+        """Return related table."""
+        if self.instance and self.cleaned_data['related_table']:
+            return RelatedTable.objects.get(
+                pk=self.cleaned_data['related_table']
+            )
+        return None
+
+    def clean_cloud_native_gis_layer_id(self):
+        """Return layer of cloud_native_gis_layer."""
+        if settings.CLOUD_NATIVE_GIS_ENABLED:
+            from cloud_native_gis.models import Layer
+            if self.instance and self.cleaned_data[
+                'cloud_native_gis_layer_id'
+            ]:
+                return Layer.objects.get(
+                    pk=self.cleaned_data['cloud_native_gis_layer_id']
+                ).pk
+            return None
+        return None
+
     def clean_styles(self):
         """Return styles."""
-        if self.instance and not self.cleaned_data['styles']:
-            return self.instance.styles
-        return self.cleaned_data['styles']
+        if self.data['layer_type'] != LayerType.CLOUD_NATIVE_GIS_LAYER:
+            if self.instance and not self.cleaned_data['styles']:
+                return self.instance.styles
+        try:
+            if self.data['override_style']:
+                return self.cleaned_data['styles']
+        except KeyError:
+            return None
 
     def clean_label_styles(self):
         """Return label_styles."""
@@ -85,7 +138,7 @@ class ContextLayerForm(forms.ModelForm):
     class Meta:  # noqa: D106
         model = ContextLayer
         exclude = (
-            'created_at', 'creator', 'modified_at'
+            'created_at', 'creator', 'modified_at', 'modified_by'
         )
 
     @staticmethod

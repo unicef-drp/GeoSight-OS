@@ -26,6 +26,7 @@ def prepare_database(self):
     """Prepare database for test."""
     with self.cursor() as cursor:
         cursor.execute('CREATE EXTENSION IF NOT EXISTS postgis')
+        cursor.execute('CREATE EXTENSION IF NOT EXISTS pg_trgm')
         cursor.execute(
             f'CREATE SCHEMA IF NOT EXISTS {settings.TEMP_SCHEMA_NAME}'
         )
@@ -34,6 +35,8 @@ def prepare_database(self):
 class PostgresSchemaTestRunner(DiscoverRunner):
     """Postgres schema test runner."""
 
+    keepdb_input = None
+
     def setup_databases(self, **kwargs):
         """Set up database for runner."""
         for connection_name in connections:
@@ -41,6 +44,9 @@ class PostgresSchemaTestRunner(DiscoverRunner):
             connection.prepare_database = MethodType(
                 prepare_database, connection
             )
+        if self.keepdb_input is None:
+            self.keepdb_input = self.keepdb
+        self.keepdb = True
         return super().setup_databases(**kwargs)
 
     @staticmethod
@@ -60,3 +66,8 @@ class PostgresSchemaTestRunner(DiscoverRunner):
         """Prepare test env."""
         PostgresSchemaTestRunner.__disable_celery()
         super(PostgresSchemaTestRunner, self).setup_test_environment(**kwargs)
+
+    def teardown_databases(self, old_config, **kwargs):
+        """Destroy all the non-mirror databases."""
+        self.keepdb = self.keepdb_input
+        return super().teardown_databases(old_config, **kwargs)

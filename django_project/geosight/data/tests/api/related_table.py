@@ -17,7 +17,6 @@ __copyright__ = ('Copyright 2023, Unicef')
 import json
 
 from django.contrib.auth import get_user_model
-from django.test.testcases import TestCase
 from django.urls import reverse
 
 from geosight.data.models import RelatedTable
@@ -27,7 +26,7 @@ from geosight.permission.tests._base import BasePermissionTest
 User = get_user_model()
 
 
-class RelatedTableApiTest(BasePermissionTest, TestCase):
+class RelatedTableApiTest(BasePermissionTest.TestCase):
     """Test for dashboard bookmark api."""
 
     index = 0

@@ -17,7 +17,7 @@
    Map Container
    ========================================================================== */
 
-@import '../../../app/variables';
+@use '../../../app/variables' as *;
 
 
 .DashboardMap {
@@ -137,11 +137,21 @@
       margin-left: -75px;
       top: 9px;
 
-      .ExtrudedIcon svg,
-      svg[data-testid='CompareIcon'] {
-        margin-top: -3px;
-        height: 22px;
-        width: 22px;
+      .CompareLayerComponent svg {
+        margin-top: -1px;
+        height: 18px;
+        width: 18px;
+      }
+
+      .MovementHistory svg {
+        height: 16px;
+        width: 16px;
+      }
+
+      .ExtrudedIcon svg {
+        margin-top: -2px;
+        height: 20px;
+        width: 20px;
       }
 
       a {
@@ -191,28 +201,11 @@
       border-radius: 0;
       height: 30px;
 
-      .Active {
-        a, span {
-          color: $primary-color !important;
-          background-color: rgba(0, 0, 0, 0) !important;
-        }
-      }
-
-      a, span {
-        color: $tab-inactive-color !important;
-        background-color: rgba(0, 0, 0, 0) !important;
-      }
-
       a {
         margin: 0 2px;
         line-height: 30px;
         width: 30px;
         height: 30px;
-
-
-        &:hover {
-          background-color: #ddd;
-        }
       }
 
       a, span {
@@ -222,6 +215,19 @@
         color: $primary-color;
         cursor: pointer;
         display: block;
+      }
+
+      .CurrentDate {
+        margin-right: 1rem;
+        width: 100px !important;
+
+        .ToolbarChild {
+          width: 100px !important;
+
+          a {
+            width: 100px !important;
+          }
+        }
       }
 
       &.LeftButton, &.GlobalDateSelector {
@@ -243,8 +249,6 @@
       }
 
       &.ReferenceLayerToolbar {
-        width: 120px;
-
         a {
           opacity: 1;
         }
@@ -258,10 +262,6 @@
         width: 30px;
         margin: 0 5px;
         padding: 3px;
-
-        &:hover {
-          background-color: #ddd;
-        }
 
         span {
           width: 100%;
@@ -418,4 +418,8 @@ $nav-disabled-color: '%23CCCCCC';
 
 .ContextPopup {
   z-index: 3;
+}
+
+.maplibregl-ctrl-bottom-right {
+  right: 40px;
 }

@@ -30,7 +30,7 @@ import KeyboardDoubleArrowUpIcon
   from "@mui/icons-material/KeyboardDoubleArrowUp";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
-import { fetchJSON } from "../../../../Requests";
+import { axiosPostWithSession } from "../../../../Requests";
 import { Actions } from "../../../../store/dashboard";
 import { formatDate, formatDateTime, nowUTC } from "../../../../utils/main";
 import {
@@ -41,6 +41,7 @@ import {
 import { SelectWithList } from "../../../../components/Input/SelectWithList";
 import PlayControl from "./PlayControl";
 import { ThemeButton } from "../../../../components/Elements/Button";
+import { Session } from "../../../../utils/Sessions";
 
 import './style.scss';
 
@@ -51,6 +52,8 @@ export default function GlobalDateSelector() {
   const dispatch = useDispatch();
   const { globalDateSelectorOpened } = useSelector(state => state.globalState)
   const {
+    slug,
+    referenceLayer,
     indicators,
     indicatorLayers,
     default_time_mode
@@ -65,15 +68,18 @@ export default function GlobalDateSelector() {
   const [selectedDatePointSelected, setSelectedDatePointSelected] = useState(false)
   const {
     default_interval,
+    use_only_last_known_value,
     fit_to_current_indicator_range,
     show_last_known_value_in_range
   } = default_time_mode
-  const [isInLatestValue, setIsInLatestValue] = useState(show_last_known_value_in_range === undefined ? false : show_last_known_value_in_range)
-  const [isFitToIndicatorRange, setIsFitToIndicatorRange] = useState(fit_to_current_indicator_range === undefined ? false : fit_to_current_indicator_range)
+  const [isInLatestValue, setIsInLatestValue] = useState(use_only_last_known_value ? true : show_last_known_value_in_range === undefined ? false : show_last_known_value_in_range)
+  const [isFitToIndicatorRange, setIsFitToIndicatorRange] = useState(use_only_last_known_value ? false : fit_to_current_indicator_range === undefined ? false : fit_to_current_indicator_range)
   const [selectedDatePoint, setSelectedDatePoint] = useState(null)
   const [interval, setInterval] = useState(default_interval ? default_interval : INTERVALS.MONTHLY)
   const [minDate, setMinDate] = useState(null)
   const [maxDate, setMaxDate] = useState(null)
+  const [animationDone, setAnimationDone] = useState(true)
+  const [hide, setHide] = useState(true)
 
   const prevState = useRef();
 
@@ -110,14 +116,14 @@ export default function GlobalDateSelector() {
       }
 
       const selectedMinDate = new Date(selectedMinDateStr)
-      const minYear = selectedMinDate.getFullYear()
-      const minMonth = selectedMinDate.getMonth()
-      const minDay = selectedMinDate.getDate()
+      const minYear = selectedMinDate.getUTCFullYear()
+      const minMonth = selectedMinDate.getUTCMonth()
+      const minDay = selectedMinDate.getUTCDate()
 
       const selectedMaxDate = new Date(selectedMaxDateStr)
-      const maxYear = selectedMaxDate.getFullYear()
-      const maxMonth = selectedMaxDate.getMonth()
-      const maxDay = selectedMaxDate.getDate()
+      const maxYear = selectedMaxDate.getUTCFullYear()
+      const maxMonth = selectedMaxDate.getUTCMonth()
+      const maxDay = selectedMaxDate.getUTCDate()
 
       // construct min/max
       switch (interval) {
@@ -280,11 +286,33 @@ export default function GlobalDateSelector() {
    * Update global config
    */
   useEffect(() => {
+      if (use_only_last_known_value) {
+        const newMinDate = currentDates[0]
+        const newMaxDate = currentDates[currentDates.length - 1]
+        if (newMinDate !== minDate) {
+          setMinDate(newMinDate)
+        }
+        if (newMaxDate !== maxDate) {
+          setMaxDate(newMaxDate)
+        }
+        if (selectedDatePoint !== newMaxDate) {
+          setSelectedDatePoint(newMaxDate)
+        }
+        if (isFitToIndicatorRange) {
+          setIsFitToIndicatorRange(false)
+        }
+        if (!isInLatestValue) {
+          setIsInLatestValue(true)
+        }
+      }
       dispatch(Actions.SelectedGlobalTimeConfig.change({
         selectedDatePoint, interval, minDate, maxDate, isInLatestValue
       }))
     },
-    [selectedDatePoint, interval, minDate, maxDate]
+    [
+      selectedDatePoint, interval, minDate, maxDate, isInLatestValue,
+      use_only_last_known_value, isFitToIndicatorRange
+    ]
   );
 
   /**
@@ -305,28 +333,39 @@ export default function GlobalDateSelector() {
   useEffect(() => {
     (
       async () => {
-        const data = {}
         if (indicators.length) {
-          const metadataUrl = indicators[0].url.replace('/values/latest', '/metadata').replace(indicators[0].id, 'all')
-          const responses = await fetchJSON(metadataUrl, {});
-          indicators.map(indicator => {
-            const response = responses[indicator.id]
-            const id = 'indicator-' + indicator.id
-            if (!response?.dates?.length) {
-              data[id] = {
-                dates: [nowUTC().toISOString()],
-                count: 0,
-                version: 'TEMP'
+          const session = new Session('GlobalDateSelector');
+          const metadataUrl = `/api/indicator/metadata?reference_layer_uuid=` + referenceLayer?.identifier
+          axiosPostWithSession('FetchMetadata', metadataUrl, indicators.map(indicator => indicator.id))
+            .then(responses => {
+                const data = {}
+                indicators.map(indicator => {
+                  const response = responses[indicator.id]
+                  const id = 'indicator-' + indicator.id
+                  if (!response?.dates?.length) {
+                    data[id] = {
+                      dates: [nowUTC().toISOString()],
+                      count: 0,
+                      version: new Date().getTime() + '-' + referenceLayer?.identifier
+                    }
+                  } else {
+                    data[id] = response
+                  }
+                })
+                if (session.isValid) {
+                  dispatch(Actions.IndicatorLayerMetadata.updateBatch(data))
+                }
               }
-            } else {
-              data[id] = response
+            ).catch(err => {
+              if (session.isValid) {
+                dispatch(Actions.IndicatorLayerMetadata.updateBatch({}))
+              }
             }
-          })
+          );
         }
-        dispatch(Actions.IndicatorLayerMetadata.updateBatch(data))
       }
     )();
-  }, [indicators]);
+  }, [indicators, referenceLayer]);
 
   /**
    * Update dates
@@ -342,7 +381,11 @@ export default function GlobalDateSelector() {
         const min = newDates[0]
         if (selectedDatePoint !== max) {
           setSelectedDatePoint(max)
+        }
+        if (maxDate !== max) {
           setMaxDate(max)
+        }
+        if (minDate !== min) {
           setMinDate(min)
         }
       }
@@ -382,6 +425,38 @@ export default function GlobalDateSelector() {
     ]
   );
 
+  /**
+   * Animation done
+   */
+  useEffect(() => {
+      const wrapper = document.querySelector(".GlobalDateSelection");
+      wrapper.addEventListener("transitionstart", () => {
+        setAnimationDone(false)
+      });
+
+      wrapper.addEventListener("transitionend", () => {
+        setAnimationDone(true)
+      });
+    },
+    []
+  );
+
+  /** Everytime globalDateSelectorOpened changed, unhide it */
+  useEffect(() => {
+      setHide(false)
+    },
+    [globalDateSelectorOpened]
+  );
+
+  /** Everytime animationDone and not opened, hide it */
+  useEffect(() => {
+      if (!globalDateSelectorOpened && animationDone) {
+        setHide(true)
+      }
+    },
+    [animationDone]
+  );
+
   // Update the inputs
   let currentSelectedDatePointMark = 0
   let usedDates = dates
@@ -402,8 +477,9 @@ export default function GlobalDateSelector() {
       label: label,
     }
   })
+
   return <div
-    className={'GlobalDateSelection ' + (globalDateSelectorOpened ? 'Open' : '')}>
+    className={'GlobalDateSelection ' + (globalDateSelectorOpened ? 'Open ' : '') + (hide ? 'Hide' : '')}>
     <div className='UpperFloating'>
       <div className='Separator'/>
       <PlayControl

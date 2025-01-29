@@ -23,7 +23,6 @@ import Modal, {
 } from "../../../../../../components/Modal";
 import { SaveButton } from "../../../../../../components/Elements/Button";
 
-import './style.scss';
 import "../../../../../../components/SqlQueryGenerator/WhereInputModal/style.scss"
 
 /**
@@ -71,17 +70,22 @@ export default function Filter(
             }
           }
       }
-      return {
+      const output = {
         name: field.name,
         type: fieldType,
         value: field.value
       }
+      if (field.options) {
+        output.options = Array.from(new Set(field.options))
+      }
+      return output
     })
   }
   return <Fragment>
     <input
       disabled={!fields || onLoading}
       type="text"
+      className='ClickedReadOnly'
       placeholder={onLoading ? "Loading" : "SQL Filter"}
       readOnly={true}
       value={data}

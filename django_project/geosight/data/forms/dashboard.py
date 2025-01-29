@@ -85,10 +85,19 @@ class DashboardForm(forms.ModelForm):
         else:
             data['slug'] = slugify(data['slug'])
 
-        other_data = json.loads(data['data'])
+        try:
+            other_data = json.loads(data['data'])
+        except TypeError:
+            other_data = data['data']
 
         # save polygon
-        poly = Polygon.from_bbox(other_data['extent'])
+        try:
+            poly = Polygon.from_bbox(other_data['extent'])
+        except ValueError:
+            raise ValueError(
+                'Invalid extent, '
+                'it seems the extent from GeoRepo is empty or not correct.'
+            )
         poly.srid = 4326
         data['extent'] = poly
 
@@ -122,4 +131,5 @@ class DashboardForm(forms.ModelForm):
             data['permission'] = other_data['permission']
         except KeyError:
             data['permission'] = None
+        data['tools'] = other_data.get('tools', [])
         return data

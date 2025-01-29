@@ -18,8 +18,8 @@ import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import Modal, { ModalHeader } from "../../../components/Modal";
 import { IconTextField } from "../../../components/Elements/Input";
 import { SaveButton } from "../../../components/Elements/Button";
-import { fetchJSON } from "../../../Requests";
-import { MainDataGrid } from "../../../components/MainDataGrid";
+import { fetchJSON, postJSON } from "../../../Requests";
+import { MainDataGrid } from "../../../components/Table";
 import { MagnifyIcon } from "../../../components/Icons";
 
 import './style.scss';
@@ -122,19 +122,29 @@ export default function ModalSelector(
 
   /** Change data based on the input data **/
   useEffect(() => {
-    if (open && api && !loaded) {
+    if (open && api) {
       setLoaded(true)
-      fetchJSON(api)
-        .then(data => {
-          setData(data)
-        })
+      if (props.filter?.length) {
+        let filteredIds = selectedData.concat(props.filter)
+        postJSON(
+          api, { ids: filteredIds }
+        )
+          .then(data => {
+            setData(data)
+          })
+      } else {
+        fetchJSON(api)
+          .then(data => {
+            setData(data)
+          })
+      }
     }
 
     if (open) {
       // Update selection model
       setSelectionModel(selectedData.map(row => returnId(row)))
     }
-  }, [open])
+  }, [open, props.filter])
 
   /** Change data based on the input data **/
   useEffect(() => {

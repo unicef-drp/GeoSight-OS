@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+        version="1.1"
+        fill="none"
+        viewBox="0 0 15.01561 15"
+        height="15"
+        width="15.01561"
+        xmlns="http://www.w3.org/2000/svg">
+    <path
+            fill="currentColor"
+            d="m 237.75087,698.53553 h 0.86742 v -15 h -0.86742 z"
+            transform="translate(-230.68458,-683.53552)"/>
+    <g>
+        <path
+                fill="currentColor"
+                d="m 239.68458,690.53553 v -6 h 5 a 1,1 45 0 1 1,1 v 11 a 1,1 135 0 1 -1,1 l -5,0 v -6 z"
+                transform="translate(-230.68458,-683.53552)"/>
+        <path
+                fill="currentColor"
+                d="m 231.38458,697.53553 5.3,0 v -0.88951 h -5.11049 v -11.22098 h 5.11049 v -0.88951 h -5.3 a 0.7,0.7 135 0 0 -0.7,0.7 l 0,11.6 a 0.7,0.7 45 0 0 0.7,0.7 z"
+                transform="matrix(-1,0,0,1,245.70019,-683.53552)"/>
+        <path
+                fill="#FFFFFF"
+                d="m 234.68458,689.08553 -2.05,1.95 2.05,1.95 v -1.45 h 2 v -1 h -2 z"
+                transform="matrix(-1,0,0,1,245.69,-683.53552)"/>
+    </g>
+    <g transform="matrix(-1,0,0,1,15.01561,0)">
+        <path
+                fill="currentColor"
+                d="m 239.68458,690.53553 v -6 h 5 a 1,1 45 0 1 1,1 v 11 a 1,1 135 0 1 -1,1 h -5 v -6 z"
+                transform="translate(-230.68458,-683.53552)"/>
+        <path
+                fill="currentColor"
+                d="m 231.38458,697.53553 h 5.3 v -0.88951 h -5.11049 v -11.22098 h 5.11049 v -0.88951 h -5.3 a 0.7,0.7 135 0 0 -0.7,0.7 v 11.6 a 0.7,0.7 45 0 0 0.7,0.7 z"
+                transform="matrix(-1,0,0,1,245.70019,-683.53552)"/>
+        <path
+                fill="#FFFFFF"
+                d="m 234.68458,689.08553 -2.05,1.95 2.05,1.95 v -1.45 h 2 v -1 h -2 z"
+                transform="matrix(-1,0,0,1,245.69,-683.53552)"/>
+    </g>
+</svg>

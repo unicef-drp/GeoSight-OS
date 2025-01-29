@@ -14,7 +14,7 @@
  */
 
 import React, { Fragment, useEffect, useState } from 'react';
-import { MainDataGrid } from "../../../../components/MainDataGrid";
+import { MainDataGrid } from "../../../../components/Table";
 import { ThemeButton } from "../../../../components/Elements/Button";
 
 import './style.scss';
@@ -126,7 +126,7 @@ export function AdminTable(
           }}
           disableSelectionOnClick={!props.enableSelectionOnClick}
 
-          checkboxSelection={columns?.length && !!setSelectionModel && !props.enableSelectionOnClick}
+          checkboxSelection={columns?.length && !!setSelectionModel && !props.enableSelectionOnClick && !props.disabledCheckboxSelection}
           onSelectionModelChange={(newSelectionModel) => {
             setSelectionModel(newSelectionModel);
           }}

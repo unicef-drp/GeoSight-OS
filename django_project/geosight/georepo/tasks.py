@@ -27,17 +27,26 @@ logger = get_task_logger(__name__)
 
 
 @app.task
+def fetch_reference_codes_by_ids(ids):
+    """Fetch reference codes."""
+    for reference_layer_view in ReferenceLayerView.objects.filter(id__in=ids):
+        reference_layer_view.sync_entities_code()
+        reference_layer_view.increase_version()
+
+
+@app.task
 def fetch_reference_codes(_id):
     """Fetch reference codes."""
     try:
         reference_layer_view = ReferenceLayerView.objects.get(id=_id)
         reference_layer_view.sync_entities_code()
+        reference_layer_view.increase_version()
     except ReferenceLayerView.DoesNotExist:
         logger.error(f'View {_id} does not exist')
 
 
 @app.task
-def fetch_datasets(fetch_code=False):
+def fetch_datasets(fetch_code=True):
     """Fetch reference codes."""
     datasets = GeorepoRequest().get_reference_layer_list()
     for dataset in datasets:

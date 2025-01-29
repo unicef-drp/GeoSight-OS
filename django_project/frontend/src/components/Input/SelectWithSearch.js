@@ -18,9 +18,11 @@ import $ from 'jquery';
 import { Checkbox, TextField } from "@mui/material";
 import CheckBoxOutlineBlankIcon
   from '@mui/icons-material/CheckBoxOutlineBlank';
+import InputAdornment from '@mui/material/InputAdornment';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { dictDeepCopy } from "../../utils/main";
 import Autocomplete from "./Autocomplete";
+import SelectWithSearchQuickSelection from "./SelectWithSearchQuickSelection";
 
 import './style.scss';
 
@@ -58,13 +60,17 @@ export function SelectWithSearch(
       value={value}
       options={options}
       disableCloseOnSelect={props.disableCloseOnSelect !== undefined ? props.disableCloseOnSelect : true}
-      getOptionLabel={(option) => option}
-      renderInput={(params) => (
-        <TextField
+      getOptionLabel={(option) => option === '' ? <i>Blank</i> : option}
+      renderInput={(params) => {
+        if (params.inputProps.value === "[object Object]") {
+          params.inputProps.value = 'Blank'
+        }
+        return <TextField
           {...params}
-          placeholder={props.placeholder ? props.placeholder : "Select 1 option"}
+          value={value}
+          placeholder={props.placeholder ? props.placeholder : 'Select 1 option'}
         />
-      )}
+      }}
       onChange={(event, values) => {
         if (onChangeFn) {
           onChangeFn(values ? values : '');
@@ -98,65 +104,83 @@ export function MultipleSelectWithSearch(
 ) {
   const isCompact = props.isCompact
   const selectAllText = 'Select all'
-  const allSelected = value.length === options.length
+  const allSelected = value.length === options.length && value.length > 0
   const optionsWithSelectAll = [selectAllText].concat(options)
-
-  return <Autocomplete
-    autoComplete={false}
-    className={
-      'MultipleSelectWithSearch ' +
-      (isCompact ? 'Compact ' : '') +
-      (props.fullWidth ? 'FullWidth ' : '') +
-      (props.smallHeight ? 'SmallHeight ' : '') +
-      (props.showValues ? 'ShowValues ' : '') +
-      (value.length === 0 ? 'NoValue ' : '') +
-      (value.length > 1 ? 'MultipleValue ' : '') +
-      (value.length === options.length ? 'AllSelected ' : '') +
-      className
-    }
-    value={value}
-    disablePortal={true}
-    options={dictDeepCopy(optionsWithSelectAll)}
-    disableCloseOnSelect={props.disableCloseOnSelect !== undefined ? props.disableCloseOnSelect : true}
-    getOptionLabel={(option) => option}
-    renderOption={(props, option, { selected }) => {
-      if (option === selectAllText && allSelected) {
-        selected = true
+  return <>
+    <Autocomplete
+      autoComplete={false}
+      className={
+        'MultipleSelectWithSearch ' +
+        (isCompact ? 'Compact ' : '') +
+        (props.fullWidth ? 'FullWidth ' : '') +
+        (props.smallHeight ? 'SmallHeight ' : '') +
+        (props.showValues ? 'ShowValues ' : '') +
+        (value.length === 0 ? 'NoValue ' : '') +
+        (value.length > 1 ? 'MultipleValue ' : '') +
+        (value.length === options.length ? 'AllSelected ' : '') +
+        className
       }
-      return <li
-        value={option} {...props}
-        className={
-          props.className + ' OptionMember ' + (isCompact ? 'Compact ' : '')
+      value={value}
+      disablePortal={true}
+      options={dictDeepCopy(optionsWithSelectAll)}
+      disableCloseOnSelect={props.disableCloseOnSelect !== undefined ? props.disableCloseOnSelect : true}
+      getOptionLabel={(option) => option}
+      renderOption={(props, option, { selected }) => {
+        if (option === selectAllText && allSelected) {
+          selected = true
         }
-      >
-        <Checkbox
-          icon={<CheckBoxOutlineBlankIcon value={option} fontSize="small"/>}
-          checkedIcon={<CheckBoxIcon value={option} fontSize="small"/>}
-          value={option}
-          style={{ marginRight: 8 }}
-          checked={selected}
-        />
-        {option}
-      </li>
-    }}
-    renderInput={(params) => (
-      <TextField
-        {...params}
-        placeholder={value?.length ? '' : props.placeholder ? props.placeholder : "Select 1 option"}
-      />
-    )}
-    onChange={(e, values) => {
-      if (e.target.getAttribute('value') === selectAllText || $(e.target).closest('li').attr('value') === selectAllText) {
-        if (!allSelected) {
-          onChangeFn(options);
+        return <li
+          value={option} {...props}
+          className={
+            props.className + ' OptionMember ' + (isCompact ? 'Compact ' : '')
+          }
+        >
+          <Checkbox
+            icon={<CheckBoxOutlineBlankIcon value={option} fontSize="small"/>}
+            checkedIcon={<CheckBoxIcon value={option} fontSize="small"/>}
+            value={option}
+            style={{ marginRight: 8 }}
+            checked={selected}
+          />
+          {option === '' ? <i>Blank</i> : option}
+        </li>
+      }}
+      renderInput={(params) => {
+        if (props.showValues) {
+          params.InputProps.placeholder = !value.length ? props.placeholder ? props.placeholder : 'Select 1 option' : ''
         } else {
-          onChangeFn([]);
+          params.InputProps.placeholder = value.length === 1 ? '' : allSelected ? 'All selected' : value.length ? (value.length + ' selected') : props.placeholder ? props.placeholder : 'Select 1 option'
         }
-      } else {
-        onChangeFn(values);
-      }
-    }}
-    disabled={disabled}
-    multiple
-  />
+        if (props?.quickSelection) {
+          params.InputProps.endAdornment = (
+            <InputAdornment
+              position='end'
+              className='MuiAutocomplete-endAdornment OtherOptions'>
+              <SelectWithSearchQuickSelection
+                value={value}
+                options={options}
+                onChange={val => {
+                  onChangeFn(val)
+                }}
+              />
+            </InputAdornment>
+          )
+        }
+        return <TextField {...params}/>
+      }}
+      onChange={(e, values) => {
+        if (e.target.getAttribute('value') === selectAllText || $(e.target).closest('li').attr('value') === selectAllText) {
+          if (!allSelected) {
+            onChangeFn(options);
+          } else {
+            onChangeFn([]);
+          }
+        } else {
+          onChangeFn(values);
+        }
+      }}
+      disabled={disabled}
+      multiple
+    />
+  </>
 }

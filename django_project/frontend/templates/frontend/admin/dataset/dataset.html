@@ -11,8 +11,11 @@
 {% block scripts %}
     <script>
       urls.api = {
-        'datasetApi': '{% url 'data-browser-api'%}',
+        'datasetApi': '{% url 'dataset-api'%}',
         'indicators': '{% url 'indicator-basic-list-api'%}',
+
+        {# permission #}
+        'permission': '{% url 'dataset-permission-api' 0 1 %}',
       }
     </script>
 {% endblock %}

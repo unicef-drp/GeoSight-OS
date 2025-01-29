@@ -21,6 +21,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
+from core.forms.maintenance import MaintenanceModelForm
 from core.forms.profile import ProfileForm
 from core.forms.site_preferences import SitePreferencesForm
 from core.forms.user import (
@@ -32,6 +33,7 @@ from core.models import (
 )
 from core.models.access_request import UserAccessRequest
 from core.models.color import ColorPalette
+from core.models.maintenance import Maintenance
 
 User = get_user_model()
 admin.site.unregister(User)
@@ -51,13 +53,22 @@ class SitePreferencesAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields': (
-                'site_title', 'site_url', 'disclaimer',
+                'site_title', 'site_url', 'site_type', 'disclaimer',
                 'default_basemap', 'default_color_palette'
             )
         }),
         ('Environment', {
             'fields': (
                 'sentry_dsn', 'sentry_environment'
+            )
+        }),
+        ('Plugins', {
+            'fields': (
+                'cloud_native_gis_enabled',
+                'machine_info_fetcher_enabled',
+                'reference_dataset_enabled',
+                'tenants_enabled',
+                'machine_info_fetcher_config',
             )
         }),
         ('GeoRepo', {
@@ -123,9 +134,20 @@ class SitePreferencesAdmin(admin.ModelAdmin):
                 'style_compare_mode_outline_size',
             ),
         }),
+        ('Login Page', {
+            'fields': (
+                'login_help_text',
+            )
+        })
     )
     inlines = (SitePreferencesImageInline,)
-    readonly_fields = ('sentry_dsn', 'sentry_environment')
+    readonly_fields = (
+        'sentry_dsn', 'sentry_environment',
+        'cloud_native_gis_enabled',
+        'machine_info_fetcher_enabled',
+        'reference_dataset_enabled',
+        'tenants_enabled'
+    )
 
 
 admin.site.register(SitePreferences, SitePreferencesAdmin)
@@ -244,7 +266,8 @@ class APIKeyAdmin(admin.ModelAdmin):
     """API key admin admin."""
 
     list_display = (
-        'get_user', 'platform', 'owner', 'contact', 'get_created', 'is_active'
+        'get_user', 'platform', 'owner', 'contact',
+        'get_created', 'is_active', 'expiry'
     )
     fields = ('platform', 'owner', 'contact', 'is_active')
 
@@ -264,3 +287,20 @@ class APIKeyAdmin(admin.ModelAdmin):
 
 
 admin.site.register(ApiKey, APIKeyAdmin)
+
+
+class MaintenanceAdmin(admin.ModelAdmin):
+    """Maintenance admin."""
+
+    form = MaintenanceModelForm
+    list_display = (
+        'id', 'scheduled_from', 'scheduled_end', 'creator', 'created_at'
+    )
+
+    def save_model(self, request, obj, form, change):
+        """Save maintenance model."""
+        obj.creator = request.user
+        super().save_model(request, obj, form, change)
+
+
+admin.site.register(Maintenance, MaintenanceAdmin)

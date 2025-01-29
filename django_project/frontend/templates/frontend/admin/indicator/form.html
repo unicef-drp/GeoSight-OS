@@ -23,6 +23,7 @@
 {% block scripts %}
     <script>
       const indicator = {{ form.indicator_data|safe }};
+      const permissionFormData = {% if form.permission_data %}{{ form.permission_data|safe }}{% else %}null{% endif %};
       const indicatorId = {% if indicator_id %}{{ indicator_id }}{% else %}null{% endif %};
       const indicatorRules = {{ rules|safe }};
       const types = {{ types|safe }};
@@ -36,8 +37,6 @@
       // Urls api
       urls.api = {
         'styles': '{% url 'style-list-api'%}',
-        'users': '{% url 'user-list-api'%}',
-        'groups': '{% url 'group-list-api'%}',
 
         {# indicator specified url#}
         'detail': '{% url 'indicator-detail-api' 0 %}',

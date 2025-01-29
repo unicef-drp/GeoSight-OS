@@ -19,10 +19,7 @@
 {% block scripts %}
     <script>
       {# specified url for dashboard #}
-      urls.dashboardData = '{% url 'dashboard-data-api' slug=dashboard.id %}'
-
-      {# specified url for dashboard #}
-      urls.dashboardData = '{% url 'dashboard-data-api' slug=dashboard.id %}'
+      urls.dashboardData = '{% url 'dashboard-data-api' slug=dashboard.id %}' + (window.location.href.split('?')[1] ? '?' + window.location.href.split('?')[1] : '')
       urls.bookmarkCreate = '{% url 'dashboard-bookmarks-create' slug=dashboard.id %}'
       urls.bookmarkList = '{% url 'dashboard-bookmarks' slug=dashboard.id %}'
       urls.bookmarkDetail = '{% url 'dashboard-bookmarks-detail' slug=dashboard.id pk=0 %}'
@@ -42,8 +39,7 @@
         'indicatorListAPI': '{% url 'indicator-list-api' %}',
         'contextLayerListAPI': '{% url 'context-layer-list-api' %}',
         'relatedTableListAPI': '{% url 'related-table-list-api' %}?permission=read',
-        'users': '{% url 'user-list-api'%}',
-        'groups': '{% url 'group-list-api'%}',
+
         'styles': '{% url 'style-list-api'%}',
 
         {# This is for specific urls #}

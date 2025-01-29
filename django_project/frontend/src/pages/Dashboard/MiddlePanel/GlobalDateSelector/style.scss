@@ -17,8 +17,6 @@
    Date selection
    ========================================================================== */
 
-@import '../../../../app/variables';
-
 .GlobalDateSelection {
   width: 100%;
   pointer-events: auto;
@@ -26,6 +24,7 @@
   height: 0;
   transition: height 0.3s;
   font-size: 0.8rem;
+  z-index: 10;
 
   .Separator {
     flex-grow: 1;
@@ -38,8 +37,6 @@
   .MuiCircularProgress-root {
     display: block;
     margin: auto;
-    margin-top: auto;
-    margin-bottom: auto;
   }
 
   .MuiFormControl-root {
@@ -60,13 +57,13 @@
       margin-left: 1%;
       margin-bottom: 20px !important;
 
-      box-shadow: $box-shadow;
-      background-color: $white;
+      box-shadow: var(--box-shadow);
+      background-color: var(--white);
       box-sizing: border-box;
-      color: $secondary-color;
+      color: var(--secondary-color);
 
       &:hover {
-        background-color: $white;
+        background-color: var(--white);
       }
 
       .AccessFilterIcon {
@@ -86,7 +83,8 @@
           & > .MuiFormControl-root {
             margin-top: 0.3rem;
           }
-          .ReactSelect__indicators{
+
+          .ReactSelect__indicators {
             padding: 0 5px;
           }
         }
@@ -97,7 +95,7 @@
 
           .Options {
             display: flex;
-            color: $base-black-color;
+            color: var(--base-black-color);
             margin-bottom: 4px;
 
             .MuiTypography-root {
@@ -121,18 +119,18 @@
           }
 
           .MuiSlider-thumb {
-            color: $secondary-color;
+            color: var(--secondary-color);
           }
 
           .MuiSlider-root {
-            color: $secondary-color;
+            color: var(--secondary-color);
           }
 
           .MuiSlider-mark {
             height: 20px;
             width: 20px;
             border-radius: 20px;
-            color: $gray-500;
+            color: var(--gray-500);
             transform: translate(-50%, -50%);
           }
 
@@ -142,15 +140,15 @@
 
           .Mui-disabled {
             .MuiSlider-markLabel {
-              color: $gray-500;
+              color: var(--gray-500);
             }
 
             .MuiSlider-thumb {
-              color: $gray-500;
+              color: var(--gray-500);
             }
 
             .MuiSlider-track {
-              color: $gray-300;
+              color: var(--gray-300);
             }
           }
         }
@@ -159,7 +157,7 @@
 
     .GlobalDateSelectionShowMinMax {
       display: flex;
-      color: $base-black-color;
+      color: var(--base-black-color);
       margin-top: 0.5rem;
 
       .GlobalDateSelectionShowMinMaxText {
@@ -175,7 +173,7 @@
 
     &.Disabled {
       .GlobalDateSelectionShowLatestValue {
-        color: $gray-500;
+        color: var(--gray-500);
       }
     }
 
@@ -188,7 +186,7 @@
         width: 140px;
 
         b {
-          font-weight: $base-font-regular !important;
+          font-weight: var(--base-font-regular) !important;
         }
       }
 
@@ -201,7 +199,7 @@
       }
 
       .GlobalDateSelectionIconDate {
-        font-weight: $base-font-weight;
+        font-weight: var(--base-font-weight);
         margin: 0.5rem 0;
         text-align: center;
 
@@ -226,6 +224,13 @@
 
 .GlobalDateSelection {
   &.Open {
-    height: 150px;
+    height: 140px;
+  }
+
+  &.Hide {
+    .UpperFloating,
+    .GlobalDateSelectionOuterWrapper {
+      display: none;
+    }
   }
 }

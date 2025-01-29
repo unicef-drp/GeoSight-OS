@@ -26,8 +26,8 @@ import { usePapaParse } from 'react-papaparse';
 
 import { updateDataWithSetState } from "../../utils";
 import { IconTextField } from "../../../../../../components/Elements/Input";
-import { MainDataGrid } from "../../../../../../components/MainDataGrid";
-import { arrayToOptions } from "../../../../../../utils/main";
+import { MainDataGrid } from "../../../../../../components/Table";
+import { arrayToOptions, delay } from "../../../../../../utils/main";
 
 import './style.scss';
 
@@ -102,7 +102,7 @@ export const BaseSDMXForm = forwardRef(
         readString(axiosResponse.data, {
           header: true,
           worker: true,
-          complete: (result) => {
+          complete: async (result) => {
             if (result.errors.length <= 1) {
               const json = result.data.map((row, idx) => {
                 row.id = idx
@@ -118,7 +118,6 @@ export const BaseSDMXForm = forwardRef(
                 array.push(row)
               })
 
-              setAttributes(arrayToOptions(array))
               if (!data.date_time_data_field) {
                 data.date_time_data_field = 'TIME_PERIOD'
               }
@@ -126,6 +125,9 @@ export const BaseSDMXForm = forwardRef(
                 data.key_value = 'OBS_VALUE'
               }
               setRequest({ loading: false, error: '', requestData: json })
+              setAttributes(arrayToOptions(array))
+              await delay(500);
+              setData({ ...data })
             } else {
               setRequest({
                 loading: false,

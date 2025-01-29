@@ -15,8 +15,13 @@ A **project** (dashboard) is the most important feature of GeoSight. Projects co
 ## :ballot_box_with_check: Project activity
 
 [![Tests](https://github.com/unicef-drp/GeoSight-OS/workflows/Tests/badge.svg)](https://github.com/unicef-drp/GeoSight-OS/actions/workflows/tests.yaml)
-[![Flake8](https://github.com/unicef-drp/GeoSight-OS/workflows/Flake8/badge.svg)](https://github.com/unicef-drp/GeoSight-OS/actions/workflows/flake8.yml)
-[![📖 Documentation](https://github.com/unicef-drp/GeoSight-OS-Documentation/actions/workflows/BuildMKDocsAndPublishToGithubPages.yml/badge.svg)](https://github.com/unicef-drp/GeoSight-OS-Documentation/actions/workflows/BuildMKDocsAndPublishToGithubPages.yml)
+[![📖 Documentation](https://github.com/unicef-drp/GeoSight-OS-Documentation/actions/workflows/BuildMKDocsAndPublishToGithubPages.yml/badge.svg)](https://github.com/unicef-drp/GeoSight-OS-Documentation)
+
+### Note for Apple Silicon
+Before proceeding with the setup, if you are developing on an Apple Silicon or other AMD-based devices, please ensure to uncomment line 16 in the deployment/docker/Dockerfile.
+```
+# FROM --platform=amd64 ubuntu:20.04 AS prod
+```  
 
 ### Production
 
@@ -42,86 +47,4 @@ docker-compose down
 
 ### Development
 
-```
-git clone https://github.com/unicef-drp/GeoSight-OS
-cd GeoSight-OS/deployment
-cp .template.env .env
-cp docker-compose.override.template.yml docker-compose.override.yml
-```
-
-After that, do
-- open new terminal
-- on folder root of project, do
-```
-make frontend-dev
-```
-Wait until it is done
-when there is sentence "webpack xxx compiled successfully in xxx ms".<br>
-After that, don't close the terminal.
-If it is accidentally closed, do `make frontend-dev` again
-
-Next step:
-- Open new terminal
-- Do commands below
-```
-make up
-make dev
-```
-
-Wait until it is on.
-
-The web can be accessed using `http://localhost:2000/`
-
-If the web is taking long time to load, restart geosight_dev container.<br>
-The sequence should be `make frontend-dev`, after that run or restart geosight_dev. 
-
-### Demo data
-Demo data command can be done after development server is run.
-
-Do
-```
-make devweb-load-demo-data
-```
-and it will restore demo data to GeoSight.
-After that, you need to update the GeoRepo configuration. <br/>
-The demo data is using https://georepo.unicef.org/api/v1/, so you need to ask API Key Level 1 and Level 4 from GeoRepo. <br/>
-Or you can use your API key, and just put your api key to Level 1 and Level 4 (same api key).
-
-# Setup GeoRepo configuration
-
-There are GeoRepo configurations that are needed for geosight.<br>
-Go to '/django-admin/core/sitepreferences/1/change/', use admin username/password on .env file (ADMIN_USERNAME and ADMIN_PASSWORD).<br>
-Change Georepo url and fill Georepo API Key. For Georepo API Key, you can ask georepo for the key.
-GeoRepo URL is basically, GeoRepo API URL.
-The url should be https://<domain>/api/v1/, e.g: https://georepo.unicef.org/api/v1/.
-
-# Building the documentation as a PDF
-
-## Install Dependencies
-
-You need to install these packages:
-
-```bash
-pip install mkdocs-with-pdf
-pip install mkdocs-material
-pip install mdx_gh_links
-pip install mkdocs-pdf-export-plugin
-```
-
-## Building in a terminal
-
-> Note that whenever you add new sections to nav in the mkdocs.yml
-> (used for building the web version), you should apply those same
-> edits to mkdocs-pdf.yml if you want those new sections to appear
-> in the pdf too.
-
-```bash
-cd  docs
-./build-docs-pdf.sh
-xdg-open TheGeosightHandbook.pdf
-```
-
-## Building in VSCode
-
-If you are in VSCode, you can also just run the 'Compile PDF' task. The
-generated PDF will be placed in docs/pdfs/.
+For development, you can check the setup instructions in our documentation: [GeoSight Developer Guide](https://unicef-drp.github.io/GeoSight-OS-Documentation/developer/).

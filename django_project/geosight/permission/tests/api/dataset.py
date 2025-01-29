@@ -15,11 +15,10 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib.auth import get_user_model
-from django.test import Client
-from django.test.testcases import TestCase
 from django.urls import reverse
 
 from core.models.profile import ROLES
+from core.tests.base_tests import TestCase
 from core.tests.model_factories import GroupF, create_user
 from geosight.data.models.indicator import Indicator
 from geosight.georepo.models import ReferenceLayerView
@@ -70,7 +69,7 @@ class DatasetPermissionTest(TestCase):
 
     def assertRequestGetView(self, url, code, user=None):
         """Assert request GET view with code."""
-        client = Client()
+        client = self.test_client()
         if user:
             client.login(username=user.username, password=self.password)
         response = client.get(url)

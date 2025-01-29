@@ -16,14 +16,15 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import json
 
-from django.forms.models import model_to_dict
-from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, reverse, render
 
-from frontend.views.admin._base import AdminBaseView
-from frontend.views.admin.context_layer.create import ContextLayerCreateView
+from frontend.views.admin._base import AdminBaseView, AdminBatchEditView
+from frontend.views.admin.context_layer.create import (
+    BaseContextLayerEditView
+)
 from geosight.data.forms.context_layer import ContextLayerForm
 from geosight.data.models.context_layer import ContextLayer
+from geosight.data.models.style.base import DynamicClassificationTypeChoices
 from geosight.permission.access import (
     edit_permission_resource,
     RoleContributorRequiredMixin
@@ -71,7 +72,10 @@ class ContextLayerEditView(RoleContributorRequiredMixin, AdminBaseView):
                 'form': ContextLayerForm(
                     initial=ContextLayerForm.model_to_initial(instance)
                 ),
-                'permission': json.dumps(permission)
+                'permission': json.dumps(permission),
+                'dynamicClassification': json.dumps(
+                    DynamicClassificationTypeChoices
+                ),
             }
         )
         return context
@@ -90,20 +94,28 @@ class ContextLayerEditView(RoleContributorRequiredMixin, AdminBaseView):
         )
 
         if form.is_valid():
-            context_layer = form.save()
+            context_layer = form.save(commit=False)
+            context_layer.modified_by = request.user
+            context_layer.save()
             context_layer.save_relations(data)
+            # Save permission
+            instance.permission.update_from_request_data(
+                request.POST, request.user
+            )
             return redirect(
                 reverse(
                     'admin-context-layer-edit-view', kwargs={'pk': instance.id}
                 ) + '?success=true'
             )
         context = self.get_context_data(**kwargs)
+        if data.get('permission', None):
+            form.permission_data = data.get('permission', None)
         context['form'] = form
         return render(request, self.template_name, context)
 
 
 class ContextLayerEditBatchView(
-    RoleContributorRequiredMixin, ContextLayerCreateView
+    AdminBatchEditView, BaseContextLayerEditView
 ):
     """ContextLayer Edit Batch View."""
 
@@ -124,37 +136,17 @@ class ContextLayerEditBatchView(
             f'Edit Batch'
         )
 
-    def get_context_data(self, **kwargs) -> dict:
-        """Return context data."""
-        context = super().get_context_data(**kwargs)
-        context['batch'] = True
-        return context
+    @property
+    def edit_query(self):
+        """Return query for edit."""
+        return ContextLayer.permissions.edit(self.request.user)
 
-    def post(self, request, **kwargs):
-        """Edit context_layer."""
-        data = request.POST.copy()
-        ids = data.get('ids', None)
-        if not ids:
-            return HttpResponseBadRequest('ids needs in payload')
-        ids = ids.split(',')
-        data_fields = request.POST.get('data_fields', None)
-        for obj in ContextLayer.permissions.edit(request.user).filter(
-                id__in=ids
-        ):
-            # Save style if it has style on payload
-            initial_data = model_to_dict(obj)
-            if obj.group:
-                initial_data['group'] = obj.group.name
-            for key, value in data.items():
-                initial_data[key] = value
-            form = ContextLayerForm(initial_data, instance=obj)
-            form.is_valid()
-            instance = form.instance
-            instance.save()
-            if data_fields:
-                instance.save_relations({'data_fields': data_fields})
-            # Save permission
-            instance.permission.update_from_request_data_in_string(
-                request.POST, request.user
-            )
-        return redirect(reverse('admin-context-layer-list-view'))
+    @property
+    def form(self):
+        """Return form."""
+        return ContextLayerForm
+
+    @property
+    def redirect_url(self):
+        """Return redirect url."""
+        return reverse('admin-context-layer-list-view')

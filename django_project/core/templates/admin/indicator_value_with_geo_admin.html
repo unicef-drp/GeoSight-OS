@@ -1,0 +1,29 @@
+{% extends "admin/change_list.html" %}
+{% load static %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <script src="{% static 'admin/refresh-materialized-view.js' %}"></script>
+    <script>
+      // static/admin_custom.js
+      document.addEventListener('DOMContentLoaded', function () {
+        const button = document.getElementById('refresh-materialized-view');
+        if (button) {
+          button.addEventListener('click', function () {
+            refreshMaterializedView('mv_indicator_value_geo', button)
+          });
+        }
+      });
+    </script>
+{% endblock %}
+
+{% block object-tools %}
+    {{ block.super }}
+    <div class="button-group" style="width: 100%; text-align: right">
+        <button id="refresh-materialized-view"
+                class="button"
+                style="right: 0;"
+        >Refresh materialized view
+        </button>
+    </div>
+{% endblock %}

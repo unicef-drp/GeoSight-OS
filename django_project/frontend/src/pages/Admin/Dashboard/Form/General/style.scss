@@ -1,0 +1,96 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+@import '@mdxeditor/editor/style.css';
+
+.General {
+  .SelectWithSearchInput {
+    max-width: unset !important;
+  }
+}
+
+.ExtentConfig {
+  .ExtentInput {
+    width: 100%;
+    display: flex;
+
+    .ExtentManualInput {
+      width: 20%;
+      padding: 1rem;
+      box-sizing: border-box;
+    }
+
+    #MapConfig {
+      width: 80%;
+      height: 500px;
+
+      .leaflet-draw {
+        span {
+          display: none;
+        }
+      }
+    }
+  }
+}
+
+.DescriptionInput {
+  padding: 0 1px;
+
+  textarea {
+    border-radius: 0;
+    border: none;
+
+    &:hover,
+    &:focus,
+    &:focus-within {
+      border: none;
+    }
+  }
+}
+
+#GeneralOverview {
+  display: none;
+}
+
+.Overview {
+  overflow-y: auto;
+
+  div[role=toolbar] {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .mdxeditor {
+
+    svg {
+      height: 18px;
+      width: 18px;
+    }
+  }
+
+  > div {
+    --text-base: 1rem !important;
+    --text-sm: 1rem !important;
+    --text-xs: 0.9rem !important;
+    --text-xxs: 0.8rem !important;
+
+    --font-mono: var(--base-font-family) !important;
+    --font-body: var(--base-font-family) !important;
+
+    > div:nth-child(2) {
+      border: 1px solid var(--border-gray);
+    }
+  }
+}

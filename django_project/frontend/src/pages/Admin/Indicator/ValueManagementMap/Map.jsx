@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 /* ==========================================================================
    MAP CONFIG CONTAINER
@@ -22,8 +22,10 @@ import $ from 'jquery';
 import L from 'leaflet';
 
 import { SelectWithList } from "../../../../components/Input/SelectWithList";
-import { axiosGet, fetchGeojson, GeorepoUrls } from '../../../../utils/georepo'
-import { GeorepoViewInputSelector } from "../../ModalSelector/InputSelector";
+import { axiosGet, fetchGeojson } from '../../../../utils/georepo'
+import { RefererenceLayerUrls } from "../../../../utils/referenceLayer";
+import DatasetViewSelector
+  from "../../../../components/ResourceSelector/DatasetViewSelector";
 
 /**
  * Map component.
@@ -35,7 +37,6 @@ export default function Map() {
 
   const [map, setMap] = useState(null);
   const [layer, setLayer] = useState(null);
-  const [references, setReferences] = useState([])
   const [reference, setReference] = useState(null)
   const [level, setLevel] = useState(null)
   const [error, setError] = useState(null)
@@ -50,8 +51,9 @@ export default function Map() {
     })
     level.layer = data
     level.finished = true
-    setReferences([...references])
+    setReference({ ...reference })
   }
+
   useEffect(() => {
     // Init Map
     if (!map) {
@@ -233,32 +235,27 @@ export default function Map() {
   useEffect(() => {
     setError('')
     if (reference) {
-      const referenceLayer = references.find(row => {
-        return row.identifier === reference.identifier
-      })
-      if (!referenceLayer) {
-        return
-      }
-      if (!referenceLayer.data) {
-        axiosGet(GeorepoUrls.ViewDetail(reference.identifier)).then(response => {
+      if (!reference.data) {
+        const url = RefererenceLayerUrls.ViewDetail(reference)
+        axiosGet(url).then(response => {
           const data = response.data
-          referenceLayer.data = data.dataset_levels.map(level => {
+          reference.data = data.dataset_levels.map(level => {
             level.value = level.level
             level.name = level.level_name
             return level
           });
-          setReferences([...references])
-          setLevel(referenceLayer.data[0]?.value)
+          setReference({ ...reference })
+          setLevel(reference.data[0]?.value)
         });
       } else {
         // Check levels
-        const referenceLayerLevel = referenceLayer.data.filter(refLevel => {
+        const referenceLayerLevel = reference.data.filter(refLevel => {
           return refLevel.level === level
         })[0]
         if (referenceLayerLevel) {
           if (!referenceLayerLevel.finished) {
             setLoading(true)
-            fetchData(referenceLayer, referenceLayerLevel, !referenceLayerLevel.page ? 1 : referenceLayerLevel.page)
+            fetchData(reference, referenceLayerLevel, !referenceLayerLevel.page ? 1 : referenceLayerLevel.page)
           } else {
             setLoading(false)
           }
@@ -275,7 +272,7 @@ export default function Map() {
         }
       }
     }
-  }, [reference, references, level])
+  }, [reference, level])
 
   return <Fragment>
     <div id="Map"></div>
@@ -285,20 +282,19 @@ export default function Map() {
           <b className='light'>View</b>
         </div>
         <div className='ReferenceLayerSelection'>
-          <GeorepoViewInputSelector
-            data={reference?.identifier ? [reference] : []}
-            setData={selectedData => {
+          <DatasetViewSelector
+            initData={
+              reference?.identifier ? [
+                {
+                  id: reference.identifier,
+                  uuid: reference.identifier, ...reference
+                }
+              ] : []
+            }
+            dataSelected={(selectedData) => {
               const reference = selectedData[0]
-              const referenceLayer = references.find(row => {
-                return row.identifier === reference
-              })
-              if (!referenceLayer) {
-                setReferences([...references, reference])
-              }
               setReference(reference)
             }}
-            isMultiple={false}
-            showSelected={false}
           />
         </div>
         <div className='ReferenceLayerSelection'>

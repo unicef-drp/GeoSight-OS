@@ -21,12 +21,11 @@ import React, { Fragment, useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 
 import { Actions } from '../../../../store/dashboard'
-import { extractCode, fetchFeatureList } from "../../../../utils/georepo";
 import { ArrowDownwardIcon } from "../../../../components/Icons";
 
 import './style.scss';
+import { dictDeepCopy } from "../../../../utils/main";
 
-let currentReferenceLayer = null
 /**
  * Reference layer.
  * Contains level selector.
@@ -34,14 +33,34 @@ let currentReferenceLayer = null
 export default function ReferenceLayerSection() {
   const dispatch = useDispatch();
   const {
-    referenceLayer,
     levelConfig
   } = useSelector(state => state.dashboard.data)
+  const { referenceLayers } = useSelector(state => state.map)
   const referenceLayerData = useSelector(state => state.referenceLayerData)
   const selectedIndicatorLayer = useSelector(state => state.selectedIndicatorLayer)
 
+  // Get level list for dropdown
+  // If it has the same levels from multiple dataset
+  // Append the level name with /
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel)
-  let levels = referenceLayerData[referenceLayer.identifier]?.data?.dataset_levels
+  let levels = null
+  referenceLayers.map(referenceLayer => {
+    let datasetLevels = referenceLayerData[referenceLayer.identifier]?.data?.dataset_levels
+    if (datasetLevels) {
+      datasetLevels = dictDeepCopy(datasetLevels)
+      if (!levels) {
+        levels = datasetLevels
+      } else {
+        datasetLevels.map(level => {
+          if (!levels[level.level]) {
+            levels[level.level] = level
+          } else {
+            levels[level.level].level_name += ' / ' + level.level_name
+          }
+        })
+      }
+    }
+  });
 
   let {
     default_level: defaultLevel,
@@ -77,64 +96,7 @@ export default function ReferenceLayerSection() {
         }
       }
     }
-  }, [referenceLayerData, selectedIndicatorLayer])
-
-  // Onload for default checked and the layer
-  useEffect(() => {
-
-    let levels = referenceLayerData[referenceLayer.identifier]?.data?.dataset_levels;
-    if (levels && availableLevels) {
-      levels = levels.filter(level => availableLevels.includes(level.level))
-    }
-    currentReferenceLayer = referenceLayer.identifier
-    if (levels) {
-      (
-        async () => {
-          const geometryUUIDByUcode = {}
-          const geometryDataByLevel = {}
-          for (let level of levels) {
-            const geometryData = await fetchFeatureList(level.url)
-            if (currentReferenceLayer !== referenceLayer.identifier) {
-              return
-            }
-            const geometryDataDict = {}
-            geometryData.map(geom => {
-              const code = extractCode(geom)
-              if (!code) {
-                return
-              }
-              geom.parents.sort(function (a, b) {
-                return a.admin_level < b.admin_level ? -1 : 1;
-              })
-              const parents = geom.parents.map(parent => geometryUUIDByUcode[parent.default]).filter(parent => !!parent)
-              const memberData = {
-                name: geom.name,
-                ucode: geom.ucode,
-                code: code,
-              }
-              geometryDataDict[code] = {
-                label: geom.name,
-                name: geom.name,
-                centroid: geom.centroid,
-                code: code,
-                ucode: geom.ucode,
-                concept_uuid: code,
-                parents: parents,
-                members: parents.concat(memberData),
-              }
-              geometryUUIDByUcode[geom.ext_codes.default] = memberData
-            })
-            geometryDataByLevel[level.level] = geometryDataDict
-            if (currentReferenceLayer === referenceLayer.identifier) {
-              dispatch(
-                Actions.Geometries.addLevelData(level.level, geometryDataDict)
-              )
-            }
-          }
-        }
-      )()
-    }
-  }, [referenceLayerData])
+  }, [referenceLayerData, selectedAdminLevel, levels])
 
   /** Change Admin Level **/
   const onChange = (newLevel) => {

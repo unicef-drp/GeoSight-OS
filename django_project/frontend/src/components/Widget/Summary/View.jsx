@@ -19,8 +19,6 @@
 
 import React, { useEffect, useState } from 'react';
 import { useSelector } from "react-redux";
-
-import { returnWhere } from "../../../utils/queryExtraction";
 import { cleanLayerData } from "../../../utils/indicators"
 import { fetchingData } from "../../../Requests";
 
@@ -31,8 +29,11 @@ import SummaryWidget from "./SummaryWidget"
 import SummaryGroupWidget from "./SummaryGroupWidget"
 import {
   dynamicLayerIndicatorList,
-  fetchDynamicLayerData
+  fetchDynamicLayerData,
+  isIndicatorLayerLikeIndicator
 } from "../../../utils/indicatorLayer";
+import { Session } from "../../../utils/Sessions";
+import { UpdateStyleData } from "../../../utils/indicatorData";
 
 /**
  * Base widget that handler widget rendering.
@@ -42,18 +43,23 @@ import {
 export default function SummaryWidgetView({ idx, data }) {
   const { config, type } = data
   const {
-    layer_id, layer_used, property, date_filter_type, date_filter_value
+    layer_id, layer_used, property, date_filter_value
   } = config
   const {
     indicators,
     indicatorLayers,
-    geoField
+    geoField,
+    default_time_mode,
+    referenceLayer
   } = useSelector(state => state.dashboard.data);
+  const {
+    use_only_last_known_value
+  } = default_time_mode
   const indicatorLayerData = useSelector(state => state.indicatorsData[layer_id]);
   const filteredGeometries = useSelector(state => state.filteredGeometries);
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel);
-  const filtersData = useSelector(state => state.filtersData);
   const [layerData, setLayerData] = useState({});
+  const date_filter_type = use_only_last_known_value ? 'No filter' : config.date_filter_type
 
   // Fetch the data if it is using global filter
   useEffect(() => {
@@ -62,10 +68,50 @@ export default function SummaryWidgetView({ idx, data }) {
     }
   }, [indicatorLayerData])
 
+  const fetchIndicatorData = async (indicator, params, session, config) => {
+    if (indicator) {
+      await fetchingData(
+        indicator.url, params, {}, function (response, error) {
+          let newState = {
+            fetching: false,
+            fetched: true,
+            receivedAt: Date.now(),
+            data: null,
+            error: null
+          };
+
+          if (error) {
+            newState.error = error;
+          } else {
+            newState.data = UpdateStyleData(response, config.override_style ? config : indicator);
+          }
+          if (!session.isValid) {
+            return
+          }
+          setLayerData(newState);
+        }
+      )
+    } else {
+      if (!session.isValid) {
+        return
+      }
+      setLayerData({
+        fetching: false,
+        fetched: true,
+        receivedAt: Date.now(),
+        data: null,
+        error: 'Indicator does not found, please reconfig the widget.'
+      });
+    }
+  }
+
   // Fetch the data if it is using no filter or custom
   useEffect(() => {
     (
       async () => {
+        if (!referenceLayer?.identifier) {
+          return
+        }
         let params = {}
         if (date_filter_type === 'Custom filter') {
           if (date_filter_value) {
@@ -78,9 +124,13 @@ export default function SummaryWidgetView({ idx, data }) {
             }
           }
         }
+        params['reference_layer_uuid'] = referenceLayer?.identifier
         if (selectedAdminLevel?.level !== undefined) {
           params['admin_level'] = selectedAdminLevel?.level
+        } else {
+          return
         }
+        const session = new Session('Widget request ' + idx)
         setLayerData({
           fetching: true,
           fetched: false,
@@ -93,40 +143,20 @@ export default function SummaryWidgetView({ idx, data }) {
             const indicator = indicators.find((layer) => {
               return layer.id === layer_id;
             })
-            if (indicator) {
-              await fetchingData(
-                indicator.url, params, {}, function (response, error) {
-                  let newState = {
-                    fetching: false,
-                    fetched: true,
-                    receivedAt: Date.now(),
-                    data: null,
-                    error: null
-                  };
-
-                  if (error) {
-                    newState.error = error;
-                  } else {
-                    newState.data = response;
-                  }
-                  setLayerData(newState);
-                }
-              )
-            } else {
-              setLayerData({
-                fetching: false,
-                fetched: true,
-                receivedAt: Date.now(),
-                data: null,
-                error: 'Indicator does not found, please reconfig the widget.'
-              });
-            }
+            await fetchIndicatorData(indicator, params, session, indicator)
             break;
           // This is for indicator layer
           case definition.WidgetLayerUsed.INDICATOR_LAYER:
             const indicatorLayer = indicatorLayers.find((layer) => {
               return layer.id === layer_id;
             })
+            if (!isIndicatorLayerLikeIndicator(indicatorLayer)) {
+              const indicator = indicators.find((indicator) => {
+                return indicator.id === indicatorLayer.indicators[0].id;
+              })
+              await fetchIndicatorData(indicator, params, session, indicatorLayer)
+              return;
+            }
             const dynamicLayerIndicators = dynamicLayerIndicatorList(indicatorLayer, indicators)
             const indicatorsData = {}
             for (let x = 0; x < dynamicLayerIndicators.length; x++) {
@@ -153,6 +183,9 @@ export default function SummaryWidgetView({ idx, data }) {
             fetchDynamicLayerData(
               indicatorLayer, indicators, indicatorsData, geoField,
               error => {
+                if (!session.isValid) {
+                  return
+                }
                 setLayerData({
                   fetching: false,
                   fetched: true,
@@ -160,7 +193,11 @@ export default function SummaryWidgetView({ idx, data }) {
                   data: null,
                   error: error
                 });
-              }, response => {
+              },
+              response => {
+                if (!session.isValid) {
+                  return
+                }
                 setLayerData({
                   fetching: false,
                   fetched: true,
@@ -168,20 +205,19 @@ export default function SummaryWidgetView({ idx, data }) {
                   data: response,
                   error: null
                 });
-              }
+              }, false, true
             )
         }
       }
     )()
-  }, [data, selectedAdminLevel, indicatorLayers])
+  }, [data, selectedAdminLevel, indicatorLayers, date_filter_type, referenceLayer])
 
-  const where = returnWhere(filtersData ? filtersData : [])
   let indicatorData = null
   if (layerData) {
     indicatorData = Object.assign({}, layerData)
     if (indicatorData?.fetched && indicatorData?.data) {
       indicatorData.data = indicatorData.data.filter(row => {
-        return !filteredGeometries || !where || filteredGeometries.includes(row.concept_uuid)
+        return !filteredGeometries || filteredGeometries?.includes(row.concept_uuid)
       })
     }
   }
@@ -204,7 +240,6 @@ export default function SummaryWidgetView({ idx, data }) {
         layers = indicatorLayers
         break;
     }
-
     // render widget by the type
     switch (type) {
       case DEFINITION.WidgetType.SUMMARY_WIDGET:

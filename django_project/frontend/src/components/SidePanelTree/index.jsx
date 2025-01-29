@@ -43,6 +43,8 @@ import {
 import LayerDescription from "./Description";
 import Highlighted from "./Highlighted";
 import { MagnifyIcon } from "../Icons";
+import { dictDeepCopy } from "../../utils/main";
+import SidePanelSlicers from './SidePanelSlicers';
 
 import './style.scss';
 
@@ -134,14 +136,17 @@ export default function SidePanelTreeView(
   useEffect(() => {
     setNodes(data)
     setGroups(getGroups(data));
-    const selected = [];
+    // TODO:
+    //  We need to fix this
+    //  Appending selected is done because of context layer unselected at first time
+    const newSelected = props.resetSelection ? [] : dictDeepCopy(selected);
     for (const item of flattenTree(data)) {
       if (!item.isGroup && item.data?.visible_by_default) {
-        selected.push(item.data?.id + '');
+        newSelected.push(item.data?.id + '');
       }
     }
-    if (selected.length > 0) {
-      setSelected([...selected])
+    if (newSelected.length > 0) {
+      setSelected([...new Set(newSelected)])
     }
   }, [data])
 
@@ -300,6 +305,7 @@ export default function SidePanelTreeView(
       return
     }
     const checked = selected.indexOf(nodesDataId) >= 0
+
     return <TreeItem
       className={'TreeItem' + (disabled ? ' Disabled' : '') + (checked ? ' Mui-selected' : '')}
       disabled={disabled}
@@ -349,6 +355,10 @@ export default function SidePanelTreeView(
             {treeData.data?.legend && selected.indexOf(nodesDataId) >= 0 ?
               <div
                 dangerouslySetInnerHTML={{ __html: treeData.data?.legend }}></div> : ''}
+            {
+              treeData.data.related_table && selected.indexOf(nodesDataId) >= 0 ?
+                <SidePanelSlicers data={treeData.data}/> : null
+            }
           </div> : groupSelectable ?
             <FormControlLabel
               className='GroupSelectable Group'

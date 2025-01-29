@@ -16,8 +16,6 @@
 /* ==========================================================================
     Materialize
    ========================================================================== */
-@import './variables.scss';
-
 
 .MuiList-root {
   padding: 0 !important;
@@ -38,7 +36,7 @@
   }
 
   &:hover {
-    opacity: $base-hovered-opacity;
+    opacity: var(--base-hovered-opacity);
   }
 
   .MuiTouchRipple-root {
@@ -58,14 +56,14 @@
 }
 
 .MuiButton-primary {
-  background-color: $primary-color !important;
-  border: 1px solid $primary-color !important;
-  color: $anti-primary-color !important;
+  background-color: var(--primary-color) !important;
+  border: 1px solid var(--primary-color) !important;
+  color: var(--anti-primary-color) !important;
 
   &.Reverse {
     background-color: white !important;
-    border: 1px solid $primary-color !important;
-    color: $primary-color !important;
+    border: 1px solid var(--primary-color) !important;
+    color: var(--primary-color) !important;
   }
 
   &.JustIcon {
@@ -73,12 +71,12 @@
     border: unset !important;
 
     &.Mui-disabled {
-      color: $gray-500 !important;
+      color: var(--gray-500) !important;
     }
   }
 
   .MuiCircularProgress-root {
-    color: $anti-primary-color !important;
+    color: var(--anti-primary-color) !important;
 
     svg {
       height: 10px !important;
@@ -88,14 +86,18 @@
 }
 
 .MuiButton-Error {
-  background-color: $error !important;
-  border: 1px solid $error !important;
+  background-color: var(--error) !important;
+  border: 1px solid var(--error) !important;
   color: white !important;
 
   &.Reverse {
     background-color: white !important;
-    border: 1px solid $error !important;
-    color: $error !important;
+    border: 1px solid var(--error) !important;
+    color: var(--error) !important;
+  }
+
+  &.NoBorder {
+    border: unset !important;
   }
 
   &.Basic {
@@ -109,12 +111,12 @@
 }
 
 .MuiButton-secondary {
-  background-color: $secondary-color !important;
-  border: 1px solid $secondary-color !important;
-  color: $anti-secondary-color !important;
+  background-color: var(--secondary-color) !important;
+  border: 1px solid var(--secondary-color) !important;
+  color: var(--anti-secondary-color) !important;
 
   a {
-    color: $anti-primary-color !important;
+    color: var(--anti-primary-color) !important;
   }
 
   &.Basic {
@@ -123,36 +125,36 @@
 
     svg {
       margin-right: 0;
-      fill: $anti-secondary-color !important;
+      fill: var(--anti-secondary-color) !important;
     }
   }
 
   &.Reverse {
-    background-color: $anti-secondary-color !important;
-    border: 1px solid $secondary-color !important;
-    color: $secondary-color !important;
+    background-color: var(--anti-secondary-color) !important;
+    border: 1px solid var(--secondary-color) !important;
+    color: var(--secondary-color) !important;
 
     svg {
-      fill: $secondary-color !important;
+      fill: var(--secondary-color) !important;
     }
 
     &:hover {
-      background-color: $secondary-color !important;
-      color: $anti-secondary-color !important;
+      background-color: var(--secondary-color) !important;
+      color: var(--anti-secondary-color) !important;
 
       svg {
-        fill: $anti-secondary-color !important;
+        fill: var(--anti-secondary-color) !important;
       }
     }
 
     &.Mui-disabled {
-      background-color: $anti-secondary-color !important;
-      border: 1px solid $secondary-color !important;
-      color: $secondary-color !important;
+      background-color: var(--anti-secondary-color) !important;
+      border: 1px solid var(--secondary-color) !important;
+      color: var(--secondary-color) !important;
 
       svg {
         display: block !important;
-        fill: $secondary-color !important;
+        fill: var(--secondary-color) !important;
       }
     }
   }
@@ -164,13 +166,13 @@
 
 .MuiButton-basic {
   background-color: white !important;
-  border: 1px solid $border-gray !important;
+  border: 1px solid var(--border-gray) !important;
   color: black !important;
 
   &.Mui-disabled {
     background-color: white !important;
-    border: 1px solid $disabled-color !important;
-    color: $disabled-color !important;
+    border: 1px solid var(--disabled-color) !important;
+    color: var(--disabled-color) !important;
     opacity: 1;
 
     &:hover {
@@ -180,11 +182,11 @@
 }
 
 .MuiButton-primary-text {
-  color: $primary-color !important;
+  color: var(--primary-color) !important;
 }
 
 .MuiListSubheader-root {
-  color: $primary-color !important;
+  color: var(--primary-color) !important;
   font-size: 1rem !important;
   font-weight: 600 !important;
 }
@@ -197,7 +199,7 @@
   cursor: pointer;
 
   &:hover {
-    opacity: $base-hovered-opacity;
+    opacity: var(--base-hovered-opacity);
   }
 }
 
@@ -250,8 +252,8 @@
     width: 100%;
     padding: 5px;
     box-sizing: border-box;
-    color: $primary-color;
-    border: 1px solid $primary-color;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
     background-color: white;
   }
 
@@ -331,7 +333,7 @@
   border: none !important;
 
   .MuiCheckbox-root {
-    color: $gray-600 !important;
+    color: var(--gray-600) !important;
     padding: 0 !important;
 
     &.Mui-checked {
@@ -363,7 +365,7 @@
       font-size: 11px !important;
 
       .MuiButtonBase-root {
-        color: $primary-color;
+        color: var(--primary-color);
       }
     }
 
@@ -384,7 +386,7 @@
   }
 
   .ActionHeader {
-    height: $base-height;
+    height: var(--base-height);
     box-sizing: border-box;
     padding: 0 !important;
 
@@ -453,12 +455,12 @@
 }
 
 .MuiCircularProgress-root {
-  color: $primary-color !important;
+  color: var(--primary-color) !important;
 }
 
 .MuiOutlinedInput-input {
   &.Mui-disabled {
-    background-color: $base-almost-white-color;
+    background-color: var(--base-almost-white-color);
   }
 }
 
@@ -473,18 +475,18 @@
   &.Secondary {
     .Mui-checked {
       .MuiSwitch-thumb {
-        color: $secondary-color;
+        color: var(--secondary-color);
       }
     }
 
     .Mui-disabled {
       .MuiSwitch-thumb {
-        color: $gray-500;
+        color: var(--gray-500);
       }
     }
 
     .Mui-checked + .MuiSwitch-track {
-      background-color: $secondary-color !important;
+      background-color: var(--secondary-color) !important;
     }
   }
 }
@@ -500,9 +502,9 @@
   max-height: unset !important;
 
   .MuiDataGrid-cell {
-    border-bottom: 1px solid $border-gray !important;
-    max-height: $base-height !important;
-    min-height: $base-height !important;
+    border-bottom: 1px solid var(--border-gray) !important;
+    max-height: var(--base-height) !important;
+    min-height: var(--base-height) !important;
     white-space: nowrap;
 
 
@@ -536,14 +538,14 @@
   }
 
   .Mui-selected {
-    background-color: $primary-color-transparency;
+    background-color: var(--primary-color-transparency);
   }
 }
 
 .MuiDataGrid-footerContainer,
 .MuiTablePagination-toolbar {
-  min-height: $base-height !important;
-  height: $base-height !important;
+  min-height: var(--base-height) !important;
+  height: var(--base-height) !important;
   font-size: 12px !important;
 }
 
@@ -564,8 +566,8 @@
 
 .MuiDataGrid-columnHeaders {
   border-radius: 0 !important;
-  min-height: $base-height !important;
-  max-height: $base-height !important;
+  min-height: var(--base-height) !important;
+  max-height: var(--base-height) !important;
 }
 
 .MuiTextField-root {
@@ -585,7 +587,7 @@
 }
 
 .MuiInputAdornment-root {
-  color: $gray-500 !important;
+  color: var(--gray-500) !important;
 
   .MuiCircularProgress-root {
     width: 16px !important;
@@ -653,14 +655,13 @@
     position: absolute;
     height: 100%;
     right: 0 !important;
-    top: 0;
     width: 25px;
     display: flex;
     align-items: center;
     max-height: unset !important;
 
     button {
-      color: $svg-gray !important;
+      color: var(--svg-gray) !important;
     }
   }
 }
@@ -690,7 +691,7 @@
     padding-right: 1rem !important;
 
     svg {
-      color: $svg-gray;
+      color: var(--svg-gray);
     }
   }
 }
@@ -699,7 +700,7 @@
   margin: 5px 0 !important;
 
   .MuiPaper-root {
-    box-shadow: $box-shadow-sm;
+    box-shadow: var(--box-shadow-sm);
   }
 
   .MuiAutocomplete-listbox {
@@ -709,13 +710,13 @@
 
 .ReactSelect {
   & > div {
-    min-height: $base-height;
+    min-height: var(--base-height);
     border-radius: 0;
   }
 
   .DropdownIndicator {
-    width: $base-height;
-    color: $svg-gray !important;
+    width: var(--base-height);
+    color: var(--svg-gray) !important;
     display: flex;
     align-items: center;
 
@@ -732,7 +733,7 @@
 .MuiAutocomplete-option[aria-selected="true"],
 .SelectWithList__option--is-selected,
 .ReactSelect__option--is-selected, {
-  background-color: $primary-color-transparency !important;
+  background-color: var(--primary-color-transparency) !important;
   color: black !important;
 }
 
@@ -743,10 +744,10 @@
 
 .MuiTab-root {
   &.Mui-selected {
-    color: $primary-color !important;
+    color: var(--primary-color) !important;
   }
 }
 
 .MuiTabs-indicator {
-  background-color: $primary-color !important;
+  background-color: var(--primary-color) !important;
 }

@@ -50,6 +50,7 @@ import {
 import { compareFilters, filtersToFlatDict } from "../../../../utils/filters";
 
 import './style.scss';
+import { INIT_DATA } from "../../../../utils/queryExtraction";
 
 /**
  * Bookmark component.
@@ -58,7 +59,6 @@ export default function Bookmark({ map }) {
   const dispatch = useDispatch();
   const isEmbed = EmbedConfig().id;
   const dashboardData = useSelector(state => state.dashboard.data);
-  const filtersData = useSelector(state => state.filtersData);
   const selectedIndicatorLayer = useSelector(state => state.selectedIndicatorLayer);
   const selectedIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer);
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel);
@@ -92,13 +92,16 @@ export default function Bookmark({ map }) {
    * Get data of bookmark
    */
   const data = () => {
+    const selectedIndicatorLayers = [selectedIndicatorLayer?.id]
+    if (selectedIndicatorSecondLayer?.id) {
+      selectedIndicatorLayers.push(selectedIndicatorSecondLayer?.id)
+    }
     return {
       name: name,
       selectedBasemap: basemapLayer?.id,
-      selectedIndicatorLayer: selectedIndicatorLayer?.id,
-      selectedIndicatorSecondLayer: selectedIndicatorSecondLayer?.id,
+      selectedIndicatorLayers: selectedIndicatorLayers,
       selectedContextLayers: Object.keys(contextLayers).map(id => parseInt(id)),
-      filters: filtersData,
+      filters: dashboardData.filters ? dashboardData.filters : INIT_DATA.GROUP(),
       extent: extent,
       indicatorShow: indicatorShow,
       contextLayersShow: contextLayersShow,
@@ -126,16 +129,20 @@ export default function Bookmark({ map }) {
     newDashboard.basemapsLayers.map(layer => {
       layer.visible_by_default = layer.id === bookmark.selected_basemap
     })
-    newDashboard.indicatorLayers.map(layer => {
-      layer.visible_by_default = bookmark.selected_indicator_layer === layer.id
-    })
+
+    // Activate compare
+    if (bookmark.selected_indicator_layers?.length >= 2) {
+      dispatch(Actions.MapMode.activateCompare())
+    } else {
+      dispatch(Actions.MapMode.deactivateCompare())
+    }
     newDashboard.contextLayers.map(layer => {
       layer.visible_by_default = bookmark.selected_context_layers.includes(layer.id)
     })
     newDashboard.filters = compareFilters(
       newDashboard.filters, filtersToFlatDict(bookmark.filters)
     )
-    changeIndicatorLayersForcedUpdate(true)
+    changeIndicatorLayersForcedUpdate(bookmark.selected_indicator_layers)
     setTimeout(function () {
       dispatch(
         Actions.Dashboard.update(JSON.parse(JSON.stringify(newDashboard)))
@@ -246,7 +253,7 @@ export default function Bookmark({ map }) {
       }}
       Button={
         <div className='Active'>
-          <PluginChild title={'Bookmark'} disabled={!filtersData}>
+          <PluginChild title={'Bookmark'}>
             <a>
               <StarOffIcon/>
             </a>

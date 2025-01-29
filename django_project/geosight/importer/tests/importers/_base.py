@@ -18,9 +18,9 @@ from unittest.mock import patch
 
 from dateutil import parser
 from django.db import connection
-from django.test.testcases import TestCase
 
 from core.models.preferences import SitePreferences
+from core.tests.base_tests import TestCase
 from core.tests.model_factories import UserF
 from geosight.data.models.code import Code, CodeList, CodeInCodeList
 from geosight.data.models.indicator import IndicatorType, IndicatorValue
@@ -138,8 +138,7 @@ class BaseIndicatorValueImporterTest(BaseImporterTest):
         importer.save_attributes(attributes, files)
         importer.run()
         log = importer.importerlog_set.all().last()
-        print(log.note)
-        self.assertEqual(log.status, 'Success')
+        self.assertTrue(log.status in ['Success', 'Warning'])
         all_tables = connection.introspection.table_names()
         self.assertTrue(importer.data_table_name not in all_tables)
 
@@ -148,7 +147,7 @@ class BaseIndicatorValueImporterTest(BaseImporterTest):
         curr_version = self.indicator_1.version
         importer.run()
         log = importer.importerlog_set.all().last()
-        self.assertEqual(log.status, 'Success')
+        self.assertTrue(log.status in ['Success', 'Warning'])
 
         self.assertFalse(curr_version != self.indicator_1.version)
 
@@ -270,7 +269,7 @@ class BaseIndicatorValueImporterTest(BaseImporterTest):
         """Assert importer when run."""
         importer.run()
         log = importer.importerlog_set.all().last()
-        self.assertEqual(log.status, 'Success')
+        self.assertTrue(log.status in ['Success', 'Warning'])
 
         # Check for indicator 1
         values = self.indicator_1.query_values(

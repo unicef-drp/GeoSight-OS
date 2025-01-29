@@ -22,7 +22,7 @@ from core.serializer.dynamic_serializer import DynamicModelSerializer
 from geosight.data.models.dashboard import (
     DashboardIndicator, DashboardBasemap, DashboardContextLayer,
     DashboardIndicatorRule, DashboardContextLayerField,
-    DashboardRelatedTable
+    DashboardRelatedTable, DashboardTool
 )
 from geosight.data.models.style.indicator_style import IndicatorStyleType
 from geosight.data.serializer.style import StyleSerializer
@@ -174,7 +174,7 @@ class DashboardContextLayerSerializer(DashboardSerializer):
         fields = (
             'data_fields', 'styles', 'label_styles',
             'override_style', 'override_label', 'override_field',
-            'default_styles'
+            'default_styles', 'configuration'
         )
         fields += DashboardSerializer.Meta.fields
 
@@ -205,3 +205,11 @@ class DashboardContextLayerFieldSerializer(serializers.ModelSerializer):
     class Meta:  # noqa: D106
         model = DashboardContextLayerField
         fields = '__all__'
+
+
+class DashboardToolSerializer(serializers.ModelSerializer):
+    """Serializer for DashboardTool."""
+
+    class Meta:  # noqa: D106
+        model = DashboardTool
+        exclude = ('id', 'group', 'order', 'relation_group', 'dashboard')

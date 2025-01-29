@@ -20,6 +20,6 @@ from .dashboard_embed import *
 from .dashboard_indicator_layer import *
 from .dashboard_related_table import *
 from .dashboard_relation import *
-from .dashboard_relation_depcrecated import *
+from .dashboard_tool import *
 from .dashboard_widget import *
-from .widget import *
+from .deprecated import *

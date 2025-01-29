@@ -14,25 +14,28 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import os
 import json
 
 from django.shortcuts import reverse
 from rest_framework import serializers
 
 from core.models.preferences import SitePreferences
-from geosight.data.models.dashboard import Dashboard
+from geosight.data.models.dashboard import Dashboard, DashboardIndicator
 from geosight.data.serializer.basemap_layer import BasemapLayerSerializer
 from geosight.data.serializer.context_layer import ContextLayerSerializer
 from geosight.data.serializer.dashboard_indicator_layer import (
     DashboardIndicatorLayerSerializer
 )
 from geosight.data.serializer.dashboard_relation import (
-    DashboardIndicatorSerializer, DashboardBasemapSerializer,
-    DashboardContextLayerSerializer, DashboardRelatedTableSerializer
+    DashboardBasemapSerializer,
+    DashboardContextLayerSerializer, DashboardRelatedTableSerializer,
+    DashboardToolSerializer
 )
 from geosight.data.serializer.dashboard_widget import DashboardWidgetSerializer
 from geosight.data.serializer.indicator import IndicatorSerializer
 from geosight.data.serializer.related_table import RelatedTableSerializer
+from geosight.data.serializer.resource import ResourceSerializer
 from geosight.permission.models.resource.dashboard import DashboardPermission
 
 
@@ -57,6 +60,9 @@ class DashboardSerializer(serializers.ModelSerializer):
     geo_field = serializers.SerializerMethodField()
     level_config = serializers.SerializerMethodField()
     default_time_mode = serializers.SerializerMethodField()
+
+    # Tools
+    tools = serializers.SerializerMethodField()
 
     def get_description(self, obj: Dashboard):
         """Return description."""
@@ -90,7 +96,8 @@ class DashboardSerializer(serializers.ModelSerializer):
             return {
                 'identifier': reference_layer.identifier,
                 'detail_url': reference_layer.detail_url,
-                'name': reference_layer.name
+                'name': reference_layer.name,
+                'is_local': reference_layer.is_local
             }
         else:
             return {
@@ -98,41 +105,39 @@ class DashboardSerializer(serializers.ModelSerializer):
                 'detail_url': ''
             }
 
+    def _get_indicator(self, obj: Dashboard, model: DashboardIndicator):
+        """Return indicator data."""
+        data = IndicatorSerializer(
+            model.object,
+            context={'user': self.context.get('user', None)},
+            exclude=['last_update', 'permission']
+        ).data
+        return data
+
     def get_indicators(self, obj: Dashboard):
         """Return indicators."""
         output = []
+        dashboard_indicators = self.context.get(
+            'dashboard_indicators', None
+        )
         for model in obj.dashboardindicator_set.all():
-            data = IndicatorSerializer(
-                model.object,
-                context={'user': self.context.get('user', None)},
-                exclude=['last_update', 'permission']
-            ).data
-            data['url'] = reverse(
-                'dashboard-indicator-values-api',
-                args=[obj.slug, model.object.id]
-            )
-            dashboard_data = DashboardIndicatorSerializer(
-                model,
-                context={'user': self.context.get('user', None)}
-            ).data
-            if dashboard_data['override_style']:
-                del data['style']
-                del data['style_config']
-                del data['style_type']
-            else:
-                del dashboard_data['style']
-                del dashboard_data['style_config']
-                del dashboard_data['style_type']
-            data.update(dashboard_data)
-            output.append(data)
+            output.append(self._get_indicator(obj, model))
+
+        # Added data if the data added manually
+        if dashboard_indicators:
+            for model in dashboard_indicators:
+                output.append(self._get_indicator(obj, model))
 
         return output
 
     def get_indicator_layers(self, obj: Dashboard):
         """Return indicator_layers."""
-        dashboard_indicator_layers = []
-        for indicator_layer in obj.dashboardindicatorlayer_set.all():
-            dashboard_indicator_layers.append(indicator_layer)
+        dashboard_indicator_layers = self.context.get(
+            'dashboard_indicator_layers', None
+        )
+        if not dashboard_indicator_layers:
+            dashboard_indicator_layers = obj.dashboardindicatorlayer_set.all()
+
         return DashboardIndicatorLayerSerializer(
             dashboard_indicator_layers, many=True,
             context={'user': self.context.get('user', None)},
@@ -182,7 +187,15 @@ class DashboardSerializer(serializers.ModelSerializer):
                 del data['label_styles']
             else:
                 del dashboard_data['label_styles']
+
+            configuration = {}
+            if data['configuration']:
+                configuration = data['configuration']
+            if dashboard_data['configuration']:
+                configuration.update(dashboard_data['configuration'])
+
             data.update(dashboard_data)
+            data['configuration'] = configuration
             output.append(data)
         return output
 
@@ -241,12 +254,19 @@ class DashboardSerializer(serializers.ModelSerializer):
         else:
             pref = SitePreferences.preferences()
             return {
+                'use_only_last_known_value': True,
                 'fit_to_current_indicator_range':
                     pref.fit_to_current_indicator_range,
                 'show_last_known_value_in_range':
                     pref.show_last_known_value_in_range,
                 'default_interval': pref.default_interval,
             }
+
+    def get_tools(self, obj: Dashboard):
+        """Return tools."""
+        return DashboardToolSerializer(
+            obj.dashboardtool_set.all(), many=True
+        ).data
 
     class Meta:  # noqa: D106
         model = Dashboard
@@ -263,19 +283,18 @@ class DashboardSerializer(serializers.ModelSerializer):
             'user_permission',
             'geo_field', 'show_splash_first_open',
             'truncate_indicator_layer_name', 'enable_geometry_search',
-            'overview', 'default_time_mode'
+            'overview', 'default_time_mode', 'tools'
         )
 
 
-class DashboardBasicSerializer(serializers.ModelSerializer):
+class DashboardBasicSerializer(ResourceSerializer):
     """Serializer for Dashboard."""
 
     id = serializers.SerializerMethodField()
     group = serializers.SerializerMethodField()
     category = serializers.SerializerMethodField()
-    modified_at = serializers.SerializerMethodField()
-    created_at = serializers.SerializerMethodField()
     permission = serializers.SerializerMethodField()
+    thumbnail = serializers.SerializerMethodField()
 
     def get_id(self, obj: Dashboard):
         """Return dashboard id."""
@@ -289,24 +308,24 @@ class DashboardBasicSerializer(serializers.ModelSerializer):
         """Return dashboard category name."""
         return obj.group.name if obj.group else ''
 
-    def get_modified_at(self, obj: Dashboard):
-        """Return dashboard last modified."""
-        return obj.modified_at.strftime('%Y-%m-%d %H:%M:%S')
-
-    def get_created_at(self, obj: Dashboard):
-        """Return dashboard created time."""
-        return obj.modified_at.strftime('%Y-%m-%d %H:%M:%S')
-
     def get_permission(self, obj: Dashboard):
         """Return permission."""
         return obj.permission.all_permission(
             self.context.get('user', None)
         )
 
+    def get_thumbnail(self, obj: Dashboard):
+        """Return tools."""
+        from django.conf import settings
+        if obj.thumbnail:
+            if os.path.exists(obj.thumbnail):
+                return obj.thumbnail.replace(settings.MEDIA_ROOT, 'media')
+        return None
+
     class Meta:  # noqa: D106
         model = Dashboard
         fields = (
-            'id', 'slug', 'icon', 'name', 'created_at', 'modified_at',
-            'description', 'group', 'category', 'permission',
-            'reference_layer', 'creator'
-        )
+                     'id', 'slug', 'icon', 'thumbnail', 'name',
+                     'description', 'group', 'category', 'permission',
+                     'reference_layer', 'creator'
+                 ) + ResourceSerializer.Meta.fields

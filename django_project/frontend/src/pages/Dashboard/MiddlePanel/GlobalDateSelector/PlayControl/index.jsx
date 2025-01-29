@@ -38,8 +38,11 @@ let playControlTimeout = null
 export default function PlayControl(
   { dates, selectedDatePoint, setSelectedDatePoint, children }
 ) {
-  const indicatorLayers = useSelector(state => state.dashboard.data?.indicatorLayers)
-  const filtersData = useSelector(state => state.filtersData);
+  const {
+    filters,
+    referenceLayer,
+    indicatorLayers
+  } = useSelector(state => state.dashboard.data)
   const indicatorsData = useSelector(state => state.indicatorsData)
   const relatedTableData = useSelector(state => state.relatedTableData)
   const currentIndicatorLayer = useSelector(state => state.selectedIndicatorLayer)
@@ -83,13 +86,13 @@ export default function PlayControl(
   useEffect(() => {
     if (isPlay) {
       const speedTime = minSpeed * 1000 / speed;
-      const where = returnWhere(filtersData ? filtersData : [])
+      const where = returnWhere(filters ? filters : [])
       let layers = [currentIndicatorLayer, selectedIndicatorSecondLayer]
       if (where) {
         layers = indicatorLayers
       }
       const ready = allLayerDataIsReady(
-        indicatorsData, relatedTableData, layers
+        indicatorsData, relatedTableData, layers, referenceLayer
       )
       if (ready) {
         stopTimeout()
@@ -101,7 +104,7 @@ export default function PlayControl(
         playControlTimeout = currentPlayControlTimeout
       }
     }
-  }, [indicatorsData, selectedDatePoint, isPlay, nextIdx]);
+  }, [indicatorsData, relatedTableData, selectedDatePoint, isPlay, nextIdx]);
 
   /**
    * If is play and nextIDX changed

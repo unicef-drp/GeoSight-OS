@@ -14,6 +14,7 @@
  */
 
 import maplibregl from 'maplibre-gl';
+import { FILL_LAYER_ID_KEY } from "./Layers/ReferenceLayer";
 
 const NON_ONCLICK_LAYER_IDS = ['indicator-label']
 
@@ -54,6 +55,9 @@ export const hasSource = (map, id) => {
  * @param {String} id of layer
  */
 export const removeSource = (map, id) => {
+  map.getStyle().layers.filter(layer => layer.source === id).map(layer => {
+    removeLayer(map, layer.id)
+  })
   if (typeof map.getSource(id) !== 'undefined') {
     map.removeSource(id);
   }
@@ -81,7 +85,7 @@ export const loadImageToMap = (map, id, callback) => {
  * Update cursor on hovered
  */
 const updateCursorOnHovered = (map) => {
-  if (map.measurementMode) {
+  if (map.drawingMode) {
     map.getCanvas().style.cursor = 'crosshair';
   } else {
     map.getCanvas().style.cursor = 'pointer';
@@ -92,7 +96,7 @@ const updateCursorOnHovered = (map) => {
  * Update cursor on hovered
  */
 const updateCursorOnLeave = (map) => {
-  if (map.measurementMode) {
+  if (map.drawingMode) {
     map.getCanvas().style.cursor = 'crosshair';
   } else {
     map.getCanvas().style.cursor = '';
@@ -121,7 +125,7 @@ export const addPopup = (map, id, popupRenderFn) => {
 
   map.off('click', id, functionPopup[id].click);
   functionPopup[id].click = function (e) {
-    if (!map.measurementMode) {
+    if (!map.drawingMode) {
 
       // Check the id that is the most top
       let clickedId = null
@@ -141,7 +145,10 @@ export const addPopup = (map, id, popupRenderFn) => {
       })
 
       if (id === clickedId) {
-        const popupHtml = popupRenderFn(e.features[0].properties)
+        let popupHtml = popupRenderFn(e.features[0].properties)
+        if (!popupHtml) {
+          popupHtml = ''
+        }
         if (popup) {
           popup.remove()
         }
@@ -156,6 +163,56 @@ export const addPopup = (map, id, popupRenderFn) => {
   map.on('click', id, functionPopup[id].click);
 }
 /**
+ * Add popup by properties
+ * @param map
+ * @param lngLat
+ * @param popupRenderFn
+ * @param properties
+ * @param session
+ */
+export const addStandalonePopup = (map, lngLat, popupRenderFn, properties, session) => {
+  let popupHtml = popupRenderFn(properties)
+  if (!popupHtml) {
+    popupHtml = ''
+  }
+  if (popup) {
+    popup.remove()
+  }
+  popup = new maplibregl.Popup()
+    .setLngLat(lngLat)
+    .setHTML(popupHtml)
+    .addTo(map);
+  popup.addClassName(`${session}`)
+}
+/**
+ * Remove click event
+ */
+export const removeClickEvent = (map, layerId, functionId) => {
+  if (functionPopup[functionId]?.click) {
+    if (layerId) {
+      map.off('click', layerId, functionPopup[functionId].click);
+    } else {
+      map.off('click', functionPopup[functionId].click);
+    }
+  }
+}
+/**
+ * Add click event
+ */
+export const addClickEvent = (map, layerId, functionId, listenerFn) => {
+  removeClickEvent(map, layerId, functionId)
+  if (!functionPopup[functionId]) {
+    functionPopup[functionId] = {}
+  }
+  functionPopup[functionId].click = listenerFn
+  if (layerId) {
+    map.on('click', layerId, functionPopup[functionId].click);
+  } else {
+    map.on('click', functionPopup[functionId].click);
+  }
+
+}
+/**
  * Popup for marker
  */
 export const addPopupEl = (map, el, latlng, properties, popupRenderFn, offset = {}) => {
@@ -168,7 +225,7 @@ export const addPopupEl = (map, el, latlng, properties, popupRenderFn, offset = 
   });
 
   el.addEventListener('click', function (e) {
-    if (!map.measurementMode) {
+    if (!map.drawingMode) {
       const popupHtml = popupRenderFn(properties)
       if (popup) {
         popup.remove()
@@ -180,3 +237,78 @@ export const addPopupEl = (map, el, latlng, properties, popupRenderFn, offset = 
     }
   });
 }
+/*** Create element ***/
+export const createElement = (
+  tag,
+  options
+) => {
+  const { classes, styles, attributes, events, content, appendTo } = options;
+  const el = document.createElement(tag);
+  if (classes) classes.forEach(cls => el.classList.add(cls));
+  if (styles) Object.entries(styles).forEach(prop => el.style.setProperty(...prop));
+  if (attributes) Object.entries(attributes).forEach(([name, value]) => {
+    if (value || value === 0) el.setAttribute(name, `${value}`);
+    else el.removeAttribute(name);
+  });
+  if (events) Object.entries(events).forEach(([e, listener]) => el.addEventListener(e, listener));
+  if (content) el.append(...(content.filter(Boolean)));
+  if (appendTo) appendTo.appendChild(el);
+  return el;
+};
+
+/**
+ * Get before layer
+ * @param map
+ * @param layerId
+ * @param contextLayerOrder
+ * @returns {undefined|string}
+ */
+export const getBeforeLayerId = (map, layerId, contextLayerOrder) => {
+  if (contextLayerOrder) {
+    const contextLayerIdx = contextLayerOrder.indexOf(layerId)
+    for (let idx = 0; idx < contextLayerOrder.length; idx++) {
+      if (map && idx > contextLayerIdx) {
+        const currentId = 'context-layer-' + contextLayerOrder[idx] + '-line'
+        if (hasLayer(map, currentId)) {
+          return currentId;
+        }
+      }
+    }
+  } else {
+    return undefined;
+  }
+};
+
+/**
+ * Get layer id of reference layer
+ * @param map
+ * @returns {undefined|string}
+ */
+export const getLayerIdOfReferenceLayer = (map) => {
+  const first = map.getStyle().layers.filter(layer => layer.id.includes(FILL_LAYER_ID_KEY))[0]
+  return first?.id
+};
+
+export const hexToRgba = (hex, alpha = 1, format = 'array') => {
+  // Remove the hash if present
+  const hexClean = hex.replace("#", "");
+
+  // Parse the R, G, and B values
+  const r = parseInt(hexClean.substring(0, 2), 16);
+  const g = parseInt(hexClean.substring(2, 4), 16);
+  const b = parseInt(hexClean.substring(4, 6), 16);
+  alpha = hexClean.length == 8 ? parseInt(hexClean.substring(6, 8), 16)/255 : alpha
+
+  // Return in RGBA format
+  if (format == 'array') {
+    return [r, g, b, alpha]
+  } else if (format == 'object') {
+    return {
+      r: r,
+      g: g,
+      b: b,
+      a: alpha
+    }
+  }
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};

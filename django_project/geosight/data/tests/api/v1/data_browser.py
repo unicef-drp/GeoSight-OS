@@ -18,10 +18,10 @@ import copy
 from datetime import datetime
 
 from django.contrib.auth import get_user_model
-from django.test.testcases import TestCase
 from django.urls import reverse
 
 from geosight.data.models import Indicator, IndicatorGroup
+from geosight.data.models.indicator.indicator_type import IndicatorType
 from geosight.georepo.models import (
     ReferenceLayerView, ReferenceLayerIndicator
 )
@@ -30,7 +30,7 @@ from geosight.permission.tests._base import BasePermissionTest
 User = get_user_model()
 
 
-class DataBrowserApiTest(BasePermissionTest, TestCase):
+class DataBrowserApiTest(BasePermissionTest.TestCase):
     """Test for dataset list api."""
 
     payload = {
@@ -60,6 +60,7 @@ class DataBrowserApiTest(BasePermissionTest, TestCase):
 
         # Create indicators
         payload['name'] = 'name_1'
+        payload['type'] = IndicatorType.INTEGER
         self.indicator_1 = Indicator.objects.create(**payload)
         self.indicator_1.creator = self.creator
         self.indicator_1.save()
@@ -86,7 +87,7 @@ class DataBrowserApiTest(BasePermissionTest, TestCase):
         # Create values
         values = [
             # Ref 1 Indicator 1
-            [self.ref_1, self.indicator_1, '2020-01-01', 1, 'A', 2],
+            [self.ref_1, self.indicator_1, '2020-01-01', 1, 'A', 2.1],
             [self.ref_1, self.indicator_1, '2020-01-01', 1, 'B', 1],
             [self.ref_1, self.indicator_1, '2020-01-01', 1, 'C', 3],
             [self.ref_1, self.indicator_1, '2020-01-01', 2, 'AA', 1],
@@ -207,6 +208,24 @@ class DataBrowserApiTest(BasePermissionTest, TestCase):
             f'{url}?date__gte=2020-06-01', 200, user=user
         )
         self.assertEqual(len(response.json()['results']), 13)
+
+        # Check the comments
+        response = self.assertRequestGetView(
+            f'{url}?indicator_id__in={",".join([f"{self.indicator_1.id}"])}'
+            '&geom_id__in=A,B&date__lte=2020-01-01',
+            200,
+            user=user
+        )
+        results = response.json()['results']
+        self.assertEqual(len(results), 2)
+        for result in results:
+            if result['geom_id'] == 'A':
+                self.assertEqual(
+                    result['attributes']['description'],
+                    'Result was rounded to int.'
+                )
+            else:
+                self.assertTrue('description' not in result['attributes'])
 
     def test_list_api_by_creator(self):
         """Test List API."""

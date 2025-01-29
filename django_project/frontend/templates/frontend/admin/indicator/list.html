@@ -11,13 +11,11 @@
 {% block scripts %}
     <script>
       urls.api = {
-        'list': '{% url 'indicator-admin-list-api' %}',
+        'list': '{% url 'indicators-list' %}?fields=__all__',
         'create': '{% url 'admin-indicator-create-view' %}',
         'edit': '{% url 'admin-indicator-edit-view' 0 %}',
         'batch': '{% url 'admin-indicator-edit-batch-view' %}',
-        'detail': '{% url 'indicator-detail-api' 0 %}',
-        'users': '{% url 'user-list-api'%}',
-        'groups': '{% url 'group-list-api'%}',
+        'detail': '{% url 'indicators-detail' 0 %}',
 
         {# indicator specified url#}
         'form': '{% url 'admin-indicator-value-form-manager' 0 %}',

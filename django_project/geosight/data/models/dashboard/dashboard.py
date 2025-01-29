@@ -14,6 +14,9 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import os.path
+
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.gis.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -25,9 +28,15 @@ from geosight.data.models.basemap_layer import BasemapLayer
 from geosight.data.models.context_layer import ContextLayer
 from geosight.data.models.indicator import Indicator
 from geosight.data.models.related_table import RelatedTable
-from geosight.data.utils import update_structure
+from geosight.data.utils import update_structure, create_thumbnail
 from geosight.georepo.models import ReferenceLayerView
 from geosight.permission.models.manager import PermissionManager
+
+# If tenant is enabled, add model limitation
+if settings.TENANTS_ENABLED:
+    from geosight.tenants.models import BaseModelWithLimitation
+else:
+    BaseModelWithLimitation = models.Model
 
 User = get_user_model()
 
@@ -38,7 +47,10 @@ class DashboardGroup(AbstractTerm):
     pass
 
 
-class Dashboard(SlugTerm, IconTerm, AbstractEditData, AbstractVersionData):
+class Dashboard(
+    SlugTerm, IconTerm, AbstractEditData, AbstractVersionData,
+    BaseModelWithLimitation
+):
     """Dashboard model.
 
     One dashboard just contains one indicator.
@@ -72,7 +84,7 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData, AbstractVersionData):
     )
     geo_field = models.CharField(
         max_length=64,
-        default='concept_uuid'
+        default='geometry_code'
     )
 
     # group
@@ -106,12 +118,53 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData, AbstractVersionData):
     enable_geometry_search = models.BooleanField(default=True)
     default_time_mode = models.JSONField(null=True, blank=True)
 
+    content_limitation_description = 'Limit the number of project items'
+
     @staticmethod
     def name_is_exist_of_all(slug: str) -> bool:
         """Check of name is exist."""
         return Dashboard.objects.filter(slug=slug).first() is not None
 
-    def save_relations(self, data):
+    @property
+    def thumbnail(self):
+        """Get dashboard thumbnail if exists."""
+        if self.icon.name:
+            file_name = os.path.basename(self.icon.name)
+            thumbnail_path = os.path.join(
+                settings.MEDIA_ROOT,
+                'icons',
+                'thumbnails',
+                file_name
+            )
+            return thumbnail_path
+        return None
+
+    def save(self, *args, **kwargs):
+        """Save object and create thumbnail."""
+        # If dashboard has icon, delete old thumbnail if exist,
+        # save dashboard, then create new thumbnail
+        if self.icon.name:
+            old_dashboard = Dashboard.objects.filter(id=self.id).first()
+
+            # Delete old thumbnail
+            if old_dashboard:
+                if old_dashboard.thumbnail:
+                    if os.path.exists(old_dashboard.thumbnail):
+                        os.remove(old_dashboard.thumbnail)
+            # Save dashboard
+            super().save(*args, **kwargs)
+
+            # create new thumbnaill
+            os.makedirs(os.path.dirname(self.thumbnail), exist_ok=True)
+            try:
+                create_thumbnail(self.icon.path, self.thumbnail)
+            except Exception:
+                pass
+        else:
+            # If it does not have icon, just save*
+            super().save(*args, **kwargs)
+
+    def save_relations(self, data, is_create=False):
         """Save all relationship data."""
         from geosight.data.models.dashboard import (
             DashboardIndicator, DashboardIndicatorRule, DashboardBasemap,
@@ -122,7 +175,8 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData, AbstractVersionData):
             DashboardRelatedTable,
             DashboardIndicatorLayerRule as DSLayerRule,
             DashboardIndicatorLayerIndicatorRule as DSLayerIndicatorRule,
-            DashboardIndicatorLayerField as IndicatorLayerField
+            DashboardIndicatorLayerField as IndicatorLayerField,
+            DashboardTool
         )
         from geosight.data.models.style.indicator_style import (
             IndicatorStyleType
@@ -150,9 +204,9 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData, AbstractVersionData):
                     'style_config', None
                 )
                 dashboard_indicator.style_type = indicator['style_type']
-                dashboard_indicator.override_style = indicator[
-                    'override_style'
-                ]
+                dashboard_indicator.override_style = indicator.get(
+                    'override_style', False
+                )
                 dashboard_indicator.dashboardindicatorrule_set.all().delete()
                 if dashboard_indicator.override_style:
                     for idx, rule in enumerate(indicator['style']):
@@ -173,9 +227,9 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData, AbstractVersionData):
                     )
 
                 # For label
-                dashboard_indicator.override_label = indicator[
-                    'override_label'
-                ]
+                dashboard_indicator.override_label = indicator.get(
+                    'override_label', False
+                )
                 dashboard_indicator.label_config = indicator[
                     'label_config'
                 ]
@@ -194,7 +248,9 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData, AbstractVersionData):
             basemaps_layers_structure, basemaps_layers_new
         )
 
+        # --------------------------------
         # RELATED TABLE
+        # --------------------------------
         self.save_relation(
             DashboardRelatedTable, RelatedTable,
             self.dashboardrelatedtable_set.all(),
@@ -305,10 +361,13 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData, AbstractVersionData):
                 config.save()
 
             # ------------ INDICATOR LAYER STYLE ---------------
+            model.override_style = layer_data.get('override_style', False)
             model.style_type = layer_data.get('style_type', '')
-            model.label_config = layer_data.get('label_config', None)
             model.style_id = layer_data.get('style_id', None)
             model.style_config = layer_data.get('style_config', None)
+
+            model.override_label = layer_data.get('override_label', False)
+            model.label_config = layer_data.get('label_config', None)
 
             rules_ids = []
             rules = model.dashboardindicatorlayerrule_set.all()
@@ -342,10 +401,16 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData, AbstractVersionData):
                 )
                 objects.delete()
                 for idx, field in enumerate(layer_data['data_fields']):
-                    obj, _ = IndicatorLayerField.objects.get_or_create(
-                        object=model,
-                        id=field.get('id', None)
-                    )
+                    if is_create:
+                        obj, _ = IndicatorLayerField.objects.get_or_create(
+                            object=model,
+                            id=None
+                        )
+                    else:
+                        obj, _ = IndicatorLayerField.objects.get_or_create(
+                            object=model,
+                            id=field.get('id', None)
+                        )
                     obj.name = field['name']
                     obj.alias = field['alias']
                     obj.visible = field.get('visible', True)
@@ -448,6 +513,22 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData, AbstractVersionData):
         self.indicator_layers_structure = update_structure(
             indicator_layers_structure, indicator_layers_new
         )
+
+        # --------------------------------
+        # TOOLS
+        # --------------------------------
+        tools = data.get('tools', [])
+        for tool in tools:
+            try:
+                obj = self.dashboardtool_set.get(name=tool['name'])
+            except DashboardTool.DoesNotExist:
+                obj = DashboardTool(
+                    dashboard=self,
+                    name=tool['name'],
+                )
+            obj.visible_by_default = tool['visible_by_default']
+            obj.config = tool.get('config', None)
+            obj.save()
         self.save()
 
     def save_relation(self, ModelClass, ObjectClass, modelQuery, inputData):
@@ -489,6 +570,19 @@ class Dashboard(SlugTerm, IconTerm, AbstractEditData, AbstractVersionData):
             model.override_label = data.get('override_label', False)
             model.override_field = data.get('override_field', False)
 
+            # Configuration
+            configuration = data.get('configuration', {})
+            saved_configuration = {}
+            if configuration:
+                for key, value in configuration.items():
+                    if 'override_' in key:
+                        try:
+                            k_val = key.replace('override_', '')
+                            saved_configuration[k_val] = configuration[k_val]
+                            saved_configuration[key] = value
+                        except KeyError:
+                            pass
+            model.configuration = saved_configuration
             model.save()
             ids_new[data.get('id', 0)] = data['id']
         return ids_new

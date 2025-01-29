@@ -17,8 +17,8 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.contrib import admin
 
 from geosight.importer.models import (
-    Importer, ImporterAttribute, ImporterLog, ImporterAlert,
-    ImporterLogDataSaveProgress
+    Importer, ImporterAttribute, ImporterMapping,
+    ImporterLog, ImporterAlert, ImporterLogDataSaveProgress
 )
 from geosight.importer.tasks import run_importer
 
@@ -61,18 +61,33 @@ class ImporterAttributeInline(admin.TabularInline):
         return False
 
 
+class ImporterMappingInline(admin.TabularInline):
+    """ImporterMapping inline."""
+
+    model = ImporterMapping
+    fields = ('name', 'value')
+    extra = 0
+
+    def has_add_permission(self, request, obj=None):
+        """Has add permission."""
+        return False
+
+
 @admin.register(Importer)
 class ImporterAdmin(admin.ModelAdmin):
     """Importer Admin."""
 
     actions = (import_data,)
-    inlines = [ImporterAlertInline, ImporterAttributeInline]
+    inlines = [
+        ImporterAlertInline, ImporterAttributeInline, ImporterMappingInline
+    ]
     list_display = (
         'id', 'unique_id', 'creator', 'import_type',
         'input_format', 'schedule_type', 'job_active'
     )
     list_filter = ('import_type', 'input_format',)
     readonly_fields = ('unique_id',)
+    search_fields = ('unique_id',)
 
 
 @admin.register(ImporterLog)
@@ -83,7 +98,7 @@ class ImporterLogAdmin(admin.ModelAdmin):
     readonly_fields = ('importer', 'start_time', 'end_time')
     list_filter = ('status',)
     inlines = [ImporterLogDataSaveProgressInline]
-    search_fields = ('note',)
+    search_fields = ('note', 'importer__unique_id')
 
     def has_add_permission(self, request, obj=None):
         """Has add permission."""

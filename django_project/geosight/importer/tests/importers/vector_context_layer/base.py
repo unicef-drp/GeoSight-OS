@@ -14,12 +14,14 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-import json
 import os
 
 import responses
 
 from core.settings.utils import ABS_PATH
+from core.tests.base_test_patch_responses import (
+    BaseTestWithPatchResponses, PatchReqeust
+)
 from geosight.data.tests.model_factories import ContextLayerF
 from geosight.georepo.models.entity import Entity
 from geosight.importer.importers.base.indicator_value import (
@@ -33,7 +35,7 @@ from geosight.importer.tests.importers._base import (
 )
 
 
-class BaseTest(BaseIndicatorValueImporterTest):
+class BaseTest(BaseIndicatorValueImporterTest, BaseTestWithPatchResponses):
     """Base for Api Importer."""
 
     databases = {'default', 'temp'}
@@ -71,91 +73,93 @@ class BaseTest(BaseIndicatorValueImporterTest):
         )
         self.reference_layer_identifier = self.reference_layer.identifier
 
-    def mock_request(self, url, response_file):
-        """Mock response with file."""
-        responses.add(
-            responses.GET,
-            url,
-            status=200,
-            json=json.loads(open(response_file, "r").read())
-        )
-
+    @property
     def mock_requests(self):
         """Mock requests."""
-        # Reference Layer
-        self.mock_request(
-            (
-                f'{self.georepo_url}/search/view/'
-                f'{self.reference_layer_identifier}/?'
-                f'cached=False'
+        return [
+            # Reference Layer
+            PatchReqeust(
+                (
+                    f'{self.georepo_url}/search/view/'
+                    f'{self.reference_layer_identifier}/?'
+                    f'cached=False'
+                ),
+                file_response=os.path.join(
+                    self.responses_folder, 'georepo_ref_detail.json'
+                )
             ),
-            os.path.join(self.responses_folder, 'georepo_ref_detail.json')
-        )
-        # Reference Layer List
-        self.mock_request(
-            (
-                f'{self.georepo_url}/search/view/test/top'
-                f'?page=1&page_size=50'
+            # Reference Layer List
+            PatchReqeust(
+                (
+                    f'{self.georepo_url}/search/view/test/top'
+                    f'?page=1&page_size=50'
+                ),
+                file_response=os.path.join(
+                    self.responses_folder, 'georepo_entity_list.json'
+                )
             ),
-            os.path.join(self.responses_folder, 'georepo_entity_list.json')
-        )
-        # Reference Layer BBOX
-        self.mock_request(
-            (
-                f'{self.georepo_url}/operation/view/'
-                f'{self.reference_layer_identifier}/bbox/uuid/test/'
+            # Reference Layer BBOX
+            PatchReqeust(
+                (
+                    f'{self.georepo_url}/operation/view/'
+                    f'{self.reference_layer_identifier}/bbox/uuid/test/'
+                ),
+                file_response=os.path.join(
+                    self.responses_folder, 'georepo_bbox.json'
+                )
             ),
-            os.path.join(self.responses_folder, 'georepo_bbox.json')
-        )
+            # Geojson containment
+            PatchReqeust(
+                (
+                    f'{self.georepo_url}/operation/view/'
+                    f'{self.reference_layer_identifier}/containment-check/'
+                    f'ST_Intersects/0/ucode/?admin_level=1'
+                ),
+                file_response=os.path.join(
+                    self.responses_folder, 'georepo_containtment.json'
+                ),
+                request_method='POST'
+            ),
 
-        # Geojson containment
-        responses.add(
-            responses.POST,
-            (
-                f'{self.georepo_url}/operation/view/'
-                f'{self.reference_layer_identifier}/containment-check/'
-                f'ST_Intersects/0/ucode/?admin_level=1'
+            # Arcgis definition
+            PatchReqeust(
+                f'{self.arcgis_test_url}?f=json',
+                file_response=os.path.join(
+                    self.responses_folder, 'arcgis_definition.json'
+                )
             ),
-            status=200,
-            json=json.loads(
-                open(os.path.join(
-                    self.responses_folder, 'georepo_containtment.json'), "r"
-                ).read()
+
+            # Arcgis data
+            PatchReqeust(
+                (
+                    f'{self.arcgis_test_url}/query?'
+                    f'where=1=1&returnGeometry=true&outSR=4326&outFields=*&'
+                    f'inSR=4326&geometryType=esriGeometryEnvelope&f=geojson&'
+                    f'geometry=%7B%22xmin%22:%200.0,%20%22ymin%22:%200.0,'
+                    f'%20%22xmax%22:%20100.0,%20%22ymax%22:%20100.0,%20%22'
+                    f'spatialReference%22:%20%7B%22wkid%22:%204326%7D%7D&'
+                    f'resultOffset=0&resultRecordCount=100'
+
+                ),
+                file_response=os.path.join(
+                    self.responses_folder, 'arcgis_geojson_1.json'
+                )
+            ),
+            PatchReqeust(
+                (
+                    f'{self.arcgis_test_url}/query?'
+                    f'where=1=1&returnGeometry=true&outSR=4326&outFields=*&'
+                    f'inSR=4326&geometryType=esriGeometryEnvelope&f=geojson&'
+                    f'geometry=%7B%22xmin%22:%200.0,%20%22ymin%22:%200.0,'
+                    f'%20%22xmax%22:%20100.0,%20%22ymax%22:%20100.0,%20%22'
+                    f'spatialReference%22:%20%7B%22wkid%22:%204326%7D%7D&'
+                    f'resultOffset=100&resultRecordCount=100'
+                ),
+                file_response=os.path.join(
+                    self.responses_folder, 'arcgis_geojson_2.json'
+                )
             )
-        )
-
-        # Arcgis definition
-        self.mock_request(
-            f'{self.arcgis_test_url}?f=json',
-            os.path.join(self.responses_folder, 'arcgis_definition.json')
-        )
-
-        # Arcgis data
-        self.mock_request(
-            (
-                f'{self.arcgis_test_url}/query?'
-                f'where=1=1&returnGeometry=true&outSR=4326&outFields=*&'
-                f'inSR=4326&geometryType=esriGeometryEnvelope&f=geojson&'
-                f'geometry=%7B%22xmin%22:%200.0,%20%22ymin%22:%200.0,'
-                f'%20%22xmax%22:%20100.0,%20%22ymax%22:%20100.0,%20%22'
-                f'spatialReference%22:%20%7B%22wkid%22:%204326%7D%7D&'
-                f'resultOffset=0&resultRecordCount=100'
-
-            ),
-            os.path.join(self.responses_folder, 'arcgis_geojson_1.json')
-        )
-        self.mock_request(
-            (
-                f'{self.arcgis_test_url}/query?'
-                f'where=1=1&returnGeometry=true&outSR=4326&outFields=*&'
-                f'inSR=4326&geometryType=esriGeometryEnvelope&f=geojson&'
-                f'geometry=%7B%22xmin%22:%200.0,%20%22ymin%22:%200.0,'
-                f'%20%22xmax%22:%20100.0,%20%22ymax%22:%20100.0,%20%22'
-                f'spatialReference%22:%20%7B%22wkid%22:%204326%7D%7D&'
-                f'resultOffset=100&resultRecordCount=100'
-            ),
-            os.path.join(self.responses_folder, 'arcgis_geojson_2.json')
-        )
+        ]
 
     @responses.activate
     def assert_results(
@@ -163,7 +167,7 @@ class BaseTest(BaseIndicatorValueImporterTest):
             statial_method: str, aggregation_method: str
     ):
         """Assert results of harvester."""
-        self.mock_requests()
+        self.init_mock_requests()
         attributes = self.attributes
         self.importer.save_attributes(
             {**attributes, **{
@@ -174,7 +178,7 @@ class BaseTest(BaseIndicatorValueImporterTest):
         )
         self.importer.run()
         log = self.importer.importerlog_set.all().last()
-        self.assertEqual(log.status, 'Success')
+        self.assertTrue(log.status in ['Success', 'Warning'])
 
         for value in self.indicator.indicatorvalue_set.all():
             self.assertEqual(value.value, values[value.geom_id])

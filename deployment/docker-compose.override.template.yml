@@ -20,6 +20,13 @@ services:
   dbbackups:
     volumes:
       - ./volumes/backups:/backups
+  redis:
+    volumes:
+      # fix redis permission issue because it's using user redis (1001)
+      # sudo chown -R 1001:1001 ./volumes/tmp_data/redis
+      - ./volumes/tmp_data/redis:/tmp
+      - ./redis/redis.conf:/opt/bitnami/redis/mounted-etc/overrides.conf
+
   django:
     build:
       context: ../
@@ -30,6 +37,8 @@ services:
       - ./volumes/static:/home/web/static
       - ./volumes/media:/home/web/media
       - ./volumes/backups:/backups
+      - ./volumes/tmp_data/django:/tmp
+      - ./volumes/tmp_data:/home/web/logs
   worker:
     build:
       context: ../
@@ -38,6 +47,7 @@ services:
       - ../django_project:/home/web/django_project
       - ./volumes/static:/home/web/static
       - ./volumes/media:/home/web/media
+      - ./volumes/tmp_data/worker:/tmp
   celery_beat:
     build:
       context: ../
@@ -46,6 +56,7 @@ services:
       - ../django_project:/home/web/django_project
       - ./volumes/static:/home/web/static
       - ./volumes/media:/home/web/media
+      - ./volumes/tmp_data/celery_beat:/tmp
   nginx:
     build:
       context: ../
@@ -54,6 +65,7 @@ services:
       - ./nginx/sites-enabled:/etc/nginx/conf.d
       - ./volumes/static:/home/web/static:ro
       - ./volumes/media:/home/web/media:ro
+      - ./volumes/tmp_data/nginx:/tmp
     ports:
       - "${HTTP_PORT:-80}:8080"
       - "${HTTPS_PORT:-443}:443"
@@ -72,6 +84,7 @@ services:
       - ./volumes/static:/home/web/static
       - ./volumes/media:/home/web/media
       - ./volumes/backups:/backups
+      - ./volumes/tmp_data:/home/web/logs
     environment:
       # editable in .env
       - DATABASE_TEMP_NAME=${DATABASE_TEMP_NAME:-temp}
@@ -100,6 +113,9 @@ services:
       - GEOREPO_AZURE_B2C_CLIENT_SECRET=${GEOREPO_AZURE_B2C_CLIENT_SECRET:-''}
       - GEOREPO_AZURE_B2C_TENANT_NAME=${GEOREPO_AZURE_B2C_TENANT_NAME:-''}
       - GEOREPO_AZURE_B2C_POLICY_NAME=${GEOREPO_AZURE_B2C_POLICY_NAME:-''}
+
+      # PLUGINS
+      - PLUGINS=${PLUGINS:-''}
     ports:
       # for django test server
       #- "2000:8080"
@@ -111,3 +127,8 @@ services:
       - db
       - redis
       - celery_beat
+
+  logrotate:
+    volumes:
+      - ./volumes/tmp_data:/logs
+      - ./volumes/tmp_data/logrotate:/tmp

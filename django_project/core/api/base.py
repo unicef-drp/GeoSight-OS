@@ -32,9 +32,22 @@ User = get_user_model()
 class FilteredAPI(object):
     """Return User list."""
 
-    def filter_query(self, request, query, ignores: list, fields: list = None):
+    def filter_query(
+            self, request, query, ignores: list, fields: list = None,
+            sort: str = None, none_is_null: bool = True,
+    ):
         """Return filter query."""
+        # Exclude sort to filter
+        if not ignores:
+            ignores = []
+        ignores.append('sort')
+
         for param, value in request.GET.items():
+            is_equal = True
+            if value[0] == '!':
+                value = value[1:]
+                is_equal = False
+
             field = param.split('__')[0]
             if field in ignores:
                 continue
@@ -47,9 +60,10 @@ class FilteredAPI(object):
 
             # Handle reference layer
             if 'reference_layer_id__in' in param:
-                value = ReferenceLayerView.objects.filter(
-                    identifier__in=value
-                ).values_list('id', flat=True)
+                if 'None' not in value:
+                    value = ReferenceLayerView.objects.filter(
+                        identifier__in=value
+                    ).values_list('id', flat=True)
 
             if 'dataset_uuid__in' in param:
                 value = ReferenceLayerView.objects.filter(
@@ -79,9 +93,20 @@ class FilteredAPI(object):
                 except (ValueError, TypeError):
                     pass
             try:
-                query = query.filter(**{param: value})
+                if none_is_null and ('NaN' in value or 'None' in value):
+                    param = f'{field}__isnull'
+                    value = True
+
+                if is_equal:
+                    query = query.filter(**{param: value})
+                else:
+                    query = query.exclude(**{param: value})
             except FieldError:
                 raise SuspiciousOperation(f'Can not query param {param}')
             except ValidationError as e:
                 raise SuspiciousOperation(e)
+
+        if sort:
+            query = query.order_by(sort)
+
         return query

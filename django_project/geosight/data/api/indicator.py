@@ -15,21 +15,28 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import json
-from datetime import datetime
 
+from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_control
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from core.pagination import Pagination
+from geosight.data.api.dashboard_indicator_value import (
+    _DashboardIndicatorValuesAPI
+)
 from geosight.data.models.indicator import Indicator
 from geosight.data.serializer.indicator import (
-    IndicatorAdminListSerializer, IndicatorSerializer,
-    IndicatorBasicListSerializer
+    IndicatorValueWithGeoDateSerializer, IndicatorAdminListSerializer,
+    IndicatorSerializer, IndicatorBasicListSerializer
 )
+from geosight.georepo.models.reference_layer import ReferenceLayerView
 from geosight.permission.access import (
-    read_permission_resource,
-    delete_permission_resource
+    read_permission_resource, delete_permission_resource
 )
 
 
@@ -58,6 +65,19 @@ class IndicatorAdminListAPI(APIView):
             IndicatorAdminListSerializer(
                 Indicator.permissions.list(request.user).filter(
                     group__isnull=False).order_by('group__name', 'name'),
+                many=True, context={'user': request.user}
+            ).data
+        )
+
+    def post(self, request):
+        """Return Indicatorslist."""
+        ids = request.data['ids']
+        return Response(
+            IndicatorAdminListSerializer(
+                Indicator.permissions.list(request.user).filter(
+                    group__isnull=False,
+                    id__in=ids
+                ).order_by('group__name', 'name'),
                 many=True, context={'user': request.user}
             ).data
         )
@@ -109,12 +129,82 @@ class IndicatorDetailAPI(APIView):
         return Response('Deleted')
 
 
-class IndicatorValuesAPI(APIView):
+@method_decorator(cache_control(public=True, max_age=864000), name='dispatch')
+class IndicatorValuesAPI(
+    _DashboardIndicatorValuesAPI, ListAPIView
+):
     """API for Values of indicator."""
 
-    permission_classes = (IsAuthenticated,)
+    pagination_class = Pagination
+    serializer_class = IndicatorValueWithGeoDateSerializer
+
+    def get_queryset(self):
+        """Return queryset of API."""
+        pk = self.kwargs['pk']
+        indicator = get_object_or_404(Indicator, pk=pk)
+        min_time, max_time = self.return_parameters(self.request)
+        try:
+            reference_layer = ReferenceLayerView.objects.get(
+                identifier=self.request.GET.get('reference_layer_uuid', '')
+            )
+        except ReferenceLayerView.DoesNotExist:
+            reference_layer = ReferenceLayerView()
+        read_permission_resource(indicator, self.request.user)
+
+        return indicator.values(
+            date_data=max_time,
+            min_date_data=min_time,
+            admin_level=self.request.GET.get('admin_level', None),
+            reference_layer=reference_layer,
+            last_value=self.request.GET.get('last_value', 'true') == 'true'
+        )
+
+    def get(self, request, **kwargs):
+        """Return Values."""
+        queryset = self.filter_queryset(self.get_queryset())
+
+        # Get list data and save it to cache
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            assert self.paginator is not None
+            response = self.paginator.get_paginated_response_data(
+                serializer.data
+            )
+            return Response(response)
+
+        serializer = self.get_serializer(queryset, many=True)
+        response = serializer.data
+        return Response(response)
+
+
+class IndicatorMetadataAPI(APIView):
+    """API for Values of indicator."""
 
     def get(self, request, pk, **kwargs):
         """Return Values."""
         indicator = get_object_or_404(Indicator, pk=pk)
-        return Response(indicator.values(datetime.now()))
+        return Response(
+            indicator.metadata(
+                self.request.GET.get('reference_layer_uuid', '')
+            )
+        )
+
+
+class SearchSimilarityIndicatorAPI(APIView):
+    """API for checking list of similarity."""
+
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, **kwargs):
+        """Return Values."""
+        data = request.data
+        try:
+            return Response(
+                Indicator.search(
+                    name=data.get('name', ''),
+                    description=data.get('description', '')
+                )
+            )
+        except Exception as e:
+            return HttpResponseBadRequest(f'{e}')

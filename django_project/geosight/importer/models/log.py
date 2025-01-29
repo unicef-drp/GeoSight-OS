@@ -95,10 +95,16 @@ class ImporterLog(models.Model):
                 status = self.status
                 if status == LogStatus.START:
                     status = 'Started'
+                elif status == LogStatus.SUCCESS:
+                    status = 'Successful'
+
                 context = {
                     'name': self.importer.__str__(),
                     'status': status.lower(),
-                    'url': f'{pref.site_url}{log_url}'
+                    'url': f'{pref.site_url}{log_url}',
+                    'helping_verb': (
+                        'has' if self.status == LogStatus.FAILED else 'is'
+                    )
                 }
 
                 message = render_to_string(
@@ -168,8 +174,9 @@ class ImporterLogDataSaveProgress(models.Model):
             id__in=self.target_ids
         )
         importer = self.log.importer.importer(self.log)
-        for log_data in log_datas:
-            importer._save_log_data_to_model(log_data)
-            self.saved_ids.append(log_data.id)
-            self.save()
+        for idx, log_data in enumerate(log_datas):
+            if log_data.id not in self.saved_ids:
+                importer._save_log_data_to_model(log_data)
+                self.saved_ids.append(log_data.id)
+                self.save()
         self.delete()

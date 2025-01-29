@@ -21,11 +21,12 @@ from django.shortcuts import redirect, reverse, render
 from frontend.views.admin._base import AdminBaseView
 from geosight.data.forms.context_layer import ContextLayerForm
 from geosight.data.models.context_layer import ContextLayer
+from geosight.data.models.style.base import DynamicClassificationTypeChoices
 from geosight.permission.access import RoleCreatorRequiredMixin
 
 
-class ContextLayerCreateView(RoleCreatorRequiredMixin, AdminBaseView):
-    """ContextLayer Create View."""
+class BaseContextLayerEditView(AdminBaseView):
+    """Base Context Layer Edit View."""
 
     template_name = 'frontend/admin/context_layer/form.html'
 
@@ -68,7 +69,10 @@ class ContextLayerCreateView(RoleCreatorRequiredMixin, AdminBaseView):
         context.update(
             {
                 'form': ContextLayerForm(initial=initial),
-                'permission': json.dumps(permission)
+                'permission': json.dumps(permission),
+                'dynamicClassification': json.dumps(
+                    DynamicClassificationTypeChoices
+                ),
             }
         )
         return context
@@ -84,15 +88,28 @@ class ContextLayerCreateView(RoleCreatorRequiredMixin, AdminBaseView):
             instance.creator = request.user
             instance.save()
             instance.save_relations(data)
+            # Save permission
+            instance.permission.update_from_request_data(
+                request.POST, request.user
+            )
             return redirect(
                 reverse(
                     'admin-context-layer-edit-view', kwargs={'pk': instance.id}
                 ) + '?success=true'
             )
         context = self.get_context_data(**kwargs)
+        if data.get('permission', None):
+            form.permission_data = data.get('permission', None)
         context['form'] = form
         return render(
             request,
             self.template_name,
             context
         )
+
+
+class ContextLayerCreateView(
+    RoleCreatorRequiredMixin, BaseContextLayerEditView
+):
+    """ContextLayer Create View."""
+    pass

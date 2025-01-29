@@ -19,17 +19,11 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 
 import { render } from '../../../app';
-import {
-  DatasetFilterSelector,
-  GroupFilterSelector,
-  IndicatorFilterSelector,
-  SelectFilter,
-  UserFilterSelector
-} from "../ModalSelector/ModalFilterSelector";
+import { SelectFilter } from "../ModalSelector/ModalFilterSelector";
 import { store } from '../../../store/admin';
 import Admin, { pageNames } from '../index';
 import { AddButton, SaveButton } from "../../../components/Elements/Button";
-import { splitParams, urlParams } from "../../../utils/main";
+import { capitalize, splitParams, urlParams } from "../../../utils/main";
 import Modal, {
   ModalContent,
   ModalFooter,
@@ -38,6 +32,18 @@ import Modal, {
 import PublicDataAccess from "./Public";
 import { UsersDataAccess } from "./Users";
 import { GroupsDataAccess } from "./Groups";
+import {
+  DatasetFilterSelector
+} from "../../../components/ResourceSelector/DatasetViewSelector";
+import {
+  IndicatorFilterSelector
+} from "../../../components/ResourceSelector/IndicatorSelector";
+import GroupSelector, {
+  GroupFilterSelector
+} from "../../../components/ResourceSelector/GroupSelector";
+import UserSelector, {
+  UserFilterSelector
+} from "../../../components/ResourceSelector/UserSelector";
 
 import '../../Admin/Components/List/style.scss';
 import './style.scss';
@@ -104,26 +110,37 @@ export function AddData(
         <IndicatorFilterSelector
           data={indicators}
           setData={setIndicators}
-          returnObject={true}/>
+          showSelected={true}
+        />
       </FormControl>
       <FormControl className='BasicForm'>
         <label className="form-label">Dataset</label>
         <DatasetFilterSelector
           data={datasets}
           setData={setDatasets}
-          returnObject={true}
+          showSelected={true}
         />
       </FormControl>
       <FormControl className='BasicForm'>
-        <label className="form-label">{tab}</label>
+        <label className="form-label">{capitalize(tab)}</label>
         {
           tab === UserTab ?
-            <UserFilterSelector data={objects}
-                                setData={setObjects}
-                                returnObject={true}/>
-            : <GroupFilterSelector data={objects}
-                                   setData={setObjects}
-                                   returnObject={true}/>
+            <UserSelector
+              initData={objects}
+              dataSelected={setObjects}
+              multipleSelection={true}
+              mode={'filter'}
+              showSelected={true}
+              placeholder={'Filter by User(s)'}
+            />
+            : <GroupSelector
+              initData={objects}
+              dataSelected={setObjects}
+              multipleSelection={true}
+              mode={'filter'}
+              showSelected={true}
+              placeholder={'Filter by Group(s)'}
+            />
         }
       </FormControl>
       <FormControl className='BasicForm'>
@@ -154,8 +171,8 @@ export function AddData(
             setCreating(true)
             tableRef?.current.createData(
               {
-                indicators: indicators.map(row => row.id),
-                datasets: datasets.map(row => row.identifier),
+                indicators: indicators,
+                datasets: datasets,
                 objects: objects.map(row => row.id),
                 permission: permission,
               },

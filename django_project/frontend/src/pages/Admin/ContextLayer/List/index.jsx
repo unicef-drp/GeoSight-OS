@@ -20,8 +20,9 @@ import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
 import { pageNames } from '../../index';
 import { COLUMNS, COLUMNS_ACTION } from "../../Components/List";
-import { AdminList } from "../../AdminList";
 import PermissionModal from "../../Permission";
+import AdminList from "../../../../components/AdminList";
+import {ResourceMeta} from "../../../../components/AdminList";
 
 import './style.scss';
 
@@ -34,8 +35,12 @@ export function resourceActions(params) {
  */
 export default function ContextLayerList() {
   const pageName = pageNames.ContextLayer
-  const columns = COLUMNS(pageName, urls.admin.contextLayerList);
-  columns[4] = {
+  let columns = COLUMNS(pageName, urls.admin.contextLayerList);
+  columns.pop();
+  columns = columns.concat(
+    [{ field: 'layer_type', headerName: 'Layer type', flex: 0.5 }].concat(ResourceMeta)
+  )
+  columns.push({
     field: 'actions',
     type: 'actions',
     cellClassName: 'MuiDataGrid-ActionsColumn',
@@ -60,12 +65,25 @@ export default function ContextLayerList() {
       }
       return actions
     },
-  }
+  })
   return <AdminList
+    url={{
+      list: urls.api.list,
+      batch: urls.api.batch,
+      detail: urls.api.detail,
+      edit: urls.api.edit,
+      create: urls.api.create,
+    }}
+    title={contentTitle}
     columns={columns}
     pageName={pageName}
-    listUrl={urls.api.list}
     multipleDelete={true}
+    enableFilter={true}
+    defaults={{
+      sort: [
+        { field: 'name', sort: 'asc' }
+      ]
+    }}
   />
 }
 

@@ -1,0 +1,101 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '22/02/2024'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   ReferenceLayerView Form style
+   ========================================================================== */
+
+.AdminForm form {
+  padding: 0 !important;
+}
+
+.dzu-dropzoneActive {
+  background-color: var(--primary-color-transparency);
+  border-color: #2484FF;
+  border: 2px solid var(--primary-color) !important;
+}
+
+form {
+  .Files {
+    height: 100%;
+    width: 100%;
+    position: relative;
+
+    .DraggableSection {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 98%;
+      margin: 1rem;
+      margin-top: 4rem;
+      box-sizing: border-box;
+    }
+
+    .Draggable {
+      .MuiPaper-root {
+        padding: 1rem;
+        border: 1px solid var(--primary-color-transparency);
+      }
+    }
+
+    .dzu-dropzone {
+      border: unset;
+      border-radius: 0;
+      height: 100%;
+      padding-top: 1rem;
+    }
+
+    .dzu-inputLabelWithFiles {
+      position: absolute;
+      top: 1rem;
+      left: 0;
+      margin-top: 0 !important;
+      margin-left: 1rem !important;
+      padding: 6px 1rem;
+      min-height: 22px;
+      height: 22px;
+    }
+
+    .dzu-submitButtonContainer {
+      margin: 0;
+    }
+
+    .MuiPaper-root {
+      overflow: visible;
+    }
+
+    .dzu-inputLabel {
+      display: flex !important;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      font-size: 1rem;
+      height: 100%;
+      width: 100% !important;
+    }
+  }
+
+  .property-selection {
+    display: flex;
+    padding-top: 1rem;
+    padding-left: 30px;
+
+    .BasicFormSection {
+      padding-right: 2rem;
+      margin-bottom: 0;
+      min-width: 200px;
+    }
+  }
+}

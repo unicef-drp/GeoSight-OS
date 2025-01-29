@@ -23,9 +23,8 @@
   },
   "homepage": "https://github.com/unicef-drp/GeoSight",
   "devDependencies": {
-    "@playwright/test": "^1.36.2"
-  },
-  "dependencies": {
+    "@playwright/test": "^1.40.1",
+    "@types/node": "^20.12.10"
   },
   "overrides": {}
 }

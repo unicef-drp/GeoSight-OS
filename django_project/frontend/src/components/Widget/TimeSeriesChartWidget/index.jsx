@@ -63,10 +63,18 @@ export function Selection(
  * @param {dict} data Widget Data
  */
 export default function Index({ idx, data }) {
-  const { slug } = useSelector(state => state.dashboard.data);
+  const {
+    slug,
+    default_time_mode
+  } = useSelector(state => state.dashboard.data);
+  const { referenceLayers } = useSelector(state => state.map)
+  const referenceLayer = referenceLayers[0]
+  const {
+    use_only_last_known_value
+  } = default_time_mode
   const [colorPalettes, setColorPalettes] = useState(null);
   const selectedGlobalTimeConfig = useSelector(state => state.selectedGlobalTimeConfig);
-  const geometries = useSelector(state => state.geometries);
+  const geometries = useSelector(state => state.datasetGeometries[referenceLayer?.identifier]);
   const filteredGeometries = useSelector(state => state.filteredGeometries);
   const selectedIndicatorLayer = useSelector(state => state.selectedIndicatorLayer)
   const selectedIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer)
@@ -84,11 +92,11 @@ export default function Index({ idx, data }) {
 
   const { name, config } = data
   const {
-    dateTimeType,
     dateTimeConfig,
     geographicalUnitPaletteColor,
     indicatorsPaletteColor
   } = config
+  const dateTimeType = use_only_last_known_value ? TimeType.SYNC : config.dateTimeType
 
   // Get date data
   let { interval } = dateTimeConfig
@@ -212,7 +220,7 @@ export default function Index({ idx, data }) {
 
   // Geometries of data
   useEffect(() => {
-    if (colorPalettes === null) {
+    if (colorPalettes === null || !geometries) {
       return
     }
     const color = colorPalettes.find(color => color.id === geographicalUnitPaletteColor)
@@ -229,7 +237,8 @@ export default function Index({ idx, data }) {
           newGeographicUnits.push({
             id: geom.concept_uuid,
             name: geom.name,
-            color: '' + getRandomColor()
+            color: '' + getRandomColor(),
+            reference_layer_uuid: referenceLayer.identifier
           })
         } else {
           newGeographicUnits.push(geomInList)
@@ -279,7 +288,10 @@ export default function Index({ idx, data }) {
         geographicUnits={geographicUnits}
         indicatorSeries={indicatorSeries}
         secondSeries={secondSeries}
-        config={config}
+        config={{
+          ...config,
+          dateTimeType: dateTimeType,
+        }}
         setChartData={setChartData}
         setRequestProgress={setRequestProgress}/>
     </Fragment>

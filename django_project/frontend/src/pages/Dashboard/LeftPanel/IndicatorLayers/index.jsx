@@ -41,9 +41,9 @@ import './style.scss';
 
 
 /** Force indicator layer to update **/
-export let indicatorLayersForcedUpdate = false
-export const changeIndicatorLayersForcedUpdate = (force) => {
-  indicatorLayersForcedUpdate = force
+export let indicatorLayersForcedUpdateIds = null
+export const changeIndicatorLayersForcedUpdate = (ids) => {
+  indicatorLayersForcedUpdateIds = ids
 }
 
 
@@ -148,29 +148,42 @@ export function IndicatorLayers() {
    */
   useEffect(() => {
     let indicatorLayersTree = JSON.parse(JSON.stringify(indicatorLayers))
+    let selectedIds = [currentIndicatorLayer, currentIndicatorSecondLayer]
     if (indicatorLayersTree && indicatorLayersTree.length) {
-
       // Indicator enabled
       let indicatorEnabled = { 'id': currentIndicatorLayer }
-      if (!indicatorEnabled.id || indicatorLayersForcedUpdate) {
-        // If not force updated
-        indicatorEnabled = indicatorLayersTree.find(indicator => {
-          return indicator.visible_by_default
-        })
+      const indicatorLayersIds = []
+      indicatorLayers.map(layer => {
+        indicatorLayersIds.push(layer.id)
+        indicatorLayersIds.push('' + layer.id)
+      })
+      if (!indicatorLayersIds.includes(currentIndicatorLayer)) {
+        indicatorEnabled = { 'id': null }
       }
-      indicatorLayersForcedUpdate = false
+      if (!indicatorEnabled.id || indicatorLayersForcedUpdateIds) {
+        if (!indicatorLayersForcedUpdateIds?.length) {
+          // If not force updated
+          indicatorEnabled = indicatorLayersTree.find(indicator => {
+            return indicator.visible_by_default
+          })
+        } else {
+          selectedIds = indicatorLayersForcedUpdateIds
+        }
+      }
+      indicatorLayersForcedUpdateIds = null
 
       // Check default indicator as turned one
       if (currentIndicatorLayer !== indicatorEnabled?.id) {
         // Change current indicator if indicators changed
         if (indicatorEnabled) {
           setCurrentIndicatorLayer(indicatorEnabled.id)
+          selectedIds[0] = indicatorEnabled.id
         } else {
           indicatorLayersTree[0].visible_by_default = true
           setCurrentIndicatorLayer(indicatorLayersTree[0].id)
+          selectedIds[0] = indicatorLayersTree[0].id
         }
       } else {
-        const selectedIds = [currentIndicatorLayer, currentIndicatorSecondLayer]
         // Change visible by default
         indicatorLayersTree.map(indicator => {
           if (selectedIds.includes(indicator.id)) {
@@ -211,6 +224,8 @@ export function IndicatorLayers() {
           }
         })
       })
+    } else {
+      onChange([])
     }
     setTreeData(
       [
@@ -219,9 +234,9 @@ export function IndicatorLayers() {
     )
 
     // Setup current indicator layer
-    updateCurrentIndicator(currentIndicatorLayer, Actions.SelectedIndicatorLayer)
-    updateCurrentIndicator(currentIndicatorSecondLayer, Actions.SelectedIndicatorSecondLayer)
-    updateOtherLayers(['' + currentIndicatorLayer, '' + currentIndicatorSecondLayer])
+    updateCurrentIndicator(selectedIds[0], Actions.SelectedIndicatorLayer)
+    updateCurrentIndicator(selectedIds[1], Actions.SelectedIndicatorSecondLayer)
+    updateOtherLayers(['' + selectedIds[0], '' + selectedIds[1]])
   }, [indicatorLayers, relatedTableData, indicatorLayersStructure]);
 
   const onChange = (selectedData) => {
@@ -251,6 +266,7 @@ export function IndicatorLayers() {
       <SidePanelTreeView
         data={treeData}
         selectable={true}
+        resetSelection={true}
         maxSelect={compareMode ? 2 : 1}
         onChange={onChange}
         otherInfo={(layer) => {
@@ -289,14 +305,16 @@ export function IndicatorLayers() {
  */
 export default function IndicatorLayersAccordion({ expanded }) {
   return (
-    <Accordion
-      expanded={expanded}
-      className={'IndicatorLayerList'}
-    >
+    <>
+      <Accordion
+        expanded={expanded}
+        className={'IndicatorLayerList'}
+      >
 
-      <AccordionDetails>
-        <IndicatorLayers/>
-      </AccordionDetails>
-    </Accordion>
+        <AccordionDetails>
+          <IndicatorLayers/>
+        </AccordionDetails>
+      </Accordion>
+    </>
   )
 }

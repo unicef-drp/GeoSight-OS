@@ -17,20 +17,17 @@
    Context Layer Form style
    ========================================================================== */
 
-@import '../../../../app/variables';
-
-
 .ContextLayerConfigButton {
   text-align: center;
   margin-bottom: 1rem;
 }
 
 form {
-  &.Map,
+  &.Preview,
   &.Fields,
   &.Label,
   &.Style {
-    .Map {
+    .Preview {
       display: block !important;
     }
   }
@@ -38,6 +35,7 @@ form {
   .ContextLayerConfig-Wrapper {
     .AdminForm {
       width: 100%;
+      overflow: visible;
     }
 
     .form-helptext {
@@ -48,4 +46,13 @@ form {
   .ContextLayerConfigTab {
     display: none !important;
   }
+}
+
+.dzu-submitButtonContainer {
+  display: none;
+}
+
+.UploadFile {
+  border: 1px solid var(--primary-color);
+  padding: 1rem;
 }

@@ -13,12 +13,6 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   ModalFilter
-   ========================================================================== */
-
-@import '../../../../app/variables';
-
 
 .FilterControl {
   cursor: pointer;
@@ -69,5 +63,14 @@
     color: rgba(0, 0, 0, 0.6) !important;
     cursor: pointer !important;
     border: inherit !important;
+  }
+
+  .HasValue {
+    color: var(--secondary-color);
+    cursor: pointer;
+
+    &:hover {
+      opacity: var(--base-hovered-opacity);
+    }
   }
 }

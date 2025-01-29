@@ -16,11 +16,13 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib.gis.db import models
 
-from geosight.data.models.dashboard.dashboard_relation import DashboardRelation
+from geosight.data.models.dashboard.dashboard_relation import (
+    DashboardRelationWithLimit
+)
 from geosight.data.models.related_table import RelatedTable
 
 
-class DashboardRelatedTable(DashboardRelation):
+class DashboardRelatedTable(DashboardRelationWithLimit):
     """RelatedTable x Dashboard rule."""
 
     object = models.ForeignKey(
@@ -35,6 +37,10 @@ class DashboardRelatedTable(DashboardRelation):
         null=True, blank=True
     )
     query = models.TextField(null=True, blank=True)
+
+    content_limitation_description = (
+        'Limit the number of related table per project'
+    )
 
     class Meta:  # noqa: D106
         ordering = ('order',)

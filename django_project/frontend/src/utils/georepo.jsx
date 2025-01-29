@@ -15,6 +15,9 @@
 
 import { fetchJSON } from '../Requests'
 import axios from "axios";
+import { InternalReferenceDatasets, referenceDatasetUrlBase } from "./urls";
+
+export const LocalReferenceDatasetIdentifier = 'Internal reference datasets'
 
 /** Georepo URL */
 export function updateToken(url) {
@@ -63,16 +66,7 @@ export const fetchReferenceLayerList = async function () {
   data.map(row => {
     row.identifier = row.uuid
   })
-  data.sort((a, b) => {
-    if (a.name < b.name) {
-      return -1;
-    }
-    if (a.name > b.name) {
-      return 1;
-    }
-    return 0;
-  })
-  return data
+  return [].concat(data.filter(row => row.is_favorite), data.filter(row => !row.is_favorite));
 }
 
 /**
@@ -80,11 +74,18 @@ export const fetchReferenceLayerList = async function () {
  */
 export const fetchReferenceLayerViewsList = async function (referenceLayerUUID) {
   let data = []
-  data = await fetchFeatureList(
-    GeorepoUrls.WithDomain(`/search/dataset/${referenceLayerUUID}/view/list/`, false), true
-  );
+  let url = GeorepoUrls.WithDomain(`/search/dataset/${referenceLayerUUID}/view/list/`, false)
+  if (referenceLayerUUID === LocalReferenceDatasetIdentifier) {
+    url = InternalReferenceDatasets.list()
+  }
+  data = await fetchFeatureList(url, true);
   data.map(row => {
-    row.identifier = row.uuid
+    if (row.uuid) {
+      row.identifier = row.uuid
+    }
+    if (referenceLayerUUID === LocalReferenceDatasetIdentifier) {
+      row.is_local = true
+    }
   })
   data.sort((a, b) => {
     if (a.name < b.name) {
@@ -108,7 +109,10 @@ export const fetchGeojson = async function (url, useCache = true) {
   }
   const _fetchGeojson = async function (page = 1) {
     try {
-      const response = await fetchJSON(url + '?format=geojson&page=' + page, headers, useCache);
+      var newUrl = new URL(url);
+      newUrl.searchParams.append('format', "geojson");
+      newUrl.searchParams.append('page', page);
+      const response = await fetchJSON(newUrl.toString(), headers, useCache);
       if (response?.features?.length) {
         data.features = data.features.concat(response.features)
         await _fetchGeojson(page += 1)
@@ -127,9 +131,24 @@ export const fetchFeatureList = async function (url, useCache = true) {
   let data = []
   const _fetchJson = async function (page = 1) {
     try {
-      const response = await fetchJSON(url + '?geom=centroid&cache=false&page=' + page, headers, useCache);
+      let usedUrl = url + '?geom=centroid&cache=false&page=' + page
+
+      // TODO : INTERNAL REFERENCE DATASETS
+      //  This is for local
+      if (url.includes(referenceDatasetUrlBase)) {
+        if (url.includes('?')) {
+          usedUrl = url + '&page=' + page
+        } else {
+          usedUrl = url + '?page=' + page
+        }
+      }
+
+      const response = await fetchJSON(usedUrl, headers, useCache);
       if (response.results) {
         data = data.concat(response.results)
+        if (response.page && response.page >= response.total_page) {
+          return
+        }
         if (response.results.length) {
           await _fetchJson(page += 1)
         }
@@ -146,8 +165,12 @@ export const fetchFeatureList = async function (url, useCache = true) {
 }
 
 /*** Axios georepo request */
-export const axiosGet = function (url) {
-  return axios.get(url, headers);
+export const axiosGet = function (url, params = null) {
+  if (params) {
+    return axios.get(url, headers, params);
+  } else {
+    return axios.get(url, headers);
+  }
 }
 
 /*** Axios georepo request json */
@@ -187,6 +210,7 @@ export const toUcode = (code) => {
  * Extracting ucode
  */
 export const extractCode = (properties, geoField = 'concept_uuid') => {
-  return toUcode(properties[geoField])
+  const geomFieldOnVectorTile = geoField === 'geometry_code' ? 'ucode' : geoField
+  return toUcode(properties[geoField] ? properties[geoField] : properties[geomFieldOnVectorTile])
 }
 

@@ -1,0 +1,4 @@
+First name,Last name,Email address,Role,Username
+admin,admin,admin@example.com,Super Admin,admin
+admin,admin,admin@example.com,Super Admin,contributor
+admin,admin,admin@example.com,Super Admin,creator

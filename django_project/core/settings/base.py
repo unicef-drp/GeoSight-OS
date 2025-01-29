@@ -44,6 +44,7 @@ BASE_DIR = ABS_PATH('')
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
 MEDIA_ROOT = '/home/web/media'
+MEDIA_TEMP = os.path.join(MEDIA_ROOT, 'temp')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -100,6 +101,7 @@ TEMPLATES = [
             # Put Templates Hers
             ABS_PATH('core', 'templates'),
             ABS_PATH('frontend', 'templates'),
+            ABS_PATH('geosight', 'reference_dataset', 'templates'),
         ],
         'OPTIONS': {
             'loaders': [
@@ -107,11 +109,11 @@ TEMPLATES = [
                 'django.template.loaders.app_directories.Loader',
             ],
             'context_processors': [
+                'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.template.context_processors.debug',
                 'django.template.context_processors.i18n',
                 'django.template.context_processors.media',
-                'django.template.context_processors.request',
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
@@ -133,25 +135,13 @@ STATICFILES_FINDERS = (
     # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
-INSTALLED_APPS = (
-    'patch',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.redirects',
-    'django.contrib.sessions',
-    'django.contrib.sites',
-    'django.contrib.sitemaps',
-    'django.contrib.staticfiles',
-    'django.contrib.gis',
-    'django.contrib.messages',
-)
+DEFAULT_PAGE_SIZE = 100
 REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'core.exceptions.exception_handler',
     'DEFAULT_PAGINATION_CLASS': (
         'rest_framework.pagination.LimitOffsetPagination'
     ),
-    'PAGE_SIZE': 100
+    'PAGE_SIZE': DEFAULT_PAGE_SIZE
 }
 LOGIN_URL = '/login/'
 SITE_ID = 1

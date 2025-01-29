@@ -13,11 +13,6 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   Data Management
-   ========================================================================== */
-@import '../../../../app/variables';
-
 .BasicForm {
   .MuiGrid-root {
     margin-top: 0;
@@ -40,15 +35,15 @@
   .BasicFormSection,
   .MuiGrid-item {
     & > input {
-      height: $base-height;
+      height: var(--base-height);
     }
   }
 
   .MappingSection {
 
     & > label {
-      background: $secondary-color;
-      color: $anti-secondary-color;
+      background: var(--secondary-color);
+      color: var(--anti-secondary-color);
       padding: 0.7rem;
       position: relative;
       text-align: center;
@@ -119,4 +114,8 @@ form {
       display: block;
     }
   }
+}
+
+.tooltip {
+  font-size: 15px;
 }

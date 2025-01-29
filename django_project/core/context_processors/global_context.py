@@ -19,7 +19,7 @@ import os
 
 from django.conf import settings
 
-from core.models.preferences import SitePreferences
+from core.models.preferences import SitePreferences, SiteType
 from core.serializer.site_preferences import SitePreferencesSerializer
 from core.settings.utils import ABS_PATH
 from geosight.georepo.request import GeorepoUrl
@@ -27,16 +27,20 @@ from geosight.georepo.request import GeorepoUrl
 
 def project_version(request):
     """Read project version from file."""
-    folder = ABS_PATH('version')
+    folder = ABS_PATH('')
     version = ''
-    version_file = os.path.join(folder, 'version.txt')
+    version_file = os.path.join(folder, '_version.txt')
     if os.path.exists(version_file):
         version += (open(version_file, 'rb').read()).decode("utf-8")
-    commit_file = os.path.join(folder, 'commit.txt')
-    if os.path.exists(commit_file):
-        commit = (open(commit_file, 'rb').read()).decode("utf-8")[:5]
-        if commit:
-            version += '-' + commit
+    pref = SitePreferences.preferences()
+
+    # If not production, show commit
+    if pref.site_type != SiteType.PRODUCTION:
+        commit_file = os.path.join(folder, '_commit_hash.txt')
+        if os.path.exists(commit_file):
+            commit = (open(commit_file, 'rb').read()).decode("utf-8")[:5]
+            if commit:
+                version += '-' + commit
     return version
 
 
@@ -52,9 +56,12 @@ def global_context(request):
             api_key_email=request.user.email
 
         ).details
+
     return {
+        'DEBUG': settings.DEBUG,
         'preferences': pref_data,
         'preferences_js': json.dumps(pref_data),
         'use_azure_auth': settings.USE_AZURE,
-        'version': project_version(request)
+        'version': project_version(request),
+        'plugins': settings.PLUGINS
     }

@@ -15,20 +15,26 @@
 
 import React, { Fragment, useRef, useState } from 'react';
 import $ from 'jquery';
+import { Checkbox } from "@mui/material";
 
 import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
 import { SaveButton } from "../../../../components/Elements/Button";
 import Admin, { pageNames } from '../../index';
-import { AdminForm } from '../../Components/AdminForm'
-import StyleConfig from '../StyleConfig'
+import { AdminForm } from '../../Components/AdminForm';
+import StyleConfig from '../StyleConfig';
+import RelatedTableFields from './RelatedTableFields';
 import DjangoTemplateForm from "../../Components/AdminForm/DjangoTemplateForm";
 import { resourceActions } from "../List";
-import { axiosGet } from "../../../../utils/georepo";
+import { dictDeepCopy } from "../../../../utils/main";
+import { Variables } from "../../../../utils/Variables";
+import CloudNativeGISFields from "./CloudNativeGIS";
 
 import './style.scss';
 
 let currentArcGis = null
+let init = false
+
 /**
  * Context Layer Form App
  */
@@ -44,21 +50,46 @@ export default function ContextLayerForm() {
     const formData = data
     $('.BasicForm').find('input').each(function () {
       const name = $(this).attr('name');
+      if (['override_field', 'override_style'].includes(name)) {
+        return
+      }
       if (name) {
         formData[name] = $(this).val()
       }
     })
+
+    // FIELDS
+    let override_field = false
     if (formData['data_fields']) {
       formData['data_fields'] = JSON.parse(formData['data_fields'])
+      if (formData['data_fields'].length) {
+        override_field = true
+      }
     }
+
+    // STYLES
+    let override_style = false
     if (formData['styles']) {
       formData['styles'] = JSON.parse(formData['styles'])
+      override_style = true
     }
     if (formData['label_styles']) {
       formData['label_styles'] = JSON.parse(formData['label_styles'])
     }
     formData['parameters'] = formData['parameters'] ? formData['parameters'] : {}
-    setData(JSON.parse(JSON.stringify(formData)))
+    if (!init) {
+      formData.override_field = override_field
+      formData.override_style = override_style
+      init = true
+    }
+    if (formData['configuration']) {
+      try {
+        formData['configuration'] = JSON.parse(formData['configuration'])
+      } catch (e) {
+        formData['configuration'] = {}
+      }
+    }
+    setData(dictDeepCopy(formData))
   }
 
   const updateData = (newData) => {
@@ -67,20 +98,47 @@ export default function ContextLayerForm() {
       $('*[name="label_styles"]').val(JSON.stringify(newData['label_styles']))
       $('*[name="data_fields"]').val(JSON.stringify(newData['data_fields']))
       $('*[name="styles"]').val(JSON.stringify(newData['styles']))
+      $('*[name="related_table"]').val(newData['related_table'])
+      $('*[name="cloud_native_gis_layer_id"]').val(newData['cloud_native_gis_layer_id'])
+      $('*[name="configuration"]').val(JSON.stringify(newData['configuration']))
     }
   }
 
   const typeChange = (value) => {
-    if (value === 'ARCGIS') {
+    // Hide arcgis
+    if (value === Variables.LAYER.TYPE.ARCGIS) {
       $('div[data-wrapper-name="arcgis_config"]').show()
     } else {
       $('div[data-wrapper-name="arcgis_config"]').hide()
     }
+
+    // Hide authentication
+    if (
+      [
+        Variables.LAYER.TYPE.RELATED_TABLE, Variables.LAYER.TYPE.CLOUD_NATIVE_GIS, Variables.LAYER.TYPE.RASTER_COG
+      ].includes(value)
+    ) {
+      $('div[data-wrapper-name="token"]').hide()
+      $('div[data-wrapper-name="username"]').hide()
+      $('div[data-wrapper-name="password"]').hide()
+    } else {
+      $('div[data-wrapper-name="token"]').show()
+      $('div[data-wrapper-name="username"]').show()
+      $('div[data-wrapper-name="password"]').show()
+    }
+
+    // Hide URL
+    if ([Variables.LAYER.TYPE.RELATED_TABLE, Variables.LAYER.TYPE.CLOUD_NATIVE_GIS].includes(value)) {
+      $('div[data-wrapper-name="url"]').hide()
+    } else {
+      $('div[data-wrapper-name="url"]').show()
+    }
+    setData({ ...data, layer_type: value })
   }
 
   const arcGisConfigChange = (value) => {
     currentArcGis = value
-    if (!value) {
+    if (!value && data.layer_type === Variables.LAYER.TYPE.ARCGIS) {
       $('div[data-wrapper-name="token"]').show()
       $('div[data-wrapper-name="username"]').show()
       $('div[data-wrapper-name="password"]').show()
@@ -89,15 +147,9 @@ export default function ContextLayerForm() {
       $('div[data-wrapper-name="username"]').hide()
       $('div[data-wrapper-name="password"]').hide()
 
-      axiosGet(`/api/arcgis/${value}/token`).then(response => {
-        if (currentArcGis === value) {
-          setData({
-            ...data,
-            token: response.data.result,
-            arcgis_config: value
-          })
-        }
-
+      setData({
+        ...data,
+        arcgis_config: value
       })
     }
   }
@@ -140,21 +192,62 @@ export default function ContextLayerForm() {
               selectableInput={selectableInput}
               selectableInputExcluded={['name', 'shortcode']}
               onChange={(name, value) => {
+                if (['override_field', 'override_style'].includes(name)) {
+                  return
+                }
                 if (name === 'layer_type') {
                   typeChange(value)
                 } else if (name === 'arcgis_config') {
                   arcGisConfigChange(value)
+                  setDataFn()
+                } else if (['url', 'url_legend'].includes(name)) {
+                  setDataFn()
                 }
-                setDataFn()
               }}
-            />
+            >
+              <Checkbox
+                name={'override_field'}
+                style={{ display: "none" }}
+                checked={data?.override_field ? data?.override_field : false}
+                onChange={evt => {
+                }}
+              />
+              <Checkbox
+                name={'override_style'}
+                style={{ display: "none" }}
+                checked={data?.override_style ? data?.override_style : false}
+                onChange={evt => {
+                }}
+              />
+              {
+                data.layer_type === Variables.LAYER.TYPE.RELATED_TABLE ?
+                  <RelatedTableFields
+                    data={data}
+                    onSetData={updateData}
+                  /> : undefined
+              }
+              {
+                data.layer_type === Variables.LAYER.TYPE.CLOUD_NATIVE_GIS ?
+                  <CloudNativeGISFields
+                    data={data}
+                    onSetData={updateData}
+                  /> : null
+              }
+            </DjangoTemplateForm>
           ),
-          'Map': (
-            <StyleConfig data={data} setData={updateData} defaultTab={tab}/>
+          'Preview': (
+            <StyleConfig
+              data={data}
+              setData={updateData}
+              defaultTab={tab}
+              useOverride={
+                Variables.LAYER.LIST.OVERRIDE_STYLES.includes(data.layer_type)
+              }
+              useOverrideLabel={false}
+            />
           ),
           'Fields': <div/>,
           'Label': <div/>,
-          'Style': <div/>,
         }}
       />
     </Admin>

@@ -17,8 +17,10 @@ import { capitalize, dictDeepCopy } from "./main";
 import nunjucks from "nunjucks";
 import { extractCode } from "./georepo";
 import { getRelatedTableData } from "./relatedTable";
+import { getIndicatorDataByLayer, UpdateStyleData } from "./indicatorData";
 
 export const SingleIndicatorType = 'Single Indicator'
+export const SingleIndicatorTypes = [SingleIndicatorType, 'Float']
 export const MultiIndicatorType = 'Multi Indicator'
 export const DynamicIndicatorType = 'Dynamic Indicator'
 export const RelatedTableLayerType = 'Related Table'
@@ -27,7 +29,7 @@ export const defaultFields = [
   'indicator.name', 'indicator.value', 'indicator.label', 'indicator.time',
   'geometry_data.admin_level', 'geometry_data.admin_level_name',
   'geometry_data.concept_uuid', 'geometry_data.geom_code',
-  'geometry_data.name',
+  'geometry_data.name', 'indicator.attributes'
 ]
 
 export function indicatorLayerId(indicatorLayer) {
@@ -84,12 +86,12 @@ export function dynamicLayerData(indicatorLayer, context) {
  */
 export function fetchDynamicLayerData(
   indicatorLayer, indicators, indicatorsData, geoField,
-  onError, onSuccess, skipAggregate
+  onError, onSuccess, skipAggregate, updateStyle = false
 ) {
   const dynamicLayerIndicators = dynamicLayerIndicatorList(indicatorLayer, indicators)
 
   let error = ''
-  const data = []
+  let data = []
   dynamicLayerIndicators.map(indicator => {
     if (indicatorsData[indicator.id]?.data) {
       indicatorsData[indicator.id].data.map(row => {
@@ -146,6 +148,9 @@ export function fetchDynamicLayerData(
         value: dynamicLayerData(indicatorLayer, value)
       })
     }
+    if (updateStyle) {
+      response = UpdateStyleData(response, indicatorLayer)
+    }
     onSuccess(response)
   }
 }
@@ -153,21 +158,26 @@ export function fetchDynamicLayerData(
 /**
  * Return layer data
  */
-export function getLayerData(indicatorsData, relatedTableData, indicatorLayer) {
+export function getLayerData(
+  indicatorsData, relatedTableData, indicatorLayer, referenceLayer, ignoreRT
+) {
   const data = []
-  indicatorLayer.indicators?.map(obj => {
-    if (indicatorsData[obj.id]) {
-      data.push(indicatorsData[obj.id])
+  indicatorLayer.indicators?.map(indicator => {
+    const indicatorData = getIndicatorDataByLayer(indicator.id, indicatorsData, indicatorLayer, referenceLayer)
+    if (indicatorData) {
+      data.push(indicatorData)
     }
   })
   if (indicatorsData[indicatorLayerId(indicatorLayer)]) {
     data.push(indicatorsData[indicatorLayerId(indicatorLayer)])
   }
-  indicatorLayer.related_tables?.map(obj => {
-    if (relatedTableData[obj.id]) {
-      data.push(relatedTableData[obj.id])
-    }
-  })
+  if (!ignoreRT) {
+    indicatorLayer.related_tables?.map(obj => {
+      if (relatedTableData[obj.id]) {
+        data.push(relatedTableData[obj.id])
+      }
+    })
+  }
   return data
 }
 
@@ -187,26 +197,20 @@ export function indicatorHasData(indicatorsData, indicator) {
  */
 export function getLayerDataCleaned(
   indicatorsData, relatedTableData, indicatorLayer, selectedGlobalTime, geoField,
-  filteredGeometries
+  filteredGeometries, referenceLayer, adminLevel
 ) {
-  let data = []
   indicatorsData = dictDeepCopy(indicatorsData)
   relatedTableData = dictDeepCopy(relatedTableData)
-  indicatorLayer.indicators?.map(obj => {
-    if (indicatorsData[obj.id]) {
-      data.push(indicatorsData[obj.id])
-    }
-  })
-  if (indicatorsData[indicatorLayerId(indicatorLayer)]) {
-    data.push(indicatorsData[indicatorLayerId(indicatorLayer)])
-  }
+  let data = getLayerData(indicatorsData, relatedTableData, indicatorLayer, referenceLayer, true)
   indicatorLayer.related_tables?.map(obj => {
     if (relatedTableData[obj.id]) {
       const { rows } = getRelatedTableData(
         relatedTableData[indicatorLayer.related_tables[0].id]?.data,
         indicatorLayer.config,
         selectedGlobalTime,
-        geoField
+        geoField,
+        true,
+        adminLevel
       )
       data.push({
         data: rows
@@ -225,12 +229,13 @@ export function getLayerDataCleaned(
  * @param indicatorsData
  * @param relatedTableData
  * @param indicatorLayers
+ * @param referenceLayer
  * @returns {boolean}
  */
-export function allLayerDataIsReady(indicatorsData, relatedTableData, indicatorLayers) {
+export function allLayerDataIsReady(indicatorsData, relatedTableData, indicatorLayers, referenceLayer) {
   let done = true
   indicatorLayers.map(indicatorLayer => {
-    getLayerData(indicatorsData, relatedTableData, indicatorLayer).map(data => {
+    getLayerData(indicatorsData, relatedTableData, indicatorLayer, referenceLayer).map(data => {
       if (data?.fetching) {
         done = false
       }
@@ -254,9 +259,16 @@ export function dataFieldsDefault() {
     return {
       "name": 'context.current.' + field,
       "alias": capitalize(fieldName),
-      "visible": field.includes('geometry_data') ? false : true,
+      "visible": field.includes('geometry_data') || field.includes('attributes') ? false : true,
       "type": field.includes('date') ? "date" : "string",
       "order": idx
     }
   })
+}
+
+/**
+ * Return reference layer of indicator layer
+ */
+export function referenceLayerIndicatorLayer(referenceLayer, indicatorLayer) {
+  return indicatorLayer?.level_config?.referenceLayer ? indicatorLayer?.level_config?.referenceLayer : referenceLayer
 }

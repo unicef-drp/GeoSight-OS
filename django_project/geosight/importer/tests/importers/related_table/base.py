@@ -81,4 +81,4 @@ class BaseTest(BaseIndicatorValueImporterTest):
         )
         self.importer.run()
         log = self.importer.importerlog_set.all().last()
-        self.assertEqual(log.status, 'Success')
+        self.assertTrue(log.status in ['Success', 'Warning'])

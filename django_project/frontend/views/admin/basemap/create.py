@@ -24,8 +24,8 @@ from geosight.data.models.basemap_layer import BasemapLayer
 from geosight.permission.access import RoleCreatorRequiredMixin
 
 
-class BasemapCreateView(RoleCreatorRequiredMixin, AdminBaseView):
-    """Basemap Create View."""
+class BaseBasemapEditView(AdminBaseView):
+    """Base Basemap Edit View."""
 
     template_name = 'frontend/admin/basemap/form.html'
 
@@ -77,13 +77,14 @@ class BasemapCreateView(RoleCreatorRequiredMixin, AdminBaseView):
 
     def post(self, request, **kwargs):
         """Create indicator."""
+        data = request.POST.copy()
         form = BasemapForm(request.POST)
         if form.is_valid():
             instance = form.instance
             instance.creator = request.user
             instance.save()
             # Save permission
-            instance.permission.update_from_request_data_in_string(
+            instance.permission.update_from_request_data(
                 request.POST, request.user
             )
             return redirect(
@@ -92,9 +93,17 @@ class BasemapCreateView(RoleCreatorRequiredMixin, AdminBaseView):
                 ) + '?success=true'
             )
         context = self.get_context_data(**kwargs)
+        if data.get('permission', None):
+            form.permission_data = data.get('permission', None)
         context['form'] = form
         return render(
             request,
             self.template_name,
             context
         )
+
+
+class BasemapCreateView(RoleCreatorRequiredMixin, BaseBasemapEditView):
+    """Basemap Create View."""
+
+    pass

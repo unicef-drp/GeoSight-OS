@@ -22,11 +22,7 @@ import React, {
   useState
 } from 'react';
 import { FormControl } from "@mui/material";
-import {
-  RelatedTableInputSelector
-} from "../../../../ModalSelector/InputSelector";
 import { updateDataWithSetState } from "../../utils";
-import { fetchJSON } from "../../../../../../Requests";
 import {
   ReferenceLayerInput
 } from "../../../../Components/Input/ReferenceLayerInput";
@@ -49,7 +45,11 @@ import {
 import {
   IndicatorSettings
 } from "../../../../Components/Input/IndicatorSettings";
+import RelatedTableRequest from "../../../../../../utils/RelatedTable/Request";
+import RelatedTableSelector
+  from "../../../../../../components/ResourceSelector/RelatedTableSelector";
 
+let lastId = null;
 /**
  * Base Excel Form.
  * @param {dict} data .
@@ -98,18 +98,28 @@ export const RelatedTableFormat = forwardRef(
         (
           async () => {
             setFetching(true)
-            const contextLayerData = await fetchJSON(
-              `/api/related-table/${relatedTable.id}`
-            )
-            setFields(contextLayerData.fields_definition)
+            lastId = relatedTable.id
+
+            const request = new RelatedTableRequest(relatedTable.id)
+            const relatedTableDetail = await request.getDetail()
             const array = [[], [], []]
-            contextLayerData.fields_definition.map(field => {
+            relatedTableDetail.fields_definition.map(field => {
+              field.value = field.name
               array[0].push(field.name)
               array[1].push(field.example[0])
               array[2].push(field.example[1])
             })
-            setAttributes(arrayToOptions(array))
-            setFetching(false)
+            const relatedTableData = await request.getData()
+            relatedTableDetail.fields_definition.map(field => {
+              field.options = relatedTableData.map(
+                row => row[field.name]
+              ).filter(row => !!row)
+            })
+            if (lastId === relatedTable.id) {
+              setFields(relatedTableDetail.fields_definition)
+              setAttributes(arrayToOptions(array))
+              setFetching(false)
+            }
           }
         )()
       }
@@ -156,15 +166,14 @@ export const RelatedTableFormat = forwardRef(
               Related Table
             </label>
           </div>
-          <RelatedTableInputSelector
-            data={relatedTable ? [relatedTable] : []}
-            setData={selectedDate => {
-              setRelatedTable(selectedDate[0])
-              data.related_table_id = selectedDate[0]?.id
+          <RelatedTableSelector
+            initData={relatedTable ? [relatedTable] : []}
+            dataSelected={(selectedData) => {
+              setRelatedTable(selectedData[0])
+              data.related_table_id = selectedData[0]?.id
               setData({ ...data })
+
             }}
-            isMultiple={false}
-            showSelected={false}
           />
           <span className="form-helptext">
           Related table that will be used.

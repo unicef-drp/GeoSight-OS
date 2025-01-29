@@ -23,15 +23,12 @@ import { MVTLayer } from '@deck.gl/geo-layers';
 import { GeoJsonLayer } from '@deck.gl/layers';
 import { DataFilterExtension } from '@deck.gl/extensions';
 import { area as turfArea, bboxPolygon, } from '@turf/turf';
-
-import { Actions } from '../../../../../store/dashboard'
 import {
   extractCode,
   GeorepoUrls,
   updateToken
 } from '../../../../../utils/georepo'
 import { allDataIsReady } from "../../../../../utils/indicators";
-import { returnWhere } from "../../../../../utils/queryExtraction";
 import { returnStyle } from "../../../../../utils/referenceLayer";
 import { dictDeepCopy, hexToRGBList } from '../../../../../utils/main'
 import {
@@ -47,17 +44,21 @@ import {
 } from "../../../../../utils/Style";
 import GeorepoAuthorizationModal
   from "../../../../../components/GeorepoAuthorizationModal";
+import { IS_DEBUG, Logger } from "../../../../../utils/logger";
+import { Actions } from "../../../../../store/dashboard";
 
 export const BEFORE_LAYER = 'gl-draw-polygon-fill-inactive.cold'
 export const CONTEXT_LAYER_ID = `context-layer`
 const MAX_ELEVATION = 500000
 
 const NOCOLOR = `rgba(0, 0, 0, 0)`
-const REFERENCE_LAYER_ID = `reference-layer`
-const FILL_LAYER_ID = REFERENCE_LAYER_ID + '-fill'
-const OUTLINE_LAYER_ID = REFERENCE_LAYER_ID + '-outline'
 const INDICATOR_LABEL_ID = 'indicator-label'
 const LAYER_HIGHLIGHT_ID = 'reference-layer-highlight'
+
+// Layer keys
+export const REFERENCE_LAYER_ID_KEY = `reference-layer`
+export const FILL_LAYER_ID_KEY = REFERENCE_LAYER_ID_KEY + '-fill'
+const OUTLINE_LAYER_ID_KEY = REFERENCE_LAYER_ID_KEY + '-outline'
 
 const geo_field = 'concept_uuid'
 
@@ -70,14 +71,23 @@ let currentRenderDataString = ''
 let currentIndicatorLayerStringData = ''
 let currentIndicatorSecondLayerStringData = ''
 let currentCompareMode = false
+
+let prevCurrentLevel = null
+
 /**
  * ReferenceLayer selector.
  */
-export default function ReferenceLayer({ map, deckgl, is3DView }) {
-  const prevState = useRef()
+export function ReferenceLayer(
+  { idx, map, referenceLayer, deckgl, is3DView }
+) {
   const dispatch = useDispatch()
+  const REFERENCE_LAYER_ID = REFERENCE_LAYER_ID_KEY + '-' + idx
+  const FILL_LAYER_ID = FILL_LAYER_ID_KEY + '-' + idx
+  const OUTLINE_LAYER_ID = OUTLINE_LAYER_ID_KEY + '-' + idx
+
+  const prevState = useRef()
   const {
-    referenceLayer,
+    referenceLayer: referenceLayerProject,
     indicatorLayers,
     indicators,
     relatedTables,
@@ -85,10 +95,9 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
   } = useSelector(state => state.dashboard.data);
   const { indicatorShow } = useSelector(state => state.map);
   const { compareMode } = useSelector(state => state.mapMode)
-  const referenceLayerData = useSelector(state => state.referenceLayerData[referenceLayer.identifier]);
+  const referenceLayerData = useSelector(state => state.referenceLayerData[referenceLayer?.identifier]);
   const indicatorsData = useSelector(state => state.indicatorsData);
   const relatedTableData = useSelector(state => state.relatedTableData);
-  const filtersData = useSelector(state => state.filtersData);
   const filteredGeometries = useSelector(state => state.filteredGeometries);
   const currentIndicatorLayer = useSelector(state => state.selectedIndicatorLayer);
   const currentIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer);
@@ -103,57 +112,18 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
   const geomFieldOnVectorTile = geoField === 'geometry_code' ? 'ucode' : geoField
   const compareOutlineSize = preferences.style_compare_mode_outline_size
 
-  const where = returnWhere(filtersData ? filtersData : [])
   const isReady = () => {
     return map && hasLayer(map, FILL_LAYER_ID) && hasLayer(map, OUTLINE_LAYER_ID)
   }
 
-  // When source data changed, and it using from georepo layer
-  // Extract the bbox from it and save it as state
-  useEffect(() => {
-    if (map) {
-      map.on("sourcedata", function (e) {
-        if (hasLayer(map, FILL_LAYER_ID)) {
-          var features = map.queryRenderedFeatures(
-            { layers: [FILL_LAYER_ID] }
-          );
-          const geometryDataByLevel = {}
-          features.map(feature => {
-            const level = feature.properties.level;
-            if (!geometryDataByLevel[level]) {
-              geometryDataByLevel[level] = {}
-            }
-            const code = extractCode(feature.properties)
-            feature.properties.code = code
-            geometryDataByLevel[level][code] = feature.properties
-          })
-          for (const [level, data] of Object.entries(geometryDataByLevel)) {
-            dispatch(
-              Actions.GeometriesVT.addLevelData(level, data)
-            )
-          }
-        }
-      });
-    }
-  }, [map]);
-
-  // When reference layer changed, fetch reference data
-  useEffect(() => {
-    if (referenceLayer.identifier && !referenceLayerData) {
-      dispatch(
-        Actions.ReferenceLayerData.fetch(
-          dispatch, referenceLayer.identifier,
-          GeorepoUrls.ViewDetail(referenceLayer.identifier)
-        )
-      )
-    }
-  }, [referenceLayer]);
+  let levels = referenceLayerData?.data?.dataset_levels
+  let currentLevel = selectedAdminLevel ? selectedAdminLevel.level : levels?.level
 
   // When indicator data, current layer, second layer and compare mode changed
   // Update the style
   useEffect(() => {
-    const data = getLayerData(indicatorsData, relatedTableData, currentIndicatorLayer).concat(
-      getLayerData(indicatorsData, relatedTableData, currentIndicatorSecondLayer)
+    const data = getLayerData(indicatorsData, relatedTableData, currentIndicatorLayer, referenceLayerProject).concat(
+      getLayerData(indicatorsData, relatedTableData, currentIndicatorSecondLayer, referenceLayerProject)
     )
     if (allDataIsReady(data)) {
       const dataInString = JSON.stringify(data)
@@ -163,19 +133,21 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
         currentRenderDataString !== dataInString ||
         currentIndicatorLayerStringData !== currentIndicatorLayerString ||
         currentIndicatorSecondLayerStringData !== currentIndicatorSecondLayerString ||
-        currentCompareMode !== compareMode
+        currentCompareMode !== compareMode ||
+        currentLevel !== prevCurrentLevel
       ) {
         updateStyle()
         currentRenderDataString = dataInString
         currentIndicatorLayerStringData = currentIndicatorLayerString
         currentIndicatorSecondLayerStringData = currentIndicatorSecondLayerString
         currentCompareMode = compareMode
+        prevCurrentLevel = currentLevel
       }
     }
   }, [
     indicatorsData, currentIndicatorLayer,
     currentIndicatorSecondLayer, compareMode,
-    layerCreated, relatedTableData, geoField
+    layerCreated, relatedTableData, geoField, currentLevel
   ]);
 
   // When reference layer, it's data, admin and show/hide changed.
@@ -183,19 +155,23 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
   useEffect(() => {
     if (referenceLayerData) {
       createLayer()
+    } else {
+      setReferenceLayerConfig({})
+      removeAllLayers()
     }
   }, [referenceLayer, referenceLayerData, selectedAdminLevel]);
 
 
   // Rerender if filter changed.
   useEffect(() => {
-    const whereStr = JSON.stringify(where)
-    const filteredGeometriesStr = JSON.stringify(filteredGeometries)
-    if (prevState.where !== whereStr || prevState.filteredGeometries !== filteredGeometriesStr) {
-      updateFilter()
-      prevState.where = whereStr
-      prevState.filteredGeometries = filteredGeometriesStr
+    if (IS_DEBUG) {
+      if (filteredGeometries) {
+        filteredGeometries.sort()
+      }
+      const filteredGeometriesStr = JSON.stringify(filteredGeometries)
+      Logger.log('FILTERED_GEOM:', filteredGeometriesStr)
     }
+    updateFilter()
   }, [filteredGeometries, layerCreated]);
 
   // Rerender when map changed.
@@ -238,8 +214,6 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
     if (!indicatorShow) {
       return;
     }
-    let levels = referenceLayerData?.data?.dataset_levels
-    let currentLevel = selectedAdminLevel ? selectedAdminLevel.level : levels?.level
     const vectorTiles = referenceLayerData?.data?.vector_tiles
     if (vectorTiles && levels && map && currentLevel !== undefined) {
       const url = GeorepoUrls.WithoutDomain(updateToken(vectorTiles))
@@ -263,6 +237,8 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
 
       // Fill layer
       const contextLayerIds = map.getStyle().layers.filter(
+        layer => layer.type !== 'raster'
+      ).filter(
         layer => layer.id.includes(CONTEXT_LAYER_ID) || layer.id === BEFORE_LAYER
       )
       let before = contextLayerIds[0]?.id
@@ -311,16 +287,8 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
    * Check codes of geometries
    */
   const checkCodes = () => {
-    let whereStr = null
-    if (where) {
-      whereStr = JSON.stringify(where)
-    }
     if (isReady()) {
-      if (whereStr && filteredGeometries) {
-        return filteredGeometries
-      } else {
-        return null
-      }
+      return filteredGeometries
     }
     return null
   }
@@ -353,7 +321,6 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
     // Filter geometry_code based on indicators layer
     // Also filter by levels that found on indicators
     if (isReady()) {
-
       // Get style for no data style
       let noDataStyle = returnNoDataStyle(
         currentIndicatorLayer, indicators
@@ -388,8 +355,14 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
       const indicatorValueByGeometry = getIndicatorValueByGeometry(
         currentIndicatorLayer, indicators, indicatorsData,
         relatedTables, relatedTableData, selectedGlobalTime,
-        geoField, filteredGeometries
+        geoField, filteredGeometries, referenceLayerProject, currentLevel
       )
+      dispatch(Actions.MapGeometryValue.update(indicatorValueByGeometry))
+      if (IS_DEBUG) {
+        const geoms = Object.keys(indicatorValueByGeometry)
+        geoms.sort()
+        Logger.log('VALUED_GEOM:', geoms)
+      }
       let indicatorSecondValueByGeometry = {}
 
       // Create colors
@@ -443,7 +416,7 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
         indicatorSecondValueByGeometry = getIndicatorValueByGeometry(
           currentIndicatorSecondLayer, indicators, indicatorsData,
           relatedTables, relatedTableData, selectedGlobalTime,
-          geoField, filteredGeometries
+          geoField, filteredGeometries, referenceLayerProject, currentLevel
         )
         // If compare mode
         // Outline is first indicator color
@@ -623,8 +596,6 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
     setIs3DInit(true)
     const geometries = checkCodes()
     let url = null
-    let levels = referenceLayerData?.data?.dataset_levels
-    let currentLevel = selectedAdminLevel ? selectedAdminLevel.level : levels?.level
     const vectorTiles = referenceLayerData?.data?.vector_tiles
     if (vectorTiles && levels && map && currentLevel !== undefined) {
       url = GeorepoUrls.WithoutDomain(updateToken(vectorTiles))
@@ -639,7 +610,7 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
       indicatorValueByGeometry = getIndicatorValueByGeometry(
         currentIndicatorLayer, indicators, indicatorsData,
         relatedTables, relatedTableData, selectedGlobalTime,
-        geoField, filteredGeometries
+        geoField, filteredGeometries, referenceLayerProject, currentLevel
       )
     }
     if (currentIndicatorLayer.indicators?.length > 1) {
@@ -772,5 +743,23 @@ export default function ReferenceLayer({ map, deckgl, is3DView }) {
   }
 
 
-  return <GeorepoAuthorizationModal/>
+  return null
+}
+
+export default function ReferenceLayers({ map, deckgl, is3DView }) {
+  const {
+    referenceLayers
+  } = useSelector(state => state.map);
+
+  return map ? <>
+    <ReferenceLayer
+      idx={0} map={map}
+      referenceLayer={referenceLayers[0]} deckgl={deckgl} is3DView={is3DView}
+    />
+    <ReferenceLayer
+      idx={1} map={map}
+      referenceLayer={referenceLayers[1]} deckgl={deckgl} is3DView={is3DView}
+    />
+    <GeorepoAuthorizationModal/>
+  </> : null
 }

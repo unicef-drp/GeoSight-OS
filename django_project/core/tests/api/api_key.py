@@ -14,15 +14,14 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '24/10/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from django.test.testcases import TestCase
 from django.urls import reverse
 
 from core.models.profile import ROLES
-from core.tests.base_tests import BaseTest
+from core.tests.base_tests import APITestCase
 from core.tests.model_factories import create_user
 
 
-class ApiKeyApiTest(BaseTest, TestCase):
+class ApiKeyApiTest(APITestCase):
     """Test for api key."""
 
     def setUp(self):

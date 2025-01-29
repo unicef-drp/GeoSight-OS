@@ -29,10 +29,11 @@ from core.api.access_request import (
     AccessRequestList, AccessRequestDetail, AccessRequestCount
 )
 from core.api.color import ColorPaletteListAPI
-from core.api.group import GroupListAPI, GroupDetailAPI
+from core.api.maintenance import MaintenanceAPI
 from core.api.proxy import ProxyView
+from core.api.refresh_materialized_view import RefreshMaterializedViewApi
 from core.api.sentry import trigger_error
-from core.api.user import UserListAPI, UserDetailAPI, UserApiKey
+from core.api.user import UserApiKey
 
 
 class CustomSchemaGenerator(OpenAPISchemaGenerator):
@@ -86,34 +87,16 @@ else:
 
 if settings.DEBUG:
     urlpatterns += static(
-        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
+    )
 
 # ------------------------------------------------------
 # USER API
 user_api = [
     url(
-        r'^list',
-        UserListAPI.as_view(), name='user-list-api'
-    ),
-    url(
         r'^(?P<pk>\d+)/token',
         UserApiKey.as_view(),
         name='user-api-key'
-    ),
-    url(
-        r'^(?P<pk>\d+)',
-        UserDetailAPI.as_view(), name='user-detail-api'
-    ),
-]
-# GROUP API
-group_api = [
-    url(
-        r'^list',
-        GroupListAPI.as_view(), name='group-list-api'
-    ),
-    url(
-        r'^(?P<pk>\d+)',
-        GroupDetailAPI.as_view(), name='group-detail-api'
     ),
 ]
 # COLOR API
@@ -145,13 +128,25 @@ request_access_api = [
 ]
 
 api = [
+    url(r'^maintenance$', MaintenanceAPI.as_view(), name='maintenance-view'),
     url(r'^color/palette/', include(color_api)),
-    url(r'^group/', include(group_api)),
     url(r'^user/', include(user_api)),
     url(r'^user/', include(user_api)),
     url(r'^access/', include(request_access_api)),
+    url(
+        r'^refresh-materialized-view$', RefreshMaterializedViewApi.as_view(),
+        name='refresh-materialized-view'
+    ),
 ]
+
+# Tenants enabled
+if settings.TENANTS_ENABLED:
+    api += [
+        url(r'^tenants/', include('geosight.tenants.urls'))
+    ]
+
 urlpatterns += [
+    url(r'^tinymce/', include('tinymce.urls')),
     url(r'^proxy', ProxyView.as_view(), name='proxy-view'),
     url(r'^api/v1/', include('core.urls_v1')),
     url(r'^api/', include(api)),

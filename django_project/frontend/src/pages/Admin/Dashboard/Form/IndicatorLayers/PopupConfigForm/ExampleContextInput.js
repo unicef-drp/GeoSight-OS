@@ -22,6 +22,9 @@ import {
 import { Select } from "../../../../../../components/Input";
 
 import './style.scss';
+import {
+  referenceLayerIndicatorLayer
+} from "../../../../../../utils/indicatorLayer";
 
 /*** Popup Config Form ***/
 export default function ExampleContextInput(
@@ -29,13 +32,14 @@ export default function ExampleContextInput(
     context, setContext, currentIndicatorLayer
   }) {
   const {
-    referenceLayer,
+    referenceLayer: referenceLayerDashboard,
     indicatorLayers,
     indicators,
     relatedTables
   } = useSelector(state => state.dashboard.data);
-  const referenceLayerData = useSelector(state => state.referenceLayerData[referenceLayer.identifier]);
-  const geometries = useSelector(state => state.geometries);
+  const referenceLayer = referenceLayerIndicatorLayer(referenceLayerDashboard, currentIndicatorLayer)
+  const referenceLayerData = useSelector(state => state.referenceLayerData[referenceLayer?.identifier]);
+  const geometries = useSelector(state => state.datasetGeometries[referenceLayer?.identifier]);
   const selectedGlobalTime = useSelector(state => state.selectedGlobalTime);
   const selectedGlobalTimeConfig = useSelector(state => state.selectedGlobalTimeConfig);
 
@@ -45,7 +49,7 @@ export default function ExampleContextInput(
   const [levelSelected, setLevelSelected] = useState(null)
   const [conceptUUID, setConceptUUID] = useState(null)
   const datasetLevels = referenceLayerData?.data?.dataset_levels;
-  const selectedGeometries = geometries[levelSelected?.value]
+  const selectedGeometries = geometries ? geometries[levelSelected?.value] : null
 
   // When reference layer changed, fetch reference data
   useEffect(() => {
@@ -63,7 +67,7 @@ export default function ExampleContextInput(
       const concept_uuid = Object.keys(selectedGeometries)[0]
       setConceptUUID({
         value: concept_uuid,
-        label: selectedGeometries[concept_uuid].label
+        label: selectedGeometries[concept_uuid]?.label
       })
     }
   }, [levelSelected, selectedGeometries]);
@@ -75,47 +79,49 @@ export default function ExampleContextInput(
 
       // Fetch drilldown
       const featureProperties = selectedGeometries[conceptUUID.value];
-      let geometryProperties = {
-        name: featureProperties.label,
-        geom_code: featureProperties.ucode,
-        admin_level: levelSelected.value,
-        admin_level_name: levelSelected.label,
-        concept_uuid: featureProperties.concept_uuid,
-      }
-      getContext(
-        indicators, relatedTables,
-        {}, {},
-        featureProperties.concept_uuid, geometryProperties,
-        selectedGlobalTime, selectedGlobalTimeConfig,
-        indicatorLayers, referenceLayerData,
-        currentIndicatorLayer, {}, conceptUUID.value,
-        function contextOnLoad(context) {
-          const indicatorValueByGeometry = {}
-          indicatorValueByGeometry[featureProperties.concept_uuid] = []
-          currentIndicatorLayer.indicators.map(indicator => {
-            let data = context.context.admin_boundary.indicators[indicator.shortcode]
-            if (data) {
-              data = data[0]
-              data.date = data?.time
-              data.indicator = indicator
-              indicatorValueByGeometry[featureProperties.concept_uuid].push({ ...indicator, ...data })
-            } else {
-              indicatorValueByGeometry[featureProperties.concept_uuid].push({ ...indicator })
-            }
-          })
-          updateCurrent(
-            context, indicators, relatedTables,
-            currentIndicatorLayer, {},
-            indicatorValueByGeometry, {},
-            featureProperties.concept_uuid
-          )
-          setContextData(JSON.stringify(context, null, 2))
-          setContext(context)
-        },
-        function contextOnError(context) {
-          setContextData(context)
+      if (featureProperties) {
+        let geometryProperties = {
+          name: featureProperties.label,
+          geom_code: featureProperties.ucode,
+          admin_level: levelSelected.value,
+          admin_level_name: levelSelected.label,
+          concept_uuid: featureProperties.concept_uuid,
         }
-      )
+        getContext(
+          indicators, relatedTables,
+          {}, {},
+          featureProperties.concept_uuid, geometryProperties,
+          selectedGlobalTime, selectedGlobalTimeConfig,
+          indicatorLayers, referenceLayerData,
+          currentIndicatorLayer, {}, conceptUUID.value,
+          function contextOnLoad(context) {
+            const indicatorValueByGeometry = {}
+            indicatorValueByGeometry[featureProperties.concept_uuid] = []
+            currentIndicatorLayer.indicators.map(indicator => {
+              let data = context.context.admin_boundary.indicators[indicator.shortcode]
+              if (data) {
+                data = data[0]
+                data.date = data?.time
+                data.indicator = indicator
+                indicatorValueByGeometry[featureProperties.concept_uuid].push({ ...indicator, ...data })
+              } else {
+                indicatorValueByGeometry[featureProperties.concept_uuid].push({ ...indicator })
+              }
+            })
+            updateCurrent(
+              context, indicators, relatedTables,
+              currentIndicatorLayer, {},
+              indicatorValueByGeometry, {},
+              featureProperties.concept_uuid
+            )
+            setContextData(JSON.stringify(context, null, 2))
+            setContext(context)
+          },
+          function contextOnError(context) {
+            setContextData(context)
+          }
+        )
+      }
     }
   }, [conceptUUID]);
 
@@ -137,12 +143,12 @@ export default function ExampleContextInput(
             }}/>
       }
       {
-        !geometries[levelSelected?.value] ? 'Loading' :
+        !geometries || !geometries[levelSelected?.value] ? 'Loading' :
           <Select
             options={Object.keys(selectedGeometries).map(concept_uuid => {
               return {
                 value: concept_uuid,
-                label: selectedGeometries[concept_uuid].label
+                label: selectedGeometries[concept_uuid]?.label
               }
             })}
             value={conceptUUID}

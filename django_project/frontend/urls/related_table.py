@@ -18,17 +18,33 @@ from django.conf.urls import url
 from django.urls import include
 
 from frontend.views.admin.related_table.data import RelatedTableDataView
+from frontend.views.admin.related_table.edit import (
+    RelatedTableEditView, RelatedTableEditBatchView
+)
 from frontend.views.admin.related_table.list import RelatedTableListView
 
+admin_detail_url = [
+    url(
+        r'^edit',
+        RelatedTableEditView.as_view(),
+        name='admin-related-table-edit-view'
+    ),
+]
 data_url = [
     url(
         r'^data',
         RelatedTableDataView.as_view(),
         name='admin-related-table-data-view'
     ),
+    url(r'^', include(admin_detail_url)),
 ]
 urlpatterns = [
     url(r'^(?P<pk>\d+)/', include(data_url)),
+    url(
+        r'^edit/batch',
+        RelatedTableEditBatchView.as_view(),
+        name='admin-related-table-edit-batch-view'
+    ),
     url(
         r'^',
         RelatedTableListView.as_view(),

@@ -16,14 +16,14 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from unittest.mock import patch
 
-from django.test.testcases import TestCase
 from django.utils import timezone
 
+from core.tests.base_tests import TestCase
 from geosight.data.forms.arcgis import ArcgisConfigForm
 
 
 class ArcgisConfigTest(TestCase):
-    """Test for ArcGis model."""
+    """Test for ArcGIS model."""
 
     generate_token_url = 'http://arcgis.test.com/generate_url'
     username = 'username'
@@ -59,7 +59,7 @@ class ArcgisConfigTest(TestCase):
     def test_create(self):
         """Test create."""
         data = {
-            'name': 'ArcGis test',
+            'name': 'ArcGIS test',
             'generate_token_url': self.generate_token_url,
             'username': self.username,
             'password': self.password,
@@ -77,7 +77,7 @@ class ArcgisConfigTest(TestCase):
     def test_error(self):
         """Test create."""
         data = {
-            'name': 'ArcGis test',
+            'name': 'ArcGIS test',
             'generate_token_url': self.generate_token_url,
             'username': 'test',
             'password': self.password,

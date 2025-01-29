@@ -156,14 +156,25 @@ export default function FieldConfig({ data_fields, update, ...props }) {
             }
             type = optionsTypes.find(opt => opt.value === field.type)
 
+            // Can't update name and type
+            let disabled = {}
+            if (field.name === 'context.current.indicator.attributes') {
+              field.alias = ''
+              disabled.alias = true
+              disabled.type = true
+            }
             return (
               <SortableItem key={item} id={item}>
                 <td>{field.name}</td>
                 <td>
-                  <input value={field.alias} onChange={(evt) => {
-                    field.alias = evt.target.value;
-                    updateData(fields)
-                  }}/>
+                  <input
+                    value={field.alias}
+                    onChange={(evt) => {
+                      field.alias = evt.target.value;
+                      updateData(fields)
+                    }}
+                    disabled={!!disabled?.alias}
+                  />
                 </td>
                 <td>
                   <input
@@ -182,7 +193,9 @@ export default function FieldConfig({ data_fields, update, ...props }) {
                     onChange={(evt) => {
                       field.type = evt.value
                       updateData(fields)
-                    }}/>
+                    }}
+                    isDisabled={!!disabled?.type}
+                  />
                 </td>
                 {
                   !props.noLabel ?

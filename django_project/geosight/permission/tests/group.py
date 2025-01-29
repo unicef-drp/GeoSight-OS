@@ -16,10 +16,10 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import factory
 from django.contrib.auth import get_user_model
-from django.test.testcases import TestCase
 
 from core.models.group import GeosightGroup
 from core.models.profile import ROLES
+from core.tests.base_tests import TestCase
 from core.tests.model_factories import create_user
 from geosight.permission.models.factory import PERMISSIONS
 from geosight.permission.models.manager import PermissionException

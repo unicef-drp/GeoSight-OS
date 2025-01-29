@@ -17,12 +17,19 @@
    Indicator Form style
    ========================================================================== */
 
-@import '../../../../../app/variables';
-
 .ContextLayerStyleModal {
+  padding: 0;
+
   #ContextLayerConfig {
     background-color: white;
     margin-bottom: 0 !important;
+    padding: 1rem !important;
+  }
+
+  .modal--wrapper--box,
+  .modal--box,
+  #ContextLayerConfig {
+    min-height: 500px;
   }
 }
 

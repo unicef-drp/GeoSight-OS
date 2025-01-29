@@ -16,10 +16,11 @@
 import React, { useEffect, useState } from 'react';
 import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
-import { pageNames } from '../../index';
-import { AdminList } from "../../AdminList";
+import { AdminPage, pageNames } from '../../index';
 import { fetchingData } from "../../../../Requests";
 import { capitalize, parseDateTime } from "../../../../utils/main";
+import { isValueDate } from "../../../../utils/relatedTable";
+import { AdminListPagination } from "../../AdminListPagination";
 
 import './style.scss';
 
@@ -28,7 +29,6 @@ import './style.scss';
  */
 export default function RelatedTableData() {
   const [columns, setColums] = useState([]);
-  const [data, setData] = useState(null);
 
   // Show modal when url changed
   useEffect(() => {
@@ -38,10 +38,7 @@ export default function RelatedTableData() {
           { field: 'id', headerName: 'id', hide: true, width: 30, }
         ].concat(
           detailData.related_fields.map(field => {
-            const isDate = (
-              field.toLowerCase().replaceAll('_', '').includes('date') ||
-              field.toLowerCase().replaceAll('_', '').includes('time')
-            )
+            const isDate = isValueDate(field, null)
             return {
               field: field,
               headerName: capitalize(field),
@@ -51,8 +48,9 @@ export default function RelatedTableData() {
                 if (isDate) {
                   return parseDateTime(params.value)
                 }
-                return <div title={params.value}
-                            className='MuiDataGrid-cellContent'>
+                return <div
+                  title={params.value}
+                  className='MuiDataGrid-cellContent'>
                   {params.value}
                 </div>
               },
@@ -60,18 +58,23 @@ export default function RelatedTableData() {
           })
         )
       )
-      fetchingData(urls.api.data, {}, {}, (listData) => {
-        setData(listData)
-      })
     })
   }, [])
 
-  return <AdminList
-    columns={columns}
-    pageName={pageNames.RelatedTablesData}
-    initData={data}
-    listUrl={null}
-  />
+  return <AdminPage pageName={pageNames.RelatedTablesData}>
+    <AdminListPagination
+      urlData={urls.api.data}
+      columns={columns}
+      disabledDelete={true}
+      checkboxSelection={false}
+      hideSearch={true}
+      getParameters={() => {
+        return {
+          flat: true
+        }
+      }}
+    />
+  </AdminPage>
 }
 
 render(RelatedTableData, store)

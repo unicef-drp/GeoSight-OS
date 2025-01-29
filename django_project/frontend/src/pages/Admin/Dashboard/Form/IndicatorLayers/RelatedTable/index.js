@@ -45,7 +45,7 @@ import Match from "../../../../../../utils/Match"
 import {
   DateTimeDataFieldSetting
 } from "../../../../Components/Input/DateTimeSettings";
-import { fetchingData } from "../../../../../../Requests";
+import { fetchPagination } from "../../../../../../Requests";
 import { queryData } from "../../../../../../utils/queryExtraction";
 import { AdminForm } from "../../../../Components/AdminForm";
 import {
@@ -54,8 +54,10 @@ import {
 import LabelForm from "../../../../Indicator/Form/LabelForm";
 import PopupConfigForm from "../PopupConfigForm";
 import StyleConfig from "../../../../Style/Form/StyleConfig";
-import { MainDataGrid } from "../../../../../../components/MainDataGrid";
+import { MainDataGrid } from "../../../../../../components/Table";
 import { CogIcon } from "../../../../../../components/Icons";
+import { ExecuteWebWorker } from "../../../../../../utils/WebWorker";
+import worker from "../../../../../Dashboard/LeftPanel/RelatedTable/Worker";
 
 import './style.scss';
 
@@ -171,11 +173,18 @@ export default function RelatedTableLayerConfig(
       prevState.params = params
       prevState.url = url
       setRelatedTableData(null)
-      fetchingData(
-        url, params, {}, function (response, error) {
-          setRelatedTableData(dictDeepCopy(response))
-        }
-      )
+      fetchPagination(
+        url, { ...params, page: 1, page_size: 10000 }
+      ).then(response => {
+        // Update data by executed worker
+        ExecuteWebWorker(
+          worker, {
+            response
+          }, (response) => {
+            setRelatedTableData(response)
+          }
+        )
+      })
     }
   }, [open, data])
 
@@ -226,7 +235,6 @@ export default function RelatedTableLayerConfig(
   if (!relatedTables[0]) {
     return ""
   }
-
   return (
     <Fragment>
       <Modal
@@ -330,6 +338,7 @@ export default function RelatedTableLayerConfig(
                               }
                             }
                             referenceLayer={referenceLayer}
+                            ableToSelectReferenceLayer={true}
                           /> : null
                       }
                     </div>
@@ -424,8 +433,13 @@ export default function RelatedTableLayerConfig(
                           columns={[
                             { field: 'id', headerName: 'id', hide: true },
                             {
-                              field: 'geometry_code',
-                              headerName: 'Geometry Code',
+                              field: 'geometry_name',
+                              headerName: 'Name',
+                              flex: 1
+                            },
+                            {
+                              field: 'ucode',
+                              headerName: 'Ucode',
                               flex: 1
                             },
                             { field: 'value', headerName: 'Value', flex: 1 },

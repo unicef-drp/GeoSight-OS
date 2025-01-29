@@ -19,6 +19,7 @@ from django.contrib import admin
 from geosight.data.models.context_layer import (
     ContextLayerGroup, ContextLayer, ContextLayerField
 )
+from geosight.data.admin.base import BaseAdminResourceMixin
 
 
 class ContextLayerFieldInline(admin.TabularInline):
@@ -28,10 +29,12 @@ class ContextLayerFieldInline(admin.TabularInline):
     extra = 0
 
 
-class ContextLayerAdmin(admin.ModelAdmin):
+class ContextLayerAdmin(BaseAdminResourceMixin):
     """ContextLayer admin."""
 
-    list_display = ('name', 'layer_type', 'group', 'creator', 'url')
+    list_display = (
+        'name', 'layer_type', 'group', 'url'
+    ) + BaseAdminResourceMixin.list_display
     inlines = (ContextLayerFieldInline,)
     list_filter = ('group',)
     list_editable = ('group', 'creator')

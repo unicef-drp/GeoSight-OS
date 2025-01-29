@@ -1,72 +1,80 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 import React, { useEffect, useState } from 'react';
 import {
   SelectWithList
 } from "../../../../../../components/Input/SelectWithList";
-import './style.scss';
 
-const aggregationOptions = [
+export const AggregationMethod = {
+  COUNT: "COUNT",
+  SUM: "SUM",
+  MAX: "MAX",
+  MIN: "MIN",
+  AVG: "AVG",
+  MAJORITY: "MAJORITY",
+  MINORITY: "MINORITY",
+  EMPTY: "EMPTY"
+}
+export const aggregationOptions = [
   {
-    value: "COUNT",
-    name: "COUNT",
+    value: AggregationMethod.COUNT,
+    name: AggregationMethod.COUNT,
     type: "Number"
   },
   {
-    value: "SUM",
-    name: "SUM",
+    value: AggregationMethod.SUM,
+    name: AggregationMethod.SUM,
     type: "Number"
   },
   {
-    value: "MAX",
-    name: "MAX",
+    value: AggregationMethod.MAX,
+    name: AggregationMethod.MAX,
     type: "Number"
   },
   {
-    value: "MIN",
-    name: "MIN",
+    value: AggregationMethod.MIN,
+    name: AggregationMethod.MIN,
     type: "Number"
   },
   {
-    value: "AVG",
-    name: "AVG",
+    value: AggregationMethod.AVG,
+    name: AggregationMethod.AVG,
     type: "Number"
   },
   {
-    value: "MAJORITY",
-    name: "MAJORITY",
+    value: AggregationMethod.MAJORITY,
+    name: AggregationMethod.MAJORITY,
     type: "String"
   },
   {
-    value: "MINORITY",
-    name: "MINORITY",
+    value: AggregationMethod.MINORITY,
+    name: AggregationMethod.MINORITY,
     type: "String"
   },
   {
-    value: "MAJORITY",
-    name: "MAJORITY",
+    value: AggregationMethod.MAJORITY,
+    name: AggregationMethod.MAJORITY,
     type: "Number"
   },
   {
-    value: "MINORITY",
-    name: "MINORITY",
+    value: AggregationMethod.MINORITY,
+    name: AggregationMethod.MINORITY,
     type: "Number"
   }
 ];
-const aggregationCount = "COUNT";
 
 /**
  * Spatial operator input
@@ -79,7 +87,16 @@ const aggregationCount = "COUNT";
 export default function Aggregation(
   { data, setData, fields, onLoading, aggregateValueType = 'Number', ...props }
 ) {
-  const aggregation = aggregationOptions.filter(option => option.type === aggregateValueType)
+  let aggregation = props.aggregationOptions ? props.aggregationOptions : aggregationOptions.filter(option => option.type === aggregateValueType)
+  if (props.optional) {
+    aggregation = [
+      {
+        value: AggregationMethod.EMPTY,
+        name: "---------------------------",
+        type: "Number"
+      }, ...aggregation
+    ]
+  }
   const [spatialMethod, spatialValue] = data.split(/[()]+/)
   const [method, setMethod] = useState(spatialMethod)
   const [methodValue, setMethodValue] = useState(
@@ -87,7 +104,7 @@ export default function Aggregation(
   )
 
   const fieldOptions = fields ? fields.filter(
-    field => ['Number'].includes(field.type)
+    field => ['Number', 'number'].includes(field.type)
   ).map(field => field.name) : []
 
   useEffect(() => {
@@ -98,7 +115,7 @@ export default function Aggregation(
       }
       if (methodUsed) {
         value = methodUsed
-        if (methodUsed !== aggregationCount) {
+        if (![AggregationMethod.COUNT, AggregationMethod.EMPTY].includes(methodUsed)) {
           if (methodValue && fieldOptions.includes(methodValue)) {
             value += `(${methodValue})`
           } else if (fieldOptions[0]) {
@@ -118,7 +135,7 @@ export default function Aggregation(
         setMethod(spatialMethod)
         setMethodValue(spatialValue)
       } else {
-        setData('COUNT')
+        setData(props.optional ? AggregationMethod.EMPTY : AggregationMethod.COUNT)
       }
     }, [data]
   )
@@ -135,11 +152,11 @@ export default function Aggregation(
         }}
       />
       <span className="form-helptext">
-        Aggregation data per geometry that will be used to determine the value of the geometry.
+        {props.helpText?.method ? props.helpText?.method : "Aggregation data per geometry that will be used to determine the value of the geometry."}
       </span>
     </div>
     {
-      method !== aggregationCount ?
+      ![AggregationMethod.COUNT, AggregationMethod.EMPTY, ''].includes(method) ?
         <div>
           <SelectWithList
             list={fieldOptions}

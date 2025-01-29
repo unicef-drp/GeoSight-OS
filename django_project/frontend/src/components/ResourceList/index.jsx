@@ -17,8 +17,8 @@ import React, { Fragment, useEffect, useState } from 'react';
 
 import { IconTextField } from '../Elements/Input'
 import { fetchJSON } from "../../Requests";
-import { MainDataGrid } from "../MainDataGrid";
 import { MagnifyIcon } from "../Icons";
+import { MainDataGrid } from "../Table";
 
 import './style.scss';
 

@@ -14,12 +14,13 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-import ast
 import os
 import shutil
 import time
 
 import django
+
+from core.utils import create_superuser
 
 django.setup()
 
@@ -28,7 +29,6 @@ django.setup()
 #########################################################
 from django.db import connection
 from django.db.utils import OperationalError
-from django.contrib.auth import get_user_model
 from django.core.management import call_command
 
 # Getting the secrets
@@ -58,39 +58,10 @@ connection.close()
 
 print("-----------------------------------------------------")
 print("2. Running the migrations")
-call_command('makemigrations')
 call_command('migrate', '--noinput')
 
 #########################################################
-# 3. Creating superuser if it doesn't exist
-#########################################################
-
-print("-----------------------------------------------------")
-print("3. Creating/updating superuser")
-USE_AZURE = os.getenv('AZURE_B2C_CLIENT_ID', '') not in ['', "''"]
-if USE_AZURE:
-    admin_email = os.getenv('B2C_ADMIN_EMAIL', admin_email)
-    admin_username = os.getenv('B2C_ADMIN_EMAIL', admin_username)
-try:
-    superuser = get_user_model().objects.get(username=admin_username)
-    superuser.is_active = True
-    superuser.email = admin_email
-    superuser.save()
-    print('superuser successfully updated')
-except get_user_model().DoesNotExist:
-    superuser = get_user_model().objects.create_superuser(
-        admin_username,
-        admin_email,
-    )
-    print('superuser successfully created')
-
-if not USE_AZURE:
-    # when b2c is disabled, use ADMIN_PASSWORD
-    superuser.set_password(admin_password)
-    superuser.save()
-
-#########################################################
-# 4. Collecting static files
+# 3. Collecting static files
 #########################################################
 
 print("-----------------------------------------------------")
@@ -110,3 +81,84 @@ except Exception:
     pass
 
 call_command('collectstatic', '--noinput', verbosity=0)
+
+#########################################################
+# 4. Remove all cache
+#########################################################
+
+print("-----------------------------------------------------")
+print("5. Remove all cache version is different")
+from core.context_processors.global_context import project_version
+from django.core.cache import cache
+
+if cache.get('APP_KEY') != project_version(None):
+    try:
+        for key in cache.keys('*/api*'):
+            cache.delete(key)
+        cache.set('APP_KEY', project_version(None))
+        print("Version is different, remove all")
+    except Exception:
+        pass
+
+#########################################################
+# 5. Restart backgrounds functions
+#########################################################
+
+try:
+    from geosight.importer.restart_functions import RestartFunctions
+
+    print("-----------------------------------------------------")
+    print("6. Restart backgrounds functions")
+
+    RestartFunctions().restart_log_sata_save_progress()
+except Exception as e:
+    print(f'{e}')
+    pass
+
+#########################################################
+# 6. Creating superuser if it doesn't exist
+#########################################################
+print("-----------------------------------------------------")
+print("7. Creating/updating superuser")
+create_superuser()
+
+#########################################################
+# 7. Create default domain for tenant
+#########################################################
+try:
+    from geosight.tenants.models import Tenant, Domain
+
+    for tenant in Tenant.objects.all():
+        tenant.create_superuser()
+
+    print("-----------------------------------------------------")
+    print("8. Create default domain for tenant")
+    app_domain = os.getenv('APP_DOMAIN', 'localhost')
+    tenant, _ = Tenant.objects.get_or_create(
+        schema_name='public', name='Main'
+    )
+    Domain.objects.get_or_create(
+        domain=app_domain,
+        tenant=tenant, defaults={
+            'is_primary': True
+        }
+    )
+
+except Exception as e:
+    print(f'{e}')
+    pass
+
+#########################################################
+# 8. Create thumbnails for Dashboard
+#########################################################
+try:
+    from geosight.data.models.dashboard import Dashboard
+
+    print("-----------------------------------------------------")
+    print("8. Create thumbnails for Dashboard")
+    for dashboard in Dashboard.objects.all():
+        dashboard.save()
+
+except Exception as e:
+    print(f'{e}')
+    pass

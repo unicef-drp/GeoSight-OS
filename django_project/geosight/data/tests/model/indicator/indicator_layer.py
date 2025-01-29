@@ -2,9 +2,9 @@
 from datetime import date, datetime
 from unittest.mock import patch
 
-from django.test.testcases import TestCase
 from django.utils import timezone
 
+from core.tests.base_tests import TestCase
 from geosight.data.models.related_table import RelatedTable
 from geosight.data.tests.model_factories import (
     DashboardIndicatorLayerF, DashboardIndicatorLayerRelatedTableF,
@@ -43,7 +43,7 @@ class TestIndicatorLayer(TestCase):
             {date_field.value: '2023-02-01T00:00:00+00:00'},
             {date_field.value: '2023-02-20T00:00:00+00:00'},
             {date_field.value: '2023-01-01T00:00:00+00:00'}
-        ]
+        ], False
 
         self.assertEquals(
             self.d_ind_layer.last_update,

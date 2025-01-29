@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 /* ==========================================================================
    MAP CONFIG CONTAINER
@@ -23,14 +23,23 @@ import { removeLayer, removeSource } from "../../../Dashboard/MapLibre/utils";
 import {
   contextLayerRendering
 } from "../../../Dashboard/MapLibre/Layers/ContextLayers/index";
-
+import 'mapboxgl-legend/dist/style.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
+
+
+// Initialize cog
+import { cogProtocol } from "@geomatico/maplibre-cog-protocol";
+import { Variables } from "../../../../utils/Variables";
+import { updateColorPaletteData } from "../../../../utils/Style";
+
+maplibregl.addProtocol('cog', cogProtocol);
 
 /**
  * Map Config component.
  */
-export default function MapConfig({ data, layerInput }) {
+export default function MapConfig({ data, setData, layerInput }) {
   const [map, setMap] = useState(null);
+  const [isInit, setIsInit] = useState(true);
 
   /***
    * Render layer to maplibre
@@ -49,7 +58,7 @@ export default function MapConfig({ data, layerInput }) {
         id: id,
         source: id,
       },
-      before
+      before && map.getLayer(before) ? before : undefined
     );
   }
 
@@ -86,8 +95,19 @@ export default function MapConfig({ data, layerInput }) {
   // When layer input changed, remove from map
   useEffect(() => {
     if (map) {
-      const id = 'Context-Layer'
-      contextLayerRendering(id, data, layerInput, map)
+      const id = data.id ? `context-layer-${data.id}` : 'context-layer'
+      if (Variables.LAYER.LIST.LAYERS_NEED_PALETTE.includes(data.layer_type)) {
+        removeLayer(map, id);
+        // Await color palette
+        (
+          async () => {
+            await updateColorPaletteData()
+            contextLayerRendering(id, data, layerInput, map, null, setData, isInit, setIsInit)
+          }
+        )()
+      } else {
+        contextLayerRendering(id, data, layerInput, map, null, setData, isInit, setIsInit)
+      }
     }
   }, [map, layerInput]);
 

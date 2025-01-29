@@ -68,8 +68,20 @@ class DashboardIndicatorLayerSerializer(DashboardSerializer):
 
     def get_indicators(self, obj: DashboardIndicatorLayer):
         """Return rules."""
+        query = obj.dashboardindicatorlayerindicator_set.all()
+        try:
+            if obj.indicators:
+                query = []
+                for indicator in obj.indicators:
+                    query.append(
+                        DashboardIndicatorLayerIndicator(
+                            object=obj, indicator=indicator
+                        )
+                    )
+        except AttributeError:
+            pass
         return DashboardIndicatorLayerIndicatorSerializer(
-            obj.dashboardindicatorlayerindicator_set.all(), many=True
+            query, many=True
         ).data
 
     def get_related_tables(self, obj: DashboardIndicatorLayer):
@@ -148,7 +160,7 @@ class DashboardIndicatorLayerSerializer(DashboardSerializer):
 
     def get_label_config(self, obj: DashboardIndicatorLayer):
         """Return style."""
-        if obj.is_using_obj_style:
+        if obj.is_using_obj_label:
             return obj.label_config
         return None
 
@@ -162,7 +174,9 @@ class DashboardIndicatorLayerSerializer(DashboardSerializer):
             'id', 'name', 'description', 'type',
             'indicators', 'related_tables',
             'chart_style', 'config', 'last_update',
+            'override_style',
             'style', 'style_id', 'style_type', 'style_data', 'style_config',
+            'override_label',
             'label_config', 'level_config', 'data_fields',
             'popup_template', 'popup_type', 'multi_indicator_mode'
         )

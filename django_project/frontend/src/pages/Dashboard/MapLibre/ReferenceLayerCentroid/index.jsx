@@ -17,187 +17,68 @@
    Geometry Center
    ========================================================================== */
 
-import React, { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from "react-redux";
-import $ from "jquery";
-import maplibregl from "maplibre-gl";
-import Chart from 'chart.js/auto';
 import { returnWhere } from "../../../../utils/queryExtraction";
-import { popupTemplate } from "../Popup";
-import { addPopupEl, hasLayer, hasSource } from "../utils";
-import { BEFORE_LAYER, CONTEXT_LAYER_ID } from "../Layers/ReferenceLayer";
 import { extractCode } from "../../../../utils/georepo";
 import { allDataIsReady } from "../../../../utils/indicators";
-
 import {
   indicatorLayerId,
-  isIndicatorLayerLikeIndicator
+  isIndicatorLayerLikeIndicator,
+  SingleIndicatorTypes
 } from "../../../../utils/indicatorLayer";
 import { dictDeepCopy } from "../../../../utils/main";
-import { UpdateStyleData } from "../../../../utils/indicatorData";
+import {
+  getIndicatorDataByLayer,
+  UpdateStyleData
+} from "../../../../utils/indicatorData";
+import { hideLabel, renderLabel, resetLabel, showLabel } from "./Label"
+import { ExecuteWebWorker } from "../../../../utils/WebWorker";
+import worker from "./Label/worker";
+import { renderChart, renderPin, resetCharts } from "./Chart";
 
 import './style.scss';
 
-let centroidMarker = []
-let charts = {}
-const INDICATOR_LABEL_ID = 'indicator-label'
-let centroidConfig = {}
+let lastConfig = {};
+let lastRequest = null;
 
-const temporary = {}
 /**
  * GeometryCenter.
  */
 export default function ReferenceLayerCentroid({ map }) {
   const {
     indicators,
-    indicatorLayers
+    indicatorLayers,
+    referenceLayer
   } = useSelector(state => state.dashboard.data)
   const { showIndicatorMapLabel } = useSelector(state => state.globalState)
-  const { indicatorShow } = useSelector(state => state.map)
-  const geometries = useSelector(state => state.geometries)
-  const geometriesVT = useSelector(state => state.geometriesVT)
+  const { referenceLayers, indicatorShow } = useSelector(state => state.map)
+  const datasetGeometries = useSelector(state => state.datasetGeometries)
   const filteredGeometries = useSelector(state => state.filteredGeometries)
   const indicatorsData = useSelector(state => state.indicatorsData);
   const selectedIndicatorLayer = useSelector(state => state.selectedIndicatorLayer)
   const selectedIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer)
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel)
-  const filtersData = useSelector(state => state.filtersData);
+  const mapGeometryValue = useSelector(state => state.mapGeometryValue)
 
-  const where = returnWhere(filtersData ? filtersData : [])
+  const [geometries, setGeometries] = useState({});
 
-  /**
-   * Render chart
-   * **/
-  const renderChart = (features, config) => {
-    if (JSON.stringify(config) !== JSON.stringify(centroidConfig)) {
-      return;
-    }
-    features.map(feature => {
-      const properties = feature.properties
-      const chartStyle = properties.chart_style;
-      const code = properties.code
-      const size = chartStyle.size;
-      const { labels, data, colors, options } = properties.chartData
-
-      if (charts[code]) {
-        charts[code].clear();
-        $(`${code}-chart`).remove()
+  // When reference layer changed, fetch features
+  useEffect(() => {
+    const currGeometries = {}
+    referenceLayers.map(referenceLayer => {
+      const geoms = datasetGeometries[referenceLayer.identifier]
+      if (geoms) {
+        for (const [level, data] of Object.entries(geoms)) {
+          if (!currGeometries[level]) {
+            currGeometries[level] = {}
+          }
+          currGeometries[level] = { ...currGeometries[level], ...data }
+        }
       }
-
-      var el = document.createElement('div');
-      const popup = new maplibregl.Popup({
-        closeOnClick: false,
-        closeButton: false
-      }).setHTML(`<div style="display: block; box-sizing: border-box; height: ${size}px; width: ${size}px;"><canvas id="${code}-chart" width="${size}" height="${size}" data-size="${size}"></div>`)
-      popup.addClassName('ChartPopup')
-      const marker = new maplibregl.Marker(el)
-        .setLngLat(feature.geometry.coordinates)
-        .setPopup(popup)
-        .addTo(map)
-        .togglePopup();
-      centroidMarker.push(marker)
-
-      // Create charts
-      setTimeout(function () {
-        // Don't render if config is not same
-        if (JSON.stringify(config) !== JSON.stringify(centroidConfig)) {
-          return;
-        }
-        const el = document.getElementById(`${code}-chart`)
-        if (!el) {
-          return
-        }
-        const ctx = el.getContext('2d');
-        try {
-          const chart = new Chart(ctx, {
-            type: chartStyle.chartType ? chartStyle.chartType.toLowerCase() : 'pie',
-            data: {
-              labels: labels,
-              datasets: [{
-                data: data,
-                backgroundColor: colors,
-                borderWidth: 1,
-                barPercentage: 1.0,
-                categoryPercentage: 1.0
-              }]
-            },
-            options: options
-          });
-          charts[code] = chart
-
-          // Popup for marker
-          addPopupEl(map, el, feature.geometry.coordinates, properties, properties => {
-              const markerProperties = JSON.parse(JSON.stringify(properties))
-              const maxValue = properties.maxValue
-              const cleanProperties = {}
-              markerProperties.data.map(data => {
-                cleanProperties[data.name] = `
-              <div class="PopupMultiDataTable">
-                <div class="PopupMultiDataTableGraph" style="background-color: ${data.color}; width: ${(data.value / maxValue) * 100}%"></div>
-                <div class="PopupMultiDataTableValue">${data.value}</div>
-              </div>`
-              })
-              const name = markerProperties['name']
-              cleanProperties['code'] = markerProperties['code']
-              cleanProperties['label'] = markerProperties['label']
-              cleanProperties['type'] = markerProperties['type']
-              return popupTemplate(null, cleanProperties, {
-                name: name,
-                color: '#eee'
-              })
-            },
-            {
-              'bottom': [0, -1 * size],
-            }
-          )
-        } catch (err) {
-
-        }
-      }, 200)
     })
-  }
-
-  /**
-   * Render PIN
-   * **/
-  const renderPin = (features, config, indicatorLayer) => {
-    if (JSON.stringify(config) !== JSON.stringify(centroidConfig)) {
-      return;
-    }
-    features.map(feature => {
-      const properties = feature.properties
-      const chartStyle = properties.chart_style;
-      const code = properties.code
-      const size = chartStyle.size ? chartStyle.size : 20;
-
-      if (charts[code]) {
-        charts[code].clear();
-        $(`${code}-chart`).remove()
-      }
-      const children = []
-      indicatorLayer.indicators.map(indicator => {
-        const data = feature.properties.data?.find(row => row.indicator === indicator.indicator)
-        if (data) {
-          children.push(`<div class="pin" title="${data.indicator} - ${data.value}" style="background-color: ${data.style?.color}; height: ${size}px; width: ${size}px;"></div>`)
-        } else {
-          children.push(`<div class="pin empty"></div>`)
-        }
-      })
-
-      var el = document.createElement('div');
-      const popup = new maplibregl.Popup({
-        closeOnClick: false,
-        closeButton: false
-      }).setHTML(`<div class="pins">${children.join('')}</div>`)
-      popup.addClassName('ChartPopup')
-      const marker = new maplibregl.Marker(el)
-        .setLngLat(feature.geometry.coordinates)
-        .setPopup(popup)
-        .addTo(map)
-        .togglePopup();
-      centroidMarker.push(marker)
-    })
-  }
+    setGeometries(currGeometries)
+  }, [referenceLayers, datasetGeometries]);
 
   /** Chart data generator **/
   const chartData = (indicators) => {
@@ -241,169 +122,45 @@ export default function ReferenceLayerCentroid({ map }) {
     }
   }
 
-  /**
-   * Render label
-   * **/
-  const renderLabel = (features, config) => {
-    const layout = {
-      'text-anchor': 'bottom',
-      'text-size': 14,
-      'text-variable-anchor': ['center'],
-    }
-    const paint = {
-      'text-halo-blur': 2
-    }
-    let minZoom = 0
-    let maxZoom = 24
-
-    // Check the style
-    const { text, style } = config
-    if (text && style) {
-      minZoom = style.minZoom ? style.minZoom : minZoom
-      maxZoom = style.maxZoom ? style.maxZoom : maxZoom
-      paint['text-color'] = style.fontColor.replaceAll('##', '#')
-      if (style.fontFamily) {
-        const font = style.fontFamily.split(',')[0].replaceAll('"', '')
-        layout['text-font'] = [font, font]
-      } else {
-        layout['text-font'] = ['Arial', 'Arial']
-      }
-      layout['text-size'] = style.fontSize
-      paint['text-halo-color'] = style.haloColor.replaceAll('##', '#')
-      paint['text-halo-width'] = style.haloWeight ? 1 : 0
-
-      const textField = ['format']
-      const formattedText = text.replaceAll('{', ' {{').replaceAll('}', '}} ')
-      const separators = [' {', '} '];
-      formattedText.split('\n').map((label, idx) => {
-        label.split(new RegExp(separators.join('|'), 'g')).map(row => {
-          if (row.includes('{')) {
-            textField.push(['get', row.replace('{', '').replace('}', '')])
-          } else if (row.includes('round')) {
-            const property = textField[textField.length - 1][1]
-            if (property) {
-              const decimalNumber = row.split(/.round\(|\)/)
-              if (decimalNumber[0]) {
-                textField.push(row)
-              } else if (!isNaN(parseInt(decimalNumber[1]))) {
-                const decimalPlace = parseInt(decimalNumber[1])
-                if (decimalNumber[2]) {
-                  textField.push(decimalNumber[2])
-                }
-                features.map(feature => {
-                  if (feature.properties[property]) {
-                    try {
-                      feature.properties[property] = feature.properties[property].round(decimalPlace)
-                    } catch (err) {
-
-                    }
-                  }
-                })
-              }
-            }
-          } else if (row) {
-            textField.push(row)
-          }
-        })
-        textField.push('\n')
-      })
-      layout['text-field'] = textField
-    }
-
-    if (hasLayer(map, INDICATOR_LABEL_ID)) {
-      map.removeLayer(INDICATOR_LABEL_ID)
-    }
-    if (hasSource(map, INDICATOR_LABEL_ID)) {
-      map.removeSource(INDICATOR_LABEL_ID)
-    }
-    map.addSource(INDICATOR_LABEL_ID, {
-      'type': 'geojson',
-      'data': {
-        type: 'FeatureCollection',
-        features: features
-      }
-    });
-    const contextLayerIds = map.getStyle().layers.filter(
-      layer => layer.id.includes(CONTEXT_LAYER_ID) || layer.id === BEFORE_LAYER
-    )
-    map.addLayer(
-      {
-        id: "indicator-label",
-        type: 'symbol',
-        source: INDICATOR_LABEL_ID,
-        filter: ['==', '$type', 'Point'],
-        layout: layout,
-        paint: paint,
-        maxzoom: maxZoom,
-        minzoom: minZoom
-
-      },
-      contextLayerIds[0]?.id
-    );
+  /** Resetting **/
+  const reset = (map) => {
+    resetLabel(map)
+    resetCharts()
   }
-  /**Resetting **/
-  const reset = () => {
-    renderLabel([], {})
-    for (const [code, chart] of Object.entries(charts)) {
-      chart.clear();
-      $(`${code}-chart`).remove()
-    }
-    centroidMarker.map(marker => marker.remove())
-    centroidMarker = []
-  }
-  // When level changed
+
+  // When show label toggled
   useEffect(() => {
-    // Check if all data is ready
+    if (showIndicatorMapLabel) {
+      showLabel(map)
+    } else {
+      hideLabel(map)
+    }
+  }, [
+    showIndicatorMapLabel
+  ]);
+
+  const updateCentroid = () => {
+    if (!map) {
+      return;
+    }
+    let rendering = true
+    // Check if multiple indicator or not
     let indicatorLayer = selectedIndicatorLayer
     if (selectedIndicatorSecondLayer?.indicators?.length >= 2) {
       indicatorLayer = selectedIndicatorSecondLayer
     }
     if (!indicatorLayer.indicators) {
-      reset()
-      return;
-    }
-
-    const isRenderingChart = indicatorLayer?.indicators?.length >= 2
-
-    let rendering = true
-    const usedIndicatorsData = {}
-    const usedIndicatorsProperties = {}
-    indicatorLayer.indicators.map(indicator => {
-      usedIndicatorsData[indicator.id] = indicatorsData[indicator.id]
-      const data = {}
-      for (const [key, value] of Object.entries(indicator)) {
-        if (!key.includes('style')) {
-          data[key] = value
-        }
-      }
-      usedIndicatorsProperties[indicator.id] = data
-    })
-    const layerId = indicatorLayerId(indicatorLayer)
-    if (indicatorsData[layerId]) {
-      usedIndicatorsData[layerId] = indicatorsData[layerId]
-      const data = {}
-      for (const [key, value] of Object.entries(indicatorLayer)) {
-        if (!key.includes('style')) {
-          data[key] = value
-        }
-      }
-      usedIndicatorsProperties[layerId] = data
-    }
-    if (!allDataIsReady(usedIndicatorsData)) {
       rendering = false
     }
-    // Check if geometries is exist
+
+    // Check if geometries data is exist
     let geometriesData = geometries[selectedAdminLevel.level]
     if (!geometriesData) {
-      if (!geometriesVT[selectedAdminLevel.level]) {
-        rendering = false
-      } else {
-        geometriesData = geometriesVT[selectedAdminLevel.level]
-      }
+      rendering = false
     }
     if (!rendering) {
-      reset()
-      centroidConfig = {}
+      lastConfig = {}
+      reset(map)
       return;
     }
     const geometriesLevel = Object.keys(geometriesData);
@@ -412,42 +169,87 @@ export default function ReferenceLayerCentroid({ map }) {
       usedFilteredGeometries = geometriesLevel
     }
 
-    // Check by config
-    const config = {
-      indicators: indicatorLayer.indicators.map(indicator => indicator.id),
-      indicatorLayer: indicatorLayer.id,
-      indicatorLayerConfig: isIndicatorLayerLikeIndicator(indicatorLayer) ? indicatorLayer.config : {},
-      filteredGeometries: usedFilteredGeometries,
-      indicatorShow: indicatorShow,
-      usedIndicatorsData: usedIndicatorsData
+    // ---------------------------------------------------------
+    // CREATE LABEL IF SINGLE INDICATOR
+    // ---------------------------------------------------------
+    let labelConfig = indicatorLayer.label_config
+    let styleConfig = indicatorLayer
+    if (SingleIndicatorTypes.includes(indicatorLayer.type)) {
+      const indicatorDetail = indicators.find(indicator => indicator.id === indicatorLayer?.indicators[0]?.id)
+      if (!indicatorLayer.override_style && indicatorDetail) {
+        styleConfig = indicatorDetail
+      }
+      if (indicatorDetail && (!labelConfig || !indicatorLayer.override_label)) {
+        labelConfig = indicatorDetail.label_config
+      }
     }
-    if (!isRenderingChart) {
-      config.showIndicatorMapLabel = showIndicatorMapLabel
-    }
-    // If config is same, don't render to prevent flicker
-    if (JSON.stringify(config) === JSON.stringify(centroidConfig)) {
-      return;
-    }
-    reset()
-    centroidConfig = config
-
-    // If not show
-    if (!indicatorShow) {
-      return;
-    }
+    // ---------------------------------------------------------
 
     // ---------------------------------------------------------
     // CREATE CHARTS IF MULTIPLE INDICATORS
     // ---------------------------------------------------------
+    const isRenderingChart = indicatorLayer?.indicators?.length >= 2
     if (isRenderingChart) {
+      // Remove label when in chart
+      resetLabel(map)
+
+      // Get all data
+      const usedIndicatorsData = {}
+      const usedIndicatorsProperties = {}
+      indicatorLayer.indicators.map(indicator => {
+        const indicatorData = getIndicatorDataByLayer(indicator.id, indicatorsData, indicatorLayer, referenceLayer)
+        usedIndicatorsData[indicator.id] = indicatorData
+        const data = {}
+        for (const [key, value] of Object.entries(indicator)) {
+          if (!key.includes('style')) {
+            data[key] = value
+          }
+        }
+        usedIndicatorsProperties[indicator.id] = data
+      })
+      const layerId = indicatorLayerId(indicatorLayer)
+      if (indicatorsData[layerId]) {
+        usedIndicatorsData[layerId] = indicatorsData[layerId]
+        const data = {}
+        for (const [key, value] of Object.entries(indicatorLayer)) {
+          if (!key.includes('style')) {
+            data[key] = value
+          }
+        }
+        usedIndicatorsProperties[layerId] = data
+      }
+      if (!allDataIsReady(usedIndicatorsData)) {
+        rendering = false
+      }
+      if (!rendering) {
+        reset(map)
+        lastConfig = {}
+        return;
+      }
+
+      // Check by config
+      const chartStyle = indicatorLayer.chart_style
+      const config = {
+        indicators: indicatorLayer.indicators.map(indicator => indicator.id),
+        indicatorLayer: indicatorLayer.id,
+        indicatorLayerConfig: isIndicatorLayerLikeIndicator(indicatorLayer) ? indicatorLayer.config : {},
+        filteredGeometries: usedFilteredGeometries,
+        indicatorShow: indicatorShow,
+        usedIndicatorsData: usedIndicatorsData,
+        chartStyle: chartStyle
+      }
+      // If config is same, don't render to prevent flicker
+      if (JSON.stringify(config) === JSON.stringify(lastConfig)) {
+        return;
+      }
+
       // Create data per geom
       // Creating features for center data
       let maxValue = 0
       const features = []
 
-      const chartStyle = indicatorLayer.chart_style
       let theGeometries = Object.keys(geometriesData)
-      if (where && usedFilteredGeometries) {
+      if (usedFilteredGeometries) {
         theGeometries = usedFilteredGeometries
       }
 
@@ -484,9 +286,6 @@ export default function ReferenceLayerCentroid({ map }) {
       }
       theGeometries.map(geom => {
         const geometry = geometriesData[geom]
-        if (!geometry?.centroid) {
-          return
-        }
         if (indicatorsByGeom[geometry?.code]) {
           const properties = Object.assign({}, geometry, {
             chart_style: JSON.parse(JSON.stringify(chartStyle)),
@@ -514,17 +313,18 @@ export default function ReferenceLayerCentroid({ map }) {
           features.push({
             "type": "Feature",
             "properties": properties,
-            "geometry": {
-              "type": "Point",
-              "coordinates": geometry.centroid.replace('POINT (', '').replace('POINT(', '').replace(')', '').split(' ').map(coord => parseFloat(coord))
-            }
+            "geometry": geometry.geometry
           })
         }
       })
-      if (indicatorLayer.multi_indicator_mode === "Pin") {
-        renderPin(features, config, indicatorLayer)
-      } else {
 
+      // ------------------------------
+      // Check the style
+      // ------------------------------
+      reset(map)
+      if (indicatorLayer.multi_indicator_mode === "Pin") {
+        renderPin(map, features, indicatorLayer, lastConfig, config)
+      } else {
         // Change size of pie chart
         switch (chartStyle.sizeType) {
           case "Fixed size":
@@ -541,87 +341,59 @@ export default function ReferenceLayerCentroid({ map }) {
               properties.chart_style.size = (percentageSize * diffSize) + minSize
             })
         }
-        renderChart(features, config)
+        renderChart(map, features, lastConfig, config)
       }
+      lastConfig = config
     } else {
+      lastConfig = {}
       // ---------------------------------------------------------
       // CREATE LABEL IF SINGLE INDICATOR
       // ---------------------------------------------------------
-      let indicatorLayerId = null
-      if (indicatorLayer?.indicators) {
-        indicatorLayerId = indicatorLayer?.indicators[0]?.id
-      }
-      const indicatorDetail = indicators.find(indicator => indicator.id === indicatorLayerId)
-      let config;
-      if (indicatorDetail) {
-        config = indicatorDetail?.label_config
-      } else {
-        config = indicatorLayer?.label_config
+      // Remove charts when label
+      resetCharts()
+
+      // Hide label if indicator not show
+      if (!indicatorShow) {
+        reset(map)
+        return;
       }
       // When there is no config, no label rendered
-      if (!(config?.style && config?.text) || !showIndicatorMapLabel) {
-        reset()
+      if (!labelConfig) {
+        reset(map)
         return;
       }
       // ---------------------------------------------------------
       // LABEL
       // ---------------------------------------------------------
       if (!geometriesData) {
-        renderLabel([], config)
+        renderLabel(map, [], labelConfig)
         return;
       }
+      const currRequest = new Date().getTime()
+      lastRequest = currRequest
 
-      // Create features
-      let theGeometries = Object.keys(geometriesData)
-      const identifier = JSON.stringify(config) + JSON.stringify(theGeometries)
-      const temp = temporary[identifier]
-      let features = []
-      if (temp) {
-        features = temp
-      } else {
-        const indicatorsByGeom = {}
-        for (const [indicatorId, indicatorData] of Object.entries(usedIndicatorsData)) {
-          indicatorData.data.forEach(function (data) {
-            const code = extractCode(data)
-            if (!indicatorsByGeom[code]) {
-              indicatorsByGeom[code] = []
-            }
-            indicatorsByGeom[code].push(data);
-          })
+      ExecuteWebWorker(
+        worker, {
+          geometriesData,
+          mapGeometryValue,
+          usedFilteredGeometries
+        }, (features) => {
+          if (currRequest === lastRequest) {
+            renderLabel(map, features, labelConfig)
+          }
         }
-        theGeometries.map(geom => {
-          const geometry = geometriesData[geom]
-          const code = extractCode(geometry)
-          const indicator = indicatorsByGeom[code] ? indicatorsByGeom[code][0] : null
-          if (usedFilteredGeometries && !usedFilteredGeometries.includes(code)) {
-            return
-          }
-          let properties = geometry
-          if (geometry) {
-            if (indicator) {
-              properties = Object.assign({}, geometry, indicator)
-            }
-            if (geometry.centroid) {
-              features.push({
-                "type": "Feature",
-                "properties": properties,
-                "geometry": {
-                  "type": "Point",
-                  "coordinates": geometry.centroid.replace('POINT (', '').replace('POINT(', '').replace(')', '').split(' ').map(coord => parseFloat(coord))
-                }
-              })
-            }
-          }
-        })
-        temporary[identifier] = dictDeepCopy(features)
-      }
-      renderLabel(features, config)
+      )
     }
+  }
+
+  // When everything changed
+  useEffect(() => {
+    updateCentroid()
   }, [
-    geometries, geometriesVT, filteredGeometries, indicatorsData,
+    geometries, filteredGeometries, indicatorsData,
     indicatorShow, indicatorLayers,
     selectedIndicatorLayer, selectedIndicatorSecondLayer,
-    showIndicatorMapLabel, selectedAdminLevel
+    selectedAdminLevel, mapGeometryValue, referenceLayers
   ]);
 
   return null

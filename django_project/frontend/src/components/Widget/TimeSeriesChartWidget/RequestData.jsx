@@ -17,11 +17,11 @@
    SHOW DATA IN TIME SERIES IN CHART WIDGET
    ========================================================================== */
 
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSelector } from "react-redux";
 import { SeriesType, TimeType } from "./Definition";
 import { fetchingData } from "../../../Requests";
-import { dateLabel, getDatesInRange } from "../../../utils/Dates";
+import { dateLabel, getDatesInRange, INTERVALS } from "../../../utils/Dates";
 import {
   dynamicLayerData,
   dynamicLayerIndicatorList,
@@ -46,8 +46,12 @@ export default function RequestDataIndicator(
   const prevState = useRef();
   const {
     indicators,
-    indicatorLayers
+    indicatorLayers,
+    default_time_mode
   } = useSelector(state => state.dashboard.data);
+  const {
+    use_only_last_known_value
+  } = default_time_mode
   const selectedGlobalTimeConfig = useSelector(state => state.selectedGlobalTimeConfig);
   const {
     seriesType,
@@ -59,6 +63,10 @@ export default function RequestDataIndicator(
     interval = selectedGlobalTimeConfig.interval
     maxDateFilter = selectedGlobalTimeConfig.maxDate
     minDateFilter = selectedGlobalTimeConfig.minDate
+  }
+  if (use_only_last_known_value) {
+    interval = INTERVALS.DAILY
+    minDateFilter = null
   }
 
 
@@ -84,7 +92,8 @@ export default function RequestDataIndicator(
       indicatorSeries: indicatorSeries,
       geographicUnits: geographicUnits,
       selectedGlobalTimeConfig: selectedGlobalTimeConfig,
-      otherIndicatorLayersConfig: indicatorLayersLikeIndicator(indicatorLayers).map(indicatorLayer => indicatorLayer.config)
+      otherIndicatorLayersConfig: indicatorLayersLikeIndicator(indicatorLayers).map(indicatorLayer => indicatorLayer.config),
+      use_only_last_known_value: use_only_last_known_value
     }
     if (JSON.stringify(requestConfig) === JSON.stringify(prevState.requestConfig)) {
       return;
@@ -122,6 +131,9 @@ export default function RequestDataIndicator(
               concept_uuid: unit.id,
               frequency: interval,
               time__lte: maxDateFilter ? maxDateFilter : new Date().toISOString()
+            }
+            if (unit.reference_layer_uuid) {
+              parameters.reference_layer_uuid = unit.reference_layer_uuid
             }
             if (minDateFilter) {
               parameters['time__gte'] = minDateFilter
@@ -215,13 +227,13 @@ export default function RequestDataIndicator(
                   backgroundColor: color
                 })
               }
-            }
 
-            // Update progress
-            setRequestProgress({
-              progress: (x + 1) * (y + 1),
-              total: total
-            })
+              // Update progress
+              setRequestProgress({
+                progress: (x + 1) * (y + 1),
+                total: total
+              })
+            }
           }
         }
         if (prevState.session === session) {
@@ -237,7 +249,9 @@ export default function RequestDataIndicator(
         }
       }
     )()
-  }, [secondSeries, config, selectedGlobalTimeConfig, indicatorSeries, geographicUnits, indicatorLayers])
+  }, [
+    secondSeries, config, selectedGlobalTimeConfig, indicatorSeries, geographicUnits, indicatorLayers, use_only_last_known_value
+  ])
 
   return null
 }

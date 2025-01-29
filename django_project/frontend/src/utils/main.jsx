@@ -16,6 +16,7 @@
 'use strict';
 
 import i18n from "i18next";
+import { isArray } from "chart.js/helpers";
 
 /**
  * Deep copy of dictionary
@@ -121,6 +122,12 @@ export function capitalize(target) {
 export function jsonToUrlParams(object) {
   const params = []
   for (const [key, value] of Object.entries(object)) {
+    if ([null, undefined].includes(value)) {
+      continue
+    }
+    if (isArray(value) && !value.length) {
+      continue
+    }
     params.push(`${key}=${value}`)
   }
   return params.join('&')
@@ -254,13 +261,32 @@ export function jsonToXlsx(data, filename, sheetName = "Sheet 1") {
   XLSX.writeFile(workbook, filename);
 }
 
+/**
+ * Multiple json to multiple sheet
+ * @param {Array} data Array of object.
+ * @param {string} filename Filename of json
+ */
+export function multiJsonToMultipleSheetsXlsx(data, filename) {
+  const workbook = XLSX.utils.book_new();
+  for (const [sheetName, sheetData] of Object.entries(data)) {
+    const worksheet = XLSX.utils.json_to_sheet(sheetData);
+    if (sheetData[0]) {
+      worksheet["!cols"] = Object.keys(sheetData[0]).map(key => {
+        return { wch: sheetData.reduce((w, r) => Math.max(w, r[key]?.length), 10) }
+      });
+    }
+    XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+  }
+  XLSX.writeFile(workbook, filename);
+}
+
 /** Return now date in UTC */
-export function nowUTC() {
+export function nowUTC(secondZero = false) {
   const date = new Date();
   return new Date(
     Date.UTC(date.getUTCFullYear(), date.getUTCMonth(),
       date.getUTCDate(), date.getUTCHours(),
-      date.getUTCMinutes(), date.getUTCSeconds())
+      date.getUTCMinutes(), secondZero ? 0 : date.getUTCSeconds())
   )
 }
 
@@ -268,10 +294,15 @@ export function nowUTC() {
  * Json to xls
  * @param {Date} d
  */
-export function formatDate(d, reverseDate = false) {
+export function formatDate(d, reverseDate = false, toUTC = false) {
   let month = '' + (d.getMonth() + 1),
     day = '' + d.getDate(),
     year = d.getFullYear();
+  if (toUTC) {
+    month = '' + (d.getUTCMonth() + 1);
+    day = '' + d.getUTCDate();
+    year = d.getUTCFullYear();
+  }
 
   if (month.length < 2)
     month = '0' + month;
@@ -284,11 +315,30 @@ export function formatDate(d, reverseDate = false) {
   }
 }
 
+/** Update date from period and interval. */
+export function updateDate(dt, amount, period) {
+  switch (period) {
+    case 'years':
+      return dt.setFullYear(dt.getFullYear() + amount) && dt;
+    case 'months':
+      return dt.setMonth(dt.getMonth() + amount) && dt;
+    case 'days':
+      return dt.setDate(dt.getDate() + amount) && dt;
+    case 'hours':
+      return dt.setHours(dt.getHours() + amount) && dt;
+    case 'minutes':
+      return dt.setMinutes(dt.getMinutes() + amount) && dt;
+    case 'seconds':
+      return dt.setSeconds(dt.getSeconds() + amount) && dt;
+  }
+  return dt
+}
+
 /**
  * Json to xls
  * @param {Date} d
  */
-export function formatDateTime(d, reverseDate = false, toUTC = false) {
+export function formatDateTime(d, reverseDate = false, toUTC = false, showSecond = true) {
   let month = '' + (d.getMonth() + 1),
     day = '' + d.getDate(),
     year = d.getFullYear(),
@@ -314,10 +364,14 @@ export function formatDateTime(d, reverseDate = false, toUTC = false) {
   if (second.length < 2)
     second = '0' + second;
 
+  const times = [hour, minute]
+  if (showSecond) {
+    times.push(second)
+  }
   if (reverseDate) {
-    return [day, month, year].join('-') + ' ' + [hour, minute, second].join(':');
+    return [day, month, year].join('-') + ' ' + times.join(':');
   } else {
-    return [year, month, day].join('-') + ' ' + [hour, minute, second].join(':');
+    return [year, month, day].join('-') + ' ' + times.join(':');
   }
 }
 
@@ -446,3 +500,59 @@ export function toFloat(val) {
   }
   return val
 }
+
+/**
+ * Return val as json
+ */
+export function toJson(val) {
+  if (!val) {
+    return {}
+  }
+  try {
+    if (typeof val === 'string' || val instanceof String) {
+      return JSON.parse(val)
+    } else {
+      return val
+    }
+  } catch (e) {
+    return {}
+  }
+}
+
+/**
+ * Sleep
+ */
+export function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/**
+ * Get the number of decimal place based on the number.
+ * @param num
+ * @returns {number}
+ */
+export function getAreaDecimalLength(num) {
+  //    1,000,000 - show 2 decimals, if between 1,000,000 - 1 - show 3 decimals, if below 0 - show 4 digits...
+  if (num >= 1000000) {
+    return 2
+  } else if (num >= 1) {
+    return 3
+  } else {
+    return 4
+  }
+}
+
+/**
+ * Make unique by key
+ * @param array
+ * @param key
+ * @returns {*}
+ */
+export const uniqueByKey = (array, key) => {
+  return array.reduce((acc, item) => {
+    if (!acc.some(el => el[key] === item[key])) {
+      acc.push(item);
+    }
+    return acc;
+  }, []);
+};

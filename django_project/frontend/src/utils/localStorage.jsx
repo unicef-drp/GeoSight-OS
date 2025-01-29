@@ -45,7 +45,7 @@ export class LocalStorageData {
     if (localStorage.getItem(this.keyVersion) === '' + this.version) {
       if (this.getItem()) {
         try {
-          newData = JSON.parse(this.getItem())
+          newData = this.getItem()
         } catch (err) {
 
         }

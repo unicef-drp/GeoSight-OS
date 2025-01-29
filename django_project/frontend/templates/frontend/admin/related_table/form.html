@@ -1,0 +1,32 @@
+{% extends 'frontend/admin/base_form.html' %}
+{% load render_bundle from webpack_loader %}
+{% load static %}
+{% load frontend %}
+
+{% block render_bundle %}
+    {% render_bundle 'AdminRelatedTableForm' %}
+{% endblock %}
+{% block scripts %}
+    <script>
+      const initialData = {{ form|get_data|safe }};
+      const permission = {{ permission|safe }};
+
+      // Urls api
+      urls.api = {
+        'styles': '{% url 'style-list-api'%}',
+        'detail': '{% url 'basemap-detail-api' 0 %}',
+        'dataView': '{% url 'admin-related-table-data-view' 0 %}',
+      }
+
+      if (permission.share) {
+        {% if id %}
+          urls.api.permission = '{% url 'related-table-permission-api' id %}'
+        {% else %}
+          urls.api.permission = '{% url 'related-table-permission-api' 0 %}'
+        {% endif %}
+      }
+
+      // If in batch or not
+      const batch = {% if batch %}true{% else %}null{% endif %};
+    </script>
+{% endblock %}

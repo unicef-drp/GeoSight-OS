@@ -17,7 +17,6 @@ __copyright__ = ('Copyright 2023, Unicef')
 import copy
 
 from django.contrib.auth import get_user_model
-from django.test.testcases import TestCase
 from django.urls import reverse
 
 from frontend.tests.admin._base import BaseViewTest
@@ -32,12 +31,13 @@ from geosight.permission.models.factory import PERMISSIONS
 User = get_user_model()
 
 
-class IndicatorAdminViewTest(BaseViewTest, TestCase):
+class IndicatorAdminViewTest(BaseViewTest.TestCaseWithBatch):
     """Test for Indicator Admin."""
 
     list_url_tag = 'admin-indicator-list-view'
     create_url_tag = 'admin-indicator-create-view'
     edit_url_tag = 'admin-indicator-edit-view'
+    batch_edit_url_tag = 'admin-indicator-edit-batch-view'
     payload = {
         'name': 'name',
         'group': 'group',
@@ -67,6 +67,9 @@ class IndicatorAdminViewTest(BaseViewTest, TestCase):
         payload = copy.deepcopy(self.payload)
         payload['style_config'] = self.style_config
         del payload['group']
+        payload['shortcode'] += (
+            f"{payload['shortcode']}-{Indicator.objects.count()}"
+        )
         return Indicator.permissions.create(
             user=user,
             **payload

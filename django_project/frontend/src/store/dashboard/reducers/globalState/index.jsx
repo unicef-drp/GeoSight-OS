@@ -23,7 +23,9 @@ export const GLOBAL_STATE_ACTION_TYPE_UPDATE = 'GLOBAL_STATE/UPDATE';
 const initialState = {
   globalDateSelectorOpened: false,
   showIndicatorMapLabel: true,
-  attributions: []
+  attributions: [],
+  datasets: [],
+  editMode: false,
 }
 export default function globalStateReducer(state = initialState, action) {
   if (action.name === GLOBAL_STATE_ACTION_NAME) {

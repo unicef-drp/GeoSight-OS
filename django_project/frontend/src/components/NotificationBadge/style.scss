@@ -13,11 +13,6 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   Notification Badge
-   ========================================================================== */
-@import '../../app/variables';
-
 .NotificationBadge {
   padding: 4px 6px;
   border-radius: 4px;
@@ -29,7 +24,7 @@
 
 
   &:hover {
-    opacity: $base-hovered-opacity;
+    opacity: var(--base-hovered-opacity);
   }
 
   &:after {
@@ -41,7 +36,7 @@
     margin-right: -7px;
     width: 0;
     height: 0;
-    border-left: solid 7px $white;
+    border-left: solid 7px var(--white);
     border-top: solid 5px transparent;
     border-bottom: solid 5px transparent;
   }

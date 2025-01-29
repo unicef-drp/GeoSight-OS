@@ -18,8 +18,6 @@ import {
   SelectWithList
 } from "../../../../../../components/Input/SelectWithList";
 
-import './style.scss';
-
 const spatialMethods = [
   {
     "value": "INTERSECT",

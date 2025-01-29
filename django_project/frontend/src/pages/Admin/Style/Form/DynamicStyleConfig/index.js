@@ -17,12 +17,9 @@ import React, { useEffect } from "react";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import FormGroup from "@mui/material/FormGroup";
-
-import ColorPaletteSelector
-  from "../../../../../components/Input/ColorPaletteSelector";
 import ColorSelector from "../../../../../components/Input/ColorSelector";
 import { IndicatorOtherRule, newRule, NO_DATA_RULE } from "../StyleRules";
-import { Select } from "../../../../../components/Input";
+import ColorPaletteStyleConfig from "./Palette";
 
 import './style.scss';
 
@@ -78,46 +75,14 @@ export default function DynamicStyleConfig({ data, setData }) {
   const sync_outline = data.style_config.sync_outline ? data.style_config.sync_outline : false
   const sync_filter = data.style_config.sync_filter ? data.style_config.sync_filter : false
   return <div className='DynamicStyleConfig'>
-    <ColorPaletteSelector
-      colorPalette={data.style_config.color_palette}
-      colorPaletteReverse={data.style_config.color_palette_reverse}
-      onChange={val => {
-        data.style_config.color_palette = val
-        setData({ ...data })
-      }}
-      onChangeReverse={val => {
-        data.style_config.color_palette_reverse = val
-        setData({ ...data })
-      }}
-      keepData={true}
-      menuPlacement={'bottom'}
-      reverseInput={true}
+    <ColorPaletteStyleConfig
+      styleType={data.style_type}
+      styleConfig={data.style_config}
+      setStyleConfig={(style_config) => setData({
+        ...data,
+        style_config: style_config
+      })}
     />
-    <div hidden={data.style_type === 'Dynamic qualitative style.'}>
-      <div className="BasicFormSection">
-        <div className='RuleTable-Title'>Classification</div>
-        <Select
-          options={dynamicClassificationChoices}
-          value={dynamicClassificationChoices.find(type => type.value === data.style_config.dynamic_classification)}
-          name='dynamic_classification'
-          onChange={evt => {
-            data.style_config.dynamic_classification = evt.value
-            setData({ ...data })
-          }}
-          menuPlacement={'bottom'}
-        />
-      </div>
-      <div className="BasicFormSection">
-        <div className='RuleTable-Title'>Number of Classes</div>
-        <input
-          type='number' min='1' value={data.style_config.dynamic_class_num}
-          name='dynamic_class_num'
-          onChange={evt => {
-            data.style_config.dynamic_class_num = evt.target.value
-            setData({ ...data })
-          }}/>
-      </div>
-    </div>
     <div className="BasicFormSection SyncOutline">
       <FormGroup>
         <FormControlLabel

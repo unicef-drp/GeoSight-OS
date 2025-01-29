@@ -14,6 +14,7 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.gis.db import models
 
@@ -25,6 +26,12 @@ from geosight.data.models.field_layer import FieldLayerAbstract
 from geosight.data.models.indicator import Indicator
 from geosight.data.models.rule import RuleModel
 from geosight.data.models.style.indicator_style import IndicatorStyleBaseModel
+
+# If tenant is enabled, add model limitation
+if settings.TENANTS_ENABLED:
+    from geosight.tenants.models import BaseModelWithLimitation
+else:
+    BaseModelWithLimitation = models.Model
 
 User = get_user_model()
 
@@ -80,15 +87,33 @@ class DashboardRelation(models.Model):
         abstract = True
 
 
-class DashboardIndicator(IndicatorStyleBaseModel, DashboardRelation):
+class DashboardRelationWithLimit(DashboardRelation, BaseModelWithLimitation):
+    """Dashboard relation with limit."""
+
+    limit_by_field_name = 'dashboard_id'
+
+    class Meta:  # noqa: D106
+        abstract = True
+
+
+class DashboardIndicator(IndicatorStyleBaseModel, DashboardRelationWithLimit):
     """Indicator x Dashboard model."""
 
     object = models.ForeignKey(
         Indicator,
         on_delete=models.CASCADE
     )
+
+    # TODO:
+    #  Deprecated, move override_style, override_label
+    #  and IndicatorStyleBaseModel
+    #  to indicatorLayer
     override_style = models.BooleanField(default=False)
     override_label = models.BooleanField(default=False)
+
+    content_limitation_description = (
+        'Limit the number of indicator per project'
+    )
 
     class Meta:  # noqa: D106
         ordering = ('object__name',)
@@ -99,6 +124,8 @@ class DashboardIndicator(IndicatorStyleBaseModel, DashboardRelation):
         return self.dashboardindicatorrule_set.all()
 
 
+# TODO:
+#  Deprecated, move this to indicatorLayer
 class DashboardIndicatorRule(RuleModel):
     """Indicator x Dashboard rule."""
 
@@ -112,7 +139,7 @@ class DashboardIndicatorRule(RuleModel):
         ordering = ('order',)
 
 
-class DashboardBasemap(DashboardRelation):
+class DashboardBasemap(DashboardRelationWithLimit):
     """Indicator x Basemap model."""
 
     object = models.ForeignKey(
@@ -120,11 +147,13 @@ class DashboardBasemap(DashboardRelation):
         on_delete=models.CASCADE
     )
 
+    content_limitation_description = 'Limit the number of basemap per project'
+
     class Meta:  # noqa: D106
         ordering = ('order',)
 
 
-class DashboardContextLayer(DashboardRelation):
+class DashboardContextLayer(DashboardRelationWithLimit):
     """Indicator x ContextLayer model."""
 
     object = models.ForeignKey(
@@ -140,6 +169,13 @@ class DashboardContextLayer(DashboardRelation):
     override_style = models.BooleanField(default=False)
     override_field = models.BooleanField(default=False)
     override_label = models.BooleanField(default=False)
+    configuration = models.JSONField(
+        null=True, blank=True
+    )
+
+    content_limitation_description = (
+        'Limit the number of context layer per project'
+    )
 
     class Meta:  # noqa: D106
         ordering = ('order',)

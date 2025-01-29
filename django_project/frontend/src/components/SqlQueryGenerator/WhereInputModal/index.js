@@ -65,6 +65,7 @@ export default function WhereInputModal(
     <input
       type="text"
       placeholder={"SQL Filter"}
+      className='ClickedReadOnly'
       readOnly={true}
       value={where}
       onClick={evt => setOpen(true)}

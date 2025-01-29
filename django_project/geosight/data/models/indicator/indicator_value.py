@@ -58,29 +58,30 @@ class IndicatorValue(models.Model):
             return self.value_str
         return self.value
 
-    def permissions(self, user):
-        """Return permission of user."""
+    @staticmethod
+    def value_permissions(user, indicator, reference_layer=None):
+        """Return value permissions for an user."""
         if user.profile.is_admin:
             return {
                 'list': True, 'read': True, 'edit': True, 'share': True,
                 'delete': True
             }
-        elif self.indicator.permission.has_delete_perm(user):
+        elif indicator and indicator.permission.has_delete_perm(user):
             return {
                 'list': True, 'read': True, 'edit': True, 'share': True,
                 'delete': True
             }
-        elif self.indicator.permission.has_share_perm(user):
+        elif indicator and indicator.permission.has_share_perm(user):
             return {
                 'list': True, 'read': True, 'edit': True, 'share': True,
                 'delete': False
             }
-        elif self.indicator.permission.has_edit_perm(user):
+        elif indicator and indicator.permission.has_edit_perm(user):
             return {
                 'list': True, 'read': True, 'edit': True, 'share': True,
                 'delete': True
             }
-        elif self.indicator.permission.has_read_perm(user):
+        elif indicator and indicator.permission.has_read_perm(user):
             return {
                 'list': True, 'read': True, 'edit': False, 'share': False,
                 'delete': False
@@ -104,6 +105,21 @@ class IndicatorValue(models.Model):
         #         ReferenceLayerIndicator.DoesNotExist
         # ):
         #     pass
+
+    def permissions(self, user):
+        """Return permission of user."""
+        return IndicatorValue.value_permissions(user, self.indicator)
+
+    @property
+    def attributes(self):
+        """Return attributes of value."""
+        extra_value = {}
+        try:
+            for extra in self.indicatorextravalue_set.all():
+                extra_value[extra.name] = extra.value
+        except AttributeError:
+            pass
+        return extra_value
 
 
 class IndicatorExtraValue(models.Model):
@@ -133,7 +149,7 @@ class IndicatorExtraValue(models.Model):
 
     @property
     def key(self):
-        """Return key of extra value in pythonic."""
+        """Return key of attributes in pythonic."""
         return self.name.replace(' ', '_').replace(':', '').lower()
 
 
@@ -143,6 +159,9 @@ class IndicatorValueWithGeo(models.Model):
     # This is geom id for the value
     indicator_id = models.BigIntegerField()
     identifier = models.CharField(
+        max_length=256, null=True, blank=True
+    )
+    identifier_with_level = models.CharField(
         max_length=256, null=True, blank=True
     )
     date = models.DateField(
@@ -170,6 +189,10 @@ class IndicatorValueWithGeo(models.Model):
     )
     # By Level
     reference_layer_id = models.BigIntegerField()
+    reference_layer_name = models.CharField(
+        max_length=256, null=True, blank=True
+    )
+    reference_layer_uuid = models.UUIDField()
     admin_level = models.IntegerField(
         null=True, blank=True
     )
@@ -183,6 +206,9 @@ class IndicatorValueWithGeo(models.Model):
     # Value control
     indicator_type = models.CharField(max_length=256, null=True, blank=True)
     indicator_shortcode = models.CharField(
+        max_length=256, null=True, blank=True
+    )
+    indicator_name = models.CharField(
         max_length=256, null=True, blank=True
     )
 
@@ -221,6 +247,14 @@ class IndicatorValueWithGeo(models.Model):
         if self.indicator_type == IndicatorType.STRING:
             return self.value_str
         return self.value
+
+    @property
+    def attributes(self):
+        """Return val of value based on int or string."""
+        try:
+            return IndicatorValue.objects.get(id=self.id).attributes
+        except Indicator.DoesNotExist:
+            return {}
 
 
 @receiver(post_save, sender=IndicatorValue)

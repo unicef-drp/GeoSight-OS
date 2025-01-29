@@ -135,7 +135,9 @@ export const AdminForm = forwardRef(
         </div>
         {/* --------------------  CONTENT -------------------- */}
         <form
-          id='Form' className={'BasicForm ' + tab} method="post"
+          id='Form' className={'BasicForm ' + tab}
+          method="post"
+          action={props.action ? props.action : window.location.href}
           encType="multipart/form-data"
           onSubmit={e => e.preventDefault()}
         >

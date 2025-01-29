@@ -13,16 +13,17 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { Component } from 'react';
+import React from 'react';
 import { createRoot } from "react-dom/client";
 import { Provider } from 'react-redux';
 import c from 'classnames';
 import NavBar from '../components/Navbar';
 import { EmbedConfig } from "../utils/embed";
 import { urlParams } from "../utils/main";
+import { ConfirmDialogProvider } from "../providers/ConfirmDialog";
 
-import './mui.scss';
 import './app.scss';
+import './mui.scss';
 import './form.scss';
 import './form.small.scss';
 
@@ -36,11 +37,15 @@ export default function App({ className, children, ...props }) {
   // Check if child window, don't show navbar
   const parentWindow = window.opener?.parent;
   if (parentWindow) {
-    // This message is for form
-    const { success } = urlParams();
-    if (objectId && success) {
-      parentWindow.postMessage(objectId);
-      window.close();
+    try {
+      // This message is for form
+      const { success } = urlParams();
+      if (objectId && success) {
+        parentWindow.postMessage(objectId);
+        window.close();
+      }
+    } catch (err) {
+
     }
   }
 
@@ -65,7 +70,9 @@ export function render(App, store) {
   const root = createRoot(document.getElementById('app'));
   root.render(
     <Provider store={store}>
-      <App/>
+      <ConfirmDialogProvider>
+        <App/>
+      </ConfirmDialogProvider>
     </Provider>
   )
 }

@@ -18,7 +18,6 @@
    ========================================================================== */
 
 import React, { Fragment, useEffect, useState } from 'react';
-import $ from 'jquery';
 import { useDispatch, useSelector } from "react-redux";
 
 import { Actions } from '../../../../store/dashboard'
@@ -46,7 +45,9 @@ export default function RelatedTableLayerMapConfig() {
   let config;
   let relatedFields;
   let selectedRelatedTableLayerId = selectedRelatedTableLayer
-  const relatedTableLayer = indicatorLayers.find(layer => layer.id === selectedRelatedTableLayerId)
+  const relatedTableLayer = indicatorLayers.find(
+    layer => layer.id && layer.id === selectedRelatedTableLayerId
+  )
   if (relatedTableLayer) {
     const relatedTable = relatedTableLayer.related_tables[0]
     const relatedTableData = relatedTableDataState[relatedTableLayer.related_tables[0].id]?.data
@@ -78,37 +79,8 @@ export default function RelatedTableLayerMapConfig() {
         relatedTableLayer && selectedRelatedTableLayer ?
           <Fragment>
             <div
-              id='RelatedTableLayerConfigDuplication'
-              className='WhereConfigurationWrapper Duplication'
-              onScroll={(evt) => {
-                $('#RelatedTableLayerMiddleConfigReal').scrollLeft($('#RelatedTableLayerConfigDuplication').scrollLeft())
-              }}
-            >
-              <WhereQueryGenerator
-                fields={updateFields(relatedFields)}
-                whereQuery={config.where}
-                setWhereQuery={(where) => {
-                  const indicatorLayer = indicatorLayers.find(layer => layer.id === relatedTableLayer.id)
-                  config.where = where
-                  if (JSON.stringify(indicatorLayer.config) !== JSON.stringify(config)) {
-                    indicatorLayer.config = config
-                    dispatch(Actions.IndicatorLayers.update(indicatorLayer))
-                  }
-                }}
-                disabledChanges={{
-                  add: true,
-                  remove: true,
-                  sql: true,
-                  and_or: true,
-                  field: true,
-                  operator: true,
-                }}
-                isCompact={true}
-              />
-            </div>
-            <div
               id='RelatedTableLayerMiddleConfigReal'
-              className='WhereConfigurationWrapper Real'
+              className='WhereConfigurationWrapper'
             >
               <WhereQueryGenerator
                 fields={updateFields(relatedFields)}

@@ -13,17 +13,18 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React from 'react';
+import React, {useState} from 'react';
 import { GridActionsCellItem } from "@mui/x-data-grid";
 
 import { render } from '../../../../app';
 import { store } from '../../../../store/admin';
 import { pageNames } from '../../index';
 import { COLUMNS, COLUMNS_ACTION } from "../../Components/List";
-import { AdminList } from "../../AdminList";
 import PermissionModal from "../../Permission";
 
 import './style.scss';
+import AdminList from "../../../../components/AdminList";
+import {ResourceMeta} from "../../../../components/AdminList";
 
 export function resourceActions(params) {
   return COLUMNS_ACTION(params, urls.admin.basemapList)
@@ -33,9 +34,11 @@ export function resourceActions(params) {
  * Indicator List App
  */
 export default function BasemapList() {
-  const pageName = pageNames.Basemaps
-  const columns = COLUMNS(pageName, urls.admin.basemapList);
-  columns[4] = {
+  const pageName = pageNames.Basemaps;
+  let columns = COLUMNS(pageName, urls.admin.basemapList);
+  columns.pop();
+  columns = columns.concat(ResourceMeta)
+  columns.push({
     field: 'actions',
     type: 'actions',
     cellClassName: 'MuiDataGrid-ActionsColumn',
@@ -62,12 +65,25 @@ export default function BasemapList() {
       }
       return actions
     },
-  }
+  })
   return <AdminList
+    url={{
+      list: urls.api.list,
+      batch: urls.api.batch,
+      detail: urls.api.detail,
+      edit: urls.api.edit,
+      create: urls.api.create,
+    }}
+    title={contentTitle}
     columns={columns}
     pageName={pageName}
-    listUrl={urls.api.list}
     multipleDelete={true}
+    enableFilter={true}
+    defaults={{
+      sort: [
+        { field: 'name', sort: 'asc' }
+      ]
+    }}
   />
 }
 

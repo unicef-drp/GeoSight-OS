@@ -18,7 +18,7 @@ from django.contrib.gis.db import models
 
 from core.models.general import AbstractTerm
 from geosight.data.models.dashboard.dashboard_relation import (
-    DashboardRelation
+    DashboardRelationWithLimit
 )
 
 
@@ -26,9 +26,10 @@ class LayerUsed(object):
     """A quick couple variable for Layer That being used."""
 
     INDICATOR = 'Indicator'
+    INDICATOR_LAYER = 'Indicator Layer'
 
 
-class DashboardWidget(AbstractTerm, DashboardRelation):
+class DashboardWidget(AbstractTerm, DashboardRelationWithLimit):
     """Dashboard Widget model."""
 
     type = models.CharField(
@@ -36,6 +37,10 @@ class DashboardWidget(AbstractTerm, DashboardRelation):
         default="SummaryWidget"
     )
     config = models.JSONField()
+
+    content_limitation_description = (
+        'Limit the number of widget per project'
+    )
 
     def __str__(self):
         return self.name

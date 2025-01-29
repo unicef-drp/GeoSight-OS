@@ -18,7 +18,6 @@ import copy
 import json
 
 from django.contrib.auth import get_user_model
-from django.test.testcases import TestCase
 from django.urls import reverse
 
 from frontend.tests.admin._base import BaseViewTest
@@ -32,7 +31,7 @@ from geosight.permission.models.factory import PERMISSIONS
 User = get_user_model()
 
 
-class DashboardAdminViewTest(BaseViewTest, TestCase):
+class DashboardAdminViewTest(BaseViewTest.TestCase):
     """Test for Dashboard Admin."""
 
     list_url_tag = 'admin-dashboard-list-view'
@@ -113,6 +112,7 @@ class DashboardAdminViewTest(BaseViewTest, TestCase):
         new_resource = self.get_resources(self.creator).last()
         self.assertEqual(new_resource.name, new_payload['name'])
         self.assertEqual(new_resource.creator, self.creator)
+        self.assertEqual(new_resource.modified_by, self.creator)
 
         # Check the edit permission
         url = reverse(self.edit_url_tag, kwargs={'slug': new_resource.slug})
@@ -173,6 +173,7 @@ class DashboardAdminViewTest(BaseViewTest, TestCase):
         self.resource.refresh_from_db()
         self.assertEqual(self.resource.name, new_payload['name'])
         self.assertEqual(self.resource.creator, self.resource_creator)
+        self.assertEqual(self.resource.modified_by, self.creator)
         self.assertNotEqual(self.resource.version, last_version)
 
     def test_detail_view(self):
@@ -255,5 +256,6 @@ class DashboardAdminViewTest(BaseViewTest, TestCase):
         indicator.save()
         self.resource.refresh_from_db()
         self.assertNotEqual(self.resource.version, last_version)
+        self.assertEqual(self.resource.modified_by, self.resource.creator)
         last_version = self.resource.version
         self.assertEqual(self.resource.version, last_version)

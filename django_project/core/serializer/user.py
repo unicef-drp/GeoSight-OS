@@ -17,10 +17,12 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
+from core.serializer.dynamic_serializer import DynamicModelSerializer
+
 User = get_user_model()
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserSerializer(DynamicModelSerializer):
     """User serializer."""
 
     is_staff = serializers.SerializerMethodField()
@@ -34,7 +36,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_is_staff(self, obj: User):
         """Return is staff."""
-        return 'true' if obj.is_staff else 'false'
+        return obj.is_staff
 
     def get_name(self, obj: User):
         """Return is staff."""
@@ -50,19 +52,19 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_is_contributor(self, obj: User):
         """Return is contributor."""
-        return 'true' if obj.profile.is_contributor else 'false'
+        return obj.profile.is_contributor
 
     def get_is_creator(self, obj: User):
         """Return is creator."""
-        return 'true' if obj.profile.is_creator else 'false'
+        return obj.profile.is_creator
 
     def get_is_admin(self, obj: User):
         """Return is admin."""
-        return 'true' if obj.profile.is_admin else 'false'
+        return obj.profile.is_admin
 
     def get_receive_notification(self, obj: User):
         """Return is admin."""
-        return 'true' if obj.profile.receive_notification else 'false'
+        return obj.profile.receive_notification
 
     class Meta:  # noqa: D106
         model = User

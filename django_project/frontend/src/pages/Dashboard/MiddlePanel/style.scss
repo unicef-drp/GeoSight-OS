@@ -17,8 +17,6 @@
    Date selection
    ========================================================================== */
 
-@import '../../../app/variables';
-
 .DashboardMiddlePanel {
   flex-grow: 1;
   position: relative;
@@ -53,11 +51,13 @@
   }
 
   .RightContent {
-    margin-right: -300px;
+    margin-right: -320px;
     height: 100%;
     transition: margin-right linear 0.2s;
     pointer-events: none !important;
     margin-left: 1rem;
+    padding-bottom: 1rem;
+    box-sizing: border-box;
 
     section {
       max-height: 100%;
@@ -91,7 +91,7 @@
       padding-top: 1rem;
 
       .IndicatorLayerMiddleConfig {
-        box-shadow: $box-shadow;
+        box-shadow: var(--box-shadow);
       }
     }
 
@@ -143,10 +143,10 @@
       }
 
       & > div {
-        box-shadow: $box-shadow;
+        box-shadow: var(--box-shadow);
         width: 29px !important;
         height: 29px !important;
-        background-color: $white !important;
+        background-color: var(--white) !important;
 
         svg {
           margin-top: 6px;
@@ -163,12 +163,12 @@
     transition: height linear 0.2s;
 
     &.DateOpen {
-      height: 210px;
+      height: 200px;
     }
 
     .Disclaimer {
-      box-shadow: $box-shadow;
-      background-color: $white;
+      box-shadow: var(--box-shadow);
+      background-color: var(--white);
       margin-top: 0.5rem;
       margin-left: 20px;
       width: 637px;
@@ -207,10 +207,10 @@
 
         .TiltControl {
           position: relative;
-          box-shadow: $box-shadow;
+          box-shadow: var(--box-shadow);
           width: 29px !important;
           height: 29px !important;
-          background-color: $white !important;
+          background-color: var(--white) !important;
           margin-bottom: 44px;
 
           .ToolbarChild {
@@ -246,10 +246,10 @@
 .Attributions,
 .BottomContent .Disclaimer {
   opacity: 0.94;
-  font-family: $base-font-family;
+  font-family: var(--base-font-family);
   font-size: 9px;
-  font-weight: $base-font-regular;
+  font-weight: var(--base-font-regular);
   line-height: 14px;
-  letter-spacing: 0em;
+  letter-spacing: 0;
   text-align: center;
 }

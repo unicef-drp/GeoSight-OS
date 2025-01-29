@@ -82,6 +82,7 @@ export default function ListForm(
     setOpenDataSelection,
     hasGroup = true,
     initColumns = null,
+    resourceSelector = null,
     ...props
   }
 ) {
@@ -127,6 +128,13 @@ export default function ListForm(
     const oldDataStructure = JSON.stringify(dataStructure)
     if (!dataStructure.children?.length && data.length) {
       dataStructure.children = data.map(row => row.id)
+    } else if (dataStructure.children?.length) {
+      dataStructure.children = Array.from(new Set(
+          dataStructure.children.concat(
+            data.filter(row => row.group == null).map(row => row.id)
+          )
+        )
+      )
     }
     updateUuid(dataStructure)
     if (oldDataStructure !== JSON.stringify(dataStructure)) {
@@ -275,10 +283,31 @@ export default function ListForm(
                 </ThemeButton> : null
 
               }
-              <AddButton
-                variant="primary" text={"Add " + singularPageName}
-                onClick={() => addLayerInGroup(dataStructure.id)}
-              />
+              {
+                resourceSelector ? React.cloneElement(resourceSelector, {
+                    initData: data,
+                    multipleSelection: true,
+                    dataSelected: (_data) => {
+                      const dataId = data.map(_row => _row.id)
+                      const _dataId = _data.map(_row => _row.id)
+                      const addedData = _data.filter(
+                        _row => !dataId.includes(_row.id)
+                      )
+                      const removedData = data.filter(
+                        _row => !_dataId.includes(_row.id)
+                      )
+                      applyData(addedData, removedData, '')
+                    },
+                    opener: <AddButton
+                      variant="primary"
+                      text={"Add " + singularPageName}
+                    />
+                  }) :
+                  <AddButton
+                    variant="primary" text={"Add " + singularPageName}
+                    onClick={() => addLayerInGroup(dataStructure.id)}
+                  />
+              }
               {
                 hasGroup ?
                   <AddButton

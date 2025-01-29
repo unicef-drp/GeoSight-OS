@@ -36,7 +36,6 @@ import { MagnifyIcon } from "../../components/Icons";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 
 import './style.scss';
-import { formWindow } from "../../utils/windows";
 
 
 /**
@@ -54,7 +53,8 @@ import { formWindow } from "../../utils/windows";
 
 export const AdminListContent = forwardRef(
   ({
-     columns, pageName = '',
+     columns,
+     pageName = '',
      listUrl,
      selectionChanged,
      initData = null,
@@ -167,7 +167,7 @@ export const AdminListContent = forwardRef(
         return <a href={apiCreate}>
           <AddButton
             variant="primary"
-            text={"Add New " + pageName}
+            text={"Create New " + pageName}
           />
         </a>
       }

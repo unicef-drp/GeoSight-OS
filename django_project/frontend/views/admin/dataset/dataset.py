@@ -28,7 +28,7 @@ class DatasetAdminView(RoleContributorRequiredMixin, AdminBaseView):
     @property
     def page_title(self):
         """Return page title that used on tab bar."""
-        return 'Dataset'
+        return 'Data Browser'
 
     @property
     def content_title(self):

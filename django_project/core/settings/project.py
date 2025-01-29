@@ -19,9 +19,9 @@ import os  # noqa
 from celery.schedules import crontab
 from django.utils.translation import ugettext_lazy as _
 
+from .apps import *  # noqa
 from .contrib import *  # noqa
 
-MOCK_GEOREPO = False
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 ALLOWED_HOSTS = ['*']
 ADMINS = (
@@ -29,9 +29,15 @@ ADMINS = (
 )
 
 TEMP_SCHEMA_NAME = 'temp_upload'
+
+# Database engine based on tenant
+DATABASE_ENGINE = 'django.contrib.gis.db.backends.postgis'
+if TENANTS_ENABLED:
+    DATABASE_ENGINE = 'django_tenants.postgresql_backend',
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'ENGINE': DATABASE_ENGINE,
         'NAME': os.environ['DATABASE_NAME'],
         'USER': os.environ['DATABASE_USERNAME'],
         'PASSWORD': os.environ['DATABASE_PASSWORD'],
@@ -40,7 +46,7 @@ DATABASES = {
         'TEST_NAME': 'unittests',
     },
     'temp': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'ENGINE': DATABASE_ENGINE,
         'OPTIONS': {
             'options': (
                 '-c search_path='
@@ -56,7 +62,16 @@ DATABASES = {
         'TEST_NAME': 'unittests',
     }
 }
-DATABASE_ROUTERS = ['core.router.Router']
+
+# If tenant enabled
+if TENANTS_ENABLED:
+    ORIGINAL_BACKEND = "django.contrib.gis.db.backends.postgis"
+    DATABASE_ROUTERS = (
+        'django_tenants.routers.TenantSyncRouter',
+        'core.router.Router'
+    )
+else:
+    DATABASE_ROUTERS = ['core.router.Router']
 
 # Due to profile page does not available,
 # this will redirect to home page after login
@@ -77,18 +92,6 @@ LANGUAGES = (
 
 # Set storage path for the translation files
 LOCALE_PATHS = (ABS_PATH('locale'),)
-
-# Extra installed apps
-INSTALLED_APPS = INSTALLED_APPS + (
-    'azure_auth',
-    'core',
-    'docs',
-    'geosight.data',
-    'geosight.georepo',
-    'geosight.permission',
-    'geosight.importer',
-    'frontend',
-)
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000
 
@@ -150,3 +153,48 @@ CELERY_BEAT_SCHEDULE = {
         'args': (True,),
     }
 }
+
+# Beat schedule for plugins
+if CLOUD_NATIVE_GIS_ENABLED:
+    CELERY_BEAT_SCHEDULE.update({
+        'clean_cloud_native': {
+            'task': 'geosight.cloud_native_gis.tasks.clean_cloud_native_layer',
+            'schedule': crontab(minute='0', hour='0'),
+        }
+    })
+if MACHINE_INFO_FETCHER_ENABLED:
+    CELERY_BEAT_SCHEDULE.update({
+        'machine_info_fetcher_api': {
+            'task': (
+                'geosight.machine_info_fetcher.tasks.'
+                'trigger_storage_checker_api'
+            ),
+            'schedule': crontab(minute='*/15'),
+        },
+        'machine_info_fetcher_clean_log': {
+            'task': (
+                'geosight.machine_info_fetcher.tasks.clean_old_machine_info'
+            ),
+            'schedule': crontab(minute='0', hour='0'),
+        },
+    })
+
+# ----------------------------------------
+# Setup for tenants
+# ----------------------------------------
+if TENANTS_ENABLED:
+    MIDDLEWARE = (
+                     'geosight.tenants.middleware.main.TenantMainMiddleware',
+                 ) + MIDDLEWARE
+
+    # Remove this because we use tenants admin
+    INSTALLED_APPS = [
+        app for app in INSTALLED_APPS if app != 'django.contrib.admin'
+    ]
+
+# ----------------------------------------
+# Logs Directory
+# ----------------------------------------
+LOGS_DIRECTORY = os.environ.get(
+    'LOGS_DIRECTORY', '/home/web/logs'
+)

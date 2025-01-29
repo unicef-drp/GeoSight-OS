@@ -13,11 +13,6 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   DataAccess Add style
-   ========================================================================== */
-@import '../../../app/variables';
-
 .ModalDataSelector {
   .modal--box {
     width: 90%;
@@ -37,6 +32,24 @@
       padding: 0;
     }
   }
+
+  .ReferenceLayerSelector {
+    &.localReferenceDatasetEnabled .DatasetSelector {
+      margin-top: 1rem !important;
+    }
+
+    .RadioButtonControl {
+      background-color: unset !important;
+
+      .MuiRadioGroup-root {
+        flex-direction: row;
+
+        label {
+          margin-left: 0;
+        }
+      }
+    }
+  }
 }
 
 .ModalDataSelectorSelected {
@@ -44,8 +57,8 @@
   flex-wrap: wrap;
 
   .ModalDataSelectorSelectedObject {
-    border: 1px solid $gray-400;
-    border-radius: $border-radius;
+    border: 1px solid var(--gray-400);
+    border-radius: var(--border-radius);
     padding: 0.5rem;
     margin: 2px 2px 0 0;
     width: fit-content;

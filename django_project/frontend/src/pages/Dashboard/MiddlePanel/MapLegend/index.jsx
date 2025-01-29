@@ -41,7 +41,7 @@ const RenderIndicatorLegendSection = ({ rules, name }) => {
     <div className='MapLegendSection'>
       <div className='MapLegendSectionTitle'>{name}</div>
       {
-        rules !== null ?
+        ![null, undefined].includes(rules) ?
           <Fragment>
             {
               rules.length ?
@@ -79,7 +79,11 @@ const RenderIndicatorLegendSection = ({ rules, name }) => {
  * @param {str} name Name of layer
  */
 const RenderIndicatorLegend = ({ layer, name }) => {
-  const { indicators, geoField } = useSelector(state => state.dashboard.data)
+  const {
+    referenceLayer,
+    indicators,
+    geoField
+  } = useSelector(state => state.dashboard.data)
   const selectedGlobalTime = useSelector(state => state.selectedGlobalTime);
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel)
   const indicatorsData = useSelector(state => state.indicatorsData);
@@ -100,9 +104,12 @@ const RenderIndicatorLegend = ({ layer, name }) => {
           }
         }
         rules = indicatorLayerStyle(
-          layer, indicators, indicatorsData, relatedTableData,
+          {
+            ...layer,
+            indicators: [indicator]
+          }, indicators, indicatorsData, relatedTableData,
           selectedGlobalTime, geoField, selectedAdminLevel?.level, filteredGeometries,
-          indicatorData
+          indicatorData, referenceLayer
         )
       }
       return <RenderIndicatorLegendSection
@@ -110,13 +117,14 @@ const RenderIndicatorLegend = ({ layer, name }) => {
         name={indicator.name}/>
     })
   }
-  const layerData = getLayerData(indicatorsData, relatedTableData, layer)
+  const layerData = getLayerData(indicatorsData, relatedTableData, layer, referenceLayer)
   const hasData = allDataIsReady(layerData)
-  let rules = null
+  let rules = []
   if (hasData) {
     rules = indicatorLayerStyle(
       layer, indicators, indicatorsData, relatedTableData,
-      selectedGlobalTime, geoField, selectedAdminLevel?.level, filteredGeometries
+      selectedGlobalTime, geoField, selectedAdminLevel?.level, filteredGeometries, null,
+      referenceLayer
     )
   }
   return <RenderIndicatorLegendSection rules={rules} name={name}/>
@@ -127,10 +135,13 @@ export default function MapLegend() {
   const { compareMode } = useSelector(state => state.mapMode)
   const selectedIndicatorLayer = useSelector(state => state.selectedIndicatorLayer);
   const selectedIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer);
+  const {
+    indicatorShow
+  } = useSelector(state => state.map);
 
   return <div className='MapLegend'>
     {
-      selectedIndicatorLayer.id ?
+      selectedIndicatorLayer.id && indicatorShow ?
         <RenderIndicatorLegend
           layer={selectedIndicatorLayer}
           name={
@@ -140,7 +151,7 @@ export default function MapLegend() {
         : ""
     }
     {
-      selectedIndicatorSecondLayer.id ?
+      selectedIndicatorSecondLayer.id && indicatorShow?
         <RenderIndicatorLegend
           layer={selectedIndicatorSecondLayer}
           name={selectedIndicatorSecondLayer.name + " (Inner)"}

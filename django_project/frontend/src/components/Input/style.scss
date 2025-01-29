@@ -13,13 +13,22 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   SELECTOR
-   ========================================================================== */
-
-@import '../../app/variables';
-
 .MultipleSelectWithSearch {
+
+  .OtherOptions {
+    color: #adb5bd !important;
+    z-index: 1;
+
+    button {
+      padding: 0 !important;
+    }
+
+    svg {
+      height: 11px;
+      width: 11px;
+    }
+  }
+
   .MuiChip-label {
     font-size: 1rem !important;
   }
@@ -31,7 +40,7 @@
   }
 
   .MuiAutocomplete-inputFocused {
-    color: rgb(0, 0, 0, 0);
+    color: rgba(0, 0, 0, 0.87);
     background-color: unset !important;
   }
 
@@ -86,7 +95,7 @@
 .MultipleSelectWithSearch,
 .SelectWithSearch {
   position: relative;
-  height: $base-input-height;
+  height: var(--base-input-height);
 
   input {
     min-height: 34px;
@@ -99,7 +108,6 @@
   .MuiInputBase-root {
     padding-right: 22px !important;
     min-width: 170px;
-    max-width: 300px;
     height: 100%;
 
     & > .MuiButtonBase-root:not(:first-child) {
@@ -141,19 +149,17 @@
         span {
           display: none;
         }
+      }
+    }
 
-        &:after {
-          content: '(Multiple Values)';
-          font-size: 1rem !important;
-        }
+    input {
+      &::placeholder {
+        color: var(--base-black-color) !important;
+        opacity: 1 !important;
       }
 
-      .MuiInputBase-root {
-        & > .MuiButtonBase-root {
-          &:after {
-            font-size: 0.9rem !important;
-          }
-        }
+      &::-ms-input-placeholder {
+        color: var(--base-black-color) !important;
       }
     }
   }
@@ -178,22 +184,45 @@
     .MuiInputBase-root {
       & > .MuiButtonBase-root {
         display: inline-flex !important;
-        margin: 0 2px;
+        margin: 0;
 
         span {
           display: inline-flex !important;
         }
+      }
 
-        &:after {
+      & > .MuiButtonBase-root:not(:first-child) {
+        &:before {
           content: ',';
+          margin-right: 4px;
         }
+      }
+    }
+
+    input {
+      color: rgba(0, 0, 0, 0);
+
+      &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+        color: #121212 !important;;
+        opacity: 0.6 !important;; /* Firefox */
+      }
+
+      &:-ms-input-placeholder { /* Internet Explorer 10-11 */
+        color: #121212 !important;;
+        opacity: 0.6 !important;; /* Firefox */
+      }
+
+      &::-ms-input-placeholder { /* Microsoft Edge */
+        color: #121212 !important;
+        opacity: 0.6 !important;; /* Firefox */
       }
     }
   }
 }
 
 .OptionMember {
-  min-height: $base-input-height;
+  min-height: var(--base-input-height);
+  padding: 0.5rem 0 !important;
 
   &.Compact {
     font-size: 0.9rem !important;
@@ -202,6 +231,4 @@
   .MuiCheckbox-root {
     padding: 0 0 0 0.5rem !important;
   }
-
-  padding: 0.5rem 0 !important;
 }

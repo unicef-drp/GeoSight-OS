@@ -17,6 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.conf.urls import url
 
 from frontend.views.admin.dataset.data_access import DataAccessAdminView
+from frontend.views.admin.dataset.data_browser import DataBrowserAdminView
 from frontend.views.admin.dataset.dataset import DatasetAdminView
 
 urlpatterns = [
@@ -29,5 +30,10 @@ urlpatterns = [
         r'dataset',
         DatasetAdminView.as_view(),
         name='admin-dataset-view'
+    ),
+    url(
+        r'^',
+        DataBrowserAdminView.as_view(),
+        name='admin-data-browser-view'
     ),
 ]

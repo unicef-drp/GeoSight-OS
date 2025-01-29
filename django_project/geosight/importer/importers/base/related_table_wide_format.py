@@ -104,10 +104,13 @@ class RelatedTableWideFormat(AbstractImporterRelatedTable):
             # Construct data
             # ---------------------------------------
             data = {}
+            print(record)
             for key, value in record.items():
                 if value.__class__ is str:
                     try:
                         value = float(value)
+                        if value.is_integer():
+                            value = int(value)
                     except (ValueError, TypeError):
                         pass
 
@@ -119,6 +122,9 @@ class RelatedTableWideFormat(AbstractImporterRelatedTable):
                     value = value.replace(
                         tzinfo=pytz.timezone(settings.TIME_ZONE))
                     value = value.timestamp()
+
+                if value is None:
+                    value = ''
                 data[key] = value
 
             # Prepare data
@@ -135,5 +141,7 @@ class RelatedTableWideFormat(AbstractImporterRelatedTable):
         RelatedTableRow.objects.bulk_create(rows)
 
         # Check relation for other place
+        related_table.set_fields()
         related_table.check_relation()
+        related_table.increase_version()
         return success, None

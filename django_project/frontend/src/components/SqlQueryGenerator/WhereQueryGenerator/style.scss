@@ -13,13 +13,6 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   Filter style
-   ========================================================================== */
-
-@import '../../../app/variables';
-
-
 .WhereConfiguration {
   .MuiFormControl-root {
     margin-top: 0 !important;
@@ -66,7 +59,7 @@
     .MuiInput-root {
       background-color: white;
       border-radius: 4px;
-      border: $border;
+      border: var(--border);
       padding: 16.5px 14px;
       margin-bottom: 0 !important;
 
@@ -82,18 +75,18 @@
     .MuiInputSliderWithInput {
       flex-grow: 1;
       display: flex;
-      border-top-right-radius: $border-radius;
-      border-bottom-right-radius: $border-radius;
+      border-top-right-radius: var(--border-radius);
+      border-bottom-right-radius: var(--border-radius);
       background-color: white;
-      border: $border;
+      border: var(--border);
       overflow: hidden;
 
       .MuiInputSlider {
         flex-grow: 1;
         min-width: 200px;
         padding: 12px 20px 0 20px;
-        border-left: $border;
-        border-right: $border;
+        border-left: var(--border);
+        border-right: var(--border);
       }
 
       .MuiInput-root {
@@ -132,6 +125,12 @@
         }
       }
     }
+
+    &.IsDate {
+      .SelectWithSearchInput {
+        min-width: 220px;
+      }
+    }
   }
 
   .MuiButton-root {
@@ -140,8 +139,8 @@
   }
 
   .WhereConfigurationQueryGroup {
-    border: 1px solid $secondary-color;
-    border-radius: $border-radius;
+    border: 1px solid var(--secondary-color);
+    border-radius: var(--border-radius);
     padding: 0.5rem;
 
     & > .WhereConfigurationQuery:last-child {
@@ -150,12 +149,25 @@
   }
 
   .WhereConfigurationQuery {
+    display: flex;
+    border: unset;
+
+    .DateOperator {
+      & > div {
+        height: 100%;
+      }
+
+      .WhereConfigurationOperatorType {
+        margin-left: -1px;
+      }
+    }
+
     &.Simplified {
       .MuiInputSliderWithInput {
         border: none;
 
         .MuiInputBase-root {
-          border: $border;
+          border: var(--border);
         }
       }
 
@@ -191,6 +203,12 @@
       }
     }
 
+    .BetweenDash {
+      padding-top: 12px;
+      width: 10px !important;
+      text-align: center;
+    }
+
     & > div {
       margin-right: -1px;
     }
@@ -212,16 +230,18 @@
 
       &.Error {
         .MuiInputBase-input {
-          color: $error;
+          color: var(--error);
         }
       }
     }
 
+    .WhereConfigurationOperatorText {
+      display: none;
+    }
+
     .WhereConfigurationOperatorValue {
-      min-width: 200px;
-      flex-grow: 1;
-      border-top-left-radius: 0 !important;
-      border-bottom-left-radius: 0 !important;
+      width: 200px;
+      border-radius: 0 !important;
 
       input {
         width: 100%;
@@ -257,38 +277,38 @@
 
         div {
           width: 3rem;
-          color: $secondary-color;
+          color: var(--secondary-color);
           text-align: center;
           cursor: pointer;
         }
 
         .AND {
-          border-top-left-radius: $border-radius;
-          border-bottom-left-radius: $border-radius;
+          border-top-left-radius: var(--border-radius);
+          border-bottom-left-radius: var(--border-radius);
         }
 
         .OR {
-          border-top-right-radius: $border-radius;
-          border-bottom-right-radius: $border-radius;
+          border-top-right-radius: var(--border-radius);
+          border-bottom-right-radius: var(--border-radius);
         }
 
         &.OR {
           .AND {
-            background-color: $secondary-color;
+            background-color: var(--secondary-color);
           }
 
           .OR {
-            border: 1px solid $secondary-color;
+            border: 1px solid var(--secondary-color);
           }
         }
 
         &.AND {
           .AND {
-            border: 1px solid $secondary-color;
+            border: 1px solid var(--secondary-color);
           }
 
           .OR {
-            background-color: $secondary-color;
+            background-color: var(--secondary-color);
           }
         }
       }
@@ -300,9 +320,9 @@
           cursor: not-allowed;
 
           div {
-            color: $gray-500;
+            color: var(--gray-500);
             cursor: not-allowed;
-            border-radius: $border-radius !important;
+            border-radius: var(--border-radius) !important;
           }
 
           &.OR {
@@ -311,13 +331,13 @@
             }
 
             .OR {
-              border: 1px solid $gray-500;
+              border: 1px solid var(--gray-500);
             }
           }
 
           &.AND {
             .AND {
-              border: 1px solid $gray-500;
+              border: 1px solid var(--gray-500);
             }
 
             .OR {
@@ -333,11 +353,11 @@
 
 .RemoveIcon {
   cursor: pointer;
-  color: $error;
+  color: var(--error);
   padding: 1rem 0.5rem;
 
   &:hover {
-    opacity: $base-hovered-opacity;
+    opacity: var(--base-hovered-opacity);
   }
 }
 
@@ -345,6 +365,6 @@
   cursor: pointer;
 
   &:hover {
-    opacity: $base-hovered-opacity;
+    opacity: var(--base-hovered-opacity);
   }
 }

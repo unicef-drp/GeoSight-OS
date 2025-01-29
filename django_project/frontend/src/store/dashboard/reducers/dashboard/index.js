@@ -31,6 +31,9 @@ import referenceLayerReducer, {
 import contextLayersReducer, {
   CONTEXT_LAYER_ACTION_NAME
 } from '../contextLayers'
+import dashboardToolReducer, {
+  DASHBOARD_TOOL_ACTION_NAME
+} from "../dashboardTool";
 
 /**
  * DASHBOARD REQUEST reducer
@@ -243,6 +246,20 @@ export default function dashboardReducer(
         newState.data = {
           ...newState.data,
           widgets: newWidgets
+        }
+        return newState;
+      }
+      return state
+    }
+
+    /** TOOLS REDUCER **/
+    case DASHBOARD_TOOL_ACTION_NAME: {
+      const data = dashboardToolReducer(state.data.tools, action);
+      if (data !== state.data.tools) {
+        const newState = { ...state }
+        newState.data = {
+          ...newState.data,
+          tools: data
         }
         return newState;
       }

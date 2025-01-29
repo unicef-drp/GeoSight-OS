@@ -17,8 +17,6 @@
    Table style
    ========================================================================== */
 
-@import '../../../../app/variables';
-
 .AdminList {
   background-color: unset !important;
   display: flex;
@@ -27,13 +25,13 @@
   min-height: 0;
   margin: 0 !important;
   padding: 0 !important;
-  border-radius: $border-radius !important;
+  border-radius: var(--border-radius) !important;
   overflow: hidden;
 
   .MoreActionIcon {
     width: 16px;
     height: 16px;
-    color: $primary-color;
+    color: var(--primary-color);
 
     svg {
       width: 100%;
@@ -48,7 +46,7 @@
     background-color: white;
 
     .AdminTableError {
-      color: $error;
+      color: var(--error);
       margin: auto;
       width: 100%;
       height: 100%;
@@ -61,7 +59,7 @@
   }
 
   .AdminTableDelete {
-    color: $error;
+    color: var(--error);
   }
 
   .AdminTable-Loading {
@@ -69,12 +67,12 @@
   }
 
   .CellLink {
-    color: $primary-color !important;
+    color: var(--primary-color) !important;
   }
 
   .CellError {
     color: white;
-    background-color: $error;
+    background-color: var(--error);
   }
 
   .CellWarning {

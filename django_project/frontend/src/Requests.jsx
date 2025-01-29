@@ -14,7 +14,32 @@
  */
 
 import axios from "axios";
+import { Session } from "./utils/Sessions";
 
+
+export const constructUrl = function (url, params) {
+  if (params && Object.keys(params).length) {
+    const paramsUrl = [];
+    for (const [key, value] of Object.entries(params)) {
+      if ([null, undefined].includes(value)) {
+        continue
+      }
+      if (Array.isArray(value) && !value.length) {
+        continue
+      }
+      paramsUrl.push(`${key}=${value}`)
+    }
+    if (!url) {
+      return url
+    }
+    if (url.includes('?')) {
+      url += '&' + paramsUrl.join('&')
+    } else {
+      url += '?' + paramsUrl.join('&')
+    }
+  }
+  return url
+}
 /**
  * Perform Fetching Data
  *
@@ -28,13 +53,7 @@ export const fetchingData = async function (
   url, params, options,
   receiveAction, useCache = true
 ) {
-  if (params && Object.keys(params).length) {
-    const paramsUrl = [];
-    for (const [key, value] of Object.entries(params)) {
-      paramsUrl.push(`${key}=${value}`)
-    }
-    url += '?' + paramsUrl.join('&')
-  }
+  url = constructUrl(url, params)
   try {
     let response = await fetchJSON(url, options, useCache);
     try {
@@ -110,7 +129,9 @@ export const fetchPaginationAsync = async function (url, onProgress) {
         total_page: response.total_page,
       })
     }
-    data = data.concat(response.results)
+    if (response.results) {
+      data = data.concat(response.results)
+    }
     if (response.next) {
       await _fetchJson(response.next)
     }
@@ -121,13 +142,7 @@ export const fetchPaginationAsync = async function (url, onProgress) {
 
 /*** Axios georepo request with cache */
 export const fetchPagination = function (url, params, onProgress) {
-  if (params && Object.keys(params).length) {
-    const paramsUrl = [];
-    for (const [key, value] of Object.entries(params)) {
-      paramsUrl.push(`${key}=${value}`)
-    }
-    url += '?' + paramsUrl.join('&')
-  }
+  url = constructUrl(url, params)
   return new Promise((resolve, reject) => {
     (
       async () => {
@@ -143,13 +158,7 @@ export const fetchPagination = function (url, params, onProgress) {
 
 /*** Axios georepo request with cache */
 export const fetchPaginationInParallel = async function (url, params, onProgress) {
-  if (params && Object.keys(params).length) {
-    const paramsUrl = [];
-    for (const [key, value] of Object.entries(params)) {
-      paramsUrl.push(`${key}=${value}`)
-    }
-    url += '?' + paramsUrl.join('&')
-  }
+  url = constructUrl(url, params)
   let data = []
   let doneCount = 0
   // First data
@@ -157,19 +166,23 @@ export const fetchPaginationInParallel = async function (url, params, onProgress
   const nextUrl = response.next;
   data = data.concat(response.results)
   doneCount += 1
-  onProgress({
-    page: doneCount,
-    total_page: response.total_page,
-  })
+  if (onProgress) {
+    onProgress({
+      page: doneCount,
+      total_page: response.total_page,
+    })
+  }
   if (response.next) {
     // Call function for other page
     const call = async (page) => {
       const response = await fetchJSON(nextUrl.replace('page=2', `page=${page}`), {});
       doneCount += 1
-      onProgress({
-        page: doneCount,
-        total_page: response.total_page,
-      })
+      if (onProgress) {
+        onProgress({
+          page: doneCount,
+          total_page: response.total_page,
+        })
+      }
       data = data.concat(response.results)
     }
     await Promise.all(Array(response.total_page - 1).fill(0).map((_, idx) => call(idx + 2)))
@@ -188,7 +201,7 @@ export const postData = async function (
   url, data, receiveAction
 ) {
   try {
-    const response = await postJSON(url, data);
+    const response = await postDataBody(url, data);
     receiveAction(response, null);
   } catch (error) {
     receiveAction(null, error);
@@ -201,7 +214,7 @@ export const postData = async function (
  * @param {string} url Url to query
  * @param {object} data Data to be pushed
  */
-export async function postJSON(url, data) {
+export async function postDataBody(url, data) {
   try {
     const response = await fetch(url, {
       method: 'POST',
@@ -238,6 +251,38 @@ export async function postJSON(url, data) {
   } catch (error) {
     throw error;
   }
+}
+
+/**
+ * Post JSON Data
+ *
+ * @param {string} url Url to query
+ * @param {object} data Data to be pushed
+ */
+export async function postJSON(url, data) {
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'X-CSRFToken': csrfmiddlewaretoken,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+  let json = null;
+  try {
+    json = await response.json();
+  } catch (error) {
+    json = {
+      message: response.status + ' ' + response.statusText,
+      detail: response.status + ' ' + response.statusText
+    }
+  }
+  if (response.status >= 400) {
+    const err = new Error(json.message ? json.message : json.detail);
+    err.data = json;
+    throw err;
+  }
+  return json;
 }
 
 /***
@@ -283,11 +328,12 @@ export const DjangoRequests = {
       }
     })
   },
-  put: (url, data, options = {}) => {
+  put: (url, data, options = {}, headers = {}) => {
     return axios.put(url, data, {
       ...options,
       headers: {
-        'X-CSRFToken': csrfmiddlewaretoken
+        'X-CSRFToken': csrfmiddlewaretoken,
+        ...headers
       }
     })
   },
@@ -296,4 +342,21 @@ export const DjangoRequests = {
       headers: { 'X-CSRFToken': csrfmiddlewaretoken }, data: data
     })
   }
+}
+
+/*** Axios georepo request */
+export const axiosPostWithSession = async function (name, url, data) {
+  const session = new Session(name)
+  return new Promise((resolve, reject) => {
+    DjangoRequests.post(url, data, {})
+      .then(response => response.data)
+      .then(data => {
+          if (session.isValid) {
+            resolve(data)
+          }
+        }
+      ).catch(err => {
+      reject(err)
+    });
+  })
 }

@@ -28,16 +28,55 @@ import { CogIcon, EditIcon, HelpIcon } from "../Icons";
 import { ThemeButton } from "../Elements/Button";
 import { HelpCenter } from "../HelpCenter";
 import NotificationBadge from "../NotificationBadge";
+import NotificationMaintenance from "../NotificationMaintenance";
 
 import './style.scss';
 
 /**
  * Navbar.
  * **/
+export function GeoRepoIndicator() {
+  const { username } = user;
+  let referenceLayerData = null
+  try {
+    const {
+      referenceLayer
+    } = useSelector(state => state.dashboard.data);
+    referenceLayerData = useSelector(state => state.referenceLayerData[referenceLayer?.identifier]);
+  } catch (err) {
+
+  }
+
+  return <>
+    {
+      (username && preferences.georepo_using_user_api_key && preferences.georepo_api.api_key_is_public) ?
+        referenceLayerData?.error ?
+          <ThemeButton variant="Error" className='GeorepoApiKeyBtn'>
+            <a href={'/admin/user/' + user.username + '/edit'}>
+              Click to add GeoRepo API Key
+            </a>
+          </ThemeButton> : <></> :
+        preferences.georepo_api.api_key_not_working ?
+          <ThemeButton variant="Error" className='GeorepoApiKeyBtn'>
+            <a href={'/admin/user/' + user.username + '/edit'}>
+              Your API Key is invalid, update your api key.
+            </a>
+          </ThemeButton> :
+          <ThemeButton
+            id="GeorepoApiKeyBtnUpdate" variant="Error"
+            className='GeorepoApiKeyBtn Hidden'>
+            <a href={'/admin/user/' + user.username + '/edit'}>
+              Your API Key is invalid, update your API key.
+            </a>
+          </ThemeButton>
+    }
+  </>
+}
+
 export default function NavBar({ minified }) {
   const helpPageRef = useRef(null);
-  const { icon, favicon, site_title } = preferences;
-  const { username, full_name, is_staff, is_contributor } = user;
+  const { icon, favicon, site_title, site_type } = preferences;
+  const { is_contributor } = user;
   const user_permission = useSelector(state => state.dashboard?.data?.user_permission);
 
   // Set width of logo
@@ -54,7 +93,7 @@ export default function NavBar({ minified }) {
   return (
     <Fragment>
       <header>
-        <div className='NavHeader'>
+        <div className={`NavHeader Nav-${site_type}`}>
           <div className='NavHeaderLogo'>
             <a
               href='/'
@@ -69,8 +108,9 @@ export default function NavBar({ minified }) {
             title={i18n.t('Homepage')}
             className='NavHeaderLink'
           >
-            {site_title}
+            {site_title} {site_type == 'Staging' ? <span className="ServerType">Staging</span> : ''}
           </a>
+          <NotificationMaintenance/>
           <div className='Separator'></div>
           {
             headerTitle ?
@@ -89,27 +129,7 @@ export default function NavBar({ minified }) {
               </div>
               : null
           }
-          {
-            username && preferences.georepo_using_user_api_key && preferences.georepo_api.api_key_is_public ?
-              <ThemeButton variant="Error" className='GeorepoApiKeyBtn'>
-                <a href={'/admin/user/' + user.username + '/edit'}>
-                  Click to add GeoRepo API Key
-                </a>
-              </ThemeButton> :
-              preferences.georepo_api.api_key_not_working ?
-                <ThemeButton variant="Error" className='GeorepoApiKeyBtn'>
-                  <a href={'/admin/user/' + user.username + '/edit'}>
-                    Your API Key is invalid, update your api key.
-                  </a>
-                </ThemeButton> :
-                <ThemeButton
-                  id="GeorepoApiKeyBtnUpdate" variant="Error"
-                  className='GeorepoApiKeyBtn Hidden'>
-                  <a href={'/admin/user/' + user.username + '/edit'}>
-                    Your API Key is invalid, update your API key.
-                  </a>
-                </ThemeButton>
-          }
+          <GeoRepoIndicator/>
           {
             canAccessAdmin ? (
               <div className='LinkButton AdminLinkButton'

@@ -47,6 +47,8 @@ import { HelpCenter } from "../../../../components/HelpCenter";
 
 import './style.scss';
 import NotificationBadge from "../../../../components/NotificationBadge";
+import NotificationMaintenance
+  from "../../../../components/NotificationMaintenance";
 
 
 function SidaNavigationButton({ title, minified, children }) {
@@ -74,6 +76,8 @@ export default function SideNavigation({ pageName, minified }) {
   const dataset = urls.admin.dataset; // eslint-disable-line no-undef
   const dataAccess = urls.admin.dataAccess; // eslint-disable-line no-undef
   const relatedTableList = urls.admin.relatedTableList; // eslint-disable-line no-undef
+  const referenceDatasetList = urls.admin.referenceDatasetList; // eslint-disable-line no-undef
+  const referenceDatesetImporterList = urls.admin.referenceDatesetImporterList; // eslint-disable-line no-undef
   const helpPageRef = useRef(null);
 
   return (
@@ -121,18 +125,14 @@ export default function SideNavigation({ pageName, minified }) {
                     <span className='SideNavigation-Row-Name'>Basemaps</span>
                   </a>
                 </SidaNavigationButton>
-                {
-                  user.is_admin ? <Fragment>
-                    <SidaNavigationButton minified={minified} title='Styles'>
-                      <a href={styleList}
-                         className={'SideNavigation-Row ' + (pageName === pageNames.Styles ? 'active' : '')}>
-                        {pageName === pageNames.Styles ? <StyleActiveIcon/> :
-                          <StyleIcon/>}
-                        <span className='SideNavigation-Row-Name'>Styles</span>
-                      </a>
-                    </SidaNavigationButton>
-                  </Fragment> : null
-                }
+                <SidaNavigationButton minified={minified} title='Styles'>
+                  <a href={styleList}
+                     className={'SideNavigation-Row ' + (pageName === pageNames.Styles ? 'active' : '')}>
+                    {pageName === pageNames.Styles ? <StyleActiveIcon/> :
+                      <StyleIcon/>}
+                    <span className='SideNavigation-Row-Name'>Styles</span>
+                  </a>
+                </SidaNavigationButton>
               </div>
               <div className='SideNavigationContentGroup'>
                 <div className='SideNavigationContentGroupTitle'>DATA</div>
@@ -153,7 +153,7 @@ export default function SideNavigation({ pageName, minified }) {
                 </div>
                 <SidaNavigationButton
                   minified={minified}
-                  title='Data Data Browser'>
+                  title='Data Browser'>
                   <a href={dataset}
                      className={'SideNavigation-Row ' + (pageName === pageNames.Dataset ? 'active' : '')}>
                     {
@@ -177,6 +177,38 @@ export default function SideNavigation({ pageName, minified }) {
                   </a>
                 </SidaNavigationButton>
               </div>
+              {
+                user.is_admin && localReferenceDatasetEnabled ?
+                  <div className='SideNavigationContentGroup'>
+                    <div className='SideNavigationContentGroupTitle'>
+                      REFERENCE DATASETS
+                    </div>
+                    <SidaNavigationButton
+                      minified={minified}
+                      title={pageNames.ReferenceLayerView}>
+                      <a href={referenceDatasetList}
+                         className={'SideNavigation-Row ' + ([pageNames.ReferenceLayerView].includes(pageName) ? 'active' : '')}>
+                        {[pageNames.ReferenceLayerView].includes(pageName) ?
+                          <LayerActiveIcon/> :
+                          <LayerIcon/>}
+                        <span
+                          className='SideNavigation-Row-Name'>Reference Datasets</span>
+                      </a>
+                    </SidaNavigationButton>
+                    <SidaNavigationButton
+                      minified={minified}
+                      title={pageNames.referenceDatesetImporter}>
+                      <a href={referenceDatesetImporterList}
+                         className={'SideNavigation-Row ' + ([pageNames.referenceDatesetImporter].includes(pageName) ? 'active' : '')}>
+                        {[pageNames.referenceDatesetImporter].includes(pageName) ?
+                          <LayerActiveIcon/> :
+                          <LayerIcon/>}
+                        <span
+                          className='SideNavigation-Row-Name'>Importers</span>
+                      </a>
+                    </SidaNavigationButton>
+                  </div> : null
+              }
               <div className='SideNavigationContentGroup'>
                 <div className='SideNavigationContentGroupTitle'>ACCESS</div>
                 {
@@ -241,7 +273,6 @@ export default function SideNavigation({ pageName, minified }) {
                         <ContactActiveIcon/> : <ContactIcon/>
                     }
                     <span className='SideNavigation-Row-Name'>Profile</span>
-                    <NotificationBadge/>
                   </a>
                 </SidaNavigationButton>
               </div>
@@ -267,6 +298,7 @@ export default function SideNavigation({ pageName, minified }) {
             <span className='SideNavigation-Row-Name'>Help</span>
           </a>
         </SidaNavigationButton>
+        <NotificationMaintenance/>
       </div>
       <div className='SideNavigationFooter'>
         <User detail={true}/>

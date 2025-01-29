@@ -17,20 +17,19 @@ __copyright__ = ('Copyright 2023, Unicef')
 from drf_yasg import openapi
 from rest_framework import serializers
 
-from core.serializer.dynamic_serializer import DynamicModelSerializer
 from geosight.data.models.basemap_layer import (
     BasemapLayerParameter, BasemapLayer, BasemapLayerType
 )
+from geosight.data.serializer.resource import ResourceSerializer
 
 TYPES = [BasemapLayerType.XYZ_TILE, BasemapLayerType.WMS]
 
 
-class BasemapLayerSerializer(DynamicModelSerializer):
+class BasemapLayerSerializer(ResourceSerializer):
     """Serializer for BasemapLayer."""
 
     category = serializers.SerializerMethodField()
     parameters = serializers.SerializerMethodField()
-    created_by = serializers.SerializerMethodField()
     permission = serializers.SerializerMethodField()
 
     def get_category(self, obj: BasemapLayer):
@@ -57,10 +56,6 @@ class BasemapLayerSerializer(DynamicModelSerializer):
                     parameters[params[0]] = '='.join(params[1:])
         return parameters
 
-    def get_created_by(self, obj: BasemapLayer):
-        """Return created by."""
-        return obj.creator.username if obj.creator else ''
-
     def get_permission(self, obj: BasemapLayer):
         """Return permission."""
         return obj.permission.all_permission(
@@ -69,7 +64,7 @@ class BasemapLayerSerializer(DynamicModelSerializer):
 
     class Meta:  # noqa: D106
         model = BasemapLayer
-        exclude = ('group',)
+        fields = '__all__'
         swagger_schema_fields = {
             'type': openapi.TYPE_OBJECT,
             'title': 'BasemapLayer',
@@ -152,37 +147,37 @@ class BasemapLayerSerializer(DynamicModelSerializer):
                     "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 ),
                 "type": "XYZ",
-            },
-            'post_body': openapi.Schema(
-                description='Data that is needed to create/edit basemap.',
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'name': openapi.Schema(
-                        title='Name',
-                        type=openapi.TYPE_STRING
-                    ),
-                    'description': openapi.Schema(
-                        title='Description',
-                        type=openapi.TYPE_STRING
-                    ),
-                    'category': openapi.Schema(
-                        title='Category',
-                        type=openapi.TYPE_STRING
-                    ),
-                    'url': openapi.Schema(
-                        title='Url',
-                        type=openapi.TYPE_STRING
-                    ),
-                    'type': openapi.Schema(
-                        title='Type',
-                        type=openapi.TYPE_STRING,
-                        description=(
-                            f'The choices are {[TYPES]}'
-                        )
-                    ),
-                }
-            )
+            }
         }
+        post_body = openapi.Schema(
+            description='Data that is needed to create/edit basemap.',
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'name': openapi.Schema(
+                    title='Name',
+                    type=openapi.TYPE_STRING
+                ),
+                'description': openapi.Schema(
+                    title='Description',
+                    type=openapi.TYPE_STRING
+                ),
+                'category': openapi.Schema(
+                    title='Category',
+                    type=openapi.TYPE_STRING
+                ),
+                'url': openapi.Schema(
+                    title='Url',
+                    type=openapi.TYPE_STRING
+                ),
+                'type': openapi.Schema(
+                    title='Type',
+                    type=openapi.TYPE_STRING,
+                    description=(
+                        f'The choices are {[TYPES]}'
+                    )
+                ),
+            }
+        )
 
 
 class BasemapLayerParameterSerializer(serializers.ModelSerializer):

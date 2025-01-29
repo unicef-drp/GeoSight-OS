@@ -13,9 +13,19 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import { Input } from "@mui/material";
+import Slider from "@mui/material/Slider";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import {
+  DesktopDateTimePicker
+} from "@mui/x-date-pickers/DesktopDateTimePicker";
+import TextField from "@mui/material/TextField";
+import {
+  LocalizationProvider
+} from "@mui/x-date-pickers/LocalizationProvider";
+
 import { SelectPlaceholder } from "../../Input";
 import {
   getOperators,
@@ -27,19 +37,20 @@ import {
   IS_NOT_NULL,
   IS_NULL,
   MULTI_SELECTABLE_OPERATORS,
+  OPERATOR_WITH_INTERNEXT,
+  OPERATOR_WITH_INTERVAL,
   SINGLE_SELECTABLE_OPERATORS
 } from "../../../utils/queryExtraction";
-import { capitalize, dictDeepCopy } from "../../../utils/main";
+import { capitalize, dictDeepCopy, nowUTC } from "../../../utils/main";
 import {
   MultipleSelectWithSearch,
   SelectWithSearch
 } from "../../Input/SelectWithSearch";
-import Slider from "@mui/material/Slider";
+import { INTERNEXT_IDENTIFIER, INTERVAL_IDENTIFIER } from "./index";
 
 // VARIABLES
-export const INTERVAL = ['minutes', 'hours', 'days', 'months', 'years']
-const OPERATOR_WITH_INTERVAL = 'last x (time)'
-const INTERVAL_IDENTIFIER = '::interval'
+// export const INTERVAL = ['minutes', 'hours', 'days', 'months', 'years']
+export const INTERVAL = ['days', 'months', 'years']
 const defaultMin = 0;
 const defaultMax = 0;
 
@@ -87,39 +98,116 @@ export function WhereInputValue(
   let max = null
   if (optionsData) {
     const data = optionsData.filter(row => {
-      return row !== undefined
+      return row !== undefined && row !== null && !isNaN(row)
     }).map(row => {
       return parseFloat(row)
     })
     min = Math.min(...data)
     max = Math.max(...data)
-    if (operator !== '=' && (isNaN(min) || !isFinite(min))) {
+    if (!SINGLE_SELECTABLE_OPERATORS.includes(operator) && (isNaN(min) || !isFinite(min))) {
       min = defaultMin
     }
-    if (operator !== '=' && (isNaN(max) || !isFinite(max))) {
+    if (!SINGLE_SELECTABLE_OPERATORS.includes(operator) && (isNaN(max) || !isFinite(max))) {
       max = defaultMax
     }
+    optionsData = optionsData.filter(row => {
+      return row !== undefined && row !== null && row !== 'null'
+    }).sort()
   }
-  const textBasedOnMinMax = ((isNaN(min) && isNaN(max)) || (!isFinite(min) && !isFinite(max)))
-
+  const textBasedOnMinMax = ((isNaN(min) && isNaN(max)) || (!isFinite(min) && !isFinite(max))) || fieldType?.toLowerCase() === 'date'
+  /** -------- IF DATE --------- **/
+  if (fieldType?.toLowerCase() === 'date') {
+    if ([">", ">=", "<", "<="].includes(operator)) {
+      return <LocalizationProvider dateAdapter={AdapterMoment}>
+        <DesktopDateTimePicker
+          className='DatePickerInput'
+          value={value}
+          inputFormat="YYYY-MM-DDThh:mm:ss"
+          onChange={(val) => {
+            try {
+              setValue(val._d.toISOString())
+            } catch (err) {
+            }
+          }}
+          renderInput={(params) => <TextField {...params} />}
+        />
+      </LocalizationProvider>
+    } else if (operator === IS_BETWEEN) {
+      const min = (!(value[0]?.length > 3) ? nowUTC(true).toISOString() : value[0]).replaceAll("'", '')
+      const max = (!(value[1]?.length > 3) ? nowUTC(true).toISOString() : value[1]).replaceAll("'", '')
+      return <LocalizationProvider dateAdapter={AdapterMoment}>
+        <div style={{ display: "flex" }}>
+          <DesktopDateTimePicker
+            className='DatePickerInput'
+            value={min}
+            maxDate={max}
+            inputFormat="YYYY-MM-DDThh:mm:ss"
+            onChange={(val) => {
+              setValue([val._d.toISOString(), value[1]])
+            }}
+            renderInput={(params) => <TextField {...params} />}
+          />
+          <div className='BetweenDash'>-</div>
+          <DesktopDateTimePicker
+            className='DatePickerInput'
+            value={max}
+            minDate={min}
+            inputFormat="YYYY-MM-DDThh:mm:ss"
+            onChange={(val) => {
+              setValue([value[0], val._d.toISOString()])
+            }}
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </div>
+      </LocalizationProvider>
+    } else if (MULTI_SELECTABLE_OPERATORS.includes(operator)) {
+      return <MultipleSelectWithSearch
+        value={value ? value : []}
+        onChangeFn={(value) => {
+          if (Array.isArray(value)) {
+            setValue(value.map(val => val.value !== undefined ? val.value : val))
+          } else {
+            setValue(value.value !== undefined ? value.value : value)
+          }
+        }}
+        options={optionsData ? optionsData : []}
+        className='FilterInput'
+        disabled={disabled}
+        quickSelection={true}
+        {...props}
+      />
+    }
+  }
   if ([IS_NULL, IS_NOT_NULL].includes(operator)) {
     return null
   } else if ([IS_LIKE, IS_NOT_LIKE].includes(operator)) {
     return defaultInput()
-  } else if (operator === OPERATOR_WITH_INTERVAL) {
-    const [timeValue, timeType] = value.replace(INTERVAL_IDENTIFIER, '').split(' ')
-    return <Fragment>
+  } else if ([OPERATOR_WITH_INTERVAL, OPERATOR_WITH_INTERNEXT].includes(operator)) {
+    let timeValue = ""
+    let timeType = ""
+    const IDENTIFIER = operator === OPERATOR_WITH_INTERVAL ? INTERVAL_IDENTIFIER : INTERNEXT_IDENTIFIER
+    try {
+      const [newTimeValue, newTimeType] = value.replace(INTERVAL_IDENTIFIER, '').replace(INTERNEXT_IDENTIFIER, '').split(' ')
+      timeValue = newTimeValue
+      timeType = newTimeType
+    } catch (err) {
+
+    }
+    return <div className='DateOperator'>
+      <span
+        className='WhereConfigurationOperatorText'>{operator === OPERATOR_WITH_INTERVAL ? 'Last' : 'Next'}</span>
       <Input
         type="number"
         className={'WhereConfigurationOperatorValue'}
         value={timeValue ? timeValue : ""}
         onChange={(evt) => {
-          setValue(`${evt.target.value ? evt.target.value : 0} ${timeType}${INTERVAL_IDENTIFIER}`)
+          setValue(`${evt.target.value && evt.target.value >= 0 ? evt.target.value : 0} ${timeType}${IDENTIFIER}`)
         }}
         disabled={disabled}
       />
       <SelectPlaceholder
         placeholder='Pick a time'
+        className={'WhereConfigurationOperatorType'}
         list={
           INTERVAL.map((key, idx) => {
             return { id: key, name: capitalize(key) }
@@ -127,17 +215,14 @@ export function WhereInputValue(
         }
         initValue={timeType ? timeType : ""}
         onChangeFn={(value) => {
-          setValue(`${timeValue} ${value}${INTERVAL_IDENTIFIER}`)
+          setValue(`${timeValue} ${value}${IDENTIFIER}`)
         }}
         disabled={disabled}
       />
-    </Fragment>
+    </div>
   } else if (MULTI_SELECTABLE_OPERATORS.includes(operator)) {
-    if (!optionsData) {
-      return defaultInput()
-    }
     return <MultipleSelectWithSearch
-      value={value}
+      value={Array.isArray(value) ? value : !Array.isArray(value) ? [value] : []}
       onChangeFn={(value) => {
         if (Array.isArray(value)) {
           setValue(value.map(val => val.value !== undefined ? val.value : val))
@@ -145,7 +230,7 @@ export function WhereInputValue(
           setValue(value.value !== undefined ? value.value : value)
         }
       }}
-      options={optionsData}
+      options={optionsData ? optionsData : []}
       className='FilterInput'
       disabled={disabled}
       {...props}
@@ -155,7 +240,7 @@ export function WhereInputValue(
       return defaultInput()
     }
     return <SelectWithSearch
-      value={value}
+      value={value ? value : []}
       onChangeFn={(value) => {
         if (Array.isArray(value)) {
           setValue(value.map(val => val.value))
@@ -291,12 +376,12 @@ export default function WhereInput(
   // If it has :interval, it is last x (time)
   const value = where.value
   const field = where.field
-  const currentField = fields.find(fieldDef => fieldDef.name === field)
-  let operator = ('' + value)?.includes(INTERVAL_IDENTIFIER) ? OPERATOR_WITH_INTERVAL : where.operator;
+  const currentField = fields.find(fieldDef => fieldDef.name === field.replaceAll('"', ''))
+  let operator = ('' + value)?.includes(INTERVAL_IDENTIFIER) ? OPERATOR_WITH_INTERVAL : ('' + value)?.includes(INTERNEXT_IDENTIFIER) ? OPERATOR_WITH_INTERNEXT : where.operator;
 
   // Check the input type
-  let fieldType = 'text'
-  if (currentField?.type) {
+  let fieldType = currentField?.type ? currentField?.type : 'text'
+  if (currentField?.type !== 'date') {
     fieldType = currentField?.type
     if (currentField?.options) {
       fieldType = 'number'
@@ -309,18 +394,22 @@ export default function WhereInput(
   }
 
   // Check the fields
-  if (operator === OPERATOR_WITH_INTERVAL) {
+  if ([OPERATOR_WITH_INTERVAL, OPERATOR_WITH_INTERNEXT].includes(operator)) {
     fields = dictDeepCopy(fields)
     fields = fields.filter(fieldDef => fieldDef.type === 'date')
   }
 
   let UPDATED_OPERATOR = getOperators(fieldType, props.isSimplified)
-  if (fieldType === 'date') {
-    UPDATED_OPERATOR[OPERATOR_WITH_INTERVAL] = OPERATOR_WITH_INTERVAL
-  }
 
+  let showOperator = false
+  let isDate = fieldType?.toLowerCase() === 'date'
+  if (fieldType?.toLowerCase() === 'date') {
+    if ([">", ">=", "<", "<="].includes(operator)) {
+      showOperator = true
+    }
+  }
   return <div
-    className={'WhereConfigurationQuery ' + (props.isSimplified ? 'Simplified' : '')}>
+    className={'WhereConfigurationQuery ' + (props.isSimplified ? 'Simplified' : '') + (showOperator ? ' ShowOperator' : '') + (isDate ? ' IsDate' : '')}>
     <SelectPlaceholder
       placeholder='Pick the field'
       className={'WhereConfigurationField'}
@@ -354,9 +443,15 @@ export default function WhereInput(
       onChangeFn={(value) => {
         if (value === OPERATOR_WITH_INTERVAL) {
           where.operator = '>'
-          where.value = "now() - interval '1 days'"
+          where.value = "1 days::interval"
+        } else if (value === OPERATOR_WITH_INTERNEXT) {
+          where.operator = '<'
+          where.value = "1 days::internext"
         } else if ([IS_IN, IS_NOT_IN].includes(value)) {
           where.operator = value
+          if (where.value?.includes(INTERVAL_IDENTIFIER) || where.value.includes(INTERNEXT_IDENTIFIER)) {
+            where.value = []
+          }
           if (!Array.isArray(where.value)) {
             if (where.value) {
               where.value = ('' + where.value).split(',')
@@ -370,7 +465,7 @@ export default function WhereInput(
             where.value = where.value[0]
           }
           if (where.value) {
-            where.value = ('' + where?.value).replace(INTERVAL_IDENTIFIER, '')
+            where.value = ('' + where?.value).replace(INTERVAL_IDENTIFIER, '').replace(INTERNEXT_IDENTIFIER, '')
           } else {
             where.value = ''
           }

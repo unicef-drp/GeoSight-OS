@@ -25,7 +25,7 @@ export { default as arcGisLayer } from "./ArcGis";
  */
 export function symbolLayers(map, id, geojson, popupRenderFn) {
   const markers = []
-  geojson.features.map(feature => {
+  geojson?.features?.map(feature => {
     const icon = feature.properties.icon;
     if (icon && feature.geometry.type === 'Point') {
       var el = document.createElement('div');

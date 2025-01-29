@@ -16,11 +16,11 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from rest_framework import serializers
 
-from core.serializer.dynamic_serializer import DynamicModelSerializer
 from geosight.data.models.style import Style, StyleRule
+from geosight.data.serializer.resource import ResourceSerializer
 
 
-class StyleSerializer(DynamicModelSerializer):
+class StyleSerializer(ResourceSerializer):
     """Serializer for Style."""
 
     category = serializers.SerializerMethodField()

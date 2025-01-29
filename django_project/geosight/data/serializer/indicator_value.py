@@ -34,6 +34,7 @@ class IndicatorValueSerializer(serializers.ModelSerializer):
     indicator_id = serializers.SerializerMethodField()
     indicator_shortcode = serializers.SerializerMethodField()
     value = serializers.SerializerMethodField()
+    attributes = serializers.SerializerMethodField()
 
     def get_indicator(self, obj: IndicatorValue):
         """Return indicator name."""
@@ -51,6 +52,10 @@ class IndicatorValueSerializer(serializers.ModelSerializer):
         """Return value of indicator."""
         return obj.val
 
+    def get_attributes(self, obj: IndicatorValue):
+        """Return attributes value of indicator."""
+        return obj.attributes
+
     def to_representation(self, instance):
         """To representation of indicator value."""
         data = super(IndicatorValueSerializer, self).to_representation(
@@ -60,6 +65,12 @@ class IndicatorValueSerializer(serializers.ModelSerializer):
             entities = Entity.objects.filter(
                 geom_id=instance.geom_id
             )
+            if self.context.get('reference_layers', None):
+                entities = entities.filter(
+                    reference_layer__identifier__in=self.context.get(
+                        'reference_layers', []
+                    )
+                )
 
             for entity in entities:
                 if not entity.reference_layer:
@@ -74,20 +85,6 @@ class IndicatorValueSerializer(serializers.ModelSerializer):
             pass
         data['geometries'] = geometries
         return data
-
-    class Meta:  # noqa: D106
-        model = IndicatorValue
-        exclude = ('value_str',)
-
-
-class IndicatorValueWithPermissionSerializer(IndicatorValueSerializer):
-    """Serializer for IndicatorValue."""
-
-    permission = serializers.SerializerMethodField()
-
-    def get_permission(self, obj: IndicatorValue):
-        """Return indicator name."""
-        return obj.permissions(self.context.get('user', None))
 
     class Meta:  # noqa: D106
         model = IndicatorValue
@@ -115,6 +112,10 @@ class IndicatorValueWithPermissionSerializer(IndicatorValueSerializer):
                 'value': openapi.Schema(
                     title='Value',
                     type=openapi.TYPE_STRING
+                ),
+                'attributes': openapi.Schema(
+                    title='Attributes',
+                    type=openapi.TYPE_OBJECT
                 ),
                 'permission': openapi.Schema(
                     title='Permission',
@@ -182,6 +183,9 @@ class IndicatorValueWithPermissionSerializer(IndicatorValueSerializer):
                 "indicator_id": 1,
                 "indicator_shortcode": "TEST",
                 "value": 0,
+                "attributes": {
+                    'Value 1': 1
+                },
                 "permission": {
                     "list": True,
                     "read": True,
@@ -205,74 +209,67 @@ class IndicatorValueWithPermissionSerializer(IndicatorValueSerializer):
                         "admin_level": 0
                     }
                 ]
-            },
-            'post_body': openapi.Schema(
-                description='Data that is needed for post new value.',
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'indicator_id': openapi.Schema(
-                        title='Indicator id',
-                        type=openapi.TYPE_NUMBER
-                    ),
-                    'indicator_shortcode': openapi.Schema(
-                        title='Indicator shortcode',
-                        type=openapi.TYPE_STRING
-                    ),
-                    'value': openapi.Schema(
-                        title='New value',
-                        type=openapi.TYPE_STRING
-                    ),
-                    'date': openapi.Schema(
-                        title='Date',
-                        description='Date is in YYYY-MM-DD in UTC.',
-                        type=openapi.TYPE_STRING
-                    ),
-                    'geom_id': openapi.Schema(
-                        title='Geom id',
-                        type=openapi.TYPE_STRING,
-                    ),
-                    'dataset_uuid': openapi.Schema(
-                        title='Dataset uuid',
-                        type=openapi.TYPE_STRING
-                    ),
-                    'admin_level': openapi.Schema(
-                        title='Admin level',
-                        type=openapi.TYPE_NUMBER
-                    ),
-                    'extra_value': openapi.Schema(
-                        title='Extra values',
-                        description=(
-                            'Optional to save extra values. It is in json'
-                        ),
-                        type=openapi.TYPE_OBJECT,
-                    ),
-                }
-            ),
-            'put_body': openapi.Schema(
-                description='List of id with new value.',
-                type=openapi.TYPE_ARRAY,
-                items=openapi.Items(
-                    type=openapi.TYPE_OBJECT,
-                    properties={
-                        'id': openapi.Schema(
-                            title='Id of value',
-                            type=openapi.TYPE_NUMBER
-                        ),
-                        'value': openapi.Schema(
-                            title='New value',
-                            type=openapi.TYPE_STRING
-                        )
-                    }
-                )
-            ),
-            'delete_body': openapi.Schema(
-                description='List of id of values.',
-                type=openapi.TYPE_ARRAY,
-                items=openapi.Items(
-                    type=openapi.TYPE_NUMBER
-                )
-            )
+            }
         }
+        post_body = openapi.Schema(
+            description='Data that is needed for post new value.',
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'indicator_id': openapi.Schema(
+                    title='Indicator id',
+                    type=openapi.TYPE_NUMBER
+                ),
+                'indicator_shortcode': openapi.Schema(
+                    title='Indicator shortcode',
+                    type=openapi.TYPE_STRING
+                ),
+                'value': openapi.Schema(
+                    title='New value',
+                    type=openapi.TYPE_STRING
+                ),
+                'date': openapi.Schema(
+                    title='Date',
+                    description='Date is in YYYY-MM-DD in UTC.',
+                    type=openapi.TYPE_STRING
+                ),
+                'geom_id': openapi.Schema(
+                    title='Geom id',
+                    type=openapi.TYPE_STRING,
+                ),
+                'dataset_uuid': openapi.Schema(
+                    title='Dataset uuid',
+                    type=openapi.TYPE_STRING
+                ),
+                'admin_level': openapi.Schema(
+                    title='Admin level',
+                    type=openapi.TYPE_NUMBER
+                ),
+                'attributes': openapi.Schema(
+                    title='Attributes',
+                    description=(
+                        'Optional to save attributes. It is in json'
+                    ),
+                    type=openapi.TYPE_OBJECT,
+                )
+            }
+        )
+        delete_body = openapi.Schema(
+            description='List of id of values.',
+            type=openapi.TYPE_ARRAY,
+            items=openapi.Items(
+                type=openapi.TYPE_NUMBER
+            )
+        )
+
+
+class IndicatorValueWithPermissionSerializer(IndicatorValueSerializer):
+    """Serializer for IndicatorValue with permission."""
+
+    permission = serializers.SerializerMethodField()
+
+    def get_permission(self, obj: IndicatorValue):
+        """Return indicator name."""
+        return obj.permissions(self.context.get('user', None))
 
 
 class IndicatorValueDetailSerializer(IndicatorValueSerializer):

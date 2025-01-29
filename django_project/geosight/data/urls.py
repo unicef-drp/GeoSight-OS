@@ -17,15 +17,15 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.conf.urls import url
 from django.urls import include
 
-from geosight.data.api.arcgis import ArcgisConfigTokenAPI
+from geosight.data.api.arcgis import arcgis_proxy_request
 from geosight.data.api.basemap import (
     BasemapListAPI, BasemapDetailAPI
 )
 from geosight.data.api.context_layers import (
-    ContextLayerListAPI, ContextLayerDetailAPI
+    ContextLayerListAPI, ContextLayerDetailAPI, ContextLayerZonalAnalysisAPI
 )
 from geosight.data.api.dashboard import (
-    DashboardData, DashboardDetail, DashboardListAPI
+    DashboardData, DashboardDuplicate, DashboardDetail, DashboardListAPI
 )
 from geosight.data.api.dashboard_bookmark import (
     DashboardBookmarksAPI,
@@ -38,7 +38,6 @@ from geosight.data.api.dashboard_indicator_layer import (
 )
 from geosight.data.api.dashboard_indicator_value import (
     DashboardIndicatorValuesAPI, DashboardIndicatorDatesAPI,
-    DashboardIndicatorMetadataAPI, DashboardIndicatorAllMetadataAPI,
     DashboardIndicatorAllValuesAPI,
     DashboardIndicatorValueListAPI, DashboardEntityDrilldown
 )
@@ -48,7 +47,11 @@ from geosight.data.api.download_file import (
 )
 from geosight.data.api.indicator import (
     IndicatorListAPI, IndicatorAdminListAPI,
-    IndicatorDetailAPI, IndicatorValuesAPI
+    IndicatorDetailAPI, IndicatorValuesAPI, SearchSimilarityIndicatorAPI,
+    IndicatorMetadataAPI
+)
+from geosight.data.api.indicator_reference_layer import (
+    IndicatorBatchMetadataAPI
 )
 from geosight.data.api.indicator_value import (
     IndicatorValuesByGeometry,
@@ -60,8 +63,14 @@ from geosight.data.api.related_table import (
     RelatedTableListAPI, RelatedTableDetailAPI, RelatedTableDataAPI,
     RelatedTableDatesAPI, RelatedTableValuesAPI, RelatedTableFieldDataAPI
 )
-from geosight.data.api.sharepoint import SharepointConfigListAPI
-from geosight.data.api.style import StyleListAPI, StyleDetailAPI
+from geosight.data.api.sharepoint import (
+    SharepointConfigListAPI, SharepointInformationAPI
+)
+from geosight.data.api.style import (
+    StyleListAPI,
+    StyleDetailAPI,
+)
+from geosight.data.api.raster import GetRasterClassificationAPI
 
 # ------------------------------------------------------
 dashboard_specific_api = [
@@ -69,6 +78,11 @@ dashboard_specific_api = [
         r'^data$',
         DashboardData.as_view(),
         name='dashboard-data-api'
+    ),
+    url(
+        r'^duplicate$',
+        DashboardDuplicate.as_view(),
+        name='dashboard-duplicate-api'
     ),
     url(
         r'^entity/(?P<concept_uuid>[^/]+)/drilldown$',
@@ -98,16 +112,6 @@ dashboard_specific_api = [
         r'^indicator/(?P<pk>\d+)/values/all$',
         DashboardIndicatorAllValuesAPI.as_view(),
         name='dashboard-indicator-values-all-api'
-    ),
-    url(
-        r'^indicator/all/metadata$',
-        DashboardIndicatorAllMetadataAPI.as_view(),
-        name='dashboard-indicator-all-metadata-api'
-    ),
-    url(
-        r'^indicator/(?P<pk>\d+)/metadata$',
-        DashboardIndicatorMetadataAPI.as_view(),
-        name='dashboard-indicator-metadata-api'
     ),
     url(
         r'^indicator/(?P<pk>\d+)/dates$',
@@ -166,6 +170,16 @@ indicator_api = [
         IndicatorListAPI.as_view(), name='indicator-list-api'
     ),
     url(
+        r'^search/similarity',
+        SearchSimilarityIndicatorAPI.as_view(),
+        name='indicator-search-similarity-api'
+    ),
+    url(
+        r'^metadata',
+        IndicatorBatchMetadataAPI.as_view(),
+        name='indicator-metadata-list-api'
+    ),
+    url(
         r'^(?P<pk>\d+)/values/latest',
         IndicatorValuesAPI.as_view(), name='indicator-values-api'
     ),
@@ -192,6 +206,10 @@ indicator_api = [
         r'^(?P<pk>\d+)/detail',
         IndicatorDetailAPI.as_view(), name='indicator-detail-api'
     ),
+    url(
+        r'^(?P<pk>\d+)/metadata',
+        IndicatorMetadataAPI.as_view(), name='indicator-metadata-api'
+    ),
 ]
 # ------------------------------------------------------
 # BASEMAP API
@@ -215,8 +233,19 @@ style_api = [
     url(
         r'^(?P<pk>\d+)',
         StyleDetailAPI.as_view(), name='style-detail-api'
-    ),
+    )
 ]
+
+
+# ------------------------------------------------------
+# RASTER
+raster_api = [
+    url(
+        r'^classification',
+        GetRasterClassificationAPI.as_view(), name='raster-classification-api'
+    )
+]
+
 # ------------------------------------------------------
 # CONTEXT LAYER API
 context_layer_api = [
@@ -225,9 +254,14 @@ context_layer_api = [
         ContextLayerListAPI.as_view(), name='context-layer-list-api'
     ),
     url(
+        r'^(?P<pk>\d+)/zonal-analysis/(?P<aggregation>[a-zA-Z0-9_-]+)',
+        ContextLayerZonalAnalysisAPI.as_view(),
+        name='context-layer-zonal-analysis'
+    ),
+    url(
         r'^(?P<pk>\d+)',
         ContextLayerDetailAPI.as_view(), name='context-layer-detail-api'
-    ),
+    )
 ]
 # ------------------------------------------------------
 # RELATED TABLE API
@@ -264,13 +298,17 @@ sharepoint_api = [
         r'^list',
         SharepointConfigListAPI.as_view(), name='sharepoint-config-list-api'
     ),
+    url(
+        r'^(?P<pk>\d+)/info',
+        SharepointInformationAPI.as_view(), name='sharepoint-fetch-info-api'
+    ),
 ]
 # ------------------------------------------------------
 # ARCGIS API
 arcgis_api = [
     url(
-        r'^(?P<pk>\d+)/token',
-        ArcgisConfigTokenAPI.as_view(), name='arcgis-config-token-api'
+        r'^(?P<pk>\d+)/proxy$',
+        arcgis_proxy_request, name='arcgis-config-proxy'
     ),
 ]
 # ------------------------------------------------------
@@ -280,6 +318,7 @@ api = [
     url(r'^indicator/', include(indicator_api)),
     url(r'^context-layer/', include(context_layer_api)),
     url(r'^style/', include(style_api)),
+    url(r'^raster/', include(raster_api)),
     url(r'^permission/', include('geosight.permission.urls')),
     url(r'^related-table/', include(related_table_api)),
     url(r'^sharepoint/', include(sharepoint_api)),

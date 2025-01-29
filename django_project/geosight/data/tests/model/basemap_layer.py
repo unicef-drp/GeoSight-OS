@@ -16,8 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import urllib.parse
 
-from django.test.testcases import TestCase
-
+from core.tests.base_tests import TestCase, BaseFileCleanupTest
 from geosight.data.serializer.basemap_layer import BasemapLayerSerializer
 from geosight.data.tests.model_factories import (
     BasemapLayerF, BasemapLayerParameterF
@@ -53,3 +52,13 @@ class BasemapLayerTest(TestCase):
         self.assertEquals(basemap_data['name'], self.name)
         for key, value in basemap_data['parameters'].items():
             self.assertEquals(urllib.parse.quote(self.params[key]), value)
+
+
+class BasemapCleanupTest(BaseFileCleanupTest.TestCase):
+    """Test cleaning up Basemap file."""
+
+    model = BasemapLayerF
+
+    def create_test_object(self):
+        """Create test object."""
+        self.test_obj = self.model()

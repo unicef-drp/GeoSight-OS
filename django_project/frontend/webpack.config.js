@@ -45,7 +45,9 @@ let conf = {
     AdminGroupForm: ['./src/pages/Admin/UserAndGroup/Group/Form'],
     AdminUserGroupList: ['./src/pages/Admin/UserAndGroup/List'],
     AdminDataset: ['./src/pages/Admin/Dataset'],
+    AdminDataBrowser: ['./src/pages/Admin/DataBrowser'],
     AdminDataAccess: ['./src/pages/Admin/DataAccess'],
+    AdminRelatedTableForm: ['./src/pages/Admin/RelatedTable/Form'],
     AdminRelatedTableList: ['./src/pages/Admin/RelatedTable/List'],
     AdminRelatedTableData: ['./src/pages/Admin/RelatedTable/Data'],
 
@@ -65,6 +67,14 @@ let conf = {
     IndicatorValueList: ['./src/pages/Admin/Indicator/IndicatorValueList'],
     IndicatorValueManagementMap: ['./src/pages/Admin/Indicator/ValueManagementMap'],
     IndicatorValueManagementForm: ['./src/pages/Admin/Indicator/ValueManagementForm'],
+
+    // REFERENCE LAYER VIEW
+    AdminReferenceDatasetForm: ['./src/pages/Admin/ReferenceDataset/Form'],
+    AdminReferenceDatasetList: ['./src/pages/Admin/ReferenceDataset/List'],
+    AdminReferenceDatasetEntityBrowser: ['./src/pages/Admin/ReferenceDataset/EntityBrowser'],
+    AdminReferenceDatasetImporterForm: ['./src/pages/Admin/ReferenceDataset/Importer/Form'],
+    AdminReferenceDatasetImporterList: ['./src/pages/Admin/ReferenceDataset/Importer/List'],
+    AdminReferenceDatasetImporterDetail: ['./src/pages/Admin/ReferenceDataset/ImporterDetail'],
   },
   output: {
     path: path.resolve(__dirname, "./bundles/frontend"),
@@ -90,6 +100,11 @@ let conf = {
             },
           },
         ],
+      },
+      {
+        test: /\.tsx?$/,
+        exclude: /node_modules/,
+        use: 'ts-loader',
       },
       {
         test: /\.jsx?$/,
@@ -118,9 +133,6 @@ let conf = {
       },
     ],
   },
-  optimization: {
-    minimize: minimized
-  },
   plugins: [
     new BundleTracker({ filename: statsFilename }),
     new MiniCssExtractPlugin({
@@ -130,7 +142,7 @@ let conf = {
   ],
   resolve: {
     modules: ['node_modules'],
-    extensions: ['.js', '.jsx']
+    extensions: ['.js', '.jsx', '.tsx']
   },
 };
 
@@ -151,5 +163,18 @@ if (isDev) {
   conf['plugins'].push(
     isDev && new ReactRefreshWebpackPlugin({ overlay: false })
   )
+} else {
+  conf['optimization'] = {
+    minimize: minimized,
+    splitChunks: {
+      chunks: 'all',
+      maxInitialRequests: 5,
+      minSize: 20000,
+    },
+  }
+  conf['cache'] = {
+    type: 'filesystem',
+  }
 }
+console.log(conf)
 module.exports = conf;
