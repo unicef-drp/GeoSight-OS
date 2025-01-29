@@ -39,7 +39,6 @@ export interface AdminListProps extends MainDataGridProps {
   useSearch?: boolean;
   searchKey?: string;
   enableFilter?: boolean
-  // getParameters: (parameter: {}) => {};
 }
 
 export interface AdminListContentProps extends AdminListProps {

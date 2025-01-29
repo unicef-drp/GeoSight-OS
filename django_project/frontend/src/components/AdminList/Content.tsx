@@ -77,9 +77,6 @@ export const AdminListContent = forwardRef(
      rightHeader,
      middleContent,
 
-    //  //
-    // getParameters,
-
      ...props
    }: AdminListContentProps, ref
   ) => {
@@ -102,7 +99,6 @@ export const AdminListContent = forwardRef(
     // When inner selection changed
     useEffect(() => {
       if (selectionChanged) {
-        console.log(selectionModel)
         selectionChanged(selectionModel)
       }
     }, [selectionModel])
@@ -197,8 +193,6 @@ export const AdminListContent = forwardRef(
       // @ts-ignore
       column.tableRef = tableRef
     })
-
-    console.log('content')
 
     /** Render **/
     return (

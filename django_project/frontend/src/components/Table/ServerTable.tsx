@@ -71,10 +71,6 @@ const ServerTable = forwardRef(
    }: ServerTableProps, ref
   ) => {
     const { openConfirmDialog } = useConfirmDialog();
-
-    console.log(selectionModel)
-    console.log(selectionModelData)
-
     if (enable.filter) {
       if (defaults.filters) {
         useEffect(() => {
@@ -197,7 +193,6 @@ const ServerTable = forwardRef(
           } else {
             setDataCount(data.data.page_size * data.data.total_page)
           }
-          console.log('set data')
           setData(data.data.results)
         }
       })

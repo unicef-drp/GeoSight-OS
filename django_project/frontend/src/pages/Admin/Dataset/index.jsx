@@ -204,13 +204,9 @@ export default function DatasetAdmin() {
   selectedViews = Array.from(new Set(selectedViews));
   selectedIndicators = Array.from(new Set(selectedIndicators));
 
-  useEffect(() => {
-    console.log('selectionModel changed');
-  }, [selectionModel]);
-
   return <AdminList
     url={{
-      list: `${urls.api.datasetApi}?detail=true`
+      list: `${urls.api.datasetApi}`
     }}
     title={contentTitle}
     columns={COLUMNS}

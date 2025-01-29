@@ -23,7 +23,6 @@ const MainDataGrid = (
 ) => {
   return (
     <DataGrid
-      className={'aaaaa'}
       columns={columns}
       rows={rows}
       headerHeight={36}
