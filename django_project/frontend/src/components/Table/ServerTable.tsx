@@ -34,11 +34,15 @@ const cleanFilters = (filters: any) => {
   if (!filters) {
     return {}
   }
-  return Object.fromEntries(
+  let newFilters: any = Object.fromEntries(
     Object.entries(filters).filter(
       ([key, value]) => ![null, 'null'].includes(value as string) && !['page', 'page_size'].includes(key)
     )
   )
+  if (newFilters.sort) {
+    newFilters['sort'] = typeof newFilters['sort'] === 'string' ? newFilters['sort'] : newFilters['sort'][0]
+  }
+  return newFilters
 }
 
 
@@ -97,13 +101,15 @@ const ServerTable = forwardRef(
           }
         }
       });
+      // useEffect(() => {
+      //   if (JSON.stringify(cleanFilters(filterModel)) === '{}') {
+      //     window.sessionStorage.removeItem(url)
+      //   } else {
+      //     window.sessionStorage.setItem(url, JSON.stringify(cleanFilters(filterModel)))
+      //   }
+      //   updateQueryParam(filterModel)
+      // }, [filterModel]);
     }
-
-  const updateQueryParam = (params: any) => { // Set 'key' to 'newValue'
-    // @ts-ignore
-    setSearchParams(cleanFilters(params));
-  };
-
 
     // Notification
     const notificationRef = useRef(null);
@@ -141,14 +147,20 @@ const ServerTable = forwardRef(
       }
     )
 
+    const updateQueryParam = (params: any) => { // Set 'key' to 'newValue'
+      // @ts-ignore
+      setSearchParams({
+        ...cleanFilters(params),
+        sort: getSort(sortModel)
+      });
+    };
+
     useEffect(() => {
-      window.sessionStorage.setItem(url, JSON.stringify(cleanFilters(filterModel)))
       // @ts-ignore
       setParameters({
         ...parameters,
         ...filterModel
       })
-      updateQueryParam(filterModel)
     }, [filterModel]);
 
     // Sort model
@@ -219,6 +231,14 @@ const ServerTable = forwardRef(
     }
     /*** When parameters changed */
     useEffect(() => {
+      if (enable.filter) {
+        if (JSON.stringify(cleanFilters(parameters)) === '{}') {
+          window.sessionStorage.removeItem(url)
+        } else {
+          window.sessionStorage.setItem(url, JSON.stringify(cleanFilters(parameters)))
+        }
+        updateQueryParam(parameters)
+      }
       loadData(false)
     }, [parameters])
 

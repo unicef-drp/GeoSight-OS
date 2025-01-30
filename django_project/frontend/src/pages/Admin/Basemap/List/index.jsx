@@ -39,8 +39,8 @@ export default function BasemapList() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   let defaultFilter = JSON.parse(window.sessionStorage.getItem(urls.api.list, "{}"))
-  if (!defaultFilter) {
-    window.sessionStorage.setItem(urls.api.list, JSON.stringify(searchParams))
+  if (searchParams.size > 0) {
+    defaultFilter = Object.fromEntries(searchParams.entries());
   }
 
   const pageName = pageNames.Basemaps;
@@ -90,7 +90,10 @@ export default function BasemapList() {
     enableFilter={true}
     defaults={{
       sort: [
-        { field: 'name', sort: 'asc' }
+        {
+          field: defaultFilter?.sort ? defaultFilter?.sort[0] === '-' ? defaultFilter?.sort.substring(1) : defaultFilter?.sort : 'name',
+          sort: defaultFilter?.sort ? defaultFilter?.sort[0] === '-' ? 'desc' : 'asc' : 'asc'
+        }
       ],
       filters: defaultFilter ? defaultFilter : {}
     }}
