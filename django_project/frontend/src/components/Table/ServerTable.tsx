@@ -72,41 +72,35 @@ const ServerTable = forwardRef(
   ) => {
     const { openConfirmDialog } = useConfirmDialog();
     if (enable.filter) {
-      if (defaults.filters) {
-        useEffect(() => {
-          // @ts-ignore
-          let newParameters =       {
-            page: 0,
-            page_size: parameters.page_size,
-            sort: parameters.sort,
-            ...defaults.filters
+      const [filterModel, setFilterModel] = useState(defaults.filters);
+      columns.forEach(column => {
+        if (column.type === 'actions') {
+          if (!column.headerName) {
+            // @ts-ignore
+            column.headerName = (
+              <DataGridFilter
+                fields={columns}
+                filterModel={filterModel}
+                setFilterModel={setFilterModel}/>
+            );
+            column.headerAlign = 'right';
           }
-          setParameters(newParameters)
-        }, [defaults.filters]);
-      } else {
-        const [filterModel, setFilterModel] = useState({});
-        columns.forEach(column => {
-          if (column.type === 'actions') {
-            if (!column.headerName) {
-              // @ts-ignore
-              column.headerName = (
-                <DataGridFilter
-                  fields={columns}
-                  filterModel={filterModel}
-                  setFilterModel={setFilterModel}/>
-              );
-              column.headerAlign = 'right';
-            }
-          }
-        });
-        useEffect(() => {
-          // @ts-ignore
-          setParameters({
-            ...parameters,
-            ...filterModel
-          })
-        }, [filterModel]);
-      }
+        }
+      });
+      useEffect(() => {
+        // @ts-ignore
+        let newParameters: any = {
+          ...parameters,
+          ...filterModel,
+          ...defaults.filters
+        }
+        newParameters = Object.fromEntries(
+          Object.entries(newParameters).filter(
+            ([_, value]) => value != null
+          )
+        )
+        setParameters(newParameters)
+      }, [filterModel, defaults.filters]);
     }
 
     // Notification

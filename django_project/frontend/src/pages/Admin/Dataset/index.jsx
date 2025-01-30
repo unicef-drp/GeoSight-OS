@@ -59,8 +59,6 @@ export default function DatasetAdmin() {
     levels: defaultFilters.levels ? splitParams(defaultFilters.levels) : [],
     detail: true,
   })
-  const [disabled, setDisabled] = useState(false)
-  const [isInit, setIsInit] = useState(true)
   const [filtersSequences, setFiltersSequences] = useState([])
   const [quickData, setQuickData] = useState({})
   let [selectionModel, setSelectionModel] = useState([]);
@@ -171,7 +169,7 @@ export default function DatasetAdmin() {
     if (filters.indicators.length) {
       parameters['indicator_id__in'] = filters.indicators.join(',')
     } else {
-      delete parameters['indicator_id__in']
+      parameters['indicator_id__in'] = null
     }
     if (filters.groupAdminLevel) {
       parameters['group_admin_level'] = true
@@ -181,12 +179,12 @@ export default function DatasetAdmin() {
     if (filters.datasets.length) {
       parameters['reference_layer_id__in'] = filters.datasets.join(',')
     } else {
-      delete parameters['reference_layer_id__in']
+      parameters['reference_layer_id__in'] = null
     }
     if (filters.levels.length) {
       parameters['admin_level__in'] = filters.levels.join(',')
     } else {
-      delete parameters['admin_level__in']
+      parameters['admin_level__in'] = null
     }
     parameters['detail'] = filters.detail
     return parameters
