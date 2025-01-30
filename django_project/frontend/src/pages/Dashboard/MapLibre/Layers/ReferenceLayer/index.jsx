@@ -236,8 +236,6 @@ export function ReferenceLayer(
 
       // Fill layer
       const contextLayerIds = map.getStyle().layers.filter(
-        layer => layer.type !== 'raster'
-      ).filter(
         layer => layer.id.includes(CONTEXT_LAYER_ID) || layer.id.includes('gl-draw-') || [INDICATOR_LABEL_ID, LAYER_HIGHLIGHT_ID].includes(layer.id)
       )
       let before = contextLayerIds[0]?.id

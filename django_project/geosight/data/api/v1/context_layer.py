@@ -38,7 +38,10 @@ class ContextLayerViewSet(
     extra_exclude_fields = [
         'url', 'permission', 'styles', 'label_styles', 'configuration',
         'parameters', 'original_styles', 'original_configuration',
-        'data_fields'
+        'data_fields',
+        'password', 'username',
+        'cloud_native_gis_layer_id', 'arcgis_config',
+        'related_table', 'token', 'url_legend', 'group'
     ]
 
     @swagger_auto_schema(

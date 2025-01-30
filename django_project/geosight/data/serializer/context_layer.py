@@ -101,11 +101,7 @@ class ContextLayerSerializer(ResourceSerializer):
 
     class Meta:  # noqa: D106
         model = ContextLayer
-        exclude = (
-            'password', 'username',
-            'cloud_native_gis_layer_id', 'arcgis_config',
-            'related_table', 'token', 'url_legend', 'group'
-        )
+        fields = '__all__'
 
 
 class ContextLayerFieldSerializer(serializers.ModelSerializer):
