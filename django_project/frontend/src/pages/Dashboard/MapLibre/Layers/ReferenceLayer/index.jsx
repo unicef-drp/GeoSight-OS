@@ -47,7 +47,6 @@ import GeorepoAuthorizationModal
 import { IS_DEBUG, Logger } from "../../../../../utils/logger";
 import { Actions } from "../../../../../store/dashboard";
 
-export const BEFORE_LAYER = 'gl-draw-polygon-fill-inactive.cold'
 export const CONTEXT_LAYER_ID = `context-layer`
 const MAX_ELEVATION = 500000
 
@@ -239,17 +238,9 @@ export function ReferenceLayer(
       const contextLayerIds = map.getStyle().layers.filter(
         layer => layer.type !== 'raster'
       ).filter(
-        layer => layer.id.includes(CONTEXT_LAYER_ID) || layer.id === BEFORE_LAYER
+        layer => layer.id.includes(CONTEXT_LAYER_ID) || layer.id.includes('gl-draw-') || [INDICATOR_LABEL_ID, LAYER_HIGHLIGHT_ID].includes(layer.id)
       )
       let before = contextLayerIds[0]?.id
-      if (hasLayer(map, INDICATOR_LABEL_ID)) {
-        before = INDICATOR_LABEL_ID
-      }
-
-      // Before highlight
-      if (hasLayer(map, LAYER_HIGHLIGHT_ID)) {
-        before = LAYER_HIGHLIGHT_ID
-      }
       map.addLayer(
         {
           id: OUTLINE_LAYER_ID,

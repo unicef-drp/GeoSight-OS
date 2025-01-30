@@ -18,7 +18,7 @@
    ========================================================================== */
 
 import { hasLayer, hasSource, removeLayer } from "../../utils";
-import { BEFORE_LAYER, CONTEXT_LAYER_ID } from "../../Layers/ReferenceLayer";
+import { CONTEXT_LAYER_ID } from "../../Layers/ReferenceLayer";
 
 const INDICATOR_LABEL_ID = 'indicator-label'
 let lastFeatures = null;
@@ -129,7 +129,7 @@ export const renderLabel = (map, features, config) => {
     }
   });
   const contextLayerIds = map.getStyle().layers.filter(
-    layer => layer.id.includes(CONTEXT_LAYER_ID) || layer.id === BEFORE_LAYER
+    layer => layer.id.includes(CONTEXT_LAYER_ID) || layer.id.includes('gl-draw-')
   )
   map.addLayer(
     {
