@@ -149,8 +149,6 @@ function ContextLayers() {
  * @param {function} handleChange Function when the accordion show.
  */
 export default function ContextLayersAccordion({ expanded }) {
-  const dispatch = useDispatch();
-  const { contextLayersShow } = useSelector(state => state.map);
 
   /** Render group and layers
    * @param {str} groupName Name of group.
