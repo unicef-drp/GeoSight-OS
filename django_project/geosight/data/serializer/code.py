@@ -116,7 +116,9 @@ class CodeListSerializer(ResourceSerializer):
     def to_internal_value(self, data):
         """Ensure `codes` stays in validated_data."""
         codes_data = data.get("codes", [])  # Extract codes manually
-        validated_data = super(CodeListSerializer, self).to_internal_value(data)
+        validated_data = super(
+            CodeListSerializer, self
+        ).to_internal_value(data)
         validated_data["codes"] = codes_data  # Reattach codes
         return validated_data
 
@@ -132,7 +134,9 @@ class CodeListSerializer(ResourceSerializer):
                 value=code_data.get("value"),
                 description=code_data.get("description")
             )
-            CodeInCodeList.objects.create(codelist=codelist, code=code, order=idx)
+            CodeInCodeList.objects.create(
+                codelist=codelist, code=code, order=idx
+            )
 
         return codelist
 

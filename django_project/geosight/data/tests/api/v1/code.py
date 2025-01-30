@@ -20,12 +20,11 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 from geosight.data.models.code import (
-    Code, CodeList, CodeInCodeList
+    Code, CodeList
 )
 from geosight.data.tests.model_factories.code import (
-    CodeF, CodeListF, CodeInCodeList, CodeInCodeListF
+    CodeF, CodeListF, CodeInCodeListF
 )
-from geosight.permission.models.factory import PERMISSIONS
 from geosight.permission.tests._base import BasePermissionTest
 
 User = get_user_model()
@@ -73,25 +72,34 @@ class CodeAPITest(BasePermissionTest.TestCase):
         self.assertEqual(len(response.json()['results']), 1)
 
         expected_response = {
-            "count": 1,
             "next": None,
             "previous": None,
+            "count": 1,
+            "page": 1,
+            "total_page": 1,
+            "page_size": 100,
             "results": [
                 {
                     "id": self.code_in_code_list_1.codelist_id,
                     "name": self.code_in_code_list_1.codelist.name,
-                    "description": self.code_in_code_list_1.codelist.description,
+                    "description": (
+                        self.code_in_code_list_1.codelist.description
+                    ),
                     "codes": [
                         {
                             "id": self.code_in_code_list_1.code_id,
                             "name": self.code_in_code_list_1.code.name,
-                            "description": self.code_in_code_list_1.code.description,
+                            "description": (
+                                self.code_in_code_list_1.code.description
+                            ),
                             "value": self.code_in_code_list_1.code.value,
                         },
                         {
                             "id": self.code_in_code_list_2.code_id,
                             "name": self.code_in_code_list_2.code.name,
-                            "description": self.code_in_code_list_2.code.description,
+                            "description": (
+                                self.code_in_code_list_2.code.description
+                            ),
                             "value": self.code_in_code_list_2.code.value,
                         },
                     ],
@@ -122,9 +130,12 @@ class CodeAPITest(BasePermissionTest.TestCase):
         response = self.assertRequestGetView(url, 200, user=self.viewer)
         self.assertEqual(len(response.json()['results']), 1)
         expected_response = {
-            "count": 1,
             "next": None,
             "previous": None,
+            "count": 1,
+            "page": 1,
+            "total_page": 1,
+            "page_size": 100,
             "results": [
                 {
                     "id": code_list_custom.id,
@@ -134,13 +145,17 @@ class CodeAPITest(BasePermissionTest.TestCase):
                         {
                             "id": code_in_code_list_3.code_id,
                             "name": code_in_code_list_3.code.name,
-                            "description": code_in_code_list_3.code.description,
+                            "description": (
+                                code_in_code_list_3.code.description
+                            ),
                             "value": code_in_code_list_3.code.value,
                         },
                         {
                             "id": code_in_code_list_4.code_id,
                             "name": code_in_code_list_4.code.name,
-                            "description": code_in_code_list_4.code.description,
+                            "description": (
+                                code_in_code_list_4.code.description
+                            ),
                             "value": code_in_code_list_4.code.value,
                         },
                     ],
@@ -153,20 +168,20 @@ class CodeAPITest(BasePermissionTest.TestCase):
         """Test create codelist."""
         url = reverse('codelist-list')
         payload = {
-          "name": "Test Code List 1",
-          "description": "Test Code List Description 1",
-          "codes": [
-            {
-              "name": "Code 1",
-              "description": "Code Description 1",
-              "value": "Code Value 1"
-            },
-            {
-              "name": "Test Code 1",
-              "description": "Test Code Description 1",
-              "value": "Test Code Value 1"
-            }
-          ]
+            "name": "Test Code List 1",
+            "description": "Test Code List Description 1",
+            "codes": [
+                {
+                    "name": "Code 1",
+                    "description": "Code Description 1",
+                    "value": "Code Value 1"
+                },
+                {
+                    "name": "Test Code 1",
+                    "description": "Test Code Description 1",
+                    "value": "Test Code Value 1"
+                }
+            ]
         }
 
         # Test admin create
@@ -225,9 +240,9 @@ class CodeAPITest(BasePermissionTest.TestCase):
             args=[code_in_code_list.codelist_id]
         )
         payload = {
-          "name": "New Code",
-          "description": "New Code Description",
-          "value": "New Code Value"
+            "name": "New Code",
+            "description": "New Code Description",
+            "value": "New Code Value"
         }
 
         # Test admin create

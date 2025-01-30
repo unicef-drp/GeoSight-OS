@@ -16,22 +16,15 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets, permissions
-from rest_framework.pagination import PageNumberPagination
+from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.decorators import action, permission_classes
 
 from core.api_utils import ApiTag
 from core.api_utils import common_api_params, ApiParams
+from core.pagination import Pagination
 from core.permissions import AdminAuthenticationPermission
 from geosight.data.models.code import CodeList
 from geosight.data.serializer.code import CodeListSerializer, CodeSerializer
-
-
-# Custom pagination class
-class CustomPagination(PageNumberPagination):
-    page_size = 10  # Number of items per page
-    page_size_query_param = "page_size"
-    max_page_size = 100  # Maximum limit
 
 
 class CodeListViewSet(
@@ -43,7 +36,7 @@ class CodeListViewSet(
     serializer_class = CodeListSerializer
     extra_exclude_fields = ['parameters']
     queryset = CodeList.objects.all()
-    pagination_class = CustomPagination
+    pagination_class = Pagination
 
     def get_permissions(self):
         """Dynamically assign permission classes."""
@@ -52,6 +45,7 @@ class CodeListViewSet(
         return [permissions.IsAuthenticated()]
 
     def get_queryset(self):
+        """Get queryset based on query parameters."""
         param = self.request.query_params.get('name__contains')
         if param:
             return self.queryset.filter(name__icontains=param)
@@ -99,7 +93,9 @@ class CodeListViewSet(
     @action(detail=True, methods=['post'])
     def codes(self, request, pk):
         """Return dashboard group list."""
-        serializer = CodeSerializer(data=request.data, context={'code_list_pk': pk})
+        serializer = CodeSerializer(
+            data=request.data, context={'code_list_pk': pk}
+        )
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(

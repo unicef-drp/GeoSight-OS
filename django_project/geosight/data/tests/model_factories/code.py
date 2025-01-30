@@ -35,7 +35,9 @@ class CodeListF(factory.django.DjangoModelFactory):
     """Factory for Code List."""
 
     name = factory.Sequence(lambda n: 'Code List {}'.format(n))
-    description = factory.Sequence(lambda n: 'Code List Description {}'.format(n))
+    description = factory.Sequence(
+        lambda n: 'Code List Description {}'.format(n)
+    )
 
     class Meta:  # noqa: D106
         model = CodeList
