@@ -42,12 +42,16 @@ class Code(AbstractTerm):
 class CodeList(AbstractTerm):
     """The CodeList."""
 
-    @property
-    def codes(self):
+    def codes(self, value_only=False):
         """Return code list."""
-        return list(
-            self.codeincodelist_set.values_list('code__value', flat=True)
-        )
+        if value_only:
+            return list(
+                self.codeincodelist_set.values_list('code__value', flat=True)
+            )
+        codes = []
+        for code_in_codelist in self.codeincodelist_set.all():
+            codes.append(code_in_codelist.code)
+        return codes
 
     class Meta:  # noqa: D106
         verbose_name = 'Codelist'

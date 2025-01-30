@@ -64,6 +64,7 @@ class ApiTag:
     BASEMAP = 'Basemap'
     INDICATOR = 'Indicator'
     CONTEXT_LAYER = 'Context layer'
+    CODE_LIST = 'Code List'
     RELATED_TABLE = 'Related table'
     RELATED_TABLE_DATA = 'Related table data'
     DATA_BROWSER = 'Data Browser'
