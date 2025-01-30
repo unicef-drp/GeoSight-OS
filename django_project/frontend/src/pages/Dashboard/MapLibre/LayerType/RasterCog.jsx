@@ -19,7 +19,6 @@ import {
   addClickEvent,
   addStandalonePopup,
   getBeforeLayerId,
-  getLayerIdOfReferenceLayer,
   hexToRgba,
   removeLayer,
   removeSource
@@ -29,6 +28,7 @@ import { sleep } from "../../../../utils/main";
 import { getCogFeatureByPoint } from "../../../../utils/COGLayer";
 import { setColorFunction } from '@geomatico/maplibre-cog-protocol';
 import { DjangoRequests } from "../../../../Requests";
+import { Session } from "../../../../utils/Sessions";
 
 
 /***
@@ -64,6 +64,10 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
       }
 
       let classifications = [];
+      const session = new Session(id, 1000)
+      if (!session.isValid) {
+        return
+      }
 
       await DjangoRequests.post(
         `/api/raster/classification`,
@@ -81,6 +85,10 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
       }).catch(error => {
         throw Error(error.toString())
       })
+
+      if (!session.isValid) {
+        return
+      }
 
       // TODO: Handle styling when multiple, identical COG URLs are used
       const url = `cog://${data.url}#` + contextLayerData.id;
@@ -132,7 +140,7 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
       map.addSource(id, sourceParams);
 
       // We find the before layers
-      let before = getLayerIdOfReferenceLayer(map)
+      let before = null;
       if (contextLayerOrder) {
         const beforeOrder = getBeforeLayerId(map, id, contextLayerOrder)
         if (beforeOrder) {
