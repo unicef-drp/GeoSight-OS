@@ -255,7 +255,6 @@ export const FilterInputData = memo(
     const updateFilter = () => {
       // Run the calculation
       if (active) {
-        console.log(field)
         const queryWhere = returnDataToExpression(`data.${keyField}`, operator, value)
         const query = `SELECT ARRAY(concept_uuid) AS concept_uuids
                        FROM ? data

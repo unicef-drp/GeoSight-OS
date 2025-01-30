@@ -42,6 +42,9 @@ import { SelectWithList } from "../../../../components/Input/SelectWithList";
 import PlayControl from "./PlayControl";
 import { ThemeButton } from "../../../../components/Elements/Button";
 import { Session } from "../../../../utils/Sessions";
+import {
+  referenceLayerIndicatorLayer
+} from "../../../../utils/indicatorLayer";
 
 import './style.scss';
 
@@ -169,8 +172,13 @@ export default function GlobalDateSelector() {
     indicatorLayersSelected.map(id => {
       const indicatorLayer = indicatorLayers.find(layer => layer.id === id)
       if (indicatorLayer) {
+        const identifier = referenceLayerIndicatorLayer(null, indicatorLayer)?.identifier;
         indicatorLayer?.indicators?.map(indicator => {
-          const indicatorDates = indicatorLayerMetadata['indicator-' + indicator.id]?.dates
+          let metadataId = 'indicator-' + indicator.id
+          if (identifier) {
+            metadataId += '-' + identifier
+          }
+          const indicatorDates = indicatorLayerMetadata[metadataId]?.dates
           if (typeof indicatorDates === 'string' && indicatorDates.includes('Error')) {
             errorMessage = indicatorDates
           }
@@ -335,8 +343,10 @@ export default function GlobalDateSelector() {
       async () => {
         if (indicators.length) {
           const session = new Session('GlobalDateSelector');
+
+          // This is for default identifier
           const metadataUrl = `/api/indicator/metadata?reference_layer_uuid=` + referenceLayer?.identifier
-          axiosPostWithSession('FetchMetadata', metadataUrl, indicators.map(indicator => indicator.id))
+          await axiosPostWithSession('FetchMetadata', metadataUrl, indicators.map(indicator => indicator.id))
             .then(responses => {
                 const data = {}
                 indicators.map(indicator => {
@@ -357,15 +367,66 @@ export default function GlobalDateSelector() {
                 }
               }
             ).catch(err => {
-              if (session.isValid) {
-                dispatch(Actions.IndicatorLayerMetadata.updateBatch({}))
+                if (session.isValid) {
+                  dispatch(Actions.IndicatorLayerMetadata.updateBatch({}))
+                }
               }
-            }
-          );
+            );
         }
       }
     )();
   }, [indicators, referenceLayer]);
+
+  /**
+   * Update indicator dates
+   */
+  useEffect(() => {
+    (
+      async () => {
+        if (indicatorLayers.length) {
+          const datasetWithIndicators = {};
+          [currentIndicatorLayer, currentIndicatorSecondLayer].concat(indicatorLayers).map(layer => {
+            const identifier = referenceLayerIndicatorLayer(referenceLayer, layer)?.identifier;
+            if (identifier !== referenceLayer.identifier) {
+              if (!datasetWithIndicators[identifier]) {
+                datasetWithIndicators[identifier] = []
+              }
+              datasetWithIndicators[identifier] = datasetWithIndicators[identifier].concat(
+                layer?.indicators?.map(indicator => indicator.id)
+              )
+            }
+          })
+          for (var identifier of Object.keys(datasetWithIndicators)) {
+            const indicators = datasetWithIndicators[identifier]
+            const metadataUrl = `/api/indicator/metadata?reference_layer_uuid=` + identifier
+            if (indicators?.length) {
+              await axiosPostWithSession(metadataUrl, metadataUrl, indicators)
+                .then(responses => {
+                    const data = {}
+                    indicators.map(indicator => {
+                      const response = responses[indicator]
+                      const id = 'indicator-' + indicator + '-' + identifier
+                      if (!response?.dates?.length) {
+                        data[id] = {
+                          dates: [nowUTC().toISOString()],
+                          count: 0,
+                          version: new Date().getTime() + '-' + referenceLayer?.identifier
+                        }
+                      } else {
+                        data[id] = response
+                      }
+                    })
+                    dispatch(Actions.IndicatorLayerMetadata.updateBatch(data))
+                  }
+                ).catch(err => {
+                  }
+                );
+            }
+          }
+        }
+      }
+    )();
+  }, [indicatorLayers]);
 
   /**
    * Update dates

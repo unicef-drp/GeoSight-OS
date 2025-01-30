@@ -84,7 +84,6 @@ export function ReferenceLayer(
   const FILL_LAYER_ID = FILL_LAYER_ID_KEY + '-' + idx
   const OUTLINE_LAYER_ID = OUTLINE_LAYER_ID_KEY + '-' + idx
 
-  const prevState = useRef()
   const {
     referenceLayer: referenceLayerProject,
     indicatorLayers,
@@ -739,7 +738,6 @@ export default function ReferenceLayers({ map, deckgl, is3DView }) {
   const {
     referenceLayers
   } = useSelector(state => state.map);
-
   return map ? <>
     <ReferenceLayer
       idx={0} map={map}
