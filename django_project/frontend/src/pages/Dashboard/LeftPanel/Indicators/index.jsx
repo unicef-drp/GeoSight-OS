@@ -75,7 +75,7 @@ export default function Indicators() {
   }, [indicators, indicatorLayerMetadata]);
 
   /** Loading data **/
-  const loading = (id) => {
+  const loading = (id, referenceLayerIdentifier) => {
     const indicatorLayer = indicatorLayers.filter(layer => layer.indicators.map(indicator => indicator.id).includes(id))
     indicatorLayer.map(indicatorLayer => {
       indicatorFetchingIds.push(indicatorLayer.id);
@@ -84,7 +84,10 @@ export default function Indicators() {
     dispatch(Actions.IndicatorsData.request(id))
 
     // get metadata and update progress
-    const dataId = 'indicator-' + id
+    let dataId = 'indicator-' + id
+    if (referenceLayer.identifier !== referenceLayerIdentifier) {
+      dataId += '-' + referenceLayerIdentifier
+    }
     const metadata = indicatorLayerMetadata[dataId]
     if (metadata?.version) {
       dispatch(
@@ -215,13 +218,16 @@ export default function Indicators() {
         // TODO:
         //  Loading by datasets
         indicatorsWithDataset.map(row => {
+          const { id, datasets } = row
           const indicator = indicators.find(
-            indicator => indicator.id === row.id
+            indicator => indicator.id === id
           )
           if (indicator) {
             const { id } = indicator
-            const referenceLayerIdentifier = referenceLayer?.identifier;
-            loading(id, referenceLayerIdentifier)
+            const _datasets = Array.from(new Set(datasets))
+            _datasets.map(dataset => {
+              loading(id, dataset)
+            })
           }
 
         })

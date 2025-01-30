@@ -131,7 +131,7 @@ export default function ListForm(
     } else if (dataStructure.children?.length) {
       dataStructure.children = Array.from(new Set(
           dataStructure.children.concat(
-            data.filter(row => row.group == null).map(row => row.id)
+            data.filter(row => row.group === null).map(row => row.id)
           )
         )
       )
