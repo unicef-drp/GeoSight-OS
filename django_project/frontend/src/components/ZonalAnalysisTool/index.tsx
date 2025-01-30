@@ -42,7 +42,11 @@ import {
 } from "./index.d";
 import { DashboardTool } from "../../store/dashboard/reducers/dashboardTool";
 import { ZonalAnalysisResult } from "./Result";
-import { dictDeepCopy, numberWithCommas, getAreaDecimalLength } from "../../utils/main";
+import {
+  dictDeepCopy,
+  getAreaDecimalLength,
+  numberWithCommas
+} from "../../utils/main";
 
 import './style.scss';
 import {
@@ -114,7 +118,9 @@ export const ZonalAnalysisTool = forwardRef((
           draw.redraw(features);
         }
       },
-      isActive() {return draw}
+      isActive() {
+        return draw
+      }
     }));
 
     /** When start */
@@ -131,9 +137,19 @@ export const ZonalAnalysisTool = forwardRef((
 
     /** When start */
     useEffect(() => {
-      // @ts-ignore
-      setConfig({ ...config, selectionMode: selectionModes[0] })
-    }, [selectionModes]);
+      if (tool?.config?.selectionModes) {
+        if (selectionModes[0] !== config.selectionMode) {
+          // @ts-ignore
+          setConfig(
+            {
+              ...config,
+              // @ts-ignore
+              selectionMode: tool?.config?.selectionModes[0]
+            }
+          )
+        }
+      }
+    }, [tool?.config?.selectionModes]);
 
     /** Buffer changed */
     useEffect(() => {
@@ -178,7 +194,7 @@ export const ZonalAnalysisTool = forwardRef((
               (layer: maplibregl.LayerSpecification) => {
                 // @ts-ignore
                 const source = style.sources[layer.source]
-                return ['vector', 'geojson'].includes(source.type)
+                return ['vector', 'geojson'].includes(source.type) && !['indicator-label'].includes(layer.id)
               }
             ).map(layer => layer.id)
             const features = map.queryRenderedFeatures(
@@ -309,8 +325,9 @@ export const ZonalAnalysisTool = forwardRef((
       <>
         <div className='ZonalAnalysisToolConfiguration'>
           <FormControl className='MuiForm-RadioGroup'>
-            <FormLabel className="MuiInputLabel-root">Selection
-              mode:</FormLabel>
+            <FormLabel className="MuiInputLabel-root">
+              Selection mode:
+            </FormLabel>
             <RadioGroup
               value={config.selectionMode}
               onChange={(evt) => {
@@ -361,7 +378,7 @@ export const ZonalAnalysisTool = forwardRef((
             <ThemeButton
               disabled={!(draw?.getFeatures().length) || !isAllAnalyzingDone}
               variant="primary Basic"
-              style={{margin: 0, minWidth: "100%"}}
+              style={{ margin: 0, minWidth: "100%" }}
               onClick={analyze}
             >
               Run analysis

@@ -196,6 +196,9 @@ test.describe('Create complex project', () => {
     await page.getByTitle('Start Measurement').click();
     await expect(page.getByText('Measure distances and areas')).toBeVisible();
     await page.getByTitle('Zonal Analysis').click();
+    await expect(page.getByText('Draw on map and finish by')).toBeVisible();
+    await page.getByText('Click to select').click();
+    await expect(page.getByText('Click a feature on the map')).toBeVisible();
 
     // --------------------------------------------------------------
     // CHECK PROJECT WITH OVERRIDE CONFIG EDIT MODE
