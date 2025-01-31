@@ -96,7 +96,6 @@ const ServerTable = forwardRef(
     const { openConfirmDialog } = useConfirmDialog();
     const [searchParams, setSearchParams] = useSearchParams();
     const [filterModel, setFilterModel] = useState(defaults.filters)
-    console.log(defaults)
 
     if (enable.filter) {
       columns.forEach(column => {
@@ -113,14 +112,6 @@ const ServerTable = forwardRef(
           }
         }
       });
-      // useEffect(() => {
-      //   if (JSON.stringify(cleanFilters(filterModel)) === '{}') {
-      //     window.sessionStorage.removeItem(url)
-      //   } else {
-      //     window.sessionStorage.setItem(url, JSON.stringify(cleanFilters(filterModel)))
-      //   }
-      //   updateQueryParam(filterModel)
-      // }, [filterModel]);
     }
 
     // Notification
