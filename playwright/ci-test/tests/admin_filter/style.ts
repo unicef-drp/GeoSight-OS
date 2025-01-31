@@ -90,9 +90,9 @@ test.describe('Test filter in style admin', () => {
     await page.getByRole('button', { name: 'Create New Style' }).click();
     await page.locator('b').getByRole('link', { name: 'Styles' }).click();
     await expect(page.locator('.MuiDataGrid-row')).toHaveCount(3);
-    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Style 3');
-    await expect(page.locator('.MuiDataGrid-row').nth(1).locator('.MuiDataGrid-cell').nth(1)).toContainText('Style 2');
-    await expect(page.locator('.MuiDataGrid-row').nth(2).locator('.MuiDataGrid-cell').nth(1)).toContainText('Style 1');
+    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Style_3');
+    await expect(page.locator('.MuiDataGrid-row').nth(1).locator('.MuiDataGrid-cell').nth(1)).toContainText('Style_2');
+    await expect(page.locator('.MuiDataGrid-row').nth(2).locator('.MuiDataGrid-cell').nth(1)).toContainText('Style_1');
   });
 
 })
