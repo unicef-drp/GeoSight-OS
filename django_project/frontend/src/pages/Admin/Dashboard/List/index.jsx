@@ -147,6 +147,9 @@ export default function DashboardList() {
       return actions
     },
   }
+
+  console.log(JSON.stringify(defaultFilter))
+
   return <AdminList
     url={{
       list: urls.api.list,

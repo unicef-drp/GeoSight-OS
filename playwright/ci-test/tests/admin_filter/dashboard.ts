@@ -132,4 +132,18 @@ test.describe('Test filter in project admin', () => {
     await expect(dataGridRow).toHaveCount(1);
   });
 
+  test('Test filters persist', async ({ page }) => {
+    await page.getByRole('button', { name: 'Sort' }).click();
+    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.getByRole('textbox', { name: 'Category' }).click();
+    await page.getByRole('textbox', { name: 'Category' }).fill('afr');
+    await page.getByRole('button', { name: 'Apply Filters' }).click();
+    await page.locator('.MuiBackdrop-root').click();
+    await page.getByRole('button', { name: 'Create New Project' }).click();
+    await page.getByRole('link', { name: 'Projects' }).click();
+    await expect(page.locator('.MuiDataGrid-row')).toHaveCount(2);
+    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Dashboard D');
+    await expect(page.locator('.MuiDataGrid-row').nth(1).locator('.MuiDataGrid-cell').nth(1)).toContainText('Dashboard C');
+  });
+
 })

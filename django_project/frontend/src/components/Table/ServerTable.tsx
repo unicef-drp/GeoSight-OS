@@ -29,7 +29,7 @@ import DataGridFilter from "../Filter";
 import './ServerTable.scss';
 
 
-const cleanFilters = (filters: any) => {
+const cleanFilters = (filters: any, columns: any) => {
   // @ts-ignore
   if (!filters) {
     return {}
@@ -39,8 +39,19 @@ const cleanFilters = (filters: any) => {
       ([key, value]) => ![null, 'null'].includes(value as string) && !['page', 'page_size'].includes(key)
     )
   )
-  if (newFilters.sort) {
-    newFilters['sort'] = typeof newFilters['sort'] === 'string' ? newFilters['sort'] : newFilters['sort'][0]
+  if (newFilters.sort?.length > 0) {
+    let field = typeof newFilters.sort === 'string' ? newFilters.sort : newFilters.sort[0]
+    let sort = 'asc'
+    if (field[0] === '-') {
+      sort = 'desc'
+      field = field.substring(1)
+    }
+
+    // @ts-ignore
+    const column = columns.find(column => column.serverKey == field || column.field == field)
+    newFilters.sort = sort === 'asc' ? column.field : `-${column.field}`
+  } else {
+    delete newFilters.sort
   }
   return newFilters
 }
@@ -85,6 +96,7 @@ const ServerTable = forwardRef(
     const { openConfirmDialog } = useConfirmDialog();
     const [searchParams, setSearchParams] = useSearchParams();
     const [filterModel, setFilterModel] = useState(defaults.filters)
+    console.log(defaults)
 
     if (enable.filter) {
       columns.forEach(column => {
@@ -149,10 +161,7 @@ const ServerTable = forwardRef(
 
     const updateQueryParam = (params: any) => { // Set 'key' to 'newValue'
       // @ts-ignore
-      setSearchParams({
-        ...cleanFilters(params),
-        sort: getSort(sortModel)
-      });
+      setSearchParams(cleanFilters(params, columns));
     };
 
     useEffect(() => {
@@ -187,7 +196,7 @@ const ServerTable = forwardRef(
     /*** Parameters Changed */
     const parametersChanged = () => {
       const params = getParameters ? getParameters(parameters) : {}
-      setParameters({ ...parameters, ...params, ...cleanFilters(filterModel) })
+      setParameters({ ...parameters, ...params, ...filterModel })
     }
 
     /*** Load data */
@@ -232,12 +241,12 @@ const ServerTable = forwardRef(
     /*** When parameters changed */
     useEffect(() => {
       if (enable.filter) {
-        if (JSON.stringify(cleanFilters(parameters)) === '{}') {
+        if (JSON.stringify(cleanFilters(parameters, columns)) === '{}') {
           window.sessionStorage.removeItem(url)
         } else {
-          window.sessionStorage.setItem(url, JSON.stringify(cleanFilters(parameters)))
+          window.sessionStorage.setItem(url, JSON.stringify(cleanFilters(parameters, columns)))
         }
-        updateQueryParam(parameters)
+        updateQueryParam(cleanFilters(parameters, columns))
       }
       loadData(false)
     }, [parameters])
