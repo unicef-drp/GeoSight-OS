@@ -18,7 +18,7 @@ import { AddButton } from "../../../components/Elements/Button";
 import { FormControl } from "@mui/material";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import { Group } from "../../../types";
+import { Group } from "../../../types/Group";
 
 
 interface Props {

@@ -17,8 +17,9 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.contrib import admin
 
 from geosight.data.models.basemap_layer import (
-    BasemapLayer, BasemapLayerParameter
+    BasemapLayer, BasemapLayerParameter, BasemapGroup
 )
+from geosight.data.admin.base import BaseAdminResourceMixin
 
 
 class BasemapLayerParameterInline(admin.TabularInline):
@@ -28,12 +29,14 @@ class BasemapLayerParameterInline(admin.TabularInline):
     extra = 0
 
 
-class BasemapLayerAdmin(admin.ModelAdmin):
+class BasemapLayerAdmin(BaseAdminResourceMixin):
     """BasemapLayer admin."""
 
-    list_display = ('name', 'url', 'group', 'creator')
+    list_display = ('name', 'url', 'group') + BaseAdminResourceMixin.list_display  # noqa
     inlines = (BasemapLayerParameterInline,)
     list_editable = ('group', 'creator')
+    readonly_fields = BaseAdminResourceMixin.readonly_fields
 
 
 admin.site.register(BasemapLayer, BasemapLayerAdmin)
+admin.site.register(BasemapGroup)

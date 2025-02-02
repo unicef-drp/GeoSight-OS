@@ -13,14 +13,8 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   Navbar : Deprecated, reusing css from admin dashboard
-   ========================================================================== */
-
-@import '../../app/variables';
-
 header {
-  background-color: $navbar-background-color;
+  background-color: var(--navbar-background-color);
 
   .MiddleSection {
     position: absolute;
@@ -38,13 +32,20 @@ header {
   .NavHeader {
     align-items: center;
     display: flex;
-    height: $nav-header-height;
+    height: var(--nav-header-height);
     padding: 5px 1rem;
     position: relative;
     width: 100%;
     z-index: 1001;
     box-sizing: border-box;
     color: var(--anti-primary-color);
+
+    &.Nav-Staging {
+      background-color: #FF0000;
+    }
+    &.Nav-Production {
+      background-color: var(--primary-color);
+    }
 
     a {
       display: block;
@@ -117,7 +118,7 @@ header {
   .NavbarAccount {
     background-color: white;
     border-radius: 50%;
-    color: $base-black-color;
+    color: var(--base-black-color);
     cursor: pointer;
     height: 24px;
     text-transform: capitalize;
@@ -126,7 +127,7 @@ header {
     font-size: 16px;
 
     &:hover {
-      opacity: $base-hovered-opacity;
+      opacity: var(--base-hovered-opacity);
     }
   }
 
@@ -135,7 +136,7 @@ header {
     align-items: center;
 
     .NavbarAccount {
-      background-color: $primary-color;
+      background-color: var(--primary-color);
       color: white;
       font-size: 22px;
       height: 33px;
@@ -163,7 +164,7 @@ header {
     margin-right: 10px;
     border: 1px solid white;
     background: white;
-    color: $primary-color;
+    color: var(--primary-color);
     position: relative;
     height: 12px;
   }
@@ -189,7 +190,7 @@ header {
     background-color: unset !important;
     display: block;
     padding: 6px 16px !important;
-    border-bottom: 1px solid $primary-color;
+    border-bottom: 1px solid var(--primary-color);
     width: 100%;
   }
 

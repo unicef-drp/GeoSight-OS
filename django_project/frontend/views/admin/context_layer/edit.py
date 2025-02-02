@@ -94,7 +94,9 @@ class ContextLayerEditView(RoleContributorRequiredMixin, AdminBaseView):
         )
 
         if form.is_valid():
-            context_layer = form.save()
+            context_layer = form.save(commit=False)
+            context_layer.modified_by = request.user
+            context_layer.save()
             context_layer.save_relations(data)
             # Save permission
             instance.permission.update_from_request_data(

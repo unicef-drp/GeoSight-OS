@@ -20,7 +20,7 @@ test.describe('View project', () => {
     // Check current date info is changed based on clicked project date
     await expect(page.locator('.CurrentDate')).toContainText('<=2026-02-17');
     await page.getByTitle('Show global time configuration').click();
-    await page.locator('div:nth-child(2) > .ReactSelect > .ReactSelect__control > .ReactSelect__indicators > .DropdownIndicator > svg').first().click();
+    await page.locator('.GlobalDateSelectionWrapper div:nth-child(2) > .ReactSelect > .ReactSelect__control > .ReactSelect__indicators > .DropdownIndicator > svg').first().click();
     await page.getByRole('option', { name: '09-' }).click();
     await expect(page.locator('.CurrentDate')).toContainText('<=2023-09-30');
     await page.getByLabel('Show last known value in range').uncheck();

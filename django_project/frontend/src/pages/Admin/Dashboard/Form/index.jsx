@@ -20,7 +20,6 @@ import ViewHeadlineIcon from '@mui/icons-material/ViewHeadline';
 import ReplayIcon from '@mui/icons-material/Replay';
 import UndoIcon from "@mui/icons-material/Undo";
 import RedoIcon from "@mui/icons-material/Redo";
-import CircularProgress from '@mui/material/CircularProgress';
 
 import App, { render } from '../../../../app';
 import { pageNames } from '../../index';
@@ -38,15 +37,6 @@ import {
 } from "../../../../components/Notification";
 
 // Dashboard Form
-import SummaryDashboardForm from './Summary'
-import IndicatorsForm from './Indicators'
-import IndicatorLayersForm from './IndicatorLayers'
-import ContextLayerForm from './ContextLayer'
-import BasemapsForm from './Basemaps'
-import WidgetForm from './Widgets'
-import RelatedTableForm from './RelatedTable'
-import FiltersForm from './Filters'
-import ShareForm from './Share'
 import GeorepoAuthorizationModal
   from "../../../../components/GeorepoAuthorizationModal";
 import { resourceActions } from "../List";
@@ -63,7 +53,9 @@ import Modal, {
   ModalFooter,
   ModalHeader
 } from "../../../../components/Modal";
-import ToolsForm from "./Tools";
+import DashboardFormContent from "./DashboardContent";
+import { PAGES } from "./types.d";
+import DashboardFormHeader from "./DashboardFormHeader";
 
 
 /**
@@ -168,17 +160,17 @@ export function DashboardSaveAsForm({ submitted, onSaveAs }) {
 
   useEffect(() => {
     if (openSaveAs) {
-      setNameData($('#SummaryName').val())
-      setSlugInput($('#SummarySlug').val())
+      setNameData($('#GeneralName').val())
+      setSlugInput($('#GeneralSlug').val())
     }
   }, [openSaveAs]);
 
   useEffect(() => {
-    $('#SummaryName').val(nameData)
+    $('#GeneralName').val(nameData)
   }, [nameData]);
 
   useEffect(() => {
-    $('#SummarySlug').val(slugInput)
+    $('#GeneralSlug').val(slugInput)
   }, [slugInput]);
 
   return <>
@@ -205,7 +197,7 @@ export function DashboardSaveAsForm({ submitted, onSaveAs }) {
             <div>
               <span className="form-input">
               <input
-                id="SummaryName" type="text" name="name" required={true}
+                id="GeneralName" type="text" name="name" required={true}
                 placeholder='Example: Afghanistan Risk Dashboard'
                 value={nameData}
                 onChange={(event) => {
@@ -301,7 +293,6 @@ export function DashboardSaveForm(
     tools
   } = useSelector(state => state.dashboard.data);
   const { data } = useSelector(state => state.dashboard);
-  const filtersData = useSelector(state => state.filtersData);
   const [submitted, setSubmitted] = useState(false);
 
   // Notification
@@ -314,21 +305,21 @@ export function DashboardSaveForm(
   const onSave = (targetUrl = document.location.href) => {
     setSubmitted(true)
     const errors = [];
-    const name = $('#SummaryName').val();
-    const slug = $('#SummarySlug').val();
-    const description = $('#SummaryDescription').val();
-    const overview = $('#SummaryOverview').val();
-    const icon = $('#SummaryIcon')[0].files[0];
-    const category = $('#SummaryCategory .ReactSelect__single-value').text();
-    const splashScreen = $('#SummarySplash').is(':checked');
-    const truncateIndicatorName = $('#SummaryTruncateIndicatorName').is(':checked');
-    const enableGeometrySearch = $('#SummaryEnableGeometrySearch').is(':checked');
+    const name = $('#GeneralName').val();
+    const slug = $('#GeneralSlug').val();
+    const description = $('#GeneralDescription').val();
+    const overview = $('#GeneralOverview').val();
+    const icon = $('#GeneralIcon')[0].files[0];
+    const category = $('#GeneralCategory .ReactSelect__single-value').text();
+    const splashScreen = $('#GeneralSplash').is(':checked');
+    const truncateIndicatorName = $('#GeneralTruncateIndicatorName').is(':checked');
+    const enableGeometrySearch = $('#GeneralEnableGeometrySearch').is(':checked');
 
     if (!name) {
       errors.push('Name is empty, please fill it.')
     }
     if (Object.keys(referenceLayer).length === 0 || !referenceLayer.identifier) {
-      errors.push('Need to select View in Summary.')
+      errors.push('Need to select View in General.')
     }
     if (basemapsLayers.length === 0) {
       errors.push('Basemap is empty, please select one or more basemap.')
@@ -411,7 +402,7 @@ export function DashboardSaveForm(
         'extent': extent,
         'widgets': widgets,
         'widgets_structure': widgetsStructure,
-        'filters': filtersData ? filtersData : filters,
+        'filters': filters,
         'filters_allow_modify': filtersAllowModify,
         'permission': permission,
         'show_splash_first_open': splashScreen,
@@ -491,124 +482,6 @@ export function DashboardSaveForm(
 }
 
 /**
- * Dashboard Form Section Content
- */
-export function DashboardFormContent({ changed }) {
-  const { data } = useSelector(state => state.dashboard);
-  return (
-    <div className='DashboardFormContent'>
-      {Object.keys(data).length > 0 ?
-        <>
-          <SummaryDashboardForm changed={changed}/>
-          <BasemapsForm/>
-          <IndicatorsForm/>
-          <IndicatorLayersForm/>
-          <ContextLayerForm/>
-          <FiltersForm/>
-          <WidgetForm/>
-          <RelatedTableForm/>
-          <ToolsForm/>
-          {
-            data?.user_permission.share ? <ShareForm/> : ""
-          }
-        </> :
-        <div className='DashboardFormLoading'>
-          <div className='DashboardFormLoadingSection'>
-            <CircularProgress/>
-            <div>
-              Fetching project data...
-            </div>
-          </div>
-        </div>
-      }
-    </div>
-  )
-}
-
-/**
- * Dashboard Form Section Content
- */
-export function DashboardFormHeader(
-  { currentPage, changePage, user_permission }) {
-  const {
-    indicators,
-    indicatorLayers,
-    basemapsLayers,
-    contextLayers,
-    relatedTables,
-    widgets
-  } = useSelector(state => state.dashboard.data);
-  return <div className='DashboardFormHeader TabPrimary'>
-    <div
-      className={currentPage === 'Summary' ? 'Selected' : 'MuiButtonLike'}
-      onClick={() => changePage('Summary')}
-    >
-      General
-    </div>
-    <div
-      className={currentPage === 'Indicators' ? 'Selected' : 'MuiButtonLike'}
-      onClick={() => changePage('Indicators')}
-    >
-      Indicators {indicators?.length ? `(${indicators?.length})` : null}
-    </div>
-    <div
-      className={currentPage === 'Indicator Layers' ? 'Selected' : 'MuiButtonLike'}
-      onClick={() => changePage('Indicator Layers')}
-    >
-      Indicator
-      Layers {indicatorLayers?.length ? `(${indicatorLayers?.length})` : null}
-    </div>
-    <div
-      className={currentPage === 'Context Layers' ? 'Selected' : 'MuiButtonLike'}
-      onClick={() => changePage('Context Layers')}
-    >
-      Context
-      Layers {contextLayers?.length ? `(${contextLayers?.length})` : null}
-    </div>
-    <div
-      className={currentPage === 'Basemaps' ? 'Selected' : 'MuiButtonLike'}
-      onClick={() => changePage('Basemaps')}
-    >
-      Basemaps {basemapsLayers?.length ? `(${basemapsLayers?.length})` : null}
-    </div>
-    <div
-      className={currentPage === 'Filters' ? 'Selected' : 'MuiButtonLike'}
-      onClick={() => changePage('Filters')}
-    >
-      Filters
-    </div>
-    <div
-      className={currentPage === 'Widgets' ? 'Selected' : 'MuiButtonLike'}
-      onClick={() => changePage('Widgets')}
-    >
-      Widgets {widgets?.length ? `(${widgets?.length})` : null}
-    </div>
-    <div
-      className={currentPage === 'RelatedTables' ? 'Selected' : 'MuiButtonLike'}
-      onClick={() => changePage('RelatedTables')}
-    >
-      Related
-      Tables {relatedTables?.length ? `(${relatedTables?.length})` : null}
-    </div>
-    <div
-      className={currentPage === 'Tools' ? 'Selected' : 'MuiButtonLike'}
-      onClick={() => changePage('Tools')}
-    >
-      Tools
-    </div>
-    {
-      user_permission?.share ?
-        <div
-          className={currentPage === 'Share' ? 'Selected' : 'MuiButtonLike'}
-          onClick={() => changePage('Share')}
-        >
-          Share
-        </div> : ""
-    }
-  </div>
-}
-
-/**
  * Dashboard Form Section
  */
 export function DashboardForm({ onPreview }) {
@@ -617,7 +490,7 @@ export function DashboardForm({ onPreview }) {
     id,
     name
   } = useSelector(state => state.dashboard.data);
-  const [currentPage, setCurrentPage] = useState('Summary');
+  const [currentPage, setCurrentPage] = useState(PAGES.GENERAL);
   const [currentHistoryIdx, setCurrentHistoryIdx] = useState(-1);
   const [changed, setChanged] = useState(false);
   const className = currentPage.replaceAll(' ', '')
@@ -656,7 +529,8 @@ export function DashboardForm({ onPreview }) {
             </ThemeButton>
             <DashboardSaveForm
               currentPage={currentPage}
-              disabled={currentHistoryIdx <= 0 && !changed}
+              // disabled={currentHistoryIdx <= 0 && !changed}
+              disabled={false}
               setCurrentHistoryIdx={setCurrentHistoryIdx}
               setChanged={setChanged}
             />
@@ -668,11 +542,12 @@ export function DashboardForm({ onPreview }) {
           <div className={'AdminForm DashboardForm ' + className}>
             {/* FORM CONTENT */}
             <DashboardFormHeader
-              currentPage={currentPage} changePage={setCurrentPage}
-              user_permission={user_permission}/>
+              page={currentPage}
+              setPage={setCurrentPage}
+            />
 
             {/* FORM CONTENT */}
-            <DashboardFormContent changed={setChanged}/>
+            <DashboardFormContent page={currentPage}/>
           </div>
         </div>
       </div>
@@ -684,7 +559,16 @@ export function DashboardForm({ onPreview }) {
  * Dashboard Form App
  */
 export default function DashboardFormApp() {
+  const dispatch = useDispatch();
   const [currentMode, setCurrentMode] = useState('FormMode');
+
+  // Change current mode
+  useEffect(() => {
+    dispatch(
+      Actions.GlobalState.update({ editMode: currentMode === 'FormMode' })
+    )
+  }, [currentMode]);
+
   return (
     <App className={currentMode}>
       {/* ADMIN SECTION */}

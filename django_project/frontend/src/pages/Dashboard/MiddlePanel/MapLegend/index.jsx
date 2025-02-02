@@ -29,7 +29,6 @@ import {
 
 import './style.scss'
 import { allDataIsReady } from "../../../../utils/indicators";
-import { returnWhere } from "../../../../utils/queryExtraction";
 
 
 /**
@@ -89,11 +88,7 @@ const RenderIndicatorLegend = ({ layer, name }) => {
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel)
   const indicatorsData = useSelector(state => state.indicatorsData);
   const relatedTableData = useSelector(state => state.relatedTableData);
-  const filteredGeometriesState = useSelector(state => state.filteredGeometries);
-  const filtersData = useSelector(state => state.filtersData);
-
-  const where = returnWhere(filtersData ? filtersData : [])
-  const filteredGeometries = where ? filteredGeometriesState : null
+  const filteredGeometries = useSelector(state => state.filteredGeometries);
 
   if (layer.multi_indicator_mode === 'Pin') {
     return layer.indicators.map(indicator => {
@@ -140,10 +135,13 @@ export default function MapLegend() {
   const { compareMode } = useSelector(state => state.mapMode)
   const selectedIndicatorLayer = useSelector(state => state.selectedIndicatorLayer);
   const selectedIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer);
+  const {
+    indicatorShow
+  } = useSelector(state => state.map);
 
   return <div className='MapLegend'>
     {
-      selectedIndicatorLayer.id ?
+      selectedIndicatorLayer.id && indicatorShow ?
         <RenderIndicatorLegend
           layer={selectedIndicatorLayer}
           name={
@@ -153,7 +151,7 @@ export default function MapLegend() {
         : ""
     }
     {
-      selectedIndicatorSecondLayer.id ?
+      selectedIndicatorSecondLayer.id && indicatorShow?
         <RenderIndicatorLegend
           layer={selectedIndicatorSecondLayer}
           name={selectedIndicatorSecondLayer.name + " (Inner)"}

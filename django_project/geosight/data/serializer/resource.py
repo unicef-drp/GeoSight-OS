@@ -23,6 +23,7 @@ class ResourceSerializer(DynamicModelSerializer):
     """Resource serializer."""
 
     modified_at = serializers.SerializerMethodField()
+    modified_by = serializers.SerializerMethodField()
     created_at = serializers.SerializerMethodField()
     created_by = serializers.SerializerMethodField()
 
@@ -30,9 +31,13 @@ class ResourceSerializer(DynamicModelSerializer):
         """Return object last modified."""
         return obj.modified_at.strftime('%Y-%m-%d %H:%M:%S')
 
+    def get_modified_by(self, obj):
+        """Return object modified by."""
+        return obj.modified_by.username if obj.modified_by else ''
+
     def get_created_at(self, obj):
         """Return object created time."""
-        return obj.modified_at.strftime('%Y-%m-%d %H:%M:%S')
+        return obj.created_at.strftime('%Y-%m-%d %H:%M:%S')
 
     def get_created_by(self, obj):
         """Return object created by."""
@@ -40,5 +45,5 @@ class ResourceSerializer(DynamicModelSerializer):
 
     class Meta:  # noqa: D106
         fields = (
-            'created_at', 'modified_at', 'created_by'
+            'created_at', 'created_by', 'modified_at', 'modified_by',
         )

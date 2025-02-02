@@ -15,20 +15,20 @@
 
 
 import $ from "jquery";
-import {useEffect, useState} from 'react';
 import {
   addClickEvent,
   addStandalonePopup,
   getBeforeLayerId,
-  getLayerIdOfReferenceLayer,
+  hexToRgba,
   removeLayer,
   removeSource
 } from "../utils";
 import { createColorsFromPaletteId } from "../../../../utils/Style";
 import { sleep } from "../../../../utils/main";
 import { getCogFeatureByPoint } from "../../../../utils/COGLayer";
-import {setColorFunction} from '@geomatico/maplibre-cog-protocol';
-import {hexToRgba} from '../utils';
+import { setColorFunction } from '@geomatico/maplibre-cog-protocol';
+import { DjangoRequests } from "../../../../Requests";
+import { Session } from "../../../../utils/Sessions";
 
 
 /***
@@ -37,13 +37,13 @@ import {hexToRgba} from '../utils';
 export default function rasterCogLayer(map, id, data, setData, contextLayerData, popupFeatureFn, contextLayerOrder, isInit, setIsInit) {
   (
     async () => {
-      // Create source
       const {
         min_band,
         max_band,
         color_palette,
         color_palette_reverse,
         dynamic_class_num,
+        dynamic_classification,
         additional_nodata,
         nodata_color,
         nodata_opacity,
@@ -52,46 +52,80 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
       const ndt_opacity = nodata_opacity ? parseFloat(nodata_opacity) : nodata_opacity;
       const colors = createColorsFromPaletteId(color_palette, dynamic_class_num, color_palette_reverse);
       let init = isInit;
-
       if (!colors.length) {
         return
       }
+
+      const requestBody = {
+        url: data.url,
+        class_type: dynamic_classification,
+        class_num: dynamic_class_num,
+        colors: colors,
+      }
+
+      let classifications = [];
+      const session = new Session(id, 1000)
+      if (!session.isValid) {
+        return
+      }
+
+      await DjangoRequests.post(
+        `/api/raster/classification`,
+        requestBody
+      ).then(response => {
+        response.data.forEach((threshold, idx) => {
+          if (idx < response.data.length - 1) {
+            classifications.push({
+              bottom: threshold,
+              top: response.data[idx + 1],
+              color: colors[idx]
+            });
+          }
+        });
+      }).catch(error => {
+        throw Error(error.toString())
+      })
+
+      if (!session.isValid) {
+        return
+      }
+
       // TODO: Handle styling when multiple, identical COG URLs are used
       const url = `cog://${data.url}#` + contextLayerData.id;
 
       removeSource(map, id)
 
       const getColor = (value) => {
-        if (value < min_band || value > max_band) {
-          throw new Error("Value is out of range");
+        for (const classification of classifications) {
+          if (value >= classification.bottom && value < classification.top) {
+            const rgbaColor = hexToRgba(classification.color, 1)
+            rgbaColor[3] = parseInt((rgbaColor[3] * 255))
+            return rgbaColor;
+          }
         }
-
-        const interval = (max_band - min_band) / dynamic_class_num; // Calculate interval size
-        const index = Math.min(
-          Math.floor((value - min_band) / interval),
-          dynamic_class_num - 1 // Ensure the index does not exceed the array length
-        );
-        try {
-          return hexToRgba(colors[index], 255);
-        } catch (e) {
-          return [0, 0, 0 , 0];
-        }
+        return null;
       };
 
-      setColorFunction(data.url, ([value], rgba, {noData}) => {
+      setColorFunction(data.url, ([value], rgba, { noData }) => {
         if (init && colors.length > 0) {
           init = false
-          setIsInit(false)
-          setData({
-            ...data,
-            styles: {
-              ...data.styles,
-              nodata: noData.toString()
-            }
-          });
+          if (setIsInit) {
+            setIsInit(false)
+          }
+          if (setData) {
+            setData({
+              ...data,
+              styles: {
+                ...data.styles,
+                nodata: noData.toString()
+              }
+            });
+          }
         }
         if (value === noData || value === Infinity || isNaN(value) || value === additional_ndt_val) {
-          rgba.set(hexToRgba(nodata_color, (ndt_opacity/100) * 255));
+          let rgbaColor = hexToRgba(nodata_color, (ndt_opacity / 100))
+          rgbaColor[3] = parseInt((rgbaColor[3] * 255))
+          rgba.set(rgbaColor);
         } else if (value < min_band || value > max_band) {
           rgba.set([0, 0, 0, 0]); // noData, fillValue or NaN => transparent
         } else {
@@ -106,14 +140,13 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
       map.addSource(id, sourceParams);
 
       // We find the before layers
-      let before = getLayerIdOfReferenceLayer(map)
+      let before = null;
       if (contextLayerOrder) {
         const beforeOrder = getBeforeLayerId(map, id, contextLayerOrder)
         if (beforeOrder) {
           before = beforeOrder
         }
       }
-
       removeLayer(map, id)
       map.addLayer(
         {

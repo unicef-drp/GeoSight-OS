@@ -26,7 +26,6 @@ import { ThemeButton } from "../../../../components/Elements/Button";
 
 import '../../Importer/ImporterDetail/style.scss';
 import '../../Importer/LogDetail/style.scss';
-import './style.scss';
 
 
 /**

@@ -13,12 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import {
-  addPopup,
-  getBeforeLayerId,
-  getLayerIdOfReferenceLayer,
-  hasSource
-} from "../utils";
+import { addPopup, getBeforeLayerId, hasSource } from "../utils";
 
 
 /***
@@ -31,7 +26,7 @@ export default function vectorTileLayer(map, id, data, contextLayerData, popupFe
   }
 
   // We find the before layers
-  let before = getLayerIdOfReferenceLayer(map)
+  let before = null;
   if (contextLayerOrder) {
     const beforeOrder = getBeforeLayerId(map, id, contextLayerOrder)
     if (beforeOrder) {

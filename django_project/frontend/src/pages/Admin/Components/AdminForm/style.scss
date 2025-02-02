@@ -13,12 +13,6 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   Admin Form specific style
-   ========================================================================== */
-
-@import '../../../../app/variables';
-
 .AdminForm {
   flex-grow: 1;
   padding: 0 !important;
@@ -46,9 +40,8 @@
     .AdminFormLoadingSection {
       height: fit-content;
       width: fit-content;
-      margin: auto;
       display: flex;
-      margin-top: 200px;
+      margin: 200px auto auto auto;
 
       div {
         margin-left: 1rem;
@@ -60,7 +53,7 @@
 
   & > .TabPrimary {
     background-color: white !important;
-    border-right: 1px solid $border-gray;
+    border-right: 1px solid var(--border-gray);
     display: block;
     min-width: 200px;
     border-bottom: unset;
@@ -72,11 +65,11 @@
       border: unset !important;
 
       &:hover {
-        color: $primary-color;
+        color: var(--primary-color);
       }
 
       &.Selected {
-        background: $primary-color-transparency !important;
+        background: var(--primary-color-transparency) !important;
         border: unset !important;
       }
     }

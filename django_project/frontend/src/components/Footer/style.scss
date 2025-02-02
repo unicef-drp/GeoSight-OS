@@ -13,14 +13,8 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   Navbar : Deprecated, reusing css from admin dashboard
-   ========================================================================== */
-
-@import '../../app/variables';
-
 footer {
-  background-color: $navbar-background-color;
+  background-color: var(--navbar-background-color);
   height: 87px;
 
   .Footer {
@@ -32,7 +26,7 @@ footer {
     padding: 1.8rem 5rem;
     height: 100%;
     box-sizing: border-box;
-    color: $anti-primary-color;
+    color: var(--anti-primary-color);
 
     a {
       display: block;

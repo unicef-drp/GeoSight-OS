@@ -30,6 +30,7 @@ import { MainDataGrid } from "./index";
 import { constructUrl, DjangoRequests } from "../../Requests";
 import { Notification, NotificationStatus } from "../Notification";
 import { useConfirmDialog } from "../../providers/ConfirmDialog";
+import DataGridFilter from "../Filter";
 
 import './ServerTable.scss';
 
@@ -60,7 +61,8 @@ const ServerTable = forwardRef(
      enable = {
        select: true,
        delete: true,
-       singleSelection: false
+       singleSelection: false,
+       filter: false
      },
      rowIdKey = 'id',
      className = '',
@@ -69,6 +71,24 @@ const ServerTable = forwardRef(
    }: ServerTableProps, ref
   ) => {
     const { openConfirmDialog } = useConfirmDialog();
+    const [filterModel, setFilterModel] = useState({})
+    if (enable.filter) {
+      columns.forEach(column => {
+        if (column.type === 'actions') {
+          if (!column.headerName) {
+            // @ts-ignore
+            column.headerName = (
+              <DataGridFilter
+                fields={columns}
+                filterModel={filterModel}
+                setFilterModel={setFilterModel}/>
+            );
+            column.headerAlign = 'right';
+          }
+        }
+      });
+    }
+
 
     // Notification
     const notificationRef = useRef(null);
@@ -89,7 +109,7 @@ const ServerTable = forwardRef(
         const column = columns.find(column => column.field == model.field)
 
         // @ts-ignore
-        const field = column.orderField ? column.orderField : column.field
+        const field = column.serverKey ? column.serverKey : column.field
         sort.push(model.sort === 'asc' ? field : `-${field}`)
       })
       return sort
@@ -104,6 +124,14 @@ const ServerTable = forwardRef(
         ...defaults.filters
       }
     )
+
+    useEffect(() => {
+      // @ts-ignore
+      setParameters({
+        ...parameters,
+        ...filterModel
+      })
+    }, [filterModel]);
 
     // Sort model
     const [sortModel, setSortModel] = useState<any[]>(defaults.sort);

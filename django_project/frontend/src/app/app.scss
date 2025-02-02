@@ -17,8 +17,6 @@
    Used for APP element
   ------------------------------------------------------------------- */
 
-@import './variables.scss';
-
 /* --------------------------------- */
 /* SCROLL */
 /* --------------------------------- */
@@ -32,16 +30,11 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: $primary-color;
+  background: var(--primary-color);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: $secondary-color;
-}
-
-:root {
-  font-size: $root-font-size;
-  --map-legend-label-color: rgba(0, 0, 0, 0.87) !important;
+  background: var(--secondary-color);
 }
 
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
@@ -72,27 +65,27 @@ html, body {
 }
 
 html {
-  font-size: $root-font-size;
+  font-size: var(--root-font-size);
 }
 
 
 body {
   margin: 0;
-  color: $base-black-color;
-  font-size: $base-font-size;
-  line-height: $base-line-height;
-  font-family: $base-font-family !important;
-  font-weight: $base-font-weight;
-  font-style: $base-font-style;
+  color: var(--base-black);
+  font-size: var(--base-font-size);
+  line-height: var(--base-line-height);
+  font-family: var(--base-font-family) !important;
+  font-weight: var(--base-font-weight);
+  font-style: var(--base-font-style);
 }
 
 
 button {
-  background: $primary-color;
+  background: var(--primary-color);
   border: unset;
-  color: $anti-primary-color;
-  font-size: $base-font-size !important;
-  line-height: $base-line-height !important;
+  color: var(--anti-primary-color);
+  font-size: var(--base-font-size) !important;
+  line-height: var(--base-line-height) !important;
 }
 
 a:link,
@@ -103,7 +96,7 @@ a:active {
 }
 
 a:hover {
-  opacity: $base-hovered-opacity;
+  opacity: var(--base-hovered-opacity);
 }
 
 b.light {
@@ -117,7 +110,7 @@ table {
 
 textarea {
   box-sizing: border-box;
-  border: 1px solid $primary-color;
+  border: 1px solid var(--primary-color);
   padding: 5px 10px;
   width: 100%;
 
@@ -126,7 +119,7 @@ textarea {
   }
 
   &.error {
-    border: 1px solid $error;
+    border: 1px solid var(--error);
   }
 }
 
@@ -335,11 +328,11 @@ header {
 }
 
 .RemoveButton {
-  color: $error;
+  color: var(--error);
 }
 
 .DeleteButton {
-  color: $error;
+  color: var(--error);
   cursor: pointer;
 
   &:hover {
@@ -372,7 +365,7 @@ header {
   display: flex;
   background-color: unset !important;
   padding: 0;
-  border-bottom: 1px solid $border-gray;
+  border-bottom: 1px solid var(--border-gray);
 
   div {
     background-color: unset;
@@ -384,18 +377,18 @@ header {
     text-align: center;
 
     &:hover {
-      color: $primary-color;
+      color: var(--primary-color);
       background-color: unset !important;
     }
 
     &.Selected {
       background-color: unset !important;
-      color: $primary-color;
-      border-bottom: 3px solid $primary-color;
+      color: var(--primary-color);
+      border-bottom: 3px solid var(--primary-color);
     }
 
     &.Disabled {
-      background: $gray-100;
+      background: var(--gray-100);
       color: #adb5bd;
       cursor: not-allowed;
     }
@@ -412,11 +405,11 @@ header {
   padding: 0.5rem;
 
   .FormError {
-    color: $error;
+    color: var(--error);
   }
 
   .FormOk {
-    color: $ok;
+    color: var(--ok);
   }
 }
 
@@ -442,12 +435,12 @@ header {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: $primary-color;
+  color: var(--primary-color);
   padding-bottom: 1rem;
   gap: 0.5rem;
 
   .Throbber {
-    color: $primary-color;
+    color: var(--primary-color);
     text-align: center;
   }
 }
@@ -502,7 +495,7 @@ header {
   .pins {
     display: flex;
     background-color: white;
-    box-shadow: $box-shadow;
+    box-shadow: var(--box-shadow);
     padding: 3px;
     padding-right: 0;
     opacity: 0.8;
@@ -526,23 +519,23 @@ header {
 // ------------------------------------
 .ReactSelect {
   position: relative;
-  height: $base-input-height;
+  height: var(--base-input-height);
 
   .ReactSelect__control,
   .ReactSelect__value-container,
   .ReactSelect__input-container {
-    height: $base-input-height;
+    height: var(--base-input-height);
   }
 
   &.Dynamic {
     height: unset !important;
-    min-height: $base-input-height !important;
+    min-height: var(--base-input-height) !important;
 
     .ReactSelect__control,
     .ReactSelect__value-container,
     .ReactSelect__input-container {
       height: unset !important;
-      min-height: $base-input-height !important;
+      min-height: var(--base-input-height) !important;
     }
 
     .ReactSelect__multi-value {
@@ -574,8 +567,8 @@ header {
 }
 
 .HelpCenter {
-  margin-top: $nav-header-height;
-  padding-bottom: $nav-header-height;
+  margin-top: var(--nav-header-height);
+  padding-bottom: var(--nav-header-height);
 }
 
 .Admin {
@@ -595,7 +588,7 @@ header {
   cursor: pointer;
 
   &:hover {
-    opacity: $base-hovered-opacity;
+    opacity: var(--base-hovered-opacity);
   }
 }
 
@@ -604,10 +597,10 @@ header {
 // ---------------------------------------------------
 
 .InfoIconButton {
-  color: $primary-color;
+  color: var(--primary-color);
   cursor: pointer;
 
   &:hover {
-    opacity: $base-hovered-opacity;
+    opacity: var(--base-hovered-opacity);
   }
 }

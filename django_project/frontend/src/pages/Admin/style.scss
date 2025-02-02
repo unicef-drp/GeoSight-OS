@@ -13,12 +13,6 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   Admin specific style
-   ========================================================================== */
-
-@import '../../app/variables';
-
 .page {
   & > header {
     display: none;
@@ -47,11 +41,11 @@ main {
   flex-direction: column;
   flex-grow: 1;
   min-width: 0;
-  background-color: $base-to-white-color;
+  background-color: var(--base-to-white-color);
   position: relative;
 
   & > div {
-    border-radius: $border-radius;
+    border-radius: var(--border-radius);
     background-color: white;
   }
 
@@ -69,7 +63,7 @@ main {
 
     .MuiInputBase-root,
     .MuiButtonBase-root {
-      height: $base-height;
+      height: var(--base-height);
     }
 
     .AdminContentHeader-Left {
@@ -78,7 +72,7 @@ main {
       font-size: 16px;
 
       span, a {
-        color: $black;
+        color: var(--black);
         display: inline-block;
         margin-right: 0.5rem;
         font-weight: 500;
@@ -99,7 +93,7 @@ main {
   }
 
   .AdminBaseInput {
-    background-color: $base-to-white-color;
+    background-color: var(--base-to-white-color);
     padding: 1rem;
 
     .MuiFormControl-root {
@@ -111,7 +105,7 @@ main {
         width: 100%;
 
         input {
-          padding: $base-input-padding;
+          padding: var(--base-input-padding);
         }
       }
     }
@@ -135,9 +129,8 @@ main {
       .AdminLoadingSection {
         height: fit-content;
         width: fit-content;
-        margin: auto;
         display: flex;
-        margin-top: 200px;
+        margin: 200px auto auto auto;
 
         div {
           margin-left: 1rem;
@@ -269,7 +262,7 @@ main {
 
 .SelectAllButton {
   .MuiCircularProgress-root {
-    color: $primary-color !important;
+    color: var(--primary-color) !important;
     margin-left: 5px;
   }
 }

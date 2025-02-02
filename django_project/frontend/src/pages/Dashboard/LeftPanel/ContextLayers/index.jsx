@@ -13,10 +13,6 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-/* ==========================================================================
-   Context Layers SELECTOR
-   ========================================================================== */
-
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 
@@ -29,8 +25,6 @@ import {
 } from "../../../../components/SortableTreeForm/utilities";
 import SidePanelTreeView from "../../../../components/SidePanelTree";
 import { getLayer } from "../../MapLibre/Layers/ContextLayers/Layer";
-
-import './style.scss'
 
 function ContextLayers() {
   const dispatch = useDispatch();
@@ -106,7 +100,9 @@ function ContextLayers() {
     )
 
     for (const contextLayer of _contextLayers) {
-      if (!contextLayer.permission.read) {
+      if (!contextLayer.permission) {
+        contextLayer.error = "It seems this layer already being deleted"
+      } else if (!contextLayer.permission.read) {
         contextLayer.error = "You don't have permission to access this resource"
       } else if (!layers[contextLayer.id + '']) {
         getLayer(
@@ -153,8 +149,6 @@ function ContextLayers() {
  * @param {function} handleChange Function when the accordion show.
  */
 export default function ContextLayersAccordion({ expanded }) {
-  const dispatch = useDispatch();
-  const { contextLayersShow } = useSelector(state => state.map);
 
   /** Render group and layers
    * @param {str} groupName Name of group.

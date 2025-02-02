@@ -33,6 +33,7 @@ from geosight.data.api.v1.related_table import RelatedTableViewSet
 from geosight.data.api.v1.related_table_data import RelatedTableDataViewSet
 from geosight.data.api.v1.style import StyleViewSet
 from geosight.data.api.v1.users import UserViewSet
+from geosight.data.api.v1.codelist import CodeListViewSet
 
 router = DefaultRouter()
 router.register(r'basemaps', BasemapViewSet, basename='basemaps')
@@ -44,6 +45,7 @@ router.register(
     r'context-layers', ContextLayerViewSet, basename='context-layers'
 )
 router.register(r'groups', GroupViewSet, basename='groups')
+router.register(r'code-list', CodeListViewSet, basename='codelist')
 
 router.register(
     r'related-tables', RelatedTableViewSet, basename='related_tables')

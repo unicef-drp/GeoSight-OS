@@ -23,7 +23,6 @@ import Modal, {
 } from "../../../../../../components/Modal";
 import { SaveButton } from "../../../../../../components/Elements/Button";
 
-import './style.scss';
 import "../../../../../../components/SqlQueryGenerator/WhereInputModal/style.scss"
 
 /**

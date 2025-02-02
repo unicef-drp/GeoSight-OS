@@ -19,7 +19,7 @@ from drf_yasg.utils import swagger_auto_schema
 from core.api_utils import common_api_params, ApiTag, ApiParams
 from geosight.data.models.context_layer import ContextLayer
 from geosight.data.serializer.context_layer import (
-    ContextLayerBasicSerializer
+    ContextLayerSerializer
 )
 from .base import (
     BaseApiV1ResourceReadOnly,
@@ -34,9 +34,14 @@ class ContextLayerViewSet(
     """ContextLayer view set."""
 
     model_class = ContextLayer
-    serializer_class = ContextLayerBasicSerializer
+    serializer_class = ContextLayerSerializer
     extra_exclude_fields = [
-        'url', 'permission'
+        'url', 'permission', 'styles', 'label_styles', 'configuration',
+        'parameters', 'original_styles', 'original_configuration',
+        'data_fields',
+        'password', 'username',
+        'cloud_native_gis_layer_id', 'arcgis_config',
+        'related_table', 'token', 'url_legend', 'group'
     ]
 
     @swagger_auto_schema(

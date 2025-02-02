@@ -13,11 +13,6 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   Login Page Content
-   ========================================================================== */
-@import '../../app/variables';
-
 main {
   flex-grow: 1;
   min-height: 0;
@@ -37,15 +32,15 @@ main {
     overflow-y: auto;
 
     .Errorlist {
-      color: $error;
+      color: var(--error);
       margin: 0;
       padding: 0;
     }
 
     .LoginHeader {
-      color: $primary-color;
+      color: var(--primary-color);
       font-size: 1.5rem;
-      font-weight: $base-font-medium;
+      font-weight: var(--base-font-medium);
       margin-bottom: 2rem;
     }
 
@@ -55,16 +50,16 @@ main {
 
     .Mui-focused {
       fieldset {
-        border: 2px solid $secondary-color;
+        border: 2px solid var(--secondary-color);
       }
     }
 
     fieldset {
       border-radius: 0;
-      border: 1px solid $secondary-color;
+      border: 1px solid var(--secondary-color);
 
       &:hover {
-        border: 1px solid $secondary-color;
+        border: 1px solid var(--secondary-color);
       }
     }
 
@@ -75,7 +70,7 @@ main {
 
     .BasicForm {
       padding: 0;
-      color: $secondary-color;
+      color: var(--secondary-color);
 
       input {
         outline: none;

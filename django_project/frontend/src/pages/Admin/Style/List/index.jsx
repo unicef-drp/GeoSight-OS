@@ -22,6 +22,7 @@ import { pageNames } from '../../index';
 import { COLUMNS, COLUMNS_ACTION } from "../../Components/List";
 import PermissionModal from "../../Permission";
 import AdminList from "../../../../components/AdminList";
+import {ResourceMeta} from "../../../../components/AdminList";
 
 import './style.scss';
 
@@ -34,9 +35,16 @@ export function resourceActions(params) {
  */
 export default function StyleList() {
   const pageName = pageNames.Styles
-  const columns = COLUMNS(pageName, urls.admin.list);
-  columns[4] = { field: 'style_type', headerName: 'Style type', flex: 0.5 }
-  columns[5] = {
+  let columns = COLUMNS(pageName, urls.admin.list);
+  // pop action
+  columns.pop();
+  // pop category
+  columns.pop();
+  columns = columns.concat([
+    { field: 'category', headerName: 'Category', flex: 0.5, serverKey: 'group' },
+    { field: 'style_type', headerName: 'Style type', flex: 0.5 }
+  ].concat(ResourceMeta))
+  columns.push({
     field: 'actions',
     type: 'actions',
     cellClassName: 'MuiDataGrid-ActionsColumn',
@@ -61,7 +69,7 @@ export default function StyleList() {
       }
       return actions
     },
-  }
+  })
   return <AdminList
     url={{
       list: urls.api.list,
@@ -74,6 +82,7 @@ export default function StyleList() {
     columns={columns}
     pageName={pageName}
     multipleDelete={true}
+    enableFilter={true}
     defaults={{
       sort: [
         { field: 'name', sort: 'asc' }

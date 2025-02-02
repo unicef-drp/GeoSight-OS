@@ -17,23 +17,21 @@
    Related Table Form style
    ========================================================================== */
 
-@import '../../../../app/variables';
-
 .FieldConfig {
   width: 100%;
 
   th, td {
-    border: 1px solid $primary-color;
+    border: 1px solid var(--primary-color);
     padding: 0.2rem 0.5rem;
   }
 
   thead {
     td {
-      background: $primary-color;
-      color: $anti-primary-color;
+      background: var(--primary-color);
+      color: var(--anti-primary-color);
 
       .form-helptext {
-        color: $anti-primary-color;
+        color: var(--anti-primary-color);
       }
     }
 
@@ -46,7 +44,7 @@
     width: fit-content;
 
     &:focus {
-      border: 1px solid $primary-color;
+      border: 1px solid var(--primary-color);
       outline: none;
     }
   }

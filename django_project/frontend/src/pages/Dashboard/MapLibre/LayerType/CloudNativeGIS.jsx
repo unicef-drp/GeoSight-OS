@@ -13,12 +13,7 @@
  * __copyright__ = ('Copyright 2024, Unicef')
  */
 
-import {
-  addPopup,
-  getBeforeLayerId,
-  getLayerIdOfReferenceLayer,
-  hasSource
-} from "../utils";
+import { addPopup, getBeforeLayerId, hasSource } from "../utils";
 import { GET_RESOURCE } from "../../../../utils/ResourceRequests";
 
 
@@ -39,7 +34,7 @@ export default function cloudNativeGISLayer(map, id, data, contextLayerData, pop
       const url = info.tile_url
 
       // We find the before layers
-      let before = getLayerIdOfReferenceLayer(map)
+      let before = null
       if (contextLayerOrder) {
         const beforeOrder = getBeforeLayerId(map, id, contextLayerOrder)
         if (beforeOrder) {

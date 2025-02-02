@@ -217,10 +217,11 @@ export function renderLabel(id, contextLayerData, contextLayer, map) {
 export function contextLayerRendering(
   id,
   contextLayerData,
-  setData,
   contextLayer,
   map,
   contextLayerOrder,
+  // For map config
+  setData,
   isInit,
   setIsInit
 ) {
@@ -230,8 +231,6 @@ export function contextLayerRendering(
       switch (layer_type) {
         case Variables.LAYER.TYPE.GEOJSON: {
           const markers = geojsonLayer(map, id, layer, featureProperties => {
-            console.log(featureProperties)
-            console.log(contextLayerData.data_fields)
             return popupFeature(
               featureProperties, contextLayerData.name, null, null
             )
