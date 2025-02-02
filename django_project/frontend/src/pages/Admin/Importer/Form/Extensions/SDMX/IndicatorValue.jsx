@@ -49,8 +49,8 @@ import { updateDataWithSetState } from "../../utils";
  */
 export const SDMXIndicatorValue = forwardRef(
   ({
-    data, setData, files, setFiles, indicatorList
-  }, ref
+     data, setData, files, setFiles, indicatorList
+   }, ref
   ) => {
     const [attributes, setAttributes] = useState([])
 
