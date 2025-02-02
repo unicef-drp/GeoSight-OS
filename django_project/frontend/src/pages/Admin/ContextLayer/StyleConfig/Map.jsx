@@ -102,11 +102,11 @@ export default function MapConfig({ data, setData, layerInput }) {
         (
           async () => {
             await updateColorPaletteData()
-            contextLayerRendering(id, data, setData, layerInput, map, null, isInit, setIsInit)
+            contextLayerRendering(id, data, layerInput, map, null, setData, isInit, setIsInit)
           }
         )()
       } else {
-        contextLayerRendering(id, data, setData, layerInput, map, null, isInit, setIsInit)
+        contextLayerRendering(id, data, layerInput, map, null, setData, isInit, setIsInit)
       }
     }
   }, [map, layerInput]);

@@ -16,7 +16,7 @@ import { isArray } from "chart.js/helpers";
 import { dictDeepCopy } from "./main";
 import { NO_DATA_RULE } from "../pages/Admin/Style/Form/StyleRules";
 import { getLayerDataCleaned, SingleIndicatorTypes } from "./indicatorLayer";
-import { fetchingData } from "../Requests";
+import {DjangoRequests, fetchingData} from "../Requests";
 
 
 export const STYLE_FORM_LIBRARY = 'Style from library.'

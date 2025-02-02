@@ -17,8 +17,6 @@
    Bookmarks
    ========================================================================== */
 
-@import '../../../../app/variables';
-
 .BookmarkComponent {
   padding: 0.5rem;
 
@@ -40,7 +38,7 @@
   }
 
   .Bookmark {
-    color: $primary-color;
+    color: var(--primary-color);
     cursor: pointer;
 
     div {
@@ -51,7 +49,7 @@
 
     td {
       padding-right: 0.3rem;
-      color: $base-black-color;
+      color: var(--base-black-color);
     }
 
     svg {
@@ -66,23 +64,23 @@
     }
 
     .EditIcon, .DeleteIcon {
-      color: $base-black-color;
+      color: var(--base-black-color);
 
       &:hover {
         cursor: pointer;
-        opacity: $base-hovered-opacity;
+        opacity: var(--base-hovered-opacity);
       }
     }
 
     .DeleteIcon {
-      color: $error;
+      color: var(--error);
     }
 
     &.Selected {
-      font-weight: $base-font-medium;
+      font-weight: var(--base-font-medium);
 
       td {
-        color: $primary-color;
+        color: var(--primary-color);
       }
 
       .StarIcon {
@@ -91,8 +89,8 @@
     }
 
     &:hover {
-      opacity: $base-hovered-opacity;
-      background-color: $base-to-white-color;
+      opacity: var(--base-hovered-opacity);
+      background-color: var(--base-to-white-color);
     }
 
     .Creator {

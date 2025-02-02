@@ -21,6 +21,7 @@ from django.contrib.auth import get_user_model
 from frontend.tests.admin._base import BaseViewTest
 from geosight.data.models.basemap_layer import BasemapLayer, BasemapLayerType
 
+
 User = get_user_model()
 
 

@@ -13,11 +13,6 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   Basic Page Content
-   ========================================================================== */
-@import '../../app/variables';
-
 .Home {
   ::-webkit-scrollbar {
     width: 10px !important;
@@ -79,7 +74,7 @@
     .ShowBanner {
       background-color: white;
       bottom: -2.5rem;
-      border: 1px solid $base-black-color;
+      border: 1px solid var(--base-black-color);
       border-radius: 0;
       display: none;
       opacity: 0.2;
@@ -160,7 +155,7 @@
     }
 
     .ProjectGrid {
-      background-color: $base-to-white-color;
+      background-color: var(--base-to-white-color);
       cursor: pointer;
       height: 360px;
       transition: margin 0.2s;
@@ -194,8 +189,8 @@
       }
 
       .ProjectGridIcon {
-        background-color: $primary-color;
-        border: 1px solid $base-to-white-color;
+        background-color: var(--primary-color);
+        border: 1px solid var(--base-to-white-color);
         height: 180px;
         width: 100%;
 
@@ -208,7 +203,7 @@
         svg {
           display: block;
           font-size: 5rem;
-          color: $base-to-white-color;
+          color: var(--base-to-white-color);
           margin: auto;
           margin-top: 5rem;
         }
@@ -231,13 +226,13 @@
       .ProjectGridTags {
         display: flex;
         padding: 0.5rem 1rem 1rem 1rem;
-        background-color: $base-to-white-color;
+        background-color: var(--base-to-white-color);
 
         div {
           background-color: white;
           margin-right: 5px;
           padding: 3px;
-          color: $primary-color;
+          color: var(--primary-color);
         }
       }
 
@@ -248,13 +243,13 @@
         padding-bottom: 1rem;
         overflow: hidden;
         max-height: 300px;
-        background-color: $base-to-white-color;
+        background-color: var(--base-to-white-color);
         line-height: 17px;
-        color: $gray-600;
+        color: var(--gray-600);
 
         .wmde-markdown {
           line-height: 17px;
-          color: $gray-600;
+          color: var(--gray-600);
         }
       }
     }

@@ -29,7 +29,6 @@ import {
   updateToken
 } from '../../../../../utils/georepo'
 import { allDataIsReady } from "../../../../../utils/indicators";
-import { returnWhere } from "../../../../../utils/queryExtraction";
 import { returnStyle } from "../../../../../utils/referenceLayer";
 import { dictDeepCopy, hexToRGBList } from '../../../../../utils/main'
 import {
@@ -48,7 +47,6 @@ import GeorepoAuthorizationModal
 import { IS_DEBUG, Logger } from "../../../../../utils/logger";
 import { Actions } from "../../../../../store/dashboard";
 
-export const BEFORE_LAYER = 'gl-draw-polygon-fill-inactive.cold'
 export const CONTEXT_LAYER_ID = `context-layer`
 const MAX_ELEVATION = 500000
 
@@ -86,7 +84,6 @@ export function ReferenceLayer(
   const FILL_LAYER_ID = FILL_LAYER_ID_KEY + '-' + idx
   const OUTLINE_LAYER_ID = OUTLINE_LAYER_ID_KEY + '-' + idx
 
-  const prevState = useRef()
   const {
     referenceLayer: referenceLayerProject,
     indicatorLayers,
@@ -99,8 +96,7 @@ export function ReferenceLayer(
   const referenceLayerData = useSelector(state => state.referenceLayerData[referenceLayer?.identifier]);
   const indicatorsData = useSelector(state => state.indicatorsData);
   const relatedTableData = useSelector(state => state.relatedTableData);
-  const filtersData = useSelector(state => state.filtersData);
-  const filteredGeometriesState = useSelector(state => state.filteredGeometries);
+  const filteredGeometries = useSelector(state => state.filteredGeometries);
   const currentIndicatorLayer = useSelector(state => state.selectedIndicatorLayer);
   const currentIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer);
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel);
@@ -114,13 +110,10 @@ export function ReferenceLayer(
   const geomFieldOnVectorTile = geoField === 'geometry_code' ? 'ucode' : geoField
   const compareOutlineSize = preferences.style_compare_mode_outline_size
 
-  const where = returnWhere(filtersData ? filtersData : [])
-
   const isReady = () => {
     return map && hasLayer(map, FILL_LAYER_ID) && hasLayer(map, OUTLINE_LAYER_ID)
   }
 
-  const filteredGeometries = where ? filteredGeometriesState : null
   let levels = referenceLayerData?.data?.dataset_levels
   let currentLevel = selectedAdminLevel ? selectedAdminLevel.level : levels?.level
 
@@ -169,14 +162,14 @@ export function ReferenceLayer(
 
   // Rerender if filter changed.
   useEffect(() => {
-    const whereStr = JSON.stringify(where)
-    const filteredGeometriesStr = JSON.stringify(filteredGeometries)
-    Logger.log('FILTERED_GEOM:', filteredGeometriesStr)
-    if (prevState.where !== whereStr || prevState.filteredGeometries !== filteredGeometriesStr) {
-      updateFilter()
-      prevState.where = whereStr
-      prevState.filteredGeometries = filteredGeometriesStr
+    if (IS_DEBUG) {
+      if (filteredGeometries) {
+        filteredGeometries.sort()
+      }
+      const filteredGeometriesStr = JSON.stringify(filteredGeometries)
+      Logger.log('FILTERED_GEOM:', filteredGeometriesStr)
     }
+    updateFilter()
   }, [filteredGeometries, layerCreated]);
 
   // Rerender when map changed.
@@ -242,19 +235,9 @@ export function ReferenceLayer(
 
       // Fill layer
       const contextLayerIds = map.getStyle().layers.filter(
-        layer => layer.type !== 'raster'
-      ).filter(
-        layer => layer.id.includes(CONTEXT_LAYER_ID) || layer.id === BEFORE_LAYER
+        layer => layer.id.includes(CONTEXT_LAYER_ID) || layer.id.includes('gl-draw-') || [INDICATOR_LABEL_ID, LAYER_HIGHLIGHT_ID].includes(layer.id)
       )
       let before = contextLayerIds[0]?.id
-      if (hasLayer(map, INDICATOR_LABEL_ID)) {
-        before = INDICATOR_LABEL_ID
-      }
-
-      // Before highlight
-      if (hasLayer(map, LAYER_HIGHLIGHT_ID)) {
-        before = LAYER_HIGHLIGHT_ID
-      }
       map.addLayer(
         {
           id: OUTLINE_LAYER_ID,
@@ -292,16 +275,8 @@ export function ReferenceLayer(
    * Check codes of geometries
    */
   const checkCodes = () => {
-    let whereStr = null
-    if (where) {
-      whereStr = JSON.stringify(where)
-    }
     if (isReady()) {
-      if (whereStr && filteredGeometries) {
-        return filteredGeometries
-      } else {
-        return null
-      }
+      return filteredGeometries
     }
     return null
   }
@@ -763,7 +738,6 @@ export default function ReferenceLayers({ map, deckgl, is3DView }) {
   const {
     referenceLayers
   } = useSelector(state => state.map);
-
   return map ? <>
     <ReferenceLayer
       idx={0} map={map}

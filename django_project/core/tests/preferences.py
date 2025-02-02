@@ -1,0 +1,28 @@
+# coding=utf-8
+"""
+GeoSight is UNICEF's geospatial web-based business intelligence platform.
+
+Contact : geosight-no-reply@unicef.org
+
+.. note:: This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation; either version 3 of the License, or
+    (at your option) any later version.
+
+"""
+__author__ = 'zakki@kartoza.com'
+__date__ = '01/17/2025'
+__copyright__ = ('Copyright 2025, Unicef')
+
+from core.models.preferences import SitePreferences
+from core.tests.base_tests import BaseFileCleanupTest
+
+
+class SitePreferenceTest(BaseFileCleanupTest.TestCase):
+    """Test cleaning up Site Preferences file."""
+
+    model = SitePreferences
+
+    def create_test_object(self):
+        """Create test object."""
+        self.test_obj = self.model.preferences()

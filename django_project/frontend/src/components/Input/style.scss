@@ -13,12 +13,6 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   SELECTOR
-   ========================================================================== */
-
-@import '../../app/variables';
-
 .MultipleSelectWithSearch {
 
   .OtherOptions {
@@ -101,7 +95,7 @@
 .MultipleSelectWithSearch,
 .SelectWithSearch {
   position: relative;
-  height: $base-input-height;
+  height: var(--base-input-height);
 
   input {
     min-height: 34px;
@@ -160,12 +154,12 @@
 
     input {
       &::placeholder {
-        color: $base-black-color !important;
+        color: var(--base-black-color) !important;
         opacity: 1 !important;
       }
 
       &::-ms-input-placeholder {
-        color: $base-black-color !important;
+        color: var(--base-black-color) !important;
       }
     }
   }
@@ -227,7 +221,7 @@
 }
 
 .OptionMember {
-  min-height: $base-input-height;
+  min-height: var(--base-input-height);
   padding: 0.5rem 0 !important;
 
   &.Compact {

@@ -17,12 +17,12 @@
    Left-side panel
    ========================================================================== */
 
-@import '../../../app/variables';
+@use '../../../app/variables' as *;
 
 .dashboard__left_side {
   position: relative;
   transition: margin-left 0.3s;
-  border-right: 1px solid $border-gray;
+  border-right: 1px solid var(--border-gray);
   width: 20%;
 
   &.HideLayer {
@@ -74,10 +74,10 @@
   .dashboard__content-wrapper {
     display: flex;
     flex-direction: column;
-    font-family: $base-font-family !important;
-    font-weight: $base-font-regular !important;
-    color: $tab-inactive-color;
-    background-color: $white;
+    font-family: var(--base-font-family) !important;
+    font-weight: var(--base-font-regular) !important;
+    color: var(--tab-inactive-color);
+    background-color: var(--white);
 
     .MuiTabs-root {
       min-height: 49px;
@@ -179,8 +179,8 @@
     }
 
     .MuiAccordionSummary-title-desc {
-      color: $base-black-color;
-      font-weight: $base-font-light;
+      color: var(--base-black-color);
+      font-weight: var(--base-font-light);
     }
 
     > div.Mui-expanded {
@@ -189,7 +189,7 @@
 
     > .MuiPaper-root {
       margin: 0.2rem 0;
-      border-radius: $border-radius;
+      border-radius: var(--border-radius);
 
       &.Mui-expanded {
         margin: 0.2rem 0;
@@ -201,9 +201,9 @@
 
       .MuiAccordionSummary-content {
         margin: 0 !important;
-        font-weight: $base-font-medium;
+        font-weight: var(--base-font-medium);
         font-size: 1rem;
-        color: $primary-color;
+        color: var(--primary-color);
         display: flex;
 
         .Name {
@@ -280,7 +280,7 @@
     }
 
     .LayerGroupName {
-      background-color: $base-to-white-color;
+      background-color: var(--base-to-white-color);
       padding: 5px 10px;
       cursor: pointer;
 
@@ -443,10 +443,10 @@
 
     &.error {
       .MuiAccordionSummary-content {
-        color: $error;
+        color: var(--error);
 
         .setting__helper {
-          color: $error;
+          color: var(--error);
         }
       }
     }
@@ -456,7 +456,7 @@
 .modal__setting {
   .title {
     b {
-      font-weight: $base-font-medium;
+      font-weight: var(--base-font-medium);
     }
   }
 }

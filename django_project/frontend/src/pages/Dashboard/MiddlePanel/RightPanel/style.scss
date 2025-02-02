@@ -17,7 +17,7 @@
    Right-side panel
    ========================================================================== */
 
-@import '../../../../app/variables';
+@use '../../../../app/variables' as *;
 
 .dashboard__right_side {
   position: relative;
@@ -49,7 +49,7 @@
     overflow-y: auto;
     min-height: 100%;
     background-color: rgba(0, 0, 0, 0) !important;
-    border-top: 1px solid $border-gray;
+    border-top: 1px solid var(--border-gray);
     padding-top: 1rem;
 
     @include media(small-down) {

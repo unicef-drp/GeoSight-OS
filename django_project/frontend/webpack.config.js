@@ -102,9 +102,9 @@ let conf = {
         ],
       },
       {
-          test: /\.tsx?$/,
-          exclude: /node_modules/,
-          use: 'ts-loader',
+        test: /\.tsx?$/,
+        exclude: /node_modules/,
+        use: 'ts-loader',
       },
       {
         test: /\.jsx?$/,
@@ -132,9 +132,6 @@ let conf = {
         ],
       },
     ],
-  },
-  optimization: {
-    minimize: minimized
   },
   plugins: [
     new BundleTracker({ filename: statsFilename }),
@@ -166,5 +163,18 @@ if (isDev) {
   conf['plugins'].push(
     isDev && new ReactRefreshWebpackPlugin({ overlay: false })
   )
+} else {
+  conf['optimization'] = {
+    minimize: minimized,
+    splitChunks: {
+      chunks: 'all',
+      maxInitialRequests: 5,
+      minSize: 20000,
+    },
+  }
+  conf['cache'] = {
+    type: 'filesystem',
+  }
 }
+console.log(conf)
 module.exports = conf;

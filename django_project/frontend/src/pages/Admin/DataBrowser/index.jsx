@@ -45,9 +45,6 @@ import { InfoFillIcon } from "../../../components/Icons";
 import {
   DatasetFilterSelector
 } from "../../../components/ResourceSelector/DatasetViewSelector";
-
-
-import './style.scss';
 import {
   IndicatorFilterSelector
 } from "../../../components/ResourceSelector/IndicatorSelector";
@@ -329,7 +326,6 @@ export default function DataBrowserAdmin() {
           <DatasetFilterSelector
             data={filters.datasets}
             setData={newFilter => {
-              console.log(newFilter)
               setFilters({
                 ...filters,
                 datasets: newFilter

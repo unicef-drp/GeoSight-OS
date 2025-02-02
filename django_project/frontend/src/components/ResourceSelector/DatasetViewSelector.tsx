@@ -17,7 +17,7 @@ import React, { useEffect, useState } from 'react';
 import { fetchReferenceLayerList, GeorepoUrls } from "../../utils/georepo";
 import { ModalInputSelector } from "./ModalInputSelector";
 import { ModalFilterSelectorProps, ModalInputSelectorProps } from "./types";
-import { DatasetView } from "../../types";
+import { DatasetView } from "../../types/DatasetView";
 import {
   FormControl,
   FormControlLabel,

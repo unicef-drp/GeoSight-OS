@@ -13,11 +13,6 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   Resource Modal Selctor style
-   ========================================================================== */
-@import '../../../app/variables';
-
 .ModalResourceSelector {
   .modal--wrapper--box {
     box-sizing: border-box;
@@ -31,7 +26,7 @@
     max-width: 90%;
     height: 100%;
     width: 90%;
-    background-color: $base-to-white-color;
+    background-color: var(--base-to-white-color);
 
     .ResourceList {
       flex-grow: 1;
@@ -52,8 +47,8 @@
   flex-wrap: wrap;
 
   .ModalResourceSelectorSelectedObject {
-    border: 1px solid $primary-color;
-    border-radius: $border-radius;
+    border: 1px solid var(--primary-color);
+    border-radius: var(--border-radius);
     padding: 0.5rem;
     width: fit-content;
     display: flex;

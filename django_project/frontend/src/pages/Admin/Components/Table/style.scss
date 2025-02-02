@@ -17,8 +17,6 @@
    Table style
    ========================================================================== */
 
-@import '../../../../app/variables';
-
 .AdminTable {
   .MuiDataGrid-cellCheckbox {
     .Mui-disabled {
@@ -28,7 +26,7 @@
 
   .MuiDataGrid-cell {
     &.Updated {
-      background-color: $base-alpha-color;
+      background-color: var(--base-alpha-color);
     }
 
     .MuiOutlinedInput-root {
@@ -51,12 +49,12 @@
   font-size: 12px !important;
 
   .Separator {
-    height: $base-height;
+    height: var(--base-height);
   }
 
   .AdminListHeader-Count {
     &.Empty {
-      color: $gray-400;
+      color: var(--gray-400);
     }
   }
 

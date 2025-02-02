@@ -17,8 +17,6 @@
    Downloader data
    ========================================================================== */
 
-@import '../../../../app/variables';
-
 .DownloaderDataComponent {
   padding: 1rem;
 
@@ -55,13 +53,13 @@
 
     thead {
       td {
-        background-color: $primary-color;
-        color: $anti-primary-color;
+        background-color: var(--primary-color);
+        color: var(--anti-primary-color);
       }
     }
 
     td {
-      border: 1px solid $primary-color;
+      border: 1px solid var(--primary-color);
     }
 
     tr {
@@ -94,13 +92,13 @@
 
   .DownloaderDataTitle {
     padding-bottom: 0.5rem;
-    border-bottom: $border;
+    border-bottom: var(--border);
     font-size: 12px;
   }
 
   .MuiCircularProgress-root {
     margin-right: 0.5rem;
-    color: $primary-color !important;
+    color: var(--primary-color) !important;
     width: 14px !important;
     height: 14px !important;
 

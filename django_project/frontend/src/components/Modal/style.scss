@@ -17,7 +17,7 @@
    MODALS
   ------------------------------------------------------------------- */
 
-@import '../../app/variables';
+@use '../../app/variables' as *;
 
 .MuiModal-root {
   height: 100%;
@@ -84,7 +84,7 @@
   }
 
   .helptext {
-    font-weight: $base-font-light;
+    font-weight: var(--base-font-light);
     margin-top: 0.5rem;
     opacity: 0.8;
     font-style: italic;
@@ -100,9 +100,8 @@
   }
 
   &.Gray {
-    background-color: $base-to-white-color;
-    padding: 0;
-    padding-top: 1rem;
+    background-color: var(--base-to-white-color);
+    padding: 1rem 0 0 0;
 
     & > .Section {
       background-color: white;
@@ -123,7 +122,7 @@
 .modal--footer {
   overflow-x: auto;
   padding: 1rem;
-  background-color: $base-to-white-color;
+  background-color: var(--base-to-white-color);
 }
 
 .ModalSelection {

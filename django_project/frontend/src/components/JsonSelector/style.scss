@@ -13,12 +13,6 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* -------------------------------------------------------------------
-   JSON SELECTOR
-  ------------------------------------------------------------------- */
-
-@import '../../app/variables';
-
 .JsonDisplay {
   font-size: 14px;
 
@@ -64,8 +58,8 @@
   .attribute-selection {
     cursor: pointer;
     padding: 2px 5px;
-    background: $primary-color;
-    color: $anti-primary-color;
+    background: var(--primary-color);
+    color: var(--anti-primary-color);
     border-radius: 3px;
     margin-right: 5px;
     margin-bottom: 5px;

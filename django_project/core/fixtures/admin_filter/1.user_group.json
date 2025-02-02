@@ -1,0 +1,138 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$260000$coHJzICjeaIGxrNKcdLHF2$DsEFHohOsRIuo42vad3WSDtk3l5CC2qtPlDAeBE4Gzo=",
+      "last_login": "2024-10-14T03:44:58.770Z",
+      "is_superuser": true,
+      "username": "admin",
+      "first_name": "",
+      "last_name": "",
+      "email": "admin@example.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2024-10-14T02:18:46.219Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$260000$ukC9d9HEKHnZiVpwuXPglm$UKFQYF+3GtJYP2oMhk/NDi95w8BSpBaTHv4Na0YN92k=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "viewer",
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2024-10-14T03:57:07.921Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+      "password": "pbkdf2_sha256$260000$Chy0AN4aYMNknd0SMZUoa7$b+UsRgbyExfRQUN3xlNSCwwswp7OBKbKLxwjNr9Hlqs=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "contributor",
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2024-10-14T03:57:23.695Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 4,
+    "fields": {
+      "password": "pbkdf2_sha256$260000$ZhLzP3hbtEf1jJjWMUSfx7$c5Oyt7epi5w09nVIlSTef+3rkGakF1Vtecn8s1rBY1M=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "creator",
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2024-10-14T03:57:33.334Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "core.profile",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "role": "Creator",
+      "georepo_api_key": null,
+      "receive_notification": false
+    }
+  },
+  {
+    "model": "core.profile",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "role": "Viewer",
+      "georepo_api_key": "",
+      "receive_notification": false
+    }
+  },
+  {
+    "model": "core.profile",
+    "pk": 3,
+    "fields": {
+      "user": 3,
+      "role": "Contributor",
+      "georepo_api_key": "",
+      "receive_notification": false
+    }
+  },
+  {
+    "model": "core.profile",
+    "pk": 4,
+    "fields": {
+      "user": 4,
+      "role": "Creator",
+      "georepo_api_key": null,
+      "receive_notification": false
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 1,
+    "fields": {
+      "name": "unicef",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 2,
+    "fields": {
+      "name": "Group 1",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 3,
+    "fields": {
+      "name": "Group 2",
+      "permissions": []
+    }
+  }
+]

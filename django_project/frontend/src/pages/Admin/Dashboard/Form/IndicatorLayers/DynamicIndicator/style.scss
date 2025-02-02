@@ -13,13 +13,6 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   Dynamic indicator style
-   ========================================================================== */
-
-@import '../../../../../../app/variables';
-
-
 .Expression {
   .context-data {
     padding: 0 0.5rem;
@@ -46,7 +39,7 @@
   }
 
   .Title {
-    color: $black;
+    color: var(--black);
     margin-right: 0.5rem;
     font-weight: 400;
     letter-spacing: 0.02857em;
@@ -57,7 +50,7 @@
 
     input,
     .MuiInputBase-root {
-      height: $base-input-height !important;
+      height: var(--base-input-height) !important;
     }
 
     .TitleButton {
@@ -86,7 +79,7 @@
 
       .MuiInputSlider {
         width: 200px;
-        padding: $base-input-padding;
+        padding: var(--base-input-padding);
       }
 
       .MuiInputSliderWithInput {

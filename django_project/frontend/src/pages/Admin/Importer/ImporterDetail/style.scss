@@ -13,15 +13,10 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   Related Table List style
-   ========================================================================== */
-@import '../../../../app/variables';
-
 .Detail {
   .DetailSection {
-    border-bottom: 1px solid $gray-500;
-    color: $base-black-color;
+    border-bottom: 1px solid var(--gray-500);
+    color: var(--base-black-color);
     padding: 1rem 1rem 0.5rem 1rem;
     height: 100%;
     box-sizing: border-box;
@@ -32,7 +27,7 @@
 
     & > div:first-child,
     .title {
-      font-weight: $base-font-regular;
+      font-weight: var(--base-font-regular);
     }
 
     a {
@@ -80,7 +75,7 @@
       overflow: visible;
 
       & > div {
-        border: 1px solid $primary-color;
+        border: 1px solid var(--primary-color);
       }
     }
   }
@@ -88,7 +83,7 @@
   .MuiGrid-container {
     &.error {
       .DetailSection {
-        color: $error;
+        color: var(--error);
       }
     }
   }
@@ -98,13 +93,13 @@
   }
 
   .SidePanelTitle {
-    background-color: $secondary-color;
-    color: $anti-secondary-color;
+    background-color: var(--secondary-color);
+    color: var(--anti-secondary-color);
     padding: 1rem;
   }
 
   .SidePanelSection {
-    border: 1px solid $secondary-color;
+    border: 1px solid var(--secondary-color);
     margin-top: -1px;
     cursor: pointer;
 

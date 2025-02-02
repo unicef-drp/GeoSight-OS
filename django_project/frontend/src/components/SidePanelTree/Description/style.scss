@@ -13,19 +13,13 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   DESCRIPTION
-   ========================================================================== */
-
-@import '../../../app/variables';
-
 .LayerInfoPopover {
   padding: 0.5rem;
   font-size: 0.8rem;
   max-width: 200px;
 
   .title {
-    color: $primary-color;
+    color: var(--primary-color);
     font-size: 1rem;
     margin-bottom: 0.5rem;
   }

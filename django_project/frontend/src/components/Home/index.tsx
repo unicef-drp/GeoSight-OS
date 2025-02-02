@@ -26,7 +26,7 @@ import {
   SelectWithSearch
 } from "../../components/Input/SelectWithSearch";
 import { SortAscIcon, SortDescIcon } from "../../components/Icons";
-import { GeoSightProject } from '../../types';
+import { Project } from '../../types/Project';
 
 import './style.scss';
 import { debounce } from "@mui/material/utils";
@@ -39,7 +39,7 @@ interface ProjectListProps {
 }
 
 interface ProjectGridProps {
-  projects: GeoSightProject[];
+  projects: Project[];
   isLoading: boolean
 }
 
@@ -55,14 +55,14 @@ function ProjectGrid({ projects, isLoading }: ProjectGridProps) {
     }
     <Grid container spacing={2} className='project-grid-container'>
       {
-        projects.map((project: GeoSightProject, idx: number) => (
+        projects.map((project: Project, idx: number) => (
           <Grid key={idx} item xs={3}>
             <div className='ProjectGrid'>
               <a href={'/project/' + project.slug}>
                 <div className='ProjectGridIcon'>
                   {
-                    project.icon ? <img src={project.icon}/> :
-                      <ImageIcon/>
+                    project.thumbnail ? <img src={project.thumbnail}/> : project.icon ? <img src={project.icon}/> :
+                    <ImageIcon/>
                   }
                 </div>
                 <div className='ProjectGridName'>{project.name}</div>
@@ -145,7 +145,7 @@ export default function ProjectList(
   const [selectedSortByAsc, setSelectedSortByAsc] = useState<boolean>(true);
   const [totalPage, setTotalPage] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [projects, setProjects] = useState<GeoSightProject[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>()
 
   /** searchProject changed, debouce **/
@@ -198,8 +198,7 @@ export default function ProjectList(
     const categories = selectedCategories === allcategories && selectedCategories.length === 0 ? [] : selectedCategories;
     const newUrl = generateUrl(baseUrl, searchProject, categories, selectedSortBy, selectedSortByAsc, allcategories, currentPage);
     fetchProjects(newUrl, true, 0);
-  }, [searchProject, searchProject, selectedCategories, selectedSortBy, selectedSortByAsc, currentPage])
-
+  }, [searchProject, selectedCategories, selectedSortBy, selectedSortByAsc, currentPage])
 
   // Fetch data
   useEffect(() => {
@@ -226,6 +225,7 @@ export default function ProjectList(
             className='SearchInput'
             placeholder='Search projects' value={typedProject}
             onChange={(value: string) => {
+              setCurrentPage(1)
               setTypedProject(value)
             }}
           />

@@ -82,12 +82,14 @@ class BasemapEditView(RoleContributorRequiredMixin, AdminBaseView):
         )
         edit_permission_resource(basemap, self.request.user)
         form = BasemapForm(
-            request.POST,
+            data,
             request.FILES,
             instance=basemap
         )
         if form.is_valid():
-            instance = form.save()
+            instance = form.save(commit=False)
+            instance.modified_by = request.user
+            instance.save()
             # Save permission
             instance.permission.update_from_request_data(
                 request.POST, request.user

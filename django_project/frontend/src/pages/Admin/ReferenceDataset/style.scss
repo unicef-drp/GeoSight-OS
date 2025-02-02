@@ -13,17 +13,11 @@
 * __copyright__ = ('Copyright 2023, Unicef')
 */
 
-/* ==========================================================================
-   ReferenceLayerView Form style
-   ========================================================================== */
-
-@import '../../../app/variables';
-
 table {
   width: 100%;
 
   th, td {
-    border: 1px solid $primary-color;
+    border: 1px solid var(--primary-color);
     padding: 0.5rem;
 
     &.level-column {
@@ -37,9 +31,9 @@ table {
       .Mui-focused,
       &:hover {
         fieldset {
-          border: 1px solid $primary-color;
+          border: 1px solid var(--primary-color);
           border-width: 1px !important;
-          border-color: $primary-color !important;
+          border-color: var(--primary-color) !important;
         }
       }
 
@@ -71,7 +65,7 @@ table {
     width: fit-content;
 
     &:hover {
-      opacity: $base-hovered-opacity;
+      opacity: var(--base-hovered-opacity);
     }
   }
 }

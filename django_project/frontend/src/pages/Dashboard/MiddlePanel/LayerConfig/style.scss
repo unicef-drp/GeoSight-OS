@@ -17,8 +17,6 @@
    Related table layer filter
    ========================================================================== */
 
-@import '../../../../app/variables';
-
 .IndicatorLayerMiddleConfig {
   box-sizing: border-box;
   max-width: 100%;
@@ -63,7 +61,7 @@
       height: 24px !important;
       min-height: 24px !important;
       background-color: white !important;
-      border: $border;
+      border: var(--border);
       outline: unset !important;
 
       & > .SelectWithSearch {
@@ -155,8 +153,8 @@
     bottom: -18px;
     left: 50%;
     height: fit-content;
-    border-bottom-left-radius: $border-radius;
-    border-bottom-right-radius: $border-radius;
+    border-bottom-left-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
   }
 
   .WhereConfigurationResult {
@@ -195,7 +193,7 @@
       width: fit-content;
       padding-top: 5px;
       background-color: unset !important;
-      color: $primary-color !important;
+      color: var(--primary-color) !important;
       font-weight: 600;
       min-height: 30px !important;
       height: fit-content !important;
@@ -209,7 +207,7 @@
       }
 
       .MuiSelect-select {
-        color: $primary-color !important;
+        color: var(--primary-color) !important;
         background-color: white;
         padding: 0;
         font-size: 0.9rem !important;
@@ -283,7 +281,7 @@
 
     .MuiInputBase-root {
       height: 25px;
-      border: $border !important;
+      border: var(--border) !important;
       margin-right: 5px;
       padding: 0 !important;
 
