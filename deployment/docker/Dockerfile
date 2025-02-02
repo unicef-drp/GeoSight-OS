@@ -54,8 +54,8 @@ ADD django_project /home/web/django_project
 # RUN apt-get install chromium-browser -y
 RUN echo "deb http://archive.ubuntu.com/ubuntu/ bionic-updates universe" >> /etc/apt/sources.list.d/bionic-updates.list
 RUN echo "Package: chromium-browser chromium-browser-l10n chromium-codecs-ffmpeg-extra chromium-codecs-ffmpeg\n\
-    Pin: release a=bionic-updates\n\
-    Pin-Priority: 900" >> /etc/apt/preferences.d/chromium-deb-bionic-updates
+Pin: release a=bionic-updates\n\
+Pin-Priority: 900" >> /etc/apt/preferences.d/chromium-deb-bionic-updates
 RUN apt-get update
 RUN apt-get install chromium-browser -y --fix-missing
 
