@@ -32,6 +32,7 @@ import relatedTableLayer from "../../LayerType/RelatedTable";
 import cloudNativeGISLayer from "../../LayerType/CloudNativeGIS";
 import rasterCogLayer from "../../LayerType/RasterCog";
 import { Variables } from "../../../../../utils/Variables";
+import { addLayerWithOrder } from "../../Render";
 
 const ID = `context-layer`
 const markersContextLayers = {}
@@ -171,7 +172,8 @@ export function renderLabel(id, contextLayerData, contextLayer, map) {
         }
       })
       layout['text-field'] = textField
-      map.addLayer(
+      addLayerWithOrder(
+        map,
         {
           id: idLabel,
           type: 'symbol',
@@ -181,8 +183,9 @@ export function renderLabel(id, contextLayerData, contextLayer, map) {
           paint: paint,
           maxzoom: maxZoom,
           minzoom: minZoom
-        }
-      );
+        },
+        Variables.LAYER_CATEGORY.LABEL
+      )
     }
 
     // For onload layer

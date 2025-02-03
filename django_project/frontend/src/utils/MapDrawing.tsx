@@ -32,6 +32,7 @@ import {
 import polygonToLine from '@turf/polygon-to-line';
 import { Variables } from "./Variables";
 import { hasLayer, hasSource } from "../pages/Dashboard/MapLibre/utils";
+import { addLayerWithOrder } from "../pages/Dashboard/MapLibre/Render";
 
 const drawingBufferId = 'DRAWING_BUFFER_ID'
 
@@ -335,7 +336,9 @@ export class MapDrawing {
         features: []
       }
     });
-    map.addLayer(
+
+    addLayerWithOrder(
+      map,
       {
         id: drawingBufferId,
         type: 'line',
@@ -345,8 +348,9 @@ export class MapDrawing {
           'line-width': 2,
           'line-dasharray': [1, 1],
         }
-      }
-    );
+      },
+      Variables.LAYER_CATEGORY.DRAW
+    )
   }
 
   redraw(features: any) {

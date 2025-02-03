@@ -63,8 +63,8 @@ def fetch_datasets(fetch_code=True):
             )
             if created:
                 create_data_access_reference_layer_view(ref.id)
-            if fetch_code:
-                fetch_reference_codes(ref.id)
+                if fetch_code:
+                    fetch_reference_codes(ref.id)
 
 
 @app.task

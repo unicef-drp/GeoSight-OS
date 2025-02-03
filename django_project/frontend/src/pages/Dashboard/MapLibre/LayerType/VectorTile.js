@@ -14,6 +14,8 @@
  */
 
 import { addPopup, getBeforeLayerId, hasSource } from "../utils";
+import { addLayerWithOrder } from "../Render";
+import { Variables } from "../../../../utils/Variables";
 
 
 /***
@@ -52,7 +54,7 @@ export default function vectorTileLayer(map, id, data, contextLayerData, popupFe
     layers.map(layer => {
       layer.id = id + '-' + layer.id
       layer.source = id
-      map.addLayer(layer, before)
+      addLayerWithOrder(map, layer, Variables.LAYER_CATEGORY.CONTEXT_LAYER, before)
       before = layer.id
       addPopup(map, layer.id, popupFeature)
     })

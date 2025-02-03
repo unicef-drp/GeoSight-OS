@@ -17,7 +17,7 @@
    REFERENCE LAYER
    ========================================================================== */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { MVTLayer } from '@deck.gl/geo-layers';
 import { GeoJsonLayer } from '@deck.gl/layers';
@@ -46,6 +46,8 @@ import GeorepoAuthorizationModal
   from "../../../../../components/GeorepoAuthorizationModal";
 import { IS_DEBUG, Logger } from "../../../../../utils/logger";
 import { Actions } from "../../../../../store/dashboard";
+import { addLayerWithOrder } from "../../Render";
+import { Variables } from "../../../../../utils/Variables";
 
 export const CONTEXT_LAYER_ID = `context-layer`
 const MAX_ELEVATION = 500000
@@ -238,8 +240,8 @@ export function ReferenceLayer(
         layer => layer.id.includes(CONTEXT_LAYER_ID) || layer.id.includes('gl-draw-') || [INDICATOR_LABEL_ID, LAYER_HIGHLIGHT_ID].includes(layer.id)
       )
       let before = contextLayerIds[0]?.id
-      map.addLayer(
-        {
+      addLayerWithOrder(
+        map, {
           id: OUTLINE_LAYER_ID,
           source: REFERENCE_LAYER_ID,
           type: 'line',
@@ -250,10 +252,11 @@ export function ReferenceLayer(
             'line-width': 1,
           }
         },
+        Variables.LAYER_CATEGORY.INDICATOR,
         before
       )
-      map.addLayer(
-        {
+      addLayerWithOrder(
+        map, {
           id: FILL_LAYER_ID,
           source: REFERENCE_LAYER_ID,
           type: 'fill',
@@ -263,7 +266,8 @@ export function ReferenceLayer(
             'fill-outline-color': NOCOLOR
           }
         },
-        OUTLINE_LAYER_ID
+        Variables.LAYER_CATEGORY.INDICATOR,
+        before
       )
       updateStyle()
       updateFilter()

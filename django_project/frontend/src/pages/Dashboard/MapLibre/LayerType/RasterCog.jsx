@@ -29,6 +29,8 @@ import { getCogFeatureByPoint } from "../../../../utils/COGLayer";
 import { setColorFunction } from '@geomatico/maplibre-cog-protocol';
 import { DjangoRequests } from "../../../../Requests";
 import { Session } from "../../../../utils/Sessions";
+import { addLayerWithOrder } from "../Render";
+import { Variables } from "../../../../utils/Variables";
 
 
 /***
@@ -148,14 +150,16 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
         }
       }
       removeLayer(map, id)
-      map.addLayer(
+      addLayerWithOrder(
+        map,
         {
           id: id,
           source: id,
           type: 'raster'
         },
+        Variables.LAYER_CATEGORY.CONTEXT_LAYER,
         before
-      );
+      )
 
       /** Click map */
       const onClick = async (e) => {
