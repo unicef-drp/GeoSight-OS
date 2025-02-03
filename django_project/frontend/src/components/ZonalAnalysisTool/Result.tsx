@@ -29,6 +29,7 @@ import { fetchFromAPIValues } from "./fetchFromAPIValues";
 
 import './style.scss';
 import Tooltip from "@mui/material/Tooltip";
+import {getAreaDecimalLength, numberWithCommas} from "../../utils/main";
 
 interface Props {
   index: number;
@@ -156,7 +157,7 @@ export const ZonalAnalysisResult = forwardRef((
             isAnalyzing ? <i>Loading</i> : error ?
               <i className='Error'>
                 {error}
-              </i> : ![null, NaN].includes(value) ? value : '-'
+              </i> : ![null, NaN].includes(value) ? numberWithCommas(value, getAreaDecimalLength(value)) : '-'
           }
         </td>
       </tr>
