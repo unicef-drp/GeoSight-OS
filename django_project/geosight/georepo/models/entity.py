@@ -180,7 +180,7 @@ class Entity(models.Model):
             }
         )
         ReferenceLayerViewEntity.objects.get_or_create(
-            reference_layer_view=reference_layer,
+            reference_layer=reference_layer,
             entity=obj,
         )
         obj.name = entity.name

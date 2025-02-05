@@ -12,7 +12,7 @@ def run(apps, schema_editor):
     )
     for entity in Entity.objects.filter(reference_layer__isnull=False):
         ReferenceLayerViewEntity.objects.get_or_create(
-            reference_layer_view=entity.reference_layer,
+            reference_layer=entity.reference_layer,
             entity=entity,
         )
 

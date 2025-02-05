@@ -26,7 +26,7 @@ class ReferenceLayerViewEntity(models.Model):
     entity = models.ForeignKey(
         Entity, on_delete=models.CASCADE
     )
-    reference_layer_view = models.ForeignKey(
+    reference_layer = models.ForeignKey(
         ReferenceLayerView, on_delete=models.CASCADE
     )
 
@@ -34,7 +34,7 @@ class ReferenceLayerViewEntity(models.Model):
         verbose_name_plural = "reference layer view entities"
         indexes = [
             models.Index(
-                fields=['entity', 'reference_layer_view'],
-                name='reference_layer_view_entity'
+                fields=['entity', 'reference_layer'],
+                name='reference_layer_entity'
             ),
         ]

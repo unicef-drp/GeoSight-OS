@@ -24,7 +24,7 @@ from core.auth import BearerAuthentication
 from core.pagination import Pagination
 from geosight.data.models.indicator import IndicatorValueWithGeo
 from geosight.permission.models.resource import (
-    ReferenceLayerIndicatorPermission, ReferenceLayerIndicatorPermissionView
+    ReferenceLayerIndicatorPermission
 )
 
 
@@ -52,12 +52,11 @@ class BaseDataApiList(FilteredAPI):
 
         # If not admin
         if not is_admin:
-            ids = ReferenceLayerIndicatorPermission.permissions.list(
+            identifiers = ReferenceLayerIndicatorPermission.permissions.list(
                 user=self.request.user
-            ).values_list('id', flat=True)
-            identifiers = ReferenceLayerIndicatorPermissionView.objects.filter(
-                id__in=list(ids)
-            ).values_list('identifier', flat=True)
+            ).values_list(
+                'obj__indicator_id', 'obj__reference_layer_id', flat=True
+            )
             if not identifiers.count():
                 query = self.model.objects.none()
             else:

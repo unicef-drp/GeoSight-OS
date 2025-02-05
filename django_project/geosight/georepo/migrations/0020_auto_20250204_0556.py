@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('entity', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='geosight_georepo.entity')),
-                ('reference_layer_view', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='geosight_georepo.referencelayerview')),
+                ('reference_layer', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='geosight_georepo.referencelayerview')),
             ],
             options={
                 'verbose_name_plural': 'reference layer view entities',
@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name='referencelayerviewentity',
-            index=models.Index(fields=['entity', 'reference_layer_view'], name='reference_layer_view_entity'),
+            index=models.Index(fields=['entity', 'reference_layer'], name='reference_layer_entity'),
         ),
         migrations.AddIndex(
             model_name='entity',

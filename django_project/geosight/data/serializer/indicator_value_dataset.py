@@ -28,8 +28,18 @@ from geosight.data.models.indicator.indicator_value_dataset import (
 class IndicatorValueDatasetSerializer(serializers.ModelSerializer):
     """Serializer for IndicatorValue."""
 
+    id = serializers.SerializerMethodField()
     browse_data_api_url = serializers.SerializerMethodField()
     browse_url = serializers.SerializerMethodField()
+
+    def get_id(self, obj: IndicatorValueDataset):
+        """Return id."""
+        if self.context.get('group_admin_level', False):
+            return (
+                f'{obj.indicator_id}-{obj.reference_layer_id}-'
+                f'[{obj.admin_level}]'
+            )
+        return f'{obj.indicator_id}-{obj.reference_layer_id}-{obj.admin_level}'
 
     def get_browse_data_api_url(self, obj: IndicatorValueDataset):
         """Return browse data API url."""
@@ -65,7 +75,7 @@ class IndicatorValueDatasetSerializer(serializers.ModelSerializer):
 
     class Meta:  # noqa: D106
         model = IndicatorValueDataset
-        exclude = ('id',)
+        field = '__all__'
 
 
 class IndicatorValueDatasetWithPermissionSerializer(

@@ -25,6 +25,6 @@ from geosight.georepo.models import (
 class ReferenceLayerViewEntityAdmin(admin.ModelAdmin):
     """ReferenceLayerViewEntity admin."""
 
-    list_display = ['entity', 'reference_layer_view']
+    list_display = ['entity', 'reference_layer']
     ordering = ['entity']
-    list_filter = ['reference_layer_view']
+    list_filter = ['reference_layer']

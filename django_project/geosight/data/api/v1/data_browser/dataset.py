@@ -18,8 +18,8 @@ import json
 
 from django.contrib.postgres.aggregates import StringAgg
 from django.core.exceptions import SuspiciousOperation
-from django.db.models import Count, F, Max, Min, CharField, Value
-from django.db.models.functions import Concat, Cast
+from django.db.models import Count, F, Max, Min, CharField
+from django.db.models.functions import Cast
 from django.http import HttpResponseBadRequest
 from django.urls import reverse
 from drf_yasg.utils import swagger_auto_schema
@@ -53,18 +53,20 @@ class BaseDatasetApiList:
         'page', 'page_size', 'group_admin_level', 'detail'
     ]
 
+    @property
+    def group_admin_level(self):
+        """Return group admin level."""
+        return self.request.GET.get(
+            'group_admin_level', 'False'
+        ).lower() == 'true'
+
     def get_queryset(self):
         """Return queryset of API."""
-        group_admin_level = self.request.GET.get('group_admin_level', False)
-        if not group_admin_level:
+        if not self.group_admin_level:
             return super().get_queryset().values(
                 'indicator_id', 'reference_layer_id', 'admin_level'
             ).annotate(
-                id=F('identifier_with_level')
-            ).annotate(
                 data_count=Count('*')
-            ).annotate(
-                identifier=F('identifier')
             ).annotate(
                 indicator_name=F('indicator_name')
             ).annotate(
@@ -90,14 +92,7 @@ class BaseDatasetApiList:
                     output_field=CharField()
                 )
             ).annotate(
-                id=Concat(
-                    'identifier', Value('['), 'admin_level', Value(']'),
-                    output_field=CharField()
-                )
-            ).annotate(
                 data_count=Count('*')
-            ).annotate(
-                identifier=F('identifier')
             ).annotate(
                 indicator_name=F('indicator_name')
             ).annotate(
@@ -129,7 +124,6 @@ class DatasetApiList(BaseDatasetApiList, BaseDataApiList, ListAPIView):
         """Return serializer of data."""
         data = []
         for row in args[0]:
-            row['reference_layer_id'] = row['reference_layer_uuid']
             data.append(IndicatorValueDataset(**row))
         serializer_class = self.get_serializer_class()
         kwargs.setdefault('context', self.get_serializer_context())
@@ -141,6 +135,7 @@ class DatasetApiList(BaseDatasetApiList, BaseDataApiList, ListAPIView):
         full_url = self.request.build_absolute_uri()
         context = super().get_serializer_context()
         context.update({"user": self.request.user})
+        context.update({"group_admin_level": self.group_admin_level})
         context.update(
             {
                 "browse-data": full_url.replace(
@@ -212,9 +207,16 @@ class DatasetApiList(BaseDatasetApiList, BaseDataApiList, ListAPIView):
                     pass
             if is_delete:
                 to_be_deleted += id_tobe_deleted
-        ids = IndicatorValueWithGeo.objects.filter(
-            identifier_with_level__in=to_be_deleted
-        ).values_list('id', flat=True)
+
+        ids = []
+        for _id in to_be_deleted:
+            [indicator_id, reference_layer_id, admin_level] = _id.split('-')
+            _ids = IndicatorValueWithGeo.objects.filter(
+                indicator_id=indicator_id,
+                reference_layer_id=reference_layer_id,
+                admin_level=admin_level
+            ).values_list('id', flat=True)
+            ids += _ids
         IndicatorValue.objects.filter(id__in=list(ids)).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 

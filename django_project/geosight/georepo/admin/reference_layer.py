@@ -16,6 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib import admin
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from geosight.data.models.indicator.indicator_value import (
     IndicatorValueWithGeo
@@ -26,6 +27,28 @@ from geosight.georepo.models import (
 from geosight.georepo.tasks import (
     fetch_reference_codes_by_ids, fetch_datasets, create_data_access
 )
+
+
+class InGeorepoFilter(admin.SimpleListFilter):
+    """Null entity filter."""
+
+    title = _('in georepo')
+    parameter_name = 'in_georepo'
+
+    def lookups(self, request, model_admin):
+        """Lookup function for entity filter."""
+        return [
+            ('yes', _('Yes')),
+            ('no', _('No')),
+        ]
+
+    def queryset(self, request, queryset):
+        """Return filtered queryset."""
+        if self.value() == 'yes':
+            return queryset.filter(in_georepo=True)
+        if self.value() == 'no':
+            return queryset.filter(in_georepo=False)
+        return queryset
 
 
 @admin.action(description='Update meta')
@@ -68,6 +91,7 @@ class ReferenceLayerViewAdmin(admin.ModelAdmin):
         'identifier', 'name', 'description', 'in_georepo', 'number_of_value',
         'number_of_entities'
     ]
+    list_filter = (InGeorepoFilter,)
     ordering = ['name']
     actions = [
         update_meta, sync_codes, action_fetch_datasets,
@@ -89,7 +113,7 @@ class ReferenceLayerViewAdmin(admin.ModelAdmin):
     def number_of_entities(self, obj: ReferenceLayerView):
         """Return number of value for this reference layer."""
         return ReferenceLayerViewEntity.objects.filter(
-            reference_layer_view=obj
+            reference_layer=obj
         ).count()
 
 
