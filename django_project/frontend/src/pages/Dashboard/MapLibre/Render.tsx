@@ -37,7 +37,5 @@ export function addLayerWithOrder(
       }
       break
   }
-  console.log(beforeId)
-  console.log(layers)
   map.addLayer(layerConfig, beforeId);
 }

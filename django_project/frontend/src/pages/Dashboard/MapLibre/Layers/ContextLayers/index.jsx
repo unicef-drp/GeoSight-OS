@@ -346,7 +346,10 @@ export default function ContextLayers({ map }) {
     contextLayersStructure
   } = useSelector(state => state.dashboard.data);
   const contextLayersData = useSelector(state => state.map?.contextLayers);
-  const contextLayerOrder = dataStructureToListData(contextLayers, contextLayersStructure).filter(row => row?.id).map(row => row?.id)
+  const contextLayerOrder = dataStructureToListData(
+    contextLayers,
+    contextLayersStructure
+  ).filter(row => row?.id).map(row => ID + '-' + row?.id)
   contextLayerOrder.reverse()
 
   /** Remove context layers when not in selected data */

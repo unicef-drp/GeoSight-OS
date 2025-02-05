@@ -65,17 +65,6 @@ export default function RasterCogLayer(
 ) {
   const newData = dictDeepCopy(data);
   const styles = constructStyle(newData.styles);
-  const [noDataColor, setNoDataColor] = useState(styles.nodata_color);
-
-  useEffect(() => {
-    setData({
-      ...data,
-      styles: {
-        ...styles,
-        nodata_color: noDataColor
-      }
-    })
-  }, [noDataColor]);
 
   const [value, setValue] = useState(styles);
   const [typedValue, setTypedValue] = useState(value);
@@ -174,14 +163,14 @@ export default function RasterCogLayer(
           <div>
             <div>NoData Color</div>
             <ColorPickerWithAlpha
-              color={noDataColor}
+              color={styles.nodata_color}
               opacity={styles.nodata_opacity}
               setColor={val => {
-                setNoDataColor(rgbaToHex(val))
                 setData({
                   ...data,
                   styles: {
                     ...styles,
+                    nodata_color: rgbaToHex(val),
                     nodata_opacity: parseFloat(val.a * 100)
                   }
                 })
