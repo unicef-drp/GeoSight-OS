@@ -10,12 +10,7 @@ class Migration(migrations.Migration):
         ('geosight_data', '0107_views_initiation'),
     ]
 
-    defaults = load_sql('views', 'default.sql')
-    views = load_sql('views', 'views.sql')
-
     operations = [
-        migrations.RunSQL(defaults, defaults),
-        migrations.RunSQL(views, defaults),
         migrations.AlterModelTable(
             name='indicatorvaluewithgeo',
             table='v_indicator_value_geo',

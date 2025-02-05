@@ -44,11 +44,19 @@ class IndicatorValue(models.Model):
         help_text='This is ucode from georepo.'
     )
 
+    entity = models.ForeignKey(
+        'geosight_georepo.entity', null=True, blank=True,
+        on_delete=models.SET_NULL
+    )
+
     class Meta:  # noqa: D106
         unique_together = ('indicator', 'date', 'geom_id')
         ordering = ('-date',)
         indexes = [
             models.Index(fields=['geom_id'], name='indicator_value_geom_id'),
+            models.Index(
+                fields=['indicator', 'entity']
+            ),
         ]
 
     @property

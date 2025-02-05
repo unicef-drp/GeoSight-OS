@@ -21,7 +21,7 @@ from geosight.data.models.indicator.indicator_value import (
     IndicatorValueWithGeo
 )
 from geosight.georepo.models import (
-    ReferenceLayerView
+    ReferenceLayerView, ReferenceLayerViewEntity
 )
 from geosight.georepo.tasks import (
     fetch_reference_codes_by_ids, fetch_datasets, create_data_access
@@ -74,7 +74,6 @@ class ReferenceLayerViewAdmin(admin.ModelAdmin):
         action_create_data_access, invalidate_cache
     ]
 
-
     def in_georepo(self, obj: ReferenceLayerView):
         """Is reference layer in georepo."""
         if obj.in_georepo:
@@ -89,7 +88,9 @@ class ReferenceLayerViewAdmin(admin.ModelAdmin):
 
     def number_of_entities(self, obj: ReferenceLayerView):
         """Return number of value for this reference layer."""
-        return obj.entity_set.count()
+        return ReferenceLayerViewEntity.objects.filter(
+            reference_layer_view=obj
+        ).count()
 
 
 admin.site.register(ReferenceLayerView, ReferenceLayerViewAdmin)

@@ -36,8 +36,4 @@ class Migration(migrations.Migration):
             model_name='indicatorvalue',
             name='original_geom_id_type',
         ),
-        migrations.RemoveField(
-            model_name='indicatorvalue',
-            name='reference_layer',
-        ),
     ]

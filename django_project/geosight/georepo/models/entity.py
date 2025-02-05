@@ -52,7 +52,8 @@ class Entity(models.Model):
     # This is geom id for the value
     geom_id = models.CharField(
         max_length=256,
-        help_text='This is ucode from georepo.'
+        help_text='This is ucode from georepo.',
+        unique=True
     )
     # This is concept uuid for the value
     concept_uuid = models.CharField(
@@ -83,12 +84,19 @@ class Entity(models.Model):
     )
 
     class Meta:  # noqa: D106
-        unique_together = ('reference_layer', 'admin_level', 'geom_id')
         verbose_name_plural = "entities"
         indexes = [
             models.Index(fields=['geom_id'], name='entity_geom_id'),
             models.Index(fields=['concept_uuid'], name='entity_concept_uuid'),
+            models.Index(fields=['id', 'reference_layer']),
+            models.Index(
+                fields=['concept_uuid', 'reference_layer', 'admin_level']
+            ),
         ]
+
+    def __str__(self):
+        """Return entity name."""
+        return self.geom_id
 
     @staticmethod
     def get_entity(
@@ -141,20 +149,7 @@ class Entity(models.Model):
             entity = GeorepoRequest().View.find_entity(
                 reference_layer.identifier, original_id_type, original_id
             )
-            obj, _ = Entity.objects.get_or_create(
-                reference_layer=reference_layer,
-                admin_level=entity.admin_level,
-                geom_id=entity.ucode,
-                defaults={
-                    'concept_uuid': entity.concept_uuid,
-                    'start_date': entity.start_date,
-                    'end_date': entity.end_date,
-                }
-            )
-            obj.name = entity.name
-            obj.parents = entity.parents
-            obj.save()
-
+            obj = Entity.get_or_create(reference_layer, entity=entity)
             entity_code, _ = EntityCode.objects.get_or_create(
                 entity=obj,
                 code_type=original_id_type,
@@ -167,6 +162,31 @@ class Entity(models.Model):
             if entity.admin_level != int(admin_level):
                 raise GeorepoEntityDoesNotExist()
         return entity
+
+    @staticmethod
+    def get_or_create(
+            reference_layer: ReferenceLayerView, entity
+    ):
+        from geosight.georepo.models.reference_layer_entity import (
+            ReferenceLayerViewEntity
+        )
+        obj, _ = Entity.objects.get_or_create(
+            geom_id=entity.ucode,
+            defaults={
+                'concept_uuid': entity.concept_uuid,
+                'start_date': entity.start_date,
+                'end_date': entity.end_date,
+                'admin_level': entity.admin_level
+            }
+        )
+        ReferenceLayerViewEntity.objects.get_or_create(
+            reference_layer_view=reference_layer,
+            entity=obj,
+        )
+        obj.name = entity.name
+        obj.parents = entity.parents
+        obj.save()
+        return obj
 
 
 class EntityCode(models.Model):

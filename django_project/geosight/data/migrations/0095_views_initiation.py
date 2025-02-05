@@ -10,10 +10,5 @@ class Migration(migrations.Migration):
         ('geosight_data', '0094_dashboard_version_data'),
     ]
 
-    defaults = load_sql('views', 'default.sql')
-    views = load_sql('views', 'views.sql')
-
     operations = [
-        migrations.RunSQL(defaults, defaults),
-        migrations.RunSQL(views, defaults),
     ]

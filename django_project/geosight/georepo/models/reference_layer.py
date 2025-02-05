@@ -112,20 +112,7 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
         """Save entities."""
         from geosight.georepo.models.entity import Entity, EntityCode
         entity = GeorepoEntity(entity)
-        obj, _ = Entity.objects.get_or_create(
-            reference_layer=self,
-            admin_level=entity.admin_level,
-            geom_id=entity.ucode,
-            defaults={
-                'concept_uuid': entity.concept_uuid,
-                'start_date': entity.start_date
-            }
-        )
-
-        obj.end_date = entity.end_date
-        obj.parents = entity.parents
-        obj.name = entity.name
-        obj.save()
+        obj = Entity.get_or_create(self, entity=entity)
         for code_type, code in entity.ext_codes.items():
             entity_code, _ = EntityCode.objects.get_or_create(
                 entity=obj,

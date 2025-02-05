@@ -31,9 +31,4 @@ class Migration(migrations.Migration):
             name='admin_level',
             field=models.IntegerField(blank=True, null=True),
         ),
-        migrations.AddField(
-            model_name='indicatorvalue',
-            name='reference_layer',
-            field=models.ForeignKey(blank=True, help_text='Reference layer.', null=True, on_delete=django.db.models.deletion.SET_NULL, to='geosight_georepo.referencelayer'),
-        ),
     ]
