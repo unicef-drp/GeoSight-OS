@@ -107,10 +107,11 @@ const ServerTable = forwardRef(
       const sort: string[] = []
       _sortModel.map(model => {
         const column = columns.find(column => column.field == model.field)
-
-        // @ts-ignore
-        const field = column.serverKey ? column.serverKey : column.field
-        sort.push(model.sort === 'asc' ? field : `-${field}`)
+        if (column) {
+          // @ts-ignore
+          const field = column.serverKey ? column.serverKey : column.field
+          sort.push(model.sort === 'asc' ? field : `-${field}`)
+        }
       })
       return sort
     }
