@@ -151,6 +151,22 @@ export default function MapLibre(
         )
       })
       newMap.addControl(new maplibregl.NavigationControl(), 'bottom-left');
+      newMap.on("styledata", () => {
+        const contextLayers = newMap.getStyle().layers.filter(
+          layer => layer.id.includes('context-layer-')
+        );
+        const contextLayersExists = contextLayers.length > 0;
+        const popupElements = document.querySelectorAll('#map .maplibregl-popup-anchor-center');
+        if (contextLayersExists) {
+          popupElements.forEach(popup => {
+              popup.style.zIndex = '-9'; // Lower than your intended layer
+          });
+        } else {
+          popupElements.forEach(popup => {
+              popup.style.zIndex = '0'; // Lower than your intended layer
+          });
+        }
+      })
 
       let mapControl = document.querySelector('.maplibregl-ctrl-bottom-left .maplibregl-ctrl-group')
       let parent = document.getElementById('maplibregl-ctrl-bottom-left')
