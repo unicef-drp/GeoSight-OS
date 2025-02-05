@@ -51,7 +51,6 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
         nodata_color,
         nodata_opacity,
       } = data?.styles;
-      console.log(data?.styles)
       const additional_ndt_val = additional_nodata ? parseFloat(additional_nodata) : additional_nodata;
       const ndt_opacity = nodata_opacity ? parseFloat(nodata_opacity) : nodata_opacity;
       const colors = createColorsFromPaletteId(color_palette, dynamic_class_num, color_palette_reverse);
@@ -149,13 +148,16 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
         const beforeOrder = getBeforeLayerId(map, id, contextLayerOrder)
         if (beforeOrder) {
           before = beforeOrder
-        } else if (contextLayerOrder[0] == id) {
+        }
+        else if (contextLayerOrder[0] == id) {
           // If context layer if the bottom-most layer,
           // before layer should be from reference layer
-          const refLayerId = map.getStyle().layers.filter(layer => layer.id.includes('reference-layer-fill-'))[0].id
+          const refLayerId = map.getStyle().layers.filter(layer => layer.id.includes('indicator-label'))[0].id
           before = refLayerId
         }
       }
+      console.log(before)
+      console.log(map.getStyle().layers)
       removeLayer(map, id)
       addLayerWithOrder(
         map,
