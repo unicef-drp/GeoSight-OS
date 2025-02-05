@@ -70,7 +70,7 @@ export function COLUMNS() {
     { field: 'email', headerName: 'Email address', flex: 1 },
     { field: 'first_name', headerName: 'First name', flex: 1 },
     { field: 'last_name', headerName: 'Last name', flex: 1 },
-    { field: 'role', headerName: 'Role', flex: 1 },
+    { field: 'role', headerName: 'Role', flex: 1, sortable: false },
     {
       field: 'is_staff',
       headerName: 'Is django staff',
@@ -85,6 +85,7 @@ export function COLUMNS() {
       field: 'receive_notification',
       headerName: 'Receive notification',
       width: 120,
+      sortable: false,
       renderCell: (params) => {
         return ['true', true].includes(params.value) ?
           <CheckCircleIcon className={'success'}/> :
