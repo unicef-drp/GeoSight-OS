@@ -240,6 +240,7 @@ export function ReferenceLayer(
         layer => layer.id.includes(CONTEXT_LAYER_ID) || layer.id.includes('gl-draw-') || [INDICATOR_LABEL_ID, LAYER_HIGHLIGHT_ID].includes(layer.id)
       )
       let before = contextLayerIds[0]?.id
+      console.log('reference')
       addLayerWithOrder(
         map, {
           id: OUTLINE_LAYER_ID,

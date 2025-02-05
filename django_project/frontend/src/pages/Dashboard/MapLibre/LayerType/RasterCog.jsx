@@ -149,12 +149,12 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
         if (beforeOrder) {
           before = beforeOrder
         }
-        else if (contextLayerOrder[0] == id) {
-          // If context layer if the bottom-most layer,
-          // before layer should be from reference layer
-          const refLayerId = map.getStyle().layers.filter(layer => layer.id.includes('indicator-label'))[0].id
-          before = refLayerId
-        }
+        // else if (contextLayerOrder[0] == id) {
+        //   // If context layer if the bottom-most layer,
+        //   // before layer should be from reference layer
+        //   const refLayerId = map.getStyle().layers.filter(layer => layer.id.includes('indicator-label'))[0].id
+        //   before = refLayerId
+        // }
       }
       console.log(before)
       console.log(map.getStyle().layers)
