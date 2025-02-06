@@ -32,6 +32,7 @@ import relatedTableLayer from "../../LayerType/RelatedTable";
 import cloudNativeGISLayer from "../../LayerType/CloudNativeGIS";
 import rasterCogLayer from "../../LayerType/RasterCog";
 import { Variables } from "../../../../../utils/Variables";
+import { addLayerWithOrder } from "../../Render";
 
 const ID = `context-layer`
 const markersContextLayers = {}
