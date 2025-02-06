@@ -154,7 +154,16 @@ class Entity(models.Model):
             entity = GeorepoRequest().View.find_entity(
                 reference_layer.identifier, original_id_type, original_id
             )
-            obj, _ = Entity.get_or_create(reference_layer, entity=entity)
+            obj, _ = Entity.get_or_create(
+                reference_layer,
+                geom_id=entity.ucode,
+                name=entity.name,
+                admin_level=entity.admin_level,
+                concept_uuid=entity.concept_uuid,
+                start_date=entity.start_date,
+                end_date=entity.end_date,
+                parents=entity.parents
+            )
             entity_code, _ = EntityCode.objects.get_or_create(
                 entity=obj,
                 code_type=original_id_type,
@@ -170,27 +179,34 @@ class Entity(models.Model):
 
     @staticmethod
     def get_or_create(
-            reference_layer: ReferenceLayerView, entity
+            reference_layer: ReferenceLayerView,
+            geom_id,
+            name,
+            admin_level,
+            concept_uuid=None,
+            start_date=None,
+            end_date=None,
+            parents=None
     ):
         """Get or create of entity."""
         from geosight.georepo.models.reference_layer_entity import (
             ReferenceLayerViewEntity
         )
         obj, created = Entity.objects.get_or_create(
-            geom_id=entity.ucode,
+            geom_id=geom_id,
             defaults={
-                'concept_uuid': entity.concept_uuid,
-                'start_date': entity.start_date,
-                'end_date': entity.end_date,
-                'admin_level': entity.admin_level
+                'concept_uuid': concept_uuid,
+                'admin_level': admin_level,
+                'start_date': start_date,
+                'end_date': end_date,
             }
         )
         ReferenceLayerViewEntity.objects.get_or_create(
             reference_layer=reference_layer,
             entity=obj,
         )
-        obj.name = entity.name
-        obj.parents = entity.parents
+        obj.name = name
+        obj.parents = parents
         obj.save()
         return obj, created
 

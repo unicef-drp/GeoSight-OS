@@ -111,9 +111,8 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
 
     def save_entity(self, entity: GeorepoEntity):
         """Save entities."""
-        from geosight.georepo.models.entity import Entity, EntityCode
-        entity = GeorepoEntity(entity)
-        obj, _ = Entity.get_or_create(self, entity=entity)
+        from geosight.georepo.models.entity import EntityCode
+        obj, _ = GeorepoEntity(entity).get_or_create(self)
         for code_type, code in entity.ext_codes.items():
             entity_code, _ = EntityCode.objects.get_or_create(
                 entity=obj,

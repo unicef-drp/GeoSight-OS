@@ -27,14 +27,13 @@ def mock_get_entity(
     try:
         entity = Entity.objects.get(geom_id=original_id)
     except Entity.DoesNotExist:
-        entity = GeorepoEntity(
+        entity, _ = GeorepoEntity(
             {
                 'name': '',
                 'ucode': original_id,
                 'admin_level': admin_level
             }
-        )
-        entity, _ = Entity.get_or_create(reference_layer, entity=entity)
+        ).get_or_create(reference_layer)
     return entity
 
 

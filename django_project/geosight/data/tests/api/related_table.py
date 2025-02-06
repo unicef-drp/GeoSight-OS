@@ -22,7 +22,6 @@ from django.urls import reverse
 
 from geosight.data.models import RelatedTable
 from geosight.georepo.models import Entity
-from geosight.georepo.request.data import GeorepoEntity
 from geosight.georepo.tests.model_factories.reference_layer import (
     ReferenceLayerF
 )
@@ -49,33 +48,15 @@ class RelatedTableApiTest(BasePermissionTest.TestCase):
         )
         Entity.get_or_create(
             reference_layer,
-            GeorepoEntity(
-                {
-                    'name': '',
-                    'ucode': 'A',
-                    'admin_level': 1,
-                }
-            )
+            name='', geom_id='A', admin_level=1
         )
         Entity.get_or_create(
             reference_layer,
-            GeorepoEntity(
-                {
-                    'name': '',
-                    'ucode': 'B',
-                    'admin_level': 1
-                }
-            )
+            name='', geom_id='B', admin_level=1
         )
         Entity.get_or_create(
             reference_layer,
-            GeorepoEntity(
-                {
-                    'name': '',
-                    'ucode': 'C',
-                    'admin_level': 1
-                }
-            )
+            name='', geom_id='C', admin_level=1
         )
 
     def create_resource(self, user, name=None):
