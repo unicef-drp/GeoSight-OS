@@ -46,7 +46,7 @@ class EntityViewSet(BaseApiV1, viewsets.ReadOnlyModelViewSet):
             identifier=self.kwargs.get('identifier', '')
         )
         read_data_permission_resource(view, self.request.user)
-        return view.entity_set.all()
+        return view.entities_set.all()
 
     @swagger_auto_schema(
         operation_id='reference-datasets-entity-list',

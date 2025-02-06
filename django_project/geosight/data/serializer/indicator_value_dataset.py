@@ -55,7 +55,7 @@ class IndicatorValueDatasetSerializer(serializers.ModelSerializer):
             elif 'indicator_id' in key:
                 value = obj.indicator_id
             elif 'reference_layer_id' in key:
-                value = obj.reference_layer_id
+                value = obj.reference_layer_uuid
             elif 'admin_level' in key:
                 value = obj.admin_level
 
@@ -69,13 +69,13 @@ class IndicatorValueDatasetSerializer(serializers.ModelSerializer):
         return (
             f"{reverse('admin-data-browser-view')}?"
             f"indicators={obj.indicator_id}&"
-            f"datasets={obj.reference_layer_id}&"
+            f"datasets={obj.reference_layer_uuid}&"
             f"levels={obj.admin_level}"
         )
 
     class Meta:  # noqa: D106
         model = IndicatorValueDataset
-        field = '__all__'
+        fields = '__all__'
 
 
 class IndicatorValueDatasetWithPermissionSerializer(

@@ -42,12 +42,12 @@ def entity_values(
     reference_layer = entity.reference_layer
     try:
         parent = entity.parents[0]
-        siblings = reference_layer.entity_set.filter(
+        siblings = reference_layer.entities_set.filter(
             parents__contains=parent,
             admin_level=entity.admin_level,
             end_date__isnull=True
         ).exclude(pk=entity.pk)
-        parent = reference_layer.entity_set.filter(
+        parent = reference_layer.entities_set.filter(
             geom_id=parent,
             reference_layer=entity.reference_layer,
             end_date__isnull=True
@@ -56,7 +56,7 @@ def entity_values(
         siblings = []
         parent = None
 
-    children = reference_layer.entity_set.filter(
+    children = reference_layer.entities_set.filter(
         parents__contains=entity.geom_id,
         admin_level=entity.admin_level + 1,
         end_date__isnull=True
@@ -153,7 +153,7 @@ def reference_layer_indicator_values(
         concept_uuids: list, Optional
             List of concept uuid that will be checked.
     """
-    entities = reference_layer.entity_set.filter(end_date__isnull=True)
+    entities = reference_layer.entities_set.filter(end_date__isnull=True)
     if admin_level is not None:
         entities = entities.filter(admin_level=admin_level)
     if concept_uuids:

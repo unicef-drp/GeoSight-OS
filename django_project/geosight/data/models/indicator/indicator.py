@@ -294,6 +294,7 @@ class Indicator(
             indicator_value.value = value
 
         # Save the original one
+        indicator_value.entity = entity
         indicator_value.save()
 
         if extras:

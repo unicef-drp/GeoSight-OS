@@ -285,7 +285,7 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
         """
         dashboard = get_object_or_404(Dashboard, slug=slug)
         reference_layer = self.return_reference_view()
-        entity = reference_layer.entity_set.filter(
+        entity = reference_layer.entities_set.filter(
             concept_uuid=concept_uuid
         ).first()
         if not entity:
@@ -294,11 +294,11 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
             )
         try:
             parent = entity.parents[0]
-            siblings = reference_layer.entity_set.filter(
+            siblings = reference_layer.entities_set.filter(
                 parents__contains=parent,
                 admin_level=entity.admin_level
             ).exclude(pk=entity.pk)
-            parent = reference_layer.entity_set.filter(
+            parent = reference_layer.entities_set.filter(
                 geom_id=parent,
                 reference_layer=reference_layer
             ).first()
@@ -306,7 +306,7 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
             siblings = []
             parent = None
 
-        children = reference_layer.entity_set.filter(
+        children = reference_layer.entities_set.filter(
             parents__contains=entity.geom_id,
             admin_level=entity.admin_level + 1
         )

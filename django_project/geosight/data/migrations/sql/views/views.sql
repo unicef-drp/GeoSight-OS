@@ -13,4 +13,4 @@ FROM geosight_data_indicatorvalue as value
      LEFT JOIN geosight_data_indicator as indicator ON value.indicator_id = indicator.id
      LEFT JOIN geosight_georepo_entity as entity ON value.entity_id = entity.id
      LEFT JOIN geosight_georepo_referencelayerviewentity as ref_entity_view ON ref_entity_view.entity_id = entity.id
-     LEFT JOIN geosight_georepo_referencelayerview as ref_view ON ref_view.id = ref_entity_view.reference_layer_view_id;
+     LEFT JOIN geosight_georepo_referencelayerview as ref_view ON ref_view.id = ref_entity_view.reference_layer_id;

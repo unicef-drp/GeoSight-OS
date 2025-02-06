@@ -38,7 +38,7 @@ class ReferenceDatasetCentroid(APIView):
             identifier=identifier
         )
         read_data_permission_resource(view, request.user)
-        entities = view.entity_set.filter(admin_level=level)
+        entities = view.entities_set.filter(admin_level=level)
         return Response(
             EntityCentroidSerializer(entities, many=True).data
         )

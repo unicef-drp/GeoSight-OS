@@ -211,6 +211,7 @@ class DatasetApiList(BaseDatasetApiList, BaseDataApiList, ListAPIView):
         ids = []
         for _id in to_be_deleted:
             [indicator_id, reference_layer_id, admin_level] = _id.split('-')
+            admin_level = admin_level.replace('[', '').replace(']', '')
             _ids = IndicatorValueWithGeo.objects.filter(
                 indicator_id=indicator_id,
                 reference_layer_id=reference_layer_id,

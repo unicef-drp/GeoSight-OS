@@ -112,7 +112,7 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
         """Save entities."""
         from geosight.georepo.models.entity import Entity, EntityCode
         entity = GeorepoEntity(entity)
-        obj = Entity.get_or_create(self, entity=entity)
+        obj, _ = Entity.get_or_create(self, entity=entity)
         for code_type, code in entity.ext_codes.items():
             entity_code, _ = EntityCode.objects.get_or_create(
                 entity=obj,
@@ -157,6 +157,19 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
     def is_local(self):
         """Return if view is local or not."""
         return not self.in_georepo
+
+    @property
+    def entities_set(self):
+        """Querying entities"""
+        from geosight.georepo.models.reference_layer_entity import (
+            ReferenceLayerViewEntity
+        )
+        from geosight.georepo.models.entity import Entity
+        return Entity.objects.filter(
+            pk__in=ReferenceLayerViewEntity.objects.filter(
+                reference_layer=self
+            ).values_list("entity_id", flat=True)
+        )
 
 
 class ReferenceLayerIndicator(models.Model):

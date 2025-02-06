@@ -18,6 +18,8 @@ from datetime import datetime
 
 from django.contrib.gis.db import models
 from django.db.models import Q
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
@@ -115,6 +117,9 @@ class Entity(models.Model):
             except (ValueError, TypeError):
                 pass
             if original_id_type != 'ucode':
+                entities = reference_layer.entities_set.values_list(
+                    'entity_id', flat=True
+                )
                 entity_code = EntityCode.objects.filter(
                     Q(entity__end_date__isnull=True) | Q(
                         Q(entity__start_date__gte=date_time) &
@@ -123,13 +128,13 @@ class Entity(models.Model):
                 ).filter(
                     code_type=original_id_type,
                     code=original_id,
-                    entity__reference_layer_id=reference_layer.id
+                    entity_id__in=entities
                 ).order_by('entity__start_date').first()
                 if not entity_code:
                     raise EntityCode.DoesNotExist
                 entity = entity_code.entity
             else:
-                entity = Entity.objects.filter(
+                entity = reference_layer.entities_set.filter(
                     Q(end_date__isnull=True) | Q(
                         Q(start_date__gte=date_time) &
                         Q(end_date__lte=date_time)
@@ -149,7 +154,7 @@ class Entity(models.Model):
             entity = GeorepoRequest().View.find_entity(
                 reference_layer.identifier, original_id_type, original_id
             )
-            obj = Entity.get_or_create(reference_layer, entity=entity)
+            obj, _ = Entity.get_or_create(reference_layer, entity=entity)
             entity_code, _ = EntityCode.objects.get_or_create(
                 entity=obj,
                 code_type=original_id_type,
@@ -167,10 +172,11 @@ class Entity(models.Model):
     def get_or_create(
             reference_layer: ReferenceLayerView, entity
     ):
+        """Get or create of entity."""
         from geosight.georepo.models.reference_layer_entity import (
             ReferenceLayerViewEntity
         )
-        obj, _ = Entity.objects.get_or_create(
+        obj, created = Entity.objects.get_or_create(
             geom_id=entity.ucode,
             defaults={
                 'concept_uuid': entity.concept_uuid,
@@ -186,7 +192,7 @@ class Entity(models.Model):
         obj.name = entity.name
         obj.parents = entity.parents
         obj.save()
-        return obj
+        return obj, created
 
 
 class EntityCode(models.Model):
@@ -204,3 +210,16 @@ class EntityCode(models.Model):
 
     class Meta:  # noqa: D106
         unique_together = ('entity', 'code', 'code_type')
+
+
+@receiver(post_save, sender=Entity)
+def assign_entity_to_view(sender, instance: Entity, created, **kwargs):
+    """Assign entity to view relationship."""
+    from geosight.georepo.models.reference_layer_entity import (
+        ReferenceLayerViewEntity
+    )
+    if instance.reference_layer:
+        ReferenceLayerViewEntity.objects.get_or_create(
+            reference_layer=instance.reference_layer,
+            entity=instance,
+        )

@@ -108,11 +108,11 @@ class FormulaBasedOnOtherIndicatorsIndicatorValueTest(BaseTest):
                     value.geom_id][value.date.strftime('%Y-%m-%d')]
             )
             self.assertEqual(value.indicator, self.indicator)
-            entity = Entity.objects.get(
+            entity = self.reference_layer.entities_set.get(
                 geom_id=value.geom_id,
-                reference_layer=self.reference_layer,
                 admin_level=self.admin_level
             )
+            self.assertEqual(entity, value.entity)
             self.assertEqual(entity.reference_layer, self.reference_layer)
             self.assertEqual(entity.admin_level, self.admin_level)
             self.assertEqual(entity.geom_id, value.geom_id)

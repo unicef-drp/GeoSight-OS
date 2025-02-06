@@ -112,9 +112,7 @@ class ReferenceLayerViewAdmin(admin.ModelAdmin):
 
     def number_of_entities(self, obj: ReferenceLayerView):
         """Return number of value for this reference layer."""
-        return ReferenceLayerViewEntity.objects.filter(
-            reference_layer=obj
-        ).count()
+        return obj.entities_set.count()
 
 
 admin.site.register(ReferenceLayerView, ReferenceLayerViewAdmin)
