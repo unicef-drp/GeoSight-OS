@@ -126,59 +126,62 @@ export default function RasterCogLayer(
       />
       <br/>
       <br/>
-      <Grid
-        container
-        flexDirection={'row'}
-        spacing={1}
-      >
-        <Grid item md={4} xl={4} lg={4}>
-          <div>
-            <div>NoData Value</div>
-            <input
-              placeholder='NoData Value' type='text'
-              value={styles.nodata}
-              disabled={true}
-            />
-          </div>
+      {
+        styles.dynamic_classification == 'Equidistant.' ? null :
+        <Grid
+          container
+          flexDirection={'row'}
+          spacing={1}
+        >
+          <Grid item md={4} xl={4} lg={4}>
+            <div>
+              <div>NoData Value</div>
+              <input
+                placeholder='NoData Value' type='text'
+                value={styles.nodata}
+                disabled={true}
+              />
+            </div>
+          </Grid>
+          <Grid item md={4} xl={4} lg={4}>
+            <div>
+              <div>Additional NoData</div>
+              <input
+                placeholder='Additional NoData' type='number'
+                value={styles.additional_nodata}
+                onChange={evt => {
+                  setData({
+                    ...data,
+                    styles: {
+                      ...styles,
+                      additional_nodata: evt.target.value
+                    }
+                  })
+                }}
+              />
+            </div>
+          </Grid>
+          <Grid item md={4} xl={4} lg={4}>
+            <div>
+              <div>NoData Color</div>
+              <ColorPickerWithAlpha
+                color={styles.nodata_color}
+                opacity={styles.nodata_opacity}
+                setColor={val => {
+                  setData({
+                    ...data,
+                    styles: {
+                      ...styles,
+                      nodata_color: rgbaToHex(val),
+                      nodata_opacity: parseFloat(val.a * 100)
+                    }
+                  })
+                }}
+              />
+            </div>
+          </Grid>
         </Grid>
-        <Grid item md={4} xl={4} lg={4}>
-          <div>
-            <div>Additional NoData</div>
-            <input
-              placeholder='Additional NoData' type='number'
-              value={styles.additional_nodata}
-              onChange={evt => {
-                setData({
-                  ...data,
-                  styles: {
-                    ...styles,
-                    additional_nodata: evt.target.value
-                  }
-                })
-              }}
-            />
-          </div>
-        </Grid>
-        <Grid item md={4} xl={4} lg={4}>
-          <div>
-            <div>NoData Color</div>
-            <ColorPickerWithAlpha
-              color={styles.nodata_color}
-              opacity={styles.nodata_opacity}
-              setColor={val => {
-                setData({
-                  ...data,
-                  styles: {
-                    ...styles,
-                    nodata_color: rgbaToHex(val),
-                    nodata_opacity: parseFloat(val.a * 100)
-                  }
-                })
-              }}
-            />
-          </div>
-        </Grid>
-      </Grid>
+      }
       <br/>
       {/*  Palette */}
       <ColorPaletteStyleConfig
