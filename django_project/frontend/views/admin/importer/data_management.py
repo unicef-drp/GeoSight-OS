@@ -33,7 +33,7 @@ class DataManagementListView(RoleContributorRequiredMixin, AdminBaseView):
     @property
     def content_title(self):
         """Return content title that used on page title indicator."""
-        data_importer = reverse('admin-importer-create-view')
+        data_importer = reverse('admin-data-management-list-view')
         logs = reverse('admin-data-management-list-view') + '#Logs'
         return (
             f'<a href="{data_importer}">Data Management</a>'

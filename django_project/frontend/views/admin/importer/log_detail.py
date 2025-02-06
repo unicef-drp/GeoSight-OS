@@ -48,7 +48,7 @@ class ImporterLogDetailView(RoleContributorRequiredMixin, AdminBaseView):
     def content_title(self):
         """Return content title that used on page title indicator."""
         log = self.log
-        data_importer = reverse('admin-importer-create-view')
+        data_importer = reverse('admin-data-management-list-view')
         logs = reverse('admin-data-management-list-view') + '#Logs'
         log_url = reverse(
             'admin-importer-log-detail-view', args=[log.id]
