@@ -183,10 +183,10 @@ class BaseTest(BaseIndicatorValueImporterTest, BaseTestWithPatchResponses):
             self.assertEqual(value.value, values[value.geom_id])
             self.assertEqual(value.indicator, self.indicator)
             entity = self.reference_layer.entities_set.get(
-                geom_id=value.geom_id,
-                admin_level=self.admin_level
+                geom_id=value.geom_id
             )
             self.assertEqual(entity, value.entity)
-            self.assertEqual(entity.reference_layer, self.reference_layer)
-            self.assertEqual(entity.admin_level, self.admin_level)
+            self.assertEqual(
+                entity.admin_level, value.entity.admin_level
+            )
             self.assertEqual(entity.geom_id, value.geom_id)

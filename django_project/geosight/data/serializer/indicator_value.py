@@ -56,28 +56,20 @@ class IndicatorValueSerializer(serializers.ModelSerializer):
         """Return attributes value of indicator."""
         return obj.attributes
 
-    def to_representation(self, instance):
+    def to_representation(self, instance: IndicatorValue):
         """To representation of indicator value."""
         data = super(IndicatorValueSerializer, self).to_representation(
             instance)
         geometries = []
         try:
-            entities = Entity.objects.filter(
-                geom_id=instance.geom_id
-            )
-            if self.context.get('reference_layers', None):
-                entities = entities.filter(
-                    reference_layer__identifier__in=self.context.get(
-                        'reference_layers', []
-                    )
-                )
-
-            for entity in entities:
-                if not entity.reference_layer:
+            entity_id = instance.entity_id
+            entity = Entity.objects.get(id=entity_id)
+            for reference_layer in entity.reference_layer_set.all():
+                if not reference_layer:
                     continue
                 geometries.append({
-                    'dataset_uuid': entity.reference_layer.identifier,
-                    'dataset_name': entity.reference_layer.name,
+                    'dataset_uuid': reference_layer.identifier,
+                    'dataset_name': reference_layer.name,
                     'name': entity.name,
                     'admin_level': entity.admin_level,
                 })

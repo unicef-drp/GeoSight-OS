@@ -23,9 +23,12 @@ def mock_get_entity(
     """Mock for get entity request."""
     from geosight.georepo.models.entity import Entity
     entity, _ = Entity.objects.get_or_create(
-        reference_layer=reference_layer,
         geom_id=original_id,
-        admin_level=admin_level
+        defaults={
+            'reference_layer': reference_layer,
+            'admin_level': admin_level
+        }
+
     )
     return entity
 

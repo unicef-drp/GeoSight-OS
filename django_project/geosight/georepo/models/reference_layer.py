@@ -160,15 +160,12 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
 
     @property
     def entities_set(self):
-        """Querying entities"""
-        from geosight.georepo.models.reference_layer_entity import (
-            ReferenceLayerViewEntity
-        )
+        """Querying entities."""
         from geosight.georepo.models.entity import Entity
         return Entity.objects.filter(
-            pk__in=ReferenceLayerViewEntity.objects.filter(
-                reference_layer=self
-            ).values_list("entity_id", flat=True)
+            pk__in=self.referencelayerviewentity_set.values_list(
+                "entity_id", flat=True
+            )
         )
 
 

@@ -194,6 +194,49 @@ class Entity(models.Model):
         obj.save()
         return obj, created
 
+    @property
+    def reference_layer_set(self):
+        """Return reference_layer."""
+        return ReferenceLayerView.objects.filter(
+            pk__in=self.referencelayerviewentity_set.values_list(
+                "reference_layer_id", flat=True
+            )
+        )
+
+    @property
+    def siblings(self):
+        """Return siblings."""
+        try:
+            parent = self.parents[0]
+            return Entity.objects.filter(
+                parents__contains=parent,
+                admin_level=self.admin_level,
+                end_date__isnull=True
+            ).exclude(pk=self.pk)
+        except (IndexError, TypeError):
+            return Entity.objects.none()
+
+    @property
+    def parent(self):
+        """Return parent."""
+        try:
+            parent = self.parents[0]
+            return Entity.objects.filter(
+                geom_id=parent,
+                end_date__isnull=True
+            ).first()
+        except (IndexError, TypeError):
+            return None
+
+    @property
+    def children(self):
+        """Return children."""
+        return Entity.objects.filter(
+            parents__contains=self.geom_id,
+            admin_level=self.admin_level + 1,
+            end_date__isnull=True
+        )
+
 
 class EntityCode(models.Model):
     """Additional data for Indicator value data."""

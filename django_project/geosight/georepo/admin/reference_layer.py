@@ -21,9 +21,7 @@ from django.utils.translation import gettext_lazy as _
 from geosight.data.models.indicator.indicator_value import (
     IndicatorValueWithGeo
 )
-from geosight.georepo.models import (
-    ReferenceLayerView, ReferenceLayerViewEntity
-)
+from geosight.georepo.models import ReferenceLayerView
 from geosight.georepo.tasks import (
     fetch_reference_codes_by_ids, fetch_datasets, create_data_access
 )

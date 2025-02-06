@@ -312,7 +312,9 @@ class Indicator(
     def query_values(
             self, date_data: date = None, min_date_data: date = None,
             reference_layer=None, admin_level: int = None,
-            concept_uuid: str = None, concept_uuids: str = None,
+            concept_uuid: str = None,
+            concept_uuids: list = None,
+            entities_id: list = None
     ):
         """Return query of indicator values."""
         from geosight.data.models.indicator.indicator_value import (
@@ -333,6 +335,8 @@ class Indicator(
             query = query.filter(concept_uuid=concept_uuid)
         if concept_uuids:
             query = query.filter(concept_uuid__in=concept_uuids)
+        if entities_id:
+            query = query.filter(entity_id__in=entities_id)
         return query
 
     def rule_by_value(self, value, rule_set=None):
@@ -361,7 +365,8 @@ class Indicator(
     def values(
             self, date_data: date = None, min_date_data: date = None,
             reference_layer=None, admin_level: int = None,
-            concept_uuids: list = None, last_value=True
+            concept_uuids: list = None, last_value=True,
+            entities_id: list = None
     ):
         """Return list data based on date.
 
@@ -369,9 +374,12 @@ class Indicator(
         it will be aggregate to upper level
         """
         query = self.query_values(
-            date_data=date_data, min_date_data=min_date_data,
-            reference_layer=reference_layer, admin_level=admin_level,
-            concept_uuids=concept_uuids
+            date_data=date_data,
+            min_date_data=min_date_data,
+            reference_layer=reference_layer,
+            admin_level=admin_level,
+            concept_uuids=concept_uuids,
+            entities_id=entities_id
         )
         query = query.order_by(
             'concept_uuid', 'geom_id', '-date'
