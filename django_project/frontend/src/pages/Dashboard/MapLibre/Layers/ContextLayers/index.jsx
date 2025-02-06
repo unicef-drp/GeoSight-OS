@@ -17,7 +17,7 @@
    CONTEXT LAYER
    ========================================================================== */
 
-import React, { Fragment, useEffect } from 'react';
+import React, {Fragment, useEffect} from 'react';
 import { centroid as turfCentroid } from '@turf/turf';
 import { useSelector } from "react-redux";
 import { hasLayer, hasSource, removeLayer, removeSource } from "../../utils";
@@ -32,6 +32,7 @@ import relatedTableLayer from "../../LayerType/RelatedTable";
 import cloudNativeGISLayer from "../../LayerType/CloudNativeGIS";
 import rasterCogLayer from "../../LayerType/RasterCog";
 import { Variables } from "../../../../../utils/Variables";
+import { addLayerWithOrder } from "../../Render";
 
 const ID = `context-layer`
 const markersContextLayers = {}
@@ -171,7 +172,8 @@ export function renderLabel(id, contextLayerData, contextLayer, map) {
         }
       })
       layout['text-field'] = textField
-      map.addLayer(
+      addLayerWithOrder(
+        map,
         {
           id: idLabel,
           type: 'symbol',
@@ -181,8 +183,9 @@ export function renderLabel(id, contextLayerData, contextLayer, map) {
           paint: paint,
           maxzoom: maxZoom,
           minzoom: minZoom
-        }
-      );
+        },
+        Variables.LAYER_CATEGORY.LABEL
+      )
     }
 
     // For onload layer
@@ -223,7 +226,8 @@ export function contextLayerRendering(
   // For map config
   setData,
   isInit,
-  setIsInit
+  setIsInit,
+  requestSent
 ) {
   if (map) {
     if (contextLayer?.layer && !hasLayer(map, id)) {
@@ -306,7 +310,7 @@ export function contextLayerRendering(
                 null,
                 contextLayerData.data_fields
               )
-            }, contextLayerOrder, isInit, setIsInit
+            }, contextLayerOrder, isInit, setIsInit, requestSent
           )
           break
         }
@@ -343,7 +347,10 @@ export default function ContextLayers({ map }) {
     contextLayersStructure
   } = useSelector(state => state.dashboard.data);
   const contextLayersData = useSelector(state => state.map?.contextLayers);
-  const contextLayerOrder = dataStructureToListData(contextLayers, contextLayersStructure).filter(row => row?.id).map(row => row?.id)
+  const contextLayerOrder = dataStructureToListData(
+    contextLayers,
+    contextLayersStructure
+  ).filter(row => row?.id).map(row => ID + '-' + row?.id)
   contextLayerOrder.reverse()
 
   /** Remove context layers when not in selected data */

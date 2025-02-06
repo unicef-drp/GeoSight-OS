@@ -17,6 +17,8 @@ import FeatureService from 'mapbox-gl-arcgis-featureserver'
 import parseArcRESTStyle from "../../../../utils/esri/esri-style";
 import { addPopup, hasLayer, hasSource, loadImageToMap } from "../utils";
 import { toFloat } from "../../../../utils/main";
+import { addLayerWithOrder } from "../Render";
+import { Variables } from "../../../../utils/Variables";
 
 /***
  * To prevent attribution created duplicated
@@ -431,46 +433,71 @@ export default function arcGisLayer(map, id, data, contextLayerData, popupFeatur
 
 // And then add it as a layer to your map
   if (!hasLayer(map, fillId)) {
-    map.addLayer({
-      id: symbolId,
-      type: 'symbol',
-      source: id,
-      filter: ['==', '$type', 'Point'],
-      layout: {
-        'icon-allow-overlap': true,
-        'icon-ignore-placement': true
-      }
-    }, before)
-    map.addLayer({
-      id: circleId,
-      type: 'circle',
-      source: id,
-      filter: ['==', '$type', 'Point'],
-      paint: {
-        'circle-color': `rgba(0, 0, 0, 0)`
-      }
-    }, symbolId)
-    map.addLayer({
-      id: lineId,
-      type: 'line',
-      source: id,
-      filter: ['==', '$type', 'LineString']
-    }, circleId)
-    map.addLayer({
-      id: outlineId,
-      type: 'line',
-      source: id,
-      filter: ['==', '$type', 'Polygon'],
-      paint: {
-        'line-width': 0
-      }
-    }, lineId)
-    map.addLayer({
-      id: fillId,
-      type: 'fill',
-      source: id,
-      filter: ['==', '$type', 'Polygon']
-    }, outlineId)
+    addLayerWithOrder(
+      map,
+      {
+        id: symbolId,
+        type: 'symbol',
+        source: id,
+        filter: ['==', '$type', 'Point'],
+        layout: {
+          'icon-allow-overlap': true,
+          'icon-ignore-placement': true
+        }
+      },
+      Variables.LAYER_CATEGORY.CONTEXT_LAYER,
+      before
+    )
+    addLayerWithOrder(
+      map,
+      {
+        id: circleId,
+        type: 'circle',
+        source: id,
+        filter: ['==', '$type', 'Point'],
+        paint: {
+          'circle-color': `rgba(0, 0, 0, 0)`
+        }
+      },
+      Variables.LAYER_CATEGORY.CONTEXT_LAYER,
+      symbolId
+    )
+    addLayerWithOrder(
+      map,
+      {
+        id: lineId,
+        type: 'line',
+        source: id,
+        filter: ['==', '$type', 'LineString']
+      },
+      Variables.LAYER_CATEGORY.CONTEXT_LAYER,
+      circleId
+    )
+    addLayerWithOrder(
+      map,
+      {
+        id: outlineId,
+        type: 'line',
+        source: id,
+        filter: ['==', '$type', 'Polygon'],
+        paint: {
+          'line-width': 0
+        }
+      },
+      Variables.LAYER_CATEGORY.CONTEXT_LAYER,
+      lineId
+    )
+    addLayerWithOrder(
+      map,
+      {
+        id: fillId,
+        type: 'fill',
+        source: id,
+        filter: ['==', '$type', 'Polygon']
+      },
+      Variables.LAYER_CATEGORY.CONTEXT_LAYER,
+      outlineId
+    )
     const popupFeature = (properties) => {
       return popupFeatureFn(properties, data?.data?.fields)
     }

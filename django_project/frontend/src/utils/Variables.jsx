@@ -47,10 +47,18 @@ export const Variables = {
       ZONAL_ANALYSIS: "Zonal analysis",
     }
   },
-  FEATURE_TYPE:{
-    MULTIPOLYGON:"MultiPolygon",
-    POLYGON:'Polygon',
-    LINESTRING:'LineString',
-    POINT:'Point',
+  FEATURE_TYPE: {
+    MULTIPOLYGON: "MultiPolygon",
+    POLYGON: 'Polygon',
+    LINESTRING: 'LineString',
+    POINT: 'Point',
+  },
+  LAYER_CATEGORY: {
+    BASEMAP: "Basemap",
+    INDICATOR: "Indicator",
+    CONTEXT_LAYER: "Context layer",
+    HIGHTLIGHT: "Hightlight",
+    LABEL: "Label",
+    DRAW: "Draw",
   }
 }

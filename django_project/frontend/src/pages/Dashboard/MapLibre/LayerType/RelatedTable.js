@@ -23,6 +23,8 @@ import {
   removeSource
 } from "../utils";
 import { toJson } from "../../../../utils/main";
+import { addLayerWithOrder } from "../Render";
+import { Variables } from "../../../../utils/Variables";
 
 
 /***
@@ -73,7 +75,7 @@ export default function relatedTableLayer(map, id, data, contextLayerData, popup
           layer.id = id + '-' + layer.id
           layer.source = id
           removeLayer(map, layer.id)
-          map.addLayer(layer, before)
+          addLayerWithOrder(map, layer, Variables.LAYER_CATEGORY.CONTEXT_LAYER, before)
           before = layer.id
           addPopup(map, layer.id, popupFeature)
         })

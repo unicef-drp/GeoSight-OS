@@ -31,6 +31,8 @@ import { CloseIcon } from "../../../../components/Icons";
 import { Session } from "../../../../utils/Sessions";
 
 import './style.scss';
+import { addLayerWithOrder } from "../../MapLibre/Render";
+import { Variables } from "../../../../utils/Variables";
 
 const LAYER_HIGHLIGHT_ID = 'reference-layer-highlight'
 
@@ -143,8 +145,7 @@ export default function SearchGeometryInput({ map }) {
             type: 'vector',
             maxzoom: 8,
           });
-          map.addLayer(
-            {
+          addLayerWithOrder(map, {
               id: LAYER_HIGHLIGHT_ID,
               source: LAYER_HIGHLIGHT_ID,
               type: 'line',
@@ -154,7 +155,8 @@ export default function SearchGeometryInput({ map }) {
                 'line-width': 10,
                 'line-blur': 5
               }
-            }
+            },
+            Variables.LAYER_CATEGORY.HIGHTLIGHT
           )
           map.setFilter(LAYER_HIGHLIGHT_ID, ['in', 'concept_uuid'].concat([newSelectedGeometryInput]));
 

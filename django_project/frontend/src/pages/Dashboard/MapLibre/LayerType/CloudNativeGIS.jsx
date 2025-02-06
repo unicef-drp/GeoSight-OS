@@ -15,6 +15,8 @@
 
 import { addPopup, getBeforeLayerId, hasSource } from "../utils";
 import { GET_RESOURCE } from "../../../../utils/ResourceRequests";
+import { addLayerWithOrder } from "../Render";
+import { Variables } from "../../../../utils/Variables";
 
 
 /***
@@ -66,7 +68,7 @@ export default function cloudNativeGISLayer(map, id, data, contextLayerData, pop
           layer.id = id + '-' + layer.id
           layer.source = id
           layer['source-layer'] = 'default'
-          map.addLayer(layer, before)
+          addLayerWithOrder(map, layer, Variables.LAYER_CATEGORY.CONTEXT_LAYER, before)
           before = layer.id
           addPopup(map, layer.id, popupFeature)
         })

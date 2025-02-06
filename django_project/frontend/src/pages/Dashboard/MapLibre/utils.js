@@ -265,15 +265,19 @@ export const createElement = (
  */
 export const getBeforeLayerId = (map, layerId, contextLayerOrder) => {
   if (contextLayerOrder) {
+    let existingLayers = []
     const contextLayerIdx = contextLayerOrder.indexOf(layerId)
     for (let idx = 0; idx < contextLayerOrder.length; idx++) {
       if (map && idx > contextLayerIdx) {
-        const currentId = 'context-layer-' + contextLayerOrder[idx] + '-line'
-        if (hasLayer(map, currentId)) {
-          return currentId;
+        const contextLayerId = contextLayerOrder[idx];
+        const layers = map.getStyle().layers.filter(layer => layer.id.includes(contextLayerId));
+        if (layers.length > 0) {
+          const currentId = layers[0].id;
+          existingLayers.push(currentId)
         }
       }
     }
+    return existingLayers.length > 0 ? existingLayers[0] : undefined;
   } else {
     return undefined;
   }

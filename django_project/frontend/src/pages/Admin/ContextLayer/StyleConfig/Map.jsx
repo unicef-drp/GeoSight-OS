@@ -17,7 +17,7 @@
    MAP CONFIG CONTAINER
    ========================================================================== */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import maplibregl from 'maplibre-gl';
 import { removeLayer, removeSource } from "../../../Dashboard/MapLibre/utils";
 import {
@@ -26,11 +26,10 @@ import {
 import 'mapboxgl-legend/dist/style.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
-
 // Initialize cog
 import { cogProtocol } from "@geomatico/maplibre-cog-protocol";
 import { Variables } from "../../../../utils/Variables";
-import { updateColorPaletteData } from "../../../../utils/Style";
+import {updateColorPaletteData} from "../../../../utils/Style";
 
 maplibregl.addProtocol('cog', cogProtocol);
 
@@ -40,6 +39,7 @@ maplibregl.addProtocol('cog', cogProtocol);
 export default function MapConfig({ data, setData, layerInput }) {
   const [map, setMap] = useState(null);
   const [isInit, setIsInit] = useState(true);
+  const requestSent = useRef(false);
 
   /***
    * Render layer to maplibre
@@ -102,11 +102,11 @@ export default function MapConfig({ data, setData, layerInput }) {
         (
           async () => {
             await updateColorPaletteData()
-            contextLayerRendering(id, data, layerInput, map, null, setData, isInit, setIsInit)
+            contextLayerRendering(id, data, layerInput, map, null, setData, isInit, setIsInit, requestSent)
           }
         )()
       } else {
-        contextLayerRendering(id, data, layerInput, map, null, setData, isInit, setIsInit)
+        contextLayerRendering(id, data, layerInput, map, null, setData, isInit, setIsInit, requestSent)
       }
     }
   }, [map, layerInput]);
