@@ -50,7 +50,6 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
         nodata_color,
         nodata_opacity,
       } = data?.styles;
-      console.log(`request current: ${requestSent.current}`)
       if (requestSent.current) {
         return
       }

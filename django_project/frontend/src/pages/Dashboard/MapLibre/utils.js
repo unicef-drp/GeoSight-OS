@@ -271,7 +271,6 @@ export const getBeforeLayerId = (map, layerId, contextLayerOrder) => {
       if (map && idx > contextLayerIdx) {
         const contextLayerId = contextLayerOrder[idx];
         const layers = map.getStyle().layers.filter(layer => layer.id.includes(contextLayerId));
-        console.log(contextLayerId)
         if (layers.length > 0) {
           const currentId = layers[0].id;
           existingLayers.push(currentId)
