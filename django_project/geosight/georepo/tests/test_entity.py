@@ -79,14 +79,14 @@ class EntityTest(APITestCase):
         ).get_or_create(self.reference_layer)
 
         # Other entities
-        _reference_layer = ReferenceLayerF()
+        self.reference_layer_2 = ReferenceLayerF()
         GeorepoEntity(
             {
                 'name': 'name',
                 'ucode': 'O',
                 'admin_level': 0
             }
-        ).get_or_create(_reference_layer)
+        ).get_or_create(self.reference_layer_2)
 
     def test_create(self):
         """Get the data."""
@@ -96,5 +96,11 @@ class EntityTest(APITestCase):
     def test_entity_detail(self):
         """Test entity detail."""
         self.assertEqual(self.entity.parent.geom_id, 'A')
+        self.assertEqual(self.entity.children.count(), 1)
         self.assertEqual(self.entity.children[0].geom_id, 'AAA')
+        self.assertEqual(self.entity.siblings.count(), 1)
         self.assertEqual(self.entity.siblings[0].geom_id, 'AB')
+        self.assertEqual(self.entity.reference_layer_set.count(), 1)
+        self.assertEqual(
+            self.entity.reference_layer_set[0], self.reference_layer
+        )
