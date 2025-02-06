@@ -15,38 +15,6 @@
     }
   },
   {
-    "model": "geosight_georepo.referencelayerindicator",
-    "pk": 1,
-    "fields": {
-      "reference_layer": 1,
-      "indicator": 318
-    }
-  },
-  {
-    "model": "geosight_georepo.referencelayerindicator",
-    "pk": 2,
-    "fields": {
-      "reference_layer": 1,
-      "indicator": 362
-    }
-  },
-  {
-    "model": "geosight_georepo.referencelayerindicator",
-    "pk": 3,
-    "fields": {
-      "reference_layer": 1,
-      "indicator": 370
-    }
-  },
-  {
-    "model": "geosight_georepo.referencelayerindicator",
-    "pk": 4,
-    "fields": {
-      "reference_layer": 1,
-      "indicator": 319
-    }
-  },
-  {
     "model": "geosight_georepo.entity",
     "pk": 1,
     "fields": {

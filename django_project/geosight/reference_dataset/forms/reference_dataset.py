@@ -51,8 +51,8 @@ class ReferenceDatasetForm(forms.ModelForm):
     class Meta:  # noqa: D106
         model = ReferenceDataset
         exclude = (
-            'created_at', 'creator', 'modified_at', 'version_data',
-            'identifier', 'in_georepo'
+            'created_at', 'creator', 'modified_at', 'modified_by',
+            'version_data', 'identifier', 'in_georepo'
         )
 
     @staticmethod
