@@ -318,8 +318,28 @@ export const ZonalAnalysisTool = forwardRef((
 
     // Draw information
     let information = null;
+    let area = null;
+    let perimeter = null;
     if (draw) {
       information = draw.selectedInformation(config.buffer, config.selectionMode === SELECTION_MODE.MANUAL)
+      if (information) {
+        if (information.area < 10000) {
+          area = `${numberWithCommas(information.area, 2)} m2`;
+        } else if (information.area < 1000000) {
+          area = `${numberWithCommas(information.area / 1000, 2)} ha`;
+        } else {
+          area = `${numberWithCommas(information.area / 1000000, 2)} km2`;
+        }
+        area = `${area} (${information.count} feature${information.count > 1 ? 's' : ''})`
+
+        if (information.lengthMeters < 1000) {
+          perimeter = `${numberWithCommas(information.lengthMeters, 2)} m ${information.lengthTerm}`;
+        } else {
+          perimeter = `${numberWithCommas(information.lengthMeters / 1000, 2)} km 
+          (${numberWithCommas(information.lengthMiles, 2)} mi) ${information.lengthTerm}`;
+        }
+      }
+
     }
     return (
       <>
@@ -407,12 +427,10 @@ export const ZonalAnalysisTool = forwardRef((
                 information ? (
                     <>
                       <div>
-                        {`${numberWithCommas(information.area, getAreaDecimalLength(information.area))} Sq Meters `}
-                        ({information.count} feature{information.count > 1 ? 's' : ''})
+                        {area}
                       </div>
                       <div>
-                        {numberWithCommas(information.lengthMeters, getAreaDecimalLength(information.lengthMeters))} Meters
-                        ({numberWithCommas(information.lengthMiles, getAreaDecimalLength(information.lengthMiles))} Miles) {information.lengthTerm}
+                        {perimeter}
                       </div>
                     </>
                   ) :
