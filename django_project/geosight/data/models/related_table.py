@@ -185,8 +185,11 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                     f"from geosight_data_relatedtablerow as row "
                     f"LEFT JOIN geosight_georepo_entity as entity "
                     f"ON data ->> '{geo_field}'::text=entity.geom_id::text "
+                    f"LEFT JOIN geosight_georepo_referencelayerviewentity "
+                    f"  as ref_entity "
+                    f"  ON ref_entity.entity_id = entity.id "
                     f"WHERE row.table_id={self.id} AND "
-                    f"entity.reference_layer_id={reference_layer.id} "
+                    f"ref_entity.reference_layer_id={reference_layer.id} "
                     f"ORDER BY row.id"
                 )
             else:
@@ -199,8 +202,11 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                     f"AND LOWER(entity_code.code_type)='{geo_type.lower()}' "
                     f"LEFT JOIN geosight_georepo_entity as entity "
                     f"ON entity.id=entity_code.entity_id "
+                    f"LEFT JOIN geosight_georepo_referencelayerviewentity "
+                    f"  as ref_entity "
+                    f"  ON ref_entity.entity_id = entity.id "
                     f"WHERE row.table_id={self.id} AND "
-                    f"entity.reference_layer_id={reference_layer.id} "
+                    f"ref_entity.reference_layer_id={reference_layer.id} "
                     f"ORDER BY row.id"
                 )
 
@@ -257,8 +263,11 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                     f"from geosight_data_relatedtablerow as row "
                     f"LEFT JOIN geosight_georepo_entity as entity "
                     f"ON data ->> '{geo_field}'::text=entity.geom_id::text "
+                    f"LEFT JOIN geosight_georepo_referencelayerviewentity "
+                    f"  as ref_entity "
+                    f"  ON ref_entity.entity_id = entity.id "
                     f"WHERE row.table_id={self.id} AND "
-                    f"entity.reference_layer_id={reference_layer.id} "
+                    f"ref_entity.reference_layer_id={reference_layer.id} "
                     f"ORDER BY data ->> '{date_field}'"
                 )
             else:
@@ -270,8 +279,11 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                     f"AND LOWER(entity_code.code_type)='{geo_type.lower()}' "
                     f"LEFT JOIN geosight_georepo_entity as entity "
                     f"ON entity.id=entity_code.entity_id "
+                    f"LEFT JOIN geosight_georepo_referencelayerviewentity "
+                    f"  as ref_entity "
+                    f"  ON ref_entity.entity_id = entity.id "
                     f"WHERE row.table_id={self.id} AND "
-                    f"entity.reference_layer_id={reference_layer.id} "
+                    f"ref_entity.reference_layer_id={reference_layer.id} "
                     f"ORDER BY data ->> '{date_field}'"
                 )
             cursor.execute(query)

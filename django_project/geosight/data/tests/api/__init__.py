@@ -26,4 +26,4 @@ from .indicators import IndicatorListApiTest  # noqa
 from .related_table import RelatedTableApiTest  # noqa
 from .sharepoint import *  # noqa
 from .style import StyleApiTest  # noqa
-from .v1 import *  # noqa
+# from .v1 import *  # noqa

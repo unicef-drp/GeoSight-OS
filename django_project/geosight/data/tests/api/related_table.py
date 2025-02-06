@@ -15,11 +15,17 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import json
+import uuid
 
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 from geosight.data.models import RelatedTable
+from geosight.georepo.models import Entity
+from geosight.georepo.request.data import GeorepoEntity
+from geosight.georepo.tests.model_factories.reference_layer import (
+    ReferenceLayerF
+)
 from geosight.permission.models.factory import PERMISSIONS
 from geosight.permission.tests._base import BasePermissionTest
 
@@ -30,6 +36,47 @@ class RelatedTableApiTest(BasePermissionTest.TestCase):
     """Test for dashboard bookmark api."""
 
     index = 0
+    geography_code_field_name = 'geom_id'
+    geography_code_type = 'ucode'
+    date_field = 'date'
+
+    def setUp(self):
+        """To setup tests."""
+        super().setUp()
+        self.uuid = uuid.uuid4()
+        reference_layer = ReferenceLayerF(
+            identifier=self.uuid
+        )
+        Entity.get_or_create(
+            reference_layer,
+            GeorepoEntity(
+                {
+                    'name': '',
+                    'ucode': 'A',
+                    'admin_level': 1,
+                }
+            )
+        )
+        Entity.get_or_create(
+            reference_layer,
+            GeorepoEntity(
+                {
+                    'name': '',
+                    'ucode': 'B',
+                    'admin_level': 1
+                }
+            )
+        )
+        Entity.get_or_create(
+            reference_layer,
+            GeorepoEntity(
+                {
+                    'name': '',
+                    'ucode': 'C',
+                    'admin_level': 1
+                }
+            )
+        )
 
     def create_resource(self, user, name=None):
         """Create resource."""
@@ -40,6 +87,30 @@ class RelatedTableApiTest(BasePermissionTest.TestCase):
         obj, _ = RelatedTable.permissions.get_or_create(
             user=user,
             name=name
+        )
+        obj.insert_row(
+            {
+                'geom_id': 'A',
+                'value': 0,
+                'date': '1577836800',
+                'population': 1
+            }
+        )
+        obj.insert_row(
+            {
+                'geom_id': 'A',
+                'value': 1,
+                'date': '1609459200',
+                'population': 2
+            }
+        )
+        obj.insert_row(
+            {
+                'geom_id': 'B',
+                'value': 1,
+                'date': '1609459200',
+                'population': 3
+            }
         )
         return obj
 
@@ -244,7 +315,7 @@ class RelatedTableApiTest(BasePermissionTest.TestCase):
 
         resource.permission.public_permission = PERMISSIONS.READ_DATA.name
         resource.permission.save()
-        self.assertRequestGetView(url, 200, self.viewer)  # Viewer
+        return self.assertRequestGetView(url, 200, self.viewer)  # Viewer
 
     def test_data_api(self):
         """Test data access."""
@@ -253,24 +324,35 @@ class RelatedTableApiTest(BasePermissionTest.TestCase):
     def test_data_dates_api(self):
         """Test data access."""
         param = (
-            'reference_layer_uuid=test&'
-            'geography_code_field_name=test&'
-            'geography_code_type=test&'
-            'date_field=test'
+            f'reference_layer_uuid={self.uuid}&'
+            f'geography_code_field_name={self.geography_code_field_name}&'
+            f'geography_code_type={self.geography_code_type}&'
+            f'date_field={self.date_field}'
         )
-        self.data_api_assert('related-table-dates-api', param)
+        response = self.data_api_assert('related-table-dates-api', param)
+        self.assertEqual(len(response.json()), 2)
+        self.assertEqual(
+            response.json(),
+            ['2020-01-01T00:00:00+00:00', '2021-01-01T00:00:00+00:00']
+        )
 
     def test_data_field_api(self):
         """Test data access."""
-        param = 'field=test'
-        self.data_api_assert('related-table-field-data-api', param)
+        param = 'field=population'
+        response = self.data_api_assert('related-table-field-data-api', param)
+        self.assertEqual(len(response.json()), 3)
+        self.assertEqual(response.json(), [1, 2, 3])
 
     def test_data_values_api(self):
         """Test data access."""
         param = (
-            'reference_layer_uuid=test&'
-            'geography_code_field_name=test&'
-            'geography_code_type=test&'
-            'date_field=test'
+            f'reference_layer_uuid={self.uuid}&'
+            f'geography_code_field_name={self.geography_code_field_name}&'
+            f'geography_code_type={self.geography_code_type}&'
+            f'date_field={self.date_field}'
         )
-        self.data_api_assert('related-table-values-api', param)
+        response = self.data_api_assert('related-table-values-api', param)
+        self.assertEqual(len(response.json()), 3)
+        self.assertEqual(
+            [res['geom_id'] for res in response.json()], ['A', 'A', 'B']
+        )

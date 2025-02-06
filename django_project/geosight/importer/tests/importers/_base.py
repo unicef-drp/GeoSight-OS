@@ -28,6 +28,7 @@ from geosight.data.tests.model_factories import (
     IndicatorF, IndicatorGroupF, IndicatorRuleF
 )
 from geosight.georepo.models.entity import Entity
+from geosight.georepo.request.data import GeorepoEntity
 from geosight.georepo.tests.mock import mock_get_entity, need_review
 from geosight.georepo.tests.model_factories import ReferenceLayerF
 from geosight.importer.utilities import json_from_excel
@@ -103,13 +104,22 @@ class BaseImporterTest(TestCase):
             'BC': ['B', 'Top'],
         }
         for geom_id, parents in entities.items():
-            Entity.objects.get_or_create(
-                reference_layer=self.reference_layer,
-                geom_id=geom_id,
-                admin_level=2,
-                defaults={
-                    'parents': parents
+            entity = GeorepoEntity(
+                {
+                    'name': '',
+                    'ucode': geom_id,
+                    'admin_level': 2,
+                    'parents': [
+                        {
+                            'ucode': ucode,
+                            'admin_level': admin_level,
+                        }
+                        for admin_level, ucode in enumerate(parents)
+                    ]
                 }
+            )
+            Entity.get_or_create(
+                self.reference_layer, entity=entity
             )
 
         # Patch
@@ -370,11 +380,7 @@ class BaseIndicatorValueImporterTest(BaseImporterTest):
         And it will check the indicator value from each rows.
         """
         indicator_values = IndicatorValue.objects.filter(
-            geom_id__in=Entity.objects.filter(
-                reference_layer=self.reference_layer
-            ).values_list(
-                'geom_id', flat=True
-            )
+            entity__in=self.reference_layer.entities_set
         )
 
         results = json_from_excel(filename, sheet_name=result_sheet_name)
