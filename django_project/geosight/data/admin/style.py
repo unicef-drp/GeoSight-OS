@@ -18,6 +18,8 @@ from django.contrib import admin
 
 from geosight.data.models.style import Style, StyleRule
 from geosight.data.admin.base import BaseAdminResourceMixin
+from geosight.data.models.style.raster import COGClassification
+from geosight.data.tasks import recalculate_cog_classification
 
 
 class StyleRuleInline(admin.TabularInline):
@@ -34,4 +36,19 @@ class StyleAdmin(BaseAdminResourceMixin):
     inlines = (StyleRuleInline,)
 
 
+def recalculate(modeladmin, request, queryset):
+    """Recalculate COG classification."""
+
+    for obj in queryset:
+        recalculate_cog_classification(obj.id)
+
+class COGClassificationAdmin(admin.ModelAdmin):
+    """COGClassification admin."""
+
+    list_display = ('url', 'type', 'number')
+    list_filter = ('type',)
+    search_fields = ('url',)
+    actions = (recalculate,)
+
 admin.site.register(Style, StyleAdmin)
+admin.site.register(COGClassification, COGClassificationAdmin)

@@ -59,7 +59,11 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
         return
       }
 
-      const requestBody = {
+      // TODO: Handle styling when multiple, identical COG URLs are used
+      const url = `cog://${data.url}#color:[${colors.map(color => '"' + color + '"')}],${min_band ? min_band : 0},${max_band ? max_band : 100},c`
+
+      if (dynamic_classification != 'Equidistant.') {
+              const requestBody = {
         url: data.url,
         class_type: dynamic_classification,
         class_num: dynamic_class_num,
@@ -94,11 +98,6 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
           throw Error(error.toString())
         })
       }
-
-      // TODO: Handle styling when multiple, identical COG URLs are used
-      const url = `cog://${data.url}#` + contextLayerData.id;
-
-      removeSource(map, id)
 
       const getColor = (value) => {
         for (const classification of classifications) {
@@ -137,6 +136,11 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
           rgba.set(getColor(value));
         }
       });
+
+      }
+
+
+      removeSource(map, id)
       const sourceParams = Object.assign({}, data.params, {
         url: url,
         type: 'raster',

@@ -15,3 +15,4 @@ __date__ = '11/07/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from .base import Style, StyleRule
+from .raster import COGClassification

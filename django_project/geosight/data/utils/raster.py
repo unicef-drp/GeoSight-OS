@@ -24,11 +24,6 @@ from rasterio.mask import mask
 from shapely.ops import transform
 import jenkspy
 
-NATURAL_BREAKS = 'Natural breaks.'
-EQUAL_INTERVAL = 'Equidistant.'
-QUANTILE = 'Quantile.'
-STANDARD_DEVIATION = 'standard_deviation'
-
 
 def run_zonal_analysis(
         raster_path: str,
@@ -225,6 +220,8 @@ class ClassifyRasterData():
 
     def run(self):
         """Run raster classification."""
+        from geosight.data.models.style.base import DynamicClassificationType
+
         with rasterio.open(self.raster_path) as src:
             data = src.read(1)
             data = np.ma.masked_invalid(data)
@@ -232,11 +229,11 @@ class ClassifyRasterData():
             data = np.sort(data)
 
             classification = []
-            if self.class_type == NATURAL_BREAKS:
+            if self.class_type == DynamicClassificationType.NATURAL_BREAKS:
                 classification = self.classify_natural_breaks(data)
-            elif self.class_type == EQUAL_INTERVAL:
+            elif self.class_type == DynamicClassificationType.EQUIDISTANT:
                 classification = self.classify_equal_interval(data)
-            elif self.class_type == QUANTILE:
+            elif self.class_type == DynamicClassificationType.QUANTILE:
                 classification = self.classify_quantile(data)
                 classification = list(set(classification))
             else:

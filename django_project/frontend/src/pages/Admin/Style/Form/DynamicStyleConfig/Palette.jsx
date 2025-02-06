@@ -38,6 +38,9 @@ export default function ColorPaletteStyleConfig(
     options = dynamicClassificationChoices
   }
 ) {
+  const classification = options.find(type => type.value === styleConfig.dynamic_classification)
+  console.log(classification)
+  console.log(dynamicClassificationChoices)
   return <>
     <ColorPaletteSelector
       colorPalette={styleConfig.color_palette}
@@ -59,7 +62,7 @@ export default function ColorPaletteStyleConfig(
         <div className='RuleTable-Title'>Classification</div>
         <Select
           options={options}
-          value={options.find(type => type.value === styleConfig.dynamic_classification)}
+          value={classification ? classification : options.find(type => type.label === 'Equidistant')}
           name='dynamic_classification'
           onChange={evt => {
             styleConfig.dynamic_classification = evt.value
