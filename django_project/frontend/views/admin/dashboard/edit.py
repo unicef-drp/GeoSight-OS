@@ -79,7 +79,10 @@ class DashboardEditView(
 
     def post(self, request, slug, **kwargs):
         """Create dashboard."""
-        data = DashboardForm.update_data(request.POST.copy().dict())
+        try:
+            data = DashboardForm.update_data(request.POST.copy().dict())
+        except ValueError as e:
+            return HttpResponseBadRequest(e)
         dashboard = get_object_or_404(
             Dashboard, slug=slug
         )
