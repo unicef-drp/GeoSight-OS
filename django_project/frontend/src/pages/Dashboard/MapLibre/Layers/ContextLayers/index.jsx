@@ -17,7 +17,7 @@
    CONTEXT LAYER
    ========================================================================== */
 
-import React, { Fragment, useEffect } from 'react';
+import React, {Fragment, useEffect} from 'react';
 import { centroid as turfCentroid } from '@turf/turf';
 import { useSelector } from "react-redux";
 import { hasLayer, hasSource, removeLayer, removeSource } from "../../utils";
@@ -226,7 +226,8 @@ export function contextLayerRendering(
   // For map config
   setData,
   isInit,
-  setIsInit
+  setIsInit,
+  requestSent
 ) {
   if (map) {
     if (contextLayer?.layer && !hasLayer(map, id)) {
@@ -309,7 +310,7 @@ export function contextLayerRendering(
                 null,
                 contextLayerData.data_fields
               )
-            }, contextLayerOrder, isInit, setIsInit
+            }, contextLayerOrder, isInit, setIsInit, requestSent
           )
           break
         }

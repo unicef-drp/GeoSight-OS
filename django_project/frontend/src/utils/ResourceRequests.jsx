@@ -20,7 +20,7 @@ export const GET_RESOURCE = {
     DETAIL: async (id) => {
       let data = null
       await fetchingData(
-        `https://staging-geosight.unitst.org/cloud-native-gis/api/layer/${id}/`,
+        `/cloud-native-gis/api/layer/${id}/`,
         {}, {}, (response, error) => {
           data = response
         }, false

@@ -31,13 +31,12 @@ import { DjangoRequests } from "../../../../Requests";
 import { addLayerWithOrder } from "../Render";
 import { Variables } from "../../../../utils/Variables";
 
-
 let sessions = {};
 
 /***
  * Render Raster Cog
  */
-export default function rasterCogLayer(map, id, data, setData, contextLayerData, popupFeatureFn, contextLayerOrder, isInit, setIsInit) {
+export default function rasterCogLayer(map, id, data, setData, contextLayerData, popupFeatureFn, contextLayerOrder, isInit, setIsInit, requestSent) {
   (
     async () => {
       const {
@@ -51,6 +50,10 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
         nodata_color,
         nodata_opacity,
       } = data?.styles;
+      console.log(`request current: ${requestSent.current}`)
+      if (requestSent.current) {
+        return
+      }
       const additional_ndt_val = additional_nodata ? parseFloat(additional_nodata) : additional_nodata;
       const ndt_opacity = nodata_opacity ? parseFloat(nodata_opacity) : nodata_opacity;
       const colors = createColorsFromPaletteId(color_palette, dynamic_class_num, color_palette_reverse);
@@ -74,6 +77,7 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
       if (sessions[key]) {
         classifications = sessions[key];
       } else {
+        requestSent.current = true
         await DjangoRequests.post(
           `/api/raster/classification`,
           requestBody
@@ -85,8 +89,9 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
                 top: response.data[idx + 1],
                 color: colors[idx]
               });
-              sessions[key] = classifications
             }
+            sessions[key] = classifications
+            requestSent.current = false
           });
         }).catch(error => {
           throw Error(error.toString())
@@ -112,7 +117,7 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
       setColorFunction(data.url, ([value], rgba, { noData }) => {
         if (init && colors.length > 0) {
           init = false
-          if (setIsInit) {
+          if (isInit) {
             setIsInit(false)
           }
           if (setData) {
@@ -149,15 +154,7 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
         if (beforeOrder) {
           before = beforeOrder
         }
-        // else if (contextLayerOrder[0] == id) {
-        //   // If context layer if the bottom-most layer,
-        //   // before layer should be from reference layer
-        //   const refLayerId = map.getStyle().layers.filter(layer => layer.id.includes('indicator-label'))[0].id
-        //   before = refLayerId
-        // }
       }
-      console.log(before)
-      console.log(map.getStyle().layers)
       removeLayer(map, id)
       addLayerWithOrder(
         map,
