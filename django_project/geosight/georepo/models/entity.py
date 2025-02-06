@@ -17,7 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 from datetime import datetime
 
 from django.contrib.gis.db import models
-from django.db.models import Q
+from django.db.models import Q, Subquery
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
@@ -197,10 +197,10 @@ class Entity(models.Model):
     @property
     def reference_layer_set(self):
         """Return reference_layer."""
+        reference_layer_ids = self.referencelayerviewentity_set.values(
+            "reference_layer_id")
         return ReferenceLayerView.objects.filter(
-            pk__in=self.referencelayerviewentity_set.values_list(
-                "reference_layer_id", flat=True
-            )
+            pk__in=Subquery(reference_layer_ids)
         )
 
     @property

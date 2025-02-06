@@ -16,6 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models import Subquery
 from django.utils.translation import ugettext_lazy as _
 
 from core.models.general import AbstractVersionData, AbstractEditData
@@ -162,11 +163,10 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
     def entities_set(self):
         """Querying entities."""
         from geosight.georepo.models.entity import Entity
-        return Entity.objects.filter(
-            pk__in=self.referencelayerviewentity_set.values_list(
-                "entity_id", flat=True
-            )
+        related_entities = self.referencelayerviewentity_set.values(
+            "entity_id"
         )
+        return Entity.objects.filter(pk__in=Subquery(related_entities))
 
 
 class ReferenceLayerIndicator(models.Model):
