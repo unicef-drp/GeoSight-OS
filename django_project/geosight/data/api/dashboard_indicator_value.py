@@ -23,6 +23,7 @@ from urllib.parse import parse_qs, urlencode, urlunparse
 import pytz
 from dateutil import parser as date_parser
 from django.conf import settings
+from django.db.models.functions import ExtractDay, ExtractMonth, ExtractYear
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from rest_framework.generics import ListAPIView
@@ -211,6 +212,12 @@ class DashboardIndicatorValueListAPI(DashboardIndicatorValuesAPI):
             reference_layer=reference_layer,
             concept_uuid=concept_uuid
         )
+        query = query.annotate(
+            day=ExtractDay('date'),
+            month=ExtractMonth('date'),
+            year=ExtractYear('date')
+        )
+
         distinct = ['geom_id', 'concept_uuid']
         frequency = request.GET.get('frequency', 'daily')
         if frequency.lower() == 'daily':

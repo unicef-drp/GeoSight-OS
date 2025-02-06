@@ -59,7 +59,7 @@ class EntityCentroidSerializer(GeoFeatureModelSerializer):
                 pcs.append(self.entities_by_ucode[parent])
             except KeyError:
                 try:
-                    entity = obj.reference_layer.entities_set.get(
+                    entity = Entity.objects.get(
                         geom_id=parent
                     ).concept_uuid
                     self.entities_by_ucode[parent] = entity

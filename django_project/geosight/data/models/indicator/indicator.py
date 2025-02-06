@@ -323,6 +323,14 @@ class Indicator(
         query = IndicatorValueWithGeo.objects.filter(
             indicator_id=self.id
         )
+
+        # Convert to date
+        if isinstance(date_data, datetime):
+            date_data = date_data.date()
+        if isinstance(min_date_data, datetime):
+            min_date_data = min_date_data.date()
+
+        # Do filter
         if reference_layer:
             query = query.filter(reference_layer_id=reference_layer.id)
         if admin_level:
