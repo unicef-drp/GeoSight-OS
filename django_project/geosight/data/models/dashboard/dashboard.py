@@ -551,13 +551,13 @@ class Dashboard(
                 )
             except (KeyError, ModelClass.DoesNotExist):
                 try:
-                    object = ObjectClass.objects.get(id=data['id'])
+                    obj = ObjectClass.objects.get(id=data['id'])
                     model = ModelClass(
                         dashboard=self,
-                        object=object
+                        object=obj
                     )
                 except ObjectClass.DoesNotExist:
-                    raise Exception(
+                    raise ValueError(
                         f"{ObjectClass.__name__} with id "
                         f"{data['id']} does not exist")
 
