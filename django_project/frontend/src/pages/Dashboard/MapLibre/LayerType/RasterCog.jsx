@@ -36,7 +36,7 @@ let sessions = {};
 /***
  * Render Raster Cog
  */
-export default function rasterCogLayer(map, id, data, setData, contextLayerData, popupFeatureFn, contextLayerOrder, isInit, setIsInit, requestSent) {
+export default function rasterCogLayer(map, id, data, setData, contextLayerData, popupFeatureFn, contextLayerOrder, isInit, setIsInit, requestSent = {}) {
   (
     async () => {
       const {
@@ -50,7 +50,7 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
         nodata_color,
         nodata_opacity,
       } = data?.styles;
-      if (requestSent.current) {
+      if (requestSent?.current) {
         return
       }
       const additional_ndt_val = additional_nodata ? parseFloat(additional_nodata) : additional_nodata;
