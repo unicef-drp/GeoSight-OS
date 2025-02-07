@@ -247,7 +247,7 @@ export const ReferenceLayerInput = forwardRef(
                     return row.identifier === reference
                   })
                   if (!referenceLayer && reference) {
-                    reference.dataset_levels = reference.dataset_levels.map(level => {
+                    reference.dataset_levels = reference.dataset_levels?.map(level => {
                       level.value = level.level
                       level.name = level.level_name
                       return level
