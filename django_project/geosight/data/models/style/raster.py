@@ -1,4 +1,5 @@
 import os
+from django.conf import settings
 from django.contrib.gis.db import models
 from geosight.data.utils import (
     download_file_from_url,
@@ -8,14 +9,6 @@ from geosight.data.models.style.base import (
     DynamicClassificationTypeChoices,
     DynamicClassificationType
 )
-
-def get_dynamic_choices():
-    from geosight.data.models.style.base import DynamicClassificationTypeChoices
-    return DynamicClassificationTypeChoices
-
-def get_default_class_type():
-    from geosight.data.models.style.base import DynamicClassificationType
-    return DynamicClassificationType.EQUIDISTANT
 
 
 class COGClassification(models.Model):
@@ -30,10 +23,12 @@ class COGClassification(models.Model):
         max_length=30
     )
     number = models.IntegerField(null=True, blank=False, default=7)
+    minimum = models.FloatField(null=True, blank=False, default=0.0)
+    maximum = models.FloatField(null=True, blank=False, default=100)
     result = models.JSONField(null=True, blank=True, default=list)
 
     class Meta:
-        unique_together = ('url', 'type', 'number')
+        unique_together = ('url', 'type', 'number', 'minimum', 'maximum')
 
     def save(self, *args, **kwargs):
         if len(self.result) == 0:
@@ -55,7 +50,9 @@ class COGClassification(models.Model):
             classification = ClassifyRasterData(
                 raster_path=tmp_file_path,
                 class_type=self.type,
-                class_num=self.number
+                class_num=self.number,
+                minimum=self.minimum,
+                maximum=self.maximum
             ).run()
             os.remove(tmp_file_path)
             self.result = [float(a) for a in classification]

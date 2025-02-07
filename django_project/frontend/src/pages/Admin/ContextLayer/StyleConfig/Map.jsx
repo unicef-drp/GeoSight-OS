@@ -17,7 +17,8 @@
    MAP CONFIG CONTAINER
    ========================================================================== */
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, {useEffect, useState, useRef, useMemo} from 'react';
+import { debounce } from '@mui/material/utils';
 import maplibregl from 'maplibre-gl';
 import { removeLayer, removeSource } from "../../../Dashboard/MapLibre/utils";
 import {
@@ -40,6 +41,17 @@ export default function MapConfig({ data, setData, layerInput }) {
   const [map, setMap] = useState(null);
   const [isInit, setIsInit] = useState(true);
   const requestSent = useRef(false);
+
+  const renderContextLayer = useMemo(
+    () =>
+      debounce(
+        (id, data, layerInput, map, contextLayerOrder, setData, isInit, setIsInit, requestSent) => {
+          contextLayerRendering(id, data, layerInput, map, contextLayerOrder, setData, isInit, setIsInit, requestSent)
+        },
+        400
+      ),
+    []
+  )
 
   /***
    * Render layer to maplibre
@@ -102,7 +114,7 @@ export default function MapConfig({ data, setData, layerInput }) {
         (
           async () => {
             await updateColorPaletteData()
-            contextLayerRendering(id, data, layerInput, map, null, setData, isInit, setIsInit, requestSent)
+            renderContextLayer(id, data, layerInput, map, null, setData, isInit, setIsInit, requestSent)
           }
         )()
       } else {
