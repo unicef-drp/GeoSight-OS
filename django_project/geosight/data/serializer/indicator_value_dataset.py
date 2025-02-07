@@ -34,12 +34,10 @@ class IndicatorValueDatasetSerializer(serializers.ModelSerializer):
 
     def get_id(self, obj: IndicatorValueDataset):
         """Return id."""
-        if self.context.get('group_admin_level', False):
-            return (
-                f'{obj.indicator_id}-{obj.reference_layer_id}-'
-                f'[{obj.admin_level}]'
-            )
-        return f'{obj.indicator_id}-{obj.reference_layer_id}-{obj.admin_level}'
+        return (
+            f'{obj.indicator_id}-{obj.reference_layer_id}-'
+            f'[{obj.admin_level}]'
+        )
 
     def get_browse_data_api_url(self, obj: IndicatorValueDataset):
         """Return browse data API url."""

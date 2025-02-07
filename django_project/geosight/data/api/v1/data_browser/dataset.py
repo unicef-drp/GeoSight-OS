@@ -18,13 +18,13 @@ import json
 
 from django.contrib.postgres.aggregates import StringAgg
 from django.core.exceptions import SuspiciousOperation
-from django.db.models import Count, F, Max, Min, CharField
-from django.db.models.functions import Cast
+from django.db.models import Value, Count, F, Max, Min, CharField
+from django.db.models.functions import Concat, Cast
 from django.http import HttpResponseBadRequest
 from django.urls import reverse
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import status
-from rest_framework.generics import ListAPIView
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from core.api_utils import common_api_params, ApiTag, ApiParams
@@ -110,7 +110,9 @@ class BaseDatasetApiList:
             )
 
 
-class DatasetApiList(BaseDatasetApiList, BaseDataApiList, ListAPIView):
+class DatasetApiList(
+    BaseDatasetApiList, BaseDataApiList, viewsets.ReadOnlyModelViewSet
+):
     """Return Dataset with indicator x reference layer x level."""
 
     @property
@@ -211,37 +213,40 @@ class DatasetApiList(BaseDatasetApiList, BaseDataApiList, ListAPIView):
         ids = []
         for _id in to_be_deleted:
             [indicator_id, reference_layer_id, admin_level] = _id.split('-')
-            admin_level = admin_level.replace('[', '').replace(']', '')
+            admin_levels = admin_level.replace('[', '').replace(']', '').split(
+                ','
+            )
             _ids = IndicatorValueWithGeo.objects.filter(
                 indicator_id=indicator_id,
                 reference_layer_id=reference_layer_id,
-                admin_level=admin_level
+                admin_level__in=admin_levels
             ).values_list('id', flat=True)
             ids += _ids
         IndicatorValue.objects.filter(id__in=list(ids)).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
-class DatasetApiListIds(BaseDatasetApiList, BaseDataApiList, ListAPIView):
-    """Return Just ids Data List."""
-
     @swagger_auto_schema(auto_schema=None)
-    def get(self, request):
+    @action(detail=False, methods=['get'])
+    def ids(self, request):
         """Get ids of data."""
         return Response(
-            self.get_queryset().values_list('id', flat=True)
+            self.get_queryset().annotate(
+                identifier=Concat(
+                    'indicator_id',
+                    Value('-'),
+                    'reference_layer_id',
+                    Value('-['),
+                    'admin_level',
+                    Value(']'),
+                    output_field=CharField()
+                )
+            ).values_list('identifier', flat=True)
         )
 
-
-class DatasetApiQuickData(BaseDatasetApiList, BaseDataApiList, ListAPIView):
-    """Return quick data for the data.
-
-    Example: It will return list of indicators, datasets, levels.
-    """
-
     @swagger_auto_schema(auto_schema=None)
-    def get(self, request):
-        """Get ids of data."""
+    @action(detail=False, methods=['get'])
+    def data(self, request):
+        """Get data."""
         indicator_id = 'indicator_id'
         reference_layer_uuid = 'reference_layer_uuid'
         admin_level = 'admin_level'
