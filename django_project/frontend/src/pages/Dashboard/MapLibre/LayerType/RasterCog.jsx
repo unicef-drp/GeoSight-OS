@@ -33,12 +33,18 @@ import { Variables } from "../../../../utils/Variables";
 
 let sessions = {};
 
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+
 /***
  * Render Raster Cog
  */
 export default function rasterCogLayer(map, id, data, setData, contextLayerData, popupFeatureFn, contextLayerOrder, isInit, setIsInit, requestSent) {
   (
     async () => {
+      console.log(data?.styles);
       const {
         min_band,
         max_band,
@@ -75,6 +81,7 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
       // otherwise, get it from API
       if (sessions[key]) {
         classifications = sessions[key];
+        requestSent.current = false;
       } else {
         requestSent.current = true
         await DjangoRequests.post(
@@ -112,6 +119,7 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
         }
         return null;
       };
+      console.log('rerender')
 
       setColorFunction(data.url, ([value], rgba, { noData }) => {
         if (init && colors.length > 0) {

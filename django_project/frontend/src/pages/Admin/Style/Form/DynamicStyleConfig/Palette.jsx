@@ -39,8 +39,6 @@ export default function ColorPaletteStyleConfig(
   }
 ) {
   const classification = options.find(type => type.value === styleConfig.dynamic_classification)
-  console.log(classification)
-  console.log(dynamicClassificationChoices)
   return <>
     <ColorPaletteSelector
       colorPalette={styleConfig.color_palette}
