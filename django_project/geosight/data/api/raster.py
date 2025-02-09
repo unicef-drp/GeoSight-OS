@@ -70,7 +70,6 @@ class GetRasterClassificationAPI(APIView):
                         minimum=minimum
                     ).result
                 except COGClassification.DoesNotExist:
-                    time.sleep(3)
                     tmp_file_path = os.path.join(
                         settings.MEDIA_TEMP,
                         f"{os.path.basename(url)}"

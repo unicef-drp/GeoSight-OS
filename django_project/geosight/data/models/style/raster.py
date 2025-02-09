@@ -23,8 +23,8 @@ class COGClassification(models.Model):
         max_length=30
     )
     number = models.IntegerField(null=True, blank=False, default=7)
-    minimum = models.FloatField(null=True, blank=False, default=0.0)
-    maximum = models.FloatField(null=True, blank=False, default=100)
+    minimum = models.FloatField(null=True, blank=True)
+    maximum = models.FloatField(null=True, blank=True)
     result = models.JSONField(null=True, blank=True, default=list)
 
     class Meta:
