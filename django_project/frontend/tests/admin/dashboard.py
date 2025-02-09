@@ -317,3 +317,9 @@ class DashboardAdminViewTest(BaseViewTest.TestCase):
         self.assertEqual(self.resource.modified_by, self.resource.creator)
         last_version = self.resource.version
         self.assertEqual(self.resource.version, last_version)
+
+    def test_extent_invalid(self):
+        """Test for create view with invalid extent."""
+
+        url = reverse(self.create_url_tag)
+
