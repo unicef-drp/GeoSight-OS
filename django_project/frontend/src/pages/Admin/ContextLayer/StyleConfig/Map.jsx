@@ -37,16 +37,16 @@ maplibregl.addProtocol('cog', cogProtocol);
 /**
  * Map Config component.
  */
-export default function MapConfig({ data, setData, layerInput }) {
+export default function MapConfig({ data, setData, layerInput, setLoading }) {
   const [map, setMap] = useState(null);
   const [isInit, setIsInit] = useState(true);
-  const requestSent = useRef(false);
+  const requestSent  = useRef()
 
   const renderContextLayer = useMemo(
     () =>
       debounce(
-        (id, data, layerInput, map, contextLayerOrder, setData, isInit, setIsInit, requestSent) => {
-          contextLayerRendering(id, data, layerInput, map, contextLayerOrder, setData, isInit, setIsInit, requestSent)
+        (id, data, layerInput, map, contextLayerOrder, setData, isInit, setIsInit, requestSent, setLoading) => {
+          contextLayerRendering(id, data, layerInput, map, contextLayerOrder, setData, isInit, setIsInit, requestSent, setLoading)
         },
         400
       ),
@@ -114,12 +114,11 @@ export default function MapConfig({ data, setData, layerInput }) {
         (
           async () => {
             await updateColorPaletteData()
-            // renderContextLayer(id, data, layerInput, map, null, setData, isInit, setIsInit, requestSent)
-            contextLayerRendering(id, data, layerInput, map, null, setData, isInit, setIsInit, requestSent)
+            renderContextLayer(id, data, layerInput, map, null, setData, isInit, setIsInit, requestSent, setLoading)
           }
         )()
       } else {
-        contextLayerRendering(id, data, layerInput, map, null, setData, isInit, setIsInit, requestSent)
+        contextLayerRendering(id, data, layerInput, map, null, setData, isInit, setIsInit, requestSent, setLoading)
       }
     }
   }, [map, layerInput]);

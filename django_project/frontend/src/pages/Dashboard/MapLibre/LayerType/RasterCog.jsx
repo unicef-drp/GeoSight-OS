@@ -36,13 +36,17 @@ let sessions = {};
 /***
  * Render Raster Cog
  */
-export default function rasterCogLayer(map, id, data, setData, contextLayerData, popupFeatureFn, contextLayerOrder, isInit, setIsInit, requestSent) {
+export default function rasterCogLayer(map, id, data, setData, contextLayerData, popupFeatureFn, contextLayerOrder, isInit, setIsInit, requestSent, setLoading = {}) {
   (
     async () => {
       console.log(data?.styles);
-      // if (requestSent.current || !data?.styles) {
-      //   return
-      // }
+      if (!data?.styles) {
+        debugger
+      }
+      if (JSON.stringify(requestSent.current) === JSON.stringify(data?.styles)) {
+        return
+      }
+      requestSent.current = data
       const {
         min_band,
         max_band,
@@ -66,7 +70,7 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
       // TODO: Handle styling when multiple, identical COG URLs are used
       let url = `cog://${data.url}?method=${dynamic_classification}#color:[${colors.map(color => '"' + color + '"')}],${min_band ? min_band : 0},${max_band ? max_band : 100},c`      //
       if (dynamic_classification != 'Equidistant.') {
-        url = `cog://${data.url}?method=${dynamic_classification}`      //
+        url = `cog://${data.url}#method=${dynamic_classification}`      //
         const requestBody = {
           url: data.url,
           class_type: dynamic_classification,
@@ -83,9 +87,8 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
         // otherwise, get it from API
         if (sessions[key]) {
           classifications = sessions[key];
-          // requestSent.current = false;
         } else {
-          // requestSent.current = true
+          setLoading(true)
           await DjangoRequests.post(
             `/api/raster/classification`,
             requestBody
@@ -99,7 +102,7 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
                 });
               }
               sessions[key] = classifications
-              // requestSent.current = false
+              setLoading(false)
             });
           }).catch(error => {
             throw Error(error.toString())
@@ -123,7 +126,6 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
 
         setColorFunction(data.url, ([value], rgba, { noData}) => {
           if (init && colors.length > 0) {
-            debugger
             init = false
             if (isInit) {
               setIsInit(false)

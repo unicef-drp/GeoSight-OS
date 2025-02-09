@@ -13,8 +13,8 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { Fragment, useEffect, useState } from 'react';
-import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
+import React, {Fragment, useEffect, useRef, useState} from 'react';
+import { Checkbox, FormControlLabel, FormGroup, Modal, Typography, Box, CircularProgress } from "@mui/material";
 import MapConfig from './Map'
 import ArcgisConfig from './Arcgis'
 import { useDispatch } from "react-redux";
@@ -59,6 +59,8 @@ export default function StyleConfig(
 
   const [layerData, setLayerData] = useState(null);
   const [layerDataClass, setLayerDataClass] = useState(null);
+  const [isMapLoading, setIsMapLoading] = useState(false);
+  const requestSent = useRef(false);
   const [tab, setTab] = useState(data.layer_type === Variables.LAYER.TYPE.ARCGIS ? FIELDS : PREVIEW);
 
   useEffect(() => {
@@ -139,6 +141,20 @@ export default function StyleConfig(
               </Fragment> : ""
           }
         </div>
+        {
+          isMapLoading && data.layer_type === Variables.LAYER.TYPE.RASTER_COG &&
+            <Modal
+              id={'Modal-Loading-Style-Config'}
+              open={true}
+            >
+              <Box>
+                <Typography id="modal-modal-title" variant="h6" component="h2">
+                  Getting color classification from API.
+                </Typography>
+                <CircularProgress/>
+              </Box>
+            </Modal>
+        }
         <div id='ContextLayerConfig'
              className={"BasicFormSection " + (data.layer_type === Variables.LAYER.TYPE.ARCGIS ? 'ShowStyle' : '')}
         >
@@ -164,6 +180,7 @@ export default function StyleConfig(
                     layer_type: data.layer_type,
                     render: true
                   }}
+                  setLoading={setIsMapLoading}
                 />
               </div> : null
           }

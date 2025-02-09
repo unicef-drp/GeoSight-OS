@@ -227,7 +227,8 @@ export function contextLayerRendering(
   setData,
   isInit,
   setIsInit,
-  requestSent
+  requestSent,
+  setLoading
 ) {
   if (map) {
     if (contextLayer?.layer && !hasLayer(map, id)) {
@@ -303,14 +304,14 @@ export function contextLayerRendering(
         case Variables.LAYER.TYPE.RASTER_COG: {
           removeLayers(map, id)
           rasterCogLayer(
-            map, id, layer, setData, contextLayerData, featureProperties => {
+            map, id, layer.styles? layer : contextLayerData, setData, contextLayerData, featureProperties => {
               return popupFeature(
                 featureProperties,
                 contextLayerData.name,
                 null,
                 contextLayerData.data_fields
               )
-            }, contextLayerOrder, isInit, setIsInit, requestSent
+            }, contextLayerOrder, isInit, setIsInit, requestSent, setLoading
           )
           break
         }

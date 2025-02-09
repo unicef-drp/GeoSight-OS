@@ -15,6 +15,8 @@ __date__ = '22/01/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
 import os
+import time
+
 from django.core.cache import cache
 from django.conf import settings
 from rest_framework.permissions import IsAuthenticated
@@ -68,6 +70,7 @@ class GetRasterClassificationAPI(APIView):
                         minimum=minimum
                     ).result
                 except COGClassification.DoesNotExist:
+                    time.sleep(3)
                     tmp_file_path = os.path.join(
                         settings.MEDIA_TEMP,
                         f"{os.path.basename(url)}"
@@ -83,13 +86,15 @@ class GetRasterClassificationAPI(APIView):
                         minimum=minimum
                     ).run()
 
-                    COGClassification.objects.create(
+                    COGClassification.objects.get_or_create(
                         url=url,
                         type=class_type,
                         number=class_num,
-                        result=[float(a) for a in classification],
                         maximum=maximum,
-                        minimum=minimum
+                        minimum=minimum,
+                        defaults={
+                            'result': [float(a) for a in classification],
+                        }
                     )
 
                 # Cache the response for future requests
