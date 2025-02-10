@@ -38,7 +38,7 @@ let sessions = {};
  */
 export default function rasterCogLayer(
   map, id, data, setData, contextLayerData, popupFeatureFn,
-  contextLayerOrder, isInit, setIsInit, prevData = {}, setLoading = () => console.log("Default function executed")) {
+  contextLayerOrder, isInit, setIsInit, prevData = {}, setLoading = () => {}) {
   (
     async () => {
       if (JSON.stringify(prevData.current) === JSON.stringify(data?.styles)) {
