@@ -39,7 +39,6 @@ let sessions = {};
 export default function rasterCogLayer(map, id, data, setData, contextLayerData, popupFeatureFn, contextLayerOrder, isInit, setIsInit, requestSent, setLoading = {}) {
   (
     async () => {
-      console.log(data?.styles);
       if (!data?.styles) {
         debugger
       }
@@ -65,7 +64,6 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
       if (!colors.length) {
         return
       }
-      console.log(dynamic_classification)
 
       // TODO: Handle styling when multiple, identical COG URLs are used
       let url = `cog://${data.url}?method=${dynamic_classification}#color:[${colors.map(color => '"' + color + '"')}],${min_band ? min_band : 0},${max_band ? max_band : 100},c`      //
@@ -109,7 +107,6 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
           })
         }
 
-        console.log(classifications)
         removeSource(map, id)
 
         const getColor = (value) => {
