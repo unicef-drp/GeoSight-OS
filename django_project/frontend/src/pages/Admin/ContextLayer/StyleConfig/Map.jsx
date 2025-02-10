@@ -17,7 +17,8 @@
    MAP CONFIG CONTAINER
    ========================================================================== */
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, {useEffect, useState, useRef, useMemo} from 'react';
+import { debounce } from '@mui/material/utils';
 import maplibregl from 'maplibre-gl';
 import { removeLayer, removeSource } from "../../../Dashboard/MapLibre/utils";
 import {
@@ -36,10 +37,21 @@ maplibregl.addProtocol('cog', cogProtocol);
 /**
  * Map Config component.
  */
-export default function MapConfig({ data, setData, layerInput }) {
+export default function MapConfig({ data, setData, layerInput, setLoading }) {
   const [map, setMap] = useState(null);
   const [isInit, setIsInit] = useState(true);
-  const requestSent = useRef(false);
+  const prevData  = useRef()
+
+  const renderContextLayer = useMemo(
+    () =>
+      debounce(
+        (id, data, layerInput, map, contextLayerOrder, setData, isInit, setIsInit, prevData, setLoading) => {
+          contextLayerRendering(id, data, layerInput, map, contextLayerOrder, setData, isInit, setIsInit, prevData, setLoading)
+        },
+        400
+      ),
+    []
+  )
 
   /***
    * Render layer to maplibre
@@ -102,15 +114,14 @@ export default function MapConfig({ data, setData, layerInput }) {
         (
           async () => {
             await updateColorPaletteData()
-            contextLayerRendering(id, data, layerInput, map, null, setData, isInit, setIsInit, requestSent)
+            renderContextLayer(id, data, layerInput, map, null, setData, isInit, setIsInit, prevData, setLoading)
           }
         )()
       } else {
-        contextLayerRendering(id, data, layerInput, map, null, setData, isInit, setIsInit, requestSent)
+        contextLayerRendering(id, data, layerInput, map, null, setData, isInit, setIsInit, prevData, setLoading)
       }
     }
   }, [map, layerInput]);
 
   return <div id="StyleMapConfig"></div>
 }
-

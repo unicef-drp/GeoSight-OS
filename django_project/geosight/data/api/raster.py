@@ -16,18 +16,19 @@ __copyright__ = ('Copyright 2025, Unicef')
 
 import os
 
-import requests
-from django.conf import settings
 from django.core.cache import cache
+from django.conf import settings
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from geosight.data.serializer.raster import GetRasterClassificationSerializer
+from geosight.data.models.style.raster import COGClassification
 from geosight.data.utils import (
     ClassifyRasterData,
-    generate_cache_key
+    generate_cache_key,
+    download_file_from_url
 )
-from geosight.data.serializer.raster import GetRasterClassificationSerializer
 
 
 class GetRasterClassificationAPI(APIView):
@@ -56,30 +57,44 @@ class GetRasterClassificationAPI(APIView):
                 class_type = serializer.validated_data['class_type']
                 class_num = serializer.validated_data['class_num']
                 colors = serializer.validated_data.get('colors', None)
+                minimum = serializer.validated_data.get('minimum', None)
+                maximum = serializer.validated_data.get('maximum', None)
 
-                tmp_file_path = os.path.join(
-                    settings.MEDIA_TEMP,
-                    os.path.basename(url)
-                )
-                response = requests.get(url, stream=True)
-                if not os.path.exists(tmp_file_path):
-                    if response.status_code == 200:
-                        with open(tmp_file_path, "wb") as tmp_file:
-                            for chunk in response.iter_content(
-                                    chunk_size=8192
-                            ):
-                                tmp_file.write(chunk)
-                    else:
-                        raise Exception(
-                            f"Failed to download file: {response.status_code}"
-                        )
+                try:
+                    classification = COGClassification.objects.get(
+                        url=url,
+                        type=class_type,
+                        number=class_num,
+                        max_value=maximum,
+                        min_value=minimum
+                    ).result
+                except COGClassification.DoesNotExist:
+                    tmp_file_path = os.path.join(
+                        settings.MEDIA_TEMP,
+                        f"{os.path.basename(url)}"
+                    )
+                    tmp_file_path = download_file_from_url(url, tmp_file_path)
 
-                classification = ClassifyRasterData(
-                    raster_path=tmp_file_path,
-                    class_type=class_type,
-                    class_num=class_num,
-                    colors=colors
-                ).run()
+                    classification = ClassifyRasterData(
+                        raster_path=tmp_file_path,
+                        class_type=class_type,
+                        class_num=class_num,
+                        colors=colors,
+                        maximum=maximum,
+                        minimum=minimum
+                    ).run()
+
+                    COGClassification.objects.get_or_create(
+                        url=url,
+                        type=class_type,
+                        number=class_num,
+                        max_value=maximum,
+                        min_value=minimum,
+                        defaults={
+                            'result': [float(a) for a in classification],
+                        }
+                    )
+
                 # Cache the response for future requests
                 cache.set(cache_key, classification, timeout=300)
 

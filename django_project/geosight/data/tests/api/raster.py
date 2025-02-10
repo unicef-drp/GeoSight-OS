@@ -21,6 +21,7 @@ from django.urls import reverse
 
 from core.tests.model_factories.user import UserF
 from geosight.permission.tests._base import APITestCase
+from geosight.data.models.style import COGClassification
 
 
 class GetRasterClassificationAPITest(APITestCase):
@@ -62,101 +63,157 @@ class GetRasterClassificationAPITest(APITestCase):
         )
         return response.json()
 
+    def _check_response(self, payload, response, expected_response):
+        """Check test response."""
+        self.assertListEqual(expected_response, response)
+        if payload.get('minimum', None) is None:
+            cog_classifications = COGClassification.objects.filter(
+                url=payload['url'],
+                type=payload['class_type'],
+                number=payload['class_num']
+            )
+        else:
+            cog_classifications = COGClassification.objects.filter(
+                url=payload['url'],
+                type=payload['class_type'],
+                number=payload['class_num'],
+                min_value=payload['minimum'],
+                max_value=payload['maximum']
+            )
+        self.assertTrue(cog_classifications.count(), 1)
+        self.assertNotEquals(cog_classifications[0].result, [])
+
     @patch('requests.get')
     def test_get_natural_breaks(self, mock_get):
         """Test get natural breaks classification."""
+        payload = {
+            "url": (
+                "https://unidatadapmclimatechange.blob.core.windows.net/"
+                "public/heatwave/cogs_by_hwi/"
+                "average_heatwaves_duration_1960s_proj_COG.tif"
+            ),
+            "class_type": "Natural breaks.",
+            "class_num": 7,
+            "colors": [
+                "#d73027",
+                "#fc8d59",
+                "#fee08b",
+                "#ffffbf",
+                "#d9ef8b",
+                "#91cf60",
+                "#1a9850"
+            ],
+            "minimum": 0,
+            "maximum": 100
+        }
         response = self._send_request(
-            data={
-                "url": (
-                    "https://unidatadapmclimatechange.blob.core.windows.net/"
-                    "public/heatwave/cogs_by_hwi/"
-                    "average_heatwaves_duration_1960s_proj_COG.tif"
-                ),
-                "class_type": "Natural breaks.",
-                "class_num": 7,
-                "colors": [
-                    "#d73027",
-                    "#fc8d59",
-                    "#fee08b",
-                    "#ffffbf",
-                    "#d9ef8b",
-                    "#91cf60",
-                    "#1a9850"
-                ]
-            },
+            data=payload,
             mock_get=mock_get
         )
         expected_response = [
-            0.0,
-            13.296875,
-            17.5,
-            21.203125,
-            25.796875,
-            34.90625,
-            48.8125,
-            78.8125
+            0.0, 13.296875, 17.5,
+            21.203125, 25.796875, 34.90625,
+            48.8125, 100.0
         ]
-        self.assertListEqual(expected_response, response)
+        self._check_response(payload, response, expected_response)
+
+    @patch('requests.get')
+    def test_get_natural_breaks_no_minmax(self, mock_get):
+        """Test get natural breaks classification with no minmax."""
+        payload = {
+            "url": (
+                "https://unidatadapmclimatechange.blob.core.windows.net/"
+                "public/heatwave/cogs_by_hwi/"
+                "average_heatwaves_duration_1960s_proj_COG.tif"
+            ),
+            "class_type": "Natural breaks.",
+            "class_num": 7,
+            "colors": [
+                "#d73027",
+                "#fc8d59",
+                "#fee08b",
+                "#ffffbf",
+                "#d9ef8b",
+                "#91cf60",
+                "#1a9850"
+            ]
+        }
+        response = self._send_request(
+            data=payload,
+            mock_get=mock_get
+        )
+        expected_response = [
+            0.0, 13.296875, 17.5,
+            21.203125, 25.796875,
+            34.90625, 48.8125, 78.8125
+        ]
+        self._check_response(payload, response, expected_response)
 
     @patch('requests.get')
     def test_get_equal_interval(self, mock_get):
         """Test get equal interval classification."""
+        payload = {
+            "url": (
+                "https://unidatadapmclimatechange.blob.core.windows.net/"
+                "public/heatwave/cogs_by_hwi/"
+                "average_heatwaves_duration_1960s_proj_COG.tif"
+            ),
+            "class_type": "Equidistant.",
+            "class_num": 7,
+            "colors": [
+                "#d73027",
+                "#fc8d59",
+                "#fee08b",
+                "#ffffbf",
+                "#d9ef8b",
+                "#91cf60",
+                "#1a9850"
+            ],
+            "minimum": 0,
+            "maximum": 100
+        }
         response = self._send_request(
-            data={
-                "url": (
-                    "https://unidatadapmclimatechange.blob.core.windows.net/"
-                    "public/heatwave/cogs_by_hwi/"
-                    "average_heatwaves_duration_1960s_proj_COG.tif"
-                ),
-                "class_type": "Equidistant.",
-                "class_num": 7,
-                "colors": [
-                    "#d73027",
-                    "#fc8d59",
-                    "#fee08b",
-                    "#ffffbf",
-                    "#d9ef8b",
-                    "#91cf60",
-                    "#1a9850"
-                ]
-            },
+            data=payload,
             mock_get=mock_get
         )
         expected_response = [
-            0.0,
-            11.258928571428571,
-            22.517857142857142,
-            33.776785714285715,
-            45.035714285714285,
-            56.294642857142854,
-            67.55357142857143,
-            78.8125
+            0.0, 14.285714285714286, 28.571428571428573,
+            42.85714285714286, 57.142857142857146,
+            71.42857142857143, 85.71428571428572,
+            100.0
         ]
-        self.assertListEqual(expected_response, response)
+        self._check_response(payload, response, expected_response)
 
     @patch('requests.get')
     def test_get_quantile(self, mock_get):
         """Test get quantile classification."""
+        payload = {
+            "url": (
+                "https://unidatadapmclimatechange.blob.core.windows.net/"
+                "public/heatwave/cogs_by_hwi/"
+                "average_heatwaves_duration_1960s_proj_COG.tif"
+            ),
+            "class_type": "Quantile.",
+            "class_num": 7,
+            "colors": [
+                "#d73027",
+                "#fc8d59",
+                "#fee08b",
+                "#ffffbf",
+                "#d9ef8b",
+                "#91cf60",
+                "#1a9850"
+            ],
+            "minimum": 0,
+            "maximum": 100
+        }
         response = self._send_request(
-            data={
-                "url": (
-                    "https://unidatadapmclimatechange.blob.core.windows.net/"
-                    "public/heatwave/cogs_by_hwi/"
-                    "average_heatwaves_duration_1960s_proj_COG.tif"
-                ),
-                "class_type": "Quantile.",
-                "class_num": 7,
-                "colors": [
-                    "#d73027",
-                    "#fc8d59",
-                    "#fee08b",
-                    "#ffffbf",
-                    "#d9ef8b",
-                    "#91cf60",
-                    "#1a9850"
-                ]
-            },
+            data=payload,
             mock_get=mock_get
         )
-        expected_response = [0.0, 17.0, 21.0, 78.8125]
-        self.assertListEqual(expected_response, response)
+        expected_response = [
+            0.0, 14.5, 16.90625,
+            18.59375, 20.09375, 22.0,
+            24.5, 100.0
+        ]
+        self._check_response(payload, response, expected_response)

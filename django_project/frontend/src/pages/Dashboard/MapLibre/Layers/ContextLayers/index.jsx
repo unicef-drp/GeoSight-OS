@@ -87,7 +87,7 @@ const popupFeature = (featureProperties, name, fields, defaultField) => {
           properties[field.alias] = featureProperties[field.name]
           if (field.type === 'date') {
             try {
-              properties[field.alias] = new Date(featureProperties[field.name]).toString()
+              properties[firendeeld.alias] = new Date(featureProperties[field.name]).toString()
             } catch (err) {
 
             }
@@ -227,7 +227,8 @@ export function contextLayerRendering(
   setData,
   isInit,
   setIsInit,
-  requestSent
+  prevData,
+  setLoading
 ) {
   if (map) {
     if (contextLayer?.layer && !hasLayer(map, id)) {
@@ -303,14 +304,14 @@ export function contextLayerRendering(
         case Variables.LAYER.TYPE.RASTER_COG: {
           removeLayers(map, id)
           rasterCogLayer(
-            map, id, layer, setData, contextLayerData, featureProperties => {
+            map, id, layer.styles? layer : contextLayerData, setData, contextLayerData, featureProperties => {
               return popupFeature(
                 featureProperties,
                 contextLayerData.name,
                 null,
                 contextLayerData.data_fields
               )
-            }, contextLayerOrder, isInit, setIsInit, requestSent
+            }, contextLayerOrder, isInit, setIsInit, prevData, setLoading
           )
           break
         }
