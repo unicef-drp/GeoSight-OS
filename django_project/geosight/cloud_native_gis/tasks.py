@@ -28,6 +28,6 @@ def clean_cloud_native_layer():
     """Clean cloud native layers that does not have context layer."""
     Layer.objects.exclude(
         pk__in=ContextLayer.objects.all().values_list(
-            'cloud_native_gis_layer__pk', flat=True
+            'cloud_native_gis_layer_id', flat=True
         )
     ).delete()
