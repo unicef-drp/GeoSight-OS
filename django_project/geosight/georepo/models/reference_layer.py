@@ -18,7 +18,7 @@ import logging
 
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.db.models import Subquery
+from django.db.models import Max, Subquery
 from django.utils.translation import ugettext_lazy as _
 
 from core.models.general import AbstractVersionData, AbstractEditData
@@ -126,13 +126,26 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
             )
         return obj
 
-    def sync_entities_code(self, level=None):
+    def sync_entities_code(self, level=None, sync_all=True):
         """Sync entities code."""
+        min_level = None
+        if not sync_all:
+            try:
+                min_level = self.entities_set.aggregate(
+                    Max('admin_level')
+                )['admin_level__max']
+            except KeyError:
+                pass
         detail = GeorepoRequest().View.get_detail(self.identifier)
+        logger.debug(f"Fetching entities: {self.identifier}")
         for dataset_level in detail['dataset_levels']:
             if level and dataset_level['level'] != level:
                 continue
-            logger.debug(f"Fetching entities: {self.identifier}")
+            if min_level is not None and dataset_level['level'] <= min_level:
+                continue
+            logger.debug(
+                f"Fetching entities: {self.identifier}-{dataset_level['level']}"
+            )
             entities = GeorepoRequest().View.entities(
                 self.identifier, dataset_level['level']
             )

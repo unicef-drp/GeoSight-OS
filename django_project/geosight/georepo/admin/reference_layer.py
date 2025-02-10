@@ -56,11 +56,21 @@ def update_meta(modeladmin, request, queryset):
         reference_layer.update_meta()
 
 
-@admin.action(description='Sync entities')
+@admin.action(description='Sync entities on all level')
 def sync_codes(modeladmin, request, queryset):
     """Fetch new reference layer."""
     fetch_reference_codes_by_ids.delay(
-        list(queryset.values_list('id', flat=True))
+        list(queryset.values_list('id', flat=True)),
+        sync_all=True
+    )
+
+
+@admin.action(description='Sync entities on non saved level')
+def sync_codes_non_saved_level(modeladmin, request, queryset):
+    """Fetch new reference layer."""
+    fetch_reference_codes_by_ids.delay(
+        list(queryset.values_list('id', flat=True)),
+        sync_all=False
     )
 
 
@@ -92,8 +102,8 @@ class ReferenceLayerViewAdmin(admin.ModelAdmin):
     list_filter = (InGeorepoFilter,)
     ordering = ['name']
     actions = [
-        update_meta, sync_codes, action_fetch_datasets,
-        action_create_data_access, invalidate_cache
+        update_meta, sync_codes, sync_codes_non_saved_level,
+        action_fetch_datasets, action_create_data_access, invalidate_cache
     ]
 
     def in_georepo(self, obj: ReferenceLayerView):
