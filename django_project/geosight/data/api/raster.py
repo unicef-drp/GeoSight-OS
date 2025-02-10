@@ -58,16 +58,16 @@ class GetRasterClassificationAPI(APIView):
                 class_type = serializer.validated_data['class_type']
                 class_num = serializer.validated_data['class_num']
                 colors = serializer.validated_data.get('colors', None)
-                minimum = serializer.validated_data.get('minimum', 0)
-                maximum = serializer.validated_data.get('maximum', 100)
+                minimum = serializer.validated_data.get('minimum', None)
+                maximum = serializer.validated_data.get('maximum', None)
 
                 try:
                     classification = COGClassification.objects.get(
                         url=url,
                         type=class_type,
                         number=class_num,
-                        maximum=maximum,
-                        minimum=minimum
+                        max_value=maximum,
+                        min_value=minimum
                     ).result
                 except COGClassification.DoesNotExist:
                     tmp_file_path = os.path.join(
@@ -89,8 +89,8 @@ class GetRasterClassificationAPI(APIView):
                         url=url,
                         type=class_type,
                         number=class_num,
-                        maximum=maximum,
-                        minimum=minimum,
+                        max_value=maximum,
+                        min_value=minimum,
                         defaults={
                             'result': [float(a) for a in classification],
                         }

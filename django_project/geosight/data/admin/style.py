@@ -45,7 +45,7 @@ def recalculate(modeladmin, request, queryset):
 class COGClassificationAdmin(admin.ModelAdmin):
     """COGClassification admin."""
 
-    list_display = ('url', 'type', 'number', 'minimum', 'maximum')
+    list_display = ('url', 'type', 'number', 'min_value', 'max_value')
     list_filter = ('type',)
     search_fields = ('url',)
     actions = (recalculate,)

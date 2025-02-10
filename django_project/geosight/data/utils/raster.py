@@ -68,7 +68,7 @@ def run_zonal_analysis(
         return aggregate
 
 
-class ClassifyRasterData():
+class ClassifyRasterData:
     """Classify raster data."""
 
     def __init__(
@@ -117,7 +117,7 @@ class ClassifyRasterData():
         # Perform stratified sampling (excluding min and max)
         sampled_data = np.random.choice(
             unique,
-            size=19998,
+            size=19998 if len(data_without_min_max) >= 19998 else len(data_without_min_max),
             replace=True,
             p=probabilities
         )
@@ -174,6 +174,7 @@ class ClassifyRasterData():
         # Ensure min and max values are excluded in the sampled data
         data_without_min_max = data[(data > min_value) & (data < max_value)]
         data = np.concatenate(([min_value, max_value], data_without_min_max))
+        data = np.sort(data)
 
         # Define quantile ranges
         quantiles = np.linspace(0, 1, self.class_num + 1)
@@ -248,7 +249,7 @@ class ClassifyRasterData():
                 classification = self.classify_equal_interval(data)
             elif self.class_type == DynamicClassificationType.QUANTILE:
                 classification = self.classify_quantile(data)
-                classification = list(set(classification))
+                classification = list(sorted(set(classification)))
             else:
                 classification = []
             # elif self.class_type == STANDARD_DEVIATION:

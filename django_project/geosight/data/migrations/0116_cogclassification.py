@@ -17,12 +17,12 @@ class Migration(migrations.Migration):
                 ('url', models.URLField(null=True)),
                 ('type', models.CharField(choices=[('Equidistant.', 'Equidistant.'), ('Natural breaks.', 'Natural breaks.'), ('Quantile.', 'Quantile.'), ('Std deviation.', 'Std deviation.'), ('Arithmetic progression.', 'Arithmetic progression.'), ('Geometric progression.', 'Geometric progression.')], default='Equidistant.', max_length=30)),
                 ('number', models.IntegerField(default=7, null=True)),
-                ('minimum', models.FloatField(blank=True, null=True)),
-                ('maximum', models.FloatField(blank=True, null=True)),
+                ('min_value', models.FloatField(blank=True, null=True)),
+                ('max_value', models.FloatField(blank=True, null=True)),
                 ('result', models.JSONField(blank=True, default=list, null=True)),
             ],
             options={
-                'unique_together': {('url', 'type', 'number', 'minimum', 'maximum')},
+                'unique_together': {('url', 'type', 'number', 'min_value', 'max_value')},
             },
         ),
     ]

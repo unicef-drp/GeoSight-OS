@@ -1,5 +1,4 @@
 import os
-from django.conf import settings
 from django.contrib.gis.db import models
 from geosight.data.utils import (
     download_file_from_url,
@@ -23,12 +22,12 @@ class COGClassification(models.Model):
         max_length=30
     )
     number = models.IntegerField(null=True, blank=False, default=7)
-    minimum = models.FloatField(null=True, blank=True)
-    maximum = models.FloatField(null=True, blank=True)
+    min_value = models.FloatField(null=True, blank=True)
+    max_value = models.FloatField(null=True, blank=True)
     result = models.JSONField(null=True, blank=True, default=list)
 
     class Meta:
-        unique_together = ('url', 'type', 'number', 'minimum', 'maximum')
+        unique_together = ('url', 'type', 'number', 'min_value', 'max_value')
 
     def save(self, *args, **kwargs):
         if len(self.result) == 0:
