@@ -227,7 +227,7 @@ export function contextLayerRendering(
   setData,
   isInit,
   setIsInit,
-  requestSent,
+  prevData,
   setLoading
 ) {
   if (map) {
@@ -311,7 +311,7 @@ export function contextLayerRendering(
                 null,
                 contextLayerData.data_fields
               )
-            }, contextLayerOrder, isInit, setIsInit, requestSent, setLoading
+            }, contextLayerOrder, isInit, setIsInit, prevData, setLoading
           )
           break
         }

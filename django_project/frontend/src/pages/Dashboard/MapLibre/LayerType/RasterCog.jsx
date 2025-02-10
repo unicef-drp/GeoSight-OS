@@ -36,16 +36,13 @@ let sessions = {};
 /***
  * Render Raster Cog
  */
-export default function rasterCogLayer(map, id, data, setData, contextLayerData, popupFeatureFn, contextLayerOrder, isInit, setIsInit, requestSent, setLoading = {}) {
+export default function rasterCogLayer(map, id, data, setData, contextLayerData, popupFeatureFn, contextLayerOrder, isInit, setIsInit, prevData, setLoading = {}) {
   (
     async () => {
-      if (!data?.styles) {
-        debugger
-      }
-      if (JSON.stringify(requestSent.current) === JSON.stringify(data?.styles)) {
+      if (JSON.stringify(prevData.current) === JSON.stringify(data?.styles)) {
         return
       }
-      requestSent.current = data
+      prevData.current = data
       const {
         min_band,
         max_band,
@@ -57,6 +54,9 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
         nodata_color,
         nodata_opacity,
       } = data?.styles || {};
+      if (prevData.current) {
+        return
+      }
       const additional_ndt_val = additional_nodata ? parseFloat(additional_nodata) : additional_nodata;
       const ndt_opacity = nodata_opacity ? parseFloat(nodata_opacity) : nodata_opacity;
       const colors = createColorsFromPaletteId(color_palette, dynamic_class_num, color_palette_reverse);
@@ -120,7 +120,6 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
           return value === classifications[classifications.length - 1].top ? value : null;
         };
 
-
         setColorFunction(data.url, ([value], rgba, { noData}) => {
           if (init && colors.length > 0) {
             init = false
@@ -150,8 +149,9 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
               console.log(`error: ${value}`)
             }
           }
-        });
-      }
+        }
+        return null;
+      };
 
       removeSource(map, id)
       const sourceParams = Object.assign({}, data.params, {

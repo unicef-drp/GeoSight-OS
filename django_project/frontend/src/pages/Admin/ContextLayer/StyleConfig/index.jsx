@@ -60,7 +60,6 @@ export default function StyleConfig(
   const [layerData, setLayerData] = useState(null);
   const [layerDataClass, setLayerDataClass] = useState(null);
   const [isMapLoading, setIsMapLoading] = useState(false);
-  const requestSent = useRef(false);
   const [tab, setTab] = useState(data.layer_type === Variables.LAYER.TYPE.ARCGIS ? FIELDS : PREVIEW);
 
   useEffect(() => {
