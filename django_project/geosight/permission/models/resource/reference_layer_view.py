@@ -78,4 +78,7 @@ def create_resource(sender, instance, created, **kwargs):
 @receiver(post_save, sender=ReferenceLayerView)
 def save_resource(sender, instance, **kwargs):
     """When resource saved."""
-    instance.permission.save()
+    try:
+        instance.permission.save()
+    except Exception:
+        pass
