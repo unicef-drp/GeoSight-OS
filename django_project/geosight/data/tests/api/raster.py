@@ -22,7 +22,6 @@ from django.urls import reverse
 from core.tests.model_factories.user import UserF
 from geosight.permission.tests._base import APITestCase
 from geosight.data.models.style import COGClassification
-from django.core.management import call_command
 
 
 class GetRasterClassificationAPITest(APITestCase):

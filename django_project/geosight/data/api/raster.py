@@ -15,7 +15,6 @@ __date__ = '22/01/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
 import os
-import time
 
 from django.core.cache import cache
 from django.conf import settings

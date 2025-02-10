@@ -38,9 +38,9 @@ class StyleAdmin(BaseAdminResourceMixin):
 
 def recalculate(modeladmin, request, queryset):
     """Recalculate COG classification."""
-
     for obj in queryset:
         recalculate_cog_classification(obj.id)
+
 
 class COGClassificationAdmin(admin.ModelAdmin):
     """COGClassification admin."""
@@ -49,6 +49,7 @@ class COGClassificationAdmin(admin.ModelAdmin):
     list_filter = ('type',)
     search_fields = ('url',)
     actions = (recalculate,)
+
 
 admin.site.register(Style, StyleAdmin)
 admin.site.register(COGClassification, COGClassificationAdmin)

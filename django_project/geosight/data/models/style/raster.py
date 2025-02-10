@@ -1,3 +1,19 @@
+# coding=utf-8
+"""
+GeoSight is UNICEF's geospatial web-based business intelligence platform.
+
+Contact : geosight-no-reply@unicef.org
+
+.. note:: This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation; either version 3 of the License, or
+    (at your option) any later version.
+
+"""
+__author__ = 'zakki@kartoza.com'
+__date__ = '16/02/2025'
+__copyright__ = ('Copyright 2025, Unicef')
+
 import os
 from django.contrib.gis.db import models
 from geosight.data.utils import (
@@ -26,10 +42,11 @@ class COGClassification(models.Model):
     max_value = models.FloatField(null=True, blank=True)
     result = models.JSONField(null=True, blank=True, default=list)
 
-    class Meta:
+    class Meta:  # noqa: D106
         unique_together = ('url', 'type', 'number', 'min_value', 'max_value')
 
     def save(self, *args, **kwargs):
+        """Custom save method."""
         if len(self.result) == 0:
             retry = 0
             success = False

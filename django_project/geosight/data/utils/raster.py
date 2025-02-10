@@ -117,7 +117,7 @@ class ClassifyRasterData:
         # Perform stratified sampling (excluding min and max)
         sampled_data = np.random.choice(
             unique,
-            size=19998 if len(data_without_min_max) >= 19998 else len(data_without_min_max),
+            size=19998 if len(data_without_min_max) >= 19998 else len(data_without_min_max),  # noqa
             replace=True,
             p=probabilities
         )
