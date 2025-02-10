@@ -299,7 +299,7 @@ export default function DatasetAdmin() {
         />
         <MultipleSelectWithSearch
           placeholder={'Filter by Level(s)'}
-          options={!filtersSequences.length || !filtersSequences.indexOf('levels') ? ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'] : quickData.levels ? quickData.levels.map(level => level + '') : []}
+          options={['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']}
           value={filters.levels}
           onChangeFn={evt => {
             setFilters({
