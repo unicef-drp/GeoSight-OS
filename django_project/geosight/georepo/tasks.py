@@ -32,7 +32,7 @@ def fetch_reference_codes_by_ids(ids, sync_all=True):
     for reference_layer_view in ReferenceLayerView.objects.filter(id__in=ids):
         try:
             reference_layer_view.sync_entities_code(sync_all=sync_all)
-        except Exception as e:
+        except Exception:
             pass
         reference_layer_view.increase_version()
 
