@@ -28,15 +28,23 @@ import { sleep } from "../../../../utils/main";
 import { getCogFeatureByPoint } from "../../../../utils/COGLayer";
 import { setColorFunction } from '@geomatico/maplibre-cog-protocol';
 import { DjangoRequests } from "../../../../Requests";
-import { Session } from "../../../../utils/Sessions";
+import { addLayerWithOrder } from "../Render";
+import { Variables } from "../../../../utils/Variables";
 
+let sessions = {};
 
 /***
  * Render Raster Cog
  */
-export default function rasterCogLayer(map, id, data, setData, contextLayerData, popupFeatureFn, contextLayerOrder, isInit, setIsInit) {
+export default function rasterCogLayer(
+  map, id, data, setData, contextLayerData, popupFeatureFn,
+  contextLayerOrder, isInit, setIsInit, prevData = {}, setLoading = () => {}) {
   (
     async () => {
+      if (JSON.stringify(prevData.current) === JSON.stringify(data?.styles)) {
+        return
+      }
+      prevData.current = data
       const {
         min_band,
         max_band,
@@ -47,7 +55,7 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
         additional_nodata,
         nodata_color,
         nodata_opacity,
-      } = data?.styles;
+      } = data?.styles || {};
       const additional_ndt_val = additional_nodata ? parseFloat(additional_nodata) : additional_nodata;
       const ndt_opacity = nodata_opacity ? parseFloat(nodata_opacity) : nodata_opacity;
       const colors = createColorsFromPaletteId(color_palette, dynamic_class_num, color_palette_reverse);
@@ -56,82 +64,94 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
         return
       }
 
-      const requestBody = {
-        url: data.url,
-        class_type: dynamic_classification,
-        class_num: dynamic_class_num,
-        colors: colors,
-      }
+      // TODO: Handle styling when multiple, identical COG URLs are used
+      let url = `cog://${data.url}?method=${dynamic_classification}#color:[${colors.map(color => '"' + color + '"')}],${min_band ? min_band : 0},${max_band ? max_band : 100},c`      //
+      if (dynamic_classification != 'Equidistant.') {
+        url = `cog://${data.url}#method=${dynamic_classification}`      //
+        const requestBody = {
+          url: data.url,
+          class_type: dynamic_classification,
+          class_num: dynamic_class_num,
+          colors: colors,
+          minumum: min_band,
+          maximum: max_band
+        }
 
-      let classifications = [];
-      const session = new Session(id, 1000)
-      if (!session.isValid) {
-        return
-      }
+        const key = id + JSON.stringify(requestBody);
+        let classifications = [];
 
-      await DjangoRequests.post(
-        `/api/raster/classification`,
-        requestBody
-      ).then(response => {
-        response.data.forEach((threshold, idx) => {
-          if (idx < response.data.length - 1) {
-            classifications.push({
-              bottom: threshold,
-              top: response.data[idx + 1],
-              color: colors[idx]
+        // if classification for the request body exist, use it
+        // otherwise, get it from API
+        if (sessions[key]) {
+          classifications = sessions[key];
+        } else {
+          setLoading(true)
+          await DjangoRequests.post(
+            `/api/raster/classification`,
+            requestBody
+          ).then(response => {
+            response.data.forEach((threshold, idx) => {
+              if (idx < response.data.length - 1) {
+                classifications.push({
+                  bottom: threshold,
+                  top: response.data[idx + 1],
+                  color: colors[idx]
+                });
+              }
+              sessions[key] = classifications
+              setLoading(false)
             });
+          }).catch(error => {
+            throw Error(error.toString())
+          })
+        }
+
+        removeSource(map, id)
+
+        const getColor = (value) => {
+          for (const classification of classifications) {
+            if (value >= classification.bottom && value < classification.top) {
+              const rgbaColor = hexToRgba(classification.color, 1)
+              rgbaColor[3] = parseInt((rgbaColor[3] * 255))
+              return rgbaColor;
+            }
+          }
+          return value === classifications[classifications.length - 1].top ? value : null;
+        };
+
+        setColorFunction(data.url, ([value], rgba, { noData}) => {
+          if (init && colors.length > 0) {
+            init = false
+            if (isInit) {
+              setIsInit(false)
+            }
+            if (setData) {
+              setData({
+                ...data,
+                styles: {
+                  ...data.styles,
+                  nodata: noData.toString()
+                }
+              });
+            }
+          }
+          if (value === noData || value === Infinity || isNaN(value) || value === additional_ndt_val) {
+            let rgbaColor = hexToRgba(nodata_color, (ndt_opacity / 100))
+            rgbaColor[3] = parseInt((rgbaColor[3] * 255))
+            rgba.set(rgbaColor);
+          } else if (value < min_band || value > max_band) {
+            rgba.set([0, 0, 0, 0]); // noData, fillValue or NaN => transparent
+          } else {
+            try {
+              rgba.set(getColor(value));
+            } catch (e) {
+              console.log(`error: ${value}`)
+            }
           }
         });
-      }).catch(error => {
-        throw Error(error.toString())
-      })
-
-      if (!session.isValid) {
-        return
       }
 
-      // TODO: Handle styling when multiple, identical COG URLs are used
-      const url = `cog://${data.url}#` + contextLayerData.id;
-
       removeSource(map, id)
-
-      const getColor = (value) => {
-        for (const classification of classifications) {
-          if (value >= classification.bottom && value < classification.top) {
-            const rgbaColor = hexToRgba(classification.color, 1)
-            rgbaColor[3] = parseInt((rgbaColor[3] * 255))
-            return rgbaColor;
-          }
-        }
-        return null;
-      };
-
-      setColorFunction(data.url, ([value], rgba, { noData }) => {
-        if (init && colors.length > 0) {
-          init = false
-          if (setIsInit) {
-            setIsInit(false)
-          }
-          if (setData) {
-            setData({
-              ...data,
-              styles: {
-                ...data.styles,
-                nodata: noData.toString()
-              }
-            });
-          }
-        }
-        if (value === noData || value === Infinity || isNaN(value) || value === additional_ndt_val) {
-          let rgbaColor = hexToRgba(nodata_color, (ndt_opacity / 100))
-          rgbaColor[3] = parseInt((rgbaColor[3] * 255))
-          rgba.set(rgbaColor);
-        } else if (value < min_band || value > max_band) {
-          rgba.set([0, 0, 0, 0]); // noData, fillValue or NaN => transparent
-        } else {
-          rgba.set(getColor(value));
-        }
-      });
       const sourceParams = Object.assign({}, data.params, {
         url: url,
         type: 'raster',
@@ -148,12 +168,14 @@ export default function rasterCogLayer(map, id, data, setData, contextLayerData,
         }
       }
       removeLayer(map, id)
-      map.addLayer(
+      addLayerWithOrder(
+        map,
         {
           id: id,
           source: id,
           type: 'raster'
         },
+        Variables.LAYER_CATEGORY.CONTEXT_LAYER,
         before
       );
 

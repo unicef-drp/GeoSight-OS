@@ -17,7 +17,7 @@
    MAP CONTAINER
    ========================================================================== */
 
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import maplibregl from 'maplibre-gl';
 import { MapboxOverlay } from '@deck.gl/mapbox/typed';
@@ -58,6 +58,7 @@ import './style.scss';
 import { cogProtocol } from "@geomatico/maplibre-cog-protocol";
 import { PopupToolbars } from "../Toolbars/PopupToolbars";
 import { Variables } from "../../../utils/Variables";
+import { addLayerWithOrder } from "./Render";
 
 maplibregl.addProtocol('cog', cogProtocol);
 
@@ -150,6 +151,22 @@ export default function MapLibre(
         )
       })
       newMap.addControl(new maplibregl.NavigationControl(), 'bottom-left');
+      newMap.on("styledata", () => {
+        const contextLayers = newMap.getStyle().layers.filter(
+          layer => layer.id.includes('context-layer-')
+        );
+        const contextLayersExists = contextLayers.length > 0;
+        const popupElements = document.querySelectorAll('#map .maplibregl-popup-anchor-center');
+        if (contextLayersExists) {
+          popupElements.forEach(popup => {
+              popup.style.zIndex = '-9'; // Lower than your intended layer
+          });
+        } else {
+          popupElements.forEach(popup => {
+              popup.style.zIndex = '0'; // Lower than your intended layer
+          });
+        }
+      })
 
       let mapControl = document.querySelector('.maplibregl-ctrl-bottom-left .maplibregl-ctrl-group')
       let parent = document.getElementById('maplibregl-ctrl-bottom-left')
@@ -221,28 +238,26 @@ export default function MapLibre(
    * @param {String} id of layer
    * @param {Object} source Layer config options.
    * @param {Object} layer Layer config options.
-   * @param {String} before Is the layer after it.
    */
-  const renderLayer = (id, source, layer, before = null) => {
+  const renderLayer = (id, source, layer) => {
     removeLayer(map, id)
     removeSource(map, id)
     map.addSource(id, source)
-    return map.addLayer(
-      {
+    addLayerWithOrder(
+      map, {
         ...layer,
         id: id,
         source: id,
       },
-      before
-    );
+      Variables.LAYER_CATEGORY.BASEMAP
+    )
   }
 
   /** BASEMAP CHANGED */
   useEffect(() => {
     if (map && basemapLayer) {
-      const layers = map.getStyle().layers.filter(layer => layer.id !== 'basemap')
       renderLayer(
-        BASEMAP_ID, basemapLayer, { type: "raster" }, layers[0]?.id
+        BASEMAP_ID, basemapLayer, { type: "raster" }
       )
     }
   }, [map, basemapLayer]);
@@ -269,7 +284,8 @@ export default function MapLibre(
         }
         <Plugin className={'ReferenceLayerToolbar'}>
           <div>
-            <PluginChild title={'Reference Layer selection'} className={'ReferenceLayerSelectorWrapper'}>
+            <PluginChild title={'Reference Layer selection'}
+                         className={'ReferenceLayerSelectorWrapper'}>
               <ReferenceLayerSection/>
             </PluginChild>
           </div>

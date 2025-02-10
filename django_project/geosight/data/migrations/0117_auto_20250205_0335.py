@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('geosight_georepo', '0021_auto_20250203_0549'),
-        ('geosight_data', '0115_auto_20250116_1211'),
+        ('geosight_data', '0116_cogclassification'),
     ]
 
     operations = [

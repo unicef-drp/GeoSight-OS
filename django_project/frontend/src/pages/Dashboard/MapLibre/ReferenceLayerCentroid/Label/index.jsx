@@ -19,6 +19,8 @@
 
 import { hasLayer, hasSource, removeLayer } from "../../utils";
 import { CONTEXT_LAYER_ID } from "../../Layers/ReferenceLayer";
+import { addLayerWithOrder } from "../../Render";
+import { Variables } from "../../../../../utils/Variables";
 
 const INDICATOR_LABEL_ID = 'indicator-label'
 let lastFeatures = null;
@@ -131,7 +133,8 @@ export const renderLabel = (map, features, config) => {
   const contextLayerIds = map.getStyle().layers.filter(
     layer => layer.id.includes(CONTEXT_LAYER_ID) || layer.id.includes('gl-draw-')
   )
-  map.addLayer(
+  addLayerWithOrder(
+    map,
     {
       id: "indicator-label",
       type: 'symbol',
@@ -143,6 +146,6 @@ export const renderLabel = (map, features, config) => {
       minzoom: minZoom
 
     },
-    contextLayerIds[0]?.id
-  );
+    Variables.LAYER_CATEGORY.LABEL
+  )
 }

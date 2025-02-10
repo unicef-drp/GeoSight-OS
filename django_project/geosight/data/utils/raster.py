@@ -24,11 +24,6 @@ from rasterio.mask import mask
 from shapely.ops import transform
 import jenkspy
 
-NATURAL_BREAKS = 'Natural breaks.'
-EQUAL_INTERVAL = 'Equidistant.'
-QUANTILE = 'Quantile.'
-STANDARD_DEVIATION = 'standard_deviation'
-
 
 def run_zonal_analysis(
         raster_path: str,
@@ -73,7 +68,7 @@ def run_zonal_analysis(
         return aggregate
 
 
-class ClassifyRasterData():
+class ClassifyRasterData:
     """Classify raster data."""
 
     def __init__(
@@ -82,7 +77,9 @@ class ClassifyRasterData():
             class_type: str,
             class_num: str,
             colors: list = None,
-            classify_colors: bool = False
+            classify_colors: bool = False,
+            minimum: float = None,
+            maximum: float = None
     ):
         """Init classify raster data."""
         self.raster_path = raster_path
@@ -90,6 +87,8 @@ class ClassifyRasterData():
         self.class_num = class_num
         self.colors = colors
         self.classify_colors = classify_colors
+        self.minimum = minimum
+        self.maximum = maximum
 
     def classify_natural_breaks(self, data):
         """
@@ -105,11 +104,11 @@ class ClassifyRasterData():
         np.random.seed(42)
 
         # Find min and max values
-        min_value = np.min(data)
-        max_value = np.max(data)
+        min_value = self.minimum if self.minimum is not None else np.min(data)
+        max_value = self.maximum if self.maximum is not None else np.max(data)
 
-        # Ensure min and max values are included in the sampled data
-        data_without_min_max = data[(data != min_value) & (data != max_value)]
+        # Ensure min and max values are excluded in the sampled data
+        data_without_min_max = data[(data > min_value) & (data < max_value)]
 
         # Get probabilities proportional to the original distribution
         unique, counts = np.unique(data_without_min_max, return_counts=True)
@@ -118,7 +117,7 @@ class ClassifyRasterData():
         # Perform stratified sampling (excluding min and max)
         sampled_data = np.random.choice(
             unique,
-            size=19998,
+            size=19998 if len(data_without_min_max) >= 19998 else len(data_without_min_max),  # noqa
             replace=True,
             p=probabilities
         )
@@ -141,8 +140,8 @@ class ClassifyRasterData():
         Returns:
             numpy.ndarray: Array of class labels (1 to self.class_num).
         """
-        data_min = np.min(data)
-        data_max = np.max(data)
+        data_min = self.minimum if self.minimum is not None else np.min(data)
+        data_max = self.maximum if self.maximum is not None else np.max(data)
         # Create class boundaries
         intervals = np.linspace(data_min, data_max, self.class_num + 1)
 
@@ -167,6 +166,16 @@ class ClassifyRasterData():
             numpy.ndarray: Quantile thresholds.
         """
         # Calculate quantile thresholds
+
+        # Find min and max values
+        min_value = self.minimum if self.minimum else np.min(data)
+        max_value = self.maximum if self.maximum else np.max(data)
+
+        # Ensure min and max values are excluded in the sampled data
+        data_without_min_max = data[(data > min_value) & (data < max_value)]
+        data = np.concatenate(([min_value, max_value], data_without_min_max))
+        data = np.sort(data)
+
         # Define quantile ranges
         quantiles = np.linspace(0, 1, self.class_num + 1)
         # Compute thresholds based on data
@@ -225,6 +234,8 @@ class ClassifyRasterData():
 
     def run(self):
         """Run raster classification."""
+        from geosight.data.models.style.base import DynamicClassificationType
+
         with rasterio.open(self.raster_path) as src:
             data = src.read(1)
             data = np.ma.masked_invalid(data)
@@ -232,13 +243,13 @@ class ClassifyRasterData():
             data = np.sort(data)
 
             classification = []
-            if self.class_type == NATURAL_BREAKS:
+            if self.class_type == DynamicClassificationType.NATURAL_BREAKS:
                 classification = self.classify_natural_breaks(data)
-            elif self.class_type == EQUAL_INTERVAL:
+            elif self.class_type == DynamicClassificationType.EQUIDISTANT:
                 classification = self.classify_equal_interval(data)
-            elif self.class_type == QUANTILE:
+            elif self.class_type == DynamicClassificationType.QUANTILE:
                 classification = self.classify_quantile(data)
-                classification = list(set(classification))
+                classification = list(sorted(set(classification)))
             else:
                 classification = []
             # elif self.class_type == STANDARD_DEVIATION:

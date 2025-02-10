@@ -16,6 +16,8 @@
 import { Marker } from "maplibre-gl";
 import { jsonToUrlParams, stringToUrlAndParams } from "../../../../utils/main";
 import { addPopup, addPopupEl, hasLayer, hasSource } from "../utils";
+import { addLayerWithOrder } from "../Render";
+import { Variables } from "../../../../utils/Variables";
 
 export { default as arcGisLayer } from "./ArcGis";
 
@@ -59,7 +61,8 @@ export function geojsonLayer(map, id, geojson, popupFeature) {
     });
   }
   if (!hasLayer(map, idFill)) {
-    map.addLayer(
+    addLayerWithOrder(
+      map,
       {
         'id': idFill,
         'type': 'fill',
@@ -69,8 +72,9 @@ export function geojsonLayer(map, id, geojson, popupFeature) {
           'fill-opacity': 0.6
         },
         'filter': ['==', '$type', 'Polygon']
-      }
-    );
+      },
+      Variables.LAYER_CATEGORY.CONTEXT_LAYER
+    )
     addPopup(map, idFill, popupFeature)
   }
   return symbolLayers(map, id, geojson, popupFeature)

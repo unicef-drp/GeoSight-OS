@@ -17,7 +17,8 @@
    MAP CONFIG CONTAINER
    ========================================================================== */
 
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState, useRef, useMemo} from 'react';
+import { debounce } from '@mui/material/utils';
 import maplibregl from 'maplibre-gl';
 import { removeLayer, removeSource } from "../../../Dashboard/MapLibre/utils";
 import {
@@ -26,20 +27,31 @@ import {
 import 'mapboxgl-legend/dist/style.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
-
 // Initialize cog
 import { cogProtocol } from "@geomatico/maplibre-cog-protocol";
 import { Variables } from "../../../../utils/Variables";
-import { updateColorPaletteData } from "../../../../utils/Style";
+import {updateColorPaletteData} from "../../../../utils/Style";
 
 maplibregl.addProtocol('cog', cogProtocol);
 
 /**
  * Map Config component.
  */
-export default function MapConfig({ data, setData, layerInput }) {
+export default function MapConfig({ data, setData, layerInput, setLoading }) {
   const [map, setMap] = useState(null);
   const [isInit, setIsInit] = useState(true);
+  const prevData  = useRef()
+
+  const renderContextLayer = useMemo(
+    () =>
+      debounce(
+        (id, data, layerInput, map, contextLayerOrder, setData, isInit, setIsInit, prevData, setLoading) => {
+          contextLayerRendering(id, data, layerInput, map, contextLayerOrder, setData, isInit, setIsInit, prevData, setLoading)
+        },
+        400
+      ),
+    []
+  )
 
   /***
    * Render layer to maplibre
@@ -102,15 +114,14 @@ export default function MapConfig({ data, setData, layerInput }) {
         (
           async () => {
             await updateColorPaletteData()
-            contextLayerRendering(id, data, layerInput, map, null, setData, isInit, setIsInit)
+            renderContextLayer(id, data, layerInput, map, null, setData, isInit, setIsInit, prevData, setLoading)
           }
         )()
       } else {
-        contextLayerRendering(id, data, layerInput, map, null, setData, isInit, setIsInit)
+        contextLayerRendering(id, data, layerInput, map, null, setData, isInit, setIsInit, prevData, setLoading)
       }
     }
   }, [map, layerInput]);
 
   return <div id="StyleMapConfig"></div>
 }
-

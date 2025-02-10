@@ -71,8 +71,8 @@ const ServerTable = forwardRef(
    }: ServerTableProps, ref
   ) => {
     const { openConfirmDialog } = useConfirmDialog();
-    const [filterModel, setFilterModel] = useState({})
     if (enable.filter) {
+      const [filterModel, setFilterModel] = useState(defaults.filters);
       columns.forEach(column => {
         if (column.type === 'actions') {
           if (!column.headerName) {
@@ -87,8 +87,21 @@ const ServerTable = forwardRef(
           }
         }
       });
+      useEffect(() => {
+        // @ts-ignore
+        let newParameters: any = {
+          ...parameters,
+          ...filterModel,
+          ...defaults.filters
+        }
+        newParameters = Object.fromEntries(
+          Object.entries(newParameters).filter(
+            ([_, value]) => value != null
+          )
+        )
+        setParameters(newParameters)
+      }, [filterModel, defaults.filters]);
     }
-
 
     // Notification
     const notificationRef = useRef(null);
@@ -107,10 +120,11 @@ const ServerTable = forwardRef(
       const sort: string[] = []
       _sortModel.map(model => {
         const column = columns.find(column => column.field == model.field)
-
-        // @ts-ignore
-        const field = column.serverKey ? column.serverKey : column.field
-        sort.push(model.sort === 'asc' ? field : `-${field}`)
+        if (column) {
+          // @ts-ignore
+          const field = column.serverKey ? column.serverKey : column.field
+          sort.push(model.sort === 'asc' ? field : `-${field}`)
+        }
       })
       return sort
     }
@@ -124,14 +138,6 @@ const ServerTable = forwardRef(
         ...defaults.filters
       }
     )
-
-    useEffect(() => {
-      // @ts-ignore
-      setParameters({
-        ...parameters,
-        ...filterModel
-      })
-    }, [filterModel]);
 
     // Sort model
     const [sortModel, setSortModel] = useState<any[]>(defaults.sort);

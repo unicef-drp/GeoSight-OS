@@ -54,12 +54,12 @@ class DynamicClassificationType(object):
 
 DynamicClassificationTypeChoices = (
     (
-        DynamicClassificationType.NATURAL_BREAKS,
-        DynamicClassificationType.NATURAL_BREAKS
-    ),
-    (
         DynamicClassificationType.EQUIDISTANT,
         DynamicClassificationType.EQUIDISTANT
+    ),
+    (
+        DynamicClassificationType.NATURAL_BREAKS,
+        DynamicClassificationType.NATURAL_BREAKS
     ),
     (
         DynamicClassificationType.QUANTILE,

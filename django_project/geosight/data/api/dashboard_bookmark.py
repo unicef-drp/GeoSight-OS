@@ -84,9 +84,12 @@ class DashboardBookmarkAPI(APIView):
 
     def update_bookmark_data(self, request, dashboard):
         """Update Bookmark Data."""
-        data = DashboardBookmarkForm.update_data(
-            json.loads(request.POST.copy()['data'])
-        )
+        try:
+            data = DashboardBookmarkForm.update_data(
+                json.loads(request.POST.copy()['data'])
+            )
+        except ValueError as e:
+            return HttpResponseBadRequest(e)
         data['dashboard'] = dashboard.id
         if request.user.is_authenticated:
             data['creator'] = request.user

@@ -24,3 +24,5 @@ class GetRasterClassificationSerializer(serializers.Serializer):
     class_type = serializers.CharField()
     class_num = serializers.IntegerField()
     colors = serializers.ListField(required=False)
+    maximum = serializers.FloatField(required=False)
+    minimum = serializers.FloatField(required=False)

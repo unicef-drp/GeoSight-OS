@@ -7,7 +7,7 @@ from geosight.data.migrations.sql.utils import load_sql
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('geosight_data', '0116_auto_20250205_0335'),
+        ('geosight_data', '0117_auto_20250205_0335'),
     ]
 
     defaults = load_sql('views', 'default.sql')

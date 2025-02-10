@@ -123,6 +123,35 @@ class DashboardAdminViewTest(BaseViewTest.TestCase):
         self.assertRequestGetView(url, 403, self.resource_creator)  # Creator
         self.assertRequestGetView(url, 200, self.admin)  # Admin
 
+        # Test invalid extent
+        new_data = copy.deepcopy(self.data)
+        new_data['extent'] = []
+        new_payload = {
+            'name': 'name_invalid_extent',
+            'data': json.dumps(new_data)
+        }
+        response = self.assertRequestPostView(url, 400, new_payload, self.admin)
+        self.assertEqual(
+            response.content,
+            (
+                b'Invalid extent, it seems the extent from '
+                b'GeoRepo is empty or not correct.'
+            )
+        )
+
+        # Test Indicator does not exist
+        new_data = copy.deepcopy(self.data)
+        new_data['indicators'] = [{'id': 9999999}]
+        new_payload = {
+            'name': 'name_invalid_indicator',
+            'data': json.dumps(new_data)
+        }
+        response = self.assertRequestPostView(url, 400, new_payload, self.admin)
+        self.assertEqual(
+            response.content,
+            b'Indicator with id 9999999 does not exist'
+        )
+
     def test_edit_view(self):
         """Test for edit view."""
         url = reverse(self.edit_url_tag, kwargs={'slug': 'test'})
@@ -175,6 +204,35 @@ class DashboardAdminViewTest(BaseViewTest.TestCase):
         self.assertEqual(self.resource.creator, self.resource_creator)
         self.assertEqual(self.resource.modified_by, self.creator)
         self.assertNotEqual(self.resource.version, last_version)
+
+        url = reverse(self.edit_url_tag, kwargs={'slug': self.resource.slug})
+        new_data = copy.deepcopy(self.data)
+        new_data['extent'] = []
+        new_payload = {
+            'name': 'name_invalid_extent',
+            'data': json.dumps(new_data)
+        }
+        response = self.assertRequestPostView(url, 400, new_payload, self.admin)
+        self.assertEqual(
+            response.content,
+            (
+                b'Invalid extent, it seems the extent from '
+                b'GeoRepo is empty or not correct.'
+            )
+        )
+
+        # Test Indicator does not exist
+        new_data = copy.deepcopy(self.data)
+        new_data['indicators'] = [{'id': 9999999}]
+        new_payload = {
+            'name': 'name_invalid_indicator',
+            'data': json.dumps(new_data)
+        }
+        response = self.assertRequestPostView(url, 400, new_payload, self.admin)
+        self.assertEqual(
+            response.content,
+            b'Indicator with id 9999999 does not exist'
+        )
 
     def test_detail_view(self):
         """Test for create view."""
