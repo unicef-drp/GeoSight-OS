@@ -36,7 +36,9 @@ let sessions = {};
 /***
  * Render Raster Cog
  */
-export default function rasterCogLayer(map, id, data, setData, contextLayerData, popupFeatureFn, contextLayerOrder, isInit, setIsInit, prevData = {}, setLoading ) {
+export default function rasterCogLayer(
+  map, id, data, setData, contextLayerData, popupFeatureFn,
+  contextLayerOrder, isInit, setIsInit, prevData = {}, setLoading = () => console.log("Default function executed")) {
   (
     async () => {
       if (JSON.stringify(prevData.current) === JSON.stringify(data?.styles)) {
