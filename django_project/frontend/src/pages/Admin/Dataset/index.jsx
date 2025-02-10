@@ -48,6 +48,8 @@ import './style.scss'
 const deleteWarning = "WARNING! Do you want to delete the selected data? This will apply directly to database."
 
 export default function DatasetAdmin() {
+  const prevFilters = useRef();
+
   const tableRef = useRef(null);
   // Notification
   const notificationRef = useRef(null);
@@ -65,11 +67,11 @@ export default function DatasetAdmin() {
     detail: true,
   })
   const [filtersSequences, setFiltersSequences] = useState([])
-  const [quickData, setQuickData] = useState({})
   let [selectionModel, setSelectionModel] = useState([]);
+  const [quickData, setQuickData] = useState({})
 
   // When filter changed
-  useEffect((prev) => {
+  useEffect(() => {
     // Check filter sequences
     for (const [key, value] of Object.entries(filters)) {
       if (key !== 'groupAdminLevel') {
@@ -84,6 +86,13 @@ export default function DatasetAdmin() {
           }
         }
       }
+    }
+    const url = JSON.stringify(getParameters({}))
+    if (prevFilters?.current && prevFilters.current !== url) {
+      tableRef?.current?.refresh(false)
+    }
+    if (prevFilters) {
+      prevFilters.current = url
     }
   }, [filters])
 
@@ -311,9 +320,10 @@ export default function DatasetAdmin() {
     defaults={{
       sort: [
         { field: 'id', sort: 'asc' }
-      ],
-      filters: getParameters({})
+      ]
     }}
+    parentGetParameters={getParameters}
+    ref={tableRef}
   />
 }
 

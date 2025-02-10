@@ -168,7 +168,9 @@ const ServerTable = forwardRef(
 
     /*** Load data */
     const loadData = (force: boolean) => {
-      let _parameters = dictDeepCopy(parameters)
+      let _parameters = dictDeepCopy(
+        getParameters ? getParameters(parameters) : parameters
+      )
       _parameters.page += 1
 
       // Construct url

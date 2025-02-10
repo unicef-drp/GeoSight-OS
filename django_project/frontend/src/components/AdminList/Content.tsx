@@ -65,6 +65,7 @@ export const AdminListContent = forwardRef(
 
      // Table props
      multipleDelete,
+     parentGetParameters,
 
      // Styling
      className,
@@ -82,7 +83,6 @@ export const AdminListContent = forwardRef(
   ) => {
     // References
     const tableRef = useRef(null);
-    const listRef = useRef(null);
 
     const [selectionModel, setSelectionModel] = useState([]);
     const [search, setSearch] = useState<string>(defaults.search);
@@ -91,8 +91,8 @@ export const AdminListContent = forwardRef(
 
     /** Refresh data **/
     useImperativeHandle(ref, () => ({
-      refresh() {
-        listRef.current.refresh()
+      refresh(force: boolean) {
+        tableRef?.current?.refresh(force)
       }
     }));
 
@@ -188,6 +188,10 @@ export const AdminListContent = forwardRef(
       } else {
         delete parameters[searchKey]
       }
+
+      if (parentGetParameters) {
+        parameters = parentGetParameters(parameters)
+      }
       return parameters
     }
 
@@ -246,6 +250,8 @@ export const AdminListContent = forwardRef(
               }
             }
             isRowSelectable={selectableFunction}
+            parentGetParameters={parentGetParameters}
+
             ref={tableRef}
           />
         </div>

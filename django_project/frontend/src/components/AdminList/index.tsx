@@ -12,80 +12,94 @@
  * __date__ = '07/01/2025'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
-import React from "react";
+import React, { forwardRef, useImperativeHandle, useRef } from "react";
 import { AdminPage } from "../../pages/Admin";
 import { AdminListProps } from "./types";
 import { AdminListContent } from "./Content";
 
 import './style.scss';
 
-export const AdminList = (
-  {
-    columns,
-    pageName,
-    title,
-    url = {
-      list: null,
-      detail: null,
-      create: null,
-      edit: null,
-      batch: null,
-    },
-    initData,
-    defaults = {
-      search: null,
-      sort: null
-    },
-    useSearch = true,
-    enableFilter = false,
+export const AdminList = forwardRef((
+    {
+      columns,
+      pageName,
+      title,
+      url = {
+        list: null,
+        detail: null,
+        create: null,
+        edit: null,
+        batch: null,
+      },
+      initData,
+      defaults = {
+        search: null,
+        sort: null
+      },
+      useSearch = true,
+      enableFilter = false,
 
-    // Table props
-    multipleDelete,
+      // Table props
+      multipleDelete,
+      parentGetParameters,
 
-    // Styling
-    className,
+      // Styling
+      className,
 
-    // Parent selector
-    selection,
-    selectionChanged,
+      // Parent selector
+      selection,
+      selectionChanged,
 
-    // Children
-    rightHeader,
-    middleContent,
-    ...props
-  }: AdminListProps
-) => {
-  return (
-    // @ts-ignore
-    <AdminPage pageName={pageName}>
-      <AdminListContent
-        columns={columns}
-        pageName={pageName}
-        title={title}
-        url={url}
-        initData={initData}
-        defaults={defaults}
-        useSearch={useSearch}
-        enableFilter={enableFilter}
+      // Children
+      rightHeader,
+      middleContent,
+      ...props
+    }: AdminListProps, ref
+  ) => {
+    const tableRef = useRef(null);
 
-        // Table props
-        multipleDelete={multipleDelete}
+    /** Refresh data **/
+    useImperativeHandle(ref, () => ({
+      refresh(force: boolean) {
+        tableRef?.current?.refresh(force)
+      }
+    }));
+    return (
+      // @ts-ignore
+      <AdminPage pageName={pageName}>
+        <AdminListContent
+          columns={columns}
+          pageName={pageName}
+          title={title}
+          url={url}
+          initData={initData}
+          defaults={defaults}
+          useSearch={useSearch}
+          enableFilter={enableFilter}
 
-        // Styling
-        className={className}
+          // Table props
+          multipleDelete={multipleDelete}
+          parentGetParameters={parentGetParameters}
 
-        // Parent selector
-        selection={selection}
-        selectionChanged={selectionChanged}
+          // Styling
+          className={className}
 
-        // Children
-        rightHeader={rightHeader}
-        middleContent={middleContent}
-        {...props}
-      />
-    </AdminPage>
-  );
-}
+          // Parent selector
+          selection={selection}
+          selectionChanged={selectionChanged}
+
+          // Children
+          rightHeader={rightHeader}
+          middleContent={middleContent}
+
+          // Ref
+          ref={tableRef}
+          {...props}
+        />
+      </AdminPage>
+    );
+  }
+)
 export default AdminList;
 
 export const ResourceMeta: any[] = [
