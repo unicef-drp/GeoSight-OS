@@ -19,7 +19,6 @@ from rest_framework import serializers
 
 from core.serializer.dynamic_serializer import DynamicModelSerializer
 from geosight.data.models.related_table import RelatedTable
-from geosight.georepo.models.entity import Entity
 from geosight.georepo.models.reference_layer import ReferenceLayerView
 from geosight.importer.models.importer import ImportType
 from geosight.importer.models.log import (
@@ -116,8 +115,7 @@ class ImporterLogDataSerializer(DynamicModelSerializer):
                 key = 'admin_level'
                 try:
                     if key not in data.keys() or data[key] is None:
-                        obj.data[key] = Entity.objects.filter(
-                            reference_layer=ref_layer,
+                        obj.data[key] = ref_layer.entities_set.filter(
                             geom_id=data['geo_code']
                         ).first().admin_level
                         obj.save()

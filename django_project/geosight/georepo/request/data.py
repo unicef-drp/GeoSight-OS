@@ -47,3 +47,17 @@ class GeorepoEntity(object):
             for parent in parents:
                 parent_in_list.append(parent['ucode'])
             self.parents = parent_in_list
+
+    def get_or_create(self, reference_layer):
+        """Save the data."""
+        from geosight.georepo.models.entity import Entity
+        return Entity.get_or_create(
+            reference_layer,
+            geom_id=self.ucode,
+            name=self.name,
+            admin_level=self.admin_level,
+            concept_uuid=self.concept_uuid,
+            start_date=self.start_date,
+            end_date=self.end_date,
+            parents=self.parents
+        )

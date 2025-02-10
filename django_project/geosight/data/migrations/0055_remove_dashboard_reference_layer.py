@@ -18,6 +18,7 @@ from django.db import migrations
 
 
 def run(apps, schema_editor):
+    return
     Dashboard = apps.get_model(
         "geosight_data", "Dashboard"
     )
@@ -34,8 +35,4 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunPython(run, migrations.RunPython.noop),
-        migrations.RemoveField(
-            model_name='dashboard',
-            name='reference_layer',
-        ),
     ]

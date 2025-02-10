@@ -23,7 +23,6 @@ from core.tests.base_test_patch_responses import (
     BaseTestWithPatchResponses, PatchReqeust
 )
 from geosight.data.tests.model_factories import ContextLayerF
-from geosight.georepo.models.entity import Entity
 from geosight.importer.importers.base.indicator_value import (
     ImporterTimeDataType, IndicatorDataType, AdminLevelType
 )
@@ -183,10 +182,11 @@ class BaseTest(BaseIndicatorValueImporterTest, BaseTestWithPatchResponses):
         for value in self.indicator.indicatorvalue_set.all():
             self.assertEqual(value.value, values[value.geom_id])
             self.assertEqual(value.indicator, self.indicator)
-            entity = Entity.objects.get(
-                geom_id=value.geom_id, reference_layer=self.reference_layer,
-                admin_level=self.admin_level
+            entity = self.reference_layer.entities_set.get(
+                geom_id=value.geom_id
             )
-            self.assertEqual(entity.reference_layer, self.reference_layer)
-            self.assertEqual(entity.admin_level, self.admin_level)
+            self.assertEqual(entity, value.entity)
+            self.assertEqual(
+                entity.admin_level, value.entity.admin_level
+            )
             self.assertEqual(entity.geom_id, value.geom_id)

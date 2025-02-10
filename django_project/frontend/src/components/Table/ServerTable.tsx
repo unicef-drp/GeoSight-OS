@@ -169,6 +169,9 @@ const ServerTable = forwardRef(
     /*** Load data */
     const loadData = (force: boolean) => {
       let _parameters = dictDeepCopy(parameters)
+      _parameters = dictDeepCopy(
+        getParameters ? getParameters(_parameters) : _parameters
+      )
       _parameters.page += 1
 
       // Construct url
@@ -255,6 +258,7 @@ const ServerTable = forwardRef(
         setParameters({ ...parameters, sort: getSort(sortModel) })
       }, [sortModel]
     )
+
 
     return (
       <Fragment>

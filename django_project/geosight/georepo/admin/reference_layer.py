@@ -16,16 +16,37 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib import admin
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from geosight.data.models.indicator.indicator_value import (
     IndicatorValueWithGeo
 )
-from geosight.georepo.models import (
-    ReferenceLayerView
-)
+from geosight.georepo.models import ReferenceLayerView
 from geosight.georepo.tasks import (
     fetch_reference_codes_by_ids, fetch_datasets, create_data_access
 )
+
+
+class InGeorepoFilter(admin.SimpleListFilter):
+    """Null entity filter."""
+
+    title = _('in georepo')
+    parameter_name = 'in_georepo'
+
+    def lookups(self, request, model_admin):
+        """Lookup function for entity filter."""
+        return [
+            ('yes', _('Yes')),
+            ('no', _('No')),
+        ]
+
+    def queryset(self, request, queryset):
+        """Return filtered queryset."""
+        if self.value() == 'yes':
+            return queryset.filter(in_georepo=True)
+        if self.value() == 'no':
+            return queryset.filter(in_georepo=False)
+        return queryset
 
 
 @admin.action(description='Update meta')
@@ -35,11 +56,21 @@ def update_meta(modeladmin, request, queryset):
         reference_layer.update_meta()
 
 
-@admin.action(description='Sync entities')
+@admin.action(description='Sync entities on all level')
 def sync_codes(modeladmin, request, queryset):
     """Fetch new reference layer."""
     fetch_reference_codes_by_ids.delay(
-        list(queryset.values_list('id', flat=True))
+        list(queryset.values_list('id', flat=True)),
+        sync_all=True
+    )
+
+
+@admin.action(description='Sync entities on non saved level')
+def sync_codes_non_saved_level(modeladmin, request, queryset):
+    """Fetch new reference layer."""
+    fetch_reference_codes_by_ids.delay(
+        list(queryset.values_list('id', flat=True)),
+        sync_all=False
     )
 
 
@@ -68,12 +99,12 @@ class ReferenceLayerViewAdmin(admin.ModelAdmin):
         'identifier', 'name', 'description', 'in_georepo', 'number_of_value',
         'number_of_entities'
     ]
+    list_filter = (InGeorepoFilter,)
     ordering = ['name']
     actions = [
-        update_meta, sync_codes, action_fetch_datasets,
-        action_create_data_access, invalidate_cache
+        update_meta, sync_codes, sync_codes_non_saved_level,
+        action_fetch_datasets, action_create_data_access, invalidate_cache
     ]
-
 
     def in_georepo(self, obj: ReferenceLayerView):
         """Is reference layer in georepo."""
@@ -89,7 +120,7 @@ class ReferenceLayerViewAdmin(admin.ModelAdmin):
 
     def number_of_entities(self, obj: ReferenceLayerView):
         """Return number of value for this reference layer."""
-        return obj.entity_set.count()
+        return obj.entities_set.count()
 
 
 admin.site.register(ReferenceLayerView, ReferenceLayerViewAdmin)

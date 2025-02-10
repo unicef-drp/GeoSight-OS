@@ -14,6 +14,8 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+from geosight.georepo.request.data import GeorepoEntity
+
 
 def mock_get_entity(
         original_id_type: str, original_id: str,
@@ -22,11 +24,16 @@ def mock_get_entity(
 ):
     """Mock for get entity request."""
     from geosight.georepo.models.entity import Entity
-    entity, _ = Entity.objects.get_or_create(
-        reference_layer=reference_layer,
-        geom_id=original_id,
-        admin_level=admin_level
-    )
+    try:
+        entity = Entity.objects.get(geom_id=original_id)
+    except Entity.DoesNotExist:
+        entity, _ = GeorepoEntity(
+            {
+                'name': '',
+                'ucode': original_id,
+                'admin_level': admin_level
+            }
+        ).get_or_create(reference_layer)
     return entity
 
 

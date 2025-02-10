@@ -23,18 +23,4 @@ class Migration(migrations.Migration):
         ('geosight_georepo', '0013_delete_referencelayerviewcode'),
     ]
 
-    sql = """
-    CREATE VIEW v_indicator_value_geo as
-        SELECT value.*, entity.concept_uuid, entity.reference_layer_id, entity.admin_level, indicator.type as indicator_type
-        from geosight_data_indicatorvalue as value
-             LEFT JOIN geosight_georepo_entity as entity ON value.geom_id = entity.geom_id
-             LEFT JOIN geosight_data_indicator as indicator ON value.indicator_id = indicator.id where reference_layer_id IS NOT NULL;
-    """
-
-    sql_back = """
-    DROP VIEW IF EXISTS v_indicator_value_geo;
-    """
-
-    operations = [
-        migrations.RunSQL(sql, sql_back)
-    ]
+    operations = []

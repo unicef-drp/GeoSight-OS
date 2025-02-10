@@ -20,6 +20,7 @@ from rest_framework import status, viewsets
 from rest_framework.authentication import (
     SessionAuthentication, BasicAuthentication
 )
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import mixins, GenericViewSet
 
@@ -129,6 +130,14 @@ class BaseApiV1ResourceReadOnly(BaseApiV1, viewsets.ReadOnlyModelViewSet):
         read_permission_resource(instance, request.user)
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
+
+    @swagger_auto_schema(auto_schema=None)
+    @action(detail=False, methods=['get'])
+    def ids(self, request):
+        """Return object id list."""
+        return Response(
+            self.get_queryset().values_list(self.lookup_field, flat=True)
+        )
 
 
 class BaseApiV1ResourceDeleteOnly(mixins.DestroyModelMixin):

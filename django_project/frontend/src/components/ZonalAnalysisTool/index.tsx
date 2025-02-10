@@ -335,7 +335,7 @@ export const ZonalAnalysisTool = forwardRef((
         if (information.lengthMeters < 1000) {
           perimeter = `${numberWithCommas(information.lengthMeters, 2)} m ${information.lengthTerm}`;
         } else {
-          perimeter = `${numberWithCommas(information.lengthMeters / 1000, 2)} km 
+          perimeter = `${numberWithCommas(information.lengthMeters / 1000, 2)} km
           (${numberWithCommas(information.lengthMiles, 2)} mi) ${information.lengthTerm}`;
         }
       }

@@ -116,8 +116,7 @@ class ReferenceDatasetImporterTask:
                         if level == 1:
                             parents = [parent_code]
                         else:
-                            parent = Entity.objects.filter(
-                                reference_layer=reference_layer,
+                            parent = reference_layer.entities_set.filter(
                                 admin_level=level - 1,
                                 geom_id=parent_code
                             ).first()
@@ -173,7 +172,7 @@ class ReferenceDatasetImporterTask:
             self.importer.status = LogStatus.RUNNING
             self.importer.save()
             reference_layer = self.importer.reference_layer
-            reference_layer.entity_set.all().delete()
+            reference_layer.entities_set.all().delete()
 
             total = self.importer.referencedatasetimporterlevel_set.count()
             min_progress = 0

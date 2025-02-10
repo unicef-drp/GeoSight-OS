@@ -30,7 +30,7 @@ test.describe('Create project from dataset', () => {
     await page.getByRole('textbox').nth(1).click();
     await page.getByRole('cell', { name: 'Somalia', exact: true }).click();
     await page.getByRole('button', { name: 'Update Selection' }).click();
-    await page.getByRole('columnheader', { name: 'Select all rows' }).locator('div').nth(1).click();
+    await page.locator('.AdminTable .MuiDataGrid-columnHeaderCheckbox').first().click();
     await page.getByRole('button', { name: 'Add to New Project' }).click();
     await expect(page.getByText('Save')).toBeVisible();
 

@@ -43,11 +43,12 @@ class ImporterCreateView(RoleContributorRequiredMixin, AdminBaseView):
     @property
     def content_title(self):
         """Return content title that used on page title indicator."""
-        data_importer = reverse('admin-importer-create-view')
+        data_importer = reverse('admin-data-management-list-view')
+        import_data = reverse('admin-importer-create-view')
         return (
             f'<a href="{data_importer}">Data Management</a>'
             '<span>></span>'
-            f'<a href="{data_importer}">Import Data</a>'
+            f'<a href="{import_data}">Import Data</a>'
         )
 
     @property
@@ -122,7 +123,7 @@ class ImporterEditView(ImporterCreateView):
         importer_edit = reverse(
             'admin-importer-edit-view', args=[importer.id]
         )
-        data_importer = reverse('admin-importer-create-view')
+        data_importer = reverse('admin-data-management-list-view')
         logs = reverse('admin-data-management-list-view') + '#Logs'
         log_url = reverse(
             'admin-importer-log-detail-view', args=[log.id]
@@ -145,7 +146,7 @@ class ImporterScheduledEditView(ImporterEditView):
     def content_title(self):
         """Return content title that used on page title indicator."""
         importer = self.instance
-        data_importer = reverse('admin-importer-create-view')
+        data_importer = reverse('admin-data-management-list-view')
         list_url = reverse(
             'admin-data-management-list-view') + '#Scheduled Jobs'
         importer_url = reverse(

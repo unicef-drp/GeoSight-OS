@@ -67,7 +67,7 @@ class ReferenceDatasetSerializer(DynamicModelSerializer):
         try:
             return [
                 float(str(round(geom, 4))) for geom in
-                obj.entity_set.aggregate(
+                obj.entities_set.aggregate(
                     Extent('geometry')
                 )['geometry__extent']
             ]

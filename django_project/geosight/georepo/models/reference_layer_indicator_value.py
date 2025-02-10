@@ -39,33 +39,19 @@ def entity_values(
         indicators: list of Indicator
             Values that will be returned by indicators.
     """
-    reference_layer = entity.reference_layer
-    try:
-        parent = entity.parents[0]
-        siblings = reference_layer.entity_set.filter(
-            parents__contains=parent,
-            admin_level=entity.admin_level,
-            end_date__isnull=True
-        ).exclude(pk=entity.pk)
-        parent = reference_layer.entity_set.filter(
-            geom_id=parent,
-            reference_layer=entity.reference_layer,
-            end_date__isnull=True
-        ).first()
-    except (IndexError, TypeError):
-        siblings = []
-        parent = None
+    siblings = entity.siblings
+    children = entity.children
+    ids = [
+              entity.id
+          ] + [
+              sibling.id for sibling in siblings
+          ] + [
+              children.id for children in children
+          ]
 
-    children = reference_layer.entity_set.filter(
-        parents__contains=entity.geom_id,
-        admin_level=entity.admin_level + 1,
-        end_date__isnull=True
-    )
-    concept_uuids = [entity.concept_uuid] + \
-                    [sibling.concept_uuid for sibling in siblings] + \
-                    [children.concept_uuid for children in children]
+    parent = entity.parent
     if parent:
-        concept_uuids.append(parent.concept_uuid)
+        ids.append(parent.id)
 
     # INDICATORS DATA
     indicators_data = {}
@@ -73,8 +59,7 @@ def entity_values(
         values = indicator.values(
             date_data=None,
             min_date_data=None,
-            reference_layer=reference_layer,
-            concept_uuids=concept_uuids,
+            entities_id=ids,
             last_value=False
         )
         for value in values:
@@ -153,7 +138,7 @@ def reference_layer_indicator_values(
         concept_uuids: list, Optional
             List of concept uuid that will be checked.
     """
-    entities = reference_layer.entity_set.filter(end_date__isnull=True)
+    entities = reference_layer.entities_set.filter(end_date__isnull=True)
     if admin_level is not None:
         entities = entities.filter(admin_level=admin_level)
     if concept_uuids:

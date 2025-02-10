@@ -14,6 +14,9 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '29/11/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+from functools import reduce
+
+from django.db.models import Q
 from rest_framework.authentication import (
     SessionAuthentication, BasicAuthentication
 )
@@ -24,7 +27,7 @@ from core.auth import BearerAuthentication
 from core.pagination import Pagination
 from geosight.data.models.indicator import IndicatorValueWithGeo
 from geosight.permission.models.resource import (
-    ReferenceLayerIndicatorPermission, ReferenceLayerIndicatorPermissionView
+    ReferenceLayerIndicatorPermission
 )
 
 
@@ -52,18 +55,21 @@ class BaseDataApiList(FilteredAPI):
 
         # If not admin
         if not is_admin:
-            ids = ReferenceLayerIndicatorPermission.permissions.list(
+            identifiers = ReferenceLayerIndicatorPermission.permissions.list(
                 user=self.request.user
-            ).values_list('id', flat=True)
-            identifiers = ReferenceLayerIndicatorPermissionView.objects.filter(
-                id__in=list(ids)
-            ).values_list('identifier', flat=True)
+            ).values_list(
+                'obj__indicator_id', 'obj__reference_layer_id'
+            )
             if not identifiers.count():
                 query = self.model.objects.none()
             else:
-                query = self.model.objects.filter(
-                    identifier__in=identifiers
+                filter = reduce(
+                    lambda q, f: q | Q(
+                        indicator_id=f[0], reference_layer_id=f[1]
+                    ),
+                    identifiers, Q()
                 )
+                query = self.model.objects.filter(filter)
 
         # Filter by parameters
         query = self.filter_query(

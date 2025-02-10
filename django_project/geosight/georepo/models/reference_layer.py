@@ -14,8 +14,11 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import logging
+
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models import Max, Subquery
 from django.utils.translation import ugettext_lazy as _
 
 from core.models.general import AbstractVersionData, AbstractEditData
@@ -28,6 +31,8 @@ from geosight.georepo.request.data import GeorepoEntity
 from geosight.permission.models.manager import PermissionManager
 
 User = get_user_model()
+
+logger = logging.getLogger(__name__)
 
 
 class ReferenceLayerView(AbstractEditData, AbstractVersionData):
@@ -110,23 +115,10 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
 
     def save_entity(self, entity: GeorepoEntity):
         """Save entities."""
-        from geosight.georepo.models.entity import Entity, EntityCode
-        entity = GeorepoEntity(entity)
-        obj, _ = Entity.objects.get_or_create(
-            reference_layer=self,
-            admin_level=entity.admin_level,
-            geom_id=entity.ucode,
-            defaults={
-                'concept_uuid': entity.concept_uuid,
-                'start_date': entity.start_date
-            }
-        )
-
-        obj.end_date = entity.end_date
-        obj.parents = entity.parents
-        obj.name = entity.name
-        obj.save()
-        for code_type, code in entity.ext_codes.items():
+        from geosight.georepo.models.entity import EntityCode
+        georepo_entity = GeorepoEntity(entity)
+        obj, _ = GeorepoEntity(entity).get_or_create(self)
+        for code_type, code in georepo_entity.ext_codes.items():
             entity_code, _ = EntityCode.objects.get_or_create(
                 entity=obj,
                 code_type=code_type,
@@ -134,12 +126,27 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
             )
         return obj
 
-    def sync_entities_code(self, level=None):
+    def sync_entities_code(self, level=None, sync_all=True):
         """Sync entities code."""
+        min_level = None
+        if not sync_all:
+            try:
+                min_level = self.entities_set.aggregate(
+                    Max('admin_level')
+                )['admin_level__max']
+            except KeyError:
+                pass
         detail = GeorepoRequest().View.get_detail(self.identifier)
+        logger.debug(f"Fetching entities: {self.identifier}")
         for dataset_level in detail['dataset_levels']:
             if level and dataset_level['level'] != level:
                 continue
+            if min_level is not None and dataset_level['level'] <= min_level:
+                continue
+            logger.debug(
+                f"Fetching entities: "
+                f"{self.identifier}-{dataset_level['level']}"
+            )
             entities = GeorepoRequest().View.entities(
                 self.identifier, dataset_level['level']
             )
@@ -170,6 +177,15 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
     def is_local(self):
         """Return if view is local or not."""
         return not self.in_georepo
+
+    @property
+    def entities_set(self):
+        """Querying entities."""
+        from geosight.georepo.models.entity import Entity
+        related_entities = self.referencelayerviewentity_set.values(
+            "entity_id"
+        )
+        return Entity.objects.filter(pk__in=Subquery(related_entities))
 
 
 class ReferenceLayerIndicator(models.Model):

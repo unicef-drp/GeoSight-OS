@@ -33,8 +33,11 @@ def querying_vector_tile(view: ReferenceDataset, z: int, x: int, y: int):
                     ST_TileEnvelope({z}, {x}, {y}),
                     extent => 4096, buffer => 64
                 ) as geom
-                FROM geosight_georepo_entity AS feature
-                WHERE reference_layer_id={view.id}
+                FROM geosight_georepo_referencelayerviewentity
+                    AS ref_entity_view
+                LEFT JOIN geosight_georepo_entity
+                    AS entity ON ref_entity_view.entity_id = entity.id
+                WHERE ref_entity_view.reference_layer_id={view.id}
         ),
         tiles as (
            SELECT

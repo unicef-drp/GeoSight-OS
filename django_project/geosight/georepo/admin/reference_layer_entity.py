@@ -11,15 +11,20 @@ Contact : geosight-no-reply@unicef.org
 
 """
 __author__ = 'irwan@kartoza.com'
-__date__ = '13/06/2023'
+__date__ = '04/02/2025'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from django.db import migrations
+from django.contrib import admin
+
+from geosight.georepo.models import (
+    ReferenceLayerViewEntity
+)
 
 
-class Migration(migrations.Migration):
-    dependencies = [
-        ('geosight_data', '0087_dashboard_default_time_mode'),
-    ]
+@admin.register(ReferenceLayerViewEntity)
+class ReferenceLayerViewEntityAdmin(admin.ModelAdmin):
+    """ReferenceLayerViewEntity admin."""
 
-    operations = []
+    list_display = ['entity', 'reference_layer']
+    ordering = ['entity']
+    list_filter = ['reference_layer']

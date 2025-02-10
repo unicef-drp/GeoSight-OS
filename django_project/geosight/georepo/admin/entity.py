@@ -30,13 +30,18 @@ class EntityAdmin(admin.ModelAdmin):
     """Entity admin."""
 
     list_display = [
-        'pk', 'name', 'reference_layer', 'admin_level', 'concept_uuid',
-        'geom_id', 'parents'
+        'pk', 'name', 'admin_level', 'concept_uuid',
+        'geom_id', 'parents', 'views'
     ]
-    ordering = ['reference_layer', 'admin_level', 'geom_id']
-    list_filter = ['reference_layer', 'admin_level']
+    ordering = ['admin_level', 'geom_id']
+    list_filter = ['admin_level']
     search_fields = ['geom_id', 'concept_uuid']
     inlines = (EntityCodeInline,)
+    readonly_fields = ('reference_layer',)
+
+    def views(self, obj: Entity):
+        """Return list of views."""
+        return obj.referencelayerviewentity_set.count()
 
 
 admin.site.register(Entity, EntityAdmin)

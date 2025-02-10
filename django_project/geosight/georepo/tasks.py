@@ -27,10 +27,13 @@ logger = get_task_logger(__name__)
 
 
 @app.task
-def fetch_reference_codes_by_ids(ids):
+def fetch_reference_codes_by_ids(ids, sync_all=True):
     """Fetch reference codes."""
     for reference_layer_view in ReferenceLayerView.objects.filter(id__in=ids):
-        reference_layer_view.sync_entities_code()
+        try:
+            reference_layer_view.sync_entities_code(sync_all=sync_all)
+        except Exception:
+            pass
         reference_layer_view.increase_version()
 
 

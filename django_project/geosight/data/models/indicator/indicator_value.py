@@ -20,6 +20,7 @@ from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
 from geosight.data.models.indicator.indicator import Indicator, IndicatorType
+from geosight.georepo.models.entity import Entity
 
 
 class IndicatorValue(models.Model):
@@ -44,11 +45,20 @@ class IndicatorValue(models.Model):
         help_text='This is ucode from georepo.'
     )
 
+    # Entity that linked to this value
+    entity = models.ForeignKey(
+        Entity, null=True, blank=True,
+        on_delete=models.SET_NULL
+    )
+
     class Meta:  # noqa: D106
         unique_together = ('indicator', 'date', 'geom_id')
         ordering = ('-date',)
         indexes = [
             models.Index(fields=['geom_id'], name='indicator_value_geom_id'),
+            models.Index(
+                fields=['indicator', 'entity']
+            ),
         ]
 
     @property
@@ -158,24 +168,10 @@ class IndicatorValueWithGeo(models.Model):
 
     # This is geom id for the value
     indicator_id = models.BigIntegerField()
-    identifier = models.CharField(
-        max_length=256, null=True, blank=True
-    )
-    identifier_with_level = models.CharField(
-        max_length=256, null=True, blank=True
-    )
+    entity_id = models.BigIntegerField()
     date = models.DateField(
         _('Date'),
         help_text=_('The date of the value harvested.')
-    )
-    day = models.IntegerField(
-        null=True, blank=True
-    )
-    month = models.IntegerField(
-        null=True, blank=True
-    )
-    year = models.IntegerField(
-        null=True, blank=True
     )
     value = models.FloatField(
         null=True, blank=True
@@ -262,3 +258,17 @@ class IndicatorValueWithGeo(models.Model):
 def increase_version(sender, instance, **kwargs):
     """Increase verison of indicator signal."""
     instance.indicator.increase_version()
+
+
+@receiver(post_save, sender=IndicatorValue)
+def assign_entity_to_value(
+        sender, instance: IndicatorValue, created, **kwargs
+):
+    """Assign entity to value."""
+    if created and not instance.entity:
+        entity = Entity.objects.filter(
+            geom_id=instance.geom_id
+        ).first()
+        if entity:
+            instance.entity = entity
+            instance.save()
