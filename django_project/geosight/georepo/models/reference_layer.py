@@ -144,7 +144,8 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
             if min_level is not None and dataset_level['level'] <= min_level:
                 continue
             logger.debug(
-                f"Fetching entities: {self.identifier}-{dataset_level['level']}"
+                f"Fetching entities: "
+                f"{self.identifier}-{dataset_level['level']}"
             )
             entities = GeorepoRequest().View.entities(
                 self.identifier, dataset_level['level']
