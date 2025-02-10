@@ -13,26 +13,49 @@
  * __copyright__ = ('Copyright 2025, Unicef')
  */
 
-import React, {
-  forwardRef,
-  Fragment,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState
-} from 'react';
+import React, {forwardRef, Fragment, useEffect, useImperativeHandle, useRef, useState} from 'react';
 import axios from "axios";
 import pluralize from 'pluralize';
-import { ServerTableProps, } from "./types";
-import { dictDeepCopy } from "../../utils/main";
-import { DeleteButton, ThemeButton } from "../Elements/Button";
-import { MainDataGrid } from "./index";
-import { constructUrl, DjangoRequests } from "../../Requests";
-import { Notification, NotificationStatus } from "../Notification";
-import { useConfirmDialog } from "../../providers/ConfirmDialog";
+import {ServerTableProps,} from "./types";
+import {useSearchParams} from "react-router-dom";
+import {dictDeepCopy} from "../../utils/main";
+import {DeleteButton, ThemeButton} from "../Elements/Button";
+import {MainDataGrid} from "./index";
+import {constructUrl, DjangoRequests} from "../../Requests";
+import {Notification, NotificationStatus} from "../Notification";
+import {useConfirmDialog} from "../../providers/ConfirmDialog";
 import DataGridFilter from "../Filter";
 
 import './ServerTable.scss';
+
+
+const cleanFilters = (filters: any, columns: any) => {
+  // @ts-ignore
+  if (!filters) {
+    return {}
+  }
+  let newFilters: any = Object.fromEntries(
+    Object.entries(filters).filter(
+      ([key, value]) => ![null, 'null'].includes(value as string) && !['page', 'page_size'].includes(key)
+    )
+  )
+  if (newFilters.sort?.length > 0) {
+    let field = typeof newFilters.sort === 'string' ? newFilters.sort : newFilters.sort[0]
+    let sort = 'asc'
+    if (field[0] === '-') {
+      sort = 'desc'
+      field = field.substring(1)
+    }
+
+    // @ts-ignore
+    const column = columns.find(column => column.serverKey == field || column.field == field)
+    newFilters.sort = sort === 'asc' ? column.field : `-${column.field}`
+  } else {
+    delete newFilters.sort
+  }
+  return newFilters
+}
+
 
 /** Server Table */
 const ServerTable = forwardRef(
@@ -71,7 +94,9 @@ const ServerTable = forwardRef(
    }: ServerTableProps, ref
   ) => {
     const { openConfirmDialog } = useConfirmDialog();
-    const [filterModel, setFilterModel] = useState({})
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [filterModel, setFilterModel] = useState(defaults.filters)
+
     if (enable.filter) {
       columns.forEach(column => {
         if (column.type === 'actions') {
@@ -88,7 +113,6 @@ const ServerTable = forwardRef(
         }
       });
     }
-
 
     // Notification
     const notificationRef = useRef(null);
@@ -122,9 +146,15 @@ const ServerTable = forwardRef(
         page: 0,
         page_size: pageSize,
         sort: getSort(defaults.sort),
-        ...defaults.filters
+        ...defaults.filters,
+        ...filterModel
       }
     )
+
+    const updateQueryParam = (params: any) => { // Set 'key' to 'newValue'
+      // @ts-ignore
+      setSearchParams(cleanFilters(params, columns));
+    };
 
     useEffect(() => {
       // @ts-ignore
@@ -158,7 +188,7 @@ const ServerTable = forwardRef(
     /*** Parameters Changed */
     const parametersChanged = () => {
       const params = getParameters ? getParameters(parameters) : {}
-      setParameters({ ...parameters, ...params })
+      setParameters({ ...parameters, ...params, ...filterModel })
     }
 
     /*** Load data */
@@ -202,6 +232,14 @@ const ServerTable = forwardRef(
     }
     /*** When parameters changed */
     useEffect(() => {
+      if (enable.filter) {
+        if (JSON.stringify(cleanFilters(parameters, columns)) === '{}') {
+          window.sessionStorage.removeItem(url)
+        } else {
+          window.sessionStorage.setItem(url, JSON.stringify(cleanFilters(parameters, columns)))
+        }
+        updateQueryParam(cleanFilters(parameters, columns))
+      }
       loadData(false)
     }, [parameters])
 

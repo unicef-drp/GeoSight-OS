@@ -79,4 +79,18 @@ test.describe('Test filter in basemap admin', () => {
     await expect(dataGridRow).toHaveCount(1);
   });
 
+  test('Test filters persist', async ({ page }) => {
+    await page.getByTitle('DataGrid-Filter').locator('a').click();
+    await page.getByRole('textbox', { name: 'Basemap Name' }).click();
+    await page.getByRole('textbox', { name: 'Basemap Name' }).fill('os');
+    await page.getByRole('button', { name: 'Apply Filters' }).click();
+    await page.locator('.MuiBackdrop-root').click();
+    await page.getByRole('button', { name: 'Sort' }).click();
+    await page.getByRole('button', { name: 'Create New Basemap' }).click();
+    await page.locator('b').getByRole('link', { name: 'Basemaps' }).click();
+    await expect(page.locator('.MuiDataGrid-row')).toHaveCount(2);
+    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Test OSM');
+    await expect(page.locator('.MuiDataGrid-row').nth(1).locator('.MuiDataGrid-cell').nth(1)).toContainText('OSM');
+  });
+
 })

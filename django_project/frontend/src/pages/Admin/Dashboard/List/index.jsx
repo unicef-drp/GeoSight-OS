@@ -14,6 +14,7 @@
  */
 
 import React from 'react';
+import {useSearchParams} from "react-router-dom";
 import {GridActionsCellItem} from "@mui/x-data-grid";
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -73,6 +74,13 @@ export function resourceActionsList(params) {
  * Indicator List App
  */
 export default function DashboardList() {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  let defaultFilter = JSON.parse(window.sessionStorage.getItem(urls.api.list, "{}"))
+  if (searchParams.size > 0) {
+    defaultFilter = Object.fromEntries(searchParams.entries());
+  }
+
   const pageName = pageNames.Dashboard
   const columns = COLUMNS(pageName, urls.admin.dashboardList);
   columns[2] = { field: 'description', headerName: 'Description', flex: 1 }
@@ -154,8 +162,12 @@ export default function DashboardList() {
     enableFilter={true}
     defaults={{
       sort: [
-        { field: 'name', sort: 'asc' }
-      ]
+        {
+          field: defaultFilter?.sort ? defaultFilter?.sort[0] === '-' ? defaultFilter?.sort.substring(1) : defaultFilter?.sort : 'name',
+          sort: defaultFilter?.sort ? defaultFilter?.sort[0] === '-' ? 'desc' : 'asc' : 'asc'
+        }
+      ],
+      filters: defaultFilter ? defaultFilter : {}
     }}
   />
 }
