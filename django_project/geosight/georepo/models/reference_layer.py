@@ -14,6 +14,8 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import logging
+
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import Subquery
@@ -29,6 +31,8 @@ from geosight.georepo.request.data import GeorepoEntity
 from geosight.permission.models.manager import PermissionManager
 
 User = get_user_model()
+
+logger = logging.getLogger(__name__)
 
 
 class ReferenceLayerView(AbstractEditData, AbstractVersionData):
@@ -112,8 +116,9 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
     def save_entity(self, entity: GeorepoEntity):
         """Save entities."""
         from geosight.georepo.models.entity import EntityCode
+        georepo_entity = GeorepoEntity(entity)
         obj, _ = GeorepoEntity(entity).get_or_create(self)
-        for code_type, code in entity.ext_codes.items():
+        for code_type, code in georepo_entity.ext_codes.items():
             entity_code, _ = EntityCode.objects.get_or_create(
                 entity=obj,
                 code_type=code_type,
@@ -127,6 +132,7 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
         for dataset_level in detail['dataset_levels']:
             if level and dataset_level['level'] != level:
                 continue
+            logger.debug(f"Fetching entities: {self.identifier}")
             entities = GeorepoRequest().View.entities(
                 self.identifier, dataset_level['level']
             )

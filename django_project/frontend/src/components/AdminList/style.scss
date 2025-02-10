@@ -1,0 +1,94 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '13/06/2023'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   Table style
+   ========================================================================== */
+
+.AdminContentMiddle {
+  background-color: unset !important;
+}
+
+.AdminList {
+  background-color: unset !important;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-height: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  border-radius: var(--border-radius) !important;
+  overflow: hidden;
+
+  .MoreActionIcon {
+    width: 16px;
+    height: 16px;
+    color: var(--primary-color);
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .AdminTable {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    background-color: white;
+
+    .AdminTableError {
+      color: var(--error);
+      margin: auto;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      position: absolute;
+      background-color: rgba(255, 255, 255, 0.5);
+      padding-top: 200px;
+      z-index: 9;
+    }
+  }
+
+  .AdminTableDelete {
+    color: var(--error);
+  }
+
+  .AdminTable-Loading {
+    padding: 1rem;
+  }
+
+  .CellLink {
+    color: var(--primary-color) !important;
+  }
+
+  .CellError {
+    color: white;
+    background-color: var(--error);
+  }
+
+  .CellWarning {
+    color: white;
+    background-color: #ed6c02;
+  }
+
+  .FlexCell {
+    display: flex;
+
+    div {
+      margin-right: 2px;
+    }
+  }
+}

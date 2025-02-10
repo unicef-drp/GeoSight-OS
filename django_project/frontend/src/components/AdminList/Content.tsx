@@ -99,7 +99,9 @@ export const AdminListContent = forwardRef(
     // When inner selection changed
     useEffect(() => {
       if (selectionChanged) {
-        selectionChanged(selectionModel)
+        if (JSON.stringify(selectionModel) !== JSON.stringify(selection)) {
+          selectionChanged(selectionModel)
+        }
       }
     }, [selectionModel])
 

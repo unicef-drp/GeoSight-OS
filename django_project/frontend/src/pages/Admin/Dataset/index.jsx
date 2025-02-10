@@ -13,31 +13,36 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import $ from "jquery";
-import {FormControlLabel, FormGroup} from "@mui/material";
+import { FormControlLabel, FormGroup } from "@mui/material";
 import Switch from "@mui/material/Switch";
-import {GridActionsCellItem} from "@mui/x-data-grid";
+import { GridActionsCellItem } from "@mui/x-data-grid";
 import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
 
-import {render} from '../../../app';
-import {store} from '../../../store/admin';
-import {splitParams, urlParams} from "../../../utils/main";
-import {NotificationStatus} from "../../../components/Notification";
-import {pageNames} from "../index";
-import {DataBrowserActiveIcon} from "../../../components/Icons";
-import {DatasetFilterSelector} from "../../../components/ResourceSelector/DatasetViewSelector";
-import {IndicatorFilterSelector} from "../../../components/ResourceSelector/IndicatorSelector";
-import {ThemeButton} from "../../../components/Elements/Button";
+import { render } from '../../../app';
+import { store } from '../../../store/admin';
+import { splitParams, urlParams } from "../../../utils/main";
+import { NotificationStatus } from "../../../components/Notification";
+import { pageNames } from "../index";
+import { DataBrowserActiveIcon } from "../../../components/Icons";
+import {
+  DatasetFilterSelector
+} from "../../../components/ResourceSelector/DatasetViewSelector";
+import {
+  IndicatorFilterSelector
+} from "../../../components/ResourceSelector/IndicatorSelector";
+import { ThemeButton } from "../../../components/Elements/Button";
 import AdminList from "../../../components/AdminList";
 import Tooltip from "@mui/material/Tooltip";
 import PermissionModal from "../Permission";
 import AddIcon from '@mui/icons-material/Add';
-import {MultipleSelectWithSearch} from "../../../components/Input/SelectWithSearch";
+import {
+  MultipleSelectWithSearch
+} from "../../../components/Input/SelectWithSearch";
+import { removeElement } from "../../../utils/Array";
 
-
-import './style.scss';
-import {removeElement} from "../../../utils/Array";
+import './style.scss'
 
 /*** Data Browser admin */
 const deleteWarning = "WARNING! Do you want to delete the selected data? This will apply directly to database."
@@ -85,12 +90,41 @@ export default function DatasetAdmin() {
   // COLUMNS
   const COLUMNS = [
     { field: 'id', headerName: 'id', hide: true },
-    { field: 'indicator_name', headerName: 'Indicator', flex: 0.5 },
-    { field: 'reference_layer_name', headerName: 'View', flex: 1 },
-    { field: 'admin_level', headerName: 'Level', width: 80 },
-    { field: 'start_date', headerName: 'Start date', width: 130 },
-    { field: 'end_date', headerName: 'End date', width: 130 },
-    { field: 'data_count', headerName: 'Data count', width: 80 },
+    {
+      field: 'indicator_name',
+      headerName: 'Indicator',
+      flex: 0.5,
+      disabledFilter: true
+    },
+    {
+      field: 'reference_layer_name',
+      headerName: 'View',
+      flex: 1,
+      disabledFilter: true
+    },
+    {
+      field: 'admin_level',
+      headerName: 'Level',
+      width: 80,
+      disabledFilter: true
+    },
+    {
+      field: 'start_date',
+      headerName: 'Start date',
+      width: 130,
+      type: 'date'
+    },
+    {
+      field: 'end_date',
+      headerName: 'End date', width: 130,
+      type: 'date'
+    },
+    {
+      field: 'data_count',
+      headerName: 'Data count',
+      width: 80,
+      disabledFilter: true
+    },
     {
       field: 'actions',
       type: 'actions',
@@ -270,7 +304,7 @@ export default function DatasetAdmin() {
     }
     pageName={pageNames.Dataset}
     multipleDelete={true}
-    enableFilter={true}
+    enableFilter={false}
     useSearch={false}
     selection={selectionModel}
     selectionChanged={setSelectionModel}

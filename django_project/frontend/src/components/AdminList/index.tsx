@@ -17,6 +17,8 @@ import { AdminPage } from "../../pages/Admin";
 import { AdminListProps } from "./types";
 import { AdminListContent } from "./Content";
 
+import './style.scss';
+
 export const AdminList = (
   {
     columns,
@@ -88,7 +90,17 @@ export default AdminList;
 
 export const ResourceMeta: any[] = [
   { field: 'created_at', headerName: 'Created At', flex: 0.5, type: 'date' },
-  { field: 'created_by', headerName: 'Created By', flex: 0.5, serverKey: 'creator__username' },
+  {
+    field: 'created_by',
+    headerName: 'Created By',
+    flex: 0.5,
+    serverKey: 'creator__username'
+  },
   { field: 'modified_at', headerName: 'Modified At', flex: 0.5, type: 'date' },
-  { field: 'modified_by', headerName: 'Modified By', flex: 0.5, serverKey: 'modified_by__username'  },
+  {
+    field: 'modified_by',
+    headerName: 'Modified By',
+    flex: 0.5,
+    serverKey: 'modified_by__username'
+  },
 ];
