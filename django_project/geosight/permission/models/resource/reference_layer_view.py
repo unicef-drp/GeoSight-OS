@@ -69,16 +69,14 @@ class ReferenceLayerViewGroupPermission(GroupPermission):
 
 
 @receiver(post_save, sender=ReferenceLayerView)
-def create_resource(sender, instance, created, **kwargs):
+def save_resource(sender, instance, created, **kwargs):
     """When resource created."""
     if created:
-        ReferenceLayerViewPermission.objects.create(obj=instance)
-
-
-@receiver(post_save, sender=ReferenceLayerView)
-def save_resource(sender, instance, **kwargs):
-    """When resource saved."""
-    try:
-        instance.permission.save()
-    except Exception:
-        pass
+        ReferenceLayerViewPermission.objects.get_or_create(obj=instance)
+    else:
+        try:
+            instance.permission.save()
+        except Exception:
+            ReferenceLayerViewPermission.objects.get_or_create(
+                obj=instance
+            )
