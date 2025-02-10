@@ -55,7 +55,9 @@ class BaseDatasetApiList:
 
     def get_queryset(self):
         """Return queryset of API."""
-        group_admin_level = self.request.GET.get('group_admin_level', False)
+        group_admin_level = self.request.GET.get(
+            'group_admin_level', False
+        ) == 'true'
         if not group_admin_level:
             return super().get_queryset().values(
                 'indicator_id', 'reference_layer_id', 'admin_level'
