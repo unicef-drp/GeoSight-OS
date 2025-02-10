@@ -46,7 +46,7 @@ class COGClassification(models.Model):
         unique_together = ('url', 'type', 'number', 'min_value', 'max_value')
 
     def save(self, *args, **kwargs):
-        """Custom save method."""
+        """Save COG Classification."""
         if len(self.result) == 0:
             retry = 0
             success = False
