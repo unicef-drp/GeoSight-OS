@@ -34,7 +34,7 @@ import { Variables } from "../Variables";
 import { customDrawStyles } from "./Styles";
 import { BufferDrawing } from "./Buffer";
 
-export class MapDrawing {
+export class MaplibreDrawingTools {
   public draw: MapboxDraw;
   public isDrawing: boolean;
   private map: maplibregl.Map;

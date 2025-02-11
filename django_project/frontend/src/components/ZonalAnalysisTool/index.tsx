@@ -34,7 +34,7 @@ import { debounce } from "@mui/material/utils";
 import { ThemeButton } from "../Elements/Button";
 import { FormControl, InputAdornment, Radio } from "@mui/material";
 import { SelectWithList } from "../Input/SelectWithList";
-import { MapDrawing } from "../../utils/MapDrawing";
+import { MaplibreDrawingTools } from "../../utils/MaplibreDrawingTools";
 import { Variables } from "../../utils/Variables";
 import {
   DRAW_MODE,
@@ -96,7 +96,7 @@ export const ZonalAnalysisTool = forwardRef((
         buffer: 0
       }
     );
-    const [draw, setDraw] = useState<MapDrawing>(null);
+    const [draw, setDraw] = useState<MaplibreDrawingTools>(null);
     const [drawState, setDrawState] = useState<number>(null);
     const [bufferCalculating, setBufferCalculating] = useState<boolean>(false);
     const [bufferInput, setBufferInput] = useState<number>(0);
@@ -127,7 +127,7 @@ export const ZonalAnalysisTool = forwardRef((
 
     /** When start */
     useEffect(() => {
-      const mapDrawing = new MapDrawing(
+      const mapDrawing = new MaplibreDrawingTools(
         map,
         'draw_polygon',
         () => {

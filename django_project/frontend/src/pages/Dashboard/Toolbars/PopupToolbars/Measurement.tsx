@@ -36,7 +36,7 @@ import {
   MeasurementOffIcon,
   MeasurementOnIcon
 } from "../../../../components/Icons";
-import { MapDrawing } from "../../../../utils/MapDrawing";
+import { MaplibreDrawingTools } from "../../../../utils/MaplibreDrawingTools";
 import { numberWithCommas } from "../../../../utils/main";
 
 import './style.scss';
@@ -52,7 +52,7 @@ interface Props {
 export const MeasurementTool = forwardRef(
   ({ map, started }: Props, ref
   ) => {
-    const [draw, setDraw] = useState<MapDrawing>(null);
+    const [draw, setDraw] = useState<MaplibreDrawingTools>(null);
     const [drawState, setDrawState] = useState<number>(null);
 
     const [start, setStart] = useState(false);
@@ -79,7 +79,7 @@ export const MeasurementTool = forwardRef(
     useEffect(() => {
       if (map) {
         if (start) {
-          const mapDrawing = new MapDrawing(
+          const mapDrawing = new MaplibreDrawingTools(
             map,
             'draw_polygon',
             () => {
