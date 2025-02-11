@@ -15,7 +15,7 @@ version: '3.4'
 services:
   db:
     volumes:
-      - ./volumes/database:/var/lib/postgresql/13
+      - ./volumes/database:/var/lib/postgresql/16
       - ./volumes/backups:/backups
   dbbackups:
     volumes:

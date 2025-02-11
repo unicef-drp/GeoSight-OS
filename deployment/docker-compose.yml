@@ -84,10 +84,10 @@ services:
       - redis-conf:/opt/bitnami/redis/mounted-etc/overrides.conf
 
   db:
-    image: kartoza/postgis:13.0
+    image: kartoza/postgis:16-3.4
     container_name: "geosight_db"
     volumes:
-      - database:/var/lib/postgresql/13
+      - database:/var/lib/postgresql/16
     ports:
       - "5432:5432"
     environment:
