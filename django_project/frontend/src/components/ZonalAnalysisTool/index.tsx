@@ -57,9 +57,9 @@ import { fetchGeoJsonValues } from "./FetchGeoJsonValues";
 import {
   REFERENCE_LAYER_ID_KEY
 } from "../../pages/Dashboard/MapLibre/Layers/ReferenceLayer";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import './style.scss';
-import CircularProgress from "@mui/material/CircularProgress";
 
 interface Props {
   map: maplibregl.Map;
