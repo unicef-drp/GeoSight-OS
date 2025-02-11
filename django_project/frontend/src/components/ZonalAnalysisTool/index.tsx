@@ -17,6 +17,7 @@ import React, {
   forwardRef,
   useEffect,
   useImperativeHandle,
+  useMemo,
   useRef,
   useState
 } from 'react';
@@ -29,6 +30,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import CancelIcon from "@mui/icons-material/Cancel";
 import AddLocationIcon from "@mui/icons-material/AddLocation";
 import { useSelector } from "react-redux";
+import { debounce } from "@mui/material/utils";
 import { ThemeButton } from "../Elements/Button";
 import { FormControl, InputAdornment, Radio } from "@mui/material";
 import { SelectWithList } from "../Input/SelectWithList";
@@ -42,13 +44,8 @@ import {
 } from "./index.d";
 import { DashboardTool } from "../../store/dashboard/reducers/dashboardTool";
 import { ZonalAnalysisResult } from "./Result";
-import {
-  dictDeepCopy,
-  getAreaDecimalLength,
-  numberWithCommas
-} from "../../utils/main";
+import { dictDeepCopy, numberWithCommas } from "../../utils/main";
 
-import './style.scss';
 import {
   addClickEvent,
   removeClickEvent
@@ -60,6 +57,9 @@ import { fetchGeoJsonValues } from "./FetchGeoJsonValues";
 import {
   REFERENCE_LAYER_ID_KEY
 } from "../../pages/Dashboard/MapLibre/Layers/ReferenceLayer";
+import CircularProgress from "@mui/material/CircularProgress";
+
+import './style.scss';
 
 interface Props {
   map: maplibregl.Map;
@@ -98,6 +98,8 @@ export const ZonalAnalysisTool = forwardRef((
     );
     const [draw, setDraw] = useState<MapDrawing>(null);
     const [drawState, setDrawState] = useState<number>(null);
+    const [bufferCalculating, setBufferCalculating] = useState<boolean>(false);
+    const [bufferInput, setBufferInput] = useState<number>(0);
 
     // Analyzing state
     const [isAnalyzing, setIsAnalyzing] = useState<boolean[]>([]);
@@ -130,6 +132,9 @@ export const ZonalAnalysisTool = forwardRef((
         'draw_polygon',
         () => {
           setDrawState(new Date().getTime())
+        },
+        (val: boolean) => {
+          setBufferCalculating(val)
         }
       )
       setDraw(mapDrawing)
@@ -161,7 +166,7 @@ export const ZonalAnalysisTool = forwardRef((
     /** Draw changed */
     useEffect(() => {
       if (draw) {
-        draw.updateBuffer(config.buffer);
+        draw.updateBuffer(config.buffer, config.selectionMode === SELECTION_MODE.MANUAL);
         if (config.selectionMode !== SELECTION_MODE.MANUAL) {
           // @ts-ignore
           map.drawingMode = true;
@@ -194,7 +199,9 @@ export const ZonalAnalysisTool = forwardRef((
               (layer: maplibregl.LayerSpecification) => {
                 // @ts-ignore
                 const source = style.sources[layer.source]
-                return ['vector', 'geojson'].includes(source.type) && !['indicator-label'].includes(layer.id)
+                return ['vector', 'geojson'].includes(source.type) && ![
+                  'indicator-label', 'DRAWING_BUFFER_ID'
+                ].includes(layer.id)
               }
             ).map(layer => layer.id)
             const features = map.queryRenderedFeatures(
@@ -339,8 +346,24 @@ export const ZonalAnalysisTool = forwardRef((
           (${numberWithCommas(information.lengthMiles, 2)} mi) ${information.lengthTerm}`;
         }
       }
-
     }
+
+
+    /** Buffer debounce changed **/
+    const bufferChanged = useMemo(
+      () =>
+        debounce(
+          (newValue) => {
+            console.log(newValue)
+            setConfig({
+              ...config,
+              buffer: parseInt(newValue)
+            })
+          },
+          400
+        ),
+      [config]
+    )
     return (
       <>
         <div className='ZonalAnalysisToolConfiguration'>
@@ -378,13 +401,11 @@ export const ZonalAnalysisTool = forwardRef((
             <FormLabel className="MuiInputLabel-root">Buffer:</FormLabel>
             <TextField
               disabled={!isAllAnalyzingDone}
-              value={config.buffer}
+              value={bufferInput}
               type="number"
               onChange={(evt) => {
-                setConfig({
-                  ...config,
-                  buffer: parseInt(evt.target.value)
-                })
+                setBufferInput(parseInt(evt.target.value))
+                bufferChanged(parseInt(evt.target.value))
               }}
               InputProps={{
                 endAdornment: (
@@ -392,6 +413,10 @@ export const ZonalAnalysisTool = forwardRef((
                 ),
               }}
             />
+            {
+              bufferCalculating &&
+              <CircularProgress size={20} style={{ marginLeft: "0.5rem" }}/>
+            }
           </FormControl>
           <div className="Separator"/>
           <div>
