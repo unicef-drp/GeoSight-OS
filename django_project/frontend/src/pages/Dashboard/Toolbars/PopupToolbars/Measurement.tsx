@@ -68,7 +68,9 @@ export const MeasurementTool = forwardRef(
           draw.redraw(features);
         }
       },
-      isActive() {return draw}
+      isActive() {
+        return draw
+      }
     }));
 
     /**
@@ -82,6 +84,9 @@ export const MeasurementTool = forwardRef(
             'draw_polygon',
             () => {
               setDrawState(new Date().getTime())
+            },
+            (val: boolean) => {
+
             }
           )
           setDraw(mapDrawing)

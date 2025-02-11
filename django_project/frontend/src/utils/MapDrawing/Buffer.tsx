@@ -27,9 +27,7 @@ import {
   lineString,
   multiPolygon,
   point,
-  polygon,
-  simplify,
-  truncate
+  polygon
 } from "@turf/turf";
 import { dictDeepCopy } from "../main";
 
@@ -40,11 +38,14 @@ export class BufferDrawing {
   public draw: MapboxDraw;
   private map: maplibregl.Map;
   private buffer: number;
+  private setBufferCalculating: (value: boolean) => void;
 
   constructor(
-    map: maplibregl.Map
+    map: maplibregl.Map,
+    setBufferCalculating: (value: boolean) => void
   ) {
     this.map = map;
+    this.setBufferCalculating = setBufferCalculating;
   }
 
   createLayer() {
@@ -82,7 +83,9 @@ export class BufferDrawing {
   }
 
   /** Update buffer */
-  updateBuffer(features: any[], buffer: number = null) {
+  updateBuffer(features: any[], buffer: number = null, force = false) {
+    this.setBufferCalculating(true)
+    const that = this;
     features = features.filter((feature: any) => feature);
     const source = this.map.getSource(drawingBufferId);
     if (!source) {
@@ -91,12 +94,26 @@ export class BufferDrawing {
     let usedFeatures: any = []
     if (buffer) {
       // If buffer changed, recalculate everything
-      if (buffer !== this.buffer) {
-        usedFeatures = this.updateFeatures(features, buffer)
-        this.buffer = buffer
+      if (force || buffer !== this.buffer) {
+        setTimeout(() => {
+          usedFeatures = that.updateFeatures(features, buffer)
+          this.buffer = buffer
+          // @ts-ignore
+          source.setData({
+            type: 'FeatureCollection',
+            features: usedFeatures
+          });
+          that.setBufferCalculating(false)
+        }, 300);
       } else {
         const incomingIds = features.map((feature: any) => feature.id)
+        incomingIds.sort()
         let currentFeatures = dictDeepCopy(this.getFeatures())
+        const currentIds = currentFeatures.map((feature: any) => feature.id)
+        currentIds.sort()
+        if (JSON.stringify(incomingIds) === JSON.stringify(currentIds)) {
+          return;
+        }
 
         // Remove not in incoming
         currentFeatures = currentFeatures.filter(
@@ -111,7 +128,6 @@ export class BufferDrawing {
         /** Adding using timeout **/
         setTimeout(() => {
           // Added
-          const currentIds = currentFeatures.map((feature: any) => feature.id)
           features.map((feature: any) => {
             if (!currentIds.includes(feature.id)) {
               currentFeatures.push(this.updateFeature(feature, buffer))
@@ -122,8 +138,11 @@ export class BufferDrawing {
             type: 'FeatureCollection',
             features: currentFeatures
           });
+          that.setBufferCalculating(false)
         }, 300);
       }
+    } else {
+      that.setBufferCalculating(false)
     }
   }
 
@@ -153,8 +172,6 @@ export class BufferDrawing {
           geom = point(feature.geometry.coordinates);
           break;
       }
-      geom = simplify(geom, { tolerance: 0.001, highQuality: true });
-      geom = truncate(geom, { precision: 5 });
       // If it has buffer in km
       if (geom && buffer) {
         geom = turfBufffer(geom, buffer, { units: 'kilometers', steps: 8 });

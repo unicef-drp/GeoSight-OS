@@ -59,6 +59,7 @@ import {
 } from "../../pages/Dashboard/MapLibre/Layers/ReferenceLayer";
 
 import './style.scss';
+import CircularProgress from "@mui/material/CircularProgress";
 
 interface Props {
   map: maplibregl.Map;
@@ -97,7 +98,7 @@ export const ZonalAnalysisTool = forwardRef((
     );
     const [draw, setDraw] = useState<MapDrawing>(null);
     const [drawState, setDrawState] = useState<number>(null);
-
+    const [bufferCalculating, setBufferCalculating] = useState<boolean>(false);
     const [bufferInput, setBufferInput] = useState<number>(0);
 
     // Analyzing state
@@ -131,6 +132,9 @@ export const ZonalAnalysisTool = forwardRef((
         'draw_polygon',
         () => {
           setDrawState(new Date().getTime())
+        },
+        (val: boolean) => {
+          setBufferCalculating(val)
         }
       )
       setDraw(mapDrawing)
@@ -162,7 +166,7 @@ export const ZonalAnalysisTool = forwardRef((
     /** Draw changed */
     useEffect(() => {
       if (draw) {
-        draw.updateBuffer(config.buffer);
+        draw.updateBuffer(config.buffer, config.selectionMode === SELECTION_MODE.MANUAL);
         if (config.selectionMode !== SELECTION_MODE.MANUAL) {
           // @ts-ignore
           map.drawingMode = true;
@@ -323,26 +327,26 @@ export const ZonalAnalysisTool = forwardRef((
     let information = null;
     let area = null;
     let perimeter = null;
-    // if (draw) {
-    //   information = draw.selectedInformation(config.buffer, config.selectionMode === SELECTION_MODE.MANUAL)
-    //   if (information) {
-    //     if (information.area < 10000) {
-    //       area = `${numberWithCommas(information.area, 2)} m2`;
-    //     } else if (information.area < 1000000) {
-    //       area = `${numberWithCommas(information.area / 1000, 2)} ha`;
-    //     } else {
-    //       area = `${numberWithCommas(information.area / 1000000, 2)} km2`;
-    //     }
-    //     area = `${area} (${information.count} feature${information.count > 1 ? 's' : ''})`
-    //
-    //     if (information.lengthMeters < 1000) {
-    //       perimeter = `${numberWithCommas(information.lengthMeters, 2)} m ${information.lengthTerm}`;
-    //     } else {
-    //       perimeter = `${numberWithCommas(information.lengthMeters / 1000, 2)} km
-    //       (${numberWithCommas(information.lengthMiles, 2)} mi) ${information.lengthTerm}`;
-    //     }
-    //   }
-    // }
+    if (draw) {
+      information = draw.selectedInformation(config.buffer, config.selectionMode === SELECTION_MODE.MANUAL)
+      if (information) {
+        if (information.area < 10000) {
+          area = `${numberWithCommas(information.area, 2)} m2`;
+        } else if (information.area < 1000000) {
+          area = `${numberWithCommas(information.area / 1000, 2)} ha`;
+        } else {
+          area = `${numberWithCommas(information.area / 1000000, 2)} km2`;
+        }
+        area = `${area} (${information.count} feature${information.count > 1 ? 's' : ''})`
+
+        if (information.lengthMeters < 1000) {
+          perimeter = `${numberWithCommas(information.lengthMeters, 2)} m ${information.lengthTerm}`;
+        } else {
+          perimeter = `${numberWithCommas(information.lengthMeters / 1000, 2)} km
+          (${numberWithCommas(information.lengthMiles, 2)} mi) ${information.lengthTerm}`;
+        }
+      }
+    }
 
 
     /** Buffer debounce changed **/
@@ -360,7 +364,6 @@ export const ZonalAnalysisTool = forwardRef((
         ),
       [config]
     )
-    console.log(config)
     return (
       <>
         <div className='ZonalAnalysisToolConfiguration'>
@@ -410,6 +413,10 @@ export const ZonalAnalysisTool = forwardRef((
                 ),
               }}
             />
+            {
+              bufferCalculating &&
+              <CircularProgress size={20} style={{ marginLeft: "0.5rem" }}/>
+            }
           </FormControl>
           <div className="Separator"/>
           <div>

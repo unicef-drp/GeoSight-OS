@@ -22,7 +22,6 @@ import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import $ from "jquery";
 import {
   area as turfArea,
-  buffer as turfBufffer,
   length as turfLength,
   lineString,
   multiPolygon,
@@ -35,24 +34,23 @@ import { Variables } from "../Variables";
 import { customDrawStyles } from "./Styles";
 import { BufferDrawing } from "./Buffer";
 
-const drawingBufferId = 'DRAWING_BUFFER_ID'
-
 export class MapDrawing {
   public draw: MapboxDraw;
   public isDrawing: boolean;
   private map: maplibregl.Map;
   private mode: string;
   private setDrawState: () => void;
+  private setBufferCalculating: (value: boolean) => void;
   private bufferDraw: BufferDrawing;
 
   constructor(
-    map: maplibregl.Map, defaultMode: string, setDrawState: () => void
+    map: maplibregl.Map, defaultMode: string, setDrawState: () => void,
+    setBufferCalculating: (value: boolean) => void
   ) {
-    console.log('RERENDER')
     this.map = map;
     this.mode = defaultMode;
     this.setDrawState = setDrawState;
-    this.bufferDraw = new BufferDrawing(map);
+    this.bufferDraw = new BufferDrawing(map, setBufferCalculating);
 
     this.draw = new MapboxDraw(
       {
@@ -121,15 +119,24 @@ export class MapDrawing {
   }
 
   /** Update feature **/
-  updateBuffer(buffer: number = null) {
-    this.bufferDraw.updateBuffer(this.draw.getAll().features, buffer)
+  updateBuffer(buffer: number = null, force = false) {
+    this.bufferDraw.updateBuffer(this.draw.getAll().features, buffer, force)
   }
 
   getFeatures(buffer: number = null) {
     const that = this;
     // @ts-ignore
     if (!buffer) {
-      return this.draw.getAll().features
+      return this.draw.getAll().features.filter(
+        feature => {
+          try {
+            // @ts-ignore
+            return feature.geometry.coordinates[0][0] != null
+          } catch (err) {
+            return true
+          }
+        }
+      )
     } else {
       return this.bufferDraw.getFeatures()
     }
@@ -184,6 +191,7 @@ export class MapDrawing {
     this.isDrawing = false;
     this.updateCursor('grab');
     this.setDrawState()
+    console.log('Stop')
   }
 
   deleteSelected() {
@@ -201,29 +209,12 @@ export class MapDrawing {
   }
 
   selectedInformation = (buffer: number = null, justSelected: boolean = true) => {
-    var data = this.draw.getAll();
+    const features = this.getFeatures();
     let area = 0
     let lengthMeters = 0
     let lengthMiles = 0
     let lengthTerm = 'Perimeter'
     let featureType = 'Polygon'
-
-    let features = data.features.filter(
-      feature => {
-        try {
-          // @ts-ignore
-          return feature.geometry.coordinates[0][0] != null
-        } catch (err) {
-          return true
-        }
-      }
-    )
-    if (justSelected) {
-      const selected = this.draw.getSelectedIds()
-      features = data.features.filter(
-        (feature: any) => selected.includes(feature.id)
-      )
-    }
     if (!features.length) {
       return null
     }
@@ -251,13 +242,6 @@ export class MapDrawing {
             geom = point(feature.geometry.coordinates);
             break;
         }
-        // If it has buffer in km
-        if (buffer) {
-          geom = turfBufffer(geom, buffer, { units: 'kilometers' });
-          line = polygonToLine(geom);
-          lengthTerm = 'Perimeter';
-        }
-
         if (geom) {
           area += turfArea(geom)
           if (line) {
