@@ -28,7 +28,6 @@ export const DataGridFilter = (
     fields = [], filterModel = {}, setFilterModel
   }: DataGridFilterProps
 ) => {
-  console.log(fields)
   const [newFilterModel, setNewFilterModel] = useState<any>(filterModel)
   const [isFiltered, setIsFiltered] = useState<boolean>(false)
   fields.forEach(item => {

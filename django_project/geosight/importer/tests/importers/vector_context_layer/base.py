@@ -91,7 +91,7 @@ class BaseTest(BaseIndicatorValueImporterTest, BaseTestWithPatchResponses):
             PatchReqeust(
                 (
                     f'{self.georepo_url}/search/view/test/top'
-                    f'?page=1&page_size=50'
+                    f'?page=1&page_size=200'
                 ),
                 file_response=os.path.join(
                     self.responses_folder, 'georepo_entity_list.json'
