@@ -43,7 +43,7 @@ export const fetchFromAPIValues = async (
   data.append("geometries", JSON.stringify(geometries));
   data.append("aggregation_field", analysisLayer.aggregatedField);
   await DjangoRequests.post(
-    `/api/context-layer/${contextLayer.id}/zonal-analysis/${analysisLayer.aggregation.toLocaleLowerCase()}`,
+    `https://staging-geosight.unitst.org/api/context-layer/${contextLayer.id}/zonal-analysis/${analysisLayer.aggregation.toLocaleLowerCase()}`,
     data
   ).then(response => {
     value = parseFloat(response.data)
