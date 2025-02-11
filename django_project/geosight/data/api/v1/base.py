@@ -37,6 +37,8 @@ from geosight.permission.access.mixin import (
     edit_permission_resource
 )
 
+non_filtered_keys = ['page', 'page_size', 'fields', 'extra_fields']
+
 
 class BaseApiV1(FilteredAPI):
     """Base API V1."""
@@ -51,7 +53,7 @@ class BaseApiV1(FilteredAPI):
         """Return queryset of API."""
         query = self.queryset
         return self.filter_query(
-            self.request, query, ['page', 'page_size', 'fields'],
+            self.request, query, non_filtered_keys,
             sort=self.request.query_params.get('sort')
         )
 
@@ -73,6 +75,13 @@ class BaseApiV1(FilteredAPI):
             fields = self.request.GET.get('fields')
             if not fields:
                 kwargs['exclude'] = ['creator'] + self.extra_exclude_fields
+                extra_fields = self.request.GET.get('extra_fields')
+                if extra_fields:
+                    for extra_field in extra_fields.split(','):
+                        try:
+                            kwargs['exclude'].remove(extra_field)
+                        except Exception:
+                            pass
             elif fields != '__all__':
                 kwargs['fields'] = self.request.GET.get('fields').split(',')
 
@@ -121,7 +130,7 @@ class BaseApiV1ResourceReadOnly(BaseApiV1, viewsets.ReadOnlyModelViewSet):
         return self.filter_query(
             self.request, query,
             sort=self.request.query_params.get('sort'),
-            ignores=['page', 'page_size', 'fields']
+            ignores=non_filtered_keys
         )
 
     def retrieve(self, request, *args, **kwargs):

@@ -70,6 +70,10 @@ const ServerTable = forwardRef(
      ...props
    }: ServerTableProps, ref
   ) => {
+    // Last controller
+    const [lastController, setLastController] = useState(null);
+
+    // Confirm dialog
     const { openConfirmDialog } = useConfirmDialog();
     if (enable.filter) {
       const [filterModel, setFilterModel] = useState(defaults.filters);
@@ -184,29 +188,49 @@ const ServerTable = forwardRef(
       setData(null)
       setError(null)
       prev.current.url = _url
-      axios.get(_url, { headers: urlHeader }).then(data => {
+
+      // Get last request
+      if (lastController) {
+        lastController.abort();
+      }
+      const controller = new AbortController();
+      const { signal } = controller;
+      setLastController(controller);
+      const request = axios.get(
+        _url,
+        {
+          headers: urlHeader,
+          signal
+        }
+      ).then(data => {
         if (prev.current.url === _url) {
           if (data.data.count !== undefined) {
             setDataCount(data.data.count)
           } else {
+            // This is for if no data.data.count
             setDataCount(data.data.page_size * data.data.total_page)
           }
           setData(data.data.results)
         }
-      })
-        .catch(error => {
-          let errorString = error.toString()
-          if (error?.response?.data?.detail) {
-            errorString = error?.response?.data?.detail
-          } else if (error.message) {
-            errorString = error.message
-          }
-          if (errorString === 'Invalid page.') {
-            setParameters({ ...parameters, page: 0 })
-          } else {
-            setError(errorString)
-          }
-        })
+      }).catch(error => {
+        // Ignore if it is cancelled
+        if (error.name === "CanceledError") {
+          return
+        }
+
+        // Check error
+        let errorString = error.toString()
+        if (error?.response?.data?.detail) {
+          errorString = error?.response?.data?.detail
+        } else if (error.message) {
+          errorString = error.message
+        }
+        if (errorString === 'Invalid page.') {
+          setParameters({ ...parameters, page: 0 })
+        } else {
+          setError(errorString)
+        }
+      });
     }
     /*** When parameters changed */
     useEffect(() => {

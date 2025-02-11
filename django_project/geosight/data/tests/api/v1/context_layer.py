@@ -173,6 +173,35 @@ class ContextLayerPermissionTest(BasePermissionTest.TestCase):
             ]
         )
 
+    def test_list_api_extra_field(self):
+        """Test GET LIST API."""
+        # Test the all fields
+        url = reverse('context-layers-list') + '?fields=__all__'
+        response = self.assertRequestGetView(url, 200, user=self.admin)
+        self.assertEqual(len(response.json()['results']), 3)
+        for result in response.json()['results']:
+            self.assertIsNotNone(result['permission'])
+            result['styles']  # noqa
+
+        # Test the extra fields
+        url = reverse('context-layers-list') + '?extra_fields=permission'
+        response = self.assertRequestGetView(url, 200, user=self.admin)
+        self.assertEqual(len(response.json()['results']), 3)
+        for result in response.json()['results']:
+            self.assertIsNotNone(result['permission'])
+            with self.assertRaises(KeyError):
+                result['styles']  # noqa
+
+        # Test the extra fields
+        url = reverse('context-layers-list') + '?fields=styles,permission'
+        response = self.assertRequestGetView(url, 200, user=self.admin)
+        self.assertEqual(len(response.json()['results']), 3)
+        for result in response.json()['results']:
+            self.assertIsNotNone(result['permission'])
+            result['styles']  # noqa
+            with self.assertRaises(KeyError):
+                result['name']  # noqa
+
     def test_detail_api(self):
         """Test GET DETAIL API."""
         url = reverse('context-layers-detail', args=[self.resource_1.id])
