@@ -232,7 +232,7 @@ class GeorepoUrl:
 class GeorepoRequest:
     """Request to georepo."""
 
-    page_size = 50
+    page_size = 200
 
     def __init__(self):
         """Init Class."""
