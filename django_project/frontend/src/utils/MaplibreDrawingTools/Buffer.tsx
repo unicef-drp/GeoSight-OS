@@ -27,7 +27,8 @@ import {
   lineString,
   multiPolygon,
   point,
-  polygon
+  polygon,
+  simplify as turfSimplify
 } from "@turf/turf";
 import { dictDeepCopy } from "../main";
 
@@ -160,13 +161,13 @@ export class BufferDrawing {
     try {
       switch (feature.geometry.type) {
         case Variables.FEATURE_TYPE.MULTIPOLYGON:
-          geom = multiPolygon(feature.geometry.coordinates);
+          geom = multiPolygon(turfSimplify(feature.geometry, { tolerance: 0.5, highQuality: true }).coordinates);
           break;
         case Variables.FEATURE_TYPE.POLYGON:
-          geom = polygon(feature.geometry.coordinates);
+          geom = polygon(turfSimplify(feature.geometry, { tolerance: 0.5, highQuality: true }).coordinates);
           break;
         case Variables.FEATURE_TYPE.LINESTRING:
-          geom = lineString(feature.geometry.coordinates);
+          geom = lineString(turfSimplify(feature.geometry, { tolerance: 0.5, highQuality: true }).coordinates);
           break;
         case Variables.FEATURE_TYPE.POINT:
           geom = point(feature.geometry.coordinates);
