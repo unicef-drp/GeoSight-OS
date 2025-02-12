@@ -26,6 +26,7 @@ import maplibregl from 'maplibre-gl';
 import TextField from "@mui/material/TextField";
 import FormLabel from "@mui/material/FormLabel";
 import RadioGroup from "@mui/material/RadioGroup";
+import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from "@mui/material/FormControlLabel";
 import CancelIcon from "@mui/icons-material/Cancel";
 import AddLocationIcon from "@mui/icons-material/AddLocation";
@@ -397,27 +398,29 @@ export const ZonalAnalysisTool = forwardRef((
               }
             </RadioGroup>
           </FormControl>
-          <FormControl className='MuiForm-RadioGroup Buffer-Input'>
-            <FormLabel className="MuiInputLabel-root">Buffer:</FormLabel>
-            <TextField
-              disabled={!isAllAnalyzingDone}
-              value={bufferInput}
-              type="number"
-              onChange={(evt) => {
-                setBufferInput(parseInt(evt.target.value))
-                bufferChanged(parseInt(evt.target.value))
-              }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">km</InputAdornment>
-                ),
-              }}
-            />
-            {
-              bufferCalculating &&
-              <CircularProgress size={20} style={{ marginLeft: "0.5rem" }}/>
-            }
-          </FormControl>
+          <Tooltip title={'Geometries will be simplified before buffer is applied'} sx={{ fontSize: '16px' }}>
+            <FormControl className='MuiForm-RadioGroup Buffer-Input'>
+              <FormLabel className="MuiInputLabel-root">Buffer:</FormLabel>
+              <TextField
+                disabled={!isAllAnalyzingDone}
+                value={bufferInput}
+                type="number"
+                onChange={(evt) => {
+                  setBufferInput(parseInt(evt.target.value))
+                  bufferChanged(parseInt(evt.target.value))
+                }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">km</InputAdornment>
+                  ),
+                }}
+              />
+              {
+                bufferCalculating &&
+                <CircularProgress size={20} style={{ marginLeft: "0.5rem" }}/>
+              }
+            </FormControl>
+          </Tooltip>
           <div className="Separator"/>
           <div>
             <ThemeButton

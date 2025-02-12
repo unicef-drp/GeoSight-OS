@@ -170,7 +170,7 @@ export class BufferDrawing {
           geom = lineString(turfSimplify(feature.geometry, { tolerance: 0.5, highQuality: true }).coordinates);
           break;
         case Variables.FEATURE_TYPE.POINT:
-          geom = point(feature.geometry.coordinates);
+          geom = point(turfSimplify(feature.geometry, { tolerance: 0.5, highQuality: true }).coordinates);
           break;
       }
       // If it has buffer in km
