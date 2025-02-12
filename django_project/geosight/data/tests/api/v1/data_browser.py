@@ -129,7 +129,8 @@ class DataBrowserApiTest(BasePermissionTest.TestCase):
         ]
         for value in values:
             self.create_value(
-                value[0], value[1], value[2], value[3], value[4], value[5]
+                value[0], value[1], value[2], value[3], value[4], value[5],
+                value_str=value[4]
             )
 
     def create_resource(self, user):
@@ -152,22 +153,46 @@ class DataBrowserApiTest(BasePermissionTest.TestCase):
 
     def create_value(
             self, reference_layer: ReferenceLayerView, indicator: Indicator,
-            date_str,
-            admin_level, geom_id, value
+            date_str, admin_level, geom_id, value, value_str=None
     ):
         """Create Indicator Value."""
-        indicator.save_value(
+        val = indicator.save_value(
             datetime.strptime(date_str, '%Y-%m-%d'), geom_id, value,
             reference_layer, admin_level
         )
+        val.value_str = value_str
+        val.save()
 
     def get_resources(self, user):
         """Create resource function."""
         return ReferenceLayerIndicator.permissions.list(user).order_by('id')
 
+    def assert_ids(self, list_url, ids_url):
+        """List data-browser ids."""
+        user = self.admin
+        # admin
+        list_response = self.assertRequestGetView(
+            f'{list_url}', 200, user=user
+        )
+        list_response_ids = [
+            result['id'] for result in list_response.json()['results']
+        ]
+
+        response = self.assertRequestGetView(
+            f'{ids_url}',
+            200, user=user
+        )
+        response_ids = response.json()
+        response_ids.sort()
+        list_response_ids.sort()
+        self.assertEqual(
+            response_ids,
+            list_response_ids
+        )
+
     def test_list_api_by_admin(self):
         """Test List API."""
-        url = reverse('data-browser-api')
+        url = reverse('data-browser-list')
         self.assertRequestGetView(url, 403)
 
         # admin
@@ -230,7 +255,7 @@ class DataBrowserApiTest(BasePermissionTest.TestCase):
     def test_list_api_by_creator(self):
         """Test List API."""
         user = self.creator
-        url = reverse('data-browser-api')
+        url = reverse('data-browser-list')
 
         # admin
         response = self.assertRequestGetView(url, 200, user=user)
@@ -276,3 +301,32 @@ class DataBrowserApiTest(BasePermissionTest.TestCase):
             f'{url}?date__gte=2020-06-01', 200, user=user
         )
         self.assertEqual(len(response.json()['results']), 4)
+
+    def test_ids_api(self):
+        """Test List API Ids."""
+        list_url = reverse('data-browser-list')
+        url = reverse('data-browser-ids')
+
+        self.assert_ids(f'{list_url}?page_size=1000', f'{url}')
+        self.assert_ids(
+            f'{list_url}?admin_level__in=1',
+            f'{url}?admin_level__in=1'
+        )
+
+    def test_values_string_api(self):
+        """Test List API values_string."""
+        url = reverse('data-browser-values-string')
+        user = self.admin
+
+        response = self.assertRequestGetView(url, 200, user=user)
+        self.assertEqual(
+            response.json(),
+            ['A', 'AA', 'B', 'BA', 'C', 'E', 'EA', 'F', 'FA', 'G']
+        )
+        response = self.assertRequestGetView(
+            f'{url}?admin_level__in=1', 200, user=user
+        )
+        self.assertEqual(
+            response.json(),
+            ['A', 'B', 'C', 'E', 'F', 'G']
+        )

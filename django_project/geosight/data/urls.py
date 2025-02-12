@@ -194,11 +194,6 @@ indicator_api = [
         name='indicator-value-detail'
     ),
     url(
-        r'^(?P<pk>\d+)/values/flat/',
-        IndicatorValueValuesAPI.as_view(),
-        name='indicator-values-flat-list-api'
-    ),
-    url(
         r'^(?P<pk>\d+)/values/',
         IndicatorValueListAPI.as_view(), name='indicator-values-list-api'
     ),

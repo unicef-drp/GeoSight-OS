@@ -19,10 +19,9 @@ import json
 from django.core.exceptions import SuspiciousOperation
 from django.http import HttpResponseBadRequest
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import status
-from rest_framework.generics import ListAPIView
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from core.api_utils import common_api_params, ApiTag, ApiParams
 from core.utils import string_is_true
@@ -51,7 +50,9 @@ class BaseDataBrowserApiList(BaseDataApiList):
         )
 
 
-class DataBrowserApiList(BaseDataBrowserApiList, ListAPIView):
+class DataBrowserApiList(
+    BaseDataBrowserApiList, viewsets.ReadOnlyModelViewSet
+):
     """Return Data List API List."""
 
     @property
@@ -88,10 +89,10 @@ class DataBrowserApiList(BaseDataBrowserApiList, ListAPIView):
             ApiParams.DATE_TO,
         ]
     )
-    def get(self, request, *args, **kwargs):
-        """Browse indicator data."""
+    def list(self, request, *args, **kwargs):
+        """List of dashboard."""
         try:
-            return self.list(request, *args, **kwargs)
+            return super().list(request, *args, **kwargs)
         except SuspiciousOperation as e:
             return HttpResponseBadRequest(f'{e}')
 
@@ -186,13 +187,25 @@ class DataBrowserApiList(BaseDataBrowserApiList, ListAPIView):
                 value.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
-class DataBrowserApiListIds(APIView, BaseDataBrowserApiList):
-    """Return Just ids Data List."""
+    @swagger_auto_schema(auto_schema=None)
+    def retrieve(self, request, pk=None):
+        """Return detailed of code list."""
+        return super().retrieve(request, pk=pk)
 
     @swagger_auto_schema(auto_schema=None)
-    def get(self, request):
+    @action(detail=False, methods=['get'])
+    def ids(self, request):
         """Get ids of data."""
         return Response(
             self.get_queryset().values_list('id', flat=True)
+        )
+
+    @swagger_auto_schema(auto_schema=None)
+    @action(detail=False, methods=['get'])
+    def values_string(self, request):
+        """Get ids of data."""
+        return Response(
+            self.get_queryset().filter(value_str__isnull=False).values_list(
+                'value_str', flat=True
+            ).distinct().order_by('value_str')
         )
