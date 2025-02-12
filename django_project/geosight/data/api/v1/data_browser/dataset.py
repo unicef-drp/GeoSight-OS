@@ -262,11 +262,6 @@ class DatasetApiList(
         })
 
     @swagger_auto_schema(auto_schema=None)
-    def list(self, request, *args, **kwargs):
-        """List of dashboard."""
-        return super().list(request, *args, **kwargs)
-
-    @swagger_auto_schema(auto_schema=None)
     def retrieve(self, request, pk=None):
         """Return detailed of code list."""
         return super().retrieve(request, pk=pk)

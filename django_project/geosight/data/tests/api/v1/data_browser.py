@@ -330,3 +330,53 @@ class DataBrowserApiTest(BasePermissionTest.TestCase):
             response.json(),
             ['A', 'B', 'C', 'E', 'F', 'G']
         )
+
+    def test_values(self):
+        """Test List API values."""
+        url = reverse('data-browser-values')
+        user = self.admin
+
+        response = self.assertRequestGetView(url, 200, user=user)
+        self.assertEqual(
+            response.json(),
+            [
+                [3.0, 'E'], [4.0, 'EA'], [4.0, 'F'], [2.0, 'FA'], [3.0, 'A'],
+                [4.0, 'AA'], [4.0, 'B'], [2.0, 'BA'], [2.0, 'E'], [1.0, 'EA'],
+                [1.0, 'F'], [1.0, 'FA'], [3.0, 'G'], [2.0, 'A'], [1.0, 'AA'],
+                [1.0, 'B'], [1.0, 'BA'], [3.0, 'C'], [3.0, 'E'], [4.0, 'EA'],
+                [4.0, 'F'], [2.0, 'FA'], [2.0, 'E'], [1.0, 'EA'], [1.0, 'F'],
+                [1.0, 'FA'], [3.0, 'G'], [3.0, 'A'], [4.0, 'AA'], [4.0, 'B'],
+                [2.0, 'BA'], [2.0, 'A'], [1.0, 'AA'], [1.0, 'B'], [1.0, 'BA'],
+                [3.0, 'C']
+            ]
+        )
+        response = self.assertRequestGetView(
+            f'{url}?admin_level__in=1', 200, user=user
+        )
+        self.assertEqual(
+            response.json(),
+            [
+                [3.0, 'E'], [4.0, 'F'], [3.0, 'A'], [4.0, 'B'], [2.0, 'E'],
+                [1.0, 'F'], [3.0, 'G'], [2.0, 'A'], [1.0, 'B'], [3.0, 'C'],
+                [3.0, 'E'], [4.0, 'F'], [2.0, 'E'], [1.0, 'F'], [3.0, 'G'],
+                [3.0, 'A'], [4.0, 'B'], [2.0, 'A'], [1.0, 'B'], [3.0, 'C']
+            ]
+        )
+
+    def test_statistic(self):
+        """Test API statistic."""
+        url = reverse('data-browser-statistic')
+        user = self.admin
+
+        response = self.assertRequestGetView(url, 200, user=user)
+        self.assertEqual(
+            response.json(),
+            {'min': 1.0, 'max': 4.0, 'avg': 2.3333333333333335}
+        )
+        response = self.assertRequestGetView(
+            f'{url}?admin_level__in=1', 200, user=user
+        )
+        self.assertEqual(
+            response.json(),
+            {'min': 1.0, 'max': 4.0, 'avg': 2.6}
+        )

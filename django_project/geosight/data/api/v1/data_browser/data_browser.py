@@ -17,6 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 import json
 
 from django.core.exceptions import SuspiciousOperation
+from django.db.models import Min, Max, Avg
 from django.http import HttpResponseBadRequest
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets, status
@@ -203,9 +204,58 @@ class DataBrowserApiList(
     @swagger_auto_schema(auto_schema=None)
     @action(detail=False, methods=['get'])
     def values_string(self, request):
-        """Get ids of data."""
+        """Get value list of string of data."""
         return Response(
             self.get_queryset().filter(value_str__isnull=False).values_list(
                 'value_str', flat=True
             ).distinct().order_by('value_str')
         )
+
+    @swagger_auto_schema(auto_schema=None)
+    @action(detail=False, methods=['get'])
+    def values(self, request):
+        """Get values of data.
+
+        It returns list of [value, value_str]
+        """
+        return Response(
+            self.get_queryset().values_list('value', 'value_str').distinct()
+        )
+
+    @swagger_auto_schema(auto_schema=None)
+    @action(detail=False, methods=['get'])
+    def statistic(self, request):
+        """Get statistic of data.
+
+        It returns {min, max, avg}
+        """
+        statistic_keys = ['min', 'max', 'avg']
+        keys = request.GET.get(
+            'keys', ','.join(statistic_keys)
+        ).replace(' ', '').split(',')
+        if not keys:
+            return HttpResponseBadRequest(
+                f'keys is required. keys:{statistic_keys}'
+            )
+
+        query = self.get_queryset()
+        aggregation_dict = {}
+        for key in keys:
+            key = key.lower()
+            if key not in statistic_keys:
+                return HttpResponseBadRequest(
+                    f'{key} does not recognized. keys:{statistic_keys}'
+                )
+
+            # Update query
+            if key == 'min':
+                aggregation_dict['min'] = Min('value')
+            elif key == 'max':
+                aggregation_dict['max'] = Max('value')
+            elif key == 'avg':
+                aggregation_dict['avg'] = Avg('value')
+
+        if not aggregation_dict.keys():
+            return HttpResponseBadRequest('No aggregation found')
+
+        return Response(query.aggregate(**aggregation_dict))

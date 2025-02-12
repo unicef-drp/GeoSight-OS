@@ -56,8 +56,7 @@ from geosight.data.api.indicator_reference_layer import (
 from geosight.data.api.indicator_value import (
     IndicatorValuesByGeometry,
     IndicatorValueDetail,
-    IndicatorValueListAPI,
-    IndicatorValueValuesAPI,
+    IndicatorValueListAPI
 )
 from geosight.data.api.related_table import (
     RelatedTableListAPI, RelatedTableDetailAPI, RelatedTableDataAPI,
