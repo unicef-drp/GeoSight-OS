@@ -27,10 +27,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from shapely.geometry import shape
 from shapely.ops import unary_union
+from shapely import simplify
 
 from geosight.data.models.context_layer import ContextLayer, LayerType
 from geosight.data.serializer.context_layer import ContextLayerSerializer
-from geosight.data.utils import run_zonal_analysis
+from geosight.data.utils import run_zonal_analysis_raster
 from geosight.permission.access import (
     read_permission_resource,
     delete_permission_resource
@@ -99,13 +100,14 @@ class ContextLayerZonalAnalysisAPI(APIView):
         layer: ContextLayer = get_object_or_404(ContextLayer, pk=pk)
         geometries = [shape(geometry_data) for geometry_data in geometry_datas]
         geometries_combined = unary_union(geometries)
+        geometries_simplified = simplify(geometries_combined, tolerance=0.01)
 
         if layer.layer_type in [LayerType.RASTER_TILE, LayerType.RASTER_COG]:
             bbox = geometries_combined.bounds
             layer_path = layer.download_layer(original_name=True, bbox=bbox)
-            result = run_zonal_analysis(
+            result = run_zonal_analysis_raster(
                 layer_path,
-                geometries,
+                [geometries_simplified],
                 aggregation
             )
             if layer.layer_type == LayerType.RASTER_TILE:
@@ -125,7 +127,7 @@ class ContextLayerZonalAnalysisAPI(APIView):
                 if cloud_layer.layer_type == CloudNativeLayerType.VECTOR_TILE:
                     try:
                         result = run_zonal_analysis_vector_layer(
-                            geometry=geometries_combined,
+                            geometry=geometries_simplified,
                             layer=cloud_layer,
                             aggregation=aggregation,
                             aggregation_field=request.data[
