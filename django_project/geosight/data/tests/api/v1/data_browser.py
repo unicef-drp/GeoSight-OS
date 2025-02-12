@@ -340,14 +340,42 @@ class DataBrowserApiTest(BasePermissionTest.TestCase):
         self.assertEqual(
             response.json(),
             [
-                [3.0, 'E'], [4.0, 'EA'], [4.0, 'F'], [2.0, 'FA'], [3.0, 'A'],
-                [4.0, 'AA'], [4.0, 'B'], [2.0, 'BA'], [2.0, 'E'], [1.0, 'EA'],
-                [1.0, 'F'], [1.0, 'FA'], [3.0, 'G'], [2.0, 'A'], [1.0, 'AA'],
-                [1.0, 'B'], [1.0, 'BA'], [3.0, 'C'], [3.0, 'E'], [4.0, 'EA'],
-                [4.0, 'F'], [2.0, 'FA'], [2.0, 'E'], [1.0, 'EA'], [1.0, 'F'],
-                [1.0, 'FA'], [3.0, 'G'], [3.0, 'A'], [4.0, 'AA'], [4.0, 'B'],
-                [2.0, 'BA'], [2.0, 'A'], [1.0, 'AA'], [1.0, 'B'], [1.0, 'BA'],
-                [3.0, 'C']
+                {'date': '2020-06-01', 'value': 3.0, 'value_str': 'E'},
+                {'date': '2020-06-01', 'value': 4.0, 'value_str': 'EA'},
+                {'date': '2020-06-01', 'value': 4.0, 'value_str': 'F'},
+                {'date': '2020-06-01', 'value': 2.0, 'value_str': 'FA'},
+                {'date': '2020-05-01', 'value': 3.0, 'value_str': 'A'},
+                {'date': '2020-05-01', 'value': 4.0, 'value_str': 'AA'},
+                {'date': '2020-05-01', 'value': 4.0, 'value_str': 'B'},
+                {'date': '2020-05-01', 'value': 2.0, 'value_str': 'BA'},
+                {'date': '2020-05-01', 'value': 2.0, 'value_str': 'E'},
+                {'date': '2020-05-01', 'value': 1.0, 'value_str': 'EA'},
+                {'date': '2020-05-01', 'value': 1.0, 'value_str': 'F'},
+                {'date': '2020-05-01', 'value': 1.0, 'value_str': 'FA'},
+                {'date': '2020-05-01', 'value': 3.0, 'value_str': 'G'},
+                {'date': '2020-01-01', 'value': 2.0, 'value_str': 'A'},
+                {'date': '2020-01-01', 'value': 1.0, 'value_str': 'AA'},
+                {'date': '2020-01-01', 'value': 1.0, 'value_str': 'B'},
+                {'date': '2020-01-01', 'value': 1.0, 'value_str': 'BA'},
+                {'date': '2020-01-01', 'value': 3.0, 'value_str': 'C'},
+                {'date': '2020-07-01', 'value': 3.0, 'value_str': 'E'},
+                {'date': '2020-07-01', 'value': 4.0, 'value_str': 'EA'},
+                {'date': '2020-07-01', 'value': 4.0, 'value_str': 'F'},
+                {'date': '2020-07-01', 'value': 2.0, 'value_str': 'FA'},
+                {'date': '2020-06-01', 'value': 2.0, 'value_str': 'E'},
+                {'date': '2020-06-01', 'value': 1.0, 'value_str': 'EA'},
+                {'date': '2020-06-01', 'value': 1.0, 'value_str': 'F'},
+                {'date': '2020-06-01', 'value': 1.0, 'value_str': 'FA'},
+                {'date': '2020-06-01', 'value': 3.0, 'value_str': 'G'},
+                {'date': '2020-03-01', 'value': 3.0, 'value_str': 'A'},
+                {'date': '2020-03-01', 'value': 4.0, 'value_str': 'AA'},
+                {'date': '2020-03-01', 'value': 4.0, 'value_str': 'B'},
+                {'date': '2020-03-01', 'value': 2.0, 'value_str': 'BA'},
+                {'date': '2020-02-01', 'value': 2.0, 'value_str': 'A'},
+                {'date': '2020-02-01', 'value': 1.0, 'value_str': 'AA'},
+                {'date': '2020-02-01', 'value': 1.0, 'value_str': 'B'},
+                {'date': '2020-02-01', 'value': 1.0, 'value_str': 'BA'},
+                {'date': '2020-02-01', 'value': 3.0, 'value_str': 'C'}
             ]
         )
         response = self.assertRequestGetView(
@@ -356,10 +384,26 @@ class DataBrowserApiTest(BasePermissionTest.TestCase):
         self.assertEqual(
             response.json(),
             [
-                [3.0, 'E'], [4.0, 'F'], [3.0, 'A'], [4.0, 'B'], [2.0, 'E'],
-                [1.0, 'F'], [3.0, 'G'], [2.0, 'A'], [1.0, 'B'], [3.0, 'C'],
-                [3.0, 'E'], [4.0, 'F'], [2.0, 'E'], [1.0, 'F'], [3.0, 'G'],
-                [3.0, 'A'], [4.0, 'B'], [2.0, 'A'], [1.0, 'B'], [3.0, 'C']
+                {'date': '2020-06-01', 'value': 3.0, 'value_str': 'E'},
+                {'date': '2020-06-01', 'value': 4.0, 'value_str': 'F'},
+                {'date': '2020-05-01', 'value': 3.0, 'value_str': 'A'},
+                {'date': '2020-05-01', 'value': 4.0, 'value_str': 'B'},
+                {'date': '2020-05-01', 'value': 2.0, 'value_str': 'E'},
+                {'date': '2020-05-01', 'value': 1.0, 'value_str': 'F'},
+                {'date': '2020-05-01', 'value': 3.0, 'value_str': 'G'},
+                {'date': '2020-01-01', 'value': 2.0, 'value_str': 'A'},
+                {'date': '2020-01-01', 'value': 1.0, 'value_str': 'B'},
+                {'date': '2020-01-01', 'value': 3.0, 'value_str': 'C'},
+                {'date': '2020-07-01', 'value': 3.0, 'value_str': 'E'},
+                {'date': '2020-07-01', 'value': 4.0, 'value_str': 'F'},
+                {'date': '2020-06-01', 'value': 2.0, 'value_str': 'E'},
+                {'date': '2020-06-01', 'value': 1.0, 'value_str': 'F'},
+                {'date': '2020-06-01', 'value': 3.0, 'value_str': 'G'},
+                {'date': '2020-03-01', 'value': 3.0, 'value_str': 'A'},
+                {'date': '2020-03-01', 'value': 4.0, 'value_str': 'B'},
+                {'date': '2020-02-01', 'value': 2.0, 'value_str': 'A'},
+                {'date': '2020-02-01', 'value': 1.0, 'value_str': 'B'},
+                {'date': '2020-02-01', 'value': 3.0, 'value_str': 'C'}
             ]
         )
 

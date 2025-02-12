@@ -18,6 +18,7 @@ import json
 
 from django.core.exceptions import SuspiciousOperation
 from django.db.models import Min, Max, Avg
+from django.db.models.functions import ExtractDay, ExtractMonth, ExtractYear
 from django.http import HttpResponseBadRequest
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets, status
@@ -26,6 +27,7 @@ from rest_framework.response import Response
 
 from core.api_utils import common_api_params, ApiTag, ApiParams
 from core.utils import string_is_true
+from geosight.data.api.v1.base import non_filtered_keys
 from geosight.data.models.indicator import (
     Indicator, IndicatorValue, IndicatorValueRejectedError
 )
@@ -38,17 +40,30 @@ from .base import BaseDataApiList
 class BaseDataBrowserApiList(BaseDataApiList):
     """Return Data List API List."""
 
-    filter_query_exclude = [
-        'page', 'page_size', 'group_admin_level', 'detail'
+    filter_query_exclude = non_filtered_keys + [
+        'group_admin_level', 'detail', 'frequency'
     ]
 
-    def get_queryset(self):
-        """Return queryset of API."""
-        query = super().get_queryset()
-        ids = query.values_list('id', flat=True)
-        return IndicatorValue.objects.filter(id__in=list(ids)).order_by(
-            'indicator_id', '-date', 'geom_id'
-        )
+    def get_serializer(self, *args, **kwargs):
+        """Return the serializer instance."""
+        serializer_class = self.get_serializer_class()
+        kwargs.setdefault('context', self.get_serializer_context())
+
+        if self.action in ['list']:
+            fields = self.request.GET.get('fields')
+            if not fields:
+                kwargs['exclude'] = ['creator'] + self.extra_exclude_fields
+                extra_fields = self.request.GET.get('extra_fields')
+                if extra_fields:
+                    for extra_field in extra_fields.split(','):
+                        try:
+                            kwargs['exclude'].remove(extra_field)
+                        except Exception:
+                            pass
+            elif fields != '__all__':
+                kwargs['fields'] = self.request.GET.get('fields').split(',')
+
+        return serializer_class(*args, **kwargs)
 
 
 class DataBrowserApiList(
@@ -214,13 +229,53 @@ class DataBrowserApiList(
     @swagger_auto_schema(auto_schema=None)
     @action(detail=False, methods=['get'])
     def values(self, request):
-        """Get values of data.
+        """Get values of data."""
+        query = self.get_queryset()
 
-        It returns list of [value, value_str]
-        """
-        return Response(
-            self.get_queryset().values_list('value', 'value_str').distinct()
-        )
+        fields = request.GET.get(
+            'fields', 'date,value,value_str,entity_id'
+        ).replace(' ', '').split(',')
+
+        # If it has frequency
+        frequency = request.GET.get('frequency', None)
+        if frequency:
+            distinct = ['geom_id', 'entity_id']
+            if frequency.lower() == 'daily':
+                distinct.append('year')
+                distinct.append('month')
+                distinct.append('day')
+                query = query.annotate(
+                    day=ExtractDay('date'),
+                    month=ExtractMonth('date'),
+                    year=ExtractYear('date')
+                )
+            elif frequency.lower() == 'monthly':
+                distinct.append('year')
+                distinct.append('month')
+                query = query.annotate(
+                    month=ExtractMonth('date'),
+                    year=ExtractYear('date')
+                )
+            elif frequency.lower() == 'yearly':
+                distinct.append('year')
+                query = query.annotate(
+                    year=ExtractYear('date')
+                )
+            else:
+                return HttpResponseBadRequest(
+                    f'frequency {frequency} is not recognized. '
+                    f'frequency: daily, monthly, yearly'
+                )
+
+            # Request
+            order_by = ['-' + field for field in distinct]
+            order_by.append('-date')
+            query = query.order_by(
+                *[field for field in order_by]
+            ).distinct(*distinct).values(*distinct + fields)
+        else:
+            query = query.values(*fields).distinct()
+        return Response(query)
 
     @swagger_auto_schema(auto_schema=None)
     @action(detail=False, methods=['get'])
@@ -244,7 +299,7 @@ class DataBrowserApiList(
             key = key.lower()
             if key not in statistic_keys:
                 return HttpResponseBadRequest(
-                    f'{key} does not recognized. keys:{statistic_keys}'
+                    f'{key} is not recognized. keys:{statistic_keys}'
                 )
 
             # Update query

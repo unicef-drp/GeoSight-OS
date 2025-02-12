@@ -21,13 +21,14 @@ from django.conf import settings
 from drf_yasg import openapi
 from rest_framework import serializers
 
+from core.serializer.dynamic_serializer import DynamicModelSerializer
 from geosight.data.models.indicator import (
     IndicatorValue, IndicatorValueWithGeo, IndicatorExtraValue
 )
 from geosight.georepo.models.entity import Entity
 
 
-class IndicatorValueSerializer(serializers.ModelSerializer):
+class IndicatorValueSerializer(DynamicModelSerializer):
     """Serializer for IndicatorValue."""
 
     indicator = serializers.SerializerMethodField()
@@ -35,6 +36,7 @@ class IndicatorValueSerializer(serializers.ModelSerializer):
     indicator_shortcode = serializers.SerializerMethodField()
     value = serializers.SerializerMethodField()
     attributes = serializers.SerializerMethodField()
+    geometries = serializers.SerializerMethodField()
 
     def get_indicator(self, obj: IndicatorValue):
         """Return indicator name."""
@@ -56,13 +58,11 @@ class IndicatorValueSerializer(serializers.ModelSerializer):
         """Return attributes value of indicator."""
         return obj.attributes
 
-    def to_representation(self, instance: IndicatorValue):
-        """To representation of indicator value."""
-        data = super(IndicatorValueSerializer, self).to_representation(
-            instance)
+    def get_geometries(self, obj: IndicatorValue):
+        """Return geometries value of indicator."""
         geometries = []
         try:
-            entity_id = instance.entity_id
+            entity_id = obj.entity_id
             entity = Entity.objects.get(id=entity_id)
             for reference_layer in entity.reference_layer_set.all():
                 if not reference_layer:
@@ -75,8 +75,7 @@ class IndicatorValueSerializer(serializers.ModelSerializer):
                 })
         except Entity.DoesNotExist:
             pass
-        data['geometries'] = geometries
-        return data
+        return geometries
 
     class Meta:  # noqa: D106
         model = IndicatorValue
