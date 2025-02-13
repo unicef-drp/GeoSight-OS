@@ -47,6 +47,7 @@ class TestRasterZonalAnalysis(BasePermissionTest.TestCase):
         )
 
     @patch('requests.get')
+    @patch('uuid.uuid4')
     def _send_request(self, url, mock_get):
         client = self.test_client()
         data = {

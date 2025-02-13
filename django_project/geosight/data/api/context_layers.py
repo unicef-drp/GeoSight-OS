@@ -14,31 +14,22 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-import uuid
 import json
-import os
 
-from cloud_native_gis.models.layer import LayerType as CloudNativeLayerType
-from django.conf import settings
-from django.db.utils import ProgrammingError
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from shapely.geometry import shape
-from shapely.ops import unary_union
-from shapely import simplify
 
 from core.utils import compress_text
-from geosight.data.models.context_layer import ContextLayer, LayerType, ZonalAnalysis
+from geosight.data.models.context_layer import ContextLayer, ZonalAnalysis
 from geosight.data.serializer.context_layer import ContextLayerSerializer
-from geosight.data.utils import run_zonal_analysis_raster
+from geosight.data.tasks.zonal_analysis import run_zonal_analysis
 from geosight.permission.access import (
     read_permission_resource,
     delete_permission_resource
 )
-from geosight.data.tasks.zonal_analysis import run_zonal_analysis
 
 
 class ContextLayerListAPI(APIView):
