@@ -1,5 +1,5 @@
 from .common import download_file_from_url
-from .raster import run_zonal_analysis_raster, ClassifyRasterData
+from .raster import run_zonal_analysis, ClassifyRasterData
 from .utils import (
     sizeof_fmt,
     path_to_dict,

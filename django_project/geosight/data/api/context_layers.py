@@ -31,7 +31,7 @@ from shapely import simplify
 
 from geosight.data.models.context_layer import ContextLayer, LayerType
 from geosight.data.serializer.context_layer import ContextLayerSerializer
-from geosight.data.utils import run_zonal_analysis_raster
+from geosight.data.utils import run_zonal_analysis
 from geosight.permission.access import (
     read_permission_resource,
     delete_permission_resource
@@ -105,7 +105,7 @@ class ContextLayerZonalAnalysisAPI(APIView):
         if layer.layer_type in [LayerType.RASTER_TILE, LayerType.RASTER_COG]:
             bbox = geometries_combined.bounds
             layer_path = layer.download_layer(original_name=True, bbox=bbox)
-            result = run_zonal_analysis_raster(
+            result = run_zonal_analysis(
                 layer_path,
                 [geometries_simplified],
                 aggregation
