@@ -15,6 +15,7 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import copy
+import uuid
 from unittest.mock import MagicMock, patch
 
 from django.contrib.auth import get_user_model
@@ -48,7 +49,9 @@ class TestRasterZonalAnalysis(BasePermissionTest.TestCase):
 
     @patch('requests.get')
     @patch('uuid.uuid4')
-    def _send_request(self, url, mock_get):
+    def _send_request(self, url, mock_uuid4, mock_get):
+        mocked_uuid = uuid.UUID("12345678-1234-5678-1234-567812345678")
+        mock_uuid4.return_value = mocked_uuid
         client = self.test_client()
         data = {
             'geometries': '[{"type":"Polygon","coordinates":[[[45.19738527596081,4.554035332048031],[45.90987617833042,4.260083544521251],[45.09911066873855,3.9905288280847344],[45.19738527596081,4.554035332048031]]]},{"type":"Polygon","coordinates":[[[46.74521033972894,6.021839943659998],[47.18744607223496,5.5329643557698205],[46.597798428894464,5.4840539720461265],[46.74521033972894,6.021839943659998]]]}]' # noqa E501
