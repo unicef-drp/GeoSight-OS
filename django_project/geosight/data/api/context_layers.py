@@ -14,6 +14,7 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import uuid
 import json
 
 from django.http import HttpResponseBadRequest
@@ -84,7 +85,6 @@ class ContextLayerZonalAnalysisAPI(APIView):
 
     def post(self, request, pk, aggregation='sum'):
         """Run zonal analysis."""
-        print(request.data.keys())
         try:
             geometry_datas = json.loads(request.data.get('geometries'))
         except TypeError:
@@ -96,6 +96,7 @@ class ContextLayerZonalAnalysisAPI(APIView):
         aggregation_field = request.data.get('aggregation_field', None)
 
         zonal_analysis = ZonalAnalysis.objects.create(
+            uuid=uuid.uuid4(),
             context_layer=layer,
             aggregation=aggregation,
             aggregation_field=aggregation_field,
@@ -103,7 +104,7 @@ class ContextLayerZonalAnalysisAPI(APIView):
         )
         run_zonal_analysis.delay(zonal_analysis.uuid)
 
-        return Response({'uuid': zonal_analysis.uuid})
+        return Response({'uuid': zonal_analysis.uuid.hex})
 
 
 class ZonalAnalysisResultAPI(APIView):

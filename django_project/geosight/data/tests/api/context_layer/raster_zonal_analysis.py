@@ -18,11 +18,12 @@ import copy
 import uuid
 from unittest.mock import MagicMock, patch
 
+from django.db.models.fields import uuid as django_uuid
 from django.contrib.auth import get_user_model
 from django.test.client import MULTIPART_CONTENT
 from django.urls import reverse
 
-from geosight.data.models.context_layer import ContextLayer, LayerType
+from geosight.data.models.context_layer import ContextLayer, LayerType, ZonalAnalysis
 from geosight.permission.tests._base import BasePermissionTest
 
 User = get_user_model()
@@ -92,7 +93,19 @@ class TestRasterZonalAnalysis(BasePermissionTest.TestCase):
             args=[self.resource.id, 'sum']
         )
         response = self._send_request(url)
-        self.assertEqual(float(response.content.decode('utf-8')), 364.2109375)
+        self.assertEqual(
+            response.data,
+            {
+                'uuid': '12345678123456781234567812345678'
+            }
+        )
+        zonal_analysis = ZonalAnalysis.objects.filter(
+            uuid=response.data['uuid'],
+            context_layer_id=self.resource.id,
+            aggregation='sum',
+            aggregation_field__isnull=True,
+        )
+        self.assertTrue(zonal_analysis.exists())
 
     def test_context_layer_avg(self):
         """Test zonal analysis average for raster context layer."""
@@ -102,9 +115,18 @@ class TestRasterZonalAnalysis(BasePermissionTest.TestCase):
         )
         response = self._send_request(url)
         self.assertEqual(
-            float(response.content.decode('utf-8')),
-            13.007533073425293
+            response.data,
+            {
+                'uuid': '12345678123456781234567812345678'
+            }
         )
+        zonal_analysis = ZonalAnalysis.objects.filter(
+            uuid=response.data['uuid'],
+            context_layer_id=self.resource.id,
+            aggregation='avg',
+            aggregation_field__isnull=True,
+        )
+        self.assertTrue(zonal_analysis.exists())
 
     def test_context_layer_min(self):
         """Test zonal analysis min for raster context layer."""
@@ -113,7 +135,19 @@ class TestRasterZonalAnalysis(BasePermissionTest.TestCase):
             args=[self.resource.id, 'min']
         )
         response = self._send_request(url)
-        self.assertEqual(float(response.content.decode('utf-8')), 10.3984375)
+        self.assertEqual(
+            response.data,
+            {
+                'uuid': '12345678123456781234567812345678'
+            }
+        )
+        zonal_analysis = ZonalAnalysis.objects.filter(
+            uuid=response.data['uuid'],
+            context_layer_id=self.resource.id,
+            aggregation='min',
+            aggregation_field__isnull=True,
+        )
+        self.assertTrue(zonal_analysis.exists())
 
     def test_context_layer_max(self):
         """Test zonal analysis max for raster context layer."""
@@ -122,7 +156,19 @@ class TestRasterZonalAnalysis(BasePermissionTest.TestCase):
             args=[self.resource.id, 'max']
         )
         response = self._send_request(url)
-        self.assertEqual(float(response.content.decode('utf-8')), 15.0)
+        self.assertEqual(
+            response.data,
+            {
+                'uuid': '12345678123456781234567812345678'
+            }
+        )
+        zonal_analysis = ZonalAnalysis.objects.filter(
+            uuid=response.data['uuid'],
+            context_layer_id=self.resource.id,
+            aggregation='max',
+            aggregation_field__isnull=True,
+        )
+        self.assertTrue(zonal_analysis.exists())
 
     def test_context_layer_count(self):
         """Test zonal analysis count for raster context layer."""
@@ -131,4 +177,16 @@ class TestRasterZonalAnalysis(BasePermissionTest.TestCase):
             args=[self.resource.id, 'count']
         )
         response = self._send_request(url)
-        self.assertEqual(int(response.content.decode('utf-8')), 28)
+        self.assertEqual(
+            response.data,
+            {
+                'uuid': '12345678123456781234567812345678'
+            }
+        )
+        zonal_analysis = ZonalAnalysis.objects.filter(
+            uuid=response.data['uuid'],
+            context_layer_id=self.resource.id,
+            aggregation='count',
+            aggregation_field__isnull=True,
+        )
+        self.assertTrue(zonal_analysis.exists())
