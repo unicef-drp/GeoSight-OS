@@ -31,8 +31,16 @@ import {
   simplify as turfSimplify
 } from "@turf/turf";
 import { dictDeepCopy } from "../main";
+import bufferGeos from './bufferGeos';
+import initGeosJs from 'geos-wasm';
 
 const drawingBufferId = 'DRAWING_BUFFER_ID'
+
+let geos: any = null; // Global variable to store GEOS instance
+
+initGeosJs().then((instance: any) => {
+    geos = instance;
+});
 
 
 export class BufferDrawing {
@@ -175,7 +183,8 @@ export class BufferDrawing {
       }
       // If it has buffer in km
       if (geom && buffer) {
-        geom = turfBufffer(geom, buffer, { units: 'kilometers', steps: 8 });
+        // geom = turfBufffer(geom, buffer, { units: 'kilometers', steps: 8 });
+        geom = bufferGeos(geom, buffer, {GEOS: geos});
       }
       geom.id = feature.id
       return geom
