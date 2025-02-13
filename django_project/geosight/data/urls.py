@@ -22,7 +22,10 @@ from geosight.data.api.basemap import (
     BasemapListAPI, BasemapDetailAPI
 )
 from geosight.data.api.context_layers import (
-    ContextLayerListAPI, ContextLayerDetailAPI, ContextLayerZonalAnalysisAPI
+    ContextLayerListAPI,
+    ContextLayerDetailAPI,
+    ContextLayerZonalAnalysisAPI,
+    ZonalAnalysisResultAPI
 )
 from geosight.data.api.dashboard import (
     DashboardData, DashboardDuplicate, DashboardDetail, DashboardListAPI
@@ -257,6 +260,11 @@ context_layer_api = [
         r'^(?P<pk>\d+)/zonal-analysis/(?P<aggregation>[a-zA-Z0-9_-]+)',
         ContextLayerZonalAnalysisAPI.as_view(),
         name='context-layer-zonal-analysis'
+    ),
+    url(
+        r'zonal-analysis/(?P<analysis_uuid>[a-zA-Z0-9_-]+)',
+        ZonalAnalysisResultAPI.as_view(),
+        name='zonal-analysis-result'
     ),
     url(
         r'^(?P<pk>\d+)',

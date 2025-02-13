@@ -425,3 +425,61 @@ class ContextLayerField(FieldLayerAbstract):
 
     def __str__(self):
         return f'{self.name}'
+
+
+class ZonalAnalysis(AbstractEditData):
+    """Class for Zonal Analysis."""
+
+    class AnalysisStatus(models.TextChoices):
+        """Choices of analysis status."""
+
+        PENDING = 'PENDING', _('PENDING')
+        RUNNING = 'RUNNING', _('RUNNING')
+        SUCCESS = 'SUCCESS', _('SUCCESS')
+        FAILED = 'FAILED', _('FAILED')
+
+    uuid = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False
+    )
+    context_layer = models.ForeignKey(
+        ContextLayer,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
+    aggregation = models.CharField(
+        max_length=10,
+        null=True,
+        blank=False
+    )
+    aggregation_field = models.CharField(
+        max_length=25,
+        null=True,
+        blank=False
+    )
+    geom_compressed = models.TextField()
+    status = models.CharField(
+        choices=AnalysisStatus.choices,
+        default=AnalysisStatus.PENDING,
+        max_length=10
+    )
+    result = models.TextField()
+
+    def failed(self, message: status):
+        self.status = ZonalAnalysis.AnalysisStatus.FAILED
+        self.result = message
+        self.save()
+        return self
+
+    def success(self, result: status):
+        self.status = ZonalAnalysis.AnalysisStatus.SUCCESS
+        self.result = result
+        self.save()
+        return self
+
+    def running(self):
+        self.status = ZonalAnalysis.AnalysisStatus.RUNNING
+        self.save()
+

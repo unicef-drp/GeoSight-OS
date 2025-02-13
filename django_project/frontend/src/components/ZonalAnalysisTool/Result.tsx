@@ -48,9 +48,18 @@ export const ZonalAnalysisResult = forwardRef((
     // @ts-ignore
     const { contextLayers } = useSelector(state => state.dashboard.data)
     const [data, setData] = useState<object[]>(null);
-    const [value, setValue] = useState<number>(null);
+    const [value, setValue] = useState<string>('-');
     const [error, setError] = useState<string>(null);
     const contextLayer = contextLayers.find((ctx: ContextLayer) => ctx.id === analysisLayer.id)
+
+    let shownValue = '-'
+    if (isNaN(value as any)) {
+      if (value.length > 0) {
+        shownValue = value
+      }
+    } else if (![null, NaN].includes(value as any)) {
+       shownValue = numberWithCommas(parseFloat(value), getAreaDecimalLength(parseFloat(value)))
+    }
 
     useEffect(() => {
       if (!(value == null && error == null)) {
@@ -72,6 +81,7 @@ export const ZonalAnalysisResult = forwardRef((
                 features
               }
             ))
+            console.log('after set value')
           } catch (err) {
             setError(err.toString());
             return;
@@ -84,7 +94,7 @@ export const ZonalAnalysisResult = forwardRef((
         let data = values
         if (analysisLayer.aggregation !== AGGREGATION_TYPES.COUNT) {
           // @ts-ignore
-          data = values.map((value: object) => value[analysisLayer.aggregatedField]).filter(value => value !== undefined)
+          data = values.map((val: object) => val[analysisLayer.aggregatedField]).filter(val => val !== undefined)
         }
         setData(data)
         // @ts-ignore
@@ -156,8 +166,8 @@ export const ZonalAnalysisResult = forwardRef((
           {
             isAnalyzing ? <i>Loading</i> : error ?
               <i className='Error'>
-                {error}
-              </i> : ![null, NaN].includes(value) ? numberWithCommas(value, getAreaDecimalLength(value)) : '-'
+                {error}value
+              </i> : shownValue
           }
         </td>
       </tr>

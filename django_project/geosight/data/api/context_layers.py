@@ -14,6 +14,7 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import uuid
 import json
 import os
 
@@ -29,13 +30,15 @@ from shapely.geometry import shape
 from shapely.ops import unary_union
 from shapely import simplify
 
-from geosight.data.models.context_layer import ContextLayer, LayerType
+from core.utils import compress_text
+from geosight.data.models.context_layer import ContextLayer, LayerType, ZonalAnalysis
 from geosight.data.serializer.context_layer import ContextLayerSerializer
 from geosight.data.utils import run_zonal_analysis_raster
 from geosight.permission.access import (
     read_permission_resource,
     delete_permission_resource
 )
+from geosight.data.tasks.zonal_analysis import run_zonal_analysis
 
 
 class ContextLayerListAPI(APIView):
@@ -90,6 +93,7 @@ class ContextLayerZonalAnalysisAPI(APIView):
 
     def post(self, request, pk, aggregation='sum'):
         """Run zonal analysis."""
+        print(request.data.keys())
         try:
             geometry_datas = json.loads(request.data.get('geometries'))
         except TypeError:
@@ -97,49 +101,35 @@ class ContextLayerZonalAnalysisAPI(APIView):
                 'geometries is empty or not valid JSON'
             )
 
-        layer: ContextLayer = get_object_or_404(ContextLayer, pk=pk)
-        geometries = [shape(geometry_data) for geometry_data in geometry_datas]
-        geometries_combined = unary_union(geometries)
-        geometries_simplified = simplify(geometries_combined, tolerance=0.01)
+        layer = get_object_or_404(ContextLayer, pk=pk)
+        aggregation_field = request.data.get('aggregation_field', None)
 
-        if layer.layer_type in [LayerType.RASTER_TILE, LayerType.RASTER_COG]:
-            bbox = geometries_combined.bounds
-            layer_path = layer.download_layer(original_name=True, bbox=bbox)
-            result = run_zonal_analysis_raster(
-                layer_path,
-                [geometries_simplified],
-                aggregation
-            )
-            if layer.layer_type == LayerType.RASTER_TILE:
-                os.remove(layer_path)
-            return Response(result)
+        zonal_analysis = ZonalAnalysis.objects.create(
+            context_layer=layer,
+            aggregation=aggregation,
+            aggregation_field=aggregation_field,
+            geom_compressed=compress_text(json.dumps(geometry_datas)),
+        )
+        run_zonal_analysis.delay(zonal_analysis.uuid)
 
-        # For cloud native GIS
-        elif layer.layer_type == LayerType.CLOUD_NATIVE_GIS_LAYER:
-            if settings.CLOUD_NATIVE_GIS_ENABLED:
-                from geosight.cloud_native_gis.utils import (
-                    run_zonal_analysis_vector_layer
-                )
-                from cloud_native_gis.models.layer import Layer
-                cloud_layer = get_object_or_404(
-                    Layer, pk=layer.cloud_native_gis_layer_id
-                )
-                if cloud_layer.layer_type == CloudNativeLayerType.VECTOR_TILE:
-                    try:
-                        result = run_zonal_analysis_vector_layer(
-                            geometry=geometries_simplified,
-                            layer=cloud_layer,
-                            aggregation=aggregation,
-                            aggregation_field=request.data[
-                                'aggregation_field'
-                            ],
-                        )
-                        return Response(result)
-                    except KeyError as e:
-                        return HttpResponseBadRequest(
-                            f'{e} is required in payload'
-                        )
-                    except (ProgrammingError, ValueError) as e:
-                        return HttpResponseBadRequest(f'{e}')
+        return Response({'uuid': zonal_analysis.uuid})
 
-        return HttpResponseBadRequest('Unsupported layer type')
+
+class ZonalAnalysisResultAPI(APIView):
+    """Fetch Zonal Analysis results."""
+
+    def get(self, request, analysis_uuid):
+        """Get zonal analysis result."""
+        analysis: ZonalAnalysis = get_object_or_404(ZonalAnalysis, uuid=analysis_uuid)
+        response = {
+            'status': analysis.status,
+            'result': analysis.result,
+        }
+
+        # if analysis has finished, delete it.
+        if analysis.status in [
+            ZonalAnalysis.AnalysisStatus.SUCCESS,
+            ZonalAnalysis.AnalysisStatus.FAILED
+        ]:
+            analysis.delete()
+        return Response(response)
