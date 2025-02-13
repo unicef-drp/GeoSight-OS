@@ -233,13 +233,14 @@ class DataBrowserApiList(
         query = self.get_queryset()
 
         fields = request.GET.get(
-            'fields', 'date,value,value_str,entity_id'
+            'fields',
+            'date, value, value_str, entity_id, indicator_id'
         ).replace(' ', '').split(',')
 
         # If it has frequency
         frequency = request.GET.get('frequency', None)
         if frequency:
-            distinct = ['geom_id', 'entity_id']
+            distinct = ['geom_id', 'entity_id', 'indicator_id']
             if frequency.lower() == 'daily':
                 distinct.append('year')
                 distinct.append('month')
@@ -274,7 +275,7 @@ class DataBrowserApiList(
                 *[field for field in order_by]
             ).distinct(*distinct).values(*distinct + fields)
         else:
-            query = query.values(*fields).distinct()
+            query = query.order_by('-date', 'id').values(*fields)
         return Response(query)
 
     @swagger_auto_schema(auto_schema=None)

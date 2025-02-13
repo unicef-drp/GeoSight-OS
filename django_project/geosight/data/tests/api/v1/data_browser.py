@@ -336,74 +336,78 @@ class DataBrowserApiTest(BasePermissionTest.TestCase):
         url = reverse('data-browser-values')
         user = self.admin
 
-        response = self.assertRequestGetView(url, 200, user=user)
+        response = self.assertRequestGetView(
+            url + '?fields=date, value, value_str', 200, user=user
+        )
         self.assertEqual(
             response.json(),
             [
+                {'date': '2020-07-01', 'value': 3.0, 'value_str': 'E'},
+                {'date': '2020-07-01', 'value': 4.0, 'value_str': 'F'},
+                {'date': '2020-07-01', 'value': 4.0, 'value_str': 'EA'},
+                {'date': '2020-07-01', 'value': 2.0, 'value_str': 'FA'},
                 {'date': '2020-06-01', 'value': 3.0, 'value_str': 'E'},
-                {'date': '2020-06-01', 'value': 4.0, 'value_str': 'EA'},
                 {'date': '2020-06-01', 'value': 4.0, 'value_str': 'F'},
+                {'date': '2020-06-01', 'value': 4.0, 'value_str': 'EA'},
                 {'date': '2020-06-01', 'value': 2.0, 'value_str': 'FA'},
+                {'date': '2020-06-01', 'value': 2.0, 'value_str': 'E'},
+                {'date': '2020-06-01', 'value': 1.0, 'value_str': 'F'},
+                {'date': '2020-06-01', 'value': 3.0, 'value_str': 'G'},
+                {'date': '2020-06-01', 'value': 1.0, 'value_str': 'EA'},
+                {'date': '2020-06-01', 'value': 1.0, 'value_str': 'FA'},
                 {'date': '2020-05-01', 'value': 3.0, 'value_str': 'A'},
-                {'date': '2020-05-01', 'value': 4.0, 'value_str': 'AA'},
                 {'date': '2020-05-01', 'value': 4.0, 'value_str': 'B'},
+                {'date': '2020-05-01', 'value': 4.0, 'value_str': 'AA'},
                 {'date': '2020-05-01', 'value': 2.0, 'value_str': 'BA'},
                 {'date': '2020-05-01', 'value': 2.0, 'value_str': 'E'},
-                {'date': '2020-05-01', 'value': 1.0, 'value_str': 'EA'},
                 {'date': '2020-05-01', 'value': 1.0, 'value_str': 'F'},
-                {'date': '2020-05-01', 'value': 1.0, 'value_str': 'FA'},
                 {'date': '2020-05-01', 'value': 3.0, 'value_str': 'G'},
-                {'date': '2020-01-01', 'value': 2.0, 'value_str': 'A'},
-                {'date': '2020-01-01', 'value': 1.0, 'value_str': 'AA'},
-                {'date': '2020-01-01', 'value': 1.0, 'value_str': 'B'},
-                {'date': '2020-01-01', 'value': 1.0, 'value_str': 'BA'},
-                {'date': '2020-01-01', 'value': 3.0, 'value_str': 'C'},
-                {'date': '2020-07-01', 'value': 3.0, 'value_str': 'E'},
-                {'date': '2020-07-01', 'value': 4.0, 'value_str': 'EA'},
-                {'date': '2020-07-01', 'value': 4.0, 'value_str': 'F'},
-                {'date': '2020-07-01', 'value': 2.0, 'value_str': 'FA'},
-                {'date': '2020-06-01', 'value': 2.0, 'value_str': 'E'},
-                {'date': '2020-06-01', 'value': 1.0, 'value_str': 'EA'},
-                {'date': '2020-06-01', 'value': 1.0, 'value_str': 'F'},
-                {'date': '2020-06-01', 'value': 1.0, 'value_str': 'FA'},
-                {'date': '2020-06-01', 'value': 3.0, 'value_str': 'G'},
+                {'date': '2020-05-01', 'value': 1.0, 'value_str': 'EA'},
+                {'date': '2020-05-01', 'value': 1.0, 'value_str': 'FA'},
                 {'date': '2020-03-01', 'value': 3.0, 'value_str': 'A'},
-                {'date': '2020-03-01', 'value': 4.0, 'value_str': 'AA'},
                 {'date': '2020-03-01', 'value': 4.0, 'value_str': 'B'},
+                {'date': '2020-03-01', 'value': 4.0, 'value_str': 'AA'},
                 {'date': '2020-03-01', 'value': 2.0, 'value_str': 'BA'},
                 {'date': '2020-02-01', 'value': 2.0, 'value_str': 'A'},
-                {'date': '2020-02-01', 'value': 1.0, 'value_str': 'AA'},
                 {'date': '2020-02-01', 'value': 1.0, 'value_str': 'B'},
+                {'date': '2020-02-01', 'value': 3.0, 'value_str': 'C'},
+                {'date': '2020-02-01', 'value': 1.0, 'value_str': 'AA'},
                 {'date': '2020-02-01', 'value': 1.0, 'value_str': 'BA'},
-                {'date': '2020-02-01', 'value': 3.0, 'value_str': 'C'}
+                {'date': '2020-01-01', 'value': 2.0, 'value_str': 'A'},
+                {'date': '2020-01-01', 'value': 1.0, 'value_str': 'B'},
+                {'date': '2020-01-01', 'value': 3.0, 'value_str': 'C'},
+                {'date': '2020-01-01', 'value': 1.0, 'value_str': 'AA'},
+                {'date': '2020-01-01', 'value': 1.0, 'value_str': 'BA'}
             ]
         )
         response = self.assertRequestGetView(
-            f'{url}?admin_level__in=1', 200, user=user
+            f'{url}?fields=date, value, value_str&admin_level__in=1',
+            200,
+            user=user
         )
         self.assertEqual(
             response.json(),
             [
+                {'date': '2020-07-01', 'value': 3.0, 'value_str': 'E'},
+                {'date': '2020-07-01', 'value': 4.0, 'value_str': 'F'},
                 {'date': '2020-06-01', 'value': 3.0, 'value_str': 'E'},
                 {'date': '2020-06-01', 'value': 4.0, 'value_str': 'F'},
+                {'date': '2020-06-01', 'value': 2.0, 'value_str': 'E'},
+                {'date': '2020-06-01', 'value': 1.0, 'value_str': 'F'},
+                {'date': '2020-06-01', 'value': 3.0, 'value_str': 'G'},
                 {'date': '2020-05-01', 'value': 3.0, 'value_str': 'A'},
                 {'date': '2020-05-01', 'value': 4.0, 'value_str': 'B'},
                 {'date': '2020-05-01', 'value': 2.0, 'value_str': 'E'},
                 {'date': '2020-05-01', 'value': 1.0, 'value_str': 'F'},
                 {'date': '2020-05-01', 'value': 3.0, 'value_str': 'G'},
-                {'date': '2020-01-01', 'value': 2.0, 'value_str': 'A'},
-                {'date': '2020-01-01', 'value': 1.0, 'value_str': 'B'},
-                {'date': '2020-01-01', 'value': 3.0, 'value_str': 'C'},
-                {'date': '2020-07-01', 'value': 3.0, 'value_str': 'E'},
-                {'date': '2020-07-01', 'value': 4.0, 'value_str': 'F'},
-                {'date': '2020-06-01', 'value': 2.0, 'value_str': 'E'},
-                {'date': '2020-06-01', 'value': 1.0, 'value_str': 'F'},
-                {'date': '2020-06-01', 'value': 3.0, 'value_str': 'G'},
                 {'date': '2020-03-01', 'value': 3.0, 'value_str': 'A'},
                 {'date': '2020-03-01', 'value': 4.0, 'value_str': 'B'},
                 {'date': '2020-02-01', 'value': 2.0, 'value_str': 'A'},
                 {'date': '2020-02-01', 'value': 1.0, 'value_str': 'B'},
-                {'date': '2020-02-01', 'value': 3.0, 'value_str': 'C'}
+                {'date': '2020-02-01', 'value': 3.0, 'value_str': 'C'},
+                {'date': '2020-01-01', 'value': 2.0, 'value_str': 'A'},
+                {'date': '2020-01-01', 'value': 1.0, 'value_str': 'B'},
+                {'date': '2020-01-01', 'value': 3.0, 'value_str': 'C'}
             ]
         )
 
