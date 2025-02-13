@@ -11,6 +11,9 @@ import {
 import { geojsonToGeosGeom, geosGeomToGeojson } from 'geos-wasm/helpers'
 let GEOSFunctions
 
+// Code taken from geos-wasm buffer documentation:
+// https://chrispahm.github.io/geos-wasm/examples/buffer.html
+
 /**
  * Calculates a buffer for input features for a given radius. Units supported are miles, kilometers, and degrees.
  *

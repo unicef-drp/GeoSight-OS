@@ -22,7 +22,6 @@ function pollZonalAnalysis(analysisUUID: string, interval = 5000, maxRetries = 1
     let result
 
     const checkStatus = async () => {
-      console.log(`check status: ${analysisUUID}`)
       await DjangoRequests.get(
         `/api/context-layer/zonal-analysis/${analysisUUID}`,
       ).then(response => {
@@ -33,7 +32,6 @@ function pollZonalAnalysis(analysisUUID: string, interval = 5000, maxRetries = 1
           resolve(result)
         } else if (attempts >= maxRetries) {
           result = 'Max retries reached. Stopping polling.';
-          console.log(result);
           clearInterval(polling);
           resolve(result)
         } else if (data.status === "FAILED") {
@@ -80,7 +78,6 @@ export const fetchFromAPIValues = async (
   let data = new FormData();
   data.append("geometries", JSON.stringify(geometries));
   data.append("aggregation_field", analysisLayer.aggregatedField);
-  let analysisUUID;
 
   await DjangoRequests.post(
     `/api/context-layer/${contextLayer.id}/zonal-analysis/${analysisLayer.aggregation.toLocaleLowerCase()}`,
@@ -94,6 +91,5 @@ export const fetchFromAPIValues = async (
   }).catch(error => {
     throw Error(error.toString())
   })
-  console.log(`VALUE before return: ${value}`)
   return value
 }

@@ -183,7 +183,6 @@ export class BufferDrawing {
       }
       // If it has buffer in km
       if (geom && buffer) {
-        // geom = turfBufffer(geom, buffer, { units: 'kilometers', steps: 8 });
         geom = bufferGeos(geom, buffer, {GEOS: geos});
       }
       geom.id = feature.id
