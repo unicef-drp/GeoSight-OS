@@ -15,13 +15,16 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import copy
+import time
 import uuid
 from unittest.mock import MagicMock, patch
+from django.test import override_settings
 
 from django.db.models.fields import uuid as django_uuid
 from django.contrib.auth import get_user_model
 from django.test.client import MULTIPART_CONTENT
 from django.urls import reverse
+from trio import sleep_until
 
 from geosight.data.models.context_layer import ContextLayer, LayerType, ZonalAnalysis
 from geosight.permission.tests._base import BasePermissionTest
@@ -86,8 +89,8 @@ class TestRasterZonalAnalysis(BasePermissionTest.TestCase):
         self.assertEqual(response.status_code, 200)
         return response
 
-    def test_context_layer_sum(self):
-        """Test zonal analysis sum for raster context layer."""
+    def _run_sum(self):
+        """Run test for zonal analysis sum."""
         url = reverse(
             'context-layer-zonal-analysis',
             args=[self.resource.id, 'sum']
@@ -106,6 +109,11 @@ class TestRasterZonalAnalysis(BasePermissionTest.TestCase):
             aggregation_field__isnull=True,
         )
         self.assertTrue(zonal_analysis.exists())
+        return zonal_analysis
+
+    def test_context_layer_sum(self):
+        """Test zonal analysis sum for raster context layer."""
+        self._run_sum()
 
     def test_context_layer_avg(self):
         """Test zonal analysis average for raster context layer."""
@@ -190,3 +198,23 @@ class TestRasterZonalAnalysis(BasePermissionTest.TestCase):
             aggregation_field__isnull=True,
         )
         self.assertTrue(zonal_analysis.exists())
+
+    @override_settings(CELERY_TASK_ALWAYS_EAGER=True)
+    def test_get_analysis_result(self):
+        zonal_analysis = self._run_sum()[0]
+        time.sleep(4)
+        url = reverse(
+            'zonal-analysis-result',
+            args=[zonal_analysis.uuid]
+        )
+        client = self.test_client()
+        if self.creator:
+            client.login(
+                username=self.creator.username,
+                password=self.password
+            )
+        response = client.get(url)
+        self.assertEqual(
+            response.data,
+            {'status': 'SUCCESS', 'result': '364.21094'}
+        )

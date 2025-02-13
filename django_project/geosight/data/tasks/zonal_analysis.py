@@ -14,7 +14,6 @@ __author__ = 'zakki@kartoza.com'
 __date__ = '13/02/2025'
 __copyright__ = ('Copyright 2025, Unicef')
 
-
 import json
 import os
 from core.celery import app
@@ -33,8 +32,7 @@ from geosight.data.utils import run_zonal_analysis_raster
 
 @app.task
 def run_zonal_analysis(zonal_analysis_uuid):
-    print('Running zonal analysis task')
-
+    """Run zonal analysis task."""
     zonal_analysis: ZonalAnalysis = ZonalAnalysis.objects.get(uuid=zonal_analysis_uuid)
     zonal_analysis.running()
 
@@ -49,7 +47,6 @@ def run_zonal_analysis(zonal_analysis_uuid):
     if layer.layer_type in [LayerType.RASTER_TILE, LayerType.RASTER_COG]:
         bbox = geometries_combined.bounds
         layer_path = layer.download_layer(original_name=True, bbox=bbox)
-        print('Running raster')
         result = run_zonal_analysis_raster(
             layer_path,
             [geometries_simplified],
