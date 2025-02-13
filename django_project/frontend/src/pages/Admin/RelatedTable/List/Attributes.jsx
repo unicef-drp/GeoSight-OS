@@ -40,10 +40,7 @@ export const relatedTableColumns = [
   },
   { field: 'unique_id', headerName: 'UUID', flex: 1 },
   {
-    field: 'created_at', headerName: 'Created at', flex: 0.5,
-    renderCell: (params) => {
-      return formatDateTime(new Date(params.value))
-    }, type: 'date', cellClassName: 'RelatedTable-CreatedAt'
+    field: 'created_at', headerName: 'Created at', flex: 0.5, type: 'date'
   },
   {
     field: 'created_by',
