@@ -209,7 +209,7 @@ class ContextLayer(AbstractEditData, AbstractTerm):
         params = {}
         if self.username and self.password:
             basic_auth = b64encode(
-                bytes(f"{self.username}:{self.password}", encoding='utf8')
+                bytes(f"{self.username}:{self.password}", encoding='utf8')  # noqa
             ).decode("ascii")
             headers['Authorization'] = f'Basic {basic_auth}'
         if self.token:
@@ -468,18 +468,20 @@ class ZonalAnalysis(AbstractEditData):
     result = models.TextField()
 
     def failed(self, message: status):
+        """Mark ZonalAnalysis as failed."""
         self.status = ZonalAnalysis.AnalysisStatus.FAILED
         self.result = message
         self.save()
         return self
 
     def success(self, result: status):
+        """Mark ZonalAnalysis as success."""
         self.status = ZonalAnalysis.AnalysisStatus.SUCCESS
         self.result = result
         self.save()
         return self
 
     def running(self):
+        """Mark ZonalAnalysis as running."""
         self.status = ZonalAnalysis.AnalysisStatus.RUNNING
         self.save()
-

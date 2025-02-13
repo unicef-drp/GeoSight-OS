@@ -112,7 +112,10 @@ class ZonalAnalysisResultAPI(APIView):
 
     def get(self, request, analysis_uuid):
         """Get zonal analysis result."""
-        analysis: ZonalAnalysis = get_object_or_404(ZonalAnalysis, uuid=analysis_uuid)
+        analysis: ZonalAnalysis = get_object_or_404(
+            ZonalAnalysis,
+            uuid=analysis_uuid
+        )
         response = {
             'status': analysis.status,
             'result': analysis.result,

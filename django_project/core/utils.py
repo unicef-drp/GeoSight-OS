@@ -152,9 +152,12 @@ class temp_disconnect_signal(object):
 
 
 def compress_text(text):
+    """Compress text."""
     compressed = gzip.compress(text.encode('utf-8'))
     return base64.b64encode(compressed).decode('utf-8')
 
+
 def decompress_text(compressed_text):
+    """Decompress compressed text."""
     compressed = base64.b64decode(compressed_text)
     return gzip.decompress(compressed).decode('utf-8')

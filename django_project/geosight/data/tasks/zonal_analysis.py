@@ -27,19 +27,30 @@ from shapely.geometry import shape
 from shapely.ops import unary_union
 
 from core.utils import decompress_text
-from geosight.data.models.context_layer import ContextLayer, LayerType, ZonalAnalysis
+from geosight.data.models.context_layer import (
+    ContextLayer,
+    LayerType,
+    ZonalAnalysis
+)
 from geosight.data.utils import run_zonal_analysis_raster
+
 
 @app.task
 def run_zonal_analysis(zonal_analysis_uuid):
     """Run zonal analysis task."""
-    zonal_analysis: ZonalAnalysis = ZonalAnalysis.objects.get(uuid=zonal_analysis_uuid)
+    zonal_analysis: ZonalAnalysis = ZonalAnalysis.objects.get(
+        uuid=zonal_analysis_uuid
+    )
     zonal_analysis.running()
 
     layer: ContextLayer = zonal_analysis.context_layer
     aggregation = zonal_analysis.aggregation
 
-    geometry_datas = json.loads(decompress_text(zonal_analysis.geom_compressed))
+    geometry_datas = json.loads(
+        decompress_text(
+            zonal_analysis.geom_compressed
+        )
+    )
     geometries = [shape(geometry_data) for geometry_data in geometry_datas]
     geometries_combined = unary_union(geometries)
     geometries_simplified = simplify(geometries_combined, tolerance=0.01)
@@ -66,7 +77,9 @@ def run_zonal_analysis(zonal_analysis_uuid):
             from cloud_native_gis.models.layer import Layer
 
             try:
-                cloud_layer = Layer.objects.get(layer.cloud_native_gis_layer_id)
+                cloud_layer = Layer.objects.get(
+                    layer.cloud_native_gis_layer_id
+                )
             except Layer.DoesNotExist:
                 zonal_analysis.failed(
                     'Could not find Cloud Native GIS Layer with id {}'.format(

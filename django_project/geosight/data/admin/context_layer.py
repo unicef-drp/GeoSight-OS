@@ -57,6 +57,7 @@ class ZonalAnalysisAdmin(BaseAdminResourceMixin):
     ) + BaseAdminResourceMixin.list_display
     list_filter = ('status',)
 
+
 admin.site.register(ContextLayerGroup, ContextLayerGroupAdmin)
 admin.site.register(ContextLayer, ContextLayerAdmin)
 admin.site.register(ZonalAnalysis, ZonalAnalysisAdmin)

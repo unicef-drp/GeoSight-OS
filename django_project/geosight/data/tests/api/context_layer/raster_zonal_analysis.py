@@ -18,15 +18,17 @@ import copy
 import time
 import uuid
 from unittest.mock import MagicMock, patch
-from django.test import override_settings
 
-from django.db.models.fields import uuid as django_uuid
 from django.contrib.auth import get_user_model
+from django.test import override_settings
 from django.test.client import MULTIPART_CONTENT
 from django.urls import reverse
-from trio import sleep_until
 
-from geosight.data.models.context_layer import ContextLayer, LayerType, ZonalAnalysis
+from geosight.data.models.context_layer import (
+    ContextLayer,
+    LayerType,
+    ZonalAnalysis
+)
 from geosight.permission.tests._base import BasePermissionTest
 
 User = get_user_model()
@@ -201,6 +203,7 @@ class TestRasterZonalAnalysis(BasePermissionTest.TestCase):
 
     @override_settings(CELERY_TASK_ALWAYS_EAGER=True)
     def test_get_analysis_result(self):
+        """Test getting analysis result."""
         zonal_analysis = self._run_sum()[0]
         time.sleep(4)
         url = reverse(
@@ -214,7 +217,17 @@ class TestRasterZonalAnalysis(BasePermissionTest.TestCase):
                 password=self.password
             )
         response = client.get(url)
+
+        # check result is returned
         self.assertEqual(
             response.data,
             {'status': 'SUCCESS', 'result': '364.21094'}
         )
+
+        # test that object is deleted
+        try:
+            zonal_analysis.refresh_from_db()
+        except ZonalAnalysis.DoesNotExist:
+            pass
+        else:
+            self.fail('Zonal Analysis object should be deleted!')
