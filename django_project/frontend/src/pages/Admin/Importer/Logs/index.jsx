@@ -27,6 +27,7 @@ import { urlParams } from "../../../../utils/main";
 import { COLUMNS } from "../utils";
 
 import { AdminListPagination } from "../../AdminListPagination";
+import AdminList from "../../../../components/AdminList";
 
 import './style.scss';
 
@@ -100,15 +101,24 @@ const LOG_COLUMNS = [
 export default function ImporterLogs({ ...props }) {
   const tableRef = useRef(null);
   const [disabled, setDisabled] = useState(false)
-  return <AdminListPagination
-    ref={tableRef}
-    urlData={urls.api.logs.list}
-    COLUMNS={LOG_COLUMNS}
-    disabled={disabled}
-    setDisabled={setDisabled}
-    hideSearch={true}
-    searchDefault={search}
-    sortingDefault={[{ field: 'start_time', sort: 'desc' }]}
+    return <AdminList
+    // ref={tableRef}
+    url={{
+      list: urls.api.logs.list
+    }}
+    columns={LOG_COLUMNS}
+    multipleDelete={false}
+    enableFilter={false}
+    // disabled={disabled}
+    // setDisabled={setDisabled}
+    useSearch={false}
+    // sortingDefault={[{ field: 'start_time', sort: 'desc' }]}
+    defaults={{
+      sort: [
+        { field: 'start_time', sort: 'desc' }
+      ],
+      search: search
+    }}
     rightHeader={
       <a
         href={urls.admin.importer}>
@@ -119,4 +129,23 @@ export default function ImporterLogs({ ...props }) {
     }
     {...props}
   />
+  // return <AdminListPagination
+  //   ref={tableRef}
+  //   urlData={urls.api.logs.list}
+  //   COLUMNS={LOG_COLUMNS}
+  //   disabled={disabled}
+  //   setDisabled={setDisabled}
+  //   hideSearch={true}
+  //   searchDefault={search}
+  //   sortingDefault={[{ field: 'start_time', sort: 'desc' }]}
+  //   rightHeader={
+  //     <a
+  //       href={urls.admin.importer}>
+  //       <ThemeButton variant="primary">
+  //         <UploadIcon/> Import Data
+  //       </ThemeButton>
+  //     </a>
+  //   }
+  //   {...props}
+  // />
 }

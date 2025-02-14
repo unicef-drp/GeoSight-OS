@@ -29,6 +29,7 @@ import { COLUMNS } from "../utils";
 import { COLUMNS_ACTION } from "../../Components/List";
 import { ThemeButton } from "../../../../components/Elements/Button";
 import { AdminListContent } from "../../AdminList";
+import AdminList from "../../../../components/AdminList";
 import { UploadIcon } from "../../../../components/Icons";
 import { urlParams } from "../../../../utils/main";
 
@@ -129,14 +130,19 @@ export default function ScheduledJobs({ ...props }) {
     })
   ];
   return <Fragment>
-    <AdminListContent
+    <AdminList
       columns={columns}
-      pageName={pageName}
-      listUrl={urls.api.scheduledJobs.list}
-      searchDefault={search}
-      sortingDefault={[{ field: 'job_name', sort: 'asc' }]}
-      selectionChanged={setSelectionModel}
+      // pageName={pageName}
+      url={{
+        list: urls.api.scheduledJobs.list
+      }}
       multipleDelete={true}
+      defaults={{
+        sort: [
+          { field: 'job_name', sort: 'asc' }
+        ],
+        search: search
+      }}
       rightHeader={
         <Fragment>
           <ThemeButton
@@ -199,9 +205,81 @@ export default function ScheduledJobs({ ...props }) {
           </a>
         </Fragment>
       }
-      ref={listRef}
       {...props}
     />
+    {/*<AdminListContent*/}
+    {/*  columns={columns}*/}
+    {/*  pageName={pageName}*/}
+    {/*  listUrl={urls.api.scheduledJobs.list}*/}
+    {/*  searchDefault={search}*/}
+    {/*  sortingDefault={[{ field: 'job_name', sort: 'asc' }]}*/}
+    {/*  selectionChanged={setSelectionModel}*/}
+    {/*  multipleDelete={true}*/}
+    {/*  rightHeader={*/}
+    {/*    <Fragment>*/}
+    {/*      <ThemeButton*/}
+    {/*        variant="primary Basic"*/}
+    {/*        disabled={!selectionModel.length}*/}
+    {/*        onClick={() => {*/}
+    {/*          $.ajax({*/}
+    {/*            url: urls.api.scheduledJobs.list,*/}
+    {/*            method: 'PUT',*/}
+    {/*            data: {*/}
+    {/*              'ids': JSON.stringify(selectionModel),*/}
+    {/*              'state': 'pause'*/}
+    {/*            },*/}
+    {/*            success: function () {*/}
+    {/*              listRef.current.refresh()*/}
+    {/*            },*/}
+    {/*            error: function (error) {*/}
+    {/*              if (error?.response?.data) {*/}
+    {/*                notify(error.response.data, NotificationStatus.ERROR)*/}
+    {/*              } else {*/}
+    {/*                notify(error.message, NotificationStatus.ERROR)*/}
+    {/*              }*/}
+    {/*            },*/}
+    {/*            beforeSend: beforeAjaxSend*/}
+    {/*          });*/}
+    {/*        }}>*/}
+    {/*        <PauseIcon/> Pause Selected*/}
+    {/*      </ThemeButton>*/}
+    {/*      <ThemeButton*/}
+    {/*        variant="primary Basic"*/}
+    {/*        disabled={!selectionModel.length}*/}
+    {/*        onClick={() => {*/}
+    {/*          $.ajax({*/}
+    {/*            url: urls.api.scheduledJobs.list,*/}
+    {/*            method: 'PUT',*/}
+    {/*            data: {*/}
+    {/*              'ids': JSON.stringify(selectionModel),*/}
+    {/*              'state': 'resume'*/}
+    {/*            },*/}
+    {/*            success: function () {*/}
+    {/*              listRef.current.refresh()*/}
+    {/*            },*/}
+    {/*            error: function (error) {*/}
+    {/*              if (error?.response?.data) {*/}
+    {/*                notify(error.response.data, NotificationStatus.ERROR)*/}
+    {/*              } else {*/}
+    {/*                notify(error.message, NotificationStatus.ERROR)*/}
+    {/*              }*/}
+    {/*            },*/}
+    {/*            beforeSend: beforeAjaxSend*/}
+    {/*          });*/}
+    {/*        }}>*/}
+    {/*        <PlayArrowIcon/> Resume Selected*/}
+    {/*      </ThemeButton>*/}
+    {/*      <a*/}
+    {/*        href={urls.admin.importer}>*/}
+    {/*        <ThemeButton variant="primary">*/}
+    {/*          <UploadIcon/> Import Data*/}
+    {/*        </ThemeButton>*/}
+    {/*      </a>*/}
+    {/*    </Fragment>*/}
+    {/*  }*/}
+    {/*  ref={listRef}*/}
+    {/*  {...props}*/}
+    {/*/>*/}
     <Notification ref={notificationRef}/>
   </Fragment>
 }
