@@ -102,7 +102,7 @@ class ContextLayerZonalAnalysisAPI(APIView):
             aggregation_field=aggregation_field,
             geom_compressed=compress_text(json.dumps(geometry_datas)),
         )
-        run_zonal_analysis.delay(zonal_analysis.uuid)
+        run_zonal_analysis.delay(zonal_analysis.uuid.hex)
 
         return Response({'uuid': zonal_analysis.uuid.hex})
 

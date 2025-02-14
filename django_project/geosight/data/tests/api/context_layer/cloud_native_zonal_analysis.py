@@ -14,19 +14,27 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import time
 import copy
+import uuid
+from unittest.mock import patch, MagicMock
 
 from cloud_native_gis.forms import LayerUploadForm
 from cloud_native_gis.models import (
     LayerUpload, Layer, LayerType as CloudNativeLayerType
 )
 from cloud_native_gis.utils.connection import count_features
+from django.test import override_settings
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 
 from core.settings.utils import ABS_PATH
-from geosight.data.models.context_layer import ContextLayer, LayerType
+from geosight.data.models.context_layer import (
+    ContextLayer,
+    LayerType,
+    ZonalAnalysis
+)
 from geosight.permission.tests._base import BasePermissionTest
 
 User = get_user_model()
@@ -101,27 +109,51 @@ class TestCloudNativeZonalAnalysis(BasePermissionTest.TestCase):
             10
         )
 
-    def _send_request(self, url, payload):
-        client = self.test_client()
-        client.login(
-            username=self.admin.username,
-            password=self.password
-        )
-        return client.post(url, data=payload)
+    def _send_request(self, url, payload=None, method='post'):
+        with patch('uuid.uuid4') as mock_uuid4:
+            mocked_uuid = uuid.UUID("12345678-1234-5678-1234-567812345678")
+            mock_uuid4.return_value = mocked_uuid
+            client = self.test_client()
+            client.login(
+                username=self.admin.username,
+                password=self.password
+            )
+            if method == 'post':
+                return client.post(url, data=payload)
+            else:
+                return client.get(url)
 
+    @override_settings(CELERY_TASK_ALWAYS_EAGER=True)
     def test_context_layer_count_bad_request(self):
         """Test zonal analysis for counting data."""
-        url = reverse(
+        url_run_analysis = reverse(
             'context-layer-zonal-analysis',
             args=[self.resource.id, 'count']
         )
-        response = self._send_request(url, {})
-        self.assertEqual(response.status_code, 400)
-        response = self._send_request(url, {
-            'geometries': self.geometries
-        })
+
+        response = self._send_request(url_run_analysis, {})
         self.assertEqual(response.status_code, 400)
 
+        # Check that Zonal Analysis API returns 200 status code
+        response = self._send_request(url_run_analysis, {
+            'geometries': self.geometries
+        })
+        self.assertEqual(response.status_code, 200)
+
+        # Check that Zonal Analysis Result API returns 200 status code
+        zonal_analysis = ZonalAnalysis.objects.get(
+            uuid='12345678-1234-5678-1234-567812345678'
+        )
+        url_analysis_result = reverse(
+            'zonal-analysis-result',
+            args=[zonal_analysis.uuid.hex]
+        )
+        response = self._send_request(url_analysis_result, None, 'get')
+        self.assertEqual(response.status_code, 200)
+        print(response.status_code)
+        self.assertEqual(response.json(), 400)
+
+    @override_settings(CELERY_TASK_ALWAYS_EAGER=True)
     def test_context_layer_count(self):
         """Test zonal analysis for counting data."""
         url = reverse(
@@ -133,8 +165,15 @@ class TestCloudNativeZonalAnalysis(BasePermissionTest.TestCase):
             'geometries': self.geometries
         })
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, 4)
+        zonal_analysis = ZonalAnalysis.objects.get(
+            uuid='12345678-1234-5678-1234-567812345678'
+        )
+        self.assertEqual(
+            zonal_analysis.result,
+            '4.0'
+        )
 
+    @override_settings(CELERY_TASK_ALWAYS_EAGER=True)
     def test_context_layer_sum(self):
         """Test zonal analysis for sum data."""
         url = reverse(
@@ -146,8 +185,15 @@ class TestCloudNativeZonalAnalysis(BasePermissionTest.TestCase):
             'geometries': self.geometries
         })
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, 5)
+        zonal_analysis = ZonalAnalysis.objects.get(
+            uuid='12345678-1234-5678-1234-567812345678'
+        )
+        self.assertEqual(
+            zonal_analysis.result,
+            '5.0'
+        )
 
+    @override_settings(CELERY_TASK_ALWAYS_EAGER=True)
     def test_context_layer_max(self):
         """Test zonal analysis for max data."""
         url = reverse(
@@ -159,8 +205,15 @@ class TestCloudNativeZonalAnalysis(BasePermissionTest.TestCase):
             'geometries': self.geometries
         })
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, 2)
+        zonal_analysis = ZonalAnalysis.objects.get(
+            uuid='12345678-1234-5678-1234-567812345678'
+        )
+        self.assertEqual(
+            zonal_analysis.result,
+            '2.0'
+        )
 
+    @override_settings(CELERY_TASK_ALWAYS_EAGER=True)
     def test_context_layer_min(self):
         """Test zonal analysis for min data."""
         url = reverse(
@@ -172,8 +225,15 @@ class TestCloudNativeZonalAnalysis(BasePermissionTest.TestCase):
             'geometries': self.geometries
         })
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, 0)
+        zonal_analysis = ZonalAnalysis.objects.get(
+            uuid='12345678-1234-5678-1234-567812345678'
+        )
+        self.assertEqual(
+            zonal_analysis.result,
+            '0.0'
+        )
 
+    @override_settings(CELERY_TASK_ALWAYS_EAGER=True)
     def test_context_layer_avg(self):
         """Test zonal analysis for min data."""
         url = reverse(
@@ -185,4 +245,36 @@ class TestCloudNativeZonalAnalysis(BasePermissionTest.TestCase):
             'geometries': self.geometries
         })
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, 1.25)
+        self.assertEqual(
+            response.data,
+            {
+                'uuid': '12345678123456781234567812345678'
+            }
+        )
+        zonal_analysis = ZonalAnalysis.objects.get(
+            uuid='12345678-1234-5678-1234-567812345678'
+        )
+        self.assertEqual(
+            zonal_analysis.result,
+            '1.25'
+        )
+
+        url = reverse(
+            'zonal-analysis-result',
+            args=[zonal_analysis.uuid.hex]
+        )
+        response = self._send_request(url, None, 'get')
+
+        # check result is returned when accessing the result endpoint
+        self.assertEqual(
+            response.data,
+            {'status': 'SUCCESS', 'result': '1.25'}
+        )
+
+        # test that object is deleted
+        try:
+            zonal_analysis.refresh_from_db()
+        except ZonalAnalysis.DoesNotExist:
+            pass
+        else:
+            self.fail('Zonal Analysis object should be deleted!')

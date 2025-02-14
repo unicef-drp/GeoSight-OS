@@ -78,7 +78,7 @@ def run_zonal_analysis(zonal_analysis_uuid):
 
             try:
                 cloud_layer = Layer.objects.get(
-                    layer.cloud_native_gis_layer_id
+                    id=layer.cloud_native_gis_layer_id
                 )
             except Layer.DoesNotExist:
                 zonal_analysis.failed(
@@ -96,7 +96,7 @@ def run_zonal_analysis(zonal_analysis_uuid):
                         aggregation=aggregation,
                         aggregation_field=zonal_analysis.aggregation_field,
                     )
-                    zonal_analysis.success(result)
+                    zonal_analysis.success(float(result))
                 except KeyError as e:
                     zonal_analysis.failed(
                         f'{e} is required in payload'
