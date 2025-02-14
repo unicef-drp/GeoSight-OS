@@ -25,6 +25,7 @@ from rest_framework.permissions import IsAuthenticated
 from core.api.base import FilteredAPI
 from core.auth import BearerAuthentication
 from core.pagination import Pagination
+from geosight.data.api.v1.base import non_filtered_keys
 from geosight.data.models.indicator import IndicatorValueWithGeo
 from geosight.permission.models.resource import (
     ReferenceLayerIndicatorPermission
@@ -40,7 +41,8 @@ class BaseDataApiList(FilteredAPI):
     permission_classes = (IsAuthenticated,)
     pagination_class = Pagination
     model = IndicatorValueWithGeo
-    filter_query_exclude = ['page', 'page_size']
+    filter_query_exclude = non_filtered_keys
+    extra_exclude_fields = []
 
     def get_queryset(self):
         """Return indicator value with geo."""

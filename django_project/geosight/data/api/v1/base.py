@@ -14,7 +14,9 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '29/11/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+from django.core.exceptions import SuspiciousOperation
 from django.forms.models import model_to_dict
+from django.http import HttpResponseBadRequest
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.authentication import (
@@ -147,6 +149,13 @@ class BaseApiV1ResourceReadOnly(BaseApiV1, viewsets.ReadOnlyModelViewSet):
         return Response(
             self.get_queryset().values_list(self.lookup_field, flat=True)
         )
+
+    def list(self, request, *args, **kwargs):
+        """List of dashboard."""
+        try:
+            return super().list(request, *args, **kwargs)
+        except SuspiciousOperation as e:
+            return HttpResponseBadRequest(f'{e}')
 
 
 class BaseApiV1ResourceDeleteOnly(mixins.DestroyModelMixin):
