@@ -14,10 +14,9 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-import time
 import copy
 import uuid
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 from cloud_native_gis.forms import LayerUploadForm
 from cloud_native_gis.models import (

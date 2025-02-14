@@ -98,7 +98,7 @@ class ContextLayerZonalAnalysisAPI(APIView):
 
         layer = get_object_or_404(ContextLayer, pk=pk)
         aggregation_field = request.data.get('aggregation_field', None)
-        if layer.layer_type == LayerType.CLOUD_NATIVE_GIS_LAYER:
+        if layer.layer_type == LayerType.CLOUD_NATIVE_GIS_LAYER and not aggregation_field:  # noqa
             return HttpResponseBadRequest(
                 "'aggregation_field' is required in payload"
             )
