@@ -27,11 +27,20 @@ import {
   lineString,
   multiPolygon,
   point,
-  polygon
+  polygon,
+  simplify as turfSimplify
 } from "@turf/turf";
 import { dictDeepCopy } from "../main";
+import bufferGeos from './bufferGeos';
+import initGeosJs from 'geos-wasm';
 
 const drawingBufferId = 'DRAWING_BUFFER_ID'
+
+let geos: any = null; // Global variable to store GEOS instance
+
+initGeosJs().then((instance: any) => {
+    geos = instance;
+});
 
 
 export class BufferDrawing {
@@ -160,21 +169,21 @@ export class BufferDrawing {
     try {
       switch (feature.geometry.type) {
         case Variables.FEATURE_TYPE.MULTIPOLYGON:
-          geom = multiPolygon(feature.geometry.coordinates);
+          geom = multiPolygon(turfSimplify(feature.geometry, { tolerance: 0.5, highQuality: true }).coordinates);
           break;
         case Variables.FEATURE_TYPE.POLYGON:
-          geom = polygon(feature.geometry.coordinates);
+          geom = polygon(turfSimplify(feature.geometry, { tolerance: 0.5, highQuality: true }).coordinates);
           break;
         case Variables.FEATURE_TYPE.LINESTRING:
-          geom = lineString(feature.geometry.coordinates);
+          geom = lineString(turfSimplify(feature.geometry, { tolerance: 0.5, highQuality: true }).coordinates);
           break;
         case Variables.FEATURE_TYPE.POINT:
-          geom = point(feature.geometry.coordinates);
+          geom = point(turfSimplify(feature.geometry, { tolerance: 0.5, highQuality: true }).coordinates);
           break;
       }
       // If it has buffer in km
       if (geom && buffer) {
-        geom = turfBufffer(geom, buffer, { units: 'kilometers', steps: 8 });
+        geom = bufferGeos(geom, buffer, {GEOS: geos});
       }
       geom.id = feature.id
       return geom

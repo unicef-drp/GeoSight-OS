@@ -25,7 +25,7 @@ from shapely.ops import transform
 import jenkspy
 
 
-def run_zonal_analysis(
+def run_zonal_analysis_raster(
         raster_path: str,
         geometries: typing.List[shapely.Geometry],
         aggregation: str
