@@ -30,6 +30,7 @@ import { AdminListPagination } from "../../AdminListPagination";
 import AdminList from "../../../../components/AdminList";
 
 import './style.scss';
+import {pageNames} from "../../index";
 
 const { search } = urlParams()
 
@@ -99,26 +100,22 @@ const LOG_COLUMNS = [
 
 /** Importer logs */
 export default function ImporterLogs({ ...props }) {
-  const tableRef = useRef(null);
-  const [disabled, setDisabled] = useState(false)
-    return <AdminList
-    // ref={tableRef}
+  return <AdminList
+    columns={LOG_COLUMNS}
+    pageName={pageNames.DataManagement}
+    title={pageNames.Logs}
     url={{
       list: urls.api.logs.list
     }}
-    columns={LOG_COLUMNS}
-    multipleDelete={false}
-    enableFilter={false}
-    // disabled={disabled}
-    // setDisabled={setDisabled}
-    useSearch={false}
-    // sortingDefault={[{ field: 'start_time', sort: 'desc' }]}
     defaults={{
       sort: [
         { field: 'start_time', sort: 'desc' }
       ],
       search: search
     }}
+    multipleDelete={false}
+    enableFilter={false}
+    useSearch={false}
     rightHeader={
       <a
         href={urls.admin.importer}>
@@ -129,23 +126,4 @@ export default function ImporterLogs({ ...props }) {
     }
     {...props}
   />
-  // return <AdminListPagination
-  //   ref={tableRef}
-  //   urlData={urls.api.logs.list}
-  //   COLUMNS={LOG_COLUMNS}
-  //   disabled={disabled}
-  //   setDisabled={setDisabled}
-  //   hideSearch={true}
-  //   searchDefault={search}
-  //   sortingDefault={[{ field: 'start_time', sort: 'desc' }]}
-  //   rightHeader={
-  //     <a
-  //       href={urls.admin.importer}>
-  //       <ThemeButton variant="primary">
-  //         <UploadIcon/> Import Data
-  //       </ThemeButton>
-  //     </a>
-  //   }
-  //   {...props}
-  // />
 }

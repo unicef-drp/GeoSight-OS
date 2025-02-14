@@ -34,6 +34,8 @@ export const pageNames = {
   // Importer
   Importer: 'Data Importer',
   DataManagement: 'Data Management',
+  ScheduledJobs: 'Scheduled Jobs',
+  Logs: 'Logs',
 
   // Access Request
   AccessRequestList: 'Access Request',
@@ -52,12 +54,15 @@ export const pageNames = {
  * Base Admin App that contains side navigation and receive children
  * @param {string} pageName Current page name.
  * @param {React.Component} children React component to be rendered
+ * @param renderLeftSidebar
+ * @param props
  */
-export function AdminPage({ pageName, children, ...props }) {
+export function AdminPage({ pageName, children, renderLeftSidebar=true, ...props }) {
+  console.log(renderLeftSidebar)
   return (
     <App className='Admin' hideNavbar={true}>
-      <SideNavigation pageName={pageName}
-                      minified={props.minifySideNavigation}/>
+      { renderLeftSidebar ? <SideNavigation pageName={pageName}
+                      minified={props.minifySideNavigation}/> : null}
       {children}
     </App>
   );

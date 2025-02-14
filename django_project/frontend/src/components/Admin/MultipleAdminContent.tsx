@@ -27,7 +27,8 @@ export const MultipleAdminContent = forwardRef(
   ({
      contents,
      onTabChanged,
-     pageName
+     pageName,
+     renderLeftSidebar=true,
    }: AdminProps, ref
   ) => {
     let defaultTab = window.location.hash.replace('#', '').replaceAll('%20', ' ')
@@ -45,9 +46,10 @@ export const MultipleAdminContent = forwardRef(
       }
       window.location.hash = tab
     }, [tab]);
+    console.log(contents)
 
     // @ts-ignore
-    return <AdminPage pageName={pageName}>
+    return <AdminPage pageName={pageName} renderLeftSidebar={renderLeftSidebar}>
       {
         content && React.cloneElement(content.content, {
           pageName: content.name,

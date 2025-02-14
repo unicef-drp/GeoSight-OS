@@ -148,6 +148,7 @@ const ServerTable = forwardRef(
 
     // Data states
     const [data, setData] = useState<any[]>(null)
+    console.log(data)
     const [dataCount, setDataCount] = useState<number>(0)
     const [error, setError] = useState<string>(null)
 
@@ -155,6 +156,7 @@ const ServerTable = forwardRef(
     useImperativeHandle(ref, () => ({
       refresh(force: boolean = true) {
         parametersChanged()
+        'useImperativeHandle'
         loadData(force)
       },
       /** Update data from outside **/
@@ -172,6 +174,7 @@ const ServerTable = forwardRef(
 
     /*** Load data */
     const loadData = (force: boolean) => {
+      console.log('loadData')
       let _parameters = dictDeepCopy(parameters)
       _parameters = dictDeepCopy(
         getParameters ? getParameters(_parameters) : _parameters
@@ -234,6 +237,7 @@ const ServerTable = forwardRef(
     }
     /*** When parameters changed */
     useEffect(() => {
+      'params changed'
       loadData(false)
     }, [parameters])
 

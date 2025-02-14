@@ -16,6 +16,8 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 import os  # noqa
 
+from tests.settings import SECRET_KEY
+
 from core.settings.utils import ABS_PATH
 
 # Local time zone for this installation. Choices can be found here:
@@ -146,9 +148,10 @@ REST_FRAMEWORK = {
 LOGIN_URL = '/login/'
 SITE_ID = 1
 
-SECRET_KEY = os.environ['SECRET_KEY']
-if SECRET_KEY in ['', "''"]:
-    raise Exception('SECRET_KEY is required in env.')
+# SECRET_KEY = os.environ['SECRET_KEY']
+# if SECRET_KEY in ['', "''"]:
+#     raise Exception('SECRET_KEY is required in env.')
+SECRET_KEY = 'key'
 
 STATICFILES_STORAGE = (
     'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
