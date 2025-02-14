@@ -19,6 +19,7 @@ from abc import ABC
 from datetime import datetime, date
 from typing import List
 
+from django.db.models import F
 from django.core.exceptions import ValidationError
 from requests.exceptions import Timeout
 
@@ -35,7 +36,7 @@ from geosight.georepo.models.reference_layer import ReferenceLayerView
 from geosight.importer.attribute import ImporterAttribute
 from geosight.importer.exception import ImporterError
 from geosight.importer.importers.query_data import QueryDataImporter
-from geosight.importer.models.log import ImporterLogData
+from geosight.importer.models.log import ImporterLogData, ImporterLog
 from geosight.importer.utilities import get_data_from_record
 from ._base import BaseImporter
 
@@ -430,6 +431,13 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
             log_data.saved = True
             log_data.save()
 
+            # Since _save_log_data_to_model is called in a loop
+            # sequantially, it is fine to just increment success count from
+            # previous success count
+            ImporterLog.objects.filter(
+                id=self.log.id
+            ).update(success_count=F('success_count') + 1)
+
     def process_data_from_records(self) -> (List, List, List, bool):
         """Process data from records.
 
@@ -737,6 +745,9 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
                 pass
             if len(note_keys):
                 success = False
+
+        self.log.total_count = line_idx + 1
+        self.log.save()
 
         # Calculate warning data
         if warning_data:

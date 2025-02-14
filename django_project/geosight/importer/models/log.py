@@ -52,6 +52,8 @@ class ImporterLog(models.Model):
         default=LogStatus.START
     )
     note = models.TextField(blank=True, null=True)
+    success_count = models.IntegerField(default=0)
+    total_count = models.IntegerField(default=0)
 
     class Meta:  # noqa: D106
         ordering = ('-start_time',)
