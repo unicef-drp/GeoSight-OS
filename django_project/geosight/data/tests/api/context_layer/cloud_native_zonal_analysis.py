@@ -138,20 +138,13 @@ class TestCloudNativeZonalAnalysis(BasePermissionTest.TestCase):
         response = self._send_request(url_run_analysis, {
             'geometries': self.geometries
         })
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
 
         # Check that Zonal Analysis Result API returns 200 status code
-        zonal_analysis = ZonalAnalysis.objects.get(
+        zonal_analysis = ZonalAnalysis.objects.filter(
             uuid='12345678-1234-5678-1234-567812345678'
         )
-        url_analysis_result = reverse(
-            'zonal-analysis-result',
-            args=[zonal_analysis.uuid.hex]
-        )
-        response = self._send_request(url_analysis_result, None, 'get')
-        self.assertEqual(response.status_code, 200)
-        print(response.status_code)
-        self.assertEqual(response.json(), 400)
+        self.assertFalse(zonal_analysis.exists())
 
     @override_settings(CELERY_TASK_ALWAYS_EAGER=True)
     def test_context_layer_count(self):

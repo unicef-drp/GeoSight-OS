@@ -24,7 +24,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from core.utils import compress_text
-from geosight.data.models.context_layer import ContextLayer, ZonalAnalysis
+from geosight.data.models.context_layer import (
+    ContextLayer,
+    ZonalAnalysis,
+    LayerType
+)
 from geosight.data.serializer.context_layer import ContextLayerSerializer
 from geosight.data.tasks.zonal_analysis import run_zonal_analysis
 from geosight.permission.access import (
@@ -94,6 +98,10 @@ class ContextLayerZonalAnalysisAPI(APIView):
 
         layer = get_object_or_404(ContextLayer, pk=pk)
         aggregation_field = request.data.get('aggregation_field', None)
+        if layer.layer_type == LayerType.CLOUD_NATIVE_GIS_LAYER:
+            return HttpResponseBadRequest(
+                "'aggregation_field' is required in payload"
+            )
 
         zonal_analysis = ZonalAnalysis.objects.create(
             uuid=uuid.uuid4(),
