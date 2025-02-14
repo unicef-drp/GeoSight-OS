@@ -55,6 +55,7 @@ def run_zonal_analysis(zonal_analysis_uuid):
     geometries_combined = unary_union(geometries)
     geometries_simplified = simplify(geometries_combined, tolerance=0.01)
 
+    # For raster
     if layer.layer_type in [LayerType.RASTER_TILE, LayerType.RASTER_COG]:
         bbox = geometries_combined.bounds
         layer_path = layer.download_layer(original_name=True, bbox=bbox)
