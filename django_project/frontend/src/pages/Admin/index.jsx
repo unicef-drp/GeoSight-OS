@@ -58,7 +58,6 @@ export const pageNames = {
  * @param props
  */
 export function AdminPage({ pageName, children, renderLeftSidebar=true, ...props }) {
-  console.log(renderLeftSidebar)
   return (
     <App className='Admin' hideNavbar={true}>
       { renderLeftSidebar ? <SideNavigation pageName={pageName}

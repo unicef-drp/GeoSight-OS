@@ -46,7 +46,6 @@ export const MultipleAdminContent = forwardRef(
       }
       window.location.hash = tab
     }, [tab]);
-    console.log(contents)
 
     // @ts-ignore
     return <AdminPage pageName={pageName} renderLeftSidebar={renderLeftSidebar}>

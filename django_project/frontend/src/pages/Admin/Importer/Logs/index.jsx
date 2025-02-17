@@ -113,7 +113,7 @@ export default function ImporterLogs({ ...props }) {
       ],
       search: search
     }}
-    multipleDelete={false}
+    multipleDelete={true}
     enableFilter={false}
     useSearch={false}
     rightHeader={
