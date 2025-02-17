@@ -227,20 +227,3 @@ class IndicatorValueListAPI(APIView):
             return Response('Deleted')
         except IndicatorValue.DoesNotExist:
             return HttpResponseNotFound('Not found')
-
-
-class IndicatorValueValuesAPI(APIView):
-    """API for Values code of indicator."""
-
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
-
-    def get(self, request, pk, **kwargs):
-        """Return Values."""
-        indicator = get_object_or_404(Indicator, pk=pk)
-        read_permission_resource(indicator, request.user)
-        codes = indicator.indicatorvalue_set.filter(
-            value_str__isnull=False
-        ).values_list(
-            'value_str', flat=True
-        ).distinct()
-        return Response(list(set(codes)))
