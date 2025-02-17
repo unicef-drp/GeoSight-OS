@@ -32,7 +32,6 @@ export interface AdminProps {
   contents: ContentProps[];
   pageName: string;
   onTabChanged: (tab: string) => void;
-  renderLeftSidebar: boolean;
 
   [key: string]: any;
 }

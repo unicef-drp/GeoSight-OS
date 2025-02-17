@@ -32,7 +32,6 @@ export default function DataManagementList({ defaultTab }) {
   return <MultipleAdminContent
     pageName={pageNames.DataManagement}
     defaultTab={defaultTab}
-    renderLeftSidebar={false}
     contents={[
       { name: 'Logs', content: <ImporterLogs/> },
       { name: 'Scheduled Jobs', content: <ScheduledJobs/> },

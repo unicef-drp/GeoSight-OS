@@ -26,8 +26,7 @@ import {
 import { urlParams } from "../../../../utils/main";
 import { COLUMNS } from "../utils";
 
-import { AdminListPagination } from "../../AdminListPagination";
-import AdminList from "../../../../components/AdminList";
+import { AdminListContent } from "../../../../components/AdminList/Content";
 
 import './style.scss';
 import {pageNames} from "../../index";
@@ -100,7 +99,7 @@ const LOG_COLUMNS = [
 
 /** Importer logs */
 export default function ImporterLogs({ ...props }) {
-  return <AdminList
+  return <AdminListContent
     columns={LOG_COLUMNS}
     pageName={pageNames.DataManagement}
     title={pageNames.Logs}

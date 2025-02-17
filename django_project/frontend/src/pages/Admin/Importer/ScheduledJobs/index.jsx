@@ -28,8 +28,7 @@ import { pageNames } from "../../index";
 import { COLUMNS } from "../utils";
 import { COLUMNS_ACTION } from "../../Components/List";
 import { ThemeButton } from "../../../../components/Elements/Button";
-import { AdminListContent } from "../../AdminList";
-import AdminList from "../../../../components/AdminList";
+import { AdminListContent } from "../../../../components/AdminList/Content";
 import { UploadIcon } from "../../../../components/Icons";
 import { urlParams } from "../../../../utils/main";
 
@@ -130,7 +129,7 @@ export default function ScheduledJobs({ ...props }) {
   ];
 
   return <Fragment>
-    <AdminList
+    <AdminListContent
       columns={columns}
       pageName={pageNames.DataManagement}
       title={pageNames.ScheduledJobs}
