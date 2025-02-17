@@ -155,7 +155,6 @@ const ServerTable = forwardRef(
     useImperativeHandle(ref, () => ({
       refresh(force: boolean = true) {
         parametersChanged()
-        'useImperativeHandle'
         loadData(force)
       },
       /** Update data from outside **/
