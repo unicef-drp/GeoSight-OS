@@ -144,7 +144,7 @@ jobs:
       - name: Backend (Prepare container)
         if: ${{ matrix.test_suite.mode == 'backend' }}
         run: |
-          make devweb-initialize
+          make devweb-entrypoint
           make devweb-test
 
       - name: E2E (Prepare container)
