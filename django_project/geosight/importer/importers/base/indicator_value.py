@@ -19,7 +19,6 @@ from abc import ABC
 from datetime import datetime, date
 from typing import List
 
-from django.db.models import F
 from django.core.exceptions import ValidationError
 from requests.exceptions import Timeout
 
@@ -36,7 +35,7 @@ from geosight.georepo.models.reference_layer import ReferenceLayerView
 from geosight.importer.attribute import ImporterAttribute
 from geosight.importer.exception import ImporterError
 from geosight.importer.importers.query_data import QueryDataImporter
-from geosight.importer.models.log import ImporterLogData, ImporterLog
+from geosight.importer.models.log import ImporterLogData
 from geosight.importer.utilities import get_data_from_record
 from ._base import BaseImporter
 

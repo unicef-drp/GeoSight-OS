@@ -146,10 +146,9 @@ REST_FRAMEWORK = {
 LOGIN_URL = '/login/'
 SITE_ID = 1
 
-# SECRET_KEY = os.environ['SECRET_KEY']
-# if SECRET_KEY in ['', "''"]:
-#     raise Exception('SECRET_KEY is required in env.')
-SECRET_KEY = 'aa'
+SECRET_KEY = os.environ['SECRET_KEY']
+if SECRET_KEY in ['', "''"]:
+    raise Exception('SECRET_KEY is required in env.')
 
 STATICFILES_STORAGE = (
     'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
