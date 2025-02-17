@@ -324,6 +324,16 @@ class RelatedTableApiTest(BasePermissionTest.TestCase):
         self.assertEqual(len(response.json()), 3)
         self.assertEqual(response.json(), [1, 2, 3])
 
+        param = (
+            f'reference_layer_uuid={self.uuid}&'
+            f'geography_code_field_name={self.geography_code_field_name}&'
+            f'geography_code_type={self.geography_code_type}&'
+            f'field=population'
+        )
+        response = self.data_api_assert('related-table-field-data-api', param)
+        self.assertEqual(len(response.json()), 3)
+        self.assertEqual(response.json(), ['1', '2', '3'])
+
     def test_data_values_api(self):
         """Test data access."""
         param = (

@@ -154,11 +154,93 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                 output.append(row.data)
         return output
 
-    def data_field(self, field):
-        """Return data field."""
-        return self.relatedtablerow_set.values_list(
-            f'data__{field}', flat=True
+    @property
+    def fields_definition(self):
+        """Return fields with it's definition."""
+        from geosight.data.serializer.related_table import (
+            RelatedTableFieldSerializer
         )
+        if not self.relatedtablefield_set.count():
+            self.set_fields()
+        return RelatedTableFieldSerializer(
+            self.relatedtablefield_set.order_by('name'), many=True,
+            context={
+                'example_data': [
+                    self.relatedtablerow_set.first(),
+                    self.relatedtablerow_set.last()
+                ]
+            }
+        ).data
+
+    @fields_definition.setter
+    def fields_definition(self, fields):
+        self.relatedtablefield_set.all().delete()
+        for field in fields:
+            self.add_field(
+                field.get('name'),
+                field.get('alias'),
+                field.get('type')
+            )
+
+    def query(
+            self, reference_layer, geo_field: str, select: str,
+            geo_type='ucode'
+    ):
+        """Return query."""
+        if geo_type.lower() == 'ucode':
+            return (
+                f"select {select} "
+                f"from geosight_data_relatedtablerow as row "
+                f"LEFT JOIN geosight_georepo_entity as entity "
+                f"ON data ->> '{geo_field}'::text=entity.geom_id::text "
+                f"LEFT JOIN geosight_georepo_referencelayerviewentity "
+                f"  as ref_entity "
+                f"  ON ref_entity.entity_id = entity.id "
+                f"WHERE row.table_id={self.id} AND "
+                f"ref_entity.reference_layer_id={reference_layer.id} "
+            )
+
+        else:
+            return (
+                f"select {select} "
+                f"from geosight_data_relatedtablerow as row "
+                f"LEFT JOIN geosight_georepo_entitycode as entity_code "
+                f"ON data ->> '{geo_field}'::text=entity_code.code::text "
+                f"AND LOWER(entity_code.code_type)='{geo_type.lower()}' "
+                f"LEFT JOIN geosight_georepo_entity as entity "
+                f"ON entity.id=entity_code.entity_id "
+                f"LEFT JOIN geosight_georepo_referencelayerviewentity "
+                f"  as ref_entity "
+                f"  ON ref_entity.entity_id = entity.id "
+                f"WHERE row.table_id={self.id} AND "
+                f"ref_entity.reference_layer_id={reference_layer.id} "
+            )
+
+    def data_field(
+            self, field,
+            reference_layer_uuid=None,
+            geo_field=None, geo_type='ucode'
+    ):
+        """Return data field."""
+        from geosight.georepo.models.reference_layer import ReferenceLayerView
+        if not reference_layer_uuid:
+            return self.relatedtablerow_set.values_list(
+                f'data__{field}', flat=True
+            ).distinct(f'data__{field}').order_by(f'data__{field}')
+        else:
+            with connection.cursor() as cursor:
+                reference_layer = ReferenceLayerView.objects.get(
+                    identifier=reference_layer_uuid
+                )
+                query = self.query(
+                    reference_layer=reference_layer,
+                    select=f"DISTINCT(data ->> '{field}')",
+                    geo_field=geo_field,
+                    geo_type=geo_type
+                )
+                cursor.execute(query)
+                rows = cursor.fetchall()
+                return [row[0] for row in rows]
 
     def data_with_query(
             self, reference_layer_uuid,
@@ -178,38 +260,18 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
         output = []
         has_next = False
         with connection.cursor() as cursor:
-            if geo_type.lower() == 'ucode':
-                query = (
-                    f"select row.id, row.order, row.data::json, "
-                    f"geom_id, concept_uuid, name, admin_level "
-                    f"from geosight_data_relatedtablerow as row "
-                    f"LEFT JOIN geosight_georepo_entity as entity "
-                    f"ON data ->> '{geo_field}'::text=entity.geom_id::text "
-                    f"LEFT JOIN geosight_georepo_referencelayerviewentity "
-                    f"  as ref_entity "
-                    f"  ON ref_entity.entity_id = entity.id "
-                    f"WHERE row.table_id={self.id} AND "
-                    f"ref_entity.reference_layer_id={reference_layer.id} "
-                    f"ORDER BY row.id"
-                )
-            else:
-                query = (
-                    f"select row.id, row.order, row.data::json, "
-                    f"geom_id, concept_uuid, name, admin_level "
-                    f"from geosight_data_relatedtablerow as row "
-                    f"LEFT JOIN geosight_georepo_entitycode as entity_code "
-                    f"ON data ->> '{geo_field}'::text=entity_code.code::text "
-                    f"AND LOWER(entity_code.code_type)='{geo_type.lower()}' "
-                    f"LEFT JOIN geosight_georepo_entity as entity "
-                    f"ON entity.id=entity_code.entity_id "
-                    f"LEFT JOIN geosight_georepo_referencelayerviewentity "
-                    f"  as ref_entity "
-                    f"  ON ref_entity.entity_id = entity.id "
-                    f"WHERE row.table_id={self.id} AND "
-                    f"ref_entity.reference_layer_id={reference_layer.id} "
-                    f"ORDER BY row.id"
-                )
-
+            query = self.query(
+                reference_layer=reference_layer,
+                geo_field=geo_field,
+                select=(
+                    "row.id, row.order, row.data::json, "
+                    "geom_id, concept_uuid, name, admin_level "
+                ),
+                geo_type=geo_type
+            )
+            query += (
+                f"ORDER BY row.id "
+            )
             if offset is not None:
                 query += f' LIMIT {limit} OFFSET {offset}'
 
@@ -257,35 +319,15 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
         except ReferenceLayerView.DoesNotExist:
             return []
         with connection.cursor() as cursor:
-            if geo_type.lower() == 'ucode':
-                query = (
-                    f"select DISTINCT(data ->> '{date_field}') "
-                    f"from geosight_data_relatedtablerow as row "
-                    f"LEFT JOIN geosight_georepo_entity as entity "
-                    f"ON data ->> '{geo_field}'::text=entity.geom_id::text "
-                    f"LEFT JOIN geosight_georepo_referencelayerviewentity "
-                    f"  as ref_entity "
-                    f"  ON ref_entity.entity_id = entity.id "
-                    f"WHERE row.table_id={self.id} AND "
-                    f"ref_entity.reference_layer_id={reference_layer.id} "
-                    f"ORDER BY data ->> '{date_field}'"
-                )
-            else:
-                query = (
-                    f"select DISTINCT(data ->> '{date_field}') "
-                    f"from geosight_data_relatedtablerow as row "
-                    f"LEFT JOIN geosight_georepo_entitycode as entity_code "
-                    f"ON data ->> '{geo_field}'::text=entity_code.code::text "
-                    f"AND LOWER(entity_code.code_type)='{geo_type.lower()}' "
-                    f"LEFT JOIN geosight_georepo_entity as entity "
-                    f"ON entity.id=entity_code.entity_id "
-                    f"LEFT JOIN geosight_georepo_referencelayerviewentity "
-                    f"  as ref_entity "
-                    f"  ON ref_entity.entity_id = entity.id "
-                    f"WHERE row.table_id={self.id} AND "
-                    f"ref_entity.reference_layer_id={reference_layer.id} "
-                    f"ORDER BY data ->> '{date_field}'"
-                )
+            query = self.query(
+                reference_layer=reference_layer,
+                geo_field=geo_field,
+                select=f"DISTINCT(data ->> '{date_field}')",
+                geo_type=geo_type
+            )
+            query += (
+                f"ORDER BY data ->> '{date_field}' "
+            )
             cursor.execute(query)
             dates = []
             for row in cursor.fetchall():
@@ -297,34 +339,6 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                         ).isoformat()
                     )
         return dates
-
-    @property
-    def fields_definition(self):
-        """Return fields with it's definition."""
-        from geosight.data.serializer.related_table import (
-            RelatedTableFieldSerializer
-        )
-        if not self.relatedtablefield_set.count():
-            self.set_fields()
-        return RelatedTableFieldSerializer(
-            self.relatedtablefield_set.order_by('name'), many=True,
-            context={
-                'example_data': [
-                    self.relatedtablerow_set.first(),
-                    self.relatedtablerow_set.last()
-                ]
-            }
-        ).data
-
-    @fields_definition.setter
-    def fields_definition(self, fields):
-        self.relatedtablefield_set.all().delete()
-        for field in fields:
-            self.add_field(
-                field.get('name'),
-                field.get('alias'),
-                field.get('type')
-            )
 
     def add_field(self, name, label, field_type):
         """Add a new field definition to the related table."""

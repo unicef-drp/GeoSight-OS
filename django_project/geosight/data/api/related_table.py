@@ -136,7 +136,8 @@ class RelatedTableValuesAPI(APIView):
         try:
             reference_layer_uuid = request.GET['reference_layer_uuid']
             geography_code_field_name = request.GET[
-                'geography_code_field_name']
+                'geography_code_field_name'
+            ]
             geography_code_type = request.GET['geography_code_type']
         except KeyError as e:
             return HttpResponseBadRequest(f'{e} is required')
@@ -201,8 +202,13 @@ class RelatedTableFieldDataAPI(APIView):
         related_table = get_object_or_404(RelatedTable, pk=pk)
         read_data_permission_resource(related_table, request.user)
         try:
-            data = related_table.data_field(field=request.GET['field'])
-            return Response(list(set(data)))
+            data = related_table.data_field(
+                field=request.GET['field'],
+                reference_layer_uuid=request.GET.get('reference_layer_uuid'),
+                geo_type=request.GET.get('geography_code_type'),
+                geo_field=request.GET.get('geography_code_field_name')
+            )
+            return Response(data)
         except KeyError as e:
             return HttpResponseBadRequest(f'{e} is required')
 
@@ -218,7 +224,8 @@ class RelatedTableDatesAPI(APIView):
         try:
             reference_layer_uuid = request.GET['reference_layer_uuid']
             geography_code_field_name = request.GET[
-                'geography_code_field_name']
+                'geography_code_field_name'
+            ]
             geography_code_type = request.GET['geography_code_type']
         except KeyError as e:
             return HttpResponseBadRequest(f'{e} is required')

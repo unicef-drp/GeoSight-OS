@@ -117,3 +117,68 @@ export const FetchIndicatorOptions = memo(
     return null
   }
 )
+
+/** This is for value */
+export const FetchRelatedTableOptions = memo(
+  ({ id, onChange }: FetchOptionsData) => {
+    const prev = useRef();
+    const {
+      minDate,
+      maxDate
+      // @ts-ignore
+    } = useSelector(state => state.selectedGlobalTimeConfig);
+    const {
+      referenceLayers
+      // @ts-ignore
+    } = useSelector(state => state.map);
+    // @ts-ignore
+    const selectedAdminLevel = useSelector(state => state.selectedAdminLevel);
+
+    // Geometry parameters
+    const adminLevel = selectedAdminLevel?.level
+    let datasets = []
+    if (referenceLayers) {
+      datasets = referenceLayers.map((_: any) => _.identifier)
+    }
+
+    const parameters = {
+      indicator_id: id,
+      admin_level: adminLevel,
+      reference_layer_id__in: datasets.join(',')
+    }
+    if (maxDate) {
+      // @ts-ignore
+      parameters['date__lte'] = maxDate.split('T')[0]
+    }
+    if (minDate) {
+      // @ts-ignore
+      parameters['date__gte'] = minDate.split('T')[0]
+    }
+
+    const key = JSON.stringify(parameters)
+
+    /** Create loading **/
+    useEffect(() => {
+      if (!maxDate || [null, undefined].includes(adminLevel) || !datasets.length) {
+        return
+      }
+      const currentKey = key
+      if (currentKey !== prev.current) {
+        // @ts-ignore
+        prev.current = currentKey
+        onChange(['Loading'])
+        console.log(parameters)
+        fetchingData(
+          '/api/v1/data-browser/statistic/',
+          parameters, {}, (output: any, error: any) => {
+            if (prev.current === currentKey) {
+              onChange([output['min'], output['max']])
+            }
+          }
+        )
+      }
+    }, [parameters]);
+
+    return null
+  }
+)
