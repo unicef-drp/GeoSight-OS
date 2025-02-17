@@ -34,6 +34,8 @@ export const pageNames = {
   // Importer
   Importer: 'Data Importer',
   DataManagement: 'Data Management',
+  ScheduledJobs: 'Scheduled Jobs',
+  Logs: 'Logs',
 
   // Access Request
   AccessRequestList: 'Access Request',
@@ -52,6 +54,7 @@ export const pageNames = {
  * Base Admin App that contains side navigation and receive children
  * @param {string} pageName Current page name.
  * @param {React.Component} children React component to be rendered
+ * @param props
  */
 export function AdminPage({ pageName, children, ...props }) {
   return (

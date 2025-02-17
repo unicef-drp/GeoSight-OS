@@ -17,25 +17,39 @@ __copyright__ = ('Copyright 2023, Unicef')
 import json
 
 from django.http import HttpResponseBadRequest
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
-from geosight.importer.models.importer import Importer
+from core.pagination import Pagination
+from geosight.data.api.v1.base import BaseApiV1
+from geosight.importer.models import Importer
 from geosight.importer.serializer.importer import ImporterSerializer
 
 
-class ScheduleJobListAPI(APIView):
+class ScheduleJobListAPI(ListAPIView, BaseApiV1):
     """Return Schedule Job list."""
 
-    def get(self, request):
-        """Return Schedule Job  list."""
-        return Response(
-            ImporterSerializer(
-                Importer.objects.filter(job__isnull=False),
-                many=True,
-                exclude=['logs']
-            ).data
+    pagination_class = Pagination
+    serializer_class = ImporterSerializer
+
+    def get_queryset(self):
+        """Return queryset of API."""
+        query = Importer.objects.all()
+        if self.request.user.is_anonymous:
+            return query.none()
+        if not self.request.user.profile.is_admin:
+            query = Importer.objects.filter(
+                creator=self.request.user
+            ).order_by('job_name')
+
+        # Filter by parameters
+        query = self.filter_query(
+            request=self.request,
+            query=query,
+            ignores=['page', 'page_size'],
+            sort=self.request.query_params.get('sort')
         )
+        return query
 
     def put(self, request):
         """Delete an basemap."""
@@ -55,7 +69,7 @@ class ScheduleJobListAPI(APIView):
         return Response('Deleted')
 
     def delete(self, request):
-        """Delete an basemap."""
+        """Delete an importer."""
         ids = json.loads(request.data['ids'])
         for obj in Importer.objects.filter(id__in=ids):
             if obj.able_to_edit(self.request.user):

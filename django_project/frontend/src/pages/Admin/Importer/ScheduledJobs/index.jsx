@@ -28,7 +28,7 @@ import { pageNames } from "../../index";
 import { COLUMNS } from "../utils";
 import { COLUMNS_ACTION } from "../../Components/List";
 import { ThemeButton } from "../../../../components/Elements/Button";
-import { AdminListContent } from "../../AdminList";
+import { AdminListContent } from "../../../../components/AdminList/Content";
 import { UploadIcon } from "../../../../components/Icons";
 import { urlParams } from "../../../../utils/main";
 
@@ -103,7 +103,6 @@ export default function ScheduledJobs({ ...props }) {
     notificationRef?.current?.notify(newMessage, newSeverity)
   }
 
-  const pageName = pageNames.ScheduleJobs
   const columns = [
     COLUMNS.ID,
     Object.assign({}, COLUMNS.JOB_NAME, {
@@ -128,14 +127,22 @@ export default function ScheduledJobs({ ...props }) {
       },
     })
   ];
+
   return <Fragment>
     <AdminListContent
       columns={columns}
-      pageName={pageName}
-      listUrl={urls.api.scheduledJobs.list}
-      searchDefault={search}
-      sortingDefault={[{ field: 'job_name', sort: 'asc' }]}
-      selectionChanged={setSelectionModel}
+      pageName={pageNames.DataManagement}
+      searchKey={'job_name__icontains'}
+      title={pageNames.ScheduledJobs}
+      url={{
+        list: urls.api.scheduledJobs.list
+      }}
+      defaults={{
+        sort: [
+          { field: 'job_name', sort: 'asc' }
+        ],
+        search: search
+      }}
       multipleDelete={true}
       rightHeader={
         <Fragment>
@@ -199,7 +206,6 @@ export default function ScheduledJobs({ ...props }) {
           </a>
         </Fragment>
       }
-      ref={listRef}
       {...props}
     />
     <Notification ref={notificationRef}/>
