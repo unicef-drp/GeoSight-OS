@@ -29,8 +29,9 @@ from geosight.data.api.v1.data_browser import (
 )
 from geosight.data.api.v1.group import GroupViewSet
 from geosight.data.api.v1.indicator import IndicatorViewSet
-from geosight.data.api.v1.related_table import RelatedTableViewSet
-from geosight.data.api.v1.related_table_data import RelatedTableDataViewSet
+from geosight.data.api.v1.related_table import (
+    RelatedTableViewSet, RelatedTableDataViewSet, RelatedTableGeoDataViewSet
+)
 from geosight.data.api.v1.style import StyleViewSet
 from geosight.data.api.v1.users import UserViewSet
 
@@ -56,6 +57,10 @@ related_tables_router = NestedSimpleRouter(
 )
 related_tables_router.register(
     'data', RelatedTableDataViewSet, basename='related_tables_data'
+)
+related_tables_router.register(
+    'geo-data', RelatedTableGeoDataViewSet,
+    basename='related_tables_geo_data'
 )
 urlpatterns = router.urls
 urlpatterns += related_tables_router.urls

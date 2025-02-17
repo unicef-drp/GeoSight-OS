@@ -269,9 +269,7 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                 ),
                 geo_type=geo_type
             )
-            query += (
-                f"ORDER BY row.id "
-            )
+            query += "ORDER BY row.id "
             if offset is not None:
                 query += f' LIMIT {limit} OFFSET {offset}'
 
