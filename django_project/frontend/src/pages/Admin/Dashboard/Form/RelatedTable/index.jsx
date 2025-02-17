@@ -55,7 +55,7 @@ function RelatedTableConfiguration({ data, referenceLayerUUID, codeTypes }) {
     if (data.geography_code_type) {
       params['geography_code_type'] = data.geography_code_type
     }
-    const url = data.url.replace('data', 'values')
+    const url = data.url
     if (JSON.stringify(params) !== JSON.stringify(prevState.params) || JSON.stringify(url) !== JSON.stringify(prevState.url)) {
       prevState.params = params
       prevState.url = url
