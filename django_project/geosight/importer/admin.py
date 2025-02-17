@@ -20,7 +20,10 @@ from geosight.importer.models import (
     Importer, ImporterAttribute, ImporterMapping,
     ImporterLog, ImporterAlert, ImporterLogDataSaveProgress
 )
-from geosight.importer.tasks import run_importer
+from geosight.importer.tasks import (
+    run_importer,
+    calculate_data_counts
+)
 
 
 def import_data(modeladmin, request, queryset):
@@ -90,6 +93,12 @@ class ImporterAdmin(admin.ModelAdmin):
     search_fields = ('unique_id',)
 
 
+def recalculate_data_count(modeladmin, request, queryset):
+    """Recalculate Importer Log Data count."""
+    for obj in queryset:
+        calculate_data_counts(obj.id)
+
+
 @admin.register(ImporterLog)
 class ImporterLogAdmin(admin.ModelAdmin):
     """ImporterLog Admin."""
@@ -99,6 +108,7 @@ class ImporterLogAdmin(admin.ModelAdmin):
     list_filter = ('status',)
     inlines = [ImporterLogDataSaveProgressInline]
     search_fields = ('note', 'importer__unique_id')
+    actions = (recalculate_data_count,)
 
     def has_add_permission(self, request, obj=None):
         """Has add permission."""
