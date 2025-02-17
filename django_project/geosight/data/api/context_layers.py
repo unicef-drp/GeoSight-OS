@@ -105,7 +105,7 @@ class ContextLayerZonalAnalysisAPI(APIView):
             layer_path = layer.download_layer(original_name=True, bbox=bbox)
             result = run_zonal_analysis(
                 layer_path,
-                [geometries],
+                geometries,
                 aggregation
             )
             if layer.layer_type == LayerType.RASTER_TILE:
