@@ -141,7 +141,7 @@ jobs:
           docker cp ./deployment/docker/requirements-dev.txt geosight_dev:/home/web/requirements-dev.txt
           docker exec -i geosight_dev bash -c "pip install -r /home/web/requirements.txt && pip install -r /home/web/requirements-dev.txt"
 
-      - name: Backend (Prepare container)
+      - name: Backend (Prepare container and test)
         if: ${{ matrix.test_suite.mode == 'backend' }}
         run: |
           make devweb-entrypoint
