@@ -433,10 +433,12 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
 
             # Since _save_log_data_to_model is called in a loop
             # sequantially, it is fine to just increment success count from
-            # previous success count
-            ImporterLog.objects.filter(
-                id=self.log.id
-            ).update(success_count=F('success_count') + 1)
+            # previous success count.
+            # If we don't need real time update on the success count,
+            # we can update success count once all log_data has
+            # been updated as saved
+            self.log.success_count = self.log.success_count + 1
+            self.log.save()
 
     def process_data_from_records(self) -> (List, List, List, bool):
         """Process data from records.
