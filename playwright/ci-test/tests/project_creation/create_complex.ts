@@ -129,6 +129,21 @@ test.describe('Create complex project', () => {
     await page.locator('li').filter({ hasText: 'Compare layers' }).getByRole('img').click();
     await page.locator('li').filter({ hasText: 'Zonal analysis' }).getByRole('img').click();
 
+    // Filter
+    await page.locator('.TabPrimary').getByText('Filters').click();
+    await page.locator('.Filters').getByTestId('AddCircleIcon').click();
+    await page.getByPlaceholder('Filter name').click();
+    await page.getByText('Pick the field').click();
+    await page.getByRole('option', { name: 'Sector' }).first().click();
+    await page.locator('.FilterEditModalQueryMethod').click();
+    await page.getByRole('option', { name: 'in', exact: true }).click();
+    await page.getByRole('button', { name: 'Open' }).click();
+    await page.getByRole('option', { name: 'Select all' }).click()
+    await page.getByPlaceholder('Filter name').fill('Sector all');
+    await page.getByPlaceholder('Filter description').fill('Description 1');
+    await page.locator('.modal--content').getByRole('checkbox').check();
+    await page.getByRole('button', { name: 'Create filter' }).click();
+
     // Save
     await page.getByText('Save').isEnabled();
     await page.getByText('Save').click();
@@ -199,6 +214,15 @@ test.describe('Create complex project', () => {
     await expect(page.getByText('Draw on map and finish by')).toBeVisible();
     await page.getByText('Click to select').click();
     await expect(page.getByText('Click a feature on the map')).toBeVisible();
+
+    // Check filter
+    await page.getByRole('tab', { name: 'Filters' }).click();
+    await page.getByRole('button', { name: 'Sector all Delete Group' }).click();
+    await page.getByPlaceholder('All selected').click();
+    await page.getByRole('option', { name: 'EDU' }).click();
+    await page.getByRole('option', { name: 'HEALTH' }).click();
+    await page.getByRole('option', { name: 'WASH' }).click();
+    await page.getByRole('option', { name: 'Blank' }).click();
 
     // --------------------------------------------------------------
     // CHECK PROJECT WITH OVERRIDE CONFIG EDIT MODE
