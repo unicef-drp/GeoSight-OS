@@ -130,13 +130,14 @@ export default function RequestDataIndicator(
             const parameters = {
               concept_uuid: unit.id,
               frequency: interval,
-              time__lte: maxDateFilter ? maxDateFilter : new Date().toISOString()
+              date__lte: dateLabel(maxDateFilter ? new Date(maxDateFilter) : new Date()),
+              indicator_id: indicator.id
             }
             if (unit.reference_layer_uuid) {
               parameters.reference_layer_uuid = unit.reference_layer_uuid
             }
             if (minDateFilter) {
-              parameters['time__gte'] = minDateFilter
+              parameters['date__gte'] = dateLabel(new Date(minDateFilter))
             }
             // ------------------------------------------------
             // This is for the data from indicator
@@ -144,11 +145,13 @@ export default function RequestDataIndicator(
             let response = []
             if (!('' + indicator.id).includes('layer_')) {
               await fetchingData(
-                `/api/dashboard/${slug}/indicator/${indicator.id}/values`,
+                `/api/v1/data-browser/values/`,
                 parameters, {}, (output, error) => {
                   if (output) {
                     response = output.map(row => {
-                      const time = row.time * 1000
+                      const date = new Date(row.date)
+                      const time = new Date(row.date).getTime()
+                      const label = dateLabel(date, interval)
                       if (!min || time < min) {
                         min = time
                       }
@@ -156,7 +159,7 @@ export default function RequestDataIndicator(
                         max = time
                       }
                       return {
-                        time: dateLabel(new Date(time), interval),
+                        time: label,
                         value: row.value
                       }
                     })
@@ -174,18 +177,19 @@ export default function RequestDataIndicator(
                 for (let x = 0; x < dynamicLayerIndicators.length; x++) {
                   const indicator = dynamicLayerIndicators[x]
                   await fetchingData(
-                    `/api/dashboard/${slug}/indicator/${indicator.id}/values`,
+                    `/api/v1/data-browser/values/`,
                     parameters, {}, (output, error) => {
                       if (output) {
                         output.map(row => {
-                          const time = row.time * 1000
+                          const date = new Date(row.date)
+                          const time = new Date(row.date).getTime()
+                          const label = dateLabel(date, interval)
                           if (!min || time < min) {
                             min = time
                           }
                           if (!max || time > max) {
                             max = time
                           }
-                          const label = dateLabel(new Date(time), interval)
                           if (!contextByDate[label]) {
                             contextByDate[label] = {}
                           }

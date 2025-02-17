@@ -110,7 +110,7 @@ export default function Config(
                     setData={newData => {
                       updateData(newData)
                     }}
-                    valuesUrl={`/api/indicator/${data.id}/values/flat/`}
+                    valuesUrl={`/api/v1/data-browser/values_string/?indicator_id__in=${data.id}`}
                     defaultStyleRules={data?.style ? data?.style : []}
                     selectableInput={null}
                   /> : null

@@ -37,9 +37,8 @@ from geosight.data.api.dashboard_indicator_layer import (
     DashboardIndicatorLayerAPI
 )
 from geosight.data.api.dashboard_indicator_value import (
-    DashboardIndicatorValuesAPI, DashboardIndicatorDatesAPI,
-    DashboardIndicatorAllValuesAPI,
-    DashboardIndicatorValueListAPI, DashboardEntityDrilldown
+    DashboardIndicatorDatesAPI,
+    DashboardIndicatorAllValuesAPI, DashboardEntityDrilldown
 )
 from geosight.data.api.download_file import (
     DownloadSharepointFile,
@@ -56,9 +55,9 @@ from geosight.data.api.indicator_reference_layer import (
 from geosight.data.api.indicator_value import (
     IndicatorValuesByGeometry,
     IndicatorValueDetail,
-    IndicatorValueListAPI,
-    IndicatorValueValuesAPI,
+    IndicatorValueListAPI
 )
+from geosight.data.api.raster import GetRasterClassificationAPI
 from geosight.data.api.related_table import (
     RelatedTableListAPI, RelatedTableDetailAPI, RelatedTableDataAPI,
     RelatedTableDatesAPI, RelatedTableValuesAPI, RelatedTableFieldDataAPI
@@ -70,7 +69,6 @@ from geosight.data.api.style import (
     StyleListAPI,
     StyleDetailAPI,
 )
-from geosight.data.api.raster import GetRasterClassificationAPI
 
 # ------------------------------------------------------
 dashboard_specific_api = [
@@ -104,11 +102,6 @@ dashboard_specific_api = [
 
     # INDICATOR VALUES
     url(
-        r'^indicator/(?P<pk>\d+)/values/latest$',
-        DashboardIndicatorValuesAPI.as_view(),
-        name='dashboard-indicator-values-api'
-    ),
-    url(
         r'^indicator/(?P<pk>\d+)/values/all$',
         DashboardIndicatorAllValuesAPI.as_view(),
         name='dashboard-indicator-values-all-api'
@@ -117,11 +110,6 @@ dashboard_specific_api = [
         r'^indicator/(?P<pk>\d+)/dates$',
         DashboardIndicatorDatesAPI.as_view(),
         name='dashboard-indicator-dates-api'
-    ),
-    url(
-        r'^indicator/(?P<pk>\d+)/values$',
-        DashboardIndicatorValueListAPI.as_view(),
-        name='dashboard-indicator-values-list-api'
     ),
 
     # BOOKMARKS
@@ -194,11 +182,6 @@ indicator_api = [
         name='indicator-value-detail'
     ),
     url(
-        r'^(?P<pk>\d+)/values/flat/',
-        IndicatorValueValuesAPI.as_view(),
-        name='indicator-values-flat-list-api'
-    ),
-    url(
         r'^(?P<pk>\d+)/values/',
         IndicatorValueListAPI.as_view(), name='indicator-values-list-api'
     ),
@@ -235,7 +218,6 @@ style_api = [
         StyleDetailAPI.as_view(), name='style-detail-api'
     )
 ]
-
 
 # ------------------------------------------------------
 # RASTER

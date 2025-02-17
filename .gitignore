@@ -21,6 +21,7 @@ deployment/node-red/*
 django_project/control
 django_project/frontend/node_modules
 django_project/frontend/bundles/*
+!django_project/frontend/bundles/.keep
 django_project/frontend/package-lock.json
 django_project/frontend/webpack-stats.dev.json
 django_project/frontend/webpack-stats.prod.json
