@@ -254,12 +254,13 @@ test.describe('Create complex project', () => {
 
     // Check indicator layers
     await page.locator('.TabPrimary').getByText('Indicator Layers (5)').click();
-    expect(await page.getByText('Sample Indicator A').nth(1)).toBeVisible();
-    expect(await page.getByText('Sample Indicator B').nth(1)).toBeVisible();
-    expect(await page.getByText('Related Table Layer').nth(1)).toBeVisible();
-    expect(await page.getByText('Chart Layer').nth(1)).toBeVisible();
+    await expect(page.locator('.IndicatorLayers').getByText('Sample Indicator A').first()).toBeVisible();
+    await expect(page.locator('.IndicatorLayers').getByText('Sample Indicator B').first()).toBeVisible();
+    await expect(page.locator('.IndicatorLayers').getByText('Related Table Layer').first()).toBeVisible();
+    await expect(page.locator('.IndicatorLayers').getByText('Pin Layer').first()).toBeVisible();
+    await expect(page.locator('.IndicatorLayers').getByText('Chart Layer').first()).toBeVisible();
 
-    // Check indicator layers
+    // Check related table
     await page.locator('.TabPrimary').getByText('Related Tables (1)').click();
     await expect(page.locator('.RelatedTableConfiguration input').nth(0)).toHaveValue('Ucode');
     await expect(page.locator('.RelatedTableConfiguration input').nth(1)).toHaveValue('ucode');
