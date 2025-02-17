@@ -15,6 +15,8 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import os
+import gzip
+import base64
 import random
 import string
 import uuid
@@ -147,3 +149,15 @@ class temp_disconnect_signal(object):
             receiver=self.receiver,
             sender=self.sender
         )
+
+
+def compress_text(text):
+    """Compress text."""
+    compressed = gzip.compress(text.encode('utf-8'))
+    return base64.b64encode(compressed).decode('utf-8')
+
+
+def decompress_text(compressed_text):
+    """Decompress compressed text."""
+    compressed = base64.b64decode(compressed_text)
+    return gzip.decompress(compressed).decode('utf-8')
