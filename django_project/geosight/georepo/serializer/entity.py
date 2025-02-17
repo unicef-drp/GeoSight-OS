@@ -17,6 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 from rest_framework import serializers
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
+from core.serializer.dynamic_serializer import DynamicModelSerializer
 from geosight.georepo.models.entity import Entity
 
 
@@ -88,7 +89,7 @@ class EntitySerializer(serializers.ModelSerializer):
         fields = ('name', 'geom_code', 'concept_uuid', 'admin_level')
 
 
-class ApiEntitySerializer(serializers.ModelSerializer):
+class ApiEntitySerializer(DynamicModelSerializer):
     """Serializer for Entity."""
 
     levels = {}
@@ -101,19 +102,7 @@ class ApiEntitySerializer(serializers.ModelSerializer):
 
     def entity_level(self, obj: Entity, admin_level: int):
         """Return levels of entity."""
-        try:
-            levels = self.levels[obj.reference_layer.id]
-        except KeyError:
-            levels = []
-            for level in obj.reference_layer.levels:
-                levels.append({
-                    'level': level.level,
-                    'name': level.name
-                })
-        try:
-            return levels[admin_level]
-        except IndexError:
-            return None
+        return None
 
     def get_parents(self, obj: Entity):
         """Return ucode."""
