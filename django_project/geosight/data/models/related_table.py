@@ -288,10 +288,6 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                 has_next = True
             for idx, row in enumerate(rows):
                 data = row[2]
-                try:
-                    date_time = data[date_field]
-                except KeyError:
-                    continue
                 data.update({
                     'id': row[0],
                     'order': row[1],
@@ -300,16 +296,21 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                     'geometry_name': row[5],
                     'admin_level': row[6],
                 })
-                # Update date field
-                data[date_field] = extract_time_string(
-                    format_time=date_format,
-                    value=date_time
-                ).isoformat()
-                # Filter by date
-                if max_time and data[date_field] > max_time:
-                    continue
-                if min_time and data[date_field] < min_time:
-                    continue
+                if date_field:
+                    try:
+                        date_time = data[date_field]
+                        # Update date field
+                        data[date_field] = extract_time_string(
+                            format_time=date_format,
+                            value=date_time
+                        ).isoformat()
+                        # Filter by date
+                        if max_time and data[date_field] > max_time:
+                            continue
+                        if min_time and data[date_field] < min_time:
+                            continue
+                    except KeyError:
+                        continue
                 output.append(data)
         return output, has_next
 

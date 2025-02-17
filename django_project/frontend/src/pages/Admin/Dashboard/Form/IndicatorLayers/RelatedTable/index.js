@@ -235,8 +235,6 @@ export default function RelatedTableLayerConfig(
   if (!relatedTables[0]) {
     return ""
   }
-  console.log('-----------')
-  console.log(rows)
   return (
     <Fragment>
       <Modal

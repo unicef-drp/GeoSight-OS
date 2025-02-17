@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
@@ -42,31 +42,35 @@ function RelatedTableConfiguration({ data, referenceLayerUUID, codeTypes }) {
 
   // Loading data
   useEffect(() => {
-    if (!open) {
-      return
-    }
-    const params = {}
-    if (referenceLayerUUID) {
-      params['reference_layer_uuid'] = referenceLayerUUID
-    }
-    if (data.geography_code_field_name) {
-      params['geography_code_field_name'] = data.geography_code_field_name
-    }
-    if (data.geography_code_type) {
-      params['geography_code_type'] = data.geography_code_type
-    }
-    const url = data.url
-    if (JSON.stringify(params) !== JSON.stringify(prevState.params) || JSON.stringify(url) !== JSON.stringify(prevState.url)) {
-      prevState.params = params
-      prevState.url = url
-      setRelatedTableData(null)
-      fetchingData(
-        url, params, {}, function (response, error) {
-          setRelatedTableData(dictDeepCopy(response))
-        }
-      )
-    }
-  }, [data, referenceLayerUUID])
+      if (!open) {
+        return
+      }
+      const params = {}
+      if (referenceLayerUUID) {
+        params['reference_layer_uuid'] = referenceLayerUUID
+      } else {
+        return;
+      }
+      if (data.geography_code_field_name) {
+        params['geography_code_field_name'] = data.geography_code_field_name
+      }
+      if (data.geography_code_type) {
+        params['geography_code_type'] = data.geography_code_type
+      }
+      const url = `/api/v1/related-tables/${data.id}/geo-data/`
+      if (JSON.stringify(params) !== JSON.stringify(prevState.params) || JSON.stringify(url) !== JSON.stringify(prevState.url)) {
+        prevState.params = params
+        prevState.url = url
+        setRelatedTableData(null)
+        fetchingData(
+          url, params, {}, function (response, error) {
+            setRelatedTableData(dictDeepCopy(response))
+          }
+        )
+      }
+    },
+    [data, data.geography_code_field_name, data.geography_code_type, referenceLayerUUID]
+  )
 
 
   const relatedFields = relatedTableData ? getRelatedTableFields(data, relatedTableData) : null
