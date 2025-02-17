@@ -34,7 +34,8 @@ import { FetchSourceData, FetchSourceGeometryData } from "../Data/SourceData";
 import { SourceDataKey, SourceDataType } from "../Data/types.d";
 import {
   FetchFromDataOptions,
-  FetchIndicatorOptions
+  FetchIndicatorOptions,
+  FetchRelatedTableOptions
 } from "../Data/DataOptions";
 
 /** Props for input data **/
@@ -253,13 +254,19 @@ export const FilterInputData = memo(
               <FetchIndicatorOptions
                 id={id}
                 onChange={receiveOptions}
-              /> : <FetchFromDataOptions
-                id={id}
-                data={data}
-                operator={operator}
-                keyField={keyField}
-                onChange={receiveOptions}
-              />
+              /> : sourceDataType === SourceDataType.RELATED_TABLE ?
+                <FetchRelatedTableOptions
+                  id={id}
+                  keyField={keyField}
+                  source={source}
+                  onChange={receiveOptions}
+                /> : <FetchFromDataOptions
+                  id={id}
+                  data={data}
+                  operator={operator}
+                  keyField={keyField}
+                  onChange={receiveOptions}
+                />
           }
         </> : null
       }

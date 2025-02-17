@@ -102,12 +102,67 @@ export const FetchIndicatorOptions = memo(
         // @ts-ignore
         prev.current = currentKey
         onChange(['Loading'])
-        console.log(parameters)
         fetchingData(
           '/api/v1/data-browser/statistic/',
           parameters, {}, (output: any, error: any) => {
             if (prev.current === currentKey) {
               onChange([output['min'], output['max']])
+            }
+          }
+        )
+      }
+    }, [parameters]);
+
+    return null
+  }
+)
+
+/** This is for value */
+export const FetchRelatedTableOptions = memo(
+  ({ id, source, keyField, onChange }: FetchOptionsData) => {
+    const prev = useRef();
+    const {
+      referenceLayers
+      // @ts-ignore
+    } = useSelector(state => state.map);
+    // @ts-ignore
+    const selectedAdminLevel = useSelector(state => state.selectedAdminLevel);
+
+    // Geometry parameters
+    const adminLevel = selectedAdminLevel?.level
+    let datasets = []
+    if (referenceLayers) {
+      datasets = referenceLayers.map((_: any) => _.identifier)
+    }
+
+    const parameters = {
+      admin_level: adminLevel,
+      reference_layer_uuid__in: datasets.join(','),
+      field: keyField,
+      geography_code_field_name: source?.geography_code_field_name,
+      geography_code_type: source?.geography_code_type,
+    }
+
+    const key = JSON.stringify(parameters)
+
+    /** Create loading **/
+    useEffect(() => {
+      if (!source) {
+        return
+      }
+      if ([null, undefined].includes(adminLevel) || !datasets.length) {
+        return
+      }
+      const currentKey = key
+      if (currentKey !== prev.current) {
+        // @ts-ignore
+        prev.current = currentKey
+        onChange(['Loading'])
+        fetchingData(
+          `/api/v1/related-tables/${id}/geo-data/data_field/`,
+          parameters, {}, (output: any, error: any) => {
+            if (prev.current === currentKey) {
+              onChange(output)
             }
           }
         )

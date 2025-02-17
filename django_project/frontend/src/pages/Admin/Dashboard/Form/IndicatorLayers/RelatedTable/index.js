@@ -168,7 +168,7 @@ export default function RelatedTableLayerConfig(
     if (relatedTableConfig.geography_code_type) {
       params['geography_code_type'] = relatedTableConfig.geography_code_type
     }
-    const url = relatedTableConfig.url.replace('data', 'values')
+    const url = `/api/v1/related-tables/${relatedTableConfig.id}/geo-data/`
     if (JSON.stringify(params) !== JSON.stringify(prevState.params) || JSON.stringify(url) !== JSON.stringify(prevState.url)) {
       prevState.params = params
       prevState.url = url

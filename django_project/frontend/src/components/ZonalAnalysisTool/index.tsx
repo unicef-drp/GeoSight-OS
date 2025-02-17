@@ -355,7 +355,6 @@ export const ZonalAnalysisTool = forwardRef((
       () =>
         debounce(
           (newValue) => {
-            console.log(newValue)
             setConfig({
               ...config,
               buffer: parseInt(newValue)

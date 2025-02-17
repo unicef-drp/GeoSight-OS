@@ -264,7 +264,7 @@ class RelatedTableApiTest(BasePermissionTest.TestCase):
         resource.permission.public_permission = PERMISSIONS.NONE.name
         resource.permission.save()
 
-        url = reverse(url_tag, kwargs={'pk': resource.id}) + '?' + params
+        url = reverse(url_tag, args=[resource.id]) + '?' + params
 
         # Check the list returned
         self.assertRequestGetView(url, 403)  # Non login
@@ -302,6 +302,20 @@ class RelatedTableApiTest(BasePermissionTest.TestCase):
         """Test data access."""
         self.data_api_assert('related-table-data-api')
 
+    def test_data_values_api(self):
+        """Test data access."""
+        param = (
+            f'reference_layer_uuid={self.uuid}&'
+            f'geography_code_field_name={self.geography_code_field_name}&'
+            f'geography_code_type={self.geography_code_type}&'
+            f'date_field={self.date_field}'
+        )
+        response = self.data_api_assert('related_tables_geo_data-list', param)
+        self.assertEqual(len(response.json()), 3)
+        self.assertEqual(
+            [res['geom_id'] for res in response.json()], ['A', 'A', 'B']
+        )
+
     def test_data_dates_api(self):
         """Test data access."""
         param = (
@@ -310,7 +324,7 @@ class RelatedTableApiTest(BasePermissionTest.TestCase):
             f'geography_code_type={self.geography_code_type}&'
             f'date_field={self.date_field}'
         )
-        response = self.data_api_assert('related-table-dates-api', param)
+        response = self.data_api_assert('related_tables_geo_data-dates', param)
         self.assertEqual(len(response.json()), 2)
         self.assertEqual(
             response.json(),
@@ -320,20 +334,32 @@ class RelatedTableApiTest(BasePermissionTest.TestCase):
     def test_data_field_api(self):
         """Test data access."""
         param = 'field=population'
-        response = self.data_api_assert('related-table-field-data-api', param)
+        response = self.data_api_assert(
+            'related_tables_geo_data-data-field', param
+        )
         self.assertEqual(len(response.json()), 3)
         self.assertEqual(response.json(), [1, 2, 3])
 
-    def test_data_values_api(self):
-        """Test data access."""
         param = (
             f'reference_layer_uuid={self.uuid}&'
             f'geography_code_field_name={self.geography_code_field_name}&'
             f'geography_code_type={self.geography_code_type}&'
-            f'date_field={self.date_field}'
+            f'field=population'
         )
-        response = self.data_api_assert('related-table-values-api', param)
+        response = self.data_api_assert(
+            'related_tables_geo_data-data-field', param
+        )
         self.assertEqual(len(response.json()), 3)
-        self.assertEqual(
-            [res['geom_id'] for res in response.json()], ['A', 'A', 'B']
+        self.assertEqual(response.json(), ['1', '2', '3'])
+
+        param = (
+            f'reference_layer_uuid__in={self.uuid}&'
+            f'geography_code_field_name={self.geography_code_field_name}&'
+            f'geography_code_type={self.geography_code_type}&'
+            f'field=population'
         )
+        response = self.data_api_assert(
+            'related_tables_geo_data-data-field', param
+        )
+        self.assertEqual(len(response.json()), 3)
+        self.assertEqual(response.json(), ['1', '2', '3'])

@@ -62,8 +62,7 @@ from geosight.data.api.indicator_value import (
 )
 from geosight.data.api.raster import GetRasterClassificationAPI
 from geosight.data.api.related_table import (
-    RelatedTableListAPI, RelatedTableDetailAPI, RelatedTableDataAPI,
-    RelatedTableDatesAPI, RelatedTableValuesAPI, RelatedTableFieldDataAPI
+    RelatedTableListAPI, RelatedTableDetailAPI, RelatedTableDataAPI
 )
 from geosight.data.api.sharepoint import (
     SharepointConfigListAPI, SharepointInformationAPI
@@ -263,18 +262,6 @@ related_table_api = [
     url(
         r'^(?P<pk>\d+)/data',
         RelatedTableDataAPI.as_view(), name='related-table-data-api'
-    ),
-    url(
-        r'^(?P<pk>\d+)/dates',
-        RelatedTableDatesAPI.as_view(), name='related-table-dates-api'
-    ),
-    url(
-        r'^(?P<pk>\d+)/field/data',
-        RelatedTableFieldDataAPI.as_view(), name='related-table-field-data-api'
-    ),
-    url(
-        r'^(?P<pk>\d+)/values',
-        RelatedTableValuesAPI.as_view(), name='related-table-values-api'
     ),
     url(
         r'^(?P<pk>\d+)',

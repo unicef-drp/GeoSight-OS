@@ -29,8 +29,7 @@ import {
   DataManagementActiveIcon,
   MapActiveIcon
 } from "../../../../components/Icons";
-import AdminList from "../../../../components/AdminList";
-import {ResourceMeta} from "../../../../components/AdminList";
+import AdminList, { ResourceMeta } from "../../../../components/AdminList";
 
 import './style.scss';
 
@@ -48,51 +47,6 @@ export function resourceActions(params, noShare = false) {
             <PermissionModal
               name={params.row.name}
               urlData={urls.api.permission.replace('/0', `/${params.id}`)}
-              additionalTabs={
-                permission.edit ? {
-                  'Push API':
-                    <div className='Other'>
-                      You can push data using api POST &nbsp;
-                      <a
-                        target={"_blank"}
-                        href={location.origin + '/api/indicator/' + params.row.id + '/values/'}>
-                        {location.origin + '/api/indicator/' + params.row.id + '/values/'}
-                      </a>
-                      <br/>
-                      <br/>
-                      <div>
-                        You need to login or using Basic Authentication to
-                        push the data.
-                        You also need to have edit permission on the data,
-                        and you role should be
-                        contributor, creator or admin.
-
-                      </div>
-                      <br/>
-                      <div>
-                        Payload data that will be pushed should be in
-                        array of json.
-
-                        Example:
-                        <pre>
-                              <code dangerouslySetInnerHTML={{
-                                __html: JSON.stringify([{
-                                    "reference_layer": "-Reference layer uuid-",
-                                    "value": "-value of data-",
-                                    "admin_level": "-admin level in integer-",
-                                    "geom_id": "-geometry code-",
-                                    "geom_id_type": "-code type of geometry code. e.g : Pcode, ucode, etc-",
-                                    "timestamp": "-Timestamp of data-"
-                                  }], null, 2
-                                )
-                              }}>
-                              </code>
-                            </pre>
-
-                      </div>
-                    </div>
-                } : {}
-              }
             />
           </a>
         }

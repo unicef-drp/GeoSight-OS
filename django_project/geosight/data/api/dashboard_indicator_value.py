@@ -310,7 +310,9 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
             except KeyError:
                 pass
             values, has_next = related_table.data_with_query(
-                reference_layer_uuid=reference_layer.identifier,
+                reference_layer_uuids=[
+                    reference_layer.identifier
+                ],
                 geo_field=dashboard_related.geography_code_field_name,
                 geo_type=dashboard_related.geography_code_type,
                 date_field=date_field,

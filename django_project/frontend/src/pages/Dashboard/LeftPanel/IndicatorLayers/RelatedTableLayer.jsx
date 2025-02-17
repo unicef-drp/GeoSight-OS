@@ -93,7 +93,7 @@ export default function RelatedTableLayer({ relatedTableLayer }) {
       }
       params.version = relatedTable.version
       fetchingData(
-        '/api/related-table/' + relatedTable.id + '/dates', params, {}, function (response, error) {
+        `/api/v1/related-tables/${relatedTable.id}/geo-data/dates/`, params, {}, function (response, error) {
           if (!error) {
             dispatch(Actions.IndicatorLayerMetadata.update(id, {
               dates: response,
