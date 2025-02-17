@@ -17,25 +17,32 @@ __copyright__ = ('Copyright 2023, Unicef')
 import json
 
 from django.http import HttpResponseBadRequest
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
-from geosight.importer.models.importer import Importer
+from core.api.base import FilteredAPI
+from core.pagination import Pagination
+from geosight.importer.models import Importer
 from geosight.importer.serializer.importer import ImporterSerializer
 
 
-class ScheduleJobListAPI(APIView):
+class ScheduleJobListAPI(ListAPIView, FilteredAPI):
     """Return Schedule Job list."""
 
-    def get(self, request):
-        """Return Schedule Job  list."""
-        return Response(
-            ImporterSerializer(
-                Importer.objects.filter(job__isnull=False),
-                many=True,
-                exclude=['logs']
-            ).data
-        )
+    pagination_class = Pagination
+    serializer_class = ImporterSerializer
+
+    def get_queryset(self):
+        """Return queryset of API."""
+        query = Importer.objects.all().order_by('job_name')
+        if not self.request.user.profile.is_admin:
+            query = Importer.objects.filter(
+                creator=self.request.user
+            ).order_by('job_name')
+
+        # Filter by parameters
+        query = self.filter_query(self.request, query, ['page', 'page_size'])
+        return query
 
     def put(self, request):
         """Delete an basemap."""

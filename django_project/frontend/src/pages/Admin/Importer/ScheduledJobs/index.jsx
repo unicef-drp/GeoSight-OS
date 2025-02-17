@@ -132,6 +132,7 @@ export default function ScheduledJobs({ ...props }) {
     <AdminListContent
       columns={columns}
       pageName={pageNames.DataManagement}
+      searchKey={'job_name__icontains'}
       title={pageNames.ScheduledJobs}
       url={{
         list: urls.api.scheduledJobs.list
