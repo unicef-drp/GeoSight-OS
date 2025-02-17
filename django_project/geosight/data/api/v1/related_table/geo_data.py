@@ -83,7 +83,12 @@ class RelatedTableGeoDataViewSet(viewsets.ReadOnlyModelViewSet):
         """List of related table rows."""
         related_table = self._get_related_table()
         try:
-            reference_layer_uuid = request.GET['reference_layer_uuid']
+            try:
+                reference_layer_uuid = request.GET[
+                    'reference_layer_uuid__in'
+                ].split(',')
+            except KeyError:
+                reference_layer_uuid = [request.GET['reference_layer_uuid']]
             geo_field = request.GET['geography_code_field_name']
             geo_type = request.GET['geography_code_type']
         except KeyError as e:
@@ -112,7 +117,7 @@ class RelatedTableGeoDataViewSet(viewsets.ReadOnlyModelViewSet):
             offset = (page - 1) * int(page_size)
 
         data, has_next = related_table.data_with_query(
-            reference_layer_uuid=reference_layer_uuid,
+            reference_layer_uuids=reference_layer_uuid,
             geo_field=geo_field,
             geo_type=geo_type,
             date_field=request.GET.get('date_field', None),
@@ -146,14 +151,19 @@ class RelatedTableGeoDataViewSet(viewsets.ReadOnlyModelViewSet):
         """Get dates of data."""
         related_table = self._get_related_table()
         try:
-            reference_layer_uuid = request.GET['reference_layer_uuid']
+            try:
+                reference_layer_uuid = request.GET[
+                    'reference_layer_uuid__in'
+                ].split(',')
+            except KeyError:
+                reference_layer_uuid = [request.GET['reference_layer_uuid']]
             geo_field = request.GET['geography_code_field_name']
             geo_type = request.GET['geography_code_type']
         except KeyError as e:
             return HttpResponseBadRequest(f'{e} is required')
 
         data = related_table.dates_with_query(
-            reference_layer_uuid=reference_layer_uuid,
+            reference_layer_uuids=reference_layer_uuid,
             geo_field=geo_field,
             geo_type=geo_type,
             date_field=request.GET.get('date_field', None),
@@ -167,16 +177,27 @@ class RelatedTableGeoDataViewSet(viewsets.ReadOnlyModelViewSet):
         """Get data field."""
         related_table = self._get_related_table()
         try:
-            reference_layer_uuid = request.GET['reference_layer_uuid']
-            geo_field = request.GET['geography_code_field_name']
-            geo_type = request.GET['geography_code_type']
             field = request.GET['field']
+            geo_field = None
+            geo_type = None
+            try:
+                reference_layer_uuid = request.GET[
+                    'reference_layer_uuid__in'
+                ].split(',')
+            except KeyError:
+                reference_layer_uuid = request.GET.get('reference_layer_uuid')
+                if reference_layer_uuid:
+                    reference_layer_uuid = [reference_layer_uuid]
+
+            if reference_layer_uuid:
+                geo_field = request.GET['geography_code_field_name']
+                geo_type = request.GET['geography_code_type']
         except KeyError as e:
             return HttpResponseBadRequest(f'{e} is required')
 
         data = related_table.data_field(
             field=field,
-            reference_layer_uuid=reference_layer_uuid,
+            reference_layer_uuids=reference_layer_uuid,
             geo_type=geo_type,
             geo_field=geo_field
         )

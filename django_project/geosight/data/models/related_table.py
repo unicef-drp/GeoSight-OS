@@ -183,10 +183,14 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
             )
 
     def query(
-            self, reference_layer, geo_field: str, select: str,
+            self, reference_layer_ids: list,
+            geo_field: str, select: str,
             geo_type='ucode'
     ):
         """Return query."""
+        reference_layer_ids = ','.join(
+            [f'{_id}' for _id in reference_layer_ids]
+        )
         if geo_type.lower() == 'ucode':
             return (
                 f"select {select} "
@@ -197,7 +201,7 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                 f"  as ref_entity "
                 f"  ON ref_entity.entity_id = entity.id "
                 f"WHERE row.table_id={self.id} AND "
-                f"ref_entity.reference_layer_id={reference_layer.id} "
+                f"ref_entity.reference_layer_id IN ({reference_layer_ids}) "
             )
 
         else:
@@ -213,28 +217,36 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                 f"  as ref_entity "
                 f"  ON ref_entity.entity_id = entity.id "
                 f"WHERE row.table_id={self.id} AND "
-                f"ref_entity.reference_layer_id={reference_layer.id} "
+                f"ref_entity.reference_layer_id IN ({reference_layer_ids}) "
             )
 
     def data_field(
             self, field,
-            reference_layer_uuid=None,
+            reference_layer_uuids=None,
             geo_field=None, geo_type='ucode'
     ):
         """Return data field."""
         from geosight.georepo.models.reference_layer import ReferenceLayerView
-        if not reference_layer_uuid:
+        if not reference_layer_uuids:
             return self.relatedtablerow_set.values_list(
                 f'data__{field}', flat=True
             ).distinct(f'data__{field}').order_by(f'data__{field}')
         else:
             with connection.cursor() as cursor:
-                reference_layer = ReferenceLayerView.objects.get(
-                    identifier=reference_layer_uuid
-                )
+                # Update the cast
+                cast = ''
+                _field = self.relatedtablefield_set.filter(name=field).first()
+                if _field:
+                    if _field.type == 'number':
+                        cast = '::numeric'
+
+                # query the data
+                reference_layer_ids = ReferenceLayerView.objects.filter(
+                    identifier__in=reference_layer_uuids
+                ).values_list('id', flat=True)
                 query = self.query(
-                    reference_layer=reference_layer,
-                    select=f"DISTINCT(data ->> '{field}')",
+                    reference_layer_ids=reference_layer_ids,
+                    select=f"DISTINCT(data ->> '{field}'){cast}",
                     geo_field=geo_field,
                     geo_type=geo_type
                 )
@@ -243,25 +255,22 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                 return [row[0] for row in rows]
 
     def data_with_query(
-            self, reference_layer_uuid,
+            self, reference_layer_uuids,
             geo_field, date_field=None, date_format=None, geo_type='ucode',
             max_time=None, min_time=None, limit=25, offset=None
     ):
         """Return data of related table."""
         from geosight.georepo.models.reference_layer import ReferenceLayerView
-        try:
-            reference_layer = ReferenceLayerView.objects.get(
-                identifier=reference_layer_uuid
-            )
-        except ReferenceLayerView.DoesNotExist:
-            return [], False
+        reference_layer_ids = ReferenceLayerView.objects.filter(
+            identifier__in=reference_layer_uuids
+        ).values_list('id', flat=True)
 
         # Check codes based on code type
         output = []
         has_next = False
         with connection.cursor() as cursor:
             query = self.query(
-                reference_layer=reference_layer,
+                reference_layer_ids=reference_layer_ids,
                 geo_field=geo_field,
                 select=(
                     "row.id, row.order, row.data::json, "
@@ -305,20 +314,17 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
         return output, has_next
 
     def dates_with_query(
-            self, reference_layer_uuid,
+            self, reference_layer_uuids,
             geo_field, date_field=None, date_format=None, geo_type='ucode'
     ):
         """Return data of related table."""
         from geosight.georepo.models.reference_layer import ReferenceLayerView
-        try:
-            reference_layer = ReferenceLayerView.objects.get(
-                identifier=reference_layer_uuid
-            )
-        except ReferenceLayerView.DoesNotExist:
-            return []
+        reference_layer_ids = ReferenceLayerView.objects.filter(
+            identifier__in=reference_layer_uuids
+        ).values_list('id', flat=True)
         with connection.cursor() as cursor:
             query = self.query(
-                reference_layer=reference_layer,
+                reference_layer_ids=reference_layer_ids,
                 geo_field=geo_field,
                 select=f"DISTINCT(data ->> '{date_field}')",
                 geo_type=geo_type

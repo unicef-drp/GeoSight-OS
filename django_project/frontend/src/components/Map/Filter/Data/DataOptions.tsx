@@ -102,7 +102,6 @@ export const FetchIndicatorOptions = memo(
         // @ts-ignore
         prev.current = currentKey
         onChange(['Loading'])
-        console.log(parameters)
         fetchingData(
           '/api/v1/data-browser/statistic/',
           parameters, {}, (output: any, error: any) => {
@@ -120,13 +119,8 @@ export const FetchIndicatorOptions = memo(
 
 /** This is for value */
 export const FetchRelatedTableOptions = memo(
-  ({ id, onChange }: FetchOptionsData) => {
+  ({ id, source, keyField, onChange }: FetchOptionsData) => {
     const prev = useRef();
-    const {
-      minDate,
-      maxDate
-      // @ts-ignore
-    } = useSelector(state => state.selectedGlobalTimeConfig);
     const {
       referenceLayers
       // @ts-ignore
@@ -142,24 +136,21 @@ export const FetchRelatedTableOptions = memo(
     }
 
     const parameters = {
-      indicator_id: id,
       admin_level: adminLevel,
-      reference_layer_id__in: datasets.join(',')
-    }
-    if (maxDate) {
-      // @ts-ignore
-      parameters['date__lte'] = maxDate.split('T')[0]
-    }
-    if (minDate) {
-      // @ts-ignore
-      parameters['date__gte'] = minDate.split('T')[0]
+      reference_layer_uuid__in: datasets.join(','),
+      field: keyField,
+      geography_code_field_name: source?.geography_code_field_name,
+      geography_code_type: source?.geography_code_type,
     }
 
     const key = JSON.stringify(parameters)
 
     /** Create loading **/
     useEffect(() => {
-      if (!maxDate || [null, undefined].includes(adminLevel) || !datasets.length) {
+      if (!source) {
+        return
+      }
+      if ([null, undefined].includes(adminLevel) || !datasets.length) {
         return
       }
       const currentKey = key
@@ -167,12 +158,11 @@ export const FetchRelatedTableOptions = memo(
         // @ts-ignore
         prev.current = currentKey
         onChange(['Loading'])
-        console.log(parameters)
         fetchingData(
-          '/api/v1/data-browser/statistic/',
+          `/api/v1/related-tables/${id}/geo-data/data_field/`,
           parameters, {}, (output: any, error: any) => {
             if (prev.current === currentKey) {
-              onChange([output['min'], output['max']])
+              onChange(output)
             }
           }
         )

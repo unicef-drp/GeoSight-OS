@@ -29,6 +29,7 @@ export interface FetchOptionsData {
   // TODO:
   //  We don't need data after all options already using API
   id: string;
+  source?: any;
   data?: any[];
   keyField?: string;
   operator?: typeof WHERE_OPERATOR[keyof typeof WHERE_OPERATOR];
