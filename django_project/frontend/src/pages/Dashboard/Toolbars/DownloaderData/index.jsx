@@ -197,7 +197,7 @@ export default function DownloaderData() {
   ) => {
     // Get per geometries
     geometries.map(geom => {
-      const ucode = extractCode(geom)
+      const ucode = extractCode(geom, geoField)
       const row = Object.assign({}, {
         GeographyCode: geom.ucode,
         GeographyName: geom.name,
@@ -266,8 +266,12 @@ export default function DownloaderData() {
                   for (let j = 0; j < dynamicLayerIndicators.length; j++) {
                     const indicator = dynamicLayerIndicators[j]
                     await fetchingData(
-                      `/api/dashboard/${slug}/indicator/${indicator.id}/values`,
-                      { extras: 'concept_uuid,date' }, {}, (response, error) => {
+                      `/api/v1/data-browser/`,
+                      {
+                        indicator_id: indicator.id,
+                        reference_layer_id__in: referenceLayer.identifier,
+                        page_size: 1000
+                      }, {}, (response, error) => {
                         if (!error) {
                           dynamicIndicatorsData[indicator.id] = {
                             data: response,
@@ -287,10 +291,10 @@ export default function DownloaderData() {
                     response => {
                       response.map(row => {
                         row.indicator = indicatorLayer
-                        if (!output[row.concept_uuid]) {
-                          output[row.concept_uuid] = []
+                        if (!output[row.geom_id]) {
+                          output[row.geom_id] = []
                         }
-                        output[row.concept_uuid].push(row)
+                        output[row.geom_id].push(row)
                       })
                     },
                     true
@@ -335,10 +339,10 @@ export default function DownloaderData() {
                             const output = {} // Output by concept uuid
                             rows.map(row => {
                               row.indicator = indicatorLayer
-                              if (!output[row.concept_uuid]) {
-                                output[row.concept_uuid] = []
+                              if (!output[row.geom_id]) {
+                                output[row.geom_id] = []
                               }
-                              output[row.concept_uuid].push(row)
+                              output[row.geom_id].push(row)
                             })
                             indicatorValueByGeometry[indicatorLayer.id] = output
                           }
@@ -351,15 +355,19 @@ export default function DownloaderData() {
                   for (let j = 0; j < indicatorLayer.indicators.length; j++) {
                     const indicator = indicatorLayer.indicators[j]
                     await fetchingData(
-                      `/api/dashboard/${slug}/indicator/${indicator.id}/values`,
-                      { extras: 'concept_uuid,date' }, {}, (response, error) => {
+                      `/api/v1/data-browser/`,
+                      {
+                        indicator_id: indicator.id,
+                        reference_layer_id__in: referenceLayer.identifier,
+                        page_size: 1000
+                      }, {}, (response, error) => {
                         if (!error) {
                           response.map(row => {
                             row.indicator = indicator
-                            if (!output[row.concept_uuid]) {
-                              output[row.concept_uuid] = []
+                            if (!output[row.geom_id]) {
+                              output[row.geom_id] = []
                             }
-                            output[row.concept_uuid].push(row)
+                            output[row.geom_id].push(row)
                           })
                         }
                       }
@@ -379,7 +387,7 @@ export default function DownloaderData() {
               const output = getIndicatorValueByGeometry(
                 indicatorLayer, indicators, indicatorsData,
                 relatedTables, relatedTableData, selectedGlobalTime,
-                geoField, filteredGeometries
+                geoField, filteredGeometries, referenceLayer, selectedAdminLevel
               )
               indicatorValueByGeometry[indicatorLayer.id] = output
             })
