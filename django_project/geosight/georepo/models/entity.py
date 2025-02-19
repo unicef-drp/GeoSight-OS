@@ -17,7 +17,8 @@ __copyright__ = ('Copyright 2023, Unicef')
 from datetime import datetime
 
 from django.contrib.gis.db import models
-from django.db.models import Q, Subquery
+from django.db import connection
+from django.db.models import Q, Subquery, Max, Min
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
@@ -83,6 +84,18 @@ class Entity(models.Model):
     )
     centroid = models.PointField(
         null=True, blank=True
+    )
+
+    # Country
+    country = models.ForeignKey(
+        'self',
+        help_text=_(
+            'The country of the entity. '
+            'If null, it is the country of the entity.'
+        ),
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
     )
 
     class Meta:  # noqa: D106
@@ -252,6 +265,34 @@ class Entity(models.Model):
             admin_level=self.admin_level + 1,
             end_date__isnull=True
         )
+
+    @staticmethod
+    def assign_country():
+        """Assign country to entity."""
+        query = """            
+            UPDATE geosight_georepo_entity AS entity
+            SET country_id = parent.id
+            FROM geosight_georepo_entity AS parent 
+            WHERE
+                entity.id BETWEEN %(start_id)s AND %(end_id)s
+            AND  
+                entity.parents ->> (entity.admin_level - 1) = parent.geom_id;            
+        """
+        id__max = Entity.objects.aggregate(
+            Max('id')
+        )['id__max']
+        id__min = Entity.objects.aggregate(
+            Min('id')
+        )['id__min']
+        step = 1000000
+        with connection.cursor() as cursor:
+            for i in range(id__min, id__max + 1, step):
+                start_id = i
+                end_id = i + step
+                print(f"Processing IDs from {start_id} to {end_id}")
+                params = {'start_id': start_id, 'end_id': end_id}
+                cursor.execute(query, params)
+                connection.commit()
 
 
 class EntityCode(models.Model):

@@ -37,6 +37,5 @@ class Migration(migrations.Migration):
                 'ordering': ('-date',),
                 'managed': False,
             },
-            bases=('geosight_data.indicatorvalue',),
         ),
     ]

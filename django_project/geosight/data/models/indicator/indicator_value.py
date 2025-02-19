@@ -15,11 +15,16 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib.gis.db import models
+from django.db import connection
+from django.db.models import Min, Max
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
-from geosight.data.models.indicator.indicator import Indicator, IndicatorType
+from geosight.data.models.indicator.indicator import Indicator
+from geosight.data.models.indicator.indicator_type import (
+    IndicatorType, IndicatorTypeChoices
+)
 from geosight.georepo.models.entity import Entity
 
 
@@ -27,9 +32,6 @@ class IndicatorValue(models.Model):
     """The data of indicator that saved per date and geometry."""
 
     # This is geom id for the value
-    indicator = models.ForeignKey(
-        Indicator, on_delete=models.CASCADE
-    )
     date = models.DateField(
         _('Date'),
         help_text=_('The date of the value harvested.')
@@ -45,10 +47,73 @@ class IndicatorValue(models.Model):
         help_text='This is ucode from georepo.'
     )
 
+    # Indicator that linked to this value
+    indicator = models.ForeignKey(
+        Indicator, on_delete=models.CASCADE
+    )
     # Entity that linked to this value
     entity = models.ForeignKey(
         Entity, null=True, blank=True,
         on_delete=models.SET_NULL
+    )
+
+    # ------------------------------
+    # This is as a flat table
+    # ------------------------------
+    # Indicator
+    # ------------------------------
+    indicator_name = models.CharField(
+        max_length=512,
+        null=True, blank=True,
+        db_index=True
+    )
+    indicator_type = models.CharField(
+        max_length=256,
+        null=True, blank=True,
+        choices=IndicatorTypeChoices,
+        db_index=True
+    )
+    indicator_shortcode = models.CharField(
+        max_length=512,
+        null=True, blank=True,
+        help_text=Indicator.shortcode_helptext,
+        db_index=True
+    )
+    # ------------------------------
+    # Entity
+    # ------------------------------
+    admin_level = models.IntegerField(
+        null=True, blank=True,
+        db_index=True
+    )
+    concept_uuid = models.CharField(
+        max_length=256,
+        help_text='This is concept uuid from georepo.',
+        null=True, blank=True,
+        db_index=True
+    )
+    entity_start_date = models.DateTimeField(
+        null=True, blank=True,
+        db_index=True
+    )
+    entity_end_date = models.DateTimeField(
+        null=True, blank=True,
+        db_index=True
+    )
+    # ------------------------------
+    # Country
+    # ------------------------------
+    country = models.ForeignKey(
+        Entity,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='indicator_value_country',
+    )
+    country_name = models.CharField(
+        max_length=512,
+        null=True, blank=True,
+        db_index=True
     )
 
     class Meta:  # noqa: D106
@@ -58,6 +123,12 @@ class IndicatorValue(models.Model):
             models.Index(fields=['geom_id'], name='indicator_value_geom_id'),
             models.Index(
                 fields=['indicator', 'entity']
+            ),
+            models.Index(
+                fields=['country_id']
+            ),
+            models.Index(
+                fields=['indicator', 'country_id']
             ),
         ]
 
@@ -130,6 +201,63 @@ class IndicatorValue(models.Model):
         except AttributeError:
             pass
         return extra_value
+
+    @staticmethod
+    def assign_flat_table():
+        """Assign flat table."""
+        entity_query = """            
+            UPDATE geosight_data_indicatorvalue AS value
+            SET entity_id = entity.id,
+                admin_level = entity.admin_level,
+                concept_uuid = entity.concept_uuid,
+                entity_start_date = entity.start_date,
+                entity_end_date = entity.end_date,
+                country_id = CASE 
+                        WHEN entity.parents IS NULL OR jsonb_array_length(entity.parents) = 0 THEN entity.id
+                        ELSE country.id
+                END,
+                country_name = CASE 
+                    WHEN entity.parents IS NULL OR jsonb_array_length(entity.parents) = 0 THEN entity.name
+                    ELSE country.name
+                END
+            FROM 
+                geosight_georepo_entity AS entity
+            LEFT JOIN geosight_georepo_entity AS country ON entity.country_id=country.id
+            WHERE 
+                value.geom_id = entity.geom_id
+                AND 
+                value.id BETWEEN %(start_id)s AND %(end_id)s
+                AND value.country_id IS NULL;         
+        """
+        indicator_query = """            
+            UPDATE geosight_data_indicatorvalue AS value
+            SET indicator_name = indicator.name,
+                indicator_type = indicator.type,
+                indicator_shortcode = indicator.shortcode
+            FROM geosight_data_indicator AS indicator
+            WHERE 
+                value.indicator_id = indicator.id 
+                AND value.id BETWEEN %(start_id)s AND %(end_id)s
+                AND value.indicator_name IS NULL;                
+        """
+        id__max = IndicatorValue.objects.aggregate(
+            Max('id')
+        )['id__max']
+        id__min = IndicatorValue.objects.aggregate(
+            Min('id')
+        )['id__min']
+        step = 3000000  # 1 million
+        with connection.cursor() as cursor:
+            for i in range(id__min, id__max + 1, step):
+                start_id = i
+                end_id = i + step
+                params = {'start_id': start_id, 'end_id': end_id}
+                print(f"Processing entity, IDs from {start_id} to {end_id}")
+                cursor.execute(entity_query, params)
+                connection.commit()
+                print(f"Processing indicator, IDs from {start_id} to {end_id}")
+                cursor.execute(indicator_query, params)
+                connection.commit()
 
 
 class IndicatorExtraValue(models.Model):
