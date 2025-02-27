@@ -56,53 +56,6 @@ class IndicatorValue(models.Model):
         Entity, null=True, blank=True,
         on_delete=models.SET_NULL
     )
-
-    # ------------------------------
-    # This is as a flat table
-    # ------------------------------
-    # Indicator
-    # ------------------------------
-    indicator_name = models.CharField(
-        max_length=512,
-        null=True, blank=True,
-        db_index=True
-    )
-    indicator_type = models.CharField(
-        max_length=256,
-        null=True, blank=True,
-        choices=IndicatorTypeChoices,
-        db_index=True
-    )
-    indicator_shortcode = models.CharField(
-        max_length=512,
-        null=True, blank=True,
-        help_text=Indicator.shortcode_helptext,
-        db_index=True
-    )
-    # ------------------------------
-    # Entity
-    # ------------------------------
-    admin_level = models.IntegerField(
-        null=True, blank=True,
-        db_index=True
-    )
-    concept_uuid = models.CharField(
-        max_length=256,
-        help_text='This is concept uuid from georepo.',
-        null=True, blank=True,
-        db_index=True
-    )
-    entity_start_date = models.DateTimeField(
-        null=True, blank=True,
-        db_index=True
-    )
-    entity_end_date = models.DateTimeField(
-        null=True, blank=True,
-        db_index=True
-    )
-    # ------------------------------
-    # Country
-    # ------------------------------
     country = models.ForeignKey(
         Entity,
         on_delete=models.SET_NULL,
@@ -110,11 +63,54 @@ class IndicatorValue(models.Model):
         blank=True,
         related_name='indicator_value_country',
     )
-    country_name = models.CharField(
-        max_length=512,
-        null=True, blank=True,
-        db_index=True
-    )
+
+    # ------------------------------
+    # This is as a flat table
+    # ------------------------------
+    # Indicator
+    # ------------------------------
+    # indicator_name = models.CharField(
+    #     max_length=512,
+    #     null=True, blank=True
+    # )
+    # indicator_type = models.CharField(
+    #     max_length=256,
+    #     null=True, blank=True,
+    #     choices=IndicatorTypeChoices
+    # )
+    # indicator_shortcode = models.CharField(
+    #     max_length=512,
+    #     null=True, blank=True,
+    #     help_text=Indicator.shortcode_helptext
+    # )
+    # # ------------------------------
+    # # Entity
+    # # ------------------------------
+    # admin_level = models.IntegerField(
+    #     null=True, blank=True
+    # )
+    # concept_uuid = models.CharField(
+    #     max_length=256,
+    #     help_text='This is concept uuid from georepo.',
+    #     null=True, blank=True
+    # )
+    # entity_name = models.CharField(
+    #     max_length=512,
+    #     null=True, blank=True
+    # )
+    # entity_start_date = models.DateTimeField(
+    #     null=True, blank=True
+    # )
+    # entity_end_date = models.DateTimeField(
+    #     null=True, blank=True
+    # )
+    # # ------------------------------
+    # # Country
+    # # ------------------------------
+    # country_name = models.CharField(
+    #     max_length=512,
+    #     null=True, blank=True
+    # )
 
     class Meta:  # noqa: D106
         unique_together = ('indicator', 'date', 'geom_id')
@@ -125,11 +121,14 @@ class IndicatorValue(models.Model):
                 fields=['indicator', 'entity']
             ),
             models.Index(
-                fields=['country_id']
-            ),
-            models.Index(
                 fields=['indicator', 'country_id']
             ),
+            # models.Index(
+            #     fields=['indicator', 'country_id', 'admin_level']
+            # ),
+            # models.Index(
+            #     fields=['indicator', 'admin_level']
+            # ),
         ]
 
     @property
@@ -205,59 +204,70 @@ class IndicatorValue(models.Model):
     @staticmethod
     def assign_flat_table():
         """Assign flat table."""
-        entity_query = """            
-            UPDATE geosight_data_indicatorvalue AS value
-            SET entity_id = entity.id,
-                admin_level = entity.admin_level,
-                concept_uuid = entity.concept_uuid,
-                entity_start_date = entity.start_date,
-                entity_end_date = entity.end_date,
-                country_id = CASE 
-                        WHEN entity.parents IS NULL OR jsonb_array_length(entity.parents) = 0 THEN entity.id
-                        ELSE country.id
-                END,
-                country_name = CASE 
-                    WHEN entity.parents IS NULL OR jsonb_array_length(entity.parents) = 0 THEN entity.name
-                    ELSE country.name
-                END
-            FROM 
-                geosight_georepo_entity AS entity
-            LEFT JOIN geosight_georepo_entity AS country ON entity.country_id=country.id
-            WHERE 
-                value.geom_id = entity.geom_id
-                AND 
-                value.id BETWEEN %(start_id)s AND %(end_id)s
-                AND value.country_id IS NULL;         
+        partition_query = """            
+            INSERT INTO public.geosight_data_indicatorvalue_master
+                SELECT * FROM public.geosight_data_indicatorvalue as value
+                WHERE 
+                    value.id BETWEEN %(start_id)s AND %(end_id)s;         
         """
-        indicator_query = """            
-            UPDATE geosight_data_indicatorvalue AS value
-            SET indicator_name = indicator.name,
-                indicator_type = indicator.type,
-                indicator_shortcode = indicator.shortcode
-            FROM geosight_data_indicator AS indicator
-            WHERE 
-                value.indicator_id = indicator.id 
-                AND value.id BETWEEN %(start_id)s AND %(end_id)s
-                AND value.indicator_name IS NULL;                
-        """
+        # entity_query = """
+        #     UPDATE geosight_data_indicatorvalue AS value
+        #     SET entity_id = entity.id,
+        #         entity_name = entity.name,
+        #         admin_level = entity.admin_level,
+        #         concept_uuid = entity.concept_uuid,
+        #         entity_start_date = entity.start_date,
+        #         entity_end_date = entity.end_date,
+        #         country_id = CASE
+        #                 WHEN entity.parents IS NULL OR jsonb_array_length(entity.parents) = 0 THEN entity.id
+        #                 ELSE country.id
+        #         END,
+        #         country_name = CASE
+        #             WHEN entity.parents IS NULL OR jsonb_array_length(entity.parents) = 0 THEN entity.name
+        #             ELSE country.name
+        #         END
+        #     FROM
+        #         geosight_georepo_entity AS entity
+        #     LEFT JOIN geosight_georepo_entity AS country ON entity.country_id=country.id
+        #     WHERE
+        #         value.geom_id = entity.geom_id
+        #         AND
+        #         value.id BETWEEN %(start_id)s AND %(end_id)s;
+        # """
+        # indicator_query = """
+        #     UPDATE geosight_data_indicatorvalue AS value
+        #     SET indicator_name = indicator.name,
+        #         indicator_type = indicator.type,
+        #         indicator_shortcode = indicator.shortcode
+        #     FROM geosight_data_indicator AS indicator
+        #     WHERE
+        #         value.indicator_id = indicator.id
+        #         AND value.id BETWEEN %(start_id)s AND %(end_id)s;
+        # """
         id__max = IndicatorValue.objects.aggregate(
             Max('id')
         )['id__max']
         id__min = IndicatorValue.objects.aggregate(
             Min('id')
         )['id__min']
-        step = 3000000  # 1 million
-        with connection.cursor() as cursor:
-            for i in range(id__min, id__max + 1, step):
+        step = 10000000  # 1 million
+        progress = 0
+        for i in range(id__min, id__max + 1, step):
+            progress += 1
+            with connection.cursor() as cursor:
                 start_id = i
-                end_id = i + step
+                end_id = i + step - 1
                 params = {'start_id': start_id, 'end_id': end_id}
-                print(f"Processing entity, IDs from {start_id} to {end_id}")
-                cursor.execute(entity_query, params)
+                print(
+                    f"{progress}: Processing entity, IDs from {start_id} to {end_id}"
+                )
+                print(partition_query.format(params=params))
+                cursor.execute(partition_query, params)
                 connection.commit()
-                print(f"Processing indicator, IDs from {start_id} to {end_id}")
-                cursor.execute(indicator_query, params)
-                connection.commit()
+                # print(
+                #     f"{progress}: Processing indicator, IDs from {start_id} to {end_id}")
+                # cursor.execute(indicator_query, params)
+                # connection.commit()
 
 
 class IndicatorExtraValue(models.Model):

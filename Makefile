@@ -22,7 +22,7 @@ web:
 	@echo "------------------------------------------------------------------"
 	@echo "Running in production mode"
 	@echo "------------------------------------------------------------------"
-	@docker compose up -d
+	@docker compose up -d db
 
 frontend-dev:
 	@echo
