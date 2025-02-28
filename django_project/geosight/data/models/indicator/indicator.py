@@ -505,14 +505,9 @@ class Indicator(
             cursor.execute(query)
 
 
-@receiver(post_save, sender=Indicator)
-def increase_version(sender, instance, **kwargs):
-    """Increase version of dashboard signal."""
-    instance.update_dashboard_version()
-
-
 @receiver(pre_save, sender=Indicator)
-def update_indicator_value(sender, instance, **kwargs):
+def update_indicator_value_data(sender, instance, **kwargs):
+    """Update indicator value when Indicator changed."""
     if not instance._state.adding:
         try:
             old_instance = sender.objects.get(pk=instance.pk)
@@ -522,3 +517,9 @@ def update_indicator_value(sender, instance, **kwargs):
                 instance.update_indicator_value_data()
         except ObjectDoesNotExist:
             pass
+
+
+@receiver(post_save, sender=Indicator)
+def increase_version(sender, instance, **kwargs):
+    """Increase version of dashboard signal."""
+    instance.update_dashboard_version()

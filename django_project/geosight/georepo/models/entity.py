@@ -17,9 +17,10 @@ __copyright__ = ('Copyright 2023, Unicef')
 from datetime import datetime
 
 from django.contrib.gis.db import models
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import connection
 from django.db.models import Q, Subquery, Max, Min
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -298,6 +299,32 @@ class Entity(models.Model):
                 params = {'start_id': start_id, 'end_id': end_id}
                 cursor.execute(query, params)
 
+    def update_indicator_value_data(self):
+        """Update entity data in indicator value."""
+        country_id = self.country.id if self.country else "NULL"
+        country_name = f"'{self.country.name}'" if self.country else "NULL"
+        start_date = f"'{self.start_date}'" if self.start_date else "NULL"
+        end_date = f"'{self.end_date}'" if self.end_date else "NULL"
+        concept_uuid = (
+            f"'{self.concept_uuid}'" if self.concept_uuid else "NULL"
+        )
+
+        query = f"""
+            UPDATE geosight_data_indicatorvalue
+            SET
+                entity_name = '{self.name}',
+                entity_admin_level = {self.admin_level},
+                entity_concept_uuid = {concept_uuid},
+                entity_start_date = {start_date},
+                entity_end_date = {end_date},
+                country_id = {country_id},
+                country_name = {country_name}
+            WHERE
+                entity_id = {self.id}
+        """
+        with connection.cursor() as cursor:
+            cursor.execute(query)
+
 
 class EntityCode(models.Model):
     """Additional data for Indicator value data."""
@@ -314,6 +341,25 @@ class EntityCode(models.Model):
 
     class Meta:  # noqa: D106
         unique_together = ('entity', 'code', 'code_type')
+
+
+@receiver(pre_save, sender=Entity)
+def update_indicator_value_data(sender, instance, **kwargs):
+    """Update indicator value data when entity changed."""
+    if not instance._state.adding:
+        try:
+            old_instance = sender.objects.get(pk=instance.pk)
+            if (
+                    old_instance.name != instance.name or
+                    old_instance.admin_level != instance.admin_level or
+                    old_instance.concept_uuid != instance.concept_uuid or
+                    old_instance.start_date != instance.start_date or
+                    old_instance.end_date != instance.end_date or
+                    old_instance.country_id != instance.country_id
+            ):
+                instance.update_indicator_value_data()
+        except ObjectDoesNotExist:
+            pass
 
 
 @receiver(post_save, sender=Entity)

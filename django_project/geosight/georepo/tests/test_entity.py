@@ -14,6 +14,8 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '06/02/2025'
 __copyright__ = ('Copyright 2023, Unicef')
 
+from unittest.mock import patch
+
 from django.db import connection
 
 from core.tests.base_tests import APITestCase
@@ -215,3 +217,36 @@ class EntityTest(APITestCase):
         self.assertEqual(entity.children.count(), 1)
         for entity in entity.children:
             self.assertEqual(entity.country, entity.country)
+
+    @patch.object(
+        Entity, 'update_indicator_value_data', autospec=True
+    )
+    def test_check_update_indicator_value_data(self, mock_func):
+        """Check update indicator value function being called.
+
+        Should be just when the indicator name is updated.
+        """
+        entity = Entity.objects.get(geom_id='AA')
+        self.assertEqual(mock_func.call_count, 0)
+        entity.parents = []
+        entity.save()
+        self.assertEqual(mock_func.call_count, 0)
+        entity.geom_id = 'geom_id'
+        entity.save()
+        self.assertEqual(mock_func.call_count, 0)
+        entity.name = 'Name 2'
+        entity.save()
+        self.assertEqual(mock_func.call_count, 1)
+        entity.concept_uuid = 'concept_uuid'
+        entity.save()
+        self.assertEqual(mock_func.call_count, 2)
+        entity.start_date = '2020-01-01'
+        entity.save()
+        self.assertEqual(mock_func.call_count, 3)
+        entity.end_date = '2021-01-01'
+        entity.save()
+        self.assertEqual(mock_func.call_count, 4)
+        entity.refresh_from_db()
+        entity.parents = []
+        entity.save()
+        self.assertEqual(mock_func.call_count, 4)

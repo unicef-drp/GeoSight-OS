@@ -22,9 +22,7 @@ from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
 from geosight.data.models.indicator.indicator import Indicator
-from geosight.data.models.indicator.indicator_type import (
-    IndicatorType, IndicatorTypeChoices
-)
+from geosight.data.models.indicator.indicator_type import IndicatorType
 from geosight.georepo.models.entity import Entity
 
 
@@ -258,7 +256,8 @@ class IndicatorValue(models.Model):
                 END
             FROM
                 geosight_georepo_entity AS entity
-            LEFT JOIN geosight_georepo_entity AS country ON entity.country_id=country.id
+            LEFT JOIN geosight_georepo_entity
+                AS country ON entity.country_id=country.id
             WHERE
                 value.geom_id = entity.geom_id
                 AND
