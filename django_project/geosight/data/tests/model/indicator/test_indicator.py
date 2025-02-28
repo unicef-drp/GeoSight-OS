@@ -14,6 +14,8 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+from unittest.mock import patch
+
 from core.tests.base_tests import TestCase
 from geosight.data.models.indicator.indicator import Indicator
 from geosight.data.tests.model_factories import (
@@ -71,3 +73,32 @@ class IndicatorTest(TestCase):
                 rule.color,
                 color
             )
+
+    @patch.object(
+        Indicator, 'update_indicator_value_data', autospec=True
+    )
+    def test_check_update_indicator_value_data(self, mock_func):
+        """Check update indicator value function being called.
+
+        Should be just when the indicator name is updated.
+        """
+        indicator = IndicatorF(
+            name='Name 1',
+            group=IndicatorGroupF()
+        )
+        self.assertEqual(mock_func.call_count, 0)
+        indicator.shortcode = 'shortcode'
+        indicator.save()
+        self.assertEqual(mock_func.call_count, 0)
+        indicator.unit = 'm'
+        indicator.save()
+        self.assertEqual(mock_func.call_count, 0)
+        indicator.name = 'Name 2'
+        indicator.save()
+        self.assertEqual(mock_func.call_count, 1)
+        indicator.name = 'Name 1'
+        indicator.save()
+        self.assertEqual(mock_func.call_count, 2)
+        indicator.unit = 'm'
+        indicator.save()
+        self.assertEqual(mock_func.call_count, 2)

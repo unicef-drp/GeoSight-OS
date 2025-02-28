@@ -115,8 +115,6 @@ class IndicatorValueTest(TestCase):
 
         # check indicator
         self.assertEquals(value.indicator_name, indicator.name)
-        self.assertEquals(value.indicator_shortcode, indicator.shortcode)
-        self.assertEquals(value.indicator_type, indicator.type)
 
     def test_create_from_indicator(self):
         """Test create."""
@@ -158,5 +156,30 @@ class IndicatorValueTest(TestCase):
 
         # check indicator
         self.assertEquals(value.indicator_name, indicator.name)
-        self.assertEquals(value.indicator_shortcode, indicator.shortcode)
-        self.assertEquals(value.indicator_type, indicator.type)
+
+    def test_indicator_name_change(self):
+        """Change when indicator name change."""
+        indicator_a = IndicatorF(name='Indicator A')
+        value_a = indicator_a.save_value(
+            date='2020-05-01', geom_id='AAA', value=2,
+            reference_layer=self.reference_layer.identifier,
+            admin_level=2
+        )
+        indicator_b = IndicatorF(name='Indicator B')
+        value_b = indicator_b.save_value(
+            date='2020-05-01', geom_id='AAA', value=2,
+            reference_layer=self.reference_layer.identifier,
+            admin_level=2
+        )
+        self.assertEquals(value_a.indicator_name, indicator_a.name)
+        self.assertEquals(value_b.indicator_name, indicator_b.name)
+
+        # Change the indicator name
+        indicator_b.name = 'Indicator B Update'
+        indicator_b.save()
+        value_a.refresh_from_db()
+        value_b.refresh_from_db()
+        self.assertEquals(value_a.indicator_name, 'Indicator A')
+        self.assertEquals(value_a.indicator_name, indicator_a.name)
+        self.assertEquals(value_b.indicator_name, 'Indicator B Update')
+        self.assertEquals(value_b.indicator_name, indicator_b.name)

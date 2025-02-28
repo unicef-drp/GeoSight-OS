@@ -78,16 +78,6 @@ class IndicatorValue(models.Model):
         max_length=512,
         null=True, blank=True
     )
-    indicator_type = models.CharField(
-        max_length=256,
-        null=True, blank=True,
-        choices=IndicatorTypeChoices
-    )
-    indicator_shortcode = models.CharField(
-        max_length=512,
-        null=True, blank=True,
-        help_text=Indicator.shortcode_helptext
-    )
     # ------------------------------
     # Entity
     # ------------------------------
@@ -255,11 +245,15 @@ class IndicatorValue(models.Model):
                 entity_start_date = entity.start_date,
                 entity_end_date = entity.end_date,
                 country_id = CASE
-                        WHEN entity.parents IS NULL OR jsonb_array_length(entity.parents) = 0 THEN entity.id
+                        WHEN entity.parents IS NULL
+                            OR jsonb_array_length(entity.parents) = 0
+                        THEN entity.id
                         ELSE country.id
                 END,
                 country_name = CASE
-                    WHEN entity.parents IS NULL OR jsonb_array_length(entity.parents) = 0 THEN entity.name
+                    WHEN entity.parents IS NULL
+                        OR jsonb_array_length(entity.parents) = 0
+                    THEN entity.name
                     ELSE country.name
                 END
             FROM
@@ -288,16 +282,14 @@ class IndicatorValue(models.Model):
         )['id__min']
         step = 10000000  # 1 million
         progress = 0
-        for i in range(id__min, id__max + 1, step):
-            progress += 1
-            with connection.cursor() as cursor:
+        progress += 1
+        with connection.cursor() as cursor:
+            for i in range(id__min, id__max + 1, step):
                 start_id = i
                 end_id = i + step - 1
                 params = {'start_id': start_id, 'end_id': end_id}
                 cursor.execute(entity_query, params)
-                connection.commit()
                 cursor.execute(indicator_query, params)
-                connection.commit()
 
 
 class IndicatorExtraValue(models.Model):
