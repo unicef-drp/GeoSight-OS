@@ -17,7 +17,9 @@ __copyright__ = ('Copyright 2023, Unicef')
 import json
 
 from django.contrib.auth import get_user_model
-from django.http import HttpResponse, HttpResponseBadRequest, Http404
+from django.http import (
+    HttpResponse, HttpResponseBadRequest, HttpResponseNotAllowed
+)
 from django.shortcuts import get_object_or_404
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -106,15 +108,27 @@ class DataAccessAPI(
     def post(self, request):
         """Delete data."""
         if self.query_class == Permission:
-            return Http404('No post action found.')
+            return HttpResponseNotAllowed('No post action found.')
         try:
             indicators = request.data['indicators']
+            if not isinstance(indicators, list):
+                return HttpResponseBadRequest('indicators must be a list.')
+
             if not self.request.user.profile.is_admin:
                 indicators = Indicator.permissions.share(request.user).filter(
                     id__in=indicators
                 ).values_list('id', flat=True)
+                if not indicators:
+                    return HttpResponseBadRequest(
+                        'You have no valid indicators.'
+                    )
+
             datasets = request.data['datasets']
+            if not isinstance(datasets, list):
+                return HttpResponseBadRequest('datasets must be a list.')
             objects = request.data['objects']
+            if not isinstance(objects, list):
+                return HttpResponseBadRequest('objects must be a list.')
             permission = request.data['permission']
             if permission not in self.PERMISSIONS:
                 return HttpResponseBadRequest(
@@ -172,7 +186,7 @@ class DataAccessAPI(
     def delete(self, request):
         """Delete data."""
         if self.query_class == Permission:
-            return Http404('No delete action found.')
+            return HttpResponseNotAllowed('No delete action found.')
         try:
             ids = self.get_allowed_ids(request.data['ids'])
             self.query_class.objects.filter(id__in=ids).delete()

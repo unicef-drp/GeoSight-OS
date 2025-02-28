@@ -229,7 +229,7 @@ export default function SideNavigation({ pageName, minified }) {
                   </Fragment> : null
                 }
                 {
-                  user.is_creator ? <Fragment>
+                  user.is_admin ? <Fragment>
                     <SidaNavigationButton
                       minified={minified}
                       title='Users and groups'>
