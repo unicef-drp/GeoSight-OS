@@ -19,8 +19,9 @@ from datetime import date, datetime
 import pytz
 from django.conf import settings
 from django.contrib.gis.db import models
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import connection
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
 from core.models.general import (
@@ -237,7 +238,9 @@ class Indicator(
     def save_value(
             self,
             date: date, geom_id: str, value: any,
-            reference_layer=None, admin_level: int = None, extras: dict = None,
+            reference_layer: str = None,
+            admin_level: int = None,
+            extras: dict = None,
             geom_id_type: str = 'ucode',
             more_error_information=False
     ):
@@ -294,7 +297,7 @@ class Indicator(
             indicator_value.value = value
 
         # Save the original one
-        indicator_value.entity = entity
+        indicator_value.assign_entity(entity)
         indicator_value.save()
 
         if extras:
@@ -489,6 +492,31 @@ class Indicator(
         response['version'] = cache.version
         cache.set(response)
         return response
+
+    def update_indicator_value_data(self):
+        """Update indicator data in indicator value."""
+        query = f"""
+            UPDATE geosight_data_indicatorvalue
+            SET indicator_name = '{self.name}'
+            WHERE
+                indicator_id = {self.id}
+        """
+        with connection.cursor() as cursor:
+            cursor.execute(query)
+
+
+@receiver(pre_save, sender=Indicator)
+def update_indicator_value_data(sender, instance, **kwargs):
+    """Update indicator value when Indicator changed."""
+    if not instance._state.adding:
+        try:
+            old_instance = sender.objects.get(pk=instance.pk)
+            if (
+                    old_instance.name != instance.name
+            ):
+                instance.update_indicator_value_data()
+        except ObjectDoesNotExist:
+            pass
 
 
 @receiver(post_save, sender=Indicator)
