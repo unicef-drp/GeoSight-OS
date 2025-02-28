@@ -11,7 +11,7 @@ Contact : geosight-no-reply@unicef.org
 
 """
 __author__ = 'irwan@kartoza.com'
-__date__ = '13/06/2023'
+__date__ = '28/02/2025'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from core.tests.base_tests import TestCase
@@ -21,7 +21,10 @@ from geosight.data.tests.model_factories import (
 
 
 class IndicatorValueTest(TestCase):
-    """.Test for IndicatorValue model."""
+    """Test for IndicatorValue model.
+
+    Focus for flat table.
+    """
 
     def setUp(self):
         """To setup test."""

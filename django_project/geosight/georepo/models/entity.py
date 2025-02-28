@@ -275,7 +275,7 @@ class Entity(models.Model):
         )
 
     @staticmethod
-    def assign_country():
+    def assign_country(step=1000000):
         """Assign country to entity."""
         query = """
             UPDATE geosight_georepo_entity AS entity
@@ -292,14 +292,12 @@ class Entity(models.Model):
         id__min = Entity.objects.aggregate(
             Min('id')
         )['id__min']
-        step = 1000000
         with connection.cursor() as cursor:
             for i in range(id__min, id__max + 1, step):
                 start_id = i
                 end_id = i + step
                 params = {'start_id': start_id, 'end_id': end_id}
                 cursor.execute(query, params)
-                connection.commit()
 
 
 class EntityCode(models.Model):
@@ -337,5 +335,6 @@ def assign_entity_to_view(sender, instance: Entity, created, **kwargs):
             instance.country = Entity.objects.get(
                 geom_id=instance.ancestor
             )
+            instance.save()
         except Entity.DoesNotExist:
             pass
