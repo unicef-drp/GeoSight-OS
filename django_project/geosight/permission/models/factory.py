@@ -247,6 +247,7 @@ def permission_model_factory(
             )
             perm.permission = permission
             perm.save()
+            return perm
 
         def update_group_permission(self, group: Group, permission: str):
             """Update group permission."""
@@ -255,6 +256,7 @@ def permission_model_factory(
             )
             perm.permission = permission
             perm.save()
+            return perm
 
         def get_user_perm_level(self, user: User = None):
             """Get user permission."""

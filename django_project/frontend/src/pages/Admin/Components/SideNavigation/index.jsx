@@ -212,7 +212,7 @@ export default function SideNavigation({ pageName, minified }) {
               <div className='SideNavigationContentGroup'>
                 <div className='SideNavigationContentGroupTitle'>ACCESS</div>
                 {
-                  user.is_admin ? <Fragment>
+                  user.is_creator ? <Fragment>
                     <SidaNavigationButton
                       minified={minified}
                       title='Data Access'>
