@@ -31,7 +31,9 @@ from geosight.georepo.models.entity import Entity
 class IndicatorValue(models.Model):
     """The data of indicator that saved per date and geometry."""
 
-    # This is geom id for the value
+    # --------------------------------------
+    # The basic attributes that is required
+    # --------------------------------------
     date = models.DateField(
         _('Date'),
         help_text=_('The date of the value harvested.')
@@ -46,11 +48,13 @@ class IndicatorValue(models.Model):
         max_length=256,
         help_text='This is ucode from georepo.'
     )
-
-    # Indicator that linked to this value
     indicator = models.ForeignKey(
         Indicator, on_delete=models.CASCADE
     )
+
+    # --------------------------------------
+    # Attributes that are able to be generated
+    # --------------------------------------
     # Entity that linked to this value
     entity = models.ForeignKey(
         Entity, null=True, blank=True,
@@ -87,16 +91,16 @@ class IndicatorValue(models.Model):
     # ------------------------------
     # Entity
     # ------------------------------
+    entity_name = models.CharField(
+        max_length=512,
+        null=True, blank=True
+    )
     entity_admin_level = models.IntegerField(
         null=True, blank=True
     )
     entity_concept_uuid = models.CharField(
         max_length=256,
         help_text='This is concept uuid from georepo.',
-        null=True, blank=True
-    )
-    entity_name = models.CharField(
-        max_length=512,
         null=True, blank=True
     )
     entity_start_date = models.DateTimeField(
@@ -229,6 +233,15 @@ class IndicatorValue(models.Model):
                 self.country_name = self.country.name
                 if autosave:
                     self.save()
+
+    def assign_indicator(self, autosave=True):
+        """Assign indicator flat value."""
+        if not self.indicator_name:
+            self.indicator_name = self.indicator.name
+            self.indicator_type = self.indicator.type
+            self.indicator_shortcode = self.indicator.shortcode
+            if autosave:
+                self.save()
 
     @staticmethod
     def assign_flat_table():
@@ -416,8 +429,9 @@ def increase_version(sender, instance, **kwargs):
 
 
 @receiver(post_save, sender=IndicatorValue)
-def assign_entity_to_value(
+def assign_entity_and_indicator_to_value(
         sender, instance: IndicatorValue, created, **kwargs
 ):
     """Assign entity to value."""
     instance.assign_entity()
+    instance.assign_indicator()

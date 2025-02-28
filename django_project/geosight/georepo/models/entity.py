@@ -135,8 +135,8 @@ class Entity(models.Model):
                 )
                 entity_code = EntityCode.objects.filter(
                     Q(entity__end_date__isnull=True) | Q(
-                        Q(entity__start_date__gte=date_time) &
-                        Q(entity__end_date__lte=date_time)
+                        Q(entity__start_date__lte=date_time) &
+                        Q(entity__end_date__gte=date_time)
                     )
                 ).filter(
                     code_type=original_id_type,
@@ -149,12 +149,11 @@ class Entity(models.Model):
             else:
                 entity = reference_layer.entities_set.filter(
                     Q(end_date__isnull=True) | Q(
-                        Q(start_date__gte=date_time) &
-                        Q(end_date__lte=date_time)
+                        Q(start_date__lte=date_time) &
+                        Q(end_date__gte=date_time)
                     )
                 ).filter(
-                    geom_id=original_id,
-                    reference_layer_id=reference_layer.id
+                    geom_id=original_id
                 ).order_by('start_date').first()
                 if not entity:
                     raise Entity.DoesNotExist
