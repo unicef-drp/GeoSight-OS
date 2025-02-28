@@ -18,9 +18,6 @@ from django.contrib import admin
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from geosight.data.models.indicator.indicator_value import (
-    IndicatorValueWithGeo
-)
 from geosight.georepo.models import ReferenceLayerView
 from geosight.georepo.tasks import (
     fetch_reference_codes_by_ids, fetch_datasets, create_data_access
@@ -114,9 +111,9 @@ class ReferenceLayerViewAdmin(admin.ModelAdmin):
 
     def number_of_value(self, obj: ReferenceLayerView):
         """Return number of value for this reference layer."""
-        return IndicatorValueWithGeo.objects.filter(
-            reference_layer_id=obj.id
-        ).count()
+        # TODO:
+        #  We need to fix this with using IndicatorValue
+        return 0
 
     def number_of_entities(self, obj: ReferenceLayerView):
         """Return number of value for this reference layer."""
