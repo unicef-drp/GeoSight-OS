@@ -119,6 +119,14 @@ class EntityTest(APITestCase):
         """Get the data."""
         self.assertEqual(Entity.objects.all().count(), 8)
         self.assertEqual(self.reference_layer.entities_set.count(), 7)
+        self.assertEqual(Entity.countries.all().count(), 3)
+        self.assertEqual(
+            list(
+                Entity.countries.order_by('geom_id').values_list(
+                    'geom_id', flat=True
+                )
+            ), ['A', 'B', 'O']
+        )
 
     def test_entity_detail(self):
         """Test entity detail."""

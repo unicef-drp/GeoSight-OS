@@ -89,18 +89,26 @@ def invalidate_cache(modeladmin, request, queryset):
     queryset.update(version_data=timezone.now())
 
 
+@admin.action(description='Assign countries')
+def assign_countries(modeladmin, request, queryset):
+    """Assign countries."""
+    for reference_layer in queryset:
+        reference_layer.assign_countries()
+
+
 class ReferenceLayerViewAdmin(admin.ModelAdmin):
     """ReferenceLayerView admin."""
 
     list_display = [
         'identifier', 'name', 'description', 'in_georepo', 'number_of_value',
-        'number_of_entities'
+        'number_of_entities', 'country_list'
     ]
     list_filter = (InGeorepoFilter,)
     ordering = ['name']
     actions = [
         update_meta, sync_codes, sync_codes_non_saved_level,
-        action_fetch_datasets, action_create_data_access, invalidate_cache
+        action_fetch_datasets, action_create_data_access, invalidate_cache,
+        assign_countries
     ]
 
     def in_georepo(self, obj: ReferenceLayerView):
@@ -118,6 +126,10 @@ class ReferenceLayerViewAdmin(admin.ModelAdmin):
     def number_of_entities(self, obj: ReferenceLayerView):
         """Return number of value for this reference layer."""
         return obj.entities_set.count()
+
+    def country_list(self, obj: ReferenceLayerView):
+        """Return countries of view."""
+        return list(obj.countries.values_list('name', flat=True))
 
 
 admin.site.register(ReferenceLayerView, ReferenceLayerViewAdmin)

@@ -29,6 +29,15 @@ from geosight.georepo.models.reference_layer import ReferenceLayerView
 from geosight.georepo.request import (
     GeorepoRequest, GeorepoEntityDoesNotExist, GeorepoRequestError
 )
+from geosight.georepo.term import admin_level_country
+
+
+class CountryManager(models.Manager):
+    """Country manager for Entity."""
+
+    def get_queryset(self):
+        """Return the queryset."""
+        return super().get_queryset().filter(admin_level=admin_level_country)
 
 
 class Entity(models.Model):
@@ -99,6 +108,10 @@ class Entity(models.Model):
         blank=True
     )
 
+    # Country manager
+    objects = models.Manager()
+    countries = CountryManager()
+
     class Meta:  # noqa: D106
         verbose_name_plural = "entities"
         indexes = [
@@ -158,7 +171,10 @@ class Entity(models.Model):
                 ).order_by('start_date').first()
                 if not entity:
                     raise Entity.DoesNotExist
-            if entity.admin_level != 0 and not entity.parents:
+            if (
+                    entity.admin_level != admin_level_country and
+                    not entity.parents
+            ):
                 raise EntityCode.DoesNotExist()
         except (Entity.DoesNotExist, EntityCode.DoesNotExist):
             if not auto_fetch:
@@ -221,6 +237,7 @@ class Entity(models.Model):
         obj.name = name
         obj.parents = parents
         obj.save()
+        reference_layer.assign_country(obj, check_entity=False)
         return obj, created
 
     @property
@@ -275,9 +292,9 @@ class Entity(models.Model):
         )
 
     @property
-    def is_ancestor(self):
+    def is_country(self):
         """Return if the entity is ancestor."""
-        return self.admin_level == 0
+        return self.admin_level == admin_level_country
 
     @staticmethod
     def assign_country(step=1000000):
@@ -313,7 +330,7 @@ class Entity(models.Model):
         )
 
         # For country
-        if self.is_ancestor:
+        if self.is_country:
             country_id = self.id
             country_name = f"'{self.name}'"
         else:
@@ -339,7 +356,7 @@ class Entity(models.Model):
     def update_parent_of_indicator_value_data(self):
         """Update entity data in indicator value."""
         # For country
-        if self.is_ancestor:
+        if self.is_country:
             country_name = f"'{self.name}'"
             query = f"""
                 UPDATE geosight_data_indicatorvalue
@@ -404,9 +421,10 @@ def assign_entity_to_view(sender, instance: Entity, created, **kwargs):
             reference_layer=instance.reference_layer,
             entity=instance,
         )
+        instance.reference_layer.assign_country(instance)
 
     # Get the country
-    if instance.admin_level != 0 and not instance.country:
+    if instance.admin_level != admin_level_country and not instance.country:
         try:
             instance.country = Entity.objects.get(
                 geom_id=instance.ancestor

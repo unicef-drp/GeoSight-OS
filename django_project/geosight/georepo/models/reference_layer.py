@@ -28,6 +28,7 @@ from geosight.georepo.request import (
     GeorepoRequest, GeorepoUrl, GeorepoRequestError
 )
 from geosight.georepo.request.data import GeorepoEntity
+from geosight.georepo.term import admin_level_country
 from geosight.permission.models.manager import PermissionManager
 
 User = get_user_model()
@@ -54,6 +55,13 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
     )
 
     in_georepo = models.BooleanField(default=True)
+
+    # Country
+    countries = models.ManyToManyField(
+        'geosight_georepo.Entity',
+        help_text=_('The country of the view.'),
+        null=True
+    )
 
     class Meta:  # noqa: D106
         indexes = [
@@ -186,6 +194,22 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
             "entity_id"
         )
         return Entity.objects.filter(pk__in=Subquery(related_entities))
+
+    def assign_countries(self):
+        """Assign countries."""
+        self.countries.set(
+            self.entities_set.filter(admin_level=admin_level_country)
+        )
+        self.save()
+
+    def assign_country(self, entity, check_entity=True):
+        """Assign country to the reference layer view."""
+        if entity.admin_level == admin_level_country:
+            if (
+                    not check_entity or
+                    self.entities_set.filter(id=entity.id).exists()
+            ):
+                self.countries.add(entity)
 
 
 class ReferenceLayerIndicator(models.Model):
