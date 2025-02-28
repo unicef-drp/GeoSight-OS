@@ -215,12 +215,16 @@ class IndicatorValue(models.Model):
 
     def assign_country(self, autosave=True):
         """Assign entity to indicator value."""
-        if not self.country_id and self.entity_admin_level >= 1:
-            if self.entity and self.entity.country:
-                self.country = self.entity.country
-                self.country_name = self.country.name
-                if autosave:
-                    self.save()
+        if not self.country_id:
+            if self.entity_admin_level >= 1:
+                if self.entity and self.entity.country:
+                    self.country = self.entity.country
+                    self.country_name = self.country.name
+            elif self.entity_admin_level == 0:
+                self.country = self.entity
+                self.country_name = self.entity.name
+        if autosave:
+            self.save()
 
     def assign_indicator(self, autosave=True):
         """Assign indicator flat value."""

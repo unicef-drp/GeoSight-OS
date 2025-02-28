@@ -274,6 +274,11 @@ class Entity(models.Model):
             admin_level=self.admin_level + 1
         )
 
+    @property
+    def is_ancestor(self):
+        """Return if the entity is ancestor."""
+        return self.admin_level == 0
+
     @staticmethod
     def assign_country(step=1000000):
         """Assign country to entity."""
@@ -301,13 +306,19 @@ class Entity(models.Model):
 
     def update_indicator_value_data(self):
         """Update entity data in indicator value."""
-        country_id = self.country.id if self.country else "NULL"
-        country_name = f"'{self.country.name}'" if self.country else "NULL"
         start_date = f"'{self.start_date}'" if self.start_date else "NULL"
         end_date = f"'{self.end_date}'" if self.end_date else "NULL"
         concept_uuid = (
             f"'{self.concept_uuid}'" if self.concept_uuid else "NULL"
         )
+
+        # For country
+        if self.is_ancestor:
+            country_id = self.id
+            country_name = f"'{self.name}'"
+        else:
+            country_id = self.country.id if self.country else "NULL"
+            country_name = f"'{self.country.name}'" if self.country else "NULL"
 
         query = f"""
             UPDATE geosight_data_indicatorvalue
@@ -324,6 +335,21 @@ class Entity(models.Model):
         """
         with connection.cursor() as cursor:
             cursor.execute(query)
+
+    def update_parent_of_indicator_value_data(self):
+        """Update entity data in indicator value."""
+        # For country
+        if self.is_ancestor:
+            country_name = f"'{self.name}'"
+            query = f"""
+                UPDATE geosight_data_indicatorvalue
+                SET
+                    country_name = {country_name}
+                WHERE
+                    country_id = {self.id}
+            """
+            with connection.cursor() as cursor:
+                cursor.execute(query)
 
 
 class EntityCode(models.Model):
@@ -349,6 +375,11 @@ def update_indicator_value_data(sender, instance, **kwargs):
     if not instance._state.adding:
         try:
             old_instance = sender.objects.get(pk=instance.pk)
+
+            # If just name, call the ancestor update
+            if old_instance.name != instance.name:
+                instance.update_parent_of_indicator_value_data()
+
             if (
                     old_instance.name != instance.name or
                     old_instance.admin_level != instance.admin_level or
