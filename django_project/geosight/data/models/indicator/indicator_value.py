@@ -236,14 +236,14 @@ class IndicatorValue(models.Model):
                 self.save()
 
     @staticmethod
-    def assign_flat_table():
+    def assign_flat_table(step=10000000):
         """Assign flat table."""
         entity_query = """
             UPDATE geosight_data_indicatorvalue AS value
             SET entity_id = entity.id,
                 entity_name = entity.name,
-                admin_level = entity.admin_level,
-                concept_uuid = entity.concept_uuid,
+                entity_admin_level = entity.admin_level,
+                entity_concept_uuid = entity.concept_uuid,
                 entity_start_date = entity.start_date,
                 entity_end_date = entity.end_date,
                 country_id = CASE
@@ -269,9 +269,7 @@ class IndicatorValue(models.Model):
         """
         indicator_query = """
             UPDATE geosight_data_indicatorvalue AS value
-            SET indicator_name = indicator.name,
-                indicator_type = indicator.type,
-                indicator_shortcode = indicator.shortcode
+            SET indicator_name = indicator.name
             FROM geosight_data_indicator AS indicator
             WHERE
                 value.indicator_id = indicator.id
@@ -283,7 +281,6 @@ class IndicatorValue(models.Model):
         id__min = IndicatorValue.objects.aggregate(
             Min('id')
         )['id__min']
-        step = 10000000  # 1 million
         progress = 0
         progress += 1
         with connection.cursor() as cursor:

@@ -14,7 +14,10 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '28/02/2025'
 __copyright__ = ('Copyright 2023, Unicef')
 
+from django.db import connection
+
 from core.tests.base_tests import TestCase
+from geosight.data.models.indicator import IndicatorValue
 from geosight.data.tests.model_factories import (
     IndicatorValueF, IndicatorF
 )
@@ -341,3 +344,204 @@ class IndicatorValueTest(TestCase):
         self.assertEquals(value_b.country_id, entity_b.country.id)
         self.assertEquals(value_b.country_name, 'Country b name')
         self.assertEquals(value_b.country_name, entity_b.country.name)
+
+    def test_assign_flat_table(self):
+        """Test assign flat table script."""
+        indicator = IndicatorF(name='Indicator 2')
+        value_a = indicator.save_value(
+            date='2020-05-01', geom_id='AAA', value=2,
+            reference_layer=self.reference_layer.identifier,
+            admin_level=2
+        )
+        self.assertIsNotNone(value_a.pk)
+        self.assertEquals(value_a.indicator, indicator)
+        self.assertEquals(value_a.date, '2020-05-01')
+        self.assertEquals(value_a.geom_id, 'AAA')
+        self.assertEquals(value_a.value, 2)
+
+        entity = Entity.objects.get(geom_id=value_a.geom_id)
+        self.assertEquals(value_a.entity, entity)
+        self.assertEquals(value_a.entity_name, 'name')
+        self.assertEquals(value_a.entity_name, entity.name)
+        self.assertEquals(value_a.entity_admin_level, 2)
+        self.assertEquals(value_a.entity_admin_level, entity.admin_level)
+        self.assertEquals(value_a.entity_concept_uuid, 'concept_AAA')
+        self.assertEquals(value_a.entity_concept_uuid, entity.concept_uuid)
+        self.assertEquals(
+            value_a.entity_start_date.strftime("%Y-%m-%d %H:%M:%S"),
+            '2020-01-01 00:00:00'
+        )
+        self.assertEquals(value_a.entity_start_date, entity.start_date)
+        self.assertEquals(
+            value_a.entity_end_date.strftime("%Y-%m-%d %H:%M:%S"),
+            '2021-01-01 00:00:00'
+        )
+        self.assertEquals(value_a.entity_end_date, entity.end_date)
+
+        self.assertIsNotNone(value_a.country)
+        self.assertEquals(value_a.country, entity.country)
+        self.assertEquals(value_a.country_name, 'country')
+        self.assertEquals(value_a.country_name, entity.country.name)
+
+        # check indicator
+        self.assertEquals(value_a.indicator_name, indicator.name)
+
+        # If the entity is country
+        value_b = indicator.save_value(
+            date='2020-05-01', geom_id='A', value=2,
+            reference_layer=self.reference_layer.identifier,
+            admin_level=0
+        )
+        self.assertIsNotNone(value_b.pk)
+        self.assertEquals(value_b.indicator, indicator)
+        self.assertEquals(value_b.date, '2020-05-01')
+        self.assertEquals(value_b.geom_id, 'A')
+        self.assertEquals(value_b.value, 2)
+
+        entity = Entity.objects.get(geom_id=value_b.geom_id)
+        self.assertEquals(value_b.entity, entity)
+        self.assertEquals(value_b.entity_name, 'country')
+        self.assertEquals(value_b.entity_name, entity.name)
+        self.assertEquals(value_b.entity_admin_level, 0)
+        self.assertEquals(value_b.entity_admin_level, entity.admin_level)
+        self.assertEquals(value_b.entity_concept_uuid, 'concept_A')
+        self.assertEquals(value_b.entity_concept_uuid, entity.concept_uuid)
+        self.assertEquals(
+            value_b.entity_start_date.strftime("%Y-%m-%d %H:%M:%S"),
+            '2020-01-01 00:00:00'
+        )
+        self.assertEquals(value_b.entity_start_date, entity.start_date)
+        self.assertEquals(
+            value_b.entity_end_date.strftime("%Y-%m-%d %H:%M:%S"),
+            '2021-01-01 00:00:00'
+        )
+        self.assertEquals(value_b.entity_end_date, entity.end_date)
+
+        self.assertIsNotNone(value_b.country)
+        self.assertEquals(value_b.country, entity)
+        self.assertEquals(value_b.country_name, 'country')
+        self.assertEquals(value_b.country_name, entity.name)
+
+        # check indicator
+        self.assertEquals(value_b.indicator_name, indicator.name)
+
+        # Remove the value
+        with connection.cursor() as cursor:
+            cursor.execute(
+                f"""
+                UPDATE geosight_data_indicatorvalue
+                SET
+                    country_id = NULL,
+                    country_name = NULL,
+                    entity_id = NULL,
+                    entity_name = NULL,
+                    entity_admin_level = NULL,
+                    entity_concept_uuid = NULL,
+                    entity_start_date = NULL,
+                    entity_end_date = NULL,
+                    indicator_name = NULL
+                WHERE id IN ({value_a.pk},{value_b.pk})
+                """
+            )
+        value_a.refresh_from_db()
+        value_b.refresh_from_db()
+        self.assertIsNone(value_a.country_id)
+        self.assertIsNone(value_a.country_name)
+        self.assertIsNone(value_a.entity_id)
+        self.assertIsNone(value_a.entity_name)
+        self.assertIsNone(value_a.entity_admin_level)
+        self.assertIsNone(value_a.entity_concept_uuid)
+        self.assertIsNone(value_a.entity_start_date)
+        self.assertIsNone(value_a.entity_end_date)
+        self.assertIsNone(value_a.indicator_name)
+        self.assertIsNone(value_b.country_id)
+        self.assertIsNone(value_b.country_name)
+        self.assertIsNone(value_b.entity_id)
+        self.assertIsNone(value_b.entity_name)
+        self.assertIsNone(value_b.entity_admin_level)
+        self.assertIsNone(value_b.entity_concept_uuid)
+        self.assertIsNone(value_b.entity_start_date)
+        self.assertIsNone(value_b.entity_end_date)
+        self.assertIsNone(value_b.indicator_name)
+
+        # Assign flat table
+        IndicatorValue.assign_flat_table(step=1)
+        value_a.refresh_from_db()
+        value_b.refresh_from_db()
+
+        # Check values
+        self.assertIsNotNone(value_a.pk)
+        self.assertEquals(value_a.indicator, indicator)
+        self.assertEquals(value_a.date.strftime("%Y-%m-%d"), '2020-05-01')
+        self.assertEquals(value_a.geom_id, 'AAA')
+        self.assertEquals(value_a.value, 2)
+
+        entity = Entity.objects.get(geom_id=value_a.geom_id)
+        self.assertEquals(value_a.entity, entity)
+        self.assertEquals(value_a.entity_name, 'name')
+        self.assertEquals(value_a.entity_name, entity.name)
+        self.assertEquals(value_a.entity_admin_level, 2)
+        self.assertEquals(value_a.entity_admin_level, entity.admin_level)
+        self.assertEquals(value_a.entity_concept_uuid, 'concept_AAA')
+        self.assertEquals(value_a.entity_concept_uuid, entity.concept_uuid)
+        self.assertEquals(
+            value_a.entity_start_date.strftime("%Y-%m-%d %H:%M:%S"),
+            '2020-01-01 00:00:00'
+        )
+        self.assertEquals(
+            value_a.entity_start_date, entity.start_date
+        )
+        self.assertEquals(
+            value_a.entity_end_date.strftime("%Y-%m-%d %H:%M:%S"),
+            '2021-01-01 00:00:00'
+        )
+        self.assertEquals(value_a.entity_end_date, entity.end_date)
+
+        self.assertIsNotNone(value_a.country)
+        self.assertEquals(value_a.country, entity.country)
+        self.assertEquals(value_a.country_name, 'country')
+        self.assertEquals(value_a.country_name, entity.country.name)
+
+        # check indicator
+        self.assertEquals(value_a.indicator_name, indicator.name)
+
+        # If the entity is country
+        value_b = indicator.save_value(
+            date='2020-05-01', geom_id='A', value=2,
+            reference_layer=self.reference_layer.identifier,
+            admin_level=0
+        )
+        self.assertIsNotNone(value_b.pk)
+        self.assertEquals(value_b.indicator, indicator)
+        self.assertEquals(
+            value_b.date.strftime("%Y-%m-%d"), '2020-05-01'
+        )
+        self.assertEquals(value_b.geom_id, 'A')
+        self.assertEquals(value_b.value, 2)
+
+        entity = Entity.objects.get(geom_id=value_b.geom_id)
+        self.assertEquals(value_b.entity, entity)
+        self.assertEquals(value_b.entity_name, 'country')
+        self.assertEquals(value_b.entity_name, entity.name)
+        self.assertEquals(value_b.entity_admin_level, 0)
+        self.assertEquals(value_b.entity_admin_level, entity.admin_level)
+        self.assertEquals(value_b.entity_concept_uuid, 'concept_A')
+        self.assertEquals(value_b.entity_concept_uuid, entity.concept_uuid)
+        self.assertEquals(
+            value_b.entity_start_date.strftime("%Y-%m-%d %H:%M:%S"),
+            '2020-01-01 00:00:00'
+        )
+        self.assertEquals(value_b.entity_start_date, entity.start_date)
+        self.assertEquals(
+            value_b.entity_end_date.strftime("%Y-%m-%d %H:%M:%S"),
+            '2021-01-01 00:00:00'
+        )
+        self.assertEquals(value_b.entity_end_date, entity.end_date)
+
+        self.assertIsNotNone(value_b.country)
+        self.assertEquals(value_b.country, entity)
+        self.assertEquals(value_b.country_name, 'country')
+        self.assertEquals(value_b.country_name, entity.name)
+
+        # check indicator
+        self.assertEquals(value_b.indicator_name, indicator.name)
