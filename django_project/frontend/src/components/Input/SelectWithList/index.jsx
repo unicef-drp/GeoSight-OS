@@ -85,7 +85,7 @@ export function SelectWithList(
       {
         showFloatingLabel ?
           <label
-            className="SelectWithListLabel MuiFormLabel-root"
+            className="SelectWithListLabel MuiFormLabel-root form-helptext"
             style={{ zIndex: 0 }}
             data-shrink="true">{props.placeholder}</label>
           : null
