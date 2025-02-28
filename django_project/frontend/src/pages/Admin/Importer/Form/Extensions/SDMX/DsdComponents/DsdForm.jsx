@@ -196,7 +196,7 @@ const DsdForm = ({ urlChanged, setRequest }) => {
         />
       )}
 
-      {selectedDataflowVersion && (
+      {selectedDataflowVersion && Object.keys(dimensionOptions) && (
         <section className="BasicFormSection">
           <div className="DimensionGrid">
             {Object.keys(dimensionOptions).map((dimensionId) => (
