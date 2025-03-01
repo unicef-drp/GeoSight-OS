@@ -238,7 +238,7 @@ class Indicator(
     def save_value(
             self,
             date: date, geom_id: str, value: any,
-            reference_layer: str = None,
+            reference_layer=None,
             admin_level: int = None,
             extras: dict = None,
             geom_id_type: str = 'ucode',

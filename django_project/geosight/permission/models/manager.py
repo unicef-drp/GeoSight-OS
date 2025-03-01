@@ -195,6 +195,10 @@ class PermissionManager(models.Manager):
         """Get read resources by user."""
         return self.query_by_permission(user, PERMISSIONS.READ)
 
+    def read_data(self, user: User):
+        """Get read data resources by user."""
+        return self.query_by_permission(user, PERMISSIONS.READ_DATA)
+
     def edit(self, user: User):
         """Get read resources by user."""
         try:

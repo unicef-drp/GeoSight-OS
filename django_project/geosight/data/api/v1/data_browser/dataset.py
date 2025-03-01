@@ -28,22 +28,16 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from core.api_utils import common_api_params, ApiTag, ApiParams
-from core.utils import string_is_true
 from geosight.data.models.indicator import (
-    IndicatorValue
-)
-from geosight.data.models.indicator.indicator_value import (
-    IndicatorValueWithGeo
+    IndicatorValue, Indicator
 )
 from geosight.data.models.indicator.indicator_value_dataset import (
     IndicatorValueDataset
 )
 from geosight.data.serializer.indicator_value_dataset import (
-    IndicatorValueDatasetSerializer,
-    IndicatorValueDatasetWithPermissionSerializer
+    IndicatorValueDatasetSerializer
 )
-from geosight.georepo.models.reference_layer import ReferenceLayerIndicator
-from .base import BaseDataApiList
+from .base import BaseIndicatorValueApi
 
 
 class BaseDatasetApiList:
@@ -52,6 +46,7 @@ class BaseDatasetApiList:
     filter_query_exclude = [
         'page', 'page_size', 'group_admin_level', 'detail'
     ]
+    serializer_class = IndicatorValueDatasetSerializer
 
     @property
     def group_admin_level(self):
@@ -64,30 +59,27 @@ class BaseDatasetApiList:
         """Return queryset of API."""
         if not self.group_admin_level:
             return super().get_queryset().values(
-                'indicator_id', 'reference_layer_id', 'admin_level'
+                'indicator_id', 'country_id', 'entity_admin_level'
             ).annotate(
                 data_count=Count('*')
             ).annotate(
                 indicator_name=F('indicator_name')
             ).annotate(
-                indicator_shortcode=F('indicator_shortcode')
-            ).annotate(
-                reference_layer_name=F('reference_layer_name')
-            ).annotate(
-                reference_layer_uuid=F('reference_layer_uuid')
+                country_name=F('country_name')
             ).annotate(
                 start_date=Min('date')
             ).annotate(
                 end_date=Max('date')
             ).order_by(
-                'indicator_name', 'reference_layer_name', 'admin_level'
-            )
+                'indicator_id', 'country_id', 'entity_admin_level'
+            ).filter(country_id__isnull=False)
         else:
             return super().get_queryset().values(
-                'indicator_id', 'reference_layer_id'
+                'indicator_id', 'country_id'
             ).annotate(
-                admin_level=StringAgg(
-                    Cast('admin_level', CharField()), delimiter=', ',
+                entity_admin_level=StringAgg(
+                    Cast('entity_admin_level', CharField()),
+                    delimiter=', ',
                     distinct=True,
                     output_field=CharField()
                 )
@@ -96,37 +88,28 @@ class BaseDatasetApiList:
             ).annotate(
                 indicator_name=F('indicator_name')
             ).annotate(
-                indicator_shortcode=F('indicator_shortcode')
-            ).annotate(
-                reference_layer_name=F('reference_layer_name')
-            ).annotate(
-                reference_layer_uuid=F('reference_layer_uuid')
+                country_name=F('country_name')
             ).annotate(
                 start_date=Min('date')
             ).annotate(
                 end_date=Max('date')
             ).order_by(
-                'indicator_name', 'reference_layer_name', 'admin_level'
-            )
+                'indicator_id', 'country_id'
+            ).filter(country_id__isnull=False)
 
 
 class DatasetApiList(
-    BaseDatasetApiList, BaseDataApiList, viewsets.ReadOnlyModelViewSet
+    BaseDatasetApiList, BaseIndicatorValueApi, viewsets.ReadOnlyModelViewSet
 ):
-    """Return Dataset with indicator x reference layer x level."""
-
-    @property
-    def serializer_class(self):
-        """Return serialize class."""
-        if string_is_true(self.request.GET.get('detail', 'false')):
-            return IndicatorValueDatasetWithPermissionSerializer
-        return IndicatorValueDatasetSerializer
+    """Return Dataset with indicator, country and admin level."""
 
     def get_serializer(self, *args, **kwargs):
         """Return serializer of data."""
         data = []
         for row in args[0]:
             data.append(IndicatorValueDataset(**row))
+        if self.action in ['list']:
+            kwargs['exclude'] = ['permission']
         serializer_class = self.get_serializer_class()
         kwargs.setdefault('context', self.get_serializer_context())
         return serializer_class(data, **kwargs)
@@ -153,21 +136,33 @@ class DatasetApiList(
         manual_parameters=[
             *common_api_params,
             ApiParams.INDICATOR_ID,
-            ApiParams.INDICATOR_SHORTCODE,
             ApiParams.DATASET_UUID,
-            ApiParams.ADMIN_LEVEL
+            ApiParams.ENTITY_ADMIN_LEVEL
         ],
         operation_description=(
-                'Return indicator data information by reference view, '
+                'Return indicator data information by country, '
                 'indicator and admin level.'
         )
     )
-    def get(self, request, *args, **kwargs):
+    def list(self, request, *args, **kwargs):
         """Return indicator data by dataset, indicator and level."""
         try:
-            return self.list(request, *args, **kwargs)
+            return super().list(request, *args, **kwargs)
         except SuspiciousOperation as e:
             return HttpResponseBadRequest(f'{e}')
+
+    @swagger_auto_schema(
+        operation_id='dataset-detail',
+        tags=[ApiTag.DATA_BROWSER],
+        manual_parameters=[],
+        operation_description=(
+                'Return the detail of indicator data information by country, '
+                'indicator and admin level with permission.'
+        )
+    )
+    def retrieve(self, request, id=None):
+        """Return detailed of basemap."""
+        return super().retrieve(request, id=id)
 
     @swagger_auto_schema(auto_schema=None)
     def delete(self, request):
@@ -184,13 +179,13 @@ class DatasetApiList(
 
             try:
                 [identifier, admin_levels] = _id.split('[')
-                [indicator_id, reference_layer_id] = identifier.split('-')
+                [indicator_id, country_id] = identifier.split('-')
                 admin_levels = admin_levels.replace(']', '').split(', ')
                 id_tobe_deleted = []
                 for admin_level in admin_levels:
                     id_tobe_deleted.append(f'{identifier}-{admin_level}')
             except ValueError:
-                [indicator_id, reference_layer_id, admin_level] = _id.split(
+                [indicator_id, country_id, admin_level] = _id.split(
                     '-'
                 )
 
@@ -199,30 +194,24 @@ class DatasetApiList(
                 is_delete = True
             else:
                 try:
-                    resource = ReferenceLayerIndicator.objects.get(
-                        reference_layer_id=reference_layer_id,
-                        indicator_id=indicator_id
-                    )
+                    resource = Indicator.objects.get(id=indicator_id)
                     if resource.permission.has_delete_perm(self.request.user):
                         is_delete = True
-                except ReferenceLayerIndicator.DoesNotExist:
+                except Indicator.DoesNotExist:
                     pass
             if is_delete:
                 to_be_deleted += id_tobe_deleted
 
-        ids = []
         for _id in to_be_deleted:
-            [indicator_id, reference_layer_id, admin_level] = _id.split('-')
+            [indicator_id, country_id, admin_level] = _id.split('-')
             admin_levels = admin_level.replace('[', '').replace(']', '').split(
                 ','
             )
-            _ids = IndicatorValueWithGeo.objects.filter(
+            IndicatorValue.objects.filter(
                 indicator_id=indicator_id,
-                reference_layer_id=reference_layer_id,
-                admin_level__in=admin_levels
-            ).values_list('id', flat=True)
-            ids += _ids
-        IndicatorValue.objects.filter(id__in=list(ids)).delete()
+                country_id=country_id,
+                entity_admin_level__in=admin_levels
+            ).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @swagger_auto_schema(auto_schema=None)
@@ -234,9 +223,9 @@ class DatasetApiList(
                 identifier=Concat(
                     'indicator_id',
                     Value('-'),
-                    'reference_layer_id',
+                    'country_id',
                     Value('-['),
-                    'admin_level',
+                    'entity_admin_level',
                     Value(']'),
                     output_field=CharField()
                 )
@@ -248,28 +237,22 @@ class DatasetApiList(
     def data(self, request):
         """Get data."""
         indicator_id = 'indicator_id'
-        reference_layer_uuid = 'reference_layer_uuid'
-        admin_level = 'admin_level'
+        country_id = 'country_id'
+        admin_level = 'entity_admin_level'
         return Response({
             'indicators': self.get_queryset().order_by(
-                indicator_id
-            ).values(
                 indicator_id
             ).values_list(
                 indicator_id, flat=True
             ).distinct(),
 
             'datasets': self.get_queryset().order_by(
-                reference_layer_uuid
-            ).values(
-                reference_layer_uuid
+                country_id
             ).values_list(
-                reference_layer_uuid, flat=True
+                country_id, flat=True
             ).distinct(),
 
             'levels': self.get_queryset().order_by(
-                admin_level
-            ).values(
                 admin_level
             ).values_list(
                 admin_level, flat=True

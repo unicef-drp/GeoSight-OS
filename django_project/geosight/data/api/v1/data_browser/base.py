@@ -25,7 +25,9 @@ from rest_framework.permissions import IsAuthenticated
 from core.api.base import FilteredAPI
 from core.auth import BearerAuthentication
 from core.pagination import Pagination
-from geosight.data.models.indicator import IndicatorValueWithGeo
+from geosight.data.models.indicator import (
+    Indicator, IndicatorValueWithGeo, IndicatorValue
+)
 from geosight.permission.models.resource import (
     ReferenceLayerIndicatorPermission
 )
@@ -70,6 +72,49 @@ class BaseDataApiList(FilteredAPI):
                     identifiers, Q()
                 )
                 query = self.model.objects.filter(filter)
+
+        # Filter by parameters
+        query = self.filter_query(
+            self.request, query, self.filter_query_exclude
+        )
+        return query
+
+
+class BaseIndicatorValueApi(FilteredAPI):
+    """Return indicator value api list."""
+
+    authentication_classes = [
+        SessionAuthentication, BasicAuthentication, BearerAuthentication
+    ]
+    permission_classes = (IsAuthenticated,)
+    pagination_class = Pagination
+    model = IndicatorValue
+    filter_query_exclude = ['page', 'page_size']
+
+    def get_queryset(self):
+        """Return indicator value with geo."""
+        query = None
+        is_admin = False
+        try:
+            if self.request.user.profile.is_admin:
+                query = self.model.objects.all()
+                is_admin = True
+        except AttributeError:
+            pass
+
+        # If not admin
+        if not is_admin:
+            indicators = Indicator.permissions.read_data(
+                user=self.request.user
+            ).values_list(
+                'id', flat=True
+            )
+            if not indicators.count():
+                query = self.model.objects.none()
+            else:
+                query = self.model.objects.filter(
+                    indicator_id__in=indicators
+                )
 
         # Filter by parameters
         query = self.filter_query(

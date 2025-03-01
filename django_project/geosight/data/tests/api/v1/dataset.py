@@ -14,15 +14,21 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-import copy
 from datetime import datetime
 
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
-from geosight.data.models import Indicator, IndicatorGroup
+from geosight.data.models import Indicator
+from geosight.data.tests.model_factories import (
+    IndicatorF
+)
 from geosight.georepo.models import (
-    ReferenceLayerView, ReferenceLayerIndicator
+    ReferenceLayerView
+)
+from geosight.georepo.request.data import GeorepoEntity
+from geosight.georepo.tests.model_factories.reference_layer import (
+    ReferenceLayerF
 )
 from geosight.permission.models.factory import PERMISSIONS
 from geosight.permission.tests._base import BasePermissionTest
@@ -39,54 +45,146 @@ class DatasetApiTest(BasePermissionTest.TestCase):
 
     def setUp(self):
         """To setup test."""
-        payload = copy.deepcopy(self.payload)
-        payload['group'] = IndicatorGroup.objects.create(name='name')
+        # Create the entities
+        self.ref_1 = ReferenceLayerF()
+        self.country_1, _ = GeorepoEntity(
+            {
+                'name': 'name',
+                'ucode': '1',
+                'admin_level': 0
+            }
+        ).get_or_create(self.ref_1)
+        GeorepoEntity(
+            {
+                'name': 'name',
+                'ucode': 'A',
+                'admin_level': 1,
+                'parents': [
+                    {'ucode': '1', 'admin_level': 0},
+                ]
+            }
+        ).get_or_create(self.ref_1)
+        GeorepoEntity(
+            {
+                'name': 'name',
+                'ucode': 'B',
+                'admin_level': 1,
+                'parents': [
+                    {'ucode': '1', 'admin_level': 0},
+                ]
+            }
+        ).get_or_create(self.ref_1)
+        GeorepoEntity(
+            {
+                'name': 'name',
+                'ucode': 'C',
+                'admin_level': 1,
+                'parents': [
+                    {'ucode': '1', 'admin_level': 0},
+                ]
+            }
+        ).get_or_create(self.ref_1)
 
-        # Create reference layers
-        self.ref_0 = ReferenceLayerView.objects.create(
-            identifier='name_0', name='name_0'
-        )
-        self.ref_1 = ReferenceLayerView.objects.create(
-            identifier='name_1', name='name_1'
-        )
-        self.ref_2 = ReferenceLayerView.objects.create(
-            identifier='name_2', name='name_1'
-        )
+        self.entity, _ = GeorepoEntity(
+            {
+                'name': 'name',
+                'ucode': 'AA',
+                'admin_level': 2,
+                'parents': [
+                    {'ucode': '1', 'admin_level': 0},
+                    {'ucode': 'A', 'admin_level': 1},
+                ]
+            }
+        ).get_or_create(self.ref_1)
 
-        payload['name'] = 'name_0'
-        self.indicator_0 = Indicator.objects.create(**payload)
+        GeorepoEntity(
+            {
+                'name': 'name',
+                'ucode': 'BA',
+                'admin_level': 2,
+                'parents': [
+                    {'ucode': '1', 'admin_level': 0},
+                    {'ucode': 'B', 'admin_level': 1},
+                ]
+            }
+        ).get_or_create(self.ref_1)
+
+        # Other entities
+        self.ref_2 = ReferenceLayerF()
+        self.country_2, _ = GeorepoEntity(
+            {
+                'name': 'name',
+                'ucode': '2',
+                'admin_level': 0
+            }
+        ).get_or_create(self.ref_1)
+        GeorepoEntity(
+            {
+                'name': 'name',
+                'ucode': 'E',
+                'admin_level': 1,
+                'parents': [
+                    {'ucode': '2', 'admin_level': 0},
+                ]
+            }
+        ).get_or_create(self.ref_2)
+        GeorepoEntity(
+            {
+                'name': 'name',
+                'ucode': 'F',
+                'admin_level': 1,
+                'parents': [
+                    {'ucode': '2', 'admin_level': 0},
+                ]
+            }
+        ).get_or_create(self.ref_2)
+        GeorepoEntity(
+            {
+                'name': 'name',
+                'ucode': 'G',
+                'admin_level': 1,
+                'parents': [
+                    {'ucode': '2', 'admin_level': 0},
+                ]
+            }
+        ).get_or_create(self.ref_2)
+        GeorepoEntity(
+            {
+                'name': 'name',
+                'ucode': 'EA',
+                'admin_level': 2,
+                'parents': [
+                    {'ucode': '2', 'admin_level': 0},
+                    {'ucode': 'E', 'admin_level': 1},
+                ]
+            }
+        ).get_or_create(self.ref_1)
+        GeorepoEntity(
+            {
+                'name': 'name',
+                'ucode': 'FA',
+                'admin_level': 2,
+                'parents': [
+                    {'ucode': '2', 'admin_level': 0},
+                    {'ucode': 'F', 'admin_level': 1},
+                ]
+            }
+        ).get_or_create(self.ref_1)
 
         super(DatasetApiTest, self).setUp()
-
-        # Create indicators
-        payload['name'] = 'name_1'
-        self.indicator_1 = Indicator.objects.create(**payload)
-        self.indicator_1.creator = self.creator
-        self.indicator_1.save()
-
-        payload['name'] = 'name_2'
-        self.indicator_2 = Indicator.objects.create(**payload)
-        self.indicator_2.creator = self.creator_in_group
-        self.indicator_2.save()
+        self.indicator_1 = IndicatorF(
+            name='name_1',
+            creator=self.creator
+        )
+        self.indicator_2 = IndicatorF(
+            name='name_1',
+            creator=self.creator_in_group
+        )
 
         # Reference layer indicators
-        permission = self.create_reference_layer_indicator(
-            self.creator_in_group, self.ref_1, self.indicator_1
-        ).permission
+        permission = self.indicator_1.permission
         permission.update_user_permission(
             self.creator_in_group, PERMISSIONS.READ_DATA.name
-        )
-        permission = self.create_reference_layer_indicator(
-            self.creator, self.ref_2, self.indicator_1
-        ).permission
-        permission.update_user_permission(
-            self.creator_in_group, PERMISSIONS.READ_DATA.name
-        )
-        self.create_reference_layer_indicator(
-            self.creator_in_group, self.ref_1, self.indicator_2
-        )
-        self.create_reference_layer_indicator(
-            self.creator_in_group, self.ref_2, self.indicator_2
         )
 
         # Create values
@@ -139,21 +237,7 @@ class DatasetApiTest(BasePermissionTest.TestCase):
 
     def create_resource(self, user):
         """Create resource function."""
-        return self.create_reference_layer_indicator(
-            user, self.ref_0, self.indicator_0
-        )
-
-    def create_reference_layer_indicator(
-            self, user, reference_layer, indicator
-    ):
-        """Create resource function."""
-        return ReferenceLayerIndicator.permissions.create(
-            user=user,
-            **{
-                'reference_layer': reference_layer,
-                'indicator': indicator
-            }
-        )
+        pass
 
     def create_value(
             self, reference_layer: ReferenceLayerView, indicator: Indicator,
@@ -163,12 +247,8 @@ class DatasetApiTest(BasePermissionTest.TestCase):
         """Create Indicator Value."""
         indicator.save_value(
             datetime.strptime(date_str, '%Y-%m-%d'), geom_id, value,
-            reference_layer, admin_level
+            reference_layer=reference_layer, admin_level=admin_level
         )
-
-    def get_resources(self, user):
-        """Create resource function."""
-        return ReferenceLayerIndicator.permissions.list(user).order_by('id')
 
     def data_count(self, response):
         """Create resource function."""
@@ -221,9 +301,8 @@ class DatasetApiTest(BasePermissionTest.TestCase):
         self.assertEqual(self.data_count(response), 18)
 
         # by reference layers
-        reference_layers = ",".join([f"{self.ref_1.identifier}"])
         response = self.assertRequestGetView(
-            f'{url}?reference_layer_id__in={reference_layers}',
+            f'{url}?country__in={self.country_1.id}',
             200, user=user
         )
         self.assertEqual(response.json()['count'], 4)
@@ -231,7 +310,7 @@ class DatasetApiTest(BasePermissionTest.TestCase):
 
         # by levels
         response = self.assertRequestGetView(
-            f'{url}?admin_level__in=1', 200, user=user
+            f'{url}?entity_admin_level__in=1', 200, user=user
         )
         self.assertEqual(response.json()['count'], 4)
         self.assertEqual(self.data_count(response), 20)
@@ -264,9 +343,8 @@ class DatasetApiTest(BasePermissionTest.TestCase):
         self.assertEqual(self.data_count(response), 0)
 
         # by reference layers
-        reference_layers = ",".join([f"{self.ref_1.identifier}"])
         response = self.assertRequestGetView(
-            f'{url}?reference_layer_id__in={reference_layers}',
+            f'{url}?country_id__in={self.country_1.id}',
             200, user=user
         )
         self.assertEqual(response.json()['count'], 2)
@@ -274,7 +352,7 @@ class DatasetApiTest(BasePermissionTest.TestCase):
 
         # by levels
         response = self.assertRequestGetView(
-            f'{url}?admin_level__in=1', 200, user=user
+            f'{url}?entity_admin_level__in=1', 200, user=user
         )
         self.assertEqual(response.json()['count'], 2)
         self.assertEqual(self.data_count(response), 10)
@@ -286,7 +364,8 @@ class DatasetApiTest(BasePermissionTest.TestCase):
 
         self.assert_ids(f'{list_url}?page_size=1000', f'{url}')
         self.assert_ids(
-            f'{list_url}?admin_level__in=1', f'{url}?admin_level__in=1'
+            f'{list_url}?entity_admin_level__in=1',
+            f'{url}?entity_admin_level__in=1'
         )
         self.assert_ids(
             f'{list_url}?group_admin_level=true',
@@ -301,7 +380,7 @@ class DatasetApiTest(BasePermissionTest.TestCase):
         # admin
         response = self.assertRequestGetView(
             f'{url}?detail=true&group_admin_level=true&'
-            f'admin_level__in=1', 200, user=user
+            f'entity_admin_level__in=1', 200, user=user
         )
         self.assertEqual(self.data_count(response), 20)
 

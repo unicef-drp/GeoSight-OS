@@ -170,6 +170,16 @@ class ApiParams:
         type=openapi.TYPE_STRING
     )
 
+    ENTITY_ADMIN_LEVEL = openapi.Parameter(
+        'entity_admin_level__in',
+        openapi.IN_QUERY,
+        description=(
+            'Filter data by multiple admin level in number. '
+            'Put multiple filter using comma separator.'
+        ),
+        type=openapi.TYPE_STRING
+    )
+
     GEOM_ID = openapi.Parameter(
         'geom_id__in',
         openapi.IN_QUERY,

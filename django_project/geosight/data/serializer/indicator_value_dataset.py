@@ -20,23 +20,25 @@ from django.urls import reverse
 from django.utils.encoding import force_str
 from rest_framework import serializers
 
+from core.serializer.dynamic_serializer import DynamicModelSerializer
 from geosight.data.models.indicator.indicator_value_dataset import (
     IndicatorValueDataset
 )
 
 
-class IndicatorValueDatasetSerializer(serializers.ModelSerializer):
+class IndicatorValueDatasetSerializer(DynamicModelSerializer):
     """Serializer for IndicatorValue."""
 
     id = serializers.SerializerMethodField()
     browse_data_api_url = serializers.SerializerMethodField()
     browse_url = serializers.SerializerMethodField()
+    permission = serializers.SerializerMethodField()
 
     def get_id(self, obj: IndicatorValueDataset):
         """Return id."""
         return (
-            f'{obj.indicator_id}-{obj.reference_layer_id}-'
-            f'[{obj.admin_level}]'
+            f'{obj.indicator_id}-{obj.country_id}-'
+            f'[{obj.entity_admin_level}]'
         )
 
     def get_browse_data_api_url(self, obj: IndicatorValueDataset):
@@ -52,10 +54,10 @@ class IndicatorValueDatasetSerializer(serializers.ModelSerializer):
                 value = 1
             elif 'indicator_id' in key:
                 value = obj.indicator_id
-            elif 'reference_layer_id' in key:
-                value = obj.reference_layer_uuid
+            elif 'country_id' in key:
+                value = obj.country_id
             elif 'admin_level' in key:
-                value = obj.admin_level
+                value = obj.entity_admin_level
 
             if value is not None:
                 query_dict[key] = value
@@ -67,26 +69,14 @@ class IndicatorValueDatasetSerializer(serializers.ModelSerializer):
         return (
             f"{reverse('admin-data-browser-view')}?"
             f"indicators={obj.indicator_id}&"
-            f"datasets={obj.reference_layer_uuid}&"
-            f"levels={obj.admin_level}"
+            f"countries={obj.country_id}&"
+            f"levels={obj.entity_admin_level}"
         )
 
     class Meta:  # noqa: D106
         model = IndicatorValueDataset
         fields = '__all__'
 
-
-class IndicatorValueDatasetWithPermissionSerializer(
-    IndicatorValueDatasetSerializer
-):
-    """Serializer for IndicatorValue."""
-
-    permission = serializers.SerializerMethodField()
-
     def get_permission(self, obj: IndicatorValueDataset):
         """Return permission."""
         return obj.permissions(self.context.get('user', None))
-
-    class Meta:  # noqa: D106
-        model = IndicatorValueDataset
-        fields = '__all__'
