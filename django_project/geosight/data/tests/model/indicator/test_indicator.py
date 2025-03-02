@@ -89,16 +89,16 @@ class IndicatorTest(TestCase):
         self.assertEqual(mock_func.call_count, 0)
         indicator.shortcode = 'shortcode'
         indicator.save()
-        self.assertEqual(mock_func.call_count, 0)
+        self.assertEqual(mock_func.call_count, 1)
         indicator.unit = 'm'
-        indicator.save()
-        self.assertEqual(mock_func.call_count, 0)
-        indicator.name = 'Name 2'
         indicator.save()
         self.assertEqual(mock_func.call_count, 1)
+        indicator.name = 'Name 2'
+        indicator.save()
+        self.assertEqual(mock_func.call_count, 2)
         indicator.name = 'Name 1'
         indicator.save()
-        self.assertEqual(mock_func.call_count, 2)
+        self.assertEqual(mock_func.call_count, 3)
         indicator.unit = 'm'
         indicator.save()
-        self.assertEqual(mock_func.call_count, 2)
+        self.assertEqual(mock_func.call_count, 3)

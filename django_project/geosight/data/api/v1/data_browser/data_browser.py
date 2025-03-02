@@ -29,14 +29,14 @@ from core.utils import string_is_true
 from geosight.data.models.indicator import (
     Indicator, IndicatorValue, IndicatorValueRejectedError
 )
-from geosight.data.serializer.indicator import (
-    IndicatorValueSerializer, IndicatorValueWithPermissionSerializer
-)
-from .base import BaseDataApiList
+from geosight.data.serializer.indicator import IndicatorValueSerializer
+from .base import BaseIndicatorValueApi
 
 
-class BaseDataBrowserApiList(BaseDataApiList):
+class BaseDataBrowserApiList(BaseIndicatorValueApi):
     """Return Data List API List."""
+
+    serializer_class = IndicatorValueSerializer
 
     filter_query_exclude = [
         'page', 'page_size', 'group_admin_level', 'detail'
@@ -54,24 +54,18 @@ class BaseDataBrowserApiList(BaseDataApiList):
 class DataBrowserApiList(BaseDataBrowserApiList, ListAPIView):
     """Return Data List API List."""
 
-    @property
-    def serializer_class(self):
-        """Return serialize class."""
-        if string_is_true(self.request.GET.get('detail', 'false')):
-            return IndicatorValueWithPermissionSerializer
-        return IndicatorValueSerializer
+    def get_serializer(self, *args, **kwargs):
+        """Return serializer of data."""
+        if not string_is_true(self.request.GET.get('detail', 'false')):
+            kwargs['exclude'] = ['permission']
+        serializer_class = self.get_serializer_class()
+        kwargs.setdefault('context', self.get_serializer_context())
+        return serializer_class(*args, **kwargs)
 
     def get_serializer_context(self):
         """For serializer context."""
         context = super().get_serializer_context()
         context.update({"user": self.request.user})
-        reference_layers = self.request.GET.get('reference_layer_id__in', None)
-        context.update(
-            {
-                "reference_layers": reference_layers.split(',')
-                if reference_layers else None
-            }
-        )
         return context
 
     @swagger_auto_schema(
@@ -99,7 +93,7 @@ class DataBrowserApiList(BaseDataBrowserApiList, ListAPIView):
         operation_id='data-browser-create',
         tags=[ApiTag.DATA_BROWSER],
         manual_parameters=[],
-        request_body=IndicatorValueWithPermissionSerializer.
+        request_body=IndicatorValueSerializer.
         Meta.post_body,
         responses={
             201: ''
@@ -172,7 +166,7 @@ class DataBrowserApiList(BaseDataBrowserApiList, ListAPIView):
         operation_id='data-browser-delete',
         tags=[ApiTag.DATA_BROWSER],
         manual_parameters=[],
-        request_body=IndicatorValueWithPermissionSerializer.
+        request_body=IndicatorValueSerializer.
         Meta.delete_body,
     )
     def delete(self, request):

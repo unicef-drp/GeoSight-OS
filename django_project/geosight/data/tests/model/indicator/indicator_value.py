@@ -115,13 +115,16 @@ class IndicatorValueTest(TestCase):
         self.assertEquals(value.country, entity.country)
         self.assertEquals(value.country_name, 'country')
         self.assertEquals(value.country_name, entity.country.name)
+        self.assertEquals(value.country_geom_id, 'A')
+        self.assertEquals(value.country_geom_id, entity.country.geom_id)
 
         # check indicator
         self.assertEquals(value.indicator_name, indicator.name)
+        self.assertEquals(value.indicator_shortcode, None)
 
     def test_create_from_indicator(self):
         """Test create."""
-        indicator = IndicatorF(name='Indicator 2')
+        indicator = IndicatorF(name='Indicator 2', shortcode='Shortcode2')
         value = indicator.save_value(
             date='2020-05-01', geom_id='AAA', value=2,
             reference_layer=self.reference_layer.identifier,
@@ -156,9 +159,13 @@ class IndicatorValueTest(TestCase):
         self.assertEquals(value.country, entity.country)
         self.assertEquals(value.country_name, 'country')
         self.assertEquals(value.country_name, entity.country.name)
+        self.assertEquals(value.country_geom_id, 'A')
+        self.assertEquals(value.country_geom_id, entity.country.geom_id)
 
         # check indicator
         self.assertEquals(value.indicator_name, indicator.name)
+        self.assertEquals(value.indicator_shortcode, 'Shortcode2')
+        self.assertEquals(value.indicator_shortcode, indicator.shortcode)
 
         # If the entity is country
         value = indicator.save_value(
@@ -338,12 +345,15 @@ class IndicatorValueTest(TestCase):
 
         # # When the country itself changed
         country_b.name = 'Country b name'
+        country_b.geom_id = 'GEOM_B'
         country_b.save()
         value_b.refresh_from_db()
         entity_b.country.refresh_from_db()
         self.assertEquals(value_b.country_id, entity_b.country.id)
         self.assertEquals(value_b.country_name, 'Country b name')
         self.assertEquals(value_b.country_name, entity_b.country.name)
+        self.assertEquals(value_b.country_geom_id, 'GEOM_B')
+        self.assertEquals(value_b.country_geom_id, entity_b.country.geom_id)
 
     def test_assign_flat_table(self):
         """Test assign flat table script."""
@@ -382,6 +392,8 @@ class IndicatorValueTest(TestCase):
         self.assertEquals(value_a.country, entity.country)
         self.assertEquals(value_a.country_name, 'country')
         self.assertEquals(value_a.country_name, entity.country.name)
+        self.assertEquals(value_a.country_geom_id, 'A')
+        self.assertEquals(value_a.country_geom_id, entity.country.geom_id)
 
         # check indicator
         self.assertEquals(value_a.indicator_name, indicator.name)
@@ -424,6 +436,7 @@ class IndicatorValueTest(TestCase):
 
         # check indicator
         self.assertEquals(value_b.indicator_name, indicator.name)
+        self.assertEquals(value_b.indicator_shortcode, indicator.shortcode)
 
         # Remove the value
         with connection.cursor() as cursor:
@@ -433,13 +446,15 @@ class IndicatorValueTest(TestCase):
                 SET
                     country_id = NULL,
                     country_name = NULL,
+                    country_geom_id = NULL,
                     entity_id = NULL,
                     entity_name = NULL,
                     entity_admin_level = NULL,
                     entity_concept_uuid = NULL,
                     entity_start_date = NULL,
                     entity_end_date = NULL,
-                    indicator_name = NULL
+                    indicator_name = NULL,
+                    indicator_shortcode = NULL
                 WHERE id IN ({value_a.pk},{value_b.pk})
                 """
             )
@@ -447,6 +462,7 @@ class IndicatorValueTest(TestCase):
         value_b.refresh_from_db()
         self.assertIsNone(value_a.country_id)
         self.assertIsNone(value_a.country_name)
+        self.assertIsNone(value_a.country_geom_id)
         self.assertIsNone(value_a.entity_id)
         self.assertIsNone(value_a.entity_name)
         self.assertIsNone(value_a.entity_admin_level)
@@ -456,6 +472,7 @@ class IndicatorValueTest(TestCase):
         self.assertIsNone(value_a.indicator_name)
         self.assertIsNone(value_b.country_id)
         self.assertIsNone(value_b.country_name)
+        self.assertIsNone(value_b.country_geom_id)
         self.assertIsNone(value_b.entity_id)
         self.assertIsNone(value_b.entity_name)
         self.assertIsNone(value_b.entity_admin_level)
@@ -501,6 +518,8 @@ class IndicatorValueTest(TestCase):
         self.assertEquals(value_a.country, entity.country)
         self.assertEquals(value_a.country_name, 'country')
         self.assertEquals(value_a.country_name, entity.country.name)
+        self.assertEquals(value_a.country_geom_id, 'A')
+        self.assertEquals(value_a.country_geom_id, entity.country.geom_id)
 
         # check indicator
         self.assertEquals(value_a.indicator_name, indicator.name)
@@ -542,6 +561,9 @@ class IndicatorValueTest(TestCase):
         self.assertEquals(value_b.country, entity)
         self.assertEquals(value_b.country_name, 'country')
         self.assertEquals(value_b.country_name, entity.name)
+        self.assertEquals(value_b.country_geom_id, 'A')
+        self.assertEquals(value_b.country_geom_id, entity.geom_id)
 
         # check indicator
         self.assertEquals(value_b.indicator_name, indicator.name)
+        self.assertEquals(value_b.indicator_shortcode, indicator.shortcode)

@@ -147,3 +147,10 @@ class temp_disconnect_signal(object):
             receiver=self.receiver,
             sender=self.sender
         )
+
+
+def pg_value(value, attr=None):
+    """Return pg value."""
+    if attr:
+        return f"'{getattr(value, attr)}'" if value else "NULL"
+    return f"'{value}'" if value else "NULL"

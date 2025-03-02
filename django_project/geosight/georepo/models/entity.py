@@ -25,6 +25,7 @@ from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
+from core.utils import pg_value
 from geosight.georepo.models.reference_layer import ReferenceLayerView
 from geosight.georepo.request import (
     GeorepoRequest, GeorepoEntityDoesNotExist, GeorepoRequestError
@@ -130,7 +131,12 @@ class Entity(models.Model):
     @staticmethod
     def get_entity(
             original_id_type: str, original_id: str,
+
+            # TODO:
+            #  reference layer will be removed after georepo
+            #  has API to check country
             reference_layer: ReferenceLayerView,
+            country_id: int = None,
             admin_level: int = None,
             date_time=timezone.now(),
             auto_fetch: bool = True
@@ -323,19 +329,19 @@ class Entity(models.Model):
 
     def update_indicator_value_data(self):
         """Update entity data in indicator value."""
-        start_date = f"'{self.start_date}'" if self.start_date else "NULL"
-        end_date = f"'{self.end_date}'" if self.end_date else "NULL"
-        concept_uuid = (
-            f"'{self.concept_uuid}'" if self.concept_uuid else "NULL"
-        )
+        start_date = pg_value(self.start_date)
+        end_date = pg_value(self.end_date)
+        concept_uuid = pg_value(self.concept_uuid)
 
         # For country
         if self.is_country:
             country_id = self.id
-            country_name = f"'{self.name}'"
+            country_name = pg_value(self.name)
+            country_geom_id = pg_value(self.geom_id)
         else:
-            country_id = self.country.id if self.country else "NULL"
-            country_name = f"'{self.country.name}'" if self.country else "NULL"
+            country_id = pg_value(self.country, 'id')
+            country_name = pg_value(self.country, 'name')
+            country_geom_id = pg_value(self.country, 'geom_id')
 
         query = f"""
             UPDATE geosight_data_indicatorvalue
@@ -346,7 +352,8 @@ class Entity(models.Model):
                 entity_start_date = {start_date},
                 entity_end_date = {end_date},
                 country_id = {country_id},
-                country_name = {country_name}
+                country_name = {country_name},
+                country_geom_id = {country_geom_id}
             WHERE
                 entity_id = {self.id}
         """
@@ -358,10 +365,12 @@ class Entity(models.Model):
         # For country
         if self.is_country:
             country_name = f"'{self.name}'"
+            country_geom_id = f"'{self.geom_id}'"
             query = f"""
                 UPDATE geosight_data_indicatorvalue
                 SET
-                    country_name = {country_name}
+                    country_name = {country_name},
+                    country_geom_id = {country_geom_id}
                 WHERE
                     country_id = {self.id}
             """

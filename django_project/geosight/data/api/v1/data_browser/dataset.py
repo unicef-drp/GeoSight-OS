@@ -28,6 +28,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from core.api_utils import common_api_params, ApiTag, ApiParams
+from core.utils import string_is_true
 from geosight.data.models.indicator import (
     IndicatorValue, Indicator
 )
@@ -65,6 +66,10 @@ class BaseDatasetApiList:
             ).annotate(
                 indicator_name=F('indicator_name')
             ).annotate(
+                indicator_name=F('indicator_shortcode')
+            ).annotate(
+                country_name=F('country_geom_id')
+            ).annotate(
                 country_name=F('country_name')
             ).annotate(
                 start_date=Min('date')
@@ -88,6 +93,10 @@ class BaseDatasetApiList:
             ).annotate(
                 indicator_name=F('indicator_name')
             ).annotate(
+                indicator_name=F('indicator_shortcode')
+            ).annotate(
+                country_name=F('country_geom_id')
+            ).annotate(
                 country_name=F('country_name')
             ).annotate(
                 start_date=Min('date')
@@ -108,7 +117,7 @@ class DatasetApiList(
         data = []
         for row in args[0]:
             data.append(IndicatorValueDataset(**row))
-        if self.action in ['list']:
+        if not string_is_true(self.request.GET.get('detail', 'false')):
             kwargs['exclude'] = ['permission']
         serializer_class = self.get_serializer_class()
         kwargs.setdefault('context', self.get_serializer_context())
@@ -151,15 +160,7 @@ class DatasetApiList(
         except SuspiciousOperation as e:
             return HttpResponseBadRequest(f'{e}')
 
-    @swagger_auto_schema(
-        operation_id='dataset-detail',
-        tags=[ApiTag.DATA_BROWSER],
-        manual_parameters=[],
-        operation_description=(
-                'Return the detail of indicator data information by country, '
-                'indicator and admin level with permission.'
-        )
-    )
+    @swagger_auto_schema(auto_schema=None)
     def retrieve(self, request, id=None):
         """Return detailed of basemap."""
         return super().retrieve(request, id=id)
@@ -237,7 +238,7 @@ class DatasetApiList(
     def data(self, request):
         """Get data."""
         indicator_id = 'indicator_id'
-        country_id = 'country_id'
+        country_geom_id = 'country_geom_id'
         admin_level = 'entity_admin_level'
         return Response({
             'indicators': self.get_queryset().order_by(
@@ -247,9 +248,9 @@ class DatasetApiList(
             ).distinct(),
 
             'datasets': self.get_queryset().order_by(
-                country_id
+                country_geom_id
             ).values_list(
-                country_id, flat=True
+                country_geom_id, flat=True
             ).distinct(),
 
             'levels': self.get_queryset().order_by(

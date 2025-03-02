@@ -29,10 +29,16 @@ class IndicatorValueDataset(models.Model):
     indicator_name = models.CharField(
         max_length=256, null=True, blank=True
     )
+    indicator_shortcode = models.CharField(
+        max_length=512, null=True, blank=True
+    )
 
     # Country
     country_id = models.BigIntegerField()
     country_name = models.CharField(
+        max_length=256, null=True, blank=True
+    )
+    country_geom_id = models.CharField(
         max_length=256, null=True, blank=True
     )
     entity_admin_level = models.CharField(max_length=256)

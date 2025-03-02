@@ -72,6 +72,11 @@ class IndicatorValue(models.Model):
     # ------------------------------
     # Indicator
     # ------------------------------
+    indicator_shortcode = models.CharField(
+        max_length=512,
+        null=True, blank=True,
+        help_text=Indicator.shortcode_helptext
+    )
     indicator_name = models.CharField(
         max_length=512,
         null=True, blank=True
@@ -104,6 +109,11 @@ class IndicatorValue(models.Model):
         max_length=512,
         null=True, blank=True
     )
+    country_geom_id = models.CharField(
+        max_length=256,
+        help_text='This is ucode from georepo.',
+        null=True, blank=True
+    )
 
     class Meta:  # noqa: D106
         unique_together = ('indicator', 'date', 'geom_id')
@@ -134,7 +144,7 @@ class IndicatorValue(models.Model):
         return self.value
 
     @staticmethod
-    def value_permissions(user, indicator, reference_layer=None):
+    def value_permissions(user, indicator):
         """Return value permissions for an user."""
         if user.profile.is_admin:
             return {
@@ -167,19 +177,6 @@ class IndicatorValue(models.Model):
             'list': True, 'read': True, 'edit': False, 'share': False,
             'delete': False
         }
-        # try:
-        #     obj = ReferenceLayerIndicator.objects.get(
-        #         reference_layer=self.reference_layer,
-        #         indicator=self.indicator,
-        #     )
-        #     permission = ReferenceLayerIndicatorPermission.objects.get(
-        #     obj=obj)
-        #     return permission.all_permission(user)
-        # except (
-        #         ReferenceLayerIndicatorPermission.DoesNotExist,
-        #         ReferenceLayerIndicator.DoesNotExist
-        # ):
-        #     pass
 
     def permissions(self, user):
         """Return permission of user."""
@@ -220,9 +217,11 @@ class IndicatorValue(models.Model):
                 if self.entity and self.entity.country:
                     self.country = self.entity.country
                     self.country_name = self.country.name
+                    self.country_geom_id = self.country.geom_id
             elif self.entity_admin_level == 0:
                 self.country = self.entity
                 self.country_name = self.entity.name
+                self.country_geom_id = self.entity.geom_id
         if autosave:
             self.save()
 
@@ -230,7 +229,6 @@ class IndicatorValue(models.Model):
         """Assign indicator flat value."""
         if not self.indicator_name:
             self.indicator_name = self.indicator.name
-            self.indicator_type = self.indicator.type
             self.indicator_shortcode = self.indicator.shortcode
             if autosave:
                 self.save()
@@ -257,6 +255,12 @@ class IndicatorValue(models.Model):
                         OR jsonb_array_length(entity.parents) = 0
                     THEN entity.name
                     ELSE country.name
+                END,
+                country_geom_id = CASE
+                    WHEN entity.parents IS NULL
+                        OR jsonb_array_length(entity.parents) = 0
+                    THEN entity.geom_id
+                    ELSE country.geom_id
                 END
             FROM
                 geosight_georepo_entity AS entity
@@ -269,7 +273,9 @@ class IndicatorValue(models.Model):
         """
         indicator_query = """
             UPDATE geosight_data_indicatorvalue AS value
-            SET indicator_name = indicator.name
+            SET
+                indicator_name = indicator.name,
+                indicator_shortcode = indicator.shortcode
             FROM geosight_data_indicator AS indicator
             WHERE
                 value.indicator_id = indicator.id

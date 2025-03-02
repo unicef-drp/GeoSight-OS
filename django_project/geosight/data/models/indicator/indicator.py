@@ -27,6 +27,7 @@ from django.dispatch import receiver
 from core.models.general import (
     AbstractTerm, AbstractSource, AbstractEditData, AbstractVersionData
 )
+from core.utils import pg_value
 from geosight.data.models.code import CodeList
 from geosight.data.models.indicator.indicator_type import (
     IndicatorType, IndicatorTypeChoices
@@ -238,6 +239,10 @@ class Indicator(
     def save_value(
             self,
             date: date, geom_id: str, value: any,
+
+            # TODO:
+            #  reference layer will be removed after georepo
+            #  has API to check country
             reference_layer=None,
             admin_level: int = None,
             extras: dict = None,
@@ -314,7 +319,14 @@ class Indicator(
 
     def query_values(
             self, date_data: date = None, min_date_data: date = None,
-            reference_layer=None, admin_level: int = None,
+
+            # TODO:
+            #  reference layer will be removed after georepo
+            #  has API to check country
+            reference_layer=None,
+
+            country_id: int = None,
+            admin_level: int = None,
             concept_uuid: str = None,
             concept_uuids: list = None,
             entities_id: list = None
@@ -336,6 +348,8 @@ class Indicator(
         # Do filter
         if reference_layer:
             query = query.filter(reference_layer_id=reference_layer.id)
+        if country_id:
+            query = query.filter(country_id=country_id)
         if admin_level:
             query = query.filter(admin_level=admin_level)
         if date_data:
@@ -495,9 +509,12 @@ class Indicator(
 
     def update_indicator_value_data(self):
         """Update indicator data in indicator value."""
+        shortcode = pg_value(self.shortcode)
         query = f"""
             UPDATE geosight_data_indicatorvalue
-            SET indicator_name = '{self.name}'
+            SET
+                indicator_name = '{self.name}',
+                indicator_shortcode = {shortcode}
             WHERE
                 indicator_id = {self.id}
         """
@@ -512,7 +529,8 @@ def update_indicator_value_data(sender, instance, **kwargs):
         try:
             old_instance = sender.objects.get(pk=instance.pk)
             if (
-                    old_instance.name != instance.name
+                    old_instance.name != instance.name or
+                    old_instance.shortcode != instance.shortcode
             ):
                 instance.update_indicator_value_data()
         except ObjectDoesNotExist:
