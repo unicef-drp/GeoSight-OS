@@ -22,7 +22,6 @@ from django.db.models import Max, Subquery
 from django.utils.translation import ugettext_lazy as _
 
 from core.models.general import AbstractVersionData, AbstractEditData
-from core.utils import is_valid_uuid
 from geosight.data.models.indicator import Indicator
 from geosight.georepo.request import (
     GeorepoRequest, GeorepoUrl, GeorepoRequestError
@@ -166,20 +165,6 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
         """Return API link for reference detail."""
         url = GeorepoUrl()
         return url.view_detail(self.identifier)
-
-    @staticmethod
-    def get_by_identifier(identifier):
-        """Return get by indicator."""
-        if is_valid_uuid(identifier):
-            reference_layer, _ = ReferenceLayerView.objects.get_or_create(
-                identifier=identifier
-            )
-            return reference_layer
-        else:
-            try:
-                return ReferenceLayerView.objects.get(id=identifier)
-            except ReferenceLayerView.DoesNotExist:
-                return
 
     @property
     def is_local(self):
