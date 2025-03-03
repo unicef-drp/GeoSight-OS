@@ -160,56 +160,80 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
             f'data__{field}', flat=True
         )
 
+    def data_query(
+            self, select, order_by, country_geom_ids, geo_field,
+            geo_type='ucode'
+    ):
+        """Return the query."""
+        from geosight.georepo.models.entity import Entity
+        countries = [
+            f'{country}' for country in list(
+                Entity.countries.filter(
+                    geom_id__in=country_geom_ids
+                ).values_list(
+                    'pk', flat=True
+                )
+            )
+        ]
+        if not countries:
+            return None
+
+        if geo_type.lower() == 'ucode':
+            return (
+                f"select {select} "
+                f"  from geosight_data_relatedtablerow as row "
+                f"LEFT JOIN geosight_georepo_entity as entity "
+                f"  ON data ->> '{geo_field}'::text=entity.geom_id::text "
+                f"WHERE row.table_id={self.id} AND "
+                f"  ("
+                f"      entity.country_id IN ({','.join(countries)}) OR"
+                f"      ("
+                f"          entity.country_id is NULL AND "
+                f"          entity.id IN ({','.join(countries)})"
+                f"      )"
+                f"  ) "
+                f"ORDER BY {order_by}"
+            )
+        else:
+            return (
+                f"select {select} "
+                f"from geosight_data_relatedtablerow as row "
+                f"LEFT JOIN geosight_georepo_entitycode as entity_code "
+                f"ON data ->> '{geo_field}'::text=entity_code.code::text "
+                f"AND LOWER(entity_code.code_type)='{geo_type.lower()}' "
+                f"LEFT JOIN geosight_georepo_entity as entity "
+                f"ON entity.id=entity_code.entity_id "
+                f"WHERE row.table_id={self.id} AND "
+                f"  ("
+                f"      entity.country_id IN ({','.join(countries)}) OR"
+                f"      ("
+                f"          entity.country_id is NULL AND "
+                f"          entity.id IN ({','.join(countries)})"
+                f"      )"
+                f"  ) "
+                f"ORDER BY {order_by}"
+            )
+
     def data_with_query(
-            self, reference_layer_uuid,
+            self, country_geom_ids,
             geo_field, date_field=None, date_format=None, geo_type='ucode',
             max_time=None, min_time=None, limit=25, offset=None
     ):
         """Return data of related table."""
-        from geosight.georepo.models.reference_layer import ReferenceLayerView
-        try:
-            reference_layer = ReferenceLayerView.objects.get(
-                identifier=reference_layer_uuid
-            )
-        except ReferenceLayerView.DoesNotExist:
-            return [], False
-
-        # Check codes based on code type
         output = []
         has_next = False
+        query = self.data_query(
+            select=(
+                "row.id, row.order, row.data::json, "
+                "geom_id, concept_uuid, name, admin_level"
+            ),
+            order_by='row.id',
+            country_geom_ids=country_geom_ids,
+            geo_field=geo_field, geo_type=geo_type
+        )
+        if not query:
+            return []
         with connection.cursor() as cursor:
-            if geo_type.lower() == 'ucode':
-                query = (
-                    f"select row.id, row.order, row.data::json, "
-                    f"geom_id, concept_uuid, name, admin_level "
-                    f"from geosight_data_relatedtablerow as row "
-                    f"LEFT JOIN geosight_georepo_entity as entity "
-                    f"ON data ->> '{geo_field}'::text=entity.geom_id::text "
-                    f"LEFT JOIN geosight_georepo_referencelayerviewentity "
-                    f"  as ref_entity "
-                    f"  ON ref_entity.entity_id = entity.id "
-                    f"WHERE row.table_id={self.id} AND "
-                    f"ref_entity.reference_layer_id={reference_layer.id} "
-                    f"ORDER BY row.id"
-                )
-            else:
-                query = (
-                    f"select row.id, row.order, row.data::json, "
-                    f"geom_id, concept_uuid, name, admin_level "
-                    f"from geosight_data_relatedtablerow as row "
-                    f"LEFT JOIN geosight_georepo_entitycode as entity_code "
-                    f"ON data ->> '{geo_field}'::text=entity_code.code::text "
-                    f"AND LOWER(entity_code.code_type)='{geo_type.lower()}' "
-                    f"LEFT JOIN geosight_georepo_entity as entity "
-                    f"ON entity.id=entity_code.entity_id "
-                    f"LEFT JOIN geosight_georepo_referencelayerviewentity "
-                    f"  as ref_entity "
-                    f"  ON ref_entity.entity_id = entity.id "
-                    f"WHERE row.table_id={self.id} AND "
-                    f"ref_entity.reference_layer_id={reference_layer.id} "
-                    f"ORDER BY row.id"
-                )
-
             if offset is not None:
                 query += f' LIMIT {limit} OFFSET {offset}'
 
@@ -229,7 +253,7 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                     'concept_uuid': row[4],
                     'geometry_code': row[3],
                     'geometry_name': row[5],
-                    'admin_level': row[6],
+                    'admin_level': row[6]
                 })
                 # Update date field
                 data[date_field] = extract_time_string(
@@ -245,47 +269,19 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
         return output, has_next
 
     def dates_with_query(
-            self, reference_layer_uuid,
-            geo_field, date_field=None, date_format=None, geo_type='ucode'
+            self, country_geom_ids, geo_field,
+            date_field=None, date_format=None, geo_type='ucode'
     ):
         """Return data of related table."""
-        from geosight.georepo.models.reference_layer import ReferenceLayerView
-        try:
-            reference_layer = ReferenceLayerView.objects.get(
-                identifier=reference_layer_uuid
-            )
-        except ReferenceLayerView.DoesNotExist:
+        query = self.data_query(
+            select=f"DISTINCT(data ->> '{date_field}') ",
+            order_by=f"data ->> '{date_field}'",
+            country_geom_ids=country_geom_ids,
+            geo_field=geo_field, geo_type=geo_type
+        )
+        if not query:
             return []
         with connection.cursor() as cursor:
-            if geo_type.lower() == 'ucode':
-                query = (
-                    f"select DISTINCT(data ->> '{date_field}') "
-                    f"from geosight_data_relatedtablerow as row "
-                    f"LEFT JOIN geosight_georepo_entity as entity "
-                    f"ON data ->> '{geo_field}'::text=entity.geom_id::text "
-                    f"LEFT JOIN geosight_georepo_referencelayerviewentity "
-                    f"  as ref_entity "
-                    f"  ON ref_entity.entity_id = entity.id "
-                    f"WHERE row.table_id={self.id} AND "
-                    f"ref_entity.reference_layer_id={reference_layer.id} "
-                    f"ORDER BY data ->> '{date_field}'"
-                )
-            else:
-                query = (
-                    f"select DISTINCT(data ->> '{date_field}') "
-                    f"from geosight_data_relatedtablerow as row "
-                    f"LEFT JOIN geosight_georepo_entitycode as entity_code "
-                    f"ON data ->> '{geo_field}'::text=entity_code.code::text "
-                    f"AND LOWER(entity_code.code_type)='{geo_type.lower()}' "
-                    f"LEFT JOIN geosight_georepo_entity as entity "
-                    f"ON entity.id=entity_code.entity_id "
-                    f"LEFT JOIN geosight_georepo_referencelayerviewentity "
-                    f"  as ref_entity "
-                    f"  ON ref_entity.entity_id = entity.id "
-                    f"WHERE row.table_id={self.id} AND "
-                    f"ref_entity.reference_layer_id={reference_layer.id} "
-                    f"ORDER BY data ->> '{date_field}'"
-                )
             cursor.execute(query)
             dates = []
             for row in cursor.fetchall():

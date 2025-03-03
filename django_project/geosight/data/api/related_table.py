@@ -134,7 +134,7 @@ class RelatedTableValuesAPI(APIView):
         related_table = get_object_or_404(RelatedTable, pk=pk)
         read_data_permission_resource(related_table, request.user)
         try:
-            reference_layer_uuid = request.GET['reference_layer_uuid']
+            country_geom_ids = request.GET['country_geom_ids'].split(',')
             geography_code_field_name = request.GET[
                 'geography_code_field_name']
             geography_code_type = request.GET['geography_code_type']
@@ -164,7 +164,7 @@ class RelatedTableValuesAPI(APIView):
                 return HttpResponseBadRequest("Page can't be zero")
             offset = (page - 1) * int(page_size)
         data, has_next = related_table.data_with_query(
-            reference_layer_uuid=reference_layer_uuid,
+            country_geom_ids=country_geom_ids,
             geo_field=geography_code_field_name,
             geo_type=geography_code_type,
             date_field=request.GET.get('date_field', None),
@@ -216,7 +216,7 @@ class RelatedTableDatesAPI(APIView):
         related_table = get_object_or_404(RelatedTable, pk=pk)
         read_data_permission_resource(related_table, request.user)
         try:
-            reference_layer_uuid = request.GET['reference_layer_uuid']
+            country_geom_ids = request.GET['country_geom_ids'].split(',')
             geography_code_field_name = request.GET[
                 'geography_code_field_name']
             geography_code_type = request.GET['geography_code_type']
@@ -224,7 +224,7 @@ class RelatedTableDatesAPI(APIView):
             return HttpResponseBadRequest(f'{e} is required')
 
         data = related_table.dates_with_query(
-            reference_layer_uuid=reference_layer_uuid,
+            country_geom_ids=country_geom_ids,
             geo_field=geography_code_field_name,
             geo_type=geography_code_type,
             date_field=request.GET.get('date_field', None),

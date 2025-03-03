@@ -9,23 +9,12 @@
  *     (at your option) any later version.
  *
  * __author__ = 'irwan@kartoza.com'
- * __date__ = '02/01/2025'
+ * __date__ = '03/03/2025'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-export interface CountryDatasetView {
-  name: string;
-  ucode: string;
-}
+import { DatasetView } from "../types/DatasetView";
 
-export interface DatasetView {
-  name: string,
-  uuid: string,
-  description: string,
-  dataset: string,
-  root_entity: string,
-  last_update: string,
-  bbox: number[],
-  tags: string[],
-  countries: CountryDatasetView[];
+export const getCountryGeomIds = (referenceLayerData: DatasetView) => {
+  return referenceLayerData.countries.map(country => country.ucode)
 }
