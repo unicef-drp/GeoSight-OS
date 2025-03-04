@@ -146,6 +146,7 @@ export default function IndicatorLayersForm() {
   } = useSelector(state => state.dashboard.data);
   const indicators = dictDeepCopy(dashboardIndicators, true)
   const relatedTables = dictDeepCopy(dashboardRelatedTables, true)
+  const referenceLayerData = useSelector(state => state.referenceLayerData[referenceLayer?.identifier]);
 
   // Handling for create layer
   const [groupName, setGroupName] = useState(false)
@@ -320,7 +321,7 @@ export default function IndicatorLayersForm() {
               </div>
               <RelatedTableLayerConfig
                 key={layer.id}
-                referenceLayerUUID={referenceLayer.identifier}
+                referenceLayerData={referenceLayerData}
                 relatedTables={relatedTables}
                 layer={layer}
                 onUpdate={
@@ -401,9 +402,9 @@ export default function IndicatorLayersForm() {
 
     {/* THIS IS FOR RELATED TABLE CONFIG */}
     {
-      referenceLayer.identifier ?
+      referenceLayerData?.data?.name ?
         <RelatedTableLayerConfig
-          referenceLayerUUID={referenceLayer.identifier}
+          referenceLayerData={referenceLayerData}
           configOpen={relatedTableLayerOpen}
           setConfigOpen={setRelatedTableLayerOpen}
           relatedTables={relatedTables}

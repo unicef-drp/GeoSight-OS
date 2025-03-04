@@ -58,6 +58,7 @@ import { MainDataGrid } from "../../../../../../components/Table";
 import { CogIcon } from "../../../../../../components/Icons";
 import { ExecuteWebWorker } from "../../../../../../utils/WebWorker";
 import worker from "../../../../../Dashboard/LeftPanel/RelatedTable/Worker";
+import { getCountryGeomIds } from "../../../../../../utils/Dataset";
 
 import './style.scss';
 
@@ -72,7 +73,7 @@ import './style.scss';
  */
 export default function RelatedTableLayerConfig(
   {
-    referenceLayerUUID,
+    referenceLayerData,
     configOpen,
     setConfigOpen,
     relatedTables,
@@ -152,21 +153,22 @@ export default function RelatedTableLayerConfig(
     if (!open || !relatedTableConfig) {
       return
     }
-    const params = {}
-    if (referenceLayerUUID) {
-      params['reference_layer_uuid'] = referenceLayerUUID
+    if (
+      !referenceLayerData?.data?.name ||
+      !relatedTableConfig.geography_code_field_name ||
+      !relatedTableConfig.geography_code_type ||
+      !data?.config?.date_field
+    ) {
+      return;
     }
-    if (data?.config?.date_field) {
-      params['date_field'] = data?.config?.date_field
+    const params = {
+      country_geom_ids: getCountryGeomIds(referenceLayerData.data).join(','),
+      geography_code_field_name: relatedTableConfig.geography_code_field_name,
+      geography_code_type: relatedTableConfig.geography_code_type,
+      date_field: data?.config?.date_field
     }
     if (data?.config?.date_format) {
       params['date_format'] = data?.config?.date_format
-    }
-    if (relatedTableConfig.geography_code_field_name) {
-      params['geography_code_field_name'] = relatedTableConfig.geography_code_field_name
-    }
-    if (relatedTableConfig.geography_code_type) {
-      params['geography_code_type'] = relatedTableConfig.geography_code_type
     }
     const url = relatedTableConfig.url.replace('data', 'values')
     if (JSON.stringify(params) !== JSON.stringify(prevState.params) || JSON.stringify(url) !== JSON.stringify(prevState.url)) {
@@ -186,7 +188,7 @@ export default function RelatedTableLayerConfig(
         )
       })
     }
-  }, [open, data])
+  }, [open, data, referenceLayerData])
 
   /** Update data **/
   const updateData = () => {

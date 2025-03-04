@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
@@ -28,13 +28,14 @@ import WhereInputModal
 import Match from '../../../../../utils/Match';
 import { fetchingData } from "../../../../../Requests";
 import { dictDeepCopy } from "../../../../../utils/main";
+import { getCountryGeomIds } from "../../../../../utils/Dataset";
 
 import './style.scss';
 
 /**
  * Related table configuration
  */
-function RelatedTableConfiguration({ data, referenceLayerUUID, codeTypes }) {
+function RelatedTableConfiguration({ data, referenceLayerData, codeTypes }) {
   const prevState = useRef();
   const dispatch = useDispatch()
   const [relatedTableData, setRelatedTableData] = useState(null)
@@ -45,15 +46,13 @@ function RelatedTableConfiguration({ data, referenceLayerUUID, codeTypes }) {
     if (!open) {
       return
     }
-    const params = {}
-    if (referenceLayerUUID) {
-      params['reference_layer_uuid'] = referenceLayerUUID
+    if (!referenceLayerData?.data?.name || !data.geography_code_field_name || !data.geography_code_type) {
+      return;
     }
-    if (data.geography_code_field_name) {
-      params['geography_code_field_name'] = data.geography_code_field_name
-    }
-    if (data.geography_code_type) {
-      params['geography_code_type'] = data.geography_code_type
+    const params = {
+      country_geom_ids: getCountryGeomIds(referenceLayerData.data).join(','),
+      geography_code_field_name: data.geography_code_field_name,
+      geography_code_type: data.geography_code_type
     }
     const url = data.url.replace('data', 'values')
     if (JSON.stringify(params) !== JSON.stringify(prevState.params) || JSON.stringify(url) !== JSON.stringify(prevState.url)) {
@@ -66,7 +65,7 @@ function RelatedTableConfiguration({ data, referenceLayerUUID, codeTypes }) {
         }
       )
     }
-  }, [data, referenceLayerUUID])
+  }, [data, referenceLayerData])
 
 
   const relatedFields = relatedTableData ? getRelatedTableFields(data, relatedTableData) : null
@@ -162,7 +161,7 @@ export default function RelatedTableForm() {
     otherActionsFunction={data => {
       return <RelatedTableConfiguration
         data={data}
-        referenceLayerUUID={referenceLayer?.identifier}
+        referenceLayerData={referenceLayerData}
         codeTypes={codeTypes}/>
     }}
   />
