@@ -232,7 +232,7 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
             geo_field=geo_field, geo_type=geo_type
         )
         if not query:
-            return []
+            return [], False
         with connection.cursor() as cursor:
             if offset is not None:
                 query += f' LIMIT {limit} OFFSET {offset}'

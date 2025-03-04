@@ -283,45 +283,31 @@ class DashboardIndicatorDatesAPI(DashboardIndicatorValuesAPI):
 class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
     """Return all values for the geometry code."""
 
-    def get(self, request, slug, concept_uuid):
+    def get(self, request, slug, geom_id):
         """Return values of all indicators in specific geometry.
 
         :param slug: slug of the dashboard
-        :param concept_uuid: the concept_uuid
+        :param geom_id: the geom_id
         :return:
         """
         dashboard = get_object_or_404(Dashboard, slug=slug)
         reference_layer = self.return_reference_view()
         entity = reference_layer.entities_set.filter(
-            concept_uuid=concept_uuid
+            geom_id=geom_id
         ).first()
         if not entity:
             return HttpResponseBadRequest(
-                f'Entity with concept_uuid: {concept_uuid} does not exist.'
+                f'Entity with geom_id: {geom_id} does not exist.'
             )
-        try:
-            parent = entity.parents[0]
-            siblings = reference_layer.entities_set.filter(
-                parents__contains=parent,
-                admin_level=entity.admin_level
-            ).exclude(pk=entity.pk)
-            parent = reference_layer.entities_set.filter(
-                geom_id=parent,
-                reference_layer=reference_layer
-            ).first()
-        except IndexError:
-            siblings = []
-            parent = None
+        siblings = entity.siblings
+        children = entity.children
+        parent = entity.parent
 
-        children = reference_layer.entities_set.filter(
-            parents__contains=entity.geom_id,
-            admin_level=entity.admin_level + 1
-        )
-        concept_uuids = [entity.concept_uuid] + \
-                        [sibling.concept_uuid for sibling in siblings] + \
-                        [children.concept_uuid for children in children]
+        entities_id = [entity.id] + \
+                      [sibling.id for sibling in siblings] + \
+                      [children.id for children in children]
         if parent:
-            concept_uuids.append(parent.concept_uuid)
+            entities_id.append(parent.id)
 
         # INIDATORS DATA
         indicators = {}
@@ -335,7 +321,7 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
                     date_data=None,
                     min_date_data=None,
                     reference_layer=reference_layer,
-                    concept_uuids=concept_uuids,
+                    entities_id=entities_id,
                     last_value=False
                 )
                 for value in values:
@@ -372,7 +358,11 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
             except KeyError:
                 pass
             values, has_next = related_table.data_with_query(
-                reference_layer_uuid=reference_layer.identifier,
+                country_geom_ids=list(
+                    reference_layer.countries.values_list(
+                        'geom_id', flat=True
+                    )
+                ),
                 geo_field=dashboard_related.geography_code_field_name,
                 geo_type=dashboard_related.geography_code_type,
                 date_field=date_field,

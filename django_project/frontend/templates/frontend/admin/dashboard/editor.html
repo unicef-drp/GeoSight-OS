@@ -23,7 +23,7 @@
       urls.bookmarkCreate = '{% url 'dashboard-bookmarks-create' slug=dashboard.id %}'
       urls.bookmarkList = '{% url 'dashboard-bookmarks' slug=dashboard.id %}'
       urls.bookmarkDetail = '{% url 'dashboard-bookmarks-detail' slug=dashboard.id pk=0 %}'
-      urls.drilldown = '{% url 'dashboard-entity-drilldown' slug=dashboard.id concept_uuid='concept_uuid' %}'
+      urls.drilldown = '{% url 'dashboard-entity-drilldown' slug=dashboard.id geom_id='geom_id' %}'
 
       {% if dashboard.id %}
         urls.embedDetail = '{% url 'dashboard-embed' slug=dashboard.id %}'

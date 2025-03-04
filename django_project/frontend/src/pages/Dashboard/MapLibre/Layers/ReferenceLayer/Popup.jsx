@@ -278,7 +278,7 @@ export function getContext(
   geom_id, geometryProperties,
   selectedGlobalTime, selectedGlobalTimeConfig,
   indicatorLayers, referenceLayerData,
-  currentIndicatorLayer, currentIndicatorSecondLayer, concept_uuid,
+  currentIndicatorLayer, currentIndicatorSecondLayer,
   contextOnLoad, contextOnError
 ) {
   let current = {}
@@ -329,7 +329,7 @@ export function getContext(
   })
 
   // Fetch drilldown
-  const url = urls.drilldown.replace('concept_uuid', concept_uuid)
+  const url = urls.drilldown.replace('geom_id', geom_id)
   const params = {
     rtconfigs: JSON.stringify(indicatorLayersConfig),
     reference_layer_uuid: referenceLayerData?.data?.uuid ? referenceLayerData?.data?.uuid : referenceLayerData?.data?.identifier
@@ -395,15 +395,14 @@ export function popup(
       admin_level_name: levelName,
       concept_uuid: featureProperties.concept_uuid,
     }
-    let concept_uuid = geometryProperties.concept_uuid
-    const geomCode = concept_uuid
+    const geomCode = geom_id
     let context = getContext(
       indicators, relatedTables,
       indicatorValueByGeometry, indicatorSecondValueByGeometry,
       geom_id, geometryProperties,
       selectedGlobalTime, selectedGlobalTimeConfig,
       indicatorLayers, referenceLayerData,
-      currentIndicatorLayer, currentIndicatorSecondLayer, concept_uuid,
+      currentIndicatorLayer, currentIndicatorSecondLayer,
       function contextOnLoad(context) {
         $('#' + geomCode + ' .copy-context').html(
           `<svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiBox-root css-1om0hkc" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="ContentCopyIcon"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"></path></svg> Copy context`

@@ -85,7 +85,7 @@ dashboard_specific_api = [
         name='dashboard-duplicate-api'
     ),
     url(
-        r'^entity/(?P<concept_uuid>[^/]+)/drilldown$',
+        r'^entity/(?P<geom_id>[^/]+)/drilldown$',
         DashboardEntityDrilldown.as_view(),
         name='dashboard-entity-drilldown'
     ),
