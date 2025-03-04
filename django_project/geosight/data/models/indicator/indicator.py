@@ -16,8 +16,6 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from datetime import date, datetime
 
-import pytz
-from django.conf import settings
 from django.contrib.gis.db import models
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import connection
@@ -325,7 +323,7 @@ class Indicator(
             #  has API to check country
             reference_layer=None,
 
-            country_id: int = None,
+            countries_id: list = None,
             admin_level: int = None,
             concept_uuid: str = None,
             concept_uuids: list = None,
@@ -348,8 +346,8 @@ class Indicator(
         # Do filter
         if reference_layer:
             query = query.filter(reference_layer_id=reference_layer.id)
-        if country_id:
-            query = query.filter(country_id=country_id)
+        if countries_id:
+            query = query.filter(country_id__in=countries_id)
         if admin_level:
             query = query.filter(admin_level=admin_level)
         if date_data:
@@ -452,38 +450,12 @@ class Indicator(
             ]
         return []
 
-    def metadata(self, reference_layer_uuid):
+    def metadata(self, reference_layer):
         """Metadata for indicator."""
-        from geosight.georepo.models.reference_layer import ReferenceLayerView
-        from geosight.data.models.indicator.indicator_value import (
-            IndicatorValueWithGeo
+        from geosight.data.models.indicator.utilities import (
+            metadata_indicator_by_view
         )
-        try:
-            query = self.query_values(
-                reference_layer=ReferenceLayerView.objects.get(
-                    identifier=reference_layer_uuid
-                )
-            )
-        except ReferenceLayerView.DoesNotExist:
-            ReferenceLayerView.objects.get_or_create(
-                identifier=reference_layer_uuid
-            )
-            query = IndicatorValueWithGeo.objects.none()
-        dates = [
-            datetime.combine(
-                date_str, datetime.min.time(),
-                tzinfo=pytz.timezone(settings.TIME_ZONE)
-            ).isoformat()
-            for date_str in set(
-                query.values_list('date', flat=True)
-            )
-        ]
-        dates.sort()
-
-        return {
-            'dates': dates,
-            'count': query.count()
-        }
+        return metadata_indicator_by_view(self, reference_layer)
 
     def metadata_with_cache(self, reference_layer):
         """Metadata for indicator."""
@@ -502,7 +474,7 @@ class Indicator(
         if cache_data:
             return cache_data
 
-        response = self.metadata(reference_layer.identifier)
+        response = self.metadata(reference_layer)
         response['version'] = cache.version
         cache.set(response)
         return response
