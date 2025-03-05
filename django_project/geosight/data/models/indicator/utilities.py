@@ -31,7 +31,6 @@ def metadata_indicator_by_view(
 
     Return dates and count.
     """
-
     query = IndicatorValue.objects.filter(
         country__in=reference_layer.countries.all(),
         indicator=indicator,
