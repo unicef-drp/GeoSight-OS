@@ -36,7 +36,7 @@ class BaseIndicatorValueApi(FilteredAPI):
     permission_classes = (IsAuthenticated,)
     pagination_class = Pagination
     model = IndicatorValue
-    filter_query_exclude = ['page', 'page_size']
+    filter_query_exclude = ['page', 'page_size', 'format']
 
     def get_queryset(self):
         """Return indicator value with geo."""

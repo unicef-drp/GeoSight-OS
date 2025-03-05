@@ -45,7 +45,7 @@ class BaseDatasetApiList:
     """Contains queryset."""
 
     filter_query_exclude = [
-        'page', 'page_size', 'group_admin_level', 'detail'
+        'page', 'page_size', 'group_admin_level', 'detail', 'format'
     ]
     serializer_class = IndicatorValueDatasetSerializer
 
@@ -115,8 +115,11 @@ class DatasetApiList(
     def get_serializer(self, *args, **kwargs):
         """Return serializer of data."""
         data = []
-        for row in args[0]:
-            data.append(IndicatorValueDataset(**row))
+        try:
+            for row in args[0]:
+                data.append(IndicatorValueDataset(**row))
+        except IndexError:
+            pass
         if not string_is_true(self.request.GET.get('detail', 'false')):
             kwargs['exclude'] = ['permission']
         serializer_class = self.get_serializer_class()

@@ -17,6 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 from rest_framework import serializers
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
+from core.serializer.dynamic_serializer import DynamicModelSerializer
 from geosight.georepo.models.entity import Entity
 
 
@@ -74,7 +75,7 @@ class EntityCentroidSerializer(GeoFeatureModelSerializer):
         fields = ('c', 'n', 'u', 'pu', 'pc')
 
 
-class EntitySerializer(serializers.ModelSerializer):
+class EntitySerializer(DynamicModelSerializer):
     """Serializer for Entity."""
 
     geom_code = serializers.SerializerMethodField()
@@ -88,7 +89,7 @@ class EntitySerializer(serializers.ModelSerializer):
         fields = ('name', 'geom_code', 'concept_uuid', 'admin_level')
 
 
-class ApiEntitySerializer(serializers.ModelSerializer):
+class ApiEntitySerializer(DynamicModelSerializer):
     """Serializer for Entity."""
 
     levels = {}

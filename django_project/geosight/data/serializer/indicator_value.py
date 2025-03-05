@@ -206,6 +206,14 @@ class IndicatorValueSerializer(DynamicModelSerializer):
         )
 
 
+class IndicatorValueExtraSerializer(DynamicModelSerializer):
+    """Return indicator value extra value."""
+
+    class Meta:  # noqa: D106
+        model = IndicatorExtraValue
+        fields = '__all__'
+
+
 class IndicatorValueDetailSerializer(IndicatorValueSerializer):
     """Serializer for IndicatorValue."""
 

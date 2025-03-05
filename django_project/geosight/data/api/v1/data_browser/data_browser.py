@@ -41,6 +41,7 @@ class BaseDataBrowserApiList(BaseIndicatorValueApi):
     filter_query_exclude = [
         'page', 'page_size', 'group_admin_level', 'detail'
     ]
+    extra_exclude_fields = ['permission']
 
     def get_queryset(self):
         """Return queryset of API."""
