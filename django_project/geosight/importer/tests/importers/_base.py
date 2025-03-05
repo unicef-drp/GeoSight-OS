@@ -24,6 +24,7 @@ from core.tests.base_tests import TestCase
 from core.tests.model_factories import UserF
 from geosight.data.models.code import Code, CodeList, CodeInCodeList
 from geosight.data.models.indicator import IndicatorType, IndicatorValue
+from geosight.importer.models import ImporterLog
 from geosight.data.tests.model_factories import (
     IndicatorF, IndicatorGroupF, IndicatorRuleF
 )
@@ -152,7 +153,7 @@ class BaseIndicatorValueImporterTest(BaseImporterTest):
         """Assert importer when run."""
         curr_version = self.indicator_1.version
         importer.run()
-        log = importer.importerlog_set.all().last()
+        log: ImporterLog = importer.importerlog_set.all().last()
         self.assertTrue(log.status in ['Success', 'Warning'])
 
         self.assertFalse(curr_version != self.indicator_1.version)
@@ -269,6 +270,16 @@ class BaseIndicatorValueImporterTest(BaseImporterTest):
         self.assertEqual(
             values.get(geom_id='C').date.strftime("%Y-%m-%d"),
             '2010-01-01'
+        )
+
+        importer_log_datas = log.importerlogdata_set.all()
+        self.assertEqual(
+            log.total_count,
+            importer_log_datas.count()
+        )
+        self.assertEqual(
+            log.success_count,
+            importer_log_datas.filter(saved=True).count()
         )
 
     def assertImporterLevelByData(self, importer):

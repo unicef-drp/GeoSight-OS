@@ -17,10 +17,12 @@ import React from 'react';
 
 import { render } from '../../../app';
 import { store } from '../../../store/admin';
-import { MultipleAdminContent } from "../MultipleAdminContent";
-import { pageNames } from "../index";
+import MultipleAdminContent
+  from "../../../components/Admin/MultipleAdminContent";import { pageNames } from "../index";
 import ImporterLogs from "./Logs";
 import ScheduledJobs from "./ScheduledJobs";
+import UserList from "../../../components/AdminList/Contents/User";
+import GroupList from "../../../components/AdminList/Contents/Group";
 
 
 /**
@@ -30,10 +32,10 @@ export default function DataManagementList({ defaultTab }) {
   return <MultipleAdminContent
     pageName={pageNames.DataManagement}
     defaultTab={defaultTab}
-    contents={{
-      'Logs': <ImporterLogs/>,
-      'Scheduled Jobs': <ScheduledJobs/>,
-    }}
+    contents={[
+      { name: 'Logs', content: <ImporterLogs/> },
+      { name: 'Scheduled Jobs', content: <ScheduledJobs/> },
+    ]}
   />
 }
 

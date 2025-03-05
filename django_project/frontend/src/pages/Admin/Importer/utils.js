@@ -62,7 +62,7 @@ export const COLUMNS = {
         </a>
       }
       return params.value
-    }
+    },
   },
   IMPORTER_BY: { field: 'created_by', headerName: 'Imported By', flex: 0.5 },
   START_AT: {

@@ -12,7 +12,7 @@
     <script>
       urls.api = {
         'data': '{% url 'importer-log-data-api' obj_id %}',
-        'datasetApi': '{% url 'data-browser-api'%}',
+        'datasetApi': '{% url 'data-browser-list'%}',
         'indicators': '{% url 'indicator-basic-list-api'%}',
       }
       const impoterType = '{{ obj_type }}'

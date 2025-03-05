@@ -77,7 +77,7 @@ export const FilterFieldOperatorInput = memo(
     }
     // FIELDS FROM INDICATORS
     indicators.map((indicator: any) => {
-      let keys = ['label', 'value', 'concept_uuid']
+      let keys = ['value']
       keys.forEach(key => {
         const id = `${IDENTIFIER}${indicator.id}.${key}`
         fields.push({
@@ -93,7 +93,7 @@ export const FilterFieldOperatorInput = memo(
     // FIELDS FROM DYNAMIC INDICATOR
     indicatorLayersLikeIndicator(indicatorLayers).map((indicatorLayer: any) => {
       const layerId = indicatorLayerId(indicatorLayer)
-      let keys = ['label', 'value']
+      let keys = ['value']
       keys.forEach(key => {
         const id = `${layerId}.${key}`
         if (!['label', 'value', 'concept_uuid'].includes(key)) {

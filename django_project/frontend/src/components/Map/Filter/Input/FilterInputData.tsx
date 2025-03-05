@@ -13,8 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { memo, useCallback, useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import React, { memo, useCallback, useEffect, useState } from "react";
 import { FilterExpressionProps } from "../types.d";
 import {
   IS_NOT_NULL,
@@ -26,110 +25,18 @@ import {
   WhereInputValue
 } from "../../../SqlQueryGenerator/WhereQueryGenerator/WhereInput";
 import alasql from "alasql";
-
-export interface FetchSourceDetail {
-  id: string;
-  sourceKey?: string;
-  receiveData: (data: any) => void;
-}
-
-export interface FetchGeometryData {
-  field: string;
-  receiveData: (data: any) => void;
-}
-
-export const FetchSourceDetailIndicator = memo(
-  ({ id, receiveData }: FetchSourceDetail) => {
-
-    // @ts-ignore
-    const { indicators } = useSelector(state => state.dashboard.data);
-
-    useEffect(() => {
-      receiveData(indicators.find((row: any) => row.id + '' == id + ''))
-    }, [indicators]);
-
-    return null
-  }
-)
-
-export const FetchSourceDetailRelatedTable = memo(
-  ({ id, receiveData }: FetchSourceDetail) => {
-
-    // @ts-ignore
-    const { relatedTables } = useSelector(state => state.dashboard.data);
-    useEffect(() => {
-      receiveData(relatedTables.find((row: any) => row.id + '' == id + ''))
-    }, [relatedTables]);
-
-    return null
-  }
-)
-
-export const FetchSourceData = memo(
-  ({ id, sourceKey, receiveData }: FetchSourceDetail) => {
-    const prevFetchedRef = useRef<string>('');
-    const stateData = useSelector((state) => {
-      // @ts-ignore
-      if (state[sourceKey] && state[sourceKey][id]) {
-        // @ts-ignore
-        return state[sourceKey][id];
-      }
-      return null;
-    });
-
-    /** Fetch the data **/
-    useEffect(() => {
-      const fetched = id + sourceKey + !!stateData?.fetched;
-      if (prevFetchedRef.current !== fetched) {
-        receiveData(stateData?.data)
-      }
-      prevFetchedRef.current = fetched;
-    }, [id, sourceKey, stateData]);
-
-    return null
-  }
-)
-
-export const FetchSourceGeometryData = memo(
-  ({ field, receiveData }: FetchGeometryData) => {
-    // @ts-ignore
-    const identifier = useSelector(state => state.dashboard?.data.referenceLayer?.identifier);
-    let usedIdentifier = identifier
-    const [keyData, level, fieldIdentifier] = field.split('.')[0].split('_')
-    if (fieldIdentifier) {
-      usedIdentifier = fieldIdentifier
-    }
-
-    // @ts-ignore
-    const referenceLayerData = useSelector((state) => state.datasetGeometries?.[usedIdentifier])
-
-    /** Fetch the data **/
-    useEffect(() => {
-      let data = referenceLayerData ? referenceLayerData[level] : null
-      if (data) {
-        const _data = []
-        // @ts-ignore
-        for (const [_, value] of Object.entries(data)) {
-          _data.push(value)
-        }
-        data = _data
-        _data.map((row: any) => {
-          row.members.map((member: any) => {
-            data.push({
-              concept_uuid: member.code,
-              ucode: row.ucode,
-              name: row.name,
-            })
-          })
-        })
-      }
-      receiveData(data)
-    }, [referenceLayerData]);
-
-    return null
-  }
-)
-
+import {
+  FetchSourceDetailIndicator,
+  FetchSourceDetailIndicatorLayer,
+  FetchSourceDetailRelatedTable
+} from "../Data/LayerDetail";
+import { FetchSourceData, FetchSourceGeometryData } from "../Data/SourceData";
+import { SourceDataKey, SourceDataType } from "../Data/types.d";
+import {
+  FetchFromDataOptions,
+  FetchIndicatorOptions,
+  FetchRelatedTableOptions
+} from "../Data/DataOptions";
 
 /** Props for input data **/
 export interface Props extends FilterExpressionProps {
@@ -169,23 +76,47 @@ export const FilterInputData = memo(
 
     /** Check the source **/
     let sourceDataKey = ''
+    let sourceDataType = ''
     if (field.includes('indicator_')) {
-      sourceDataKey = 'indicatorsData'
-    }
-    if (field.includes('related_table_')) {
-      sourceDataKey = 'relatedTableData'
-    }
-    if (field.includes('layer_')) {
-      sourceDataKey = 'indicatorsData'
-    }
-    if (field.includes('geometry_')) {
-      sourceDataKey = 'Geometry'
+      sourceDataKey = SourceDataKey.INDICATORS_DATA
+      sourceDataType = SourceDataType.INDICATOR
+    } else if (field.includes('layer_')) {
+      sourceDataKey = SourceDataKey.INDICATORS_DATA
+      sourceDataType = SourceDataType.INDICATOR_LAYER
+    } else if (field.includes('related_table_')) {
+      sourceDataKey = SourceDataKey.RELATED_TABLE_DATA
+      sourceDataType = SourceDataType.RELATED_TABLE
+    } else if (field.includes('geometry_')) {
+      sourceDataKey = SourceDataKey.GEOMETRY
+      sourceDataType = SourceDataType.GEOMETRY
     }
 
     /** The state of element **/
     const [source, setSource] = useState(null);
     const [data, setData] = useState<any[]>(null);
+    const [options, setOptions] = useState<any[]>(null);
     const [result, setResult] = useState<string[]>(null);
+
+    /** Update all necessary variables **/
+    const needsValue = ![IS_NULL, IS_NOT_NULL].includes(operator)
+    // @ts-ignore
+    const operatorName = OPERATOR[operator]
+
+    /** Check the datatype **/
+    let dataType = keyField === 'value' ? 'Number' : 'String';
+    if (sourceDataKey === SourceDataKey.INDICATORS_DATA) {
+      dataType = keyField === 'value' ? source?.type : 'String'
+    }
+    if (sourceDataKey === SourceDataKey.RELATED_TABLE_DATA) {
+      if (source?.fields_definition) {
+        const _field = source.fields_definition.find(
+          (_field: any) => _field.name == keyField
+        )
+        if (_field) {
+          dataType = _field.type
+        }
+      }
+    }
 
     /** Receive source detail callbacks **/
     const receiveSource = useCallback((_data: any) => {
@@ -203,7 +134,7 @@ export const FilterInputData = memo(
       if (data) {
         let usedData = data
         switch (sourceDataKey) {
-          case 'indicatorsData':
+          case SourceDataKey.INDICATORS_DATA:
             usedData = data.map(
               row => {
                 return {
@@ -223,49 +154,33 @@ export const FilterInputData = memo(
       }
     }, []);
 
-    const needsValue = ![IS_NULL, IS_NOT_NULL].includes(operator)
-    // @ts-ignore
-    const operatorName = OPERATOR[operator]
-
-    /** Check the datatype **/
-    let dataType = keyField === 'value' ? 'Number' : 'String';
-    if (sourceDataKey === 'indicatorsData') {
-      dataType = keyField === 'value' ? source?.type : 'String'
-    }
-    if (sourceDataKey === 'relatedTableData') {
-      if (source?.fields_definition) {
-        const _field = source.fields_definition.find(
-          (_field: any) => _field.name == keyField
-        )
-        if (_field) {
-          dataType = _field.type
-        }
+    /** Receive options callbacks **/
+    const receiveOptions = useCallback((_options: any) => {
+      let update = true
+      if (update && JSON.stringify(_options) == JSON.stringify(options)) {
+        update = false
       }
-    }
-
-    let options: any[] = ['loading']
-    if (dataType && data) {
-      try {
-        options = Array.from(new Set(data.map((row: any) => row[keyField])))
-      } catch (err) {
-
+      if (update) {
+        setOptions(_options)
       }
-    }
+    }, []);
 
+    /** Run filter calculation **/
     const updateFilter = () => {
-      // Run the calculation
       if (active) {
         const queryWhere = returnDataToExpression(`data.${keyField}`, operator, value)
-        const query = `SELECT ARRAY(concept_uuid) AS concept_uuids
-                       FROM ? data
-                       WHERE ${queryWhere}
-                       ORDER BY concept_uuid`
+        const query = `
+            SELECT ARRAY(concept_uuid) AS concept_uuids
+            FROM ? data
+            WHERE ${queryWhere}
+            ORDER BY concept_uuid
+        `
         const _result = alasql(query, [data])
         setResult(_result[0].concept_uuids ? _result[0].concept_uuids : [])
       }
     }
 
-    // When field, operator, value changed, make geometries null
+    /** When field, operator, value changed, make geometries null **/
     useEffect(() => {
         setResult(null)
         updateFilter()
@@ -273,7 +188,7 @@ export const FilterInputData = memo(
       [data, field, operator, value]
     );
 
-    // When active and has data, calculate filter
+    /** When active and has data, calculate filter **/
     useEffect(() => {
         if (onFiltered) {
           if (active && result === null) {
@@ -288,7 +203,7 @@ export const FilterInputData = memo(
       [active, data]
     );
 
-    // When data, field, operator, value changed
+    /** When data, field, operator, value changed **/
     useEffect(() => {
         if (onFiltered) {
           // if result changed
@@ -301,27 +216,57 @@ export const FilterInputData = memo(
     return <>
       {
         sourceDataKey ? <>
+
+          {/* GETTING THE LAYER DETAIL*/}
           {
-            sourceDataKey === 'indicatorsData' ?
+            sourceDataType === SourceDataType.INDICATOR ?
               <FetchSourceDetailIndicator
                 id={id}
-                receiveData={receiveSource}
-              /> : sourceDataKey === 'relatedTableData' ?
-                <FetchSourceDetailRelatedTable
+                onChange={receiveSource}
+              /> : sourceDataType === SourceDataType.INDICATOR_LAYER ?
+                <FetchSourceDetailIndicatorLayer
                   id={id}
-                  receiveData={receiveSource}
-                /> : null
+                  onChange={receiveSource}
+                /> : sourceDataType === SourceDataType.RELATED_TABLE ?
+                  <FetchSourceDetailRelatedTable
+                    id={id}
+                    onChange={receiveSource}
+                  /> : null
           }
+
+          {/* GET THE DATA*/}
           {
-            sourceDataKey !== 'Geometry' ?
+            sourceDataKey !== SourceDataKey.GEOMETRY ?
               <FetchSourceData
                 id={id}
                 sourceKey={sourceDataKey}
-                receiveData={receiveData}
+                onChange={receiveData}
               /> : <FetchSourceGeometryData
                 field={field}
-                receiveData={receiveData}
+                onChange={receiveData}
               />
+          }
+
+          {/* GET OPTIONS DATA*/}
+          {
+            sourceDataType === SourceDataType.INDICATOR
+            && keyField === 'value' ?
+              <FetchIndicatorOptions
+                id={id}
+                onChange={receiveOptions}
+              /> : sourceDataType === SourceDataType.RELATED_TABLE ?
+                <FetchRelatedTableOptions
+                  id={id}
+                  keyField={keyField}
+                  source={source}
+                  onChange={receiveOptions}
+                /> : <FetchFromDataOptions
+                  id={id}
+                  data={data}
+                  operator={operator}
+                  keyField={keyField}
+                  onChange={receiveOptions}
+                />
           }
         </> : null
       }

@@ -170,7 +170,13 @@ export default function RelatedTableLayerConfig(
     if (data?.config?.date_format) {
       params['date_format'] = data?.config?.date_format
     }
-    const url = relatedTableConfig.url.replace('data', 'values')
+    if (relatedTableConfig.geography_code_field_name) {
+      params['geography_code_field_name'] = relatedTableConfig.geography_code_field_name
+    }
+    if (relatedTableConfig.geography_code_type) {
+      params['geography_code_type'] = relatedTableConfig.geography_code_type
+    }
+    const url = `/api/v1/related-tables/${relatedTableConfig.id}/geo-data/`
     if (JSON.stringify(params) !== JSON.stringify(prevState.params) || JSON.stringify(url) !== JSON.stringify(prevState.url)) {
       prevState.params = params
       prevState.url = url

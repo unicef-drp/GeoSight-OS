@@ -27,7 +27,6 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from core.api_utils import common_api_params, ApiTag, ApiParams
 from core.utils import string_is_true
 from geosight.data.models.indicator import (
     IndicatorValue, Indicator
@@ -136,26 +135,13 @@ class DatasetApiList(
         context.update(
             {
                 "browse-data": full_url.replace(
-                    curr_url, reverse('data-browser-api')
+                    curr_url, reverse('data-browser-list')
                 )
             }
         )
         return context
 
-    @swagger_auto_schema(
-        operation_id='dataset-get',
-        tags=[ApiTag.DATA_BROWSER],
-        manual_parameters=[
-            *common_api_params,
-            ApiParams.INDICATOR_ID,
-            ApiParams.DATASET_UUID,
-            ApiParams.ADMIN_LEVEL
-        ],
-        operation_description=(
-                'Return indicator data information by country, '
-                'indicator and admin level.'
-        )
-    )
+    @swagger_auto_schema(auto_schema=None)
     def list(self, request, *args, **kwargs):
         """Return indicator data by dataset, indicator and level."""
         try:
@@ -262,3 +248,8 @@ class DatasetApiList(
                 admin_level, flat=True
             ).distinct(),
         })
+
+    @swagger_auto_schema(auto_schema=None)
+    def retrieve(self, request, pk=None):
+        """Return detailed of code list."""
+        return super().retrieve(request, pk=pk)

@@ -19,8 +19,7 @@ from rest_framework import status, viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from core.api_utils import ApiTag
-from core.api_utils import common_api_params, ApiParams
+from core.api_utils import ApiTag, common_api_params, ApiParams
 from core.pagination import Pagination
 from core.permissions import AdminAuthenticationPermission
 from geosight.data.models.code import CodeList
@@ -88,7 +87,7 @@ class CodeListViewSet(
         manual_parameters=[],
         operation_description='List dashboard groups.',
         request_body=CodeSerializer.Meta.post_body,
-        permission_classes = [AdminAuthenticationPermission]
+        permission_classes=[AdminAuthenticationPermission]
     )
     @action(detail=True, methods=['post'])
     def codes(self, request, pk):
@@ -102,3 +101,43 @@ class CodeListViewSet(
                 serializer.data,
                 status=status.HTTP_201_CREATED
             )
+
+    @swagger_auto_schema(
+        operation_id='codelist-detail',
+        tags=[ApiTag.CODE_LIST],
+        manual_parameters=[],
+        operation_description='Return detailed of code list.'
+    )
+    def retrieve(self, request, pk=None):
+        """Return detailed of code list."""
+        return super().retrieve(request, pk=pk)
+
+    @swagger_auto_schema(
+        operation_id='codelist-update',
+        tags=[ApiTag.CODE_LIST],
+        manual_parameters=[],
+        operation_description='Update detailed of code list.'
+    )
+    def update(self, request, pk=None):
+        """Return detailed of code list."""
+        return super().update(request, pk=pk)
+
+    @swagger_auto_schema(
+        operation_id='codelist-patch',
+        tags=[ApiTag.CODE_LIST],
+        manual_parameters=[],
+        operation_description='Patch detailed of code list.'
+    )
+    def partial_update(self, request, pk=None):
+        """Return detailed of code list."""
+        return super().partial_update(request, pk=pk)
+
+    @swagger_auto_schema(
+        operation_id='codelist-delete',
+        tags=[ApiTag.CODE_LIST],
+        manual_parameters=[],
+        operation_description='Delete detailed of code list.'
+    )
+    def destroy(self, request, pk=None):
+        """Destroy detailed of code list."""
+        return super().destroy(request, pk=pk)

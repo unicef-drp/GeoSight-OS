@@ -129,6 +129,21 @@ test.describe('Create complex project', () => {
     await page.locator('li').filter({ hasText: 'Compare layers' }).getByRole('img').click();
     await page.locator('li').filter({ hasText: 'Zonal analysis' }).getByRole('img').click();
 
+    // Filter
+    await page.locator('.TabPrimary').getByText('Filters').click();
+    await page.locator('.Filters').getByTestId('AddCircleIcon').click();
+    await page.getByPlaceholder('Filter name').click();
+    await page.getByText('Pick the field').click();
+    await page.getByRole('option', { name: 'Sector' }).first().click();
+    await page.locator('.FilterEditModalQueryMethod').click();
+    await page.getByRole('option', { name: 'in', exact: true }).click();
+    await page.getByRole('button', { name: 'Open' }).click();
+    await page.getByRole('option', { name: 'Select all' }).click()
+    await page.getByPlaceholder('Filter name').fill('Sector all');
+    await page.getByPlaceholder('Filter description').fill('Description 1');
+    await page.locator('.modal--content').getByRole('checkbox').check();
+    await page.getByRole('button', { name: 'Create filter' }).click();
+
     // Save
     await page.getByText('Save').isEnabled();
     await page.getByText('Save').click();
@@ -200,6 +215,15 @@ test.describe('Create complex project', () => {
     await page.getByText('Click to select').click();
     await expect(page.getByText('Click a feature on the map')).toBeVisible();
 
+    // Check filter
+    await page.getByRole('tab', { name: 'Filters' }).click();
+    await page.getByRole('button', { name: 'Sector all Delete Group' }).click();
+    await page.getByPlaceholder('All selected').click();
+    await page.getByRole('option', { name: 'EDU' }).click();
+    await page.getByRole('option', { name: 'HEALTH' }).click();
+    await page.getByRole('option', { name: 'WASH' }).click();
+    await page.getByRole('option', { name: 'Blank' }).click();
+
     // --------------------------------------------------------------
     // CHECK PROJECT WITH OVERRIDE CONFIG EDIT MODE
     // --------------------------------------------------------------
@@ -230,12 +254,13 @@ test.describe('Create complex project', () => {
 
     // Check indicator layers
     await page.locator('.TabPrimary').getByText('Indicator Layers (5)').click();
-    expect(await page.getByText('Sample Indicator A').nth(1)).toBeVisible();
-    expect(await page.getByText('Sample Indicator B').nth(1)).toBeVisible();
-    expect(await page.getByText('Related Table Layer').nth(1)).toBeVisible();
-    expect(await page.getByText('Chart Layer').nth(1)).toBeVisible();
+    await expect(page.locator('.IndicatorLayers').getByText('Sample Indicator A').first()).toBeVisible();
+    await expect(page.locator('.IndicatorLayers').getByText('Sample Indicator B').first()).toBeVisible();
+    await expect(page.locator('.IndicatorLayers').getByText('Related Table Layer').first()).toBeVisible();
+    await expect(page.locator('.IndicatorLayers').getByText('Pin Layer').first()).toBeVisible();
+    await expect(page.locator('.IndicatorLayers').getByText('Chart Layer').first()).toBeVisible();
 
-    // Check indicator layers
+    // Check related table
     await page.locator('.TabPrimary').getByText('Related Tables (1)').click();
     await expect(page.locator('.RelatedTableConfiguration input').nth(0)).toHaveValue('Ucode');
     await expect(page.locator('.RelatedTableConfiguration input').nth(1)).toHaveValue('ucode');

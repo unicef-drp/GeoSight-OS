@@ -383,7 +383,7 @@ export default function WhereInput(
   let fieldType = currentField?.type ? currentField?.type : 'text'
   if (currentField?.type !== 'date') {
     fieldType = currentField?.type
-    if (currentField?.options) {
+    if (!fieldType && currentField?.options) {
       fieldType = 'number'
       currentField?.options.map(option => {
         if (isNaN(parseFloat(option))) {

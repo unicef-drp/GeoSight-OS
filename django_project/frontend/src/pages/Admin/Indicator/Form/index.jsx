@@ -315,7 +315,7 @@ export default function IndicatorForm() {
                 setIndicatorData({ ...newData })
               }
             }}
-            valuesUrl={`/api/indicator/${indicatorData.id}/values/flat/`}
+            valuesUrl={`/api/v1/data-browser/values_string/?indicator_id__in=${indicatorData.id}`}
             defaultStyleRules={indicatorData.style ? indicatorData.style : indicatorRules ? indicatorRules : []}
             selectableInput={batch !== null}
           />,

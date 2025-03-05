@@ -102,19 +102,7 @@ class ApiEntitySerializer(DynamicModelSerializer):
 
     def entity_level(self, obj: Entity, admin_level: int):
         """Return levels of entity."""
-        try:
-            levels = self.levels[obj.reference_layer.id]
-        except KeyError:
-            levels = []
-            for level in obj.reference_layer.levels:
-                levels.append({
-                    'level': level.level,
-                    'name': level.name
-                })
-        try:
-            return levels[admin_level]
-        except IndexError:
-            return None
+        return None
 
     def get_parents(self, obj: Entity):
         """Return ucode."""

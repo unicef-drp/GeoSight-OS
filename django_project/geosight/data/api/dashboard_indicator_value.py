@@ -15,7 +15,6 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import json
-import time
 from datetime import datetime
 from urllib import parse
 from urllib.parse import parse_qs, urlencode, urlunparse
@@ -23,7 +22,6 @@ from urllib.parse import parse_qs, urlencode, urlunparse
 import pytz
 from dateutil import parser as date_parser
 from django.conf import settings
-from django.db.models.functions import ExtractDay, ExtractMonth, ExtractYear
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from rest_framework.generics import ListAPIView
@@ -194,66 +192,6 @@ class DashboardIndicatorAllValuesAPI(_DashboardIndicatorValuesListAPI):
             last_value=False,
             reference_layer=reference_layer
         )
-
-
-class DashboardIndicatorValueListAPI(DashboardIndicatorValuesAPI):
-    """API for Values of indicator in periodically."""
-
-    def get(self, request, slug, pk, **kwargs):
-        """Return Values."""
-        indicator = get_object_or_404(Indicator, pk=pk)
-        reference_layer = self.check_permission(request.user, indicator)
-        min_time, max_time = self.return_parameters(request)
-        concept_uuid = request.GET.get('concept_uuid', None)
-
-        query = indicator.query_values(
-            date_data=max_time,
-            min_date_data=min_time,
-            reference_layer=reference_layer,
-            concept_uuid=concept_uuid
-        )
-        query = query.annotate(
-            day=ExtractDay('date'),
-            month=ExtractMonth('date'),
-            year=ExtractYear('date')
-        )
-
-        distinct = ['geom_id', 'concept_uuid']
-        frequency = request.GET.get('frequency', 'daily')
-        if frequency.lower() == 'daily':
-            distinct.append('year')
-            distinct.append('month')
-            distinct.append('day')
-        elif frequency.lower() == 'monthly':
-            distinct.append('year')
-            distinct.append('month')
-        elif frequency.lower() == 'yearly':
-            distinct.append('year')
-
-        order_by = ['-' + field for field in distinct]
-        order_by.append('-date')
-        query = query.order_by(
-            *[field for field in order_by]
-        ).distinct(*distinct)
-
-        output = []
-        for row in query:
-            new_date = datetime.combine(
-                row.date, datetime.max.time(),
-                tzinfo=pytz.timezone(settings.TIME_ZONE)
-            )
-            row_data = {
-                'time': time.mktime(new_date.timetuple()),
-                'value': row.value
-            }
-            extras = request.GET.get('extras', '').split(',')
-            if 'concept_uuid' in extras:
-                row_data['concept_uuid'] = row.concept_uuid
-            if 'date' in extras:
-                row_data['date'] = row.date.strftime('%Y-%m-%d')
-            output.append(row_data)
-
-        return Response(output)
 
 
 class DashboardIndicatorDatesAPI(DashboardIndicatorValuesAPI):

@@ -250,7 +250,8 @@ class Entity(models.Model):
     def reference_layer_set(self):
         """Return reference_layer."""
         reference_layer_ids = self.referencelayerviewentity_set.values(
-            "reference_layer_id")
+            "reference_layer_id"
+        )
         return ReferenceLayerView.objects.filter(
             pk__in=Subquery(reference_layer_ids)
         )

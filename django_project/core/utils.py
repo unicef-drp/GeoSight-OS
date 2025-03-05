@@ -14,6 +14,8 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import base64
+import gzip
 import os
 import random
 import string
@@ -154,3 +156,15 @@ def pg_value(value, attr=None):
     if attr:
         return f"'{getattr(value, attr)}'" if value else "NULL"
     return f"'{value}'" if value else "NULL"
+
+
+def compress_text(text):
+    """Compress text."""
+    compressed = gzip.compress(text.encode('utf-8'))
+    return base64.b64encode(compressed).decode('utf-8')
+
+
+def decompress_text(compressed_text):
+    """Decompress compressed text."""
+    compressed = base64.b64decode(compressed_text)
+    return gzip.decompress(compressed).decode('utf-8')

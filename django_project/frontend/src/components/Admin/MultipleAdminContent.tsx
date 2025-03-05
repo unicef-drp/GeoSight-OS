@@ -27,7 +27,7 @@ export const MultipleAdminContent = forwardRef(
   ({
      contents,
      onTabChanged,
-     pageName
+     pageName,
    }: AdminProps, ref
   ) => {
     let defaultTab = window.location.hash.replace('#', '').replaceAll('%20', ' ')

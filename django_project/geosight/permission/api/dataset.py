@@ -17,7 +17,9 @@ __copyright__ = ('Copyright 2023, Unicef')
 import json
 
 from django.contrib.auth import get_user_model
-from django.http import HttpResponse, HttpResponseBadRequest, Http404
+from django.http import (
+    HttpResponse, HttpResponseBadRequest, HttpResponseNotAllowed
+)
 from django.shortcuts import get_object_or_404
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -32,7 +34,7 @@ from geosight.georepo.models import (
 )
 from geosight.permission.access import (
     share_permission_resource,
-    RoleSuperAdminRequiredMixin
+    RoleCreatorRequiredMixin
 )
 from geosight.permission.models import (
     PERMISSIONS,
@@ -51,7 +53,7 @@ User = get_user_model()
 
 
 class DataAccessAPI(
-    RoleSuperAdminRequiredMixin, ListAPIView, FilteredAPI
+    RoleCreatorRequiredMixin, ListAPIView, FilteredAPI
 ):
     """Abstract API for data access."""
 
@@ -61,10 +63,31 @@ class DataAccessAPI(
         PERMISSIONS.NONE.name, PERMISSIONS.READ.name, PERMISSIONS.WRITE.name
     ]
 
+    @property
+    def indicator_view_query(self):
+        """Indicator view query."""
+        query = ReferenceLayerIndicator.permissions.share(self.request.user)
+        query = self.filter_query(
+            self.request, query,
+            ignores=[],
+            fields=['reference_layer_id', 'indicator_id']
+        )
+        return query
+
+    def get_allowed_ids(self, ids):
+        """Return allowed ids."""
+        if not self.request.user.profile.is_admin:
+            # Filter the ids
+            allowed_ids = list(
+                self.get_queryset().values_list('id', flat=True)
+            )
+            ids = list(set(ids) & set(allowed_ids))
+        return ids
+
     def put(self, request):
         """Update data."""
         try:
-            ids = request.data['ids']
+            ids = self.get_allowed_ids(request.data['ids'])
             permission = request.data['permission']
             if permission not in self.PERMISSIONS:
                 return HttpResponseBadRequest(
@@ -85,11 +108,27 @@ class DataAccessAPI(
     def post(self, request):
         """Delete data."""
         if self.query_class == Permission:
-            return Http404('No post action found.')
+            return HttpResponseNotAllowed('No post action found.')
         try:
             indicators = request.data['indicators']
+            if not isinstance(indicators, list):
+                return HttpResponseBadRequest('indicators must be a list.')
+
+            if not self.request.user.profile.is_admin:
+                indicators = Indicator.permissions.share(request.user).filter(
+                    id__in=indicators
+                ).values_list('id', flat=True)
+                if not indicators:
+                    return HttpResponseBadRequest(
+                        'You have no valid indicators.'
+                    )
+
             datasets = request.data['datasets']
+            if not isinstance(datasets, list):
+                return HttpResponseBadRequest('datasets must be a list.')
             objects = request.data['objects']
+            if not isinstance(objects, list):
+                return HttpResponseBadRequest('objects must be a list.')
             permission = request.data['permission']
             if permission not in self.PERMISSIONS:
                 return HttpResponseBadRequest(
@@ -147,9 +186,9 @@ class DataAccessAPI(
     def delete(self, request):
         """Delete data."""
         if self.query_class == Permission:
-            return Http404('No delete action found.')
+            return HttpResponseNotAllowed('No delete action found.')
         try:
-            ids = request.data['ids']
+            ids = self.get_allowed_ids(request.data['ids'])
             self.query_class.objects.filter(id__in=ids).delete()
         except KeyError as e:
             return HttpResponseBadRequest(f'{e}')
@@ -167,14 +206,8 @@ class DataAccessGeneralAPI(DataAccessAPI):
 
     def get_queryset(self):
         """Return queryset of API."""
-        query = ReferenceLayerIndicator.objects.all()
-        query = self.filter_query(
-            self.request, query,
-            ignores=[],
-            fields=['reference_layer_id', 'indicator_id']
-        )
         output = Permission.objects.filter(
-            obj_id__in=query.values_list('id')
+            obj_id__in=self.indicator_view_query.values_list('id')
         )
         if 'permission__in' in self.request.GET:
             permissions = self.request.GET.get('permission__in').split(',')
@@ -193,14 +226,8 @@ class DataAccessUsersAPI(DataAccessAPI):
 
     def get_queryset(self):
         """Return queryset of API."""
-        query = ReferenceLayerIndicator.objects.all()
-        query = self.filter_query(
-            self.request, query,
-            ignores=[],
-            fields=['reference_layer_id', 'indicator_id']
-        )
         output = UserPermission.objects.filter(
-            obj__obj_id__in=query.values_list('id')
+            obj__obj_id__in=self.indicator_view_query.values_list('id')
         )
         return self.filter_query(
             self.request, output,
@@ -219,14 +246,8 @@ class DataAccessGroupsAPI(DataAccessAPI):
 
     def get_queryset(self):
         """Return queryset of API."""
-        query = ReferenceLayerIndicator.objects.all()
-        query = self.filter_query(
-            self.request, query,
-            ignores=[],
-            fields=['reference_layer_id', 'indicator_id']
-        )
         output = GroupPermission.objects.filter(
-            obj__obj_id__in=query.values_list('id')
+            obj__obj_id__in=self.indicator_view_query.values_list('id')
         )
         return self.filter_query(
             self.request, output,

@@ -430,6 +430,15 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
             log_data.saved = True
             log_data.save()
 
+            # Since _save_log_data_to_model is called in a loop
+            # sequantially, it is fine to just increment success count from
+            # previous success count.
+            # If we don't need real time update on the success count,
+            # we can update success count once all log_data has
+            # been updated as saved
+            self.log.success_count = self.log.success_count + 1
+            self.log.save()
+
     def process_data_from_records(self) -> (List, List, List, bool):
         """Process data from records.
 
@@ -737,6 +746,9 @@ class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
                 pass
             if len(note_keys):
                 success = False
+
+        self.log.total_count = line_idx + 1
+        self.log.save()
 
         # Calculate warning data
         if warning_data:

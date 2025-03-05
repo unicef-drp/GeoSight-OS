@@ -48,3 +48,14 @@ def run_save_log_data(_id):
         progress.run()
     except ImporterLogDataSaveProgress.DoesNotExist:
         pass
+
+
+@app.task
+def calculate_data_counts(_id):
+    """Calculate data counts."""
+    log = ImporterLog.objects.get(id=_id)
+    log_datas = log.importerlogdata_set.all()
+    success_log_datas = log_datas.filter(saved=True)
+    log.total_count = log_datas.count()
+    log.success_count = success_log_datas.count()
+    log.save()

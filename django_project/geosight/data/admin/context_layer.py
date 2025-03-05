@@ -17,7 +17,10 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.contrib import admin
 
 from geosight.data.models.context_layer import (
-    ContextLayerGroup, ContextLayer, ContextLayerField
+    ContextLayerGroup,
+    ContextLayer,
+    ContextLayerField,
+    ZonalAnalysis
 )
 from geosight.data.admin.base import BaseAdminResourceMixin
 
@@ -46,5 +49,15 @@ class ContextLayerGroupAdmin(admin.ModelAdmin):
     list_display = ('name',)
 
 
+class ZonalAnalysisAdmin(BaseAdminResourceMixin):
+    """ZonalAnalysisAdmin admin."""
+
+    list_display = (
+        'uuid', 'context_layer', 'status', 'aggregation', 'result'
+    ) + BaseAdminResourceMixin.list_display
+    list_filter = ('status',)
+
+
 admin.site.register(ContextLayerGroup, ContextLayerGroupAdmin)
 admin.site.register(ContextLayer, ContextLayerAdmin)
+admin.site.register(ZonalAnalysis, ZonalAnalysisAdmin)

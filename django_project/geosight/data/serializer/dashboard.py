@@ -214,7 +214,7 @@ class DashboardSerializer(serializers.ModelSerializer):
                 ).data
             )
             data['url'] = reverse(
-                'related-table-values-api',
+                'related_tables_geo_data-list',
                 args=[model.object.id]
             )
             output.append(data)

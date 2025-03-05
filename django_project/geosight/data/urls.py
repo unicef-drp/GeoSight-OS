@@ -22,7 +22,10 @@ from geosight.data.api.basemap import (
     BasemapListAPI, BasemapDetailAPI
 )
 from geosight.data.api.context_layers import (
-    ContextLayerListAPI, ContextLayerDetailAPI, ContextLayerZonalAnalysisAPI
+    ContextLayerListAPI,
+    ContextLayerDetailAPI,
+    ContextLayerZonalAnalysisAPI,
+    ZonalAnalysisResultAPI
 )
 from geosight.data.api.dashboard import (
     DashboardData, DashboardDuplicate, DashboardDetail, DashboardListAPI
@@ -37,9 +40,8 @@ from geosight.data.api.dashboard_indicator_layer import (
     DashboardIndicatorLayerAPI
 )
 from geosight.data.api.dashboard_indicator_value import (
-    DashboardIndicatorValuesAPI, DashboardIndicatorDatesAPI,
-    DashboardIndicatorAllValuesAPI,
-    DashboardIndicatorValueListAPI, DashboardEntityDrilldown
+    DashboardIndicatorDatesAPI,
+    DashboardIndicatorAllValuesAPI, DashboardEntityDrilldown
 )
 from geosight.data.api.download_file import (
     DownloadSharepointFile,
@@ -56,12 +58,11 @@ from geosight.data.api.indicator_reference_layer import (
 from geosight.data.api.indicator_value import (
     IndicatorValuesByGeometry,
     IndicatorValueDetail,
-    IndicatorValueListAPI,
-    IndicatorValueValuesAPI,
+    IndicatorValueListAPI
 )
+from geosight.data.api.raster import GetRasterClassificationAPI
 from geosight.data.api.related_table import (
-    RelatedTableListAPI, RelatedTableDetailAPI, RelatedTableDataAPI,
-    RelatedTableDatesAPI, RelatedTableValuesAPI, RelatedTableFieldDataAPI
+    RelatedTableListAPI, RelatedTableDetailAPI, RelatedTableDataAPI
 )
 from geosight.data.api.sharepoint import (
     SharepointConfigListAPI, SharepointInformationAPI
@@ -70,7 +71,6 @@ from geosight.data.api.style import (
     StyleListAPI,
     StyleDetailAPI,
 )
-from geosight.data.api.raster import GetRasterClassificationAPI
 
 # ------------------------------------------------------
 dashboard_specific_api = [
@@ -104,11 +104,6 @@ dashboard_specific_api = [
 
     # INDICATOR VALUES
     url(
-        r'^indicator/(?P<pk>\d+)/values/latest$',
-        DashboardIndicatorValuesAPI.as_view(),
-        name='dashboard-indicator-values-api'
-    ),
-    url(
         r'^indicator/(?P<pk>\d+)/values/all$',
         DashboardIndicatorAllValuesAPI.as_view(),
         name='dashboard-indicator-values-all-api'
@@ -117,11 +112,6 @@ dashboard_specific_api = [
         r'^indicator/(?P<pk>\d+)/dates$',
         DashboardIndicatorDatesAPI.as_view(),
         name='dashboard-indicator-dates-api'
-    ),
-    url(
-        r'^indicator/(?P<pk>\d+)/values$',
-        DashboardIndicatorValueListAPI.as_view(),
-        name='dashboard-indicator-values-list-api'
     ),
 
     # BOOKMARKS
@@ -194,11 +184,6 @@ indicator_api = [
         name='indicator-value-detail'
     ),
     url(
-        r'^(?P<pk>\d+)/values/flat/',
-        IndicatorValueValuesAPI.as_view(),
-        name='indicator-values-flat-list-api'
-    ),
-    url(
         r'^(?P<pk>\d+)/values/',
         IndicatorValueListAPI.as_view(), name='indicator-values-list-api'
     ),
@@ -236,7 +221,6 @@ style_api = [
     )
 ]
 
-
 # ------------------------------------------------------
 # RASTER
 raster_api = [
@@ -259,6 +243,11 @@ context_layer_api = [
         name='context-layer-zonal-analysis'
     ),
     url(
+        r'zonal-analysis/(?P<analysis_uuid>[a-zA-Z0-9_-]+)',
+        ZonalAnalysisResultAPI.as_view(),
+        name='zonal-analysis-result'
+    ),
+    url(
         r'^(?P<pk>\d+)',
         ContextLayerDetailAPI.as_view(), name='context-layer-detail-api'
     )
@@ -273,18 +262,6 @@ related_table_api = [
     url(
         r'^(?P<pk>\d+)/data',
         RelatedTableDataAPI.as_view(), name='related-table-data-api'
-    ),
-    url(
-        r'^(?P<pk>\d+)/dates',
-        RelatedTableDatesAPI.as_view(), name='related-table-dates-api'
-    ),
-    url(
-        r'^(?P<pk>\d+)/field/data',
-        RelatedTableFieldDataAPI.as_view(), name='related-table-field-data-api'
-    ),
-    url(
-        r'^(?P<pk>\d+)/values',
-        RelatedTableValuesAPI.as_view(), name='related-table-values-api'
     ),
     url(
         r'^(?P<pk>\d+)',

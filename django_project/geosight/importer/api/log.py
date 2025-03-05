@@ -51,6 +51,8 @@ class ImporterLogListAPI(ListAPIView, FilteredAPI):
         if not self.request.user.profile.is_admin:
             query = ImporterLog.objects.filter(
                 importer__creator=self.request.user
+            ).prefetch_related(
+                'importerlogdata_set'
             ).order_by('importer', '-end_time')
 
         # Filter by parameters

@@ -25,14 +25,14 @@ from geosight.data.api.v1.codelist import CodeListViewSet
 from geosight.data.api.v1.context_layer import ContextLayerViewSet
 from geosight.data.api.v1.dashboard import DashboardViewSet
 from geosight.data.api.v1.data_browser import (
-    DataBrowserApiList, DataBrowserApiListIds,
-    DatasetApiList
+    DataBrowserApiList, DatasetApiList
 )
 from geosight.data.api.v1.group import GroupViewSet
 from geosight.data.api.v1.indicator import IndicatorViewSet
 from geosight.data.api.v1.indicator_data import IndicatorDataViewSet
-from geosight.data.api.v1.related_table import RelatedTableViewSet
-from geosight.data.api.v1.related_table_data import RelatedTableDataViewSet
+from geosight.data.api.v1.related_table import (
+    RelatedTableViewSet, RelatedTableDataViewSet, RelatedTableGeoDataViewSet
+)
 from geosight.data.api.v1.style import StyleViewSet
 from geosight.data.api.v1.users import UserViewSet
 
@@ -47,6 +47,7 @@ router.register(
 router.register(r'groups', GroupViewSet, basename='groups')
 router.register(r'code-list', CodeListViewSet, basename='codelist')
 router.register(r'dataset', DatasetApiList, basename='dataset')
+router.register(r'data-browser', DataBrowserApiList, basename='data-browser')
 
 # Indicator
 router.register(r'indicators', IndicatorViewSet, basename='indicators')
@@ -58,22 +59,19 @@ indicators_router.register(
 
 # Related table API
 router.register(
-    r'related-tables', RelatedTableViewSet, basename='related_tables')
+    r'related-tables', RelatedTableViewSet, basename='related_tables'
+)
 related_tables_router = NestedSimpleRouter(
-    router, r'related-tables', lookup='related_tables')
+    router, r'related-tables', lookup='related_tables'
+)
 related_tables_router.register(
     'data', RelatedTableDataViewSet, basename='related_tables_data'
 )
-
-data_browser_api_v1 = [
-    url(r'^ids', DataBrowserApiListIds.as_view(), name='data-browser-ids-api'),
-    url(r'^', DataBrowserApiList.as_view(), name='data-browser-api'),
-]
-
-urlpatterns = [
-    url(r'^data-browser/', include(data_browser_api_v1))
-]
-urlpatterns += router.urls
+related_tables_router.register(
+    'geo-data', RelatedTableGeoDataViewSet,
+    basename='related_tables_geo_data'
+)
+urlpatterns = router.urls
 urlpatterns += related_tables_router.urls
 urlpatterns += indicators_router.urls
 

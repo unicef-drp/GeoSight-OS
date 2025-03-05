@@ -26,9 +26,10 @@ import {
 import { urlParams } from "../../../../utils/main";
 import { COLUMNS } from "../utils";
 
-import { AdminListPagination } from "../../AdminListPagination";
+import { AdminListContent } from "../../../../components/AdminList/Content";
 
 import './style.scss';
+import {pageNames} from "../../index";
 
 const { search } = urlParams()
 
@@ -98,17 +99,22 @@ const LOG_COLUMNS = [
 
 /** Importer logs */
 export default function ImporterLogs({ ...props }) {
-  const tableRef = useRef(null);
-  const [disabled, setDisabled] = useState(false)
-  return <AdminListPagination
-    ref={tableRef}
-    urlData={urls.api.logs.list}
-    COLUMNS={LOG_COLUMNS}
-    disabled={disabled}
-    setDisabled={setDisabled}
-    hideSearch={true}
-    searchDefault={search}
-    sortingDefault={[{ field: 'start_time', sort: 'desc' }]}
+  return <AdminListContent
+    columns={LOG_COLUMNS}
+    pageName={pageNames.DataManagement}
+    title={pageNames.Logs}
+    url={{
+      list: urls.api.logs.list
+    }}
+    defaults={{
+      sort: [
+        { field: 'start_time', sort: 'desc' }
+      ],
+      search: search
+    }}
+    multipleDelete={true}
+    enableFilter={false}
+    useSearch={false}
     rightHeader={
       <a
         href={urls.admin.importer}>

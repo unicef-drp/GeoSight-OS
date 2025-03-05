@@ -17,15 +17,17 @@ __copyright__ = ('Copyright 2023, Unicef')
 import json
 
 from django.core.exceptions import SuspiciousOperation
+from django.db.models import Min, Max, Avg
+from django.db.models.functions import ExtractDay, ExtractMonth, ExtractYear
 from django.http import HttpResponseBadRequest
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import status
-from rest_framework.generics import ListAPIView
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from core.api_utils import common_api_params, ApiTag, ApiParams
 from core.utils import string_is_true
+from geosight.data.api.v1.base import BaseApiV1
 from geosight.data.models.indicator import (
     Indicator, IndicatorValue, IndicatorValueRejectedError
 )
@@ -37,23 +39,37 @@ class BaseDataBrowserApiList(BaseIndicatorValueApi):
     """Return Data List API List."""
 
     serializer_class = IndicatorValueSerializer
-
-    filter_query_exclude = [
-        'page', 'page_size', 'group_admin_level', 'detail',
+    filter_query_exclude = BaseApiV1.non_filtered_keys + [
+        'group_admin_level', 'detail', 'frequency',
         'time', 'geometry_code'
     ]
     extra_exclude_fields = ['permission']
 
-    def get_queryset(self):
-        """Return queryset of API."""
-        query = super().get_queryset()
-        ids = query.values_list('id', flat=True)
-        return IndicatorValue.objects.filter(id__in=list(ids)).order_by(
-            'indicator_id', '-date', 'geom_id'
-        )
+    def get_serializer(self, *args, **kwargs):
+        """Return the serializer instance."""
+        serializer_class = self.get_serializer_class()
+        kwargs.setdefault('context', self.get_serializer_context())
+
+        if self.action in ['list']:
+            fields = self.request.GET.get('fields')
+            if not fields:
+                kwargs['exclude'] = ['creator'] + self.extra_exclude_fields
+                extra_fields = self.request.GET.get('extra_fields')
+                if extra_fields:
+                    for extra_field in extra_fields.split(','):
+                        try:
+                            kwargs['exclude'].remove(extra_field)
+                        except Exception:
+                            pass
+            elif fields != '__all__':
+                kwargs['fields'] = self.request.GET.get('fields').split(',')
+
+        return serializer_class(*args, **kwargs)
 
 
-class DataBrowserApiList(BaseDataBrowserApiList, ListAPIView):
+class DataBrowserApiList(
+    BaseDataBrowserApiList, viewsets.ReadOnlyModelViewSet
+):
     """Return Data List API List."""
 
     def get_serializer(self, *args, **kwargs):
@@ -84,10 +100,10 @@ class DataBrowserApiList(BaseDataBrowserApiList, ListAPIView):
             ApiParams.DATE_TO,
         ]
     )
-    def get(self, request, *args, **kwargs):
-        """Browse indicator data."""
+    def list(self, request, *args, **kwargs):
+        """List of dashboard."""
         try:
-            return self.list(request, *args, **kwargs)
+            return super().list(request, *args, **kwargs)
         except SuspiciousOperation as e:
             return HttpResponseBadRequest(f'{e}')
 
@@ -182,13 +198,115 @@ class DataBrowserApiList(BaseDataBrowserApiList, ListAPIView):
                 value.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
-class DataBrowserApiListIds(APIView, BaseDataBrowserApiList):
-    """Return Just ids Data List."""
+    @swagger_auto_schema(auto_schema=None)
+    def retrieve(self, request, pk=None):
+        """Return detailed of code list."""
+        return super().retrieve(request, pk=pk)
 
     @swagger_auto_schema(auto_schema=None)
-    def get(self, request):
+    @action(detail=False, methods=['get'])
+    def ids(self, request):
         """Get ids of data."""
         return Response(
             self.get_queryset().values_list('id', flat=True)
         )
+
+    @swagger_auto_schema(auto_schema=None)
+    @action(detail=False, methods=['get'])
+    def values_string(self, request):
+        """Get value list of string of data."""
+        return Response(
+            self.get_queryset().filter(value_str__isnull=False).values_list(
+                'value_str', flat=True
+            ).distinct().order_by('value_str')
+        )
+
+    @swagger_auto_schema(auto_schema=None)
+    @action(detail=False, methods=['get'])
+    def values(self, request):
+        """Get values of data."""
+        query = self.get_queryset()
+
+        fields = request.GET.get(
+            'fields',
+            'date, value, value_str, entity_id, indicator_id'
+        ).replace(' ', '').split(',')
+
+        # If it has frequency
+        frequency = request.GET.get('frequency', None)
+        if frequency:
+            distinct = ['geom_id', 'entity_id', 'indicator_id']
+            if frequency.lower() == 'daily':
+                distinct.append('year')
+                distinct.append('month')
+                distinct.append('day')
+                query = query.annotate(
+                    day=ExtractDay('date'),
+                    month=ExtractMonth('date'),
+                    year=ExtractYear('date')
+                )
+            elif frequency.lower() == 'monthly':
+                distinct.append('year')
+                distinct.append('month')
+                query = query.annotate(
+                    month=ExtractMonth('date'),
+                    year=ExtractYear('date')
+                )
+            elif frequency.lower() == 'yearly':
+                distinct.append('year')
+                query = query.annotate(
+                    year=ExtractYear('date')
+                )
+            else:
+                return HttpResponseBadRequest(
+                    f'frequency {frequency} is not recognized. '
+                    f'frequency: daily, monthly, yearly'
+                )
+
+            # Request
+            order_by = ['-' + field for field in distinct]
+            order_by.append('-date')
+            query = query.order_by(
+                *[field for field in order_by]
+            ).distinct(*distinct).values(*distinct + fields)
+        else:
+            query = query.order_by('-date', 'id').values(*fields)
+        return Response(query)
+
+    @swagger_auto_schema(auto_schema=None)
+    @action(detail=False, methods=['get'])
+    def statistic(self, request):
+        """Get statistic of data.
+
+        It returns {min, max, avg}
+        """
+        statistic_keys = ['min', 'max', 'avg']
+        keys = request.GET.get(
+            'keys', ','.join(statistic_keys)
+        ).replace(' ', '').split(',')
+        if not keys:
+            return HttpResponseBadRequest(
+                f'keys is required. keys:{statistic_keys}'
+            )
+
+        query = self.get_queryset()
+        aggregation_dict = {}
+        for key in keys:
+            key = key.lower()
+            if key not in statistic_keys:
+                return HttpResponseBadRequest(
+                    f'{key} is not recognized. keys:{statistic_keys}'
+                )
+
+            # Update query
+            if key == 'min':
+                aggregation_dict['min'] = Min('value')
+            elif key == 'max':
+                aggregation_dict['max'] = Max('value')
+            elif key == 'avg':
+                aggregation_dict['avg'] = Avg('value')
+
+        if not aggregation_dict.keys():
+            return HttpResponseBadRequest('No aggregation found')
+
+        return Response(query.aggregate(**aggregation_dict))

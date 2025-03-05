@@ -54,7 +54,7 @@ function RelatedTableConfiguration({ data, referenceLayerData, codeTypes }) {
       geography_code_field_name: data.geography_code_field_name,
       geography_code_type: data.geography_code_type
     }
-    const url = data.url.replace('data', 'values')
+    const url = `/api/v1/related-tables/${data.id}/geo-data/`
     if (JSON.stringify(params) !== JSON.stringify(prevState.params) || JSON.stringify(url) !== JSON.stringify(prevState.url)) {
       prevState.params = params
       prevState.url = url
@@ -65,7 +65,7 @@ function RelatedTableConfiguration({ data, referenceLayerData, codeTypes }) {
         }
       )
     }
-  }, [data, referenceLayerData])
+  }, [data, data.geography_code_field_name, data.geography_code_type, referenceLayerData])
 
 
   const relatedFields = relatedTableData ? getRelatedTableFields(data, relatedTableData) : null
