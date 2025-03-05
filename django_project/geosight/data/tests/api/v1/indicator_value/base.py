@@ -227,7 +227,8 @@ class BaseDataBrowserTest(object):
             ]
             for value in values:
                 self.create_value(
-                    value[0], value[1], value[2], value[3], value[4], value[5]
+                    value[0], value[1], value[2], value[3], value[4], value[5],
+                    value_str=value[4]
                 )
 
         def create_resource(self, user):
@@ -238,13 +239,16 @@ class BaseDataBrowserTest(object):
                 self, reference_layer: ReferenceLayerView,
                 indicator: Indicator,
                 date_str,
-                admin_level, geom_id, value
+                admin_level, geom_id, value,
+                value_str
         ):
             """Create Indicator Value."""
-            indicator.save_value(
+            val = indicator.save_value(
                 datetime.strptime(date_str, '%Y-%m-%d'), geom_id, value,
                 reference_layer=reference_layer, admin_level=admin_level
             )
+            val.value_str = value_str
+            val.save()
 
         def get_resources(self, user):
             """Create resource function."""

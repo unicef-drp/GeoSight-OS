@@ -154,13 +154,35 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                 output.append(row.data)
         return output
 
-    def data_field(self, field):
-        """Return data field."""
-        return self.relatedtablerow_set.values_list(
-            f'data__{field}', flat=True
+    @property
+    def fields_definition(self):
+        """Return fields with it's definition."""
+        from geosight.data.serializer.related_table import (
+            RelatedTableFieldSerializer
         )
+        if not self.relatedtablefield_set.count():
+            self.set_fields()
+        return RelatedTableFieldSerializer(
+            self.relatedtablefield_set.order_by('name'), many=True,
+            context={
+                'example_data': [
+                    self.relatedtablerow_set.first(),
+                    self.relatedtablerow_set.last()
+                ]
+            }
+        ).data
 
-    def data_query(
+    @fields_definition.setter
+    def fields_definition(self, fields):
+        self.relatedtablefield_set.all().delete()
+        for field in fields:
+            self.add_field(
+                field.get('name'),
+                field.get('alias'),
+                field.get('type')
+            )
+
+    def query(
             self, select, order_by, country_geom_ids, geo_field,
             geo_type='ucode'
     ):
@@ -214,26 +236,57 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                 f"ORDER BY {order_by}"
             )
 
+    def data_field(
+            self, field,
+            country_geom_ids=None,
+            geo_field=None, geo_type='ucode'
+    ):
+        """Return data field."""
+        if not country_geom_ids:
+            return self.relatedtablerow_set.values_list(
+                f'data__{field}', flat=True
+            ).distinct(f'data__{field}').order_by(f'data__{field}')
+        else:
+            with connection.cursor() as cursor:
+                # Update the cast
+                cast = ''
+                _field = self.relatedtablefield_set.filter(name=field).first()
+                if _field:
+                    if _field.type == 'number':
+                        cast = '::numeric'
+
+                # query the data
+                query = self.query(
+                    country_geom_ids=country_geom_ids,
+                    select=f"DISTINCT(data ->> '{field}'){cast}",
+                    geo_field=geo_field,
+                    geo_type=geo_type,
+                    order_by=f"data ->> '{field}'",
+                )
+                cursor.execute(query)
+                rows = cursor.fetchall()
+                return [row[0] for row in rows]
+
     def data_with_query(
             self, country_geom_ids,
             geo_field, date_field=None, date_format=None, geo_type='ucode',
             max_time=None, min_time=None, limit=25, offset=None
     ):
         """Return data of related table."""
+        # Check codes based on code type
         output = []
         has_next = False
-        query = self.data_query(
-            select=(
-                "row.id, row.order, row.data::json, "
-                "geom_id, concept_uuid, name, admin_level"
-            ),
-            order_by='row.id',
-            country_geom_ids=country_geom_ids,
-            geo_field=geo_field, geo_type=geo_type
-        )
-        if not query:
-            return [], False
         with connection.cursor() as cursor:
+            query = self.query(
+                country_geom_ids=country_geom_ids,
+                geo_field=geo_field,
+                select=(
+                    "row.id, row.order, row.data::json, "
+                    "geom_id, concept_uuid, name, admin_level "
+                ),
+                geo_type=geo_type,
+                order_by='row.id',
+            )
             if offset is not None:
                 query += f' LIMIT {limit} OFFSET {offset}'
 
@@ -249,39 +302,39 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                     'concept_uuid': row[4],
                     'geometry_code': row[3],
                     'geometry_name': row[5],
-                    'admin_level': row[6]
+                    'admin_level': row[6],
                 })
-                # Update date field
-                try:
-                    date_time = data[date_field]
-                    data[date_field] = extract_time_string(
-                        format_time=date_format,
-                        value=date_time
-                    ).isoformat()
-                    # Filter by date
-                    if max_time and data[date_field] > max_time:
+                if date_field:
+                    try:
+                        date_time = data[date_field]
+                        # Update date field
+                        data[date_field] = extract_time_string(
+                            format_time=date_format,
+                            value=date_time
+                        ).isoformat()
+                        # Filter by date
+                        if max_time and data[date_field] > max_time:
+                            continue
+                        if min_time and data[date_field] < min_time:
+                            continue
+                    except KeyError:
                         continue
-                    if min_time and data[date_field] < min_time:
-                        continue
-                except KeyError:
-                    pass
                 output.append(data)
         return output, has_next
 
     def dates_with_query(
-            self, country_geom_ids, geo_field,
-            date_field=None, date_format=None, geo_type='ucode'
+            self, country_geom_ids,
+            geo_field, date_field=None, date_format=None, geo_type='ucode'
     ):
         """Return data of related table."""
-        query = self.data_query(
-            select=f"DISTINCT(data ->> '{date_field}') ",
-            order_by=f"data ->> '{date_field}'",
-            country_geom_ids=country_geom_ids,
-            geo_field=geo_field, geo_type=geo_type
-        )
-        if not query:
-            return []
         with connection.cursor() as cursor:
+            query = self.query(
+                country_geom_ids=country_geom_ids,
+                geo_field=geo_field,
+                select=f"DISTINCT(data ->> '{date_field}')",
+                geo_type=geo_type,
+                order_by=f"data ->> '{date_field}'",
+            )
             cursor.execute(query)
             dates = []
             for row in cursor.fetchall():
@@ -293,34 +346,6 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                         ).isoformat()
                     )
         return dates
-
-    @property
-    def fields_definition(self):
-        """Return fields with it's definition."""
-        from geosight.data.serializer.related_table import (
-            RelatedTableFieldSerializer
-        )
-        if not self.relatedtablefield_set.count():
-            self.set_fields()
-        return RelatedTableFieldSerializer(
-            self.relatedtablefield_set.order_by('name'), many=True,
-            context={
-                'example_data': [
-                    self.relatedtablerow_set.first(),
-                    self.relatedtablerow_set.last()
-                ]
-            }
-        ).data
-
-    @fields_definition.setter
-    def fields_definition(self, fields):
-        self.relatedtablefield_set.all().delete()
-        for field in fields:
-            self.add_field(
-                field.get('name'),
-                field.get('alias'),
-                field.get('type')
-            )
 
     def add_field(self, name, label, field_type):
         """Add a new field definition to the related table."""

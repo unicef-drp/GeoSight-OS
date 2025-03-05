@@ -16,6 +16,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name='entity',
-            index=models.Index(fields=['concept_uuid'], name='concept_uuid'),
+            index=models.Index(fields=['concept_uuid'], name='entity_concept_uuid'),
         ),
     ]
