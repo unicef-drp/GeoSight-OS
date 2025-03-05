@@ -98,9 +98,6 @@ export default function Indicators() {
   /** On response **/
   const onProgress = useCallback(
     (id, metadataId, progress) => {
-      console.log('---------')
-      console.log(id)
-      console.log(progress)
       dispatch(
         Actions.IndicatorsMetadata.progress(metadataId, progress)
       )

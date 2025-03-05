@@ -18,6 +18,7 @@ import { memo, useEffect, useRef } from "react";
 import { FetchOptionsData } from "./types.d";
 import { useSelector } from "react-redux";
 import { fetchingData } from "../../../../Requests";
+import { getCountryGeomIds } from "../../../../utils/Dataset";
 
 export const FetchFromDataOptions = memo(
   ({ id, data, keyField, operator, onChange }: FetchOptionsData) => {
@@ -56,6 +57,13 @@ export const FetchFromDataOptions = memo(
 /** This is for value */
 export const FetchIndicatorOptions = memo(
   ({ id, onChange }: FetchOptionsData) => {
+    const {
+      referenceLayer,
+      // @ts-ignore
+    } = useSelector(state => state.dashboard.data)
+    // @ts-ignore
+    const referenceLayerData = useSelector(state => state.referenceLayerData[referenceLayer?.identifier]);
+
     const prev = useRef();
     const {
       minDate,
@@ -76,10 +84,16 @@ export const FetchIndicatorOptions = memo(
       datasets = referenceLayers.map((_: any) => _.identifier)
     }
 
+    // Return if no data
+    let countryGeomIds = null
+    if (referenceLayerData?.data?.countries) {
+      countryGeomIds = getCountryGeomIds(referenceLayerData.data);
+    }
+
     const parameters = {
       indicator_id: id,
       admin_level: adminLevel,
-      reference_layer_id__in: datasets.join(',')
+      country_geom_id__in: countryGeomIds
     }
     if (maxDate) {
       // @ts-ignore
@@ -94,7 +108,10 @@ export const FetchIndicatorOptions = memo(
 
     /** Create loading **/
     useEffect(() => {
-      if (!maxDate || [null, undefined].includes(adminLevel) || !datasets.length) {
+      if (
+        !maxDate || [null, undefined].includes(adminLevel) || !datasets.length ||
+        !countryGeomIds
+      ) {
         return
       }
       const currentKey = key
