@@ -28,8 +28,9 @@ from geosight.data.api.v1.data_browser import (
     DataBrowserApiList, DatasetApiList
 )
 from geosight.data.api.v1.group import GroupViewSet
-from geosight.data.api.v1.indicator import IndicatorViewSet
-from geosight.data.api.v1.indicator_data import IndicatorDataViewSet
+from geosight.data.api.v1.indicator import (
+    IndicatorViewSet, IndicatorDataViewSet
+)
 from geosight.data.api.v1.related_table import (
     RelatedTableViewSet, RelatedTableDataViewSet, RelatedTableGeoDataViewSet
 )

@@ -20,19 +20,20 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_control
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework.response import Response
+from rest_framework.decorators import action
 
 from core.api_utils import ApiTag
 from geosight.data.api.v1.base import BaseApiV1ResourceReadOnly
+from geosight.data.api.v1.indicator_value import IndicatorValueApiUtilities
 from geosight.data.models import IndicatorValue
 from geosight.data.models.indicator import Indicator
 from geosight.data.serializer.indicator_value import IndicatorValueSerializer
-from geosight.permission.access import (
-    read_permission_resource
-)
+from geosight.permission.access import read_permission_resource
 
 
-class IndicatorDataViewSet(BaseApiV1ResourceReadOnly):
+class IndicatorDataViewSet(
+    BaseApiV1ResourceReadOnly, IndicatorValueApiUtilities
+):
     """indicator Data ViewSet."""
 
     model_class = IndicatorValue
@@ -102,6 +103,31 @@ class IndicatorDataViewSet(BaseApiV1ResourceReadOnly):
     )
     def retrieve(self, request, *args, **kwargs):
         """Get a single indicator row."""
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data)
+        return super().retrieve(self, request, *args, **kwargs)
+
+    @swagger_auto_schema(auto_schema=None)
+    @action(detail=False, methods=['get'])
+    def ids(self, request, *args, **kwargs):
+        """Get ids of data."""
+        return super().ids(request)
+
+    @swagger_auto_schema(auto_schema=None)
+    @action(detail=False, methods=['get'])
+    def values_string(self, request, *args, **kwargs):
+        """Get value list of string of data."""
+        return super().values_string(request)
+
+    @swagger_auto_schema(auto_schema=None)
+    @action(detail=False, methods=['get'])
+    def values(self, request, *args, **kwargs):
+        """Get values of data."""
+        return super().values(request)
+
+    @swagger_auto_schema(auto_schema=None)
+    @action(detail=False, methods=['get'])
+    def statistic(self, request, *args, **kwargs):
+        """Get statistic of data.
+
+        It returns {min, max, avg}
+        """
+        return super().statistic(request)

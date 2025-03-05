@@ -17,13 +17,13 @@ __copyright__ = ('Copyright 2023, Unicef')
 from drf_yasg.utils import swagger_auto_schema
 
 from core.api_utils import common_api_params, ApiTag, ApiParams
+from geosight.data.api.v1.base import (
+    BaseApiV1ResourceReadOnly,
+    BaseApiV1ResourceDeleteOnly
+)
 from geosight.data.models.indicator import Indicator
 from geosight.data.serializer.indicator import (
     IndicatorAdminListSerializer
-)
-from .base import (
-    BaseApiV1ResourceReadOnly,
-    BaseApiV1ResourceDeleteOnly
 )
 
 

@@ -19,6 +19,7 @@ import { FetchOptionsData } from "./types.d";
 import { useSelector } from "react-redux";
 import { fetchingData } from "../../../../Requests";
 import { getCountryGeomIds } from "../../../../utils/Dataset";
+import { Indicator } from "../../../../class/Indicator";
 
 export const FetchFromDataOptions = memo(
   ({ id, data, keyField, operator, onChange }: FetchOptionsData) => {
@@ -64,6 +65,8 @@ export const FetchIndicatorOptions = memo(
     // @ts-ignore
     const referenceLayerData = useSelector(state => state.referenceLayerData[referenceLayer?.identifier]);
 
+    // @ts-ignore
+    const indicator = new Indicator({ id: id })
     const prev = useRef();
     const {
       minDate,
@@ -91,7 +94,6 @@ export const FetchIndicatorOptions = memo(
     }
 
     const parameters = {
-      indicator_id: id,
       admin_level: adminLevel,
       country_geom_id__in: countryGeomIds
     }
@@ -118,15 +120,15 @@ export const FetchIndicatorOptions = memo(
       if (currentKey !== prev.current) {
         // @ts-ignore
         prev.current = currentKey
-        onChange(['Loading'])
-        fetchingData(
-          '/api/v1/data-browser/statistic/',
-          parameters, {}, (output: any, error: any) => {
+        onChange(['Loading']);
+        (
+          async () => {
+            const output = await indicator.statistic(parameters)
             if (prev.current === currentKey) {
               onChange([output['min'], output['max']])
             }
           }
-        )
+        )()
       }
     }, [parameters]);
 

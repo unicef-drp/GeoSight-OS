@@ -14,7 +14,7 @@
  */
 
 import { Indicator as IndicatorType } from "../types/Indicator";
-import { fetchPaginationInParallel } from "../Requests";
+import { fetchJSON, fetchPaginationInParallel } from "../Requests";
 
 export class Indicator {
   id: number;
@@ -35,6 +35,18 @@ export class Indicator {
     params['sort'] = 'geom_id,-date'
     return await fetchPaginationInParallel(
       this.url, params, onProgress
+    )
+  }
+
+  async statistic(params: any) {
+    return await fetchJSON(
+      `/api/v1/indicators/${this.id}/data/statistic/`, params
+    )
+  }
+
+  async frequencyValue(params: any, onProgress?: () => void | null) {
+    return await fetchJSON(
+      `/api/v1/indicators/${this.id}/data/values/`, params
     )
   }
 

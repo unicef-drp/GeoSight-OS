@@ -185,3 +185,8 @@ class RelatedTableGeoDataViewSet(viewsets.ReadOnlyModelViewSet):
             geo_field=geo_field
         )
         return Response(data)
+
+    @swagger_auto_schema(auto_schema=None)
+    def retrieve(self, request, pk=None):
+        """Return detailed of code list."""
+        return super().retrieve(request, pk=pk)
