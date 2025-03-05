@@ -52,12 +52,11 @@ class IndicatorDataViewSet(BaseApiV1ResourceReadOnly):
     def get_queryset(self):
         """Return queryset of API."""
         indicator = self._get_indicator()
-        query = IndicatorValue.objects.filter(
+        query = super().get_queryset()
+        query = query.filter(
             indicator_id=indicator.id
         )
-        return self.filter_query(
-            self.request, query, ['page', 'page_size']
-        )
+        return query
 
     @swagger_auto_schema(
         operation_id='indicator-data-list',

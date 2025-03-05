@@ -34,13 +34,14 @@ class FilteredAPI(object):
 
     def filter_query(
             self, request, query, ignores: list, fields: list = None,
-            sort: str = None, none_is_null: bool = True,
+            sort: str = None, distinct: str = None, none_is_null: bool = True,
     ):
         """Return filter query."""
         # Exclude sort to filter
         if not ignores:
             ignores = []
         ignores.append('sort')
+        ignores.append('distinct')
 
         for param, value in request.GET.items():
             is_equal = True
@@ -107,6 +108,10 @@ class FilteredAPI(object):
                 raise SuspiciousOperation(e)
 
         if sort:
-            query = query.order_by(sort)
+            query = query.order_by(*sort.split(','))
+
+        if distinct:
+            query = query.order_by(*distinct.split(','))
+            query = query.distinct(*distinct.split(','))
 
         return query

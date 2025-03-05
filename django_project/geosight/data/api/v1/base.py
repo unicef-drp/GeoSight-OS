@@ -53,8 +53,10 @@ class BaseApiV1(FilteredAPI):
         """Return queryset of API."""
         query = self.queryset
         return self.filter_query(
-            self.request, query, non_filtered_keys,
-            sort=self.request.query_params.get('sort')
+            self.request, query,
+            ignores=non_filtered_keys,
+            sort=self.request.query_params.get('sort'),
+            distinct=self.request.query_params.get('distinct'),
         )
 
     def get_serializer_context(self):
@@ -107,13 +109,15 @@ class BaseApiV1ResourceReadOnly(BaseApiV1, viewsets.ReadOnlyModelViewSet):
     @property
     def queryset(self):
         """Return queryset."""
-        if self.action not in [
-            'retrieve', 'create', 'update', 'partial_update', 'destroy'
-        ]:
-            query = self.model_class.permissions.list(self.request.user)
-        else:
-            query = self.model_class.objects.all()
-        return query
+        try:
+            if self.action not in [
+                'retrieve', 'create', 'update', 'partial_update', 'destroy'
+            ]:
+                return self.model_class.permissions.list(self.request.user)
+            else:
+                return self.model_class.objects.all()
+        except AttributeError:
+            return self.model_class.objects.all()
 
     def get_queryset(self):
         """Return queryset of API."""
@@ -129,8 +133,9 @@ class BaseApiV1ResourceReadOnly(BaseApiV1, viewsets.ReadOnlyModelViewSet):
 
         return self.filter_query(
             self.request, query,
+            ignores=non_filtered_keys,
             sort=self.request.query_params.get('sort'),
-            ignores=non_filtered_keys
+            distinct=self.request.query_params.get('distinct')
         )
 
     def retrieve(self, request, *args, **kwargs):
