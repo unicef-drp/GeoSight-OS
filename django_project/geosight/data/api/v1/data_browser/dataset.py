@@ -60,7 +60,7 @@ class BaseDatasetApiList:
         """Return queryset of API."""
         if not self.group_admin_level:
             return super().get_queryset().values(
-                'indicator_id', 'country_id', 'entity_admin_level'
+                'indicator_id', 'country_id', 'admin_level'
             ).annotate(
                 data_count=Count('*')
             ).annotate(
@@ -76,14 +76,14 @@ class BaseDatasetApiList:
             ).annotate(
                 end_date=Max('date')
             ).order_by(
-                'indicator_id', 'country_id', 'entity_admin_level'
+                'indicator_id', 'country_id', 'admin_level'
             ).filter(country_id__isnull=False)
         else:
             return super().get_queryset().values(
                 'indicator_id', 'country_id'
             ).annotate(
-                entity_admin_level=StringAgg(
-                    Cast('entity_admin_level', CharField()),
+                admin_level=StringAgg(
+                    Cast('admin_level', CharField()),
                     delimiter=', ',
                     distinct=True,
                     output_field=CharField()
@@ -146,7 +146,7 @@ class DatasetApiList(
             *common_api_params,
             ApiParams.INDICATOR_ID,
             ApiParams.DATASET_UUID,
-            ApiParams.ENTITY_ADMIN_LEVEL
+            ApiParams.ADMIN_LEVEL
         ],
         operation_description=(
                 'Return indicator data information by country, '
@@ -211,7 +211,7 @@ class DatasetApiList(
             IndicatorValue.objects.filter(
                 indicator_id=indicator_id,
                 country_id=country_id,
-                entity_admin_level__in=admin_levels
+                admin_level__in=admin_levels
             ).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -226,7 +226,7 @@ class DatasetApiList(
                     Value('-'),
                     'country_id',
                     Value('-['),
-                    'entity_admin_level',
+                    'admin_level',
                     Value(']'),
                     output_field=CharField()
                 )
@@ -239,7 +239,7 @@ class DatasetApiList(
         """Get data."""
         indicator_id = 'indicator_id'
         country_geom_id = 'country_geom_id'
-        admin_level = 'entity_admin_level'
+        admin_level = 'admin_level'
         return Response({
             'indicators': self.get_queryset().order_by(
                 indicator_id

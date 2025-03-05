@@ -87,7 +87,7 @@ class IndicatorValueSerializer(DynamicModelSerializer):
                     title='Geom id',
                     type=openapi.TYPE_STRING,
                 ),
-                'entity_admin_level': openapi.Schema(
+                'admin_level': openapi.Schema(
                     title='Entity admin level',
                     type=openapi.TYPE_NUMBER
                 ),
@@ -146,7 +146,7 @@ class IndicatorValueSerializer(DynamicModelSerializer):
                 "value": 0,
                 "date": "1990-01-01",
                 "geom_id": "GEOM_1",
-                "entity_admin_level": 1,
+                "admin_level": 1,
                 "entity_name": "Geometry 1",
                 "country_id": 1,
                 "country_geom_id": "COUNTRY_1",
@@ -294,6 +294,6 @@ class IndicatorValueWithGeoDateSerializer(
     class Meta:  # noqa: D106
         model = IndicatorValue
         fields = (
-            'geometry_code', 'value', 'entity_concept_uuid',
-            'entity_admin_level', 'date', 'time'
+            'geometry_code', 'value', 'concept_uuid',
+            'admin_level', 'date', 'time'
         )

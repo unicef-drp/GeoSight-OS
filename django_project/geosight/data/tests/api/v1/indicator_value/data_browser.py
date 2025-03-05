@@ -52,7 +52,7 @@ class DataBrowserApiTest(BaseDataBrowserTest.TestCase):
 
         # by levels
         response = self.assertRequestGetView(
-            f'{url}?entity_admin_level__in=1', 200, user=user
+            f'{url}?admin_level__in=1', 200, user=user
         )
         self.assertEqual(len(response.json()['results']), 20)
 
@@ -119,7 +119,7 @@ class DataBrowserApiTest(BaseDataBrowserTest.TestCase):
 
         # by levels
         response = self.assertRequestGetView(
-            f'{url}?entity_admin_level__in=1', 200, user=user
+            f'{url}?admin_level__in=1', 200, user=user
         )
         self.assertEqual(len(response.json()['results']), 10)
 

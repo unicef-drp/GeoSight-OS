@@ -88,10 +88,10 @@ class IndicatorValue(models.Model):
         max_length=512,
         null=True, blank=True
     )
-    entity_admin_level = models.IntegerField(
+    admin_level = models.IntegerField(
         null=True, blank=True
     )
-    entity_concept_uuid = models.CharField(
+    concept_uuid = models.CharField(
         max_length=256,
         help_text='This is concept uuid from georepo.',
         null=True, blank=True
@@ -129,10 +129,10 @@ class IndicatorValue(models.Model):
                 fields=['indicator', 'country_id']
             ),
             models.Index(
-                fields=['indicator', 'country_id', 'entity_admin_level']
+                fields=['indicator', 'country_id', 'admin_level']
             ),
             models.Index(
-                fields=['indicator', 'entity_admin_level']
+                fields=['indicator', 'admin_level']
             ),
         ]
 
@@ -202,8 +202,8 @@ class IndicatorValue(models.Model):
             if entity:
                 self.entity = entity
                 self.entity_name = entity.name
-                self.entity_admin_level = entity.admin_level
-                self.entity_concept_uuid = entity.concept_uuid
+                self.admin_level = entity.admin_level
+                self.concept_uuid = entity.concept_uuid
                 self.entity_start_date = entity.start_date
                 self.entity_end_date = entity.end_date
                 self.assign_country(autosave=autosave)
@@ -213,12 +213,12 @@ class IndicatorValue(models.Model):
     def assign_country(self, autosave=True):
         """Assign entity to indicator value."""
         if not self.country_id:
-            if self.entity_admin_level >= 1:
+            if self.admin_level >= 1:
                 if self.entity and self.entity.country:
                     self.country = self.entity.country
                     self.country_name = self.country.name
                     self.country_geom_id = self.country.geom_id
-            elif self.entity_admin_level == 0:
+            elif self.admin_level == 0:
                 self.country = self.entity
                 self.country_name = self.entity.name
                 self.country_geom_id = self.entity.geom_id
@@ -240,8 +240,8 @@ class IndicatorValue(models.Model):
             UPDATE geosight_data_indicatorvalue AS value
             SET entity_id = entity.id,
                 entity_name = entity.name,
-                entity_admin_level = entity.admin_level,
-                entity_concept_uuid = entity.concept_uuid,
+                admin_level = entity.admin_level,
+                concept_uuid = entity.concept_uuid,
                 entity_start_date = entity.start_date,
                 entity_end_date = entity.end_date,
                 country_id = CASE

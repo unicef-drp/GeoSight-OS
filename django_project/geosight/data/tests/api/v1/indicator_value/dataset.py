@@ -75,7 +75,7 @@ class DatasetApiTest(BaseDataBrowserTest.TestCase):
 
         # by levels
         response = self.assertRequestGetView(
-            f'{url}?entity_admin_level__in=1', 200, user=user
+            f'{url}?admin_level__in=1', 200, user=user
         )
         self.assertEqual(response.json()['count'], 4)
         self.assertEqual(self.data_count(response), 20)
@@ -130,7 +130,7 @@ class DatasetApiTest(BaseDataBrowserTest.TestCase):
 
         # by levels
         response = self.assertRequestGetView(
-            f'{url}?entity_admin_level__in=1', 200, user=user
+            f'{url}?admin_level__in=1', 200, user=user
         )
         self.assertEqual(response.json()['count'], 2)
         self.assertEqual(self.data_count(response), 10)
@@ -142,8 +142,8 @@ class DatasetApiTest(BaseDataBrowserTest.TestCase):
 
         self.assert_ids(f'{list_url}?page_size=1000', f'{url}')
         self.assert_ids(
-            f'{list_url}?entity_admin_level__in=1',
-            f'{url}?entity_admin_level__in=1'
+            f'{list_url}?admin_level__in=1',
+            f'{url}?admin_level__in=1'
         )
         self.assert_ids(
             f'{list_url}?group_admin_level=true',
@@ -158,7 +158,7 @@ class DatasetApiTest(BaseDataBrowserTest.TestCase):
         # admin
         response = self.assertRequestGetView(
             f'{url}?group_admin_level=true&'
-            f'entity_admin_level__in=1', 200, user=user
+            f'admin_level__in=1', 200, user=user
         )
         self.assertEqual(self.data_count(response), 20)
 

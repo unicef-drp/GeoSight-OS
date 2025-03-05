@@ -96,10 +96,10 @@ class IndicatorValueTest(TestCase):
         self.assertEquals(value.entity, entity)
         self.assertEquals(value.entity_name, 'name')
         self.assertEquals(value.entity_name, entity.name)
-        self.assertEquals(value.entity_admin_level, 1)
-        self.assertEquals(value.entity_admin_level, entity.admin_level)
-        self.assertEquals(value.entity_concept_uuid, 'concept_AA')
-        self.assertEquals(value.entity_concept_uuid, entity.concept_uuid)
+        self.assertEquals(value.admin_level, 1)
+        self.assertEquals(value.admin_level, entity.admin_level)
+        self.assertEquals(value.concept_uuid, 'concept_AA')
+        self.assertEquals(value.concept_uuid, entity.concept_uuid)
         self.assertEquals(
             value.entity_start_date.strftime("%Y-%m-%d %H:%M:%S"),
             '2020-01-01 00:00:00'
@@ -140,10 +140,10 @@ class IndicatorValueTest(TestCase):
         self.assertEquals(value.entity, entity)
         self.assertEquals(value.entity_name, 'name')
         self.assertEquals(value.entity_name, entity.name)
-        self.assertEquals(value.entity_admin_level, 2)
-        self.assertEquals(value.entity_admin_level, entity.admin_level)
-        self.assertEquals(value.entity_concept_uuid, 'concept_AAA')
-        self.assertEquals(value.entity_concept_uuid, entity.concept_uuid)
+        self.assertEquals(value.admin_level, 2)
+        self.assertEquals(value.admin_level, entity.admin_level)
+        self.assertEquals(value.concept_uuid, 'concept_AAA')
+        self.assertEquals(value.concept_uuid, entity.concept_uuid)
         self.assertEquals(
             value.entity_start_date.strftime("%Y-%m-%d %H:%M:%S"),
             '2020-01-01 00:00:00'
@@ -183,10 +183,10 @@ class IndicatorValueTest(TestCase):
         self.assertEquals(value.entity, entity)
         self.assertEquals(value.entity_name, 'country')
         self.assertEquals(value.entity_name, entity.name)
-        self.assertEquals(value.entity_admin_level, 0)
-        self.assertEquals(value.entity_admin_level, entity.admin_level)
-        self.assertEquals(value.entity_concept_uuid, 'concept_A')
-        self.assertEquals(value.entity_concept_uuid, entity.concept_uuid)
+        self.assertEquals(value.admin_level, 0)
+        self.assertEquals(value.admin_level, entity.admin_level)
+        self.assertEquals(value.concept_uuid, 'concept_A')
+        self.assertEquals(value.concept_uuid, entity.concept_uuid)
         self.assertEquals(
             value.entity_start_date.strftime("%Y-%m-%d %H:%M:%S"),
             '2020-01-01 00:00:00'
@@ -285,8 +285,8 @@ class IndicatorValueTest(TestCase):
             value=1
         )
         self.assertEquals(value_a.entity_name, entity_a.name)
-        self.assertEquals(value_a.entity_concept_uuid, entity_a.concept_uuid)
-        self.assertEquals(value_a.entity_admin_level, entity_a.admin_level)
+        self.assertEquals(value_a.concept_uuid, entity_a.concept_uuid)
+        self.assertEquals(value_a.admin_level, entity_a.admin_level)
         self.assertEquals(
             value_a.entity_start_date.strftime("%Y-%m-%d"),
             entity_a.start_date.strftime("%Y-%m-%d")
@@ -298,8 +298,8 @@ class IndicatorValueTest(TestCase):
         self.assertEquals(value_a.country_id, entity_a.id)
 
         self.assertEquals(value_b.entity_name, entity_b.name)
-        self.assertEquals(value_b.entity_concept_uuid, entity_b.concept_uuid)
-        self.assertEquals(value_b.entity_admin_level, entity_b.admin_level)
+        self.assertEquals(value_b.concept_uuid, entity_b.concept_uuid)
+        self.assertEquals(value_b.admin_level, entity_b.admin_level)
         self.assertEquals(
             value_b.entity_start_date.strftime("%Y-%m-%d"),
             entity_b.start_date.strftime("%Y-%m-%d")
@@ -317,8 +317,8 @@ class IndicatorValueTest(TestCase):
         value_b.refresh_from_db()
         self.assertEquals(value_a.entity_name, 'Entity A name')
         self.assertEquals(value_a.entity_name, entity_a.name)
-        self.assertEquals(value_a.entity_concept_uuid, entity_a.concept_uuid)
-        self.assertEquals(value_a.entity_admin_level, entity_a.admin_level)
+        self.assertEquals(value_a.concept_uuid, entity_a.concept_uuid)
+        self.assertEquals(value_a.admin_level, entity_a.admin_level)
         self.assertEquals(
             value_a.entity_start_date.strftime("%Y-%m-%d"),
             entity_a.start_date.strftime("%Y-%m-%d")
@@ -331,8 +331,8 @@ class IndicatorValueTest(TestCase):
 
         self.assertEquals(value_b.entity_name, 'name')
         self.assertEquals(value_b.entity_name, entity_b.name)
-        self.assertEquals(value_b.entity_concept_uuid, entity_b.concept_uuid)
-        self.assertEquals(value_b.entity_admin_level, entity_b.admin_level)
+        self.assertEquals(value_b.concept_uuid, entity_b.concept_uuid)
+        self.assertEquals(value_b.admin_level, entity_b.admin_level)
         self.assertEquals(
             value_b.entity_start_date.strftime("%Y-%m-%d"),
             entity_b.start_date.strftime("%Y-%m-%d")
@@ -373,10 +373,10 @@ class IndicatorValueTest(TestCase):
         self.assertEquals(value_a.entity, entity)
         self.assertEquals(value_a.entity_name, 'name')
         self.assertEquals(value_a.entity_name, entity.name)
-        self.assertEquals(value_a.entity_admin_level, 2)
-        self.assertEquals(value_a.entity_admin_level, entity.admin_level)
-        self.assertEquals(value_a.entity_concept_uuid, 'concept_AAA')
-        self.assertEquals(value_a.entity_concept_uuid, entity.concept_uuid)
+        self.assertEquals(value_a.admin_level, 2)
+        self.assertEquals(value_a.admin_level, entity.admin_level)
+        self.assertEquals(value_a.concept_uuid, 'concept_AAA')
+        self.assertEquals(value_a.concept_uuid, entity.concept_uuid)
         self.assertEquals(
             value_a.entity_start_date.strftime("%Y-%m-%d %H:%M:%S"),
             '2020-01-01 00:00:00'
@@ -414,10 +414,10 @@ class IndicatorValueTest(TestCase):
         self.assertEquals(value_b.entity, entity)
         self.assertEquals(value_b.entity_name, 'country')
         self.assertEquals(value_b.entity_name, entity.name)
-        self.assertEquals(value_b.entity_admin_level, 0)
-        self.assertEquals(value_b.entity_admin_level, entity.admin_level)
-        self.assertEquals(value_b.entity_concept_uuid, 'concept_A')
-        self.assertEquals(value_b.entity_concept_uuid, entity.concept_uuid)
+        self.assertEquals(value_b.admin_level, 0)
+        self.assertEquals(value_b.admin_level, entity.admin_level)
+        self.assertEquals(value_b.concept_uuid, 'concept_A')
+        self.assertEquals(value_b.concept_uuid, entity.concept_uuid)
         self.assertEquals(
             value_b.entity_start_date.strftime("%Y-%m-%d %H:%M:%S"),
             '2020-01-01 00:00:00'
@@ -449,8 +449,8 @@ class IndicatorValueTest(TestCase):
                     country_geom_id = NULL,
                     entity_id = NULL,
                     entity_name = NULL,
-                    entity_admin_level = NULL,
-                    entity_concept_uuid = NULL,
+                    admin_level = NULL,
+                    concept_uuid = NULL,
                     entity_start_date = NULL,
                     entity_end_date = NULL,
                     indicator_name = NULL,
@@ -465,8 +465,8 @@ class IndicatorValueTest(TestCase):
         self.assertIsNone(value_a.country_geom_id)
         self.assertIsNone(value_a.entity_id)
         self.assertIsNone(value_a.entity_name)
-        self.assertIsNone(value_a.entity_admin_level)
-        self.assertIsNone(value_a.entity_concept_uuid)
+        self.assertIsNone(value_a.admin_level)
+        self.assertIsNone(value_a.concept_uuid)
         self.assertIsNone(value_a.entity_start_date)
         self.assertIsNone(value_a.entity_end_date)
         self.assertIsNone(value_a.indicator_name)
@@ -475,8 +475,8 @@ class IndicatorValueTest(TestCase):
         self.assertIsNone(value_b.country_geom_id)
         self.assertIsNone(value_b.entity_id)
         self.assertIsNone(value_b.entity_name)
-        self.assertIsNone(value_b.entity_admin_level)
-        self.assertIsNone(value_b.entity_concept_uuid)
+        self.assertIsNone(value_b.admin_level)
+        self.assertIsNone(value_b.concept_uuid)
         self.assertIsNone(value_b.entity_start_date)
         self.assertIsNone(value_b.entity_end_date)
         self.assertIsNone(value_b.indicator_name)
@@ -497,10 +497,10 @@ class IndicatorValueTest(TestCase):
         self.assertEquals(value_a.entity, entity)
         self.assertEquals(value_a.entity_name, 'name')
         self.assertEquals(value_a.entity_name, entity.name)
-        self.assertEquals(value_a.entity_admin_level, 2)
-        self.assertEquals(value_a.entity_admin_level, entity.admin_level)
-        self.assertEquals(value_a.entity_concept_uuid, 'concept_AAA')
-        self.assertEquals(value_a.entity_concept_uuid, entity.concept_uuid)
+        self.assertEquals(value_a.admin_level, 2)
+        self.assertEquals(value_a.admin_level, entity.admin_level)
+        self.assertEquals(value_a.concept_uuid, 'concept_AAA')
+        self.assertEquals(value_a.concept_uuid, entity.concept_uuid)
         self.assertEquals(
             value_a.entity_start_date.strftime("%Y-%m-%d %H:%M:%S"),
             '2020-01-01 00:00:00'
@@ -542,10 +542,10 @@ class IndicatorValueTest(TestCase):
         self.assertEquals(value_b.entity, entity)
         self.assertEquals(value_b.entity_name, 'country')
         self.assertEquals(value_b.entity_name, entity.name)
-        self.assertEquals(value_b.entity_admin_level, 0)
-        self.assertEquals(value_b.entity_admin_level, entity.admin_level)
-        self.assertEquals(value_b.entity_concept_uuid, 'concept_A')
-        self.assertEquals(value_b.entity_concept_uuid, entity.concept_uuid)
+        self.assertEquals(value_b.admin_level, 0)
+        self.assertEquals(value_b.admin_level, entity.admin_level)
+        self.assertEquals(value_b.concept_uuid, 'concept_A')
+        self.assertEquals(value_b.concept_uuid, entity.concept_uuid)
         self.assertEquals(
             value_b.entity_start_date.strftime("%Y-%m-%d %H:%M:%S"),
             '2020-01-01 00:00:00'

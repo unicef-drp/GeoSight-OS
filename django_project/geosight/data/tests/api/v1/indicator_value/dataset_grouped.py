@@ -52,7 +52,7 @@ class DatasetApiGroupedDataTest(BaseDataBrowserTest.TestCase):
 
         # by levels
         response = self.assertRequestGetView(
-            f'{url}&entity_admin_level__in=1', 200, user=user
+            f'{url}&admin_level__in=1', 200, user=user
         )
         self.assertEqual(response.json()['count'], 4)
         self.assertEqual(self.data_count(response), 20)
@@ -94,7 +94,7 @@ class DatasetApiGroupedDataTest(BaseDataBrowserTest.TestCase):
 
         # by levels
         response = self.assertRequestGetView(
-            f'{url}&entity_admin_level__in=1', 200, user=user
+            f'{url}&admin_level__in=1', 200, user=user
         )
         self.assertEqual(self.data_count(response), 10)
 
@@ -105,7 +105,7 @@ class DatasetApiGroupedDataTest(BaseDataBrowserTest.TestCase):
 
         # admin
         response = self.assertRequestGetView(
-            f'{url}&entity_admin_level__in=1', 200, user=user
+            f'{url}&admin_level__in=1', 200, user=user
         )
         self.assertEqual(self.data_count(response), 20)
 

@@ -41,7 +41,7 @@ class IndicatorValueDataset(models.Model):
     country_geom_id = models.CharField(
         max_length=256, null=True, blank=True
     )
-    entity_admin_level = models.CharField(max_length=256)
+    admin_level = models.CharField(max_length=256)
 
     data_count = models.IntegerField(
         null=True, blank=True

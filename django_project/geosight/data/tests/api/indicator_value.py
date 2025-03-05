@@ -165,5 +165,5 @@ class IndicatorValueTest(BasePermissionTest.TestCase):
         # TODO:
         #   Fix the API and this
         self.assertEqual(
-            response.json()[0]['entity_admin_level'], None
+            response.json()[0]['admin_level'], None
         )

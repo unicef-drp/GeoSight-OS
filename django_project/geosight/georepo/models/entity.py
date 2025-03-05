@@ -117,7 +117,7 @@ class Entity(models.Model):
         verbose_name_plural = "entities"
         indexes = [
             models.Index(fields=['geom_id'], name='entity_geom_id'),
-            models.Index(fields=['concept_uuid'], name='entity_concept_uuid'),
+            models.Index(fields=['concept_uuid'], name='concept_uuid'),
             models.Index(fields=['id', 'reference_layer']),
             models.Index(
                 fields=['concept_uuid', 'reference_layer', 'admin_level']
@@ -347,8 +347,8 @@ class Entity(models.Model):
             UPDATE geosight_data_indicatorvalue
             SET
                 entity_name = '{self.name}',
-                entity_admin_level = {self.admin_level},
-                entity_concept_uuid = {concept_uuid},
+                admin_level = {self.admin_level},
+                concept_uuid = {concept_uuid},
                 entity_start_date = {start_date},
                 entity_end_date = {end_date},
                 country_id = {country_id},

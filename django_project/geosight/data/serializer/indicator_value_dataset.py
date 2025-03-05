@@ -38,7 +38,7 @@ class IndicatorValueDatasetSerializer(DynamicModelSerializer):
         """Return id."""
         return (
             f'{obj.indicator_id}-{obj.country_id}-'
-            f'[{obj.entity_admin_level}]'
+            f'[{obj.admin_level}]'
         )
 
     def get_browse_data_api_url(self, obj: IndicatorValueDataset):
@@ -57,7 +57,7 @@ class IndicatorValueDatasetSerializer(DynamicModelSerializer):
             elif 'country_id' in key:
                 value = obj.country_id
             elif 'admin_level' in key:
-                value = obj.entity_admin_level
+                value = obj.admin_level
 
             if value is not None:
                 query_dict[key] = value
@@ -70,7 +70,7 @@ class IndicatorValueDatasetSerializer(DynamicModelSerializer):
             f"{reverse('admin-data-browser-view')}?"
             f"indicators={obj.indicator_id}&"
             f"countries={obj.country_id}&"
-            f"levels={obj.entity_admin_level}"
+            f"levels={obj.admin_level}"
         )
 
     class Meta:  # noqa: D106
