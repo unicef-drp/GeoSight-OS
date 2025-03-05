@@ -14,7 +14,7 @@
  */
 
 export interface Indicator {
-  id: string,
+  id: number,
   name: string,
   category: string,
   description: string,

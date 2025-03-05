@@ -39,7 +39,8 @@ class BaseDataBrowserApiList(BaseIndicatorValueApi):
     serializer_class = IndicatorValueSerializer
 
     filter_query_exclude = [
-        'page', 'page_size', 'group_admin_level', 'detail'
+        'page', 'page_size', 'group_admin_level', 'detail',
+        'time', 'geometry_code'
     ]
     extra_exclude_fields = ['permission']
 

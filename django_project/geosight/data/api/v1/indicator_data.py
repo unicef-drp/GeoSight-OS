@@ -13,6 +13,11 @@ __author__ = 'Víctor González'
 __date__ = '05/03/2025'
 __copyright__ = ('Copyright 2023, Unicef')
 
+import time
+
+from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_control
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.generics import get_object_or_404
@@ -20,7 +25,8 @@ from rest_framework.response import Response
 
 from core.api_utils import ApiTag
 from geosight.data.api.v1.base import BaseApiV1ResourceReadOnly
-from geosight.data.models import Indicator, IndicatorValue
+from geosight.data.models import IndicatorValue
+from geosight.data.models.indicator import Indicator
 from geosight.data.serializer.indicator_value import IndicatorValueSerializer
 from geosight.permission.access import (
     read_permission_resource
@@ -32,6 +38,10 @@ class IndicatorDataViewSet(BaseApiV1ResourceReadOnly):
 
     model_class = IndicatorValue
     serializer_class = IndicatorValueSerializer
+    non_filtered_keys = [
+        'page', 'page_size', 'fields', 'extra_fields', 'permission',
+        'attributes', 'version'
+    ]
 
     @property
     def extra_exclude_fields(self):
@@ -39,7 +49,7 @@ class IndicatorDataViewSet(BaseApiV1ResourceReadOnly):
         if self.action == 'retrieve':
             return []
         else:
-            return ['permission', 'attributes']
+            return self.non_filtered_keys
 
     def _get_indicator(self):  # noqa: D102
         indicator_id = self.kwargs.get('indicators_id')
@@ -58,6 +68,10 @@ class IndicatorDataViewSet(BaseApiV1ResourceReadOnly):
         )
         return query
 
+    @method_decorator(
+        cache_control(public=True, max_age=864000),
+        name='dispatch'
+    )
     @swagger_auto_schema(
         operation_id='indicator-data-list',
         tags=[ApiTag.INDICATOR],
@@ -72,6 +86,7 @@ class IndicatorDataViewSet(BaseApiV1ResourceReadOnly):
     )
     def list(self, request, *args, **kwargs):
         """List of indicator rows."""
+        time.sleep(2)
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(

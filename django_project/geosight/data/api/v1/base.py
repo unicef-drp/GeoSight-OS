@@ -37,8 +37,6 @@ from geosight.permission.access.mixin import (
     edit_permission_resource
 )
 
-non_filtered_keys = ['page', 'page_size', 'fields', 'extra_fields']
-
 
 class BaseApiV1(FilteredAPI):
     """Base API V1."""
@@ -48,13 +46,14 @@ class BaseApiV1(FilteredAPI):
     ]
     pagination_class = Pagination
     extra_exclude_fields = []
+    non_filtered_keys = ['page', 'page_size', 'fields', 'extra_fields']
 
     def get_queryset(self):
         """Return queryset of API."""
         query = self.queryset
         return self.filter_query(
             self.request, query,
-            ignores=non_filtered_keys,
+            ignores=self.non_filtered_keys,
             sort=self.request.query_params.get('sort'),
             distinct=self.request.query_params.get('distinct'),
         )
@@ -133,7 +132,7 @@ class BaseApiV1ResourceReadOnly(BaseApiV1, viewsets.ReadOnlyModelViewSet):
 
         return self.filter_query(
             self.request, query,
-            ignores=non_filtered_keys,
+            ignores=self.non_filtered_keys,
             sort=self.request.query_params.get('sort'),
             distinct=self.request.query_params.get('distinct')
         )

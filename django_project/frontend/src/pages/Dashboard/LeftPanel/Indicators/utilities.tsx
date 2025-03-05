@@ -9,24 +9,14 @@
  *     (at your option) any later version.
  *
  * __author__ = 'irwan@kartoza.com'
- * __date__ = '02/01/2025'
+ * __date__ = '05/03/2025'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
+import { IndicatorLayer } from "../../../../types/IndicatorLayer";
 
-export interface CountryDatasetView {
-  name: string;
-  ucode: string;
-}
 
-export interface DatasetView {
-  name: string,
-  uuid: string,
-  description: string,
-  dataset: string,
-  root_entity: string,
-  last_update: string,
-  bbox: number[],
-  tags: string[],
-  countries: CountryDatasetView[];
-  identifier?: string,
+export function getDatasets(indicatorLayers: IndicatorLayer[]): string[] {
+  return indicatorLayers.map(
+    indicatorLayer => indicatorLayer.level_config?.referenceLayer?.identifier
+  )
 }

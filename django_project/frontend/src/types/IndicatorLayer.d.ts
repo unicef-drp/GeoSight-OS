@@ -1,3 +1,5 @@
+import { DatasetView } from "./DatasetView";
+
 /**
  * GeoSight is UNICEF's geospatial web-based business intelligence platform.
  *
@@ -9,24 +11,18 @@
  *     (at your option) any later version.
  *
  * __author__ = 'irwan@kartoza.com'
- * __date__ = '02/01/2025'
+ * __date__ = '05/03/2025'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-export interface CountryDatasetView {
-  name: string;
-  ucode: string;
+export interface LevelConfig {
+  levels: number[],
+  default_level: number,
+  referenceLayer?: DatasetView
 }
 
-export interface DatasetView {
+export interface IndicatorLayer {
+  id: number,
   name: string,
-  uuid: string,
-  description: string,
-  dataset: string,
-  root_entity: string,
-  last_update: string,
-  bbox: number[],
-  tags: string[],
-  countries: CountryDatasetView[];
-  identifier?: string,
+  level_config: LevelConfig,
 }

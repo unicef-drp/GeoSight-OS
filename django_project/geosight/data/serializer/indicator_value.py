@@ -30,11 +30,17 @@ from geosight.data.models.indicator import (
 class IndicatorValueSerializer(DynamicModelSerializer):
     """Serializer for IndicatorValue."""
 
+    geometry_code = serializers.SerializerMethodField()
     indicator = serializers.SerializerMethodField()
     indicator_id = serializers.SerializerMethodField()
     value = serializers.SerializerMethodField()
     attributes = serializers.SerializerMethodField()
     permission = serializers.SerializerMethodField()
+    time = serializers.SerializerMethodField()
+
+    def get_geometry_code(self, obj: IndicatorValue):
+        """Return geometry_code."""
+        return obj.geom_id
 
     def get_indicator(self, obj: IndicatorValue):
         """Return indicator name."""
@@ -55,6 +61,13 @@ class IndicatorValueSerializer(DynamicModelSerializer):
     def get_permission(self, obj: IndicatorValue):
         """Return indicator name."""
         return obj.permissions(self.context.get('user', None))
+
+    def get_time(self, obj: IndicatorValueWithGeo):
+        """Return date."""
+        return datetime.combine(
+            obj.date, datetime.min.time(),
+            tzinfo=pytz.timezone(settings.TIME_ZONE)
+        ).timestamp()
 
     class Meta:  # noqa: D106
         model = IndicatorValue

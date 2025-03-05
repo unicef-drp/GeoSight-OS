@@ -111,7 +111,8 @@ class FilteredAPI(object):
             query = query.order_by(*sort.split(','))
 
         if distinct:
-            query = query.order_by(*distinct.split(','))
+            if not sort:
+                query = query.order_by(*distinct.split(','))
             query = query.distinct(*distinct.split(','))
 
         return query
