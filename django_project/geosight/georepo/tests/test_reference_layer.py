@@ -150,12 +150,14 @@ class ReferenceLayerViewTest(APITestCase):
         self.assertEqual(
             self.reference_layer.countries.all().count(), 3
         )
+        output = list(
+            self.reference_layer.countries.values_list(
+                'geom_id', flat=True
+            )
+        )
+        output.sort()
         self.assertEqual(
-            list(
-                self.reference_layer.countries.values_list(
-                    'geom_id', flat=True
-                )
-            ),
+            output,
             ['A', 'B', 'C']
         )
 
@@ -178,12 +180,14 @@ class ReferenceLayerViewTest(APITestCase):
         self.assertEqual(
             self.reference_layer.countries.all().count(), 2
         )
+        output = list(
+            self.reference_layer.countries.order_by('geom_id').values_list(
+                'geom_id', flat=True
+            )
+        )
+        output.sort()
         self.assertEqual(
-            list(
-                self.reference_layer.countries.order_by('geom_id').values_list(
-                    'geom_id', flat=True
-                )
-            ),
+            output,
             ['A', 'B']
         )
 
@@ -218,12 +222,14 @@ class ReferenceLayerViewTest(APITestCase):
         self.assertEqual(
             self.reference_layer.countries.all().count(), 2
         )
+        output = list(
+            self.reference_layer.countries.values_list(
+                'geom_id', flat=True
+            )
+        )
+        output.sort()
         self.assertEqual(
-            list(
-                self.reference_layer.countries.values_list(
-                    'geom_id', flat=True
-                )
-            ),
+            output,
             ['A', 'B']
         )
 
@@ -248,13 +254,15 @@ class ReferenceLayerViewTest(APITestCase):
         self.assertEqual(
             self.reference_layer_2.countries.all().count(), 2
         )
+        output = list(
+            self.reference_layer_2.countries.order_by(
+                'geom_id'
+            ).values_list(
+                'geom_id', flat=True
+            )
+        )
+        output.sort()
         self.assertEqual(
-            list(
-                self.reference_layer_2.countries.order_by(
-                    'geom_id'
-                ).values_list(
-                    'geom_id', flat=True
-                )
-            ),
+            output,
             ['A', 'O']
         )
