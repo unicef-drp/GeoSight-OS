@@ -39,7 +39,23 @@ test.describe('View project', () => {
     await expect(page.locator('.MapLegendSection')).toHaveCount(1);
 
     // Check widgets
-    await expect(page.locator('.widget__sw__content')).toContainText('895');
+    await expect(page.locator('.widget__title').nth(0)).toContainText('Total of Sample indicator A');
+    await expect(page.locator('.widget__title').nth(1)).toContainText('Total of Dynamic Layer');
+    await expect(page.locator('.widget__title').nth(2)).toContainText('Time Chart by Entity');
+    await expect(page.locator('.widget__title').nth(3)).toContainText('Time Chart by Indicator');
+    await expect(page.locator('.widget__title').nth(4)).toContainText('Value by Geom Code');
+    await expect(page.locator('.widget__sw__content').nth(0)).toContainText('895');
+    await expect(page.locator('.widget__sw__content').nth(1)).toContainText('978.5');
+    await expect(page.locator('.widget__sgw').nth(0).locator('.widget__time_series__row_inner').nth(0)).toContainText('Mudug');
+    await expect(page.locator('.widget__sgw').nth(0).locator('.widget__time_series__row_inner').nth(1)).toContainText('Nugaal');
+    await expect(page.locator('.widget__sgw').nth(0).locator('.widget__time_series__row_inner').nth(2)).toContainText('Sanaag');
+    await expect(page.locator('.widget__sgw').nth(1).locator('.widget__time_series__row_inner').nth(0)).toContainText('Sample Indicator A');
+    await expect(page.locator('.widget__sgw').nth(1).locator('.widget__time_series__row_inner').nth(1)).toContainText('Sample Indicator B');
+    await expect(page.locator('.widget__sgw').nth(1).locator('.widget__time_series__row_inner').nth(2)).toContainText('Sample Indicator C');
+    await expect(page.locator('.widget__sgw').nth(2).locator('.widget__sgw__row').nth(0).locator('td').nth(0)).toContainText('SOM_0009_V1');
+    await expect(page.locator('.widget__sgw').nth(2).locator('.widget__sgw__row').nth(0).locator('td').nth(1)).toContainText('96');
+    await expect(page.locator('.widget__sgw').nth(2).locator('.widget__sgw__row').nth(1).locator('td').nth(0)).toContainText('SOM_0012_V1');
+    await expect(page.locator('.widget__sgw').nth(2).locator('.widget__sgw__row').nth(1).locator('td').nth(1)).toContainText('94');
 
     // Chart
     const layer3 = 'Pie Chart layer'

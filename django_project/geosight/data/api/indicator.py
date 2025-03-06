@@ -184,10 +184,12 @@ class IndicatorMetadataAPI(APIView):
     def get(self, request, pk, **kwargs):
         """Return Values."""
         indicator = get_object_or_404(Indicator, pk=pk)
+        reference_layer = get_object_or_404(
+            ReferenceLayerView,
+            identifier=self.request.GET.get('reference_layer_uuid', '')
+        )
         return Response(
-            indicator.metadata(
-                self.request.GET.get('reference_layer_uuid', '')
-            )
+            indicator.metadata(reference_layer)
         )
 
 

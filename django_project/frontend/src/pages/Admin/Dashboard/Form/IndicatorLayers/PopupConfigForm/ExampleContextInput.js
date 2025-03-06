@@ -93,7 +93,7 @@ export default function ExampleContextInput(
           featureProperties.concept_uuid, geometryProperties,
           selectedGlobalTime, selectedGlobalTimeConfig,
           indicatorLayers, referenceLayerData,
-          currentIndicatorLayer, {}, conceptUUID.value,
+          currentIndicatorLayer, {},
           function contextOnLoad(context) {
             const indicatorValueByGeometry = {}
             indicatorValueByGeometry[featureProperties.concept_uuid] = []

@@ -71,20 +71,23 @@ export const TimeType = {
 export default function DownloaderData() {
   const filteredGeometries = useSelector(state => state.filteredGeometries)
   const {
-    slug,
     indicators,
     referenceLayer,
     indicatorLayers,
     relatedTables,
-    name,
-    geoField
+    name
   } = useSelector(state => state.dashboard.data)
-  const referenceLayerData = useSelector(state => state.referenceLayerData)
+  const geoField = 'geometry_code'
+  const referenceLayerData = useSelector(state => state.referenceLayerData[referenceLayer.identifier])
   const selectedIndicatorLayer = useSelector(state => state.selectedIndicatorLayer)
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel)
   const indicatorsData = useSelector(state => state.indicatorsData)
   const relatedTableData = useSelector(state => state.relatedTableData)
   const selectedGlobalTime = useSelector(state => state.selectedGlobalTime);
+
+  const countries = referenceLayerData?.data?.countries?.map(
+    country => country.ucode
+  )
 
   const [downloading, setDownloading] = useState(false)
 
@@ -92,7 +95,7 @@ export default function DownloaderData() {
   const indicatorLayersIds = indicatorLayers.map(indicatorLayer => indicatorLayer.id);
   indicatorLayersIds.sort()
 
-  const levels = referenceLayerData[referenceLayer.identifier]?.data?.dataset_levels
+  const levels = referenceLayerData?.data?.dataset_levels
   const [state, setState] = useState({
     levels: [],
     geographyFilter: GeographyFilter.All,
@@ -102,7 +105,7 @@ export default function DownloaderData() {
     time: TimeType.Current,
   })
 
-  const disabled = downloading || !state.levels.length || !state.indicators.length || !indicatorLayers.length
+  const disabled = downloading || !state.levels.length || !state.indicators.length || !indicatorLayers.length || !countries
 
   // Notification
   const notificationRef = useRef(null);
@@ -269,7 +272,7 @@ export default function DownloaderData() {
                       `/api/v1/data-browser/`,
                       {
                         indicator_id: indicator.id,
-                        reference_layer_id__in: referenceLayer.identifier,
+                        country_geom_id__in: countries,
                         page_size: 1000
                       }, {}, (response, error) => {
                         if (!error) {
@@ -306,9 +309,7 @@ export default function DownloaderData() {
                     const params = {
                       geography_code_field_name: relatedTable.geography_code_field_name,
                       geography_code_type: relatedTable.geography_code_type,
-                    }
-                    if (referenceLayer) {
-                      params.reference_layer_uuid = referenceLayer.identifier
+                      country_geom_ids: countries
                     }
                     if (indicatorLayer.config.date_field) {
                       params.date_field = indicatorLayer.config.date_field
@@ -316,8 +317,9 @@ export default function DownloaderData() {
                     if (indicatorLayer.config.date_format) {
                       params.date_format = indicatorLayer.config.date_format
                     }
+                    const url = `/api/v1/related-tables/${relatedTable.id}/geo-data/`
                     await fetchingData(
-                      '/api/related-table/' + relatedTable.id + '/values', params, {}, function (response, error) {
+                      url, params, {}, function (response, error) {
                         if (!error) {
                           const relatedTableData = {}
                           relatedTableData[relatedTable.id] = {
@@ -336,8 +338,9 @@ export default function DownloaderData() {
                             false
                           )
                           if (rows) {
-                            const output = {} // Output by concept uuid
+                            const output = {}
                             rows.map(row => {
+                              row.geom_id = row.geometry_code
                               row.indicator = indicatorLayer
                               if (!output[row.geom_id]) {
                                 output[row.geom_id] = []
@@ -358,7 +361,7 @@ export default function DownloaderData() {
                       `/api/v1/data-browser/`,
                       {
                         indicator_id: indicator.id,
-                        reference_layer_id__in: referenceLayer.identifier,
+                        country_geom_id__in: countries,
                         page_size: 1000
                       }, {}, (response, error) => {
                         if (!error) {

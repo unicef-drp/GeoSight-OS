@@ -28,13 +28,14 @@ import WhereInputModal
 import Match from '../../../../../utils/Match';
 import { fetchingData } from "../../../../../Requests";
 import { dictDeepCopy } from "../../../../../utils/main";
+import { getCountryGeomIds } from "../../../../../utils/Dataset";
 
 import './style.scss';
 
 /**
  * Related table configuration
  */
-function RelatedTableConfiguration({ data, referenceLayerUUID, codeTypes }) {
+function RelatedTableConfiguration({ data, referenceLayerData, codeTypes }) {
   const prevState = useRef();
   const dispatch = useDispatch()
   const [relatedTableData, setRelatedTableData] = useState(null)
@@ -42,35 +43,29 @@ function RelatedTableConfiguration({ data, referenceLayerUUID, codeTypes }) {
 
   // Loading data
   useEffect(() => {
-      if (!open) {
-        return
-      }
-      const params = {}
-      if (referenceLayerUUID) {
-        params['reference_layer_uuid'] = referenceLayerUUID
-      } else {
-        return;
-      }
-      if (data.geography_code_field_name) {
-        params['geography_code_field_name'] = data.geography_code_field_name
-      }
-      if (data.geography_code_type) {
-        params['geography_code_type'] = data.geography_code_type
-      }
-      const url = `/api/v1/related-tables/${data.id}/geo-data/`
-      if (JSON.stringify(params) !== JSON.stringify(prevState.params) || JSON.stringify(url) !== JSON.stringify(prevState.url)) {
-        prevState.params = params
-        prevState.url = url
-        setRelatedTableData(null)
-        fetchingData(
-          url, params, {}, function (response, error) {
-            setRelatedTableData(dictDeepCopy(response))
-          }
-        )
-      }
-    },
-    [data, data.geography_code_field_name, data.geography_code_type, referenceLayerUUID]
-  )
+    if (!open) {
+      return
+    }
+    if (!referenceLayerData?.data?.name || !data.geography_code_field_name || !data.geography_code_type) {
+      return;
+    }
+    const params = {
+      country_geom_ids: getCountryGeomIds(referenceLayerData.data).join(','),
+      geography_code_field_name: data.geography_code_field_name,
+      geography_code_type: data.geography_code_type
+    }
+    const url = `/api/v1/related-tables/${data.id}/geo-data/`
+    if (JSON.stringify(params) !== JSON.stringify(prevState.params) || JSON.stringify(url) !== JSON.stringify(prevState.url)) {
+      prevState.params = params
+      prevState.url = url
+      setRelatedTableData(null)
+      fetchingData(
+        url, params, {}, function (response, error) {
+          setRelatedTableData(dictDeepCopy(response))
+        }
+      )
+    }
+  }, [data, data.geography_code_field_name, data.geography_code_type, referenceLayerData])
 
 
   const relatedFields = relatedTableData ? getRelatedTableFields(data, relatedTableData) : null
@@ -166,7 +161,7 @@ export default function RelatedTableForm() {
     otherActionsFunction={data => {
       return <RelatedTableConfiguration
         data={data}
-        referenceLayerUUID={referenceLayer?.identifier}
+        referenceLayerData={referenceLayerData}
         codeTypes={codeTypes}/>
     }}
   />

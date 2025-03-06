@@ -17,15 +17,13 @@
    WIDGET
    ========================================================================== */
 
-import React, { Fragment, useEffect, useState } from 'react';
-import { useSelector } from "react-redux";
+import React, { Fragment, memo, useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
-import { fetchingData } from "../../Requests";
-import SummaryWidgetView from "./Summary/View";
 import { InfoFillIcon } from '../Icons'
 
 // Widgets
-import TimeSeriesChartWidget from "./TimeSeriesChartWidget"
+import SummaryGroupWidgetView from "./SummaryGroupWidget/View";
+import TimeSeriesChartWidgetView from "./TimeSeriesChartWidget/View"
 
 import './style.scss';
 
@@ -40,156 +38,93 @@ export const DEFINITION = {
   }
 }
 
-/**
- * Base widget that handler widget rendering.
- * @param {int} idx Index of widget
+/** Base widget that handler widget rendering.
  * @param {string} data Data of widget
  */
-export function Widget({ idx, data }) {
-  const { name, description, config, type } = data
-  const {
-    layer_id, layer_used, property, date_filter_type, date_filter_value
-  } = config
-  const { indicators } = useSelector(state => state.dashboard.data);
-  const indicatorLayerData = useSelector(state => state.indicatorsData[layer_id]);
-  const filteredGeometries = useSelector(state => state.filteredGeometries);
-  const [showInfo, setShowInfo] = useState(false);
-  const [layerData, setLayerData] = useState({});
+export const Widget = memo(
+  ({ data }) => {
+    const { name, description, type } = data
+    const [showInfo, setShowInfo] = useState(false);
 
-  // Fetch the data if it is using global filter
-  useEffect(() => {
-    if (date_filter_type === 'Global datetime filter') {
-      setLayerData(indicatorLayerData)
-    }
-  }, [indicatorLayerData])
+    const showInfoHandler = () => {
+      setShowInfo(!showInfo)
+    };
 
-
-  const layer = indicators.find((layer) => {
-    return layer.id === layer_id;
-  })
-
-  // Fetch the data if it is using no filter or custom
-  useEffect(() => {
-    if (layer) {
-      setLayerData({
-        fetching: true,
-        fetched: false,
-        data: {},
-        error: null
-      })
-      let params = {}
-      if (date_filter_type === 'Custom filter') {
-        if (date_filter_value) {
-          let [minDateFilter, maxDateFilter] = date_filter_value.split(';')
-          params = {
-            'time__gte': minDateFilter,
-          }
-          if (maxDateFilter) {
-            params['time__lte'] = maxDateFilter
-          }
-        }
+    /**
+     * Render widget by type
+     * **/
+    function renderWidgetByType() {
+      // render widget by the type
+      switch (type) {
+        case DEFINITION.WidgetType.SUMMARY_WIDGET:
+        case DEFINITION.WidgetType.SUMMARY_GROUP_WIDGET:
+          // We will fix the widget summary calculation
+          return <SummaryGroupWidgetView data={data}/>;
+        case DEFINITION.WidgetType.TIME_SERIES_CHART_WIDGET:
+          return <TimeSeriesChartWidgetView data={data}/>;
+        default:
+          throw new Error("Widget type does not recognized.");
       }
+    }
 
-      fetchingData(
-        layer.url, params, {}, function (response, error) {
-          let newState = {
-            fetching: false,
-            fetched: true,
-            receivedAt: Date.now(),
-            data: null,
-            error: null
-          };
+    // Render widget based on the type and raise error
+    const renderWidget = () => {
+      try {
+        return renderWidgetByType()
+      } catch (error) {
+        return <div className='widget__error'>{'' + error}</div>
+      }
+    }
 
-          if (error) {
-            newState.error = error;
-          } else {
-            newState.data = response;
+    return (
+      <div className='widget'>
+        <InfoFillIcon
+          className="info__button"
+          onClick={showInfoHandler}/>
+        <div className='widget__fill'>
+          {
+            renderWidget()
           }
-          setLayerData(newState);
-        }
-      )
-    }
-  }, [data])
-
-  let indicatorData = null
-  if (layer) {
-    indicatorData = Object.assign({}, layerData)
-    if (indicatorData.fetched && indicatorData.data) {
-      indicatorData.data = indicatorData.data.filter(indicator => {
-        return !filteredGeometries || filteredGeometries?.includes(indicator.concept_uuid)
-      })
-    }
-  }
-
-
-  const showInfoHandler = () => {
-    setShowInfo(!showInfo)
-  };
-
-  /**
-   * Render widget by type
-   * **/
-  function renderWidgetByType() {
-    // get layers by layer used
-    let layers = null
-    switch (layer_used) {
-      case definition.WidgetLayerUsed.INDICATOR:
-        layers = indicators
-        break;
-    }
-
-    // render widget by the type
-    switch (type) {
-      case DEFINITION.WidgetType.SUMMARY_WIDGET:
-      case DEFINITION.WidgetType.SUMMARY_GROUP_WIDGET:
-        return <SummaryWidgetView idx={idx} data={data}/>;
-      case DEFINITION.WidgetType.TIME_SERIES_CHART_WIDGET:
-        return <TimeSeriesChartWidget idx={idx} data={data}/>;
-      default:
-        throw new Error("Widget type does not recognized.");
-    }
-  }
-
-  // Render widget based on the type and raise error
-  const renderWidget = () => {
-    try {
-      return renderWidgetByType()
-    } catch (error) {
-      return <div className='widget__error'>{'' + error}</div>
-    }
-  }
-
-  return (
-    <div className='widget'>
-      <InfoFillIcon className="info__button" onClick={() => {
-        showInfoHandler()
-      }}/>
-      <div className='widget__fill'>
-        {renderWidget()}
-      </div>
-      {
-        showInfo ?
+        </div>
+        {
+          showInfo &&
           <div className='widget__info'>
             <div className='widget__info__title'><b
               className='light'>{name}</b></div>
             <div className='widget__info__content'>{description}</div>
-          </div> : ''
-      }
-    </div>
-  )
-}
+          </div>
+        }
+      </div>
+    )
+  }
+)
 
 /**
  * Widget List rendering
  */
-export default function WidgetList({ widgets }) {
+export default function WidgetList(
+  { widgets, widgetsStructure }
+) {
+  let orders = widgetsStructure?.children ? widgetsStructure?.children : [];
+  if (widgets) {
+    widgets.map(
+      widget => {
+        if (!orders.includes(widget.id)) {
+          orders.push(widget.id)
+        }
+      }
+    )
+  }
   return <Fragment>
     {
       widgets ?
-        widgets.map(
-          (widget, idx) => {
-            return widget.visible_by_default ?
-              <Widget key={idx} data={widget} idx={idx}/> : ''
+        orders.map(
+          (id) => {
+            const widget = widgets.find(widget => widget.id === id)
+            return widget?.visible_by_default && <Widget
+              key={id}
+              data={widget}
+            />
           }
         ) : <div className='dashboard__right_side__loading'>
           <CircularProgress/>

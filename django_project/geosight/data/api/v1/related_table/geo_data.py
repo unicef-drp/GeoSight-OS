@@ -83,12 +83,7 @@ class RelatedTableGeoDataViewSet(viewsets.ReadOnlyModelViewSet):
         """List of related table rows."""
         related_table = self._get_related_table()
         try:
-            try:
-                reference_layer_uuid = request.GET[
-                    'reference_layer_uuid__in'
-                ].split(',')
-            except KeyError:
-                reference_layer_uuid = [request.GET['reference_layer_uuid']]
+            country_geom_ids = request.GET['country_geom_ids'].split(',')
             geo_field = request.GET['geography_code_field_name']
             geo_type = request.GET['geography_code_type']
         except KeyError as e:
@@ -117,7 +112,7 @@ class RelatedTableGeoDataViewSet(viewsets.ReadOnlyModelViewSet):
             offset = (page - 1) * int(page_size)
 
         data, has_next = related_table.data_with_query(
-            reference_layer_uuids=reference_layer_uuid,
+            country_geom_ids=country_geom_ids,
             geo_field=geo_field,
             geo_type=geo_type,
             date_field=request.GET.get('date_field', None),
@@ -151,19 +146,14 @@ class RelatedTableGeoDataViewSet(viewsets.ReadOnlyModelViewSet):
         """Get dates of data."""
         related_table = self._get_related_table()
         try:
-            try:
-                reference_layer_uuid = request.GET[
-                    'reference_layer_uuid__in'
-                ].split(',')
-            except KeyError:
-                reference_layer_uuid = [request.GET['reference_layer_uuid']]
+            country_geom_ids = request.GET['country_geom_ids'].split(',')
             geo_field = request.GET['geography_code_field_name']
             geo_type = request.GET['geography_code_type']
         except KeyError as e:
             return HttpResponseBadRequest(f'{e} is required')
 
         data = related_table.dates_with_query(
-            reference_layer_uuids=reference_layer_uuid,
+            country_geom_ids=country_geom_ids,
             geo_field=geo_field,
             geo_type=geo_type,
             date_field=request.GET.get('date_field', None),
@@ -180,16 +170,9 @@ class RelatedTableGeoDataViewSet(viewsets.ReadOnlyModelViewSet):
             field = request.GET['field']
             geo_field = None
             geo_type = None
-            try:
-                reference_layer_uuid = request.GET[
-                    'reference_layer_uuid__in'
-                ].split(',')
-            except KeyError:
-                reference_layer_uuid = request.GET.get('reference_layer_uuid')
-                if reference_layer_uuid:
-                    reference_layer_uuid = [reference_layer_uuid]
-
-            if reference_layer_uuid:
+            country_geom_ids = request.GET.get('country_geom_ids')
+            if country_geom_ids:
+                country_geom_ids = country_geom_ids.split(',')
                 geo_field = request.GET['geography_code_field_name']
                 geo_type = request.GET['geography_code_type']
         except KeyError as e:
@@ -197,8 +180,13 @@ class RelatedTableGeoDataViewSet(viewsets.ReadOnlyModelViewSet):
 
         data = related_table.data_field(
             field=field,
-            reference_layer_uuids=reference_layer_uuid,
+            country_geom_ids=country_geom_ids,
             geo_type=geo_type,
             geo_field=geo_field
         )
         return Response(data)
+
+    @swagger_auto_schema(auto_schema=None)
+    def retrieve(self, request, pk=None):
+        """Return detailed of code list."""
+        return super().retrieve(request, pk=pk)
