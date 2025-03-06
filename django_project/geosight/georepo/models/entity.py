@@ -378,6 +378,16 @@ class Entity(models.Model):
             with connection.cursor() as cursor:
                 cursor.execute(query)
 
+    def create_reference_layer_view_entity(self):
+        """Create link between reference and entity."""
+        from geosight.georepo.models.reference_layer_entity import (
+            ReferenceLayerViewEntity
+        )
+        ReferenceLayerViewEntity.objects.get_or_create(
+            reference_layer=self.reference_layer,
+            entity=self,
+        )
+
 
 class EntityCode(models.Model):
     """Additional data for Indicator value data."""
@@ -423,14 +433,8 @@ def update_indicator_value_data(sender, instance, **kwargs):
 @receiver(post_save, sender=Entity)
 def assign_entity_to_view(sender, instance: Entity, created, **kwargs):
     """Assign entity to view relationship."""
-    from geosight.georepo.models.reference_layer_entity import (
-        ReferenceLayerViewEntity
-    )
     if instance.reference_layer:
-        ReferenceLayerViewEntity.objects.get_or_create(
-            reference_layer=instance.reference_layer,
-            entity=instance,
-        )
+        instance.create_reference_layer_view_entity()
         instance.reference_layer.assign_country(instance)
 
     # Get the country

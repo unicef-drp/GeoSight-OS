@@ -24,6 +24,7 @@ from django.utils import timezone
 from fiona.model import to_dict
 
 from geosight.georepo.models.entity import Entity
+from geosight.georepo.term import admin_level_country
 from geosight.reference_dataset.models.reference_dataset_importer import (
     ReferenceDatasetImporter, ReferenceDatasetImporterLevel, LogStatus
 )
@@ -149,7 +150,21 @@ class ReferenceDatasetImporterTask:
                 progress_changed((idx + 1) / count)
             if len(data) > 0:
                 Entity.objects.bulk_create(data)
+
             delete_tmp_shapefile(features.path)
+
+            # Create reference view link
+            for entity in Entity.objects.filter(
+                    reference_layer=reference_layer,
+                    admin_level=level
+            ):
+                entity.create_reference_layer_view_entity()
+
+            # Assign reference layer countries
+            if level == admin_level_country:
+                reference_layer.assign_countries()
+            else:
+                Entity.assign_country()
 
     def _error(self, message: str):
         """Raise error and update log."""
@@ -172,7 +187,9 @@ class ReferenceDatasetImporterTask:
             self.importer.status = LogStatus.RUNNING
             self.importer.save()
             reference_layer = self.importer.reference_layer
-            reference_layer.entities_set.all().delete()
+
+            # Remove old entities
+            Entity.objects.filter(reference_layer=reference_layer).delete()
 
             total = self.importer.referencedatasetimporterlevel_set.count()
             min_progress = 0
