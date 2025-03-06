@@ -59,18 +59,21 @@ class FilteredAPI(object):
             if '_in' in param:
                 value = value.split(',')
 
-            # Handle reference layer
-            if 'reference_layer_id__in' in param:
-                if 'None' not in value:
-                    value = ReferenceLayerView.objects.filter(
+            # TODO:
+            #  This will be fixed
+            if param == 'reference_layer_uuid':
+                value = [value]
+            if param in [
+                'reference_layer_id__in', 'dataset_uuid__in',
+                'reference_layer_uuid'
+            ]:
+                countries = []
+                for view in ReferenceLayerView.objects.filter(
                         identifier__in=value
-                    ).values_list('id', flat=True)
-
-            if 'dataset_uuid__in' in param:
-                value = ReferenceLayerView.objects.filter(
-                    identifier__in=value
-                ).values_list('id', flat=True)
-                param = 'reference_layer_id__in'
+                ):
+                    countries += view.countries.values_list('id', flat=True)
+                value = countries
+                param = 'country_id__in'
 
             # Handle project filters
             if 'project_' in field:

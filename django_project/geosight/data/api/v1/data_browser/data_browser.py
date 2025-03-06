@@ -34,8 +34,10 @@ from geosight.data.serializer.indicator import IndicatorValueSerializer
 from .base import BaseIndicatorValueApi
 
 
-class BaseDataBrowserApiList(BaseIndicatorValueApi,
-                             IndicatorValueApiUtilities):
+class BaseDataBrowserApiList(
+    BaseIndicatorValueApi,
+    IndicatorValueApiUtilities
+):
     """Return Data List API List."""
 
     serializer_class = IndicatorValueSerializer
