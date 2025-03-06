@@ -28211,8 +28211,11 @@
         "id": "0cf47b4d-3410-4410-b05e-4e825832350f",
         "group": "",
         "children": [
+          34,
+          35,
           33,
-          34
+          36,
+          37
         ]
       },
       "level_config": {
@@ -30008,7 +30011,7 @@
     "model": "geosight_data.dashboardwidget",
     "pk": 33,
     "fields": {
-      "name": "Time Chart",
+      "name": "Time Chart by Entity",
       "description": "",
       "dashboard": 53,
       "order": 1,
@@ -30069,6 +30072,114 @@
         "layer_used": "Indicator",
         "date_filter_type": "No filter",
         "date_filter_value": "2024-12-12T00:00:00.000Z;"
+      }
+    }
+  },
+  {
+    "model": "geosight_data.dashboardwidget",
+    "pk": 35,
+    "fields": {
+      "name": "Total of Dynamic Layer",
+      "description": "",
+      "dashboard": 53,
+      "order": 3,
+      "visible_by_default": true,
+      "group": null,
+      "relation_group": null,
+      "type": "SummaryWidget",
+      "config": {
+        "unit": "",
+        "layer_id": 408,
+        "property": "value",
+        "operation": "Sum",
+        "layer_used": "Indicator Layer",
+        "date_filter_type": "No filter",
+        "date_filter_value": "2025-03-06T05:26:41.949Z;"
+      }
+    }
+  },
+  {
+    "model": "geosight_data.dashboardwidget",
+    "pk": 36,
+    "fields": {
+      "name": "Time Chart by Indicator",
+      "description": "",
+      "dashboard": 53,
+      "order": 4,
+      "visible_by_default": true,
+      "group": null,
+      "relation_group": null,
+      "type": "TimeSeriesChartWidget",
+      "config": {
+        "seriesType": "Indicators",
+        "dateTimeType": "Sync with dashboard",
+        "dateTimeConfig": {
+          "interval": "Daily",
+          "maxDateFilter": null,
+          "minDateFilter": "2025-03-06T05:27:12.368Z"
+        },
+        "indicatorsList": [
+          {
+            "id": 318,
+            "name": "Sample Indicator A",
+            "color": "#ff0000"
+          },
+          {
+            "id": 319,
+            "name": "Sample Indicator B",
+            "color": "#0dadf2"
+          },
+          {
+            "id": 362,
+            "name": "Sample Indicator C",
+            "color": "#95ff14"
+          }
+        ],
+        "indicatorsType": "Predefined list",
+        "geographicalUnitList": [
+          {
+            "id": "7977bca3-3645-4072-bfe9-ad342c2674e8",
+            "name": "Awdal (SOM_0001_V1)",
+            "color": "#000000"
+          },
+          {
+            "id": "2943bd42-b7c8-45b7-9967-250ba0a72eec",
+            "name": "Bakool (SOM_0002_V1)",
+            "color": "#000000"
+          },
+          {
+            "id": "2e72b6c7-56b3-410b-958c-a400ce692e52",
+            "name": "Banadir (SOM_0003_V1)",
+            "color": "#000000"
+          }
+        ],
+        "geographicalUnitType": "Predefined list",
+        "indicatorsPaletteColor": 0,
+        "geographicalUnitPaletteColor": 0
+      }
+    }
+  },
+  {
+    "model": "geosight_data.dashboardwidget",
+    "pk": 37,
+    "fields": {
+      "name": "Value by Geom Code",
+      "description": "",
+      "dashboard": 53,
+      "order": 5,
+      "visible_by_default": true,
+      "group": null,
+      "relation_group": null,
+      "type": "SummaryGroupWidget",
+      "config": {
+        "unit": "",
+        "layer_id": 318,
+        "property": "value",
+        "operation": "Sum",
+        "layer_used": "Indicator",
+        "property_2": "geometry_code",
+        "date_filter_type": "No filter",
+        "date_filter_value": "2025-03-06T05:28:05.164Z;"
       }
     }
   },
