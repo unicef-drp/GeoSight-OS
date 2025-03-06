@@ -193,7 +193,8 @@ class DataBrowserApiTest(BaseDataBrowserTest.TestCase):
         user = self.admin
 
         response = self.assertRequestGetView(
-            url + '?fields=date, value, value_str', 200, user=user
+            url + '?fields=date, value, value_str&sort=-date,id',
+            200, user=user
         )
         self.assertEqual(
             response.json(),
@@ -237,7 +238,8 @@ class DataBrowserApiTest(BaseDataBrowserTest.TestCase):
             ]
         )
         response = self.assertRequestGetView(
-            f'{url}?fields=date, value, value_str&admin_level__in=1',
+            f'{url}?fields=date, value, value_str&'
+            'admin_level__in=1&sort=-date,id',
             200,
             user=user
         )

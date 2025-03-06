@@ -96,7 +96,10 @@ class IndicatorValueApiUtilities:
                 *[field for field in order_by]
             ).distinct(*distinct).values(*distinct + fields)
         else:
-            query = query.order_by('-date').values(*fields)
+            sort = ['-date']
+            if request.GET.get('sort'):
+                sort = request.GET.get('sort').split(',')
+            query = query.order_by(*sort).values(*fields)
         return Response(query)
 
     @swagger_auto_schema(auto_schema=None)

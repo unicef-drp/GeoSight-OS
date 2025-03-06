@@ -155,9 +155,11 @@ class DashboardIndicatorLayer(
             except DashboardIndicatorLayerConfig.DoesNotExist:
                 date_format = None
             data, has_next = dil_related_table.related_table.data_with_query(
-                reference_layer_uuids=[
-                    self.dashboard.reference_layer.identifier
-                ],
+                country_geom_ids=list(
+                    self.dashboard.reference_layer.countries.values_list(
+                        'geom_id', flat=True
+                    )
+                ),
                 geo_field=dashboard_related_table.geography_code_field_name,
                 geo_type=dashboard_related_table.geography_code_type,
                 date_field=date_field,
