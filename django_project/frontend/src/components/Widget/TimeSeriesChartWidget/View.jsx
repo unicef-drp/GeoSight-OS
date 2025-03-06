@@ -59,10 +59,9 @@ export function Selection(
 
 /**
  * General widget to show time series widget.
- * @param {int} idx Index of widget
  * @param {dict} data Widget Data
  */
-export default function Index({ idx, data }) {
+export default function TimeSeriesChartWidget({ data }) {
   const {
     slug,
     default_time_mode
@@ -236,7 +235,7 @@ export default function Index({ idx, data }) {
         if (!geomInList) {
           newGeographicUnits.push({
             id: geom.concept_uuid,
-            name: geom.name,
+            name: `${geom.name} (${geom.ucode})`,
             color: '' + getRandomColor(),
             reference_layer_uuid: referenceLayer.identifier
           })

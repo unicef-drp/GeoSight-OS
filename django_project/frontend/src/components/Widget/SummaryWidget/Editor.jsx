@@ -19,7 +19,7 @@
 
 import React, { Fragment } from 'react';
 
-import EditSection from "../Editor"
+import EditSection from "../SummaryEditor"
 
 /**
  * Edit section for widget.

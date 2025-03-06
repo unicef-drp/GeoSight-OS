@@ -96,7 +96,7 @@ class IndicatorValueApiUtilities:
                 *[field for field in order_by]
             ).distinct(*distinct).values(*distinct + fields)
         else:
-            query = query.order_by('-date', 'id').values(*fields)
+            query = query.order_by('-date').values(*fields)
         return Response(query)
 
     @swagger_auto_schema(auto_schema=None)

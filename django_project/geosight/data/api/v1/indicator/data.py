@@ -40,7 +40,7 @@ class IndicatorDataViewSet(
     serializer_class = IndicatorValueSerializer
     non_filtered_keys = [
         'page', 'page_size', 'fields', 'extra_fields', 'permission',
-        'attributes', 'version'
+        'attributes', 'version', 'frequency'
     ]
 
     @property

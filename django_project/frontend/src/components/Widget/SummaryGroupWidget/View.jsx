@@ -20,19 +20,19 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from "react-redux";
 import { cleanLayerData } from "../../../utils/indicators"
-import { fetchingData } from "../../../Requests";
 
 import { DEFINITION } from "../index"
 
 // Widgets
-import SummaryWidget from "./SummaryWidget"
-import SummaryGroupWidget from "./SummaryGroupWidget"
+import SummaryWidget from "../SummaryWidget"
+import SummaryGroupWidget from "../SummaryGroupWidget"
 import {
   dynamicLayerIndicatorList,
   fetchDynamicLayerData,
   isIndicatorLayerLikeIndicator
 } from "../../../utils/indicatorLayer";
 import { Session } from "../../../utils/Sessions";
+import { Indicator } from "../../../class/Indicator";
 import { UpdateStyleData } from "../../../utils/indicatorData";
 
 /**
@@ -40,7 +40,7 @@ import { UpdateStyleData } from "../../../utils/indicatorData";
  * @param {int} idx Index of widget
  * @param {dict} data Data of widget
  */
-export default function SummaryWidgetView({ idx, data }) {
+export default function SummaryGroupWidgetView({ data }) {
   const { config, type } = data
   const {
     layer_id, layer_used, property, date_filter_value
@@ -58,8 +58,21 @@ export default function SummaryWidgetView({ idx, data }) {
   const indicatorLayerData = useSelector(state => state.indicatorsData[layer_id]);
   const filteredGeometries = useSelector(state => state.filteredGeometries);
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel);
+  const referenceLayerData = useSelector(state => state.referenceLayerData[referenceLayer?.identifier]);
+  const [countries, setCountries] = useState({});
+
   const [layerData, setLayerData] = useState({});
   const date_filter_type = use_only_last_known_value ? 'No filter' : config.date_filter_type
+
+  // Fetch the data if it is using global filter
+  useEffect(() => {
+    const newCountries = referenceLayerData?.data?.countries?.map(
+      country => country.ucode
+    )
+    if (newCountries !== countries) {
+      setCountries(newCountries)
+    }
+  }, [referenceLayerData?.data])
 
   // Fetch the data if it is using global filter
   useEffect(() => {
@@ -68,51 +81,34 @@ export default function SummaryWidgetView({ idx, data }) {
     }
   }, [indicatorLayerData])
 
-  const fetchIndicatorData = async (indicator, params, session, config) => {
-    if (indicator) {
-      await fetchingData(
-        indicator.url, params, {}, function (response, error) {
-          let newState = {
-            fetching: false,
-            fetched: true,
-            receivedAt: Date.now(),
-            data: null,
-            error: null
-          };
-
-          if (error) {
-            newState.error = error;
-          } else {
-            newState.data = UpdateStyleData(response, config.override_style ? config : indicator);
-          }
-          if (!session.isValid) {
-            return
-          }
-          setLayerData(newState);
-        }
-      )
-    } else {
-      if (!session.isValid) {
-        return
-      }
-      setLayerData({
-        fetching: false,
-        fetched: true,
-        receivedAt: Date.now(),
-        data: null,
-        error: 'Indicator does not found, please reconfig the widget.'
-      });
+  const fetchIndicatorData = async (indicator, params, config) => {
+    if (!indicator) {
+      throw new Error('Indicator does not found, please reconfig the widget.')
     }
+    const response = await (new Indicator(indicator)).valueLatest(params, null)
+    let newState = {
+      fetching: false,
+      fetched: true,
+      receivedAt: Date.now(),
+      data: null,
+      error: null
+    };
+
+    newState.data = UpdateStyleData(response, config.override_style ? config : indicator);
+    return newState
   }
 
   // Fetch the data if it is using no filter or custom
   useEffect(() => {
     (
       async () => {
-        if (!referenceLayer?.identifier) {
+        if (!countries || [null, undefined].includes(selectedAdminLevel?.level)) {
           return
         }
-        let params = {}
+        let params = {
+          'admin_level': selectedAdminLevel?.level,
+          'country_geom_id__in': countries
+        }
         if (date_filter_type === 'Custom filter') {
           if (date_filter_value) {
             let [minDateFilter, maxDateFilter] = date_filter_value.split(';')
@@ -124,13 +120,7 @@ export default function SummaryWidgetView({ idx, data }) {
             }
           }
         }
-        params['reference_layer_uuid'] = referenceLayer?.identifier
-        if (selectedAdminLevel?.level !== undefined) {
-          params['admin_level'] = selectedAdminLevel?.level
-        } else {
-          return
-        }
-        const session = new Session('Widget request ' + idx)
+        const session = new Session('Widget request ' + data.name)
         setLayerData({
           fetching: true,
           fetched: false,
@@ -143,7 +133,11 @@ export default function SummaryWidgetView({ idx, data }) {
             const indicator = indicators.find((layer) => {
               return layer.id === layer_id;
             })
-            await fetchIndicatorData(indicator, params, session, indicator)
+            const output = await fetchIndicatorData(indicator, params, session, indicator)
+            if (!session.isValid) {
+              return
+            }
+            setLayerData(output)
             break;
           // This is for indicator layer
           case definition.WidgetLayerUsed.INDICATOR_LAYER:
@@ -154,31 +148,18 @@ export default function SummaryWidgetView({ idx, data }) {
               const indicator = indicators.find((indicator) => {
                 return indicator.id === indicatorLayer.indicators[0].id;
               })
-              await fetchIndicatorData(indicator, params, session, indicatorLayer)
+              const output = await fetchIndicatorData(indicator, params, session, indicatorLayer)
+              if (!session.isValid) {
+                return
+              }
+              setLayerData(output)
               return;
             }
             const dynamicLayerIndicators = dynamicLayerIndicatorList(indicatorLayer, indicators)
             const indicatorsData = {}
             for (let x = 0; x < dynamicLayerIndicators.length; x++) {
               const indicator = dynamicLayerIndicators[x]
-              await fetchingData(
-                indicator.url, params, {}, function (response, error) {
-                  let newState = {
-                    fetching: false,
-                    fetched: true,
-                    receivedAt: Date.now(),
-                    data: null,
-                    error: null
-                  };
-
-                  if (error) {
-                    newState.error = error;
-                  } else {
-                    newState.data = response;
-                  }
-                  indicatorsData[indicator.id] = newState
-                }
-              )
+              indicatorsData[indicator.id] = await fetchIndicatorData(indicator, params, session, indicatorLayer)
             }
             fetchDynamicLayerData(
               indicatorLayer, indicators, indicatorsData, geoField,
@@ -210,7 +191,7 @@ export default function SummaryWidgetView({ idx, data }) {
         }
       }
     )()
-  }, [data, selectedAdminLevel, indicatorLayers, date_filter_type, referenceLayer])
+  }, [data, selectedAdminLevel, indicatorLayers, date_filter_type, countries])
 
   let indicatorData = null
   if (layerData) {
@@ -243,14 +224,13 @@ export default function SummaryWidgetView({ idx, data }) {
     // render widget by the type
     switch (type) {
       case DEFINITION.WidgetType.SUMMARY_WIDGET:
+        const _data = cleanLayerData(layer_id, layer_used, indicatorData, property);
         return <SummaryWidget
-          idx={idx}
-          data={cleanLayerData(layer_id, layer_used, indicatorData, property)}
+          data={_data}
           widgetData={data}
         />;
       case DEFINITION.WidgetType.SUMMARY_GROUP_WIDGET:
         return <SummaryGroupWidget
-          idx={idx}
           data={cleanLayerData(layer_id, layer_used, indicatorData, property)}
           widgetData={data}
         />;

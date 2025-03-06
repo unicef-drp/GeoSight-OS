@@ -14,7 +14,7 @@
  */
 
 import { Indicator as IndicatorType } from "../types/Indicator";
-import { fetchJSON, fetchPaginationInParallel } from "../Requests";
+import { DjangoRequests, fetchPaginationInParallel } from "../Requests";
 
 export class Indicator {
   id: number;
@@ -39,20 +39,16 @@ export class Indicator {
   }
 
   async statistic(params: any) {
-    return await fetchJSON(
-      `/api/v1/indicators/${this.id}/data/statistic/`, params
-    )
+    const response = await DjangoRequests.get(
+      this.url + "statistic/", {}, params
+    );
+    return response.data;
   }
 
-  async frequencyValue(params: any, onProgress?: () => void | null) {
-    return await fetchJSON(
-      `/api/v1/indicators/${this.id}/data/values/`, params
-    )
-  }
-
-  async values(params: any, onProgress?: () => void | null) {
-    return await fetchPaginationInParallel(
-      this.url, params, onProgress
-    )
+  async values(params: any): Promise<any> {
+    const response = await DjangoRequests.get(
+      this.url + "values/", {}, params
+    );
+    return response.data;
   }
 }

@@ -26,7 +26,10 @@ import { LEFT, RIGHT } from '../../../../components/ToggleButton'
 import './style.scss';
 
 export default function RightPanel({ rightExpanded }) {
-  const { widgets } = useSelector(state => state.dashboard.data);
+  const {
+    widgets,
+    widgetsStructure
+  } = useSelector(state => state.dashboard.data);
   const [state, setState] = useState(rightExpanded ? RIGHT : LEFT)
 
   useEffect(() => {
@@ -41,7 +44,10 @@ export default function RightPanel({ rightExpanded }) {
           <section className={className}>
             <div className='dashboard__content-wrapper'>
               <div className='dashboard__content'>
-                <WidgetList widgets={widgets}/>
+                <WidgetList
+                  widgets={widgets}
+                  widgetsStructure={widgetsStructure}
+                />
               </div>
             </div>
           </section> : null

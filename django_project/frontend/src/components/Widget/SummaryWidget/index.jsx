@@ -20,8 +20,8 @@
 import React, { Fragment } from 'react';
 import CircularProgress from "@mui/material/CircularProgress";
 
-import { DEFINITION } from "../../index"
-import { numberWithCommas } from '../../../../utils/main'
+import { DEFINITION } from "../index"
+import { numberWithCommas } from '../../../utils/main'
 
 /**
  * General widget to show summary of data.
@@ -30,7 +30,7 @@ import { numberWithCommas } from '../../../../utils/main'
  * @param {object} widgetData Widget Data
  */
 export default function SummaryWidget(
-  { idx, data, widgetData }
+  { data, widgetData }
 ) {
   const { name, config } = widgetData
   const { unit, operation } = config

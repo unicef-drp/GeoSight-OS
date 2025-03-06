@@ -21,8 +21,8 @@ import React, { Fragment } from 'react';
 import { useSelector } from "react-redux";
 import CircularProgress from "@mui/material/CircularProgress";
 
-import { DEFINITION } from "../../index"
-import { numberWithCommas } from '../../../../utils/main'
+import { DEFINITION } from "../index"
+import { numberWithCommas } from '../../../utils/main'
 
 /**
  * General widget to show summary of data.
@@ -31,7 +31,7 @@ import { numberWithCommas } from '../../../../utils/main'
  * @param {object} widgetData Widget Data
  */
 export default function Index(
-  { idx, data, widgetData }
+  { data, widgetData }
 ) {
   const { name, config } = widgetData
   const { operation, property_2 } = config

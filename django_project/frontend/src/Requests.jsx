@@ -312,7 +312,10 @@ export const CacheRequests = {
  * Request using cache
  */
 export const DjangoRequests = {
-  get: (url, options = {}) => {
+  get: (url, options = {}, params = null) => {
+    if (params) {
+      url = constructUrl(url, params)
+    }
     return axios.get(url, {
       ...options,
       headers: {
