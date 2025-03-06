@@ -110,6 +110,7 @@ class ReferenceLayerViewAdmin(admin.ModelAdmin):
         action_fetch_datasets, action_create_data_access, invalidate_cache,
         assign_countries
     ]
+    filter_horizontal = ['countries']
 
     def in_georepo(self, obj: ReferenceLayerView):
         """Is reference layer in georepo."""

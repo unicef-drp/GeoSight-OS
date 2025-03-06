@@ -12,6 +12,8 @@ test.describe('Reference dataset selector admin', () => {
     await page.locator('#id_identifier').fill(`Dataset A${index}`);
     await page.locator('#id_name').fill(`Dataset A${index}`);
     await page.locator('#id_in_georepo').click();
+    await page.locator('#id_countries_from').selectOption({ value: '1' });
+    await page.getByRole('link', { name: 'Choose', exact: true }).click();
     await page.evaluate(() => {
       window.scrollTo(0, document.body.scrollHeight);
     });

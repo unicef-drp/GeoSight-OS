@@ -65,7 +65,7 @@ class BaseDatasetApiList:
             ).annotate(
                 indicator_name=F('indicator_name')
             ).annotate(
-                indicator_name=F('indicator_shortcode')
+                indicator_shortcode=F('indicator_shortcode')
             ).annotate(
                 country_name=F('country_geom_id')
             ).annotate(
@@ -92,7 +92,7 @@ class BaseDatasetApiList:
             ).annotate(
                 indicator_name=F('indicator_name')
             ).annotate(
-                indicator_name=F('indicator_shortcode')
+                indicator_shortcode=F('indicator_shortcode')
             ).annotate(
                 country_name=F('country_geom_id')
             ).annotate(

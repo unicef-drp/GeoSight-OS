@@ -256,7 +256,7 @@ export default function TimeSeriesChartWidget({ data }) {
   return (
     <Fragment>
       <div className='widget__sw widget__sgw'>
-        <div className='widget__gw__title'>{name}</div>
+        <div className='widget__title'>{name}</div>
         <div className='widget__content widget__time_series'>
           {
             requestProgress.total !== requestProgress.progress ?

@@ -122,7 +122,7 @@ export default function Index(
   return (
     <Fragment>
       <div className='widget__sw widget__sgw'>
-        <div className='widget__gw__title'>{name}</div>
+        <div className='widget__title'>{name}</div>
         <div className='widget__content'>{getValue()}</div>
       </div>
     </Fragment>
