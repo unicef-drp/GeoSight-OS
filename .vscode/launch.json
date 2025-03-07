@@ -15,10 +15,11 @@
             "justMyCode": true,
             "env": {
                 "DJANGO_SETTINGS_MODULE": "core.settings.dev"
-            }
+            },
+            "preLaunchTask": "React: Webpack-dev-server"
         },
         {
-            "name": "React: Run webpack-dev-server",
+            "name": "React: Webpack-dev-server",
             "request": "launch",
             "type": "node-terminal",
             "cwd": "${workspaceFolder}/django_project/frontend",
@@ -54,8 +55,9 @@
             "name": "Django + React",
             "configurations": [
                 "Django: Run server",
-                "React: Run webpack-dev-server"
-            ]
+                // "React: Run webpack-dev-server"
+            ],
+            // "preLaunchTask": "Start Frontend (npm run dev)"
         }
     ]
 }
