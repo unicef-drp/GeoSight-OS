@@ -55,9 +55,7 @@
             "name": "Django + React",
             "configurations": [
                 "Django: Run server",
-                // "React: Run webpack-dev-server"
             ],
-            // "preLaunchTask": "Start Frontend (npm run dev)"
         }
     ]
 }
