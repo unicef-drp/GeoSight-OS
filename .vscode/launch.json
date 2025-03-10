@@ -5,27 +5,25 @@
             "name": "Django: Run server",
             "type": "python",
             "request": "launch",
-            "program": "/home/web/project/django_project/manage.py",
-            "cwd": "/home/web/project/django_project",
+            "program": "${workspaceFolder}/django_project/manage.py",
             "args": [
                 "runserver",
-                "2000"
+                "0.0.0.0:8080"
             ],
-            "envFile": "/home/web/project/deployment/.env",
+            "envFile": "${workspaceFolder}/deployment/.env",
             "django": true,
             "justMyCode": true,
             "env": {
                 "DJANGO_SETTINGS_MODULE": "core.settings.dev"
-            }
+            },
+            "preLaunchTask": "React: Webpack-dev-server"
         },
         {
-            "name": "React: Run webpack-dev-server",
-            "type": "node",
+            "name": "React: Webpack-dev-server",
             "request": "launch",
-            "runtimeExecutable": "npm",
-            "preLaunchTask": "React: Webpack-dev-server",
-            "cwd": "/home/web/project/django_project",
-            "console": "integratedTerminal"
+            "type": "node-terminal",
+            "cwd": "${workspaceFolder}/django_project/frontend",
+            "command": "npm run dev",
         },
         {
             "name": "Playwright runner: Authentication",
@@ -57,8 +55,7 @@
             "name": "Django + React",
             "configurations": [
                 "Django: Run server",
-                "React: Run webpack-dev-server"
-            ]
+            ],
         }
     ]
 }
