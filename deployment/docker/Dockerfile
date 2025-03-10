@@ -24,6 +24,9 @@ MAINTAINER Irwan Fathurrahman<meomancer@gmail.com>
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update -y
 RUN apt-get install -y python3-pip python3-dev gdal-bin gettext libcurl4-openssl-dev libssl-dev yui-compressor git vim
+RUN apt-get update -y
+RUN apt-get install -y libgdal-dev python3-gdal
+RUN export GDAL_VERSION=$(gdal-config --version)
 
 ENV PATH /usr/local/bin:$PATH
 
