@@ -27,6 +27,7 @@ import { fetchingData } from "../../../../Requests";
 import {
   referenceLayerIndicatorLayer
 } from "../../../../utils/indicatorLayer";
+import { getCountryGeomIds } from "../../../../utils/Dataset";
 
 /**
  * Related table layer handler
@@ -38,10 +39,15 @@ export default function RelatedTableLayer({ relatedTableLayer }) {
     referenceLayer: referenceLayerDashboard,
     indicatorLayers
   } = useSelector(state => state.dashboard.data)
-  const referenceLayer = referenceLayerIndicatorLayer(referenceLayerDashboard, relatedTableLayer)
   const relatedTableDataState = useSelector(state => state.relatedTableData)
+
+  // Reference layer data
+  const referenceLayer = referenceLayerIndicatorLayer(referenceLayerDashboard, relatedTableLayer)
+  const referenceLayerData = useSelector(state => state.referenceLayerData[referenceLayer?.identifier]);
+
   const geometries = useSelector(state => state.datasetGeometries[referenceLayer.identifier]);
 
+  // Related table attributes
   const relatedTable = relatedTableLayer.related_tables[0]
   const relatedTableData = relatedTableDataState[relatedTableLayer.related_tables[0].id]?.data
   const relatedTableConfig = relatedTables.find(rt => rt.id === relatedTable.id)
@@ -68,6 +74,13 @@ export default function RelatedTableLayer({ relatedTableLayer }) {
    * Update related table dates
    */
   useEffect(() => {
+    // Skip if no data
+    // To get the countries
+    if (!referenceLayerData?.data?.identifier) {
+      return;
+    }
+    const countryGeomIds = getCountryGeomIds(referenceLayerData.data);
+
     indicatorLayers.map(indicatorLayer => {
       const relatedTableLayer = indicatorLayer.related_tables[0]
       if (!relatedTableLayer) {
@@ -81,9 +94,7 @@ export default function RelatedTableLayer({ relatedTableLayer }) {
       const params = {
         geography_code_field_name: relatedTable.geography_code_field_name,
         geography_code_type: relatedTable.geography_code_type,
-      }
-      if (referenceLayer) {
-        params.reference_layer_uuid = referenceLayer.identifier
+        country_geom_ids: countryGeomIds
       }
       if (indicatorLayer.config.date_field) {
         params.date_field = indicatorLayer.config.date_field
@@ -108,7 +119,7 @@ export default function RelatedTableLayer({ relatedTableLayer }) {
         }
       )
     })
-  }, [relatedTables, indicatorLayers, referenceLayer])
+  }, [relatedTables, referenceLayerData, indicatorLayers])
   return null
 }
 

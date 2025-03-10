@@ -15,8 +15,8 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib import admin
-from django.db import connection
 from django.utils import timezone
+from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
 from geosight.data.admin.base import BaseAdminResourceMixin
@@ -43,23 +43,38 @@ class NullEntityFilter(admin.SimpleListFilter):
     def queryset(self, request, queryset):
         """Return filtered queryset."""
         if self.value() == 'yes':
-            return queryset.filter(entity__isnull=True)
+            return queryset.filter(entity_id__isnull=True)
         if self.value() == 'no':
-            return queryset.filter(entity__isnull=False)
+            return queryset.filter(entity_id__isnull=False)
         return queryset
 
 
-@admin.action(description='Assign entity')
-def assign_entity(modeladmin, request, queryset):
-    """Assign entity."""
-    sql = """
-        UPDATE geosight_data_indicatorvalue AS value
-        SET entity_id = entity.id
-        FROM geosight_georepo_entity AS entity
-        WHERE value.geom_id = entity.geom_id AND value.entity_id IS NULL;
-    """
-    with connection.cursor() as cursor:
-        cursor.execute(sql)
+class NullCountryFilter(admin.SimpleListFilter):
+    """Null country filter."""
+
+    title = _('Country Null')
+    parameter_name = 'is_country_null'
+
+    def lookups(self, request, model_admin):
+        """Lookup function for country filter."""
+        return [
+            ('yes', _('Is NULL')),
+            ('no', _('Is NOT NULL')),
+        ]
+
+    def queryset(self, request, queryset):
+        """Return filtered queryset."""
+        if self.value() == 'yes':
+            return queryset.filter(country_id__isnull=True)
+        if self.value() == 'no':
+            return queryset.filter(country_id__isnull=False)
+        return queryset
+
+
+@admin.action(description='Assign flat table')
+def assign_flat_table(modeladmin, request, queryset):
+    """Assign flat table."""
+    IndicatorValue.assign_flat_table()
 
 
 class IndicatorExtraValueRuleInline(admin.TabularInline):
@@ -72,11 +87,32 @@ class IndicatorExtraValueRuleInline(admin.TabularInline):
 class IndicatorValueAdmin(admin.ModelAdmin):
     """IndicatorValue admin."""
 
-    list_display = ('indicator', 'date', 'value', 'geom_id', 'entity')
-    list_filter = (NullEntityFilter, 'date', 'indicator')
+    list_display = (
+        'indicator', 'date', 'value', 'geom_id',
+        'entity_geom_id', 'country_geom_id'
+    )
+    list_filter = (NullEntityFilter, NullCountryFilter, 'date', 'indicator')
     search_fields = ('indicator__name', 'geom_id')
     inlines = (IndicatorExtraValueRuleInline,)
-    actions = (assign_entity,)
+    actions = (assign_flat_table,)
+
+    def entity_geom_id(self, obj: IndicatorValue):
+        """Return entity."""
+        if not obj.entity_id:
+            return '-'
+        url = f"/django-admin/geosight_georepo/entity/{obj.entity_id}/change/"
+        return format_html(
+            f'<a href="{url}" target="_blank">{obj.entity.geom_id}</a>'
+        )
+
+    def country_geom_id(self, obj: IndicatorValue):
+        """Return country."""
+        if not obj.country_id:
+            return '-'
+        url = f"/django-admin/geosight_georepo/entity/{obj.country_id}/change/"
+        return format_html(
+            f'<a href="{url}" target="_blank">{obj.country.geom_id}</a>'
+        )
 
 
 class IndicatorRuleInline(admin.TabularInline):

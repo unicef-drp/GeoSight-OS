@@ -35,7 +35,7 @@ from geosight.data.models.indicator.indicator_value import (
     IndicatorValueWithGeo
 )
 from geosight.data.serializer.indicator import (
-    IndicatorValueBasicSerializer, IndicatorValueDetailSerializer
+    IndicatorValueDetailSerializer
 
 )
 from geosight.data.serializer.indicator_value import IndicatorValueSerializer
@@ -61,8 +61,16 @@ class IndicatorValuesByGeometry(APIView):
         """
         indicator = get_object_or_404(Indicator, pk=pk)
         values = indicator.indicatorvalue_set.filter(
-            geom_id=geometry_code).order_by('-date')
-        return Response(IndicatorValueBasicSerializer(values, many=True).data)
+            geom_id=geometry_code
+        ).order_by('-date')
+        return Response(
+            IndicatorValueSerializer(
+                values,
+                fields=['date', 'value', 'value_str'],
+                context={'user': request.user},
+                many=True
+            ).data
+        )
 
     def post(self, request, pk, geometry_code):
         """Return values of the indicator.
@@ -145,7 +153,8 @@ class IndicatorValueListAPI(APIView):
                 IndicatorValueWithGeo.objects.filter(
                     indicator_id=indicator.id
                 ),
-                many=True
+                many=True,
+                context={'user': request.user}
             ).data
         )
 
@@ -198,12 +207,16 @@ class IndicatorValueListAPI(APIView):
                             value=record['value']
                         )
                         ids.append(value.id)
+
+            # TODO:
+            #  Response with the no content
             return Response(
                 IndicatorValueSerializer(
                     IndicatorValueWithGeo.objects.filter(
                         indicator_id=indicator.id
                     ),
-                    many=True
+                    many=True,
+                    context={'user': request.user}
                 ).data
             )
         except ValueError as e:

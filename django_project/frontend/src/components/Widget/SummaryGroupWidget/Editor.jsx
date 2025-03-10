@@ -22,7 +22,7 @@ import { FormControl, InputLabel } from "@mui/material";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 
-import EditSection from "../Editor"
+import EditSection from "../SummaryEditor"
 
 /**
  * Edit section for widget.

@@ -13,17 +13,6 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 export default () => {
-
-  /*** Change code to ucode */
-  const toUcode = (code) => {
-    return code ? code : null
-  }
-  /*** Extracting ucode */
-  const extractCode = (properties, geoField = 'concept_uuid') => {
-    const geomFieldOnVectorTile = geoField === 'geometry_code' ? 'ucode' : geoField
-    return toUcode(properties[geoField] ? properties[geoField] : properties[geomFieldOnVectorTile])
-  }
-
   self.addEventListener('message', e => { // eslint-disable-line no-restricted-globals
     if (!e) return;
     let {
@@ -34,17 +23,16 @@ export default () => {
 
     // Create features
     let features = []
-    let theGeometries = Object.keys(geometriesData)
-    theGeometries.map(geom => {
-      const geometry = geometriesData[geom]
-      if (!geometry) {
-        return;
-      }
-      const indicator = mapGeometryValue[geometry.concept_uuid] ? mapGeometryValue[geometry.concept_uuid][0] : {};
 
-      const code = extractCode(geometry)
-      if (usedFilteredGeometries && !usedFilteredGeometries.includes(code)) {
-        return
+    for (const [geom, geometry] of Object.entries(geometriesData)) {
+      if (!geometry) {
+        continue
+      }
+      const indicator = mapGeometryValue[geometry.ucode] ? mapGeometryValue[geometry.ucode][0] : mapGeometryValue[geometry.concept_uuid] ? mapGeometryValue[geometry.concept_uuid] : {};
+      if (
+        usedFilteredGeometries && !usedFilteredGeometries.includes(geometry.ucode) && !usedFilteredGeometries.includes(geometry.concept_uuid)
+      ) {
+        continue
       }
       let properties = geometry
       if (geometry) {
@@ -58,7 +46,7 @@ export default () => {
           "geometry": geometry.geometry
         })
       }
-    })
+    }
 
     postMessage(features);
   })

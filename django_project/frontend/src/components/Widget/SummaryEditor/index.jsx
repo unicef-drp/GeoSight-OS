@@ -83,7 +83,7 @@ export default function WidgetEditor(
     setLayerType(layer_used ? layer_used : definition.WidgetLayerUsed.INDICATOR)
     setOperation(operation ? operation : DEFINITION.WidgetOperation.SUM)
     setUnit(unit ? unit : '')
-    setProperty(property ? property : '')
+    setProperty(property ? property : 'value')
     setDateFilterType(date_filter_type ? date_filter_type : 'No filter')
     const dateFilterValue = date_filter_value ? date_filter_value : ''
     setDateFilterValue(dateFilterValue)
@@ -260,7 +260,7 @@ export default function WidgetEditor(
               value={property}
             >
               {
-                Object.keys(selectedData).map((key, index) => (
+                ['value'].map((key, index) => (
                   <MenuItem
                     key={index}
                     value={key}>{key}</MenuItem>

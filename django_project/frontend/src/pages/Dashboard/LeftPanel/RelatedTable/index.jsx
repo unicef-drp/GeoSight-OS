@@ -24,6 +24,7 @@ import { fetchPagination } from "../../../../Requests";
 import { queryData } from "../../../../utils/queryExtraction";
 import { ExecuteWebWorker } from "../../../../utils/WebWorker";
 import worker from "./Worker";
+import { getCountryGeomIds } from "../../../../utils/Dataset";
 
 
 /**
@@ -41,6 +42,9 @@ export function RelatedTable(
   const selectedGlobalTimeStr = JSON.stringify(selectedGlobalTime);
   const [responseAndTime, setResponseAndTime] = useState(null);
 
+  // Reference layer data
+  const referenceLayerData = useSelector(state => state.referenceLayerData[referenceLayerUUID]);
+
   // TODO:
   //  Fix this to use id of layer
   const { id, url, query } = relatedTable
@@ -52,26 +56,27 @@ export function RelatedTable(
    * Fetch related table data by the current global selected time
    */
   useEffect(() => {
+    if (!indicatorLayer?.config?.date_field) return;
+    if (!relatedTable.geography_code_field_name) return;
+    if (!relatedTable.geography_code_type) return;
+    // Skip if no data
+    // To get the countries
+    if (!referenceLayerData?.data?.identifier) return;
+    const countryGeomIds = getCountryGeomIds(referenceLayerData.data);
+
     const params = {
-      'time__lte': selectedGlobalTime.max,
+      time__lte: selectedGlobalTime.max,
+      country_geom_ids: countryGeomIds,
+      date_field: indicatorLayer?.config?.date_field,
+      date_format: indicatorLayer?.config?.date_format,
+      geography_code_field_name: relatedTable.geography_code_field_name,
+      geography_code_type: relatedTable.geography_code_type
     }
     if (selectedGlobalTime.min) {
       params['time__gte'] = selectedGlobalTime.min
     }
-    if (referenceLayerUUID) {
-      params['reference_layer_uuid'] = referenceLayerUUID
-    }
-    if (indicatorLayer?.config?.date_field) {
-      params['date_field'] = indicatorLayer?.config?.date_field
-    }
     if (indicatorLayer?.config?.date_format) {
       params['date_format'] = indicatorLayer?.config?.date_format
-    }
-    if (relatedTable.geography_code_field_name) {
-      params['geography_code_field_name'] = relatedTable.geography_code_field_name
-    }
-    if (relatedTable.geography_code_type) {
-      params['geography_code_type'] = relatedTable.geography_code_type
     }
     params.version = relatedTable.version
     if (
@@ -109,7 +114,7 @@ export function RelatedTable(
       })
       dispatch(Actions.RelatedTableData.request(id))
     }
-  }, [selectedGlobalTime, referenceLayerUUID, indicatorLayer]);
+  }, [selectedGlobalTime, referenceLayerData, indicatorLayer]);
 
   /**
    * Update style

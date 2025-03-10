@@ -14,9 +14,6 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '29/11/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from functools import reduce
-
-from django.db.models import Q
 from rest_framework.authentication import (
     SessionAuthentication, BasicAuthentication
 )
@@ -25,23 +22,22 @@ from rest_framework.permissions import IsAuthenticated
 from core.api.base import FilteredAPI
 from core.auth import BearerAuthentication
 from core.pagination import Pagination
-from geosight.data.api.v1.base import non_filtered_keys
-from geosight.data.models.indicator import IndicatorValueWithGeo
-from geosight.permission.models.resource import (
-    ReferenceLayerIndicatorPermission
+from geosight.data.api.v1.base import BaseApiV1
+from geosight.data.models.indicator import (
+    Indicator, IndicatorValue
 )
 
 
-class BaseDataApiList(FilteredAPI):
-    """Return Data List API List."""
+class BaseIndicatorValueApi(FilteredAPI):
+    """Return indicator value api list."""
 
     authentication_classes = [
         SessionAuthentication, BasicAuthentication, BearerAuthentication
     ]
     permission_classes = (IsAuthenticated,)
     pagination_class = Pagination
-    model = IndicatorValueWithGeo
-    filter_query_exclude = non_filtered_keys
+    model = IndicatorValue
+    filter_query_exclude = BaseApiV1.non_filtered_keys
     extra_exclude_fields = []
 
     def get_queryset(self):
@@ -57,21 +53,17 @@ class BaseDataApiList(FilteredAPI):
 
         # If not admin
         if not is_admin:
-            identifiers = ReferenceLayerIndicatorPermission.permissions.list(
+            indicators = Indicator.permissions.read_data(
                 user=self.request.user
             ).values_list(
-                'obj__indicator_id', 'obj__reference_layer_id'
+                'id', flat=True
             )
-            if not identifiers.count():
+            if not indicators.count():
                 query = self.model.objects.none()
             else:
-                filter = reduce(
-                    lambda q, f: q | Q(
-                        indicator_id=f[0], reference_layer_id=f[1]
-                    ),
-                    identifiers, Q()
+                query = self.model.objects.filter(
+                    indicator_id__in=indicators
                 )
-                query = self.model.objects.filter(filter)
 
         # Filter by parameters
         query = self.filter_query(

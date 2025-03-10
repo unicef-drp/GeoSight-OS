@@ -15,12 +15,12 @@ __date__ = '24/10/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import os
+
 from django.conf import settings
-from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.core.management import call_command
-from django.db import connection, connections
+from django.db import models, connection, connections
 from django.db.utils import ProgrammingError
 from django.test import TestCase as DjangoTestCase
 from django.test.client import MULTIPART_CONTENT

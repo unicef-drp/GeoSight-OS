@@ -15,8 +15,8 @@
 
 import React from 'react';
 
-import { DEFINITION } from "../../index"
-import WidgetSelectionMember from "../../WidgetSelectionMember"
+import { DEFINITION } from "../index"
+import WidgetSelectionMember from "../WidgetSelectionMember"
 
 /**
  * Widget Selection Member for Summary Group.
