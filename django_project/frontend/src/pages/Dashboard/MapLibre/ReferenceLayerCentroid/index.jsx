@@ -19,7 +19,6 @@
 
 import { useEffect, useState } from 'react';
 import { useSelector } from "react-redux";
-import { returnWhere } from "../../../../utils/queryExtraction";
 import { extractCode } from "../../../../utils/georepo";
 import { allDataIsReady } from "../../../../utils/indicators";
 import {
@@ -38,6 +37,7 @@ import worker from "./Label/worker";
 import { renderChart, renderPin, resetCharts } from "./Chart";
 
 import './style.scss';
+import { IS_DEBUG, Logger } from "../../../../utils/logger";
 
 let lastConfig = {};
 let lastRequest = null;
@@ -379,13 +379,20 @@ export default function ReferenceLayerCentroid({ map }) {
           usedFilteredGeometries
         }, (features) => {
           if (currRequest === lastRequest) {
+            if (IS_DEBUG) {
+              const output = features.map(
+                feature => [
+                  feature.properties.geometry_code, feature.properties.value
+                ]
+              )
+              Logger.log('LABEL_GEOM:', output)
+            }
             renderLabel(map, features, labelConfig)
           }
         }
       )
     }
   }
-
   // When everything changed
   useEffect(() => {
     updateCentroid()

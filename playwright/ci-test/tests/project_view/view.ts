@@ -13,10 +13,19 @@ test.describe('View project', () => {
   // A use case tests scenarios
   test('View project', async ({ page }) => {
     let lastLog = null
+    let lastLogLabel = null
     page.on('console', msg => {
       if (msg.text().indexOf('VALUED_GEOM:') !== -1) {
         try {
           lastLog = msg.text().replace('VALUED_GEOM:', '')
+        } catch (e) {
+          console.log(e)
+
+        }
+      }
+      if (msg.text().indexOf('LABEL_GEOM:') !== -1) {
+        try {
+          lastLogLabel = msg.text().replace('LABEL_GEOM:', '')
         } catch (e) {
           console.log(e)
 
@@ -56,6 +65,18 @@ test.describe('View project', () => {
     await expect(page.locator('.widget__sgw').nth(2).locator('.widget__sgw__row').nth(0).locator('td').nth(1)).toContainText('96');
     await expect(page.locator('.widget__sgw').nth(2).locator('.widget__sgw__row').nth(1).locator('td').nth(0)).toContainText('SOM_0012_V1');
     await expect(page.locator('.widget__sgw').nth(2).locator('.widget__sgw__row').nth(1).locator('td').nth(1)).toContainText('94');
+
+    // Check the label
+    await expect(page.locator('.widget__sw__content').nth(1)).toContainText('978.5');
+    await expect(lastLogLabel).toEqual("SOM_0001_V1,61,SOM_0002_V1,78,SOM_0003_V1,30,SOM_0004_V1,11,SOM_0005_V1,40,SOM_0008_V1,32,SOM_0009_V1,96,SOM_0010_V1,59,SOM_0006_V1,10,SOM_0007_V1,40,SOM_0011_V1,74,SOM_0012_V1,94,SOM_0013_V1,63,SOM_0014_V1,68,SOM_0015_V1,14,SOM_0016_V1,35,SOM_0017_V1,89,SOM_0018_V1,1");
+    await page.getByRole('tab', { name: 'Filters' }).click();
+    lastLogLabel = null
+    await page.getByRole('button', { name: 'Indicator A above X% Delete' }).getByRole('checkbox').check();
+    await expect(page.locator('.widget__sw__content').nth(1)).toContainText('562');
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    await expect(lastLogLabel).toEqual("SOM_0001_V1,61,SOM_0002_V1,78,SOM_0009_V1,96,SOM_0011_V1,74,SOM_0012_V1,94,SOM_0013_V1,63,SOM_0014_V1,68,SOM_0017_V1,89");
+    await page.getByRole('button', { name: 'Indicator A above X% Delete' }).getByRole('checkbox').uncheck();
+    await page.getByRole('tab', { name: 'Layers' }).click();
 
     // Chart
     const layer3 = 'Pie Chart layer'
