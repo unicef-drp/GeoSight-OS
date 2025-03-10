@@ -225,19 +225,12 @@ devweb-load-demo-data:
 	@echo "Load demo data for devweb"
 	@echo "------------------------------------------------------------------"
 	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/demo/1.core.json"
-	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/demo/2.geosight_georepo.json"
-	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/demo/3.geosight_data.json"
-
-load-test-data:
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Load demo data for devweb"
-	@echo "------------------------------------------------------------------"
-	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/test/1.core.json"
-	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/test/2.user_group.json"
-	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/test/3.geosight_georepo.json"
-	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/test/4.geosight_data.json"
+	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/demo/2.user_group.json"
+	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/demo/3.geosight_georepo.json"
 	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata geosight/reference_dataset/fixtures/test/4.reference_dataset_levels.json"
+	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/demo/4.geosight_data.json"
+
+load-test-data: devweb-load-demo-data
 
 load-test-data-for-filter:
 	@echo
