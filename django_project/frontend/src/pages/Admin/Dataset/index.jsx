@@ -106,8 +106,8 @@ export default function DatasetAdmin() {
       disabledFilter: true
     },
     {
-      field: 'reference_layer_name',
-      headerName: 'View',
+      field: 'country_name',
+      headerName: 'Country',
       flex: 1,
       disabledFilter: true
     },

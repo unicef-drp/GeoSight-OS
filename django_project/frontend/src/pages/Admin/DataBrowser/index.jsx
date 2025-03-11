@@ -87,24 +87,8 @@ export default function DataBrowserAdmin() {
   const COLUMNS = [
     { field: 'id', headerName: 'id', hide: true },
     { field: 'indicator', headerName: 'Indicator', flex: 1 },
-    {
-      field: 'reference_layer_name', headerName: 'View', flex: 0.5,
-      renderCell: (params) => {
-        const data = Array.from(new Set(params.row.geometries.map(geom => geom.dataset_name))).join(',')
-        return <div title={data} className='MuiDataGrid-cellContent'>
-          {data}
-        </div>
-      }
-    },
-    {
-      field: 'admin_level', headerName: 'Level', width: 80,
-      renderCell: (params) => {
-        const data = Array.from(new Set(params.row.geometries.map(geom => geom.admin_level))).join(',')
-        return <div title={data} className='MuiDataGrid-cellContent'>
-          {data}
-        </div>
-      }
-    },
+    { field: 'country_name', headerName: 'Country', flex: 0.5 },
+    { field: 'admin_level', headerName: 'Level', width: 80 },
     {
       field: 'geom_id', headerName: 'Geo Code', flex: 1,
       renderCell: (params) => {
