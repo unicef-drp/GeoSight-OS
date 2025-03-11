@@ -390,12 +390,12 @@ export default function DownloaderData() {
               const output = getIndicatorValueByGeometry(
                 indicatorLayer, indicators, indicatorsData,
                 relatedTables, relatedTableData, selectedGlobalTime,
-                geoField, filteredGeometries, referenceLayer, selectedAdminLevel
+                geoField, filteredGeometries, referenceLayer,
+                '' + state.levels.map(level => level)
               )
               indicatorValueByGeometry[indicatorLayer.id] = output
             })
           }
-
           // If excel
           if (state.format === Format.Excel) {
             // Get the geometries

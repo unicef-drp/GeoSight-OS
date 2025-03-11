@@ -26,5 +26,8 @@
     "@playwright/test": "^1.40.1",
     "@types/node": "^20.12.10"
   },
-  "overrides": {}
+  "overrides": {},
+  "dependencies": {
+    "xlsx": "^0.18.5"
+  }
 }
