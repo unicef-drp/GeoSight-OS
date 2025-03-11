@@ -75,6 +75,7 @@ export const IndicatorRequest = memo(
     const selectedGlobalTime = useSelector(state => state.selectedGlobalTime);
     // @ts-ignore
     const indicatorLayerMetadata = useSelector(state => state.indicatorLayerMetadata[metadataId]);
+    const totalPage = indicatorLayerMetadata?.count ? Math.ceil(indicatorLayerMetadata.count / 100) : 0
 
     // Params
     const params: Parameter = {
@@ -88,13 +89,13 @@ export const IndicatorRequest = memo(
 
     /** Change selected time when selected global time changed and correct. */
     useEffect(() => {
-      let data = null
-      if (response.data) {
-        data = UpdateStyleData(response.data, indicator.indicator)
+      let data = response?.data
+      if (data) {
+        data = UpdateStyleData(data, indicator.indicator)
       }
       // @ts-ignore
       onResponse(indicator.id, metadataId, datasetIdentifier, data, response.error)
-    }, [indicator, response]);
+    }, [response]);
 
     /**
      * Change selected time when selected global time changed and correct.
@@ -114,7 +115,7 @@ export const IndicatorRequest = memo(
     /** Loading when metadata fetched. */
     useEffect(() => {
       if (indicatorLayerMetadata) {
-        onLoading(indicator.id, metadataId, indicatorLayerMetadata.total_page);
+        onLoading(indicator.id, metadataId, totalPage);
       }
     }, [indicatorLayerMetadata]);
 
@@ -142,7 +143,7 @@ export const IndicatorRequest = memo(
       prevState.session = session
 
       setResponse({ data: null, error: null })
-      onLoading(indicator.id, metadataId, indicatorLayerMetadata.total_page);
+      onLoading(indicator.id, metadataId, totalPage);
       //   Fetch indicator data
       (
         async () => {

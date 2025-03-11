@@ -14,7 +14,6 @@
  */
 
 import { INDICATORS_DATA_ACTION_NAME, } from './index'
-import { fetchingData } from "../../../../Requests";
 
 /**
  * Requests data.
@@ -43,17 +42,6 @@ function receive(data, error, id) {
   };
 }
 
-export function fetch(dispatch, id, url) {
-  fetchingData(
-    url, {}, {}, function (response, error) {
-      dispatch(
-        receive(response, error, id)
-      )
-    }
-  )
-  return request(id);
-}
-
 export default {
-  fetch, request, receive
+  request, receive
 }

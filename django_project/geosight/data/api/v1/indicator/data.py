@@ -13,8 +13,6 @@ __author__ = 'Víctor González'
 __date__ = '05/03/2025'
 __copyright__ = ('Copyright 2023, Unicef')
 
-import time
-
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_control
@@ -86,7 +84,6 @@ class IndicatorDataViewSet(
     )
     def list(self, request, *args, **kwargs):
         """List of indicator rows."""
-        time.sleep(2)
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(

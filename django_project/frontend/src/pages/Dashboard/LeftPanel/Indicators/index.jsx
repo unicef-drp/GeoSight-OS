@@ -41,7 +41,6 @@ export default function Indicators() {
   } = useSelector(state => state.dashboard.data);
   const currentIndicatorLayer = useSelector(state => state.selectedIndicatorLayer);
   const currentIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer);
-  const indicatorLayerMetadata = useSelector(state => state.indicatorLayerMetadata);
 
   /** Get the indicators */
   const indicatorsWithDataset = [];
