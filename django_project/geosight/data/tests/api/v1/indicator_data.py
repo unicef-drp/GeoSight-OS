@@ -25,6 +25,21 @@ User = get_user_model()
 class IndicatorDataApiTest(BaseDataBrowserTest.TestCase):
     """Test for IndicatorData list api."""
 
+    def test_list_permission(self):
+        """Test list permission."""
+        url = reverse(
+            'indicator_data-list', args=[self.indicator_1.id]
+        )
+        self.assertRequestGetView(url, 403)
+        self.assertRequestGetView(url, 403, user=self.viewer)
+        self.assertRequestGetView(url, 403, user=self.viewer_in_group)
+        self.assertRequestGetView(url, 403, user=self.contributor)
+        self.assertRequestGetView(url, 403, user=self.contributor_in_group)
+        self.assertRequestGetView(url, 403, user=self.resource_creator)
+        self.assertRequestGetView(url, 200, user=self.creator_in_group)
+        self.assertRequestGetView(url, 200, user=self.creator)
+        self.assertRequestGetView(url, 200, user=self.admin)
+
     def test_list_api_by_admin(self):
         """Test List API."""
         url = reverse(
