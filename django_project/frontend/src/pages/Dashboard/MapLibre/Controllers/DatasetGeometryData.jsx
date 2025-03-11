@@ -111,7 +111,6 @@ export default function DatasetGeometryData() {
           if (datasets[i].is_local) {
             url = InternalReferenceDatasets.centroid(identifier)
           }
-
           await axiosGet(url).then(async centroidResponse => {
             const centroids = centroidResponse.data
             for (let i = 0; i < centroids.length; i++) {

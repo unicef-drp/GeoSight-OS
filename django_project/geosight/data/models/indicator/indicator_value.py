@@ -329,6 +329,8 @@ class IndicatorExtraValue(models.Model):
         return self.name.replace(' ', '_').replace(':', '').lower()
 
 
+# TODO;
+#  This will be deprecated after we fully migrate to use country
 class IndicatorValueWithGeo(models.Model):
     """Indicator value x entity view."""
 

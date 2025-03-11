@@ -234,12 +234,14 @@ class Entity(models.Model):
                 'admin_level': admin_level,
                 'start_date': start_date,
                 'end_date': end_date,
+                'parents': parents
             }
         )
         ReferenceLayerViewEntity.objects.get_or_create(
             reference_layer=reference_layer,
             entity=obj,
         )
+        obj.reference_layer = reference_layer
         obj.name = name
         obj.parents = parents
         obj.save()
@@ -433,10 +435,6 @@ def update_indicator_value_data(sender, instance, **kwargs):
 @receiver(post_save, sender=Entity)
 def assign_entity_to_view(sender, instance: Entity, created, **kwargs):
     """Assign entity to view relationship."""
-    if instance.reference_layer:
-        instance.create_reference_layer_view_entity()
-        instance.reference_layer.assign_country(instance)
-
     # Get the country
     if instance.admin_level != admin_level_country and not instance.country:
         try:
@@ -446,3 +444,7 @@ def assign_entity_to_view(sender, instance: Entity, created, **kwargs):
             instance.save()
         except Entity.DoesNotExist:
             pass
+
+    if instance.reference_layer:
+        instance.create_reference_layer_view_entity()
+        instance.reference_layer.assign_country(instance)

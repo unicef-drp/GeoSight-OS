@@ -24,17 +24,12 @@ from dateutil import parser as date_parser
 from django.conf import settings
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
-from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from core.cache import VersionCache
-from core.pagination import Pagination
 from geosight.data.models.dashboard import Dashboard
 from geosight.data.models.indicator import Indicator
-from geosight.data.serializer.indicator import (
-    IndicatorValueWithGeoDateSerializer
-)
 from geosight.georepo.models.reference_layer import (
     ReferenceLayerView, ReferenceLayerIndicator
 )
@@ -118,104 +113,6 @@ class _DashboardIndicatorValuesAPI(APIView):
             identifier=identifier
         )
         return reference_layer
-
-
-class _DashboardIndicatorValuesListAPI(
-    _DashboardIndicatorValuesAPI, ListAPIView
-):
-    """Base indicator values ListAPI."""
-
-    pagination_class = Pagination
-    serializer_class = IndicatorValueWithGeoDateSerializer
-
-    def get(self, request, *args, **kwargs):
-        """Return Values."""
-        pk = self.kwargs['pk']
-        indicator = get_object_or_404(Indicator, pk=pk)
-        reference_layer = self.check_permission(self.request.user, indicator)
-
-        # Cache version
-        cache = version_cache(
-            url=request.get_full_path(),
-            reference_layer=reference_layer,
-            indicator=indicator
-        )
-        cache_data = cache.get()
-        if cache_data:
-            return Response(cache_data)
-        queryset = self.filter_queryset(self.get_queryset())
-
-        # Get list data and save it to cache
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            assert self.paginator is not None
-            response = self.paginator.get_paginated_response_data(
-                serializer.data
-            )
-            cache.set(response)
-            return Response(response)
-
-        serializer = self.get_serializer(queryset, many=True)
-        response = serializer.data
-        cache.set(response)
-        return Response(response)
-
-
-class DashboardIndicatorValuesAPI(_DashboardIndicatorValuesListAPI):
-    """API for Values of indicator."""
-
-    def get_queryset(self):
-        """Return queryset of API."""
-        pk = self.kwargs['pk']
-        indicator = get_object_or_404(Indicator, pk=pk)
-        reference_layer = self.check_permission(self.request.user, indicator)
-        min_time, max_time = self.return_parameters(self.request)
-
-        return indicator.values(
-            date_data=max_time,
-            min_date_data=min_time,
-            admin_level=self.request.GET.get('admin_level', None),
-            reference_layer=reference_layer
-        )
-
-
-class DashboardIndicatorAllValuesAPI(_DashboardIndicatorValuesListAPI):
-    """API for all Values of indicator."""
-
-    def get_queryset(self):
-        """Return queryset of API."""
-        pk = self.kwargs['pk']
-        indicator = get_object_or_404(Indicator, pk=pk)
-        reference_layer = self.check_permission(self.request.user, indicator)
-        return indicator.values(
-            last_value=False,
-            reference_layer=reference_layer
-        )
-
-
-class DashboardIndicatorDatesAPI(DashboardIndicatorValuesAPI):
-    """API for of indicator."""
-
-    def get(self, request, slug, pk, **kwargs):
-        """Return Values."""
-        indicator = get_object_or_404(Indicator, pk=pk)
-        reference_layer = self.check_permission(request.user, indicator)
-
-        dates = [
-            datetime.combine(
-                date_str, datetime.min.time(),
-                tzinfo=pytz.timezone(settings.TIME_ZONE)
-            ).isoformat()
-            for date_str in set(
-                indicator.query_values(
-                    reference_layer=reference_layer
-                ).values_list('date', flat=True)
-            )
-        ]
-        dates.sort()
-
-        return Response(dates)
 
 
 class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):

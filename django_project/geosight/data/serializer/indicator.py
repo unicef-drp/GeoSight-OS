@@ -16,7 +16,6 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.shortcuts import reverse
 
-from core.serializer.dynamic_serializer import DynamicModelSerializer
 from geosight.data.models.indicator import (
     Indicator, IndicatorRule
 )
@@ -38,7 +37,7 @@ class IndicatorSerializer(DynamicModelSerializer):
     def get_url(self, obj: Indicator):
         """Return url."""
         return reverse(
-            'indicator-values-api',
+            'indicator_data-values',
             args=[obj.id]
         )
 
@@ -96,7 +95,7 @@ class IndicatorAdminListSerializer(ResourceSerializer):
     def get_url(self, obj: Indicator):
         """Return url."""
         return reverse(
-            'indicator-values-api',
+            'indicator_data-values',
             args=[obj.id]
         )
 

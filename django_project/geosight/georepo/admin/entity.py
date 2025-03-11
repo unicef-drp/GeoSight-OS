@@ -61,7 +61,7 @@ class EntityAdmin(admin.ModelAdmin):
 
     list_display = [
         'pk', 'name', 'admin_level', 'concept_uuid',
-        'geom_id', 'parents', 'views', 'country_name'
+        'geom_id', 'parents', 'country_name'
     ]
     ordering = ['admin_level', 'geom_id']
     list_filter = [NullCountryFilter, 'admin_level']
@@ -69,10 +69,6 @@ class EntityAdmin(admin.ModelAdmin):
     inlines = (EntityCodeInline,)
     actions = [assign_country]
     readonly_fields = ('reference_layer',)
-
-    def views(self, obj: Entity):
-        """Return list of views."""
-        return obj.referencelayerviewentity_set.count()
 
     def country_name(self, obj: Entity):
         """Return country name."""

@@ -175,6 +175,8 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
     def entities_set(self):
         """Querying entities."""
         from geosight.georepo.models.entity import Entity
+        # TODO:
+        #  We will fix this after we migrate to production
         related_entities = self.referencelayerviewentity_set.values(
             "entity_id"
         )

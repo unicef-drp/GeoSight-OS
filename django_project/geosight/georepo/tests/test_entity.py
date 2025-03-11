@@ -128,6 +128,19 @@ class EntityTest(APITestCase):
             ), ['A', 'B', 'O']
         )
 
+    def test_entity_detail_parent(self):
+        """Test entity detail."""
+        entity = Entity.objects.get(geom_id='A')
+        self.assertIsNone(entity.parent)
+        self.assertEqual(entity.admin_level, 0)
+        self.assertEqual(entity.children.count(), 2)
+        self.assertEqual(entity.children[0].geom_id, 'AA')
+        self.assertEqual(entity.siblings.count(), 0)
+        self.assertEqual(entity.reference_layer_set.count(), 1)
+        self.assertEqual(
+            self.entity.reference_layer_set[0], self.reference_layer
+        )
+
     def test_entity_detail(self):
         """Test entity detail."""
         self.assertEqual(self.entity.parent.geom_id, 'A')

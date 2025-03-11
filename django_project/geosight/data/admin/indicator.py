@@ -22,8 +22,7 @@ from django.utils.translation import gettext_lazy as _
 from geosight.data.admin.base import BaseAdminResourceMixin
 from geosight.data.models.indicator import (
     Indicator, IndicatorGroup,
-    IndicatorValue, IndicatorRule, IndicatorExtraValue,
-    IndicatorValueWithGeo
+    IndicatorValue, IndicatorRule, IndicatorExtraValue
 )
 
 
@@ -132,8 +131,8 @@ class IndicatorAdmin(BaseAdminResourceMixin):
     """Indicator admin."""
 
     list_display = (
-        'name', 'group', 'type'
-    ) + BaseAdminResourceMixin.list_display
+                       'name', 'group', 'type'
+                   ) + BaseAdminResourceMixin.list_display
     list_filter = ('group',)
     list_editable = ('creator', 'group', 'type')
     search_fields = ('name',)
@@ -145,28 +144,6 @@ class IndicatorGroupAdmin(admin.ModelAdmin):
     """IndicatorGroup admin."""
 
     list_display = ('name',)
-
-
-@admin.register(IndicatorValueWithGeo)
-class IndicatorValueWithGeoAdmin(admin.ModelAdmin):
-    """Admin for checking indicator values with geometry."""
-
-    list_display = (
-        'reference_layer_name', 'reference_layer_uuid', 'indicator_name',
-        'date', 'value'
-    )
-
-    def has_add_permission(self, request):
-        """Return True if the user has add permission."""
-        return False
-
-    def has_change_permission(self, request, obj=None):
-        """Return True if the user has change permission."""
-        return False
-
-    def has_delete_permission(self, request, obj=None):
-        """Return True if the user has delete permission."""
-        return False
 
 
 admin.site.register(IndicatorGroup, IndicatorGroupAdmin)
