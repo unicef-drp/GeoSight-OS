@@ -24,7 +24,6 @@ import { pageNames } from '../../index';
 import { COLUMNS, COLUMNS_ACTION } from "../../Components/List";
 import PermissionModal from "../../Permission";
 import {
-  DataAccessActiveIcon,
   DataBrowserActiveIcon,
   DataManagementActiveIcon,
   MapActiveIcon
@@ -51,23 +50,6 @@ export function resourceActions(params, noShare = false) {
           </a>
         }
         label="Change Share Configuration."
-      />)
-  }
-
-  if (permission.delete) {
-    actions.unshift(
-      <GridActionsCellItem
-        icon={
-          <Tooltip title={`Go to data access.`}>
-            <a
-              href={urls.api.permissionAdmin + '?indicators=' + params.id}>
-              <div className='ButtonIcon'>
-                <DataAccessActiveIcon/>
-              </div>
-            </a>
-          </Tooltip>
-        }
-        label="Go to data access."
       />)
   }
 
