@@ -50,6 +50,11 @@ class IndicatorValue(models.Model):
         Indicator, on_delete=models.CASCADE
     )
 
+    # This is for extra value
+    extra_value = models.JSONField(
+        null=True, blank=True
+    )
+
     # --------------------------------------
     # Attributes that are able to be generated
     # --------------------------------------
@@ -185,13 +190,7 @@ class IndicatorValue(models.Model):
     @property
     def attributes(self):
         """Return attributes of value."""
-        extra_value = {}
-        try:
-            for extra in self.indicatorextravalue_set.all():
-                extra_value[extra.name] = extra.value
-        except AttributeError:
-            pass
-        return extra_value
+        return self.extra_value if self.extra_value else {}
 
     def assign_entity(self, autosave=True):
         """Assign entity to indicator value."""
@@ -281,6 +280,21 @@ class IndicatorValue(models.Model):
                 value.indicator_id = indicator.id
                 AND value.id BETWEEN %(start_id)s AND %(end_id)s;
         """
+        extra_value_query = """
+            UPDATE geosight_data_indicatorvalue value
+            SET extra_value = subquery.json_data
+            FROM (
+                SELECT
+                    indicator_value_id,
+                    jsonb_object_agg(name, value) AS json_data
+                FROM geosight_data_indicatorextravalue
+                GROUP BY indicator_value_id
+            ) subquery
+            WHERE
+                value.id = subquery.indicator_value_id
+                AND value.extra_value IS NULL
+                AND value.id BETWEEN %(start_id)s AND %(end_id)s;
+        """
         id__max = IndicatorValue.objects.aggregate(
             Max('id')
         )['id__max']
@@ -294,10 +308,22 @@ class IndicatorValue(models.Model):
                 start_id = i
                 end_id = i + step - 1
                 params = {'start_id': start_id, 'end_id': end_id}
+                cursor.execute(extra_value_query, params)
                 cursor.execute(entity_query, params)
                 cursor.execute(indicator_query, params)
 
+    def add_extra_value(self, name, value):
+        """Add extra value."""
+        extra_value = self.extra_value
+        if not extra_value:
+            extra_value = {}
+        extra_value[name] = value
+        self.extra_value = extra_value
+        self.save()
 
+
+# TODO;
+#  This will be deprecated production is stable
 class IndicatorExtraValue(models.Model):
     """Additional data for Indicator value data."""
 

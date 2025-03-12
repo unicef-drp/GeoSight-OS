@@ -249,7 +249,7 @@ class Indicator(
     ):
         """Save new value for the indicator."""
         from geosight.data.models.indicator import (
-            IndicatorValue, IndicatorExtraValue
+            IndicatorValue
         )
         from geosight.georepo.models import ReferenceLayerView
         from geosight.georepo.models.entity import Entity
@@ -305,14 +305,7 @@ class Indicator(
 
         if extras:
             for extra_key, extra_value in extras.items():
-                indicator_extra_value, created = \
-                    IndicatorExtraValue.objects.get_or_create(
-                        indicator_value=indicator_value,
-                        name=extra_key
-                    )
-                indicator_extra_value.value = extra_value
-                indicator_extra_value.save()
-
+                indicator_value.add_extra_value(extra_key, extra_value)
         return indicator_value
 
     def query_values(

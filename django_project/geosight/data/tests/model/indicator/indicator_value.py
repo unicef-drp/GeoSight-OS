@@ -17,7 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.db import connection
 
 from core.tests.base_tests import TestCase
-from geosight.data.models.indicator import IndicatorValue
+from geosight.data.models.indicator import IndicatorValue, IndicatorExtraValue
 from geosight.data.tests.model_factories import (
     IndicatorValueF, IndicatorF
 )
@@ -369,6 +369,9 @@ class IndicatorValueTest(TestCase):
             reference_layer=self.reference_layer.identifier,
             admin_level=2
         )
+        IndicatorExtraValue.objects.create(
+            indicator_value=value_a, name='Extra 1', value=1
+        )
         self.assertIsNotNone(value_a.pk)
         self.assertEquals(value_a.indicator, indicator)
         self.assertEquals(value_a.date, '2020-05-01')
@@ -400,6 +403,7 @@ class IndicatorValueTest(TestCase):
         self.assertEquals(value_a.country_name, entity.country.name)
         self.assertEquals(value_a.country_geom_id, 'A')
         self.assertEquals(value_a.country_geom_id, entity.country.geom_id)
+        self.assertEquals(value_a.extra_value, None)
 
         # check indicator
         self.assertEquals(value_a.indicator_name, indicator.name)
@@ -460,7 +464,8 @@ class IndicatorValueTest(TestCase):
                     entity_start_date = NULL,
                     entity_end_date = NULL,
                     indicator_name = NULL,
-                    indicator_shortcode = NULL
+                    indicator_shortcode = NULL,
+                    extra_value = NULL
                 WHERE id IN ({value_a.pk},{value_b.pk})
                 """
             )
@@ -476,6 +481,7 @@ class IndicatorValueTest(TestCase):
         self.assertIsNone(value_a.entity_start_date)
         self.assertIsNone(value_a.entity_end_date)
         self.assertIsNone(value_a.indicator_name)
+        self.assertIsNone(value_a.extra_value)
         self.assertIsNone(value_b.country_id)
         self.assertIsNone(value_b.country_name)
         self.assertIsNone(value_b.country_geom_id)
@@ -486,6 +492,7 @@ class IndicatorValueTest(TestCase):
         self.assertIsNone(value_b.entity_start_date)
         self.assertIsNone(value_b.entity_end_date)
         self.assertIsNone(value_b.indicator_name)
+        self.assertIsNone(value_b.extra_value)
 
         # Assign flat table
         IndicatorValue.assign_flat_table(step=1)
@@ -526,6 +533,7 @@ class IndicatorValueTest(TestCase):
         self.assertEquals(value_a.country_name, entity.country.name)
         self.assertEquals(value_a.country_geom_id, 'A')
         self.assertEquals(value_a.country_geom_id, entity.country.geom_id)
+        self.assertEquals(value_a.extra_value, {'Extra 1':'1'})
 
         # check indicator
         self.assertEquals(value_a.indicator_name, indicator.name)
@@ -569,6 +577,7 @@ class IndicatorValueTest(TestCase):
         self.assertEquals(value_b.country_name, entity.name)
         self.assertEquals(value_b.country_geom_id, 'A')
         self.assertEquals(value_b.country_geom_id, entity.geom_id)
+        self.assertIsNone(value_b.extra_value)
 
         # check indicator
         self.assertEquals(value_b.indicator_name, indicator.name)

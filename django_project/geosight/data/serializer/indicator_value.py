@@ -22,9 +22,7 @@ from drf_yasg import openapi
 from rest_framework import serializers
 
 from core.serializer.dynamic_serializer import DynamicModelSerializer
-from geosight.data.models.indicator import (
-    IndicatorValue, IndicatorExtraValue
-)
+from geosight.data.models.indicator import IndicatorValue
 
 
 class IndicatorValueSerializer(DynamicModelSerializer):
@@ -219,14 +217,6 @@ class IndicatorValueSerializer(DynamicModelSerializer):
         )
 
 
-class IndicatorValueExtraSerializer(DynamicModelSerializer):
-    """Return indicator value extra value."""
-
-    class Meta:  # noqa: D106
-        model = IndicatorExtraValue
-        fields = '__all__'
-
-
 class IndicatorValueDetailSerializer(IndicatorValueSerializer):
     """Serializer for IndicatorValue."""
 
@@ -235,22 +225,11 @@ class IndicatorValueDetailSerializer(IndicatorValueSerializer):
 
     def get_details(self, obj: IndicatorValue):
         """Return extra data."""
-        # for details
-        details = []
-        for row in obj.indicatorvalueextradetailrow_set.all():
-            columns = {}
-            for column in row.indicatorvalueextradetailcolumn_set.all():
-                columns[column.name] = column.value
-            details.append(columns)
-        return details
+        return obj.attributes
 
     def get_extra_data(self, obj: IndicatorValue):
         """Return extra data."""
-        # for details
-        extras = {}
-        for row in obj.indicatorextravalue_set.all():
-            extras[row.name] = row.value
-        return extras
+        return obj.attributes
 
     class Meta:  # noqa: D106
         model = IndicatorValue
