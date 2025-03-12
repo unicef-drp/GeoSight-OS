@@ -40,7 +40,7 @@ class BaseImporterTest(TestCase):
     databases = {'default', 'temp'}
 
     admin_level = 1
-    georepo_url = 'http://test.com'
+    georepo_url = 'http://localhost'
     georepo_api_key = 'AAA'
 
     import_type = ''

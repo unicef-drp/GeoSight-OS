@@ -4,7 +4,7 @@
     {
       "level": 0,
       "level_name": "Top",
-      "url": "http://test.com/search/view/test/top"
+      "url": "http://localhost/search/view/test/top"
     }
   ]
 }

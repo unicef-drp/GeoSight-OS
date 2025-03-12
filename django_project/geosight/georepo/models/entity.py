@@ -257,10 +257,11 @@ class Entity(models.Model):
                     admin_level=admin_level_country
                 )
                 obj.country = country
-            except (IndexError, GeorepoEntityDoesNotExist):
+            except Exception:
                 pass
 
         obj.save()
+        reference_layer.assign_country(obj, check_entity=False)
         return obj, created
 
     @property

@@ -16,8 +16,10 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from unittest.mock import patch
 
+import responses
 from django.db import connection
 
+from core.models import SitePreferences
 from core.tests.base_tests import APITestCase
 from geosight.georepo.models.entity import Entity
 from geosight.georepo.request.data import GeorepoEntity
@@ -29,8 +31,16 @@ from geosight.georepo.tests.model_factories.reference_layer import (
 class EntityTest(APITestCase):
     """Entity test."""
 
+    georepo_url = 'http://localhost'
+    georepo_api_key = 'AAA'
+
     def setUp(self):
-        """To setup test."""
+        """To setup tests."""
+        preference = SitePreferences.preferences()
+        preference.georepo_url = self.georepo_url
+        preference.georepo_api_key = self.georepo_api_key
+        preference.save()
+
         self.reference_layer = ReferenceLayerF()
         GeorepoEntity(
             {
@@ -271,3 +281,40 @@ class EntityTest(APITestCase):
         entity.parents = []
         entity.save()
         self.assertEqual(mock_func.call_count, 4)
+
+    @responses.activate
+    def test_check_auto_country(self):
+        """Check autofetch country from georepo."""
+        responses.add(
+            responses.GET,
+            'http://localhost/search/view/00000000-0000-0000-0000-000000000000/entity/identifier/ucode/X/?cached=False',
+            status=200,
+            json={
+                'count': 1,
+                'total_page': 1,
+                'results': [
+                    {
+                        'name': 'name',
+                        'ucode': 'X',
+                        'admin_level': 0
+                    }
+                ]
+            }
+        )
+        reference_layer = ReferenceLayerF(
+            identifier='00000000-0000-0000-0000-000000000000'
+        )
+        GeorepoEntity(
+            {
+                'name': 'name',
+                'ucode': 'XXX',
+                'admin_level': 2,
+                'parents': [
+                    {'ucode': 'X', 'admin_level': 0},
+                    {'ucode': 'XX', 'admin_level': 1},
+                ]
+            }
+        ).get_or_create(reference_layer)
+        entity = Entity.objects.get(geom_id='XXX')
+        self.assertEqual(entity.country, Entity.objects.get(geom_id='X'))
+        reference_layer.countries.get(geom_id='X')
