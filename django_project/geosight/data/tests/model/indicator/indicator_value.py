@@ -533,7 +533,7 @@ class IndicatorValueTest(TestCase):
         self.assertEquals(value_a.country_name, entity.country.name)
         self.assertEquals(value_a.country_geom_id, 'A')
         self.assertEquals(value_a.country_geom_id, entity.country.geom_id)
-        self.assertEquals(value_a.extra_value, {'Extra 1':'1'})
+        self.assertEquals(value_a.extra_value, {'Extra 1': '1'})
 
         # check indicator
         self.assertEquals(value_a.indicator_name, indicator.name)
