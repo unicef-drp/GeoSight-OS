@@ -62,6 +62,7 @@ export const IndicatorRequest = memo(
       data: null,
       error: null
     });
+    const [version, setVersion] = useState<string | null>(null);
 
     // get metadata and update progress
     let metadataId = indicator.metadataKey
@@ -80,7 +81,7 @@ export const IndicatorRequest = memo(
     // Params
     const params: Parameter = {
       date__lte: selectedGlobalTime.max ? selectedGlobalTime.max.split('T')[0] : null,
-      version: indicatorLayerMetadata ? indicatorLayerMetadata.version : null,
+      version: version,
       country_geom_id: referenceLayerData?.data?.countries?.map((country: CountryDatasetView) => country.ucode)
     }
     if (selectedGlobalTime.min) {
@@ -114,8 +115,17 @@ export const IndicatorRequest = memo(
 
     /** Loading when metadata fetched. */
     useEffect(() => {
-      if (indicatorLayerMetadata) {
+      if (version) {
         onLoading(indicator.id, metadataId, totalPage);
+      }
+    }, [version]);
+
+    /** Loading when metadata fetched. */
+    useEffect(() => {
+      if (indicatorLayerMetadata) {
+        if (version !== indicatorLayerMetadata.version) {
+          setVersion(indicatorLayerMetadata.version);
+        }
       }
     }, [indicatorLayerMetadata]);
 

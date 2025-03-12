@@ -131,7 +131,6 @@ export default function Indicators() {
     },
     [referenceLayer.identifier]
   )
-
   return <>
     {
       indicatorsWithDataset.map(indicatorDataset => {
@@ -143,7 +142,6 @@ export default function Indicators() {
 
           return <IndicatorRequest
             key={identifier}
-            id={indicator.id}
             indicator={indicator}
             datasetIdentifier={dataset}
             onLoading={onLoading}
