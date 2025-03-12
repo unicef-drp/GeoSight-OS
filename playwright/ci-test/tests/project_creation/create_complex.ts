@@ -21,7 +21,7 @@ test.describe('Create complex project', () => {
 
     // Select dataset
     await page.locator(".ReferenceDatasetSection input").click();
-    await page.locator(".ModalDataSelector .MuiDataGrid-row").click();
+    await page.locator(".ModalDataSelector .MuiDataGrid-row").nth(1).click();
 
     // Check extent
     await expect(page.locator('.ExtentManualInput input').nth(0)).toHaveValue('40.9943');
