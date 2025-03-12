@@ -154,7 +154,7 @@ class temp_disconnect_signal(object):
 def pg_value(value, attr=None):
     """Return pg value."""
     set_value = value
-    if attr:
+    if attr and value:
         set_value = getattr(value, attr)
     try:
         set_value = set_value.replace("'", "''")

@@ -245,8 +245,22 @@ class Entity(models.Model):
         obj.concept_uuid = concept_uuid
         obj.name = name
         obj.parents = parents
+
+        # We need to fetch the country
+        if admin_level != admin_level_country and not obj.country:
+            try:
+                parent_ucode = parents[-1]
+                country = Entity.get_entity(
+                    reference_layer=reference_layer,
+                    original_id=parent_ucode,
+                    original_id_type='ucode',
+                    admin_level=admin_level_country
+                )
+                obj.country = country
+            except (IndexError, GeorepoEntityDoesNotExist):
+                pass
+
         obj.save()
-        reference_layer.assign_country(obj, check_entity=False)
         return obj, created
 
     @property
