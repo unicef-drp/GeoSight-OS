@@ -287,7 +287,11 @@ class EntityTest(APITestCase):
         """Check autofetch country from georepo."""
         responses.add(
             responses.GET,
-            'http://localhost/search/view/00000000-0000-0000-0000-000000000000/entity/identifier/ucode/X/?cached=False',
+            (
+                'http://localhost/search/view/'
+                '00000000-0000-0000-0000-000000000000/'
+                'entity/identifier/ucode/X/?cached=False'
+            ),
             status=200,
             json={
                 'count': 1,
