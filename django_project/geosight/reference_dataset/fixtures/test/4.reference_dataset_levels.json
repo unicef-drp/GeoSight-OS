@@ -25,5 +25,23 @@
       "level": 2,
       "name": "Admin Level 2"
     }
+  },
+  {
+    "model": "geosight_reference_dataset.referencedatasetlevel",
+    "pk": 4,
+    "fields": {
+      "reference_layer": 2,
+      "level": 0,
+      "name": "Level 0"
+    }
+  },
+  {
+    "model": "geosight_reference_dataset.referencedatasetlevel",
+    "pk": 5,
+    "fields": {
+      "reference_layer": 2,
+      "level": 1,
+      "name": "Level 1"
+    }
   }
 ]
