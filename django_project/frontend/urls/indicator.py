@@ -25,18 +25,12 @@ from frontend.views.admin.indicator.list import IndicatorListView
 from frontend.views.admin.indicator.value_management import (
     IndicatorValueManagementMapView, IndicatorValueManagementTableView
 )
-from frontend.views.admin.indicator.values import IndicatorValueListView
 
 admin_indicator_detail_url = [
     url(
         r'^edit',
         IndicatorEditView.as_view(),
         name='admin-indicator-edit-view'
-    ),
-    url(
-        r'^value-list$',
-        IndicatorValueListView.as_view(),
-        name='admin-indicator-value-list-manager'
     ),
     url(
         r'^value-manager-map$',

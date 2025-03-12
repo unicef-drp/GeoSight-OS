@@ -79,29 +79,6 @@ class IndicatorAdminViewTest(BaseViewTest.TestCaseWithBatch):
         """Create resource function."""
         return Indicator.permissions.list(user).order_by('id')
 
-    def test_values_view(self):
-        """Test for values view."""
-        resource = self.create_resource(self.creator)
-
-        url = reverse(
-            'admin-indicator-value-list-manager', kwargs={'pk': resource.id})
-        self.assertRequestGetView(url, 302)  # Non login
-        self.assertRequestGetView(url, 403, self.viewer)  # Viewer
-        self.assertRequestGetView(url, 403, self.contributor)  # Contributor
-        self.assertRequestGetView(url, 200, self.creator)  # Creator
-        self.assertRequestGetView(url, 200, self.admin)  # Admin
-
-        # sharing
-        resource.permission.update_user_permission(
-            self.contributor, PERMISSIONS.READ.name)
-        self.assertRequestGetView(url, 200, self.contributor)
-
-        resource.permission.update_group_permission(
-            self.group, PERMISSIONS.READ.name)
-        self.assertRequestGetView(url, 403, self.viewer_in_group)
-        self.assertRequestGetView(url, 200, self.contributor_in_group)
-        self.assertRequestGetView(url, 200, self.creator_in_group)
-
     def test_value_management_map_view(self):
         """Test for management map view."""
         resource = self.create_resource(self.creator)
