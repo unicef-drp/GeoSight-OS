@@ -213,6 +213,22 @@ class Entity(models.Model):
         return entity
 
     @staticmethod
+    def check_country(obj, admin_level, parents, reference_layer):
+        """Check country."""
+        if admin_level != admin_level_country and not obj.country:
+            try:
+                parent_ucode = parents[-1]
+                country = Entity.get_entity(
+                    reference_layer=reference_layer,
+                    original_id=parent_ucode,
+                    original_id_type='ucode',
+                    admin_level=admin_level_country
+                )
+                obj.country = country
+            except Exception:
+                pass
+
+    @staticmethod
     def get_or_create(
             reference_layer: ReferenceLayerView,
             geom_id,
@@ -246,20 +262,7 @@ class Entity(models.Model):
         obj.name = name
         obj.parents = parents
 
-        # We need to fetch the country
-        if admin_level != admin_level_country and not obj.country:
-            try:
-                parent_ucode = parents[-1]
-                country = Entity.get_entity(
-                    reference_layer=reference_layer,
-                    original_id=parent_ucode,
-                    original_id_type='ucode',
-                    admin_level=admin_level_country
-                )
-                obj.country = country
-            except Exception:
-                pass
-
+        Entity.check_country(obj, admin_level, parents, reference_layer)
         obj.save()
         reference_layer.assign_country(obj, check_entity=False)
         return obj, created

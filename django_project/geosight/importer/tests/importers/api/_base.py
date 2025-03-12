@@ -25,7 +25,7 @@ from geosight.importer.utilities import json_from_excel
 class BaseApiTest(BaseImporterTest):
     """Base for Api Importer."""
 
-    api_url = 'http://localhost'
+    api_url = 'http://test.com'
     attributes = {
         'api_url': api_url,
         'key_feature_list': 'features',
