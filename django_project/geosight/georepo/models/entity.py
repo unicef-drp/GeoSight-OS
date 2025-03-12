@@ -242,6 +242,7 @@ class Entity(models.Model):
             entity=obj,
         )
         obj.reference_layer = reference_layer
+        obj.concept_uuid = concept_uuid
         obj.name = name
         obj.parents = parents
         obj.save()

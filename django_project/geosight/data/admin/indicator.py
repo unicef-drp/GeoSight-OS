@@ -87,10 +87,10 @@ class IndicatorValueAdmin(admin.ModelAdmin):
     """IndicatorValue admin."""
 
     list_display = (
-        'indicator', 'date', 'value', 'geom_id',
+        'geom_id', 'indicator_name', 'date', 'value',
         'entity_geom_id', 'country_geom_id'
     )
-    list_filter = (NullEntityFilter, NullCountryFilter, 'date', 'indicator')
+    list_filter = (NullEntityFilter, NullCountryFilter, 'date')
     search_fields = ('indicator__name', 'geom_id')
     inlines = (IndicatorExtraValueRuleInline,)
     actions = (assign_flat_table,)

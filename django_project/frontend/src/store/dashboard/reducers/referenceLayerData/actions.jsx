@@ -29,6 +29,7 @@ function request(id) {
 }
 
 function receive(data, error, id) {
+  data.identifier = id
   return {
     id: id,
     name: REFERENCE_LAYER_DATA_ACTION_NAME,
