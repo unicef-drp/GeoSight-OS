@@ -93,7 +93,6 @@ test.describe('Download feature project', () => {
     const workbook = xlsx.readFile(filePath);
     const sheetName = workbook.SheetNames[0];
     const jsonData = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
-    console.log(jsonData)
     await expect(jsonData[0]).toStrictEqual({
       GeographyCode: 'SOM_V1',
       GeographyName: 'Somalia',

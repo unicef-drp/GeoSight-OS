@@ -13,7 +13,7 @@ test.describe('View edit project', () => {
   // A use case tests scenarios
   test('Edit project', async ({ page }) => {
     // Check popup config
-    await page.getByText('Indicator Layers (9)').click();
+    await page.getByText('Indicator Layers (10)').click();
     await page.locator('li').filter({ hasText: 'Sample Indicator ASingle' }).getByRole('button').nth(1).click();
     await page.getByText('Popup', { exact: true }).click();
     await expect(page.locator('.preview .popup-content').nth(0).locator('td').nth(0)).toContainText('SOM_TEST_IND_A')
