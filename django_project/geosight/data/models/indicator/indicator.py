@@ -482,10 +482,11 @@ class Indicator(
     def update_indicator_value_data(self):
         """Update indicator data in indicator value."""
         shortcode = pg_value(self.shortcode)
+        name = pg_value(self.name)
         query = f"""
             UPDATE geosight_data_indicatorvalue
             SET
-                indicator_name = '{self.name}',
+                indicator_name = {name},
                 indicator_shortcode = {shortcode}
             WHERE
                 indicator_id = {self.id}

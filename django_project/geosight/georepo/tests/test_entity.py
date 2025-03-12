@@ -34,7 +34,7 @@ class EntityTest(APITestCase):
         self.reference_layer = ReferenceLayerF()
         GeorepoEntity(
             {
-                'name': 'name',
+                'name': "name'A",
                 'ucode': 'A',
                 'admin_level': 0
             }

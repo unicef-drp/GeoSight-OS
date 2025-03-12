@@ -119,8 +119,14 @@ class IndicatorValueTest(TestCase):
         self.assertEquals(value.country_geom_id, entity.country.geom_id)
 
         # check indicator
-        self.assertEquals(value.indicator_name, indicator.name)
+        self.assertEquals(value.indicator_name, 'Indicator 1')
         self.assertEquals(value.indicator_shortcode, None)
+
+        # Update indicator name
+        indicator.name = "Indicator '1"
+        indicator.save()
+        value.refresh_from_db()
+        self.assertEquals(value.indicator_name, "Indicator '1")
 
     def test_create_from_indicator(self):
         """Test create."""

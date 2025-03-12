@@ -338,6 +338,7 @@ class Entity(models.Model):
         concept_uuid = pg_value(self.concept_uuid)
 
         # For country
+        entity_name = pg_value(self.name)
         if self.is_country:
             country_id = self.id
             country_name = pg_value(self.name)
@@ -350,7 +351,7 @@ class Entity(models.Model):
         query = f"""
             UPDATE geosight_data_indicatorvalue
             SET
-                entity_name = '{self.name}',
+                entity_name = {entity_name},
                 admin_level = {self.admin_level},
                 concept_uuid = {concept_uuid},
                 entity_start_date = {start_date},
@@ -368,8 +369,8 @@ class Entity(models.Model):
         """Update entity data in indicator value."""
         # For country
         if self.is_country:
-            country_name = f"'{self.name}'"
-            country_geom_id = f"'{self.geom_id}'"
+            country_name = pg_value(self.name)
+            country_geom_id = pg_value(self.geom_id)
             query = f"""
                 UPDATE geosight_data_indicatorvalue
                 SET

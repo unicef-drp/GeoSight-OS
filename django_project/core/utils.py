@@ -153,9 +153,14 @@ class temp_disconnect_signal(object):
 
 def pg_value(value, attr=None):
     """Return pg value."""
+    set_value = value
     if attr:
-        return f"'{getattr(value, attr)}'" if value else "NULL"
-    return f"'{value}'" if value else "NULL"
+        set_value = getattr(value, attr)
+    try:
+        set_value = set_value.replace("'", "''")
+    except Exception:
+        pass
+    return f"'{set_value}'" if value else "NULL"
 
 
 def compress_text(text):

@@ -38,9 +38,7 @@ class ReferenceDatasetAdmin(ReferenceLayerViewAdmin):
     list_filter = ()
 
     def get_queryset(self, request):
-        """Return a QuerySet of all model instances that can be edited by the
-        admin site. This is used by changelist_view.
-        """
+        """Return queryset."""
         qs = self.model.permissions.get_queryset()
         ordering = self.get_ordering(request)
         if ordering:
