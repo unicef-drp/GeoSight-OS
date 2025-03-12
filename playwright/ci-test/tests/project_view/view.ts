@@ -78,6 +78,16 @@ test.describe('View project', () => {
     await page.getByRole('button', { name: 'Indicator A above X% Delete' }).getByRole('checkbox').uncheck();
     await page.getByRole('tab', { name: 'Layers' }).click();
 
+    // --------------------------------
+    // Check multi reference layer
+    // --------------------------------
+    await expect(page.locator('.ReferenceLayerLevelSelected')).toContainText('Admin Level 1')
+    const kenyaLayer = 'Kenya Indicator A'
+    await page.getByLabel(kenyaLayer).click();
+    await expect(page.locator('.ReferenceLayerLevelSelected')).toContainText('Level 1')
+    await expect(lastLog).toEqual("KEN_0001_V1,KEN_0002_V1,KEN_0003_V1,KEN_0004_V1,KEN_0005_V1,KEN_0006_V1,KEN_0007_V1,KEN_0008_V1,KEN_0009_V1,KEN_0010_V1,KEN_0011_V1,KEN_0012_V1,KEN_0013_V1,KEN_0014_V1,KEN_0015_V1,KEN_0016_V1,KEN_0017_V1,KEN_0018_V1,KEN_0019_V1,KEN_0020_V1,KEN_0021_V1,KEN_0022_V1,KEN_0023_V1,KEN_0024_V1,KEN_0025_V1,KEN_0026_V1,KEN_0027_V1,KEN_0028_V1,KEN_0029_V1,KEN_0030_V1,KEN_0031_V1,KEN_0032_V1,KEN_0033_V1,KEN_0034_V1,KEN_0035_V1,KEN_0036_V1,KEN_0037_V1,KEN_0038_V1,KEN_0039_V1,KEN_0040_V1,KEN_0041_V1,KEN_0042_V1,KEN_0043_V1,KEN_0044_V1,KEN_0045_V1,KEN_0046_V1,KEN_0047_V1");
+    await expect(lastLogLabel).toEqual("KEN_0028_V1,4,KEN_0029_V1,3,KEN_0030_V1,2,KEN_0031_V1,1,KEN_0032_V1,2,KEN_0033_V1,3,KEN_0034_V1,2,KEN_0035_V1,6,KEN_0036_V1,1,KEN_0037_V1,8,KEN_0038_V1,3,KEN_0039_V1,4,KEN_0040_V1,1,KEN_0041_V1,2,KEN_0042_V1,3,KEN_0043_V1,8,KEN_0044_V1,3,KEN_0045_V1,4,KEN_0046_V1,3,KEN_0047_V1,1,KEN_0001_V1,1,KEN_0002_V1,2,KEN_0003_V1,1,KEN_0004_V1,2,KEN_0005_V1,3,KEN_0006_V1,6,KEN_0007_V1,7,KEN_0008_V1,4,KEN_0009_V1,5,KEN_0010_V1,3,KEN_0011_V1,4,KEN_0012_V1,7,KEN_0013_V1,6,KEN_0014_V1,8,KEN_0015_V1,1,KEN_0016_V1,2,KEN_0017_V1,1,KEN_0018_V1,2,KEN_0019_V1,3,KEN_0020_V1,4,KEN_0021_V1,3,KEN_0022_V1,2,KEN_0023_V1,1,KEN_0024_V1,2,KEN_0025_V1,3,KEN_0026_V1,4,KEN_0027_V1,5");
+
     // Chart
     const layer3 = 'Pie Chart layer'
     await page.getByLabel(layer3).click();
