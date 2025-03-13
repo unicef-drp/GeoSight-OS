@@ -28,7 +28,9 @@ from geosight.data.api.v1.data_browser import (
     DataBrowserApiList, DatasetApiList
 )
 from geosight.data.api.v1.group import GroupViewSet
-from geosight.data.api.v1.indicator import IndicatorViewSet
+from geosight.data.api.v1.indicator import (
+    IndicatorViewSet, IndicatorDataViewSet
+)
 from geosight.data.api.v1.related_table import (
     RelatedTableViewSet, RelatedTableDataViewSet, RelatedTableGeoDataViewSet
 )
@@ -38,7 +40,6 @@ from geosight.data.api.v1.users import UserViewSet
 router = DefaultRouter()
 router.register(r'basemaps', BasemapViewSet, basename='basemaps')
 router.register(r'dashboards', DashboardViewSet, basename='dashboards')
-router.register(r'indicators', IndicatorViewSet, basename='indicators')
 router.register(r'styles', StyleViewSet, basename='styles')
 router.register(r'users', UserViewSet, basename='users')
 router.register(
@@ -49,6 +50,15 @@ router.register(r'code-list', CodeListViewSet, basename='codelist')
 router.register(r'dataset', DatasetApiList, basename='dataset')
 router.register(r'data-browser', DataBrowserApiList, basename='data-browser')
 
+# Indicator
+router.register(r'indicators', IndicatorViewSet, basename='indicators')
+indicators_router = NestedSimpleRouter(
+    router, r'indicators', lookup='indicators')
+indicators_router.register(
+    'data', IndicatorDataViewSet, basename='indicator_data'
+)
+
+# Related table API
 router.register(
     r'related-tables', RelatedTableViewSet, basename='related_tables'
 )
@@ -64,6 +74,7 @@ related_tables_router.register(
 )
 urlpatterns = router.urls
 urlpatterns += related_tables_router.urls
+urlpatterns += indicators_router.urls
 
 if settings.REFERENCE_DATASET_ENABLED:
     urlpatterns += [

@@ -21,7 +21,6 @@ from .dashboard import DashboardListApiTest  # noqa
 from .dashboard_bookmark import DashboardBookmarkApiTest  # noqa
 from .dashboard_embed import DashboardBookmarkApiTest  # noqa
 from .indicator import *  # noqa
-from .indicator_value import IndicatorValueTest  # noqa
 from .indicators import IndicatorListApiTest  # noqa
 from .related_table import RelatedTableApiTest  # noqa
 from .sharepoint import *  # noqa

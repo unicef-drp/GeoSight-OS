@@ -20,6 +20,7 @@ from drf_yasg import openapi
 from rest_framework import serializers
 
 from core.serializer.dynamic_serializer import DynamicModelSerializer
+from geosight.georepo.models.entity import Entity
 from geosight.reference_dataset.models.reference_dataset import (
     ReferenceDataset, ReferenceDatasetLevel
 )
@@ -47,6 +48,20 @@ class ReferenceDatasetLevelSerializer(serializers.ModelSerializer):
         fields = ('level', 'level_name', 'url')
 
 
+class EntitySerializer(serializers.ModelSerializer):
+    """Serializer for Entity."""
+
+    ucode = serializers.SerializerMethodField()
+
+    def get_ucode(self, obj: Entity):
+        """Return value."""
+        return obj.geom_id
+
+    class Meta:  # noqa: D106
+        model = Entity
+        fields = ('name', 'ucode')
+
+
 class ReferenceDatasetSerializer(DynamicModelSerializer):
     """Serializer for ReferenceDataset."""
 
@@ -57,6 +72,7 @@ class ReferenceDatasetSerializer(DynamicModelSerializer):
     dataset_levels = serializers.SerializerMethodField()
     tags = serializers.SerializerMethodField()
     permission = serializers.SerializerMethodField()
+    countries = serializers.SerializerMethodField()
 
     def get_uuid(self, obj: ReferenceDataset):
         """Return uuid."""
@@ -125,6 +141,10 @@ class ReferenceDatasetSerializer(DynamicModelSerializer):
         return obj.permission.all_permission(
             self.context.get('user', None)
         )
+
+    def get_countries(self, obj: ReferenceDataset):
+        """Return countries."""
+        return EntitySerializer(obj.countries, many=True).data
 
     class Meta:  # noqa: D106
         model = ReferenceDataset

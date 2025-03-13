@@ -23,8 +23,6 @@ import User from "../../../../components/Navbar/User";
 import {
   ContactActiveIcon,
   ContactIcon,
-  DataAccessActiveIcon,
-  DataAccessIcon,
   DataBrowserActiveIcon,
   DataBrowserIcon,
   DataManagementActiveIcon,
@@ -211,23 +209,6 @@ export default function SideNavigation({ pageName, minified }) {
               }
               <div className='SideNavigationContentGroup'>
                 <div className='SideNavigationContentGroupTitle'>ACCESS</div>
-                {
-                  user.is_creator ? <Fragment>
-                    <SidaNavigationButton
-                      minified={minified}
-                      title='Data Access'>
-                      <a href={dataAccess}
-                         className={'SideNavigation-Row ' + (pageName === pageNames.DataAccess ? 'active' : '')}>
-                        {
-                          pageName === pageNames.DataAccess ?
-                            <DataAccessActiveIcon/> : <DataAccessIcon/>
-                        }
-                        <span
-                          className='SideNavigation-Row-Name'>Data Access</span>
-                      </a>
-                    </SidaNavigationButton>
-                  </Fragment> : null
-                }
                 {
                   user.is_admin ? <Fragment>
                     <SidaNavigationButton

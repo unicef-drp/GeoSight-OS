@@ -19,14 +19,11 @@ import os
 from django.core.files import File
 
 from core.settings.utils import ABS_PATH
+from geosight.data.models.indicator import IndicatorValue
 from geosight.importer.exception import ImporterDoesNotExist
 from geosight.importer.importers import IndicatorValueExcelLongFormat
-from geosight.importer.importers.base.indicator_value import (
-    ImporterTimeDataType, AdminLevelType
-)
-from geosight.importer.importers.base.indicator_value import (
-    MultipleValueAggregationType
-)
+from geosight.importer.importers.base.indicator_value import \
+    ImporterTimeDataType, AdminLevelType, MultipleValueAggregationType
 from geosight.importer.models import Importer, ImportType, InputFormat
 from geosight.importer.models.log import LogStatus
 from geosight.importer.tests.importers._base import (
@@ -347,6 +344,17 @@ class ExcelLongFormatIndicatorValueTest(BaseIndicatorValueImporterTest):
 
         self.assertIndicatorValueByExcel(filepath, 'COUNT (Upper Level)')
 
+        # Check the description
+        country_values = IndicatorValue.objects.filter(
+            entity__in=self.reference_layer.entities_set,
+            admin_level=0
+        )
+        for value in country_values:
+            self.assertEqual(
+                value.attributes,
+                {'description': 'COUNT of 9 records (from level 1).'}
+            )
+
         # '----------------------------------------------------'
         # Multiple value with max data
         attributes = {
@@ -366,6 +374,17 @@ class ExcelLongFormatIndicatorValueTest(BaseIndicatorValueImporterTest):
 
         self.assertIndicatorValueByExcel(filepath, 'MAX (Upper Level)')
 
+        # Check the description
+        country_values = IndicatorValue.objects.filter(
+            entity__in=self.reference_layer.entities_set,
+            admin_level=0
+        )
+        for value in country_values:
+            self.assertEqual(
+                value.attributes,
+                {'description': 'MAX of 9 records (from level 1).'}
+            )
+
         # '----------------------------------------------------'
         # Multiple value with min data
         attributes = {
@@ -384,6 +403,17 @@ class ExcelLongFormatIndicatorValueTest(BaseIndicatorValueImporterTest):
             self.run_importer(self.importer, attributes, files)
 
         self.assertIndicatorValueByExcel(filepath, 'MIN (Upper Level)')
+
+        # Check the description
+        country_values = IndicatorValue.objects.filter(
+            entity__in=self.reference_layer.entities_set,
+            admin_level=0
+        )
+        for value in country_values:
+            self.assertEqual(
+                value.attributes,
+                {'description': 'MIN of 9 records (from level 1).'}
+            )
 
         # '----------------------------------------------------'
         # Multiple value with avg data
@@ -405,3 +435,14 @@ class ExcelLongFormatIndicatorValueTest(BaseIndicatorValueImporterTest):
         self.assertIndicatorValueByExcel(filepath, 'AVG (Upper Level)')
         self.indicator_2.max_value = 7
         self.indicator_2.save()
+
+        # Check the description
+        country_values = IndicatorValue.objects.filter(
+            entity__in=self.reference_layer.entities_set,
+            admin_level=0
+        )
+        for value in country_values:
+            self.assertEqual(
+                value.attributes,
+                {'description': 'AVG of 9 records (from level 1).'}
+            )

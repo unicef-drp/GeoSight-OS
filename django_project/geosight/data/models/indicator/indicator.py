@@ -16,16 +16,16 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from datetime import date, datetime
 
-import pytz
-from django.conf import settings
 from django.contrib.gis.db import models
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import connection
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
 from core.models.general import (
     AbstractTerm, AbstractSource, AbstractEditData, AbstractVersionData
 )
+from core.utils import pg_value
 from geosight.data.models.code import CodeList
 from geosight.data.models.indicator.indicator_type import (
     IndicatorType, IndicatorTypeChoices
@@ -237,13 +237,19 @@ class Indicator(
     def save_value(
             self,
             date: date, geom_id: str, value: any,
-            reference_layer=None, admin_level: int = None, extras: dict = None,
+
+            # TODO:
+            #  reference layer will be removed after georepo
+            #  has API to check country
+            reference_layer=None,
+            admin_level: int = None,
+            extras: dict = None,
             geom_id_type: str = 'ucode',
             more_error_information=False
     ):
         """Save new value for the indicator."""
         from geosight.data.models.indicator import (
-            IndicatorValue, IndicatorExtraValue
+            IndicatorValue
         )
         from geosight.georepo.models import ReferenceLayerView
         from geosight.georepo.models.entity import Entity
@@ -294,24 +300,24 @@ class Indicator(
             indicator_value.value = value
 
         # Save the original one
-        indicator_value.entity = entity
+        indicator_value.assign_entity(entity)
         indicator_value.save()
 
         if extras:
             for extra_key, extra_value in extras.items():
-                indicator_extra_value, created = \
-                    IndicatorExtraValue.objects.get_or_create(
-                        indicator_value=indicator_value,
-                        name=extra_key
-                    )
-                indicator_extra_value.value = extra_value
-                indicator_extra_value.save()
-
+                indicator_value.add_extra_value(extra_key, extra_value)
         return indicator_value
 
     def query_values(
             self, date_data: date = None, min_date_data: date = None,
-            reference_layer=None, admin_level: int = None,
+
+            # TODO:
+            #  reference layer will be removed after georepo
+            #  has API to check country
+            reference_layer=None,
+
+            countries_id: list = None,
+            admin_level: int = None,
             concept_uuid: str = None,
             concept_uuids: list = None,
             entities_id: list = None
@@ -333,6 +339,8 @@ class Indicator(
         # Do filter
         if reference_layer:
             query = query.filter(reference_layer_id=reference_layer.id)
+        if countries_id:
+            query = query.filter(country_id__in=countries_id)
         if admin_level:
             query = query.filter(admin_level=admin_level)
         if date_data:
@@ -435,38 +443,12 @@ class Indicator(
             ]
         return []
 
-    def metadata(self, reference_layer_uuid):
+    def metadata(self, reference_layer):
         """Metadata for indicator."""
-        from geosight.georepo.models.reference_layer import ReferenceLayerView
-        from geosight.data.models.indicator.indicator_value import (
-            IndicatorValueWithGeo
+        from geosight.data.models.indicator.utilities import (
+            metadata_indicator_by_view
         )
-        try:
-            query = self.query_values(
-                reference_layer=ReferenceLayerView.objects.get(
-                    identifier=reference_layer_uuid
-                )
-            )
-        except ReferenceLayerView.DoesNotExist:
-            ReferenceLayerView.objects.get_or_create(
-                identifier=reference_layer_uuid
-            )
-            query = IndicatorValueWithGeo.objects.none()
-        dates = [
-            datetime.combine(
-                date_str, datetime.min.time(),
-                tzinfo=pytz.timezone(settings.TIME_ZONE)
-            ).isoformat()
-            for date_str in set(
-                query.values_list('date', flat=True)
-            )
-        ]
-        dates.sort()
-
-        return {
-            'dates': dates,
-            'count': query.count()
-        }
+        return metadata_indicator_by_view(self, reference_layer)
 
     def metadata_with_cache(self, reference_layer):
         """Metadata for indicator."""
@@ -485,10 +467,40 @@ class Indicator(
         if cache_data:
             return cache_data
 
-        response = self.metadata(reference_layer.identifier)
+        response = self.metadata(reference_layer)
         response['version'] = cache.version
         cache.set(response)
         return response
+
+    def update_indicator_value_data(self):
+        """Update indicator data in indicator value."""
+        shortcode = pg_value(self.shortcode)
+        name = pg_value(self.name)
+        query = f"""
+            UPDATE geosight_data_indicatorvalue
+            SET
+                indicator_name = {name},
+                indicator_shortcode = {shortcode}
+            WHERE
+                indicator_id = {self.id}
+        """
+        with connection.cursor() as cursor:
+            cursor.execute(query)
+
+
+@receiver(pre_save, sender=Indicator)
+def update_indicator_value_data(sender, instance, **kwargs):
+    """Update indicator value when Indicator changed."""
+    if not instance._state.adding:
+        try:
+            old_instance = sender.objects.get(pk=instance.pk)
+            if (
+                    old_instance.name != instance.name or
+                    old_instance.shortcode != instance.shortcode
+            ):
+                instance.update_indicator_value_data()
+        except ObjectDoesNotExist:
+            pass
 
 
 @receiver(post_save, sender=Indicator)

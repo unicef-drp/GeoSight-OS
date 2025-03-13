@@ -29,11 +29,11 @@ const cache = {}
 /**
  * Return related table data
  */
-export const getRelatedTableData = (data, config, selectedGlobalTime, geoField = 'geometry_code', aggregateDate = true, adminLevel = null) => {
+export const getRelatedTableData = (data, config, selectedGlobalTime, geoField = 'geometry_code', aggregateDate = true, adminLevels = null) => {
   if (data) {
     // Get admin level
-    if (adminLevel == null) {
-      adminLevel = data[0]?.admin_level
+    if (adminLevels == null) {
+      adminLevels = data[0]?.admin_level
     }
     const identifier = JSON.stringify(
       {
@@ -42,7 +42,7 @@ export const getRelatedTableData = (data, config, selectedGlobalTime, geoField =
         selectedGlobalTime: selectedGlobalTime,
         geoField: geoField,
         aggregateDate: aggregateDate,
-        adminLevel: adminLevel
+        adminLevels: adminLevels
       }
     )
     if (cache[identifier]) {
@@ -50,8 +50,8 @@ export const getRelatedTableData = (data, config, selectedGlobalTime, geoField =
     }
 
     // Filter by admin level
-    if (adminLevel !== null) {
-      data = data.filter(row => row.admin_level === adminLevel)
+    if (adminLevels !== null) {
+      data = data.filter(row => ('' + adminLevels).split(',').includes('' + row.admin_level))
     }
     data = JSON.parse(JSON.stringify(data))
     const { aggregation } = config

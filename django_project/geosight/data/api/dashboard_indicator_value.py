@@ -24,17 +24,12 @@ from dateutil import parser as date_parser
 from django.conf import settings
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
-from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from core.cache import VersionCache
-from core.pagination import Pagination
 from geosight.data.models.dashboard import Dashboard
 from geosight.data.models.indicator import Indicator
-from geosight.data.serializer.indicator import (
-    IndicatorValueWithGeoDateSerializer
-)
 from geosight.georepo.models.reference_layer import (
     ReferenceLayerView, ReferenceLayerIndicator
 )
@@ -120,146 +115,34 @@ class _DashboardIndicatorValuesAPI(APIView):
         return reference_layer
 
 
-class _DashboardIndicatorValuesListAPI(
-    _DashboardIndicatorValuesAPI, ListAPIView
-):
-    """Base indicator values ListAPI."""
-
-    pagination_class = Pagination
-    serializer_class = IndicatorValueWithGeoDateSerializer
-
-    def get(self, request, *args, **kwargs):
-        """Return Values."""
-        pk = self.kwargs['pk']
-        indicator = get_object_or_404(Indicator, pk=pk)
-        reference_layer = self.check_permission(self.request.user, indicator)
-
-        # Cache version
-        cache = version_cache(
-            url=request.get_full_path(),
-            reference_layer=reference_layer,
-            indicator=indicator
-        )
-        cache_data = cache.get()
-        if cache_data:
-            return Response(cache_data)
-        queryset = self.filter_queryset(self.get_queryset())
-
-        # Get list data and save it to cache
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            assert self.paginator is not None
-            response = self.paginator.get_paginated_response_data(
-                serializer.data
-            )
-            cache.set(response)
-            return Response(response)
-
-        serializer = self.get_serializer(queryset, many=True)
-        response = serializer.data
-        cache.set(response)
-        return Response(response)
-
-
-class DashboardIndicatorValuesAPI(_DashboardIndicatorValuesListAPI):
-    """API for Values of indicator."""
-
-    def get_queryset(self):
-        """Return queryset of API."""
-        pk = self.kwargs['pk']
-        indicator = get_object_or_404(Indicator, pk=pk)
-        reference_layer = self.check_permission(self.request.user, indicator)
-        min_time, max_time = self.return_parameters(self.request)
-
-        return indicator.values(
-            date_data=max_time,
-            min_date_data=min_time,
-            admin_level=self.request.GET.get('admin_level', None),
-            reference_layer=reference_layer
-        )
-
-
-class DashboardIndicatorAllValuesAPI(_DashboardIndicatorValuesListAPI):
-    """API for all Values of indicator."""
-
-    def get_queryset(self):
-        """Return queryset of API."""
-        pk = self.kwargs['pk']
-        indicator = get_object_or_404(Indicator, pk=pk)
-        reference_layer = self.check_permission(self.request.user, indicator)
-        return indicator.values(
-            last_value=False,
-            reference_layer=reference_layer
-        )
-
-
-class DashboardIndicatorDatesAPI(DashboardIndicatorValuesAPI):
-    """API for of indicator."""
-
-    def get(self, request, slug, pk, **kwargs):
-        """Return Values."""
-        indicator = get_object_or_404(Indicator, pk=pk)
-        reference_layer = self.check_permission(request.user, indicator)
-
-        dates = [
-            datetime.combine(
-                date_str, datetime.min.time(),
-                tzinfo=pytz.timezone(settings.TIME_ZONE)
-            ).isoformat()
-            for date_str in set(
-                indicator.query_values(
-                    reference_layer=reference_layer
-                ).values_list('date', flat=True)
-            )
-        ]
-        dates.sort()
-
-        return Response(dates)
-
-
 class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
     """Return all values for the geometry code."""
 
-    def get(self, request, slug, concept_uuid):
+    def get(self, request, slug, geom_id):
         """Return values of all indicators in specific geometry.
 
         :param slug: slug of the dashboard
-        :param concept_uuid: the concept_uuid
+        :param geom_id: the geom_id
         :return:
         """
         dashboard = get_object_or_404(Dashboard, slug=slug)
         reference_layer = self.return_reference_view()
         entity = reference_layer.entities_set.filter(
-            concept_uuid=concept_uuid
+            geom_id=geom_id
         ).first()
         if not entity:
             return HttpResponseBadRequest(
-                f'Entity with concept_uuid: {concept_uuid} does not exist.'
+                f'Entity with geom_id: {geom_id} does not exist.'
             )
-        try:
-            parent = entity.parents[0]
-            siblings = reference_layer.entities_set.filter(
-                parents__contains=parent,
-                admin_level=entity.admin_level
-            ).exclude(pk=entity.pk)
-            parent = reference_layer.entities_set.filter(
-                geom_id=parent,
-                reference_layer=reference_layer
-            ).first()
-        except IndexError:
-            siblings = []
-            parent = None
+        siblings = entity.siblings
+        children = entity.children
+        parent = entity.parent
 
-        children = reference_layer.entities_set.filter(
-            parents__contains=entity.geom_id,
-            admin_level=entity.admin_level + 1
-        )
-        concept_uuids = [entity.concept_uuid] + \
-                        [sibling.concept_uuid for sibling in siblings] + \
-                        [children.concept_uuid for children in children]
+        entities_id = [entity.id] + \
+                      [sibling.id for sibling in siblings] + \
+                      [children.id for children in children]
         if parent:
-            concept_uuids.append(parent.concept_uuid)
+            entities_id.append(parent.id)
 
         # INIDATORS DATA
         indicators = {}
@@ -273,7 +156,7 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
                     date_data=None,
                     min_date_data=None,
                     reference_layer=reference_layer,
-                    concept_uuids=concept_uuids,
+                    entities_id=entities_id,
                     last_value=False
                 )
                 for value in values:
@@ -310,9 +193,11 @@ class DashboardEntityDrilldown(_DashboardIndicatorValuesAPI):
             except KeyError:
                 pass
             values, has_next = related_table.data_with_query(
-                reference_layer_uuids=[
-                    reference_layer.identifier
-                ],
+                country_geom_ids=list(
+                    reference_layer.countries.values_list(
+                        'geom_id', flat=True
+                    )
+                ),
                 geo_field=dashboard_related.geography_code_field_name,
                 geo_type=dashboard_related.geography_code_type,
                 date_field=date_field,

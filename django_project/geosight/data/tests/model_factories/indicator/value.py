@@ -18,7 +18,7 @@ import datetime
 
 import factory
 
-from geosight.data.models.indicator import IndicatorValue, IndicatorExtraValue
+from geosight.data.models.indicator import IndicatorValue
 from geosight.data.tests.model_factories.indicator.indicator import IndicatorF
 
 
@@ -32,14 +32,3 @@ class IndicatorValueF(factory.django.DjangoModelFactory):
 
     class Meta:  # noqa: D106
         model = IndicatorValue
-
-
-class IndicatorExtraValueF(factory.django.DjangoModelFactory):
-    """Factory of IndicatorExtraValue."""
-
-    indicator_value = factory.SubFactory(IndicatorValueF)
-    name = factory.Sequence(lambda n: 'Indicator Extra {}'.format(n))
-    value = factory.Sequence(lambda n: n)
-
-    class Meta:  # noqa: D106
-        model = IndicatorExtraValue

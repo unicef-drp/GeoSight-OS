@@ -215,6 +215,12 @@ export function ReferenceLayer(
       return;
     }
     const vectorTiles = referenceLayerData?.data?.vector_tiles
+
+    // No vector tile
+    if (referenceLayerData?.data && !referenceLayerData?.data?.vector_tiles) {
+      removeAllLayers()
+      return;
+    }
     if (vectorTiles && levels && map && currentLevel !== undefined) {
       const url = GeorepoUrls.WithoutDomain(updateToken(vectorTiles))
       const _referenceLayerConfig = {

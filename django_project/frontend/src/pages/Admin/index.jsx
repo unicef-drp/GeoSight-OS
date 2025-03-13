@@ -27,7 +27,6 @@ export const pageNames = {
   UsersAndGroups: 'Users And Groups',
   Styles: 'Style',
   Dataset: 'Data Browser',
-  DataAccess: 'Data Access',
   RelatedTables: 'Related Tables',
   RelatedTablesData: 'Related Tables Data',
 

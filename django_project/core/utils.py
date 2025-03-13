@@ -14,9 +14,9 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-import os
-import gzip
 import base64
+import gzip
+import os
 import random
 import string
 import uuid
@@ -149,6 +149,18 @@ class temp_disconnect_signal(object):
             receiver=self.receiver,
             sender=self.sender
         )
+
+
+def pg_value(value, attr=None):
+    """Return pg value."""
+    set_value = value
+    if attr and value:
+        set_value = getattr(value, attr)
+    try:
+        set_value = set_value.replace("'", "''")
+    except Exception:
+        pass
+    return f"'{set_value}'" if value else "NULL"
 
 
 def compress_text(text):

@@ -22,21 +22,23 @@ from drf_yasg import openapi
 from rest_framework import serializers
 
 from core.serializer.dynamic_serializer import DynamicModelSerializer
-from geosight.data.models.indicator import (
-    IndicatorValue, IndicatorValueWithGeo, IndicatorExtraValue
-)
-from geosight.georepo.models.entity import Entity
+from geosight.data.models.indicator import IndicatorValue
 
 
 class IndicatorValueSerializer(DynamicModelSerializer):
     """Serializer for IndicatorValue."""
 
+    geometry_code = serializers.SerializerMethodField()
     indicator = serializers.SerializerMethodField()
     indicator_id = serializers.SerializerMethodField()
-    indicator_shortcode = serializers.SerializerMethodField()
     value = serializers.SerializerMethodField()
     attributes = serializers.SerializerMethodField()
-    geometries = serializers.SerializerMethodField()
+    permission = serializers.SerializerMethodField()
+    time = serializers.SerializerMethodField()
+
+    def get_geometry_code(self, obj: IndicatorValue):
+        """Return geometry_code."""
+        return obj.geom_id
 
     def get_indicator(self, obj: IndicatorValue):
         """Return indicator name."""
@@ -46,10 +48,6 @@ class IndicatorValueSerializer(DynamicModelSerializer):
         """Return indicator id."""
         return obj.indicator.id
 
-    def get_indicator_shortcode(self, obj: IndicatorValue):
-        """Return indicator shortcode."""
-        return obj.indicator.shortcode
-
     def get_value(self, obj: IndicatorValue):
         """Return value of indicator."""
         return obj.val
@@ -58,24 +56,16 @@ class IndicatorValueSerializer(DynamicModelSerializer):
         """Return attributes value of indicator."""
         return obj.attributes
 
-    def get_geometries(self, obj: IndicatorValue):
-        """Return geometries value of indicator."""
-        geometries = []
-        try:
-            entity_id = obj.entity_id
-            entity = Entity.objects.get(id=entity_id)
-            for reference_layer in entity.reference_layer_set.all():
-                if not reference_layer:
-                    continue
-                geometries.append({
-                    'dataset_uuid': reference_layer.identifier,
-                    'dataset_name': reference_layer.name,
-                    'name': entity.name,
-                    'admin_level': entity.admin_level,
-                })
-        except Entity.DoesNotExist:
-            pass
-        return geometries
+    def get_permission(self, obj: IndicatorValue):
+        """Return indicator name."""
+        return obj.permissions(self.context.get('user', None))
+
+    def get_time(self, obj: IndicatorValue):
+        """Return date."""
+        return datetime.combine(
+            obj.date, datetime.min.time(),
+            tzinfo=pytz.timezone(settings.TIME_ZONE)
+        ).timestamp()
 
     class Meta:  # noqa: D106
         model = IndicatorValue
@@ -96,12 +86,36 @@ class IndicatorValueSerializer(DynamicModelSerializer):
                     title='Indicator id',
                     type=openapi.TYPE_NUMBER
                 ),
-                'indicator_shortcode': openapi.Schema(
-                    title='Indicator shortcode',
-                    type=openapi.TYPE_STRING
-                ),
                 'value': openapi.Schema(
                     title='Value',
+                    type=openapi.TYPE_STRING
+                ),
+                'date': openapi.Schema(
+                    title='Date',
+                    type=openapi.TYPE_STRING
+                ),
+                'geom_id': openapi.Schema(
+                    title='Geom id',
+                    type=openapi.TYPE_STRING,
+                ),
+                'admin_level': openapi.Schema(
+                    title='Entity admin level',
+                    type=openapi.TYPE_NUMBER
+                ),
+                'entity_name': openapi.Schema(
+                    title='Entity name',
+                    type=openapi.TYPE_STRING
+                ),
+                'country_id': openapi.Schema(
+                    title='Country id',
+                    type=openapi.TYPE_STRING
+                ),
+                'country_geom_id': openapi.Schema(
+                    title='Country geom id',
+                    type=openapi.TYPE_STRING
+                ),
+                'country_name': openapi.Schema(
+                    title='Country name',
                     type=openapi.TYPE_STRING
                 ),
                 'attributes': openapi.Schema(
@@ -134,39 +148,6 @@ class IndicatorValueSerializer(DynamicModelSerializer):
                         ),
                     }
                 ),
-                'date': openapi.Schema(
-                    title='Date',
-                    type=openapi.TYPE_STRING
-                ),
-                'geom_id': openapi.Schema(
-                    title='Geom id',
-                    type=openapi.TYPE_STRING,
-                ),
-                'geometries': openapi.Schema(
-                    title='Geometries',
-                    type=openapi.TYPE_ARRAY,
-                    items=openapi.Items(
-                        type=openapi.TYPE_OBJECT,
-                        properties={
-                            'dataset_uuid': openapi.Schema(
-                                title='Dataset uuid',
-                                type=openapi.TYPE_STRING
-                            ),
-                            'dataset_name': openapi.Schema(
-                                title='Dataset name',
-                                type=openapi.TYPE_STRING
-                            ),
-                            'name': openapi.Schema(
-                                title='Name',
-                                type=openapi.TYPE_STRING
-                            ),
-                            'admin_level': openapi.Schema(
-                                title='Admin level',
-                                type=openapi.TYPE_NUMBER
-                            ),
-                        }
-                    )
-                ),
             },
             'example': {
                 "id": 1,
@@ -174,6 +155,13 @@ class IndicatorValueSerializer(DynamicModelSerializer):
                 "indicator_id": 1,
                 "indicator_shortcode": "TEST",
                 "value": 0,
+                "date": "1990-01-01",
+                "geom_id": "GEOM_1",
+                "admin_level": 1,
+                "entity_name": "Geometry 1",
+                "country_id": 1,
+                "country_geom_id": "COUNTRY_1",
+                "country_name": "Country 1",
                 "attributes": {
                     'Value 1': 1
                 },
@@ -184,22 +172,6 @@ class IndicatorValueSerializer(DynamicModelSerializer):
                     "share": True,
                     "delete": True
                 },
-                "date": "1990-01-01",
-                "geom_id": "GEOM_1",
-                "geometries": [
-                    {
-                        "dataset_uuid": "21f21520-d6e4-4928-95cf-afac44289e7b",
-                        "dataset_name": "World (All Versions)",
-                        "name": "Geometry 1",
-                        "admin_level": 0
-                    },
-                    {
-                        "dataset_uuid": "408bd456-bf89-48d2-9e82-d2c9c683af8a",
-                        "dataset_name": "World (Latest)",
-                        "name": "Geometry 1",
-                        "admin_level": 0
-                    }
-                ]
             }
         }
         post_body = openapi.Schema(
@@ -209,10 +181,6 @@ class IndicatorValueSerializer(DynamicModelSerializer):
                 'indicator_id': openapi.Schema(
                     title='Indicator id',
                     type=openapi.TYPE_NUMBER
-                ),
-                'indicator_shortcode': openapi.Schema(
-                    title='Indicator shortcode',
-                    type=openapi.TYPE_STRING
                 ),
                 'value': openapi.Schema(
                     title='New value',
@@ -227,13 +195,9 @@ class IndicatorValueSerializer(DynamicModelSerializer):
                     title='Geom id',
                     type=openapi.TYPE_STRING,
                 ),
-                'dataset_uuid': openapi.Schema(
-                    title='Dataset uuid',
+                'country_geom_id': openapi.Schema(
+                    title='Country geom id',
                     type=openapi.TYPE_STRING
-                ),
-                'admin_level': openapi.Schema(
-                    title='Admin level',
-                    type=openapi.TYPE_NUMBER
                 ),
                 'attributes': openapi.Schema(
                     title='Attributes',
@@ -253,16 +217,6 @@ class IndicatorValueSerializer(DynamicModelSerializer):
         )
 
 
-class IndicatorValueWithPermissionSerializer(IndicatorValueSerializer):
-    """Serializer for IndicatorValue with permission."""
-
-    permission = serializers.SerializerMethodField()
-
-    def get_permission(self, obj: IndicatorValue):
-        """Return indicator name."""
-        return obj.permissions(self.context.get('user', None))
-
-
 class IndicatorValueDetailSerializer(IndicatorValueSerializer):
     """Serializer for IndicatorValue."""
 
@@ -271,111 +225,12 @@ class IndicatorValueDetailSerializer(IndicatorValueSerializer):
 
     def get_details(self, obj: IndicatorValue):
         """Return extra data."""
-        # for details
-        details = []
-        for row in obj.indicatorvalueextradetailrow_set.all():
-            columns = {}
-            for column in row.indicatorvalueextradetailcolumn_set.all():
-                columns[column.name] = column.value
-            details.append(columns)
-        return details
+        return obj.attributes
 
     def get_extra_data(self, obj: IndicatorValue):
         """Return extra data."""
-        # for details
-        extras = {}
-        for row in obj.indicatorextravalue_set.all():
-            extras[row.name] = row.value
-        return extras
+        return obj.attributes
 
     class Meta:  # noqa: D106
         model = IndicatorValue
         fields = '__all__'
-
-
-class IndicatorValueBasicSerializer(serializers.ModelSerializer):
-    """Serializer for IndicatorValue."""
-
-    class Meta:  # noqa: D106
-        model = IndicatorValue
-        exclude = ('indicator', 'geom_id')
-
-
-class _BaseIndicatorValueWithGeoSerializer(serializers.ModelSerializer):
-    """Serializer for IndicatorValueWithGeo."""
-
-    geometry_code = serializers.SerializerMethodField()
-    value = serializers.SerializerMethodField()
-
-    def get_geometry_code(self, obj: IndicatorValueWithGeo):
-        """Return geometry_code."""
-        return obj.geom_id
-
-    def get_value(self, obj: IndicatorValue):
-        """Return value of indicator."""
-        return obj.val
-
-    def to_representation(self, obj: IndicatorValueWithGeo):
-        """To representation of indicator value."""
-        data = super(
-            _BaseIndicatorValueWithGeoSerializer, self
-        ).to_representation(obj)
-
-        for extra in IndicatorExtraValue.objects.filter(
-                indicator_value_id=obj.id
-        ):
-            data[extra.name] = extra.value
-        data['geometry_code'] = obj.geom_id
-        return data
-
-    class Meta:  # noqa: D106
-        model = IndicatorValueWithGeo
-        fields = (
-            'geometry_code', 'value', 'concept_uuid', 'admin_level',
-        )
-
-
-class IndicatorValueWithGeoSerializer(_BaseIndicatorValueWithGeoSerializer):
-    """Serializer for IndicatorValueWithGeo."""
-
-    time = serializers.SerializerMethodField()
-
-    def get_time(self, obj: IndicatorValueWithGeo):
-        """Return time."""
-        return datetime.combine(
-            obj.date, datetime.min.time(),
-            tzinfo=pytz.timezone(settings.TIME_ZONE)
-        ).timestamp()
-
-    class Meta:  # noqa: D106
-        model = IndicatorValueWithGeo
-        fields = (
-            'geometry_code', 'value', 'concept_uuid', 'admin_level', 'time'
-        )
-
-
-class IndicatorValueWithGeoDateSerializer(
-    _BaseIndicatorValueWithGeoSerializer
-):
-    """Serializer for IndicatorValueWithGeo."""
-
-    date = serializers.SerializerMethodField()
-    time = serializers.SerializerMethodField()
-
-    def get_date(self, obj: IndicatorValueWithGeo):
-        """Return date."""
-        return obj.date.strftime("%d-%m-%Y")
-
-    def get_time(self, obj: IndicatorValueWithGeo):
-        """Return date."""
-        return datetime.combine(
-            obj.date, datetime.min.time(),
-            tzinfo=pytz.timezone(settings.TIME_ZONE)
-        ).timestamp()
-
-    class Meta:  # noqa: D106
-        model = IndicatorValueWithGeo
-        fields = (
-            'geometry_code', 'value', 'concept_uuid',
-            'admin_level', 'date', 'time'
-        )

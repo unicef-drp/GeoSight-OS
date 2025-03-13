@@ -12,6 +12,8 @@ test.describe('Reference dataset selector admin', () => {
     await page.locator('#id_identifier').fill(`Dataset A${index}`);
     await page.locator('#id_name').fill(`Dataset A${index}`);
     await page.locator('#id_in_georepo').click();
+    await page.locator('#id_countries_from').selectOption({ value: '1' });
+    await page.getByRole('link', { name: 'Choose', exact: true }).click();
     await page.evaluate(() => {
       window.scrollTo(0, document.body.scrollHeight);
     });
@@ -19,7 +21,7 @@ test.describe('Reference dataset selector admin', () => {
   }
 
   const testFunction = async (originalPage, page) => {
-    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–11 of 11');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–12 of 12');
 
     // Check search
     await page.getByPlaceholder('Search View').fill('A2');
@@ -38,10 +40,10 @@ test.describe('Reference dataset selector admin', () => {
       exact: true
     }).click();
     await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Dataset A0');
-    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 11');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 12');
     await page.getByLabel('Go to next page').click();
-    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Somalia');
-    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('11–11 of 11');
+    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Kenya');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('11–12 of 12');
 
     // Orders
     await page.getByLabel('Go to previous page').click();

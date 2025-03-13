@@ -40,8 +40,7 @@ from geosight.data.api.dashboard_indicator_layer import (
     DashboardIndicatorLayerAPI
 )
 from geosight.data.api.dashboard_indicator_value import (
-    DashboardIndicatorDatesAPI,
-    DashboardIndicatorAllValuesAPI, DashboardEntityDrilldown
+    DashboardEntityDrilldown
 )
 from geosight.data.api.download_file import (
     DownloadSharepointFile,
@@ -49,7 +48,7 @@ from geosight.data.api.download_file import (
 )
 from geosight.data.api.indicator import (
     IndicatorListAPI, IndicatorAdminListAPI,
-    IndicatorDetailAPI, IndicatorValuesAPI, SearchSimilarityIndicatorAPI,
+    IndicatorDetailAPI, SearchSimilarityIndicatorAPI,
     IndicatorMetadataAPI
 )
 from geosight.data.api.indicator_reference_layer import (
@@ -57,8 +56,7 @@ from geosight.data.api.indicator_reference_layer import (
 )
 from geosight.data.api.indicator_value import (
     IndicatorValuesByGeometry,
-    IndicatorValueDetail,
-    IndicatorValueListAPI
+    IndicatorValueDetail
 )
 from geosight.data.api.raster import GetRasterClassificationAPI
 from geosight.data.api.related_table import (
@@ -85,7 +83,7 @@ dashboard_specific_api = [
         name='dashboard-duplicate-api'
     ),
     url(
-        r'^entity/(?P<concept_uuid>[^/]+)/drilldown$',
+        r'^entity/(?P<geom_id>[^/]+)/drilldown$',
         DashboardEntityDrilldown.as_view(),
         name='dashboard-entity-drilldown'
     ),
@@ -100,18 +98,6 @@ dashboard_specific_api = [
         r'^indicator-layer/(?P<pk>\d+)$',
         DashboardIndicatorLayerAPI.as_view(),
         name='dashboard-indicator-layer-api'
-    ),
-
-    # INDICATOR VALUES
-    url(
-        r'^indicator/(?P<pk>\d+)/values/all$',
-        DashboardIndicatorAllValuesAPI.as_view(),
-        name='dashboard-indicator-values-all-api'
-    ),
-    url(
-        r'^indicator/(?P<pk>\d+)/dates$',
-        DashboardIndicatorDatesAPI.as_view(),
-        name='dashboard-indicator-dates-api'
     ),
 
     # BOOKMARKS
@@ -170,10 +156,6 @@ indicator_api = [
         name='indicator-metadata-list-api'
     ),
     url(
-        r'^(?P<pk>\d+)/values/latest',
-        IndicatorValuesAPI.as_view(), name='indicator-values-api'
-    ),
-    url(
         r'^(?P<pk>\d+)/values/by-geometry/(?P<geometry_code>.+)$',
         IndicatorValuesByGeometry.as_view(),
         name='indicator-values-by-geometry'
@@ -182,10 +164,6 @@ indicator_api = [
         r'^(?P<pk>\d+)/values/(?P<value_id>\d+)/details$',
         IndicatorValueDetail.as_view(),
         name='indicator-value-detail'
-    ),
-    url(
-        r'^(?P<pk>\d+)/values/',
-        IndicatorValueListAPI.as_view(), name='indicator-values-list-api'
     ),
     url(
         r'^(?P<pk>\d+)/detail',

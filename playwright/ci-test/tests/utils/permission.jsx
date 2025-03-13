@@ -75,11 +75,6 @@ export async function checkPermission(page, id, {
   users,
   groups
 }) {
-  console.log({
-    public_access,
-    users,
-    groups
-  })
   await page.locator(`.MuiDataGrid-row[data-id="${id}"] .MuiButtonBase-root[aria-label="Change Share Configuration."] .ButtonIcon`).first().click();
   page = await page.locator('.PermissionFormModal')
   await expect(page.locator(`.GeneralAccess .MuiFormControl-root`).first()).toContainText(public_access);

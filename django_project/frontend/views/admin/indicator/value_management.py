@@ -22,7 +22,7 @@ from django.shortcuts import redirect, reverse, get_object_or_404
 from frontend.views._base import BaseView
 from frontend.views.admin._base import AdminBaseView
 from geosight.data.models import (
-    Indicator, IndicatorExtraValue, IndicatorValueRejectedError
+    Indicator, IndicatorValueRejectedError
 )
 from geosight.georepo.models.reference_layer import (
     ReferenceLayerView, ReferenceLayerIndicator
@@ -217,13 +217,9 @@ class IndicatorValueManagementTableView(
                         if attribute_name and attribute:
                             try:
                                 indicator_value = indicator_values[report_id]
-                                indicator_attribute, created = \
-                                    IndicatorExtraValue.objects.get_or_create(
-                                        indicator_value=indicator_value,
-                                        name=attribute_name
-                                    )
-                                indicator_attribute.value = attribute
-                                indicator_attribute.save()
+                                indicator_value.add_extra_value(
+                                    attribute_name, attribute
+                                )
                             except KeyError:
                                 pass
             except IndicatorValueRejectedError as e:

@@ -22,12 +22,12 @@ from django.db.models import Max, Subquery
 from django.utils.translation import ugettext_lazy as _
 
 from core.models.general import AbstractVersionData, AbstractEditData
-from core.utils import is_valid_uuid
 from geosight.data.models.indicator import Indicator
 from geosight.georepo.request import (
     GeorepoRequest, GeorepoUrl, GeorepoRequestError
 )
 from geosight.georepo.request.data import GeorepoEntity
+from geosight.georepo.term import admin_level_country
 from geosight.permission.models.manager import PermissionManager
 
 User = get_user_model()
@@ -54,6 +54,13 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
     )
 
     in_georepo = models.BooleanField(default=True)
+
+    # Country
+    countries = models.ManyToManyField(
+        'geosight_georepo.Entity',
+        help_text=_('The country of the view.'),
+        null=True
+    )
 
     class Meta:  # noqa: D106
         indexes = [
@@ -159,20 +166,6 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
         url = GeorepoUrl()
         return url.view_detail(self.identifier)
 
-    @staticmethod
-    def get_by_identifier(identifier):
-        """Return get by indicator."""
-        if is_valid_uuid(identifier):
-            reference_layer, _ = ReferenceLayerView.objects.get_or_create(
-                identifier=identifier
-            )
-            return reference_layer
-        else:
-            try:
-                return ReferenceLayerView.objects.get(id=identifier)
-            except ReferenceLayerView.DoesNotExist:
-                return
-
     @property
     def is_local(self):
         """Return if view is local or not."""
@@ -182,10 +175,28 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
     def entities_set(self):
         """Querying entities."""
         from geosight.georepo.models.entity import Entity
+        # TODO:
+        #  We will fix this after we migrate to production
         related_entities = self.referencelayerviewentity_set.values(
             "entity_id"
         )
         return Entity.objects.filter(pk__in=Subquery(related_entities))
+
+    def assign_countries(self):
+        """Assign countries."""
+        self.countries.set(
+            self.entities_set.filter(admin_level=admin_level_country)
+        )
+        self.save()
+
+    def assign_country(self, entity, check_entity=True):
+        """Assign country to the reference layer view."""
+        if entity.admin_level == admin_level_country:
+            if (
+                    not check_entity or
+                    self.entities_set.filter(id=entity.id).exists()
+            ):
+                self.countries.add(entity)
 
 
 class ReferenceLayerIndicator(models.Model):

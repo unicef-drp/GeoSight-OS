@@ -17,16 +17,28 @@ __copyright__ = ('Copyright 2023, Unicef')
 from datetime import datetime
 
 from django.contrib.gis.db import models
-from django.db.models import Q, Subquery
-from django.db.models.signals import post_save
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import connection
+from django.db.models import Q, Subquery, Max, Min
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
+from core.utils import pg_value
 from geosight.georepo.models.reference_layer import ReferenceLayerView
 from geosight.georepo.request import (
     GeorepoRequest, GeorepoEntityDoesNotExist, GeorepoRequestError
 )
+from geosight.georepo.term import admin_level_country
+
+
+class CountryManager(models.Manager):
+    """Country manager for Entity."""
+
+    def get_queryset(self):
+        """Return the queryset."""
+        return super().get_queryset().filter(admin_level=admin_level_country)
 
 
 class Entity(models.Model):
@@ -85,6 +97,22 @@ class Entity(models.Model):
         null=True, blank=True
     )
 
+    # Country
+    country = models.ForeignKey(
+        'self',
+        help_text=_(
+            'The country of the entity. '
+            'If null, it is the country of the entity.'
+        ),
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+
+    # Country manager
+    objects = models.Manager()
+    countries = CountryManager()
+
     class Meta:  # noqa: D106
         verbose_name_plural = "entities"
         indexes = [
@@ -103,7 +131,12 @@ class Entity(models.Model):
     @staticmethod
     def get_entity(
             original_id_type: str, original_id: str,
+
+            # TODO:
+            #  reference layer will be removed after georepo
+            #  has API to check country
             reference_layer: ReferenceLayerView,
+            country_id: int = None,
             admin_level: int = None,
             date_time=timezone.now(),
             auto_fetch: bool = True
@@ -122,8 +155,8 @@ class Entity(models.Model):
                 )
                 entity_code = EntityCode.objects.filter(
                     Q(entity__end_date__isnull=True) | Q(
-                        Q(entity__start_date__gte=date_time) &
-                        Q(entity__end_date__lte=date_time)
+                        Q(entity__start_date__lte=date_time) &
+                        Q(entity__end_date__gte=date_time)
                     )
                 ).filter(
                     code_type=original_id_type,
@@ -136,15 +169,18 @@ class Entity(models.Model):
             else:
                 entity = reference_layer.entities_set.filter(
                     Q(end_date__isnull=True) | Q(
-                        Q(start_date__gte=date_time) &
-                        Q(end_date__lte=date_time)
+                        Q(start_date__lte=date_time) &
+                        Q(end_date__gte=date_time)
                     )
                 ).filter(
                     geom_id=original_id
                 ).order_by('start_date').first()
                 if not entity:
                     raise Entity.DoesNotExist
-            if entity.admin_level != 0 and not entity.parents:
+            if (
+                    entity.admin_level != admin_level_country and
+                    not entity.parents
+            ):
                 raise EntityCode.DoesNotExist()
         except (Entity.DoesNotExist, EntityCode.DoesNotExist):
             if not auto_fetch:
@@ -177,6 +213,22 @@ class Entity(models.Model):
         return entity
 
     @staticmethod
+    def check_country(obj, admin_level, parents, reference_layer):
+        """Check country."""
+        if admin_level != admin_level_country and not obj.country:
+            try:
+                parent_ucode = parents[-1]
+                country = Entity.get_entity(
+                    reference_layer=reference_layer,
+                    original_id=parent_ucode,
+                    original_id_type='ucode',
+                    admin_level=admin_level_country
+                )
+                obj.country = country
+            except Exception:
+                pass
+
+    @staticmethod
     def get_or_create(
             reference_layer: ReferenceLayerView,
             geom_id,
@@ -198,15 +250,21 @@ class Entity(models.Model):
                 'admin_level': admin_level,
                 'start_date': start_date,
                 'end_date': end_date,
+                'parents': parents
             }
         )
         ReferenceLayerViewEntity.objects.get_or_create(
             reference_layer=reference_layer,
             entity=obj,
         )
+        obj.reference_layer = reference_layer
+        obj.concept_uuid = concept_uuid
         obj.name = name
         obj.parents = parents
+
+        Entity.check_country(obj, admin_level, parents, reference_layer)
         obj.save()
+        reference_layer.assign_country(obj, check_entity=False)
         return obj, created
 
     @property
@@ -226,8 +284,7 @@ class Entity(models.Model):
             parent = self.parents[0]
             return Entity.objects.filter(
                 parents__contains=parent,
-                admin_level=self.admin_level,
-                end_date__isnull=True
+                admin_level=self.admin_level
             ).exclude(pk=self.pk)
         except (IndexError, TypeError):
             return Entity.objects.none()
@@ -238,8 +295,18 @@ class Entity(models.Model):
         try:
             parent = self.parents[0]
             return Entity.objects.filter(
-                geom_id=parent,
-                end_date__isnull=True
+                geom_id=parent
+            ).first()
+        except (IndexError, TypeError):
+            return None
+
+    @property
+    def ancestor(self):
+        """Return ancestor."""
+        try:
+            ancestor = self.parents[len(self.parents) - 1]
+            return Entity.objects.filter(
+                geom_id=ancestor
             ).first()
         except (IndexError, TypeError):
             return None
@@ -249,8 +316,98 @@ class Entity(models.Model):
         """Return children."""
         return Entity.objects.filter(
             parents__contains=self.geom_id,
-            admin_level=self.admin_level + 1,
-            end_date__isnull=True
+            admin_level=self.admin_level + 1
+        )
+
+    @property
+    def is_country(self):
+        """Return if the entity is ancestor."""
+        return self.admin_level == admin_level_country
+
+    @staticmethod
+    def assign_country(step=1000000):
+        """Assign country to entity."""
+        query = """
+            UPDATE geosight_georepo_entity AS entity
+            SET country_id = parent.id
+            FROM geosight_georepo_entity AS parent
+            WHERE
+                entity.id BETWEEN %(start_id)s AND %(end_id)s
+            AND
+                entity.parents ->> (entity.admin_level - 1) = parent.geom_id;
+        """
+        id__max = Entity.objects.aggregate(
+            Max('id')
+        )['id__max']
+        id__min = Entity.objects.aggregate(
+            Min('id')
+        )['id__min']
+        with connection.cursor() as cursor:
+            for i in range(id__min, id__max + 1, step):
+                start_id = i
+                end_id = i + step
+                params = {'start_id': start_id, 'end_id': end_id}
+                cursor.execute(query, params)
+
+    def update_indicator_value_data(self):
+        """Update entity data in indicator value."""
+        start_date = pg_value(self.start_date)
+        end_date = pg_value(self.end_date)
+        concept_uuid = pg_value(self.concept_uuid)
+
+        # For country
+        entity_name = pg_value(self.name)
+        if self.is_country:
+            country_id = self.id
+            country_name = pg_value(self.name)
+            country_geom_id = pg_value(self.geom_id)
+        else:
+            country_id = pg_value(self.country, 'id')
+            country_name = pg_value(self.country, 'name')
+            country_geom_id = pg_value(self.country, 'geom_id')
+
+        query = f"""
+            UPDATE geosight_data_indicatorvalue
+            SET
+                entity_name = {entity_name},
+                admin_level = {self.admin_level},
+                concept_uuid = {concept_uuid},
+                entity_start_date = {start_date},
+                entity_end_date = {end_date},
+                country_id = {country_id},
+                country_name = {country_name},
+                country_geom_id = {country_geom_id}
+            WHERE
+                entity_id = {self.id}
+        """
+        with connection.cursor() as cursor:
+            cursor.execute(query)
+
+    def update_parent_of_indicator_value_data(self):
+        """Update entity data in indicator value."""
+        # For country
+        if self.is_country:
+            country_name = pg_value(self.name)
+            country_geom_id = pg_value(self.geom_id)
+            query = f"""
+                UPDATE geosight_data_indicatorvalue
+                SET
+                    country_name = {country_name},
+                    country_geom_id = {country_geom_id}
+                WHERE
+                    country_id = {self.id}
+            """
+            with connection.cursor() as cursor:
+                cursor.execute(query)
+
+    def create_reference_layer_view_entity(self):
+        """Create link between reference and entity."""
+        from geosight.georepo.models.reference_layer_entity import (
+            ReferenceLayerViewEntity
+        )
+        ReferenceLayerViewEntity.objects.get_or_create(
+            reference_layer=self.reference_layer,
+            entity=self,
         )
 
 
@@ -271,14 +428,43 @@ class EntityCode(models.Model):
         unique_together = ('entity', 'code', 'code_type')
 
 
+@receiver(pre_save, sender=Entity)
+def update_indicator_value_data(sender, instance, **kwargs):
+    """Update indicator value data when entity changed."""
+    if not instance._state.adding:
+        try:
+            old_instance = sender.objects.get(pk=instance.pk)
+
+            # If just name, call the ancestor update
+            if old_instance.name != instance.name:
+                instance.update_parent_of_indicator_value_data()
+
+            if (
+                    old_instance.name != instance.name or
+                    old_instance.admin_level != instance.admin_level or
+                    old_instance.concept_uuid != instance.concept_uuid or
+                    old_instance.start_date != instance.start_date or
+                    old_instance.end_date != instance.end_date or
+                    old_instance.country_id != instance.country_id
+            ):
+                instance.update_indicator_value_data()
+        except ObjectDoesNotExist:
+            pass
+
+
 @receiver(post_save, sender=Entity)
 def assign_entity_to_view(sender, instance: Entity, created, **kwargs):
     """Assign entity to view relationship."""
-    from geosight.georepo.models.reference_layer_entity import (
-        ReferenceLayerViewEntity
-    )
+    # Get the country
+    if instance.admin_level != admin_level_country and not instance.country:
+        try:
+            instance.country = Entity.objects.get(
+                geom_id=instance.ancestor
+            )
+            instance.save()
+        except Entity.DoesNotExist:
+            pass
+
     if instance.reference_layer:
-        ReferenceLayerViewEntity.objects.get_or_create(
-            reference_layer=instance.reference_layer,
-            entity=instance,
-        )
+        instance.create_reference_layer_view_entity()
+        instance.reference_layer.assign_country(instance)

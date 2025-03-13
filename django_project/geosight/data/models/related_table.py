@@ -183,27 +183,39 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
             )
 
     def query(
-            self, reference_layer_ids: list,
-            geo_field: str, select: str,
+            self, select, order_by, country_geom_ids, geo_field,
             geo_type='ucode'
     ):
-        """Return query."""
-        reference_layer_ids = ','.join(
-            [f'{_id}' for _id in reference_layer_ids]
-        )
+        """Return the query."""
+        from geosight.georepo.models.entity import Entity
+        countries = [
+            f'{country}' for country in list(
+                Entity.countries.filter(
+                    geom_id__in=country_geom_ids
+                ).values_list(
+                    'pk', flat=True
+                )
+            )
+        ]
+        if not countries:
+            return None
+
         if geo_type.lower() == 'ucode':
             return (
                 f"select {select} "
-                f"from geosight_data_relatedtablerow as row "
+                f"  from geosight_data_relatedtablerow as row "
                 f"LEFT JOIN geosight_georepo_entity as entity "
-                f"ON data ->> '{geo_field}'::text=entity.geom_id::text "
-                f"LEFT JOIN geosight_georepo_referencelayerviewentity "
-                f"  as ref_entity "
-                f"  ON ref_entity.entity_id = entity.id "
+                f"  ON data ->> '{geo_field}'::text=entity.geom_id::text "
                 f"WHERE row.table_id={self.id} AND "
-                f"ref_entity.reference_layer_id IN ({reference_layer_ids}) "
+                f"  ("
+                f"      entity.country_id IN ({','.join(countries)}) OR"
+                f"      ("
+                f"          entity.country_id is NULL AND "
+                f"          entity.id IN ({','.join(countries)})"
+                f"      )"
+                f"  ) "
+                f"ORDER BY {order_by}"
             )
-
         else:
             return (
                 f"select {select} "
@@ -213,21 +225,24 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                 f"AND LOWER(entity_code.code_type)='{geo_type.lower()}' "
                 f"LEFT JOIN geosight_georepo_entity as entity "
                 f"ON entity.id=entity_code.entity_id "
-                f"LEFT JOIN geosight_georepo_referencelayerviewentity "
-                f"  as ref_entity "
-                f"  ON ref_entity.entity_id = entity.id "
                 f"WHERE row.table_id={self.id} AND "
-                f"ref_entity.reference_layer_id IN ({reference_layer_ids}) "
+                f"  ("
+                f"      entity.country_id IN ({','.join(countries)}) OR"
+                f"      ("
+                f"          entity.country_id is NULL AND "
+                f"          entity.id IN ({','.join(countries)})"
+                f"      )"
+                f"  ) "
+                f"ORDER BY {order_by}"
             )
 
     def data_field(
             self, field,
-            reference_layer_uuids=None,
+            country_geom_ids=None,
             geo_field=None, geo_type='ucode'
     ):
         """Return data field."""
-        from geosight.georepo.models.reference_layer import ReferenceLayerView
-        if not reference_layer_uuids:
+        if not country_geom_ids:
             return self.relatedtablerow_set.values_list(
                 f'data__{field}', flat=True
             ).distinct(f'data__{field}').order_by(f'data__{field}')
@@ -241,44 +256,37 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                         cast = '::numeric'
 
                 # query the data
-                reference_layer_ids = ReferenceLayerView.objects.filter(
-                    identifier__in=reference_layer_uuids
-                ).values_list('id', flat=True)
                 query = self.query(
-                    reference_layer_ids=reference_layer_ids,
+                    country_geom_ids=country_geom_ids,
                     select=f"DISTINCT(data ->> '{field}'){cast}",
                     geo_field=geo_field,
-                    geo_type=geo_type
+                    geo_type=geo_type,
+                    order_by=f"data ->> '{field}'",
                 )
                 cursor.execute(query)
                 rows = cursor.fetchall()
                 return [row[0] for row in rows]
 
     def data_with_query(
-            self, reference_layer_uuids,
+            self, country_geom_ids,
             geo_field, date_field=None, date_format=None, geo_type='ucode',
             max_time=None, min_time=None, limit=25, offset=None
     ):
         """Return data of related table."""
-        from geosight.georepo.models.reference_layer import ReferenceLayerView
-        reference_layer_ids = ReferenceLayerView.objects.filter(
-            identifier__in=reference_layer_uuids
-        ).values_list('id', flat=True)
-
         # Check codes based on code type
         output = []
         has_next = False
         with connection.cursor() as cursor:
             query = self.query(
-                reference_layer_ids=reference_layer_ids,
+                country_geom_ids=country_geom_ids,
                 geo_field=geo_field,
                 select=(
                     "row.id, row.order, row.data::json, "
                     "geom_id, concept_uuid, name, admin_level "
                 ),
-                geo_type=geo_type
+                geo_type=geo_type,
+                order_by='row.id',
             )
-            query += "ORDER BY row.id "
             if offset is not None:
                 query += f' LIMIT {limit} OFFSET {offset}'
 
@@ -315,23 +323,17 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
         return output, has_next
 
     def dates_with_query(
-            self, reference_layer_uuids,
+            self, country_geom_ids,
             geo_field, date_field=None, date_format=None, geo_type='ucode'
     ):
         """Return data of related table."""
-        from geosight.georepo.models.reference_layer import ReferenceLayerView
-        reference_layer_ids = ReferenceLayerView.objects.filter(
-            identifier__in=reference_layer_uuids
-        ).values_list('id', flat=True)
         with connection.cursor() as cursor:
             query = self.query(
-                reference_layer_ids=reference_layer_ids,
+                country_geom_ids=country_geom_ids,
                 geo_field=geo_field,
                 select=f"DISTINCT(data ->> '{date_field}')",
-                geo_type=geo_type
-            )
-            query += (
-                f"ORDER BY data ->> '{date_field}' "
+                geo_type=geo_type,
+                order_by=f"data ->> '{date_field}'",
             )
             cursor.execute(query)
             dates = []

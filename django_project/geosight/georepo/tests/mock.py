@@ -46,3 +46,8 @@ def need_review(self):
 def update_meta(self):
     """Mock for update_meta importer."""
     return False
+
+
+def check_country(obj, admin_level, parents, reference_layer):
+    """Check country."""
+    return

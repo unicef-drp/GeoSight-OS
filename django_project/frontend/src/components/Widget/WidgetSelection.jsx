@@ -1,17 +1,17 @@
 /**
-* GeoSight is UNICEF's geospatial web-based business intelligence platform.
-*
-* Contact : geosight-no-reply@unicef.org
-*
-* .. note:: This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU Affero General Public License as published by
-*     the Free Software Foundation; either version 3 of the License, or
-*     (at your option) any later version.
-*
-* __author__ = 'irwan@kartoza.com'
-* __date__ = '13/06/2023'
-* __copyright__ = ('Copyright 2023, Unicef')
-*/
+ * GeoSight is UNICEF's geospatial web-based business intelligence platform.
+ *
+ * Contact : geosight-no-reply@unicef.org
+ *
+ * .. note:: This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation; either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ * __author__ = 'irwan@kartoza.com'
+ * __date__ = '13/06/2023'
+ * __copyright__ = ('Copyright 2023, Unicef')
+ */
 
 /* ==========================================================================
    WIDGET SELECTION
@@ -22,16 +22,15 @@ import React, { Fragment, useEffect, useState } from 'react';
 import Modal, { ModalContent, ModalHeader } from "../Modal";
 
 // Members
-import SummaryMember from "./Summary/SummaryWidget/SelectionMember";
-import SummaryGroupMember
-  from "./Summary/SummaryGroupWidget/SelectionMember";
+import SummaryMember from "./SummaryWidget/SelectionMember";
+import SummaryGroupMember from "./SummaryGroupWidget/SelectionMember";
 import TimeSeriesChartWidgetMember
   from "./TimeSeriesChartWidget/SelectionMember";
 
 // Editors
-import SummaryWidgetEditSection from "./Summary/SummaryWidget/edit";
-import SummaryGroupWidgetEditSection from "./Summary/SummaryGroupWidget/edit";
-import TimeSeriesChartWidgetEditor from "./TimeSeriesChartWidget/edit";
+import SummaryWidgetEditor from "./SummaryWidget/Editor";
+import SummaryGroupWidgetEditor from "./SummaryGroupWidget/Editor";
+import TimeSeriesChartWidgetEditor from "./TimeSeriesChartWidget/Editor";
 import { DEFINITION } from "./index";
 
 /**
@@ -60,11 +59,11 @@ export default function WidgetSelectionSection(
   function renderEditByType() {
     switch (data.type) {
       case DEFINITION.WidgetType.SUMMARY_WIDGET:
-        return <SummaryWidgetEditSection
+        return <SummaryWidgetEditor
           open={formOpen} data={data} setData={onUpdateData}
         />
       case DEFINITION.WidgetType.SUMMARY_GROUP_WIDGET:
-        return <SummaryGroupWidgetEditSection
+        return <SummaryGroupWidgetEditor
           open={formOpen} data={data} setData={onUpdateData}
         />
       case DEFINITION.WidgetType.TIME_SERIES_CHART_WIDGET:

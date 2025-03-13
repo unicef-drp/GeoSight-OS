@@ -35,3 +35,12 @@ class ReferenceDatasetAdmin(ReferenceLayerViewAdmin):
 
     inlines = (ReferenceDatasetLevelInline,)
     search_fields = ('name',)
+    list_filter = ()
+
+    def get_queryset(self, request):
+        """Return queryset."""
+        qs = self.model.permissions.get_queryset()
+        ordering = self.get_ordering(request)
+        if ordering:
+            qs = qs.order_by(*ordering)
+        return qs

@@ -20,7 +20,6 @@
 import { useEffect, useRef } from 'react';
 import { useSelector } from "react-redux";
 import { SeriesType, TimeType } from "./Definition";
-import { fetchingData } from "../../../Requests";
 import { dateLabel, getDatesInRange, INTERVALS } from "../../../utils/Dates";
 import {
   dynamicLayerData,
@@ -28,13 +27,13 @@ import {
   indicatorLayerId,
   indicatorLayersLikeIndicator
 } from "../../../utils/indicatorLayer";
+import { Indicator } from "../../../class/Indicator";
 
 /**
  * Request data for time series widget.
  */
 export default function RequestDataIndicator(
   {
-    slug,
     geographicUnits,
     indicatorSeries,
     secondSeries,
@@ -118,6 +117,7 @@ export default function RequestDataIndicator(
           if (!indicator.id) {
             return
           }
+          const indicatorObj = new Indicator({ id: indicator.id });
           for (var y = 0; y < geographicUnits.length; y++) {
             if (prevState.session !== session) {
               return
@@ -128,13 +128,13 @@ export default function RequestDataIndicator(
               return
             }
             const parameters = {
-              concept_uuid: unit.id,
               frequency: interval,
-              date__lte: dateLabel(maxDateFilter ? new Date(maxDateFilter) : new Date()),
-              indicator_id: indicator.id
+              date__lte: dateLabel(maxDateFilter ? new Date(maxDateFilter) : new Date())
             }
-            if (unit.reference_layer_uuid) {
-              parameters.reference_layer_uuid = unit.reference_layer_uuid
+            try {
+              parameters.geom_id = unit.name.split('(')[1].replace(')', '')
+            } catch (err) {
+              parameters.concept_uuid = unit.id
             }
             if (minDateFilter) {
               parameters['date__gte'] = dateLabel(new Date(minDateFilter))
@@ -144,28 +144,22 @@ export default function RequestDataIndicator(
             // ------------------------------------------------
             let response = []
             if (!('' + indicator.id).includes('layer_')) {
-              await fetchingData(
-                `/api/v1/data-browser/values/`,
-                parameters, {}, (output, error) => {
-                  if (output) {
-                    response = output.map(row => {
-                      const date = new Date(row.date)
-                      const time = new Date(row.date).getTime()
-                      const label = dateLabel(date, interval)
-                      if (!min || time < min) {
-                        min = time
-                      }
-                      if (!max || time > max) {
-                        max = time
-                      }
-                      return {
-                        time: label,
-                        value: row.value
-                      }
-                    })
-                  }
+              const output = await indicatorObj.values(parameters);
+              response = output.map(row => {
+                const date = new Date(row.date)
+                const time = new Date(row.date).getTime()
+                const label = dateLabel(date, interval)
+                if (!min || time < min) {
+                  min = time
                 }
-              )
+                if (!max || time > max) {
+                  max = time
+                }
+                return {
+                  time: label,
+                  value: row.value
+                }
+              })
             } else {
               // ------------------------------------------------
               // This is for the data from indicator layer
@@ -176,28 +170,22 @@ export default function RequestDataIndicator(
                 const contextByDate = {}
                 for (let x = 0; x < dynamicLayerIndicators.length; x++) {
                   const indicator = dynamicLayerIndicators[x]
-                  await fetchingData(
-                    `/api/v1/data-browser/values/`,
-                    parameters, {}, (output, error) => {
-                      if (output) {
-                        output.map(row => {
-                          const date = new Date(row.date)
-                          const time = new Date(row.date).getTime()
-                          const label = dateLabel(date, interval)
-                          if (!min || time < min) {
-                            min = time
-                          }
-                          if (!max || time > max) {
-                            max = time
-                          }
-                          if (!contextByDate[label]) {
-                            contextByDate[label] = {}
-                          }
-                          contextByDate[label][indicator.shortcode] = row.value
-                        })
-                      }
+                  const output = await (new Indicator({ id: indicator.id })).values(parameters);
+                  output.map(row => {
+                    const date = new Date(row.date)
+                    const time = new Date(row.date).getTime()
+                    const label = dateLabel(date, interval)
+                    if (!min || time < min) {
+                      min = time
                     }
-                  )
+                    if (!max || time > max) {
+                      max = time
+                    }
+                    if (!contextByDate[label]) {
+                      contextByDate[label] = {}
+                    }
+                    contextByDate[label][indicator.shortcode] = row.value
+                  })
                 }
                 for (const [date, value] of Object.entries(contextByDate)) {
                   response.push({

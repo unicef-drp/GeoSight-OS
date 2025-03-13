@@ -90,29 +90,29 @@ export default function ExampleContextInput(
         getContext(
           indicators, relatedTables,
           {}, {},
-          featureProperties.concept_uuid, geometryProperties,
+          featureProperties.ucode, geometryProperties,
           selectedGlobalTime, selectedGlobalTimeConfig,
           indicatorLayers, referenceLayerData,
-          currentIndicatorLayer, {}, conceptUUID.value,
+          currentIndicatorLayer, {},
           function contextOnLoad(context) {
             const indicatorValueByGeometry = {}
-            indicatorValueByGeometry[featureProperties.concept_uuid] = []
+            indicatorValueByGeometry[featureProperties.ucode] = []
             currentIndicatorLayer.indicators.map(indicator => {
               let data = context.context.admin_boundary.indicators[indicator.shortcode]
               if (data) {
                 data = data[0]
                 data.date = data?.time
                 data.indicator = indicator
-                indicatorValueByGeometry[featureProperties.concept_uuid].push({ ...indicator, ...data })
+                indicatorValueByGeometry[featureProperties.ucode].push({ ...indicator, ...data })
               } else {
-                indicatorValueByGeometry[featureProperties.concept_uuid].push({ ...indicator })
+                indicatorValueByGeometry[featureProperties.ucode].push({ ...indicator })
               }
             })
             updateCurrent(
               context, indicators, relatedTables,
               currentIndicatorLayer, {},
               indicatorValueByGeometry, {},
-              featureProperties.concept_uuid
+              featureProperties.ucode
             )
             setContextData(JSON.stringify(context, null, 2))
             setContext(context)

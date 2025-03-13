@@ -17,6 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 import json
 import uuid
 
+from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -149,9 +150,14 @@ class DashboardData(APIView):
             # Get default by dataset
             dataset = request.GET.get('dataset', None)
             if dataset:
-                view, _ = ReferenceLayerView.objects.get_or_create(
-                    identifier=dataset
-                )
+                try:
+                    view, _ = ReferenceLayerView.objects.get(
+                        identifier=dataset
+                    )
+                except ReferenceLayerView.DoesNotExist:
+                    return HttpResponseBadRequest(
+                        'Dataset is not ready, please refresh'
+                    )
                 dashboard.reference_layer = view
 
             # Get default by dataset_id

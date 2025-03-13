@@ -75,7 +75,7 @@ class EntityCentroidSerializer(GeoFeatureModelSerializer):
         fields = ('c', 'n', 'u', 'pu', 'pc')
 
 
-class EntitySerializer(serializers.ModelSerializer):
+class EntitySerializer(DynamicModelSerializer):
     """Serializer for Entity."""
 
     geom_code = serializers.SerializerMethodField()

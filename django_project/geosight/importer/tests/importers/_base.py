@@ -24,13 +24,15 @@ from core.tests.base_tests import TestCase
 from core.tests.model_factories import UserF
 from geosight.data.models.code import Code, CodeList, CodeInCodeList
 from geosight.data.models.indicator import IndicatorType, IndicatorValue
-from geosight.importer.models import ImporterLog
 from geosight.data.tests.model_factories import (
     IndicatorF, IndicatorGroupF, IndicatorRuleF
 )
 from geosight.georepo.request.data import GeorepoEntity
-from geosight.georepo.tests.mock import mock_get_entity, need_review
+from geosight.georepo.tests.mock import (
+    mock_get_entity, need_review, check_country
+)
 from geosight.georepo.tests.model_factories import ReferenceLayerF
+from geosight.importer.models import ImporterLog
 from geosight.importer.utilities import json_from_excel
 
 
@@ -48,6 +50,13 @@ class BaseImporterTest(TestCase):
 
     def setUp(self):
         """To setup tests."""
+        # Mock the check_country
+        self.auto_fetch_country = patch(
+            'geosight.georepo.models.entity.Entity.check_country',
+            check_country
+        )
+        self.auto_fetch_country.start()
+
         preference = SitePreferences.preferences()
         preference.georepo_url = self.georepo_url
         preference.georepo_api_key = self.georepo_api_key
@@ -135,6 +144,7 @@ class BaseImporterTest(TestCase):
         """Stop the patcher."""
         self.entity_patcher.stop()
         self.review_patcher.stop()
+        self.auto_fetch_country.stop()
 
 
 class BaseIndicatorValueImporterTest(BaseImporterTest):

@@ -18,7 +18,7 @@ test.describe('Indicator list admin', () => {
   }
 
   const testFunction = async (originalPage, page) => {
-    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–14 of 14');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–15 of 15');
 
     // Check search
     await page.getByPlaceholder('Search Indicator').fill('B');
@@ -35,11 +35,11 @@ test.describe('Indicator list admin', () => {
       name: '10',
       exact: true
     }).click();
-    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Sample Indicator A');
-    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 14');
+    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Kenya Indicator A');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 15');
     await page.getByLabel('Go to next page').click();
-    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Sample Indicator A A9');
-    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('11–14 of 14');
+    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Sample Indicator A A8');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('11–15 of 15');
 
     // Orders
     await page.getByLabel('Go to previous page').click();
@@ -47,7 +47,7 @@ test.describe('Indicator list admin', () => {
     await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Sample Indicator D');
     await page.getByLabel('Name').click();
     await page.getByLabel('Name').click();
-    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Sample Indicator A');
+    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Kenya Indicator A');
   }
 
   test('Test list functions', async ({ page }) => {
@@ -71,7 +71,7 @@ test.describe('Indicator list admin', () => {
     await testFunction(page, page.locator('.ModalDataSelector'))
 
     // Select
-    await page.locator('.MuiDataGrid-row').nth(1).click();
+    await page.locator('.MuiDataGrid-row').nth(2).click();
     await expect(page.locator('.ModalDataSelector')).toBeHidden()
     await expect(page.locator('.IndicatorSetting .InputControl .MuiInputBase-input')).toHaveValue('Sample Indicator A A0')
 
@@ -113,6 +113,6 @@ test.describe('Indicator list admin', () => {
 
     // Reload
     await page.reload();
-    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–4 of 4');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–5 of 5');
   })
 })

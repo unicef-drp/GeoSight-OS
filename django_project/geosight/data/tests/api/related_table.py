@@ -48,15 +48,15 @@ class RelatedTableApiTest(BasePermissionTest.TestCase):
         )
         Entity.get_or_create(
             reference_layer,
-            name='', geom_id='A', admin_level=1
+            name='', geom_id='A', admin_level=0
         )
         Entity.get_or_create(
             reference_layer,
-            name='', geom_id='B', admin_level=1
+            name='', geom_id='B', admin_level=0
         )
         Entity.get_or_create(
             reference_layer,
-            name='', geom_id='C', admin_level=1
+            name='', geom_id='C', admin_level=0
         )
 
     def create_resource(self, user, name=None):
@@ -305,7 +305,7 @@ class RelatedTableApiTest(BasePermissionTest.TestCase):
     def test_data_values_api(self):
         """Test data access."""
         param = (
-            f'reference_layer_uuid={self.uuid}&'
+            f'country_geom_ids=A,B,C&'
             f'geography_code_field_name={self.geography_code_field_name}&'
             f'geography_code_type={self.geography_code_type}&'
             f'date_field={self.date_field}'
@@ -319,7 +319,7 @@ class RelatedTableApiTest(BasePermissionTest.TestCase):
     def test_data_dates_api(self):
         """Test data access."""
         param = (
-            f'reference_layer_uuid={self.uuid}&'
+            f'country_geom_ids=A,B,C&'
             f'geography_code_field_name={self.geography_code_field_name}&'
             f'geography_code_type={self.geography_code_type}&'
             f'date_field={self.date_field}'
@@ -341,7 +341,7 @@ class RelatedTableApiTest(BasePermissionTest.TestCase):
         self.assertEqual(response.json(), [1, 2, 3])
 
         param = (
-            f'reference_layer_uuid={self.uuid}&'
+            f'country_geom_ids=A,B,C&'
             f'geography_code_field_name={self.geography_code_field_name}&'
             f'geography_code_type={self.geography_code_type}&'
             f'field=population'
@@ -353,7 +353,7 @@ class RelatedTableApiTest(BasePermissionTest.TestCase):
         self.assertEqual(response.json(), ['1', '2', '3'])
 
         param = (
-            f'reference_layer_uuid__in={self.uuid}&'
+            f'country_geom_ids=A,B,C&'
             f'geography_code_field_name={self.geography_code_field_name}&'
             f'geography_code_type={self.geography_code_type}&'
             f'field=population'
