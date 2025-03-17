@@ -69,6 +69,7 @@ class EntityAdmin(admin.ModelAdmin):
     inlines = (EntityCodeInline,)
     actions = [assign_country]
     readonly_fields = ('reference_layer',)
+    raw_id_fields = ('country',)
 
     def country_name(self, obj: Entity):
         """Return country name."""

@@ -263,6 +263,8 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                     geo_type=geo_type,
                     order_by=f"data ->> '{field}'",
                 )
+                if not query:
+                    return []
                 cursor.execute(query)
                 rows = cursor.fetchall()
                 return [row[0] for row in rows]
@@ -287,6 +289,8 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                 geo_type=geo_type,
                 order_by='row.id',
             )
+            if not query:
+                return []
             if offset is not None:
                 query += f' LIMIT {limit} OFFSET {offset}'
 
@@ -335,6 +339,8 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
                 geo_type=geo_type,
                 order_by=f"data ->> '{date_field}'",
             )
+            if not query:
+                return []
             cursor.execute(query)
             dates = []
             for row in cursor.fetchall():

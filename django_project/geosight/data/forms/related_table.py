@@ -32,7 +32,10 @@ class RelatedTableForm(forms.ModelForm):
 
     class Meta:  # noqa: D106
         model = RelatedTable
-        exclude = ('created_at', 'creator', 'modified_at', 'version_data')
+        exclude = (
+            'created_at', 'creator', 'modified_at', 'modified_by',
+            'version_data'
+        )
 
     @staticmethod
     def model_to_initial(model: RelatedTable):
