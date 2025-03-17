@@ -87,6 +87,8 @@ class RelatedTableEditView(RoleContributorRequiredMixin, AdminBaseView):
         )
         if form.is_valid():
             instance = form.save()
+            instance.modified_by = request.user
+            instance.save()
             # Save permission
             instance.permission.update_from_request_data(
                 data, request.user
