@@ -273,7 +273,7 @@ export function ReferenceLayer(
           }
         },
         Variables.LAYER_CATEGORY.INDICATOR,
-        before
+        OUTLINE_LAYER_ID
       )
       updateStyle()
       updateFilter()
@@ -562,6 +562,12 @@ export function ReferenceLayer(
 
       // Create deck gl
       deckGLLayer(dictDeepCopy(indicatorValueByGeometry))
+
+      //
+      if (IS_DEBUG) {
+        const output = map.getStyle()
+        Logger.log('LAYERS:', output.layers.map(layer => layer.id))
+      }
     }
   }
 

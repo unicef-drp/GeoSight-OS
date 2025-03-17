@@ -12,6 +12,7 @@ test.describe('View project', () => {
 
   // A use case tests scenarios
   test('View project', async ({ page }) => {
+    let lastLayers = null
     let lastLog = null
     let lastLogLabel = null
     page.on('console', msg => {
@@ -26,6 +27,14 @@ test.describe('View project', () => {
       if (msg.text().indexOf('LABEL_GEOM:') !== -1) {
         try {
           lastLogLabel = msg.text().replace('LABEL_GEOM:', '')
+        } catch (e) {
+          console.log(e)
+
+        }
+      }
+      if (msg.text().indexOf('LAYERS:') !== -1) {
+        try {
+          lastLayers = msg.text().replace('LAYERS:', '')
         } catch (e) {
           console.log(e)
 
@@ -75,6 +84,7 @@ test.describe('View project', () => {
     await expect(page.locator('.widget__sw__content').nth(1)).toContainText('562');
     await new Promise(resolve => setTimeout(resolve, 1000));
     await expect(lastLogLabel).toEqual("Awdal,SOM_0001_V1,2020-01-01,60 - 80,61,Bakool,SOM_0002_V1,2020-01-01,60 - 80,78,Lower Juba,SOM_0009_V1,2020-01-01,80 - 100,96,Middle Juba,SOM_0011_V1,2020-01-01,60 - 80,74,Middle Shabelle,SOM_0012_V1,2020-01-01,80 - 100,94,Mudug,SOM_0013_V1,2020-01-01,60 - 80,63,Nugaal,SOM_0014_V1,2020-01-01,60 - 80,68,Togdheer,SOM_0017_V1,2020-01-01,80 - 100,89");
+    await expect(lastLayers.includes("reference-layer-fill-0,reference-layer-outline-0")).toBeTruthy();
     await page.getByRole('button', { name: 'Indicator A above X% Delete' }).getByRole('checkbox').uncheck();
     await page.getByRole('tab', { name: 'Layers' }).click();
 
@@ -166,6 +176,13 @@ test.describe('View project', () => {
     await expect(page.getByTitle('Zonal Analysis')).toBeHidden();
     await page.getByTitle('Start Measurement').click();
     await expect(page.getByText('Measure distances and areas')).toBeVisible();
+
+    // COMPARE
+    await page.getByTitle('Turn on compare Layers').click();
+    await page.getByLabel(kenyaLayer).click();
+    await expect(lastLayers.includes("reference-layer-fill-0,reference-layer-outline-0,reference-layer-fill-1,reference-layer-outline-1")).toBeTruthy();
+    await page.getByLabel(kenyaLayer).click();
+    await page.getByTitle('Turn off compare Layers').click();
 
     // ----------------------------------------------------------------------------
     // BOOKMARK
