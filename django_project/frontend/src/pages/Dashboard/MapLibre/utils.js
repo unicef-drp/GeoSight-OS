@@ -294,7 +294,7 @@ export const getLayerIdOfReferenceLayer = (map) => {
 };
 
 export const hexToRgba = (hex, alpha = 1, format = 'array') => {
-  if (!hexClean) {
+  if (!hex) {
     return
   }
   // Remove the hash if present
