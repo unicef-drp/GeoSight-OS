@@ -86,6 +86,7 @@ class IndicatorValueAdmin(admin.ModelAdmin):
     list_filter = (NullEntityFilter, NullCountryFilter, 'date')
     search_fields = ('indicator__name', 'geom_id')
     actions = (assign_flat_table,)
+    raw_id_fields = ('country', 'entity')
 
     def entity_geom_id(self, obj: IndicatorValue):
         """Return entity."""

@@ -16,6 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib import admin
 from django.utils import timezone
+from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
 from geosight.georepo.models import ReferenceLayerView
@@ -130,7 +131,13 @@ class ReferenceLayerViewAdmin(admin.ModelAdmin):
 
     def country_list(self, obj: ReferenceLayerView):
         """Return countries of view."""
-        return list(obj.countries.values_list('name', flat=True))
+        _list = []
+        for country in obj.countries.all():
+            url = f"/django-admin/geosight_georepo/entity/{country.id}/change/"
+            _list.append(
+                f'<a href="{url}" target="_blank">{country.name}</a>'
+            )
+        return format_html(''.join(_list))
 
 
 admin.site.register(ReferenceLayerView, ReferenceLayerViewAdmin)
