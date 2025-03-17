@@ -88,7 +88,10 @@ export default function Indicators() {
       indicatorFetchingIds.push(indicatorLayer.id);
       $('#Indicator-Radio-' + indicatorLayer.id).addClass('Loading')
     })
-    dispatch(Actions.IndicatorsData.request(id))
+    const indicatorDataId = getIndicatorDataId(
+      id, referenceLayer.identifier, referenceLayerIdentifier
+    )
+    dispatch(Actions.IndicatorsData.request(indicatorDataId))
     dispatch(
       Actions.IndicatorsMetadata.progress(metadataId, {
         total_page: totalPage,
