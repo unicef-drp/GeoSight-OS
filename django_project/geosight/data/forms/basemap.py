@@ -117,4 +117,6 @@ class BasemapFormAPI(forms.ModelForm):
 
     class Meta:  # noqa: D106
         model = BasemapLayer
-        exclude = ('created_at', 'creator', 'modified_at', 'group')
+        exclude = (
+            'created_at', 'creator', 'modified_at', 'modified_by', 'group'
+        )
