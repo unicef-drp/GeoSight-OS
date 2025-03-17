@@ -24,6 +24,7 @@ import { Actions } from "../../../../store/dashboard";
 import { removeElement } from "../../../../utils/Array";
 import { getIndicatorDataId } from "../../../../utils/indicatorData";
 import {
+  getIndicatorLayers,
   referenceLayerIndicatorLayer
 } from "../../../../utils/indicatorLayer";
 import { IndicatorRequest } from "./Request";
@@ -68,24 +69,40 @@ export default function Indicators() {
   })
 
   /** Done data **/
-  const done = (id) => {
-    const indicatorLayer = indicatorLayers.filter(layer => layer.indicators.map(indicator => indicator.id).includes(id))
-    indicatorLayer.map(indicatorLayer => {
+  const done = (id, referenceLayerIdentifier) => {
+    const _indicatorLayers = getIndicatorLayers(
+      id, indicatorLayers, referenceLayerIdentifier, referenceLayer
+    )
+    _indicatorLayers.map(indicatorLayer => {
       removeElement(indicatorFetchingIds, indicatorLayer.id)
       $('#Indicator-Radio-' + indicatorLayer.id).removeClass('Loading')
     })
   }
 
   /** On loading **/
-  const onLoading = useCallback((id, metadataId, totalPage) => {
-    const indicatorLayer = indicatorLayers.filter(
-      layer => layer.indicators.map(indicator => indicator.id).includes(id)
+  const onLoading = useCallback((id, metadataId, referenceLayerIdentifier, totalPage) => {
+    const _indicatorLayers = getIndicatorLayers(
+      id, indicatorLayers, referenceLayerIdentifier, referenceLayer
     )
-    indicatorLayer.map(indicatorLayer => {
+    _indicatorLayers.map(indicatorLayer => {
       indicatorFetchingIds.push(indicatorLayer.id);
       $('#Indicator-Radio-' + indicatorLayer.id).addClass('Loading')
     })
-    dispatch(Actions.IndicatorsData.request(id))
+
+    // Make error as empty
+    _indicatorLayers.map(indicatorLayer => {
+      if (indicatorLayer.error) {
+        dispatch(
+          Actions.IndicatorLayers.updateJson(
+            indicatorLayer.id, { error: null }
+          )
+        )
+      }
+    })
+    const indicatorDataId = getIndicatorDataId(
+      id, referenceLayer.identifier, referenceLayerIdentifier
+    )
+    dispatch(Actions.IndicatorsData.request(indicatorDataId))
     dispatch(
       Actions.IndicatorsMetadata.progress(metadataId, {
         total_page: totalPage,
@@ -110,24 +127,41 @@ export default function Indicators() {
       if (!error && !response) {
         return
       }
+
+      // Add error info
+      if (error) {
+        const _indicatorLayers = getIndicatorLayers(
+          id, indicatorLayers, referenceLayerIdentifier, referenceLayer
+        )
+        _indicatorLayers.map(indicatorLayer => {
+          if (!indicatorLayer.error) {
+            dispatch(
+              Actions.IndicatorLayers.updateJson(
+                indicatorLayer.id,
+                { error: error }
+              )
+            )
+          }
+        })
+      }
+      const indicatorDataId = getIndicatorDataId(
+        id, referenceLayer.identifier, referenceLayerIdentifier
+      )
+      dispatch(
+        Actions.IndicatorsMetadata.progress(
+          metadataId,
+          {
+            total_page: 100,
+            page: 100
+          }
+        )
+      )
       if (response) {
-        const indicatorDataId = getIndicatorDataId(
-          id, referenceLayer.identifier, referenceLayerIdentifier
-        )
-        dispatch(
-          Actions.IndicatorsMetadata.progress(
-            metadataId,
-            {
-              total_page: 100,
-              page: 100
-            }
-          )
-        )
         dispatch(
           Actions.IndicatorsData.receive(response, error, indicatorDataId)
         )
       }
-      done(id)
+      done(id, referenceLayerIdentifier)
     },
     [referenceLayer.identifier]
   )

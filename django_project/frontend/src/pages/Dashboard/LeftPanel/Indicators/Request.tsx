@@ -31,7 +31,7 @@ interface Props {
   datasetIdentifier: string;
   dashboardDatasetIdentifier: string;
 
-  onLoading: (id: number, metadataId: string, totalPage: number) => void;
+  onLoading: (id: number, metadataId: string, datasetIdentifier: string, totalPage: number) => void;
   onProgress: (id: number, metadataId: string, progress: any) => void;
   onResponse: (id: number, metadataId: string, datasetIdentifier: string, response: any, error: string | null) => void;
 }
@@ -116,7 +116,7 @@ export const IndicatorRequest = memo(
     /** Loading when metadata fetched. */
     useEffect(() => {
       if (version) {
-        onLoading(indicator.id, metadataId, totalPage);
+        onLoading(indicator.id, metadataId, datasetIdentifier, totalPage);
       }
     }, [version]);
 
@@ -153,7 +153,7 @@ export const IndicatorRequest = memo(
       prevState.session = session
 
       setResponse({ data: null, error: null })
-      onLoading(indicator.id, metadataId, totalPage);
+      onLoading(indicator.id, metadataId, datasetIdentifier, totalPage);
       //   Fetch indicator data
       (
         async () => {
@@ -165,7 +165,10 @@ export const IndicatorRequest = memo(
           }).catch(error => {
             // @ts-ignore
             if (prevState.session === session) {
-              setResponse({ data: null, error: error })
+              setResponse({
+                data: null,
+                error: error.message ? error.message : error
+              })
             }
           })
         }

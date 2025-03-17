@@ -28,7 +28,7 @@ import {
   fetchDynamicLayerData,
   indicatorLayerId
 } from "../../../../utils/indicatorLayer";
-import { UpdateStyleData } from "../../../../utils/indicatorData";
+import { getIndicatorDataByLayer } from "../../../../utils/indicatorData";
 
 /**
  * Related table layer handler
@@ -36,7 +36,11 @@ import { UpdateStyleData } from "../../../../utils/indicatorData";
 export default function DynamicIndicatorLayer({ indicatorLayer }) {
   const dispatch = useDispatch()
   const prevState = useRef();
-  const { indicators, geoField } = useSelector(state => state.dashboard.data)
+  const {
+    indicators,
+    geoField,
+    referenceLayer
+  } = useSelector(state => state.dashboard.data)
   const indicatorLayerMetadata = useSelector(state => state.indicatorLayerMetadata);
   const indicatorsData = useSelector(state => state.indicatorsData);
 
@@ -85,7 +89,8 @@ export default function DynamicIndicatorLayer({ indicatorLayer }) {
     // ------------ Check loading -----------
     let loaded = true
     dynamicLayerIndicators.map(indicator => {
-      if (!indicatorsData[indicator.id]?.fetched) {
+      const indicatorData = getIndicatorDataByLayer(indicator.id, indicatorsData, indicatorLayer, referenceLayer)
+      if (!indicatorData?.fetched) {
         loaded = false
       }
     })
@@ -108,7 +113,7 @@ export default function DynamicIndicatorLayer({ indicatorLayer }) {
         }
       )
     }
-  }, [indicatorsData, geoField, config])
+  }, [referenceLayer, indicatorsData, geoField, config])
 
   return null
 }
