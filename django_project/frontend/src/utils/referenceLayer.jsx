@@ -63,7 +63,7 @@ export function returnValueByGeometry(
       layer.indicators.map(indicatorLayer => {
         const indicator = indicators.find(indicator => indicatorLayer.id === indicator.id)
         const indicatorData = getIndicatorDataByLayer(indicator.id, indicatorsData, layer, referenceLayer)
-        if (indicator && indicatorData?.fetched) {
+        if (indicator && indicatorData?.fetched && indicatorData?.data) {
           indicatorData?.data.forEach(function (data) {
             data.indicator = indicator
             allData.push(data);

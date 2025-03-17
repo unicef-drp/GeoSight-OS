@@ -24,6 +24,7 @@ import { Actions } from "../../../../store/dashboard";
 import { removeElement } from "../../../../utils/Array";
 import { getIndicatorDataId } from "../../../../utils/indicatorData";
 import {
+  getIndicatorLayers,
   referenceLayerIndicatorLayer
 } from "../../../../utils/indicatorLayer";
 import { IndicatorRequest } from "./Request";
@@ -68,8 +69,10 @@ export default function Indicators() {
   })
 
   /** Done data **/
-  const done = (id) => {
-    const indicatorLayer = indicatorLayers.filter(layer => layer.indicators.map(indicator => indicator.id).includes(id))
+  const done = (id, referenceLayerIdentifier) => {
+    const indicatorLayer = getIndicatorLayers(
+      id, indicatorLayers, referenceLayerIdentifier, referenceLayer
+    )
     indicatorLayer.map(indicatorLayer => {
       removeElement(indicatorFetchingIds, indicatorLayer.id)
       $('#Indicator-Radio-' + indicatorLayer.id).removeClass('Loading')
@@ -77,9 +80,9 @@ export default function Indicators() {
   }
 
   /** On loading **/
-  const onLoading = useCallback((id, metadataId, totalPage) => {
-    const indicatorLayer = indicatorLayers.filter(
-      layer => layer.indicators.map(indicator => indicator.id).includes(id)
+  const onLoading = useCallback((id, metadataId, referenceLayerIdentifier, totalPage) => {
+    const indicatorLayer = getIndicatorLayers(
+      id, indicatorLayers, referenceLayerIdentifier, referenceLayer
     )
     indicatorLayer.map(indicatorLayer => {
       indicatorFetchingIds.push(indicatorLayer.id);
@@ -110,24 +113,22 @@ export default function Indicators() {
       if (!error && !response) {
         return
       }
-      if (response) {
-        const indicatorDataId = getIndicatorDataId(
-          id, referenceLayer.identifier, referenceLayerIdentifier
+      const indicatorDataId = getIndicatorDataId(
+        id, referenceLayer.identifier, referenceLayerIdentifier
+      )
+      dispatch(
+        Actions.IndicatorsMetadata.progress(
+          metadataId,
+          {
+            total_page: 100,
+            page: 100
+          }
         )
-        dispatch(
-          Actions.IndicatorsMetadata.progress(
-            metadataId,
-            {
-              total_page: 100,
-              page: 100
-            }
-          )
-        )
-        dispatch(
-          Actions.IndicatorsData.receive(response, error, indicatorDataId)
-        )
-      }
-      done(id)
+      )
+      dispatch(
+        Actions.IndicatorsData.receive(response, error, indicatorDataId)
+      )
+      done(id, referenceLayerIdentifier)
     },
     [referenceLayer.identifier]
   )

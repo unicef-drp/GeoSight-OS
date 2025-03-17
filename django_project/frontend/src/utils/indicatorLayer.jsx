@@ -272,3 +272,25 @@ export function dataFieldsDefault() {
 export function referenceLayerIndicatorLayer(referenceLayer, indicatorLayer) {
   return indicatorLayer?.level_config?.referenceLayer ? indicatorLayer?.level_config?.referenceLayer : referenceLayer
 }
+
+export function getIndicatorLayers(id, indicatorLayers, referenceLayerIdentifier, referenceLayer) {
+  let indicatorLayer = indicatorLayers.filter(
+    layer => layer.indicators.map(indicator => indicator.id).includes(id)
+  )
+  if (referenceLayerIdentifier === referenceLayer.identifier) {
+    indicatorLayer = indicatorLayer.filter(
+      layer => {
+        const _referenceLayer = referenceLayerIndicatorLayer(referenceLayer, indicatorLayer)
+        return !_referenceLayer || _referenceLayer === referenceLayerIdentifier
+      }
+    )
+  } else {
+    indicatorLayer = indicatorLayer.filter(
+      layer => {
+        const _referenceLayer = !layer?.level_config?.referenceLayer?.identifier
+        return _referenceLayer === referenceLayerIdentifier
+      }
+    )
+  }
+  return indicatorLayer
+}
