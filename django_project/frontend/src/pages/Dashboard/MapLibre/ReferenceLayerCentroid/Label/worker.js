@@ -37,7 +37,8 @@ export default () => {
       let properties = geometry
       if (geometry) {
         if (indicator) {
-          properties = Object.assign({}, indicator, geometry)
+          properties = Object.assign({}, geometry, indicator)
+          properties.code = properties.ucode
           delete properties.geometry
         }
         features.push({
