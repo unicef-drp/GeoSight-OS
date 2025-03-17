@@ -70,10 +70,10 @@ export default function Indicators() {
 
   /** Done data **/
   const done = (id, referenceLayerIdentifier) => {
-    const indicatorLayer = getIndicatorLayers(
+    const _indicatorLayers = getIndicatorLayers(
       id, indicatorLayers, referenceLayerIdentifier, referenceLayer
     )
-    indicatorLayer.map(indicatorLayer => {
+    _indicatorLayers.map(indicatorLayer => {
       removeElement(indicatorFetchingIds, indicatorLayer.id)
       $('#Indicator-Radio-' + indicatorLayer.id).removeClass('Loading')
     })
@@ -81,12 +81,23 @@ export default function Indicators() {
 
   /** On loading **/
   const onLoading = useCallback((id, metadataId, referenceLayerIdentifier, totalPage) => {
-    const indicatorLayer = getIndicatorLayers(
+    const _indicatorLayers = getIndicatorLayers(
       id, indicatorLayers, referenceLayerIdentifier, referenceLayer
     )
-    indicatorLayer.map(indicatorLayer => {
+    _indicatorLayers.map(indicatorLayer => {
       indicatorFetchingIds.push(indicatorLayer.id);
       $('#Indicator-Radio-' + indicatorLayer.id).addClass('Loading')
+    })
+
+    // Make error as empty
+    _indicatorLayers.map(indicatorLayer => {
+      if (indicatorLayer.error) {
+        dispatch(
+          Actions.IndicatorLayers.updateJson(
+            indicatorLayer.id, { error: null }
+          )
+        )
+      }
     })
     const indicatorDataId = getIndicatorDataId(
       id, referenceLayer.identifier, referenceLayerIdentifier
@@ -116,6 +127,23 @@ export default function Indicators() {
       if (!error && !response) {
         return
       }
+
+      // Add error info
+      if (error) {
+        const _indicatorLayers = getIndicatorLayers(
+          id, indicatorLayers, referenceLayerIdentifier, referenceLayer
+        )
+        _indicatorLayers.map(indicatorLayer => {
+          if (!indicatorLayer.error) {
+            dispatch(
+              Actions.IndicatorLayers.updateJson(
+                indicatorLayer.id,
+                { error: error }
+              )
+            )
+          }
+        })
+      }
       const indicatorDataId = getIndicatorDataId(
         id, referenceLayer.identifier, referenceLayerIdentifier
       )
@@ -128,9 +156,11 @@ export default function Indicators() {
           }
         )
       )
-      dispatch(
-        Actions.IndicatorsData.receive(response, error, indicatorDataId)
-      )
+      if (response) {
+        dispatch(
+          Actions.IndicatorsData.receive(response, error, indicatorDataId)
+        )
+      }
       done(id, referenceLayerIdentifier)
     },
     [referenceLayer.identifier]
