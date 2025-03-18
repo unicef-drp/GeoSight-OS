@@ -383,6 +383,7 @@ export default function GlobalDateSelector() {
   useEffect(() => {
     (
       async () => {
+        console.log('METADATA INDICATOR LAYERS')
         if (indicatorLayers.length) {
           const datasetWithIndicators = {};
           [currentIndicatorLayer, currentIndicatorSecondLayer].concat(indicatorLayers).map(layer => {
@@ -576,7 +577,7 @@ export default function GlobalDateSelector() {
       className={'GlobalDateSelectionOuterWrapper'}>
       <div className='GlobalDateSelectionWrapper'>
         {
-          errorMessage ?
+          errorMessage && !marks.length ?
             <div className='LoadingElement'>
               <div className='Throbber error'>
                 {errorMessage}

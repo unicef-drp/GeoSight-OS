@@ -14,7 +14,8 @@
  */
 
 import { Indicator as IndicatorType } from "../types/Indicator";
-import { DjangoRequests, fetchPaginationInParallel } from "../Requests";
+import { DjangoRequestPagination, DjangoRequests } from "../Requests";
+import { dictDeepCopy } from "../utils/main";
 
 export class Indicator {
   id: number;
@@ -29,25 +30,54 @@ export class Indicator {
     this.url = `/api/v1/indicators/${indicator.id}/data/`
   }
 
+  getParamAndData(params: any) {
+    params = dictDeepCopy(params)
+    const data = {}
+    for (const [key, value] of Object.entries(params)) {
+      if (key.includes('country_geom')) {
+        if (Array.isArray(value)) {
+          // @ts-ignore
+          data[key] = value.join(',')
+        } else {
+          // @ts-ignore
+          data[key] = value
+        }
+        // @ts-ignore
+        delete params[key]
+
+      }
+    }
+    return [params, data]
+  }
+
+  /** Return latest values of data **/
   async valueLatest(params: any, onProgress: (progress: any) => void | null) {
+    params = dictDeepCopy(params)
     params['fields'] = 'geometry_code,value,concept_uuid,admin_level,date,time'
     params['distinct'] = 'geom_id'
     params['sort'] = 'geom_id,-date'
-    return await fetchPaginationInParallel(
-      this.url, params, onProgress
-    )
+
+    let data: any = {};
+    [params, data] = this.getParamAndData(params);
+    return await DjangoRequestPagination.post(this.url, data, {}, params, onProgress)
   }
 
+  /** Return statistic of data **/
   async statistic(params: any) {
-    const response = await DjangoRequests.get(
-      this.url + "statistic/", {}, params
+    let data: any = {};
+    [params, data] = this.getParamAndData(params);
+    const response = await DjangoRequests.post(
+      this.url + "statistic/", data, {}, params
     );
     return response.data;
   }
 
+  /** Return values of data **/
   async values(params: any): Promise<any> {
-    const response = await DjangoRequests.get(
-      this.url + "values/", {}, params
+    let data: any = {};
+    [params, data] = this.getParamAndData(params);
+    const response = await DjangoRequests.post(
+      this.url + "values/", data, {}, params
     );
     return response.data;
   }

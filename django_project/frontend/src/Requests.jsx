@@ -323,8 +323,12 @@ export const DjangoRequests = {
       }
     })
   },
-  post: (url, data, options = {}) => {
-    return axios.post(url, data, {
+  post: (url, data, options = {}, params = null) => {
+    let urlRequest = url
+    if (params) {
+      urlRequest = constructUrl(url, { ...params })
+    }
+    return axios.post(urlRequest, data, {
       ...options,
       headers: {
         'X-CSRFToken': csrfmiddlewaretoken
@@ -345,6 +349,85 @@ export const DjangoRequests = {
       headers: { 'X-CSRFToken': csrfmiddlewaretoken }, data: data
     })
   }
+}
+
+export const DjangoRequestPagination = {
+  parallel: async (url, requestFunction, onProgress) => {
+    let data = []
+    let doneCount = 0
+    /** Request first data **/
+    const response = await requestFunction(1)
+    data = data.concat(response.results)
+    doneCount += 1
+    if (onProgress) {
+      onProgress({
+        page: doneCount,
+        total_page: response.total_page,
+      })
+    }
+
+    /** Call next request **/
+    if (response.next) {
+      const call = async (page) => {
+        const response = await requestFunction(page)
+        doneCount += 1
+        if (onProgress) {
+          onProgress({
+            page: doneCount,
+            total_page: response.total_page,
+          })
+        }
+        data = data.concat(response.results)
+      }
+      await Promise.all(Array(response.total_page - 1).fill(0).map((_, idx) => call(idx + 2)))
+    }
+    return data
+  },
+  get: async (url, options = {}, params = null, onProgress = null) => {
+    return await DjangoRequestPagination.parallel(
+      url,
+      async (page) => {
+        let urlRequest = url
+        if (params) {
+          urlRequest = constructUrl(url, { ...params, page: page })
+        }
+        const response = await axios.get(
+          urlRequest,
+          {
+            ...options,
+            headers: {
+              'X-CSRFToken': csrfmiddlewaretoken
+            }
+          }
+        )
+        return response.data
+      },
+      onProgress
+    )
+  },
+  post: async (url, data, options = {}, params, onProgress) => {
+    return await DjangoRequestPagination.parallel(
+      url,
+      async (page) => {
+        let urlRequest = url
+        if (params) {
+          urlRequest = constructUrl(url, { ...params, page: page })
+        }
+        const response = await axios.post(
+          urlRequest,
+          data,
+          {
+            ...options,
+            headers: {
+              'X-CSRFToken': csrfmiddlewaretoken
+            }
+          }
+        )
+        return response.data
+      },
+      onProgress
+    )
+  },
 }
 
 /*** Axios georepo request */
