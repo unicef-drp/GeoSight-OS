@@ -383,7 +383,6 @@ export default function GlobalDateSelector() {
   useEffect(() => {
     (
       async () => {
-        console.log('METADATA INDICATOR LAYERS')
         if (indicatorLayers.length) {
           const datasetWithIndicators = {};
           [currentIndicatorLayer, currentIndicatorSecondLayer].concat(indicatorLayers).map(layer => {

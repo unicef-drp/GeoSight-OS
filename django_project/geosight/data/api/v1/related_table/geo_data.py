@@ -18,6 +18,9 @@ from datetime import datetime
 from dateutil import parser as date_parser
 from django.conf import settings
 from django.http import HttpResponseBadRequest
+from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_control
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
@@ -61,6 +64,15 @@ class RelatedTableGeoDataViewSet(viewsets.ReadOnlyModelViewSet):
 
     queryset = RelatedTable.objects.all()
 
+    def _set_request(self):
+        """Set request parameters from POST."""
+
+        # Add the data to query
+        self.request.GET = self.request.GET.copy()
+        data = self.request.data.copy()
+        for key, value in data.items():
+            self.request.GET[key] = value
+
     def _get_related_table(self):  # noqa: D102
         related_table = get_object_or_404(
             RelatedTable, pk=self.kwargs.get('related_tables_id')
@@ -81,6 +93,7 @@ class RelatedTableGeoDataViewSet(viewsets.ReadOnlyModelViewSet):
     )
     def list(self, request, *args, **kwargs):
         """List of related table rows."""
+        self._set_request()
         related_table = self._get_related_table()
         try:
             country_geom_ids = request.GET['country_geom_ids'].split(',')
@@ -140,10 +153,22 @@ class RelatedTableGeoDataViewSet(viewsets.ReadOnlyModelViewSet):
             }
         return Response(data)
 
+    @method_decorator(
+        cache_control(public=True, max_age=864000),
+        name='dispatch'
+    )
     @swagger_auto_schema(auto_schema=None)
-    @action(detail=False, methods=['get'])
+    def post(self, request, *args, **kwargs):
+        """List of indicator values in POST."""
+        self._set_request()
+        return super().list(request, *args, **kwargs)
+
+    @swagger_auto_schema(method='get', auto_schema=None)
+    @swagger_auto_schema(method='post', auto_schema=None)
+    @action(detail=False, methods=['get', 'post'])
     def dates(self, request, *args, **kwargs):
         """Get dates of data."""
+        self._set_request()
         related_table = self._get_related_table()
         try:
             country_geom_ids = request.GET['country_geom_ids'].split(',')
@@ -161,10 +186,12 @@ class RelatedTableGeoDataViewSet(viewsets.ReadOnlyModelViewSet):
         )
         return Response(data)
 
-    @swagger_auto_schema(auto_schema=None)
-    @action(detail=False, methods=['get'])
+    @swagger_auto_schema(method='get', auto_schema=None)
+    @swagger_auto_schema(method='post', auto_schema=None)
+    @action(detail=False, methods=['get', 'post'])
     def data_field(self, request, *args, **kwargs):
         """Get data field."""
+        self._set_request()
         related_table = self._get_related_table()
         try:
             field = request.GET['field']

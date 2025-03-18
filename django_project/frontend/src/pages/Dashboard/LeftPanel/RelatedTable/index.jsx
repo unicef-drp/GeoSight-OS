@@ -111,6 +111,12 @@ export function RelatedTable(
           'response': [],
           'error': error
         })
+        dispatch(
+          Actions.IndicatorLayers.updateJson(
+            indicatorLayer.id,
+            { error: error }
+          )
+        )
       })
       dispatch(Actions.RelatedTableData.request(id))
     }
