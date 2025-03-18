@@ -576,7 +576,7 @@ export default function GlobalDateSelector() {
       className={'GlobalDateSelectionOuterWrapper'}>
       <div className='GlobalDateSelectionWrapper'>
         {
-          errorMessage ?
+          errorMessage && !marks.length ?
             <div className='LoadingElement'>
               <div className='Throbber error'>
                 {errorMessage}

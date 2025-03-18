@@ -17,7 +17,7 @@
    INDICATOR
    ========================================================================== */
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import $ from "jquery";
 import { useDispatch, useSelector } from "react-redux";
 import { Actions } from "../../../../store/dashboard";
@@ -42,31 +42,37 @@ export default function Indicators() {
   } = useSelector(state => state.dashboard.data);
   const currentIndicatorLayer = useSelector(state => state.selectedIndicatorLayer);
   const currentIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer);
+  const [indicatorsWithDataset, setIndicatorsWithDataset] = useState([]);
 
-  /** Get the indicators */
-  const indicatorsWithDataset = [];
-  [currentIndicatorLayer, currentIndicatorSecondLayer].concat(indicatorLayers).map(layer => {
-    const identifier = referenceLayerIndicatorLayer(referenceLayer, layer)?.identifier;
+  /** Update the indicators with dataset. */
+  useEffect(() => {
+    const _indicatorsWithDataset = [];
+    [currentIndicatorLayer, currentIndicatorSecondLayer].concat(indicatorLayers).map(layer => {
+      const identifier = referenceLayerIndicatorLayer(referenceLayer, layer)?.identifier;
 
-    layer?.indicators?.map(_ => {
-      const data = indicatorsWithDataset.find(row => row.id === _.id && row.dataset === identifier)
+      layer?.indicators?.map(_ => {
+        const data = _indicatorsWithDataset.find(row => row.id === _.id && row.dataset === identifier)
+        if (!data) {
+          _indicatorsWithDataset.push({
+            id: _.id,
+            dataset: identifier
+          })
+        }
+      })
+    })
+    indicators.map(_ => {
+      const data = _indicatorsWithDataset.find(row => row.id === _.id && row.dataset === referenceLayer.identifier)
       if (!data) {
-        indicatorsWithDataset.push({
+        _indicatorsWithDataset.push({
           id: _.id,
-          dataset: identifier
+          dataset: referenceLayer.identifier
         })
       }
     })
-  })
-  indicators.map(_ => {
-    const data = indicatorsWithDataset.find(row => row.id === _.id && row.dataset === referenceLayer.identifier)
-    if (!data) {
-      indicatorsWithDataset.push({
-        id: _.id,
-        dataset: referenceLayer.identifier
-      })
+    if (JSON.stringify(_indicatorsWithDataset) !== JSON.stringify(indicatorsWithDataset)) {
+      setIndicatorsWithDataset(_indicatorsWithDataset)
     }
-  })
+  }, [referenceLayer, indicators, indicatorLayers, currentIndicatorLayer, currentIndicatorSecondLayer]);
 
   /** Done data **/
   const done = (id, referenceLayerIdentifier) => {
@@ -87,17 +93,6 @@ export default function Indicators() {
     _indicatorLayers.map(indicatorLayer => {
       indicatorFetchingIds.push(indicatorLayer.id);
       $('#Indicator-Radio-' + indicatorLayer.id).addClass('Loading')
-    })
-
-    // Make error as empty
-    _indicatorLayers.map(indicatorLayer => {
-      if (indicatorLayer.error) {
-        dispatch(
-          Actions.IndicatorLayers.updateJson(
-            indicatorLayer.id, { error: null }
-          )
-        )
-      }
     })
     const indicatorDataId = getIndicatorDataId(
       id, referenceLayer.identifier, referenceLayerIdentifier

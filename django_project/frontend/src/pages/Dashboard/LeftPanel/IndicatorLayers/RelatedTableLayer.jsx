@@ -17,22 +17,23 @@
    RELATED TABLE LAYER
    ========================================================================== */
 
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toUcode } from "../../../../utils/georepo";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import FilterAltOffIcon from "@mui/icons-material/FilterAltOff";
 import { Actions } from "../../../../store/dashboard";
-import { fetchingData } from "../../../../Requests";
 import {
   referenceLayerIndicatorLayer
 } from "../../../../utils/indicatorLayer";
 import { getCountryGeomIds } from "../../../../utils/Dataset";
+import { RelatedTable } from "../../../../class/RelatedTable";
 
 /**
  * Related table layer handler
  */
 export default function RelatedTableLayer({ relatedTableLayer }) {
+  const prevState = useRef();
   const dispatch = useDispatch();
   const {
     relatedTables,
@@ -70,56 +71,61 @@ export default function RelatedTableLayer({ relatedTableLayer }) {
     }
   }, [geometries, relatedTableData]);
 
+
   /**
    * Update related table dates
    */
   useEffect(() => {
-    // Skip if no data
-    // To get the countries
-    if (!referenceLayerData?.data?.identifier) {
-      return;
-    }
-    const countryGeomIds = getCountryGeomIds(referenceLayerData.data);
+    (
+      async () => {
 
-    indicatorLayers.map(indicatorLayer => {
-      const relatedTableLayer = indicatorLayer.related_tables[0]
-      if (!relatedTableLayer) {
-        return;
-      }
-      const relatedTable = relatedTables.find(rt => rt.id === relatedTableLayer.id)
-      if (!relatedTable) {
-        return
-      }
-      const id = indicatorLayer.id
-      const params = {
-        geography_code_field_name: relatedTable.geography_code_field_name,
-        geography_code_type: relatedTable.geography_code_type,
-        country_geom_ids: countryGeomIds
-      }
-      if (indicatorLayer.config.date_field) {
-        params.date_field = indicatorLayer.config.date_field
-      }
-      if (indicatorLayer.config.date_format) {
-        params.date_format = indicatorLayer.config.date_format
-      }
-      params.version = relatedTable.version
-      fetchingData(
-        `/api/v1/related-tables/${relatedTable.id}/geo-data/dates/`, params, {}, function (response, error) {
-          if (!error) {
+        // Skip if no data
+        // To get the countries
+        if (!referenceLayerData?.data?.identifier) {
+          return;
+        }
+        const countryGeomIds = getCountryGeomIds(referenceLayerData.data);
+        const indicatorLayer = relatedTableLayer;
+        const id = indicatorLayer.id
+        const params = {
+          geography_code_field_name: relatedTableConfig.geography_code_field_name,
+          geography_code_type: relatedTableConfig.geography_code_type,
+          country_geom_ids: countryGeomIds
+        }
+        if (indicatorLayer.config.date_field) {
+          params.date_field = indicatorLayer.config.date_field
+        }
+        if (indicatorLayer.config.date_format) {
+          params.date_format = indicatorLayer.config.date_format
+        }
+        params.version = relatedTableConfig.version
+        if (
+          JSON.stringify(params) !== JSON.stringify(prevState.params)
+        ) {
+          prevState.params = params
+          try {
+            const relatedTableObj = new RelatedTable(relatedTableConfig)
+            const response = await relatedTableObj.dates(params)
+            console.log(response)
             dispatch(Actions.IndicatorLayerMetadata.update(id, {
               dates: response,
               count: 0
             }))
-          } else {
+          } catch (error) {
             dispatch(Actions.IndicatorLayerMetadata.update(id, {
               dates: error.toString(),
               count: 0
             }))
+            dispatch(
+              Actions.IndicatorLayers.updateJson(
+                id, { error: error.toString() }
+              )
+            )
           }
         }
-      )
-    })
-  }, [relatedTables, referenceLayerData, indicatorLayers])
+      }
+    )()
+  }, [relatedTable, referenceLayerData, indicatorLayers])
   return null
 }
 

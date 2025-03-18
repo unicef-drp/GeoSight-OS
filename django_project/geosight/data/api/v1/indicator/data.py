@@ -57,6 +57,14 @@ class IndicatorDataViewSet(
         read_permission_resource(indicator, self.request.user)
         return indicator
 
+    def _set_request(self):
+        """Set request parameters from POST."""
+        # Add the data to query
+        self.request.GET = self.request.GET.copy()
+        data = self.request.data.copy()
+        for key, value in data.items():
+            self.request.GET[key] = value
+
     def get_queryset(self):
         """Return queryset of API."""
         indicator = self._get_indicator()
@@ -84,6 +92,16 @@ class IndicatorDataViewSet(
     )
     def list(self, request, *args, **kwargs):
         """List of indicator rows."""
+        return super().list(request, *args, **kwargs)
+
+    @method_decorator(
+        cache_control(public=True, max_age=864000),
+        name='dispatch'
+    )
+    @swagger_auto_schema(auto_schema=None)
+    def post(self, request, *args, **kwargs):
+        """List of indicator values in POST."""
+        self._set_request()
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(
@@ -114,17 +132,21 @@ class IndicatorDataViewSet(
         """Get value list of string of data."""
         return super().values_string(request)
 
-    @swagger_auto_schema(auto_schema=None)
-    @action(detail=False, methods=['get'])
+    @swagger_auto_schema(method='get', auto_schema=None)
+    @swagger_auto_schema(method='post', auto_schema=None)
+    @action(detail=False, methods=['get', 'post'])
     def values(self, request, *args, **kwargs):
         """Get values of data."""
+        self._set_request()
         return super().values(request)
 
-    @swagger_auto_schema(auto_schema=None)
-    @action(detail=False, methods=['get'])
+    @swagger_auto_schema(method='get', auto_schema=None)
+    @swagger_auto_schema(method='post', auto_schema=None)
+    @action(detail=False, methods=['get', 'post'])
     def statistic(self, request, *args, **kwargs):
         """Get statistic of data.
 
         It returns {min, max, avg}
         """
+        self._set_request()
         return super().statistic(request)
