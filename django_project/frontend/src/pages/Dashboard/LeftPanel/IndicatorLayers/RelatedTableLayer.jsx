@@ -106,7 +106,6 @@ export default function RelatedTableLayer({ relatedTableLayer }) {
           try {
             const relatedTableObj = new RelatedTable(relatedTableConfig)
             const response = await relatedTableObj.dates(params)
-            console.log(response)
             dispatch(Actions.IndicatorLayerMetadata.update(id, {
               dates: response,
               count: 0

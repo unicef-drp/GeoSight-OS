@@ -21,7 +21,7 @@ import { UpdateStyleData } from "../../../../utils/indicatorData";
 interface Parameter {
   date__lte: string;
   date__gte?: string;
-  country_geom_id?: string;
+  country_geom_id__in?: string[];
   version?: string;
 }
 
@@ -82,7 +82,7 @@ export const IndicatorRequest = memo(
     const params: Parameter = {
       date__lte: selectedGlobalTime.max ? selectedGlobalTime.max.split('T')[0] : null,
       version: version,
-      country_geom_id: referenceLayerData?.data?.countries?.map((country: CountryDatasetView) => country.ucode)
+      country_geom_id__in: referenceLayerData?.data?.countries?.map((country: CountryDatasetView) => country.ucode)
     }
     if (selectedGlobalTime.min) {
       params.date__gte = selectedGlobalTime.min.split('T')[0]
@@ -102,7 +102,7 @@ export const IndicatorRequest = memo(
      * Change selected time when selected global time changed and correct.
      * */
     useEffect(() => {
-      if (!params.date__lte || !params.country_geom_id || !params.version) {
+      if (!params.date__lte || !params.country_geom_id__in || !params.version) {
         return
       }
       // @ts-ignore
