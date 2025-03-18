@@ -42,6 +42,8 @@ class FilteredAPI(object):
             ignores = []
         ignores.append('sort')
         ignores.append('distinct')
+        ignores.append('encoding')
+        ignores.append('Content-Type')
 
         for param, value in request.GET.items():
             is_equal = True
