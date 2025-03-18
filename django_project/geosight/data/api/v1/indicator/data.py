@@ -59,7 +59,6 @@ class IndicatorDataViewSet(
 
     def _set_request(self):
         """Set request parameters from POST."""
-
         # Add the data to query
         self.request.GET = self.request.GET.copy()
         data = self.request.data.copy()

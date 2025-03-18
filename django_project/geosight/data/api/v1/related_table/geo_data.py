@@ -18,7 +18,6 @@ from datetime import datetime
 from dateutil import parser as date_parser
 from django.conf import settings
 from django.http import HttpResponseBadRequest
-from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_control
 from drf_yasg import openapi
@@ -66,7 +65,6 @@ class RelatedTableGeoDataViewSet(viewsets.ReadOnlyModelViewSet):
 
     def _set_request(self):
         """Set request parameters from POST."""
-
         # Add the data to query
         self.request.GET = self.request.GET.copy()
         data = self.request.data.copy()
