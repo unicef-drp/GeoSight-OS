@@ -202,9 +202,10 @@ export function DatasetFilterSelector(
     setData
   }: ModalFilterSelectorProps
 ) {
+
   return <DatasetViewSelector
     initData={
-      data.map((row: any) => {
+      !data ? [] : data.map((row: any) => {
         return {
           identifier: row,
           uuid: row
