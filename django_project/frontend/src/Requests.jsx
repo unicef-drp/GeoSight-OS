@@ -328,12 +328,26 @@ export const DjangoRequests = {
     if (params) {
       urlRequest = constructUrl(url, { ...params })
     }
-    return axios.post(urlRequest, data, {
-      ...options,
-      headers: {
-        'X-CSRFToken': csrfmiddlewaretoken
-      }
-    })
+    if (Object.keys(data).length) {
+      return axios.post(
+        urlRequest,
+        data,
+        {
+          ...options,
+          headers: {
+            'X-CSRFToken': csrfmiddlewaretoken
+          }
+        })
+    } else {
+      return axios.get(
+        urlRequest,
+        {
+          ...options,
+          headers: {
+            'X-CSRFToken': csrfmiddlewaretoken
+          }
+        })
+    }
   },
   put: (url, data, options = {}, headers = {}) => {
     return axios.put(url, data, {
@@ -413,17 +427,30 @@ export const DjangoRequestPagination = {
         if (params) {
           urlRequest = constructUrl(url, { ...params, page: page })
         }
-        const response = await axios.post(
-          urlRequest,
-          data,
-          {
-            ...options,
-            headers: {
-              'X-CSRFToken': csrfmiddlewaretoken
+        if (Object.keys(data).length) {
+          const response = await axios.post(
+            urlRequest,
+            data,
+            {
+              ...options,
+              headers: {
+                'X-CSRFToken': csrfmiddlewaretoken
+              }
             }
-          }
-        )
-        return response.data
+          )
+          return response.data
+        } else {
+          const response = await axios.get(
+            urlRequest,
+            {
+              ...options,
+              headers: {
+                'X-CSRFToken': csrfmiddlewaretoken
+              }
+            }
+          )
+          return response.data
+        }
       },
       onProgress
     )

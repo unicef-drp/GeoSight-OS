@@ -161,6 +161,10 @@ class RelatedTableGeoDataViewSet(viewsets.ReadOnlyModelViewSet):
         self._set_request()
         return super().list(request, *args, **kwargs)
 
+    @method_decorator(
+        cache_control(public=True, max_age=864000),
+        name='dispatch'
+    )
     @swagger_auto_schema(method='get', auto_schema=None)
     @swagger_auto_schema(method='post', auto_schema=None)
     @action(detail=False, methods=['get', 'post'])
