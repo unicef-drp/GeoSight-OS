@@ -4,6 +4,7 @@ import { expect } from "@playwright/test";
 export async function createIndicator(page, name) {
   await page.goto('/django-admin/geosight_data/indicator/add/');
   await page.locator('#id_name').fill(name);
+  await page.getByLabel('Aggregation upper level allowed').check();
   await page.getByRole('button', { name: 'Save and continue editing' }).click();
   await expect(page.getByText('History')).toBeVisible();
   return page.url();
