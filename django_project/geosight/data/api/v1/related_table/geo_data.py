@@ -31,6 +31,9 @@ from rest_framework.utils.urls import replace_query_param
 from core.api_utils import ApiTag
 from core.pagination import Pagination
 from geosight.data.models.related_table import RelatedTable
+from geosight.data.serializer.related_table import (
+    RelatedTableGeoDataSerializer
+)
 from geosight.permission.access import read_data_permission_resource
 
 
@@ -62,6 +65,7 @@ class RelatedTableGeoDataViewSet(viewsets.ReadOnlyModelViewSet):
     """Related Table Data ViewSet."""
 
     queryset = RelatedTable.objects.all()
+    serializer_class = RelatedTableGeoDataSerializer
 
     def _set_request(self):
         """Set request parameters from POST."""
