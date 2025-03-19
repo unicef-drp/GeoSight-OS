@@ -16,6 +16,21 @@
 import axios from "axios";
 import { Session } from "./utils/Sessions";
 
+/** Check if we use post or get */
+const isPost = function (data) {
+  try {
+    if (data instanceof FormData) {
+      return true
+    }
+    const keys = Object.keys(JSON.parse(JSON.stringify(data)))
+    if (!keys.length) {
+      return false
+    }
+  } catch (err) {
+
+  }
+  return true
+}
 
 export const constructUrl = function (url, params) {
   if (params && Object.keys(params).length) {
@@ -323,12 +338,12 @@ export const DjangoRequests = {
       }
     })
   },
-  post: (url, data, options = {}, params = null) => {
+  post: (url, data, options = {}, params = null, alterRequest = false) => {
     let urlRequest = url
     if (params) {
       urlRequest = constructUrl(url, { ...params })
     }
-    if (Object.keys(data).length) {
+    if (!alterRequest || isPost(data)) {
       return axios.post(
         urlRequest,
         data,
@@ -419,7 +434,7 @@ export const DjangoRequestPagination = {
       onProgress
     )
   },
-  post: async (url, data, options = {}, params, onProgress) => {
+  post: async (url, data, options = {}, params, onProgress, alterRequest = false) => {
     return await DjangoRequestPagination.parallel(
       url,
       async (page) => {
@@ -427,7 +442,7 @@ export const DjangoRequestPagination = {
         if (params) {
           urlRequest = constructUrl(url, { ...params, page: page })
         }
-        if (Object.keys(data).length) {
+        if (!alterRequest || isPost(data)) {
           const response = await axios.post(
             urlRequest,
             data,

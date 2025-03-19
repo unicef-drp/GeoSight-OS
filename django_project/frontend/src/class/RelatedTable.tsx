@@ -59,7 +59,7 @@ export class RelatedTable {
     let data: any = {};
     [params, data] = this.getParamAndData(params);
     const response = await DjangoRequests.post(
-      this.url + "dates/", data, {}, params
+      this.url + "dates/", data, {}, params, true
     );
     return response.data;
   }

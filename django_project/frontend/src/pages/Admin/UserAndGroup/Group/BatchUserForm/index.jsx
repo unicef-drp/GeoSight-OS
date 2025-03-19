@@ -49,15 +49,16 @@ export const BatchUserForm = forwardRef(
     const submit = () => {
       var formData = new FormData()
       const file = $('#BatchUserFormFile')[0].files[0];
+      console.log(file)
       formData.append('file', file)
       setUpdating(true)
       setUpdated(false)
 
       DjangoRequests.post(
         `/api/v1/groups/${data.id}/user_batch/`,
-        formData, {}, {
+        formData, {
           'Content-Type': 'multipart/form-data'
-        }
+        }, {}
       ).then(response => {
         setUpdating(false)
         setUpdated(true)
