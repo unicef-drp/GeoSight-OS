@@ -370,7 +370,6 @@ export default function ReferenceLayerCentroid({ map }) {
       }
       const currRequest = new Date().getTime()
       lastRequest = currRequest
-
       ExecuteWebWorker(
         worker, {
           geometriesData,
