@@ -343,17 +343,7 @@ export const DjangoRequests = {
     if (params) {
       urlRequest = constructUrl(url, { ...params })
     }
-    if (!alterRequest || isPost(data)) {
-      return axios.post(
-        urlRequest,
-        data,
-        {
-          ...options,
-          headers: {
-            'X-CSRFToken': csrfmiddlewaretoken
-          }
-        })
-    } else {
+    if (alterRequest && !isPost(data)) {
       return axios.get(
         urlRequest,
         {
@@ -363,6 +353,15 @@ export const DjangoRequests = {
           }
         })
     }
+    return axios.post(
+      urlRequest,
+      data,
+      {
+        ...options,
+        headers: {
+          'X-CSRFToken': csrfmiddlewaretoken
+        }
+      })
   },
   put: (url, data, options = {}, headers = {}) => {
     return axios.put(url, data, {
@@ -442,19 +441,7 @@ export const DjangoRequestPagination = {
         if (params) {
           urlRequest = constructUrl(url, { ...params, page: page })
         }
-        if (!alterRequest || isPost(data)) {
-          const response = await axios.post(
-            urlRequest,
-            data,
-            {
-              ...options,
-              headers: {
-                'X-CSRFToken': csrfmiddlewaretoken
-              }
-            }
-          )
-          return response.data
-        } else {
+        if (alterRequest && !isPost(data)) {
           const response = await axios.get(
             urlRequest,
             {
@@ -466,6 +453,17 @@ export const DjangoRequestPagination = {
           )
           return response.data
         }
+        const response = await axios.post(
+          urlRequest,
+          data,
+          {
+            ...options,
+            headers: {
+              'X-CSRFToken': csrfmiddlewaretoken
+            }
+          }
+        )
+        return response.data
       },
       onProgress
     )
