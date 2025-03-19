@@ -35,15 +35,19 @@ export class Indicator {
     const data = {}
     for (const [key, value] of Object.entries(params)) {
       if (key.includes('country_geom')) {
+        let dataValue = '' + value;
         if (Array.isArray(value)) {
           // @ts-ignore
-          data[key] = value.join(',')
-        } else {
-          // @ts-ignore
-          data[key] = value
+          dataValue = value.join(',')
+          params[key] = dataValue
         }
         // @ts-ignore
-        delete params[key]
+        if (dataValue.length > 1500) {
+          // @ts-ignore
+          data[key] = dataValue
+          // @ts-ignore
+          delete params[key]
+        }
 
       }
     }
@@ -59,7 +63,7 @@ export class Indicator {
 
     let data: any = {};
     [params, data] = this.getParamAndData(params);
-    return await DjangoRequestPagination.post(this.url, data, {}, params, onProgress)
+    return await DjangoRequestPagination.post(this.url, data, {}, params, onProgress, true)
   }
 
   /** Return statistic of data **/
@@ -67,7 +71,7 @@ export class Indicator {
     let data: any = {};
     [params, data] = this.getParamAndData(params);
     const response = await DjangoRequests.post(
-      this.url + "statistic/", data, {}, params
+      this.url + "statistic/", data, {}, params, true
     );
     return response.data;
   }
@@ -77,7 +81,7 @@ export class Indicator {
     let data: any = {};
     [params, data] = this.getParamAndData(params);
     const response = await DjangoRequests.post(
-      this.url + "values/", data, {}, params
+      this.url + "values/", data, {}, params, true
     );
     return response.data;
   }

@@ -35,15 +35,19 @@ export class RelatedTable {
     const data = {}
     for (const [key, value] of Object.entries(params)) {
       if (key.includes('country_geom')) {
+        let dataValue = '' + value;
         if (Array.isArray(value)) {
           // @ts-ignore
-          data[key] = value.join(',')
-        } else {
-          // @ts-ignore
-          data[key] = value
+          dataValue = value.join(',')
+          params[key] = dataValue
         }
         // @ts-ignore
-        delete params[key]
+        if (dataValue.length > 1500) {
+          // @ts-ignore
+          data[key] = dataValue
+          // @ts-ignore
+          delete params[key]
+        }
 
       }
     }
@@ -55,7 +59,7 @@ export class RelatedTable {
     let data: any = {};
     [params, data] = this.getParamAndData(params);
     const response = await DjangoRequests.post(
-      this.url + "dates/", data, {}, params
+      this.url + "dates/", data, {}, params, true
     );
     return response.data;
   }
