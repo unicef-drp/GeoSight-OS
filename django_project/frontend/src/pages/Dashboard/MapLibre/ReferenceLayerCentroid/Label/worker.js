@@ -28,7 +28,7 @@ export default () => {
       if (!geometry) {
         continue
       }
-      const indicator = mapGeometryValue[geometry.ucode] ? mapGeometryValue[geometry.ucode][0] : mapGeometryValue[geometry.concept_uuid] ? mapGeometryValue[geometry.concept_uuid] : {};
+      const indicator = mapGeometryValue[geometry.ucode] ? mapGeometryValue[geometry.ucode][0] : mapGeometryValue[geometry.concept_uuid] ? mapGeometryValue[geometry.concept_uuid][0] : {};
       if (
         usedFilteredGeometries && !usedFilteredGeometries.includes(geometry.ucode) && !usedFilteredGeometries.includes(geometry.concept_uuid)
       ) {
