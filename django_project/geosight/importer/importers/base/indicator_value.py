@@ -66,8 +66,8 @@ class AdminLevelType(object):
 class MultipleValueAggregationType(object):
     """A quick couple of variable and multiple value aggregation type."""
 
-    BY_INDICATOR = 'Use aggregation from indicator'
-    DEFAULT = 'Default Aggregations'
+    BY_INDICATOR = 'Use default aggregation from indicator'
+    DEFAULT = 'Use custom aggregations'
 
 
 class AbstractImporterIndicatorValue(BaseImporter, QueryDataImporter, ABC):
