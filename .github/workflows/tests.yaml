@@ -101,7 +101,8 @@ jobs:
           { name: "E2E Tests: Project View", mode: "e2e", path: "tests/project_view", workers: 3, script: "make load-test-data" },
           { name: "E2E Tests: Admin List", mode: "e2e", path: "tests/admin_list", workers: 3, script: "make load-test-data" },
           { name: "E2E Tests: Admin Edit", mode: "e2e", path: "tests/admin_edit", workers: 3, script: "make load-test-data" },
-          { name: "E2E Tests: Admin List Filter", mode: "e2e", path: "tests/admin_filter", workers: 3, script: "make load-test-data-for-filter" }
+          { name: "E2E Tests: Admin List Filter", mode: "e2e", path: "tests/admin_filter", workers: 3, script: "make load-test-data-for-filter" },
+          { name: "E2E Tests: Importer", mode: "e2e", path: "tests/importer", workers: 3, script: "make load-test-data" },
         ]
     env:
       APP_IMAGE: kartoza/geosight
