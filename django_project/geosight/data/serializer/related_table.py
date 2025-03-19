@@ -263,6 +263,14 @@ class RelatedTableSerializer(DynamicModelSerializer):
         exclude = ()
 
 
+class RelatedTableGeoDataSerializer(DynamicModelSerializer):
+    """Serializer for GeoData."""
+
+    class Meta:  # noqa: D106
+        model = RelatedTableRow
+        exclude = ('table', 'data')
+
+
 class RelatedTableRowSerializer(DynamicModelSerializer):
     """Serializer for RelatedTableRow."""
 
