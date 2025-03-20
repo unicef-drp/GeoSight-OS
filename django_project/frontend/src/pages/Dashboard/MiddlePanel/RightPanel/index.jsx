@@ -24,6 +24,7 @@ import WidgetList from '../../../../components/Widget'
 import { LEFT, RIGHT } from '../../../../components/ToggleButton'
 
 import './style.scss';
+import { EmbedConfig } from "../../../../utils/embed";
 
 export default function RightPanel({ rightExpanded }) {
   const {
@@ -36,11 +37,12 @@ export default function RightPanel({ rightExpanded }) {
     setState(rightExpanded ? RIGHT : LEFT)
   }, [rightExpanded])
 
+  const showWidget = EmbedConfig().widget_tab
   const className = `${state}`
   return (
     <Fragment>
       {
-        widgets?.filter(widget => widget.visible_by_default).length ?
+        showWidget && widgets?.filter(widget => widget.visible_by_default).length ?
           <section className={className}>
             <div className='dashboard__content-wrapper'>
               <div className='dashboard__content'>

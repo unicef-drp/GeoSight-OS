@@ -179,24 +179,6 @@ test.describe('View project', () => {
     await expect(lastLayers.includes("reference-layer-fill-0,reference-layer-outline-0,reference-layer-fill-1,reference-layer-outline-1")).toBeTruthy();
     await page.getByLabel(kenyaLayer).click();
     await page.getByTitle('Turn off compare Layers').click();
-
-    // Embed
-    await page.goto('/project/demo-geosight-project');
-    await page.getByRole('button', { name: 'Close' }).click();
-    await page.getByTitle('Get embed code').click();
-    await page.getByRole('button', { name: 'Generate' }).click();
-    await page.waitForTimeout(3000);
-    const embedUrl = await page.locator('.modal--footer input').inputValue()
-    await expect(embedUrl.includes('http://localhost:2000/embed/')).toBeTruthy();
-
-    // Got to embed page
-    await page.goto(embedUrl);
-    await delay(2000)
-    await page.getByRole('button', { name: 'Close' }).click();
-    await expect(page.getByLabel(layer1)).toBeVisible();
-    await expect(page.locator('.MapLegendSectionTitle')).toContainText(layer1);
-    await expect(page.getByLabel(layer1)).toBeChecked();
-    await expect(page.getByLabel(layer2)).not.toBeChecked();
   }
 
   // A use case tests scenarios

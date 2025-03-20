@@ -17,9 +17,8 @@
    Bookmark
    ========================================================================== */
 
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useRef, useState } from 'react';
 import { useSelector } from "react-redux";
-import $ from "jquery";
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
@@ -33,6 +32,8 @@ import Modal, {
   ModalHeader
 } from "../../../../components/Modal";
 import { domain } from "../../../../utils/main";
+import { ProjectCheckpoint } from "../../../../components/ProjectCheckpoint";
+import { DjangoRequests } from "../../../../Requests";
 
 import './style.scss';
 
@@ -40,28 +41,11 @@ import './style.scss';
  * Embed component.
  */
 export default function Embed({ map }) {
+  // Project point states
+  const projectCheckpointRef = useRef(null);
+  const [projectCheckpointEnable, setProjectCheckpointEnable] = useState(false)
+
   const dashboardData = useSelector(state => state.dashboard.data);
-  const selectedIndicatorLayer = useSelector(state => state.selectedIndicatorLayer);
-  const selectedIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer);
-  const selectedAdminLevel = useSelector(state => state.selectedAdminLevel);
-  const {
-    basemapLayer,
-    contextLayers,
-    indicatorShow,
-    contextLayersShow,
-    is3dMode
-  } = useSelector(state => state.map)
-
-  // Extent
-  const bounds = map?.getBounds()
-  let extent = null
-  if (bounds) {
-    extent = [
-      bounds._sw.lng, bounds._sw.lat,
-      bounds._ne.lng, bounds._ne.lat
-    ]
-  }
-
   const [open, setOpen] = useState(false)
   const [code, setCode] = useState('')
   const [data, setData] = useState({
@@ -71,53 +55,21 @@ export default function Embed({ map }) {
     widget_tab: true,
   })
 
-  /***
-   * Get data of bookmark like
-   */
-  const otherData = () => {
-    const selectedIndicatorLayers = [selectedIndicatorLayer?.id]
-    if (selectedIndicatorSecondLayer?.id) {
-      selectedIndicatorLayers.push(selectedIndicatorSecondLayer?.id)
-    }
-    return {
-      selectedBasemap: basemapLayer?.id,
-      selectedIndicatorLayers: selectedIndicatorLayers,
-      selectedContextLayers: Object.keys(contextLayers).map(id => parseInt(id)),
-      filters: dashboardData.filters,
-      extent: extent,
-      indicatorShow: indicatorShow,
-      contextLayersShow: contextLayersShow,
-      selectedAdminLevel: selectedAdminLevel.level,
-      is3dMode: is3dMode,
-      position: JSON.stringify({
-        pitch: map?.getPitch(),
-        bearing: map?.getBearing(),
-        zoom: map?.getZoom(),
-        center: map?.getCenter(),
-      })
-    }
-  }
-
   /**
    * Save function based on url
    */
-  const save = () => {
+  const save = async () => {
+    const _data = projectCheckpointRef.current.getData();
     setCode('Generating')
-    $.ajax({
-      url: urls.embedDetail,
-      data: {
-        data: JSON.stringify(Object.assign({}, data, otherData()))
-      },
-      type: 'POST',
-      dataType: 'json',
-      success: function (data, textStatus, request) {
-        setCode(`${domain()}/embed/${data.code}`)
-      },
-      error: function (error, textStatus, errorThrown) {
-        setCode(error.responseText)
-      },
-      beforeSend: beforeAjaxSend
-    });
+    try {
+      const response = await DjangoRequests.post(
+        urls.embedDetail,
+        { ...data, ..._data }
+      )
+      setCode(`${domain()}/embed/${response.data.code}`)
+    } catch (err) {
+      setCode(err.toString())
+    }
   }
 
 
@@ -126,6 +78,11 @@ export default function Embed({ map }) {
   }
   return (
     <Fragment>
+      <ProjectCheckpoint
+        map={map}
+        setProjectCheckpointEnable={setProjectCheckpointEnable}
+        ref={projectCheckpointRef}
+      />
       <EmbedIcon onClick={_ => setOpen(true)}/>
       <Modal
         className='EmbedComponent'
@@ -189,7 +146,7 @@ export default function Embed({ map }) {
           <SaveButton
             variant="primary"
             text='Generate'
-            disabled={code === 'Generating'}
+            disabled={code === 'Generating' || !projectCheckpointEnable}
             onClick={() => {
               save()
             }}/>

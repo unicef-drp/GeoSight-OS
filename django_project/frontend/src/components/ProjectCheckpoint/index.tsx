@@ -28,6 +28,7 @@ import {
 } from "../../pages/Dashboard/LeftPanel/IndicatorLayers";
 import { BasemapLayer } from "../../types/BasemapLayer";
 import { ContextLayer } from "../../types/ContextLayer";
+import { IndicatorLayer } from "../../types/IndicatorLayer";
 
 export interface Props {
   map: maplibregl.Map;
@@ -107,6 +108,7 @@ export const ProjectCheckpoint = memo(
           })
 
           // Activate compare
+          changeIndicatorLayersForcedUpdate(data.selected_indicator_layers)
           if (data.selected_indicator_layers?.length >= 2) {
             dispatch(Actions.MapMode.activateCompare())
           } else {
@@ -116,16 +118,15 @@ export const ProjectCheckpoint = memo(
           newDashboard.contextLayers.map((layer: ContextLayer) => {
             layer.visible_by_default = data.selected_context_layers.includes(layer.id)
           })
+          newDashboard.indicatorLayers.map((layer: IndicatorLayer) => {
+            layer.visible_by_default = data.selected_indicator_layers.includes(layer.id)
+          })
           newDashboard.filters = compareFilters(
             newDashboard.filters, filtersToFlatDict(data.filters)
           )
-          console.log(data.selected_indicator_layers)
-          changeIndicatorLayersForcedUpdate(data.selected_indicator_layers)
-          setTimeout(function () {
-            dispatch(
-              Actions.Dashboard.update(JSON.parse(JSON.stringify(newDashboard)))
-            )
-          }, 100)
+          dispatch(
+            Actions.Dashboard.update(JSON.parse(JSON.stringify(newDashboard)))
+          )
           dispatch(Actions.Map.showHideContextLayer(data.context_layer_show))
           dispatch(Actions.Map.showHideIndicator(data.indicator_layer_show))
 

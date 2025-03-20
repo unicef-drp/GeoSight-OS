@@ -45,6 +45,7 @@ export let indicatorLayersForcedUpdateIds = null
 export const changeIndicatorLayersForcedUpdate = (ids) => {
   indicatorLayersForcedUpdateIds = ids
 }
+export let lastSelectedIds = []
 
 
 /**
@@ -148,7 +149,8 @@ export function IndicatorLayers() {
    */
   useEffect(() => {
     let indicatorLayersTree = JSON.parse(JSON.stringify(indicatorLayers))
-    let selectedIds = [currentIndicatorLayer, currentIndicatorSecondLayer]
+    let selectedIds = lastSelectedIds ? lastSelectedIds : [currentIndicatorLayer, currentIndicatorSecondLayer];
+    console.log(lastSelectedIds)
     if (indicatorLayersTree && indicatorLayersTree.length) {
       // Indicator enabled
       let indicatorEnabled = { 'id': currentIndicatorLayer }
@@ -169,6 +171,7 @@ export function IndicatorLayers() {
         } else {
           selectedIds = indicatorLayersForcedUpdateIds
         }
+        console.log(selectedIds)
       }
       indicatorLayersForcedUpdateIds = null
 
@@ -234,6 +237,8 @@ export function IndicatorLayers() {
     )
 
     // Setup current indicator layer
+    console.log(selectedIds)
+    lastSelectedIds = selectedIds
     updateCurrentIndicator(selectedIds[0], Actions.SelectedIndicatorLayer)
     updateCurrentIndicator(selectedIds[1], Actions.SelectedIndicatorSecondLayer)
     updateOtherLayers(['' + selectedIds[0], '' + selectedIds[1]])

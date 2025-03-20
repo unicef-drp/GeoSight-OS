@@ -25,4 +25,5 @@ export interface IndicatorLayer {
   id: number,
   name: string,
   level_config: LevelConfig,
+  visible_by_default: boolean,
 }

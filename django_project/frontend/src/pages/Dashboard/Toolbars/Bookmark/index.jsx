@@ -87,14 +87,14 @@ export default function Bookmark({ map }) {
   // Change selected bookmark when there is embed config
   useEffect(() => {
     fetchBookmarks()
-    if (map) {
+    if (map && id) {
       const defaultBookmark = EmbedConfig().bookmark
       if (defaultBookmark) {
         dispatch(Actions.SelectedBookmark.change(defaultBookmark))
         updateDashboardData(defaultBookmark)
       }
     }
-  }, [map])
+  }, [map, id])
 
   const selectedBookmarkChanged = (selectedBookmark) => {
     if (bookmarks !== null) {
