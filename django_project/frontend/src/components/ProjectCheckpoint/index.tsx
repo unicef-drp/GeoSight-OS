@@ -119,6 +119,7 @@ export const ProjectCheckpoint = memo(
           newDashboard.filters = compareFilters(
             newDashboard.filters, filtersToFlatDict(data.filters)
           )
+          console.log(data.selected_indicator_layers)
           changeIndicatorLayersForcedUpdate(data.selected_indicator_layers)
           setTimeout(function () {
             dispatch(
