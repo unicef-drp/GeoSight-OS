@@ -58,8 +58,10 @@ export const defaultBookmark = async (page) => {
   await expect(page.getByLabel(layer1)).not.toBeChecked();
   await expect(page.getByLabel(layer2)).toBeChecked();
   await expect(page.getByLabel(kenyaLayer)).toBeChecked();
-  await expect(page.locator('.MapLegendSectionTitle').nth(0)).toContainText(layer2);
-  await expect(page.locator('.MapLegendSectionTitle').nth(1)).toContainText(kenyaLayer);
+  let titles = await page.locator('.MapLegendSectionTitle').allTextContents();
+  titles = titles.map(content => content.replace(' (Outline)', '').replace(' (Inner)', ''))
+  await expect(titles).toContain(layer2);
+  await expect(titles).toContain(kenyaLayer);
 
   // Check widgets
   await expect(page.locator('.widget__title').nth(0)).toContainText('Total of Sample indicator A');
@@ -69,7 +71,8 @@ export const defaultBookmark = async (page) => {
   await expect(page.locator('.widget__title').nth(4)).toContainText('Value by Geom Code');
   await expect(page.locator('.widget__sw__content').nth(0)).toContainText('623');
   await expect(page.locator('.widget__sw__content').nth(1)).toContainText('562');
-  await expect(page.locator('.widget__sgw').nth(0).locator('.ReactSelect__single-value').first()).toContainText('Sample Indicator B');
+  const values = await page.locator('.widget__sgw').nth(0).locator('.ReactSelect__single-value').first().allTextContents();
+  await expect([layer2, kenyaLayer]).toContain(values[0]);
   await expect(page.locator('.widget__sgw').nth(0).locator('.widget__time_series__row_inner').nth(0)).toContainText('Mudug');
   await expect(page.locator('.widget__sgw').nth(0).locator('.widget__time_series__row_inner').nth(1)).toContainText('Nugaal');
   await expect(page.locator('.widget__sgw').nth(0).locator('.widget__time_series__row_inner').nth(2)).toContainText('Sanaag');

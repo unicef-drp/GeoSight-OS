@@ -28,6 +28,7 @@ import { dictDeepCopy } from "../../../../utils/main";
 import { dataFieldsDefault } from "../../../../utils/indicatorLayer";
 import { updateColorPaletteData } from "../../../../utils/Style";
 import { Variables } from "../../../../utils/Variables";
+import { EmbedConfig } from "../../../../utils/embed";
 
 const REQUEST_DASHBOARD = 'REQUEST/' + DASHBOARD_ACTION_NAME;
 const RECEIVE_DASHBOARD = 'RECEIVE/' + DASHBOARD_ACTION_NAME;
@@ -82,9 +83,13 @@ function receive(data, error = null) {
 
     if (!data.indicatorLayers) {
       data.indicatorLayers = data.indicator_layers
+      const embedConfig = EmbedConfig()
       data.indicatorLayers.map(layer => {
         if (!layer.data_fields) {
           layer.data_fields = dataFieldsDefault()
+        }
+        if (embedConfig.id) {
+          layer.visible_by_default = embedConfig.bookmark.selected_indicator_layers.includes(layer.id)
         }
       })
       delete data.indicator_layers

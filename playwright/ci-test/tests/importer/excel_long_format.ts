@@ -2,6 +2,8 @@ import { expect, test } from '@playwright/test';
 import { createIndicator, deleteIndicator } from "../utils/indicator"
 import path from "path";
 
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
+
 test.describe('Test excel long format', () => {
 
   test('Test Indicator Value: Use default aggregation from indicator', async ({ page }) => {
@@ -84,6 +86,7 @@ test.describe('Test excel long format', () => {
     await page.getByRole('cell', { name: indicatorName }).click();
 
     // Aggregations
+    await delay(1000)
     await page.getByText('Aggregations', { exact: true }).click();
     await page.getByLabel('Aggregate up to level').click();
     await page.getByText('Use custom aggregations').click();
@@ -91,6 +94,7 @@ test.describe('Test excel long format', () => {
     await page.getByRole('option', { name: 'SUM' }).click();
 
     // Select view
+    await delay(1000)
     await page.getByText('Reference Layer & Time').click();
     await page.getByPlaceholder('Select View').click();
     await page.getByRole('cell', { name: 'Kenya', exact: true }).click();

@@ -14,8 +14,6 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-import json
-
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
@@ -50,20 +48,21 @@ class DashboardBookmarkApiTest(BasePermissionTest.TestCase):
             'name': 'name CCC',
             'extent': [0, 0, 0, 0],
             'filters': {},
-            'indicatorShow': 0,
-            'selectedIndicatorLayers': [self.layer.id],
-            'selectedContextLayers': [],
-            'contextLayersShow': False,
-            'selectedAdminLevel': 0,
-            'selectedBasemap': BasemapLayer.objects.create(name='name').id,
-            'is3dMode': True,
-            'position': '{}',
+            'selected_indicator_layers': [self.layer.id],
+            'selected_context_layers': [],
+            'indicator_layer_show': False,
+            'context_layer_show': False,
+            'selected_admin_level': 0,
+            'selected_basemap': BasemapLayer.objects.create(name='name').id,
+            'is_3d_mode': True,
+            'position': {},
         }
         url = reverse(
             'dashboard-embed', kwargs={'slug': self.dashboard.slug}
         )
-        response = self.assertRequestPostView(url, 200, data={
-            'data': json.dumps(data),
-        }, user=self.viewer)
+        response = self.assertRequestPostView(
+            url, 200, data=data, user=self.viewer,
+            content_type='application/json'
+        )
         self.assertEqual(DashboardEmbed.objects.count(), 1)
         self.assertTrue('code' in response.json())
