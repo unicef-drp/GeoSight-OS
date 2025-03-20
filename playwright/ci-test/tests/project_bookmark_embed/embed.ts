@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-
+import fs from 'fs';
 import { defaultBookmark, selection } from '../utils/bookmark'
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
@@ -23,6 +23,7 @@ test.describe('Embed project', () => {
 
     // Got to embed page
     await page.goto(embedUrl);
+    await delay(2000);
     await page.getByRole('button', { name: 'Close' }).click();
     await defaultBookmark(page)
 
@@ -60,6 +61,7 @@ test.describe('Embed project', () => {
 
     // Got to embed page
     await page.goto(embedUrl);
+    await delay(2000);
     await page.getByRole('button', { name: 'Close' }).click();
 
     // Check the test
@@ -96,6 +98,7 @@ test.describe('Embed project', () => {
 
     // Got to embed page
     await page.goto(embedUrl);
+    await delay(2000);
     await page.getByRole('button', { name: 'Close' }).click();
 
     // Check the test
