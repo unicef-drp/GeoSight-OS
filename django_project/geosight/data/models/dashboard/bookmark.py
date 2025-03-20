@@ -53,14 +53,6 @@ class DashboardBookmarkAbstract(models.Model):
     is_3d_mode = models.BooleanField(default=False)
     position = models.JSONField(null=True, blank=True)
 
-    # TODO:
-    #  Deprecated
-    selected_indicator_layer = models.ForeignKey(
-        "DashboardIndicatorLayer",
-        null=True, blank=True,
-        on_delete=models.SET_NULL
-    )
-
     class Meta:  # noqa: D106
         abstract = True
 
@@ -82,8 +74,11 @@ class DashboardBookmark(DashboardBookmarkAbstract, AbstractTerm):
     def able_to_edit(self, user):
         """If able to edit."""
         from core.models.profile import ROLES
-        return user.profile.role == ROLES.SUPER_ADMIN.name or \
-            user == self.creator
+        return (
+                user.is_superuser or
+                user.profile.role == ROLES.SUPER_ADMIN.name or
+                user == self.creator
+        )
 
     class Meta:  # noqa: D106
         unique_together = ('dashboard', 'name')
@@ -93,7 +88,7 @@ class DashboardBookmark(DashboardBookmarkAbstract, AbstractTerm):
         """Save all relationship data."""
         from geosight.data.models import ContextLayer
         try:
-            for row in data['selectedContextLayers']:
+            for row in data['selected_context_layers']:
                 self.selected_context_layers.add(
                     ContextLayer.objects.get(id=row)
                 )

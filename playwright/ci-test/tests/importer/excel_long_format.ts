@@ -83,17 +83,17 @@ test.describe('Test excel long format', () => {
     await page.getByPlaceholder('Select Indicator').click();
     await page.getByRole('cell', { name: indicatorName }).click();
 
-    // Select view
-    await page.getByText('Reference Layer & Time').click();
-    await page.getByPlaceholder('Select View').click();
-    await page.getByRole('cell', { name: 'Kenya', exact: true }).click();
-
     // Aggregations
-    await page.getByText('Aggregations').click();
+    await page.getByText('Aggregations', { exact: true }).click();
     await page.getByLabel('Aggregate up to level').click();
     await page.getByText('Use custom aggregations').click();
     await page.locator('.InputInLine > div > .MuiFormControl-root > .ReactSelect > .ReactSelect__control > .ReactSelect__value-container > .ReactSelect__input-container').first().click();
     await page.getByRole('option', { name: 'SUM' }).click();
+
+    // Select view
+    await page.getByText('Reference Layer & Time').click();
+    await page.getByPlaceholder('Select View').click();
+    await page.getByRole('cell', { name: 'Kenya', exact: true }).click();
 
     // Submit
     await page.getByRole('button', { name: 'Submit' }).click();

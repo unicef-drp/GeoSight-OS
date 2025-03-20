@@ -19,7 +19,7 @@ from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 
-from geosight.data.api.dashboard_bookmark import DashboardBookmarkAPI
+from geosight.data.api.dashboard_bookmark import _DashboardBookmarkAPI
 from geosight.data.forms.dashboard_embed import DashboardEmbedForm
 from geosight.data.models.dashboard import (
     Dashboard
@@ -27,7 +27,7 @@ from geosight.data.models.dashboard import (
 from geosight.data.serializer.dashboard_embed import DashboardEmbedSerializer
 
 
-class DashboardEmbedAPI(DashboardBookmarkAPI):
+class DashboardEmbedAPI(_DashboardBookmarkAPI):
     """Return Dashboard embed detail."""
 
     def save(self, request, dashboard):

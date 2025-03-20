@@ -19,7 +19,11 @@ import json
 from django import forms
 from django.contrib.gis.geos import Polygon
 
-from geosight.data.models.dashboard import DashboardBookmark
+from geosight.data.models.basemap_layer import BasemapLayer
+from geosight.data.models.context_layer import ContextLayer
+from geosight.data.models.dashboard import (
+    Dashboard, DashboardBookmark
+)
 
 
 class DashboardBookmarkForm(forms.ModelForm):
@@ -30,17 +34,27 @@ class DashboardBookmarkForm(forms.ModelForm):
         fields = '__all__'
 
     @staticmethod
-    def update_data(data):
+    def update_data(data, dashboard: Dashboard):
         """Update data from POST data."""
+        data['dashboard'] = dashboard.id
+
         # save polygon
         poly = Polygon.from_bbox(data['extent'])
         poly.srid = 4326
         data['extent'] = poly
         data['filters'] = json.dumps(data['filters'])
-        data['indicator_layer_show'] = data['indicatorShow']
-        data['context_layer_show'] = data['contextLayersShow']
-        data['selected_indicator_layers'] = data['selectedIndicatorLayers']
-        data['selected_admin_level'] = data['selectedAdminLevel']
-        data['is_3d_mode'] = data['is3dMode']
-        data['position'] = json.loads(data['position'])
+
+        # Check other foreign key
+        try:
+            data['selected_basemap'] = BasemapLayer.objects.get(
+                id=data['selected_basemap']
+            )
+        except BasemapLayer.DoesNotExist:
+            raise ValueError(f'{data["selected_basemap"]} does not exist')
+
+        try:
+            for row in data['selected_context_layers']:
+                ContextLayer.objects.get(id=row)
+        except ContextLayer.DoesNotExist:
+            raise ValueError('Context layer does not exist')
         return data

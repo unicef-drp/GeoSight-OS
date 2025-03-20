@@ -43,6 +43,7 @@ import {
   ZonalAnalysisConfiguration,
   ZonalAnalysisLayerConfiguration
 } from "./index.d";
+import { ContextLayer } from "../../types/ContextLayer";
 import { DashboardTool } from "../../store/dashboard/reducers/dashboardTool";
 import { ZonalAnalysisResult } from "./Result";
 import { dictDeepCopy, numberWithCommas } from "../../utils/main";
@@ -52,7 +53,6 @@ import {
   removeClickEvent
 } from "../../pages/Dashboard/MapLibre/utils";
 import { getFeatureByConceptUUID } from "../../utils/referenceLayer";
-import { ContextLayer } from "../../store/dashboard/reducers/contextLayers";
 import { fetchArcGISValues } from "./FetchArcGISValues";
 import { fetchGeoJsonValues } from "./FetchGeoJsonValues";
 import {
@@ -397,7 +397,9 @@ export const ZonalAnalysisTool = forwardRef((
               }
             </RadioGroup>
           </FormControl>
-          <Tooltip title={'Geometries will be simplified before buffer is applied'} sx={{ fontSize: '16px' }}>
+          <Tooltip
+            title={'Geometries will be simplified before buffer is applied'}
+            sx={{ fontSize: '16px' }}>
             <FormControl className='MuiForm-RadioGroup Buffer-Input'>
               <FormLabel className="MuiInputLabel-root">Buffer:</FormLabel>
               <TextField

@@ -14,9 +14,9 @@
  */
 
 import { AGGREGATION_TYPES } from "../../utils/analysisData";
-import { ContextLayer } from "../../store/dashboard/reducers/contextLayers";
 import { Feature } from "geojson";
 import maplibregl from "maplibre-gl";
+import { ContextLayer } from "../../types/ContextLayer";
 
 export const SELECTION_MODE = {
   SELECT_ADMIN: "SELECT_ADMIN",

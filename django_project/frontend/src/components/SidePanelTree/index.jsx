@@ -110,6 +110,7 @@ function FilterLayer({ placeholder, inputChanged }) {
  *   }]
  * }]
  * @param {boolean} selectable whether this sidepanel is selectable or not
+ * @param {Array} parentSelected parent selected
  * @param {number} maxSelect max selected item
  * @param {boolean} groupSelectable is group also selectable
  * @param {function} onChange callback function to call when selected data changed
@@ -119,6 +120,7 @@ export default function SidePanelTreeView(
   {
     data,
     selectable = false,
+    parentSelected = null,
     maxSelect = 0,
     groupSelectable = false,
     onChange = null,
@@ -145,7 +147,7 @@ export default function SidePanelTreeView(
         newSelected.push(item.data?.id + '');
       }
     }
-    if (newSelected.length > 0) {
+    if (maxSelect <= 2 && newSelected.length > 0) {
       setSelected([...new Set(newSelected)])
     }
   }, [data])
@@ -155,6 +157,15 @@ export default function SidePanelTreeView(
       setWidth(layerGroupListRef.current.offsetWidth - 20);
     }
   }, []);
+
+  /** Parent selected */
+  useLayoutEffect(() => {
+    if (parentSelected !== null) {
+      if (JSON.stringify(selected) !== JSON.stringify(parentSelected)) {
+        setSelected(parentSelected)
+      }
+    }
+  }, [parentSelected]);
 
   useEffect(() => {
     const filterResults = filterData(JSON.parse(JSON.stringify(data)), filterText)

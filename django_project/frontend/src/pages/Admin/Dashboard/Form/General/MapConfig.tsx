@@ -19,8 +19,8 @@ import L from 'leaflet';
 import 'leaflet-draw';
 
 import { Actions } from "../../../../../store/dashboard";
-import { Extent } from "../../../../../types/Project";
 import { debounce } from "@mui/material/utils";
+import { Extent } from "../../../../../types/Geometry";
 
 
 export interface Props {
@@ -55,15 +55,18 @@ const MapConfig = memo(({}: Props) => {
     /** Create the drawing map **/
     useEffect(() => {
       if (!map) {
-        const newMap = L.map('MapConfig', {
-          center: [0, 0],
-          zoom: 6,
-          zoomControl: false,
+        const newMap = L.map(
           // @ts-ignore
-          maxZoom: maxZoom,
-          // @ts-ignore
-          noWrap: true
-        });
+          'MapConfig', {
+            center: [0, 0],
+            zoom: 6,
+            zoomControl: false,
+            // @ts-ignore
+            maxZoom: maxZoom,
+            // @ts-ignore
+            noWrap: true
+          }
+        );
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
           noWrap: true

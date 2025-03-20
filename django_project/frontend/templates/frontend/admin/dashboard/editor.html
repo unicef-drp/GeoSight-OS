@@ -20,9 +20,6 @@
     <script>
       {# specified url for dashboard #}
       urls.dashboardData = '{% url 'dashboard-data-api' slug=dashboard.id %}' + (window.location.href.split('?')[1] ? '?' + window.location.href.split('?')[1] : '')
-      urls.bookmarkCreate = '{% url 'dashboard-bookmarks-create' slug=dashboard.id %}'
-      urls.bookmarkList = '{% url 'dashboard-bookmarks' slug=dashboard.id %}'
-      urls.bookmarkDetail = '{% url 'dashboard-bookmarks-detail' slug=dashboard.id pk=0 %}'
       urls.drilldown = '{% url 'dashboard-entity-drilldown' slug=dashboard.id geom_id='geom_id' %}'
 
       {% if dashboard.id %}
