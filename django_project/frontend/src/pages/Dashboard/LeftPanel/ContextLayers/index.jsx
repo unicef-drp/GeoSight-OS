@@ -32,6 +32,10 @@ function ContextLayers() {
     contextLayers,
     contextLayersStructure
   } = useSelector(state => state.dashboard.data);
+  const [defaultSelectedContextLayers, setDefaultSelectedContextLayers] = useState(
+    null
+  )
+
   const [treeData, setTreeData] = useState([])
   const [selectedLayer, setSelectedLayer] = useState([])
   const [layers, setLayers] = useState({})
@@ -64,6 +68,18 @@ function ContextLayers() {
 
   useEffect(() => {
     initialize(contextLayers)
+
+    // Update selected layers
+    const newDefaultSelectedContextLayers = contextLayers.filter(
+      contextLayer => contextLayer.visible_by_default
+    ).map(
+      contextLayer => '' + contextLayer.id
+    )
+    newDefaultSelectedContextLayers.sort()
+    if (JSON.stringify(newDefaultSelectedContextLayers) !== JSON.stringify(defaultSelectedContextLayers)) {
+      setDefaultSelectedContextLayers(newDefaultSelectedContextLayers)
+      setSelectedLayer(newDefaultSelectedContextLayers)
+    }
   }, [contextLayers])
 
   useEffect(() => {
@@ -135,6 +151,7 @@ function ContextLayers() {
     <SidePanelTreeView
       data={treeData}
       selectable={true}
+      parentSelected={defaultSelectedContextLayers}
       groupSelectable={true}
       maxSelect={10000000}
       onChange={onChange}

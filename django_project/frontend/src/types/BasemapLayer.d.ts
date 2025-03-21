@@ -1,5 +1,3 @@
-import { DatasetView } from "./DatasetView";
-
 /**
  * GeoSight is UNICEF's geospatial web-based business intelligence platform.
  *
@@ -11,19 +9,13 @@ import { DatasetView } from "./DatasetView";
  *     (at your option) any later version.
  *
  * __author__ = 'irwan@kartoza.com'
- * __date__ = '05/03/2025'
+ * __date__ = '20/03/2025'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-export interface LevelConfig {
-  levels: number[],
-  default_level: number,
-  referenceLayer?: DatasetView
-}
 
-export interface IndicatorLayer {
+export interface BasemapLayer {
   id: number,
   name: string,
-  level_config: LevelConfig,
   visible_by_default: boolean,
 }

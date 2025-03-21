@@ -37,9 +37,6 @@ import EditIcon from "@mui/icons-material/Edit";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../../store/dashboard/reducers";
 import { Variables } from "../../../../../utils/Variables";
-import {
-  ContextLayer
-} from "../../../../../store/dashboard/reducers/contextLayers";
 import FormLabel from "@mui/material/FormLabel";
 import {
   SelectWithList
@@ -51,6 +48,7 @@ import {
 } from "../../../../../store/dashboard/reducers/relatedTable";
 import GeoJsonRequest from "../../../../../utils/GeoJson/Request";
 import axiosRequest from "../../../../../utils/Request";
+import { ContextLayer } from "../../../../../types/ContextLayer";
 
 
 interface Props {

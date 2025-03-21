@@ -20,16 +20,16 @@ import React, {
   useState
 } from 'react';
 import { useSelector } from "react-redux";
-import { ContextLayer } from "../../store/dashboard/reducers/contextLayers";
 import { ZonalAnalysisLayerConfiguration } from "./index.d";
 import { AGGREGATION_TYPES, analyzeData } from "../../utils/analysisData";
 import { Variables } from "../../utils/Variables";
 import { Feature } from "geojson";
 import { fetchFromAPIValues } from "./fetchFromAPIValues";
+import Tooltip from "@mui/material/Tooltip";
+import { getAreaDecimalLength, numberWithCommas } from "../../utils/main";
+import { ContextLayer } from "../../types/ContextLayer";
 
 import './style.scss';
-import Tooltip from "@mui/material/Tooltip";
-import {getAreaDecimalLength, numberWithCommas} from "../../utils/main";
 
 interface Props {
   index: number;
@@ -58,7 +58,7 @@ export const ZonalAnalysisResult = forwardRef((
         shownValue = value
       }
     } else if (![null, NaN].includes(value as any)) {
-       shownValue = numberWithCommas(parseFloat(value), getAreaDecimalLength(parseFloat(value)))
+      shownValue = numberWithCommas(parseFloat(value), getAreaDecimalLength(parseFloat(value)))
     }
 
     useEffect(() => {
@@ -149,7 +149,8 @@ export const ZonalAnalysisResult = forwardRef((
     }
     return (
       <tr>
-        <Tooltip title={<p style={{ fontSize: "12px" }}>{contextLayer?.name}</p>}>
+        <Tooltip
+          title={<p style={{ fontSize: "12px" }}>{contextLayer?.name}</p>}>
           <td
             style={{
               maxWidth: "200px",

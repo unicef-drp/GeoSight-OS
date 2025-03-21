@@ -9,16 +9,15 @@
  *     (at your option) any later version.
  *
  * __author__ = 'irwan@kartoza.com'
- * __date__ = '26/12/2024'
+ * __date__ = '20/03/2025'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-export interface ContextLayer {
-  id: number;
-  name: string;
-  url: string;
-  layer_type: string;
-  arcgis_config?: number;
-  related_table?: number;
-  cloud_native_gis_layer_id?: number;
-}
+export type Extent = [number, number, number, number];
+export type Center = [number, number];
+export type Position = {
+  pitch: number;
+  bearing: number;
+  zoom: number;
+  center: Center;
+};

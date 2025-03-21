@@ -14,8 +14,7 @@
  */
 
 import { Permission } from "./Permission";
-
-export type Extent = [number, number, number, number];
+import { Extent } from "./Geometry";
 
 export interface ReferenceLayer {
   identifier: string;

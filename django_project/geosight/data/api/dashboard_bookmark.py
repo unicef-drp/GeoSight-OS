@@ -14,8 +14,6 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-import json
-
 from django.db import transaction
 from django.http import HttpResponseBadRequest, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
@@ -27,9 +25,8 @@ from core.permissions import (
     RoleContributorAuthenticationPermission
 )
 from geosight.data.forms.dashboard_bookmark import DashboardBookmarkForm
-from geosight.data.models.basemap_layer import BasemapLayer
 from geosight.data.models.dashboard import (
-    Dashboard, DashboardBookmark, DashboardIndicatorLayer
+    Dashboard, DashboardBookmark
 )
 from geosight.data.serializer.dashboard_bookmark import (
     DashboardBookmarkSerializer
@@ -62,7 +59,7 @@ class DashboardBookmarksAPI(APIView):
                 name='Default',
                 extent=dashboard.extent,
                 selected_basemap=basemap.object if basemap else None,
-                selected_indicator_layer=first_layer,
+                selected_indicator_layers=[first_layer.id],
                 selected_admin_level=default_level,
                 filters=dashboard.filters
             )
@@ -79,39 +76,19 @@ class DashboardBookmarksAPI(APIView):
         return Response(data)
 
 
-class DashboardBookmarkAPI(APIView):
+class _DashboardBookmarkAPI(APIView):
     """Return Dashboard Bookmark detail."""
 
     def update_bookmark_data(self, request, dashboard):
         """Update Bookmark Data."""
         try:
             data = DashboardBookmarkForm.update_data(
-                json.loads(request.POST.copy()['data'])
+                request.data.copy(), dashboard
             )
         except ValueError as e:
             return HttpResponseBadRequest(e)
-        data['dashboard'] = dashboard.id
         if request.user.is_authenticated:
             data['creator'] = request.user
-
-        try:
-            data['selected_basemap'] = BasemapLayer.objects.get(
-                id=data['selectedBasemap']
-            )
-        except BasemapLayer.DoesNotExist:
-            return HttpResponseBadRequest(
-                f'{data["selectedBasemap"]} does not exist')
-
-        try:
-            layer = dashboard.dashboardindicatorlayer_set.get(
-                id=data['selectedIndicatorLayer']
-            )
-            data['selected_indicator_layer'] = layer
-        except DashboardIndicatorLayer.DoesNotExist:
-            return HttpResponseBadRequest(
-                f'{data["selectedIndicatorLayer"]} does not exist')
-        except KeyError:
-            pass
         return data
 
     def save_bookmark(self, request, dashboard, bookmark):
@@ -136,7 +113,7 @@ class DashboardBookmarkAPI(APIView):
             return HttpResponseBadRequest('<br>'.join(errors))
 
 
-class DashboardBookmarkDetailAPI(DashboardBookmarkAPI):
+class DashboardBookmarkDetailAPI(_DashboardBookmarkAPI):
     """Return Dashboard Bookmark detail."""
 
     permission_classes = (IsAuthenticated,)
@@ -166,7 +143,7 @@ class DashboardBookmarkDetailAPI(DashboardBookmarkAPI):
         return Response('Deleted')
 
 
-class DashboardBookmarkCreateAPI(DashboardBookmarkAPI):
+class DashboardBookmarkCreateAPI(_DashboardBookmarkAPI):
     """Return all dashboard data."""
 
     permission_classes = (

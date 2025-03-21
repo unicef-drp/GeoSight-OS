@@ -17,7 +17,7 @@
    Bookmark
    ========================================================================== */
 
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import $ from "jquery";
 import { useDispatch, useSelector } from "react-redux";
 import SaveAsIcon from '@mui/icons-material/SaveAs';
@@ -29,7 +29,7 @@ import {
   StarOffIcon,
   StarOnIcon
 } from "../../../../components/Icons";
-import { fetchingData } from "../../../../Requests";
+import { DjangoRequests, fetchingData } from "../../../../Requests";
 import { Actions } from '../../../../store/dashboard'
 import {
   SaveButton,
@@ -43,44 +43,22 @@ import Modal, {
 import CustomPopover from "../../../../components/CustomPopover";
 import { PluginChild } from "../../MapLibre/Plugin";
 import { EmbedConfig } from "../../../../utils/embed";
-import { dictDeepCopy } from "../../../../utils/main";
-import {
-  changeIndicatorLayersForcedUpdate
-} from "../../LeftPanel/IndicatorLayers";
-import { compareFilters, filtersToFlatDict } from "../../../../utils/filters";
+import { ProjectCheckpoint } from "../../../../components/ProjectCheckpoint";
 
 import './style.scss';
-import { INIT_DATA } from "../../../../utils/queryExtraction";
 
-/**
- * Bookmark component.
- */
+/** Bookmark component. */
 export default function Bookmark({ map }) {
+  // Project point states
+  const projectCheckpointRef = useRef(null);
+  const [projectCheckpointEnable, setProjectCheckpointEnable] = useState(false)
+
   const dispatch = useDispatch();
   const isEmbed = EmbedConfig().id;
-  const dashboardData = useSelector(state => state.dashboard.data);
-  const selectedIndicatorLayer = useSelector(state => state.selectedIndicatorLayer);
-  const selectedIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer);
-  const selectedAdminLevel = useSelector(state => state.selectedAdminLevel);
-  const selectedBookmark = useSelector(state => state.selectedBookmark);
-  const {
-    basemapLayer,
-    contextLayers,
-    indicatorShow,
-    contextLayersShow,
-    is3dMode
-  } = useSelector(state => state.map)
+  const { id } = useSelector(state => state.dashboard.data);
+  const selectedBookmark = useSelector(state => state.selectedBookmark)
 
-  // Extent
-  const bounds = map?.getBounds()
-  let extent = null
-  if (bounds) {
-    extent = [
-      bounds._sw.lng, bounds._sw.lat,
-      bounds._ne.lng, bounds._ne.lat
-    ]
-  }
-
+  const [uploading, setUploading] = useState(false)
   const [open, setOpen] = useState(false)
   const [name, setName] = useState('')
   const [error, setError] = useState('')
@@ -88,96 +66,35 @@ export default function Bookmark({ map }) {
   // Bookmarks
   const [bookmarks, setBookmarks] = useState(null)
   const [saveBookmarkID, setSaveBookmarkID] = useState(null)
-  /***
-   * Get data of bookmark
-   */
-  const data = () => {
-    const selectedIndicatorLayers = [selectedIndicatorLayer?.id]
-    if (selectedIndicatorSecondLayer?.id) {
-      selectedIndicatorLayers.push(selectedIndicatorSecondLayer?.id)
-    }
-    return {
-      name: name,
-      selectedBasemap: basemapLayer?.id,
-      selectedIndicatorLayers: selectedIndicatorLayers,
-      selectedContextLayers: Object.keys(contextLayers).map(id => parseInt(id)),
-      filters: dashboardData.filters ? dashboardData.filters : INIT_DATA.GROUP(),
-      extent: extent,
-      indicatorShow: indicatorShow,
-      contextLayersShow: contextLayersShow,
-      selectedAdminLevel: selectedAdminLevel.level,
-      is3dMode: is3dMode,
-      position: JSON.stringify({
-        pitch: map?.getPitch(),
-        bearing: map?.getBearing(),
-        zoom: map?.getZoom(),
-        center: map?.getCenter(),
-      })
-    }
-  }
 
   /** Update dashboard data with new bookmark */
   const updateDashboardData = (bookmark) => {
-    dispatch(
-      Actions.Map.update({
-          is3dMode: bookmark?.is_3d_mode,
-          position: bookmark.position
-        }
-      )
-    )
-    const newDashboard = dictDeepCopy(dashboardData)
-    newDashboard.basemapsLayers.map(layer => {
-      layer.visible_by_default = layer.id === bookmark.selected_basemap
-    })
-
-    // Activate compare
-    if (bookmark.selected_indicator_layers?.length >= 2) {
-      dispatch(Actions.MapMode.activateCompare())
-    } else {
-      dispatch(Actions.MapMode.deactivateCompare())
-    }
-    newDashboard.contextLayers.map(layer => {
-      layer.visible_by_default = bookmark.selected_context_layers.includes(layer.id)
-    })
-    newDashboard.filters = compareFilters(
-      newDashboard.filters, filtersToFlatDict(bookmark.filters)
-    )
-    changeIndicatorLayersForcedUpdate(bookmark.selected_indicator_layers)
-    setTimeout(function () {
-      dispatch(
-        Actions.Dashboard.update(JSON.parse(JSON.stringify(newDashboard)))
-      )
-    }, 100)
-    dispatch(Actions.Map.showHideContextLayer(bookmark?.context_layer_show))
-    dispatch(Actions.Map.showHideIndicator(bookmark?.indicator_layer_show))
-
-    if (bookmark.selected_admin_level !== null) {
-      dispatch(Actions.SelectedAdminLevel.change({
-        level: bookmark.selected_admin_level
-      }))
-    }
+    projectCheckpointRef.current.applyData(bookmark)
   }
 
   /** Fetch bookmark list
    */
   const fetchBookmarks = () => {
     setBookmarks(null)
-    fetchingData(urls.bookmarkList, {}, {}, (data) => {
-      setBookmarks(data)
-    }, false)
+    fetchingData(
+      '/api/dashboard/demo-geosight-project/bookmarks',
+      {}, {},
+      (data) => {
+        setBookmarks(data)
+      }, false)
   }
 
   // Change selected bookmark when there is embed config
   useEffect(() => {
     fetchBookmarks()
-    if (map) {
+    if (map && id) {
       const defaultBookmark = EmbedConfig().bookmark
       if (defaultBookmark) {
         dispatch(Actions.SelectedBookmark.change(defaultBookmark))
         updateDashboardData(defaultBookmark)
       }
     }
-  }, [map])
+  }, [map, id])
 
   const selectedBookmarkChanged = (selectedBookmark) => {
     if (bookmarks !== null) {
@@ -199,49 +116,44 @@ export default function Bookmark({ map }) {
   /**
    * Save function based on url
    */
-  const save = (url) => {
-    $.ajax({
-      url: url,
-      data: {
-        data: JSON.stringify(data())
-      },
-      type: 'POST',
-      dataType: 'json',
-      success: function (response, textStatus, request) {
-        fetchBookmarks()
-        setOpen(false)
-        dispatch(Actions.SelectedBookmark.change({ ...response }))
-      },
-      error: function (error, textStatus, errorThrown) {
-        if (error.responseText) {
-          setError(error.responseText);
-        } else {
-          try {
-            setError(error.responseJSON.detail);
-          } catch (err) {
-            setError(error.statusText);
-          }
-        }
-      },
-      beforeSend: beforeAjaxSend
-    });
+  const save = async (url) => {
+    setUploading(true);
+    const data = projectCheckpointRef.current.getData();
+    try {
+      const response = await DjangoRequests.post(url, { ...data, name: name })
+      fetchBookmarks()
+      setOpen(false)
+      setUploading(false)
+      dispatch(Actions.SelectedBookmark.change({ ...response.data }))
+    } catch (err) {
+      setError(err.toString());
+      setUploading(false);
+    }
   }
-  // on save data
+
+  // On save as data
   const onSaveAs = () => {
-    save(urls.bookmarkCreate)
+    save('/api/dashboard/demo-geosight-project/bookmarks/create')
   }
-  // on save data
+
+  // On save data
   const onSave = (id) => {
-    save(urls.bookmarkDetail.replaceAll('/0', `/${id}`))
+    save(`/api/dashboard/demo-geosight-project/bookmarks/${id}`)
   }
 
   const bookmarkSave = bookmarks ? bookmarks.find(
-    row => row.id === saveBookmarkID) : null
+    row => row.id === saveBookmarkID
+  ) : null
 
-  if (!dashboardData.id) {
-    return ""
+  if (!id) {
+    return null
   }
-  return (
+  return <>
+    <ProjectCheckpoint
+      map={map}
+      setProjectCheckpointEnable={setProjectCheckpointEnable}
+      ref={projectCheckpointRef}
+    />
     <CustomPopover
       anchorOrigin={{
         vertical: 'bottom',
@@ -316,7 +228,7 @@ export default function Bookmark({ map }) {
                                     onClick={(e) => {
                                       if (confirm(`Are you sure you want to delete ${bookmark.name}?`)) {
                                         $.ajax({
-                                          url: urls.bookmarkDetail.replaceAll('/0', `/${bookmark.id}`),
+                                          url: `/api/dashboard/demo-geosight-project/bookmarks/${bookmark.id}`,
                                           method: 'DELETE',
                                           success: function () {
                                             if (selectedBookmark.id === bookmark.id) {
@@ -395,9 +307,11 @@ export default function Bookmark({ map }) {
                 onSaveAs()
               }
             }}
-            disabled={!name || !basemapLayer || !extent || !selectedIndicatorLayer}/>
+            disabled={
+              !name || !projectCheckpointEnable || uploading
+            }/>
         </ModalFooter>
       </Modal>
     </CustomPopover>
-  )
+  </>
 }

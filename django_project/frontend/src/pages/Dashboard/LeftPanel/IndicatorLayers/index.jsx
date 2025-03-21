@@ -58,8 +58,10 @@ export function IndicatorLayers() {
     indicatorLayersStructure,
     relatedTables
   } = useSelector(state => state.dashboard.data)
-  const [currentIndicatorLayer, setCurrentIndicatorLayer] = useState(0)
-  const [currentIndicatorSecondLayer, setCurrentIndicatorSecondLayer] = useState(0)
+  const [currentIndicatorLayers, setCurrentIndicatorLayers] = useState([0, 0])
+  const currentIndicatorLayer = currentIndicatorLayers[0]
+  const currentIndicatorSecondLayer = currentIndicatorLayers[1]
+
   const relatedTableData = useSelector(state => state.relatedTableData)
   const { compareMode } = useSelector(state => state.mapMode)
   const [treeData, setTreeData] = useState([])
@@ -123,7 +125,7 @@ export function IndicatorLayers() {
    */
   useEffect(() => {
     if (!compareMode) {
-      setCurrentIndicatorSecondLayer(0)
+      setCurrentIndicatorLayers([currentIndicatorLayer, 0])
       dispatch(Actions.SelectedIndicatorSecondLayer.change({}))
     }
   }, [compareMode]);
@@ -151,36 +153,35 @@ export function IndicatorLayers() {
     let selectedIds = [currentIndicatorLayer, currentIndicatorSecondLayer]
     if (indicatorLayersTree && indicatorLayersTree.length) {
       // Indicator enabled
-      let indicatorEnabled = { 'id': currentIndicatorLayer }
       const indicatorLayersIds = []
       indicatorLayers.map(layer => {
         indicatorLayersIds.push(layer.id)
         indicatorLayersIds.push('' + layer.id)
       })
+      // Assign to selected ids
       if (!indicatorLayersIds.includes(currentIndicatorLayer)) {
-        indicatorEnabled = { 'id': null }
+        selectedIds[0] = null
       }
-      if (!indicatorEnabled.id || indicatorLayersForcedUpdateIds) {
-        if (!indicatorLayersForcedUpdateIds?.length) {
-          // If not force updated
-          indicatorEnabled = indicatorLayersTree.find(indicator => {
-            return indicator.visible_by_default
-          })
-        } else {
-          selectedIds = indicatorLayersForcedUpdateIds
-        }
+      if (!indicatorLayersIds.includes(currentIndicatorSecondLayer)) {
+        selectedIds[1] = null
+      }
+
+      // Get the force update ids
+      if (indicatorLayersForcedUpdateIds !== null) {
+        selectedIds = indicatorLayersForcedUpdateIds
       }
       indicatorLayersForcedUpdateIds = null
 
+      if (selectedIds[0] == null) {
+        selectedIds = indicatorLayersTree.filter(indicator => {
+          return indicator.visible_by_default
+        }).map(indicator => indicator.id)
+      }
+
       // Check default indicator as turned one
-      if (currentIndicatorLayer !== indicatorEnabled?.id) {
-        // Change current indicator if indicators changed
-        if (indicatorEnabled) {
-          setCurrentIndicatorLayer(indicatorEnabled.id)
-          selectedIds[0] = indicatorEnabled.id
-        } else {
+      if (currentIndicatorLayer !== selectedIds[0]) {
+        if (!selectedIds[0]) {
           indicatorLayersTree[0].visible_by_default = true
-          setCurrentIndicatorLayer(indicatorLayersTree[0].id)
           selectedIds[0] = indicatorLayersTree[0].id
         }
       } else {
@@ -234,6 +235,7 @@ export function IndicatorLayers() {
     )
 
     // Setup current indicator layer
+    setCurrentIndicatorLayers(selectedIds)
     updateCurrentIndicator(selectedIds[0], Actions.SelectedIndicatorLayer)
     updateCurrentIndicator(selectedIds[1], Actions.SelectedIndicatorSecondLayer)
     updateOtherLayers(['' + selectedIds[0], '' + selectedIds[1]])
@@ -242,20 +244,12 @@ export function IndicatorLayers() {
   const onChange = (selectedData) => {
     if (selectedData.length === 0) {
       if (currentIndicatorLayer) {
-        setCurrentIndicatorLayer(0)
+        setCurrentIndicatorLayers([0, 0])
         dispatch(Actions.SelectedIndicatorLayer.change({}))
       }
     }
-    if (selectedData.length > 0) {
-      setCurrentIndicatorLayer(selectedData[0])
-    }
-    if (selectedData.length > 1) {
-      setCurrentIndicatorSecondLayer(selectedData[1])
-    } else {
-      if (compareMode) {
-        setCurrentIndicatorSecondLayer(0)
-        dispatch(Actions.SelectedIndicatorSecondLayer.change({}))
-      }
+    if (selectedData.length >= 1) {
+      setCurrentIndicatorLayers(selectedData)
     }
 
     updateOtherLayers(selectedData)

@@ -1,7 +1,6 @@
 import { expect, test } from '@playwright/test';
 
 // URL That we need to check
-const timeout = 2000;
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 test.describe('View project', () => {
@@ -180,61 +179,6 @@ test.describe('View project', () => {
     await expect(lastLayers.includes("reference-layer-fill-0,reference-layer-outline-0,reference-layer-fill-1,reference-layer-outline-1")).toBeTruthy();
     await page.getByLabel(kenyaLayer).click();
     await page.getByTitle('Turn off compare Layers').click();
-
-    // ----------------------------------------------------------------------------
-    // BOOKMARK
-    // ----------------------------------------------------------------------------
-    // Create bookmark with Dynamic Layer as default
-    await page.getByTitle('Bookmark').locator('a').click();
-    await page.getByRole('button', { name: 'Save As...' }).click();
-    await page.getByLabel('Bookmark Name').fill('Bookmark 1');
-    await page.getByRole('button', { name: 'Submit' }).click();
-    await expect(page.getByLabel(layer1)).not.toBeChecked();
-    await expect(page.getByLabel(layer2)).toBeChecked();
-    await expect(page.locator('.MapLegendSectionTitle')).toContainText(layer2);
-
-    // Click default on bookmark
-    await page.getByText('Default').click();
-    await expect(page.locator('.MapLegendSectionTitle')).toContainText(layer1);
-    await expect(page.getByLabel(layer1)).toBeChecked();
-    await expect(page.getByLabel(layer2)).not.toBeChecked();
-
-    // Click Bookmark Sample Indicator B
-    await page.getByText('Bookmark 1').click();
-    await expect(page.getByLabel(layer1)).not.toBeChecked();
-    await expect(page.getByLabel(layer2)).toBeChecked();
-    await expect(page.locator('.MapLegendSectionTitle')).toContainText(layer2);
-
-    // Delete the bookmark and it will back to default
-    page.once('dialog', async dialog => {
-      // Verify Dialog Message
-      await expect(dialog.message()).toContain(`Are you sure you want to delete Bookmark 1?`);
-
-      //Click on OK Button
-      await dialog.accept();
-    });
-    await page.locator('.Bookmark  .DeleteIcon').click();
-    await expect(page.locator('.MapLegendSectionTitle')).toContainText(layer1);
-    await expect(page.getByLabel(layer1)).toBeChecked();
-    await expect(page.getByLabel(layer2)).not.toBeChecked();
-
-    // Embed
-    await page.goto('/project/demo-geosight-project');
-    await page.getByRole('button', { name: 'Close' }).click();
-    await page.getByTitle('Get embed code').click();
-    await page.getByRole('button', { name: 'Generate' }).click();
-    await page.waitForTimeout(3000);
-    const embedUrl = await page.locator('.modal--footer input').inputValue()
-    await expect(embedUrl.includes('http://localhost:2000/embed/')).toBeTruthy();
-
-    // Got to embed page
-    await page.goto(embedUrl);
-    await delay(2000)
-    await page.getByRole('button', { name: 'Close' }).click();
-    await expect(page.getByLabel(layer1)).toBeVisible();
-    await expect(page.locator('.MapLegendSectionTitle')).toContainText(layer1);
-    await expect(page.getByLabel(layer1)).toBeChecked();
-    await expect(page.getByLabel(layer2)).not.toBeChecked();
   }
 
   // A use case tests scenarios

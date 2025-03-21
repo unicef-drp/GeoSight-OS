@@ -14,9 +14,6 @@
     <script>
       {# specified url for dashboard #}
       urls.dashboardData = '{% url 'dashboard-data-api' slug=dashboard.id %}'
-      urls.bookmarkCreate = '{% url 'dashboard-bookmarks-create' slug=dashboard.id %}'
-      urls.bookmarkList = '{% url 'dashboard-bookmarks' slug=dashboard.id %}'
-      urls.bookmarkDetail = '{% url 'dashboard-bookmarks-detail' slug=dashboard.id pk=0 %}'
       urls.embedDetail = '{% url 'dashboard-embed' slug=dashboard.id %}'
       urls.drilldown = '{% url 'dashboard-entity-drilldown' slug=dashboard.id geom_id='geom_id' %}'
 
