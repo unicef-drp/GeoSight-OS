@@ -137,7 +137,7 @@ class ReferenceLayerViewAdmin(admin.ModelAdmin):
             _list.append(
                 f'<a href="{url}" target="_blank">{country.name}</a>'
             )
-        return format_html(''.join(_list))
+        return format_html(', '.join(_list))
 
 
 admin.site.register(ReferenceLayerView, ReferenceLayerViewAdmin)

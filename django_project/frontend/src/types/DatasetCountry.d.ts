@@ -13,21 +13,10 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-export interface CountryDatasetView {
+
+export interface DatasetCountry {
   name: string;
   ucode: string;
-}
-
-export interface DatasetView {
-  name: string,
-  uuid: string,
-  description: string,
-  dataset: string,
-  root_entity: string,
-  last_update: string,
-  bbox: number[],
-  tags: string[],
-  countries: CountryDatasetView[];
-  identifier?: string;
-  is_local?: boolean;
+  concept_uuid: string;
+  ext_codes: Record<string, string>;
 }
