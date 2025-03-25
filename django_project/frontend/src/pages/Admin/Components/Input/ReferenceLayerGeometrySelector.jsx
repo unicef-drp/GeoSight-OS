@@ -16,7 +16,7 @@
 import React, { useEffect, useState } from 'react';
 import { axiosGet, fetchFeatureList } from "../../../../utils/georepo";
 import { Select } from "../../../../components/Input";
-import { RefererenceLayerUrls } from "../../../../utils/referenceLayer";
+import { URLS } from "../../../../utils/urls";
 
 let requestTime = null
 /**
@@ -37,7 +37,7 @@ export default function ReferenceLayerGeometrySelector(
         setLevels(null)
         const currentDate = new Date().getTime();
         requestTime = currentDate;
-        const url = RefererenceLayerUrls.ViewDetail(referenceLayer)
+        const url = URLS.ReferenceLayer.Detail(referenceLayer)
         axiosGet(url).then(response => {
           if (requestTime === currentDate) {
             const data = response.data

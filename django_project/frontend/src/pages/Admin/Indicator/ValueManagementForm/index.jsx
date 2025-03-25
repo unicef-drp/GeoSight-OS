@@ -37,11 +37,11 @@ import {
   Notification,
   NotificationStatus
 } from "../../../../components/Notification";
-import { RefererenceLayerUrls } from "../../../../utils/referenceLayer";
-
-import './style.scss';
 import DatasetViewSelector
   from "../../../../components/ResourceSelector/DatasetViewSelector";
+import { URLS } from "../../../../utils/urls";
+
+import './style.scss';
 
 export function InputForm({ type, placeholder, name, initValue }) {
   const [value, setValue] = useState(initValue)
@@ -101,7 +101,7 @@ export default function ValueManagement() {
         return
       }
       if (!referenceLayer.data) {
-        const url = RefererenceLayerUrls.ViewDetail(referenceLayer)
+        const url = URLS.ReferenceLayer.Detail(referenceLayer)
         axiosGet(url).then(response => {
           const data = response.data
           referenceLayer.data = data.dataset_levels.map(level => {

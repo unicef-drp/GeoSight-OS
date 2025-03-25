@@ -12,16 +12,45 @@
  * __date__ = '14/02/2024'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
+import { DatasetView } from "../types/DatasetView";
+import { GeorepoUrls } from "./georepo";
 
 export const referenceDatasetUrlBase = 'reference-datasets'
 export const InternalReferenceDatasets = {
   list: () => {
     return `/api/v1/${referenceDatasetUrlBase}/`
   },
-  detail: (identifier) => {
+  detail: (identifier: string) => {
     return `${window.location.origin}/api/v1/${referenceDatasetUrlBase}/${identifier}/`
   },
-  centroid: (identifier) => {
+  centroid: (identifier: string) => {
     return `${window.location.origin}/reference-dataset/${referenceDatasetUrlBase}/${identifier}/centroid`
+  }
+}
+
+export const URLS = {
+  ReferenceLayer: {
+    List: function (dataset: string, isLocal: boolean) {
+      if (isLocal) {
+        return InternalReferenceDatasets.list()
+      }
+      return GeorepoUrls.ViewList(dataset)
+    },
+    Detail: function (detail: DatasetView) {
+      const { identifier } = detail
+      if (detail.is_local) {
+        return InternalReferenceDatasets.detail(identifier)
+      } else {
+        return GeorepoUrls.ViewDetail(identifier)
+      }
+    },
+    Centroid: function (detail: DatasetView) {
+      const { identifier } = detail
+      if (detail.is_local) {
+        return InternalReferenceDatasets.centroid(identifier)
+      } else {
+        return GeorepoUrls.Centroid(identifier)
+      }
+    }
   }
 }

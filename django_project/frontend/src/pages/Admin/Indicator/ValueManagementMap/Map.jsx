@@ -23,9 +23,9 @@ import L from 'leaflet';
 
 import { SelectWithList } from "../../../../components/Input/SelectWithList";
 import { axiosGet, fetchGeojson } from '../../../../utils/georepo'
-import { RefererenceLayerUrls } from "../../../../utils/referenceLayer";
 import DatasetViewSelector
   from "../../../../components/ResourceSelector/DatasetViewSelector";
+import { URLS } from "../../../../utils/urls";
 
 /**
  * Map component.
@@ -236,7 +236,7 @@ export default function Map() {
     setError('')
     if (reference) {
       if (!reference.data) {
-        const url = RefererenceLayerUrls.ViewDetail(reference)
+        const url = URLS.ReferenceLayer.Detail(reference)
         axiosGet(url).then(response => {
           const data = response.data
           reference.data = data.dataset_levels.map(level => {
