@@ -15,9 +15,7 @@
 
 import { fetchJSON } from '../Requests'
 import axios from "axios";
-import { InternalReferenceDatasets, referenceDatasetUrlBase } from "./urls";
-
-export const LocalReferenceDatasetIdentifier = 'Internal reference datasets'
+import { referenceDatasetUrlBase } from "./urls";
 
 /** Georepo URL */
 export function updateToken(url) {
@@ -46,7 +44,16 @@ export const GeorepoUrls = {
   },
   ViewDetail: function (identifier) {
     return preferences.georepo_api.view_detail.replace('<identifier>', identifier)
-  }
+  },
+  ViewList: function (dataset) {
+    return GeorepoUrls.WithDomain(`/search/dataset/${dataset}/view/list/`, true)
+  },
+  Centroid: function (identifier) {
+    return GeorepoUrls.WithDomain(`/search/view/${identifier}/centroid/`, true)
+  },
+  CountryList: function (dataset) {
+    return GeorepoUrls.WithDomain(`/search/dataset/${dataset}/entity/level/0/`, true)
+  },
 }
 
 /**
@@ -67,36 +74,6 @@ export const fetchReferenceLayerList = async function () {
     row.identifier = row.uuid
   })
   return [].concat(data.filter(row => row.is_favorite), data.filter(row => !row.is_favorite));
-}
-
-/**
- * Return reference layer view List
- */
-export const fetchReferenceLayerViewsList = async function (referenceLayerUUID) {
-  let data = []
-  let url = GeorepoUrls.WithDomain(`/search/dataset/${referenceLayerUUID}/view/list/`, false)
-  if (referenceLayerUUID === LocalReferenceDatasetIdentifier) {
-    url = InternalReferenceDatasets.list()
-  }
-  data = await fetchFeatureList(url, true);
-  data.map(row => {
-    if (row.uuid) {
-      row.identifier = row.uuid
-    }
-    if (referenceLayerUUID === LocalReferenceDatasetIdentifier) {
-      row.is_local = true
-    }
-  })
-  data.sort((a, b) => {
-    if (a.name < b.name) {
-      return -1;
-    }
-    if (a.name > b.name) {
-      return 1;
-    }
-    return 0;
-  })
-  return data
 }
 
 /***
@@ -171,32 +148,6 @@ export const axiosGet = function (url, params = null) {
   } else {
     return axios.get(url, headers);
   }
-}
-
-/*** Axios georepo request json */
-export const fetchJson = async function (url) {
-  if (!url.includes('http')) {
-    url = preferences.georepo_api.api + url
-  }
-  return await fetchJSON(url, headers)
-}
-
-/*** Axios georepo request with cache */
-export const axiosGetCache = function (url) {
-  if (!url.includes('http')) {
-    url = preferences.georepo_api.api + url
-  }
-  return new Promise((resolve, reject) => {
-    (
-      async () => {
-        try {
-          resolve(await fetchJSON(url, headers));
-        } catch (err) {
-          reject(err)
-        }
-      }
-    )()
-  });
 }
 
 /***

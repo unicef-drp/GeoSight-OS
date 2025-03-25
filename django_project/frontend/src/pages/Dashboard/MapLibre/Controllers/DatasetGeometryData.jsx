@@ -26,8 +26,7 @@ import { Actions } from "../../../../store/dashboard";
 import { axiosGet, extractCode, headers } from "../../../../utils/georepo";
 import { apiReceive } from "../../../../store/reducers_api";
 import { fetchJSON } from "../../../../Requests";
-import { InternalReferenceDatasets } from "../../../../utils/urls";
-import { RefererenceLayerUrls } from "../../../../utils/referenceLayer";
+import { URLS } from "../../../../utils/urls";
 
 /**
  * Handling geometry data.
@@ -59,7 +58,7 @@ export default function DatasetGeometryData() {
             )
 
             // Fetch the data
-            const url = RefererenceLayerUrls.ViewDetail(referenceLayer)
+            const url = URLS.ReferenceLayer.VIEW.Detail(referenceLayer)
             await axiosGet(url).then(response => {
               referenceLayerData[identifier] = apiReceive({
                 data: response.data,
@@ -107,10 +106,10 @@ export default function DatasetGeometryData() {
           const currGeometries = {}
           const geometryDataDict = {}
           const geometryMemberByUcode = {}
-          let url = `${preferences.georepo_api.api}/search/view/${identifier}/centroid/`
-          if (datasets[i].is_local) {
-            url = InternalReferenceDatasets.centroid(identifier)
-          }
+          let url = URLS.ReferenceLayer.VIEW.Centroid({
+            ...referenceLayer,
+            is_local: datasets[i].is_local
+          })
           await axiosGet(url).then(async centroidResponse => {
             const centroids = centroidResponse.data
             for (let i = 0; i < centroids.length; i++) {

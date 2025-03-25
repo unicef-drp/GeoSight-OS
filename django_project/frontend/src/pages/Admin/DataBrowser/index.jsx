@@ -48,6 +48,9 @@ import {
 import {
   IndicatorFilterSelector
 } from "../../../components/ResourceSelector/IndicatorSelector";
+import {
+  DatasetCountryFilterSelector
+} from "../../../components/ResourceSelector/DatasetCountrySelector";
 
 /*** Data Browser admin */
 const deleteWarning = "WARNING! Do you want to delete the selected data? This will apply directly to database."
@@ -64,7 +67,7 @@ export default function DataBrowserAdmin() {
   const defaultFilters = urlParams()
   const [filters, setFilters] = useState({
     indicators: defaultFilters.indicators ? splitParams(defaultFilters.indicators) : [],
-    datasets: defaultFilters.datasets ? splitParams(defaultFilters.datasets, false) : [],
+    countries: defaultFilters.countries ? splitParams(defaultFilters.countries, false) : [],
     levels: defaultFilters.levels ? splitParams(defaultFilters.levels) : [],
     geographies: defaultFilters.geographies ? splitParams(defaultFilters.geographies) : [],
     fromTime: defaultFilters.fromTime ? defaultFilters.fromTime : null,
@@ -230,10 +233,10 @@ export default function DataBrowserAdmin() {
     } else {
       delete parameters['indicator_id__in']
     }
-    if (filters.datasets.length) {
-      parameters['reference_layer_id__in'] = filters.datasets.join(',')
+    if (filters.countries.length) {
+      parameters['country_geom_id__in'] = filters.countries.join(',')
     } else {
-      delete parameters['reference_layer_id__in']
+      delete parameters['country_geom_id__in']
     }
     if (filters.levels.length) {
       parameters['admin_level__in'] = filters.levels.join(',')
@@ -307,12 +310,12 @@ export default function DataBrowserAdmin() {
               ...filters,
               indicators: newFilter
             })}/>
-          <DatasetFilterSelector
-            data={filters.datasets}
+          <DatasetCountryFilterSelector
+            data={filters.countries}
             setData={newFilter => {
               setFilters({
                 ...filters,
-                datasets: newFilter
+                countries: newFilter
               })
             }}/>
           <MultipleCreatableFilter

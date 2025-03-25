@@ -44,6 +44,7 @@ class ReferenceDatasetViewTest(BasePermissionTest.TestCase):
         payload = copy.deepcopy(self.payload)
         return ReferenceDataset.permissions.create(
             user=user,
+            in_georepo=False,
             **payload
         )
 

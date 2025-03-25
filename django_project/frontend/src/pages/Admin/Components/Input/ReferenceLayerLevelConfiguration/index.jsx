@@ -22,11 +22,9 @@ import {
   MultipleSelectWithSearch,
   SelectWithSearch
 } from "../../../../../components/Input/SelectWithSearch";
-import { GeorepoUrls } from "../../../../../utils/georepo";
 import { FormControlLabel, FormGroup } from "@mui/material";
-import { InternalReferenceDatasets } from "../../../../../utils/urls";
+import { URLS } from "../../../../../utils/urls";
 import { Actions } from "../../../../../store/dashboard";
-import { RefererenceLayerUrls } from "../../../../../utils/referenceLayer";
 import DatasetViewSelector
   from "../../../../../components/ResourceSelector/DatasetViewSelector";
 
@@ -84,7 +82,7 @@ export const ViewLevelConfiguration = forwardRef(
 
     useEffect(() => {
       if (referenceLayer.identifier && !referenceLayerData) {
-        const url = RefererenceLayerUrls.ViewDetail(referenceLayer)
+        const url = URLS.ReferenceLayer.VIEW.Detail(referenceLayer)
         dispatch(
           Actions.ReferenceLayerData.fetch(
             dispatch, referenceLayer.identifier, url
@@ -146,7 +144,7 @@ export const ViewLevelConfiguration = forwardRef(
                           const identifier = selectedData[0].identifier
                           selected = {
                             identifier: identifier,
-                            detail_url: selectedData[0].is_local ? InternalReferenceDatasets.centroid(identifier) : GeorepoUrls.ViewDetail(identifier),
+                            detail_url: URLS.ReferenceLayer.VIEW.Detail(selectedData[0]),
                             is_local: selectedData[0].is_local
                           }
                         }

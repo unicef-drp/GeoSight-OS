@@ -190,7 +190,7 @@ class RelatedTable(AbstractTerm, AbstractEditData, AbstractVersionData):
         from geosight.georepo.models.entity import Entity
         countries = [
             f'{country}' for country in list(
-                Entity.countries.filter(
+                Entity.objects.countries().filter(
                     geom_id__in=country_geom_ids
                 ).values_list(
                     'pk', flat=True

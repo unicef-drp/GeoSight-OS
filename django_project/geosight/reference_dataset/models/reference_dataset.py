@@ -37,6 +37,15 @@ class ReferenceDatasetLocalQuerySet(QuerySet):
     pass
 
 
+class ReferenceDatasetManager(models.Manager):
+    """Reference layer view local manager."""
+
+    def get_queryset(self):
+        """Return queryset just for non georepo."""
+        qs = ReferenceDatasetLocalQuerySet(self.model, using=self._db)
+        return qs.filter(in_georepo=False)
+
+
 class ReferenceDatasetPermissionManager(PermissionManager):
     """Reference layer view local manager."""
 
@@ -57,7 +66,7 @@ class ReferenceDatasetPermissionManager(PermissionManager):
 class ReferenceDataset(ReferenceLayerView):
     """Reference Layer view data."""
 
-    objects = models.Manager()
+    objects = ReferenceDatasetManager()
     permissions = ReferenceDatasetPermissionManager()
 
     class Meta:  # noqa: D106
