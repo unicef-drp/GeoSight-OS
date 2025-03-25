@@ -20,8 +20,14 @@ test.describe('Dataset list admin', () => {
 
     // Check indicator filter
     await page.getByRole('textbox').first().click();
-    await page.getByRole('cell', { name: 'Sample Indicator A', exact: true }).click();
-    await page.getByRole('cell', { name: 'Sample Indicator B', exact: true }).click();
+    await page.getByRole('cell', {
+      name: 'Sample Indicator A',
+      exact: true
+    }).click();
+    await page.getByRole('cell', {
+      name: 'Sample Indicator B',
+      exact: true
+    }).click();
     await page.getByRole('button', { name: 'Update Selection' }).click();
     await expect(page.locator('.MuiDataGrid-row')).toHaveCount(2);
     await page.getByRole('textbox').first().click();
@@ -34,6 +40,16 @@ test.describe('Dataset list admin', () => {
     await page.getByRole('option', { name: '0' }).getByRole('checkbox').check();
     await expect(page.locator('.MuiDataGrid-row')).toHaveCount(3);
     await page.getByRole('option', { name: '0' }).getByRole('checkbox').uncheck();
+    await expect(page.locator('.MuiDataGrid-row')).toHaveCount(5);
+
+    // Test filter by country
+    await page.getByRole('textbox').nth(1).click();
+    await page.getByRole('cell', { name: 'Somalia' }).click();
+    await page.getByRole('button', { name: 'Update Selection' }).click();
+    await expect(page.locator('.MuiDataGrid-row')).toHaveCount(4);
+    await page.getByRole('textbox').nth(1).click();
+    await page.getByRole('button', { name: 'Clear selection.' }).click();
+    await page.getByRole('button', { name: 'Update Selection' }).click();
     await expect(page.locator('.MuiDataGrid-row')).toHaveCount(5);
 
     // Test sort
