@@ -107,6 +107,8 @@ class ApiEntitySerializer(DynamicModelSerializer):
     def get_parents(self, obj: Entity):
         """Return ucode."""
         output = []
+        if not obj.parents:
+            return output
         for idx, parent in enumerate(obj.parents):
             level = self.entity_level(obj, idx)
             output.append(
