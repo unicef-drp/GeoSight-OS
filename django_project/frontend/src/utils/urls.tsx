@@ -28,7 +28,7 @@ const InternalReferenceDatasets = {
   },
   COUNTRY: {
     List: () => {
-
+      return `${window.location.origin}/api/v1/${referenceDatasetUrlBase}/entity?admin_level=0`
     }
   }
 }

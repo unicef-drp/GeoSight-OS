@@ -14,16 +14,16 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { fetchReferenceLayerList } from "../../utils/georepo";
-import { ModalInputSelector } from "./ModalInputSelector";
-import { ModalFilterSelectorProps, ModalInputSelectorProps } from "./types";
-import { DatasetView } from "../../types/DatasetView";
 import {
   FormControl,
   FormControlLabel,
   Radio,
   RadioGroup
 } from "@mui/material";
+import { fetchReferenceLayerList } from "../../utils/georepo";
+import { ModalInputSelector } from "./ModalInputSelector";
+import { ModalFilterSelectorProps, ModalInputSelectorProps } from "./types";
+import { DatasetView } from "../../types/DatasetView";
 import { SelectWithList } from "../Input/SelectWithList";
 import { URLS } from "../../utils/urls";
 import { DatasetCountry } from "../../types/DatasetCountry";
@@ -33,13 +33,21 @@ const VALUE_REMOTE = 'Remote'
 const VALUE_LOCAL = 'Local'
 
 const columns = [
-  { field: 'id', headerName: 'id', hide: true },
-  { field: 'name', headerName: 'Name', flex: 1 },
-  { field: 'ucode', headerName: 'Ucode', flex: 1 },
+  { field: 'ucode', headerName: 'id', hide: true },
+  { field: 'name', headerName: 'Name', flex: 0.5 },
   {
-    field: 'codes', headerName: 'Codes', flex: 1,
+    field: 'ucodeTable',
+    headerName: 'Ucode',
+    serverKey: 'geom_id',
+    flex: 0.5,
     renderCell: (params: { row: DatasetCountry }) => {
-      return Object.entries(params.row.codes).map(([key, value]) => {
+      return params.row.ucode
+    }
+  },
+  {
+    field: 'ext_codes', headerName: 'Codes', flex: 1,
+    renderCell: (params: { row: DatasetCountry }) => {
+      return Object.entries(params.row.ext_codes).map(([key, value]) => {
         return <span
           style={{
             padding: '0.5rem',
@@ -77,7 +85,7 @@ export default function DatasetCountrySelector(
   // @ts-ignore
   const isLocalEnabled = localReferenceDatasetEnabled
   const [sourceType, setSourceType] = useState(isLocalEnabled ? VALUE_LOCAL : VALUE_REMOTE)
-  const url = dataset ? URLS.ReferenceLayer.VIEW.List('' + dataset, sourceType === VALUE_LOCAL) : null
+  const url = dataset ? URLS.ReferenceLayer.COUNTRY.List('' + dataset, sourceType === VALUE_LOCAL) : null
 
   /** Get the datasets */
   useEffect(
@@ -125,7 +133,7 @@ export default function DatasetCountrySelector(
     showSelected={showSelected}
     disabled={disabled}
     mode={mode}
-    dataName={'View'}
+    dataName={'Country'}
     opener={opener}
 
     // Data properties
@@ -150,10 +158,10 @@ export default function DatasetCountrySelector(
 
     // Table properties
     multipleSelection={multipleSelection}
-    rowIdKey={'uuid'}
+    rowIdKey={'ucode'}
     topChildren={
       <div
-        className={'DatasetLayerSelector ' + (isLocalEnabled ? 'localDatasetDatasetEnabled' : '')}>
+        className={'DatasetLayerSelector'}>
         {
           isLocalEnabled ?
             <FormControl className='RadioButtonControl'>
@@ -190,7 +198,7 @@ export default function DatasetCountrySelector(
   />
 }
 
-export function DatasetFilterSelector(
+export function DatasetCountryFilterSelector(
   {
     // Input properties
     showSelected,
@@ -204,22 +212,21 @@ export function DatasetFilterSelector(
   }: ModalFilterSelectorProps
 ) {
 
-  return <DatasetViewSelector
+  return <DatasetCountrySelector
     initData={
       !data ? [] : data.map((row: any) => {
         return {
-          identifier: row,
-          uuid: row
+          ucode: row
         }
       })
     }
     dataSelected={(data) => {
-      setData(data.map((row: any) => row.identifier))
+      setData(data.map((row: any) => row.ucode))
     }}
     multipleSelection={true}
     showSelected={showSelected}
     disabled={disabled}
-    placeholder={'Filter by View(s)'}
+    placeholder={'Filter by Country(s)'}
     mode={'filter'}
   />
 }

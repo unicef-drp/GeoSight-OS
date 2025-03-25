@@ -18,5 +18,5 @@ export interface DatasetCountry {
   name: string;
   ucode: string;
   concept_uuid: string;
-  codes: any;
+  ext_codes: Record<string, string>;
 }

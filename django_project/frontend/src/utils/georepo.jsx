@@ -52,7 +52,7 @@ export const GeorepoUrls = {
     return GeorepoUrls.WithDomain(`/search/view/${identifier}/centroid/`, true)
   },
   CountryList: function (dataset) {
-    return GeorepoUrls.WithDomain(`/search/dataset/${identifier}/entity/level/0/`, true)
+    return GeorepoUrls.WithDomain(`/search/dataset/${dataset}/entity/level/0/`, true)
   },
 }
 
