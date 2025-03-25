@@ -83,7 +83,7 @@ export function ImporterDetailSection({ inputData }) {
 
   useEffect(() => {
     if (data.attributes?.admin_level_type === 'Specific Level') {
-      const url = URLS.ReferenceLayer.Detail(data)
+      const url = URLS.ReferenceLayer.VIEW.Detail(data)
       axiosGet(url).then(response => response.data).then(response => {
         const level = response.dataset_levels.find(level => level.level + '' === data.attributes?.admin_level_value + '')
         data.attributes.admin_level_type = level ? level.level_name : data.attributes?.admin_level_value

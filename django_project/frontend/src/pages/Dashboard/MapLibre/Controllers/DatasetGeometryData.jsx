@@ -58,7 +58,7 @@ export default function DatasetGeometryData() {
             )
 
             // Fetch the data
-            const url = URLS.ReferenceLayer.Detail(referenceLayer)
+            const url = URLS.ReferenceLayer.VIEW.Detail(referenceLayer)
             await axiosGet(url).then(response => {
               referenceLayerData[identifier] = apiReceive({
                 data: response.data,
@@ -106,7 +106,7 @@ export default function DatasetGeometryData() {
           const currGeometries = {}
           const geometryDataDict = {}
           const geometryMemberByUcode = {}
-          let url = URLS.ReferenceLayer.Centroid({
+          let url = URLS.ReferenceLayer.VIEW.Centroid({
             ...referenceLayer,
             is_local: datasets[i].is_local
           })

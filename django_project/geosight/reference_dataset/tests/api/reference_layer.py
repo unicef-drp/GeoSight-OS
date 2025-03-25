@@ -61,6 +61,12 @@ class ReferenceDatasetListApiTest(BasePermissionTest.TestCase):
                 'in_georepo': True
             }
         )
+        self.create_resource(
+            self.creator, {
+                'name': 'name 2: Georepo',
+                'in_georepo': False
+            }
+        )
 
         # Check the list returned
         self.assertRequestGetView(url, 200)  # Non login

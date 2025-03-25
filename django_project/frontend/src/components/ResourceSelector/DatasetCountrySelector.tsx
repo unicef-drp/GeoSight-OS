@@ -9,7 +9,7 @@
  *     (at your option) any later version.
  *
  * __author__ = 'irwan@kartoza.com'
- * __date__ = '14/01/2025'
+ * __date__ = '25/03/2025'
  * __copyright__ = ('Copyright 2025, Unicef')
  */
 
@@ -26,6 +26,7 @@ import {
 } from "@mui/material";
 import { SelectWithList } from "../Input/SelectWithList";
 import { URLS } from "../../utils/urls";
+import { DatasetCountry } from "../../types/DatasetCountry";
 
 
 const VALUE_REMOTE = 'Remote'
@@ -34,25 +35,24 @@ const VALUE_LOCAL = 'Local'
 const columns = [
   { field: 'id', headerName: 'id', hide: true },
   { field: 'name', headerName: 'Name', flex: 1 },
-  { field: 'description', headerName: 'Description', flex: 1 },
-  { field: 'last_update', headerName: 'Last Update', flex: 1 },
+  { field: 'ucode', headerName: 'Ucode', flex: 1 },
   {
-    field: 'tags', headerName: 'Tags', flex: 1,
-    renderCell: (params: any) => {
-      return params.row.tags.map((tag: any) => {
+    field: 'codes', headerName: 'Codes', flex: 1,
+    renderCell: (params: { row: DatasetCountry }) => {
+      return Object.entries(params.row.codes).map(([key, value]) => {
         return <span
           style={{
             padding: '0.5rem',
             backgroundColor: '#EEE',
             marginRight: '2px'
-          }}>{tag}</span>
-      })
+          }}>{key} : {value}</span>
+      });
     }
   },
 ]
 
-/** For Georepo View selection. */
-export default function DatasetViewSelector(
+/** For Georepo Country selection. */
+export default function DatasetCountrySelector(
   {
     // Input properties
     placeholder,

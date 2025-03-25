@@ -16,7 +16,7 @@ import { DatasetView } from "../types/DatasetView";
 import { GeorepoUrls } from "./georepo";
 
 export const referenceDatasetUrlBase = 'reference-datasets'
-export const InternalReferenceDatasets = {
+const InternalReferenceDatasets = {
   list: () => {
     return `/api/v1/${referenceDatasetUrlBase}/`
   },
@@ -25,32 +25,47 @@ export const InternalReferenceDatasets = {
   },
   centroid: (identifier: string) => {
     return `${window.location.origin}/reference-dataset/${referenceDatasetUrlBase}/${identifier}/centroid`
+  },
+  COUNTRY: {
+    List: () => {
+
+    }
   }
 }
 
 export const URLS = {
   ReferenceLayer: {
-    List: function (dataset: string, isLocal: boolean) {
-      if (isLocal) {
-        return InternalReferenceDatasets.list()
+    VIEW: {
+      List: function (dataset: string, isLocal: boolean) {
+        if (isLocal) {
+          return InternalReferenceDatasets.list()
+        }
+        return GeorepoUrls.ViewList(dataset)
+      },
+      Detail: function (detail: DatasetView) {
+        const { identifier } = detail
+        if (detail.is_local) {
+          return InternalReferenceDatasets.detail(identifier)
+        } else {
+          return GeorepoUrls.ViewDetail(identifier)
+        }
+      },
+      Centroid: function (detail: DatasetView) {
+        const { identifier } = detail
+        if (detail.is_local) {
+          return InternalReferenceDatasets.centroid(identifier)
+        } else {
+          return GeorepoUrls.Centroid(identifier)
+        }
       }
-      return GeorepoUrls.ViewList(dataset)
     },
-    Detail: function (detail: DatasetView) {
-      const { identifier } = detail
-      if (detail.is_local) {
-        return InternalReferenceDatasets.detail(identifier)
-      } else {
-        return GeorepoUrls.ViewDetail(identifier)
-      }
-    },
-    Centroid: function (detail: DatasetView) {
-      const { identifier } = detail
-      if (detail.is_local) {
-        return InternalReferenceDatasets.centroid(identifier)
-      } else {
-        return GeorepoUrls.Centroid(identifier)
-      }
+    COUNTRY: {
+      List: function (dataset: string, isLocal: boolean) {
+        if (isLocal) {
+          return InternalReferenceDatasets.COUNTRY.List()
+        }
+        return GeorepoUrls.CountryList(dataset)
+      },
     }
   }
 }

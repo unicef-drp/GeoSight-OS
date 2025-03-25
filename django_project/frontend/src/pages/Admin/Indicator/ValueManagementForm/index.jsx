@@ -101,7 +101,7 @@ export default function ValueManagement() {
         return
       }
       if (!referenceLayer.data) {
-        const url = URLS.ReferenceLayer.Detail(referenceLayer)
+        const url = URLS.ReferenceLayer.VIEW.Detail(referenceLayer)
         axiosGet(url).then(response => {
           const data = response.data
           referenceLayer.data = data.dataset_levels.map(level => {

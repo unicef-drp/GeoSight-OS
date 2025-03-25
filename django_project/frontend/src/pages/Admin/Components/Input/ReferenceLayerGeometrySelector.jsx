@@ -37,7 +37,7 @@ export default function ReferenceLayerGeometrySelector(
         setLevels(null)
         const currentDate = new Date().getTime();
         requestTime = currentDate;
-        const url = URLS.ReferenceLayer.Detail(referenceLayer)
+        const url = URLS.ReferenceLayer.VIEW.Detail(referenceLayer)
         axiosGet(url).then(response => {
           if (requestTime === currentDate) {
             const data = response.data

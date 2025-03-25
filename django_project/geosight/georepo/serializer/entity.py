@@ -130,11 +130,15 @@ class ApiEntitySerializer(DynamicModelSerializer):
 
     def get_centroid(self, obj: Entity):
         """Return bbox."""
-        return obj.geometry.centroid.wkt
+        if obj.geometry:
+            return obj.geometry.centroid.wkt
+        return None
 
     def get_bbox(self, obj: Entity):
         """Return bbox."""
-        return obj.geometry.extent
+        if obj.geometry:
+            return obj.geometry.extent
+        return None
 
     def get_ext_codes(self, obj: Entity):
         """Return ext_codes."""

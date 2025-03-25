@@ -82,7 +82,7 @@ export const ViewLevelConfiguration = forwardRef(
 
     useEffect(() => {
       if (referenceLayer.identifier && !referenceLayerData) {
-        const url = URLS.ReferenceLayer.Detail(referenceLayer)
+        const url = URLS.ReferenceLayer.VIEW.Detail(referenceLayer)
         dispatch(
           Actions.ReferenceLayerData.fetch(
             dispatch, referenceLayer.identifier, url
@@ -144,7 +144,7 @@ export const ViewLevelConfiguration = forwardRef(
                           const identifier = selectedData[0].identifier
                           selected = {
                             identifier: identifier,
-                            detail_url: URLS.ReferenceLayer.Detail(selectedData[0]),
+                            detail_url: URLS.ReferenceLayer.VIEW.Detail(selectedData[0]),
                             is_local: selectedData[0].is_local
                           }
                         }

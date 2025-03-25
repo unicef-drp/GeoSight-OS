@@ -236,7 +236,7 @@ export default function Map() {
     setError('')
     if (reference) {
       if (!reference.data) {
-        const url = URLS.ReferenceLayer.Detail(reference)
+        const url = URLS.ReferenceLayer.VIEW.Detail(reference)
         axiosGet(url).then(response => {
           const data = response.data
           reference.data = data.dataset_levels.map(level => {
