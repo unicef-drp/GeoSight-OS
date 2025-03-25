@@ -77,7 +77,7 @@ export default function DatasetViewSelector(
   // @ts-ignore
   const isLocalEnabled = localReferenceDatasetEnabled
   const [sourceType, setSourceType] = useState(isLocalEnabled ? VALUE_LOCAL : VALUE_REMOTE)
-  const url = dataset ? URLS.ReferenceLayer.VIEW.List('' + dataset, sourceType === VALUE_LOCAL) : null
+  const url = URLS.ReferenceLayer.VIEW.List('' + dataset, sourceType === VALUE_LOCAL)
 
   /** Get the datasets */
   useEffect(
