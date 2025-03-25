@@ -46,6 +46,7 @@ const columns = [
   },
   {
     field: 'ext_codes', headerName: 'Codes', flex: 1,
+    sortable: false,
     renderCell: (params: { row: DatasetCountry }) => {
       return Object.entries(params.row.ext_codes).map(([key, value]) => {
         return <span
