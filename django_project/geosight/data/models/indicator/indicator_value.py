@@ -233,8 +233,8 @@ class IndicatorValue(models.Model):
                 self.save()
 
     @staticmethod
-    def assign_flat_table(step=10000000):
-        """Assign flat table."""
+    def get_raw_query():
+        """Return raw query."""
         entity_query = """
             UPDATE geosight_data_indicatorvalue AS value
             SET entity_id = entity.id,
@@ -268,7 +268,7 @@ class IndicatorValue(models.Model):
             WHERE
                 value.geom_id = entity.geom_id
                 AND
-                value.id BETWEEN %(start_id)s AND %(end_id)s;
+                value.id BETWEEN %(start_id)s AND %(end_id)s
         """
         indicator_query = """
             UPDATE geosight_data_indicatorvalue AS value
@@ -278,7 +278,7 @@ class IndicatorValue(models.Model):
             FROM geosight_data_indicator AS indicator
             WHERE
                 value.indicator_id = indicator.id
-                AND value.id BETWEEN %(start_id)s AND %(end_id)s;
+                AND value.id BETWEEN %(start_id)s AND %(end_id)s
         """
         extra_value_query = """
             UPDATE geosight_data_indicatorvalue value
@@ -293,8 +293,16 @@ class IndicatorValue(models.Model):
             WHERE
                 value.id = subquery.indicator_value_id
                 AND value.extra_value IS NULL
-                AND value.id BETWEEN %(start_id)s AND %(end_id)s;
+                AND value.id BETWEEN %(start_id)s AND %(end_id)s
         """
+        return entity_query, indicator_query, extra_value_query
+
+    @staticmethod
+    def assign_flat_table(step=10000000):
+        """Assign flat table."""
+        entity_query, indicator_query, extra_value_query = (
+            IndicatorValue.get_raw_query()
+        )
         id__max = IndicatorValue.objects.aggregate(
             Max('id')
         )['id__max']
@@ -312,6 +320,32 @@ class IndicatorValue(models.Model):
                 cursor.execute(entity_query, params)
                 cursor.execute(indicator_query, params)
                 connection.commit()
+
+    @staticmethod
+    def assign_flat_table_selected(ids, step=100000):
+        """Assign flat table for selected ids."""
+        entity_query, indicator_query, extra_value_query = (
+            IndicatorValue.get_raw_query()
+        )
+        progress = 0
+        progress += 1
+        with connection.cursor() as cursor:
+            start_id = min(ids)
+            end_id = max(ids)
+            entity_query += (
+                f' AND value.id IN ({", ".join(map(str, ids))})'
+            )
+            indicator_query += (
+                f' AND value.id IN ({", ".join(map(str, ids))})'
+            )
+            extra_value_query += (
+                f' AND value.id IN ({", ".join(map(str, ids))})'
+            )
+            params = {'start_id': start_id, 'end_id': end_id}
+            cursor.execute(extra_value_query, params)
+            cursor.execute(entity_query, params)
+            cursor.execute(indicator_query, params)
+            connection.commit()
 
     def add_extra_value(self, name, value):
         """Add extra value."""
