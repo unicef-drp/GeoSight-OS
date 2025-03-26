@@ -31,8 +31,8 @@ import Grid from '@mui/material/Grid';
 import Aggregation from "./Extensions/QueryForm/Aggregation";
 
 const aggregationValueType = {
-  BY_INDICATOR: 'Use aggregation from indicator',
-  DEFAULT: 'Default Aggregations'
+  BY_INDICATOR: 'Use default aggregation from indicator',
+  DEFAULT: 'Use custom aggregations'
 }
 
 /**

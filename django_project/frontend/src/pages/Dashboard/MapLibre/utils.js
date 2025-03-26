@@ -16,8 +16,6 @@
 import maplibregl from 'maplibre-gl';
 import { FILL_LAYER_ID_KEY } from "./Layers/ReferenceLayer";
 
-const NON_ONCLICK_LAYER_IDS = ['indicator-label']
-
 /**
  * Return if layer exist or not
  * @param {Object} map Map
@@ -102,6 +100,14 @@ const updateCursorOnLeave = (map) => {
     map.getCanvas().style.cursor = '';
   }
 }
+/** Return the selectable layer that can be selected or clicked
+ * @param {maplibregl.Map} map Map
+ * **/
+export const selectableLayers = (map) => {
+  return map.getStyle().layers.filter(
+    layer => !layer.id.includes('-label')
+  )
+}
 /***
  * Add popup when click
  */
@@ -134,7 +140,7 @@ export const addPopup = (map, id, popupRenderFn) => {
       // Return clicked features
       // Check the most top
       // show the popup
-      const ids = map.getStyle().layers.filter(layer => !NON_ONCLICK_LAYER_IDS.includes(layer.id)).map(layer => layer.id)
+      const ids = selectableLayers(map).map(layer => layer.id)
       var pointFeatures = map.queryRenderedFeatures(e.point);
       pointFeatures.map(feature => {
         const idx = ids.indexOf(feature.layer.id)

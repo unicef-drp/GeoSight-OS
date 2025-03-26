@@ -70,6 +70,14 @@ class NullCountryFilter(admin.SimpleListFilter):
         return queryset
 
 
+@admin.action(description='Assign flat table selected')
+def assign_flat_table_selected(modeladmin, request, queryset):
+    """Assign flat table."""
+    IndicatorValue.assign_flat_table_selected(
+        list(queryset.values_list('id', flat=True))
+    )
+
+
 @admin.action(description='Assign flat table')
 def assign_flat_table(modeladmin, request, queryset):
     """Assign flat table."""
@@ -85,7 +93,7 @@ class IndicatorValueAdmin(admin.ModelAdmin):
     )
     list_filter = (NullEntityFilter, NullCountryFilter, 'date')
     search_fields = ('indicator__name', 'geom_id')
-    actions = (assign_flat_table,)
+    actions = (assign_flat_table, assign_flat_table_selected)
     raw_id_fields = ('country', 'entity')
 
     def entity_geom_id(self, obj: IndicatorValue):
