@@ -78,11 +78,9 @@ export class MaplibreDrawingTools {
       }
     });
     map.on('draw.delete', () => {
-      console.log('draw.delete')
       that.setDrawState()
     });
     map.on('draw.update', () => {
-      console.log('draw.update')
       that.setDrawState()
 
     });
@@ -90,7 +88,6 @@ export class MaplibreDrawingTools {
       if (!that.draw) {
         return
       }
-      console.log('draw.update')
       that.setDrawState()
       that.stopDrawing()
     });
