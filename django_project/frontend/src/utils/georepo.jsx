@@ -46,7 +46,16 @@ export const GeorepoUrls = {
   },
   ViewDetail: function (identifier) {
     return preferences.georepo_api.view_detail.replace('<identifier>', identifier)
-  }
+  },
+  ViewList: function (dataset) {
+    return GeorepoUrls.WithDomain(`/search/dataset/${dataset}/view/list/`, true)
+  },
+  Centroid: function (identifier) {
+    return GeorepoUrls.WithDomain(`/search/view/${identifier}/centroid/`, true)
+  },
+  CountryList: function (dataset) {
+    return GeorepoUrls.WithDomain(`/search/dataset/${dataset}/entity/level/0/`, true)
+  },
 }
 
 /**
