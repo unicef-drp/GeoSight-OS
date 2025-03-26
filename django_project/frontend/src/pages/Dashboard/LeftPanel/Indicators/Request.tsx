@@ -22,6 +22,7 @@ interface Parameter {
   date__lte: string;
   date__gte?: string;
   country_geom_id__in?: string[];
+  admin_level: number;
   version?: string;
 }
 
@@ -30,6 +31,7 @@ interface Props {
   indicator: Indicator;
   datasetIdentifier: string;
   dashboardDatasetIdentifier: string;
+  admin_level: number;
 
   onLoading: (id: number, metadataId: string, datasetIdentifier: string, totalPage: number) => void;
   onProgress: (id: number, metadataId: string, progress: any) => void;
@@ -42,6 +44,7 @@ export const IndicatorRequest = memo(
     {
       indicator,
       datasetIdentifier,
+      admin_level,
       onLoading,
       onResponse,
       onProgress,
@@ -82,6 +85,7 @@ export const IndicatorRequest = memo(
     const params: Parameter = {
       date__lte: selectedGlobalTime.max ? selectedGlobalTime.max.split('T')[0] : null,
       version: version,
+      admin_level: admin_level,
       country_geom_id__in: referenceLayerData?.data?.countries?.map((country: CountryDatasetView) => country.ucode)
     }
     if (selectedGlobalTime.min) {

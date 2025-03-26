@@ -42,6 +42,7 @@ export default function Indicators() {
   } = useSelector(state => state.dashboard.data);
   const currentIndicatorLayer = useSelector(state => state.selectedIndicatorLayer);
   const currentIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer);
+  const { level } = useSelector(state => state.selectedAdminLevel);
   const [indicatorsWithDataset, setIndicatorsWithDataset] = useState([]);
 
   /** Update the indicators with dataset. */
@@ -160,6 +161,7 @@ export default function Indicators() {
     },
     [referenceLayer.identifier]
   )
+
   return <>
     {
       indicatorsWithDataset.map(indicatorDataset => {
@@ -172,6 +174,7 @@ export default function Indicators() {
           return <IndicatorRequest
             key={identifier}
             indicator={indicator}
+            admin_level={level}
             datasetIdentifier={dataset}
             onLoading={onLoading}
             onResponse={onResponse}
