@@ -50,7 +50,8 @@ import { dictDeepCopy, numberWithCommas } from "../../utils/main";
 
 import {
   addClickEvent,
-  removeClickEvent
+  removeClickEvent,
+  selectableLayers
 } from "../../pages/Dashboard/MapLibre/utils";
 import { getFeatureByConceptUUID } from "../../utils/referenceLayer";
 import { fetchArcGISValues } from "./FetchArcGISValues";
@@ -196,12 +197,14 @@ export const ZonalAnalysisTool = forwardRef((
           /** Click map */
           const onClick = (e: any) => {
             const style = map.getStyle()
-            const visibleLayerIds = map.getStyle().layers.filter(
+            const visibleLayerIds = selectableLayers(map).filter(
               (layer: maplibregl.LayerSpecification) => {
                 // @ts-ignore
                 const source = style.sources[layer.source]
-                return ['vector', 'geojson'].includes(source.type) && ![
-                  'indicator-label', 'DRAWING_BUFFER_ID'
+                return [
+                  'vector', 'geojson'
+                ].includes(source.type) && ![
+                  'DRAWING_BUFFER_ID'
                 ].includes(layer.id)
               }
             ).map(layer => layer.id)

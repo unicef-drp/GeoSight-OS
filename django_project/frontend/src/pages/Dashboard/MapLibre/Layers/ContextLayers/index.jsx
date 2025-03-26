@@ -166,7 +166,7 @@ export function renderLabel(id, contextLayerData, contextLayer, map) {
       labels.map((label, idx) => {
         textField.push(['get', label.name])
         textField.push({})
-        if (idx < labels - 1) {
+        if (idx < labels.length - 1) {
           textField.push('\n')
           textField.push({})
         }
