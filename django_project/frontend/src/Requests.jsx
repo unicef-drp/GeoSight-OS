@@ -148,7 +148,7 @@ export const fetchPaginationAsync = async function (url, onProgress) {
       data = data.concat(response.results)
     }
     if (response.next) {
-      await _fetchJson(response.next)
+      await _fetchJson(decodeURIComponent(response.next))
     }
   }
   await _fetchJson(url)
