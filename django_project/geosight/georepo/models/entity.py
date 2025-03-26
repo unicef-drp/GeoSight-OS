@@ -348,6 +348,7 @@ class Entity(models.Model):
                 end_id = i + step
                 params = {'start_id': start_id, 'end_id': end_id}
                 cursor.execute(query, params)
+                connection.commit()
 
     def update_indicator_value_data(self):
         """Update entity data in indicator value."""

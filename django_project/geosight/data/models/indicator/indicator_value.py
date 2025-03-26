@@ -311,6 +311,7 @@ class IndicatorValue(models.Model):
                 cursor.execute(extra_value_query, params)
                 cursor.execute(entity_query, params)
                 cursor.execute(indicator_query, params)
+                connection.commit()
 
     def add_extra_value(self, name, value):
         """Add extra value."""
