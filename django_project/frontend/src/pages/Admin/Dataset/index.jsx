@@ -27,8 +27,8 @@ import { NotificationStatus } from "../../../components/Notification";
 import { pageNames } from "../index";
 import { DataBrowserActiveIcon } from "../../../components/Icons";
 import {
-  DatasetFilterSelector
-} from "../../../components/ResourceSelector/DatasetViewSelector";
+  DatasetCountryFilterSelector
+} from "../../../components/ResourceSelector/DatasetCountrySelector";
 import {
   IndicatorFilterSelector
 } from "../../../components/ResourceSelector/IndicatorSelector";
@@ -62,7 +62,7 @@ export default function DatasetAdmin() {
   const [filters, setFilters] = useState({
     groupAdminLevel: defaultFilters.groupAdminLevel ? defaultFilters.groupAdminLevel === 'true' : true,
     indicators: defaultFilters.indicators ? splitParams(defaultFilters.indicators) : [],
-    datasets: defaultFilters.datasets ? splitParams(defaultFilters.datasets, false) : [],
+    countries: defaultFilters.countries ? splitParams(defaultFilters.countries, false) : [],
     levels: defaultFilters.levels ? splitParams(defaultFilters.levels) : [],
     detail: true,
   })
@@ -219,10 +219,10 @@ export default function DatasetAdmin() {
     } else {
       parameters['group_admin_level'] = false
     }
-    if (filters.datasets.length) {
-      parameters['reference_layer_id__in'] = filters.datasets.join(',')
+    if (filters.countries.length) {
+      parameters['country_geom_id__in'] = filters.countries.join(',')
     } else {
-      parameters['reference_layer_id__in'] = null
+      parameters['country_geom_id__in'] = null
     }
     if (filters.levels.length) {
       parameters['admin_level__in'] = filters.levels.join(',')
@@ -289,13 +289,13 @@ export default function DatasetAdmin() {
           })}
           filter={quickData.indicators}
         />
-        <DatasetFilterSelector
-          data={filters.datasets}
+        <DatasetCountryFilterSelector
+          data={filters.countries}
           setData={newFilter => setFilters({
             ...filters,
-            datasets: newFilter
+            countries: newFilter
           })}
-          filter={quickData.datasets}
+          filter={quickData.countries}
         />
         <MultipleSelectWithSearch
           placeholder={'Filter by Level(s)'}
