@@ -76,6 +76,11 @@ export default function DatasetViewSelector(
   // @ts-ignore
   const isLocalEnabled = localReferenceDatasetEnabled
   const [sourceType, setSourceType] = useState(isLocalEnabled ? VALUE_LOCAL : VALUE_REMOTE)
+
+  // TODO:
+  //  This makes the E2E tests fails, need to check it
+  // const url = URLS.ReferenceLayer.VIEW.List('' + dataset, sourceType === VALUE_LOCAL)
+
   const url = sourceType === VALUE_REMOTE ? GeorepoUrls.WithDomain(`/search/dataset/${dataset}/view/list/`, true) : '/api/v1/reference-datasets/?page=1&page_size=25'
 
   /** Get the datasets */
