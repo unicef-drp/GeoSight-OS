@@ -16,9 +16,7 @@ __copyright__ = ('Copyright 2025, Unicef')
 
 import json
 import os
-from core.celery import app
 
-from cloud_native_gis.models.layer import LayerType as CloudNativeLayerType
 from django.conf import settings
 from django.db.utils import ProgrammingError
 from rest_framework.response import Response
@@ -26,6 +24,7 @@ from shapely import simplify
 from shapely.geometry import shape
 from shapely.ops import unary_union
 
+from core.celery import app
 from core.utils import decompress_text
 from geosight.data.models.context_layer import (
     ContextLayer,
@@ -89,7 +88,7 @@ def run_zonal_analysis(zonal_analysis_uuid):
                 )
                 return
 
-            if cloud_layer.layer_type == CloudNativeLayerType.VECTOR_TILE:
+            if cloud_layer.layer_type == 'Vector Tile':
                 try:
                     result = run_zonal_analysis_vector_layer(
                         geometry=geometries_simplified,
