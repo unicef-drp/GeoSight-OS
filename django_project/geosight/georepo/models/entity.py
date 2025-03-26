@@ -342,13 +342,12 @@ class Entity(models.Model):
         id__min = Entity.objects.aggregate(
             Min('id')
         )['id__min']
-        with connection.cursor() as cursor:
-            for i in range(id__min, id__max + 1, step):
+        for i in range(id__min, id__max + 1, step):
+            with connection.cursor() as cursor:
                 start_id = i
                 end_id = i + step
                 params = {'start_id': start_id, 'end_id': end_id}
                 cursor.execute(query, params)
-                connection.commit()
 
     def update_indicator_value_data(self):
         """Update entity data in indicator value."""

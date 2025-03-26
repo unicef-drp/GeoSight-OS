@@ -311,15 +311,14 @@ class IndicatorValue(models.Model):
         )['id__min']
         progress = 0
         progress += 1
-        with connection.cursor() as cursor:
-            for i in range(id__min, id__max + 1, step):
+        for i in range(id__min, id__max + 1, step):
+            with connection.cursor() as cursor:
                 start_id = i
                 end_id = i + step - 1
                 params = {'start_id': start_id, 'end_id': end_id}
                 cursor.execute(extra_value_query, params)
                 cursor.execute(entity_query, params)
                 cursor.execute(indicator_query, params)
-                connection.commit()
 
     @staticmethod
     def assign_flat_table_selected(ids, step=100000):
