@@ -33,12 +33,18 @@ from geosight.georepo.request import (
 from geosight.georepo.term import admin_level_country
 
 
-class CountryManager(models.Manager):
-    """Country manager for Entity."""
+class Manager(models.Manager):
+    """Manager for Entity."""
 
-    def get_queryset(self):
+    def countries(self):
         """Return the queryset."""
         return super().get_queryset().filter(admin_level=admin_level_country)
+
+    def by_countries(self, countries):
+        """Return the queryset by countries."""
+        return super().get_queryset().filter(
+            Q(country__in=countries) | Q(id__in=countries)
+        )
 
 
 class Entity(models.Model):
@@ -110,8 +116,7 @@ class Entity(models.Model):
     )
 
     # Country manager
-    objects = models.Manager()
-    countries = CountryManager()
+    objects = Manager()
 
     class Meta:  # noqa: D106
         verbose_name_plural = "entities"

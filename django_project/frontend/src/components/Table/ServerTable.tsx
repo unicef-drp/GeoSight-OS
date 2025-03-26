@@ -161,6 +161,11 @@ const ServerTable = forwardRef(
       updateData(
         fn: (data: any[]) => any[]) {
         setData([...fn(data)])
+      },
+      /** Emptying data from outside **/
+      loading() {
+        setData(null)
+        setError(null)
       }
     }));
 

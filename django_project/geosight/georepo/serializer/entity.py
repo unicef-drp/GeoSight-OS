@@ -107,6 +107,8 @@ class ApiEntitySerializer(DynamicModelSerializer):
     def get_parents(self, obj: Entity):
         """Return ucode."""
         output = []
+        if not obj.parents:
+            return output
         for idx, parent in enumerate(obj.parents):
             level = self.entity_level(obj, idx)
             output.append(
@@ -130,11 +132,15 @@ class ApiEntitySerializer(DynamicModelSerializer):
 
     def get_centroid(self, obj: Entity):
         """Return bbox."""
-        return obj.geometry.centroid.wkt
+        if obj.geometry:
+            return obj.geometry.centroid.wkt
+        return None
 
     def get_bbox(self, obj: Entity):
         """Return bbox."""
-        return obj.geometry.extent
+        if obj.geometry:
+            return obj.geometry.extent
+        return None
 
     def get_ext_codes(self, obj: Entity):
         """Return ext_codes."""

@@ -39,7 +39,7 @@ class ReferenceDatasetLevelSerializer(serializers.ModelSerializer):
     def get_url(self, obj: ReferenceDatasetLevel):
         """Return value."""
         return reverse(
-            'reference-datasets-entity-api-list',
+            'reference-datasets-detail-entity-api-list',
             kwargs={'identifier': obj.reference_layer.identifier}
         ) + f'?admin_level={obj.level}'
 

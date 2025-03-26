@@ -28,5 +28,6 @@ export interface DatasetView {
   bbox: number[],
   tags: string[],
   countries: CountryDatasetView[];
-  identifier?: string,
+  identifier?: string;
+  is_local?: boolean;
 }

@@ -16,15 +16,20 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from rest_framework.routers import DefaultRouter
 
-from .v1.entities import EntityViewSet
+from .v1.entities import EntityViewSet, EntityReferenceDatasetViewSet
 from .v1.reference_dataset import ReferenceDatasetViewSet
 
 detail_api = []
 
 router = DefaultRouter()
 router.register(
-    r'reference-datasets/(?P<identifier>[^/]+)/entity',
+    r'reference-datasets/entity',
     EntityViewSet, basename='reference-datasets-entity-api'
+)
+router.register(
+    r'reference-datasets/(?P<identifier>[^/]+)/entity',
+    EntityReferenceDatasetViewSet,
+    basename='reference-datasets-detail-entity-api'
 )
 router.register(
     r'reference-datasets', ReferenceDatasetViewSet,

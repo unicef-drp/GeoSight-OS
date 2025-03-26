@@ -81,6 +81,7 @@ export function ModalInputSelector(
 
   /** Search name value changed **/
   useEffect(() => {
+    tableRef?.current?.loading(null)
     searchValueUpdate(search)
   }, [search]);
 
