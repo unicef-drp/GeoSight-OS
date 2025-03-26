@@ -24,8 +24,9 @@ import {
 } from "../../../../../components/Input/SelectWithSearch";
 import { GeorepoUrls } from "../../../../../utils/georepo";
 import { FormControlLabel, FormGroup } from "@mui/material";
-import { InternalReferenceDatasets, URLS } from "../../../../../utils/urls";
+import { InternalReferenceDatasets } from "../../../../../utils/urls";
 import { Actions } from "../../../../../store/dashboard";
+import { RefererenceLayerUrls } from "../../../../../utils/referenceLayer";
 import DatasetViewSelector
   from "../../../../../components/ResourceSelector/DatasetViewSelector";
 
@@ -83,7 +84,7 @@ export const ViewLevelConfiguration = forwardRef(
 
     useEffect(() => {
       if (referenceLayer.identifier && !referenceLayerData) {
-        const url = URLS.ReferenceLayer.VIEW.Detail(referenceLayer)
+        const url = RefererenceLayerUrls.ViewDetail(referenceLayer)
         dispatch(
           Actions.ReferenceLayerData.fetch(
             dispatch, referenceLayer.identifier, url
