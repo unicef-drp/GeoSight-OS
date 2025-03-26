@@ -38,7 +38,7 @@ export const URLS = {
     VIEW: {
       List: function (dataset: string, isLocal: boolean) {
         if (isLocal) {
-          return InternalReferenceDatasets.list()
+          return InternalReferenceDatasets.list() + '?page=1&page_size=25'
         }
         return GeorepoUrls.ViewList(dataset)
       },

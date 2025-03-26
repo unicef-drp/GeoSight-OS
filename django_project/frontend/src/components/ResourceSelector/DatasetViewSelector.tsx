@@ -14,7 +14,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { fetchReferenceLayerList, GeorepoUrls } from "../../utils/georepo";
+import { fetchReferenceLayerList } from "../../utils/georepo";
 import { ModalInputSelector } from "./ModalInputSelector";
 import { ModalFilterSelectorProps, ModalInputSelectorProps } from "./types";
 import { DatasetView } from "../../types/DatasetView";
@@ -25,6 +25,7 @@ import {
   RadioGroup
 } from "@mui/material";
 import { SelectWithList } from "../Input/SelectWithList";
+import { URLS } from "../../utils/urls";
 
 
 const VALUE_REMOTE = 'Remote'
@@ -76,7 +77,8 @@ export default function DatasetViewSelector(
   // @ts-ignore
   const isLocalEnabled = localReferenceDatasetEnabled
   const [sourceType, setSourceType] = useState(isLocalEnabled ? VALUE_LOCAL : VALUE_REMOTE)
-  const url = sourceType === VALUE_REMOTE ? GeorepoUrls.WithDomain(`/search/dataset/${dataset}/view/list/`, true) : '/api/v1/reference-datasets/?page=1&page_size=25'
+  const url = URLS.ReferenceLayer.VIEW.List('' + dataset, sourceType === VALUE_LOCAL)
+  console.log(url)
 
   /** Get the datasets */
   useEffect(
