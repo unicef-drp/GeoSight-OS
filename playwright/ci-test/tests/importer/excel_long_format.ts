@@ -7,6 +7,8 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 test.describe('Test excel long format', () => {
 
   test('Test Indicator Value: Use default aggregation from indicator', async ({ page }) => {
+    const consoles = []
+    page.on('console', msg => consoles.push(msg.text()));
     const indicatorName = 'Long format use default aggregation from indicator'
     // Create indicator
     const editUrl = await createIndicator(page, indicatorName)
@@ -52,6 +54,9 @@ test.describe('Test excel long format', () => {
 
     await page.goto('/admin/dataset/?indicators=' + id)
     await delay(1000)
+    const html = await page.content();
+    console.log(html);
+    console.log(consoles);
     await expect(page.locator('.AdminContentHeader-Left')).toContainText('Data Browser')
     await expect(page.locator('.MuiTablePagination-displayedRows')).toContainText('1–25 of 48')
     await page.locator('.FilterControl').nth(3).click();
