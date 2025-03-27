@@ -8,8 +8,6 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 test.describe('Test excel long format', () => {
 
   test('Test Indicator Value: Use default aggregation from indicator', async ({ page }) => {
-    const consoles = []
-    page.on('console', msg => consoles.push(msg.text()));
     const indicatorName = 'Long format use default aggregation from indicator'
     // Create indicator
     const editUrl = await createIndicator(page, indicatorName)
@@ -53,13 +51,7 @@ test.describe('Test excel long format', () => {
     await page.getByRole('button', { name: 'Save' }).click();
     await expect(page.locator('.MuiDataGrid-cell svg[data-testid="CheckIcon"]').nth(1)).toBeVisible();
 
-    const url = '/admin/dataset/?indicators=' + id
-    await page.goto(url)
-    await delay(1000)
-    const html = await page.content();
-    fs.writeFileSync('playwright-results/' + id + '.html', html, 'utf8');
-    fs.writeFileSync('playwright-results/' + id + '.consoles', consoles.join('\n'), 'utf8');
-
+    await page.goto('/admin/dataset/?indicators=' + id)
     await expect(page.locator('.AdminContentHeader-Left')).toContainText('Data Browser')
     await expect(page.locator('.MuiTablePagination-displayedRows')).toContainText('1–25 of 48')
     await page.locator('.FilterControl').nth(3).click();
@@ -96,7 +88,6 @@ test.describe('Test excel long format', () => {
     await page.locator(`[data-id="${id}"]`).click();
 
     // Aggregations
-    await delay(1000)
     await page.getByText('Aggregations', { exact: true }).click();
     await page.getByLabel('Aggregate up to level').click();
     await page.getByText('Use custom aggregations').click();
@@ -104,7 +95,6 @@ test.describe('Test excel long format', () => {
     await page.getByRole('option', { name: 'SUM' }).click();
 
     // Select view
-    await delay(1000)
     await page.getByText('Reference Layer & Time').click();
     await page.getByPlaceholder('Select View').click();
     await page.getByRole('cell', { name: 'Kenya', exact: true }).click();
@@ -122,7 +112,6 @@ test.describe('Test excel long format', () => {
     await expect(page.locator('.MuiDataGrid-cell svg[data-testid="CheckIcon"]').nth(1)).toBeVisible();
 
     await page.goto('/admin/dataset/?indicators=' + id)
-    await delay(1000)
     await expect(page.locator('.AdminContentHeader-Left')).toContainText('Data Browser')
     await expect(page.locator('.MuiTablePagination-displayedRows')).toContainText('1–25 of 48')
     await page.locator('.FilterControl').nth(3).click();
