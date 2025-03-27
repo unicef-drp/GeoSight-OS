@@ -47,7 +47,6 @@ test.describe('Test excel long format', () => {
     await expect(page.locator('.MuiDataGrid-cell svg[data-testid="CheckIcon"]').nth(1)).toBeVisible();
 
     await page.goto('/admin/dataset/?indicators=' + id)
-    await delay(1000)
     await expect(page.locator('.AdminContentHeader-Left')).toContainText('Data Browser')
     await expect(page.locator('.MuiTablePagination-displayedRows')).toContainText('1–25 of 47')
     await page.locator('.FilterControl').nth(3).click();
@@ -57,7 +56,6 @@ test.describe('Test excel long format', () => {
     await expect(page.locator('.ResourceRow').nth(0).locator('.MuiInputBase-input').nth(0)).toHaveValue('5')
 
     await page.goto('/admin/dataset/?indicators=' + id)
-    await delay(1000)
     await expect(page.locator('.AdminContentHeader-Left')).toContainText('Data Browser')
     await expect(page.locator('.MuiTablePagination-displayedRows')).toContainText('1–25 of 47')
     await page.locator('.FilterControl').nth(3).click();
@@ -116,7 +114,6 @@ test.describe('Test excel long format', () => {
     await expect(page.locator('.MuiDataGrid-cell svg[data-testid="CheckIcon"]').nth(1)).toBeVisible();
 
     await page.goto('/admin/dataset/?indicators=' + id)
-    await delay(1000)
     await expect(page.locator('.AdminContentHeader-Left')).toContainText('Data Browser')
     await expect(page.locator('.MuiTablePagination-displayedRows')).toContainText('1–25 of 47')
     await page.locator('.FilterControl').nth(3).click();
@@ -126,7 +123,6 @@ test.describe('Test excel long format', () => {
     await expect(page.locator('.ResourceRow').nth(0).locator('.MuiInputBase-input').nth(0)).toHaveValue('1')
 
     await page.goto('/admin/dataset/?indicators=' + id)
-    await delay(1000)
     await expect(page.locator('.AdminContentHeader-Left')).toContainText('Data Browser')
     await expect(page.locator('.MuiTablePagination-displayedRows')).toContainText('1–25 of 47')
     await page.locator('.FilterControl').nth(3).click();
@@ -163,7 +159,6 @@ test.describe('Test excel long format', () => {
     await page.locator(`[data-id="${id}"]`).click();
 
     // Aggregations
-    await delay(1000)
     await page.getByText('Aggregations', { exact: true }).click();
     await page.getByLabel('Aggregate', { exact: true }).click();
     await page.getByText('Use custom aggregations').click();
@@ -171,7 +166,6 @@ test.describe('Test excel long format', () => {
     await page.getByRole('option', { name: 'SUM' }).click();
 
     // Select view
-    await delay(1000)
     await page.getByText('Reference Layer & Time').click();
     await page.getByPlaceholder('Select View').click();
     await page.getByRole('cell', { name: 'Kenya', exact: true }).click();
@@ -190,7 +184,6 @@ test.describe('Test excel long format', () => {
     await expect(page.locator('.MuiDataGrid-cell svg[data-testid="CheckIcon"]').nth(1)).toBeVisible();
 
     await page.goto('/admin/dataset/?indicators=' + id)
-    await delay(1000)
     await expect(page.locator('.AdminContentHeader-Left')).toContainText('Data Browser')
     await expect(page.locator('.MuiTablePagination-displayedRows')).toContainText('1–25 of 47')
     await page.locator('.FilterControl').nth(3).click();
@@ -200,7 +193,6 @@ test.describe('Test excel long format', () => {
     await expect(page.locator('.ResourceRow').nth(0).locator('.MuiInputBase-input').nth(0)).toHaveValue('5')
 
     await page.goto('/admin/dataset/?indicators=' + id)
-    await delay(1000)
     await expect(page.locator('.AdminContentHeader-Left')).toContainText('Data Browser')
     await expect(page.locator('.MuiTablePagination-displayedRows')).toContainText('1–25 of 47')
     await page.locator('.FilterControl').nth(3).click();
