@@ -11,9 +11,6 @@ test.describe('Create project from dataset', () => {
 
   // A use case tests scenarios
   test('Create project from dataset', async ({ page }) => {
-    // TODO:
-    //  We will fix after we update the country selection
-    return
     // --------------------------------------------------------------
     // CREATE PROJECT FROM DATASET
     // --------------------------------------------------------------

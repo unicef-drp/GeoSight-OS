@@ -37,6 +37,7 @@ import worker from "./Label/worker";
 import { renderChart, renderPin, resetCharts } from "./Chart";
 
 import './style.scss';
+import { IS_DEBUG } from "../../../../utils/logger";
 
 let lastConfig = {};
 let lastRequest = null;
@@ -377,6 +378,18 @@ export default function ReferenceLayerCentroid({ map }) {
           usedFilteredGeometries
         }, (features) => {
           if (currRequest === lastRequest) {
+            if (IS_DEBUG) {
+              features = features.sort(
+                (a, b) => {
+                  try {
+                    return a.properties.geometry_code.localeCompare(b.properties.geometry_code)
+                  } catch (err) {
+                    return false
+                  }
+
+                }
+              );
+            }
             renderLabel(map, features, labelConfig)
           }
         }
