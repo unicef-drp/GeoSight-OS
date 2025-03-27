@@ -79,7 +79,7 @@ try:
         except Exception as e:
             print(f'{e}')
             pass
-except Exception:
+except Exception as e:
     print(f'{e}')
     pass
 
