@@ -136,6 +136,7 @@ jobs:
           cd ../
           make devweb
           make wait-db
+          docker volume ls
           echo "Deleting frontend geosight_dev"
           docker exec geosight_dev rm -rf /home/web/django_project/frontend
           echo "Deleting frontend geosight_worker"
