@@ -26,7 +26,6 @@ services:
     image: ${APP_IMAGE}:dev
     container_name: "geosight_worker"
     volumes:
-      - static-data:/home/web/static
       - media-data:/home/web/media
       - ./docker/Dockerfile:/home/web/django_project/Dockerfile
       - ./docker/requirements.txt:/home/web/django_project/requirements.txt
@@ -71,7 +70,6 @@ services:
       - worker
       - celery_beat
     volumes:
-      - static-data:/home/web/static
       - media-data:/home/web/media
       - ./docker/Dockerfile:/home/web/django_project/Dockerfile
       - ./docker/requirements.txt:/home/web/django_project/requirements.txt
