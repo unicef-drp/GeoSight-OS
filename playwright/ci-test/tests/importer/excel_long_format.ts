@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import { createIndicator, deleteIndicator } from "../utils/indicator"
 import path from "path";
 
+const fs = require('fs');
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 test.describe('Test excel long format', () => {
@@ -52,11 +53,13 @@ test.describe('Test excel long format', () => {
     await page.getByRole('button', { name: 'Save' }).click();
     await expect(page.locator('.MuiDataGrid-cell svg[data-testid="CheckIcon"]').nth(1)).toBeVisible();
 
-    await page.goto('/admin/dataset/?indicators=' + id)
+    const url = '/admin/dataset/?indicators=' + id
+    await page.goto(url)
     await delay(1000)
     const html = await page.content();
-    console.log(html);
-    console.log(consoles);
+    fs.writeFileSync('playwright-results/' + id + '.html', html, 'utf8');
+    fs.writeFileSync('playwright-results/' + id + '.consoles', consoles.join('\n'), 'utf8');
+
     await expect(page.locator('.AdminContentHeader-Left')).toContainText('Data Browser')
     await expect(page.locator('.MuiTablePagination-displayedRows')).toContainText('1–25 of 48')
     await page.locator('.FilterControl').nth(3).click();
