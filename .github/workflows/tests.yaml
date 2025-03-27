@@ -137,11 +137,7 @@ jobs:
           make devweb
           make wait-db
           docker volume ls
-          echo "Deleting frontend geosight_dev"
           docker exec geosight_dev rm -rf /home/web/django_project/frontend
-          echo "Deleting frontend geosight_worker"
-          docker exec geosight_worker rm -rf /home/web/django_project/frontend
-          docker cp ./django_project geosight_dev:/home/web
           docker cp ./django_project geosight_worker:/home/web
           docker restart geosight_dev
           docker restart geosight_worker
