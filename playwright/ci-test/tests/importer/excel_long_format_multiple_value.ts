@@ -27,7 +27,7 @@ test.describe('Test excel long format', () => {
 
     // Select indicator
     await page.getByPlaceholder('Select Indicator').click();
-    await page.getByRole('cell', { name: indicatorName }).click();
+    await page.locator(`[data-id="${id}"]`).click();
 
     // Select view
     await page.getByText('Reference Layer & Time').click();
@@ -47,6 +47,8 @@ test.describe('Test excel long format', () => {
     await expect(page.locator('.MuiDataGrid-cell svg[data-testid="CheckIcon"]').nth(1)).toBeVisible();
 
     await page.goto('/admin/dataset/?indicators=' + id)
+    await delay(1000)
+    await expect(page.locator('.AdminContentHeader-Left')).toContainText('Data Browser')
     await expect(page.locator('.MuiTablePagination-displayedRows')).toContainText('1–25 of 47')
     await page.locator('.FilterControl').nth(3).click();
     await page.locator('#react-select-2-input').fill('KEN_0002_V1');
@@ -55,6 +57,8 @@ test.describe('Test excel long format', () => {
     await expect(page.locator('.ResourceRow').nth(0).locator('.MuiInputBase-input').nth(0)).toHaveValue('5')
 
     await page.goto('/admin/dataset/?indicators=' + id)
+    await delay(1000)
+    await expect(page.locator('.AdminContentHeader-Left')).toContainText('Data Browser')
     await expect(page.locator('.MuiTablePagination-displayedRows')).toContainText('1–25 of 47')
     await page.locator('.FilterControl').nth(3).click();
     await page.locator('#react-select-2-input').fill('KEN_0001_V1');
@@ -87,7 +91,7 @@ test.describe('Test excel long format', () => {
 
     // Select indicator
     await page.getByPlaceholder('Select Indicator').click();
-    await page.getByRole('cell', { name: indicatorName }).click();
+    await page.locator(`[data-id="${id}"]`).click();
 
     // Select view
     await page.getByText('Reference Layer & Time').click();
@@ -112,6 +116,8 @@ test.describe('Test excel long format', () => {
     await expect(page.locator('.MuiDataGrid-cell svg[data-testid="CheckIcon"]').nth(1)).toBeVisible();
 
     await page.goto('/admin/dataset/?indicators=' + id)
+    await delay(1000)
+    await expect(page.locator('.AdminContentHeader-Left')).toContainText('Data Browser')
     await expect(page.locator('.MuiTablePagination-displayedRows')).toContainText('1–25 of 47')
     await page.locator('.FilterControl').nth(3).click();
     await page.locator('#react-select-2-input').fill('KEN_0002_V1');
@@ -120,6 +126,8 @@ test.describe('Test excel long format', () => {
     await expect(page.locator('.ResourceRow').nth(0).locator('.MuiInputBase-input').nth(0)).toHaveValue('1')
 
     await page.goto('/admin/dataset/?indicators=' + id)
+    await delay(1000)
+    await expect(page.locator('.AdminContentHeader-Left')).toContainText('Data Browser')
     await expect(page.locator('.MuiTablePagination-displayedRows')).toContainText('1–25 of 47')
     await page.locator('.FilterControl').nth(3).click();
     await page.locator('#react-select-2-input').fill('KEN_0001_V1');
@@ -152,7 +160,7 @@ test.describe('Test excel long format', () => {
 
     // Select indicator
     await page.getByPlaceholder('Select Indicator').click();
-    await page.getByRole('cell', { name: indicatorName }).click();
+    await page.locator(`[data-id="${id}"]`).click();
 
     // Aggregations
     await delay(1000)
@@ -182,6 +190,8 @@ test.describe('Test excel long format', () => {
     await expect(page.locator('.MuiDataGrid-cell svg[data-testid="CheckIcon"]').nth(1)).toBeVisible();
 
     await page.goto('/admin/dataset/?indicators=' + id)
+    await delay(1000)
+    await expect(page.locator('.AdminContentHeader-Left')).toContainText('Data Browser')
     await expect(page.locator('.MuiTablePagination-displayedRows')).toContainText('1–25 of 47')
     await page.locator('.FilterControl').nth(3).click();
     await page.locator('#react-select-2-input').fill('KEN_0002_V1');
@@ -190,6 +200,8 @@ test.describe('Test excel long format', () => {
     await expect(page.locator('.ResourceRow').nth(0).locator('.MuiInputBase-input').nth(0)).toHaveValue('5')
 
     await page.goto('/admin/dataset/?indicators=' + id)
+    await delay(1000)
+    await expect(page.locator('.AdminContentHeader-Left')).toContainText('Data Browser')
     await expect(page.locator('.MuiTablePagination-displayedRows')).toContainText('1–25 of 47')
     await page.locator('.FilterControl').nth(3).click();
     await page.locator('#react-select-2-input').fill('KEN_0001_V1');

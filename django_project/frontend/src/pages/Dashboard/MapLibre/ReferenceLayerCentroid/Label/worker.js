@@ -43,7 +43,18 @@ export default () => {
         }
         features.push({
           "type": "Feature",
-          "properties": properties,
+          "properties": {
+            admin_level: properties.admin_level,
+            code: properties.code,
+            concept_uuid: properties.concept_uuid,
+            date: properties.date,
+            geometry_code: properties.geometry_code,
+            label: properties.label,
+            name: properties.name,
+            time: properties.time,
+            ucode: properties.ucode,
+            value: properties.value,
+          },
           "geometry": geometry.geometry
         })
       }
