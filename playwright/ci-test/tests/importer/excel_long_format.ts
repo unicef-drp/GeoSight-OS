@@ -27,7 +27,7 @@ test.describe('Test excel long format', () => {
 
     // Select indicator
     await page.getByPlaceholder('Select Indicator').click();
-    await page.getByRole('cell', { name: indicatorName }).click();
+    await page.locator(`[data-id="${id}"]`).click();
 
     // Select view
     await page.getByText('Reference Layer & Time').click();
@@ -83,7 +83,7 @@ test.describe('Test excel long format', () => {
 
     // Select indicator
     await page.getByPlaceholder('Select Indicator').click();
-    await page.getByRole('cell', { name: indicatorName }).click();
+    await page.locator(`[data-id="${id}"]`).click();
 
     // Aggregations
     await delay(1000)
