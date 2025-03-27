@@ -22,7 +22,7 @@ interface Parameter {
   date__lte: string;
   date__gte?: string;
   country_geom_id__in?: string[];
-  admin_level: number;
+  admin_level?: number | null | undefined;
   version?: string;
 }
 
@@ -31,7 +31,7 @@ interface Props {
   indicator: Indicator;
   datasetIdentifier: string;
   dashboardDatasetIdentifier: string;
-  admin_level: number;
+  admin_level?: number | null | undefined;
 
   onLoading: (id: number, metadataId: string, datasetIdentifier: string, totalPage: number) => void;
   onProgress: (id: number, metadataId: string, progress: any) => void;
@@ -106,7 +106,7 @@ export const IndicatorRequest = memo(
      * Change selected time when selected global time changed and correct.
      * */
     useEffect(() => {
-      if (!params.date__lte || !params.country_geom_id__in || !params.version) {
+      if (!params.date__lte || !params.country_geom_id__in || !params.version || [null, undefined].includes(params.admin_level)) {
         return
       }
       // @ts-ignore
