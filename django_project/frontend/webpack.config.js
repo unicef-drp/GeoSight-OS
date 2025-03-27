@@ -172,9 +172,7 @@ if (isDev) {
       minSize: 20000,
     },
   }
-  conf['cache'] = {
-    type: 'filesystem',
-  }
+  conf['cache'] = false
 }
 console.log(conf)
 module.exports = conf;

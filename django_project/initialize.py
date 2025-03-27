@@ -75,9 +75,12 @@ try:
                 os.unlink(file_path)
             elif os.path.isdir(file_path):
                 shutil.rmtree(file_path)
-        except Exception:
+            print(f'{file_path} deleted')
+        except Exception as e:
+            print(f'{e}')
             pass
-except Exception:
+except Exception as e:
+    print(f'{e}')
     pass
 
 call_command('collectstatic', '--noinput', verbosity=0)
