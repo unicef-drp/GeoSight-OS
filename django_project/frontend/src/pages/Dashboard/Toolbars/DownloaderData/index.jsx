@@ -35,7 +35,6 @@ import {
   fetchFeatureList,
   fetchGeojson
 } from "../../../../utils/georepo";
-import { getIndicatorValueByGeometry } from "../../../../utils/indicatorData";
 import {
   Notification,
   NotificationStatus
@@ -52,6 +51,7 @@ import {
   fetchDynamicLayerData
 } from "../../../../utils/indicatorLayer";
 import { getRelatedTableData } from "../../../../utils/relatedTable";
+import { Indicator } from "../../../../class/Indicator";
 
 export const GeographyFilter = {
   All: 'All Geographies',
@@ -244,240 +244,243 @@ export default function DownloaderData() {
       }
     })
   }
+  const indicatorLayerData = async (
+    timeType, indicator
+  ) => {
+    const output = []
+    if (state.time === TimeType.All) {
+      await fetchingData(
+        `/api/v1/data-browser/`,
+        {
+          indicator_id: indicator.id,
+          country_geom_id__in: countries
+        }, {}, (response, error) => {
+          if (!error) {
+            response.map(row => {
+              row.indicator = indicator
+              output.push(row)
+            })
+          }
+        }
+      )
+    } else {
+      const response = await (new Indicator(indicator)).valueLatest(
+        {
+          date__lte: selectedGlobalTime.max ? selectedGlobalTime.max.split('T')[0] : null,
+          date__gte: selectedGlobalTime.min.split('T')[0],
+          admin_level__in: state.levels.map(level => level).join(','),
+          country_geom_id__in: countries
+        }
+      )
+      response.map(row => {
+        row.indicator = indicator
+        output.push(row)
+      })
+    }
+    return output
+  }
+  const dynamicLayerData = async (
+    timeType, indicatorLayer
+  ) => {
+    const dynamicIndicatorsData = {}
+    const dynamicLayerIndicators = dynamicLayerIndicatorList(indicatorLayer, indicators)
+    for (let j = 0; j < dynamicLayerIndicators.length; j++) {
+      const indicator = dynamicLayerIndicators[j]
+      dynamicIndicatorsData[indicator.id] = await indicatorLayerData(timeType, indicator)
+    }
+    return dynamicIndicatorsData;
+  }
+
   // Construct the data
   const download = () => {
     setDownloading(true);
     (
       async () => {
-        try {
-          // Get the data
-          const levelsUsed = levels.filter(level => state.levels.includes(level.level))
-          const indicatorValueByGeometry = {}
+        // try {
+        // Get the data
+        const levelsUsed = levels.filter(level => state.levels.includes(level.level))
+        const indicatorValueByGeometry = {}
 
-          // The data
-          if (state.time === TimeType.All) {
-            for (let i = 0; i < state.indicators.length; i++) {
-              const indicatorId = state.indicators[i]
-              const indicatorLayer = indicatorLayers.find(indicatorLayer => indicatorId === indicatorLayer.id)
-              // For indicator
-              if (indicatorLayer) {
-
-                // This is for dynamic layer
-                if (!indicatorLayer.indicators?.length && !indicatorLayer.related_tables?.length) {
-                  const dynamicIndicatorsData = {}
-                  const dynamicLayerIndicators = dynamicLayerIndicatorList(indicatorLayer, indicators)
-                  for (let j = 0; j < dynamicLayerIndicators.length; j++) {
-                    const indicator = dynamicLayerIndicators[j]
-                    await fetchingData(
-                      `/api/v1/data-browser/`,
-                      {
-                        indicator_id: indicator.id,
-                        country_geom_id__in: countries,
-                        page_size: 1000
-                      }, {}, (response, error) => {
-                        if (!error) {
-                          dynamicIndicatorsData[indicator.id] = {
-                            data: response,
-                            fetching: true,
-                            fetched: true
-                          }
-                        }
-                      }
-                    )
-                  }
-                  // Create layer data
-                  const output = {} // Output by concept uuid
-                  fetchDynamicLayerData(
-                    indicatorLayer, indicators, dynamicIndicatorsData, geoField,
-                    error => {
-                    },
-                    response => {
-                      response.map(row => {
-                        row.indicator = indicatorLayer
-                        if (!output[row.geom_id]) {
-                          output[row.geom_id] = []
-                        }
-                        output[row.geom_id].push(row)
-                      })
-                    },
-                    true
-                  )
-                  indicatorValueByGeometry[indicatorLayer.id] = output
-                } else if (indicatorLayer.related_tables?.length) {
-                  const relatedTable = relatedTables.find(rt => rt.id === indicatorLayer.related_tables[0].id)
-                  if (relatedTable) {
-                    const params = {
-                      geography_code_field_name: relatedTable.geography_code_field_name,
-                      geography_code_type: relatedTable.geography_code_type,
-                      country_geom_ids: countries
+        // The data
+        for (let i = 0; i < state.indicators.length; i++) {
+          const indicatorId = state.indicators[i]
+          const indicatorLayer = indicatorLayers.find(indicatorLayer => indicatorId === indicatorLayer.id)
+          // For indicator
+          if (indicatorLayer) {
+            // This is for dynamic layer
+            if (!indicatorLayer.indicators?.length && !indicatorLayer.related_tables?.length) {
+              const dynamicIndicatorsData = await dynamicLayerData(state.time, indicatorLayer)
+              // Create layer data
+              const output = {} // Output by concept uuid
+              fetchDynamicLayerData(
+                indicatorLayer, indicators, dynamicIndicatorsData, geoField,
+                error => {
+                },
+                response => {
+                  response.map(row => {
+                    row.indicator = indicatorLayer
+                    if (!output[row.geom_id]) {
+                      output[row.geom_id] = []
                     }
-                    if (indicatorLayer.config.date_field) {
-                      params.date_field = indicatorLayer.config.date_field
-                    }
-                    if (indicatorLayer.config.date_format) {
-                      params.date_format = indicatorLayer.config.date_format
-                    }
-                    const url = `/api/v1/related-tables/${relatedTable.id}/geo-data/`
-                    await fetchingData(
-                      url, params, {}, function (response, error) {
-                        if (!error) {
-                          const relatedTableData = {}
-                          relatedTableData[relatedTable.id] = {
-                            data: response,
-                            fetching: true,
-                            fetched: true
-                          }
-                          const { rows } = getRelatedTableData(
-                            response,
-                            {
-                              ...indicatorLayer.config,
-                              geography_code_field_name: relatedTable.geography_code_field_name
-                            },
-                            selectedGlobalTime,
-                            geoField,
-                            false
-                          )
-                          if (rows) {
-                            const output = {}
-                            rows.map(row => {
-                              row.geom_id = row.geometry_code
-                              row.indicator = indicatorLayer
-                              if (!output[row.geom_id]) {
-                                output[row.geom_id] = []
-                              }
-                              output[row.geom_id].push(row)
-                            })
-                            indicatorValueByGeometry[indicatorLayer.id] = output
-                          }
-                        }
-                      }
-                    )
-                  }
-                } else {
-                  const output = {} // Output by concept uuid
-                  for (let j = 0; j < indicatorLayer.indicators.length; j++) {
-                    const indicator = indicatorLayer.indicators[j]
-                    await fetchingData(
-                      `/api/v1/data-browser/`,
-                      {
-                        indicator_id: indicator.id,
-                        country_geom_id__in: countries,
-                        page_size: 1000
-                      }, {}, (response, error) => {
-                        if (!error) {
-                          response.map(row => {
-                            row.indicator = indicator
-                            if (!output[row.geom_id]) {
-                              output[row.geom_id] = []
-                            }
-                            output[row.geom_id].push(row)
-                          })
-                        }
-                      }
-                    )
-                  }
-                  indicatorValueByGeometry[indicatorLayer.id] = output
-                }
-              }
-            }
-          } else if (state.time === TimeType.Current) {
-            state.indicators.map(indicatorId => {
-              const indicatorLayer = indicatorLayers.find(indicatorLayer => indicatorId === indicatorLayer.id)
-              if (!indicatorLayer) {
-                return
-              }
-
-              const output = getIndicatorValueByGeometry(
-                indicatorLayer, indicators, indicatorsData,
-                relatedTables, relatedTableData, selectedGlobalTime,
-                geoField, filteredGeometries, referenceLayer,
-                '' + state.levels.map(level => level)
+                    output[row.geom_id].push(row)
+                  })
+                },
+                true
               )
               indicatorValueByGeometry[indicatorLayer.id] = output
-            })
-          }
-          // If excel
-          if (state.format === Format.Excel) {
-            // Get the geometries
-            const tableData = []
-            let geometries = []
-            for (const level of levelsUsed) {
-              let geometryData = await fetchFeatureList(level.url)
-              geometryData.sort((a, b) => (a.ucode > b.ucode) ? 1 : ((b.ucode > a.ucode) ? -1 : 0))
-              if (state.geographyFilter === GeographyFilter.Filtered) {
-                geometryData = geometryData.filter(geom => filteredGeometries.includes(extractCode(geom)))
+            } else if (indicatorLayer.related_tables?.length) {
+              if (state.time !== TimeType.All) {
+                continue
               }
-              geometries = geometries.concat(geometryData);
+              const relatedTable = relatedTables.find(rt => rt.id === indicatorLayer.related_tables[0].id)
+              if (relatedTable) {
+                const params = {
+                  geography_code_field_name: relatedTable.geography_code_field_name,
+                  geography_code_type: relatedTable.geography_code_type,
+                  country_geom_ids: countries
+                }
+                if (indicatorLayer.config.date_field) {
+                  params.date_field = indicatorLayer.config.date_field
+                }
+                if (indicatorLayer.config.date_format) {
+                  params.date_format = indicatorLayer.config.date_format
+                }
+                const url = `/api/v1/related-tables/${relatedTable.id}/geo-data/`
+                await fetchingData(
+                  url, params, {}, function (response, error) {
+                    if (!error) {
+                      const relatedTableData = {}
+                      relatedTableData[relatedTable.id] = {
+                        data: response,
+                        fetching: true,
+                        fetched: true
+                      }
+                      const { rows } = getRelatedTableData(
+                        response,
+                        {
+                          ...indicatorLayer.config,
+                          geography_code_field_name: relatedTable.geography_code_field_name
+                        },
+                        selectedGlobalTime,
+                        geoField,
+                        false
+                      )
+                      if (rows) {
+                        const output = {}
+                        rows.map(row => {
+                          row.geom_id = row.geometry_code
+                          row.indicator = indicatorLayer
+                          if (!output[row.geom_id]) {
+                            output[row.geom_id] = []
+                          }
+                          output[row.geom_id].push(row)
+                        })
+                        indicatorValueByGeometry[indicatorLayer.id] = output
+                      }
+                    }
+                  }
+                )
+              }
+            } else {
+              const output = {} // Output by concept uuid
+              for (let j = 0; j < indicatorLayer.indicators.length; j++) {
+                const indicator = indicatorLayer.indicators[j]
+                const response = await indicatorLayerData(state.time, indicator)
+                response.map(row => {
+                  row.indicator = indicator
+                  if (!output[row.geometry_code]) {
+                    output[row.geometry_code] = []
+                  }
+                  output[row.geometry_code].push(row)
+                })
+              }
+              indicatorValueByGeometry[indicatorLayer.id] = output
             }
-
-            // Get every indicators selected
-            state.indicators.map(indicatorId => {
-              // Get per indicator layer
-              const indicatorLayer = indicatorLayers.find(indicatorLayer => indicatorId === indicatorLayer.id)
-              if (!indicatorLayer.indicators?.length && !indicatorLayer.related_tables?.length) {
-                cleanDataToExcel(tableData, geometries, indicatorLayer, indicatorLayer, indicatorValueByGeometry, false)
-              } else {
-                // For indicators
-                indicatorLayer.indicators.map(indicatorData => {
-                  cleanDataToExcel(tableData, geometries, indicatorLayer, indicatorData, indicatorValueByGeometry, true)
-                })
-
-                // For related tables
-                indicatorLayer.related_tables.map(rt => {
-                  cleanDataToExcel(tableData, geometries, indicatorLayer, rt, indicatorValueByGeometry, false)
-                })
-              }
-            })
-            jsonToXlsx(tableData, name + '.xls')
           }
-          // else if just geojson
-          else if (state.format === Format.Geojson) {
-            const features = []
-            let geometries = []
-            for (const level of levelsUsed) {
-              let response = await fetchGeojson(level.url)
-              let geometryData = response.features
-              geometryData.sort((a, b) => (a.properties.ucode > b.properties.ucode) ? 1 : ((b.properties.ucode > a.properties.ucode) ? -1 : 0))
-              if (state.geographyFilter === GeographyFilter.Filtered) {
-                geometryData = geometryData.filter(geom => filteredGeometries.includes(extractCode(geom.properties)))
-              }
-              geometries = geometries.concat(geometryData);
-            }
-
-            // Get every selected indicators
-            state.indicators.map(indicatorId => {
-              // Get per indicator layer
-              const indicatorLayer = indicatorLayers.find(indicatorLayer => indicatorId === indicatorLayer.id)
-              if (!indicatorLayer.indicators?.length && !indicatorLayer.related_tables?.length) {
-                cleanDataToGeojson(features, geometries, indicatorLayer, indicatorLayer, indicatorValueByGeometry, false)
-              } else {
-                // For indicators
-                indicatorLayer.indicators.map(indicatorData => {
-                  cleanDataToGeojson(features, geometries, indicatorLayer, indicatorData, indicatorValueByGeometry, true)
-                })
-
-                // For related tables
-                indicatorLayer.related_tables.map(rt => {
-                  cleanDataToGeojson(features, geometries, indicatorLayer, rt, indicatorValueByGeometry, false)
-                })
-              }
-            })
-
-            // Download geojson
-            var element = document.createElement('a');
-            element.setAttribute('href', 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify({
-              type: "FeatureCollection",
-              features: features
-            })))
-            element.setAttribute('download', name + '.geojson');
-            element.style.display = 'none';
-            document.body.appendChild(element);
-            element.click();
-            document.body.removeChild(element);
-          }
-        } catch (err) {
-          notify(err.toString(), NotificationStatus.ERROR)
         }
+
+        // If excel
+        if (state.format === Format.Excel) {
+          // Get the geometries
+          const tableData = []
+          let geometries = []
+          for (const level of levelsUsed) {
+            let geometryData = await fetchFeatureList(level.url)
+            geometryData.sort((a, b) => (a.ucode > b.ucode) ? 1 : ((b.ucode > a.ucode) ? -1 : 0))
+            if (state.geographyFilter === GeographyFilter.Filtered) {
+              geometryData = geometryData.filter(geom => filteredGeometries.includes(extractCode(geom)))
+            }
+            geometries = geometries.concat(geometryData);
+          }
+
+          // Get every indicators selected
+          state.indicators.map(indicatorId => {
+            // Get per indicator layer
+            const indicatorLayer = indicatorLayers.find(indicatorLayer => indicatorId === indicatorLayer.id)
+            if (!indicatorLayer.indicators?.length && !indicatorLayer.related_tables?.length) {
+              cleanDataToExcel(tableData, geometries, indicatorLayer, indicatorLayer, indicatorValueByGeometry, false)
+            } else {
+              // For indicators
+              indicatorLayer.indicators.map(indicatorData => {
+                cleanDataToExcel(tableData, geometries, indicatorLayer, indicatorData, indicatorValueByGeometry, true)
+              })
+
+              // For related tables
+              indicatorLayer.related_tables.map(rt => {
+                cleanDataToExcel(tableData, geometries, indicatorLayer, rt, indicatorValueByGeometry, false)
+              })
+            }
+          })
+          jsonToXlsx(tableData, name + '.xls')
+        }
+        // else if just geojson
+        else if (state.format === Format.Geojson) {
+          const features = []
+          let geometries = []
+          for (const level of levelsUsed) {
+            let response = await fetchGeojson(level.url)
+            let geometryData = response.features
+            geometryData.sort((a, b) => (a.properties.ucode > b.properties.ucode) ? 1 : ((b.properties.ucode > a.properties.ucode) ? -1 : 0))
+            if (state.geographyFilter === GeographyFilter.Filtered) {
+              geometryData = geometryData.filter(geom => filteredGeometries.includes(extractCode(geom.properties)))
+            }
+            geometries = geometries.concat(geometryData);
+          }
+
+          // Get every selected indicators
+          state.indicators.map(indicatorId => {
+            // Get per indicator layer
+            const indicatorLayer = indicatorLayers.find(indicatorLayer => indicatorId === indicatorLayer.id)
+            if (!indicatorLayer.indicators?.length && !indicatorLayer.related_tables?.length) {
+              cleanDataToGeojson(features, geometries, indicatorLayer, indicatorLayer, indicatorValueByGeometry, false)
+            } else {
+              // For indicators
+              indicatorLayer.indicators.map(indicatorData => {
+                cleanDataToGeojson(features, geometries, indicatorLayer, indicatorData, indicatorValueByGeometry, true)
+              })
+
+              // For related tables
+              indicatorLayer.related_tables.map(rt => {
+                cleanDataToGeojson(features, geometries, indicatorLayer, rt, indicatorValueByGeometry, false)
+              })
+            }
+          })
+
+          // Download geojson
+          var element = document.createElement('a');
+          element.setAttribute('href', 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify({
+            type: "FeatureCollection",
+            features: features
+          })))
+          element.setAttribute('download', name + '.geojson');
+          element.style.display = 'none';
+          document.body.appendChild(element);
+          element.click();
+          document.body.removeChild(element);
+        }
+        // } catch (err) {
+        //   notify(err.toString(), NotificationStatus.ERROR)
+        // }
         setDownloading(false);
       }
     )()
