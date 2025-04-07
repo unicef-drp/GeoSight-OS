@@ -50,6 +50,7 @@ test.describe('Create project', () => {
     await page.getByRole('button', { name: 'Add Indicator' }).click();
     await page.getByText('Sample Indicator A').first().click();
     await page.getByText('Sample Indicator B').first().click();
+    await page.getByText('Sample Indicator C').first().click();
     await page.locator('.ModalDataSelector').getByRole('button', { name: 'Update Selection' }).click()
 
     // Add indicator Layers
@@ -64,7 +65,21 @@ test.describe('Create project', () => {
       name: 'Sample Indicator B',
       exact: true
     }).click();
+    await page.getByRole('cell', {
+      name: 'Sample Indicator C',
+      exact: true
+    }).first().click();
     await page.locator('.AdminSelectDataForm .Save-Button button').click();
+
+    // We check the count
+    expect(await page.locator('.TabPrimary').getByText('Indicator Layers (3)')).toBeVisible();
+
+    // We delete the indicator
+    await page.locator('.TabPrimary').getByText('Indicators').click();
+    await page.getByRole('row', { name: 'Select row Sample Indicator C' }).getByLabel('Select row').check();
+    await page.getByRole('button', { name: 'Delete' }).click();
+    await expect(page.getByText('Indicator Layers (2)')).toBeVisible();
+    await page.locator('.TabPrimary').getByText('Indicator Layers').click();
 
 
     // --------------------------------

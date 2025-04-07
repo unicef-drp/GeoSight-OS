@@ -27,6 +27,7 @@ import RelatedTableForm from "./RelatedTable";
 import ToolsForm from "./Tools";
 import ShareForm from "./Share";
 import { PAGES } from "./types.d";
+import IndicatorLayersControl from "./IndicatorLayers/Control";
 
 export interface Props {
   page: string;
@@ -43,6 +44,7 @@ export const DashboardFormContent = memo(
           user_permission !== undefined ?
             <>
               <GeneralForm/>
+              <IndicatorLayersControl/>
               {
                 page == PAGES.BASEMAPS ? <BasemapsForm/> :
                   page == PAGES.INDICATORS ? <IndicatorsForm/> :
