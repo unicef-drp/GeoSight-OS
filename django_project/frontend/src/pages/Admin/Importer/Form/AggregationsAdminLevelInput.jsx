@@ -32,7 +32,7 @@ const aggregationEnabled = {
   N_LEVEL: 'Aggregate n level up',
 }
 
-const aggregationValueType = {
+export const aggregationValueType = {
   BY_INDICATOR: 'Use default aggregation from indicator',
   BY_INDICATOR_TOOLTIP: 'For each imported indicator, it\'s default aggregation method, ' +
     'configured at the indicator level, will be used.',

@@ -28,12 +28,9 @@ import {
   RadioGroup
 } from "@mui/material";
 import Grid from '@mui/material/Grid';
+import Tooltip from "@mui/material/Tooltip";
 import Aggregation from "./Extensions/QueryForm/Aggregation";
-
-const aggregationValueType = {
-  BY_INDICATOR: 'Use default aggregation from indicator',
-  DEFAULT: 'Use custom aggregations'
-}
+import { aggregationValueType } from "./AggregationsAdminLevelInput";
 
 /**
  * Indicator specified input
@@ -132,16 +129,20 @@ export const AggregationsMultiValueInput = forwardRef(
                   >
                     <Grid container spacing={2}>
                       <Grid item xs={4}>
-                        <FormControlLabel
-                          value={aggregationValueType.BY_INDICATOR}
-                          control={<Radio/>}
-                          label={aggregationValueType.BY_INDICATOR}/>
+                        <Tooltip title={<p style={{ fontSize: "12px" }}>{aggregationValueType.BY_INDICATOR_TOOLTIP}</p>} className={'tooltip'}>
+                          <FormControlLabel
+                            value={aggregationValueType.BY_INDICATOR}
+                            control={<Radio/>}
+                            label={aggregationValueType.BY_INDICATOR}/>
+                        </Tooltip>
                       </Grid>
                       <Grid item xs={4}>
-                        <FormControlLabel
-                          value={aggregationValueType.DEFAULT}
-                          control={<Radio/>}
-                          label={aggregationValueType.DEFAULT}/>
+                        <Tooltip title={<p style={{ fontSize: "12px" }}>{aggregationValueType.DEFAULT_TOOLTIP}</p>} className={'tooltip'}>
+                          <FormControlLabel
+                            value={aggregationValueType.DEFAULT}
+                            control={<Radio/>}
+                            label={aggregationValueType.DEFAULT}/>
+                        </Tooltip>
                       </Grid>
                     </Grid>
                   </RadioGroup>

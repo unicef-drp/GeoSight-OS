@@ -13,7 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { Actions } from "../../../../../store/dashboard";
 import ListForm from "../ListForm";
@@ -31,7 +31,6 @@ import {
 } from "../../../../../components/SortableTreeForm/utilities";
 import {
   DynamicIndicatorType,
-  isIndicatorLayerLikeIndicator,
   MultiIndicatorType,
   RelatedTableLayerType,
   SingleIndicatorType
@@ -179,38 +178,6 @@ export default function IndicatorLayersForm() {
       }
     }
   }
-
-  // Remove layer if the indicator is removed
-  useEffect(() => {
-    const indicatorIds = dashboardIndicators.map(indicator => indicator.id)
-    const relatedTableIds = dashboardRelatedTables.map(rt => rt.id)
-    indicatorLayers.map(layer => {
-      const indicators = layer.indicators.filter(
-        indicator => indicatorIds.includes(indicator.id)
-      )
-      const relatedTables = layer.related_tables.filter(
-        rt => relatedTableIds.includes(rt.id)
-      )
-      // If it is multi indicator and just remaining 1 indicator, remove it
-      if (indicators.length === 1 && layer.indicators.length >= 2) {
-        removeLayer(layer)
-      }
-      // Update indicators when the size is different
-      if (indicators.length !== layer.indicators.length) {
-        layer.indicators = indicators
-      }
-      if (relatedTables.length !== layer.related_tables.length) {
-        layer.related_tables = relatedTables
-      }
-
-      // delete or update
-      if (layer.indicators.length === 0 && layer.related_tables.length === 0 && !isIndicatorLayerLikeIndicator(layer)) {
-        removeLayer(layer)
-      } else {
-        dispatch(Actions.IndicatorLayers.update(layer))
-      }
-    })
-  }, [dashboardIndicators, dashboardRelatedTables])
 
   /** Change indicator data format to indicator layer data. **/
   const indicatorToIndicatorLayer = (layer) => {

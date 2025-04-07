@@ -124,10 +124,16 @@ class ContextLayerForm(forms.ModelForm):
             if self.instance and not self.cleaned_data['styles']:
                 return self.instance.styles
         try:
-            if self.data['override_style']:
-                return self.cleaned_data['styles']
+            override_style = self.data['override_style']
         except KeyError:
-            return None
+            override_style = False
+
+        # Raster cog always override style
+        if self.data['layer_type'] == LayerType.RASTER_COG:
+            override_style = True
+
+        if override_style:
+            return self.cleaned_data['styles']
 
     def clean_label_styles(self):
         """Return label_styles."""
