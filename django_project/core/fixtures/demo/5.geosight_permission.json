@@ -1,0 +1,110 @@
+[
+  {
+    "model": "geosight_permission.indicatorpermission",
+    "pk": 1,
+    "fields": {
+      "obj": 318,
+      "organization_permission": "List",
+      "public_permission": "None"
+    }
+  },
+  {
+    "model": "geosight_permission.indicatorpermission",
+    "pk": 2,
+    "fields": {
+      "obj": 319,
+      "organization_permission": "List",
+      "public_permission": "None"
+    }
+  },
+  {
+    "model": "geosight_permission.indicatorpermission",
+    "pk": 3,
+    "fields": {
+      "obj": 362,
+      "organization_permission": "List",
+      "public_permission": "None"
+    }
+  },
+  {
+    "model": "geosight_permission.indicatorpermission",
+    "pk": 4,
+    "fields": {
+      "obj": 370,
+      "organization_permission": "List",
+      "public_permission": "None"
+    }
+  },
+  {
+    "model": "geosight_permission.indicatorpermission",
+    "pk": 5,
+    "fields": {
+      "obj": 371,
+      "organization_permission": "List",
+      "public_permission": "Read Data"
+    }
+  },
+  {
+    "model": "geosight_permission.indicatoruserpermission",
+    "pk": 1,
+    "fields": {
+      "obj": 5,
+      "user": 1,
+      "permission": "Owner"
+    }
+  },
+  {
+    "model": "geosight_permission.indicatoruserpermission",
+    "pk": 2,
+    "fields": {
+      "obj": 1,
+      "user": 2,
+      "permission": "Read"
+    }
+  },
+  {
+    "model": "geosight_permission.indicatoruserpermission",
+    "pk": 3,
+    "fields": {
+      "obj": 1,
+      "user": 1,
+      "permission": "Owner"
+    }
+  },
+  {
+    "model": "geosight_permission.indicatoruserpermission",
+    "pk": 4,
+    "fields": {
+      "obj": 2,
+      "user": 2,
+      "permission": "Read Data"
+    }
+  },
+  {
+    "model": "geosight_permission.indicatoruserpermission",
+    "pk": 5,
+    "fields": {
+      "obj": 2,
+      "user": 1,
+      "permission": "Owner"
+    }
+  },
+  {
+    "model": "geosight_permission.indicatoruserpermission",
+    "pk": 6,
+    "fields": {
+      "obj": 1,
+      "user": 3,
+      "permission": "Write"
+    }
+  },
+  {
+    "model": "geosight_permission.indicatoruserpermission",
+    "pk": 7,
+    "fields": {
+      "obj": 2,
+      "user": 3,
+      "permission": "Write Data"
+    }
+  }
+]
