@@ -55,7 +55,7 @@ export default function Bookmark({ map }) {
 
   const dispatch = useDispatch();
   const isEmbed = EmbedConfig().id;
-  const { id } = useSelector(state => state.dashboard.data);
+  const { id, slug } = useSelector(state => state.dashboard.data);
   const selectedBookmark = useSelector(state => state.selectedBookmark)
 
   const [uploading, setUploading] = useState(false)
@@ -77,7 +77,7 @@ export default function Bookmark({ map }) {
   const fetchBookmarks = () => {
     setBookmarks(null)
     fetchingData(
-      '/api/dashboard/demo-geosight-project/bookmarks',
+      `/api/dashboard/${slug}/bookmarks`,
       {}, {},
       (data) => {
         setBookmarks(data)
@@ -133,12 +133,12 @@ export default function Bookmark({ map }) {
 
   // On save as data
   const onSaveAs = () => {
-    save('/api/dashboard/demo-geosight-project/bookmarks/create')
+    save(`/api/dashboard/${slug}/bookmarks/create`)
   }
 
   // On save data
   const onSave = (id) => {
-    save(`/api/dashboard/demo-geosight-project/bookmarks/${id}`)
+    save(`/api/dashboard/${slug}/bookmarks/${id}`)
   }
 
   const bookmarkSave = bookmarks ? bookmarks.find(
@@ -228,7 +228,7 @@ export default function Bookmark({ map }) {
                                     onClick={(e) => {
                                       if (confirm(`Are you sure you want to delete ${bookmark.name}?`)) {
                                         $.ajax({
-                                          url: `/api/dashboard/demo-geosight-project/bookmarks/${bookmark.id}`,
+                                          url: `/api/dashboard/${slug}/bookmarks/${bookmark.id}`,
                                           method: 'DELETE',
                                           success: function () {
                                             if (selectedBookmark.id === bookmark.id) {
