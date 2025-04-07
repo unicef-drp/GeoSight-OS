@@ -53,7 +53,7 @@ export function resourceActions(params, noShare = false) {
       />)
   }
 
-  if (permission.write_data) {
+  if (permission.edit_data) {
     actions.unshift(
       <GridActionsCellItem
         icon={
@@ -69,7 +69,7 @@ export function resourceActions(params, noShare = false) {
         label="Edit"
       />)
   }
-  if (permission.write_data) {
+  if (permission.edit_data) {
     actions.unshift(
       <GridActionsCellItem
         icon={
@@ -85,7 +85,7 @@ export function resourceActions(params, noShare = false) {
         label="Management Form"
       />)
   }
-  if (permission.write_data) {
+  if (permission.edit_data) {
     actions.unshift(
       <GridActionsCellItem
         icon={
