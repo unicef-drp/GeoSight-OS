@@ -563,11 +563,8 @@ export function ReferenceLayer(
       // Create deck gl
       deckGLLayer(dictDeepCopy(indicatorValueByGeometry))
 
-      //
-      if (IS_DEBUG) {
-        const output = map.getStyle()
-        Logger.log('LAYERS:', output.layers.map(layer => layer.id))
-      }
+      // Log layers
+      Logger.layers(map)
     }
   }
 

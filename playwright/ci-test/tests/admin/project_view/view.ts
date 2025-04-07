@@ -8,6 +8,7 @@ test.describe('View project', () => {
     page, assertLogs
   ) => {
     let lastLayers = null
+    let lastVisibleLayers = null
     let lastLog = null
     let lastLogLabel = null
     page.on('console', msg => {
@@ -35,6 +36,14 @@ test.describe('View project', () => {
 
         }
       }
+      if (msg.text().indexOf('LAYERS-VISIBLE:') !== -1) {
+        try {
+          lastVisibleLayers = msg.text().replace('LAYERS-VISIBLE:', '')
+        } catch (e) {
+          console.log(e)
+
+        }
+      }
     });
 
     // Check initial state
@@ -51,6 +60,24 @@ test.describe('View project', () => {
     await expect(page.locator('.MapLegendSection')).toHaveCount(0);
     await page.locator('#simple-tab-1 svg').click();
     await expect(page.locator('.MapLegendSection')).toHaveCount(1);
+
+    // ------------------------------------------------------------
+    // LABEL
+    // ------------------------------------------------------------
+    const layerB = 'Sample Indicator B'
+    await expect(lastVisibleLayers.includes("indicator-label")).toBeTruthy();
+    await page.locator('[title="Hide map labels"] svg').click();
+    await delay(500)
+    await expect(lastVisibleLayers.includes("indicator-label")).not.toBeTruthy();
+    await page.getByLabel(layerB).click();
+    await delay(500)
+    await expect(lastVisibleLayers.includes("indicator-label")).not.toBeTruthy();
+    await page.getByLabel(layer1).click();
+    await delay(500)
+    await expect(lastVisibleLayers.includes("indicator-label")).not.toBeTruthy();
+    await page.locator('[title="Show map labels"] svg').click();
+    await delay(500)
+    await expect(lastVisibleLayers.includes("indicator-label")).toBeTruthy();
 
     // ------------------------------------------------------------
     // LEVEL 1
