@@ -97,13 +97,14 @@ jobs:
       matrix:
         test_suite: [
           { id: "backend-tests", mode: "backend" },
-          { id: "e2e-project-creation", mode: "e2e", path: "tests/project_creation", workers: 2, script: "make load-test-data" },
-          { id: "e2e-project-view", mode: "e2e", path: "tests/project_view", workers: 3, script: "make load-test-data" },
-          { id: "e2e-admin-list", mode: "e2e", path: "tests/admin_list", workers: 3, script: "make load-test-data" },
-          { id: "e2e-admin-edit", mode: "e2e", path: "tests/admin_edit", workers: 3, script: "make load-test-data" },
-          { id: "e2e-admin-list-filter", mode: "e2e", path: "tests/admin_filter", workers: 3, script: "make load-test-data-for-filter" },
-          { id: "e2e-importer", mode: "e2e", path: "tests/importer", workers: 3, script: "make load-test-data" },
-          { id: "e2e-project-bookmark-embed", mode: "e2e", path: "tests/project_bookmark_embed", workers: 3, script: "make load-test-data" },
+          { id: "e2e-project-creation", mode: "e2e", path: "tests/admin/project_creation", workers: 2, script: "make load-test-data" },
+          { id: "e2e-project-view", mode: "e2e", path: "tests/admin/project_view", workers: 3, script: "make load-test-data" },
+          { id: "e2e-admin-list", mode: "e2e", path: "tests/admin/admin_list", workers: 3, script: "make load-test-data" },
+          { id: "e2e-admin-edit", mode: "e2e", path: "tests/admin/admin_edit", workers: 3, script: "make load-test-data" },
+          { id: "e2e-admin-list-filter", mode: "e2e", path: "tests/admin/admin_filter", workers: 3, script: "make load-test-data-for-filter" },
+          { id: "e2e-importer", mode: "e2e", path: "tests/admin/importer", workers: 3, script: "make load-test-data" },
+          { id: "e2e-project-bookmark-embed", mode: "e2e", path: "tests/admin/project_bookmark_embed", workers: 3, script: "make load-test-data" },
+          { id: "e2e-contributor", mode: "e2e", path: "tests/contributor", workers: 3, script: "make load-test-data" },
         ]
     env:
       APP_IMAGE: kartoza/geosight

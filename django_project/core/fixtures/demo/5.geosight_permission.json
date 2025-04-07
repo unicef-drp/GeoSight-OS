@@ -1,5 +1,23 @@
 [
   {
+    "model": "geosight_permission.dashboardpermission",
+    "pk": 1,
+    "fields": {
+      "obj": 53,
+      "organization_permission": "None",
+      "public_permission": "Read"
+    }
+  },
+  {
+    "model": "geosight_permission.dashboarduserpermission",
+    "pk": 1,
+    "fields": {
+      "obj": 1,
+      "user": 1,
+      "permission": "Owner"
+    }
+  },
+  {
     "model": "geosight_permission.indicatorpermission",
     "pk": 1,
     "fields": {

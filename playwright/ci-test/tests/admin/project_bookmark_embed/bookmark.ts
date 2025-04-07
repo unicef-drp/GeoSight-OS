@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import { defaultBookmark, defaultCheck, selection } from '../utils/bookmark'
+import { defaultBookmark, defaultCheck, selection } from '../../utils/bookmark'
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 

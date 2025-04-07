@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { checkPermission, editPermission } from "../utils/permission";
+import { checkPermission, editPermission } from "../../utils/permission";
 
 const timeout = 2000;
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))

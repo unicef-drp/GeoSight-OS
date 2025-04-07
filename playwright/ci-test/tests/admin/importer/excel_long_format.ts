@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { createIndicator, deleteIndicator } from "../utils/indicator"
+import { createIndicator, deleteIndicator } from "../../utils/indicator"
 import path from "path";
 
 const fs = require('fs');
