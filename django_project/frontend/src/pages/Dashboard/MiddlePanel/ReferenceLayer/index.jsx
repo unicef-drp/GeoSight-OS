@@ -22,9 +22,9 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { Actions } from '../../../../store/dashboard'
 import { ArrowDownwardIcon } from "../../../../components/Icons";
+import { dictDeepCopy } from "../../../../utils/main";
 
 import './style.scss';
-import { dictDeepCopy } from "../../../../utils/main";
 
 /**
  * Reference layer.
