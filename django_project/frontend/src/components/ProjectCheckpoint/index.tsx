@@ -130,14 +130,16 @@ export const ProjectCheckpoint = memo(
           dispatch(Actions.Map.showHideContextLayer(data.context_layer_show))
           dispatch(Actions.Map.showHideIndicator(data.indicator_layer_show))
 
-          if (data.selected_admin_level !== null) {
-            dispatch(
-              Actions.SelectedAdminLevel.change(
-                {
-                  level: data.selected_admin_level
-                }
+          if (data.selected_admin_level !== null && selectedAdminLevel.level !== data.selected_admin_level) {
+            setTimeout(() => {
+              dispatch(
+                Actions.SelectedAdminLevel.change(
+                  {
+                    level: data.selected_admin_level
+                  }
+                )
               )
-            )
+            }, 500);
           }
         },
       }));
