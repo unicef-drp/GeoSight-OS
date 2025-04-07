@@ -93,11 +93,11 @@ class PermissionDefault:
     INDICATOR = PermissionResourceDefault(
         user=PermissionDefaultDetail(
             default=PERMISSIONS.LIST.name,
-            permissions=ALL_PERMISSIONS
+            permissions=ALL_PERMISSIONS_WITH_DATA
         ),
         group=PermissionDefaultDetail(
             default=PERMISSIONS.LIST.name,
-            permissions=ALL_PERMISSIONS
+            permissions=ALL_PERMISSIONS_WITH_DATA
         ),
         organization=PermissionDefaultDetail(
             default=PERMISSIONS.LIST.name,
@@ -111,7 +111,7 @@ class PermissionDefault:
             default=PERMISSIONS.NONE.name,
             permissions=[
                 (PERMISSIONS.NONE.name, PERMISSIONS.NONE.name),
-                (PERMISSIONS.READ.name, PERMISSIONS.READ.name),
+                (PERMISSIONS.READ_DATA.name, PERMISSIONS.READ_DATA.name),
             ]
         )
     )

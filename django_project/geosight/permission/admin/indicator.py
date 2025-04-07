@@ -16,6 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib import admin
 
+from geosight.permission.admin.permission import AbstractPermissionAdmin
 from geosight.permission.models import (
     IndicatorPermission, IndicatorUserPermission, IndicatorGroupPermission
 )
@@ -35,12 +36,10 @@ class IndicatorPermissionInline(admin.TabularInline):
     extra = 0
 
 
-class PermissionAdmin(admin.ModelAdmin):
+class PermissionAdmin(AbstractPermissionAdmin):
     """Permission admin."""
 
-    list_display = ('obj', 'organization_permission', 'public_permission')
     inlines = (UserPermissionInline, IndicatorPermissionInline)
-    read_only = ('obj',)
 
 
 admin.site.register(IndicatorPermission, PermissionAdmin)

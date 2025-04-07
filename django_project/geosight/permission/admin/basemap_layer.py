@@ -15,7 +15,7 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib import admin
-
+from geosight.permission.admin.permission import AbstractPermissionAdmin
 from geosight.permission.models import (
     BasemapLayerPermission, BasemapLayerUserPermission,
     BasemapLayerGroupPermission
@@ -36,12 +36,10 @@ class GroupPermissionInline(admin.TabularInline):
     extra = 0
 
 
-class PermissionAdmin(admin.ModelAdmin):
+class PermissionAdmin(AbstractPermissionAdmin):
     """Permission admin."""
 
-    list_display = ('obj', 'organization_permission', 'public_permission')
     inlines = (UserPermissionInline, GroupPermissionInline)
-    read_only = ('obj',)
 
 
 admin.site.register(BasemapLayerPermission, PermissionAdmin)
