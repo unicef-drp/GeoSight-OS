@@ -48,7 +48,9 @@ class BaseApiV1(FilteredAPI):
     ]
     pagination_class = Pagination
     extra_exclude_fields = []
-    non_filtered_keys = ['page', 'page_size', 'fields', 'extra_fields']
+    non_filtered_keys = [
+        'page', 'page_size', 'fields', 'extra_fields', 'permission'
+    ]
 
     def get_queryset(self):
         """Return queryset of API."""
@@ -110,6 +112,28 @@ class BaseApiV1ResourceReadOnly(BaseApiV1, viewsets.ReadOnlyModelViewSet):
     @property
     def queryset(self):
         """Return queryset."""
+        # Return by the permission
+        permission = self.request.GET.get('permission', None)
+        if permission:
+            if permission == 'list':
+                return self.model_class.permissions.list(self.request.user)
+            if permission == 'read':
+                return self.model_class.permissions.read(self.request.user)
+            if permission == 'read_data':
+                return self.model_class.permissions.read_data(
+                    self.request.user
+                )
+            if permission == 'write':
+                return self.model_class.permissions.edit(self.request.user)
+            if permission == 'write_data':
+                return self.model_class.permissions.edit_data(
+                    self.request.user
+                )
+            if permission == 'share':
+                return self.model_class.permissions.share(self.request.user)
+            if permission == 'delete':
+                return self.model_class.permissions.delete(self.request.user)
+
         try:
             if self.action not in [
                 'retrieve', 'create', 'update', 'partial_update', 'destroy'

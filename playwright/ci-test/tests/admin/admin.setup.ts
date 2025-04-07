@@ -1,6 +1,6 @@
 import { test as setup } from '@playwright/test';
 
-const authFile = 'states/.auth/user.json';
+const authFile = 'states/.auth/admin.json';
 
 setup('authenticate', async ({ page }) => {
 

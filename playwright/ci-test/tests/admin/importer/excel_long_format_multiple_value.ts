@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { createIndicator, deleteIndicator } from "../utils/indicator"
+import { createIndicator, deleteIndicator } from "../../utils/indicator"
 import path from "path";
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))

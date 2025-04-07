@@ -10,7 +10,6 @@ import { defineConfig, devices } from '@playwright/test';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  testDir: './tests',
   /* Run tests in files in parallel */
   timeout: 60 * 1000,
   fullyParallel: false,
@@ -32,20 +31,42 @@ export default defineConfig({
   },
 
   outputDir: 'playwright-results',
-  testMatch: /.*\.ts/,
 
   /* Configure projects for major browsers */
   projects: [
-    // Setup project
-    { name: 'setup', testMatch: /.*\.setup\.ts/ },
+    // Admin project
     {
-      name: 'chromium',
+      name: 'admin-setup',
+      testDir: './tests/admin',
+      testMatch: /.*\.setup\.ts/
+    },
+    {
+      name: 'admin-chromium',
+      testDir: './tests/admin',
+      testMatch: /.*\.ts/,
       use: {
         ...devices['Desktop Chrome'],
         // Use prepared auth state.
-        storageState: 'states/.auth/user.json',
+        storageState: 'states/.auth/admin.json',
       },
-      dependencies: ['setup'],
+      dependencies: ['admin-setup'],
+    },
+    // Contributor project
+    {
+      name: 'contributor-setup',
+      testDir: './tests/contributor',
+      testMatch: /.*\.setup\.ts/
+    },
+    {
+      name: 'contributor-chromium',
+      testDir: './tests/contributor',
+      testMatch: /.*\.ts/,
+      use: {
+        ...devices['Desktop Chrome'],
+        // Use prepared auth state.
+        storageState: 'states/.auth/contributor.json',
+      },
+      dependencies: ['contributor-setup'],
     },
   ],
 });

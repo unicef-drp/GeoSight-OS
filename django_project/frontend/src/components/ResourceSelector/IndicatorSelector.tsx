@@ -30,6 +30,8 @@ const columns = [
 /** For Georepo View selection. */
 export default function IndicatorSelector(
   {
+    url = '/api/v1/indicators/?fields=__all__',
+
     // Input properties
     placeholder,
     showSelected,
@@ -50,7 +52,6 @@ export default function IndicatorSelector(
 ) {
   const [indicators, setIndicators] = useState([])
   const [indicator, setIndicator] = useState(null)
-  const url = '/api/v1/indicators/?fields=__all__'
 
   /** Get the Indicators */
   useEffect(

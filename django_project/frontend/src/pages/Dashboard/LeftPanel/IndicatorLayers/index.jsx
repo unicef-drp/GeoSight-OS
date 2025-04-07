@@ -202,7 +202,7 @@ export function IndicatorLayers() {
           const indicator = indicators.find(indicator => indicator.id === indLy.id)
           if (!indicator) {
             indicatorLayer.error = "There is no indicator found for this layer. Please ask admin to fix this."
-          } else if (!indicator.permission.read) {
+          } else if (!indicator.permission.read_data) {
             indicatorLayer.error = "You don't have permission to access this resource"
           }
         })

@@ -24,7 +24,7 @@ from geosight.data.models.indicator import (
     Indicator, IndicatorType, IndicatorStyleType
 )
 from geosight.georepo.models.reference_layer import (
-    ReferenceLayerView, ReferenceLayerIndicator
+    ReferenceLayerView
 )
 from geosight.permission.models.factory import PERMISSIONS
 
@@ -135,10 +135,6 @@ class IndicatorAdminViewTest(BaseViewTest.TestCaseWithBatch):
         payload = {
             'reference_layer': reference_layer.identifier
         }
-        dataset, created = ReferenceLayerIndicator.objects.get_or_create(
-            reference_layer=reference_layer,
-            indicator=resource
-        )
         self.assertRequestPostView(url, 302, payload)
         self.assertRequestPostView(url, 403, payload, self.viewer)
         self.assertRequestPostView(url, 403, payload, self.contributor)
@@ -147,22 +143,30 @@ class IndicatorAdminViewTest(BaseViewTest.TestCaseWithBatch):
         self.assertRequestPostView(url, 302, payload, self.admin)
 
         # Sharing
-        dataset.permission.update_user_permission(
+        resource.permission.update_user_permission(
             self.contributor, PERMISSIONS.READ.name)
         self.assertRequestPostView(url, 403, payload, self.contributor)
-        dataset.permission.update_user_permission(
+        resource.permission.update_user_permission(
             self.contributor, PERMISSIONS.WRITE.name)
+        self.assertRequestPostView(url, 403, payload, self.contributor)
+        resource.permission.update_user_permission(
+            self.contributor, PERMISSIONS.WRITE_DATA.name)
         self.assertRequestPostView(url, 302, payload, self.contributor)
 
-        dataset.permission.update_group_permission(
+        resource.permission.update_group_permission(
             self.group, PERMISSIONS.READ.name)
         self.assertRequestPostView(url, 403, payload, self.viewer_in_group)
         self.assertRequestPostView(
             url, 403, payload, self.contributor_in_group)
         self.assertRequestPostView(url, 403, payload, self.creator_in_group)
 
-        dataset.permission.update_group_permission(
+        resource.permission.update_group_permission(
             self.group, PERMISSIONS.WRITE.name)
+        self.assertRequestPostView(url, 403, payload, self.viewer_in_group)
+        self.assertRequestPostView(
+            url, 403, payload, self.contributor_in_group)
+        resource.permission.update_group_permission(
+            self.group, PERMISSIONS.WRITE_DATA.name)
         self.assertRequestPostView(url, 403, payload, self.viewer_in_group)
         self.assertRequestPostView(
             url, 302, payload, self.contributor_in_group)

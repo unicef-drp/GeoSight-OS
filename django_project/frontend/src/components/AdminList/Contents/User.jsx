@@ -14,11 +14,8 @@
  */
 
 import React from 'react';
-import { GridActionsCellItem } from "@mui/x-data-grid";
-import Tooltip from "@mui/material/Tooltip";
 import { AdminListContent } from "../Content";
 import { COLUMNS_ACTION } from "../../../pages/Admin/Components/List";
-import { DataAccessActiveIcon } from "../../Icons";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 
@@ -30,23 +27,7 @@ export const userUrl = {
 }
 
 export function resourceActions(params) {
-  const actions = COLUMNS_ACTION(params, urls.admin.userAndGroupList + '#Users', userUrl.edit, userUrl.detail)
-  // Unshift before more & edit action
-  actions.unshift(
-    <GridActionsCellItem
-      icon={
-        <Tooltip title={`Go to data access.`}>
-          <a
-            href={urls.api.permissionAdmin + '?users=' + params.id}>
-            <div className='ButtonIcon'>
-              <DataAccessActiveIcon/>
-            </div>
-          </a>
-        </Tooltip>
-      }
-      label="Go to data access."
-    />)
-  return actions;
+  return COLUMNS_ACTION(params, urls.admin.userAndGroupList + '#Users', userUrl.edit, userUrl.detail)
 }
 
 export function COLUMNS() {

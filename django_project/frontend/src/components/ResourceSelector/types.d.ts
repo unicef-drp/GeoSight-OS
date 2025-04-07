@@ -42,6 +42,9 @@ export interface ModalFilterSelectorProps {
 
 
 export interface ModalInputSelectorProps {
+  /** url of the input selector **/
+  url?: string;
+
   /** Placeholder of input. */
   placeholder?: string;
 
