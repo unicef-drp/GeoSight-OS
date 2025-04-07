@@ -34,6 +34,9 @@ from geosight.permission.access import (
     delete_permission_resource, read_permission_resource,
     ResourcePermissionDenied
 )
+from geosight.permission.access.mixin import (
+    edit_data_permission_resource
+)
 
 
 class IndicatorValuesByGeometry(APIView):
@@ -71,6 +74,7 @@ class IndicatorValuesByGeometry(APIView):
         indicator = get_object_or_404(Indicator, pk=pk)
         reference_layer = request.POST.get('reference_layer', None)
         admin_level = request.POST.get('admin_level', None)
+        indicator.able_to_write_data(self.request.user)
         try:
             value = float(request.POST['value'])
             indicator.save_value(

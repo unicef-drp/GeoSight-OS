@@ -34,6 +34,7 @@ Permission = permission_model_factory(
     public_permissions=default_permission.public.permissions,
     public_permission_default=default_permission.public.default,
     role_to_edit_level_input=2,  # ROLES.CONTRIBUTOR
+    permissions_with_data_access=True
 )
 
 

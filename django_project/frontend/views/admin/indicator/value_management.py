@@ -25,14 +25,10 @@ from geosight.data.models import (
     Indicator, IndicatorValueRejectedError
 )
 from geosight.georepo.models.reference_layer import (
-    ReferenceLayerView, ReferenceLayerIndicator
+    ReferenceLayerView
 )
 from geosight.permission.access.mixin import (
-    RoleContributorRequiredMixin, read_permission_resource,
-    edit_permission_resource
-)
-from geosight.permission.models.resource import (
-    ReferenceLayerIndicatorPermission
+    RoleContributorRequiredMixin, read_permission_resource
 )
 
 
@@ -183,13 +179,8 @@ class IndicatorValueManagementTableView(
         reference_layer, created = ReferenceLayerView.objects.get_or_create(
             identifier=reference_layer
         )
-        dataset, created = ReferenceLayerIndicator.objects.get_or_create(
-            reference_layer=reference_layer,
-            indicator=indicator
-        )
         # Make sure we have permission
-        ReferenceLayerIndicatorPermission.objects.get_or_create(obj=dataset)
-        edit_permission_resource(dataset, self.request.user)
+        indicator.able_to_write_data(self.request.user)
         if date:
             try:
                 indicator_values = {}

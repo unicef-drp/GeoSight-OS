@@ -137,6 +137,7 @@ export const IndicatorSettings = forwardRef(
                   {
                     data.indicator_data_type === 'By Value' ?
                       <IndicatorSelector
+                        url='/api/v1/indicators/?fields=__all__&permission=write_data'
                         initData={data.indicator_data ? [data.indicator_data] : []}
                         dataSelected={selectedDate => {
                           data.indicator_data = selectedDate[0]

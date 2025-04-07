@@ -149,39 +149,9 @@ class IndicatorValue(models.Model):
         return self.value
 
     @staticmethod
-    def value_permissions(user, indicator):
-        """Return value permissions for an user."""
-        if user.profile.is_admin:
-            return {
-                'list': True, 'read': True, 'edit': True, 'share': True,
-                'delete': True
-            }
-        elif indicator and indicator.permission.has_delete_perm(user):
-            return {
-                'list': True, 'read': True, 'edit': True, 'share': True,
-                'delete': True
-            }
-        elif indicator and indicator.permission.has_share_perm(user):
-            return {
-                'list': True, 'read': True, 'edit': True, 'share': True,
-                'delete': False
-            }
-        elif indicator and indicator.permission.has_edit_perm(user):
-            return {
-                'list': True, 'read': True, 'edit': True, 'share': True,
-                'delete': True
-            }
-        elif indicator and indicator.permission.has_read_perm(user):
-            return {
-                'list': True, 'read': True, 'edit': False, 'share': False,
-                'delete': False
-            }
-        # TODO:
-        #  We need to fix this
-        return {
-            'list': True, 'read': True, 'edit': False, 'share': False,
-            'delete': False
-        }
+    def value_permissions(user, indicator: Indicator):
+        """Return value permissions for a user."""
+        return indicator.permission.all_permission(user)
 
     def permissions(self, user):
         """Return permission of user."""

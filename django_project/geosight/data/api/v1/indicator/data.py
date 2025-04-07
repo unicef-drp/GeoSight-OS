@@ -26,7 +26,7 @@ from geosight.data.api.v1.indicator_value import IndicatorValueApiUtilities
 from geosight.data.models import IndicatorValue
 from geosight.data.models.indicator import Indicator
 from geosight.data.serializer.indicator_value import IndicatorValueSerializer
-from geosight.permission.access import read_permission_resource
+from geosight.permission.access import read_data_permission_resource
 
 
 class IndicatorDataViewSet(
@@ -54,7 +54,7 @@ class IndicatorDataViewSet(
         indicator = get_object_or_404(
             Indicator.objects.filter(pk=indicator_id)
         )
-        read_permission_resource(indicator, self.request.user)
+        read_data_permission_resource(indicator, self.request.user)
         return indicator
 
     def _set_request(self):

@@ -35,6 +35,7 @@ from geosight.data.models.style.indicator_style import (
 )
 from geosight.data.serializer.style import StyleRuleSerializer
 from geosight.permission.models.manager import PermissionManager
+from geosight.permission.access.mixin import edit_data_permission_resource
 
 VALUE_IS_EMPTY_TEXT = 'Value is empty'
 
@@ -171,6 +172,10 @@ class Indicator(
                 self.style.stylerule_set.all(), many=True
             ).data
         return None
+
+    def able_to_write_data(self, user):
+        """Is able to write data."""
+        edit_data_permission_resource(self, user)
 
     def validate(self, value):
         """Check value and return the comment."""

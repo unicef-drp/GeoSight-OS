@@ -43,9 +43,6 @@ import { SaveButton } from "../../../components/Elements/Button";
 import { AdminPage, pageNames } from "../index";
 import { InfoFillIcon } from "../../../components/Icons";
 import {
-  DatasetFilterSelector
-} from "../../../components/ResourceSelector/DatasetViewSelector";
-import {
   IndicatorFilterSelector
 } from "../../../components/ResourceSelector/IndicatorSelector";
 import {
@@ -128,7 +125,7 @@ export default function DataBrowserAdmin() {
       renderCell: (params) => {
         const rowData = updatedData.find(row => row.id === params.row.id)
         const permission = params.row.permission
-        if (permission.edit) {
+        if (permission.edit_data) {
           return <IconTextField
             iconEnd={
               rowData ?
@@ -192,34 +189,37 @@ export default function DataBrowserAdmin() {
       type: 'actions',
       width: 60,
       getActions: (params) => {
-        return [
-          <GridActionsCellItem
-            icon={
-              <DoDisturbOnIcon
-                className='DeleteButton'/>
-            }
-            onClick={() => {
-              if (confirm(deleteWarning) === true) {
-                $.ajax({
-                  url: urls.api.datasetApi,
-                  method: 'DELETE',
-                  data: {
-                    'ids': JSON.stringify([params.row.id])
-                  },
-                  success: function () {
-                    tableRef?.current?.refresh()
-                  },
-                  error: function (error) {
-                    notify(error, NotificationStatus.ERROR)
-                  },
-                  beforeSend: beforeAjaxSend
-                });
-                return false;
+        const permission = params.row.permission
+        if (permission.edit_data) {
+          return [
+            <GridActionsCellItem
+              icon={
+                <DoDisturbOnIcon
+                  className='DeleteButton'/>
               }
-            }}
-            label="Delete"
-          />
-        ]
+              onClick={() => {
+                if (confirm(deleteWarning) === true) {
+                  $.ajax({
+                    url: urls.api.datasetApi,
+                    method: 'DELETE',
+                    data: {
+                      'ids': JSON.stringify([params.row.id])
+                    },
+                    success: function () {
+                      tableRef?.current?.refresh()
+                    },
+                    error: function (error) {
+                      notify(error, NotificationStatus.ERROR)
+                    },
+                    beforeSend: beforeAjaxSend
+                  });
+                  return false;
+                }
+              }}
+              label="Delete"
+            />
+          ]
+        } else return []
       }
     }
   ]
