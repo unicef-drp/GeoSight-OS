@@ -34,9 +34,6 @@ from geosight.permission.access import (
     delete_permission_resource, read_permission_resource,
     ResourcePermissionDenied
 )
-from geosight.permission.access.mixin import (
-    edit_data_permission_resource
-)
 
 
 class IndicatorValuesByGeometry(APIView):
