@@ -362,6 +362,9 @@ export default function ReferenceLayerCentroid({ map }) {
         reset(map)
         return;
       }
+      if (!showIndicatorMapLabel) {
+        return;
+      }
       // ---------------------------------------------------------
       // LABEL
       // ---------------------------------------------------------
@@ -403,7 +406,8 @@ export default function ReferenceLayerCentroid({ map }) {
     geometries, filteredGeometries, indicatorsData,
     indicatorShow, indicatorLayers,
     selectedIndicatorLayer, selectedIndicatorSecondLayer,
-    selectedAdminLevel, mapGeometryValue, referenceLayers
+    selectedAdminLevel, mapGeometryValue, referenceLayers,
+    showIndicatorMapLabel
   ]);
 
   return null
