@@ -167,9 +167,11 @@ export default function Indicators() {
       indicatorsWithDataset.map(indicatorDataset => {
           const dataset = indicatorDataset.dataset;
           const identifier = `${indicatorDataset.id}-${dataset}`
-          const indicator = new Indicator(
-            indicators.find(indicator => indicator.id === indicatorDataset.id)
-          )
+          const indicatorData = indicators.find(indicator => indicator.id === indicatorDataset.id)
+          if (!indicatorData) {
+            return null
+          }
+          const indicator = new Indicator(indicatorData)
 
           return <IndicatorRequest
             key={identifier}
