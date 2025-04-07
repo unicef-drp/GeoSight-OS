@@ -61,23 +61,6 @@ export default function IndicatorsForm() {
       const permission = params.row.permission
       // Create actions
       const actions = []
-      if (permission.delete) {
-        actions.unshift(
-          <GridActionsCellItem
-            icon={
-              <Tooltip title={`Go to data access.`}>
-                <a
-                  href={`${urls.api.permissionAdmin}?indicators=${params.id}&datasets=${referenceLayer?.identifier ? referenceLayer?.identifier : ''}`}>
-                  <div className='ButtonIcon'>
-                    <DataAccessActiveIcon/>
-                  </div>
-                </a>
-              </Tooltip>
-            }
-            label="Go to data access."
-          />)
-      }
-
       if (permission.edit) {
         actions.unshift(
           <GridActionsCellItem

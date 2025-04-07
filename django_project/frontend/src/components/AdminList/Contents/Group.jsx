@@ -51,19 +51,6 @@ export function resourceActions(params) {
         </Tooltip>
       }
       label="Update user in batch."
-    />,
-    <GridActionsCellItem
-      icon={
-        <Tooltip title={`Go to data access.`}>
-          <a
-            href={urls.api.permissionAdmin + '?groups=' + params.id + '#Groups'}>
-            <div className='ButtonIcon'>
-              <DataAccessActiveIcon/>
-            </div>
-          </a>
-        </Tooltip>
-      }
-      label="Go to data access."
     />
   )
   return actions;
