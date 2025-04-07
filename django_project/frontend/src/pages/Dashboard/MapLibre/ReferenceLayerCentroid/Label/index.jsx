@@ -38,6 +38,7 @@ export const showLabel = (map) => {
   if (hasLayer(map, INDICATOR_LABEL_ID)) {
     map.setLayoutProperty(INDICATOR_LABEL_ID, 'visibility', 'visible');
   }
+  Logger.layers(map)
 }
 
 /** Hide Label **/
@@ -45,10 +46,11 @@ export const hideLabel = (map) => {
   if (hasLayer(map, INDICATOR_LABEL_ID)) {
     map.setLayoutProperty(INDICATOR_LABEL_ID, 'visibility', 'none');
   }
+  Logger.layers(map)
 }
 
 /** Render label **/
-export const renderLabel = (map, features, config) => {
+export const renderLabel = (map, features, config, showIndicatorMapLabel) => {
   if (JSON.stringify(features) === JSON.stringify(lastFeatures)) {
     return
   }
@@ -65,6 +67,7 @@ export const renderLabel = (map, features, config) => {
     'text-anchor': 'bottom',
     'text-size': 14,
     'text-variable-anchor': ['center'],
+    'visibility': showIndicatorMapLabel ? 'visible' : 'none'
   }
   const paint = {
     'text-halo-blur': 2
@@ -153,4 +156,5 @@ export const renderLabel = (map, features, config) => {
     },
     Variables.LAYER_CATEGORY.LABEL
   )
+  Logger.layers(map)
 }

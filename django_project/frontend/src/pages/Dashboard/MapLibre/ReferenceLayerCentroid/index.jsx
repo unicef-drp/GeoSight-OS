@@ -36,8 +36,8 @@ import { ExecuteWebWorker } from "../../../../utils/WebWorker";
 import worker from "./Label/worker";
 import { renderChart, renderPin, resetCharts } from "./Chart";
 
-import './style.scss';
 import { IS_DEBUG } from "../../../../utils/logger";
+import './style.scss';
 
 let lastConfig = {};
 let lastRequest = null;
@@ -366,7 +366,7 @@ export default function ReferenceLayerCentroid({ map }) {
       // LABEL
       // ---------------------------------------------------------
       if (!geometriesData) {
-        renderLabel(map, [], labelConfig)
+        renderLabel(map, [], labelConfig, showIndicatorMapLabel)
         return;
       }
       const currRequest = new Date().getTime()
@@ -390,7 +390,7 @@ export default function ReferenceLayerCentroid({ map }) {
                 }
               );
             }
-            renderLabel(map, features, labelConfig)
+            renderLabel(map, features, labelConfig, showIndicatorMapLabel)
           }
         }
       )
