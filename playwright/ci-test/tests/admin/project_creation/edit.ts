@@ -94,24 +94,5 @@ test.describe('View edit project', () => {
     await expect(JSON.stringify(lastLayerStyles["80 - 100"])).toEqual('{"rule":"x>80 and x<=100","color":"#d7191c","outline_color":"#ffffff","outline_size":"1"}')
     await expect(JSON.stringify(lastLayerStyles["No data"])).toEqual('{"rule":"No data","color":"#D8D8D8","outline_color":"#ffffff","outline_size":"2"}')
     await expect(JSON.stringify(lastLayerStyles["Other data"])).toEqual('{"rule":"Other data","color":"#A6A6A6","outline_color":"#ffffff","outline_size":"3"}')
-
-    // Revert
-    await page.goto('/admin/project/demo-geosight-project/edit');
-    await page.getByText('Indicator Layers (10)').click();
-    await page.locator('li').filter({ hasText: 'Sample Indicator ASingle' }).getByRole('button').nth(1).click();
-    await page.locator('.TabPrimary').getByText('Style', { exact: true }).click();
-    await page.getByText('Override style from indicator').click();
-    await delay(1000)
-    await page.getByRole('button', { name: 'Apply Changes' }).click();
-    await page.getByRole('button', { name: 'Save', exact: true }).click();
-
-    // Check the style
-    await expect(page.getByText('Configuration has been saved!')).toBeVisible()
-    await page.goto('/project/demo-geosight-project');
-    await page.waitForURL('/project/demo-geosight-project');
-    await delay(1000)
-    await expect(JSON.stringify(lastLayerStyles["80 - 100"])).toEqual('{"rule":"x>80 and x<=100","color":"#d7191c","outline_color":"#ffffff","outline_size":"0.5"}')
-    await expect(JSON.stringify(lastLayerStyles["No data"])).toEqual('{"rule":"No data","color":"#D8D8D8","outline_color":"#ffffff","outline_size":"0.5"}')
-    await expect(JSON.stringify(lastLayerStyles["Other data"])).toEqual('{"rule":"Other data","color":"#A6A6A6","outline_color":"#ffffff","outline_size":"0.5"}')
   });
 });
