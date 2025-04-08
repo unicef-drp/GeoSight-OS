@@ -65,13 +65,20 @@ test.describe('View edit project', () => {
       window.scrollTo(0, document.body.scrollHeight);
     });
     await page.locator('input[name="rule_outline_size_0"]').fill('1');
+    await page.locator('input[name="rule_outline_size_1"]').fill('1');
     await page.locator('input[name="rule_outline_size_5"]').fill('2');
     await page.locator('input[name="rule_outline_size_6"]').fill('3');
     await page.locator('#RuleTable thead').click();
+    await expect(page.locator('input[name="rule_outline_size_0"]')).toHaveValue('1');
+    await expect(page.locator('input[name="rule_outline_size_1"]')).toHaveValue('1');
+    await expect(page.locator('input[name="rule_outline_size_5"]')).toHaveValue('2');
+    await expect(page.locator('input[name="rule_outline_size_6"]')).toHaveValue('3');
+    await delay(1000)
     await page.getByRole('button', { name: 'Apply Changes' }).click();
     await page.getByRole('button', { name: 'Save', exact: true }).click();
 
     // Check the style
+    await expect(page.getByText('Configuration has been saved!')).toBeVisible()
     await page.goto('/project/demo-geosight-project');
     await page.waitForURL('/project/demo-geosight-project');
     await delay(1000)
@@ -89,6 +96,7 @@ test.describe('View edit project', () => {
     await page.getByRole('button', { name: 'Save', exact: true }).click();
 
     // Check the style
+    await expect(page.getByText('Configuration has been saved!')).toBeVisible()
     await page.goto('/project/demo-geosight-project');
     await page.waitForURL('/project/demo-geosight-project');
     await delay(1000)
