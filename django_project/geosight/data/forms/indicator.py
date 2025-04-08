@@ -21,6 +21,7 @@ from django.forms.models import model_to_dict
 from geosight.data.forms.style import BaseStyleForm
 from geosight.data.models.indicator import Indicator, IndicatorGroup
 from geosight.data.models.style.base import Style
+from geosight.data.models.style.indicator_style import IndicatorStyleType
 from geosight.data.serializer.style import StyleSerializer
 
 
@@ -125,9 +126,13 @@ class IndicatorForm(BaseStyleForm):
         except IndicatorGroup.DoesNotExist:
             initial['group'] = None
         try:
-            initial['style_data'] = StyleSerializer(
-                Style.objects.get(id=initial['style'])
-            ).data
+            if indicator.style_type == IndicatorStyleType.LIBRARY:
+                initial['style_data'] = StyleSerializer(
+                    Style.objects.get(id=initial['style'])
+                ).data
+            else:
+                initial['style'] = indicator.style_obj(None)
+                initial['style_data'] = None
         except Style.DoesNotExist:
             initial['style_data'] = None
         return initial
