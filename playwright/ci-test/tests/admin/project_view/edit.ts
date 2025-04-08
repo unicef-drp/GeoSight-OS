@@ -12,6 +12,16 @@ test.describe('View edit project', () => {
 
   // A use case tests scenarios
   test('Edit project', async ({ page }) => {
+    // Check extent
+    await page.evaluate(() => {
+      window.scrollTo(0, document.body.scrollHeight);
+    });
+    await delay(2000)
+    await expect(page.locator('.ExtentManualInput input').nth(0)).toHaveValue('32.90038883686066')
+    await expect(page.locator('.ExtentManualInput input').nth(1)).toHaveValue('13.63887097489157')
+    await expect(page.locator('.ExtentManualInput input').nth(2)).toHaveValue('54.19921517372131')
+    await expect(page.locator('.ExtentManualInput input').nth(3)).toHaveValue('-5.586827947149395')
+
     // Check popup config
     await page.getByText('Indicator Layers (10)').click();
     await page.locator('li').filter({ hasText: 'Sample Indicator ASingle' }).getByRole('button').nth(1).click();

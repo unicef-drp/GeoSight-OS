@@ -142,7 +142,7 @@ const MapConfig = memo(({}: Props) => {
         referenceLayerData?.data?.bbox?.length &&
         JSON.stringify(referenceLayerData?.data?.bbox) !== JSON.stringify(extentState?.current)
       ) {
-        if (!!extent || !isInit) {
+        if (!!extent && !isInit) {
           setEditedExtent(referenceLayerData?.data?.bbox)
         }
         setIsInit(false)
