@@ -38,6 +38,7 @@ const MapConfig = memo(({}: Props) => {
       identifier
       // @ts-ignore
     } = useSelector(state => state.dashboard.data?.referenceLayer);
+    const identifierState = useRef<null | string>(identifier);
 
     const [map, setMap] = useState(null);
     const [editableLayers, setEditableLayers] = useState(null);
@@ -142,8 +143,9 @@ const MapConfig = memo(({}: Props) => {
         referenceLayerData?.data?.bbox?.length &&
         JSON.stringify(referenceLayerData?.data?.bbox) !== JSON.stringify(extentState?.current)
       ) {
-        if (!!extent && !isInit) {
+        if (!identifierState.current || (!!extent && !isInit)) {
           setEditedExtent(referenceLayerData?.data?.bbox)
+          identifierState.current = identifier
         }
         setIsInit(false)
       } else if (referenceLayerData) {
