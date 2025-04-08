@@ -177,7 +177,7 @@ export function newShade(hexColor, magnitude) {
 };
 
 /*** Return url params */
-export function urlParams(url) {
+export function urlParams(url = null) {
   if (!url) {
     url = window.location.href
   }

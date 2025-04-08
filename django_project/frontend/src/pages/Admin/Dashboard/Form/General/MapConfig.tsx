@@ -21,6 +21,7 @@ import 'leaflet-draw';
 import { Actions } from "../../../../../store/dashboard";
 import { debounce } from "@mui/material/utils";
 import { Extent } from "../../../../../types/Geometry";
+import { urlParams } from "../../../../../utils/main";
 
 
 export interface Props {
@@ -28,6 +29,7 @@ export interface Props {
 
 /** Map config component. */
 const MapConfig = memo(({}: Props) => {
+    const { dataset_id } = urlParams() as { dataset_id: string };
     const extentState = useRef<Extent | null | boolean>();
     const dispatcher = useDispatch();
 
@@ -38,6 +40,7 @@ const MapConfig = memo(({}: Props) => {
       identifier
       // @ts-ignore
     } = useSelector(state => state.dashboard.data?.referenceLayer);
+    const identifierState = useRef<null | string>(identifier);
 
     const [map, setMap] = useState(null);
     const [editableLayers, setEditableLayers] = useState(null);
@@ -142,8 +145,9 @@ const MapConfig = memo(({}: Props) => {
         referenceLayerData?.data?.bbox?.length &&
         JSON.stringify(referenceLayerData?.data?.bbox) !== JSON.stringify(extentState?.current)
       ) {
-        if (!!extent || !isInit) {
+        if (dataset_id || !identifierState.current || (!!extent && !isInit)) {
           setEditedExtent(referenceLayerData?.data?.bbox)
+          identifierState.current = identifier
         }
         setIsInit(false)
       } else if (referenceLayerData) {
