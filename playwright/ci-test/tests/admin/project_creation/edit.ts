@@ -101,6 +101,7 @@ test.describe('View edit project', () => {
     await page.locator('li').filter({ hasText: 'Sample Indicator ASingle' }).getByRole('button').nth(1).click();
     await page.locator('.TabPrimary').getByText('Style', { exact: true }).click();
     await page.getByText('Override style from indicator').click();
+    await delay(1000)
     await page.getByRole('button', { name: 'Apply Changes' }).click();
     await page.getByRole('button', { name: 'Save', exact: true }).click();
 
