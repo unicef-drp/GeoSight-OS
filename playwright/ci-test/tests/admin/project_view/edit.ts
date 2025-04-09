@@ -12,6 +12,29 @@ test.describe('View edit project', () => {
 
   // A use case tests scenarios
   test('Edit project', async ({ page }) => {
+    let lastLayerStyles = null
+    page.on('console', msg => {
+      if (msg.text().indexOf('LAYER_STYLE:') !== -1) {
+        try {
+          const log = msg.text().replace('LAYER_STYLE:', '')
+          if (log) {
+            lastLayerStyles = {}
+            JSON.parse(log).map(style => {
+              lastLayerStyles[style.name] = {
+                rule: style.rule,
+                color: style.color,
+                outline_color: style.outline_color,
+                outline_size: "" + style.outline_size
+              }
+            })
+          }
+        } catch (e) {
+          console.log(e)
+
+        }
+      }
+    });
+
     // Check extent
     await page.evaluate(() => {
       window.scrollTo(0, document.body.scrollHeight);
