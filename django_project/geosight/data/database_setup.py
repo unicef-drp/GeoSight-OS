@@ -1,6 +1,4 @@
 # coding=utf-8
-from __future__ import absolute_import, unicode_literals
-
 """
 GeoSight is UNICEF's geospatial web-based business intelligence platform.
 
@@ -13,23 +11,19 @@ Contact : geosight-no-reply@unicef.org
 
 """
 __author__ = 'irwan@kartoza.com'
-__date__ = '13/06/2023'
+__date__ = '22/08/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from django.apps import AppConfig
+from django.db import connection
 
 
-class Config(AppConfig):
-    """GeoSight Config App."""
-
-    label = 'geosight_data'
-    name = 'geosight.data'
-    verbose_name = "GeoSight Data"
-
-    def ready(self):
-        """Create temp schema."""
-        from geosight.data.database_setup import create_pg_trgm_extension
-        # create_pg_trgm_extension()
-
-
-default_app_config = 'geosight.data.Config'
+def create_pg_trgm_extension():
+    """Create pg_trgm extension."""
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                f'CREATE EXTENSION IF NOT EXISTS pg_trgm'
+            )
+        print('CREATE EXTENSION')
+    except Exception:
+        pass
