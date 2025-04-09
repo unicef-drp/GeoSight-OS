@@ -21,8 +21,8 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from core.models.color import ColorPalette
-from core.models.singleton import SingletonModel
 from core.models.general import AbstractFileCleanup
+from core.models.singleton import SingletonModel
 
 DEFAULT_OUTLINE_COLOR = '#FFFFFF'
 DEFAULT_OUTLINE_SIZE = 0.5
@@ -324,6 +324,28 @@ class SitePreferences(AbstractFileCleanup, SingletonModel):
         help_text=(
             'Config for machine info fetcher.'
         )
+    )
+
+    # -----------------------------------------------
+    # HELPS
+    # -----------------------------------------------
+    send_feedback_url = models.TextField(
+        default='',
+        help_text=_(
+            'Add a feedback URL in the Help section. '
+            'You can use a mailto: link, like mailto:example@email.com, '
+            'to allow users to send an email.'
+        ),
+        null=True, blank=True
+    )
+    contact_us_url = models.TextField(
+        default='',
+        help_text=_(
+            'Add a Contact Us URL in the Help section. '
+            'You can use a mailto: link, like mailto:example@email.com, '
+            'to allow users to send an email.'
+        ),
+        null=True, blank=True
     )
 
     class Meta:  # noqa: D106

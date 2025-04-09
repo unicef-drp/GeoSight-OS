@@ -21,9 +21,8 @@ import React, {
 } from 'react';
 import { Button } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
-
-import Block from "./Block";
 import { ChatBubbleIcon, CloseIcon, EmailIcon } from "../Icons";
+import Block from "./Block";
 
 import './style.scss';
 
@@ -100,22 +99,26 @@ export const HelpCenter = forwardRef(({}, ref) => {
         <div className='HelpCenter-Footer'>
           <a
             tabIndex="-1"
-            href='#'>
+            href={preferences.send_feedback_url}
+            target="_blank"
+          >
             <ThemeButton
               tabIndex="-1"
               variant="basic Basic"
-              disabled={true}
+              disabled={!preferences.send_feedback_url}
             >
               <EmailIcon/> Send Feedback
             </ThemeButton>
           </a>
           <a
             tabIndex="-1"
-            href='#'>
+            href={preferences.contact_us_url}
+            target="_blank"
+          >
             <ThemeButton
               tabIndex="-1"
               variant="basic Basic"
-              disabled={true}
+              disabled={!preferences.contact_us_url}
             >
               <ChatBubbleIcon/> Contact Us
             </ThemeButton>
