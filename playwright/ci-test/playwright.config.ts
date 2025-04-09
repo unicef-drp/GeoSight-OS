@@ -47,8 +47,7 @@ export default defineConfig({
       use: {
         ...devices['Desktop Chrome'],
         // Use prepared auth state.
-        storageState: 'states/.auth/admin.json',
-        viewport: { width: 1920, height: 1080 }
+        storageState: 'states/.auth/admin.json'
       },
       dependencies: ['admin-setup'],
     },
@@ -65,8 +64,7 @@ export default defineConfig({
       use: {
         ...devices['Desktop Chrome'],
         // Use prepared auth state.
-        storageState: 'states/.auth/contributor.json',
-        viewport: { width: 1920, height: 1080 }
+        storageState: 'states/.auth/contributor.json'
       },
       dependencies: ['contributor-setup'],
     },
