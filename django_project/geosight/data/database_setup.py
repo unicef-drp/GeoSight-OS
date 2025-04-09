@@ -22,7 +22,7 @@ def create_pg_trgm_extension():
     try:
         with connection.cursor() as cursor:
             cursor.execute(
-                f'CREATE EXTENSION IF NOT EXISTS pg_trgm'
+                'CREATE EXTENSION IF NOT EXISTS pg_trgm'
             )
         print('CREATE EXTENSION')
     except Exception:
