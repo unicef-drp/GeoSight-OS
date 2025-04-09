@@ -68,6 +68,10 @@ export function IndicatorLayers() {
 
   /** Update current indicator **/
   const updateCurrentIndicator = (indicatorID, Action) => {
+    if (!indicatorID) {
+      dispatch(Action.change(null))
+      return
+    }
     const indicator = indicatorLayers.filter(indicator => {
       return ('' + indicator.id) === ('' + indicatorID)
     })[0]

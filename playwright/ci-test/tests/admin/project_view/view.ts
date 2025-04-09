@@ -271,11 +271,17 @@ test.describe('View project', () => {
     await expect(page.getByText('Measure distances and areas')).toBeVisible();
 
     // COMPARE
+    await expect(page.locator('.MapLegendSectionTitle').nth(0)).toContainText('Dynamic Layer based on a list of interventions')
+    await expect(page.locator('.MapLegendSectionTitle').nth(1)).toBeHidden()
     await page.getByTitle('Turn on compare Layers').click();
     await page.getByLabel(kenyaLayer).click();
     await expect(lastLayers.includes("reference-layer-fill-0,reference-layer-outline-0,reference-layer-fill-1,reference-layer-outline-1")).toBeTruthy();
+    await expect(page.locator('.MapLegendSectionTitle').nth(0)).toContainText('Dynamic Layer based on a list of interventions (Outline)')
+    await expect(page.locator('.MapLegendSectionTitle').nth(1)).toContainText('Kenya Indicator A (Inner)')
     await page.getByLabel(kenyaLayer).click();
     await page.getByTitle('Turn off compare Layers').click();
+    await expect(page.locator('.MapLegendSectionTitle').nth(0)).toContainText('Dynamic Layer based on a list of interventions')
+    await expect(page.locator('.MapLegendSectionTitle').nth(1)).toBeHidden()
   }
 
   // A use case tests scenarios
