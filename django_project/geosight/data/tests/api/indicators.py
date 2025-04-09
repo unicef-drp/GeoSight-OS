@@ -125,3 +125,47 @@ class IndicatorListApiTest(BasePermissionTest.TestCase):
         response = self.assertRequestGetView(
             reverse('indicator-list-api'), 200, self.creator)
         self.assertEqual(len(response.json()), 0)
+
+    def test_similarity_api(self):
+        """Test similarity API."""
+        Indicator.objects.create(name='Indicator A')
+        Indicator.objects.create(name='Indicator B')
+        Indicator.objects.create(name='Indicator C')
+        Indicator.objects.create(name='Example A')
+        url = reverse('indicator-search-similarity-api')
+        self.assertRequestPostView(url, 403, {"name": "indicator"})
+        response = self.assertRequestPostView(
+            url, 200, {"name": "indicator"}, self.admin
+        )
+        data = response.data
+        self.assertEqual(len(data), 3)
+        self.assertEqual(data[0]['name'], 'Indicator A')
+        self.assertEqual(data[0]['name_score'], 0.8333333)
+        self.assertEqual(data[1]['name'], 'Indicator B')
+        self.assertEqual(data[1]['name_score'], 0.8333333)
+        self.assertEqual(data[2]['name'], 'Indicator C')
+        self.assertEqual(data[2]['name_score'], 0.8333333)
+
+        response = self.assertRequestPostView(
+            url, 200, {"name": "example"}, self.admin
+        )
+        data = response.data
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]['name'], 'Example A')
+        self.assertEqual(data[0]['name_score'], 0.8)
+
+        response = self.assertRequestPostView(
+            url, 200, {"name": "dicator A"}, self.admin
+        )
+        data = response.data
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]['name'], 'Indicator A')
+        self.assertEqual(data[0]['name_score'], 0.5714286)
+
+        response = self.assertRequestPostView(
+            url, 200, {"name": "Example A"}, self.admin
+        )
+        data = response.data
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]['name'], 'Example A')
+        self.assertEqual(data[0]['name_score'], 1)

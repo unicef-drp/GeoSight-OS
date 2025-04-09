@@ -28,7 +28,7 @@ class Config(AppConfig):
 
     def ready(self):
         """Create temp schema."""
-        from core.database_setup import create_temp_schema
+        from geosight.importer.database_setup import create_temp_schema
         create_temp_schema()
 
 
