@@ -106,6 +106,7 @@ test.describe('Create project', () => {
     await page.locator('.MuiMenu-root .MuiButtonBase-root .error').click();
     await expect(page.locator('.modal--content ')).toContainText(`Are you sure you want to delete : Test Project Override Config?`);
     await page.getByRole('button', { name: 'Confirm' }).click();
+    await page.waitForURL('/admin/project/');
     await expect(page.getByText('Create New Project')).toBeVisible();
     await expect(page.getByText('Test Project Override Config')).toBeHidden();
   });

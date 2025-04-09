@@ -365,7 +365,7 @@ export function IndicatorOtherRule(
     rule.outline_size = outlineSize
     rule.active = active
     onChange()
-  }, [name, color, outlineColor, active])
+  }, [name, color, outlineColor, outlineSize, active])
 
   // When the rule changed
   useEffect(() => {
