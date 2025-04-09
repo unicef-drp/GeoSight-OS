@@ -360,7 +360,6 @@ export function ReferenceLayer(
         const geoms = Object.keys(indicatorValueByGeometry)
         geoms.sort()
         Logger.log('VALUED_GEOM:', geoms)
-        // Need to trigger workflow
         Logger.log('LAYER_STYLE:', JSON.stringify(currentIndicatorLayer.style))
       }
       let indicatorSecondValueByGeometry = {}
