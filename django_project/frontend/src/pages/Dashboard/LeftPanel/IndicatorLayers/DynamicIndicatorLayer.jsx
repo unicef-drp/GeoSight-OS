@@ -103,7 +103,10 @@ export default function DynamicIndicatorLayer({ indicatorLayer }) {
       fetchDynamicLayerData(
         indicatorLayer, indicators, indicatorsData, geoField,
         error => {
-          dispatch(Actions.IndicatorsData.receive([], error, id))
+          if (error !== prevState.lastData) {
+            dispatch(Actions.IndicatorsData.receive([], error, id))
+            prevState.lastData = error
+          }
         }, response => {
           if (JSON.stringify(response) !== prevState.lastData) {
             dispatch(Actions.IndicatorsData.receive(response, '', id))

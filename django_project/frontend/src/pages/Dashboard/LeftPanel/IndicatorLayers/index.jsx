@@ -27,7 +27,7 @@ import { Actions } from '../../../../store/dashboard'
 import {
   dataStructureToTreeData
 } from "../../../../components/SortableTreeForm/utilities";
-import SidePanelTreeView from "../../../../components/SidePanelTree";
+import SidePanelTreeView from "../../../../components/Map/SidePanelTree";
 import { returnWhereToDict } from "../../../../utils/queryExtraction";
 import RelatedTableLayer, {
   RelatedTableLayerFilter

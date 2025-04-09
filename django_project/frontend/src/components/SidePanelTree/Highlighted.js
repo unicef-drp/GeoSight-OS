@@ -19,7 +19,9 @@ import _ from 'lodash';
 
 /**
  * Description layer.
- * @param {Object} layer Layer data.
+ * @param {string} text text.
+ * @param {string} highlight highlight.
+ * @param {boolean} isGroup isGroup.
  */
 export default function Highlighted(
   { text = '', highlight = '', isGroup = false }

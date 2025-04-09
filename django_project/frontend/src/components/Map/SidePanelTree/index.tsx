@@ -9,93 +9,37 @@
  *     (at your option) any later version.
  *
  * __author__ = 'irwan@kartoza.com'
- * __date__ = '13/06/2023'
+ * __date__ = '09/04/2025'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
 import React, {
+  ReactNode,
   useEffect,
   useLayoutEffect,
-  useMemo,
   useRef,
   useState
 } from 'react';
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { Checkbox, IconButton, Paper } from "@mui/material";
+import { Checkbox, Paper } from "@mui/material";
 import { TreeView } from '@mui/x-tree-view/TreeView';
 import { TreeItem } from '@mui/x-tree-view/TreeItem';
-import { debounce } from '@mui/material/utils';
-import CircularProgress from '@mui/material/CircularProgress';
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ClearIcon from '@mui/icons-material/Clear';
-import Radio from "@mui/material/Radio";
-import TextField from "@mui/material/TextField";
 import {
   findAllGroups,
   flattenTree,
   getDepth
-} from "../SortableTreeForm/utilities";
+} from "../../SortableTreeForm/utilities";
 
-import LayerDescription from "./Description";
-import Highlighted from "./Highlighted";
-import { MagnifyIcon } from "../Icons";
-import { dictDeepCopy } from "../../utils/main";
-import SidePanelSlicers from './SidePanelSlicers';
-
-import './style.scss';
+import { dictDeepCopy } from "../../../utils/main";
+import Highlighted from "../../SidePanelTree/Highlighted";
+import FilterLayer from "./FilterLayer";
+import IndicatorLayer from "./IndicatorLayer";
 
 
 const TREE_INDENT_SPACE = 40
-let unexpandedGroups = []
-
-
-/***
- * Filter layer
- */
-function FilterLayer({ placeholder, inputChanged }) {
-  const [value, setValue] = useState('')
-
-  const update = useMemo(
-    () =>
-      debounce(
-        (input) => {
-          inputChanged(input)
-        },
-        400
-      ),
-    []
-  )
-
-  const onChange = (e) => {
-    setValue(e.target.value)
-  }
-
-  useEffect(() => {
-    update(value)
-  }, [value])
-
-  return <TextField
-    className='PanelSearchBox'
-    variant={'outlined'}
-    value={value}
-    onKeyPress={(e) => {
-      e.key === 'Enter' && e.preventDefault();
-    }}
-    placeholder={placeholder ? placeholder : ''}
-    onChange={onChange}
-    InputProps={{
-      endAdornment: (
-        <IconButton
-          type="button" sx={{ p: '10px' }}
-          aria-label="search"
-          disabled={value.length === 0}
-          onClick={() => setValue('')}>
-          {value ? <ClearIcon/> : <MagnifyIcon/>}
-        </IconButton>
-      )
-    }}/>
-}
+let unexpandedGroups: any = []
 
 /**
  * SidePanelTreeView component
@@ -113,6 +57,29 @@ function FilterLayer({ placeholder, inputChanged }) {
  * @param {function} onChange callback function to call when selected data changed
  * @param {function} otherInfo Other info that will be rendered before info icon
  */
+export interface Props {
+  data: any;
+  /**
+   * @param {array} data tree data, format = [{
+   *   'id': 'group_id',
+   *   'children': [{
+   *     'id': 'data_id',
+   *     'children': []
+   *   }]
+   * }]
+   */
+  parentSelected: string[];
+  maxSelect: number;
+  onChange: (value: string[]) => void;
+
+  otherInfo: ReactNode;
+  resetSelection: boolean;
+
+  placeholder: string;
+  selectable: boolean;
+  groupSelectable: boolean;
+}
+
 export default function SidePanelTreeView(
   {
     data,
@@ -123,7 +90,7 @@ export default function SidePanelTreeView(
     onChange = null,
     otherInfo = null,
     ...props
-  }) {
+  }: Props) {
   const [nodes, setNodes] = useState([])
   const [selected, setSelected] = useState([])
   const [selectedGroups, setSelectedGroups] = useState([])
@@ -145,7 +112,7 @@ export default function SidePanelTreeView(
       }
     }
     if (maxSelect <= 2 && newSelected.length > 0) {
-      setSelected([...new Set(newSelected)])
+      setSelected(Array.from(new Set(newSelected)))
     }
   }, [data])
 
@@ -179,8 +146,8 @@ export default function SidePanelTreeView(
     }
   }, [maxSelect])
 
-  const getGroups = (groupData) => {
-    const _groups = [];
+  const getGroups = (groupData: any[]) => {
+    const _groups: any[] = [];
     for (const _data of groupData) {
       if (_data.children.length > 0) {
         _groups.push(...getGroups(_data.children))
@@ -194,7 +161,7 @@ export default function SidePanelTreeView(
     return _groups;
   }
 
-  const selectItem = (e) => {
+  const selectItem = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.stopPropagation();
     const checked = e.target.checked;
     const nodeId = e.target.value;
@@ -225,8 +192,8 @@ export default function SidePanelTreeView(
     setSelected(_selectedIds)
   }
 
-  const getChildIds = (_data) => {
-    const _selectedIds = []
+  const getChildIds = (_data: any) => {
+    const _selectedIds: any[] = []
     for (const item of _data.children) {
       if (!item.data || item.isGroup) {
         if (item.children) {
@@ -241,10 +208,10 @@ export default function SidePanelTreeView(
     return _selectedIds;
   }
 
-  const selectGroup = (e) => {
+  const selectGroup = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.stopPropagation();
     const checked = e.target.checked;
-    let _selectedIds = [];
+    let _selectedIds: any[] = [];
     let _selectedGroups = [e.target.value]
     const allGroups = findAllGroups(data);
     let parentGroup = e.target.value;
@@ -269,18 +236,18 @@ export default function SidePanelTreeView(
     setSelected(_selectedIds)
   }
 
-  const handleToggle = (event, nodeIds) => {
+  const handleToggle = (event: React.ChangeEvent<HTMLInputElement>, nodeIds: string[]) => {
     setGroups(nodeIds);
-    unexpandedGroups = getGroups(data).filter(id => !nodeIds.includes(id))
+    unexpandedGroups = getGroups(data).filter((id: string) => !nodeIds.includes(id))
   };
 
-  const handleSelect = (event, nodeIds) => {
+  const handleSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.stopPropagation();
   };
 
-  function filterData(data, query) {
+  function filterData(data: any, query: any) {
     try {
-      return data.filter(node => {
+      return data.filter((node: any) => {
         if (node.name.toLowerCase().includes(query.toLowerCase())) {
           return true;
         }
@@ -294,77 +261,33 @@ export default function SidePanelTreeView(
     }
   }
 
-  const renderTree = (treeData) => {
+  const renderTree = (treeData: any) => {
     const nodesDataId = treeData.data ? '' + treeData.data.id : treeData.id;
-    let loading = treeData?.data?.loading;
-    const disabled = treeData.data ? treeData.data.disabled ? true : !!treeData.data.error : false;
     const itemDeep = getDepth(data, treeData.id)
     const maxWord = parseInt(
       '' + ((width - (TREE_INDENT_SPACE * itemDeep)) / 9)
     )
-    let id = ''
-    if (treeData?.data && !treeData?.data?.layer_type) {
-      id = 'Indicator-Radio-' + treeData?.data?.id
-    }
     if (!treeData.name) {
       return
     }
     const checked = selected.indexOf(nodesDataId) >= 0
 
     return <TreeItem
-      className={'TreeItem' + (disabled ? ' Disabled' : '') + (checked ? ' Mui-selected' : '')}
-      disabled={disabled}
+      className={'TreeItem SidePanelTreeItem' + (checked ? ' Mui-selected' : '')}
       key={nodesDataId}
       nodeId={nodesDataId}
       label={
         !treeData.isGroup && selectable ?
-          <div>
-            <FormControlLabel
-              control={
-                <div id={id}
-                     className={'PanelInput ' + (loading ? 'Loading' : '')}>
-                  {
-                    maxSelect > 1 ?
-                      <Checkbox
-                        tabIndex="-1"
-                        className='PanelCheckbox'
-                        size={'small'}
-                        disabled={disabled}
-                        value={nodesDataId}
-                        checked={checked}
-                        onChange={selectItem}/> :
-                      <Radio
-                        tabIndex="-1"
-                        className='PanelRadio'
-                        size={'small'}
-                        disabled={disabled}
-                        value={nodesDataId}
-                        checked={checked}
-                        onChange={selectItem}/>
-                  }
-                  {loading ? <CircularProgress/> : null}
-                </div>
-              }
-              label={
-                <span>
-                  <Highlighted
-                    text={treeData.name.replace(new RegExp(`(\\w{${maxWord}})(?=\\w)`), '$1')}
-                    highlight={filterText}/>
-                  {
-                    otherInfo ? otherInfo(treeData) : null
-                  }
-                  <LayerDescription layer={treeData?.data}/>
-                </span>
-              }
-            />
-            {treeData.data?.legend && selected.indexOf(nodesDataId) >= 0 ?
-              <div
-                dangerouslySetInnerHTML={{ __html: treeData.data?.legend }}></div> : ''}
-            {
-              treeData.data.related_table && selected.indexOf(nodesDataId) >= 0 ?
-                <SidePanelSlicers data={treeData.data}/> : null
-            }
-          </div> : groupSelectable ?
+          !treeData.data ? null : <IndicatorLayer
+            layer={treeData.data}
+            nodesDataId={nodesDataId}
+            checked={checked}
+            selected={selected}
+            filterText={filterText}
+            selectItem={selectItem}
+            maxWord={maxWord}
+          />
+          : groupSelectable ?
             <FormControlLabel
               className='GroupSelectable Group'
               onClick={(e) => e.stopPropagation()}
@@ -375,34 +298,39 @@ export default function SidePanelTreeView(
                   onChange={selectGroup} className='PanelCheckbox' size={'small'}
                   value={treeData.id}/>}
               label={
+                // @ts-ignore
                 <Highlighted
-                  isGroup={true}
                   text={treeData.name ? treeData.name : 'No Name'}
-                  highlight={filterText}/>}
+                  highlight={filterText} isGroup={true}/>
+              }
             /> :
+            // @ts-ignore
             <Highlighted
-              isGroup={true}
               text={treeData.name ? treeData.name : 'No Name'}
-              highlight={filterText}/>
+              highlight={filterText}
+              isGroup={true}
+            />
       }>
       {Array.isArray(treeData.children)
-        ? treeData.children.map((node) => renderTree(node))
+        ? treeData.children.map((node: any) => renderTree(node))
         : null}
     </TreeItem>
   };
 
   return (
     <div className='TreeView'>
-      <Paper component="form"
-             sx={{
-               p: '2px 4px',
-               display: 'flex',
-               alignItems: 'center', width: '100%'
-             }}
+      <Paper
+        component="form"
+        sx={{
+          p: '2px 4px',
+          display: 'flex',
+          alignItems: 'center', width: '100%'
+        }}
       >
         <FilterLayer
           placeholder={props.placeholder}
-          inputChanged={input => setFilterText(input)}/>
+          inputChanged={input => setFilterText(input)}
+        />
       </Paper>
       <TreeView
         aria-label="rich object"
@@ -414,7 +342,10 @@ export default function SidePanelTreeView(
         defaultExpandIcon={<ExpandLessIcon/>}
         sx={{ flexGrow: 1, maxWidth: '100%', paddingRight: '1em' }}
       >
-        {nodes.length > 0 ? nodes.map(treeData => renderTree(treeData)) : 'No data'}
+        {
+          nodes.length > 0 ? nodes.map(treeData => renderTree(treeData)) :
+            <div style={{ margin: "1rem 0" }}>No data</div>
+        }
       </TreeView>
     </div>
   );

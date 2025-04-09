@@ -39,7 +39,8 @@ export default function RequestDataIndicator(
     secondSeries,
     config,
     setChartData,
-    setRequestProgress
+    setRequestProgress,
+    setError
   }
 ) {
   const prevState = useRef();
@@ -104,140 +105,145 @@ export default function RequestDataIndicator(
     // Request all data
     (
       async () => {
-        setChartData(null)
+        try {
+          setChartData(null)
+          setError('')
 
-        // Request data
-        const newDatasets = []
-        let min = null
-        let max = null
+          // Request data
+          const newDatasets = []
+          let min = null
+          let max = null
 
-        const total = indicatorSeries.length * geographicUnits.length;
-        for (var x = 0; x < indicatorSeries.length; x++) {
-          const indicator = indicatorSeries[x]
-          if (!indicator.id) {
-            return
-          }
-          const indicatorObj = new Indicator({ id: indicator.id });
-          for (var y = 0; y < geographicUnits.length; y++) {
-            if (prevState.session !== session) {
+          const total = indicatorSeries.length * geographicUnits.length;
+          for (var x = 0; x < indicatorSeries.length; x++) {
+            const indicator = indicatorSeries[x]
+            if (!indicator.id) {
               return
             }
+            const indicatorObj = new Indicator({ id: indicator.id });
+            for (var y = 0; y < geographicUnits.length; y++) {
+              if (prevState.session !== session) {
+                return
+              }
 
-            const unit = geographicUnits[y]
-            if (!unit.id) {
-              return
-            }
-            const parameters = {
-              frequency: interval,
-              date__lte: dateLabel(maxDateFilter ? new Date(maxDateFilter) : new Date())
-            }
-            try {
-              parameters.geom_id = unit.name.split('(')[1].replace(')', '')
-            } catch (err) {
-              parameters.concept_uuid = unit.id
-            }
-            if (minDateFilter) {
-              parameters['date__gte'] = dateLabel(new Date(minDateFilter))
-            }
-            // ------------------------------------------------
-            // This is for the data from indicator
-            // ------------------------------------------------
-            let response = []
-            if (!('' + indicator.id).includes('layer_')) {
-              const output = await indicatorObj.values(parameters);
-              response = output.map(row => {
-                const date = new Date(row.date)
-                const time = new Date(row.date).getTime()
-                const label = dateLabel(date, interval)
-                if (!min || time < min) {
-                  min = time
-                }
-                if (!max || time > max) {
-                  max = time
-                }
-                return {
-                  time: label,
-                  value: row.value
-                }
-              })
-            } else {
+              const unit = geographicUnits[y]
+              if (!unit.id) {
+                return
+              }
+              const parameters = {
+                frequency: interval,
+                date__lte: dateLabel(maxDateFilter ? new Date(maxDateFilter) : new Date())
+              }
+              try {
+                parameters.geom_id = unit.name.split('(')[1].replace(')', '')
+              } catch (err) {
+                parameters.concept_uuid = unit.id
+              }
+              if (minDateFilter) {
+                parameters['date__gte'] = dateLabel(new Date(minDateFilter))
+              }
               // ------------------------------------------------
-              // This is for the data from indicator layer
+              // This is for the data from indicator
               // ------------------------------------------------
-              const indicatorLayer = indicatorLayersLikeIndicator(indicatorLayers).find(layer => indicatorLayerId(layer) === indicator.id);
-              if (indicatorLayer) {
-                const dynamicLayerIndicators = dynamicLayerIndicatorList(indicatorLayer, indicators)
-                const contextByDate = {}
-                for (let x = 0; x < dynamicLayerIndicators.length; x++) {
-                  const indicator = dynamicLayerIndicators[x]
-                  const output = await (new Indicator({ id: indicator.id })).values(parameters);
-                  output.map(row => {
-                    const date = new Date(row.date)
-                    const time = new Date(row.date).getTime()
-                    const label = dateLabel(date, interval)
-                    if (!min || time < min) {
-                      min = time
-                    }
-                    if (!max || time > max) {
-                      max = time
-                    }
-                    if (!contextByDate[label]) {
-                      contextByDate[label] = {}
-                    }
-                    contextByDate[label][indicator.shortcode] = row.value
-                  })
-                }
-                for (const [date, value] of Object.entries(contextByDate)) {
-                  response.push({
-                    time: date,
-                    value: dynamicLayerData(indicatorLayer, { values: value })
-                  })
+              let response = []
+              if (!('' + indicator.id).includes('layer_')) {
+                const output = await indicatorObj.values(parameters);
+                response = output.map(row => {
+                  const date = new Date(row.date)
+                  const time = new Date(row.date).getTime()
+                  const label = dateLabel(date, interval)
+                  if (!min || time < min) {
+                    min = time
+                  }
+                  if (!max || time > max) {
+                    max = time
+                  }
+                  return {
+                    time: label,
+                    value: row.value
+                  }
+                })
+              } else {
+                // ------------------------------------------------
+                // This is for the data from indicator layer
+                // ------------------------------------------------
+                const indicatorLayer = indicatorLayersLikeIndicator(indicatorLayers).find(layer => indicatorLayerId(layer) === indicator.id);
+                if (indicatorLayer) {
+                  const dynamicLayerIndicators = dynamicLayerIndicatorList(indicatorLayer, indicators)
+                  const contextByDate = {}
+                  for (let x = 0; x < dynamicLayerIndicators.length; x++) {
+                    const indicator = dynamicLayerIndicators[x]
+                    const output = await (new Indicator({ id: indicator.id })).values(parameters);
+                    output.map(row => {
+                      const date = new Date(row.date)
+                      const time = new Date(row.date).getTime()
+                      const label = dateLabel(date, interval)
+                      if (!min || time < min) {
+                        min = time
+                      }
+                      if (!max || time > max) {
+                        max = time
+                      }
+                      if (!contextByDate[label]) {
+                        contextByDate[label] = {}
+                      }
+                      contextByDate[label][indicator.shortcode] = row.value
+                    })
+                  }
+                  for (const [date, value] of Object.entries(contextByDate)) {
+                    response.push({
+                      time: date,
+                      value: dynamicLayerData(indicatorLayer, { values: value })
+                    })
+                  }
                 }
               }
-            }
 
-            if (prevState.session === session) {
-              let name = null
-              let color = null
-              if (seriesType === SeriesType.INDICATORS) {
-                name = indicator.name
-                color = indicator.color
-              } else if (seriesType === SeriesType.GEOGRAPHICAL_UNITS) {
-                name = unit.name
-                color = unit.color
-              }
-              if (name && response && color) {
-                newDatasets.push({
-                  label: name,
-                  data: response.map(row => {
-                    return {
-                      x: row.time,
-                      y: row.value
-                    }
-                  }),
-                  borderColor: color,
-                  backgroundColor: color
+              if (prevState.session === session) {
+                let name = null
+                let color = null
+                if (seriesType === SeriesType.INDICATORS) {
+                  name = indicator.name
+                  color = indicator.color
+                } else if (seriesType === SeriesType.GEOGRAPHICAL_UNITS) {
+                  name = unit.name
+                  color = unit.color
+                }
+                if (name && response && color) {
+                  newDatasets.push({
+                    label: name,
+                    data: response.map(row => {
+                      return {
+                        x: row.time,
+                        y: row.value
+                      }
+                    }),
+                    borderColor: color,
+                    backgroundColor: color
+                  })
+                }
+
+                // Update progress
+                setRequestProgress({
+                  progress: (x + 1) * (y + 1),
+                  total: total
                 })
               }
-
-              // Update progress
-              setRequestProgress({
-                progress: (x + 1) * (y + 1),
-                total: total
-              })
             }
           }
-        }
-        if (prevState.session === session) {
-          const labels = [
-            ...new Set(
-              getDatesInRange(new Date(min), new Date(max), interval)
-            )
-          ]
-          setChartData({
-            labels: labels,
-            datasets: newDatasets
-          })
+          if (prevState.session === session) {
+            const labels = [
+              ...new Set(
+                getDatesInRange(new Date(min), new Date(max), interval)
+              )
+            ]
+            setChartData({
+              labels: labels,
+              datasets: newDatasets
+            })
+          }
+        } catch (err) {
+          setError(err.response?.data?.detail ? err.response?.data?.detail : err.message)
         }
       }
     )()
