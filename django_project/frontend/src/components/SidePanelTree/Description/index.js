@@ -16,8 +16,6 @@
 import React, { Fragment, useLayoutEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CircularProgress from "@mui/material/CircularProgress";
-
-import { Actions } from "../../../store/dashboard";
 import CustomPopover from "../../CustomPopover";
 import { fetchingData } from "../../../Requests";
 import { formatDateTime } from "../../../utils/main";
@@ -33,10 +31,11 @@ const LAYER_TYPE_INDICATOR = 'Indicator';
  * @param {Object} layer Layer data.
  */
 export default function LayerDescription({ layer }) {
-  const dispatch = useDispatch();
   const { slug, indicators } = useSelector(state => state.dashboard.data);
   const layerType = layer.indicators === undefined ? LAYER_TYPE_CONTEXT_LAYER : LAYER_TYPE_INDICATOR;
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [loadedData, setLoadedData] = useState({});
 
   /***
    * Set loading if description not in layer.
@@ -67,14 +66,14 @@ export default function LayerDescription({ layer }) {
    */
   function fetchLastUpdate() {
     const url = `/api/dashboard/${slug}/indicator-layer/` + layer.id;
+    setLoadedData({})
+    setError('')
     fetchingData(
       url, {}, {}, function (response, error) {
         if (!error) {
-          dispatch(
-            Actions.IndicatorLayers.updateJson(
-              layer.id, { last_update: response.last_update }
-            )
-          )
+          setLoadedData({ last_update: response.last_update })
+        } else {
+          setError(error)
         }
         setLoading(false)
       }
@@ -140,7 +139,7 @@ export default function LayerDescription({ layer }) {
                           <div>
                             <b className='light'> Last Update: </b>
                             {
-                              layer.last_update ? formatDateTime(new Date(layer.last_update), false, true) : '-'
+                              loadedData.last_update ? formatDateTime(new Date(loadedData.last_update), false, true) : '-'
                             }
                           </div> : null
                       }
