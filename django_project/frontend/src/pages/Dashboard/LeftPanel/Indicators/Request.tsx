@@ -24,6 +24,7 @@ interface Parameter {
   country_geom_id__in?: string[];
   admin_level?: number | null | undefined;
   version?: string;
+  page_size: number;
 }
 
 interface Props {
@@ -86,7 +87,8 @@ export const IndicatorRequest = memo(
       date__lte: selectedGlobalTime.max ? selectedGlobalTime.max.split('T')[0] : null,
       version: version,
       admin_level: admin_level,
-      country_geom_id__in: referenceLayerData?.data?.countries?.map((country: CountryDatasetView) => country.ucode)
+      country_geom_id__in: referenceLayerData?.data?.countries?.map((country: CountryDatasetView) => country.ucode),
+      page_size: 500
     }
     if (selectedGlobalTime.min) {
       params.date__gte = selectedGlobalTime.min.split('T')[0]
@@ -171,7 +173,7 @@ export const IndicatorRequest = memo(
             if (prevState.session === session) {
               setResponse({
                 data: null,
-                error: error.message ? error.message : error
+                error: error.response?.data?.detail ? error.response?.data?.detail : error.message ? error.message : error
               })
             }
           })

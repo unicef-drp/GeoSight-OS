@@ -43,6 +43,11 @@ export default function IndicatorLayersReferenceControl({ map }) {
         views.push(view)
       }
     }
+    views.map(view => {
+      if (view.is_local) {
+        view.detail_url = `/reference-dataset/${view.identifier}/`
+      }
+    })
     dispatch(Actions.Map.changeReferenceLayers(views))
   }, [referenceLayer, selectedIndicatorLayer, selectedIndicatorSecondLayer]);
 

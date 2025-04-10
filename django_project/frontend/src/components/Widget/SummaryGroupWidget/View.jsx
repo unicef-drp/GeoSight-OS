@@ -82,20 +82,31 @@ export default function SummaryGroupWidgetView({ data }) {
   }, [indicatorLayerData])
 
   const fetchIndicatorData = async (indicator, params, config) => {
-    if (!indicator) {
-      throw new Error('Indicator does not found, please reconfig the widget.')
-    }
-    const response = await (new Indicator(indicator)).valueLatest(params, null)
-    let newState = {
-      fetching: false,
-      fetched: true,
-      receivedAt: Date.now(),
-      data: null,
-      error: null
-    };
+    try {
+      if (!indicator) {
+        throw new Error('Indicator does not found, please reconfig the widget.')
+      }
+      const response = await (new Indicator(indicator)).valueLatest(params, null)
+      let newState = {
+        fetching: false,
+        fetched: true,
+        receivedAt: Date.now(),
+        data: null,
+        error: null
+      };
 
-    newState.data = UpdateStyleData(response, config.override_style ? config : indicator);
-    return newState
+      newState.data = UpdateStyleData(response, config.override_style ? config : indicator);
+      return newState
+    } catch (err) {
+      setLayerData({
+        fetching: false,
+        fetched: true,
+        receivedAt: Date.now(),
+        data: null,
+        error: err.response?.data?.detail ? err.response?.data?.detail : err.message
+      });
+      throw new Error(err)
+    }
   }
 
   // Fetch the data if it is using no filter or custom

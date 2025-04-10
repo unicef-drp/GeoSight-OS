@@ -188,7 +188,6 @@ export class MaplibreDrawingTools {
     this.isDrawing = false;
     this.updateCursor('grab');
     this.setDrawState()
-    console.log('Stop')
   }
 
   deleteSelected() {

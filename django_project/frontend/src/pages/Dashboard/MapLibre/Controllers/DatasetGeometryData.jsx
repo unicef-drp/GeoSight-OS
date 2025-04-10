@@ -25,7 +25,7 @@ import { dictDeepCopy } from "../../../../utils/main";
 import { Actions } from "../../../../store/dashboard";
 import { axiosGet, extractCode, headers } from "../../../../utils/georepo";
 import { apiReceive } from "../../../../store/reducers_api";
-import { fetchJSON } from "../../../../Requests";
+import { DjangoRequests, fetchJSON } from "../../../../Requests";
 import { InternalReferenceDatasets } from "../../../../utils/urls";
 import { RefererenceLayerUrls } from "../../../../utils/referenceLayer";
 
@@ -38,7 +38,6 @@ export default function DatasetGeometryData() {
   const referenceLayerDataState = useSelector(state => state.referenceLayerData)
   const datasets = datasetListFromDashboardData(data)
   const identifiers = datasets.map(dataset => dataset.identifier)
-
 
   /** Run script when data of dashboard changed */
   useEffect(() => {
@@ -60,24 +59,9 @@ export default function DatasetGeometryData() {
 
             // Fetch the data
             const url = RefererenceLayerUrls.ViewDetail(referenceLayer)
-            await axiosGet(url).then(response => {
-              referenceLayerData[identifier] = apiReceive({
-                data: response.data,
-                error: null
-              })
-              dispatch(
-                Actions.ReferenceLayerData.receive(response.data, null, identifier)
-              )
-            }).catch(async err => {
-              headers.headers = preferences.georepo_api.public_headers
-              preferences.georepo_api.headers = preferences.georepo_api.public_headers
-              preferences.georepo_api.api_key = preferences.georepo_api.api_key_public.api_key
-              preferences.georepo_api.api_key_email = preferences.georepo_api.api_key_public.email
-              preferences.georepo_api.api_key_not_working = true
-              $('#GeorepoApiKeyBtnUpdate').removeClass('Hidden')
-
-              // We use public key
-              await axiosGet(url).then(response => {
+            try {
+              if (referenceLayer.is_local) {
+                await DjangoRequests.get(url).then(response => {
                   referenceLayerData[identifier] = apiReceive({
                     data: response.data,
                     error: null
@@ -85,20 +69,51 @@ export default function DatasetGeometryData() {
                   dispatch(
                     Actions.ReferenceLayerData.receive(response.data, null, identifier)
                   )
-                }
-              ).catch(async err => {
+                })
+              } else {
                 await axiosGet(url).then(response => {
-                    referenceLayerData[identifier] = apiReceive({
-                      data: null,
-                      error: err
-                    })
-                    dispatch(
-                      Actions.ReferenceLayerData.receive(null, err, identifier)
+                  referenceLayerData[identifier] = apiReceive({
+                    data: response.data,
+                    error: null
+                  })
+                  dispatch(
+                    Actions.ReferenceLayerData.receive(response.data, null, identifier)
+                  )
+                }).catch(async err => {
+                  headers.headers = preferences.georepo_api.public_headers
+                  preferences.georepo_api.headers = preferences.georepo_api.public_headers
+                  preferences.georepo_api.api_key = preferences.georepo_api.api_key_public.api_key
+                  preferences.georepo_api.api_key_email = preferences.georepo_api.api_key_public.email
+                  preferences.georepo_api.api_key_not_working = true
+                  $('#GeorepoApiKeyBtnUpdate').removeClass('Hidden')
+
+                  // We use public key
+                  await axiosGet(url).then(response => {
+                      referenceLayerData[identifier] = apiReceive({
+                        data: response.data,
+                        error: null
+                      })
+                      dispatch(
+                        Actions.ReferenceLayerData.receive(response.data, null, identifier)
+                      )
+                    }
+                  ).catch(async err => {
+                    await axiosGet(url).then(response => {
+                        referenceLayerData[identifier] = apiReceive({
+                          data: null,
+                          error: err
+                        })
+                        dispatch(
+                          Actions.ReferenceLayerData.receive(null, err, identifier)
+                        )
+                      }
                     )
-                  }
-                )
-              });
-            });
+                  });
+                });
+              }
+            } catch (err) {
+              console.log(err)
+            }
           }
 
           // ------------------------------------------

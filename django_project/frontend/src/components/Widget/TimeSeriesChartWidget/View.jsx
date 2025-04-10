@@ -88,6 +88,7 @@ export default function TimeSeriesChartWidget({ data }) {
 
   const [secondSeries, setSecondSeries] = useState({});
   const [chartData, setChartData] = useState(null);
+  const [error, setError] = useState(null);
 
   const { name, config } = data
   const {
@@ -253,6 +254,13 @@ export default function TimeSeriesChartWidget({ data }) {
   }, [geometries, colorPalettes, selectedAdminLevel])
 
   const secondSeriesList = config.seriesType === SeriesType.INDICATORS ? geographicUnits : indicatorSeries
+
+  if (error) {
+    return <div
+      className='widget__error'>
+      {'' + ('' + error).replaceAll('Error: ', '')}
+    </div>
+  }
   return (
     <Fragment>
       <div className='widget__sw widget__sgw'>
@@ -292,7 +300,9 @@ export default function TimeSeriesChartWidget({ data }) {
           dateTimeType: dateTimeType,
         }}
         setChartData={setChartData}
-        setRequestProgress={setRequestProgress}/>
+        setRequestProgress={setRequestProgress}
+        setError={setError}
+      />
     </Fragment>
   )
 }

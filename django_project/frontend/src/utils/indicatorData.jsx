@@ -152,6 +152,9 @@ export const filterIndicatorsData = (time_min, time_max, data) => {
  * @returns {*|string}
  */
 export const getIndicatorDataId = (id, referenceLayerIdentifier, referenceLayerOfIndicatorIdentifier) => {
+  if (!referenceLayerOfIndicatorIdentifier) {
+    return id
+  }
   return referenceLayerOfIndicatorIdentifier === referenceLayerIdentifier ? id : id + '-' + referenceLayerOfIndicatorIdentifier
 }
 

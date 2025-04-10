@@ -41,6 +41,7 @@
 }
 
 .TreeItem {
+  .Disabled,
   &.Disabled {
     .LayerName {
       opacity: 0.5;
@@ -90,18 +91,12 @@
       padding-right: 2px;
 
       .MuiCircularProgress-root {
-        display: none;
+        display: block;
         position: absolute;
-        top: 4px;
-        left: 1px;
-        height: 14px !important;
-        width: 14px !important;
-      }
-
-      &.Loading {
-        .MuiCircularProgress-root {
-          display: block;
-        }
+        top: 3px;
+        left: 0;
+        height: 15px !important;
+        width: 15px !important;
       }
     }
 
