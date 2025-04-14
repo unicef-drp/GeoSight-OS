@@ -16,7 +16,7 @@ ARG PLATFORM=linux/amd64
 # Uncomment for Apple Silicon (M1, M2, or later) chips
 #ARG PLATFORM=linux/arm64
 
-FROM --platform=$PLATFORM ubuntu:20.04 AS prod
+FROM --platform=$PLATFORM ubuntu:22.04 AS prod
 
 MAINTAINER Irwan Fathurrahman<meomancer@gmail.com>
 
