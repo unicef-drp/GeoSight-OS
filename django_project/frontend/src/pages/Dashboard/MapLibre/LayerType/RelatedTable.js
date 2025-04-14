@@ -70,7 +70,7 @@ export default function relatedTableLayer(map, id, data, contextLayerData, popup
       }
       try {
         const layers = JSON.parse(contextLayerData.styles)
-        let before = getBeforeLayerId(map, contextLayerData.id, contextLayerOrder)
+        let before = getBeforeLayerId(map, id, contextLayerOrder)
         layers.map(layer => {
           layer.id = id + '-' + layer.id
           layer.source = id
