@@ -12,11 +12,11 @@
 # __copyright__ = ('Copyright 2023, Unicef')
 
 # Default
-ARG PLATFORM=linux/amd64
+# ARG PLATFORM=linux/amd64
 # Uncomment for Apple Silicon (M1, M2, or later) chips
-#ARG PLATFORM=linux/arm64
+ARG PLATFORM=linux/arm64
 
-FROM --platform=$PLATFORM ubuntu:20.04 AS prod
+FROM --platform=$PLATFORM ubuntu:22.04 AS prod
 
 MAINTAINER Irwan Fathurrahman<meomancer@gmail.com>
 
@@ -59,10 +59,10 @@ ADD django_project /home/web/django_project
 # This will not works on ARM (Macbook M1/M2) Ubuntu VM
 # WORKDIR /home/web/django_project/selenium
 # RUN apt-get install chromium-browser -y
-RUN echo "deb http://archive.ubuntu.com/ubuntu/ bionic-updates universe" >> /etc/apt/sources.list.d/bionic-updates.list
+RUN echo "deb http://archive.ubuntu.com/ubuntu/ jammy-updates universe" >> /etc/apt/sources.list.d/π>-updates.list
 RUN echo "Package: chromium-browser chromium-browser-l10n chromium-codecs-ffmpeg-extra chromium-codecs-ffmpeg\n\
-Pin: release a=bionic-updates\n\
-Pin-Priority: 900" >> /etc/apt/preferences.d/chromium-deb-bionic-updates
+    Pin: release a=jammy-updates\n\
+    Pin-Priority: 900" >> /etc/apt/preferences.d/chromium-deb-jammy-updates
 RUN apt-get update
 RUN apt-get install chromium-browser -y --fix-missing
 
