@@ -17,6 +17,7 @@
 import $ from "jquery";
 import {
   addClickEvent,
+  addPopup,
   addStandalonePopup,
   getBeforeLayerId,
   hexToRgba,
@@ -38,7 +39,8 @@ let sessions = {};
  */
 export default function rasterCogLayer(
   map, id, data, setData, contextLayerData, popupFeatureFn,
-  contextLayerOrder, isInit, setIsInit, prevData = {}, setLoading = () => {}) {
+  contextLayerOrder, isInit, setIsInit, prevData = {}, setLoading = () => {
+  }) {
   (
     async () => {
       if (JSON.stringify(prevData.current) === JSON.stringify(data?.styles)) {
@@ -119,7 +121,7 @@ export default function rasterCogLayer(
           return value === classifications[classifications.length - 1].top ? value : null;
         };
 
-        setColorFunction(data.url, ([value], rgba, { noData}) => {
+        setColorFunction(data.url, ([value], rgba, { noData }) => {
           if (init && colors.length > 0) {
             init = false
             if (isInit) {
@@ -208,6 +210,7 @@ export default function rasterCogLayer(
           }
         }
       }
+      addPopup(map, id, { Value: 'loading' })
       addClickEvent(map, null, id, onClick)
     }
   )()
