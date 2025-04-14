@@ -35,6 +35,8 @@ import {
   IndicatorLayerChecker,
   RelatedTableChecker
 } from "./IndicatorChecker";
+import { Checkbox } from "@mui/material";
+import { useSelector } from "react-redux";
 
 export interface Props {
   layer?: IndicatorLayer;
@@ -56,6 +58,8 @@ export default function IndicatorLayer(
     selectItem
   }: Props
 ) {
+  // @ts-ignore
+  const { compareMode } = useSelector(state => state.mapMode)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [error, setError] = useState<string>('')
   const disabled = !!(error ? error : layer.error)
@@ -94,14 +98,25 @@ export default function IndicatorLayer(
       className={(disabled ? ' Disabled' : '')}
       control={
         <div className={'PanelInput'}>
-          <Radio
-            tabIndex={-1}
-            className='PanelRadio'
-            size={'small'}
-            disabled={disabled}
-            value={nodesDataId}
-            checked={checked}
-            onChange={selectItem}/>
+          {
+            compareMode ?
+              <Checkbox
+                tabIndex={-1}
+                className='PanelCheckbox'
+                size={'small'}
+                disabled={disabled}
+                value={nodesDataId}
+                checked={checked}
+                onChange={selectItem}/> :
+              <Radio
+                tabIndex={-1}
+                className='PanelRadio'
+                size={'small'}
+                disabled={disabled}
+                value={nodesDataId}
+                checked={checked}
+                onChange={selectItem}/>
+          }
           {isLoading ? <CircularProgress/> : null}
         </div>
       }
