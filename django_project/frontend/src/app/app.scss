@@ -158,7 +158,7 @@ header {
 
 .maplibregl-popup {
   max-width: 400px !important;
-  z-index: 100 !important;
+  z-index: 1 !important;
 
   & > .maplibregl-popup-tip {
     display: none;
