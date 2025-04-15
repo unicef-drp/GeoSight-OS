@@ -37,6 +37,7 @@ from geosight.data.serializer.basemap_layer import BasemapLayerSerializer
 from geosight.data.serializer.dashboard import (
     DashboardBasicSerializer, DashboardSerializer
 )
+from geosight.georepo.models.entity import Entity
 from geosight.georepo.models.reference_layer import ReferenceLayerView
 from geosight.permission.access import (
     delete_permission_resource, read_permission_resource
@@ -167,6 +168,19 @@ class DashboardData(APIView):
                     view = ReferenceLayerView.objects.get(id=dataset_id)
                     dashboard.reference_layer = view
                 except ReferenceLayerView.DoesNotExist:
+                    pass
+
+            # Get default by entity_id
+            entity_id = request.GET.get('entity_id', None)
+            if entity_id:
+                try:
+                    entity = Entity.objects.get(id=entity_id)
+                    dashboard.reference_layer = (
+                        ReferenceLayerView.get_priority_view_by_country(
+                            entity
+                        )
+                    )
+                except Entity.DoesNotExist:
                     pass
 
             indicators = request.GET.get('indicators', None)

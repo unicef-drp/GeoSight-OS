@@ -270,13 +270,13 @@ export default function DatasetAdmin() {
           variant='primary'
           disabled={selectedViews.length !== 1}
           onClick={() => {
-            let url = `/admin/project/create?dataset_id=${selectedViews[0]}`
+            let url = `/admin/project/create?entity_id=${selectedViews[0]}`
             if (selectedModelIds) {
               url += `&indicators=${selectedIndicators.join(',')}`
             }
             window.location.href = url;
           }}
-          title={'Enable this by selecting data contain just 1 view.'}
+          title={'Enable this by selecting data contain just 1 country.'}
         >
           <AddIcon/> Add to New Project
         </ThemeButton>
