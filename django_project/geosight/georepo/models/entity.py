@@ -156,7 +156,7 @@ class Entity(models.Model):
                 pass
             if original_id_type != 'ucode':
                 entities = reference_layer.entities_set.values_list(
-                    'entity_id', flat=True
+                    'id', flat=True
                 )
                 entity_code = EntityCode.objects.filter(
                     Q(entity__end_date__isnull=True) | Q(

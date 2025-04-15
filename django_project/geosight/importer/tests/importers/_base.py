@@ -27,6 +27,7 @@ from geosight.data.models.indicator import IndicatorType, IndicatorValue
 from geosight.data.tests.model_factories import (
     IndicatorF, IndicatorGroupF, IndicatorRuleF
 )
+from geosight.georepo.models.entity import EntityCode
 from geosight.georepo.request.data import GeorepoEntity
 from geosight.georepo.tests.mock import (
     mock_get_entity, need_review, check_country
@@ -113,7 +114,7 @@ class BaseImporterTest(TestCase):
             'BC': ['B', 'Top'],
         }
         for geom_id, parents in entities.items():
-            GeorepoEntity(
+            entity, _ = GeorepoEntity(
                 {
                     'name': '',
                     'ucode': geom_id,
@@ -127,6 +128,11 @@ class BaseImporterTest(TestCase):
                     ]
                 }
             ).get_or_create(self.reference_layer)
+            EntityCode.objects.create(
+                entity=entity,
+                code=f'code_{geom_id}',
+                code_type='custom_code'
+            )
 
         # Patch
         self.entity_patcher = patch(

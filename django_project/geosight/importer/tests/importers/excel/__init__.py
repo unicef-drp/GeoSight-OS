@@ -15,5 +15,6 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from .long_indicator_value import *
+from .long_indicator_value_with_code_type import *
 from .wide_indicator_value import *
 from .wide_related_table import *
