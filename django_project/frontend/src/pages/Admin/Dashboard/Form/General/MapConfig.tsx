@@ -29,7 +29,7 @@ export interface Props {
 
 /** Map config component. */
 const MapConfig = memo(({}: Props) => {
-    const { dataset_id } = urlParams() as { dataset_id: string };
+    const { entity_id } = urlParams() as { entity_id: string };
     const extentState = useRef<Extent | null | boolean>();
     const dispatcher = useDispatch();
 
@@ -145,7 +145,7 @@ const MapConfig = memo(({}: Props) => {
         referenceLayerData?.data?.bbox?.length &&
         JSON.stringify(referenceLayerData?.data?.bbox) !== JSON.stringify(extentState?.current)
       ) {
-        if (dataset_id || !identifierState.current || (!!extent && !isInit)) {
+        if (entity_id || !identifierState.current || (!!extent && !isInit)) {
           setEditedExtent(referenceLayerData?.data?.bbox)
           identifierState.current = identifier
         }

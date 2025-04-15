@@ -62,6 +62,12 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
         null=True
     )
 
+    # Tags of the view
+    tags = models.JSONField(
+        null=True,
+        blank=True
+    )
+
     class Meta:  # noqa: D106
         indexes = [
             models.Index(
@@ -104,6 +110,7 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
         """Update meta."""
         detail = GeorepoRequest().View.get_detail(self.identifier)
         self.name = detail['name']
+        self.tags = detail['tags']
         self.description = detail['description']
         self.in_georepo = True
         self.save()
@@ -197,6 +204,30 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
                     self.entities_set.filter(id=entity.id).exists()
             ):
                 self.countries.add(entity)
+
+    @staticmethod
+    def get_priority_view_by_country(country):
+        """Return priority view.
+
+        Return 1 view based on country.
+        Priority is the latest tags.
+        After that just return the first view.
+        """
+        views = ReferenceLayerView.objects.filter(
+            countries__id=country.id
+        )
+        # Just the view with 1 country
+        views = [view for view in views if view.countries.count() == 1]
+
+        if not len(views):
+            return None
+
+        # Check the latest tag
+        for view in views:
+            if view.tags and 'latest' in view.tags:
+                return view
+
+        return views[0]
 
 
 class ReferenceLayerIndicator(models.Model):

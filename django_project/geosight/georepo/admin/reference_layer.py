@@ -102,7 +102,7 @@ class ReferenceLayerViewAdmin(admin.ModelAdmin):
 
     list_display = [
         'identifier', 'name', 'description', 'in_georepo', 'number_of_value',
-        'number_of_entities', 'country_list'
+        'number_of_entities', 'country_list', 'tags'
     ]
     list_filter = (InGeorepoFilter,)
     ordering = ['name']
