@@ -106,9 +106,6 @@ export function MultipleSelectWithSearch(
   const selectAllText = 'Select all'
   const allSelected = value.length === options.length && value.length > 0
   const optionsWithSelectAll = [selectAllText].concat(options)
-  console.log('---------------')
-  console.log(options)
-  console.log(value)
   return <>
     <Autocomplete
       autoComplete={false}
