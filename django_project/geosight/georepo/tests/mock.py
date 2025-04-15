@@ -23,17 +23,43 @@ def mock_get_entity(
         date_time=None, auto_fetch=True
 ):
     """Mock for get entity request."""
-    from geosight.georepo.models.entity import Entity
-    try:
-        entity = Entity.objects.get(geom_id=original_id)
-    except Entity.DoesNotExist:
-        entity, _ = GeorepoEntity(
-            {
-                'name': '',
-                'ucode': original_id,
-                'admin_level': admin_level
-            }
-        ).get_or_create(reference_layer)
+    from geosight.georepo.models.entity import Entity, EntityCode
+    if original_id_type == 'ucode':
+        try:
+            entity = Entity.objects.get(geom_id=original_id)
+        except Entity.DoesNotExist:
+            entity, _ = GeorepoEntity(
+                {
+                    'name': '',
+                    'ucode': original_id,
+                    'admin_level': admin_level
+                }
+            ).get_or_create(reference_layer)
+            EntityCode.objects.create(
+                entity=entity,
+                code=f'code_{original_id}',
+                code_type='custom_code'
+            )
+    else:
+        try:
+            entity = EntityCode.objects.get(
+                code=f'{original_id}',
+                code_type='custom_code'
+            ).entity
+        except EntityCode.DoesNotExist:
+            original_id = original_id.replace('code_', '')
+            entity, _ = GeorepoEntity(
+                {
+                    'name': '',
+                    'ucode': original_id,
+                    'admin_level': admin_level
+                }
+            ).get_or_create(reference_layer)
+            EntityCode.objects.create(
+                entity=entity,
+                code=f'code_{original_id}',
+                code_type='custom_code'
+            )
     return entity
 
 

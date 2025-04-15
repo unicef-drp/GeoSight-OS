@@ -21,7 +21,9 @@ from django.db import connection
 
 from core.models import SitePreferences
 from core.tests.base_tests import APITestCase
-from geosight.georepo.models.entity import Entity
+from geosight.georepo.models.entity import (
+    Entity, EntityCode, GeorepoEntityDoesNotExist
+)
 from geosight.georepo.request.data import GeorepoEntity
 from geosight.georepo.tests.model_factories.reference_layer import (
     ReferenceLayerF
@@ -33,6 +35,15 @@ class EntityTest(APITestCase):
 
     georepo_url = 'http://localhost'
     georepo_api_key = 'AAA'
+    custom_code_type = 'custom_code'
+
+    def create_code(self, entity: Entity):
+        """Create code."""
+        EntityCode.objects.create(
+            entity=entity,
+            code=f'code_{entity.geom_id}',
+            code_type=self.custom_code_type
+        )
 
     def setUp(self):
         """To setup tests."""
@@ -42,13 +53,14 @@ class EntityTest(APITestCase):
         preference.save()
 
         self.reference_layer = ReferenceLayerF()
-        GeorepoEntity(
+        entity, _ = GeorepoEntity(
             {
                 'name': "name'A",
                 'ucode': 'A',
                 'admin_level': 0
             }
         ).get_or_create(self.reference_layer)
+        self.create_code(entity)
 
         self.entity, _ = GeorepoEntity(
             {
@@ -60,8 +72,9 @@ class EntityTest(APITestCase):
                 ]
             }
         ).get_or_create(self.reference_layer)
+        self.create_code(self.entity)
 
-        GeorepoEntity(
+        entity, _ = GeorepoEntity(
             {
                 'name': 'name',
                 'ucode': 'AB',
@@ -71,8 +84,9 @@ class EntityTest(APITestCase):
                 ]
             }
         ).get_or_create(self.reference_layer)
+        self.create_code(entity)
 
-        GeorepoEntity(
+        entity, _ = GeorepoEntity(
             {
                 'name': 'name',
                 'ucode': 'AAA',
@@ -83,16 +97,18 @@ class EntityTest(APITestCase):
                 ]
             }
         ).get_or_create(self.reference_layer)
+        self.create_code(entity)
 
-        GeorepoEntity(
+        entity, _ = GeorepoEntity(
             {
                 'name': 'name',
                 'ucode': 'B',
                 'admin_level': 0
             }
         ).get_or_create(self.reference_layer)
+        self.create_code(entity)
 
-        GeorepoEntity(
+        entity, _ = GeorepoEntity(
             {
                 'name': 'name',
                 'ucode': 'BA',
@@ -102,8 +118,9 @@ class EntityTest(APITestCase):
                 ]
             }
         ).get_or_create(self.reference_layer)
+        self.create_code(entity)
 
-        GeorepoEntity(
+        entity, _ = GeorepoEntity(
             {
                 'name': 'name',
                 'ucode': 'BAA',
@@ -114,16 +131,18 @@ class EntityTest(APITestCase):
                 ]
             }
         ).get_or_create(self.reference_layer)
+        self.create_code(entity)
 
         # Other entities
         self.reference_layer_2 = ReferenceLayerF()
-        GeorepoEntity(
+        entity, _ = GeorepoEntity(
             {
                 'name': 'name',
                 'ucode': 'O',
                 'admin_level': 0
             }
         ).get_or_create(self.reference_layer_2)
+        self.create_code(entity)
 
     def test_create(self):
         """Get the data."""
@@ -322,3 +341,64 @@ class EntityTest(APITestCase):
         entity = Entity.objects.get(geom_id='XXX')
         self.assertEqual(entity.country, Entity.objects.get(geom_id='X'))
         reference_layer.countries.get(geom_id='X')
+
+    def test_get_entity(self):
+        """Test get entity."""
+        entity = Entity.get_entity(
+            original_id_type='ucode',
+            original_id='AB',
+            reference_layer=self.reference_layer,
+            admin_level=None,
+            auto_fetch=False
+        )
+        self.assertEqual(entity.geom_id, 'AB')
+        entity = Entity.get_entity(
+            original_id_type='ucode',
+            original_id='O',
+            reference_layer=self.reference_layer_2,
+            admin_level=None,
+            auto_fetch=False
+        )
+        self.assertEqual(entity.geom_id, 'O')
+        with self.assertRaises(GeorepoEntityDoesNotExist):
+            Entity.get_entity(
+                original_id_type='ucode',
+                original_id='AB',
+                reference_layer=self.reference_layer_2,
+                admin_level=None,
+                auto_fetch=False
+            )
+
+        # Get with custom code type
+        entity = Entity.get_entity(
+            original_id_type=self.custom_code_type,
+            original_id='code_AB',
+            reference_layer=self.reference_layer,
+            admin_level=None,
+            auto_fetch=False
+        )
+        self.assertEqual(entity.geom_id, 'AB')
+        entity = Entity.get_entity(
+            original_id_type=self.custom_code_type,
+            original_id='code_O',
+            reference_layer=self.reference_layer_2,
+            admin_level=None,
+            auto_fetch=False
+        )
+        self.assertEqual(entity.geom_id, 'O')
+        with self.assertRaises(GeorepoEntityDoesNotExist):
+            Entity.get_entity(
+                original_id_type=self.custom_code_type,
+                original_id='code_AB',
+                reference_layer=self.reference_layer_2,
+                admin_level=None,
+                auto_fetch=False
+            )
+        with self.assertRaises(GeorepoEntityDoesNotExist):
+            Entity.get_entity(
+                original_id_type=self.custom_code_type,
+                original_id='AB',
+                reference_layer=self.reference_layer,
+                admin_level=None,
+                auto_fetch=False
+            )

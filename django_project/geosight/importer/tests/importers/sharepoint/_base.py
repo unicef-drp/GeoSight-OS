@@ -62,6 +62,7 @@ class BaseSharepointTest(BaseImporterTest):
         """Stop the patcher."""
         self.patcher.stop()
         super().tearDown()
+        self.entity_patcher.stop()
 
 
 class BaseSharepointIndicatorValueTest(
