@@ -204,7 +204,10 @@ export const addStandalonePopup = (map, lngLat, popupRenderFn, properties, sessi
     .setLngLat(lngLat)
     .setHTML(popupHtml)
     .addTo(map);
-  popup.addClassName(`${session}`)
+  if (session) {
+    popup.addClassName(`${session}`)
+  }
+  popup.addClassName(`ContextPopup`)
 }
 /**
  * Remove click event

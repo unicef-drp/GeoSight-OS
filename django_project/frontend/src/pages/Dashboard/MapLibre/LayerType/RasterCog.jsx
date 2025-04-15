@@ -20,6 +20,7 @@ import {
   addPopup,
   addStandalonePopup,
   getBeforeLayerId,
+  hasLayer,
   hexToRgba,
   removeLayer,
   removeSource
@@ -65,7 +66,28 @@ export default function rasterCogLayer(
       if (!colors.length) {
         return
       }
+      // -----------------------------------------------
+      // Create the temporary layers
+      // -----------------------------------------------
+      removeSource(map, id)
+      removeLayer(map, id)
+      map.addSource(id, {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: [] // Empty initially
+        }
+      });
+      map.addLayer({
+        id: id,
+        type: 'circle',
+        source: id,
+        paint: {}
+      });
 
+      // -----------------------------------------------
+      // We fetch the details
+      // -----------------------------------------------
       // TODO: Handle styling when multiple, identical COG URLs are used
       let url = `cog://${data.url}?method=${dynamic_classification}#color:[${colors.map(color => '"' + color + '"')}],${min_band ? min_band : 0},${max_band ? max_band : 100},c`      //
       if (dynamic_classification != 'Equidistant.') {
@@ -107,8 +129,6 @@ export default function rasterCogLayer(
             throw Error(error.toString())
           })
         }
-
-        removeSource(map, id)
 
         const getColor = (value) => {
           for (const classification of classifications) {
@@ -152,14 +172,15 @@ export default function rasterCogLayer(
           }
         });
       }
+      // -----------------------------------
+      // We create the layer
+      // -----------------------------------
+      if (!hasLayer(map, id)) {
+        return
+      }
 
+      removeLayer(map, id)
       removeSource(map, id)
-      const sourceParams = Object.assign({}, data.params, {
-        url: url,
-        type: 'raster',
-        tileSize: 256
-      })
-      map.addSource(id, sourceParams);
 
       // We find the before layers
       let before = null;
@@ -169,7 +190,12 @@ export default function rasterCogLayer(
           before = beforeOrder
         }
       }
-      removeLayer(map, id)
+      const sourceParams = Object.assign({}, data.params, {
+        url: url,
+        type: 'raster',
+        tileSize: 256
+      })
+      map.addSource(id, sourceParams);
       addLayerWithOrder(
         map,
         {
@@ -196,6 +222,9 @@ export default function rasterCogLayer(
         const isVisible = map.getStyle().layers.find(layer => layer.id === id)
         if (isVisible) {
           await sleep(100);
+          if ($('.ContextPopup').length) {
+            return
+          }
           const session = new Date().getTime();
           addStandalonePopup(map, e.lngLat, popupFeatureFn, { Value: 'loading' }, session)
           getCogFeatureByPoint(
