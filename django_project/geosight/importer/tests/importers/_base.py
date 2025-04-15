@@ -145,12 +145,15 @@ class BaseImporterTest(TestCase):
         )
         self.entity_patcher.start()
         self.review_patcher.start()
+        self.addCleanup(self.entity_patcher.stop)
+        self.addCleanup(self.review_patcher.stop)
 
     def tearDown(self):
         """Stop the patcher."""
         self.entity_patcher.stop()
         self.review_patcher.stop()
         self.auto_fetch_country.stop()
+        super().tearDown()
 
 
 class BaseIndicatorValueImporterTest(BaseImporterTest):
