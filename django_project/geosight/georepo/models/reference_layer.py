@@ -216,14 +216,18 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
         views = ReferenceLayerView.objects.filter(
             countries__id=country.id
         )
+        # Just the view with 1 country
+        views = [view for view in views if view.countries.count() == 1]
+
+        if not len(views):
+            return None
+
         # Check the latest tag
         for view in views:
             if view.tags and 'latest' in view.tags:
                 return view
 
-        if views.count():
-            return views[0]
-        return None
+        return views[0]
 
 
 class ReferenceLayerIndicator(models.Model):

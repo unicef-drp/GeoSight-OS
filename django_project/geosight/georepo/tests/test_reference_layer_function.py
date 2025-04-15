@@ -64,6 +64,37 @@ class ReferenceLayerViewTest(APITestCase):
             }
         ).get_or_create(reference_layer)
 
+        reference_layer = ReferenceLayerF(
+            name='Reference C (All version)',
+            tags=['latest']
+        )
+        GeorepoEntity(
+            {
+                'name': 'name',
+                'ucode': 'CA',
+                'admin_level': 0
+            }
+        ).get_or_create(reference_layer)
+        GeorepoEntity(
+            {
+                'name': 'name',
+                'ucode': 'CB',
+                'admin_level': 0
+            }
+        ).get_or_create(reference_layer)
+
+        reference_layer = ReferenceLayerF(
+            name='Reference CA (latest)',
+            tags=['latest']
+        )
+        GeorepoEntity(
+            {
+                'name': 'name',
+                'ucode': 'CA',
+                'admin_level': 0
+            }
+        ).get_or_create(reference_layer)
+
         Entity.objects.get_or_create(
             geom_id='O',
             admin_level=0
@@ -82,6 +113,17 @@ class ReferenceLayerViewTest(APITestCase):
                 Entity.objects.get(geom_id='B')
             ).name,
             'Reference B (All version)'
+        )
+        self.assertIsNone(
+            ReferenceLayerView.get_priority_view_by_country(
+                Entity.objects.get(geom_id='CB')
+            )
+        )
+        self.assertEqual(
+            ReferenceLayerView.get_priority_view_by_country(
+                Entity.objects.get(geom_id='CA')
+            ).name,
+            'Reference CA (latest)'
         )
         self.assertIsNone(
             ReferenceLayerView.get_priority_view_by_country(
