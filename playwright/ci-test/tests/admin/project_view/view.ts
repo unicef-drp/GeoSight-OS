@@ -288,6 +288,29 @@ test.describe('View project', () => {
     await expect(page.locator('#simple-tabpanel-1 .MuiRadio-root:visible')).toHaveCount(10);
     await expect(page.locator('.MapLegendSectionTitle').nth(0)).toContainText('Dynamic Layer based on a list of interventions')
     await expect(page.locator('.MapLegendSectionTitle').nth(1)).toBeHidden()
+
+    // ------------------------------------------------
+    // Check the filter inputs behaviour
+    // ------------------------------------------------
+    await page.getByLabel(layer2).click();
+    await page.locator('.WhereConfigurationQuery .MuiTextField-root').first().click()
+    await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('input')).toHaveAttribute('placeholder', 'All selected');
+    await page.getByRole('option', { name: 'Partner A' }).click();
+    await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('input')).toHaveAttribute('placeholder', '2 selected');
+    await page.getByRole('option', { name: 'Partner B' }).click();
+    await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('.MuiChip-label')).toContainText('Partner C');
+    await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('input')).toHaveAttribute('placeholder', '');
+    await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('input')).toHaveValue('');
+    await page.getByRole('option', { name: 'Partner C' }).click();
+    await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('input')).toHaveAttribute('placeholder', '');
+    await page.getByRole('option', { name: 'Select all' }).click();
+    await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('input')).toHaveAttribute('placeholder', 'All selected');
+    await page.getByRole('option', { name: 'Select all' }).click();
+    await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('input')).toHaveAttribute('placeholder', '');
+    await page.getByRole('option', { name: 'Partner C' }).click();
+    await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('.MuiChip-label')).toContainText('Partner C');
+    await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('input')).toHaveAttribute('placeholder', '');
+    await expect(page.locator('.WhereConfigurationQuery .MuiTextField-root').first().locator('input')).toHaveValue('');
   }
 
   // A use case tests scenarios
