@@ -16,14 +16,15 @@ ARG PLATFORM=linux/amd64
 # Uncomment for Apple Silicon (M1, M2, or later) chips
 #ARG PLATFORM=linux/arm64
 
-FROM --platform=$PLATFORM ubuntu:20.04 AS prod
+ARG CACHE_BUST=2
+FROM --platform=$PLATFORM ubuntu:22.04 AS prod
 
 MAINTAINER Irwan Fathurrahman<meomancer@gmail.com>
 
 # Pandoc needed to generate rst dumps, uic compressor needed for django-pipeline
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update -y
-RUN apt-get install -y python3-pip python3-dev gdal-bin gettext libcurl4-openssl-dev libssl-dev yui-compressor git vim
+RUN apt-get install -y jq wget python3-pip python3-dev gdal-bin gettext libcurl4-openssl-dev libssl-dev yui-compressor git vim
 RUN apt-get update -y
 RUN apt-get install -y libgdal-dev python3-gdal
 RUN export GDAL_VERSION=$(gdal-config --version)
@@ -59,12 +60,25 @@ ADD django_project /home/web/django_project
 # This will not works on ARM (Macbook M1/M2) Ubuntu VM
 # WORKDIR /home/web/django_project/selenium
 # RUN apt-get install chromium-browser -y
-RUN echo "deb http://archive.ubuntu.com/ubuntu/ bionic-updates universe" >> /etc/apt/sources.list.d/bionic-updates.list
-RUN echo "Package: chromium-browser chromium-browser-l10n chromium-codecs-ffmpeg-extra chromium-codecs-ffmpeg\n\
-Pin: release a=bionic-updates\n\
-Pin-Priority: 900" >> /etc/apt/preferences.d/chromium-deb-bionic-updates
-RUN apt-get update
-RUN apt-get install chromium-browser -y --fix-missing
+
+# Download and install Google Chrome
+RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+    apt install -y ./google-chrome-stable_current_amd64.deb && \
+    rm ./google-chrome-stable_current_amd64.deb
+CMD ["google-chrome", "--version"]
+
+# Install matching ChromeDriver
+RUN CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d'.' -f1) && \
+    DRIVER_URL=$(curl -s https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json | \
+      jq -r --arg ver "$CHROME_VERSION" '.channels.Stable.downloads.chromedriver[] | select(.platform=="linux64") | .url') && \
+    wget -O /tmp/chromedriver.zip "$DRIVER_URL" && \
+    unzip /tmp/chromedriver.zip -d /tmp/ && \
+    mv /tmp/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver && \
+    chmod +x /usr/local/bin/chromedriver && \
+    rm -rf /tmp/chromedriver*
+
+# Test command (optional)
+CMD ["chromedriver", "--version"]
 
 # Open port 8080 as we will be running our uwsgi socket on that
 EXPOSE 8080

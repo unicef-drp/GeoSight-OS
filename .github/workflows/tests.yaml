@@ -88,6 +88,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-docker-image-
 
+      - name: ✅ Check GDAL version inside geosight_dev
+        run: |
+          docker run --rm --entrypoint "" kartoza/geosight:dev sh -c '\
+            VERSION=$(gdalinfo --version | awk '\''{print $2}'\'') && \
+            echo "GDAL version: $VERSION" && \
+            if [ "$(printf "%s\n" "3.0.9" "$VERSION" | sort -V | head -n1)" = "3.0.9" ] && [ "$VERSION" != "3.0.9" ]; then \
+              echo "✅ GDAL version is greater than 3.0.9"; \
+            else \
+              echo "❌ GDAL version is NOT greater than 3.0.9"; exit 1; \
+            fi'
+
   django_app_tests:
     needs: build_image
     name: Django App Tests
