@@ -94,10 +94,6 @@ class IndicatorDataViewSet(
         """List of indicator rows."""
         return super().list(request, *args, **kwargs)
 
-    @method_decorator(
-        cache_control(public=True, max_age=864000),
-        name='dispatch'
-    )
     @swagger_auto_schema(auto_schema=None)
     def post(self, request, *args, **kwargs):
         """List of indicator values in POST."""

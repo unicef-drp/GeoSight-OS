@@ -15,7 +15,7 @@
 
 import { Indicator as IndicatorType } from "../types/Indicator";
 import { DjangoRequestPagination, DjangoRequests } from "../Requests";
-import { dictDeepCopy } from "../utils/main";
+import { dictDeepCopy, splitByJoinedLength } from "../utils/main";
 
 export class Indicator {
   id: number;
@@ -62,8 +62,25 @@ export class Indicator {
     params['sort'] = 'geom_id,-date'
 
     let data: any = {};
-    [params, data] = this.getParamAndData(params);
-    return await DjangoRequestPagination.post(this.url, data, {}, params, onProgress, true)
+    if (params['country_geom_id__in']) {
+      const newParams = splitByJoinedLength(params['country_geom_id__in']);
+      let values: any[] = []
+      for (let i: number = 0; i < newParams.length; i++) {
+        const result = await DjangoRequestPagination.get(
+          this.url,
+          data,
+          {
+            ...params,
+            country_geom_id__in: newParams[i]
+          }, onProgress
+        )
+        values.push(...result);
+      }
+      return values
+    } else {
+      [params, data] = this.getParamAndData(params);
+      return await DjangoRequestPagination.post(this.url, data, {}, params, onProgress, true)
+    }
   }
 
   /** Return statistic of data **/
