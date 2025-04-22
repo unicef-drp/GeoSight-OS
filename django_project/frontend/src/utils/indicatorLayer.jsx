@@ -294,3 +294,10 @@ export function getIndicatorLayers(id, indicatorLayers, referenceLayerIdentifier
   }
   return indicatorLayer
 }
+
+/** Return list of indicator by expression */
+export function getIndicatorsOfDynamicLayer(indicators, expression) {
+  return indicators.filter(
+    indicator => expression?.includes(indicator.shortcode)
+  )
+}

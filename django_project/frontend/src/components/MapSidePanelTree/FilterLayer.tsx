@@ -18,7 +18,7 @@ import { debounce } from "@mui/material/utils";
 import TextField from "@mui/material/TextField";
 import { IconButton } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
-import { MagnifyIcon } from "../../Icons";
+import { MagnifyIcon } from "../Icons";
 
 export interface Props {
   placeholder: string;

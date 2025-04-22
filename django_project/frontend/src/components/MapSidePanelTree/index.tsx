@@ -30,10 +30,10 @@ import {
   findAllGroups,
   flattenTree,
   getDepth
-} from "../../SortableTreeForm/utilities";
+} from "../SortableTreeForm/utilities";
 
-import { dictDeepCopy } from "../../../utils/main";
-import Highlighted from "../../SidePanelTree/Highlighted";
+import { dictDeepCopy } from "../../utils/main";
+import Highlighted from "../SidePanelTree/Highlighted";
 import FilterLayer from "./FilterLayer";
 import IndicatorLayer from "./IndicatorLayer";
 
@@ -295,7 +295,7 @@ export default function SidePanelTreeView(
                 <Checkbox
                   checked={selectedGroups.length > 0 && selectedGroups.indexOf(treeData.id) >= 0}
                   onClick={(e) => e.stopPropagation()}
-                  onChange={selectGroup} className='PanelCheckbox' size={'small'}
+                  onChange={selectGroup} className='PanelCheckbox' size='small'
                   value={treeData.id}/>}
               label={
                 // @ts-ignore
@@ -311,9 +311,11 @@ export default function SidePanelTreeView(
               isGroup={true}
             />
       }>
-      {Array.isArray(treeData.children)
-        ? treeData.children.map((node: any) => renderTree(node))
-        : null}
+      {
+        Array.isArray(treeData.children)
+          ? treeData.children.map((node: any) => renderTree(node))
+          : null
+      }
     </TreeItem>
   };
 

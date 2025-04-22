@@ -43,6 +43,9 @@ export default function DynamicIndicatorLayer({ indicatorLayer }) {
   } = useSelector(state => state.dashboard.data)
   const indicatorLayerMetadata = useSelector(state => state.indicatorLayerMetadata);
   const indicatorsData = useSelector(state => state.indicatorsData);
+  const currentIndicatorLayer = useSelector(state => state.selectedIndicatorLayer);
+  const currentIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer);
+  const activated = [currentIndicatorLayer?.id, currentIndicatorSecondLayer?.id].includes(indicatorLayer.id)
 
   const id = indicatorLayer.id;
   const { config } = indicatorLayer
@@ -84,7 +87,9 @@ export default function DynamicIndicatorLayer({ indicatorLayer }) {
 
   /** Update datas */
   useEffect(() => {
-    $('#Indicator-Radio-' + indicatorLayer.id).addClass('Loading')
+    if (!activated) {
+      return
+    }
     const id = indicatorLayerId(indicatorLayer)
     // ------------ Check loading -----------
     let loaded = true
@@ -116,7 +121,7 @@ export default function DynamicIndicatorLayer({ indicatorLayer }) {
         }
       )
     }
-  }, [referenceLayer, indicatorsData, geoField, config])
+  }, [referenceLayer, indicatorsData, geoField, config, activated])
 
   return null
 }
