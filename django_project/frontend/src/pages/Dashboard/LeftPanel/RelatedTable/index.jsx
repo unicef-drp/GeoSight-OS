@@ -20,11 +20,13 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { Actions } from "../../../../store/dashboard";
-import { fetchPagination } from "../../../../Requests";
 import { queryData } from "../../../../utils/queryExtraction";
 import { ExecuteWebWorker } from "../../../../utils/WebWorker";
 import worker from "./Worker";
 import { getCountryGeomIds } from "../../../../utils/Dataset";
+import {
+  RelatedTable as RelatedTableRequest
+} from "../../../../class/RelatedTable";
 
 
 /**
@@ -88,40 +90,48 @@ export function RelatedTable(
       JSON.stringify(params) !== JSON.stringify(prevState.params)
     ) {
       prevState.params = params
-      setResponseAndTime(null)
-      fetchPagination(
-        url, { ...params, page: 1, page_size: 10000 }
-      ).then(response => {
-        // Update data by executed worker
-        ExecuteWebWorker(
-          worker, {
-            response
-          }, (response) => {
+      setResponseAndTime(null);
+      (
+        async () => {
+          try {
+            const relatedTableObj = new RelatedTableRequest(
+              relatedTable
+            )
+            const response = await relatedTableObj.values(
+              { ...params, page: 1, page_size: 100000 }
+            )
+            // Update data by executed worker
+            ExecuteWebWorker(
+              worker, {
+                response
+              }, (response) => {
+                setResponseAndTime({
+                  'timeStr': selectedGlobalTimeStr,
+                  'params': params,
+                  'response': response,
+                  'error': null
+                })
+              }
+            )
+          } catch (error) {
+            if (error?.toString().includes('have permission')) {
+              error = "You don't have permission to access this resource"
+            }
             setResponseAndTime({
               'timeStr': selectedGlobalTimeStr,
               'params': params,
-              'response': response,
-              'error': null
+              'response': [],
+              'error': error
             })
+            dispatch(
+              Actions.IndicatorLayers.updateJson(
+                indicatorLayer.id,
+                { error: error }
+              )
+            )
           }
-        )
-      }).catch(error => {
-        if (error?.toString().includes('have permission')) {
-          error = "You don't have permission to access this resource"
         }
-        setResponseAndTime({
-          'timeStr': selectedGlobalTimeStr,
-          'params': params,
-          'response': [],
-          'error': error
-        })
-        dispatch(
-          Actions.IndicatorLayers.updateJson(
-            indicatorLayer.id,
-            { error: error }
-          )
-        )
-      })
+      )()
       dispatch(Actions.RelatedTableData.request(id))
     }
   }, [selectedGlobalTime, referenceLayerData, indicatorLayer, activated]);

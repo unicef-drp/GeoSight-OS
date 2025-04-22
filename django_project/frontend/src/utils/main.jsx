@@ -556,3 +556,30 @@ export const uniqueByKey = (array, key) => {
     return acc;
   }, []);
 };
+
+/** plit array that the array is just has 500 when join
+ * @param {string[]} input
+ * @param {number} maxLength
+ * @returns {string[][]}
+ */
+export function splitByJoinedLength(input, maxLength = 500) {
+  const result = [];
+  let currentChunk = [];
+
+  for (const item of input) {
+    const joinedWithNewItem = [...currentChunk, item].join(',');
+
+    if (joinedWithNewItem.length > maxLength) {
+      result.push(currentChunk);
+      currentChunk = [item];
+    } else {
+      currentChunk.push(item);
+    }
+  }
+
+  if (currentChunk.length) {
+    result.push(currentChunk);
+  }
+
+  return result;
+}

@@ -395,7 +395,7 @@ export const DjangoRequestPagination = {
     }
 
     /** Call next request **/
-    if (response.next) {
+    if (response.next && response.total_page) {
       const call = async (page) => {
         const response = await requestFunction(page)
         doneCount += 1

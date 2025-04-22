@@ -38,7 +38,11 @@ export default function Indicators() {
   const { level } = useSelector(state => state.selectedAdminLevel);
   const [indicatorsWithDataset, setIndicatorsWithDataset] = useState([]);
   const indicatorLayerIds = useSelector(state => state.selectionState.filter.indicatorLayerIds);
-  const activatedLayers = [currentIndicatorLayer?.id, currentIndicatorSecondLayer?.id] + indicatorLayerIds
+  const activatedLayers = [
+    currentIndicatorLayer?.id,
+    currentIndicatorSecondLayer?.id,
+    ...indicatorLayerIds
+  ];
 
   /** Update the indicators with dataset. */
   useEffect(() => {
