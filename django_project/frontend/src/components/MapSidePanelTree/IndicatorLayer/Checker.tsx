@@ -112,11 +112,14 @@ export function RelatedTableChecker(
     layer.related_tables.map(indicator => {
       const id = layerReferenceLayer && layerReferenceLayer != referenceLayer.identifier ? indicator.id + '-' + layerReferenceLayer : indicator.id
       const data = relatedTableData[id]
-      if (!data?.fetched) {
-        loading = true
-      } else {
-        if (data?.error) {
-          error = data?.error
+      console.log(data)
+      if (data) {
+        if (!data?.fetched) {
+          loading = true
+        } else {
+          if (data?.error) {
+            error = data?.error
+          }
         }
       }
     })
