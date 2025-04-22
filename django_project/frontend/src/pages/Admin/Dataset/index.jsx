@@ -268,9 +268,9 @@ export default function DatasetAdmin() {
         <div className='Separator'/>
         <ThemeButton
           variant='primary'
-          disabled={selectedViews.length !== 1}
+          disabled={!selectedViews.length}
           onClick={() => {
-            let url = `/admin/project/create?entity_id=${selectedViews[0]}`
+            let url = `/admin/project/create?entity_ids=${selectedViews.join(',')}`
             if (selectedModelIds) {
               url += `&indicators=${selectedIndicators.join(',')}`
             }

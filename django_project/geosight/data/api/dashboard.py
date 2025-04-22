@@ -171,17 +171,15 @@ class DashboardData(APIView):
                     pass
 
             # Get default by entity_id
-            entity_id = request.GET.get('entity_id', None)
-            if entity_id:
-                try:
-                    entity = Entity.objects.get(id=entity_id)
-                    dashboard.reference_layer = (
-                        ReferenceLayerView.get_priority_view_by_country(
-                            entity
-                        )
+            entity_ids = request.GET.get('entity_ids', None)
+            if entity_ids:
+                entity_ids = entity_ids.split(',')
+                entity = Entity.objects.get(id=entity_ids[0])
+                dashboard.reference_layer = (
+                    ReferenceLayerView.get_priority_view_by_country(
+                        entity, tag=None if len(entity_ids) == 1 else 'dataset'
                     )
-                except Entity.DoesNotExist:
-                    pass
+                )
 
             indicators = request.GET.get('indicators', None)
 
