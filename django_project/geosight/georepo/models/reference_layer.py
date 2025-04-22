@@ -206,19 +206,13 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
                 self.countries.add(entity)
 
     @staticmethod
-    def get_priority_view_by_country(country):
+    def get_priority_view(views):
         """Return priority view.
 
-        Return 1 view based on country.
+        Return 1 view.
         Priority is the latest tags.
         After that just return the first view.
         """
-        views = ReferenceLayerView.objects.filter(
-            countries__id=country.id
-        )
-        # Just the view with 1 country
-        views = [view for view in views if view.countries.count() == 1]
-
         if not len(views):
             return None
 
@@ -228,6 +222,27 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
                 return view
 
         return views[0]
+
+    @staticmethod
+    def get_priority_view_by_country(country, tag=None):
+        """Return priority view.
+
+        Return 1 view based on country.
+        Priority is the latest tags.
+        After that just return the first view.
+        """
+        views = ReferenceLayerView.objects.filter(
+            countries__id=country.id
+        )
+        if tag:
+            views = views.filter(
+                tags__contains=tag
+            )
+        else:
+            # Just the view with 1 country
+            views = [view for view in views if view.countries.count() == 1]
+
+        return ReferenceLayerView.get_priority_view(views)
 
 
 class ReferenceLayerIndicator(models.Model):
