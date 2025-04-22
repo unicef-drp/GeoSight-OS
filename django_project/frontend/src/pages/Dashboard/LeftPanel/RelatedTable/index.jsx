@@ -43,10 +43,12 @@ export function RelatedTable(
   const [responseAndTime, setResponseAndTime] = useState(null);
   const currentIndicatorLayer = useSelector(state => state.selectedIndicatorLayer);
   const currentIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer);
+  const relatedTableIds = useSelector(state => state.selectionState.filter.relatedTableIds);
 
   // Reference layer data
   const referenceLayerData = useSelector(state => state.referenceLayerData[referenceLayerUUID]);
   const activatedLayers = [currentIndicatorLayer?.id, currentIndicatorSecondLayer?.id]
+  const activated = activatedLayers.includes(indicatorLayer.id) || relatedTableIds.includes(relatedTable.id)
   const { id, url, query } = relatedTable
 
   /**
@@ -54,7 +56,7 @@ export function RelatedTable(
    */
   useEffect(() => {
     // Don't request if layer is not activated
-    if (!activatedLayers.includes(indicatorLayer.id)) {
+    if (!activated) {
       return;
     }
 
@@ -122,7 +124,7 @@ export function RelatedTable(
       })
       dispatch(Actions.RelatedTableData.request(id))
     }
-  }, [selectedGlobalTime, referenceLayerData, indicatorLayer, activatedLayers]);
+  }, [selectedGlobalTime, referenceLayerData, indicatorLayer, activated]);
 
   /**
    * Update style

@@ -37,6 +37,8 @@ import {
   FetchIndicatorOptions,
   FetchRelatedTableOptions
 } from "../Data/DataOptions";
+import { useDispatch } from "react-redux";
+import { Actions } from "../../../../store/dashboard";
 
 /** Props for input data **/
 export interface Props extends FilterExpressionProps {
@@ -65,6 +67,7 @@ export const FilterInputData = memo(
       onFiltered
     }: Props
   ) => {
+    const dispatch = useDispatch()
     const isEnabled = isAdmin || allowModify;
 
     // Get the id and keyField
@@ -201,6 +204,38 @@ export const FilterInputData = memo(
         }
       },
       [active, data]
+    );
+
+    /** We need to update selection for fetching data **/
+    useEffect(() => {
+        const _id = parseInt(('' + id).replace('layer_', ''));
+        if (active) {
+          switch (sourceDataType) {
+            case SourceDataType.INDICATOR:
+              dispatch(Actions.SelectionState.filterAddIndicator(_id))
+              break
+            case SourceDataType.INDICATOR_LAYER:
+              dispatch(Actions.SelectionState.filterAddIndicatorLayer(_id))
+              break
+            case SourceDataType.RELATED_TABLE:
+              dispatch(Actions.SelectionState.filterAddRelatedTable(_id))
+              break
+          }
+        } else {
+          switch (sourceDataType) {
+            case SourceDataType.INDICATOR:
+              dispatch(Actions.SelectionState.filterRemoveIndicator(_id))
+              break
+            case SourceDataType.INDICATOR_LAYER:
+              dispatch(Actions.SelectionState.filterRemoveIndicatorLayer(_id))
+              break
+            case SourceDataType.RELATED_TABLE:
+              dispatch(Actions.SelectionState.filterRemoveRelatedTable(_id))
+              break
+          }
+        }
+      },
+      [active]
     );
 
     /** When data, field, operator, value changed **/

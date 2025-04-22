@@ -45,7 +45,8 @@ export default function DynamicIndicatorLayer({ indicatorLayer }) {
   const indicatorsData = useSelector(state => state.indicatorsData);
   const currentIndicatorLayer = useSelector(state => state.selectedIndicatorLayer);
   const currentIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer);
-  const activated = [currentIndicatorLayer?.id, currentIndicatorSecondLayer?.id].includes(indicatorLayer.id)
+  const indicatorLayerIds = useSelector(state => state.selectionState.filter.indicatorLayerIds);
+  const activated = ([currentIndicatorLayer?.id, currentIndicatorSecondLayer?.id] + indicatorLayerIds).includes(indicatorLayer.id)
 
   const id = indicatorLayer.id;
   const { config } = indicatorLayer

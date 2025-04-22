@@ -296,8 +296,12 @@ export function getIndicatorLayers(id, indicatorLayers, referenceLayerIdentifier
 }
 
 /** Return list of indicator by expression */
-export function getIndicatorsOfDynamicLayer(indicators, expression) {
-  return indicators.filter(
-    indicator => expression?.includes(indicator.shortcode)
-  )
+export function getIndicatorsOfIndicatorLayers(layer, indicators) {
+  let _indicators = layer?.indicators ? layer?.indicators : [];
+  if (layer.type === DynamicIndicatorType && indicators) {
+    _indicators = indicators.filter(
+      indicator => layer?.config.expression?.includes(indicator.shortcode)
+    )
+  }
+  return _indicators
 }

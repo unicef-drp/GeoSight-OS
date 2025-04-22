@@ -85,6 +85,10 @@ export const IndicatorRequest = memo(
     const indicatorLayerMetadata = useSelector(state => state.indicatorLayerMetadata[metadataId]);
     const totalPage = indicatorLayerMetadata?.count ? Math.ceil(indicatorLayerMetadata.count / 100) : 0
 
+    // @ts-ignore
+    const indicatorsIdsSelected = useSelector(state => state.selectionState.filter.indicatorIds);
+    const isBeingRequest = isRequest || indicatorsIdsSelected.includes(indicator.id);
+
     // Params
     const params: Parameter = {
       date__lte: selectedGlobalTime.max ? selectedGlobalTime.max.split('T')[0] : null,
@@ -150,7 +154,7 @@ export const IndicatorRequest = memo(
      * Change selected time when selected global time changed and correct.
      * */
     useEffect(() => {
-      if (!isRequest) {
+      if (!isBeingRequest) {
         return;
       }
       if (!params.date__lte || !params.country_geom_id__in || !params.version || [null, undefined].includes(params.admin_level)) {
@@ -162,7 +166,7 @@ export const IndicatorRequest = memo(
         prevState.params = params;
         fetchData()
       }
-    }, [params, isRequest]);
+    }, [params, isBeingRequest]);
 
     /** Loading when metadata fetched. */
     useEffect(() => {
@@ -201,7 +205,6 @@ export const IndicatorRequest = memo(
 
       setResponse({ data: null, error: null })
       onLoading();
-      console.log(`FETCH DATA FOR ${indicator.id}`);
       //   Fetch indicator data
       (
         async () => {

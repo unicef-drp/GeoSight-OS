@@ -20,8 +20,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from "react-redux";
 import {
-  DynamicIndicatorType,
-  getIndicatorsOfDynamicLayer,
+  getIndicatorsOfIndicatorLayers,
   referenceLayerIndicatorLayer
 } from "../../../../utils/indicatorLayer";
 import { IndicatorRequest } from "./Request";
@@ -38,18 +37,16 @@ export default function Indicators() {
   const currentIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer);
   const { level } = useSelector(state => state.selectedAdminLevel);
   const [indicatorsWithDataset, setIndicatorsWithDataset] = useState([]);
-  const activatedLayers = [currentIndicatorLayer?.id, currentIndicatorSecondLayer?.id]
+  const indicatorLayerIds = useSelector(state => state.selectionState.filter.indicatorLayerIds);
+  const activatedLayers = [currentIndicatorLayer?.id, currentIndicatorSecondLayer?.id] + indicatorLayerIds
 
   /** Update the indicators with dataset. */
   useEffect(() => {
     const _indicatorsWithDataset = [];
     [currentIndicatorLayer, currentIndicatorSecondLayer].concat(indicatorLayers).map(layer => {
       const identifier = referenceLayerIndicatorLayer(referenceLayer, layer)?.identifier;
-      let indicators = layer?.indicators ? layer?.indicators : [];
-      if (layer.type === DynamicIndicatorType) {
-        indicators = getIndicatorsOfDynamicLayer(indicators, layer?.config.expression)
-      }
-      indicators.map(_ => {
+      const _indicators = getIndicatorsOfIndicatorLayers(layer, indicators)
+      _indicators.map(_ => {
         let data = _indicatorsWithDataset.find(row => row.id === _.id && row.dataset === identifier)
         if (!data) {
           _indicatorsWithDataset.push({
@@ -80,7 +77,7 @@ export default function Indicators() {
           const indicator = new Indicator(indicatorData)
           const isRequest = indicatorDataset.indicatorLayerIds.some(
             item => activatedLayers.includes(item)
-          );
+          )
           return <IndicatorRequest
             key={identifier}
             indicator={indicator}
