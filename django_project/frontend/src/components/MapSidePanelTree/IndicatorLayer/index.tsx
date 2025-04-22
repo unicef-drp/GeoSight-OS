@@ -14,10 +14,12 @@
  */
 
 import React, { useState } from "react";
-import { IndicatorLayer } from "../../../types/IndicatorLayer";
+import { useSelector } from "react-redux";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Radio from "@mui/material/Radio";
+import { Checkbox } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
+import { IndicatorLayer } from "../../../types/IndicatorLayer";
 import Highlighted from "../../SidePanelTree/Highlighted";
 import LayerDescription from "../../SidePanelTree/Description";
 import SidePanelSlicers from "../../SidePanelTree/SidePanelSlicers";
@@ -31,12 +33,7 @@ import {
 import {
   DynamicIndicatorLayerConfig
 } from "../../../pages/Dashboard/LeftPanel/IndicatorLayers/DynamicIndicatorLayer";
-import {
-  IndicatorLayerChecker,
-  RelatedTableChecker
-} from "./IndicatorChecker";
-import { Checkbox } from "@mui/material";
-import { useSelector } from "react-redux";
+import { Checker, RelatedTableChecker } from "./Checker";
 
 export interface Props {
   layer?: IndicatorLayer;
@@ -75,7 +72,7 @@ export default function IndicatorLayer(
         />
         break
       default:
-        return <IndicatorLayerChecker
+        return <Checker
           layer={layer}
           setIsLoading={setIsLoading}
           setError={setError}

@@ -50,6 +50,7 @@ import SelectedRelatedTableLayer
   from './reducers/selectedRelatedTableLayer/actions'
 import SelectedDynamicIndicatorLayer
   from './reducers/selectedDynamicIndicatorLayer/actions'
+import SelectionState from './reducers/selectionState/actions'
 import Widgets from './reducers/widgets/actions'
 
 const Actions = {
@@ -82,6 +83,7 @@ const Actions = {
   SelectedGlobalTimeConfig,
   SelectedDynamicIndicatorLayer,
   SelectedRelatedTableLayer,
+  SelectionState,
   Widgets
 }
 

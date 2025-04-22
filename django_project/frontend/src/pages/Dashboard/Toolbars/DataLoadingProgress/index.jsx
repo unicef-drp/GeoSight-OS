@@ -47,6 +47,11 @@ export default function DataLoadingProgress() {
         return null
       }
       total += 1
+
+      // If it does not have data
+      if (!relatedTableData[relatedTable.id + '-og']) {
+        currProgress += 1
+      }
       if (relatedTableData[relatedTable.id + '-og']?.fetched) {
         currProgress += 1
       }

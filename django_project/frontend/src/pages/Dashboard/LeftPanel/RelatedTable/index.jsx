@@ -41,21 +41,25 @@ export function RelatedTable(
   const selectedGlobalTime = useSelector(state => state.selectedGlobalTime);
   const selectedGlobalTimeStr = JSON.stringify(selectedGlobalTime);
   const [responseAndTime, setResponseAndTime] = useState(null);
+  const currentIndicatorLayer = useSelector(state => state.selectedIndicatorLayer);
+  const currentIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer);
+  const relatedTableIds = useSelector(state => state.selectionState.filter.relatedTableIds);
 
   // Reference layer data
   const referenceLayerData = useSelector(state => state.referenceLayerData[referenceLayerUUID]);
-
-  // TODO:
-  //  Fix this to use id of layer
+  const activatedLayers = [currentIndicatorLayer?.id, currentIndicatorSecondLayer?.id]
+  const activated = activatedLayers.includes(indicatorLayer.id) || relatedTableIds.includes(relatedTable.id)
   const { id, url, query } = relatedTable
-  useEffect(() => {
-    dispatch(Actions.RelatedTableData.request(id))
-  }, []);
 
   /**
    * Fetch related table data by the current global selected time
    */
   useEffect(() => {
+    // Don't request if layer is not activated
+    if (!activated) {
+      return;
+    }
+
     if (!indicatorLayer?.config?.date_field) return;
     if (!relatedTable.geography_code_field_name) return;
     if (!relatedTable.geography_code_type) return;
@@ -120,7 +124,7 @@ export function RelatedTable(
       })
       dispatch(Actions.RelatedTableData.request(id))
     }
-  }, [selectedGlobalTime, referenceLayerData, indicatorLayer]);
+  }, [selectedGlobalTime, referenceLayerData, indicatorLayer, activated]);
 
   /**
    * Update style

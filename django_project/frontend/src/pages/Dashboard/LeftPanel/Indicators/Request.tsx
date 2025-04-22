@@ -12,11 +12,15 @@
  * __date__ = '13/06/2023'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { memo, useEffect, useRef, useState } from "react";
 import { Indicator } from "../../../../class/Indicator";
 import { CountryDatasetView } from "../../../../types/DatasetView";
-import { UpdateStyleData } from "../../../../utils/indicatorData";
+import {
+  getIndicatorDataId,
+  UpdateStyleData
+} from "../../../../utils/indicatorData";
+import { Actions } from "../../../../store/dashboard";
 
 interface Parameter {
   date__lte: string;
@@ -33,10 +37,7 @@ interface Props {
   datasetIdentifier: string;
   dashboardDatasetIdentifier: string;
   admin_level?: number | null | undefined;
-
-  onLoading: (id: number, metadataId: string, datasetIdentifier: string, totalPage: number) => void;
-  onProgress: (id: number, metadataId: string, progress: any) => void;
-  onResponse: (id: number, metadataId: string, datasetIdentifier: string, response: any, error: string | null) => void;
+  isRequest: boolean;
 }
 
 
@@ -44,15 +45,14 @@ export const IndicatorRequest = memo(
   (
     {
       indicator,
-      datasetIdentifier,
       admin_level,
-      onLoading,
-      onResponse,
-      onProgress,
-
-      dashboardDatasetIdentifier
+      datasetIdentifier,
+      dashboardDatasetIdentifier,
+      isRequest
     }: Props
   ) => {
+    const dispatch = useDispatch();
+
     // @ts-ignore
     const prevState = useRef();
 
@@ -73,6 +73,9 @@ export const IndicatorRequest = memo(
     if (dashboardDatasetIdentifier !== datasetIdentifier) {
       metadataId += '-' + datasetIdentifier
     }
+    const indicatorDataId = getIndicatorDataId(
+      indicator.id, dashboardDatasetIdentifier, datasetIdentifier
+    )
 
     // @ts-ignore
     const referenceLayerData = useSelector(state => state.referenceLayerData[datasetIdentifier]);
@@ -81,6 +84,10 @@ export const IndicatorRequest = memo(
     // @ts-ignore
     const indicatorLayerMetadata = useSelector(state => state.indicatorLayerMetadata[metadataId]);
     const totalPage = indicatorLayerMetadata?.count ? Math.ceil(indicatorLayerMetadata.count / 100) : 0
+
+    // @ts-ignore
+    const indicatorsIdsSelected = useSelector(state => state.selectionState.filter.indicatorIds);
+    const isBeingRequest = isRequest || indicatorsIdsSelected.includes(indicator.id);
 
     // Params
     const params: Parameter = {
@@ -94,6 +101,45 @@ export const IndicatorRequest = memo(
       params.date__gte = selectedGlobalTime.min.split('T')[0]
     }
 
+    /** ------------ FUNCTIONS -------------- **/
+    /** ------------ On loading ------------- **/
+    const onLoading = () => {
+      dispatch(Actions.IndicatorsData.request(indicatorDataId))
+      dispatch(
+        Actions.IndicatorsMetadata.progress(metadataId, {
+          total_page: totalPage,
+          page: 0
+        })
+      )
+    }
+
+    /** ------------ On progress ------------- **/
+    const onProgress = (progress: any) => {
+      dispatch(
+        Actions.IndicatorsMetadata.progress(metadataId, progress)
+      )
+    }
+
+    /** ------------ On response ------------- **/
+    const onResponse = (response: any, error: any) => {
+      if (!error && !response) {
+        return
+      }
+      dispatch(
+        Actions.IndicatorsMetadata.progress(
+          metadataId,
+          {
+            total_page: 100,
+            page: 100
+          }
+        )
+      )
+      dispatch(
+        Actions.IndicatorsData.receive(response, error, indicatorDataId)
+      )
+    }
+
+    /** ------------ EFFECTS -------------- **/
     /** Change selected time when selected global time changed and correct. */
     useEffect(() => {
       let data = response?.data
@@ -101,13 +147,16 @@ export const IndicatorRequest = memo(
         data = UpdateStyleData(data, indicator.indicator)
       }
       // @ts-ignore
-      onResponse(indicator.id, metadataId, datasetIdentifier, data, response.error)
+      onResponse(data, response.error)
     }, [response]);
 
     /**
      * Change selected time when selected global time changed and correct.
      * */
     useEffect(() => {
+      if (!isBeingRequest) {
+        return;
+      }
       if (!params.date__lte || !params.country_geom_id__in || !params.version || [null, undefined].includes(params.admin_level)) {
         return
       }
@@ -117,14 +166,7 @@ export const IndicatorRequest = memo(
         prevState.params = params;
         fetchData()
       }
-    }, [params]);
-
-    /** Loading when metadata fetched. */
-    useEffect(() => {
-      if (version) {
-        onLoading(indicator.id, metadataId, datasetIdentifier, totalPage);
-      }
-    }, [version]);
+    }, [params, isBeingRequest]);
 
     /** Loading when metadata fetched. */
     useEffect(() => {
@@ -135,20 +177,23 @@ export const IndicatorRequest = memo(
       }
     }, [indicatorLayerMetadata]);
 
+    /** ------------ FETCHER FUNCTIONS -------------- **/
     /*** Get data of indicator */
     const getDataPromise = async () => {
       return new Promise((resolve, reject) => {
-        (async () => {
-          try {
-            resolve(
-              await indicator.valueLatest({ ...params }, (progress: any) => {
-                onProgress(indicator.id, metadataId, progress)
-              })
-            )
-          } catch (error) {
-            reject(error)
+        (
+          async () => {
+            try {
+              resolve(
+                await indicator.valueLatest({ ...params }, (progress: any) => {
+                  onProgress(progress)
+                })
+              )
+            } catch (error) {
+              reject(error)
+            }
           }
-        })()
+        )()
       });
     }
 
@@ -159,7 +204,7 @@ export const IndicatorRequest = memo(
       prevState.session = session
 
       setResponse({ data: null, error: null })
-      onLoading(indicator.id, metadataId, datasetIdentifier, totalPage);
+      onLoading();
       //   Fetch indicator data
       (
         async () => {

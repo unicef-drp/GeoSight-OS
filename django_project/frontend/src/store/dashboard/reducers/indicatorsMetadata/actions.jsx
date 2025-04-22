@@ -20,7 +20,7 @@ import {
 
 /**
  * Add data.
- * @param {int} id Id of data.
+ * @param {string} id Id of data.
  * @param {object} data Data.
  */
 export function progress(id, data) {

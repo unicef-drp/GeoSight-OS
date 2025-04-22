@@ -89,26 +89,45 @@ export default function NavBar({ minified }) {
   } catch (err) {
 
   }
-
+  const iconUrl = minified ? favicon : icon;
   return (
     <Fragment>
       <header>
         <div className={`NavHeader Nav-${site_type}`}>
-          <div className='NavHeaderLogo'>
-            <a
-              href='/'
-              title={i18n.t('Homepage')}
-              className='nav-header-link'
+          {
+            iconUrl &&
+            <div className='NavHeaderLogo'>
+              <a
+                href='/'
+                title={i18n.t('Homepage')}
+                className='nav-header-link'
+              >
+                <img src={iconUrl} alt="Logo"/>
+              </a>
+            </div>
+          }
+          {
+            !iconUrl && minified &&
+            <div
+              className='NavHeaderLogo'
+              style={{ width: '100%', textAlign: "center" }}
             >
-              <img src={(minified ? favicon : icon)} alt="Logo"/>
-            </a>
-          </div>
+              <a
+                href='/'
+                title={i18n.t('Homepage')}
+                className='nav-header-link'
+              >
+                G
+              </a>
+            </div>
+          }
           <a
             href='/'
             title={i18n.t('Homepage')}
             className='NavHeaderLink'
           >
-            {site_title} {site_type == 'Staging' ? <span className="ServerType">Staging</span> : ''}
+            {site_title} {site_type == 'Staging' ?
+            <span className="ServerType">Staging</span> : ''}
           </a>
           <NotificationMaintenance/>
           <div className='Separator'></div>

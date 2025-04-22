@@ -17,11 +17,10 @@
    INDICATOR
    ========================================================================== */
 
-import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from "react-redux";
-import { Actions } from "../../../../store/dashboard";
-import { getIndicatorDataId } from "../../../../utils/indicatorData";
+import React, { useEffect, useState } from 'react';
+import { useSelector } from "react-redux";
 import {
+  getIndicatorsOfIndicatorLayers,
   referenceLayerIndicatorLayer
 } from "../../../../utils/indicatorLayer";
 import { IndicatorRequest } from "./Request";
@@ -29,7 +28,6 @@ import { Indicator } from "../../../../class/Indicator";
 
 /** Indicators data. */
 export default function Indicators() {
-  const dispatch = useDispatch();
   const {
     referenceLayer,
     indicators,
@@ -39,85 +37,34 @@ export default function Indicators() {
   const currentIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer);
   const { level } = useSelector(state => state.selectedAdminLevel);
   const [indicatorsWithDataset, setIndicatorsWithDataset] = useState([]);
+  const indicatorLayerIds = useSelector(state => state.selectionState.filter.indicatorLayerIds);
+  const activatedLayers = [currentIndicatorLayer?.id, currentIndicatorSecondLayer?.id] + indicatorLayerIds
 
   /** Update the indicators with dataset. */
   useEffect(() => {
     const _indicatorsWithDataset = [];
     [currentIndicatorLayer, currentIndicatorSecondLayer].concat(indicatorLayers).map(layer => {
       const identifier = referenceLayerIndicatorLayer(referenceLayer, layer)?.identifier;
-
-      layer?.indicators?.map(_ => {
-        const data = _indicatorsWithDataset.find(row => row.id === _.id && row.dataset === identifier)
+      const _indicators = getIndicatorsOfIndicatorLayers(layer, indicators)
+      _indicators.map(_ => {
+        let data = _indicatorsWithDataset.find(row => row.id === _.id && row.dataset === identifier)
         if (!data) {
           _indicatorsWithDataset.push({
             id: _.id,
-            dataset: identifier
+            dataset: identifier,
+            indicatorLayerIds: []
           })
         }
+        data = _indicatorsWithDataset.find(row => row.id === _.id && row.dataset === identifier)
+        data.indicatorLayerIds.push(layer.id)
       })
-    })
-    indicators.map(_ => {
-      const data = _indicatorsWithDataset.find(row => row.id === _.id && row.dataset === referenceLayer.identifier)
-      if (!data) {
-        _indicatorsWithDataset.push({
-          id: _.id,
-          dataset: referenceLayer.identifier
-        })
-      }
+
     })
     if (JSON.stringify(_indicatorsWithDataset) !== JSON.stringify(indicatorsWithDataset)) {
       setIndicatorsWithDataset(_indicatorsWithDataset)
     }
   }, [referenceLayer, indicators, indicatorLayers, currentIndicatorLayer, currentIndicatorSecondLayer]);
 
-  /** On loading **/
-  const onLoading = useCallback((id, metadataId, referenceLayerIdentifier, totalPage) => {
-    const indicatorDataId = getIndicatorDataId(
-      id, referenceLayer.identifier, referenceLayerIdentifier
-    )
-    dispatch(Actions.IndicatorsData.request(indicatorDataId))
-    dispatch(
-      Actions.IndicatorsMetadata.progress(metadataId, {
-        total_page: totalPage,
-        page: 0
-      })
-    )
-  }, [referenceLayer.identifier]);
-
-  /** On response **/
-  const onProgress = useCallback(
-    (id, metadataId, progress) => {
-      dispatch(
-        Actions.IndicatorsMetadata.progress(metadataId, progress)
-      )
-    }
-  )
-
-
-  /** On response **/
-  const onResponse = useCallback(
-    (id, metadataId, referenceLayerIdentifier, response, error) => {
-      if (!error && !response) {
-        return
-      }
-      const indicatorDataId = getIndicatorDataId(
-        id, referenceLayer.identifier, referenceLayerIdentifier
-      )
-      dispatch(
-        Actions.IndicatorsMetadata.progress(
-          metadataId,
-          {
-            total_page: 100,
-            page: 100
-          }
-        )
-      )
-      dispatch(
-        Actions.IndicatorsData.receive(response, error, indicatorDataId)
-      )
-    },
-    [referenceLayer.identifier]
-  )
   return <>
     {
       indicatorsWithDataset.map(indicatorDataset => {
@@ -128,17 +75,16 @@ export default function Indicators() {
             return null
           }
           const indicator = new Indicator(indicatorData)
-
+          const isRequest = indicatorDataset.indicatorLayerIds.some(
+            item => activatedLayers.includes(item)
+          )
           return <IndicatorRequest
             key={identifier}
             indicator={indicator}
             admin_level={level}
             datasetIdentifier={dataset}
-            onLoading={onLoading}
-            onResponse={onResponse}
-            onProgress={onProgress}
-
             dashboardDatasetIdentifier={referenceLayer?.identifier}
+            isRequest={isRequest}
           />
         }
       )

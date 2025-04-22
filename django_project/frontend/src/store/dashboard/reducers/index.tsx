@@ -37,6 +37,7 @@ import selectedGlobalTimeConfigReducer from "./selectedGlobalTimeConfig";
 import selectedRelatedTableLayerReducer from "./selectedRelatedTableLayer";
 import selectedDynamicIndicatorLayerReducer
   from "./selectedDynamicIndicatorLayer";
+import selectionStateReducer from "./selectionState";
 
 
 const rootReducer = combineReducers({
@@ -62,6 +63,7 @@ const rootReducer = combineReducers({
   selectedGlobalTimeConfig: selectedGlobalTimeConfigReducer,
   selectedRelatedTableLayer: selectedRelatedTableLayerReducer,
   selectedDynamicIndicatorLayer: selectedDynamicIndicatorLayerReducer,
+  selectionState: selectionStateReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
