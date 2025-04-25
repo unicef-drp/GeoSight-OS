@@ -1,30 +1,52 @@
 import React, { useState } from 'react';
-import Select from 'react-select';
+import Select, { components } from 'react-select';
 import './style.scss';
 
 export default function LanguageSelector() {
-    const [selectedLanguage, setSelectedLanguage] = useState({ value: 'en', label: 'English' });
+    const [selectedLanguage, setSelectedLanguage] = useState({
+        value: 'en', label: 'English (US)', code: 'US', flag: '🇺🇸'
+    });
 
     const languageOptions = [
-        { value: 'en', label: 'English' },
-        { value: 'es', label: 'Spanish' },
-        { value: 'fr', label: 'French' },
-        { value: 'de', label: 'German' },
+        { value: 'en', label: 'English (US)', code: 'US', flag: '🇺🇸' },
+        { value: 'es', label: 'Spanish', code: 'ES', flag: '🇪🇸' },
+        { value: 'fr', label: 'French', code: 'FR', flag: '🇫🇷' },
+        { value: 'it', label: 'Italian', code: 'IT', flag: '🇮🇹' },
+        { value: 'de', label: 'German', code: 'DE', flag: '🇩🇪' },
     ];
 
     const handleLanguageChange = (selectedOption) => {
         setSelectedLanguage(selectedOption);
     };
 
+    const customOption = (props) => {
+        const { data, innerRef, innerProps } = props;
+        return (
+            <div ref={innerRef} {...innerProps} className="custom-option">
+                <span className="code">{data.code}</span>
+                <span className="flag">{data.flag}</span>
+                <span className="label">{data.label}</span>
+            </div>
+        );
+    };
+
+    const customSingleValue = ({ data }) => (
+        <div className="custom-single-value">
+            <span className="code">{data.code}</span>
+            <span className="flag">{data.flag}</span>
+            <span className="label">{data.label}</span>
+        </div>
+    );
+
     return (
         <div className="language-selector">
-            <label htmlFor="language-selector">Select Language: </label>
             <Select
-                inputId="language-selector"
                 value={selectedLanguage}
                 onChange={handleLanguageChange}
                 options={languageOptions}
+                components={{ Option: customOption, SingleValue: customSingleValue }}
                 classNamePrefix="react-select"
+                menuPlacement="auto"
             />
         </div>
     );
