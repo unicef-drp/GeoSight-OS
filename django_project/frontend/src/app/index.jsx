@@ -26,6 +26,7 @@ import './app.scss';
 import './mui.scss';
 import './form.scss';
 import './form.small.scss';
+import '../utils/i18n.js'
 
 
 /**
@@ -53,7 +54,7 @@ export default function App({ className, children, ...props }) {
     <div
       className={c('page', className) + (EmbedConfig().id ? ' Embed' : '') + (parentWindow ? ' PopupMode' : '')}>
       {
-        !props.hideNavbar ? <NavBar/> : null
+        !props.hideNavbar ? <NavBar /> : null
       }
       <main>
         {children}
@@ -71,7 +72,7 @@ export function render(App, store) {
   root.render(
     <Provider store={store}>
       <ConfirmDialogProvider>
-        <App/>
+        <App />
       </ConfirmDialogProvider>
     </Provider>
   )

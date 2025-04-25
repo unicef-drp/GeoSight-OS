@@ -7,7 +7,7 @@ i18n
     .use(initReactI18next)
     .init({
         resources: {
-            en: { translation: require('../locales/en/common.json') }
+            en: { translation: require('../locales/en/common.json') },
         },
         fallbackLng: 'en',
         interpolation: {

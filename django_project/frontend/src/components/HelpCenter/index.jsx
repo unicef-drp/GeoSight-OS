@@ -23,7 +23,6 @@ import { Button } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import { ChatBubbleIcon, CloseIcon, EmailIcon } from "../Icons";
 import Block from "./Block";
-import { useTranslation } from 'react-i18next';
 
 import './style.scss';
 
@@ -46,7 +45,6 @@ export const HelpCenter = forwardRef(({ }, ref) => {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState(null)
-  const { t } = useTranslation('common');
 
   useImperativeHandle(ref, () => ({
     open() {
@@ -122,7 +120,7 @@ export const HelpCenter = forwardRef(({ }, ref) => {
             variant="basic Basic"
             disabled={!preferences.contact_us_url}
           >
-            <ChatBubbleIcon /> {t('test')}
+            <ChatBubbleIcon /> Contact Us
           </ThemeButton>
         </a>
       </div>
