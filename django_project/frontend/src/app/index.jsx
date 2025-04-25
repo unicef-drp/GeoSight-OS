@@ -26,7 +26,7 @@ import './app.scss';
 import './mui.scss';
 import './form.scss';
 import './form.small.scss';
-import '../utils/i18n.js'
+import '../utils/i18n.js';
 
 
 /**
