@@ -1,3 +1,6 @@
 {
-    "nativeName": "English"
+    "edit": "Edit",
+    "mapboxStyleInformation": "Mapbox style information.",
+    "nativeName": "English",
+    "seeMapboxDocumentationForMoreDetail": "See mapbox documentation for more detail."
 }

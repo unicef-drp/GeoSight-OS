@@ -28,6 +28,7 @@ import { MagnifyIcon } from "../Icons";
 import { AddButton, ThemeButton } from "../Elements/Button";
 import { ServerTable } from "../Table";
 import { debounce } from "@mui/material/utils";
+import { useTranslation } from 'react-i18next';
 
 /**
  * Admin List that contains content of list
@@ -83,6 +84,7 @@ export const AdminListContent = forwardRef(
   ) => {
     // References
     const tableRef = useRef(null);
+    const { t } = useTranslation();
 
     const [selectionModel, setSelectionModel] = useState([]);
     const [search, setSearch] = useState<string>(defaults.search);
@@ -158,7 +160,7 @@ export const AdminListContent = forwardRef(
           <ThemeButton
             variant="primary Basic"
             disabled={!selectedIds.length}>
-            <EditIcon/>Edit
+            <EditIcon/>t('edit')
           </ThemeButton>
         </a>
       }

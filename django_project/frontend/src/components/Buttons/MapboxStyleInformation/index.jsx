@@ -21,6 +21,7 @@ import React, {
 } from 'react';
 import InfoIcon from "@mui/icons-material/Info";
 import Modal, { ModalContent, ModalHeader } from "../../Modal";
+import { useTranslation } from 'react-i18next';
 
 const MapboxStyleInformationModal = forwardRef(
   ({}, ref) => {
@@ -42,14 +43,14 @@ const MapboxStyleInformationModal = forwardRef(
       onClosed={onClosed}
     >
       <ModalHeader onClosed={onClosed}>
-        Mapbox style information.
+        t('mapboxStyleInformation')
       </ModalHeader>
       <ModalContent>
         <span>
           <a
             href="https://docs.mapbox.com/style-spec/reference/layers/"
             target="_blank">
-            See mapbox documentation for more detail.
+            t('seeMapboxDocumentationForMoreDetail')
           </a>
           <div>
             There are some information to control the Legend.
