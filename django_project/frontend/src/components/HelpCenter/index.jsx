@@ -33,7 +33,7 @@ import './style.scss';
 export function ThemeButton({ children, ...props }) {
   return (
     <Button {...props}
-            className={'ThemeButton ' + (props.className ? props.className : '')}>
+      className={'ThemeButton ' + (props.className ? props.className : '')}>
       {children}
     </Button>
   )
@@ -41,90 +41,90 @@ export function ThemeButton({ children, ...props }) {
 
 /** Help center section */
 
-export const HelpCenter = forwardRef(({}, ref) => {
-    const [open, setOpen] = useState(false)
-    const [loading, setLoading] = useState(true)
-    const [data, setData] = useState(null)
+export const HelpCenter = forwardRef(({ }, ref) => {
+  const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [data, setData] = useState(null)
 
-    useImperativeHandle(ref, () => ({
-      open() {
-        return setOpen(_ => !_)
-      }
-    }));
+  useImperativeHandle(ref, () => ({
+    open() {
+      return setOpen(_ => !_)
+    }
+  }));
 
-    useEffect(
-      () => {
-        setLoading(true)
-        fetch(`/docs/data?relative_url=` + window.location.pathname,)
-          .then(response => response.json())
-          .then((response) => {
-            if (response.detail) {
-              throw new Error(response.detail)
-            }
-            response.html = response.intro
-            setLoading(false)
-            setData(response)
-          })
-          .catch(err => {
-            setLoading(false)
-          })
-      }, [])
-
-    return <div
-      className={'HelpCenter ' + (open ? 'Open' : '')}
-      onClick={_ => {
-        setOpen(false)
-      }}>
-      <div className='HelpCenter-Content' onClick={_ => {
-        _.stopPropagation();
-      }}>
-        <div className='HelpCenter-Close'>
-          <CloseIcon
-            onClick={_ => {
-              setOpen(false)
-            }}/>
-        </div>
-
-        {/* -------------------------------- */}
-        {/* CONTENT */}
-        <div className='HelpCenter-InnerContent'>
-          {
-            loading ? <div className='Throbber'>
-              <CircularProgress/> Loading...
-            </div> : data ? <Block data={data} isRoot={true}/> :
-              <div className='NotFound'>No helps found</div>
+  useEffect(
+    () => {
+      setLoading(true)
+      fetch(`/docs/data?relative_url=` + window.location.pathname,)
+        .then(response => response.json())
+        .then((response) => {
+          if (response.detail) {
+            throw new Error(response.detail)
           }
-        </div>
-        {/* -------------------------------- */}
-        <div className='HelpCenter-Footer'>
-          <a
+          response.html = response.intro
+          setLoading(false)
+          setData(response)
+        })
+        .catch(err => {
+          setLoading(false)
+        })
+    }, [])
+
+  return <div
+    className={'HelpCenter ' + (open ? 'Open' : '')}
+    onClick={_ => {
+      setOpen(false)
+    }}>
+    <div className='HelpCenter-Content' onClick={_ => {
+      _.stopPropagation();
+    }}>
+      <div className='HelpCenter-Close'>
+        <CloseIcon
+          onClick={_ => {
+            setOpen(false)
+          }} />
+      </div>
+
+      {/* -------------------------------- */}
+      {/* CONTENT */}
+      <div className='HelpCenter-InnerContent'>
+        {
+          loading ? <div className='Throbber'>
+            <CircularProgress /> Loading...
+          </div> : data ? <Block data={data} isRoot={true} /> :
+            <div className='NotFound'>No helps found</div>
+        }
+      </div>
+      {/* -------------------------------- */}
+      <div className='HelpCenter-Footer'>
+        <a
+          tabIndex="-1"
+          href={preferences.send_feedback_url}
+          target="_blank"
+        >
+          <ThemeButton
             tabIndex="-1"
-            href={preferences.send_feedback_url}
-            target="_blank"
+            variant="basic Basic"
+            disabled={!preferences.send_feedback_url}
           >
-            <ThemeButton
-              tabIndex="-1"
-              variant="basic Basic"
-              disabled={!preferences.send_feedback_url}
-            >
-              <EmailIcon/> Send Feedback
-            </ThemeButton>
-          </a>
-          <a
+            <EmailIcon /> Send Feedback
+          </ThemeButton>
+        </a>
+        <a
+          tabIndex="-1"
+          href={preferences.contact_us_url}
+          target="_blank"
+        >
+          <ThemeButton
             tabIndex="-1"
-            href={preferences.contact_us_url}
-            target="_blank"
+            variant="basic Basic"
+            disabled={!preferences.contact_us_url}
           >
-            <ThemeButton
-              tabIndex="-1"
-              variant="basic Basic"
-              disabled={!preferences.contact_us_url}
-            >
-              <ChatBubbleIcon/> Contact Us
-            </ThemeButton>
-          </a>
-        </div>
+            <ChatBubbleIcon /> Contact Us
+          </ThemeButton>
+        </a>
       </div>
     </div>
-  }
+  </div>
+}
 )
