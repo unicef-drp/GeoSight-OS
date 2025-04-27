@@ -1,17 +1,4 @@
 {
-    "en": {
-        "label": "English",
-        "flag": "🇺🇸",
-        "code": "US"
-    },
-    "fr": {
-        "label": "French",
-        "flag": "🇫🇷",
-        "code": "FR"
-    },
-    "es": {
-        "label": "Spanish",
-        "flag": "🇪🇸",
-        "code": "ES"
-    }
+    "nativeName": "English",
+    "flag": "🇺🇸"
 }

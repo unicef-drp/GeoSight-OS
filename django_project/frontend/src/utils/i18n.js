@@ -12,7 +12,10 @@ languageCodes.forEach(lang => {
 
 export const languages = {};
 languageCodes.forEach(lang => {
-    languages[lang] = resources[lang].translation.nativeName;
+    languages[lang] = {
+        name: resources[lang].translation.nativeName, 
+        flag: resources[lang].translation.flag
+    };
 });
 
 // Get current language from URL

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import Select, { components } from 'react-select';
 import './style.scss';
+// import languageData from '../../../../locales/en/common.json';
+import { languages, changeLanguage } from '../../../../utils/i18n';
 
 
 print()
@@ -10,7 +12,12 @@ export default function LanguageSelector() {
         value: 'en', label: 'English (US)', code: 'US', flag: '🇺🇸'
     });
 
-    const languageOptions = require.context("../../../../locales", true, /\.json$/);
+    const languageOptions = Object.keys(languages).map((key) => ({
+        value: key,
+        label: languages[key].name,
+        code: key,
+        flag: languages[key].flag,
+    }));
 
     // const languageOptions = [
     //     { value: 'en', label: 'English (US)', code: 'US', flag: '🇺🇸' },
@@ -25,6 +32,7 @@ export default function LanguageSelector() {
 
     const handleLanguageChange = (selectedOption) => {
         setSelectedLanguage(selectedOption);
+        changeLanguage(selectedOption);
     };
 
     const customOption = (props) => {
