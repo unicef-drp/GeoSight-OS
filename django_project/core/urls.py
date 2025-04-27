@@ -16,6 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.conf import settings
 from django.conf.urls import url, include
+from django.conf.urls.i18n import i18n_patterns
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
@@ -64,6 +65,10 @@ schema_view_v1 = get_schema_view(
 admin.autodiscover()
 
 urlpatterns = [
+    url(r'^i18n/', include('django.conf.urls.i18n')),
+]
+
+urlpatterns += i18n_patterns(
     url(r'^django-admin/core/sitepreferences/$', RedirectView.as_view(
         url='/django-admin/core/sitepreferences/1/change/', permanent=False),
         name='index'),
@@ -73,17 +78,17 @@ urlpatterns = [
     url(r'^api/v1/docs/$', schema_view_v1.with_ui(
         'swagger', cache_timeout=0),
         name='schema-swagger-ui'),
-]
+)
 
 if settings.USE_AZURE:
     # azure auth
-    urlpatterns += [
+    urlpatterns += i18n_patterns(
         path("", include("azure_auth.urls", namespace="azure_auth")),
-    ]
+    )
 else:
-    urlpatterns += [
+    urlpatterns += i18n_patterns(
         url(r'^auth/', include('django.contrib.auth.urls')),
-    ]
+    )
 
 if settings.DEBUG:
     urlpatterns += static(
@@ -145,7 +150,7 @@ if settings.TENANTS_ENABLED:
         url(r'^tenants/', include('geosight.tenants.urls'))
     ]
 
-urlpatterns += [
+urlpatterns += i18n_patterns(
     url(r'^tinymce/', include('tinymce.urls')),
     url(r'^proxy', ProxyView.as_view(), name='proxy-view'),
     url(r'^api/v1/', include('core.urls_v1')),
@@ -154,4 +159,4 @@ urlpatterns += [
     url(r'^captcha/', include('captcha.urls')),
     url(r'^', include('geosight.urls')),
     url(r'^', include('frontend.urls')),
-]
+)
