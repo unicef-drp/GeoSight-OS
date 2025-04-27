@@ -88,6 +88,7 @@ SOUTH_TESTS_MIGRATE = False
 # Set languages which want to be translated
 LANGUAGES = (
     ('en', _('English')),
+    ('es', _('Spanish')),
 )
 
 # Set storage path for the translation files

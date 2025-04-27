@@ -14,6 +14,7 @@
  */
 import { DatasetView } from "../types/DatasetView";
 import { GeorepoUrls } from "./georepo";
+import { getCurrentLanguage } from './i18n';
 
 export const referenceDatasetUrlBase = 'reference-datasets'
 export const InternalReferenceDatasets = {
@@ -37,34 +38,38 @@ export const URLS = {
   ReferenceLayer: {
     VIEW: {
       List: function (dataset: string, isLocal: boolean) {
+        const lang = getCurrentLanguage();
         if (isLocal) {
-          return InternalReferenceDatasets.list() + '?page=1&page_size=25'
+          return `/${lang}${InternalReferenceDatasets.list()}?page=1&page_size=25`;
         }
-        return GeorepoUrls.ViewList(dataset)
+        return `/${lang}${GeorepoUrls.ViewList(dataset)}`;
       },
       Detail: function (detail: DatasetView) {
-        const { identifier } = detail
+        const { identifier } = detail;
+        const lang = getCurrentLanguage();
         if (detail.is_local) {
-          return InternalReferenceDatasets.detail(identifier)
+          return `/${lang}${InternalReferenceDatasets.detail(identifier)}`;
         } else {
-          return GeorepoUrls.ViewDetail(identifier)
+          return `/${lang}${GeorepoUrls.ViewDetail(identifier)}`;
         }
       },
       Centroid: function (detail: DatasetView) {
-        const { identifier } = detail
+        const { identifier } = detail;
+        const lang = getCurrentLanguage();
         if (detail.is_local) {
-          return InternalReferenceDatasets.centroid(identifier)
+          return `/${lang}${InternalReferenceDatasets.centroid(identifier)}`;
         } else {
-          return GeorepoUrls.Centroid(identifier)
+          return `/${lang}${GeorepoUrls.Centroid(identifier)}`;
         }
       }
     },
     COUNTRY: {
       List: function (dataset: string, isLocal: boolean) {
+        const lang = getCurrentLanguage();
         if (isLocal) {
-          return InternalReferenceDatasets.COUNTRY.List()
+          return `/${lang}${InternalReferenceDatasets.COUNTRY.List()}`;
         }
-        return GeorepoUrls.CountryList(dataset)
+        return `/${lang}${GeorepoUrls.CountryList(dataset)}`;
       },
     }
   }
