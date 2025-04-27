@@ -23,6 +23,7 @@ import { formatDateTime } from "../../../../utils/main";
 import { ConfirmDialog } from "../../../../components/ConfirmDialog";
 import Admin from "../../index";
 import { ThemeButton } from "../../../../components/Elements/Button";
+import { useTranslation } from 'react-i18next';
 
 import {
   Notification,
@@ -33,6 +34,7 @@ import './style.scss';
 
 /** Access request Detail */
 export default function AccessRequestDetail({ pageName }) {
+  const { t } = useTranslation();
   const [data, setData] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [remark, setRemark] = useState("");
@@ -66,7 +68,7 @@ export default function AccessRequestDetail({ pageName }) {
         'X-CSRFToken': csrfmiddlewaretoken
       }
     }).then(response => {
-      notify('Request is ' + (approve ? 'Approved' : 'Rejected') + '!', NotificationStatus.SUCCESS)
+      notify((approve ? t('admin.requestApproved') : t('admin.requestRejected')) + '!', NotificationStatus.SUCCESS)
       window.location = urls.api.list;
     }).catch(error => {
       setSubmitted(false)
@@ -85,19 +87,19 @@ export default function AccessRequestDetail({ pageName }) {
 
         {/* APPROVE */}
         <ConfirmDialog
-          header='Approve this request'
+          header={t('admin.approveRequestHeader')}
           onConfirmed={() => {
             post(true)
           }}
           ref={approveRef}
         >
           <div>
-            Are you sure you want to approve this request?<br/>
-            {data.type === 'NEW_USER' ? "A new user will be created when you approve this request." : "The permission needs to be done manually."}
+            {t('admin.approveRequestQuery')}<br/>
+            {data.type === 'NEW_USER' ? t('admin.approveRequestNewUser') : t('admin.approveRequestPermission')}
           </div>
           <br/>
           <FormControl>
-            <InputLabel>Remarks (Optional)</InputLabel>
+            <InputLabel>{t('admin.approveRequestRemarks')}</InputLabel>
             <Input
               type="text"
               style={{ width: "100%" }}
@@ -114,23 +116,23 @@ export default function AccessRequestDetail({ pageName }) {
           onClick={() => {
             approveRef?.current?.open()
           }}>
-          Approve
+          {t('admin.approveRequestButton')}
         </ThemeButton>
 
         {/* REJECT */}
         <ConfirmDialog
-          header='Reject this request'
+          header={t('admin.rejectRequestHeader')}
           onConfirmed={() => {
             post(false)
           }}
           ref={rejectRef}
         >
           <div>
-            Are you sure you want to reject this request?<br/>
+            {t('admin.rejectRequestQuery')}<br/>
           </div>
           <br/>
           <FormControl>
-            <InputLabel>Remarks (Optional)</InputLabel>
+            <InputLabel>{t('admin.rejectRequestRemarks')}</InputLabel>
             <Input
               type="text"
               style={{ width: "100%" }}
@@ -147,7 +149,7 @@ export default function AccessRequestDetail({ pageName }) {
           onClick={() => {
             rejectRef?.current?.open()
           }}>
-          Reject
+          {t('admin.rejectRequestButton')}
         </ThemeButton>
       </Fragment> : null
     }
@@ -158,7 +160,7 @@ export default function AccessRequestDetail({ pageName }) {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <div className='DetailSection'>
-                <div>Status</div>
+                <div>{t('admin.dataStatusSection')}</div>
                 <div>{data.status}</div>
               </div>
             </Grid>
@@ -166,19 +168,19 @@ export default function AccessRequestDetail({ pageName }) {
           <Grid container spacing={2}>
             <Grid item xs={3}>
               <div className='DetailSection'>
-                <div>Name</div>
+                <div>{t('admin.dataNameSection')}</div>
                 <div>{data.requester_first_name + ' ' + data.requester_last_name}</div>
               </div>
             </Grid>
             <Grid item xs={3}>
               <div className='DetailSection'>
-                <div>Email</div>
+                <div>{t('admin.dataEmailSection')}</div>
                 <div>{data.requester_email}</div>
               </div>
             </Grid>
             <Grid item xs={3}>
               <div className='DetailSection'>
-                <div>Submitted at</div>
+                <div>{t('admin.dataSubmittedAtSection')}</div>
                 <div>
                   {data.submitted_on ? formatDateTime(new Date(data.submitted_on)) : null}
                 </div>
@@ -188,7 +190,7 @@ export default function AccessRequestDetail({ pageName }) {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <div className='DetailSection'>
-                <div>Description</div>
+                <div>{t('admin.dataDescriptionSection')}</div>
                 <div>{data.description}</div>
               </div>
             </Grid>
@@ -198,13 +200,13 @@ export default function AccessRequestDetail({ pageName }) {
               <Grid container spacing={2}>
                 <Grid item xs={3}>
                   <div className='DetailSection'>
-                    <div>{data?.status === 'APPROVED' ? 'Approved by' : 'Rejected by'}</div>
+                    <div>{data?.status === 'APPROVED' ? t('admin.dataApprovedBy') : t('admin.dataRejectedBy')}</div>
                     <div>{data.approval_by}</div>
                   </div>
                 </Grid>
                 <Grid item xs={3}>
                   <div className='DetailSection'>
-                    <div>{data?.status === 'APPROVED' ? 'Approved at' : 'Rejected at'}</div>
+                    <div>{data?.status === 'APPROVED' ? t('admin.dataApprovedAt') : t('admin.dataRejectedAt')}</div>
                     <div>
                       {data.approved_date ? formatDateTime(new Date(data.approved_date)) : null}
                     </div>
@@ -212,7 +214,7 @@ export default function AccessRequestDetail({ pageName }) {
                 </Grid>
                 <Grid item xs={3}>
                   <div className='DetailSection'>
-                    <div>Remarks</div>
+                    <div>{t('admin.dataRemarks')}</div>
                     <div>{data.approver_notes}</div>
                   </div>
                 </Grid>
