@@ -38,32 +38,34 @@ import FilterEditor from "../Input/FilterEditor";
 import { INIT_DATA } from "../../../../utils/queryExtraction";
 import FilterInput from "../Input";
 import CircularProgress from "@mui/material/CircularProgress";
+import { useTranslation } from 'react-i18next';
 
+const { t } = useTranslation();
 /** Filter group component */
 const FilterGroupElement = memo(
   ({
-     // Operator stats
-     operator,
-     setOperator,
+    // Operator stats
+    operator,
+    setOperator,
 
-     // Active state
-     active,
-     setActive,
+    // Active state
+    active,
+    setActive,
 
-     // On delete
-     onDelete,
+    // On delete
+    onDelete,
 
-     // On create filter
-     onCreateNewFilter,
+    // On create filter
+    onCreateNewFilter,
 
-     // On create new group
-     onCreateNewGroup,
+    // On create new group
+    onCreateNewGroup,
 
-     // Is master
-     isMaster,
-     isAdmin,
-     isLoading
-   }: FilterGroupElementProps) => {
+    // Is master
+    isMaster,
+    isAdmin,
+    isLoading
+  }: FilterGroupElementProps) => {
     const modalRef = useRef(null);
 
     // Fetch this from global data
@@ -103,10 +105,10 @@ const FilterGroupElement = memo(
           {
             isLoading &&
             <div style={{ marginLeft: "0.5rem" }}>
-              <CircularProgress size="1rem"/>
+              <CircularProgress size="1rem" />
             </div>
           }
-          <div className='Separator'/>
+          <div className='Separator' />
           {
             isEnabled && <>
               <Tooltip title="Add New Filter">
@@ -119,19 +121,19 @@ const FilterGroupElement = memo(
                           onCreateNewFilter(newData)
                         }
                       )
-                    }}/>
+                    }} />
               </Tooltip>
               <Tooltip title="Add New Group">
                 <CreateNewFolderIcon
                   className='FilterGroupAdd MuiButtonLike' onClick={
-                  () => {
-                    modalRef.current.open(
-                      INIT_DATA.WHERE(), (newData: any) => {
-                        onCreateNewGroup(newData)
-                      }
-                    )
-                  }
-                }/>
+                    () => {
+                      modalRef.current.open(
+                        INIT_DATA.WHERE(), (newData: any) => {
+                          onCreateNewGroup(newData)
+                        }
+                      )
+                    }
+                  } />
               </Tooltip>
             </>
           }
@@ -142,7 +144,7 @@ const FilterGroupElement = memo(
               isAdmin={isAdmin}
             />
           }
-          <FilterEditor ref={modalRef}/>
+          <FilterEditor ref={modalRef} />
         </div>
       </div>
     )
@@ -219,27 +221,27 @@ const FilterGroup = (
 
   // When field, operator, value changed, make geometries null
   useEffect(() => {
-      const isLoading = !!results.includes(null);
-      setIsLoading(isLoading)
-      if (!isLoading) {
-        const _results = results.filter(row => row !== undefined);
-        if (!_results.length) {
-          updateFilter(undefined)
-        } else {
-          if (query.operator === WHERE_OPERATOR.AND) {
-            updateFilter(_.intersection(..._results));
-          } else {
-            let _array: string[] = [];
-            _results.map(result => {
-              _array = _array.concat(result)
-            })
-            updateFilter(Array.from(new Set(_array)));
-          }
-        }
+    const isLoading = !!results.includes(null);
+    setIsLoading(isLoading)
+    if (!isLoading) {
+      const _results = results.filter(row => row !== undefined);
+      if (!_results.length) {
+        updateFilter(undefined)
       } else {
-        updateFilter(null)
+        if (query.operator === WHERE_OPERATOR.AND) {
+          updateFilter(_.intersection(..._results));
+        } else {
+          let _array: string[] = [];
+          _results.map(result => {
+            _array = _array.concat(result)
+          })
+          updateFilter(Array.from(new Set(_array)));
+        }
       }
-    },
+    } else {
+      updateFilter(null)
+    }
+  },
     [results, query.operator]
   );
 
@@ -319,7 +321,7 @@ const FilterGroup = (
 
           )
         )
-        : <div className='FilterNote'>There is no filter for this group.</div>
+        : <div className='FilterNote'>{t('dashboardPage.filterNote')}</div>
     }
   </div>
 };

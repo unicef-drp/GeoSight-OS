@@ -60,8 +60,8 @@ function ContextLayers() {
 
       }
       setTreeData([
-          ...dataStructureToTreeData(_contextLayers, contextLayersStructure)
-        ]
+        ...dataStructureToTreeData(_contextLayers, contextLayersStructure)
+      ]
       )
     }
   }
@@ -117,9 +117,9 @@ function ContextLayers() {
 
     for (const contextLayer of _contextLayers) {
       if (!contextLayer.permission) {
-        contextLayer.error = "It seems this layer already being deleted"
+        contextLayer.error = t('contextLayerErrorDelete')
       } else if (!contextLayer.permission.read) {
-        contextLayer.error = "You don't have permission to access this resource"
+        contextLayer.error = t('contextLayerErrorPermission')
       } else if (!layers[contextLayer.id + '']) {
         getLayer(
           contextLayer,
@@ -133,8 +133,8 @@ function ContextLayers() {
           (legend) => contextLayer.legend = legend,
           (error) => {
             setErrors(prevState => {
-                return { ...prevState, [contextLayer.id + '']: error.toString() }
-              }
+              return { ...prevState, [contextLayer.id + '']: error.toString() }
+            }
             )
           },
           null
@@ -155,7 +155,7 @@ function ContextLayers() {
       groupSelectable={true}
       maxSelect={10000000}
       onChange={onChange}
-      placeholder={'Search Context Layers'}
+      placeholder={t('contextLayerSearch')}
     />
   )
 }
@@ -177,7 +177,7 @@ export default function ContextLayersAccordion({ expanded }) {
       className='ContextLayersAccordion'
     >
       <AccordionDetails>
-        <ContextLayers/>
+        <ContextLayers />
       </AccordionDetails>
     </Accordion>
   )

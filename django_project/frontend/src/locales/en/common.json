@@ -4,8 +4,22 @@
     "nativeName": "English",
     "seeMapboxDocumentationForMoreDetail": "See mapbox documentation for more detail.",
     "thereAreSomeInformationToControlTheLegend": "There are some information to control the Legend.",
-    "admin" : {
-        "requestApproved" : "Request is Approved",
-        "requestRejected" : "Request is Rejected"
+    "admin": {
+        "requestApproved": "Request is Approved",
+        "requestRejected": "Request is Rejected"
+    },
+    "dashboardPage": {
+        "layers": "Layers",
+        "filters": "Filters",
+        "contextLayers": "Context Layers",
+        "indicators": "Indicators",
+        "contextLayerErrorDelete": "It seems this layer already being deleted",
+        "contextLayerErrorPermission": "You don't have permission to access this resource",
+        "contextLayerSearch": "Search Context Layers",
+        "filterNote": "There is no filter for this group.",
+        "indicatorSearch": "Search Indicators",
+        "indicatorLayerNotFound": "There is no indicator found for this layer. Please ask admin to fix this.",
+        "indicatorLayerErrorPermission": "You don't have permission to access this resource",
+        "relatedTableNotConfigured": "Related table does not configured properly"
     }
 }
