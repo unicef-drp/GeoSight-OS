@@ -2,18 +2,26 @@ import React, { useState } from 'react';
 import Select, { components } from 'react-select';
 import './style.scss';
 
+
+print()
+
 export default function LanguageSelector() {
     const [selectedLanguage, setSelectedLanguage] = useState({
         value: 'en', label: 'English (US)', code: 'US', flag: '🇺🇸'
     });
 
-    const languageOptions = [
-        { value: 'en', label: 'English (US)', code: 'US', flag: '🇺🇸' },
-        { value: 'es', label: 'Spanish', code: 'ES', flag: '🇪🇸' },
-        { value: 'fr', label: 'French', code: 'FR', flag: '🇫🇷' },
-        { value: 'it', label: 'Italian', code: 'IT', flag: '🇮🇹' },
-        { value: 'de', label: 'German', code: 'DE', flag: '🇩🇪' },
-    ];
+    const languageOptions = require.context("../../../../locales", true, /\.json$/);
+
+    // const languageOptions = [
+    //     { value: 'en', label: 'English (US)', code: 'US', flag: '🇺🇸' },
+    //     { value: 'es', label: 'Spanish', code: 'ES', flag: '🇪🇸' },
+    //     { value: 'fr', label: 'French', code: 'FR', flag: '🇫🇷' },
+    //     { value: 'it', label: 'Italian', code: 'IT', flag: '🇮🇹' },
+    //     { value: 'de', label: 'German', code: 'DE', flag: '🇩🇪' },
+    // ];
+
+    console.log("These language options are: ");
+    console.log(languageOptions);
 
     const handleLanguageChange = (selectedOption) => {
         setSelectedLanguage(selectedOption);
@@ -48,6 +56,7 @@ export default function LanguageSelector() {
                 classNamePrefix="react-select"
                 menuPlacement="auto"
             />
+
         </div>
     );
 }
