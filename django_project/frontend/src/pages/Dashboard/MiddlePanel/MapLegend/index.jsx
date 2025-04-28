@@ -119,7 +119,7 @@ const RenderIndicatorLegend = ({ layer, name }) => {
   }
   const layerData = getLayerData(indicatorsData, relatedTableData, layer, referenceLayer)
   const hasData = allDataIsReady(layerData)
-  let rules = []
+  let rules = null
   if (hasData) {
     rules = indicatorLayerStyle(
       layer, indicators, indicatorsData, relatedTableData,
@@ -151,7 +151,7 @@ export default function MapLegend() {
         : ""
     }
     {
-      selectedIndicatorSecondLayer.id && indicatorShow?
+      selectedIndicatorSecondLayer.id && indicatorShow ?
         <RenderIndicatorLegend
           layer={selectedIndicatorSecondLayer}
           name={selectedIndicatorSecondLayer.name + " (Inner)"}
