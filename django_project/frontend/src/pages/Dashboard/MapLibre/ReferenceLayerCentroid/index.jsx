@@ -71,16 +71,22 @@ export default function ReferenceLayerCentroid({ map }) {
     const currRequest = new Date().getTime()
     lastRequestRender = currRequest
 
-    ExecuteWebWorker(
-      workerMergeGeometries, {
-        referenceLayers: referenceLayers.map(referenceLayer => referenceLayer.identifier),
-        datasetGeometries
-      }, (features) => {
-        if (currRequest === lastRequestRender) {
-          setGeometries(features)
+    if (referenceLayers.length > 1) {
+      ExecuteWebWorker(
+        workerMergeGeometries, {
+          referenceLayers: referenceLayers.map(referenceLayer => referenceLayer.identifier),
+          datasetGeometries
+        }, (features) => {
+          if (currRequest === lastRequestRender) {
+            setGeometries(features)
+          }
         }
+      )
+    } else {
+      if (datasetGeometries[referenceLayers[0]?.identifier]) {
+        setGeometries(datasetGeometries[referenceLayers[0]?.identifier])
       }
-    )
+    }
   }, [referenceLayers, datasetGeometries]);
 
   /** Chart data generator **/
