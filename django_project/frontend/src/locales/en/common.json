@@ -1,7 +1,10 @@
 {
+    "native": {
+        "name": "English",
+        "flag": "🇺🇸"
+    },
     "edit": "Edit",
     "mapboxStyleInformation": "Mapbox style information.",
-    "nativeName": "English",
     "seeMapboxDocumentationForMoreDetail": "See mapbox documentation for more detail.",
     "thereAreSomeInformationToControlTheLegend": "There are some information to control the Legend.",
     "admin": {

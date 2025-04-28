@@ -47,6 +47,7 @@ import './style.scss';
 import NotificationBadge from "../../../../components/NotificationBadge";
 import NotificationMaintenance
   from "../../../../components/NotificationMaintenance";
+import LanguageSelector from '../../../../components/LanguageSelector';
 
 
 function SidaNavigationButton({ title, minified, children }) {
@@ -81,7 +82,7 @@ export default function SideNavigation({ pageName, minified }) {
   return (
     <div className={'SideNavigation ' + (minified ? 'Minified' : '')}>
       <div className='SideNavigationHeader'>
-        <NavBar minified={minified}/>
+        <NavBar minified={minified} />
       </div>
       <div className='SideNavigationContent'>
         {
@@ -92,42 +93,42 @@ export default function SideNavigation({ pageName, minified }) {
                 </div>
                 <SidaNavigationButton minified={minified} title='Project'>
                   <a href={dashboardList}
-                     className={'SideNavigation-Row ' + (pageName === pageNames.Dashboard ? 'active' : '')}>
-                    {pageName === pageNames.Dashboard ? <ProjectActiveIcon/> :
-                      <ProjectIcon/>}
+                    className={'SideNavigation-Row ' + (pageName === pageNames.Dashboard ? 'active' : '')}>
+                    {pageName === pageNames.Dashboard ? <ProjectActiveIcon /> :
+                      <ProjectIcon />}
                     <span className='SideNavigation-Row-Name'>Project</span>
                   </a>
                 </SidaNavigationButton>
                 <SidaNavigationButton minified={minified} title='Indicators'>
                   <a href={indicatorList}
-                     className={'SideNavigation-Row ' + (pageName === pageNames.Indicators ? 'active' : '')}>
-                    <ListIcon/>
+                    className={'SideNavigation-Row ' + (pageName === pageNames.Indicators ? 'active' : '')}>
+                    <ListIcon />
                     <span className='SideNavigation-Row-Name'>Indicators</span>
                   </a>
                 </SidaNavigationButton>
                 <SidaNavigationButton minified={minified}
-                                      title='Context Layers'>
+                  title='Context Layers'>
                   <a href={contextLayerList}
-                     className={'SideNavigation-Row ' + (pageName === pageNames.ContextLayer ? 'active' : '')}>
-                    {pageName === pageNames.ContextLayer ? <LayerActiveIcon/> :
-                      <LayerIcon/>}
+                    className={'SideNavigation-Row ' + (pageName === pageNames.ContextLayer ? 'active' : '')}>
+                    {pageName === pageNames.ContextLayer ? <LayerActiveIcon /> :
+                      <LayerIcon />}
                     <span
                       className='SideNavigation-Row-Name'>Context Layers</span>
                   </a>
                 </SidaNavigationButton>
                 <SidaNavigationButton minified={minified} title='Basemaps'>
                   <a href={basemapList}
-                     className={'SideNavigation-Row ' + (pageName === pageNames.Basemaps ? 'active' : '')}>
-                    {pageName === pageNames.Basemaps ? <MapActiveIcon/> :
-                      <MapIcon/>}
+                    className={'SideNavigation-Row ' + (pageName === pageNames.Basemaps ? 'active' : '')}>
+                    {pageName === pageNames.Basemaps ? <MapActiveIcon /> :
+                      <MapIcon />}
                     <span className='SideNavigation-Row-Name'>Basemaps</span>
                   </a>
                 </SidaNavigationButton>
                 <SidaNavigationButton minified={minified} title='Styles'>
                   <a href={styleList}
-                     className={'SideNavigation-Row ' + (pageName === pageNames.Styles ? 'active' : '')}>
-                    {pageName === pageNames.Styles ? <StyleActiveIcon/> :
-                      <StyleIcon/>}
+                    className={'SideNavigation-Row ' + (pageName === pageNames.Styles ? 'active' : '')}>
+                    {pageName === pageNames.Styles ? <StyleActiveIcon /> :
+                      <StyleIcon />}
                     <span className='SideNavigation-Row-Name'>Styles</span>
                   </a>
                 </SidaNavigationButton>
@@ -139,10 +140,10 @@ export default function SideNavigation({ pageName, minified }) {
                     minified={minified}
                     title='Data Management'>
                     <a href={urls.admin.dataManagement}
-                       className={'SideNavigation-Row ' + ([pageNames.Importer, pageNames.DataManagement].includes(pageName) ? 'active' : '')}>
+                      className={'SideNavigation-Row ' + ([pageNames.Importer, pageNames.DataManagement].includes(pageName) ? 'active' : '')}>
                       {
                         [pageNames.Importer, pageNames.DataManagement].includes(pageName) ?
-                          <DataManagementActiveIcon/> : <DataManagementIcon/>
+                          <DataManagementActiveIcon /> : <DataManagementIcon />
                       }
                       <span
                         className='SideNavigation-Row-Name'>Data Management</span>
@@ -153,23 +154,23 @@ export default function SideNavigation({ pageName, minified }) {
                   minified={minified}
                   title='Data Browser'>
                   <a href={dataset}
-                     className={'SideNavigation-Row ' + (pageName === pageNames.Dataset ? 'active' : '')}>
+                    className={'SideNavigation-Row ' + (pageName === pageNames.Dataset ? 'active' : '')}>
                     {
                       pageName === pageNames.Dataset ?
-                        <DataBrowserActiveIcon/> :
-                        <DataBrowserIcon/>
+                        <DataBrowserActiveIcon /> :
+                        <DataBrowserIcon />
                     }
                     <span
                       className='SideNavigation-Row-Name'>Data Browser</span>
                   </a>
                 </SidaNavigationButton>
                 <SidaNavigationButton minified={minified}
-                                      title='Related Tables'>
+                  title='Related Tables'>
                   <a href={relatedTableList}
-                     className={'SideNavigation-Row ' + ([pageNames.RelatedTables, pageNames.RelatedTablesData].includes(pageName) ? 'active' : '')}>
+                    className={'SideNavigation-Row ' + ([pageNames.RelatedTables, pageNames.RelatedTablesData].includes(pageName) ? 'active' : '')}>
                     {[pageNames.RelatedTables, pageNames.RelatedTablesData].includes(pageName) ?
-                      <TableActiveIcon/> :
-                      <TableIcon/>}
+                      <TableActiveIcon /> :
+                      <TableIcon />}
                     <span
                       className='SideNavigation-Row-Name'>Related Tables</span>
                   </a>
@@ -185,10 +186,10 @@ export default function SideNavigation({ pageName, minified }) {
                       minified={minified}
                       title={pageNames.ReferenceLayerView}>
                       <a href={referenceDatasetList}
-                         className={'SideNavigation-Row ' + ([pageNames.ReferenceLayerView].includes(pageName) ? 'active' : '')}>
+                        className={'SideNavigation-Row ' + ([pageNames.ReferenceLayerView].includes(pageName) ? 'active' : '')}>
                         {[pageNames.ReferenceLayerView].includes(pageName) ?
-                          <LayerActiveIcon/> :
-                          <LayerIcon/>}
+                          <LayerActiveIcon /> :
+                          <LayerIcon />}
                         <span
                           className='SideNavigation-Row-Name'>Reference Datasets</span>
                       </a>
@@ -197,10 +198,10 @@ export default function SideNavigation({ pageName, minified }) {
                       minified={minified}
                       title={pageNames.referenceDatesetImporter}>
                       <a href={referenceDatesetImporterList}
-                         className={'SideNavigation-Row ' + ([pageNames.referenceDatesetImporter].includes(pageName) ? 'active' : '')}>
+                        className={'SideNavigation-Row ' + ([pageNames.referenceDatesetImporter].includes(pageName) ? 'active' : '')}>
                         {[pageNames.referenceDatesetImporter].includes(pageName) ?
-                          <LayerActiveIcon/> :
-                          <LayerIcon/>}
+                          <LayerActiveIcon /> :
+                          <LayerIcon />}
                         <span
                           className='SideNavigation-Row-Name'>Importers</span>
                       </a>
@@ -215,9 +216,9 @@ export default function SideNavigation({ pageName, minified }) {
                       minified={minified}
                       title='Users and groups'>
                       <a href={userAndGroupList}
-                         className={'SideNavigation-Row ' + (pageName === pageNames.UsersAndGroups ? 'active' : '')}>
+                        className={'SideNavigation-Row ' + (pageName === pageNames.UsersAndGroups ? 'active' : '')}>
                         {pageName === pageNames.UsersAndGroups ?
-                          <ContactActiveIcon/> : <ContactIcon/>}
+                          <ContactActiveIcon /> : <ContactIcon />}
                         <span
                           className='SideNavigation-Row-Name'>Users and groups</span>
                       </a>
@@ -229,12 +230,12 @@ export default function SideNavigation({ pageName, minified }) {
                     minified={minified}
                     title='Access Request'>
                     <a href={urls.admin.accessRequest}
-                       className={'SideNavigation-Row ' + (pageNames.AccessRequestList === pageName ? 'active' : '')}>
-                      <GppMaybeIcon className='SideNavigation-Row-Icon'/>
+                      className={'SideNavigation-Row ' + (pageNames.AccessRequestList === pageName ? 'active' : '')}>
+                      <GppMaybeIcon className='SideNavigation-Row-Icon' />
                       <span className='SideNavigation-Row-Name'>
                         Access Request
                       </span>
-                      <NotificationBadge/>
+                      <NotificationBadge />
                     </a>
                   </SidaNavigationButton>
                 </div>
@@ -248,10 +249,10 @@ export default function SideNavigation({ pageName, minified }) {
               <div className='SideNavigation-Row-Group'>
                 <SidaNavigationButton minified={minified} title='Profile'>
                   <a href={`/admin/user/${user.username}/edit`}
-                     className={'SideNavigation-Row ' + (pageNames.UserProfile === pageName ? 'active' : '')}>
+                    className={'SideNavigation-Row ' + (pageNames.UserProfile === pageName ? 'active' : '')}>
                     {
                       pageName === pageNames.UserProfile ?
-                        <ContactActiveIcon/> : <ContactIcon/>
+                        <ContactActiveIcon /> : <ContactIcon />
                     }
                     <span className='SideNavigation-Row-Name'>Profile</span>
                   </a>
@@ -265,27 +266,28 @@ export default function SideNavigation({ pageName, minified }) {
         <SidaNavigationButton
           minified={minified} title='View all dashboard(s)'>
           <a href='/' className='SideNavigation-Row Button'>
-            <GridIcon/>
+            <GridIcon />
             <span className='SideNavigation-Row-Name'>
               View all dashboard(s)
             </span>
           </a>
         </SidaNavigationButton>
+        <LanguageSelector />
         <SidaNavigationButton minified={minified} title='Help'>
           <a href='#' className='SideNavigation-Row' onClick={_ => {
             helpPageRef?.current.open()
           }}>
-            <HelpIcon/>
+            <HelpIcon />
             <span className='SideNavigation-Row-Name'>Help</span>
           </a>
         </SidaNavigationButton>
-        <NotificationMaintenance/>
+        <NotificationMaintenance />
       </div>
       <div className='SideNavigationFooter'>
-        <User detail={true}/>
+        <User detail={true} />
       </div>
 
-      <HelpCenter ref={helpPageRef}/>
+      <HelpCenter ref={helpPageRef} />
     </div>
   );
 }
