@@ -1,16 +1,13 @@
 import React, { useState } from 'react';
-import Select, { components } from 'react-select';
+import Select from 'react-select';
 import './style.scss';
-// import languageData from '../../../../locales/en/common.json';
-import { languages, changeLanguage } from '../../../../utils/i18n';
+import { languages, changeLanguage, getCurrentLanguage } from '../../../../utils/i18n';
 
 
 print()
 
 export default function LanguageSelector() {
-    const [selectedLanguage, setSelectedLanguage] = useState({
-        value: 'en', label: 'English (US)', code: 'US', flag: '🇺🇸'
-    });
+    const currentLanguageCode = getCurrentLanguage();
 
     const languageOptions = Object.keys(languages).map((key) => ({
         value: key,
@@ -19,27 +16,19 @@ export default function LanguageSelector() {
         flag: languages[key].flag,
     }));
 
-    // const languageOptions = [
-    //     { value: 'en', label: 'English (US)', code: 'US', flag: '🇺🇸' },
-    //     { value: 'es', label: 'Spanish', code: 'ES', flag: '🇪🇸' },
-    //     { value: 'fr', label: 'French', code: 'FR', flag: '🇫🇷' },
-    //     { value: 'it', label: 'Italian', code: 'IT', flag: '🇮🇹' },
-    //     { value: 'de', label: 'German', code: 'DE', flag: '🇩🇪' },
-    // ];
+    const [selectedLanguage, setSelectedLanguage] = useState(languageOptions.find((lang) => lang.value === currentLanguageCode));
 
-    console.log("These language options are: ");
-    console.log(languageOptions);
-
-    const handleLanguageChange = (selectedOption) => {
-        setSelectedLanguage(selectedOption);
-        changeLanguage(selectedOption);
+    const handleLanguageChange = (lang) => {
+        setSelectedLanguage(lang);
+        changeLanguage(lang.code);
+        console.log("CHANGED TO: " + lang.code)
     };
 
     const customOption = (props) => {
         const { data, innerRef, innerProps } = props;
         return (
             <div ref={innerRef} {...innerProps} className="custom-option">
-                <span className="code">{data.code}</span>
+                <span className="code">{data.code.toUpperCase()}</span>
                 <span className="flag">{data.flag}</span>
                 <span className="label">{data.label}</span>
             </div>
@@ -48,7 +37,7 @@ export default function LanguageSelector() {
 
     const customSingleValue = ({ data }) => (
         <div className="custom-single-value">
-            <span className="code">{data.code}</span>
+            <span className="code">{data.code.toUpperCase()}</span>
             <span className="flag">{data.flag}</span>
             <span className="label">{data.label}</span>
         </div>

@@ -13,8 +13,8 @@ languageCodes.forEach(lang => {
 export const languages = {};
 languageCodes.forEach(lang => {
     languages[lang] = {
-        name: resources[lang].translation.nativeName, 
-        flag: resources[lang].translation.flag
+        name: resources[lang].translation.native.name,
+        flag: resources[lang].translation.native.flag
     };
 });
 
