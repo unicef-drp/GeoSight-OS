@@ -114,17 +114,17 @@ export default function LeftPanel({ leftExpanded }) {
               aria-label="basic tabs example">
               <Tab
                 className='layers-tab'
-                label="Layers"
+                label={t('dashboardPage.layers')}
                 icon=<LayerIcon />
                 iconPosition="start"
-                {...tabProps(t('dashboardPage.layers'))}
+                {...tabProps('Layers')}
               />
               <Tab
                 className='filters-tab'
-                label="Filters"
+                label={t('dashboardPage.filters')}
                 icon=<TuneIcon />
                 iconPosition="start"
-                {...tabProps(t('dashboardPage.filters'))}
+                {...tabProps('Filters')}
               />
             </Tabs>
           </Box>

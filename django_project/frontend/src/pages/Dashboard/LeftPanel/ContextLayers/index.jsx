@@ -157,7 +157,7 @@ function ContextLayers() {
       groupSelectable={true}
       maxSelect={10000000}
       onChange={onChange}
-      placeholder={t('contextLayerSearch')}
+      placeholder={t('dashboardPage.contextLayerSearch')}
     />
   )
 }

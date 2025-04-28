@@ -2,5 +2,27 @@
     "native": {
         "name": "Español",
         "flag": "🇪🇸"
+    },
+    "edit": "Editar",
+    "mapboxStyleInformation": "Información de estilo de Mapbox.",
+    "seeMapboxDocumentationForMoreDetail": "Consulta la documentación de Mapbox para más detalles.",
+    "thereAreSomeInformationToControlTheLegend": "Hay información para controlar la leyenda.",
+    "admin": {
+        "requestApproved": "La solicitud ha sido aprobada",
+        "requestRejected": "La solicitud ha sido rechazada"
+    },
+    "dashboardPage": {
+        "layers": "Capas",
+        "filters": "Filtros",
+        "contextLayers": "Capas de contexto",
+        "indicators": "Indicadores",
+        "contextLayerErrorDelete": "Parece que esta capa ya fue eliminada",
+        "contextLayerErrorPermission": "No tienes permiso para acceder a este recurso",
+        "contextLayerSearch": "Buscar capas de contexto",
+        "filterNote": "No hay filtros para este grupo.",
+        "indicatorSearch": "Buscar indicadores",
+        "indicatorLayerNotFound": "No se encontró ningún indicador para esta capa. Por favor, pide al administrador que lo solucione.",
+        "indicatorLayerErrorPermission": "No tienes permiso para acceder a este recurso",
+        "relatedTableNotConfigured": "La tabla relacionada no está configurada correctamente"
     }
 }
