@@ -28,6 +28,7 @@
         "searchGeographyEntityLoading": "Loading....",
         "projectOverview": "Project Overview",
         "projectOverviewNoShow": "Do not show this again!",
-        "projectOverviewClose": "Close"
+        "projectOverviewClose": "Close",
+        "adminPanelButton": "Admin panel"
     }
 }
