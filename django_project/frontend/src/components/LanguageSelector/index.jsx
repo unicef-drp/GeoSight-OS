@@ -3,9 +3,6 @@ import Select from 'react-select';
 import './style.scss';
 import { languages, changeLanguage, getCurrentLanguage } from '../../utils/i18n';
 
-
-print()
-
 export default function LanguageSelector() {
     const currentLanguageCode = getCurrentLanguage();
 
@@ -21,7 +18,6 @@ export default function LanguageSelector() {
     const handleLanguageChange = (lang) => {
         setSelectedLanguage(lang);
         changeLanguage(lang.code);
-        console.log("CHANGED TO: " + lang.code)
     };
 
     const customOption = (props) => {
