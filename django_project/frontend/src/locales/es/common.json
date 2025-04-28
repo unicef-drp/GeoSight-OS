@@ -23,6 +23,11 @@
         "indicatorSearch": "Buscar indicadores",
         "indicatorLayerNotFound": "No se encontró ningún indicador para esta capa. Por favor, pide al administrador que lo solucione.",
         "indicatorLayerErrorPermission": "No tienes permiso para acceder a este recurso",
-        "relatedTableNotConfigured": "La tabla relacionada no está configurada correctamente"
+        "relatedTableNotConfigured": "La tabla relacionada no está configurada correctamente",
+        "searchGeographyEntity": "Buscar entidad geográfica",
+        "searchGeographyEntityLoading": "Cargando...",
+        "projectOverview": "Resumen del proyecto",
+        "projectOverviewNoShow": "¡No mostrar esto de nuevo!",
+        "projectOverviewClose": "Cerrar"
     }
 }

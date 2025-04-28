@@ -36,6 +36,7 @@ import { CloseButton } from "../../../../components/Elements/Button";
 import { InfoFillIcon } from "../../../../components/Icons";
 
 import './style.scss';
+import { useTranslation } from 'react-i18next';
 
 /**
  * ProjectOverview.
@@ -46,6 +47,7 @@ export default function ProjectOverview() {
     overview,
     show_splash_first_open
   } = useSelector(state => state.dashboard.data);
+  const { t } = useTranslation();
 
   // If overview does not match the one in the cookies, project is set to show splash screen
   // editMode is false, and overview is not empty, show splash screen.
@@ -58,19 +60,19 @@ export default function ProjectOverview() {
   const [showSplashScreenCheckbox, setShowSplashScreenCheckbox] = useState(showSplashScreen);
 
   useEffect(() => {
-      // Only set Cookies when showSplashScreenCheckbox is set to false/unchecked, to reduce cookie size.
-      if (!open && showSplashScreenCheckbox === false) {
-        // Set current overview as cookies.
-        Cookies.set(`overview-${id}`, overview)
-      }
-    }, [open]
+    // Only set Cookies when showSplashScreenCheckbox is set to false/unchecked, to reduce cookie size.
+    if (!open && showSplashScreenCheckbox === false) {
+      // Set current overview as cookies.
+      Cookies.set(`overview-${id}`, overview)
+    }
+  }, [open]
   );
 
   return (
     <Plugin className='ProjectOverview-Toolbar'>
       <div className={open ? "Active" : "Inactive"}>
         <PluginChild title={'Project Overview'}>
-          <InfoFillIcon onClick={_ => setOpen(true)}/>
+          <InfoFillIcon onClick={_ => setOpen(true)} />
           <Modal
             className='ProjectOverview'
             open={open}
@@ -81,7 +83,7 @@ export default function ProjectOverview() {
             <ModalHeader onClosed={() => {
               setOpen(false)
             }}>
-              Project Overview
+              {t("dashboardPage.projectOverview")}
             </ModalHeader>
             <ModalContent>
               <div className='ProjectDescription'>
@@ -99,9 +101,9 @@ export default function ProjectOverview() {
                         checked={!showSplashScreenCheckbox}
                         onChange={evt => {
                           setShowSplashScreenCheckbox((current) => !current)
-                        }}/>
+                        }} />
                     }
-                    label={"Do not show this again!"}/> : null
+                    label={t("dashboardPage.projectOverviewNoShow")} /> : null
               }
               <div className={'Separator'}></div>
               <CloseButton
@@ -111,7 +113,7 @@ export default function ProjectOverview() {
                   setOpen(false);
                 }
                 }
-                text='Close'
+                text={t("dashboardPage.projectOverviewClose")}
               />
             </ModalFooter>
           </Modal>

@@ -23,6 +23,11 @@
         "indicatorSearch": "Search Indicators",
         "indicatorLayerNotFound": "There is no indicator found for this layer. Please ask admin to fix this.",
         "indicatorLayerErrorPermission": "You don't have permission to access this resource",
-        "relatedTableNotConfigured": "Related table does not configured properly"
+        "relatedTableNotConfigured": "Related table does not configured properly",
+        "searchGeographyEntity": "Search Geography Entity",
+        "searchGeographyEntityLoading": "Loading....",
+        "projectOverview": "Project Overview",
+        "projectOverviewNoShow": "Do not show this again!",
+        "projectOverviewClose": "Close"
     }
 }
