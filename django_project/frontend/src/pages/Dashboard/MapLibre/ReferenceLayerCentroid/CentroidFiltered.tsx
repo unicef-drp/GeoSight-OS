@@ -19,6 +19,7 @@ import $ from "jquery";
 import maplibregl from "maplibre-gl";
 import { hasLayer } from "../utils";
 import { INDICATOR_LABEL_ID } from "./Label";
+import { IS_DEBUG, Logger } from "../../../../utils/logger";
 
 const geo_field = 'concept_uuid'
 
@@ -53,6 +54,31 @@ export const ReferenceLayerFilterCentroid = forwardRef(
           $(`#${code}-wrapper`).show()
           $(`#${code}-pin`).show()
         })
+      }
+
+      // LOG THE LABELS
+      if (IS_DEBUG) {
+        setTimeout(function () {
+          const features = map.queryRenderedFeatures({
+            layers: [INDICATOR_LABEL_ID]
+          });
+          const output = features.sort(
+            (a, b) => {
+              try {
+                return a.properties.geometry_code.localeCompare(b.properties.geometry_code)
+              } catch (err) {
+                return false
+              }
+
+            }
+          ).map(
+            feature => [
+              feature.properties.name, feature.properties.code, feature.properties.date, feature.properties.label, feature.properties.value
+            ]
+          )
+
+          Logger.log('LABEL_GEOM:', output)
+        }, 500);
       }
     }
 

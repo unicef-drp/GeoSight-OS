@@ -104,12 +104,13 @@ test.describe('View project', () => {
 
     // Check the label
     await expect(page.locator('.widget__sw__content').nth(1)).toContainText('978.5');
+    await delay(500)
     await expect(lastLogLabel).toEqual("Awdal,SOM_0001_V1,2020-01-01,60 - 80,61,Bakool,SOM_0002_V1,2020-01-01,60 - 80,78,Banadir,SOM_0003_V1,2020-01-01,20 - 40,30,Bari,SOM_0004_V1,2020-01-01,0 - 20,11,Bay,SOM_0005_V1,2020-01-01,20 - 40,40,Galgaduud,SOM_0006_V1,2020-01-01,0 - 20,10,Gedo,SOM_0007_V1,2020-01-01,20 - 40,40,Hiraan,SOM_0008_V1,2020-01-01,20 - 40,32,Lower Juba,SOM_0009_V1,2020-01-01,80 - 100,96,Lower Shabelle,SOM_0010_V1,2020-01-01,40 - 60,59,Middle Juba,SOM_0011_V1,2020-01-01,60 - 80,74,Middle Shabelle,SOM_0012_V1,2020-01-01,80 - 100,94,Mudug,SOM_0013_V1,2020-01-01,60 - 80,63,Nugaal,SOM_0014_V1,2020-01-01,60 - 80,68,Sanaag,SOM_0015_V1,2020-01-01,0 - 20,14,Sool,SOM_0016_V1,2020-01-01,20 - 40,35,Togdheer,SOM_0017_V1,2020-01-01,80 - 100,89,Woqooyi Galbeed,SOM_0018_V1,2020-01-01,0 - 20,1");
     await page.getByRole('tab', { name: 'Filters' }).click();
     lastLogLabel = null
     await page.getByRole('button', { name: 'Indicator A above X% Delete' }).getByRole('checkbox').check();
     await expect(page.locator('.widget__sw__content').nth(1)).toContainText('562');
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await delay(500)
     await expect(lastLogLabel).toEqual("Awdal,SOM_0001_V1,2020-01-01,60 - 80,61,Bakool,SOM_0002_V1,2020-01-01,60 - 80,78,Lower Juba,SOM_0009_V1,2020-01-01,80 - 100,96,Middle Juba,SOM_0011_V1,2020-01-01,60 - 80,74,Middle Shabelle,SOM_0012_V1,2020-01-01,80 - 100,94,Mudug,SOM_0013_V1,2020-01-01,60 - 80,63,Nugaal,SOM_0014_V1,2020-01-01,60 - 80,68,Togdheer,SOM_0017_V1,2020-01-01,80 - 100,89");
     await expect(lastLayers.includes("reference-layer-fill-0,reference-layer-outline-0")).toBeTruthy();
     await page.getByRole('button', { name: 'Indicator A above X% Delete' }).getByRole('checkbox').uncheck();
@@ -139,6 +140,7 @@ test.describe('View project', () => {
     await expect(page.locator('.widget__sgw').nth(2).locator('.widget__sgw__row').nth(0).locator('td').nth(1)).toContainText('77');
 
     // Check the label
+    await delay(500)
     await expect(lastLogLabel).toEqual("Somalia,SOM_V1,2020-01-01,60 - 80,77");
 
     // ------------------------------------------------------------
@@ -168,12 +170,13 @@ test.describe('View project', () => {
 
     // Check the label
     await expect(page.locator('.widget__sw__content').nth(1)).toContainText('3,778.5');
+    await delay(500)
     await expect(lastLogLabel).toEqual("Baki,SOM_0001_0001_V1,2020-01-01,0 - 20,1,Borama,SOM_0001_0002_V1,2020-01-01,40 - 60,51,Lughaye,SOM_0001_0003_V1,2020-01-01,80 - 100,91,Zeylac,SOM_0001_0004_V1,2020-01-01,80 - 100,82,Ceel Barde,SOM_0002_0001_V1,2020-01-01,20 - 40,22,Rab Dhuure,SOM_0002_0002_V1,2020-01-01,40 - 60,54,Tayeeglow,SOM_0002_0003_V1,2020-01-01,40 - 60,59,Waajid,SOM_0002_0004_V1,2020-01-01,80 - 100,94,Xudur,SOM_0002_0005_V1,2020-01-01,20 - 40,21,Banadir,SOM_0003_0001_V1,2020-01-01,20 - 40,36,Bandarbeyla,SOM_0004_0001_V1,2020-01-01,40 - 60,50,Bossaso,SOM_0004_0002_V1,2020-01-01,0 - 20,16,Caluula,SOM_0004_0003_V1,2020-01-01,60 - 80,67,Iskushuban,SOM_0004_0004_V1,2020-01-01,40 - 60,48,Qandala,SOM_0004_0005_V1,2020-01-01,20 - 40,40,Qardho,SOM_0004_0006_V1,2020-01-01,40 - 60,50,Baydhaba,SOM_0005_0001_V1,2020-01-01,0 - 20,15,Buur Hakaba,SOM_0005_0002_V1,2020-01-01,0 - 20,2,Diinsoor,SOM_0005_0003_V1,2020-01-01,20 - 40,35,Qansax Dheere,SOM_0005_0004_V1,2020-01-01,40 - 60,47,Cabudwaaq,SOM_0006_0001_V1,2020-01-01,40 - 60,44,Cadaado,SOM_0006_0002_V1,2020-01-01,20 - 40,33,Ceel Buur,SOM_0006_0003_V1,2020-01-01,0 - 20,19,Ceel Dheer,SOM_0006_0004_V1,2020-01-01,60 - 80,70,Dhuusamarreeb,SOM_0006_0005_V1,2020-01-01,60 - 80,80,Baardheere,SOM_0007_0001_V1,2020-01-01,20 - 40,23,Belet Xaawo,SOM_0007_0002_V1,2020-01-01,0 - 20,18,Ceel Waaq,SOM_0007_0003_V1,2020-01-01,80 - 100,94,Doolow,SOM_0007_0004_V1,2020-01-01,20 - 40,25,Garbahaarey,SOM_0007_0005_V1,2020-01-01,20 - 40,40,Luuq,SOM_0007_0006_V1,2020-01-01,80 - 100,84,Belet Weyne,SOM_0008_0001_V1,2020-01-01,40 - 60,51,Bulo Burto,SOM_0008_0002_V1,2020-01-01,0 - 20,15,Jalalaqsi,SOM_0008_0003_V1,2020-01-01,60 - 80,79,Afmadow,SOM_0009_0001_V1,2020-01-01,0 - 20,7,Badhaadhe,SOM_0009_0002_V1,2020-01-01,80 - 100,87,Jamaame,SOM_0009_0003_V1,2020-01-01,40 - 60,57,Kismaayo,SOM_0009_0004_V1,2020-01-01,80 - 100,98,Afgooye,SOM_0010_0001_V1,2020-01-01,20 - 40,25,Baraawe,SOM_0010_0002_V1,2020-01-01,60 - 80,63,Kurtunwaarey,SOM_0010_0003_V1,2020-01-01,80 - 100,96,Marka,SOM_0010_0004_V1,2020-01-01,80 - 100,94,Qoryooley,SOM_0010_0005_V1,2020-01-01,40 - 60,57,Sablaale,SOM_0010_0006_V1,2020-01-01,40 - 60,60,Wanla Weyn,SOM_0010_0007_V1,2020-01-01,0 - 20,7,Bu'Aale,SOM_0011_0001_V1,2020-01-01,80 - 100,94,Jilib,SOM_0011_0002_V1,2020-01-01,60 - 80,72,Saakow,SOM_0011_0003_V1,2020-01-01,60 - 80,71,Adan Yabaal,SOM_0012_0001_V1,2020-01-01,40 - 60,55,Balcad,SOM_0012_0002_V1,2020-01-01,20 - 40,29,Cadale,SOM_0012_0003_V1,2020-01-01,60 - 80,62,Jowhar,SOM_0012_0004_V1,2020-01-01,60 - 80,75,Gaalkacyo,SOM_0013_0001_V1,2020-01-01,0 - 20,2,Galdogob,SOM_0013_0002_V1,2020-01-01,80 - 100,93,Hobyo,SOM_0013_0003_V1,2020-01-01,80 - 100,91,Jariiban,SOM_0013_0004_V1,2020-01-01,60 - 80,65,Xarardheere,SOM_0013_0005_V1,2020-01-01,0 - 20,12,Burtinle,SOM_0014_0001_V1,2020-01-01,0 - 20,14,Eyl,SOM_0014_0002_V1,2020-01-01,40 - 60,46,Garoowe,SOM_0014_0003_V1,2020-01-01,60 - 80,67,Ceel Afweyn,SOM_0015_0001_V1,2020-01-01,40 - 60,53,Ceerigaabo,SOM_0015_0002_V1,2020-01-01,20 - 40,39,Laasqoray,SOM_0015_0003_V1,2020-01-01,20 - 40,28,Caynabo,SOM_0016_0001_V1,2020-01-01,60 - 80,65,Laas Caanood,SOM_0016_0002_V1,2020-01-01,40 - 60,42,Taleex,SOM_0016_0003_V1,2020-01-01,0 - 20,19,Xudun,SOM_0016_0004_V1,2020-01-01,20 - 40,37,Burco,SOM_0017_0001_V1,2020-01-01,20 - 40,27,Buuhoodle,SOM_0017_0002_V1,2020-01-01,20 - 40,36,Owdweyne,SOM_0017_0003_V1,2020-01-01,40 - 60,47,Sheikh,SOM_0017_0004_V1,2020-01-01,20 - 40,40,Berbera,SOM_0018_0001_V1,2020-01-01,80 - 100,81,Gebiley,SOM_0018_0002_V1,2020-01-01,40 - 60,53,Hargeysa,SOM_0018_0003_V1,2020-01-01,20 - 40,34");
     await page.getByRole('tab', { name: 'Filters' }).click();
     lastLogLabel = null
     await page.getByRole('button', { name: 'Indicator A above X% Delete' }).getByRole('checkbox').check();
     await expect(page.locator('.widget__sw__content').nth(1)).toContainText('1,674.5');
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await delay(500)
     await expect(lastLogLabel).toEqual("Lughaye,SOM_0001_0003_V1,2020-01-01,80 - 100,91,Zeylac,SOM_0001_0004_V1,2020-01-01,80 - 100,82,Waajid,SOM_0002_0004_V1,2020-01-01,80 - 100,94,Caluula,SOM_0004_0003_V1,2020-01-01,60 - 80,67,Ceel Dheer,SOM_0006_0004_V1,2020-01-01,60 - 80,70,Dhuusamarreeb,SOM_0006_0005_V1,2020-01-01,60 - 80,80,Ceel Waaq,SOM_0007_0003_V1,2020-01-01,80 - 100,94,Luuq,SOM_0007_0006_V1,2020-01-01,80 - 100,84,Jalalaqsi,SOM_0008_0003_V1,2020-01-01,60 - 80,79,Badhaadhe,SOM_0009_0002_V1,2020-01-01,80 - 100,87,Kismaayo,SOM_0009_0004_V1,2020-01-01,80 - 100,98,Baraawe,SOM_0010_0002_V1,2020-01-01,60 - 80,63,Kurtunwaarey,SOM_0010_0003_V1,2020-01-01,80 - 100,96,Marka,SOM_0010_0004_V1,2020-01-01,80 - 100,94,Bu'Aale,SOM_0011_0001_V1,2020-01-01,80 - 100,94,Jilib,SOM_0011_0002_V1,2020-01-01,60 - 80,72,Saakow,SOM_0011_0003_V1,2020-01-01,60 - 80,71,Cadale,SOM_0012_0003_V1,2020-01-01,60 - 80,62,Jowhar,SOM_0012_0004_V1,2020-01-01,60 - 80,75,Galdogob,SOM_0013_0002_V1,2020-01-01,80 - 100,93,Hobyo,SOM_0013_0003_V1,2020-01-01,80 - 100,91,Jariiban,SOM_0013_0004_V1,2020-01-01,60 - 80,65,Garoowe,SOM_0014_0003_V1,2020-01-01,60 - 80,67,Caynabo,SOM_0016_0001_V1,2020-01-01,60 - 80,65,Berbera,SOM_0018_0001_V1,2020-01-01,80 - 100,81");
     await expect(lastLayers.includes("reference-layer-fill-0,reference-layer-outline-0")).toBeTruthy();
     await page.getByRole('button', { name: 'Indicator A above X% Delete' }).getByRole('checkbox').uncheck();
@@ -188,7 +191,9 @@ test.describe('View project', () => {
     const kenyaLayer = 'Kenya Indicator A'
     await page.getByLabel(kenyaLayer).click();
     await expect(page.locator('.ReferenceLayerLevelSelected')).toContainText('Level 1')
+    await delay(500)
     await expect(lastLog).toEqual(assertLogs[0]);
+    await delay(500)
     await expect(lastLogLabel).toEqual("Baringo,KEN_0001_V1,2025-01-01,1.00 - 2.00,1,Bomet,KEN_0002_V1,2025-01-01,1.00 - 2.00,2,Bungoma,KEN_0003_V1,2025-01-01,1.00 - 2.00,1,Busia,KEN_0004_V1,2025-01-01,1.00 - 2.00,2,Elgeyo-Marakwet,KEN_0005_V1,2025-01-01,2.00 - 3.00,3,Embu,KEN_0006_V1,2025-01-01,5.00 - 6.00,6,Garissa,KEN_0007_V1,2025-01-01,6.00 - 7.00,7,Homa Bay,KEN_0008_V1,2025-01-01,3.00 - 4.00,4,Isiolo,KEN_0009_V1,2025-01-01,4.00 - 5.00,5,Kajiado,KEN_0010_V1,2025-01-01,2.00 - 3.00,3,Kakamega,KEN_0011_V1,2025-01-01,3.00 - 4.00,4,Kericho,KEN_0012_V1,2025-01-01,6.00 - 7.00,7,Kiambu,KEN_0013_V1,2025-01-01,5.00 - 6.00,6,Kilifi,KEN_0014_V1,2025-01-01,7.00 - 8.00,8,Kirinyaga,KEN_0015_V1,2025-01-01,1.00 - 2.00,1,Kisii,KEN_0016_V1,2025-01-01,1.00 - 2.00,2,Kisumu,KEN_0017_V1,2025-01-01,1.00 - 2.00,1,Kitui,KEN_0018_V1,2025-01-01,1.00 - 2.00,2,Kwale,KEN_0019_V1,2025-01-01,2.00 - 3.00,3,Laikipia,KEN_0020_V1,2025-01-01,3.00 - 4.00,4,Lamu,KEN_0021_V1,2025-01-01,2.00 - 3.00,3,Machakos,KEN_0022_V1,2025-01-01,1.00 - 2.00,2,Makueni,KEN_0023_V1,2025-01-01,1.00 - 2.00,1,Mandera,KEN_0024_V1,2025-01-01,1.00 - 2.00,2,Marsabit,KEN_0025_V1,2025-01-01,2.00 - 3.00,3,Meru,KEN_0026_V1,2025-01-01,3.00 - 4.00,4,Migori,KEN_0027_V1,2025-01-01,4.00 - 5.00,5,Mombasa,KEN_0028_V1,2025-01-01,3.00 - 4.00,4,Murang'A,KEN_0029_V1,2025-01-01,2.00 - 3.00,3,Nairobi,KEN_0030_V1,2025-01-01,1.00 - 2.00,2,Nakuru,KEN_0031_V1,2025-01-01,1.00 - 2.00,1,Nandi,KEN_0032_V1,2025-01-01,1.00 - 2.00,2,Narok,KEN_0033_V1,2025-01-01,2.00 - 3.00,3,Nyamira,KEN_0034_V1,2025-01-01,1.00 - 2.00,2,Nyandarua,KEN_0035_V1,2025-01-01,5.00 - 6.00,6,Nyeri,KEN_0036_V1,2025-01-01,1.00 - 2.00,1,Samburu,KEN_0037_V1,2025-01-01,7.00 - 8.00,8,Siaya,KEN_0038_V1,2025-01-01,2.00 - 3.00,3,Taita Taveta,KEN_0039_V1,2025-01-01,3.00 - 4.00,4,Tana River,KEN_0040_V1,2025-01-01,1.00 - 2.00,1,Tharaka-Nithi,KEN_0041_V1,2025-01-01,1.00 - 2.00,2,Trans Nzoia,KEN_0042_V1,2025-01-01,2.00 - 3.00,3,Turkana,KEN_0043_V1,2025-01-01,7.00 - 8.00,8,Uasin Gishu,KEN_0044_V1,2025-01-01,2.00 - 3.00,3,Vihiga,KEN_0045_V1,2025-01-01,3.00 - 4.00,4,Wajir,KEN_0046_V1,2025-01-01,2.00 - 3.00,3,West Pokot,KEN_0047_V1,2025-01-01,1.00 - 2.00,1");
 
     // Chart
@@ -234,6 +239,7 @@ test.describe('View project', () => {
     await page.getByLabel(layer2).click();
     await expect(page.getByLabel(layer1)).not.toBeChecked();
     await expect(page.getByLabel(layer2)).toBeChecked();
+    await delay(500)
     await expect(page.locator('.MapLegendSectionTitle')).toContainText(layer2);
 
     // Click the slicer
@@ -279,6 +285,7 @@ test.describe('View project', () => {
     await expect(page.locator('#simple-tabpanel-1 .MuiCheckbox-root:visible')).toHaveCount(10);
     await expect(page.locator('#simple-tabpanel-1 .MuiRadio-root:visible')).toHaveCount(0);
     await page.getByLabel(kenyaLayer).click();
+    await delay(500)
     await expect(lastLayers.includes("reference-layer-fill-0,reference-layer-outline-0,reference-layer-fill-1,reference-layer-outline-1")).toBeTruthy();
     await expect(page.locator('.MapLegendSectionTitle').nth(0)).toContainText('Dynamic Layer based on a list of interventions (Outline)')
     await expect(page.locator('.MapLegendSectionTitle').nth(1)).toContainText('Kenya Indicator A (Inner)')

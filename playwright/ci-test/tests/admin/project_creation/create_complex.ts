@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 
 // URL That we need to check
 const timeout = 2000;
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 test.describe('Create complex project', () => {
   test.beforeEach(async ({ page }) => {
@@ -198,6 +199,7 @@ test.describe('Create complex project', () => {
     // Related Table
     const layer5 = 'Related Table Layer'
     await page.getByLabel(layer5).click();
+    await delay(500)
     await expect(page.locator('.MapLegendSectionTitle')).toContainText(layer5);
     await expect(page.getByLabel(layer5)).toBeChecked();
     await expect(page.locator('.MapLegendSection .IndicatorLegendRowName').nth(0)).toContainText("4");

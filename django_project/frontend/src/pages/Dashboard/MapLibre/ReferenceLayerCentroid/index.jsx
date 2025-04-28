@@ -38,7 +38,6 @@ import { renderChart, renderPin, resetCharts } from "./Chart";
 import workerMergeGeometries from "../../../../workers/merge_geometries";
 import { ReferenceLayerFilterCentroid } from "./CentroidFiltered";
 
-import { IS_DEBUG } from "../../../../utils/logger";
 import './style.scss';
 
 let lastConfig = {};
@@ -63,28 +62,43 @@ export default function ReferenceLayerCentroid({ map }) {
   const selectedAdminLevel = useSelector(state => state.selectedAdminLevel)
   const mapGeometryValue = useSelector(state => state.mapGeometryValue)
 
-  const [geometries, setGeometries] = useState({});
+  const [geometriesDataState, setGeometriesDataState] = useState(
+    {
+      identifiers: null,
+      geometries: {}
+    }
+  );
   const filterRef = useRef(null);
 
   // When reference layer changed, fetch features
   useEffect(() => {
     const currRequest = new Date().getTime()
     lastRequestRender = currRequest
-
+    const identifiers = referenceLayers.map(referenceLayer => referenceLayer.identifier)
     if (referenceLayers.length > 1) {
       ExecuteWebWorker(
         workerMergeGeometries, {
-          referenceLayers: referenceLayers.map(referenceLayer => referenceLayer.identifier),
+          referenceLayers: identifiers,
           datasetGeometries
         }, (features) => {
           if (currRequest === lastRequestRender) {
-            setGeometries(features)
+            setGeometriesDataState(
+              {
+                identifiers: identifiers,
+                geometries: features
+              }
+            )
           }
         }
       )
     } else {
       if (datasetGeometries[referenceLayers[0]?.identifier]) {
-        setGeometries(datasetGeometries[referenceLayers[0]?.identifier])
+        setGeometriesDataState(
+          {
+            identifiers: [referenceLayers[0]?.identifier],
+            geometries: datasetGeometries[referenceLayers[0]?.identifier]
+          }
+        )
       }
     }
   }, [referenceLayers, datasetGeometries]);
@@ -152,6 +166,8 @@ export default function ReferenceLayerCentroid({ map }) {
     if (!map) {
       return;
     }
+    const { identifiers, geometries } = geometriesDataState
+
     let rendering = true
     // Check if multiple indicator or not
     let indicatorLayer = selectedIndicatorLayer
@@ -239,7 +255,8 @@ export default function ReferenceLayerCentroid({ map }) {
         indicatorLayerConfig: isIndicatorLayerLikeIndicator(indicatorLayer) ? indicatorLayer.config : {},
         indicatorShow: indicatorShow,
         usedIndicatorsData: usedIndicatorsData,
-        chartStyle: chartStyle
+        chartStyle: chartStyle,
+        referenceLayers: identifiers
       }
       // If config is same, don't render to prevent flicker
       if (JSON.stringify(config) === JSON.stringify(lastConfig)) {
@@ -390,18 +407,6 @@ export default function ReferenceLayerCentroid({ map }) {
           mapGeometryValue
         }, (features) => {
           if (currRequest === lastRequest) {
-            if (IS_DEBUG) {
-              features = features.sort(
-                (a, b) => {
-                  try {
-                    return a.properties.geometry_code.localeCompare(b.properties.geometry_code)
-                  } catch (err) {
-                    return false
-                  }
-
-                }
-              );
-            }
             renderLabel(map, features, labelConfig, showIndicatorMapLabel)
             filterRef.current?.call()
           }
@@ -413,7 +418,7 @@ export default function ReferenceLayerCentroid({ map }) {
   useEffect(() => {
     updateCentroid()
   }, [
-    geometries, indicatorsData,
+    geometriesDataState, indicatorsData,
     indicatorShow, indicatorLayers,
     selectedIndicatorLayer, selectedIndicatorSecondLayer,
     selectedAdminLevel, mapGeometryValue, referenceLayers,
