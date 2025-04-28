@@ -55,7 +55,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import './style.scss';
 
 // Import LanguageSelector from Toolbars
-import LanguageSelector from '../Toolbars/LanguageSelector';
+import LanguageSelector from '../../../components/LanguageSelector';
 
 
 // Initialize cog

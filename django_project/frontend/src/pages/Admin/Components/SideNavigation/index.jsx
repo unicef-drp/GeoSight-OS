@@ -47,7 +47,7 @@ import './style.scss';
 import NotificationBadge from "../../../../components/NotificationBadge";
 import NotificationMaintenance
   from "../../../../components/NotificationMaintenance";
-import LanguageSelector from '../../../Dashboard/Toolbars/LanguageSelector';
+import LanguageSelector from '../../../../components/LanguageSelector';
 
 
 function SidaNavigationButton({ title, minified, children }) {

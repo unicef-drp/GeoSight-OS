@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Select from 'react-select';
 import './style.scss';
-import { languages, changeLanguage, getCurrentLanguage } from '../../../../utils/i18n';
+import { languages, changeLanguage, getCurrentLanguage } from '../../utils/i18n';
 
 
 print()
