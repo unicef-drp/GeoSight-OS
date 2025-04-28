@@ -20,7 +20,7 @@
 import { hasLayer, hasSource, removeLayer } from "../../utils";
 import { addLayerWithOrder } from "../../Render";
 import { Variables } from "../../../../../utils/Variables";
-import { Logger } from "../../../../../utils/logger";
+import { IS_DEBUG, Logger } from "../../../../../utils/logger";
 
 export const INDICATOR_LABEL_ID = 'indicator-label'
 let lastFeatures = null;
@@ -59,10 +59,14 @@ export const renderLabel = (map, features, config, showIndicatorMapLabel) => {
     'text-anchor': 'bottom',
     'text-size': 14,
     'text-variable-anchor': ['center'],
-    'visibility': showIndicatorMapLabel ? 'visible' : 'none',
-    "text-allow-overlap": true,
-    "text-ignore-placement": true,
-    "symbol-avoid-edges": false
+    'visibility': showIndicatorMapLabel ? 'visible' : 'none'
+  }
+
+  // This is for test
+  if (IS_DEBUG) {
+    layout['text-allow-overlap'] = true
+    layout['text-ignore-placement'] = true
+    layout['symbol-avoid-edges'] = true
   }
   const paint = {
     'text-halo-blur': 2

@@ -18,6 +18,7 @@ from .prod import *  # noqa
 
 TEST_RUNNER = 'core.tests.runner.PostgresSchemaTestRunner'
 DEBUG = True
+IS_TEST = True
 
 # Disable caching while in development
 CACHES = {

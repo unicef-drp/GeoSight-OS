@@ -81,7 +81,7 @@ LOGIN_REDIRECT_URL = '/'
 PROJECT_VERSION_LIST_SIZE = 10
 
 # Set debug to false for production
-DEBUG = TEMPLATE_DEBUG = False
+DEBUG = TEMPLATE_DEBUG = IS_TEST = False
 
 SOUTH_TESTS_MIGRATE = False
 
