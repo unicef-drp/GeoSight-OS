@@ -40,7 +40,6 @@ import FilterInput from "../Input";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useTranslation } from 'react-i18next';
 
-const { t } = useTranslation();
 /** Filter group component */
 const FilterGroupElement = memo(
   ({
@@ -170,6 +169,7 @@ const FilterGroup = (
 ) => {
   const active = query.active;
   const prevActiveRef = useRef<boolean | undefined>();
+  const { t } = useTranslation();
 
   // For member
   // Null meaning isLoading

@@ -25,6 +25,7 @@ import {
 } from "../../../../components/SortableTreeForm/utilities";
 import SidePanelTreeView from "../../../../components/SidePanelTree";
 import { getLayer } from "../../MapLibre/Layers/ContextLayers/Layer";
+import { useTranslation } from 'react-i18next';
 
 function ContextLayers() {
   const dispatch = useDispatch();
@@ -35,6 +36,7 @@ function ContextLayers() {
   const [defaultSelectedContextLayers, setDefaultSelectedContextLayers] = useState(
     null
   )
+  const { t } = useTranslation();
 
   const [treeData, setTreeData] = useState([])
   const [selectedLayer, setSelectedLayer] = useState([])

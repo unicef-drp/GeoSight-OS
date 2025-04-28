@@ -278,7 +278,7 @@ export function IndicatorLayers() {
           }
           return null
         }}
-        placeholder={t(dashboardPage.indicatorSearch)}
+        placeholder={t('dashboardPage.indicatorSearch')}
       />
       {
         indicatorLayers.map(indicatorLayer => {

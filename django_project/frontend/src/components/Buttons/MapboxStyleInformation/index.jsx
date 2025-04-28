@@ -24,8 +24,9 @@ import Modal, { ModalContent, ModalHeader } from "../../Modal";
 import { useTranslation } from 'react-i18next';
 
 const MapboxStyleInformationModal = forwardRef(
-  ({}, ref) => {
+  ({ }, ref) => {
     const [open, setOpen] = useState(false);
+    const { t } = useTranslation();
 
     // Open
     useImperativeHandle(ref, () => ({
@@ -43,14 +44,14 @@ const MapboxStyleInformationModal = forwardRef(
       onClosed={onClosed}
     >
       <ModalHeader onClosed={onClosed}>
-        t('mapboxStyleInformation')
+        {t('mapboxStyleInformation')}
       </ModalHeader>
       <ModalContent>
         <span>
           <a
             href="https://docs.mapbox.com/style-spec/reference/layers/"
             target="_blank">
-            t('seeMapboxDocumentationForMoreDetail')
+            {t('seeMapboxDocumentationForMoreDetail')}
           </a>
           <div>
             There are some information to control the Legend.
@@ -77,11 +78,11 @@ export default function MapboxStyleInformation({ inIcon = true }) {
       inIcon ?
         <InfoIcon
           className='InfoIconButton'
-          onClick={() => ref.current.open()}/> :
+          onClick={() => ref.current.open()} /> :
         <span className='InfoIconButton' onClick={() => ref.current.open()}>
-      More information
-    </span>
+          More information
+        </span>
     }
-    <MapboxStyleInformationModal ref={ref}/>
+    <MapboxStyleInformationModal ref={ref} />
   </>
 }
