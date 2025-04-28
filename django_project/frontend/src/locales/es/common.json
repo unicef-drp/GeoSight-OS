@@ -1,3 +1,6 @@
 {
-    "nativeName": "Español"
+    "native": {
+        "name": "Español",
+        "flag": "🇪🇸"
+    }
 }
