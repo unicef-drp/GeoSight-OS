@@ -29,6 +29,8 @@ import { getRandomColor } from "../../../utils/main";
 import { dateLabel } from "../../../utils/Dates";
 import { indicatorLayerId } from "../../../utils/indicatorLayer";
 import RequestData from "./RequestData";
+import { ExecuteWebWorker } from "../../../utils/WebWorker";
+import workerReformatGeometries from "../../../workers/reformat_geometries";
 
 import './style.scss';
 
@@ -228,29 +230,19 @@ export default function TimeSeriesChartWidget({ data }) {
     if (color) {
       colors = color.colors
     }
+
     const geometriesData = geometries[selectedAdminLevel.level]
-    const newGeographicUnits = []
-    if (geometriesData) {
-      for (const [code, geom] of Object.entries(geometriesData)) {
-        const geomInList = unitList.find(row => row.id === geom.concept_uuid)
-        if (!geomInList) {
-          newGeographicUnits.push({
-            id: geom.concept_uuid,
-            name: `${geom.name} (${geom.ucode})`,
-            color: '' + getRandomColor(),
-            reference_layer_uuid: referenceLayer.identifier
-          })
-        } else {
-          newGeographicUnits.push(geomInList)
-        }
+    ExecuteWebWorker(
+      workerReformatGeometries, {
+        identifier: referenceLayer.identifier,
+        geometriesData,
+        unitList,
+        color,
+        colors
+      }, (newGeographicUnits) => {
+        setUnitList(newGeographicUnits)
       }
-    }
-    newGeographicUnits.map((list, idx) => {
-      if (colors?.length) {
-        list.color = colors[idx % color.colors.length]
-      }
-    })
-    setUnitList(newGeographicUnits)
+    )
   }, [geometries, colorPalettes, selectedAdminLevel])
 
   const secondSeriesList = config.seriesType === SeriesType.INDICATORS ? geographicUnits : indicatorSeries
