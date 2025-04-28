@@ -345,7 +345,6 @@ export default function ReferenceLayerCentroid({ map }) {
       }
       lastConfig = config
     } else {
-      lastConfig = {}
       // ---------------------------------------------------------
       // CREATE LABEL IF SINGLE INDICATOR
       // ---------------------------------------------------------
@@ -372,6 +371,16 @@ export default function ReferenceLayerCentroid({ map }) {
         renderLabel(map, [], labelConfig, showIndicatorMapLabel)
         return;
       }
+      const config = {
+        selectedIndicators: [selectedIndicatorLayer?.id, selectedIndicatorSecondLayer?.id],
+        referenceLayers: referenceLayers.map(referenceLayer => referenceLayer.identifier),
+        selectedAdminLevel: selectedAdminLevel.level,
+      }
+      if (JSON.stringify(config) !== JSON.stringify(lastConfig)) {
+        reset(map)
+      }
+      lastConfig = config
+
       const currRequest = new Date().getTime()
       lastRequest = currRequest
       ExecuteWebWorker(

@@ -136,7 +136,6 @@ export default function DatasetGeometryData() {
               },
               (response) => {
                 const { identifier: _identifier, data } = response;
-                console.log(data)
                 dispatch(
                   Actions.DatasetGeometries.replaceData(
                     _identifier, data
