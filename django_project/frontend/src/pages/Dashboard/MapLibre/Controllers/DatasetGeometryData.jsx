@@ -135,10 +135,11 @@ export default function DatasetGeometryData() {
                 identifier,
               },
               (response) => {
-                const { identifier: _identifier, level, data } = response;
+                const { identifier: _identifier, data } = response;
+                console.log(data)
                 dispatch(
-                  Actions.DatasetGeometries.addLevelData(
-                    _identifier, level, data
+                  Actions.DatasetGeometries.replaceData(
+                    _identifier, data
                   )
                 )
               },

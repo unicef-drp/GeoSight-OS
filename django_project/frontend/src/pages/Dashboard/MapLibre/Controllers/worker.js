@@ -68,6 +68,7 @@ export default () => {
             const response = await fetchJSON(url);
             const geoms = {}
 
+            const data = {}
             response.features.map(feature => {
               const name = feature.properties.n
               const ucode = feature.properties.u
@@ -98,10 +99,7 @@ export default () => {
                 ucode: ucode,
                 code: code,
               }
-              if (!geometryDataDict[level.level]) {
-                geometryDataDict[level.level] = {}
-              }
-              geometryDataDict[level.level][code] = {
+              data[code] = {
                 label: name,
                 name: name,
                 code: code,
@@ -120,11 +118,24 @@ export default () => {
             currGeometries[level.level] = {
               ...currGeometries[level.level], ...geoms
             }
+
+            // Update members of parents
+            for (const [code, geom] of Object.entries(data)) {
+              geom.parents.map((parent, geomLevel) => {
+                if (geometryDataDict[geomLevel] && geometryDataDict[geomLevel][parent.code]) {
+                  geometryDataDict[geomLevel][parent.code].members.push({
+                    name: geom.name,
+                    ucode: geom.ucode,
+                    code: code,
+                  })
+                }
+              })
+            }
+            geometryDataDict[level.level] = data;
             postMessage(
               {
                 identifier: identifier,
-                level: level.level,
-                data: geometryDataDict[level.level]
+                data: geometryDataDict
               }
             );
           } catch (e) {
