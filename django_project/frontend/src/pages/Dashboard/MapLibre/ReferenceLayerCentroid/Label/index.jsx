@@ -22,7 +22,7 @@ import { addLayerWithOrder } from "../../Render";
 import { Variables } from "../../../../../utils/Variables";
 import { IS_DEBUG, Logger } from "../../../../../utils/logger";
 
-const INDICATOR_LABEL_ID = 'indicator-label'
+export const INDICATOR_LABEL_ID = 'indicator-label'
 let lastFeatures = null;
 
 /** Remove label **/

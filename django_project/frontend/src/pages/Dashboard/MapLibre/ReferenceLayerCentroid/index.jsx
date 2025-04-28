@@ -17,7 +17,7 @@
    Geometry Center
    ========================================================================== */
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from "react-redux";
 import { extractCode } from "../../../../utils/georepo";
 import { allDataIsReady } from "../../../../utils/indicators";
@@ -35,12 +35,15 @@ import { hideLabel, renderLabel, resetLabel, showLabel } from "./Label"
 import { ExecuteWebWorker } from "../../../../utils/WebWorker";
 import worker from "./Label/worker";
 import { renderChart, renderPin, resetCharts } from "./Chart";
+import workerMergeGeometries from "../../../../workers/merge_geometries";
+import { ReferenceLayerFilterCentroid } from "./CentroidFiltered";
 
 import { IS_DEBUG } from "../../../../utils/logger";
 import './style.scss';
 
 let lastConfig = {};
 let lastRequest = null;
+let lastRequestRender = null;
 
 /**
  * GeometryCenter.
@@ -54,7 +57,6 @@ export default function ReferenceLayerCentroid({ map }) {
   const { showIndicatorMapLabel } = useSelector(state => state.globalState)
   const { referenceLayers, indicatorShow } = useSelector(state => state.map)
   const datasetGeometries = useSelector(state => state.datasetGeometries)
-  const filteredGeometries = useSelector(state => state.filteredGeometries)
   const indicatorsData = useSelector(state => state.indicatorsData);
   const selectedIndicatorLayer = useSelector(state => state.selectedIndicatorLayer)
   const selectedIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer)
@@ -62,22 +64,23 @@ export default function ReferenceLayerCentroid({ map }) {
   const mapGeometryValue = useSelector(state => state.mapGeometryValue)
 
   const [geometries, setGeometries] = useState({});
+  const filterRef = useRef(null);
 
   // When reference layer changed, fetch features
   useEffect(() => {
-    const currGeometries = {}
-    referenceLayers.map(referenceLayer => {
-      const geoms = datasetGeometries[referenceLayer.identifier]
-      if (geoms) {
-        for (const [level, data] of Object.entries(geoms)) {
-          if (!currGeometries[level]) {
-            currGeometries[level] = {}
-          }
-          currGeometries[level] = { ...currGeometries[level], ...data }
+    const currRequest = new Date().getTime()
+    lastRequestRender = currRequest
+
+    ExecuteWebWorker(
+      workerMergeGeometries, {
+        referenceLayers: referenceLayers.map(referenceLayer => referenceLayer.identifier),
+        datasetGeometries
+      }, (features) => {
+        if (currRequest === lastRequestRender) {
+          setGeometries(features)
         }
       }
-    })
-    setGeometries(currGeometries)
+    )
   }, [referenceLayers, datasetGeometries]);
 
   /** Chart data generator **/
@@ -163,11 +166,6 @@ export default function ReferenceLayerCentroid({ map }) {
       reset(map)
       return;
     }
-    const geometriesLevel = Object.keys(geometriesData);
-    let usedFilteredGeometries = filteredGeometries?.filter(geom => geometriesLevel.includes(geom))
-    if (!usedFilteredGeometries && geometriesData) {
-      usedFilteredGeometries = geometriesLevel
-    }
 
     // ---------------------------------------------------------
     // CREATE LABEL IF SINGLE INDICATOR
@@ -233,7 +231,6 @@ export default function ReferenceLayerCentroid({ map }) {
         indicators: indicatorLayer.indicators.map(indicator => indicator.id),
         indicatorLayer: indicatorLayer.id,
         indicatorLayerConfig: isIndicatorLayerLikeIndicator(indicatorLayer) ? indicatorLayer.config : {},
-        filteredGeometries: usedFilteredGeometries,
         indicatorShow: indicatorShow,
         usedIndicatorsData: usedIndicatorsData,
         chartStyle: chartStyle
@@ -249,9 +246,6 @@ export default function ReferenceLayerCentroid({ map }) {
       const features = []
 
       let theGeometries = Object.keys(geometriesData)
-      if (usedFilteredGeometries) {
-        theGeometries = usedFilteredGeometries
-      }
 
       // Create style
       const copiedUsedIndicatorsData = dictDeepCopy(usedIndicatorsData)
@@ -344,6 +338,7 @@ export default function ReferenceLayerCentroid({ map }) {
         renderChart(map, features, lastConfig, config)
       }
       lastConfig = config
+      filterRef.current?.call()
     } else {
       // ---------------------------------------------------------
       // CREATE LABEL IF SINGLE INDICATOR
@@ -386,8 +381,7 @@ export default function ReferenceLayerCentroid({ map }) {
       ExecuteWebWorker(
         worker, {
           geometriesData,
-          mapGeometryValue,
-          usedFilteredGeometries
+          mapGeometryValue
         }, (features) => {
           if (currRequest === lastRequest) {
             if (IS_DEBUG) {
@@ -403,6 +397,7 @@ export default function ReferenceLayerCentroid({ map }) {
               );
             }
             renderLabel(map, features, labelConfig, showIndicatorMapLabel)
+            filterRef.current?.call()
           }
         }
       )
@@ -412,12 +407,17 @@ export default function ReferenceLayerCentroid({ map }) {
   useEffect(() => {
     updateCentroid()
   }, [
-    geometries, filteredGeometries, indicatorsData,
+    geometries, indicatorsData,
     indicatorShow, indicatorLayers,
     selectedIndicatorLayer, selectedIndicatorSecondLayer,
     selectedAdminLevel, mapGeometryValue, referenceLayers,
     showIndicatorMapLabel
   ]);
 
-  return null
+  return <>
+    <ReferenceLayerFilterCentroid
+      map={map}
+      ref={filterRef}
+    />
+  </>
 }
