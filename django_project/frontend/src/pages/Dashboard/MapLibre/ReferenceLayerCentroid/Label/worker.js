@@ -23,6 +23,9 @@ export default () => {
 
     // Create features
     let features = []
+    if (!geometriesData) {
+      return features
+    }
 
     for (const [geom, geometry] of Object.entries(geometriesData)) {
       if (!geometry) {
