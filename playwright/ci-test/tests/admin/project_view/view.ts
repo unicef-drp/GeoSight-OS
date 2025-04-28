@@ -65,6 +65,7 @@ test.describe('View project', () => {
     // LABEL
     // ------------------------------------------------------------
     const layerB = 'Sample Indicator B'
+    await delay(500)
     await expect(lastVisibleLayers.includes("indicator-label")).toBeTruthy();
     await page.locator('[title="Hide map labels"] svg').click();
     await delay(500)
