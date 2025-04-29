@@ -59,6 +59,9 @@ export const ReferenceLayerFilterCentroid = forwardRef(
       // LOG THE LABELS
       if (IS_DEBUG) {
         setTimeout(function () {
+          if (!hasLayer(map, INDICATOR_LABEL_ID)) {
+            return
+          }
           const features = map.queryRenderedFeatures({
             layers: [INDICATOR_LABEL_ID]
           });

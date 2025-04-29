@@ -192,7 +192,6 @@ export const ZonalAnalysisTool = forwardRef((
         if (config.selectionMode === SELECTION_MODE.MANUAL) {
           draw.start()
         } else {
-          setConfig({ ...config, drawMode: DRAW_MODE.POLYGON })
           draw.stop()
           /** Click map */
           const onClick = (e: any) => {
