@@ -85,6 +85,10 @@ export function IndicatorsVisibility() {
  * Left panel.
  */
 export default function LeftPanel({ leftExpanded }) {
+  const {
+    filtersAllowModify,
+    filtersBeingHidden
+  } = useSelector(state => state.dashboard.data);
   const state = leftExpanded ? LEFT : RIGHT
   const showLayerTab = !!EmbedConfig().layer_tab
   const showFilterTab = !!EmbedConfig().filter_tab
@@ -107,25 +111,31 @@ export default function LeftPanel({ leftExpanded }) {
     >
       <div className={classNameWrapper}>
         <Box sx={{ width: '100%' }}>
-          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tabs value={tabValue} onChange={handleChangeTab}
-                  aria-label="basic tabs example">
-              <Tab
-                className='layers-tab'
-                label="Layers"
-                icon=<LayerIcon/>
-              iconPosition="start"
-              {...tabProps('Layers')}
-              />
-              <Tab
-                className='filters-tab'
-                label="Filters"
-                icon=<TuneIcon/>
-              iconPosition="start"
-              {...tabProps('Filters')}
-              />
-            </Tabs>
-          </Box>
+          {
+
+            !filtersBeingHidden &&
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+              <Tabs
+                value={tabValue}
+                onChange={handleChangeTab}
+                aria-label="basic tabs example">
+                <Tab
+                  className='layers-tab'
+                  label="Layers"
+                  icon=<LayerIcon/>
+                iconPosition="start"
+                {...tabProps('Layers')}
+                />
+                <Tab
+                  className='filters-tab'
+                  label="Filters"
+                  icon=<TuneIcon/>
+                iconPosition="start"
+                {...tabProps('Filters')}
+                />
+              </Tabs>
+            </Box>
+          }
           <TabPanel value={tabValue} index={0}
                     className={'sidepanel-tab layers-tab'}>
             <Box sx={{ width: '100%' }}>

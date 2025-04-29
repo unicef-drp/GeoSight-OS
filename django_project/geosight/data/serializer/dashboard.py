@@ -14,8 +14,8 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-import os
 import json
+import os
 
 from django.shortcuts import reverse
 from rest_framework import serializers
@@ -272,8 +272,8 @@ class DashboardSerializer(serializers.ModelSerializer):
         model = Dashboard
         fields = (
             'id', 'slug', 'icon', 'name', 'description',
-            'category', 'group',
-            'extent', 'filters', 'filters_allow_modify',
+            'category', 'group', 'extent',
+            'filters', 'filters_being_hidden', 'filters_allow_modify',
             'reference_layer', 'level_config',
             'indicators', 'indicator_layers', 'indicator_layers_structure',
             'context_layers', 'context_layers_structure',

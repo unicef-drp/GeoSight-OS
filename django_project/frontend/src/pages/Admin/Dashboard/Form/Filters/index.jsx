@@ -20,6 +20,7 @@ import FiltersAccordion from "../../../../Dashboard/LeftPanel/Filters";
 import { Actions } from "../../../../../store/dashboard/index";
 
 import './style.scss';
+import FormControlLabel from "@mui/material/FormControlLabel";
 
 /**
  * Widget dashboard
@@ -27,13 +28,29 @@ import './style.scss';
 export default function FiltersForm() {
   const dispatch = useDispatch();
   const {
-    filtersAllowModify
+    filtersAllowModify,
+    filtersBeingHidden
   } = useSelector(state => state.dashboard.data);
 
   return <div className={'Filters'}>
-    <Checkbox checked={filtersAllowModify} onChange={(evt) => {
-      dispatch(Actions.Dashboard.updateFiltersAllowModify())
-    }}/> Allow users to modify filters in dashboard
+    <div>
+      <FormControlLabel
+        checked={filtersBeingHidden}
+        control={<Checkbox/>}
+        onChange={evt => {
+          dispatch(Actions.Dashboard.updateFiltersBeingHidden())
+        }}
+        label={'Hide filter section'}/>
+    </div>
+    <div>
+      <FormControlLabel
+        checked={filtersAllowModify}
+        control={<Checkbox/>}
+        onChange={evt => {
+          dispatch(Actions.Dashboard.updateFiltersAllowModify())
+        }}
+        label={'Allow users to modify filters in dashboard'}/>
+    </div>
     <FiltersAccordion isAdmin={true}/>
   </div>
 }

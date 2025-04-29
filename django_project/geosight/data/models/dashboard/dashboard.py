@@ -76,12 +76,6 @@ class Dashboard(
             'Extent of the dashboard. If empty, it is the whole map'
         )
     )
-    filters = models.TextField(
-        blank=True, null=True
-    )
-    filters_allow_modify = models.BooleanField(
-        default=False
-    )
     geo_field = models.CharField(
         max_length=64,
         default='geometry_code'
@@ -119,6 +113,17 @@ class Dashboard(
     default_time_mode = models.JSONField(null=True, blank=True)
 
     content_limitation_description = 'Limit the number of project items'
+
+    # Filters
+    filters = models.TextField(
+        blank=True, null=True
+    )
+    filters_allow_modify = models.BooleanField(
+        default=False
+    )
+    filters_being_hidden = models.BooleanField(
+        default=False
+    )
 
     @staticmethod
     def name_is_exist_of_all(slug: str) -> bool:
