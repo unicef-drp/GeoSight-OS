@@ -9,8 +9,6 @@ test.describe('View edit project', () => {
     // Go to the starting url before each test.
     await page.goto('/admin/project/demo-geosight-project/edit');
   });
-
-  // A use case tests scenarios
   test('Edit project', async ({ page }) => {
     let lastLayerStyles = null
     page.on('console', msg => {
@@ -44,6 +42,7 @@ test.describe('View edit project', () => {
     await newPage.waitForLoadState();
     await expect(newPage.url()).toEqual('http://localhost:2000/project/demo-geosight-project')
 
+    // --------------------------------------------------------------------
     // Check filter is hidden or not
     await page.goto('/admin/project/demo-geosight-project/edit');
     await page.locator('.TabPrimary').getByText('Filters').click();
@@ -127,4 +126,211 @@ test.describe('View edit project', () => {
     await expect(JSON.stringify(lastLayerStyles["No data"])).toEqual('{"rule":"No data","color":"#D8D8D8","outline_color":"#ffffff","outline_size":"2"}')
     await expect(JSON.stringify(lastLayerStyles["Other data"])).toEqual('{"rule":"Other data","color":"#A6A6A6","outline_color":"#ffffff","outline_size":"3"}')
   });
+
+  // A use case tests scenarios
+  test('Edit project: Check history', async ({ page }) => {
+    // --------------------------------------------------------------------
+    // CHECK HISTORY
+    // --------------------------------------------------------------------
+    await expect(page.getByRole('button', {
+      name: 'Save',
+      exact: true
+    })).toBeDisabled();
+    await expect(page.locator('#UndoHistory')).toBeDisabled();
+    await expect(page.locator('#ResetHistory')).toBeDisabled();
+    await expect(page.locator('#RedoHistory')).toBeDisabled();
+    await page.getByText('Indicator Layers (10)').click();
+
+    await page.locator('li').filter({ hasText: 'Sample Indicator BSingle' }).getByRole('img').nth(2).click();
+    await expect(page.getByRole('button', {
+      name: 'Save',
+      exact: true
+    })).toBeEnabled();
+    await expect(page.locator('#UndoHistory')).toBeEnabled();
+    await expect(page.locator('#ResetHistory')).toBeEnabled();
+    await expect(page.locator('#RedoHistory')).toBeDisabled();
+
+    await page.locator('li').filter({ hasText: 'Sample Indicator ASingle' }).getByRole('img').nth(2).click();
+    await expect(page.getByRole('button', {
+      name: 'Save',
+      exact: true
+    })).toBeEnabled();
+    await expect(page.locator('#UndoHistory')).toBeEnabled();
+    await expect(page.locator('#ResetHistory')).toBeEnabled();
+    await expect(page.locator('#RedoHistory')).toBeDisabled();
+    await expect(page.locator('li').filter({ hasText: 'Sample Indicator ASingle' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOn.*/);
+    await expect(page.locator('li').filter({ hasText: 'Sample Indicator BSingle' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOff.*/);
+    await expect(page.locator('li').filter({ hasText: 'Pie Chart layer2 Layers (' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOff.*/);
+
+    await page.locator('li').filter({ hasText: 'Pie Chart layer2 Layers (' }).getByRole('img').nth(2).click();
+    await expect(page.getByRole('button', {
+      name: 'Save',
+      exact: true
+    })).toBeEnabled();
+    await expect(page.locator('#UndoHistory')).toBeEnabled();
+    await expect(page.locator('#ResetHistory')).toBeEnabled();
+    await expect(page.locator('#RedoHistory')).toBeDisabled();
+    await expect(page.locator('li').filter({ hasText: 'Sample Indicator ASingle' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOff.*/);
+    await expect(page.locator('li').filter({ hasText: 'Sample Indicator BSingle' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOff.*/);
+    await expect(page.locator('li').filter({ hasText: 'Pie Chart layer2 Layers (' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOn.*/);
+
+    // Undo 1
+    await page.locator('#UndoHistory').click();
+    await expect(page.getByRole('button', {
+      name: 'Save',
+      exact: true
+    })).toBeEnabled();
+    await expect(page.locator('#UndoHistory')).toBeEnabled();
+    await expect(page.locator('#ResetHistory')).toBeEnabled();
+    await expect(page.locator('#RedoHistory')).toBeEnabled();
+    await expect(page.locator('li').filter({ hasText: 'Sample Indicator ASingle' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOn.*/);
+    await expect(page.locator('li').filter({ hasText: 'Sample Indicator BSingle' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOff.*/);
+    await expect(page.locator('li').filter({ hasText: 'Pie Chart layer2 Layers (' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOff.*/);
+
+    // Undo 2
+    await page.locator('#UndoHistory').click();
+    await expect(page.getByRole('button', {
+      name: 'Save',
+      exact: true
+    })).toBeEnabled();
+    await expect(page.locator('#UndoHistory')).toBeEnabled();
+    await expect(page.locator('#ResetHistory')).toBeEnabled();
+    await expect(page.locator('#RedoHistory')).toBeEnabled();
+    await expect(page.locator('li').filter({ hasText: 'Sample Indicator ASingle' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOff.*/);
+    await expect(page.locator('li').filter({ hasText: 'Sample Indicator BSingle' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOn.*/);
+    await expect(page.locator('li').filter({ hasText: 'Pie Chart layer2 Layers (' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOff.*/);
+
+    // Undo 3
+    await page.locator('#UndoHistory').click();
+    await expect(page.getByRole('button', {
+      name: 'Save',
+      exact: true
+    })).toBeDisabled();
+    await expect(page.locator('#UndoHistory')).toBeDisabled();
+    await expect(page.locator('#ResetHistory')).toBeDisabled();
+    await expect(page.locator('#RedoHistory')).toBeEnabled();
+    await expect(page.locator('li').filter({ hasText: 'Sample Indicator ASingle' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOn.*/);
+    await expect(page.locator('li').filter({ hasText: 'Sample Indicator BSingle' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOff.*/);
+    await expect(page.locator('li').filter({ hasText: 'Pie Chart layer2 Layers (' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOff.*/);
+
+    // Redo 1
+    await page.locator('#RedoHistory').click();
+    await expect(page.getByRole('button', {
+      name: 'Save',
+      exact: true
+    })).toBeEnabled();
+    await expect(page.locator('#UndoHistory')).toBeEnabled();
+    await expect(page.locator('#ResetHistory')).toBeEnabled();
+    await expect(page.locator('#RedoHistory')).toBeEnabled();
+    await expect(page.locator('li').filter({ hasText: 'Sample Indicator ASingle' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOff.*/);
+    await expect(page.locator('li').filter({ hasText: 'Sample Indicator BSingle' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOn.*/);
+    await expect(page.locator('li').filter({ hasText: 'Pie Chart layer2 Layers (' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOff.*/);
+
+    // Redo 2
+    await page.locator('#RedoHistory').click();
+    await expect(page.getByRole('button', {
+      name: 'Save',
+      exact: true
+    })).toBeEnabled();
+    await expect(page.locator('#UndoHistory')).toBeEnabled();
+    await expect(page.locator('#ResetHistory')).toBeEnabled();
+    await expect(page.locator('#RedoHistory')).toBeEnabled();
+    await expect(page.locator('li').filter({ hasText: 'Sample Indicator ASingle' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOn.*/);
+    await expect(page.locator('li').filter({ hasText: 'Sample Indicator BSingle' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOff.*/);
+    await expect(page.locator('li').filter({ hasText: 'Pie Chart layer2 Layers (' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOff.*/);
+
+    // Redo 3
+    await page.locator('#RedoHistory').click();
+    await expect(page.getByRole('button', {
+      name: 'Save',
+      exact: true
+    })).toBeEnabled();
+    await expect(page.locator('#UndoHistory')).toBeEnabled();
+    await expect(page.locator('#ResetHistory')).toBeEnabled();
+    await expect(page.locator('#RedoHistory')).toBeDisabled();
+    await expect(page.locator('li').filter({ hasText: 'Sample Indicator ASingle' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOff.*/);
+    await expect(page.locator('li').filter({ hasText: 'Sample Indicator BSingle' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOff.*/);
+    await expect(page.locator('li').filter({ hasText: 'Pie Chart layer2 Layers (' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOn.*/);
+
+    // Undo 1
+    await page.locator('#UndoHistory').click();
+    await expect(page.getByRole('button', {
+      name: 'Save',
+      exact: true
+    })).toBeEnabled();
+    await expect(page.locator('#UndoHistory')).toBeEnabled();
+    await expect(page.locator('#ResetHistory')).toBeEnabled();
+    await expect(page.locator('#RedoHistory')).toBeEnabled();
+    await expect(page.locator('li').filter({ hasText: 'Sample Indicator ASingle' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOn.*/);
+    await expect(page.locator('li').filter({ hasText: 'Sample Indicator BSingle' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOff.*/);
+    await expect(page.locator('li').filter({ hasText: 'Pie Chart layer2 Layers (' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOff.*/);
+
+    // We save with this state
+    await page.getByRole('button', { name: 'Save', exact: true }).click();
+    await expect(page.getByRole('button', {
+      name: 'Save',
+      exact: true
+    })).toBeDisabled();
+    await expect(page.locator('#UndoHistory')).toBeEnabled();
+    await expect(page.locator('#ResetHistory')).toBeDisabled();
+    await expect(page.locator('#RedoHistory')).toBeDisabled();
+    await expect(page.locator('li').filter({ hasText: 'Sample Indicator ASingle' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOn.*/);
+    await expect(page.locator('li').filter({ hasText: 'Sample Indicator BSingle' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOff.*/);
+    await expect(page.locator('li').filter({ hasText: 'Pie Chart layer2 Layers (' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOff.*/);
+
+    // Undo 2
+    await page.locator('#UndoHistory').click();
+    await expect(page.getByRole('button', {
+      name: 'Save',
+      exact: true
+    })).toBeEnabled();
+    await expect(page.locator('#UndoHistory')).toBeEnabled();
+    await expect(page.locator('#ResetHistory')).toBeEnabled();
+    await expect(page.locator('#RedoHistory')).toBeEnabled();
+    await expect(page.locator('li').filter({ hasText: 'Sample Indicator ASingle' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOff.*/);
+    await expect(page.locator('li').filter({ hasText: 'Sample Indicator BSingle' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOn.*/);
+    await expect(page.locator('li').filter({ hasText: 'Pie Chart layer2 Layers (' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOff.*/);
+
+    // Undo 3
+    await page.locator('#UndoHistory').click();
+    await expect(page.getByRole('button', {
+      name: 'Save',
+      exact: true
+    })).toBeEnabled();
+    await expect(page.locator('#UndoHistory')).toBeDisabled();
+    await expect(page.locator('#ResetHistory')).toBeEnabled();
+    await expect(page.locator('#RedoHistory')).toBeEnabled();
+    await expect(page.locator('li').filter({ hasText: 'Sample Indicator ASingle' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOn.*/);
+    await expect(page.locator('li').filter({ hasText: 'Sample Indicator BSingle' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOff.*/);
+    await expect(page.locator('li').filter({ hasText: 'Pie Chart layer2 Layers (' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOff.*/);
+
+    // Redo 1
+    await page.locator('#RedoHistory').click();
+    await expect(page.getByRole('button', {
+      name: 'Save',
+      exact: true
+    })).toBeEnabled();
+    await expect(page.locator('#UndoHistory')).toBeEnabled();
+    await expect(page.locator('#ResetHistory')).toBeEnabled();
+    await expect(page.locator('#RedoHistory')).toBeEnabled();
+    await expect(page.locator('li').filter({ hasText: 'Sample Indicator ASingle' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOff.*/);
+    await expect(page.locator('li').filter({ hasText: 'Sample Indicator BSingle' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOn.*/);
+    await expect(page.locator('li').filter({ hasText: 'Pie Chart layer2 Layers (' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOff.*/);
+
+    // Reset
+    await page.locator('#ResetHistory').click();
+    await expect(page.getByRole('button', {
+      name: 'Save',
+      exact: true
+    })).toBeDisabled();
+    await expect(page.locator('#UndoHistory')).toBeEnabled();
+    await expect(page.locator('#ResetHistory')).toBeDisabled();
+    await expect(page.locator('#RedoHistory')).toBeDisabled();
+    await expect(page.locator('li').filter({ hasText: 'Sample Indicator ASingle' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOn.*/);
+    await expect(page.locator('li').filter({ hasText: 'Sample Indicator BSingle' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOff.*/);
+    await expect(page.locator('li').filter({ hasText: 'Pie Chart layer2 Layers (' }).getByRole('img').nth(2)).toHaveClass(/.*VisibilityIconOff.*/);
+    // --------------------------------------------------------------------
+    // CHECK HISTORY
+    // --------------------------------------------------------------------
+  })
 });

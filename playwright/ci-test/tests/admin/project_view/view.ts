@@ -326,7 +326,6 @@ test.describe('View project', () => {
     await page.goto('/admin/project/demo-geosight-project/edit');
     await page.getByPlaceholder('Select 1 option').click();
     await page.getByRole('option', { name: 'Latest ucode' }).click();
-    await page.getByRole('button', { name: 'Save', exact: true }).click();
     await page.getByText('Configuration has been saved!');
     await assert(
       page,
