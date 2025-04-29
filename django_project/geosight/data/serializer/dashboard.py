@@ -64,6 +64,9 @@ class DashboardSerializer(serializers.ModelSerializer):
     # Tools
     tools = serializers.SerializerMethodField()
 
+    # View
+    view_url = serializers.SerializerMethodField()
+
     def get_description(self, obj: Dashboard):
         """Return description."""
         return obj.description if obj.description else ''
@@ -268,6 +271,12 @@ class DashboardSerializer(serializers.ModelSerializer):
             obj.dashboardtool_set.all(), many=True
         ).data
 
+    def get_view_url(self, obj: Dashboard):
+        """Return tools."""
+        if not obj.slug:
+            return None
+        return reverse('dashboard-detail-view', args=[obj.slug])
+
     class Meta:  # noqa: D106
         model = Dashboard
         fields = (
@@ -283,7 +292,8 @@ class DashboardSerializer(serializers.ModelSerializer):
             'user_permission',
             'geo_field', 'show_splash_first_open',
             'truncate_indicator_layer_name', 'enable_geometry_search',
-            'overview', 'default_time_mode', 'tools'
+            'overview', 'default_time_mode', 'tools',
+            'view_url'
         )
 
 
