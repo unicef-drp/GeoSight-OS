@@ -61,7 +61,6 @@ export default function dashboardReducer(
     case DASHBOARD_ACTION_NAME: {
       switch (action.type) {
         case DASHBOARD_ACTION_TYPE_UPDATE: {
-          console.log(action.payload)
           return {
             ...state,
             data: action.payload
