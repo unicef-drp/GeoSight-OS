@@ -34,7 +34,30 @@ test.describe('View edit project', () => {
         }
       }
     });
+
+    // Check filter is hidden or not
+    await page.goto('/admin/project/demo-geosight-project/edit');
+    await page.locator('.TabPrimary').getByText('Filters').click();
+    await page.getByText('Hide filter section').click();
+    await page.getByRole('button', { name: 'Save', exact: true }).click();
+    await page.goto('/project/demo-geosight-project');
+    await page.waitForURL('/project/demo-geosight-project');
+    await delay(1000)
+    await page.getByRole('button', { name: 'Close' }).click();
+    await expect(page.getByRole('tab', { name: 'Filters' })).toBeHidden();
+
+    await page.goto('/admin/project/demo-geosight-project/edit');
+    await page.locator('.TabPrimary').getByText('Filters').click();
+    await page.getByText('Hide filter section').click();
+    await page.getByRole('button', { name: 'Save', exact: true }).click();
+    await page.goto('/project/demo-geosight-project');
+    await page.waitForURL('/project/demo-geosight-project');
+    await delay(1000)
+    await page.getByRole('button', { name: 'Close' }).click();
+    await expect(page.getByRole('tab', { name: 'Filters' })).toBeVisible();
+
     // Check extent
+    await page.goto('/admin/project/demo-geosight-project/edit');
     await page.evaluate(() => {
       window.scrollTo(0, document.body.scrollHeight);
     });
