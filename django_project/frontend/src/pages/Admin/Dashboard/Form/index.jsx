@@ -56,6 +56,7 @@ import Modal, {
 import DashboardFormContent from "./DashboardContent";
 import { PAGES } from "./types.d";
 import DashboardFormHeader from "./DashboardFormHeader";
+import Tooltip from "@mui/material/Tooltip";
 
 
 /**
@@ -489,6 +490,7 @@ export function DashboardSaveForm(
 export function DashboardForm({ onPreview }) {
   const {
     user_permission,
+    view_url,
     id,
     name
   } = useSelector(state => state.dashboard.data);
@@ -523,12 +525,23 @@ export function DashboardForm({ onPreview }) {
               setCurrentPage={setCurrentPage}
               currentHistoryIdx={currentHistoryIdx}
               setCurrentHistoryIdx={setCurrentHistoryIdx}/>
-            <ThemeButton
-              variant="primary"
-              onClick={onPreview}
-            >
-              <MapActiveIcon/>Preview
-            </ThemeButton>
+            {
+              view_url && <Tooltip
+                title={
+                  <p style={{ fontSize: "12px" }}>
+                    To preview the project, please save your changes first and
+                    refresh the preview page to see the updates.
+                  </p>
+                }
+                className={'tooltip'}
+              >
+                <a href={view_url} target='_blank'>
+                  <ThemeButton variant="primary">
+                    <MapActiveIcon/>Preview
+                  </ThemeButton>
+                </a>
+              </Tooltip>
+            }
             <DashboardSaveForm
               currentPage={currentPage}
               // disabled={currentHistoryIdx <= 0 && !changed}
