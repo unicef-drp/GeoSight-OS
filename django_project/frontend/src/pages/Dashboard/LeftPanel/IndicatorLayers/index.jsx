@@ -246,17 +246,19 @@ export function IndicatorLayers() {
   }, [indicatorLayers, relatedTableData, indicatorLayersStructure]);
 
   const onChange = (selectedData) => {
-    if (selectedData.length === 0) {
-      if (currentIndicatorLayer) {
-        setCurrentIndicatorLayers([0, 0])
-        dispatch(Actions.SelectedIndicatorLayer.change({}))
+    setTimeout(function () {
+      if (selectedData.length === 0) {
+        if (currentIndicatorLayer) {
+          setCurrentIndicatorLayers([0, 0])
+          dispatch(Actions.SelectedIndicatorLayer.change({}))
+        }
       }
-    }
-    if (selectedData.length >= 1) {
-      setCurrentIndicatorLayers(selectedData)
-    }
+      if (selectedData.length >= 1) {
+        setCurrentIndicatorLayers(selectedData)
+      }
 
-    updateOtherLayers(selectedData)
+      updateOtherLayers(selectedData)
+    }, 100);
   }
 
   return (

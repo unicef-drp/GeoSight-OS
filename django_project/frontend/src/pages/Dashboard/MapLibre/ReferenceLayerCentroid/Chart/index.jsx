@@ -70,7 +70,7 @@ export const renderChart = (map, features, lastConfig, config) => {
       anchor: 'center'
     })
       .setLngLat(feature.geometry.coordinates)
-      .setHTML(`<div style="display: block; box-sizing: border-box; height: ${size}px; width: ${size}px;"><canvas id="${code}-chart" width="${size}" height="${size}" data-size="${size}"></div>`)
+      .setHTML(`<div id="${code}-wrapper" class="centroid-chart" style="display: block; box-sizing: border-box; height: ${size}px; width: ${size}px;"><canvas id="${code}-chart" width="${size}" height="${size}" data-size="${size}"></div>`)
       .addTo(map);
     markers.push(popup)
 
@@ -174,7 +174,7 @@ export const renderPin = (map, features, indicatorLayer, lastConfig, config) => 
       anchor: 'center'
     })
       .setLngLat(feature.geometry.coordinates)
-      .setHTML(`<div id="${code}-pin" class="pins">${children.join('')}</div>`)
+      .setHTML(`<div id="${code}-pin" class="pins centroid-chart">${children.join('')}</div>`)
       .addTo(map)
     markers.push(popup)
   })

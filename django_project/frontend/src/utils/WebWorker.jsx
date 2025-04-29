@@ -20,11 +20,17 @@ export default class WebWorker {
   }
 }
 
-export function ExecuteWebWorker(script, data, callback) {
+export function ExecuteWebWorker(script, data, callback, onePostMessage = true) {
   var _webWorker = new WebWorker(script);
   _webWorker.postMessage(data);
   _webWorker.addEventListener('message', (event) => {
+    if (event.data?.isDone) {
+      _webWorker.terminate()
+      return
+    }
     callback(event.data)
-    _webWorker.terminate()
+    if (onePostMessage) {
+      _webWorker.terminate()
+    }
   });
 }

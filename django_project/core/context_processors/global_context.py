@@ -59,6 +59,7 @@ def global_context(request):
 
     return {
         'DEBUG': settings.DEBUG,
+        'IS_TEST': settings.IS_TEST,
         'preferences': pref_data,
         'preferences_js': json.dumps(pref_data),
         'use_azure_auth': settings.USE_AZURE,

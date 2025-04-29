@@ -23,11 +23,13 @@ import $ from "jquery";
 import { datasetListFromDashboardData } from "../../../../utils/geometry";
 import { dictDeepCopy } from "../../../../utils/main";
 import { Actions } from "../../../../store/dashboard";
-import { axiosGet, extractCode, headers } from "../../../../utils/georepo";
+import { axiosGet, headers } from "../../../../utils/georepo";
 import { apiReceive } from "../../../../store/reducers_api";
-import { DjangoRequests, fetchJSON } from "../../../../Requests";
+import { DjangoRequests } from "../../../../Requests";
 import { InternalReferenceDatasets } from "../../../../utils/urls";
 import { RefererenceLayerUrls } from "../../../../utils/referenceLayer";
+import { ExecuteWebWorker } from "../../../../utils/WebWorker";
+import worker from "./worker";
 
 /**
  * Handling geometry data.
@@ -119,78 +121,29 @@ export default function DatasetGeometryData() {
           // ------------------------------------------
           // ----------- CENTROID DATA ----------------
           // ------------------------------------------
-          const currGeometries = {}
-          const geometryDataDict = {}
-          const geometryMemberByUcode = {}
           let url = `${preferences.georepo_api.api}/search/view/${identifier}/centroid/`
           if (datasets[i].is_local) {
             url = InternalReferenceDatasets.centroid(identifier)
           }
           await axiosGet(url).then(async centroidResponse => {
             const centroids = centroidResponse.data
-            for (let i = 0; i < centroids.length; i++) {
-              const level = centroids[i]
-              const response = await fetchJSON(level.url)
-              const geoms = {}
-
-              response.features.map(feature => {
-                const name = feature.properties.n
-                const ucode = feature.properties.u
-                const concept_uuid = feature.properties.c
-                const parentsUcode = feature.properties.pu
-                const properties = {
-                  concept_uuid: feature.properties.c,
-                  name: name,
-                  ucode: ucode,
-                  geometry: feature.geometry
-                }
-                const code = extractCode(properties)
-                if (!code) {
-                  return
-                }
-                properties.code = code
-                geoms[code] = properties
-
-                // Check parents
-                let parents = []
-                if (parentsUcode) {
-                  parents = parentsUcode.map(parent => geometryMemberByUcode[parent]).filter(parent => !!parent)
-                }
-
-                // Save for geometries
-                const memberData = {
-                  name: name,
-                  ucode: ucode,
-                  code: code,
-                }
-                if (!geometryDataDict[level.level]) {
-                  geometryDataDict[level.level] = {}
-                }
-                geometryDataDict[level.level][code] = {
-                  label: name,
-                  name: name,
-                  code: code,
-                  ucode: ucode,
-                  concept_uuid: concept_uuid,
-                  parents: parents,
-                  members: parents.concat(memberData),
-                  properties: properties,
-                  geometry: feature.geometry,
-                }
-                geometryMemberByUcode[ucode] = memberData
-              })
-              if (!currGeometries[level.level]) {
-                currGeometries[level.level] = {}
-              }
-              currGeometries[level.level] = {
-                ...currGeometries[level.level], ...geoms
-              }
-              dispatch(
-                Actions.DatasetGeometries.addLevelData(
-                  identifier, level.level, geometryDataDict[level.level]
+            ExecuteWebWorker(
+              worker,
+              {
+                domain: window.location.origin,
+                centroids,
+                identifier,
+              },
+              (response) => {
+                const { identifier: _identifier, data } = response;
+                dispatch(
+                  Actions.DatasetGeometries.replaceData(
+                    _identifier, data
+                  )
                 )
-              )
-            }
+              },
+              false
+            )
           })
         }
       }
