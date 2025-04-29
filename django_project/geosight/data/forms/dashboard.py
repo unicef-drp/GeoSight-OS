@@ -126,7 +126,11 @@ class DashboardForm(forms.ModelForm):
 
         data['filters'] = json.dumps(other_data['filters'])
         data['filters_allow_modify'] = other_data.get(
-            'filters_allow_modify', False)
+            'filters_allow_modify', False
+        )
+        data['filters_being_hidden'] = other_data.get(
+            'filters_being_hidden', False
+        )
         try:
             data['permission'] = other_data['permission']
         except KeyError:

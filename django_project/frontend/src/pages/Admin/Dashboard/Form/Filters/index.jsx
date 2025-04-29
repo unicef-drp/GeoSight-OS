@@ -13,17 +13,46 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import FiltersAccordion from "../../../../Dashboard/LeftPanel/Filters";
 import { Actions } from "../../../../../store/dashboard/index";
 
 import './style.scss';
 
-/**
- * Widget dashboard
- */
+export function FiltersBeingHidden() {
+  const dispatch = useDispatch();
+  const {
+    id,
+    filters,
+    filtersBeingHidden
+  } = useSelector(state => state.dashboard.data);
+  const [edited, setEdited] = useState(false);
+
+
+  useEffect(() => {
+    if (!id && !edited) {
+      if (filters?.queries?.length && filtersBeingHidden) {
+        dispatch(Actions.Dashboard.updateFiltersBeingHidden())
+      } else if (!filters?.queries?.length && !filtersBeingHidden) {
+        dispatch(Actions.Dashboard.updateFiltersBeingHidden())
+      }
+    }
+  }, [filters])
+
+  return <FormControlLabel
+    checked={filtersBeingHidden}
+    control={<Checkbox/>}
+    onChange={evt => {
+      setEdited(true)
+      dispatch(Actions.Dashboard.updateFiltersBeingHidden())
+    }}
+    label={'Hide filter section'}/>
+}
+
+/** Filters dashboard */
 export default function FiltersForm() {
   const dispatch = useDispatch();
   const {
@@ -31,9 +60,16 @@ export default function FiltersForm() {
   } = useSelector(state => state.dashboard.data);
 
   return <div className={'Filters'}>
-    <Checkbox checked={filtersAllowModify} onChange={(evt) => {
-      dispatch(Actions.Dashboard.updateFiltersAllowModify())
-    }}/> Allow users to modify filters in dashboard
+    <FiltersBeingHidden/>
+    <div>
+      <FormControlLabel
+        checked={filtersAllowModify}
+        control={<Checkbox/>}
+        onChange={evt => {
+          dispatch(Actions.Dashboard.updateFiltersAllowModify())
+        }}
+        label={'Allow users to modify filters in dashboard'}/>
+    </div>
     <FiltersAccordion isAdmin={true}/>
   </div>
 }

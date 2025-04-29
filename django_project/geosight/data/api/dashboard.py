@@ -147,6 +147,7 @@ class DashboardData(APIView):
 
         else:
             dashboard = Dashboard()
+            dashboard.filters_being_hidden = True
 
             # Get default by dataset
             dataset = request.GET.get('dataset', None)
