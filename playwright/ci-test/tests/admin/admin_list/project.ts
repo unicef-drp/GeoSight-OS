@@ -30,7 +30,7 @@ test.describe('Dashboard list admin', () => {
     // --------------------------------------------------------------
     // CHECK PREVIEW
     // --------------------------------------------------------------
-    await page.getByRole('button', { name: 'Preview' }).click();
+    await page.getByRole('button', { name: 'Live Preview' }).click();
     const layer1 = 'Sample Indicator A'
     const layer2 = 'Sample Indicator B'
     await expect(page.getByLabel(layer1)).toBeVisible();

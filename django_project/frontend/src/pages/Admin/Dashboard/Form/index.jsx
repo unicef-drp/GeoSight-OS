@@ -57,6 +57,7 @@ import DashboardFormContent from "./DashboardContent";
 import { PAGES } from "./types.d";
 import DashboardFormHeader from "./DashboardFormHeader";
 import Tooltip from "@mui/material/Tooltip";
+import { IS_DEBUG } from "../../../../utils/logger";
 
 
 /**
@@ -541,6 +542,14 @@ export function DashboardForm({ onPreview }) {
                   </ThemeButton>
                 </a>
               </Tooltip>
+            }
+            {
+              IS_DEBUG && <ThemeButton
+                variant="primary"
+                onClick={onPreview}
+              >
+                <MapActiveIcon/>Live Preview
+              </ThemeButton>
             }
             <DashboardSaveForm
               currentPage={currentPage}
