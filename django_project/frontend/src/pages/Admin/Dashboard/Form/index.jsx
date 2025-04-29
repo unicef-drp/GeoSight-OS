@@ -13,13 +13,10 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import $ from "jquery";
 import ViewHeadlineIcon from '@mui/icons-material/ViewHeadline';
-import ReplayIcon from '@mui/icons-material/Replay';
-import UndoIcon from "@mui/icons-material/Undo";
-import RedoIcon from "@mui/icons-material/Redo";
 
 import App, { render } from '../../../../app';
 import { pageNames } from '../../index';
@@ -58,102 +55,12 @@ import { PAGES } from "./types.d";
 import DashboardFormHeader from "./DashboardFormHeader";
 import Tooltip from "@mui/material/Tooltip";
 import { IS_DEBUG } from "../../../../utils/logger";
+import DashboardHistory from "./History";
 
 
 /**
  * Dashboard history
  */
-
-let histories = [];
-let forceChangedDataStr = null;
-
-export function DashboardHistory(
-  {
-    page,
-    setCurrentPage,
-    currentHistoryIdx,
-    setCurrentHistoryIdx
-  }) {
-  const dispatch = useDispatch();
-  const { data } = useSelector(state => state.dashboard);
-
-  const applyHistory = (targetIdx, page) => {
-    const history = histories[targetIdx]
-    const data = history.data
-    forceChangedDataStr = JSON.stringify(data)
-    dispatch(
-      Actions.Dashboard.update(dictDeepCopy(data))
-    )
-    setCurrentPage(page)
-    setCurrentHistoryIdx(targetIdx)
-  }
-
-  const undo = () => {
-    const currentHistory = histories[currentHistoryIdx]
-    applyHistory(currentHistoryIdx - 1, currentHistory.page)
-  }
-
-  const redo = () => {
-    const history = histories[currentHistoryIdx + 1]
-    applyHistory(currentHistoryIdx + 1, history.page)
-  }
-
-  const reset = () => {
-    const history = histories[0]
-    applyHistory(0, history.page)
-  }
-
-  // Add history
-  useEffect(() => {
-    if (data.extent) {
-      const strData = JSON.stringify(data)
-      if (forceChangedDataStr !== strData) {
-        const lastHistory = histories[currentHistoryIdx];
-        histories = histories.slice(0, currentHistoryIdx + 1);
-        if (!lastHistory || (lastHistory && strData !== JSON.stringify(lastHistory.data))) {
-          const newHistoryIdx = currentHistoryIdx + 1
-          const newHistory = {
-            page: page,
-            data: dictDeepCopy(data)
-          }
-          histories[newHistoryIdx] = newHistory
-          setCurrentHistoryIdx(newHistoryIdx)
-        }
-      }
-    }
-  }, [data]);
-
-  const redoDisabled = (
-    histories.length <= 1 || histories.length - 1 === currentHistoryIdx
-  )
-
-  return <>
-    <ThemeButton
-      variant='primary Reverse JustIcon'
-      className='UndoRedo'
-      onClick={undo}
-      disabled={currentHistoryIdx <= 0}
-    >
-      <UndoIcon/>
-    </ThemeButton>
-    <ThemeButton
-      variant='primary Reverse JustIcon'
-      className='UndoRedo'
-      onClick={reset}
-      disabled={currentHistoryIdx <= 0}
-    >
-      <ReplayIcon/>
-    </ThemeButton>
-    <ThemeButton
-      variant='primary Reverse JustIcon'
-      className='UndoRedo'
-      onClick={redo}
-      disabled={redoDisabled}
-    >
-      <RedoIcon/>
-    </ThemeButton>
-  </>
-}
 
 export function DashboardSaveAsForm({ submitted, onSaveAs }) {
   const [openSaveAs, setOpenSaveAs] = useState(false);
@@ -265,13 +172,8 @@ export function DashboardSaveAsForm({ submitted, onSaveAs }) {
 /**
  * Dashboard Save Form
  */
-export function DashboardSaveForm(
-  {
-    currentPage,
-    disabled,
-    setCurrentHistoryIdx,
-    setChanged
-  }) {
+export function DashboardSaveForm() {
+  const dispatch = useDispatch();
   const {
     id,
     referenceLayer,
@@ -303,6 +205,13 @@ export function DashboardSaveForm(
   const notify = (newMessage, newSeverity = NotificationStatus.INFO) => {
     notificationRef?.current?.notify(newMessage, newSeverity)
   }
+
+  // Check histories
+  const {
+    checkpoint,
+    currentIdx
+    // @ts-ignore
+  } = useSelector(state => state.dashboardHistory);
 
   /** On save **/
   const onSave = (targetUrl = document.location.href) => {
@@ -448,12 +357,7 @@ export function DashboardSaveForm(
               window.location = response.url
             } else {
               notify('Configuration has been saved!', NotificationStatus.SUCCESS)
-              histories = [{
-                page: currentPage,
-                data: JSON.parse(JSON.stringify(data))
-              }]
-              setCurrentHistoryIdx(0)
-              setChanged(false)
+              dispatch(Actions.DashboardHistory.applyCheckpoint())
             }
           }
         }
@@ -480,7 +384,7 @@ export function DashboardSaveForm(
         onSave()
       }}
       className={submitted ? 'Submitted' : ''}
-      disabled={disabled || submitted || !Object.keys(data).length}/>
+      disabled={submitted || !Object.keys(data).length || checkpoint === currentIdx}/>
     <Notification ref={notificationRef}/>
   </>
 }
@@ -496,9 +400,14 @@ export function DashboardForm({ onPreview }) {
     name
   } = useSelector(state => state.dashboard.data);
   const [currentPage, setCurrentPage] = useState(PAGES.GENERAL);
-  const [currentHistoryIdx, setCurrentHistoryIdx] = useState(-1);
-  const [changed, setChanged] = useState(false);
   const className = currentPage.replaceAll(' ', '')
+
+
+  // Callback for setCurrentPage
+  const setCurrentPageCallback = useCallback((page) => {
+    setCurrentPage(page)
+  }, []);
+
   return (
     <div className='Admin'>
       <SideNavigation pageName={pageNames.Dashboard} minified={true}/>
@@ -523,9 +432,8 @@ export function DashboardForm({ onPreview }) {
             }
             <DashboardHistory
               page={currentPage}
-              setCurrentPage={setCurrentPage}
-              currentHistoryIdx={currentHistoryIdx}
-              setCurrentHistoryIdx={setCurrentHistoryIdx}/>
+              setPage={setCurrentPageCallback}
+            />
             {
               view_url && <Tooltip
                 title={
@@ -551,13 +459,7 @@ export function DashboardForm({ onPreview }) {
                 <MapActiveIcon/>Live Preview
               </ThemeButton>
             }
-            <DashboardSaveForm
-              currentPage={currentPage}
-              // disabled={currentHistoryIdx <= 0 && !changed}
-              disabled={false}
-              setCurrentHistoryIdx={setCurrentHistoryIdx}
-              setChanged={setChanged}
-            />
+            <DashboardSaveForm/>
           </div>
         </div>
 

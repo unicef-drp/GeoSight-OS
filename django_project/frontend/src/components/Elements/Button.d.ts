@@ -21,6 +21,7 @@ declare module './Button' {
     [key: string]: any;
 
     children?: React.ReactNode;
+    variant?: string;
   }
 
   export function ThemeButton(props: ButtonProps): JSX.Element;
