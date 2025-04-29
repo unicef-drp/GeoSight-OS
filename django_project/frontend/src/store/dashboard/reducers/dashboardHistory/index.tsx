@@ -79,9 +79,12 @@ export default function dashboardHistoryReducer(
           currentIdx: index
         }
       case STATE_APPLY_CHECKPOINT:
+        const { currentIdx, histories } = state;
+        const newHistories = histories.slice(0, currentIdx + 1);
         return {
           ...state,
-          checkpoint: state.currentIdx
+          histories: newHistories,
+          checkpoint: currentIdx
         }
     }
   }

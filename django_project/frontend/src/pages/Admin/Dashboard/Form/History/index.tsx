@@ -42,6 +42,7 @@ export const DashboardHistory = memo(
     const { data } = useSelector(state => state.dashboard);
     // @ts-ignore
     const {
+      checkpoint,
       currentIdx,
       histories
       // @ts-ignore
@@ -74,8 +75,8 @@ export const DashboardHistory = memo(
     }
 
     const reset = () => {
-      const history = histories[0]
-      applyHistory(0, history.page)
+      const currentHistory = histories[checkpoint]
+      applyHistory(checkpoint, currentHistory.page)
     }
 
     // Add history
@@ -96,6 +97,7 @@ export const DashboardHistory = memo(
 
     return <>
       <ThemeButton
+        id='UndoHistory'
         variant='primary Reverse JustIcon'
         className='UndoRedo'
         onClick={undo}
@@ -104,14 +106,16 @@ export const DashboardHistory = memo(
         <UndoIcon/>
       </ThemeButton>
       <ThemeButton
+        id='ResetHistory'
         variant='primary Reverse JustIcon'
         className='UndoRedo'
         onClick={reset}
-        disabled={currentIdx <= 0}
+        disabled={currentIdx == -1 || checkpoint === currentIdx}
       >
         <ReplayIcon/>
       </ThemeButton>
       <ThemeButton
+        id='RedoHistory'
         variant='primary Reverse JustIcon'
         className='UndoRedo'
         onClick={redo}
