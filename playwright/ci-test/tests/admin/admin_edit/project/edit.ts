@@ -11,39 +11,7 @@ test.describe('View edit project', () => {
   });
 
   // A use case tests scenarios
-  test('Edit project', async ({ page }) => {
-    let lastLayerStyles = null
-    page.on('console', msg => {
-      if (msg.text().indexOf('LAYER_STYLE:') !== -1) {
-        try {
-          const log = msg.text().replace('LAYER_STYLE:', '')
-          if (log) {
-            lastLayerStyles = {}
-            JSON.parse(log).map(style => {
-              lastLayerStyles[style.name] = {
-                rule: style.rule,
-                color: style.color,
-                outline_color: style.outline_color,
-                outline_size: "" + style.outline_size
-              }
-            })
-          }
-        } catch (e) {
-          console.log(e)
-
-        }
-      }
-    });
-    // Check preview
-    await expect(page.getByText('Preview', { exact: true })).toBeVisible();
-    // @ts-ignore
-    const [newPage] = await Promise.all([
-      page.context().waitForEvent('page'),
-      page.getByText('Preview', { exact: true }).click()
-    ]);
-    await newPage.waitForLoadState();
-    await expect(newPage.url()).toEqual('http://localhost:2000/project/demo-geosight-project')
-
+  test('Edit project: Check history', async ({ page }) => {
     // --------------------------------------------------------------------
     // CHECK HISTORY
     // --------------------------------------------------------------------
@@ -247,6 +215,39 @@ test.describe('View edit project', () => {
     // --------------------------------------------------------------------
     // CHECK HISTORY
     // --------------------------------------------------------------------
+  })
+  test('Edit project', async ({ page }) => {
+    let lastLayerStyles = null
+    page.on('console', msg => {
+      if (msg.text().indexOf('LAYER_STYLE:') !== -1) {
+        try {
+          const log = msg.text().replace('LAYER_STYLE:', '')
+          if (log) {
+            lastLayerStyles = {}
+            JSON.parse(log).map(style => {
+              lastLayerStyles[style.name] = {
+                rule: style.rule,
+                color: style.color,
+                outline_color: style.outline_color,
+                outline_size: "" + style.outline_size
+              }
+            })
+          }
+        } catch (e) {
+          console.log(e)
+
+        }
+      }
+    });
+    // Check preview
+    await expect(page.getByText('Preview', { exact: true })).toBeVisible();
+    // @ts-ignore
+    const [newPage] = await Promise.all([
+      page.context().waitForEvent('page'),
+      page.getByText('Preview', { exact: true }).click()
+    ]);
+    await newPage.waitForLoadState();
+    await expect(newPage.url()).toEqual('http://localhost:2000/project/demo-geosight-project')
 
     // --------------------------------------------------------------------
     // Check filter is hidden or not
