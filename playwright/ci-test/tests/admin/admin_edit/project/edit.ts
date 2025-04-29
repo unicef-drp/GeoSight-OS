@@ -34,6 +34,15 @@ test.describe('View edit project', () => {
         }
       }
     });
+    // Check preview
+    await expect(page.getByText('Preview', { exact: true })).toBeVisible();
+    // @ts-ignore
+    const [newPage] = await Promise.all([
+      page.context().waitForEvent('page'),
+      page.getByText('Preview', { exact: true }).click()
+    ]);
+    await newPage.waitForLoadState();
+    await expect(newPage.url()).toEqual('http://localhost:2000/project/demo-geosight-project')
 
     // Check filter is hidden or not
     await page.goto('/admin/project/demo-geosight-project/edit');
