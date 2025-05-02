@@ -45,6 +45,7 @@ export { default as EmailIcon } from "./email.svg";
 export { default as EmbedIcon } from "./embed.svg";
 export { default as ExpandIcon } from "./expand.svg";
 export { default as FilterIcon } from "./filter.svg";
+export { default as GlobeIcon } from "./globe.svg";
 export { default as GridIcon } from "./grid.svg";
 export { default as GraphIcon } from "./graph.svg";
 export { default as GraphCheckedIcon } from "./graph-checked.svg";
