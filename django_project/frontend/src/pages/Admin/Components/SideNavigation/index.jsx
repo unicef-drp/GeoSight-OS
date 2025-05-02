@@ -27,6 +27,7 @@ import {
   DataBrowserIcon,
   DataManagementActiveIcon,
   DataManagementIcon,
+  GlobeIcon,
   GridIcon,
   HelpIcon,
   LayerActiveIcon,
@@ -272,7 +273,14 @@ export default function SideNavigation({ pageName, minified }) {
             </span>
           </a>
         </SidaNavigationButton>
-        <LanguageSelector />
+        <SidaNavigationButton minified={minified} title='Language'>
+          <LanguageSelector>
+            <a className='SideNavigation-Row language-selector'>
+              <GlobeIcon />
+              <span className='SideNavigation-Row-Name'>Language</span>
+            </a>
+          </LanguageSelector>
+        </SidaNavigationButton>
         <SidaNavigationButton minified={minified} title='Help'>
           <a href='#' className='SideNavigation-Row' onClick={_ => {
             helpPageRef?.current.open()

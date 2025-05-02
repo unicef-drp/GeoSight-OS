@@ -27,6 +27,7 @@ import ContextLayers from "./Layers/ContextLayers";
 import { Plugin, PluginChild } from "./Plugin";
 import { removeLayer, removeSource } from "./utils"
 import {
+  GlobeIcon,
   ThreeDimensionOffIcon,
   ThreeDimensionOnIcon
 } from '../../../components/Icons'
@@ -334,7 +335,15 @@ export default function MapLibre(
       {/* Embed */}
       <div className='Toolbar-Right'>
         <SearchGeometryInput map={map} />
-        <LanguageSelector />
+        <Plugin className='LanguageSelector'>
+          <LanguageSelector>
+            <div className='Active'>
+              <PluginChild title={'Select language'}>
+                <GlobeIcon />
+              </PluginChild>
+            </div>
+          </LanguageSelector>
+        </Plugin>
         <Plugin className='EmbedControl'>
           <div className='Active'>
             <PluginChild title={'Get embed code'}>
