@@ -29,6 +29,8 @@
         "projectOverview": "Resumen del proyecto",
         "projectOverviewNoShow": "¡No mostrar esto de nuevo!",
         "projectOverviewClose": "Cerrar",
-        "adminPanelButton": "Panel de administración"
+        "adminPanelButton": "Panel de administración",
+        "fetchingDashboardData": "Obteniendo datos del panel",
+        "loadingDashboardData": "Cargando datos del panel"
     }
 }

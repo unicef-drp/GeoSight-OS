@@ -29,6 +29,8 @@
         "projectOverview": "Project Overview",
         "projectOverviewNoShow": "Do not show this again!",
         "projectOverviewClose": "Close",
-        "adminPanelButton": "Admin panel"
+        "adminPanelButton": "Admin panel",
+        "fetchingDashboardData": "Fetching Dashboard Data",
+        "loadingDashboardData": "Loading Dashboard Data"
     }
 }
