@@ -49,6 +49,7 @@ import NotificationBadge from "../../../../components/NotificationBadge";
 import NotificationMaintenance
   from "../../../../components/NotificationMaintenance";
 import LanguageSelector from '../../../../components/LanguageSelector';
+import { useTranslation } from 'react-i18next';
 
 
 function SidaNavigationButton({ title, minified, children }) {
@@ -79,6 +80,7 @@ export default function SideNavigation({ pageName, minified }) {
   const referenceDatasetList = urls.admin.referenceDatasetList; // eslint-disable-line no-undef
   const referenceDatesetImporterList = urls.admin.referenceDatesetImporterList; // eslint-disable-line no-undef
   const helpPageRef = useRef(null);
+  const { t } = useTranslation();
 
   return (
     <div className={'SideNavigation ' + (minified ? 'Minified' : '')}>
@@ -277,7 +279,7 @@ export default function SideNavigation({ pageName, minified }) {
           <LanguageSelector>
             <a className='SideNavigation-Row language-selector'>
               <GlobeIcon />
-              <span className='SideNavigation-Row-Name'>Language</span>
+              <span className='SideNavigation-Row-Name'>{t("native.name")}</span>
             </a>
           </LanguageSelector>
         </SidaNavigationButton>
