@@ -19,7 +19,7 @@ import { store } from '../../store/admin';
 import App, { render } from '../../app';
 import AdminForm from "../Admin/Components/Form";
 import { ThemeButton } from "../../components/Elements/Button";
-
+import { useTranslation } from 'react-i18next';
 
 import './style.scss';
 import './style.small.scss';
@@ -30,6 +30,8 @@ import './style.small.scss';
 export default function Login() {
   const [submitted, setSubmitted] = useState(false);
   const useAzureLogin = useAzureAuth
+
+  const { t } = useTranslation();
 
   /** Render **/
   const login = () => {
@@ -76,7 +78,7 @@ export default function Login() {
     <App className='Login'>
       <div className='Background'></div>
       <div className='Login'>
-        <div className='LoginHeader'>Welcome to {preferences.site_title}</div>
+        <div className='LoginHeader'>{t('loginPage.welcome', { siteTitle: preferences.site_title })}</div>
         {!getNoLoginAccess() && loginHelpText && (
           <div className='HelpText'>
             <p>{loginHelpText}</p>
@@ -94,7 +96,7 @@ export default function Login() {
                 onClick={login}
                 disabled={submitted ? true : false}
               >
-                LOG IN
+                {t('loginPage.login')}
               </ThemeButton>
             </div>
           )
@@ -104,15 +106,14 @@ export default function Login() {
             <Fragment>
               <div style={{ marginBottom: '20px' }}>
                 <p>
-                  You are not allowed to access GeoSight. Please contact
-                  administrator or try to use different account!
+                  {t('loginPage.noAccessMessage')}
                 </p>
               </div>
               <div>
                 <a
                   href={urls.requestAccess}>
                   <ThemeButton variant="secondary Basic">
-                    Request Access
+                    {t('loginPage.requestAccess')}
                   </ThemeButton>
                 </a>
                 <br />
