@@ -51,7 +51,7 @@
         "projectOverviewNoShow": "¡No mostrar esto de nuevo!",
         "projectOverviewClose": "Cerrar",
         "adminPanelButton": "Panel de administración",
-        "fetchingDashboardData": "Obteniendo datos del panel",
-        "loadingDashboardData": "Cargando datos del panel"
+        "fetchingDashboardData": "Obteniendo datos del panel...",
+        "loadingDashboardData": "Cargando datos del panel..."
     }
 }
