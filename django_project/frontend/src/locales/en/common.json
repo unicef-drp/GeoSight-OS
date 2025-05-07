@@ -53,15 +53,5 @@
         "adminPanelButton": "Admin panel",
         "fetchingDashboardData": "Fetching Dashboard Data...",
         "loadingDashboardData": "Loading Dashboard Data..."
-    },
-    "homePage": {
-        "hideBanner": "Hide this banner",
-        "showBanner": "Show banner"
-    },
-    "loginPage": {
-        "welcome": "Welcome to {{siteTitle}}",
-        "login": "LOG IN",
-        "noAccessMessage": "You are not allowed to access GeoSight. Please contact administrator or try to use different account!",
-        "requestAccess": "Request Access"
     }
 }

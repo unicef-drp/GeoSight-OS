@@ -23,7 +23,6 @@ import ProjectList from "../../components/Home";
 import { VisibilityIcon } from "../../components/Icons";
 import Footer from "../../components/Footer";
 import BasicPage from '../Basic'
-import { useTranslation } from 'react-i18next';
 
 import './style.scss';
 
@@ -34,8 +33,6 @@ import './style.scss';
 export default function Home() {
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [showBanner, setShowBanner] = useState(true);
-
-  const { t } = useTranslation();
 
   // @ts-ignore
   const userId: number = user.id;
@@ -54,27 +51,27 @@ export default function Home() {
         mainImageTs ?
           <div className={showBanner ? 'banner' : 'banner Hide'}>
             <div className='BannerContent'>
-              <div className='Separator'/>
+              <div className='Separator' />
               {
                 // @ts-ignore
                 preferences.landing_page_banner_text ?
                   <div dangerouslySetInnerHTML={{
                     // @ts-ignore
                     __html: preferences.landing_page_banner_text
-                  }}/>
+                  }} />
                   :
                   null
               }
               <ThemeButton
                 variant="primary Basic HideBanner"
                 onClick={_ => setShowBanner(false)}>
-                {t('hideBanner')} <HighlightOffIcon/>
+                Hide this banner <HighlightOffIcon />
               </ThemeButton>
             </div>
             <ThemeButton
               variant="Basic ShowBanner"
               onClick={_ => setShowBanner(true)}>
-              <VisibilityIcon/> {t('showBanner')}
+              <VisibilityIcon /> Show banner
             </ThemeButton>
           </div> : null
       }
@@ -83,7 +80,7 @@ export default function Home() {
           isLoading ? (
             <div className='LoadingElement'>
               <div className='Throbber'>
-                <CircularProgress size="10rem"/>
+                <CircularProgress size="10rem" />
               </div>
             </div>
           ) : null
@@ -108,7 +105,7 @@ export default function Home() {
         }
       </div>
       <div>
-        <Footer/>
+        <Footer />
       </div>
     </BasicPage>
   )
