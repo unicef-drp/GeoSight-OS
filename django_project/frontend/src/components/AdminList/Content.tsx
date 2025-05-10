@@ -144,7 +144,7 @@ export const AdminListContent = forwardRef(
         return <a href={url.create}>
           <AddButton
             variant="primary"
-            text={"Create New " + pageName}
+            text={t('admin.createNew', { pageName: t('admin.pageNameFormats.singular.' + pageName) })}
           />
         </a>
       }
@@ -160,7 +160,7 @@ export const AdminListContent = forwardRef(
           <ThemeButton
             variant="primary Basic"
             disabled={!selectedIds.length}>
-            <EditIcon/>t('edit')
+            <EditIcon/>{t('admin.edit')}
           </ThemeButton>
         </a>
       }
@@ -214,7 +214,7 @@ export const AdminListContent = forwardRef(
               !useSearch ? null :
                 <IconTextField
                   // @ts-ignore
-                  placeholder={"Search " + pageName}
+                  placeholder={t('admin.searchPlaceholder', { pageName: t('admin.pageNameFormats.singular.' + pageName).toLowerCase() })}
                   defaultValue={search ? search : ""}
                   iconEnd={<MagnifyIcon/>}
                   onChange={(evt: React.ChangeEvent<HTMLInputElement>) => {

@@ -66,7 +66,7 @@ export const DashboardFormContent = memo(
               <div className='DashboardFormLoadingSection'>
                 <CircularProgress />
                 <div>
-                  {t("dashboardPage.fetchingProjectData")}
+                  {t("admin.fetchingProjectData")}
                 </div>
               </div>
             </div>

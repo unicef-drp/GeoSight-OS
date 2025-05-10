@@ -1,7 +1,7 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
-const translationFiles = require.context('../locales', true, /\.json$/);
+const translationFiles = require.context('../../locale', true, /\.json$/);
 const resources = {};
 const languageCodes = translationFiles.keys().map(key => key.split('/')[1]);
 languageCodes.forEach(lang => {
@@ -45,8 +45,8 @@ export const changeLanguage = (newLang) => {
         // Change the language in i18n
         i18n.changeLanguage(newLang);
 
-        // Update the URL without reloading the page
-        window.history.pushState({}, '', newPath);
+        // Update the URL and reload the page to trigger Django's language change
+        window.location.href = newPath;
     }
 };
 

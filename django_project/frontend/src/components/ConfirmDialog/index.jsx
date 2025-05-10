@@ -22,7 +22,7 @@ import React, {
 
 import Modal, { ModalContent, ModalFooter, ModalHeader } from "../Modal";
 import { ThemeButton } from "../Elements/Button";
-
+import { useTranslation } from 'react-i18next';
 
 /**
  * Confirm Dialog.
@@ -40,7 +40,7 @@ export const ConfirmDialog = forwardRef(
   ) => {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
-
+    const { t } = useTranslation();
     /*** When page size and filter changed */
     useEffect(() => {
         if (!open) {
@@ -91,7 +91,7 @@ export const ConfirmDialog = forwardRef(
                 }
                 setOpen(false)
               }}>
-              Cancel
+              {t('admin.cancel')}
             </ThemeButton>
             &nbsp;
             <ThemeButton
@@ -106,7 +106,7 @@ export const ConfirmDialog = forwardRef(
                   setLoading(true)
                 }
               }}>
-              Confirm
+              {t('admin.confirm')}
             </ThemeButton>
           </div>
         </ModalFooter>

@@ -22,7 +22,7 @@ import { pageNames } from '../../index';
 import { COLUMNS, COLUMNS_ACTION } from "../../Components/List";
 import PermissionModal from "../../Permission";
 import AdminList from "../../../../components/AdminList";
-import {ResourceMeta} from "../../../../components/AdminList";
+import {useResourceMeta} from "../../../../components/AdminList";
 
 import './style.scss';
 
@@ -40,10 +40,11 @@ export default function StyleList() {
   columns.pop();
   // pop category
   columns.pop();
+  const resourceMeta = useResourceMeta();
   columns = columns.concat([
     { field: 'category', headerName: 'Category', flex: 0.5, serverKey: 'group' },
     { field: 'style_type', headerName: 'Style type', flex: 0.5 }
-  ].concat(ResourceMeta))
+  ].concat(resourceMeta))
   columns.push({
     field: 'actions',
     type: 'actions',
