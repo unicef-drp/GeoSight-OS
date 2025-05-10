@@ -32,6 +32,8 @@ import MoreAction from "../../../../components/Elements/MoreAction";
 import { dictDeepCopy, toSingular } from "../../../../utils/main";
 import { DeleteIcon, MagnifyIcon } from "../../../../components/Icons";
 import { useConfirmDialog } from "../../../../providers/ConfirmDialog";
+import { useTranslation } from 'react-i18next';
+import { pageNames } from '../../../../pages/Admin';
 
 import './style.scss';
 
@@ -48,6 +50,7 @@ import './style.scss';
 export function COLUMNS_ACTION(
   params, redirectUrl, editUrl = null, detailUrl = null, moreActions = null
 ) {
+  const { t } = useTranslation();
   const { openConfirmDialog } = useConfirmDialog();
   detailUrl = detailUrl ? detailUrl : urls.api.detail;
   const actions = []
@@ -70,7 +73,7 @@ export function COLUMNS_ACTION(
                 <div className='error'
                      onClick={() => {
                        openConfirmDialog({
-                         header: 'Delete confirmation',
+                         header: t('admin.deleteConfirmation'),
                          onConfirmed: async () => {
                            const api = detailUrl.replace('/0', `/${params.id}`);
                            await DjangoRequests.delete(api, {}).then(response => {
@@ -88,13 +91,14 @@ export function COLUMNS_ACTION(
                          onRejected: () => {
                          },
                          children: <div>
-                           Are you sure you want to delete
-                           : {params.row.name ? params.row.name : params.row.id}?
+                           {t('admin.deleteConfirmationMessage', {
+                             item: params.row.name ? params.row.name : params.row.id
+                           })}
                          </div>,
                        })
                      }}
                 >
-                  <DeleteIcon/> Delete
+                  <DeleteIcon/> {t('admin.delete')}
                 </div>
               </>
             }
@@ -117,13 +121,13 @@ export function COLUMNS_ACTION(
  * @returns {list}
  */
 export function COLUMNS(pageName, redirectUrl, editUrl = null, detailUrl = null) {
-  const singularPageName = toSingular(pageName)
+  const { t } = useTranslation();
   editUrl = editUrl ? editUrl : urls.api.edit;
   detailUrl = detailUrl ? detailUrl : urls.api.detail;
   const _columns = [
     { field: 'id', headerName: 'id', hide: true, width: 30, },
     {
-      field: 'name', headerName: singularPageName + ' Name', flex: 1,
+      field: 'name', headerName: t('admin.pageNameFormats.names.' + pageName), flex: 1,
       renderCell: (params) => {
         const permission = params.row.permission
         if (editUrl && (!permission || permission.edit)) {
@@ -136,8 +140,8 @@ export function COLUMNS(pageName, redirectUrl, editUrl = null, detailUrl = null)
         }
       }
     },
-    { field: 'description', headerName: 'Description', flex: 1 },
-    { field: 'category', headerName: 'Category', flex: 0.5, serverKey: 'group__name' },
+    { field: 'description', headerName: t('admin.columns.description'), flex: 1 },
+    { field: 'category', headerName: t('admin.columns.category'), flex: 0.5, serverKey: 'group__name' },
     {
       field: 'actions',
       type: 'actions',
@@ -148,8 +152,8 @@ export function COLUMNS(pageName, redirectUrl, editUrl = null, detailUrl = null)
       },
     }
   ]
-  if (['indicator'].includes(singularPageName.toLowerCase())) {
-    _columns[2] = { field: 'shortcode', headerName: 'Shortcode', flex: 0.5 }
+  if (pageName === pageNames.Indicators) {
+    _columns[2] = { field: 'shortcode', headerName: t('admin.columns.shortcode'), flex: 0.5 }
   }
   return _columns
 }

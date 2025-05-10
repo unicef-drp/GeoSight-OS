@@ -51,27 +51,27 @@ export default function Home() {
         mainImageTs ?
           <div className={showBanner ? 'banner' : 'banner Hide'}>
             <div className='BannerContent'>
-              <div className='Separator'/>
+              <div className='Separator' />
               {
                 // @ts-ignore
                 preferences.landing_page_banner_text ?
                   <div dangerouslySetInnerHTML={{
                     // @ts-ignore
                     __html: preferences.landing_page_banner_text
-                  }}/>
+                  }} />
                   :
                   null
               }
               <ThemeButton
                 variant="primary Basic HideBanner"
                 onClick={_ => setShowBanner(false)}>
-                Hide this banner <HighlightOffIcon/>
+                Hide this banner <HighlightOffIcon />
               </ThemeButton>
             </div>
             <ThemeButton
               variant="Basic ShowBanner"
               onClick={_ => setShowBanner(true)}>
-              <VisibilityIcon/> Show banner
+              <VisibilityIcon /> Show banner
             </ThemeButton>
           </div> : null
       }
@@ -80,7 +80,7 @@ export default function Home() {
           isLoading ? (
             <div className='LoadingElement'>
               <div className='Throbber'>
-                <CircularProgress size="10rem"/>
+                <CircularProgress size="10rem" />
               </div>
             </div>
           ) : null
@@ -105,7 +105,7 @@ export default function Home() {
         }
       </div>
       <div>
-        <Footer/>
+        <Footer />
       </div>
     </BasicPage>
   )

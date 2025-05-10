@@ -16,8 +16,29 @@ import React, { forwardRef, useImperativeHandle, useRef } from "react";
 import { AdminPage } from "../../pages/Admin";
 import { AdminListProps } from "./types";
 import { AdminListContent } from "./Content";
+import { useTranslation } from 'react-i18next';
 
 import './style.scss';
+
+export const useResourceMeta = () => {
+  const { t } = useTranslation();
+  return [
+    { field: 'created_at', headerName: t('admin.columns.createdAt'), flex: 0.5, type: 'date' },
+    {
+      field: 'created_by',
+      headerName: t('admin.columns.createdBy'),
+      flex: 0.5,
+      serverKey: 'creator__username'
+    },
+    { field: 'modified_at', headerName: t('admin.columns.modifiedAt'), flex: 0.5, type: 'date' },
+    {
+      field: 'modified_by',
+      headerName: t('admin.columns.modifiedBy'),
+      flex: 0.5,
+      serverKey: 'modified_by__username'
+    },
+  ];
+};
 
 export const AdminList = forwardRef((
     {
@@ -101,20 +122,3 @@ export const AdminList = forwardRef((
   }
 )
 export default AdminList;
-
-export const ResourceMeta: any[] = [
-  { field: 'created_at', headerName: 'Created At', flex: 0.5, type: 'date' },
-  {
-    field: 'created_by',
-    headerName: 'Created By',
-    flex: 0.5,
-    serverKey: 'creator__username'
-  },
-  { field: 'modified_at', headerName: 'Modified At', flex: 0.5, type: 'date' },
-  {
-    field: 'modified_by',
-    headerName: 'Modified By',
-    flex: 0.5,
-    serverKey: 'modified_by__username'
-  },
-];

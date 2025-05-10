@@ -22,7 +22,7 @@ import { pageNames } from '../../index';
 import { COLUMNS, COLUMNS_ACTION } from "../../Components/List";
 import PermissionModal from "../../Permission";
 import AdminList from "../../../../components/AdminList";
-import {ResourceMeta} from "../../../../components/AdminList";
+import {useResourceMeta} from "../../../../components/AdminList";
 
 import './style.scss';
 
@@ -37,8 +37,9 @@ export default function ContextLayerList() {
   const pageName = pageNames.ContextLayer
   let columns = COLUMNS(pageName, urls.admin.contextLayerList);
   columns.pop();
+  const resourceMeta = useResourceMeta();
   columns = columns.concat(
-    [{ field: 'layer_type', headerName: 'Layer type', flex: 0.5 }].concat(ResourceMeta)
+    [{ field: 'layer_type', headerName: 'Layer type', flex: 0.5 }].concat(resourceMeta)
   )
   columns.push({
     field: 'actions',

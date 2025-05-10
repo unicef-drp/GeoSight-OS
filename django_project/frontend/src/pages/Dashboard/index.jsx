@@ -25,6 +25,7 @@ import MiddlePanel from './MiddlePanel'
 import { EmbedConfig } from "../../utils/embed";
 import { LEFT, RIGHT } from "../../components/ToggleButton";
 import { ProjectOverview } from "./Toolbars";
+import { useTranslation } from 'react-i18next';
 
 import './style.scss';
 
@@ -40,6 +41,7 @@ export default function Dashboard({ children }) {
   const showWidget = EmbedConfig().widget_tab
   const [leftExpanded, setLeftExpanded] = useState(showLayerTab || showFilterTab);
   const [rightExpanded, setRightExpanded] = useState(showWidget);
+  const { t } = useTranslation();
 
   const leftPanelProps = (showLayerTab || showFilterTab) ? {
     className: 'LeftButton',
@@ -79,8 +81,8 @@ export default function Dashboard({ children }) {
         <Fragment>
           <MapLibre
             leftPanelProps={leftPanelProps}
-            rightPanelProps={rightPanelProps}/>
-          <LeftPanel leftExpanded={leftExpanded}/>
+            rightPanelProps={rightPanelProps} />
+          <LeftPanel leftExpanded={leftExpanded} />
           <MiddlePanel
             leftExpanded={leftExpanded}
             setLeftExpanded={setLeftExpanded}
@@ -88,19 +90,19 @@ export default function Dashboard({ children }) {
             setRightExpanded={setRightExpanded}
             leftContent={
               <div className='ButtonSection'>
-                <ProjectOverview/>
+                <ProjectOverview />
               </div>
             }
             rightContent={
-              <RightPanel rightExpanded={rightExpanded}/>
+              <RightPanel rightExpanded={rightExpanded} />
             }
           >
           </MiddlePanel>
         </Fragment> :
         <div className='LoadingElement'>
           <div className='Throbber'>
-            <CircularProgress/>
-            Loading dashboard data...
+            <CircularProgress />
+            {t("dashboardPage.loadingDashboardData")}
           </div>
         </div>
       }

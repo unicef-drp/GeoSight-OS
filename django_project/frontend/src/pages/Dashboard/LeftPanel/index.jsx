@@ -22,6 +22,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import { useTranslation } from 'react-i18next';
 
 import { Actions } from '../../../store/dashboard';
 import { LEFT, RIGHT } from '../../../components/ToggleButton'
@@ -90,6 +91,7 @@ export default function LeftPanel({ leftExpanded }) {
   const showFilterTab = !!EmbedConfig().filter_tab
   const [tabValue, setTabValue] = React.useState(showLayerTab ? 0 : 1);
   const [tab2Value, setTab2Value] = React.useState(1);
+  const { t } = useTranslation();
 
   const handleChangeTab = (event, newValue) => {
     setTabValue(newValue);
@@ -109,59 +111,59 @@ export default function LeftPanel({ leftExpanded }) {
         <Box sx={{ width: '100%' }}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Tabs value={tabValue} onChange={handleChangeTab}
-                  aria-label="basic tabs example">
+              aria-label="basic tabs example">
               <Tab
                 className='layers-tab'
-                label="Layers"
-                icon=<LayerIcon/>
-              iconPosition="start"
-              {...tabProps('Layers')}
+                label={t('dashboardPage.layers')}
+                icon=<LayerIcon />
+                iconPosition="start"
+                {...tabProps('Layers')}
               />
               <Tab
                 className='filters-tab'
-                label="Filters"
-                icon=<TuneIcon/>
-              iconPosition="start"
-              {...tabProps('Filters')}
+                label={t('dashboardPage.filters')}
+                icon=<TuneIcon />
+                iconPosition="start"
+                {...tabProps('Filters')}
               />
             </Tabs>
           </Box>
           <TabPanel value={tabValue} index={0}
-                    className={'sidepanel-tab layers-tab'}>
+            className={'sidepanel-tab layers-tab'}>
             <Box sx={{ width: '100%' }}>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}
-                   className={'layers-tab-container'}>
+                className={'layers-tab-container'}>
                 <Tabs value={tab2Value} onChange={handleChangeTab2}
-                      aria-label="basic tabs example">
+                  aria-label="basic tabs example">
                   <Tab
-                    label="Context Layers"
-                    icon={<ContextLayerVisibility/>}
+                    label={t('dashboardPage.contextLayers')}
+                    icon={<ContextLayerVisibility />}
                     iconPosition='end'
                     {...tabProps(0)}
                   />
                   <Tab
-                    label="Indicators"
-                    icon={<IndicatorsVisibility/>}
+                    label={t('dashboardPage.indicators')}
+                    icon={<IndicatorsVisibility />}
                     iconPosition='end'
                     {...tabProps(1)}
                   />
                 </Tabs>
               </Box>
               <TabPanel value={tab2Value} index={0}
-                        className={'sidepanel-tab layers-panel'}>
-                <ContextLayersAccordion/>
+                className={'sidepanel-tab layers-panel'}>
+                <ContextLayersAccordion />
               </TabPanel>
               <TabPanel value={tab2Value} index={1}
-                        className={'sidepanel-tab layers-panel'}>
-                <IndicatorLayersAccordion/>
+                className={'sidepanel-tab layers-panel'}>
+                <IndicatorLayersAccordion />
               </TabPanel>
             </Box>
-            <Indicators/>
-            <RelatedTables/>
+            <Indicators />
+            <RelatedTables />
           </TabPanel>
           <TabPanel value={tabValue} index={1}
-                    className={'sidepanel-tab filters-tab'}>
-            <FiltersAccordion/>
+            className={'sidepanel-tab filters-tab'}>
+            <FiltersAccordion />
           </TabPanel>
         </Box>
       </div>

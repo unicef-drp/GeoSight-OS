@@ -15,6 +15,7 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.shortcuts import reverse
+from django.utils.translation import gettext as _
 
 from frontend.views.admin._base import AdminBaseView
 from geosight.permission.access import RoleContributorRequiredMixin
@@ -28,10 +29,10 @@ class DashboardListView(RoleContributorRequiredMixin, AdminBaseView):
     @property
     def page_title(self):
         """Return page title that used on tab bar."""
-        return 'Projects'
+        return _('Projects')
 
     @property
     def content_title(self):
         """Return content title that used on page title indicator."""
         list_url = reverse('admin-dashboard-list-view')
-        return f'<a href="{list_url}">Projects</a>'
+        return f'<a href="{list_url}">{_("Projects")}</a>'

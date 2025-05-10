@@ -25,6 +25,7 @@ import {
 } from "../../../../components/SortableTreeForm/utilities";
 import SidePanelTreeView from "../../../../components/SidePanelTree";
 import { getLayer } from "../../MapLibre/Layers/ContextLayers/Layer";
+import { useTranslation } from 'react-i18next';
 
 function ContextLayers() {
   const dispatch = useDispatch();
@@ -35,6 +36,7 @@ function ContextLayers() {
   const [defaultSelectedContextLayers, setDefaultSelectedContextLayers] = useState(
     null
   )
+  const { t } = useTranslation();
 
   const [treeData, setTreeData] = useState([])
   const [selectedLayer, setSelectedLayer] = useState([])
@@ -60,8 +62,8 @@ function ContextLayers() {
 
       }
       setTreeData([
-          ...dataStructureToTreeData(_contextLayers, contextLayersStructure)
-        ]
+        ...dataStructureToTreeData(_contextLayers, contextLayersStructure)
+      ]
       )
     }
   }
@@ -117,9 +119,9 @@ function ContextLayers() {
 
     for (const contextLayer of _contextLayers) {
       if (!contextLayer.permission) {
-        contextLayer.error = "It seems this layer already being deleted"
+        contextLayer.error = t('contextLayerErrorDelete')
       } else if (!contextLayer.permission.read) {
-        contextLayer.error = "You don't have permission to access this resource"
+        contextLayer.error = t('contextLayerErrorPermission')
       } else if (!layers[contextLayer.id + '']) {
         getLayer(
           contextLayer,
@@ -133,8 +135,8 @@ function ContextLayers() {
           (legend) => contextLayer.legend = legend,
           (error) => {
             setErrors(prevState => {
-                return { ...prevState, [contextLayer.id + '']: error.toString() }
-              }
+              return { ...prevState, [contextLayer.id + '']: error.toString() }
+            }
             )
           },
           null
@@ -155,7 +157,7 @@ function ContextLayers() {
       groupSelectable={true}
       maxSelect={10000000}
       onChange={onChange}
-      placeholder={'Search Context Layers'}
+      placeholder={t('dashboardPage.contextLayerSearch')}
     />
   )
 }
@@ -177,7 +179,7 @@ export default function ContextLayersAccordion({ expanded }) {
       className='ContextLayersAccordion'
     >
       <AccordionDetails>
-        <ContextLayers/>
+        <ContextLayers />
       </AccordionDetails>
     </Accordion>
   )

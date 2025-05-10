@@ -24,7 +24,7 @@ import PermissionModal from "../../Permission";
 
 import './style.scss';
 import AdminList from "../../../../components/AdminList";
-import {ResourceMeta} from "../../../../components/AdminList";
+import {useResourceMeta} from "../../../../components/AdminList";
 
 export function resourceActions(params) {
   return COLUMNS_ACTION(params, urls.admin.basemapList)
@@ -37,7 +37,8 @@ export default function BasemapList() {
   const pageName = pageNames.Basemaps;
   let columns = COLUMNS(pageName, urls.admin.basemapList);
   columns.pop();
-  columns = columns.concat(ResourceMeta)
+  const resourceMeta = useResourceMeta();
+  columns = columns.concat(resourceMeta)
   columns.push({
     field: 'actions',
     type: 'actions',

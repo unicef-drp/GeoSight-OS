@@ -31,6 +31,7 @@ import NotificationBadge from "../NotificationBadge";
 import NotificationMaintenance from "../NotificationMaintenance";
 
 import './style.scss';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Navbar.
@@ -78,6 +79,7 @@ export default function NavBar({ minified }) {
   const { icon, favicon, site_title, site_type } = preferences;
   const { is_contributor } = user;
   const user_permission = useSelector(state => state.dashboard?.data?.user_permission);
+  const { t } = useTranslation();
 
   // Set width of logo
   // Not working using css on firefox
@@ -100,7 +102,7 @@ export default function NavBar({ minified }) {
               title={i18n.t('Homepage')}
               className='nav-header-link'
             >
-              <img src={(minified ? favicon : icon)} alt="Logo"/>
+              <img src={(minified ? favicon : icon)} alt="Logo" />
             </a>
           </div>
           <a
@@ -110,7 +112,7 @@ export default function NavBar({ minified }) {
           >
             {site_title} {site_type == 'Staging' ? <span className="ServerType">Staging</span> : ''}
           </a>
-          <NotificationMaintenance/>
+          <NotificationMaintenance />
           <div className='Separator'></div>
           {
             headerTitle ?
@@ -120,26 +122,26 @@ export default function NavBar({ minified }) {
           {
             user_permission?.edit && dashboardEditUrl ?
               <div className='LinkButton AdminLinkButton EditProjectLinkButton'
-                   style={{ marginRight: "1rem" }}
-                   title='Edit project'
+                style={{ marginRight: "1rem" }}
+                title='Edit project'
               >
                 <a href={dashboardEditUrl}>
-                  <EditIcon/>
+                  <EditIcon />
                 </a>
               </div>
               : null
           }
-          <GeoRepoIndicator/>
+          <GeoRepoIndicator />
           {
             canAccessAdmin ? (
               <div className='LinkButton AdminLinkButton'
-                   style={{ marginRight: "1rem" }}>
-                <NotificationBadge/>
+                style={{ marginRight: "1rem" }}>
+                <NotificationBadge />
                 <a href={urls.admin.dashboardList}>
                   <ThemeButton
                     variant="white"
                   >
-                    <CogIcon/> Admin panel
+                    <CogIcon /> {t("dashboardPage.adminPanelButton")}
                   </ThemeButton>
                 </a>
               </div>
@@ -149,13 +151,13 @@ export default function NavBar({ minified }) {
             <a href='#' onClick={_ => {
               helpPageRef?.current.open()
             }}>
-              <HelpIcon/>
+              <HelpIcon />
             </a>
           </div>
-          <User/>
+          <User />
         </div>
       </header>
-      <HelpCenter ref={helpPageRef}/>
+      <HelpCenter ref={helpPageRef} />
     </Fragment>
   )
 }
