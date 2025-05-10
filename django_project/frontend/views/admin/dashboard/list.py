@@ -16,6 +16,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.shortcuts import reverse
 from django.utils.translation import gettext as _
+from django.utils import translation
 
 from frontend.views.admin._base import AdminBaseView
 from geosight.permission.access import RoleContributorRequiredMixin
@@ -35,4 +36,5 @@ class DashboardListView(RoleContributorRequiredMixin, AdminBaseView):
     def content_title(self):
         """Return content title that used on page title indicator."""
         list_url = reverse('admin-dashboard-list-view')
-        return f'<a href="{list_url}">{_("Projects")}</a>'
+        print(translation.get_language())
+        return f'<a href="{list_url}">{_("projects")}</a>'

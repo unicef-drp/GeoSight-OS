@@ -1,7 +1,7 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
-const translationFiles = require.context('../../locale', true, /\.json$/);
+const translationFiles = require.context('../../locales/react/', true, /\.json$/);
 const resources = {};
 const languageCodes = translationFiles.keys().map(key => key.split('/')[1]);
 languageCodes.forEach(lang => {
@@ -18,13 +18,25 @@ languageCodes.forEach(lang => {
     };
 });
 
+// Format language code to proper case (e.g., "en-us" to "en-US")
+function formatLanguageCode(code) {
+  const formattedCode = languageCodes.find(
+    langCode => langCode.toLowerCase().replace(/[-_]/g, '') === code.toLowerCase().replace(/[-_]/g, '')
+  );
+  return formattedCode || code;
+}
+
+function formatLanguageCodeUrl(code) {
+  return code.toLowerCase()
+}
+
 // Get current language from URL
 export const getCurrentLanguage = () => {
     const pathParts = window.location.pathname.split('/');
-    if (pathParts.length > 1 && languageCodes.includes(pathParts[1])) {
-        return pathParts[1];
+    if (pathParts.length > 1 && languageCodes.includes(formatLanguageCode(pathParts[1]))) {
+        return formatLanguageCode(pathParts[1]);
     }
-    return 'en';
+    return 'en-US';
 };
 
 // Change language and update URL
@@ -34,18 +46,19 @@ export const changeLanguage = (newLang) => {
         let newPath;
 
         // If current path already has a language code
-        if (pathParts.length > 1 && languageCodes.includes(pathParts[1])) {
-            pathParts[1] = newLang;
+        if (pathParts.length > 1 && languageCodes.includes(formatLanguageCode(pathParts[1]))) {
+            pathParts[1] = formatLanguageCodeUrl(newLang);
             newPath = pathParts.join('/');
         } else {
             // If no language code in path, insert it at the beginning
-            newPath = `/${newLang}${window.location.pathname}`;
+            newPath = `/${formatLanguageCodeUrl(newLang)}${window.location.pathname}`;
         }
 
         // Change the language in i18n
         i18n.changeLanguage(newLang);
 
         // Update the URL and reload the page to trigger Django's language change
+        console.log(newPath);
         window.location.href = newPath;
     }
 };
@@ -55,10 +68,10 @@ const currentLanguage = getCurrentLanguage();
 i18n
     .use(initReactI18next)
     .init({
-        debug: false,
+        debug: true,
         resources,
         lng: currentLanguage,
-        fallbackLng: 'en',
+        fallbackLng: 'en-US',
         interpolation: {
             escapeValue: false
         }

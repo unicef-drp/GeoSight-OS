@@ -1,4 +1,4 @@
-# Spanish translations for GeoSight package.
+# English translations for GeoSight package.
 # Copyright (C) 2024 UNICEF
 # This file is distributed under the same license as the GeoSight package.
 msgid ""
@@ -8,13 +8,13 @@ msgstr ""
 "POT-Creation-Date: 2024-03-21 12:00+0000\n"
 "PO-Revision-Date: 2024-03-21 12:00+0000\n"
 "Last-Translator: \n"
-"Language-Team: Spanish\n"
-"Language: es\n"
+"Language-Team: English\n"
+"Language: en_US\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: frontend/views/admin/dashboard/list.py:38
-msgid "Projects"
-msgstr "Proyectos" 
+msgid "projects"
+msgstr "Projects" 
