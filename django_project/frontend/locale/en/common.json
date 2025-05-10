@@ -6,7 +6,6 @@
     "mapboxStyleInformation": "Mapbox style information.",
     "seeMapboxDocumentationForMoreDetail": "See mapbox documentation for more detail.",
     "thereAreSomeInformationToControlTheLegend": "There are some information to control the Legend.",
-    "pageNameName": "{{pageName}} Name",
     "admin": {
         "requestApproved": "Request is Approved",
         "requestRejected": "Request is Rejected",
@@ -42,6 +41,7 @@
         "deleteMultipleConfirmationMessage": "Are you sure want to delete {{numberOfItems}} {{dataName}}?",
         "createNew": "Create New {{pageName}}",
         "edit": "Edit",
+        "deleteConfirmationMessage": "Are you sure want to delete {{item}}?",
         "pageNameFormats": {
             "singular": {
                 "dashboard": "Project",
@@ -148,11 +148,5 @@
     "homePage": {
         "hideBanner": "Hide this banner",
         "showBanner": "Show banner"
-    },
-    "loginPage": {
-        "welcome": "Welcome to {{siteTitle}}",
-        "login": "LOG IN",
-        "noAccessMessage": "You are not allowed to access GeoSight. Please contact administrator or try to use different account!",
-        "requestAccess": "Request Access"
     }
 }

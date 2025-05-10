@@ -6,7 +6,6 @@
     "mapboxStyleInformation": "Información de estilo de Mapbox.",
     "seeMapboxDocumentationForMoreDetail": "Consulta la documentación de Mapbox para más detalles.",
     "thereAreSomeInformationToControlTheLegend": "Hay información para controlar la leyenda.",
-    "pageNameName": "Nombre de {{pageName}}",
     "admin": {
         "requestApproved": "La solicitud ha sido aprobada",
         "requestRejected": "La solicitud ha sido rechazada",
