@@ -42,27 +42,6 @@
         "createNew": "Crear Nuevo {{pageName}}",
         "edit": "Editar",
         "deleteConfirmationMessage": "¿Estás seguro de querer eliminar {{item}}?",
-        "pageNames": {
-            "dashboard": "Proyecto",
-            "indicators": "Indicador",
-            "basemaps": "Mapa base",
-            "contextLayer": "Capa de contexto",
-            "usersAndGroups": "Usuarios y grupos",
-            "styles": "Estilo",
-            "dataset": "Explorador de datos",
-            "relatedTables": "Tablas relacionadas",
-            "relatedTablesData": "Datos de tablas relacionadas",
-            "importer": "Importador de datos",
-            "dataManagement": "Gestión de datos",
-            "scheduledJobs": "Tareas programadas",
-            "logs": "Registros",
-            "accessRequest": "Solicitud de acceso",
-            "accessRequestUserDetail": "Detalles de solicitud de nuevo usuario",
-            "accessRequestPermissionDetail": "Detalles de solicitud de permisos",
-            "userProfile": "Perfil de usuario",
-            "referenceLayerView": "Conjunto de datos de referencia",
-            "referenceDatasetImporter": "Importador de conjunto de datos de referencia"
-        },
         "pageNameFormats": {
             "singular": {
                 "dashboard": "Proyecto",

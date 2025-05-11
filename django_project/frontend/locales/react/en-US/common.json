@@ -144,9 +144,5 @@
         "projectOverviewClose": "Close",
         "adminPanelButton": "Admin panel",
         "loadingDashboardData": "Loading Dashboard Data..."
-    },
-    "homePage": {
-        "hideBanner": "Hide this banner",
-        "showBanner": "Show banner"
     }
 }
