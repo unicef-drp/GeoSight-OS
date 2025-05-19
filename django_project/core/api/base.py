@@ -47,7 +47,7 @@ class FilteredAPI(object):
 
         for param, value in request.GET.items():
             is_equal = True
-            if value[0] == '!':
+            if value and value[0] == '!':
                 value = value[1:]
                 is_equal = False
 
