@@ -323,6 +323,15 @@ export default function DatasetAdmin() {
       ]
     }}
     parentGetParameters={getParameters}
+    selectableFunction={
+      (params) => {
+        const { permission } = params.row
+        if (!permission) {
+          return true
+        }
+        return permission?.delete || (permission.read_data && user.is_creator)
+      }
+    }
     ref={tableRef}
   />
 }

@@ -93,6 +93,10 @@ class ImporterCreateView(RoleContributorRequiredMixin, AdminBaseView):
                 return HttpResponse(importer.post_saved(), status=201)
             except (ImporterError, ImporterDoesNotExist) as e:
                 return HttpResponseBadRequest(f'{e}')
+            except FileNotFoundError:
+                return HttpResponseBadRequest(
+                    'The file was not found. Please re-upload the file.'
+                )
         errors = []
         for key, value in form.errors.items():
             errors.append(f'{key} - {value[0]}')
