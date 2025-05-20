@@ -2,6 +2,16 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Django migrate",
+      "type": "shell",
+      "command": "python",
+      "args": [
+        "${workspaceFolder}/django_project/manage.py",
+        "migrate"
+      ],
+      "problemMatcher": []
+    },
+    {
       "label": "Playwright runner: Authentication",
       "command": "./create-auth.ps1",
       "args": [
@@ -58,7 +68,7 @@
       "options": {
         "cwd": "${workspaceFolder}/playwright/staging-tests"
       }
-    },
+    }
   ],
   "inputs": [
     {

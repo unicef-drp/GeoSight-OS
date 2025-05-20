@@ -15,7 +15,8 @@
             "justMyCode": true,
             "env": {
                 "DJANGO_SETTINGS_MODULE": "core.settings.dev"
-            }
+            },
+            "preLaunchTask": "Django migrate"
         },
         {
             "name": "Playwright runner: Authentication",
@@ -40,6 +41,6 @@
             "type": "node",
             "preLaunchTask": "Playwright runner: Run test",
             "request": "attach"
-        },
+        }
     ]
 }
