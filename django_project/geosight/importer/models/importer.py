@@ -15,7 +15,9 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import json
+import os
 import uuid
+from datetime import datetime
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -203,7 +205,13 @@ class Importer(AbstractEditData):
                     importer=self, name=name
                 )
                 attr.value = value
-                attr.file = file
+                if attr.file:
+                    attr.file.delete(save=False)
+                if file:
+                    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                    base, ext = os.path.splitext(file.name)
+                    new_filename = f"{base}_{timestamp}{ext}"
+                    attr.file.save(new_filename, file, save=False)
                 attr.save()
 
         # Save mapping
