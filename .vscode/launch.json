@@ -15,15 +15,7 @@
             "justMyCode": true,
             "env": {
                 "DJANGO_SETTINGS_MODULE": "core.settings.dev"
-            },
-            "preLaunchTask": "React: Webpack-dev-server"
-        },
-        {
-            "name": "React: Webpack-dev-server",
-            "request": "launch",
-            "type": "node-terminal",
-            "cwd": "${workspaceFolder}/django_project/frontend",
-            "command": "npm run dev",
+            }
         },
         {
             "name": "Playwright runner: Authentication",
@@ -49,13 +41,5 @@
             "preLaunchTask": "Playwright runner: Run test",
             "request": "attach"
         },
-    ],
-    "compounds": [
-        {
-            "name": "Django + React",
-            "configurations": [
-                "Django: Run server",
-            ],
-        }
     ]
 }

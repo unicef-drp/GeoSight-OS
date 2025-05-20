@@ -3,14 +3,11 @@
   "remoteUser": "root",
   "dockerComposeFile": [
     "../deployment/docker-compose.yml",
-    "../deployment/docker-compose.override.yml"
+    "../deployment/docker-compose.override.yml",
+    "../deployment/docker-compose.override.vscode.yml",
   ],
   "service": "dev",
   "runServices": [
-    "db",
-    "redis",
-    "celery_beat",
-    "worker",
     "dev"
   ],
   "workspaceFolder": "/home/web/project",
@@ -18,16 +15,8 @@
     "--env-file",
     "../deployment/.env"
   ],
-  "portsAttributes": {
-    "9000": {
-      "label": "Frontend",
-      "onAutoForward": "notify"
-    }
-  },
   "forwardPorts": [
-    2000,
-    9000,
-    51102
+    2000
   ],
   "shutdownAction": "stopCompose",
   "customizations": {
