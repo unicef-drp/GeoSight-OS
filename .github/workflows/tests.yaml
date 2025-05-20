@@ -145,7 +145,7 @@ jobs:
           cp docker-compose.test.yml docker-compose.override.yml
           cp .template.env .env
           cd ../
-          make devweb
+          make dev
           make wait-db
           docker volume ls
           docker exec geosight_dev rm -rf /home/web/django_project/frontend
@@ -162,14 +162,14 @@ jobs:
       - name: Backend (Prepare container and test)
         if: ${{ matrix.test_suite.mode == 'backend' }}
         run: |
-          make devweb-entrypoint
-          make devweb-test
+          make dev-entrypoint
+          make dev-test
 
       - name: E2E (Prepare container)
         if: ${{ matrix.test_suite.mode == 'e2e' }}
         run: |
-          make devweb-entrypoint
-          make devweb-runserver
+          make dev-entrypoint
+          make dev-runserver
           ${{ matrix.test_suite.script }}
           make sleep
 
