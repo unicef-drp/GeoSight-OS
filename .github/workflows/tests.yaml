@@ -145,7 +145,7 @@ jobs:
           cp docker-compose.test.yml docker-compose.override.yml
           cp .template.env .env
           cd ../
-          make dev
+          make dev-ci-test
           make wait-db
           docker volume ls
           docker exec geosight_dev rm -rf /home/web/django_project/frontend

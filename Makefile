@@ -132,6 +132,13 @@ dev: down
 	@echo "------------------------------------------------------------------"
 	@docker compose ${ARGS} up -d dev
 
+dev-ci-test:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Running in DEVELOPMENT mode for CI test"
+	@echo "------------------------------------------------------------------"
+	@docker compose ${ARGS} up --no-recreate --no-deps -d db worker redis dev
+
 dev-entrypoint:
 	@echo
 	@echo "------------------------------------------------------------------"
