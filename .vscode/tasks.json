@@ -2,31 +2,14 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "React: Webpack-dev-server",
+      "label": "Django migrate",
       "type": "shell",
-      "command": "npm install --verbose; npm run dev;",
-      "options": {
-        "cwd": "${workspaceFolder}/django_project/frontend"
-      },
-      "group": "build",
-      "isBackground": true,
-      "problemMatcher": [
-        {
-          "pattern": [
-            {
-              "regexp": ".*",
-              "file": 1,
-              "location": 2,
-              "message": 3
-            }
-          ],
-          "background": {
-            "activeOnStart": true,
-            "beginsPattern": ".*Project is running at:",
-            "endsPattern": "webpack [0-9]+\\.[0-9]+\\.[0-9]+ compiled successfully"
-          }
-        }
-      ]
+      "command": "python",
+      "args": [
+        "${workspaceFolder}/django_project/manage.py",
+        "migrate"
+      ],
+      "problemMatcher": []
     },
     {
       "label": "Playwright runner: Authentication",
@@ -85,7 +68,7 @@
       "options": {
         "cwd": "${workspaceFolder}/playwright/staging-tests"
       }
-    },
+    }
   ],
   "inputs": [
     {

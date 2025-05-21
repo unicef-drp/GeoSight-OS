@@ -7,50 +7,6 @@ SHELL := /usr/bin/env bash
 # ----------------------------------------------------------------------------
 #    P R O D U C T I O N     C O M M A N D S
 # ----------------------------------------------------------------------------
-default: web
-run: build web collectstatic
-
-deploy: run
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Bringing up fresh instance "
-	@echo "You can access it on http://localhost"
-	@echo "------------------------------------------------------------------"
-
-web:
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Running in production mode"
-	@echo "------------------------------------------------------------------"
-	@docker compose up -d
-
-frontend-dev:
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Run frontend dev"
-	@echo "------------------------------------------------------------------"
-	@cd django_project/frontend; npm run dev;
-
-dev:
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Running in dev mode"
-	@echo "------------------------------------------------------------------"
-	@docker compose ${ARGS} up -d dev
-
-dev-kill:
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Kill dev"
-	@echo "------------------------------------------------------------------"
-	@docker kill $(PROJECT_ID)_dev
-
-dev-reload: dev-kill dev
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Reload DEV"
-	@echo "------------------------------------------------------------------"
-
 build:
 	@echo
 	@echo "------------------------------------------------------------------"
@@ -58,25 +14,12 @@ build:
 	@echo "------------------------------------------------------------------"
 	@docker compose build
 
-nginx:
+up:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Running nginx in production mode"
-	@echo "Normally you should use this only for testing"
-	@echo "In a production environment you will typically use nginx running"
-	@echo "on the host rather if you have a multi-site host."
+	@echo "Running in production mode"
 	@echo "------------------------------------------------------------------"
-	@docker compose up -d nginx
-	@echo "Site should now be available at http://localhost"
-
-up: web
-
-status:
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Show status for all containers"
-	@echo "------------------------------------------------------------------"
-	@docker compose ps
+	@docker compose ${ARGS} up -d nginx
 
 kill:
 	@echo
@@ -146,56 +89,29 @@ migrate:
 	@echo "------------------------------------------------------------------"
 	@docker compose exec django python manage.py migrate
 
-# --------------- help --------------------------------
+production-check:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Run production check"
+	@echo "------------------------------------------------------------------"
+	@docker compose exec -T dev python production_prep_check.py
+
+# ----------------------------------
+# --------------- help -------------
+# ----------------------------------
 
 help:
 	@echo "* **build** - builds all required containers."
-	@echo "* **up** - runs all required containers."
-	@echo "* **kill** - kills all running containers. Does not remove them."
-	@echo "* **logs** - view the logs of all running containers. Note that you can also view individual logs in the deployment/logs directory."
-	@echo "* **nginx** - builds and runs the nginx container."
-	@echo "* **permissions** - Update the permissions of shared volumes. Note this will destroy any existing permissions you have in place."
-	@echo "* **rm** - remove all containers."
-	@echo "* **shell-frontend-mapstore** - open a bash shell in the frontend mapstore (where django runs) container."
+	@echo "* **up** - runs all production containers."
+	@echo "* **down** - kills all running containers."
+	@echo "* **down** - kills all running containers."
 
 # ----------------------------------------------------------------------------
-#    DEVELOPMENT C O M M A N D S
-# --no-deps will attach to prod deps if running
-# after running you will have ssh and web ports open (see dockerfile for no's)
-# and you can set your pycharm to use the python in the container
-# Note that pycharm will copy in resources to the /root/ user folder
-# for pydevd etc. If they dont get copied, restart pycharm...
+#    D E V E L O P M E N T     C O M M A N D S
 # ----------------------------------------------------------------------------
-db:
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Running db in production mode"
-	@echo "------------------------------------------------------------------"
-	@docker compose ${ARGS} up -d db
 
 wait-db:
 	@docker compose ${ARGS} exec -T db su - postgres -c "until pg_isready; do sleep 5; done"
-
-devweb: db
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Running in DEVELOPMENT mode"
-	@echo "------------------------------------------------------------------"
-	@docker compose ${ARGS} up --no-recreate --no-deps -d worker redis dev
-
-devweb-entrypoint:
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Running entrypoint.sh in DEVELOPMENT mode"
-	@echo "------------------------------------------------------------------"
-	@docker compose ${ARGS} exec -T dev "/home/web/django_project/entrypoint.sh"
-
-devweb-initialize:
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Running initialize.py in DEVELOPMENT mode"
-	@echo "------------------------------------------------------------------"
-	@docker compose $(ARGS) exec -T dev bash -c "python -u /home/web/django_project/initialize.py"
 
 sleep:
 	@echo
@@ -205,24 +121,49 @@ sleep:
 	@sleep 50
 	@echo "Done"
 
-production-check:
+# ----------------------------------
+# --------------- DEV --------------
+# ----------------------------------
+
+dev: down
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Run production check"
+	@echo "Running in DEVELOPMENT mode"
 	@echo "------------------------------------------------------------------"
-	@docker compose exec -T dev python production_prep_check.py
+	@docker compose ${ARGS} up -d dev
 
-devweb-runserver:
+dev-ci-test:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Running in DEVELOPMENT mode for CI test"
+	@echo "------------------------------------------------------------------"
+	@docker compose ${ARGS} up --no-recreate --no-deps -d db worker redis dev
+
+dev-entrypoint:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Running entrypoint.sh in DEVELOPMENT mode"
+	@echo "------------------------------------------------------------------"
+	@docker compose ${ARGS} exec -T dev "/home/web/django_project/entrypoint.sh"
+
+dev-initialize:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Running initialize.py in DEVELOPMENT mode"
+	@echo "------------------------------------------------------------------"
+	@docker compose $(ARGS) exec -T dev bash -c "python -u /home/web/django_project/initialize.py"
+
+dev-runserver:
 	@echo
 	@echo "------------------------------------------------------------------"
 	@echo "Start django runserver in dev container"
 	@echo "------------------------------------------------------------------"
 	@docker compose $(ARGS) exec -T dev bash -c "nohup python manage.py runserver 0.0.0.0:2000 &"
 
-devweb-load-demo-data:
+load-test-data:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Load demo data for devweb"
+	@echo "Load demo data for dev"
 	@echo "------------------------------------------------------------------"
 	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/demo/1.core.json"
 	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/demo/2.user_group.json"
@@ -231,7 +172,19 @@ devweb-load-demo-data:
 	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/demo/4.geosight_data.json"
 	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/demo/5.geosight_permission.json"
 
-load-test-data: devweb-load-demo-data
+dev-test:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Run tests"
+	@echo "------------------------------------------------------------------"
+	@docker compose exec -T dev python manage.py test --keepdb --noinput
+
+dev-shell:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Run shell"
+	@echo "------------------------------------------------------------------"
+	@docker compose exec dev /bin/bash
 
 load-test-data-for-filter:
 	@echo
@@ -241,20 +194,6 @@ load-test-data-for-filter:
 	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/admin_filter/1.user_group.json"
 	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/admin_filter/2.geosight_data.json"
 
-devweb-test:
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Run tests"
-	@echo "------------------------------------------------------------------"
-	@docker compose exec -T dev python manage.py test --keepdb --noinput
-
-devweb-shell:
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Run shell"
-	@echo "------------------------------------------------------------------"
-	@docker compose exec dev /bin/bash
-# --------------- TESTS ---------------
 run-flake8:
 	@echo
 	@echo "------------------------------------------------------------------"

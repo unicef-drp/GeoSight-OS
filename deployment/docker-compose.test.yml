@@ -57,7 +57,6 @@ services:
     links:
       - db
       - redis
-      - celery_beat
     working_dir: /home/web/django_project
 
   dev:
@@ -67,7 +66,6 @@ services:
       - db
       - redis
       - worker
-      - celery_beat
     volumes:
       - media-data:/home/web/media
       - ./docker/Dockerfile:/home/web/django_project/Dockerfile

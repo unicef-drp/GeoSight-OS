@@ -16,14 +16,7 @@
             "env": {
                 "DJANGO_SETTINGS_MODULE": "core.settings.dev"
             },
-            "preLaunchTask": "React: Webpack-dev-server"
-        },
-        {
-            "name": "React: Webpack-dev-server",
-            "request": "launch",
-            "type": "node-terminal",
-            "cwd": "${workspaceFolder}/django_project/frontend",
-            "command": "npm run dev",
+            "preLaunchTask": "Django migrate"
         },
         {
             "name": "Playwright runner: Authentication",
@@ -48,14 +41,6 @@
             "type": "node",
             "preLaunchTask": "Playwright runner: Run test",
             "request": "attach"
-        },
-    ],
-    "compounds": [
-        {
-            "name": "Django + React",
-            "configurations": [
-                "Django: Run server",
-            ],
         }
     ]
 }

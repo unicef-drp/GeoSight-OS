@@ -53,8 +53,6 @@ RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg -
 RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
 RUN apt-get update && apt-get install nodejs -y
 
-ADD django_project /home/web/django_project
-
 # Install chrome for selenium
 # TODO: Change how to get the Nunjucks results without browser
 # This will not works on ARM (Macbook M1/M2) Ubuntu VM
@@ -79,6 +77,8 @@ RUN CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d'.' -f1)
 
 # Test command (optional)
 CMD ["chromedriver", "--version"]
+
+ADD django_project /home/web/django_project
 
 # Open port 8080 as we will be running our uwsgi socket on that
 EXPOSE 8080
