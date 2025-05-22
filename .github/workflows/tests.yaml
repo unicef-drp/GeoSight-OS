@@ -32,18 +32,27 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.head_ref }}
+          fetch-depth: 0
       - name: Display branch
         run: git branch --show-current
 
       - name: Install flake8
-        run: pip install flake8 flake8-docstrings
-      - name: Run flake8
-        uses: suo/flake8-github-action@releases/v1
-        with:
-          checkName: 'Python Lint'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pip install flake8 flake8-docstrings pydoclint[flake8]
+
+      - name: Run flake8 on changed/untracked Python files
+        run: |
+          files=$(
+            { git diff --name-only origin/main...HEAD;
+              git ls-files --others --exclude-standard;
+            } | grep '\.py$' | sort -u
+          )
+          echo "Changed/untracked Python files:"
+          echo "$files"
+          if [ -n "$files" ]; then
+            flake8 $files
+          else
+            echo "No Python files to lint."
+          fi
 
   build_image:
     needs: flake8_py3
