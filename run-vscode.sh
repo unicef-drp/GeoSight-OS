@@ -4,7 +4,7 @@ EXTENSION_ID="ms-vscode-remote.remote-containers"
 
 # Check if VS Code CLI is available
 if ! command -v code &> /dev/null; then
-    echo "❌ 'code' CLI not found. Please install VS Code and add 'code' to your PATH. See the documentation https://unicef-drp.github.io/GeoSight-OS-Documentation/developer/setup/run-with-vscode/#autorun"
+    echo "❌ 'code' CLI not found. Please install VS Code and add 'code' to your PATH. See the documentation https://unicef-drp.github.io/GeoSight-OS-Documentation/developer/setup/run-with-vscode/#prerequisites"
     exit 1
 fi
     
