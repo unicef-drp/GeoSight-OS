@@ -17,8 +17,7 @@ FROM ubuntu:22.04 AS prod
 # NOTE: If you forgot to run setup.sh and you are arm architecture
 #  And comment above FROM
 # ----------------------------------------------------------------
-##ARG PLATFORM=linux/arm64
-#FROM --platform=$PLATFORM ubuntu:22.04 AS prod
+#FROM --platform=linux/arm64 ubuntu:22.04 AS prod
 # --------------------------------------------
 
 MAINTAINER Irwan Fathurrahman<meomancer@gmail.com>
@@ -70,7 +69,7 @@ CMD ["google-chrome", "--version"]
 # Install matching ChromeDriver
 RUN CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d'.' -f1) && \
     DRIVER_URL=$(curl -s https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json | \
-      jq -r --arg ver "$CHROME_VERSION" '.channels.Stable.downloads.chromedriver[] | select(.platform=="linux64") | .url') && \
+    jq -r --arg ver "$CHROME_VERSION" '.channels.Stable.downloads.chromedriver[] | select(.platform=="linux64") | .url') && \
     wget -O /tmp/chromedriver.zip "$DRIVER_URL" && \
     unzip /tmp/chromedriver.zip -d /tmp/ && \
     mv /tmp/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver && \
