@@ -140,7 +140,7 @@ jobs:
 
       - name: Run docker-compose services
         run: |
-          cd ./setup.sh
+          ./setup.sh
           cd deployment
           echo "Override docker-compose.test.yml for testing purposes"
           cp docker-compose.test.yml docker-compose.override.yml
@@ -195,6 +195,7 @@ jobs:
       - name: Upload Playwright Screenshots
         if: failure()
         uses: actions/upload-artifact@v4
+
         with:
           name: playwright-screenshots-${{ matrix.test_suite.id }}
           path: playwright/ci-test/playwright-results/
