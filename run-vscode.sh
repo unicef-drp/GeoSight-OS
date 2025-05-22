@@ -1,9 +1,6 @@
 #!/bin/bash
 
 EXTENSION_ID="ms-vscode-remote.remote-containers"
-EXT_DIR=".vscode-extensions"
-
-mkdir -p "$EXT_DIR"
 
 # Check if VS Code CLI is available
 if ! command -v code &> /dev/null; then
@@ -12,13 +9,13 @@ if ! command -v code &> /dev/null; then
 fi
     
 # Check if the extension is already installed in the custom dir
-if code --extensions-dir "$EXT_DIR" --list-extensions | grep -q "$EXTENSION_ID"; then
+if code --list-extensions | grep -q "$EXTENSION_ID"; then
     echo "✅ '$EXTENSION_ID' is already installed in '$EXT_DIR'."
 else
     echo "📦 Installing '$EXTENSION_ID' into '$EXT_DIR'..."
-    code --extensions-dir "$EXT_DIR" --install-extension "$EXTENSION_ID"
+    code --install-extension "$EXTENSION_ID"
 
-    if code --extensions-dir "$EXT_DIR" --list-extensions | grep -q "$EXTENSION_ID"; then
+    if code --list-extensions | grep -q "$EXTENSION_ID"; then
         echo "✅ Successfully installed '$EXTENSION_ID' into '$EXT_DIR'."
     else
         echo "❌ Failed to install '$EXTENSION_ID' into '$EXT_DIR'."
@@ -27,5 +24,6 @@ else
 fi
 
 echo "🚀 Opening VS Code in current folder"
-code --extensions-dir "$EXT_DIR" .
+code .
+
 
