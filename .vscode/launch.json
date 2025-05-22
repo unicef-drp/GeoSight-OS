@@ -16,7 +16,7 @@
             "env": {
                 "DJANGO_SETTINGS_MODULE": "core.settings.dev"
             },
-            "preLaunchTask": "Django migrate"
+            "preLaunchTask": "Initialize"
         },
         {
             "name": "Playwright runner: Authentication",
