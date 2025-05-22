@@ -2,14 +2,17 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Django migrate",
+      "label": "Initialize",
       "type": "shell",
       "command": "python",
       "args": [
-        "${workspaceFolder}/django_project/manage.py",
-        "migrate"
+        "-u",
+        "/home/web/django_project/initialize.py"
       ],
-      "problemMatcher": []
+      "problemMatcher": [],
+      "presentation": {
+        "close": true
+      }
     },
     {
       "label": "Playwright runner: Authentication",

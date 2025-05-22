@@ -85,14 +85,14 @@ services:
       - ./volumes/tmp_data:/home/web/logs
     working_dir: /home/web/django_project/frontend
     command: sh -c "npm install --verbose && npm run dev"
-    entrypoint: [ ]
+    entrypoint: []
     ports:
       - "9000:9000"
     healthcheck:
       test: [ "CMD", "curl", "http://localhost:9000" ]
       interval: 5s
       timeout: 2s
-      retries: 30
+      retries: 200
       start_period: 5s
 
   # dev

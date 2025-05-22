@@ -1,12 +1,18 @@
 PROJECT_ID := geosight
 export COMPOSE_FILE=deployment/docker-compose.yml:deployment/docker-compose.override.yml
-export ONEDRIVE_DATA_DIR=$(shell pwd)/deployment/onedrive/data
 
 SHELL := /usr/bin/env bash
 
 # ----------------------------------------------------------------------------
 #    P R O D U C T I O N     C O M M A N D S
 # ----------------------------------------------------------------------------
+setup:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Run the setup.sh"
+	@echo "------------------------------------------------------------------"
+	./setup.sh
+
 build:
 	@echo
 	@echo "------------------------------------------------------------------"
@@ -14,7 +20,7 @@ build:
 	@echo "------------------------------------------------------------------"
 	@docker compose build
 
-up:
+up: setup
 	@echo
 	@echo "------------------------------------------------------------------"
 	@echo "Running in production mode"
@@ -125,7 +131,7 @@ sleep:
 # --------------- DEV --------------
 # ----------------------------------
 
-dev: down
+dev: down setup
 	@echo
 	@echo "------------------------------------------------------------------"
 	@echo "Running in DEVELOPMENT mode"

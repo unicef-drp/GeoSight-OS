@@ -18,4 +18,4 @@ services:
     ports:
       # for ssh
       - "2001:22"
-    entrypoint: [ ]
+    entrypoint: []

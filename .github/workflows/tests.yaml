@@ -139,11 +139,11 @@ jobs:
         run: docker load -i /tmp/my-image.tar
 
       - name: Run docker-compose services
-        working-directory: deployment
         run: |
-          echo "Override docker-compose for testing purposes"
+          ./setup.sh
+          cd deployment
+          echo "Override docker-compose.test.yml for testing purposes"
           cp docker-compose.test.yml docker-compose.override.yml
-          cp .template.env .env
           cd ../
           make dev-ci-test
           make wait-db
@@ -195,6 +195,7 @@ jobs:
       - name: Upload Playwright Screenshots
         if: failure()
         uses: actions/upload-artifact@v4
+
         with:
           name: playwright-screenshots-${{ matrix.test_suite.id }}
           path: playwright/ci-test/playwright-results/
