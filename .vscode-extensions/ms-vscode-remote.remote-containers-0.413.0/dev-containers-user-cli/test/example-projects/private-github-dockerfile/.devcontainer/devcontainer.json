@@ -1,1 +1,0 @@
-{"name":"PrivateGitHubDockerfile","build":{"dockerfile":"Dockerfile","args":{"VARIANT":"focal"}},"containerEnv":{"FROM_DEVCONTAINER":"yes"},"extensions":[],"remoteUser":"vscode","features":{"codspace/privatefeatures/helloworld":{"greeting":"howdy"}}}

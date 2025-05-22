@@ -1,1 +1,0 @@
-{"name":"DirectTarDockerfile","build":{"dockerfile":"Dockerfile","args":{"VARIANT":"focal"}},"containerEnv":{"FROM_DEVCONTAINER":"yes"},"extensions":[],"remoteUser":"vscode","features":{"https://github.com/codspace/myfeatures/releases/latest/download/devcontainer-features.tgz#helloworld":{"greeting":"howdy"}}}

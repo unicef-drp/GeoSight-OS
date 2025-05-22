@@ -1,8 +1,0 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *--------------------------------------------------------------------------------------------*/
-
-var y=Object.create;var i=Object.defineProperty;var f=Object.getOwnPropertyDescriptor;var S=Object.getOwnPropertyNames;var d=Object.getPrototypeOf,_=Object.prototype.hasOwnProperty;var l=(e,t,r,n)=>{if(t&&typeof t=="object"||typeof t=="function")for(let s of S(t))!_.call(e,s)&&s!==r&&i(e,s,{get:()=>t[s],enumerable:!(n=f(t,s))||n.enumerable});return e};var p=(e,t,r)=>(r=e!=null?y(d(e)):{},l(t||!e||!e.__esModule?i(r,"default",{value:e,enumerable:!0}):r,e));var c=p(require("net")),a=p(require("path")),o=c.connect(process.env.RUN_AS_SOCKET,async()=>{try{let e=await u("node-pty");if(!e)throw new Error("Missing node-pty");let t=e.spawn(process.env.RUN_AS_CMD,JSON.parse(process.env.RUN_AS_ARGS),{cols:parseInt(process.env.RUN_AS_COLS||"",10),rows:parseInt(process.env.RUN_AS_ROWS||"",10),useConpty:!1});t.onData(r=>o.write(r)),o.on("data",r=>t.write(r.toString())),t.onExit(({exitCode:r,signal:n})=>{process.exit(r||n&&n+127||0)}),o.on("close",()=>{t.kill("SIGKILL")})}catch(e){o.write(`Failed with error: ${(e==null?void 0:e.stack)||(e==null?void 0:e.message)||String(e)}
-`.replaceAll(/\r?\n/g,`\r
-`)),o.end(()=>{process.exit(1)})}});async function u(e){if(process.env.NODE_PATH){for(let t of process.env.NODE_PATH.split(a.delimiter))if(t)try{return require(`${t}/${e}`)}catch{}}try{return require(e)}catch{}}
-//# sourceMappingURL=runAsMain.js.map
