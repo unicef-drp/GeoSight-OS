@@ -195,11 +195,12 @@ load-test-data-for-filter:
 	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/admin_filter/1.user_group.json"
 	@docker compose $(ARGS) exec -T dev bash -c "python manage.py loaddata core/fixtures/admin_filter/2.geosight_data.json"
 
-run-flake8:
+flake8:
 	@echo
 	@echo "------------------------------------------------------------------"
 	@echo "Running flake8"
 	@echo "------------------------------------------------------------------"
-	@pip install flake8==6.0.0
-	@pip install flake8-docstrings
-	@python3 -m flake8
+	@pip install flake8 flake8-docstrings pydoclint[flake8]
+	@files=`{ git diff --cached --name-only; git diff --name-only; git ls-files --others --exclude-standard; } | grep '\.py$$' | sort -u`; \
+	echo "$$files"; \
+	if [ -n "$$files" ]; then flake8 $$files; else echo "No Python files to lint."; fi
