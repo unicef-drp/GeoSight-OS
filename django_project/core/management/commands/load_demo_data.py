@@ -20,6 +20,7 @@ from django.core.management.base import BaseCommand
 
 class Command(BaseCommand):
     """Load demo data fro geosight."""
+
     fixtures = [
         'core/fixtures/demo/1.core.json',
         'core/fixtures/demo/2.user_group.json',
