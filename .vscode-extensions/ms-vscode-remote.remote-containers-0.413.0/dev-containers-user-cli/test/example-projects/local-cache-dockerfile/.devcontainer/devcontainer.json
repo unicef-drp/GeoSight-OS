@@ -1,0 +1,1 @@
+{"name":"LocalCacheDockerfile","build":{"dockerfile":"Dockerfile","args":{"VARIANT":"focal"}},"containerEnv":{"FROM_DEVCONTAINER":"yes"},"extensions":[],"remoteUser":"vscode","features":{"github-cli":"latest"}}

@@ -9,7 +9,10 @@
         "-u",
         "/home/web/django_project/initialize.py"
       ],
-      "problemMatcher": []
+      "problemMatcher": [],
+      "presentation": {
+        "close": true
+      }
     },
     {
       "label": "Playwright runner: Authentication",
