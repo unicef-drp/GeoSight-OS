@@ -11,13 +11,15 @@
 # __date__ = '13/06/2023'
 # __copyright__ = ('Copyright 2023, Unicef')
 
-# Default
-ARG PLATFORM=linux/amd64
-# Uncomment for Apple Silicon (M1, M2, or later) chips
-#ARG PLATFORM=linux/arm64
 
-ARG CACHE_BUST=2
-FROM --platform=$PLATFORM ubuntu:22.04 AS prod
+FROM ubuntu:22.04 AS prod
+# ----------------------------------------------------------------
+# NOTE: If you forgot to run setup.sh and you are arm architecture
+#  And comment above FROM
+# ----------------------------------------------------------------
+##ARG PLATFORM=linux/arm64
+#FROM --platform=$PLATFORM ubuntu:22.04 AS prod
+# --------------------------------------------
 
 MAINTAINER Irwan Fathurrahman<meomancer@gmail.com>
 
