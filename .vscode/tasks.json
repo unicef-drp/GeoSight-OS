@@ -6,7 +6,8 @@
       "type": "shell",
       "command": "python",
       "args": [
-        "python -u /home/web/django_project/initialize.py"
+        "-u",
+        "/home/web/django_project/initialize.py"
       ],
       "problemMatcher": []
     },
