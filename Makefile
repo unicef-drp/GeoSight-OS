@@ -136,6 +136,13 @@ dev: down setup
 	@echo "------------------------------------------------------------------"
 	@echo "Running in DEVELOPMENT mode"
 	@echo "------------------------------------------------------------------"
+	@if [ ! -d deployment/volumes/tmp_data/redis ]; then \
+		echo "Creating deployment/volumes/tmp_data/redis and setting permissions..."; \
+		sudo mkdir -p deployment/volumes/tmp_data/redis; \
+		sudo chown -R 1001:1001 deployment/volumes/tmp_data/redis; \
+	else \
+		echo "Directory already exists: deployment/volumes/tmp_data/redis"; \
+	fi
 	@docker compose ${ARGS} up -d dev
 
 dev-ci-test:

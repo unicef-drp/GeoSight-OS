@@ -52,7 +52,8 @@ class ReferenceDatasetForm(forms.ModelForm):
         model = ReferenceDataset
         exclude = (
             'created_at', 'creator', 'modified_at', 'modified_by',
-            'version_data', 'identifier', 'in_georepo', 'countries'
+            'version_data', 'identifier', 'in_georepo', 'countries',
+            'tags'
         )
 
     @staticmethod
