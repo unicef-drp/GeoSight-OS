@@ -198,7 +198,7 @@ load-test-data-for-filter:
 flake8:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Running flake8 (compared to main)"
+	@echo "Running flake8"
 	@echo "------------------------------------------------------------------"
 	@pip install flake8 flake8-docstrings pydoclint[flake8]
 	@files=`{ \
