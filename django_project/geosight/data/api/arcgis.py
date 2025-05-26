@@ -81,6 +81,7 @@ class ProxyView:
             content_type=response.headers.get('Content-Type', 'text/plain')
             # Default to text/plain if Content-Type is missing
         )
+        print('AAA')
         return django_response
 
     def get_url(self, request, pk):

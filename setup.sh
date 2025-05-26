@@ -3,7 +3,7 @@
 # --------------------------------------------------
 # copy .env
 # --------------------------------------------------
-if [ ! -f .env ]; then
+if [ ! -f deployment/.env ]; then
   echo "Copying .template.env to .env"
   cp deployment/.template.env deployment/.env
 else
