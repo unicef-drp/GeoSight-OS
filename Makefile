@@ -201,6 +201,9 @@ flake8:
 	@echo "Running flake8"
 	@echo "------------------------------------------------------------------"
 	@pip install flake8 flake8-docstrings pydoclint[flake8]
-	@files=`{ git diff --cached --name-only; git diff --name-only; git ls-files --others --exclude-standard; } | grep '\.py$$' | sort -u`; \
+	@files=`{ \
+		git diff --name-only origin/main; \
+		git ls-files --others --exclude-standard; \
+	} | grep '\.py$$' | sort -u`; \
 	echo "$$files"; \
 	if [ -n "$$files" ]; then flake8 $$files; else echo "No Python files to lint."; fi
