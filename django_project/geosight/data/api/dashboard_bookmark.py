@@ -38,7 +38,18 @@ class DashboardBookmarksAPI(APIView):
     """Return Dashboard Bookmark list."""
 
     def get(self, request, slug):
-        """Return Dashboard Bookmark list."""
+        """
+        Retrieve the dashboard bookmark list along with default visible layers.
+
+        :param request: The incoming HTTP GET request.
+        :type request: django.http.HttpRequest
+        :param slug: The unique slug used to identify the dashboard.
+        :type slug: str
+
+        :return:
+            A response containing the dashboard data and its default layers.
+        :rtype: django.http.HttpResponse or rest_framework.response.Response
+        """
         dashboard = get_object_or_404(Dashboard, slug=slug)
         first_layer = dashboard.dashboardindicatorlayer_set.filter(
             visible_by_default=True).first()
@@ -92,7 +103,22 @@ class _DashboardBookmarkAPI(APIView):
     """Return Dashboard Bookmark detail."""
 
     def update_bookmark_data(self, request, dashboard):
-        """Update Bookmark Data."""
+        """
+        Prepare and update bookmark data from the request.
+
+        :param request:
+            The HTTP request containing the bookmark data
+            (typically POST data).
+        :type request: django.http.HttpRequest
+        :param dashboard: The dashboard instance associated with the bookmark.
+        :type dashboard: Dashboard
+
+        :return:
+            A dictionary of cleaned data ready to be passed to a form, or
+            an `HttpResponseBadRequest`
+            if the update fails due to a ValueError.
+        :rtype: dict or django.http.HttpResponseBadRequest
+        """
         try:
             data = DashboardBookmarkForm.update_data(
                 request.data.copy(), dashboard
@@ -104,7 +130,25 @@ class _DashboardBookmarkAPI(APIView):
         return data
 
     def save_bookmark(self, request, dashboard, bookmark):
-        """Save bookmark."""
+        """
+        Save or update a dashboard bookmark.
+
+        :param request: The HTTP request object containing bookmark data.
+        :type request: django.http.HttpRequest
+        :param dashboard: The dashboard instance to which the bookmark belongs.
+        :type dashboard: Dashboard
+        :param bookmark:
+            The existing bookmark instance to update, or `None` for a new one.
+        :type bookmark: DashboardBookmark or None
+
+        :return:
+            A JSON `Response` with serialized bookmark data if successful, or
+            an `HttpResponseBadRequest`
+            if the data is invalid or an exception is raised.
+        :rtype:
+            rest_framework.response.Response or
+            django.http.HttpResponseBadRequest
+        """
         data = self.update_bookmark_data(request, dashboard)
         if not isinstance(data, dict):
             return data
@@ -131,7 +175,25 @@ class DashboardBookmarkDetailAPI(_DashboardBookmarkAPI):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, slug, pk):
-        """Return Dashboard Bookmark list."""
+        """
+        Handle POST request to update a dashboard bookmark.
+
+        Retrieves the dashboard using the given slug and finds the bookmark by
+        primary key.
+        If the bookmark exists and the user has permission to edit it,
+        the bookmark is updated via `save_bookmark`.
+
+        :param request: The HTTP request object.
+        :type request: django.http.HttpRequest
+        :param slug: The slug of the dashboard.
+        :type slug: str
+        :param pk: The primary key of the bookmark to update.
+        :type pk: int
+
+        :return: HTTP 400 if bookmark does not exist, HTTP 403 if forbidden,
+                 or the result of `save_bookmark`.
+        :rtype: django.http.HttpResponse or rest_framework.response.Response
+        """
         dashboard = get_object_or_404(Dashboard, slug=slug)
         try:
             bookmark = dashboard.dashboardbookmark_set.get(id=pk)
@@ -143,7 +205,25 @@ class DashboardBookmarkDetailAPI(_DashboardBookmarkAPI):
         return self.save_bookmark(request, dashboard, bookmark)
 
     def delete(self, request, slug, pk):
-        """Delete an basemap."""
+        """
+        Handle DELETE request to remove a dashboard bookmark.
+
+        Retrieves the dashboard by slug and attempts to find the associated
+        bookmark by its primary key. If found and the user has permission
+        to edit, the bookmark is deleted.
+
+        :param request: The HTTP request object.
+        :type request: django.http.HttpRequest
+        :param slug: The slug of the dashboard.
+        :type slug: str
+        :param pk: The primary key of the bookmark to delete.
+        :type pk: int
+
+        :return: HTTP 400 if bookmark does not exist,
+                 HTTP 403 if user lacks permission,
+                 or HTTP 200 on successful deletion.
+        :rtype: django.http.HttpResponse or rest_framework.response.Response
+        """
         dashboard = get_object_or_404(Dashboard, slug=slug)
         try:
             bookmark = dashboard.dashboardbookmark_set.get(id=pk)
@@ -163,7 +243,20 @@ class DashboardBookmarkCreateAPI(_DashboardBookmarkAPI):
     )
 
     def post(self, request, slug):
-        """Return Dashboard Bookmark list."""
+        """
+        Handle POST request to save dashboard bookmark.
+
+        Retrieves the dashboard object using the provided slug,
+        checks if the user has permission to edit it, and then
+        delegates the logic to `save_bookmark`.
+
+        :param request: The HTTP request object.
+        :type request: django.http.HttpRequest
+        :param slug: The unique slug identifier of the dashboard.
+        :type slug: str
+        :return: HTTP response returned by `save_bookmark`.
+        :rtype: django.http.HttpResponse
+        """
         dashboard = get_object_or_404(Dashboard, slug=slug)
         edit_permission_resource(dashboard, request.user)
         return self.save_bookmark(request, dashboard, None)
