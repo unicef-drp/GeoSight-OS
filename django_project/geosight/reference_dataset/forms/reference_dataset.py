@@ -27,7 +27,17 @@ class ReferenceDatasetForm(forms.ModelForm):
     """ReferenceDatasetForm form."""
 
     def clean_name(self):
-        """Return name."""
+        """
+        Validate that the name is unique among ReferenceDataset instances.
+
+        Checks if any other `ReferenceDataset` objects
+        (excluding the current instance) already have the same name.
+        Raises a `ValidationError` if a duplicate is found.
+
+        :raises ValidationError: If the name already exists in another dataset.
+        :return: The validated unique name.
+        :rtype: str
+        """
         name = self.cleaned_data['name']
         views = ReferenceDataset.objects.exclude(
             id=self.instance.id
@@ -39,7 +49,20 @@ class ReferenceDatasetForm(forms.ModelForm):
         return name
 
     def save(self, commit=True):
-        """Save form."""
+        """
+        Save the form data to create or update a `ReferenceDataset` instance.
+
+        If the instance does not have an identifier,
+        generate a UUID and assign it.
+        Sets `in_georepo` to `False` before saving.
+
+        :param commit:
+            Whether to commit the save operation to the database immediately.
+            Defaults to `True`.
+        :type commit: bool, optional
+        :return: The saved or unsaved `ReferenceDataset` instance.
+        :rtype: ReferenceDataset
+        """
         instance = super(ReferenceDatasetForm, self).save(commit=False)
         if not instance.identifier:
             instance.identifier = ReferenceDataset.get_uuid()
@@ -58,5 +81,15 @@ class ReferenceDatasetForm(forms.ModelForm):
 
     @staticmethod
     def model_to_initial(model: ReferenceDataset):
-        """Return model data as json."""
+        """
+        Convert a ReferenceDataset model instance to a dictionary.
+
+        This method serializes the given `model` instance into a dictionary
+        representation suitable for JSON serialization or form initialization.
+
+        :param model: An instance of `ReferenceDataset` to serialize.
+        :type model: ReferenceDataset
+        :return: A dictionary representation of the model's fields and values.
+        :rtype: dict
+        """
         return model_to_dict(model)
