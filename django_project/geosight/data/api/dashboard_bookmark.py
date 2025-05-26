@@ -73,6 +73,15 @@ class DashboardBookmarksAPI(APIView):
             visible_by_default=True
         ).values_list('object__id', flat=True)
 
+        # Context layer configs
+        context_layers_config = {}
+        for context_layer in context_layers.all():
+            if context_layer.configuration:
+                context_layers_config[
+                    context_layer.object.id
+                ] = context_layer.configuration
+        default['context_layers_config'] = context_layers_config
+
         data = [default] + DashboardBookmarkSerializer(
             dashboard.dashboardbookmark_set, many=True
         ).data

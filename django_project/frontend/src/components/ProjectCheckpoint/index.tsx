@@ -78,14 +78,7 @@ export const ProjectCheckpoint = memo(
           }
           const context_layers_config: { [key: string]: object } = {}
           contextLayersDashboard.map((contextLayer: ContextLayer) => {
-            const configuration = contextLayer.configuration
-            const mapLayer = contextLayers[contextLayer.id]
-            if (
-              configuration && mapLayer?.layer.configuration &&
-              JSON.stringify(mapLayer?.layer.configuration) !== JSON.stringify(contextLayer.configuration)
-            ) {
-              context_layers_config[contextLayer.id] = configuration
-            }
+            context_layers_config[contextLayer.id] = contextLayer.configuration
           })
           return {
             selected_basemap: basemapLayer?.id,
@@ -128,8 +121,22 @@ export const ProjectCheckpoint = memo(
             dispatch(Actions.MapMode.deactivateCompare())
           }
 
+          const { context_layers_config } = data
           newDashboard.contextLayers.map((layer: ContextLayer) => {
             layer.visible_by_default = data.selected_context_layers.includes(layer.id)
+            try {
+              // @ts-ignore
+              if (context_layers_config[layer.id]) {
+                // @ts-ignore
+                layer.configuration = {
+                  // @ts-ignore
+                  ...layer.configuration,
+                  // @ts-ignore
+                  ...context_layers_config[layer.id]
+                }
+              }
+            } catch (err) {
+            }
           })
           newDashboard.indicatorLayers.map((layer: IndicatorLayer) => {
             layer.visible_by_default = data.selected_indicator_layers.includes(layer.id)
