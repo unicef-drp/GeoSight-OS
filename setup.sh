@@ -4,7 +4,18 @@
 # copy .env
 # --------------------------------------------------
 if [ ! -f deployment/.env ]; then
+  echo "-----------------------------"
   echo "Copying .template.env to .env"
+  echo ""
+  echo "You are using the default environment settings."
+  echo "You can review the environment details here:"
+  echo "https://unicef-drp.github.io/GeoSight-OS-Documentation/developer/setup/code-preparation/#set-up-different-environment-optional"
+  echo ""
+  echo "By default, the plugins 'cloud_native_gis' and 'reference_dataset' are enabled."
+  echo "For more information about plugins, visit:"
+  echo "https://unicef-drp.github.io/GeoSight-OS-Documentation/developer/manual/plugins/#geosight-plugin"
+  echo ""
+  read -p "Press Enter to copying..."
   cp deployment/.template.env deployment/.env
 else
   echo ".env already exists, skipping"
