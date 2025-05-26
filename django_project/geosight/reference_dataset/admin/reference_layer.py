@@ -38,7 +38,15 @@ class ReferenceDatasetAdmin(ReferenceLayerViewAdmin):
     list_filter = ()
 
     def get_queryset(self, request):
-        """Return queryset."""
+        """
+        Return a queryset of permissions of ReferenceDataset.
+
+        :param request: The HTTP request object, used to determine ordering.
+        :type request: django.http.HttpRequest
+
+        :return: The filtered and ordered queryset of permissions.
+        :rtype: django.db.models.QuerySet
+        """
         qs = self.model.permissions.get_queryset()
         ordering = self.get_ordering(request)
         if ordering:

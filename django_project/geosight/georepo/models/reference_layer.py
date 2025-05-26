@@ -77,15 +77,25 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
         ]
 
     def get_name(self):
-        """Return name."""
-        if not self.name:
+        """
+        Retrieve the name of the reference layer view.
+
+        If the `name` attribute is not set but the `identifier` exists,
+        attempts to update metadata from the remote GeoRepo server.
+        If the update fails with `GeorepoRequestError`,
+        the error is silently ignored.
+
+        :return: The name of the reference layer view.
+        :rtype: str
+        """
+        if not self.name and self.identifier:
             try:
                 self.update_meta()
             except GeorepoRequestError:
                 pass
         return self.name
 
-    def __str__(self):
+    def __str__(self):  # noqa DOC201
         """Return str."""
         return f'{self.get_name()} ({self.identifier})'
 
@@ -94,8 +104,8 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
         """Return version data."""
         return f'{self.identifier}-{self.version}'
 
-    def save(self, *args, **kwargs):
-        """On save method."""
+    def save(self, *args, **kwargs):  # noqa DOC101
+        """Save the ReferenceLayerView instance."""
         from geosight.georepo.tasks import fetch_reference_codes
         from geosight.georepo.tasks import (
             create_data_access_reference_layer_view
@@ -107,7 +117,7 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
             create_data_access_reference_layer_view.delay(self.id)
 
     def update_meta(self):
-        """Update meta."""
+        """Update the metadata from the GeoRepo remote server."""
         detail = GeorepoRequest().View.get_detail(self.identifier)
         self.name = detail['name']
         self.tags = detail['tags']
@@ -116,19 +126,49 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
         self.save()
 
     def full_name(self):
-        """Return str."""
+        """
+        Return the full name of the reference dataset.
+
+        :return: The full name string.
+        :rtype: str
+        """
         return f'{self.get_name()} ({self.identifier})'
 
     def bbox(self):
-        """Return bbox of reference layer."""
+        """
+        Return bbox of reference layer.
+
+        :return:
+            The bounding box of the reference layer,
+            typically as a list or tuple of coordinates.
+        :rtype: list | tuple | Any
+        """
         return GeorepoRequest().View.get_reference_layer_bbox(self.identifier)
 
     def entities(self, level=None):
-        """Return entities of reference layer view."""
+        """
+        Retrieve entities associated with the reference layer view.
+
+        Calls the `get_detail` method of `GeorepoRequest().View` using
+        the instance's identifier to fetch detailed entity information.
+
+        :param level: Optional level to filter entities (currently unused).
+        :type level: optional
+        :return:
+            Detailed information of entities related to this reference layer.
+        :rtype: dict
+        """
         return GeorepoRequest().View.get_detail(self.identifier)
 
     def save_entity(self, entity: GeorepoEntity):
-        """Save entities."""
+        """Save entity that is found on GeorepoEntity.
+
+        :param entity: Entity to be saved.
+        :type entity: GeorepoEntity
+
+        :return: The entity object that is created.
+        :rtype: Entity
+        """
         from geosight.georepo.models.entity import EntityCode
         georepo_entity = GeorepoEntity(entity)
         obj, _ = GeorepoEntity(entity).get_or_create(self)
@@ -141,7 +181,16 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
         return obj
 
     def sync_entities_code(self, level=None, sync_all=True):
-        """Sync entities code."""
+        """Sync entities code.
+
+        Sync entities code from georepo remote server.
+        :param level: Optional level to filter which entities to synchronize.
+        :type level: Optional[Any], defaults to None
+        :param sync_all:
+            Whether to synchronize all entities regardless of level.
+            Defaults to True.
+        :type sync_all: bool, optional
+        """
         min_level = None
         if not sync_all:
             try:
@@ -180,7 +229,12 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
 
     @property
     def entities_set(self):
-        """Querying entities."""
+        """
+        Return a queryset of entities related to this reference layer view.
+
+        :return: A queryset of related `Entity` instances.
+        :rtype: QuerySet[Entity]
+        """
         from geosight.georepo.models.entity import Entity
         # TODO:
         #  We will fix this after we migrate to production
@@ -190,14 +244,23 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
         return Entity.objects.filter(pk__in=Subquery(related_entities))
 
     def assign_countries(self):
-        """Assign countries."""
+        """Assign all entities from the entity set to the countries field."""
         self.countries.set(
             self.entities_set.filter(admin_level=admin_level_country)
         )
         self.save()
 
     def assign_country(self, entity, check_entity=True):
-        """Assign country to the reference layer view."""
+        """
+        Assign a country-level entity to the reference layer view.
+
+        :param entity: The entity to evaluate and possibly assign as a country.
+        :type entity: Entity
+        :param check_entity:
+            Whether to check if the entity is already in the entities set.
+            If True, the entity must exist in `entities_set` to be assigned.
+        :type check_entity: bool
+        """
         if entity.admin_level == admin_level_country:
             if (
                     not check_entity or
@@ -207,11 +270,22 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
 
     @staticmethod
     def get_priority_view(views):
-        """Return priority view.
+        """
+        Return the priority view from a list of views.
 
-        Return 1 view.
-        Priority is the latest tags.
-        After that just return the first view.
+        This method selects a single view from
+        the given list with the following priority:
+        1. If any view has a tag containing the string 'latest',
+            that view is returned.
+        2. If no such view exists, the first view in the list is returned.
+
+        If the input list is empty, None is returned.
+
+        :param views: A list of view instances to evaluate.
+        :type views: list[View]
+
+        :return: The prioritized view, or None if the list is empty.
+        :rtype: View or None
         """
         if not len(views):
             return None
@@ -225,11 +299,20 @@ class ReferenceLayerView(AbstractEditData, AbstractVersionData):
 
     @staticmethod
     def get_priority_view_by_country(country, tag=None):
-        """Return priority view.
+        """
+        Return the priority view for a given country.
 
-        Return 1 view based on country.
-        Priority is the latest tags.
-        After that just return the first view.
+        This method returns a single view associated with the country.
+        If a tag is provided, it prioritizes views matching the latest tags.
+        If no such view exists or no tag is given, it falls back to returning
+        the first available view for the country.
+
+        :param country: The country object or identifier to filter views by.
+        :type country: Country
+        :param tag: Optional tag used to prioritize matching views.
+        :type tag: str
+        :return: A single prioritized view instance, or None if not found.
+        :rtype: View or None
         """
         views = ReferenceLayerView.objects.filter(
             countries__id=country.id
