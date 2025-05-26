@@ -60,7 +60,9 @@ class ReferenceDatasetImporterSerializer(DynamicModelSerializer):
     def get_levels(self, obj: ReferenceDatasetImporter):
         """Return urls of importer."""
         return ReferenceDatasetImporterLevelSerializer(
-            obj.referencedatasetimporterlevel_set.all(), many=True
+            obj.referencedatasetimporterlevel_set.filter(
+                level__isnull=False
+            ), many=True
         ).data
 
     class Meta:  # noqa: D106

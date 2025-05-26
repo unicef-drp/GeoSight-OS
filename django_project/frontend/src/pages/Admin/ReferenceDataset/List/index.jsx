@@ -164,7 +164,7 @@ export default function ReferenceLayerViewList() {
   return <AdminList
     columns={cleanColumns}
     pageName={pageName}
-    listUrl={urls.api.list}
+    listUrl={urls.api.list + '?fields=uuid,bbox,vector_tiles,possible_id_types,dataset_levels,tags,permission,version_data,created_at,modified_at,identifier,name,description,in_georepo,modified_by'}
     getRowId={(row) => row.identifier}
   />
 }

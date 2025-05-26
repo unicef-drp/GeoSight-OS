@@ -190,14 +190,14 @@ class ReferenceDatasetImporterTask:
 
             # Remove old entities
             Entity.objects.filter(reference_layer=reference_layer).delete()
-
-            total = self.importer.referencedatasetimporterlevel_set.count()
+            query = self.importer.referencedatasetimporterlevel_set.filter(
+                level__isnull=False
+            )
+            total = query.count()
             min_progress = 0
             max_progress = 80
             progress_section = max_progress / total
-            for idx, level in enumerate(
-                    self.importer.referencedatasetimporterlevel_set.all()
-            ):
+            for idx, level in enumerate(query):
                 self.importer.note = f'Importing level {idx}'
                 self.importer.progress = (progress_section * idx)
                 self.importer.save()

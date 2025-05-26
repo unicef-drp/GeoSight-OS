@@ -81,7 +81,8 @@ export default function DatasetViewSelector(
   //  This makes the E2E tests fails, need to check it
   // const url = URLS.ReferenceLayer.VIEW.List('' + dataset, sourceType === VALUE_LOCAL)
 
-  const url = sourceType === VALUE_REMOTE ? GeorepoUrls.WithDomain(`/search/dataset/${dataset}/view/list/`, true) : '/api/v1/reference-datasets/?page=1&page_size=25'
+  const url = sourceType === VALUE_REMOTE ? GeorepoUrls.WithDomain(`/search/dataset/${dataset}/view/list/`, true) :
+    '/api/v1/reference-datasets/?page=1&page_size=25&fields=uuid,bbox,vector_tiles,possible_id_types,dataset_levels,tags,permission,version_data,created_at,modified_at,identifier,name,description,in_georepo,modified_by'
 
   /** Get the datasets */
   useEffect(
