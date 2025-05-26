@@ -304,7 +304,7 @@ export function contextLayerRendering(
         case Variables.LAYER.TYPE.RASTER_COG: {
           removeLayers(map, id)
           rasterCogLayer(
-            map, id, layer.styles? layer : contextLayerData, setData, contextLayerData, featureProperties => {
+            map, id, layer.styles ? layer : contextLayerData, setData, contextLayerData, featureProperties => {
               return popupFeature(
                 featureProperties,
                 contextLayerData.name,

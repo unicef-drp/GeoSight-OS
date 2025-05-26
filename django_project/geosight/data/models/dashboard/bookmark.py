@@ -44,14 +44,17 @@ class DashboardBookmarkAbstract(models.Model):
     selected_indicator_layers = models.JSONField(
         null=True, blank=True, default=list
     )
-    selected_context_layers = models.ManyToManyField(
-        ContextLayer, blank=True
-    )
     indicator_layer_show = models.BooleanField(default=True)
-    context_layer_show = models.BooleanField(default=True)
     selected_admin_level = models.FloatField(null=True, blank=True)
     is_3d_mode = models.BooleanField(default=False)
     position = models.JSONField(null=True, blank=True)
+
+    # Selected context layers
+    context_layer_show = models.BooleanField(default=True)
+    selected_context_layers = models.ManyToManyField(
+        ContextLayer, blank=True
+    )
+    context_layers_config = models.JSONField(null=True, blank=True)
 
     class Meta:  # noqa: D106
         abstract = True

@@ -66,6 +66,7 @@ export const ProjectCheckpoint = memo(
           bounds._ne.lng, bounds._ne.lat
         ]
       }
+      const { contextLayers: contextLayersDashboard } = dashboardData
 
       // Open
       useImperativeHandle(ref, () => ({
@@ -75,6 +76,17 @@ export const ProjectCheckpoint = memo(
           if (selectedIndicatorSecondLayer?.id) {
             selectedIndicatorLayers.push(selectedIndicatorSecondLayer?.id)
           }
+          const context_layers_config: { [key: string]: object } = {}
+          contextLayersDashboard.map((contextLayer: ContextLayer) => {
+            const configuration = contextLayer.configuration
+            const mapLayer = contextLayers[contextLayer.id]
+            if (
+              configuration && mapLayer?.layer.configuration &&
+              JSON.stringify(mapLayer?.layer.configuration) !== JSON.stringify(contextLayer.configuration)
+            ) {
+              context_layers_config[contextLayer.id] = configuration
+            }
+          })
           return {
             selected_basemap: basemapLayer?.id,
             selected_indicator_layers: selectedIndicatorLayers,
@@ -90,7 +102,8 @@ export const ProjectCheckpoint = memo(
               bearing: map?.getBearing(),
               zoom: map?.getZoom(),
               center: map?.getCenter(),
-            }
+            },
+            context_layers_config: context_layers_config
           }
         },
         /** Apply data **/
