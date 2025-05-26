@@ -17,7 +17,7 @@
    CONTEXT LAYER
    ========================================================================== */
 
-import React, {Fragment, useEffect} from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { centroid as turfCentroid } from '@turf/turf';
 import { useSelector } from "react-redux";
 import { hasLayer, hasSource, removeLayer, removeSource } from "../../utils";
@@ -304,7 +304,7 @@ export function contextLayerRendering(
         case Variables.LAYER.TYPE.RASTER_COG: {
           removeLayers(map, id)
           rasterCogLayer(
-            map, id, layer.styles? layer : contextLayerData, setData, contextLayerData, featureProperties => {
+            map, id, layer.styles ? layer : contextLayerData, setData, contextLayerData, featureProperties => {
               return popupFeature(
                 featureProperties,
                 contextLayerData.name,
@@ -331,6 +331,10 @@ export function ContextLayer({ contextLayerData, map, contextLayerOrder }) {
   /** CONTEXT LAYER CHANGED */
   useEffect(() => {
     if (map && contextLayersShow) {
+      // Update configuration
+      if (contextLayer?.layer && contextLayerData?.configuration) {
+        contextLayer.layer.configuration = contextLayerData?.configuration
+      }
       contextLayerRendering(id, contextLayerData, contextLayer, map, contextLayerOrder)
     } else {
       removeLayers(map, id)

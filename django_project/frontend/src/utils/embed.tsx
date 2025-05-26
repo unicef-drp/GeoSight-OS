@@ -52,8 +52,9 @@ export function EmbedConfig(): EmbedConfigProps {
             context_layer_show: _embedConfig.context_layer_show,
             selected_admin_level: _embedConfig.selected_admin_level,
             is_3d_mode: _embedConfig.is_3d_mode,
-            position: _embedConfig.position
-          }
+            position: _embedConfig.position,
+            context_layers_config: _embedConfig.context_layers_config
+          },
         }
       }
     }

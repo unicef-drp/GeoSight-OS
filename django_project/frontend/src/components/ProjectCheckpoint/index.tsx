@@ -66,6 +66,7 @@ export const ProjectCheckpoint = memo(
           bounds._ne.lng, bounds._ne.lat
         ]
       }
+      const { contextLayers: contextLayersDashboard } = dashboardData
 
       // Open
       useImperativeHandle(ref, () => ({
@@ -75,6 +76,10 @@ export const ProjectCheckpoint = memo(
           if (selectedIndicatorSecondLayer?.id) {
             selectedIndicatorLayers.push(selectedIndicatorSecondLayer?.id)
           }
+          const context_layers_config: { [key: string]: object } = {}
+          contextLayersDashboard.map((contextLayer: ContextLayer) => {
+            context_layers_config[contextLayer.id] = contextLayer.configuration
+          })
           return {
             selected_basemap: basemapLayer?.id,
             selected_indicator_layers: selectedIndicatorLayers,
@@ -90,7 +95,8 @@ export const ProjectCheckpoint = memo(
               bearing: map?.getBearing(),
               zoom: map?.getZoom(),
               center: map?.getCenter(),
-            }
+            },
+            context_layers_config: context_layers_config
           }
         },
         /** Apply data **/
@@ -115,8 +121,22 @@ export const ProjectCheckpoint = memo(
             dispatch(Actions.MapMode.deactivateCompare())
           }
 
+          const { context_layers_config } = data
           newDashboard.contextLayers.map((layer: ContextLayer) => {
             layer.visible_by_default = data.selected_context_layers.includes(layer.id)
+            // try {
+            //   // @ts-ignore
+            //   if (context_layers_config[layer.id]) {
+            //     // @ts-ignore
+            //     layer.configuration = {
+            //       // @ts-ignore
+            //       ...layer.configuration,
+            //       // @ts-ignore
+            //       ...context_layers_config[layer.id]
+            //     }
+            //   }
+            // } catch (err) {
+            // }
           })
           newDashboard.indicatorLayers.map((layer: IndicatorLayer) => {
             layer.visible_by_default = data.selected_indicator_layers.includes(layer.id)

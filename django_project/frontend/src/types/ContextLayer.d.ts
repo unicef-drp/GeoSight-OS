@@ -22,4 +22,5 @@ export interface ContextLayer {
   related_table?: number;
   visible_by_default: boolean,
   cloud_native_gis_layer_id?: number;
+  configuration?: object;
 }
