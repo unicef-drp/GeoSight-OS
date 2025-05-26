@@ -1,5 +1,9 @@
 {
     "files.eol": "\n",
     "editor.formatOnSave": true,
-    "remote.containers.openFolderOnCreate": "always"
+    "remote.containers.openFolderOnCreate": "always",
+    "flake8.args": [
+        "--config",
+        "setup.cfg"
+    ]
 }
