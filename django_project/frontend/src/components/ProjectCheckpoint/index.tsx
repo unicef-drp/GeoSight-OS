@@ -124,19 +124,19 @@ export const ProjectCheckpoint = memo(
           const { context_layers_config } = data
           newDashboard.contextLayers.map((layer: ContextLayer) => {
             layer.visible_by_default = data.selected_context_layers.includes(layer.id)
-            try {
-              // @ts-ignore
-              if (context_layers_config[layer.id]) {
-                // @ts-ignore
-                layer.configuration = {
-                  // @ts-ignore
-                  ...layer.configuration,
-                  // @ts-ignore
-                  ...context_layers_config[layer.id]
-                }
-              }
-            } catch (err) {
-            }
+            // try {
+            //   // @ts-ignore
+            //   if (context_layers_config[layer.id]) {
+            //     // @ts-ignore
+            //     layer.configuration = {
+            //       // @ts-ignore
+            //       ...layer.configuration,
+            //       // @ts-ignore
+            //       ...context_layers_config[layer.id]
+            //     }
+            //   }
+            // } catch (err) {
+            // }
           })
           newDashboard.indicatorLayers.map((layer: IndicatorLayer) => {
             layer.visible_by_default = data.selected_indicator_layers.includes(layer.id)
