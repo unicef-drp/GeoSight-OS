@@ -36,7 +36,6 @@ class ReferenceDatasetAdmin(ReferenceLayerViewAdmin):
     inlines = (ReferenceDatasetLevelInline,)
     search_fields = ('name',)
     list_filter = ()
-    readonly_fields = ('countries',)
 
     def get_queryset(self, request):
         """
