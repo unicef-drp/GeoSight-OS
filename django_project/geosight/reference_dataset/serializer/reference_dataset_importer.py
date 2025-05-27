@@ -33,7 +33,7 @@ class ReferenceDatasetImporterSerializer(DynamicModelSerializer):
     urls = serializers.SerializerMethodField()
     levels = serializers.SerializerMethodField()
 
-    def get_created_by(self, obj: ReferenceDatasetImporter) -> str | None:
+    def get_created_by(self, obj: ReferenceDatasetImporter):
         """
         Return the full name of the user who created the importer.
 
@@ -47,9 +47,7 @@ class ReferenceDatasetImporterSerializer(DynamicModelSerializer):
         else:
             return None
 
-    def get_reference_layer_name(
-            self, obj: ReferenceDatasetImporter
-    ) -> str | None:
+    def get_reference_layer_name(self, obj: ReferenceDatasetImporter):
         """
         Return the full name of the reference layer.
 
@@ -64,7 +62,7 @@ class ReferenceDatasetImporterSerializer(DynamicModelSerializer):
         else:
             return None
 
-    def get_urls(self, obj: ReferenceDatasetImporter) -> dict[str, str]:
+    def get_urls(self, obj: ReferenceDatasetImporter):
         """
         Return related URLs of the importer.
 
@@ -86,7 +84,7 @@ class ReferenceDatasetImporterSerializer(DynamicModelSerializer):
             'detail': detail_url
         }
 
-    def get_levels(self, obj: ReferenceDatasetImporter) -> list[dict]:
+    def get_levels(self, obj: ReferenceDatasetImporter):
         """Return urls of importer.
 
         This method serializes all related `ReferenceDatasetImporterLevel`
