@@ -1,5 +1,15 @@
 #!/bin/bash
 
+# --- Pre-check and create redis directory with permissions ---
+
+if [ ! -d deployment/volumes/tmp_data/redis ]; then
+    echo "Creating deployment/volumes/tmp_data/redis and setting permissions..."
+    mkdir -p deployment/volumes/tmp_data/redis
+    sudo chown -R 1001:1001 deployment/volumes/tmp_data/redis
+else
+    echo "Directory already exists: deployment/volumes/tmp_data/redis"
+fi
+
 EXTENSION_ID="ms-vscode-remote.remote-containers"
 
 # Check if VS Code CLI is available
