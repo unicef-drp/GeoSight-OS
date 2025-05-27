@@ -35,7 +35,11 @@ export default function VectorStyleConfig({ data, setData, setError }) {
 
   useEffect(() => {
     if (data.styles !== inputStyle) {
-      setInputStyle(data.styles)
+      if (typeof layers !== 'string') {
+        setInputStyle(JSON.stringify(data.styles, null, 4))
+      } else {
+        setInputStyle(data.styles)
+      }
     }
     if (data.cloud_native_gis_layer_id && !data.mapbox_style) {
       (
