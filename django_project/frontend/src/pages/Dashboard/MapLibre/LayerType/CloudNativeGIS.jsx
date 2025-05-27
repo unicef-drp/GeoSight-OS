@@ -59,7 +59,10 @@ export default function cloudNativeGISLayer(map, id, data, contextLayerData, pop
       try {
         let layers = []
         if (contextLayerData.styles) {
-          layers = JSON.parse(contextLayerData.styles)
+          layers = contextLayerData.styles
+          if (typeof layers === 'string') {
+            layers = JSON.parse(layers)
+          }
         } else if (info.default_style?.style_url) {
           layers = await (await fetch(info.default_style?.style_url)).json()
           layers = layers.layers

@@ -19,7 +19,7 @@ export const cleanDashboardData = (data: any) => {
     })
   })
   data?.contextLayers?.map((ctx: any) => {
-    ['group', 'loading', 'disabled', 'legend', 'trueId'].map(key => {
+    ['group', 'loading', 'disabled', 'legend', 'trueId', 'parameters'].map(key => {
       try {
         delete ctx[key]
       } catch (err) {
