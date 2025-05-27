@@ -1,0 +1,496 @@
+[
+  {
+    "model": "geosight_data.contextlayer",
+    "pk": 2,
+    "fields": {
+      "name": "Somalia healthsites",
+      "description": "",
+      "creator": 1,
+      "created_at": "2025-05-27T01:40:44.638Z",
+      "modified_by": 1,
+      "modified_at": "2025-05-27T01:52:23.908Z",
+      "group": 21,
+      "url": null,
+      "layer_type": "Cloud Native GIS Layer",
+      "arcgis_config": null,
+      "related_table": null,
+      "url_legend": null,
+      "token": null,
+      "username": null,
+      "password": null,
+      "styles": "\"[\\n    {\\n        \\\"id\\\": \\\"00000000-0000-0000-0000-000000000000\\\",\\n        \\\"type\\\": \\\"circle\\\",\\n        \\\"paint\\\": {\\n            \\\"circle-color\\\": \\\"rgba(6, 134, 0, 1)\\\",\\n            \\\"circle-radius\\\": 7,\\n            \\\"circle-opacity\\\": 1\\n        },\\n        \\\"filter\\\": [\\n            \\\"all\\\",\\n            [\\n                \\\"==\\\",\\n                \\\"$type\\\",\\n                \\\"Point\\\"\\n            ],\\n            [\\n                \\\"==\\\",\\n                \\\"amenity\\\",\\n                \\\"hospital\\\"\\n            ]\\n        ],\\n        \\\"source\\\": \\\"00000000-0000-0000-0000-000000000000\\\",\\n        \\\"source-layer\\\": \\\"default\\\",\\n        \\\"layout\\\": {\\n            \\\"visibility\\\": \\\"visible\\\"\\n        }\\n    },\\n    {\\n        \\\"id\\\": \\\"00000000-0000-0000-0000-000000000000-copy\\\",\\n        \\\"type\\\": \\\"circle\\\",\\n        \\\"paint\\\": {\\n            \\\"circle-color\\\": \\\"rgba(152, 241, 148, 1)\\\",\\n            \\\"circle-radius\\\": 5,\\n            \\\"circle-opacity\\\": 1\\n        },\\n        \\\"filter\\\": [\\n            \\\"all\\\",\\n            [\\n                \\\"==\\\",\\n                \\\"$type\\\",\\n                \\\"Point\\\"\\n            ],\\n            [\\n                \\\"==\\\",\\n                \\\"amenity\\\",\\n                \\\"clinic\\\"\\n            ]\\n        ],\\n        \\\"source\\\": \\\"00000000-0000-0000-0000-000000000000\\\",\\n        \\\"source-layer\\\": \\\"default\\\"\\n    },\\n    {\\n        \\\"id\\\": \\\"00000000-0000-0000-0000-000000000000-copy-copy-copy\\\",\\n        \\\"type\\\": \\\"circle\\\",\\n        \\\"paint\\\": {\\n            \\\"circle-color\\\": \\\"rgba(136, 0, 92, 1)\\\",\\n            \\\"circle-radius\\\": 4,\\n            \\\"circle-opacity\\\": 1\\n        },\\n        \\\"filter\\\": [\\n            \\\"all\\\",\\n            [\\n                \\\"==\\\",\\n                \\\"$type\\\",\\n                \\\"Point\\\"\\n            ],\\n            [\\n                \\\"==\\\",\\n                \\\"amenity\\\",\\n                \\\"dentist\\\"\\n            ]\\n        ],\\n        \\\"source\\\": \\\"00000000-0000-0000-0000-000000000000\\\",\\n        \\\"source-layer\\\": \\\"default\\\"\\n    },\\n    {\\n        \\\"id\\\": \\\"00000000-0000-0000-0000-000000000000-copy-copy\\\",\\n        \\\"type\\\": \\\"circle\\\",\\n        \\\"paint\\\": {\\n            \\\"circle-color\\\": \\\"rgba(244, 224, 52, 1)\\\",\\n            \\\"circle-radius\\\": 4,\\n            \\\"circle-opacity\\\": 1\\n        },\\n        \\\"filter\\\": [\\n            \\\"all\\\",\\n            [\\n                \\\"==\\\",\\n                \\\"$type\\\",\\n                \\\"Point\\\"\\n            ],\\n            [\\n                \\\"==\\\",\\n                \\\"amenity\\\",\\n                \\\"pharmacy\\\"\\n            ]\\n        ],\\n        \\\"source\\\": \\\"00000000-0000-0000-0000-000000000000\\\",\\n        \\\"source-layer\\\": \\\"default\\\"\\n    }\\n]\"",
+      "label_styles": "\"\"",
+      "configuration": "\"\"",
+      "cloud_native_gis_layer_id": 1
+    }
+  },
+  {
+    "model": "geosight_data.dashboardcontextlayer",
+    "pk": 110,
+    "fields": {
+      "dashboard": 53,
+      "order": 0,
+      "visible_by_default": false,
+      "group": null,
+      "relation_group": null,
+      "object": 2,
+      "styles": "\"[\\n    {\\n        \\\"id\\\": \\\"00000000-0000-0000-0000-000000000000\\\",\\n        \\\"type\\\": \\\"circle\\\",\\n        \\\"paint\\\": {\\n            \\\"circle-color\\\": \\\"rgba(6, 134, 0, 1)\\\",\\n            \\\"circle-radius\\\": 7,\\n            \\\"circle-opacity\\\": 1,\\n            \\\"circle-stroke-color\\\": \\\"rgba(0, 0, 0, 1)\\\",\\n            \\\"circle-stroke-width\\\": 1,\\n            \\\"circle-stroke-opacity\\\": 0.5\\n        },\\n        \\\"filter\\\": [\\n            \\\"all\\\",\\n            [\\n                \\\"==\\\",\\n                \\\"$type\\\",\\n                \\\"Point\\\"\\n            ],\\n            [\\n                \\\"==\\\",\\n                \\\"amenity\\\",\\n                \\\"hospital\\\"\\n            ]\\n        ],\\n        \\\"source\\\": \\\"00000000-0000-0000-0000-000000000000\\\",\\n        \\\"source-layer\\\": \\\"default\\\",\\n        \\\"layout\\\": {\\n            \\\"visibility\\\": \\\"visible\\\"\\n        }\\n    },\\n    {\\n        \\\"id\\\": \\\"00000000-0000-0000-0000-000000000000-copy\\\",\\n        \\\"type\\\": \\\"circle\\\",\\n        \\\"paint\\\": {\\n            \\\"circle-color\\\": \\\"rgba(152, 241, 148, 1)\\\",\\n            \\\"circle-radius\\\": 5,\\n            \\\"circle-opacity\\\": 1,\\n            \\\"circle-stroke-color\\\": \\\"rgba(0, 0, 0, 1)\\\",\\n            \\\"circle-stroke-width\\\": 1,\\n            \\\"circle-stroke-opacity\\\": 0.5\\n        },\\n        \\\"filter\\\": [\\n            \\\"all\\\",\\n            [\\n                \\\"==\\\",\\n                \\\"$type\\\",\\n                \\\"Point\\\"\\n            ],\\n            [\\n                \\\"==\\\",\\n                \\\"amenity\\\",\\n                \\\"clinic\\\"\\n            ]\\n        ],\\n        \\\"source\\\": \\\"00000000-0000-0000-0000-000000000000\\\",\\n        \\\"source-layer\\\": \\\"default\\\"\\n    },\\n    {\\n        \\\"id\\\": \\\"00000000-0000-0000-0000-000000000000-copy-copy-copy\\\",\\n        \\\"type\\\": \\\"circle\\\",\\n        \\\"paint\\\": {\\n            \\\"circle-color\\\": \\\"rgba(136, 0, 92, 1)\\\",\\n            \\\"circle-radius\\\": 4,\\n            \\\"circle-opacity\\\": 1,\\n            \\\"circle-stroke-opacity\\\": 1,\\n            \\\"circle-stroke-color\\\": \\\"rgba(0, 0, 0, 1)\\\",\\n            \\\"circle-stroke-width\\\": 1\\n        },\\n        \\\"filter\\\": [\\n            \\\"all\\\",\\n            [\\n                \\\"==\\\",\\n                \\\"$type\\\",\\n                \\\"Point\\\"\\n            ],\\n            [\\n                \\\"==\\\",\\n                \\\"amenity\\\",\\n                \\\"dentist\\\"\\n            ]\\n        ],\\n        \\\"source\\\": \\\"00000000-0000-0000-0000-000000000000\\\",\\n        \\\"source-layer\\\": \\\"default\\\"\\n    },\\n    {\\n        \\\"id\\\": \\\"00000000-0000-0000-0000-000000000000-copy-copy\\\",\\n        \\\"type\\\": \\\"circle\\\",\\n        \\\"paint\\\": {\\n            \\\"circle-color\\\": \\\"rgba(244, 224, 52, 1)\\\",\\n            \\\"circle-radius\\\": 4,\\n            \\\"circle-opacity\\\": 1,\\n            \\\"circle-stroke-opacity\\\": 1,\\n            \\\"circle-stroke-color\\\": \\\"rgba(0, 0, 0, 1)\\\",\\n            \\\"circle-stroke-width\\\": 1\\n        },\\n        \\\"filter\\\": [\\n            \\\"all\\\",\\n            [\\n                \\\"==\\\",\\n                \\\"$type\\\",\\n                \\\"Point\\\"\\n            ],\\n            [\\n                \\\"==\\\",\\n                \\\"amenity\\\",\\n                \\\"pharmacy\\\"\\n            ]\\n        ],\\n        \\\"source\\\": \\\"00000000-0000-0000-0000-000000000000\\\",\\n        \\\"source-layer\\\": \\\"default\\\"\\n    }\\n]\"",
+      "label_styles": "\"\"",
+      "override_style": false,
+      "override_field": false,
+      "override_label": false,
+      "configuration": {}
+    }
+  },
+  {
+    "model": "cloud_native_gis.style",
+    "pk": 1,
+    "fields": {
+      "name": "Default point",
+      "description": null,
+      "created_at": "2025-05-27T01:40:22.537Z",
+      "created_by": null,
+      "style": {
+        "layers": [
+          {
+            "id": "<uuid>",
+            "type": "circle",
+            "paint": {
+              "circle-color": "#ff7800",
+              "circle-radius": 4,
+              "circle-opacity": 1
+            },
+            "filter": [
+              "==",
+              "$type",
+              "Point"
+            ],
+            "source": "<uuid>",
+            "source-layer": "default"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "model": "cloud_native_gis.layer",
+    "pk": 1,
+    "fields": {
+      "name": "00000000-0000-0000-0000-000000000000",
+      "description": null,
+      "created_by": 1,
+      "created_at": "2025-05-27T01:40:21.622Z",
+      "unique_id": "00000000-0000-0000-0000-000000000000",
+      "layer_type": "Vector Tile",
+      "is_ready": true,
+      "license": null,
+      "abstract": null,
+      "attribution": null,
+      "metadata": {
+        "GEOMETRY SRS": "EPSG:4326",
+        "FEATURE COUNT": 47,
+        "GEOMETRY TYPE": "Point"
+      },
+      "default_style": 1,
+      "styles": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 1,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "osm_id",
+      "attribute_type": "bigint",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 0
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 2,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "osm_type",
+      "attribute_type": "text",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 1
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 3,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "completene",
+      "attribute_type": "double precision",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 2
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 4,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "amenity",
+      "attribute_type": "text",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 3
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 5,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "healthcare",
+      "attribute_type": "text",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 4
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 6,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "name",
+      "attribute_type": "text",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 5
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 7,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "operator",
+      "attribute_type": "text",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 6
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 8,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "source",
+      "attribute_type": "text",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 7
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 9,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "speciality",
+      "attribute_type": "text",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 8
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 10,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "operator_t",
+      "attribute_type": "text",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 9
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 11,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "operationa",
+      "attribute_type": "text",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 10
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 12,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "opening_ho",
+      "attribute_type": "text",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 11
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 13,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "beds",
+      "attribute_type": "text",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 12
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 14,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "staff_doct",
+      "attribute_type": "text",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 13
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 15,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "staff_nurs",
+      "attribute_type": "text",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 14
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 16,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "health_ame",
+      "attribute_type": "text",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 15
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 17,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "dispensing",
+      "attribute_type": "text",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 16
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 18,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "wheelchair",
+      "attribute_type": "text",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 17
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 19,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "emergency",
+      "attribute_type": "text",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 18
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 20,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "insurance",
+      "attribute_type": "text",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 19
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 21,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "water_sour",
+      "attribute_type": "text",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 20
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 22,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "electricit",
+      "attribute_type": "text",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 21
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 23,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "is_in_heal",
+      "attribute_type": "text",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 22
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 24,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "is_in_he_1",
+      "attribute_type": "text",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 23
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 25,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "url",
+      "attribute_type": "text",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 24
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 26,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "addr_house",
+      "attribute_type": "text",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 25
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 27,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "addr_stree",
+      "attribute_type": "text",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 26
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 28,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "addr_postc",
+      "attribute_type": "text",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 27
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 29,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "addr_city",
+      "attribute_type": "text",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 28
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 30,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "changeset_",
+      "attribute_type": "double precision",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 29
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 31,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "changese_1",
+      "attribute_type": "double precision",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 30
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 32,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "changese_2",
+      "attribute_type": "timestamp without time zone",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 31
+    }
+  },
+  {
+    "model": "cloud_native_gis.layerattributes",
+    "pk": 33,
+    "fields": {
+      "layer": 1,
+      "attribute_name": "uuid",
+      "attribute_type": "text",
+      "attribute_label": null,
+      "attribute_description": null,
+      "attribute_order": 32
+    }
+  }
+]
