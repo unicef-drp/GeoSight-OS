@@ -132,7 +132,7 @@ export function DashboardHistory(
       onClick={undo}
       disabled={currentHistoryIdx <= 0}
     >
-      <UndoIcon/>
+      <UndoIcon />
     </ThemeButton>
     <ThemeButton
       variant='primary Reverse JustIcon'
@@ -140,7 +140,7 @@ export function DashboardHistory(
       onClick={reset}
       disabled={currentHistoryIdx <= 0}
     >
-      <ReplayIcon/>
+      <ReplayIcon />
     </ThemeButton>
     <ThemeButton
       variant='primary Reverse JustIcon'
@@ -148,7 +148,7 @@ export function DashboardHistory(
       onClick={redo}
       disabled={redoDisabled}
     >
-      <RedoIcon/>
+      <RedoIcon />
     </ThemeButton>
   </>
 }
@@ -196,34 +196,34 @@ export function DashboardSaveAsForm({ submitted, onSaveAs }) {
             </div>
             <div>
               <span className="form-input">
-              <input
-                id="GeneralName" type="text" name="name" required={true}
-                placeholder='Example: Afghanistan Risk Dashboard'
-                value={nameData}
-                onChange={(event) => {
-                  setNameData(event.target.value)
-                  setSlugInput(slugify(event.target.value))
-                }}/>
+                <input
+                  id="GeneralName" type="text" name="name" required={true}
+                  placeholder='Example: Afghanistan Risk Dashboard'
+                  value={nameData}
+                  onChange={(event) => {
+                    setNameData(event.target.value)
+                    setSlugInput(slugify(event.target.value))
+                  }} />
               </span>
             </div>
-            <br/>
+            <br />
             <label className="form-label" htmlFor="name">
               URL Shortcode
             </label>
             <div>
-            <span className="form-input">
-            <input
-              type="text" name="name" required={true}
-              value={slugInput}
-              onChange={(event) => {
-                setSlugInput(slugify(event.target.value))
-              }}/>
-            </span>
+              <span className="form-input">
+                <input
+                  type="text" name="name" required={true}
+                  value={slugInput}
+                  onChange={(event) => {
+                    setSlugInput(slugify(event.target.value))
+                  }} />
+              </span>
             </div>
             <span className='form-helptext'>
               Url of project in slug format. It will auto change space to "-" and to lowercase.
               It will be generated from name if empty.
-              <br/>
+              <br />
               Please change it if it is same with the origin one.
             </span>
           </div>
@@ -231,7 +231,7 @@ export function DashboardSaveAsForm({ submitted, onSaveAs }) {
       </ModalContent>
       <ModalFooter>
         <div style={{ display: "flex" }}>
-          <div className='Separator'/>
+          <div className='Separator' />
           <ThemeButton
             variant="Basic Reverse"
             onClick={() => {
@@ -244,7 +244,7 @@ export function DashboardSaveAsForm({ submitted, onSaveAs }) {
             text='Create'
             onClick={() => {
               onSaveAs()
-            }}/>
+            }} />
         </div>
       </ModalFooter>
     </Modal>
@@ -467,7 +467,7 @@ export function DashboardSaveForm(
           submitted={submitted}
           onSaveAs={() => {
             onSave('/admin/project/create')
-          }}/> : null
+          }} /> : null
     }
     <SaveButton
       variant="primary"
@@ -476,8 +476,8 @@ export function DashboardSaveForm(
         onSave()
       }}
       className={submitted ? 'Submitted' : ''}
-      disabled={disabled || submitted || !Object.keys(data).length}/>
-    <Notification ref={notificationRef}/>
+      disabled={disabled || submitted || !Object.keys(data).length} />
+    <Notification ref={notificationRef} />
   </>
 }
 
@@ -494,38 +494,40 @@ export function DashboardForm({ onPreview }) {
   const [currentHistoryIdx, setCurrentHistoryIdx] = useState(-1);
   const [changed, setChanged] = useState(false);
   const className = currentPage.replaceAll(' ', '')
+
+  const resourceActionsResult = resourceActions({
+    id: id,
+    row: {
+      id,
+      name,
+      permission: user_permission
+    }
+  })
   return (
     <div className='Admin'>
-      <SideNavigation pageName={pageNames.Dashboard} minified={true}/>
+      <SideNavigation pageName={pageNames.Dashboard} minified={true} />
       <div className='AdminContent'>
-        <GeorepoAuthorizationModal/>
+        <GeorepoAuthorizationModal />
         <div className='AdminContentHeader'>
           <div className='AdminContentHeader-Left'>
             <b className='light'
-               dangerouslySetInnerHTML={{ __html: contentTitle }}></b>
+              dangerouslySetInnerHTML={{ __html: contentTitle }}></b>
           </div>
           <div className='AdminContentHeader-Right'>
             {
               id ?
-                resourceActions({
-                  id: id,
-                  row: {
-                    id,
-                    name,
-                    permission: user_permission
-                  }
-                }) : null
+                resourceActionsResult : null
             }
             <DashboardHistory
               page={currentPage}
               setCurrentPage={setCurrentPage}
               currentHistoryIdx={currentHistoryIdx}
-              setCurrentHistoryIdx={setCurrentHistoryIdx}/>
+              setCurrentHistoryIdx={setCurrentHistoryIdx} />
             <ThemeButton
               variant="primary"
               onClick={onPreview}
             >
-              <MapActiveIcon/>Preview
+              <MapActiveIcon />Preview
             </ThemeButton>
             <DashboardSaveForm
               currentPage={currentPage}
@@ -547,7 +549,7 @@ export function DashboardForm({ onPreview }) {
             />
 
             {/* FORM CONTENT */}
-            <DashboardFormContent page={currentPage}/>
+            <DashboardFormContent page={currentPage} />
           </div>
         </div>
       </div>
@@ -574,7 +576,7 @@ export default function DashboardFormApp() {
       {/* ADMIN SECTION */}
       <DashboardForm onPreview={() => {
         setCurrentMode('PreviewMode')
-      }}/>
+      }} />
       {/* DASHBOARD SECTION */}
       <Dashboard>
         <div className='BackToForm'>
@@ -584,7 +586,7 @@ export default function DashboardFormApp() {
               setCurrentMode('FormMode')
             }}
           >
-            <ViewHeadlineIcon/>Back to Form
+            <ViewHeadlineIcon />Back to Form
           </ThemeButton>
         </div>
       </Dashboard>
