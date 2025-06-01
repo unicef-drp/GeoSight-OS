@@ -1,6 +1,0 @@
-{
-  "git.enableCommitSigning": true,
-  "[markdown]": {
-    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
-  }
-}
