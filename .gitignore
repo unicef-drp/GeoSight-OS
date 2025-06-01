@@ -43,3 +43,7 @@ docs/src/developer/manual/*.md
 
 *.swp
 deployment/.cache/
+
+.vscode
+.vscode-extensions
+vscode.log
