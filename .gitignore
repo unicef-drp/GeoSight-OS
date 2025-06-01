@@ -47,3 +47,6 @@ deployment/.cache/
 .vscode
 .vscode-extensions
 vscode.log
+.vscode/settings.json
+.vscode/settings.json
+.vscode/settings.json
