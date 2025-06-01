@@ -123,6 +123,23 @@ else
     echo "  ✅ VSCode found ok."
 fi
 
+# Ensure .vscode directory exists
+echo "🗨️  Checking if VSCode has been run before..."
+if [ ! -d .vscode ]; then
+    echo "  🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻"
+    echo "  ⭐️ It appears you have not run vscode in this project before."
+    echo "     After it opens, please close vscode and then rerun this script"
+    echo "     so that the extensions directory initialises properly."
+    echo "  🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺"
+    mkdir -p .vscode
+    mkdir -p .vscode-extensions
+    # Launch VSCode with the sandboxed environment
+    launch_vscode .
+    exit 1
+else
+    echo "  ✅ VSCode directory found from previous runs of vscode."
+fi
+
 echo "🗨️ Checking docker is installed ..."
 if ! command -v docker &>/dev/null; then
     echo "  ❌ 'docker' CLI not found. Please install docker and ensure you have permissions to use it."
