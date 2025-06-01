@@ -64,16 +64,17 @@ Usage: $(basename "$0") [OPTIONS]
 This script sets up and launches VSCode with a custom profile and extensions for the GeoSight project.
 
 Actions performed:
-  - Checks for required files and directories (deployment/.env, redis volume, etc.)
-  - Ensures VSCode and Docker are installed
-  - Initializes VSCode user and extension directories if needed
-  - Updates VSCode settings for commit signing, formatters, and linters (Markdown, Shell, Python)
-  - Installs all required VSCode extensions
-  - Launches VSCode with the specified profile and directories
+    - Checks for required files and directories (deployment/.env, redis volume, etc.)
+    - Ensures VSCode and Docker are installed
+    - Initializes VSCode user and extension directories if needed
+    - Updates VSCode settings for commit signing, formatters, and linters (Markdown, Shell, Python)
+    - Installs all required VSCode extensions
+    - Launches VSCode with the specified profile and directories
 
 Options:
-  --help      Show this help message and exit
-  --verbose   Print final settings.json contents before launching VSCode
+    --help             Show this help message and exit
+    --verbose          Print final settings.json contents before launching VSCode
+    --list-extensions  List installed VSCode extensions in the custom extensions directory
 
 EOF
 }
@@ -87,6 +88,11 @@ for arg in "$@"; do
             ;;
         --verbose)
             # Handled later in the script
+            ;;
+        --list-extensions)
+            echo "Installed extensions:"
+            list_installed_extensions
+            exit 0
             ;;
         *) ;;
     esac
