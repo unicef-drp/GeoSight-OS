@@ -557,12 +557,12 @@ export const uniqueByKey = (array, key) => {
   }, []);
 };
 
-/** plit array that the array is just has 500 when join
+/** plit array that the array is just has 1500 when join
  * @param {string[]} input
  * @param {number} maxLength
  * @returns {string[][]}
  */
-export function splitByJoinedLength(input, maxLength = 500) {
+export function splitByJoinedLength(input, maxLength = 1500) {
   const result = [];
   let currentChunk = [];
 
