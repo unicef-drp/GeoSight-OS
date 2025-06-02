@@ -105,6 +105,8 @@ export default function ImporterEntityForm() {
       'Content-Disposition': 'attachment; filename=' + meta.name,
       'X-CSRFToken': csrfmiddlewaretoken
     }
+    console.log(file.name)
+    console.log(file.type)
     return { url: urls.api.uploadFile, body, headers }
   }
 

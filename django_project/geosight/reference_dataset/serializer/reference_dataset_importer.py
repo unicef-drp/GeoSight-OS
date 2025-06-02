@@ -134,18 +134,34 @@ class ReferenceDatasetImporterLevelSerializer(DynamicModelSerializer):
         """
         return obj.file.name
 
-    def get_percent(self) -> int:
+    def get_percent(self, obj: ReferenceDatasetImporterLevel) -> int:
         """Return percent.
 
         :return: Return percentage of progress, just return 100 as it is done.
         :rtype: int
+
+        :param obj: An instance of `ReferenceDatasetImporterLevel`.
+        :type obj: ReferenceDatasetImporterLevel
+        :return:
+            The guessed MIME type of the file
+            (e.g., 'text/csv', 'application/zip').
+            Returns `None` if the type cannot be guessed.
+        :rtype: str
         """
         return 100
 
-    def get_status(self) -> str:
+    def get_status(self, obj: ReferenceDatasetImporterLevel) -> str:
         """Return status.
 
         :return: Return just 'done' as it is done.
+        :rtype: str
+
+        :param obj: An instance of `ReferenceDatasetImporterLevel`.
+        :type obj: ReferenceDatasetImporterLevel
+        :return:
+            The guessed MIME type of the file
+            (e.g., 'text/csv', 'application/zip').
+            Returns `None` if the type cannot be guessed.
         :rtype: str
         """
         return 'done'

@@ -141,6 +141,7 @@ dev: down setup
 		sudo mkdir -p deployment/volumes/tmp_data/redis; \
 		sudo chown -R 1001:1001 deployment/volumes/tmp_data/redis; \
 	else \
+	    sudo chown -R 1001:1001 deployment/volumes/tmp_data/redis; \
 		echo "Directory already exists: deployment/volumes/tmp_data/redis"; \
 	fi
 	@docker compose ${ARGS} up -d dev
