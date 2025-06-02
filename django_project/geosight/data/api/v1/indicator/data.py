@@ -15,7 +15,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_control
+from django.views.decorators.cache import cache_control, cache_page
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
@@ -74,6 +74,10 @@ class IndicatorDataViewSet(
         )
         return query
 
+    @method_decorator(
+        cache_page(60 * 60 * 24 * 7),  # cache 7 days
+        name='list'
+    )
     @method_decorator(
         cache_control(public=True, max_age=864000),
         name='dispatch'
