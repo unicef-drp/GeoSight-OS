@@ -5,9 +5,9 @@
 # ----------------------------------------------
 
 VSCODE_PROFILE="geosight"
-EXT_DIR=".vscode-extensions"
+EXT_DIR=".vscode/extensions"
 VSCODE_DIR=".vscode"
-LOG_FILE="vscode.log"
+LOG_FILE=".vscode/.log"
 
 REQUIRED_EXTENSIONS=(
     aikebang.mkdocs-syntax-highlight@0.2.1
@@ -138,6 +138,21 @@ if [ ! -d .vscode ]; then
     exit 1
 else
     echo "  ✅ VSCode directory found from previous runs of vscode."
+fi
+
+# Ensure profiles directory exists
+echo "🗨️  Checking if VSCode has profiles..."
+if [ ! -d ".vscode/User/profiles" ]; then
+    echo "  🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻"
+    echo "  ⭐️ It appears you have have not profiles yet."
+    echo "     After it opens, please close vscode and then rerun this script"
+    echo "     so that the extensions directory initialises properly."
+    echo "  🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺"
+    # Launch VSCode with the sandboxed environment
+    launch_vscode .
+    exit 1
+else
+    echo "  ✅ ${VSCODE_PROFILE} profile has been created."
 fi
 
 echo "🗨️ Checking docker is installed ..."
