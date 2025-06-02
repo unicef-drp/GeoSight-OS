@@ -176,7 +176,7 @@ class ImporterLogDataSaveProgress(models.Model):
             id__in=self.target_ids
         )
         importer = self.log.importer.importer(self.log)
-        for idx, log_data in enumerate(log_datas):
+        for log_data in log_datas:
             if log_data.id not in self.saved_ids:
                 importer._save_log_data_to_model(log_data)
                 self.saved_ids.append(log_data.id)

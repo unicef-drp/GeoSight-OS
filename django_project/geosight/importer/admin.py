@@ -22,6 +22,7 @@ from geosight.importer.models import (
 )
 from geosight.importer.tasks import (
     run_importer,
+    run_save_log_data,
     calculate_data_counts
 )
 
@@ -109,6 +110,28 @@ class ImporterLogAdmin(admin.ModelAdmin):
     inlines = [ImporterLogDataSaveProgressInline]
     search_fields = ('note', 'importer__unique_id')
     actions = (recalculate_data_count,)
+
+    def has_add_permission(self, request, obj=None):
+        """Has add permission."""
+        return False
+
+
+def run_save_progress(modeladmin, request, queryset):
+    """Run save progress."""
+    for progress in queryset:
+        run_save_log_data.delay(progress.id)
+
+
+@admin.register(ImporterLogDataSaveProgress)
+class ImporterLogDataSaveProgressAdmin(admin.ModelAdmin):
+    """ImporterLogDataSaveProgress Admin."""
+
+    list_display = ('log', 'note', 'done', 'progress')
+    actions = (run_save_progress,)
+
+    def progress(self, obj: ImporterLogDataSaveProgress):
+        """Return current progress."""
+        return f'{len(obj.saved_ids) / len(obj.target_ids) * 100}%'
 
     def has_add_permission(self, request, obj=None):
         """Has add permission."""
