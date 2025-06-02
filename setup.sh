@@ -21,7 +21,7 @@ if [ ! -f deployment/.env ]; then
   echo "You are using the default environment settings."
   echo ""
   echo "You can review or customize them here:"
-  echo "https://unicef-drp.github.io/GeoSight-OS-Documentation/developer/setup/code-preparation/#set-up-different-environment-optional"
+  echo "https://unicef-drp.github.io/GeoSight-OS-Documentation/developer/setup/setup-generic/configuration/"
   echo ""
   echo "By default, these plugins will be enabled:"
   echo ""
@@ -30,7 +30,7 @@ if [ ! -f deployment/.env ]; then
   echo ""
   echo "Learn more about plugins here:"
   echo ""
-  echo "https://unicef-drp.github.io/GeoSight-OS-Documentation/developer/manual/plugins/#geosight-plugin"
+  echo "https://unicef-drp.github.io/GeoSight-OS-Documentation/developer/manual/plugins/"
   echo ""
   read -p "Press Enter to continue copying..."
   cp deployment/.template.env deployment/.env
