@@ -5,9 +5,9 @@
 # ----------------------------------------------
 
 VSCODE_PROFILE="geosight"
-EXT_DIR=".vscode-extensions"
+EXT_DIR=".vscode/extensions"
 VSCODE_DIR=".vscode"
-LOG_FILE="vscode.log"
+LOG_FILE=".vscode/.log"
 
 REQUIRED_EXTENSIONS=(
     aikebang.mkdocs-syntax-highlight@0.2.1
