@@ -1,6 +1,5 @@
 .idea
 .venv
-.vscode-extensions
 deployment/.env
 deployment/backups
 deployment/docker-compose.override.yml
@@ -43,3 +42,6 @@ docs/src/developer/manual/*.md
 
 *.swp
 deployment/.cache/
+
+.vscode
+.vscode/settings.json
