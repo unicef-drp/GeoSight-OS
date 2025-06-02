@@ -59,7 +59,11 @@ class ImporterLog(models.Model):
         ordering = ('-start_time',)
 
     def send_alert(self):
-        """Send alert."""
+        """Send an alert notification.
+
+        :return: None
+        :rtype: None
+        """
         from geosight.importer.models.importer import ImporterAlert
         pref = SitePreferences.preferences()
         if not self.importer.job:

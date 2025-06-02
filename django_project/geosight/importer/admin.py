@@ -28,7 +28,19 @@ from geosight.importer.tasks import (
 
 
 def import_data(modeladmin, request, queryset):
-    """Run importers."""
+    """
+    Trigger asynchronous import tasks for selected importer objects.
+
+    This admin action enqueues background jobs to run the import process
+    for each importer in the provided queryset.
+
+    :param modeladmin: The ModelAdmin instance handling the request.
+    :type modeladmin: ModelAdmin
+    :param request: The HTTP request that initiated the action.
+    :type request: HttpRequest
+    :param queryset: A queryset of importer objects to run importers on.
+    :type queryset: QuerySet[Importer]
+    """
     for importer in queryset:
         run_importer.delay(importer.id)
 
@@ -61,7 +73,16 @@ class ImporterAttributeInline(admin.TabularInline):
     extra = 0
 
     def has_add_permission(self, request, obj=None):
-        """Has add permission."""
+        """
+        Determine whether the user has permission to add a new object.
+
+        :param request: The HTTP request instance.
+        :type request: HttpRequest
+        :param obj: The object being added or `None` when adding a new object.
+        :type obj: Model or None
+        :return: `False` indicating that add permission is denied.
+        :rtype: bool
+        """
         return False
 
 
@@ -73,7 +94,16 @@ class ImporterMappingInline(admin.TabularInline):
     extra = 0
 
     def has_add_permission(self, request, obj=None):
-        """Has add permission."""
+        """
+        Determine whether the user has permission to add a new object.
+
+        :param request: The HTTP request instance.
+        :type request: HttpRequest
+        :param obj: The object being added or `None` when adding a new object.
+        :type obj: Model or None
+        :return: `False` indicating that add permission is denied.
+        :rtype: bool
+        """
         return False
 
 
@@ -95,7 +125,20 @@ class ImporterAdmin(admin.ModelAdmin):
 
 
 def recalculate_data_count(modeladmin, request, queryset):
-    """Recalculate Importer Log Data count."""
+    """
+    Recalculate data counts for selected Importer Log Data objects.
+
+    This admin action triggers the recalculation of data-related counts
+    for each object in the provided queryset.
+
+    :param modeladmin: The ModelAdmin instance handling the request.
+    :type modeladmin: ModelAdmin
+    :param request: The HTTP request that initiated the action.
+    :type request: HttpRequest
+    :param queryset:
+        A queryset of objects for which data counts will be recalculated.
+    :type queryset: QuerySet[ImporterLogData]
+    """
     for obj in queryset:
         calculate_data_counts(obj.id)
 
@@ -112,12 +155,34 @@ class ImporterLogAdmin(admin.ModelAdmin):
     actions = (recalculate_data_count,)
 
     def has_add_permission(self, request, obj=None):
-        """Has add permission."""
+        """
+        Determine whether the user has permission to add a new object.
+
+        :param request: The HTTP request instance.
+        :type request: HttpRequest
+        :param obj: The object being added or `None` when adding a new object.
+        :type obj: Model or None
+        :return: `False` indicating that add permission is denied.
+        :rtype: bool
+        """
         return False
 
 
 def run_save_progress(modeladmin, request, queryset):
-    """Run save progress."""
+    """
+    Trigger asynchronous saving of log data for each selected progress item.
+
+    This admin action enqueues background tasks to process and save data
+    for each object in the given queryset using Celery.
+
+    :param modeladmin: The current ModelAdmin instance.
+    :type modeladmin: ModelAdmin
+    :param request: The current HTTP request.
+    :type request: HttpRequest
+    :param queryset:
+        A queryset of ImporterLogDataSaveProgress instances to process.
+    :type queryset: QuerySet[ImporterLogDataSaveProgress]
+    """
     for progress in queryset:
         run_save_log_data.delay(progress.id)
 
@@ -130,9 +195,27 @@ class ImporterLogDataSaveProgressAdmin(admin.ModelAdmin):
     actions = (run_save_progress,)
 
     def progress(self, obj: ImporterLogDataSaveProgress):
-        """Return current progress."""
+        """
+        Calculate and return the current progress as a percentage string.
+
+        :param obj:
+            The object containing saved and target IDs for progress tracking.
+        :type obj: ImporterLogDataSaveProgress
+        :return:
+            A string representing the progress percentage (e.g., "75.00%").
+        :rtype: str
+        """
         return f'{len(obj.saved_ids) / len(obj.target_ids) * 100}%'
 
     def has_add_permission(self, request, obj=None):
-        """Has add permission."""
+        """
+        Determine whether the user has permission to add a new object.
+
+        :param request: The HTTP request instance.
+        :type request: HttpRequest
+        :param obj: The object being added or `None` when adding a new object.
+        :type obj: Model or None
+        :return: `False` indicating that add permission is denied.
+        :rtype: bool
+        """
         return False
