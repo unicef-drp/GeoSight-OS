@@ -61,9 +61,8 @@ RUN apt-get update && apt-get install nodejs -y
 # RUN apt-get install chromium-browser -y
 
 # Download and install Google Chrome
-RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
-    apt install -y ./google-chrome-stable_current_amd64.deb && \
-    rm ./google-chrome-stable_current_amd64.deb
+RUN apt update
+RUN apt install chromium-browser -y
 CMD ["google-chrome", "--version"]
 
 # Install matching ChromeDriver
