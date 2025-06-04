@@ -144,7 +144,7 @@ dev: down setup
 	    sudo chown -R 1001:1001 deployment/volumes/tmp_data/redis; \
 		echo "Directory already exists: deployment/volumes/tmp_data/redis"; \
 	fi
-	@docker compose ${ARGS} up -d dev
+	@docker compose ${ARGS} up -d worker celery_beat dev
 
 dev-ci-test:
 	@echo
