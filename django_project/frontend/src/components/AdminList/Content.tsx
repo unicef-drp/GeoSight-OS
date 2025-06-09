@@ -136,6 +136,9 @@ export const AdminListContent = forwardRef(
         return (url.batch && permission?.edit) || (multipleDelete && permission?.delete)
       }
     }
+    if (props.selectableFunction) {
+      selectableFunction = props.selectableFunction
+    }
 
     /** Create button **/
     const createButton = () => {

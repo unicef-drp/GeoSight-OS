@@ -20,6 +20,7 @@ import rootReducer from './reducers';
 import Basemaps from './reducers/basemap/actions'
 import ContextLayers from './reducers/contextLayers/actions'
 import Dashboard from './reducers/dashboard/actions'
+import DashboardHistory from './reducers/dashboardHistory/actions'
 import DashboardTool from './reducers/dashboardTool/actions'
 import DatasetGeometries from './reducers/datasetGeometries/actions'
 import Extent from './reducers/extent/actions'
@@ -50,12 +51,14 @@ import SelectedRelatedTableLayer
   from './reducers/selectedRelatedTableLayer/actions'
 import SelectedDynamicIndicatorLayer
   from './reducers/selectedDynamicIndicatorLayer/actions'
+import SelectionState from './reducers/selectionState/actions'
 import Widgets from './reducers/widgets/actions'
 
 const Actions = {
   Basemaps,
   ContextLayers,
   Dashboard,
+  DashboardHistory,
   DashboardTool,
   DatasetGeometries,
   Extent,
@@ -82,6 +85,7 @@ const Actions = {
   SelectedGlobalTimeConfig,
   SelectedDynamicIndicatorLayer,
   SelectedRelatedTableLayer,
+  SelectionState,
   Widgets
 }
 

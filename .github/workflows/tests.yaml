@@ -32,18 +32,27 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.head_ref }}
+          fetch-depth: 0
       - name: Display branch
         run: git branch --show-current
 
       - name: Install flake8
-        run: pip install flake8 flake8-docstrings
-      - name: Run flake8
-        uses: suo/flake8-github-action@releases/v1
-        with:
-          checkName: 'Python Lint'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pip install flake8 flake8-docstrings pydoclint[flake8]
+
+      - name: Run flake8 on changed/untracked Python files
+        run: |
+          files=$(
+            { git diff --name-only origin/main...HEAD;
+              git ls-files --others --exclude-standard;
+            } | grep '\.py$' | sort -u
+          )
+          echo "Changed/untracked Python files:"
+          echo "$files"
+          if [ -n "$files" ]; then
+            flake8 $files
+          else
+            echo "No Python files to lint."
+          fi
 
   build_image:
     needs: flake8_py3
@@ -88,6 +97,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-docker-image-
 
+      - name: ✅ Check GDAL version inside geosight_dev
+        run: |
+          docker run --rm --entrypoint "" kartoza/geosight:dev sh -c '\
+            VERSION=$(gdalinfo --version | awk '\''{print $2}'\'') && \
+            echo "GDAL version: $VERSION" && \
+            if [ "$(printf "%s\n" "3.0.9" "$VERSION" | sort -V | head -n1)" = "3.0.9" ] && [ "$VERSION" != "3.0.9" ]; then \
+              echo "✅ GDAL version is greater than 3.0.9"; \
+            else \
+              echo "❌ GDAL version is NOT greater than 3.0.9"; exit 1; \
+            fi'
+
   django_app_tests:
     needs: build_image
     name: Django App Tests
@@ -128,13 +148,13 @@ jobs:
         run: docker load -i /tmp/my-image.tar
 
       - name: Run docker-compose services
-        working-directory: deployment
         run: |
-          echo "Override docker-compose for testing purposes"
+          ./setup.sh
+          cd deployment
+          echo "Override docker-compose.test.yml for testing purposes"
           cp docker-compose.test.yml docker-compose.override.yml
-          cp .template.env .env
           cd ../
-          make devweb
+          make dev-ci-test
           make wait-db
           docker volume ls
           docker exec geosight_dev rm -rf /home/web/django_project/frontend
@@ -151,14 +171,14 @@ jobs:
       - name: Backend (Prepare container and test)
         if: ${{ matrix.test_suite.mode == 'backend' }}
         run: |
-          make devweb-entrypoint
-          make devweb-test
+          make dev-entrypoint
+          make dev-test
 
       - name: E2E (Prepare container)
         if: ${{ matrix.test_suite.mode == 'e2e' }}
         run: |
-          make devweb-entrypoint
-          make devweb-runserver
+          make dev-entrypoint
+          make dev-runserver
           ${{ matrix.test_suite.script }}
           make sleep
 
@@ -184,6 +204,7 @@ jobs:
       - name: Upload Playwright Screenshots
         if: failure()
         uses: actions/upload-artifact@v4
+
         with:
           name: playwright-screenshots-${{ matrix.test_suite.id }}
           path: playwright/ci-test/playwright-results/

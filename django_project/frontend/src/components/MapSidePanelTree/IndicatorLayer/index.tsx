@@ -14,10 +14,12 @@
  */
 
 import React, { useState } from "react";
-import { IndicatorLayer } from "../../../types/IndicatorLayer";
+import { useSelector } from "react-redux";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Radio from "@mui/material/Radio";
+import { Checkbox } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
+import { IndicatorLayer } from "../../../types/IndicatorLayer";
 import Highlighted from "../../SidePanelTree/Highlighted";
 import LayerDescription from "../../SidePanelTree/Description";
 import SidePanelSlicers from "../../SidePanelTree/SidePanelSlicers";
@@ -31,10 +33,7 @@ import {
 import {
   DynamicIndicatorLayerConfig
 } from "../../../pages/Dashboard/LeftPanel/IndicatorLayers/DynamicIndicatorLayer";
-import {
-  IndicatorLayerChecker,
-  RelatedTableChecker
-} from "./IndicatorChecker";
+import { Checker, RelatedTableChecker } from "./Checker";
 
 export interface Props {
   layer?: IndicatorLayer;
@@ -56,6 +55,8 @@ export default function IndicatorLayer(
     selectItem
   }: Props
 ) {
+  // @ts-ignore
+  const { compareMode } = useSelector(state => state.mapMode)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [error, setError] = useState<string>('')
   const disabled = !!(error ? error : layer.error)
@@ -71,7 +72,7 @@ export default function IndicatorLayer(
         />
         break
       default:
-        return <IndicatorLayerChecker
+        return <Checker
           layer={layer}
           setIsLoading={setIsLoading}
           setError={setError}
@@ -94,14 +95,25 @@ export default function IndicatorLayer(
       className={(disabled ? ' Disabled' : '')}
       control={
         <div className={'PanelInput'}>
-          <Radio
-            tabIndex={-1}
-            className='PanelRadio'
-            size={'small'}
-            disabled={disabled}
-            value={nodesDataId}
-            checked={checked}
-            onChange={selectItem}/>
+          {
+            compareMode ?
+              <Checkbox
+                tabIndex={-1}
+                className='PanelCheckbox'
+                size={'small'}
+                disabled={disabled}
+                value={nodesDataId}
+                checked={checked}
+                onChange={selectItem}/> :
+              <Radio
+                tabIndex={-1}
+                className='PanelRadio'
+                size={'small'}
+                disabled={disabled}
+                value={nodesDataId}
+                checked={checked}
+                onChange={selectItem}/>
+          }
           {isLoading ? <CircularProgress/> : null}
         </div>
       }

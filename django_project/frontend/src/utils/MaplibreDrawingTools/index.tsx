@@ -127,8 +127,13 @@ export class MaplibreDrawingTools {
       return this.draw.getAll().features.filter(
         feature => {
           try {
-            // @ts-ignore
-            return feature.geometry.coordinates[0][0] != null
+            if (feature.geometry.type === Variables.FEATURE_TYPE.POINT) {
+              // @ts-ignore
+              return feature.geometry.coordinates.length && feature.geometry.coordinates[0] != null
+            } else {
+              // @ts-ignore
+              return feature.geometry.coordinates.length && feature.geometry.coordinates[0][0] != null
+            }
           } catch (err) {
             return true
           }

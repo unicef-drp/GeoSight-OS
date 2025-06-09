@@ -169,16 +169,16 @@ export class BufferDrawing {
     try {
       switch (feature.geometry.type) {
         case Variables.FEATURE_TYPE.MULTIPOLYGON:
-          geom = multiPolygon(turfSimplify(feature.geometry, { tolerance: 0.5, highQuality: true }).coordinates);
+          geom = multiPolygon(turfSimplify(feature.geometry, { tolerance: 0.01, highQuality: true }).coordinates);
           break;
         case Variables.FEATURE_TYPE.POLYGON:
-          geom = polygon(turfSimplify(feature.geometry, { tolerance: 0.5, highQuality: true }).coordinates);
+          geom = polygon(turfSimplify(feature.geometry, { tolerance: 0.01, highQuality: true }).coordinates);
           break;
         case Variables.FEATURE_TYPE.LINESTRING:
-          geom = lineString(turfSimplify(feature.geometry, { tolerance: 0.5, highQuality: true }).coordinates);
+          geom = lineString(turfSimplify(feature.geometry, { tolerance: 0.01, highQuality: true }).coordinates);
           break;
         case Variables.FEATURE_TYPE.POINT:
-          geom = point(turfSimplify(feature.geometry, { tolerance: 0.5, highQuality: true }).coordinates);
+          geom = point(turfSimplify(feature.geometry, { tolerance: 0.01, highQuality: true }).coordinates);
           break;
       }
       // If it has buffer in km

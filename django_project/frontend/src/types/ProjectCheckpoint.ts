@@ -26,4 +26,5 @@ export interface ProjectCheckpoint {
   selected_admin_level: number,
   is_3d_mode: boolean,
   position: Position;
+  context_layers_config?: object;
 }

@@ -15,15 +15,18 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import os
+from unittest.mock import patch
 
 from django.core.files import File
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from core.settings.utils import ABS_PATH
 from geosight.data.models.indicator import IndicatorValue
 from geosight.importer.exception import ImporterDoesNotExist
 from geosight.importer.importers import IndicatorValueExcelLongFormat
-from geosight.importer.importers.base.indicator_value import \
+from geosight.importer.importers.base.indicator_value import (
     ImporterTimeDataType, AdminLevelType, MultipleValueAggregationType
+)
 from geosight.importer.models import Importer, ImportType, InputFormat
 from geosight.importer.models.log import LogStatus
 from geosight.importer.tests.importers._base import (
@@ -146,6 +149,17 @@ class ExcelLongFormatIndicatorValueTest(BaseIndicatorValueImporterTest):
             self.importer.save_attributes(attributes, files)
 
         self.assertImporter(self.importer)
+
+    @patch(
+        'django.db.models.fields.files.FieldFile.save',
+        side_effect=FileNotFoundError("File does not found")
+    )
+    def test_error_file_not_found(self, mock_file):
+        """Test error file not found."""
+        mock_file = SimpleUploadedFile("missing.xlsx", b"fake content")
+        files = {'file': mock_file}
+        with self.assertRaises(FileNotFoundError):
+            self.importer.save_attributes(self.attributes, files)
 
     def test_run_using_date_time_field(self):
         """Test if correct importer."""

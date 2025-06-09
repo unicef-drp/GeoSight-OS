@@ -37,7 +37,24 @@ User = get_user_model()
 
 
 def get_feature_value(feature, field_name, default='') -> str:
-    """Read properties value from field_name from single feature."""
+    """
+    Retrieve the value of a given field from a GeoJSON feature's properties.
+
+    This function attempts to extract the value associated with `field_name`
+    from the `properties` dictionary of a GeoJSON `feature`. If the field is
+    missing or the value is `None`, it returns the provided default value.
+    Otherwise, it converts the value to a stripped string.
+
+    :param feature: A GeoJSON feature dictionary containing a `properties` key.
+    :type feature: dict
+    :param field_name: The name of the property field to retrieve.
+    :type field_name: str
+    :param default:
+        The default value to return if the field is missing or `None`.
+    :type default: str, optional
+    :return: The string value of the requested property, or the default.
+    :rtype: str
+    """
     value = (
         feature['properties'][field_name] if
         field_name in feature['properties'] else None
@@ -52,7 +69,18 @@ def get_feature_value(feature, field_name, default='') -> str:
 
 
 def build_geom_object(geom_str: str):
-    """Build geom object."""
+    """
+    Build a GEOSGeometry object from a geometry string.
+
+    Attempts to parse a geometry string (WKT, WKB, or GeoJSON) into a Django
+    `GEOSGeometry` object. If parsing fails, returns `None` and logs an error.
+
+    :param geom_str: A geometry string in WKT, WKB, or GeoJSON format.
+    :type geom_str: str
+
+    :return: A GEOSGeometry object if parsing is successful; otherwise, None.
+    :rtype: GEOSGeometry | None
+    """
     geom = None
     try:
         geom = GEOSGeometry(geom_str)
@@ -62,7 +90,22 @@ def build_geom_object(geom_str: str):
 
 
 def check_layer_type(filename: str) -> str:
-    """Check layer type of uploader."""
+    """
+    Determine the layer type based on the file extension.
+
+    Supported file types:
+    - `.geojson` or `.json` → GEOJSON
+    - `.zip` → SHAPEFILE
+    - `.gpkg` → GEOPACKAGE
+
+    :param filename: The name of the uploaded file.
+    :type filename: str
+
+    :return:
+        The corresponding layer type constant,
+        or an empty string if unsupported.
+    :rtype: str
+    """
     if (filename.lower().endswith('.geojson') or
             filename.lower().endswith('.json')):
         return GEOJSON
@@ -76,15 +119,37 @@ def check_layer_type(filename: str) -> str:
 class ReferenceDatasetImporterTask:
     """Abstract class for importer."""
 
-    def __init__(self, importer: ReferenceDatasetImporter):
-        """Init class."""
+    def __init__(  # noqa DOC101
+            self, importer: ReferenceDatasetImporter
+    ) -> None:
+        """
+        Initialize the importer handler with a given importer instance.
+
+        :param importer: The reference dataset importer instance to operate on.
+        """
         self.importer = importer
 
     def read_file(
             self, importer_level: ReferenceDatasetImporterLevel,
             progress_changed
-    ):
-        """Read file."""
+    ) -> None:
+        """
+        Read and process the file for a specific importer level.
+
+        This method reads the file associated with the given `importer_level`
+        and optionally reports progress through
+        the `progress_changed` callback.
+
+        :param importer_level:
+            The importer level instance that contains the file to read.
+        :type importer_level: ReferenceDatasetImporterLevel
+        :param progress_changed:
+            Callback function to report progress updates.
+            Expected to accept a single integer argument (percentage).
+        :type progress_changed: Callable[[int], None]
+        :return: None
+        :rtype: None
+        """
         reference_layer = importer_level.importer.reference_layer
         level = int(importer_level.level)
         name_field = importer_level.name_field
@@ -166,23 +231,51 @@ class ReferenceDatasetImporterTask:
             else:
                 Entity.assign_country()
 
-    def _error(self, message: str):
-        """Raise error and update log."""
+    def _error(self, message: str) -> None:
+        """
+        Mark the import process as failed and save the error message.
+
+        This method updates the associated importer's status to `FAILED`,
+        sets the current time as the end time,
+        stores the provided error message, and saves the changes.
+
+        :param message: Error message or note to store with the import log.
+        :type message: str
+        :return: None
+        :rtype: None
+        """
         self.importer.end_time = timezone.now()
         self.importer.status = LogStatus.FAILED
         self.importer.note = message
         self.importer.save()
 
-    def _done(self, message: str = ''):
-        """Update log to done."""
+    def _done(self, message: str = '') -> None:
+        """
+        Mark the import process as completed successfully.
+
+        This method updates the associated importer's status to `SUCCESS`,
+        sets the current time as the end time,
+        sets the progress to 100%, and saves an optional note.
+
+        :param message: Optional message or note to store with the import log.
+        :type message: str
+        :return: None
+        :rtype: None
+        """
         self.importer.end_time = timezone.now()
         self.importer.status = LogStatus.SUCCESS
         self.importer.note = message
         self.importer.progress = 100
         self.importer.save()
 
-    def run(self):
-        """To run the process."""
+    def run(self) -> None:
+        """To run the process.
+
+        Running the process of the importer.
+
+        :return: None
+        :rtype: None
+        """
         try:
             self.importer.status = LogStatus.RUNNING
             self.importer.save()
@@ -190,20 +283,27 @@ class ReferenceDatasetImporterTask:
 
             # Remove old entities
             Entity.objects.filter(reference_layer=reference_layer).delete()
-
-            total = self.importer.referencedatasetimporterlevel_set.count()
+            query = self.importer.referencedatasetimporterlevel_set.filter(
+                level__isnull=False
+            )
+            total = query.count()
             min_progress = 0
             max_progress = 80
             progress_section = max_progress / total
-            for idx, level in enumerate(
-                    self.importer.referencedatasetimporterlevel_set.all()
-            ):
+            for idx, level in enumerate(query):
                 self.importer.note = f'Importing level {idx}'
                 self.importer.progress = (progress_section * idx)
                 self.importer.save()
 
-                def progress_update(progress):
-                    """Update progress based on feature saved."""
+                def progress_update(progress: int) -> None:
+                    """Update progress based on feature saved.
+
+                    :param progress: progress value.
+                    :type progress: int
+
+                    :return: None
+                    :rtype: None
+                    """
                     progress = progress_section * progress
                     self.importer.progress = progress + min_progress
                     self.importer.save()

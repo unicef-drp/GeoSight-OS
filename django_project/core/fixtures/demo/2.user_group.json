@@ -7,7 +7,7 @@
       "last_login": "2024-10-14T03:44:58.770Z",
       "is_superuser": true,
       "username": "admin",
-      "first_name": "",
+      "first_name": "Admin",
       "last_name": "",
       "email": "admin@example.com",
       "is_staff": true,

@@ -176,7 +176,7 @@ export function MultipleSelectWithSearch(
             onChangeFn([]);
           }
         } else {
-          onChangeFn(values);
+          onChangeFn(values.filter(value => value !== ''));
         }
       }}
       disabled={disabled}

@@ -34,21 +34,48 @@ class ReferenceDatasetImporterSerializer(DynamicModelSerializer):
     levels = serializers.SerializerMethodField()
 
     def get_created_by(self, obj: ReferenceDatasetImporter):
-        """Return creator name."""
+        """
+        Return the full name of the user who created the importer.
+
+        :param obj: The importer instance.
+        :type obj: ReferenceDatasetImporter
+        :return: The full name of the creator, or `None` if not available.
+        :rtype: str | None
+        """
         if obj.creator:
             return obj.creator.get_full_name()
         else:
             return None
 
     def get_reference_layer_name(self, obj: ReferenceDatasetImporter):
-        """Return reference_layer name."""
+        """
+        Return the full name of the reference layer.
+
+        :param obj: The importer instance.
+        :type obj: ReferenceDatasetImporter
+        :return:
+            The full name of the reference layer, or `None` if not available.
+        :rtype: str | None
+        """
         if obj.reference_layer:
             return obj.reference_layer.full_name()
         else:
             return None
 
     def get_urls(self, obj: ReferenceDatasetImporter):
-        """Return urls of importer."""
+        """
+        Return related URLs of the importer.
+
+        Constructs URLs (e.g., detail view) associated with the given importer
+        instance using Django's `reverse` function.
+
+        :param obj: The importer instance for which URLs are being generated.
+        :type obj: ReferenceDatasetImporter
+        :return:
+            A dictionary containing named URLs related to the importer.
+            Currently includes the 'detail' view.
+        :rtype: dict[str, str]
+        """
         detail_url = reverse(
             'admin-reference-dataset-import-data-detail-view',
             args=[obj.reference_layer.identifier, obj.id]
@@ -58,9 +85,20 @@ class ReferenceDatasetImporterSerializer(DynamicModelSerializer):
         }
 
     def get_levels(self, obj: ReferenceDatasetImporter):
-        """Return urls of importer."""
+        """Return urls of importer.
+
+        This method serializes all related `ReferenceDatasetImporterLevel`
+        objects that have a non-null `level` field.
+
+        :param obj: The importer instance for which to retrieve levels.
+        :type obj: ReferenceDatasetImporter
+        :return: A list of serialized importer level data.
+        :rtype: list[dict]
+        """
         return ReferenceDatasetImporterLevelSerializer(
-            obj.referencedatasetimporterlevel_set.all(), many=True
+            obj.referencedatasetimporterlevel_set.filter(
+                level__isnull=False
+            ), many=True
         ).data
 
     class Meta:  # noqa: D106
@@ -76,24 +114,73 @@ class ReferenceDatasetImporterLevelSerializer(DynamicModelSerializer):
     percent = serializers.SerializerMethodField()
     type = serializers.SerializerMethodField()
 
-    def get_id(self, obj: ReferenceDatasetImporterLevel):
-        """Return id."""
+    def get_id(self, obj: ReferenceDatasetImporterLevel) -> str:
+        """Return id.
+
+        :param obj: An instance of `ReferenceDatasetImporterLevel`.
+        :type obj: ReferenceDatasetImporterLevel
+        :return: Return file id of importer.
+        :rtype: str
+        """
         return obj.file_id
 
-    def get_name(self, obj: ReferenceDatasetImporterLevel):
-        """Return file."""
+    def get_name(self, obj: ReferenceDatasetImporterLevel) -> str:
+        """Return file.
+
+        :param obj: An instance of `ReferenceDatasetImporterLevel`.
+        :type obj: ReferenceDatasetImporterLevel
+        :return: Return file name of importer.
+        :rtype: str
+        """
         return obj.file.name
 
-    def get_percent(self, obj: ReferenceDatasetImporterLevel):
-        """Return percent."""
+    def get_percent(self, obj: ReferenceDatasetImporterLevel) -> int:
+        """Return percent.
+
+        :return: Return percentage of progress, just return 100 as it is done.
+        :rtype: int
+
+        :param obj: An instance of `ReferenceDatasetImporterLevel`.
+        :type obj: ReferenceDatasetImporterLevel
+        :return:
+            The guessed MIME type of the file
+            (e.g., 'text/csv', 'application/zip').
+            Returns `None` if the type cannot be guessed.
+        :rtype: str
+        """
         return 100
 
-    def get_status(self, obj: ReferenceDatasetImporterLevel):
-        """Return percent."""
+    def get_status(self, obj: ReferenceDatasetImporterLevel) -> str:
+        """Return status.
+
+        :return: Return just 'done' as it is done.
+        :rtype: str
+
+        :param obj: An instance of `ReferenceDatasetImporterLevel`.
+        :type obj: ReferenceDatasetImporterLevel
+        :return:
+            The guessed MIME type of the file
+            (e.g., 'text/csv', 'application/zip').
+            Returns `None` if the type cannot be guessed.
+        :rtype: str
+        """
         return 'done'
 
-    def get_type(self, obj: ReferenceDatasetImporterLevel):
-        """Return percent."""
+    def get_type(self, obj: ReferenceDatasetImporterLevel) -> str:
+        """
+        Get the MIME type of the file.
+
+        Uses the `mimetypes` module to guess the MIME type of the file
+        based on its path.
+
+        :param obj: An instance of `ReferenceDatasetImporterLevel`.
+        :type obj: ReferenceDatasetImporterLevel
+        :return:
+            The guessed MIME type of the file
+            (e.g., 'text/csv', 'application/zip').
+            Returns `None` if the type cannot be guessed.
+        :rtype: str
+        """
         mime_type, encoding = mimetypes.guess_type(obj.file.path)
         return mime_type
 

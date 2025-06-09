@@ -26,7 +26,7 @@ export interface Props {
   setError: (value: string) => void;
 }
 
-export function IndicatorLayerChecker(
+export function Checker(
   { layer, setIsLoading, setError }: Props
 ) {
   const layerReferenceLayer = layer?.level_config?.referenceLayer?.identifier
@@ -34,8 +34,20 @@ export function IndicatorLayerChecker(
   const { referenceLayer } = useSelector(state => state.dashboard.data);
   // @ts-ignore
   const indicatorsData = useSelector(state => state.indicatorsData);
+  // @ts-ignore
+  const currentIndicatorLayer = useSelector(state => state.selectedIndicatorLayer);
+  // @ts-ignore
+  const currentIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer);
+  const activate = [currentIndicatorLayer?.id, currentIndicatorSecondLayer?.id].includes(layer.id)
 
-  /** Remove context layers when not in selected data */
+  /** When not activated, don't show loading */
+  useEffect(() => {
+    if (!activate) {
+      setIsLoading(false)
+    }
+  }, [activate]);
+
+  /** Check data readiness */
   useEffect(() => {
     if (!layer) {
       return;
@@ -47,27 +59,37 @@ export function IndicatorLayerChecker(
         indicator.id, referenceLayer.identifier, layerReferenceLayer
       )
       const data = indicatorsData[id]
-      if (!data?.fetched) {
-        loading = true
-      } else {
-        if (data?.error) {
-          error = data?.error
+      if (data) {
+        if (!data.fetched) {
+          loading = true
+        } else {
+          if (data.error) {
+            error = data.error
+          }
         }
       }
     })
+
+    // This is for dynamic checker
     if (layer.type === DynamicIndicatorType) {
       const data = indicatorsData['layer_' + layer.id]
-      if (!data?.fetched) {
-        loading = true
-      } else {
-        if (data?.error) {
-          error = data?.error
+      if (data) {
+        if (!data?.fetched) {
+          loading = true
+        } else {
+          if (data?.error) {
+            error = data?.error
+          }
         }
       }
     }
-    setIsLoading(loading)
+    if (activate) {
+      setIsLoading(loading)
+    } else {
+      setIsLoading(false)
+    }
     setError(error)
-  }, [indicatorsData]);
+  }, [indicatorsData, activate]);
   return <></>
 }
 
@@ -90,11 +112,13 @@ export function RelatedTableChecker(
     layer.related_tables.map(indicator => {
       const id = layerReferenceLayer && layerReferenceLayer != referenceLayer.identifier ? indicator.id + '-' + layerReferenceLayer : indicator.id
       const data = relatedTableData[id]
-      if (!data?.fetched) {
-        loading = true
-      } else {
-        if (data?.error) {
-          error = data?.error
+      if (data) {
+        if (!data?.fetched) {
+          loading = true
+        } else {
+          if (data?.error) {
+            error = data?.error
+          }
         }
       }
     })

@@ -30,3 +30,8 @@ mock==5.1.0
 
 # ssl server localhost
 django-sslserver==0.22
+
+# For python style
+flake8
+flake8-docstrings
+pydoclint[flake8]

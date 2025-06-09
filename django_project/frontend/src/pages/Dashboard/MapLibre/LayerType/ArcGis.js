@@ -15,7 +15,13 @@
 
 import FeatureService from 'mapbox-gl-arcgis-featureserver'
 import parseArcRESTStyle from "../../../../utils/esri/esri-style";
-import { addPopup, hasLayer, hasSource, loadImageToMap } from "../utils";
+import {
+  addPopup,
+  getBeforeLayerId,
+  hasLayer,
+  hasSource,
+  loadImageToMap
+} from "../utils";
 import { toFloat } from "../../../../utils/main";
 import { addLayerWithOrder } from "../Render";
 import { Variables } from "../../../../utils/Variables";
@@ -397,19 +403,7 @@ export default function arcGisLayer(map, id, data, contextLayerData, popupFeatur
   }
 
   // We find the before layers
-  let before = null;
-  if (contextLayerOrder) {
-    const contextLayerIdx = contextLayerOrder.indexOf(contextLayerData.id)
-    for (let idx = 0; idx < contextLayerOrder.length; idx++) {
-      if (map && idx > contextLayerIdx) {
-        const currentId = 'context-layer-' + contextLayerOrder[idx] + '-line'
-        if (hasLayer(map, currentId)) {
-          before = currentId
-          break;
-        }
-      }
-    }
-  }
+  let before = getBeforeLayerId(map, id, contextLayerOrder)
   if (!hasSource(map, id)) {
     let url = data.url
     if (data.params.url) {

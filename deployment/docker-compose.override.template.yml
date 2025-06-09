@@ -70,6 +70,31 @@ services:
       - "${HTTP_PORT:-80}:8080"
       - "${HTTPS_PORT:-443}:443"
 
+  webpack:
+    build:
+      context: ../
+      dockerfile: deployment/docker/Dockerfile
+      target: dev
+    container_name: "geosight_webpack"
+    image: kartoza/geosight:${DJANGO_TAG}-dev
+    volumes:
+      - ../django_project:/home/web/django_project
+      - ./volumes/static:/home/web/static
+      - ./volumes/media:/home/web/media
+      - ./volumes/backups:/backups
+      - ./volumes/tmp_data:/home/web/logs
+    working_dir: /home/web/django_project/frontend
+    command: sh -c "npm install --verbose && npm run dev"
+    entrypoint: []
+    ports:
+      - "9000:9000"
+    healthcheck:
+      test: [ "CMD", "curl", "http://localhost:9000" ]
+      interval: 5s
+      timeout: 2s
+      retries: 200
+      start_period: 5s
+
   # dev
   dev:
     build:
@@ -118,15 +143,18 @@ services:
       - PLUGINS=${PLUGINS:-''}
     ports:
       # for django test server
-      #- "2000:8080"
+      - "2000:8080"
       # for ssh
       - "2001:22"
-    command: 'python manage.py runserver 0.0.0.0:8080'
-    entrypoint: [ ]
+    entrypoint: [ "/home/web/django_project/entrypoint.dev.sh" ]
     links:
       - db
       - redis
-      - celery_beat
+      - worker
+      - webpack
+    depends_on:
+      webpack:
+        condition: service_healthy
 
   logrotate:
     volumes:

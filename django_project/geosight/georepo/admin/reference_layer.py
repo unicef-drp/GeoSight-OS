@@ -32,14 +32,38 @@ class InGeorepoFilter(admin.SimpleListFilter):
     parameter_name = 'in_georepo'
 
     def lookups(self, request, model_admin):
-        """Lookup function for entity filter."""
+        """
+        Provide lookup choices for the filter dropdown.
+
+        Returns a list of tuples representing filter options:
+        - ('yes', 'Yes') to filter where is in GeoRepo.
+        - ('no', 'No') to filter where is not in GeoRepo (local).
+
+        :param request: The current HttpRequest object.
+        :type request: django.http.HttpRequest
+        :param model_admin: The current ModelAdmin instance.
+        :type model_admin: django.contrib.admin.ModelAdmin
+        :return: List of tuples representing filter options.
+        :rtype: list[tuple[str, str]]
+        """
         return [
             ('yes', _('Yes')),
             ('no', _('No')),
         ]
 
     def queryset(self, request, queryset):
-        """Return filtered queryset."""
+        """
+        Filter the queryset based on the value of this filter.
+
+        :param request: The current HttpRequest object.
+        :type request: django.http.HttpRequest
+
+        :param queryset: The original queryset to filter.
+        :type queryset: django.db.models.QuerySet
+
+        :return: The filtered or original queryset depending on filter value.
+        :rtype: django.db.models.QuerySet
+        """
         if self.value() == 'yes':
             return queryset.filter(in_georepo=True)
         if self.value() == 'no':
@@ -49,14 +73,33 @@ class InGeorepoFilter(admin.SimpleListFilter):
 
 @admin.action(description='Update meta')
 def update_meta(modeladmin, request, queryset):
-    """Fetch new reference layer."""
+    """
+    Update metadata for selected reference layers.
+
+    :param modeladmin: The current ModelAdmin instance.
+    :type modeladmin: django.contrib.admin.ModelAdmin
+    :param request: The current HttpRequest object.
+    :type request: django.http.HttpRequest
+    :param queryset: The queryset of selected ReferenceLayerView instances.
+    :type queryset: django.db.models.QuerySet
+    """
     for reference_layer in queryset:
         reference_layer.update_meta()
 
 
 @admin.action(description='Sync entities on all level')
 def sync_codes(modeladmin, request, queryset):
-    """Fetch new reference layer."""
+    """
+    Trigger asynchronous task to sync entities for all levels.
+
+    :param modeladmin: The current ModelAdmin instance.
+    :type modeladmin: django.contrib.admin.ModelAdmin
+    :param request: The current HttpRequest object.
+    :type request: django.http.HttpRequest
+    :param queryset:
+        The queryset of selected ReferenceDatasetImporterLevel instances.
+    :type queryset: django.db.models.QuerySet
+    """
     fetch_reference_codes_by_ids.delay(
         list(queryset.values_list('id', flat=True)),
         sync_all=True
@@ -65,7 +108,17 @@ def sync_codes(modeladmin, request, queryset):
 
 @admin.action(description='Sync entities on non saved level')
 def sync_codes_non_saved_level(modeladmin, request, queryset):
-    """Fetch new reference layer."""
+    """
+    Trigger asynchronous task to sync entities for levels that are not saved.
+
+    :param modeladmin: The current ModelAdmin instance.
+    :type modeladmin: django.contrib.admin.ModelAdmin
+    :param request: The current HttpRequest object.
+    :type request: django.http.HttpRequest
+    :param queryset:
+        The queryset of selected ReferenceDatasetImporterLevel instances.
+    :type queryset: django.db.models.QuerySet
+    """
     fetch_reference_codes_by_ids.delay(
         list(queryset.values_list('id', flat=True)),
         sync_all=False
@@ -74,25 +127,63 @@ def sync_codes_non_saved_level(modeladmin, request, queryset):
 
 @admin.action(description='Fetch new views')
 def action_fetch_datasets(modeladmin, request, queryset):
-    """Fetch new reference layer."""
+    """
+    Trigger asynchronous task to fetch new reference layer datasets.
+
+    :param modeladmin: The current ModelAdmin instance.
+    :type modeladmin: django.contrib.admin.ModelAdmin
+    :param request: The current HttpRequest object.
+    :type request: django.http.HttpRequest
+    :param queryset: The queryset of selected model instances (not used).
+    :type queryset: django.db.models.QuerySet
+    """
     fetch_datasets.delay(True)
 
 
 @admin.action(description='Create all data access')
 def action_create_data_access(modeladmin, request, queryset):
-    """Fetch new reference layer."""
+    """
+    Trigger asynchronous task to create all data access entries.
+
+    :param modeladmin: The current ModelAdmin instance.
+    :type modeladmin: django.contrib.admin.ModelAdmin
+    :param request: The current HttpRequest object.
+    :type request: django.http.HttpRequest
+    :param queryset: The queryset of selected model instances (not used).
+    :type queryset: django.db.models.QuerySet
+    """
     create_data_access.delay()
 
 
 @admin.action(description='Invalidate cache')
 def invalidate_cache(modeladmin, request, queryset):
-    """Invalidate cache of value on frontend."""
+    """
+    Invalidate the frontend cache for selected objects.
+
+    :param modeladmin: The current ModelAdmin instance.
+    :type modeladmin: django.contrib.admin.ModelAdmin
+    :param request: The current HttpRequest object.
+    :type request: django.http.HttpRequest
+    :param queryset: The queryset of selected model instances.
+    :type queryset: django.db.models.QuerySet
+    """
     queryset.update(version_data=timezone.now())
 
 
 @admin.action(description='Assign countries')
 def assign_countries(modeladmin, request, queryset):
-    """Assign countries."""
+    """
+    Admin action to assign countries to selected reference layers.
+
+    :param modeladmin: The current ModelAdmin instance.
+    :type modeladmin: django.contrib.admin.ModelAdmin
+
+    :param request: The current HttpRequest object.
+    :type request: django.http.HttpRequest
+
+    :param queryset: The queryset of selected reference layer instances.
+    :type queryset: django.db.models.QuerySet
+    """
     for reference_layer in queryset:
         reference_layer.assign_countries()
 
@@ -102,7 +193,7 @@ class ReferenceLayerViewAdmin(admin.ModelAdmin):
 
     list_display = [
         'identifier', 'name', 'description', 'in_georepo', 'number_of_value',
-        'number_of_entities', 'country_list'
+        'number_of_entities', 'country_list', 'tags'
     ]
     list_filter = (InGeorepoFilter,)
     ordering = ['name']
@@ -113,24 +204,76 @@ class ReferenceLayerViewAdmin(admin.ModelAdmin):
     ]
     filter_horizontal = ['countries']
 
+    def get_readonly_fields(self, request, obj=None):
+        """
+        Set read-only fields whether the object is being created or edited.
+
+        :param request: The current HttpRequest object.
+        :type request: HttpRequest
+        :param obj:
+            The instance of the model being edited. None if creating a new one.
+        :type obj: ReferenceDataset or None
+        :return: A tuple of field names that should be read-only.
+        :rtype: tuple
+        """
+        if obj:
+            return ('countries',)
+        return ()
+
     def in_georepo(self, obj: ReferenceLayerView):
-        """Is reference layer in georepo."""
+        """
+        Indicate whether the reference layer is present in GeoRepo.
+
+        Returns a check mark if `in_georepo` is True, otherwise a cross.
+
+        :param obj: An instance of `ReferenceLayerView`.
+        :type obj: ReferenceLayerView
+        :return: '✓' if in GeoRepo, otherwise '✕'.
+        :rtype: str
+        """
         if obj.in_georepo:
             return '✓'
         return '✕'
 
     def number_of_value(self, obj: ReferenceLayerView):
-        """Return number of value for this reference layer."""
-        # TODO:
-        #  We need to fix this with using IndicatorValue
+        """
+        Return the number of values for this reference layer.
+
+        .. todo::
+            Implement this method properly by using `IndicatorValue`.
+
+        :param obj: An instance of `ReferenceLayerView`.
+        :type obj: ReferenceLayerView
+        :return: Currently returns 0 as a placeholder.
+        :rtype: int
+        """
         return 0
 
     def number_of_entities(self, obj: ReferenceLayerView):
-        """Return number of value for this reference layer."""
+        """
+        Return the count of entities with the given ReferenceLayerView.
+
+        :param obj: An instance of `ReferenceLayerView`.
+        :type obj: ReferenceLayerView
+        :return: The number of related entities.
+        :rtype: int
+        """
         return obj.entities_set.count()
 
     def country_list(self, obj: ReferenceLayerView):
-        """Return countries of view."""
+        """
+        Return an HTML list of countries related to the ReferenceLayerView.
+
+        Iterates over the `countries` related to the `obj`, creating
+        admin change URLs for each country and joining them as clickable links.
+
+        :param obj: An instance of `ReferenceLayerView`.
+        :type obj: ReferenceLayerView
+        :return:
+            An HTML-safe string containing
+            comma-separated links to country admin pages.
+        :rtype: django.utils.safestring.SafeString
+        """
         _list = []
         for country in obj.countries.all():
             url = f"/django-admin/geosight_georepo/entity/{country.id}/change/"

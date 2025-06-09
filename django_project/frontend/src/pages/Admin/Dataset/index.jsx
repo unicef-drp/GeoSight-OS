@@ -268,15 +268,15 @@ export default function DatasetAdmin() {
         <div className='Separator'/>
         <ThemeButton
           variant='primary'
-          disabled={selectedViews.length !== 1}
+          disabled={!selectedViews.length}
           onClick={() => {
-            let url = `/admin/project/create?dataset_id=${selectedViews[0]}`
+            let url = `/admin/project/create?entity_ids=${selectedViews.join(',')}`
             if (selectedModelIds) {
               url += `&indicators=${selectedIndicators.join(',')}`
             }
             window.location.href = url;
           }}
-          title={'Enable this by selecting data contain just 1 view.'}
+          title={'Enable this by selecting data contain just 1 country.'}
         >
           <AddIcon/> Add to New Project
         </ThemeButton>
@@ -323,6 +323,15 @@ export default function DatasetAdmin() {
       ]
     }}
     parentGetParameters={getParameters}
+    selectableFunction={
+      (params) => {
+        const { permission } = params.row
+        if (!permission) {
+          return true
+        }
+        return permission?.delete || (permission.read_data && user.is_creator)
+      }
+    }
     ref={tableRef}
   />
 }

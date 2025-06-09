@@ -41,6 +41,7 @@ export interface AdminListProps extends MainDataGridProps {
   enableFilter?: boolean;
 
   parentGetParameters?: (parameters: any[]) => any[];
+  selectableFunction?: (parameters: any) => boolean;
 }
 
 export interface AdminListContentProps extends AdminListProps {

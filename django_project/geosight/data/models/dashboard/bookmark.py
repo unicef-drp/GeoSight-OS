@@ -44,14 +44,17 @@ class DashboardBookmarkAbstract(models.Model):
     selected_indicator_layers = models.JSONField(
         null=True, blank=True, default=list
     )
-    selected_context_layers = models.ManyToManyField(
-        ContextLayer, blank=True
-    )
     indicator_layer_show = models.BooleanField(default=True)
-    context_layer_show = models.BooleanField(default=True)
     selected_admin_level = models.FloatField(null=True, blank=True)
     is_3d_mode = models.BooleanField(default=False)
     position = models.JSONField(null=True, blank=True)
+
+    # Selected context layers
+    context_layer_show = models.BooleanField(default=True)
+    selected_context_layers = models.ManyToManyField(
+        ContextLayer, blank=True
+    )
+    context_layers_config = models.JSONField(null=True, blank=True)
 
     class Meta:  # noqa: D106
         abstract = True
@@ -72,7 +75,19 @@ class DashboardBookmark(DashboardBookmarkAbstract, AbstractTerm):
     )
 
     def able_to_edit(self, user):
-        """If able to edit."""
+        """
+        Determine whether the given user has permission to edit this object.
+
+        The user can edit if:
+        - They are a superuser,
+        - Their profile role is SUPER_ADMIN, or
+        - They are the creator of the object.
+
+        :param user: The user whose permissions are being checked.
+        :type user: django.contrib.auth.models.User
+        :return: True if the user has edit permissions, False otherwise.
+        :rtype: bool
+        """
         from core.models.profile import ROLES
         return (
                 user.is_superuser or
@@ -85,7 +100,18 @@ class DashboardBookmark(DashboardBookmarkAbstract, AbstractTerm):
         ordering = ('name',)
 
     def save_relations(self, data):
-        """Save all relationship data."""
+        """
+        Save related context layers from the provided data.
+
+        This method adds `ContextLayer` instances (identified by their IDs)
+        from the `data['selected_context_layers']` list to the
+        `selected_context_layers` relationship field of the current instance.
+
+        :param data: Dictionary containing the selected context layer IDs.
+        :type data: dict
+
+        :raises Exception: If any provided context layer ID does not exist.
+        """
         from geosight.data.models import ContextLayer
         try:
             for row in data['selected_context_layers']:

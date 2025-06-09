@@ -13,13 +13,10 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import $ from "jquery";
 import ViewHeadlineIcon from '@mui/icons-material/ViewHeadline';
-import ReplayIcon from '@mui/icons-material/Replay';
-import UndoIcon from "@mui/icons-material/Undo";
-import RedoIcon from "@mui/icons-material/Redo";
 
 import App, { render } from '../../../../app';
 import { pageNames } from '../../index';
@@ -56,102 +53,14 @@ import Modal, {
 import DashboardFormContent from "./DashboardContent";
 import { PAGES } from "./types.d";
 import DashboardFormHeader from "./DashboardFormHeader";
+import Tooltip from "@mui/material/Tooltip";
+import { IS_DEBUG } from "../../../../utils/logger";
+import DashboardHistory from "./History";
 
 
 /**
  * Dashboard history
  */
-
-let histories = [];
-let forceChangedDataStr = null;
-
-export function DashboardHistory(
-  {
-    page,
-    setCurrentPage,
-    currentHistoryIdx,
-    setCurrentHistoryIdx
-  }) {
-  const dispatch = useDispatch();
-  const { data } = useSelector(state => state.dashboard);
-
-  const applyHistory = (targetIdx, page) => {
-    const history = histories[targetIdx]
-    const data = history.data
-    forceChangedDataStr = JSON.stringify(data)
-    dispatch(
-      Actions.Dashboard.update(dictDeepCopy(data))
-    )
-    setCurrentPage(page)
-    setCurrentHistoryIdx(targetIdx)
-  }
-
-  const undo = () => {
-    const currentHistory = histories[currentHistoryIdx]
-    applyHistory(currentHistoryIdx - 1, currentHistory.page)
-  }
-
-  const redo = () => {
-    const history = histories[currentHistoryIdx + 1]
-    applyHistory(currentHistoryIdx + 1, history.page)
-  }
-
-  const reset = () => {
-    const history = histories[0]
-    applyHistory(0, history.page)
-  }
-
-  // Add history
-  useEffect(() => {
-    if (data.extent) {
-      const strData = JSON.stringify(data)
-      if (forceChangedDataStr !== strData) {
-        const lastHistory = histories[currentHistoryIdx];
-        histories = histories.slice(0, currentHistoryIdx + 1);
-        if (!lastHistory || (lastHistory && strData !== JSON.stringify(lastHistory.data))) {
-          const newHistoryIdx = currentHistoryIdx + 1
-          const newHistory = {
-            page: page,
-            data: dictDeepCopy(data)
-          }
-          histories[newHistoryIdx] = newHistory
-          setCurrentHistoryIdx(newHistoryIdx)
-        }
-      }
-    }
-  }, [data]);
-
-  const redoDisabled = (
-    histories.length <= 1 || histories.length - 1 === currentHistoryIdx
-  )
-
-  return <>
-    <ThemeButton
-      variant='primary Reverse JustIcon'
-      className='UndoRedo'
-      onClick={undo}
-      disabled={currentHistoryIdx <= 0}
-    >
-      <UndoIcon />
-    </ThemeButton>
-    <ThemeButton
-      variant='primary Reverse JustIcon'
-      className='UndoRedo'
-      onClick={reset}
-      disabled={currentHistoryIdx <= 0}
-    >
-      <ReplayIcon />
-    </ThemeButton>
-    <ThemeButton
-      variant='primary Reverse JustIcon'
-      className='UndoRedo'
-      onClick={redo}
-      disabled={redoDisabled}
-    >
-      <RedoIcon />
-    </ThemeButton>
-  </>
-}
 
 export function DashboardSaveAsForm({ submitted, onSaveAs }) {
   const [openSaveAs, setOpenSaveAs] = useState(false);
@@ -196,34 +105,34 @@ export function DashboardSaveAsForm({ submitted, onSaveAs }) {
             </div>
             <div>
               <span className="form-input">
-                <input
-                  id="GeneralName" type="text" name="name" required={true}
-                  placeholder='Example: Afghanistan Risk Dashboard'
-                  value={nameData}
-                  onChange={(event) => {
-                    setNameData(event.target.value)
-                    setSlugInput(slugify(event.target.value))
-                  }} />
+              <input
+                id="GeneralName" type="text" name="name" required={true}
+                placeholder='Example: Afghanistan Risk Dashboard'
+                value={nameData}
+                onChange={(event) => {
+                  setNameData(event.target.value)
+                  setSlugInput(slugify(event.target.value))
+                }}/>
               </span>
             </div>
-            <br />
+            <br/>
             <label className="form-label" htmlFor="name">
               URL Shortcode
             </label>
             <div>
-              <span className="form-input">
-                <input
-                  type="text" name="name" required={true}
-                  value={slugInput}
-                  onChange={(event) => {
-                    setSlugInput(slugify(event.target.value))
-                  }} />
-              </span>
+            <span className="form-input">
+            <input
+              type="text" name="name" required={true}
+              value={slugInput}
+              onChange={(event) => {
+                setSlugInput(slugify(event.target.value))
+              }}/>
+            </span>
             </div>
             <span className='form-helptext'>
               Url of project in slug format. It will auto change space to "-" and to lowercase.
               It will be generated from name if empty.
-              <br />
+              <br/>
               Please change it if it is same with the origin one.
             </span>
           </div>
@@ -231,7 +140,7 @@ export function DashboardSaveAsForm({ submitted, onSaveAs }) {
       </ModalContent>
       <ModalFooter>
         <div style={{ display: "flex" }}>
-          <div className='Separator' />
+          <div className='Separator'/>
           <ThemeButton
             variant="Basic Reverse"
             onClick={() => {
@@ -244,7 +153,7 @@ export function DashboardSaveAsForm({ submitted, onSaveAs }) {
             text='Create'
             onClick={() => {
               onSaveAs()
-            }} />
+            }}/>
         </div>
       </ModalFooter>
     </Modal>
@@ -263,13 +172,8 @@ export function DashboardSaveAsForm({ submitted, onSaveAs }) {
 /**
  * Dashboard Save Form
  */
-export function DashboardSaveForm(
-  {
-    currentPage,
-    disabled,
-    setCurrentHistoryIdx,
-    setChanged
-  }) {
+export function DashboardSaveForm() {
+  const dispatch = useDispatch();
   const {
     id,
     referenceLayer,
@@ -286,6 +190,7 @@ export function DashboardSaveForm(
     extent,
     filters,
     filtersAllowModify,
+    filtersBeingHidden,
     permission,
     geoField,
     levelConfig,
@@ -300,6 +205,13 @@ export function DashboardSaveForm(
   const notify = (newMessage, newSeverity = NotificationStatus.INFO) => {
     notificationRef?.current?.notify(newMessage, newSeverity)
   }
+
+  // Check histories
+  const {
+    checkpoint,
+    currentIdx
+    // @ts-ignore
+  } = useSelector(state => state.dashboardHistory);
 
   /** On save **/
   const onSave = (targetUrl = document.location.href) => {
@@ -404,6 +316,7 @@ export function DashboardSaveForm(
         'widgets_structure': widgetsStructure,
         'filters': filters,
         'filters_allow_modify': filtersAllowModify,
+        'filters_being_hidden': filtersBeingHidden,
         'permission': permission,
         'show_splash_first_open': splashScreen,
         'truncate_indicator_layer_name': truncateIndicatorName,
@@ -444,12 +357,7 @@ export function DashboardSaveForm(
               window.location = response.url
             } else {
               notify('Configuration has been saved!', NotificationStatus.SUCCESS)
-              histories = [{
-                page: currentPage,
-                data: JSON.parse(JSON.stringify(data))
-              }]
-              setCurrentHistoryIdx(0)
-              setChanged(false)
+              dispatch(Actions.DashboardHistory.applyCheckpoint())
             }
           }
         }
@@ -467,7 +375,7 @@ export function DashboardSaveForm(
           submitted={submitted}
           onSaveAs={() => {
             onSave('/admin/project/create')
-          }} /> : null
+          }}/> : null
     }
     <SaveButton
       variant="primary"
@@ -476,8 +384,8 @@ export function DashboardSaveForm(
         onSave()
       }}
       className={submitted ? 'Submitted' : ''}
-      disabled={disabled || submitted || !Object.keys(data).length} />
-    <Notification ref={notificationRef} />
+      disabled={submitted || !Object.keys(data).length || checkpoint === currentIdx}/>
+    <Notification ref={notificationRef}/>
   </>
 }
 
@@ -487,55 +395,71 @@ export function DashboardSaveForm(
 export function DashboardForm({ onPreview }) {
   const {
     user_permission,
+    view_url,
     id,
     name
   } = useSelector(state => state.dashboard.data);
   const [currentPage, setCurrentPage] = useState(PAGES.GENERAL);
-  const [currentHistoryIdx, setCurrentHistoryIdx] = useState(-1);
-  const [changed, setChanged] = useState(false);
   const className = currentPage.replaceAll(' ', '')
 
-  const resourceActionsResult = resourceActions({
-    id: id,
-    row: {
-      id,
-      name,
-      permission: user_permission
-    }
-  })
+
+  // Callback for setCurrentPage
+  const setCurrentPageCallback = useCallback((page) => {
+    setCurrentPage(page)
+  }, []);
+
   return (
     <div className='Admin'>
-      <SideNavigation pageName={pageNames.Dashboard} minified={true} />
+      <SideNavigation pageName={pageNames.Dashboard} minified={true}/>
       <div className='AdminContent'>
-        <GeorepoAuthorizationModal />
+        <GeorepoAuthorizationModal/>
         <div className='AdminContentHeader'>
           <div className='AdminContentHeader-Left'>
             <b className='light'
-              dangerouslySetInnerHTML={{ __html: contentTitle }}></b>
+               dangerouslySetInnerHTML={{ __html: contentTitle }}></b>
           </div>
           <div className='AdminContentHeader-Right'>
             {
               id ?
-                resourceActionsResult : null
+                resourceActions({
+                  id: id,
+                  row: {
+                    id,
+                    name,
+                    permission: user_permission
+                  }
+                }) : null
             }
             <DashboardHistory
               page={currentPage}
-              setCurrentPage={setCurrentPage}
-              currentHistoryIdx={currentHistoryIdx}
-              setCurrentHistoryIdx={setCurrentHistoryIdx} />
-            <ThemeButton
-              variant="primary"
-              onClick={onPreview}
-            >
-              <MapActiveIcon />Preview
-            </ThemeButton>
-            <DashboardSaveForm
-              currentPage={currentPage}
-              // disabled={currentHistoryIdx <= 0 && !changed}
-              disabled={false}
-              setCurrentHistoryIdx={setCurrentHistoryIdx}
-              setChanged={setChanged}
+              setPage={setCurrentPageCallback}
             />
+            {
+              view_url && <Tooltip
+                title={
+                  <p style={{ fontSize: "12px" }}>
+                    To preview the project, please save your changes first and
+                    refresh the preview page to see the updates.
+                  </p>
+                }
+                className={'tooltip'}
+              >
+                <a href={view_url} target='_blank'>
+                  <ThemeButton variant="primary">
+                    <MapActiveIcon/>Preview
+                  </ThemeButton>
+                </a>
+              </Tooltip>
+            }
+            {
+              IS_DEBUG && <ThemeButton
+                variant="primary"
+                onClick={onPreview}
+              >
+                <MapActiveIcon/>Live Preview
+              </ThemeButton>
+            }
+            <DashboardSaveForm/>
           </div>
         </div>
 
@@ -549,7 +473,7 @@ export function DashboardForm({ onPreview }) {
             />
 
             {/* FORM CONTENT */}
-            <DashboardFormContent page={currentPage} />
+            <DashboardFormContent page={currentPage}/>
           </div>
         </div>
       </div>
@@ -576,7 +500,7 @@ export default function DashboardFormApp() {
       {/* ADMIN SECTION */}
       <DashboardForm onPreview={() => {
         setCurrentMode('PreviewMode')
-      }} />
+      }}/>
       {/* DASHBOARD SECTION */}
       <Dashboard>
         <div className='BackToForm'>
@@ -586,7 +510,7 @@ export default function DashboardFormApp() {
               setCurrentMode('FormMode')
             }}
           >
-            <ViewHeadlineIcon />Back to Form
+            <ViewHeadlineIcon/>Back to Form
           </ThemeButton>
         </div>
       </Dashboard>

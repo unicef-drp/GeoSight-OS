@@ -17,8 +17,10 @@
 import $ from "jquery";
 import {
   addClickEvent,
+  addPopup,
   addStandalonePopup,
   getBeforeLayerId,
+  hasLayer,
   hexToRgba,
   removeLayer,
   removeSource
@@ -38,7 +40,8 @@ let sessions = {};
  */
 export default function rasterCogLayer(
   map, id, data, setData, contextLayerData, popupFeatureFn,
-  contextLayerOrder, isInit, setIsInit, prevData = {}, setLoading = () => {}) {
+  contextLayerOrder, isInit, setIsInit, prevData = {}, setLoading = () => {
+  }) {
   (
     async () => {
       if (JSON.stringify(prevData.current) === JSON.stringify(data?.styles)) {
@@ -63,7 +66,28 @@ export default function rasterCogLayer(
       if (!colors.length) {
         return
       }
+      // -----------------------------------------------
+      // Create the temporary layers
+      // -----------------------------------------------
+      removeSource(map, id)
+      removeLayer(map, id)
+      map.addSource(id, {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: [] // Empty initially
+        }
+      });
+      map.addLayer({
+        id: id,
+        type: 'circle',
+        source: id,
+        paint: {}
+      });
 
+      // -----------------------------------------------
+      // We fetch the details
+      // -----------------------------------------------
       // TODO: Handle styling when multiple, identical COG URLs are used
       let url = `cog://${data.url}?method=${dynamic_classification}#color:[${colors.map(color => '"' + color + '"')}],${min_band ? min_band : 0},${max_band ? max_band : 100},c`      //
       if (dynamic_classification != 'Equidistant.') {
@@ -106,8 +130,6 @@ export default function rasterCogLayer(
           })
         }
 
-        removeSource(map, id)
-
         const getColor = (value) => {
           for (const classification of classifications) {
             if (value >= classification.bottom && value < classification.top) {
@@ -119,7 +141,7 @@ export default function rasterCogLayer(
           return value === classifications[classifications.length - 1].top ? value : null;
         };
 
-        setColorFunction(data.url, ([value], rgba, { noData}) => {
+        setColorFunction(data.url, ([value], rgba, { noData }) => {
           if (init && colors.length > 0) {
             init = false
             if (isInit) {
@@ -150,14 +172,15 @@ export default function rasterCogLayer(
           }
         });
       }
+      // -----------------------------------
+      // We create the layer
+      // -----------------------------------
+      if (!hasLayer(map, id)) {
+        return
+      }
 
+      removeLayer(map, id)
       removeSource(map, id)
-      const sourceParams = Object.assign({}, data.params, {
-        url: url,
-        type: 'raster',
-        tileSize: 256
-      })
-      map.addSource(id, sourceParams);
 
       // We find the before layers
       let before = null;
@@ -167,7 +190,12 @@ export default function rasterCogLayer(
           before = beforeOrder
         }
       }
-      removeLayer(map, id)
+      const sourceParams = Object.assign({}, data.params, {
+        url: url,
+        type: 'raster',
+        tileSize: 256
+      })
+      map.addSource(id, sourceParams);
       addLayerWithOrder(
         map,
         {
@@ -194,20 +222,22 @@ export default function rasterCogLayer(
         const isVisible = map.getStyle().layers.find(layer => layer.id === id)
         if (isVisible) {
           await sleep(100);
-          if (!$('.maplibregl-popup').length) {
-            const session = new Date().getTime();
-            addStandalonePopup(map, e.lngLat, popupFeatureFn, { Value: 'loading' }, session)
-            getCogFeatureByPoint(
-              data.url, [e.lngLat.lng, e.lngLat.lat],
-              (values) => {
-                if ($(`.${session}`).length) {
-                  addStandalonePopup(map, e.lngLat, popupFeatureFn, { Value: values.length ? values[0][0] : '-' })
-                }
-              }
-            )
+          if ($('.ContextPopup').length) {
+            return
           }
+          const session = new Date().getTime();
+          addStandalonePopup(map, e.lngLat, popupFeatureFn, { Value: 'loading' }, session)
+          getCogFeatureByPoint(
+            data.url, [e.lngLat.lng, e.lngLat.lat],
+            (values) => {
+              if ($(`.${session}`).length) {
+                addStandalonePopup(map, e.lngLat, popupFeatureFn, { Value: values.length ? values[0][0] : '-' })
+              }
+            }
+          )
         }
       }
+      addPopup(map, id, { Value: 'loading' })
       addClickEvent(map, null, id, onClick)
     }
   )()

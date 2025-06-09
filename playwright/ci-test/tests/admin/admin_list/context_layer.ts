@@ -40,13 +40,13 @@ test.describe('Context layer list admin', () => {
     await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Context Layer A0');
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 12');
     await page.getByLabel('Go to next page').click();
-    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Somalia sample context layer');
+    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Somalia healthsites');
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('11–12 of 12');
 
     // Orders
     await page.getByLabel('Go to previous page').click();
     await page.getByLabel('Name').click();
-    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Somalia sample context layer 2');
+    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Somalia sample context layer');
     await page.getByLabel('Name').click();
     await page.getByLabel('Name').click();
     await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Context Layer A0');

@@ -14,8 +14,8 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-import os
 import json
+import os
 
 from django.shortcuts import reverse
 from rest_framework import serializers
@@ -63,6 +63,9 @@ class DashboardSerializer(serializers.ModelSerializer):
 
     # Tools
     tools = serializers.SerializerMethodField()
+
+    # View
+    view_url = serializers.SerializerMethodField()
 
     def get_description(self, obj: Dashboard):
         """Return description."""
@@ -268,12 +271,18 @@ class DashboardSerializer(serializers.ModelSerializer):
             obj.dashboardtool_set.all(), many=True
         ).data
 
+    def get_view_url(self, obj: Dashboard):
+        """Return tools."""
+        if not obj.slug:
+            return None
+        return reverse('dashboard-detail-view', args=[obj.slug])
+
     class Meta:  # noqa: D106
         model = Dashboard
         fields = (
             'id', 'slug', 'icon', 'name', 'description',
-            'category', 'group',
-            'extent', 'filters', 'filters_allow_modify',
+            'category', 'group', 'extent',
+            'filters', 'filters_being_hidden', 'filters_allow_modify',
             'reference_layer', 'level_config',
             'indicators', 'indicator_layers', 'indicator_layers_structure',
             'context_layers', 'context_layers_structure',
@@ -283,7 +292,8 @@ class DashboardSerializer(serializers.ModelSerializer):
             'user_permission',
             'geo_field', 'show_splash_first_open',
             'truncate_indicator_layer_name', 'enable_geometry_search',
-            'overview', 'default_time_mode', 'tools'
+            'overview', 'default_time_mode', 'tools',
+            'view_url'
         )
 
 

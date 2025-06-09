@@ -140,6 +140,7 @@ export const addPopup = (map, id, popupRenderFn) => {
       // Return clicked features
       // Check the most top
       // show the popup
+      const layers = selectableLayers(map).reverse()
       const ids = selectableLayers(map).map(layer => layer.id)
       var pointFeatures = map.queryRenderedFeatures(e.point);
       pointFeatures.map(feature => {
@@ -149,6 +150,21 @@ export const addPopup = (map, id, popupRenderFn) => {
           clickedIdIdx = idx
         }
       })
+      const lastRasterLayerIdxInLayers = layers.findIndex(
+        obj => obj.type === "raster"
+      )
+      const lastRasterLayerInLayers = layers.find(
+        obj => obj.type === "raster"
+      )
+      const clickedIdxInLayers = layers.findIndex(
+        obj => obj.id === clickedId
+      )
+      if (lastRasterLayerIdxInLayers < clickedIdxInLayers) {
+        // This is for
+        if (functionPopup[lastRasterLayerInLayers.id]?.click) {
+          clickedId = lastRasterLayerInLayers.id
+        }
+      }
 
       if (id === clickedId) {
         let popupHtml = popupRenderFn(e.features[0].properties)
@@ -188,7 +204,10 @@ export const addStandalonePopup = (map, lngLat, popupRenderFn, properties, sessi
     .setLngLat(lngLat)
     .setHTML(popupHtml)
     .addTo(map);
-  popup.addClassName(`${session}`)
+  if (session) {
+    popup.addClassName(`${session}`)
+  }
+  popup.addClassName(`ContextPopup`)
 }
 /**
  * Remove click event

@@ -18,6 +18,7 @@ import { fetchingData } from "../../../../Requests";
 import {
   DASHBOARD_ACTION_NAME,
   DASHBOARD_ACTION_TYPE_FILTERS_ALLOW_MODIFY,
+  DASHBOARD_ACTION_TYPE_FILTERS_BEING_HIDDEN,
   DASHBOARD_ACTION_TYPE_UPDATE,
   DASHBOARD_ACTION_TYPE_UPDATE_GEOFIELD,
   DASHBOARD_ACTION_TYPE_UPDATE_PROPS,
@@ -69,6 +70,10 @@ function receive(data, error = null) {
     if (!data.filtersAllowModify) {
       data.filtersAllowModify = data.filters_allow_modify
       delete data.filters_allow_modify
+    }
+    if (!data.filtersBeingHidden) {
+      data.filtersBeingHidden = data.filters_being_hidden
+      delete data.filters_being_hidden
     }
 
     if (!data.referenceLayer) {
@@ -222,6 +227,16 @@ export function updateFiltersAllowModify() {
 }
 
 /**
+ * Update filters allow modify.
+ */
+export function updateFiltersBeingHidden() {
+  return {
+    name: DASHBOARD_ACTION_NAME,
+    type: DASHBOARD_ACTION_TYPE_FILTERS_BEING_HIDDEN
+  };
+}
+
+/**
  * Change geofield
  */
 export function changeGeoField(geoField) {
@@ -253,6 +268,7 @@ export default {
   update,
   updateProps,
   updateFiltersAllowModify,
+  updateFiltersBeingHidden,
   updatePermission,
   changeGeoField,
   updateStructure

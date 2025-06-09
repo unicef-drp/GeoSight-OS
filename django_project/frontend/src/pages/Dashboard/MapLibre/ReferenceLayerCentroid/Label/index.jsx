@@ -22,7 +22,7 @@ import { addLayerWithOrder } from "../../Render";
 import { Variables } from "../../../../../utils/Variables";
 import { IS_DEBUG, Logger } from "../../../../../utils/logger";
 
-const INDICATOR_LABEL_ID = 'indicator-label'
+export const INDICATOR_LABEL_ID = 'indicator-label'
 let lastFeatures = null;
 
 /** Remove label **/
@@ -54,20 +54,19 @@ export const renderLabel = (map, features, config, showIndicatorMapLabel) => {
   if (JSON.stringify(features) === JSON.stringify(lastFeatures)) {
     return
   }
-  if (IS_DEBUG) {
-    const output = features.map(
-      feature => [
-        feature.properties.name, feature.properties.code, feature.properties.date, feature.properties.label, feature.properties.value
-      ]
-    )
-    Logger.log('LABEL_GEOM:', output)
-  }
   lastFeatures = features
   const layout = {
     'text-anchor': 'bottom',
     'text-size': 14,
     'text-variable-anchor': ['center'],
     'visibility': showIndicatorMapLabel ? 'visible' : 'none'
+  }
+
+  // This is for test
+  if (IS_DEBUG) {
+    layout['text-allow-overlap'] = true
+    layout['text-ignore-placement'] = true
+    layout['symbol-avoid-edges'] = true
   }
   const paint = {
     'text-halo-blur': 2

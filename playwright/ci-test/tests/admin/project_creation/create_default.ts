@@ -27,6 +27,9 @@ test.describe('Create project', () => {
     await expect(page.getByText('Create New Project')).toBeVisible();
     await page.getByText('Create New Project').click();
 
+    // Preview should be hidden
+    await expect(page.getByText('Preview', { exact: true })).toBeHidden();
+
     // Select dataset
     await page.locator(".ReferenceDatasetSection input").click();
     await page.locator(".ModalDataSelector .MuiDataGrid-row").nth(1).click();

@@ -76,6 +76,7 @@ class BasePermissionTest(object):
                 mock_get_entity
             )
             self.entity_patcher.start()
+            self.addCleanup(self.entity_patcher.stop)
 
         def tearDown(self):
             """Stop the patcher."""
@@ -83,6 +84,7 @@ class BasePermissionTest(object):
                 self.entity_patcher.stop()
             except AttributeError:
                 pass
+            super().tearDown()
 
         def check_delete_resource_with_different_users(self, id, view_name):
             """Check the DELETE method of the given view with different users.

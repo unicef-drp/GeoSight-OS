@@ -243,12 +243,13 @@ export const TreeItem = forwardRef(
           {
             !isGroup && data ?
               data?.visible_by_default ? <VisibilityIcon
+                  className='VisibilityIconOn'
                   onClick={() => {
                     data.visible_by_default = false;
                     changeLayer(data);
                   }}/> :
                 <VisibilityOffIcon
-                  className={styles.VisibilityOffAction}
+                  className={'VisibilityIconOff ' + styles.VisibilityOffAction}
                   onClick={() => {
                     data.visible_by_default = true;
                     changeLayer(data);

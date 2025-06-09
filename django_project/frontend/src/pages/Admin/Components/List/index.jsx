@@ -142,6 +142,13 @@ export function COLUMNS(pageName, redirectUrl, editUrl = null, detailUrl = null)
     },
     { field: 'description', headerName: t('admin.columns.description'), flex: 1 },
     { field: 'category', headerName: t('admin.columns.category'), flex: 0.5, serverKey: 'group__name' },
+    { field: 'description', headerName: 'Description', flex: 1 },
+    {
+      field: 'category',
+      headerName: 'Category',
+      flex: 0.5,
+      serverKey: 'group__name'
+    },
     {
       field: 'actions',
       type: 'actions',
@@ -187,7 +194,14 @@ export const BaseList = forwardRef(
     const refresh = (force) => {
       if (listUrl && (!data || force)) {
         fetchingData(listUrl, {}, {}, (data, error) => {
-          setData(data)
+          // Check if not array, return error
+          if (!Array.isArray(data)) {
+            error = 'Data is not an array'
+          } else {
+            setData(data)
+          }
+
+          // If error
           if (error) {
             setError(error.toString())
           } else {

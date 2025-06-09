@@ -17,23 +17,20 @@ export default () => {
     if (!e) return;
     let {
       geometriesData,
-      mapGeometryValue,
-      usedFilteredGeometries
+      mapGeometryValue
     } = e.data;
 
     // Create features
     let features = []
+    if (!geometriesData) {
+      return features
+    }
 
     for (const [geom, geometry] of Object.entries(geometriesData)) {
       if (!geometry) {
         continue
       }
       const indicator = mapGeometryValue[geometry.ucode] ? mapGeometryValue[geometry.ucode][0] : mapGeometryValue[geometry.concept_uuid] ? mapGeometryValue[geometry.concept_uuid][0] : {};
-      if (
-        usedFilteredGeometries && !usedFilteredGeometries.includes(geometry.ucode) && !usedFilteredGeometries.includes(geometry.concept_uuid)
-      ) {
-        continue
-      }
       let properties = geometry
       if (geometry) {
         if (indicator) {

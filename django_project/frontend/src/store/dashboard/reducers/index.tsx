@@ -19,6 +19,7 @@ import mapReducer from './map'
 import mapGeometryValue from './mapGeometryValue'
 import mapModeReducer from './mapMode'
 import dashboardRequestReducer from './dashboard'
+import dashboardHistoryReducer from './dashboardHistory'
 import datasetGeometriesReducer from './datasetGeometries'
 import indicatorsDataReducer from "./indicatorsData";
 import indicatorsMetadataReducer from "./indicatorsMetadata";
@@ -37,11 +38,13 @@ import selectedGlobalTimeConfigReducer from "./selectedGlobalTimeConfig";
 import selectedRelatedTableLayerReducer from "./selectedRelatedTableLayer";
 import selectedDynamicIndicatorLayerReducer
   from "./selectedDynamicIndicatorLayer";
+import selectionStateReducer from "./selectionState";
 
 
 const rootReducer = combineReducers({
   // Just dashboard data without adding anything in there
   dashboard: dashboardRequestReducer,
+  dashboardHistory: dashboardHistoryReducer,
 
   map: mapReducer,
   mapGeometryValue: mapGeometryValue,
@@ -62,6 +65,7 @@ const rootReducer = combineReducers({
   selectedGlobalTimeConfig: selectedGlobalTimeConfigReducer,
   selectedRelatedTableLayer: selectedRelatedTableLayerReducer,
   selectedDynamicIndicatorLayer: selectedDynamicIndicatorLayerReducer,
+  selectionState: selectionStateReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

@@ -15,27 +15,24 @@
 
 import {
   DATASET_GEOMETRIES_ACTION_NAME,
-  DATASET_GEOMETRIES_ACTION_TYPE_ADD_LEVEL_DATA
+  DATASET_GEOMETRIES_ACTION_TYPE_REPLACE_DATA
 } from './index';
 
-
 /**
- * Add level data.
+ * Replace data.
  * @param {str} datasetIdentifier Dataset identifier.
- * @param {int} level Level of data.
- * @param {object} data Value data.
+ * @param {object} data Data by level
  */
-export function addLevelData(datasetIdentifier, level, data) {
+export function replaceData(datasetIdentifier, data) {
   return {
     name: DATASET_GEOMETRIES_ACTION_NAME,
-    type: DATASET_GEOMETRIES_ACTION_TYPE_ADD_LEVEL_DATA,
+    type: DATASET_GEOMETRIES_ACTION_TYPE_REPLACE_DATA,
     datasetIdentifier: datasetIdentifier,
-    level: level,
     data: data
   };
 }
 
 
 export default {
-  addLevelData
+  replaceData
 }

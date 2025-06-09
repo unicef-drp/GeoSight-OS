@@ -14,8 +14,8 @@
  */
 
 import { RelatedTable as RelatedTableType } from "../types/RelatedTable";
-import { DjangoRequests } from "../Requests";
-import { dictDeepCopy } from "../utils/main";
+import { DjangoRequestPagination, DjangoRequests } from "../Requests";
+import { dictDeepCopy, splitByJoinedLength } from "../utils/main";
 
 export class RelatedTable {
   id: number;
@@ -62,5 +62,31 @@ export class RelatedTable {
       this.url + "dates/", data, {}, params, true
     );
     return response.data;
+  }
+
+  /** Return dates of data **/
+  async values(params: any, onProgress: (value: any) => void = null) {
+    params = dictDeepCopy(params)
+
+    let data: any = {};
+    if (params['country_geom_ids']) {
+      const newParams = splitByJoinedLength(params['country_geom_ids']);
+      let values: any[] = []
+      for (let i: number = 0; i < newParams.length; i++) {
+        const result = await DjangoRequestPagination.get(
+          this.url,
+          data,
+          {
+            ...params,
+            country_geom_ids: newParams[i]
+          }
+        )
+        values.push(...result);
+      }
+      return values
+    } else {
+      [params, data] = this.getParamAndData(params);
+      return await DjangoRequestPagination.post(this.url, data, {}, params, onProgress, true)
+    }
   }
 }

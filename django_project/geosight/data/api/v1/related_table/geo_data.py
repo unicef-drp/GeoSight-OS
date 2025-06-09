@@ -82,6 +82,10 @@ class RelatedTableGeoDataViewSet(viewsets.ReadOnlyModelViewSet):
         read_data_permission_resource(related_table, self.request.user)
         return related_table
 
+    @method_decorator(
+        cache_control(public=True, max_age=864000),
+        name='dispatch'
+    )
     @swagger_auto_schema(
         operation_id='related-table-geo-data-list',
         tags=[ApiTag.RELATED_TABLE_DATA],
@@ -155,10 +159,6 @@ class RelatedTableGeoDataViewSet(viewsets.ReadOnlyModelViewSet):
             }
         return Response(data)
 
-    @method_decorator(
-        cache_control(public=True, max_age=864000),
-        name='dispatch'
-    )
     @swagger_auto_schema(auto_schema=None)
     def post(self, request, *args, **kwargs):
         """List of indicator values in POST."""

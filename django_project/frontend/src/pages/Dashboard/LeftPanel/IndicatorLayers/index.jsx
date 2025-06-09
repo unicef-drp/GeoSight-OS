@@ -28,7 +28,7 @@ import { Actions } from '../../../../store/dashboard'
 import {
   dataStructureToTreeData
 } from "../../../../components/SortableTreeForm/utilities";
-import SidePanelTreeView from "../../../../components/Map/SidePanelTree";
+import SidePanelTreeView from "../../../../components/MapSidePanelTree";
 import { returnWhereToDict } from "../../../../utils/queryExtraction";
 import RelatedTableLayer, {
   RelatedTableLayerFilter
@@ -248,17 +248,19 @@ export function IndicatorLayers() {
   }, [indicatorLayers, relatedTableData, indicatorLayersStructure]);
 
   const onChange = (selectedData) => {
-    if (selectedData.length === 0) {
-      if (currentIndicatorLayer) {
-        setCurrentIndicatorLayers([0, 0])
-        dispatch(Actions.SelectedIndicatorLayer.change({}))
+    setTimeout(function () {
+      if (selectedData.length === 0) {
+        if (currentIndicatorLayer) {
+          setCurrentIndicatorLayers([0, 0])
+          dispatch(Actions.SelectedIndicatorLayer.change({}))
+        }
       }
-    }
-    if (selectedData.length >= 1) {
-      setCurrentIndicatorLayers(selectedData)
-    }
+      if (selectedData.length >= 1) {
+        setCurrentIndicatorLayers(selectedData)
+      }
 
-    updateOtherLayers(selectedData)
+      updateOtherLayers(selectedData)
+    }, 100);
   }
 
   return (
