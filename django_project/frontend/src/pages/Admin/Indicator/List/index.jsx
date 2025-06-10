@@ -129,8 +129,7 @@ export default function IndicatorList() {
   let columns = COLUMNS(pageName, urls.admin.indicatorList);
   // pop action
   columns.pop();
-  const resourceMeta = useResourceMeta();
-  columns = columns.concat(resourceMeta)
+  columns = columns.concat(useResourceMeta())
   columns[1].headerName = 'Name'
 
   columns.push({

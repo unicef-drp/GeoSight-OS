@@ -16,7 +16,6 @@
 import React from 'react';
 import App from '../../app';
 import SideNavigation from './Components/SideNavigation'
-import { useTranslation } from 'react-i18next';
 
 import './style.scss';
 
@@ -94,49 +93,6 @@ export function AdminPageContent({ rightHeader, title, children }) {
  * @param {React.Component} children React component to be rendered
  */
 export default function Admin({ pageName, rightHeader, children, ...props }) {
-  const { t } = useTranslation();
-
-  const columns = [
-    {
-      field: 'name',
-      headerName: t('name'),
-      flex: 1,
-    },
-    {
-      field: 'description',
-      headerName: t('admin.columns.description'),
-      flex: 1,
-    },
-    {
-      field: 'category',
-      headerName: t('admin.columns.category'),
-      flex: 1,
-    },
-  ];
-
-  const actions = [
-    {
-      label: t('admin.actions.changeShareConfig'),
-      icon: <ShareIcon />,
-      onClick: () => {
-        setOpenShareConfig(true);
-      },
-    },
-    {
-      label: t('admin.actions.previewDashboard'),
-      icon: <PreviewIcon />,
-      onClick: () => {
-        window.open(`/dashboard/${selectedRow.id}`, '_blank');
-      },
-    },
-    {
-      label: t('admin.actions.goToMap'),
-      icon: <MapIcon />,
-      onClick: () => {
-        window.open(`/map/${selectedRow.id}`, '_blank');
-      },
-    },
-  ];
 
   return (
     <AdminPage pageName={pageName} {...props}>

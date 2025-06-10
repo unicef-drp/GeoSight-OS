@@ -48,7 +48,7 @@ export default function IndicatorsForm() {
     useSelector(state => state.dashboard.data)
   )
   const columns = dictDeepCopy(
-    COLUMNS('Indicators', urls.admin.indicatorList)
+    COLUMNS('indicators', urls.admin.indicatorList)
   )
 
   // Other actions

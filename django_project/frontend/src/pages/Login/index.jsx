@@ -20,6 +20,7 @@ import App, { render } from '../../app';
 import AdminForm from "../Admin/Components/Form";
 import { ThemeButton } from "../../components/Elements/Button";
 
+
 import './style.scss';
 import './style.small.scss';
 
@@ -103,7 +104,8 @@ export default function Login() {
             <Fragment>
               <div style={{ marginBottom: '20px' }}>
                 <p>
-                  You are not allowed to access GeoSight. Please contact administrator or try to use different account!
+                  You are not allowed to access GeoSight. Please contact
+                  administrator or try to use different account!
                 </p>
               </div>
               <div>

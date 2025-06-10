@@ -33,7 +33,6 @@ import { dictDeepCopy, toSingular } from "../../../../utils/main";
 import { DeleteIcon, MagnifyIcon } from "../../../../components/Icons";
 import { useConfirmDialog } from "../../../../providers/ConfirmDialog";
 import { useTranslation } from 'react-i18next';
-import { pageNames } from '../../../../pages/Admin';
 
 import './style.scss';
 
@@ -141,11 +140,9 @@ export function COLUMNS(pageName, redirectUrl, editUrl = null, detailUrl = null)
       }
     },
     { field: 'description', headerName: t('admin.columns.description'), flex: 1 },
-    { field: 'category', headerName: t('admin.columns.category'), flex: 0.5, serverKey: 'group__name' },
-    { field: 'description', headerName: 'Description', flex: 1 },
     {
       field: 'category',
-      headerName: 'Category',
+      headerName: t('admin.columns.category'),
       flex: 0.5,
       serverKey: 'group__name'
     },
@@ -159,7 +156,7 @@ export function COLUMNS(pageName, redirectUrl, editUrl = null, detailUrl = null)
       },
     }
   ]
-  if (pageName === pageNames.Indicators) {
+  if (pageName === 'indicator') {
     _columns[2] = { field: 'shortcode', headerName: t('admin.columns.shortcode'), flex: 0.5 }
   }
   return _columns

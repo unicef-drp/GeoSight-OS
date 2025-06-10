@@ -408,6 +408,15 @@ export function DashboardForm({ onPreview }) {
     setCurrentPage(page)
   }, []);
 
+  const resourceActionsResult = resourceActions({
+    id: id,
+    row: {
+      id,
+      name,
+      permission: user_permission
+    }
+  })
+
   return (
     <div className='Admin'>
       <SideNavigation pageName={pageNames.Dashboard} minified={true}/>
@@ -420,15 +429,7 @@ export function DashboardForm({ onPreview }) {
           </div>
           <div className='AdminContentHeader-Right'>
             {
-              id ?
-                resourceActions({
-                  id: id,
-                  row: {
-                    id,
-                    name,
-                    permission: user_permission
-                  }
-                }) : null
+              id ? resourceActionsResult : null
             }
             <DashboardHistory
               page={currentPage}

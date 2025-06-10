@@ -40,7 +40,7 @@ from core.api.user import UserApiKey
 class CustomSchemaGenerator(OpenAPISchemaGenerator):
     """Scheme generator of swagger."""
 
-    def get_schema(self, request=None, public=False):
+    def get_schema(self, request=None, public=False):  # noqa DOC101
         """Return schema of swagger."""
         schema = super().get_schema(request, public)
         schema.schemes = ['https']
@@ -82,11 +82,11 @@ urlpatterns += i18n_patterns(
 
 if settings.USE_AZURE:
     # azure auth
-    urlpatterns += i18n_patterns(
+    urlpatterns += (
         path("", include("azure_auth.urls", namespace="azure_auth")),
     )
 else:
-    urlpatterns += i18n_patterns(
+    urlpatterns += (
         url(r'^auth/', include('django.contrib.auth.urls')),
     )
 
@@ -150,7 +150,7 @@ if settings.TENANTS_ENABLED:
         url(r'^tenants/', include('geosight.tenants.urls'))
     ]
 
-urlpatterns += i18n_patterns(
+urlpatterns += (
     url(r'^tinymce/', include('tinymce.urls')),
     url(r'^proxy', ProxyView.as_view(), name='proxy-view'),
     url(r'^api/v1/', include('core.urls_v1')),
@@ -158,5 +158,7 @@ urlpatterns += i18n_patterns(
     url(r'^sentry-debug', trigger_error),
     url(r'^captcha/', include('captcha.urls')),
     url(r'^', include('geosight.urls')),
+)
+urlpatterns += i18n_patterns(
     url(r'^', include('frontend.urls')),
 )

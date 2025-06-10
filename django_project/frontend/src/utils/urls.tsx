@@ -14,63 +14,62 @@
  */
 import { DatasetView } from "../types/DatasetView";
 import { GeorepoUrls } from "./georepo";
-import { getCurrentLanguage } from './i18n';
 
-export const referenceDatasetUrlBase = 'reference-datasets'
+export const apiUrl = () => {
+  return `/api/v1/`;
+};
+
+export const referenceDatasetUrlBase = "reference-datasets";
 export const InternalReferenceDatasets = {
   list: () => {
-    return `/api/v1/${referenceDatasetUrlBase}/`
+    return `${apiUrl()}${referenceDatasetUrlBase}/`;
   },
   detail: (identifier: string) => {
-    return `${window.location.origin}/api/v1/${referenceDatasetUrlBase}/${identifier}/`
+    return `${window.location.origin}${apiUrl()}${referenceDatasetUrlBase}/${identifier}/`;
   },
   centroid: (identifier: string) => {
-    return `${window.location.origin}/reference-dataset/${referenceDatasetUrlBase}/${identifier}/centroid`
+    return `${window.location.origin}/reference-dataset/${referenceDatasetUrlBase}/${identifier}/centroid`;
   },
   COUNTRY: {
     List: () => {
-      return `${window.location.origin}/api/v1/${referenceDatasetUrlBase}/entity?admin_level=0`
-    }
-  }
-}
+      return `${window.location.origin}${apiUrl()}${referenceDatasetUrlBase}/entity?admin_level=0`;
+    },
+  },
+};
 
 export const URLS = {
   ReferenceLayer: {
     VIEW: {
       List: function (dataset: string, isLocal: boolean) {
-        const lang = getCurrentLanguage();
         if (isLocal) {
-          return `/${lang}${InternalReferenceDatasets.list()}?page=1&page_size=25`;
+          return InternalReferenceDatasets.list() + "?page=1&page_size=25";
         }
-        return `/${lang}${GeorepoUrls.ViewList(dataset)}`;
+        return GeorepoUrls.ViewList(dataset);
       },
       Detail: function (detail: DatasetView) {
         const { identifier } = detail;
-        const lang = getCurrentLanguage();
         if (detail.is_local) {
-          return `/${lang}${InternalReferenceDatasets.detail(identifier)}`;
+          return InternalReferenceDatasets.detail(identifier);
         } else {
-          return `/${lang}${GeorepoUrls.ViewDetail(identifier)}`;
+          return GeorepoUrls.ViewDetail(identifier);
         }
       },
       Centroid: function (detail: DatasetView) {
         const { identifier } = detail;
-        const lang = getCurrentLanguage();
         if (detail.is_local) {
-          return `/${lang}${InternalReferenceDatasets.centroid(identifier)}`;
+          return InternalReferenceDatasets.centroid(identifier);
         } else {
-          return `/${lang}${GeorepoUrls.Centroid(identifier)}`;
+          return GeorepoUrls.Centroid(identifier);
         }
-      }
+      },
     },
     COUNTRY: {
       List: function (dataset: string, isLocal: boolean) {
-        const lang = getCurrentLanguage();
         if (isLocal) {
-          return `/${lang}${InternalReferenceDatasets.COUNTRY.List()}`;
+          return InternalReferenceDatasets.COUNTRY.List();
         }
-        return `/${lang}${GeorepoUrls.CountryList(dataset)}`;
+        return GeorepoUrls.CountryList(dataset);
       },
-    }
-  }
-}
+    },
+  },
+};

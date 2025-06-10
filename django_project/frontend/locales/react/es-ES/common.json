@@ -83,7 +83,11 @@
                 "accessRequestPermissionDetail": "Detalles de solicitud de permisos",
                 "userProfile": "Perfiles de usuario",
                 "referenceLayerView": "Conjuntos de datos de referencia",
-                "referenceDatasetImporter": "Importadores de conjunto de datos de referencia"
+                "referenceDatasetImporter": "Importadores de conjunto de datos de referencia",
+                "Users": "Usuario",
+                "Groups": "Grupo",
+                "permissionRequests": "Solicitud de Permiso",
+                "newUsers": "Nuevo Usuario"
             },
             "names": {
                 "dashboard": "Nombre de Proyecto",
@@ -104,7 +108,11 @@
                 "accessRequestPermissionDetail": "Nombre de Detalle de solicitud de permisos",
                 "userProfile": "Nombre de Perfil de usuario",
                 "referenceLayerView": "Nombre de Conjunto de datos de referencia",
-                "referenceDatasetImporter": "Nombre de Importador de conjunto de datos de referencia"
+                "referenceDatasetImporter": "Nombre de Importador de conjunto de datos de referencia",
+                "Users": "Usuarios",
+                "Groups": "Grupos",
+                "permissionRequests": "Solicitudes de Permiso",
+                "newUsers": "Nuevos Usuarios"
             }
         },
         "columns": {

@@ -22,7 +22,8 @@ import React, {
   useState
 } from 'react';
 import $ from "jquery";
-
+import _ from 'lodash';
+import { useTranslation } from "react-i18next";
 import {
   AddButton,
   DeleteButton,
@@ -76,6 +77,7 @@ export const AdminListContent = forwardRef(
     const [isDeleting, setIsDeleting] = useState(false)
     const listRef = useRef(null);
     const [search, setSearch] = useState(searchDefault);
+    const { t } = useTranslation();
 
     const dataName = pageName.replace(/s$/, '');
 
@@ -167,7 +169,7 @@ export const AdminListContent = forwardRef(
         return <a href={apiCreate}>
           <AddButton
             variant="primary"
-            text={"Create New " + pageName}
+            text={t('admin.createNew', { pageName: t('admin.pageNameFormats.singular.' + _.camelCase(pageName) )})}
           />
         </a>
       }
@@ -197,7 +199,7 @@ export const AdminListContent = forwardRef(
             {
               props.hideSearch ? null :
                 <IconTextField
-                  placeholder={"Search " + pageName}
+                  placeholder={t('admin.searchPlaceholder', { pageName: t('admin.pageNameFormats.singular.' + _.camelCase(pageName)).toLowerCase() })}
                   defaultValue={search ? search : ""}
                   iconEnd={<MagnifyIcon/>}
                   onChange={evt => {

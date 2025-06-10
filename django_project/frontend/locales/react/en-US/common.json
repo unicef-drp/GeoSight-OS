@@ -62,7 +62,11 @@
                 "accessRequestPermissionDetail": "Request Permission Detail",
                 "userProfile": "User Profile",
                 "referenceLayerView": "Reference Dataset",
-                "referenceDatasetImporter": "Reference Dataset Importer"
+                "referenceDatasetImporter": "Reference Dataset Importer",
+                "Users": "User",
+                "Groups": "Group",
+                "permissionRequests" : "Permission Request",
+                "newUsers" : "New User"
             },
             "plural": {
                 "dashboard": "Projects",
@@ -83,7 +87,11 @@
                 "accessRequestPermissionDetail": "Request Permission Details",
                 "userProfile": "User Profiles",
                 "referenceLayerView": "Reference Datasets",
-                "referenceDatasetImporter": "Reference Dataset Importers"
+                "referenceDatasetImporter": "Reference Dataset Importers",
+                "Users": "Users",
+                "Groups": "Groups",
+                "permissionRequests" : "Permission Requests",
+                "newUsers" : "New Users"
             },
             "names": {
                 "dashboard": "Project Name",
