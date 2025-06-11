@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { BASE_URL } from "../../variables";
 
 const timeout = 2000;
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
@@ -23,7 +24,7 @@ test.describe('Dashboard list admin', () => {
       exact: true
     }).click();
 
-    const editUrl = 'http://localhost:2000/admin/project/demo-geosight-project-1/edit'
+    const editUrl = `${BASE_URL}/admin/project/demo-geosight-project-1/edit`
     await page.waitForURL(editUrl)
     await expect(page.getByPlaceholder('Example: Afghanistan Risk')).toHaveValue('Demo GeoSight Project 1');
 
@@ -44,9 +45,9 @@ test.describe('Dashboard list admin', () => {
     await page.goto(editUrl);
     await page.locator('.MoreActionIcon').click();
     await page.locator('.MuiMenu-root .MuiButtonBase-root .error').click();
-    await expect(page.locator('.modal--content ')).toContainText(`Are you sure you want to delete : Demo GeoSight Project 1?`);
+    await expect(page.locator('.modal--content ')).toContainText(`Are you sure want to delete Demo GeoSight Project 1?`);
     await page.getByRole('button', { name: 'Confirm' }).click();
-    await page.waitForURL('/admin/project/');
+    await page.waitForURL(`${BASE_URL}/admin/project/`);
     await expect(page.getByText('Create New Project')).toBeVisible();
     await expect(page.getByText('Demo GeoSight Project 1')).toBeHidden();
   });

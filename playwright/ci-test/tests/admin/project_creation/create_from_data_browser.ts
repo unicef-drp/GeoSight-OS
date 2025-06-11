@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { BASE_URL } from "../../variables";
 
 // URL That we need to check
 const timeout = 2000;
@@ -87,7 +88,7 @@ test.describe('Create project from dataset', () => {
     await page.getByText('Save').isEnabled();
     await page.getByText('Save').click();
 
-    const editUrl = 'http://localhost:2000/admin/project/test-from-dataset/edit'
+    const editUrl = `${BASE_URL}/admin/project/test-from-dataset/edit`
     await page.waitForURL(editUrl)
 
     // --------------------------------------------------------------
@@ -173,9 +174,9 @@ test.describe('Create project from dataset', () => {
     // ------------------------------------
     await page.locator('.MoreActionIcon').click();
     await page.locator('.MuiMenu-root .MuiButtonBase-root .error').click();
-    await expect(page.locator('.modal--content ')).toContainText(`Are you sure you want to delete : Test From Dataset?`);
+    await expect(page.locator('.modal--content ')).toContainText(`Are you sure want to delete Test From Dataset?`);
     await page.getByRole('button', { name: 'Confirm' }).click();
-    await page.waitForURL('/admin/project/');
+    await page.waitForURL(`${BASE_URL}/admin/project/`);
     await expect(page.getByText('Create New Project')).toBeVisible();
     await expect(page.getByText('Test From Dataset')).toBeHidden();
   });

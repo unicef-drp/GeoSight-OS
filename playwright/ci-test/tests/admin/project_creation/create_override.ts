@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { BASE_URL } from "../../variables";
 
 // URL That we need to check
 const timeout = 2000;
@@ -67,7 +68,7 @@ test.describe('Create project', () => {
     await page.getByText('Save').click();
 
     // Check values
-    await page.waitForURL('http://localhost:2000/admin/project/test-project-override-config/edit')
+    await page.waitForURL(`${BASE_URL}/admin/project/test-project-override-config/edit`);
     await expect(page.locator('.MoreActionIcon')).toBeVisible();
     await expect(page.locator('.General .ReferenceDatasetSection input')).toHaveValue('Somalia');
     await expect(page.locator('.General .CodeMappingConfig input')).toHaveValue('Latest ucode');
@@ -104,9 +105,9 @@ test.describe('Create project', () => {
     // Delete
     await page.locator('.MoreActionIcon').click();
     await page.locator('.MuiMenu-root .MuiButtonBase-root .error').click();
-    await expect(page.locator('.modal--content ')).toContainText(`Are you sure you want to delete : Test Project Override Config?`);
+    await expect(page.locator('.modal--content ')).toContainText(`Are you sure want to delete Test Project Override Config?`);
     await page.getByRole('button', { name: 'Confirm' }).click();
-    await page.waitForURL('/admin/project/');
+    await page.waitForURL(`${BASE_URL}/admin/project/`);
     await expect(page.getByText('Create New Project')).toBeVisible();
     await expect(page.getByText('Test Project Override Config')).toBeHidden();
   });

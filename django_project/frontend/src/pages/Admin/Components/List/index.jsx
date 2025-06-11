@@ -36,6 +36,74 @@ import { useTranslation } from 'react-i18next';
 
 import './style.scss';
 
+// Delete action
+const DeleteAction = ({
+  params,
+  redirectUrl,
+  detailUrl = null,
+  moreActions = null,
+}) => {
+  const { t } = useTranslation();
+  const { openConfirmDialog } = useConfirmDialog();
+
+  const permission = params.row.permission;
+  if (permission && !permission.delete) return null;
+
+  return (
+    <GridActionsCellItem
+      data-id={params.id}
+      icon={
+        <MoreAction moreIcon={<MoreVertIcon />}>
+          {moreActions
+            ? React.Children.map(moreActions, (child) => child)
+            : null}
+
+          {detailUrl && (
+            <div
+              className="error"
+              onClick={() => {
+                openConfirmDialog({
+                  header: t("admin.deleteConfirmation"),
+                  onConfirmed: async () => {
+                    const api = detailUrl.replace("/0", `/${params.id}`);
+                    await DjangoRequests.delete(api, {}).then(() => {
+                      try {
+                        params.columns[params.columns.length - 1]?.tableRef.current.refresh();
+                      } catch (err) {
+                        if (
+                          window.location.href.replace(
+                            window.location.origin,
+                            ""
+                          ) === redirectUrl
+                        ) {
+                          location.reload();
+                        } else {
+                          window.location = redirectUrl;
+                        }
+                      }
+                    });
+                  },
+                  onRejected: () => {},
+                  children: (
+                    <div>
+                      {t("admin.deleteConfirmationMessage", {
+                        item: params.row.name ?? params.row.id,
+                      })}
+                    </div>
+                  ),
+                });
+              }}
+            >
+              <DeleteIcon /> {t("admin.delete")}
+            </div>
+          )}
+        </MoreAction>
+      }
+      label="More"
+    />
+  );
+};
+
 /**
  *
  * DEFAULT COLUMNS ACTIONS
@@ -49,8 +117,6 @@ import './style.scss';
 export function COLUMNS_ACTION(
   params, redirectUrl, editUrl = null, detailUrl = null, moreActions = null
 ) {
-  const { t } = useTranslation();
-  const { openConfirmDialog } = useConfirmDialog();
   detailUrl = detailUrl ? detailUrl : urls.api.detail;
   const actions = []
 
@@ -58,54 +124,13 @@ export function COLUMNS_ACTION(
   const permission = params.row.permission
   if (!permission || permission.delete) {
     actions.push(
-      <GridActionsCellItem
-        data-id={params.id}
-        icon={
-          <MoreAction moreIcon={<MoreVertIcon/>}>
-            {
-              moreActions ? React.Children.map(moreActions, child => {
-                return child
-              }) : ''
-            }
-            {
-              detailUrl && <>
-                <div className='error'
-                     onClick={() => {
-                       openConfirmDialog({
-                         header: t('admin.deleteConfirmation'),
-                         onConfirmed: async () => {
-                           const api = detailUrl.replace('/0', `/${params.id}`);
-                           await DjangoRequests.delete(api, {}).then(response => {
-                             try {
-                               params.columns[params.columns.length - 1]?.tableRef.current.refresh()
-                             } catch (err) {
-                               if (window.location.href.replace(window.location.origin, '') === redirectUrl) {
-                                 location.reload();
-                               } else {
-                                 window.location = redirectUrl;
-                               }
-                             }
-                           })
-                         },
-                         onRejected: () => {
-                         },
-                         children: <div>
-                           {t('admin.deleteConfirmationMessage', {
-                             item: params.row.name ? params.row.name : params.row.id
-                           })}
-                         </div>,
-                       })
-                     }}
-                >
-                  <DeleteIcon/> {t('admin.delete')}
-                </div>
-              </>
-            }
-          </MoreAction>
-        }
-        label="More"
-      />
-    )
+      <DeleteAction
+        params={params}
+        redirectUrl={redirectUrl}
+        detailUrl={detailUrl}
+        moreActions={moreActions}
+      />,
+    );
   }
   return actions
 }
@@ -156,7 +181,7 @@ export function COLUMNS(pageName, redirectUrl, editUrl = null, detailUrl = null)
       },
     }
   ]
-  if (pageName === 'indicator') {
+  if (['indicators', 'indicator'].includes(pageName)) {
     _columns[2] = { field: 'shortcode', headerName: t('admin.columns.shortcode'), flex: 0.5 }
   }
   return _columns

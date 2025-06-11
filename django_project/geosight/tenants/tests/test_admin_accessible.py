@@ -27,7 +27,7 @@ class TenantAdminAccessibleTest(BaseTenantTestCase.TestCase):
     Test can be accessed just by primary tenant.
     """
 
-    url = '/django-admin/geosight_tenants/tenant/'
+    url = '/en-us/django-admin/geosight_tenants/tenant/'
 
     def test_admin_accessible(self):
         """Test can be accessed just by primary tenant."""

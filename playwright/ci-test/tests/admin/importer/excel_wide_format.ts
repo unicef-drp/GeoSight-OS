@@ -39,14 +39,14 @@ test.describe('Test excel wide format', () => {
 
     // Check on RT level
     await page.locator('.SideNavigation').getByRole('link', { name: 'Related Tables' }).click();
-    await page.getByPlaceholder('Search Related Tables').fill('Wide format');
+    await page.getByPlaceholder('Search Related Table').fill('Wide format');
     await expect(page.getByRole('grid')).toContainText('1–1 of 1');
     await page.getByLabel('Browse data').click();
     await expect(page.locator('.MuiTablePagination-displayedRows')).toContainText('1–47 of 47')
 
     // Delete RT
     await page.locator('.SideNavigation').getByRole('link', { name: 'Related Tables' }).click();
-    await page.getByPlaceholder('Search Related Tables').fill(name);
+    await page.getByPlaceholder('Search Related Table').fill(name);
     await expect(page.getByRole('grid')).toContainText('1–1 of 1');
     await page.getByLabel('More').click();
     await page.getByRole('menuitem', { name: 'Delete' }).locator('div').click();

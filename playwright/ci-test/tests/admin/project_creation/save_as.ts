@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { BASE_URL } from "../../variables";
 
 // URL That we need to check
 const timeout = 2000;
@@ -25,7 +26,7 @@ test.describe('Duplicate and save as project', () => {
     await page.getByRole('textbox', { name: 'Example: Afghanistan Risk' }).fill('Test Project Save As');
     await page.getByRole('button', { name: 'Create' }).click();
 
-    const editUrl = 'http://localhost:2000/admin/project/test-project-save-as/edit'
+    const editUrl = `${BASE_URL}/admin/project/test-project-save-as/edit`
     await page.waitForURL(editUrl)
     await expect(page.getByPlaceholder('Example: Afghanistan Risk')).toHaveValue('Test Project Save As');
 
@@ -46,9 +47,9 @@ test.describe('Duplicate and save as project', () => {
     await page.goto(editUrl);
     await page.locator('.MoreActionIcon').click();
     await page.locator('.MuiMenu-root .MuiButtonBase-root .error').click();
-    await expect(page.locator('.modal--content ')).toContainText(`Are you sure you want to delete : Test Project Save As?`);
+    await expect(page.locator('.modal--content ')).toContainText(`Are you sure want to delete Test Project Save As?`);
     await page.getByRole('button', { name: 'Confirm' }).click();
-    await page.waitForURL('/admin/project/');
+    await page.waitForURL(`${BASE_URL}/admin/project/`);
     await expect(page.getByText('Create New Project')).toBeVisible();
     await expect(page.getByText('Test Project Save As')).toBeHidden();
   });
