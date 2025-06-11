@@ -374,7 +374,7 @@ export function DashboardSaveForm() {
         <DashboardSaveAsForm
           submitted={submitted}
           onSaveAs={() => {
-            onSave('/admin/project/create')
+            onSave(urls.admin.dashboardCreate)
           }}/> : null
     }
     <SaveButton

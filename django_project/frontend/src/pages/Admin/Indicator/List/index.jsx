@@ -28,7 +28,7 @@ import {
   DataManagementActiveIcon,
   MapActiveIcon
 } from "../../../../components/Icons";
-import AdminList, { ResourceMeta } from "../../../../components/AdminList";
+import AdminList, { useResourceMeta } from "../../../../components/AdminList";
 
 import './style.scss';
 
@@ -129,7 +129,7 @@ export default function IndicatorList() {
   let columns = COLUMNS(pageName, urls.admin.indicatorList);
   // pop action
   columns.pop();
-  columns = columns.concat(ResourceMeta)
+  columns = columns.concat(useResourceMeta())
   columns[1].headerName = 'Name'
 
   columns.push({

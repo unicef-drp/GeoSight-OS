@@ -31,7 +31,7 @@ test.describe('Dataset list admin', () => {
     await page.getByRole('button', { name: 'Update Selection' }).click();
     await expect(page.locator('.MuiDataGrid-row')).toHaveCount(2);
     await page.getByRole('textbox').first().click();
-    await page.getByRole('button', { name: 'Clear selection.' }).click();
+    await page.getByRole('button', { name: 'Clear selection' }).click();
     await page.getByRole('button', { name: 'Update Selection' }).click();
     await expect(page.locator('.MuiDataGrid-row')).toHaveCount(5);
 
@@ -48,7 +48,7 @@ test.describe('Dataset list admin', () => {
     await page.getByRole('button', { name: 'Update Selection' }).click();
     await expect(page.locator('.MuiDataGrid-row')).toHaveCount(4);
     await page.getByRole('textbox').nth(1).click();
-    await page.getByRole('button', { name: 'Clear selection.' }).click();
+    await page.getByRole('button', { name: 'Clear selection' }).click();
     await page.getByRole('button', { name: 'Update Selection' }).click();
     await expect(page.locator('.MuiDataGrid-row')).toHaveCount(5);
 

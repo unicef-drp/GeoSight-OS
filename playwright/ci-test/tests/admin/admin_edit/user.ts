@@ -77,7 +77,7 @@ test.describe('Users list admin', () => {
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–14 of 14');
     await page.locator('.MuiDataGrid-row').nth(0).getByTestId('MoreVertIcon').click();
     await page.getByRole('menuitem', { name: 'Delete' }).click();
-    await expect(page.locator('.modal--content ')).toContainText('Are you sure you want to delete : Generated_A0?');
+    await expect(page.locator('.modal--content ')).toContainText('Are you sure want to delete Generated_A0?');
     await page.getByRole('button', { name: 'Confirm' }).click();
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–13 of 13');
 

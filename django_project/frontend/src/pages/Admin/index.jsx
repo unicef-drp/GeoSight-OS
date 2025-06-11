@@ -20,33 +20,33 @@ import SideNavigation from './Components/SideNavigation'
 import './style.scss';
 
 export const pageNames = {
-  Dashboard: 'Project',
-  Indicators: 'Indicator',
-  Basemaps: 'Basemap',
-  ContextLayer: 'Context Layer',
-  UsersAndGroups: 'Users And Groups',
-  Styles: 'Style',
-  Dataset: 'Data Browser',
-  RelatedTables: 'Related Tables',
-  RelatedTablesData: 'Related Tables Data',
+  Dashboard: 'dashboard',
+  Indicators: 'indicators', 
+  Basemaps: 'basemaps',
+  ContextLayer: 'contextLayer',
+  UsersAndGroups: 'usersAndGroups',
+  Styles: 'styles',
+  Dataset: 'dataset',
+  RelatedTables: 'relatedTables',
+  RelatedTablesData: 'relatedTablesData',
 
   // Importer
-  Importer: 'Data Importer',
-  DataManagement: 'Data Management',
-  ScheduledJobs: 'Scheduled Jobs',
-  Logs: 'Logs',
+  Importer: 'importer',
+  DataManagement: 'dataManagement', 
+  ScheduledJobs: 'scheduledJobs',
+  Logs: 'logs',
 
   // Access Request
-  AccessRequestList: 'Access Request',
-  AccessRequestUserDetail: 'Request New User Detail',
-  AccessRequestPermissionDetail: 'Request Permission Detail',
+  AccessRequestList: 'accessRequest',
+  AccessRequestUserDetail: 'accessRequestUserDetail',
+  AccessRequestPermissionDetail: 'accessRequestPermissionDetail',
 
   // Profile
-  UserProfile: 'User Profile',
+  UserProfile: 'userProfile',
 
   // ReferenceLayerView
-  ReferenceLayerView: 'Reference Dataset',
-  referenceDatesetImporter: 'Reference Dataset Importer',
+  ReferenceLayerView: 'referenceLayerView',
+  referenceDatesetImporter: 'referenceDatasetImporter',
 }
 
 /**
@@ -93,6 +93,7 @@ export function AdminPageContent({ rightHeader, title, children }) {
  * @param {React.Component} children React component to be rendered
  */
 export default function Admin({ pageName, rightHeader, children, ...props }) {
+
   return (
     <AdminPage pageName={pageName} {...props}>
       <AdminPageContent rightHeader={rightHeader} children={children}/>

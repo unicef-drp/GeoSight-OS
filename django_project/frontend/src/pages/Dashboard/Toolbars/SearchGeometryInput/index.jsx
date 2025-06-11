@@ -33,6 +33,7 @@ import { Session } from "../../../../utils/Sessions";
 import './style.scss';
 import { addLayerWithOrder } from "../../MapLibre/Render";
 import { Variables } from "../../../../utils/Variables";
+import { useTranslation } from 'react-i18next';
 
 const LAYER_HIGHLIGHT_ID = 'reference-layer-highlight'
 
@@ -57,42 +58,43 @@ export default function SearchGeometryInput({ map }) {
   const datasetGeometries = useSelector(state => state.datasetGeometries);
   const [value, setValue] = useState(null)
   const [options, setOptions] = useState([])
+  const { t } = useTranslation();
 
   /** Create options */
   useEffect(() => {
-      const options = []
-      datasets.map(dataset => {
-        const referenceLayerData = referenceLayerDataState[dataset]
-        const geometries = datasetGeometries[dataset]
+    const options = []
+    datasets.map(dataset => {
+      const referenceLayerData = referenceLayerDataState[dataset]
+      const geometries = datasetGeometries[dataset]
 
-        // Vector tile url
-        const levels = referenceLayerData?.data?.dataset_levels
-        if (levels && map && enable_geometry_search) {
-          levels?.map(level => {
-            if (geometries && geometries[level.level]) {
-              for (const [concept_uuid, geometry] of Object.entries(geometries[level.level])) {
-                options.push({
-                  id: geometry.concept_uuid,
-                  label: geometry.label,
-                  level_name: level.level_name,
-                  level: level.level,
-                  dataset: dataset
-                })
-              }
-            } else {
+      // Vector tile url
+      const levels = referenceLayerData?.data?.dataset_levels
+      if (levels && map && enable_geometry_search) {
+        levels?.map(level => {
+          if (geometries && geometries[level.level]) {
+            for (const [concept_uuid, geometry] of Object.entries(geometries[level.level])) {
               options.push({
-                id: level.level,
-                label: 'Loading...',
+                id: geometry.concept_uuid,
+                label: geometry.label,
                 level_name: level.level_name,
                 level: level.level,
-                disabled: true
+                dataset: dataset
               })
             }
-          })
-        }
-      })
-      setOptions(options)
-    },
+          } else {
+            options.push({
+              id: level.level,
+              label: 'Loading...',
+              level_name: level.level_name,
+              level: level.level,
+              disabled: true
+            })
+          }
+        })
+      }
+    })
+    setOptions(options)
+  },
     [referenceLayerDataState, datasetGeometries, enable_geometry_search]
   );
 
@@ -130,9 +132,9 @@ export default function SearchGeometryInput({ map }) {
         $input.removeClass('Loading')
         if (session.isValid && extent?.length === 4) {
           map.fitBounds([
-              [extent[0], extent[1]],
-              [extent[2], extent[3]]
-            ],
+            [extent[0], extent[1]],
+            [extent[2], extent[3]]
+          ],
             { padding: 20 }
           )
 
@@ -146,16 +148,16 @@ export default function SearchGeometryInput({ map }) {
             maxzoom: 8,
           });
           addLayerWithOrder(map, {
-              id: LAYER_HIGHLIGHT_ID,
-              source: LAYER_HIGHLIGHT_ID,
-              type: 'line',
-              "source-layer": 'Level-' + input.level,
-              paint: {
-                'line-color': '#FF0000',
-                'line-width': 10,
-                'line-blur': 5
-              }
-            },
+            id: LAYER_HIGHLIGHT_ID,
+            source: LAYER_HIGHLIGHT_ID,
+            type: 'line',
+            "source-layer": 'Level-' + input.level,
+            paint: {
+              'line-color': '#FF0000',
+              'line-width': 10,
+              'line-blur': 5
+            }
+          },
             Variables.LAYER_CATEGORY.HIGHTLIGHT
           )
           map.setFilter(LAYER_HIGHLIGHT_ID, ['in', 'concept_uuid'].concat([newSelectedGeometryInput]));
@@ -168,8 +170,8 @@ export default function SearchGeometryInput({ map }) {
           }, 10000)
         }
       }).catch(err => {
-      $input.removeClass('Loading')
-    });
+        $input.removeClass('Loading')
+      });
   }
 
   if (!enable_geometry_search) {
@@ -189,7 +191,7 @@ export default function SearchGeometryInput({ map }) {
       renderInput={(params) => (
         <TextField
           {...params}
-          placeholder={!loaded ? 'Loading....' : 'Search Geography Entity'}
+          placeholder={!loaded ? t("dashboardPage.searchGeographyEntityLoading") : t("dashboardPage.searchGeographyEntity")}
           InputProps={{
             ...params.InputProps,
             endAdornment: (
@@ -205,8 +207,8 @@ export default function SearchGeometryInput({ map }) {
                     }}
                   />
                 </div>
-                <SearchIcon/>
-                <CircularProgress/>
+                <SearchIcon />
+                <CircularProgress />
               </InputAdornment>
             )
           }}

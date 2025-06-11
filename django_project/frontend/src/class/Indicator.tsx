@@ -16,6 +16,7 @@
 import { Indicator as IndicatorType } from "../types/Indicator";
 import { DjangoRequestPagination, DjangoRequests } from "../Requests";
 import { dictDeepCopy, splitByJoinedLength } from "../utils/main";
+import { apiUrl } from "../utils/urls";
 
 export class Indicator {
   id: number;
@@ -27,7 +28,7 @@ export class Indicator {
     this.indicator = indicator;
     this.id = indicator.id;
     this.metadataKey = 'indicator-' + indicator.id
-    this.url = `/api/v1/indicators/${indicator.id}/data/`
+    this.url = `${apiUrl()}indicators/${indicator.id}/data/`
   }
 
   getParamAndData(params: any) {

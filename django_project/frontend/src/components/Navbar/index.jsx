@@ -24,11 +24,12 @@ import i18n from "i18next";
 
 import User from './User'
 import { EmbedConfig } from "../../utils/embed";
-import { CogIcon, EditIcon, HelpIcon } from "../Icons";
+import { CogIcon, EditIcon, GlobeIcon, HelpIcon } from "../Icons";
 import { ThemeButton } from "../Elements/Button";
 import { HelpCenter } from "../HelpCenter";
 import NotificationBadge from "../NotificationBadge";
 import NotificationMaintenance from "../NotificationMaintenance";
+import LanguageSelector from "../LanguageSelector";
 
 import './style.scss';
 
@@ -164,6 +165,14 @@ export default function NavBar({ minified }) {
               </div>
             ) : null
           }
+          <LanguageSelector>
+            <div
+              className="AdminLinkButton LanguageSelector"
+              style={{ marginRight: "1rem", cursor: "pointer" }}
+            >
+              <GlobeIcon/>
+            </div>
+          </LanguageSelector>
           <div className='HelpButton .SvgButton'>
             <a href='#' onClick={_ => {
               helpPageRef?.current.open()

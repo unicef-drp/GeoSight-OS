@@ -69,7 +69,7 @@ test.describe('Create indicator', () => {
 
     await page.locator('.MoreActionIcon').click();
     await page.locator('.MuiMenu-root .MuiButtonBase-root .error').click();
-    await expect(page.locator('.modal--content ')).toContainText(`Are you sure you want to delete : ${name}?`);
+    await expect(page.locator('.modal--content ')).toContainText(`Are you sure want to delete ${name}?`);
     await page.getByRole('button', { name: 'Confirm' }).click();
     await expect(page.getByText('Create New Indicator')).toBeVisible();
     await expect(page.getByText(name)).toBeHidden();

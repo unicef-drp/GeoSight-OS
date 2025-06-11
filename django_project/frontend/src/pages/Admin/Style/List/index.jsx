@@ -21,8 +21,7 @@ import { store } from '../../../../store/admin';
 import { pageNames } from '../../index';
 import { COLUMNS, COLUMNS_ACTION } from "../../Components/List";
 import PermissionModal from "../../Permission";
-import AdminList from "../../../../components/AdminList";
-import {ResourceMeta} from "../../../../components/AdminList";
+import AdminList, { useResourceMeta } from "../../../../components/AdminList";
 
 import './style.scss';
 
@@ -43,7 +42,7 @@ export default function StyleList() {
   columns = columns.concat([
     { field: 'category', headerName: 'Category', flex: 0.5, serverKey: 'group' },
     { field: 'style_type', headerName: 'Style type', flex: 0.5 }
-  ].concat(ResourceMeta))
+  ].concat(useResourceMeta()))
   columns.push({
     field: 'actions',
     type: 'actions',

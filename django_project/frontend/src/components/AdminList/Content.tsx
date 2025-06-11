@@ -28,6 +28,7 @@ import { MagnifyIcon } from "../Icons";
 import { AddButton, ThemeButton } from "../Elements/Button";
 import { ServerTable } from "../Table";
 import { debounce } from "@mui/material/utils";
+import { useTranslation } from 'react-i18next';
 
 /**
  * Admin List that contains content of list
@@ -83,6 +84,7 @@ export const AdminListContent = forwardRef(
   ) => {
     // References
     const tableRef = useRef(null);
+    const { t } = useTranslation();
 
     const [selectionModel, setSelectionModel] = useState([]);
     const [search, setSearch] = useState<string>(defaults.search);
@@ -145,7 +147,7 @@ export const AdminListContent = forwardRef(
         return <a href={url.create}>
           <AddButton
             variant="primary"
-            text={"Create New " + pageName}
+            text={t('admin.createNew', { pageName: t('admin.pageNameFormats.singular.' + pageName) })}
           />
         </a>
       }
@@ -161,7 +163,7 @@ export const AdminListContent = forwardRef(
           <ThemeButton
             variant="primary Basic"
             disabled={!selectedIds.length}>
-            <EditIcon/>Edit
+            <EditIcon/>{t('admin.edit')}
           </ThemeButton>
         </a>
       }
@@ -215,7 +217,7 @@ export const AdminListContent = forwardRef(
               !useSearch ? null :
                 <IconTextField
                   // @ts-ignore
-                  placeholder={"Search " + pageName}
+                  placeholder={t('admin.searchPlaceholder', { pageName: t('admin.pageNameFormats.singular.' + pageName).toLowerCase() })}
                   defaultValue={search ? search : ""}
                   iconEnd={<MagnifyIcon/>}
                   onChange={(evt: React.ChangeEvent<HTMLInputElement>) => {

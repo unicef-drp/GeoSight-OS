@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { BASE_URL } from "../../variables";
 
 // URL That we need to check
 const timeout = 2000;
@@ -125,7 +126,7 @@ test.describe('Create project', () => {
     // --------------------------------------------
     // Check the preview
     // --------------------------------------------
-    const editUrl = 'http://localhost:2000/admin/project/test-project-default/edit'
+    const editUrl = `${BASE_URL}/admin/project/test-project-default/edit`
     await page.waitForURL(editUrl)
     await page.goto('/project/test-project-default');
 
@@ -166,7 +167,7 @@ test.describe('Create project', () => {
 
     // Check values
     await page.getByTitle('Edit project').getByRole('link').click();
-    await page.waitForURL('http://localhost:2000/admin/project/test-project-default/edit')
+    await page.waitForURL(`${BASE_URL}/admin/project/test-project-default/edit`);
     await expect(page.locator('.MoreActionIcon')).toBeVisible();
     await expect(page.locator('.General .ReferenceDatasetSection input')).toHaveValue('Somalia');
     await expect(page.locator('.General .CodeMappingConfig input')).toHaveValue('Latest ucode');
@@ -207,9 +208,9 @@ test.describe('Create project', () => {
     // Delete
     await page.locator('.MoreActionIcon').click();
     await page.locator('.MuiMenu-root .MuiButtonBase-root .error').click();
-    await expect(page.locator('.modal--content ')).toContainText(`Are you sure you want to delete : Test Project Default?`);
+    await expect(page.locator('.modal--content ')).toContainText(`Are you sure want to delete Test Project Default?`);
     await page.getByRole('button', { name: 'Confirm' }).click();
-    await page.waitForURL('/admin/project/');
+    await page.waitForURL(`${BASE_URL}/admin/project/`);
     await expect(page.getByText('Create New Project')).toBeVisible();
     await expect(page.getByText('Test Project Default')).toBeHidden();
   });

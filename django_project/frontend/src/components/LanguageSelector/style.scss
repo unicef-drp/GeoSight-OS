@@ -1,0 +1,47 @@
+.language-options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+}
+
+.language-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 18px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.15s, color 0.15s;
+    position: relative;
+    color: #222;
+    background: none;
+    border: none;
+    outline: none;
+}
+
+.language-option:hover,
+.language-option:focus {
+    background: #f0f4fa;
+}
+
+.language-option.selected {
+    background: #e6f0ff;
+    font-weight: bold;
+    color: #007aff;
+}
+
+.language-option .flag {
+    font-size: 1.3em;
+}
+
+.language-option .name {
+    flex: 1;
+    text-align: left;
+}
+
+.language-option .checkmark {
+    color: #5BB3E7;
+    font-size: 1.1em;
+    margin-left: 8px;
+}

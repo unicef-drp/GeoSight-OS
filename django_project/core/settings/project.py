@@ -87,11 +87,12 @@ SOUTH_TESTS_MIGRATE = False
 
 # Set languages which want to be translated
 LANGUAGES = (
-    ('en', _('English')),
+    ('en-us', _('English')),
+    ('es-es', _('Spanish')),
 )
 
 # Set storage path for the translation files
-LOCALE_PATHS = (ABS_PATH('locale'),)
+LOCALE_PATHS = (ABS_PATH('frontend', 'locales', 'django'),)
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000
 

@@ -22,6 +22,7 @@ import { useDispatch, useSelector } from "react-redux";
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Accordion from "@mui/material/Accordion";
 import sqlParser from "js-sql-parser";
+import { useTranslation } from 'react-i18next';
 
 import { Actions } from '../../../../store/dashboard'
 import {
@@ -51,6 +52,7 @@ export const changeIndicatorLayersForcedUpdate = (ids) => {
  * Indicators selector.
  */
 export function IndicatorLayers() {
+  const { t } = useTranslation();
   const dispatch = useDispatch()
   const {
     indicators,
@@ -205,9 +207,9 @@ export function IndicatorLayers() {
         indicatorLayer.indicators.map(indLy => {
           const indicator = indicators.find(indicator => indicator.id === indLy.id)
           if (!indicator) {
-            indicatorLayer.error = "There is no indicator found for this layer. Please ask admin to fix this."
+            indicatorLayer.error = t('dashboardPage.indicatorLayerNotFound')
           } else if (!indicator.permission.read_data) {
-            indicatorLayer.error = "You don't have permission to access this resource"
+            indicatorLayer.error = t('dashboardPage.indicatorLayerErrorPermission')
           }
         })
 
@@ -215,11 +217,11 @@ export function IndicatorLayers() {
         indicatorLayer.related_tables.map(rt => {
           const rtConfig = relatedTables.find(rtConfig => rtConfig.id === rt.id)
           if (!rtConfig) {
-            indicatorLayer.error = "Related table does not configured properly"
+            indicatorLayer.error = t('dashboardPage.relatedTableNotConfigured')
           } else {
             indicatorLayer.description = updateDescription(indicatorLayer, rtConfig)
             if (!rtConfig.permission.read_data) {
-              indicatorLayer.error = "You don't have permission to access this resource"
+              indicatorLayer.error = t('dashboardPage.indicatorLayerErrorPermission')
             }
             if (relatedTableData[rt.id]?.fetching) {
               indicatorLayer.loading = true
@@ -271,25 +273,25 @@ export function IndicatorLayers() {
         onChange={onChange}
         otherInfo={(layer) => {
           if (layer.data.related_tables?.length && layer.data.config.where) {
-            return <RelatedTableLayerFilter relatedTableLayer={layer.data}/>
+            return <RelatedTableLayerFilter relatedTableLayer={layer.data} />
           } else if (layer.data.type === DynamicIndicatorType) {
             return <DynamicIndicatorLayerConfig
-              indicatorLayer={layer}/>
+              indicatorLayer={layer} />
           }
           return null
         }}
-        placeholder={'Search Indicators'}
+        placeholder={t('dashboardPage.indicatorSearch')}
       />
       {
         indicatorLayers.map(indicatorLayer => {
           if (indicatorLayer.related_tables?.length) {
             return <RelatedTableLayer
               key={indicatorLayer.id}
-              relatedTableLayer={indicatorLayer}/>
+              relatedTableLayer={indicatorLayer} />
           } else if (indicatorLayer.type === DynamicIndicatorType) {
             return <DynamicIndicatorLayer
               key={indicatorLayer.id}
-              indicatorLayer={indicatorLayer}/>
+              indicatorLayer={indicatorLayer} />
           }
           return null
         })
@@ -312,7 +314,7 @@ export default function IndicatorLayersAccordion({ expanded }) {
       >
 
         <AccordionDetails>
-          <IndicatorLayers/>
+          <IndicatorLayers />
         </AccordionDetails>
       </Accordion>
     </>

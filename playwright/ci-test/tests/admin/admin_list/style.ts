@@ -61,7 +61,7 @@ test.describe('Style list admin', () => {
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 10');
     await page.locator('.MuiDataGrid-row').nth(0).getByTestId('MoreVertIcon').click();
     await page.getByRole('menuitem', { name: 'Delete' }).click();
-    await expect(page.locator('.modal--content ')).toContainText('Are you sure you want to delete : Generated A0?');
+    await expect(page.locator('.modal--content ')).toContainText('Are you sure want to delete Generated A0?');
     await page.getByRole('button', { name: 'Confirm' }).click();
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–9 of 9');
 

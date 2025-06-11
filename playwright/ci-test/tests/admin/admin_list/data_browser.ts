@@ -21,7 +21,7 @@ test.describe('Dataset list admin', () => {
     await page.getByRole('button', { name: 'Update Selection' }).click();
     await expect(page.getByRole('grid')).toContainText('1–25 of 372');
     await page.getByRole('textbox').nth(1).click();
-    await page.getByRole('button', { name: 'Clear selection.' }).click();
+    await page.getByRole('button', { name: 'Clear selection' }).click();
     await page.getByRole('button', { name: 'Update Selection' }).click();
     await expect(page.getByRole('grid')).toContainText('1–25 of 372');
 

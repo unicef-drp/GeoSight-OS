@@ -18,6 +18,7 @@ from django.shortcuts import reverse
 
 from frontend.views.admin._base import AdminBaseView
 from geosight.permission.access import RoleContributorRequiredMixin
+from django.utils.translation import gettext as _
 
 
 class IndicatorListView(RoleContributorRequiredMixin, AdminBaseView):
@@ -28,10 +29,10 @@ class IndicatorListView(RoleContributorRequiredMixin, AdminBaseView):
     @property
     def page_title(self):
         """Return page title that used on tab bar."""
-        return 'Indicators'
+        return _('Indicators')
 
     @property
     def content_title(self):
         """Return content title that used on page title indicator."""
         list_url = reverse('admin-indicator-list-view')
-        return f'<a href="{list_url}">Indicators</a> '
+        return f'<a href="{list_url}">{_("Indicators")}</a> '

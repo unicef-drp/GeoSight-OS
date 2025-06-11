@@ -31,6 +31,7 @@ import { constructUrl, DjangoRequests } from "../../Requests";
 import { Notification, NotificationStatus } from "../Notification";
 import { useConfirmDialog } from "../../providers/ConfirmDialog";
 import DataGridFilter from "../Filter";
+import { useTranslation } from 'react-i18next';
 
 import './ServerTable.scss';
 
@@ -75,6 +76,7 @@ const ServerTable = forwardRef(
 
     // Confirm dialog
     const { openConfirmDialog } = useConfirmDialog();
+    const { t } = useTranslation();
     if (enable.filter) {
       const [filterModel, setFilterModel] = useState(defaults.filters);
       columns.forEach(column => {
@@ -296,7 +298,7 @@ const ServerTable = forwardRef(
             <div className='AdminListHeader'>
               <div
                 className={'AdminListHeader-Count ' + (!selectionModel.length ? 'Empty' : '')}>
-                {selectionModel.length + ' item' + (selectionModel.length > 1 ? 's' : '') + ' on this list ' + (selectionModel.length > 1 ? 'are' : 'is') + ' selected.'}
+                {selectionModel.length === 1 ? t('admin.oneItemSelected') : t('admin.numberOfItemsSelected', { numberOfItems: selectionModel.length })}
                 {
                   selectionModel.length ?
                     <ThemeButton
@@ -305,7 +307,7 @@ const ServerTable = forwardRef(
                         setSelectionModel([])
                       }}
                     >
-                      Clear selection.
+                      {t('admin.clearSelection')}
                     </ThemeButton> : null
                 }
                 {leftHeader}
@@ -317,10 +319,10 @@ const ServerTable = forwardRef(
                   enable.delete ? <DeleteButton
                     disabled={!selectionModel.length}
                     variant="Error Reverse"
-                    text={"Delete"}
+                    text={t('admin.delete')}
                     onClick={() => {
                       openConfirmDialog({
-                        header: 'Delete confirmation',
+                        header: t('admin.deleteConfirmation'),
                         onConfirmed: async () => {
                           const deletingIds = selectionModel.map(model => {
                             if (typeof model === 'object') {
@@ -345,9 +347,10 @@ const ServerTable = forwardRef(
                         onRejected: () => {
                         },
                         children: <div>
-                          Are you sure want to
-                          delete {selectionModel.length}&nbsp;
-                          {selectionModel.length > 1 ? pluralize(dataName).toLowerCase() : dataName.toLowerCase()}?
+                          {t('admin.deleteMultipleConfirmationMessage', {
+                            numberOfItems: selectionModel.length,
+                            dataName: selectionModel.length > 1 ? t('admin.pageNameFormats.plural.' + dataName).toLowerCase() : t('admin.pageNameFormats.singular.' + dataName).toLowerCase()
+                          })}
                         </div>,
                       })
                     }}

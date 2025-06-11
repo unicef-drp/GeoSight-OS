@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { BASE_URL } from "../../../variables";
 
 // URL That we need to check
 const timeout = 2000;
@@ -40,7 +41,7 @@ test.describe('View edit project', () => {
       page.getByText('Preview', { exact: true }).click()
     ]);
     await newPage.waitForLoadState();
-    await expect(newPage.url()).toEqual('http://localhost:2000/project/demo-geosight-project')
+    await expect(newPage.url()).toEqual(`${BASE_URL}/project/demo-geosight-project`)
 
     // --------------------------------------------------------------------
     // Check filter is hidden or not
@@ -49,7 +50,7 @@ test.describe('View edit project', () => {
     await page.getByText('Hide filter section').click();
     await page.getByRole('button', { name: 'Save', exact: true }).click();
     await page.goto('/project/demo-geosight-project');
-    await page.waitForURL('/project/demo-geosight-project');
+    await page.waitForURL(`${BASE_URL}/project/demo-geosight-project`);
     await delay(1000)
     await page.getByRole('button', { name: 'Close' }).click();
     await expect(page.getByRole('tab', { name: 'Filters' })).toBeHidden();
@@ -59,7 +60,7 @@ test.describe('View edit project', () => {
     await page.getByText('Hide filter section').click();
     await page.getByRole('button', { name: 'Save', exact: true }).click();
     await page.goto('/project/demo-geosight-project');
-    await page.waitForURL('/project/demo-geosight-project');
+    await page.waitForURL(`${BASE_URL}/project/demo-geosight-project`);
     await delay(1000)
     await page.getByRole('button', { name: 'Close' }).click();
     await expect(page.getByRole('tab', { name: 'Filters' })).toBeVisible();
@@ -120,7 +121,7 @@ test.describe('View edit project', () => {
     // Check the style
     await expect(page.getByText('Configuration has been saved!')).toBeVisible()
     await page.goto('/project/demo-geosight-project');
-    await page.waitForURL('/project/demo-geosight-project');
+    await page.waitForURL(`${BASE_URL}/project/demo-geosight-project`);
     await delay(1000)
     await expect(JSON.stringify(lastLayerStyles["80 - 100"])).toEqual('{"rule":"x>80 and x<=100","color":"#d7191c","outline_color":"#ffffff","outline_size":"1"}')
     await expect(JSON.stringify(lastLayerStyles["No data"])).toEqual('{"rule":"No data","color":"#D8D8D8","outline_color":"#ffffff","outline_size":"2"}')

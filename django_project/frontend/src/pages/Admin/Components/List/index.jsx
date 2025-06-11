@@ -32,8 +32,77 @@ import MoreAction from "../../../../components/Elements/MoreAction";
 import { dictDeepCopy, toSingular } from "../../../../utils/main";
 import { DeleteIcon, MagnifyIcon } from "../../../../components/Icons";
 import { useConfirmDialog } from "../../../../providers/ConfirmDialog";
+import { useTranslation } from 'react-i18next';
 
 import './style.scss';
+
+// Delete action
+const DeleteAction = ({
+  params,
+  redirectUrl,
+  detailUrl = null,
+  moreActions = null,
+}) => {
+  const { t } = useTranslation();
+  const { openConfirmDialog } = useConfirmDialog();
+
+  const permission = params.row.permission;
+  if (permission && !permission.delete) return null;
+
+  return (
+    <GridActionsCellItem
+      data-id={params.id}
+      icon={
+        <MoreAction moreIcon={<MoreVertIcon />}>
+          {moreActions
+            ? React.Children.map(moreActions, (child) => child)
+            : null}
+
+          {detailUrl && (
+            <div
+              className="error"
+              onClick={() => {
+                openConfirmDialog({
+                  header: t("admin.deleteConfirmation"),
+                  onConfirmed: async () => {
+                    const api = detailUrl.replace("/0", `/${params.id}`);
+                    await DjangoRequests.delete(api, {}).then(() => {
+                      try {
+                        params.columns[params.columns.length - 1]?.tableRef.current.refresh();
+                      } catch (err) {
+                        if (
+                          window.location.href.replace(
+                            window.location.origin,
+                            ""
+                          ) === redirectUrl
+                        ) {
+                          location.reload();
+                        } else {
+                          window.location = redirectUrl;
+                        }
+                      }
+                    });
+                  },
+                  onRejected: () => {},
+                  children: (
+                    <div>
+                      {t("admin.deleteConfirmationMessage", {
+                        item: params.row.name ?? params.row.id,
+                      })}
+                    </div>
+                  ),
+                });
+              }}
+            >
+              <DeleteIcon /> {t("admin.delete")}
+            </div>
+          )}
+        </MoreAction>
+      }
+      label="More"
+    />
+  );
+};
 
 /**
  *
@@ -48,7 +117,6 @@ import './style.scss';
 export function COLUMNS_ACTION(
   params, redirectUrl, editUrl = null, detailUrl = null, moreActions = null
 ) {
-  const { openConfirmDialog } = useConfirmDialog();
   detailUrl = detailUrl ? detailUrl : urls.api.detail;
   const actions = []
 
@@ -56,53 +124,13 @@ export function COLUMNS_ACTION(
   const permission = params.row.permission
   if (!permission || permission.delete) {
     actions.push(
-      <GridActionsCellItem
-        data-id={params.id}
-        icon={
-          <MoreAction moreIcon={<MoreVertIcon/>}>
-            {
-              moreActions ? React.Children.map(moreActions, child => {
-                return child
-              }) : ''
-            }
-            {
-              detailUrl && <>
-                <div className='error'
-                     onClick={() => {
-                       openConfirmDialog({
-                         header: 'Delete confirmation',
-                         onConfirmed: async () => {
-                           const api = detailUrl.replace('/0', `/${params.id}`);
-                           await DjangoRequests.delete(api, {}).then(response => {
-                             try {
-                               params.columns[params.columns.length - 1]?.tableRef.current.refresh()
-                             } catch (err) {
-                               if (window.location.href.replace(window.location.origin, '') === redirectUrl) {
-                                 location.reload();
-                               } else {
-                                 window.location = redirectUrl;
-                               }
-                             }
-                           })
-                         },
-                         onRejected: () => {
-                         },
-                         children: <div>
-                           Are you sure you want to delete
-                           : {params.row.name ? params.row.name : params.row.id}?
-                         </div>,
-                       })
-                     }}
-                >
-                  <DeleteIcon/> Delete
-                </div>
-              </>
-            }
-          </MoreAction>
-        }
-        label="More"
-      />
-    )
+      <DeleteAction
+        params={params}
+        redirectUrl={redirectUrl}
+        detailUrl={detailUrl}
+        moreActions={moreActions}
+      />,
+    );
   }
   return actions
 }
@@ -117,13 +145,13 @@ export function COLUMNS_ACTION(
  * @returns {list}
  */
 export function COLUMNS(pageName, redirectUrl, editUrl = null, detailUrl = null) {
-  const singularPageName = toSingular(pageName)
+  const { t } = useTranslation();
   editUrl = editUrl ? editUrl : urls.api.edit;
   detailUrl = detailUrl ? detailUrl : urls.api.detail;
   const _columns = [
     { field: 'id', headerName: 'id', hide: true, width: 30, },
     {
-      field: 'name', headerName: singularPageName + ' Name', flex: 1,
+      field: 'name', headerName: t('admin.pageNameFormats.names.' + pageName), flex: 1,
       renderCell: (params) => {
         const permission = params.row.permission
         if (editUrl && (!permission || permission.edit)) {
@@ -136,10 +164,10 @@ export function COLUMNS(pageName, redirectUrl, editUrl = null, detailUrl = null)
         }
       }
     },
-    { field: 'description', headerName: 'Description', flex: 1 },
+    { field: 'description', headerName: t('admin.columns.description'), flex: 1 },
     {
       field: 'category',
-      headerName: 'Category',
+      headerName: t('admin.columns.category'),
       flex: 0.5,
       serverKey: 'group__name'
     },
@@ -153,8 +181,8 @@ export function COLUMNS(pageName, redirectUrl, editUrl = null, detailUrl = null)
       },
     }
   ]
-  if (['indicator'].includes(singularPageName.toLowerCase())) {
-    _columns[2] = { field: 'shortcode', headerName: 'Shortcode', flex: 0.5 }
+  if (['indicators', 'indicator'].includes(pageName)) {
+    _columns[2] = { field: 'shortcode', headerName: t('admin.columns.shortcode'), flex: 0.5 }
   }
   return _columns
 }

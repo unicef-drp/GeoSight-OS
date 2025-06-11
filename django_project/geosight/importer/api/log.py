@@ -40,13 +40,26 @@ class ImporterLogListAPI(ListAPIView, FilteredAPI):
     serializer_class = ImporterLogSerializer
 
     def get_serializer_context(self):
-        """For serializer context."""
+        """
+        Extend the default serializer context with the requesting user.
+
+        :return: Context dictionary including the request user.
+        :rtype: dict
+        """
         context = super().get_serializer_context()
         context.update({"user": self.request.user})
         return context
 
     def get_queryset(self):
-        """Return queryset of API."""
+        """
+        Return a filtered queryset of ImporterLog entries.
+
+        If the requesting user is not an admin, only logs created by that user
+        are returned,.
+
+        :return: A filtered and ordered queryset of `ImporterLog` objects.
+        :rtype: QuerySet
+        """
         query = ImporterLog.objects.all().order_by('-start_time')
         if not self.request.user.profile.is_admin:
             query = ImporterLog.objects.filter(
@@ -60,8 +73,24 @@ class ImporterLogListAPI(ListAPIView, FilteredAPI):
         return query
 
     def delete(self, request):
-        """Delete objects."""
-        ids = json.loads(request.data['ids'])
+        """
+        Delete ImporterLog objects if the user has permission.
+
+        Parses a list of IDs from the request data.
+        For each `ImporterLog` object found, it checks whether the associated
+        importer is editable by the requesting user.
+        If so, all related `ImporterLog` entries for that importer are deleted.
+
+        :param request:
+            The HTTP request containing a list of ImporterLog IDs to delete.
+        :type request: Request
+        :return: A response indicating deletion success.
+        :rtype: Response
+        """
+        try:
+            ids = json.loads(request.data['ids'])
+        except TypeError:
+            ids = request.data['ids']
         for obj in ImporterLog.objects.filter(id__in=ids):
             if obj.importer.able_to_edit(self.request.user):
                 obj.importer.importerlog_set.all().delete()
@@ -74,14 +103,35 @@ class ImporterLogDetailAPI(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, pk):
-        """Delete an basemap."""
+        """
+        Retrieve a specific ImporterLog by primary key.
+
+        :param request: The HTTP request.
+        :type request: Request
+        :param pk: The primary key of the ImporterLog to retrieve.
+        :type pk: int or str
+        :return: Serialized ImporterLog data.
+        :rtype: Response
+        """
         obj = get_object_or_404(ImporterLog, pk=pk)
         return Response(
             ImporterLogSerializer(obj, context={'user': request.user}).data
         )
 
     def delete(self, request, pk):
-        """Delete an basemap."""
+        """
+        Delete a specific ImporterLog by primary key if user has permission.
+
+        If the user is not allowed to edit the associated importer,
+        returns a 403 Forbidden.
+
+        :param request: The HTTP request.
+        :type request: Request
+        :param pk: The primary key of the ImporterLog to delete.
+        :type pk: int or str
+        :return: A response indicating success or failure.
+        :rtype: Response or HttpResponseForbidden
+        """
         obj = get_object_or_404(ImporterLog, pk=pk)
         if not obj.importer.able_to_edit(self.request.user):
             return HttpResponseForbidden()

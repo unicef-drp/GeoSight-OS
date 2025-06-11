@@ -26,7 +26,7 @@ import {VisibilityIcon} from "../../../../components/Icons";
 import AdminList from "../../../../components/AdminList";
 import {useConfirmDialog} from "../../../../providers/ConfirmDialog";
 import {DjangoRequests} from "../../../../Requests";
-
+import {useTranslation} from "react-i18next";
 
 import './style.scss';
 
@@ -73,21 +73,22 @@ export function resourceActionsList(params) {
  * Indicator List App
  */
 export default function DashboardList() {
+  const { t } = useTranslation();
   const pageName = pageNames.Dashboard
   const columns = COLUMNS(pageName, urls.admin.dashboardList);
-  columns[2] = { field: 'description', headerName: 'Description', flex: 1 }
+  columns[2] = { field: 'description', headerName: t('admin.columns.description'), flex: 1 }
   columns[3] = {
     field: 'category',
-    headerName: 'Category', flex: 0.5,
+    headerName: t('admin.columns.category'), flex: 0.5,
     serverKey: 'group__name'
   }
   columns[4] = {
-    field: 'created_by', headerName: 'Created By', flex: 0.5,
+    field: 'created_by', headerName: t('admin.columns.createdBy'), flex: 0.5,
     serverKey: 'creator__username'
   }
-  columns[5] = { field: 'created_at', headerName: 'Created At', flex: 0.5, type: 'date' }
-  columns[6] = { field: 'modified_at', headerName: 'Modified At', flex: 0.5 , type: 'date' }
-  columns[7] = { field: 'modified_by', headerName: 'Modified By', flex: 0.5, serverKey: 'modified_by__username' }
+  columns[5] = { field: 'created_at', headerName: t('admin.columns.createdAt'), flex: 0.5, type: 'date' }
+  columns[6] = { field: 'modified_at', headerName: t('admin.columns.modifiedAt'), flex: 0.5 , type: 'date' }
+  columns[7] = { field: 'modified_by', headerName: t('admin.columns.modifiedBy'), flex: 0.5, serverKey: 'modified_by__username' }
   columns[8] = {
     field: 'actions',
     type: 'actions',
