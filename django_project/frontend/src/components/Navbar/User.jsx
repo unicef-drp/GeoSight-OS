@@ -25,11 +25,13 @@ import LoginIcon from '@mui/icons-material/Login';
 
 import { EmbedConfig } from "../../utils/embed";
 import { ThemeButton } from "../Elements/Button";
+import { useTranslation } from "react-i18next";
 
 /**
  * User dropdown.
  **/
 export default function User({ ...props }) {
+  const { t, i18n } = useTranslation();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -75,7 +77,7 @@ export default function User({ ...props }) {
           TransitionComponent={Fade}
         >
           <MenuItem className='MenuItem-Header Description'>
-            Logged as : <a href={`/admin/user/${user.username}/edit`}
+            { t("loggedAs") } : <a href={`/${i18n.language.toLowerCase()}/admin/user/${user.username}/edit`}
                            style={{
                              width: "fit-content",
                              padding: 0,
@@ -86,7 +88,7 @@ export default function User({ ...props }) {
             {
               preferences.georepo_using_user_api_key && !preferences.georepo_api.api_key_is_public ?
                 <div className='Description'>
-                  Authorized to GeoRepo.
+                  { t("navbar.authorizedToGeoRepo") }
                 </div> : null
             }
           </MenuItem>
@@ -96,7 +98,7 @@ export default function User({ ...props }) {
                 className='MenuItem-Header MenuItem-Button Description'>
                 You are not authorized to GeoRepo.<br/>
                 Please add your API Key in <a
-                href={'/admin/user/' + user.username + '/edit'}
+                href={`/${i18n.language.toLowerCase()}/admin/user/${user.username}/edit`}
                 style={{
                   color: "red",
                   width: "fit-content",
@@ -106,22 +108,22 @@ export default function User({ ...props }) {
               </MenuItem> : null
           }
           <MenuItem className='MenuItem-Header'>
-            <a href={`/admin/user/${user.username}/edit`}>
-              Profile
+            <a href={`/${i18n.language.toLowerCase()}/admin/user/${user.username}/edit`}>
+              { t('admin.profile') }
             </a>
           </MenuItem>
           {
             canAccessAdmin ? (
               <MenuItem className='MenuItem-Header DjangoAdmin'>
-                <a href={adminUrl}>Django Admin</a>
+                <a href={adminUrl}>{ t("navbar.djangoAdmin") }</a>
               </MenuItem>
             ) : null
           }
           <MenuItem className='MenuItem-Header'>
-            <a href='/api/v1/docs'>API Docs</a>
+            <a href='/api/v1/docs'>{ t("navbar.apiDocumentation") }</a>
           </MenuItem>
           <MenuItem className='MenuItem-Header'>
-            <a href={logoutUrl}>Logout</a>
+            <a href={logoutUrl}>{ t("logout") }</a>
           </MenuItem>
         </Menu>
       </Fragment>
