@@ -17,6 +17,7 @@ import React from 'react';
 import {GridActionsCellItem} from "@mui/x-data-grid";
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import Tooltip from "@mui/material/Tooltip";
 import {render} from '../../../../app';
 import {store} from '../../../../store/admin';
 import {pageNames} from '../../index';
@@ -108,23 +109,25 @@ export default function DashboardList() {
                   urlData={urls.api.permission.replace('/0', `/${params.id}`)}/>
               </a>
             }
-            label="Change Share Configuration."
-          />)
+            label={t('admin.actions.changeShareConfig')}
+          />
+        )
       }
       if (permission.read) {
         actions.unshift(
           <GridActionsCellItem
             icon={
-              <a
-                title='Preview dashbaord'
-                className={"MuiButtonLike CellLink"}
-                href={urls.api.map.replace('/0', `/${params.id}`)}>
-                <div className='ButtonIcon'>
-                  <VisibilityIcon/>
-                </div>
-              </a>
+              <Tooltip title={t('admin.actions.changeShareConfig')}>
+                <a
+                  className={"MuiButtonLike CellLink"}
+                  href={urls.api.map.replace('/0', `/${params.id}`)}>
+                  <div className='ButtonIcon'>
+                    <VisibilityIcon/>
+                  </div>
+                </a>
+              </Tooltip>
             }
-            label="Go to map."
+            label={t('admin.actions.previewDashboard')}
           />
         )
       }
@@ -132,7 +135,7 @@ export default function DashboardList() {
         actions.unshift(
           <GridActionsCellItem
             className='TextButton'
-            title={'Need to re-select reference layer.'}
+            title={t('admin.actions.needReselectReferenceLayer')}
             icon={<ErrorOutlineIcon className='error'/>}
           />
         )

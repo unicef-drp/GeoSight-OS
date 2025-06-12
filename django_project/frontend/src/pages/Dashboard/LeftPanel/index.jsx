@@ -22,6 +22,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import { useTranslation } from 'react-i18next';
 
 import { Actions } from '../../../store/dashboard';
 import { LEFT, RIGHT } from '../../../components/ToggleButton'
@@ -94,6 +95,7 @@ export default function LeftPanel({ leftExpanded }) {
   const showFilterTab = !!EmbedConfig().filter_tab
   const [tabValue, setTabValue] = React.useState(showLayerTab ? 0 : 1);
   const [tab2Value, setTab2Value] = React.useState(1);
+  const { t } = useTranslation();
 
   const handleChangeTab = (event, newValue) => {
     setTabValue(newValue);
@@ -121,14 +123,14 @@ export default function LeftPanel({ leftExpanded }) {
                 aria-label="basic tabs example">
                 <Tab
                   className='layers-tab'
-                  label="Layers"
+                  label={t('dashboardPage.layers')}
                   icon=<LayerIcon/>
                 iconPosition="start"
                 {...tabProps('Layers')}
                 />
                 <Tab
                   className='filters-tab'
-                  label="Filters"
+                  label={t('dashboardPage.filters')}
                   icon=<TuneIcon/>
                 iconPosition="start"
                 {...tabProps('Filters')}
@@ -144,13 +146,13 @@ export default function LeftPanel({ leftExpanded }) {
                 <Tabs value={tab2Value} onChange={handleChangeTab2}
                       aria-label="basic tabs example">
                   <Tab
-                    label="Context Layers"
+                    label={t('dashboardPage.contextLayers')}
                     icon={<ContextLayerVisibility/>}
                     iconPosition='end'
                     {...tabProps(0)}
                   />
                   <Tab
-                    label="Indicators"
+                    label={t('dashboardPage.indicators')}
                     icon={<IndicatorsVisibility/>}
                     iconPosition='end'
                     {...tabProps(1)}

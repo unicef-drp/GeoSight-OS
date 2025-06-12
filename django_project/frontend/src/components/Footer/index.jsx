@@ -17,33 +17,35 @@
    NAVBAR
    ========================================================================== */
 
-import React from 'react';
-import $ from 'jquery';
-import i18n from "i18next";
+import React from "react";
+import $ from "jquery";
+import { useTranslation } from "react-i18next";
 
-import './style.scss';
+import "./style.scss";
 
 /** Footer **/
 export default function Footer() {
   const { icon } = preferences;
+  const { t, i18n } = useTranslation();
 
+  const homepageUrl = "/" + i18n.language.toLowerCase();
   // Set width of logo
   // Not working using css on firefox
-  $('.page__header-logo').width($('.page__header-link').width());
+  $(".page__header-logo").width($(".page__header-link").width());
   return (
     <footer>
-      <div className='Footer'>
+      <div className="Footer">
         <a
-          href='/'
-          title={i18n.t('Homepage')}
-          className='nav-header-link'
+          href={homepageUrl}
+          title={i18n.t("Homepage")}
+          className="nav-header-link"
         >
-          <img src={icon} alt="Logo"/>
+          <img src={icon} alt="Logo" />
         </a>
-        <div className='FooterTitle'>
-          Version <span className='FooterVersion'>{version}</span>
+        <div className="FooterTitle">
+          Version <span className="FooterVersion">{version}</span>
         </div>
       </div>
     </footer>
-  )
+  );
 }

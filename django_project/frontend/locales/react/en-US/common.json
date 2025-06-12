@@ -6,6 +6,13 @@
     "mapboxStyleInformation": "Mapbox style information.",
     "seeMapboxDocumentationForMoreDetail": "See mapbox documentation for more detail.",
     "thereAreSomeInformationToControlTheLegend": "There are some information to control the Legend.",
+    "logout" : "Logout",
+    "loggedAs" : "Logged as",
+    "navbar": {
+        "authorizedToGeoRepo": "Authorized to GeoRepo.",
+        "djangoAdmin" : "Django admin",
+        "apiDocumentation" : "API Documentation"
+    },
     "admin": {
         "requestApproved": "Request is Approved",
         "requestRejected": "Request is Rejected",
