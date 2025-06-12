@@ -21,6 +21,7 @@ import React, { Fragment, useRef } from 'react';
 import { useSelector } from "react-redux";
 import $ from 'jquery';
 import i18n from "i18next";
+import { useTranslation } from "react-i18next";
 
 import User from './User'
 import { EmbedConfig } from "../../utils/embed";
@@ -79,6 +80,7 @@ export default function NavBar({ minified }) {
   const { icon, favicon, site_title, site_type } = preferences;
   const { is_contributor } = user;
   const user_permission = useSelector(state => state.dashboard?.data?.user_permission);
+  const { t, i18n } = useTranslation();
 
   // Set width of logo
   // Not working using css on firefox
@@ -90,6 +92,7 @@ export default function NavBar({ minified }) {
   } catch (err) {
 
   }
+  const homepageUrl = '/' + i18n.language.toLowerCase()
   const iconUrl = minified ? favicon : icon;
   return (
     <Fragment>
@@ -99,7 +102,7 @@ export default function NavBar({ minified }) {
             iconUrl &&
             <div className='NavHeaderLogo'>
               <a
-                href='/'
+                href={homepageUrl}
                 title={i18n.t('Homepage')}
                 className='nav-header-link'
               >
@@ -114,7 +117,7 @@ export default function NavBar({ minified }) {
               style={{ width: '100%', textAlign: "center" }}
             >
               <a
-                href='/'
+                href={homepageUrl}
                 title={i18n.t('Homepage')}
                 className='nav-header-link'
               >
@@ -123,7 +126,7 @@ export default function NavBar({ minified }) {
             </div>
           }
           <a
-            href='/'
+            href={homepageUrl}
             title={i18n.t('Homepage')}
             className='NavHeaderLink'
           >
@@ -159,7 +162,7 @@ export default function NavBar({ minified }) {
                   <ThemeButton
                     variant="white"
                   >
-                    <CogIcon/> Admin panel
+                    <CogIcon/> {t("dashboardPage.adminPanelButton")}
                   </ThemeButton>
                 </a>
               </div>

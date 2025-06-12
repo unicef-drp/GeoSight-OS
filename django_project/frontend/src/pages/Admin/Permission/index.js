@@ -23,6 +23,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import DoDisturbOnIcon from '@mui/icons-material/DoDisturbOn';
 import { GridActionsCellItem } from "@mui/x-data-grid";
+import { useTranslation } from "react-i18next";
 
 import Modal, {
   ModalContent,
@@ -656,6 +657,7 @@ export function PermissionForm(
 export default function PermissionModal(
   { name, urlData, additionalTabs = {}, ...props }
 ) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false)
   const [defaultData, setDefaultData] = useState(null)
   const [data, setData] = useState(null)
@@ -678,7 +680,7 @@ export default function PermissionModal(
   }, [defaultData])
 
   return <Fragment>
-    <Tooltip title={`Share`}>
+    <Tooltip title={t('admin.actions.changeShareConfig')}>
       <div className='ButtonIcon' onClick={() => setOpen(true)}>
         <ShareIcon onClick={() => setOpen(true)}/>
       </div>

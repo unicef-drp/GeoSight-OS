@@ -19,6 +19,7 @@ import Grid from "@mui/material/Grid";
 import Pagination from '@mui/material/Pagination';
 import ImageIcon from '@mui/icons-material/Image';
 import Box from "@mui/material/Box";
+import { useTranslation } from 'react-i18next';
 
 import { SearchInput } from "../Input/IconInput";
 import {
@@ -48,6 +49,7 @@ interface ProjectGridProps {
 function ProjectGrid({ projects, isLoading }: ProjectGridProps) {
   // @ts-ignore
   const userId: number = user.id;
+  const { i18n } = useTranslation();
 
   return <div style={{ position: "relative" }}>
     {
@@ -58,7 +60,7 @@ function ProjectGrid({ projects, isLoading }: ProjectGridProps) {
         projects.map((project: Project, idx: number) => (
           <Grid key={idx} item xs={3}>
             <div className='ProjectGrid'>
-              <a href={'/project/' + project.slug}>
+              <a href={'/' + i18n.language.toLowerCase() + '/project/' + project.slug}>
                 <div className='ProjectGridIcon'>
                   {
                     project.thumbnail ? <img src={project.thumbnail}/> : project.icon ? <img src={project.icon}/> :
