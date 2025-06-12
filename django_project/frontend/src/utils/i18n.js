@@ -58,7 +58,6 @@ export const changeLanguage = (newLang) => {
         i18n.changeLanguage(newLang);
 
         // Update the URL and reload the page to trigger Django's language change
-        console.log(newPath);
         window.location.href = newPath;
     }
 };
