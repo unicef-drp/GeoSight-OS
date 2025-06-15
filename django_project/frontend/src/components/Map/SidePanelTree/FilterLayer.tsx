@@ -18,7 +18,7 @@ import { debounce } from "@mui/material/utils";
 import TextField from "@mui/material/TextField";
 import { IconButton } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
-import { MagnifyIcon } from "../Icons";
+import { MagnifyIcon } from "../../Icons";
 
 export interface Props {
   placeholder: string;
@@ -26,45 +26,47 @@ export interface Props {
 }
 
 export default function FilterLayer({ placeholder, inputChanged }: Props) {
-  const [value, setValue] = useState('')
+  const [value, setValue] = useState("");
 
   const update = useMemo(
     () =>
-      debounce(
-        (input) => {
-          inputChanged(input)
-        },
-        400
-      ),
-    []
-  )
+      debounce((input) => {
+        inputChanged(input);
+      }, 400),
+    [],
+  );
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value)
-  }
+    setValue(e.target.value);
+  };
 
   useEffect(() => {
-    update(value)
-  }, [value])
+    update(value);
+  }, [value]);
 
-  return <TextField
-    className='PanelSearchBox'
-    variant={'outlined'}
-    value={value}
-    onKeyPress={(e) => {
-      e.key === 'Enter' && e.preventDefault();
-    }}
-    placeholder={placeholder ? placeholder : ''}
-    onChange={onChange}
-    InputProps={{
-      endAdornment: (
-        <IconButton
-          type="button" sx={{ p: '10px' }}
-          aria-label="search"
-          disabled={value.length === 0}
-          onClick={() => setValue('')}>
-          {value ? <ClearIcon/> : <MagnifyIcon/>}
-        </IconButton>
-      )
-    }}/>
+  return (
+    <TextField
+      className="PanelSearchBox"
+      variant={"outlined"}
+      value={value}
+      onKeyPress={(e) => {
+        e.key === "Enter" && e.preventDefault();
+      }}
+      placeholder={placeholder ? placeholder : ""}
+      onChange={onChange}
+      InputProps={{
+        endAdornment: (
+          <IconButton
+            type="button"
+            sx={{ p: "10px" }}
+            aria-label="search"
+            disabled={value.length === 0}
+            onClick={() => setValue("")}
+          >
+            {value ? <ClearIcon /> : <MagnifyIcon />}
+          </IconButton>
+        ),
+      }}
+    />
+  );
 }
