@@ -130,7 +130,9 @@ class Dashboard(
         default={
             'indicatorLayer': 100,
             'contextLayer': 100,
-        }
+        },
+        null=True,
+        blank=True
     )
 
     @staticmethod

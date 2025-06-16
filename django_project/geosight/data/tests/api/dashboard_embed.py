@@ -56,6 +56,7 @@ class DashboardBookmarkApiTest(BasePermissionTest.TestCase):
             'selected_basemap': BasemapLayer.objects.create(name='name').id,
             'is_3d_mode': True,
             'position': {},
+            "transparency_config": {}
         }
         url = reverse(
             'dashboard-embed', kwargs={'slug': self.dashboard.slug}

@@ -136,4 +136,14 @@ class DashboardForm(forms.ModelForm):
         except KeyError:
             data['permission'] = None
         data['tools'] = other_data.get('tools', [])
+
+        # Transparency
+        try:
+            if not data['transparency_config']:
+                raise KeyError
+        except KeyError:
+            data['transparency_config'] = {
+                'indicatorLayer': 100,
+                'contextLayer': 100,
+            }
         return data

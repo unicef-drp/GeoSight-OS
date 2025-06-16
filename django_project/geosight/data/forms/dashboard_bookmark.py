@@ -57,4 +57,14 @@ class DashboardBookmarkForm(forms.ModelForm):
                 ContextLayer.objects.get(id=row)
         except ContextLayer.DoesNotExist:
             raise ValueError('Context layer does not exist')
+
+        # Transparency
+        try:
+            if not data['transparency_config']:
+                raise KeyError
+        except KeyError:
+            data['transparency_config'] = {
+                'indicatorLayer': 100,
+                'contextLayer': 100,
+            }
         return data
