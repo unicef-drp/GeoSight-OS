@@ -18,9 +18,27 @@ export const selection = async (page) => {
   await page.getByRole('tab', { name: 'Filters' }).click();
   await page.getByRole('button', { name: 'Indicator A above X% Delete' }).getByRole('checkbox').check();
   await page.getByRole('tab', { name: 'Layers' }).click();
+
+  // Update indicator layer transparency
+  const slider = await page.locator('#simple-tabpanel-1.layers-panel .Transparency .MuiSlider-root');
+  await slider.evaluate(el => el.scrollIntoView({
+    behavior: 'auto',
+    block: 'center'
+  }));
+  await page.waitForTimeout(100);
+  const box = await slider.boundingBox();
+
+  if (box) {
+    const x = box.x + box.width / 2;
+    const y = box.y + box.height / 2;
+
+    await page.mouse.click(x, y);
+  }
+  await expect(page.locator('#simple-tabpanel-1.layers-panel .Transparency .MuiSlider-valueLabelLabel').getByText('50', { exact: true })).toBeVisible();
 }
 
 export const defaultCheck = async (page) => {
+  await expect(page.locator('#simple-tabpanel-1.layers-panel .Transparency .MuiSlider-valueLabelLabel').getByText('100', { exact: true })).toBeVisible();
   await expect(page.getByTitle('Turn on compare Layers')).toBeVisible();
   await expect(page.locator('.MapLegendSectionTitle')).toContainText(layer1);
   await expect(page.getByLabel(layer1)).toBeChecked();
@@ -55,6 +73,7 @@ export const defaultCheck = async (page) => {
 }
 
 export const defaultBookmark = async (page) => {
+  await expect(page.locator('#simple-tabpanel-1.layers-panel .Transparency .MuiSlider-valueLabelLabel').getByText('50', { exact: true })).toBeVisible();
   await expect(page.getByLabel(layer1)).not.toBeChecked();
   await expect(page.getByLabel(layer2)).toBeChecked();
   await expect(page.getByLabel(kenyaLayer)).toBeChecked();
