@@ -34,8 +34,29 @@ class DashboardBookmarkForm(forms.ModelForm):
         fields = '__all__'
 
     @staticmethod
-    def update_data(data, dashboard: Dashboard):
-        """Update data from POST data."""
+    def update_data(data, dashboard: Dashboard):  # noqa DOC503
+        """
+        Normalize and validate dashboard POST data before saving.
+
+        This method updates and prepares raw input data by:
+        - Attaching the dashboard ID.
+        - Converting the bounding box (`extent`) to
+            a PostGIS Polygon with SRID 4326.
+        - Serializing filters to JSON string.
+        - Resolving foreign key references
+            (e.g., `selected_basemap`, `selected_context_layers`).
+        - Ensuring `transparency_config` exists with default values if missing.
+
+        :param data: Raw dashboard data from POST request.
+        :type data: dict
+        :param dashboard: Dashboard instance to associate the data with.
+        :type dashboard: Dashboard
+        :return:
+            The cleaned and updated data dictionary ready for model saving.
+        :rtype: dict
+        :raises ValueError:
+            If `selected_basemap` or any `selected_context_layers` are invalid.
+        """
         data['dashboard'] = dashboard.id
 
         # save polygon

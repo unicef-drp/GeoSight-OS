@@ -20,9 +20,9 @@ import Radio from "@mui/material/Radio";
 import { Checkbox } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import { IndicatorLayer } from "../../../../types/IndicatorLayer";
-import Highlighted from "../../../SidePanelTree/Highlighted";
-import LayerDescription from "../../../SidePanelTree/Description";
-import SidePanelSlicers from "../../../SidePanelTree/SidePanelSlicers";
+import Highlighted from "../Highlighted";
+import LayerDescription from "../Description";
+import SidePanelSlicers from "../SidePanelSlicers";
 import { RelatedTableLayerFilter } from "../../../../pages/Dashboard/LeftPanel/IndicatorLayers/RelatedTableLayer";
 import {
   DynamicIndicatorType,

@@ -23,7 +23,7 @@ import { Actions } from '../../../../store/dashboard'
 import {
   dataStructureToTreeData
 } from "../../../../components/SortableTreeForm/utilities";
-import SidePanelTreeView from "../../../../components/SidePanelTree";
+import SidePanelTreeView from "../../../../components/Map/SidePanelTree/ContextLayer";
 import { getLayer } from "../../MapLibre/Layers/ContextLayers/Layer";
 import { useTranslation } from 'react-i18next';
 
