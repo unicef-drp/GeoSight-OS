@@ -75,7 +75,8 @@ class DashboardBookmarksAPI(APIView):
                 selected_basemap=basemap.object if basemap else None,
                 selected_indicator_layers=selected_indicator_layers,
                 selected_admin_level=default_level,
-                filters=dashboard.filters
+                filters=dashboard.filters,
+                transparency_config=dashboard.transparency_config,
             )
         ).data
 

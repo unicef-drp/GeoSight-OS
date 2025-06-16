@@ -12,7 +12,7 @@
  * __date__ = '16/06/2025'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Transparency from "../../../TransparencySlider";
 import { Actions } from "../../../../store/dashboard";
@@ -25,27 +25,31 @@ export function GlobalTransparency({}: Props) {
     indicatorLayer,
     // @ts-ignore
   } = useSelector((state) => state.dashboard.data?.transparency_config);
-  const [value, setValue] = useState(100);
+  const {
+    indicatorLayer: currTransparency,
+    // @ts-ignore
+  } = useSelector((state) => state.map?.transparency);
 
   // When dashboard transparency indicator layer changed
   useEffect(() => {
     if (indicatorLayer === undefined) {
-      setValue(100);
+      dispatch(Actions.Map.updateTransparency("indicatorLayer", 100));
     } else {
-      setValue(indicatorLayer);
+      dispatch(
+        Actions.Map.updateTransparency("indicatorLayer", indicatorLayer),
+      );
     }
   }, [indicatorLayer]);
 
-  // When value changed
-  useEffect(() => {
-    dispatch(Actions.Map.updateTransparency("indicatorLayer", value));
-  }, [value]);
-
   return (
     <Transparency
-      value={value}
-      onChange={setValue}
-      onChangeCommitted={setValue}
+      value={currTransparency}
+      onChange={(value) =>
+        dispatch(Actions.Map.updateTransparency("indicatorLayer", value))
+      }
+      onChangeCommitted={(value) =>
+        dispatch(Actions.Map.updateTransparency("indicatorLayer", value))
+      }
     />
   );
 }

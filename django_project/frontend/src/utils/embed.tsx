@@ -18,20 +18,18 @@ interface EmbedConfigProps {
   id: number | null;
   filter_tab: boolean;
   layer_tab: boolean;
-  widget_tab: boolean,
+  widget_tab: boolean;
   map: boolean;
-  bookmark: ProjectCheckpoint | null
+  bookmark: ProjectCheckpoint | null;
 }
 
 /** Return embed config */
 export function EmbedConfig(): EmbedConfigProps {
-  let _embedConfig = null
+  let _embedConfig = null;
   try {
     // @ts-ignore
     _embedConfig = embedConfig;
-  } catch (err) {
-
-  }
+  } catch (err) {}
   try {
     if (_embedConfig) {
       // @ts-ignore
@@ -53,20 +51,19 @@ export function EmbedConfig(): EmbedConfigProps {
             selected_admin_level: _embedConfig.selected_admin_level,
             is_3d_mode: _embedConfig.is_3d_mode,
             position: _embedConfig.position,
-            context_layers_config: _embedConfig.context_layers_config
+            context_layers_config: _embedConfig.context_layers_config,
+            transparency_config: _embedConfig.transparency_config,
           },
-        }
+        };
       }
     }
-  } catch (err) {
-
-  }
+  } catch (err) {}
   return {
     id: null,
     filter_tab: true,
     layer_tab: true,
     widget_tab: true,
     map: true,
-    bookmark: null
-  }
+    bookmark: null,
+  };
 }
