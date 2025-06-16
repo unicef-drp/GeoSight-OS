@@ -155,6 +155,14 @@ export const ProjectCheckpoint = memo(
         );
         dispatch(Actions.Map.showHideContextLayer(data.context_layer_show));
         dispatch(Actions.Map.showHideIndicator(data.indicator_layer_show));
+
+        // Default transparency_config
+        if (!data.transparency_config) {
+          data.transparency_config = {
+            indicatorLayer: 100,
+            contextLayer: 100,
+          };
+        }
         dispatch(
           Actions.Map.update({ transparency: data.transparency_config }),
         );

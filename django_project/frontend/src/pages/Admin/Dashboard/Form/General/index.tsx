@@ -522,7 +522,7 @@ const GeneralForm = memo(({}: Props) => {
               </FormGroup>
             </Grid>
             <Grid item xs={6}>
-              <FormControl>
+              <FormControl className="transparency-indicator-layer">
                 <label className="form-label">
                   {t("admin.dashboard.transparencyOfIndicatorLayers")}
                 </label>
@@ -544,7 +544,7 @@ const GeneralForm = memo(({}: Props) => {
                   }}
                 />
               </FormControl>
-              <FormControl>
+              <FormControl className="transparency-context-layer">
                 <label className="form-label">
                   {t("admin.dashboard.transparencyOfContextLayers")}
                 </label>
