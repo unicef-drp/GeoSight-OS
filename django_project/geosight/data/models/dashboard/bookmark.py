@@ -56,6 +56,16 @@ class DashboardBookmarkAbstract(models.Model):
     )
     context_layers_config = models.JSONField(null=True, blank=True)
 
+    # TransparencySlider
+    transparency_config = models.JSONField(
+        default={
+            'indicatorLayer': 100,
+            'contextLayer': 100,
+        },
+        null=True,
+        blank=True
+    )
+
     class Meta:  # noqa: D106
         abstract = True
 

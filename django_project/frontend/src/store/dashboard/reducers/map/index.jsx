@@ -30,6 +30,8 @@ export const MAP_POSITION = `MAP/POSITION`;
 export const MAP_IS_3D_MODE = `MAP/IS_3D_MODE`;
 export const MAP_UPDATE_CONFIG = `MAP/UPDATE_CONFIG`;
 
+export const MAP_UPDATE_TRANSPARENCY = `MAP/MAP_UPDATE_TRANSPARENCY`;
+
 const mapInitialState = {
   referenceLayers: [],
   basemapLayer: null,
@@ -42,6 +44,11 @@ const mapInitialState = {
   position: {},
   is3dMode: false,
   force: false,
+
+  transparency: {
+    indicatorLayer: 100,
+    contextLayer: 100,
+  },
 };
 
 export default function mapReducer(state = mapInitialState, action) {
@@ -50,104 +57,113 @@ export default function mapReducer(state = mapInitialState, action) {
       case MAP_CHANGE_BASEMAP: {
         return {
           ...state,
-          basemapLayer: action.payload
-        }
+          basemapLayer: action.payload,
+        };
       }
       case MAP_ADD_CONTEXTLAYERS: {
         const contextLayers = Object.assign({}, state.contextLayers);
-        const { layer, layer_type } = action.payload
+        const { layer, layer_type } = action.payload;
         contextLayers[action.id] = {
           render: true,
           layer: layer,
-          layer_type: layer_type
-        }
+          layer_type: layer_type,
+        };
         return {
           ...state,
-          contextLayers: contextLayers
-        }
+          contextLayers: contextLayers,
+        };
       }
       case MAP_REMOVE_CONTEXTLAYERS: {
         const contextLayers = Object.assign({}, state.contextLayers);
         if (contextLayers[action.id]) {
-          delete contextLayers[action.id]
+          delete contextLayers[action.id];
         }
         return {
           ...state,
-          contextLayers: contextLayers
-        }
+          contextLayers: contextLayers,
+        };
       }
       case MAP_REMOVE_CONTEXTLAYERS_ALL: {
         return {
           ...state,
-          contextLayers: {}
-        }
+          contextLayers: {},
+        };
       }
       case MAP_REFERENCE_LAYER_CHANGED: {
-        const identifierList = []
-        const views = action.payload.filter(view => {
-          const found = identifierList.includes(view.identifier)
-          identifierList.push(view.identifier)
-          return !found
-        })
+        const identifierList = [];
+        const views = action.payload.filter((view) => {
+          const found = identifierList.includes(view.identifier);
+          identifierList.push(view.identifier);
+          return !found;
+        });
         if (JSON.stringify(state.referenceLayers) !== JSON.stringify(views)) {
           return {
             ...state,
-            referenceLayers: views
-          }
+            referenceLayers: views,
+          };
         }
       }
       case MAP_CENTER: {
         return {
           ...state,
-          center: action.payload
-        }
+          center: action.payload,
+        };
       }
       case MAP_EXTENT: {
         return {
           ...state,
-          extent: action.payload
-        }
+          extent: action.payload,
+        };
       }
       case MAP_INDICATOR_SHOW: {
         return {
           ...state,
-          indicatorShow: action.payload
-        }
+          indicatorShow: action.payload,
+        };
       }
       case MAP_CONTEXTLAYERS_SHOW: {
         return {
           ...state,
-          contextLayersShow: action.payload
-        }
+          contextLayersShow: action.payload,
+        };
       }
       case MAP_ZOOM: {
         return {
           ...state,
-          zoom: action.payload
-        }
+          zoom: action.payload,
+        };
       }
       case MAP_POSITION: {
         return {
           ...state,
           position: action.payload,
-          force: false
-        }
+          force: false,
+        };
       }
       case MAP_IS_3D_MODE: {
         return {
           ...state,
           is3dMode: action.payload,
-          force: false
-        }
+          force: false,
+        };
       }
       case MAP_UPDATE_CONFIG: {
         return {
           ...state,
           ...action.payload,
-          force: true
-        }
+          force: true,
+        };
+      }
+      case MAP_UPDATE_TRANSPARENCY: {
+        const { key, value } = action.payload;
+        const transparency = state.transparency;
+        transparency[key] = value;
+        return {
+          ...state,
+          transparency: { ...transparency },
+        };
       }
     }
   }
-  return state
+  return state;
 }

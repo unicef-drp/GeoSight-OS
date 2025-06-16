@@ -35,6 +35,40 @@ test.describe('Create project', () => {
     await page.locator(".ReferenceDatasetSection input").click();
     await page.locator(".ModalDataSelector .MuiDataGrid-row").nth(1).click();
 
+    // Update indicator layer transparency
+    const slider = await page.locator('.transparency-indicator-layer .MuiSlider-root');
+    await slider.evaluate(el => el.scrollIntoView({
+      behavior: 'auto',
+      block: 'center'
+    }));
+    await page.waitForTimeout(100);
+    const box = await slider.boundingBox();
+
+    if (box) {
+      const x = box.x + box.width / 2;
+      const y = box.y + box.height / 2;
+
+      await page.mouse.click(x, y);
+    }
+
+    // Check transparency
+    await expect(page.locator('.transparency-indicator-layer .MuiSlider-valueLabelLabel')).toContainText('50');
+
+    await page.waitForTimeout(1000);
+    // Update context layer transparency
+    const slider2 = await page.locator('.transparency-context-layer .MuiSlider-root');
+    const box2 = await slider2.boundingBox();
+
+    if (box2) {
+      const x = box2.x + box2.width / 4;
+      const y = box2.y + box2.height / 2;
+
+      await page.mouse.click(x, y);
+    }
+
+    // Check transparency
+    await expect(page.locator('.transparency-context-layer .MuiSlider-valueLabelLabel')).toContainText('25');
+
     // Check extent
     await expect(page.locator('.ExtentManualInput input').nth(0)).toHaveValue('40.9943');
     await expect(page.locator('.ExtentManualInput input').nth(1)).toHaveValue('11.9884');
@@ -129,6 +163,12 @@ test.describe('Create project', () => {
     const editUrl = `${BASE_URL}/admin/project/test-project-default/edit`
     await page.waitForURL(editUrl)
     await page.goto('/project/test-project-default');
+
+    // Check transparency
+    await page.getByRole('tab', { name: 'Context Layers' }).click();
+    await expect(page.locator('#simple-tabpanel-0.layers-panel .Transparency .MuiSlider-valueLabelLabel').getByText('25', { exact: true })).toBeVisible();
+    await page.getByRole('tab', { name: 'Indicators' }).click();
+    await expect(page.locator('#simple-tabpanel-1.layers-panel .Transparency .MuiSlider-valueLabelLabel').getByText('50', { exact: true })).toBeVisible();
 
     // --------------------------------------------
     // TEST FILTERS

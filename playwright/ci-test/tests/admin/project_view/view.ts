@@ -61,6 +61,9 @@ test.describe('View project', () => {
     await page.locator('#simple-tab-1 svg').click();
     await expect(page.locator('.MapLegendSection')).toHaveCount(1);
 
+    // Check transparency
+    await expect(page.locator('#simple-tabpanel-1.layers-panel .Transparency .MuiSlider-valueLabelLabel').getByText('100', { exact: true })).toBeVisible();
+
     // ------------------------------------------------------------
     // LABEL
     // ------------------------------------------------------------

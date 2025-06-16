@@ -13,18 +13,19 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 import { Extent, Position } from "./Geometry";
-
+import { TransparencyConfiguration } from "../pages/Admin/Dashboard/Form/General";
 
 export interface ProjectCheckpoint {
-  selected_basemap: number,
-  selected_indicator_layers: number[],
-  selected_context_layers: number[],
-  filters: any,
-  extent: Extent,
-  indicator_layer_show: boolean,
-  context_layer_show: boolean,
-  selected_admin_level: number,
-  is_3d_mode: boolean,
+  selected_basemap: number;
+  selected_indicator_layers: number[];
+  selected_context_layers: number[];
+  filters: any;
+  extent: Extent;
+  indicator_layer_show: boolean;
+  context_layer_show: boolean;
+  selected_admin_level: number;
+  is_3d_mode: boolean;
   position: Position;
   context_layers_config?: object;
+  transparency_config?: TransparencyConfiguration;
 }

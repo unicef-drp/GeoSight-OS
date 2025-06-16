@@ -22,7 +22,7 @@ import { addLayerWithOrder } from "../../Render";
 import { Variables } from "../../../../../utils/Variables";
 import { IS_DEBUG, Logger } from "../../../../../utils/logger";
 
-export const INDICATOR_LABEL_ID = 'indicator-label'
+export const INDICATOR_LABEL_ID = "indicator-label";
 let lastFeatures = null;
 
 /** Remove label **/
@@ -31,129 +31,134 @@ export const resetLabel = (map) => {
   if (hasLayer(map, INDICATOR_LABEL_ID)) {
     removeLayer(map, INDICATOR_LABEL_ID);
   }
-}
+};
 
 /** Show Label **/
 export const showLabel = (map) => {
   if (hasLayer(map, INDICATOR_LABEL_ID)) {
-    map.setLayoutProperty(INDICATOR_LABEL_ID, 'visibility', 'visible');
+    map.setLayoutProperty(INDICATOR_LABEL_ID, "visibility", "visible");
   }
-  Logger.layers(map)
-}
+  Logger.layers(map);
+};
 
 /** Hide Label **/
 export const hideLabel = (map) => {
   if (hasLayer(map, INDICATOR_LABEL_ID)) {
-    map.setLayoutProperty(INDICATOR_LABEL_ID, 'visibility', 'none');
+    map.setLayoutProperty(INDICATOR_LABEL_ID, "visibility", "none");
   }
-  Logger.layers(map)
-}
+  Logger.layers(map);
+};
 
 /** Render label **/
-export const renderLabel = (map, features, config, showIndicatorMapLabel) => {
+export const renderLabel = (
+  map,
+  features,
+  config,
+  showIndicatorMapLabel,
+  transparency
+) => {
   if (JSON.stringify(features) === JSON.stringify(lastFeatures)) {
-    return
+    return;
   }
-  lastFeatures = features
+  lastFeatures = features;
   const layout = {
-    'text-anchor': 'bottom',
-    'text-size': 14,
-    'text-variable-anchor': ['center'],
-    'visibility': showIndicatorMapLabel ? 'visible' : 'none'
-  }
+    "text-anchor": "bottom",
+    "text-size": 14,
+    "text-variable-anchor": ["center"],
+    visibility: showIndicatorMapLabel ? "visible" : "none",
+  };
 
   // This is for test
   if (IS_DEBUG) {
-    layout['text-allow-overlap'] = true
-    layout['text-ignore-placement'] = true
-    layout['symbol-avoid-edges'] = true
+    layout["text-allow-overlap"] = true;
+    layout["text-ignore-placement"] = true;
+    layout["symbol-avoid-edges"] = true;
   }
   const paint = {
-    'text-halo-blur': 2
-  }
-  let minZoom = 0
-  let maxZoom = 24
+    "text-halo-blur": 2,
+  };
+  let minZoom = 0;
+  let maxZoom = 24;
 
   // Check the style
-  const { text, style } = config
+  const { text, style } = config;
   if (text && style) {
-    minZoom = style.minZoom ? style.minZoom : minZoom
-    maxZoom = style.maxZoom ? style.maxZoom : maxZoom
-    paint['text-color'] = style.fontColor.replaceAll('##', '#')
+    minZoom = style.minZoom ? style.minZoom : minZoom;
+    maxZoom = style.maxZoom ? style.maxZoom : maxZoom;
+    paint["text-color"] = style.fontColor.replaceAll("##", "#");
     if (style.fontFamily) {
-      const font = style.fontFamily.split(',')[0].replaceAll('"', '')
-      layout['text-font'] = [font, font]
+      const font = style.fontFamily.split(",")[0].replaceAll('"', "");
+      layout["text-font"] = [font, font];
     } else {
-      layout['text-font'] = ['Arial', 'Arial']
+      layout["text-font"] = ["Arial", "Arial"];
     }
-    layout['text-size'] = style.fontSize
-    paint['text-halo-color'] = style.haloColor.replaceAll('##', '#')
-    paint['text-halo-width'] = style.haloWeight ? 1 : 0
+    layout["text-size"] = style.fontSize;
+    paint["text-halo-color"] = style.haloColor.replaceAll("##", "#");
+    paint["text-halo-width"] = style.haloWeight ? 1 : 0;
+    paint["text-opacity"] = transparency;
 
-    const textField = ['format']
-    const formattedText = text.replaceAll('{', ' {{').replaceAll('}', '}} ')
-    const separators = [' {', '} '];
-    formattedText.split('\n').map((label, idx) => {
-      label.split(new RegExp(separators.join('|'), 'g')).map(row => {
-        if (row.includes('{')) {
-          textField.push(['get', row.replace('{', '').replace('}', '')])
-        } else if (row.includes('round')) {
-          const property = textField[textField.length - 1][1]
+    const textField = ["format"];
+    const formattedText = text.replaceAll("{", " {{").replaceAll("}", "}} ");
+    const separators = [" {", "} "];
+    formattedText.split("\n").map((label, idx) => {
+      label.split(new RegExp(separators.join("|"), "g")).map((row) => {
+        if (row.includes("{")) {
+          textField.push(["get", row.replace("{", "").replace("}", "")]);
+        } else if (row.includes("round")) {
+          const property = textField[textField.length - 1][1];
           if (property) {
-            const decimalNumber = row.split(/.round\(|\)/)
+            const decimalNumber = row.split(/.round\(|\)/);
             if (decimalNumber[0]) {
-              textField.push(row)
+              textField.push(row);
             } else if (!isNaN(parseInt(decimalNumber[1]))) {
-              const decimalPlace = parseInt(decimalNumber[1])
+              const decimalPlace = parseInt(decimalNumber[1]);
               if (decimalNumber[2]) {
-                textField.push(decimalNumber[2])
+                textField.push(decimalNumber[2]);
               }
-              features.map(feature => {
+              features.map((feature) => {
                 if (feature.properties[property]) {
                   try {
-                    feature.properties[property] = feature.properties[property].round(decimalPlace)
-                  } catch (err) {
-
-                  }
+                    feature.properties[property] =
+                      feature.properties[property].round(decimalPlace);
+                  } catch (err) {}
                 }
-              })
+              });
             }
           }
         } else if (row) {
-          textField.push(row)
+          textField.push(row);
         }
-      })
-      textField.push('\n')
-    })
-    layout['text-field'] = textField
+      });
+      textField.push("\n");
+    });
+    layout["text-field"] = textField;
   }
   if (hasLayer(map, INDICATOR_LABEL_ID)) {
-    map.removeLayer(INDICATOR_LABEL_ID)
+    map.removeLayer(INDICATOR_LABEL_ID);
   }
   if (hasSource(map, INDICATOR_LABEL_ID)) {
-    map.removeSource(INDICATOR_LABEL_ID)
+    map.removeSource(INDICATOR_LABEL_ID);
   }
   map.addSource(INDICATOR_LABEL_ID, {
-    'type': 'geojson',
-    'data': {
-      type: 'FeatureCollection',
-      features: features
-    }
+    type: "geojson",
+    data: {
+      type: "FeatureCollection",
+      features: features,
+    },
   });
   addLayerWithOrder(
     map,
     {
       id: "indicator-label",
-      type: 'symbol',
+      type: "symbol",
       source: INDICATOR_LABEL_ID,
-      filter: ['==', '$type', 'Point'],
+      filter: ["==", "$type", "Point"],
       layout: layout,
       paint: paint,
       maxzoom: maxZoom,
-      minzoom: minZoom
-
+      minzoom: minZoom,
     },
-    Variables.LAYER_CATEGORY.LABEL
-  )
-  Logger.layers(map)
-}
+    Variables.LAYER_CATEGORY.LABEL,
+  );
+  Logger.layers(map);
+};

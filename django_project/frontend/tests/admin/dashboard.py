@@ -113,6 +113,10 @@ class DashboardAdminViewTest(BaseViewTest.TestCase):
         self.assertEqual(new_resource.name, new_payload['name'])
         self.assertEqual(new_resource.creator, self.creator)
         self.assertEqual(new_resource.modified_by, self.creator)
+        self.assertEqual(
+            new_resource.transparency_config,
+            {'contextLayer': 100, 'indicatorLayer': 100}
+        )
 
         # Check the edit permission
         url = reverse(self.edit_url_tag, kwargs={'slug': new_resource.slug})
@@ -130,7 +134,9 @@ class DashboardAdminViewTest(BaseViewTest.TestCase):
             'name': 'name_invalid_extent',
             'data': json.dumps(new_data)
         }
-        response = self.assertRequestPostView(url, 400, new_payload, self.admin)
+        response = self.assertRequestPostView(
+            url, 400, new_payload, self.admin
+        )
         self.assertEqual(
             response.content,
             (
@@ -146,7 +152,9 @@ class DashboardAdminViewTest(BaseViewTest.TestCase):
             'name': 'name_invalid_indicator',
             'data': json.dumps(new_data)
         }
-        response = self.assertRequestPostView(url, 400, new_payload, self.admin)
+        response = self.assertRequestPostView(
+            url, 400, new_payload, self.admin
+        )
         self.assertEqual(
             response.content,
             b'Indicator with id 9999999 does not exist'
@@ -194,6 +202,9 @@ class DashboardAdminViewTest(BaseViewTest.TestCase):
         last_version = self.resource.version
         new_payload = copy.deepcopy(self.payload)
         new_payload['name'] = 'name 1'
+        new_payload['transparency_config'] = json.dumps(
+            {"contextLayer": 20, "indicatorLayer": 30}
+        )
         self.assertRequestPostView(url, 302, new_payload)
         self.assertRequestPostView(url, 403, new_payload, self.viewer)
         self.assertRequestPostView(url, 403, new_payload, self.contributor)
@@ -204,6 +215,10 @@ class DashboardAdminViewTest(BaseViewTest.TestCase):
         self.assertEqual(self.resource.creator, self.resource_creator)
         self.assertEqual(self.resource.modified_by, self.creator)
         self.assertNotEqual(self.resource.version, last_version)
+        self.assertEqual(
+            self.resource.transparency_config,
+            {'contextLayer': 20, 'indicatorLayer': 30}
+        )
 
         url = reverse(self.edit_url_tag, kwargs={'slug': self.resource.slug})
         new_data = copy.deepcopy(self.data)
@@ -212,7 +227,8 @@ class DashboardAdminViewTest(BaseViewTest.TestCase):
             'name': 'name_invalid_extent',
             'data': json.dumps(new_data)
         }
-        response = self.assertRequestPostView(url, 400, new_payload, self.admin)
+        response = self.assertRequestPostView(url, 400, new_payload,
+                                              self.admin)
         self.assertEqual(
             response.content,
             (
@@ -228,7 +244,8 @@ class DashboardAdminViewTest(BaseViewTest.TestCase):
             'name': 'name_invalid_indicator',
             'data': json.dumps(new_data)
         }
-        response = self.assertRequestPostView(url, 400, new_payload, self.admin)
+        response = self.assertRequestPostView(url, 400, new_payload,
+                                              self.admin)
         self.assertEqual(
             response.content,
             b'Indicator with id 9999999 does not exist'

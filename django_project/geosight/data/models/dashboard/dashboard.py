@@ -125,9 +125,27 @@ class Dashboard(
         default=False
     )
 
+    # TransparencySlider
+    transparency_config = models.JSONField(
+        default={
+            'indicatorLayer': 100,
+            'contextLayer': 100,
+        },
+        null=True,
+        blank=True
+    )
+
     @staticmethod
     def name_is_exist_of_all(slug: str) -> bool:
-        """Check of name is exist."""
+        """
+        Check whether a dashboard with the given slug exists.
+
+        :param slug: The slug to check for existence in the Dashboard model.
+        :type slug: str
+        :return:
+            True if a dashboard with the given slug exists, False otherwise.
+        :rtype: bool
+        """
         return Dashboard.objects.filter(slug=slug).first() is not None
 
     @property
@@ -144,7 +162,7 @@ class Dashboard(
             return thumbnail_path
         return None
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs):  # noqa DOC101
         """Save object and create thumbnail."""
         # If dashboard has icon, delete old thumbnail if exist,
         # save dashboard, then create new thumbnail
@@ -169,8 +187,37 @@ class Dashboard(
             # If it does not have icon, just save*
             super().save(*args, **kwargs)
 
-    def save_relations(self, data, is_create=False):
-        """Save all relationship data."""
+    def save_relations(self, data, is_create=False):  # noqa DOC202
+        """
+        Save all related data and relationships for a dashboard instance.
+
+        This method handles saving or updating all the dashboard’s related
+        models and configuration, including:
+
+        - Dashboard indicators and their styling rules
+        - Widgets and their layout structure
+        - Basemaps and their layout structure
+        - Context layers and their configuration
+        - Related tables and associated fields
+        - Permissions
+
+        :param data:
+            Dictionary containing all data related to the dashboard's
+            relationships, including widgets, indicators, basemaps,
+            context layers, related tables, and permissions.
+        :type data: dict
+
+        :param is_create:
+            Optional flag to indicate if this call is during a
+            dashboard creation process. May be used to handle
+            initialization-specific logic.
+        :type is_create: bool
+
+        :raises ValueError:
+            If related table information is invalid or incomplete.
+
+        :return: None
+        """
         from geosight.data.models.dashboard import (
             DashboardIndicator, DashboardIndicatorRule, DashboardBasemap,
             DashboardContextLayer, DashboardContextLayerField,
@@ -537,7 +584,42 @@ class Dashboard(
         self.save()
 
     def save_relation(self, ModelClass, ObjectClass, modelQuery, inputData):
-        """Save relation from data."""
+        """
+        Save or update a dashboard relationship with linked objects.
+
+        This generic method synchronizes the relationship between a dashboard
+        and a set of related objects
+        (e.g., indicators, basemaps, context layers),
+        based on the given input data. It ensures only the specified objects
+        are linked and removes others not present in the input.
+
+        :param ModelClass:
+            The Django model class representing the intermediate
+            relationship (e.g., DashboardIndicator).
+        :type ModelClass: django.db.models.Model
+
+        :param ObjectClass:
+            The base object class being linked to
+            (e.g., Indicator, BasemapLayer).
+        :type ObjectClass: django.db.models.Model
+
+        :param modelQuery:
+            QuerySet of the current related model instances tied to
+            the dashboard.
+        :type modelQuery: django.db.models.QuerySet
+
+        :param inputData:
+            A list of dictionaries representing the data for each
+            object to be saved, including attributes like
+            `id`, `visible_by_default`, `styles`, and `configuration`.
+        :type inputData: list[dict]
+
+        :raises ValueError:
+            If an object with a given ID does not exist in the ObjectClass.
+
+        :return: A dictionary mapping original object IDs to saved object IDs.
+        :rtype: dict
+        """
         ids = []
         ids_new = {}
 
@@ -593,7 +675,34 @@ class Dashboard(
         return ids_new
 
     def save_widgets(self, widget_data):
-        """Save widgets from data."""
+        """
+        Save or update dashboard widgets from the provided data.
+
+        This method performs the following actions:
+            - Deletes existing widgets not present in the `widget_data` list.
+            - Updates existing widgets based on their ID.
+            - Creates new widgets if no valid ID is provided
+                or the widget does not exist.
+            - Returns a mapping of temporary widget IDs (if any)
+                to their new database IDs.
+
+        :param widget_data:
+            A list of dictionaries containing widget data.
+            Each dict may contain:
+                - id (int, optional): Existing widget ID
+                - name (str): Widget name
+                - description (str): Widget description
+                - order (int, optional): Display order
+                - visible_by_default (bool): Visibility setting
+                - type (str): Widget type
+                - config (dict): Configuration options
+        :type widget_data: list[dict]
+
+        :return:
+            A mapping of original widget IDs (or 0 for new ones)
+            to actual saved widget IDs.
+        :rtype: dict[int, int]
+        """
         from .dashboard_widget import DashboardWidget
         ids = []
         ids_new = {}

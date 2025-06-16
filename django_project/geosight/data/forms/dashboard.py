@@ -47,7 +47,7 @@ class DashboardForm(forms.ModelForm):
             'context_layers', 'created_at', 'version_data'
         )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):  # noqa DOC101
         """Init."""
         super().__init__(*args, **kwargs)
         self.fields['group'].choices = [
@@ -64,22 +64,59 @@ class DashboardForm(forms.ModelForm):
             pass
 
     def clean_group(self):
-        """Return group."""
+        """
+        Clean and return the DashboardGroup instance.
+
+        This method retrieves or creates a `DashboardGroup` object based on the
+        group name provided in the form's cleaned data.
+
+        :return: A `DashboardGroup` instance.
+        :rtype: DashboardGroup
+        """
         group, created = DashboardGroup.objects.get_or_create(
             name=self.cleaned_data['group']
         )
         return group
 
     def clean_reference_layer(self):
-        """Return group."""
+        """
+        Clean and return the ReferenceLayerView instance.
+
+        This method retrieves or creates a `ReferenceLayerView`
+        object based on the identifier provided in the form's cleaned data.
+
+        :return: A `ReferenceLayerView` instance.
+        :rtype: ReferenceLayerView
+        """
         reference_layer, created = ReferenceLayerView.objects.get_or_create(
             identifier=self.cleaned_data['reference_layer']
         )
         return reference_layer
 
     @staticmethod
-    def update_data(data):
-        """Update data from POST data."""
+    def update_data(data):  # noqa DOC503
+        """
+        Normalize and prepare dashboard data for saving.
+
+        This method transforms and sanitizes raw POST
+        input into a format suitable
+        for saving into the database. It processes fields like `slug`,
+        `extent`,
+        `reference_layer`, `filters`, and various dashboard relations.
+
+        It also handles the conversion of the bounding box to a PostGIS Polygon
+        with SRID 4326 and ensures default values are used when certain fields
+        are missing.
+
+        :param data:
+            A dictionary containing dashboard data,
+            typically from a POST request.
+        :type data: dict
+        :return: A modified and normalized version of the input `data`.
+        :rtype: dict
+        :raises ValueError:
+            If `extent` is invalid or cannot be converted to a Polygon.
+        """
         if 'slug' not in data:
             data['slug'] = slugify(data['name'])
         else:
@@ -136,4 +173,14 @@ class DashboardForm(forms.ModelForm):
         except KeyError:
             data['permission'] = None
         data['tools'] = other_data.get('tools', [])
+
+        # Transparency
+        try:
+            if not data['transparency_config']:
+                raise KeyError
+        except KeyError:
+            data['transparency_config'] = {
+                'indicatorLayer': 100,
+                'contextLayer': 100,
+            }
         return data

@@ -23,17 +23,16 @@ import {
   DASHBOARD_ACTION_TYPE_UPDATE_GEOFIELD,
   DASHBOARD_ACTION_TYPE_UPDATE_PROPS,
   DASHBOARD_ACTION_TYPE_UPDATE_SHARE,
-  DASHBOARD_ACTION_TYPE_UPDATE_STRUCTURE
-} from './index'
+  DASHBOARD_ACTION_TYPE_UPDATE_STRUCTURE,
+} from "./index";
 import { dictDeepCopy } from "../../../../utils/main";
 import { dataFieldsDefault } from "../../../../utils/indicatorLayer";
 import { updateColorPaletteData } from "../../../../utils/Style";
 import { Variables } from "../../../../utils/Variables";
 import { EmbedConfig } from "../../../../utils/embed";
 
-const REQUEST_DASHBOARD = 'REQUEST/' + DASHBOARD_ACTION_NAME;
-const RECEIVE_DASHBOARD = 'RECEIVE/' + DASHBOARD_ACTION_NAME;
-
+const REQUEST_DASHBOARD = "REQUEST/" + DASHBOARD_ACTION_NAME;
+const RECEIVE_DASHBOARD = "RECEIVE/" + DASHBOARD_ACTION_NAME;
 
 /**
  * Request dashboard data.
@@ -41,26 +40,24 @@ const RECEIVE_DASHBOARD = 'RECEIVE/' + DASHBOARD_ACTION_NAME;
 function request() {
   return {
     name: DASHBOARD_ACTION_NAME,
-    type: REQUEST_DASHBOARD
+    type: REQUEST_DASHBOARD,
   };
 }
 
 const groupDefault = {
-  'group': '',
-  'children': []
-}
+  group: "",
+  children: [],
+};
 
 const toolDefaults = (tools, name, visible) => {
-  if (!tools.find(tool => tool.name === name)) {
-    tools.push(
-      {
-        "visible_by_default": visible,
-        "name": name,
-        "config": null
-      }
-    )
+  if (!tools.find((tool) => tool.name === name)) {
+    tools.push({
+      visible_by_default: visible,
+      name: name,
+      config: null,
+    });
   }
-}
+};
 
 /**
  * Receive response dashboard data.
@@ -68,75 +65,76 @@ const toolDefaults = (tools, name, visible) => {
 function receive(data, error = null) {
   if (data) {
     if (!data.filtersAllowModify) {
-      data.filtersAllowModify = data.filters_allow_modify
-      delete data.filters_allow_modify
+      data.filtersAllowModify = data.filters_allow_modify;
+      delete data.filters_allow_modify;
     }
     if (!data.filtersBeingHidden) {
-      data.filtersBeingHidden = data.filters_being_hidden
-      delete data.filters_being_hidden
+      data.filtersBeingHidden = data.filters_being_hidden;
+      delete data.filters_being_hidden;
     }
 
     if (!data.referenceLayer) {
-      data.referenceLayer = data.reference_layer
-      delete data.reference_layer
+      data.referenceLayer = data.reference_layer;
+      delete data.reference_layer;
     }
 
     if (!data.geoField) {
-      data.geoField = data.geo_field
-      delete data.geo_field
+      data.geoField = data.geo_field;
+      delete data.geo_field;
     }
 
     if (!data.indicatorLayers) {
-      data.indicatorLayers = data.indicator_layers
-      const embedConfig = EmbedConfig()
-      data.indicatorLayers.map(layer => {
+      data.indicatorLayers = data.indicator_layers;
+      const embedConfig = EmbedConfig();
+      data.indicatorLayers.map((layer) => {
         if (!layer.data_fields) {
-          layer.data_fields = dataFieldsDefault()
+          layer.data_fields = dataFieldsDefault();
         }
         if (embedConfig.id) {
-          layer.visible_by_default = embedConfig.bookmark.selected_indicator_layers.includes(layer.id)
+          layer.visible_by_default =
+            embedConfig.bookmark.selected_indicator_layers.includes(layer.id);
         }
-      })
-      delete data.indicator_layers
+      });
+      delete data.indicator_layers;
     }
-    data.indicatorLayersStructure = dictDeepCopy(groupDefault)
+    data.indicatorLayersStructure = dictDeepCopy(groupDefault);
     if (data.indicator_layers_structure) {
-      data.indicatorLayersStructure = data.indicator_layers_structure
+      data.indicatorLayersStructure = data.indicator_layers_structure;
     }
-    delete data.indicator_layers_structure
+    delete data.indicator_layers_structure;
 
     if (!data.contextLayers) {
-      data.contextLayers = data.context_layers
-      delete data.context_layers
+      data.contextLayers = data.context_layers;
+      delete data.context_layers;
     }
-    data.contextLayersStructure = dictDeepCopy(groupDefault)
+    data.contextLayersStructure = dictDeepCopy(groupDefault);
     if (data.context_layers_structure) {
-      data.contextLayersStructure = data.context_layers_structure
+      data.contextLayersStructure = data.context_layers_structure;
     }
-    delete data.context_layers_structure
+    delete data.context_layers_structure;
 
     if (!data.basemapsLayers) {
-      data.basemapsLayers = data.basemaps_layers
-      delete data.basemaps_layers
+      data.basemapsLayers = data.basemaps_layers;
+      delete data.basemaps_layers;
     }
-    data.basemapsLayersStructure = dictDeepCopy(groupDefault)
+    data.basemapsLayersStructure = dictDeepCopy(groupDefault);
     if (data.basemaps_layers_structure) {
-      data.basemapsLayersStructure = data.basemaps_layers_structure
+      data.basemapsLayersStructure = data.basemaps_layers_structure;
     }
-    delete data.basemaps_layers_structure
+    delete data.basemaps_layers_structure;
 
-    data.widgetsStructure = dictDeepCopy(groupDefault)
+    data.widgetsStructure = dictDeepCopy(groupDefault);
     if (data.widgets_structure) {
-      data.widgetsStructure = data.widgets_structure
+      data.widgetsStructure = data.widgets_structure;
     }
-    delete data.widgets_structure
+    delete data.widgets_structure;
     if (!data.relatedTables) {
-      data.relatedTables = data.related_tables
-      delete data.related_tables
+      data.relatedTables = data.related_tables;
+      delete data.related_tables;
     }
     if (!data.levelConfig) {
-      data.levelConfig = data.level_config
-      delete data.level_config
+      data.levelConfig = data.level_config;
+      delete data.level_config;
     }
 
     // Adding default tools
@@ -145,14 +143,21 @@ function receive(data, error = null) {
       [Variables.DASHBOARD.TOOL.COMPARE_LAYERS, true],
       [Variables.DASHBOARD.TOOL.MEASUREMENT, true],
       [Variables.DASHBOARD.TOOL.ZONAL_ANALYSIS, false],
-    ].map(tool => {
-        toolDefaults(data.tools, tool[0], tool[1])
-      }
-    )
+    ].map((tool) => {
+      toolDefaults(data.tools, tool[0], tool[1]);
+    });
     data.tools.map((tool, idx) => {
       tool.id = idx + 1;
-    })
+    });
     data.tools.sort((a, b) => a.name.localeCompare(b.name));
+
+    // Default transparency_config
+    if (!data.transparency_config) {
+      data.transparency_config = {
+        indicatorLayer: 100,
+        contextLayer: 100,
+      };
+    }
   }
 
   return {
@@ -160,7 +165,7 @@ function receive(data, error = null) {
     type: RECEIVE_DASHBOARD,
     data,
     error,
-    receivedAt: Date.now()
+    receivedAt: Date.now(),
   };
 }
 
@@ -168,15 +173,15 @@ function receive(data, error = null) {
  * Fetching dashboard data.
  */
 export function fetch(dispatch) {
-  fetchingData(
-    urls.dashboardData, {}, {}, async function (response, error) {
-      await updateColorPaletteData().then(palettes => {
-        dispatch(receive(response, null))
-      }).catch(error => {
-        dispatch(receive(response, error))
+  fetchingData(urls.dashboardData, {}, {}, async function (response, error) {
+    await updateColorPaletteData()
+      .then((palettes) => {
+        dispatch(receive(response, null));
       })
-    }
-  )
+      .catch((error) => {
+        dispatch(receive(response, error));
+      });
+  });
   return request();
 }
 
@@ -188,7 +193,7 @@ export function update(payload) {
   return {
     name: DASHBOARD_ACTION_NAME,
     type: DASHBOARD_ACTION_TYPE_UPDATE,
-    payload: payload
+    payload: payload,
   };
 }
 
@@ -200,7 +205,7 @@ export function updateProps(payload) {
   return {
     name: DASHBOARD_ACTION_NAME,
     type: DASHBOARD_ACTION_TYPE_UPDATE_PROPS,
-    payload: payload
+    payload: payload,
   };
 }
 
@@ -212,7 +217,7 @@ export function updatePermission(payload) {
   return {
     name: DASHBOARD_ACTION_NAME,
     type: DASHBOARD_ACTION_TYPE_UPDATE_SHARE,
-    payload: payload
+    payload: payload,
   };
 }
 
@@ -222,7 +227,7 @@ export function updatePermission(payload) {
 export function updateFiltersAllowModify() {
   return {
     name: DASHBOARD_ACTION_NAME,
-    type: DASHBOARD_ACTION_TYPE_FILTERS_ALLOW_MODIFY
+    type: DASHBOARD_ACTION_TYPE_FILTERS_ALLOW_MODIFY,
   };
 }
 
@@ -232,7 +237,7 @@ export function updateFiltersAllowModify() {
 export function updateFiltersBeingHidden() {
   return {
     name: DASHBOARD_ACTION_NAME,
-    type: DASHBOARD_ACTION_TYPE_FILTERS_BEING_HIDDEN
+    type: DASHBOARD_ACTION_TYPE_FILTERS_BEING_HIDDEN,
   };
 }
 
@@ -244,8 +249,8 @@ export function changeGeoField(geoField) {
     name: DASHBOARD_ACTION_NAME,
     type: DASHBOARD_ACTION_TYPE_UPDATE_GEOFIELD,
     payload: {
-      geoField: geoField
-    }
+      geoField: geoField,
+    },
   };
 }
 
@@ -258,8 +263,8 @@ export function updateStructure(key, structure) {
     type: DASHBOARD_ACTION_TYPE_UPDATE_STRUCTURE,
     payload: {
       key: key,
-      structure: structure
-    }
+      structure: structure,
+    },
   };
 }
 
@@ -271,5 +276,5 @@ export default {
   updateFiltersBeingHidden,
   updatePermission,
   changeGeoField,
-  updateStructure
-}
+  updateStructure,
+};
