@@ -111,7 +111,7 @@ export function ReferenceLayer({ idx, map, referenceLayer, deckgl, is3DView }) {
     (state) => state.selectedGlobalTimeConfig,
   );
 
-  // Transparency
+  // TransparencySlider
   const {
     indicatorLayer: indicatorLayerTransparency,
     // @ts-ignore

@@ -3,6 +3,8 @@
         "name": "Español",
         "flag": "🇪🇸"
     },
+    "name": "Nombre",
+    "category": "Categoría",
     "mapboxStyleInformation": "Información de estilo de Mapbox.",
     "seeMapboxDocumentationForMoreDetail": "Consulta la documentación de Mapbox para más detalles.",
     "thereAreSomeInformationToControlTheLegend": "Hay información para controlar la leyenda.",
@@ -149,7 +151,15 @@
             "goToMap": "Ir al mapa",
             "needReselectReferenceLayer": "Necesita volver a seleccionar la capa de referencia"
         },
-        "fetchingProjectData": "Obteniendo datos del proyecto..."
+        "fetchingProjectData": "Obteniendo datos del proyecto...",
+        "dashboard": {
+            "mappingIndicatorsUsing": "Mapeo de Indicadores Usando",
+            "nameExample": "Ejemplo: Panel de Riesgo de Afganistán",
+            "urlShortcode": "Código Corto de URL",
+            "urlShortcodeDescription": "URL del proyecto en formato slug. Automáticamente cambiará los espacios por \"-\" y a minúsculas.\nSe generará a partir del nombre si está vacío.",
+            "transparencyOfIndicatorLayers": "Transparencia de las Capas de Indicadores",
+            "transparencyOfContextLayers": "Transparencia de las Capas de Contexto"
+        }
     },
     "dashboardPage": {
         "layers": "Capas",

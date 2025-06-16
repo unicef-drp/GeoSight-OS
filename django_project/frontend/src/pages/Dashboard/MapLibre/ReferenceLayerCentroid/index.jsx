@@ -69,7 +69,7 @@ export default function ReferenceLayerCentroid({ map }) {
     geometries: {},
   });
 
-  // Transparency
+  // TransparencySlider
   const {
     indicatorLayer: indicatorLayerTransparency,
     // @ts-ignore

@@ -68,19 +68,49 @@ class DashboardSerializer(serializers.ModelSerializer):
     view_url = serializers.SerializerMethodField()
 
     def get_description(self, obj: Dashboard):
-        """Return description."""
+        """
+        Return the dashboard's description.
+
+        :param obj: The dashboard instance.
+        :type obj: Dashboard
+        :return: The dashboard description, or an empty string if not set.
+        :rtype: str
+        """
         return obj.description if obj.description else ''
 
     def get_category(self, obj: Dashboard):
-        """Return dashboard category name."""
+        """
+        Return the dashboard's category name.
+
+        Currently returns the group name if available.
+
+        :param obj: The dashboard instance.
+        :type obj: Dashboard
+        :return: The category name.
+        :rtype: str
+        """
         return obj.group.name if obj.group else ''
 
     def get_group(self, obj: Dashboard):
-        """Return dashboard group name."""
+        """
+        Return the dashboard's group name.
+
+        :param obj: The dashboard instance.
+        :type obj: Dashboard
+        :return: The group name, or empty string if no group is assigned.
+        :rtype: str
+        """
         return obj.group.name if obj.group else ''
 
     def get_widgets(self, obj: Dashboard):
-        """Return widgets."""
+        """
+        Return serialized widgets for the dashboard.
+
+        :param obj: The dashboard instance.
+        :type obj: Dashboard
+        :return: A list of serialized widgets.
+        :rtype: list[dict]
+        """
         if obj.id:
             return DashboardWidgetSerializer(
                 obj.dashboardwidget_set.all(), many=True
@@ -89,11 +119,27 @@ class DashboardSerializer(serializers.ModelSerializer):
             return []
 
     def get_extent(self, obj: Dashboard):
-        """Return extent."""
+        """
+        Return the extent (bounding box) for the dashboard.
+
+        :param obj: The dashboard instance.
+        :type obj: Dashboard
+        :return: A list representing the extent [xmin, ymin, xmax, ymax].
+        :rtype: list[float]
+        """
         return obj.extent.extent if obj.extent else [-100, -60, 100, 60]
 
     def get_reference_layer(self, obj: Dashboard):
-        """Return reference_layer."""
+        """
+        Return the reference layer information for the dashboard.
+
+        :param obj: The dashboard instance.
+        :type obj: Dashboard
+        :return:
+            A dictionary with reference layer info
+            (identifier, URL, name, is_local).
+        :rtype: dict
+        """
         reference_layer = obj.reference_layer
         if reference_layer:
             return {
@@ -109,7 +155,16 @@ class DashboardSerializer(serializers.ModelSerializer):
             }
 
     def _get_indicator(self, obj: Dashboard, model: DashboardIndicator):
-        """Return indicator data."""
+        """
+        Return serialized indicator data.
+
+        :param obj: The dashboard instance.
+        :type obj: Dashboard
+        :param model: A related DashboardIndicator instance.
+        :type model: DashboardIndicator
+        :return: Serialized indicator data.
+        :rtype: dict
+        """
         data = IndicatorSerializer(
             model.object,
             context={'user': self.context.get('user', None)},
@@ -118,7 +173,17 @@ class DashboardSerializer(serializers.ModelSerializer):
         return data
 
     def get_indicators(self, obj: Dashboard):
-        """Return indicators."""
+        """
+        Return serialized indicators for the dashboard.
+
+        Includes both database-linked and manually provided indicators
+        from the serializer context.
+
+        :param obj: The dashboard instance.
+        :type obj: Dashboard
+        :return: A list of serialized indicator data.
+        :rtype: list[dict]
+        """
         output = []
         dashboard_indicators = self.context.get(
             'dashboard_indicators', None
@@ -134,7 +199,16 @@ class DashboardSerializer(serializers.ModelSerializer):
         return output
 
     def get_indicator_layers(self, obj: Dashboard):
-        """Return indicator_layers."""
+        """
+        Return serialized indicator layers for the dashboard.
+
+        Allows for indicator layers to be provided via context override.
+
+        :param obj: The dashboard instance.
+        :type obj: Dashboard
+        :return: A list of serialized indicator layer data.
+        :rtype: list[dict]
+        """
         dashboard_indicator_layers = self.context.get(
             'dashboard_indicator_layers', None
         )
@@ -148,7 +222,17 @@ class DashboardSerializer(serializers.ModelSerializer):
         ).data
 
     def get_basemaps_layers(self, obj: Dashboard):
-        """Return basemapsLayers."""
+        """
+        Return serialized basemap layers for the dashboard.
+
+        Merges data from the basemap object and
+        its dashboard-specific configuration.
+
+        :param obj: The dashboard instance.
+        :type obj: Dashboard
+        :return: A list of serialized basemap layer data.
+        :rtype: list[dict]
+        """
         output = []
         for model in obj.dashboardbasemap_set.all():
             data = BasemapLayerSerializer(
@@ -166,7 +250,18 @@ class DashboardSerializer(serializers.ModelSerializer):
         return output
 
     def get_context_layers(self, obj: Dashboard):
-        """Return contextLayers."""
+        """
+        Return serialized context layers for the dashboard.
+
+        Combines data from the original layer and dashboard-specific overrides.
+        Merges configuration fields and removes duplicated fields if needed.
+
+        :param obj: The dashboard instance.
+        :type obj: Dashboard
+        :return:
+            A list of serialized context layers with merged configurations.
+        :rtype: list[dict]
+        """
         output = []
         for model in obj.dashboardcontextlayer_set.all():
             data = ContextLayerSerializer(
@@ -203,7 +298,18 @@ class DashboardSerializer(serializers.ModelSerializer):
         return output
 
     def get_related_tables(self, obj: Dashboard):
-        """Return related_tables."""
+        """
+        Return a list of related tables for the given dashboard.
+
+        This method combines serialized data from the related table object
+        and the dashboard-specific relation, then adds a URL to access
+        the related table's geo data.
+
+        :param obj: The dashboard instance.
+        :type obj: Dashboard
+        :return: A list of dictionaries representing the related tables.
+        :rtype: list[dict]
+        """
         output = []
         for model in obj.dashboardrelatedtable_set.all():
             data = RelatedTableSerializer(
@@ -225,14 +331,34 @@ class DashboardSerializer(serializers.ModelSerializer):
         return output
 
     def get_filters(self, obj: Dashboard):
-        """Return filters."""
+        """
+        Return the list of filters configured for the dashboard.
+
+        If no filters are defined, returns an empty list.
+
+        :param obj: The dashboard instance.
+        :type obj: Dashboard
+        :return: A list of filters, parsed from JSON.
+        :rtype: list
+        """
         if obj.filters:
             return json.loads(obj.filters)
         else:
             return []
 
     def get_user_permission(self, obj: Dashboard):
-        """Return permissions of dashboard."""
+        """
+        Return the user's permissions for the given dashboard.
+
+        If the dashboard does not have associated permissions,
+        a default `DashboardPermission` instance is used.
+
+        :param obj: The dashboard instance.
+        :type obj: Dashboard
+        :return:
+            A dictionary or object representing the user's permission levels.
+        :rtype: Any
+        """
         try:
             return obj.permission.all_permission(
                 self.context.get('user', None)
@@ -243,15 +369,41 @@ class DashboardSerializer(serializers.ModelSerializer):
             )
 
     def get_geo_field(self, obj: Dashboard):
-        """Return geofield that will be used for geometry matching on map."""
+        """
+        Return the geospatial field used for geometry matching on the map.
+
+        :param obj: The dashboard instance.
+        :type obj: Dashboard
+        :return: The name of the geometry field used in spatial operations.
+        :rtype: str
+        """
         return obj.geo_field
 
     def get_level_config(self, obj: Dashboard):
-        """Return level_config."""
+        """
+        Return the dashboard's level configuration.
+
+        If no level configuration is set, an empty dictionary is returned.
+
+        :param obj: The dashboard instance.
+        :type obj: Dashboard
+        :return: The level configuration dictionary.
+        :rtype: dict
+        """
         return obj.level_config if obj.level_config else {}
 
     def get_default_time_mode(self, obj: Dashboard):
-        """Return default_time_mode."""
+        """
+        Return the default time mode configuration for the given dashboard.
+
+        If the dashboard has a custom `default_time_mode`, it will be returned.
+        Otherwise, fallback to site-wide preferences.
+
+        :param obj: The dashboard object to retrieve the time mode for.
+        :type obj: Dashboard
+        :return: A dictionary representing the default time mode configuration.
+        :rtype: dict
+        """
         if obj.default_time_mode:
             return obj.default_time_mode
         else:
@@ -266,13 +418,35 @@ class DashboardSerializer(serializers.ModelSerializer):
             }
 
     def get_tools(self, obj: Dashboard):
-        """Return tools."""
+        """
+        Return serialized tools associated with the dashboard.
+
+        This method retrieves all related tools for the given dashboard
+        and serializes them using `DashboardToolSerializer`.
+
+        :param obj: The dashboard instance.
+        :type obj: Dashboard
+        :return: A list of serialized dashboard tools.
+        :rtype: list[dict]
+        """
         return DashboardToolSerializer(
             obj.dashboardtool_set.all(), many=True
         ).data
 
     def get_view_url(self, obj: Dashboard):
-        """Return tools."""
+        """
+        Return the URL to view the dashboard detail page.
+
+        Uses Django's `reverse()` to resolve the URL based
+        on the dashboard's slug.
+
+        :param obj: The dashboard instance.
+        :type obj: Dashboard
+        :return:
+            The URL to the dashboard detail view,
+            or None if the slug is missing.
+        :rtype: str or None
+        """
         if not obj.slug:
             return None
         return reverse('dashboard-detail-view', args=[obj.slug])
@@ -293,7 +467,7 @@ class DashboardSerializer(serializers.ModelSerializer):
             'geo_field', 'show_splash_first_open',
             'truncate_indicator_layer_name', 'enable_geometry_search',
             'overview', 'default_time_mode', 'tools',
-            'view_url'
+            'view_url', 'transparency_config'
         )
 
 
@@ -307,25 +481,72 @@ class DashboardBasicSerializer(ResourceSerializer):
     thumbnail = serializers.SerializerMethodField()
 
     def get_id(self, obj: Dashboard):
-        """Return dashboard id."""
+        """
+        Return the dashboard identifier.
+
+        :param obj: The dashboard instance.
+        :type obj: Dashboard
+        :return: The slug of the dashboard, used as a unique identifier.
+        :rtype: str
+        """
         return obj.slug
 
     def get_group(self, obj: Dashboard):
-        """Return dashboard group name."""
+        """
+        Return the name of the dashboard's group.
+
+        :param obj: The dashboard instance.
+        :type obj: Dashboard
+        :return:
+            The name of the associated group,
+            or an empty string if none exists.
+        :rtype: str
+        """
         return obj.group.name if obj.group else ''
 
     def get_category(self, obj: Dashboard):
-        """Return dashboard category name."""
+        """
+        Return the name of the dashboard's category.
+
+        Note: This currently returns the group name,
+        assuming group and category are the same.
+
+        :param obj: The dashboard instance.
+        :type obj: Dashboard
+        :return:
+            The name of the associated category,
+            or an empty string if none exists.
+        :rtype: str
+        """
         return obj.group.name if obj.group else ''
 
     def get_permission(self, obj: Dashboard):
-        """Return permission."""
+        """
+        Return the user's permission set for the dashboard.
+
+        :param obj: The dashboard instance.
+        :type obj: Dashboard
+        :return:
+            A dictionary or object representing
+            the user's permissions for this dashboard.
+        :rtype: Any
+        """
         return obj.permission.all_permission(
             self.context.get('user', None)
         )
 
     def get_thumbnail(self, obj: Dashboard):
-        """Return tools."""
+        """
+        Return the thumbnail URL or image data for the given dashboard.
+
+        This method retrieves the thumbnail
+        representation associated with the dashboard object.
+
+        :param obj: The dashboard instance for which to retrieve the thumbnail.
+        :type obj: Dashboard
+        :return: The thumbnail, typically a URL or base64-encoded image.
+        :rtype: str or None
+        """
         from django.conf import settings
         if obj.thumbnail:
             if os.path.exists(obj.thumbnail):

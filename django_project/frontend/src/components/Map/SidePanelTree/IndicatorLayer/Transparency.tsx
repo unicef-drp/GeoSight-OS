@@ -14,7 +14,7 @@
  */
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Transparency } from "../Transparency";
+import Transparency from "../../../TransparencySlider";
 import { Actions } from "../../../../store/dashboard";
 
 export interface Props {}
@@ -22,17 +22,19 @@ export interface Props {}
 export function GlobalTransparency({}: Props) {
   const dispatch = useDispatch();
   const {
-    transparencyIndicatorLayer,
+    indicatorLayer,
     // @ts-ignore
-  } = useSelector((state) => state.dashboard.data);
+  } = useSelector((state) => state.dashboard.data?.transparency_config);
   const [value, setValue] = useState(100);
 
   // When dashboard transparency indicator layer changed
   useEffect(() => {
-    if (transparencyIndicatorLayer === undefined) {
+    if (indicatorLayer === undefined) {
       setValue(100);
+    } else {
+      setValue(indicatorLayer);
     }
-  }, [transparencyIndicatorLayer]);
+  }, [indicatorLayer]);
 
   // When value changed
   useEffect(() => {

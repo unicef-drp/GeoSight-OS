@@ -3,6 +3,8 @@
         "name": "English",
         "flag": "🇺🇸"
     },
+    "name": "Name",
+    "category": "Category",
     "mapboxStyleInformation": "Mapbox style information.",
     "seeMapboxDocumentationForMoreDetail": "See mapbox documentation for more detail.",
     "thereAreSomeInformationToControlTheLegend": "There are some information to control the Legend.",
@@ -149,7 +151,15 @@
             "goToMap": "Go to map",
             "needReselectReferenceLayer": "Need to re-select reference layer"
         },
-        "fetchingProjectData": "Fetching Project Data..."
+        "fetchingProjectData": "Fetching Project Data...",
+        "dashboard" : {
+            "mappingIndicatorsUsing" : "Mapping Indicators Using",
+            "nameExample": "Example: Afghanistan Risk Dashboard",
+            "urlShortcode": "URL Shortcode",
+            "urlShortcodeDescription": "Url of project in slug format. It will auto change space to \"-\" and to lowercase.\nIt will be generated from name if empty.",
+            "transparencyOfIndicatorLayers": "Transparency of Indicator Layers",
+            "transparencyOfContextLayers": "Transparency of Context Layers"
+        }
     },
     "dashboardPage": {
         "layers": "Layers",

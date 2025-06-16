@@ -12,30 +12,51 @@
  * __date__ = '16/06/2025'
  * __copyright__ = ('Copyright 2023, Unicef')
  */
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Slider from "@mui/material/Slider";
 
 export interface Props {
   value: number;
-  onChange: (value: number) => void;
-  onChangeCommitted: (value: number) => void;
+  onChange?: (value: number) => void;
+  onChangeCommitted?: (value: number) => void;
 }
 
-export function Transparency({ value, onChange, onChangeCommitted }: Props) {
+export default function TransparencySlider({
+  value,
+  onChange,
+  onChangeCommitted,
+}: Props) {
+  /** Transparency slider */
+  const [currValue, setCurrentValue] = useState(value);
+
+  useEffect(() => {
+    if (value !== currValue) {
+      setCurrentValue(value);
+    }
+  }, [value]);
+
+  useEffect(() => {
+    if (onChange) {
+      onChange(currValue);
+    }
+  }, [currValue]);
+
   return (
     <div className="Transparency" style={{ padding: "0 1.5rem" }}>
       <Slider
-        value={value}
+        value={currValue}
         step={1}
         min={0}
         max={100}
         onChange={(event) => {
           // @ts-ignore
-          onChange(event.target.value);
+          setCurrentValue(event.target.value);
         }}
         onChangeCommitted={() => {
-          // @ts-ignore
-          onChangeCommitted(value);
+          if (onChangeCommitted) {
+            // @ts-ignore
+            onChangeCommitted(currValue);
+          }
         }}
         valueLabelDisplay="on"
         /* STYLES */
