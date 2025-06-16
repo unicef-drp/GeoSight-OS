@@ -4,7 +4,7 @@
  * Contact : geosight-no-reply@unicef.org
  *
  * .. note:: This program is free software; you can redistribute it and/or modify
- *     it under the terms of the GNU Affero General Public License as published by
+ *     it under the GNU Affero General Public License as published by
  *     the Free Software Foundation; either version 3 of the License, or
  *     (at your option) any later version.
  *
@@ -34,7 +34,12 @@ export const DEFINITION = {
     "TIME_SERIES_CHART_WIDGET": "TimeSeriesChartWidget",
   },
   "WidgetOperation": {
-    "SUM": "Sum"
+    "SUM": "Sum",
+    "MIN": "Min",
+    "MAX": "Max",
+    "AVG": "Avg",
+    "COUNT": "Count",
+    "COUNT_UNIQUE": "Count Unique"
   }
 }
 

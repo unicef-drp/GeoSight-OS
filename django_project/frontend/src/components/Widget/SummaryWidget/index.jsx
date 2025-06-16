@@ -51,6 +51,48 @@ export default function SummaryWidget(
             }
           })
           return <span>{numberWithCommas(total)} {unit}</span>
+        case DEFINITION.WidgetOperation.MIN:
+          let min = null;
+          data.forEach(function (rowData) {
+            const rowValue = parseFloat(rowData.value);
+            if (!isNaN(rowValue)) {
+              if (min === null || rowValue < min) {
+                min = rowValue;
+              }
+            }
+          })
+          return <span>{min !== null ? numberWithCommas(min) : 'N/A'} {unit}</span>
+        case DEFINITION.WidgetOperation.MAX:
+          let max = null;
+          data.forEach(function (rowData) {
+            const rowValue = parseFloat(rowData.value);
+            if (!isNaN(rowValue)) {
+              if (max === null || rowValue > max) {
+                max = rowValue;
+              }
+            }
+          })
+          return <span>{max !== null ? numberWithCommas(max) : 'N/A'} {unit}</span>
+        case DEFINITION.WidgetOperation.AVG:
+          let sum = 0;
+          let count = 0;
+          data.forEach(function (rowData) {
+            const rowValue = parseFloat(rowData.value);
+            if (!isNaN(rowValue)) {
+              sum += rowValue;
+              count++;
+            }
+          })
+          const avg = count > 0 ? sum / count : null;
+          return <span>{avg !== null ? numberWithCommas(avg.toFixed(2)) : 'N/A'} {unit}</span>
+        case DEFINITION.WidgetOperation.COUNT:
+          return <span>{data.length} {unit}</span>
+        case DEFINITION.WidgetOperation.COUNT_UNIQUE:
+          const uniqueValues = new Set();
+          data.forEach(function (rowData) {
+            uniqueValues.add(rowData.value);
+          })
+          return <span>{uniqueValues.size} {unit}</span>
         default:
           return <div className='widget__error'>Operation Not Found</div>;
       }
