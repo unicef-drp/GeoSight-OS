@@ -62,7 +62,7 @@ test.describe('View project', () => {
     await expect(page.locator('.MapLegendSection')).toHaveCount(1);
 
     // Check transparency
-    await expect(page.locator('.MuiSlider-valueLabelLabel').getByText('100', { exact: true })).toBeVisible();
+    await expect(page.locator('#simple-tabpanel-1.layers-panel .Transparency .MuiSlider-valueLabelLabel').getByText('100', { exact: true })).toBeVisible();
 
     // ------------------------------------------------------------
     // LABEL
