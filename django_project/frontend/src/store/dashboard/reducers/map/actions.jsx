@@ -26,9 +26,9 @@ import {
   MAP_REFERENCE_LAYER_CHANGED,
   MAP_REMOVE_CONTEXTLAYERS,
   MAP_UPDATE_CONFIG,
-  MAP_ZOOM
-} from '../map'
-
+  MAP_UPDATE_TRANSPARENCY,
+  MAP_ZOOM,
+} from "../map";
 
 /**
  * Change basemap.
@@ -38,7 +38,7 @@ function changeBasemap(payload) {
   return {
     name: MAP_ACTION_NAME,
     type: MAP_CHANGE_BASEMAP,
-    payload: payload
+    payload: payload,
   };
 }
 
@@ -50,7 +50,7 @@ function changeReferenceLayers(payload) {
   return {
     name: MAP_ACTION_NAME,
     type: MAP_REFERENCE_LAYER_CHANGED,
-    payload: payload
+    payload: payload,
   };
 }
 
@@ -76,7 +76,7 @@ function removeContextLayer(id) {
   return {
     name: MAP_ACTION_NAME,
     type: MAP_REMOVE_CONTEXTLAYERS,
-    id: id
+    id: id,
   };
 }
 
@@ -87,7 +87,7 @@ function updateCenter(center) {
   return {
     name: MAP_ACTION_NAME,
     type: MAP_CENTER,
-    payload: center
+    payload: center,
   };
 }
 
@@ -98,7 +98,7 @@ function updateExtent(center) {
   return {
     name: MAP_ACTION_NAME,
     type: MAP_EXTENT,
-    payload: center
+    payload: center,
   };
 }
 
@@ -109,7 +109,7 @@ function showHideIndicator(payload) {
   return {
     name: MAP_ACTION_NAME,
     type: MAP_INDICATOR_SHOW,
-    payload: payload
+    payload: payload,
   };
 }
 
@@ -120,7 +120,7 @@ function showHideContextLayer(payload) {
   return {
     name: MAP_ACTION_NAME,
     type: MAP_CONTEXTLAYERS_SHOW,
-    payload: payload
+    payload: payload,
   };
 }
 
@@ -131,7 +131,7 @@ function changeZoom(payload) {
   return {
     name: MAP_ACTION_NAME,
     type: MAP_ZOOM,
-    payload: payload
+    payload: payload,
   };
 }
 
@@ -142,7 +142,7 @@ function changePosition(payload) {
   return {
     name: MAP_ACTION_NAME,
     type: MAP_POSITION,
-    payload: payload
+    payload: payload,
   };
 }
 
@@ -153,7 +153,7 @@ function change3DMode(payload) {
   return {
     name: MAP_ACTION_NAME,
     type: MAP_IS_3D_MODE,
-    payload: payload
+    payload: payload,
   };
 }
 
@@ -164,7 +164,18 @@ function update(payload) {
   return {
     name: MAP_ACTION_NAME,
     type: MAP_UPDATE_CONFIG,
-    payload: payload
+    payload: payload,
+  };
+}
+
+/**
+ * Update transparency
+ */
+function updateTransparency(key, value) {
+  return {
+    name: MAP_ACTION_NAME,
+    type: MAP_UPDATE_TRANSPARENCY,
+    payload: { key, value },
   };
 }
 
@@ -180,5 +191,6 @@ export default {
   changeZoom,
   changePosition,
   change3DMode,
-  update
-}
+  update,
+  updateTransparency,
+};

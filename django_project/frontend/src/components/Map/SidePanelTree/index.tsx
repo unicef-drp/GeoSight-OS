@@ -36,6 +36,7 @@ import { dictDeepCopy } from "../../../utils/main";
 import Highlighted from "../../SidePanelTree/Highlighted";
 import FilterLayer from "./FilterLayer";
 import IndicatorLayer from "./IndicatorLayer";
+import { GlobalTransparency } from "./IndicatorLayer/Transparency";
 
 const TREE_INDENT_SPACE = 40;
 let unexpandedGroups: any = [];
@@ -381,6 +382,7 @@ export default function SidePanelTreeView({
           <div style={{ margin: "1rem 0" }}>No data</div>
         )}
       </TreeView>
+      <GlobalTransparency />
     </div>
   );
 }
