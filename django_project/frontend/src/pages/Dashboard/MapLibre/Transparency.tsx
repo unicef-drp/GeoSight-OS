@@ -13,7 +13,12 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { useEffect } from "react";
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+} from "react";
 import $ from "jquery";
 import { useSelector } from "react-redux";
 import maplibregl, { LayerSpecification } from "maplibre-gl";
@@ -23,52 +28,90 @@ export interface Props {
   map: maplibregl.Map;
 }
 
-export function IndicatorLayerTransparencyControl({ map }: Props) {
-  const {
-    indicatorLayer,
-    // @ts-ignore
-  } = useSelector((state) => state.map.transparency);
+export const IndicatorLayerTransparencyControl = forwardRef(
+  ({ map }: Props, ref) => {
+    const {
+      indicatorLayer,
+      // @ts-ignore
+    } = useSelector((state) => state.map.transparency);
 
-  const update = () => {
-    map
-      .getStyle()
-      .layers.filter(
-        (layer: LayerSpecification) =>
-          layer.id.startsWith("reference-layer-") ||
-          layer.id.startsWith("indicator-label"),
-      )
-      .map((layer: LayerSpecification) =>
-        changeTransparency(map, layer.id, indicatorLayer / 100),
-      );
-    $(".centroid-chart").css("opacity", indicatorLayer / 100);
-  };
+    const update = () => {
+      map
+        .getStyle()
+        .layers.filter(
+          (layer: LayerSpecification) =>
+            layer.id.startsWith("reference-layer-") ||
+            layer.id.startsWith("indicator-label"),
+        )
+        .map((layer: LayerSpecification) =>
+          changeTransparency(map, layer.id, indicatorLayer / 100),
+        );
+      $(".centroid-chart").css("opacity", indicatorLayer / 100);
+    };
 
-  // When the transparency changed
-  useEffect(() => {
-    update();
-  }, [indicatorLayer]);
-  return <></>;
-}
+    // Update
+    useImperativeHandle(ref, () => ({
+      update() {
+        update();
+      },
+    }));
 
-export function ContextLayerTransparencyControl({ map }: Props) {
-  const {
-    contextLayer,
-    // @ts-ignore
-  } = useSelector((state) => state.map.transparency);
+    // When the transparency changed
+    useEffect(() => {
+      update();
+    }, [indicatorLayer]);
+    return <></>;
+  },
+);
 
-  // When the transparency changed
-  useEffect(() => {
-    console.log("contextLayer", map.getStyle().layers);
-  }, [contextLayer]);
+export const ContextLayerTransparencyControl = forwardRef(
+  ({ map }: Props, ref) => {
+    const {
+      contextLayer,
+      // @ts-ignore
+    } = useSelector((state) => state.map.transparency);
 
-  return <></>;
-}
+    const update = () => {
+      map
+        .getStyle()
+        .layers.filter((layer: LayerSpecification) =>
+          layer.id.startsWith("context-layer-"),
+        )
+        .map((layer: LayerSpecification) =>
+          changeTransparency(map, layer.id, contextLayer / 100),
+        );
+    };
 
-export function TransparencyControl({ map }: Props) {
+    // Update
+    useImperativeHandle(ref, () => ({
+      update() {
+        update();
+      },
+    }));
+
+    // When the transparency changed
+    useEffect(() => {
+      update();
+    }, [contextLayer]);
+    return <></>;
+  },
+);
+
+export const TransparencyControl = forwardRef(({ map }: Props, ref) => {
+  const indicatorRef = useRef(null);
+  const contextRef = useRef(null);
+
+  // Update
+  useImperativeHandle(ref, () => ({
+    update() {
+      indicatorRef.current.update();
+      contextRef.current.update();
+    },
+  }));
   return (
     <>
-      <IndicatorLayerTransparencyControl map={map} />
-      <ContextLayerTransparencyControl map={map} />
+      <IndicatorLayerTransparencyControl map={map} ref={indicatorRef} />
+      <ContextLayerTransparencyControl map={map} ref={contextRef} />
     </>
   );
-}
+});

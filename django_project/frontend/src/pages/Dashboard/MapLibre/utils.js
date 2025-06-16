@@ -382,6 +382,7 @@ export const changeTransparency = (map, layerId, transparentValue) => {
       break;
     case "circle":
       map.setPaintProperty(layer.id, "circle-opacity", transparentValue);
+      map.setPaintProperty(layer.id, "circle-stroke-opacity", transparentValue);
       break;
     case "symbol":
       map.setPaintProperty(layer.id, "icon-opacity", transparentValue);

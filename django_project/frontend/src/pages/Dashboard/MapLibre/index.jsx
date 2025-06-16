@@ -64,6 +64,7 @@ import { TransparencyControl } from "./Transparency";
 maplibregl.addProtocol("cog", cogProtocol);
 
 const BASEMAP_ID = `basemap`;
+let previousLayerIds = [];
 
 /**
  * MapLibre component.
@@ -80,6 +81,7 @@ export default function MapLibre({
   const { basemapLayer, is3dMode, position, force } = useSelector(
     (state) => state.map,
   );
+  const transparencyRef = useRef(null);
 
   // Tools
   const { tools: dashboardTools } = useSelector(
@@ -161,6 +163,11 @@ export default function MapLibre({
       });
       newMap.addControl(new maplibregl.NavigationControl(), "bottom-left");
       newMap.on("styledata", () => {
+        const currentIds = newMap.getStyle().layers.map((layer) => layer.id);
+        if (JSON.stringify(currentIds) === JSON.stringify(previousLayerIds)) {
+          return;
+        }
+        previousLayerIds = currentIds;
         const contextLayers = newMap
           .getStyle()
           .layers.filter((layer) => layer.id.includes("context-layer-"));
@@ -177,6 +184,7 @@ export default function MapLibre({
             popup.style.zIndex = "0"; // Lower than your intended layer
           });
         }
+        transparencyRef.current.update();
       });
 
       let mapControl = document.querySelector(
@@ -388,7 +396,7 @@ export default function MapLibre({
           <IndicatorLayersReferenceControl map={map} />
           <DatasetGeometryData />
           <ReferenceLayerCentroid map={map} />
-          <TransparencyControl map={map} />
+          <TransparencyControl map={map} ref={transparencyRef} />
         </>
       ) : null}
     </section>
