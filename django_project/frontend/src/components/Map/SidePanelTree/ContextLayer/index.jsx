@@ -42,6 +42,7 @@ import Highlighted from "../Highlighted";
 import { MagnifyIcon } from "../../../Icons";
 import { dictDeepCopy } from "../../../../utils/main";
 import SidePanelSlicers from "../SidePanelSlicers";
+import { GlobalContextLayerTransparency } from "./Transparency";
 
 import "./style.scss";
 
@@ -465,6 +466,7 @@ export default function SidePanelTreeView({
           ? nodes.map((treeData) => renderTree(treeData))
           : "No data"}
       </TreeView>
+      <GlobalContextLayerTransparency />
     </div>
   );
 }

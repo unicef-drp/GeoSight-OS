@@ -19,36 +19,34 @@ import { Actions } from "../../../../store/dashboard";
 
 export interface Props {}
 
-export function GlobalIndicatorLayerTransparency({}: Props) {
+export function GlobalContextLayerTransparency({}: Props) {
   const dispatch = useDispatch();
   const {
-    indicatorLayer,
+    contextLayer,
     // @ts-ignore
   } = useSelector((state) => state.dashboard.data?.transparency_config);
   const {
-    indicatorLayer: currTransparency,
+    contextLayer: currTransparency,
     // @ts-ignore
   } = useSelector((state) => state.map?.transparency);
 
-  // When dashboard transparency indicator layer changed
+  // When dashboard transparency context layer changed
   useEffect(() => {
-    if (indicatorLayer === undefined) {
-      dispatch(Actions.Map.updateTransparency("indicatorLayer", 100));
+    if (contextLayer === undefined) {
+      dispatch(Actions.Map.updateTransparency("contextLayer", 100));
     } else {
-      dispatch(
-        Actions.Map.updateTransparency("indicatorLayer", indicatorLayer),
-      );
+      dispatch(Actions.Map.updateTransparency("contextLayer", contextLayer));
     }
-  }, [indicatorLayer]);
+  }, [contextLayer]);
 
   return (
     <Transparency
       value={currTransparency}
       onChange={(value) =>
-        dispatch(Actions.Map.updateTransparency("indicatorLayer", value))
+        dispatch(Actions.Map.updateTransparency("contextLayer", value))
       }
       onChangeCommitted={(value) =>
-        dispatch(Actions.Map.updateTransparency("indicatorLayer", value))
+        dispatch(Actions.Map.updateTransparency("contextLayer", value))
       }
     />
   );
