@@ -160,6 +160,7 @@ export default function DatasetCountrySelector(
     // Table properties
     multipleSelection={multipleSelection}
     rowIdKey={'ucode'}
+    rowIdKeyParameter={'geom_id'}
     topChildren={
       <div
         className={'DatasetLayerSelector'}>

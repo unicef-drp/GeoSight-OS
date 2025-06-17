@@ -13,127 +13,92 @@
  * __copyright__ = ('Copyright 2025, Unicef')
  */
 
-import React, { useEffect, useState } from 'react';
-import { fetchReferenceLayerList } from "../../utils/georepo";
+import React from "react";
 import { ModalInputSelector } from "./ModalInputSelector";
 import { ModalFilterSelectorProps, ModalInputSelectorProps } from "./types";
 
-
 const columns = [
-  { field: 'id', headerName: 'id', hide: true },
-  { field: 'name', headerName: 'Name', flex: 1 },
-]
+  { field: "id", headerName: "id", hide: true },
+  { field: "name", headerName: "Name", flex: 1 },
+];
 
 /** For Georepo View selection. */
-export default function GroupSelector(
-  {
-    // Input properties
-    placeholder,
-    showSelected,
-    disabled,
-    mode,
-    opener,
+export default function GroupSelector({
+  // Input properties
+  placeholder,
+  showSelected,
+  disabled,
+  mode,
+  opener,
 
-    // Data properties
-    initData,
+  // Data properties
+  initData,
 
-    // Listeners
-    dataSelected,
+  // Listeners
+  dataSelected,
 
-    // Table properties
-    multipleSelection,
-    defaults,
-    topChildren
-  }: ModalInputSelectorProps
-) {
-  const [groups, setGroups] = useState([])
-  const [group, setGroup] = useState(null)
-  const url = '/api/v1/groups/?fields=__all__'
+  // Table properties
+  multipleSelection,
+  defaults,
+  topChildren,
+}: ModalInputSelectorProps) {
+  const url = "/api/v1/groups/?fields=__all__";
 
-  /** Get the Groups */
-  useEffect(
-    () => {
-      (
-        async () => {
-          const responseData = await fetchReferenceLayerList()
-          const Groups = responseData.map((row: any) => {
-            row.value = row.identifier
-            return row
-          })
-          setGroups(Groups)
+  return (
+    <ModalInputSelector
+      // Input properties
+      placeholder={placeholder}
+      showSelected={showSelected}
+      disabled={disabled}
+      mode={mode}
+      dataName={"Group"}
+      opener={opener}
+      // Data properties
+      initData={initData}
+      // Listeners
+      url={url}
+      columns={columns}
+      dataSelected={(data: any) => {
+        if (dataSelected) {
+          dataSelected(data);
         }
-      )();
-    }, []
-  )
-
-  /** On Groups loaded */
-  useEffect(
-    () => {
-      if (!group && groups[0]) {
-        setGroup(groups[0].value)
-      }
-    }, [groups]
-  )
-
-
-  return <ModalInputSelector
-    // Input properties
-    placeholder={placeholder}
-    showSelected={showSelected}
-    disabled={disabled}
-    mode={mode}
-    dataName={'Group'}
-    opener={opener}
-
-    // Data properties
-    initData={initData}
-
-    // Listeners
-    url={url}
-    columns={columns}
-    dataSelected={(data: any) => {
-      if (dataSelected) {
-        dataSelected(data)
-      }
-    }}
-
-    // Table properties
-    multipleSelection={multipleSelection}
-    defaults={defaults}
-    topChildren={topChildren}
-  />
+      }}
+      // Table properties
+      multipleSelection={multipleSelection}
+      defaults={defaults}
+      topChildren={topChildren}
+    />
+  );
 }
 
-export function GroupFilterSelector(
-  {
-    // Input properties
-    showSelected,
-    disabled,
-    mode = 'filter',
-    multipleSelection = true,
+export function GroupFilterSelector({
+  // Input properties
+  showSelected,
+  disabled,
+  mode = "filter",
+  multipleSelection = true,
 
-    // Data properties
-    data,
+  // Data properties
+  data,
 
-    // Listeners
-    setData,
-    opener
-  }: ModalFilterSelectorProps
-) {
-  return <GroupSelector
-    initData={
-      data.map((row: any) => {
+  // Listeners
+  setData,
+  opener,
+}: ModalFilterSelectorProps) {
+  return (
+    <GroupSelector
+      initData={data.map((row: any) => {
         return {
-          id: row
-        }
-      })
-    }
-    dataSelected={(data) => setData(data.map((row: any) => row.id))}
-    multipleSelection={multipleSelection}
-    showSelected={showSelected}
-    disabled={disabled}
-    opener={opener}
-    placeholder={'Filter by Group(s)'}
-    mode={mode}
-  />
+          id: row,
+        };
+      })}
+      dataSelected={(data) => setData(data.map((row: any) => row.id))}
+      multipleSelection={multipleSelection}
+      showSelected={showSelected}
+      disabled={disabled}
+      opener={opener}
+      placeholder={"Filter by Group(s)"}
+      mode={mode}
+    />
+  );
 }

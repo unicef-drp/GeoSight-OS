@@ -13,34 +13,35 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { Fragment, useEffect, useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import React, { Fragment, useEffect, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import AddIcon from "@mui/icons-material/Add";
+import CircularProgress from "@mui/material/CircularProgress";
 import {
   AddButton,
-  ThemeButton
+  ThemeButton,
 } from "../../../../../components/Elements/Button";
 import { deleteUrlCache, fetchingData } from "../../../../../Requests";
 
-import DataSelectionModal from './DataSelectionModal'
+import DataSelectionModal from "./DataSelectionModal";
 
-import { SortableTree } from "../../../../../components/SortableTreeForm/index"
+import { SortableTree } from "../../../../../components/SortableTreeForm/index";
 import {
   dataStructureToTreeData,
   findAllGroups,
-  updateGroupInStructure
+  updateGroupInStructure,
 } from "../../../../../components/SortableTreeForm/utilities";
-import { dictDeepCopy } from "../../../../../utils/main";
+import { dictDeepCopy, toLowercaseFirst } from "../../../../../utils/main";
 import { BaseList } from "../../../Components/List";
 import { formWindow } from "../../../../../utils/windows";
 
-import './style.scss';
-import CircularProgress from "@mui/material/CircularProgress";
+import "./style.scss";
+import { useTranslation } from "react-i18next";
 
 const groupDefault = {
-  'group': '',
-  'children': []
-}
+  group: "",
+  children: [],
+};
 /**
  * Basemaps dashboard
  * @param {string} pageName Page Name.
@@ -61,34 +62,35 @@ const groupDefault = {
  * @param {boolean} hasGroup Is the data has group
  * @param {Array} initColumns Column initiation.
  */
-export default function ListForm(
-  {
-    pageName,
-    data,
-    dataStructure,
-    setDataStructure,
-    listUrl,
-    defaultListData,
+export default function ListForm({
+  pageName,
+  data,
+  dataStructure,
+  setDataStructure,
+  listUrl,
+  defaultListData,
 
-    // Layer actions
-    addLayerAction,
-    removeLayerAction,
-    changeLayerAction,
-    addLayerInGroupAction,
-    editLayerInGroupAction,
-    otherActionsFunction,
+  // Layer actions
+  addLayerAction,
+  removeLayerAction,
+  changeLayerAction,
+  addLayerInGroupAction,
+  editLayerInGroupAction,
+  otherActionsFunction,
 
-    openDataSelection,
-    setOpenDataSelection,
-    hasGroup = true,
-    initColumns = null,
-    resourceSelector = null,
-    ...props
-  }
-) {
+  openDataSelection,
+  setOpenDataSelection,
+  hasGroup = true,
+  initColumns = null,
+  resourceSelector = null,
+  ...props
+}) {
+  const { t } = useTranslation();
   // GLOBAL DATA
-  const className = pageName.replaceAll(' ', '')
-  const singularPageName = pageName.substring(0, pageName.length - 1);
+  const className = pageName.replaceAll(" ", "");
+  const singularPageName = toLowercaseFirst(
+    pageName.substring(0, pageName.length - 1),
+  ).replaceAll(" ", "");
 
   // Generate group of layers
   const [listData, setListData] = useState(null);
@@ -96,66 +98,67 @@ export default function ListForm(
   const [open, setOpen] = useState(false);
   const [applyingCreateNew, setApplyingCreateNew] = useState(false);
 
-  const [treeData, setTreeData] = useState(null)
+  const [treeData, setTreeData] = useState(null);
 
   // Fetch data
   useEffect(() => {
     if (listUrl) {
       if (open) {
-        setListData([])
+        setListData([]);
         fetchingData(listUrl, {}, {}, (data) => {
-          setListData(data)
-        })
+          setListData(data);
+        });
       }
     } else if (defaultListData) {
-      setListData(defaultListData)
+      setListData(defaultListData);
     }
-  }, [defaultListData, open])
+  }, [defaultListData, open]);
 
   // add uuid to the data structure
   const updateUuid = (currDataStructure) => {
-    if (Object.keys(currDataStructure).includes('group')) {
+    if (Object.keys(currDataStructure).includes("group")) {
       if (!currDataStructure.id) {
-        currDataStructure.id = uuidv4() + '';
+        currDataStructure.id = uuidv4() + "";
       }
-      currDataStructure.children?.forEach(child => {
-        updateUuid(child)
-      })
+      currDataStructure.children?.forEach((child) => {
+        updateUuid(child);
+      });
     }
-  }
+  };
   // Onload, check the default one
   useEffect(() => {
-    const oldDataStructure = JSON.stringify(dataStructure)
+    const oldDataStructure = JSON.stringify(dataStructure);
     if (!dataStructure.children?.length && data.length) {
-      dataStructure.children = data.map(row => row.id)
+      dataStructure.children = data.map((row) => row.id);
     } else if (dataStructure.children?.length) {
-      dataStructure.children = Array.from(new Set(
+      dataStructure.children = Array.from(
+        new Set(
           dataStructure.children.concat(
-            data.filter(row => row.group === null).map(row => row.id)
-          )
-        )
-      )
+            data.filter((row) => row.group === null).map((row) => row.id),
+          ),
+        ),
+      );
     }
-    updateUuid(dataStructure)
+    updateUuid(dataStructure);
     if (oldDataStructure !== JSON.stringify(dataStructure)) {
-      setDataStructure({ ...dataStructure })
+      setDataStructure({ ...dataStructure });
     }
-    setTreeData(dataStructureToTreeData(data, dataStructure))
-  }, [data, dataStructure])
+    setTreeData(dataStructureToTreeData(data, dataStructure));
+  }, [data, dataStructure]);
 
   // Open data selection when the props true
   useEffect(() => {
     if (openDataSelection) {
-      setOpen(true)
+      setOpen(true);
     }
-  }, [openDataSelection])
+  }, [openDataSelection]);
 
   // Open data selection when the props true
   useEffect(() => {
     if (setOpenDataSelection) {
-      setOpenDataSelection(open)
+      setOpenDataSelection(open);
     }
-  }, [open])
+  }, [open]);
 
   /** Add group */
   const addGroup = () => {
@@ -163,196 +166,209 @@ export default function ListForm(
     let allGroups = findAllGroups(treeData);
     let idx = allGroups.length + 1;
     let maxTry = 10 + idx;
-    let groupName = '';
+    let groupName = "";
     while (!created && idx < maxTry) {
-      groupName = 'Group ' + idx;
-      const group = allGroups.find(group => group.name === groupName)
+      groupName = "Group " + idx;
+      const group = allGroups.find((group) => group.name === groupName);
       if (!group) {
         dataStructure.children.unshift({
           ...dictDeepCopy(groupDefault),
-          group: groupName
-        })
-        setDataStructure({ ...dataStructure })
-        created = true
+          group: groupName,
+        });
+        setDataStructure({ ...dataStructure });
+        created = true;
       }
       idx += 1;
     }
-  }
+  };
 
   /*** Remove layers in group **/
   const removeLayersInGroup = (group) => {
-    group.children.map(child => {
+    group.children.map((child) => {
       if (!child.group) {
-        const layerData = data.find(row => row.id === child)
-        removeLayer(layerData)
+        const layerData = data.find((row) => row.id === child);
+        removeLayer(layerData);
       } else {
-        removeLayersInGroup(child)
+        removeLayersInGroup(child);
       }
-    })
-  }
+    });
+  };
 
   /** Remove group */
   const removeGroup = (groupName) => {
     updateGroupInStructure(groupName, dataStructure, (data, structure) => {
       const index = structure.children.indexOf(data);
       if (index > -1) {
-        structure.children.splice(index, 1)
-        setDataStructure({ ...dataStructure })
-        removeLayersInGroup(data)
+        structure.children.splice(index, 1);
+        setDataStructure({ ...dataStructure });
+        removeLayersInGroup(data);
       }
-    })
-  }
+    });
+  };
 
   /** Remove Layer */
   const removeLayer = (layer) => {
     if (layer) {
-      removeLayerAction(layer)
+      removeLayerAction(layer);
     }
-  }
+  };
   /** Change Layer */
   const changeLayer = (layer) => {
-    changeLayerAction(layer)
-  }
+    changeLayerAction(layer);
+  };
   /** Change group name */
   const changeGroupName = (id, newName) => {
-    updateGroupInStructure(id, dataStructure, data => {
-      data.group = newName
-      setDataStructure({ ...dataStructure })
-    })
-  }
+    updateGroupInStructure(id, dataStructure, (data) => {
+      data.group = newName;
+      setDataStructure({ ...dataStructure });
+    });
+  };
 
   const addLayerInGroup = (groupName) => {
-    setCurrentGroupName(groupName)
+    setCurrentGroupName(groupName);
     if (addLayerInGroupAction) {
-      addLayerInGroupAction(groupName)
+      addLayerInGroupAction(groupName);
     } else {
-      setOpen(true)
+      setOpen(true);
     }
-  }
+  };
   /** APPLY DATA WHEN REMOVED OR DELETED **/
   const applyData = (addedData, removeData, groupName) => {
-    let usedGroupName = currentGroupName
+    let usedGroupName = currentGroupName;
     if (groupName) {
-      usedGroupName = groupName
+      usedGroupName = groupName;
     }
 
-    addedData.map(data => {
-      data.group = usedGroupName
-      addLayerAction(data)
-    })
-    removeData.map(data => {
-      removeLayerAction(data, usedGroupName)
-    })
-    setDataStructure({ ...dataStructure })
-    setOpen(false)
-  }
-
-  return <Fragment>
-    {
-      !treeData ? <div>Loading</div> :
-        <div className={'TableForm ' + className}>
-          <div className='TableForm-Header'>
-            <div className='TableForm-Header-Left'></div>
-            <div className='TableForm-Header-Right'>
+    addedData.map((data) => {
+      data.group = usedGroupName;
+      addLayerAction(data);
+    });
+    removeData.map((data) => {
+      removeLayerAction(data, usedGroupName);
+    });
+    setDataStructure({ ...dataStructure });
+    setOpen(false);
+  };
+  console.log(singularPageName)
+  return (
+    <Fragment>
+      {!treeData ? (
+        <div>Loading</div>
+      ) : (
+        <div className={"TableForm " + className}>
+          <div className="TableForm-Header">
+            <div className="TableForm-Header-Left"></div>
+            <div className="TableForm-Header-Right">
               {props.otherHeaders}
-              {(props.createNew && urls.api[pageName.toLowerCase()]?.create && urls.api[pageName.toLowerCase()]?.detail) ?
+              {props.createNew &&
+              urls.api[pageName.toLowerCase()]?.create &&
+              urls.api[pageName.toLowerCase()]?.detail ? (
                 <ThemeButton
                   variant="primary"
                   disabled={applyingCreateNew}
                   onClick={() => {
-                    formWindow(urls.api[pageName.toLowerCase()]?.create).then(response => {
-                      setApplyingCreateNew(true)
-                      fetchingData(
-                        urls.api[pageName.toLowerCase()]?.detail.replace('0', response), {}, {},
-                        (data) => {
-                          deleteUrlCache(listUrl)
-                          applyData([data], [], dataStructure.id)
-                          setApplyingCreateNew(false)
-                        }
-                      )
-                    })
+                    formWindow(urls.api[pageName.toLowerCase()]?.create).then(
+                      (response) => {
+                        setApplyingCreateNew(true);
+                        fetchingData(
+                          urls.api[pageName.toLowerCase()]?.detail.replace(
+                            "0",
+                            response,
+                          ),
+                          {},
+                          {},
+                          (data) => {
+                            deleteUrlCache(listUrl);
+                            applyData([data], [], dataStructure.id);
+                            setApplyingCreateNew(false);
+                          },
+                        );
+                      },
+                    );
                   }}
                 >
-                  {
-                    applyingCreateNew ? <CircularProgress/> :
-                      <AddIcon/>
-                  }
-                  {
-                    "Create New " + singularPageName
-                  }
-                </ThemeButton> : null
-
-              }
-              {
-                resourceSelector ? React.cloneElement(resourceSelector, {
-                    initData: data,
-                    multipleSelection: true,
-                    dataSelected: (_data) => {
-                      const dataId = data.map(_row => _row.id)
-                      const _dataId = _data.map(_row => _row.id)
-                      const addedData = _data.filter(
-                        _row => !dataId.includes(_row.id)
-                      )
-                      const removedData = data.filter(
-                        _row => !_dataId.includes(_row.id)
-                      )
-                      applyData(addedData, removedData, '')
-                    },
-                    opener: <AddButton
+                  {applyingCreateNew ? <CircularProgress /> : <AddIcon />}
+                  {t(`admin.create.${singularPageName}`)}
+                </ThemeButton>
+              ) : null}
+              {resourceSelector ? (
+                React.cloneElement(resourceSelector, {
+                  initData: data,
+                  multipleSelection: true,
+                  dataSelected: (_data) => {
+                    const dataId = data.map((_row) => _row.id);
+                    const _dataId = _data.map((_row) => _row.id);
+                    const addedData = _data.filter(
+                      (_row) => !dataId.includes(_row.id),
+                    );
+                    const removedData = data.filter(
+                      (_row) => !_dataId.includes(_row.id),
+                    );
+                    applyData(addedData, removedData, "");
+                  },
+                  opener: (
+                    <AddButton
                       variant="primary"
-                      text={"Add " + singularPageName}
+                      text={t(`admin.add.${singularPageName}`)}
                     />
-                  }) :
-                  <AddButton
-                    variant="primary" text={"Add " + singularPageName}
-                    onClick={() => addLayerInGroup(dataStructure.id)}
-                  />
-              }
-              {
-                hasGroup ?
-                  <AddButton
-                    className='AddGroupButton'
-                    variant="primary" text={"Add Group"}
-                    onClick={addGroup}/> : ""
-              }
+                  ),
+                })
+              ) : (
+                <AddButton
+                  variant="primary"
+                  text={t(`admin.add.${singularPageName}`)}
+                  onClick={() => addLayerInGroup(dataStructure.id)}
+                />
+              )}
+              {hasGroup ? (
+                <AddButton
+                  className="AddGroupButton"
+                  variant="primary"
+                  text={"Add Group"}
+                  onClick={addGroup}
+                />
+              ) : (
+                ""
+              )}
             </div>
           </div>
-          {
-            props.listConfig ?
-              <BaseList
-                pageName={pageName}
-                {...props.listConfig}
-              /> :
-              <SortableTree
-                data={treeData}
-                changeGroupName={changeGroupName}
-                changeLayer={changeLayer}
-                otherActionsFunction={otherActionsFunction}
-                rearrangeLayers={structure => {
-                  setDataStructure({ ...structure })
-                }}
-                addLayerInGroup={addLayerInGroup}
-                removeGroup={removeGroup}
-                removeLayer={removeLayer}
-                editLayerInGroupAction={editLayerInGroupAction}
-                isIndicator={pageName === 'Indicators'}
-                collapsible indicator/>
-          }
+          {props.listConfig ? (
+            <BaseList pageName={pageName} {...props.listConfig} />
+          ) : (
+            <SortableTree
+              data={treeData}
+              changeGroupName={changeGroupName}
+              changeLayer={changeLayer}
+              otherActionsFunction={otherActionsFunction}
+              rearrangeLayers={(structure) => {
+                setDataStructure({ ...structure });
+              }}
+              addLayerInGroup={addLayerInGroup}
+              removeGroup={removeGroup}
+              removeLayer={removeLayer}
+              editLayerInGroupAction={editLayerInGroupAction}
+              isIndicator={pageName === "Indicators"}
+              collapsible
+              indicator
+            />
+          )}
 
-          {
-            open ?
-              <DataSelectionModal
-                listData={listData}
-                selectedData={data}
-                open={open} setOpen={setOpen}
-                pageName={pageName}
-                groupName={currentGroupName}
-                applyData={applyData}
-                initColumns={initColumns}
-              />
-              : ""
-          }
+          {open ? (
+            <DataSelectionModal
+              listData={listData}
+              selectedData={data}
+              open={open}
+              setOpen={setOpen}
+              pageName={pageName}
+              groupName={currentGroupName}
+              applyData={applyData}
+              initColumns={initColumns}
+            />
+          ) : (
+            ""
+          )}
         </div>
-    }
-  </Fragment>
+      )}
+    </Fragment>
+  );
 }

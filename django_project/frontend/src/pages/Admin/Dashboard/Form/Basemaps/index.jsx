@@ -13,42 +13,49 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React from 'react';
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Actions } from "../../../../../store/dashboard";
-import ListForm from '../ListForm'
+import ListForm from "../ListForm";
+import BasemapSelector
+  from "../../../../../components/ResourceSelector/BasemapSelector";
 
-import './style.scss';
+import "./style.scss";
 
 /**
  * Basemaps dashboard
  */
 export default function BasemapsForm() {
-  const dispatch = useDispatch()
-  const {
-    basemapsLayers,
-    basemapsLayersStructure
-  } = useSelector(state => state.dashboard.data);
+  const dispatch = useDispatch();
+  const { basemapsLayers, basemapsLayersStructure } = useSelector(
+    (state) => state.dashboard.data,
+  );
 
-  return <ListForm
-    pageName={'Basemaps'}
-    data={basemapsLayers}
-    dataStructure={basemapsLayersStructure}
-    createNew={true}
-    setDataStructure={structure => {
-      dispatch(
-        Actions.Dashboard.updateStructure('basemapsLayersStructure', structure)
-      )
-    }}
-    listUrl={urls.api.basemapListAPI}
-    addLayerAction={(layer) => {
-      dispatch(Actions.Basemaps.add(layer))
-    }}
-    removeLayerAction={(layer) => {
-      dispatch(Actions.Basemaps.remove(layer))
-    }}
-    changeLayerAction={(layer) => {
-      dispatch(Actions.Basemaps.update(layer))
-    }}
-  />
+  return (
+    <ListForm
+      pageName={"Basemaps"}
+      data={basemapsLayers}
+      dataStructure={basemapsLayersStructure}
+      createNew={true}
+      setDataStructure={(structure) => {
+        dispatch(
+          Actions.Dashboard.updateStructure(
+            "basemapsLayersStructure",
+            structure,
+          ),
+        );
+      }}
+      listUrl={urls.api.basemapListAPI}
+      addLayerAction={(layer) => {
+        dispatch(Actions.Basemaps.add(layer));
+      }}
+      removeLayerAction={(layer) => {
+        dispatch(Actions.Basemaps.remove(layer));
+      }}
+      changeLayerAction={(layer) => {
+        dispatch(Actions.Basemaps.update(layer));
+      }}
+      resourceSelector={<BasemapSelector />}
+    />
+  );
 }

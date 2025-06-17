@@ -13,134 +13,73 @@
  * __copyright__ = ('Copyright 2025, Unicef')
  */
 
-import React, { useEffect, useState } from 'react';
-import { fetchReferenceLayerList } from "../../utils/georepo";
+import React from "react";
 import { ModalInputSelector } from "./ModalInputSelector";
-import { ModalFilterSelectorProps, ModalInputSelectorProps } from "./types";
+import { ModalInputSelectorProps } from "./types";
 import { formatDateTime } from "../../utils/main";
 
-
 const columns = [
-  { field: 'id', headerName: 'id', hide: true },
-  { field: 'name', headerName: 'Name', flex: 1 },
-  { field: 'unique_id', headerName: 'UUID', flex: 1 },
+  { field: "id", headerName: "id", hide: true },
+  { field: "name", headerName: "Name", flex: 1 },
+  { field: "unique_id", headerName: "UUID", flex: 1 },
   {
-    field: 'created_at', headerName: 'Created at', flex: 0.5,
+    field: "created_at",
+    headerName: "Created at",
+    flex: 0.5,
     renderCell: (params: any) => {
-      return formatDateTime(new Date(params.value))
-    }
+      return formatDateTime(new Date(params.value));
+    },
   },
   {
-    field: 'creator', headerName: 'Created by', flex: 0.5
-  }
-]
+    field: "creator",
+    headerName: "Created by",
+    flex: 0.5,
+  },
+];
 
 /** For Georepo View selection. */
-export default function RelatedTableSelector(
-  {
-    // Input properties
-    placeholder,
-    showSelected,
-    disabled,
-    mode,
-    opener,
+export default function RelatedTableSelector({
+  // Input properties
+  placeholder,
+  showSelected,
+  disabled,
+  mode,
+  opener,
 
-    // Data properties
-    initData,
+  // Data properties
+  initData,
 
-    // Listeners
-    dataSelected,
+  // Listeners
+  dataSelected,
 
-    // Table properties
-    multipleSelection,
-    defaults
-  }: ModalInputSelectorProps
-) {
-  const [relatedTables, setRelatedTables] = useState([])
-  const [relatedTable, setRelatedTable] = useState(null)
-  const url = '/api/v1/related-tables/?fields=__all__'
+  // Table properties
+  multipleSelection,
+  defaults,
+}: ModalInputSelectorProps) {
+  const url = "/api/v1/related-tables/?fields=__all__";
 
-  /** Get the RelatedTables */
-  useEffect(
-    () => {
-      (
-        async () => {
-          const responseData = await fetchReferenceLayerList()
-          const RelatedTables = responseData.map((row: any) => {
-            row.value = row.identifier
-            return row
-          })
-          setRelatedTables(RelatedTables)
+  return (
+    <ModalInputSelector
+      // Input properties
+      placeholder={placeholder}
+      showSelected={showSelected}
+      disabled={disabled}
+      mode={mode}
+      dataName={"Related Table"}
+      opener={opener}
+      // Data properties
+      initData={initData}
+      // Listeners
+      url={url}
+      columns={columns}
+      dataSelected={(data: any) => {
+        if (dataSelected) {
+          dataSelected(data);
         }
-      )();
-    }, []
-  )
-
-  /** On RelatedTables loaded */
-  useEffect(
-    () => {
-      if (!relatedTable && relatedTables[0]) {
-        setRelatedTable(relatedTables[0].value)
-      }
-    }, [relatedTables]
-  )
-
-
-  return <ModalInputSelector
-    // Input properties
-    placeholder={placeholder}
-    showSelected={showSelected}
-    disabled={disabled}
-    mode={mode}
-    dataName={'Related Table'}
-    opener={opener}
-
-    // Data properties
-    initData={initData}
-
-    // Listeners
-    url={url}
-    columns={columns}
-    dataSelected={(data: any) => {
-      if (dataSelected) {
-        dataSelected(data)
-      }
-    }}
-
-    // Table properties
-    multipleSelection={multipleSelection}
-    defaults={defaults}
-  />
-}
-
-export function RelatedTableFilterSelector(
-  {
-    // Input properties
-    showSelected,
-    disabled,
-    mode = 'filter',
-    multipleSelection = true,
-
-    // Data properties
-    data,
-
-    // Listeners
-    setData
-  }: ModalFilterSelectorProps
-) {
-  return <RelatedTableSelector
-    initData={
-      data.map((row: any) => {
-        return {
-          id: row
-        }
-      })
-    }
-    dataSelected={(data) => setData(data.map((row: any) => row.id))}
-    multipleSelection={multipleSelection}
-    showSelected={showSelected}
-    disabled={disabled}
-    placeholder={'Filter by Related Table(s)'}
-    mode={mode}
-  />
+      }}
+      // Table properties
+      multipleSelection={multipleSelection}
+      defaults={defaults}
+    />
+  );
 }

@@ -13,125 +13,60 @@
  * __copyright__ = ('Copyright 2025, Unicef')
  */
 
-import React, { useEffect, useState } from 'react';
-import { fetchReferenceLayerList } from "../../utils/georepo";
+import React from "react";
 import { ModalInputSelector } from "./ModalInputSelector";
-import { ModalFilterSelectorProps, ModalInputSelectorProps } from "./types";
-
+import { ModalInputSelectorProps } from "./types";
 
 const columns = [
-  { field: 'id', headerName: 'id', hide: true },
-  { field: 'name', headerName: 'Name', flex: 1 },
-  { field: 'description', headerName: 'Description', flex: 1 },
-  { field: 'category', headerName: 'Category', flex: 1 },
-]
+  { field: "id", headerName: "id", hide: true },
+  { field: "name", headerName: "Name", flex: 1 },
+  { field: "description", headerName: "Description", flex: 1 },
+  { field: "category", headerName: "Category", flex: 1 },
+];
 
 /** For Georepo View selection. */
-export default function ContextLayerSelector(
-  {
-    // Input properties
-    placeholder,
-    showSelected,
-    disabled,
-    mode,
-    opener,
+export default function ContextLayerSelector({
+  // Input properties
+  placeholder,
+  showSelected,
+  disabled,
+  mode,
+  opener,
 
-    // Data properties
-    initData,
+  // Data properties
+  initData,
 
-    // Listeners
-    dataSelected,
+  // Listeners
+  dataSelected,
 
-    // Table properties
-    multipleSelection,
-    defaults
-  }: ModalInputSelectorProps
-) {
-  const [contextLayers, setContextLayers] = useState([])
-  const [contextLayer, setContextLayer] = useState(null)
-  const url = '/api/v1/context-layers/?fields=__all__'
+  // Table properties
+  multipleSelection,
+  defaults,
+}: ModalInputSelectorProps) {
+  const url = "/api/v1/context-layers/?fields=__all__";
 
-  /** Get the ContextLayers */
-  useEffect(
-    () => {
-      (
-        async () => {
-          const responseData = await fetchReferenceLayerList()
-          const ContextLayers = responseData.map((row: any) => {
-            row.value = row.identifier
-            return row
-          })
-          setContextLayers(ContextLayers)
+  return (
+    <ModalInputSelector
+      // Input properties
+      placeholder={placeholder}
+      showSelected={showSelected}
+      disabled={disabled}
+      mode={mode}
+      dataName={"Context Layer"}
+      opener={opener}
+      // Data properties
+      initData={initData}
+      // Listeners
+      url={url}
+      columns={columns}
+      dataSelected={(data: any) => {
+        if (dataSelected) {
+          dataSelected(data);
         }
-      )();
-    }, []
-  )
-
-  /** On ContextLayers loaded */
-  useEffect(
-    () => {
-      if (!contextLayer && contextLayers[0]) {
-        setContextLayer(contextLayers[0].value)
-      }
-    }, [contextLayers]
-  )
-
-
-  return <ModalInputSelector
-    // Input properties
-    placeholder={placeholder}
-    showSelected={showSelected}
-    disabled={disabled}
-    mode={mode}
-    dataName={'Context Layer'}
-    opener={opener}
-
-    // Data properties
-    initData={initData}
-
-    // Listeners
-    url={url}
-    columns={columns}
-    dataSelected={(data: any) => {
-      if (dataSelected) {
-        dataSelected(data)
-      }
-    }}
-
-    // Table properties
-    multipleSelection={multipleSelection}
-    defaults={defaults}
-  />
-}
-
-export function ContextLayerFilterSelector(
-  {
-    // Input properties
-    showSelected,
-    disabled,
-    mode = 'filter',
-    multipleSelection = true,
-
-    // Data properties
-    data,
-
-    // Listeners
-    setData
-  }: ModalFilterSelectorProps
-) {
-  return <ContextLayerSelector
-    initData={
-      data.map((row: any) => {
-        return {
-          id: row
-        }
-      })
-    }
-    dataSelected={(data) => setData(data.map((row: any) => row.id))}
-    multipleSelection={multipleSelection}
-    showSelected={showSelected}
-    disabled={disabled}
-    placeholder={'Filter by Context Layer(s)'}
-    mode={mode}
-  />
+      }}
+      // Table properties
+      multipleSelection={multipleSelection}
+      defaults={defaults}
+    />
+  );
 }
