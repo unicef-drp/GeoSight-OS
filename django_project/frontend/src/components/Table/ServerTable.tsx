@@ -31,6 +31,7 @@ import { Notification, NotificationStatus } from "../Notification";
 import { useConfirmDialog } from "../../providers/ConfirmDialog";
 import DataGridFilter from "../Filter";
 import { useTranslation } from "react-i18next";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 import "./ServerTable.scss";
 
@@ -74,6 +75,7 @@ const ServerTable = forwardRef(
   ) => {
     // Last controller
     const [lastController, setLastController] = useState(null);
+    const [showSelected, setShowSelected] = useState<boolean>(false);
 
     // Confirm dialog
     const { openConfirmDialog } = useConfirmDialog();
@@ -281,7 +283,17 @@ const ServerTable = forwardRef(
           setSelectionModelData(newSelectedModelData);
         }
       }
-    }, [selectionModel]);
+      // Add parameters
+      if (!showSelected) {
+        // @ts-ignore
+        delete parameters[`${rowIdKey}__in`];
+        parametersChanged();
+      } else {
+        // @ts-ignore
+        parameters[`${rowIdKey}__in`] = selectionModel;
+        parametersChanged();
+      }
+    }, [selectionModel, showSelected]);
 
     /*** When sortmodel changed */
     useEffect(() => {
@@ -303,6 +315,7 @@ const ServerTable = forwardRef(
                 : t("admin.numberOfItemsSelected", {
                     numberOfItems: selectionModel.length,
                   })}
+              {/* Clear selection button */}
               {selectionModel.length ? (
                 <ThemeButton
                   variant="primary Reverse"
@@ -311,6 +324,18 @@ const ServerTable = forwardRef(
                   }}
                 >
                   {t("admin.clearSelection")}
+                </ThemeButton>
+              ) : null}
+              {selectionModel.length ? (
+                <ThemeButton
+                  variant={showSelected ? "primary" : "primary Reverse"}
+                  className="ShowSelected"
+                  onClick={() => {
+                    setShowSelected(!showSelected);
+                  }}
+                >
+                  {t("admin.showSelected")}{" "}
+                  {showSelected ? <CancelIcon /> : null}
                 </ThemeButton>
               ) : null}
               {leftHeader}
@@ -437,6 +462,10 @@ const ServerTable = forwardRef(
               setSortModel(newSortModel)
             }
             getRowId={(row: any) => row[rowIdKey]}
+            localeText={{
+              noRowsLabel: t('admin.noDataTable'),
+              errorOverlayDefaultLabel: t('admin.tableError'),
+            }}
             {...props}
           />
         </div>
