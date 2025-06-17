@@ -22,7 +22,7 @@ from rest_framework.response import Response
 from core.api_utils import common_api_params, ApiTag, ApiParams
 from core.forms.user import UserForm
 from core.permissions import (
-    AdminAuthenticationPermission
+    AdminAuthenticationPermission, RoleContributorAuthenticationPermission
 )
 from core.serializer.user import UserSerializer
 from geosight.data.api.v1.base import BaseApiV1
@@ -39,10 +39,19 @@ class UserViewSet(
     model_class = User
     form_class = UserForm
     serializer_class = UserSerializer
-    extra_exclude_fields = [
-        'parameters', 'permission'
-    ]
     lookup_field = 'id'
+    keep_exclude_fields = True
+
+    @property
+    def extra_exclude_fields(self):
+        """Return extra fields to exclude."""
+        fields = ['parameters', 'permission']
+        if not self.request.user.profile.is_admin:
+            fields += [
+                "is_staff", "name", "role", "is_contributor", "is_creator",
+                "is_admin", "receive_notification"
+            ]
+        return fields
 
     @property
     def queryset(self):
@@ -57,7 +66,7 @@ class UserViewSet(
         ]:
             permission_classes = [AdminAuthenticationPermission]
         else:
-            permission_classes = []
+            permission_classes = [RoleContributorAuthenticationPermission]
         return [permission() for permission in permission_classes]
 
     @swagger_auto_schema(

@@ -36,7 +36,9 @@ class PermissionSerializer:
             user=self.creator
         )
         if users_permissions:
-            self.user_permissions = users_permissions
+            self.user_permissions = users_permissions.select_related(
+                'user'
+            )
 
         # Check group permission init
         self.group_permissions = obj.group_permissions.all()
@@ -55,6 +57,8 @@ class PermissionSerializer:
                     'id': creator.id,
                     'username': creator.username,
                     'full_name': creator.get_full_name(),
+                    'first_name': creator.first_name,
+                    'last_name': creator.last_name,
                     'email': creator.email,
                     'role': creator.profile.role,
                     'permission': PERMISSIONS.OWNER.name,
@@ -65,6 +69,8 @@ class PermissionSerializer:
             {
                 'id': user_permission.user.id,
                 'username': user_permission.user.username,
+                'first_name': user_permission.user.first_name,
+                'last_name': user_permission.user.last_name,
                 'full_name': user_permission.user.get_full_name(),
                 'email': user_permission.user.email,
                 'role': user_permission.user.profile.role,

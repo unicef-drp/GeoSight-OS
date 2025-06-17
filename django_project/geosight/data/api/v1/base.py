@@ -51,6 +51,7 @@ class BaseApiV1(FilteredAPI):
     non_filtered_keys = [
         'page', 'page_size', 'fields', 'extra_fields', 'permission'
     ]
+    keep_exclude_fields = False
 
     def get_queryset(self):
         """Return queryset of API."""
@@ -87,6 +88,8 @@ class BaseApiV1(FilteredAPI):
                             kwargs['exclude'].remove(extra_field)
                         except Exception:
                             pass
+            elif self.keep_exclude_fields and self.extra_exclude_fields:
+                kwargs['exclude'] = ['creator'] + self.extra_exclude_fields
             elif fields != '__all__':
                 kwargs['fields'] = self.request.GET.get('fields').split(',')
 

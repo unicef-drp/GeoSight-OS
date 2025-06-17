@@ -29,7 +29,7 @@ from rest_framework.response import Response
 from core.api_utils import common_api_params, ApiTag, ApiParams
 from core.forms.group import GroupForm
 from core.permissions import (
-    AdminAuthenticationPermission
+    AdminAuthenticationPermission, RoleContributorAuthenticationPermission
 )
 from core.serializer.group import GroupSerializer
 from geosight.data.api.v1.base import BaseApiV1
@@ -64,7 +64,7 @@ class GroupViewSet(
         ]:
             permission_classes = [AdminAuthenticationPermission]
         else:
-            permission_classes = []
+            permission_classes = [RoleContributorAuthenticationPermission]
         return [permission() for permission in permission_classes]
 
     @swagger_auto_schema(
