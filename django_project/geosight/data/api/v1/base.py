@@ -88,10 +88,22 @@ class BaseApiV1(FilteredAPI):
                             kwargs['exclude'].remove(extra_field)
                         except Exception:
                             pass
-            elif self.keep_exclude_fields and self.extra_exclude_fields:
-                kwargs['exclude'] = ['creator'] + self.extra_exclude_fields
             elif fields != '__all__':
                 kwargs['fields'] = self.request.GET.get('fields').split(',')
+
+        # Exclude fields if it needs to keep exclude fields
+        if self.keep_exclude_fields and self.extra_exclude_fields:
+            try:
+                kwargs['exclude'] += self.extra_exclude_fields
+            except KeyError:
+                kwargs['exclude'] = self.extra_exclude_fields
+
+        # Override the exclude if the user is not logged in
+        if not self.request.user.is_authenticated:
+            try:
+                kwargs['exclude'] += ["created_by", "modified_by"]
+            except KeyError:
+                kwargs['exclude'] = ["created_by", "modified_by"]
 
         return serializer_class(*args, **kwargs)
 

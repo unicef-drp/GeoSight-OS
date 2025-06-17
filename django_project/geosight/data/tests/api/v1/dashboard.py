@@ -69,21 +69,32 @@ class DashboardPermissionTest(BasePermissionTest.TestCase):
     def test_list_api_by_permission(self):
         """Test List API."""
         url = reverse('dashboards-list')
-        self.assertRequestGetView(url, 200)
+        resource = Dashboard.permissions.create(
+            user=self.resource_creator,
+            name='Name Public',
+            group=DashboardGroup.objects.create(name='Group 4')
+        )
+        resource.permission.public_permission = PERMISSIONS.READ.name
+        resource.permission.save()
+        response = self.assertRequestGetView(url, 200)
+        self.assertEqual(len(response.json()['results']), 1)
+        self.assertFalse("modified_by" in response.json()['results'][0].keys())
+        self.assertFalse("created_by" in response.json()['results'][0].keys())
 
         response = self.assertRequestGetView(url, 200, user=self.admin)
-        self.assertEqual(len(response.json()['results']), 3)
+        self.assertEqual(len(response.json()['results']), 4)
+        self.assertTrue("modified_by" in response.json()['results'][0].keys())
+        self.assertTrue("created_by" in response.json()['results'][0].keys())
 
         response = self.assertRequestGetView(url, 200, user=self.viewer)
-        self.assertEqual(len(response.json()['results']), 0)
+        self.assertEqual(len(response.json()['results']), 1)
+        self.assertTrue("modified_by" in response.json()['results'][0].keys())
+        self.assertTrue("created_by" in response.json()['results'][0].keys())
 
         response = self.assertRequestGetView(url, 200, user=self.creator)
-        self.assertEqual(len(response.json()['results']), 1)
-
-        response = self.assertRequestGetView(
-            url, 200, user=self.creator_in_group
-        )
-        self.assertEqual(len(response.json()['results']), 1)
+        self.assertEqual(len(response.json()['results']), 2)
+        self.assertTrue("modified_by" in response.json()['results'][0].keys())
+        self.assertTrue("created_by" in response.json()['results'][0].keys())
 
     def test_list_api_by_filter(self):
         """Test GET LIST API."""
