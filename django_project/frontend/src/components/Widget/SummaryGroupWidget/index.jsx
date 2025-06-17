@@ -23,7 +23,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 
 import { DEFINITION } from "../index"
-import { numberWithCommas } from '../../../utils/main'
+import { formatNumberSmart, numberWithCommas } from '../../../utils/number'
 import './style.scss'
 
 /**
@@ -33,7 +33,7 @@ import './style.scss'
  * @param {object} widgetData Widget Data
  */
 export default function Index(
-  { data, widgetData }
+  { data, widgetData, compactNumbers = false }
 ) {
   const { name, config } = widgetData
   const { operation, property_2 } = config
@@ -82,6 +82,18 @@ export default function Index(
             }
           })
 
+          // Format values if compactNumbers is enabled
+          if (compactNumbers) {
+            for (const [key, value] of Object.entries(byGroup)) {
+              value.value = formatNumberSmart(value.value);
+            }
+          } else {
+            // Format with commas if not using compact numbers
+            for (const [key, value] of Object.entries(byGroup)) {
+              value.value = numberWithCommas(value.value);
+            }
+          }
+
           // We need to check max value for all group
           for (const [key, value] of Object.entries(byGroup)) {
             if (maxValue < value.value) {
@@ -121,13 +133,14 @@ export default function Index(
                   <td className='widget__sgw__row__name'>{value[0]}</td>
                   <td>
                     <div
-                      style={{ width: value[1].perc + '%' }}>{numberWithCommas(value[1].value)}</div>
+                      style={{ width: value[1].perc + '%' }}>{value[1].value}</div>
                   </td>
                 </tr>
               ))
             }
             </tbody>
           </table>
+        }
         default:
           return <div className='widget__error'>Operation Not Found</div>;
       }
