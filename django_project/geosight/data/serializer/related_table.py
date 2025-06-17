@@ -112,18 +112,34 @@ class RelatedTableApiSerializer(ResourceSerializer):
         table = RelatedTable(**data)
         table.save()
         for definition in fields:
-            table.add_field(definition['name'],
-                            definition['alias'], definition['type'])
+            table.add_field(
+                definition['name'], definition['alias'], definition['type']
+            )
         return table
 
     def get_permission(self, obj: RelatedTable):
-        """Return permission."""
+        """
+        Retrieve all permissions for the given related table object.
+
+        :param obj: The related table object for which to retrieve permissions.
+        :type obj: RelatedTable
+        :return:
+            A list or queryset of all permissions
+            available to the user in the current context.
+        """
         return obj.permission.all_permission(
             self.context.get('user', None)
         )
 
     def get_related_fields(self, obj: RelatedTable):
-        """Return related_fields."""
+        """
+        Retrieve the related fields for the given related table object.
+
+        :param obj: The related table object from which to get related fields.
+        :type obj: RelatedTable
+        :return: The related fields associated with the object.
+        :rtype: list[str]
+        """
         return obj.related_fields
 
     class Meta:  # noqa: D106
@@ -201,7 +217,19 @@ class RelatedTableRowApiFlatSerializer(DynamicModelSerializer):
         fields = ('id',)
 
     def to_representation(self, instance):
-        """Update custom data."""
+        """
+        Customize the serialized representation of the instance.
+
+        This method extends the default representation by:
+        - Updating the serialized data with the instance's `data` attribute.
+        - Optionally applying a custom
+            `to_representation` function from the context.
+
+        :param instance: The model instance being serialized.
+        :type instance: RelatedTable or a compatible model
+        :return: A dictionary representing the serialized instance.
+        :rtype: dict
+        """
         data = super(RelatedTableRowApiFlatSerializer, self).to_representation(
             instance
         )
@@ -228,39 +256,88 @@ class RelatedTableSerializer(DynamicModelSerializer):
     version_data = serializers.SerializerMethodField()
 
     def get_url(self, obj: RelatedTable):
-        """Return url."""
+        """
+        Get the API URL for the given related table object.
+
+        :param obj: The related table instance.
+        :type obj: RelatedTable
+        :return: URL to access the related table data API.
+        :rtype: str
+        """
         return reverse(
             'related-table-data-api',
             args=[obj.id]
         )
 
     def get_creator(self, obj: RelatedTable):
-        """Return value."""
+        """
+        Get the full name of the creator of the related table.
+
+        :param obj: The related table instance.
+        :type obj: RelatedTable
+        :return: Full name of the creator or an empty string if not set.
+        :rtype: str
+        """
         if obj.creator:
             return obj.creator.get_full_name()
         else:
             return ''
 
     def get_rows(self, obj: RelatedTable):
-        """Return value."""
+        """
+        Get the data rows of the related table.
+
+        :param obj: The related table instance.
+        :type obj: RelatedTable
+        :return: The table's data rows.
+        :rtype: List[dict]
+        """
         return obj.data
 
     def get_fields_definition(self, obj: RelatedTable):
-        """Return fields_definition."""
+        """
+        Get the field definitions of the related table.
+
+        :param obj: The related table instance.
+        :type obj: RelatedTable
+        :return: Field definitions of the table.
+        :rtype: dict
+        """
         return obj.fields_definition
 
     def get_related_fields(self, obj: RelatedTable):
-        """Return related_fields."""
+        """
+        Get the related field names for the table.
+
+        :param obj: The related table instance.
+        :type obj: RelatedTable
+        :return: A list of related field names.
+        :rtype: list[str]
+        """
         return obj.related_fields
 
     def get_permission(self, obj: RelatedTable):
-        """Return permission."""
+        """
+        Get all permissions available for the user in the current context.
+
+        :param obj: The related table instance.
+        :type obj: RelatedTable
+        :return: Permissions available to the user.
+        :rtype: dict
+        """
         return obj.permission.all_permission(
             self.context.get('user', None)
         )
 
     def get_version_data(self, obj: RelatedTable):
-        """Return permission."""
+        """
+        Get the version information of the related table.
+
+        :param obj: The related table instance.
+        :type obj: RelatedTable
+        :return: Version data of the table.
+        :rtype: int
+        """
         return obj.version
 
     class Meta:  # noqa: D106
@@ -290,7 +367,20 @@ class RelatedTableFieldSerializer(DynamicModelSerializer):
     example = serializers.SerializerMethodField()
 
     def get_example(self, obj: RelatedTableField):
-        """Return example."""
+        """
+        Get example values for the given related table field.
+
+        This method looks for example data
+        in the serializer context under the key `'example_data'`.
+        For each item in `example_data`,
+        it attempts to extract the value corresponding to the field's name.
+
+        :param obj:
+            The related table field whose example values are being retrieved.
+        :type obj: RelatedTableField
+        :return: A list of example values for the field.
+        :rtype: list[Any]
+        """
         example = []
         example_data = self.context.get('example_data', None)
         if example_data:
