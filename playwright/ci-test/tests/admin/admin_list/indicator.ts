@@ -83,10 +83,24 @@ test.describe('Indicator list admin', () => {
     await expect(page.locator('.ModalDataSelector')).toBeVisible()
     await testFunction(page, page.locator('.ModalDataSelector'))
 
-    // Select
+    // Check Show Selected
+    await delay(500)
     await page.locator('.ModalDataSelector').locator('.MuiDataGrid-row').nth(0).click();
+    await page.locator('.ModalDataSelector').locator('.MuiDataGrid-row').nth(1).click();
     await page.locator('.ModalDataSelector').locator('.MuiDataGrid-row').nth(2).click();
     await page.locator('.ModalDataSelector').locator('.MuiDataGrid-row').nth(3).click();
+    await page.locator('.ModalDataSelector').getByRole('button', { name: 'Show selected' }).click();
+    await expect(page.locator('.ModalDataSelector').locator('.MuiTablePagination-displayedRows').first()).toContainText('1–4 of 4');
+    await page.locator('.ModalDataSelector').getByRole('cell', { name: 'Unselect row' }).nth(2).click();
+    await expect(page.locator('.ModalDataSelector').locator('.MuiTablePagination-displayedRows').first()).toContainText('1–3 of 3');
+    await page.locator('.ModalDataSelector').getByRole('button', { name: 'Show selected' }).click();
+    await expect(page.locator('.ModalDataSelector').locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 15');
+    await expect(page.locator('.ModalDataSelector').getByRole('cell', { name: 'Unselect row' }).nth(0)).toBeVisible();
+    await expect(page.locator('.ModalDataSelector').getByRole('cell', { name: 'Unselect row' }).nth(1)).toBeVisible();
+    await expect(page.locator('.ModalDataSelector').getByRole('cell', { name: 'Unselect row' }).nth(2)).toBeVisible();
+    await expect(page.locator('.ModalDataSelector').getByRole('cell', { name: 'Unselect row' }).nth(3)).toBeHidden();
+
+    // Select
     await page.locator('.ModalDataSelector').getByRole('button', { name: 'Update Selection' }).click()
     await expect(page.locator('.ModalDataSelector').locator('.ModalDataSelector')).toBeHidden()
     await expect(page.locator('.FilterControl').nth(0).locator('input')).toHaveValue('3 selected');

@@ -84,13 +84,28 @@ test.describe('Context layer list admin', () => {
     // ----------------------------------
     await page.goto('/admin/project/create');
     await page.locator('.DashboardFormHeader').getByText('Context Layers').click();
-    await page.getByRole('button', { name: 'Add Context Layer' }).click()
+    await page.getByRole('button', { name: 'Add Context Layer' }).click();
     await expect(page.locator('.ModalDataSelector')).toBeVisible()
     await testFunction(page, page.locator('.ModalDataSelector'))
 
-    // Select
+    // Check Show Selected
+    await delay(500)
     await page.locator('.ModalDataSelector').locator('.MuiDataGrid-row').nth(0).click();
     await page.locator('.ModalDataSelector').locator('.MuiDataGrid-row').nth(1).click();
+    await page.locator('.ModalDataSelector').locator('.MuiDataGrid-row').nth(2).click();
+    await page.locator('.ModalDataSelector').locator('.MuiDataGrid-row').nth(3).click();
+    await page.getByRole('button', { name: 'Show selected' }).click();
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–4 of 4');
+    await page.getByRole('cell', { name: 'Unselect row' }).nth(2).click();
+    await page.getByRole('cell', { name: 'Unselect row' }).nth(2).click();
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–2 of 2');
+    await page.getByRole('button', { name: 'Show selected' }).click();
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 12');
+    await expect(page.getByRole('cell', { name: 'Unselect row' }).nth(0)).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'Unselect row' }).nth(1)).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'Unselect row' }).nth(2)).toBeHidden();
+
+    // Select
     await page.locator('.ModalDataSelector').getByRole('button', { name: 'Update Selection' }).click()
     await expect(page.locator('.ModalDataSelector').locator('.ModalDataSelector')).toBeHidden()
     await expect(page.getByText('Context Layer A0 Config')).toBeVisible();

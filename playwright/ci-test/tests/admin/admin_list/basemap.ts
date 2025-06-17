@@ -77,6 +77,24 @@ test.describe('Basemap list admin', () => {
     await page.getByLabel('Basemap Name').click();
     await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Basemap A0');
 
+    // Check Show Selected
+    await page.reload();
+    await delay(500)
+    await page.locator('div:nth-child(3) > .MuiDataGrid-cellCheckbox').click();
+    await page.locator('div:nth-child(4) > .MuiDataGrid-cellCheckbox').click();
+    await page.locator('div:nth-child(5) > .MuiDataGrid-cellCheckbox').click();
+    await page.locator('div:nth-child(6) > .MuiDataGrid-cellCheckbox').click();
+    await page.getByRole('button', { name: 'Show selected' }).click();
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–4 of 4');
+    await page.getByRole('cell', { name: 'Unselect row' }).first().click();
+    await page.getByRole('cell', { name: 'Unselect row' }).first().click();
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–2 of 2');
+    await page.getByRole('button', { name: 'Show selected' }).click();
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–13 of 13');
+    await expect(page.getByRole('cell', { name: 'Unselect row' }).nth(0)).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'Unselect row' }).nth(1)).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'Unselect row' }).nth(2)).toBeHidden();
+
     // Delete per row
     await page.reload();
     await page.getByPlaceholder('Search Basemap').fill('Basemap A');
