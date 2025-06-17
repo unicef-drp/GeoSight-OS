@@ -78,12 +78,6 @@ function RelatedTableConfiguration({ data, referenceLayerData, codeTypes }) {
     referenceLayerData,
   ]);
 
-  if ([null, undefined].includes(data.related_fields)) {
-    return null;
-  } else {
-    data.related_fields.sort();
-  }
-
   const relatedFields = relatedTableData
     ? getRelatedTableFields(data, relatedTableData)
     : null;

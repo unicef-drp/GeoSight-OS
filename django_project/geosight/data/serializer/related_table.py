@@ -93,6 +93,7 @@ class RelatedTableApiSerializer(ResourceSerializer):
     url = serializers.SerializerMethodField()
     creator = serializers.SerializerMethodField()
     fields_definition = RelatedTableFieldApiSerializer(many=True)
+    related_fields = serializers.SerializerMethodField()
     permission = serializers.SerializerMethodField()
 
     def get_url(self, obj: RelatedTable):  # noqa: D102
@@ -120,6 +121,10 @@ class RelatedTableApiSerializer(ResourceSerializer):
         return obj.permission.all_permission(
             self.context.get('user', None)
         )
+
+    def get_related_fields(self, obj: RelatedTable):
+        """Return related_fields."""
+        return obj.related_fields
 
     class Meta:  # noqa: D106
         model = RelatedTable
