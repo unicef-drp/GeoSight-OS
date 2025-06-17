@@ -9,7 +9,7 @@
  *     (at your option) any later version.
  *
  * __author__ = 'irwan@kartoza.com'
- * __date__ = '14/01/2025'
+ * __date__ = '17/06/2025'
  * __copyright__ = ('Copyright 2025, Unicef')
  */
 
@@ -20,14 +20,13 @@ import { ModalFilterSelectorProps, ModalInputSelectorProps } from "./types";
 const columns = [
   { field: "id", headerName: "id", hide: true },
   { field: "name", headerName: "Name", flex: 1 },
-  { field: "shortcode", headerName: "Code", flex: 1 },
   { field: "description", headerName: "Description", flex: 1 },
   { field: "category", headerName: "Category", flex: 1 },
 ];
 
 /** For Georepo View selection. */
-export default function IndicatorSelector({
-  url = "/api/v1/indicators/?fields=__all__",
+export default function BasemapSelector({
+  url = "/api/v1/basemaps/?fields=__all__",
 
   // Input properties
   placeholder,
@@ -53,7 +52,7 @@ export default function IndicatorSelector({
       showSelected={showSelected}
       disabled={disabled}
       mode={mode}
-      dataName={"Indicator"}
+      dataName={"Basemap"}
       opener={opener}
       // Data properties
       initData={initData}
@@ -68,36 +67,6 @@ export default function IndicatorSelector({
       // Table properties
       multipleSelection={multipleSelection}
       defaults={defaults}
-    />
-  );
-}
-
-export function IndicatorFilterSelector({
-  // Input properties
-  showSelected,
-  disabled,
-  mode = "filter",
-  multipleSelection = true,
-
-  // Data properties
-  data,
-
-  // Listeners
-  setData,
-}: ModalFilterSelectorProps) {
-  return (
-    <IndicatorSelector
-      initData={data.map((row: any) => {
-        return {
-          id: row,
-        };
-      })}
-      dataSelected={(data) => setData(data.map((row: any) => row.id))}
-      multipleSelection={multipleSelection}
-      showSelected={showSelected}
-      disabled={disabled}
-      placeholder={"Filter by Indicator(s)"}
-      mode={mode}
     />
   );
 }

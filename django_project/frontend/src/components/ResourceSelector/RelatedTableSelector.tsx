@@ -13,8 +13,7 @@
  * __copyright__ = ('Copyright 2025, Unicef')
  */
 
-import React, { useEffect, useState } from "react";
-import { fetchReferenceLayerList } from "../../utils/georepo";
+import React from "react";
 import { ModalInputSelector } from "./ModalInputSelector";
 import { ModalInputSelectorProps } from "./types";
 import { formatDateTime } from "../../utils/main";
@@ -57,28 +56,7 @@ export default function RelatedTableSelector({
   multipleSelection,
   defaults,
 }: ModalInputSelectorProps) {
-  const [relatedTables, setRelatedTables] = useState([]);
-  const [relatedTable, setRelatedTable] = useState(null);
   const url = "/api/v1/related-tables/?fields=__all__";
-
-  /** Get the RelatedTables */
-  useEffect(() => {
-    (async () => {
-      const responseData = await fetchReferenceLayerList();
-      const RelatedTables = responseData.map((row: any) => {
-        row.value = row.identifier;
-        return row;
-      });
-      setRelatedTables(RelatedTables);
-    })();
-  }, []);
-
-  /** On RelatedTables loaded */
-  useEffect(() => {
-    if (!relatedTable && relatedTables[0]) {
-      setRelatedTable(relatedTables[0].value);
-    }
-  }, [relatedTables]);
 
   return (
     <ModalInputSelector

@@ -34,7 +34,10 @@ test.describe('Related table list admin', () => {
     // Check pagination();
     await page.getByPlaceholder('Search related table').fill('');
     await page.getByLabel('25').click();
-    await originalPage.getByRole('option', { name: '10', exact: true }).click();
+    await originalPage.getByRole('option', {
+      name: '10',
+      exact: true
+    }).click();
     await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Generated A0');
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 11');
     await page.getByLabel('Go to next page').click();
@@ -77,10 +80,40 @@ test.describe('Related table list admin', () => {
     await expect(page.locator('.ModalDataSelector')).toBeHidden()
     await expect(page.getByPlaceholder('Select Related Table')).toHaveValue('Generated A1');
 
+    // ----------------------------------
+    // Test Project Selection
+    // ----------------------------------
+    await page.goto('/admin/project/create');
+    await page.locator('.DashboardFormHeader').getByText('Related Tables').click();
+    await page.getByRole('button', { name: 'Add Related Table' }).click();
+    await expect(page.locator('.ModalDataSelector')).toBeVisible()
+
+    // Check Show Selected
+    await delay(500)
+    await page.locator('.ModalDataSelector').locator('.MuiDataGrid-row').nth(0).click();
+    await page.locator('.ModalDataSelector').locator('.MuiDataGrid-row').nth(1).click();
+    await page.locator('.ModalDataSelector').locator('.MuiDataGrid-row').nth(2).click();
+    await page.locator('.ModalDataSelector').locator('.MuiDataGrid-row').nth(3).click();
+    await page.locator('.ModalDataSelector').getByRole('button', { name: 'Show selected' }).click();
+    await expect(page.locator('.ModalDataSelector').locator('.MuiTablePagination-displayedRows').first()).toContainText('1–4 of 4');
+    await page.locator('.ModalDataSelector').getByRole('cell', { name: 'Unselect row' }).nth(2).click();
+    await page.locator('.ModalDataSelector').getByRole('cell', { name: 'Unselect row' }).nth(2).click();
+    await expect(page.locator('.ModalDataSelector').locator('.MuiTablePagination-displayedRows').first()).toContainText('1–2 of 2');
+    await page.locator('.ModalDataSelector').getByRole('button', { name: 'Show selected' }).click();
+    await expect(page.locator('.ModalDataSelector').locator('.MuiTablePagination-displayedRows').first()).toContainText('1–11 of 11');
+    await expect(page.locator('.ModalDataSelector').getByRole('cell', { name: 'Unselect row' }).nth(0)).toBeVisible();
+    await expect(page.locator('.ModalDataSelector').getByRole('cell', { name: 'Unselect row' }).nth(1)).toBeVisible();
+    await expect(page.locator('.ModalDataSelector').getByRole('cell', { name: 'Unselect row' }).nth(2)).toBeHidden();
+
+    // Select
+    await page.locator('.ModalDataSelector').getByRole('button', { name: 'Update Selection' }).click()
+    await expect(page.locator('.ModalDataSelector').locator('.ModalDataSelector')).toBeHidden()
+    await expect(page.getByText('Generated A0').first()).toBeVisible();
+    await expect(page.getByText('Generated A1').first()).toBeVisible();
+
     // ------------------------------------------------------
     // DELETE THE CREATED
     // ------------------------------------------------------
-
     // Delete per row
     await page.goto(_url);
     await page.getByPlaceholder('Search related table').fill('Generated A');
