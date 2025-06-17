@@ -20,8 +20,24 @@ from geosight.permission.models.factory import PERMISSIONS
 class PermissionSerializer:
     """Serializer for Permission."""
 
-    def __init__(self, obj, users_permissions=None, group_permissions=None):
-        """Serialize permission of object."""
+    def __init__(  # noqa DOC103
+            self, obj, users_permissions=None, group_permissions=None
+    ):
+        """
+        Initialize permission serializer for an object.
+
+        This constructor sets up user and group permission data related
+        to the given object. It also attempts to identify the object's creator.
+
+        :param obj: The object whose permissions will be serialized
+        :type obj: Any
+        :param users_permissions:
+            Optional queryset of user permissions to override default
+        :type users_permissions: QuerySet or None
+        :param group_permissions:
+            Optional queryset of group permissions to override default
+        :type group_permissions: QuerySet or None
+        """
         self.obj = obj
         try:
             self.creator = obj.obj.creator

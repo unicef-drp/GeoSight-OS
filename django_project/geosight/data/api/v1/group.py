@@ -53,11 +53,29 @@ class GroupViewSet(
 
     @property
     def queryset(self):
-        """Return queryset."""
+        """
+        Return the base queryset for this view.
+
+        Retrieves all instances of the associated model.
+
+        :return: Queryset of all model instances
+        :rtype: QuerySet
+        """
         return self.model_class.objects.all()
 
     def get_permissions(self):
-        """Get the permissions based on the action."""
+        """
+        Get the permission instances based on the current action.
+
+        Returns a list of permission classes depending on the action.
+        - Admin-only actions:
+            'create', 'destroy', 'update', 'retrieve',
+            'partial_update', 'user_batch'
+        - All other actions: contributor-level permissions
+
+        :return: A list of instantiated permission classes
+        :rtype: list
+        """
         if self.action in [
             'create', 'destroy', 'update', 'retrieve', 'partial_update',
             'user_batch'
@@ -76,8 +94,18 @@ class GroupViewSet(
         ],
         operation_description='Return list of accessed group for the user.'
     )
-    def list(self, request, *args, **kwargs):
-        """List of group."""
+    def list(self, request, *args, **kwargs):  # noqa DOC103
+        """
+        Return a list of groups accessible to the current user.
+
+        Handles GET requests to retrieve a paginated list of group objects
+        the user has permission to view.
+
+        :param request: The HTTP request
+        :type request: Request
+        :return: Paginated list of serialized group data
+        :rtype: Response
+        """
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(
@@ -87,7 +115,19 @@ class GroupViewSet(
         operation_description='Return detailed of group.'
     )
     def retrieve(self, request, id=None):
-        """Return detailed of group."""
+        """
+        Return the details of a single group.
+
+        Retrieves and returns the serialized representation of a group
+        identified by its ID.
+
+        :param request: The HTTP request
+        :type request: Request
+        :param id: The ID of the group to retrieve
+        :type id: int or str
+        :return: Serialized group data
+        :rtype: Response
+        """
         return super().retrieve(request, id=id)
 
     @swagger_auto_schema(
@@ -96,8 +136,17 @@ class GroupViewSet(
         manual_parameters=[],
         operation_description='Create a group.'
     )
-    def create(self, request, *args, **kwargs):
-        """Create a group."""
+    def create(self, request, *args, **kwargs):  # noqa DOC103
+        """
+        Create a new group.
+
+        Validates and creates a group using the request payload.
+
+        :param request: The HTTP request containing group data
+        :type request: Request
+        :return: Serialized data of the created group
+        :rtype: Response
+        """
         return super().create(request, *args, **kwargs)
 
     @swagger_auto_schema(
@@ -106,8 +155,17 @@ class GroupViewSet(
         manual_parameters=[],
         operation_description='Replace a detailed of group.'
     )
-    def update(self, request, *args, **kwargs):
-        """Update detailed of group."""
+    def update(self, request, *args, **kwargs):  # noqa DOC103
+        """
+        Fully update a group's details.
+
+        Replaces all fields of the group with the data provided in the request.
+
+        :param request: The HTTP request containing updated group data
+        :type request: Request
+        :return: Serialized data of the updated group
+        :rtype: Response
+        """
         return super().update(request, *args, **kwargs)
 
     @swagger_auto_schema(
@@ -119,8 +177,17 @@ class GroupViewSet(
                 'a detailed of group.'
         )
     )
-    def partial_update(self, request, *args, **kwargs):
-        """Partial update of object."""
+    def partial_update(self, request, *args, **kwargs):  # noqa DOC103
+        """
+        Update a group's details partially.
+
+        Only the fields present in the request payload will be updated.
+
+        :param request: The HTTP request containing partial group data
+        :type request: Request
+        :return: Serialized data of the updated group
+        :rtype: Response
+        """
         kwargs['partial'] = True
         return self.update(request, *args, **kwargs)
 
@@ -131,13 +198,42 @@ class GroupViewSet(
         operation_description='Delete a group.'
     )
     def destroy(self, request, id=None):
-        """Destroy an object."""
+        """
+        Delete a group.
+
+        Removes the group identified by its ID from the system.
+
+        :param request: The HTTP request
+        :type request: Request
+        :param id: The ID of the group to delete
+        :type id: int or str
+        :return: Empty response with 204 No Content status
+        :rtype: Response
+        """
         return super().destroy(request, id=id)
 
     @swagger_auto_schema(auto_schema=None)
     @action(detail=True, methods=['POST'])
     def user_batch(self, request, id=None):
-        """Destroy an object."""
+        """
+        Batch update group users via CSV upload.
+
+        This endpoint replaces all users of a group based on
+        the uploaded CSV file.
+        It expects a CSV with either an "Email address"
+        (if `USE_AZURE` is True) or a "Username" column
+        (if `USE_AZURE` is False). Existing users are removed
+        from the group, and new users are added based on the data in the file.
+
+        :param request: The HTTP request containing the CSV file
+        :type request: Request
+        :param id: The ID of the group to update
+        :type id: int or str
+        :raises KeyError: If expected columns are missing in the CSV
+        :raises ValueError: If email/username is empty in a row
+        :return: Serialized group data with updated users
+        :rtype: Response
+        """
         group = self.get_object()
         try:
             reader = csv.DictReader(
@@ -211,8 +307,22 @@ class GroupViewSet(
         return Response(GroupSerializer(group).data)
 
     @swagger_auto_schema(auto_schema=None)
-    def delete(self, request, *args, **kwargs):
-        """Destroy an object."""
+    def delete(self, request, *args, **kwargs):  # noqa DOC103
+        """
+        Delete multiple objects by ID.
+
+        Expects a list of IDs in the `ids` field of the request body.
+        All matching objects will be deleted.
+
+        :param request: The HTTP request containing 'ids' list
+        :type request: Request
+        :param args: Additional positional arguments
+        :type args: tuple
+        :param kwargs: Additional keyword arguments
+        :type kwargs: dict
+        :return: Empty response with HTTP 204 No Content
+        :rtype: Response
+        """
         param = f'{self.lookup_field}__in'
         value = request.data['ids']
         for obj in self.model_class.objects.filter(**{param: value}):
