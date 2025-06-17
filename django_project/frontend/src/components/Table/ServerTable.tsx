@@ -251,6 +251,20 @@ const ServerTable = forwardRef(
       parametersChanged();
     }, [pageSize]);
 
+    const updateShowSelected = () => {
+      const key = props.rowIdKeyParameter ? props.rowIdKeyParameter : rowIdKey;
+      // Add parameters
+      if (!showSelected) {
+        // @ts-ignore
+        delete parameters[`${key}__in`];
+        parametersChanged();
+      } else {
+        // @ts-ignore
+        parameters[`${key}__in`] = selectionModel;
+        parametersChanged();
+      }
+    };
+
     /*** When selectionModel */
     useEffect(() => {
       if (setSelectionModelData) {
@@ -284,15 +298,7 @@ const ServerTable = forwardRef(
         }
       }
       // Add parameters
-      if (!showSelected) {
-        // @ts-ignore
-        delete parameters[`${rowIdKey}__in`];
-        parametersChanged();
-      } else {
-        // @ts-ignore
-        parameters[`${rowIdKey}__in`] = selectionModel;
-        parametersChanged();
-      }
+      updateShowSelected();
     }, [selectionModel, showSelected]);
 
     /*** When sortmodel changed */
@@ -463,8 +469,8 @@ const ServerTable = forwardRef(
             }
             getRowId={(row: any) => row[rowIdKey]}
             localeText={{
-              noRowsLabel: t('admin.noDataTable'),
-              errorOverlayDefaultLabel: t('admin.tableError'),
+              noRowsLabel: t("admin.noDataTable"),
+              errorOverlayDefaultLabel: t("admin.tableError"),
             }}
             {...props}
           />

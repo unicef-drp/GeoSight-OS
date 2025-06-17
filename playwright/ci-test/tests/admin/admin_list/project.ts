@@ -89,6 +89,23 @@ test.describe('Dashboard list admin', () => {
     await duplicate(page, '1–11 of 11')
     await duplicate(page, '1–12 of 12')
 
+    // Check Show Selected
+    await delay(500)
+    await page.locator('div:nth-child(3) > .MuiDataGrid-cellCheckbox').click();
+    await page.locator('div:nth-child(4) > .MuiDataGrid-cellCheckbox').click();
+    await page.locator('div:nth-child(5) > .MuiDataGrid-cellCheckbox').click();
+    await page.locator('div:nth-child(6) > .MuiDataGrid-cellCheckbox').click();
+    await page.getByRole('button', { name: 'Show selected' }).click();
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–4 of 4');
+    await page.getByRole('cell', { name: 'Unselect row' }).first().click();
+    await page.getByRole('cell', { name: 'Unselect row' }).first().click();
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–2 of 2');
+    await page.getByRole('button', { name: 'Show selected' }).click();
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–12 of 12');
+    await expect(page.getByRole('cell', { name: 'Unselect row' }).nth(0)).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'Unselect row' }).nth(1)).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'Unselect row' }).nth(2)).toBeHidden();
+
     // Check pagination();
     await page.reload();
     await page.getByPlaceholder('Search Project').fill('Demo GeoSight Project 1');

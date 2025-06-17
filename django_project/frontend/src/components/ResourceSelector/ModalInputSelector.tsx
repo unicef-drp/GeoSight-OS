@@ -55,6 +55,7 @@ export function ModalInputSelector(
     multipleSelection,
     defaults = {},
     rowIdKey = 'id',
+    rowIdKeyParameter = 'id',
     topChildren,
     opener,
     searchKey = 'name__icontains'
@@ -232,6 +233,7 @@ export function ModalInputSelector(
               }
             }
             rowIdKey={rowIdKey}
+            rowIdKeyParameter={rowIdKeyParameter}
             selectionModelData={selectionModelData}
             setSelectionModelData={(data: any[]) => {
               setSelectionModelData(data)
