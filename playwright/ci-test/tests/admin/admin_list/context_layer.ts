@@ -80,7 +80,7 @@ test.describe('Context layer list admin', () => {
     await expect(page.getByPlaceholder('Select Context Layer')).toHaveValue('Context Layer A1');
 
     // ----------------------------------
-    // Test Filter Selection
+    // Test Project Selection
     // ----------------------------------
     await page.goto('/admin/project/create');
     await page.locator('.DashboardFormHeader').getByText('Context Layers').click();
