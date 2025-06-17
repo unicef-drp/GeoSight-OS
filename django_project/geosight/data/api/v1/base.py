@@ -51,9 +51,18 @@ class BaseApiV1(FilteredAPI):
     non_filtered_keys = [
         'page', 'page_size', 'fields', 'extra_fields', 'permission'
     ]
+    keep_exclude_fields = False
 
     def get_queryset(self):
-        """Return queryset of API."""
+        """
+        Return the filtered queryset for the API.
+
+        This method applies filtering, sorting, and optional distinct
+        operations based on the request's query parameters.
+
+        :return: Filtered queryset
+        :rtype: QuerySet
+        """
         query = self.queryset
         return self.filter_query(
             self.request, query,
@@ -63,7 +72,15 @@ class BaseApiV1(FilteredAPI):
         )
 
     def get_serializer_context(self):
-        """Extra context provided to the serializer class."""
+        """
+        Return extra context provided to the serializer class.
+
+        This context includes the request, format, view, and user,
+        which can be accessed within the serializer.
+
+        :return: A dictionary of context data for the serializer
+        :rtype: dict
+        """
         return {
             'request': self.request,
             'format': self.format_kwarg,
@@ -71,8 +88,21 @@ class BaseApiV1(FilteredAPI):
             'user': self.request.user
         }
 
-    def get_serializer(self, *args, **kwargs):
-        """Return the serializer instance."""
+    def get_serializer(self, *args, **kwargs):  # noqa DOC103
+        """
+        Return the serializer instance.
+
+        Initializes the serializer class with
+        the given arguments and keyword arguments,
+        along with the context provided by `get_serializer_context()`.
+
+        :param args: Positional arguments passed to the serializer
+        :type args: tuple
+        :param kwargs: Keyword arguments passed to the serializer
+        :type kwargs: dict
+        :return: An instance of the serializer class
+        :rtype: Serializer
+        """
         serializer_class = self.get_serializer_class()
         kwargs.setdefault('context', self.get_serializer_context())
 
@@ -90,6 +120,20 @@ class BaseApiV1(FilteredAPI):
             elif fields != '__all__':
                 kwargs['fields'] = self.request.GET.get('fields').split(',')
 
+        # Exclude fields if it needs to keep exclude fields
+        if self.keep_exclude_fields and self.extra_exclude_fields:
+            try:
+                kwargs['exclude'] += self.extra_exclude_fields
+            except KeyError:
+                kwargs['exclude'] = self.extra_exclude_fields
+
+        # Override the exclude if the user is not logged in
+        if not self.request.user.is_authenticated:
+            try:
+                kwargs['exclude'] += ["created_by", "modified_by"]
+            except KeyError:
+                kwargs['exclude'] = ["created_by", "modified_by"]
+
         return serializer_class(*args, **kwargs)
 
 
@@ -100,7 +144,16 @@ class BaseApiV1ResourceReadOnly(BaseApiV1, viewsets.ReadOnlyModelViewSet):
     lookup_field = 'id'
 
     def get_permissions(self):
-        """Get the permissions based on the action."""
+        """
+        Get the permissions based on the current action.
+
+        This method returns a list of instantiated permission classes
+        that apply to the current view action
+        (e.g., 'list', 'create', 'update').
+
+        :return: A list of permission instances
+        :rtype: list
+        """
         if self.action in ['create', 'destroy']:
             permission_classes = [RoleCreatorAuthenticationPermission]
         elif self.action in ['update', 'partial_update']:
@@ -111,7 +164,15 @@ class BaseApiV1ResourceReadOnly(BaseApiV1, viewsets.ReadOnlyModelViewSet):
 
     @property
     def queryset(self):
-        """Return queryset."""
+        """
+        Return the base queryset used by the view.
+
+        Typically overridden to provide custom filtering, annotations, or
+        dynamic behavior based on the request context.
+
+        :return: The base queryset
+        :rtype: QuerySet
+        """
         # Return by the permission
         permission = self.request.GET.get('permission', None)
         if permission:
@@ -145,7 +206,16 @@ class BaseApiV1ResourceReadOnly(BaseApiV1, viewsets.ReadOnlyModelViewSet):
             return self.model_class.objects.all()
 
     def get_queryset(self):
-        """Return queryset of API."""
+        """
+        Return the queryset used for this API view.
+
+        This method retrieves the base queryset and applies filtering,
+        sorting, and distinct operations based
+            on the request's query parameters.
+
+        :return: The filtered and processed queryset
+        :rtype: QuerySet
+        """
         query = self.queryset
 
         self.request.GET = self.request.GET.copy()
@@ -163,8 +233,23 @@ class BaseApiV1ResourceReadOnly(BaseApiV1, viewsets.ReadOnlyModelViewSet):
             distinct=self.request.query_params.get('distinct')
         )
 
-    def retrieve(self, request, *args, **kwargs):
-        """Retrive the detailed object."""
+    def retrieve(self, request, *args, **kwargs):  # noqa DOC103
+        """
+        Retrieve the detailed representation of a single object.
+
+        This method handles GET requests for a single instance identified by
+        the URL parameters.
+
+        :param request: The HTTP request object
+        :type request: Request
+        :param args: Additional positional arguments
+        :type args: tuple
+        :param kwargs:
+            Additional keyword arguments (typically includes 'pk' or 'slug')
+        :type kwargs: dict
+        :return: The HTTP response with serialized object data
+        :rtype: Response
+        """
         instance = self.get_object()
         read_permission_resource(instance, request.user)
         serializer = self.get_serializer(instance)
@@ -173,13 +258,38 @@ class BaseApiV1ResourceReadOnly(BaseApiV1, viewsets.ReadOnlyModelViewSet):
     @swagger_auto_schema(auto_schema=None)
     @action(detail=False, methods=['get'])
     def ids(self, request):
-        """Return object id list."""
+        """
+        Return a list of object IDs.
+
+        This custom action returns a flat list of primary key values
+        (or another lookup field) from the queryset.
+
+        :param request: The HTTP request object
+        :type request: Request
+        :return: A response containing a list of IDs
+        :rtype: Response
+        """
         return Response(
             self.get_queryset().values_list(self.lookup_field, flat=True)
         )
 
-    def list(self, request, *args, **kwargs):
-        """List of dashboard."""
+    def list(self, request, *args, **kwargs):  # noqa DOC103
+        """
+        Return a list of dashboard objects.
+
+        Handles GET requests to retrieve a paginated list of
+        serialized objects.
+        If a SuspiciousOperation occurs, a 400 Bad Request is returned instead.
+
+        :param request: The HTTP request object
+        :type request: Request
+        :param args: Additional positional arguments
+        :type args: tuple
+        :param kwargs: Additional keyword arguments
+        :type kwargs: dict
+        :return: A list of serialized data or a 400 Bad Request response
+        :rtype: Response or HttpResponseBadRequest
+        """
         try:
             return super().list(request, *args, **kwargs)
         except SuspiciousOperation as e:
@@ -193,8 +303,22 @@ class BaseApiV1ResourceDeleteOnly(mixins.DestroyModelMixin):
     lookup_field = 'id'
 
     @swagger_auto_schema(auto_schema=None)
-    def delete(self, request, *args, **kwargs):
-        """Destroy an object."""
+    def delete(self, request, *args, **kwargs):  # noqa DOC103
+        """
+        Delete multiple objects based on provided IDs.
+
+        Expects a list of IDs in the request body under the key `'ids'`.
+        Deletes each object the user has permission to delete.
+
+        :param request: The HTTP request containing the list of IDs
+        :type request: Request
+        :param args: Additional positional arguments
+        :type args: tuple
+        :param kwargs: Additional keyword arguments
+        :type kwargs: dict
+        :return: An empty response with HTTP 204 status
+        :rtype: Response
+        """
         param = f'{self.lookup_field}__in'
         value = request.data['ids']
         for obj in self.model_class.permissions.delete(request.user).filter(
@@ -204,8 +328,22 @@ class BaseApiV1ResourceDeleteOnly(mixins.DestroyModelMixin):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @swagger_auto_schema(auto_schema=None)
-    def destroy(self, request, *args, **kwargs):
-        """Destroy an object."""
+    def destroy(self, request, *args, **kwargs):  # noqa DOC103
+        """
+        Delete a single object.
+
+        Retrieves the instance based on URL parameters,
+        checks delete permissions, and performs the deletion.
+
+        :param request: The HTTP request
+        :type request: Request
+        :param args: Additional positional arguments
+        :type args: tuple
+        :param kwargs: Additional keyword arguments (usually includes 'pk')
+        :type kwargs: dict
+        :return: An empty response with HTTP 204 status
+        :rtype: Response
+        """
         instance = self.get_object()
         delete_permission_resource(instance, request.user)
         self.perform_destroy(instance)
@@ -222,8 +360,25 @@ class BaseApiV1ResourceWriteOnly(
     form_class = None
     lookup_field = 'id'
 
-    def create(self, request, *args, **kwargs):
-        """Update an object."""
+    def create(self, request, *args, **kwargs):  # noqa DOC103
+        """
+        Create a new object using form validation.
+
+        Copies request data and validates it using a form class.
+        If valid, saves the object,
+        assigns the creator, and returns serialized data.
+
+        :param request:
+            The HTTP request containing the data to create the object
+        :type request: Request
+        :param args: Additional positional arguments
+        :type args: tuple
+        :param kwargs: Additional keyword arguments
+        :type kwargs: dict
+        :return:
+            Serialized data of the created object or form validation errors
+        :rtype: Response
+        """
         data = request.data.copy()
         form = self.form_class(data)
         form.user = request.user
@@ -242,8 +397,25 @@ class BaseApiV1ResourceWriteOnly(
             status=status.HTTP_400_BAD_REQUEST
         )
 
-    def update(self, request, *args, **kwargs):
-        """Update an object."""
+    def update(self, request, *args, **kwargs):  # noqa DOC103
+        """
+        Update an existing object.
+
+        Performs full or partial updates using form validation.
+        If `partial` is True, only the provided fields are updated.
+        Validates user permission before saving.
+
+        :param request: The HTTP request containing the updated data
+        :type request: Request
+        :param args: Additional positional arguments
+        :type args: tuple
+        :param kwargs:
+            Additional keyword arguments (may include 'partial': bool)
+        :type kwargs: dict
+        :return:
+            Serialized data of the updated object or form validation errors
+        :rtype: Response
+        """
         partial = kwargs.pop('partial', False)
         data = request.data.copy()
 
@@ -281,8 +453,23 @@ class BaseApiV1ResourceWriteOnly(
             status=status.HTTP_400_BAD_REQUEST
         )
 
-    def partial_update(self, request, *args, **kwargs):
-        """Partial update of object."""
+    def partial_update(self, request, *args, **kwargs):  # noqa DOC103
+        """
+        Update an existing object partially.
+
+        Marks the update as partial and delegates to the `update` method,
+        allowing partial data to be submitted.
+
+        :param request: The HTTP request containing partial data
+        :type request: Request
+        :param args: Additional positional arguments
+        :type args: tuple
+        :param kwargs: Additional keyword arguments
+        :type kwargs: dict
+        :return:
+            Serialized data of the updated object or form validation errors
+        :rtype: Response
+        """
         kwargs['partial'] = True
         return self.update(request, *args, **kwargs)
 

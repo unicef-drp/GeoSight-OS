@@ -50,17 +50,57 @@ class UserPermissionTest(BasePermissionTest.TestCase):
     def test_list_api_by_permission(self):
         """Test List API."""
         url = reverse('users-list')
-        self.assertRequestGetView(url, 200)
-        response = self.assertRequestGetView(url, 200, user=self.viewer)
+        self.assertRequestGetView(url, 403)
+        self.assertRequestGetView(url, 403, user=self.viewer)
+        response = self.assertRequestGetView(url, 200, user=self.contributor)
         self.assertEqual(len(response.json()['results']), 12)
+        keys = list(
+            response.json()['results'][0].keys()
+        )
+        self.assertEqual(
+            [
+                "id", "username", "email", "first_name", "last_name",
+                "full_name"
+            ], keys
+        )
         response = self.assertRequestGetView(url, 200, user=self.creator)
         self.assertEqual(len(response.json()['results']), 12)
+        keys = list(
+            response.json()['results'][0].keys()
+        )
+        self.assertEqual(
+            [
+                "id", "username", "email", "first_name", "last_name",
+                "full_name"
+            ], keys
+        )
+
         response = self.assertRequestGetView(
             url, 200, user=self.creator_in_group
         )
         self.assertEqual(len(response.json()['results']), 12)
+        keys = list(
+            response.json()['results'][0].keys()
+        )
+        self.assertEqual(
+            [
+                "id", "username", "email", "first_name", "last_name",
+                "full_name"
+            ], keys
+        )
         response = self.assertRequestGetView(url, 200, user=self.admin)
         self.assertEqual(len(response.json()['results']), 12)
+        keys = list(
+            response.json()['results'][0].keys()
+        )
+        self.assertEqual(
+            [
+                "id", "username", "email", "first_name", "last_name",
+                "is_staff", "name", "role",
+                "is_contributor", "is_creator", "is_admin",
+                "full_name", "receive_notification"
+            ], keys
+        )
 
     def test_list_api_by_filter(self):
         """Test GET LIST API."""
