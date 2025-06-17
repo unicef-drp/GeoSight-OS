@@ -75,6 +75,7 @@ const ServerTable = forwardRef(
   ) => {
     // Last controller
     const [lastController, setLastController] = useState(null);
+    const [paginationMode, setPaginationMode] = useState<string>("server");
     const [showSelected, setShowSelected] = useState<boolean>(false);
 
     // Confirm dialog
@@ -196,6 +197,20 @@ const ServerTable = forwardRef(
       setError(null);
       prev.current.url = _url;
 
+      // ---------- USING SAVED selectionModelData -----
+      if (
+        showSelected &&
+        selectionModelData?.length &&
+        selectionModelData?.length === selectionModel?.length
+      ) {
+        setPaginationMode("client");
+        setDataCount(selectionModelData.length);
+        setData(selectionModelData);
+        return;
+      }
+      setPaginationMode("server");
+
+      // ---------- USING API ---------
       // Get last request
       if (lastController) {
         lastController.abort();
@@ -203,7 +218,7 @@ const ServerTable = forwardRef(
       const controller = new AbortController();
       const { signal } = controller;
       setLastController(controller);
-      const request = axios
+      axios
         .get(_url, {
           headers: urlHeader,
           signal,
@@ -251,7 +266,7 @@ const ServerTable = forwardRef(
       parametersChanged();
     }, [pageSize]);
 
-    const updateShowSelected = () => {
+    const updateShowSelected = (showSelected: boolean) => {
       const key = props.rowIdKeyParameter ? props.rowIdKeyParameter : rowIdKey;
       // Add parameters
       if (!showSelected) {
@@ -297,8 +312,13 @@ const ServerTable = forwardRef(
           setSelectionModelData(newSelectedModelData);
         }
       }
-      // Add parameters
-      updateShowSelected();
+      // Add for show selected
+      let newShowSelected: boolean = showSelected;
+      if (!selectionModel.length) {
+        newShowSelected = false;
+        setShowSelected(newShowSelected);
+      }
+      updateShowSelected(newShowSelected);
     }, [selectionModel, showSelected]);
 
     /*** When sortmodel changed */
@@ -433,7 +453,7 @@ const ServerTable = forwardRef(
               parameters.page_size = newPageSize;
               parametersChanged();
             }}
-            paginationMode="server"
+            paginationMode={paginationMode}
             onPageChange={(newPage: number) => {
               parameters.page = newPage;
               parametersChanged();
