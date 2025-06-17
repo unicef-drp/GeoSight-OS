@@ -1,0 +1,39 @@
+.widget__sgw {
+  &__sort-controls {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    padding: 8px;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+  }
+  
+  &__row {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    
+    &:last-child {
+      border-bottom: none;
+    }
+    
+    &__name {
+      flex: 1;
+      min-width: 150px;
+      padding-right: 16px;
+    }
+    
+    td:last-child {
+      flex: 1;
+      
+      div {
+        background-color: #007bff;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        text-align: right;
+      }
+    }
+  }
+}
