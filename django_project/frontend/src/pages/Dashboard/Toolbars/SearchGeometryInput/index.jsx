@@ -17,7 +17,7 @@
    Search Geometry
    ========================================================================== */
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import $ from "jquery";
 import { createFilterOptions } from "@mui/material/Autocomplete";
 import { useSelector } from "react-redux";
@@ -34,6 +34,7 @@ import './style.scss';
 import { addLayerWithOrder } from "../../MapLibre/Render";
 import { Variables } from "../../../../utils/Variables";
 import { useTranslation } from 'react-i18next';
+import SearchEntityOption from "../../../../components/SearchEntityOption";
 
 const LAYER_HIGHLIGHT_ID = 'reference-layer-highlight'
 
@@ -101,8 +102,12 @@ export default function SearchGeometryInput({ map }) {
   // Check all geometries are loaded
   let loaded = !!map
 
+  const onSelected = useCallback((value) => {
+    // do something
+  }, []);
+
   const selected = (input) => {
-    const $input = $('.SearchGeometryInput');
+    const $input = $('.SearchEntityOption');
     const session = new Session('SearchGeometryInput')
 
     const newSelectedGeometryInput = input?.id;
@@ -178,55 +183,5 @@ export default function SearchGeometryInput({ map }) {
     return
   }
 
-  return <div className={'SelectWithSearchInput SearchGeometryInput'}>
-    <Autocomplete
-      value={value}
-      autoComplete={false}
-      className={'SelectWithSearch SearchGeometry'}
-      disableCloseOnSelect={true}
-      options={options}
-      disabled={!loaded}
-      getOptionLabel={(option) => `${option.label} (${option.level_name})`}
-      getOptionDisabled={option => option.disabled ? true : false}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          placeholder={!loaded ? t("dashboardPage.searchGeographyEntityLoading") : t("dashboardPage.searchGeographyEntity")}
-          InputProps={{
-            ...params.InputProps,
-            endAdornment: (
-              <InputAdornment
-                position="end" className="MuiAutocomplete-endAdornment">
-                <div className='CloseIcon'>
-                  <CloseIcon
-                    onClick={_ => {
-                      setValue(null)
-                      $('.SearchGeometryInput').removeClass('HasData')
-                      removeLayer(map, LAYER_HIGHLIGHT_ID)
-                      removeSource(map, LAYER_HIGHLIGHT_ID)
-                    }}
-                  />
-                </div>
-                <SearchIcon />
-                <CircularProgress />
-              </InputAdornment>
-            )
-          }}
-        />
-      )}
-      onChange={(event, values) => {
-        setValue(values)
-        selected(values)
-      }}
-      renderOption={(props, option) => (
-        <li {...props} aria-selected={option.id === value?.id}>
-          <div
-            className='SearchGeometryOption'>{option.label}<i>{option.level_name}</i>
-          </div>
-        </li>
-      )}
-      filterOptions={filterOptions}
-    />
-
-  </div>
+  return <SearchEntityOption onSelected={onSelected} />
 }

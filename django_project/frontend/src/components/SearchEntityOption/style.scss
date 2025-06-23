@@ -1,0 +1,94 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '23/06/2025'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+/* ==========================================================================
+   Search Geometry data
+   ========================================================================== */
+
+.SearchEntityOption {
+  margin-right: 0.5rem;
+  width: 250px;
+
+  .MuiCircularProgress-root {
+    display: none;
+  }
+
+  &.Loading {
+    .MuiCircularProgress-root {
+      display: inline-block;
+    }
+
+    .MuiSvgIcon-root {
+      display: none;
+    }
+  }
+
+  &.HasData {
+    .CloseIcon {
+      display: inline-block;
+    }
+  }
+
+  .CloseIcon {
+    display: none;
+    cursor: pointer;
+    margin-right: 5px;
+    height: 12px;
+    width: 12px;
+
+    &:hover {
+      opacity: var(--base-hovered-opacity);
+    }
+
+    svg {
+      height: 12px;
+      width: 12px;
+    }
+  }
+
+  .MuiAutocomplete-endAdornment {
+    padding-right: 5px;
+    justify-content: flex-end;
+    width: 60px;
+
+    .MuiCircularProgress-root {
+      width: 18px !important;
+      height: 18px !important;
+      box-sizing: border-box;
+      padding: 2px 3px;
+    }
+  }
+
+  input {
+    background-color: white !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .MuiInputBase-root {
+    padding-right: 45px !important;
+  }
+}
+
+.SearchGeometryOption {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+
+  i {
+    font-size: 0.8rem;
+    margin-top: 2px;
+  }
+}

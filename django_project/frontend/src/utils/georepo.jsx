@@ -78,36 +78,6 @@ export const fetchReferenceLayerList = async function () {
   return [].concat(data.filter(row => row.is_favorite), data.filter(row => !row.is_favorite));
 }
 
-/**
- * Return reference layer view List
- */
-export const fetchReferenceLayerViewsList = async function (referenceLayerUUID) {
-  let data = []
-  let url = GeorepoUrls.WithDomain(`/search/dataset/${referenceLayerUUID}/view/list/`, false)
-  if (referenceLayerUUID === LocalReferenceDatasetIdentifier) {
-    url = InternalReferenceDatasets.list()
-  }
-  data = await fetchFeatureList(url, true);
-  data.map(row => {
-    if (row.uuid) {
-      row.identifier = row.uuid
-    }
-    if (referenceLayerUUID === LocalReferenceDatasetIdentifier) {
-      row.is_local = true
-    }
-  })
-  data.sort((a, b) => {
-    if (a.name < b.name) {
-      return -1;
-    }
-    if (a.name > b.name) {
-      return 1;
-    }
-    return 0;
-  })
-  return data
-}
-
 /***
  * Return geojson
  */
@@ -176,36 +146,10 @@ export const fetchFeatureList = async function (url, useCache = true) {
 /*** Axios georepo request */
 export const axiosGet = function (url, params = null) {
   if (params) {
-    return axios.get(url, headers, params);
+    return axios.get(url, { ...headers, params });
   } else {
     return axios.get(url, headers);
   }
-}
-
-/*** Axios georepo request json */
-export const fetchJson = async function (url) {
-  if (!url.includes('http')) {
-    url = preferences.georepo_api.api + url
-  }
-  return await fetchJSON(url, headers)
-}
-
-/*** Axios georepo request with cache */
-export const axiosGetCache = function (url) {
-  if (!url.includes('http')) {
-    url = preferences.georepo_api.api + url
-  }
-  return new Promise((resolve, reject) => {
-    (
-      async () => {
-        try {
-          resolve(await fetchJSON(url, headers));
-        } catch (err) {
-          reject(err)
-        }
-      }
-    )()
-  });
 }
 
 /***
