@@ -17,85 +17,30 @@
    Search Geometry
    ========================================================================== */
 
-import React, { memo, useCallback, useEffect, useRef, useState } from "react";
+import React, { memo, useState } from "react";
+import { useTranslation } from "react-i18next";
+
+import { InputAdornment } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import CircularProgress from "@mui/material/CircularProgress";
-import { Autocomplete, InputAdornment } from "@mui/material";
-import { axiosGet } from "../../utils/georepo";
-import { CloseIcon } from "../Icons";
 import SearchIcon from "@mui/icons-material/Search";
-import { useTranslation } from "react-i18next";
+
+import { CloseIcon } from "../Icons";
 import { Entity } from "../../types/Entity";
-import useInfiniteScroll from "react-infinite-scroll-hook";
+import { axiosGet } from "../../utils/georepo";
+import AsyncAutocomplete from "../AsyncAutocomplete";
 
 export interface Props {
   url: string;
   pageSize: number;
 }
 
-/** ServerAutocomplete component. */
+/** AsyncAutocomplete component. */
 function ServerAutocomplete({ url, pageSize }: Props) {
   const { t } = useTranslation();
 
   const [selected, setSelected] = useState<Entity>(null);
-  const [inputValue, setInputValue] = useState<string>("");
-  const [options, setOptions] = useState([]);
-  const [page, setPage] = useState<number>(1);
-  const [hasNextPage, setHasNextPage] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
-
-  const skipFetchRef = useRef(false);
-
-  // Effect for typing
-  useEffect(() => {
-    if (skipFetchRef.current) return;
-
-    const delayDebounce = setTimeout(() => {
-      setOptions([]);
-      setPage(1);
-      fetchData(inputValue, 1);
-    }, 500);
-
-    return () => clearTimeout(delayDebounce);
-  }, [inputValue]);
-
-  /*** Fetch data from server **/
-  const fetchData = async (input: string, pageNumber: number) => {
-    setLoading(true);
-    try {
-      const params = {
-        page: pageNumber,
-        page_size: pageSize,
-      };
-      if (input) {
-        // @ts-ignore
-        params["search"] = input;
-      }
-      const response = await axiosGet(url, params);
-      const data = await response.data;
-      setOptions((prev) =>
-        pageNumber === 1 ? data.results : [...prev, ...data.results],
-      );
-      setHasNextPage(data.page !== data.total_page);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loadMore = useCallback(async () => {
-    if (loading || !hasNextPage) return;
-    setLoading(true);
-    await fetchData(inputValue, page + 1);
-  }, [inputValue, page, loading, hasNextPage]);
-
-  const [sentryRef] = useInfiniteScroll({
-    loading,
-    hasNextPage,
-    onLoadMore: loadMore,
-    rootMargin: "0px 0px 400px 0px",
-  });
 
   return (
     <div
@@ -105,22 +50,20 @@ function ServerAutocomplete({ url, pageSize }: Props) {
         (loading ? "Loading " : "")
       }
     >
-      <Autocomplete
-        /* @ts-ignore */
-        freeSolo
-        open
-        openOnFocus
-        loading={loading}
-        filterOptions={(x: any) => x} // disable client-side filtering
-        options={options}
-        onInputChange={(e: any, value: string, reason: string) => {
-          if (reason === "input") {
-            skipFetchRef.current = false;
-            setInputValue(value);
+      <AsyncAutocomplete
+        noOptionsText={"No entity found"}
+        loadingState={{ loading, setLoading }}
+        selectedState={{ selected, setSelected }}
+        onFetchData={(input: string, page: number) => {
+          const params = {
+            page: page,
+            page_size: pageSize,
+          };
+          if (input) {
+            // @ts-ignore
+            params["search"] = input;
           }
-        }}
-        ListboxProps={{
-          style: { maxHeight: 300, overflow: "auto" },
+          return axiosGet(url, params);
         }}
         renderInput={(params: any) => (
           <TextField
@@ -147,44 +90,17 @@ function ServerAutocomplete({ url, pageSize }: Props) {
             }}
           />
         )}
-        /* TODO: */
-        /*  Specific, we move this after being used by others */
         disableCloseOnSelect={true}
         className={"SelectWithSearch SearchGeometry"}
+        /* @ts-ignore */
         getOptionLabel={(option) => `${option.name}`}
-        onChange={(event, value: Entity) => {
-          skipFetchRef.current = true;
-          setSelected(value);
-          setInputValue(value?.name || "");
-        }}
-        renderOption={(props, option, { index }) => (
-          <>
-            <li {...props} aria-selected={option.ucode === selected?.ucode}>
-              <div className="SearchGeometryOption">
-                {option.name}
-                <i>{option.level_name}</i>
-              </div>
-            </li>
-
-            {index === options.length - 1 && hasNextPage && (
-              <li>
-                <div
-                  ref={sentryRef}
-                  style={{
-                    display: "flex",
-                    height: 30,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontStyle: "italic",
-                    opacity: 0.5,
-                    fontSize: "0.8em",
-                  }}
-                >
-                  Next page
-                </div>
-              </li>
-            )}
-          </>
+        renderOption={(props, option, state) => (
+          <div className="SearchGeometryOption">
+            {/* @ts-ignore */}
+            {option.name}
+            {/* @ts-ignore */}
+            <i>{option.level_name}</i>
+          </div>
         )}
       />
     </div>
