@@ -34,13 +34,20 @@ import {
 } from "@mui/material";
 import { Entity } from "../../types/Entity";
 import useInfiniteScroll from "react-infinite-scroll-hook";
+import axios from "axios";
 
 interface Props
   extends Omit<
     AutocompleteProps<Object, false, false, false>,
     "options" | "renderInput"
   > {
-  onFetchData: (input: string, page: number) => Promise<any>;
+  onFetchData: (
+    input: string,
+    page: number,
+  ) => Promise<{
+    response: any;
+    hasNextPage: boolean;
+  }>;
   loadingState: { loading: boolean; setLoading: (val: boolean) => void };
   selectedState: { selected: Object; setSelected: (val: Object) => void };
   renderInput: (params: AutocompleteRenderInputParams) => ReactNode;
@@ -69,7 +76,9 @@ export const AsyncAutocomplete = forwardRef(
       reload() {
         setOptions([]);
         setPage(1);
-        fetchData(inputValue, 1);
+      },
+      emptyInput() {
+        setInputValue("");
       },
     }));
 
@@ -88,23 +97,22 @@ export const AsyncAutocomplete = forwardRef(
 
     /*** Fetch data from server **/
     const fetchData = async (input: string, pageNumber: number) => {
-      if (!open || loading) {
+      if (!open) {
         return;
       }
       setLoading(true);
       try {
-        const response = await onFetchData(input, pageNumber);
-        const data = await response.data;
+        const { response, hasNextPage } = await onFetchData(input, pageNumber);
         setOptions((prev) =>
-          pageNumber === 1 ? data.results : [...prev, ...data.results],
+          pageNumber === 1 ? response.results : [...prev, ...response.results],
         );
-        // TODO:
-        //  Make sure our data is like below
-        setHasNextPage(data.page !== data.total_page);
-      } catch (e) {
-        console.error(e);
-      } finally {
+        setHasNextPage(hasNextPage);
         setLoading(false);
+      } catch (error) {
+        if (axios.isCancel(error) || error.name === "CanceledError") {
+        } else {
+          setLoading(false);
+        }
       }
     };
 
@@ -132,6 +140,7 @@ export const AsyncAutocomplete = forwardRef(
     return (
       <Autocomplete
         {...autocompleteProps}
+        value={selected}
         open={open}
         onOpen={() => {
           setOpen(true);

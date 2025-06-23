@@ -17,17 +17,18 @@
    Search Geometry
    ========================================================================== */
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { GeorepoUrls, updateToken } from "../../../../utils/georepo";
-import { removeLayer, removeSource } from "../../MapLibre/utils";
+import maplibregl from "maplibre-gl";
 
-import "./style.scss";
 import { addLayerWithOrder } from "../../MapLibre/Render";
 import { Variables } from "../../../../utils/Variables";
 import SearchEntityOption from "../../../../components/SearchEntityOption";
+import { GeorepoUrls, updateToken } from "../../../../utils/georepo";
+import { removeLayer, removeSource } from "../../MapLibre/utils";
 import { Entity } from "../../../../types/Entity";
-import maplibregl from "maplibre-gl";
+
+import "./style.scss";
 
 const LAYER_HIGHLIGHT_ID = "reference-layer-highlight";
 
@@ -49,13 +50,43 @@ export default function SearchGeometryInput({ map }: Props) {
     (state) => state.referenceLayerData,
   );
 
+  // When selected changed
+  useEffect(() => {
+    if (!map) {
+      return;
+    }
+    removeLayer(map, LAYER_HIGHLIGHT_ID);
+    removeSource(map, LAYER_HIGHLIGHT_ID);
+
+    // CREATE HIGHLIGHT
+    const tiles: any[] = [];
+    Object.entries(referenceLayerDataState).forEach(([key, value]) => {
+      // @ts-ignore
+      const vectorTiles = value?.data?.vector_tiles;
+      let vectorTileUrl = null;
+      if (vectorTiles && map) {
+        vectorTileUrl = GeorepoUrls.WithoutDomain(updateToken(vectorTiles));
+      }
+      if (vectorTiles) {
+        tiles.push(vectorTileUrl);
+      }
+    });
+    if (!tiles) {
+      return;
+    }
+    map.addSource(LAYER_HIGHLIGHT_ID, {
+      tiles: tiles,
+      type: "vector",
+      maxzoom: 8,
+    });
+  }, [map, referenceLayerDataState]);
+
   const selected = (entity: Entity): void => {
     if (!map) {
       return;
     }
 
     removeLayer(map, LAYER_HIGHLIGHT_ID);
-    removeSource(map, LAYER_HIGHLIGHT_ID);
     if (!entity) {
       return null;
     }
@@ -70,22 +101,6 @@ export default function SearchGeometryInput({ map }: Props) {
     );
 
     // CREATE HIGHLIGHT
-    const datasetIdentifier = entity.dataset;
-    const referenceLayerData = referenceLayerDataState[datasetIdentifier];
-    const vectorTiles = referenceLayerData?.data?.vector_tiles;
-    let vectorTileUrl = null;
-    if (vectorTiles && map) {
-      vectorTileUrl = GeorepoUrls.WithoutDomain(updateToken(vectorTiles));
-    }
-    if (!vectorTiles) {
-      return;
-    }
-    map.addSource(LAYER_HIGHLIGHT_ID, {
-      tiles: [vectorTileUrl],
-      type: "vector",
-      maxzoom: 8,
-    });
-
     addLayerWithOrder(
       map,
       {
@@ -98,12 +113,10 @@ export default function SearchGeometryInput({ map }: Props) {
           "line-width": 10,
           "line-blur": 5,
         },
+        filter: ["in", "ucode", entity.ucode],
       },
       Variables.LAYER_CATEGORY.HIGHTLIGHT,
     );
-    if (entity && entity.ucode) {
-      map.setFilter(LAYER_HIGHLIGHT_ID, ["in", "ucode", entity.ucode]);
-    }
   };
 
   if (!enable_geometry_search) {

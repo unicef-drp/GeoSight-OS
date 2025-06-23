@@ -18,6 +18,8 @@
    ========================================================================== */
 
 import React, { memo, useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import axios from "axios";
 import { useTranslation } from "react-i18next";
 
 import { InputAdornment } from "@mui/material";
@@ -26,11 +28,12 @@ import CircularProgress from "@mui/material/CircularProgress";
 import SearchIcon from "@mui/icons-material/Search";
 
 import { CloseIcon } from "../Icons";
-import { axiosGet } from "../../utils/georepo";
 import { AsyncAutocomplete } from "../AsyncAutocomplete";
+import { axiosGet } from "../../utils/georepo";
 
 import "./style.scss";
-import { useSelector } from "react-redux";
+
+let lastAbortController: AbortController | null = null;
 
 export interface Props {
   onSelected: (entity: Object) => void;
@@ -42,26 +45,58 @@ function SearchEntityOption({ onSelected }: Props) {
     "https://staging-georepo.unitst.org/api/v1/search/view/13fd9923-d778-4b6b-af76-2c2c411eb5e3/entity/list/";
   const { t } = useTranslation();
 
-  const referenceLayerDataState = useSelector(
+  const { referenceLayers } = useSelector(
     // @ts-ignore
-    (state) => state.referenceLayerData,
+    (state) => state.map,
   );
-  const autoceompleteRef = useRef(null);
+  const autocompleteRef = useRef(null);
 
   const [selected, setSelected] = useState<Object>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
   // When selected changed
   useEffect(() => {
-    if (!selected) {
-      onSelected(selected);
-    } else {
-      onSelected({
-        ...selected,
-        dataset: "13fd9923-d778-4b6b-af76-2c2c411eb5e3",
-      });
-    }
+    onSelected(selected);
   }, [selected]);
+
+  // When selected changed
+  useEffect(() => {
+    autocompleteRef.current.reload();
+  }, [referenceLayers]);
+
+  const onFetchData = async (
+    input: string,
+    page: number,
+  ): Promise<{ response: any; hasNextPage: boolean }> => {
+    // Cancel the previous request if it's still pending
+    if (lastAbortController) {
+      lastAbortController.abort();
+    }
+
+    // Create a new AbortController
+    const controller = new AbortController();
+    lastAbortController = controller;
+
+    const params: any = {
+      page,
+      page_size: 100,
+    };
+    if (input) {
+      params["search"] = input;
+    }
+
+    try {
+      const response = await axiosGet(url, params, controller.signal);
+      const data = response.data;
+
+      return {
+        response: data,
+        hasNextPage: data.page !== data.total_page,
+      };
+    } catch (error: any) {
+      throw error; // rethrow other errors
+    }
+  };
 
   return (
     <div
@@ -75,25 +110,11 @@ function SearchEntityOption({ onSelected }: Props) {
         noOptionsText={"No entity found"}
         loadingState={{ loading, setLoading }}
         selectedState={{ selected, setSelected }}
-        onFetchData={(input: string, page: number) => {
-          const params = {
-            page: page,
-            page_size: 100,
-          };
-          if (input) {
-            // @ts-ignore
-            params["search"] = input;
-          }
-          return axiosGet(url, params);
-        }}
+        onFetchData={onFetchData}
         renderInput={(params: any) => (
           <TextField
             {...params}
-            placeholder={
-              loading
-                ? t("dashboardPage.searchGeographyEntityLoading")
-                : t("dashboardPage.searchGeographyEntity")
-            }
+            placeholder={t("dashboardPage.searchGeographyEntity")}
             InputProps={{
               ...params.InputProps,
               endAdornment: (
@@ -102,7 +123,12 @@ function SearchEntityOption({ onSelected }: Props) {
                   className="MuiAutocomplete-endAdornment"
                 >
                   <div className="CloseIcon">
-                    <CloseIcon onClick={(_: any) => {}} />
+                    <CloseIcon
+                      onClick={(_: any) => {
+                        setSelected(null);
+                        autocompleteRef.current.emptyInput();
+                      }}
+                    />
                   </div>
                   <SearchIcon />
                   <CircularProgress />
@@ -123,7 +149,7 @@ function SearchEntityOption({ onSelected }: Props) {
             <i>{option.level_name}</i>
           </div>
         )}
-        ref={autoceompleteRef}
+        ref={autocompleteRef}
       />
     </div>
   );
