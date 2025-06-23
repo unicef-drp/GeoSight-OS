@@ -17,4 +17,7 @@ export interface Entity {
   id: string;
   name: string;
   ucode: string;
+  admin_level: number;
+  bbox: [number, number, number, number];
+  dataset: string;
 }
