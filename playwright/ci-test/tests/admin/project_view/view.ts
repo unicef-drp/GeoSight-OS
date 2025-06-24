@@ -55,7 +55,28 @@ test.describe('View project', () => {
       }
     });
 
+    // ------------------------------------------------------------
+    // Check search
+    // ------------------------------------------------------------
+    await page.goto('/project/demo-geosight-project');
+    await page.getByRole('button', { name: 'Close' }).click();
+    await page.getByRole('combobox', { name: 'Search Geography Entity' }).click();
+    await page.getByRole('option', { name: 'Banadir Admin Level' }).click();
+    await expect(lastSearchEntity).toEqual("45.20831299,1.96833061,45.60608431,2.18504432");
+    await page.getByRole('option', { name: 'Gedo Admin Level' }).click();
+    await expect(lastSearchEntity).toEqual("40.994317,1.23272177,43.14093018,4.30793036");
+    const input = page.locator('.SearchGeometry');
+    await input.click();
+    await input.locator('input').fill('');
+    await input.type('Sanaag');
+    await delay(1000)
+    await page.waitForSelector('.SearchGeometryOption');
+    expect(await page.locator('.SearchGeometryOption').count()).toBe(1);
+    await expect(page.getByRole('option', { name: 'Sanaag Admin Level' })).toBeVisible();
+
+    // ------------------------------------------------------------
     // Check initial state
+    // ------------------------------------------------------------
     await page.goto('/project/demo-geosight-project');
     await page.getByRole('button', { name: 'Close' }).click();
     const layer1 = 'Sample Indicator A'
@@ -72,24 +93,6 @@ test.describe('View project', () => {
 
     // Check transparency
     await expect(page.locator('#simple-tabpanel-1.layers-panel .Transparency .MuiSlider-valueLabelLabel').getByText('100', { exact: true })).toBeVisible();
-
-    // ------------------------------------------------------------
-    // Check search
-    // ------------------------------------------------------------
-    await page.getByRole('combobox', { name: 'Search Geography Entity' }).click();
-    await page.getByRole('option', { name: 'Banadir Admin Level' }).click();
-    await expect(lastSearchEntity).toEqual("45.20831299,1.96833061,45.60608431,2.18504432");
-    await page.getByRole('option', { name: 'Gedo Admin Level' }).click();
-    await expect(lastSearchEntity).toEqual("40.994317,1.23272177,43.14093018,4.30793036");
-    const input = page.locator('.SearchGeometry');
-    await input.click();
-    await input.locator('input').fill('');
-    await input.type('Sanaag');
-    await delay(1000)
-    await page.waitForSelector('.SearchGeometryOption');
-    expect(await page.locator('.SearchGeometryOption').count()).toBe(1);
-    await expect(page.getByRole('option', { name: 'Sanaag Admin Level' })).toBeVisible();
-
 
     // ------------------------------------------------------------
     // LABEL
