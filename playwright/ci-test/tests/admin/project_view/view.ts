@@ -11,6 +11,7 @@ test.describe('View project', () => {
     let lastVisibleLayers = null
     let lastLog = null
     let lastLogLabel = null
+    let lastSearchEntity = null
     page.on('console', msg => {
       if (msg.text().indexOf('VALUED_GEOM:') !== -1) {
         try {
@@ -44,9 +45,38 @@ test.describe('View project', () => {
 
         }
       }
+      if (msg.text().indexOf('SEARCH_GEOMETRY_INPUT:') !== -1) {
+        try {
+          lastSearchEntity = msg.text().replace('SEARCH_GEOMETRY_INPUT:', '')
+        } catch (e) {
+          console.log(e)
+
+        }
+      }
     });
 
+    // ------------------------------------------------------------
+    // Check search
+    // ------------------------------------------------------------
+    await page.goto('/project/demo-geosight-project');
+    await page.getByRole('button', { name: 'Close' }).click();
+    await page.getByRole('combobox', { name: 'Search Geography Entity' }).click();
+    await page.getByRole('option', { name: 'Banadir Admin Level' }).click();
+    await expect(lastSearchEntity).toEqual("45.20831299,1.96833061,45.60608431,2.18504432");
+    await page.getByRole('option', { name: 'Gedo Admin Level' }).click();
+    await expect(lastSearchEntity).toEqual("40.994317,1.23272177,43.14093018,4.30793036");
+    const input = page.locator('.SearchGeometry');
+    await input.click();
+    await input.locator('input').fill('');
+    await input.type('Sanaag');
+    await delay(1000)
+    await page.waitForSelector('.SearchGeometryOption');
+    expect(await page.locator('.SearchGeometryOption').count()).toBe(1);
+    await expect(page.getByRole('option', { name: 'Sanaag Admin Level' })).toBeVisible();
+
+    // ------------------------------------------------------------
     // Check initial state
+    // ------------------------------------------------------------
     await page.goto('/project/demo-geosight-project');
     await page.getByRole('button', { name: 'Close' }).click();
     const layer1 = 'Sample Indicator A'

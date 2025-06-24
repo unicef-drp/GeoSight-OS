@@ -13,100 +13,89 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import { fetchJSON } from '../Requests'
+import { fetchJSON } from "../Requests";
 import axios from "axios";
-import { InternalReferenceDatasets, referenceDatasetUrlBase } from "./urls";
+import { referenceDatasetUrlBase } from "./urls";
 
-export const LocalReferenceDatasetIdentifier = 'Internal reference datasets'
+export const LocalReferenceDatasetIdentifier = "Internal reference datasets";
 
 /** Georepo URL */
 export function updateToken(url) {
   if (preferences.georepo_api.api_key) {
-    const urls = url.split('?')
-    let parameters = urls[1] ? urls[1].split('&') : []
-    parameters.unshift('token=' + preferences.georepo_api.api_key)
-    parameters.unshift('georepo_user_key=' + preferences.georepo_api.api_key_email)
-    urls[1] = parameters.join('&')
-    url = urls.join('?')
+    const urls = url.split("?");
+    let parameters = urls[1] ? urls[1].split("&") : [];
+    parameters.unshift("token=" + preferences.georepo_api.api_key);
+    parameters.unshift(
+      "georepo_user_key=" + preferences.georepo_api.api_key_email,
+    );
+    urls[1] = parameters.join("&");
+    url = urls.join("?");
   }
-  return url
+  return url;
 }
 
 /** Headers georepo **/
 export const headers = {
-  headers: preferences.georepo_api.headers
-}
+  headers: preferences.georepo_api.headers,
+};
 
 export const GeorepoUrls = {
   WithDomain: function (url, useToken = true) {
-    return preferences.georepo_api.api + url
+    return preferences.georepo_api.api + url;
   },
   WithoutDomain: function (url) {
-    return url
+    return url;
   },
   ViewDetail: function (identifier) {
-    return preferences.georepo_api.view_detail.replace('<identifier>', identifier)
+    return preferences.georepo_api.view_detail.replace(
+      "<identifier>",
+      identifier,
+    );
   },
   ViewList: function (dataset) {
-    return GeorepoUrls.WithDomain(`/search/dataset/${dataset}/view/list/`, true)
+    return GeorepoUrls.WithDomain(
+      `/search/dataset/${dataset}/view/list/`,
+      true,
+    );
   },
   Centroid: function (identifier) {
-    return GeorepoUrls.WithDomain(`/search/view/${identifier}/centroid/`, true)
+    return GeorepoUrls.WithDomain(`/search/view/${identifier}/centroid/`, true);
   },
   CountryList: function (dataset) {
-    return GeorepoUrls.WithDomain(`/search/dataset/${dataset}/entity/level/0/`, true)
+    return GeorepoUrls.WithDomain(
+      `/search/dataset/${dataset}/entity/level/0/`,
+      true,
+    );
   },
-}
+};
 
 /**
  * Return reference layer List
  */
 export const fetchReferenceLayerList = async function () {
-  let data = []
+  let data = [];
   const modules = await fetchFeatureList(
-    GeorepoUrls.WithDomain('/search/module/list/', false), true
+    GeorepoUrls.WithDomain("/search/module/list/", false),
+    true,
   );
   for (const module of modules) {
     const referenceLayers = await fetchFeatureList(
-      GeorepoUrls.WithDomain(`/search/module/${module.uuid}/dataset/list/`, false), true
+      GeorepoUrls.WithDomain(
+        `/search/module/${module.uuid}/dataset/list/`,
+        false,
+      ),
+      true,
     );
-    data = data.concat(referenceLayers)
+    data = data.concat(referenceLayers);
   }
-  data.map(row => {
-    row.identifier = row.uuid
-  })
-  return [].concat(data.filter(row => row.is_favorite), data.filter(row => !row.is_favorite));
-}
-
-/**
- * Return reference layer view List
- */
-export const fetchReferenceLayerViewsList = async function (referenceLayerUUID) {
-  let data = []
-  let url = GeorepoUrls.WithDomain(`/search/dataset/${referenceLayerUUID}/view/list/`, false)
-  if (referenceLayerUUID === LocalReferenceDatasetIdentifier) {
-    url = InternalReferenceDatasets.list()
-  }
-  data = await fetchFeatureList(url, true);
-  data.map(row => {
-    if (row.uuid) {
-      row.identifier = row.uuid
-    }
-    if (referenceLayerUUID === LocalReferenceDatasetIdentifier) {
-      row.is_local = true
-    }
-  })
-  data.sort((a, b) => {
-    if (a.name < b.name) {
-      return -1;
-    }
-    if (a.name > b.name) {
-      return 1;
-    }
-    return 0;
-  })
-  return data
-}
+  data.map((row) => {
+    row.identifier = row.uuid;
+  });
+  return [].concat(
+    data.filter((row) => row.is_favorite),
+    data.filter((row) => !row.is_favorite),
+  );
+};
 
 /***
  * Return geojson
@@ -114,112 +103,87 @@ export const fetchReferenceLayerViewsList = async function (referenceLayerUUID) 
 export const fetchGeojson = async function (url, useCache = true) {
   let data = {
     type: "FeatureCollection",
-    features: []
-  }
+    features: [],
+  };
   const _fetchGeojson = async function (page = 1) {
     try {
       var newUrl = new URL(url);
-      newUrl.searchParams.append('format', "geojson");
-      newUrl.searchParams.append('page', page);
+      newUrl.searchParams.append("format", "geojson");
+      newUrl.searchParams.append("page", page);
       const response = await fetchJSON(newUrl.toString(), headers, useCache);
       if (response?.features?.length) {
-        data.features = data.features.concat(response.features)
-        await _fetchGeojson(page += 1)
+        data.features = data.features.concat(response.features);
+        await _fetchGeojson((page += 1));
       }
-    } catch (error) {
-    }
-  }
-  await _fetchGeojson()
-  return data
-}
+    } catch (error) {}
+  };
+  await _fetchGeojson();
+  return data;
+};
 
 /***
  * Return feature list paginated
  */
 export const fetchFeatureList = async function (url, useCache = true) {
-  let data = []
+  let data = [];
   const _fetchJson = async function (page = 1) {
     try {
-      let usedUrl = url + '?geom=centroid&cache=false&page=' + page
+      let usedUrl = url + "?geom=centroid&cache=false&page=" + page;
 
       // TODO : INTERNAL REFERENCE DATASETS
       //  This is for local
       if (url.includes(referenceDatasetUrlBase)) {
-        if (url.includes('?')) {
-          usedUrl = url + '&page=' + page
+        if (url.includes("?")) {
+          usedUrl = url + "&page=" + page;
         } else {
-          usedUrl = url + '?page=' + page
+          usedUrl = url + "?page=" + page;
         }
       }
 
       const response = await fetchJSON(usedUrl, headers, useCache);
       if (response.results) {
-        data = data.concat(response.results)
+        data = data.concat(response.results);
         if (response.page && response.page >= response.total_page) {
-          return
+          return;
         }
         if (response.results.length) {
-          await _fetchJson(page += 1)
+          await _fetchJson((page += 1));
         }
       } else if (Array.isArray(response)) {
         // This if the return is array
-        data = data.concat(response)
+        data = data.concat(response);
       }
-    } catch (error) {
-
-    }
-  }
-  await _fetchJson()
-  return data
-}
+    } catch (error) {}
+  };
+  await _fetchJson();
+  return data;
+};
 
 /*** Axios georepo request */
-export const axiosGet = function (url, params = null) {
+export const axiosGet = function (url, params = null, signal = null) {
   if (params) {
-    return axios.get(url, headers, params);
+    return axios.get(url, { ...headers, params, signal: signal });
   } else {
     return axios.get(url, headers);
   }
-}
-
-/*** Axios georepo request json */
-export const fetchJson = async function (url) {
-  if (!url.includes('http')) {
-    url = preferences.georepo_api.api + url
-  }
-  return await fetchJSON(url, headers)
-}
-
-/*** Axios georepo request with cache */
-export const axiosGetCache = function (url) {
-  if (!url.includes('http')) {
-    url = preferences.georepo_api.api + url
-  }
-  return new Promise((resolve, reject) => {
-    (
-      async () => {
-        try {
-          resolve(await fetchJSON(url, headers));
-        } catch (err) {
-          reject(err)
-        }
-      }
-    )()
-  });
-}
+};
 
 /***
  * Change code to ucode
  */
 export const toUcode = (code) => {
-  return code ? code : null
-}
+  return code ? code : null;
+};
 
 /***
  * Extracting ucode
  */
-export const extractCode = (properties, geoField = 'concept_uuid') => {
-  const geomFieldOnVectorTile = geoField === 'geometry_code' ? 'ucode' : geoField
-  return toUcode(properties[geoField] ? properties[geoField] : properties[geomFieldOnVectorTile])
-}
-
+export const extractCode = (properties, geoField = "concept_uuid") => {
+  const geomFieldOnVectorTile =
+    geoField === "geometry_code" ? "ucode" : geoField;
+  return toUcode(
+    properties[geoField]
+      ? properties[geoField]
+      : properties[geomFieldOnVectorTile],
+  );
+};
