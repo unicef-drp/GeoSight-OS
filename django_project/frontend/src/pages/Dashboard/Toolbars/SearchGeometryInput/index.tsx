@@ -27,6 +27,7 @@ import SearchEntityOption from "../../../../components/SearchEntityOption";
 import { GeorepoUrls, updateToken } from "../../../../utils/georepo";
 import { removeLayer, removeSource } from "../../MapLibre/utils";
 import { Entity } from "../../../../types/Entity";
+import { Logger } from "../../../../utils/logger";
 
 import "./style.scss";
 
@@ -92,6 +93,7 @@ export default function SearchGeometryInput({ map }: Props) {
     }
 
     const bbox = entity.bbox;
+    Logger.log("SEARCH_GEOMETRY_INPUT:", bbox);
     map.fitBounds(
       [
         [bbox[0], bbox[1]],

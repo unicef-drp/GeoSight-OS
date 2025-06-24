@@ -328,7 +328,6 @@ export const CacheRequests = {
  */
 export const DjangoRequests = {
   get: (url, options = {}, params = null) => {
-    console.log(params)
     if (params) {
       url = constructUrl(url, params)
     }
