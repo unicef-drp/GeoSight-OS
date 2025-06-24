@@ -59,6 +59,7 @@ export const AsyncAutocomplete = forwardRef(
     { onFetchData, loadingState, selectedState, ...autocompleteProps }: Props,
     ref,
   ) => {
+    const [init, setInit] = useState(true);
     const [open, setOpen] = useState(false);
     const { loading, setLoading } = loadingState;
     const { selected, setSelected } = selectedState;
@@ -77,7 +78,11 @@ export const AsyncAutocomplete = forwardRef(
         setOptions([]);
         setPage(1);
       },
-      emptyInput() {
+      emptyInput(force: boolean) {
+        if (force) {
+          skipFetchRef.current = false;
+        }
+        setSelected(null);
         setInputValue("");
       },
     }));
@@ -91,15 +96,15 @@ export const AsyncAutocomplete = forwardRef(
         setPage(1);
         fetchData(inputValue, 1);
       }, 500);
-
       return () => clearTimeout(delayDebounce);
     }, [inputValue]);
 
     /*** Fetch data from server **/
     const fetchData = async (input: string, pageNumber: number) => {
-      if (!open) {
+      if (init && !open) {
         return;
       }
+      setInit(false);
       setLoading(true);
       try {
         const { response, hasNextPage } = await onFetchData(input, pageNumber);
@@ -125,10 +130,6 @@ export const AsyncAutocomplete = forwardRef(
 
     // When open
     useEffect(() => {
-      if (!selected && inputValue) {
-        setInputValue("");
-        return;
-      }
       if (open && options.length === 0) {
         fetchData(inputValue, 1);
       }
@@ -144,6 +145,7 @@ export const AsyncAutocomplete = forwardRef(
     return (
       <Autocomplete
         {...autocompleteProps}
+        freeSolo
         value={selected}
         open={open}
         onOpen={() => {

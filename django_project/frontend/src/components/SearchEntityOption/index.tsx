@@ -25,15 +25,13 @@ import { InputAdornment } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import CircularProgress from "@mui/material/CircularProgress";
 import SearchIcon from "@mui/icons-material/Search";
-
-import { CloseIcon } from "../Icons";
 import { AsyncAutocomplete } from "../AsyncAutocomplete";
 import { axiosGet, GeorepoUrls } from "../../utils/georepo";
 import { DjangoRequests } from "../../Requests";
 import { ReferenceLayer } from "../../types/Project";
+import { Entity } from "../../types/Entity";
 
 import "./style.scss";
-import { Entity } from "../../types/Entity";
 
 let lastAbortController: AbortController | null = null;
 
@@ -73,6 +71,7 @@ function SearchEntityOption({ onSelected }: Props) {
   const [selected, setSelected] = useState<Object>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [queue, setQueue] = useState<PropsQueue[]>([]);
+  const [lastInputValue, setLastInputValue] = useState<string>("");
 
   // When selected changed
   useEffect(() => {
@@ -107,6 +106,8 @@ function SearchEntityOption({ onSelected }: Props) {
     page: number,
     keepQueue: boolean = false,
   ): Promise<{ response: any; hasNextPage: boolean }> => {
+    setLastInputValue(input);
+
     // Cancel the previous request if it's still pending
     if (lastAbortController) {
       lastAbortController.abort();
@@ -136,14 +137,14 @@ function SearchEntityOption({ onSelected }: Props) {
       admin_level: currentQueue.admin_level,
       page_size: 100,
     };
-    if (input) {
-      params["search"] = input;
-    }
 
     try {
       let response = null;
       const dataset = currentQueue.dataset;
       if (currentQueue.isGeorepo) {
+        if (input) {
+          params["search"] = input;
+        }
         response = await axiosGet(
           GeorepoUrls.WithDomain(
             `/search/view/${dataset}/entity/level/${params.admin_level}/`,
@@ -152,6 +153,9 @@ function SearchEntityOption({ onSelected }: Props) {
           controller.signal,
         );
       } else {
+        if (input) {
+          params["name__icontains"] = input;
+        }
         response = await DjangoRequests.get(
           `/api/v1/reference-datasets/${dataset}/entity/`,
           { signal: controller.signal },
@@ -196,7 +200,7 @@ function SearchEntityOption({ onSelected }: Props) {
       className={
         "SelectWithSearchInput SearchEntityOption " +
         (selected ? "HasData " : "") +
-        (loading ? "Loading " : "")
+        (queue.length === 0 || loading ? "Loading " : "")
       }
     >
       <AsyncAutocomplete
@@ -216,14 +220,6 @@ function SearchEntityOption({ onSelected }: Props) {
                   position="end"
                   className="MuiAutocomplete-endAdornment"
                 >
-                  <div className="CloseIcon">
-                    <CloseIcon
-                      onClick={(_: any) => {
-                        setSelected(null);
-                        autocompleteRef.current.emptyInput();
-                      }}
-                    />
-                  </div>
                   <SearchIcon />
                   <CircularProgress />
                 </InputAdornment>
