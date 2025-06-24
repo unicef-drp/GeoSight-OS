@@ -104,7 +104,7 @@ export const AsyncAutocomplete = forwardRef(
       try {
         const { response, hasNextPage } = await onFetchData(input, pageNumber);
         setOptions((prev) =>
-          pageNumber === 1 ? response.results : [...prev, ...response.results],
+          pageNumber === 1 ? response : [...prev, ...response],
         );
         setHasNextPage(hasNextPage);
         setLoading(false);
@@ -125,6 +125,10 @@ export const AsyncAutocomplete = forwardRef(
 
     // When open
     useEffect(() => {
+      if (!selected && inputValue) {
+        setInputValue("");
+        return;
+      }
       if (open && options.length === 0) {
         fetchData(inputValue, 1);
       }
