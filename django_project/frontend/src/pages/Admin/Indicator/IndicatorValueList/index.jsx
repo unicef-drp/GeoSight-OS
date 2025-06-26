@@ -46,6 +46,33 @@ export function COLUMNS(pageName, redirectUrl, onDetails, editUrl = null, detail
   return [
     { field: 'id', headerName: 'id', hide: true, width: 30, },
     { field: 'reference_layer', headerName: 'Reference Layer', flex: 1 },
+    { field: 'entity_name', headerName: 'Admin Unit Name', flex: 1 },
+    { field: 'geom_id', headerName: 'Geometry ID', flex: 1 },
+    { field: 'date', headerName: 'Date', flex: 1 },
+    { field: 'value', headerName: 'Value', flex: 1 },
+    { field: 'indicator', headerName: 'Indicator', flex: 1 },
+    { field: 'actions', type: 'actions', cellClassName: 'MuiDataGrid-ActionsColumn', width: 320,
+      getActions: (params) => {
+        const actions = COLUMNS_ACTION(params, redirectUrl, null, detailUrl)
+        // Unshift before more & edit action
+        actions.unshift(
+          <GridActionsCellItem
+            className='TextButton'
+            onClick={() => {
+              onDetails(params)
+            }}
+            icon={
+              <div
+                className='MuiButton-Div MuiButtonBase-root MuiButton-secondary ThemeButton'>
+                Details
+              </div>
+            }
+            label="Value List"
+          />
+        )
+        return actions
+      },
+    }
     { field: 'name', headerName: 'Reference Layer name', flex: 1 },
     { field: 'geom_id', headerName: 'Geometry Code', flex: 1 },
     { field: 'date', headerName: 'Date', flex: 1 },
