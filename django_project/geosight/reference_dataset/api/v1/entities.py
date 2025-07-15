@@ -40,6 +40,8 @@ class EntityViewSet(BaseApiV1, viewsets.ReadOnlyModelViewSet):
     lookup_field = 'geom_id'
     lookup_value_regex = '[^/]+'
 
+    query_search_fields = ['name', 'geom_id']
+
     @property
     def queryset(self):
         """Return the queryset."""

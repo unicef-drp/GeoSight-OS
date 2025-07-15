@@ -96,6 +96,7 @@ export function GroupList({ ...props }) {
         { field: 'name', sort: 'asc' }
       ]
     }}
+    searchKey={'name__icontains'}
     {...props}
   />
 }

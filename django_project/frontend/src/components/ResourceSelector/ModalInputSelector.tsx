@@ -57,7 +57,7 @@ export function ModalInputSelector(
     rowIdKey = 'id',
     topChildren,
     opener,
-    searchKey = 'name__icontains'
+    searchKey = 'q'
   }: Props
 ) {
   const tableRef = useRef(null);

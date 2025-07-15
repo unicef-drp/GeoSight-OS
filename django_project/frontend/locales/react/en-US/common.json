@@ -118,6 +118,7 @@
                 "dashboard": "Project Name",
                 "indicators": "Indicator Name",
                 "basemaps": "Basemap Name",
+                "Basemaps": "Basemap Name",
                 "contextLayer": "Context Layer Name",
                 "usersAndGroups": "User and Group Name",
                 "styles": "Style Name",
