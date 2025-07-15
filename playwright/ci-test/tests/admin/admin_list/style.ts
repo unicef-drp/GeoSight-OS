@@ -13,6 +13,7 @@ test.describe('Style list admin', () => {
   const duplicate = async (page, index) => {
     await page.goto('/admin/style/create#General');
     await page.locator('#Form #id_name').fill(`Generated A${index}`);
+    await page.locator('#Form #id_description').fill(`Generated_A${index}`);
     await page.locator('#id_group').first().click();
     await page.getByRole('option', { name: 'Generic' }).click();
     await page.getByRole('button', { name: 'Save' }).click();
@@ -34,6 +35,8 @@ test.describe('Style list admin', () => {
 
     // Search by new object
     await page.getByPlaceholder('Search style').fill('Generated A');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 10');
+    await page.getByPlaceholder('Search style').fill('Generated_A');
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 10');
 
 

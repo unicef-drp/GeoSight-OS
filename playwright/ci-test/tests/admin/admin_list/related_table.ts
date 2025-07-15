@@ -13,6 +13,7 @@ test.describe('Related table list admin', () => {
   const duplicate = async (page, index) => {
     await page.goto('/django-admin/geosight_data/relatedtable/add/');
     await page.locator('#id_name').fill(`Generated A${index}`);
+    await page.locator('#id_description').fill(`Generated_A${index}`);
     await page.evaluate(() => {
       window.scrollTo(0, document.body.scrollHeight);
     });
@@ -28,6 +29,8 @@ test.describe('Related table list admin', () => {
 
     // Search by new object
     await page.getByPlaceholder('Search related table').fill('Generated A');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 10');
+    await page.getByPlaceholder('Search related table').fill('Generated_A');
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 10');
 
 
@@ -71,6 +74,10 @@ test.describe('Related table list admin', () => {
     await page.getByPlaceholder('Select Related Table').click();
     await expect(page.locator('.ModalDataSelector')).toBeVisible()
     await testFunction(page, page.locator('.ModalDataSelector'))
+    await page.getByPlaceholder('Search related table').fill('Generated_A');
+    await expect(page.locator('.ModalDataSelector').locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 10');
+    await page.getByPlaceholder('Search related table').fill('');
+    await expect(page.locator('.ModalDataSelector').locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 11');
 
     // Select
     await page.locator('.MuiDataGrid-row').nth(1).click();

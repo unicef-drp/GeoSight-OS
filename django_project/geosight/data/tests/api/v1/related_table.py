@@ -102,6 +102,17 @@ class RelatedTableApiTest(BasePermissionTest.TestCase):  # noqa: D101
             self.resource_1, self.resource_2, self.resource_3, resource
         )
 
+        # Search
+        params = urllib.parse.urlencode(
+            {
+                'q': 'Resource '
+            }
+        )
+        url = reverse('related_tables-list') + '?' + params
+        response = self.assertRequestGetView(url, 200, user=self.admin)
+        self.assertEqual(len(response.json()['results']), 1)
+        self.assertEqual(response.json()['results'][0]['name'], 'Name C')
+
     def test_delete(self):
         """Test DELETE /related-tables/{id} ."""
         id = self.resource_1.id

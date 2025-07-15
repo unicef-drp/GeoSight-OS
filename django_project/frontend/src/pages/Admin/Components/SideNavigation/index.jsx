@@ -165,7 +165,7 @@ export default function SideNavigation({ pageName, minified }) {
               {user.is_admin && localReferenceDatasetEnabled ?
                 <div className='SideNavigationContentGroup'>
                   <div className='SideNavigationContentGroupTitle'>{t('admin.referenceDatasets')}</div>
-                  <SidaNavigationButton minified={minified} title={pageNames.ReferenceLayerView}>
+                  <SidaNavigationButton minified={minified} title={t('admin.referenceDatasetsLower')}>
                     <a href={referenceDatasetList}
                       className={'SideNavigation-Row ' + ([pageNames.ReferenceLayerView].includes(pageName) ? 'active' : '')}>
                       {[pageNames.ReferenceLayerView].includes(pageName) ?
@@ -173,7 +173,7 @@ export default function SideNavigation({ pageName, minified }) {
                       <span className='SideNavigation-Row-Name'>{t('admin.referenceDatasetsLower')}</span>
                     </a>
                   </SidaNavigationButton>
-                  <SidaNavigationButton minified={minified} title={pageNames.referenceDatesetImporter}>
+                  <SidaNavigationButton minified={minified} title={t('admin.importers')}>
                     <a href={referenceDatesetImporterList}
                       className={'SideNavigation-Row ' + ([pageNames.referenceDatesetImporter].includes(pageName) ? 'active' : '')}>
                       {[pageNames.referenceDatesetImporter].includes(pageName) ?

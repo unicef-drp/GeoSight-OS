@@ -14,4 +14,7 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-from .indicator_value import *
+# TODO:
+#  We need to fix this
+#  Message: session not created: probably user data directory is already in use, please specify a unique value for --user-data-dir argument, or don't use --user-data-dir
+# from .indicator_value import * # noqa
