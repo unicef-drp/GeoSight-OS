@@ -52,8 +52,18 @@ class IndicatorViewSet(
         ],
         operation_description='Return list of accessed indicator for the user.'
     )
-    def list(self, request, *args, **kwargs):
-        """List of indicator."""
+    def list(self, request, *args, **kwargs):  # noqa DOC103
+        """
+        Retrieve a list of indicators available to the user.
+
+        Applies search and filter parameters such as name, description,
+        categories, types, and project identifiers.
+
+        :param request: The HTTP request.
+        :type request: Request
+        :return: A paginated list of serialized Indicator objects.
+        :rtype: Response
+        """
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(
@@ -63,7 +73,16 @@ class IndicatorViewSet(
         operation_description='Return detailed of indicator.'
     )
     def retrieve(self, request, id=None):
-        """Return detailed of indicator."""
+        """
+        Retrieve the detail of a specific indicator by its ID.
+
+        :param request: The HTTP request.
+        :type request: Request
+        :param id: The ID of the indicator.
+        :type id: int or str
+        :return: A serialized Indicator object.
+        :rtype: Response
+        """
         return super().retrieve(request, id=id)
 
     @swagger_auto_schema(
@@ -73,5 +92,14 @@ class IndicatorViewSet(
         operation_description='Delete an indicator.'
     )
     def destroy(self, request, id=None):
-        """Destroy an object."""
+        """
+        Delete a specific indicator by its ID.
+
+        :param request: The HTTP request.
+        :type request: Request
+        :param id: The ID of the indicator to be deleted.
+        :type id: int or str
+        :return: A response indicating the result of the delete operation.
+        :rtype: Response
+        """
         return super().destroy(request, id=id)

@@ -44,7 +44,12 @@ class EntityViewSet(BaseApiV1, viewsets.ReadOnlyModelViewSet):
 
     @property
     def queryset(self):
-        """Return the queryset."""
+        """Get queryset of entities by countries from reference datasets.
+
+        :return:
+            Queryset of Entity objects filtered by user-accessible countries.
+        :rtype: QuerySet
+        """
         country_lists = ReferenceDataset.objects.annotate(
             country_list=ArrayAgg('countries')
         ).values_list('country_list', flat=True)
@@ -68,8 +73,15 @@ class EntityViewSet(BaseApiV1, viewsets.ReadOnlyModelViewSet):
                 'reference dataset for the user.'
         )
     )
-    def list(self, request, *args, **kwargs):
-        """List of reference-dataset."""
+    def list(self, request, *args, **kwargs):  # noqa DOC103
+        """
+        List all accessible entities related to reference datasets.
+
+        :param request: The HTTP request object.
+        :type request: Request
+        :return: Paginated list of Entity objects.
+        :rtype: Response
+        """
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(
@@ -80,8 +92,16 @@ class EntityViewSet(BaseApiV1, viewsets.ReadOnlyModelViewSet):
                 'Return detailed of entity of reference dataset.'
         )
     )
-    def retrieve(self, request, *args, **kwargs):
-        """Return detailed of reference-dataset."""
+    def retrieve(self, request, *args, **kwargs):  # noqa DOC103
+        """
+        Retrieve details of a specific entity by geom_id.
+
+        :param request: The HTTP request object.
+        :type request: Request
+        :param kwargs: Should contain `geom_id` for lookup.
+        :return: Serialized representation of the Entity object.
+        :rtype: Response
+        """
         return super().retrieve(request, geom_id=kwargs['geom_id'])
 
 
@@ -93,8 +113,19 @@ class EntityReferenceDatasetViewSet(BaseApiV1, viewsets.ReadOnlyModelViewSet):
     lookup_value_regex = '[^/]+'
 
     @property
-    def queryset(self):
-        """Return the queryset."""
+    def queryset(self):  # noqa DOC103
+        """Get queryset of entities belonging to a specific reference dataset.
+
+        Checks for user access permissions on the dataset before returning.
+
+        :raises Http404:
+            If the reference dataset with the given identifier is not found.
+        :raises PermissionDenied:
+            If the user does not have access to the dataset.
+
+        :return: Queryset of Entity objects.
+        :rtype: QuerySet
+        """
         view = get_object_or_404(
             ReferenceDataset,
             identifier=self.kwargs.get('identifier', '')
@@ -116,8 +147,14 @@ class EntityReferenceDatasetViewSet(BaseApiV1, viewsets.ReadOnlyModelViewSet):
                 'reference dataset for the user.'
         )
     )
-    def list(self, request, *args, **kwargs):
-        """List of reference-dataset."""
+    def list(self, request, *args, **kwargs):  # noqa DOC103
+        """List all entities within a specific reference dataset.
+
+        :param request: The HTTP request object.
+        :type request: Request
+        :return: Paginated list of Entity objects.
+        :rtype: Response
+        """
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(
@@ -128,6 +165,13 @@ class EntityReferenceDatasetViewSet(BaseApiV1, viewsets.ReadOnlyModelViewSet):
                 'Return detailed of entity of reference dataset.'
         )
     )
-    def retrieve(self, request, *args, **kwargs):
-        """Return detailed of reference-dataset."""
+    def retrieve(self, request, *args, **kwargs):  # noqa DOC103
+        """Retrieve details of an entity in a reference dataset by geom_id.
+
+        :param request: The HTTP request object.
+        :type request: Request
+        :param kwargs: Should contain `geom_id` for lookup.
+        :return: Serialized representation of the Entity object.
+        :rtype: Response
+        """
         return super().retrieve(request, geom_id=kwargs['geom_id'])
