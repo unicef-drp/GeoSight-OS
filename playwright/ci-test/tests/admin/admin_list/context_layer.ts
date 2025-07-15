@@ -13,6 +13,7 @@ test.describe('Context layer list admin', () => {
   const duplicate = async (page, index) => {
     await page.goto('/admin/context-layer/create#General');
     await page.locator('#Form #id_name').fill(`Context Layer A${index}`);
+    await page.locator('#Form #id_description').fill(`Context_Layer_A${index}`);
     await page.locator('.ReactSelect__input-container').first().click();
     await page.getByRole('option', { name: 'Test' }).click();
     await page.getByRole('button', { name: 'Save' }).click();
@@ -27,6 +28,8 @@ test.describe('Context layer list admin', () => {
 
     // Search by new object
     await page.getByPlaceholder('Search Context Layer').fill('Context Layer A');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 10');
+    await page.getByPlaceholder('Search Context Layer').fill('Context_Layer_A');
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 10');
 
 
