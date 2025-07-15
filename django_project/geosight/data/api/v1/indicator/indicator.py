@@ -36,6 +36,7 @@ class IndicatorViewSet(
     model_class = Indicator
     serializer_class = IndicatorAdminListSerializer
     extra_exclude_fields = ['url', 'permission']
+    query_search_fields = ['name', 'description', 'shortcode']
 
     @swagger_auto_schema(
         operation_id='indicator-list',

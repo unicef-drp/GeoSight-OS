@@ -51,7 +51,8 @@ class IndicatorPermissionTest(BasePermissionTest.TestCase):
             user=self.resource_creator,
             name='Name B',
             group=IndicatorGroup.objects.create(name='Group 2'),
-            description='This is test'
+            description='This is test',
+            shortcode='Name_B'
         )
         self.resource_3 = Indicator.permissions.create(
             user=self.resource_creator,
@@ -154,6 +155,27 @@ class IndicatorPermissionTest(BasePermissionTest.TestCase):
         for result in response.json()['results']:
             self.assertTrue(
                 result['id'] in [self.resource_3.id])
+
+        # Search
+        params = urllib.parse.urlencode(
+            {
+                'q': 'Resource '
+            }
+        )
+        url = reverse('indicators-list') + '?' + params
+        response = self.assertRequestGetView(url, 200, user=self.admin)
+        self.assertEqual(len(response.json()['results']), 1)
+        self.assertEqual(response.json()['results'][0]['name'], 'Name C')
+
+        params = urllib.parse.urlencode(
+            {
+                'q': 'Name_'
+            }
+        )
+        url = reverse('indicators-list') + '?' + params
+        response = self.assertRequestGetView(url, 200, user=self.admin)
+        self.assertEqual(len(response.json()['results']), 1)
+        self.assertEqual(response.json()['results'][0]['name'], 'Name B')
 
     def test_list_api_sort(self):
         """Test GET LIST API."""

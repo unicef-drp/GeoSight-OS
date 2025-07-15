@@ -20,6 +20,7 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import (
     FieldError, ValidationError, SuspiciousOperation
 )
+from django.db.models import Q
 
 from geosight.data.models.dashboard import (
     Dashboard, DashboardBasemap, DashboardIndicator
@@ -31,6 +32,17 @@ User = get_user_model()
 
 class FilteredAPI(object):
     """Return User list."""
+
+    query_search_fields = []
+
+    def query_search(self, query, queryset):
+        """This will be called when being filtered with 'q' parameter."""
+        if self.query_search_fields:
+            queries = Q()
+            for field in self.query_search_fields:
+                queries |= Q(**{f'{field}__icontains': query})
+            queryset = queryset.filter(queries)
+        return queryset
 
     def filter_query(
             self, request, query, ignores: list, fields: list = None,
@@ -44,6 +56,7 @@ class FilteredAPI(object):
         ignores.append('distinct')
         ignores.append('encoding')
         ignores.append('Content-Type')
+        ignores.append('q')
 
         for param, value in request.GET.items():
             is_equal = True
@@ -111,6 +124,9 @@ class FilteredAPI(object):
                 raise SuspiciousOperation(f'Can not query param {param}')
             except ValidationError as e:
                 raise SuspiciousOperation(e)
+
+        if request.GET.get('q'):
+            query = self.query_search(request.GET.get('q'), query)
 
         if sort:
             query = query.order_by(*sort.split(','))

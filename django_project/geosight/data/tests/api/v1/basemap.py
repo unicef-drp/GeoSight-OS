@@ -209,6 +209,17 @@ class BasemapPermissionTest(BasePermissionTest.TestCase):
         response = self.assertRequestGetView(url, 200, user=self.admin)
         self.assertEqual(len(response.json()['results']), 3)
 
+        # Search
+        params = urllib.parse.urlencode(
+            {
+                'q': 'Resource '
+            }
+        )
+        url = reverse('basemaps-list') + '?' + params
+        response = self.assertRequestGetView(url, 200, user=self.admin)
+        self.assertEqual(len(response.json()['results']), 1)
+        self.assertEqual(response.json()['results'][0]['name'], 'Name C')
+
     def test_create_api(self):
         """Test POST API."""
         url = reverse('basemaps-list') + '?fields=__all__'

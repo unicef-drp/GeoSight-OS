@@ -142,6 +142,7 @@ class BaseApiV1ResourceReadOnly(BaseApiV1, viewsets.ReadOnlyModelViewSet):
 
     model_class = None
     lookup_field = 'id'
+    query_search_fields = ['name', 'description']
 
     def get_permissions(self):
         """

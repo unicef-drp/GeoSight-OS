@@ -147,6 +147,17 @@ class DashboardPermissionTest(BasePermissionTest.TestCase):
             self.assertTrue(
                 result['id'] in [self.resource_3.slug])
 
+        # Search
+        params = urllib.parse.urlencode(
+            {
+                'q': 'Resource '
+            }
+        )
+        url = reverse('dashboards-list') + '?' + params
+        response = self.assertRequestGetView(url, 200, user=self.admin)
+        self.assertEqual(len(response.json()['results']), 1)
+        self.assertEqual(response.json()['results'][0]['name'], 'Name C')
+
     def test_list_api_sort(self):
         """Test GET LIST API."""
         params = urllib.parse.urlencode(
