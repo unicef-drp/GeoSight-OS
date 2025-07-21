@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "webpack serve --mode development",
     "build": "webpack --mode production",
-    "lint": "eslint src/**/*.jsx"
+    "lint": "eslint src/**/*.jsx",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "keywords": [],
   "repository": {
@@ -44,6 +46,10 @@
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-react": "^7.29.4",
     "eslint-plugin-react-hooks": "^4.5.0",
+    "jest": "^29.7.0",
+    "@testing-library/jest-dom": "^6.2.0",
+    "@testing-library/react": "^14.1.2",
+    "@testing-library/user-event": "^14.5.1",
     "prettier": "^3.5.3",
     "react-svg-loader": "^3.0.3",
     "sass": "^1.51.0",
