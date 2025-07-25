@@ -21,7 +21,6 @@ import { render } from '../../app';
 import { ThemeButton } from "../../components/Elements/Button";
 import ProjectList from "../../components/Home";
 import { VisibilityIcon } from "../../components/Icons";
-import Footer from "../../components/Footer";
 import BasicPage from '../Basic'
 
 import './style.scss';
@@ -105,7 +104,6 @@ export default function Home() {
         }
       </div>
       <div>
-        <Footer/>
       </div>
     </BasicPage>
   )
