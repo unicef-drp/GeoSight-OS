@@ -583,3 +583,11 @@ export function splitByJoinedLength(input, maxLength = 1500) {
 
   return result;
 }
+
+/**
+ * @param {string} str
+ * @returns {*}
+ */
+export function toLowercaseFirst(str) {
+  return str.charAt(0).toLowerCase() + str.slice(1);
+}

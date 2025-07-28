@@ -8,12 +8,12 @@
     "mapboxStyleInformation": "Mapbox style information.",
     "seeMapboxDocumentationForMoreDetail": "See mapbox documentation for more detail.",
     "thereAreSomeInformationToControlTheLegend": "There are some information to control the Legend.",
-    "logout" : "Logout",
-    "loggedAs" : "Logged as",
+    "logout": "Logout",
+    "loggedAs": "Logged as",
     "navbar": {
         "authorizedToGeoRepo": "Authorized to GeoRepo.",
-        "djangoAdmin" : "Django admin",
-        "apiDocumentation" : "API Documentation"
+        "djangoAdmin": "Django admin",
+        "apiDocumentation": "API Documentation"
     },
     "admin": {
         "requestApproved": "Request is Approved",
@@ -41,6 +41,9 @@
         "importers": "Importers",
         "searchPlaceholder": "Search {{pageName}}",
         "clearSelection": "Clear selection",
+        "showSelected": "Show selected",
+        "noDataTable": "No data available.",
+        "tableError": "Oops! Something went wrong while loading data.",
         "numberOfItemsSelected": "{{numberOfItems}} items on this list are selected.",
         "oneItemSelected": "1 item on this list is selected.",
         "delete": "Delete",
@@ -80,8 +83,8 @@
                 "Users": "User",
                 "Group": "Group",
                 "Groups": "Group",
-                "permissionRequests" : "Permission Request",
-                "newUsers" : "New User"
+                "permissionRequests": "Permission Request",
+                "newUsers": "New User"
             },
             "plural": {
                 "dashboard": "Projects",
@@ -111,8 +114,8 @@
                 "Users": "Users",
                 "Group": "Groups",
                 "Groups": "Groups",
-                "permissionRequests" : "Permission Requests",
-                "newUsers" : "New Users"
+                "permissionRequests": "Permission Requests",
+                "newUsers": "New Users"
             },
             "names": {
                 "dashboard": "Project Name",
@@ -153,13 +156,26 @@
             "needReselectReferenceLayer": "Need to re-select reference layer"
         },
         "fetchingProjectData": "Fetching Project Data...",
-        "dashboard" : {
-            "mappingIndicatorsUsing" : "Mapping Indicators Using",
+        "dashboard": {
+            "mappingIndicatorsUsing": "Mapping Indicators Using",
             "nameExample": "Example: Afghanistan Risk Dashboard",
             "urlShortcode": "URL Shortcode",
             "urlShortcodeDescription": "Url of project in slug format. It will auto change space to \"-\" and to lowercase.\nIt will be generated from name if empty.",
             "transparencyOfIndicatorLayers": "Transparency of Indicator Layers",
             "transparencyOfContextLayers": "Transparency of Context Layers"
+        },
+        "create": {
+            "indicator": "Create New Indicator",
+            "contextLayer": "Create New Context Layer",
+            "basemap": "Create New Basemap"
+        },
+        "add": {
+            "indicator": "Add Indicator",
+            "indicatorLayer": "Add Indicator Layer",
+            "contextLayer": "Add Context Layer",
+            "basemap": "Add Basemap",
+            "widget": "Add Widget",
+            "relatedTable": "Add Related Table"
         }
     },
     "dashboardPage": {

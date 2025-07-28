@@ -41,6 +41,9 @@
         "importers": "Importadores",
         "searchPlaceholder": "Buscar {{pageName}}",
         "clearSelection": "Limpiar selección",
+        "showSelected": "Mostrar seleccionados",
+        "noDataTable": "No hay datos disponibles.",
+        "tableError": "¡Vaya! Ocurrió un error al cargar los datos.",
         "numberOfItemsSelected": "{{numberOfItems}} elementos en esta lista están seleccionados.",
         "oneItemSelected": "1 elemento en esta lista está seleccionado.",
         "delete": "Eliminar",
@@ -160,6 +163,19 @@
             "urlShortcodeDescription": "URL del proyecto en formato slug. Automáticamente cambiará los espacios por \"-\" y a minúsculas.\nSe generará a partir del nombre si está vacío.",
             "transparencyOfIndicatorLayers": "Transparencia de las Capas de Indicadores",
             "transparencyOfContextLayers": "Transparencia de las Capas de Contexto"
+        },
+        "create": {
+            "indicator": "Crear nuevo indicador",
+            "contextLayer": "Crear nueva capa de contexto",
+            "basemap": "Crear nuevo mapa base"
+        },
+        "add": {
+            "indicator": "Agregar indicador",
+            "indicatorLayer": "Agregar capa de indicador",
+            "contextLayer": "Agregar capa de contexto",
+            "basemap": "Agregar mapa base",
+            "widget": "Agregar widget",
+            "relatedTable": "Agregar tabla relacionada"
         }
     },
     "dashboardPage": {

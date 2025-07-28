@@ -47,9 +47,9 @@ test.describe('Create complex project', () => {
 
     // Add Related table
     await page.locator('.TabPrimary').getByText('Related Tables').click();
-    await page.getByRole('button', { name: 'Add RelatedTable' }).click();
+    await page.getByRole('button', { name: 'Add Related Table' }).click();
     await page.getByRole('cell', { name: 'RRR' }).click();
-    await page.getByRole('button', { name: 'Apply Selections : Selected (' }).click();
+    await page.getByRole('button', { name: 'Update Selection' }).click();
     await page.getByRole('button', { name: 'Open' }).first().click();
     await page.getByRole('option', { name: 'Ucode' }).click();
 
