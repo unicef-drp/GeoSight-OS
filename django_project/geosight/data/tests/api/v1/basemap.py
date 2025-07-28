@@ -100,21 +100,41 @@ class BasemapPermissionTest(BasePermissionTest.TestCase):
     def test_list_api_by_permission(self):
         """Test List API."""
         url = reverse('basemaps-list')
-        self.assertRequestGetView(url, 200)
+        resource = BasemapLayer.permissions.create(
+            user=self.resource_creator,
+            name='Name Public',
+            group=BasemapGroup.objects.create(name='Group 4'),
+            url='url',
+            type=BasemapLayerType.XYZ_TILE
+        )
+        resource.permission.public_permission = PERMISSIONS.READ.name
+        resource.permission.save()
+        response = self.assertRequestGetView(url, 200)
+        self.assertEqual(len(response.json()['results']), 1)
+        self.assertFalse("modified_by" in response.json()['results'][0].keys())
+        self.assertFalse("created_by" in response.json()['results'][0].keys())
 
         response = self.assertRequestGetView(url, 200, user=self.admin)
-        self.assertEqual(len(response.json()['results']), 3)
+        self.assertEqual(len(response.json()['results']), 4)
+        self.assertTrue("modified_by" in response.json()['results'][0].keys())
+        self.assertTrue("created_by" in response.json()['results'][0].keys())
 
         response = self.assertRequestGetView(url, 200, user=self.viewer)
-        self.assertEqual(len(response.json()['results']), 0)
+        self.assertEqual(len(response.json()['results']), 1)
+        self.assertTrue("modified_by" in response.json()['results'][0].keys())
+        self.assertTrue("created_by" in response.json()['results'][0].keys())
 
         response = self.assertRequestGetView(url, 200, user=self.creator)
-        self.assertEqual(len(response.json()['results']), 1)
+        self.assertEqual(len(response.json()['results']), 2)
+        self.assertTrue("modified_by" in response.json()['results'][0].keys())
+        self.assertTrue("created_by" in response.json()['results'][0].keys())
 
         response = self.assertRequestGetView(
             url, 200, user=self.creator_in_group
         )
-        self.assertEqual(len(response.json()['results']), 1)
+        self.assertEqual(len(response.json()['results']), 2)
+        self.assertTrue("modified_by" in response.json()['results'][0].keys())
+        self.assertTrue("created_by" in response.json()['results'][0].keys())
 
     def test_list_api_by_filter(self):
         """Test GET LIST API."""
@@ -188,6 +208,17 @@ class BasemapPermissionTest(BasePermissionTest.TestCase):
         url = reverse('basemaps-list') + '?' + params
         response = self.assertRequestGetView(url, 200, user=self.admin)
         self.assertEqual(len(response.json()['results']), 3)
+
+        # Search
+        params = urllib.parse.urlencode(
+            {
+                'q': 'Resource '
+            }
+        )
+        url = reverse('basemaps-list') + '?' + params
+        response = self.assertRequestGetView(url, 200, user=self.admin)
+        self.assertEqual(len(response.json()['results']), 1)
+        self.assertEqual(response.json()['results'][0]['name'], 'Name C')
 
     def test_create_api(self):
         """Test POST API."""

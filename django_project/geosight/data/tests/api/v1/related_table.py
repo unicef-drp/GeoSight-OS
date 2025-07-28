@@ -70,23 +70,48 @@ class RelatedTableApiTest(BasePermissionTest.TestCase):  # noqa: D101
     def test_list(self):
         """Test GET /related-tables/ ."""
         url = reverse('related_tables-list') + '?fields=__all__'
-        self.assertRequestGetView(url, 200)
+        resource = RelatedTable.permissions.create(
+            user=self.resource_creator,
+            name='Name Public'
+        )
+        resource.permission.public_permission = PERMISSIONS.READ.name
+        resource.permission.save()
+        response = self.assertRequestGetView(url, 200)
+        self.assertEqual(len(response.json()['results']), 1)
+        self.assertFalse("modified_by" in response.json()['results'][0].keys())
+        self.assertFalse("created_by" in response.json()['results'][0].keys())
+
+        response = self.assertRequestGetView(url, 200, user=self.admin)
+        self.assertEqual(len(response.json()['results']), 4)
+        self.assertTrue("modified_by" in response.json()['results'][0].keys())
+        self.assertTrue("created_by" in response.json()['results'][0].keys())
+
+        response = self.assertRequestGetView(url, 200, user=self.viewer)
+        self.assertEqual(len(response.json()['results']), 1)
+        self.assertTrue("modified_by" in response.json()['results'][0].keys())
+        self.assertTrue("created_by" in response.json()['results'][0].keys())
+
+        response = self.assertRequestGetView(url, 200, user=self.creator)
+        self.assertEqual(len(response.json()['results']), 2)
+        self.assertTrue("modified_by" in response.json()['results'][0].keys())
+        self.assertTrue("created_by" in response.json()['results'][0].keys())
 
         response = self.assertRequestGetView(url, 200, user=self.admin)
         self.assertResponseContainsPaginatedList(
             response, validate_related_table,
-            self.resource_1, self.resource_2, self.resource_3
+            self.resource_1, self.resource_2, self.resource_3, resource
         )
 
-        response = self.assertRequestGetView(url, 200, user=self.viewer)
-        self.assertEqual(len(response.json().get('results')), 0)
-
-        response = self.assertRequestGetView(url, 200, user=self.creator)
-        self.assertEqual(len(response.json().get('results')), 1)
-
-        response = self.assertRequestGetView(url, 200,
-                                             user=self.creator_in_group)
-        self.assertEqual(len(response.json().get('results')), 1)
+        # Search
+        params = urllib.parse.urlencode(
+            {
+                'q': 'Resource '
+            }
+        )
+        url = reverse('related_tables-list') + '?' + params
+        response = self.assertRequestGetView(url, 200, user=self.admin)
+        self.assertEqual(len(response.json()['results']), 1)
+        self.assertEqual(response.json()['results'][0]['name'], 'Name C')
 
     def test_delete(self):
         """Test DELETE /related-tables/{id} ."""

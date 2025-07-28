@@ -62,7 +62,7 @@ export const AdminListContent = forwardRef(
         sort: null,
       },
       useSearch = true,
-      searchKey = "name__icontains",
+      searchKey = "q",
       enableFilter = false,
 
       // Table props

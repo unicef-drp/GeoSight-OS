@@ -115,6 +115,7 @@
                 "dashboard": "Nombre de Proyecto",
                 "indicators": "Nombre de Indicador",
                 "basemaps": "Nombre de Mapa base",
+                "Basemaps": "Nombre de Mapa base",
                 "contextLayer": "Nombre de Capa de contexto",
                 "usersAndGroups": "Nombre de Usuario y grupo",
                 "styles": "Nombre de Estilo",

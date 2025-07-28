@@ -68,8 +68,9 @@ class GroupPermissionTest(BasePermissionTest.TestCase):
     def test_list_api_by_permission(self):
         """Test List API."""
         url = reverse('groups-list')
-        self.assertRequestGetView(url, 200)
-        response = self.assertRequestGetView(url, 200, user=self.viewer)
+        self.assertRequestGetView(url, 403)
+        self.assertRequestGetView(url, 403, user=self.viewer)
+        response = self.assertRequestGetView(url, 200, user=self.contributor)
         self.assertEqual(len(response.json()['results']), 5)
         response = self.assertRequestGetView(url, 200, user=self.creator)
         self.assertEqual(len(response.json()['results']), 5)

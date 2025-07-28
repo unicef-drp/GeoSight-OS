@@ -26,6 +26,7 @@ test.describe('Basemap list admin', () => {
     await page.goto('/admin/basemap/create#General');
     await page.locator('#Form #id_name').fill(`Basemap A${index}`);
     await page.locator('#Form #id_url').fill(`Test`);
+    await page.locator('#Form #id_description').fill(`Basemap_A${index}`);
     await page.locator('#id_group').first().click();
     await page.getByRole('option', { name: 'Test' }).click();
     await page.getByRole('button', { name: 'Save' }).click();
@@ -56,6 +57,8 @@ test.describe('Basemap list admin', () => {
 
     // Search by new object
     await page.getByPlaceholder('Search Basemap').fill('Basemap A');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 10');
+    await page.getByPlaceholder('Search Basemap').fill('Basemap_A');
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 10');
 
 

@@ -13,6 +13,7 @@ test.describe('Indicator list admin', () => {
   const duplicate = async (page, index) => {
     await page.goto('/admin/indicators/318/edit#General');
     await page.locator('#Form #id_name').fill(`Sample Indicator A A${index}`);
+    await page.locator('#Form #id_description').fill(`Sample_Indicator_A_A${index}`);
     await page.locator('#Form #id_shortcode').fill(`SOM_TEST_IND_A_A${index}`);
     await page.getByRole('button', { name: 'Save As' }).click();
   }
@@ -27,6 +28,10 @@ test.describe('Indicator list admin', () => {
     // Search by new project
     await page.getByPlaceholder('Search Indicator').fill('Sample Indicator A');
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–11 of 11');
+    await page.getByPlaceholder('Search Indicator').fill('Sample_Indicator_A');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 10');
+    await page.getByPlaceholder('Search Indicator').fill('SOM_TEST_IND_A_A');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 10');
 
     // Check pagination();
     await page.getByPlaceholder('Search Indicator').fill('');
@@ -82,6 +87,10 @@ test.describe('Indicator list admin', () => {
     await page.locator('.FilterControl').nth(0).click();
     await expect(page.locator('.ModalDataSelector')).toBeVisible()
     await testFunction(page, page.locator('.ModalDataSelector'))
+    await page.getByPlaceholder('Search Indicator').fill('SOM_TEST_IND_A_A');
+    await expect(page.locator('.ModalDataSelector').locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 10');
+    await page.getByPlaceholder('Search Indicator').fill('');
+    await expect(page.locator('.ModalDataSelector').locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 15');
 
     // Check Show Selected
     await delay(500)

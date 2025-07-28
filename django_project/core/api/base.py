@@ -20,6 +20,7 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import (
     FieldError, ValidationError, SuspiciousOperation
 )
+from django.db.models import Q
 
 from geosight.data.models.dashboard import (
     Dashboard, DashboardBasemap, DashboardIndicator
@@ -32,11 +33,75 @@ User = get_user_model()
 class FilteredAPI(object):
     """Return User list."""
 
+    query_search_fields = []
+
+    def query_search(self, query, queryset):
+        """
+        Filter the queryset based on the search query and predefined fields.
+
+        This method is called when filtering with the 'q' parameter. It applies
+        a case-insensitive search (`icontains`) across the fields specified
+        in `self.query_search_fields`.
+
+        :param query: The search string used to filter the queryset.
+        :type query: str
+        :param queryset: The initial queryset to be filtered.
+        :type queryset: QuerySet
+        :return: A filtered queryset containing objects matching the search.
+        :rtype: QuerySet
+        """
+        if self.query_search_fields:
+            queries = Q()
+            for field in self.query_search_fields:
+                queries |= Q(**{f'{field}__icontains': query})
+            queryset = queryset.filter(queries)
+        return queryset
+
     def filter_query(
             self, request, query, ignores: list, fields: list = None,
             sort: str = None, distinct: str = None, none_is_null: bool = True,
     ):
-        """Return filter query."""
+        """
+        Apply dynamic filters to a queryset based on request parameters.
+
+        This method parses the GET parameters from the request and applies
+        filtering, exclusion, sorting, and distinct clauses to the provided
+        queryset.
+
+        Special logic is applied for certain fields such as:
+        - Parameters prefixed with `!` are used for exclusion.
+        - `_in` suffix is used for multiple values (comma-separated).
+        - Fields like `reference_layer_uuid`, `project_*`, and `*_date` have
+          custom handling.
+        - Converts "NaN" and "None" values to `isnull` checks when
+          `none_is_null` is True.
+        - Supports simple full-text search via `q` parameter if
+          `query_search` is defined.
+
+        :param request: The HTTP request containing GET parameters.
+        :type request: HttpRequest
+        :param query: The initial queryset to filter.
+        :type query: QuerySet
+        :param ignores: List of parameter names to ignore during filtering.
+        :type ignores: list
+        :param fields:
+            Optional list of fields that are allowed to be filtered.
+        :type fields: list, optional
+        :param sort:
+            Optional comma-separated string of field names for sorting.
+        :type sort: str, optional
+        :param distinct:
+            Optional comma-separated string of fields for distinct clause.
+        :type distinct: str, optional
+        :param none_is_null:
+            If True, string values "NaN" or "None" are treated as null.
+        :type none_is_null: bool
+        :return: The filtered queryset.
+        :rtype: QuerySet
+
+        :raises SuspiciousOperation:
+            If a filter references an invalid field or invalid value.
+        """
         # Exclude sort to filter
         if not ignores:
             ignores = []
@@ -44,6 +109,7 @@ class FilteredAPI(object):
         ignores.append('distinct')
         ignores.append('encoding')
         ignores.append('Content-Type')
+        ignores.append('q')
 
         for param, value in request.GET.items():
             is_equal = True
@@ -111,6 +177,9 @@ class FilteredAPI(object):
                 raise SuspiciousOperation(f'Can not query param {param}')
             except ValidationError as e:
                 raise SuspiciousOperation(e)
+
+        if request.GET.get('q'):
+            query = self.query_search(request.GET.get('q'), query)
 
         if sort:
             query = query.order_by(*sort.split(','))
