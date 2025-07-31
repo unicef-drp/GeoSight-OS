@@ -2,13 +2,6 @@ import { expect, test } from '@playwright/test';
 
 const _url = '/admin/indicators/'
 
-class AdminListPage {
-  constructor(page: any) {
-    this.page = page;
-    this.dataGridRow = this.page.locator('.MuiDataGrid-row');
-  }
-}
-
 test.describe('Test filter in indicator admin', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(_url);
