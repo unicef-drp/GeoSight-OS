@@ -1,10 +1,11 @@
 import { expect, test } from '@playwright/test';
 import { checkPermission, editPermission } from "../../../utils/permission";
+import { BASE_URL } from "../../../variables";
 
 const timeout = 2000;
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
-const _url = '/admin/basemap/'
+const _url = `${BASE_URL}/admin/basemap/`
 const description = 'This is test';
 const defaultPermission = {
   1: {
@@ -78,17 +79,13 @@ test.describe('Batch edit basemap', () => {
 
     // Delete creator user
     await page.locator('label').filter({ hasText: 'Change permission' }).getByTestId('CheckBoxOutlineBlankIcon').click();
-    page.once('dialog', async dialog => {
-      await dialog.accept();
-    });
     await page.getByRole('row', { name: 'Select row creator' }).getByLabel('Delete').click();
+    await page.getByRole('button', { name: 'Confirm' }).click();
 
     // Delete group 2
     await page.locator('.PermissionForm .TabPrimary > div').nth(1).click();
-    page.once('dialog', async dialog => {
-      await dialog.accept();
-    });
     await page.getByRole('row', { name: 'Select row Group 2' }).getByLabel('Delete').click();
+    await page.getByRole('button', { name: 'Confirm' }).click();
     await page.getByRole('button', { name: 'Save' }).click();
 
     // Check after setup
@@ -98,7 +95,9 @@ test.describe('Batch edit basemap', () => {
     }
 
     // Edit the public access
-    await page.getByRole('checkbox', { name: 'Select all rows' }).check();
+    await page.goto(_url);
+    await page.waitForURL(_url)
+    await page.getByLabel('Select all rows').check();
     await page.getByRole('button', { name: 'Edit' }).click();
     await page.getByText('Share').click();
     await page.locator('label').filter({ hasText: 'Change permission' }).getByTestId('CheckBoxOutlineBlankIcon').click();
@@ -116,6 +115,13 @@ test.describe('Batch edit basemap', () => {
           public_access: 'Read'
         }
       )
+    }
+
+    // Revert to default
+    for (let i = 0; i < ids.length; i++) {
+      const _id = ids[i]
+      await editPermission(page, _id, defaultPermission[_id])
+      await checkPermission(page, _id, defaultPermission[_id])
     }
   });
 })

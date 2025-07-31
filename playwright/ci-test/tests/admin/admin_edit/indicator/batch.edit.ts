@@ -104,9 +104,11 @@ test.describe('Batch edit indicator', () => {
     }
 
     // Edit the public access
+    await page.goto(_url);
+    await page.waitForURL(_url)
     await page.getByPlaceholder('Search Indicator').fill('Sample Indicator');
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–4 of 4');
-    await page.getByRole('checkbox', { name: 'Select all rows' }).check();
+    await page.getByLabel('Select all rows').check();
     await page.getByRole('button', { name: 'Edit' }).click();
     await page.getByText('Share').click();
     await page.locator('label').filter({ hasText: 'Change permission' }).getByTestId('CheckBoxOutlineBlankIcon').click();
