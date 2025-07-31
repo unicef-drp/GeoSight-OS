@@ -12,8 +12,8 @@ test.describe('Indicator list admin', () => {
 
   const duplicate = async (page, index) => {
     await page.goto('/admin/indicators/318/edit#General');
-    await page.locator('#Form #id_name').fill(`Sample Indicator A A${index}`);
-    await page.locator('#Form #id_description').fill(`Sample_Indicator_A_A${index}`);
+    await page.locator('#Form #id_name').fill(`Created Indicator A${index}`);
+    await page.locator('#Form #id_description').fill(`Created_Indicator_A${index}`);
     await page.locator('#Form #id_shortcode').fill(`SOM_TEST_IND_A_A${index}`);
     await page.getByRole('button', { name: 'Save As' }).click();
   }
@@ -26,9 +26,9 @@ test.describe('Indicator list admin', () => {
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–1 of 1');
 
     // Search by new project
-    await page.getByPlaceholder('Search Indicator').fill('Sample Indicator A');
-    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–11 of 11');
-    await page.getByPlaceholder('Search Indicator').fill('Sample_Indicator_A');
+    await page.getByPlaceholder('Search Indicator').fill('Created Indicator A');
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 10');
+    await page.getByPlaceholder('Search Indicator').fill('Created_Indicator_A');
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 10');
     await page.getByPlaceholder('Search Indicator').fill('SOM_TEST_IND_A_A');
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 10');
@@ -40,10 +40,10 @@ test.describe('Indicator list admin', () => {
       name: '10',
       exact: true
     }).click();
-    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Kenya Indicator A');
+    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Created Indicator A0');
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 15');
     await page.getByLabel('Go to next page').click();
-    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Sample Indicator A A8');
+    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Kenya Indicator A');
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('11–15 of 15');
 
     // Orders
@@ -52,7 +52,7 @@ test.describe('Indicator list admin', () => {
     await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Sample Indicator D');
     await page.getByLabel('Name').click();
     await page.getByLabel('Name').click();
-    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Kenya Indicator A');
+    await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Created Indicator A0');
   }
 
   test('Test list functions', async ({ page }) => {
@@ -78,7 +78,7 @@ test.describe('Indicator list admin', () => {
     // Select
     await page.locator('.MuiDataGrid-row').nth(2).click();
     await expect(page.locator('.ModalDataSelector')).toBeHidden()
-    await expect(page.locator('.IndicatorSetting .InputControl .MuiInputBase-input')).toHaveValue('Sample Indicator A A0')
+    await expect(page.locator('.IndicatorSetting .InputControl .MuiInputBase-input')).toHaveValue('Created Indicator A2')
 
     // ----------------------------------
     // Test Filter Selection
@@ -143,8 +143,8 @@ test.describe('Indicator list admin', () => {
     // Select
     await page.locator('.ModalDataSelector').getByRole('button', { name: 'Update Selection' }).click()
     await expect(page.locator('.ModalDataSelector').locator('.ModalDataSelector')).toBeHidden()
-    await expect(page.getByText('Kenya Indicator A').first()).toBeVisible();
-    await expect(page.getByText('Sample Indicator A').first()).toBeVisible();
+    await expect(page.getByText('Created Indicator A0').first()).toBeVisible();
+    await expect(page.getByText('Created Indicator A1').first()).toBeVisible();
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–2 of 2');
 
     // ------------------------------------------------------
@@ -152,11 +152,11 @@ test.describe('Indicator list admin', () => {
     // ------------------------------------------------------
     await page.goto(_url);
     // Delete per row
-    await page.getByPlaceholder('Search Indicator').fill('Sample Indicator A A');
+    await page.getByPlaceholder('Search Indicator').fill('Created Indicator A');
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 10');
     await page.locator('.MuiDataGrid-row').nth(0).getByTestId('MoreVertIcon').click();
     await page.getByRole('menuitem', { name: 'Delete' }).click();
-    await expect(page.locator('.modal--content ')).toContainText('Are you sure want to delete Sample Indicator A A0?');
+    await expect(page.locator('.modal--content ')).toContainText('Are you sure want to delete Created Indicator A0?');
     await page.getByRole('button', { name: 'Confirm' }).click();
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–9 of 9');
 
