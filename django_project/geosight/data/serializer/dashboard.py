@@ -550,7 +550,8 @@ class DashboardBasicSerializer(ResourceSerializer):
         from django.conf import settings
         if obj.thumbnail:
             if os.path.exists(obj.thumbnail):
-                return obj.thumbnail.replace(settings.MEDIA_ROOT, 'media')
+                return obj.thumbnail.replace(
+                    settings.MEDIA_ROOT, settings.MEDIA_URL).replace('//', '/')
         return None
 
     class Meta:  # noqa: D106
