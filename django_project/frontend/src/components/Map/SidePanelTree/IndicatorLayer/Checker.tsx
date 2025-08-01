@@ -80,14 +80,10 @@ export function Checker({ layer, setIsLoading, setError }: Props) {
     // This is for dynamic checker
     if (layer.type === DynamicIndicatorType) {
       const data = indicatorsData["layer_" + layer.id];
-      if (data) {
-        if (!data?.fetched) {
-          loading = true;
-        } else {
-          if (data?.error) {
-            error = data?.error;
-          }
-        }
+      if (data && !data.fetched) {
+        loading = true;
+      } else if (data && data.error) {
+        error = data?.error;
       }
     }
     if (activate) {
@@ -120,14 +116,10 @@ export function RelatedTableChecker({ layer, setIsLoading, setError }: Props) {
           ? indicator.id + "-" + layerReferenceLayer
           : indicator.id;
       const data = relatedTableData[id];
-      if (data) {
-        if (!data?.fetched) {
-          loading = true;
-        } else {
-          if (data?.error) {
-            error = data?.error;
-          }
-        }
+      if (data && !data.fetched) {
+        loading = true;
+      } else if (data && data.error) {
+        error = data?.error;
       }
     });
     setIsLoading(loading);
