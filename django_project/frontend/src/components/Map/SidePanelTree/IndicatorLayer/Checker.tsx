@@ -66,23 +66,19 @@ export function Checker({ layer, setIsLoading, setError }: Props) {
         layerReferenceLayer,
       );
       const data = indicatorsData[id];
-      if (data) {
-        if (!data.fetched) {
-          loading = true;
-        } else {
-          if (data.error) {
-            error = data.error;
-          }
-        }
+      if (data?.fetching) {
+        loading = true;
+      } else if (data?.error) {
+        error = data?.error;
       }
     });
 
     // This is for dynamic checker
     if (layer.type === DynamicIndicatorType) {
       const data = indicatorsData["layer_" + layer.id];
-      if (data && !data.fetched) {
+      if (data?.fetching) {
         loading = true;
-      } else if (data && data.error) {
+      } else if (data?.error) {
         error = data?.error;
       }
     }
@@ -116,9 +112,9 @@ export function RelatedTableChecker({ layer, setIsLoading, setError }: Props) {
           ? indicator.id + "-" + layerReferenceLayer
           : indicator.id;
       const data = relatedTableData[id];
-      if (data && !data.fetched) {
+      if (data?.fetching) {
         loading = true;
-      } else if (data && data.error) {
+      } else if (data?.error) {
         error = data?.error;
       }
     });
