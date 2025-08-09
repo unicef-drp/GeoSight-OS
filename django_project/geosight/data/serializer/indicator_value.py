@@ -67,6 +67,10 @@ class IndicatorValueSerializer(DynamicModelSerializer):
             tzinfo=pytz.timezone(settings.TIME_ZONE)
         ).timestamp()
 
+    def get_entity_name(self, obj: IndicatorValue):
+        """Return entity name."""
+        return obj.entity_name
+
     class Meta:  # noqa: D106
         model = IndicatorValue
         exclude = ('value_str',)
@@ -97,6 +101,11 @@ class IndicatorValueSerializer(DynamicModelSerializer):
                 'geom_id': openapi.Schema(
                     title='Geom id',
                     type=openapi.TYPE_STRING,
+                ),
+                'entity_name': openapi.Schema(
+                    title='Admin unit name',
+                    type=openapi.TYPE_STRING,
+                    description='Name of the administrative unit'
                 ),
                 'admin_level': openapi.Schema(
                     title='Entity admin level',
