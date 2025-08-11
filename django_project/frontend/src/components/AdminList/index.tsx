@@ -16,31 +16,42 @@ import React, { forwardRef, useImperativeHandle, useRef } from "react";
 import { AdminPage } from "../../pages/Admin";
 import { AdminListProps } from "./types";
 import { AdminListContent } from "./Content";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
-import './style.scss';
+import "./style.scss";
 
 export const useResourceMeta = () => {
   const { t } = useTranslation();
   return [
-    { field: 'created_at', headerName: t('admin.columns.createdAt'), flex: 0.5, type: 'date' },
     {
-      field: 'created_by',
-      headerName: t('admin.columns.createdBy'),
+      field: "created_at",
+      headerName: t("admin.columns.createdAt"),
       flex: 0.5,
-      serverKey: 'creator__username'
+      type: "date",
     },
-    { field: 'modified_at', headerName: t('admin.columns.modifiedAt'), flex: 0.5, type: 'date' },
     {
-      field: 'modified_by',
-      headerName: t('admin.columns.modifiedBy'),
+      field: "created_by",
+      headerName: t("admin.columns.createdBy"),
       flex: 0.5,
-      serverKey: 'modified_by__username'
+      serverKey: "creator__username",
+    },
+    {
+      field: "modified_at",
+      headerName: t("admin.columns.modifiedAt"),
+      flex: 0.5,
+      type: "date",
+    },
+    {
+      field: "modified_by",
+      headerName: t("admin.columns.modifiedBy"),
+      flex: 0.5,
+      serverKey: "modified_by__username",
     },
   ];
 };
 
-export const AdminList = forwardRef((
+export const AdminList = forwardRef(
+  (
     {
       columns,
       pageName,
@@ -55,7 +66,7 @@ export const AdminList = forwardRef((
       initData,
       defaults = {
         search: null,
-        sort: null
+        sort: null,
       },
       useSearch = true,
       enableFilter = false,
@@ -75,15 +86,16 @@ export const AdminList = forwardRef((
       rightHeader,
       middleContent,
       ...props
-    }: AdminListProps, ref
+    }: AdminListProps,
+    ref,
   ) => {
     const tableRef = useRef(null);
 
     /** Refresh data **/
     useImperativeHandle(ref, () => ({
       refresh(force: boolean) {
-        tableRef?.current?.refresh(force)
-      }
+        tableRef?.current?.refresh(force);
+      },
     }));
     return (
       // @ts-ignore
@@ -97,28 +109,23 @@ export const AdminList = forwardRef((
           defaults={defaults}
           useSearch={useSearch}
           enableFilter={enableFilter}
-
           // Table props
           multipleDelete={multipleDelete}
           parentGetParameters={parentGetParameters}
-
           // Styling
           className={className}
-
           // Parent selector
           selection={selection}
           selectionChanged={selectionChanged}
-
           // Children
           rightHeader={rightHeader}
           middleContent={middleContent}
-
           // Ref
           ref={tableRef}
           {...props}
         />
       </AdminPage>
     );
-  }
-)
+  },
+);
 export default AdminList;
