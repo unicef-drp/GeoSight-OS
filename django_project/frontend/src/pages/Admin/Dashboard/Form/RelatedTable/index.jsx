@@ -33,6 +33,7 @@ import RelatedTableSelector
   from "../../../../../components/ResourceSelector/RelatedTableSelector";
 
 import "./style.scss";
+import { useResourceMeta } from "../../../../../components/AdminList";
 
 /**
  * Related table configuration
@@ -158,7 +159,8 @@ export default function RelatedTableForm() {
     (state) => state.referenceLayerData[referenceLayer?.identifier],
   );
   const codeTypes = referenceLayerData?.data?.possible_id_types;
-
+  let columns = dictDeepCopy(relatedTableColumns);
+  columns = columns.concat(useResourceMeta());
   return (
     <ListForm
       pageName={"RelatedTables"}
@@ -183,7 +185,7 @@ export default function RelatedTableForm() {
       changeLayerAction={(layer) => {
         dispatch(Actions.RelatedTable.update(layer));
       }}
-      initColumns={relatedTableColumns}
+      initColumns={columns}
       hasGroup={false}
       otherActionsFunction={(data) => {
         return (

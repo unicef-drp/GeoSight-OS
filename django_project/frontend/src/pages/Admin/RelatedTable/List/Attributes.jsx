@@ -14,38 +14,34 @@
  */
 
 import React from "react";
-import { formatDateTime } from "../../../../utils/main";
 
 export const relatedTableColumns = [
   {
-    field: 'id',
-    headerName: 'id',
+    field: "id",
+    headerName: "id",
     hide: true,
     width: 30,
   },
   {
-    field: 'name', headerName: 'Related Table Name', flex: 1,
+    field: "name",
+    headerName: "Related Table Name",
+    flex: 1,
     renderCell: (params) => {
-      const permission = params.row.permission
+      const permission = params.row.permission;
       const editUrl = urls.api.edit;
       if (editUrl && (!permission || permission.edit)) {
-        return <a className='MuiButtonLike CellLink'
-                  href={editUrl.replace('/0', `/${params.id}`)}>
-          {params.value}
-        </a>
+        return (
+          <a
+            className="MuiButtonLike CellLink"
+            href={editUrl.replace("/0", `/${params.id}`)}
+          >
+            {params.value}
+          </a>
+        );
       } else {
-        return <div className='MuiDataGrid-cellContent'>{params.value}</div>
+        return <div className="MuiDataGrid-cellContent">{params.value}</div>;
       }
-    }
+    },
   },
-  { field: 'unique_id', headerName: 'UUID', flex: 1 },
-  {
-    field: 'created_at', headerName: 'Created at', flex: 0.5, type: 'date'
-  },
-  {
-    field: 'created_by',
-    headerName: 'Created by',
-    flex: 0.5,
-    serverKey: 'creator__username'
-  }
-]
+  { field: "unique_id", headerName: "UUID", flex: 1 },
+];

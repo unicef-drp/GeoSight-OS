@@ -24,7 +24,7 @@ import { pageNames } from "../../index";
 import { COLUMNS, COLUMNS_ACTION } from "../../Components/List";
 import PermissionModal from "../../Permission";
 import { VisibilityIcon } from "../../../../components/Icons";
-import AdminList from "../../../../components/AdminList";
+import AdminList, { useResourceMeta } from "../../../../components/AdminList";
 import { useConfirmDialog } from "../../../../providers/ConfirmDialog";
 import { DjangoRequests } from "../../../../Requests";
 import { useTranslation } from "react-i18next";
@@ -96,30 +96,11 @@ export default function DashboardList() {
     flex: 0.5,
     serverKey: "group__name",
   };
-  columns[4] = {
-    field: "created_by",
-    headerName: t("admin.columns.createdBy"),
-    flex: 0.5,
-    serverKey: "creator__username",
-  };
-  columns[5] = {
-    field: "created_at",
-    headerName: t("admin.columns.createdAt"),
-    flex: 0.5,
-    type: "date",
-  };
-  columns[6] = {
-    field: "modified_at",
-    headerName: t("admin.columns.modifiedAt"),
-    flex: 0.5,
-    type: "date",
-  };
-  columns[7] = {
-    field: "modified_by",
-    headerName: t("admin.columns.modifiedBy"),
-    flex: 0.5,
-    serverKey: "modified_by__username",
-  };
+  const columnMeta = useResourceMeta()
+  columns[4] = columnMeta[0];
+  columns[5] = columnMeta[1];
+  columns[6] = columnMeta[2];
+  columns[7] = columnMeta[3];
   columns[8] = {
     field: "actions",
     type: "actions",
