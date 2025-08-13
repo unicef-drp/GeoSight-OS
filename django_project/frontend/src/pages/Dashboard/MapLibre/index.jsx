@@ -91,6 +91,18 @@ export default function MapLibre({
     tools,
     Variables.DASHBOARD.TOOL.VIEW_3D,
   )?.visible_by_default;
+  const levelSelectorEnable = getDashboardTool(
+    tools,
+    Variables.DASHBOARD.TOOL.LEVEL_SELECTOR,
+  )?.visible_by_default;
+  const embedToolEnable = getDashboardTool(
+    tools,
+    Variables.DASHBOARD.TOOL.EMBED_TOOL,
+  )?.visible_by_default;
+  const dataDownloadEnable = getDashboardTool(
+    tools,
+    Variables.DASHBOARD.TOOL.DATA_DOWNLOAD,
+  )?.visible_by_default;
 
   const drawingRef = useRef(null);
   const redrawMeasurement = () => drawingRef.current.redrawMeasurement();
@@ -301,16 +313,18 @@ export default function MapLibre({
               }}
             />
           ) : null}
-          <Plugin className={"ReferenceLayerToolbar"}>
-            <div>
-              <PluginChild
-                title={"Reference Layer selection"}
-                className={"ReferenceLayerSelectorWrapper"}
-              >
-                <ReferenceLayerSection />
-              </PluginChild>
-            </div>
-          </Plugin>
+          {levelSelectorEnable && (
+            <Plugin className={"ReferenceLayerToolbar"}>
+              <div data-tool={Variables.DASHBOARD.TOOL.LEVEL_SELECTOR}>
+                <PluginChild
+                  title={"Reference Layer selection"}
+                  className={"ReferenceLayerSelectorWrapper"}
+                >
+                  <ReferenceLayerSection />
+                </PluginChild>
+              </div>
+            </Plugin>
+          )}
           <GlobalDateSelector />
         </div>
 
@@ -353,14 +367,19 @@ export default function MapLibre({
         {/* Embed */}
         <div className="Toolbar-Right">
           <SearchGeometryInput map={map} />
-          <Plugin className="EmbedControl">
-            <div className="Active">
-              <PluginChild title={"Get embed code"}>
-                <EmbedControl map={map} />
-              </PluginChild>
-            </div>
-          </Plugin>
-          <DownloaderData />
+          {embedToolEnable && (
+            <Plugin className="EmbedControl">
+              <div
+                className="Active"
+                data-tool={Variables.DASHBOARD.TOOL.EMBED_TOOL}
+              >
+                <PluginChild title={"Get embed code"}>
+                  <EmbedControl map={map} />
+                </PluginChild>
+              </div>
+            </Plugin>
+          )}
+          {dataDownloadEnable && <DownloaderData />}
           <Plugin className="BookmarkControl">
             <Bookmark map={map} />
           </Plugin>

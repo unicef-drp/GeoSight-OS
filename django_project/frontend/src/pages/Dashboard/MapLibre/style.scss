@@ -134,8 +134,11 @@
       flex-grow: 1;
       position: absolute;
       left: 50%;
-      margin-left: -75px;
+      margin-left: -100px;
       top: 9px;
+      width: 200px;
+      display: flex;
+      flex-direction: row;
 
       .CompareLayerComponent svg {
         margin-top: -1px;

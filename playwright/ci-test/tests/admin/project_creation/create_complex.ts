@@ -11,14 +11,15 @@ const TOOLS = {
   MEASUREMENT: "Measurement",
   ZONAL_ANALYSIS: "Zonal analysis",
 
-  ENTITY_SEARCH_BOX: 'Entity search box',
-  SPATIAL_BOOKMARK: "Spatial bookmark",
-
-  MAP_LABEL_TOGGLE: "Map label toggle",
-  LEVEL_SELECTOR: "Level selector",
-
   LEFT_PANEL_TOGGLE: "Left panel toggle",
   WIDGET_PANEL_TOGGLE: "Widget panel toggle",
+  MAP_LABEL_TOGGLE: "Map label toggle",
+  LEVEL_SELECTOR: "Level selector",
+  ENTITY_SEARCH_BOX: 'Entity search box',
+  EMBED_TOOL: "Embed tool",
+  DATA_DOWNLOAD: "Data download",
+  SPATIAL_BOOKMARK: "Spatial bookmark",
+
 }
 test.describe('Create complex project', () => {
   test.beforeEach(async ({ page }) => {
@@ -373,6 +374,7 @@ test.describe('Create complex project', () => {
     // --------------------------------------------------------------
     await page.goto(`${BASE_URL}/project/test-project-complex-config/`);
     await expect(page.getByText("Do not show this again!")).not.toBeVisible();
+    await expect(page.getByText("Layers")).toBeVisible();
     await expect(page.locator('.SearchEntityOption')).not.toBeVisible();
 
     // Checking tools works
