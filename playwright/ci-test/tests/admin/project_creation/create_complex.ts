@@ -5,6 +5,10 @@ import { BASE_URL } from "../../variables";
 const timeout = 2000;
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
+const TOOLS = {
+  ENTITY_SEARCH_BOX: 'Entity search box',
+  SPATIAL_BOOKMARK: "Spatial bookmark",
+}
 test.describe('Create complex project', () => {
   test.beforeEach(async ({ page }) => {
     // Go to the starting url before each test.
@@ -152,7 +156,8 @@ test.describe('Create complex project', () => {
     await page.locator('li').filter({ hasText: '3D view' }).getByRole('img').click();
     await page.locator('li').filter({ hasText: 'Compare layers' }).getByRole('img').click();
     await page.locator('li').filter({ hasText: 'Zonal analysis' }).getByRole('img').click();
-    await expect(page.locator('.VisibilityIcon[data-name="Entity search box"]').locator('.VisibilityIconOn')).toBeVisible();
+    await expect(page.locator(`.VisibilityIcon[data-name="${TOOLS.ENTITY_SEARCH_BOX}"]`).locator('.VisibilityIconOn')).toBeVisible();
+    await expect(page.locator(`.VisibilityIcon[data-name="${TOOLS.SPATIAL_BOOKMARK}"]`).locator('.VisibilityIconOn')).toBeVisible();
 
     // Filter
     await page.locator('.TabPrimary').getByText('Filters').click();
@@ -182,8 +187,11 @@ test.describe('Create complex project', () => {
     await page.goto(`${BASE_URL}/project/test-project-complex-config/`);
     await expect(page.getByText("Do not show this again!")).toBeVisible();
     await expect(page.locator('.SearchEntityOption')).toBeVisible();
-    await expect(page.locator('.layers-tab-container').getByText('Context Layers')).toBeVisible();
     await page.getByRole('button', { name: 'Close' }).click();
+
+    // Check tools works
+    await expect(page.locator('.layers-tab-container').getByText('Context Layers')).toBeVisible();
+    await expect(page.locator(`[data-tool="${TOOLS.SPATIAL_BOOKMARK}"]`)).toBeVisible();
 
     const layer1 = 'Sample Indicator A'
     const layer2 = 'Sample Indicator B'
@@ -330,7 +338,10 @@ test.describe('Create complex project', () => {
 
     // Update tools
     await page.locator('.TabPrimary').getByText('Tools').click();
-    await page.locator('.VisibilityIcon[data-name="Entity search box"]').click();
+    await page.locator(`.AllToggleVisibility`).click();
+    await expect(page.locator('.TableForm.Tools').locator(`.VisibilityIconOff`)).toHaveCount(0);
+    await page.locator(`.AllToggleVisibility`).click();
+    await expect(page.locator('.TableForm.Tools').locator(`.VisibilityIconOn`)).toHaveCount(0);
 
     // Save
     await page.getByRole('button', { name: 'Save', exact: true }).isEnabled();
@@ -343,7 +354,10 @@ test.describe('Create complex project', () => {
     await page.goto(`${BASE_URL}/project/test-project-complex-config/`);
     await expect(page.getByText("Do not show this again!")).not.toBeVisible();
     await expect(page.locator('.SearchEntityOption')).not.toBeVisible();
+
+    // Checking tools works
     await expect(page.locator('.layers-tab-container').getByText('Context Layers')).not.toBeVisible();
+    await expect(page.locator(`[data-tool="${TOOLS.SPATIAL_BOOKMARK}"]`)).not.toBeVisible();
 
     // ------------------------------------
     // DELETE PROJECT
