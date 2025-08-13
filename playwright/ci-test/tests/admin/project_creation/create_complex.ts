@@ -13,6 +13,10 @@ const TOOLS = {
 
   ENTITY_SEARCH_BOX: 'Entity search box',
   SPATIAL_BOOKMARK: "Spatial bookmark",
+
+  MAP_LABEL_TOGGLE: "Map label toggle",
+  LEVEL_SELECTOR: "Level selector",
+
   LEFT_PANEL_TOGGLE: "Left panel toggle",
   WIDGET_PANEL_TOGGLE: "Widget panel toggle",
 }
@@ -24,6 +28,22 @@ test.describe('Create complex project', () => {
 
   // A use case tests scenarios
   test('Create with complex config', async ({ page }) => {
+    const checkToolConfigActive = async () => {
+      for (const tool of Object.keys(TOOLS)) {
+        await expect(page.locator(`.VisibilityIcon[data-name="${TOOLS[tool]}"]`).locator('.VisibilityIconOn')).toBeVisible();
+      }
+    }
+    const checkToolIconVisible = async () => {
+      for (const tool of Object.keys(TOOLS)) {
+        await expect(page.locator(`[data-tool="${TOOLS[tool]}"]`)).toBeVisible();
+      }
+    }
+    const checkToolIconNotVisible = async () => {
+      for (const tool of Object.keys(TOOLS)) {
+        await expect(page.locator(`[data-tool="${TOOLS[tool]}"]`)).not.toBeVisible();
+      }
+    }
+
     // --------------------------------------------------------------
     // CREATE PROJECT WITH OVERRIDE CONFIG
     // --------------------------------------------------------------
@@ -162,15 +182,7 @@ test.describe('Create complex project', () => {
     await page.locator('.TabPrimary').getByText('Tools').click();
     await page.locator(`.AllToggleVisibility`).click();
     await expect(page.locator('.TableForm.Tools').locator(`.VisibilityIconOff`)).toHaveCount(0);
-    await expect(page.locator(`.VisibilityIcon[data-name="${TOOLS.VIEW_3D}"]`).locator('.VisibilityIconOn')).toBeVisible();
-    await expect(page.locator(`.VisibilityIcon[data-name="${TOOLS.COMPARE_LAYERS}"]`).locator('.VisibilityIconOn')).toBeVisible();
-    await expect(page.locator(`.VisibilityIcon[data-name="${TOOLS.MEASUREMENT}"]`).locator('.VisibilityIconOn')).toBeVisible();
-    await expect(page.locator(`.VisibilityIcon[data-name="${TOOLS.ZONAL_ANALYSIS}"]`).locator('.VisibilityIconOn')).toBeVisible();
-
-    await expect(page.locator(`.VisibilityIcon[data-name="${TOOLS.ENTITY_SEARCH_BOX}"]`).locator('.VisibilityIconOn')).toBeVisible();
-    await expect(page.locator(`.VisibilityIcon[data-name="${TOOLS.SPATIAL_BOOKMARK}"]`).locator('.VisibilityIconOn')).toBeVisible();
-    await expect(page.locator(`.VisibilityIcon[data-name="${TOOLS.LEFT_PANEL_TOGGLE}"]`).locator('.VisibilityIconOn')).toBeVisible();
-    await expect(page.locator(`.VisibilityIcon[data-name="${TOOLS.WIDGET_PANEL_TOGGLE}"]`).locator('.VisibilityIconOn')).toBeVisible();
+    await checkToolConfigActive()
 
     // Filter
     await page.locator('.TabPrimary').getByText('Filters').click();
@@ -204,14 +216,7 @@ test.describe('Create complex project', () => {
 
     // Check tools works
     await expect(page.locator('.layers-tab-container').getByText('Context Layers')).toBeVisible();
-    await expect(page.locator(`[data-tool="${TOOLS.VIEW_3D}"]`)).toBeVisible();
-    await expect(page.locator(`[data-tool="${TOOLS.COMPARE_LAYERS}"]`)).toBeVisible();
-    await expect(page.locator(`[data-tool="${TOOLS.MEASUREMENT}"]`)).toBeVisible();
-    await expect(page.locator(`[data-tool="${TOOLS.ZONAL_ANALYSIS}"]`)).toBeVisible();
-
-    await expect(page.locator(`[data-tool="${TOOLS.SPATIAL_BOOKMARK}"]`)).toBeVisible();
-    await expect(page.locator(`[data-tool="${TOOLS.LEFT_PANEL_TOGGLE}"]`)).toBeVisible();
-    await expect(page.locator(`[data-tool="${TOOLS.WIDGET_PANEL_TOGGLE}"]`)).toBeVisible();
+    await checkToolIconVisible();
 
     const layer1 = 'Sample Indicator A'
     const layer2 = 'Sample Indicator B'
@@ -372,15 +377,7 @@ test.describe('Create complex project', () => {
 
     // Checking tools works
     await expect(page.locator('.layers-tab-container').getByText('Context Layers')).not.toBeVisible();
-    await expect(page.locator(`[data-tool="${TOOLS.VIEW_3D}"]`)).not.toBeVisible();
-    await expect(page.locator(`[data-tool="${TOOLS.COMPARE_LAYERS}"]`)).not.toBeVisible();
-    await expect(page.locator(`[data-tool="${TOOLS.MEASUREMENT}"]`)).not.toBeVisible();
-    await expect(page.locator(`[data-tool="${TOOLS.ZONAL_ANALYSIS}"]`)).not.toBeVisible();
-
-    await expect(page.locator(`[data-tool="${TOOLS.ENTITY_SEARCH_BOX}"]`)).not.toBeVisible();
-    await expect(page.locator(`[data-tool="${TOOLS.SPATIAL_BOOKMARK}"]`)).not.toBeVisible();
-    await expect(page.locator(`[data-tool="${TOOLS.LEFT_PANEL_TOGGLE}"]`)).not.toBeVisible();
-    await expect(page.locator(`[data-tool="${TOOLS.WIDGET_PANEL_TOGGLE}"]`)).not.toBeVisible();
+    await checkToolIconNotVisible()
 
     // ------------------------------------
     // DELETE PROJECT
