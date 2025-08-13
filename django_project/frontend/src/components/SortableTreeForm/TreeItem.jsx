@@ -239,7 +239,7 @@ export const TreeItem = forwardRef(
             <RemoveCircleIcon/>{"Remove Group"}
           </span> : null}
 
-          <span className={'VisibilityIcon ' + styles.VisibilityAction}>
+          <span className={'VisibilityIcon ' + styles.VisibilityAction} data-name={data.name}>
           {
             !isGroup && data ?
               data?.visible_by_default ? <VisibilityIcon

@@ -51,7 +51,7 @@ export const Variables = {
       WIDGET_PANEL_TOGGLE: "Widget panel toggle",
       MAP_LABEL_TOGGLE: "Map label toggle",
       LEVEL_SELECTOR: "Level selector",
-      SEARCH_BOX: "Search box",
+      ENTITY_SEARCH_BOX: "Entity search box",
       EMBED_TOOL: "Embed tool",
       DATA_DOWNLOAD: "Data download",
       SPATIAL_BOOKMARK: "Spatial bookmark",

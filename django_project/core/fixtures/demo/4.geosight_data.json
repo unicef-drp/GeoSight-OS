@@ -30420,7 +30420,6 @@
       },
       "show_splash_first_open": true,
       "truncate_indicator_layer_name": true,
-      "enable_geometry_search": true,
       "default_time_mode": {
         "default_interval": "Monthly",
         "fit_to_current_indicator_range": false,

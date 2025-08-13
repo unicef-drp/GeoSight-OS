@@ -53,12 +53,6 @@ test.describe('Create complex project', () => {
     }
     {
       const checkbox = await page.locator(
-        'label', { hasText: 'Enable geography entity' }
-      ).locator('input[type="checkbox"]');
-      await expect(checkbox).toBeChecked();
-    }
-    {
-      const checkbox = await page.locator(
         'label', { hasText: 'Hide context layer tab' }
       ).locator('input[type="checkbox"]');
       await expect(checkbox).not.toBeChecked();
@@ -158,6 +152,7 @@ test.describe('Create complex project', () => {
     await page.locator('li').filter({ hasText: '3D view' }).getByRole('img').click();
     await page.locator('li').filter({ hasText: 'Compare layers' }).getByRole('img').click();
     await page.locator('li').filter({ hasText: 'Zonal analysis' }).getByRole('img').click();
+    await expect(page.locator('.VisibilityIcon[data-name="Entity search box"]').locator('.VisibilityIconOn')).toBeVisible();
 
     // Filter
     await page.locator('.TabPrimary').getByText('Filters').click();
@@ -280,12 +275,6 @@ test.describe('Create complex project', () => {
     }
     {
       const checkbox = await page.locator(
-        'label', { hasText: 'Enable geography entity' }
-      ).locator('input[type="checkbox"]');
-      await expect(checkbox).toBeChecked();
-    }
-    {
-      const checkbox = await page.locator(
         'label', { hasText: 'Hide context layer tab' }
       ).locator('input[type="checkbox"]');
       await expect(checkbox).not.toBeChecked();
@@ -297,9 +286,6 @@ test.describe('Create complex project', () => {
     ).click();
     await page.locator(
       'label', { hasText: 'Truncate long indicator layer' }
-    ).click();
-    await page.locator(
-      'label', { hasText: 'Enable geography entity' }
     ).click();
     await page.locator(
       'label', { hasText: 'Hide context layer tab' }
@@ -341,6 +327,10 @@ test.describe('Create complex project', () => {
     await page.locator('.TabPrimary').getByText('Related Tables (1)').click();
     await expect(page.locator('.RelatedTableConfiguration input').nth(0)).toHaveValue('Ucode');
     await expect(page.locator('.RelatedTableConfiguration input').nth(1)).toHaveValue('ucode');
+
+    // Update tools
+    await page.locator('.TabPrimary').getByText('Tools').click();
+    await page.locator('.VisibilityIcon[data-name="Entity search box"]').click();
 
     // Save
     await page.getByRole('button', { name: 'Save', exact: true }).isEnabled();

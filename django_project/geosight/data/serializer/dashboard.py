@@ -476,7 +476,7 @@ class DashboardSerializer(serializers.ModelSerializer):
             # Configuration for dashboard
             # ------------------------------
             'show_splash_first_open',
-            'truncate_indicator_layer_name', 'enable_geometry_search',
+            'truncate_indicator_layer_name',
             'hide_context_layer_tab', 'transparency_config'
         )
 

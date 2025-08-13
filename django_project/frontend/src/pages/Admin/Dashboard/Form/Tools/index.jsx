@@ -84,7 +84,6 @@ export default function ToolsForm() {
         addLayerAction={(data) => {}}
         removeLayerAction={(data) => {}}
         changeLayerAction={(data) => {
-          console.log(data);
           dispatch(Actions.DashboardTool.update(data));
         }}
         initColumns={columns}

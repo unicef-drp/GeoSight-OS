@@ -148,7 +148,7 @@ function receive(data, error = null) {
       [Variables.DASHBOARD.TOOL.WIDGET_PANEL_TOGGLE, true],
       [Variables.DASHBOARD.TOOL.MAP_LABEL_TOGGLE, true],
       [Variables.DASHBOARD.TOOL.LEVEL_SELECTOR, true],
-      [Variables.DASHBOARD.TOOL.SEARCH_BOX, true],
+      [Variables.DASHBOARD.TOOL.ENTITY_SEARCH_BOX, true],
       [Variables.DASHBOARD.TOOL.EMBED_TOOL, true],
       [Variables.DASHBOARD.TOOL.DATA_DOWNLOAD, true],
       [Variables.DASHBOARD.TOOL.SPATIAL_BOOKMARK, true],
