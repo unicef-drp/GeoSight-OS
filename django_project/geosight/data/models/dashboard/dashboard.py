@@ -127,7 +127,7 @@ class Dashboard(
         null=True, blank=True, default=False
     )
     enable_geometry_search = models.BooleanField(default=True)
-    hide_context_layer_tab = models.BooleanField(default=True)
+    hide_context_layer_tab = models.BooleanField(default=False)
     default_time_mode = models.JSONField(null=True, blank=True)
 
     # TransparencySlider
