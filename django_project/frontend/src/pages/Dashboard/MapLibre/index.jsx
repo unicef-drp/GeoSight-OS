@@ -60,6 +60,7 @@ import { PopupToolbars } from "../Toolbars/PopupToolbars";
 import { Variables } from "../../../utils/Variables";
 import { addLayerWithOrder } from "./Render";
 import { TransparencyControl } from "./Transparency";
+import { getDashboardTool } from "../../../utils/dashboardTool";
 
 maplibregl.addProtocol("cog", cogProtocol);
 
@@ -84,17 +85,12 @@ export default function MapLibre({
   const transparencyRef = useRef(null);
 
   // Tools
-  const { tools: dashboardTools } = useSelector(
-    (state) => state.dashboard.data,
-  );
-  const tools = dashboardTools.filter(
-    (row) =>
-      row.visible_by_default &&
-      [
-        Variables.DASHBOARD.TOOL.VIEW_3D,
-        Variables.DASHBOARD.TOOL.COMPARE_LAYERS,
-      ].includes(row.name),
-  );
+  const { tools } = useSelector((state) => state.dashboard.data);
+  // @ts-ignore
+  const view3DEnable = getDashboardTool(
+    tools,
+    Variables.DASHBOARD.TOOL.VIEW_3D,
+  )?.visible_by_default;
 
   const drawingRef = useRef(null);
   const redrawMeasurement = () => drawingRef.current.redrawMeasurement();
@@ -322,17 +318,14 @@ export default function MapLibre({
           <div className="Separator" />
           <HomeButton map={map} />
           <LabelToggler />
-          {tools.find(
-            (tool) => tool.name === Variables.DASHBOARD.TOOL.COMPARE_LAYERS,
-          ) ? (
-            <CompareLayer disabled={is3dMode} />
-          ) : null}
+          <CompareLayer disabled={is3dMode} />
           {/* 3D View */}
-          {tools.find(
-            (tool) => tool.name === Variables.DASHBOARD.TOOL.VIEW_3D,
-          ) ? (
+          {view3DEnable && (
             <Plugin>
-              <div className="ExtrudedIcon Active">
+              <div
+                className="ExtrudedIcon Active"
+                data-tool={Variables.DASHBOARD.TOOL.VIEW_3D}
+              >
                 <PluginChild
                   title={"3D layer"}
                   disabled={!map}
@@ -352,7 +345,7 @@ export default function MapLibre({
                 </PluginChild>
               </div>
             </Plugin>
-          ) : null}
+          )}
           <PopupToolbars map={map} ref={drawingRef} />
           <div className="Separator" />
         </div>

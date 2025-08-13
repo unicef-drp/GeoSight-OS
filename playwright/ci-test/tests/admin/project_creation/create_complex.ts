@@ -6,6 +6,8 @@ const timeout = 2000;
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 const TOOLS = {
+  VIEW_3D: "3D view",
+  COMPARE_LAYERS: "Compare layers",
   ENTITY_SEARCH_BOX: 'Entity search box',
   SPATIAL_BOOKMARK: "Spatial bookmark",
 }
@@ -153,10 +155,11 @@ test.describe('Create complex project', () => {
 
     // Update tools
     await page.locator('.TabPrimary').getByText('Tools').click();
-    await page.locator('li').filter({ hasText: '3D view' }).getByRole('img').click();
-    await page.locator('li').filter({ hasText: 'Compare layers' }).getByRole('img').click();
-    await page.locator('li').filter({ hasText: 'Zonal analysis' }).getByRole('img').click();
+    await page.locator(`.AllToggleVisibility`).click();
+    await expect(page.locator('.TableForm.Tools').locator(`.VisibilityIconOff`)).toHaveCount(0);
+    await expect(page.locator(`.VisibilityIcon[data-name="${TOOLS.VIEW_3D}"]`).locator('.VisibilityIconOn')).toBeVisible();
     await expect(page.locator(`.VisibilityIcon[data-name="${TOOLS.ENTITY_SEARCH_BOX}"]`).locator('.VisibilityIconOn')).toBeVisible();
+    await expect(page.locator(`.VisibilityIcon[data-name="${TOOLS.COMPARE_LAYERS}"]`).locator('.VisibilityIconOn')).toBeVisible();
     await expect(page.locator(`.VisibilityIcon[data-name="${TOOLS.SPATIAL_BOOKMARK}"]`).locator('.VisibilityIconOn')).toBeVisible();
 
     // Filter
@@ -191,6 +194,8 @@ test.describe('Create complex project', () => {
 
     // Check tools works
     await expect(page.locator('.layers-tab-container').getByText('Context Layers')).toBeVisible();
+    await expect(page.locator(`[data-tool="${TOOLS.VIEW_3D}"]`)).toBeVisible();
+    await expect(page.locator(`[data-tool="${TOOLS.COMPARE_LAYERS}"]`)).toBeVisible();
     await expect(page.locator(`[data-tool="${TOOLS.SPATIAL_BOOKMARK}"]`)).toBeVisible();
 
     const layer1 = 'Sample Indicator A'
@@ -243,10 +248,7 @@ test.describe('Create complex project', () => {
     await expect(page.locator('.MapLegendSection .IndicatorLegendRowName').nth(1)).toContainText("No data");
 
     // CHECK TOOLS VISIBILITY
-    await expect(page.getByTitle('Zonal Analysis')).toBeVisible();
     await expect(page.getByTitle('Start Measurement')).toBeVisible();
-    await expect(page.getByTitle('Turn on compare Layers')).toBeHidden();
-    await expect(page.getByTitle('3D layer')).toBeHidden();
     await page.getByTitle('Start Measurement').click();
     await expect(page.getByText('Measure distances and areas')).toBeVisible();
     await page.getByTitle('Zonal Analysis').click();
@@ -339,8 +341,6 @@ test.describe('Create complex project', () => {
     // Update tools
     await page.locator('.TabPrimary').getByText('Tools').click();
     await page.locator(`.AllToggleVisibility`).click();
-    await expect(page.locator('.TableForm.Tools').locator(`.VisibilityIconOff`)).toHaveCount(0);
-    await page.locator(`.AllToggleVisibility`).click();
     await expect(page.locator('.TableForm.Tools').locator(`.VisibilityIconOn`)).toHaveCount(0);
 
     // Save
@@ -357,6 +357,8 @@ test.describe('Create complex project', () => {
 
     // Checking tools works
     await expect(page.locator('.layers-tab-container').getByText('Context Layers')).not.toBeVisible();
+    await expect(page.locator(`[data-tool="${TOOLS.VIEW_3D}"]`)).not.toBeVisible();
+    await expect(page.locator(`[data-tool="${TOOLS.COMPARE_LAYERS}"]`)).not.toBeVisible();
     await expect(page.locator(`[data-tool="${TOOLS.SPATIAL_BOOKMARK}"]`)).not.toBeVisible();
 
     // ------------------------------------
