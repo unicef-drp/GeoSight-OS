@@ -56,10 +56,13 @@ export interface GeneralData {
   referenceLayer: ReferenceLayer;
   geoField: string;
   levelConfig: string;
+  default_time_mode: DefaultTimeMode;
+
+  // Configurations
   show_splash_first_open: boolean;
   truncate_indicator_layer_name: boolean;
   enable_geometry_search: boolean;
-  default_time_mode: DefaultTimeMode;
+  hide_context_layer_tab: boolean;
   transparency_config: TransparencyConfiguration;
 }
 
@@ -85,9 +88,6 @@ const GeneralForm = memo(({}: Props) => {
   const levelConfigProject = useSelector(
     (state: any) => state.dashboard.data?.levelConfig,
   );
-  const enableGeometrySearchProject = useSelector(
-    (state: any) => state.dashboard.data?.enable_geometry_search,
-  );
   const projectData = useSelector((state: any) => state.dashboard.data);
 
   const [data, setData] = useState<GeneralData>({
@@ -105,6 +105,7 @@ const GeneralForm = memo(({}: Props) => {
     enable_geometry_search: projectData.enable_geometry_search,
     default_time_mode: projectData.default_time_mode,
     transparency_config: projectData.transparency_config,
+    hide_context_layer_tab: projectData.hide_context_layer_tab,
   });
 
   /** referenceLayerProject changed **/
@@ -127,15 +128,19 @@ const GeneralForm = memo(({}: Props) => {
     setData({ ...data, levelConfig: levelConfigProject });
   }, [levelConfigProject]);
 
-  /** levelConfigProject changed **/
-  useEffect(() => {
-    setData({ ...data, enable_geometry_search: enableGeometrySearchProject });
-  }, [enableGeometrySearchProject]);
-
   if (!data) {
     return null;
   }
 
+  const {
+    enable_geometry_search,
+    show_splash_first_open,
+    truncate_indicator_layer_name,
+    hide_context_layer_tab,
+  } = projectData;
+
+  // TODO:
+  //  We need to move using projectData
   const {
     id,
     name,
@@ -145,11 +150,8 @@ const GeneralForm = memo(({}: Props) => {
     group,
     referenceLayer,
     geoField,
-    enable_geometry_search,
     levelConfig,
     default_time_mode,
-    show_splash_first_open,
-    truncate_indicator_layer_name,
   } = data;
 
   const {
@@ -469,44 +471,41 @@ const GeneralForm = memo(({}: Props) => {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      id={"GeneralSplash"}
                       checked={show_splash_first_open}
                       onChange={(event) => {
-                        setData({
-                          ...data,
-                          show_splash_first_open: !show_splash_first_open,
-                        });
+                        dispatch(
+                          Actions.Dashboard.updateProps({
+                            show_splash_first_open: !show_splash_first_open,
+                          }),
+                        );
                       }}
                     />
                   }
-                  label={
-                    "Show as a splash screen when opening project for the first time"
-                  }
+                  label={t("admin.dashboard.showSplashScreenOnFirstOpen")}
                 />
               </FormGroup>
               <FormGroup>
                 <FormControlLabel
                   control={
                     <Checkbox
-                      id={"GeneralTruncateIndicatorName"}
                       checked={truncate_indicator_layer_name}
                       onChange={(event) => {
-                        setData({
-                          ...data,
-                          truncate_indicator_layer_name:
-                            !truncate_indicator_layer_name,
-                        });
+                        dispatch(
+                          Actions.Dashboard.updateProps({
+                            truncate_indicator_layer_name:
+                              !truncate_indicator_layer_name,
+                          }),
+                        );
                       }}
                     />
                   }
-                  label={"Truncate long indicator layer name"}
+                  label={t("admin.dashboard.truncateLongIndicatorLayerName")}
                 />
               </FormGroup>
               <FormGroup>
                 <FormControlLabel
                   control={
                     <Checkbox
-                      id={"GeneralEnableGeometrySearch"}
                       checked={enable_geometry_search}
                       onChange={(event) => {
                         dispatch(
@@ -517,7 +516,24 @@ const GeneralForm = memo(({}: Props) => {
                       }}
                     />
                   }
-                  label={"Enable geography entity search box"}
+                  label={t("admin.dashboard.enableGeographyEntitySearchBox")}
+                />
+              </FormGroup>
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={hide_context_layer_tab}
+                      onChange={(event) => {
+                        dispatch(
+                          Actions.Dashboard.updateProps({
+                            hide_context_layer_tab: !hide_context_layer_tab,
+                          }),
+                        );
+                      }}
+                    />
+                  }
+                  label={t("admin.dashboard.hideContextLayerTab")}
                 />
               </FormGroup>
             </Grid>

@@ -162,7 +162,11 @@
             "urlShortcode": "URL Shortcode",
             "urlShortcodeDescription": "Url of project in slug format. It will auto change space to \"-\" and to lowercase.\nIt will be generated from name if empty.",
             "transparencyOfIndicatorLayers": "Transparency of Indicator Layers",
-            "transparencyOfContextLayers": "Transparency of Context Layers"
+            "transparencyOfContextLayers": "Transparency of Context Layers",
+            "enableGeographyEntitySearchBox": "Enable geography entity search box",
+            "truncateLongIndicatorLayerName": "Truncate long indicator layer name",
+            "showSplashScreenOnFirstOpen": "Show as a splash screen when opening project for the first time",
+            "hideContextLayerTab": "Hide context layer tab"
         },
         "create": {
             "indicator": "Create New Indicator",
