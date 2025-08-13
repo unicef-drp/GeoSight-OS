@@ -16,14 +16,16 @@
 import {
   ZonalAnalysisDashboardConfiguration
 } from "../../../../components/ZonalAnalysisTool/index.d";
+import { dictDeepCopy } from "../../../../utils/main";
 
 /**
  * Dashboard tools reducer
  */
 
-
-export const DASHBOARD_TOOL_ACTION_NAME = 'DASHBOARD_TOOL';
-export const DASHBOARD_TOOL_ACTION_TYPE_UPDATE = 'DASHBOARD_TOOL/UPDATE';
+export const DASHBOARD_TOOL_ACTION_NAME = "DASHBOARD_TOOL";
+export const DASHBOARD_TOOL_ACTION_TYPE_UPDATE = "DASHBOARD_TOOL/UPDATE";
+export const DASHBOARD_TOOL_ACTION_TYPE_UPDATE_BATCH_VISIBILITY =
+  "DASHBOARD_TOOL/UPDATE_BATCH_VISIBILITY";
 
 export interface DashboardTool {
   id: string;
@@ -43,7 +45,7 @@ export interface DashboardToolAction {
 const initialState: DashboardToolState = [];
 export default function dashboardToolReducer(
   state: DashboardToolState = initialState,
-  action: DashboardToolAction
+  action: DashboardToolAction,
 ): DashboardToolState {
   if (action.name === DASHBOARD_TOOL_ACTION_NAME) {
     switch (action.type) {
@@ -56,6 +58,16 @@ export default function dashboardToolReducer(
             dashboardTools.push(dashboardTool); // Keep existing tools
           }
         });
+        return dashboardTools;
+      }
+      case DASHBOARD_TOOL_ACTION_TYPE_UPDATE_BATCH_VISIBILITY: {
+        const dashboardTools: DashboardToolState = dictDeepCopy(state);
+        dashboardTools.forEach((dashboardTool) => {
+          // @ts-ignore
+          dashboardTool.visible_by_default = action.payload;
+        });
+        console.log(action.payload);
+        console.log(dashboardTools);
         return dashboardTools;
       }
       default:

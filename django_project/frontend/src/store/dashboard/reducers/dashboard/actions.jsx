@@ -137,12 +137,21 @@ function receive(data, error = null) {
       delete data.level_config;
     }
 
+    // DASHBOARD TOOLS
     // Adding default tools
     [
       [Variables.DASHBOARD.TOOL.VIEW_3D, true],
       [Variables.DASHBOARD.TOOL.COMPARE_LAYERS, true],
       [Variables.DASHBOARD.TOOL.MEASUREMENT, true],
       [Variables.DASHBOARD.TOOL.ZONAL_ANALYSIS, false],
+      [Variables.DASHBOARD.TOOL.LEFT_PANEL_TOGGLE, true],
+      [Variables.DASHBOARD.TOOL.WIDGET_PANEL_TOGGLE, true],
+      [Variables.DASHBOARD.TOOL.MAP_LABEL_TOGGLE, true],
+      [Variables.DASHBOARD.TOOL.LEVEL_SELECTOR, true],
+      [Variables.DASHBOARD.TOOL.SEARCH_BOX, true],
+      [Variables.DASHBOARD.TOOL.EMBED_TOOL, true],
+      [Variables.DASHBOARD.TOOL.DATA_DOWNLOAD, true],
+      [Variables.DASHBOARD.TOOL.SPATIAL_BOOKMARK, true],
     ].map((tool) => {
       toolDefaults(data.tools, tool[0], tool[1]);
     });

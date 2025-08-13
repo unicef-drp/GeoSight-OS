@@ -13,13 +13,13 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-const CLOUD_NATIVE_GIS = 'Cloud Native GIS Layer';
-const RASTER_COG = 'Raster COG';
-const RASTER_TILE = 'Raster Tile';
-const RELATED_TABLE = 'Related Table';
-const VECTOR_TILE = 'Vector Tile';
-const ARCGIS = 'ARCGIS';
-const GEOJSON = 'Geojson';
+const CLOUD_NATIVE_GIS = "Cloud Native GIS Layer";
+const RASTER_COG = "Raster COG";
+const RASTER_TILE = "Raster Tile";
+const RELATED_TABLE = "Related Table";
+const VECTOR_TILE = "Vector Tile";
+const ARCGIS = "ARCGIS";
+const GEOJSON = "Geojson";
 
 export const Variables = {
   LAYER: {
@@ -37,7 +37,7 @@ export const Variables = {
       RASTER_TYPES: [RASTER_COG, RASTER_TILE],
       OVERRIDE_STYLES: [ARCGIS],
       LAYERS_NEED_PALETTE: [RASTER_COG],
-    }
+    },
   },
   DASHBOARD: {
     TOOL: {
@@ -45,13 +45,23 @@ export const Variables = {
       COMPARE_LAYERS: "Compare layers",
       MEASUREMENT: "Measurement",
       ZONAL_ANALYSIS: "Zonal analysis",
-    }
+
+      // New
+      LEFT_PANEL_TOGGLE: "Left panel toggle",
+      WIDGET_PANEL_TOGGLE: "Widget panel toggle",
+      MAP_LABEL_TOGGLE: "Map label toggle",
+      LEVEL_SELECTOR: "Level selector",
+      SEARCH_BOX: "Search box",
+      EMBED_TOOL: "Embed tool",
+      DATA_DOWNLOAD: "Data download",
+      SPATIAL_BOOKMARK: "Spatial bookmark",
+    },
   },
   FEATURE_TYPE: {
     MULTIPOLYGON: "MultiPolygon",
-    POLYGON: 'Polygon',
-    LINESTRING: 'LineString',
-    POINT: 'Point',
+    POLYGON: "Polygon",
+    LINESTRING: "LineString",
+    POINT: "Point",
   },
   LAYER_CATEGORY: {
     BASEMAP: "Basemap",
@@ -60,5 +70,5 @@ export const Variables = {
     HIGHTLIGHT: "Hightlight",
     LABEL: "Label",
     DRAW: "Draw",
-  }
-}
+  },
+};

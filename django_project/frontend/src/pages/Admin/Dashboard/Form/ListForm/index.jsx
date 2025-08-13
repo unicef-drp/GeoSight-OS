@@ -249,7 +249,6 @@ export default function ListForm({
     setDataStructure({ ...dataStructure });
     setOpen(false);
   };
-  console.log(singularPageName)
   return (
     <Fragment>
       {!treeData ? (
