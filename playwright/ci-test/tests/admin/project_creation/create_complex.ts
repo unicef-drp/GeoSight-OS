@@ -10,6 +10,8 @@ const TOOLS = {
   COMPARE_LAYERS: "Compare layers",
   ENTITY_SEARCH_BOX: 'Entity search box',
   SPATIAL_BOOKMARK: "Spatial bookmark",
+  LEFT_PANEL_TOGGLE: "Left panel toggle",
+  WIDGET_PANEL_TOGGLE: "Widget panel toggle",
 }
 test.describe('Create complex project', () => {
   test.beforeEach(async ({ page }) => {
@@ -161,6 +163,8 @@ test.describe('Create complex project', () => {
     await expect(page.locator(`.VisibilityIcon[data-name="${TOOLS.ENTITY_SEARCH_BOX}"]`).locator('.VisibilityIconOn')).toBeVisible();
     await expect(page.locator(`.VisibilityIcon[data-name="${TOOLS.COMPARE_LAYERS}"]`).locator('.VisibilityIconOn')).toBeVisible();
     await expect(page.locator(`.VisibilityIcon[data-name="${TOOLS.SPATIAL_BOOKMARK}"]`).locator('.VisibilityIconOn')).toBeVisible();
+    await expect(page.locator(`.VisibilityIcon[data-name="${TOOLS.LEFT_PANEL_TOGGLE}"]`).locator('.VisibilityIconOn')).toBeVisible();
+    await expect(page.locator(`.VisibilityIcon[data-name="${TOOLS.WIDGET_PANEL_TOGGLE}"]`).locator('.VisibilityIconOn')).toBeVisible();
 
     // Filter
     await page.locator('.TabPrimary').getByText('Filters').click();
@@ -197,6 +201,8 @@ test.describe('Create complex project', () => {
     await expect(page.locator(`[data-tool="${TOOLS.VIEW_3D}"]`)).toBeVisible();
     await expect(page.locator(`[data-tool="${TOOLS.COMPARE_LAYERS}"]`)).toBeVisible();
     await expect(page.locator(`[data-tool="${TOOLS.SPATIAL_BOOKMARK}"]`)).toBeVisible();
+    await expect(page.locator(`[data-tool="${TOOLS.LEFT_PANEL_TOGGLE}"]`)).toBeVisible();
+    await expect(page.locator(`[data-tool="${TOOLS.WIDGET_PANEL_TOGGLE}"]`)).toBeVisible();
 
     const layer1 = 'Sample Indicator A'
     const layer2 = 'Sample Indicator B'
@@ -360,6 +366,8 @@ test.describe('Create complex project', () => {
     await expect(page.locator(`[data-tool="${TOOLS.VIEW_3D}"]`)).not.toBeVisible();
     await expect(page.locator(`[data-tool="${TOOLS.COMPARE_LAYERS}"]`)).not.toBeVisible();
     await expect(page.locator(`[data-tool="${TOOLS.SPATIAL_BOOKMARK}"]`)).not.toBeVisible();
+    await expect(page.locator(`[data-tool="${TOOLS.LEFT_PANEL_TOGGLE}"]`)).not.toBeVisible();
+    await expect(page.locator(`[data-tool="${TOOLS.WIDGET_PANEL_TOGGLE}"]`)).not.toBeVisible();
 
     // ------------------------------------
     // DELETE PROJECT

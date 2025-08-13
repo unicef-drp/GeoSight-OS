@@ -46,7 +46,6 @@ export const Variables = {
       MEASUREMENT: "Measurement",
       ZONAL_ANALYSIS: "Zonal analysis",
 
-      // New
       LEFT_PANEL_TOGGLE: "Left panel toggle",
       WIDGET_PANEL_TOGGLE: "Widget panel toggle",
       MAP_LABEL_TOGGLE: "Map label toggle",
