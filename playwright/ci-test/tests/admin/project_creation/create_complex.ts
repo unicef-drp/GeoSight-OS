@@ -38,6 +38,34 @@ test.describe('Create complex project', () => {
     await page.getByPlaceholder('Select default admin level').click();
     await page.getByRole('option', { name: 'Admin Level 1' }).click();
 
+    // Check other configurations
+    {
+      const checkbox = await page.locator(
+        'label', { hasText: 'Show as a splash screen when opening project for the first time' }
+      ).locator('input[type="checkbox"]');
+      await expect(checkbox).toBeChecked();
+    }
+    {
+      const checkbox = await page.locator(
+        'label', { hasText: 'Truncate long indicator layer' }
+      ).locator('input[type="checkbox"]');
+      await expect(checkbox).not.toBeChecked();
+    }
+    {
+      const checkbox = await page.locator(
+        'label', { hasText: 'Enable geography entity' }
+      ).locator('input[type="checkbox"]');
+      await expect(checkbox).toBeChecked();
+    }
+    {
+      const checkbox = await page.locator(
+        'label', { hasText: 'Hide context layer tab' }
+      ).locator('input[type="checkbox"]');
+      await expect(checkbox).not.toBeChecked();
+    }
+    await page.locator('div').filter({ hasText: /^Project overviewBlock type$/ }).getByRole('textbox').getByRole('paragraph').click();
+    await page.locator('div').filter({ hasText: /^Project overviewParagraph$/ }).getByRole('textbox').fill('Test overview');
+
     // Add indicator
     await page.locator('.TabPrimary').getByText('Indicators').click();
     await page.getByRole('button', { name: 'Add Indicator' }).click();
@@ -156,7 +184,12 @@ test.describe('Create complex project', () => {
     // --------------------------------------------------------------
     // CHECK PREVIEW
     // --------------------------------------------------------------
-    await page.getByRole('button', { name: 'Live Preview' }).click();
+    await page.goto(`${BASE_URL}/project/test-project-complex-config/`);
+    await expect(page.getByText("Do not show this again!")).toBeVisible();
+    await expect(page.locator('.SearchEntityOption')).toBeVisible();
+    await expect(page.locator('.layers-tab-container').getByText('Context Layers')).toBeVisible();
+    await page.getByRole('button', { name: 'Close' }).click();
+
     const layer1 = 'Sample Indicator A'
     const layer2 = 'Sample Indicator B'
     await expect(page.getByLabel(layer1)).toBeVisible();
@@ -230,7 +263,48 @@ test.describe('Create complex project', () => {
     // --------------------------------------------------------------
     // CHECK PROJECT WITH OVERRIDE CONFIG EDIT MODE
     // --------------------------------------------------------------
-    await page.getByRole('button', { name: 'Back to form' }).click();
+    await page.goto(editUrl);
+
+    // Check other configurations
+    {
+      const checkbox = await page.locator(
+        'label', { hasText: 'Show as a splash screen when opening project for the first time' }
+      ).locator('input[type="checkbox"]');
+      await expect(checkbox).toBeChecked();
+    }
+    {
+      const checkbox = await page.locator(
+        'label', { hasText: 'Truncate long indicator layer' }
+      ).locator('input[type="checkbox"]');
+      await expect(checkbox).not.toBeChecked();
+    }
+    {
+      const checkbox = await page.locator(
+        'label', { hasText: 'Enable geography entity' }
+      ).locator('input[type="checkbox"]');
+      await expect(checkbox).toBeChecked();
+    }
+    {
+      const checkbox = await page.locator(
+        'label', { hasText: 'Hide context layer tab' }
+      ).locator('input[type="checkbox"]');
+      await expect(checkbox).not.toBeChecked();
+    }
+
+    // override above
+    await page.locator(
+      'label', { hasText: 'Show as a splash screen when opening project for the first time' }
+    ).click();
+    await page.locator(
+      'label', { hasText: 'Truncate long indicator layer' }
+    ).click();
+    await page.locator(
+      'label', { hasText: 'Enable geography entity' }
+    ).click();
+    await page.locator(
+      'label', { hasText: 'Hide context layer tab' }
+    ).click();
+
     await expect(page.locator('.MoreActionIcon')).toBeVisible();
     await expect(page.locator('.General .ReferenceDatasetSection input')).toHaveValue('Somalia');
     await expect(page.locator('.General .CodeMappingConfig input')).toHaveValue('Latest ucode');
@@ -268,9 +342,23 @@ test.describe('Create complex project', () => {
     await expect(page.locator('.RelatedTableConfiguration input').nth(0)).toHaveValue('Ucode');
     await expect(page.locator('.RelatedTableConfiguration input').nth(1)).toHaveValue('ucode');
 
+    // Save
+    await page.getByRole('button', { name: 'Save', exact: true }).isEnabled();
+    await page.getByRole('button', { name: 'Save', exact: true }).click();
+    await page.waitForURL(editUrl)
+
+    // --------------------------------------------------------------
+    // CHECK PREVIEW
+    // --------------------------------------------------------------
+    await page.goto(`${BASE_URL}/project/test-project-complex-config/`);
+    await expect(page.getByText("Do not show this again!")).not.toBeVisible();
+    await expect(page.locator('.SearchEntityOption')).not.toBeVisible();
+    await expect(page.locator('.layers-tab-container').getByText('Context Layers')).not.toBeVisible();
+
     // ------------------------------------
     // DELETE PROJECT
     // ------------------------------------
+    await page.goto(editUrl);
     await page.locator('.MoreActionIcon').click();
     await page.locator('.MuiMenu-root .MuiButtonBase-root .error').click();
     await expect(page.locator('.modal--content ')).toContainText(`Are you sure want to delete Test Project Complex Config?`);
