@@ -100,21 +100,10 @@ class Dashboard(
     basemaps_layers_structure = models.JSONField(null=True, blank=True)
     widgets_structure = models.JSONField(null=True, blank=True)
     level_config = models.JSONField(null=True, blank=True, default=dict)
-    show_splash_first_open = models.BooleanField(
-        null=True, blank=True, default=True,
-        help_text=_(
-            'Show a splash screen when opening project for the first time'
-        )
-    )
-    truncate_indicator_layer_name = models.BooleanField(
-        null=True, blank=True, default=False
-    )
-    enable_geometry_search = models.BooleanField(default=True)
-    default_time_mode = models.JSONField(null=True, blank=True)
 
-    content_limitation_description = 'Limit the number of project items'
-
+    # ------------------------------
     # Filters
+    # ------------------------------
     filters = models.TextField(
         blank=True, null=True
     )
@@ -125,6 +114,22 @@ class Dashboard(
         default=False
     )
 
+    # ------------------------------
+    # Configuration for dashboard
+    # ------------------------------
+    show_splash_first_open = models.BooleanField(
+        null=True, blank=True, default=True,
+        help_text=_(
+            'Show a splash screen when opening project for the first time'
+        )
+    )
+    truncate_indicator_layer_name = models.BooleanField(
+        null=True, blank=True, default=False
+    )
+    enable_geometry_search = models.BooleanField(default=True)
+    hide_context_layer_tab = models.BooleanField(default=False)
+    default_time_mode = models.JSONField(null=True, blank=True)
+
     # TransparencySlider
     transparency_config = models.JSONField(
         default={
@@ -134,6 +139,8 @@ class Dashboard(
         null=True,
         blank=True
     )
+
+    content_limitation_description = 'Limit the number of project items'
 
     @staticmethod
     def name_is_exist_of_all(slug: str) -> bool:

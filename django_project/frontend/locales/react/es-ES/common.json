@@ -162,7 +162,11 @@
             "urlShortcode": "Código Corto de URL",
             "urlShortcodeDescription": "URL del proyecto en formato slug. Automáticamente cambiará los espacios por \"-\" y a minúsculas.\nSe generará a partir del nombre si está vacío.",
             "transparencyOfIndicatorLayers": "Transparencia de las Capas de Indicadores",
-            "transparencyOfContextLayers": "Transparencia de las Capas de Contexto"
+            "transparencyOfContextLayers": "Transparencia de las Capas de Contexto",
+            "enableGeographyEntitySearchBox": "Habilitar cuadro de búsqueda de entidades geográficas",
+            "truncateLongIndicatorLayerName": "Truncar nombre largo de la capa de indicador",
+            "showSplashScreenOnFirstOpen": "Mostrar como pantalla de bienvenida al abrir el proyecto por primera vez",
+            "hideContextLayerTab": "Ocultar pestaña de capa de contexto"
         },
         "create": {
             "indicator": "Crear nuevo indicador",

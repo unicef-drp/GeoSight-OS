@@ -17,46 +17,50 @@
    LEFT SIDE CONTAINER
    ========================================================================== */
 
-import React from 'react';
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Box from '@mui/material/Box';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import { useTranslation } from 'react-i18next';
+import Box from "@mui/material/Box";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import { useTranslation } from "react-i18next";
 
-import { Actions } from '../../../store/dashboard';
-import { LEFT, RIGHT } from '../../../components/ToggleButton'
-import ContextLayersAccordion from './ContextLayers'
-import Indicators from './Indicators'
-import IndicatorLayersAccordion from './IndicatorLayers'
-import RelatedTables from './RelatedTable'
-import FiltersAccordion from './Filters'
-import { LayerIcon, TuneIcon, VisibilityIcon, VisibilityOffIcon } from "../../../components/Icons";
-import TabPanel, { tabProps } from "../../../components/Tabs/index"
+import { Actions } from "../../../store/dashboard";
+import { LEFT, RIGHT } from "../../../components/ToggleButton";
+import ContextLayersAccordion from "./ContextLayers";
+import Indicators from "./Indicators";
+import IndicatorLayersAccordion from "./IndicatorLayers";
+import RelatedTables from "./RelatedTable";
+import FiltersAccordion from "./Filters";
+import {
+  LayerIcon,
+  TuneIcon,
+  VisibilityIcon,
+  VisibilityOffIcon,
+} from "../../../components/Icons";
+import TabPanel, { tabProps } from "../../../components/Tabs/index";
 import { EmbedConfig } from "../../../utils/embed";
 
-import './style.scss';
+import "./style.scss";
 
 /**
  * Context layer visibility
  */
 export function ContextLayerVisibility() {
   const dispatch = useDispatch();
-  const {
-    contextLayersShow
-  } = useSelector(state => state.map);
+  const { contextLayersShow } = useSelector((state) => state.map);
 
   const handleVisibility = (e) => {
     e.stopPropagation();
-    dispatch(Actions.Map.showHideContextLayer(!contextLayersShow))
-  }
-  return contextLayersShow ? <VisibilityIcon
-    className="MuiTab-iconWrapper"
-    onClick={handleVisibility}
-  /> : <VisibilityOffIcon
-    className="MuiTab-iconWrapper"
-    onClick={handleVisibility}
-  />
+    dispatch(Actions.Map.showHideContextLayer(!contextLayersShow));
+  };
+  return contextLayersShow ? (
+    <VisibilityIcon className="MuiTab-iconWrapper" onClick={handleVisibility} />
+  ) : (
+    <VisibilityOffIcon
+      className="MuiTab-iconWrapper"
+      onClick={handleVisibility}
+    />
+  );
 }
 
 /**
@@ -64,35 +68,33 @@ export function ContextLayerVisibility() {
  */
 export function IndicatorsVisibility() {
   const dispatch = useDispatch();
-  const {
-    indicatorShow
-  } = useSelector(state => state.map);
+  const { indicatorShow } = useSelector((state) => state.map);
 
   const handleVisibility = (e) => {
     e.stopPropagation();
-    dispatch(Actions.Map.showHideIndicator(!indicatorShow))
-  }
+    dispatch(Actions.Map.showHideIndicator(!indicatorShow));
+  };
 
-  return indicatorShow ? <VisibilityIcon
-    className="MuiTab-iconWrapper"
-    onClick={handleVisibility}
-  /> : <VisibilityOffIcon
-    className="MuiTab-iconWrapper"
-    onClick={handleVisibility}
-  />
+  return indicatorShow ? (
+    <VisibilityIcon className="MuiTab-iconWrapper" onClick={handleVisibility} />
+  ) : (
+    <VisibilityOffIcon
+      className="MuiTab-iconWrapper"
+      onClick={handleVisibility}
+    />
+  );
 }
 
 /**
  * Left panel.
  */
 export default function LeftPanel({ leftExpanded }) {
-  const {
-    filtersAllowModify,
-    filtersBeingHidden
-  } = useSelector(state => state.dashboard.data);
-  const state = leftExpanded ? LEFT : RIGHT
-  const showLayerTab = !!EmbedConfig().layer_tab
-  const showFilterTab = !!EmbedConfig().filter_tab
+  const { filtersBeingHidden, hide_context_layer_tab } = useSelector(
+    (state) => state.dashboard.data,
+  );
+  const state = leftExpanded ? LEFT : RIGHT;
+  const showLayerTab = !!EmbedConfig().layer_tab;
+  const showFilterTab = !!EmbedConfig().filter_tab;
   const [tabValue, setTabValue] = React.useState(showLayerTab ? 0 : 1);
   const [tab2Value, setTab2Value] = React.useState(1);
   const { t } = useTranslation();
@@ -105,78 +107,102 @@ export default function LeftPanel({ leftExpanded }) {
     setTab2Value(newValue);
   };
 
-  const className = `dashboard__panel dashboard__left_side ${state}`
-  const classNameWrapper = `dashboard__content-wrapper`
+  const className = `dashboard__panel dashboard__left_side ${state}`;
+  const classNameWrapper = `dashboard__content-wrapper`;
   return (
     <section
-      className={className + (!showLayerTab ? ' HideLayer' : '') + (!showFilterTab ? ' HideFilter' : '')}
+      className={
+        className +
+        (!showLayerTab ? " HideLayer " : "") +
+        (!showFilterTab ? " HideFilter " : "")
+      }
     >
       <div className={classNameWrapper}>
-        <Box sx={{ width: '100%' }}>
-          {
-
-            !filtersBeingHidden &&
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Box sx={{ width: "100%" }}>
+          {!filtersBeingHidden && (
+            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
               <Tabs
                 value={tabValue}
                 onChange={handleChangeTab}
-                aria-label="basic tabs example">
+                aria-label="basic tabs example"
+              >
                 <Tab
-                  className='layers-tab'
-                  label={t('dashboardPage.layers')}
-                  icon=<LayerIcon/>
-                iconPosition="start"
-                {...tabProps('Layers')}
+                  className="layers-tab"
+                  label={t("dashboardPage.layers")}
+                  icon=<LayerIcon />
+                  iconPosition="start"
+                  {...tabProps("Layers")}
                 />
                 <Tab
-                  className='filters-tab'
-                  label={t('dashboardPage.filters')}
-                  icon=<TuneIcon/>
-                iconPosition="start"
-                {...tabProps('Filters')}
+                  className="filters-tab"
+                  label={t("dashboardPage.filters")}
+                  icon=<TuneIcon />
+                  iconPosition="start"
+                  {...tabProps("Filters")}
                 />
               </Tabs>
             </Box>
-          }
-          <TabPanel value={tabValue} index={0}
-                    className={'sidepanel-tab layers-tab'}>
-            <Box sx={{ width: '100%' }}>
-              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}
-                   className={'layers-tab-container'}>
-                <Tabs value={tab2Value} onChange={handleChangeTab2}
-                      aria-label="basic tabs example">
-                  <Tab
-                    label={t('dashboardPage.contextLayers')}
-                    icon={<ContextLayerVisibility/>}
-                    iconPosition='end'
-                    {...tabProps(0)}
-                  />
-                  <Tab
-                    label={t('dashboardPage.indicators')}
-                    icon={<IndicatorsVisibility/>}
-                    iconPosition='end'
-                    {...tabProps(1)}
-                  />
-                </Tabs>
-              </Box>
-              <TabPanel value={tab2Value} index={0}
-                        className={'sidepanel-tab layers-panel'}>
-                <ContextLayersAccordion/>
-              </TabPanel>
-              <TabPanel value={tab2Value} index={1}
-                        className={'sidepanel-tab layers-panel'}>
-                <IndicatorLayersAccordion/>
+          )}
+          <TabPanel
+            value={tabValue}
+            index={0}
+            className={"sidepanel-tab layers-tab"}
+          >
+            <Box sx={{ width: "100%" }}>
+              {!hide_context_layer_tab && (
+                <Box
+                  sx={{ borderBottom: 1, borderColor: "divider" }}
+                  className={"layers-tab-container"}
+                >
+                  <Tabs
+                    value={tab2Value}
+                    onChange={handleChangeTab2}
+                    aria-label="basic tabs example"
+                  >
+                    <Tab
+                      label={t("dashboardPage.contextLayers")}
+                      icon={<ContextLayerVisibility />}
+                      iconPosition="end"
+                      {...tabProps(0)}
+                    />
+                    <Tab
+                      label={t("dashboardPage.indicators")}
+                      icon={<IndicatorsVisibility />}
+                      iconPosition="end"
+                      {...tabProps(1)}
+                    />
+                  </Tabs>
+                </Box>
+              )}
+              {!hide_context_layer_tab && (
+                <TabPanel
+                  value={tab2Value}
+                  index={0}
+                  className={"sidepanel-tab layers-panel"}
+                >
+                  <ContextLayersAccordion />
+                </TabPanel>
+              )}
+              <TabPanel
+                value={tab2Value}
+                index={1}
+                className={"sidepanel-tab layers-panel"}
+              >
+                <IndicatorLayersAccordion />
               </TabPanel>
             </Box>
-            <Indicators/>
-            <RelatedTables/>
+            <Indicators />
+            <RelatedTables />
           </TabPanel>
-          <TabPanel value={tabValue} index={1}
-                    className={'sidepanel-tab filters-tab'}>
-            <FiltersAccordion/>
+          <TabPanel
+            value={tabValue}
+            index={1}
+            className={"sidepanel-tab filters-tab"}
+          >
+            <FiltersAccordion />
           </TabPanel>
         </Box>
       </div>
     </section>
-  )
+  );
 }
