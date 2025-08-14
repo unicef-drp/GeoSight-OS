@@ -58,8 +58,24 @@
 }
 
 @media (max-width: 1000px) {
+  .modal--box {
+    min-width: unset !important;
+  }
   .MuiPopover-root .MuiMenuItem-root {
     min-height: unset;
+  }
+  .maplibregl-ctrl-bottom-right {
+    right: 0 !important;
+  }
+  .DashboardMiddlePanel .BottomContent {
+    height: 0 !important;
+
+    .Separator, .RightSection {
+      display: none;
+    }
+  }
+  .DashboardMiddlePanel .BottomContent.DateOpen {
+    height: 140px !important;
   }
   .Fullscreen {
     display: none !important;;
@@ -77,9 +93,6 @@
   .LeftExpanded .Toolbar {
     padding-left: 0 !important;
   }
-  .DashboardMiddlePanel {
-    z-index: 1000;
-  }
   .layers-tab #simple-tabpanel-0,
   .layers-tab #simple-tabpanel-1,
   .filters-tab,
@@ -93,6 +106,9 @@
     padding-bottom: var(--mobile-bottom-nav-height) !important;;
     width: 100vw !important;;
     transition: left 0.2s !important;
+  }
+  .DashboardMiddlePanel .TopContent {
+    z-index: 10;
   }
   .DashboardMiddlePanel .RightContent {
     background-color: white !important;
