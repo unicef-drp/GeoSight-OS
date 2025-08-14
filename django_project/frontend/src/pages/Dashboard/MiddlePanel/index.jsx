@@ -62,7 +62,7 @@ export default function MiddlePanel(
           </div>
           <div className='ContentLine Inner'>
             <Basemaps/>
-            <div className='Disclaimer'>{preferences.disclaimer}</div>
+            <div className='Disclaimer Fullscreen'>{preferences.disclaimer}</div>
           </div>
         </div>
         <div className='Separator'/>

@@ -93,7 +93,7 @@ export default function ToggleSidePanel({
   return (
     <Plugin className={props.className}>
       <div
-        className="Active"
+        className="Active Fullscreen"
         data-tool={
           props.className === "LeftButton"
             ? Variables.DASHBOARD.TOOL.LEFT_PANEL_TOGGLE

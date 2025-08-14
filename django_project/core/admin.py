@@ -90,7 +90,8 @@ class SitePreferencesAdmin(admin.ModelAdmin):
                 'primary_color', 'anti_primary_color',
                 'secondary_color', 'anti_secondary_color',
                 'tertiary_color', 'anti_tertiary_color',
-                'icon', 'favicon'
+                'icon', 'small_icon',
+                'favicon'
             ),
         }),
         ('Default Time Mode', {

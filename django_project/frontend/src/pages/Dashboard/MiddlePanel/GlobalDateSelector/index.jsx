@@ -542,7 +542,6 @@ export default function GlobalDateSelector() {
   return <div
     className={'GlobalDateSelection ' + (globalDateSelectorOpened ? 'Open ' : '') + (hide ? 'Hide' : '')}>
     <div className='UpperFloating'>
-      <div className='Separator'/>
       <PlayControl
         dates={marks.map(mark => mark.date)}
         selectedDatePoint={selectedDatePoint}
@@ -570,7 +569,6 @@ export default function GlobalDateSelector() {
           }
         </ThemeButton>
       </PlayControl>
-      <div className='Separator'/>
     </div>
     <div
       className={'GlobalDateSelectionOuterWrapper'}>

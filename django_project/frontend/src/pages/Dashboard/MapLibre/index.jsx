@@ -40,6 +40,7 @@ import {
   GlobalDateSelector,
   HomeButton,
   LabelToggler,
+  ProjectOverview,
   SearchGeometryInput,
   TiltControl,
   ToggleSidePanel,
@@ -61,6 +62,7 @@ import { Variables } from "../../../utils/Variables";
 import { addLayerWithOrder } from "./Render";
 import { TransparencyControl } from "./Transparency";
 import { getDashboardTool } from "../../../utils/dashboardTool";
+import MobileBottomNav from "../../../components/MobileBottomNav";
 
 maplibregl.addProtocol("cog", cogProtocol);
 
@@ -309,6 +311,9 @@ export default function MapLibre({
               }}
             />
           ) : null}
+          <div className="Mobile">
+            <ProjectOverview />
+          </div>
           <Plugin
             className={"ReferenceLayerToolbar"}
             hidden={!levelSelectorEnable}
@@ -404,6 +409,9 @@ export default function MapLibre({
           <TransparencyControl map={map} ref={transparencyRef} />
         </>
       ) : null}
+
+      {/* Navbar footer */}
+      <MobileBottomNav />
     </section>
   );
 }
