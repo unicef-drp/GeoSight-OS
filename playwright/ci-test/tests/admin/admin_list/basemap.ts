@@ -80,8 +80,60 @@ test.describe('Basemap list admin', () => {
     await page.getByLabel('Basemap Name').click();
     await expect(page.locator('.MuiDataGrid-row').nth(0).locator('.MuiDataGrid-cell').nth(1)).toContainText('Basemap A0');
 
-    // Delete per row
+    // Check Show Selected
     await page.reload();
+    await delay(500)
+    await page.locator('div:nth-child(3) > .MuiDataGrid-cellCheckbox').click();
+    await page.locator('div:nth-child(4) > .MuiDataGrid-cellCheckbox').click();
+    await page.locator('div:nth-child(5) > .MuiDataGrid-cellCheckbox').click();
+    await page.locator('div:nth-child(6) > .MuiDataGrid-cellCheckbox').click();
+    await page.getByRole('button', { name: 'Show selected' }).click();
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–4 of 4');
+    await page.getByRole('cell', { name: 'Unselect row' }).first().click();
+    await page.getByRole('cell', { name: 'Unselect row' }).first().click();
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–2 of 2');
+    await page.getByRole('button', { name: 'Show selected' }).click();
+    await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–13 of 13');
+    await expect(page.getByRole('cell', { name: 'Unselect row' }).nth(0)).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'Unselect row' }).nth(1)).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'Unselect row' }).nth(2)).toBeHidden();
+
+    // ----------------------------------
+    // Test Project Selection
+    // ----------------------------------
+    await page.goto('/admin/project/create');
+    await page.locator('.DashboardFormHeader').getByText('Basemaps').click();
+    await page.getByRole('button', { name: 'Add Basemap' }).click();
+    await expect(page.locator('.ModalDataSelector')).toBeVisible()
+
+    // Check Show Selected
+    await delay(500)
+    await page.locator('.ModalDataSelector').locator('.MuiDataGrid-row').nth(0).click();
+    await page.locator('.ModalDataSelector').locator('.MuiDataGrid-row').nth(1).click();
+    await page.locator('.ModalDataSelector').locator('.MuiDataGrid-row').nth(2).click();
+    await page.locator('.ModalDataSelector').locator('.MuiDataGrid-row').nth(3).click();
+    await page.locator('.ModalDataSelector').getByRole('button', { name: 'Show selected' }).click();
+    await expect(page.locator('.ModalDataSelector').locator('.MuiTablePagination-displayedRows').first()).toContainText('1–5 of 5');
+    await page.locator('.ModalDataSelector').getByRole('cell', { name: 'Unselect row' }).nth(2).click();
+    await page.locator('.ModalDataSelector').getByRole('cell', { name: 'Unselect row' }).nth(2).click();
+    await page.locator('.ModalDataSelector').getByRole('cell', { name: 'Unselect row' }).nth(2).click();
+    await expect(page.locator('.ModalDataSelector').locator('.MuiTablePagination-displayedRows').first()).toContainText('1–2 of 2');
+    await page.locator('.ModalDataSelector').getByRole('button', { name: 'Show selected' }).click();
+    await expect(page.locator('.ModalDataSelector').locator('.MuiTablePagination-displayedRows').first()).toContainText('1–13 of 13');
+    await expect(page.locator('.ModalDataSelector').getByRole('cell', { name: 'Unselect row' }).nth(0)).toBeVisible();
+    await expect(page.locator('.ModalDataSelector').getByRole('cell', { name: 'Unselect row' }).nth(1)).toBeVisible();
+    await expect(page.locator('.ModalDataSelector').getByRole('cell', { name: 'Unselect row' }).nth(2)).toBeHidden();
+
+    // Select
+    await page.locator('.ModalDataSelector').getByRole('button', { name: 'Update Selection' }).click()
+    await expect(page.locator('.ModalDataSelector').locator('.ModalDataSelector')).toBeHidden()
+    await expect(page.getByText('Basemap A0').first()).toBeVisible();
+    await expect(page.getByText('Basemap A1').first()).toBeVisible();
+
+    // ------------------------------------------------------
+    // DELETE THE CREATED
+    // ------------------------------------------------------
+    await page.goto(_url);
     await page.getByPlaceholder('Search Basemap').fill('Basemap A');
     await expect(page.locator('.MuiTablePagination-displayedRows').first()).toContainText('1–10 of 10');
     await page.locator('.MuiDataGrid-row').nth(0).getByTestId('MoreVertIcon').click();

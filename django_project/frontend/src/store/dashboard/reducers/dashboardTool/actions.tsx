@@ -16,8 +16,9 @@
 import {
   DASHBOARD_TOOL_ACTION_NAME,
   DASHBOARD_TOOL_ACTION_TYPE_UPDATE,
-  DashboardTool
-} from './index'
+  DASHBOARD_TOOL_ACTION_TYPE_UPDATE_BATCH_VISIBILITY,
+  DashboardTool,
+} from "./index";
 
 /**
  * Update dashboard tool data.
@@ -27,8 +28,21 @@ export function update(payload: DashboardTool) {
   return {
     name: DASHBOARD_TOOL_ACTION_NAME,
     type: DASHBOARD_TOOL_ACTION_TYPE_UPDATE,
-    payload: payload
+    payload: payload,
   };
 }
 
-export default { update }
+/**
+ * Update dashboard tool visibility in batch mode.
+ * Using dictionary
+ * @param {boolean} payload The visibility state for updates.
+ */
+export function updateBatchVisibility(payload: boolean) {
+  return {
+    name: DASHBOARD_TOOL_ACTION_NAME,
+    type: DASHBOARD_TOOL_ACTION_TYPE_UPDATE_BATCH_VISIBILITY,
+    payload: payload,
+  };
+}
+
+export default { update, updateBatchVisibility };

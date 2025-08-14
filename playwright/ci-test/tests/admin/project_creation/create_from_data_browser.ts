@@ -32,7 +32,7 @@ test.describe('Create project from dataset', () => {
     await page.getByRole('button', { name: 'Update Selection' }).click();
     await page.locator('.AdminTable .MuiDataGrid-columnHeaderCheckbox').first().click();
     await page.getByRole('button', { name: 'Add to New Project' }).click();
-    await expect(page.getByText('Save')).toBeVisible();
+    await expect(page.locator("#GeneralName")).toBeVisible();
 
     await page.locator("#GeneralName").fill('Test From Dataset');
     await page.locator("#GeneralCategory").click();

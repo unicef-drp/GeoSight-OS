@@ -456,7 +456,6 @@ class DashboardSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'slug', 'icon', 'name', 'description',
             'category', 'group', 'extent',
-            'filters', 'filters_being_hidden', 'filters_allow_modify',
             'reference_layer', 'level_config',
             'indicators', 'indicator_layers', 'indicator_layers_structure',
             'context_layers', 'context_layers_structure',
@@ -464,10 +463,21 @@ class DashboardSerializer(serializers.ModelSerializer):
             'widgets', 'widgets_structure',
             'related_tables',
             'user_permission',
-            'geo_field', 'show_splash_first_open',
-            'truncate_indicator_layer_name', 'enable_geometry_search',
+            'geo_field',
             'overview', 'default_time_mode', 'tools',
-            'view_url', 'transparency_config'
+            'view_url',
+
+            # ------------------------------
+            # Filters
+            # ------------------------------
+            'filters', 'filters_being_hidden', 'filters_allow_modify',
+
+            # ------------------------------
+            # Configuration for dashboard
+            # ------------------------------
+            'show_splash_first_open',
+            'truncate_indicator_layer_name',
+            'hide_context_layer_tab', 'transparency_config'
         )
 
 
@@ -550,7 +560,8 @@ class DashboardBasicSerializer(ResourceSerializer):
         from django.conf import settings
         if obj.thumbnail:
             if os.path.exists(obj.thumbnail):
-                return obj.thumbnail.replace(settings.MEDIA_ROOT, 'media')
+                return obj.thumbnail.replace(
+                    settings.MEDIA_ROOT, settings.MEDIA_URL).replace('//', '/')
         return None
 
     class Meta:  # noqa: D106

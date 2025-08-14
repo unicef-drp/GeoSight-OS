@@ -19,7 +19,7 @@ import React, {
   useImperativeHandle,
   useMemo,
   useRef,
-  useState
+  useState,
 } from "react";
 import { AdminListContentProps } from "./types";
 import EditIcon from "@mui/icons-material/Edit";
@@ -28,7 +28,7 @@ import { MagnifyIcon } from "../Icons";
 import { AddButton, ThemeButton } from "../Elements/Button";
 import { ServerTable } from "../Table";
 import { debounce } from "@mui/material/utils";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
 /**
  * Admin List that contains content of list
@@ -44,43 +44,45 @@ import { useTranslation } from 'react-i18next';
  */
 
 export const AdminListContent = forwardRef(
-  ({
-     columns,
-     pageName,
-     title,
-     url = {
-       list: null,
-       detail: null,
-       create: null,
-       edit: null,
-       batch: null,
-     },
-     initData = null,
-     defaults = {
-       search: null,
-       sort: null
-     },
-     useSearch = true,
-     searchKey = 'q',
-     enableFilter = false,
+  (
+    {
+      columns,
+      pageName,
+      title,
+      url = {
+        list: null,
+        detail: null,
+        create: null,
+        edit: null,
+        batch: null,
+      },
+      initData = null,
+      defaults = {
+        search: null,
+        sort: null,
+      },
+      useSearch = true,
+      searchKey = "q",
+      enableFilter = false,
 
-     // Table props
-     multipleDelete,
-     parentGetParameters,
+      // Table props
+      multipleDelete,
+      parentGetParameters,
 
-     // Styling
-     className,
+      // Styling
+      className,
 
-     // Parent selector
-     selection,
-     selectionChanged,
+      // Parent selector
+      selection,
+      selectionChanged,
 
-     // Children
-     rightHeader,
-     middleContent,
+      // Children
+      rightHeader,
+      middleContent,
 
-     ...props
-   }: AdminListContentProps, ref
+      ...props
+    }: AdminListContentProps,
+    ref,
   ) => {
     // References
     const tableRef = useRef(null);
@@ -89,152 +91,163 @@ export const AdminListContent = forwardRef(
     const [selectionModel, setSelectionModel] = useState([]);
     const [search, setSearch] = useState<string>(defaults.search);
 
-    const dataName = pageName.replace(/s$/, '');
+    const dataName = pageName.replace(/s$/, "");
 
     /** Refresh data **/
     useImperativeHandle(ref, () => ({
       refresh(force: boolean) {
-        tableRef?.current?.refresh(force)
-      }
+        tableRef?.current?.refresh(force);
+      },
     }));
 
     // When inner selection changed
     useEffect(() => {
       if (selectionChanged) {
         if (JSON.stringify(selectionModel) !== JSON.stringify(selection)) {
-          selectionChanged(selectionModel)
+          selectionChanged(selectionModel);
         }
       }
-    }, [selectionModel])
+    }, [selectionModel]);
 
     // When selection changed
     useEffect(() => {
       if (selection) {
-        setSelectionModel(selection)
+        setSelectionModel(selection);
       }
-    }, [selection])
+    }, [selection]);
 
     // When init data changed
     useEffect(() => {
       if (initData) {
-        const selectableIds = initData.filter(row => [null, undefined, true].includes(row.selectable)).map(row => row.id)
-        const newSelectionModel = selectionModel.filter(row => selectableIds.includes(row))
-        if (JSON.stringify(newSelectionModel) !== JSON.stringify(selectionModel)) {
-          setSelectionModel(newSelectionModel)
+        const selectableIds = initData
+          .filter((row) => [null, undefined, true].includes(row.selectable))
+          .map((row) => row.id);
+        const newSelectionModel = selectionModel.filter((row) =>
+          selectableIds.includes(row),
+        );
+        if (
+          JSON.stringify(newSelectionModel) !== JSON.stringify(selectionModel)
+        ) {
+          setSelectionModel(newSelectionModel);
         }
       }
-    }, [initData])
+    }, [initData]);
 
     // Create selectable functions
     let selectableFunction: any = false;
-    if ((multipleDelete || url.batch)) {
+    if (multipleDelete || url.batch) {
       selectableFunction = (params: any) => {
-        const { permission } = params.row
+        const { permission } = params.row;
         if (!permission) {
-          return true
+          return true;
         }
-        return (url.batch && permission?.edit) || (multipleDelete && permission?.delete)
-      }
+        return (
+          (url.batch && permission?.edit) ||
+          (multipleDelete && permission?.delete)
+        );
+      };
     }
     if (props.selectableFunction) {
-      selectableFunction = props.selectableFunction
+      selectableFunction = props.selectableFunction;
     }
 
     /** Create button **/
     const createButton = () => {
       // @ts-ignore
       if (user.is_creator && url.create) {
-        return <a href={url.create}>
-          <AddButton
-            variant="primary"
-            text={t('admin.createNew', { pageName: t('admin.pageNameFormats.singular.' + pageName) })}
-          />
-        </a>
+        return (
+          <a href={url.create}>
+            <AddButton
+              variant="primary"
+              text={t("admin.createNew", {
+                pageName: t("admin.pageNameFormats.singular." + pageName),
+              })}
+            />
+          </a>
+        );
       }
-    }
+    };
 
     /** Button for batch edit **/
     const batchEditButton = () => {
       // @ts-ignore
       if (user.is_creator && url.batch) {
-        const selectedIds = selectionModel
-        return <a
-          href={url.batch + '?ids=' + selectedIds.join(',')}>
-          <ThemeButton
-            variant="primary Basic"
-            disabled={!selectedIds.length}>
-            <EditIcon/>{t('admin.edit')}
-          </ThemeButton>
-        </a>
+        const selectedIds = selectionModel;
+        return (
+          <a href={url.batch + "?ids=" + selectedIds.join(",")}>
+            <ThemeButton variant="primary Basic" disabled={!selectedIds.length}>
+              <EditIcon />
+              {t("admin.edit")}
+            </ThemeButton>
+          </a>
+        );
       }
-    }
+    };
     /** Search value changed, debouce **/
     const searchValueUpdate = useMemo(
       () =>
-        debounce(
-          (newValue) => {
-            setSelectionModel([])
-            tableRef?.current?.refresh(false)
-          },
-          400
-        ),
-      []
-    )
+        debounce((newValue) => {
+          setSelectionModel([]);
+          tableRef?.current?.refresh(false);
+        }, 400),
+      [],
+    );
 
     /** Search name value changed **/
     useEffect(() => {
-      searchValueUpdate(search)
+      searchValueUpdate(search);
     }, [search]);
 
     /*** Parameters Changed */
     const getParameters = (parameters: any) => {
       if (search) {
-        parameters[searchKey] = search
+        parameters[searchKey] = search;
       } else {
-        delete parameters[searchKey]
+        delete parameters[searchKey];
       }
 
       if (parentGetParameters) {
-        parameters = parentGetParameters(parameters)
+        parameters = parentGetParameters(parameters);
       }
-      return parameters
-    }
+      return parameters;
+    };
 
-    columns.map(column => {
+    columns.map((column) => {
       // @ts-ignore
-      column.tableRef = tableRef
-    })
+      column.tableRef = tableRef;
+    });
 
     /** Render **/
     return (
-      <div className={'AdminContent ' + className}>
-        <div className='AdminContentHeader'>
-          <div className='AdminContentHeader-Left'>
-            <b className='light' dangerouslySetInnerHTML={{ __html: title }}/>
+      <div className={"AdminContent " + className}>
+        <div className="AdminContentHeader">
+          <div className="AdminContentHeader-Left">
+            <b className="light" dangerouslySetInnerHTML={{ __html: title }} />
           </div>
           <div>
-            {
-              !useSearch ? null :
-                <IconTextField
-                  // @ts-ignore
-                  placeholder={t('admin.searchPlaceholder', { pageName: t('admin.pageNameFormats.singular.' + pageName).toLowerCase() })}
-                  defaultValue={search ? search : ""}
-                  iconEnd={<MagnifyIcon/>}
-                  onChange={(evt: React.ChangeEvent<HTMLInputElement>) => {
-                    setSearch(evt.target.value.toLowerCase())
-                  }}
-                />
-            }
+            {!useSearch ? null : (
+              <IconTextField
+                // @ts-ignore
+                placeholder={t("admin.searchPlaceholder", {
+                  pageName: t(
+                    "admin.pageNameFormats.singular." + pageName,
+                  ).toLowerCase(),
+                })}
+                defaultValue={search ? search : ""}
+                iconEnd={<MagnifyIcon />}
+                onChange={(evt: React.ChangeEvent<HTMLInputElement>) => {
+                  setSearch(evt.target.value.toLowerCase());
+                }}
+              />
+            )}
           </div>
-          <div className='AdminContentHeader-Right'>
+          <div className="AdminContentHeader-Right">
             {rightHeader ? rightHeader : null}
             {createButton()}
           </div>
         </div>
-        <div className='AdminContentMiddle'>
-          {middleContent}
-        </div>
-        <div className='AdminList'>
+        <div className="AdminContentMiddle">{middleContent}</div>
+        <div className="AdminList">
           <ServerTable
             url={url.list}
             dataName={dataName}
@@ -243,24 +256,20 @@ export const AdminListContent = forwardRef(
             setSelectionModel={setSelectionModel}
             getParameters={getParameters}
             checkboxSelection={true}
-            rightHeader={
-              <>{batchEditButton()}</>
-            }
+            rightHeader={<>{batchEditButton()}</>}
             defaults={defaults}
-            enable={
-              {
-                delete: true,
-                select: true,
-                filter: enableFilter
-              }
-            }
+            enable={{
+              delete: true,
+              select: true,
+              filter: enableFilter,
+            }}
             isRowSelectable={selectableFunction}
             parentGetParameters={parentGetParameters}
-
+            rowIdKey={props.rowIdKey}
             ref={tableRef}
           />
         </div>
       </div>
-    )
-  }
-)
+    );
+  },
+);

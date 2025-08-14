@@ -56,6 +56,7 @@ import DashboardFormHeader from "./DashboardFormHeader";
 import Tooltip from "@mui/material/Tooltip";
 import { IS_DEBUG } from "../../../../utils/logger";
 import DashboardHistory from "./History";
+import { useTranslation } from "react-i18next";
 
 /**
  * Dashboard history
@@ -209,6 +210,11 @@ export function DashboardSaveForm() {
     default_time_mode,
     tools,
     transparency_config,
+
+    // Configurations
+    show_splash_first_open,
+    truncate_indicator_layer_name,
+    hide_context_layer_tab,
   } = useSelector((state) => state.dashboard.data);
   const { data } = useSelector((state) => state.dashboard);
   const [submitted, setSubmitted] = useState(false);
@@ -236,13 +242,6 @@ export function DashboardSaveForm() {
     const overview = $("#GeneralOverview").val();
     const icon = $("#GeneralIcon")[0].files[0];
     const category = $("#GeneralCategory .ReactSelect__single-value").text();
-    const splashScreen = $("#GeneralSplash").is(":checked");
-    const truncateIndicatorName = $("#GeneralTruncateIndicatorName").is(
-      ":checked",
-    );
-    const enableGeometrySearch = $("#GeneralEnableGeometrySearch").is(
-      ":checked",
-    );
 
     if (!name) {
       errors.push("Name is empty, please fill it.");
@@ -348,9 +347,6 @@ export function DashboardSaveForm() {
         filters_allow_modify: filtersAllowModify,
         filters_being_hidden: filtersBeingHidden,
         permission: permission,
-        show_splash_first_open: splashScreen,
-        truncate_indicator_layer_name: truncateIndicatorName,
-        enable_geometry_search: enableGeometrySearch,
         tools: tools,
       };
 
@@ -367,9 +363,14 @@ export function DashboardSaveForm() {
       formData.append("group", category);
       formData.append("data", JSON.stringify(dashboardData));
       formData.append("geoField", geoField);
-      formData.append("show_splash_first_open", splashScreen);
-      formData.append("truncate_indicator_layer_name", truncateIndicatorName);
-      formData.append("enable_geometry_search", enableGeometrySearch);
+
+      // Configurations
+      formData.append("show_splash_first_open", show_splash_first_open);
+      formData.append(
+        "truncate_indicator_layer_name",
+        truncate_indicator_layer_name,
+      );
+      formData.append("hide_context_layer_tab", hide_context_layer_tab);
       formData.append("default_time_mode", JSON.stringify(default_time_mode));
       formData.append(
         "transparency_config",

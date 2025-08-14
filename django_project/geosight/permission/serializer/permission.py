@@ -52,9 +52,12 @@ class PermissionSerializer:
             user=self.creator
         )
         if users_permissions:
-            self.user_permissions = users_permissions.select_related(
-                'user'
-            )
+            try:
+                self.user_permissions = users_permissions.select_related(
+                    'user'
+                )
+            except AttributeError:
+                self.user_permissions = users_permissions
 
         # Check group permission init
         self.group_permissions = obj.group_permissions.all()
