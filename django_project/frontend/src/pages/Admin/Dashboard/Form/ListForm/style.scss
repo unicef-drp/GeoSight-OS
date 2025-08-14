@@ -184,8 +184,8 @@
 }
 
 .TableForm {
-  .SortableTree {
-    margin-top: -2rem;
+  .SortableTree > p {
+    display: none;
   }
 }
 

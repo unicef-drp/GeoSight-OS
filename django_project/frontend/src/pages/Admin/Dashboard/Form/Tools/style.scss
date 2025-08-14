@@ -30,6 +30,17 @@
   .TreeItemCheckbox {
     display: none;
   }
+
+  .AllToggleVisibility {
+    min-width: unset;
+    padding: 0;
+    border-radius: 4px !important;
+
+    svg {
+      margin-right: 0 !important;
+    }
+  }
+
 }
 
 .ZonalAnalysisConfiguration {

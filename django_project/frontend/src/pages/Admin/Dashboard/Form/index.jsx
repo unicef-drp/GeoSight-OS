@@ -213,7 +213,6 @@ export function DashboardSaveForm() {
 
     // Configurations
     show_splash_first_open,
-    enable_geometry_search,
     truncate_indicator_layer_name,
     hide_context_layer_tab,
   } = useSelector((state) => state.dashboard.data);
@@ -371,7 +370,6 @@ export function DashboardSaveForm() {
         "truncate_indicator_layer_name",
         truncate_indicator_layer_name,
       );
-      formData.append("enable_geometry_search", enable_geometry_search);
       formData.append("hide_context_layer_tab", hide_context_layer_tab);
       formData.append("default_time_mode", JSON.stringify(default_time_mode));
       formData.append(

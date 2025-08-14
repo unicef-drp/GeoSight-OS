@@ -21,74 +21,78 @@ import React, {
   forwardRef,
   useImperativeHandle,
   useRef,
-  useState
-} from 'react';
+  useState,
+} from "react";
 import maplibregl from "maplibre-gl";
 import { Plugin, PluginChild } from "../../MapLibre/Plugin";
 import {
   ZonalAnalysisOffIcon,
-  ZonalAnalysisOnIcon
+  ZonalAnalysisOnIcon,
 } from "../../../../components/Icons";
 import { ZonalAnalysisTool } from "../../../../components/ZonalAnalysisTool";
 
-import './style.scss';
+import "./style.scss";
+import { Variables } from "../../../../utils/Variables";
 
 interface Props {
   map: maplibregl.Map;
-  started: () => void
+  started: () => void;
 }
-
 
 /**
  * Zonal Analysis
  */
-export const ZonalAnalysisComponent = forwardRef((
-    { map, started }: Props, ref
-  ) => {
+export const ZonalAnalysisComponent = forwardRef(
+  ({ map, started }: Props, ref) => {
     const toolRef = useRef(null);
     const [active, setActive] = useState(false);
 
     useImperativeHandle(ref, () => ({
       stop() {
-        toolRef?.current?.stop()
-        setActive(false)
+        toolRef?.current?.stop();
+        setActive(false);
       },
       redraw() {
-        toolRef?.current?.redraw()
+        toolRef?.current?.redraw();
       },
       isActive() {
-        toolRef?.current?.isActive()
-      }
+        toolRef?.current?.isActive();
+      },
     }));
 
     const toggle = (active: boolean) => {
       if (!active) {
-        toolRef?.current?.stop()
+        toolRef?.current?.stop();
       }
-      started()
-      setActive(active)
-    }
+      started();
+      setActive(active);
+    };
 
-    return <Plugin className='PopupToolbarIcon ZonalAnalysisIcon'>
-      <div className='Active'>
-        <PluginChild
-          title={'Zonal Analysis'}
-          disabled={!map}
-          active={active}
-          onClick={() => {
-            if (map) {
-              toggle(!active)
-            }
-          }}>
-          {active ? <ZonalAnalysisOnIcon/> : <ZonalAnalysisOffIcon/>}
-        </PluginChild>
-      </div>
-      {
-        active ? <div className='PopupToolbarComponent'>
-          <ZonalAnalysisTool map={map} ref={toolRef}/>
-        </div> : null
-      }
-
-    </Plugin>
-  }
-)
+    return (
+      <Plugin className="PopupToolbarIcon ZonalAnalysisIcon">
+        <div
+          className="Active"
+          data-tool={Variables.DASHBOARD.TOOL.ZONAL_ANALYSIS}
+        >
+          <PluginChild
+            title={"Zonal Analysis"}
+            disabled={!map}
+            active={active}
+            onClick={() => {
+              if (map) {
+                toggle(!active);
+              }
+            }}
+          >
+            {active ? <ZonalAnalysisOnIcon /> : <ZonalAnalysisOffIcon />}
+          </PluginChild>
+        </div>
+        {active ? (
+          <div className="PopupToolbarComponent">
+            <ZonalAnalysisTool map={map} ref={toolRef} />
+          </div>
+        ) : null}
+      </Plugin>
+    );
+  },
+);

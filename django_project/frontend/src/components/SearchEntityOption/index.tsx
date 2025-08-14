@@ -32,6 +32,7 @@ import { ReferenceLayer } from "../../types/Project";
 import { Entity } from "../../types/Entity";
 
 import "./style.scss";
+import { Variables } from "../../utils/Variables";
 
 let lastAbortController: AbortController | null = null;
 
@@ -202,6 +203,7 @@ function SearchEntityOption({ onSelected }: Props) {
         (selected ? "HasData " : "") +
         (queue.length === 0 || loading ? "Loading " : "")
       }
+      data-tool={Variables.DASHBOARD.TOOL.ENTITY_SEARCH_BOX}
     >
       <AsyncAutocomplete
         noOptionsText={"No entity found"}

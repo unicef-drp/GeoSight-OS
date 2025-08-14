@@ -17,68 +17,108 @@
    Toggle Side  Panel
    ========================================================================== */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 import { Plugin, PluginChild } from "../../MapLibre/Plugin";
 import {
   GraphCheckedIcon,
   GraphUncheckedIcon,
   LeftPanelCheckedIcon,
-  LeftPanelUncheckedIcon
-} from "../../../../components/Icons/index"
+  LeftPanelUncheckedIcon,
+} from "../../../../components/Icons/index";
 import { LEFT, RIGHT } from "../../../../components/ToggleButton";
 
-import './style.scss';
+import "./style.scss";
+import { useSelector } from "react-redux";
+import { getDashboardTool } from "../../../../utils/dashboardTool";
+import { Variables } from "../../../../utils/Variables";
 
 /**
  * ToggleSidePanel.
  */
-export default function ToggleSidePanel(
-  { initState, onLeft, onRight, ...props }
-) {
-  const [state, setState] = useState(props.className === 'LeftButton' ? LEFT : RIGHT);
-  const [active, setActive] = useState('');
+export default function ToggleSidePanel({
+  initState,
+  onLeft,
+  onRight,
+  ...props
+}) {
+  // Tools
+  const { tools } = useSelector((state) => state.dashboard.data);
+  // @ts-ignore
+  const leftPanelToggleEnable = getDashboardTool(
+    tools,
+    Variables.DASHBOARD.TOOL.LEFT_PANEL_TOGGLE,
+  )?.visible_by_default;
+  const rightPanelToggleEnable = getDashboardTool(
+    tools,
+    Variables.DASHBOARD.TOOL.WIDGET_PANEL_TOGGLE,
+  )?.visible_by_default;
+
+  const [state, setState] = useState(
+    props.className === "LeftButton" ? LEFT : RIGHT,
+  );
+  const [active, setActive] = useState("");
 
   useEffect(() => {
-    setState(initState)
-    setActive('Active')
-  }, [])
+    setState(initState);
+    setActive("Active");
+  }, []);
 
   const change = () => {
     const newState = state === RIGHT ? LEFT : RIGHT;
     setState(newState);
 
     if (newState === LEFT) {
-      onLeft()
+      onLeft();
     } else if (newState === RIGHT) {
-      onRight()
+      onRight();
     }
     if (
-      (props.className === 'LeftButton' && newState === LEFT) ||
-      (props.className === 'RightButton' && newState === RIGHT)
+      (props.className === "LeftButton" && newState === LEFT) ||
+      (props.className === "RightButton" && newState === RIGHT)
     ) {
-      setActive('Active')
+      setActive("Active");
     } else {
-      setActive('')
+      setActive("");
     }
   };
 
+  if (!leftPanelToggleEnable && props.className === "LeftButton") {
+    return null;
+  }
+  if (!rightPanelToggleEnable && props.className === "RightButton") {
+    return null;
+  }
+
   return (
     <Plugin className={props.className}>
-      <div className='Active'>
+      <div
+        className="Active"
+        data-tool={
+          props.className === "LeftButton"
+            ? Variables.DASHBOARD.TOOL.LEFT_PANEL_TOGGLE
+            : Variables.DASHBOARD.TOOL.WIDGET_PANEL_TOGGLE
+        }
+      >
         <PluginChild
-          title={'Toggle Panel'}
+          title={"Toggle Panel"}
           onClick={() => {
-            change()
+            change();
           }}
         >
-          {
-            props.className === 'LeftButton' ? active === 'Active' ?
-                <LeftPanelCheckedIcon/> : <LeftPanelUncheckedIcon/> :
-              active === 'Active' ? <GraphCheckedIcon/> : <GraphUncheckedIcon/>
-          }
+          {props.className === "LeftButton" ? (
+            active === "Active" ? (
+              <LeftPanelCheckedIcon />
+            ) : (
+              <LeftPanelUncheckedIcon />
+            )
+          ) : active === "Active" ? (
+            <GraphCheckedIcon />
+          ) : (
+            <GraphUncheckedIcon />
+          )}
         </PluginChild>
       </div>
     </Plugin>
-  )
+  );
 }

@@ -717,7 +717,6 @@
       "level_config": {},
       "show_splash_first_open": true,
       "truncate_indicator_layer_name": false,
-      "enable_geometry_search": true,
       "default_time_mode": null
     }
   },
@@ -749,7 +748,6 @@
       "level_config": {},
       "show_splash_first_open": true,
       "truncate_indicator_layer_name": false,
-      "enable_geometry_search": true,
       "default_time_mode": null
     }
   },
@@ -781,7 +779,6 @@
       "level_config": {},
       "show_splash_first_open": true,
       "truncate_indicator_layer_name": false,
-      "enable_geometry_search": true,
       "default_time_mode": null
     }
   },
@@ -813,7 +810,6 @@
       "level_config": {},
       "show_splash_first_open": true,
       "truncate_indicator_layer_name": false,
-      "enable_geometry_search": true,
       "default_time_mode": null
     }
   },

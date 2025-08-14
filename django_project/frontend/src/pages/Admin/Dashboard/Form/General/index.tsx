@@ -61,7 +61,6 @@ export interface GeneralData {
   // Configurations
   show_splash_first_open: boolean;
   truncate_indicator_layer_name: boolean;
-  enable_geometry_search: boolean;
   hide_context_layer_tab: boolean;
   transparency_config: TransparencyConfiguration;
 }
@@ -102,7 +101,6 @@ const GeneralForm = memo(({}: Props) => {
     levelConfig: projectData.levelConfig,
     show_splash_first_open: projectData.show_splash_first_open,
     truncate_indicator_layer_name: projectData.truncate_indicator_layer_name,
-    enable_geometry_search: projectData.enable_geometry_search,
     default_time_mode: projectData.default_time_mode,
     transparency_config: projectData.transparency_config,
     hide_context_layer_tab: projectData.hide_context_layer_tab,
@@ -133,7 +131,6 @@ const GeneralForm = memo(({}: Props) => {
   }
 
   const {
-    enable_geometry_search,
     show_splash_first_open,
     truncate_indicator_layer_name,
     hide_context_layer_tab,
@@ -500,23 +497,6 @@ const GeneralForm = memo(({}: Props) => {
                     />
                   }
                   label={t("admin.dashboard.truncateLongIndicatorLayerName")}
-                />
-              </FormGroup>
-              <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={enable_geometry_search}
-                      onChange={(event) => {
-                        dispatch(
-                          Actions.Dashboard.updateProps({
-                            enable_geometry_search: !enable_geometry_search,
-                          }),
-                        );
-                      }}
-                    />
-                  }
-                  label={t("admin.dashboard.enableGeographyEntitySearchBox")}
                 />
               </FormGroup>
               <FormGroup>

@@ -15,29 +15,16 @@ __date__ = '30/12/2024'
 __copyright__ = ('Copyright 2023, Unicef')
 
 from django.contrib.gis.db import models
-from django.utils.translation import gettext_lazy as _
 
 from geosight.data.models.dashboard.dashboard_relation import (
     DashboardRelation
 )
 
 
-class ToolName(models.TextChoices):
-    """Choices of request status."""
-
-    VIEW_3D = '3D view', _('3D view')
-    COMPARE_LAYERS = 'Compare layers', _('Compare layers')
-    MEASUREMENT = 'Measurement', _('Measurement')
-    ZONAL_ANALYSIS = 'Zonal analysis', _('Zonal analysis')
-
-
 class DashboardTool(DashboardRelation):
     """Dashboard tool."""
 
-    name = models.CharField(
-        max_length=255,
-        choices=ToolName.choices
-    )
+    name = models.CharField(max_length=255)
     config = models.JSONField(null=True, blank=True)
 
     def __str__(self):

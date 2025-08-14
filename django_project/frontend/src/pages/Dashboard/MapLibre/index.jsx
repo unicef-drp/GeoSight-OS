@@ -60,6 +60,7 @@ import { PopupToolbars } from "../Toolbars/PopupToolbars";
 import { Variables } from "../../../utils/Variables";
 import { addLayerWithOrder } from "./Render";
 import { TransparencyControl } from "./Transparency";
+import { getDashboardTool } from "../../../utils/dashboardTool";
 
 maplibregl.addProtocol("cog", cogProtocol);
 
@@ -84,17 +85,20 @@ export default function MapLibre({
   const transparencyRef = useRef(null);
 
   // Tools
-  const { tools: dashboardTools } = useSelector(
-    (state) => state.dashboard.data,
-  );
-  const tools = dashboardTools.filter(
-    (row) =>
-      row.visible_by_default &&
-      [
-        Variables.DASHBOARD.TOOL.VIEW_3D,
-        Variables.DASHBOARD.TOOL.COMPARE_LAYERS,
-      ].includes(row.name),
-  );
+  const { tools } = useSelector((state) => state.dashboard.data);
+  // @ts-ignore
+  const view3DEnable = getDashboardTool(
+    tools,
+    Variables.DASHBOARD.TOOL.VIEW_3D,
+  )?.visible_by_default;
+  const levelSelectorEnable = getDashboardTool(
+    tools,
+    Variables.DASHBOARD.TOOL.LEVEL_SELECTOR,
+  )?.visible_by_default;
+  const embedToolEnable = getDashboardTool(
+    tools,
+    Variables.DASHBOARD.TOOL.EMBED_TOOL,
+  )?.visible_by_default;
 
   const drawingRef = useRef(null);
   const redrawMeasurement = () => drawingRef.current.redrawMeasurement();
@@ -305,8 +309,11 @@ export default function MapLibre({
               }}
             />
           ) : null}
-          <Plugin className={"ReferenceLayerToolbar"}>
-            <div>
+          <Plugin
+            className={"ReferenceLayerToolbar"}
+            hidden={!levelSelectorEnable}
+          >
+            <div data-tool={Variables.DASHBOARD.TOOL.LEVEL_SELECTOR}>
               <PluginChild
                 title={"Reference Layer selection"}
                 className={"ReferenceLayerSelectorWrapper"}
@@ -322,37 +329,32 @@ export default function MapLibre({
           <div className="Separator" />
           <HomeButton map={map} />
           <LabelToggler />
-          {tools.find(
-            (tool) => tool.name === Variables.DASHBOARD.TOOL.COMPARE_LAYERS,
-          ) ? (
-            <CompareLayer disabled={is3dMode} />
-          ) : null}
+          <CompareLayer disabled={is3dMode} />
           {/* 3D View */}
-          {tools.find(
-            (tool) => tool.name === Variables.DASHBOARD.TOOL.VIEW_3D,
-          ) ? (
-            <Plugin>
-              <div className="ExtrudedIcon Active">
-                <PluginChild
-                  title={"3D layer"}
-                  disabled={!map}
-                  active={is3dMode}
-                  onClick={() => {
-                    if (is3dMode) {
-                      map.easeTo({ pitch: 0 });
-                    }
-                    dispatch(Actions.Map.change3DMode(!is3dMode));
-                  }}
-                >
-                  {is3dMode ? (
-                    <ThreeDimensionOnIcon />
-                  ) : (
-                    <ThreeDimensionOffIcon />
-                  )}
-                </PluginChild>
-              </div>
-            </Plugin>
-          ) : null}
+          <Plugin hidden={!view3DEnable}>
+            <div
+              className="ExtrudedIcon Active"
+              data-tool={Variables.DASHBOARD.TOOL.VIEW_3D}
+            >
+              <PluginChild
+                title={"3D layer"}
+                disabled={!map}
+                active={is3dMode}
+                onClick={() => {
+                  if (is3dMode) {
+                    map.easeTo({ pitch: 0 });
+                  }
+                  dispatch(Actions.Map.change3DMode(!is3dMode));
+                }}
+              >
+                {is3dMode ? (
+                  <ThreeDimensionOnIcon />
+                ) : (
+                  <ThreeDimensionOffIcon />
+                )}
+              </PluginChild>
+            </div>
+          </Plugin>
           <PopupToolbars map={map} ref={drawingRef} />
           <div className="Separator" />
         </div>
@@ -360,8 +362,11 @@ export default function MapLibre({
         {/* Embed */}
         <div className="Toolbar-Right">
           <SearchGeometryInput map={map} />
-          <Plugin className="EmbedControl">
-            <div className="Active">
+          <Plugin className="EmbedControl" hidden={!embedToolEnable}>
+            <div
+              className="Active"
+              data-tool={Variables.DASHBOARD.TOOL.EMBED_TOOL}
+            >
               <PluginChild title={"Get embed code"}>
                 <EmbedControl map={map} />
               </PluginChild>

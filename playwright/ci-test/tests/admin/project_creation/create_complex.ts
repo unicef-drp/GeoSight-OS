@@ -5,6 +5,22 @@ import { BASE_URL } from "../../variables";
 const timeout = 2000;
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
+const TOOLS = {
+  VIEW_3D: "3D view",
+  COMPARE_LAYERS: "Compare layers",
+  MEASUREMENT: "Measurement",
+  ZONAL_ANALYSIS: "Zonal analysis",
+
+  LEFT_PANEL_TOGGLE: "Left panel toggle",
+  WIDGET_PANEL_TOGGLE: "Widget panel toggle",
+  MAP_LABEL_TOGGLE: "Map label toggle",
+  LEVEL_SELECTOR: "Level selector",
+  ENTITY_SEARCH_BOX: 'Entity search box',
+  EMBED_TOOL: "Embed tool",
+  DATA_DOWNLOAD: "Data download",
+  SPATIAL_BOOKMARK: "Spatial bookmark",
+
+}
 test.describe('Create complex project', () => {
   test.beforeEach(async ({ page }) => {
     // Go to the starting url before each test.
@@ -13,6 +29,22 @@ test.describe('Create complex project', () => {
 
   // A use case tests scenarios
   test('Create with complex config', async ({ page }) => {
+    const checkToolConfigActive = async () => {
+      for (const tool of Object.keys(TOOLS)) {
+        await expect(page.locator(`.VisibilityIcon[data-name="${TOOLS[tool]}"]`).locator('.VisibilityIconOn')).toBeVisible();
+      }
+    }
+    const checkToolIconVisible = async () => {
+      for (const tool of Object.keys(TOOLS)) {
+        await expect(page.locator(`[data-tool="${TOOLS[tool]}"]`)).toBeVisible();
+      }
+    }
+    const checkToolIconNotVisible = async () => {
+      for (const tool of Object.keys(TOOLS)) {
+        await expect(page.locator(`[data-tool="${TOOLS[tool]}"]`)).not.toBeVisible();
+      }
+    }
+
     // --------------------------------------------------------------
     // CREATE PROJECT WITH OVERRIDE CONFIG
     // --------------------------------------------------------------
@@ -50,12 +82,6 @@ test.describe('Create complex project', () => {
         'label', { hasText: 'Truncate long indicator layer' }
       ).locator('input[type="checkbox"]');
       await expect(checkbox).not.toBeChecked();
-    }
-    {
-      const checkbox = await page.locator(
-        'label', { hasText: 'Enable geography entity' }
-      ).locator('input[type="checkbox"]');
-      await expect(checkbox).toBeChecked();
     }
     {
       const checkbox = await page.locator(
@@ -155,9 +181,9 @@ test.describe('Create complex project', () => {
 
     // Update tools
     await page.locator('.TabPrimary').getByText('Tools').click();
-    await page.locator('li').filter({ hasText: '3D view' }).getByRole('img').click();
-    await page.locator('li').filter({ hasText: 'Compare layers' }).getByRole('img').click();
-    await page.locator('li').filter({ hasText: 'Zonal analysis' }).getByRole('img').click();
+    await page.locator(`.AllToggleVisibility`).click();
+    await expect(page.locator('.TableForm.Tools').locator(`.VisibilityIconOff`)).toHaveCount(0);
+    await checkToolConfigActive()
 
     // Filter
     await page.locator('.TabPrimary').getByText('Filters').click();
@@ -187,8 +213,11 @@ test.describe('Create complex project', () => {
     await page.goto(`${BASE_URL}/project/test-project-complex-config/`);
     await expect(page.getByText("Do not show this again!")).toBeVisible();
     await expect(page.locator('.SearchEntityOption')).toBeVisible();
-    await expect(page.locator('.layers-tab-container').getByText('Context Layers')).toBeVisible();
     await page.getByRole('button', { name: 'Close' }).click();
+
+    // Check tools works
+    await expect(page.locator('.layers-tab-container').getByText('Context Layers')).toBeVisible();
+    await checkToolIconVisible();
 
     const layer1 = 'Sample Indicator A'
     const layer2 = 'Sample Indicator B'
@@ -240,10 +269,7 @@ test.describe('Create complex project', () => {
     await expect(page.locator('.MapLegendSection .IndicatorLegendRowName').nth(1)).toContainText("No data");
 
     // CHECK TOOLS VISIBILITY
-    await expect(page.getByTitle('Zonal Analysis')).toBeVisible();
     await expect(page.getByTitle('Start Measurement')).toBeVisible();
-    await expect(page.getByTitle('Turn on compare Layers')).toBeHidden();
-    await expect(page.getByTitle('3D layer')).toBeHidden();
     await page.getByTitle('Start Measurement').click();
     await expect(page.getByText('Measure distances and areas')).toBeVisible();
     await page.getByTitle('Zonal Analysis').click();
@@ -280,12 +306,6 @@ test.describe('Create complex project', () => {
     }
     {
       const checkbox = await page.locator(
-        'label', { hasText: 'Enable geography entity' }
-      ).locator('input[type="checkbox"]');
-      await expect(checkbox).toBeChecked();
-    }
-    {
-      const checkbox = await page.locator(
         'label', { hasText: 'Hide context layer tab' }
       ).locator('input[type="checkbox"]');
       await expect(checkbox).not.toBeChecked();
@@ -297,9 +317,6 @@ test.describe('Create complex project', () => {
     ).click();
     await page.locator(
       'label', { hasText: 'Truncate long indicator layer' }
-    ).click();
-    await page.locator(
-      'label', { hasText: 'Enable geography entity' }
     ).click();
     await page.locator(
       'label', { hasText: 'Hide context layer tab' }
@@ -342,6 +359,11 @@ test.describe('Create complex project', () => {
     await expect(page.locator('.RelatedTableConfiguration input').nth(0)).toHaveValue('Ucode');
     await expect(page.locator('.RelatedTableConfiguration input').nth(1)).toHaveValue('ucode');
 
+    // Update tools
+    await page.locator('.TabPrimary').getByText('Tools').click();
+    await page.locator(`.AllToggleVisibility`).click();
+    await expect(page.locator('.TableForm.Tools').locator(`.VisibilityIconOn`)).toHaveCount(0);
+
     // Save
     await page.getByRole('button', { name: 'Save', exact: true }).isEnabled();
     await page.getByRole('button', { name: 'Save', exact: true }).click();
@@ -352,8 +374,12 @@ test.describe('Create complex project', () => {
     // --------------------------------------------------------------
     await page.goto(`${BASE_URL}/project/test-project-complex-config/`);
     await expect(page.getByText("Do not show this again!")).not.toBeVisible();
+    await expect(page.getByText("Layers")).toBeVisible();
     await expect(page.locator('.SearchEntityOption')).not.toBeVisible();
+
+    // Checking tools works
     await expect(page.locator('.layers-tab-container').getByText('Context Layers')).not.toBeVisible();
+    await checkToolIconNotVisible()
 
     // ------------------------------------
     // DELETE PROJECT

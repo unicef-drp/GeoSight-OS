@@ -28,6 +28,7 @@ import { GeorepoUrls, updateToken } from "../../../../utils/georepo";
 import { removeLayer, removeSource } from "../../MapLibre/utils";
 import { Entity } from "../../../../types/Entity";
 import { Logger } from "../../../../utils/logger";
+import { getDashboardTool } from "../../../../utils/dashboardTool";
 
 import "./style.scss";
 
@@ -41,10 +42,12 @@ interface Props {
  * CompareLayer component.
  */
 export default function SearchGeometryInput({ map }: Props) {
-  const {
-    enable_geometry_search,
-    // @ts-ignore
-  } = useSelector((state) => state.dashboard.data);
+  // @ts-ignore
+  const { tools } = useSelector((state) => state.dashboard.data);
+  const enable_geometry_search = getDashboardTool(
+    tools,
+    Variables.DASHBOARD.TOOL.ENTITY_SEARCH_BOX,
+  )?.visible_by_default;
 
   const referenceLayerDataState = useSelector(
     // @ts-ignore
