@@ -12,12 +12,12 @@
 # __copyright__ = ('Copyright 2023, Unicef')
 
 
-# FROM ubuntu:22.04 AS prod
+FROM ubuntu:22.04 AS prod
 # ----------------------------------------------------------------
 # NOTE: If you forgot to run setup.sh and you are arm architecture
 #  And comment above FROM
 # ----------------------------------------------------------------
-FROM --platform=linux/arm64 ubuntu:22.04 AS prod
+#FROM --platform=linux/arm64 ubuntu:22.04 AS prod
 # --------------------------------------------
 
 MAINTAINER Irwan Fathurrahman<meomancer@gmail.com>

@@ -17,7 +17,7 @@
    NAVBAR
    ========================================================================== */
 
-import React, { useState } from "react";
+import React from "react";
 import $ from "jquery";
 import { useTranslation } from "react-i18next";
 
@@ -32,41 +32,20 @@ export default function Footer() {
   // Set width of logo
   // Not working using css on firefox
   $(".page__header-logo").width($(".page__header-link").width());
-
-  // Only show mobile nav on small screens
-  const [activePanel, setActivePanel] = useState("map");
-  const navItems = [
-    { key: "context", icon: "📄", label: "Context" },
-    { key: "indicator", icon: "📊", label: "Indicator" },
-    { key: "filters", icon: "🔍", label: "Filters" },
-    { key: "map", icon: "🗺️", label: "Map" },
-    { key: "widgets", icon: "📈", label: "Widgets" },
-  ];
-
-  // Emit a custom event for panel switching (for integration)
-  const handleNavClick = (key) => {
-    setActivePanel(key);
-    const event = new CustomEvent("mobilePanelSwitch", { detail: { panel: key } });
-    window.dispatchEvent(event);
-  };
-
   return (
-    <>
-      <footer className="MobileBottomNav">
-        {navItems.map((item) => (
-          <div
-            key={item.key}
-            className={
-              "MobileBottomNav__item" +
-              (activePanel === item.key ? " MobileBottomNav__item--active" : "")
-            }
-            onClick={() => handleNavClick(item.key)}
-          >
-            <span role="img" aria-label={item.label}>{item.icon}</span>
-            <div style={{ fontSize: "0.75rem" }}>{item.label}</div>
-          </div>
-        ))}
-      </footer>
-    </>
+    <footer>
+      <div className="Footer">
+        <a
+          href={homepageUrl}
+          title={i18n.t("Homepage")}
+          className="nav-header-link"
+        >
+          <img src={icon} alt="Logo" />
+        </a>
+        <div className="FooterTitle">
+          Version <span className="FooterVersion">{version}</span>
+        </div>
+      </div>
+    </footer>
   );
 }
