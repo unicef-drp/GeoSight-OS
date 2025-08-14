@@ -77,39 +77,21 @@
 
     & > div {
       background-color: $white !important;
-    }
-
-    .EmbedControl,
-    .BookmarkControl,
-    .DownloadControl {
-      padding: 2px;
-
-      a {
-        margin: 0 !important;
-        height: 28px !important;
-        width: 28px !important;
-
-        svg {
-          width: 16px;
-          height: 16px;
-        }
-      }
+      background-color: $white !important;
     }
 
     .EmbedControl {
-      margin-right: 10px;
+      a {
+        width: 38px !important;
+      }
 
       svg {
         width: 28px !important;
       }
     }
 
-    .RightButton {
-      margin-right: 1rem;
-    }
-
     .Toolbar-Left {
-      padding-left: 0.5rem;
+      padding-left: 11px;
       flex-grow: 1;
     }
 
@@ -121,11 +103,39 @@
     }
 
     .Toolbar-Right {
+      padding-right: 11px;
+
       .ToolbarChild {
         a {
           display: flex;
           text-align: center;
           align-items: center;
+          justify-content: center;
+        }
+      }
+    }
+
+    .Toolbar-Middle,
+    .Toolbar-Right {
+      a {
+        margin: 0 !important;
+        padding: 6px !important;
+        line-height: unset !important;
+
+        svg {
+          height: 16px;
+          width: 16px;
+        }
+      }
+
+      .RightButton {
+        a {
+          padding: 0 !important;
+
+          svg {
+            height: unset;
+            width: unset;
+          }
         }
       }
     }
@@ -155,17 +165,6 @@
         margin-top: -2px;
         height: 20px;
         width: 20px;
-      }
-
-      a {
-        margin: 0 !important;
-        padding: 6px !important;
-        line-height: unset !important;
-
-        svg {
-          height: 16px;
-          width: 16px;
-        }
       }
     }
 

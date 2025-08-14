@@ -313,18 +313,19 @@ export default function MapLibre({
               }}
             />
           ) : null}
-          {levelSelectorEnable && (
-            <Plugin className={"ReferenceLayerToolbar"}>
-              <div data-tool={Variables.DASHBOARD.TOOL.LEVEL_SELECTOR}>
-                <PluginChild
-                  title={"Reference Layer selection"}
-                  className={"ReferenceLayerSelectorWrapper"}
-                >
-                  <ReferenceLayerSection />
-                </PluginChild>
-              </div>
-            </Plugin>
-          )}
+          <Plugin
+            className={"ReferenceLayerToolbar"}
+            hidden={!levelSelectorEnable}
+          >
+            <div data-tool={Variables.DASHBOARD.TOOL.LEVEL_SELECTOR}>
+              <PluginChild
+                title={"Reference Layer selection"}
+                className={"ReferenceLayerSelectorWrapper"}
+              >
+                <ReferenceLayerSection />
+              </PluginChild>
+            </div>
+          </Plugin>
           <GlobalDateSelector />
         </div>
 
