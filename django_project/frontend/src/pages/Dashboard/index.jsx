@@ -26,7 +26,6 @@ import { EmbedConfig } from "../../utils/embed";
 import { LEFT, RIGHT } from "../../components/ToggleButton";
 import { ProjectOverview } from "./Toolbars";
 import { useTranslation } from 'react-i18next';
-import MobileBottomNav from '../../components/MobileBottomNav';
 
 import './style.scss';
 
@@ -108,9 +107,6 @@ export default function Dashboard({ children }) {
         </div>
       }
       {children ? children : ""}
-
-      {/* Navbar footer */}
-      <MobileBottomNav />
     </div>
   );
 }

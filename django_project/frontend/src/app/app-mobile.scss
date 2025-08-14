@@ -1,0 +1,79 @@
+/**
+* GeoSight is UNICEF's geospatial web-based business intelligence platform.
+*
+* Contact : geosight-no-reply@unicef.org
+*
+* .. note:: This program is free software; you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation; either version 3 of the License, or
+*     (at your option) any later version.
+*
+* __author__ = 'irwan@kartoza.com'
+* __date__ = '14/08/2025'
+* __copyright__ = ('Copyright 2023, Unicef')
+*/
+
+@media (min-width: 1300px) {
+  .DashboardMap {
+    .Toolbar {
+      .Toolbar-Middle {
+        position: absolute;
+        left: 50%;
+        margin-left: -100px;
+        top: 9px;
+        width: 200px;
+      }
+    }
+  }
+  .MobileBottomNav {
+    display: none;
+  }
+}
+
+@media (max-width: 1300px) {
+  .DashboardMap {
+    .Toolbar {
+      .Toolbar-Middle {
+        position: unset;
+      }
+    }
+  }
+  .MobileBottomNav {
+    background: var(--navbar-background-color);
+    display: flex;
+    align-items: center;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
+  }
+  .MobileBottomNav__item {
+    flex: 1;
+    text-align: center;
+    color: var(--navbar-font-color);
+    font-size: 1.5rem;
+    padding: 8px 0;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .MobileBottomNav__item--active {
+    color: var(--primary-color);
+    background: var(--white);
+    border-top: 2px solid var(--primary-color);
+  }
+  body, html {
+    padding-bottom: 56px !important; // Prevent content from being hidden behind nav
+  }
+
+  .MobilePanel {
+    display: none;
+    height: calc(100vh - 56px - var(--nav-header-height));
+    overflow-y: auto;
+    background: #fff;
+    position: fixed;
+    top: var(--nav-header-height);
+    left: 0;
+    width: 100vw;
+    z-index: 900;
+  }
+  .MobilePanel--active {
+    display: block;
+  }
+}
