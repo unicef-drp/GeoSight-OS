@@ -17,6 +17,7 @@ __copyright__ = ('Copyright 2023, Unicef')
 from django.conf import settings
 from django.core import signing
 from django.core.signing import BadSignature
+from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -26,6 +27,9 @@ from core.models.singleton import SingletonModel
 
 DEFAULT_OUTLINE_COLOR = '#FFFFFF'
 DEFAULT_OUTLINE_SIZE = 0.5
+
+file_validators = FileExtensionValidator(
+    allowed_extensions=['png', 'jpg', 'jpeg', 'svg', 'gif'])
 
 
 def default_machine_info_fetcher_config():
@@ -175,13 +179,21 @@ class SitePreferences(AbstractFileCleanup, SingletonModel):
             'Anti of tertiary color that used for text in primary color.'
         )
     )
-    icon = models.ImageField(
+    icon = models.FileField(
         upload_to='settings/icons',
+        validators=[file_validators],
         null=True,
         blank=True
     )
-    favicon = models.ImageField(
+    small_icon = models.FileField(
         upload_to='settings/icons',
+        validators=[file_validators],
+        null=True,
+        blank=True
+    )
+    favicon = models.FileField(
+        upload_to='settings/icons',
+        validators=[file_validators],
         null=True,
         blank=True
     )

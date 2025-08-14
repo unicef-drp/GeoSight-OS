@@ -37,6 +37,14 @@
         position: unset;
       }
     }
+
+    .CurrentDate {
+      display: none;
+    }
+
+    .SearchEntityOption {
+      width: 175px;
+    }
   }
 }
 
@@ -44,14 +52,61 @@
   .MobileBottomNav {
     display: none;
   }
+  .Mobile {
+    display: none !important;
+  }
 }
 
 @media (max-width: 1000px) {
+  .MuiPopover-root .MuiMenuItem-root {
+    min-height: unset;
+  }
+  .Fullscreen {
+    display: none !important;;
+  }
   .MobileBottomNav {
     display: flex;
   }
   .DashboardMiddlePanel,
   .dashboard__left_side {
     padding-bottom: var(--mobile-bottom-nav-height);
+  }
+  .dashboard__left_side {
+    width: 0 !important;
+  }
+  .LeftExpanded .Toolbar {
+    padding-left: 0 !important;
+  }
+  .layers-tab {
+    #simple-tabpanel-0,
+    #simple-tabpanel-1 {
+      display: block;
+      position: fixed;
+      left: 100vw;
+      top: 0;
+      height: 100vh;
+      padding-top: var(--nav-header-height);
+      padding-bottom: var(--mobile-bottom-nav-height);
+      width: 100vw;
+      transition: left 0.2s;
+    }
+  }
+
+  html {
+    &.Mobile_Indicators {
+      .layers-tab {
+        #simple-tabpanel-0 {
+          left: 0;
+        }
+      }
+    }
+
+    &.Mobile_Context_Layers {
+      .layers-tab {
+        #simple-tabpanel-1 {
+          left: 0;
+        }
+      }
+    }
   }
 }

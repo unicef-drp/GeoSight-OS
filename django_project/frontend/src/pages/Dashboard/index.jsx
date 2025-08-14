@@ -101,7 +101,7 @@ export default function Dashboard({ children }) {
         </Fragment> :
         <div className='LoadingElement'>
           <div className='Throbber'>
-            <CircularProgress />
+            <CircularProgress thickness={2}/>
             {t("dashboardPage.loadingDashboardData")}
           </div>
         </div>
