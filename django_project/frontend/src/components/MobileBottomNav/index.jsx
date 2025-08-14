@@ -20,36 +20,39 @@
 import React, { useState } from "react";
 import $ from "jquery";
 import { useTranslation } from "react-i18next";
+import {
+  FilterIcon,
+  GraphIcon,
+  LayerIcon,
+  ListIcon,
+  MapActiveIcon,
+} from "../Icons";
 
 import "./style.scss";
 
 /** MobileBottomNav **/
 export default function MobileBottomNav() {
-  const { icon } = preferences;
   const { t, i18n } = useTranslation();
 
-  const homepageUrl = "/" + i18n.language.toLowerCase();
-  // Set width of logo
-  // Not working using css on firefox
-  $(".page__header-logo").width($(".page__header-link").width());
-
-  // Only show mobile nav on small screens
-  const [activePanel, setActivePanel] = useState("map");
+  const [activePanel, setActivePanel] = useState("Map");
   const navItems = [
-    { key: "context", icon: "📄", label: "Context" },
-    { key: "indicator", icon: "📊", label: "Indicator" },
-    { key: "filters", icon: "🔍", label: "Filters" },
-    { key: "map", icon: "🗺️", label: "Map" },
-    { key: "widgets", icon: "📈", label: "Widgets" },
+    { key: "Map", icon: <MapActiveIcon /> },
+    { key: "Indicators", icon: <ListIcon /> },
+    { key: "Context Layers", icon: <LayerIcon /> },
+    { key: "Filter", icon: <FilterIcon /> },
+    { key: "Widget", icon: <GraphIcon /> },
   ];
+  const className = (key) => {
+    return "Mobile_" + key.replace(" ", "_");
+  };
 
   // Emit a custom event for panel switching (for integration)
   const handleNavClick = (key) => {
     setActivePanel(key);
-    const event = new CustomEvent("mobilePanelSwitch", {
-      detail: { panel: key },
+    navItems.map((item) => {
+      $("html").removeClass(className(item.key));
     });
-    window.dispatchEvent(event);
+    $("html").addClass(className(key));
   };
 
   return (
@@ -58,16 +61,10 @@ export default function MobileBottomNav() {
         {navItems.map((item) => (
           <div
             key={item.key}
-            className={
-              "MobileBottomNav__item" +
-              (activePanel === item.key ? " MobileBottomNav__item--active" : "")
-            }
+            className={"Item" + (activePanel === item.key ? " Active" : "")}
             onClick={() => handleNavClick(item.key)}
           >
-            <span role="img" aria-label={item.label}>
-              {item.icon}
-            </span>
-            <div style={{ fontSize: "0.75rem" }}>{item.label}</div>
+            {item.icon}
           </div>
         ))}
       </footer>

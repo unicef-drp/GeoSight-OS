@@ -12,6 +12,9 @@
 * __date__ = '14/08/2025'
 * __copyright__ = ('Copyright 2023, Unicef')
 */
+:root {
+  --mobile-bottom-nav-height: 24px;
+}
 
 @media (min-width: 1300px) {
   .DashboardMap {
@@ -25,9 +28,6 @@
       }
     }
   }
-  .MobileBottomNav {
-    display: none;
-  }
 }
 
 @media (max-width: 1300px) {
@@ -38,42 +38,20 @@
       }
     }
   }
-  .MobileBottomNav {
-    background: var(--navbar-background-color);
-    display: flex;
-    align-items: center;
-    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
-  }
-  .MobileBottomNav__item {
-    flex: 1;
-    text-align: center;
-    color: var(--navbar-font-color);
-    font-size: 1.5rem;
-    padding: 8px 0;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .MobileBottomNav__item--active {
-    color: var(--primary-color);
-    background: var(--white);
-    border-top: 2px solid var(--primary-color);
-  }
-  body, html {
-    padding-bottom: 56px !important; // Prevent content from being hidden behind nav
-  }
+}
 
-  .MobilePanel {
+@media (min-width: 1000px) {
+  .MobileBottomNav {
     display: none;
-    height: calc(100vh - 56px - var(--nav-header-height));
-    overflow-y: auto;
-    background: #fff;
-    position: fixed;
-    top: var(--nav-header-height);
-    left: 0;
-    width: 100vw;
-    z-index: 900;
   }
-  .MobilePanel--active {
-    display: block;
+}
+
+@media (max-width: 1000px) {
+  .MobileBottomNav {
+    display: flex;
+  }
+  .DashboardMiddlePanel,
+  .dashboard__left_side {
+    padding-bottom: var(--mobile-bottom-nav-height);
   }
 }

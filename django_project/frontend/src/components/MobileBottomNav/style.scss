@@ -15,4 +15,26 @@
 
 .MobileBottomNav {
   z-index: 999999;
+  align-items: center;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
+
+  .Item {
+    flex: 1;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s, border-left 0.2s;
+    height: var(--mobile-bottom-nav-height);
+    color: var(--primary-color);
+    background: var(--anti-primary-color);
+    border-left: 1px solid var(--gray-200);
+
+    &.Active {
+      background: var(--primary-color);
+      color: var(--anti-primary-color);
+      border-left: 1px solid var(--primary-color);
+    }
+  }
 }
