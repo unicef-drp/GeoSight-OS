@@ -77,18 +77,30 @@
   .LeftExpanded .Toolbar {
     padding-left: 0 !important;
   }
-  .layers-tab {
-    #simple-tabpanel-0,
-    #simple-tabpanel-1 {
-      display: block;
-      position: fixed;
-      left: 100vw;
-      top: 0;
-      height: 100vh;
-      padding-top: var(--nav-header-height);
-      padding-bottom: var(--mobile-bottom-nav-height);
-      width: 100vw;
-      transition: left 0.2s;
+  .DashboardMiddlePanel {
+    z-index: 1000;
+  }
+  .layers-tab #simple-tabpanel-0,
+  .layers-tab #simple-tabpanel-1,
+  .filters-tab,
+  .DashboardMiddlePanel .RightContent {
+    display: block !important;;
+    position: fixed !important;;
+    left: 100vw;;
+    top: 0 !important;;
+    height: 100vh !important;;
+    padding-top: var(--nav-header-height) !important;;
+    padding-bottom: var(--mobile-bottom-nav-height) !important;;
+    width: 100vw !important;;
+    transition: left 0.2s !important;
+  }
+  .DashboardMiddlePanel .RightContent {
+    background-color: white !important;
+    margin: 0 !important;
+
+    section {
+      width: 100% !important;
+      margin-top: 0 !important;
     }
   }
 
@@ -106,6 +118,18 @@
         #simple-tabpanel-1 {
           left: 0;
         }
+      }
+    }
+
+    &.Mobile_Filter {
+      .filters-tab {
+        left: 0;
+      }
+    }
+
+    &.Mobile_Widget {
+      .DashboardMiddlePanel .RightContent {
+        left: 0;
       }
     }
   }
