@@ -249,7 +249,7 @@ export const TreeItem = forwardRef(
 
           <span
             className={"VisibilityIcon " + styles.VisibilityAction}
-            data-name={data.name}
+            data-name={data?.name}
           >
             {!isGroup && data ? (
               data?.visible_by_default ? (
