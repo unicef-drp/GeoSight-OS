@@ -17,19 +17,20 @@
    BASEMAPS SELECTOR
    ========================================================================== */
 
-import React, { Fragment } from 'react';
+import React, { Fragment } from "react";
 import { useSelector } from "react-redux";
 import CircularProgress from "@mui/material/CircularProgress";
 import { indicatorLayerStyle } from "../../../../utils/Style";
 import { dictDeepCopy } from "../../../../utils/main";
 import {
   getLayerData,
-  indicatorHasData
+  indicatorHasData,
 } from "../../../../utils/indicatorLayer";
 
-import './style.scss'
+import "./style.scss";
 import { allDataIsReady } from "../../../../utils/indicators";
-
+import { Plugin, PluginChild } from "../../MapLibre/Plugin";
+import { LayerIcon } from "../../../../components/Icons";
 
 /**
  * Render indicator legend section
@@ -38,125 +39,150 @@ import { allDataIsReady } from "../../../../utils/indicators";
  */
 const RenderIndicatorLegendSection = ({ rules, name }) => {
   return (
-    <div className='MapLegendSection'>
-      <div className='MapLegendSectionTitle'>{name}</div>
-      {
-        ![null, undefined].includes(rules) ?
-          <Fragment>
-            {
-              rules.length ?
-                <div className='IndicatorLegendSection'>
-                  {
-                    rules.map(rule => {
-                      const border = `1px solid ${rule.outline_color}`
-                      return <div className='IndicatorLegendRow'>
-                        <div
-                          className='IndicatorLegendRowBlock'
-                          style={{
-                            backgroundColor: rule.color,
-                            border: border
-                          }}>
-                        </div>
-                        <div className='IndicatorLegendRowName'
-                             title={rule.name}>
-                          {rule.name}
-                        </div>
-                      </div>
-                    })
-                  }
-                </div> : null
-            }
-          </Fragment> : <div className='Throbber'>
-            <CircularProgress/>
-          </div>
-      }
+    <div className="MapLegendSection">
+      <div className="MapLegendSectionTitle">{name}</div>
+      {![null, undefined].includes(rules) ? (
+        <Fragment>
+          {rules.length ? (
+            <div className="IndicatorLegendSection">
+              {rules.map((rule) => {
+                const border = `1px solid ${rule.outline_color}`;
+                return (
+                  <div className="IndicatorLegendRow">
+                    <div
+                      className="IndicatorLegendRowBlock"
+                      style={{
+                        backgroundColor: rule.color,
+                        border: border,
+                      }}
+                    ></div>
+                    <div className="IndicatorLegendRowName" title={rule.name}>
+                      {rule.name}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : null}
+        </Fragment>
+      ) : (
+        <div className="Throbber">
+          <CircularProgress />
+        </div>
+      )}
     </div>
-  )
-}
+  );
+};
 /**
  * Render indicator legend
  * @param {dict} layer Layer that will be checked
  * @param {str} name Name of layer
  */
 const RenderIndicatorLegend = ({ layer, name }) => {
-  const {
-    referenceLayer,
-    indicators,
-    geoField
-  } = useSelector(state => state.dashboard.data)
-  const selectedGlobalTime = useSelector(state => state.selectedGlobalTime);
-  const selectedAdminLevel = useSelector(state => state.selectedAdminLevel)
-  const indicatorsData = useSelector(state => state.indicatorsData);
-  const relatedTableData = useSelector(state => state.relatedTableData);
-  const filteredGeometries = useSelector(state => state.filteredGeometries);
+  const { referenceLayer, indicators, geoField } = useSelector(
+    (state) => state.dashboard.data,
+  );
+  const selectedGlobalTime = useSelector((state) => state.selectedGlobalTime);
+  const selectedAdminLevel = useSelector((state) => state.selectedAdminLevel);
+  const indicatorsData = useSelector((state) => state.indicatorsData);
+  const relatedTableData = useSelector((state) => state.relatedTableData);
+  const filteredGeometries = useSelector((state) => state.filteredGeometries);
 
-  if (layer.multi_indicator_mode === 'Pin') {
-    return layer.indicators.map(indicator => {
-      const hasData = indicatorHasData(indicatorsData, indicator)
-      let rules = null
+  if (layer.multi_indicator_mode === "Pin") {
+    return layer.indicators.map((indicator) => {
+      const hasData = indicatorHasData(indicatorsData, indicator);
+      let rules = null;
       if (hasData) {
-        let indicatorData = indicator
+        let indicatorData = indicator;
         if (!indicator.style) {
-          const obj = indicators.find(ind => ind.id === indicator.id)
+          const obj = indicators.find((ind) => ind.id === indicator.id);
           if (obj) {
-            indicatorData = dictDeepCopy(obj)
-            indicatorData.indicators = [indicator]
+            indicatorData = dictDeepCopy(obj);
+            indicatorData.indicators = [indicator];
           }
         }
         rules = indicatorLayerStyle(
           {
             ...layer,
-            indicators: [indicator]
-          }, indicators, indicatorsData, relatedTableData,
-          selectedGlobalTime, geoField, selectedAdminLevel?.level, filteredGeometries,
-          indicatorData, referenceLayer
-        )
+            indicators: [indicator],
+          },
+          indicators,
+          indicatorsData,
+          relatedTableData,
+          selectedGlobalTime,
+          geoField,
+          selectedAdminLevel?.level,
+          filteredGeometries,
+          indicatorData,
+          referenceLayer,
+        );
       }
-      return <RenderIndicatorLegendSection
-        rules={rules}
-        name={indicator.name}/>
-    })
+      return (
+        <RenderIndicatorLegendSection rules={rules} name={indicator.name} />
+      );
+    });
   }
-  const layerData = getLayerData(indicatorsData, relatedTableData, layer, referenceLayer)
-  const hasData = allDataIsReady(layerData)
-  let rules = null
+  const layerData = getLayerData(
+    indicatorsData,
+    relatedTableData,
+    layer,
+    referenceLayer,
+  );
+  const hasData = allDataIsReady(layerData);
+  let rules = null;
   if (hasData) {
     rules = indicatorLayerStyle(
-      layer, indicators, indicatorsData, relatedTableData,
-      selectedGlobalTime, geoField, selectedAdminLevel?.level, filteredGeometries, null,
-      referenceLayer
-    )
+      layer,
+      indicators,
+      indicatorsData,
+      relatedTableData,
+      selectedGlobalTime,
+      geoField,
+      selectedAdminLevel?.level,
+      filteredGeometries,
+      null,
+      referenceLayer,
+    );
   }
-  return <RenderIndicatorLegendSection rules={rules} name={name}/>
-}
+  return <RenderIndicatorLegendSection rules={rules} name={name} />;
+};
 /** Map Legend.
  */
 export default function MapLegend() {
-  const { compareMode } = useSelector(state => state.mapMode)
-  const selectedIndicatorLayer = useSelector(state => state.selectedIndicatorLayer);
-  const selectedIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer);
-  const {
-    indicatorShow
-  } = useSelector(state => state.map);
+  const { compareMode } = useSelector((state) => state.mapMode);
+  const selectedIndicatorLayer = useSelector(
+    (state) => state.selectedIndicatorLayer,
+  );
+  const selectedIndicatorSecondLayer = useSelector(
+    (state) => state.selectedIndicatorSecondLayer,
+  );
+  const { indicatorShow } = useSelector((state) => state.map);
 
-  return <div className='MapLegend'>
-    {
-      selectedIndicatorLayer.id && indicatorShow ?
+  return (
+    <div className="MapLegend">
+      <Plugin className="Mobile">
+        <div>
+          <PluginChild title={"Legend"}>
+            <LayerIcon onClick={(_) => setOpen(true)} />
+          </PluginChild>
+        </div>
+      </Plugin>
+      {selectedIndicatorLayer.id && indicatorShow ? (
         <RenderIndicatorLegend
           layer={selectedIndicatorLayer}
-          name={
-            selectedIndicatorLayer.name + (compareMode ? " (Outline)" : "")
-          }
+          name={selectedIndicatorLayer.name + (compareMode ? " (Outline)" : "")}
         />
-        : ""
-    }
-    {
-      selectedIndicatorSecondLayer.id && indicatorShow ?
+      ) : (
+        ""
+      )}
+      {selectedIndicatorSecondLayer.id && indicatorShow ? (
         <RenderIndicatorLegend
           layer={selectedIndicatorSecondLayer}
           name={selectedIndicatorSecondLayer.name + " (Inner)"}
         />
-        : ""
-    }
-  </div>
+      ) : (
+        ""
+      )}
+    </div>
+  );
 }

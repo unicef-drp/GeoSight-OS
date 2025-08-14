@@ -40,6 +40,7 @@ import {
   GlobalDateSelector,
   HomeButton,
   LabelToggler,
+  ProjectOverview,
   SearchGeometryInput,
   TiltControl,
   ToggleSidePanel,
@@ -310,6 +311,9 @@ export default function MapLibre({
               }}
             />
           ) : null}
+          <div className="Mobile">
+            <ProjectOverview />
+          </div>
           <Plugin
             className={"ReferenceLayerToolbar"}
             hidden={!levelSelectorEnable}

@@ -13,75 +13,80 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { Fragment, useEffect, useState } from 'react';
-import CircularProgress from '@mui/material/CircularProgress';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { Fragment, useEffect, useState } from "react";
+import CircularProgress from "@mui/material/CircularProgress";
+import { useDispatch, useSelector } from "react-redux";
 
-import { Actions } from '../../store/dashboard';
-import LeftPanel from './LeftPanel'
-import MapLibre from './MapLibre'
-import RightPanel from './MiddlePanel/RightPanel'
-import MiddlePanel from './MiddlePanel'
+import { Actions } from "../../store/dashboard";
+import LeftPanel from "./LeftPanel";
+import MapLibre from "./MapLibre";
+import RightPanel from "./MiddlePanel/RightPanel";
+import MiddlePanel from "./MiddlePanel";
 import { EmbedConfig } from "../../utils/embed";
 import { LEFT, RIGHT } from "../../components/ToggleButton";
 import { ProjectOverview } from "./Toolbars";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
-import './style.scss';
+import "./style.scss";
 
 export default function Dashboard({ children }) {
   const dispatch = useDispatch();
-  const {
-    widgets,
-    user_permission
-  } = useSelector(state => state.dashboard.data);
+  const { widgets, user_permission } = useSelector(
+    (state) => state.dashboard.data,
+  );
 
-  const showLayerTab = !!EmbedConfig().layer_tab
-  const showFilterTab = !!EmbedConfig().filter_tab
-  const showWidget = EmbedConfig().widget_tab
-  const [leftExpanded, setLeftExpanded] = useState(showLayerTab || showFilterTab);
+  const showLayerTab = !!EmbedConfig().layer_tab;
+  const showFilterTab = !!EmbedConfig().filter_tab;
+  const showWidget = EmbedConfig().widget_tab;
+  const [leftExpanded, setLeftExpanded] = useState(
+    showLayerTab || showFilterTab,
+  );
   const [rightExpanded, setRightExpanded] = useState(showWidget);
   const { t } = useTranslation();
 
-  const leftPanelProps = (showLayerTab || showFilterTab) ? {
-    className: 'LeftButton',
-    initState: leftExpanded ? LEFT : RIGHT,
-    active: leftExpanded,
-    onLeft: () => {
-      setLeftExpanded(true)
-    },
-    onRight: () => {
-      setLeftExpanded(false)
-    }
-  } : null
+  const leftPanelProps =
+    showLayerTab || showFilterTab
+      ? {
+          className: "LeftButton",
+          initState: leftExpanded ? LEFT : RIGHT,
+          active: leftExpanded,
+          onLeft: () => {
+            setLeftExpanded(true);
+          },
+          onRight: () => {
+            setLeftExpanded(false);
+          },
+        }
+      : null;
 
-  const rightPanelProps = (showWidget && widgets?.filter(widget => widget.visible_by_default).length) ? {
-    className: 'RightButton',
-    initState: rightExpanded ? RIGHT : LEFT,
-    active: rightExpanded,
-    onLeft: () => {
-      setRightExpanded(false)
-    },
-    onRight: () => {
-      setRightExpanded(true)
-    }
-  } : null
+  const rightPanelProps =
+    showWidget && widgets?.filter((widget) => widget.visible_by_default).length
+      ? {
+          className: "RightButton",
+          initState: rightExpanded ? RIGHT : LEFT,
+          active: rightExpanded,
+          onLeft: () => {
+            setRightExpanded(false);
+          },
+          onRight: () => {
+            setRightExpanded(true);
+          },
+        }
+      : null;
 
   // Fetch data of dashboard
   useEffect(() => {
-    dispatch(
-      Actions.Dashboard.fetch(dispatch)
-    )
+    dispatch(Actions.Dashboard.fetch(dispatch));
   }, []);
 
   return (
-    <div
-      className={'dashboard ' + (leftExpanded ? 'LeftExpanded' : "")}>
-      {user_permission ?
+    <div className={"dashboard " + (leftExpanded ? "LeftExpanded" : "")}>
+      {user_permission ? (
         <Fragment>
           <MapLibre
             leftPanelProps={leftPanelProps}
-            rightPanelProps={rightPanelProps} />
+            rightPanelProps={rightPanelProps}
+          />
           <LeftPanel leftExpanded={leftExpanded} />
           <MiddlePanel
             leftExpanded={leftExpanded}
@@ -89,23 +94,21 @@ export default function Dashboard({ children }) {
             rightExpanded={rightExpanded}
             setRightExpanded={setRightExpanded}
             leftContent={
-              <div className='ButtonSection'>
+              <div className="ButtonSection Fullscreen">
                 <ProjectOverview />
               </div>
             }
-            rightContent={
-              <RightPanel rightExpanded={rightExpanded} />
-            }
-          >
-          </MiddlePanel>
-        </Fragment> :
-        <div className='LoadingElement'>
-          <div className='Throbber'>
-            <CircularProgress thickness={2}/>
+            rightContent={<RightPanel rightExpanded={rightExpanded} />}
+          ></MiddlePanel>
+        </Fragment>
+      ) : (
+        <div className="LoadingElement">
+          <div className="Throbber">
+            <CircularProgress thickness={2} />
             {t("dashboardPage.loadingDashboardData")}
           </div>
         </div>
-      }
+      )}
       {children ? children : ""}
     </div>
   );

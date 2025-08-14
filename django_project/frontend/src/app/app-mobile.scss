@@ -58,14 +58,96 @@
 }
 
 @media (max-width: 1000px) {
+  .Toolbar-Left {
+    .ProjectOverview-Toolbar {
+      a {
+        margin: 0 !important;
+        padding: 6px !important;
+        line-height: unset !important;
+      }
+    }
+  }
+  .DashboardMiddlePanel .TopContent .MiddleContent {
+    flex-grow: 1;
+  }
+  .DashboardMiddlePanel .TopContent .LeftContent {
+    width: 0;
+    flex-grow: unset !important;
+  }
+  .MapLegend {
+    position: absolute !important;
+    bottom: 65px;
+    right: 10px;
+    max-height: 75%;
+
+    .MapLegendSection {
+      margin-bottom: 0 !important;
+      margin-top: 0.5rem;
+    }
+  }
+  .DataLoadingProgress {
+    margin-top: 79px !important;
+  }
+  .DashboardMap .Toolbar {
+    padding: 0.5rem !important;
+    height: 80px !important;
+    min-height: 80px !important;
+    justify-content: center !important;
+    align-items: start !important;
+
+    & > div {
+      padding: 0 !important;
+    }
+
+    .Toolbar-Middle {
+      flex-grow: unset !important;
+    }
+  }
+  .SearchGeometryInputComponent {
+    position: absolute !important;
+    top: 40px;
+    width: 100% !important;
+    box-sizing: border-box;
+    left: 0;
+    padding: 0 1rem !important;
+  }
+  .SearchEntityOption {
+    width: 100% !important;
+    margin: 0 !important;
+    height: 30px !important;
+
+    .MuiAutocomplete-input {
+      padding: 0 !important;
+      min-height: 30px !important;
+      height: 30px !important;
+      background-color: unset !important;
+    }
+  }
+  .PopupToolbarIcon .PopupToolbarComponent {
+    width: 80vw !important;
+    margin-left: -40vw !important;
+  }
+  .ReferenceLayerToolbar {
+    position: absolute !important;
+    top: 90px !important;
+    left: 10px;
+
+    .ReferenceLayerLevelSelector {
+      background-color: white !important;
+    }
+  }
   .modal--box {
     min-width: unset !important;
   }
+  .MuiAutocomplete-popper .MuiAutocomplete-option,
   .MuiPopover-root .MuiMenuItem-root {
-    min-height: unset;
+    min-height: unset !important;
   }
   .maplibregl-ctrl-bottom-right {
     right: 0 !important;
+  }
+  .DashboardMiddlePanel {
+    padding-top: 80px !important;
   }
   .DashboardMiddlePanel .BottomContent {
     height: 0 !important;
@@ -90,8 +172,8 @@
   .dashboard__left_side {
     width: 0 !important;
   }
-  .LeftExpanded .Toolbar {
-    padding-left: 0 !important;
+  .DashboardMiddlePanel {
+    z-index: 1000;
   }
   .layers-tab #simple-tabpanel-0,
   .layers-tab #simple-tabpanel-1,
