@@ -99,10 +99,6 @@ export default function MapLibre({
     tools,
     Variables.DASHBOARD.TOOL.EMBED_TOOL,
   )?.visible_by_default;
-  const dataDownloadEnable = getDashboardTool(
-    tools,
-    Variables.DASHBOARD.TOOL.DATA_DOWNLOAD,
-  )?.visible_by_default;
 
   const drawingRef = useRef(null);
   const redrawMeasurement = () => drawingRef.current.redrawMeasurement();
@@ -335,32 +331,30 @@ export default function MapLibre({
           <LabelToggler />
           <CompareLayer disabled={is3dMode} />
           {/* 3D View */}
-          {view3DEnable && (
-            <Plugin>
-              <div
-                className="ExtrudedIcon Active"
-                data-tool={Variables.DASHBOARD.TOOL.VIEW_3D}
+          <Plugin hidden={!view3DEnable}>
+            <div
+              className="ExtrudedIcon Active"
+              data-tool={Variables.DASHBOARD.TOOL.VIEW_3D}
+            >
+              <PluginChild
+                title={"3D layer"}
+                disabled={!map}
+                active={is3dMode}
+                onClick={() => {
+                  if (is3dMode) {
+                    map.easeTo({ pitch: 0 });
+                  }
+                  dispatch(Actions.Map.change3DMode(!is3dMode));
+                }}
               >
-                <PluginChild
-                  title={"3D layer"}
-                  disabled={!map}
-                  active={is3dMode}
-                  onClick={() => {
-                    if (is3dMode) {
-                      map.easeTo({ pitch: 0 });
-                    }
-                    dispatch(Actions.Map.change3DMode(!is3dMode));
-                  }}
-                >
-                  {is3dMode ? (
-                    <ThreeDimensionOnIcon />
-                  ) : (
-                    <ThreeDimensionOffIcon />
-                  )}
-                </PluginChild>
-              </div>
-            </Plugin>
-          )}
+                {is3dMode ? (
+                  <ThreeDimensionOnIcon />
+                ) : (
+                  <ThreeDimensionOffIcon />
+                )}
+              </PluginChild>
+            </div>
+          </Plugin>
           <PopupToolbars map={map} ref={drawingRef} />
           <div className="Separator" />
         </div>
@@ -368,19 +362,17 @@ export default function MapLibre({
         {/* Embed */}
         <div className="Toolbar-Right">
           <SearchGeometryInput map={map} />
-          {embedToolEnable && (
-            <Plugin className="EmbedControl">
-              <div
-                className="Active"
-                data-tool={Variables.DASHBOARD.TOOL.EMBED_TOOL}
-              >
-                <PluginChild title={"Get embed code"}>
-                  <EmbedControl map={map} />
-                </PluginChild>
-              </div>
-            </Plugin>
-          )}
-          {dataDownloadEnable && <DownloaderData />}
+          <Plugin className="EmbedControl" hidden={!embedToolEnable}>
+            <div
+              className="Active"
+              data-tool={Variables.DASHBOARD.TOOL.EMBED_TOOL}
+            >
+              <PluginChild title={"Get embed code"}>
+                <EmbedControl map={map} />
+              </PluginChild>
+            </div>
+          </Plugin>
+          <DownloaderData />
           <Plugin className="BookmarkControl">
             <Bookmark map={map} />
           </Plugin>

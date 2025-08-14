@@ -23,6 +23,7 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import CircularProgress from "@mui/material/CircularProgress";
 import FormLabel from "@mui/material/FormLabel";
+import Grid from "@mui/material/Grid";
 import Checkbox from "@mui/material/Checkbox";
 import { Plugin, PluginChild } from "../../MapLibre/Plugin";
 import { DownloadIcon } from "../../../../components/Icons";
@@ -40,8 +41,6 @@ import {
   NotificationStatus,
 } from "../../../../components/Notification";
 
-import "./style.scss";
-import Grid from "@mui/material/Grid";
 import {
   SelectWithSearch
 } from "../../../../components/Input/SelectWithSearch";
@@ -53,6 +52,9 @@ import {
 import { getRelatedTableData } from "../../../../utils/relatedTable";
 import { Indicator } from "../../../../class/Indicator";
 import { Variables } from "../../../../utils/Variables";
+import { getDashboardTool } from "../../../../utils/dashboardTool";
+
+import "./style.scss";
 
 export const GeographyFilter = {
   All: "All Geographies",
@@ -70,6 +72,12 @@ export const TimeType = {
  * DownloaderData component.
  */
 export default function DownloaderData() {
+  const { tools } = useSelector((state) => state.dashboard.data);
+  const dataDownloadEnable = getDashboardTool(
+    tools,
+    Variables.DASHBOARD.TOOL.DATA_DOWNLOAD,
+  )?.visible_by_default;
+
   const filteredGeometries = useSelector((state) => state.filteredGeometries);
   const { indicators, referenceLayer, indicatorLayers, relatedTables, name } =
     useSelector((state) => state.dashboard.data);
@@ -609,7 +617,7 @@ export default function DownloaderData() {
   };
 
   return (
-    <Plugin className="DownloadControl">
+    <Plugin className="DownloadControl" hidden={!dataDownloadEnable}>
       <div
         title={downloading ? "Preparing Data" : ""}
         className={downloading ? "Disabled" : ""}
