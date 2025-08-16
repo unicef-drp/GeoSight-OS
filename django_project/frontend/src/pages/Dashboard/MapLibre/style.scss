@@ -417,3 +417,7 @@ $nav-disabled-color: '%23CCCCCC';
 .maplibregl-ctrl-bottom-right {
   right: 40px;
 }
+
+.mapboxgl-ctrl {
+  display: none !important;
+}

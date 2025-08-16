@@ -58,6 +58,10 @@
 }
 
 @media (max-width: 1000px) {
+  html, body {
+    touch-action: manipulation;
+  }
+
   .LegendToggler {
     position: absolute;
     bottom: 1rem;
@@ -221,9 +225,6 @@
   .dashboard__left_side {
     width: 0 !important;
   }
-  .DashboardMiddlePanel {
-    z-index: 1000;
-  }
   .layers-tab #simple-tabpanel-0,
   .layers-tab #simple-tabpanel-1,
   .filters-tab,
@@ -239,7 +240,7 @@
     transition: left 0.2s !important;
   }
   .DashboardMiddlePanel .TopContent {
-    z-index: 10;
+    z-index: unset !important;
     position: relative;
   }
   .maplibregl-ctrl-bottom-right {
@@ -248,6 +249,7 @@
   .DashboardMiddlePanel .RightContent {
     background-color: white !important;
     margin: 0 !important;
+    z-index: 1000;
 
     section {
       width: 100% !important;
