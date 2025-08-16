@@ -58,6 +58,41 @@
 }
 
 @media (max-width: 1000px) {
+  .LegendToggler {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    box-shadow: var(--box-shadow);
+    width: 29px !important;
+    height: 29px !important;
+    background-color: var(--white) !important;
+    cursor: pointer;
+    pointer-events: auto;
+
+    .ToolbarChild {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      a {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      svg {
+        width: 18px;
+        height: 13px;
+      }
+    }
+  }
+  .MapLegendOpen .MapLegendContent {
+    display: block !important;
+  }
   .Toolbar-Left {
     .ProjectOverview-Toolbar {
       a {
@@ -76,7 +111,7 @@
   }
   .MapLegend {
     position: absolute !important;
-    bottom: 65px;
+    bottom: 4rem;
     right: 10px;
     max-height: 75%;
 
@@ -123,9 +158,18 @@
       background-color: unset !important;
     }
   }
-  .PopupToolbarIcon .PopupToolbarComponent {
-    width: 80vw !important;
-    margin-left: -40vw !important;
+  .PopupToolbarIcon {
+    position: unset !important;
+
+    .PopupToolbarComponent {
+      width: 100vw !important;
+      margin-left: 0 !important;
+      left: 0 !important;
+
+      &::after {
+        display: none !important;
+      }
+    }
   }
   .ReferenceLayerToolbar {
     position: absolute !important;
@@ -151,6 +195,7 @@
   }
   .DashboardMiddlePanel .BottomContent {
     height: 0 !important;
+    width: 100vw !important;
 
     .Separator, .RightSection {
       display: none;
@@ -158,6 +203,10 @@
   }
   .DashboardMiddlePanel .BottomContent.DateOpen {
     height: 140px !important;
+  }
+  .GlobalDateSelectionWrapper {
+    margin-left: 0 !important;
+    width: 100% !important;
   }
   .Fullscreen {
     display: none !important;;
@@ -191,6 +240,10 @@
   }
   .DashboardMiddlePanel .TopContent {
     z-index: 10;
+    position: relative;
+  }
+  .maplibregl-ctrl-bottom-right {
+    display: none;
   }
   .DashboardMiddlePanel .RightContent {
     background-color: white !important;

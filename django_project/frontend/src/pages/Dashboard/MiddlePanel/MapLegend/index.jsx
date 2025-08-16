@@ -18,6 +18,7 @@
    ========================================================================== */
 
 import React, { Fragment } from "react";
+import $ from "jquery";
 import { useSelector } from "react-redux";
 import CircularProgress from "@mui/material/CircularProgress";
 import { indicatorLayerStyle } from "../../../../utils/Style";
@@ -26,11 +27,11 @@ import {
   getLayerData,
   indicatorHasData,
 } from "../../../../utils/indicatorLayer";
-
-import "./style.scss";
 import { allDataIsReady } from "../../../../utils/indicators";
 import { Plugin, PluginChild } from "../../MapLibre/Plugin";
 import { LayerIcon } from "../../../../components/Icons";
+
+import "./style.scss";
 
 /**
  * Render indicator legend section
@@ -159,30 +160,34 @@ export default function MapLegend() {
   const { indicatorShow } = useSelector((state) => state.map);
 
   return (
-    <div className="MapLegend">
-      <Plugin className="Mobile">
-        <div>
-          <PluginChild title={"Legend"}>
-            <LayerIcon onClick={(_) => setOpen(true)} />
-          </PluginChild>
+    <>
+      <div className="MapLegend">
+        <div className="MapLegendContent Fullscreen">
+          {selectedIndicatorLayer.id && indicatorShow && (
+            <RenderIndicatorLegend
+              layer={selectedIndicatorLayer}
+              name={
+                selectedIndicatorLayer.name + (compareMode ? " (Outline)" : "")
+              }
+            />
+          )}
+          {selectedIndicatorSecondLayer.id && indicatorShow && (
+            <RenderIndicatorLegend
+              layer={selectedIndicatorSecondLayer}
+              name={selectedIndicatorSecondLayer.name + " (Inner)"}
+            />
+          )}
         </div>
+      </div>
+      <Plugin className="LegendToggler Mobile" title="Legend">
+        <PluginChild title={"Legend"}>
+          <LayerIcon
+            onClick={(_) => {
+              $("html").toggleClass("MapLegendOpen");
+            }}
+          />
+        </PluginChild>
       </Plugin>
-      {selectedIndicatorLayer.id && indicatorShow ? (
-        <RenderIndicatorLegend
-          layer={selectedIndicatorLayer}
-          name={selectedIndicatorLayer.name + (compareMode ? " (Outline)" : "")}
-        />
-      ) : (
-        ""
-      )}
-      {selectedIndicatorSecondLayer.id && indicatorShow ? (
-        <RenderIndicatorLegend
-          layer={selectedIndicatorSecondLayer}
-          name={selectedIndicatorSecondLayer.name + " (Inner)"}
-        />
-      ) : (
-        ""
-      )}
-    </div>
+    </>
   );
 }
