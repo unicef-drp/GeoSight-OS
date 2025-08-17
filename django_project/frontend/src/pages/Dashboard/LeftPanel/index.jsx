@@ -89,14 +89,16 @@ export function IndicatorsVisibility() {
  * Left panel.
  */
 export default function LeftPanel({ leftExpanded }) {
-  const { filtersBeingHidden, hide_context_layer_tab } = useSelector(
+  const { filtersBeingHidden, layer_tabs_visibility } = useSelector(
     (state) => state.dashboard.data,
   );
   const state = leftExpanded ? LEFT : RIGHT;
   const showLayerTab = !!EmbedConfig().layer_tab;
   const showFilterTab = !!EmbedConfig().filter_tab;
   const [tabValue, setTabValue] = React.useState(showLayerTab ? 0 : 1);
-  const [tab2Value, setTab2Value] = React.useState(1);
+  const [tab2Value, setTab2Value] = React.useState(
+    layer_tabs_visibility.includes("indicator_layers") ? 1 : 0,
+  );
   const { t } = useTranslation();
 
   const handleChangeTab = (event, newValue) => {
@@ -106,7 +108,6 @@ export default function LeftPanel({ leftExpanded }) {
   const handleChangeTab2 = (event, newValue) => {
     setTab2Value(newValue);
   };
-
   const className = `dashboard__panel dashboard__left_side ${state}`;
   const classNameWrapper = `dashboard__content-wrapper`;
   return (
@@ -149,32 +150,33 @@ export default function LeftPanel({ leftExpanded }) {
             className={"sidepanel-tab layers-tab"}
           >
             <Box sx={{ width: "100%" }}>
-              {!hide_context_layer_tab && (
-                <Box
-                  sx={{ borderBottom: 1, borderColor: "divider" }}
-                  className={"layers-tab-container"}
-                >
-                  <Tabs
-                    value={tab2Value}
-                    onChange={handleChangeTab2}
-                    aria-label="basic tabs example"
+              {layer_tabs_visibility.includes("context_layers") &&
+                layer_tabs_visibility.includes("indicator_layers") && (
+                  <Box
+                    sx={{ borderBottom: 1, borderColor: "divider" }}
+                    className={"layers-tab-container"}
                   >
-                    <Tab
-                      label={t("dashboardPage.contextLayers")}
-                      icon={<ContextLayerVisibility />}
-                      iconPosition="end"
-                      {...tabProps(0)}
-                    />
-                    <Tab
-                      label={t("dashboardPage.indicators")}
-                      icon={<IndicatorsVisibility />}
-                      iconPosition="end"
-                      {...tabProps(1)}
-                    />
-                  </Tabs>
-                </Box>
-              )}
-              {!hide_context_layer_tab && (
+                    <Tabs
+                      value={tab2Value}
+                      onChange={handleChangeTab2}
+                      aria-label="basic tabs example"
+                    >
+                      <Tab
+                        label={t("dashboardPage.contextLayers")}
+                        icon={<ContextLayerVisibility />}
+                        iconPosition="end"
+                        {...tabProps(0)}
+                      />
+                      <Tab
+                        label={t("dashboardPage.indicators")}
+                        icon={<IndicatorsVisibility />}
+                        iconPosition="end"
+                        {...tabProps(1)}
+                      />
+                    </Tabs>
+                  </Box>
+                )}
+              {layer_tabs_visibility.includes("context_layers") && (
                 <TabPanel
                   value={tab2Value}
                   index={0}
