@@ -138,6 +138,11 @@ class DashboardForm(forms.ModelForm):
         poly.srid = 4326
         data['extent'] = poly
 
+        try:
+            data['layer_tabs_visibility']
+        except KeyError:
+            data['layer_tabs_visibility'] = "indicator_layers,context_layers"
+
         # save others data
         data['reference_layer'] = other_data['reference_layer']
         data['level_config'] = other_data.get('level_config', {})

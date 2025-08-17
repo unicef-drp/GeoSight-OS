@@ -15,7 +15,7 @@
 
 import React, { memo, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { FormControl } from "@mui/material";
+import { FormControl, Radio, RadioGroup } from "@mui/material";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
@@ -61,7 +61,7 @@ export interface GeneralData {
   // Configurations
   show_splash_first_open: boolean;
   truncate_indicator_layer_name: boolean;
-  hide_context_layer_tab: boolean;
+  layer_tabs_visibility: string;
   transparency_config: TransparencyConfiguration;
 }
 
@@ -103,7 +103,7 @@ const GeneralForm = memo(({}: Props) => {
     truncate_indicator_layer_name: projectData.truncate_indicator_layer_name,
     default_time_mode: projectData.default_time_mode,
     transparency_config: projectData.transparency_config,
-    hide_context_layer_tab: projectData.hide_context_layer_tab,
+    layer_tabs_visibility: projectData.layer_tabs_visibility,
   });
 
   /** referenceLayerProject changed **/
@@ -133,7 +133,7 @@ const GeneralForm = memo(({}: Props) => {
   const {
     show_splash_first_open,
     truncate_indicator_layer_name,
-    hide_context_layer_tab,
+    layer_tabs_visibility,
   } = projectData;
 
   // TODO:
@@ -499,23 +499,48 @@ const GeneralForm = memo(({}: Props) => {
                   label={t("admin.dashboard.truncateLongIndicatorLayerName")}
                 />
               </FormGroup>
-              <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={hide_context_layer_tab}
-                      onChange={(event) => {
-                        dispatch(
-                          Actions.Dashboard.updateProps({
-                            hide_context_layer_tab: !hide_context_layer_tab,
-                          }),
-                        );
-                      }}
+              <FormControl>
+                <div>
+                  <div style={{ marginTop: "0.5rem" }}>
+                    {t("Context and indicator layer tabs visibility")}
+                  </div>
+                  <RadioGroup
+                    style={{
+                      marginLeft: "3rem",
+                      marginTop: "1rem",
+                      marginBottom: "1rem",
+                    }}
+                    className="tabs-visibility"
+                    value={layer_tabs_visibility}
+                    onChange={(value) => {
+                      dispatch(
+                        Actions.Dashboard.updateProps({
+                          layer_tabs_visibility: value.target.value,
+                        }),
+                      );
+                    }}
+                  >
+                    <FormControlLabel
+                      style={{ marginTop: "1rem" }}
+                      value={"indicator_layers,context_layers"}
+                      control={<Radio />}
+                      label={t("Show both tabs")}
                     />
-                  }
-                  label={t("admin.dashboard.hideContextLayerTab")}
-                />
-              </FormGroup>
+                    <FormControlLabel
+                      style={{ marginTop: "1rem" }}
+                      value="context_layers"
+                      control={<Radio />}
+                      label={t("Context layers tab only")}
+                    />
+                    <FormControlLabel
+                      style={{ marginTop: "1rem" }}
+                      value={"indicator_layers"}
+                      control={<Radio />}
+                      label={t("Indicator layers tab only")}
+                    />
+                  </RadioGroup>
+                </div>
+              </FormControl>
             </Grid>
             <Grid item xs={6}>
               <FormControl className="transparency-indicator-layer">

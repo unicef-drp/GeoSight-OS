@@ -84,10 +84,14 @@ test.describe('Create complex project', () => {
       await expect(checkbox).not.toBeChecked();
     }
     {
-      const checkbox = await page.locator(
-        'label', { hasText: 'Hide context layer tab' }
-      ).locator('input[type="checkbox"]');
-      await expect(checkbox).not.toBeChecked();
+      const tabVisibility = await page.locator('.tabs-visibility');
+      await tabVisibility.evaluate(el => el.scrollIntoView({
+        behavior: 'auto',
+        block: 'center'
+      }));
+      const checkbox = await page
+        .locator('.tabs-visibility input[value="indicator_layers,context_layers"]');
+      await expect(checkbox).toBeChecked();
     }
     await page.locator('div').filter({ hasText: /^Project overviewBlock type$/ }).getByRole('textbox').getByRole('paragraph').click();
     await page.locator('div').filter({ hasText: /^Project overviewParagraph$/ }).getByRole('textbox').fill('Test overview');
@@ -305,10 +309,13 @@ test.describe('Create complex project', () => {
       await expect(checkbox).not.toBeChecked();
     }
     {
-      const checkbox = await page.locator(
-        'label', { hasText: 'Hide context layer tab' }
-      ).locator('input[type="checkbox"]');
-      await expect(checkbox).not.toBeChecked();
+      const tabVisibility = await page.locator('.tabs-visibility');
+      await tabVisibility.evaluate(el => el.scrollIntoView({
+        behavior: 'auto',
+        block: 'center'
+      }));
+      const checkbox = await page.locator('.tabs-visibility input[value="indicator_layers,context_layers"]');
+      await expect(checkbox).toBeChecked();
     }
 
     // override above
@@ -318,9 +325,15 @@ test.describe('Create complex project', () => {
     await page.locator(
       'label', { hasText: 'Truncate long indicator layer' }
     ).click();
-    await page.locator(
-      'label', { hasText: 'Hide context layer tab' }
-    ).click();
+    {
+
+      const tabVisibility = await page.locator('.tabs-visibility');
+      await tabVisibility.evaluate(el => el.scrollIntoView({
+        behavior: 'auto',
+        block: 'center'
+      }));
+      await page.locator('.tabs-visibility input[value="indicator_layers"]').click();
+    }
 
     await expect(page.locator('.MoreActionIcon')).toBeVisible();
     await expect(page.locator('.General .ReferenceDatasetSection input')).toHaveValue('Somalia');
@@ -378,8 +391,31 @@ test.describe('Create complex project', () => {
     await expect(page.locator('.SearchEntityOption')).not.toBeVisible();
 
     // Checking tools works
-    await expect(page.locator('.layers-tab-container').getByText('Context Layers')).not.toBeVisible();
+    await expect(page.locator('#simple-tabpanel-1.layers-panel')).toBeVisible();
     await checkToolIconNotVisible()
+
+    // --------------------------------------------------------------
+    // OVERRIDE AGAIN
+    // --------------------------------------------------------------
+    await page.goto(editUrl);
+    {
+      const tabVisibility = await page.locator('.tabs-visibility');
+      await tabVisibility.evaluate(el => el.scrollIntoView({
+        behavior: 'auto',
+        block: 'center'
+      }));
+      await page.locator('.tabs-visibility input[value="context_layers"]').click();
+    }
+    await page.getByRole('button', { name: 'Save', exact: true }).isEnabled();
+    await page.getByRole('button', { name: 'Save', exact: true }).click();
+    await page.waitForURL(editUrl)
+
+    // ----------------------------------
+    // PREVIEW
+    // ----------------------------------
+    // Checking tools works
+    await page.goto(`${BASE_URL}/project/test-project-complex-config/`);
+    await expect(page.locator('#simple-tabpanel-0.layers-panel')).toBeVisible();
 
     // ------------------------------------
     // DELETE PROJECT
