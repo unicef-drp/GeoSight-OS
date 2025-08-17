@@ -128,7 +128,8 @@ class Dashboard(
     )
     layer_tabs_visibility = models.CharField(
         max_length=64,
-        default='indicator_layers,context_layers'
+        default='indicator_layers,context_layers',
+        null=True, blank=True
     )
     default_time_mode = models.JSONField(null=True, blank=True)
 
