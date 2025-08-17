@@ -233,7 +233,7 @@
   }
   .layers-tab #simple-tabpanel-0,
   .layers-tab #simple-tabpanel-1,
-  .filters-tab,
+  .filters-tab-content,
   .DashboardMiddlePanel .RightContent {
     display: block !important;;
     position: fixed !important;;
@@ -264,7 +264,7 @@
   }
 
   html {
-    &.Mobile_Indicators {
+    &.Mobile_Context_Layers {
       .layers-tab {
         #simple-tabpanel-0 {
           left: 0;
@@ -272,7 +272,7 @@
       }
     }
 
-    &.Mobile_Context_Layers {
+    &.Mobile_Indicators {
       .layers-tab {
         #simple-tabpanel-1 {
           left: 0;
@@ -281,7 +281,7 @@
     }
 
     &.Mobile_Filter {
-      .filters-tab {
+      .filters-tab-content {
         left: 0;
       }
     }
@@ -291,5 +291,8 @@
         left: 0;
       }
     }
+  }
+  .IndicatorLayerMiddleConfig .WhereConfigurationWrapper {
+    max-width: 100vw !important;
   }
 }

@@ -37,8 +37,8 @@ export default function MobileBottomNav() {
   const [activePanel, setActivePanel] = useState("Map");
   const navItems = [
     { key: "Map", icon: <MapActiveIcon /> },
-    { key: "Indicators", icon: <ListIcon /> },
-    { key: "Context Layers", icon: <LayerIcon /> },
+    { key: "Context Layers", icon: <ListIcon /> },
+    { key: "Indicators", icon: <LayerIcon /> },
     { key: "Filter", icon: <FilterIcon /> },
     { key: "Widget", icon: <GraphIcon /> },
   ];
@@ -63,6 +63,7 @@ export default function MobileBottomNav() {
             key={item.key}
             className={"Item" + (activePanel === item.key ? " Active" : "")}
             onClick={() => handleNavClick(item.key)}
+            data-item={item.key}
           >
             {item.icon}
           </div>
