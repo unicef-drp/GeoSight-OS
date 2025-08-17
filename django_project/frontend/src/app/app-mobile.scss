@@ -58,10 +58,16 @@
 }
 
 @media (max-width: 1000px) {
-  html, body {
-    touch-action: manipulation;
+  .no-select {
+    user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    -webkit-tap-highlight-color: transparent;
   }
 
+  .ProjectOverview-Toolbar {
+    margin-top: 3rem;
+  }
   .LegendToggler {
     position: absolute;
     bottom: 1rem;

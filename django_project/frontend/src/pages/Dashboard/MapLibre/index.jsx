@@ -311,9 +311,6 @@ export default function MapLibre({
               }}
             />
           ) : null}
-          <div className="Mobile">
-            <ProjectOverview />
-          </div>
           <Plugin
             className={"ReferenceLayerToolbar"}
             hidden={!levelSelectorEnable}
@@ -321,7 +318,7 @@ export default function MapLibre({
             <div data-tool={Variables.DASHBOARD.TOOL.LEVEL_SELECTOR}>
               <PluginChild
                 title={"Reference Layer selection"}
-                className={"ReferenceLayerSelectorWrapper"}
+                className={"ReferenceLayerSelectorWrapper no-select"}
               >
                 <ReferenceLayerSection />
               </PluginChild>

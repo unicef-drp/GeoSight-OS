@@ -94,7 +94,7 @@ export default function Dashboard({ children }) {
             rightExpanded={rightExpanded}
             setRightExpanded={setRightExpanded}
             leftContent={
-              <div className="ButtonSection Fullscreen">
+              <div className="ButtonSection">
                 <ProjectOverview />
               </div>
             }

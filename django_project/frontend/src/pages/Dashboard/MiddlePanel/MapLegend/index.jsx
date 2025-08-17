@@ -179,13 +179,15 @@ export default function MapLegend() {
           )}
         </div>
       </div>
-      <Plugin className="LegendToggler Mobile" title="Legend">
+      <Plugin
+        className="LegendToggler Mobile"
+        title="Legend"
+        onClick={(_) => {
+          $("html").toggleClass("MapLegendOpen");
+        }}
+      >
         <PluginChild title={"Legend"}>
-          <LayerIcon
-            onClick={(_) => {
-              $("html").toggleClass("MapLegendOpen");
-            }}
-          />
+          <LayerIcon />
         </PluginChild>
       </Plugin>
     </>
