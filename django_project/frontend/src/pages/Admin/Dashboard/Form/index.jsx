@@ -214,7 +214,7 @@ export function DashboardSaveForm() {
     // Configurations
     show_splash_first_open,
     truncate_indicator_layer_name,
-    hide_context_layer_tab,
+    layer_tabs_visibility,
   } = useSelector((state) => state.dashboard.data);
   const { data } = useSelector((state) => state.dashboard);
   const [submitted, setSubmitted] = useState(false);
@@ -370,7 +370,7 @@ export function DashboardSaveForm() {
         "truncate_indicator_layer_name",
         truncate_indicator_layer_name,
       );
-      formData.append("hide_context_layer_tab", hide_context_layer_tab);
+      formData.append("layer_tabs_visibility", layer_tabs_visibility);
       formData.append("default_time_mode", JSON.stringify(default_time_mode));
       formData.append(
         "transparency_config",

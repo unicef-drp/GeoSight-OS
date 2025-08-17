@@ -214,5 +214,9 @@
   "Entity search box": "Caja de búsqueda de entidad",
   "Embed tool": "Herramienta de incrustar",
   "Data download": "Descarga de datos",
-  "Spatial bookmark": "Marcador espacial"
+  "Spatial bookmark": "Marcador espacial",
+  "Context and indicator layer tabs visibility": "Visibilidad de las pestañas de capas de contexto e indicadores",
+  "Show both tabs": "Mostrar ambas pestañas",
+  "Context layers tab only": "Solo pestaña de capas de contexto",
+  "Indicator layers tab only": "Solo pestaña de capas de indicadores"
 }

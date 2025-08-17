@@ -126,7 +126,10 @@ class Dashboard(
     truncate_indicator_layer_name = models.BooleanField(
         null=True, blank=True, default=False
     )
-    hide_context_layer_tab = models.BooleanField(default=False)
+    layer_tabs_visibility = models.CharField(
+        max_length=64,
+        default='indicator_layers,context_layers'
+    )
     default_time_mode = models.JSONField(null=True, blank=True)
 
     # TransparencySlider
