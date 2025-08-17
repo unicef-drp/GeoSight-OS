@@ -32,7 +32,7 @@ file_validators = FileExtensionValidator(
     allowed_extensions=['png', 'jpg', 'jpeg', 'svg', 'gif'])
 
 
-def default_machine_info_fetcher_config():
+def default_machine_info_fetcher_config():  # noqa: DOC101, DOC103, DOC201
     """Return default config for machine info fetcher."""
     return {
         'api_key': '',
@@ -364,7 +364,7 @@ class SitePreferences(AbstractFileCleanup, SingletonModel):
         verbose_name_plural = "site preferences"
 
     @staticmethod
-    def preferences() -> "SitePreferences":
+    def preferences() -> "SitePreferences":  # noqa: DOC101, DOC103, DOC201
         """Load Site Preference."""
         obj = SitePreferences.load()
         return obj
