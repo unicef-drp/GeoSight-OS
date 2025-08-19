@@ -24,7 +24,7 @@ import WidgetSelectionMember from "../WidgetSelectionMember"
  */
 export default function SummaryGroupMember({ onClick }) {
   return <WidgetSelectionMember
-    title="Summary Group Widget"
+      title={DEFINITION.WidgetText[DEFINITION.WidgetType.SUMMARY_GROUP_WIDGET]}
     description="Summarize all values grouping the results by unique values in another column."
     onClick={() => {
       onClick({

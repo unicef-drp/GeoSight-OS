@@ -13,23 +13,27 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React from 'react';
+import React from "react";
 
-import { DEFINITION } from "../index"
-import WidgetSelectionMember from "../WidgetSelectionMember"
+import { DEFINITION } from "../index";
+import WidgetSelectionMember from "../WidgetSelectionMember";
 
 /**
  * Widget Selection Member for Summary Group.
  * @param {function} onClick When element clicked
  */
 export default function TimeSeriesChartWidgetMember({ onClick }) {
-  return <WidgetSelectionMember
-    title="Time Series Chart Widget"
-    description="Show data in time series chart."
-    onClick={() => {
-      onClick({
-        "type": DEFINITION.WidgetType.TIME_SERIES_CHART_WIDGET,
-      })
-    }}
-  />
+  return (
+    <WidgetSelectionMember
+      title={
+        DEFINITION.WidgetText[DEFINITION.WidgetType.TIME_SERIES_CHART_WIDGET]
+      }
+      description="Show data in time series chart."
+      onClick={() => {
+        onClick({
+          type: DEFINITION.WidgetType.TIME_SERIES_CHART_WIDGET,
+        });
+      }}
+    />
+  );
 }

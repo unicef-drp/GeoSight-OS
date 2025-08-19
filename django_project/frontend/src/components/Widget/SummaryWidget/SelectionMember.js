@@ -13,23 +13,25 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React from 'react';
+import React from "react";
 
-import { DEFINITION } from "../index"
-import WidgetSelectionMember from "../WidgetSelectionMember"
+import { DEFINITION } from "../index";
+import WidgetSelectionMember from "../WidgetSelectionMember";
 
 /**
  * Widget Selection Member for Summary.
  * @param {function} onClick When element clicked
  */
 export default function SummaryMember({ onClick }) {
-  return <WidgetSelectionMember
-    title="Summary Widget"
-    description="Summarize all values to show a single number."
-    onClick={() => {
-      onClick({
-        "type": DEFINITION.WidgetType.SUMMARY_WIDGET,
-      })
-    }}
-  />
+  return (
+    <WidgetSelectionMember
+      title={DEFINITION.WidgetText[DEFINITION.WidgetType.SUMMARY_WIDGET]}
+      description="Summarize all values to show a single number."
+      onClick={() => {
+        onClick({
+          type: DEFINITION.WidgetType.SUMMARY_WIDGET,
+        });
+      }}
+    />
+  );
 }
