@@ -34,13 +34,15 @@ function _SummaryGroupWidgetEditSection(
   { data, selectedData, setAdditionalData }
 ) {
   const [property2, setProperty2] = useState(data.config.property_2 ? data.config.property_2 : '');
+  const [topN, setTopN] = useState(data.config.top_n || 5);
 
-  // When state change, call setAdditionalData
+  // When state changes, call setAdditionalData
   useEffect(() => {
     setAdditionalData({
-      property_2: property2
+      property_2: property2,
+      top_n: topN
     })
-  }, [property2])
+  }, [property2, topN])
 
   return (
     <Fragment>
@@ -52,15 +54,27 @@ function _SummaryGroupWidgetEditSection(
           }}
           value={property2}
         >
-          {
-            Object.keys(selectedData).map((key, index) => (
-              <MenuItem
-                key={index}
-                value={key}>{key}</MenuItem>
-            ))
-          }
+          {Object.keys(selectedData).map((key, index) => (
+            <MenuItem
+              key={index}
+              value={key}
+            >
+              {key}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
+      <FormControl>
+        <InputLabel>Top N Records</InputLabel>
+        <Input
+          type="number"
+          min="0"
+          value={topN}
+          onChange={(e) => setTopN(e.target.value)}
+          placeholder="Number of top records to show (0 for all)"
+        />
+      </FormControl>
+    </Fragment>
     </Fragment>
   )
 }

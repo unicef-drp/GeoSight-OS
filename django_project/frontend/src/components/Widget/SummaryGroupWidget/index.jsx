@@ -17,12 +17,14 @@
    GENERAL WIDGET FOR SHOWING SUMMARY OF DATA
    ========================================================================== */
 
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import { useSelector } from "react-redux";
 import CircularProgress from "@mui/material/CircularProgress";
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 
 import { DEFINITION } from "../index"
-import { numberWithCommas } from '../../../utils/main'
+import { formatNumberSmart, numberWithCommas } from '../../../utils/number'
+import './style.scss'
 
 /**
  * General widget to show summary of data.
@@ -31,10 +33,14 @@ import { numberWithCommas } from '../../../utils/main'
  * @param {object} widgetData Widget Data
  */
 export default function Index(
-  { data, widgetData }
+  { data, widgetData, compactNumbers = false }
 ) {
   const { name, config } = widgetData
   const { operation, property_2 } = config
+
+  // Sorting state
+  const [sortBy, setSortBy] = useState('value'); // 'value' | 'name'
+  const [sortOrder, setSortOrder] = useState('desc'); // 'asc' | 'desc'
 
   const {
     referenceLayer
@@ -76,6 +82,18 @@ export default function Index(
             }
           })
 
+          // Format values if compactNumbers is enabled
+          if (compactNumbers) {
+            for (const [key, value] of Object.entries(byGroup)) {
+              value.value = formatNumberSmart(value.value);
+            }
+          } else {
+            // Format with commas if not using compact numbers
+            for (const [key, value] of Object.entries(byGroup)) {
+              value.value = numberWithCommas(value.value);
+            }
+          }
+
           // We need to check max value for all group
           for (const [key, value] of Object.entries(byGroup)) {
             if (maxValue < value.value) {
@@ -88,13 +106,25 @@ export default function Index(
             value.perc = ((value.value / maxValue) * 80) + 20;
           }
 
-          // Sort group
+          // Sort group based on selected options
           var sorted = Object.keys(byGroup).map(function (key) {
             return [key, byGroup[key]];
           });
-          sorted.sort(function (first, second) {
-            return second[1].value - first[1].value;
-          });
+          
+          // Sort by selected criteria
+          if (sortBy === 'value') {
+            sorted.sort(function (first, second) {
+              const value1 = first[1].value;
+              const value2 = second[1].value;
+              return sortOrder === 'asc' ? value1 - value2 : value2 - value1;
+            });
+          } else {
+            sorted.sort(function (first, second) {
+              const name1 = first[0];
+              const name2 = second[0];
+              return sortOrder === 'asc' ? name1.localeCompare(name2) : name2.localeCompare(name1);
+            });
+          }
           return <table>
             <tbody>
             {
@@ -103,13 +133,14 @@ export default function Index(
                   <td className='widget__sgw__row__name'>{value[0]}</td>
                   <td>
                     <div
-                      style={{ width: value[1].perc + '%' }}>{numberWithCommas(value[1].value)}</div>
+                      style={{ width: value[1].perc + '%' }}>{value[1].value}</div>
                   </td>
                 </tr>
               ))
             }
             </tbody>
           </table>
+        }
         default:
           return <div className='widget__error'>Operation Not Found</div>;
       }
@@ -123,7 +154,33 @@ export default function Index(
     <Fragment>
       <div className='widget__sw widget__sgw'>
         <div className='widget__title'>{name}</div>
-        <div className='widget__content'>{getValue()}</div>
+        <div className='widget__content'>
+          <div className='widget__sgw__sort-controls'>
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>Sort By</InputLabel>
+              <Select
+                value={sortBy}
+                label="Sort By"
+                onChange={(e) => setSortBy(e.target.value)}
+              >
+                <MenuItem value="value">Value</MenuItem>
+                <MenuItem value="name">Geographical Name</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>Sort Order</InputLabel>
+              <Select
+                value={sortOrder}
+                label="Sort Order"
+                onChange={(e) => setSortOrder(e.target.value)}
+              >
+                <MenuItem value="asc">Ascending</MenuItem>
+                <MenuItem value="desc">Descending</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+          {getValue()}
+        </div>
       </div>
     </Fragment>
   )

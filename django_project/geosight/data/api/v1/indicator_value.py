@@ -55,13 +55,13 @@ class IndicatorValueApiUtilities:
 
         fields = request.GET.get(
             'fields',
-            'date, value, value_str, entity_id, indicator_id'
+            'date, value, value_str, entity_id, indicator_id, entity_name'
         ).replace(' ', '').split(',')
 
         # If it has frequency
         frequency = request.GET.get('frequency', None)
         if frequency:
-            distinct = ['geom_id', 'entity_id', 'indicator_id']
+            distinct = ['geom_id', 'entity_id', 'indicator_id', 'entity_name']
             if frequency.lower() == 'daily':
                 distinct.append('year')
                 distinct.append('month')
