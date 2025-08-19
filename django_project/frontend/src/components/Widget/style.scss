@@ -203,7 +203,8 @@
     font-size: 1rem;
     line-height: 1.4375em;
     letter-spacing: 0.00938em;
-    padding: 0;
+    padding-left: 1rem;
+    padding-right: 1rem;
     display: block;
     transform-origin: top left;
     white-space: nowrap;
@@ -213,7 +214,7 @@
     position: absolute;
     left: 0;
     top: 0;
-    transform: translate(14px, -9px) scale(0.75);
+    transform: translate(14px, -7px) scale(0.75);
     background-color: white;
   }
 

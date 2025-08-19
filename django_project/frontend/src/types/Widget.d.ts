@@ -13,6 +13,20 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
+export interface AggregationConfig {
+  method: string;
+  decimalPlace: number;
+  useDecimalPlace: boolean;
+  useAutoUnits: boolean;
+}
+
+export interface SortConfig {
+  field: string;
+  method: string;
+  topN: number;
+  useTopN: boolean;
+}
+
 export interface UnitConfig {
   id: number;
   name: string;
@@ -38,9 +52,13 @@ export interface WidgetConfig {
   geographicalUnitType: string;
   geographicalUnitPaletteColor: number;
 
-  // FOr the date filter
+  // For the date filter
   dateTimeType: string;
   dateTimeConfig: DateTimeConfig;
+
+  // Aggregation
+  aggregation?: AggregationConfig;
+  sort?: SortConfig;
 }
 
 export interface WidgetMetadata {

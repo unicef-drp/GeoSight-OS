@@ -32,6 +32,8 @@ export const DEFINITION = {
     SUMMARY_WIDGET: "SummaryWidget",
     SUMMARY_GROUP_WIDGET: "SummaryGroupWidget",
     TIME_SERIES_CHART_WIDGET: "TimeSeriesChartWidget",
+    GENERIC_SUMMARY_WIDGET: "GenericSummaryWidget",
+    GENERIC_TIME_SERIES_WIDGET: "GenericTimeSeriesWidget",
   },
   WidgetText: {
     SummaryWidget: "Summary Widget",

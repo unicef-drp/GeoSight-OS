@@ -37,6 +37,7 @@ export interface Props {
   setSelectedList: (items: UnitConfig[]) => void;
   colorPalette: number;
   setColorPalette: (colorPalette: number) => void;
+  useColorPalette: boolean;
 }
 
 export interface DataSeriesConfigChild extends Props {
@@ -59,6 +60,7 @@ export function DataSeriesConfig({
   setSelectedList,
   colorPalette,
   setColorPalette,
+  useColorPalette,
 }: DataSeriesConfig) {
   return (
     <FormControl className="MuiForm-RadioGroup">
@@ -94,7 +96,7 @@ export function DataSeriesConfig({
           }}
           configEnabled={enabled}
         />
-      ) : (
+      ) : enabled && useColorPalette ? (
         <div className="MuiForm-SubGroup">
           {/* TODO: We need to move color palette to tsx */}
           {/* @ts-ignore*/}
@@ -107,7 +109,7 @@ export function DataSeriesConfig({
             keepData={true}
           />
         </div>
-      )}
+      ) : null}
     </FormControl>
   );
 }
@@ -120,6 +122,7 @@ export function IndicatorDataSeriesConfig({
   setSelectedList,
   colorPalette,
   setColorPalette,
+  useColorPalette,
 }: DataSeriesConfigChild) {
   const { indicators, indicatorLayers } = useSelector(
     // @ts-ignore
@@ -152,6 +155,7 @@ export function IndicatorDataSeriesConfig({
       setSelectedList={setSelectedList}
       colorPalette={colorPalette}
       setColorPalette={setColorPalette}
+      useColorPalette={useColorPalette}
     />
   );
 }
@@ -164,6 +168,7 @@ export function GeographyUnitSeriesConfig({
   setSelectedList,
   colorPalette,
   setColorPalette,
+  useColorPalette,
 }: DataSeriesConfigChild) {
   /** States of dashboard **/
   const { referenceLayer } =
@@ -196,6 +201,7 @@ export function GeographyUnitSeriesConfig({
       setSelectedList={setSelectedList}
       colorPalette={colorPalette}
       setColorPalette={setColorPalette}
+      useColorPalette={useColorPalette}
     />
   );
 }

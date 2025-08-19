@@ -34,3 +34,16 @@ export const TimeType = {
   PREDEFINED: "Predefined start/end date",
   SYNC: "Sync with dashboard",
 };
+
+/** Used for sorting data. **/
+export const SortTypes = {
+  NAME: "Name",
+  CODE: "Code",
+  VALUE: "Value",
+};
+
+/** Used for sorting data. **/
+export const SortMethodTypes = {
+  ASC: "Ascending",
+  DESC: "Descending",
+};
