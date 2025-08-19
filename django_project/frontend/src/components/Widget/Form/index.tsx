@@ -73,7 +73,7 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
       geographicalUnit: [],
       geographicalUnitPaletteColor: 0,
 
-      dateTimeType: TimeType.PREDEFINED,
+      dateTimeType: TimeType.SYNC,
       dateTimeConfig: {
         minDateFilter: "",
         maxDateFilter: "",
@@ -144,10 +144,10 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
           ? geographicalUnitPaletteColor
           : 0,
 
-        dateTimeType: dateTimeType ? dateTimeType : TimeType.PREDEFINED,
+        dateTimeType: dateTimeType ? dateTimeType : TimeType.SYNC,
         dateTimeConfig: {
-          minDateFilter: minDateFilter,
-          maxDateFilter: maxDateFilter,
+          minDateFilter: dateTimeType ? minDateFilter : null,
+          maxDateFilter: dateTimeType ? maxDateFilter : null,
           interval: interval ? interval : INTERVALS.DAILY,
         },
       },
@@ -195,6 +195,7 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
           {data.name ? "Change " + data.name : "New " + title + " Widget"}
         </ModalHeader>
         <ModalContent>
+          <div>{JSON.stringify(widgetData)}</div>
           <div className="BasicForm">
             {widgetData.type !==
               DEFINITION.WidgetType.TIME_SERIES_CHART_WIDGET && (
