@@ -195,7 +195,6 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
           {data.name ? "Change " + data.name : "New " + title + " Widget"}
         </ModalHeader>
         <ModalContent>
-          <div>{JSON.stringify(widgetData)}</div>
           <div className="BasicForm">
             {widgetData.type !==
               DEFINITION.WidgetType.TIME_SERIES_CHART_WIDGET && (
