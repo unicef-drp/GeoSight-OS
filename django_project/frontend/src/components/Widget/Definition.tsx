@@ -17,15 +17,20 @@
    ALL DEFINITION FOR TIME SERIES
    ========================================================================== */
 
+/** Used for grouping data **/
 export const SeriesType = {
-  "INDICATORS": "Indicators",
-  "GEOGRAPHICAL_UNITS": "Geographical units",
-}
+  INDICATORS: "Indicators",
+  GEOGRAPHICAL_UNITS: "Geographical units",
+};
+/** Used for grouping data
+ * Is the data type of the series based on predefined list or sync with the current map. **/
 export const SeriesDataType = {
-  "PREDEFINED": "Predefined list",
-  "SYNC": "Sync with the current map",
-}
+  PREDEFINED: "Predefined list",
+  SYNC: "Sync with the current map",
+};
+/** Used for grouping data
+ * Is the data type of the series based on predefined list or sync with the current map. **/
 export const TimeType = {
-  "PREDEFINED": "Predefined start/end date",
-  "SYNC": "Sync with dashboard",
-}
+  PREDEFINED: "Predefined start/end date",
+  SYNC: "Sync with dashboard",
+};

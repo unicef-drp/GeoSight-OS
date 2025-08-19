@@ -19,7 +19,7 @@
 
 import { useEffect, useRef } from 'react';
 import { useSelector } from "react-redux";
-import { SeriesType, TimeType } from "./Definition";
+import { SeriesType, TimeType } from "../Definition";
 import { dateLabel, getDatesInRange, INTERVALS } from "../../../utils/Dates";
 import {
   dynamicLayerData,

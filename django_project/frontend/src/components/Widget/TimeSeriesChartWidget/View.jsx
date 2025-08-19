@@ -23,7 +23,7 @@ import LinearProgress from '@mui/material/LinearProgress';
 
 import Chart from "./Chart";
 import { SelectWithList } from "../../Input/SelectWithList";
-import { SeriesDataType, SeriesType, TimeType } from "./Definition";
+import { SeriesDataType, SeriesType, TimeType } from "../Definition";
 import { fetchingData } from "../../../Requests";
 import { getRandomColor } from "../../../utils/main";
 import { dateLabel } from "../../../utils/Dates";
@@ -85,7 +85,7 @@ export default function TimeSeriesChartWidget({ data }) {
     progress: 0,
     total: 1
   });
-  const [indicatorsList, setIndicatorsList] = useState([]);
+  const [indicators, setIndicators] = useState([]);
   const [unitList, setUnitList] = useState([]);
 
   const [secondSeries, setSecondSeries] = useState({});
@@ -109,7 +109,7 @@ export default function TimeSeriesChartWidget({ data }) {
   let geographicUnits = []
   switch (config.geographicalUnitType) {
     case SeriesDataType.PREDEFINED: {
-      geographicUnits = config.geographicalUnitList
+      geographicUnits = config.geographicalUnit
       break
     }
     case SeriesDataType.SYNC: {
@@ -123,11 +123,11 @@ export default function TimeSeriesChartWidget({ data }) {
   let indicatorSeries = []
   switch (config.indicatorsType) {
     case SeriesDataType.PREDEFINED: {
-      indicatorSeries = config.indicatorsList
+      indicatorSeries = config.indicators
       break
     }
     case SeriesDataType.SYNC: {
-      indicatorSeries = indicatorsList
+      indicatorSeries = indicators
       break
     }
   }
@@ -161,7 +161,7 @@ export default function TimeSeriesChartWidget({ data }) {
     if (selectedIndicatorLayer?.indicators?.length) {
       indicatorList = indicatorList.concat(
         selectedIndicatorLayer.indicators.map(indicator => {
-          const indicatorInList = indicatorsList.find(row => row.id === indicator.id)
+          const indicatorInList = indicators.find(row => row.id === indicator.id)
           if (!indicatorInList) {
             return {
               id: indicator.id,
@@ -174,7 +174,7 @@ export default function TimeSeriesChartWidget({ data }) {
       )
     } else if (selectedIndicatorLayer?.id) {
       const id = indicatorLayerId(selectedIndicatorLayer)
-      const indicatorInList = indicatorsList.find(row => row.id === id)
+      const indicatorInList = indicators.find(row => row.id === id)
       if (!indicatorInList) {
         indicatorList.push({
           id: id,
@@ -188,7 +188,7 @@ export default function TimeSeriesChartWidget({ data }) {
     if (selectedIndicatorSecondLayer?.indicators?.length) {
       indicatorList = indicatorList.concat(
         selectedIndicatorSecondLayer.indicators.map(indicator => {
-          const indicatorInList = indicatorsList.find(row => row.id === indicator.id)
+          const indicatorInList = indicators.find(row => row.id === indicator.id)
           if (!indicatorInList) {
             return {
               id: indicator.id,
@@ -201,7 +201,7 @@ export default function TimeSeriesChartWidget({ data }) {
       )
     } else if (selectedIndicatorSecondLayer?.id) {
       const id = indicatorLayerId(selectedIndicatorSecondLayer)
-      const indicatorInList = indicatorsList.find(row => row.id === id)
+      const indicatorInList = indicators.find(row => row.id === id)
       if (!indicatorInList) {
         indicatorList.push({
           id: id,
@@ -217,7 +217,7 @@ export default function TimeSeriesChartWidget({ data }) {
         list.color = colors[idx % color.colors.length]
       }
     })
-    setIndicatorsList(indicatorList)
+    setIndicators(indicatorList)
   }, [selectedIndicatorLayer, selectedIndicatorSecondLayer, colorPalettes])
 
   // Geometries of data

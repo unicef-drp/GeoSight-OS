@@ -17,15 +17,15 @@
    BASE MODAL CONTAINER
    ========================================================================== */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
-import { Modal as BaseModal } from '@mui/material'
-import Backdrop from '@mui/material/Backdrop';
-import Box from '@mui/material/Box';
-import Fade from '@mui/material/Fade';
+import { Modal as BaseModal } from "@mui/material";
+import Backdrop from "@mui/material/Backdrop";
+import Box from "@mui/material/Box";
+import Fade from "@mui/material/Fade";
 import { CloseIcon } from "../Icons";
 
-import './style.scss';
+import "./style.scss";
 
 /**
  * Base modal component.
@@ -34,14 +34,12 @@ import './style.scss';
  * @param {string} className Class name for modal.
  * @param {React.Component} children React component to be rendered.
  */
-export default function Modal(
-  { open, onClosed, className, children }
-) {
+export default function Modal({ open, onClosed, className, children }) {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     setIsOpen(open);
-  }, [open])
+  }, [open]);
 
   const onClosedFn = () => {
     setIsOpen(false);
@@ -62,42 +60,40 @@ export default function Modal(
       }}
     >
       <Fade in={isOpen}>
-        <Box className='modal--wrapper--box'>
-          <Box className='modal--box'>
-            {children}
-          </Box>
+        <Box className="modal--wrapper--box">
+          <Box className="modal--box">{children}</Box>
         </Box>
       </Fade>
     </BaseModal>
-  )
+  );
 }
 
 export function ModalHeader({ children, onClosed }) {
   return (
-    <div className='modal--header'>
-      <div className='modal--header--title'>{children}</div>
-      <div className='MuiButtonLike modal--header--close' onClick={() => {
-        if (onClosed) {
-          onClosed()
-        }
-      }}>
-        <CloseIcon/></div>
+    <div className="modal--header">
+      <div className="modal--header--title">{children}</div>
+      <div
+        className="MuiButtonLike modal--header--close"
+        onClick={() => {
+          if (onClosed) {
+            onClosed();
+          }
+        }}
+      >
+        <CloseIcon />
+      </div>
     </div>
-  )
+  );
 }
 
-export function ModalContent({ className, children }) {
+export function ModalContent({ className = null, children }) {
   return (
-    <div className={'modal--content ' + (className ? className : "")}>
+    <div className={"modal--content " + (className ? className : "")}>
       {children}
     </div>
-  )
+  );
 }
 
 export function ModalFooter({ children }) {
-  return (
-    <div className='modal--footer'>
-      {children}
-    </div>
-  )
+  return <div className="modal--footer">{children}</div>;
 }
