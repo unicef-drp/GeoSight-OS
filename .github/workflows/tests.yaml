@@ -125,6 +125,8 @@ jobs:
           { id: "e2e-importer", mode: "e2e", path: "tests/admin/importer", workers: 3, script: "make load-test-data" },
           { id: "e2e-project-bookmark-embed", mode: "e2e", path: "tests/admin/project_bookmark_embed", workers: 3, script: "make load-test-data" },
           { id: "e2e-contributor", mode: "e2e", path: "tests/contributor", workers: 3, script: "make load-test-data" },
+          # Mobile
+          { id: "e2e-project-view-mobile", mode: "e2e", path: "tests/admin/project_view_mobile", workers: 3, script: "make load-test-data" },
         ]
     env:
       APP_IMAGE: kartoza/geosight

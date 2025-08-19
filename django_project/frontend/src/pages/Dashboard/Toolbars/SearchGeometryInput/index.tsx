@@ -128,5 +128,9 @@ export default function SearchGeometryInput({ map }: Props) {
     return;
   }
 
-  return <SearchEntityOption onSelected={selected} />;
+  return (
+    <div className="SearchGeometryInputComponent">
+      <SearchEntityOption onSelected={selected} />
+    </div>
+  );
 }

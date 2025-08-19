@@ -624,6 +624,7 @@ export default function DownloaderData() {
         data-tool={Variables.DASHBOARD.TOOL.DATA_DOWNLOAD}
       >
         <CustomPopover
+          showCloseButton={true}
           anchorOrigin={{
             vertical: "bottom",
             horizontal: "center",

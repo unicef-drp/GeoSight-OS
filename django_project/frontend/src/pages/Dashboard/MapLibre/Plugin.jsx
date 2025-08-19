@@ -35,11 +35,21 @@ export function PluginChild({ title, disabled, active, children, ...props }) {
   );
 }
 
-export function Plugin({ className, hidden = false, children }) {
+export function Plugin({
+  className,
+  hidden = false,
+  onClick = null,
+  children,
+}) {
   return (
     <div
       className={"ToolbarControl " + (className ? className : "")}
       style={{ display: hidden ? "none" : "inherit" }}
+      onClick={() => {
+        if (onClick) {
+          onClick();
+        }
+      }}
     >
       {children}
     </div>

@@ -32,7 +32,7 @@ export default function FullScreen() {
   const [fullScreen, setFullScreen] = useState(isFullScreen)
 
   return (
-    <Plugin className='FullScreen'>
+    <Plugin className='FullScreen Fullscreen'>
       <div>
         <PluginChild
           title={(fullScreen ? 'Exit' : 'Enter') + ' fullscreen'}

@@ -90,7 +90,8 @@ class SitePreferencesAdmin(admin.ModelAdmin):
                 'primary_color', 'anti_primary_color',
                 'secondary_color', 'anti_secondary_color',
                 'tertiary_color', 'anti_tertiary_color',
-                'icon', 'favicon'
+                'icon', 'small_icon',
+                'favicon'
             ),
         }),
         ('Default Time Mode', {
@@ -160,7 +161,21 @@ class ColorPaletteAdmin(admin.ModelAdmin):
     list_display = ('name', '_colors')
 
     def _colors(self, obj: ColorPalette):
-        """Return colors that palette has."""
+        """
+        Return an HTML representation of the colors in a palette.
+
+        This method generates small colored square blocks for each color in
+        the given :class:`ColorPalette`. Each block is styled as a 20x20 pixel
+        square with its background set to the color value.
+        The ``title`` attribute of each block contains the color string.
+
+        :param obj: The color palette instance containing a list of colors.
+        :type obj: ColorPalette
+        :return:
+            An HTML string marked safe for rendering, containing the
+            color squares for each color in the palette.
+        :rtype: str
+        """
         html = ''
         for color in obj.colors:
             html += (
@@ -192,13 +207,36 @@ class CustomUserAdmin(UserAdmin):
     inlines = (ProfileInline,)
 
     def role(self, obj):
-        """Role of user."""
+        """
+        Return the role of a user.
+
+        This method checks if the given object has an associated profile.
+        If so, it returns the profile's role. Otherwise, it returns ``"-"``.
+
+        :param obj: The user object being inspected.
+        :type obj: User
+        :return: The role of the user, or ``"-"`` if no profile exists.
+        :rtype: str
+        """
         if obj.profile:
             return obj.profile.role
         return '-'
 
     def receive_notification(self, obj):
-        """receive_notification of user."""
+        """
+        Return whether the user receives notifications.
+
+        This method checks if the given object has an associated profile.
+        If so, it returns the profile's ``receive_notification`` value.
+        Otherwise, it returns ``False``.
+
+        :param obj: The user object being inspected.
+        :type obj: User
+        :return:
+            ``True`` if the user has notifications enabled,
+            otherwise ``False``.
+        :rtype: bool
+        """
         if obj.profile:
             return obj.profile.receive_notification
         return False
@@ -273,16 +311,18 @@ class APIKeyAdmin(admin.ModelAdmin):
     fields = ('platform', 'owner', 'contact', 'is_active')
 
     @admin.display(ordering='token__user__username', description='User')
-    def get_user(self, obj):
+    def get_user(self, obj):  # noqa: DOC101, DOC103, DOC201
         """Return user."""
         return obj.token.user
 
     @admin.display(ordering='token__created', description='Created')
-    def get_created(self, obj):
+    def get_created(self, obj):  # noqa: DOC101, DOC103, DOC201
         """Return token."""
         return obj.token.created
 
-    def has_add_permission(self, request, obj=None):
+    def has_add_permission(  # noqa: DOC101, DOC103, DOC201
+            self, request, obj=None
+    ):
         """Remove add permission."""
         return False
 
@@ -298,7 +338,9 @@ class MaintenanceAdmin(admin.ModelAdmin):
         'id', 'scheduled_from', 'scheduled_end', 'creator', 'created_at'
     )
 
-    def save_model(self, request, obj, form, change):
+    def save_model(  # noqa: DOC101, DOC103, DOC201
+            self, request, obj, form, change
+    ):
         """Save maintenance model."""
         obj.creator = request.user
         super().save_model(request, obj, form, change)

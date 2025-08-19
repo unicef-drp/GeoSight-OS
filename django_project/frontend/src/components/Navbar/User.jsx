@@ -17,20 +17,26 @@
    USER NAVBAR
    ========================================================================== */
 
-import React, { Fragment, useState } from 'react';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import Fade from '@mui/material/Fade';
-import LoginIcon from '@mui/icons-material/Login';
+import React, { Fragment, useRef, useState } from "react";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Fade from "@mui/material/Fade";
+import LoginIcon from "@mui/icons-material/Login";
 
 import { EmbedConfig } from "../../utils/embed";
 import { ThemeButton } from "../Elements/Button";
 import { useTranslation } from "react-i18next";
+import LanguageSelector from "../LanguageSelector";
+import { getCurrentLanguage, languages } from "../../utils/i18n";
+import { HelpIcon } from "../Icons";
+import { HelpCenter } from "../HelpCenter";
 
 /**
  * User dropdown.
  **/
 export default function User({ ...props }) {
+  const currentLanguageId = getCurrentLanguage();
+  const helpPageRef = useRef(null);
   const { t, i18n } = useTranslation();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -50,92 +56,132 @@ export default function User({ ...props }) {
 
   // Admin URLS
   const adminUrl = urls.admin.djangoAdmin; // eslint-disable-line no-undef
-  const canAccessAdmin = is_staff && !EmbedConfig().id
+  const canAccessAdmin = is_staff && !EmbedConfig().id;
+  const canAccessAdminPanel = is_contributor && !EmbedConfig().id;
 
   if (username) {
     return (
       <Fragment>
         <div
-          className={'NavbarAccount-Wrapper ' + (props.detail ? 'Detail' : '')}>
-          <div
-            className='NavbarAccount'
-            onClick={handleClick}>{username[0]}</div>
-          {
-            props.detail ? <div className='NavbarAccountName'>
-              <div className='NavbarAccount-Username'>{username}</div>
-              <div className='NavbarAccount-FullName'>{full_name}</div>
-            </div> : null
-          }
+          className={"NavbarAccount-Wrapper " + (props.detail ? "Detail" : "")}
+        >
+          <div className="NavbarAccount" onClick={handleClick}>
+            {username[0]}
+          </div>
+          {props.detail ? (
+            <div className="NavbarAccountName">
+              <div className="NavbarAccount-Username">{username}</div>
+              <div className="NavbarAccount-FullName">{full_name}</div>
+            </div>
+          ) : null}
         </div>
         <Menu
           anchorEl={anchorEl}
           open={open}
           onClose={handleClose}
           MenuListProps={{
-            'aria-labelledby': 'basic-button',
+            "aria-labelledby": "basic-button",
           }}
           TransitionComponent={Fade}
         >
-          <MenuItem className='MenuItem-Header Description'>
-            { t("loggedAs") } : <a href={`/${i18n.language.toLowerCase()}/admin/user/${user.username}/edit`}
-                           style={{
-                             width: "fit-content",
-                             padding: 0,
-                             display: "inline-block"
-                           }}>
-            {username}
-          </a>
-            {
-              preferences.georepo_using_user_api_key && !preferences.georepo_api.api_key_is_public ?
-                <div className='Description'>
-                  { t("navbar.authorizedToGeoRepo") }
-                </div> : null
-            }
+          <MenuItem className="MenuItem-Header Description">
+            {t("loggedAs")} :{" "}
+            <a
+              href={`/${i18n.language.toLowerCase()}/admin/user/${user.username}/edit`}
+              style={{
+                width: "fit-content",
+                padding: 0,
+                display: "inline-block",
+              }}
+            >
+              {username}
+            </a>
+            {preferences.georepo_using_user_api_key &&
+            !preferences.georepo_api.api_key_is_public ? (
+              <div className="Description">
+                {t("navbar.authorizedToGeoRepo")}
+              </div>
+            ) : null}
           </MenuItem>
-          {
-            preferences.georepo_using_user_api_key && preferences.georepo_api.api_key_is_public ?
-              <MenuItem
-                className='MenuItem-Header MenuItem-Button Description'>
-                You are not authorized to GeoRepo.<br/>
-                Please add your API Key in <a
+          {preferences.georepo_using_user_api_key &&
+          preferences.georepo_api.api_key_is_public ? (
+            <MenuItem className="MenuItem-Header MenuItem-Button Description">
+              You are not authorized to GeoRepo.
+              <br />
+              Please add your API Key in{" "}
+              <a
                 href={`/${i18n.language.toLowerCase()}/admin/user/${user.username}/edit`}
                 style={{
                   color: "red",
                   width: "fit-content",
                   padding: 0,
-                  display: "inline-block"
-                }}>here</a>.
-              </MenuItem> : null
-          }
-          <MenuItem className='MenuItem-Header'>
-            <a href={`/${i18n.language.toLowerCase()}/admin/user/${user.username}/edit`}>
-              { t('admin.profile') }
+                  display: "inline-block",
+                }}
+              >
+                here
+              </a>
+              .
+            </MenuItem>
+          ) : null}
+          <MenuItem className="MenuItem-Header">
+            <a
+              href={`/${i18n.language.toLowerCase()}/admin/user/${user.username}/edit`}
+            >
+              {t("admin.profile")}
             </a>
           </MenuItem>
-          {
-            canAccessAdmin ? (
-              <MenuItem className='MenuItem-Header DjangoAdmin'>
-                <a href={adminUrl}>{ t("navbar.djangoAdmin") }</a>
-              </MenuItem>
-            ) : null
-          }
-          <MenuItem className='MenuItem-Header'>
-            <a href='/api/v1/docs'>{ t("navbar.apiDocumentation") }</a>
+          {canAccessAdminPanel && (
+            <MenuItem className="MenuItem-Header Mobile">
+              <a href={urls.admin.dashboardList}>
+                {t("dashboardPage.adminPanelButton")}
+              </a>
+            </MenuItem>
+          )}
+          {canAccessAdmin ? (
+            <MenuItem className="MenuItem-Header DjangoAdmin">
+              <a href={adminUrl}>{t("navbar.djangoAdmin")}</a>
+            </MenuItem>
+          ) : null}
+          <MenuItem className="MenuItem-Header">
+            <a href="/api/v1/docs">{t("navbar.apiDocumentation")}</a>
           </MenuItem>
-          <MenuItem className='MenuItem-Header'>
-            <a href={logoutUrl}>{ t("logout") }</a>
+
+          {/* Language selector */}
+          <LanguageSelector>
+            <MenuItem className="MenuItem-Header Mobile">
+              <a>
+                {languages[currentLanguageId].flag}{" "}
+                {languages[currentLanguageId].name}
+              </a>
+            </MenuItem>
+          </LanguageSelector>
+          <MenuItem className="MenuItem-Header Mobile">
+            <a
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "4px",
+              }}
+              onClick={(_) => {
+                helpPageRef?.current.open();
+              }}
+            >
+              <HelpIcon /> Help
+            </a>
+          </MenuItem>
+          <MenuItem className="MenuItem-Header">
+            <a href={logoutUrl}>{t("logout")}</a>
           </MenuItem>
         </Menu>
+        <HelpCenter ref={helpPageRef} />
       </Fragment>
-    )
+    );
   } else {
     return (
-      <div className='LinkButton'>
+      <div className="LinkButton">
         <a href={loginUrl}>
-          <ThemeButton
-            variant="white"
-          >
-            <LoginIcon/> Login
+          <ThemeButton variant="white">
+            <LoginIcon /> Login
           </ThemeButton>
         </a>
       </div>

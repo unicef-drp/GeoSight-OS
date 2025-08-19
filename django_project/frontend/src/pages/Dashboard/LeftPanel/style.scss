@@ -53,24 +53,6 @@
     margin-left: -20%;
   }
 
-  @include media(small-down) {
-    width: 20%;
-    &.right {
-      margin-left: -20%;
-    }
-  }
-
-  @include media(xsmall-only) {
-    height: 500px !important;
-    max-height: 100vh;
-    width: 50%;
-    margin-left: -50%;
-
-    &.right {
-      margin-left: 0;
-    }
-  }
-
   .dashboard__content-wrapper {
     display: flex;
     flex-direction: column;

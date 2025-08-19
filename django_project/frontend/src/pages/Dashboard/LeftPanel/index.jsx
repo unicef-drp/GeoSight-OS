@@ -199,7 +199,7 @@ export default function LeftPanel({ leftExpanded }) {
           <TabPanel
             value={tabValue}
             index={1}
-            className={"sidepanel-tab filters-tab"}
+            className={"sidepanel-tab filters-tab-content"}
           >
             <FiltersAccordion />
           </TabPanel>
