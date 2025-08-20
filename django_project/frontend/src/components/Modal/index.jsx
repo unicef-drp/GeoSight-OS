@@ -29,7 +29,7 @@ import "./style.scss";
 
 /**
  * Base modal component.
- * @param {bool} open Initial state if modal is open or not.
+ * @param {tags.bool} open Initial state if modal is open or not.
  * @param {function} onClosed Function when modal closed.
  * @param {string} className Class name for modal.
  * @param {React.Component} children React component to be rendered.

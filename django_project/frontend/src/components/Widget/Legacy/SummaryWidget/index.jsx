@@ -17,11 +17,11 @@
    GENERAL WIDGET FOR SHOWING SUMMARY OF DATA PER GROUP
    ========================================================================== */
 
-import React, { Fragment } from 'react';
+import React, { Fragment } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 
-import { DEFINITION } from "../index"
-import { numberWithCommas } from '../../../utils/main'
+import { numberWithCommas } from "../../../../utils/main";
+import { WidgetOperation } from "../../Definition";
 
 /**
  * General widget to show summary of data.
@@ -29,11 +29,9 @@ import { numberWithCommas } from '../../../utils/main'
  * @param {list} data List of data {value, date}
  * @param {object} widgetData Widget Data
  */
-export default function SummaryWidget(
-  { data, widgetData }
-) {
-  const { name, config } = widgetData
-  const { unit, operation } = config
+export default function SummaryWidget({ data, widgetData }) {
+  const { config } = widgetData;
+  const { unit, operation } = config;
 
   /**
    * Return value of widget
@@ -42,30 +40,33 @@ export default function SummaryWidget(
   function getValue() {
     if (data !== null) {
       switch (operation) {
-        case DEFINITION.WidgetOperation.SUM:
+        case WidgetOperation.SUM:
           let total = 0;
           data.forEach(function (rowData) {
             const rowValue = parseFloat(rowData.value);
             if (!isNaN(rowValue)) {
               total += rowValue;
             }
-          })
-          return <span>{numberWithCommas(total)} {unit}</span>
+          });
+          return (
+            <span>
+              {numberWithCommas(total)} {unit}
+            </span>
+          );
         default:
-          return <div className='widget__error'>Operation Not Found</div>;
+          return <div className="WidgetError">Operation Not Found</div>;
       }
     }
-    return <div className='dashboard__right_side__loading'>
-      <CircularProgress/>
-    </div>
+    return (
+      <div className="dashboard__right_side__loading">
+        <CircularProgress />
+      </div>
+    );
   }
 
   return (
     <Fragment>
-      <div className='widget__sw'>
-        <div className='widget__title'>{name}</div>
-        <div className='widget__sw__content'>{getValue()}</div>
-      </div>
+      <div className="widget__sw">{getValue()}</div>
     </Fragment>
-  )
+  );
 }

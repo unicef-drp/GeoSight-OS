@@ -57,7 +57,6 @@ export default function MultiSelectorConfig(
     filteredItems = itemList.filter(item => item.name.includes(filter))
   }
 
-
   return (
     <div
       className={'MultiSelectorItem ' + (props.className ? props.className : '')}>

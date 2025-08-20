@@ -13,16 +13,14 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-// @ts-ignore
-import DatePicker from "react-datepicker";
 import React from "react";
-import { SortConfig } from "../../../types/Widget";
-import FormControlLabel from "@mui/material/FormControlLabel";
+import { useTranslation } from "react-i18next";
 import { FormControl, Radio } from "@mui/material";
+import FormLabel from "@mui/material/FormLabel";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import RadioGroup from "@mui/material/RadioGroup";
 import Checkbox from "@mui/material/Checkbox";
-import { useTranslation } from "react-i18next";
-import FormLabel from "@mui/material/FormLabel";
+import { SortConfig } from "../../../types/Widget";
 import { SortMethodTypes, SortTypes } from "../Definition";
 
 export interface Props {
@@ -32,7 +30,6 @@ export interface Props {
 
 export function SortConfigForm({ data, setData }: Props) {
   const { t } = useTranslation();
-  console.log(data);
   return (
     <FormControl className="MuiForm-RadioGroup">
       <FormLabel className="MuiInputLabel-root">{t("Sort by")}</FormLabel>

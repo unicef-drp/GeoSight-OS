@@ -19,7 +19,7 @@ import { Actions } from "../../../../../store/dashboard";
 import ListForm from "../ListForm";
 import WidgetSelectionSection
   from "../../../../../components/Widget/WidgetSelection";
-import { DEFINITION } from "../../../../../components/Widget";
+import { WidgetType } from "../../../../../components/Widget/Definition";
 
 /**
  * Widget dashboard
@@ -97,24 +97,32 @@ export default function WidgetForm() {
           dispatch(Actions.Widgets.update(layer));
         }}
         addLayerInGroupAction={(groupName) => {
-          setSelectedWidget(null);
-          setGroupName(groupName);
-          setOpen(true);
+          // TODO:
+          //  We need to remove this for multi widget form
+          setSelectedWidget({
+            type: WidgetType.GENERIC_SUMMARY_WIDGET,
+            visible_by_default: true,
+            config: {},
+          });
+          // setSelectedWidget(null);
+          // setGroupName(groupName);
+          // setOpen(true);
         }}
         editLayerInGroupAction={(data) => {
+          console.log(data);
           setSelectedWidget(data);
         }}
         hasGroup={false}
         otherActionsFunction={(data) => {
           // render widget by the type
           switch (data?.type) {
-            case DEFINITION.WidgetType.SUMMARY_WIDGET:
+            case WidgetType.SUMMARY_WIDGET:
               return <div className="OtherActionIndicator">Summary Widget</div>;
-            case DEFINITION.WidgetType.SUMMARY_GROUP_WIDGET:
+            case WidgetType.SUMMARY_GROUP_WIDGET:
               return (
                 <div className="OtherActionIndicator">Summary Group Widget</div>
               );
-            case DEFINITION.WidgetType.TIME_SERIES_CHART_WIDGET:
+            case WidgetType.TIME_SERIES_CHART_WIDGET:
               return (
                 <div className="OtherActionIndicator">Time Series Widget</div>
               );

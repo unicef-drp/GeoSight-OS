@@ -15,8 +15,8 @@
 
 import React from "react";
 
-import { DEFINITION } from "../index";
 import WidgetSelectionMember from "../WidgetSelectionMember";
+import { WidgetType } from "../Definition";
 
 /**
  * Widget Selection Member for Generic Widget.
@@ -29,7 +29,7 @@ export default function GenericWidgetMember({ onClick }) {
       description="A generic widget."
       onClick={() => {
         onClick({
-          type: DEFINITION.WidgetType.GENERIC_SUMMARY_WIDGET,
+          type: WidgetType.GENERIC_SUMMARY_WIDGET,
         });
       }}
     />

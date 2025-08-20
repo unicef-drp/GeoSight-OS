@@ -13,6 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
+import { useSelector } from "react-redux";
 import { FormControl, Radio } from "@mui/material";
 import FormLabel from "@mui/material/FormLabel";
 import RadioGroup from "@mui/material/RadioGroup";
@@ -25,7 +26,6 @@ import { TimeType } from "../Definition";
 import { SelectWithList } from "../../Input/SelectWithList";
 import { INTERVALS } from "../../../utils/Dates";
 import { RemoveIcon } from "../../Icons";
-import { useSelector } from "react-redux";
 
 export interface Props {
   dateTimeType: string;

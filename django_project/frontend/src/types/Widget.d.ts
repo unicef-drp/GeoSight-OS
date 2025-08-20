@@ -59,6 +59,14 @@ export interface WidgetConfig {
   // Aggregation
   aggregation?: AggregationConfig;
   sort?: SortConfig;
+
+  // This is legacy
+  layer_id?: number;
+  layer_used?: string;
+  property_2?: string;
+  date_filter_type?: string;
+  date_filter_value?: string;
+  operation?: string;
 }
 
 export interface WidgetMetadata {

@@ -28,7 +28,7 @@ import { GeorepoUrls, updateToken } from "../../../../utils/georepo";
 import { removeLayer, removeSource } from "../../MapLibre/utils";
 import { Entity } from "../../../../types/Entity";
 import { Logger } from "../../../../utils/logger";
-import { getDashboardTool } from "../../../../utils/dashboardTool";
+import { getDashboardTool } from "../../../../utils/dashboard";
 
 import "./style.scss";
 

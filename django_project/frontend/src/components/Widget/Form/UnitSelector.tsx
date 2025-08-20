@@ -13,6 +13,7 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
+import React from "react";
 import { useSelector } from "react-redux";
 import { FormControl, Radio } from "@mui/material";
 import FormLabel from "@mui/material/FormLabel";
@@ -20,7 +21,6 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import MultiSelectorConfig from "../../../pages/Admin/Components/Input/MultiSelector";
 import ColorPaletteSelector from "../../Input/ColorPaletteSelector";
-import React from "react";
 import { UnitConfig } from "../../../types/Widget";
 import { SeriesDataType, SeriesType } from "../Definition";
 import {
@@ -95,6 +95,7 @@ export function DataSeriesConfig({
             setSelectedList(items);
           }}
           configEnabled={enabled}
+          noColor={!useColorPalette}
         />
       ) : enabled && useColorPalette ? (
         <div className="MuiForm-SubGroup">

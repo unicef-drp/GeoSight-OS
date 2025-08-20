@@ -52,7 +52,7 @@ import {
 import { getRelatedTableData } from "../../../../utils/relatedTable";
 import { Indicator } from "../../../../class/Indicator";
 import { Variables } from "../../../../utils/Variables";
-import { getDashboardTool } from "../../../../utils/dashboardTool";
+import { getDashboardTool } from "../../../../utils/dashboard";
 
 import "./style.scss";
 

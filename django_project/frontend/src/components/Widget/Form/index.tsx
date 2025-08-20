@@ -18,11 +18,11 @@
    ========================================================================== */
 
 import React, { Fragment, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button, FormControl, Radio } from "@mui/material";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormLabel from "@mui/material/FormLabel";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { useTranslation } from "react-i18next";
 
 import Modal, { ModalContent, ModalHeader } from "../../Modal";
 import {
@@ -31,21 +31,21 @@ import {
   SortMethodTypes,
   SortTypes,
   TimeType,
+  WidgetType,
 } from "../Definition";
 import { INTERVALS } from "../../../utils/Dates";
 import { DateTimeConfig, WidgetMetadata } from "../../../types/Widget";
-import { DEFINITION } from "../index";
 import {
   GeographyUnitSeriesConfig,
   IndicatorDataSeriesConfig,
 } from "./UnitSelector";
 import { DateTimeConfigForm } from "./DateTimeConfig";
 import { AGGREGATION_TYPES } from "../../../utils/analysisData";
-
-import "./style.scss";
 import { AggregationConfigForm } from "./Aggregation";
 import { SortConfigForm } from "./SortConfig";
 import { Logger } from "../../../utils/logger";
+
+import "./style.scss";
 
 /** Widget form. */
 export interface Props {
@@ -61,7 +61,7 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
   const [widgetData, setWidgetData] = useState<WidgetMetadata>({
     name: "",
     description: "",
-    type: DEFINITION.WidgetType.GENERIC_SUMMARY_WIDGET,
+    type: WidgetType.GENERIC_SUMMARY_WIDGET,
     config: {
       seriesType: SeriesType.INDICATORS,
 
@@ -120,11 +120,11 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
     const newData: WidgetMetadata = {
       name: name ? name : "",
       description: description ? description : "",
-      type: type ? type : DEFINITION.WidgetType.TIME_SERIES_CHART_WIDGET,
+      type: type ? type : WidgetType.TIME_SERIES_CHART_WIDGET,
       config: {
         seriesType: seriesType
           ? seriesType
-          : type === DEFINITION.WidgetType.GENERIC_SUMMARY_WIDGET
+          : type === WidgetType.GENERIC_SUMMARY_WIDGET
             ? "None"
             : SeriesType.INDICATORS,
 
@@ -154,7 +154,7 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
     };
 
     // This is for additional data
-    if (data.type !== DEFINITION.WidgetType.TIME_SERIES_CHART_WIDGET) {
+    if (data.type !== WidgetType.TIME_SERIES_CHART_WIDGET) {
       newData.config.aggregation = {
         method: AGGREGATION_TYPES.SUM,
         decimalPlace: 0,
@@ -162,7 +162,7 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
         useAutoUnits: false,
       };
       newData.config.sort = {
-        field: SortTypes.NAME,
+        field: SortTypes.VALUE,
         method: SortMethodTypes.ASC,
         topN: 0,
         useTopN: false,
@@ -181,23 +181,22 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
   };
 
   const isSummary = ![
-    DEFINITION.WidgetType.TIME_SERIES_CHART_WIDGET,
-    DEFINITION.WidgetType.GENERIC_TIME_SERIES_WIDGET,
+    WidgetType.TIME_SERIES_CHART_WIDGET,
+    WidgetType.GENERIC_TIME_SERIES_WIDGET,
   ].includes(widgetData.type);
   return (
     <Fragment>
       <Modal
         open={open}
         onClosed={onClosed}
-        className="modal__widget__editor MuiFormControl-Form MuiBox-Large"
+        className="WidgetEditor MuiFormControl-Form MuiBox-Large"
       >
         <ModalHeader onClosed={onClosed}>
           {data.name ? "Change " + data.name : "New " + title + " Widget"}
         </ModalHeader>
         <ModalContent>
           <div className="BasicForm">
-            {widgetData.type !==
-              DEFINITION.WidgetType.TIME_SERIES_CHART_WIDGET && (
+            {widgetData.type !== WidgetType.TIME_SERIES_CHART_WIDGET && (
               <RadioGroup
                 className="TypeSelector"
                 style={{ display: "flex", flexDirection: "row" }}
@@ -208,13 +207,13 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
               >
                 <FormControlLabel
                   style={{ marginLeft: 0 }}
-                  value={DEFINITION.WidgetType.GENERIC_SUMMARY_WIDGET}
+                  value={WidgetType.GENERIC_SUMMARY_WIDGET}
                   control={<Radio />}
                   label="Summary"
                 />
                 <FormControlLabel
                   style={{ marginLeft: 0 }}
-                  value={DEFINITION.WidgetType.GENERIC_TIME_SERIES_WIDGET}
+                  value={WidgetType.GENERIC_TIME_SERIES_WIDGET}
                   control={<Radio />}
                   label="Time Series"
                 />
@@ -424,7 +423,7 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
             <Button
               /* @ts-ignore */
               variant="primary"
-              className="modal__widget__editor__apply"
+              className="WidgetEditor-apply"
               onClick={onApply}
               disabled={!widgetData.name}
             >

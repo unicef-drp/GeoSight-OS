@@ -19,8 +19,8 @@
 
 /** Used for grouping data **/
 export const SeriesType = {
-  INDICATORS: "Indicators",
   GEOGRAPHICAL_UNITS: "Geographical units",
+  INDICATORS: "Indicators",
 };
 /** Used for grouping data
  * Is the data type of the series based on predefined list or sync with the current map. **/
@@ -37,13 +37,39 @@ export const TimeType = {
 
 /** Used for sorting data. **/
 export const SortTypes = {
+  VALUE: "Value",
   NAME: "Name",
   CODE: "Code",
-  VALUE: "Value",
 };
 
 /** Used for sorting data. **/
 export const SortMethodTypes = {
   ASC: "Ascending",
   DESC: "Descending",
+};
+
+export const WidgetType = {
+  SUMMARY_WIDGET: "SummaryWidget",
+  SUMMARY_GROUP_WIDGET: "SummaryGroupWidget",
+  TIME_SERIES_CHART_WIDGET: "TimeSeriesChartWidget",
+  GENERIC_SUMMARY_WIDGET: "GenericSummaryWidget",
+  GENERIC_TIME_SERIES_WIDGET: "GenericTimeSeriesWidget",
+};
+export const WidgetText = {
+  SummaryWidget: "Summary Widget",
+  SummaryGroupWidget: "Summary Group Widget",
+  TimeSeriesChartWidget: "Time Series Chart Widget",
+};
+export const WidgetOperation = {
+  SUM: "Sum",
+};
+
+export const WidgetLayerUsed = {
+  INDICATOR: "Indicator",
+  INDICATOR_LAYER: "Indicator Layer",
+};
+export const DateFilterType = {
+  NO_FILTER: "No filter",
+  SYNC: "Global datetime filter",
+  CUSTOM: "Custom filter",
 };

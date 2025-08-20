@@ -22,18 +22,14 @@ import React, { Fragment, useEffect, useState } from "react";
 import Modal, { ModalContent, ModalHeader } from "../Modal";
 
 // Members
-import SummaryMember from "./SummaryWidget/SelectionMember";
-import SummaryGroupMember from "./SummaryGroupWidget/SelectionMember";
-import TimeSeriesChartWidgetMember
-  from "./TimeSeriesChartWidget/SelectionMember";
+import GenericWidgetMember from "./GenericWidget/SelectionMember";
 
 // Editors
-import SummaryWidgetEditor from "./SummaryWidget/Editor";
-import SummaryGroupWidgetEditor from "./SummaryGroupWidget/Editor";
-import { DEFINITION } from "./index";
 import { WidgetForm } from "./Form";
-import GenericWidgetMember from "./GenericWidget/SelectionMember";
+import SummaryWidgetEditor from "./Legacy/SummaryWidget/Editor";
+import SummaryGroupWidgetEditor from "./Legacy/SummaryGroupWidget/Editor";
 import { Logger } from "../../utils/logger";
+import { WidgetType } from "./Definition";
 
 /**
  * Edit section for widget panel.
@@ -64,7 +60,7 @@ export default function WidgetSelectionSection({
    * **/
   function renderEditByType() {
     switch (data.type) {
-      case DEFINITION.WidgetType.SUMMARY_WIDGET:
+      case WidgetType.SUMMARY_WIDGET:
         return (
           <SummaryWidgetEditor
             open={formOpen}
@@ -72,7 +68,7 @@ export default function WidgetSelectionSection({
             setData={onUpdateData}
           />
         );
-      case DEFINITION.WidgetType.SUMMARY_GROUP_WIDGET:
+      case WidgetType.SUMMARY_GROUP_WIDGET:
         return (
           <SummaryGroupWidgetEditor
             open={formOpen}
@@ -80,8 +76,8 @@ export default function WidgetSelectionSection({
             setData={onUpdateData}
           />
         );
-      case DEFINITION.WidgetType.GENERIC_SUMMARY_WIDGET:
-      case DEFINITION.WidgetType.GENERIC_TIME_SERIES_WIDGET:
+      case WidgetType.GENERIC_SUMMARY_WIDGET:
+      case WidgetType.GENERIC_TIME_SERIES_WIDGET:
         return (
           <WidgetForm
             title={"Generic"}
@@ -90,7 +86,7 @@ export default function WidgetSelectionSection({
             setData={onUpdateData}
           />
         );
-      case DEFINITION.WidgetType.TIME_SERIES_CHART_WIDGET:
+      case WidgetType.TIME_SERIES_CHART_WIDGET:
         return (
           <WidgetForm
             title={"Time Series"}
@@ -131,9 +127,6 @@ export default function WidgetSelectionSection({
       >
         <ModalHeader onClosed={onClosed}>Add new widget</ModalHeader>
         <ModalContent>
-          <SummaryMember onClick={onSelected} />
-          <SummaryGroupMember onClick={onSelected} />
-          <TimeSeriesChartWidgetMember onClick={onSelected} />
           <GenericWidgetMember onClick={onSelected} />
         </ModalContent>
       </Modal>

@@ -24,7 +24,7 @@ import { MeasurementTool } from "./Measurement";
 import { ZonalAnalysisComponent } from "./ZonalAnalysis";
 import "./style.scss";
 import { Variables } from "../../../../utils/Variables";
-import { getDashboardTool } from "../../../../utils/dashboardTool";
+import { getDashboardTool } from "../../../../utils/dashboard";
 
 interface Props {
   map: maplibregl.Map;

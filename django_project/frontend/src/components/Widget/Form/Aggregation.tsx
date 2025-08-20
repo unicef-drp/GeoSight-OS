@@ -14,14 +14,14 @@
  */
 
 import React from "react";
-import { AggregationConfig } from "../../../types/Widget";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import { FormControl, Radio } from "@mui/material";
-import RadioGroup from "@mui/material/RadioGroup";
-import { AGGREGATION_TYPES } from "../../../utils/analysisData";
-import Checkbox from "@mui/material/Checkbox";
 import { useTranslation } from "react-i18next";
+import { FormControl, Radio } from "@mui/material";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import RadioGroup from "@mui/material/RadioGroup";
+import Checkbox from "@mui/material/Checkbox";
 import FormLabel from "@mui/material/FormLabel";
+import { AGGREGATION_TYPES } from "../../../utils/analysisData";
+import { AggregationConfig } from "../../../types/Widget";
 
 export interface Props {
   data: AggregationConfig;
