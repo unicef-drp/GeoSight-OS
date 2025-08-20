@@ -55,11 +55,29 @@
     }
   }
 
+  legend {
+    span {
+      display: none;
+    }
+  }
+
+  .MultipleItemRowTable td:first-child,
+  .MultipleItemRowTable th:first-child,
+  .MultipleItemRowTable td:nth-child(2),
+  .MultipleItemRowTable th:nth-child(2) {
+    width: 1px;
+    white-space: nowrap;
+  }
+
   .MultiSelectorButtons {
     padding: 1rem 0.5rem;
 
     div {
       margin-bottom: 0.5rem;
+    }
+
+    svg {
+      margin-right: 0 !important;
     }
   }
 

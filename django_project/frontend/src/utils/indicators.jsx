@@ -13,8 +13,6 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import { queryingFromDictionary } from "./queryExtraction";
-
 /**
  * Return data from indicators.
  * @param {int} layer_id ID Of Layer
@@ -57,25 +55,6 @@ export function cleanLayerData(
     default:
       throw new Error(`Plugin using Layer : ${layer_used} does not work.`);
   }
-}
-
-export function filteredGeoms(indicators, query, level) {
-  if (query) {
-    let data = queryingFromDictionary(indicators, query)
-    if (data[level]) {
-      return data[level].filter(row => {
-        return row
-      }).map(row => {
-        return row.concept_uuid
-      })
-    }
-  }
-  let geoms = []
-  indicators.map(indicator => {
-    if (indicator.fetched && indicator.data) {
-      geoms = geoms.concat(indicator.data.map(data => data.concept_uuid))
-    }
-  })
 }
 
 export function allDataIsReady(indicatorsData) {

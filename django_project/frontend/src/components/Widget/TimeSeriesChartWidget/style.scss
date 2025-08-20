@@ -41,6 +41,7 @@
 
   .widget__time_series__legend {
     margin-top: 1rem;
+    color: var(--base-black);
 
     .widget__time_series__row {
       width: fit-content;
@@ -64,14 +65,14 @@
 
       .widget__time_series__row_inner {
         display: flex;
+        align-items: center;
+        gap: 3px;
       }
 
       .widget__time_series__color {
         height: 0.7rem;
         width: 0.7rem;
         border-radius: 0.5rem;
-        margin-top: 3px;
-        margin-right: 3px;
       }
     }
   }

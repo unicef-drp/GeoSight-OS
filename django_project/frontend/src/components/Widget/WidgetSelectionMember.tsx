@@ -13,23 +13,26 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React from 'react';
+import React, { MouseEventHandler } from "react";
 
-import { DEFINITION } from "../index"
-import WidgetSelectionMember from "../WidgetSelectionMember"
+export interface Props {
+  title: string;
+  description: string;
+  onClick: MouseEventHandler<HTMLDivElement>;
+}
 
-/**
- * Widget Selection Member for Summary.
- * @param {function} onClick When element clicked
- */
-export default function SummaryMember({ onClick }) {
-  return <WidgetSelectionMember
-    title="Summary Widget"
-    description="Summarize all values to show a single number."
-    onClick={() => {
-      onClick({
-        "type": DEFINITION.WidgetType.SUMMARY_WIDGET,
-      })
-    }}
-  />
+/** Widget Selection Member */
+export default function WidgetSelectionMember({
+  title,
+  description,
+  onClick,
+}: Props) {
+  return (
+    <div className="widget__selection__member" onClick={onClick}>
+      <div>
+        <b className="light">{title}</b>
+      </div>
+      <div className="setting__helper">{description}</div>
+    </div>
+  );
 }

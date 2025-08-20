@@ -15,7 +15,6 @@ __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
 import json
-
 from django import forms
 from django.contrib.gis.geos import Polygon
 from django.template.defaultfilters import slugify
@@ -153,14 +152,26 @@ class DashboardForm(forms.ModelForm):
         data['indicator_layers'] = other_data['indicator_layers']
         data['indicator_layers_structure'] = \
             other_data['indicator_layers_structure']
+        if not data['indicator_layers_structure']:
+            raise ValueError(
+                'Indicator layers structure is empty, please try again'
+            )
 
         data['context_layers'] = other_data['context_layers']
         data['context_layers_structure'] = \
             other_data['context_layers_structure']
+        if not data['context_layers_structure']:
+            raise ValueError(
+                'Context layer structure is empty, please try again'
+            )
 
         data['basemaps_layers'] = other_data['basemaps_layers']
         data['basemaps_layers_structure'] = other_data[
             'basemaps_layers_structure']
+        if not data['basemaps_layers_structure']:
+            raise ValueError(
+                'Basemap layers structure is empty, please try again'
+            )
         data['widgets'] = other_data['widgets']
         data['widgets_structure'] = other_data['widgets_structure']
 

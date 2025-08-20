@@ -307,3 +307,30 @@ main {
     padding-top: 7rem;
   }
 }
+
+
+.OtherActions {
+  display: flex;
+  align-items: flex-end;
+
+
+  .OtherActionButton {
+    color: var(--primary-color);
+    margin-left: 1rem;
+  }
+
+  .OtherActionIndicator {
+    color: var(--primary-color);
+    width: fit-content;
+    height: 22px;
+    display: block;
+    margin-left: 1rem;
+    background: white;
+    border-radius: var(--border-radius);
+    text-align: center;
+    padding: 7px 10px 0 10px;
+    border: 1px solid var(--primary-color);
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+}

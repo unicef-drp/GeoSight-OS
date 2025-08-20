@@ -111,7 +111,7 @@ function RelatedTableConfiguration({ data, referenceLayerData, codeTypes }) {
             className="FilterInput"
           />
         </div>
-        <div>
+        <div className="GeographyCodeField">
           <div>Related Fields</div>
           <MultipleSelectWithSearch
             value={

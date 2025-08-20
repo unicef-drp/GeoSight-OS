@@ -46,7 +46,7 @@ import { EmbedConfig } from "../../../../utils/embed";
 import { ProjectCheckpoint } from "../../../../components/ProjectCheckpoint";
 
 import "./style.scss";
-import { getDashboardTool } from "../../../../utils/dashboardTool";
+import { getDashboardTool } from "../../../../utils/dashboard";
 import { Variables } from "../../../../utils/Variables";
 
 /** Bookmark component. */

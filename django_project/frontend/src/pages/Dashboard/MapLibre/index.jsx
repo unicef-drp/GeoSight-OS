@@ -61,7 +61,7 @@ import { PopupToolbars } from "../Toolbars/PopupToolbars";
 import { Variables } from "../../../utils/Variables";
 import { addLayerWithOrder } from "./Render";
 import { TransparencyControl } from "./Transparency";
-import { getDashboardTool } from "../../../utils/dashboardTool";
+import { getDashboardTool } from "../../../utils/dashboard";
 import MobileBottomNav from "../../../components/MobileBottomNav";
 
 maplibregl.addProtocol("cog", cogProtocol);

@@ -167,6 +167,19 @@ function receive(data, error = null) {
         contextLayer: 100,
       };
     }
+
+    // Fixing widget naming convention
+    data.widgets.map((widget) => {
+      widget.config;
+      if ("indicatorsList" in widget.config) {
+        widget.config.indicators = widget.config.indicatorsList;
+        delete widget.config.indicatorsList;
+      }
+      if ("geographicalUnitList" in widget.config) {
+        widget.config.geographicalUnit = widget.config.geographicalUnitList;
+        delete widget.config.geographicalUnitList;
+      }
+    });
   }
 
   return {

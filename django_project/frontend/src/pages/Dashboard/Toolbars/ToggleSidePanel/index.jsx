@@ -30,7 +30,7 @@ import { LEFT, RIGHT } from "../../../../components/ToggleButton";
 
 import "./style.scss";
 import { useSelector } from "react-redux";
-import { getDashboardTool } from "../../../../utils/dashboardTool";
+import { getDashboardTool } from "../../../../utils/dashboard";
 import { Variables } from "../../../../utils/Variables";
 
 /**

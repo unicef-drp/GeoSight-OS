@@ -27,7 +27,7 @@ import {
 } from "../../../../components/Icons";
 
 import "./style.scss";
-import { getDashboardTool } from "../../../../utils/dashboardTool";
+import { getDashboardTool } from "../../../../utils/dashboard";
 import { Variables } from "../../../../utils/Variables";
 
 /**

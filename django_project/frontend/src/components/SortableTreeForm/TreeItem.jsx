@@ -202,12 +202,8 @@ export const TreeItem = forwardRef(
             <span className={styles.Count}>{childCount}</span>
           ) : null}
 
-          {otherActionsFunction && data ? (
-            <span className="OtherActionFunctions">
-              {otherActionsFunction(data)}
-            </span>
-          ) : (
-            ""
+          {otherActionsFunction && data && (
+            <span className="OtherActions">{otherActionsFunction(data)}</span>
           )}
 
           {isGroup ? (

@@ -273,28 +273,6 @@ export function referenceLayerIndicatorLayer(referenceLayer, indicatorLayer) {
   return indicatorLayer?.level_config?.referenceLayer ? indicatorLayer?.level_config?.referenceLayer : referenceLayer
 }
 
-export function getIndicatorLayers(id, indicatorLayers, referenceLayerIdentifier, referenceLayer) {
-  let indicatorLayer = indicatorLayers.filter(
-    layer => layer.indicators.map(indicator => indicator.id).includes(id)
-  )
-  if (referenceLayerIdentifier === referenceLayer.identifier) {
-    indicatorLayer = indicatorLayer.filter(
-      layer => {
-        const _referenceLayer = referenceLayerIndicatorLayer(referenceLayer, layer)
-        return _referenceLayer.identifier === referenceLayerIdentifier
-      }
-    )
-  } else {
-    indicatorLayer = indicatorLayer.filter(
-      layer => {
-        const _referenceLayer = referenceLayerIndicatorLayer(referenceLayer, layer)
-        return _referenceLayer.identifier === referenceLayerIdentifier
-      }
-    )
-  }
-  return indicatorLayer
-}
-
 /** Return list of indicator by expression */
 export function getIndicatorsOfIndicatorLayers(layer, indicators) {
   let _indicators = layer?.indicators ? layer?.indicators : [];

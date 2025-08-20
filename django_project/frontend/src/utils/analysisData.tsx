@@ -14,12 +14,12 @@
  */
 
 export const AGGREGATION_TYPES = {
-  COUNT: 'COUNT',
-  COUNT_UNIQUE: 'COUNT_UNIQUE',
   SUM: 'SUM',
   MIN: 'MIN',
   MAX: 'MAX',
   AVG: 'AVG',
+  COUNT: 'COUNT',
+  COUNT_UNIQUE: 'COUNT_UNIQUE',
 } as const;
 
 export const analyzeData = (

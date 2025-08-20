@@ -13,23 +13,25 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React from 'react';
+import React from "react";
 
-import { DEFINITION } from "../index"
-import WidgetSelectionMember from "../WidgetSelectionMember"
+import WidgetSelectionMember from "../WidgetSelectionMember";
+import { WidgetType } from "../Definition";
 
 /**
- * Widget Selection Member for Summary Group.
+ * Widget Selection Member for Generic Widget.
  * @param {function} onClick When element clicked
  */
-export default function SummaryGroupMember({ onClick }) {
-  return <WidgetSelectionMember
-    title="Summary Group Widget"
-    description="Summarize all values grouping the results by unique values in another column."
-    onClick={() => {
-      onClick({
-        "type": DEFINITION.WidgetType.SUMMARY_GROUP_WIDGET,
-      })
-    }}
-  />
+export default function GenericWidgetMember({ onClick }) {
+  return (
+    <WidgetSelectionMember
+      title="Generic Widget"
+      description="A generic widget."
+      onClick={() => {
+        onClick({
+          type: WidgetType.GENERIC_SUMMARY_WIDGET,
+        });
+      }}
+    />
+  );
 }

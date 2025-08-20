@@ -29,7 +29,10 @@ from geosight.data.api.v1.data_browser import (
 )
 from geosight.data.api.v1.group import GroupViewSet
 from geosight.data.api.v1.indicator import (
-    IndicatorViewSet, IndicatorDataViewSet
+    IndicatorViewSet, IndicatorDataViewSet,
+)
+from geosight.data.api.v1.indicator.indicators_data import (
+    IndicatorsDataViewSet
 )
 from geosight.data.api.v1.related_table import (
     RelatedTableViewSet, RelatedTableDataViewSet, RelatedTableGeoDataViewSet
@@ -51,6 +54,9 @@ router.register(r'dataset', DatasetApiList, basename='dataset')
 router.register(r'data-browser', DataBrowserApiList, basename='data-browser')
 
 # Indicator
+router.register(
+    r'indicators/data', IndicatorsDataViewSet, basename='indicators_data'
+)
 router.register(r'indicators', IndicatorViewSet, basename='indicators')
 indicators_router = NestedSimpleRouter(
     router, r'indicators', lookup='indicators')

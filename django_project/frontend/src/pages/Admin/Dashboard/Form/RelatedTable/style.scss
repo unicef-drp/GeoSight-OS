@@ -30,18 +30,14 @@
     display: none;
   }
 
-  .OtherActionFunctions {
-    width: 50%;
-
-    .BasicForm {
-      & > div {
-        margin-bottom: 0.5rem;
-      }
+  .BasicForm {
+    & > div {
+      margin-bottom: 1rem;
     }
 
     .GeographyCodeField {
-      .MuiInputBase-root {
-        padding-left: 0.5rem !important;
+      & > div {
+        margin-top: 0.5rem;
       }
     }
   }
