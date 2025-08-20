@@ -229,12 +229,6 @@ export default function WidgetInformation({ data }: Props) {
         <Indicators {...config} />
         <GeographicUnit {...config} />
         <DateTimeRange {...config} />
-        {aggregation && (
-          <div>
-            <div>Aggregation:</div>
-            <div>{aggregation}</div>
-          </div>
-        )}
       </div>
     </CustomPopover>
   );

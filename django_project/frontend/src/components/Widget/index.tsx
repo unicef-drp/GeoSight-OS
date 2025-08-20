@@ -23,10 +23,10 @@ import React, { Fragment, memo } from "react";
 import TimeSeriesChartWidgetView from "./TimeSeriesChartWidget/View";
 import SummaryGroupWidgetView from "./Legacy/SummaryGroupWidget/View";
 import { WidgetType } from "./Definition";
-
-import "./style.scss";
 import { Widget } from "../../types/Widget";
 import WidgetInformation from "./Information";
+
+import "./style.scss";
 
 export interface WidgetViewProps {
   data: Widget;
@@ -58,7 +58,7 @@ export const WidgetView = memo(({ data }: WidgetViewProps) => {
     try {
       return renderWidgetByType();
     } catch (error) {
-      return <div className="WidgetError">{"" + error}</div>;
+      return <div className="error">{"" + error}</div>;
     }
   };
 

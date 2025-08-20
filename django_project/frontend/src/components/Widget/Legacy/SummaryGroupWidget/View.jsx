@@ -291,7 +291,7 @@ export default function SummaryGroupWidgetView({ data }) {
       return renderWidgetByType();
     } catch (error) {
       error = ("" + error).replaceAll("Error: ", "");
-      return <div className="WidgetError">{"" + error}</div>;
+      return <div className="error">{"" + error}</div>;
     }
   };
 

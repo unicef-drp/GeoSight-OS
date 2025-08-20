@@ -114,7 +114,7 @@ export default function Index({ data, widgetData }) {
             </table>
           );
         default:
-          return <div className="WidgetError">Operation Not Found</div>;
+          return <div className="error">Operation Not Found</div>;
       }
     }
     return (

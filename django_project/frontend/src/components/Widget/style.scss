@@ -29,7 +29,6 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 1rem;
   }
 
   .widget__description {
@@ -47,11 +46,6 @@
     top: 0;
     left: 0;
     width: 100%;
-  }
-
-  .WidgetError {
-    color: red;
-    padding: 0 2rem;
   }
 
   // SUMMARY WIDGET

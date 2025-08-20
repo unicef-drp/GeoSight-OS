@@ -54,7 +54,7 @@ export default function SummaryWidget({ data, widgetData }) {
             </span>
           );
         default:
-          return <div className="WidgetError">Operation Not Found</div>;
+          return <div className="error">Operation Not Found</div>;
       }
     }
     return (

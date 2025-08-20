@@ -273,7 +273,7 @@ export default function TimeSeriesChartWidget({ data }) {
 
   if (error) {
     return (
-      <div className="WidgetError">
+      <div className="error">
         {"" + ("" + error).replaceAll("Error: ", "")}
       </div>
     );
