@@ -28,6 +28,7 @@ import Modal, { ModalContent, ModalHeader } from "../../Modal";
 import {
   SeriesDataType,
   SeriesType,
+  SeriesTypeNone,
   SortMethodTypes,
   SortTypes,
   TimeType,
@@ -202,6 +203,14 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
                 style={{ display: "flex", flexDirection: "row" }}
                 value={widgetData.type}
                 onChange={(evt) => {
+                  if (
+                    evt.target.value ===
+                      WidgetType.GENERIC_TIME_SERIES_WIDGET &&
+                    widgetData.config.seriesType === SeriesTypeNone
+                  ) {
+                    widgetData.config.seriesType =
+                      SeriesType.GEOGRAPHICAL_UNITS;
+                  }
                   setWidgetData({ ...widgetData, type: evt.target.value });
                 }}
               >
@@ -296,9 +305,9 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
                   <FormControlLabel
                     control={<Radio />}
                     /*@ts-ignore*/
-                    value={"None"}
+                    value={SeriesTypeNone}
                     /*@ts-ignore*/
-                    label={t("None")}
+                    label={t(SeriesTypeNone)}
                   />
                 )}
                 {Object.keys(SeriesType).map((key) => {

@@ -117,19 +117,24 @@ export default function WidgetForm() {
           // render widget by the type
           switch (data?.type) {
             case WidgetType.SUMMARY_WIDGET:
-              return <div className="OtherActionIndicator">Summary Widget (Legacy)</div>;
+              return (
+                <div className="OtherActionIndicator">
+                  Summary Widget (Legacy)
+                </div>
+              );
             case WidgetType.SUMMARY_GROUP_WIDGET:
               return (
-                <div className="OtherActionIndicator">Summary Group Widget (Legacy)</div>
+                <div className="OtherActionIndicator">
+                  Summary Group Widget (Legacy)
+                </div>
               );
+            case WidgetType.GENERIC_TIME_SERIES_WIDGET:
             case WidgetType.TIME_SERIES_CHART_WIDGET:
               return (
                 <div className="OtherActionIndicator">Time Series Widget</div>
               );
             case WidgetType.GENERIC_SUMMARY_WIDGET:
-              return (
-                <div className="OtherActionIndicator">Summary Widget</div>
-              );
+              return <div className="OtherActionIndicator">Summary Widget</div>;
             default:
               throw null;
           }

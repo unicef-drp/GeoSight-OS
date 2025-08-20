@@ -18,6 +18,7 @@
    ========================================================================== */
 
 /** Used for grouping data **/
+export const SeriesTypeNone = "None"
 export const SeriesType = {
   GEOGRAPHICAL_UNITS: "Geographical units",
   INDICATORS: "Indicators",

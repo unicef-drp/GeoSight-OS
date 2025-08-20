@@ -47,6 +47,7 @@ export const WidgetView = memo(({ data }: WidgetViewProps) => {
         // We will fix the widget summary calculation
         return <SummaryGroupWidgetView data={data} />;
       case WidgetType.TIME_SERIES_CHART_WIDGET:
+      case WidgetType.GENERIC_TIME_SERIES_WIDGET:
         return <TimeSeriesChartWidgetView data={data} />;
       default:
         throw new Error("Widget type does not recognized.");

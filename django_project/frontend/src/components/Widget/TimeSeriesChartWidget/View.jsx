@@ -101,7 +101,7 @@ export default function TimeSeriesChartWidget({ data }) {
   const [chartData, setChartData] = useState(null);
   const [error, setError] = useState(null);
 
-  const { name, config } = data;
+  const { config } = data;
   const {
     dateTimeConfig,
     geographicalUnitPaletteColor,
@@ -273,9 +273,7 @@ export default function TimeSeriesChartWidget({ data }) {
 
   if (error) {
     return (
-      <div className="error">
-        {"" + ("" + error).replaceAll("Error: ", "")}
-      </div>
+      <div className="error">{"" + ("" + error).replaceAll("Error: ", "")}</div>
     );
   }
   return (

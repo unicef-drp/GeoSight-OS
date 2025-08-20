@@ -38,7 +38,6 @@ test.describe('View edit project widget', () => {
     await page.goto('/admin/project/demo-geosight-project/edit');
     await page.getByText('Widgets (5)').click();
     await page.getByRole('button', { name: 'Add Widget' }).click();
-    await page.getByText('Generic Widget', { exact: true }).click();
     await expect(onRun).toEqual(`{"name":"","description":"","type":"GenericSummaryWidget","config":{"seriesType":"None","indicators":[],"indicatorsType":"Predefined list","indicatorsPaletteColor":0,"geographicalUnit":[],"geographicalUnitType":"Predefined list","geographicalUnitPaletteColor":0,"dateTimeType":"Sync with dashboard","dateTimeConfig":{"minDateFilter":null,"maxDateFilter":null,"interval":"Daily"},"aggregation":{"method":"SUM","decimalPlace":0,"useDecimalPlace":false,"useAutoUnits":false},"sort":{"field":"Name","method":"Ascending","topN":0,"useTopN":false}}}`)
     await page.getByRole('textbox', { name: 'Widget name' }).fill('This is widget');
     await page.getByRole('textbox', { name: 'Widget description' }).fill('This is description');
