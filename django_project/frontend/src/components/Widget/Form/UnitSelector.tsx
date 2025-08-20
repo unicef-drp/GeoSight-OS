@@ -23,12 +23,7 @@ import MultiSelectorConfig from "../../../pages/Admin/Components/Input/MultiSele
 import ColorPaletteSelector from "../../Input/ColorPaletteSelector";
 import { UnitConfig } from "../../../types/Widget";
 import { SeriesDataType, SeriesType } from "../Definition";
-import {
-  indicatorLayerId,
-  indicatorLayersLikeIndicator,
-} from "../../../utils/indicatorLayer";
 import { Indicator } from "../../../types/Indicator";
-import { IndicatorLayer } from "../../../types/IndicatorLayer";
 
 export interface Props {
   type: string;
@@ -137,14 +132,16 @@ export function IndicatorDataSeriesConfig({
       name: indicator.name,
     });
   });
-  indicatorLayersLikeIndicator(indicatorLayers).map(
-    (indicatorLayer: IndicatorLayer) => {
-      indicatorListConfig.push({
-        id: indicatorLayerId(indicatorLayer),
-        name: indicatorLayer.name,
-      });
-    },
-  );
+  // TODO:
+  //  We need to fix this
+  // indicatorLayersLikeIndicator(indicatorLayers).map(
+  //   (indicatorLayer: IndicatorLayer) => {
+  //     indicatorListConfig.push({
+  //       id: indicatorLayerId(indicatorLayer),
+  //       name: indicatorLayer.name,
+  //     });
+  //   },
+  // );
   return (
     <DataSeriesConfig
       name={"Indicators"}

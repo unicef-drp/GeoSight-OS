@@ -22,6 +22,9 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 import { numberWithCommas } from "../../../../utils/main";
 import { WidgetOperation } from "../../Definition";
+import {
+  AggregationMethod
+} from "../../../../pages/Admin/Importer/Form/Extensions/QueryForm/Aggregation";
 
 /**
  * General widget to show summary of data.
@@ -31,31 +34,32 @@ import { WidgetOperation } from "../../Definition";
  */
 export default function SummaryWidget({ data, widgetData }) {
   const { config } = widgetData;
-  const { unit, operation } = config;
+  const { unit, operation, aggregation } = config;
 
   /**
    * Return value of widget
    * @returns {JSX.Element}
    */
   function getValue() {
-    if (data !== null) {
-      switch (operation) {
-        case WidgetOperation.SUM:
-          let total = 0;
-          data.forEach(function (rowData) {
-            const rowValue = parseFloat(rowData.value);
-            if (!isNaN(rowValue)) {
-              total += rowValue;
-            }
-          });
-          return (
-            <span>
-              {numberWithCommas(total)} {unit}
-            </span>
-          );
-        default:
-          return <div className="error">Operation Not Found</div>;
+    if (![null, undefined].includes(data)) {
+      if (
+        operation === WidgetOperation.SUM ||
+        aggregation?.method === AggregationMethod.SUM
+      ) {
+        let total = 0;
+        data.forEach(function (rowData) {
+          const rowValue = parseFloat(rowData.value);
+          if (!isNaN(rowValue)) {
+            total += rowValue;
+          }
+        });
+        return (
+          <span>
+            {numberWithCommas(total)} {unit}
+          </span>
+        );
       }
+      return <div className="error">Operation Not Found</div>;
     }
     return (
       <div className="dashboard__right_side__loading">

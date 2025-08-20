@@ -25,6 +25,7 @@ import SummaryGroupWidgetView from "./Legacy/SummaryGroupWidget/View";
 import { WidgetType } from "./Definition";
 import { Widget } from "../../types/Widget";
 import WidgetInformation from "./Information";
+import GenericWidgetView from "./GenericWidget/View";
 
 import "./style.scss";
 
@@ -49,6 +50,8 @@ export const WidgetView = memo(({ data }: WidgetViewProps) => {
       case WidgetType.TIME_SERIES_CHART_WIDGET:
       case WidgetType.GENERIC_TIME_SERIES_WIDGET:
         return <TimeSeriesChartWidgetView data={data} />;
+      case WidgetType.GENERIC_SUMMARY_WIDGET:
+        return <GenericWidgetView data={data} />;
       default:
         throw new Error("Widget type does not recognized.");
     }

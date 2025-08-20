@@ -25,6 +25,21 @@ from rest_framework.response import Response
 class IndicatorValueApiUtilities:
     """Indicator value api utilities."""
 
+    def _set_request(self):  # noqa DOC110, DOC103
+        """
+        Set request query parameters from POST data.
+
+        Copies data from the POST body (`self.request.data`) into
+        the GET query parameters (`self.request.GET`), allowing
+        uniform access to parameters regardless of HTTP method.
+
+        :return: None
+        """
+        self.request.GET = self.request.GET.copy()
+        data = self.request.data.copy()
+        for key, value in data.items():
+            self.request.GET[key] = value
+
     def get_queryset(self):
         """Queryset."""
         raise NotImplementedError()
