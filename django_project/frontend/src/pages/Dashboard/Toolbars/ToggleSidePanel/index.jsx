@@ -28,7 +28,7 @@ import {
   LeftPanelUncheckedIcon,
 } from "../../../../components/Icons/index";
 import { LEFT, RIGHT } from "../../../../components/ToggleButton";
-import { isDashboardToolEnabled } from "../../../../utils/dashboardTool";
+import { isDashboardToolEnabled } from "../../../../selectors/dashboard";
 import { Variables } from "../../../../utils/Variables";
 
 import "./style.scss";

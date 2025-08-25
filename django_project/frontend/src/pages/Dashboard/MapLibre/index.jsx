@@ -40,6 +40,7 @@ import {
   GlobalDateSelector,
   HomeButton,
   LabelToggler,
+  PopupToolbars,
   SearchGeometryInput,
   TiltControl,
   ToggleSidePanel,
@@ -50,18 +51,18 @@ import ReferenceLayerSection from "../MiddlePanel/ReferenceLayer";
 import DatasetGeometryData from "./Controllers/DatasetGeometryData";
 import IndicatorLayersReferenceControl
   from "./IndicatorLayersReferenceControl";
+import { Variables } from "../../../utils/Variables";
+import { addLayerWithOrder } from "./Render";
+import { TransparencyControl } from "./Transparency";
+import { isDashboardToolEnabled } from "../../../selectors/dashboard";
+import MobileBottomNav from "../../../components/MobileBottomNav";
+import { SearchGeometryMobile } from "../Toolbars/SearchGeometryInput";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 import "./style.scss";
 
 // Initialize cog
 import { cogProtocol } from "@geomatico/maplibre-cog-protocol";
-import { PopupToolbars } from "../Toolbars/PopupToolbars";
-import { Variables } from "../../../utils/Variables";
-import { addLayerWithOrder } from "./Render";
-import { TransparencyControl } from "./Transparency";
-import { isDashboardToolEnabled } from "../../../utils/dashboardTool";
-import MobileBottomNav from "../../../components/MobileBottomNav";
 
 maplibregl.addProtocol("cog", cogProtocol);
 
@@ -382,6 +383,8 @@ export default function MapLibre({ leftPanelProps, rightPanelProps }) {
           ) : null}
         </div>
       </div>
+
+      <SearchGeometryMobile />
 
       <div id="map"></div>
 

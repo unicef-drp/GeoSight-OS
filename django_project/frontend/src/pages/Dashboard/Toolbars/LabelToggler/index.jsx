@@ -22,7 +22,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Plugin, PluginChild } from "../../MapLibre/Plugin";
 import { Actions } from "../../../../store/dashboard";
 import { LabelOffIcon, LabelOnIcon } from "../../../../components/Icons";
-import { isDashboardToolEnabled } from "../../../../utils/dashboardTool";
+import { isDashboardToolEnabled } from "../../../../selectors/dashboard";
 import { Variables } from "../../../../utils/Variables";
 
 import "./style.scss";

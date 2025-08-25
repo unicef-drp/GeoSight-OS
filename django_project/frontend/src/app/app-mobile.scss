@@ -64,7 +64,11 @@
     -ms-user-select: none;
     -webkit-tap-highlight-color: transparent;
   }
-
+  .ToolbarMobileBottom {
+    margin-top: -2px;
+    border-top: 2px solid white;
+    border-bottom: 1px solid var(--border-gray);
+  }
   .ProjectOverview-Toolbar {
     margin-top: 3rem;
   }
@@ -135,8 +139,8 @@
   }
   .DashboardMap .Toolbar {
     padding: 0.5rem !important;
-    height: 80px !important;
-    min-height: 80px !important;
+    height: auto !important;
+    min-height: 40px !important;
     justify-content: center !important;
     align-items: start !important;
 
@@ -294,5 +298,9 @@
   }
   .IndicatorLayerMiddleConfig .WhereConfigurationWrapper {
     max-width: 100vw !important;
+  }
+
+  .ToolbarMobileBottom {
+    height: 43px;
   }
 }

@@ -220,5 +220,10 @@
   "Context layers tab only": "Solo pestaña de capas de contexto",
   "Indicator layers tab only": "Solo pestaña de capas de indicadores",
   "Show map toolbar": "Mostrar barra del mapa",
-  "Back to home": "Volver a inicio"
+  "Back to home": "Volver a inicio",
+  "Map": "Mapa",
+  "Context layers": "Capas de contexto",
+  "Indicators": "Indicadores",
+  "Filter": "Filtro",
+  "Widget": "Widget"
 }

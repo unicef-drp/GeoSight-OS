@@ -23,7 +23,7 @@ import { useSelector } from "react-redux";
 import { MeasurementTool } from "./Measurement";
 import { ZonalAnalysisComponent } from "./ZonalAnalysis";
 import { Variables } from "../../../../utils/Variables";
-import { isDashboardToolEnabled } from "../../../../utils/dashboardTool";
+import { isDashboardToolEnabled } from "../../../../selectors/dashboard";
 
 import "./style.scss";
 
