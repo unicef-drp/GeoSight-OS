@@ -34,15 +34,16 @@ export function HomeButton({ map }) {
   );
   const extent = useSelector((state) => state.dashboard.data?.extent);
 
-  console.log("HomeButtonChanged " + enable);
-
   if (!enable) return null;
   return (
     <Fragment>
       <Plugin className={"MovementHistory"}>
-        <div className={"Active"}>
+        <div
+          className={"Active"}
+          data-tool={Variables.DASHBOARD.TOOL.BACK_TO_HOME}
+        >
           <PluginChild
-            title={"Back to home"}
+            title={Variables.DASHBOARD.TOOL.BACK_TO_HOME}
             disabled={!extent}
             onClick={() => {
               map.fitBounds([

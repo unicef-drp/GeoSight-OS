@@ -407,6 +407,12 @@ test.describe('Create complex project', () => {
       }));
       await page.locator('.tabs-visibility input[value="context_layers"]').click();
     }
+
+    // Update tools
+    await page.locator('.TabPrimary').getByText('Tools').click();
+    await page.locator(`.AllToggleVisibility`).click();
+    await expect(page.locator('.TableForm.Tools').locator(`.VisibilityIconOn`)).not.toHaveCount(0);
+
     await page.getByRole('button', { name: 'Save', exact: true }).isEnabled();
     await page.getByRole('button', { name: 'Save', exact: true }).click();
     await page.waitForURL(editUrl)
@@ -417,6 +423,24 @@ test.describe('Create complex project', () => {
     // Checking tools works
     await page.goto(`${BASE_URL}/project/test-project-complex-config/`);
     await expect(page.locator('#simple-tabpanel-0.layers-panel')).toBeVisible();
+    await checkToolIconVisible();
+
+    // --------------------------------------------------------------
+    // OVERRIDE AGAIN
+    // --------------------------------------------------------------
+    await page.goto(editUrl);
+    await page.getByText('Show map toolbar').click();
+
+    await page.getByRole('button', { name: 'Save', exact: true }).isEnabled();
+    await page.getByRole('button', { name: 'Save', exact: true }).click();
+    await page.waitForURL(editUrl)
+
+    // ----------------------------------
+    // PREVIEW
+    // ----------------------------------
+    // Checking tools works
+    await page.goto(`${BASE_URL}/project/test-project-complex-config/`);
+    await checkToolIconNotVisible()
 
     // ------------------------------------
     // DELETE PROJECT

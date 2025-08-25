@@ -17,12 +17,12 @@
    CompareLayer
    ========================================================================== */
 
-import React from "react";
+import React, { memo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Plugin, PluginChild } from "../../MapLibre/Plugin";
 import { Actions } from "../../../../store/dashboard";
 import { LabelOffIcon, LabelOnIcon } from "../../../../components/Icons";
-import { getDashboardTool } from "../../../../utils/dashboardTool";
+import { isDashboardToolEnabled } from "../../../../utils/dashboardTool";
 import { Variables } from "../../../../utils/Variables";
 
 import "./style.scss";
@@ -30,16 +30,15 @@ import "./style.scss";
 /**
  * CompareLayer component.
  */
-export default function LabelToggler() {
-  // @ts-ignore
-  const { tools } = useSelector((state) => state.dashboard.data);
-  const enabled = getDashboardTool(
-    tools,
-    Variables.DASHBOARD.TOOL.MAP_LABEL_TOGGLE,
-  )?.visible_by_default;
-
+export function LabelToggler() {
   const dispatch = useDispatch();
-  const { showIndicatorMapLabel } = useSelector((state) => state.globalState);
+
+  const enabled = useSelector(
+    isDashboardToolEnabled(Variables.DASHBOARD.TOOL.MAP_LABEL_TOGGLE),
+  );
+  const showIndicatorMapLabel = useSelector(
+    (state) => state.globalState?.showIndicatorMapLabel,
+  );
 
   if (!enabled) {
     return null;
@@ -75,3 +74,5 @@ export default function LabelToggler() {
     </Plugin>
   );
 }
+
+export default memo(LabelToggler);

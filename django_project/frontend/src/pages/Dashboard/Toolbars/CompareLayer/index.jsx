@@ -17,7 +17,7 @@
    CompareLayer
    ========================================================================== */
 
-import React, { useEffect } from "react";
+import React, { memo, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Plugin, PluginChild } from "../../MapLibre/Plugin";
 import { Actions } from "../../../../store/dashboard";
@@ -25,23 +25,20 @@ import {
   CompareCheckedIcon,
   CompareUncheckedIcon,
 } from "../../../../components/Icons";
+import { isDashboardToolEnabled } from "../../../../utils/dashboardTool";
+import { Variables } from "../../../../utils/Variables";
 
 import "./style.scss";
-import { getDashboardTool } from "../../../../utils/dashboardTool";
-import { Variables } from "../../../../utils/Variables";
 
 /**
  * CompareLayer component.
  */
-export default function CompareLayer({ disabled = false }) {
+export function CompareLayer({ disabled = false }) {
   const dispatch = useDispatch();
-  const { compareMode } = useSelector((state) => state.mapMode);
-  // @ts-ignore
-  const { tools } = useSelector((state) => state.dashboard.data);
-  const enabled = getDashboardTool(
-    tools,
-    Variables.DASHBOARD.TOOL.COMPARE_LAYERS,
-  )?.visible_by_default;
+  const compareMode = useSelector((state) => state.mapMode?.compareMode);
+  const enabled = useSelector(
+    isDashboardToolEnabled(Variables.DASHBOARD.TOOL.COMPARE_LAYERS),
+  );
 
   /**
    * FIRST INITIATE
@@ -76,3 +73,5 @@ export default function CompareLayer({ disabled = false }) {
     </Plugin>
   );
 }
+
+export default memo(CompareLayer);
