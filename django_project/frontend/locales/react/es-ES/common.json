@@ -218,5 +218,6 @@
   "Context and indicator layer tabs visibility": "Visibilidad de las pestañas de capas de contexto e indicadores",
   "Show both tabs": "Mostrar ambas pestañas",
   "Context layers tab only": "Solo pestaña de capas de contexto",
-  "Indicator layers tab only": "Solo pestaña de capas de indicadores"
+  "Indicator layers tab only": "Solo pestaña de capas de indicadores",
+  "Show map toolbar": "Mostrar barra del mapa"
 }

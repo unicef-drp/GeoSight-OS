@@ -87,19 +87,22 @@ export default function MapLibre({
   const transparencyRef = useRef(null);
 
   // Tools
-  const { tools } = useSelector((state) => state.dashboard.data);
+  const { tools, show_map_toolbar } = useSelector((state) => state.dashboard.data);
   // @ts-ignore
   const view3DEnable = getDashboardTool(
     tools,
     Variables.DASHBOARD.TOOL.VIEW_3D,
+    show_map_toolbar
   )?.visible_by_default;
   const levelSelectorEnable = getDashboardTool(
     tools,
     Variables.DASHBOARD.TOOL.LEVEL_SELECTOR,
+    show_map_toolbar
   )?.visible_by_default;
   const embedToolEnable = getDashboardTool(
     tools,
     Variables.DASHBOARD.TOOL.EMBED_TOOL,
+    show_map_toolbar
   )?.visible_by_default;
 
   const drawingRef = useRef(null);

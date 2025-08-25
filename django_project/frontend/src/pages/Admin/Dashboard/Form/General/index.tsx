@@ -62,6 +62,7 @@ export interface GeneralData {
   show_splash_first_open: boolean;
   truncate_indicator_layer_name: boolean;
   layer_tabs_visibility: string;
+  show_map_toolbar: boolean;
   transparency_config: TransparencyConfiguration;
 }
 
@@ -104,6 +105,7 @@ const GeneralForm = memo(({}: Props) => {
     default_time_mode: projectData.default_time_mode,
     transparency_config: projectData.transparency_config,
     layer_tabs_visibility: projectData.layer_tabs_visibility,
+    show_map_toolbar: projectData.show_map_toolbar,
   });
 
   /** referenceLayerProject changed **/
@@ -134,6 +136,7 @@ const GeneralForm = memo(({}: Props) => {
     show_splash_first_open,
     truncate_indicator_layer_name,
     layer_tabs_visibility,
+    show_map_toolbar,
   } = projectData;
 
   // TODO:
@@ -497,6 +500,24 @@ const GeneralForm = memo(({}: Props) => {
                     />
                   }
                   label={t("admin.dashboard.truncateLongIndicatorLayerName")}
+                />
+              </FormGroup>
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={show_map_toolbar}
+                      onChange={(event) => {
+                        dispatch(
+                          Actions.Dashboard.updateProps({
+                            show_map_toolbar:
+                              !show_map_toolbar,
+                          }),
+                        );
+                      }}
+                    />
+                  }
+                  label={t("Show map toolbar")}
                 />
               </FormGroup>
               <FormControl>

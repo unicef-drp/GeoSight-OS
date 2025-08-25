@@ -132,6 +132,10 @@ class Dashboard(
         null=True, blank=True
     )
     default_time_mode = models.JSONField(null=True, blank=True)
+    show_map_toolbar = models.BooleanField(
+        null=True, blank=True, default=True,
+        help_text=_('Show map toolbars on the map.')
+    )
 
     # TransparencySlider
     transparency_config = models.JSONField(

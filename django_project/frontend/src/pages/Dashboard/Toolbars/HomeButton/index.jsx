@@ -17,35 +17,46 @@
    History Movement
    ========================================================================== */
 
-import React, { Fragment } from 'react';
+import React, { Fragment, memo } from "react";
 import { useSelector } from "react-redux";
-import { HomeIcon } from "../../../../components/Icons"
+import { HomeIcon } from "../../../../components/Icons";
 
 import { Plugin, PluginChild } from "../../MapLibre/Plugin";
+import { isDashboardToolEnabled } from "../../../../utils/dashboardTool";
+import { Variables } from "../../../../utils/Variables";
 
 /**
  * Movement history component.
  */
-export default function HomeButton({ map }) {
-  const { extent } = useSelector(state => state.dashboard.data)
+export function HomeButton({ map }) {
+  const enable = useSelector(
+    isDashboardToolEnabled(Variables.DASHBOARD.TOOL.BACK_TO_HOME),
+  );
+  const extent = useSelector((state) => state.dashboard.data?.extent);
 
+  console.log("HomeButtonChanged " + enable);
+
+  if (!enable) return null;
   return (
     <Fragment>
-      <Plugin className={'MovementHistory'}>
-        <div className={'Active'}>
+      <Plugin className={"MovementHistory"}>
+        <div className={"Active"}>
           <PluginChild
-            title={'Back to home'}
+            title={"Back to home"}
             disabled={!extent}
             onClick={() => {
               map.fitBounds([
                 [extent[0], extent[1]],
-                [extent[2], extent[3]]
-              ])
-            }}>
-            <HomeIcon/>
+                [extent[2], extent[3]],
+              ]);
+            }}
+          >
+            <HomeIcon />
           </PluginChild>
         </div>
       </Plugin>
     </Fragment>
-  )
+  );
 }
+
+export default memo(HomeButton);
