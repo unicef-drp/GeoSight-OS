@@ -44,19 +44,16 @@ import CustomPopover from "../../../../components/CustomPopover";
 import { PluginChild } from "../../MapLibre/Plugin";
 import { EmbedConfig } from "../../../../utils/embed";
 import { ProjectCheckpoint } from "../../../../components/ProjectCheckpoint";
+import { isDashboardToolEnabled } from "../../../../selectors/dashboard";
+import { Variables } from "../../../../utils/Variables";
 
 import "./style.scss";
-import { getDashboardTool } from "../../../../utils/dashboardTool";
-import { Variables } from "../../../../utils/Variables";
 
 /** Bookmark component. */
 export default function Bookmark({ map }) {
-  // @ts-ignore
-  const { tools } = useSelector((state) => state.dashboard.data);
-  const enabled = getDashboardTool(
-    tools,
-    Variables.DASHBOARD.TOOL.SPATIAL_BOOKMARK,
-  )?.visible_by_default;
+  const enabled = useSelector(
+    isDashboardToolEnabled(Variables.DASHBOARD.TOOL.SPATIAL_BOOKMARK),
+  );
 
   // Project point states
   const projectCheckpointRef = useRef(null);

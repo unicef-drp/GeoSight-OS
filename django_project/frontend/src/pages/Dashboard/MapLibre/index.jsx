@@ -40,7 +40,7 @@ import {
   GlobalDateSelector,
   HomeButton,
   LabelToggler,
-  ProjectOverview,
+  PopupToolbars,
   SearchGeometryInput,
   TiltControl,
   ToggleSidePanel,
@@ -51,18 +51,18 @@ import ReferenceLayerSection from "../MiddlePanel/ReferenceLayer";
 import DatasetGeometryData from "./Controllers/DatasetGeometryData";
 import IndicatorLayersReferenceControl
   from "./IndicatorLayersReferenceControl";
+import { Variables } from "../../../utils/Variables";
+import { addLayerWithOrder } from "./Render";
+import { TransparencyControl } from "./Transparency";
+import { isDashboardToolEnabled } from "../../../selectors/dashboard";
+import MobileBottomNav from "../../../components/MobileBottomNav";
+import { SearchGeometryMobile } from "../Toolbars/SearchGeometryInput";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 import "./style.scss";
 
 // Initialize cog
 import { cogProtocol } from "@geomatico/maplibre-cog-protocol";
-import { PopupToolbars } from "../Toolbars/PopupToolbars";
-import { Variables } from "../../../utils/Variables";
-import { addLayerWithOrder } from "./Render";
-import { TransparencyControl } from "./Transparency";
-import { getDashboardTool } from "../../../utils/dashboardTool";
-import MobileBottomNav from "../../../components/MobileBottomNav";
 
 maplibregl.addProtocol("cog", cogProtocol);
 
@@ -72,11 +72,7 @@ let previousLayerIds = [];
 /**
  * MapLibre component.
  */
-export default function MapLibre({
-  leftPanelProps,
-  rightPanelProps,
-  ...props
-}) {
+export default function MapLibre({ leftPanelProps, rightPanelProps }) {
   const dispatch = useDispatch();
   const [map, setMap] = useState(null);
   const [deckgl, setDeckGl] = useState(null);
@@ -86,21 +82,15 @@ export default function MapLibre({
   );
   const transparencyRef = useRef(null);
 
-  // Tools
-  const { tools } = useSelector((state) => state.dashboard.data);
-  // @ts-ignore
-  const view3DEnable = getDashboardTool(
-    tools,
-    Variables.DASHBOARD.TOOL.VIEW_3D,
-  )?.visible_by_default;
-  const levelSelectorEnable = getDashboardTool(
-    tools,
-    Variables.DASHBOARD.TOOL.LEVEL_SELECTOR,
-  )?.visible_by_default;
-  const embedToolEnable = getDashboardTool(
-    tools,
-    Variables.DASHBOARD.TOOL.EMBED_TOOL,
-  )?.visible_by_default;
+  const view3DEnable = useSelector(
+    isDashboardToolEnabled(Variables.DASHBOARD.TOOL.VIEW_3D),
+  );
+  const levelSelectorEnable = useSelector(
+    isDashboardToolEnabled(Variables.DASHBOARD.TOOL.LEVEL_SELECTOR),
+  );
+  const embedToolEnable = useSelector(
+    isDashboardToolEnabled(Variables.DASHBOARD.TOOL.EMBED_TOOL),
+  );
 
   const drawingRef = useRef(null);
   const redrawMeasurement = () => drawingRef.current.redrawMeasurement();
@@ -393,6 +383,8 @@ export default function MapLibre({
           ) : null}
         </div>
       </div>
+
+      <SearchGeometryMobile />
 
       <div id="map"></div>
 

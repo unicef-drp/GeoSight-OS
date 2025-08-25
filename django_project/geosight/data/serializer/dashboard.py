@@ -477,7 +477,8 @@ class DashboardSerializer(serializers.ModelSerializer):
             # ------------------------------
             'show_splash_first_open',
             'truncate_indicator_layer_name',
-            'layer_tabs_visibility', 'transparency_config'
+            'layer_tabs_visibility', 'transparency_config',
+            'show_map_toolbar'
         )
 
 
