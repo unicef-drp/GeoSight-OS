@@ -58,6 +58,28 @@
 }
 
 @media (max-width: 1000px) {
+  .EntitySearchEnable {
+    .ReferenceLayerToolbar {
+      position: absolute !important;
+      top: 90px !important;
+      left: 10px;
+    }
+
+    .DashboardMiddlePanel {
+      padding-top: 80px !important;
+    }
+  }
+  .EntitySearchDisable {
+    .ReferenceLayerToolbar {
+      position: absolute !important;
+      top: 50px !important;
+      left: 10px;
+    }
+
+    .DashboardMiddlePanel {
+      padding-top: 40px !important;
+    }
+  }
   .no-select {
     user-select: none;
     -webkit-user-select: none;
@@ -186,10 +208,6 @@
     }
   }
   .ReferenceLayerToolbar {
-    position: absolute !important;
-    top: 90px !important;
-    left: 10px;
-
     .ReferenceLayerLevelSelector {
       background-color: white !important;
     }
@@ -203,9 +221,6 @@
   }
   .maplibregl-ctrl-bottom-right {
     right: 0 !important;
-  }
-  .DashboardMiddlePanel {
-    padding-top: 80px !important;
   }
   .DashboardMiddlePanel .BottomContent {
     height: 0 !important;
