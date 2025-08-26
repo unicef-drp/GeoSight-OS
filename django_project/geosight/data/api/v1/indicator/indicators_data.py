@@ -33,6 +33,7 @@ class IndicatorsDataViewSet(
     ListModelMixin
 ):
     """indicator Data ViewSet."""
+
     model_class = IndicatorValue
     serializer_class = IndicatorValueSerializer
     non_filtered_keys = [
@@ -44,15 +45,21 @@ class IndicatorsDataViewSet(
     @property
     def queryset(self):
         """
-        Return the base queryset used by the view.
+        Build and return the base queryset for this view.
 
-        Typically overridden to provide custom filtering, annotations, or
-        dynamic behavior based on the request context.
+        The queryset is restricted to ``IndicatorValue`` objects that belong to
+        indicators the current user has permission to read. Optionally, the
+        results can be filtered further by passing a comma-separated list of
+        indicator IDs via the ``indicator_id__in`` query parameter.
 
-        :return: The base queryset
-        :rtype: QuerySet
+        :raises PermissionDenied:
+            If the user does not have permission to access any of the requested
+            indicators.
+
+        :return: A queryset of ``IndicatorValue`` objects filtered by user
+                 permissions and optional request parameters.
+        :rtype: django.db.models.QuerySet
         """
-        # Return by the permission
         indicators_id = []
         indicators_id__in = self.request.GET.get('indicator_id__in', None)
         if indicators_id__in:
