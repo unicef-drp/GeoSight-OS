@@ -38,10 +38,6 @@
       width: 100%;
       justify-content: end;
     }
-
-    .RightContent {
-
-    }
   }
 
   &.RightExpanded {
@@ -70,6 +66,9 @@
 
       .dashboard__content {
         padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
       }
     }
 

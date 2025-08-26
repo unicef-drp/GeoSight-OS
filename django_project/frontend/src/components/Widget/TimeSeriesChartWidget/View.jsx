@@ -17,13 +17,13 @@
    SHOW DATA IN TIME SERIES IN CHART WIDGET
    ========================================================================== */
 
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import LinearProgress from '@mui/material/LinearProgress';
+import LinearProgress from "@mui/material/LinearProgress";
 
 import Chart from "./Chart";
 import { SelectWithList } from "../../Input/SelectWithList";
-import { SeriesDataType, SeriesType, TimeType } from "./Definition";
+import { SeriesDataType, SeriesType, TimeType } from "../Definition";
 import { fetchingData } from "../../../Requests";
 import { getRandomColor } from "../../../utils/main";
 import { dateLabel } from "../../../utils/Dates";
@@ -32,7 +32,7 @@ import RequestData from "./RequestData";
 import { ExecuteWebWorker } from "../../../utils/WebWorker";
 import workerReformatGeometries from "../../../workers/reformat_geometries";
 
-import './style.scss';
+import "./style.scss";
 
 /**
  * Selection of data.
@@ -40,23 +40,27 @@ import './style.scss';
  * @param {dict} secondSeries Selected second series
  * @param {Function} setSecondSeries Set second series
  */
-export function Selection(
-  { list, secondSeries, setSecondSeries }
-) {
+export function Selection({ list, secondSeries, setSecondSeries }) {
   // When config changed
   useEffect(() => {
-    if (!list.map(row => row.id).includes(secondSeries?.id) || !list.map(row => row.color).includes(secondSeries?.color)) {
-      setSecondSeries(list[0])
+    if (
+      !list.map((row) => row.id).includes(secondSeries?.id) ||
+      !list.map((row) => row.color).includes(secondSeries?.color)
+    ) {
+      setSecondSeries(list[0]);
     }
-  }, [list])
+  }, [list]);
 
-  return <SelectWithList
-    tabIndex="-1"
-    list={list}
-    value={secondSeries}
-    onChange={evt => {
-      setSecondSeries(evt.value)
-    }}/>
+  return (
+    <SelectWithList
+      tabIndex="-1"
+      list={list}
+      value={secondSeries}
+      onChange={(evt) => {
+        setSecondSeries(evt.value);
+      }}
+    />
+  );
 }
 
 /**
@@ -64,223 +68,249 @@ export function Selection(
  * @param {dict} data Widget Data
  */
 export default function TimeSeriesChartWidget({ data }) {
-  const {
-    slug,
-    default_time_mode
-  } = useSelector(state => state.dashboard.data);
-  const { referenceLayers } = useSelector(state => state.map)
-  const referenceLayer = referenceLayers[0]
-  const {
-    use_only_last_known_value
-  } = default_time_mode
+  const { slug, default_time_mode } = useSelector(
+    (state) => state.dashboard.data,
+  );
+  const { referenceLayers } = useSelector((state) => state.map);
+  const referenceLayer = referenceLayers[0];
+  const { use_only_last_known_value } = default_time_mode;
   const [colorPalettes, setColorPalettes] = useState(null);
-  const selectedGlobalTimeConfig = useSelector(state => state.selectedGlobalTimeConfig);
-  const geometries = useSelector(state => state.datasetGeometries[referenceLayer?.identifier]);
-  const filteredGeometries = useSelector(state => state.filteredGeometries);
-  const selectedIndicatorLayer = useSelector(state => state.selectedIndicatorLayer)
-  const selectedIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer)
-  const selectedAdminLevel = useSelector(state => state.selectedAdminLevel);
+  const selectedGlobalTimeConfig = useSelector(
+    (state) => state.selectedGlobalTimeConfig,
+  );
+  const geometries = useSelector(
+    (state) => state.datasetGeometries[referenceLayer?.identifier],
+  );
+  const filteredGeometries = useSelector((state) => state.filteredGeometries);
+  const selectedIndicatorLayer = useSelector(
+    (state) => state.selectedIndicatorLayer,
+  );
+  const selectedIndicatorSecondLayer = useSelector(
+    (state) => state.selectedIndicatorSecondLayer,
+  );
+  const selectedAdminLevel = useSelector((state) => state.selectedAdminLevel);
 
   const [requestProgress, setRequestProgress] = useState({
     progress: 0,
-    total: 1
+    total: 1,
   });
-  const [indicatorsList, setIndicatorsList] = useState([]);
+  const [indicators, setIndicators] = useState([]);
   const [unitList, setUnitList] = useState([]);
 
   const [secondSeries, setSecondSeries] = useState({});
   const [chartData, setChartData] = useState(null);
   const [error, setError] = useState(null);
 
-  const { name, config } = data
+  const { config } = data;
   const {
     dateTimeConfig,
     geographicalUnitPaletteColor,
-    indicatorsPaletteColor
-  } = config
-  const dateTimeType = use_only_last_known_value ? TimeType.SYNC : config.dateTimeType
+    indicatorsPaletteColor,
+  } = config;
+  const dateTimeType = use_only_last_known_value
+    ? TimeType.SYNC
+    : config.dateTimeType;
 
   // Get date data
-  let { interval } = dateTimeConfig
+  let { interval } = dateTimeConfig;
   if (dateTimeType === TimeType.SYNC) {
-    interval = selectedGlobalTimeConfig.interval
+    interval = selectedGlobalTimeConfig.interval;
   }
 
-  let geographicUnits = []
+  let geographicUnits = [];
   switch (config.geographicalUnitType) {
     case SeriesDataType.PREDEFINED: {
-      geographicUnits = config.geographicalUnitList
-      break
+      geographicUnits = config.geographicalUnit;
+      break;
     }
     case SeriesDataType.SYNC: {
       geographicUnits = unitList.filter(
-        geom => !(filteredGeometries && !filteredGeometries.includes(geom.id))
-      )
-      break
+        (geom) =>
+          !(filteredGeometries && !filteredGeometries.includes(geom.id)),
+      );
+      break;
     }
   }
 
-  let indicatorSeries = []
+  let indicatorSeries = [];
   switch (config.indicatorsType) {
     case SeriesDataType.PREDEFINED: {
-      indicatorSeries = config.indicatorsList
-      break
+      indicatorSeries = config.indicators;
+      break;
     }
     case SeriesDataType.SYNC: {
-      indicatorSeries = indicatorsList
-      break
+      indicatorSeries = indicators;
+      break;
     }
   }
 
   // On init
   useEffect(() => {
-    (
-      async () => {
-        await fetchingData(
-          `/api/color/palette/list`,
-          {}, {}, (response, error) => {
-            setColorPalettes(response)
-          }
-        )
-      }
-    )()
-  }, [])
-
+    (async () => {
+      await fetchingData(
+        `/api/color/palette/list`,
+        {},
+        {},
+        (response, error) => {
+          setColorPalettes(response);
+        },
+      );
+    })();
+  }, []);
 
   // Update indicator list
   useEffect(() => {
     if (colorPalettes === null) {
-      return
+      return;
     }
-    const color = colorPalettes.find(color => color.id === indicatorsPaletteColor)
-    let colors = null
+    const color = colorPalettes.find(
+      (color) => color.id === indicatorsPaletteColor,
+    );
+    let colors = null;
     if (color) {
-      colors = color.colors
+      colors = color.colors;
     }
-    let indicatorList = []
+    let indicatorList = [];
     if (selectedIndicatorLayer?.indicators?.length) {
       indicatorList = indicatorList.concat(
-        selectedIndicatorLayer.indicators.map(indicator => {
-          const indicatorInList = indicatorsList.find(row => row.id === indicator.id)
+        selectedIndicatorLayer.indicators.map((indicator) => {
+          const indicatorInList = indicators.find(
+            (row) => row.id === indicator.id,
+          );
           if (!indicatorInList) {
             return {
               id: indicator.id,
               name: indicator.name,
-              color: getRandomColor()
-            }
+              color: getRandomColor(),
+            };
           }
-          return indicatorInList
-        })
-      )
+          return indicatorInList;
+        }),
+      );
     } else if (selectedIndicatorLayer?.id) {
-      const id = indicatorLayerId(selectedIndicatorLayer)
-      const indicatorInList = indicatorsList.find(row => row.id === id)
+      const id = indicatorLayerId(selectedIndicatorLayer);
+      const indicatorInList = indicators.find((row) => row.id === id);
       if (!indicatorInList) {
         indicatorList.push({
           id: id,
           name: selectedIndicatorLayer.name,
-          color: getRandomColor()
-        })
+          color: getRandomColor(),
+        });
       } else {
-        indicatorList.push(indicatorInList)
+        indicatorList.push(indicatorInList);
       }
     }
     if (selectedIndicatorSecondLayer?.indicators?.length) {
       indicatorList = indicatorList.concat(
-        selectedIndicatorSecondLayer.indicators.map(indicator => {
-          const indicatorInList = indicatorsList.find(row => row.id === indicator.id)
+        selectedIndicatorSecondLayer.indicators.map((indicator) => {
+          const indicatorInList = indicators.find(
+            (row) => row.id === indicator.id,
+          );
           if (!indicatorInList) {
             return {
               id: indicator.id,
               name: indicator.name,
-              color: getRandomColor()
-            }
+              color: getRandomColor(),
+            };
           }
-          return indicatorInList
-        })
-      )
+          return indicatorInList;
+        }),
+      );
     } else if (selectedIndicatorSecondLayer?.id) {
-      const id = indicatorLayerId(selectedIndicatorSecondLayer)
-      const indicatorInList = indicatorsList.find(row => row.id === id)
+      const id = indicatorLayerId(selectedIndicatorSecondLayer);
+      const indicatorInList = indicators.find((row) => row.id === id);
       if (!indicatorInList) {
         indicatorList.push({
           id: id,
           name: selectedIndicatorSecondLayer.name,
-          color: getRandomColor()
-        })
+          color: getRandomColor(),
+        });
       } else {
-        indicatorList.push(indicatorInList)
+        indicatorList.push(indicatorInList);
       }
     }
     indicatorList.map((list, idx) => {
       if (colors?.length) {
-        list.color = colors[idx % color.colors.length]
+        list.color = colors[idx % color.colors.length];
       }
-    })
-    setIndicatorsList(indicatorList)
-  }, [selectedIndicatorLayer, selectedIndicatorSecondLayer, colorPalettes])
+    });
+    setIndicators(indicatorList);
+  }, [selectedIndicatorLayer, selectedIndicatorSecondLayer, colorPalettes]);
 
   // Geometries of data
   useEffect(() => {
     if (colorPalettes === null || !geometries) {
-      return
+      return;
     }
-    const color = colorPalettes.find(color => color.id === geographicalUnitPaletteColor)
-    let colors = null
+    const color = colorPalettes.find(
+      (color) => color.id === geographicalUnitPaletteColor,
+    );
+    let colors = null;
     if (color) {
-      colors = color.colors
+      colors = color.colors;
     }
 
-    const geometriesData = geometries[selectedAdminLevel.level]
+    const geometriesData = geometries[selectedAdminLevel.level];
     ExecuteWebWorker(
-      workerReformatGeometries, {
+      workerReformatGeometries,
+      {
         identifier: referenceLayer.identifier,
         geometriesData,
         unitList,
         color,
-        colors
-      }, (newGeographicUnits) => {
-        setUnitList(newGeographicUnits)
-      }
-    )
-  }, [geometries, colorPalettes, selectedAdminLevel])
+        colors,
+      },
+      (newGeographicUnits) => {
+        setUnitList(newGeographicUnits);
+      },
+    );
+  }, [geometries, colorPalettes, selectedAdminLevel]);
 
-  const secondSeriesList = config.seriesType === SeriesType.INDICATORS ? geographicUnits : indicatorSeries
+  const secondSeriesList =
+    config.seriesType === SeriesType.INDICATORS
+      ? geographicUnits
+      : indicatorSeries;
 
   if (error) {
-    return <div
-      className='widget__error'>
-      {'' + ('' + error).replaceAll('Error: ', '')}
-    </div>
+    return (
+      <div className="error">{"" + ("" + error).replaceAll("Error: ", "")}</div>
+    );
   }
   return (
     <Fragment>
-      <div className='widget__sw widget__sgw'>
-        <div className='widget__title'>{name}</div>
-        <div className='widget__content widget__time_series'>
-          {
-            requestProgress.total !== requestProgress.progress ?
-              <LinearProgress
-                variant="determinate"
-                value={requestProgress.progress * 100 / requestProgress.total}/> : null
-          }
-          {
-            secondSeriesList.length ? <Fragment>
-                <Selection
-                  list={secondSeriesList}
-                  secondSeries={secondSeries}
-                  setSecondSeries={setSecondSeries}/>
-                <Chart
-                  chartData={chartData}
-                  selectedLabel={
-                    selectedGlobalTimeConfig.selectedDatePoint ? dateLabel(new Date(selectedGlobalTimeConfig.selectedDatePoint), interval) : null
-                  }/>
-              </Fragment> :
-              <div className='form-helptext'>
-                {selectedIndicatorLayer?.id ? 'This indicator layer is not supported yet.' : 'No indicator layer is selected.'}
-              </div>
-          }
-        </div>
+      <div className="widget__time_series">
+        {requestProgress.total !== requestProgress.progress ? (
+          <LinearProgress
+            variant="determinate"
+            value={(requestProgress.progress * 100) / requestProgress.total}
+          />
+        ) : null}
+        {secondSeriesList.length ? (
+          <Fragment>
+            <Selection
+              list={secondSeriesList}
+              secondSeries={secondSeries}
+              setSecondSeries={setSecondSeries}
+            />
+            <Chart
+              chartData={chartData}
+              selectedLabel={
+                selectedGlobalTimeConfig.selectedDatePoint
+                  ? dateLabel(
+                      new Date(selectedGlobalTimeConfig.selectedDatePoint),
+                      interval,
+                    )
+                  : null
+              }
+            />
+          </Fragment>
+        ) : (
+          <div className="form-helptext">
+            {selectedIndicatorLayer?.id
+              ? "This indicator layer is not supported yet."
+              : "No indicator layer is selected."}
+          </div>
+        )}
       </div>
       <RequestData
         slug={slug}
@@ -296,5 +326,5 @@ export default function TimeSeriesChartWidget({ data }) {
         setError={setError}
       />
     </Fragment>
-  )
+  );
 }

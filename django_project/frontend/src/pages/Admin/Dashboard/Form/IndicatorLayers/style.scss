@@ -18,38 +18,6 @@
    ========================================================================== */
 
 .IndicatorLayers {
-  .OtherActionFunctions {
-    width: 220px;
-  }
-
-  .OtherActionFunctionsWrapper {
-    display: flex;
-  }
-
-  .LayerCountIndicatorWrapper {
-    display: flex;
-    width: 122px;
-    color: var(--primary-color);
-
-    div:first-child {
-      flex-grow: 1;
-    }
-
-    .LayerCountIndicator {
-      width: fit-content;
-      height: 22px;
-      display: block;
-      margin-left: 0.5rem;
-      background: white;
-      border-radius: var(--border-radius);
-      text-align: center;
-      padding: 7px 10px 0 10px;
-      border: 1px solid var(--primary-color);
-      font-size: 0.8rem;
-      white-space: nowrap;
-    }
-  }
-
   .MuiTextField-root {
     input,
     svg {

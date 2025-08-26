@@ -17,21 +17,19 @@
    WIDGET SELECTION
    ========================================================================== */
 
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from "react";
 
 import Modal, { ModalContent, ModalHeader } from "../Modal";
 
 // Members
-import SummaryMember from "./SummaryWidget/SelectionMember";
-import SummaryGroupMember from "./SummaryGroupWidget/SelectionMember";
-import TimeSeriesChartWidgetMember
-  from "./TimeSeriesChartWidget/SelectionMember";
+import GenericWidgetMember from "./GenericWidget/SelectionMember";
 
 // Editors
-import SummaryWidgetEditor from "./SummaryWidget/Editor";
-import SummaryGroupWidgetEditor from "./SummaryGroupWidget/Editor";
-import TimeSeriesChartWidgetEditor from "./TimeSeriesChartWidget/Editor";
-import { DEFINITION } from "./index";
+import { WidgetForm } from "./Form";
+import SummaryWidgetEditor from "./Legacy/SummaryWidget/Editor";
+import SummaryGroupWidgetEditor from "./Legacy/SummaryGroupWidget/Editor";
+import { Logger } from "../../utils/logger";
+import { WidgetType } from "./Definition";
 
 /**
  * Edit section for widget panel.
@@ -40,38 +38,65 @@ import { DEFINITION } from "./index";
  * @param {bool} open Is open or close.
  * @param {Function} setOpen Set Parent Open.
  */
-export default function WidgetSelectionSection(
-  { initData, updateData, open, setOpen }) {
+export default function WidgetSelectionSection({
+  initData,
+  updateData,
+  open,
+  setOpen,
+}) {
   const [data, setData] = useState(initData);
   const [formOpen, setFormOpen] = useState(null);
 
   // onSubmitted
   useEffect(() => {
-    setData(initData)
+    setData(initData);
     if (initData) {
       setFormOpen(true);
     }
-  }, [initData])
+  }, [initData]);
 
   /**
    * Render edit by type
    * **/
   function renderEditByType() {
     switch (data.type) {
-      case DEFINITION.WidgetType.SUMMARY_WIDGET:
-        return <SummaryWidgetEditor
-          open={formOpen} data={data} setData={onUpdateData}
-        />
-      case DEFINITION.WidgetType.SUMMARY_GROUP_WIDGET:
-        return <SummaryGroupWidgetEditor
-          open={formOpen} data={data} setData={onUpdateData}
-        />
-      case DEFINITION.WidgetType.TIME_SERIES_CHART_WIDGET:
-        return <TimeSeriesChartWidgetEditor
-          open={formOpen} data={data} setData={onUpdateData}
-        />
+      case WidgetType.SUMMARY_WIDGET:
+        return (
+          <SummaryWidgetEditor
+            open={formOpen}
+            data={data}
+            setData={onUpdateData}
+          />
+        );
+      case WidgetType.SUMMARY_GROUP_WIDGET:
+        return (
+          <SummaryGroupWidgetEditor
+            open={formOpen}
+            data={data}
+            setData={onUpdateData}
+          />
+        );
+      case WidgetType.GENERIC_SUMMARY_WIDGET:
+      case WidgetType.GENERIC_TIME_SERIES_WIDGET:
+        return (
+          <WidgetForm
+            title={"Generic"}
+            open={formOpen}
+            data={data}
+            setData={onUpdateData}
+          />
+        );
+      case WidgetType.TIME_SERIES_CHART_WIDGET:
+        return (
+          <WidgetForm
+            title={"Time Series"}
+            open={formOpen}
+            data={data}
+            setData={onUpdateData}
+          />
+        );
       default:
-        return null
+        return null;
     }
   }
 
@@ -79,17 +104,18 @@ export default function WidgetSelectionSection(
     setOpen(false);
   };
   const onSelected = (newData) => {
-    setOpen(false)
+    setOpen(false);
     setData({
       ...newData,
-      config: {}
-    })
-    setFormOpen(true)
+      config: {},
+    });
+    setFormOpen(true);
   };
 
   const onUpdateData = (newData) => {
-    setFormOpen(false)
-    updateData(newData)
+    Logger.log("WIDGET_FINISH:", JSON.stringify(newData));
+    setFormOpen(false);
+    updateData(newData);
   };
 
   return (
@@ -99,17 +125,12 @@ export default function WidgetSelectionSection(
         onClosed={onClosed}
         className="modal__widget__selection"
       >
-        <ModalHeader onClosed={onClosed}>
-          Add new widget
-        </ModalHeader>
+        <ModalHeader onClosed={onClosed}>Add new widget</ModalHeader>
         <ModalContent>
-          <SummaryMember onClick={onSelected}/>
-          <SummaryGroupMember onClick={onSelected}/>
-          <TimeSeriesChartWidgetMember onClick={onSelected}/>
+          <GenericWidgetMember onClick={onSelected} />
         </ModalContent>
       </Modal>
       {data ? renderEditByType() : null}
-
     </Fragment>
-  )
+  );
 }

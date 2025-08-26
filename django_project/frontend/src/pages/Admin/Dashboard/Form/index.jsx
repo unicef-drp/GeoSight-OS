@@ -255,22 +255,6 @@ export function DashboardSaveForm() {
     if (basemapsLayers.length === 0) {
       errors.push("Basemap is empty, please select one or more basemap.");
     }
-    // Check widget error
-    if ($(".widget__error").length > 0) {
-      let error = false;
-      $(".widget__error").each(function () {
-        if (
-          $(this).html() !== "You don't have permission to access this resource"
-        ) {
-          error = true;
-        }
-      });
-      if (error) {
-        errors.push(
-          "There is widget that error, please check it in review mode.",
-        );
-      }
-    }
 
     // Submit dashboard
     if (errors.length === 0) {
