@@ -15,7 +15,7 @@
 
 import React from "react";
 
-import WidgetSelectionMember from "../WidgetSelectionMember";
+import WidgetSelectionMember from "./Member";
 import { WidgetType } from "../Definition";
 
 /**

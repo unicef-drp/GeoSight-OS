@@ -19,17 +19,18 @@
 
 import React, { Fragment, useEffect, useState } from "react";
 
-import Modal, { ModalContent, ModalHeader } from "../Modal";
+import Modal, { ModalContent, ModalHeader } from "../../Modal";
 
 // Members
-import GenericWidgetMember from "./GenericWidget/SelectionMember";
+import GenericWidgetMember from "./GenericWidget";
 
 // Editors
-import { WidgetForm } from "./Form";
-import SummaryWidgetEditor from "./Legacy/SummaryWidget/Editor";
-import SummaryGroupWidgetEditor from "./Legacy/SummaryGroupWidget/Editor";
-import { Logger } from "../../utils/logger";
-import { WidgetType } from "./Definition";
+import { WidgetForm } from "../Form";
+import SummaryWidgetEditor from "../WidgetLegacy/SummaryWidget/Editor";
+import SummaryGroupWidgetEditor
+  from "../WidgetLegacy/SummaryGroupWidget/Editor";
+import { Logger } from "../../../utils/logger";
+import { WidgetType } from "../Definition";
 
 /**
  * Edit section for widget panel.
@@ -38,7 +39,7 @@ import { WidgetType } from "./Definition";
  * @param {bool} open Is open or close.
  * @param {Function} setOpen Set Parent Open.
  */
-export default function WidgetSelectionSection({
+export default function WidgetSelection({
   initData,
   updateData,
   open,

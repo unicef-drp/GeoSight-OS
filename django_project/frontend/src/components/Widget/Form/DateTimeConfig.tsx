@@ -47,7 +47,7 @@ export function DateTimeConfigForm({
     <FormControl className="MuiForm-RadioGroup">
       <FormLabel className="MuiInputLabel-root">Date/Time</FormLabel>
       <RadioGroup
-        className="Horizontal"
+        row
         value={dateTimeType}
         onChange={(evt) => {
           setDateTimeType(evt.target.value);

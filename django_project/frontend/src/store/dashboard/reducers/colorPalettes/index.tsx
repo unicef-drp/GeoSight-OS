@@ -13,26 +13,24 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { MouseEventHandler } from "react";
+import { APIReducer } from "../../../reducers_api";
+import { ColorPalette } from "../../../../types/Color";
 
-export interface Props {
-  title: string;
-  description: string;
-  onClick: MouseEventHandler<HTMLDivElement>;
-}
+/**
+ * RELATED_TABLE_DATA reducer
+ */
 
-/** Widget Selection Member */
-export default function WidgetSelectionMember({
-  title,
-  description,
-  onClick,
-}: Props) {
-  return (
-    <div className="widget__selection__member" onClick={onClick}>
-      <div>
-        <b className="light">{title}</b>
-      </div>
-      <div className="setting__helper">{description}</div>
-    </div>
-  );
+export const ACTION_NAME = "COLOR_PALETTE_REQUEST";
+
+const initialState: ColorPalette[] | null = null;
+export default function ColorPaletteReducer(state = initialState, action: any) {
+  if (action.name === ACTION_NAME) {
+    switch (action.type) {
+      default: {
+        // @ts-ignore
+        return APIReducer(state, action, ACTION_NAME).data;
+      }
+    }
+  }
+  return state;
 }

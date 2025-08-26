@@ -22,22 +22,15 @@ import { useSelector } from "react-redux";
 
 // Widgets
 import { Session } from "../../../utils/Sessions";
-import { DateFilterType } from "../Definition";
 import { UnitConfig, Widget } from "../../../types/Widget";
 import { IndicatorData } from "../../../class/IndicatorData";
+import UnitParameters, { UnitParametersProps } from "./UnitParameters";
+import TimeParameter, { TimeParametersProps } from "./TimeParameter";
 
-const fetchIndicatorData = async (indicatorIds: number[], params: any) => {
+const fetchIndicatorData = async (params: any) => {
+  console.log(params);
   try {
-    if (!indicatorIds) {
-      throw new Error("Indicators is empty.");
-    }
-    const response = await new IndicatorData().valueLatest(
-      {
-        ...params,
-        indicator_id__in: indicatorIds.join(","),
-      },
-      null,
-    );
+    const response = await new IndicatorData().valueLatest(params, null);
     return {
       fetching: false,
       fetched: true,
@@ -69,27 +62,24 @@ export interface Props {
 /**Base widget that handler widget rendering. */
 export default function RequestData({ data, applyData }: Props) {
   const { config } = data;
-  const { indicators, date_filter_value } = config;
-  const {
-    indicatorLayers,
-    default_time_mode,
-    referenceLayer,
-    // @ts-ignore
-  } = useSelector((state) => state.dashboard.data);
-  const { use_only_last_known_value } = default_time_mode;
+  const { dateTimeType } = config;
   // @ts-ignore
-  const filteredGeometries = useSelector((state) => state.filteredGeometries);
+  const referenceLayers = useSelector((state) => state.map?.referenceLayers);
+  const referenceLayer = referenceLayers[0];
   // @ts-ignore
   const selectedAdminLevel = useSelector((state) => state.selectedAdminLevel);
   const referenceLayerData = useSelector(
     // @ts-ignore
     (state) => state.referenceLayerData[referenceLayer?.identifier],
   );
+  // @ts-ignore
+  const filteredGeometries = useSelector((state) => state.filteredGeometries);
 
   const [countries, setCountries] = useState({});
   const [layerData, setLayerData] = useState({});
-
-  const date_filter_type = use_only_last_known_value;
+  const [unitParameter, setUnitParameter] = useState<UnitParametersProps[]>([]);
+  const [timeParameter, setTimeParameter] =
+    useState<TimeParametersProps | null>(null);
 
   // Fetch the data if it is using global filter
   useEffect(() => {
@@ -104,26 +94,44 @@ export default function RequestData({ data, applyData }: Props) {
   // Fetch the data if it is using no filter or custom
   useEffect(() => {
     (async () => {
+      const unitParameterUsed = unitParameter[0];
+      if (!unitParameterUsed) {
+        return;
+      }
       if (!countries || [null, undefined].includes(selectedAdminLevel?.level)) {
         return;
       }
-      let params = {
+      const indicators = unitParameterUsed.indicators.map(
+        (indicator: any) => indicator.id,
+      );
+      if (!indicators.length) {
+        setLayerData({
+          fetching: false,
+          fetched: true,
+          data: null,
+          error: "No indicators found.",
+        });
+        return;
+      }
+      let params: any = {
         admin_level: selectedAdminLevel?.level,
         country_geom_id__in: countries,
+        indicator_id__in: indicators,
       };
-      if (date_filter_type === DateFilterType.CUSTOM) {
-        if (date_filter_value) {
-          let [minDateFilter, maxDateFilter] = date_filter_value.split(";");
-          params = {
-            // @ts-ignore
-            time__gte: minDateFilter,
-          };
-          if (maxDateFilter) {
-            // @ts-ignore
-            params["time__lte"] = maxDateFilter;
-          }
+      if (unitParameterUsed.geographic_units.length > 0) {
+        params["geom_id__in"] = unitParameterUsed.geographic_units.map(
+          (unit: UnitConfig) => unit.id,
+        );
+      }
+      const dateTimeConfig = timeParameter.dateTimeConfig;
+      if (dateTimeConfig) {
+        params["date__gte"] = dateTimeConfig.minDateFilter.split("T")[0];
+        if (dateTimeConfig.maxDateFilter) {
+          // @ts-ignore
+          params["date__lte"] = dateTimeConfig.maxDateFilter.split("T")[0];
         }
       }
+      // We
       const session = new Session("Widget request " + data.name);
       setLayerData({
         fetching: true,
@@ -131,19 +139,13 @@ export default function RequestData({ data, applyData }: Props) {
         data: null,
         error: null,
       });
-      const output = await fetchIndicatorData(
-        indicators.map((indicator: UnitConfig) => indicator.id),
-        params,
-      );
+      const output = await fetchIndicatorData(params);
       if (!session.isValid) {
         return;
       }
       setLayerData(output);
-      if (output.error) {
-        throw new Error(output.error);
-      }
     })();
-  }, [data, selectedAdminLevel, indicatorLayers, date_filter_type, countries]);
+  }, [selectedAdminLevel, countries, unitParameter, timeParameter]);
 
   // Fetch the data if it is using no filter or custom
   useEffect(() => {
@@ -154,7 +156,8 @@ export default function RequestData({ data, applyData }: Props) {
         indicatorData.data = indicatorData.data.filter((row: any) => {
           return (
             !filteredGeometries ||
-            filteredGeometries?.includes(row.concept_uuid)
+            filteredGeometries?.includes(row.concept_uuid) ||
+            filteredGeometries?.includes(row.geom_id)
           );
         });
       }
@@ -162,5 +165,18 @@ export default function RequestData({ data, applyData }: Props) {
     applyData(indicatorData);
   }, [filteredGeometries, layerData]);
 
-  return <></>;
+  return (
+    <>
+      <UnitParameters
+        config={config}
+        parameter={unitParameter}
+        setParameter={setUnitParameter}
+      />
+      <TimeParameter
+        config={config}
+        parameter={timeParameter}
+        setParameter={setTimeParameter}
+      />
+    </>
+  );
 }

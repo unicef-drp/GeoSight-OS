@@ -34,7 +34,7 @@ export interface UnitConfig {
 }
 
 export interface DateTimeConfig {
-  interval: string;
+  interval: null | string;
   maxDateFilter: null | string;
   minDateFilter: null | string;
 }
@@ -67,6 +67,7 @@ export interface WidgetConfig {
   date_filter_type?: string;
   date_filter_value?: string;
   operation?: string;
+  unit?: string;
 }
 
 export interface WidgetMetadata {

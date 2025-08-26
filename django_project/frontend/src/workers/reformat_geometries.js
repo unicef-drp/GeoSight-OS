@@ -14,45 +14,42 @@
  */
 export default () => {
   function getRandomColor() {
-    var letters = '0123456789ABCDEF';
-    var color = '#';
+    var letters = "0123456789ABCDEF";
+    var color = "#";
     for (var i = 0; i < 6; i++) {
       color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
   }
 
-  self.addEventListener('message', e => { // eslint-disable-line no-restricted-globals
+  self.addEventListener("message", (e) => {
+    // eslint-disable-line no-restricted-globals
     if (!e) return;
-    let {
-      identifier,
-      geometriesData,
-      unitList,
-      color,
-      colors
-    } = e.data;
-    const newGeographicUnits = []
+    let { identifier, geometriesData, unitList, color, colors } = e.data;
+    const newGeographicUnits = [];
     if (geometriesData) {
       for (const [code, geom] of Object.entries(geometriesData)) {
-        const geomInList = unitList.find(row => row.id === geom.concept_uuid)
+        const geomInList = unitList.find((row) =>
+          [geom.ucode, geom.concept_uuid].includes(row.id),
+        );
         if (!geomInList) {
           newGeographicUnits.push({
             id: geom.concept_uuid,
             name: `${geom.name} (${geom.ucode})`,
-            color: '' + getRandomColor(),
-            reference_layer_uuid: identifier
-          })
+            color: "" + getRandomColor(),
+            reference_layer_uuid: identifier,
+          });
         } else {
-          newGeographicUnits.push(geomInList)
+          newGeographicUnits.push(geomInList);
         }
       }
     }
     newGeographicUnits.map((list, idx) => {
       if (colors?.length) {
-        list.color = colors[idx % color.colors.length]
+        list.color = colors[idx % color.colors.length];
       }
-    })
+    });
 
     postMessage(newGeographicUnits);
-  })
-}
+  });
+};

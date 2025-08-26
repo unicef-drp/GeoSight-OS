@@ -17,8 +17,7 @@ import React, { Fragment, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Actions } from "../../../../../store/dashboard";
 import ListForm from "../ListForm";
-import WidgetSelectionSection
-  from "../../../../../components/Widget/WidgetSelection";
+import WidgetSelection from "../../../../../components/Widget/Selection";
 import { WidgetType } from "../../../../../components/Widget/Definition";
 
 /**
@@ -71,7 +70,7 @@ export default function WidgetForm() {
 
   return (
     <Fragment>
-      <WidgetSelectionSection
+      <WidgetSelection
         initData={selectedWidget}
         open={open}
         setOpen={setOpenModal}

@@ -199,8 +199,8 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
           <div className="BasicForm">
             {widgetData.type !== WidgetType.TIME_SERIES_CHART_WIDGET && (
               <RadioGroup
+                row
                 className="TypeSelector"
-                style={{ display: "flex", flexDirection: "row" }}
                 value={widgetData.type}
                 onChange={(evt) => {
                   if (
@@ -289,7 +289,7 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
                 {!isSummary ? "Series" : "Group By"}
               </FormLabel>
               <RadioGroup
-                className="Horizontal"
+                row
                 value={widgetData.config.seriesType}
                 onChange={(evt) => {
                   setWidgetData({

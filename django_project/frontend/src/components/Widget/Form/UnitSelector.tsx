@@ -61,7 +61,7 @@ export function DataSeriesConfig({
     <FormControl className="MuiForm-RadioGroup">
       <FormLabel className="MuiInputLabel-root">{name}</FormLabel>
       <RadioGroup
-        className="Horizontal"
+        row
         value={type}
         onChange={(evt) => {
           setType(evt.target.value);
@@ -180,14 +180,15 @@ export function GeographyUnitSeriesConfig({
   // This is for configurations
   const geometryList: any = [];
   Object.keys(geometries).map((level) =>
-    Object.keys(geometries[level]).map((concept_uuid) => {
-      const geom = geometries[level][concept_uuid];
+    Object.keys(geometries[level]).map((code) => {
+      const geom = geometries[level][code];
       geometryList.push({
-        id: concept_uuid,
+        id: geom.ucode,
         name: geom.name + ` (${geom.ucode})`,
       });
     }),
   );
+
   return (
     <DataSeriesConfig
       name={"Geographical units"}

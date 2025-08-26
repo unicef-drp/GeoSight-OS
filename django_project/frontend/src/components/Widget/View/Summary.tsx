@@ -20,20 +20,23 @@
 import React, { Fragment } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 
-import { numberWithCommas } from "../../../../utils/main";
-import { WidgetOperation } from "../../Definition";
+import { numberWithCommas } from "../../../utils/main";
+import { WidgetOperation } from "../Definition";
 import {
   AggregationMethod
-} from "../../../../pages/Admin/Importer/Form/Extensions/QueryForm/Aggregation";
+} from "../../../pages/Admin/Importer/Form/Extensions/QueryForm/Aggregation";
+import { WidgetConfig } from "../../../types/Widget";
 
-/**
- * General widget to show summary of data.
- * @param {int} idx Index of widget
- * @param {list} data List of data {value, date}
- * @param {object} widgetData Widget Data
- */
-export default function SummaryWidget({ data, widgetData }) {
-  const { config } = widgetData;
+export interface DataProps {
+  value: string;
+}
+
+export interface Props {
+  data: DataProps[];
+  config: WidgetConfig;
+}
+
+export default function Summary({ data, config }: Props) {
   const { unit, operation, aggregation } = config;
 
   /**

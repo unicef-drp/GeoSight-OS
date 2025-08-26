@@ -21,7 +21,7 @@ import React, { Fragment, memo } from "react";
 
 // Widgets
 import TimeSeriesChartWidgetView from "./TimeSeriesChartWidget/View";
-import SummaryGroupWidgetView from "./Legacy/SummaryGroupWidget/View";
+import SummaryGroupWidgetView from "./WidgetLegacy/SummaryGroupWidget/View";
 import { WidgetType } from "./Definition";
 import { Widget } from "../../types/Widget";
 import WidgetInformation from "./Information";

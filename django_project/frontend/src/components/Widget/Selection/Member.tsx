@@ -13,27 +13,26 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { useEffect } from "react";
-import App, { render } from "../../app";
-import { Actions, store } from "../../store/dashboard";
+import React, { MouseEventHandler } from "react";
 
-import Dashboard from "../Dashboard";
-import { useDispatch } from "react-redux";
-
-export default function DashboardPage() {
-  const dispatch = useDispatch();
-
-  // Fetch some default data
-  useEffect(() => {
-    // Color palette fetch
-    dispatch(Actions.ColorPalettes.fetch(dispatch));
-  }, []);
-
-  return (
-    <App>
-      <Dashboard />
-    </App>
-  );
+export interface Props {
+  title: string;
+  description: string;
+  onClick: MouseEventHandler<HTMLDivElement>;
 }
 
-render(DashboardPage, store);
+/** Widget Selection Member */
+export default function Member({
+  title,
+  description,
+  onClick,
+}: Props) {
+  return (
+    <div className="widget__selection__member" onClick={onClick}>
+      <div>
+        <b className="light">{title}</b>
+      </div>
+      <div className="setting__helper">{description}</div>
+    </div>
+  );
+}

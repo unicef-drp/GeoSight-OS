@@ -22,7 +22,7 @@ import { useSelector } from "react-redux";
 import { cleanLayerData } from "../../../../utils/indicators";
 
 // Widgets
-import SummaryWidget from "../SummaryWidget";
+import SummaryWidget from "../../View/Summary";
 import SummaryGroupWidget from "../SummaryGroupWidget";
 import {
   dynamicLayerIndicatorList,
@@ -272,7 +272,7 @@ export default function SummaryGroupWidgetView({ data }) {
           indicatorData,
           property,
         );
-        return <SummaryWidget data={_data} widgetData={data} />;
+        return <SummaryWidget data={_data} config={data.config} />;
       case WidgetType.SUMMARY_GROUP_WIDGET:
         return (
           <SummaryGroupWidget

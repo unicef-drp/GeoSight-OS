@@ -242,7 +242,7 @@ class RelatedTableRowApiFlatSerializer(DynamicModelSerializer):
 
 class RelatedTableSerializer(DynamicModelSerializer):
     """
-    DEPRECATED: Legacy serializer.
+    DEPRECATED: WidgetLegacy serializer.
 
     To be replaced with RelatedTableApiSerializer Serializer for RelatedTable.
     """

@@ -16,7 +16,7 @@
 import React, { useState } from "react";
 
 // Widgets
-import SummaryWidget from "../Legacy/SummaryWidget";
+import SummaryWidget from "../View/Summary";
 import { SeriesTypeNone, WidgetType } from "../Definition";
 import { Widget } from "../../../types/Widget";
 import RequestData from "./RequestData";
@@ -44,7 +44,7 @@ export default function GenericWidgetView({ data }: Props) {
     // render widget by the type
     switch (seriesType) {
       case SeriesTypeNone:
-        return <SummaryWidget data={indicatorData?.data} widgetData={data} />;
+        return <SummaryWidget data={indicatorData?.data} config={config} />;
       default:
         throw new Error("Widget type does not recognized.");
     }

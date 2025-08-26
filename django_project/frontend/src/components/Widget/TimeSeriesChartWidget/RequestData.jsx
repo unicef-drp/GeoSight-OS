@@ -28,6 +28,7 @@ import {
   indicatorLayersLikeIndicator
 } from "../../../utils/indicatorLayer";
 import { Indicator } from "../../../class/Indicator";
+import { isUUID } from "../../../utils/main";
 
 /**
  * Request data for time series widget.
@@ -137,7 +138,11 @@ export default function RequestDataIndicator(
               try {
                 parameters.geom_id = unit.name.split('(')[1].replace(')', '')
               } catch (err) {
-                parameters.concept_uuid = unit.id
+                if(isUUID(unit.id)) {
+                  parameters.concept_uuid = unit.id
+                }else {
+                  parameters.geom_id = unit.id
+                }
               }
               if (minDateFilter) {
                 parameters['date__gte'] = dateLabel(new Date(minDateFilter))

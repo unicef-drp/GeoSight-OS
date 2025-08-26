@@ -18,6 +18,7 @@ import { combineReducers } from 'redux';
 import mapReducer from './map'
 import mapGeometryValue from './mapGeometryValue'
 import mapModeReducer from './mapMode'
+import colorPalettesReducer from './colorPalettes'
 import dashboardRequestReducer from './dashboard'
 import dashboardHistoryReducer from './dashboardHistory'
 import datasetGeometriesReducer from './datasetGeometries'
@@ -46,6 +47,7 @@ const rootReducer = combineReducers({
   dashboard: dashboardRequestReducer,
   dashboardHistory: dashboardHistoryReducer,
 
+  colorPalettes: colorPalettesReducer,
   map: mapReducer,
   mapGeometryValue: mapGeometryValue,
   mapMode: mapModeReducer,
