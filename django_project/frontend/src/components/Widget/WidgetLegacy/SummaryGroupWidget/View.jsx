@@ -23,7 +23,6 @@ import { cleanLayerData } from "../../../../utils/indicators";
 
 // Widgets
 import SummaryWidget from "../../View/Summary";
-import SummaryGroupWidget from "../SummaryGroupWidget";
 import {
   dynamicLayerIndicatorList,
   fetchDynamicLayerData,
@@ -32,7 +31,8 @@ import {
 import { Session } from "../../../../utils/Sessions";
 import { Indicator } from "../../../../class/Indicator";
 import { UpdateStyleData } from "../../../../utils/indicatorData";
-import { DateFilterType, WidgetType } from "../../Definition";
+import { DateFilterType, SortTypes, WidgetType } from "../../Definition";
+import SummaryGroup from "../../View/SummaryGroup";
 
 /**
  * Base widget that handler widget rendering.
@@ -89,7 +89,19 @@ export default function SummaryGroupWidgetView({ data }) {
           "Indicator does not found, please reconfig the widget.",
         );
       }
-      const response = await new Indicator(indicator).valueLatest(params, null);
+      const response = await new Indicator(indicator).valueLatest(
+        params,
+        null,
+        [
+          "date",
+          "geometry_code",
+          "value",
+          "concept_uuid",
+          "entity_name",
+          "indicator_name",
+          "indicator_shortcode",
+        ],
+      );
       let newState = {
         fetching: false,
         fetched: true,
@@ -265,7 +277,7 @@ export default function SummaryGroupWidgetView({ data }) {
     }
     // render widget by the type
     switch (type) {
-      case WidgetType.SUMMARY_WIDGET:
+      case WidgetType.SUMMARY_WIDGET: {
         const _data = cleanLayerData(
           layer_id,
           layer_used,
@@ -273,13 +285,31 @@ export default function SummaryGroupWidgetView({ data }) {
           property,
         );
         return <SummaryWidget data={_data} config={data.config} />;
-      case WidgetType.SUMMARY_GROUP_WIDGET:
+      }
+      case WidgetType.SUMMARY_GROUP_WIDGET: {
+        const _data = cleanLayerData(
+          layer_id,
+          layer_used,
+          indicatorData,
+          property,
+        );
+        const groupBy = "geometry_code";
+        let sortBy = SortTypes.VALUE;
+        const fields = ["geometry_code", "value"];
         return (
-          <SummaryGroupWidget
-            data={cleanLayerData(layer_id, layer_used, indicatorData, property)}
-            widgetData={data}
+          <SummaryGroup
+            data={_data}
+            config={{
+              ...config,
+              sort: { field: "value", order: "descending" },
+              aggregation: { method: config.operation.toUpperCase() },
+            }}
+            groupBy={groupBy}
+            sortBy={sortBy}
+            fields={fields}
           />
         );
+      }
       default:
         throw new Error("Widget type does not recognized.");
     }
