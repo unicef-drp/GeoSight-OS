@@ -39,6 +39,10 @@ import {
 } from "../../../components/Icons";
 import TabPanel, { tabProps } from "../../../components/Tabs/index";
 import { EmbedConfig } from "../../../utils/embed";
+import {
+  isContextLayerContentVisible, isFilterContentVisible,
+  isIndicatorLayerContentVisible,
+} from "../../../selectors/dashboard";
 
 import "./style.scss";
 
@@ -47,7 +51,9 @@ import "./style.scss";
  */
 export function ContextLayerVisibility() {
   const dispatch = useDispatch();
-  const { contextLayersShow } = useSelector((state) => state.map);
+  const contextLayersShow = useSelector(
+    (state) => state.map?.contextLayersShow,
+  );
 
   const handleVisibility = (e) => {
     e.stopPropagation();
@@ -68,7 +74,7 @@ export function ContextLayerVisibility() {
  */
 export function IndicatorsVisibility() {
   const dispatch = useDispatch();
-  const { indicatorShow } = useSelector((state) => state.map);
+  const indicatorShow = useSelector((state) => state.map?.indicatorShow);
 
   const handleVisibility = (e) => {
     e.stopPropagation();
@@ -89,15 +95,18 @@ export function IndicatorsVisibility() {
  * Left panel.
  */
 export default function LeftPanel({ leftExpanded }) {
-  const { filtersBeingHidden, layer_tabs_visibility } = useSelector(
-    (state) => state.dashboard.data,
+  const indicatorLayerVisible = useSelector(isIndicatorLayerContentVisible());
+  const contextLayerContentVisible = useSelector(
+    isContextLayerContentVisible(),
   );
+
+  const filterVisible = useSelector(isFilterContentVisible());
   const state = leftExpanded ? LEFT : RIGHT;
   const showLayerTab = !!EmbedConfig().layer_tab;
   const showFilterTab = !!EmbedConfig().filter_tab;
   const [tabValue, setTabValue] = React.useState(showLayerTab ? 0 : 1);
   const [tab2Value, setTab2Value] = React.useState(
-    layer_tabs_visibility.includes("indicator_layers") ? 1 : 0,
+    indicatorLayerVisible ? 1 : 0,
   );
   const { t } = useTranslation();
 
@@ -120,7 +129,7 @@ export default function LeftPanel({ leftExpanded }) {
     >
       <div className={classNameWrapper}>
         <Box sx={{ width: "100%" }}>
-          {!filtersBeingHidden && (
+          {filterVisible && (
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
               <Tabs
                 value={tabValue}
@@ -150,33 +159,32 @@ export default function LeftPanel({ leftExpanded }) {
             className={"sidepanel-tab layers-tab"}
           >
             <Box sx={{ width: "100%" }}>
-              {layer_tabs_visibility.includes("context_layers") &&
-                layer_tabs_visibility.includes("indicator_layers") && (
-                  <Box
-                    sx={{ borderBottom: 1, borderColor: "divider" }}
-                    className={"layers-tab-container"}
+              {indicatorLayerVisible && contextLayerContentVisible && (
+                <Box
+                  sx={{ borderBottom: 1, borderColor: "divider" }}
+                  className={"layers-tab-container"}
+                >
+                  <Tabs
+                    value={tab2Value}
+                    onChange={handleChangeTab2}
+                    aria-label="basic tabs example"
                   >
-                    <Tabs
-                      value={tab2Value}
-                      onChange={handleChangeTab2}
-                      aria-label="basic tabs example"
-                    >
-                      <Tab
-                        label={t("dashboardPage.contextLayers")}
-                        icon={<ContextLayerVisibility />}
-                        iconPosition="end"
-                        {...tabProps(0)}
-                      />
-                      <Tab
-                        label={t("dashboardPage.indicators")}
-                        icon={<IndicatorsVisibility />}
-                        iconPosition="end"
-                        {...tabProps(1)}
-                      />
-                    </Tabs>
-                  </Box>
-                )}
-              {layer_tabs_visibility.includes("context_layers") && (
+                    <Tab
+                      label={t("dashboardPage.contextLayers")}
+                      icon={<ContextLayerVisibility />}
+                      iconPosition="end"
+                      {...tabProps(0)}
+                    />
+                    <Tab
+                      label={t("dashboardPage.indicators")}
+                      icon={<IndicatorsVisibility />}
+                      iconPosition="end"
+                      {...tabProps(1)}
+                    />
+                  </Tabs>
+                </Box>
+              )}
+              {contextLayerContentVisible && (
                 <TabPanel
                   value={tab2Value}
                   index={0}

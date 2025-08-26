@@ -54,6 +54,7 @@ export const Variables = {
       EMBED_TOOL: "Embed tool",
       DATA_DOWNLOAD: "Data download",
       SPATIAL_BOOKMARK: "Spatial bookmark",
+      BACK_TO_HOME: "Back to Home",
     },
   },
   FEATURE_TYPE: {

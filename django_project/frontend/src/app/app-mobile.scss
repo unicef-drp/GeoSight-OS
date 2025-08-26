@@ -58,13 +58,39 @@
 }
 
 @media (max-width: 1000px) {
+  .EntitySearchEnable {
+    .ReferenceLayerToolbar {
+      position: absolute !important;
+      top: 90px !important;
+      left: 10px;
+    }
+
+    .DashboardMiddlePanel {
+      padding-top: 80px !important;
+    }
+  }
+  .EntitySearchDisable {
+    .ReferenceLayerToolbar {
+      position: absolute !important;
+      top: 50px !important;
+      left: 10px;
+    }
+
+    .DashboardMiddlePanel {
+      padding-top: 40px !important;
+    }
+  }
   .no-select {
     user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none;
     -webkit-tap-highlight-color: transparent;
   }
-
+  .ToolbarMobileBottom {
+    margin-top: -2px;
+    border-top: 2px solid white;
+    border-bottom: 1px solid var(--border-gray);
+  }
   .ProjectOverview-Toolbar {
     margin-top: 3rem;
   }
@@ -135,8 +161,8 @@
   }
   .DashboardMap .Toolbar {
     padding: 0.5rem !important;
-    height: 80px !important;
-    min-height: 80px !important;
+    height: auto !important;
+    min-height: 40px !important;
     justify-content: center !important;
     align-items: start !important;
 
@@ -182,10 +208,6 @@
     }
   }
   .ReferenceLayerToolbar {
-    position: absolute !important;
-    top: 90px !important;
-    left: 10px;
-
     .ReferenceLayerLevelSelector {
       background-color: white !important;
     }
@@ -199,9 +221,6 @@
   }
   .maplibregl-ctrl-bottom-right {
     right: 0 !important;
-  }
-  .DashboardMiddlePanel {
-    padding-top: 80px !important;
   }
   .DashboardMiddlePanel .BottomContent {
     height: 0 !important;
@@ -294,5 +313,9 @@
   }
   .IndicatorLayerMiddleConfig .WhereConfigurationWrapper {
     max-width: 100vw !important;
+  }
+
+  .ToolbarMobileBottom {
+    height: 43px;
   }
 }

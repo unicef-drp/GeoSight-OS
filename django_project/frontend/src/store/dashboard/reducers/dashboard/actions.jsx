@@ -137,6 +137,10 @@ function receive(data, error = null) {
       delete data.level_config;
     }
 
+    if ([null, undefined].includes(data.show_map_toolbar)) {
+      data.show_map_toolbar = true;
+    }
+
     // DASHBOARD TOOLS
     // Adding default tools
     [
@@ -152,6 +156,7 @@ function receive(data, error = null) {
       [Variables.DASHBOARD.TOOL.EMBED_TOOL, true],
       [Variables.DASHBOARD.TOOL.DATA_DOWNLOAD, true],
       [Variables.DASHBOARD.TOOL.SPATIAL_BOOKMARK, true],
+      [Variables.DASHBOARD.TOOL.BACK_TO_HOME, true],
     ].map((tool) => {
       toolDefaults(data.tools, tool[0], tool[1]);
     });

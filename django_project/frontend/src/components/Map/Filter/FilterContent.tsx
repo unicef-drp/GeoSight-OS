@@ -19,8 +19,7 @@ import FilterGroup from "./Group";
 import { INIT_DATA } from "../../../utils/queryExtraction";
 import { Actions } from "../../../store/dashboard";
 
-import './style.scss';
-
+import "./style.scss";
 
 export interface Props {
   isAdmin: boolean;
@@ -30,55 +29,62 @@ export interface Props {
  * @constructor
  */
 const FilterControl = ({ isAdmin }: Props) => {
-  const dispatcher = useDispatch()
+  const dispatcher = useDispatch();
   // @ts-ignore
-  const filterState = useSelector(state => state.dashboard?.data['filters']);
-  const filter = (filterState && Object.keys(filterState).length ? filterState : INIT_DATA.GROUP()) as FilterGroupDataProps;
+  const filterState = useSelector((state) => state.dashboard?.data["filters"]);
+  const filter = (
+    filterState && Object.keys(filterState).length
+      ? filterState
+      : INIT_DATA.GROUP()
+  ) as FilterGroupDataProps;
 
   /** Update query */
   const updateQuery = () => {
-    dispatcher(
-      Actions.Filters.update({ ...filter })
-    )
-  }
+    dispatcher(Actions.Filters.update({ ...filter }));
+  };
 
   // UpdateFilter callbacks
   const updateFilter = useCallback((data: string[]) => {
     if (data === undefined) {
-      dispatcher(Actions.FilteredGeometries.update(null))
+      dispatcher(Actions.FilteredGeometries.update(null));
     } else if (data === null) {
-      dispatcher(Actions.FilteredGeometries.update([]))
+      dispatcher(Actions.FilteredGeometries.update([]));
     } else {
-      dispatcher(Actions.FilteredGeometries.update(data))
+      dispatcher(Actions.FilteredGeometries.update(data));
     }
   }, []);
 
-  return <FilterGroup
-    /* Query global */
-    query={filter}
-    updateQuery={updateQuery}
-
-    /* Is master */
-    isMaster={true}
-    isAdmin={isAdmin}
-    updateFilter={updateFilter}
-  />
+  return (
+    <FilterGroup
+      /* Query global */
+      query={filter}
+      updateQuery={updateQuery}
+      /* Is master */
+      isMaster={true}
+      isAdmin={isAdmin}
+      updateFilter={updateFilter}
+    />
+  );
 };
 
-const FilterContent = memo(({ isAdmin }: Props) => {
+const FilterContent = ({ isAdmin }: Props) => {
   // @ts-ignore
-  const { editMode } = useSelector(state => state.globalState)
-  // @ts-ignore
-  const { filtersAllowModify } = useSelector(state => state.dashboard?.data)
+  const editMode = useSelector((state) => state.globalState?.editMode);
+  const filtersAllowModify = useSelector(
+    // @ts-ignore
+    (state) => state.dashboard?.data?.filtersAllowModify,
+  );
 
-  if ((!isAdmin && editMode) || isAdmin && !editMode) {
-    return
+  if ((!isAdmin && editMode) || (isAdmin && !editMode)) {
+    return;
   }
-  return <div className='FilterControl'>
-    <FilterControl
-      isAdmin={filtersAllowModify ? filtersAllowModify : isAdmin}
-    />
-  </div>;
-});
+  return (
+    <div className="FilterControl">
+      <FilterControl
+        isAdmin={filtersAllowModify ? filtersAllowModify : isAdmin}
+      />
+    </div>
+  );
+};
 
-export default FilterContent;
+export default memo(FilterContent);

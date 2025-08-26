@@ -18,6 +18,7 @@
    ========================================================================== */
 
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 import { Plugin, PluginChild } from "../../MapLibre/Plugin";
 import {
@@ -27,11 +28,10 @@ import {
   LeftPanelUncheckedIcon,
 } from "../../../../components/Icons/index";
 import { LEFT, RIGHT } from "../../../../components/ToggleButton";
+import { isDashboardToolEnabled } from "../../../../selectors/dashboard";
+import { Variables } from "../../../../utils/Variables";
 
 import "./style.scss";
-import { useSelector } from "react-redux";
-import { getDashboardTool } from "../../../../utils/dashboardTool";
-import { Variables } from "../../../../utils/Variables";
 
 /**
  * ToggleSidePanel.
@@ -42,17 +42,12 @@ export default function ToggleSidePanel({
   onRight,
   ...props
 }) {
-  // Tools
-  const { tools } = useSelector((state) => state.dashboard.data);
-  // @ts-ignore
-  const leftPanelToggleEnable = getDashboardTool(
-    tools,
-    Variables.DASHBOARD.TOOL.LEFT_PANEL_TOGGLE,
-  )?.visible_by_default;
-  const rightPanelToggleEnable = getDashboardTool(
-    tools,
-    Variables.DASHBOARD.TOOL.WIDGET_PANEL_TOGGLE,
-  )?.visible_by_default;
+  const leftPanelToggleEnable = useSelector(
+    isDashboardToolEnabled(Variables.DASHBOARD.TOOL.LEFT_PANEL_TOGGLE),
+  );
+  const rightPanelToggleEnable = useSelector(
+    isDashboardToolEnabled(Variables.DASHBOARD.TOOL.WIDGET_PANEL_TOGGLE),
+  );
 
   const [state, setState] = useState(
     props.className === "LeftButton" ? LEFT : RIGHT,

@@ -26,13 +26,19 @@ import { EmbedConfig } from "../../utils/embed";
 import { LEFT, RIGHT } from "../../components/ToggleButton";
 import { ProjectOverview } from "./Toolbars";
 import { useTranslation } from "react-i18next";
+import { isDashboardToolEnabled } from "../../selectors/dashboard";
+import { Variables } from "../../utils/Variables";
 
 import "./style.scss";
 
 export default function Dashboard({ children }) {
   const dispatch = useDispatch();
-  const { widgets, user_permission } = useSelector(
-    (state) => state.dashboard.data,
+  const widgets = useSelector((state) => state.dashboard.data?.widgets);
+  const user_permission = useSelector(
+    (state) => state.dashboard.data?.user_permission,
+  );
+  const entitySearchEnable = useSelector(
+    isDashboardToolEnabled(Variables.DASHBOARD.TOOL.ENTITY_SEARCH_BOX),
   );
 
   const showLayerTab = !!EmbedConfig().layer_tab;
@@ -80,7 +86,13 @@ export default function Dashboard({ children }) {
   }, []);
 
   return (
-    <div className={"dashboard " + (leftExpanded ? "LeftExpanded" : "")}>
+    <div
+      className={
+        "dashboard " +
+        (leftExpanded ? "LeftExpanded" : "") +
+        (entitySearchEnable ? " EntitySearchEnable" : " EntitySearchDisable")
+      }
+    >
       {user_permission ? (
         <Fragment>
           <MapLibre

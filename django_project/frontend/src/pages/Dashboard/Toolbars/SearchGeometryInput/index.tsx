@@ -28,7 +28,7 @@ import { GeorepoUrls, updateToken } from "../../../../utils/georepo";
 import { removeLayer, removeSource } from "../../MapLibre/utils";
 import { Entity } from "../../../../types/Entity";
 import { Logger } from "../../../../utils/logger";
-import { getDashboardTool } from "../../../../utils/dashboardTool";
+import { isDashboardToolEnabled } from "../../../../selectors/dashboard";
 
 import "./style.scss";
 
@@ -38,16 +38,21 @@ interface Props {
   map: maplibregl.Map;
 }
 
-/**
- * CompareLayer component.
- */
+export function SearchGeometryMobile() {
+  const entitySearchEnable = useSelector(
+    isDashboardToolEnabled(Variables.DASHBOARD.TOOL.ENTITY_SEARCH_BOX),
+  );
+  if (!entitySearchEnable) {
+    return;
+  }
+  return <div className="ToolbarMobileBottom Mobile"></div>;
+}
+
+/** CompareLayer component. */
 export default function SearchGeometryInput({ map }: Props) {
-  // @ts-ignore
-  const { tools } = useSelector((state) => state.dashboard.data);
-  const enable_geometry_search = getDashboardTool(
-    tools,
-    Variables.DASHBOARD.TOOL.ENTITY_SEARCH_BOX,
-  )?.visible_by_default;
+  const enable_geometry_search = useSelector(
+    isDashboardToolEnabled(Variables.DASHBOARD.TOOL.ENTITY_SEARCH_BOX),
+  );
 
   const referenceLayerDataState = useSelector(
     // @ts-ignore

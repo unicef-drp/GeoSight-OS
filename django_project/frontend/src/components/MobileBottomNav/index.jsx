@@ -18,6 +18,7 @@
    ========================================================================== */
 
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import $ from "jquery";
 import { useTranslation } from "react-i18next";
 import {
@@ -27,21 +28,36 @@ import {
   ListIcon,
   MapActiveIcon,
 } from "../Icons";
+import {
+  isContextLayerContentVisible,
+  isFilterContentVisible,
+  isIndicatorLayerContentVisible,
+} from "../../selectors/dashboard";
 
 import "./style.scss";
 
 /** MobileBottomNav **/
 export default function MobileBottomNav() {
   const { t, i18n } = useTranslation();
-
   const [activePanel, setActivePanel] = useState("Map");
-  const navItems = [
-    { key: "Map", icon: <MapActiveIcon /> },
-    { key: "Context Layers", icon: <ListIcon /> },
-    { key: "Indicators", icon: <LayerIcon /> },
-    { key: "Filter", icon: <FilterIcon /> },
-    { key: "Widget", icon: <GraphIcon /> },
-  ];
+
+  const indicatorLayerVisible = useSelector(isIndicatorLayerContentVisible());
+  const contextLayerContentVisible = useSelector(
+    isContextLayerContentVisible(),
+  );
+  const filterVisible = useSelector(isFilterContentVisible());
+
+  const navItems = [{ key: t("Map"), icon: <MapActiveIcon /> }];
+  if (contextLayerContentVisible) {
+    navItems.push({ key: t("Context Layers"), icon: <ListIcon /> });
+  }
+  if (indicatorLayerVisible) {
+    navItems.push({ key: t("Indicators"), icon: <LayerIcon /> });
+  }
+  if (filterVisible) {
+    navItems.push({ key: t("Filter"), icon: <FilterIcon /> });
+  }
+  navItems.push({ key: t("Widget"), icon: <GraphIcon /> });
   const className = (key) => {
     return "Mobile_" + key.replace(" ", "_");
   };

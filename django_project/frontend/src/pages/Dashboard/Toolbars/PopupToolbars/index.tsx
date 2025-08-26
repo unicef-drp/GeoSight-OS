@@ -22,9 +22,10 @@ import maplibregl from "maplibre-gl";
 import { useSelector } from "react-redux";
 import { MeasurementTool } from "./Measurement";
 import { ZonalAnalysisComponent } from "./ZonalAnalysis";
-import "./style.scss";
 import { Variables } from "../../../../utils/Variables";
-import { getDashboardTool } from "../../../../utils/dashboardTool";
+import { isDashboardToolEnabled } from "../../../../selectors/dashboard";
+
+import "./style.scss";
 
 interface Props {
   map: maplibregl.Map;
@@ -53,16 +54,12 @@ export const PopupToolbars = forwardRef(({ map }: Props, ref) => {
     },
   }));
 
-  // @ts-ignore
-  const { tools } = useSelector((state) => state.dashboard.data);
-  const measurementEnabled = getDashboardTool(
-    tools,
-    Variables.DASHBOARD.TOOL.MEASUREMENT,
-  )?.visible_by_default;
-  const zonalAnalysisEnabled = getDashboardTool(
-    tools,
-    Variables.DASHBOARD.TOOL.ZONAL_ANALYSIS,
-  )?.visible_by_default;
+  const measurementEnabled = useSelector(
+    isDashboardToolEnabled(Variables.DASHBOARD.TOOL.MEASUREMENT),
+  );
+  const zonalAnalysisEnabled = useSelector(
+    isDashboardToolEnabled(Variables.DASHBOARD.TOOL.ZONAL_ANALYSIS),
+  );
 
   if (!measurementEnabled && !zonalAnalysisEnabled) {
     return null;

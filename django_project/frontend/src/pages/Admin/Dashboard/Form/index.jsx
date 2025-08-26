@@ -215,6 +215,7 @@ export function DashboardSaveForm() {
     show_splash_first_open,
     truncate_indicator_layer_name,
     layer_tabs_visibility,
+    show_map_toolbar
   } = useSelector((state) => state.dashboard.data);
   const { data } = useSelector((state) => state.dashboard);
   const [submitted, setSubmitted] = useState(false);
@@ -356,6 +357,7 @@ export function DashboardSaveForm() {
       );
       formData.append("layer_tabs_visibility", layer_tabs_visibility);
       formData.append("default_time_mode", JSON.stringify(default_time_mode));
+      formData.append("show_map_toolbar", show_map_toolbar);
       formData.append(
         "transparency_config",
         JSON.stringify(transparency_config),

@@ -52,7 +52,7 @@ import {
 import { getRelatedTableData } from "../../../../utils/relatedTable";
 import { Indicator } from "../../../../class/Indicator";
 import { Variables } from "../../../../utils/Variables";
-import { getDashboardTool } from "../../../../utils/dashboardTool";
+import { isDashboardToolEnabled, } from "../../../../selectors/dashboard";
 
 import "./style.scss";
 
@@ -72,11 +72,9 @@ export const TimeType = {
  * DownloaderData component.
  */
 export default function DownloaderData() {
-  const { tools } = useSelector((state) => state.dashboard.data);
-  const dataDownloadEnable = getDashboardTool(
-    tools,
-    Variables.DASHBOARD.TOOL.DATA_DOWNLOAD,
-  )?.visible_by_default;
+  const dataDownloadEnable = useSelector(
+    isDashboardToolEnabled(Variables.DASHBOARD.TOOL.DATA_DOWNLOAD),
+  );
 
   const filteredGeometries = useSelector((state) => state.filteredGeometries);
   const { indicators, referenceLayer, indicatorLayers, relatedTables, name } =
