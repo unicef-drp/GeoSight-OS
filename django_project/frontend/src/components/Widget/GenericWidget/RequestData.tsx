@@ -30,7 +30,14 @@ import TimeParameter, { TimeParametersProps } from "./TimeParameter";
 const fetchIndicatorData = async (params: any) => {
   console.log(params);
   try {
-    const response = await new IndicatorData().valueLatest(params, null);
+    const response = await new IndicatorData().valueLatest(params, null, [
+      "geometry_code",
+      "entity_name",
+      "value",
+      "indicator_name",
+      "indicator_shortcode",
+      "concept_uuid",
+    ]);
     return {
       fetching: false,
       fetched: true,

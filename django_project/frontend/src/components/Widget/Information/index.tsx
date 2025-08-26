@@ -83,15 +83,17 @@ function Indicators(config: WidgetConfig) {
   if (!indicatorsUsed.length) {
     return null;
   }
+  let text = indicatorsUsed
+    .map((indicator: any) => indicator.name)
+    .filter((name: string) => name)
+    .join(", ");
+  if (text.length > 50) {
+    text = `${indicatorsUsed.length} indicators used`;
+  }
   return (
     <div>
       <div>{t("Indicators")}:</div>
-      <div>
-        {indicatorsUsed
-          .map((indicator: any) => indicator.name)
-          .filter((name: string) => name)
-          .join(", ")}
-      </div>
+      <div>{text}</div>
     </div>
   );
 }
@@ -114,15 +116,17 @@ function GeographicUnit(config: WidgetConfig) {
   if (!geographicUnitUsed.length) {
     return null;
   }
+  let text = geographicUnitUsed
+    .map((unit: any) => unit.name)
+    .filter((name: string) => name)
+    .join(", ");
+  if (text.length > 50) {
+    text = `${geographicUnitUsed.length} admin units used`;
+  }
   return (
     <div>
       <div>{t("Geographic unit")}:</div>
-      <div>
-        {geographicUnitUsed
-          .map((unit: any) => unit.name)
-          .filter((name: string) => name)
-          .join(", ")}
-      </div>
+      <div>{text}</div>
     </div>
   );
 }

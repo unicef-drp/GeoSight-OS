@@ -89,7 +89,7 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
   // On data Changed
   useEffect(() => {
     const { name, type, description, config } = data;
-    const { seriesType } = config;
+    const { seriesType, aggregation, sort } = config;
     const { indicatorsType, indicators, indicatorsPaletteColor } = config;
     const {
       geographicalUnit,
@@ -156,18 +156,22 @@ export const WidgetForm = ({ title, open, data, setData }: Props) => {
 
     // This is for additional data
     if (data.type !== WidgetType.TIME_SERIES_CHART_WIDGET) {
-      newData.config.aggregation = {
-        method: AGGREGATION_TYPES.SUM,
-        decimalPlace: 0,
-        useDecimalPlace: false,
-        useAutoUnits: false,
-      };
-      newData.config.sort = {
-        field: SortTypes.VALUE,
-        method: SortMethodTypes.ASC,
-        topN: 0,
-        useTopN: false,
-      };
+      newData.config.aggregation = aggregation
+        ? aggregation
+        : {
+            method: AGGREGATION_TYPES.SUM,
+            decimalPlace: 0,
+            useDecimalPlace: false,
+            useAutoUnits: false,
+          };
+      newData.config.sort = sort
+        ? sort
+        : {
+            field: SortTypes.VALUE,
+            method: SortMethodTypes.ASC,
+            topN: 0,
+            useTopN: false,
+          };
     }
     setWidgetData(newData);
   }, [data]);

@@ -17,9 +17,15 @@ import React, { useState } from "react";
 
 // Widgets
 import SummaryWidget from "../View/Summary";
-import { SeriesTypeNone, WidgetType } from "../Definition";
+import {
+  SeriesType,
+  SeriesTypeNone,
+  SortTypes,
+  WidgetType,
+} from "../Definition";
 import { Widget } from "../../../types/Widget";
 import RequestData from "./RequestData";
+import SummaryGroup from "../View/SummaryGroup";
 
 /**Base widget that handler widget rendering. */
 
@@ -29,7 +35,7 @@ export interface Props {
 
 export default function GenericWidgetView({ data }: Props) {
   const { type, config } = data;
-  const { seriesType } = config;
+  const { seriesType, sort } = config;
   const [indicatorData, setIndicatorData] = useState(null);
 
   /** Render widget by type **/
@@ -45,6 +51,61 @@ export default function GenericWidgetView({ data }: Props) {
     switch (seriesType) {
       case SeriesTypeNone:
         return <SummaryWidget data={indicatorData?.data} config={config} />;
+      case SeriesType.INDICATORS: {
+        const groupBy = "indicator_name";
+        let sortBy = SortTypes.VALUE;
+        const fields = [];
+        switch (sort.field) {
+          case SortTypes.NAME:
+            sortBy = "indicator_name";
+            fields.push("indicator_name");
+            break;
+          case SortTypes.CODE:
+            sortBy = "indicator_shortcode";
+            fields.push("indicator_shortcode");
+            break;
+          default:
+            fields.push("indicator_name");
+        }
+        fields.push("value");
+        return (
+          <SummaryGroup
+            data={indicatorData?.data}
+            config={config}
+            groupBy={groupBy}
+            sortBy={sortBy}
+            fields={fields}
+          />
+        );
+      }
+      case SeriesType.GEOGRAPHICAL_UNITS: {
+        const groupBy = "geometry_code";
+        let sortBy = SortTypes.VALUE;
+        const fields = [];
+        switch (sort.field) {
+          case SortTypes.NAME:
+            sortBy = "entity_name";
+            fields.push("entity_name");
+            break;
+          case SortTypes.CODE:
+            sortBy = "geometry_code";
+            fields.push("geometry_code");
+            break;
+          default:
+            fields.push("entity_name");
+        }
+        fields.push("value");
+        return (
+          <SummaryGroup
+            data={indicatorData?.data}
+            config={config}
+            groupBy={groupBy}
+            sortBy={sortBy}
+            fields={fields}
+          />
+        );
+      }
+
       default:
         throw new Error("Widget type does not recognized.");
     }

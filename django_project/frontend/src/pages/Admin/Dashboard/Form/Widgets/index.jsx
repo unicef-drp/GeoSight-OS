@@ -108,7 +108,6 @@ export default function WidgetForm() {
           // setOpen(true);
         }}
         editLayerInGroupAction={(data) => {
-          console.log(data);
           setSelectedWidget(data);
         }}
         hasGroup={false}

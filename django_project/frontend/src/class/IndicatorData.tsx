@@ -13,7 +13,6 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import { Indicator as IndicatorType } from "../types/Indicator";
 import { DjangoRequestPagination, DjangoRequests } from "../Requests";
 import { dictDeepCopy, splitByJoinedLength } from "../utils/main";
 import { apiUrl } from "../utils/urls";
@@ -22,59 +21,77 @@ export class IndicatorData {
   url: string;
 
   constructor() {
-    this.url = `${apiUrl()}indicators/data/`
+    this.url = `${apiUrl()}indicators/data/`;
   }
 
   getParamAndData(params: any) {
-    params = dictDeepCopy(params)
-    const data = {}
+    params = dictDeepCopy(params);
+    const data = {};
     for (const [key, value] of Object.entries(params)) {
-      if (key.includes('country_geom')) {
-        let dataValue = '' + value;
+      if (key.includes("country_geom")) {
+        let dataValue = "" + value;
         if (Array.isArray(value)) {
           // @ts-ignore
-          dataValue = value.join(',')
-          params[key] = dataValue
+          dataValue = value.join(",");
+          params[key] = dataValue;
         }
         // @ts-ignore
         if (dataValue.length > 1500) {
           // @ts-ignore
-          data[key] = dataValue
+          data[key] = dataValue;
           // @ts-ignore
-          delete params[key]
+          delete params[key];
         }
-
       }
     }
-    return [params, data]
+    return [params, data];
   }
 
   /** Return latest values of data **/
-  async valueLatest(params: any, onProgress: (progress: any) => void | null) {
-    params = dictDeepCopy(params)
-    params['fields'] = 'geometry_code,value,concept_uuid,admin_level,date,time'
-    params['distinct'] = 'geom_id'
-    params['sort'] = 'geom_id,-date'
+  async valueLatest(
+    params: any,
+    onProgress: (progress: any) => void | null,
+    fields: string[] = [
+      "geometry_code",
+      "value",
+      "concept_uuid",
+      "admin_level",
+      "date",
+      "time",
+    ],
+  ) {
+    params = dictDeepCopy(params);
+    params["fields"] = fields.join(",");
+    params["distinct"] = "geom_id,indicator_id";
+    params["sort"] = "geom_id,indicator_id,-date";
 
     let data: any = {};
-    if (params['country_geom_id__in']) {
-      const newParams = splitByJoinedLength(params['country_geom_id__in']);
-      let values: any[] = []
+    if (params["country_geom_id__in"]) {
+      const newParams = splitByJoinedLength(params["country_geom_id__in"]);
+      let values: any[] = [];
       for (let i: number = 0; i < newParams.length; i++) {
         const result = await DjangoRequestPagination.get(
           this.url,
           data,
           {
             ...params,
-            country_geom_id__in: newParams[i]
-          }, onProgress
-        )
+            country_geom_id__in: newParams[i],
+          },
+          onProgress,
+        );
         values.push(...result);
       }
-      return values
+      return values;
     } else {
       [params, data] = this.getParamAndData(params);
-      return await DjangoRequestPagination.post(this.url, data, {}, params, onProgress, true)
+      return await DjangoRequestPagination.post(
+        this.url,
+        data,
+        {},
+        params,
+        onProgress,
+        true,
+      );
     }
   }
 
@@ -83,7 +100,11 @@ export class IndicatorData {
     let data: any = {};
     [params, data] = this.getParamAndData(params);
     const response = await DjangoRequests.post(
-      this.url + "statistic/", data, {}, params, true
+      this.url + "statistic/",
+      data,
+      {},
+      params,
+      true,
     );
     return response.data;
   }
@@ -93,7 +114,11 @@ export class IndicatorData {
     let data: any = {};
     [params, data] = this.getParamAndData(params);
     const response = await DjangoRequests.post(
-      this.url + "values/", data, {}, params, true
+      this.url + "values/",
+      data,
+      {},
+      params,
+      true,
     );
     return response.data;
   }
