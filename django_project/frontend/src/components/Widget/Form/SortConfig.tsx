@@ -86,7 +86,7 @@ export function SortConfigForm({ data, setData }: Props) {
           label={t("Top N")}
         />
         <input
-          style={{ width: "50px" }}
+          style={{ width: "100px" }}
           disabled={!data.useTopN}
           type="number"
           onChange={(event) => {

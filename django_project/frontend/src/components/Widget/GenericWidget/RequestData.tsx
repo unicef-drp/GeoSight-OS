@@ -28,7 +28,6 @@ import UnitParameters, { UnitParametersProps } from "./UnitParameters";
 import TimeParameter, { TimeParametersProps } from "./TimeParameter";
 
 const fetchIndicatorData = async (params: any) => {
-  console.log(params);
   try {
     const response = await new IndicatorData().valueLatest(params, null, [
       "geometry_code",

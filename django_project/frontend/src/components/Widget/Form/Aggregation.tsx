@@ -66,7 +66,7 @@ export function AggregationConfigForm({ data, setData }: Props) {
           label={t("Decimal places")}
         />
         <input
-          style={{ width: "50px" }}
+          style={{ width: "100px" }}
           disabled={!data.useDecimalPlace}
           type="number"
           onChange={(event) => {

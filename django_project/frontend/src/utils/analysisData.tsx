@@ -14,27 +14,27 @@
  */
 
 export const AGGREGATION_TYPES = {
-  SUM: 'SUM',
-  MIN: 'MIN',
-  MAX: 'MAX',
-  AVG: 'AVG',
-  COUNT: 'COUNT',
-  COUNT_UNIQUE: 'COUNT_UNIQUE',
+  SUM: "SUM",
+  MIN: "MIN",
+  MAX: "MAX",
+  AVG: "AVG",
+  COUNT: "COUNT",
+  COUNT_UNIQUE: "COUNT_UNIQUE",
 } as const;
 
 export const analyzeData = (
   operator: keyof typeof AGGREGATION_TYPES,
-  data: number[]
+  data: number[],
 ) => {
   if (!data?.length) {
-    return null
+    return null;
   }
   switch (operator) {
     case AGGREGATION_TYPES.COUNT_UNIQUE: {
-      return Array.from(new Set(data)).length
+      return Array.from(new Set(data)).length;
     }
     case AGGREGATION_TYPES.COUNT: {
-      return data.length
+      return data.length;
     }
     case AGGREGATION_TYPES.SUM: {
       return data.reduce((sum, num) => {
@@ -48,13 +48,15 @@ export const analyzeData = (
       return total / data.length;
     }
     case AGGREGATION_TYPES.MIN: {
-      const val = Math.min(...data)
-      return val === Infinity ? null : val
+      const val = Math.min(...data);
+      return val === Infinity ? null : val;
     }
     case AGGREGATION_TYPES.MAX: {
-      const val = Math.max(...data)
-      return val === -Infinity ? null : val
+      const val = Math.max(...data);
+      return val === -Infinity ? null : val;
     }
+    default:
+      throw new Error(`Invalid operator: ${operator}`);
   }
-  return null
-}
+  return null;
+};

@@ -21,11 +21,8 @@ import React, { Fragment } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 
 import { numberWithCommas } from "../../../utils/main";
-import { WidgetOperation } from "../Definition";
-import {
-  AggregationMethod
-} from "../../../pages/Admin/Importer/Form/Extensions/QueryForm/Aggregation";
 import { WidgetConfig } from "../../../types/Widget";
+import { analyzeData } from "../../../utils/analysisData";
 
 export interface DataProps {
   value: string;
@@ -45,24 +42,21 @@ export default function Summary({ data, config }: Props) {
    */
   function getValue() {
     if (![null, undefined].includes(data)) {
-      if (
-        operation === WidgetOperation.SUM ||
-        aggregation?.method === AggregationMethod.SUM
-      ) {
-        let total = 0;
-        data.forEach(function (rowData) {
-          const rowValue = parseFloat(rowData.value);
-          if (!isNaN(rowValue)) {
-            total += rowValue;
-          }
-        });
+      const method = operation ? operation : aggregation?.method;
+      try {
+        const total = analyzeData(
+          // @ts-ignore
+          method.toUpperCase(),
+          data.map((row) => row.value),
+        );
         return (
           <span>
             {numberWithCommas(total)} {unit}
           </span>
         );
+      } catch (err) {
+        return <div className="error">{err.toString()}</div>;
       }
-      return <div className="error">Operation Not Found</div>;
     }
     return (
       <div className="dashboard__right_side__loading">
