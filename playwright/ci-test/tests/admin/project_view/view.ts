@@ -123,27 +123,39 @@ test.describe('View project', () => {
     await expect(page.locator('.widget__title').nth(2)).toContainText('Time Chart by Entity');
     await expect(page.locator('.widget__title').nth(3)).toContainText('Time Chart by Indicator');
     await expect(page.locator('.widget__title').nth(4)).toContainText('Value by Geom Code');
-    await expect(page.locator('.widget__sw__content').nth(0)).toContainText('895');
-    await expect(page.locator('.widget__sw__content').nth(1)).toContainText('978.5');
-    await expect(page.locator('.widget__sgw').nth(0).locator('.widget__time_series__row_inner').nth(0)).toContainText('Mudug');
-    await expect(page.locator('.widget__sgw').nth(0).locator('.widget__time_series__row_inner').nth(1)).toContainText('Nugaal');
-    await expect(page.locator('.widget__sgw').nth(0).locator('.widget__time_series__row_inner').nth(2)).toContainText('Sanaag');
-    await expect(page.locator('.widget__sgw').nth(1).locator('.widget__time_series__row_inner').nth(0)).toContainText('Sample Indicator A');
-    await expect(page.locator('.widget__sgw').nth(1).locator('.widget__time_series__row_inner').nth(1)).toContainText('Sample Indicator B');
-    await expect(page.locator('.widget__sgw').nth(1).locator('.widget__time_series__row_inner').nth(2)).toContainText('Sample Indicator C');
-    await expect(page.locator('.widget__sgw').nth(2).locator('.widget__sgw__row').nth(0).locator('td').nth(0)).toContainText('SOM_0009_V1');
-    await expect(page.locator('.widget__sgw').nth(2).locator('.widget__sgw__row').nth(0).locator('td').nth(1)).toContainText('96');
-    await expect(page.locator('.widget__sgw').nth(2).locator('.widget__sgw__row').nth(1).locator('td').nth(0)).toContainText('SOM_0012_V1');
-    await expect(page.locator('.widget__sgw').nth(2).locator('.widget__sgw__row').nth(1).locator('td').nth(1)).toContainText('94');
+
+    // Widget 1
+    await expect(page.locator('.widget__content').nth(0)).toContainText('895');
+
+    // Widget 2
+    await expect(page.locator('.widget__content').nth(1)).toContainText('978.5');
+
+    // Widget 3
+    await expect(page.locator('.widget__content').nth(2).locator('.ReactSelect__single-value').first()).toContainText('Sample Indicator A');
+    await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(0)).toContainText('Mudug');
+    await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(1)).toContainText('Nugaal');
+    await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(2)).toContainText('Sanaag');
+
+    // Widget 4
+    await expect(page.locator('.widget__content').nth(3).locator('.ReactSelect__single-value').first()).toContainText('Awdal (SOM_0001_V1)');
+    await expect(page.locator('.widget__content').nth(3).locator('.widget__time_series__row_inner').nth(0)).toContainText('Sample Indicator A');
+    await expect(page.locator('.widget__content').nth(3).locator('.widget__time_series__row_inner').nth(1)).toContainText('Sample Indicator B');
+    await expect(page.locator('.widget__content').nth(3).locator('.widget__time_series__row_inner').nth(2)).toContainText('Sample Indicator C');
+
+    // Widget 5
+    await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(0).locator('td').nth(0)).toContainText('SOM_0009_V1');
+    await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(0).locator('td').nth(1)).toContainText('96');
+    await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(1).locator('td').nth(0)).toContainText('SOM_0012_V1');
+    await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(1).locator('td').nth(1)).toContainText('94');
 
     // Check the label
-    await expect(page.locator('.widget__sw__content').nth(1)).toContainText('978.5');
+    await expect(page.locator('.widget__content').nth(1)).toContainText('978.5');
     await delay(1000)
     await expect(lastLogLabel).toEqual("Awdal,SOM_0001_V1,2020-01-01,60 - 80,61,Bakool,SOM_0002_V1,2020-01-01,60 - 80,78,Banadir,SOM_0003_V1,2020-01-01,20 - 40,30,Bari,SOM_0004_V1,2020-01-01,0 - 20,11,Bay,SOM_0005_V1,2020-01-01,20 - 40,40,Galgaduud,SOM_0006_V1,2020-01-01,0 - 20,10,Gedo,SOM_0007_V1,2020-01-01,20 - 40,40,Hiraan,SOM_0008_V1,2020-01-01,20 - 40,32,Lower Juba,SOM_0009_V1,2020-01-01,80 - 100,96,Lower Shabelle,SOM_0010_V1,2020-01-01,40 - 60,59,Middle Juba,SOM_0011_V1,2020-01-01,60 - 80,74,Middle Shabelle,SOM_0012_V1,2020-01-01,80 - 100,94,Mudug,SOM_0013_V1,2020-01-01,60 - 80,63,Nugaal,SOM_0014_V1,2020-01-01,60 - 80,68,Sanaag,SOM_0015_V1,2020-01-01,0 - 20,14,Sool,SOM_0016_V1,2020-01-01,20 - 40,35,Togdheer,SOM_0017_V1,2020-01-01,80 - 100,89,Woqooyi Galbeed,SOM_0018_V1,2020-01-01,0 - 20,1");
     await page.getByRole('tab', { name: 'Filters' }).click();
     lastLogLabel = null
     await page.getByRole('button', { name: 'Indicator A above X% Delete' }).getByRole('checkbox').check();
-    await expect(page.locator('.widget__sw__content').nth(1)).toContainText('562');
+    await expect(page.locator('.widget__content').nth(1)).toContainText('562');
     await delay(1000)
     await expect(lastLogLabel).toEqual("Awdal,SOM_0001_V1,2020-01-01,60 - 80,61,Bakool,SOM_0002_V1,2020-01-01,60 - 80,78,Lower Juba,SOM_0009_V1,2020-01-01,80 - 100,96,Middle Juba,SOM_0011_V1,2020-01-01,60 - 80,74,Middle Shabelle,SOM_0012_V1,2020-01-01,80 - 100,94,Mudug,SOM_0013_V1,2020-01-01,60 - 80,63,Nugaal,SOM_0014_V1,2020-01-01,60 - 80,68,Togdheer,SOM_0017_V1,2020-01-01,80 - 100,89");
     await expect(lastLayers.includes("reference-layer-fill-0,reference-layer-outline-0")).toBeTruthy();
@@ -162,16 +174,28 @@ test.describe('View project', () => {
     await expect(page.locator('.widget__title').nth(2)).toContainText('Time Chart by Entity');
     await expect(page.locator('.widget__title').nth(3)).toContainText('Time Chart by Indicator');
     await expect(page.locator('.widget__title').nth(4)).toContainText('Value by Geom Code');
-    await expect(page.locator('.widget__sw__content').nth(0)).toContainText('77');
-    await expect(page.locator('.widget__sw__content').nth(1)).toContainText('72.5');
-    await expect(page.locator('.widget__sgw').nth(0).locator('.widget__time_series__row_inner').nth(0)).toContainText('Mudug');
-    await expect(page.locator('.widget__sgw').nth(0).locator('.widget__time_series__row_inner').nth(1)).toContainText('Nugaal');
-    await expect(page.locator('.widget__sgw').nth(0).locator('.widget__time_series__row_inner').nth(2)).toContainText('Sanaag');
-    await expect(page.locator('.widget__sgw').nth(1).locator('.widget__time_series__row_inner').nth(0)).toContainText('Sample Indicator A');
-    await expect(page.locator('.widget__sgw').nth(1).locator('.widget__time_series__row_inner').nth(1)).toContainText('Sample Indicator B');
-    await expect(page.locator('.widget__sgw').nth(1).locator('.widget__time_series__row_inner').nth(2)).toContainText('Sample Indicator C');
-    await expect(page.locator('.widget__sgw').nth(2).locator('.widget__sgw__row').nth(0).locator('td').nth(0)).toContainText('SOM_V1');
-    await expect(page.locator('.widget__sgw').nth(2).locator('.widget__sgw__row').nth(0).locator('td').nth(1)).toContainText('77');
+
+    // Widget 1
+    await expect(page.locator('.widget__content').nth(0)).toContainText('77');
+
+    // Widget 2
+    await expect(page.locator('.widget__content').nth(1)).toContainText('72.5');
+
+    // Widget 3
+    await expect(page.locator('.widget__content').nth(2).locator('.ReactSelect__single-value').first()).toContainText('Sample Indicator A');
+    await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(0)).toContainText('Mudug');
+    await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(1)).toContainText('Nugaal');
+    await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(2)).toContainText('Sanaag');
+
+    // Widget 4
+    await expect(page.locator('.widget__content').nth(3).locator('.ReactSelect__single-value').first()).toContainText('Awdal (SOM_0001_V1)');
+    await expect(page.locator('.widget__content').nth(3).locator('.widget__time_series__row_inner').nth(0)).toContainText('Sample Indicator A');
+    await expect(page.locator('.widget__content').nth(3).locator('.widget__time_series__row_inner').nth(1)).toContainText('Sample Indicator B');
+    await expect(page.locator('.widget__content').nth(3).locator('.widget__time_series__row_inner').nth(2)).toContainText('Sample Indicator C');
+
+    // Widget 5
+    await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(0).locator('td').nth(0)).toContainText('SOM_V1');
+    await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(0).locator('td').nth(1)).toContainText('77');
 
     // Check the label
     await delay(1000)
@@ -189,27 +213,39 @@ test.describe('View project', () => {
     await expect(page.locator('.widget__title').nth(2)).toContainText('Time Chart by Entity');
     await expect(page.locator('.widget__title').nth(3)).toContainText('Time Chart by Indicator');
     await expect(page.locator('.widget__title').nth(4)).toContainText('Value by Geom Code');
-    await expect(page.locator('.widget__sw__content').nth(0)).toContainText('3,656');
-    await expect(page.locator('.widget__sw__content').nth(1)).toContainText('3,778.5');
-    await expect(page.locator('.widget__sgw').nth(0).locator('.widget__time_series__row_inner').nth(0)).toContainText('Mudug');
-    await expect(page.locator('.widget__sgw').nth(0).locator('.widget__time_series__row_inner').nth(1)).toContainText('Nugaal');
-    await expect(page.locator('.widget__sgw').nth(0).locator('.widget__time_series__row_inner').nth(2)).toContainText('Sanaag');
-    await expect(page.locator('.widget__sgw').nth(1).locator('.widget__time_series__row_inner').nth(0)).toContainText('Sample Indicator A');
-    await expect(page.locator('.widget__sgw').nth(1).locator('.widget__time_series__row_inner').nth(1)).toContainText('Sample Indicator B');
-    await expect(page.locator('.widget__sgw').nth(1).locator('.widget__time_series__row_inner').nth(2)).toContainText('Sample Indicator C');
-    await expect(page.locator('.widget__sgw').nth(2).locator('.widget__sgw__row').nth(0).locator('td').nth(0)).toContainText('SOM_0009_0004_V1');
-    await expect(page.locator('.widget__sgw').nth(2).locator('.widget__sgw__row').nth(0).locator('td').nth(1)).toContainText('98');
-    await expect(page.locator('.widget__sgw').nth(2).locator('.widget__sgw__row').nth(1).locator('td').nth(0)).toContainText('SOM_0010_0003_V1');
-    await expect(page.locator('.widget__sgw').nth(2).locator('.widget__sgw__row').nth(1).locator('td').nth(1)).toContainText('96');
+
+    // Widget 1
+    await expect(page.locator('.widget__content').nth(0)).toContainText('3,656');
+
+    // Widget 2
+    await expect(page.locator('.widget__content').nth(1)).toContainText('3,778.5');
+
+    // Widget 3
+    await expect(page.locator('.widget__content').nth(2).locator('.ReactSelect__single-value').first()).toContainText('Sample Indicator A');
+    await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(0)).toContainText('Mudug');
+    await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(1)).toContainText('Nugaal');
+    await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(2)).toContainText('Sanaag');
+
+    // Widget 4
+    await expect(page.locator('.widget__content').nth(3).locator('.ReactSelect__single-value').first()).toContainText('Awdal (SOM_0001_V1)');
+    await expect(page.locator('.widget__content').nth(3).locator('.widget__time_series__row_inner').nth(0)).toContainText('Sample Indicator A');
+    await expect(page.locator('.widget__content').nth(3).locator('.widget__time_series__row_inner').nth(1)).toContainText('Sample Indicator B');
+    await expect(page.locator('.widget__content').nth(3).locator('.widget__time_series__row_inner').nth(2)).toContainText('Sample Indicator C');
+
+    // Widget 5
+    await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(0).locator('td').nth(0)).toContainText('SOM_0009_0004_V1');
+    await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(0).locator('td').nth(1)).toContainText('98');
+    await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(1).locator('td').nth(0)).toContainText('SOM_0010_0003_V1');
+    await expect(page.locator('.widget__content').nth(4).locator('tbody tr').nth(1).locator('td').nth(1)).toContainText('96');
 
     // Check the label
-    await expect(page.locator('.widget__sw__content').nth(1)).toContainText('3,778.5');
+    await expect(page.locator('.widget__content').nth(1)).toContainText('3,778.5');
     await delay(1000)
     await expect(lastLogLabel).toEqual("Baki,SOM_0001_0001_V1,2020-01-01,0 - 20,1,Borama,SOM_0001_0002_V1,2020-01-01,40 - 60,51,Lughaye,SOM_0001_0003_V1,2020-01-01,80 - 100,91,Zeylac,SOM_0001_0004_V1,2020-01-01,80 - 100,82,Ceel Barde,SOM_0002_0001_V1,2020-01-01,20 - 40,22,Rab Dhuure,SOM_0002_0002_V1,2020-01-01,40 - 60,54,Tayeeglow,SOM_0002_0003_V1,2020-01-01,40 - 60,59,Waajid,SOM_0002_0004_V1,2020-01-01,80 - 100,94,Xudur,SOM_0002_0005_V1,2020-01-01,20 - 40,21,Banadir,SOM_0003_0001_V1,2020-01-01,20 - 40,36,Bandarbeyla,SOM_0004_0001_V1,2020-01-01,40 - 60,50,Bossaso,SOM_0004_0002_V1,2020-01-01,0 - 20,16,Caluula,SOM_0004_0003_V1,2020-01-01,60 - 80,67,Iskushuban,SOM_0004_0004_V1,2020-01-01,40 - 60,48,Qandala,SOM_0004_0005_V1,2020-01-01,20 - 40,40,Qardho,SOM_0004_0006_V1,2020-01-01,40 - 60,50,Baydhaba,SOM_0005_0001_V1,2020-01-01,0 - 20,15,Buur Hakaba,SOM_0005_0002_V1,2020-01-01,0 - 20,2,Diinsoor,SOM_0005_0003_V1,2020-01-01,20 - 40,35,Qansax Dheere,SOM_0005_0004_V1,2020-01-01,40 - 60,47,Cabudwaaq,SOM_0006_0001_V1,2020-01-01,40 - 60,44,Cadaado,SOM_0006_0002_V1,2020-01-01,20 - 40,33,Ceel Buur,SOM_0006_0003_V1,2020-01-01,0 - 20,19,Ceel Dheer,SOM_0006_0004_V1,2020-01-01,60 - 80,70,Dhuusamarreeb,SOM_0006_0005_V1,2020-01-01,60 - 80,80,Baardheere,SOM_0007_0001_V1,2020-01-01,20 - 40,23,Belet Xaawo,SOM_0007_0002_V1,2020-01-01,0 - 20,18,Ceel Waaq,SOM_0007_0003_V1,2020-01-01,80 - 100,94,Doolow,SOM_0007_0004_V1,2020-01-01,20 - 40,25,Garbahaarey,SOM_0007_0005_V1,2020-01-01,20 - 40,40,Luuq,SOM_0007_0006_V1,2020-01-01,80 - 100,84,Belet Weyne,SOM_0008_0001_V1,2020-01-01,40 - 60,51,Bulo Burto,SOM_0008_0002_V1,2020-01-01,0 - 20,15,Jalalaqsi,SOM_0008_0003_V1,2020-01-01,60 - 80,79,Afmadow,SOM_0009_0001_V1,2020-01-01,0 - 20,7,Badhaadhe,SOM_0009_0002_V1,2020-01-01,80 - 100,87,Jamaame,SOM_0009_0003_V1,2020-01-01,40 - 60,57,Kismaayo,SOM_0009_0004_V1,2020-01-01,80 - 100,98,Afgooye,SOM_0010_0001_V1,2020-01-01,20 - 40,25,Baraawe,SOM_0010_0002_V1,2020-01-01,60 - 80,63,Kurtunwaarey,SOM_0010_0003_V1,2020-01-01,80 - 100,96,Marka,SOM_0010_0004_V1,2020-01-01,80 - 100,94,Qoryooley,SOM_0010_0005_V1,2020-01-01,40 - 60,57,Sablaale,SOM_0010_0006_V1,2020-01-01,40 - 60,60,Wanla Weyn,SOM_0010_0007_V1,2020-01-01,0 - 20,7,Bu'Aale,SOM_0011_0001_V1,2020-01-01,80 - 100,94,Jilib,SOM_0011_0002_V1,2020-01-01,60 - 80,72,Saakow,SOM_0011_0003_V1,2020-01-01,60 - 80,71,Adan Yabaal,SOM_0012_0001_V1,2020-01-01,40 - 60,55,Balcad,SOM_0012_0002_V1,2020-01-01,20 - 40,29,Cadale,SOM_0012_0003_V1,2020-01-01,60 - 80,62,Jowhar,SOM_0012_0004_V1,2020-01-01,60 - 80,75,Gaalkacyo,SOM_0013_0001_V1,2020-01-01,0 - 20,2,Galdogob,SOM_0013_0002_V1,2020-01-01,80 - 100,93,Hobyo,SOM_0013_0003_V1,2020-01-01,80 - 100,91,Jariiban,SOM_0013_0004_V1,2020-01-01,60 - 80,65,Xarardheere,SOM_0013_0005_V1,2020-01-01,0 - 20,12,Burtinle,SOM_0014_0001_V1,2020-01-01,0 - 20,14,Eyl,SOM_0014_0002_V1,2020-01-01,40 - 60,46,Garoowe,SOM_0014_0003_V1,2020-01-01,60 - 80,67,Ceel Afweyn,SOM_0015_0001_V1,2020-01-01,40 - 60,53,Ceerigaabo,SOM_0015_0002_V1,2020-01-01,20 - 40,39,Laasqoray,SOM_0015_0003_V1,2020-01-01,20 - 40,28,Caynabo,SOM_0016_0001_V1,2020-01-01,60 - 80,65,Laas Caanood,SOM_0016_0002_V1,2020-01-01,40 - 60,42,Taleex,SOM_0016_0003_V1,2020-01-01,0 - 20,19,Xudun,SOM_0016_0004_V1,2020-01-01,20 - 40,37,Burco,SOM_0017_0001_V1,2020-01-01,20 - 40,27,Buuhoodle,SOM_0017_0002_V1,2020-01-01,20 - 40,36,Owdweyne,SOM_0017_0003_V1,2020-01-01,40 - 60,47,Sheikh,SOM_0017_0004_V1,2020-01-01,20 - 40,40,Berbera,SOM_0018_0001_V1,2020-01-01,80 - 100,81,Gebiley,SOM_0018_0002_V1,2020-01-01,40 - 60,53,Hargeysa,SOM_0018_0003_V1,2020-01-01,20 - 40,34");
     await page.getByRole('tab', { name: 'Filters' }).click();
     lastLogLabel = null
     await page.getByRole('button', { name: 'Indicator A above X% Delete' }).getByRole('checkbox').check();
-    await expect(page.locator('.widget__sw__content').nth(1)).toContainText('1,674.5');
+    await expect(page.locator('.widget__content').nth(1)).toContainText('1,674.5');
     await delay(1000)
     await expect(lastLogLabel).toEqual("Lughaye,SOM_0001_0003_V1,2020-01-01,80 - 100,91,Zeylac,SOM_0001_0004_V1,2020-01-01,80 - 100,82,Waajid,SOM_0002_0004_V1,2020-01-01,80 - 100,94,Caluula,SOM_0004_0003_V1,2020-01-01,60 - 80,67,Ceel Dheer,SOM_0006_0004_V1,2020-01-01,60 - 80,70,Dhuusamarreeb,SOM_0006_0005_V1,2020-01-01,60 - 80,80,Ceel Waaq,SOM_0007_0003_V1,2020-01-01,80 - 100,94,Luuq,SOM_0007_0006_V1,2020-01-01,80 - 100,84,Jalalaqsi,SOM_0008_0003_V1,2020-01-01,60 - 80,79,Badhaadhe,SOM_0009_0002_V1,2020-01-01,80 - 100,87,Kismaayo,SOM_0009_0004_V1,2020-01-01,80 - 100,98,Baraawe,SOM_0010_0002_V1,2020-01-01,60 - 80,63,Kurtunwaarey,SOM_0010_0003_V1,2020-01-01,80 - 100,96,Marka,SOM_0010_0004_V1,2020-01-01,80 - 100,94,Bu'Aale,SOM_0011_0001_V1,2020-01-01,80 - 100,94,Jilib,SOM_0011_0002_V1,2020-01-01,60 - 80,72,Saakow,SOM_0011_0003_V1,2020-01-01,60 - 80,71,Cadale,SOM_0012_0003_V1,2020-01-01,60 - 80,62,Jowhar,SOM_0012_0004_V1,2020-01-01,60 - 80,75,Galdogob,SOM_0013_0002_V1,2020-01-01,80 - 100,93,Hobyo,SOM_0013_0003_V1,2020-01-01,80 - 100,91,Jariiban,SOM_0013_0004_V1,2020-01-01,60 - 80,65,Garoowe,SOM_0014_0003_V1,2020-01-01,60 - 80,67,Caynabo,SOM_0016_0001_V1,2020-01-01,60 - 80,65,Berbera,SOM_0018_0001_V1,2020-01-01,80 - 100,81");
     await expect(lastLayers.includes("reference-layer-fill-0,reference-layer-outline-0")).toBeTruthy();

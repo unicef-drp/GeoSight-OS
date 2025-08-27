@@ -31,7 +31,12 @@ import {
 import { Session } from "../../../../utils/Sessions";
 import { Indicator } from "../../../../class/Indicator";
 import { UpdateStyleData } from "../../../../utils/indicatorData";
-import { DateFilterType, SortTypes, WidgetType } from "../../Definition";
+import {
+  DateFilterType,
+  SortMethodTypes,
+  SortTypes,
+  WidgetType,
+} from "../../Definition";
 import SummaryGroup from "../../View/SummaryGroup";
 
 /**
@@ -301,7 +306,7 @@ export default function SummaryGroupWidgetView({ data }) {
             data={_data}
             config={{
               ...config,
-              sort: { field: "value", order: "descending" },
+              sort: { field: sortBy, method: SortMethodTypes.DESC },
               aggregation: { method: config.operation.toUpperCase() },
             }}
             groupBy={groupBy}
