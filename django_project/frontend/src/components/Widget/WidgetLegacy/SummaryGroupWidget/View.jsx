@@ -289,7 +289,17 @@ export default function SummaryGroupWidgetView({ data }) {
           indicatorData,
           property,
         );
-        return <SummaryWidget data={_data} config={data.config} />;
+        return (
+          <SummaryWidget
+            data={_data}
+            config={{
+              ...config,
+              aggregation: {
+                useDecimalPlace: true,
+              },
+            }}
+          />
+        );
       }
       case WidgetType.SUMMARY_GROUP_WIDGET: {
         const _data = cleanLayerData(
@@ -307,7 +317,10 @@ export default function SummaryGroupWidgetView({ data }) {
             config={{
               ...config,
               sort: { field: sortBy, method: SortMethodTypes.DESC },
-              aggregation: { method: config.operation.toUpperCase() },
+              aggregation: {
+                method: config.operation.toUpperCase(),
+                useDecimalPlace: true,
+              },
             }}
             groupBy={groupBy}
             sortBy={sortBy}
