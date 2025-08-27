@@ -19,10 +19,9 @@
 
 import React, { Fragment } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
-
-import { numberWithCommas } from "../../../utils/main";
 import { WidgetConfig } from "../../../types/Widget";
 import { analyzeData } from "../../../utils/analysisData";
+import { formatNumber } from "../../../utils/Utilities";
 
 export interface DataProps {
   value: string;
@@ -51,7 +50,12 @@ export default function Summary({ data, config }: Props) {
         );
         return (
           <span>
-            {numberWithCommas(total)} {unit}
+            {formatNumber(
+              total,
+              aggregation?.useDecimalPlace ? aggregation?.decimalPlace : 0,
+              aggregation?.useAutoUnits,
+            )}{" "}
+            {unit}
           </span>
         );
       } catch (err) {

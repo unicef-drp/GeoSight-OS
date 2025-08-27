@@ -77,36 +77,6 @@ export function deleteFromArray(item, array) {
   return array
 }
 
-
-/**
- * Return number with commas
- */
-export function numberWithCommas(x, decimalNum = 2) {
-  if (x === null) {
-    return '';
-  } else if (isNaN(x)) {
-    return x;
-  } else {
-    let numFloat = parseFloat(x);
-    if (!isNaN(numFloat)) {
-      x = numFloat;
-    } else {
-      return x
-    }
-    if (typeof x !== 'number') {
-      return x
-    }
-    x = x.toFixed(decimalNum)
-    let num = x.split('.')[0];
-    let decimal = x.split('.')[1];
-    let string = num.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    if (decimal && parseInt(decimal)) {
-      string += '.' + decimal.replace(/[0]+$/, '');
-    }
-    return string;
-  }
-}
-
 /**
  * Capitalize a string
  * @param target

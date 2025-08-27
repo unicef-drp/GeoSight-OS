@@ -14,11 +14,12 @@
  */
 import React, { Fragment, memo } from "react";
 
-import { capitalize, numberWithCommas } from "../../../utils/main";
+import { capitalize } from "../../../utils/main";
 import { WidgetConfig } from "../../../types/Widget";
 import { analyzeData } from "../../../utils/analysisData";
 import { SortMethodTypes } from "../Definition";
 import CircularProgress from "@mui/material/CircularProgress";
+import { formatNumber } from "../../../utils/Utilities";
 
 export interface Props {
   data: any[];
@@ -102,7 +103,17 @@ function SummaryGroup({ data, config, groupBy, sortBy, fields }: Props) {
             <tr key={index}>
               {fields.map((field) => {
                 if (field.toLowerCase() === "value") {
-                  return <td>{numberWithCommas(value[1][field])}</td>;
+                  return (
+                    <td>
+                      {formatNumber(
+                        value[1][field],
+                        aggregation?.useDecimalPlace
+                          ? aggregation?.decimalPlace
+                          : 0,
+                        aggregation?.useAutoUnits,
+                      )}
+                    </td>
+                  );
                 }
                 return <td>{value[1][field]}</td>;
               })}
