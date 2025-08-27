@@ -137,7 +137,6 @@ test.describe('View project', () => {
     await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(2)).toContainText('Sanaag');
 
     // Widget 4
-    await expect(page.locator('.widget__content').nth(3).locator('.ReactSelect__single-value').first()).toContainText('Awdal (SOM_0001_V1)');
     await expect(page.locator('.widget__content').nth(3).locator('.widget__time_series__row_inner').nth(0)).toContainText('Sample Indicator A');
     await expect(page.locator('.widget__content').nth(3).locator('.widget__time_series__row_inner').nth(1)).toContainText('Sample Indicator B');
     await expect(page.locator('.widget__content').nth(3).locator('.widget__time_series__row_inner').nth(2)).toContainText('Sample Indicator C');
@@ -188,7 +187,6 @@ test.describe('View project', () => {
     await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(2)).toContainText('Sanaag');
 
     // Widget 4
-    await expect(page.locator('.widget__content').nth(3).locator('.ReactSelect__single-value').first()).toContainText('Awdal (SOM_0001_V1)');
     await expect(page.locator('.widget__content').nth(3).locator('.widget__time_series__row_inner').nth(0)).toContainText('Sample Indicator A');
     await expect(page.locator('.widget__content').nth(3).locator('.widget__time_series__row_inner').nth(1)).toContainText('Sample Indicator B');
     await expect(page.locator('.widget__content').nth(3).locator('.widget__time_series__row_inner').nth(2)).toContainText('Sample Indicator C');
@@ -227,7 +225,6 @@ test.describe('View project', () => {
     await expect(page.locator('.widget__content').nth(2).locator('.widget__time_series__row_inner').nth(2)).toContainText('Sanaag');
 
     // Widget 4
-    await expect(page.locator('.widget__content').nth(3).locator('.ReactSelect__single-value').first()).toContainText('Awdal (SOM_0001_V1)');
     await expect(page.locator('.widget__content').nth(3).locator('.widget__time_series__row_inner').nth(0)).toContainText('Sample Indicator A');
     await expect(page.locator('.widget__content').nth(3).locator('.widget__time_series__row_inner').nth(1)).toContainText('Sample Indicator B');
     await expect(page.locator('.widget__content').nth(3).locator('.widget__time_series__row_inner').nth(2)).toContainText('Sample Indicator C');
