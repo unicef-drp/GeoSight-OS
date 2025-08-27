@@ -23,8 +23,10 @@ logger = logging.getLogger(__name__)
 class VersionCache:
     """Geosight cache system with version."""
 
-    def __init__(self, key, version):
+    def __init__(self, key, version, request=None):
         """Initiate data."""
+        if request and request.user.is_authenticated:
+            key += f"-{request.user.id}"
         self.key = key
         self.version_key = f'{key}-version'
         self.version = version
