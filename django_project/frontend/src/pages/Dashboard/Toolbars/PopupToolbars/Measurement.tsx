@@ -37,10 +37,10 @@ import {
   MeasurementOnIcon,
 } from "../../../../components/Icons";
 import { MaplibreDrawingTools } from "../../../../utils/MaplibreDrawingTools";
-import { numberWithCommas } from "../../../../utils/main";
+import { Variables } from "../../../../utils/Variables";
+import { formatNumber } from "../../../../utils/Utilities";
 
 import "./style.scss";
-import { Variables } from "../../../../utils/Variables";
 
 interface Props {
   map: maplibregl.Map;
@@ -136,11 +136,11 @@ export const MeasurementTool = forwardRef(({ map, started }: Props, ref) => {
             {draw?.draw.getSelectedIds().length && information ? (
               <div>
                 {information.featureType === "Polygon" ? (
-                  <div>{numberWithCommas(information.area, 2)} Sq Meters</div>
+                  <div>{formatNumber(information.area, 2)} Sq Meters</div>
                 ) : null}
                 <div>
-                  {numberWithCommas(information.lengthMeters, 2)} Meters (
-                  {numberWithCommas(information.lengthMiles, 2)} Miles){" "}
+                  {formatNumber(information.lengthMeters, 2)} Meters (
+                  {formatNumber(information.lengthMiles, 2)} Miles){" "}
                   {information.lengthTerm}
                 </div>
               </div>

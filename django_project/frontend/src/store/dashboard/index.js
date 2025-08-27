@@ -18,6 +18,7 @@ import rootReducer from './reducers';
 
 // Reducers and Actions
 import Basemaps from './reducers/basemap/actions'
+import ColorPalettes from './reducers/colorPalettes/actions'
 import ContextLayers from './reducers/contextLayers/actions'
 import Dashboard from './reducers/dashboard/actions'
 import DashboardHistory from './reducers/dashboardHistory/actions'
@@ -56,6 +57,7 @@ import Widgets from './reducers/widgets/actions'
 
 const Actions = {
   Basemaps,
+  ColorPalettes,
   ContextLayers,
   Dashboard,
   DashboardHistory,

@@ -17,21 +17,21 @@ import React, { Fragment, useEffect, useState } from "react";
 import {
   rectSortingStrategy,
   SortableContext,
-  useSortable
+  useSortable,
 } from "@dnd-kit/sortable";
-import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
-import DragHandleIcon from '@mui/icons-material/DragHandle';
-import DoneIcon from '@mui/icons-material/Done';
+import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
+import DragHandleIcon from "@mui/icons-material/DragHandle";
+import DoneIcon from "@mui/icons-material/Done";
 import EditIcon from "@mui/icons-material/Edit";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import SortableItem from "./SortableItem";
 import { CSS } from "@dnd-kit/utilities";
 import { Button, Checkbox } from "@mui/material";
 import { IconTextField } from "../../../../../components/Elements/Input";
 import {
   VisibilityIcon,
-  VisibilityOffIcon
+  VisibilityOffIcon,
 } from "../../../../../components/Icons";
 
 /**
@@ -50,250 +50,283 @@ import {
  * @param {boolean} selectable Indicates whether the list is selectable or not, default is false
  * @param {Function} removeItems Remove selected items
  */
-export default function SortableContainer(
-  {
-    data,
-    groupIdx,
-    items,
-    groupName,
-    removeGroup,
-    changeGroupName,
-    removeLayer,
-    changeLayer,
-    addLayerInGroup,
-    editLayerInGroup,
-    otherActionsFunction,
-    selectable = false,
-    removeItems
-  }) {
-
-  const noGroup = '_noGroup'
+export default function SortableContainer({
+  data,
+  groupIdx,
+  items,
+  groupName,
+  removeGroup,
+  changeGroupName,
+  removeLayer,
+  changeLayer,
+  addLayerInGroup,
+  editLayerInGroup,
+  otherActionsFunction,
+  selectable = false,
+  removeItems,
+}) {
+  const noGroup = "_noGroup";
   const [editName, setEditName] = useState(false);
   const [name, setName] = useState(groupName);
   const [itemSelected, setItemSelected] = useState([]);
   const [groupSelected, setGroupSelected] = useState(false);
 
   useEffect(() => {
-    if (!data) return
+    if (!data) return;
     if (data.length !== itemSelected.length) {
-      setItemSelected([])
+      setItemSelected([]);
     }
-  }, [data])
+  }, [data]);
 
   useEffect(() => {
     if (items) {
-      const itemIds = items.filter(item => Number.isInteger(item))
+      const itemIds = items.filter((item) => Number.isInteger(item));
       if (itemSelected.length === itemIds.length) {
-        setGroupSelected(true)
+        setGroupSelected(true);
       } else {
-        setGroupSelected(false)
+        setGroupSelected(false);
       }
     }
-  }, [itemSelected])
+  }, [itemSelected]);
 
   const selectItem = (item) => {
     if (itemSelected.indexOf(item) >= 0) {
-      setItemSelected(itemSelected.filter(id => id !== item))
+      setItemSelected(itemSelected.filter((id) => id !== item));
     } else {
-      setItemSelected([...itemSelected, ...[item]])
+      setItemSelected([...itemSelected, ...[item]]);
     }
-  }
+  };
 
   const selectGroup = () => {
     if (!groupSelected) {
-      const itemIds = items.filter(item => Number.isInteger(item))
-      setItemSelected([...itemIds])
+      const itemIds = items.filter((item) => Number.isInteger(item));
+      setItemSelected([...itemIds]);
     } else {
-      setItemSelected([])
+      setItemSelected([]);
     }
-  }
+  };
 
   const handleRemoveItemsClick = () => {
-    removeItems(itemSelected.map(item => data[item]))
-  }
+    removeItems(itemSelected.map((item) => data[item]));
+  };
 
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition
-  } = useSortable({ id: groupName });
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: groupName });
   const style = {
     transform: CSS.Translate.toString(transform),
-    transition
+    transition,
   };
   return (
     <Fragment>
-      <tbody key={groupName} id={groupName} style={style} ref={setNodeRef}
-             className={groupName}>
-      <SortableContext
-        id={groupName} items={items} strategy={rectSortingStrategy}>
+      <tbody
+        key={groupName}
+        id={groupName}
+        style={style}
+        ref={setNodeRef}
+        className={groupName}
+      >
+        <SortableContext
+          id={groupName}
+          items={items}
+          strategy={rectSortingStrategy}
+        >
+          {Object.keys(items).length !== 0 ? (
+            items.map((item) => {
+              const layer = data[item];
 
-        {
-          Object.keys(items).length !== 0 ? items.map(item => {
-            const layer = data[item];
-
-            /** ----------------------------------------------------  **/
-            /** FOR GROUP HEADER **/
-            if (!layer) {
-              return (
-                <SortableItem
-                  key={item} id={item}
-                  className={'GroupRow ' + item}>
-                  {
-                    selectable ?
+              /** ----------------------------------------------------  **/
+              /** FOR GROUP HEADER **/
+              if (!layer) {
+                return (
+                  <SortableItem
+                    key={item}
+                    id={item}
+                    className={"GroupRow " + item}
+                  >
+                    {selectable ? (
                       <td width={1}>
                         <Checkbox
-                          onClick={selectGroup} style={{ color: 'white' }}
-                          checked={groupSelected}/>
-                      </td> : null
-                  }
-                  <td className='DragDropItem-Drag'>
-                    {
-                      item !== noGroup ?
+                          onClick={selectGroup}
+                          style={{ color: "white" }}
+                          checked={groupSelected}
+                        />
+                      </td>
+                    ) : null}
+                    <td className="DragDropItem-Drag">
+                      {item !== noGroup ? (
                         <DragHandleIcon
-                          className='MuiButtonLike'
-                          {...attributes} {...listeners}/> : ''
-                    }
-                  </td>
-                  <td colSpan={5}>
-                    {
-                      groupName !== noGroup ?
-                        <div className='GroupRowTitle'>
-                          {
-                            editName ? (
-                                <Fragment>
-                                  <span>Group : </span>
-                                  <IconTextField
-                                    iconEnd={
-                                      <DoneIcon
-                                        className='MuiButtonLike'
-                                        onClick={() => {
-                                          if (changeGroupName(groupName, name)) {
-                                            setEditName(false)
-                                          }
-                                        }}/>
-                                    }
-                                    value={name}
-                                    onChange={(evt) => {
-                                      setName(evt.target.value)
+                          className="MuiButtonLike"
+                          {...attributes}
+                          {...listeners}
+                        />
+                      ) : (
+                        ""
+                      )}
+                    </td>
+                    <td colSpan={5}>
+                      {groupName !== noGroup ? (
+                        <div className="GroupRowTitle">
+                          {editName ? (
+                            <Fragment>
+                              <span>Group : </span>
+                              <IconTextField
+                                iconEnd={
+                                  <DoneIcon
+                                    className="MuiButtonLike"
+                                    onClick={() => {
+                                      if (changeGroupName(groupName, name)) {
+                                        setEditName(false);
+                                      }
                                     }}
                                   />
-                                </Fragment>
-                              ) :
-                              (
-                                <Fragment>
-                                  <span>Group : {name ? name :
-                                    <i>No Name</i>}
-                                  </span>
-                                  <EditIcon
-                                    className='MuiButtonLike GroupEditName'
-                                    onClick={() => {
-                                      setEditName(true)
-                                    }}/>
-                                </Fragment>
-                              )
-                          }
-                          <div className='Separator'/>
-                          {itemSelected.length > 0 ?
-                            <span
-                              className='ItemSelectedInfo'>{itemSelected.length} selected
-                              <Button size={'small'} variant="text"
-                                      onClick={handleRemoveItemsClick}>
-                                <DeleteOutlineIcon fontSize={'small'}/>
+                                }
+                                value={name}
+                                onChange={(evt) => {
+                                  setName(evt.target.value);
+                                }}
+                              />
+                            </Fragment>
+                          ) : (
+                            <Fragment>
+                              <span>
+                                Group : {name ? name : <i>No Name</i>}
+                              </span>
+                              <EditIcon
+                                className="MuiButtonLike GroupEditName"
+                                onClick={() => {
+                                  setEditName(true);
+                                }}
+                              />
+                            </Fragment>
+                          )}
+                          <div className="Separator" />
+                          {itemSelected.length > 0 ? (
+                            <span className="ItemSelectedInfo">
+                              {itemSelected.length} selected
+                              <Button
+                                size={"small"}
+                                variant="text"
+                                onClick={handleRemoveItemsClick}
+                              >
+                                <DeleteOutlineIcon fontSize={"small"} />
                               </Button>
-                            </span> : ''
-                          }
-                          <div className='AddButton MuiButtonLike'
-                               onClick={() => {
-                                 addLayerInGroup(groupName)
-                               }}>
-                            <AddCircleIcon/>{"Add To Group"}
+                            </span>
+                          ) : (
+                            ""
+                          )}
+                          <div
+                            className="AddButton MuiButtonLike"
+                            onClick={() => {
+                              addLayerInGroup(groupName);
+                            }}
+                          >
+                            <AddCircleIcon />
+                            {"Add To Group"}
                           </div>
-                          <div className='AddButton MuiButtonLike'
-                               onClick={() => {
-                                 removeGroup(name)
-                               }}>
-                            <RemoveCircleIcon/>{"Remove Group"}
+                          <div
+                            className="AddButton MuiButtonLike"
+                            onClick={() => {
+                              removeGroup(name);
+                            }}
+                          >
+                            <RemoveCircleIcon />
+                            {"Remove Group"}
                           </div>
-                        </div> : ""
-                    }
+                        </div>
+                      ) : (
+                        ""
+                      )}
+                    </td>
+                  </SortableItem>
+                );
+              }
+              /** ----------------------------------------------------  **/
+              /** FOR GROUP MEMBERS **/
+              return (
+                <SortableItem key={item} id={item}>
+                  {selectable ? (
+                    <td width={1}>
+                      <Checkbox
+                        onClick={(e) => selectItem(item)}
+                        checked={itemSelected.indexOf(item) >= 0}
+                      />
+                    </td>
+                  ) : null}
+                  <td title={layer.name}>
+                    <div className="DragDropItem-Name">
+                      {layer.name}
+                      {layer.nameOtherElmt ? layer.nameOtherElmt : ""}
+                    </div>
                   </td>
-                </SortableItem>
-              )
-            }
-            /** ----------------------------------------------------  **/
-            /** FOR GROUP MEMBERS **/
-            return (
-              <SortableItem key={item} id={item}>
-                {selectable ?
-                  <td width={1}>
-                    <Checkbox onClick={(e) => selectItem(item)}
-                              checked={itemSelected.indexOf(item) >= 0}/>
-                  </td> : null}
-                <td title={layer.name}>
-                  <div className='DragDropItem-Name'>
-                    {layer.name}
-                    {layer.nameOtherElmt ? layer.nameOtherElmt : ""}
-                  </div>
-                </td>
-                <td title={layer.description}>
-                  <div className='DragDropItem-Description'>
-                    {layer.description}
-                  </div>
-                </td>
-                {
-                  otherActionsFunction ?
-                    <td className='OtherActionFunctions'>
-                      {
-                        otherActionsFunction(layer)
-                      }
-                    </td> : ''
-                }
-                <td className='VisibilityAction'>
-                  {
-                    layer.visible_by_default ?
+                  <td title={layer.description}>
+                    <div className="DragDropItem-Description">
+                      {layer.description}
+                    </div>
+                  </td>
+                  {otherActionsFunction ? (
+                    <td className="OtherActions">
+                      {otherActionsFunction(layer)}
+                    </td>
+                  ) : (
+                    ""
+                  )}
+                  <td className="VisibilityAction">
+                    {layer.visible_by_default ? (
                       <VisibilityIcon
-                        className='MuiButtonLike'
+                        className="MuiButtonLike"
                         onClick={() => {
                           layer.visible_by_default = false;
                           changeLayer(layer);
-                        }}/> :
+                        }}
+                      />
+                    ) : (
                       <VisibilityOffIcon
-                        className='MuiButtonLike VisibilityOff'
+                        className="MuiButtonLike VisibilityOff"
                         onClick={() => {
                           layer.visible_by_default = true;
                           changeLayer(layer);
-                        }}/>
-                  }
-                </td>
-                {
-                  editLayerInGroup ?
-                    <td className='RemoveAction'>
-                      <EditIcon className='MuiButtonLike' onClick={() => {
-                        editLayerInGroup(layer)
-                      }}/>
-                    </td> : ''
-                }
-                {!selectable ?
-                  <td className='RemoveAction'>
-                    <RemoveCircleIcon className='MuiButtonLike'
-                                      onClick={() => {
-                                        removeLayer(layer)
-                                      }}/>
-                  </td> : null}
-              </SortableItem>
-            )
-          }) : <SortableItem
-            key={-1 * groupIdx} id={-1 * groupIdx}
-            isDropArea={true}>
-            <td colSpan={6} className='DropArea'>Drop Here</td>
-          </SortableItem>
-        }
-      </SortableContext>
+                        }}
+                      />
+                    )}
+                  </td>
+                  {editLayerInGroup ? (
+                    <td className="RemoveAction">
+                      <EditIcon
+                        className="MuiButtonLike"
+                        onClick={() => {
+                          editLayerInGroup(layer);
+                        }}
+                      />
+                    </td>
+                  ) : (
+                    ""
+                  )}
+                  {!selectable ? (
+                    <td className="RemoveAction">
+                      <RemoveCircleIcon
+                        className="MuiButtonLike"
+                        onClick={() => {
+                          removeLayer(layer);
+                        }}
+                      />
+                    </td>
+                  ) : null}
+                </SortableItem>
+              );
+            })
+          ) : (
+            <SortableItem
+              key={-1 * groupIdx}
+              id={-1 * groupIdx}
+              isDropArea={true}
+            >
+              <td colSpan={6} className="DropArea">
+                Drop Here
+              </td>
+            </SortableItem>
+          )}
+        </SortableContext>
       </tbody>
     </Fragment>
   );
-};
-
+}

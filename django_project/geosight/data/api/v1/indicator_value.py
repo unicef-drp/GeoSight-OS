@@ -25,14 +25,51 @@ from rest_framework.response import Response
 class IndicatorValueApiUtilities:
     """Indicator value api utilities."""
 
+    def _set_request(self):  # noqa DOC110, DOC103
+        """
+        Set request query parameters from POST data.
+
+        Copies data from the POST body (`self.request.data`) into
+        the GET query parameters (`self.request.GET`), allowing
+        uniform access to parameters regardless of HTTP method.
+
+        :return: None
+        """
+        self.request.GET = self.request.GET.copy()
+        data = self.request.data.copy()
+        for key, value in data.items():
+            self.request.GET[key] = value
+
     def get_queryset(self):
-        """Queryset."""
+        """
+        Return the base queryset for this view.
+
+        This method must be overridden in subclasses to provide the set of
+        objects that the view will operate on. By default, it raises
+        :class:`NotImplementedError` to enforce explicit definition.
+
+        :raises NotImplementedError:
+            If the method is not overridden in a subclass.
+        """
         raise NotImplementedError()
 
     @swagger_auto_schema(auto_schema=None)
     @action(detail=False, methods=['get'])
     def ids(self, request):
-        """Get ids of data."""
+        """
+        Retrieve the list of record IDs.
+
+        This endpoint returns the primary key (``id``) values of all objects
+        in the queryset.
+
+        :param request: The HTTP request object.
+        :type request: rest_framework.request.Request
+
+        :return: A list of integer IDs.
+        :rtype: rest_framework.response.Response
+
+        :status 200: Successfully returns the list of IDs.
+        """
         return Response(
             self.get_queryset().values_list('id', flat=True)
         )
@@ -40,7 +77,20 @@ class IndicatorValueApiUtilities:
     @swagger_auto_schema(auto_schema=None)
     @action(detail=False, methods=['get'])
     def values_string(self, request):
-        """Get value list of string of data."""
+        """
+        Retrieve the distinct list of string values.
+
+        This endpoint returns a sorted list of unique ``value_str`` entries
+        from the queryset where ``value_str`` is not null.
+
+        :param request: The HTTP request object.
+        :type request: rest_framework.request.Request
+
+        :return: A list of distinct string values.
+        :rtype: rest_framework.response.Response
+
+        :status 200: Successfully returns the list of string values.
+        """
         return Response(
             self.get_queryset().filter(value_str__isnull=False).values_list(
                 'value_str', flat=True
@@ -50,7 +100,37 @@ class IndicatorValueApiUtilities:
     @swagger_auto_schema(auto_schema=None)
     @action(detail=False, methods=['get'])
     def values(self, request):
-        """Get values of data."""
+        """
+        Retrieve raw values of data with optional frequency-based grouping.
+
+        By default, the response includes the fields:
+        ``date``, ``value``, ``value_str``, ``entity_id``,
+        and ``indicator_id``.
+        The result set can be customized by passing the ``fields``
+        query parameter,
+        and can be grouped by ``daily``, ``monthly``, or ``yearly`` frequency.
+
+        :param request: The HTTP request object.
+        :type request: rest_framework.request.Request
+
+        :query string fields:
+            Comma-separated list of fields to include in the response.
+            Defaults to ``date,value,value_str,entity_id,indicator_id``.
+        :query string frequency:
+            Optional frequency granularity for grouping.
+            Valid values are ``daily``, ``monthly``, or ``yearly``.
+        :query string sort:
+            Comma-separated list of fields to sort by.
+            Defaults to ``-date`` if not provided.
+
+        :return:
+            A list of dictionaries containing the requested fields, optionally
+            grouped and aggregated by frequency.
+        :rtype: rest_framework.response.Response
+
+        :status 200: Successfully returns the data values.
+        :status 400: If an invalid ``frequency`` is provided.
+        """
         query = self.get_queryset()
 
         fields = request.GET.get(
@@ -105,9 +185,26 @@ class IndicatorValueApiUtilities:
     @swagger_auto_schema(auto_schema=None)
     @action(detail=False, methods=['get'])
     def statistic(self, request):
-        """Get statistic of data.
+        """
+        Retrieve statistical aggregations of the data.
 
-        It returns {min, max, avg}
+        This endpoint computes one or more aggregate values
+        (``min``, ``max``, ``avg``)
+        over the queryset returned by :meth:`get_queryset`.
+
+        :param request: The HTTP request object.
+        :type request: rest_framework.request.Request
+
+        :query string keys:
+            Comma-separated list of aggregation functions to apply.
+            Valid values are ``min``, ``max``, and ``avg``.
+            Defaults to ``min,max,avg``.
+
+        :return: A JSON response containing the requested statistics.
+        :rtype: rest_framework.response.Response
+
+        :status 200: Successfully returns the requested aggregations.
+        :status 400: If ``keys`` is missing, empty, or contains invalid values.
         """
         statistic_keys = ['min', 'max', 'avg']
         keys = request.GET.get(

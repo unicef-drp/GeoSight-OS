@@ -42,12 +42,18 @@ class DashboardAdminViewTest(BaseViewTest.TestCase):
     data = {
         "reference_layer": "AAAA",
         "indicator_layers": [],
-        "indicator_layers_structure": {},
+        "indicator_layers_structure": {
+            'children': []
+        },
         "indicators": [],
         "basemaps_layers": [],
-        "basemaps_layers_structure": {},
+        "basemaps_layers_structure": {
+            'children': []
+        },
         "context_layers": [],
-        "context_layers_structure": {},
+        "context_layers_structure": {
+            'children': []
+        },
         "extent": [
             0,
             0,

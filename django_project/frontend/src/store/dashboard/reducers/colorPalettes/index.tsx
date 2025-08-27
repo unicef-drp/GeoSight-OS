@@ -13,23 +13,24 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React from 'react';
-
-import { DEFINITION } from "../index"
-import WidgetSelectionMember from "../WidgetSelectionMember"
+import { APIReducer } from "../../../reducers_api";
+import { ColorPalette } from "../../../../types/Color";
 
 /**
- * Widget Selection Member for Summary.
- * @param {function} onClick When element clicked
+ * RELATED_TABLE_DATA reducer
  */
-export default function SummaryMember({ onClick }) {
-  return <WidgetSelectionMember
-    title="Summary Widget"
-    description="Summarize all values to show a single number."
-    onClick={() => {
-      onClick({
-        "type": DEFINITION.WidgetType.SUMMARY_WIDGET,
-      })
-    }}
-  />
+
+export const ACTION_NAME = "COLOR_PALETTE_REQUEST";
+
+const initialState: ColorPalette[] | null = null;
+export default function ColorPaletteReducer(state = initialState, action: any) {
+  if (action.name === ACTION_NAME) {
+    switch (action.type) {
+      default: {
+        // @ts-ignore
+        return APIReducer(state, action, ACTION_NAME).data;
+      }
+    }
+  }
+  return state;
 }

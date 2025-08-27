@@ -26,8 +26,9 @@ import { Variables } from "../../utils/Variables";
 import { Feature } from "geojson";
 import { fetchFromAPIValues } from "./fetchFromAPIValues";
 import Tooltip from "@mui/material/Tooltip";
-import { getAreaDecimalLength, numberWithCommas } from "../../utils/main";
+import { getAreaDecimalLength } from "../../utils/main";
 import { ContextLayer } from "../../types/ContextLayer";
+import { formatNumber } from "../../utils/Utilities";
 
 import './style.scss';
 
@@ -58,7 +59,7 @@ export const ZonalAnalysisResult = forwardRef((
         shownValue = value
       }
     } else if (![null, NaN].includes(value as any)) {
-      shownValue = numberWithCommas(parseFloat(value), getAreaDecimalLength(parseFloat(value)))
+      shownValue = formatNumber(parseFloat(value), getAreaDecimalLength(parseFloat(value)))
     }
 
     useEffect(() => {

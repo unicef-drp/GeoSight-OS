@@ -46,7 +46,7 @@ import {
 import { ContextLayer } from "../../types/ContextLayer";
 import { DashboardTool } from "../../store/dashboard/reducers/dashboardTool";
 import { ZonalAnalysisResult } from "./Result";
-import { dictDeepCopy, numberWithCommas } from "../../utils/main";
+import { dictDeepCopy } from "../../utils/main";
 
 import {
   addClickEvent,
@@ -60,6 +60,7 @@ import {
   REFERENCE_LAYER_ID_KEY
 } from "../../pages/Dashboard/MapLibre/Layers/ReferenceLayer";
 import CircularProgress from "@mui/material/CircularProgress";
+import { formatNumber } from "../../utils/Utilities";
 
 import './style.scss';
 
@@ -334,19 +335,19 @@ export const ZonalAnalysisTool = forwardRef((
       information = draw.selectedInformation(config.buffer, config.selectionMode === SELECTION_MODE.MANUAL)
       if (information) {
         if (information.area < 10000) {
-          area = `${numberWithCommas(information.area, 2)} m2`;
+          area = `${formatNumber(information.area, 2)} m2`;
         } else if (information.area < 1000000) {
-          area = `${numberWithCommas(information.area / 1000, 2)} ha`;
+          area = `${formatNumber(information.area / 1000, 2)} ha`;
         } else {
-          area = `${numberWithCommas(information.area / 1000000, 2)} km2`;
+          area = `${formatNumber(information.area / 1000000, 2)} km2`;
         }
         area = `${area} (${information.count} feature${information.count > 1 ? 's' : ''})`
 
         if (information.lengthMeters < 1000) {
-          perimeter = `${numberWithCommas(information.lengthMeters, 2)} m ${information.lengthTerm}`;
+          perimeter = `${formatNumber(information.lengthMeters, 2)} m ${information.lengthTerm}`;
         } else {
-          perimeter = `${numberWithCommas(information.lengthMeters / 1000, 2)} km
-          (${numberWithCommas(information.lengthMiles, 2)} mi) ${information.lengthTerm}`;
+          perimeter = `${formatNumber(information.lengthMeters / 1000, 2)} km
+          (${formatNumber(information.lengthMiles, 2)} mi) ${information.lengthTerm}`;
         }
       }
     }

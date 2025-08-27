@@ -70,18 +70,35 @@ test.describe('Create project from dataset', () => {
     await page.getByRole('button').nth(2).click();
     await page.getByRole('button', { name: 'Apply Changes' }).click();
 
-    // Widgets
+    // Create widgets
     await page.getByText('Widgets').click();
+    // Widget 1
     await page.getByRole('button', { name: 'Add Widget' }).click();
-    await page.getByText('Summary WidgetSummarize all').click();
-    await page.getByPlaceholder('Widget name').fill('Widget 1');
-    await page.getByText('Indicator', { exact: true }).click();
-    await page.getByRole('option', { name: 'Indicator', exact: true }).click();
-    await page.getByRole('combobox').nth(1).click();
-    await page.getByRole('option', { name: 'Sample Indicator A' }).click();
-    await page.getByRole('combobox').nth(3).click();
-    await page.getByRole('option', { name: 'value' }).click();
-    await expect(page.locator('label').filter({ hasText: 'No filter (global latest' })).toBeDisabled();
+    await page.getByRole('textbox', { name: 'Widget name' }).fill('Widget 1');
+    await page.getByRole('textbox', { name: 'Widget description' }).fill('Widget 1 description');
+    await page.getByText('None').click();
+    await page.getByText('Sync with the current map').first().click();
+    await page.getByText('Sync with the current map').nth(1).click();
+    await page.getByRole('button', { name: 'Apply' }).click();
+
+    // Widget 2
+    await page.getByRole('button', { name: 'Add Widget' }).click();
+    await page.getByRole('textbox', { name: 'Widget name' }).fill('Widget 2');
+    await page.getByText('MAX').click();
+    await page.getByText('None').click();
+    await page.getByText('Sync with the current map').first().click();
+    await page.getByText('Sync with the current map').nth(1).click();
+    await page.getByRole('button', { name: 'Apply' }).click();
+
+    // Widget 3
+    await page.getByRole('button', { name: 'Add Widget' }).click();
+    await page.getByRole('textbox', { name: 'Widget name' }).fill('Widget 3');
+    await page.locator('span').getByText('Geographical units', { exact: true }).click();
+    await page.locator('span').filter({ hasText: /^Name$/ }).click();
+    await page.locator('label').filter({ hasText: 'Top N' }).getByTestId('CheckBoxOutlineBlankIcon').click();
+    await page.locator('div').filter({ hasText: /^ValueNameCodeAscendingDescendingTop N$/ }).getByRole('spinbutton').fill('2');
+    await page.getByText('Sync with the current map').nth(1).click();
+    await page.getByText('Sync with the current map').first().click();
     await page.getByRole('button', { name: 'Apply' }).click();
 
     // Save
@@ -101,6 +118,26 @@ test.describe('Create project from dataset', () => {
     await expect(page.locator('.MapLegendSectionTitle')).toContainText(layer1);
     await expect(page.getByLabel(layer1)).toBeChecked();
     await expect(page.getByLabel(layer2)).not.toBeChecked();
+
+    // Check widgets
+    await expect(page.locator('.widget__title').nth(0)).toContainText('Widget 1');
+    await expect(page.locator('.widget__title').nth(1)).toContainText('Widget 2');
+    await expect(page.locator('.widget__title').nth(2)).toContainText('Widget 3');
+    await expect(page.locator('.widget__description').nth(0)).toContainText('Widget 1 description');
+    await expect(page.locator('.widget__description').nth(1)).not.toBeVisible();
+
+    // Widget 1
+    await expect(page.locator('.widget__content').nth(0)).toContainText('895');
+
+    // Widget 2
+    await expect(page.locator('.widget__content').nth(1)).toContainText('96');
+
+    // Widget 3
+    await expect(page.locator('.widget__content').nth(2).locator('tbody tr')).toHaveCount(2);
+    await expect(page.locator('.widget__content').nth(2).locator('tbody tr').nth(0).locator('td').nth(0)).toContainText('Awdal');
+    await expect(page.locator('.widget__content').nth(2).locator('tbody tr').nth(0).locator('td').nth(1)).toContainText('61');
+    await expect(page.locator('.widget__content').nth(2).locator('tbody tr').nth(1).locator('td').nth(0)).toContainText('Bakool');
+    await expect(page.locator('.widget__content').nth(2).locator('tbody tr').nth(1).locator('td').nth(1)).toContainText('78');
 
     // Because turn on Last Know Value, the button is hidden
     await expect(page.getByTitle('Show global time configuration')).toBeHidden();

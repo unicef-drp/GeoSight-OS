@@ -13,19 +13,27 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React from 'react';
-import App, { render } from '../../app';
-import { store } from '../../store/dashboard';
+import React, { useEffect } from "react";
+import App, { render } from "../../app";
+import { Actions, store } from "../../store/dashboard";
 
-import Dashboard from '../Dashboard'
-
+import Dashboard from "../Dashboard";
+import { useDispatch } from "react-redux";
 
 export default function DashboardPage() {
+  const dispatch = useDispatch();
+
+  // Fetch some default data
+  useEffect(() => {
+    // Color palette fetch
+    dispatch(Actions.ColorPalettes.fetch(dispatch));
+  }, []);
+
   return (
     <App>
-      <Dashboard/>
+      <Dashboard />
     </App>
   );
 }
 
-render(DashboardPage, store)
+render(DashboardPage, store);
