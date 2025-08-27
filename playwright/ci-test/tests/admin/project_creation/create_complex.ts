@@ -148,6 +148,11 @@ test.describe('Create complex project', () => {
     await page.getByRole('option', { name: 'Dynamic quantitative style.' }).click();
     await page.getByRole('button', { name: 'Apply Changes' }).click();
 
+    // Check delete
+    await page.locator('.IndicatorLayers .SortableTree .MuiCheckbox-root').first().click();
+    await expect(page.locator('.SelectedContainer')).toContainText('1 selected');
+
+
     // Add pins layer
     await page.getByRole('button', { name: 'Add Indicator Layer' }).click();
     await page.getByText('Multi Indicators LayerSelect').click();
@@ -200,6 +205,10 @@ test.describe('Create complex project', () => {
     await page.getByText('Sync with the current map').nth(1).click();
     await page.getByText('Sync with the current map').first().click();
     await page.getByRole('button', { name: 'Apply' }).click();
+
+    // Check delete
+    await page.locator('.Widgets .SortableTree .MuiCheckbox-root').first().click();
+    await expect(page.locator('.SelectedContainer')).toContainText('1 selected');
 
     // Update tools
     await page.locator('.TabPrimary').getByText('Tools').click();
