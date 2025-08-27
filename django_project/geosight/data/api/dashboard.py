@@ -47,10 +47,25 @@ CREATE_SLUG = ':CREATE'
 
 
 class DashboardListAPI(APIView):
-    """Return DashboardLayer list."""
+    """
+    API view for listing and deleting dashboards.
+
+    Provides:
+
+    * **GET** – Return a list of dashboards accessible to the user.
+    * **DELETE** – Delete dashboards by their slugs.
+    """
 
     def get(self, request):
-        """Return DashboardLayer list."""
+        """
+        Retrieve the list of dashboards.
+
+        :param request: HTTP request object.
+        :type request: rest_framework.request.Request
+        :return: A list of dashboards serialized using
+            :class:`DashboardBasicSerializer`.
+        :rtype: rest_framework.response.Response
+        """
         return Response(
             DashboardBasicSerializer(
                 Dashboard.permissions.list(request.user).order_by('name'),
@@ -59,7 +74,15 @@ class DashboardListAPI(APIView):
         )
 
     def delete(self, request):
-        """Delete objects."""
+        """
+        Delete dashboards by their slugs.
+
+        :param request: HTTP request containing a JSON list of dashboard slugs
+            in ``ids``.
+        :type request: rest_framework.request.Request
+        :return: Confirmation message.
+        :rtype: rest_framework.response.Response
+        """
         ids = json.loads(request.data['ids'])
         for obj in Dashboard.permissions.delete(request.user).filter(
                 slug__in=ids):
@@ -68,12 +91,21 @@ class DashboardListAPI(APIView):
 
 
 class DashboardDetail(APIView):
-    """Return all dashboard data."""
+    """API view for retrieving or deleting a single dashboard."""
 
     permission_classes = (IsAuthenticated,)
 
     def delete(self, request, slug):
-        """Delete an basemap."""
+        """
+        Delete a dashboard.
+
+        :param request: HTTP request object.
+        :type request: rest_framework.request.Request
+        :param slug: Unique identifier of the dashboard.
+        :type slug: str
+        :return: Confirmation message.
+        :rtype: rest_framework.response.Response
+        """
         dashboard = get_object_or_404(Dashboard, slug=slug)
         delete_permission_resource(dashboard, request.user)
         dashboard.delete()
@@ -81,12 +113,26 @@ class DashboardDetail(APIView):
 
 
 class DashboardDuplicate(APIView, DashboardCreateViewBase):
-    """Return all dashboard data."""
+    """
+    API view for duplicating a dashboard.
+
+    Creates a new dashboard by cloning an existing one, ensuring unique
+    names and slugs.
+    """
 
     permission_classes = (IsAuthenticated,)
 
     def update_name(self, name, counter=1):
-        """Get name of data."""
+        """
+        Generate a unique dashboard name.
+
+        :param name: Original name.
+        :type name: str
+        :param counter: Recursion counter for uniqueness.
+        :type counter: int
+        :return: A unique dashboard name.
+        :rtype: str
+        """
         new_name = f'{name} {counter}'
         try:
             Dashboard.objects.get(name=new_name)
@@ -95,7 +141,16 @@ class DashboardDuplicate(APIView, DashboardCreateViewBase):
             return new_name
 
     def update_slug(self, slug, counter=1):
-        """Get slug of data."""
+        """
+        Generate a unique dashboard slug.
+
+        :param slug: Original slug.
+        :type slug: str
+        :param counter: Recursion counter for uniqueness.
+        :type counter: int
+        :return: A unique dashboard slug.
+        :rtype: str
+        """
         new_slug = f'{slug}-{counter}'
         try:
             Dashboard.objects.get(slug=new_slug)
@@ -104,7 +159,16 @@ class DashboardDuplicate(APIView, DashboardCreateViewBase):
             return new_slug
 
     def post(self, request, slug):
-        """Delete an basemap."""
+        """
+        Duplicate a dashboard.
+
+        :param request: HTTP request object.
+        :type request: rest_framework.request.Request
+        :param slug: Slug of the dashboard to duplicate.
+        :type slug: str
+        :return: The newly created dashboard.
+        :rtype: rest_framework.response.Response
+        """
         dashboard = get_object_or_404(Dashboard, slug=slug)
         delete_permission_resource(dashboard, request.user)
 
@@ -125,10 +189,30 @@ class DashboardDuplicate(APIView, DashboardCreateViewBase):
 
 
 class DashboardData(APIView):
-    """Return all dashboard data."""
+    """
+    API view for retrieving dashboard data.
+
+    Handles:
+
+    * Returning cached dashboard data when available.
+    * Creating a temporary dashboard for `:CREATE` slug with optional defaults.
+    """
 
     def get(self, request, slug):
-        """Return all context analysis data."""
+        """
+        Retrieve dashboard data.
+
+        If ``slug`` equals ``:CREATE``, returns a new dashboard object with
+        defaults applied. Otherwise, retrieves the existing dashboard and
+        caches the serialized response.
+
+        :param request: HTTP request object.
+        :type request: rest_framework.request.Request
+        :param slug: Slug of the dashboard or ``:CREATE`` for new dashboards.
+        :type slug: str
+        :return: Dashboard data serialized with :class:`DashboardSerializer`.
+        :rtype: rest_framework.response.Response
+        """
         if slug != CREATE_SLUG:
             dashboard = get_object_or_404(Dashboard, slug=slug)
             read_permission_resource(dashboard, request.user)
