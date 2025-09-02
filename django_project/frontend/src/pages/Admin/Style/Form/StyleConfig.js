@@ -115,9 +115,7 @@ export default function StyleConfig({
           >
             <div className="RuleTable-Title">Style</div>
             <StyleRules
-              inputStyleRules={dictDeepCopy(
-                defaultStyleRules ? defaultStyleRules : {},
-              )}
+              inputStyleRules={dictDeepCopy(defaultStyleRules)}
               valueType={data.value_type}
               valuesUrl={valuesUrl}
               defaultCodeChoices={codelist}

@@ -37,9 +37,9 @@ import LabelForm from "../../../pages/Admin/Indicator/Form/LabelForm";
 import PopupConfigForm
   from "../../../pages/Admin/Dashboard/Form/IndicatorLayers/PopupConfigForm";
 import { IndicatorLayerConfig } from "../../../types/IndicatorLayer";
+import { Logger } from "../../../utils/logger";
 
 import "./Config.scss";
-import { Logger } from "../../../utils/logger";
 
 export interface Props {
   config: any;
@@ -84,7 +84,7 @@ export const CompositeIndexLayerConfig = forwardRef(
     const apply = () => {
       setConfig(data);
       onClose();
-      Logger.log("COMPOSITE_INDEX_LAYER_CONFIG: ", JSON.stringify(data));
+      Logger.log("COMPOSITE_INDEX_LAYER_CONFIG:", JSON.stringify(data));
     };
 
     return (
@@ -123,6 +123,7 @@ export const CompositeIndexLayerConfig = forwardRef(
                       setData={(newData: any) => {
                         updateData(newData);
                       }}
+                      defaultStyleRules={data.style ? data.style : []}
                     />
                   ),
                   Label: (

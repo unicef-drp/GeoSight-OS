@@ -1,6 +1,7 @@
 import { DatasetView } from "./DatasetView";
 import { Indicator } from "./Indicator";
 import { RelatedTable } from "./RelatedTable";
+import { Style } from "./Style";
 
 /**
  * GeoSight is UNICEF's geospatial web-based business intelligence platform.
@@ -23,17 +24,46 @@ export interface LevelConfig {
   referenceLayer?: DatasetView;
 }
 
+export interface DataField {
+  name: string;
+  alias: string;
+  visible: boolean;
+  type: string;
+  order: number;
+}
+
+export interface LabelConfigStyle {
+  minZoom: number;
+  maxZoom: number;
+  fontFamily: string;
+  fontSize: number;
+  fontColor: string;
+  fontWeight: number;
+  strokeColor: string;
+  strokeWeight: number;
+  haloColor: string;
+  haloWeight: number;
+}
+
+export interface LabelConfig {
+  text: string;
+  style: LabelConfigStyle;
+}
+
 export interface IndicatorLayerConfig {
   config: any;
   type: string;
 
+  // style
+  style?: Style[];
+
   // Label
-  label_config?: any;
+  label_config?: LabelConfig;
 
   // Popup
   popup_template?: string;
   popup_type?: string;
-  data_fields?: any;
+  data_fields?: DataField[];
 }
 
 export interface IndicatorLayer extends IndicatorLayerConfig {
