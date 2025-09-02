@@ -24,8 +24,10 @@ import {
   VisibilityIcon,
   VisibilityOffIcon,
 } from "../../../../../components/Icons";
+import CompositeIndexLayerConfig from "../../../../../components/IndicatorLayer/CompositeIndexLayer/Config";
 
 import "./style.scss";
+import EditIcon from "@mui/icons-material/Edit";
 
 export const columns = [
   {
@@ -89,19 +91,43 @@ export default function ToolsForm() {
         initColumns={columns}
         hasGroup={false}
         otherActionsFunction={(data) => {
-          if (data.name === Variables.DASHBOARD.TOOL.ZONAL_ANALYSIS) {
-            return (
-              <ZonalAnalysisConfiguration
-                config={data.config}
-                setConfig={(config) => {
-                  dispatch(
-                    Actions.DashboardTool.update({ ...data, config: config }),
-                  );
-                }}
-              />
-            );
+          switch (data.name) {
+            case Variables.DASHBOARD.TOOL.ZONAL_ANALYSIS:
+              return (
+                <ZonalAnalysisConfiguration
+                  config={data.config}
+                  setConfig={(config) => {
+                    dispatch(
+                      Actions.DashboardTool.update({
+                        ...data,
+                        config: config,
+                      }),
+                    );
+                  }}
+                />
+              );
+            case Variables.DASHBOARD.TOOL.COMPOSITE_INDEX_LAYER:
+              return (
+                <CompositeIndexLayerConfig
+                  config={data.config}
+                  setConfig={(config) => {
+                    dispatch(
+                      Actions.DashboardTool.update({
+                        ...data,
+                        config: config,
+                      }),
+                    );
+                  }}
+                  icon={
+                    <EditIcon
+                      style={{ marginRight: "1rem", cursor: "pointer" }}
+                    />
+                  }
+                />
+              );
+            default:
+              return null;
           }
-          return null;
         }}
       />
     </>

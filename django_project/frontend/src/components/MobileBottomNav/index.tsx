@@ -38,7 +38,7 @@ import "./style.scss";
 
 /** MobileBottomNav **/
 export default function MobileBottomNav() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [activePanel, setActivePanel] = useState("Map");
 
   const indicatorLayerVisible = useSelector(isIndicatorLayerContentVisible());
@@ -58,12 +58,12 @@ export default function MobileBottomNav() {
     navItems.push({ key: t("Filter"), icon: <FilterIcon /> });
   }
   navItems.push({ key: t("Widget"), icon: <GraphIcon /> });
-  const className = (key) => {
+  const className = (key: string) => {
     return "Mobile_" + key.replace(" ", "_");
   };
 
   // Emit a custom event for panel switching (for integration)
-  const handleNavClick = (key) => {
+  const handleNavClick = (key: string) => {
     setActivePanel(key);
     navItems.map((item) => {
       $("html").removeClass(className(item.key));

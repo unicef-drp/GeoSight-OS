@@ -18,29 +18,39 @@ import { RelatedTable } from "./RelatedTable";
  */
 
 export interface LevelConfig {
-  levels: number[],
-  default_level: number,
-  referenceLayer?: DatasetView
+  levels: number[];
+  default_level: number;
+  referenceLayer?: DatasetView;
 }
 
-export interface IndicatorLayer {
-  id: number,
-  description: string,
-  name: string,
-  level_config: LevelConfig,
-  visible_by_default: boolean,
-  last_update: string,
-  indicators: Indicator[],
-  type: string,
-  layer_type: string,
+export interface IndicatorLayerConfig {
+  config: any;
+  type: string;
 
-  related_table: RelatedTable,
-  related_tables: RelatedTable[],
+  // Label
+  label_config?: any;
 
-  config: any,
-  legend: string,
+  // Popup
+  popup_template?: string;
+  popup_type?: string;
+  data_fields?: any;
+}
+
+export interface IndicatorLayer extends IndicatorLayerConfig {
+  id: number;
+  description: string;
+  name: string;
+  level_config: LevelConfig;
+  visible_by_default: boolean;
+  last_update: string;
+  indicators: Indicator[];
+
+  related_table: RelatedTable;
+  related_tables: RelatedTable[];
+
+  legend: string;
 
   // TODO:
   //  We will remove this
-  error: string,
+  error: string;
 }
