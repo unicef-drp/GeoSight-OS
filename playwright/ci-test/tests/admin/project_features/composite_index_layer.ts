@@ -1,8 +1,9 @@
 import { expect, test } from '@playwright/test';
-
-// URL That we need to check
-const timeout = 2000;
-const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
+import {
+  deleteProject,
+  saveAsProject,
+  viewProject
+} from "../../utils/project";
 
 test.describe('Composite index layer', () => {
   test('Config tool', async ({ page }) => {
@@ -23,10 +24,25 @@ test.describe('Composite index layer', () => {
     });
 
     // --------------------------------------------------------------------
-    // Check filter is hidden or not
-    await page.goto('/admin/project/demo-geosight-project/edit');
+    // Check configuration
+    // --------------------------------------------------------------------
+    // Create project
+    // --------------------------------------------------------------------
+    const name = 'Demo GeoSight Project Composite Index Layer'
+    await saveAsProject(page, 'Demo GeoSight Project', name)
 
     await page.getByText('Tools').click();
+
+    const disable = await page
+      .getByRole('listitem')
+      .filter({ hasText: 'Composite index layer' })
+      .locator('.VisibilityIconOff')
+      .first()
+      .isVisible();
+    if (disable) {
+      await page.getByRole('listitem').filter({ hasText: 'Composite index layer' }).getByRole('img').click(); // Activate it
+    }
+
     await page.getByRole('listitem').filter({ hasText: 'Composite index layer' }).getByTestId('EditIcon').click();
     await page.getByRole('button', { name: 'Add New Rule' }).click();
     await page.locator('input[name="rule_name_0"]').fill('A');
@@ -51,5 +67,29 @@ test.describe('Composite index layer', () => {
     await page.getByRole('option', { name: 'Dynamic qualitative style.' }).click();
     await page.getByRole('button', { name: 'Apply Changes' }).click();
     await expect(onRun).toEqual(`{"data_fields":[{"name":"context.current.indicator.name","alias":"Indicator","visible":false,"type":"string","order":0},{"name":"context.current.indicator.value","alias":"Value","visible":true,"type":"string","order":1},{"name":"context.current.indicator.label","alias":"Label","visible":true,"type":"string","order":2},{"name":"context.current.indicator.time","alias":"Date","visible":true,"type":"string","order":3},{"name":"context.current.geometry_data.admin_level","alias":"Admin level","visible":true,"type":"string","order":4},{"name":"context.current.geometry_data.admin_level_name","alias":"Admin level name","visible":true,"type":"string","order":5},{"name":"context.current.geometry_data.concept_uuid","alias":"Concept uuid","visible":false,"type":"string","order":6},{"name":"context.current.geometry_data.geom_code","alias":"Geom code","visible":false,"type":"string","order":7},{"name":"context.current.geometry_data.name","alias":"Name","visible":false,"type":"string","order":8},{"name":"context.current.indicator.attributes","alias":"","visible":false,"type":"string","order":9}],"config":{},"type":"Composite Index","style":[{"id":1,"name":"A","rule":"x==0","color":"#000000","outline_color":"#FFFFFF","outline_size":0.5,"active":true},{"id":2,"name":"B","rule":"x==2","color":"#000000","outline_color":"#FFFFFF","outline_size":0.5,"active":true},{"id":-1,"name":"No data","rule":"No data","color":"#D8D8D8","outline_color":"#ffffff","outline_size":0.5,"active":false},{"id":0,"name":"Other data","rule":"Other data","color":"#A6A6A6","outline_color":"#ffffff","outline_size":0.5,"active":false}],"style_config":{"dynamic_classification":"Equidistant.","dynamic_class_num":7,"sync_outline":false,"sync_filter":false,"outline_color":"#FFFFFF","outline_size":0.5,"no_data_rule":{"id":0,"name":"No data","rule":"No data","color":"#D8D8D8","outline_color":"#ffffff","outline_size":0.5,"active":true},"color_palette":3},"style_type":"Dynamic qualitative style.","label_config":{"text":"{name}\\n{value}.round(3)","style":{"minZoom":0,"maxZoom":24,"fontFamily":"\\"Rubik\\", sans-serif","fontSize":13,"fontColor":"#000000","fontWeight":300,"strokeColor":"#FFFFFF","strokeWeight":0,"haloColor":"#FFFFFF","haloWeight":3}}}`)
+
+
+    // --------------------------------------------------------------------
+    // View the project
+    // --------------------------------------------------------------------
+    await viewProject(page, name)
+    await page.getByRole('button', { name: 'Close' }).click();
+
+    // Test composite and compare toggle each other
+    await expect(page.getByTitle('Activate composite index layer')).toBeVisible();
+    await expect(page.getByTitle('Turn on compare Layers')).toBeVisible();
+
+    await page.getByTitle('Activate composite index layer').click();
+    await expect(page.getByTitle('Deactivate composite index')).toBeVisible();
+    await expect(page.getByTitle('Turn on compare Layers')).toBeVisible();
+
+    await page.getByTitle('Turn on compare Layers').click();
+    await expect(page.getByTitle('Activate composite index layer')).toBeVisible();
+    await expect(page.getByTitle('Turn off compare Layers')).toBeVisible();
+
+    // --------------------------------------------------------------------
+    // Delete project
+    // --------------------------------------------------------------------
+    await deleteProject(page, name)
   })
 });

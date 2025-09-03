@@ -1,10 +1,7 @@
 import { expect, test } from '@playwright/test';
+import { deleteProject, saveAsProject } from "../../utils/project";
 
-// URL That we need to check
-const timeout = 2000;
-const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
-
-test.describe('View edit project widget', () => {
+test.describe('Project widget feature', () => {
   test('Edit widget', async ({ page }) => {
     let onRun = null
     let onFinish = null
@@ -35,7 +32,9 @@ test.describe('View edit project widget', () => {
 
     // --------------------------------------------------------------------
     // Check filter is hidden or not
-    await page.goto('/admin/project/demo-geosight-project/edit');
+    const name = 'Demo GeoSight Project Widget Feature'
+    await saveAsProject(page, 'Demo GeoSight Project', name)
+
     await page.getByText('Widgets (5)').click();
     await page.getByRole('button', { name: 'Add Widget' }).click();
     await expect(onRun).toEqual(`{"name":"","description":"","type":"GenericSummaryWidget","config":{"seriesType":"None","indicators":[],"indicatorsType":"Predefined list","indicatorsPaletteColor":0,"geographicalUnit":[],"geographicalUnitType":"Predefined list","geographicalUnitPaletteColor":0,"dateTimeType":"Sync with dashboard","dateTimeConfig":{"minDateFilter":null,"maxDateFilter":null,"interval":"Daily"},"aggregation":{"method":"SUM","decimalPlace":0,"useDecimalPlace":false,"useAutoUnits":false},"sort":{"field":"Value","method":"Ascending","topN":0,"useTopN":false}}}`)
@@ -62,5 +61,10 @@ test.describe('View edit project widget', () => {
     await page.locator('div').filter({ hasText: /^ValueNameCodeAscendingDescendingTop N$/ }).getByRole('spinbutton').click();
     await page.locator('div').filter({ hasText: /^ValueNameCodeAscendingDescendingTop N$/ }).getByRole('spinbutton').fill('3');
     await expect(onRun).toEqual(`{"name":"This is widget","description":"This is description","type":"GenericSummaryWidget","config":{"seriesType":"Indicators","indicators":[],"indicatorsType":"Predefined list","indicatorsPaletteColor":0,"geographicalUnit":[],"geographicalUnitType":"Predefined list","geographicalUnitPaletteColor":0,"dateTimeType":"Sync with dashboard","dateTimeConfig":{"minDateFilter":null,"maxDateFilter":null,"interval":"Daily"},"aggregation":{"method":"COUNT","decimalPlace":2,"useDecimalPlace":true,"useAutoUnits":true},"sort":{"field":"Code","method":"Descending","topN":3,"useTopN":true}}}`)
+
+    // --------------------------------------------------------------------
+    // Delete project
+    // --------------------------------------------------------------------
+    await deleteProject(page, name)
   })
 });

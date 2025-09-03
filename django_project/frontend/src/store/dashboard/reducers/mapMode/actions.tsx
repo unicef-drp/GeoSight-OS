@@ -15,10 +15,9 @@
 
 import {
   MAP_MODE_ACTION_NAME,
-  MAP_MODE_ACTION_TYPE_COMPARE_ACTIVE,
-  MAP_MODE_ACTION_TYPE_COMPARE_CHANGE,
-  MAP_MODE_ACTION_TYPE_COMPARE_INACTIVE,
-} from './index'
+  MAP_MODE_ACTION_TYPE_COMPARE,
+  MAP_MODE_ACTION_TYPE_COMPOSITE,
+} from "./index";
 
 /**
  * Change compare mode.
@@ -26,7 +25,7 @@ import {
 export function changeCompareMode() {
   return {
     name: MAP_MODE_ACTION_NAME,
-    type: MAP_MODE_ACTION_TYPE_COMPARE_CHANGE
+    type: MAP_MODE_ACTION_TYPE_COMPARE,
   };
 }
 
@@ -36,7 +35,8 @@ export function changeCompareMode() {
 export function activateCompare() {
   return {
     name: MAP_MODE_ACTION_NAME,
-    type: MAP_MODE_ACTION_TYPE_COMPARE_ACTIVE
+    type: MAP_MODE_ACTION_TYPE_COMPARE,
+    value: true,
   };
 }
 
@@ -46,10 +46,22 @@ export function activateCompare() {
 export function deactivateCompare() {
   return {
     name: MAP_MODE_ACTION_NAME,
-    type: MAP_MODE_ACTION_TYPE_COMPARE_INACTIVE
+    type: MAP_MODE_ACTION_TYPE_COMPARE,
+    value: false,
+  };
+}
+
+/**Toggle composite mode.*/
+export function toggleCompositeMode() {
+  return {
+    name: MAP_MODE_ACTION_NAME,
+    type: MAP_MODE_ACTION_TYPE_COMPOSITE,
   };
 }
 
 export default {
-  changeCompareMode, activateCompare, deactivateCompare
-}
+  changeCompareMode,
+  activateCompare,
+  deactivateCompare,
+  toggleCompositeMode,
+};
