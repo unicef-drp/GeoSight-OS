@@ -18,16 +18,11 @@ import json
 from abc import ABC
 
 from frontend.views._base import BaseView
-from geosight.data.models.code import CodeList
 from geosight.data.models.dashboard import DashboardGroup
 from geosight.data.models.dashboard.dashboard_widget import LayerUsed
 from geosight.data.models.indicator import (
     IndicatorTypeChoices
 )
-from geosight.data.models.style.indicator_style import (
-    IndicatorStyleTypeChoices
-)
-from geosight.data.serializer.code import CodeListSerializer
 
 
 class BaseDashboardView(ABC, BaseView):
@@ -46,9 +41,6 @@ class BaseDashboardView(ABC, BaseView):
                 name.isupper()
             },
         }
-        context['codelists'] = json.dumps(
-            CodeListSerializer(CodeList.objects.all(), many=True).data
-        )
         context['types'] = json.dumps(IndicatorTypeChoices)
         context['categories'] = json.dumps(
             list(
@@ -57,7 +49,6 @@ class BaseDashboardView(ABC, BaseView):
                     'name', flat=True)
             )
         )
-        context['styleTypes'] = json.dumps(IndicatorStyleTypeChoices)
         return context
 
     @property

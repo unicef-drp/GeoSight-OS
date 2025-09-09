@@ -21,15 +21,9 @@ from django.shortcuts import redirect, reverse, render
 from core.utils import string_is_true
 from frontend.views.admin._base import AdminBaseView
 from geosight.data.forms.indicator import IndicatorForm
-from geosight.data.models.code import CodeList
 from geosight.data.models.indicator import (
     Indicator, IndicatorRule, IndicatorTypeChoices
 )
-from geosight.data.models.style.base import DynamicClassificationTypeChoices
-from geosight.data.models.style.indicator_style import (
-    IndicatorStyleTypeChoices
-)
-from geosight.data.serializer.code import CodeListSerializer
 from geosight.permission.access import RoleCreatorRequiredMixin
 
 
@@ -80,14 +74,7 @@ class BaseIndicatorEditView(AdminBaseView):
                 'form': form,
                 'indicator_id': indicator.id,
                 'types': json.dumps(IndicatorTypeChoices),
-                'styleTypes': json.dumps(IndicatorStyleTypeChoices),
-                'dynamicClassification': json.dumps(
-                    DynamicClassificationTypeChoices
-                ),
                 'rules': json.dumps(indicator.rules_dict()),
-                'codelists': json.dumps(
-                    CodeListSerializer(CodeList.objects.all(), many=True).data
-                ),
                 'permission': json.dumps(permission)
             }
         )

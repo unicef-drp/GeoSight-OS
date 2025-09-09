@@ -23,7 +23,6 @@ from azure_auth.backends import AzureAuthRequiredMixin
 from frontend.views.dashboard._base import BaseDashboardView
 from geosight.data.forms.dashboard import DashboardForm
 from geosight.data.models.dashboard import Dashboard
-from geosight.data.models.style.base import DynamicClassificationTypeChoices
 from geosight.permission.access import (
     edit_permission_resource,
     RoleContributorRequiredMixin
@@ -72,9 +71,6 @@ class DashboardEditView(
         )
         edit_permission_resource(dashboard, self.request.user)
         context['dashboard'] = {'id': dashboard.slug}
-        context['dynamicClassification'] = json.dumps(
-            DynamicClassificationTypeChoices
-        )
         return context
 
     def post(self, request, slug, **kwargs):

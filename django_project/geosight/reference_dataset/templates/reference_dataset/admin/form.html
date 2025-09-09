@@ -25,8 +25,5 @@
           urls.api.permission = '{% url 'reference-datasets-permission-api' id %}'
         {% endif %}
       }
-
-      // If in batch or not
-      const batch = {% if batch %}true{% else %}null{% endif %};
     </script>
 {% endblock %}

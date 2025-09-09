@@ -44,6 +44,8 @@ export interface Props {
   maxWord: number;
   maxSelect: number;
   selectItem: (e: React.ChangeEvent<HTMLInputElement>) => void;
+
+  otherElement?: React.ReactNode;
 }
 
 export default function IndicatorLayer({
@@ -55,6 +57,7 @@ export default function IndicatorLayer({
   maxWord,
   selectItem,
   maxSelect,
+  otherElement = null,
 }: Props) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
@@ -62,7 +65,7 @@ export default function IndicatorLayer({
   // @ts-ignore
   const compositeMode = useSelector((state) => state.mapMode.compositeMode);
   const isDisabled =
-    disabled || (compositeMode && isEligibleForCompositeLayer(layer));
+    disabled || (compositeMode && !isEligibleForCompositeLayer(layer));
 
   // When the indicator layer type selected
   const IndicatorLayerTypeSelection = () => {
@@ -146,7 +149,6 @@ export default function IndicatorLayer({
                 isGroup={false}
               />
             }
-            {!isDisabled && <>{OtherData()}</>}
             {layer.type !== CompositeIndexLayerType && (
               // @ts-ignore
               <LayerDescription
@@ -154,6 +156,8 @@ export default function IndicatorLayer({
                 layer={{ ...layer, error: error ? error : layer.error }}
               />
             )}
+            {!isDisabled && <>{OtherData()}</>}
+            {otherElement}
           </span>
         }
       />

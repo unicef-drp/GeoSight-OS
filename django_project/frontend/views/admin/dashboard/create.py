@@ -24,7 +24,6 @@ from azure_auth.backends import AzureAuthRequiredMixin
 from frontend.views.dashboard._base import BaseDashboardView
 from geosight.data.forms.dashboard import DashboardForm
 from geosight.data.models.dashboard import Dashboard
-from geosight.data.models.style.base import DynamicClassificationTypeChoices
 from geosight.permission.access import RoleCreatorRequiredMixin
 
 
@@ -106,9 +105,6 @@ class DashboardCreateView(
         from geosight.data.api.dashboard import CREATE_SLUG
         context = super().get_context_data(**kwargs)
         context['dashboard'] = {'id': CREATE_SLUG}
-        context['dynamicClassification'] = json.dumps(
-            DynamicClassificationTypeChoices
-        )
         return context
 
     def post(self, request, **kwargs):

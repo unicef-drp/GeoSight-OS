@@ -104,7 +104,15 @@ export const CompositeIndexLayerConfig = forwardRef(
             {t("Composite index layer configuration")}
           </ModalHeader>
           <ModalContent className="Gray">
-            <div className="SaveButton-Section">
+            <div
+              className="SaveButton-Section"
+              style={{
+                marginBottom: "1rem",
+                marginRight: "1rem",
+                display: "flex",
+                flexDirection: "row-reverse",
+              }}
+            >
               <SaveButton
                 variant="primary"
                 text={"Apply Changes"}

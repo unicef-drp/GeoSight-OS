@@ -21,13 +21,8 @@ from django.shortcuts import redirect, reverse, render
 
 from frontend.views.admin._base import AdminBaseView
 from geosight.data.forms.style import StyleForm
-from geosight.data.models.code import CodeList
 from geosight.data.models.indicator import IndicatorTypeChoices
 from geosight.data.models.style import Style, StyleRule
-from geosight.data.models.style.base import (
-    StyleTypeChoices, DynamicClassificationTypeChoices
-)
-from geosight.data.serializer.code import CodeListSerializer
 from geosight.permission.access import RoleCreatorRequiredMixin
 
 User = get_user_model()
@@ -79,13 +74,6 @@ class BaseStyleEditingView(AdminBaseView):
                 'form': form,
                 'types': json.dumps(IndicatorTypeChoices),
                 'rules': json.dumps(self.style.rules_dict()),
-                'styleTypes': json.dumps(StyleTypeChoices),
-                'dynamicClassification': json.dumps(
-                    DynamicClassificationTypeChoices
-                ),
-                'codelists': json.dumps(
-                    CodeListSerializer(CodeList.objects.all(), many=True).data
-                ),
                 'permission': json.dumps(permission)
             }
         )

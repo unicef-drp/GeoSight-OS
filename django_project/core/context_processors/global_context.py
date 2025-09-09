@@ -22,6 +22,12 @@ from django.conf import settings
 from core.models.preferences import SitePreferences, SiteType
 from core.serializer.site_preferences import SitePreferencesSerializer
 from core.settings.utils import ABS_PATH
+from geosight.data.models.code import CodeList
+from geosight.data.models.style.base import (
+    StyleTypeChoices,
+    DynamicClassificationTypeChoices
+)
+from geosight.data.serializer.code import CodeListSerializer
 from geosight.georepo.request import GeorepoUrl
 
 
@@ -64,5 +70,13 @@ def global_context(request):
         'preferences_js': json.dumps(pref_data),
         'use_azure_auth': settings.USE_AZURE,
         'version': project_version(request),
-        'plugins': settings.PLUGINS
+        'plugins': settings.PLUGINS,
+        # For specific dashboard
+        'dynamic_classification': json.dumps(
+            DynamicClassificationTypeChoices
+        ),
+        'style_types': json.dumps(StyleTypeChoices),
+        'code_list': json.dumps(
+            CodeListSerializer(CodeList.objects.all(), many=True).data
+        ),
     }

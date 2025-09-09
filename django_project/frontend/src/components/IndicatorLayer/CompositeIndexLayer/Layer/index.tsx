@@ -17,21 +17,35 @@
    Composite Layer
    ========================================================================== */
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { TreeItem } from "@mui/x-tree-view/TreeItem";
+import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
 import {
   IndicatorLayer as IndicatorLayerType
 } from "../../../../types/IndicatorLayer";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import IndicatorLayer from "../../../Map/SidePanelTree/IndicatorLayer";
 import { CompositeIndexLayerType } from "../../../../utils/indicatorLayer";
+import { Actions } from "../../../../store/dashboard";
+import { CogIcon } from "../../../Icons";
+import { defaultCompositeIndexLayer } from "../variable";
 
 import "./style.scss";
+import { getDashboardTool } from "../../../../selectors/dashboard";
+import { Variables } from "../../../../utils/Variables";
+import CompositeIndexLayerConfig from "../Config";
 
 /** Composite index layer.*/
 export default function CompositeIndexLayer() {
+  const dispatch = useDispatch();
   // @ts-ignore
   const compositeMode = useSelector((state) => state.mapMode.compositeMode);
+  const tool = useSelector(
+    getDashboardTool(Variables.DASHBOARD.TOOL.COMPOSITE_INDEX_LAYER),
+  );
+  // @ts-ignore
+  const [data, setData] = useState<IndicatorLayerType>(tool.config);
+
   const layer: IndicatorLayerType = {
     id: -1000,
     name: CompositeIndexLayerType,
@@ -44,6 +58,18 @@ export default function CompositeIndexLayer() {
     error: "",
     config: {},
   };
+
+  /** Update data when opened **/
+  useEffect(() => {
+    if (tool.config) {
+      // @ts-ignore
+      setData(tool.config);
+    } else {
+      // @ts-ignore
+      setData(defaultCompositeIndexLayer());
+    }
+  }, [compositeMode]);
+
   if (!compositeMode) {
     return null;
   }
@@ -62,6 +88,29 @@ export default function CompositeIndexLayer() {
           selectItem={() => {}}
           maxWord={0}
           maxSelect={1}
+          otherElement={
+            <>
+              <CompositeIndexLayerConfig
+                config={data}
+                setConfig={(config) => {
+                  setData(config);
+                }}
+                icon={
+                  <CogIcon
+                    style={{
+                      width: "20px",
+                      height: "20px",
+                    }}
+                  />
+                }
+              />
+              <DoDisturbOnIcon
+                onClick={() => {
+                  dispatch(Actions.MapMode.toggleCompositeMode());
+                }}
+              />
+            </>
+          }
         />
       }
     />

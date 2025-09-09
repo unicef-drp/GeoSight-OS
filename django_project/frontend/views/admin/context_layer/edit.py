@@ -24,7 +24,6 @@ from frontend.views.admin.context_layer.create import (
 )
 from geosight.data.forms.context_layer import ContextLayerForm
 from geosight.data.models.context_layer import ContextLayer
-from geosight.data.models.style.base import DynamicClassificationTypeChoices
 from geosight.permission.access import (
     edit_permission_resource,
     RoleContributorRequiredMixin
@@ -72,10 +71,7 @@ class ContextLayerEditView(RoleContributorRequiredMixin, AdminBaseView):
                 'form': ContextLayerForm(
                     initial=ContextLayerForm.model_to_initial(instance)
                 ),
-                'permission': json.dumps(permission),
-                'dynamicClassification': json.dumps(
-                    DynamicClassificationTypeChoices
-                ),
+                'permission': json.dumps(permission)
             }
         )
         return context

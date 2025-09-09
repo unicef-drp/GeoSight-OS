@@ -141,6 +141,7 @@
     width: 100%;
     margin-left: 0 !important;
     display: flex;
+    align-items: center;
 
     span {
       display: block;
@@ -152,15 +153,15 @@
 
       & > span {
         display: flex;
+        align-items: center;
+        gap: 5px;
 
         & > .LayerName {
           display: block;
-          margin-right: 4px;
         }
 
         & > .LayerConfig {
           display: block;
-          margin-right: 4px;
         }
       }
     }
@@ -172,7 +173,6 @@
 
   .LayerName {
     width: 100%;
-    margin-top: 3px;
 
     &.Group {
       font-weight: 600;
