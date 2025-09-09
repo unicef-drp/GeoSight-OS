@@ -147,7 +147,6 @@
     }
 
     .MuiTypography-root {
-      flex-grow: 0.05;
       display: block;
       overflow: hidden;
 
@@ -156,6 +155,12 @@
 
         & > .LayerName {
           display: block;
+          margin-right: 4px;
+        }
+
+        & > .LayerConfig {
+          display: block;
+          margin-right: 4px;
         }
       }
     }

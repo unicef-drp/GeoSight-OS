@@ -11,7 +11,7 @@ export const isDashboardToolEnabled =
     }
     return (
       (
-        state.dashboard.data?.tools.find(
+        state.dashboard.data?.tools?.find(
           (tool: DashboardTool) => tool.name === name,
         ) || null
       )?.visible_by_default === true

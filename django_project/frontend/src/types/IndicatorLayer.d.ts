@@ -70,15 +70,15 @@ export interface IndicatorLayer extends IndicatorLayerConfig {
   id: number;
   description: string;
   name: string;
-  level_config: LevelConfig;
+  level_config?: LevelConfig;
   visible_by_default: boolean;
   last_update: string;
   indicators: Indicator[];
 
-  related_table: RelatedTable;
+  related_table?: RelatedTable;
   related_tables: RelatedTable[];
 
-  legend: string;
+  legend?: string;
 
   // TODO:
   //  We will remove this

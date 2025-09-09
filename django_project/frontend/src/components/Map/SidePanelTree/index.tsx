@@ -37,6 +37,7 @@ import Highlighted from "./Highlighted";
 import FilterLayer from "./FilterLayer";
 import IndicatorLayer from "./IndicatorLayer";
 import { GlobalIndicatorLayerTransparency } from "./IndicatorLayer/Transparency";
+import CompositeIndexLayer from "../../IndicatorLayer/CompositeIndexLayer/Layer";
 
 const TREE_INDENT_SPACE = 40;
 let unexpandedGroups: any = [];
@@ -305,6 +306,7 @@ export default function SidePanelTreeView({
                 filterText={filterText}
                 selectItem={selectItem}
                 maxWord={maxWord}
+                maxSelect={maxSelect}
               />
             )
           ) : groupSelectable ? (
@@ -376,6 +378,7 @@ export default function SidePanelTreeView({
         defaultExpandIcon={<ExpandLessIcon />}
         sx={{ flexGrow: 1, maxWidth: "100%", paddingRight: "1em" }}
       >
+        <CompositeIndexLayer />
         {nodes.length > 0 ? (
           nodes.map((treeData) => renderTree(treeData))
         ) : (

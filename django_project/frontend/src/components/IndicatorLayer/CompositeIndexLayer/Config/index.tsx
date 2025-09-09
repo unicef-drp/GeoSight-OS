@@ -26,20 +26,20 @@ import React, {
 } from "react";
 import { useTranslation } from "react-i18next";
 
-import { defaultCompositeIndexLayer } from "./variable";
-import Modal, { ModalContent, ModalHeader } from "../../Modal";
-import { SaveButton } from "../../Elements/Button";
-import { useDisclosure } from "../../../hooks";
-import { AdminForm } from "../../../pages/Admin/Components/AdminForm";
+import { defaultCompositeIndexLayer } from "../variable";
+import Modal, { ModalContent, ModalHeader } from "../../../Modal";
+import { SaveButton } from "../../../Elements/Button";
+import { useDisclosure } from "../../../../hooks";
+import { AdminForm } from "../../../../pages/Admin/Components/AdminForm";
 
-import StyleConfig from "../../../pages/Admin/Style/Form/StyleConfig";
-import LabelForm from "../../../pages/Admin/Indicator/Form/LabelForm";
+import StyleConfig from "../../../../pages/Admin/Style/Form/StyleConfig";
+import LabelForm from "../../../../pages/Admin/Indicator/Form/LabelForm";
 import PopupConfigForm
-  from "../../../pages/Admin/Dashboard/Form/IndicatorLayers/PopupConfigForm";
-import { IndicatorLayerConfig } from "../../../types/IndicatorLayer";
-import { Logger } from "../../../utils/logger";
+  from "../../../../pages/Admin/Dashboard/Form/IndicatorLayers/PopupConfigForm";
+import { IndicatorLayerConfig } from "../../../../types/IndicatorLayer";
+import { Logger } from "../../../../utils/logger";
 
-import "./Config.scss";
+import "./style.scss";
 
 export interface Props {
   config: any;

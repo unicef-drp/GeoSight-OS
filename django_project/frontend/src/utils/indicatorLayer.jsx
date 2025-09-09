@@ -24,7 +24,7 @@ export const SingleIndicatorTypes = [SingleIndicatorType, "Float"];
 export const MultiIndicatorType = "Multi Indicator";
 export const DynamicIndicatorType = "Dynamic Indicator";
 export const RelatedTableLayerType = "Related Table";
-export const CompositeIndexType = "Composite Index";
+export const CompositeIndexLayerType = "Composite Index Layer";
 
 export const defaultFields = [
   "indicator.name",
@@ -47,7 +47,7 @@ export function indicatorLayerId(indicatorLayer) {
  * Return indicator layers that has behaviour like indicator data
  */
 export function isIndicatorLayerLikeIndicator(indicatorLayer) {
-  return [DynamicIndicatorType, CompositeIndexType].includes(
+  return [DynamicIndicatorType, CompositeIndexLayerType].includes(
     indicatorLayer.type,
   );
 }

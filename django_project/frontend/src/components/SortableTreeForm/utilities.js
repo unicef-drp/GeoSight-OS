@@ -13,7 +13,8 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import { arrayMove } from '@dnd-kit/sortable';
+import { arrayMove } from "@dnd-kit/sortable";
+import { Actions } from "../../store/dashboard";
 
 export const iOS = /iPad|iPhone|iPod/.test(navigator.platform);
 
@@ -26,7 +27,7 @@ export function getProjection(
   activeId,
   overId,
   dragOffset,
-  indentationWidth
+  indentationWidth,
 ) {
   const overItemIndex = items.findIndex(({ id }) => id === overId);
   const activeItemIndex = items.findIndex(({ id }) => id === activeId);
@@ -90,12 +91,7 @@ function getMinDepth({ nextItem }) {
   return 0;
 }
 
-function flatten(
-  items,
-  parentId = null,
-  data = null,
-  depth = 0
-) {
+function flatten(items, parentId = null, data = null, depth = 0) {
   return items.reduce((acc, item, index) => {
     return [
       ...acc,
@@ -111,7 +107,7 @@ export function flattenTree(items) {
 
 export function createTreeData(layerData) {
   // Sort the data by order
-  layerData.sort((a, b) => a.order - b.order)
+  layerData.sort((a, b) => a.order - b.order);
 
   // Create a map to store the tree structure
   const treeMap = new Map();
@@ -129,16 +125,16 @@ export function createTreeData(layerData) {
           trueId: layer.id,
           isGroup: true,
           data: null,
-          children: []
+          children: [],
         };
         treeMap.set(layer.group, group);
 
         // If the group has a parent group, add it as a child of the parent group
         if (layer.group_parent) {
           const parentGroup = treeMap.get(layer.group_parent);
-          if (typeof parentGroup !== 'undefined') {
+          if (typeof parentGroup !== "undefined") {
             parentGroup.children.push(group);
-            childrenGroups.push(group)
+            childrenGroups.push(group);
           }
         }
       }
@@ -149,13 +145,13 @@ export function createTreeData(layerData) {
       // Create a new layer object and add it to the current group's children array
       if (layer.name) {
         if (layer.layer) {
-          delete layer.layer
+          delete layer.layer;
         }
         const newLayer = {
           id: layer.name,
           children: [],
           isGroup: false,
-          data: layer
+          data: layer,
         };
         currentGroup.children.push(newLayer);
       }
@@ -163,13 +159,13 @@ export function createTreeData(layerData) {
       // Create a new layer object and add it to the current group's children array
       if (layer.name) {
         if (layer.layer) {
-          delete layer.layer
+          delete layer.layer;
         }
         const newLayer = {
           id: layer.name,
           children: [],
           isGroup: false,
-          data: layer
+          data: layer,
         };
         treeMap.set(layer.id, newLayer);
       }
@@ -177,9 +173,9 @@ export function createTreeData(layerData) {
   }
 
   // Return the tree as an array
-  let treeData = Array.from(treeMap.values())
+  let treeData = Array.from(treeMap.values());
   for (const group of childrenGroups) {
-    treeData = treeData.filter(data => data.id !== group.id)
+    treeData = treeData.filter((data) => data.id !== group.id);
   }
   return treeData;
 }
@@ -187,29 +183,29 @@ export function createTreeData(layerData) {
 /** ---------------- **/
 /** Untree data **/
 function _untree(treeData) {
-  return treeData.map(data => {
+  return treeData.map((data) => {
     if (!data.isGroup) {
-      return data.id
+      return data.id;
     } else {
       return {
         group: data.name,
-        children: _untree(data.children)
-      }
+        children: _untree(data.children),
+      };
     }
-  })
+  });
 }
 
 export function untreeData(treeData) {
   return {
-    group: '',
-    children: _untree(treeData)
+    group: "",
+    children: _untree(treeData),
   };
 }
 
 /** ---------------- **/
 
 export function buildTree(flattenedItems) {
-  const root = { id: 'root', children: [] };
+  const root = { id: "root", children: [] };
   const nodes = { [root.id]: root };
   const items = flattenedItems.map((item) => ({ ...item, children: [] }));
 
@@ -230,16 +226,13 @@ export function findItem(items, itemId) {
 }
 
 export function findAllGroups(items) {
-  const flattenItems = flattenTree(items)
+  const flattenItems = flattenTree(items);
   return flattenItems.filter((obj) => {
-    return obj.isGroup === true
-  })
+    return obj.isGroup === true;
+  });
 }
 
-export function findItemDeep(
-  items,
-  itemId
-) {
+export function findItemDeep(items, itemId) {
   for (const item of items) {
     const { id, children } = item;
 
@@ -296,12 +289,7 @@ export function removeItem(items, id) {
   return newItems;
 }
 
-export function setProperty(
-  items,
-  id,
-  property,
-  setter
-) {
+export function setProperty(items, id, property, setter) {
   for (const item of items) {
     if (item.id === id) {
       item[property] = setter(item[property]);
@@ -354,131 +342,154 @@ export function removeChildrenOf(items, ids) {
 /** Data structure to tree data */
 export function dataStructureToTreeData(data, dataStructure, parentGroupId) {
   if (!data || !dataStructure) {
-    return []
+    return [];
   }
-  return dataStructure.children.map(child => {
-    if (!child) {
-      return null
-    }
-    if (child.group) {
-      const groupId = child.id ? child.id : '';
-      return {
-        id: groupId,
-        name: child.group,
-        isGroup: true,
-        data: null,
-        children: dataStructureToTreeData(data, child, groupId)
-
+  return dataStructure.children
+    .map((child) => {
+      if (!child) {
+        return null;
       }
-    } else {
-      const layerData = data.find(row => row.id === child)
-      if (layerData) {
-        layerData.group = parentGroupId
+      if (child.group) {
+        const groupId = child.id ? child.id : "";
         return {
-          id: child,
-          name: layerData.name,
-          children: [],
-          isGroup: false,
-          data: layerData
-        }
+          id: groupId,
+          name: child.group,
+          isGroup: true,
+          data: null,
+          children: dataStructureToTreeData(data, child, groupId),
+        };
       } else {
-        return null
-      }
-    }
-  }).filter(child => child !== null)
-}
-
-/** Data structure to tree data */
-export function dataStructureToListData(data, dataStructure, parentGroupId = []) {
-  if (!data || !dataStructure) {
-    return []
-  }
-  let output = []
-  dataStructure.children.map(child => {
-    if (!child) {
-      return []
-    }
-    if (child.group) {
-      const groupId = child.id ? child.id : '';
-      output = output.concat([
-          {
-            id: groupId,
-            name: child.group,
-            isGroup: true,
-            data: null
-
-          }
-        ]
-      )
-      output = output.concat(
-        dataStructureToListData(data, child, groupId)
-      )
-    } else {
-      const layerData = data.find(row => row.id === child)
-      if (layerData) {
-        layerData.group = parentGroupId
-        output = output.concat(
-          [{
+        const layerData = data.find((row) => row.id === child);
+        if (layerData) {
+          layerData.group = parentGroupId;
+          return {
             id: child,
             name: layerData.name,
             children: [],
             isGroup: false,
-            data: layerData
-          }]
-        )
+            data: layerData,
+          };
+        } else {
+          return null;
+        }
+      }
+    })
+    .filter((child) => child !== null);
+}
+
+/** Data structure to tree data */
+export function dataStructureToListData(
+  data,
+  dataStructure,
+  parentGroupId = [],
+) {
+  if (!data || !dataStructure) {
+    return [];
+  }
+  let output = [];
+  dataStructure.children.map((child) => {
+    if (!child) {
+      return [];
+    }
+    if (child.group) {
+      const groupId = child.id ? child.id : "";
+      output = output.concat([
+        {
+          id: groupId,
+          name: child.group,
+          isGroup: true,
+          data: null,
+        },
+      ]);
+      output = output.concat(dataStructureToListData(data, child, groupId));
+    } else {
+      const layerData = data.find((row) => row.id === child);
+      if (layerData) {
+        layerData.group = parentGroupId;
+        output = output.concat([
+          {
+            id: child,
+            name: layerData.name,
+            children: [],
+            isGroup: false,
+            data: layerData,
+          },
+        ]);
       } else {
-        return []
+        return [];
       }
     }
-  })
-  return output
+  });
+  return output;
 }
 
 /** Return group in structure **/
 export function _returnGroupInStructure(structure, id, updateFunction, parent) {
   if (!structure.children) {
-    return
+    return;
   }
   if (structure.id === id) {
-    updateFunction(structure, parent)
+    updateFunction(structure, parent);
   }
-  structure.children.map(child => {
+  structure.children.map((child) => {
     if (child.children) {
-      _returnGroupInStructure(child, id, updateFunction, structure)
+      _returnGroupInStructure(child, id, updateFunction, structure);
     }
-  })
+  });
 }
 
 /** Update group in structure **/
 export function updateGroupInStructure(id, structure, updateFunction) {
   if (id !== undefined) {
-    _returnGroupInStructure(structure, id, updateFunction)
+    _returnGroupInStructure(structure, id, updateFunction);
   }
 }
 
 /** Update child in structure **/
 export function addChildToGroupInStructure(id, child, structure, callback) {
-  updateGroupInStructure(id, structure, data => {
+  updateGroupInStructure(id, structure, (data) => {
     if (!data.children.includes(child)) {
-      data.children.push(child)
+      data.children.push(child);
     }
     if (callback) {
-      callback()
+      callback();
     }
-  })
+  });
 }
 
 /** Remove child from structure **/
 export function removeChildInGroupInStructure(id, child, structure, callback) {
   if (id !== undefined) {
-    _returnGroupInStructure(structure, id, data => {
+    _returnGroupInStructure(structure, id, (data) => {
       const index = data.children.indexOf(child);
       if (index > -1) {
-        data.children.splice(index, 1)
+        data.children.splice(index, 1);
         if (callback) {
-          callback()
+          callback();
         }
       }
-    })
+    });
   }
 }
+
+/** Remove layer **/
+export const removeLayerFromProject = (
+  dispatch,
+  layer,
+  indicatorLayersStructure,
+) => {
+  removeChildInGroupInStructure(
+    layer.group,
+    layer.id,
+    indicatorLayersStructure,
+    (_) => {
+      dispatch(
+        Actions.Dashboard.updateStructure(
+          "indicatorLayersStructure",
+          indicatorLayersStructure,
+        ),
+      );
+    },
+  );
+  dispatch(Actions.IndicatorLayers.remove(layer));
+};

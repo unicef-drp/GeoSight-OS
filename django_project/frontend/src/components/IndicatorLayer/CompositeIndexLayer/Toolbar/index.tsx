@@ -26,6 +26,7 @@ import {
 } from "../../../../pages/Dashboard/MapLibre/Plugin";
 import { LabelOffIcon, LabelOnIcon } from "../../../Icons";
 import { Actions } from "../../../../store/dashboard";
+import { isEligibleForCompositeLayer } from "../utilities";
 
 import "./style.scss";
 
@@ -34,30 +35,43 @@ import "./style.scss";
  */
 export default function CompositeIndexLayerToolbar() {
   const dispatch = useDispatch();
+  // @ts-ignore
   const compositeMode = useSelector((state) => state.mapMode.compositeMode);
+  const currentIndicatorLayer = useSelector(
+    // @ts-ignore
+    (state) => state.selectedIndicatorLayer,
+  );
+  const enabled = isEligibleForCompositeLayer(currentIndicatorLayer);
 
   return (
+    // @ts-ignore
     <Plugin>
       <div
         className="Active"
         data-tool={Variables.DASHBOARD.TOOL.COMPOSITE_INDEX_LAYER}
       >
+        {/* @ts-ignore */}
         <PluginChild
           title={
             (compositeMode ? "Deactivate" : "Activate") +
             " composite index layer"
           }
+          disabled={!enabled}
         >
           {compositeMode ? (
             <LabelOnIcon
               onClick={() => {
-                dispatch(Actions.MapMode.toggleCompositeMode());
+                if (enabled) {
+                  dispatch(Actions.MapMode.toggleCompositeMode());
+                }
               }}
             />
           ) : (
             <LabelOffIcon
               onClick={() => {
-                dispatch(Actions.MapMode.toggleCompositeMode());
+                if (enabled) {
+                  dispatch(Actions.MapMode.toggleCompositeMode());
+                }
               }}
             />
           )}

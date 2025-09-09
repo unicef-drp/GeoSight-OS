@@ -13,142 +13,143 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 
-import { Actions } from '../../../../store/dashboard'
-import {
-  dataStructureToTreeData
-} from "../../../../components/SortableTreeForm/utilities";
+import { Actions } from "../../../../store/dashboard";
+import { dataStructureToTreeData } from "../../../../components/SortableTreeForm/utilities";
 import SidePanelTreeView from "../../../../components/Map/SidePanelTree/ContextLayer";
 import { getLayer } from "../../MapLibre/Layers/ContextLayers/Layer";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
 function ContextLayers() {
   const dispatch = useDispatch();
-  const {
-    contextLayers,
-    contextLayersStructure
-  } = useSelector(state => state.dashboard.data);
-  const [defaultSelectedContextLayers, setDefaultSelectedContextLayers] = useState(
-    null
-  )
+  const contextLayers = useSelector(
+    (state) => state.dashboard.data.contextLayers,
+  );
+  const contextLayersStructure = useSelector(
+    (state) => state.dashboard.data.contextLayersStructure,
+  );
+  const [defaultSelectedContextLayers, setDefaultSelectedContextLayers] =
+    useState(null);
   const { t } = useTranslation();
 
-  const [treeData, setTreeData] = useState([])
-  const [selectedLayer, setSelectedLayer] = useState([])
-  const [layers, setLayers] = useState({})
-  const [errors, setErrors] = useState({})
+  const [treeData, setTreeData] = useState([]);
+  const [selectedLayer, setSelectedLayer] = useState([]);
+  const [layers, setLayers] = useState({});
+  const [errors, setErrors] = useState({});
 
   const updateTree = (_contextLayers) => {
     if (_contextLayers) {
       try {
-        _contextLayers?.map(ctx => {
+        _contextLayers?.map((ctx) => {
           if (errors[ctx.id]) {
-            ctx.error = errors[ctx.id]
+            ctx.error = errors[ctx.id];
           }
           if (!layers[ctx.id] && !ctx.error) {
-            ctx.loading = true
-            ctx.disabled = true
+            ctx.loading = true;
+            ctx.disabled = true;
           } else {
-            ctx.loading = false
-            ctx.disabled = false
+            ctx.loading = false;
+            ctx.disabled = false;
           }
-        })
-      } catch (err) {
-
-      }
+        });
+      } catch (err) {}
       setTreeData([
-        ...dataStructureToTreeData(_contextLayers, contextLayersStructure)
-      ]
-      )
+        ...dataStructureToTreeData(_contextLayers, contextLayersStructure),
+      ]);
     }
-  }
+  };
 
   useEffect(() => {
-    initialize(contextLayers)
+    initialize(contextLayers);
 
     // Update selected layers
-    const newDefaultSelectedContextLayers = contextLayers.filter(
-      contextLayer => contextLayer.visible_by_default
-    ).map(
-      contextLayer => '' + contextLayer.id
-    )
-    newDefaultSelectedContextLayers.sort()
-    if (JSON.stringify(newDefaultSelectedContextLayers) !== JSON.stringify(defaultSelectedContextLayers)) {
-      setDefaultSelectedContextLayers(newDefaultSelectedContextLayers)
-      setSelectedLayer(newDefaultSelectedContextLayers)
+    const newDefaultSelectedContextLayers = contextLayers
+      .filter((contextLayer) => contextLayer.visible_by_default)
+      .map((contextLayer) => "" + contextLayer.id);
+    newDefaultSelectedContextLayers.sort();
+    if (
+      JSON.stringify(newDefaultSelectedContextLayers) !==
+      JSON.stringify(defaultSelectedContextLayers)
+    ) {
+      setDefaultSelectedContextLayers(newDefaultSelectedContextLayers);
+      setSelectedLayer(newDefaultSelectedContextLayers);
     }
-  }, [contextLayers])
+  }, [contextLayers]);
 
   useEffect(() => {
-    updateTree(contextLayers)
-  }, [errors, layers])
+    updateTree(contextLayers);
+  }, [errors, layers]);
 
   useEffect(() => {
     for (const contextLayer of contextLayers) {
-      if (selectedLayer.includes(contextLayer.id + '')) {
+      if (selectedLayer.includes(contextLayer.id + "")) {
         dispatch(
           Actions.Map.addContextLayer(contextLayer.id, {
-            layer: layers[contextLayer.id + ''],
-            layer_type: contextLayer.layer_type
-          })
+            layer: layers[contextLayer.id + ""],
+            layer_type: contextLayer.layer_type,
+          }),
         );
       } else {
-        dispatch(
-          Actions.Map.removeContextLayer(contextLayer.id)
-        );
+        dispatch(Actions.Map.removeContextLayer(contextLayer.id));
       }
     }
-  }, [layers, selectedLayer])
+  }, [layers, selectedLayer]);
 
   const initialize = (_contextLayers) => {
     if (selectedLayer.length > 0) {
-      selectedLayer.forEach(layer => {
-        dispatch(
-          Actions.Map.removeContextLayer(layer)
-        )
-      })
+      selectedLayer.forEach((layer) => {
+        dispatch(Actions.Map.removeContextLayer(layer));
+      });
     }
     setSelectedLayer(
-      contextLayers.filter(row => (row.visible_by_default || selectedLayer.includes(row.id + ''))).map(row => row.id + '')
-    )
+      contextLayers
+        .filter(
+          (row) =>
+            row.visible_by_default || selectedLayer.includes(row.id + ""),
+        )
+        .map((row) => row.id + ""),
+    );
 
     for (const contextLayer of _contextLayers) {
       if (!contextLayer.permission) {
-        contextLayer.error = t('contextLayerErrorDelete')
+        contextLayer.error = t("contextLayerErrorDelete");
       } else if (!contextLayer.permission.read) {
-        contextLayer.error = t('contextLayerErrorPermission')
-      } else if (!layers[contextLayer.id + '']) {
+        contextLayer.error = t("contextLayerErrorPermission");
+      } else if (!layers[contextLayer.id + ""]) {
         getLayer(
           contextLayer,
-          (layer) => setLayers(prevState => {
-            if (!prevState[contextLayer.id + '']) {
-              return { ...prevState, [contextLayer.id + '']: layer }
-            } else {
-              return prevState
-            }
-          }),
-          (legend) => contextLayer.legend = legend,
+          (layer) =>
+            setLayers((prevState) => {
+              if (!prevState[contextLayer.id + ""]) {
+                return { ...prevState, [contextLayer.id + ""]: layer };
+              } else {
+                return prevState;
+              }
+            }),
+          (legend) => (contextLayer.legend = legend),
           (error) => {
-            setErrors(prevState => {
-              return { ...prevState, [contextLayer.id + '']: error.toString() }
-            }
-            )
+            setErrors((prevState) => {
+              return {
+                ...prevState,
+                [contextLayer.id + ""]: error.toString(),
+              };
+            });
           },
-          null
-        )
+          null,
+        );
       }
     }
-    updateTree(contextLayers)
-  }
+    updateTree(contextLayers);
+  };
 
   const onChange = (selectedData, layersData = null) => {
-    setSelectedLayer([...selectedData])
-  }
+    setSelectedLayer([...selectedData]);
+  };
   return (
     <SidePanelTreeView
       data={treeData}
@@ -157,9 +158,9 @@ function ContextLayers() {
       groupSelectable={true}
       maxSelect={10000000}
       onChange={onChange}
-      placeholder={t('dashboardPage.contextLayerSearch')}
+      placeholder={t("dashboardPage.contextLayerSearch")}
     />
-  )
+  );
 }
 
 /**
@@ -168,19 +169,15 @@ function ContextLayers() {
  * @param {function} handleChange Function when the accordion show.
  */
 export default function ContextLayersAccordion({ expanded }) {
-
   /** Render group and layers
    * @param {str} groupName Name of group.
    * @param {dict} group Data of group.
    */
   return (
-    <Accordion
-      expanded={expanded}
-      className='ContextLayersAccordion'
-    >
+    <Accordion expanded={expanded} className="ContextLayersAccordion">
       <AccordionDetails>
         <ContextLayers />
       </AccordionDetails>
     </Accordion>
-  )
+  );
 }

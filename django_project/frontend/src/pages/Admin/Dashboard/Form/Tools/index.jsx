@@ -15,8 +15,9 @@
 
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Actions } from "../../../../../store/dashboard";
+import EditIcon from "@mui/icons-material/Edit";
 import ListForm from "../ListForm";
+import { Actions } from "../../../../../store/dashboard";
 import { Variables } from "../../../../../utils/Variables";
 import { ZonalAnalysisConfiguration } from "./ZonalAnalysis";
 import { ThemeButton } from "../../../../../components/Elements/Button";
@@ -27,7 +28,6 @@ import {
 import CompositeIndexLayerConfig from "../../../../../components/IndicatorLayer/CompositeIndexLayer/Config";
 
 import "./style.scss";
-import EditIcon from "@mui/icons-material/Edit";
 
 export const columns = [
   {
@@ -44,11 +44,11 @@ export const columns = [
  */
 export default function ToolsForm() {
   const dispatch = useDispatch();
-  const { tools } = useSelector((state) => state.dashboard.data);
+  const tools = useSelector((state) => state.dashboard.data?.tools);
   const sortedTools = tools.sort((a, b) => a.name.localeCompare(b.name));
 
   const allVisible = tools.every((tool) => tool.visible_by_default);
-  const onToggle = (tool) => {
+  const onToggle = () => {
     dispatch(Actions.DashboardTool.updateBatchVisibility(!allVisible));
   };
   return (
