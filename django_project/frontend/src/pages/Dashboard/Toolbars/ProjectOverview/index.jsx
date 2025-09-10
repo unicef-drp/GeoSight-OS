@@ -24,6 +24,7 @@ import Cookies from "js-cookie";
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import Checkbox from "@mui/material/Checkbox";
+import { useTranslation } from 'react-i18next';
 import { FormControlLabel } from "@mui/material";
 
 import Modal, {
@@ -36,83 +37,90 @@ import { CloseButton } from "../../../../components/Elements/Button";
 import { InfoFillIcon } from "../../../../components/Icons";
 
 import './style.scss';
-import { useTranslation } from 'react-i18next';
 
 /**
  * ProjectOverview.
  */
 export default function ProjectOverview() {
-  const {
-    id,
-    overview,
-    show_splash_first_open
-  } = useSelector(state => state.dashboard.data);
+  const id = useSelector((state) => state.dashboard.data.id);
+  const overview = useSelector((state) => state.dashboard.data.overview);
+  const show_splash_first_open = useSelector(
+    (state) => state.dashboard.data.show_splash_first_open,
+  );
   const { t } = useTranslation();
 
   // If overview does not match the one in the cookies, project is set to show splash screen
   // editMode is false, and overview is not empty, show splash screen.
   const showSplashScreen = Cookies.get(`overview-${id}`) !== overview;
-  let isOpen = show_splash_first_open && showSplashScreen && !editMode && !["", undefined].includes(overview);
+  let isOpen =
+    show_splash_first_open &&
+    showSplashScreen &&
+    !editMode &&
+    !["", undefined].includes(overview);
 
   const [open, setOpen] = useState(isOpen);
 
   //checkbox state
-  const [showSplashScreenCheckbox, setShowSplashScreenCheckbox] = useState(showSplashScreen);
+  const [showSplashScreenCheckbox, setShowSplashScreenCheckbox] =
+    useState(showSplashScreen);
 
   useEffect(() => {
     // Only set Cookies when showSplashScreenCheckbox is set to false/unchecked, to reduce cookie size.
     if (!open && showSplashScreenCheckbox === false) {
       // Set current overview as cookies.
-      Cookies.set(`overview-${id}`, overview)
+      Cookies.set(`overview-${id}`, overview);
     }
-  }, [open]
-  );
+  }, [open]);
 
   return (
-    <Plugin className='ProjectOverview-Toolbar'>
+    <Plugin className="ProjectOverview-Toolbar">
       <div className={open ? "Active" : "Inactive"}>
-        <PluginChild title={'Project Overview'}>
-          <InfoFillIcon onClick={_ => setOpen(true)} />
+        <PluginChild title={"Project Overview"}>
+          <InfoFillIcon onClick={(_) => setOpen(true)} />
           <Modal
-            className='ProjectOverview'
+            className="ProjectOverview"
             open={open}
             onClosed={() => {
-              setOpen(false)
+              setOpen(false);
             }}
           >
-            <ModalHeader onClosed={() => {
-              setOpen(false)
-            }}>
+            <ModalHeader
+              onClosed={() => {
+                setOpen(false);
+              }}
+            >
               {t("dashboardPage.projectOverview")}
             </ModalHeader>
             <ModalContent>
-              <div className='ProjectDescription'>
+              <div className="ProjectDescription">
                 <Markdown remarkPlugins={[remarkGfm]}>
-                  {overview ? overview : '*There is no information for this project.*'}
+                  {overview
+                    ? overview
+                    : "*There is no information for this project.*"}
                 </Markdown>
               </div>
             </ModalContent>
             <ModalFooter>
-              {
-                isOpen ?
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={!showSplashScreenCheckbox}
-                        onChange={evt => {
-                          setShowSplashScreenCheckbox((current) => !current)
-                        }} />
-                    }
-                    label={t("dashboardPage.projectOverviewNoShow")} /> : null
-              }
-              <div className={'Separator'}></div>
+              {isOpen ? (
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={!showSplashScreenCheckbox}
+                      onChange={(evt) => {
+                        setShowSplashScreenCheckbox((current) => !current);
+                      }}
+                    />
+                  }
+                  label={t("dashboardPage.projectOverviewNoShow")}
+                />
+              ) : null}
+              <div className={"Separator"}></div>
               <CloseButton
                 variant="primary"
                 onClick={(e) => {
-                  e.stopPropagation()
+                  e.stopPropagation();
                   setOpen(false);
-                }
-                }
+                }}
                 text={t("dashboardPage.projectOverviewClose")}
               />
             </ModalFooter>
@@ -120,5 +128,5 @@ export default function ProjectOverview() {
         </PluginChild>
       </div>
     </Plugin>
-  )
+  );
 }

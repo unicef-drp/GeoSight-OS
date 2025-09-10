@@ -26,6 +26,7 @@ import React, {
 } from "react";
 import { useTranslation } from "react-i18next";
 
+import { GeneralForm } from "./General";
 import { defaultCompositeIndexLayer } from "../variable";
 import Modal, { ModalContent, ModalHeader } from "../../../Modal";
 import { SaveButton } from "../../../Elements/Button";
@@ -45,10 +46,11 @@ export interface Props {
   config: any;
   setConfig: (data: any) => void;
   icon?: ReactElement;
+  showGeneral?: boolean;
 }
 
 export const CompositeIndexLayerConfig = forwardRef(
-  ({ config, setConfig, icon }: Props, ref) => {
+  ({ config, setConfig, icon, showGeneral }: Props, ref) => {
     const { t } = useTranslation();
     const { open, onOpen, onClose } = useDisclosure();
 
@@ -124,6 +126,12 @@ export const CompositeIndexLayerConfig = forwardRef(
                 /* @ts-ignore */
                 selectableInput={false}
                 forms={{
+                  ...(showGeneral && {
+                    General: (
+                      // @ts-ignore
+                      <GeneralForm data={data} setData={updateData} />
+                    ),
+                  }),
                   Style: (
                     /* @ts-ignore */
                     <StyleConfig

@@ -38,6 +38,8 @@ import FilterLayer from "./FilterLayer";
 import IndicatorLayer from "./IndicatorLayer";
 import { GlobalIndicatorLayerTransparency } from "./IndicatorLayer/Transparency";
 import CompositeIndexLayer from "../../IndicatorLayer/CompositeIndexLayer/Layer";
+import { Actions } from "../../../store/dashboard";
+import { useDispatch } from "react-redux";
 
 const TREE_INDENT_SPACE = 40;
 let unexpandedGroups: any = [];
@@ -91,6 +93,7 @@ export default function SidePanelTreeView({
   otherInfo = null,
   ...props
 }: Props) {
+  const dispatch = useDispatch();
   const [nodes, setNodes] = useState([]);
   const [selected, setSelected] = useState([]);
   const [selectedGroups, setSelectedGroups] = useState([]);
@@ -121,6 +124,13 @@ export default function SidePanelTreeView({
       setWidth(layerGroupListRef.current.offsetWidth - 20);
     }
   }, []);
+
+  useEffect(() => {
+    dispatch(
+      // @ts-ignore
+      Actions.CompositeIndicatorLayer.updateIndicatorLayers(selected),
+    );
+  }, [selected]);
 
   /** Parent selected */
   useLayoutEffect(() => {

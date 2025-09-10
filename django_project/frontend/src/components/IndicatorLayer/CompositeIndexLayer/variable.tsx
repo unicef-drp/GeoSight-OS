@@ -11,3 +11,9 @@ export const defaultCompositeIndexLayer = (): IndicatorLayerConfig => {
     type: CompositeIndexLayerType,
   };
 };
+
+export interface CompositeIndexLayerConfigIndicatorLayer {
+  id: number;
+  weight: number;
+  invert: boolean;
+}

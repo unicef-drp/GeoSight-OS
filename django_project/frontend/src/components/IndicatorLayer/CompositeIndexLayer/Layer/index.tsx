@@ -17,7 +17,7 @@
    Composite Layer
    ========================================================================== */
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { TreeItem } from "@mui/x-tree-view/TreeItem";
 import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
 import {
@@ -29,22 +29,22 @@ import { CompositeIndexLayerType } from "../../../../utils/indicatorLayer";
 import { Actions } from "../../../../store/dashboard";
 import { CogIcon } from "../../../Icons";
 import { defaultCompositeIndexLayer } from "../variable";
-
-import "./style.scss";
 import { getDashboardTool } from "../../../../selectors/dashboard";
 import { Variables } from "../../../../utils/Variables";
 import CompositeIndexLayerConfig from "../Config";
+
+import "./style.scss";
 
 /** Composite index layer.*/
 export default function CompositeIndexLayer() {
   const dispatch = useDispatch();
   // @ts-ignore
   const compositeMode = useSelector((state) => state.mapMode.compositeMode);
+  // @ts-ignore
+  const data = useSelector((state) => state.compositeIndicatorLayer.data);
   const tool = useSelector(
     getDashboardTool(Variables.DASHBOARD.TOOL.COMPOSITE_INDEX_LAYER),
   );
-  // @ts-ignore
-  const [data, setData] = useState<IndicatorLayerType>(tool.config);
 
   const layer: IndicatorLayerType = {
     id: -1000,
@@ -61,13 +61,8 @@ export default function CompositeIndexLayer() {
 
   /** Update data when opened **/
   useEffect(() => {
-    if (tool.config) {
-      // @ts-ignore
-      setData(tool.config);
-    } else {
-      // @ts-ignore
-      setData(defaultCompositeIndexLayer());
-    }
+    const config = tool.config ? tool.config : defaultCompositeIndexLayer();
+    dispatch(Actions.CompositeIndicatorLayer.update({ ...layer, ...config }));
   }, [compositeMode]);
 
   if (!compositeMode) {
@@ -93,7 +88,7 @@ export default function CompositeIndexLayer() {
               <CompositeIndexLayerConfig
                 config={data}
                 setConfig={(config) => {
-                  setData(config);
+                  dispatch(Actions.CompositeIndicatorLayer.update(config));
                 }}
                 icon={
                   <CogIcon
@@ -103,6 +98,7 @@ export default function CompositeIndexLayer() {
                     }}
                   />
                 }
+                showGeneral={true}
               />
               <DoDisturbOnIcon
                 onClick={() => {
