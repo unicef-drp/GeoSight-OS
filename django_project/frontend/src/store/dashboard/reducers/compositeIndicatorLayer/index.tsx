@@ -31,19 +31,26 @@ interface props {
 
 const initialState: props = {
   // @ts-ignore
-  data: defaultCompositeIndexLayer(),
+  data: {},
 };
-export default function mapCompareModeReducer(
+export default function compositeIndexLayerReducer(
   state = initialState,
   action: any,
 ) {
   if (action.name === ACTION_NAME) {
+    // If not data, we make default
+    if (!state.data) {
+      // @ts-ignore
+      state.data = defaultCompositeIndexLayer();
+    }
+
+    // Make actions
     switch (action.type) {
       case ACTION_TYPE_UPDATE: {
         let { data } = action;
         return {
           ...state,
-          data: data,
+          data: { ...data, config: { ...state.data.config } },
         };
       }
       case ACTION_TYPE_UPDATE_INDICATOR_LAYERS: {
@@ -67,6 +74,7 @@ export default function mapCompareModeReducer(
             });
           }
         });
+        console.log(state.data);
         return {
           ...state,
           data: { ...state.data },
