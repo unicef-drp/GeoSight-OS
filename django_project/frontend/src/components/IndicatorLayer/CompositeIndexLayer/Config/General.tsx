@@ -115,7 +115,7 @@ export function GeneralForm({ data, setData }: Props) {
       0,
     ) || 0;
   return (
-    <div>
+    <div className="GeneralFormCompositeIndexLayer">
       <div className="BasicFormSection">
         <div>
           <label className="form-label required">Name</label>

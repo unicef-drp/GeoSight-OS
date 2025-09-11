@@ -92,6 +92,7 @@ export default function CompositeIndexLayer() {
                 }}
                 icon={
                   <CogIcon
+                    className="CogIcon"
                     style={{
                       width: "20px",
                       height: "20px",
