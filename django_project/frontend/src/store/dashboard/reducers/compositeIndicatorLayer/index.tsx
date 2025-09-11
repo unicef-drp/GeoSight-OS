@@ -74,7 +74,6 @@ export default function compositeIndexLayerReducer(
             });
           }
         });
-        console.log(state.data);
         return {
           ...state,
           data: { ...state.data },
