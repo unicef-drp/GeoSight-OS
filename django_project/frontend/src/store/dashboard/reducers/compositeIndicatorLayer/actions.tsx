@@ -20,12 +20,16 @@ import {
 } from "./index";
 import { IndicatorLayer } from "../../../../types/IndicatorLayer";
 
-/** Update composite indicator layer. */
-export function update(data: IndicatorLayer) {
+/** Update composite indicator layer.
+ * If force, it will update all data
+ * If not, it will only update the data that has changed.
+ * */
+export function update(data: IndicatorLayer, force: boolean = false) {
   return {
     name: ACTION_NAME,
     type: ACTION_TYPE_UPDATE,
     data: data,
+    force: force,
   };
 }
 

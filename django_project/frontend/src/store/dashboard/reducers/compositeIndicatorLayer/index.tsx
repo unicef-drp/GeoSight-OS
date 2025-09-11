@@ -47,7 +47,14 @@ export default function compositeIndexLayerReducer(
     // Make actions
     switch (action.type) {
       case ACTION_TYPE_UPDATE: {
-        let { data } = action;
+        let { data, force } = action;
+        // We meed to be able to force update
+        if (force) {
+          return {
+            ...state,
+            data: { ...data },
+          };
+        }
         return {
           ...state,
           data: { ...data, config: { ...state.data.config } },

@@ -17,3 +17,5 @@ export interface CompositeIndexLayerConfigIndicatorLayer {
   weight: number;
   invert: boolean;
 }
+
+export const MaxSelectableLayersForCompositeIndexLayer = 100;

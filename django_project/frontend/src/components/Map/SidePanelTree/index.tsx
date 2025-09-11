@@ -39,7 +39,8 @@ import IndicatorLayer from "./IndicatorLayer";
 import { GlobalIndicatorLayerTransparency } from "./IndicatorLayer/Transparency";
 import CompositeIndexLayer from "../../IndicatorLayer/CompositeIndexLayer/Layer";
 import { Actions } from "../../../store/dashboard";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { MaxSelectableLayersForCompositeIndexLayer } from "../../IndicatorLayer/CompositeIndexLayer/variable";
 
 const TREE_INDENT_SPACE = 40;
 let unexpandedGroups: any = [];
@@ -102,6 +103,19 @@ export default function SidePanelTreeView({
   const layerGroupListRef = useRef(null);
   const [width, setWidth] = useState(25);
 
+  // @ts-ignore
+  const compositeIndicatorLayerIds = useSelector((state) => {
+    // @ts-ignore
+    if (!state.compositeIndicatorLayer.data?.config?.indicatorLayers) {
+      return [];
+    } else {
+      // @ts-ignore
+      return state.compositeIndicatorLayer.data?.config?.indicatorLayers.map(
+        (layer: any) => layer.id,
+      );
+    }
+  });
+
   useEffect(() => {
     setNodes(data);
     setGroups(getGroups(data));
@@ -125,12 +139,28 @@ export default function SidePanelTreeView({
     }
   }, []);
 
+  /** COMPOSITE INDEX LAYER
+   * Update composite index layer when selected changed
+   */
   useEffect(() => {
     dispatch(
       // @ts-ignore
       Actions.CompositeIndicatorLayer.updateIndicatorLayers(selected),
     );
   }, [selected]);
+
+  /** COMPOSITE INDEX LAYER
+   * Update composite index layer when selected changed
+   */
+  useEffect(() => {
+    if (maxSelect === MaxSelectableLayersForCompositeIndexLayer) {
+      if (
+        JSON.stringify(selected) !== JSON.stringify(compositeIndicatorLayerIds)
+      ) {
+        setSelected(compositeIndicatorLayerIds);
+      }
+    }
+  }, [compositeIndicatorLayerIds, maxSelect]);
 
   /** Parent selected */
   useLayoutEffect(() => {

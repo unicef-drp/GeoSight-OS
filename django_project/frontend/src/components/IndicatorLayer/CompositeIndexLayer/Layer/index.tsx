@@ -52,6 +52,8 @@ export default function CompositeIndexLayer() {
     description: "Composite index layer",
     type: CompositeIndexLayerType,
     indicators: [],
+    // @ts-ignore
+    indicatorLayers: [],
     visible_by_default: true,
     last_update: "",
     related_tables: [],
@@ -88,7 +90,9 @@ export default function CompositeIndexLayer() {
               <CompositeIndexLayerConfig
                 config={data}
                 setConfig={(config) => {
-                  dispatch(Actions.CompositeIndicatorLayer.update(config));
+                  dispatch(
+                    Actions.CompositeIndicatorLayer.update(config, true),
+                  );
                 }}
                 icon={
                   <CogIcon

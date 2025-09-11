@@ -37,6 +37,9 @@ import DynamicIndicatorLayer, {
   DynamicIndicatorLayerConfig,
 } from "./DynamicIndicatorLayer";
 import { DynamicIndicatorType } from "../../../../utils/indicatorLayer";
+import {
+  MaxSelectableLayersForCompositeIndexLayer
+} from "../../../../components/IndicatorLayer/CompositeIndexLayer/variable";
 
 import "./style.scss";
 
@@ -298,7 +301,13 @@ export function IndicatorLayers() {
         data={treeData}
         selectable={true}
         resetSelection={true}
-        maxSelect={compositeMode ? 50 : compareMode ? 2 : 1}
+        maxSelect={
+          compositeMode
+            ? MaxSelectableLayersForCompositeIndexLayer
+            : compareMode
+              ? 2
+              : 1
+        }
         onChange={onChange}
         otherInfo={(layer) => {
           if (layer.data.related_tables?.length && layer.data.config.where) {
