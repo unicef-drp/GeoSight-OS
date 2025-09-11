@@ -24,8 +24,10 @@ from core.serializer.site_preferences import SitePreferencesSerializer
 from core.settings.utils import ABS_PATH
 from geosight.data.models.code import CodeList
 from geosight.data.models.style.base import (
-    StyleTypeChoices,
     DynamicClassificationTypeChoices
+)
+from geosight.data.models.style.indicator_style import (
+    IndicatorStyleTypeChoices
 )
 from geosight.data.serializer.code import CodeListSerializer
 from geosight.georepo.request import GeorepoUrl
@@ -92,7 +94,7 @@ def global_context(request):
         'dynamic_classification': json.dumps(
             DynamicClassificationTypeChoices
         ),
-        'style_types': json.dumps(StyleTypeChoices),
+        'style_types': json.dumps(IndicatorStyleTypeChoices),
         'code_list': json.dumps(
             CodeListSerializer(CodeList.objects.all(), many=True).data
         ),

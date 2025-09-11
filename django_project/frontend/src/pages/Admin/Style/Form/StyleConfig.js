@@ -19,7 +19,7 @@ import StyleRules from "./StyleRules";
 import DynamicStyleConfig from "./DynamicStyleConfig";
 import { StyleInputSelector } from "../../../../components/ResourceList/WithModal/WithInput";
 import { dictDeepCopy } from "../../../../utils/main";
-import { dynamicStyleTypes } from "../../../../utils/Style";
+import { dynamicStyleTypes, STYLE_FORM_LIBRARY } from "../../../../utils/Style";
 import { Select } from "../../../../components/Input";
 
 export const styleTypesChoices = styleTypes.map((type) => {
@@ -37,6 +37,7 @@ export default function StyleConfig({
   defaultCodes,
   selectableInput,
   valuesUrl,
+  useLibrary = true,
 }) {
   const [selectableInputState, setSelectableInputState] = useState({});
   const [style, setStyle] = useState(data.style_data ? data.style_data : null);
@@ -97,7 +98,13 @@ export default function StyleConfig({
               <label className="form-label required">Style type</label>
             </div>
             <Select
-              options={styleTypesChoices}
+              options={
+                useLibrary
+                  ? styleTypesChoices
+                  : styleTypesChoices.filter(
+                      (type) => type.value !== STYLE_FORM_LIBRARY,
+                    )
+              }
               value={styleTypesChoices.find(
                 (type) => type.value === data.style_type,
               )}
