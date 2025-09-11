@@ -26,13 +26,31 @@ from geosight.data.models.indicator import (
 
 
 class BaseDashboardView(ABC, BaseView):
-    """Base dashboard View."""
+    """
+    Base view for dashboards.
+
+    Provides common context variables used by dashboard pages, such as
+    indicator types, categories, and widget layer usage. This class should
+    be extended by specific dashboard implementations.
+    """
 
     instance = None
     template_name = 'frontend/dashboard.html'
 
     def get_context_data(self, **kwargs) -> dict:
-        """Return context data."""
+        """
+        Return context data for rendering the dashboard.
+
+        The context includes:
+
+        - ``definition``: A mapping of widget layers used.
+        - ``types``: JSON-encoded list of indicator types.
+        - ``categories``: JSON-encoded list of dashboard categories.
+
+        :param dict **kwargs: Arbitrary keyword arguments passed from the view.
+        :return: Context dictionary with dashboard-related variables.
+        :rtype: dict
+        """
         context = super().get_context_data(**kwargs)
 
         context['definition'] = {
@@ -53,10 +71,22 @@ class BaseDashboardView(ABC, BaseView):
 
     @property
     def page_title(self):
-        """Return page title that used on tab bar."""
+        """
+        Return the page title to be displayed on the browser tab.
+
+        :return: Page title string.
+        :rtype: str
+        """
         return 'Project'
 
     @property
     def content_title(self):
-        """Return content title that used on page title indicator."""
+        """
+        Return the content title used as the page heading.
+
+        Must be implemented in subclasses.
+
+        :raises NotImplementedError:
+            This property must be overridden in subclasses.
+        """
         raise NotImplementedError

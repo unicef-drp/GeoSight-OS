@@ -32,7 +32,13 @@ from geosight.georepo.request import GeorepoUrl
 
 
 def project_version(request):
-    """Read project version from file."""
+    """Read the project version from the version file.
+
+    :param request: The HTTP request object.
+    :type request: HttpRequest
+    :return: Project version string (with commit hash if not production).
+    :rtype: str
+    """
     folder = ABS_PATH('')
     version = ''
     version_file = os.path.join(folder, '_version.txt')
@@ -51,7 +57,18 @@ def project_version(request):
 
 
 def global_context(request):
-    """Global context that will be returned for every request."""
+    """
+    Build the global context dictionary for every request.
+
+    This includes application settings, site preferences, API keys,
+    version information, and other configuration values that are
+    available globally in templates.
+
+    :param request: The HTTP request object.
+    :type request: HttpRequest
+    :return: A dictionary containing global context values.
+    :rtype: dict
+    """
     # Return api_key level 1 if user not have api_key
     pref = SitePreferences.preferences()
     pref_data = SitePreferencesSerializer(pref).data

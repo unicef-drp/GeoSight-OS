@@ -37,12 +37,24 @@ class ContextLayerEditView(RoleContributorRequiredMixin, AdminBaseView):
 
     @property
     def page_title(self):
-        """Return page title that used on tab bar."""
+        """
+        Return the page title used on the browser tab bar.
+
+        :return: Page title string.
+        :rtype: str
+        """
         return 'Edit Context Layer'
 
     @property
     def content_title(self):
-        """Return content title that used on page title context_layer."""
+        """
+        Return the content title displayed on the page title section.
+
+        :return:
+            HTML string containing breadcrumb-style links
+            for editing the context layer.
+        :rtype: str
+        """
         context_layer = get_object_or_404(
             ContextLayer, id=self.kwargs.get('pk', '')
         )
@@ -57,7 +69,16 @@ class ContextLayerEditView(RoleContributorRequiredMixin, AdminBaseView):
         )
 
     def get_context_data(self, **kwargs) -> dict:
-        """Return context data."""
+        """
+        Return context data for rendering the template.
+
+        :param **kwargs: Additional keyword arguments passed to the view.
+        :type **kwargs: dict
+        :return:
+            Context dictionary including the form,
+            instance, and permission data.
+        :rtype: dict
+        """
         context = super().get_context_data(**kwargs)
         instance = get_object_or_404(
             ContextLayer, id=self.kwargs.get('pk', '')
@@ -77,7 +98,17 @@ class ContextLayerEditView(RoleContributorRequiredMixin, AdminBaseView):
         return context
 
     def post(self, request, **kwargs):
-        """Edit context_layer."""
+        """
+        Handle POST request to edit a context layer.
+
+        :param request: The HTTP request object.
+        :type request: HttpRequest
+        :param **kwargs: Additional keyword arguments.
+        :type **kwargs: dict
+        :return:
+            HTTP redirect response if successful, or rendered form with errors.
+        :rtype: HttpResponse
+        """
         instance = get_object_or_404(
             ContextLayer, id=self.kwargs.get('pk', '')
         )
@@ -119,12 +150,23 @@ class ContextLayerEditBatchView(
 
     @property
     def page_title(self):
-        """Return page title that used on tab bar."""
+        """
+        Return the page title used on the browser tab bar.
+
+        :return: Page title string.
+        :rtype: str
+        """
         return 'Edit Batch Context Layer'
 
     @property
     def content_title(self):
-        """Return content title that used on page title context_layer."""
+        """
+        Return the content title displayed on the page title section.
+
+        :return:
+            HTML string containing breadcrumb-style links for batch editing.
+        :rtype: str
+        """
         list_url = reverse('admin-context-layer-list-view')
         return (
             f'<a href="{list_url}">Context Layers</a> '
@@ -134,15 +176,30 @@ class ContextLayerEditBatchView(
 
     @property
     def edit_query(self):
-        """Return query for edit."""
+        """
+        Return the queryset of context layers that the user can edit.
+
+        :return: Queryset of editable context layers.
+        :rtype: QuerySet
+        """
         return ContextLayer.permissions.edit(self.request.user)
 
     @property
     def form(self):
-        """Return form."""
+        """
+        Return the form class used for editing context layers.
+
+        :return: The form class.
+        :rtype: type[ContextLayerForm]
+        """
         return ContextLayerForm
 
     @property
     def redirect_url(self):
-        """Return redirect url."""
+        """
+        Return the URL to redirect to after a successful batch edit.
+
+        :return: Redirect URL string.
+        :rtype: str
+        """
         return reverse('admin-context-layer-list-view')

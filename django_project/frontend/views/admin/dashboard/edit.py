@@ -14,8 +14,6 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-import json
-
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, reverse
 
@@ -38,12 +36,20 @@ class DashboardEditView(
 
     @property
     def page_title(self):
-        """Return page title that used on tab bar."""
+        """
+        Return the page title used on the browser tab.
+
+        :rtype: str
+        """
         return 'Edit Project'
 
     @property
     def content_title(self):
-        """Return content title that used on page title indicator."""
+        """
+        Return the content title used as the page heading.
+
+        :rtype: str
+        """
         dashboard = get_object_or_404(
             Dashboard, slug=self.kwargs.get('slug', '')
         )
@@ -57,14 +63,26 @@ class DashboardEditView(
 
     @property
     def header_title(self):
-        """Return content title that will be show on the header."""
+        """
+        Return the dashboard name used as the page header title.
+
+        :rtype: str
+        """
         dashboard = get_object_or_404(
             Dashboard, slug=self.kwargs.get('slug', '')
         )
         return dashboard.name
 
     def get_context_data(self, slug, **kwargs) -> dict:
-        """Return context data."""
+        """
+        Return context data for the dashboard edit view.
+
+        :param str slug: Slug of the dashboard to edit.
+        :param **kwargs: Extra keyword arguments passed from the base view.
+        :type **kwargs: dict
+        :return: Context data containing the dashboard info.
+        :rtype: dict
+        """
         context = super().get_context_data(**kwargs)
         dashboard = get_object_or_404(
             Dashboard, slug=slug
@@ -74,7 +92,18 @@ class DashboardEditView(
         return context
 
     def post(self, request, slug, **kwargs):
-        """Create dashboard."""
+        """
+        Handle POST request to update a dashboard.
+
+        :param request: The incoming HTTP request object.
+        :type request: HttpRequest
+        :param str slug: Slug of the dashboard to edit.
+        :param **kwargs: Extra keyword arguments.
+        :type **kwargs: dict
+        :return: Redirect to the edit page if the update succeeds,
+            or a bad request response if validation fails.
+        :rtype: HttpResponse or HttpResponseBadRequest
+        """
         try:
             data = DashboardForm.update_data(request.POST.copy().dict())
         except ValueError as e:
