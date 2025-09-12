@@ -68,6 +68,10 @@ export default function compositeIndexLayerReducer(
         if (!state.data.config.indicatorLayers) {
           state.data.config.indicatorLayers = [];
         }
+        state.data.config.indicatorLayers =
+          state.data.config.indicatorLayers.filter((layer: any) =>
+            data.includes(layer.id),
+          );
         data.forEach((layerId: number) => {
           if (
             !state.data.config.indicatorLayers.find(
@@ -81,6 +85,9 @@ export default function compositeIndexLayerReducer(
             });
           }
         });
+        console.log('-------------------');
+        console.log(data);
+        console.log(state.data.config.indicatorLayers);
         return {
           ...state,
           data: { ...state.data },

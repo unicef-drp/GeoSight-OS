@@ -76,6 +76,7 @@ export function IndicatorLayers() {
 
   /** Update current indicator **/
   const updateCurrentIndicator = (indicatorID, Action) => {
+    if (compositeMode) return;
     if (!indicatorID) {
       dispatch(Action.change(null));
       return;
@@ -148,11 +149,12 @@ export function IndicatorLayers() {
   useEffect(() => {
     if (!compareMode) {
       setCurrentIndicatorLayers([currentIndicatorLayer, 0]);
-      dispatch(Actions.SelectedIndicatorSecondLayer.change({}));
+      updateCurrentIndicator(null, Actions.SelectedIndicatorSecondLayer);
     }
   }, [compareMode]);
 
   const updateOtherLayers = (selectedData) => {
+    if (compositeMode) return;
     // Check selected indicator layers
     const selectedIndicatorLayers = indicatorLayers.filter((layer) =>
       selectedData.includes("" + layer.id),
@@ -284,7 +286,7 @@ export function IndicatorLayers() {
       if (selectedData.length === 0) {
         if (currentIndicatorLayer) {
           setCurrentIndicatorLayers([0, 0]);
-          dispatch(Actions.SelectedIndicatorLayer.change({}));
+          updateCurrentIndicator(null, Actions.SelectedIndicatorLayer);
         }
       }
       if (selectedData.length >= 1) {

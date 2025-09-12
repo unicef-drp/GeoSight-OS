@@ -109,7 +109,6 @@ export interface Props {
 }
 
 export function GeneralForm({ data, setData }: Props) {
-  console.log(data)
   const totalWeight =
     data.config?.indicatorLayers.reduce(
       (sum: number, layer: any) => sum + (layer.weight || 0),

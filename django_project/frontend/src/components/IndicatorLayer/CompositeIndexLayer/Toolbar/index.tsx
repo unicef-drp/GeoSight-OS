@@ -17,7 +17,7 @@
    Composite Index Layer Toolbar
    ========================================================================== */
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Variables } from "../../../../utils/Variables";
 import {
@@ -29,6 +29,7 @@ import { Actions } from "../../../../store/dashboard";
 import { isEligibleForCompositeLayer } from "../utilities";
 
 import "./style.scss";
+import { delay } from "../../../../utils/main";
 
 /**
  * Composite index layer toolbar component.
@@ -41,7 +42,16 @@ export default function CompositeIndexLayerToolbar() {
     // @ts-ignore
     (state) => state.selectedIndicatorLayer,
   );
-  const enabled = isEligibleForCompositeLayer(currentIndicatorLayer);
+  const [previousLayer, setPreviousLayer] = useState(null);
+  const enabled =
+    compositeMode || isEligibleForCompositeLayer(currentIndicatorLayer);
+
+  /** Update data when opened **/
+  useEffect(() => {
+    if (compositeMode) {
+      setPreviousLayer(currentIndicatorLayer);
+    }
+  }, [compositeMode]);
 
   return (
     // @ts-ignore
@@ -62,7 +72,21 @@ export default function CompositeIndexLayerToolbar() {
             <LabelOnIcon
               onClick={() => {
                 if (enabled) {
-                  dispatch(Actions.MapMode.toggleCompositeMode());
+                  if (previousLayer) {
+                    dispatch(
+                      Actions.SelectedIndicatorLayer.change(previousLayer),
+                    );
+                    dispatch(
+                      // @ts-ignore
+                      Actions.CompositeIndicatorLayer.updateIndicatorLayers([
+                        previousLayer.id,
+                      ]),
+                    );
+                  }
+                  (async () => {
+                    await delay(100);
+                    dispatch(Actions.MapMode.toggleCompositeMode());
+                  })();
                 }
               }}
             />

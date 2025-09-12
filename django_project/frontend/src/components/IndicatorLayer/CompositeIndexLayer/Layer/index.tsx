@@ -36,6 +36,23 @@ import CompositeIndexLayerConfig from "../Config";
 import "./style.scss";
 
 /** Composite index layer.*/
+export function CompositeIndexLayerRenderers() {
+  // @ts-ignore
+  const data = useSelector((state) => state.compositeIndicatorLayer.data);
+  // @ts-ignore
+  const compositeMode = useSelector((state) => state.mapMode.compositeMode);
+
+  /** Update data when opened **/
+  useEffect(() => {
+    if (compositeMode) {
+      // console.log(data);
+    }
+  }, [data, compositeMode]);
+
+  return <></>;
+}
+
+/** Composite index layer.*/
 export default function CompositeIndexLayer() {
   const dispatch = useDispatch();
   // @ts-ignore
@@ -71,49 +88,52 @@ export default function CompositeIndexLayer() {
     return null;
   }
   return (
-    <TreeItem
-      className={"TreeItem SidePanelTreeItem Mui-selected"}
-      key={layer.id}
-      nodeId={layer.id.toString()}
-      label={
-        <IndicatorLayer
-          layer={layer}
-          nodesDataId={layer.id.toString()}
-          checked={true}
-          selected={[]}
-          filterText={""}
-          selectItem={() => {}}
-          maxWord={0}
-          maxSelect={1}
-          otherElement={
-            <>
-              <CompositeIndexLayerConfig
-                config={data}
-                setConfig={(config) => {
-                  dispatch(
-                    Actions.CompositeIndicatorLayer.update(config, true),
-                  );
-                }}
-                icon={
-                  <CogIcon
-                    className="CogIcon"
-                    style={{
-                      width: "20px",
-                      height: "20px",
-                    }}
-                  />
-                }
-                showGeneral={true}
-              />
-              <DoDisturbOnIcon
-                onClick={() => {
-                  dispatch(Actions.MapMode.toggleCompositeMode());
-                }}
-              />
-            </>
-          }
-        />
-      }
-    />
+    <>
+      <TreeItem
+        className={"TreeItem SidePanelTreeItem Mui-selected"}
+        key={layer.id}
+        nodeId={layer.id.toString()}
+        label={
+          <IndicatorLayer
+            layer={layer}
+            nodesDataId={layer.id.toString()}
+            checked={true}
+            selected={[]}
+            filterText={""}
+            selectItem={() => {}}
+            maxWord={0}
+            maxSelect={1}
+            otherElement={
+              <>
+                <CompositeIndexLayerConfig
+                  config={data}
+                  setConfig={(config) => {
+                    dispatch(
+                      Actions.CompositeIndicatorLayer.update(config, true),
+                    );
+                  }}
+                  icon={
+                    <CogIcon
+                      className="CogIcon"
+                      style={{
+                        width: "20px",
+                        height: "20px",
+                      }}
+                    />
+                  }
+                  showGeneral={true}
+                />
+                <DoDisturbOnIcon
+                  onClick={() => {
+                    dispatch(Actions.MapMode.toggleCompositeMode());
+                  }}
+                />
+              </>
+            }
+          />
+        }
+      />
+      <CompositeIndexLayerRenderers />
+    </>
   );
 }

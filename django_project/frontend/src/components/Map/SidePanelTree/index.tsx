@@ -111,10 +111,18 @@ export default function SidePanelTreeView({
     } else {
       // @ts-ignore
       return state.compositeIndicatorLayer.data?.config?.indicatorLayers.map(
-        (layer: any) => layer.id,
+        (layer: any) => layer.id.toString(),
       );
     }
   });
+
+  const updateCompositeIndicatorLayer = (selected: string[]) => {
+    // Update composite index layer
+    dispatch(
+      // @ts-ignore
+      Actions.CompositeIndicatorLayer.updateIndicatorLayers(selected),
+    );
+  };
 
   useEffect(() => {
     setNodes(data);
@@ -129,7 +137,9 @@ export default function SidePanelTreeView({
       }
     }
     if (maxSelect <= 2 && newSelected.length > 0) {
-      setSelected(Array.from(new Set(newSelected)));
+      const selectedIds: string[] = Array.from(new Set(newSelected));
+      setSelected(selectedIds);
+      updateCompositeIndicatorLayer(selectedIds);
     }
   }, [data]);
 
@@ -138,16 +148,6 @@ export default function SidePanelTreeView({
       setWidth(layerGroupListRef.current.offsetWidth - 20);
     }
   }, []);
-
-  /** COMPOSITE INDEX LAYER
-   * Update composite index layer when selected changed
-   */
-  useEffect(() => {
-    dispatch(
-      // @ts-ignore
-      Actions.CompositeIndicatorLayer.updateIndicatorLayers(selected),
-    );
-  }, [selected]);
 
   /** COMPOSITE INDEX LAYER
    * Update composite index layer when selected changed
@@ -233,6 +233,8 @@ export default function SidePanelTreeView({
     }
     onChange(_selectedIds);
     setSelected(_selectedIds);
+
+    updateCompositeIndicatorLayer(_selectedIds);
   };
 
   const getChildIds = (_data: any) => {
@@ -391,7 +393,6 @@ export default function SidePanelTreeView({
       </TreeItem>
     );
   };
-
   return (
     <div className="TreeView">
       <Paper
