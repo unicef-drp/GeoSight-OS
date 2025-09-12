@@ -37,6 +37,9 @@ export default function DynamicIndicatorLayer({ indicatorLayer }) {
   const dispatch = useDispatch();
   const prevState = useRef();
   const indicators = useSelector((state) => state.dashboard.data.indicators);
+  const indicatorLayers = useSelector(
+    (state) => state.dashboard.data.indicatorLayers,
+  );
   const geoField = useSelector((state) => state.dashboard.data.geoField);
   const referenceLayer = useSelector(
     (state) => state.dashboard.data.referenceLayer,
@@ -54,6 +57,10 @@ export default function DynamicIndicatorLayer({ indicatorLayer }) {
   const indicatorLayerIds = useSelector(
     (state) => state.selectionState.filter.indicatorLayerIds,
   );
+  const selectedAdminLevel = useSelector(
+    (state) => state.selectedAdminLevel?.level,
+  );
+  const relatedTableData = useSelector((state) => state.relatedTableData);
   const filteredGeometries = useSelector((state) => state.filteredGeometries);
   const activated = [
     currentIndicatorLayer?.id,
@@ -109,7 +116,6 @@ export default function DynamicIndicatorLayer({ indicatorLayer }) {
     }
   }, [indicatorsData, indicatorLayerMetadata]);
 
-  console.log(indicatorLayer);
   /** Update datas */
   useEffect(() => {
     if (!activated) {
@@ -127,6 +133,22 @@ export default function DynamicIndicatorLayer({ indicatorLayer }) {
       );
       if (!indicatorData?.fetched) {
         loaded = false;
+      }
+    });
+
+    // Checking the related tables
+    indicatorLayer.indicatorLayers?.map((il) => {
+      const layer = indicatorLayers.find(
+        (l) => l.id.toString() === il.id.toString(),
+      );
+      if (layer) {
+        il.config = layer.config;
+        il.related_tables = layer.related_tables;
+        layer.related_tables?.map((rt) => {
+          if (!relatedTableData[rt.id]?.fetched) {
+            loaded = false;
+          }
+        });
       }
     });
     // ---------------------------------------
@@ -156,15 +178,19 @@ export default function DynamicIndicatorLayer({ indicatorLayer }) {
         false,
         false,
         filteredGeometries,
+        relatedTableData,
+        selectedAdminLevel,
       );
     }
   }, [
     referenceLayer,
     indicatorsData,
+    relatedTableData,
     geoField,
     config,
     activated,
     filteredGeometries,
+    selectedAdminLevel,
   ]);
 
   return null;

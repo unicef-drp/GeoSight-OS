@@ -45,9 +45,6 @@ export const getRelatedTableData = (data, config, selectedGlobalTime, geoField =
         adminLevels: adminLevels
       }
     )
-    if (cache[identifier]) {
-      return cache[identifier]
-    }
 
     // Filter by admin level
     if (adminLevels !== null) {

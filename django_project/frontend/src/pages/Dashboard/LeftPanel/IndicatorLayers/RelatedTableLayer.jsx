@@ -40,7 +40,9 @@ export default function RelatedTableLayer({ relatedTableLayer }) {
     referenceLayer: referenceLayerDashboard,
     indicatorLayers
   } = useSelector(state => state.dashboard.data)
-  const relatedTableDataState = useSelector(state => state.relatedTableData)
+  const relatedTableData = useSelector(state => {
+    return state.relatedTableData[relatedTableLayer.related_tables[0].id]?.data
+  })
 
   // Reference layer data
   const referenceLayer = referenceLayerIndicatorLayer(referenceLayerDashboard, relatedTableLayer)
@@ -50,7 +52,6 @@ export default function RelatedTableLayer({ relatedTableLayer }) {
 
   // Related table attributes
   const relatedTable = relatedTableLayer.related_tables[0]
-  const relatedTableData = relatedTableDataState[relatedTableLayer.related_tables[0].id]?.data
   const relatedTableConfig = relatedTables.find(rt => rt.id === relatedTable.id)
 
   /**

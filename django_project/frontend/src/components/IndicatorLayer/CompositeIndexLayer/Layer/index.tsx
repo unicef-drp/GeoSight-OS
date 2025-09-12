@@ -54,6 +54,7 @@ export function CompositeIndexLayerRenderers() {
 
   const indicatorLayer = {
     ...data,
+    indicatorLayers: data.config.indicatorLayers,
     config: {
       exposedVariables: [],
       expression: configToExpression(data, indicatorLayers),

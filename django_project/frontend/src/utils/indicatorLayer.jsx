@@ -108,6 +108,8 @@ export function fetchDynamicLayerData(
   skipAggregate,
   updateStyle = false,
   filteredGeometries = null,
+  relatedTableData = null,
+  selectedAdminLevel,
 ) {
   const dynamicLayerIndicators = dynamicLayerIndicatorList(
     indicatorLayer,
@@ -118,6 +120,7 @@ export function fetchDynamicLayerData(
   let data = [];
   const minMax = {};
 
+  // Getting indicator data
   dynamicLayerIndicators.map((indicator) => {
     if (indicatorsData[indicator.id]?.data) {
       let total = 0;
@@ -160,6 +163,59 @@ export function fetchDynamicLayerData(
       error = indicatorsData[indicator.id].error;
     }
   });
+
+  // Getting related table data
+  if (relatedTableData) {
+    // Checking the related tables
+    indicatorLayer.indicatorLayers?.map((layer) => {
+      if (layer.related_tables[0]) {
+        let total = 0;
+        let min = null;
+        let max = null;
+        const { rows } = getRelatedTableData(
+          relatedTableData[layer.related_tables[0].id]?.data,
+          layer.config,
+          null,
+          geoField,
+          true,
+          selectedAdminLevel,
+        );
+
+        const id = "layer_" + layer.id;
+        rows.map((row) => {
+          data.push({
+            admin_level: row.admin_level,
+            concept_uuid: row.concept_uuid,
+            date: row.date,
+            geometry_code: row.geometry_code,
+            value: row.value,
+            id: id,
+          });
+          if (filteredGeometries !== null) {
+            if (
+              !filteredGeometries.includes(row.concept_uuid) &&
+              !filteredGeometries.includes(row.geometry_code)
+            ) {
+              return;
+            }
+          }
+          // Create max and min
+          total += row.value;
+          if (min == null || row.value < min) {
+            min = row.value;
+          }
+          if (max == null || row.value > max) {
+            max = row.value;
+          }
+        });
+        minMax[id] = {
+          total: total,
+          min: min,
+          max: max,
+        };
+      }
+    });
+  }
 
   // If error, set error
   if (error) {
