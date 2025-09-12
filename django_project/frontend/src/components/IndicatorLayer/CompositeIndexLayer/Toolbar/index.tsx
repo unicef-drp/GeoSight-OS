@@ -17,7 +17,7 @@
    Composite Index Layer Toolbar
    ========================================================================== */
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Variables } from "../../../../utils/Variables";
 import {
@@ -46,13 +46,6 @@ export default function CompositeIndexLayerToolbar() {
   const enabled =
     compositeMode || isEligibleForCompositeLayer(currentIndicatorLayer);
 
-  /** Update data when opened **/
-  useEffect(() => {
-    if (compositeMode) {
-      setPreviousLayer(currentIndicatorLayer);
-    }
-  }, [compositeMode]);
-
   return (
     // @ts-ignore
     <Plugin>
@@ -74,9 +67,6 @@ export default function CompositeIndexLayerToolbar() {
                 if (enabled) {
                   if (previousLayer) {
                     dispatch(
-                      Actions.SelectedIndicatorLayer.change(previousLayer),
-                    );
-                    dispatch(
                       // @ts-ignore
                       Actions.CompositeIndicatorLayer.updateIndicatorLayers([
                         previousLayer.id,
@@ -86,6 +76,9 @@ export default function CompositeIndexLayerToolbar() {
                   (async () => {
                     await delay(100);
                     dispatch(Actions.MapMode.toggleCompositeMode());
+                    dispatch(
+                      Actions.SelectedIndicatorLayer.change(previousLayer),
+                    );
                   })();
                 }
               }}
@@ -94,7 +87,11 @@ export default function CompositeIndexLayerToolbar() {
             <LabelOffIcon
               onClick={() => {
                 if (enabled) {
-                  dispatch(Actions.MapMode.toggleCompositeMode());
+                  setPreviousLayer(currentIndicatorLayer);
+                  (async () => {
+                    await delay(100);
+                    dispatch(Actions.MapMode.toggleCompositeMode());
+                  })();
                 }
               }}
             />

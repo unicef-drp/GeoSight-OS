@@ -107,6 +107,7 @@ export function fetchDynamicLayerData(
   onSuccess,
   skipAggregate,
   updateStyle = false,
+  filteredGeometries = null,
 ) {
   const dynamicLayerIndicators = dynamicLayerIndicatorList(
     indicatorLayer,
@@ -115,8 +116,14 @@ export function fetchDynamicLayerData(
 
   let error = "";
   let data = [];
+  const minMax = {};
+
   dynamicLayerIndicators.map((indicator) => {
     if (indicatorsData[indicator.id]?.data) {
+      let total = 0;
+      let min = null;
+      let max = null;
+      const id = indicator.shortcode ? indicator.shortcode : indicator.id;
       indicatorsData[indicator.id].data.map((row) => {
         data.push({
           admin_level: row.admin_level,
@@ -124,9 +131,30 @@ export function fetchDynamicLayerData(
           date: row.date,
           geometry_code: row.geometry_code,
           value: row.value,
-          id: indicator.shortcode ? indicator.shortcode : indicator.id,
+          id: id,
         });
+        if (filteredGeometries !== null) {
+          if (
+            !filteredGeometries.includes(row.concept_uuid) &&
+            !filteredGeometries.includes(row.geometry_code)
+          ) {
+            return;
+          }
+        }
+        // Create max and min
+        total += row.value;
+        if (min == null || row.value < min) {
+          min = row.value;
+        }
+        if (max == null || row.value > max) {
+          max = row.value;
+        }
       });
+      minMax[id] = {
+        total: total,
+        min: min,
+        max: max,
+      };
     }
     if (indicatorsData[indicator.id].error) {
       error = indicatorsData[indicator.id].error;
@@ -162,13 +190,23 @@ export function fetchDynamicLayerData(
 
     // Construct data
     let response = [];
+    const minMaxValues = {};
+    for (const [key, value] of Object.entries(minMax)) {
+      minMaxValues[key + "_min"] = value.min;
+      minMaxValues[key + "_max"] = value.max;
+      minMaxValues[key + "_total"] = value.total;
+    }
+
     for (const [key, value] of Object.entries(dataDict)) {
       response.push({
         admin_level: value.admin_level,
         concept_uuid: value.concept_uuid,
         date: value.date,
         geometry_code: value.geometry_code,
-        value: dynamicLayerData(indicatorLayer, value),
+        value: dynamicLayerData(indicatorLayer, {
+          ...value,
+          values: { ...value.values, ...minMaxValues },
+        }),
       });
     }
     if (updateStyle) {

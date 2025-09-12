@@ -25,31 +25,53 @@ import {
 } from "../../../../types/IndicatorLayer";
 import { useDispatch, useSelector } from "react-redux";
 import IndicatorLayer from "../../../Map/SidePanelTree/IndicatorLayer";
-import { CompositeIndexLayerType } from "../../../../utils/indicatorLayer";
+import {
+  CompositeIndexLayerType,
+  DynamicIndicatorType,
+} from "../../../../utils/indicatorLayer";
 import { Actions } from "../../../../store/dashboard";
 import { CogIcon } from "../../../Icons";
-import { defaultCompositeIndexLayer } from "../variable";
+import { configToExpression, defaultCompositeIndexLayer } from "../variable";
 import { getDashboardTool } from "../../../../selectors/dashboard";
 import { Variables } from "../../../../utils/Variables";
 import CompositeIndexLayerConfig from "../Config";
+import DynamicIndicatorLayer
+  from "../../../../pages/Dashboard/LeftPanel/IndicatorLayers/DynamicIndicatorLayer";
 
 import "./style.scss";
 
 /** Composite index layer.*/
 export function CompositeIndexLayerRenderers() {
+  const dispatch = useDispatch();
   // @ts-ignore
   const data = useSelector((state) => state.compositeIndicatorLayer.data);
   // @ts-ignore
   const compositeMode = useSelector((state) => state.mapMode.compositeMode);
+  const indicatorLayers = useSelector(
+    // @ts-ignore
+    (state) => state.dashboard.data.indicatorLayers,
+  );
+
+  const indicatorLayer = {
+    ...data,
+    config: {
+      exposedVariables: [],
+      expression: configToExpression(data, indicatorLayers),
+    },
+    type: DynamicIndicatorType,
+  };
 
   /** Update data when opened **/
   useEffect(() => {
     if (compositeMode) {
-      // console.log(data);
+      dispatch(Actions.SelectedIndicatorLayer.change(indicatorLayer));
     }
   }, [data, compositeMode]);
 
-  return <></>;
+  if (!indicatorLayer?.id) {
+    return null;
+  }
+  return <DynamicIndicatorLayer indicatorLayer={indicatorLayer} />;
 }
 
 /** Composite index layer.*/

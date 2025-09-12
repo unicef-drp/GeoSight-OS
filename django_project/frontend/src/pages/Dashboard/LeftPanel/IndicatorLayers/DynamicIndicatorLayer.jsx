@@ -26,7 +26,7 @@ import { Actions } from "../../../../store/dashboard";
 import {
   dynamicLayerIndicatorList,
   fetchDynamicLayerData,
-  indicatorLayerId
+  indicatorLayerId,
 } from "../../../../utils/indicatorLayer";
 import { getIndicatorDataByLayer } from "../../../../utils/indicatorData";
 
@@ -34,101 +34,140 @@ import { getIndicatorDataByLayer } from "../../../../utils/indicatorData";
  * Related table layer handler
  */
 export default function DynamicIndicatorLayer({ indicatorLayer }) {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const prevState = useRef();
-  const {
-    indicators,
-    geoField,
-    referenceLayer
-  } = useSelector(state => state.dashboard.data)
-  const indicatorLayerMetadata = useSelector(state => state.indicatorLayerMetadata);
-  const indicatorsData = useSelector(state => state.indicatorsData);
-  const currentIndicatorLayer = useSelector(state => state.selectedIndicatorLayer);
-  const currentIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer);
-  const indicatorLayerIds = useSelector(state => state.selectionState.filter.indicatorLayerIds);
+  const indicators = useSelector((state) => state.dashboard.data.indicators);
+  const geoField = useSelector((state) => state.dashboard.data.geoField);
+  const referenceLayer = useSelector(
+    (state) => state.dashboard.data.referenceLayer,
+  );
+  const indicatorLayerMetadata = useSelector(
+    (state) => state.indicatorLayerMetadata,
+  );
+  const indicatorsData = useSelector((state) => state.indicatorsData);
+  const currentIndicatorLayer = useSelector(
+    (state) => state.selectedIndicatorLayer,
+  );
+  const currentIndicatorSecondLayer = useSelector(
+    (state) => state.selectedIndicatorSecondLayer,
+  );
+  const indicatorLayerIds = useSelector(
+    (state) => state.selectionState.filter.indicatorLayerIds,
+  );
+  const filteredGeometries = useSelector((state) => state.filteredGeometries);
   const activated = [
     currentIndicatorLayer?.id,
     currentIndicatorSecondLayer?.id,
-    ...indicatorLayerIds
+    ...indicatorLayerIds,
   ].includes(indicatorLayer.id);
 
   const id = indicatorLayer.id;
-  const { config } = indicatorLayer
-  const dynamicLayerIndicators = dynamicLayerIndicatorList(indicatorLayer, indicators)
+  const { config } = indicatorLayer;
+  const dynamicLayerIndicators = dynamicLayerIndicatorList(
+    indicatorLayer,
+    indicators,
+  );
 
   /** Update dates */
   useEffect(() => {
-    let dates = []
+    let dates = [];
     let loading = false;
-    let errorMessage = '';
-    dynamicLayerIndicators.map(indicator => {
-      const indicatorDates = indicatorLayerMetadata['indicator-' + indicator.id]?.dates
+    let errorMessage = "";
+    dynamicLayerIndicators.map((indicator) => {
+      const indicatorDates =
+        indicatorLayerMetadata["indicator-" + indicator.id]?.dates;
       if (indicatorDates) {
-        if (typeof indicatorDates === 'string' && indicatorDates.includes('Error')) {
-          errorMessage = indicatorDates
+        if (
+          typeof indicatorDates === "string" &&
+          indicatorDates.includes("Error")
+        ) {
+          errorMessage = indicatorDates;
         } else {
-          dates = dates.concat(indicatorDates)
+          dates = dates.concat(indicatorDates);
         }
       } else {
-        loading = true
+        loading = true;
       }
-    })
-    const indicatorDates = indicatorLayerMetadata[id]?.dates
+    });
+    const indicatorDates = indicatorLayerMetadata[id]?.dates;
     if (!loading) {
       if (errorMessage) {
-        dates = errorMessage
+        dates = errorMessage;
         if (!indicatorDates || dates !== indicatorDates) {
-          dispatch(Actions.IndicatorLayerMetadata.updateDates(id, dates))
+          dispatch(Actions.IndicatorLayerMetadata.updateDates(id, dates));
         }
       } else {
-        dates = Array.from(new Set(dates))
-        dates.sort()
-        if (!indicatorDates || JSON.stringify(dates) !== JSON.stringify(indicatorDates)) {
-          dispatch(Actions.IndicatorLayerMetadata.updateDates(id, dates))
+        dates = Array.from(new Set(dates));
+        dates.sort();
+        if (
+          !indicatorDates ||
+          JSON.stringify(dates) !== JSON.stringify(indicatorDates)
+        ) {
+          dispatch(Actions.IndicatorLayerMetadata.updateDates(id, dates));
         }
       }
     }
-  }, [indicatorsData, indicatorLayerMetadata])
+  }, [indicatorsData, indicatorLayerMetadata]);
 
+  console.log(indicatorLayer);
   /** Update datas */
   useEffect(() => {
     if (!activated) {
-      return
+      return;
     }
-    const id = indicatorLayerId(indicatorLayer)
+    const id = indicatorLayerId(indicatorLayer);
     // ------------ Check loading -----------
-    let loaded = true
-    dynamicLayerIndicators.map(indicator => {
-      const indicatorData = getIndicatorDataByLayer(indicator.id, indicatorsData, indicatorLayer, referenceLayer)
+    let loaded = true;
+    dynamicLayerIndicators.map((indicator) => {
+      const indicatorData = getIndicatorDataByLayer(
+        indicator.id,
+        indicatorsData,
+        indicatorLayer,
+        referenceLayer,
+      );
       if (!indicatorData?.fetched) {
-        loaded = false
+        loaded = false;
       }
-    })
+    });
     // ---------------------------------------
     if (!loaded && !indicatorsData[id]?.fetching) {
-      dispatch(Actions.IndicatorsData.request(id))
-      prevState.lastData = null
+      dispatch(Actions.IndicatorsData.request(id));
+      prevState.lastData = null;
     }
     if (loaded) {
       fetchDynamicLayerData(
-        indicatorLayer, indicators, indicatorsData, geoField,
-        error => {
+        indicatorLayer,
+        indicators,
+        indicatorsData,
+        geoField,
+        (error) => {
           if (error !== prevState.lastData) {
-            dispatch(Actions.IndicatorsData.receive([], error, id))
-            prevState.lastData = error
+            dispatch(Actions.IndicatorsData.receive([], error, id));
+            prevState.lastData = error;
           }
-        }, response => {
+        },
+        (response) => {
           if (JSON.stringify(response) !== prevState.lastData) {
-            dispatch(Actions.IndicatorsData.receive(response, '', id))
-            prevState.lastData = JSON.stringify(response)
+            dispatch(Actions.IndicatorsData.receive(response, "", id));
+            prevState.lastData = JSON.stringify(response);
           }
-          $('#Indicator-Radio-' + indicatorLayer.id).removeClass('Loading')
-        }
-      )
+          $("#Indicator-Radio-" + indicatorLayer.id).removeClass("Loading");
+        },
+        false,
+        false,
+        filteredGeometries,
+      );
     }
-  }, [referenceLayer, indicatorsData, geoField, config, activated])
+  }, [
+    referenceLayer,
+    indicatorsData,
+    geoField,
+    config,
+    activated,
+    filteredGeometries,
+  ]);
 
-  return null
+  return null;
 }
 
 /**
@@ -136,17 +175,29 @@ export default function DynamicIndicatorLayer({ indicatorLayer }) {
  */
 export function DynamicIndicatorLayerConfig({ indicatorLayer }) {
   const dispatch = useDispatch();
-  const selectedDynamicIndicatorLayer = useSelector(state => state.selectedDynamicIndicatorLayer)
+  const selectedDynamicIndicatorLayer = useSelector(
+    (state) => state.selectedDynamicIndicatorLayer,
+  );
 
-  return <div className='LayerIcon LayerConfig'>
-    {
-      selectedDynamicIndicatorLayer === indicatorLayer.id ?
-        <FilterAltIcon fontSize={"small"} onClick={() => {
-          dispatch(Actions.SelectedDynamicIndicatorLayer.change(null))
-        }}/> :
-        <FilterAltOffIcon fontSize={"small"} onClick={() => {
-          dispatch(Actions.SelectedDynamicIndicatorLayer.change(indicatorLayer.id))
-        }}/>
-    }
-  </div>
+  return (
+    <div className="LayerIcon LayerConfig">
+      {selectedDynamicIndicatorLayer === indicatorLayer.id ? (
+        <FilterAltIcon
+          fontSize={"small"}
+          onClick={() => {
+            dispatch(Actions.SelectedDynamicIndicatorLayer.change(null));
+          }}
+        />
+      ) : (
+        <FilterAltOffIcon
+          fontSize={"small"}
+          onClick={() => {
+            dispatch(
+              Actions.SelectedDynamicIndicatorLayer.change(indicatorLayer.id),
+            );
+          }}
+        />
+      )}
+    </div>
+  );
 }

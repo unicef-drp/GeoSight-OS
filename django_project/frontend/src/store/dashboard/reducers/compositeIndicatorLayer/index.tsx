@@ -85,9 +85,6 @@ export default function compositeIndexLayerReducer(
             });
           }
         });
-        console.log('-------------------');
-        console.log(data);
-        console.log(state.data.config.indicatorLayers);
         return {
           ...state,
           data: { ...state.data },
