@@ -83,9 +83,6 @@ export function dynamicLayerIndicatorList(indicatorLayer, indicators) {
  * }
  */
 export function dynamicLayerData(indicatorLayer, context) {
-  console.log('-------------------------------')
-  console.log(indicatorLayer?.config.expression)
-  console.log(context)
   indicatorLayer?.config.exposedVariables.map((variable) => {
     context.values[variable.field] = variable.value;
   });
