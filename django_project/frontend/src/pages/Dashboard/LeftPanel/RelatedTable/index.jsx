@@ -53,6 +53,9 @@ export function RelatedTable({
   const relatedTableIds = useSelector(
     (state) => state.selectionState.filter.relatedTableIds,
   );
+  const compositeIndicatorLayerIds = useSelector(
+    (state) => state.selectionState.composite.indicatorLayerIds,
+  );
 
   // Reference layer data
   const referenceLayerData = useSelector(
@@ -61,7 +64,7 @@ export function RelatedTable({
   const activatedLayers = [
     currentIndicatorLayer?.id,
     currentIndicatorSecondLayer?.id,
-    ...(currentIndicatorLayer?.indicatorLayers?.map((layer) => parseInt(layer.id)) ?? []),
+    ...compositeIndicatorLayerIds,
   ];
   const activated =
     activatedLayers.includes(indicatorLayer.id) ||

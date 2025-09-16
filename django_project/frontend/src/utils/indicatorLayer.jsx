@@ -83,6 +83,9 @@ export function dynamicLayerIndicatorList(indicatorLayer, indicators) {
  * }
  */
 export function dynamicLayerData(indicatorLayer, context) {
+  console.log('-------------------------------')
+  console.log(indicatorLayer?.config.expression)
+  console.log(context)
   indicatorLayer?.config.exposedVariables.map((variable) => {
     context.values[variable.field] = variable.value;
   });
@@ -164,58 +167,70 @@ export function fetchDynamicLayerData(
     }
   });
 
-  // Getting related table data
-  if (relatedTableData) {
-    // Checking the related tables
-    indicatorLayer.indicatorLayers?.map((layer) => {
-      if (layer.related_tables[0]) {
-        let total = 0;
-        let min = null;
-        let max = null;
-        const { rows } = getRelatedTableData(
-          relatedTableData[layer.related_tables[0].id]?.data,
-          layer.config,
-          null,
-          geoField,
-          true,
-          selectedAdminLevel,
-        );
+  // Get indicator layers data
+  const dynamicLayerIndicatorLayers =
+    indicatorLayer.config?.indicatorLayers ?? [];
 
-        const id = "layer_" + layer.id;
-        rows.map((row) => {
-          data.push({
-            admin_level: row.admin_level,
-            concept_uuid: row.concept_uuid,
-            date: row.date,
-            geometry_code: row.geometry_code,
-            value: row.value,
-            id: id,
-          });
-          if (filteredGeometries !== null) {
-            if (
-              !filteredGeometries.includes(row.concept_uuid) &&
-              !filteredGeometries.includes(row.geometry_code)
-            ) {
-              return;
-            }
-          }
-          // Create max and min
-          total += row.value;
-          if (min == null || row.value < min) {
-            min = row.value;
-          }
-          if (max == null || row.value > max) {
-            max = row.value;
-          }
+  // Get indicator layer data
+  dynamicLayerIndicatorLayers.map((layer) => {
+    const id = "layer_" + layer.id;
+    let total = 0;
+    let min = null;
+    let max = null;
+    let rowData = null;
+
+    // For related table
+    if (layer.related_tables[0] && relatedTableData) {
+      const { rows } = getRelatedTableData(
+        relatedTableData[layer.related_tables[0].id]?.data,
+        layer.config,
+        null,
+        geoField,
+        true,
+        selectedAdminLevel,
+      );
+      rowData = rows;
+    }
+
+    // For layer
+    if (indicatorsData && indicatorsData[id]?.fetched) {
+      rowData = indicatorsData[id].data;
+    }
+
+    if (rowData) {
+      rowData.map((row) => {
+        data.push({
+          admin_level: row.admin_level,
+          concept_uuid: row.concept_uuid,
+          date: row.date,
+          geometry_code: row.geometry_code,
+          value: row.value,
+          id: id,
         });
-        minMax[id] = {
-          total: total,
-          min: min,
-          max: max,
-        };
-      }
-    });
-  }
+        if (filteredGeometries !== null) {
+          if (
+            !filteredGeometries.includes(row.concept_uuid) &&
+            !filteredGeometries.includes(row.geometry_code)
+          ) {
+            return;
+          }
+        }
+        // Create max and min
+        total += row.value;
+        if (min == null || row.value < min) {
+          min = row.value;
+        }
+        if (max == null || row.value > max) {
+          max = row.value;
+        }
+      });
+      minMax[id] = {
+        total: total,
+        min: min,
+        max: max,
+      };
+    }
+  });
 
   // If error, set error
   if (error) {

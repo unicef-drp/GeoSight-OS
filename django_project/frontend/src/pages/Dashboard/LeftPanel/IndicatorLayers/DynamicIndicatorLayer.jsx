@@ -57,6 +57,9 @@ export default function DynamicIndicatorLayer({ indicatorLayer }) {
   const indicatorLayerIds = useSelector(
     (state) => state.selectionState.filter.indicatorLayerIds,
   );
+  const compositeIndicatorLayerIds = useSelector(
+    (state) => state.selectionState.composite.indicatorLayerIds,
+  );
   const selectedAdminLevel = useSelector(
     (state) => state.selectedAdminLevel?.level,
   );
@@ -66,6 +69,7 @@ export default function DynamicIndicatorLayer({ indicatorLayer }) {
     currentIndicatorLayer?.id,
     currentIndicatorSecondLayer?.id,
     ...indicatorLayerIds,
+    ...compositeIndicatorLayerIds,
   ].includes(indicatorLayer.id);
 
   const id = indicatorLayer.id;
@@ -137,7 +141,7 @@ export default function DynamicIndicatorLayer({ indicatorLayer }) {
     });
 
     // Checking the related tables
-    indicatorLayer.indicatorLayers?.map((il) => {
+    indicatorLayer.config?.indicatorLayers?.map((il) => {
       const layer = indicatorLayers.find(
         (l) => l.id.toString() === il.id.toString(),
       );
@@ -204,25 +208,63 @@ export function DynamicIndicatorLayerConfig({ indicatorLayer }) {
   const selectedDynamicIndicatorLayer = useSelector(
     (state) => state.selectedDynamicIndicatorLayer,
   );
+  const currentIndicatorLayer = useSelector(
+    (state) => state.selectedIndicatorLayer,
+  );
+  const currentIndicatorSecondLayer = useSelector(
+    (state) => state.selectedIndicatorSecondLayer,
+  );
+  const indicatorLayerIds = useSelector(
+    (state) => state.selectionState.filter.indicatorLayerIds,
+  );
+  const compositeIndicatorLayerIds = useSelector(
+    (state) => state.selectionState.composite.indicatorLayerIds,
+  );
+  const activated = [
+    currentIndicatorLayer?.id,
+    currentIndicatorSecondLayer?.id,
+    ...indicatorLayerIds,
+    ...compositeIndicatorLayerIds,
+  ].includes(indicatorLayer.id);
+
+  const isActive = selectedDynamicIndicatorLayer === indicatorLayer.id;
+
+  /** Remove the selector. */
+  useEffect(() => {
+    if (activated) {
+      if (!isActive) {
+        dispatch(
+          Actions.SelectedDynamicIndicatorLayer.change(indicatorLayer.id),
+        );
+      }
+    } else {
+      if (isActive) {
+        dispatch(Actions.SelectedDynamicIndicatorLayer.change(null));
+      }
+    }
+  }, [activated]);
 
   return (
-    <div className="LayerIcon LayerConfig">
-      {selectedDynamicIndicatorLayer === indicatorLayer.id ? (
-        <FilterAltIcon
-          fontSize={"small"}
-          onClick={() => {
-            dispatch(Actions.SelectedDynamicIndicatorLayer.change(null));
-          }}
-        />
+    <div
+      className="LayerIcon LayerConfig"
+      onClick={(e) => {
+        if (isActive) {
+          dispatch(Actions.SelectedDynamicIndicatorLayer.change(null));
+        } else {
+          dispatch(
+            Actions.SelectedDynamicIndicatorLayer.change(indicatorLayer.id),
+          );
+        }
+        if (activated) {
+          e.stopPropagation();
+          e.preventDefault();
+        }
+      }}
+    >
+      {isActive ? (
+        <FilterAltIcon fontSize="small" />
       ) : (
-        <FilterAltOffIcon
-          fontSize={"small"}
-          onClick={() => {
-            dispatch(
-              Actions.SelectedDynamicIndicatorLayer.change(indicatorLayer.id),
-            );
-          }}
-        />
+        <FilterAltOffIcon fontSize="small" />
       )}
     </div>
   );

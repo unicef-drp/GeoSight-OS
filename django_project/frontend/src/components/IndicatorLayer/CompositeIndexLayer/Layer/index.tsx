@@ -54,8 +54,8 @@ export function CompositeIndexLayerRenderers() {
 
   const indicatorLayer = {
     ...data,
-    indicatorLayers: data.config.indicatorLayers,
     config: {
+      indicatorLayers: data.config.indicatorLayers,
       exposedVariables: [],
       expression: configToExpression(data, indicatorLayers),
     },
@@ -66,6 +66,13 @@ export function CompositeIndexLayerRenderers() {
   useEffect(() => {
     if (compositeMode) {
       dispatch(Actions.SelectedIndicatorLayer.change(indicatorLayer));
+      dispatch(
+        Actions.SelectionState.updateCompositeIndicatorLayer(
+          data.config.indicatorLayers.map((layer: any) => parseInt(layer.id)),
+        ),
+      );
+    } else {
+      dispatch(Actions.SelectionState.updateCompositeIndicatorLayer([]));
     }
   }, [data, compositeMode]);
 
@@ -92,8 +99,6 @@ export default function CompositeIndexLayer() {
     description: "Composite index layer",
     type: CompositeIndexLayerType,
     indicators: [],
-    // @ts-ignore
-    indicatorLayers: [],
     visible_by_default: true,
     last_update: "",
     related_tables: [],

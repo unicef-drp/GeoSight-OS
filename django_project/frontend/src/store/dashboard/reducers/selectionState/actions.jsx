@@ -15,13 +15,14 @@
 
 import {
   SELECTION_STATE,
+  SELECTION_STATE_COMPOSITE_INDICATOR_LAYERS,
   SELECTION_STATE_FILTER_ADD_INDICATOR,
   SELECTION_STATE_FILTER_ADD_INDICATOR_LAYER,
   SELECTION_STATE_FILTER_ADD_RELATED_TABLE,
   SELECTION_STATE_FILTER_REMOVE_INDICATOR,
   SELECTION_STATE_FILTER_REMOVE_INDICATOR_LAYER,
-  SELECTION_STATE_FILTER_REMOVE_RELATED_TABLE
-} from './index'
+  SELECTION_STATE_FILTER_REMOVE_RELATED_TABLE,
+} from "./index";
 
 /** Add indicator of filter.
  * @param {number} payload id.
@@ -30,7 +31,7 @@ export function filterAddIndicator(payload) {
   return {
     name: SELECTION_STATE,
     type: SELECTION_STATE_FILTER_ADD_INDICATOR,
-    payload: payload
+    payload: payload,
   };
 }
 
@@ -41,7 +42,7 @@ export function filterRemoveIndicator(payload) {
   return {
     name: SELECTION_STATE,
     type: SELECTION_STATE_FILTER_REMOVE_INDICATOR,
-    payload: payload
+    payload: payload,
   };
 }
 
@@ -52,7 +53,7 @@ export function filterAddIndicatorLayer(payload) {
   return {
     name: SELECTION_STATE,
     type: SELECTION_STATE_FILTER_ADD_INDICATOR_LAYER,
-    payload: payload
+    payload: payload,
   };
 }
 
@@ -63,7 +64,7 @@ export function filterRemoveIndicatorLayer(payload) {
   return {
     name: SELECTION_STATE,
     type: SELECTION_STATE_FILTER_REMOVE_INDICATOR_LAYER,
-    payload: payload
+    payload: payload,
   };
 }
 
@@ -74,7 +75,7 @@ export function filterAddRelatedTable(payload) {
   return {
     name: SELECTION_STATE,
     type: SELECTION_STATE_FILTER_ADD_RELATED_TABLE,
-    payload: payload
+    payload: payload,
   };
 }
 
@@ -85,7 +86,17 @@ export function filterRemoveRelatedTable(payload) {
   return {
     name: SELECTION_STATE,
     type: SELECTION_STATE_FILTER_REMOVE_RELATED_TABLE,
-    payload: payload
+    payload: payload,
+  };
+}
+
+/** Update composite indicator layer.
+ */
+export function updateCompositeIndicatorLayer(payload) {
+  return {
+    name: SELECTION_STATE,
+    type: SELECTION_STATE_COMPOSITE_INDICATOR_LAYERS,
+    payload: payload,
   };
 }
 
@@ -95,5 +106,6 @@ export default {
   filterAddIndicatorLayer,
   filterRemoveIndicatorLayer,
   filterAddRelatedTable,
-  filterRemoveRelatedTable
-}
+  filterRemoveRelatedTable,
+  updateCompositeIndicatorLayer,
+};
