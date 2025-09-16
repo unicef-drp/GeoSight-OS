@@ -158,6 +158,7 @@ export default function SidePanelTreeView({
         JSON.stringify(selected) !== JSON.stringify(compositeIndicatorLayerIds)
       ) {
         setSelected(compositeIndicatorLayerIds);
+        onChange(compositeIndicatorLayerIds);
       }
     }
   }, [compositeIndicatorLayerIds, maxSelect]);
@@ -231,6 +232,7 @@ export default function SidePanelTreeView({
         }
       }
     }
+    console.log(_selectedIds);
     onChange(_selectedIds);
     setSelected(_selectedIds);
 

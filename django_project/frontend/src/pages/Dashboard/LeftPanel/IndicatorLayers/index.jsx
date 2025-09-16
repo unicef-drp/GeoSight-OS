@@ -292,7 +292,6 @@ export function IndicatorLayers() {
       if (selectedData.length >= 1) {
         setCurrentIndicatorLayers(selectedData);
       }
-
       updateOtherLayers(selectedData);
     }, 100);
   };

@@ -16,26 +16,23 @@ import { isArray } from "chart.js/helpers";
 import { dictDeepCopy } from "./main";
 import { NO_DATA_RULE } from "../pages/Admin/Style/Form/StyleRules";
 import { getLayerDataCleaned, SingleIndicatorTypes } from "./indicatorLayer";
-import {DjangoRequests, fetchingData} from "../Requests";
+import { fetchingData } from "../Requests";
+import { deepClone } from "@mui/x-data-grid/utils/utils";
 
+export const STYLE_FORM_LIBRARY = "Style from library.";
+const DYNAMIC_QUANTITATIVE = "Dynamic quantitative style.";
+const DYNAMIC_QUALITATIVE = "Dynamic qualitative style.";
 
-export const STYLE_FORM_LIBRARY = 'Style from library.'
-const DYNAMIC_QUANTITATIVE = 'Dynamic quantitative style.'
-const DYNAMIC_QUALITATIVE = 'Dynamic qualitative style.'
+const NATURAL_BREAKS = "Natural breaks.";
+const EQUIDISTANT = "Equidistant.";
+const QUANTILE = "Quantile.";
+const STD_DEFIATION = "Std deviation.";
+const ARITHMETIC_PROGRESSION = "Arithmetic progression.";
+const GEOMETRIC_PROGRESSION = "Geometric progression.";
 
-const NATURAL_BREAKS = 'Natural breaks.'
-const EQUIDISTANT = 'Equidistant.'
-const QUANTILE = 'Quantile.'
-const STD_DEFIATION = 'Std deviation.'
-const ARITHMETIC_PROGRESSION = 'Arithmetic progression.'
-const GEOMETRIC_PROGRESSION = 'Geometric progression.'
+export const dynamicStyleTypes = [DYNAMIC_QUANTITATIVE, DYNAMIC_QUALITATIVE];
 
-
-export const dynamicStyleTypes = [
-  DYNAMIC_QUANTITATIVE, DYNAMIC_QUALITATIVE
-]
-
-export let COLOR_PALETTE_DATA = null
+export let COLOR_PALETTE_DATA = null;
 
 /**
  * Update color data
@@ -43,80 +40,97 @@ export let COLOR_PALETTE_DATA = null
 export async function updateColorPaletteData() {
   return new Promise((resolve, reject) => {
     if (!COLOR_PALETTE_DATA) {
-      fetchingData(
-        `/api/color/palette/list`,
-        {}, {}, (response, error) => {
-          if (response) {
-            COLOR_PALETTE_DATA = response
-            resolve(response)
-          } else {
-            reject(error)
-          }
+      fetchingData(`/api/color/palette/list`, {}, {}, (response, error) => {
+        if (response) {
+          COLOR_PALETTE_DATA = response;
+          resolve(response);
+        } else {
+          reject(error);
         }
-      )
+      });
     } else {
-      resolve(COLOR_PALETTE_DATA)
+      resolve(COLOR_PALETTE_DATA);
     }
   });
 }
 
 /** Return layer style config */
 export function returnLayerStyleConfig(layer, indicators) {
-  let config = {}
+  let config = {};
   if (layer.id) {
-    config = dictDeepCopy(layer)
+    config = dictDeepCopy(layer);
     // Use layer rules
     // If not, use first indicator rules
     if (SingleIndicatorTypes.includes(layer.type)) {
-      const indicatorDetail = indicators.find(indicator => indicator.id === layer?.indicators[0]?.id)
+      const indicatorDetail = indicators.find(
+        (indicator) => indicator.id === layer?.indicators[0]?.id,
+      );
       if (!layer.override_style && indicatorDetail) {
-        config = indicatorDetail
+        config = indicatorDetail;
       }
     } else if (layer.indicators?.length > 1) {
-      config.style = layer.indicators
+      config.style = layer.indicators;
     }
   }
 
   // If from style from library
   if (config.style_type === STYLE_FORM_LIBRARY && config.style_data) {
-    config = config.style_data
+    config = config.style_data;
   }
-  return config
+  return config;
 }
-
 
 /** Getting style of layer ***/
 export const indicatorLayerStyle = (
-  layer, indicators, indicatorsData,
-  relatedTableData, selectedGlobalTime, geoField, admin_level, filteredGeometries,
-  initConfig, referenceLayer
+  layer,
+  indicators,
+  indicatorsData,
+  relatedTableData,
+  selectedGlobalTime,
+  geoField,
+  admin_level,
+  filteredGeometries,
+  initConfig,
+  referenceLayer,
 ) => {
   // Get rules
-  let config = returnLayerStyleConfig(layer, indicators)
+  let config = returnLayerStyleConfig(layer, indicators);
   if (initConfig) {
-    config = initConfig
+    config = initConfig;
   }
-  let style = config.style
+  let style = config.style;
   if (dynamicStyleTypes.includes(config.style_type)) {
     let data = getLayerDataCleaned(
-      indicatorsData, relatedTableData, layer, selectedGlobalTime, geoField,
+      indicatorsData,
+      relatedTableData,
+      layer,
+      selectedGlobalTime,
+      geoField,
       config?.style_config?.sync_filter ? filteredGeometries : null,
-      referenceLayer, admin_level
-    )
-    style = createDynamicStyle(data[0]?.data, config.style_type, config.style_config, config.style_data)
+      referenceLayer,
+      admin_level,
+    );
+    style = createDynamicStyle(
+      data[0]?.data,
+      config.style_type,
+      config.style_config,
+      config.style_data,
+    );
     if (style[admin_level]) {
-      const adminStyle = style[admin_level].filter(st => st.name !== NO_DATA_RULE)
-      adminStyle.reverse()
-      style = [...adminStyle, ...style['NoData']]
+      const adminStyle = style[admin_level].filter(
+        (st) => st.name !== NO_DATA_RULE,
+      );
+      adminStyle.reverse();
+      style = [...adminStyle, ...style["NoData"]];
     } else {
-      style = style['NoData']
+      style = style["NoData"];
     }
   }
   if (style) {
-    style = style.filter(st => st.active)
+    style = style.filter((st) => st.active);
   }
-  return style
-}
+  return style;
+};
 
 /**
  * Create colors from palette
@@ -124,19 +138,17 @@ export const indicatorLayerStyle = (
  * @param classNum
  */
 export function createColors(colors, classNum) {
-  const out = []
+  const out = [];
   for (let idx = 0; idx < classNum; idx++) {
-    let idxInColors = (colors.length - 1) * idx / (classNum - 1)
+    let idxInColors = ((colors.length - 1) * idx) / (classNum - 1);
     if (isNaN(idxInColors)) {
-      idxInColors = 0
+      idxInColors = 0;
     }
-    const before = Math.floor(idxInColors)
-    const after = Math.ceil(idxInColors)
-    out.push(
-      middleColor(colors[before], colors[after], (idxInColors - before))
-    )
+    const before = Math.floor(idxInColors);
+    const after = Math.ceil(idxInColors);
+    out.push(middleColor(colors[before], colors[after], idxInColors - before));
   }
-  return out
+  return out;
 }
 
 /**
@@ -145,20 +157,20 @@ export function createColors(colors, classNum) {
  * @param classNum
  */
 export function createColorsFromPaletteId(paletteId, classNum, isReverse) {
-  let colors = []
+  let colors = [];
   let palette = null;
   if (COLOR_PALETTE_DATA) {
-    palette = COLOR_PALETTE_DATA.find(data => data.id === paletteId)
+    palette = COLOR_PALETTE_DATA.find((data) => data.id === paletteId);
   }
   if (!palette || isNaN(classNum)) {
-    colors = []
+    colors = [];
   } else {
-    colors = createColors(palette.colors, classNum)
+    colors = createColors(palette.colors, classNum);
   }
   if (isReverse) {
-    colors.reverse()
+    colors.reverse();
   }
-  return colors
+  return colors;
 }
 
 /***
@@ -171,141 +183,170 @@ export function createColorsFromPaletteId(paletteId, classNum, isReverse) {
  */
 export function createDynamicStyle(data, styleType, config, styleData) {
   if (config?.no_data_rule?.outline_size) {
-    config.no_data_rule.outline_size = parseFloat(config.no_data_rule.outline_size)
+    config.no_data_rule.outline_size = parseFloat(
+      config.no_data_rule.outline_size,
+    );
     if (isNaN(config.no_data_rule.outline_size)) {
-      config.no_data_rule.outline_size = 0
+      config.no_data_rule.outline_size = 0;
     }
   }
   // If library, override the config
   if (styleType === STYLE_FORM_LIBRARY) {
-    styleType = styleData.style_type
-    config = styleData.style_config
+    styleType = styleData.style_type;
+    config = styleData.style_config;
   }
-  let valuesByAdmin = {}
-  let uniqueValues = []
-  const output = {}
-  if (!(
-    !data || !isArray(data) || !config || config?.color_palette === undefined ||
-    config?.dynamic_classification === undefined ||
-    !dynamicStyleTypes.includes(styleType))
+  let valuesByAdmin = {};
+  let uniqueValues = [];
+  const output = {};
+  if (
+    !(
+      !data ||
+      !isArray(data) ||
+      !config ||
+      config?.color_palette === undefined ||
+      config?.dynamic_classification === undefined ||
+      !dynamicStyleTypes.includes(styleType)
+    )
   ) {
-    let numClass = 1
-    data.map(row => {
+    let numClass = 1;
+    data.map((row) => {
       if (!valuesByAdmin[row.admin_level]) {
-        valuesByAdmin[row.admin_level] = []
+        valuesByAdmin[row.admin_level] = [];
       }
       if (![undefined, null].includes(row.value)) {
-        valuesByAdmin[row.admin_level].push(row.value)
+        valuesByAdmin[row.admin_level].push(row.value);
       }
-    })
+    });
     for (let [admin_level, values] of Object.entries(valuesByAdmin)) {
-      let styles = []
-      values.sort()
+      let styles = [];
+      values.sort();
 
-
-      let classifications = []
+      let classifications = [];
       if (values?.length) {
         if (values.length === 1) {
-          values.push(values[0])
+          values.push(values[0]);
         }
         if (styleType === DYNAMIC_QUALITATIVE) {
-          uniqueValues = Array.from(new Set(values))
-          values = Array.from(new Set(values))
-          numClass = values.length
+          // Re sort as for integer, we need to sort the number
+          values.sort((a, b) => a - b);
+
+          uniqueValues = Array.from(new Set(values));
+          values = Array.from(new Set(values));
+          numClass = values.length;
         } else if (styleType === DYNAMIC_QUANTITATIVE) {
-          uniqueValues = Array.from(new Set(values))
-          numClass = config.dynamic_class_num > uniqueValues.length - 1 ? uniqueValues.length - 1 : config.dynamic_class_num
+          uniqueValues = Array.from(new Set(values));
+          numClass =
+            config.dynamic_class_num > uniqueValues.length - 1
+              ? uniqueValues.length - 1
+              : config.dynamic_class_num;
         }
-        const colors = createColorsFromPaletteId(config.color_palette, numClass, config.color_palette_reverse)
-        numClass = colors.length
+        const colors = createColorsFromPaletteId(
+          config.color_palette,
+          numClass,
+          config.color_palette_reverse,
+        );
+        numClass = colors.length;
 
         /** Generate qualitative styles**/
         if (styleType === DYNAMIC_QUALITATIVE) {
           colors.map((color, idx) => {
-            const usedValue = values[idx]
-            styles.push(
-              {
+            const usedValue = values[idx];
+            styles.push({
+              id: idx,
+              name: usedValue,
+              rule: `x==${usedValue}`,
+              color: color,
+              outline_color: !config.sync_outline
+                ? config.outline_color
+                : color,
+              outline_size: config.outline_size,
+              order: idx,
+              active: true,
+            });
+          });
+        } else if (styleType === DYNAMIC_QUANTITATIVE) {
+          /** Generate quantitative styles**/
+          values = values.filter((val) => !isNaN(val));
+          // If the unique values are just 2
+          // We can show exactly 2 classification
+          if (uniqueValues.length <= 2) {
+            const colors = createColorsFromPaletteId(
+              config.color_palette,
+              uniqueValues.length,
+              config.color_palette_reverse,
+            );
+            colors.map((color, idx) => {
+              const usedValue = uniqueValues[idx];
+              styles.push({
                 id: idx,
                 name: usedValue,
                 rule: `x==${usedValue}`,
                 color: color,
-                outline_color: !config.sync_outline ? config.outline_color : color,
+                outline_color: !config.sync_outline
+                  ? config.outline_color
+                  : color,
                 outline_size: config.outline_size,
                 order: idx,
-                active: true
-              }
-            )
-          })
-        }
-        /** Generate quantitative styles**/
-        else if (styleType === DYNAMIC_QUANTITATIVE) {
-          values = values.filter(val => !isNaN(val))
-          // If the unique values are just 2
-          // We can show exactly 2 classification
-          if (uniqueValues.length <= 2) {
-            const colors = createColorsFromPaletteId(config.color_palette, uniqueValues.length, config.color_palette_reverse)
-            colors.map((color, idx) => {
-              const usedValue = uniqueValues[idx]
-              styles.push(
-                {
-                  id: idx,
-                  name: usedValue,
-                  rule: `x==${usedValue}`,
-                  color: color,
-                  outline_color: !config.sync_outline ? config.outline_color : color,
-                  outline_size: config.outline_size,
-                  order: idx,
-                  active: true
-                }
-              )
-            })
+                active: true,
+              });
+            });
           } else {
             if (values.length) {
-              const series = new geostats(values)
+              const series = new geostats(values);
               switch (config.dynamic_classification) {
                 case NATURAL_BREAKS:
-                  classifications = series.getClassJenks(numClass)
-                  break
+                  classifications = series.getClassJenks(numClass);
+                  break;
                 case EQUIDISTANT:
-                  classifications = series.getEqInterval(numClass)
-                  break
+                  classifications = series.getEqInterval(numClass);
+                  break;
                 case QUANTILE:
-                  classifications = series.getQuantile(numClass)
-                  break
+                  classifications = series.getQuantile(numClass);
+                  break;
                 case STD_DEFIATION:
-                  classifications = series.getStdDeviation(numClass)
-                  break
+                  classifications = series.getStdDeviation(numClass);
+                  break;
                 case ARITHMETIC_PROGRESSION:
-                  classifications = series.getArithmeticProgression(numClass)
-                  break
+                  classifications = series.getArithmeticProgression(numClass);
+                  break;
                 case GEOMETRIC_PROGRESSION:
-                  classifications = series.getGeometricProgression(numClass)
-                  break
+                  classifications = series.getGeometricProgression(numClass);
+                  break;
               }
 
               // Create classification
               for (let idx = 0; idx < classifications.length; idx++) {
                 if (idx !== 0) {
-                  if ([classifications[idx - 1], classifications[idx]].includes(undefined)) {
-                    continue
+                  if (
+                    [classifications[idx - 1], classifications[idx]].includes(
+                      undefined,
+                    )
+                  ) {
+                    continue;
                   }
                   const below = classifications[idx - 1];
                   const top = classifications[idx];
                   const belowLabel = below.toFixed(2);
                   const topLabel = top.toFixed(2);
-                  const color = colors[idx - 1]
-                  styles.push(
-                    {
-                      id: idx,
-                      name: below === top ? belowLabel : `${belowLabel} - ${topLabel}`,
-                      rule: below === top ? `x==${below}` : `x>=${below} and x<=${top}`,
-                      color: color,
-                      outline_color: !config.sync_outline ? config.outline_color : color,
-                      outline_size: config.outline_size,
-                      order: idx,
-                      active: true
-                    }
-                  )
+                  const color = colors[idx - 1];
+                  styles.push({
+                    id: idx,
+                    name:
+                      below === top
+                        ? belowLabel
+                        : `${belowLabel} - ${topLabel}`,
+                    rule:
+                      below === top
+                        ? `x==${below}`
+                        : `x>=${below} and x<=${top}`,
+                    color: color,
+                    outline_color: !config.sync_outline
+                      ? config.outline_color
+                      : color,
+                    outline_size: config.outline_size,
+                    order: idx,
+                    active: true,
+                  });
                 }
               }
             }
@@ -313,36 +354,41 @@ export function createDynamicStyle(data, styleType, config, styleData) {
         }
       }
       if (config?.no_data_rule?.active) {
-        styles.push(config?.no_data_rule)
+        styles.push(config?.no_data_rule);
       }
-      output[admin_level] = styles
+      output[admin_level] = styles;
     }
   }
   if (config?.no_data_rule?.active) {
-    output['NoData'] = [config?.no_data_rule]
+    output["NoData"] = [config?.no_data_rule];
   } else {
-    output['NoData'] = []
+    output["NoData"] = [];
   }
-  return output
+  return output;
 }
 
 /**
  * Return no data style
  */
 export function returnNoDataStyle(layer, indicators) {
-  let noDataRule = null
-  let config = returnLayerStyleConfig(layer, indicators)
-  let style = config.style
+  let noDataRule = null;
+  let config = returnLayerStyleConfig(layer, indicators);
+  let style = config.style;
   if (dynamicStyleTypes.includes(config.style_type)) {
-    const style = createDynamicStyle([], config.style_type, config.style_config, config.style_data)
-    return style['NoData'][0]
+    const style = createDynamicStyle(
+      [],
+      config.style_type,
+      config.style_config,
+      config.style_data,
+    );
+    return style["NoData"][0];
   } else {
     if (style) {
-      noDataRule = style.filter(
-        rule => rule.active
-      ).find(rule => rule.rule.toLowerCase() === 'no data')
+      noDataRule = style
+        .filter((rule) => rule.active)
+        .find((rule) => rule.rule.toLowerCase() === "no data");
     }
-    return noDataRule
+    return noDataRule;
   }
 }
 
@@ -354,25 +400,25 @@ export function returnNoDataStyle(layer, indicators) {
  * @returns {*}
  */
 function middleColor(color1, color2, ratio) {
-  color1 = color1.replace('#', '')
-  color2 = color2.replace('#', '')
+  color1 = color1.replace("#", "");
+  color2 = color2.replace("#", "");
   const hex = (color) => {
     const colorString = color.toString(16);
     return colorString.length === 1 ? `0${colorString}` : colorString;
   };
 
   const r = Math.ceil(
-    parseInt(color2.substring(0, 2), 16) * ratio
-    + parseInt(color1.substring(0, 2), 16) * (1 - ratio),
+    parseInt(color2.substring(0, 2), 16) * ratio +
+      parseInt(color1.substring(0, 2), 16) * (1 - ratio),
   );
   const g = Math.ceil(
-    parseInt(color2.substring(2, 4), 16) * ratio
-    + parseInt(color1.substring(2, 4), 16) * (1 - ratio),
+    parseInt(color2.substring(2, 4), 16) * ratio +
+      parseInt(color1.substring(2, 4), 16) * (1 - ratio),
   );
   const b = Math.ceil(
-    parseInt(color2.substring(4, 6), 16) * ratio
-    + parseInt(color1.substring(4, 6), 16) * (1 - ratio),
+    parseInt(color2.substring(4, 6), 16) * ratio +
+      parseInt(color1.substring(4, 6), 16) * (1 - ratio),
   );
 
-  return '#' + hex(r) + hex(g) + hex(b);
-};
+  return "#" + hex(r) + hex(g) + hex(b);
+}
