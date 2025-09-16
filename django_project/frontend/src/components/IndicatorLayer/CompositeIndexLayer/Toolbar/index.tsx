@@ -24,7 +24,10 @@ import {
   Plugin,
   PluginChild,
 } from "../../../../pages/Dashboard/MapLibre/Plugin";
-import { LabelOffIcon, LabelOnIcon } from "../../../Icons";
+import {
+  CompositeIndexLayerActiveIcon,
+  CompositeIndexLayerIcon,
+} from "../../../Icons";
 import { Actions } from "../../../../store/dashboard";
 import {
   disabledCompositeLayer,
@@ -60,7 +63,7 @@ export default function CompositeIndexLayerToolbar() {
     // @ts-ignore
     <Plugin>
       <div
-        className="Active"
+        className="Active CompositeIndexLayerToolbar"
         data-tool={Variables.DASHBOARD.TOOL.COMPOSITE_INDEX_LAYER}
       >
         {/* @ts-ignore */}
@@ -72,7 +75,7 @@ export default function CompositeIndexLayerToolbar() {
           disabled={!enabled}
         >
           {compositeMode ? (
-            <LabelOnIcon
+            <CompositeIndexLayerActiveIcon
               onClick={() => {
                 if (enabled) {
                   disabledCompositeLayer(
@@ -84,7 +87,7 @@ export default function CompositeIndexLayerToolbar() {
               }}
             />
           ) : (
-            <LabelOffIcon
+            <CompositeIndexLayerIcon
               onClick={() => {
                 if (enabled) {
                   (async () => {

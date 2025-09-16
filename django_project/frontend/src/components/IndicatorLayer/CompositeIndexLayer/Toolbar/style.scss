@@ -12,3 +12,9 @@
 * __date__ = '03/09/2025'
 * __copyright__ = ('Copyright 2025, Unicef')
 */
+
+.CompositeIndexLayerToolbar {
+  .ToolbarChild.Disabled {
+    opacity: 0.5;
+  }
+}
