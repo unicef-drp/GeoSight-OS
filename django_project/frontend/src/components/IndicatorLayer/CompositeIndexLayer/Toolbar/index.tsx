@@ -17,7 +17,7 @@
    Composite Index Layer Toolbar
    ========================================================================== */
 
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Variables } from "../../../../utils/Variables";
 import {
@@ -26,23 +26,33 @@ import {
 } from "../../../../pages/Dashboard/MapLibre/Plugin";
 import { LabelOffIcon, LabelOnIcon } from "../../../Icons";
 import { Actions } from "../../../../store/dashboard";
-import { isEligibleForCompositeLayer } from "../utilities";
+import {
+  disabledCompositeLayer,
+  isEligibleForCompositeLayer,
+} from "../utilities";
+import { delay } from "../../../../utils/main";
 
 import "./style.scss";
-import { delay } from "../../../../utils/main";
 
 /**
  * Composite index layer toolbar component.
  */
 export default function CompositeIndexLayerToolbar() {
   const dispatch = useDispatch();
+  const indicatorLayers = useSelector(
+    // @ts-ignore
+    (state) => state.dashboard.data.indicatorLayers,
+  );
+  const indicatorLayersStructure = useSelector(
+    // @ts-ignore
+    (state) => state.dashboard.data?.indicatorLayersStructure,
+  );
   // @ts-ignore
   const compositeMode = useSelector((state) => state.mapMode.compositeMode);
   const currentIndicatorLayer = useSelector(
     // @ts-ignore
     (state) => state.selectedIndicatorLayer,
   );
-  const [previousLayer, setPreviousLayer] = useState(null);
   const enabled =
     compositeMode || isEligibleForCompositeLayer(currentIndicatorLayer);
 
@@ -65,21 +75,11 @@ export default function CompositeIndexLayerToolbar() {
             <LabelOnIcon
               onClick={() => {
                 if (enabled) {
-                  if (previousLayer) {
-                    dispatch(
-                      // @ts-ignore
-                      Actions.CompositeIndicatorLayer.updateIndicatorLayers([
-                        previousLayer.id,
-                      ]),
-                    );
-                  }
-                  (async () => {
-                    await delay(100);
-                    dispatch(Actions.MapMode.toggleCompositeMode());
-                    dispatch(
-                      Actions.SelectedIndicatorLayer.change(previousLayer),
-                    );
-                  })();
+                  disabledCompositeLayer(
+                    dispatch,
+                    indicatorLayers,
+                    indicatorLayersStructure,
+                  );
                 }
               }}
             />
@@ -87,7 +87,6 @@ export default function CompositeIndexLayerToolbar() {
             <LabelOffIcon
               onClick={() => {
                 if (enabled) {
-                  setPreviousLayer(currentIndicatorLayer);
                   (async () => {
                     await delay(100);
                     dispatch(Actions.MapMode.toggleCompositeMode());

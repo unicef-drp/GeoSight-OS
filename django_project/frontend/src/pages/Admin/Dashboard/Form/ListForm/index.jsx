@@ -34,11 +34,11 @@ import {
 import { dictDeepCopy, toLowercaseFirst } from "../../../../../utils/main";
 import { BaseList } from "../../../Components/List";
 import { formWindow } from "../../../../../utils/windows";
-
-import "./style.scss";
 import { useTranslation } from "react-i18next";
 
-const groupDefault = {
+import "./style.scss";
+
+export const groupDefault = {
   group: "",
   children: [],
 };

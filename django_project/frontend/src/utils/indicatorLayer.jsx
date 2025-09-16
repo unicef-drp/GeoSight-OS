@@ -177,7 +177,7 @@ export function fetchDynamicLayerData(
     let rowData = null;
 
     // For related table
-    if (layer.related_tables[0] && relatedTableData) {
+    if (layer?.related_tables && layer?.related_tables[0] && relatedTableData) {
       const { rows } = getRelatedTableData(
         relatedTableData[layer.related_tables[0].id]?.data,
         layer.config,

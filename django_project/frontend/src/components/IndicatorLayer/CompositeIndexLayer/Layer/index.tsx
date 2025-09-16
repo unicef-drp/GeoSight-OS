@@ -17,7 +17,7 @@
    Composite Layer
    ========================================================================== */
 
-import React, { useEffect } from "react";
+import React, { memo, useEffect } from "react";
 import { TreeItem } from "@mui/x-tree-view/TreeItem";
 import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
 import {
@@ -25,6 +25,7 @@ import {
 } from "../../../../types/IndicatorLayer";
 import { useDispatch, useSelector } from "react-redux";
 import IndicatorLayer from "../../../Map/SidePanelTree/IndicatorLayer";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import {
   CompositeIndexLayerType,
   DynamicIndicatorType,
@@ -37,8 +38,67 @@ import { Variables } from "../../../../utils/Variables";
 import CompositeIndexLayerConfig from "../Config";
 import DynamicIndicatorLayer
   from "../../../../pages/Dashboard/LeftPanel/IndicatorLayers/DynamicIndicatorLayer";
+import { delay, dictDeepCopy } from "../../../../utils/main";
+import { disabledCompositeLayer } from "../utilities";
 
 import "./style.scss";
+
+/** Convert to dynamic layer*/
+const ToDynamicLayer = memo(() => {
+  const dispatch = useDispatch();
+  const indicatorLayers = useSelector(
+    // @ts-ignore
+    (state) => state.dashboard.data.indicatorLayers,
+  );
+  const indicatorLayersStructure = useSelector(
+    // @ts-ignore
+    (state) => state.dashboard.data?.indicatorLayersStructure,
+  );
+  const currentIndicatorLayer = useSelector(
+    // @ts-ignore
+    (state) => state.selectedIndicatorLayer,
+  );
+
+  return (
+    <AddCircleIcon
+      onClick={() => {
+        let structure = indicatorLayersStructure.children.find(
+          (children: any) => children.id === "Temporary layers",
+        );
+        const newLayer = dictDeepCopy(currentIndicatorLayer);
+        dispatch(Actions.IndicatorLayers.add(newLayer));
+        indicatorLayers.push(newLayer);
+        const usedIndicatorLayers = dictDeepCopy(indicatorLayers);
+
+        if (!structure) {
+          indicatorLayersStructure.children.unshift({
+            id: "Temporary layers",
+            group: "Temporary layers",
+            children: [newLayer.id],
+          });
+        } else {
+          structure.children.unshift(newLayer.id);
+        }
+        const usedIndicatorLayersStructure = dictDeepCopy(
+          indicatorLayersStructure,
+        );
+        dispatch(
+          Actions.Dashboard.updateStructure("indicatorLayersStructure", {
+            ...indicatorLayersStructure,
+          }),
+        );
+        (async () => {
+          await delay(100);
+          disabledCompositeLayer(
+            dispatch,
+            usedIndicatorLayers,
+            usedIndicatorLayersStructure,
+          );
+        })();
+      }}
+    />
+  );
+});
 
 /** Composite index layer.*/
 export function CompositeIndexLayerRenderers() {
@@ -80,6 +140,32 @@ export function CompositeIndexLayerRenderers() {
     return null;
   }
   return <DynamicIndicatorLayer indicatorLayer={indicatorLayer} />;
+}
+
+/**
+ * Turn off composite layer
+ */
+function TurnOffCompositeLayer() {
+  const dispatch = useDispatch();
+  const indicatorLayers = useSelector(
+    // @ts-ignore
+    (state) => state.dashboard.data.indicatorLayers,
+  );
+  const indicatorLayersStructure = useSelector(
+    // @ts-ignore
+    (state) => state.dashboard.data?.indicatorLayersStructure,
+  );
+  return (
+    <DoDisturbOnIcon
+      onClick={() => {
+        disabledCompositeLayer(
+          dispatch,
+          indicatorLayers,
+          indicatorLayersStructure,
+        );
+      }}
+    />
+  );
 }
 
 /** Composite index layer.*/
@@ -133,6 +219,8 @@ export default function CompositeIndexLayer() {
             maxSelect={1}
             otherElement={
               <>
+                {/* @ts-ignore */}
+                <ToDynamicLayer />
                 <CompositeIndexLayerConfig
                   config={data}
                   setConfig={(config) => {
@@ -151,11 +239,7 @@ export default function CompositeIndexLayer() {
                   }
                   showGeneral={true}
                 />
-                <DoDisturbOnIcon
-                  onClick={() => {
-                    dispatch(Actions.MapMode.toggleCompositeMode());
-                  }}
-                />
+                <TurnOffCompositeLayer />
               </>
             }
           />
