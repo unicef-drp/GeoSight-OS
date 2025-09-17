@@ -18,7 +18,7 @@
    ========================================================================== */
 
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Variables } from "../../../../utils/Variables";
 import {
   Plugin,
@@ -28,12 +28,7 @@ import {
   CompositeIndexLayerActiveIcon,
   CompositeIndexLayerIcon,
 } from "../../../Icons";
-import { Actions } from "../../../../store/dashboard";
-import {
-  disabledCompositeLayer,
-  isEligibleForCompositeLayer,
-} from "../utilities";
-import { delay } from "../../../../utils/main";
+import CompositeIndexLayerToggler from "../Toggler";
 
 import "./style.scss";
 
@@ -41,24 +36,8 @@ import "./style.scss";
  * Composite index layer toolbar component.
  */
 export default function CompositeIndexLayerToolbar() {
-  const dispatch = useDispatch();
-  const indicatorLayers = useSelector(
-    // @ts-ignore
-    (state) => state.dashboard.data.indicatorLayers,
-  );
-  const indicatorLayersStructure = useSelector(
-    // @ts-ignore
-    (state) => state.dashboard.data?.indicatorLayersStructure,
-  );
   // @ts-ignore
   const compositeMode = useSelector((state) => state.mapMode.compositeMode);
-  const currentIndicatorLayer = useSelector(
-    // @ts-ignore
-    (state) => state.selectedIndicatorLayer,
-  );
-  const enabled =
-    compositeMode || isEligibleForCompositeLayer(currentIndicatorLayer);
-
   return (
     // @ts-ignore
     <Plugin>
@@ -72,32 +51,11 @@ export default function CompositeIndexLayerToolbar() {
             (compositeMode ? "Deactivate" : "Activate") +
             " composite index layer"
           }
-          disabled={!enabled}
         >
-          {compositeMode ? (
-            <CompositeIndexLayerActiveIcon
-              onClick={() => {
-                if (enabled) {
-                  disabledCompositeLayer(
-                    dispatch,
-                    indicatorLayers,
-                    indicatorLayersStructure,
-                  );
-                }
-              }}
-            />
-          ) : (
-            <CompositeIndexLayerIcon
-              onClick={() => {
-                if (enabled) {
-                  (async () => {
-                    await delay(100);
-                    dispatch(Actions.MapMode.toggleCompositeMode());
-                  })();
-                }
-              }}
-            />
-          )}
+          <CompositeIndexLayerToggler
+            ActiveIcon={<CompositeIndexLayerActiveIcon />}
+            InactiveIcon={<CompositeIndexLayerIcon />}
+          />
         </PluginChild>
       </div>
     </Plugin>

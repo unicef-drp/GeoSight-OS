@@ -35,7 +35,7 @@ import { CogIcon } from "../../../Icons";
 import {
   configToExpression,
   defaultCompositeIndexLayer,
-  DynamicCompositeLayerGroupName
+  DynamicCompositeLayerGroupName,
 } from "../variable";
 import { getDashboardTool } from "../../../../selectors/dashboard";
 import { Variables } from "../../../../utils/Variables";
@@ -46,6 +46,7 @@ import { delay, dictDeepCopy } from "../../../../utils/main";
 import { disabledCompositeLayer } from "../utilities";
 
 import "./style.scss";
+import CompositeIndexLayerToggler from "../Toggler";
 
 /** Convert to dynamic layer*/
 const ToDynamicLayer = memo(() => {
@@ -146,32 +147,6 @@ export function CompositeIndexLayerRenderers() {
   return <DynamicIndicatorLayer indicatorLayer={indicatorLayer} />;
 }
 
-/**
- * Turn off composite layer
- */
-function TurnOffCompositeLayer() {
-  const dispatch = useDispatch();
-  const indicatorLayers = useSelector(
-    // @ts-ignore
-    (state) => state.dashboard.data.indicatorLayers,
-  );
-  const indicatorLayersStructure = useSelector(
-    // @ts-ignore
-    (state) => state.dashboard.data?.indicatorLayersStructure,
-  );
-  return (
-    <DoDisturbOnIcon
-      onClick={() => {
-        disabledCompositeLayer(
-          dispatch,
-          indicatorLayers,
-          indicatorLayersStructure,
-        );
-      }}
-    />
-  );
-}
-
 /** Composite index layer.*/
 export default function CompositeIndexLayer() {
   const dispatch = useDispatch();
@@ -243,7 +218,10 @@ export default function CompositeIndexLayer() {
                   }
                   showGeneral={true}
                 />
-                <TurnOffCompositeLayer />
+                <CompositeIndexLayerToggler
+                  ActiveIcon={<DoDisturbOnIcon />}
+                  InactiveIcon={<DoDisturbOnIcon />}
+                />
               </>
             }
           />
