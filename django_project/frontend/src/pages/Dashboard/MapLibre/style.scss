@@ -161,7 +161,7 @@
     }
 
     .Disabled {
-      a, span {
+      a, span, svg {
         color: $disabled-color !important;
         cursor: not-allowed !important;
 

@@ -37,6 +37,10 @@ import Highlighted from "./Highlighted";
 import FilterLayer from "./FilterLayer";
 import IndicatorLayer from "./IndicatorLayer";
 import { GlobalIndicatorLayerTransparency } from "./IndicatorLayer/Transparency";
+import CompositeIndexLayer from "../../IndicatorLayer/CompositeIndexLayer/Layer";
+import { Actions } from "../../../store/dashboard";
+import { useDispatch, useSelector } from "react-redux";
+import { MaxSelectableLayersForCompositeIndexLayer } from "../../IndicatorLayer/CompositeIndexLayer/variable";
 
 const TREE_INDENT_SPACE = 40;
 let unexpandedGroups: any = [];
@@ -90,6 +94,7 @@ export default function SidePanelTreeView({
   otherInfo = null,
   ...props
 }: Props) {
+  const dispatch = useDispatch();
   const [nodes, setNodes] = useState([]);
   const [selected, setSelected] = useState([]);
   const [selectedGroups, setSelectedGroups] = useState([]);
@@ -97,6 +102,27 @@ export default function SidePanelTreeView({
   const [filterText, setFilterText] = useState("");
   const layerGroupListRef = useRef(null);
   const [width, setWidth] = useState(25);
+
+  // @ts-ignore
+  const compositeIndicatorLayerIds = useSelector((state) => {
+    // @ts-ignore
+    if (!state.compositeIndicatorLayer.data?.config?.indicatorLayers) {
+      return [];
+    } else {
+      // @ts-ignore
+      return state.compositeIndicatorLayer.data?.config?.indicatorLayers.map(
+        (layer: any) => layer.id.toString(),
+      );
+    }
+  });
+
+  const updateCompositeIndicatorLayer = (selected: string[]) => {
+    // Update composite index layer
+    dispatch(
+      // @ts-ignore
+      Actions.CompositeIndicatorLayer.updateIndicatorLayers(selected),
+    );
+  };
 
   useEffect(() => {
     setNodes(data);
@@ -111,7 +137,9 @@ export default function SidePanelTreeView({
       }
     }
     if (maxSelect <= 2 && newSelected.length > 0) {
-      setSelected(Array.from(new Set(newSelected)));
+      const selectedIds: string[] = Array.from(new Set(newSelected));
+      setSelected(selectedIds);
+      updateCompositeIndicatorLayer(selectedIds);
     }
   }, [data]);
 
@@ -120,6 +148,20 @@ export default function SidePanelTreeView({
       setWidth(layerGroupListRef.current.offsetWidth - 20);
     }
   }, []);
+
+  /** COMPOSITE INDEX LAYER
+   * Update composite index layer when selected changed
+   */
+  useEffect(() => {
+    if (maxSelect === MaxSelectableLayersForCompositeIndexLayer) {
+      if (
+        JSON.stringify(selected) !== JSON.stringify(compositeIndicatorLayerIds)
+      ) {
+        setSelected(compositeIndicatorLayerIds);
+        onChange(compositeIndicatorLayerIds);
+      }
+    }
+  }, [compositeIndicatorLayerIds, maxSelect]);
 
   /** Parent selected */
   useLayoutEffect(() => {
@@ -190,8 +232,11 @@ export default function SidePanelTreeView({
         }
       }
     }
+    console.log(_selectedIds);
     onChange(_selectedIds);
     setSelected(_selectedIds);
+
+    updateCompositeIndicatorLayer(_selectedIds);
   };
 
   const getChildIds = (_data: any) => {
@@ -305,6 +350,7 @@ export default function SidePanelTreeView({
                 filterText={filterText}
                 selectItem={selectItem}
                 maxWord={maxWord}
+                maxSelect={maxSelect}
               />
             )
           ) : groupSelectable ? (
@@ -349,7 +395,6 @@ export default function SidePanelTreeView({
       </TreeItem>
     );
   };
-
   return (
     <div className="TreeView">
       <Paper
@@ -376,6 +421,7 @@ export default function SidePanelTreeView({
         defaultExpandIcon={<ExpandLessIcon />}
         sx={{ flexGrow: 1, maxWidth: "100%", paddingRight: "1em" }}
       >
+        <CompositeIndexLayer />
         {nodes.length > 0 ? (
           nodes.map((treeData) => renderTree(treeData))
         ) : (

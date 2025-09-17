@@ -38,20 +38,30 @@ export default function RelatedTableLayer({ relatedTableLayer }) {
   const {
     relatedTables,
     referenceLayer: referenceLayerDashboard,
-    indicatorLayers
-  } = useSelector(state => state.dashboard.data)
-  const relatedTableDataState = useSelector(state => state.relatedTableData)
+    indicatorLayers,
+  } = useSelector((state) => state.dashboard.data);
+  const relatedTableData = useSelector((state) => {
+    return state.relatedTableData[relatedTableLayer.related_tables[0].id]?.data;
+  });
 
   // Reference layer data
-  const referenceLayer = referenceLayerIndicatorLayer(referenceLayerDashboard, relatedTableLayer)
-  const referenceLayerData = useSelector(state => state.referenceLayerData[referenceLayer?.identifier]);
+  const referenceLayer = referenceLayerIndicatorLayer(
+    referenceLayerDashboard,
+    relatedTableLayer,
+  );
+  const referenceLayerData = useSelector(
+    (state) => state.referenceLayerData[referenceLayer?.identifier],
+  );
 
-  const geometries = useSelector(state => state.datasetGeometries[referenceLayer.identifier]);
+  const geometries = useSelector(
+    (state) => state.datasetGeometries[referenceLayer.identifier],
+  );
 
   // Related table attributes
-  const relatedTable = relatedTableLayer.related_tables[0]
-  const relatedTableData = relatedTableDataState[relatedTableLayer.related_tables[0].id]?.data
-  const relatedTableConfig = relatedTables.find(rt => rt.id === relatedTable.id)
+  const relatedTable = relatedTableLayer.related_tables[0];
+  const relatedTableConfig = relatedTables.find(
+    (rt) => rt.id === relatedTable.id,
+  );
 
   /**
    * Change the reporting level
@@ -59,73 +69,70 @@ export default function RelatedTableLayer({ relatedTableLayer }) {
   useEffect(() => {
     if (relatedTableData && relatedTableData[0] && relatedTableConfig) {
       try {
-        const ucode = toUcode(relatedTableData[0][relatedTableConfig.geography_code_field_name])
-        let dataLevel = null
-        Object.keys(geometries).map(level => {
+        const ucode = toUcode(
+          relatedTableData[0][relatedTableConfig.geography_code_field_name],
+        );
+        let dataLevel = null;
+        Object.keys(geometries).map((level) => {
           if (Object.keys(geometries[level]).includes(ucode)) {
-            dataLevel = level
+            dataLevel = level;
           }
-        })
-      } catch (err) {
-      }
+        });
+      } catch (err) {}
     }
   }, [geometries, relatedTableData]);
-
 
   /**
    * Update related table dates
    */
   useEffect(() => {
-    (
-      async () => {
-
-        // Skip if no data
-        // To get the countries
-        if (!referenceLayerData?.data?.identifier) {
-          return;
-        }
-        const countryGeomIds = getCountryGeomIds(referenceLayerData.data);
-        const indicatorLayer = relatedTableLayer;
-        const id = indicatorLayer.id
-        const params = {
-          geography_code_field_name: relatedTableConfig.geography_code_field_name,
-          geography_code_type: relatedTableConfig.geography_code_type,
-          country_geom_ids: countryGeomIds
-        }
-        if (indicatorLayer.config.date_field) {
-          params.date_field = indicatorLayer.config.date_field
-        }
-        if (indicatorLayer.config.date_format) {
-          params.date_format = indicatorLayer.config.date_format
-        }
-        params.version = relatedTableConfig.version
-        if (
-          JSON.stringify(params) !== JSON.stringify(prevState.params)
-        ) {
-          prevState.params = params
-          try {
-            const relatedTableObj = new RelatedTable(relatedTableConfig)
-            const response = await relatedTableObj.dates(params)
-            dispatch(Actions.IndicatorLayerMetadata.update(id, {
+    (async () => {
+      // Skip if no data
+      // To get the countries
+      if (!referenceLayerData?.data?.identifier) {
+        return;
+      }
+      const countryGeomIds = getCountryGeomIds(referenceLayerData.data);
+      const indicatorLayer = relatedTableLayer;
+      const id = indicatorLayer.id;
+      const params = {
+        geography_code_field_name: relatedTableConfig.geography_code_field_name,
+        geography_code_type: relatedTableConfig.geography_code_type,
+        country_geom_ids: countryGeomIds,
+      };
+      if (indicatorLayer.config.date_field) {
+        params.date_field = indicatorLayer.config.date_field;
+      }
+      if (indicatorLayer.config.date_format) {
+        params.date_format = indicatorLayer.config.date_format;
+      }
+      params.version = relatedTableConfig.version;
+      if (JSON.stringify(params) !== JSON.stringify(prevState.params)) {
+        prevState.params = params;
+        try {
+          const relatedTableObj = new RelatedTable(relatedTableConfig);
+          const response = await relatedTableObj.dates(params);
+          dispatch(
+            Actions.IndicatorLayerMetadata.update(id, {
               dates: response,
-              count: 0
-            }))
-          } catch (error) {
-            dispatch(Actions.IndicatorLayerMetadata.update(id, {
+              count: 0,
+            }),
+          );
+        } catch (error) {
+          dispatch(
+            Actions.IndicatorLayerMetadata.update(id, {
               dates: error.toString(),
-              count: 0
-            }))
-            dispatch(
-              Actions.IndicatorLayers.updateJson(
-                id, { error: error.toString() }
-              )
-            )
-          }
+              count: 0,
+            }),
+          );
+          dispatch(
+            Actions.IndicatorLayers.updateJson(id, { error: error.toString() }),
+          );
         }
       }
-    )()
-  }, [relatedTable, referenceLayerData, indicatorLayers])
-  return null
+    })();
+  }, [relatedTable, referenceLayerData, indicatorLayers]);
+  return null;
 }
 
 /**
@@ -133,17 +140,67 @@ export default function RelatedTableLayer({ relatedTableLayer }) {
  */
 export function RelatedTableLayerFilter({ relatedTableLayer }) {
   const dispatch = useDispatch();
-  const selectedRelatedTableLayer = useSelector(state => state.selectedRelatedTableLayer)
+  const selectedRelatedTableLayer = useSelector(
+    (state) => state.selectedRelatedTableLayer,
+  );
+  const currentIndicatorLayer = useSelector(
+    (state) => state.selectedIndicatorLayer,
+  );
+  const currentIndicatorSecondLayer = useSelector(
+    (state) => state.selectedIndicatorSecondLayer,
+  );
+  const indicatorLayerIds = useSelector(
+    (state) => state.selectionState.filter.indicatorLayerIds,
+  );
+  const compositeIndicatorLayerIds = useSelector(
+    (state) => state.selectionState.composite.indicatorLayerIds,
+  );
+  const activated = [
+    currentIndicatorLayer?.id,
+    currentIndicatorSecondLayer?.id,
+    ...indicatorLayerIds,
+    ...compositeIndicatorLayerIds,
+  ].includes(relatedTableLayer.id);
 
-  return <div className='LayerIcon LayerConfig'>
-    {
-      selectedRelatedTableLayer === relatedTableLayer.id ?
-        <FilterAltIcon fontSize={"small"} onClick={() => {
-          dispatch(Actions.SelectedRelatedTableLayer.change(null))
-        }}/> :
-        <FilterAltOffIcon fontSize={"small"} onClick={() => {
-          dispatch(Actions.SelectedRelatedTableLayer.change(relatedTableLayer.id))
-        }}/>
+  const isActive = selectedRelatedTableLayer === relatedTableLayer.id;
+
+  /** Remove the selector. */
+  useEffect(() => {
+    if (activated) {
+      if (!isActive) {
+        dispatch(
+          Actions.SelectedRelatedTableLayer.change(relatedTableLayer.id),
+        );
+      }
+    } else {
+      if (isActive) {
+        dispatch(Actions.SelectedRelatedTableLayer.change(null));
+      }
     }
-  </div>
+  }, [activated]);
+
+  return (
+    <div
+      className="LayerIcon LayerConfig"
+      onClick={(e) => {
+        if (isActive) {
+          dispatch(Actions.SelectedRelatedTableLayer.change(null));
+        } else {
+          dispatch(
+            Actions.SelectedRelatedTableLayer.change(relatedTableLayer.id),
+          );
+        }
+        if (activated) {
+          e.stopPropagation();
+          e.preventDefault();
+        }
+      }}
+    >
+      {isActive ? (
+        <FilterAltIcon fontSize={"small"} />
+      ) : (
+        <FilterAltOffIcon fontSize={"small"} />
+      )}
+    </div>
+  );
 }

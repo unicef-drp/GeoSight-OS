@@ -157,6 +157,7 @@ function receive(data, error = null) {
       [Variables.DASHBOARD.TOOL.DATA_DOWNLOAD, true],
       [Variables.DASHBOARD.TOOL.SPATIAL_BOOKMARK, true],
       [Variables.DASHBOARD.TOOL.BACK_TO_HOME, true],
+      [Variables.DASHBOARD.TOOL.COMPOSITE_INDEX_LAYER, false],
     ].map((tool) => {
       toolDefaults(data.tools, tool[0], tool[1]);
     });

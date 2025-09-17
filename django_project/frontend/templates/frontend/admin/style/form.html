@@ -20,9 +20,6 @@
       const style = {{ form.instance_data|safe }};
       const currentRules = {{ rules|safe }};
       const types = {{ types|safe }};
-      const styleTypes = {{ styleTypes|safe }};
-      const dynamicClassification = {{ dynamicClassification|safe }};
-      const codelists = {{ codelists|safe }};
 
       const permission = {{ permission|safe }};
       // Urls api
@@ -38,8 +35,5 @@
           urls.api.permission = '{% url 'style-permission-api' 0 %}'
         {% endif %}
       }
-
-      // If in batch or not
-      const batch = {% if batch %}true{% else %}null{% endif %};
     </script>
 {% endblock %}

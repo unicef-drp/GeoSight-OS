@@ -21,7 +21,6 @@ from django.shortcuts import redirect, reverse, render
 from frontend.views.admin._base import AdminBaseView
 from geosight.data.forms.context_layer import ContextLayerForm
 from geosight.data.models.context_layer import ContextLayer
-from geosight.data.models.style.base import DynamicClassificationTypeChoices
 from geosight.permission.access import RoleCreatorRequiredMixin
 
 
@@ -32,12 +31,24 @@ class BaseContextLayerEditView(AdminBaseView):
 
     @property
     def page_title(self):
-        """Return page title that used on tab bar."""
+        """
+        Return the page title used on the browser tab bar.
+
+        :return: Page title string.
+        :rtype: str
+        """
         return 'Create Context Layer'
 
     @property
     def content_title(self):
-        """Return content title that used on page title indicator."""
+        """
+        Return the content title displayed on the page.
+
+        :return:
+            HTML string with breadcrumb navigation
+            for creating a context layer.
+        :rtype: str
+        """
         list_url = reverse('admin-context-layer-list-view')
         create_url = reverse('admin-context-layer-create-view')
         return (
@@ -47,7 +58,14 @@ class BaseContextLayerEditView(AdminBaseView):
         )
 
     def get_context_data(self, **kwargs) -> dict:
-        """Return context data."""
+        """
+        Return context data for rendering the template.
+
+        :param **kwargs: Additional keyword arguments passed to the view.
+        :type **kwargs: dict
+        :return: Context dictionary including form and permission data.
+        :rtype: dict
+        """
         context = super().get_context_data(**kwargs)
         initial = None
 
@@ -69,16 +87,23 @@ class BaseContextLayerEditView(AdminBaseView):
         context.update(
             {
                 'form': ContextLayerForm(initial=initial),
-                'permission': json.dumps(permission),
-                'dynamicClassification': json.dumps(
-                    DynamicClassificationTypeChoices
-                ),
+                'permission': json.dumps(permission)
             }
         )
         return context
 
     def post(self, request, **kwargs):
-        """Create indicator."""
+        """
+        Handle POST request to create a new context layer.
+
+        :param request: The HTTP request object.
+        :type request: HttpRequest
+        :param **kwargs: Additional keyword arguments.
+        :type **kwargs: dict
+        :return:
+            HTTP redirect response if successful, or rendered form with errors.
+        :rtype: HttpResponse
+        """
         data = request.POST.copy()
         data['data_fields'] = data.get('data_fields', '[]')
         form = ContextLayerForm(data)
@@ -112,4 +137,5 @@ class ContextLayerCreateView(
     RoleCreatorRequiredMixin, BaseContextLayerEditView
 ):
     """ContextLayer Create View."""
+
     pass

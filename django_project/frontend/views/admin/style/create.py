@@ -21,31 +21,39 @@ from django.shortcuts import redirect, reverse, render
 
 from frontend.views.admin._base import AdminBaseView
 from geosight.data.forms.style import StyleForm
-from geosight.data.models.code import CodeList
 from geosight.data.models.indicator import IndicatorTypeChoices
 from geosight.data.models.style import Style, StyleRule
-from geosight.data.models.style.base import (
-    StyleTypeChoices, DynamicClassificationTypeChoices
-)
-from geosight.data.serializer.code import CodeListSerializer
 from geosight.permission.access import RoleCreatorRequiredMixin
 
 User = get_user_model()
 
 
 class BaseStyleEditingView(AdminBaseView):
-    """Style Create View."""
+    """
+    Base view for creating and editing styles.
+
+    Provides context, form handling, and rule saving logic for style
+    management in the admin dashboard.
+    """
 
     template_name = 'frontend/admin/style/form.html'
 
     @property
     def page_title(self):
-        """Return page title that used on tab bar."""
+        """
+        Return the page title used on the browser tab.
+
+        :rtype: str
+        """
         return 'Create Style'
 
     @property
     def content_title(self):
-        """Return content title that used on page title indicator."""
+        """
+        Return the content title used as the page heading.
+
+        :rtype: str
+        """
         list_url = reverse('admin-style-list-view')
         create_url = reverse('admin-style-create-view')
         return (
@@ -56,11 +64,28 @@ class BaseStyleEditingView(AdminBaseView):
 
     @property
     def style(self):
-        """Return style."""
+        """
+        Return a new style instance.
+
+        :rtype: Style
+        """
         return Style()
 
     def get_context_data(self, **kwargs) -> dict:
-        """Return context data."""
+        """
+        Return context data for rendering the style form.
+
+        The context includes:
+        - ``id``: The style ID (if editing an existing style).
+        - ``form``: The style form instance.
+        - ``types``: JSON-encoded list of indicator types.
+        - ``rules``: JSON-encoded list of style rules.
+        - ``permission``: JSON-encoded permission settings.
+
+        :param dict **kwargs: Arbitrary keyword arguments passed from the view.
+        :return: Context dictionary with style-related variables.
+        :rtype: dict
+        """
         context = super().get_context_data(**kwargs)
         initial = StyleForm.model_to_initial(self.style)
         form = StyleForm(initial=initial)
@@ -79,20 +104,19 @@ class BaseStyleEditingView(AdminBaseView):
                 'form': form,
                 'types': json.dumps(IndicatorTypeChoices),
                 'rules': json.dumps(self.style.rules_dict()),
-                'styleTypes': json.dumps(StyleTypeChoices),
-                'dynamicClassification': json.dumps(
-                    DynamicClassificationTypeChoices
-                ),
-                'codelists': json.dumps(
-                    CodeListSerializer(CodeList.objects.all(), many=True).data
-                ),
                 'permission': json.dumps(permission)
             }
         )
         return context
 
     def post_save(self, style: Style, data: dict, save_style=True):
-        """Save rules."""
+        """
+        Save permissions and rules for a style.
+
+        :param Style style: The style instance being saved.
+        :param dict data: POST data from the request.
+        :param bool save_style: Whether to save style rules (default: True).
+        """
         request = self.request
         # Save permission
         style.permission.update_from_request_data(
@@ -138,7 +162,14 @@ class BaseStyleEditingView(AdminBaseView):
         return data
 
     def post(self, request, **kwargs):
-        """Create indicator."""
+        """
+        Handle POST requests for creating or updating a style.
+
+        :param HttpRequest request: The incoming HTTP request.
+        :param dict **kwargs: Arbitrary keyword arguments.
+        :return: Redirect to edit view on success, or render form on failure.
+        :rtype: HttpResponse
+        """
         data = self.data
         form = StyleForm(data)
         if form.is_valid():
@@ -166,6 +197,6 @@ class BaseStyleEditingView(AdminBaseView):
 
 
 class StyleCreateView(RoleCreatorRequiredMixin, BaseStyleEditingView):
-    """Style Create View."""
+    """View for creating a new style."""
 
     pass

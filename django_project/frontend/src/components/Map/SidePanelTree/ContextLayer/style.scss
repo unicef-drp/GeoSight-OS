@@ -141,20 +141,26 @@
     width: 100%;
     margin-left: 0 !important;
     display: flex;
+    align-items: center;
 
     span {
       display: block;
     }
 
     .MuiTypography-root {
-      flex-grow: 0.05;
       display: block;
       overflow: hidden;
 
       & > span {
         display: flex;
+        align-items: center;
+        gap: 5px;
 
         & > .LayerName {
+          display: block;
+        }
+
+        & > .LayerConfig {
           display: block;
         }
       }
@@ -167,7 +173,6 @@
 
   .LayerName {
     width: 100%;
-    margin-top: 3px;
 
     &.Group {
       font-weight: 600;

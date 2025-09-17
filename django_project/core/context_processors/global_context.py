@@ -22,11 +22,25 @@ from django.conf import settings
 from core.models.preferences import SitePreferences, SiteType
 from core.serializer.site_preferences import SitePreferencesSerializer
 from core.settings.utils import ABS_PATH
+from geosight.data.models.code import CodeList
+from geosight.data.models.style.base import (
+    DynamicClassificationTypeChoices
+)
+from geosight.data.models.style.indicator_style import (
+    IndicatorStyleTypeChoices
+)
+from geosight.data.serializer.code import CodeListSerializer
 from geosight.georepo.request import GeorepoUrl
 
 
 def project_version(request):
-    """Read project version from file."""
+    """Read the project version from the version file.
+
+    :param request: The HTTP request object.
+    :type request: HttpRequest
+    :return: Project version string (with commit hash if not production).
+    :rtype: str
+    """
     folder = ABS_PATH('')
     version = ''
     version_file = os.path.join(folder, '_version.txt')
@@ -45,7 +59,18 @@ def project_version(request):
 
 
 def global_context(request):
-    """Global context that will be returned for every request."""
+    """
+    Build the global context dictionary for every request.
+
+    This includes application settings, site preferences, API keys,
+    version information, and other configuration values that are
+    available globally in templates.
+
+    :param request: The HTTP request object.
+    :type request: HttpRequest
+    :return: A dictionary containing global context values.
+    :rtype: dict
+    """
     # Return api_key level 1 if user not have api_key
     pref = SitePreferences.preferences()
     pref_data = SitePreferencesSerializer(pref).data
@@ -64,5 +89,13 @@ def global_context(request):
         'preferences_js': json.dumps(pref_data),
         'use_azure_auth': settings.USE_AZURE,
         'version': project_version(request),
-        'plugins': settings.PLUGINS
+        'plugins': settings.PLUGINS,
+        # For specific dashboard
+        'dynamic_classification': json.dumps(
+            DynamicClassificationTypeChoices
+        ),
+        'style_types': json.dumps(IndicatorStyleTypeChoices),
+        'code_list': json.dumps(
+            CodeListSerializer(CodeList.objects.all(), many=True).data
+        ),
     }

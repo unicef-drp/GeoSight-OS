@@ -13,15 +13,16 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import { combineReducers } from 'redux';
+import { combineReducers } from "redux";
 
-import mapReducer from './map'
-import mapGeometryValue from './mapGeometryValue'
-import mapModeReducer from './mapMode'
-import colorPalettesReducer from './colorPalettes'
-import dashboardRequestReducer from './dashboard'
-import dashboardHistoryReducer from './dashboardHistory'
-import datasetGeometriesReducer from './datasetGeometries'
+import mapReducer from "./map";
+import mapGeometryValue from "./mapGeometryValue";
+import mapModeReducer from "./mapMode";
+import compositeIndicatorLayerReducer from "./compositeIndicatorLayer";
+import colorPalettesReducer from "./colorPalettes";
+import dashboardRequestReducer from "./dashboard";
+import dashboardHistoryReducer from "./dashboardHistory";
+import datasetGeometriesReducer from "./datasetGeometries";
 import indicatorsDataReducer from "./indicatorsData";
 import indicatorsMetadataReducer from "./indicatorsMetadata";
 import indicatorLayerMetadataReducer from "./indicatorLayerMetadata";
@@ -30,17 +31,14 @@ import ReferenceLayerDataReducer from "./referenceLayerData";
 import filteredGeometriesReducer from "./filteredGeometries";
 import globalStateReducer from "./globalState";
 import selectedIndicatorLayerReducer from "./selectedIndicatorLayer";
-import selectedIndicatorSecondLayerReducer
-  from "./selectedIndicatorSecondLayer";
+import selectedIndicatorSecondLayerReducer from "./selectedIndicatorSecondLayer";
 import selectedAdminLevelReducer from "./selectedAdminLevel";
 import selectedBookmarkReducer from "./selectedBookmark";
 import selectedGlobalTimeReducer from "./selectedGlobalTime";
 import selectedGlobalTimeConfigReducer from "./selectedGlobalTimeConfig";
 import selectedRelatedTableLayerReducer from "./selectedRelatedTableLayer";
-import selectedDynamicIndicatorLayerReducer
-  from "./selectedDynamicIndicatorLayer";
+import selectedDynamicIndicatorLayerReducer from "./selectedDynamicIndicatorLayer";
 import selectionStateReducer from "./selectionState";
-
 
 const rootReducer = combineReducers({
   // Just dashboard data without adding anything in there
@@ -68,6 +66,9 @@ const rootReducer = combineReducers({
   selectedRelatedTableLayer: selectedRelatedTableLayerReducer,
   selectedDynamicIndicatorLayer: selectedDynamicIndicatorLayerReducer,
   selectionState: selectionStateReducer,
+
+  // Composite indicator layer
+  compositeIndicatorLayer: compositeIndicatorLayerReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

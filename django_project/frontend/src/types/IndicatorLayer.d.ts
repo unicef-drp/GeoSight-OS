@@ -1,6 +1,7 @@
 import { DatasetView } from "./DatasetView";
 import { Indicator } from "./Indicator";
 import { RelatedTable } from "./RelatedTable";
+import { Style } from "./Style";
 
 /**
  * GeoSight is UNICEF's geospatial web-based business intelligence platform.
@@ -18,29 +19,68 @@ import { RelatedTable } from "./RelatedTable";
  */
 
 export interface LevelConfig {
-  levels: number[],
-  default_level: number,
-  referenceLayer?: DatasetView
+  levels: number[];
+  default_level: number;
+  referenceLayer?: DatasetView;
 }
 
-export interface IndicatorLayer {
-  id: number,
-  description: string,
-  name: string,
-  level_config: LevelConfig,
-  visible_by_default: boolean,
-  last_update: string,
-  indicators: Indicator[],
-  type: string,
-  layer_type: string,
+export interface DataField {
+  name: string;
+  alias: string;
+  visible: boolean;
+  type: string;
+  order: number;
+}
 
-  related_table: RelatedTable,
-  related_tables: RelatedTable[],
+export interface LabelConfigStyle {
+  minZoom: number;
+  maxZoom: number;
+  fontFamily: string;
+  fontSize: number;
+  fontColor: string;
+  fontWeight: number;
+  strokeColor: string;
+  strokeWeight: number;
+  haloColor: string;
+  haloWeight: number;
+}
 
-  config: any,
-  legend: string,
+export interface LabelConfig {
+  text: string;
+  style: LabelConfigStyle;
+}
+
+export interface IndicatorLayerConfig {
+  config: any;
+  type: string;
+
+  // style
+  style?: Style[];
+
+  // Label
+  label_config?: LabelConfig;
+
+  // Popup
+  popup_template?: string;
+  popup_type?: string;
+  data_fields?: DataField[];
+}
+
+export interface IndicatorLayer extends IndicatorLayerConfig {
+  id: number;
+  description: string;
+  name: string;
+  level_config?: LevelConfig;
+  visible_by_default: boolean;
+  last_update: string;
+  indicators: Indicator[];
+
+  related_table?: RelatedTable;
+  related_tables: RelatedTable[];
+
+  legend?: string;
 
   // TODO:
   //  We will remove this
-  error: string,
+  error: string;
 }

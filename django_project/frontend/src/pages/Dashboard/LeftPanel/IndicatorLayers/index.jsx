@@ -17,113 +17,130 @@
    INDICATOR LAYER
    ========================================================================== */
 
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionDetails from "@mui/material/AccordionDetails";
 import Accordion from "@mui/material/Accordion";
 import sqlParser from "js-sql-parser";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
-import { Actions } from '../../../../store/dashboard'
+import { Actions } from "../../../../store/dashboard";
 import {
   dataStructureToTreeData
 } from "../../../../components/SortableTreeForm/utilities";
 import SidePanelTreeView from "../../../../components/Map/SidePanelTree";
 import { returnWhereToDict } from "../../../../utils/queryExtraction";
 import RelatedTableLayer, {
-  RelatedTableLayerFilter
+  RelatedTableLayerFilter,
 } from "./RelatedTableLayer";
 import DynamicIndicatorLayer, {
-  DynamicIndicatorLayerConfig
+  DynamicIndicatorLayerConfig,
 } from "./DynamicIndicatorLayer";
 import { DynamicIndicatorType } from "../../../../utils/indicatorLayer";
+import {
+  MaxSelectableLayersForCompositeIndexLayer
+} from "../../../../components/IndicatorLayer/CompositeIndexLayer/variable";
 
-import './style.scss';
-
+import "./style.scss";
 
 /** Force indicator layer to update **/
-export let indicatorLayersForcedUpdateIds = null
+export let indicatorLayersForcedUpdateIds = null;
 export const changeIndicatorLayersForcedUpdate = (ids) => {
-  indicatorLayersForcedUpdateIds = ids
-}
-
+  indicatorLayersForcedUpdateIds = ids;
+};
 
 /**
  * Indicators selector.
  */
 export function IndicatorLayers() {
   const { t } = useTranslation();
-  const dispatch = useDispatch()
-  const {
-    indicators,
-    indicatorLayers,
-    indicatorLayersStructure,
-    relatedTables
-  } = useSelector(state => state.dashboard.data)
-  const [currentIndicatorLayers, setCurrentIndicatorLayers] = useState([0, 0])
-  const currentIndicatorLayer = currentIndicatorLayers[0]
-  const currentIndicatorSecondLayer = currentIndicatorLayers[1]
+  const dispatch = useDispatch();
+  const indicators = useSelector((state) => state.dashboard.data.indicators);
+  const indicatorLayers = useSelector(
+    (state) => state.dashboard.data.indicatorLayers,
+  );
+  const indicatorLayersStructure = useSelector(
+    (state) => state.dashboard.data.indicatorLayersStructure,
+  );
+  const relatedTables = useSelector(
+    (state) => state.dashboard.data.relatedTables,
+  );
+  const [currentIndicatorLayers, setCurrentIndicatorLayers] = useState([0, 0]);
+  const currentIndicatorLayer = currentIndicatorLayers[0];
+  const currentIndicatorSecondLayer = currentIndicatorLayers[1];
 
-  const relatedTableData = useSelector(state => state.relatedTableData)
-  const { compareMode } = useSelector(state => state.mapMode)
-  const [treeData, setTreeData] = useState([])
+  const relatedTableData = useSelector((state) => state.relatedTableData);
+  const compareMode = useSelector((state) => state.mapMode.compareMode);
+  const compositeMode = useSelector((state) => state.mapMode.compositeMode);
+  const [treeData, setTreeData] = useState([]);
 
   /** Update current indicator **/
   const updateCurrentIndicator = (indicatorID, Action) => {
+    if (compositeMode) return;
     if (!indicatorID) {
-      dispatch(Action.change(null))
-      return
+      dispatch(Action.change(null));
+      return;
     }
-    const indicator = indicatorLayers.filter(indicator => {
-      return ('' + indicator.id) === ('' + indicatorID)
-    })[0]
+    const indicator = indicatorLayers.filter((indicator) => {
+      return "" + indicator.id === "" + indicatorID;
+    })[0];
     if (indicator) {
-      const indicatorData = JSON.parse(JSON.stringify(indicator))
+      const indicatorData = JSON.parse(JSON.stringify(indicator));
       if (!indicatorData.style?.length) {
-        indicatorData.style = indicators.find(indicator => {
-          return indicator.id === indicatorData.indicators[0]?.id
-        })?.style
+        indicatorData.style = indicators.find((indicator) => {
+          return indicator.id === indicatorData.indicators[0]?.id;
+        })?.style;
       }
-      dispatch(Action.change(indicatorData))
+      dispatch(Action.change(indicatorData));
     }
-  }
+  };
 
   const updateDescription = (indicatorLayer, relatedTableConfig) => {
-    const [aggrMethod, aggrField] = indicatorLayer.config.aggregation.replace(')', '')
-      .split('(');
+    const [aggrMethod, aggrField] = indicatorLayer.config.aggregation
+      .replace(")", "")
+      .split("(");
 
     let fields;
     try {
       const parsed = sqlParser.parse(
         `SELECT *
          FROM test
-         WHERE ${relatedTableConfig.query}`);
+         WHERE ${relatedTableConfig.query}`,
+      );
       const parsedQuery = returnWhereToDict(parsed.value.where);
-      fields = Array.isArray(parsedQuery) ? parsedQuery.map(query => query.field) : [parsedQuery.field];
+      fields = Array.isArray(parsedQuery)
+        ? parsedQuery.map((query) => query.field)
+        : [parsedQuery.field];
     } catch (error) {
       fields = [];
     }
 
     return indicatorLayer.description
-      .replace('{aggr-method-name}', aggrMethod)
-      .replace('{aggr-field-name}', aggrField)
-      .replace('{related-table-name}', relatedTableConfig.name)
-      .replace('{sql-field-names}', fields.join(', '))
-      .replace('{sql-query}', relatedTableConfig.query)
-  }
+      .replace("{aggr-method-name}", aggrMethod)
+      .replace("{aggr-field-name}", aggrField)
+      .replace("{related-table-name}", relatedTableConfig.name)
+      .replace("{sql-field-names}", fields.join(", "))
+      .replace("{sql-query}", relatedTableConfig.query);
+  };
 
   /**
    * Change selected indicator layer
    */
   useEffect(() => {
-    updateCurrentIndicator(currentIndicatorLayer, Actions.SelectedIndicatorLayer)
+    updateCurrentIndicator(
+      currentIndicatorLayer,
+      Actions.SelectedIndicatorLayer,
+    );
   }, [currentIndicatorLayer]);
 
   /**
    * Change selected indicator layer
    */
   useEffect(() => {
-    updateCurrentIndicator(currentIndicatorSecondLayer, Actions.SelectedIndicatorSecondLayer)
+    updateCurrentIndicator(
+      currentIndicatorSecondLayer,
+      Actions.SelectedIndicatorSecondLayer,
+    );
   }, [currentIndicatorSecondLayer]);
 
   /**
@@ -131,137 +148,153 @@ export function IndicatorLayers() {
    */
   useEffect(() => {
     if (!compareMode) {
-      setCurrentIndicatorLayers([currentIndicatorLayer, 0])
-      dispatch(Actions.SelectedIndicatorSecondLayer.change({}))
+      setCurrentIndicatorLayers([currentIndicatorLayer, 0]);
+      updateCurrentIndicator(null, Actions.SelectedIndicatorSecondLayer);
     }
   }, [compareMode]);
 
   const updateOtherLayers = (selectedData) => {
+    if (compositeMode) return;
     // Check selected indicator layers
-    const selectedIndicatorLayers = indicatorLayers.filter(layer => selectedData.includes('' + layer.id))
-    let relatedLayer = null
-    let dynamicLayer = null
-    selectedIndicatorLayers.map(layer => {
+    const selectedIndicatorLayers = indicatorLayers.filter((layer) =>
+      selectedData.includes("" + layer.id),
+    );
+    let relatedLayer = null;
+    let dynamicLayer = null;
+    selectedIndicatorLayers.map((layer) => {
       if (layer.related_tables?.length && layer.config.where) {
-        relatedLayer = layer.id
+        relatedLayer = layer.id;
       } else if (layer.type === DynamicIndicatorType) {
-        dynamicLayer = layer.id
+        dynamicLayer = layer.id;
       }
-    })
-    dispatch(Actions.SelectedRelatedTableLayer.change(relatedLayer))
-    dispatch(Actions.SelectedDynamicIndicatorLayer.change(dynamicLayer))
-  }
+    });
+    dispatch(Actions.SelectedRelatedTableLayer.change(relatedLayer));
+    dispatch(Actions.SelectedDynamicIndicatorLayer.change(dynamicLayer));
+  };
   /**
    * Init the current indicator layer
    */
   useEffect(() => {
-    let indicatorLayersTree = JSON.parse(JSON.stringify(indicatorLayers))
-    let selectedIds = [currentIndicatorLayer, currentIndicatorSecondLayer]
+    let indicatorLayersTree = JSON.parse(JSON.stringify(indicatorLayers));
+    let selectedIds = [currentIndicatorLayer, currentIndicatorSecondLayer];
     if (indicatorLayersTree && indicatorLayersTree.length) {
       // Indicator enabled
-      const indicatorLayersIds = []
-      indicatorLayers.map(layer => {
-        indicatorLayersIds.push(layer.id)
-        indicatorLayersIds.push('' + layer.id)
-      })
+      const indicatorLayersIds = [];
+      indicatorLayers.map((layer) => {
+        indicatorLayersIds.push(layer.id);
+        indicatorLayersIds.push("" + layer.id);
+      });
       // Assign to selected ids
       if (!indicatorLayersIds.includes(currentIndicatorLayer)) {
-        selectedIds[0] = null
+        selectedIds[0] = null;
       }
       if (!indicatorLayersIds.includes(currentIndicatorSecondLayer)) {
-        selectedIds[1] = null
+        selectedIds[1] = null;
       }
 
       // Get the force update ids
       if (indicatorLayersForcedUpdateIds !== null) {
-        selectedIds = indicatorLayersForcedUpdateIds
+        selectedIds = indicatorLayersForcedUpdateIds;
       }
-      indicatorLayersForcedUpdateIds = null
+      indicatorLayersForcedUpdateIds = null;
 
       if (selectedIds[0] == null) {
-        selectedIds = indicatorLayersTree.filter(indicator => {
-          return indicator.visible_by_default
-        }).map(indicator => indicator.id)
+        selectedIds = indicatorLayersTree
+          .filter((indicator) => {
+            return indicator.visible_by_default;
+          })
+          .map((indicator) => indicator.id);
       }
 
       // Check default indicator as turned one
       if (currentIndicatorLayer !== selectedIds[0]) {
         if (!selectedIds[0]) {
-          indicatorLayersTree[0].visible_by_default = true
-          selectedIds[0] = indicatorLayersTree[0].id
+          indicatorLayersTree[0].visible_by_default = true;
+          selectedIds[0] = indicatorLayersTree[0].id;
         }
       } else {
         // Change visible by default
-        indicatorLayersTree.map(indicator => {
+        indicatorLayersTree.map((indicator) => {
           if (selectedIds.includes(indicator.id)) {
-            indicator.visible_by_default = true
+            indicator.visible_by_default = true;
           } else {
-            indicator.visible_by_default = false
+            indicator.visible_by_default = false;
           }
-        })
+        });
       }
 
       // Check permission
-      indicatorLayersTree.map(indicatorLayer => {
+      indicatorLayersTree.map((indicatorLayer) => {
         // Check indicators
-        indicatorLayer.indicators.map(indLy => {
-          const indicator = indicators.find(indicator => indicator.id === indLy.id)
+        indicatorLayer.indicators.map((indLy) => {
+          const indicator = indicators.find(
+            (indicator) => indicator.id === indLy.id,
+          );
           if (!indicator) {
-            indicatorLayer.error = t('dashboardPage.indicatorLayerNotFound')
+            indicatorLayer.error = t("dashboardPage.indicatorLayerNotFound");
           } else if (!indicator.permission.read_data) {
-            indicatorLayer.error = t('dashboardPage.indicatorLayerErrorPermission')
+            indicatorLayer.error = t(
+              "dashboardPage.indicatorLayerErrorPermission",
+            );
           }
-        })
+        });
 
         // Check related tables
-        indicatorLayer.related_tables.map(rt => {
-          const rtConfig = relatedTables.find(rtConfig => rtConfig.id === rt.id)
+        indicatorLayer.related_tables.map((rt) => {
+          const rtConfig = relatedTables.find(
+            (rtConfig) => rtConfig.id === rt.id,
+          );
           if (!rtConfig) {
-            indicatorLayer.error = t('dashboardPage.relatedTableNotConfigured')
+            indicatorLayer.error = t("dashboardPage.relatedTableNotConfigured");
           } else {
-            indicatorLayer.description = updateDescription(indicatorLayer, rtConfig)
+            indicatorLayer.description = updateDescription(
+              indicatorLayer,
+              rtConfig,
+            );
             if (!rtConfig.permission.read_data) {
-              indicatorLayer.error = t('dashboardPage.indicatorLayerErrorPermission')
+              indicatorLayer.error = t(
+                "dashboardPage.indicatorLayerErrorPermission",
+              );
             }
             if (relatedTableData[rt.id]?.fetching) {
-              indicatorLayer.loading = true
+              indicatorLayer.loading = true;
             } else if (relatedTableData[rt.id]?.error) {
-              indicatorLayer.error = relatedTableData[rt.id]?.error
+              indicatorLayer.error = relatedTableData[rt.id]?.error;
             }
           }
-        })
-      })
+        });
+      });
     } else {
-      onChange([])
+      onChange([]);
     }
-    setTreeData(
-      [
-        ...dataStructureToTreeData(indicatorLayersTree, indicatorLayersStructure)
-      ]
-    )
+    setTreeData([
+      ...dataStructureToTreeData(indicatorLayersTree, indicatorLayersStructure),
+    ]);
 
     // Setup current indicator layer
-    setCurrentIndicatorLayers(selectedIds)
-    updateCurrentIndicator(selectedIds[0], Actions.SelectedIndicatorLayer)
-    updateCurrentIndicator(selectedIds[1], Actions.SelectedIndicatorSecondLayer)
-    updateOtherLayers(['' + selectedIds[0], '' + selectedIds[1]])
+    setCurrentIndicatorLayers(selectedIds);
+    updateCurrentIndicator(selectedIds[0], Actions.SelectedIndicatorLayer);
+    updateCurrentIndicator(
+      selectedIds[1],
+      Actions.SelectedIndicatorSecondLayer,
+    );
+    updateOtherLayers(["" + selectedIds[0], "" + selectedIds[1]]);
   }, [indicatorLayers, relatedTableData, indicatorLayersStructure]);
 
   const onChange = (selectedData) => {
     setTimeout(function () {
       if (selectedData.length === 0) {
         if (currentIndicatorLayer) {
-          setCurrentIndicatorLayers([0, 0])
-          dispatch(Actions.SelectedIndicatorLayer.change({}))
+          setCurrentIndicatorLayers([0, 0]);
+          updateCurrentIndicator(null, Actions.SelectedIndicatorLayer);
         }
       }
       if (selectedData.length >= 1) {
-        setCurrentIndicatorLayers(selectedData)
+        setCurrentIndicatorLayers(selectedData);
       }
-
-      updateOtherLayers(selectedData)
+      updateOtherLayers(selectedData);
     }, 100);
-  }
+  };
 
   return (
     <Fragment>
@@ -269,35 +302,44 @@ export function IndicatorLayers() {
         data={treeData}
         selectable={true}
         resetSelection={true}
-        maxSelect={compareMode ? 2 : 1}
+        maxSelect={
+          compositeMode
+            ? MaxSelectableLayersForCompositeIndexLayer
+            : compareMode
+              ? 2
+              : 1
+        }
         onChange={onChange}
         otherInfo={(layer) => {
           if (layer.data.related_tables?.length && layer.data.config.where) {
-            return <RelatedTableLayerFilter relatedTableLayer={layer.data} />
+            return <RelatedTableLayerFilter relatedTableLayer={layer.data} />;
           } else if (layer.data.type === DynamicIndicatorType) {
-            return <DynamicIndicatorLayerConfig
-              indicatorLayer={layer} />
+            return <DynamicIndicatorLayerConfig indicatorLayer={layer} />;
           }
-          return null
+          return null;
         }}
-        placeholder={t('dashboardPage.indicatorSearch')}
+        placeholder={t("dashboardPage.indicatorSearch")}
       />
-      {
-        indicatorLayers.map(indicatorLayer => {
-          if (indicatorLayer.related_tables?.length) {
-            return <RelatedTableLayer
+      {indicatorLayers.map((indicatorLayer) => {
+        if (indicatorLayer.related_tables?.length) {
+          return (
+            <RelatedTableLayer
               key={indicatorLayer.id}
-              relatedTableLayer={indicatorLayer} />
-          } else if (indicatorLayer.type === DynamicIndicatorType) {
-            return <DynamicIndicatorLayer
+              relatedTableLayer={indicatorLayer}
+            />
+          );
+        } else if (indicatorLayer.type === DynamicIndicatorType) {
+          return (
+            <DynamicIndicatorLayer
               key={indicatorLayer.id}
-              indicatorLayer={indicatorLayer} />
-          }
-          return null
-        })
-      }
+              indicatorLayer={indicatorLayer}
+            />
+          );
+        }
+        return null;
+      })}
     </Fragment>
-  )
+  );
 }
 
 /**
@@ -308,15 +350,11 @@ export function IndicatorLayers() {
 export default function IndicatorLayersAccordion({ expanded }) {
   return (
     <>
-      <Accordion
-        expanded={expanded}
-        className={'IndicatorLayerList'}
-      >
-
+      <Accordion expanded={expanded} className={"IndicatorLayerList"}>
         <AccordionDetails>
           <IndicatorLayers />
         </AccordionDetails>
       </Accordion>
     </>
-  )
+  );
 }

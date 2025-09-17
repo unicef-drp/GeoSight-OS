@@ -16,7 +16,6 @@
 export { default as Bookmark } from "./Bookmark";
 export { default as CompareLayer } from "./CompareLayer";
 export { default as DownloaderData } from "./DownloaderData";
-export { default as DataLoadingProgress } from "./DataLoadingProgress";
 export { default as GlobalDateSelector } from "./GlobalDateSelector";
 export { default as FullScreen } from "./FullScreen";
 export { PopupToolbars } from "./PopupToolbars";

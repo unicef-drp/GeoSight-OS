@@ -21,31 +21,38 @@ from django.shortcuts import redirect, reverse, render
 from core.utils import string_is_true
 from frontend.views.admin._base import AdminBaseView
 from geosight.data.forms.indicator import IndicatorForm
-from geosight.data.models.code import CodeList
 from geosight.data.models.indicator import (
     Indicator, IndicatorRule, IndicatorTypeChoices
 )
-from geosight.data.models.style.base import DynamicClassificationTypeChoices
-from geosight.data.models.style.indicator_style import (
-    IndicatorStyleTypeChoices
-)
-from geosight.data.serializer.code import CodeListSerializer
 from geosight.permission.access import RoleCreatorRequiredMixin
 
 
 class BaseIndicatorEditView(AdminBaseView):
-    """Base Indicator Edit View."""
+    """
+    Base view for creating and editing indicators.
+
+    Provides context, form handling, and rule saving logic for indicator
+    management in the admin dashboard.
+    """
 
     template_name = 'frontend/admin/indicator/form.html'
 
     @property
     def page_title(self):
-        """Return page title that used on tab bar."""
+        """
+        Return the page title used on the browser tab.
+
+        :rtype: str
+        """
         return 'Create Indicator'
 
     @property
     def content_title(self):
-        """Return content title that used on page title indicator."""
+        """
+        Return the content title used as the page heading.
+
+        :rtype: str
+        """
         list_url = reverse('admin-indicator-list-view')
         create_url = reverse('admin-indicator-create-view')
         return (
@@ -56,11 +63,28 @@ class BaseIndicatorEditView(AdminBaseView):
 
     @property
     def indicator(self) -> Indicator:
-        """Return indicator."""
+        """
+        Return a new indicator instance.
+
+        :rtype: Indicator
+        """
         return Indicator()
 
     def get_context_data(self, **kwargs) -> dict:
-        """Return context data."""
+        """
+        Return context data for rendering the indicator form.
+
+        The context includes:
+        - ``form``: Indicator form instance.
+        - ``indicator_id``: The indicator ID (if editing an existing one).
+        - ``types``: JSON-encoded list of indicator types.
+        - ``rules``: JSON-encoded list of indicator rules.
+        - ``permission``: JSON-encoded permission settings.
+
+        :param dict **kwargs: Arbitrary keyword arguments passed from the view.
+        :return: Context dictionary with indicator-related variables.
+        :rtype: dict
+        """
         context = super().get_context_data(**kwargs)
         indicator = self.indicator
         initial = IndicatorForm.model_to_initial(indicator)
@@ -80,14 +104,7 @@ class BaseIndicatorEditView(AdminBaseView):
                 'form': form,
                 'indicator_id': indicator.id,
                 'types': json.dumps(IndicatorTypeChoices),
-                'styleTypes': json.dumps(IndicatorStyleTypeChoices),
-                'dynamicClassification': json.dumps(
-                    DynamicClassificationTypeChoices
-                ),
                 'rules': json.dumps(indicator.rules_dict()),
-                'codelists': json.dumps(
-                    CodeListSerializer(CodeList.objects.all(), many=True).data
-                ),
                 'permission': json.dumps(permission)
             }
         )
@@ -97,7 +114,16 @@ class BaseIndicatorEditView(AdminBaseView):
             self, indicator: Indicator, data: dict, save_style=True,
             clean_update_permission=True
     ):
-        """Save rules."""
+        """
+        Save permissions and rules for an indicator.
+
+        :param Indicator indicator: The indicator instance being saved.
+        :param dict data: POST data from the request.
+        :param bool save_style:
+            Whether to save indicator rules (default: True).
+        :param bool clean_update_permission: Whether to clean existing
+            permissions before update (default: True).
+        """
         request = self.request
         # Save permission
         indicator.permission.update_from_request_data(
@@ -138,7 +164,14 @@ class BaseIndicatorEditView(AdminBaseView):
 
     @property
     def data(self):
-        """Update data of request."""
+        """
+        Return POST data with default configs if not provided.
+
+        Ensures `aggregation_upper_level_allowed`, `label_config`, and
+        `style_config` fields are always set.
+
+        :rtype: dict
+        """
         data = self.request.POST.copy()
         data['aggregation_upper_level_allowed'] = string_is_true(
             data.get('aggregation_upper_level_allowed', 'False')
@@ -150,7 +183,14 @@ class BaseIndicatorEditView(AdminBaseView):
         return data
 
     def post(self, request, **kwargs):
-        """Create indicator."""
+        """
+        Handle POST requests for creating or updating an indicator.
+
+        :param HttpRequest request: The incoming HTTP request.
+        :param dict **kwargs: Arbitrary keyword arguments.
+        :return: Redirect to edit view on success, or render form on failure.
+        :rtype: HttpResponse
+        """
         data = self.data
         form = IndicatorForm(data)
         if form.is_valid():
@@ -180,6 +220,6 @@ class BaseIndicatorEditView(AdminBaseView):
 
 
 class IndicatorCreateView(RoleCreatorRequiredMixin, BaseIndicatorEditView):
-    """Indicator Create View."""
+    """View for creating a new indicator."""
 
     pass

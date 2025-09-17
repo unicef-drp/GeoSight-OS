@@ -13,12 +13,12 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import React, { Fragment, useRef, useState } from 'react';
+import React, { Fragment, useRef, useState } from "react";
 
-import { render } from '../../../../app';
-import { store } from '../../../../store/admin';
-import Admin, { pageNames } from '../../index';
-import { AdminForm } from '../../Components/AdminForm'
+import { render } from "../../../../app";
+import { store } from "../../../../store/admin";
+import Admin, { pageNames } from "../../index";
+import { AdminForm } from "../../Components/AdminForm";
 import DjangoTemplateForm from "../../Components/AdminForm/DjangoTemplateForm";
 import { AdminFormInput } from "../../Components/AdminForm/Base";
 import { dictDeepCopy } from "../../../../utils/main";
@@ -27,8 +27,7 @@ import StyleConfig from "./StyleConfig";
 import { Select } from "../../../../components/Input";
 import { resourceActions } from "../List";
 
-import './style.scss';
-
+import "./style.scss";
 
 /**
  * Indicator Form App
@@ -37,85 +36,94 @@ export default function StyleForm() {
   const formRef = useRef(null);
   const [submitted, setSubmitted] = useState(false);
   const [styleData, setStyleData] = useState(style);
-  const selectableInput = batch !== null
+  const selectableInput = batch !== null;
 
   /** Render **/
-  const typeChoices = types.map(type => {
+  const typeChoices = types.map((type) => {
     return {
       value: type[0],
-      label: type[1]
-    }
-  })
+      label: type[1],
+    };
+  });
   return (
     <Admin
       minifySideNavigation={true}
       pageName={pageNames.Styles}
       rightHeader={
         <Fragment>
-          {
-            initialData.id ?
-              resourceActions({
+          {initialData.id
+            ? resourceActions({
                 id: initialData.id,
                 row: {
                   ...initialData,
-                  permission
-                }
-              }) : null
-          }
+                  permission,
+                },
+              })
+            : null}
           <SaveButton
             variant="primary"
             text="Save"
             onClick={() => {
-              formRef.current.submit(true)
-              setSubmitted(true)
+              formRef.current.submit(true);
+              setSubmitted(true);
             }}
             disabled={submitted ? true : false}
           />
         </Fragment>
-      }>
-
+      }
+    >
       <AdminForm
         ref={formRef}
         selectableInput={selectableInput}
         forms={{
-          'General': (
+          General: (
             <DjangoTemplateForm
               selectableInput={selectableInput}
-              selectableInputExcluded={['name', 'shortcode']}
+              selectableInputExcluded={["name", "shortcode"]}
             >
               <AdminFormInput
                 selectableInput={selectableInput}
-                label='Value type'
-                attrName='value_type'
-                required={true}>
+                label="Value type"
+                attrName="value_type"
+                required={true}
+              >
                 <Select
                   options={typeChoices}
-                  value={typeChoices.find(type => type.value === styleData.value_type)}
-                  name='value_type'
-                  onChange={evt => {
-                    styleData.value_type = evt.value
-                    setStyleData({ ...styleData })
+                  value={typeChoices.find(
+                    (type) => type.value === styleData.value_type,
+                  )}
+                  name="value_type"
+                  onChange={(evt) => {
+                    styleData.value_type = evt.value;
+                    setStyleData({ ...styleData });
                   }}
-                  menuPlacement='top'
+                  menuPlacement="top"
                 />
               </AdminFormInput>
             </DjangoTemplateForm>
           ),
-          'Style Config': (
+          "Style Config": (
             <StyleConfig
               data={dictDeepCopy(styleData)}
-              setData={style => {
+              setData={(style) => {
                 if (JSON.stringify(style) !== JSON.stringify(styleData)) {
-                  setStyleData({ ...style })
+                  setStyleData({ ...style });
                 }
               }}
-              defaultStyleRules={styleData.style ? styleData.style : currentRules ? currentRules : []}
+              defaultStyleRules={
+                styleData.style
+                  ? styleData.style
+                  : currentRules
+                    ? currentRules
+                    : []
+              }
+              useLibrary={false}
             />
-          )
+          ),
         }}
       />
     </Admin>
   );
 }
 
-render(StyleForm, store)
+render(StyleForm, store);

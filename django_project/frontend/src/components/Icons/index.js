@@ -27,6 +27,8 @@ export { default as CloseIcon } from "./close.svg";
 export { default as ContactIcon } from "./contact.svg";
 export { default as CompareCheckedIcon } from "./compare-checked.svg";
 export { default as CompareUncheckedIcon } from "./compare-unchecked.svg";
+export { default as CompositeIndexLayerActiveIcon } from "./composite-index-layer-selected.svg";
+export { default as CompositeIndexLayerIcon } from "./composite-index-layer-unselected.svg";
 export { default as CogIcon } from "./cog.svg";
 export { default as CopyIcon } from "./copy.svg";
 export { default as ContactActiveIcon } from "./contact-active.svg";

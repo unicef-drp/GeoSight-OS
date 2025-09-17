@@ -15,8 +15,9 @@
 
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Actions } from "../../../../../store/dashboard";
+import EditIcon from "@mui/icons-material/Edit";
 import ListForm from "../ListForm";
+import { Actions } from "../../../../../store/dashboard";
 import { Variables } from "../../../../../utils/Variables";
 import { ZonalAnalysisConfiguration } from "./ZonalAnalysis";
 import { ThemeButton } from "../../../../../components/Elements/Button";
@@ -24,6 +25,7 @@ import {
   VisibilityIcon,
   VisibilityOffIcon,
 } from "../../../../../components/Icons";
+import CompositeIndexLayerConfig from "../../../../../components/IndicatorLayer/CompositeIndexLayer/Config";
 
 import "./style.scss";
 
@@ -42,11 +44,11 @@ export const columns = [
  */
 export default function ToolsForm() {
   const dispatch = useDispatch();
-  const { tools } = useSelector((state) => state.dashboard.data);
+  const tools = useSelector((state) => state.dashboard.data?.tools);
   const sortedTools = tools.sort((a, b) => a.name.localeCompare(b.name));
 
   const allVisible = tools.every((tool) => tool.visible_by_default);
-  const onToggle = (tool) => {
+  const onToggle = () => {
     dispatch(Actions.DashboardTool.updateBatchVisibility(!allVisible));
   };
   return (
@@ -89,19 +91,43 @@ export default function ToolsForm() {
         initColumns={columns}
         hasGroup={false}
         otherActionsFunction={(data) => {
-          if (data.name === Variables.DASHBOARD.TOOL.ZONAL_ANALYSIS) {
-            return (
-              <ZonalAnalysisConfiguration
-                config={data.config}
-                setConfig={(config) => {
-                  dispatch(
-                    Actions.DashboardTool.update({ ...data, config: config }),
-                  );
-                }}
-              />
-            );
+          switch (data.name) {
+            case Variables.DASHBOARD.TOOL.ZONAL_ANALYSIS:
+              return (
+                <ZonalAnalysisConfiguration
+                  config={data.config}
+                  setConfig={(config) => {
+                    dispatch(
+                      Actions.DashboardTool.update({
+                        ...data,
+                        config: config,
+                      }),
+                    );
+                  }}
+                />
+              );
+            case Variables.DASHBOARD.TOOL.COMPOSITE_INDEX_LAYER:
+              return (
+                <CompositeIndexLayerConfig
+                  config={data.config}
+                  setConfig={(config) => {
+                    dispatch(
+                      Actions.DashboardTool.update({
+                        ...data,
+                        config: config,
+                      }),
+                    );
+                  }}
+                  icon={
+                    <EditIcon
+                      style={{ marginRight: "1rem", cursor: "pointer" }}
+                    />
+                  }
+                />
+              );
+            default:
+              return null;
           }
-          return null;
         }}
       />
     </>

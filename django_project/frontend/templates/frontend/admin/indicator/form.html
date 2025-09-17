@@ -27,12 +27,7 @@
       const indicatorId = {% if indicator_id %}{{ indicator_id }}{% else %}null{% endif %};
       const indicatorRules = {{ rules|safe }};
       const types = {{ types|safe }};
-      const styleTypes = {{ styleTypes|safe }};
-      const dynamicClassification = {{ dynamicClassification|safe }};
       const permission = {{ permission|safe }};
-
-      // Format code choices
-      const codelists = {{ codelists|safe }};
 
       // Urls api
       urls.api = {
@@ -54,8 +49,5 @@
           urls.api.permission = '{% url 'indicator-permission-api' 0 %}';
         {% endif %}
       }
-
-      // If in batch or not
-      const batch = {% if batch %}true{% else %}null{% endif %};
     </script>
 {% endblock %}

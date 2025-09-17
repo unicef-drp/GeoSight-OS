@@ -55,6 +55,7 @@ export const Variables = {
       DATA_DOWNLOAD: "Data download",
       SPATIAL_BOOKMARK: "Spatial bookmark",
       BACK_TO_HOME: "Back to Home",
+      COMPOSITE_INDEX_LAYER: "Composite index layer",
     },
   },
   FEATURE_TYPE: {

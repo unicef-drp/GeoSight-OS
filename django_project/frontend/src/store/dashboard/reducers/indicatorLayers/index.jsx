@@ -21,85 +21,104 @@ import {
 } from "../../../../components/SortableTreeForm/utilities";
 import { dataFieldsDefault } from "../../../../utils/indicatorLayer";
 
-export const INDICATOR_LAYERS_ACTION_NAME = 'INDICATOR_LAYERS';
-export const INDICATOR_LAYERS_ACTION_TYPE_ADD = 'INDICATOR_LAYERS/ADD';
-export const INDICATOR_LAYERS_ACTION_TYPE_REMOVE = 'INDICATOR_LAYERS/REMOVE';
-export const INDICATOR_LAYERS_ACTION_TYPE_UPDATE = 'INDICATOR_LAYERS/UPDATE';
-export const INDICATOR_LAYERS_ACTION_TYPE_UPDATE_JSON = 'INDICATOR_LAYERS/UPDATE_JSON';
-export const INDICATOR_LAYERS_ACTION_TYPE_REARRANGE = 'INDICATOR_LAYERS/REARRANGE';
+export const INDICATOR_LAYERS_ACTION_NAME = "INDICATOR_LAYERS";
+export const INDICATOR_LAYERS_ACTION_TYPE_ADD = "INDICATOR_LAYERS/ADD";
+export const INDICATOR_LAYERS_ACTION_TYPE_REMOVE = "INDICATOR_LAYERS/REMOVE";
+export const INDICATOR_LAYERS_ACTION_TYPE_UPDATE = "INDICATOR_LAYERS/UPDATE";
+export const INDICATOR_LAYERS_ACTION_TYPE_UPDATE_JSON =
+  "INDICATOR_LAYERS/UPDATE_JSON";
+export const INDICATOR_LAYERS_ACTION_TYPE_REARRANGE =
+  "INDICATOR_LAYERS/REARRANGE";
 
-const initialState = []
-export default function indicatorLayersReducer(state = initialState, action, dashboardState) {
+const initialState = [];
+export default function indicatorLayersReducer(
+  state = initialState,
+  action,
+  dashboardState,
+) {
   switch (action.type) {
     case INDICATOR_LAYERS_ACTION_TYPE_ADD: {
-      action.payload.id = state.length === 0 ? 1 : Math.max(...state.map(layer => layer.id)) + 1
+      action.payload.id =
+        state.length === 0
+          ? 1
+          : Math.max(...state.map((layer) => layer.id)) + 1;
       if (state.length === 0) {
-        action.payload.visible_by_default = true
+        action.payload.visible_by_default = true;
       }
       if (!action.payload.related_tables) {
-        action.payload.related_tables = []
+        action.payload.related_tables = [];
       }
       if (!action.payload.indicators) {
-        action.payload.indicators = []
+        action.payload.indicators = [];
       }
       if (!action.payload.data_fields) {
-        action.payload.data_fields = dataFieldsDefault()
+        action.payload.data_fields = dataFieldsDefault();
       }
-      addChildToGroupInStructure(action.payload.group, action.payload.id, dashboardState.indicatorLayersStructure)
-      return [
-        ...state,
-        action.payload
-      ]
+      addChildToGroupInStructure(
+        action.payload.group,
+        action.payload.id,
+        dashboardState.indicatorLayersStructure,
+      );
+      return [...state, action.payload];
     }
 
     case INDICATOR_LAYERS_ACTION_TYPE_REMOVE: {
-      const newState = []
-      let noVisiblePayload = action.payload.visible_by_default;
-      state.forEach(function (indicator) {
-        if (indicator.id !== action.payload.id) {
-          if (noVisiblePayload) {
-            indicator.visible_by_default = true
-            noVisiblePayload = false;
+      const newState = [];
+      let deleted = state.find(
+        (indicator) => indicator.id === action.payload.id,
+      );
+      if (deleted) {
+        let noVisiblePayload = action.payload.visible_by_default;
+        state.forEach(function (indicator) {
+          if (indicator.id !== action.payload.id) {
+            if (noVisiblePayload) {
+              indicator.visible_by_default = true;
+              noVisiblePayload = false;
+            }
+            newState.push(indicator);
           }
-          newState.push(indicator)
-        }
-      })
-      return newState
+        });
+        return newState;
+      } else {
+        return state;
+      }
     }
     case INDICATOR_LAYERS_ACTION_TYPE_UPDATE: {
-      const newState = []
-      const currentVisible = state.find(indicator => indicator.visible_by_default)
+      const newState = [];
+      const currentVisible = state.find(
+        (indicator) => indicator.visible_by_default,
+      );
       state.forEach(function (indicator) {
         if (indicator.id === action.payload.id) {
-          newState.push(action.payload)
+          newState.push(action.payload);
           if (!currentVisible || currentVisible?.id === action.payload.id) {
-            indicator.visible_by_default = true
+            indicator.visible_by_default = true;
           }
         } else if (indicator.id !== action.payload.id) {
           if (action.payload.visible_by_default) {
-            indicator.visible_by_default = false
+            indicator.visible_by_default = false;
           }
-          newState.push(indicator)
+          newState.push(indicator);
         }
-      })
-      return newState
+      });
+      return newState;
     }
     case INDICATOR_LAYERS_ACTION_TYPE_UPDATE_JSON: {
-      let newState = state
+      let newState = state;
       state.forEach(function (layer) {
         const { id, data } = action.payload;
         if (layer.id === id) {
           for (const [key, value] of Object.entries(data)) {
-            layer[key] = value
+            layer[key] = value;
           }
-          newState = [...state]
-          return
+          newState = [...state];
+          return;
         }
-      })
-      return newState
+      });
+      return newState;
     }
     case INDICATOR_LAYERS_ACTION_TYPE_REARRANGE: {
-      let newState = []
+      let newState = [];
       for (const [groupName, groupValue] of Object.entries(action.payload)) {
         for (const value of groupValue) {
           state.forEach(function (indicator) {
@@ -107,14 +126,14 @@ export default function indicatorLayersReducer(state = initialState, action, das
               indicator.order = value.data.order;
               indicator.group = value.group;
               indicator.group_parent = value.group_parent;
-              newState.push(indicator)
+              newState.push(indicator);
             }
-          })
+          });
         }
       }
-      return newState
+      return newState;
     }
     default:
-      return state
+      return state;
   }
 }

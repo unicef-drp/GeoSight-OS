@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { BASE_URL } from "../../variables";
+import { deleteProject } from "../../utils/project";
 
 // URL That we need to check
 const timeout = 2000;
@@ -20,6 +21,7 @@ const TOOLS = {
   DATA_DOWNLOAD: "Data download",
   SPATIAL_BOOKMARK: "Spatial bookmark",
   BACK_TO_HOME: "Back to Home",
+  COMPOSITE_INDEX_LAYER: "Composite index layer",
 
 }
 test.describe('Create complex project', () => {
@@ -491,13 +493,6 @@ test.describe('Create complex project', () => {
     // ------------------------------------
     // DELETE PROJECT
     // ------------------------------------
-    await page.goto(editUrl);
-    await page.locator('.MoreActionIcon').click();
-    await page.locator('.MuiMenu-root .MuiButtonBase-root .error').click();
-    await expect(page.locator('.modal--content ')).toContainText(`Are you sure want to delete Test Project Complex Config?`);
-    await page.getByRole('button', { name: 'Confirm' }).click();
-    await page.waitForURL(`${BASE_URL}/admin/project/`);
-    await expect(page.getByText('Create New Project')).toBeVisible();
-    await expect(page.getByText('Test Project Complex Config')).toBeHidden();
+    await deleteProject(page, "Test Project Complex Config")
   });
 });

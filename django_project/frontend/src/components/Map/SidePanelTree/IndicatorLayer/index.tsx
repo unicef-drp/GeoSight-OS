@@ -25,11 +25,13 @@ import LayerDescription from "../Description";
 import SidePanelSlicers from "../SidePanelSlicers";
 import { RelatedTableLayerFilter } from "../../../../pages/Dashboard/LeftPanel/IndicatorLayers/RelatedTableLayer";
 import {
+  CompositeIndexLayerType,
   DynamicIndicatorType,
   RelatedTableLayerType,
 } from "../../../../utils/indicatorLayer";
 import { DynamicIndicatorLayerConfig } from "../../../../pages/Dashboard/LeftPanel/IndicatorLayers/DynamicIndicatorLayer";
 import { Checker, RelatedTableChecker } from "./Checker";
+import { isEligibleForCompositeLayer } from "../../../IndicatorLayer/CompositeIndexLayer/utilities";
 
 export interface Props {
   layer?: IndicatorLayer;
@@ -40,8 +42,10 @@ export interface Props {
   selected: string[];
   filterText: string;
   maxWord: number;
-
+  maxSelect: number;
   selectItem: (e: React.ChangeEvent<HTMLInputElement>) => void;
+
+  otherElement?: React.ReactNode;
 }
 
 export default function IndicatorLayer({
@@ -52,12 +56,16 @@ export default function IndicatorLayer({
   filterText,
   maxWord,
   selectItem,
+  maxSelect,
+  otherElement = null,
 }: Props) {
-  // @ts-ignore
-  const { compareMode } = useSelector((state) => state.mapMode);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const disabled = !!(error ? error : layer.error);
+  // @ts-ignore
+  const compositeMode = useSelector((state) => state.mapMode.compositeMode);
+  const isDisabled =
+    disabled || (compositeMode && !isEligibleForCompositeLayer(layer));
 
   // When the indicator layer type selected
   const IndicatorLayerTypeSelection = () => {
@@ -94,15 +102,22 @@ export default function IndicatorLayer({
   return (
     <div>
       <FormControlLabel
-        className={disabled ? " Disabled" : ""}
+        className={isDisabled ? " Disabled" : ""}
         control={
-          <div className={"PanelInput"}>
-            {compareMode ? (
+          <div
+            className={"PanelInput"}
+            title={
+              isDisabled && compositeMode
+                ? "This indicator layer is not eligible in composite mode"
+                : ""
+            }
+          >
+            {maxSelect >= 2 ? (
               <Checkbox
                 tabIndex={-1}
                 className="PanelCheckbox"
                 size={"small"}
-                disabled={disabled}
+                disabled={isDisabled}
                 value={nodesDataId}
                 checked={checked}
                 onChange={selectItem}
@@ -112,7 +127,7 @@ export default function IndicatorLayer({
                 tabIndex={-1}
                 className="PanelRadio"
                 size={"small"}
-                disabled={disabled}
+                disabled={isDisabled}
                 value={nodesDataId}
                 checked={checked}
                 onChange={selectItem}
@@ -134,22 +149,18 @@ export default function IndicatorLayer({
                 isGroup={false}
               />
             }
-            {OtherData()}
-            {
+            {layer.type !== CompositeIndexLayerType && (
               // @ts-ignore
               <LayerDescription
                 // @ts-ignore
                 layer={{ ...layer, error: error ? error : layer.error }}
               />
-            }
+            )}
+            {!isDisabled && <>{OtherData()}</>}
+            {otherElement}
           </span>
         }
       />
-      {layer.legend && selected.indexOf(nodesDataId) >= 0 ? (
-        <div dangerouslySetInnerHTML={{ __html: layer.legend }}></div>
-      ) : (
-        ""
-      )}
       {layer.related_table && selected.indexOf(nodesDataId) >= 0 ? (
         <SidePanelSlicers data={layer} />
       ) : null}

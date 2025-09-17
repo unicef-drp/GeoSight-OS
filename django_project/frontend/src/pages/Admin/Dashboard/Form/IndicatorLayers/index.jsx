@@ -27,7 +27,7 @@ import RelatedTableLayerConfig from "./RelatedTable";
 import DynamicIndicatorConfig from "./DynamicIndicator";
 import { dictDeepCopy } from "../../../../../utils/main";
 import {
-  removeChildInGroupInStructure
+  removeLayerFromProject
 } from "../../../../../components/SortableTreeForm/utilities";
 import {
   DynamicIndicatorType,
@@ -155,13 +155,21 @@ export function IndicatorLayerConfig({
  */
 export default function IndicatorLayersForm() {
   const dispatch = useDispatch();
-  const {
-    indicators: dashboardIndicators,
-    relatedTables: dashboardRelatedTables,
-    indicatorLayers,
-    indicatorLayersStructure,
-    referenceLayer,
-  } = useSelector((state) => state.dashboard.data);
+  const dashboardIndicators = useSelector(
+    (state) => state.dashboard.data?.indicators,
+  );
+  const dashboardRelatedTables = useSelector(
+    (state) => state.dashboard.data?.relatedTables,
+  );
+  const indicatorLayers = useSelector(
+    (state) => state.dashboard.data?.indicatorLayers,
+  );
+  const indicatorLayersStructure = useSelector(
+    (state) => state.dashboard.data?.indicatorLayersStructure,
+  );
+  const referenceLayer = useSelector(
+    (state) => state.dashboard.data?.referenceLayer,
+  );
   const indicators = dictDeepCopy(dashboardIndicators, true);
   const relatedTables = dictDeepCopy(dashboardRelatedTables, true);
   const referenceLayerData = useSelector(
@@ -224,20 +232,7 @@ export default function IndicatorLayersForm() {
 
   /** Remove layer **/
   const removeLayer = (layer) => {
-    removeChildInGroupInStructure(
-      layer.group,
-      layer.id,
-      indicatorLayersStructure,
-      (_) => {
-        dispatch(
-          Actions.Dashboard.updateStructure(
-            "indicatorLayersStructure",
-            indicatorLayersStructure,
-          ),
-        );
-      },
-    );
-    dispatch(Actions.IndicatorLayers.remove(layer));
+    removeLayerFromProject(dispatch, layer, indicatorLayersStructure);
   };
 
   return (

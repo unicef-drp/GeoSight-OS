@@ -66,8 +66,6 @@ export default function dashboardToolReducer(
           // @ts-ignore
           dashboardTool.visible_by_default = action.payload;
         });
-        console.log(action.payload);
-        console.log(dashboardTools);
         return dashboardTools;
       }
       default:

@@ -24,6 +24,8 @@ import { MeasurementTool } from "./Measurement";
 import { ZonalAnalysisComponent } from "./ZonalAnalysis";
 import { Variables } from "../../../../utils/Variables";
 import { isDashboardToolEnabled } from "../../../../selectors/dashboard";
+import CompositeIndexLayerToolbar
+  from "../../../../components/IndicatorLayer/CompositeIndexLayer/Toolbar";
 
 import "./style.scss";
 
@@ -60,8 +62,15 @@ export const PopupToolbars = forwardRef(({ map }: Props, ref) => {
   const zonalAnalysisEnabled = useSelector(
     isDashboardToolEnabled(Variables.DASHBOARD.TOOL.ZONAL_ANALYSIS),
   );
+  const compositeIndexLayerEnabled = useSelector(
+    isDashboardToolEnabled(Variables.DASHBOARD.TOOL.COMPOSITE_INDEX_LAYER),
+  );
 
-  if (!measurementEnabled && !zonalAnalysisEnabled) {
+  if (
+    !measurementEnabled &&
+    !zonalAnalysisEnabled &&
+    !compositeIndexLayerEnabled
+  ) {
     return null;
   }
   return (
@@ -87,6 +96,7 @@ export const PopupToolbars = forwardRef(({ map }: Props, ref) => {
           started={() => measurementRef?.current?.stop()}
         />
       )}
+      {compositeIndexLayerEnabled && <CompositeIndexLayerToolbar />}
     </>
   );
 });

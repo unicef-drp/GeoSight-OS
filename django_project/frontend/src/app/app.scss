@@ -605,3 +605,23 @@ header {
     opacity: var(--base-hovered-opacity);
   }
 }
+
+.MainTable {
+  width: 100%;
+
+  th, td {
+    border: 1px solid var(--primary-color);
+    padding: 0.2rem 0.5rem;
+  }
+
+  thead {
+    th {
+      background: var(--primary-color);
+      color: var(--anti-primary-color);
+
+      .form-helptext {
+        color: var(--anti-primary-color);
+      }
+    }
+  }
+}

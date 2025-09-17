@@ -13,50 +13,48 @@
  * __copyright__ = ('Copyright 2023, Unicef')
  */
 
-import { compose, legacy_createStore as createStore } from 'redux';
-import rootReducer from './reducers';
+import { compose, legacy_createStore as createStore } from "redux";
+import rootReducer from "./reducers";
 
 // Reducers and Actions
-import Basemaps from './reducers/basemap/actions'
-import ColorPalettes from './reducers/colorPalettes/actions'
-import ContextLayers from './reducers/contextLayers/actions'
-import Dashboard from './reducers/dashboard/actions'
-import DashboardHistory from './reducers/dashboardHistory/actions'
-import DashboardTool from './reducers/dashboardTool/actions'
-import DatasetGeometries from './reducers/datasetGeometries/actions'
-import Extent from './reducers/extent/actions'
-import Filters from './reducers/filters/actions'
-import FilteredGeometries from './reducers/filteredGeometries/actions'
-import GlobalState from './reducers/globalState/actions'
-import IndicatorLayers from './reducers/indicatorLayers/actions'
-import Indicators from './reducers/indicators/actions'
-import IndicatorsData from './reducers/indicatorsData/actions'
-import IndicatorsMetadata from './reducers/indicatorsMetadata/actions'
-import IndicatorLayerMetadata from './reducers/indicatorLayerMetadata/actions'
-import Map from './reducers/map/actions'
-import MapGeometryValue from './reducers/mapGeometryValue/actions'
-import MapMode from './reducers/mapMode/actions'
-import ReferenceLayer from './reducers/referenceLayer/actions'
-import ReferenceLayerData from './reducers/referenceLayerData/actions'
-import RelatedTable from './reducers/relatedTable/actions'
-import RelatedTableData from './reducers/relatedTableData/actions'
-import SelectedAdminLevel from './reducers/selectedAdminLevel/actions'
-import SelectedIndicatorLayer from './reducers/selectedIndicatorLayer/actions'
-import SelectedIndicatorSecondLayer
-  from './reducers/selectedIndicatorSecondLayer/actions'
-import SelectedBookmark from './reducers/selectedBookmark/actions'
-import SelectedGlobalTime from './reducers/selectedGlobalTime/actions'
-import SelectedGlobalTimeConfig
-  from './reducers/selectedGlobalTimeConfig/actions'
-import SelectedRelatedTableLayer
-  from './reducers/selectedRelatedTableLayer/actions'
-import SelectedDynamicIndicatorLayer
-  from './reducers/selectedDynamicIndicatorLayer/actions'
-import SelectionState from './reducers/selectionState/actions'
-import Widgets from './reducers/widgets/actions'
+import Basemaps from "./reducers/basemap/actions";
+import CompositeIndicatorLayer from "./reducers/compositeIndicatorLayer/actions";
+import ColorPalettes from "./reducers/colorPalettes/actions";
+import ContextLayers from "./reducers/contextLayers/actions";
+import Dashboard from "./reducers/dashboard/actions";
+import DashboardHistory from "./reducers/dashboardHistory/actions";
+import DashboardTool from "./reducers/dashboardTool/actions";
+import DatasetGeometries from "./reducers/datasetGeometries/actions";
+import Extent from "./reducers/extent/actions";
+import Filters from "./reducers/filters/actions";
+import FilteredGeometries from "./reducers/filteredGeometries/actions";
+import GlobalState from "./reducers/globalState/actions";
+import IndicatorLayers from "./reducers/indicatorLayers/actions";
+import Indicators from "./reducers/indicators/actions";
+import IndicatorsData from "./reducers/indicatorsData/actions";
+import IndicatorsMetadata from "./reducers/indicatorsMetadata/actions";
+import IndicatorLayerMetadata from "./reducers/indicatorLayerMetadata/actions";
+import Map from "./reducers/map/actions";
+import MapGeometryValue from "./reducers/mapGeometryValue/actions";
+import MapMode from "./reducers/mapMode/actions";
+import ReferenceLayer from "./reducers/referenceLayer/actions";
+import ReferenceLayerData from "./reducers/referenceLayerData/actions";
+import RelatedTable from "./reducers/relatedTable/actions";
+import RelatedTableData from "./reducers/relatedTableData/actions";
+import SelectedAdminLevel from "./reducers/selectedAdminLevel/actions";
+import SelectedIndicatorLayer from "./reducers/selectedIndicatorLayer/actions";
+import SelectedIndicatorSecondLayer from "./reducers/selectedIndicatorSecondLayer/actions";
+import SelectedBookmark from "./reducers/selectedBookmark/actions";
+import SelectedGlobalTime from "./reducers/selectedGlobalTime/actions";
+import SelectedGlobalTimeConfig from "./reducers/selectedGlobalTimeConfig/actions";
+import SelectedRelatedTableLayer from "./reducers/selectedRelatedTableLayer/actions";
+import SelectedDynamicIndicatorLayer from "./reducers/selectedDynamicIndicatorLayer/actions";
+import SelectionState from "./reducers/selectionState/actions";
+import Widgets from "./reducers/widgets/actions";
 
 const Actions = {
   Basemaps,
+  CompositeIndicatorLayer,
   ColorPalettes,
   ContextLayers,
   Dashboard,
@@ -88,25 +86,23 @@ const Actions = {
   SelectedDynamicIndicatorLayer,
   SelectedRelatedTableLayer,
   SelectionState,
-  Widgets
-}
+  Widgets,
+};
 
-export { Actions }
+export { Actions };
 
 const initialState = {};
 const enhancers = [];
 
 // Dev Tools
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === "development") {
   const devToolsExtension = window.__REDUX_DEVTOOLS_EXTENSION__;
 
-  if (typeof devToolsExtension === 'function') {
+  if (typeof devToolsExtension === "function") {
     enhancers.push(devToolsExtension());
   }
 }
 
-const composedEnhancers = compose(
-  ...enhancers
-);
+const composedEnhancers = compose(...enhancers);
 
 export const store = createStore(rootReducer, initialState, composedEnhancers);

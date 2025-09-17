@@ -25,8 +25,5 @@
           urls.api.permission = '{% url 'related-table-permission-api' 0 %}'
         {% endif %}
       }
-
-      // If in batch or not
-      const batch = {% if batch %}true{% else %}null{% endif %};
     </script>
 {% endblock %}

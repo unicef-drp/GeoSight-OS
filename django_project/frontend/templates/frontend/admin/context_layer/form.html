@@ -17,7 +17,6 @@
     <script>
       const initialData = {{ form|get_data|safe }};
       const permission = {{ permission|safe }};
-      const dynamicClassification = {{ dynamicClassification|safe }};
       const permissionFormData = {% if form.permission_data %}{{ form.permission_data|safe }}{% else %}null{% endif %};
 
       // Urls api
@@ -51,8 +50,5 @@
       {% if 'cloud_native_gis' in plugins %}
         urls.api.cloudNativeGISImportHistory = '{% url 'cloud-native-gis-layer-upload-list' 0 %}?page_size=1'
       {% endif %}
-
-      // If in batch or not
-      const batch = {% if batch %}true{% else %}null{% endif %};
     </script>
 {% endblock %}

@@ -17,72 +17,100 @@
    INDICATOR
    ========================================================================== */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import {
   getIndicatorsOfIndicatorLayers,
-  referenceLayerIndicatorLayer
+  referenceLayerIndicatorLayer,
 } from "../../../../utils/indicatorLayer";
 import { IndicatorRequest } from "./Request";
 import { Indicator } from "../../../../class/Indicator";
 
 /** Indicators data. */
 export default function Indicators() {
-  const {
-    referenceLayer,
-    indicators,
-    indicatorLayers
-  } = useSelector(state => state.dashboard.data);
-  const currentIndicatorLayer = useSelector(state => state.selectedIndicatorLayer);
-  const currentIndicatorSecondLayer = useSelector(state => state.selectedIndicatorSecondLayer);
-  const { level } = useSelector(state => state.selectedAdminLevel);
+  const { referenceLayer, indicators, indicatorLayers } = useSelector(
+    (state) => state.dashboard.data,
+  );
+  const currentIndicatorLayer = useSelector(
+    (state) => state.selectedIndicatorLayer,
+  );
+  const currentIndicatorSecondLayer = useSelector(
+    (state) => state.selectedIndicatorSecondLayer,
+  );
+  const { level } = useSelector((state) => state.selectedAdminLevel);
   const [indicatorsWithDataset, setIndicatorsWithDataset] = useState([]);
-  const indicatorLayerIds = useSelector(state => state.selectionState.filter.indicatorLayerIds);
+  const indicatorLayerIds = useSelector(
+    (state) => state.selectionState.filter.indicatorLayerIds,
+  );
+  const compositeIndicatorLayerIds = useSelector(
+    (state) => state.selectionState.composite.indicatorLayerIds,
+  );
   const activatedLayers = [
     currentIndicatorLayer?.id,
     currentIndicatorSecondLayer?.id,
-    ...indicatorLayerIds
+    ...indicatorLayerIds,
+    ...compositeIndicatorLayerIds,
   ];
 
   /** Update the indicators with dataset. */
   useEffect(() => {
     const _indicatorsWithDataset = [];
-    [currentIndicatorLayer, currentIndicatorSecondLayer].concat(indicatorLayers).map(layer => {
-      const identifier = referenceLayerIndicatorLayer(referenceLayer, layer)?.identifier;
-      const _indicators = getIndicatorsOfIndicatorLayers(layer, indicators)
-      _indicators.map(_ => {
-        let data = _indicatorsWithDataset.find(row => row.id === _.id && row.dataset === identifier)
-        if (!data) {
-          _indicatorsWithDataset.push({
-            id: _.id,
-            dataset: identifier,
-            indicatorLayerIds: []
-          })
-        }
-        data = _indicatorsWithDataset.find(row => row.id === _.id && row.dataset === identifier)
-        data.indicatorLayerIds.push(layer.id)
-      })
-
-    })
-    if (JSON.stringify(_indicatorsWithDataset) !== JSON.stringify(indicatorsWithDataset)) {
-      setIndicatorsWithDataset(_indicatorsWithDataset)
-    }
-  }, [referenceLayer, indicators, indicatorLayers, currentIndicatorLayer, currentIndicatorSecondLayer]);
-
-  return <>
-    {
-      indicatorsWithDataset.map(indicatorDataset => {
-          const dataset = indicatorDataset.dataset;
-          const identifier = `${indicatorDataset.id}-${dataset}`
-          const indicatorData = indicators.find(indicator => indicator.id === indicatorDataset.id)
-          if (!indicatorData) {
-            return null
+    [currentIndicatorLayer, currentIndicatorSecondLayer]
+      .concat(indicatorLayers)
+      .map((layer) => {
+        const identifier = referenceLayerIndicatorLayer(
+          referenceLayer,
+          layer,
+        )?.identifier;
+        const _indicators = getIndicatorsOfIndicatorLayers(layer, indicators);
+        _indicators.map((_) => {
+          let data = _indicatorsWithDataset.find(
+            (row) => row.id === _.id && row.dataset === identifier,
+          );
+          if (!data) {
+            _indicatorsWithDataset.push({
+              id: _.id,
+              dataset: identifier,
+              indicatorLayerIds: [],
+            });
           }
-          const indicator = new Indicator(indicatorData)
-          const isRequest = indicatorDataset.indicatorLayerIds.some(
-            item => activatedLayers.includes(item)
-          )
-          return <IndicatorRequest
+          data = _indicatorsWithDataset.find(
+            (row) => row.id === _.id && row.dataset === identifier,
+          );
+          data.indicatorLayerIds.push(layer.id);
+        });
+      });
+    if (
+      JSON.stringify(_indicatorsWithDataset) !==
+      JSON.stringify(indicatorsWithDataset)
+    ) {
+      setIndicatorsWithDataset(_indicatorsWithDataset);
+    }
+  }, [
+    referenceLayer,
+    indicators,
+    indicatorLayers,
+    currentIndicatorLayer,
+    currentIndicatorSecondLayer,
+  ]);
+
+  return (
+    <>
+      {indicatorsWithDataset.map((indicatorDataset) => {
+        const dataset = indicatorDataset.dataset;
+        const identifier = `${indicatorDataset.id}-${dataset}`;
+        const indicatorData = indicators.find(
+          (indicator) => indicator.id === indicatorDataset.id,
+        );
+        if (!indicatorData) {
+          return null;
+        }
+        const indicator = new Indicator(indicatorData);
+        const isRequest = indicatorDataset.indicatorLayerIds.some((item) =>
+          activatedLayers.includes(item),
+        );
+        return (
+          <IndicatorRequest
             key={identifier}
             indicator={indicator}
             admin_level={level}
@@ -90,8 +118,8 @@ export default function Indicators() {
             dashboardDatasetIdentifier={referenceLayer?.identifier}
             isRequest={isRequest}
           />
-        }
-      )
-    }
-  </>
+        );
+      })}
+    </>
+  );
 }

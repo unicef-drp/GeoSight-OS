@@ -28,7 +28,6 @@
 
       const definition = {{ definition|safe }};
       const projectCategories = {{ categories|safe }};
-      const batch = null
       let editMode = true;
       urls.api = {
         'detail': '{% url 'dashboard-detail-api' slug=dashboard.id %}',
@@ -59,9 +58,6 @@
       }
 
       // Format code choices
-      const codelists = {{ codelists|safe }};
       const types = {{ types|safe }};
-      const styleTypes = {{ styleTypes|safe }};
-      const dynamicClassification = {{ dynamicClassification|safe }};
     </script>
 {% endblock %}

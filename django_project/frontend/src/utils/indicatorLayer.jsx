@@ -19,44 +19,58 @@ import { extractCode } from "./georepo";
 import { getRelatedTableData } from "./relatedTable";
 import { getIndicatorDataByLayer, UpdateStyleData } from "./indicatorData";
 
-export const SingleIndicatorType = 'Single Indicator'
-export const SingleIndicatorTypes = [SingleIndicatorType, 'Float']
-export const MultiIndicatorType = 'Multi Indicator'
-export const DynamicIndicatorType = 'Dynamic Indicator'
-export const RelatedTableLayerType = 'Related Table'
+export const SingleIndicatorType = "Single Indicator";
+export const SingleIndicatorTypes = [SingleIndicatorType, "Float"];
+export const MultiIndicatorType = "Multi Indicator";
+export const DynamicIndicatorType = "Dynamic Indicator";
+export const RelatedTableLayerType = "Related Table";
+export const CompositeIndexLayerType = "Composite Index Layer";
 
 export const defaultFields = [
-  'indicator.name', 'indicator.value', 'indicator.label', 'indicator.time',
-  'geometry_data.admin_level', 'geometry_data.admin_level_name',
-  'geometry_data.concept_uuid', 'geometry_data.geom_code',
-  'geometry_data.name', 'indicator.attributes'
-]
+  "indicator.name",
+  "indicator.value",
+  "indicator.label",
+  "indicator.time",
+  "geometry_data.admin_level",
+  "geometry_data.admin_level_name",
+  "geometry_data.concept_uuid",
+  "geometry_data.geom_code",
+  "geometry_data.name",
+  "indicator.attributes",
+];
 
 export function indicatorLayerId(indicatorLayer) {
-  return 'layer_' + indicatorLayer.id
+  return "layer_" + indicatorLayer.id;
 }
 
 /***
  * Return indicator layers that has behaviour like indicator data
  */
 export function isIndicatorLayerLikeIndicator(indicatorLayer) {
-  return [DynamicIndicatorType].includes(indicatorLayer.type)
+  return [DynamicIndicatorType, CompositeIndexLayerType].includes(
+    indicatorLayer.type,
+  );
 }
 
 /***
  * Return indicator layers that has behaviour like indicator data
  */
 export function indicatorLayersLikeIndicator(indicatorLayers) {
-  return indicatorLayers.filter(indicatorLayer => isIndicatorLayerLikeIndicator(indicatorLayer))
+  return indicatorLayers.filter((indicatorLayer) =>
+    isIndicatorLayerLikeIndicator(indicatorLayer),
+  );
 }
 
 /***
  * Return indicators for dynamic indicator layer
  */
 export function dynamicLayerIndicatorList(indicatorLayer, indicators) {
-  return indicators.filter(indicator => {
-    return indicatorLayer?.config.expression?.includes(indicator.shortcode) || indicatorLayer?.config.expression?.includes(indicator.id)
-  })
+  return indicators.filter((indicator) => {
+    return (
+      indicatorLayer?.config.expression?.includes(indicator.shortcode) ||
+      indicatorLayer?.config.expression?.includes(indicator.id)
+    );
+  });
 }
 
 /***
@@ -69,57 +83,162 @@ export function dynamicLayerIndicatorList(indicatorLayer, indicators) {
  * }
  */
 export function dynamicLayerData(indicatorLayer, context) {
-  indicatorLayer?.config.exposedVariables.map(variable => {
-    context.values[variable.field] = variable.value
-  })
-  let valueData = nunjucks.renderString(
-    indicatorLayer?.config.expression, { context: context }
-  )
+  indicatorLayer?.config.exposedVariables.map((variable) => {
+    context.values[variable.field] = variable.value;
+  });
+  let valueData = nunjucks.renderString(indicatorLayer?.config.expression, {
+    context: context,
+  });
   if (!isNaN(parseFloat(valueData))) {
-    valueData = parseFloat(valueData)
+    valueData = parseFloat(valueData);
   }
-  return valueData
+  return valueData;
 }
 
 /***
  * Return indicators for dynamic indicator layer
  */
 export function fetchDynamicLayerData(
-  indicatorLayer, indicators, indicatorsData, geoField,
-  onError, onSuccess, skipAggregate, updateStyle = false
+  indicatorLayer,
+  indicators,
+  indicatorsData,
+  geoField,
+  onError,
+  onSuccess,
+  skipAggregate,
+  updateStyle = false,
+  filteredGeometries = null,
+  relatedTableData = null,
+  selectedAdminLevel,
 ) {
-  const dynamicLayerIndicators = dynamicLayerIndicatorList(indicatorLayer, indicators)
+  const dynamicLayerIndicators = dynamicLayerIndicatorList(
+    indicatorLayer,
+    indicators,
+  );
 
-  let error = ''
-  let data = []
-  dynamicLayerIndicators.map(indicator => {
+  let error = "";
+  let data = [];
+  const minMax = {};
+
+  // Getting indicator data
+  dynamicLayerIndicators.map((indicator) => {
     if (indicatorsData[indicator.id]?.data) {
-      indicatorsData[indicator.id].data.map(row => {
+      let total = 0;
+      let min = null;
+      let max = null;
+      const id = indicator.shortcode ? indicator.shortcode : indicator.id;
+      indicatorsData[indicator.id].data.map((row) => {
         data.push({
           admin_level: row.admin_level,
           concept_uuid: row.concept_uuid,
           date: row.date,
           geometry_code: row.geometry_code,
           value: row.value,
-          id: indicator.shortcode ? indicator.shortcode : indicator.id,
-        })
-      })
+          id: id,
+        });
+        if (filteredGeometries !== null) {
+          if (
+            !filteredGeometries.includes(row.concept_uuid) &&
+            !filteredGeometries.includes(row.geometry_code)
+          ) {
+            return;
+          }
+        }
+        // Create max and min
+        total += row.value;
+        if (min == null || row.value < min) {
+          min = row.value;
+        }
+        if (max == null || row.value > max) {
+          max = row.value;
+        }
+      });
+      minMax[id] = {
+        total: total,
+        min: min,
+        max: max,
+      };
     }
     if (indicatorsData[indicator.id].error) {
-      error = indicatorsData[indicator.id].error
+      error = indicatorsData[indicator.id].error;
     }
-  })
+  });
+
+  // Get indicator layers data
+  const dynamicLayerIndicatorLayers =
+    indicatorLayer.config?.indicatorLayers ?? [];
+
+  // Get indicator layer data
+  dynamicLayerIndicatorLayers.map((layer) => {
+    const id = "layer_" + layer.id;
+    let total = 0;
+    let min = null;
+    let max = null;
+    let rowData = null;
+
+    // For related table
+    if (layer?.related_tables && layer?.related_tables[0] && relatedTableData) {
+      const { rows } = getRelatedTableData(
+        relatedTableData[layer.related_tables[0].id]?.data,
+        layer.config,
+        null,
+        geoField,
+        true,
+        selectedAdminLevel,
+      );
+      rowData = rows;
+    }
+
+    // For layer
+    if (indicatorsData && indicatorsData[id]?.fetched) {
+      rowData = indicatorsData[id].data;
+    }
+
+    if (rowData) {
+      rowData.map((row) => {
+        data.push({
+          admin_level: row.admin_level,
+          concept_uuid: row.concept_uuid,
+          date: row.date,
+          geometry_code: row.geometry_code,
+          value: row.value,
+          id: id,
+        });
+        if (filteredGeometries !== null) {
+          if (
+            !filteredGeometries.includes(row.concept_uuid) &&
+            !filteredGeometries.includes(row.geometry_code)
+          ) {
+            return;
+          }
+        }
+        // Create max and min
+        total += row.value;
+        if (min == null || row.value < min) {
+          min = row.value;
+        }
+        if (max == null || row.value > max) {
+          max = row.value;
+        }
+      });
+      minMax[id] = {
+        total: total,
+        min: min,
+        max: max,
+      };
+    }
+  });
 
   // If error, set error
   if (error) {
-    onError(error)
+    onError(error);
   } else {
     // Get data per code
-    const dataDict = {}
-    data.map(row => {
-      let code = extractCode(row, geoField)
+    const dataDict = {};
+    data.map((row) => {
+      let code = extractCode(row, geoField);
       if (skipAggregate) {
-        code += '-' + row.date
+        code += "-" + row.date;
       }
       if (!dataDict[code]) {
         dataDict[code] = {
@@ -127,31 +246,41 @@ export function fetchDynamicLayerData(
           concept_uuid: null,
           date: null,
           geometry_code: null,
-          values: {}
-        }
+          values: {},
+        };
       }
-      dataDict[code].admin_level = row.admin_level
-      dataDict[code].concept_uuid = row.concept_uuid
-      dataDict[code].date = row.date
-      dataDict[code].geometry_code = row.geometry_code
-      dataDict[code].values[row.id] = row.value
-    })
+      dataDict[code].admin_level = row.admin_level;
+      dataDict[code].concept_uuid = row.concept_uuid;
+      dataDict[code].date = row.date;
+      dataDict[code].geometry_code = row.geometry_code;
+      dataDict[code].values[row.id] = row.value;
+    });
 
     // Construct data
-    let response = []
+    let response = [];
+    const minMaxValues = {};
+    for (const [key, value] of Object.entries(minMax)) {
+      minMaxValues[key + "_min"] = value.min;
+      minMaxValues[key + "_max"] = value.max;
+      minMaxValues[key + "_total"] = value.total;
+    }
+
     for (const [key, value] of Object.entries(dataDict)) {
       response.push({
         admin_level: value.admin_level,
         concept_uuid: value.concept_uuid,
         date: value.date,
         geometry_code: value.geometry_code,
-        value: dynamicLayerData(indicatorLayer, value)
-      })
+        value: dynamicLayerData(indicatorLayer, {
+          ...value,
+          values: { ...value.values, ...minMaxValues },
+        }),
+      });
     }
     if (updateStyle) {
-      response = UpdateStyleData(response, indicatorLayer)
+      response = UpdateStyleData(response, indicatorLayer);
     }
-    onSuccess(response)
+    onSuccess(response);
   }
 }
 
@@ -159,50 +288,71 @@ export function fetchDynamicLayerData(
  * Return layer data
  */
 export function getLayerData(
-  indicatorsData, relatedTableData, indicatorLayer, referenceLayer, ignoreRT
+  indicatorsData,
+  relatedTableData,
+  indicatorLayer,
+  referenceLayer,
+  ignoreRT,
 ) {
-  const data = []
-  indicatorLayer.indicators?.map(indicator => {
-    const indicatorData = getIndicatorDataByLayer(indicator.id, indicatorsData, indicatorLayer, referenceLayer)
+  const data = [];
+  indicatorLayer.indicators?.map((indicator) => {
+    const indicatorData = getIndicatorDataByLayer(
+      indicator.id,
+      indicatorsData,
+      indicatorLayer,
+      referenceLayer,
+    );
     if (indicatorData) {
-      data.push(indicatorData)
+      data.push(indicatorData);
     }
-  })
+  });
   if (indicatorsData[indicatorLayerId(indicatorLayer)]) {
-    data.push(indicatorsData[indicatorLayerId(indicatorLayer)])
+    data.push(indicatorsData[indicatorLayerId(indicatorLayer)]);
   }
   if (!ignoreRT) {
-    indicatorLayer.related_tables?.map(obj => {
+    indicatorLayer.related_tables?.map((obj) => {
       if (relatedTableData[obj.id]) {
-        data.push(relatedTableData[obj.id])
+        data.push(relatedTableData[obj.id]);
       }
-    })
+    });
   }
-  return data
+  return data;
 }
 
 /**
  * Return if layer has data
  */
 export function indicatorHasData(indicatorsData, indicator) {
-  let hasData = false
+  let hasData = false;
   if (indicatorsData[indicator.id]?.fetched) {
-    hasData = true
+    hasData = true;
   }
-  return hasData
+  return hasData;
 }
 
 /**
  * Return layer data
  */
 export function getLayerDataCleaned(
-  indicatorsData, relatedTableData, indicatorLayer, selectedGlobalTime, geoField,
-  filteredGeometries, referenceLayer, adminLevel
+  indicatorsData,
+  relatedTableData,
+  indicatorLayer,
+  selectedGlobalTime,
+  geoField,
+  filteredGeometries,
+  referenceLayer,
+  adminLevel,
 ) {
-  indicatorsData = dictDeepCopy(indicatorsData)
-  relatedTableData = dictDeepCopy(relatedTableData)
-  let data = getLayerData(indicatorsData, relatedTableData, indicatorLayer, referenceLayer, true)
-  indicatorLayer.related_tables?.map(obj => {
+  indicatorsData = dictDeepCopy(indicatorsData);
+  relatedTableData = dictDeepCopy(relatedTableData);
+  let data = getLayerData(
+    indicatorsData,
+    relatedTableData,
+    indicatorLayer,
+    referenceLayer,
+    true,
+  );
+  indicatorLayer.related_tables?.map((obj) => {
     if (relatedTableData[obj.id]) {
       const { rows } = getRelatedTableData(
         relatedTableData[indicatorLayer.related_tables[0].id]?.data,
@@ -210,18 +360,20 @@ export function getLayerDataCleaned(
         selectedGlobalTime,
         geoField,
         true,
-        adminLevel
-      )
+        adminLevel,
+      );
       data.push({
-        data: rows
-      })
+        data: rows,
+      });
     }
-  })
+  });
 
   if (filteredGeometries && Array.isArray(data[0]?.data)) {
-    data[0].data = data[0].data.filter(row => filteredGeometries.includes(row.concept_uuid))
+    data[0].data = data[0].data.filter((row) =>
+      filteredGeometries.includes(row.concept_uuid),
+    );
   }
-  return data
+  return data;
 }
 
 /**
@@ -232,16 +384,26 @@ export function getLayerDataCleaned(
  * @param referenceLayer
  * @returns {boolean}
  */
-export function allLayerDataIsReady(indicatorsData, relatedTableData, indicatorLayers, referenceLayer) {
-  let done = true
-  indicatorLayers.map(indicatorLayer => {
-    getLayerData(indicatorsData, relatedTableData, indicatorLayer, referenceLayer).map(data => {
+export function allLayerDataIsReady(
+  indicatorsData,
+  relatedTableData,
+  indicatorLayers,
+  referenceLayer,
+) {
+  let done = true;
+  indicatorLayers.map((indicatorLayer) => {
+    getLayerData(
+      indicatorsData,
+      relatedTableData,
+      indicatorLayer,
+      referenceLayer,
+    ).map((data) => {
       if (data?.fetching) {
-        done = false
+        done = false;
       }
-    })
-  })
-  return done
+    });
+  });
+  return done;
 }
 
 /**
@@ -249,37 +411,42 @@ export function allLayerDataIsReady(indicatorsData, relatedTableData, indicatorL
  */
 export function dataFieldsDefault() {
   return defaultFields.map((field, idx) => {
-    let fieldName = field.split('.')[1]
-    if (field === 'indicator.name') {
-      fieldName = 'indicator'
+    let fieldName = field.split(".")[1];
+    if (field === "indicator.name") {
+      fieldName = "indicator";
     }
-    if (field === 'indicator.time') {
-      fieldName = 'date'
+    if (field === "indicator.time") {
+      fieldName = "date";
     }
     return {
-      "name": 'context.current.' + field,
-      "alias": capitalize(fieldName),
-      "visible": field.includes('geometry_data') || field.includes('attributes') ? false : true,
-      "type": field.includes('date') ? "date" : "string",
-      "order": idx
-    }
-  })
+      name: "context.current." + field,
+      alias: capitalize(fieldName),
+      visible:
+        field.includes("geometry_data") || field.includes("attributes")
+          ? false
+          : true,
+      type: field.includes("date") ? "date" : "string",
+      order: idx,
+    };
+  });
 }
 
 /**
  * Return reference layer of indicator layer
  */
 export function referenceLayerIndicatorLayer(referenceLayer, indicatorLayer) {
-  return indicatorLayer?.level_config?.referenceLayer ? indicatorLayer?.level_config?.referenceLayer : referenceLayer
+  return indicatorLayer?.level_config?.referenceLayer
+    ? indicatorLayer?.level_config?.referenceLayer
+    : referenceLayer;
 }
 
 /** Return list of indicator by expression */
 export function getIndicatorsOfIndicatorLayers(layer, indicators) {
   let _indicators = layer?.indicators ? layer?.indicators : [];
-  if (layer.type === DynamicIndicatorType && indicators) {
-    _indicators = indicators.filter(
-      indicator => layer?.config.expression?.includes(indicator.shortcode)
-    )
+  if (isIndicatorLayerLikeIndicator(layer) && indicators) {
+    _indicators = indicators.filter((indicator) =>
+      layer?.config.expression?.includes(indicator.shortcode),
+    );
   }
-  return _indicators
+  return _indicators;
 }

@@ -14,8 +14,6 @@ __author__ = 'irwan@kartoza.com'
 __date__ = '13/06/2023'
 __copyright__ = ('Copyright 2023, Unicef')
 
-import json
-
 from django.db import transaction
 from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect, reverse
@@ -24,7 +22,6 @@ from azure_auth.backends import AzureAuthRequiredMixin
 from frontend.views.dashboard._base import BaseDashboardView
 from geosight.data.forms.dashboard import DashboardForm
 from geosight.data.models.dashboard import Dashboard
-from geosight.data.models.style.base import DynamicClassificationTypeChoices
 from geosight.permission.access import RoleCreatorRequiredMixin
 
 
@@ -32,7 +29,17 @@ class DashboardCreateViewBase:
     """Dashboard create view base View."""
 
     def save(self, data, user, files):
-        """Save data."""
+        """
+        Save a new dashboard instance.
+
+        :param dict data: Dashboard data from the request.
+        :param User user: The user creating the dashboard.
+        :param files: Uploaded files from the request.
+        :type files: MultiValueDict or dict
+        :return: Redirect to the dashboard edit page if successful,
+            otherwise an HTTP bad request response.
+        :rtype: HttpResponseRedirect or HttpResponseBadRequest
+        """
         try:
             data = DashboardForm.update_data(data)
             if Dashboard.name_is_exist_of_all(data['slug']):
@@ -87,12 +94,24 @@ class DashboardCreateView(
 
     @property
     def page_title(self):
-        """Return page title that used on tab bar."""
+        """
+        Return the page title used on the browser tab bar.
+
+        :return: The page title string.
+        :rtype: str
+        """
         return 'Create Project'
 
     @property
     def content_title(self):
-        """Return content title that used on page title indicator."""
+        """
+        Return the content title displayed on the page title indicator.
+
+        :return:
+            HTML string containing breadcrumb-style links
+            for the dashboard creation page.
+        :rtype: str
+        """
         list_url = reverse('admin-dashboard-list-view')
         create_url = reverse('admin-dashboard-create-view')
         return (
@@ -102,17 +121,31 @@ class DashboardCreateView(
         )
 
     def get_context_data(self, **kwargs) -> dict:
-        """Return context data."""
+        """
+        Return context data for creating a dashboard.
+
+        :param **kwargs: Extra keyword arguments passed from the base view.
+        :type **kwargs: dict
+        :return: Context data containing the placeholder dashboard slug.
+        :rtype: dict
+        """
         from geosight.data.api.dashboard import CREATE_SLUG
         context = super().get_context_data(**kwargs)
         context['dashboard'] = {'id': CREATE_SLUG}
-        context['dynamicClassification'] = json.dumps(
-            DynamicClassificationTypeChoices
-        )
         return context
 
     def post(self, request, **kwargs):
-        """Create dashboard."""
+        """
+        Handle POST request to create a new dashboard.
+
+        :param request: The incoming HTTP request.
+        :type request: HttpRequest
+        :param **kwargs: Extra keyword arguments.
+        :type **kwargs: dict
+        :return: Redirect to the dashboard edit page if successful,
+            otherwise an HTTP bad request response.
+        :rtype: HttpResponseRedirect or HttpResponseBadRequest
+        """
         return self.save(
             request.POST.copy().dict(), request.user, request.FILES
         )

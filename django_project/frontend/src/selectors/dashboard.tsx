@@ -1,6 +1,16 @@
 import { DashboardTool } from "../store/dashboard/reducers/dashboardTool";
 import { EmbedConfig } from "../utils/embed";
 
+export const getDashboardTool =
+  (name: string) =>
+  (state: any): DashboardTool => {
+    return (
+      state.dashboard.data?.tools?.find(
+        (tool: DashboardTool) => tool.name === name,
+      ) || null
+    );
+  };
+
 /** Check if a dashboard tool is enabled.
  * By the tool name. */
 export const isDashboardToolEnabled =
@@ -11,7 +21,7 @@ export const isDashboardToolEnabled =
     }
     return (
       (
-        state.dashboard.data?.tools.find(
+        state.dashboard.data?.tools?.find(
           (tool: DashboardTool) => tool.name === name,
         ) || null
       )?.visible_by_default === true
