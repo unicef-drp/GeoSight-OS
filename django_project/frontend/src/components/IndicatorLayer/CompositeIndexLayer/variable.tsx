@@ -61,3 +61,6 @@ export const configToExpression = (
     {{ result  | round(2)}}
   `;
 };
+
+
+export const DynamicCompositeLayerGroupName = "Dynamic Composite Layers";

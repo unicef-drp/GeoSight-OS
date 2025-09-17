@@ -32,7 +32,11 @@ import {
 } from "../../../../utils/indicatorLayer";
 import { Actions } from "../../../../store/dashboard";
 import { CogIcon } from "../../../Icons";
-import { configToExpression, defaultCompositeIndexLayer } from "../variable";
+import {
+  configToExpression,
+  defaultCompositeIndexLayer,
+  DynamicCompositeLayerGroupName
+} from "../variable";
 import { getDashboardTool } from "../../../../selectors/dashboard";
 import { Variables } from "../../../../utils/Variables";
 import CompositeIndexLayerConfig from "../Config";
@@ -63,7 +67,7 @@ const ToDynamicLayer = memo(() => {
     <AddCircleIcon
       onClick={() => {
         let structure = indicatorLayersStructure.children.find(
-          (children: any) => children.id === "Temporary layers",
+          (children: any) => children.id === DynamicCompositeLayerGroupName,
         );
         const newLayer = dictDeepCopy(currentIndicatorLayer);
         dispatch(Actions.IndicatorLayers.add(newLayer));
@@ -72,8 +76,8 @@ const ToDynamicLayer = memo(() => {
 
         if (!structure) {
           indicatorLayersStructure.children.unshift({
-            id: "Temporary layers",
-            group: "Temporary layers",
+            id: DynamicCompositeLayerGroupName,
+            group: DynamicCompositeLayerGroupName,
             children: [newLayer.id],
           });
         } else {
