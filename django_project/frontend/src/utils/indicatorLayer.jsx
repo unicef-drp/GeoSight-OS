@@ -119,7 +119,7 @@ export function fetchDynamicLayerData(
   let error = "";
   let data = [];
   const minMax = {};
-  console.log(filteredGeometries);
+
   // Getting indicator data
   dynamicLayerIndicators.map((indicator) => {
     if (indicatorsData[indicator.id]?.data) {
