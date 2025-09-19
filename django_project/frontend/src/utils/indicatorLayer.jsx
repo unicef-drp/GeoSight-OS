@@ -119,7 +119,7 @@ export function fetchDynamicLayerData(
   let error = "";
   let data = [];
   const minMax = {};
-
+  console.log(filteredGeometries);
   // Getting indicator data
   dynamicLayerIndicators.map((indicator) => {
     if (indicatorsData[indicator.id]?.data) {
@@ -128,14 +128,6 @@ export function fetchDynamicLayerData(
       let max = null;
       const id = indicator.shortcode ? indicator.shortcode : indicator.id;
       indicatorsData[indicator.id].data.map((row) => {
-        data.push({
-          admin_level: row.admin_level,
-          concept_uuid: row.concept_uuid,
-          date: row.date,
-          geometry_code: row.geometry_code,
-          value: row.value,
-          id: id,
-        });
         if (filteredGeometries !== null) {
           if (
             !filteredGeometries.includes(row.concept_uuid) &&
@@ -144,6 +136,14 @@ export function fetchDynamicLayerData(
             return;
           }
         }
+        data.push({
+          admin_level: row.admin_level,
+          concept_uuid: row.concept_uuid,
+          date: row.date,
+          geometry_code: row.geometry_code,
+          value: row.value,
+          id: id,
+        });
         // Create max and min
         total += row.value;
         if (min == null || row.value < min) {
@@ -196,14 +196,6 @@ export function fetchDynamicLayerData(
 
     if (rowData) {
       rowData.map((row) => {
-        data.push({
-          admin_level: row.admin_level,
-          concept_uuid: row.concept_uuid,
-          date: row.date,
-          geometry_code: row.geometry_code,
-          value: row.value,
-          id: id,
-        });
         if (filteredGeometries !== null) {
           if (
             !filteredGeometries.includes(row.concept_uuid) &&
@@ -212,6 +204,14 @@ export function fetchDynamicLayerData(
             return;
           }
         }
+        data.push({
+          admin_level: row.admin_level,
+          concept_uuid: row.concept_uuid,
+          date: row.date,
+          geometry_code: row.geometry_code,
+          value: row.value,
+          id: id,
+        });
         // Create max and min
         total += row.value;
         if (min == null || row.value < min) {
@@ -264,7 +264,6 @@ export function fetchDynamicLayerData(
       minMaxValues[key + "_max"] = value.max;
       minMaxValues[key + "_total"] = value.total;
     }
-
     for (const [key, value] of Object.entries(dataDict)) {
       response.push({
         admin_level: value.admin_level,
