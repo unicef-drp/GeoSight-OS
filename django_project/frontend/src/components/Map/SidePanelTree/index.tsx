@@ -232,7 +232,6 @@ export default function SidePanelTreeView({
         }
       }
     }
-    console.log(_selectedIds);
     onChange(_selectedIds);
     setSelected(_selectedIds);
 
