@@ -412,6 +412,13 @@ class Dashboard(
             model.popup_template = layer_data.get('popup_template', {})
             model.popup_type = layer_data.get('popup_type', 'Simplified')
 
+            model.raw_data_popup_enable = layer_data.get(
+                'raw_data_popup_enable', False
+            )
+            model.raw_data_popup_config = layer_data.get(
+                'raw_data_popup_config', []
+            )
+
             model.dashboardindicatorlayerconfig_set.all().delete()
             model.save()
 

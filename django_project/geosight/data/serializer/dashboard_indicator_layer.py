@@ -178,7 +178,8 @@ class DashboardIndicatorLayerSerializer(DashboardSerializer):
             'style', 'style_id', 'style_type', 'style_data', 'style_config',
             'override_label',
             'label_config', 'level_config', 'data_fields',
-            'popup_template', 'popup_type', 'multi_indicator_mode'
+            'popup_template', 'popup_type', 'multi_indicator_mode',
+            'raw_data_popup_enable', 'raw_data_popup_config'
         )
         fields += DashboardSerializer.Meta.fields
 

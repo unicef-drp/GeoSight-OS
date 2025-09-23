@@ -84,3 +84,11 @@ export interface IndicatorLayer extends IndicatorLayerConfig {
   //  We will remove this
   error: string;
 }
+
+export interface DataField {
+  name: string;
+  alias: string;
+  type: string;
+  visible: boolean;
+  order: number;
+}
