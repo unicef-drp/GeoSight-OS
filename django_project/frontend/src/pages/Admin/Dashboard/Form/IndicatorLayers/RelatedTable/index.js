@@ -545,7 +545,7 @@ export default function RelatedTableLayerConfig({
                     }}
                   />
                 ),
-                "Related Record Popups": (
+                "Related Record Popup": (
                   <>
                     <div className="BasicFormSection">
                       <FormControlLabel
