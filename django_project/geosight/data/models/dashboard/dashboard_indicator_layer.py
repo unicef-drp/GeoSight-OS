@@ -109,6 +109,24 @@ class DashboardIndicatorLayer(
         'Limit the number of indicator layer per project'
     )
 
+    # -----------------------
+    # Raw data popup
+    # -----------------------
+    raw_data_popup_enable = models.BooleanField(
+        default=False,
+        help_text=(
+            "This popup will be used for showing raw data on popup."
+            "Example: Showing related table data on popup."
+        )
+    )
+    raw_data_popup_config = models.JSONField(
+        blank=True, null=True,
+        help_text=(
+            "This configuration is specifically used for raw data popup."
+            "It is list of {name, alias, type, visible}"
+        )
+    )
+
     @property
     def label(self):
         """Return label data."""

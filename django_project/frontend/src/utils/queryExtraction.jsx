@@ -144,10 +144,11 @@ export function isNeedQuote(field) {
  * Return indicator query
  * @param {array} data Data that will be filtered.
  * @param {string} whereQuery String where query.
+ * @param {string} select String select query.
  */
-export function queryData(data, whereQuery) {
+export function queryData(data, whereQuery, select) {
   if (whereQuery) {
-    return alasql(`SELECT *
+    return alasql(`SELECT ${select ? select : '*'}
                    FROM ?
                    WHERE ${whereQuery}`, [data])
   }

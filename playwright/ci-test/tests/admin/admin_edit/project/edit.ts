@@ -58,12 +58,55 @@ test.describe('View edit project', () => {
     await page.goto('/admin/project/demo-geosight-project/edit');
     await page.locator('.TabPrimary').getByText('Filters').click();
     await page.getByText('Hide filter section').click();
+
+    // -------------------------------
+    // Related table popup
+    await page.getByText('Indicator Layers (10)').click();
+    await page.getByRole('listitem').filter({ hasText: 'Sample Indicator ASingle' }).getByRole('button').nth(1).click();
+    await expect(page.getByText('Popup', { exact: true })).toBeVisible();
+    await expect(page.getByText('Related Record Popup')).not.toBeVisible();
+    await page.locator('.MuiButtonLike > svg > path').click();
+    await page.locator('span').filter({ hasText: 'Layers (Chart) Config' }).getByRole('button').click();
+    await expect(page.getByText('Popup', { exact: true })).toBeVisible();
+    await expect(page.getByText('Related Record Popup')).not.toBeVisible();
+    await page.locator('.MuiButtonLike > svg > path').click();
+    await page.locator('span').filter({ hasText: 'Related Table Config' }).getByRole('button').click();
+    await expect(page.getByText('Popup', { exact: true })).toBeVisible();
+    await expect(page.getByText('Related Record Popup')).toBeVisible();
+    await page.getByText('Related Record Popup').click();
+    await expect(page.getByRole('cell', { name: 'Date' }).first()).toBeVisible();
+    await expect(page.getByRole('table').getByText('Name')).toBeVisible();
+    await expect(page.getByRole('table').getByText('NoBeneficiaries')).toBeVisible();
+    await expect(page.getByText('Partner')).toBeVisible();
+    await expect(page.getByText('Pcode')).toBeVisible();
+    await expect(page.getByText('Sector')).toBeVisible();
+    await expect(page.getByRole('table').getByText('Ucode')).toBeVisible();
+    await page.getByText('Enable popup for Related').click();
+    await page.getByRole('button', { name: 'Apply Changes' }).click();
+    // -------------------------------
+
     await page.getByRole('button', { name: 'Save', exact: true }).click();
     await page.goto('/project/demo-geosight-project');
     await page.waitForURL(`${BASE_URL}/project/demo-geosight-project`);
     await delay(1000)
     await page.getByRole('button', { name: 'Close' }).click();
     await expect(page.getByRole('tab', { name: 'Filters' })).toBeVisible();
+
+    // ------------------------------------
+    // Check RT
+    // ------------------------------------
+    await delay(1000)
+    await page.getByText('Dynamic Layer based on a list').click();
+    await delay(1000)
+    await page.getByRole('region', { name: 'Map' }).click({
+      position: {
+        x: 583,
+        y: 425
+      }
+    });
+    await expect(page.getByText('Related Records')).toBeVisible();
+    await page.getByText('Related Records').click();
+    await expect(page.getByText('/ 2')).toBeVisible();
 
     // Check extent
     await page.goto('/admin/project/demo-geosight-project/edit');

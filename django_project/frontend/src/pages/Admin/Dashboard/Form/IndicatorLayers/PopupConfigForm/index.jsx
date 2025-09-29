@@ -123,7 +123,6 @@ export default function PopupConfigForm({ indicator, setIndicator }) {
           update={(fields) => {
             setIndicator({ ...indicator, data_fields: fields })
           }}
-          noLabel={true}
         /> : null
     }
     {

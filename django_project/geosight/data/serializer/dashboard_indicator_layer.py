@@ -50,7 +50,14 @@ class DashboardIndicatorLayerSerializer(DashboardSerializer):
     data_fields = serializers.SerializerMethodField()
 
     def get_data_fields(self, obj: DashboardIndicatorLayer):
-        """Return dashboard group name."""
+        """
+        Return serialized dashboard indicator layer fields.
+
+        :param obj: Dashboard indicator layer instance.
+        :type obj: DashboardIndicatorLayer
+        :return: Serialized field data or None if empty.
+        :rtype: list[dict] | None
+        """
         output = DashboardIndicatorLayerFieldSerializer(
             obj.dashboardindicatorlayerfield_set, many=True
         ).data
@@ -59,15 +66,39 @@ class DashboardIndicatorLayerSerializer(DashboardSerializer):
         return None
 
     def get_name(self, obj: DashboardIndicatorLayer):
-        """Return dashboard group name."""
+        """
+        Return the dashboard group name (label).
+
+        :param obj: Dashboard indicator layer instance.
+        :type obj: DashboardIndicatorLayer
+        :return: Label of the dashboard indicator layer.
+        :rtype: str
+        """
         return obj.label
 
     def get_description(self, obj: DashboardIndicatorLayer):
-        """Return dashboard group name."""
+        """
+        Return the dashboard group description.
+
+        :param obj: Dashboard indicator layer instance.
+        :type obj: DashboardIndicatorLayer
+        :return: Description text.
+        :rtype: str
+        """
         return obj.desc
 
     def get_indicators(self, obj: DashboardIndicatorLayer):
-        """Return rules."""
+        """
+        Return serialized indicators for the layer.
+
+        If ``obj.indicators`` exists, constructs indicator objects manually.
+        Otherwise, fetches from related set.
+
+        :param obj: Dashboard indicator layer instance.
+        :type obj: DashboardIndicatorLayer
+        :return: Serialized indicators.
+        :rtype: list[dict]
+        """
         query = obj.dashboardindicatorlayerindicator_set.all()
         try:
             if obj.indicators:
@@ -85,17 +116,41 @@ class DashboardIndicatorLayerSerializer(DashboardSerializer):
         ).data
 
     def get_related_tables(self, obj: DashboardIndicatorLayer):
-        """Return rules."""
+        """
+        Return serialized related tables.
+
+        :param obj: Dashboard indicator layer instance.
+        :type obj: DashboardIndicatorLayer
+        :return: Serialized related tables.
+        :rtype: list[dict]
+        """
         return DashboardIndicatorLayerRelatedTableSerializer(
             obj.dashboardindicatorlayerrelatedtable_set.all(), many=True
         ).data
 
     def get_last_update(self, obj: DashboardIndicatorLayer):
-        """Return last update."""
+        """
+        Return last update timestamp.
+
+        :param obj: Dashboard indicator layer instance.
+        :type obj: DashboardIndicatorLayer
+        :return: Last update value.
+        :rtype: datetime | None
+        """
         return obj.last_update
 
     def get_chart_style(self, obj: DashboardIndicatorLayer):
-        """Return last update."""
+        """
+        Return chart style configuration.
+
+        If style is a JSON string, it is parsed. If empty or invalid,
+        default style is used.
+
+        :param obj: Dashboard indicator layer instance.
+        :type obj: DashboardIndicatorLayer
+        :return: Chart style configuration.
+        :rtype: dict | list | None
+        """
         if not obj.chart_style:
             return None
         if isinstance(obj.chart_style, list):
@@ -109,7 +164,17 @@ class DashboardIndicatorLayerSerializer(DashboardSerializer):
             return obj.chart_style
 
     def get_config(self, obj: DashboardIndicatorLayer):
-        """Return last update."""
+        """
+        Return configuration as dictionary.
+
+        Attempts to parse each config value using ``ast.literal_eval``.
+        Falls back to string if parsing fails.
+
+        :param obj: Dashboard indicator layer instance.
+        :type obj: DashboardIndicatorLayer
+        :return: Config mapping.
+        :rtype: dict
+        """
         output = {}
         for config in obj.dashboardindicatorlayerconfig_set.all():
             try:
@@ -119,7 +184,17 @@ class DashboardIndicatorLayerSerializer(DashboardSerializer):
         return output
 
     def get_style(self, obj: DashboardIndicatorLayer):
-        """Return style."""
+        """
+        Return computed style for the layer.
+
+        If multiple indicators exist, returns empty list.
+        If using object style, calls ``obj.style_obj``.
+
+        :param obj: Dashboard indicator layer instance.
+        :type obj: DashboardIndicatorLayer
+        :return: Style configuration.
+        :rtype: list | dict | None
+        """
         indicators = obj.dashboardindicatorlayerindicator_set.all()
         if indicators.count() >= 2:
             return []
@@ -129,7 +204,16 @@ class DashboardIndicatorLayerSerializer(DashboardSerializer):
         return []
 
     def get_style_id(self, obj: DashboardIndicatorLayer):
-        """Return rules."""
+        """
+        Return ID of the applied style if available.
+
+        Only applicable if style type is ``LIBRARY``.
+
+        :param obj: Dashboard indicator layer instance.
+        :type obj: DashboardIndicatorLayer
+        :return: Style ID or None.
+        :rtype: int | None
+        """
         if obj.is_using_obj_style:
             if obj.style_type == IndicatorStyleType.LIBRARY:
                 if obj.style:
@@ -137,13 +221,30 @@ class DashboardIndicatorLayerSerializer(DashboardSerializer):
         return None
 
     def get_style_type(self, obj: DashboardIndicatorLayer):
-        """Return rules."""
+        """
+        Return type of the applied style.
+
+        :param obj: Dashboard indicator layer instance.
+        :type obj: DashboardIndicatorLayer
+        :return: Style type string or empty string.
+        :rtype: str
+        """
         if obj.is_using_obj_style:
             return obj.style_type
         return ''
 
     def get_style_data(self, obj: DashboardIndicatorLayer):
-        """Return rules."""
+        """
+        Return serialized style data if style is set.
+
+        Includes ``name``, ``id``, ``style_type``, ``style_config``,
+        and ``style`` (flattened).
+
+        :param obj: Dashboard indicator layer instance.
+        :type obj: DashboardIndicatorLayer
+        :return: Style data or None.
+        :rtype: dict | None
+        """
         if obj.is_using_obj_style:
             if obj.style:
                 data = StyleSerializer(
@@ -159,13 +260,27 @@ class DashboardIndicatorLayerSerializer(DashboardSerializer):
                 return None
 
     def get_label_config(self, obj: DashboardIndicatorLayer):
-        """Return style."""
+        """
+        Return label configuration if enabled.
+
+        :param obj: Dashboard indicator layer instance.
+        :type obj: DashboardIndicatorLayer
+        :return: Label configuration or None.
+        :rtype: dict | None
+        """
         if obj.is_using_obj_label:
             return obj.label_config
         return None
 
     def get_level_config(self, obj: DashboardIndicatorLayer):
-        """Return level_config."""
+        """
+        Return level configuration dictionary.
+
+        :param obj: Dashboard indicator layer instance.
+        :type obj: DashboardIndicatorLayer
+        :return: Level configuration.
+        :rtype: dict
+        """
         return obj.level_config if obj.level_config else {}
 
     class Meta:  # noqa: D106
@@ -178,7 +293,8 @@ class DashboardIndicatorLayerSerializer(DashboardSerializer):
             'style', 'style_id', 'style_type', 'style_data', 'style_config',
             'override_label',
             'label_config', 'level_config', 'data_fields',
-            'popup_template', 'popup_type', 'multi_indicator_mode'
+            'popup_template', 'popup_type', 'multi_indicator_mode',
+            'raw_data_popup_enable', 'raw_data_popup_config'
         )
         fields += DashboardSerializer.Meta.fields
 
@@ -200,19 +316,49 @@ class DashboardIndicatorLayerObjectSerializer(serializers.ModelSerializer):
     active = serializers.SerializerMethodField()
 
     def get_id(self, obj: DashboardIndicatorLayerIndicator):
-        """Return dashboard group name."""
+        """
+        Return the related indicator ID.
+
+        :param obj: Dashboard indicator layer indicator instance.
+        :type obj: DashboardIndicatorLayerIndicator
+        :return: Indicator ID.
+        :rtype: int
+        """
         return obj.indicator.id
 
     def get_name(self, obj: DashboardIndicatorLayerIndicator):
-        """Return dashboard group name."""
+        """
+        Return the indicator name.
+
+        Falls back to ``obj.indicator.name`` if custom name is not set.
+
+        :param obj: Dashboard indicator layer indicator instance.
+        :type obj: DashboardIndicatorLayerIndicator
+        :return: Indicator name.
+        :rtype: str
+        """
         return obj.name if obj.name else obj.indicator.name
 
     def get_rule(self, obj: DashboardIndicatorLayerIndicator):
-        """Return rule."""
+        """
+        Return a string rule for the indicator.
+
+        :param obj: Dashboard indicator layer indicator instance.
+        :type obj: DashboardIndicatorLayerIndicator
+        :return: Rule expression string.
+        :rtype: str
+        """
         return f'x=={obj.indicator.id}'
 
     def get_active(self, obj: DashboardIndicatorLayerIndicator):
-        """Return the rule is active or not."""
+        """
+        Return whether the rule is active.
+
+        :param obj: Dashboard indicator layer indicator instance.
+        :type obj: DashboardIndicatorLayerIndicator
+        :return: Always ``True``.
+        :rtype: bool
+        """
         return True
 
     class Meta:  # noqa: D106
@@ -237,21 +383,49 @@ class DashboardIndicatorLayerIndicatorSerializer(
     style_data = serializers.SerializerMethodField()
 
     def get_indicator(self, obj: DashboardIndicatorLayerIndicator):
-        """Return dashboard group name."""
+        """
+        Return the string representation of the indicator.
+
+        :param obj: Dashboard indicator layer indicator instance.
+        :type obj: DashboardIndicatorLayerIndicator
+        :return: Indicator name as string.
+        :rtype: str
+        """
         return obj.indicator.__str__()
 
     def get_shortcode(self, obj: DashboardIndicatorLayerIndicator):
-        """Return indicator shortcode."""
+        """
+        Return the indicator shortcode.
+
+        :param obj: Dashboard indicator layer indicator instance.
+        :type obj: DashboardIndicatorLayerIndicator
+        :return: Indicator shortcode.
+        :rtype: str
+        """
         return obj.indicator.shortcode
 
     def get_style(self, obj: DashboardIndicatorLayerIndicator):
-        """Return style."""
+        """
+        Return style configuration if override is enabled.
+
+        :param obj: Dashboard indicator layer indicator instance.
+        :type obj: DashboardIndicatorLayerIndicator
+        :return: Style configuration or None.
+        :rtype: dict | None
+        """
         if not obj.override_style:
             return None
         return obj.style_obj(self.context.get('user', None))
 
     def get_style_id(self, obj: DashboardIndicatorLayerIndicator):
-        """Return rules."""
+        """
+        Return style ID if override is enabled.
+
+        :param obj: Dashboard indicator layer indicator instance.
+        :type obj: DashboardIndicatorLayerIndicator
+        :return: Style ID or None.
+        :rtype: int | None
+        """
         if not obj.override_style:
             return None
         if obj.style:
@@ -259,13 +433,30 @@ class DashboardIndicatorLayerIndicatorSerializer(
         return None
 
     def get_style_type(self, obj: DashboardIndicatorLayerIndicator):
-        """Return rules."""
+        """
+        Return style type if override is enabled.
+
+        :param obj: Dashboard indicator layer indicator instance.
+        :type obj: DashboardIndicatorLayerIndicator
+        :return: Style type or None.
+        :rtype: str | None
+        """
         if not obj.override_style:
             return None
         return obj.style_type
 
     def get_style_data(self, obj: DashboardIndicatorLayerIndicator):
-        """Return rules."""
+        """
+        Return serialized style data if override is enabled.
+
+        Includes ``name``, ``id``, ``style_type``, ``style_config``,
+        and ``style`` (flattened).
+
+        :param obj: Dashboard indicator layer indicator instance.
+        :type obj: DashboardIndicatorLayerIndicator
+        :return: Style data or None.
+        :rtype: dict | None
+        """
         if not obj.override_style:
             return None
         if obj.style:
@@ -299,23 +490,58 @@ class DashboardIndicatorLayerRelatedTableSerializer(
     related_table = serializers.SerializerMethodField()
 
     def get_id(self, obj: DashboardIndicatorLayerRelatedTable):
-        """Return dashboard group name."""
+        """
+        Return related table ID.
+
+        :param obj: Dashboard indicator layer related table instance.
+        :type obj: DashboardIndicatorLayerRelatedTable
+        :return: Related table ID.
+        :rtype: int
+        """
         return obj.related_table.id
 
     def get_name(self, obj: DashboardIndicatorLayerRelatedTable):
-        """Return dashboard group name."""
+        """
+        Return related table name.
+
+        :param obj: Dashboard indicator layer related table instance.
+        :type obj: DashboardIndicatorLayerRelatedTable
+        :return: Name of the related table.
+        :rtype: str
+        """
         return obj.name
 
     def get_related_table(self, obj: DashboardIndicatorLayerRelatedTable):
-        """Return dashboard group name."""
+        """
+        Return string representation of the related table.
+
+        :param obj: Dashboard indicator layer related table instance.
+        :type obj: DashboardIndicatorLayerRelatedTable
+        :return: Related table name as string.
+        :rtype: str
+        """
         return obj.related_table.__str__()
 
     def get_rule(self, obj: DashboardIndicatorLayerRelatedTable):
-        """Return rule."""
+        """
+        Return rule string for the related table.
+
+        :param obj: Dashboard indicator layer related table instance.
+        :type obj: DashboardIndicatorLayerRelatedTable
+        :return: Rule expression.
+        :rtype: str
+        """
         return f'x=={obj.related_table.id}'
 
     def get_active(self, obj: DashboardIndicatorLayerRelatedTable):
-        """Return the rule is active or not."""
+        """
+        Return whether the rule is active.
+
+        :param obj: Dashboard indicator layer related table instance.
+        :type obj: DashboardIndicatorLayerRelatedTable
+        :return: Always ``True``.
+        :rtype: bool
+        """
         return True
 
     class Meta:  # noqa: D106

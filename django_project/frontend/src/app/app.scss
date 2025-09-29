@@ -234,11 +234,11 @@ header {
 .preview,
 .maplibregl-popup-content {
   border-radius: 5px;
-  overflow: hidden;
   padding: 0 !important;
   margin: 0;
   background: unset !important;
   box-shadow: unset !important;
+  min-width: 150px;
 
   .header {
     padding: 5px 25px;
@@ -246,7 +246,7 @@ header {
   }
 
   .content {
-    max-height: 200px;
+    max-height: 400px;
     overflow-y: auto;
 
     table {
@@ -273,6 +273,63 @@ header {
 
   canvas {
     cursor: grab;
+  }
+
+  .maplibregl-popup-content-raw-data {
+    display: none;
+
+    table {
+      display: none;
+      margin-right: 1rem;
+
+      &.selected {
+        display: table;
+      }
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: space-between;
+      display: flex;
+      padding: 0.5rem 1rem;
+      border-top: 1px solid #eee;
+
+      svg {
+        width: 1.5rem;
+        height: 1.5rem;
+        cursor: pointer;
+      }
+
+      div {
+        &.disabled {
+          opacity: 0.3;
+
+          svg {
+            cursor: not-allowed;
+          }
+        }
+      }
+    }
+  }
+
+  .maplibregl-popup-content-tabs {
+    position: absolute;
+    top: -2rem;
+    left: 0;
+    display: flex;
+    font-size: 10px;
+    border-bottom: 1px solid var(--border-gray);
+
+    .maplibregl-popup-content-tab {
+      padding: 2px 1rem;
+      cursor: pointer;
+      background-color: white;
+
+      &.selected {
+        background-color: var(--primary-color);
+        color: var(--anti-primary-color);
+      }
+    }
   }
 }
 
