@@ -13,7 +13,12 @@
  * __copyright__ = ('Copyright 2024, Unicef')
  */
 
-import { addPopup, getBeforeLayerId, hasSource } from "../utils";
+import {
+  addPopup,
+  getBeforeLayerId,
+  hasSource,
+  loadImageToMap
+} from "../utils";
 import { GET_RESOURCE } from "../../../../utils/ResourceRequests";
 import { addLayerWithOrder } from "../Render";
 import { Variables } from "../../../../utils/Variables";
@@ -70,12 +75,26 @@ export default function cloudNativeGISLayer(map, id, data, contextLayerData, pop
           layers = layers.layers
         }
         layers.reverse().map(layer => {
-          layer.id = id + '-' + layer.id
-          layer.source = id
-          layer['source-layer'] = 'default'
-          addLayerWithOrder(map, layer, Variables.LAYER_CATEGORY.CONTEXT_LAYER, before)
-          before = layer.id
-          addPopup(map, layer.id, popupFeature)
+          (async () => {
+            if (
+              layer.type === "symbol" &&
+              layer.layout &&
+              layer.layout["icon-image"]
+            ) {
+              await loadImageToMap(map, layer.layout["icon-image"]);
+            }
+            layer.id = id + "-" + layer.id;
+            layer.source = id;
+            layer["source-layer"] = "default";
+            addLayerWithOrder(
+              map,
+              layer,
+              Variables.LAYER_CATEGORY.CONTEXT_LAYER,
+              before,
+            );
+            before = layer.id;
+            addPopup(map, layer.id, popupFeature);
+          })();
         })
       } catch (e) {
         console.log(e)
