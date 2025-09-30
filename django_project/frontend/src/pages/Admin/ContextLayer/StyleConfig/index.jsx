@@ -79,7 +79,7 @@ export default function StyleConfig(
     if (!data.styles && Variables.LAYER.LIST.VECTOR_TILE_TYPES.includes(data.layer_type)) {
       setData({
         ...data,
-        styles: JSON.stringify(defaultPointStyle, null, 4),
+        styles: data?.mapbox_style?.layers ? JSON.stringify(data?.mapbox_style?.layers, null, 4) : JSON.stringify(defaultPointStyle, null, 4),
         override_style: true
       })
     } else if (data.styles?.min_band === undefined && Variables.LAYER.TYPE.RASTER_COG === data.layer_type) {

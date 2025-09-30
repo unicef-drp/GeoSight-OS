@@ -17,6 +17,7 @@ import { addPopup, getBeforeLayerId, hasSource } from "../utils";
 import { GET_RESOURCE } from "../../../../utils/ResourceRequests";
 import { addLayerWithOrder } from "../Render";
 import { Variables } from "../../../../utils/Variables";
+import { dictDeepCopy } from "../../../../utils/main";
 
 
 /***
@@ -58,6 +59,7 @@ export default function cloudNativeGISLayer(map, id, data, contextLayerData, pop
       }
       try {
         let layers = []
+        contextLayerData = dictDeepCopy(contextLayerData)
         if (contextLayerData.styles) {
           layers = contextLayerData.styles
           if (typeof layers === 'string') {
