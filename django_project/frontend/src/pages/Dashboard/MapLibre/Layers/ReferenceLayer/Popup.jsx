@@ -498,6 +498,12 @@ export function popup(
         let where = currentIndicatorLayer?.config?.where;
         const geomWhere = `${geoField} = '${geoCode}`;
         where = where ? where + ` AND ${geomWhere}'` : geomWhere;
+        where = where.replaceAll('"', '`').replace(/`(.*?)`/g, function (match, text, href) {
+          if (match.includes("'")) {
+            return match.replaceAll('`', '"')
+          }
+          return match
+        })
         console.log(where);
         const data =
           relatedTableData[currentIndicatorLayer.related_tables[0].id]?.data;
