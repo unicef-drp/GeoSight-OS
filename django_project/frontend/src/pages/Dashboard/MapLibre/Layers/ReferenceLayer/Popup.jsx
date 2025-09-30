@@ -485,11 +485,20 @@ export function popup(
       currentIndicatorLayer.raw_data_popup_enable &&
       currentIndicatorLayer.type === RelatedTableLayerType
     ) {
-      const geoField = currentIndicatorLayer?.config?.geography_code_field_name;
-      let where = currentIndicatorLayer?.config?.where;
-      if (geoField) {
-        const geomWhere = `${geoField} = '${geomCode}`;
+      const relatedTable = relatedTables.find(
+        (rt) => currentIndicatorLayer.related_tables[0]?.id === rt.id,
+      );
+      if (relatedTable) {
+        // Get the geocode from feature properties
+        // Based on related table geography code type
+        const geoFieldType = relatedTable.geography_code_type;
+        const geoCode = featureProperties[geoFieldType];
+
+        const geoField = relatedTable.geography_code_field_name;
+        let where = currentIndicatorLayer?.config?.where;
+        const geomWhere = `${geoField} = '${geoCode}`;
         where = where ? where + ` AND ${geomWhere}'` : geomWhere;
+        console.log(where);
         const data =
           relatedTableData[currentIndicatorLayer.related_tables[0].id]?.data;
         if (data) {
@@ -510,9 +519,9 @@ export function popup(
             }
           }
         }
+        console.log(rawData);
       }
     }
-    console.log(rawData);
     if (rawData?.length) {
       const content = [];
       rawData.map((data, idx) => {
@@ -521,7 +530,7 @@ export function popup(
           rows.push(`<tr><td><b>${key}</b></td><td>${data[key]}</td></tr>`);
         });
         content.push(
-          `<table id="row-data-${idx+1}" class="maplibregl-popup-content-raw-data-row-data ${idx === 0 ? "selected" : ""}">${rows.join("")}</table>`,
+          `<table id="row-data-${idx + 1}" class="maplibregl-popup-content-raw-data-row-data ${idx === 0 ? "selected" : ""}">${rows.join("")}</table>`,
         );
       });
       rawDataContent += `
