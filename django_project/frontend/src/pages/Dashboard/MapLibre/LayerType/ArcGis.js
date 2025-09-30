@@ -59,6 +59,7 @@ function ArcGisStyle(map, id, layer) {
   /**
    * Assign Cases
    */
+  const layers = []
   const assignCases = (styleType, propertyType, cases) => {
     let layerId = null
     switch (styleType) {
@@ -82,6 +83,7 @@ function ArcGisStyle(map, id, layer) {
       }
     }
     if (layerId) {
+      layers.push(layerId)
       casesByType[layerId] = casesByType[layerId] ? casesByType[layerId] : {}
       casesByType[layerId][propertyType] = casesByType[layerId][propertyType] ? casesByType[layerId][propertyType] : []
       casesByType[layerId][propertyType] = casesByType[layerId][propertyType].concat(cases)
@@ -390,6 +392,13 @@ function ArcGisStyle(map, id, layer) {
       }
     }
   }
+  [lineId, fillId, outlineId, circleId, symbolId].map((layerId) => {
+    if (!layers.includes(layerId)) {
+      map.setLayoutProperty(layerId, "visibility", "none");
+    } else {
+      map.setLayoutProperty(layerId, "visibility", "visible");
+    }
+  });
   return null;
 }
 
