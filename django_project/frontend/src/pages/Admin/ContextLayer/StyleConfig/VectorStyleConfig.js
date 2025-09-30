@@ -35,7 +35,7 @@ export default function VectorStyleConfig({ data, setData, setError }) {
 
   useEffect(() => {
     if (data.styles !== inputStyle) {
-      if (typeof layers !== 'string') {
+      if (typeof data.styles !== 'string') {
         setInputStyle(JSON.stringify(data.styles, null, 4))
       } else {
         setInputStyle(data.styles)

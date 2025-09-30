@@ -72,7 +72,7 @@ export default function CloudNativeGISStreamUpload(
       .then(data => {
         data = data.results[0]
         setLastImporter(data)
-        if (!data.id) {
+        if (!data?.id) {
           return
         }
         if (!isDone(data)) {
