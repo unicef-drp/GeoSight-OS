@@ -74,7 +74,7 @@ x-common-django:
 
 services:
   redis:
-    image: bitnami/redis:7.0.2
+    image: bitnamilegacy/redis:7.0.2
     container_name: "geosight_redis"
     environment:
       - REDIS_PASSWORD=${REDIS_PASSWORD:-redis_password}
