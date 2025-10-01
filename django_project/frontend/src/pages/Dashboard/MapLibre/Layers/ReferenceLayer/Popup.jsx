@@ -496,8 +496,8 @@ export function popup(
 
         const geoField = relatedTable.geography_code_field_name;
         let where = currentIndicatorLayer?.config?.where;
-        const geomWhere = `${geoField} = '${geoCode}`;
-        where = where ? where + ` AND ${geomWhere}'` : geomWhere;
+        const geomWhere = `${geoField} = '${geoCode}'`;
+        where = where ? where + ` AND ${geomWhere}` : geomWhere;
         where = where.replaceAll('"', '`').replace(/`(.*?)`/g, function (match, text, href) {
           if (match.includes("'")) {
             return match.replaceAll('`', '"')
