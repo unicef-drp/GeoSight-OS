@@ -19,7 +19,43 @@
 
 import React from "react";
 import { EditorProps } from "./type";
+import { ColorSelectorStyle, NumberInput } from "./Input";
 
 export function Line({ layer, setLayer }: EditorProps) {
-  return <div>This is line</div>;
+  const layerAttr = "paint";
+  if (!layer[layerAttr]) {
+    return (
+      <div>
+        No paint attributes on this layer. Please delete and recreate this.
+      </div>
+    );
+  }
+  return (
+    <>
+      <ColorSelectorStyle
+        layer={layer}
+        setLayer={setLayer}
+        layerAttr={layerAttr}
+        styleKey="line-color"
+      />
+      <NumberInput
+        layer={layer}
+        setLayer={setLayer}
+        layerAttr={layerAttr}
+        styleKey="line-width"
+        min={0}
+        max={100}
+        step={1}
+      />
+      <NumberInput
+        layer={layer}
+        setLayer={setLayer}
+        layerAttr={layerAttr}
+        styleKey="line-opacity"
+        min={0}
+        max={1}
+        step={0.1}
+      />
+    </>
+  );
 }

@@ -21,7 +21,7 @@ export const DEFAULT_STYLES = {
       "circle-color": "#1CABE2",
       "circle-opacity": 0.6,
     },
-    filter: ["==", "$type", "Point"],
+    filter: ["all", ["==", "$type", "Point"]],
   },
   symbol: {
     type: "symbol",
@@ -39,15 +39,15 @@ export const DEFAULT_STYLES = {
       "line-color": "#1CABE2",
       "line-width": 1,
     },
-    filter: ["==", "$type", "LineString"],
+    filter: ["all", ["==", "$type", "LineString"]],
   },
   fill: {
     type: "fill",
     source: "source",
-    filter: ["==", "$type", "Polygon"],
+    filter: ["all", ["==", "$type", "Polygon"]],
     paint: {
       "fill-color": "#1CABE2",
-      "fill-opacity": 0,
+      "fill-opacity": 1,
     },
   },
 };

@@ -57,19 +57,35 @@ export function MapBoxStyleEditor({
     switch (layer.type) {
       case "circle":
         return (
-          <Circle layer={layer} setLayer={(layer) => setLayer(layer, idx)} />
+          <Circle
+            key={idx}
+            layer={layer}
+            setLayer={(layer) => setLayer(layer, idx)}
+          />
         );
       case "fill":
         return (
-          <Fill layer={layer} setLayer={(layer) => setLayer(layer, idx)} />
+          <Fill
+            key={idx}
+            layer={layer}
+            setLayer={(layer) => setLayer(layer, idx)}
+          />
         );
       case "line":
         return (
-          <Line layer={layer} setLayer={(layer) => setLayer(layer, idx)} />
+          <Line
+            key={idx}
+            layer={layer}
+            setLayer={(layer) => setLayer(layer, idx)}
+          />
         );
       case "symbol":
         return (
-          <Symbol layer={layer} setLayer={(layer) => setLayer(layer, idx)} />
+          <Symbol
+            key={idx}
+            layer={layer}
+            setLayer={(layer) => setLayer(layer, idx)}
+          />
         );
       default:
         return <div>This type does not have editor</div>;
@@ -92,8 +108,8 @@ export function MapBoxStyleEditor({
           <DeleteIcon />
         </div>
       </div>
-      <div className="LayerForm">
-        <Render layer={layer} idx={idx} />
+      <div className="LayerStyleForm">
+        <Render layer={layer} idx={idx} key={idx} />
       </div>
     </div>
   ));

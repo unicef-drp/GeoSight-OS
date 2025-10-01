@@ -33,7 +33,7 @@ export default function ColorSelector(
     ...props
   }) {
   const className = props.fullWidth ? 'ColorConfig FullWidth' : 'ColorConfig';
-
+  console.log(color)
   return (
     <div className={className}>
       {

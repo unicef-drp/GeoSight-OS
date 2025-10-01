@@ -19,7 +19,69 @@
 
 import React from "react";
 import { EditorProps } from "./type";
+import { ColorSelectorStyle, NumberInput } from "./Input";
 
 export function Circle({ layer, setLayer }: EditorProps) {
-  return <div>This is circle</div>;
+  const layerAttr = "paint";
+  if (!layer[layerAttr]) {
+    return (
+      <div>
+        No paint attributes on this layer. Please delete and recreate this.
+      </div>
+    );
+  }
+  return (
+    <>
+      <ColorSelectorStyle
+        layer={layer}
+        setLayer={setLayer}
+        layerAttr={layerAttr}
+        styleKey="circle-color"
+      />
+      <NumberInput
+        layer={layer}
+        setLayer={setLayer}
+        layerAttr={layerAttr}
+        styleKey="circle-radius"
+        min={0}
+        max={100}
+        step={1}
+      />
+      <NumberInput
+        layer={layer}
+        setLayer={setLayer}
+        layerAttr={layerAttr}
+        styleKey="circle-opacity"
+        min={0}
+        max={1}
+        step={0.1}
+      />
+
+      {/* STROKE */}
+      <ColorSelectorStyle
+        layer={layer}
+        setLayer={setLayer}
+        layerAttr={layerAttr}
+        styleKey="circle-stroke-color"
+      />
+      <NumberInput
+        layer={layer}
+        setLayer={setLayer}
+        layerAttr={layerAttr}
+        styleKey="circle-stroke-opacity"
+        min={0}
+        max={1}
+        step={0.1}
+      />
+      <NumberInput
+        layer={layer}
+        setLayer={setLayer}
+        layerAttr={layerAttr}
+        styleKey="circle-stroke-width"
+        min={0}
+        max={100}
+        step={1}
+      />
+    </>
+  );
 }

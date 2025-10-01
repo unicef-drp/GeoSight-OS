@@ -19,7 +19,34 @@
 
 import React from "react";
 import { EditorProps } from "./type";
+import { ImageInput, NumberInput } from "./Input";
 
 export function Symbol({ layer, setLayer }: EditorProps) {
-  return <div>This is symbol</div>;
+  const layerAttr = "layout";
+  if (!layer[layerAttr]) {
+    return (
+      <div>
+        No layout attributes on this layer. Please delete and recreate this.
+      </div>
+    );
+  }
+  return (
+    <>
+      <ImageInput
+        layer={layer}
+        setLayer={setLayer}
+        layerAttr={layerAttr}
+        styleKey="icon-image"
+      />
+      <NumberInput
+        layer={layer}
+        setLayer={setLayer}
+        layerAttr={layerAttr}
+        styleKey="icon-size"
+        min={0}
+        max={100}
+        step={0.1}
+      />
+    </>
+  );
 }
