@@ -19,34 +19,41 @@
 
 import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { useTranslation } from "react-i18next";
 import type { LayerSpecification, SourceSpecification } from "maplibre-gl";
 import { Circle } from "./Circle";
 import { Symbol } from "./Symbol";
 import { Line } from "./Line";
 import { Fill } from "./Fill";
-import { MaputnikIcon } from "../Icons";
+import { AddIcon, DeleteIcon, MaputnikIcon } from "../Icons";
 import { ThemeButton } from "../Elements/Button";
 import {
   defaultPointStyle
 } from "../../pages/Admin/ContextLayer/StyleConfig/layerStyles";
+import { DEFAULT_STYLES } from "./style";
+
+import "./style.scss";
 
 interface MapBoxStyleEditorProps {
-  source: string;
   layers: LayerSpecification[];
   setLayers: (layer: LayerSpecification[]) => void;
 }
 
+interface MapBoxStyleEditorMemberProps {
+  layer: LayerSpecification;
+  idx: number;
+}
+
 export function MapBoxStyleEditor({
-  source,
   layers,
   setLayers,
 }: MapBoxStyleEditorProps) {
   const setLayer = (layer: LayerSpecification, idx: number) => {
     const newLayers = [...layers];
-    newLayers[idx] = layer;
+    newLayers[idx] = { ...layer };
     setLayers(newLayers);
   };
-  return layers.map((layer, idx) => {
+  const Render = ({ layer, idx }: MapBoxStyleEditorMemberProps) => {
     switch (layer.type) {
       case "circle":
         return (
@@ -67,29 +74,93 @@ export function MapBoxStyleEditor({
       default:
         return <div>This type does not have editor</div>;
     }
-  });
+  };
+  return layers.map((layer, idx) => (
+    <div key={idx}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <div className="LayerId">{layer.id}</div>
+        <div
+          className="LayerDelete"
+          onClick={() => setLayers(layers.filter((l) => l.id !== layer.id))}
+        >
+          <DeleteIcon />
+        </div>
+      </div>
+      <div className="LayerForm">
+        <Render layer={layer} idx={idx} />
+      </div>
+    </div>
+  ));
 }
 
 interface Props {
   layers: LayerSpecification[];
   setLayers: (layers: LayerSpecification[]) => void;
   source?: SourceSpecification;
+  sourceLayer: string;
 }
 
-export function Editor({ layers, setLayers, source }: Props) {
+const FREE_TEXT_FORM = "Free text form";
+const EDITOR = "Editor";
+
+export function Editor({ layers, setLayers, source, sourceLayer }: Props) {
+  const { t } = useTranslation();
   const [textArea, setTextArea] = useState<string>(null);
+  const [mode, setMode] = useState<string>(EDITOR);
 
   useEffect(() => {
     if (textArea !== JSON.stringify(layers)) {
       setTextArea(JSON.stringify(layers, null, 4));
     }
   }, [layers]);
+
+  const onAdd = (layerType: string) => {
+    // @ts-ignore
+    const style = DEFAULT_STYLES[layerType];
+    if (sourceLayer) {
+      style["source-layer"] = sourceLayer;
+    }
+    if (source && Object.keys(source)[0]) {
+      style.source = Object.keys(source)[0];
+    } else {
+      style.source = "source";
+    }
+    if (style?.layout && style?.layout["icon-image"]) {
+      style.layout["icon-image"] =
+        window.location.origin + style?.layout["icon-image"];
+    }
+
+    const maxId = Math.max(
+      ...layers.map((l) => Number(l.id)).filter((n) => !isNaN(n)),
+    );
+    style.id = (
+      Number.isFinite(maxId) ? maxId + 1 : layers.length + 1
+    ).toString();
+    setLayers([...layers, style]);
+  };
+
   return (
     <>
       {/* Extra button */}
       <div style={{ display: "flex" }}>
-        <ThemeButton variant="primary">Free text form</ThemeButton>
-        <ThemeButton variant="primary">Editor</ThemeButton>
+        <ThemeButton
+          variant={"primary " + (mode !== FREE_TEXT_FORM ? "Reverse" : "")}
+          onClick={() => setMode(FREE_TEXT_FORM)}
+        >
+          {t(FREE_TEXT_FORM)}
+        </ThemeButton>
+        <ThemeButton
+          variant={"primary " + (mode !== EDITOR ? "Reverse" : "")}
+          onClick={() => setMode(EDITOR)}
+        >
+          {t(EDITOR)}
+        </ThemeButton>
         <div style={{ flexGrow: 1 }} />
         {/* MAPUTNIK EDITOR */}
         {source ? (
@@ -108,6 +179,7 @@ export function Editor({ layers, setLayers, source }: Props) {
                 name: "Layer",
                 sources: source,
                 layers: layers,
+                version: 8,
               });
               window.addEventListener(
                 "message",
@@ -129,21 +201,51 @@ export function Editor({ layers, setLayers, source }: Props) {
           </ThemeButton>
         ) : null}
       </div>
-      <textarea
-        style={{ flexGrow: 1 }}
-        placeholder={`Fill with style, which is list if Mapbox Layer specification. e.g: ${JSON.stringify(
-          defaultPointStyle,
-          null,
-          4,
-        )}`}
-        value={textArea}
-        onChange={(evt) => {
-          setTextArea(evt.target.value);
-          try {
-            setLayers(JSON.parse(evt.target.value));
-          } catch (err) {}
-        }}
-      />
+      {mode === FREE_TEXT_FORM && (
+        <textarea
+          style={{ flexGrow: 1 }}
+          placeholder={`Fill with style, which is list if Mapbox Layer specification. e.g: ${JSON.stringify(
+            defaultPointStyle,
+            null,
+            4,
+          )}`}
+          value={textArea}
+          onChange={(evt) => {
+            setTextArea(evt.target.value);
+            try {
+              setLayers(JSON.parse(evt.target.value));
+            } catch (err) {}
+          }}
+        />
+      )}
+      {mode === EDITOR && (
+        <div style={{ flexGrow: 1 }}>
+          <div className="MapBoxStyleEditor">
+            <MapBoxStyleEditor
+              layers={layers ? layers : []}
+              setLayers={setLayers}
+            />
+            <div className="AdditonalStyleEditor">
+              <div onClick={() => onAdd("fill")}>
+                <AddIcon />
+                Add fill
+              </div>
+              <div onClick={() => onAdd("circle")}>
+                <AddIcon />
+                Add circle
+              </div>
+              <div onClick={() => onAdd("line")}>
+                <AddIcon />
+                Add line
+              </div>
+              <div onClick={() => onAdd("symbol")}>
+                <AddIcon />
+                Add symbol
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

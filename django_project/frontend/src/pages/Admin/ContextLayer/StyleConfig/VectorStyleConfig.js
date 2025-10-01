@@ -19,6 +19,7 @@ import AggregationStyleGuide from "./AggregationStyleGuide";
 import { updateDataWithMapbox } from "../../../../utils/CloudNativeGIS";
 import MapboxStyleInformation from "../../../../components/Buttons/MapboxStyleInformation";
 import { Editor } from "../../../../components/MapBoxStyleEditor";
+import { Variables } from "../../../../utils/Variables";
 
 export default function VectorStyleConfig({ data, setData, setError }) {
   const [inputStyle, setInputStyle] = useState(null);
@@ -57,6 +58,7 @@ export default function VectorStyleConfig({ data, setData, setError }) {
       setError((e + "").split("at")[0]);
     }
   };
+
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <div>
@@ -97,6 +99,9 @@ export default function VectorStyleConfig({ data, setData, setError }) {
           updateStyle(JSON.stringify(layers));
         }}
         source={data.mapbox_style?.sources}
+        sourceLayer={
+          data.type === Variables.LAYER.TYPE.CLOUD_NATIVE_GIS ? "default" : null
+        }
       />
     </div>
   );
