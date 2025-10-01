@@ -83,6 +83,7 @@ export const loadImageToMap = async (map, id, callback) => {
   if (callback) {
     callback(error, image);
   }
+  return image;
 };
 
 /**

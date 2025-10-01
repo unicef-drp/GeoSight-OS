@@ -36,6 +36,7 @@
     "@types/pluralize": "^0.0.33",
     "@types/proj4": "^2.5.5",
     "@types/react-color": "^3.0.13",
+    "@types/uuid": "^9.0.0",
     "babel-loader": "^8.2.5",
     "eslint": "^8.15.0",
     "eslint-config-standard": "^17.0.0",
