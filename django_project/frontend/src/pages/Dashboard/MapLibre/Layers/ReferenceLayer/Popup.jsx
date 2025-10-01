@@ -23,6 +23,10 @@ import { capitalize } from "../../../../../utils/main";
 import { Session } from "../../../../../utils/Sessions";
 import { RelatedTableLayerType } from "../../../../../utils/indicatorLayer";
 import { queryData } from "../../../../../utils/queryExtraction";
+import {
+  cleanWhereQuery,
+  updateWhereQuery,
+} from "../../../../../utils/relatedTable";
 
 export const referenceSimpleDefaultTemplate = `
 <!--  HEADER  -->
@@ -496,9 +500,9 @@ export function popup(
 
         const geoField = relatedTable.geography_code_field_name;
         let where = currentIndicatorLayer?.config?.where;
-        const geomWhere = `${geoField} = '${geoCode}`;
-        where = where ? where + ` AND ${geomWhere}'` : geomWhere;
-        console.log(where);
+        const geomWhere = `${geoField} = '${geoCode}'`;
+        where = where ? where + ` AND ${geomWhere}` : geomWhere;
+        where = updateWhereQuery(cleanWhereQuery(where));
         const data =
           relatedTableData[currentIndicatorLayer.related_tables[0].id]?.data;
         if (data) {
